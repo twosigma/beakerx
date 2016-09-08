@@ -59,14 +59,17 @@
           if (data[i].type === "text"){
             fragment.appendChild(document.createTextNode(data[i].data));
           } else {
-            var element = document.createElement("div");
-            element.style.float = "left";
+            var element = document.createElement("span");
             fragment.appendChild(element);
             var math = data[i].data;
             try {
               katex.render(math, element, {throwOnError:false});
             } catch(err) {
-              bkHelper.show1ButtonModal(err.message+'<br>See: <a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its <a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">list of supported functions</a>.', "KaTex error");
+              var errorElement = document.createElement('span');
+              errorElement.style.color = '#cc0000';
+              errorElement.title = err.message;
+              errorElement.appendChild(document.createTextNode(data[i].rawData));
+              fragment.appendChild(errorElement);
             }
           }
         }

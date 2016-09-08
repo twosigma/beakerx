@@ -1485,8 +1485,9 @@
             return;
           }
           for (var colInd = 0; colInd < scope.columns.length; colInd++) {
-            var max = scope.table.column(colInd).data().max();
-            var min = scope.table.column(colInd).data().min();
+
+            var max = Math.max(scope.table.column(colInd).data().max(), Math.abs(scope.table.column(colInd).data().min()));
+
             scope.table.column(colInd).nodes().each(function (td) {
               var value = $(td).text();
               if ($.isNumeric(value)) {
@@ -1500,12 +1501,42 @@
                     "class": "dt-cell-text"
                   }).text(value);
 
-                  var percent = (parseFloat(value) / max) * 100;
                   var barsBkg = $("<div></div>", {
-                    "class": "dt-bar-data "
-                  }).css({
-                    "width": percent + "%"
+                    "class": "dt-bar-data-cell"
                   });
+
+                  var barsBkgPositiveValueCell = $("<div></div>", {
+                    "class": "dt-bar-data-value-cell"
+                  });
+
+                  var barsBkgNegativeValueCell = $("<div></div>", {
+                    "class": "dt-bar-data-value-cell"
+                  });
+
+                  var percent = (parseFloat(Math.abs(value)) / max) * 100;
+
+                  if(value>0){
+                    var barsBkgPositiveValues = $("<div></div>", {
+                      "class": "dt-bar-data "
+                    }).css({
+                      "width": percent + "%"
+                    });
+
+                    barsBkgPositiveValueCell.append(barsBkgPositiveValues);
+
+                  }else if(value<0){
+                    var barsBkgNegativeValues = $("<div></div>", {
+                      "class": "dt-bar-data-negative "
+                    }).css({
+                      "width": percent + "%"
+                    });
+
+                    barsBkgNegativeValueCell.append(barsBkgNegativeValues)
+                  }
+
+                  barsBkg.append(barsBkgNegativeValueCell);
+                  barsBkg.append(barsBkgPositiveValueCell);
+
                   cellDiv.append(barsBkg);
                   if (!barsRenderer.includeText) {
                     textSpan.hide();
@@ -1523,7 +1554,6 @@
             }
           }
         };
-
         scope.addInteractionListeners = function () {
           if (!scope.interactionListeners) {
             $(scope.table.table().container())

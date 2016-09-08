@@ -32,12 +32,8 @@ describe('EasyForm', function () {
 
   function evaluate(code) {
     beakerPO.setCellInput(code)
-        .then(function(){
-          beakerPO.createScreenshot('evaluateCell');
-          beakerPO.evaluateCell();
-          console.log('evaluateCell');
-        })
-        .then(function(){ beakerPO.waitForCellOutput(); console.log('waitForCellOutput'); });
+        .then(function(){ beakerPO.evaluateCell(); console.log('evaluateCell - OK'); })
+        .then(function(){ beakerPO.waitForCellOutput(); });
   }
 
   function testUndoRedo(code, selector) {
@@ -59,7 +55,6 @@ describe('EasyForm', function () {
       e.sendKeys("\uE009z");
     }
     expect(e.getAttribute('value')).toEqual("");
-    beakerPO.createScreenshot('easyFormUndoRedo');
     //TEST REDO
     //SHIFT:        '\uE008',
     if (os.type() === 'Darwin') {
@@ -69,6 +64,7 @@ describe('EasyForm', function () {
       //CONTROL:      '\uE009',
       e.sendKeys("\uE008\uE009z");
     }
+    beakerPO.createScreenshot('easyFormUndoRedo');
     expect(e.getAttribute('value')).toEqual("A");
 }
 

@@ -253,7 +253,6 @@ var BeakerPageObject = function() {
 
   this.insertCellOfType = function(language) {
     var self = this;
-    this.createScreenshot('insertCellOfType');
     browser.wait(this.EC.presenceOf(this.getCellEvaluatorMenu()), 1000)
         .then(function(){ self.getCellEvaluatorMenu().click();})
         .then(function(){ self.activateCellEvaluatorMenu(language);  browser.sleep(1000);})
@@ -375,17 +374,12 @@ var BeakerPageObject = function() {
 
   this.waitForCellOutput = function() {
     var self = this;
-
-    this.waitUntilLoadingCellOutput().then(function(){
-      browser.wait(self.EC.not(self.EC.textToBePresentInElement($('bk-code-cell-output'), 'Elapsed:'), 10000));
-    });
-  };
-
-  this.waitForCellOutputByIdCell = function(idCell) {
-    var self = this;
-    browser.wait(this.getCodeCellOutputByIdCell(idCell).isDisplayed(), 10000).then(function(){
-      browser.wait(self.EC.not(self.EC.textToBePresentInElement(self.getCodeCellOutputByIdCell(idCell), 'Elapsed:'), 10000));
-    });
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 5000);
+    browser.wait(self.EC.not(self.EC.textToBePresentInElement(element(by.css('bk-code-cell-output pre')), 'waiting for evaluator initialization ...')), 20000).then(
+      function(result){ console.log("hasn't initialization - " + result); self.createScreenshot('waitForCellOutput'); },
+      function(error){ console.log(error); self.createScreenshot('errorWaitForCellOutput'); }
+    );
+    browser.wait(self.EC.not(self.EC.textToBePresentInElement($('bk-code-cell-output'), 'Elapsed:'), 10000));
   };
 
   this.waitUntilLoadingFinished = function() {

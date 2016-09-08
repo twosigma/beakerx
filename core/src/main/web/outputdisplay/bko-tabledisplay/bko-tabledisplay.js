@@ -1485,8 +1485,9 @@
             return;
           }
           for (var colInd = 0; colInd < scope.columns.length; colInd++) {
-            var max = scope.table.column(colInd).data().max();
-            var min = scope.table.column(colInd).data().min();
+
+            var max = Math.max(scope.table.column(colInd).data().max(), Math.abs(scope.table.column(colInd).data().min()));
+
             scope.table.column(colInd).nodes().each(function (td) {
               var value = $(td).text();
               if ($.isNumeric(value)) {
@@ -1500,21 +1501,42 @@
                     "class": "dt-cell-text"
                   }).text(value);
 
-                  var percent = 0;
-                  var cssStyle ="";
+                  var barsBkg = $("<div></div>", {
+                    "class": "dt-bar-data-cell"
+                  });
+
+                  var barsBkgPositiveValuesCell = $("<div></div>", {
+                    "class": "dt-bar-data-cell-part"
+                  });
+
+                  var barsBkgNegativeValuesCell = $("<div></div>", {
+                    "class": "dt-bar-data-cell-part"
+                  });
+
                   if(value>0){
-                    percent = (parseFloat(value) / max) * 100;
-                    cssStyle = "dt-bar-data ";
+                    var percentP = (parseFloat(value) / max) * 100;
+                    var barsBkgPositiveValues = $("<div></div>", {
+                      "class": "dt-bar-data "
+                    }).css({
+                      "width": percentP + "%"
+                    });
+
+                    barsBkgPositiveValuesCell.append(barsBkgPositiveValues);
+
                   }else if(value<0){
-                    percent = (parseFloat(value) / min) * 100;
-                    cssStyle = "dt-bar-data-negative ";
+                    var percentN = (parseFloat(Math.abs(value)) / max) * 100;
+                    var barsBkgNegativeValues = $("<div></div>", {
+                      "class": "dt-bar-data-negative "
+                    }).css({
+                      "width": percentN + "%"
+                    });
+
+                    barsBkgNegativeValuesCell.append(barsBkgNegativeValues)
                   }
 
-                  var barsBkg = $("<div></div>", {
-                    "class": cssStyle
-                  }).css({
-                    "width": percent + "%"
-                  });
+                  barsBkg.append(barsBkgNegativeValuesCell);
+                  barsBkg.append(barsBkgPositiveValuesCell);
+
                   cellDiv.append(barsBkg);
                   if (!barsRenderer.includeText) {
                     textSpan.hide();
@@ -1532,7 +1554,6 @@
             }
           }
         };
-
         scope.addInteractionListeners = function () {
           if (!scope.interactionListeners) {
             $(scope.table.table().container())

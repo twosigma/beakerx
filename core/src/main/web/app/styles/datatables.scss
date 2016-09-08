@@ -192,6 +192,18 @@ a.dtmenu {
   text-overflow: ellipsis;
 }
 
+.dt-bar-data-cell {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+.dt-bar-data-cell-part {
+  height: 100%;
+  width: 50%;
+  position: relative;
+  float: left;
+}
+
 .dt-bar-data {
   background-color: #6ba2c7;
   height: 100%;
@@ -199,9 +211,10 @@ a.dtmenu {
 }
 
 .dt-bar-data-negative {
-  background-color: #f63a3e;
+  background-color: #6ba2c7;
   height: 100%;
   position: absolute;
+  right: 0;
 }
 
 .bko-table-use-pagination {

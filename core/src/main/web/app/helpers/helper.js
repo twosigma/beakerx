@@ -20,7 +20,7 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.debug', 'bk.electron', 'bk.publication', 'bk.katexhelper']);
+  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.debug', 'bk.electron', 'bk.publication']);
   /**
    * bkHelper
    * - should be the only thing plugins depend on to interact with general beaker stuffs (other than
@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, $uibModal,  bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, katexhelper, GLOBALS) {
+  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, $uibModal,  bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -539,7 +539,7 @@
       },        
       typeset: function(element) {
         try {
-          katexhelper.renderElem(element[0], {
+          renderMathInElement(element[0], {
             delimiters: [
               {left: "$$", right: "$$", display: true},
               {left: "$", right:  "$", display: false},
@@ -1317,11 +1317,7 @@
             };
           } else {
             // wrapper display with standard output and error
-            modelOutput.result = {
-              type: "Results",
-              outputdata: modelOutput.result.object.outputdata,
-              payload: {type: "BeakerDisplay", innertype: "Error", object: evaluation.payload}
-            };
+            modelOutput.result = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : { type: "BeakerDisplay", innertype: "Error", object: evaluation.payload } };
           }
         } else if (evaluation.status === "RUNNING") {
           if (evaluation.message === undefined)

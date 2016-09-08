@@ -1505,37 +1505,37 @@
                     "class": "dt-bar-data-cell"
                   });
 
-                  var barsBkgPositiveValuesCell = $("<div></div>", {
-                    "class": "dt-bar-data-cell-part"
+                  var barsBkgPositiveValueCell = $("<div></div>", {
+                    "class": "dt-bar-data-value-cell"
                   });
 
-                  var barsBkgNegativeValuesCell = $("<div></div>", {
-                    "class": "dt-bar-data-cell-part"
+                  var barsBkgNegativeValueCell = $("<div></div>", {
+                    "class": "dt-bar-data-value-cell"
                   });
+
+                  var percent = (parseFloat(Math.abs(value)) / max) * 100;
 
                   if(value>0){
-                    var percentP = (parseFloat(value) / max) * 100;
                     var barsBkgPositiveValues = $("<div></div>", {
                       "class": "dt-bar-data "
                     }).css({
-                      "width": percentP + "%"
+                      "width": percent + "%"
                     });
 
-                    barsBkgPositiveValuesCell.append(barsBkgPositiveValues);
+                    barsBkgPositiveValueCell.append(barsBkgPositiveValues);
 
                   }else if(value<0){
-                    var percentN = (parseFloat(Math.abs(value)) / max) * 100;
                     var barsBkgNegativeValues = $("<div></div>", {
                       "class": "dt-bar-data-negative "
                     }).css({
-                      "width": percentN + "%"
+                      "width": percent + "%"
                     });
 
-                    barsBkgNegativeValuesCell.append(barsBkgNegativeValues)
+                    barsBkgNegativeValueCell.append(barsBkgNegativeValues)
                   }
 
-                  barsBkg.append(barsBkgNegativeValuesCell);
-                  barsBkg.append(barsBkgPositiveValuesCell);
+                  barsBkg.append(barsBkgNegativeValueCell);
+                  barsBkg.append(barsBkgPositiveValueCell);
 
                   cellDiv.append(barsBkg);
                   if (!barsRenderer.includeText) {

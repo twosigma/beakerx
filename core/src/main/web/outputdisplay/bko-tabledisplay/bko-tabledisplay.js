@@ -1500,9 +1500,18 @@
                     "class": "dt-cell-text"
                   }).text(value);
 
-                  var percent = (parseFloat(value) / max) * 100;
+                  var percent = 0;
+                  var cssStyle ="";
+                  if(value>0){
+                    percent = (parseFloat(value) / max) * 100;
+                    cssStyle = "dt-bar-data ";
+                  }else if(value<0){
+                    percent = (parseFloat(value) / min) * 100;
+                    cssStyle = "dt-bar-data-negative ";
+                  }
+
                   var barsBkg = $("<div></div>", {
-                    "class": "dt-bar-data "
+                    "class": cssStyle
                   }).css({
                     "width": percent + "%"
                   });

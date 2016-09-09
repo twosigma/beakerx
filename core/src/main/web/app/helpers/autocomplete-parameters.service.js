@@ -27,7 +27,7 @@
     var params = [];
     var cm;
     var scope;
-    var currentParam;
+    var currentParam, currentValue;
     var args = [];
     var DOCUMENTATION_WIDTH = 500;
 
@@ -49,6 +49,7 @@
       }
 
       if (cursorInRange(args[currentParam].find())) {
+        currentValue = params[currentParam].name;
         return showParameterDocumentation(params[currentParam]);
       }
 
@@ -128,14 +129,37 @@
     }
 
     function endCompletion() {
+      removeOptionalParams();
       cm.off('cursorActivity', endCompletionIfCursorOutOfRange);
       hideParameterDocumentation();
-      clearMarks()
+      clearMarks();
       cm = void 0;
       currentParam = void 0;
       scope = void 0;
       params = [];
       args = [];
+    }
+
+    function removeOptionalParams() {
+      // last param
+      if (currentParam == args.length - 1) {
+        return;
+      }
+      try {
+        var currentArg = args[currentParam].find();
+
+        var lastValue = cm.doc.getRange(currentArg.from, currentArg.to);
+        // current param not changed - should also be removed
+        if (lastValue === currentValue) {
+          currentArg = args[--currentParam].find();
+        }
+
+        var lastArg = _.last(args).find();
+        cm.doc.setSelection(currentArg.to, lastArg.to);
+        cm.doc.replaceSelection('');
+      } catch(e) {
+        console.log('unable to get selection for removing optional parameters');
+      }
     }
 
     function endCompletionAndMoveCursor() {

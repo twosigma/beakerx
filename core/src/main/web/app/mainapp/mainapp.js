@@ -1265,7 +1265,14 @@
         }
 
         var keydownHandler = function(e) {
-          if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
+          var windowHeight = $(window).height();
+          if (bkHelper.isPageUpKey(e)) {
+            window.scrollBy(0, -windowHeight);
+            return false;
+          } else if (bkHelper.isPageDownKey(e)) {
+            window.scrollBy(0, windowHeight);
+            return false;
+          }else if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();
             _impl.saveNotebook();
             $scope.$apply();

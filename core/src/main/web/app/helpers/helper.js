@@ -146,6 +146,12 @@
         return e.ctrlKey && !e.altKey && e.shiftKey &&
           ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
       },
+      isPageUpKey: function (e) {
+        return e.which === 33;
+      },
+      isPageDownKey: function (e) {
+        return e.which === 34;
+      },
 
       //see http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
       // Firefox 1.0+

@@ -278,6 +278,16 @@ $fix-col-separator-width: 3px;
   outline: 0;
   animation: 1s fadeIn;
   animation-fill-mode: forwards;
+  .modal-dialog{
+    width: 300px;
+  }
+  .modal-content{
+    border: none;
+  }
+  .modal-body{
+    padding-top: 25px;
+  }
+
 }
 
 @keyframes fadeIn {

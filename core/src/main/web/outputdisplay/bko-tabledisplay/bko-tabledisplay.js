@@ -2613,12 +2613,12 @@
           }
         };
 
-        scope.showAllColumns = function(){
-          var id = scope.id;
-          $('#'+id).DataTable().columns().visible(true);
-          $('#'+id).css('pointer-events', 'all');
-          id += '_modal_dialog';
-          $('#'+id).hide()
+        scope.showHeaderMenu = function() {
+          $('#' + scope.id + '_modal_dialog').hide();
+          bkHelper.timeout(function() {
+            $('#' + scope.id + '_dropdown_menu').click();
+          }, 0);
+          $('#' + scope.id).css('pointer-events', 'all');
         };
 
         scope.hideModal = function(){

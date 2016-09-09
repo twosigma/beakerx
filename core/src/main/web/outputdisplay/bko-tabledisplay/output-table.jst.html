@@ -19,25 +19,19 @@
     <div class="table_modal" id="{{id}}_modal_dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-          </div>
           <div class="modal-body">
             hiding columns 50 to {{columnNames.length}}. View complete list to change?
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" ng-click="showAllColumns()">OK</button>
+            <button type="button" class="btn btn-primary" ng-click="showHeaderMenu()">OK</button>
             <button type="button" class="btn btn-secondary" ng-click="hideModal()">Cancel</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="dropdown dtmenu clearfix" style="float: left; z-index: 10" ng-if="renderMenu">
-     <a class="dropdown-toggle" data-toggle="dropdown" ng-click="menuToggle()">
+  <div class="dropdown dtmenu clearfix" style="float: left; z-index: 10" ng-if="renderMenu" id="{{id}}_tabel_menu">
+     <a class="dropdown-toggle" data-toggle="dropdown" ng-click="menuToggle()" id="{{id}}_dropdown_menu">
       <span class="bko-menu" aria-hidden="true" ng-class="{ sorting_desc: isIndexColumnDesc }"></span>
      </a>
      <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
@@ -64,8 +58,8 @@
        <li><a tabindex="-1" href="#" ng-click="doCSVDownload(false)" id="dt-download-all" eat-click>Download All as CSV</a></li>
        <li><a tabindex="-1" href="#" ng-click="doCSVDownload(true)" id="dt-download-selected" eat-click>Download Selected as CSV</a></li>
        <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(true)" id="dt-show-all" class="menu-separator" eat-click>Show All Columns</a></li>
-       <li class="dropdown-submenu">
-         <a tabindex="-1" href="#" id="dt-show-columns" eat-click>Show Column</a>
+       <li class="dropdown-submenu" id="{{id}}_show_columns">
+         <a tabindex="-1" href="#" class="dt-show-columns"  eat-click>Show Column</a>
          <div class="dropdown-menu dropdown-menu-search" ng-if="showColumnMenu.searchable()" stop-click>
            <i class="fa fa-search"></i>
            <input ng-model="showColumnMenu.search" placeholder="search...">

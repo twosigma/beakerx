@@ -253,10 +253,10 @@ var BeakerPageObject = function() {
 
   this.insertCellOfType = function(language) {
     var self = this;
-    browser.wait(this.EC.visibilityOf(this.getCellEvaluatorMenu()), 1000)
+    browser.wait(this.EC.visibilityOf(this.getCellEvaluatorMenu()), 10000)
         .then(function(){ self.getCellEvaluatorMenu().click();})
         .then(function(){ self.activateCellEvaluatorMenu(language);  browser.sleep(1000);})
-        .then(function(){ browser.wait(self.EC.visibilityOf(self.cellEvaluatorMenuItem(language)), 1000)})
+        .then(function(){ browser.wait(self.EC.visibilityOf(self.cellEvaluatorMenuItem(language)), 10000)})
         .then(function(){ console.log('cellEvaluatorMenuItem is visible');
           self.cellEvaluatorMenuItem(language).click();});
   };

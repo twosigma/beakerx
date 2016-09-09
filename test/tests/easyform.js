@@ -32,7 +32,7 @@ describe('EasyForm', function () {
 
   function evaluate(code) {
     beakerPO.setCellInput(code)
-        .then(function(){ beakerPO.evaluateCell(); console.log('evaluateCell - OK'); })
+        .then(function(){ beakerPO.evaluateCell(); })
         .then(function(){ browser.sleep(1000); beakerPO.waitForCellOutput(); });
   }
 

@@ -314,7 +314,6 @@ var BeakerPageObject = function() {
   //CodeMirror API. See for information https://sharpkit.net/help/SharpKit.CodeMirror/SharpKit.CodeMirror/CodeMirror/
 
   this.setCellInput = function(code) {
-    console.log('setCellInput');
     return browser.executeScript("$('.CodeMirror')[0].CodeMirror.setValue('" + code + "')");
   };
 
@@ -375,11 +374,10 @@ var BeakerPageObject = function() {
 
   this.waitForCellOutput = function() {
     var self = this;
-    browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 10000);
-    browser.wait(self.EC.not(self.EC.textToBePresentInElement($('bk-code-cell-output'), 'Elapsed:'), 10000)).then(
-        function(result){ console.log("hasn't Elapsed - " + result); self.createScreenshot('waitElapsed'); },
-        function(error){ console.log(error); self.createScreenshot('errorWaitElapsed'); }
-    );
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 10000).then(function(result){
+      console.log('presence of CodeCellOutput - ' + result);
+      browser.wait(self.EC.not(self.EC.textToBePresentInElement($('bk-code-cell-output'), 'Elapsed:'), 10000));
+    });
   };
 
   this.waitForCellOutputByIdCell = function(idCell) {

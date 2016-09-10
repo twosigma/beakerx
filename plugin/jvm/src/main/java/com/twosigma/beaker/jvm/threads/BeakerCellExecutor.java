@@ -86,18 +86,7 @@ public class BeakerCellExecutor {
       theLock.lock();
       worker.shutdownNow();
       Thread thr = thrFactory.getTheThread();
-      if (thr != null) {
-        //logger.info("interrupting");
-        thr.interrupt();
-        try {
-          Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-        }
-        if (!thr.getState().equals(State.TERMINATED)) {
-          //logger.info("stopping");
-          thr.stop();
-        }
-      }
+      killThread(thr);
     } finally {
       theLock.unlock();
       reset();
@@ -118,58 +107,41 @@ public class BeakerCellExecutor {
     } while ( n == nAlloc );
     return Arrays.asList(threads);
   }
+
+  private void killThread(Thread thr) {
+    if (null == thr) return;
+    //logger.info("interrupting");
+    thr.interrupt();
+    try {
+      Thread.sleep(2000);
+    } catch (InterruptedException ex) {
+    }
+    if (!thr.getState().equals(State.TERMINATED)) {
+      //logger.info("stopping");
+      thr.stop();
+    }
+  }
   
   @SuppressWarnings("deprecation")
   public void killAllThreads() {
-    // first stop current execution (if any)
-    theLock.lock();
-    worker.shutdownNow();
-    Thread thr = thrFactory.getTheThread();
-    int repeat;
-    if(thr != null) {
-      repeat = 5;
-      while(repeat>0 && !thr.getState().equals(State.TERMINATED)) {
-        repeat--;
-        try {  Thread.sleep(100);  } catch (Throwable t) { }
-      }
-      if(!thr.getState().equals(State.TERMINATED)) {
-        repeat = 15;
-        while(repeat>0 && !thr.getState().equals(State.TERMINATED)) {
-          repeat--;
-          thr.stop();
-          try {  Thread.sleep(100);  } catch (Throwable t) { }
-        }
-      }
-    }
-    
-    // then kill all remaining threads in the threadpool
-    List<Thread> tlist = getThreadList();
-    
-    for (Thread t : tlist) {
-      if (t!=null)
-        t.interrupt();
-    }
+    //logger.info("killAllThreads begin");
+    try {
+      theLock.lock();
+      worker.shutdownNow();
+      Thread thr = thrFactory.getTheThread();
+      killThread(thr);
 
-    repeat = 15;
-    while(repeat>0) {
-      boolean finished = true;
+      // then kill all remaining threads in the threadpool
+      List<Thread> tlist = getThreadList();
+    
       for (Thread t : tlist) {
-        if (t!=null && ! t.getState().equals(State.TERMINATED) ) {
-          finished = false;
-          t.stop();
-        }
+	killThread(t);
       }
-      if (finished)
-        break;
-      repeat--;
-      try {  Thread.sleep(100);  } catch (Throwable t) { }
+      
+    } finally {
+      theLock.unlock();
+      reset();
+      //logger.info("killAllThreads done");
     }
-
-    theLock.unlock();
-
-    // reset executor service
-    reset();
   }
-  
-  
 }

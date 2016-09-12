@@ -374,16 +374,11 @@ var BeakerPageObject = function() {
 
   this.waitForCellOutput = function() {
     var self = this;
-    browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 5000).then(function(){
-      browser.wait(self.EC.not(self.EC.textToBePresentInElement(element(by.css('bk-code-cell-output pre')), 'waiting for evaluator initialization ...')), 20000).then(
-            function(result){ console.log("hasn't initialization - " + result); self.createScreenshot('waitInitCellOutput'); },
-            function(error){ console.log(error); self.createScreenshot('errorWaitInitCellOutput'); }
-          );
-      }).then(function(){
-      browser.wait(self.EC.not(self.EC.textToBePresentInElement($('bk-code-cell-output'), 'Elapsed:'), 10000)).then(
-            function(result){ console.log("hasn't Elapsed - " + result); self.createScreenshot('waitElapsed'); },
-            function(error){ console.log(error); self.createScreenshot('errorWaitElapsed'); }
-          );
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 5000)
+      .then(function(){
+        browser.wait(self.EC.not(self.EC.textToBePresentInElement(element(by.css('bk-code-cell-output pre')), 'waiting for evaluator initialization ...')), 20000); })
+      .then(function(){
+        browser.wait(self.EC.not(self.EC.textToBePresentInElement($('bk-code-cell-output'), 'Elapsed:'), 10000));
     });
   };
 

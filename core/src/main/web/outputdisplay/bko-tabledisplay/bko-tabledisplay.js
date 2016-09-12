@@ -2618,7 +2618,6 @@
           bkHelper.timeout(function() {
             $('#' + scope.id + '_dropdown_menu').click();
           }, 0);
-          $('#' + scope.id).css('pointer-events', 'all');
         };
 
         scope.hideModal = function(){

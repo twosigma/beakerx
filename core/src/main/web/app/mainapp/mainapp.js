@@ -1264,13 +1264,16 @@
           });
         }
 
+        var sizeOfWindowWithoutTheMenusAtTop = function() {
+          return ($(window).height() - $('.navbar-fixed-top').height());
+        };
+
         var keydownHandler = function(e) {
-          var windowHeight = $(window).height();
           if (bkHelper.isPageUpKey(e)) {
-            window.scrollBy(0, -windowHeight);
+            window.scrollBy(0, - sizeOfWindowWithoutTheMenusAtTop());
             return false;
           } else if (bkHelper.isPageDownKey(e)) {
-            window.scrollBy(0, windowHeight);
+            window.scrollBy(0, sizeOfWindowWithoutTheMenusAtTop());
             return false;
           }else if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();

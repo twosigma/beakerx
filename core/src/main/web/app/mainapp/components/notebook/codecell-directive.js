@@ -463,6 +463,14 @@
           },
           'Shift-Cmd-Enter':  function(cm) {
             scope.evaluateSelection(cm);
+          },
+          'PageDown': function (cm) {
+            //override default behaviour of codemirror control
+            //do nothing
+          },
+          'PageUp': function (cm) {
+            //override default behaviour of codemirror control
+            //do nothing
           }
 
         });

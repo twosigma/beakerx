@@ -106,8 +106,8 @@ var BeakerPageObject = function() {
     element(by.css('.notebook-menu')).click()
         .then(function(){self.activateEditModeMenuItem();})
         .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#edit-mode-menuitem'))), 5000);})
-        .then(function(){browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform(); browser.sleep(1000);})
-        .then(function(){self.activateNormalEditModeMenuItem(); browser.sleep(1000);})
+        .then(function(){browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform(); })
+        .then(function(){self.activateNormalEditModeMenuItem(); })
         .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#normal-edit-mode-menuitem'))), 5000);})
         .then(function(){console.log('normal-edit-mode-menuitem is visible'); element(by.css('#normal-edit-mode-menuitem')).click();});
   };
@@ -122,8 +122,8 @@ var BeakerPageObject = function() {
     element(by.css('.notebook-menu')).click()
         .then(function(){self.activateEditModeMenuItem();})
         .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#edit-mode-menuitem'))), 5000);})
-        .then(function(){browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform(); browser.sleep(1000);})
-        .then(function(){self.activateVimEditModeMenuItem(); browser.sleep(1000);})
+        .then(function(){browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform(); })
+        .then(function(){self.activateVimEditModeMenuItem(); })
         .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#vim-edit-mode-menuitem'))), 5000);})
         .then(function(){console.log('vim-edit-mode-menuitem is visible'); element(by.css('#vim-edit-mode-menuitem')).click();});
   };

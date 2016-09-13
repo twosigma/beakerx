@@ -143,6 +143,7 @@ var BeakerPageObject = function() {
         .then(function(isVisible) {
           console.log('VimEditModeMenuItem dislayed - ' + isVisible);
           if (!isVisible) {
+            browser.actions().mouseMove(element(by.css('#open-all-menuitem'))).perform();
             return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
           }
         }.bind(this));
@@ -153,6 +154,7 @@ var BeakerPageObject = function() {
         .then(function(isVisible) {
           console.log('NormalEditModeMenuItem dislayed - ' + isVisible);
           if (!isVisible) {
+            browser.actions().mouseMove(element(by.css('#open-all-menuitem'))).perform();
             return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
           }
         }.bind(this));

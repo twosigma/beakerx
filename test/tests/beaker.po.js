@@ -793,7 +793,7 @@ var BeakerPageObject = function() {
   this.clickCodeCellInputButtonByIdCell = function(idCell, outputType, screenshotName, timeOut){
     var self = this;
     if(!timeOut){
-      timeOut = 25000;
+      timeOut = 60000;
     }
     this.runBkCellDefaultButtonByIdCell(idCell);
     browser.wait(this.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + ']')), 5000)

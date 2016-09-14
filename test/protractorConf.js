@@ -43,8 +43,8 @@ var config = {
     'tests/text-cell.js',
     'tests/language-manager.js',
     'tests/vim-mode.js',
-    'tests/autotranslation.js'
-    'tests/cell-menu.js',
+    'tests/autotranslation.js',
+    'tests/cell-menu.js'
   ]
 };
 

@@ -139,20 +139,24 @@ var BeakerPageObject = function() {
   };
 
   this.activateVimEditModeMenuItem = function() {
+    var self = this;
     element(by.css('#vim-edit-mode-menuitem')).isDisplayed()
         .then(function(isVisible) {
           console.log('VimEditModeMenuItem dislayed - ' + isVisible);
           if (!isVisible) {
+            self.activateEditModeMenuItem();
             return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
           }
         }.bind(this));
   };
 
   this.activateNormalEditModeMenuItem = function() {
+    var self = this;
     element(by.css('#normal-edit-mode-menuitem')).isDisplayed()
         .then(function(isVisible) {
           console.log('NormalEditModeMenuItem dislayed - ' + isVisible);
           if (!isVisible) {
+            self.activateEditModeMenuItem();
             return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
           }
         }.bind(this));
@@ -253,10 +257,13 @@ var BeakerPageObject = function() {
 
   this.insertCellOfType = function(language) {
     var self = this;
-    browser.wait(this.EC.visibilityOf(this.getCellEvaluatorMenu()), 5000)
+    browser.sleep(1000);
+    browser.wait(this.EC.visibilityOf(this.getCellEvaluatorMenu()), 10000)
+        .then(function(isVisible){ console.log('CellEvaluatorMenu is visible - ' + isVisible); },
+              function(error){ console.log('error'); self.createScreenshot("errorCellEvaluatorMenu");  })
         .then(function(){ self.getCellEvaluatorMenu().click();})
         .then(function(){ self.activateCellEvaluatorMenu(language);  browser.sleep(1000);})
-        .then(function(){ browser.wait(self.EC.visibilityOf(self.cellEvaluatorMenuItem(language)), 5000)})
+        .then(function(){ browser.wait(self.EC.visibilityOf(self.cellEvaluatorMenuItem(language)), 10000)})
         .then(function(){ console.log('cellEvaluatorMenuItem is visible');
           self.cellEvaluatorMenuItem(language).click();});
   };
@@ -373,9 +380,11 @@ var BeakerPageObject = function() {
 
   this.waitForCellOutput = function() {
     var self = this;
-
-    this.waitUntilLoadingCellOutput().then(function(){
-      browser.wait(self.EC.not(self.EC.textToBePresentInElement($('bk-code-cell-output'), 'Elapsed:'), 10000));
+    browser.wait(this.EC.presenceOf($('bk-code-cell-output')), 5000)
+      .then(function(){
+        browser.wait(self.EC.not(self.EC.textToBePresentInElement(element(by.css('bk-code-cell-output pre')), 'waiting for evaluator initialization ...')), 20000); })
+      .then(function(){
+        browser.wait(self.EC.not(self.EC.textToBePresentInElement($('bk-code-cell-output'), 'Elapsed:'), 10000));
     });
   };
 

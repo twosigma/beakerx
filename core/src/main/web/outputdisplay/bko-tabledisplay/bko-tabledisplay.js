@@ -511,6 +511,35 @@
           }
         };
 
+        $('body').on('click', '.dropdown > .dropdown-menu > .dropdown-submenu > a', function() {
+          event.stopPropagation();
+
+          var dropStyle = {
+            'display': 'block',
+            'max-height': '300px'
+          };
+
+          $(event.toElement.parentElement).find('.dropdown-menu').css(dropStyle);
+
+          $('.dropdown').find('.dropdown-submenu').hover(function() {
+            if ($('.dropdown-submenu').find('.dropdown-menu').is(':visible')){
+              $(this).find('.dropdown-menu').css(dropStyle);
+              $(this).parent('.dropdown-submenu').find('.dropdown-menu').css(dropStyle);
+            }
+          });
+
+          $('.dropdown > ul > li > a').hover(function() {
+            if ($(this).siblings('.dropdown-menu').size() == 0 &&
+              $('.dropdown-submenu').find('.dropdown-menu').is(':visible')){
+              $('.dropdown-submenu').find('.dropdown-menu').removeAttr('style');
+            }
+          });
+
+          $('html').click(function() {
+            $('.dropdown-submenu').find('.dropdown-menu').removeAttr('style');
+          });
+        });
+
         $scope.getCellIdx      =  [];
         $scope.getCellNam      =  [];
         $scope.getCellSho      =  [];

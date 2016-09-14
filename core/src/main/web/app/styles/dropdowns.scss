@@ -121,11 +121,6 @@
     content: " ";
   }
 
-  &:hover, &.hover {
-    > .dropdown-menu {
-      display: block;
-    }
-  }
 }
 
 

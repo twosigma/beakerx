@@ -37,11 +37,15 @@ for line in iter(beaker.stdout.readline, ''):
     if line.startswith('Beaker listening on'):
         break
 
-os.chdir("../test/node_modules/protractor-flake/bin")
-result = os.system("node protractor-flake --node-bin node --max-attempts=3 -- ../../../protractorConf.js");
-result2 = 1
+os.chdir("../test/node_modules/protractor/bin")
+result = 1
+result = os.system("node protractor ../../../protractorConf.js");
 if not result:
-    result2 = os.system("node protractor-flake --node-bin node --max-attempts=3 -- ../../../protractorWithoutRestartBrowserConf.js")
+    result = os.system("node protractor ../../../protractorOneInstanceConf.js");
+if not result:
+    result = os.system("node protractor ../../../protractorWithoutRestartBrowserConf.js")
+if not result:
+    result = os.system("node protractor ../../../protractorNonRestartOneInstanceConf.js")
 
 # Skipping memory tests because they hang on Jenkins
 #os.system("node ../../../memory-tests.js")
@@ -52,5 +56,5 @@ webcontrol.terminate();
 response = urllib2.urlopen('http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer')
 html = response.read()
 
-if result2:
+if result:
     sys.exit(20)

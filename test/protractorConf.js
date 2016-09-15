@@ -38,7 +38,6 @@ var config = {
   specs: [
     'tests/notebook.js',
     'tests/easyform.js',
-    'tests/vim-mode.js',
     'tests/landing-page.js',
     'tests/text-cell.js',
     'tests/cell-menu.js',

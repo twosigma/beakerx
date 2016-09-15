@@ -34,6 +34,7 @@ var config = {
         }));
     },
     specs: [
+        'tests/vim-mode.js',
         'tests/code-cell.js'
     ]
 };

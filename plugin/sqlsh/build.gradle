@@ -29,6 +29,7 @@ configurations {
 }
 
 dependencies {
+  compile group: 'org.owasp.esapi', name: 'esapi', version: '2.1.0.1'
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
   antlr group : 'org.antlr', name :'antlr4', version: '4.5'
   provided project(':plugin:jvm')

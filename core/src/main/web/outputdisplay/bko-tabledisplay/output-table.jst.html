@@ -37,8 +37,8 @@
       <li><a tabindex="-1" href="#" ng-click="doDeselectAll()" class="dt-deselect-all" eat-click>Deselect All</a></li>
       <li><a tabindex="-1" href="#" ng-click="doReverseSelection()" class="dt-reverse-selection" eat-click>Reverse Selection</a></li>
       <li><a tabindex="-1" href="#" ng-click="doCopyToClipboard()" class="menu-separator"  id="{{id}}_dt_copy" eat-click>Copy to Clipboard</a></li>
-      <li><a tabindex="-1" href="#" ng-click="doCSVExport(false)" class="dt-save-all" eat-click>Save All as CSV</a></li>
-      <li><a tabindex="-1" href="#" ng-click="doCSVExport(true)" class="dt-save-selected" eat-click>Save Selected as CSV</a></li>
+      <li><a tabindex="-1" href="#" ng-click="doCSVExport(false)" class="dt-save-all" ng-if="isPublication == false && isEmbedded == false" eat-click>Save All as CSV</a></li>
+      <li><a tabindex="-1" href="#" ng-click="doCSVExport(true)" class="dt-save-selected" ng-if="isPublication == false && isEmbedded == false" eat-click>Save Selected as CSV</a></li>
       <li><a tabindex="-1" href="#" ng-click="doCSVDownload(false)" class="dt-download-all" eat-click>Download All as CSV</a></li>
       <li><a tabindex="-1" href="#" ng-click="doCSVDownload(true)" class="dt-download-selected" eat-click>Download Selected as CSV</a></li>
       <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(true)" class="dt-show-all menu-separator" eat-click>Show All Columns</a></li>

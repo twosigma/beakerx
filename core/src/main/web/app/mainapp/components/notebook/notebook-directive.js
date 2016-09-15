@@ -215,6 +215,7 @@
         };
 
         var cursor = null;
+        
         var previousFilter = {};
         var currentCm = null;
         var currentCellmodel = null;
@@ -262,10 +263,6 @@
           }
         }
         
-        var sleep = function(time) {
-          return new Promise((resolve) => setTimeout(resolve, time));
-        }
-        
         $scope.cmArray = [];
         $scope.markAllInterval = null;
         
@@ -278,9 +275,9 @@
           
           $scope.findAllFunctionTemplate(
               result,
-              function(cursor,theCM){
+              function(theCursor,theCM){
                 //markText is too slow to put it directly in here.
-                $scope.cmArray.push({theCM : theCM, from: cursor.from(), to: cursor.to()});
+                $scope.cmArray.push({theCM : theCM, from: theCursor.from(), to: theCursor.to()});
               }
           );
           
@@ -303,24 +300,25 @@
         $scope.replaceAllFunction = function (result) {
           $scope.findAllFunctionTemplate(
               result,
-              function(cursor,theCM){
-                cursor.replace(result.replace, result.find);
-                theCM.addSelection(cursor.from(), cursor.to());
+              function(theCursor,theCM){
+                theCursor.replace(result.replace, result.find);
+                theCM.addSelection(theCursor.from(), theCursor.to());
               }
           );
         }
         
         $scope.findAllFunctionTemplate = function (result, action) {
+          var theCursor = null;
           for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
             var theCell = notebookCellOp.getCellAtIndex(index);
             if (theCell){
               var theCM = _impl.getCM(theCell.id);
               if (theCM){
-                clearMarcs(theCM);
+                clearMarcs(theCM);     
                 if(result.find && result.searchCellFilter.allNotebook){
                   if(isCellMatchSearchCellFilter(theCell, result.searchCellFilter)){
-                    for (cursor = getSearchCursor(result, cursor, 'MIN', theCM); cursor.findNext();) {
-                      action(cursor, theCM);
+                    for (theCursor = getSearchCursor(result, theCursor, 'MIN', theCM); theCursor.findNext();) {
+                      action(theCursor, theCM);
                     }
                   }
                 }
@@ -329,8 +327,8 @@
           }
           if(!result.searchCellFilter.allNotebook){
             if(result.find){
-              for (cursor = getSearchCursor(result, cursor, 'MIN', currentCm); cursor.findNext();) {
-                action(cursor, currentCm);
+              for (theCursor = getSearchCursor(result, theCursor, 'MIN', currentCm); theCursor.findNext();) {
+                action(theCursor, currentCm);
               }
             }
           }

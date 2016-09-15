@@ -503,13 +503,8 @@
           }
         };
 
-        scope.displayOutput = false;
-        Scrollin.track(element[0], function() {
-          $timeout(function() {
-            initCodeMirror();
-            scope.displayOutput = true;
-          }, 1);
-        }, {top: -GLOBALS.CELL_INSTANTIATION_DISTANCE});
+        initCodeMirror();
+        scope.displayOutput = true;
 
         scope.focus = function() {
           if (scope.cm) {

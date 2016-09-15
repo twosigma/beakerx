@@ -45,28 +45,49 @@
     var rgbaToHex = bkUtils.rgbaToHex;
     var defaultPlotColors = {};
     defaultPlotColors[GLOBALS.THEMES.DEFAULT] = [
-      "#FF1F77B4", // blue
-      "#FFFF7F0E", // orange
-      "#FF2CA02C", // green
-      "#FFD62728", // red
-      "#FF9467BD", // purple
-      "#FF8C564B", // brown
-      "#FFE377C2", // pink
-      "#FF7F7F7F", // gray
-      "#FFBCBD22", // pear
-      "#FF17BECF"  // aqua
+      "#FF1F77B4",
+      "#FFAEC7E8",
+      "#FFFF7F0E",
+      "#FFFFBB78",
+      "#FF2CA02C",
+      "#FF98DF8A",
+      "#FFD62728",
+      "#FFFF9896",
+      "#FF9467BD",
+      "#FFC5B0D5",
+      "#FF8C564B",
+      "#FFC49C94",
+      "#FFE377C2",
+      "#FFF7B6D2",
+      "#FF7F7F7F",
+      "#FFC7C7C7",
+      "#FFBCBD22",
+      "#FFDBDB8D",
+      "#FF17BECF",
+      "#FF9EDAE5"
+
     ];
     defaultPlotColors[GLOBALS.THEMES.AMBIANCE] = [
-      "#FF1F77B4", // blue
-      "#FFFF7F0E", // orange
-      "#FF2CA02C", // green
-      "#FFD62728", // red
-      "#FF9467BD", // purple
-      "#FF8C564B", // brown
-      "#FFE377C2", // pink
-      "#FF7F7F7F", // gray
-      "#FFBCBD22", // pear
-      "#FF17BECF"  // aqua
+      "#FF1F77B4",
+      "#FFAEC7E8",
+      "#FFFF7F0E",
+      "#FFFFBB78",
+      "#FF2CA02C",
+      "#FF98DF8A",
+      "#FFD62728",
+      "#FFFF9896",
+      "#FF9467BD",
+      "#FFC5B0D5",
+      "#FF8C564B",
+      "#FFC49C94",
+      "#FFE377C2",
+      "#FFF7B6D2",
+      "#FF7F7F7F",
+      "#FFC7C7C7",
+      "#FFBCBD22",
+      "#FFDBDB8D",
+      "#FF17BECF",
+      "#FF9EDAE5"
     ];
 
     var defaultEvaluator = GLOBALS.DEFAULT_EVALUATOR;

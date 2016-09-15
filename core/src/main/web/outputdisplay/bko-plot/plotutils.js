@@ -887,48 +887,40 @@
         return value;
       },
 
-      createNiceColor: function () {
-        var hue = Math.random();
-        var saturation = 0.75;
-        var luminance = 0.5;
-        var rgb = this.hslToRgb(hue, saturation, luminance);
-        var niceColor = bkUtils.rgbaToHex(rgb[0], rgb[1], rgb[2]);
-        while (bkHelper.defaultPlotColors[bkHelper.getTheme()].indexOf(niceColor) !== -1) {
-          niceColor = this.createNiceColor();
-        }
-        return niceColor;
+      createNiceColor: function (n) {
+        var hue =  Math.abs(Math.cos(n*137.5));
+        var saturation = Math.abs(0.5 + Math.cos(1.414*n)/2);
+        var value = Math.abs(0.75 + Math.cos(1.414*n)/4);
+
+        var rgb = this.hsvToRgb(hue, saturation, value);
+        return bkUtils.rgbaToHex(rgb[0], rgb[1], rgb[2]);
       },
 
       //http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-      hslToRgb: function (h, s, l) {
+      hsvToRgb : function(h,s,v){
         var r, g, b;
 
-        if (s == 0) {
-          r = g = b = l; // achromatic
-        } else {
-          var hue2rgb = function (p, q, t) {
-            if (t < 0) t += 1;
-            if (t > 1) t -= 1;
-            if (t < 1 / 6) return p + (q - p) * 6 * t;
-            if (t < 1 / 2) return q;
-            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-            return p;
-          };
+        var i = Math.floor(h * 6);
+        var f = h * 6 - i;
+        var p = v * (1 - s);
+        var q = v * (1 - f * s);
+        var t = v * (1 - (1 - f) * s);
 
-          var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-          var p = 2 * l - q;
-          r = hue2rgb(p, q, h + 1 / 3);
-          g = hue2rgb(p, q, h);
-          b = hue2rgb(p, q, h - 1 / 3);
+        switch(i % 6){
+          case 0: r = v, g = t, b = p; break;
+          case 1: r = q, g = v, b = p; break;
+          case 2: r = p, g = v, b = t; break;
+          case 3: r = p, g = q, b = v; break;
+          case 4: r = t, g = p, b = v; break;
+          case 5: r = v, g = p, b = q; break;
         }
 
         return [r * 255, g * 255, b * 255];
       },
 
-
       getDefaultColor: function (i) {
         var themeColors = bkHelper.defaultPlotColors[bkHelper.getTheme()];
-        return i < themeColors.length ? themeColors[i] : this.createNiceColor();
+        return i < themeColors.length ? themeColors[i] : this.createNiceColor(i);
       },
       evaluateTagCell: function (tag) {
         var cellOp = bkSessionManager.getNotebookCellOp();

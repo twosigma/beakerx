@@ -262,6 +262,10 @@
           }
         }
         
+        var sleep = function(time) {
+          return new Promise((resolve) => setTimeout(resolve, time));
+        }
+        
         $scope.cmArray = [];
         $scope.markAllInterval = null;
         
@@ -279,7 +283,7 @@
                 $scope.cmArray.push({theCM : theCM, from: cursor.from(), to: cursor.to()});
               }
           );
-
+          
           if($scope.cmArray && $scope.cmArray.length > 0){
             var index = 0;
             $scope.markAllInterval = setInterval(function(){
@@ -333,10 +337,35 @@
         }
         
         var scrollToChar = function (theCM, pozition){
-          var charPozition = currentCm.charCoords({line: pozition.line, ch: pozition.ch}, "local").top; 
-          var cmCozition = currentCm.getScrollerElement().offsetTop; 
-          window.scrollTo(0, cmCozition + charPozition);
+          var headerHeight = 0;
+          var searchReplaceHeight = 0;
+
+          var header = $window.document.getElementById("notebook_header");
+          if(header){
+            headerHeight = header.getBoundingClientRect().height;
+          }
+
+          var searchReplace = $window.document.getElementById("search_replace_window");
+          if(searchReplace){
+            searchReplaceHeight = searchReplace.getBoundingClientRect().height;
+          }
+          
+          var visible_area_start = $(window).scrollTop() + headerHeight;
+          var visible_area_end = visible_area_start + window.innerHeight - searchReplaceHeight;
+
+          var de = document.documentElement;
+          var box = theCM.getScrollerElement().getBoundingClientRect();
+          
+          var cmPozition = box.top - headerHeight + window.pageYOffset - de.clientTop;
+          var charPozition = theCM.charCoords({line: pozition.line, ch: pozition.ch}, "local").top;
+          var sctollTo = cmPozition + charPozition;
+          
+          if(sctollTo < visible_area_start || sctollTo > visible_area_end){
+            $('html,body').animate({scrollTop: sctollTo - window.innerWidth * 0.2}, 1000);
+            //window.scrollTo(0, sctollTo);
+          }
         }
+        
 
         $scope.findFunction = function (result, reversive) {
           if(result.find){

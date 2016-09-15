@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<header class="navbar-fixed-top" ng-class="{'electron-hide': getElectronMode()}">
+<header class="navbar-fixed-top" ng-class="{'electron-hide': getElectronMode()}" id="notebook_header">
   <div class="navbar navbar-inverse">
     <bk-brand-logo reference="/beaker/#/control" on-click="gotoControlPanel(event)"></bk-brand-logo>
     <div ng-switch="renamingAllowed()">

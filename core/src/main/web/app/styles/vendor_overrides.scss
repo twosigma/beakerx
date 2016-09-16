@@ -207,3 +207,10 @@ input[type="checkbox"], input[type="radio"] {
 .radio label, .checkbox label {
   padding-left: 0;
 }
+
+table.dataTable {
+  th.focus,
+  td.focus {
+    z-index: 1;
+  }
+}

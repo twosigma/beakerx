@@ -110,8 +110,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "SQL",
-                "shellId": "1dc4e979-1d5e-4862-b2f2-ecc37f1a56d2",
-                "elapsedTime": 130,
+                "shellId": "41d6ca92-d2c4-4ecb-9b73-4384105c9c8c",
+                "elapsedTime": 36,
                 "result": {
                     "hasDoubleClickAction": false,
                     "doubleClickTag": null,
@@ -174,7 +174,7 @@
                         ],
                         [
                             1002,
-                            "0xE2Antique\"White\"",
+                            "0xE2AntiqueWhite",
                             "#FAEBD7"
                         ],
                         [
@@ -210,6 +210,137 @@
                     ]
                 },
                 "height": 399
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeEttrgP",
+            "type": "code",
+            "evaluator": "SQL",
+            "input": {
+                "body": [
+                    "SELECT * FROM dates;"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "ID",
+                            "NAME",
+                            "DATE"
+                        ],
+                        "actualtype": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": [],
+                        "headerFontSize": null,
+                        "dataFontSize": null,
+                        "fontColor": [],
+                        "headersVertical": false
+                    }
+                },
+                "result": {
+                    "hasDoubleClickAction": false,
+                    "doubleClickTag": null,
+                    "contextMenuItems": [],
+                    "contextMenuTags": {},
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "ID",
+                        "NAME",
+                        "DATE"
+                    ],
+                    "types": [
+                        "java.lang.Integer",
+                        "java.lang.String",
+                        "java.sql.Timestamp"
+                    ],
+                    "subtype": "TableDisplay",
+                    "stringFormatForTimes": null,
+                    "stringFormatForType": {},
+                    "stringFormatForColumn": {},
+                    "rendererForType": {},
+                    "rendererForColumn": {},
+                    "alignmentForType": {},
+                    "alignmentForColumn": {},
+                    "columnsFrozen": {},
+                    "columnsFrozenRight": {},
+                    "columnsVisible": {},
+                    "columnOrder": [],
+                    "cellHighlighters": [],
+                    "tooltips": [],
+                    "dataFontSize": null,
+                    "headerFontSize": null,
+                    "fontColor": [],
+                    "headersVertical": false,
+                    "values": [
+                        [
+                            1,
+                            "code0",
+                            {
+                                "type": "Date",
+                                "timestamp": 1476090671500
+                            }
+                        ],
+                        [
+                            2,
+                            "code1",
+                            {
+                                "type": "Date",
+                                "timestamp": 1415664061100
+                            }
+                        ],
+                        [
+                            3,
+                            "code2",
+                            {
+                                "type": "Date",
+                                "timestamp": 1415660400000
+                            }
+                        ]
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "SQL",
+                "shellId": "41d6ca92-d2c4-4ecb-9b73-4384105c9c8c",
+                "elapsedTime": 26,
+                "height": 156
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -252,7 +383,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 120,
+                "elapsedTime": 53,
                 "hidden": true,
                 "result": [
                     1001,
@@ -291,8 +422,8 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "665f5877-fc80-4338-9b70-0362c2babe7f",
-                "elapsedTime": 1438
+                "shellId": "41d6ca92-d2c4-4ecb-9b73-4384105c9c8c",
+                "elapsedTime": 643
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -314,11 +445,57 @@
                 "state": {},
                 "selectedType": "Hidden",
                 "pluginName": "SQL",
-                "shellId": "1dc4e979-1d5e-4862-b2f2-ecc37f1a56d2",
-                "elapsedTime": 37
+                "shellId": "41d6ca92-d2c4-4ecb-9b73-4384105c9c8c",
+                "elapsedTime": 22
             },
             "evaluatorReader": true,
             "lineCount": 4
+        },
+        {
+            "id": "code3MSCuj",
+            "type": "code",
+            "evaluator": "SQL",
+            "input": {
+                "body": [
+                    "drop table if exists dates;",
+                    "CREATE TABLE dates (",
+                    "  id int(11) NOT NULL,",
+                    "  name varchar(45) NOT NULL,",
+                    "  `date` timestamp,",
+                    "  PRIMARY KEY (id)",
+                    ");"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "SQL",
+                "shellId": "41d6ca92-d2c4-4ecb-9b73-4384105c9c8c",
+                "elapsedTime": 31
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "codeTKIhq7",
+            "type": "code",
+            "evaluator": "SQL",
+            "input": {
+                "body": [
+                    "INSERT INTO dates VALUES (1, 'code0', '2016-10-10 11:11:11.5');",
+                    "INSERT INTO dates VALUES (2, 'code1', '2014-11-11 01:01:01.1');",
+                    "INSERT INTO dates VALUES (3, 'code2', '2014-11-11');"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "SQL",
+                "shellId": "41d6ca92-d2c4-4ecb-9b73-4384105c9c8c",
+                "elapsedTime": 30
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         }
     ],
     "namespace": {

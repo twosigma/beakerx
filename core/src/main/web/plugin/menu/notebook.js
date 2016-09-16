@@ -59,6 +59,16 @@ define(function(require, exports, module) {
       id: 'delete-all-menuitem'
     },
     {
+      name: 'Find and replace',
+      shortcut: ["Alt-F", "Ctrl-F"],
+      sortorder: 125,
+      action: function () {
+        bkHelper.getBkNotebookViewModel().showSearchReplace();        
+      },
+      tooltip: 'Find and Replace...',
+      id: 'find-replace'
+    },
+    {
       name: 'Run all cells',
       shortcut: 'F5',
       sortorder: 130,

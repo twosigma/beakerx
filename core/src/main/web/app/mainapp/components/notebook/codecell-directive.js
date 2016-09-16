@@ -62,6 +62,18 @@
       template: JST['mainapp/components/notebook/codecell'](),
       scope: {cellmodel: '=', cellmenu: '='},
       controller: function($scope) {
+        
+        $scope.changeHandler = function(cm, e) {
+          if ($scope.cellmodel.input.body !== cm.getValue()) {
+            $scope.cellmodel.lineCount = cm.lineCount();
+            $scope.cellmodel.input.body = cm.getValue();
+            if (!bkSessionManager.isNotebookModelEdited()) {
+              bkSessionManager.setNotebookModelEdited(true);
+              bkUtils.refreshRootScope();
+            }
+          }
+        };
+        
         $scope.cellview = {
           inputMenu: [],
           displays: []
@@ -113,6 +125,14 @@
           }
         });
 
+        $scope.prepareForSearch = function() {
+          delete $scope.cellmodel.output.hidden;
+          $scope.cm.off('change', $scope.changeHandler);
+        };
+        
+        $scope.afterSearchActions = function() {
+          $scope.cm.on('change', $scope.changeHandler);
+        };
 
         $scope.isHiddenOutput = function() {
           return $scope.cellmodel.output.selectedType == 'Hidden';
@@ -486,7 +506,7 @@
 
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
-          scope.cm.on('change', changeHandler);
+          scope.cm.on('change', scope.changeHandler);
           scope.cm.on('blur', function () {
             if ($('.CodeMirror-hint').length > 0) {
               //codecomplete is up, skip
@@ -511,13 +531,8 @@
           }
         };
 
-        scope.displayOutput = false;
-        Scrollin.track(element[0], function() {
-          $timeout(function() {
-            initCodeMirror();
-            scope.displayOutput = true;
-          }, 1);
-        }, {top: -GLOBALS.CELL_INSTANTIATION_DISTANCE});
+        initCodeMirror();
+        scope.displayOutput = true;
 
         scope.focus = function() {
           if (scope.cm) scope.cm.focus();
@@ -535,17 +550,6 @@
             scope.cm.clearHistory();
           }
         });
-        // cellmodel.body <-- CodeMirror
-        var changeHandler = function(cm, e) {
-          if (scope.cellmodel.input.body !== cm.getValue()) {
-            scope.cellmodel.lineCount = cm.lineCount();
-            scope.cellmodel.input.body = cm.getValue();
-            if (!bkSessionManager.isNotebookModelEdited()) {
-              bkSessionManager.setNotebookModelEdited(true);
-              bkUtils.refreshRootScope();
-            }
-          }
-        };
 
         var onGutterClick = function(cm, line, gutter, e) {
           if (gutter !== 'CodeMirror-linenumbers') return;
@@ -683,7 +687,8 @@
         scope.$on('$destroy', function() {
           Scrollin.untrack(element[0]);
           CodeMirror.off(window, 'resize', resizeHandler);
-          CodeMirror.off('change', changeHandler);
+          //CodeMirror.off('change', changeHandler);
+          scope.cm.off('change', scope.changeHandler);
           if (scope.cm) {
             scope.cm.off();
           }

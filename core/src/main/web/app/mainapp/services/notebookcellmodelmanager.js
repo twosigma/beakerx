@@ -629,6 +629,9 @@
                   this.insertAfter(id, cell);
                 }
               },
+              getCellsSize: function(){
+                return cells.length;
+              },
               getInitializationCells: function() {
                 return tagMap.initialization;
               },

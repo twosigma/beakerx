@@ -741,9 +741,13 @@
             "Shift-Ctrl-F": reformat,
             "Shift-Cmd-F": reformat,
             "Alt-F11": setFullScreen,
-            "Ctrl-F": findReplace,
-            "Cmd-F": findReplace,
         };
+        
+        if(bkHelper.isMacOS){
+          keys["Ctrl-F"] = findReplace;
+        }else{
+          keys["Alt-F"] = findReplace;
+        }
 
         if(bkHelper.isMacOS){
           keys["Ctrl-C"] = cancel;

@@ -70,6 +70,15 @@
           scope.edit();
           scope.$apply();
         };
+        
+        scope.prepareForSearch = function() {
+          scope.setPreviewMode();
+          scope.disablePreview();
+        };
+        
+        scope.afterSearchActions = function() {
+          scope.enablePreview();
+        };
 
         scope.isShowInput = function() {
           //Markdown cell input is always visible

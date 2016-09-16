@@ -83,6 +83,16 @@
         $scope.$watch('cellmodel.title', editedListener);
         $scope.$watch('cellmodel.initialization', editedListener);
         
+        $scope.prepareForSearch = function() {
+          if(!$scope.isShowChildren()){
+            $scope.toggleShowChildren();
+          }
+        };
+        
+        $scope.afterSearchActions = function() {
+          //nothing to do
+        };
+        
         $scope.cellview.menu.addItem({
           name: 'Change Header Level',
           sortorder: 100,

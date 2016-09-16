@@ -453,32 +453,10 @@
             element.focus();  
           }
           
-
           for ( var property in _impl._focusables) {
             if (_impl._focusables.hasOwnProperty(property)) {
               if(_impl._focusables[property]){
-                if(_impl._focusables[property].cellmodel.type == "code"){
-                  delete _impl._focusables[property].cellmodel.input.hidden;
-                }
-              }
-            }
-          }
-          
-          for ( var property in _impl._previewable) {
-            if (_impl._previewable.hasOwnProperty(property)) {
-              if(_impl._previewable[property]){
-                _impl._previewable[property].setPreviewMode();
-                _impl._previewable[property].disablePreview();
-              }
-            }
-          }
-          
-          for (var property in _impl._sectioncells) {
-            if (_impl._sectioncells.hasOwnProperty(property)) {
-              if(_impl._sectioncells[property]){
-                if(!_impl._sectioncells[property].isShowChildren()){
-                  _impl._sectioncells[property].toggleShowChildren();
-                }
+                _impl._focusables[property].prepareForSearch();
               }
             }
           }
@@ -490,14 +468,14 @@
             clearInterval($scope.markAllInterval);
           }
           
-          for ( var property in _impl._previewable ) {
-            if (_impl._previewable.hasOwnProperty(property)) {
-              if(_impl._previewable[property]){
-                _impl._previewable[property].enablePreview();
+          for ( var property in _impl._focusables) {
+            if (_impl._focusables.hasOwnProperty(property)) {
+              if(_impl._focusables[property]){
+                _impl._focusables[property].afterSearchActions();
               }
             }
           }
-          
+
           for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
             var theCell = notebookCellOp.getCellAtIndex(index);
             if (theCell){

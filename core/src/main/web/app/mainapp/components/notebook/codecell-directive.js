@@ -57,11 +57,24 @@
       return bkCoreManager.getBkApp().getBkNotebookWidget();
     };
     var CELL_TYPE = 'code';
+
     return {
       restrict: 'E',
       template: JST['mainapp/components/notebook/codecell'](),
       scope: {cellmodel: '=', cellmenu: '='},
-      controller: function($scope) {
+      controller: function($scope) {    
+        
+        $scope.changeHandler = function(cm, e) {
+          if ($scope.cellmodel.input.body !== cm.getValue()) {
+            $scope.cellmodel.lineCount = cm.lineCount();
+            $scope.cellmodel.input.body = cm.getValue();
+            if (!bkSessionManager.isNotebookModelEdited()) {
+              bkSessionManager.setNotebookModelEdited(true);
+              bkUtils.refreshRootScope();
+            }
+          }
+        };
+        
         $scope.cellview = {
           inputMenu: [],
           displays: []
@@ -76,9 +89,9 @@
         };
 
         $scope.isError = function() {
-          //jscs:disable
+          // jscs:disable
           if ($scope.cellmodel === undefined || $scope.cellmodel.output === undefined || $scope.cellmodel.output.result === undefined) {
-            //jscs:enable
+            // jscs:enable
             return false;
           }
 
@@ -97,10 +110,19 @@
           }
           return $scope.cellmodel.input.hidden !== true;
         };
+        
+        $scope.prepareForSearch = function() {
+          delete $scope.cellmodel.output.hidden;
+          $scope.cm.off('change', $scope.changeHandler);
+        };
+        
+        $scope.afterSearchActions = function() {
+          $scope.cm.on('change', $scope.changeHandler);
+        };
 
         $scope.bkNotebook = getBkNotebookWidget();
 
-        //ensure cm refreshes when 'unhide'
+        // ensure cm refreshes when 'unhide'
         $scope.afterShow = function () {
           if ($scope.cm)
             $scope.cm.refresh();
@@ -478,10 +500,10 @@
 
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
-          scope.cm.on('change', changeHandler);
+          scope.cm.on('change', scope.changeHandler);
           scope.cm.on('blur', function () {
             if ($('.CodeMirror-hint').length > 0) {
-              //codecomplete is up, skip
+              // codecomplete is up, skip
               return;
             }
             if(document.hasFocus()){
@@ -525,16 +547,6 @@
           }
         });
         // cellmodel.body <-- CodeMirror
-        var changeHandler = function(cm, e) {
-          if (scope.cellmodel.input.body !== cm.getValue()) {
-            scope.cellmodel.lineCount = cm.lineCount();
-            scope.cellmodel.input.body = cm.getValue();
-            if (!bkSessionManager.isNotebookModelEdited()) {
-              bkSessionManager.setNotebookModelEdited(true);
-              bkUtils.refreshRootScope();
-            }
-          }
-        };
 
         var onGutterClick = function(cm, line, gutter, e) {
           if (gutter !== 'CodeMirror-linenumbers') return;
@@ -611,15 +623,12 @@
         });
 
         /*
-        scope.getShareData = function() {
-          var evaluator = _(bkSessionManager.getRawNotebookModel().evaluators)
-              .find(function(evaluator) {
-                return evaluator.name === scope.cellmodel.evaluator;
-              });
-          var cells = [scope.cellmodel];
-          return bkUtils.generateNotebook([evaluator], cells);
-        };
-        */
+         * scope.getShareData = function() { var evaluator =
+         * _(bkSessionManager.getRawNotebookModel().evaluators)
+         * .find(function(evaluator) { return evaluator.name ===
+         * scope.cellmodel.evaluator; }); var cells = [scope.cellmodel]; return
+         * bkUtils.generateNotebook([evaluator], cells); };
+         */
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
           if (cellmodel === scope.cellmodel) {
@@ -672,7 +681,8 @@
         scope.$on('$destroy', function() {
           Scrollin.untrack(element[0]);
           CodeMirror.off(window, 'resize', resizeHandler);
-          CodeMirror.off('change', changeHandler);
+          // CodeMirror.off('change', changeHandler);
+          scope.cm.off('change', scope.changeHandler);
           if (scope.cm) {
             scope.cm.off();
           }

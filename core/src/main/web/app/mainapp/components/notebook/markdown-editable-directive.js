@@ -32,11 +32,17 @@
       link: function(scope, element, attrs) {
         var contentAttribute = scope.cellmodel.type === "section" ? 'title' : 'body';
 
+        var previewEnable = true;
+        
         var preview = function () {
           bkHelper.markupCellContent(scope.cellmodel[contentAttribute], bkHelper.evaluateCode)
               .then(function (transformedHtml) {
-                element.find('.markup').html(transformedHtml);
-                scope.mode = 'preview';
+                if(previewEnable){
+                  element.find('.markup').html(transformedHtml);
+                  scope.mode = 'preview';
+                }else{
+                  scope.mode = 'edit';
+                }
               });
         };
 
@@ -69,6 +75,19 @@
           //Markdown cell input is always visible
           return true;
         };
+        
+        scope.prepareForSearch = function() {
+          scope.mode = 'edit';
+          previewEnable = false;
+        };
+        
+        scope.afterSearchActions = function() {
+          previewEnable = true;
+          preview();
+          if (scope.$root.$$phase != '$apply' && scope.$root.$$phase != '$digest') {
+            scope.$apply();
+          }
+        }
 
         scope.edit = function(event) {
           var selection = window.getSelection() || {};
@@ -144,6 +163,7 @@
 
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], codeMirrorOptions);
 
+        scope.bkNotebook.registerPreviewable(scope.cellmodel.id, scope);
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
         scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
 
@@ -185,6 +205,7 @@
 
         scope.$on('$destroy', function() {
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
+          scope.bkNotebook.unregisterPreviewable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id, scope.cm);
           CodeMirror.off('change', changeHandler);
           scope.cm.off();

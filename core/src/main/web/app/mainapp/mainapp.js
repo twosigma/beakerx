@@ -1285,6 +1285,10 @@
               bkCoreManager.newSession(false);
             });
             return false;
+          } else if (bkHelper.isSearchReplace(e)) { // Alt + f
+            e.preventDefault();
+            bkHelper.getBkNotebookViewModel().showSearchReplace();
+            return false;
           } else if (bkHelper.isNewNotebookShortcut(e)) { // Ctrl/Alt + n
             bkUtils.fcall(function() {
               bkCoreManager.newSession(true);

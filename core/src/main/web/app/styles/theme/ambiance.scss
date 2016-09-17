@@ -71,6 +71,17 @@ $ef-active-control-bg:  #3B99FC;
 
 $markdown-heading-color: #aac6e3;
 
+$cm-search-mark-all-color: #FFFF00; 
+$cm-search-mark-color: #F26D00;
+
+.search-find-all-selected-background{
+  background-color: $cm-search-mark-all-color;
+}
+
+.search-selected-background{
+  background-color: $cm-search-mark-color;
+}
+
 $scrollbar-width: 8px; // default size scrollbar looks ugly in this theme
 $scrollbar-track-color: $std-btn-bg;
 $text-cursor: url('../images/ambiance/ambiance-i-beam.png') 5 9, text;

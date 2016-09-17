@@ -143,7 +143,7 @@
       },
       isResetEnvironmentShortcut: function (e) {
         if (this.isMacOS) {
-          return e.ctrlKey && (e.which === 82); // Alt + r
+          return e.ctrlKey && (e.which === 82); // ctrlKey + r
         }
         return e.altKey && (e.which === 82); // Alt + r
       },
@@ -167,6 +167,13 @@
         return e.ctrlKey && !e.altKey && e.shiftKey &&
           ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
       },
+      isSearchReplace: function (e){
+        if (this.isMacOS){
+          return e.ctrlKey && (e.which === 70);// Ctrl + f
+        }
+        return e.altKey && (e.which === 70);// Alt + f
+      },
+  
       isPageUpKey: function (e) {
         return e.which === 33;
       },

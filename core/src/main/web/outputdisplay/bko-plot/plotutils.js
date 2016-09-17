@@ -904,9 +904,9 @@
       },
 
       createNiceColor: function (n) {
-        var hue =  Math.abs(Math.cos(n*137.5));
-        var saturation = Math.abs(0.5 + Math.cos(1.414*n)/2);
-        var value = Math.abs(0.75 + Math.cos(1.414*n)/4);
+        var hue = n * 157.5 / 360;
+        var saturation = 0.75 + Math.cos(n) / 4;
+        var value = 7/8 + Math.cos(n/5.1) / 8;
 
         var rgb = this.hsvToRgb(hue, saturation, value);
         return bkUtils.rgbaToHex(rgb[0], rgb[1], rgb[2]);

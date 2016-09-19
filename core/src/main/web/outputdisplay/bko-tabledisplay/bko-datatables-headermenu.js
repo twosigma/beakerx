@@ -66,7 +66,7 @@ HeaderMenu.prototype = {
   _appendMenuContainer: function()
   {
     var node = this.s.dt.table().container();
-    var $container = $("<div/>", { 'class': 'bko-header-menu' });
+    var $container = $("<div/>", { 'class': 'dropdown bko-header-menu' });
 
     $(node).before($container);
     this.dom.container = $container;

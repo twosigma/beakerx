@@ -53,6 +53,7 @@ describe('language manager', function () {
   it('can be closed', function () {
     beakerPO.languageManagerButton('Groovy').click();
     beakerPO.languageManagerCloseButton.click();
+    browser.sleep(1000);
     expect(element.all(by.className('plugin-manager')).count()).toEqual(0);
   });
 });

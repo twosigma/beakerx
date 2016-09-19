@@ -225,9 +225,9 @@
         $scope.availableSearchCellOptions =
           [
            {value: {allNotebook:true, codeCells:true, sectionCells:true, markdownCells:true}, name: 'entire notebook'},
-           {value: {allNotebook:false, codeCells:false, sectionCells:false, markdownCells:false}, name: 'selected cell'},
+           {value: {allNotebook:false, codeCells:false, sectionCells:false, markdownCells:false}, name: 'current cell only'},
            {value: {allNotebook:true, codeCells:true, sectionCells:false, markdownCells:false}, name: 'all code cells'},
-           {value: {allNotebook:true, codeCells:false, sectionCells:true, markdownCells:true}, name: 'all text and cells and section headings'}
+           {value: {allNotebook:true, codeCells:false, sectionCells:true, markdownCells:true}, name: 'all text'}
         ];
 
         $scope.searchReplaceData = {

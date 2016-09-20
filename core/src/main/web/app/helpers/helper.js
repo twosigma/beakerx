@@ -54,8 +54,19 @@
       "#FFE377C2", // pink
       "#FF7F7F7F", // gray
       "#FFBCBD22", // pear
-      "#FF17BECF"  // aqua
+      "#FF17BECF",  // aqua
+      "#FFAEC7E8",
+      "#FFFFBB78",
+      "#FF98DF8A",
+      "#FFFF9896",
+      "#FFC5B0D5",
+      "#FFC49C94",
+      "#FFF7B6D2",
+      "#FFC7C7C7",
+      "#FFDBDB8D",
+      "#FF9EDAE5"
     ];
+
     defaultPlotColors[GLOBALS.THEMES.AMBIANCE] = [
       "#FF1F77B4", // blue
       "#FFFF7F0E", // orange
@@ -66,7 +77,17 @@
       "#FFE377C2", // pink
       "#FF7F7F7F", // gray
       "#FFBCBD22", // pear
-      "#FF17BECF"  // aqua
+      "#FF17BECF",  // aqua
+      "#FFAEC7E8",
+      "#FFFFBB78",
+      "#FF98DF8A",
+      "#FFFF9896",
+      "#FFC5B0D5",
+      "#FFC49C94",
+      "#FFF7B6D2",
+      "#FFC7C7C7",
+      "#FFDBDB8D",
+      "#FF9EDAE5"
     ];
 
     var defaultEvaluator = GLOBALS.DEFAULT_EVALUATOR;
@@ -122,7 +143,7 @@
       },
       isResetEnvironmentShortcut: function (e) {
         if (this.isMacOS) {
-          return e.ctrlKey && (e.which === 82); // Alt + r
+          return e.ctrlKey && (e.which === 82); // ctrlKey + r
         }
         return e.altKey && (e.which === 82); // Alt + r
       },
@@ -146,6 +167,13 @@
         return e.ctrlKey && !e.altKey && e.shiftKey &&
           ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
       },
+      isSearchReplace: function (e){
+        if (this.isMacOS){
+          return e.ctrlKey && (e.which === 70);// Ctrl + f
+        }
+        return e.altKey && (e.which === 70);// Alt + f
+      },
+  
       isPageUpKey: function (e) {
         return e.which === 33;
       },

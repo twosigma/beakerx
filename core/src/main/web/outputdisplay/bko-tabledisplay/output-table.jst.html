@@ -14,8 +14,24 @@
     limitations under the License.
 -->
 <div class="dtcontainer">
-  <div class="dropdown dtmenu clearfix" style="float: left; z-index: 10" ng-if="renderMenu">
-    <a class="dropdown-toggle" data-toggle="dropdown" ng-click="menuToggle()">
+  <!-- Modal -->
+  <div ng-if="columns.length > 50">
+    <div class="table_modal" id="{{id}}_modal_dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            hiding columns 50 to {{columnNames.length}}. View complete list to change?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ng-click="showHeaderMenu()">OK</button>
+            <button type="button" class="btn btn-secondary" ng-click="hideModal()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dropdown dtmenu clearfix" style="float: left; z-index: 10" ng-if="renderMenu" id="{{id}}_tabel_menu">
+     <a class="dropdown-toggle" data-toggle="dropdown" ng-click="menuToggle()" id="{{id}}_dropdown_menu">
       <span class="bko-menu" aria-hidden="true" ng-class="{ sorting_desc: isIndexColumnDesc }"></span>
     </a>
     <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
@@ -76,22 +92,22 @@
 
   <table cellpadding="0" class="display" border="0" cellspacing="0" width="10%" id="{{id}}">
     <thead>
-    <tr>
-      <th ng-repeat="c in [].constructor(columns.length) track by $index"></th>
-    </tr>
-    <tr class="filterRow" ng-show="showFilter">
-      <th ng-repeat="c in [].constructor(columns.length) track by $index">
-        <div class="input-clear-growing">
-          <div class="input-clear">
-            <span class="fa filter-icon"></span>
-            <input class="filter-input" ng-class="{'table-filter': $first}" type="text">
-            <span class="fa fa-times clear-filter"></span>
+      <tr>
+        <th ng-repeat="c in [].constructor(columns.length) track by $index"></th>
+      </tr>
+      <tr class="filterRow" ng-show="showFilter">
+        <th ng-repeat="c in [].constructor(columns.length) track by $index">
+          <div class="input-clear-growing">
+            <div class="input-clear">
+              <span class="fa filter-icon"></span>
+              <input class="filter-input" ng-class="{'table-filter': $first}" type="text">
+              <span class="fa fa-times clear-filter"></span>
+            </div>
+            <input tabindex="-1" class="hidden-filter hidden-filter-input">
+            <span class="hidden-length"></span>
           </div>
-          <input tabindex="-1" class="hidden-filter hidden-filter-input">
-          <span class="hidden-length"></span>
-        </div>
-      </th>
-    </tr>
+        </th>
+      </tr>
     </thead>
   </table>
 </div>

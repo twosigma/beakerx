@@ -157,7 +157,7 @@
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
                 "elapsedTime": 28,
-                "height": 56
+                "height": 36
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -238,7 +238,7 @@
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 269,
                 "state": {},
-                "height": 226
+                "height": 188
             },
             "evaluatorReader": true,
             "lineCount": 21
@@ -446,7 +446,7 @@
                 },
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 0,
-                "height": 90
+                "height": 70
             },
             "evaluatorReader": true,
             "lineCount": 85
@@ -455,7 +455,7 @@
             "id": "markdowneyI3Lb",
             "type": "markdown",
             "body": [
-                "You can drag-and-drop a jpeg or png file onto the notebook to create a new text cell with that image in it.",
+                "You can copy-and-paste or drag-and-drop a jpeg or png file onto the notebook to create a new text cell with that image in it.",
                 "This feature works better for small images.",
                 "You can adjust the display size of images like these with the usual attributes.  At your option, add more text at the bottom for a caption.  Edit the next cell to see how. "
             ],
@@ -509,9 +509,9 @@
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 8,
                 "state": {},
-                "height": 172
+                "height": 41
             },
-            "evaluatorReader": false,
+            "evaluatorReader": true,
             "lineCount": 3
         }
     ],

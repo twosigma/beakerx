@@ -46,12 +46,6 @@
   }
 }
 
-.search-replace {
-  width:      50%;
-  display:    block;
-  padding:    0 10px;
-}
-
 .outputlogbox {
   height:     200px;
   overflow:   auto;
@@ -68,7 +62,27 @@
   width: 100%;
   z-index: 1000;
   bottom: 0;
-  height: 300px;
+  height: 250px;
+}
+
+.search-replace {
+  width: 90%;
+  height: 90%;
+  margin: auto;
+  margin-top: 30px;
+}
+
+.searchreplace-container {
+  background-color: #eff2f8;
+  position: fixed;
+  right: 0;
+  width: 600px;
+  z-index: 1000;
+  bottom: 0;
+  height: 250px;
+  border-style: solid;
+  border-image: linear-gradient(#DDE0E6, #EFF2F8, #DDE0E6) 10 repeat stretch;
+  border-image-width: 5px;
 }
 
 .prelog {

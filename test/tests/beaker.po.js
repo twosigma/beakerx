@@ -922,7 +922,9 @@ var BeakerPageObject = function() {
             })
           })
         });
+        expect(element(by.id('file-dlg-selected-path')).isDisplayed()).toBe(true);
         element(by.id('file-dlg-selected-path')).sendKeys(filename);
+        expect(element(by.cssContainingText('button', 'Save')).isDisplayed()).toBe(true);
         element(by.cssContainingText('button', 'Save')).click();
         var filenameCsv = path.join(dir, (filename));
         browser.wait(fs.existsSync.bind(this, filenameCsv), 10000).then(function(){

@@ -930,7 +930,12 @@ var BeakerPageObject = function() {
         browser.wait(fs.existsSync.bind(this, filenameCsv), 10000).then(function(){
           expect(fs.statSync(filenameCsv).isFile() && fs.existsSync(filenameCsv)).toBe(true);
           browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-        });
+        },
+          function(error){
+            console.log(filenameCsv + ' error : ' + error);
+            browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+          }
+        );
       });
     });
   }

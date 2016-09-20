@@ -166,7 +166,7 @@ describe('Table Display (Groovy API)', function (done) {
 
             browser.actions().mouseMove(arrTd0.get(1)).perform();
             browser.actions().click(protractor.Button.RIGHT).perform();
-            var contextMenu =  element(by.css('ul.context-menu-list[style*="z-index: 1"]'));
+            var contextMenu =  element(by.css('ul.context-menu-list[style*="z-index: 2"]'));
             var negate = contextMenu.element(by.cssContainingText('span', 'negate'));
             browser.actions().mouseMove(negate).perform();
             negate.click();

@@ -225,9 +225,9 @@
         $scope.availableSearchCellOptions =
           [
            {value: {allNotebook:true, codeCells:true, sectionCells:true, markdownCells:true}, name: 'entire notebook'},
-           {value: {allNotebook:false, codeCells:false, sectionCells:false, markdownCells:false}, name: 'selected cell'},
+           {value: {allNotebook:false, codeCells:false, sectionCells:false, markdownCells:false}, name: 'current cell only'},
            {value: {allNotebook:true, codeCells:true, sectionCells:false, markdownCells:false}, name: 'all code cells'},
-           {value: {allNotebook:true, codeCells:false, sectionCells:true, markdownCells:true}, name: 'all text and cells and section headings'}
+           {value: {allNotebook:true, codeCells:false, sectionCells:true, markdownCells:true}, name: 'all text'}
         ];
 
         $scope.searchReplaceData = {
@@ -349,18 +349,19 @@
           }
           
           var visible_area_start = $(window).scrollTop() + headerHeight;
-          var visible_area_end = visible_area_start + window.innerHeight - searchReplaceHeight;
-
+          var visible_area_end = $(window).scrollTop() + window.innerHeight - searchReplaceHeight;
+        
           var de = document.documentElement;
           var box = theCM.getScrollerElement().getBoundingClientRect();
           
-          var cmPozition = box.top - headerHeight + window.pageYOffset - de.clientTop;
+          var cmPozition = box.top + window.pageYOffset - de.clientTop;
           var charPozition = theCM.charCoords({line: pozition.line, ch: pozition.ch}, "local").top;
           var sctollTo = cmPozition + charPozition;
-          
+ 
           if(sctollTo < visible_area_start || sctollTo > visible_area_end){
-            $('html,body').animate({scrollTop: sctollTo - window.innerWidth * 0.2}, 1000);
-            //window.scrollTo(0, sctollTo);
+            var visibelFrame = window.innerHeight - searchReplaceHeight - headerHeight;
+            $('html,body').animate({scrollTop: sctollTo - Math.round(visibelFrame *0.2) - headerHeight}, 1000);
+            //window.scrollTo(0, cmPozition - window.innerHeight);
           }
         }
         

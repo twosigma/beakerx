@@ -922,20 +922,12 @@ var BeakerPageObject = function() {
             })
           })
         });
-        expect(element(by.id('file-dlg-selected-path')).isDisplayed()).toBe(true);
         element(by.id('file-dlg-selected-path')).sendKeys(filename);
-        expect(element(by.cssContainingText('button', 'Save')).isDisplayed()).toBe(true);
         element(by.cssContainingText('button', 'Save')).click();
         var filenameCsv = path.join(dir, (filename));
-        browser.wait(fs.existsSync.bind(this, filenameCsv), 10000).then(function(){
-          expect(fs.statSync(filenameCsv).isFile() && fs.existsSync(filenameCsv)).toBe(true);
-          browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-        },
-          function(error){
-            console.log(filenameCsv + ' error : ' + error);
-            browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
-          }
-        );
+        browser.wait(fs.existsSync.bind(this, filenameCsv), 20000).then(function(){
+          expect(fs.statSync(filenameCsv).isFile()).toBe(true);
+        });
       });
     });
   }

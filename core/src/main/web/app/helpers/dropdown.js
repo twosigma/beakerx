@@ -146,5 +146,21 @@
     .on('keydown.bs.dropdown.data-api', toggle, $.fn.dropdown.Constructor.prototype.keydown)
     .on('keydown.bs.dropdown.data-api', '.dropdown-menu', $.fn.dropdown.Constructor.prototype.keydown)
     .on('mouseenter.bs.dropdown.data-api', '.dropdown-menu, .dropdown', clearMenus);
+  
+  //dropdown behaviour correction
+  $(document)
+  .on('mouseover', '.dropdown > .dropdown-menu > .dropdown-submenu > a', function() {
+    $(this).siblings('.dropdown-menu').css('display', 'block');
+  })
+  .on('mouseover', '.dropdown > ul > li > a', function() {
+    if ($(this).siblings('.dropdown-menu').size() == 0){
+      $('.dropdown-submenu').find('.dropdown-menu').removeAttr('style');
+    }
+  });
+
+  $(document)
+  .on('click', 'html', function() {
+    $('.dropdown-submenu').find('.dropdown-menu').removeAttr('style');
+  });
 
 })(jQuery);

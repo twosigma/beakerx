@@ -37,11 +37,11 @@ for line in iter(beaker.stdout.readline, ''):
     if line.startswith('Beaker listening on'):
         break
 
-os.chdir("../test/node_modules/protractor-flake/bin")
-result = os.system("node protractor-flake --node-bin node --max-attempts=3 -- ../../../protractorConf.js");
+os.chdir("../test/node_modules/protractor/bin")
+result = os.system("node protractor ../../../protractorConf.js");
 result2 = 1
 if not result:
-    result2 = os.system("node protractor-flake --node-bin node --max-attempts=3 -- ../../../protractorWithoutRestartBrowserConf.js")
+    result2 = os.system("node protractor ../../../protractorWithoutRestartBrowserConf.js")
 
 # Skipping memory tests because they hang on Jenkins
 #os.system("node ../../../memory-tests.js")

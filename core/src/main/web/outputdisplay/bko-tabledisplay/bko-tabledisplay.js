@@ -2220,7 +2220,8 @@
             var al = scope.actualalign[i];
             var col = {
               'title' : '<span class="header-text">' + scope.columnNames[i] +'</span>',
-              'header': { 'menu': headerMenuItems }
+              'header': { 'menu': headerMenuItems },
+              'visible': i<50,
             };
             col.createdCell = function (td, cellData, rowData, row, col) {
               if(!_.isEmpty(scope.tooltips)){
@@ -2649,6 +2650,18 @@
               bkElectron.clipboard.writeText(getTableData(), 'text/plain');
             }
           }
+        };
+
+        scope.showHeaderMenu = function() {
+          $('#' + scope.id + '_modal_dialog').hide();
+          bkHelper.timeout(function() {
+            $('#' + scope.id + '_dropdown_menu').click();
+          }, 0);
+        };
+
+        scope.hideModal = function(){
+          var id = scope.id + '_modal_dialog';
+          $('#'+id).hide()
         };
 
         scope.getDumpState = function() {

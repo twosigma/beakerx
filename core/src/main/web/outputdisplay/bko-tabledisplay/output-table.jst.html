@@ -14,63 +14,81 @@
     limitations under the License.
 -->
 <div class="dtcontainer">
-  <div class="dropdown dtmenu clearfix" style="float: left; z-index: 10" ng-if="renderMenu">
-     <a class="dropdown-toggle" data-toggle="dropdown" ng-click="menuToggle()">
+  <!-- Modal -->
+  <div ng-if="columns.length > 50">
+    <div class="table_modal" id="{{id}}_modal_dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            hiding columns 50 to {{columnNames.length}}. View complete list to change?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ng-click="showHeaderMenu()">OK</button>
+            <button type="button" class="btn btn-secondary" ng-click="hideModal()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dropdown dtmenu clearfix" style="float: left; z-index: 10" ng-if="renderMenu" id="{{id}}_tabel_menu">
+     <a class="dropdown-toggle" data-toggle="dropdown" ng-click="menuToggle()" id="{{id}}_dropdown_menu">
       <span class="bko-menu" aria-hidden="true" ng-class="{ sorting_desc: isIndexColumnDesc }"></span>
-     </a>
-     <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
-       <li><a tabindex="-1" href="#" ng-click="doResetAll()" id="dt-reset-all" eat-click>Reset All Interactions</a></li>
-       <li>
-         <a tabindex="-1" href="#" ng-click="doUsePagination()" id="dt-use-pagination" eat-click>Use pagination</a>
-         <i class="glyphicon glyphicon-ok" ng-show="pagination.use"></i>
-       </li>
-       <li class="dropdown-submenu">
-         <a tabindex="-1" href="#" id="dt-rows-to-show" eat-click>Rows to Show</a>
-         <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
-           <li ng-repeat="length in rowsToDisplayMenu[0]">
-             <a tabindex="-1" href="" ng-click="changePageLength(length)"> {{rowsToDisplayMenu[1][$index]}}</a>
-             <i class="glyphicon glyphicon-ok" ng-show="pagination.rowsToDisplay === length"></i>
-           </li>
-         </ul>
-       </li>
-       <li><a tabindex="-1" href="#" ng-click="doSelectAll()" id="dt-select-all" eat-click class="menu-separator">Select All</a></li>
-       <li><a tabindex="-1" href="#" ng-click="doDeselectAll()" id="dt-deselect-all" eat-click>Deselect All</a></li>
-       <li><a tabindex="-1" href="#" ng-click="doReverseSelection()" id="dt-reverse-selection" eat-click>Reverse Selection</a></li>
-       <li><a tabindex="-1" href="#" ng-click="doCopyToClipboard()" id="{{id}}_dt_copy" class="menu-separator" eat-click>Copy to Clipboard</a></li>
-       <li><a tabindex="-1" href="#" ng-click="doCSVExport(false)" id="dt-save-all" ng-if="isPublication == false && isEmbedded == false" eat-click>Save All as CSV</a></li>
-       <li><a tabindex="-1" href="#" ng-click="doCSVExport(true)" id="dt-save-selected" ng-if="isPublication == false && isEmbedded == false" eat-click>Save Selected as CSV</a></li>
-       <li><a tabindex="-1" href="#" ng-click="doCSVDownload(false)" id="dt-download-all" eat-click>Download All as CSV</a></li>
-       <li><a tabindex="-1" href="#" ng-click="doCSVDownload(true)" id="dt-download-selected" eat-click>Download Selected as CSV</a></li>
-       <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(true)" id="dt-show-all" class="menu-separator" eat-click>Show All Columns</a></li>
-       <li class="dropdown-submenu">
-         <a tabindex="-1" href="#" id="dt-show-columns" eat-click>Show Column</a>
-         <div class="dropdown-menu dropdown-menu-search" ng-if="showColumnMenu.searchable()" stop-click>
-           <i class="fa fa-search"></i>
-           <input ng-model="showColumnMenu.search" placeholder="search...">
-         </div>
-         <ul class="dropdown-menu dropdown-submenu-scrollable" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
-           <li ng-repeat="title in columnNames | filter: showColumnMenu.search">
-             <a tabindex="-1" href="" ng-click="showColumn($index+1, $event)">
-               {{title}}
-             </a>
-             <input type="checkbox" id="{{id}}-{{$index}}-visible" class="beforeCheckbox" ng-click="showColumn($index+1, $event)" ng-checked="isColumnVisible($index+1)">
-             <label for="{{id}}-{{$index}}-visible" class="checkbox-label"></label>
-           </li>
-         </ul>
-       </li>
-       <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(false)" id="dt-hide-all" eat-click>Hide All Columns</a></li>
-       <li>
-         <a tabindex="-1" href="#" ng-click="doShowFilter(table.column(0), true)" id="dt-search" class="menu-separator" title="search the whole table for a substring" eat-click>Search...</a>
-         <i class="fa fa-search"></i>
-       </li>
-       <li>
-         <a tabindex="-1" href="#" ng-click="doShowFilter(table.column(0), false)" id="dt-filter" eat-click
-            title="filter with an expression with a variable defined for each column">Filter...</a>
-         <i class="fa fa-filter"></i>
-       </li>
-       <li><a tabindex="-1" href="#" ng-click="hideFilter()" id="dt-hide-filter" eat-click>Hide Filter</a></li>
-     </ul>
-   </div>
+    </a>
+    <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
+      <li><a tabindex="-1" href="#" ng-click="doResetAll()" class="dt-reset-all" eat-click>Reset All Interactions</a></li>
+      <li>
+        <a tabindex="-1" href="#" ng-click="doUsePagination()" class="dt-use-pagination" eat-click>Use pagination</a>
+        <i class="glyphicon glyphicon-ok" ng-show="pagination.use"></i>
+      </li>
+      <li class="dropdown-submenu">
+        <a tabindex="-1" href="" class="dt-rows-to-show" data-toggle="dropdown" eat-click>Rows to Show</a>
+        <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
+          <li ng-repeat="length in rowsToDisplayMenu[0]">
+            <a tabindex="-1" href="" ng-click="changePageLength(length)"> {{rowsToDisplayMenu[1][$index]}}</a>
+            <i class="glyphicon glyphicon-ok" ng-show="pagination.rowsToDisplay === length"></i>
+          </li>
+        </ul>
+      </li>
+      <li><a tabindex="-1" href="#" ng-click="doSelectAll()" class="dt-select-all menu-separator" eat-click>Select All</a></li>
+      <li><a tabindex="-1" href="#" ng-click="doDeselectAll()" class="dt-deselect-all" eat-click>Deselect All</a></li>
+      <li><a tabindex="-1" href="#" ng-click="doReverseSelection()" class="dt-reverse-selection" eat-click>Reverse Selection</a></li>
+      <li><a tabindex="-1" href="#" ng-click="doCopyToClipboard()" class="menu-separator"  id="{{id}}_dt_copy" eat-click>Copy to Clipboard</a></li>
+      <li><a tabindex="-1" href="#" ng-click="doCSVExport(false)" class="dt-save-all" ng-if="isPublication == false && isEmbedded == false" eat-click>Save All as CSV</a></li>
+      <li><a tabindex="-1" href="#" ng-click="doCSVExport(true)" class="dt-save-selected" ng-if="isPublication == false && isEmbedded == false" eat-click>Save Selected as CSV</a></li>
+      <li><a tabindex="-1" href="#" ng-click="doCSVDownload(false)" class="dt-download-all" eat-click>Download All as CSV</a></li>
+      <li><a tabindex="-1" href="#" ng-click="doCSVDownload(true)" class="dt-download-selected" eat-click>Download Selected as CSV</a></li>
+      <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(true)" class="dt-show-all menu-separator" eat-click>Show All Columns</a></li>
+      <li class="dropdown-submenu">
+        <a tabindex="-1" href="" class="dt-show-columns" data-toggle="dropdown" eat-click>Show Column</a>
+        <div class="dropdown-menu dropdown-menu-search" ng-if="showColumnMenu.searchable()" stop-click>
+          <i class="fa fa-search"></i>
+          <input ng-model="showColumnMenu.search" placeholder="search...">
+        </div>
+        <ul class="dropdown-menu dropdown-submenu-scrollable" role="menu" submenu-classes="drop-right"
+            aria-labelledby="dLabel">
+          <li ng-repeat="title in columnNames | filter: showColumnMenu.search">
+            <a tabindex="-1" href="" ng-click="showColumn($index+1, $event)">
+              {{title}}
+            </a>
+            <input type="checkbox" id="{{id}}-{{$index}}-visible" class="beforeCheckbox"
+                   ng-click="showColumn($index+1, $event)" ng-checked="isColumnVisible($index+1)">
+            <label for="{{id}}-{{$index}}-visible" class="checkbox-label"></label>
+          </li>
+        </ul>
+      </li>
+      <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(false)" class="dt-hide-all" eat-click>Hide All Columns</a></li>
+      <li>
+        <a tabindex="-1" href="#" ng-click="doShowFilter(table.column(0), true)" class="dt-search menu-separator" title="search the whole table for a substring" eat-click>Search...</a>
+        <i class="fa fa-search"></i>
+      </li>
+      <li>
+        <a tabindex="-1" href="#" ng-click="doShowFilter(table.column(0), false)" class="dt-filter" eat-click
+           title="filter with an expression with a variable defined for each column">Filter...</a>
+        <i class="fa fa-filter"></i>
+      </li>
+      <li><a tabindex="-1" href="#" ng-click="hideFilter()" class="dt-hide-filter" eat-click>Hide Filter</a></li>
+    </ul>
+  </div>
 
   <table cellpadding="0" class="display" border="0" cellspacing="0" width="10%" id="{{id}}">
     <thead>

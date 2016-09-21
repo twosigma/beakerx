@@ -333,10 +333,11 @@
             }
           }
         }
-        
+
         var scrollToChar = function (theCM, pozition){
           var headerHeight = 0;
           var searchReplaceHeight = 0;
+          var searchReplaceWidth = 0;
 
           var header = $window.document.getElementById("notebook_header");
           if(header){
@@ -346,25 +347,37 @@
           var searchReplace = $window.document.getElementById("search_replace_window");
           if(searchReplace){
             searchReplaceHeight = searchReplace.getBoundingClientRect().height;
+            searchReplaceWidth = searchReplace.getBoundingClientRect().width;
           }
-          
-          var visible_area_start = $(window).scrollTop() + headerHeight;
-          var visible_area_end = $(window).scrollTop() + window.innerHeight - searchReplaceHeight;
-        
+
           var de = document.documentElement;
           var box = theCM.getScrollerElement().getBoundingClientRect();
           
-          var cmPozition = box.top + window.pageYOffset - de.clientTop;
-          var charPozition = theCM.charCoords({line: pozition.line, ch: pozition.ch}, "local").top;
-          var sctollTo = cmPozition + charPozition;
+          var cmPozitionY = box.top + window.pageYOffset - de.clientTop;
+          var charPozitionY = theCM.charCoords({line: pozition.line, ch: pozition.ch}, "local").top;
+          var charPozitionX = theCM.charCoords({line: pozition.line, ch: pozition.ch}, "page").left;
+          var scrollToY = cmPozitionY + charPozitionY;
+          var scrollToX = charPozitionX;
  
-          if(sctollTo < visible_area_start || sctollTo > visible_area_end){
-            var visibelFrame = window.innerHeight - searchReplaceHeight - headerHeight;
-            $('html,body').animate({scrollTop: sctollTo - Math.round(visibelFrame *0.2) - headerHeight}, 1000);
-            //window.scrollTo(0, cmPozition - window.innerHeight);
+          var visible_start = $(window).scrollTop() + headerHeight;
+          var visible_end = $(window).scrollTop() + window.innerHeight;
+          var visible_end_search = $(window).scrollTop() + window.innerHeight - searchReplaceHeight;
+          
+          var visibelFrameSearchX = window.innerWidth - searchReplaceWidth;
+          var visibelFrameSearchY = window.innerHeight - searchReplaceHeight - headerHeight;
+          
+          if(scrollToX < visibelFrameSearchX){
+            if((scrollToY < visible_start || scrollToY > visible_end)){
+              $('html,body').animate({scrollTop: scrollToY - Math.round(visibelFrameSearchY *0.2) - headerHeight}, 700);
+              //window.scrollTo(0, cmPozition - window.innerHeight);
+            }
+          }else{
+            if((scrollToY < visible_start || scrollToY > visible_end_search)){
+              $('html,body').animate({scrollTop: scrollToY - Math.round(visibelFrameSearchY *0.2) - headerHeight}, 700);
+              //window.scrollTo(0, cmPozition - window.innerHeight);
+            }
           }
         }
-        
 
         $scope.findFunction = function (result, reversive) {
           if(result.find){
@@ -384,7 +397,7 @@
                 currentMarker.clear();
               }
               currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
-              scrollToChar(currentCm, cursor.from());
+              scrollToChar(currentCm, cursor.to());
             }else {
               
               var search = true;
@@ -407,7 +420,7 @@
                     currentMarker.clear();
                   }
                   currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
-                  scrollToChar(currentCm, cursor.from());
+                  scrollToChar(currentCm, cursor.to());
                 }
               }while(search);
               

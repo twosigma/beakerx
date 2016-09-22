@@ -148,36 +148,36 @@
     .on('mouseenter.bs.dropdown.data-api', '.dropdown-menu, .dropdown', clearMenus);
   
   //dropdown behaviour correction
+
   $(document)
-  .on('mouseover', '.dropdown > .dropdown-menu > .dropdown-submenu > a', function() {
+  .on('mouseover', '.dropdown-menu', function() {
+    $(this).css('display', 'block');
     $(this).siblings('.dropdown-menu').css('display', 'block');
   })
-  .on('mouseover', '.dropdown > ul > li > a', function() {
-    var visibleSubMenu = $('.dropdown-submenu > .dropdown-menu:visible').parent('.dropdown-submenu');
+  .on('mouseover', '.dropdown-menu > li > a', function() {
 
-    if($(this).siblings('.dropdown-menu').size() == 0){
-      $(visibleSubMenu).find('.dropdown-menu').removeAttr('style');
-    }else if($(this).siblings('.dropdown-menu').size() != 0 && visibleSubMenu.size() > 1 && visibleSubMenu[visibleSubMenu.length-1] == $(this).siblings('.dropdown-menu').parent('.dropdown-submenu')[0]){
-      $(visibleSubMenu[0]).find('.dropdown-menu').css('display','none');
+    if ($(this).siblings('.dropdown-menu').size() == 0){
+      if ($(this).parent().siblings().find('.dropdown-menu:visible').length>0){
+
+        var removeElementFrom = $(this).parent().siblings().find('.dropdown-menu');
+        bkHelper.timeout(function() {
+          removeElementFrom.removeAttr('style');
+        }, 300);
+
+      }
+    } else if ($(this).siblings('.dropdown-menu').size() != 0){
+
+      $(this).parent().siblings('.dropdown-submenu').find('.dropdown-menu').removeAttr('style');
+      $(this).siblings('.dropdown-menu').css('display', 'block');
+
     }
-    // if ($(this).parent('.dropdown-submenu').size() != 0
-    //   && $(this).parent('.dropdown-submenu')[0] !== visibleSubMenu[0]){
-    //   $('.dropdown-submenu').find('.dropdown-menu').removeAttr('style');
-    // }
-
-    // setTimeout(function(){
-    //   if ($(this).siblings('.dropdown-menu').size() == 0){
-    //     $('.dropdown-submenu').find('.dropdown-menu').removeAttr('style');
-    //   }else{
-    //     $('.dropdown-submenu').find('.dropdown-menu').removeAttr('style');
-    //     $(this).siblings('.dropdown-menu').css('display', 'block');
-    //   }
-    // },1000)
   });
 
   $(document)
   .on('click', 'html', function() {
-    $('.dropdown-submenu').find('.dropdown-menu').removeAttr('style');
+    if (event.target.className != 'bko-menu bko-column-header-menu'){
+      $('.dropdown-menu').removeAttr('style');
+    }
   });
 
 })(jQuery);

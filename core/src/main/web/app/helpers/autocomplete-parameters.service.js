@@ -27,7 +27,7 @@
     var params = [];
     var cm;
     var scope;
-    var currentParam, currentValue;
+    var currentParam, initialValues = [], currentValues = [];
     var args = [];
     var DOCUMENTATION_WIDTH = 500;
 
@@ -49,7 +49,10 @@
       }
 
       if (cursorInRange(args[currentParam].find())) {
-        currentValue = params[currentParam].name;
+        // if not initialized
+        if (initialValues.length == 0) {
+          initialValues = getAllValues();
+        }
         return showParameterDocumentation(params[currentParam]);
       }
 
@@ -140,24 +143,38 @@
       args = [];
     }
 
-    function removeOptionalParams() {
-      // last param
-      if (currentParam == args.length - 1) {
-        return;
+    function getAllValues() {
+      var currentValues = [];
+      for (var i = 0; i < args.length; ++i) {
+        var arg = args[i].find();
+        currentValues[i] = cm.doc.getRange(arg.from, arg.to);
       }
-      try {
-        var currentArg = args[currentParam].find();
+      return currentValues;
+    }
 
-        var lastValue = cm.doc.getRange(currentArg.from, currentArg.to);
-        // current param not changed - should also be removed
-        if (lastValue === currentValue) {
-          currentArg = args[--currentParam].find();
+    function getIndexOfLastChangedParam() {
+      for (var i = initialValues.length - 1; i >= 0; --i) {
+        // that means value was changed
+        if (initialValues[i] !== currentValues[i]) {
+          return i;
         }
+      }
+      return 0;
+    }
 
+    function removeOptionalParams() {
+      try {
+        currentValues = getAllValues();
+        // last changed parameter
+        var lastParamIndex = getIndexOfLastChangedParam();
+        var lastParam = args[lastParamIndex].find();
+        // last argument for current params suggestion
         var lastArg = _.last(args).find();
-        cm.doc.setSelection(currentArg.to, lastArg.to);
+        // get selection of optional params
+        cm.doc.setSelection(lastParam.to, lastArg.to);
         cm.doc.replaceSelection('');
       } catch(e) {
+        // if we get here than there is error in editor
         console.log('unable to get selection for removing optional parameters');
       }
     }

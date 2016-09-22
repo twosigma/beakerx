@@ -25,6 +25,7 @@ describe('Plot actions Tutorial', function() {
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fplot-actions.bkr&readOnly=true").then(done);
         beakerPO.waitUntilLoadingFinished();
+        browser.driver.manage().window().maximize();
     });
 
     afterAll(function(done){
@@ -148,11 +149,9 @@ describe('Plot actions Tutorial', function() {
             beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).click();
             var h1 = beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('height');
             element(by.css('body')).sendKeys(protractor.Key.ARROW_DOWN).then(function(){
-                browser.createScreenshot('UP_ARROW');
                 expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('height')).toBeLessThan(h1);
             });
             element(by.css('body')).sendKeys(protractor.Key.ARROW_UP).then(function(){
-                browser.createScreenshot('DOWN_ARROW');
                 expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('height')).toBe(h1);
             });
             element(by.css('body')).sendKeys("T").then(function(){

@@ -29,12 +29,12 @@
           <tr>
             <td style="border-top:none"><label for="find_field">Find:</label></td>
             <td style="border-top:none">
-               <input type="text" id="find_field" class="field" placeholder="Find" ng-model="searchReplaceData.find"
+               <input type="text" id="find_field" class="field cursor_hand" placeholder="Find" ng-model="searchReplaceData.find"
                 ng-keyup="($event.which==13)?findNextFunction(searchReplaceData):findALLFunction(searchReplaceData)"></input>
             </td>
             <td style="border-top:none"><label for="replace_field">Replace:</label></td>
             <td style="border-top:none">
-              <input type="text" id="replace_field" class="field" placeholder="Replace" ng-model="searchReplaceData.replace"
+              <input type="text" id="replace_field" class="field cursor_hand" placeholder="Replace" ng-model="searchReplaceData.replace"
                 ng-keyup="($event.which==13)?replaceFunction(searchReplaceData):return"></input>
             </td>
           </tr>
@@ -45,6 +45,7 @@
           <tr>
             <td style="border-top:none">
               <select 
+                class="cursor_hand"
                 ng-model="searchReplaceData.searchCellFilter" 
                 ng-change="findALLFunction(searchReplaceData)"
                 ng-options="option.value as option.name for option in availableSearchCellOptions">
@@ -52,11 +53,11 @@
             </td>
             <td style="border-top:none">
               <input type="checkbox" id="case_sensitive" ng-model="searchReplaceData.caseSensitive"
-                ng-change="findALLFunction(searchReplaceData)">
+                ng-change="findALLFunction(searchReplaceData)" class="cursor_hand">
               <label for="case_sensitive">Case sensitive</label>
             </td>
             <td style="border-top:none">
-              <input type="checkbox" id="wrap_search" ng-model="searchReplaceData.wrapSearch">
+              <input type="checkbox" id="wrap_search" ng-model="searchReplaceData.wrapSearch" class="cursor_hand">
               <label for="wrap_search">Wrap search</label>
             </td>
           </tr>

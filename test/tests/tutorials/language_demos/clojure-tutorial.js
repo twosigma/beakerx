@@ -57,9 +57,9 @@ describe('Clojure Tutorial', function () {
         idCell = "codeHnlYry";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Results');
-        browser.wait(beakerPO.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] li:nth-child(2)')), 10000);
-        var listOutput = beakerPO.getCodeCellOutputByIdCell(idCell).all(By.css('pre'));
-        expect(listOutput.get(0).getText()).toBe('([0 1 2 3 4 5] [6 7 8 9 10 11] [12 13 14 15 16 17] [18 19 20 21 22 23] [24 25 26 27 28 29] [30 31 32 33 34 35])\nDistinct: 36');
+        beakerPO.waitForCellOutput();
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('bk-output-display pre')).get(0).getText())
+            .toBe('([0 1 2 3 4 5] [6 7 8 9 10 11] [12 13 14 15 16 17] [18 19 20 21 22 23] [24 25 26 27 28 29] [30 31 32 33 34 35])\nDistinct: 36');
 
         idCell = "codepKxxJX";
         beakerPO.scrollToBkCellByIdCell(idCell);

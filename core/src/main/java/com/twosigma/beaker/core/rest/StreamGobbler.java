@@ -88,6 +88,8 @@ public class StreamGobbler extends Thread {
         if (line.matches("^\\s*$")) continue;
         // remove nginx 
         if (line.matches(".*GET /.*/ready .*")) continue;
+        // remove esapi
+        if (line.matches(".*[eE][sS][aA][pP][iI].*")) continue;
         if (pw != null) {
           pw.println(line);
         }

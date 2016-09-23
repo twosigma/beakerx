@@ -171,11 +171,9 @@
       $(this).siblings('.dropdown-menu').css('display', 'block');
 
     }
-  });
-
-  $(document)
-  .on('click', 'html', function() {
-    if (event.target.className != 'bko-menu bko-column-header-menu'){
+  })
+  .on('click', 'html, .dropdown > a, button[data-toggle="dropdown"]', function() {
+    if(event.target.className.indexOf('bko-column-header-menu') == -1){
       $('.dropdown-menu').removeAttr('style');
     }
   });

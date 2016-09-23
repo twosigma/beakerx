@@ -137,12 +137,14 @@ public class NamespaceClient {
     if (!unset) {
       StringWriter sw = new StringWriter();
       JsonGenerator jgen = objectMapper.get().getJsonFactory().createJsonGenerator(sw);
+      SerializerTracker.add(jgen);
       if (!objectSerializerProvider.get().writeObject(value, jgen, true))
         form.add("value", value.toString());
       else {
         jgen.flush();
         form.add("value", sw.toString());
       }
+      SerializerTracker.remove(jgen);
     }
     String reply = Request.Post(urlBase + "/set")
       .addHeader("Authorization", auth).bodyForm(form.build())

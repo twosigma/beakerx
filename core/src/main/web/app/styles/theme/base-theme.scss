@@ -383,7 +383,7 @@
   .searchreplace-container {
     color: $std-fg-color;
     background-color: $std-bg-color;
-    border-image: linear-gradient($cell-border, $main-theme-panel-background, $cell-border) 10 repeat stretch;
+    border-color: $cell-border;
   }
   
   //datatable

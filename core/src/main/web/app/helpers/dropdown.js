@@ -61,7 +61,6 @@
 
   var clearMenus = function () {
     closeSubmenu($('.dropdown-submenu'));
-    $('.dropdown-menu a').blur();
   };
 
   function getParent($this) {

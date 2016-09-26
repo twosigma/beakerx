@@ -20,7 +20,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-body">
-            hiding columns 50 to {{columnNames.length}}. View complete list to change?
+            Too many columns, hiding those numbered 50 to {{columnNames.length}}. Open list of all columns to show selectively?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" ng-click="showHeaderMenu()">OK</button>
@@ -58,7 +58,7 @@
       <li><a tabindex="-1" href="#" ng-click="doCSVDownload(false)" class="dt-download-all" eat-click>Download All as CSV</a></li>
       <li><a tabindex="-1" href="#" ng-click="doCSVDownload(true)" class="dt-download-selected" eat-click>Download Selected as CSV</a></li>
       <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(true)" class="dt-show-all menu-separator" eat-click>Show All Columns</a></li>
-      <li class="dropdown-submenu">
+      <li class="dropdown-submenu" id="{{id}}_show_column">
         <a tabindex="-1" href="" class="dt-show-columns" data-toggle="dropdown" eat-click>Show Column</a>
         <div class="dropdown-menu dropdown-menu-search" ng-if="showColumnMenu.searchable()" stop-click>
           <i class="fa fa-search"></i>

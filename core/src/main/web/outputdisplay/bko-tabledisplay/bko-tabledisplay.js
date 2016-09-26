@@ -2656,6 +2656,7 @@
           $('#' + scope.id + '_modal_dialog').hide();
           bkHelper.timeout(function() {
             $('#' + scope.id + '_dropdown_menu').click();
+            $('#' + scope.id + '_show_column > .dropdown-menu').css('display', 'block');
           }, 0);
         };
 
@@ -2756,7 +2757,9 @@
               state.headersVertical = scope.headersVertical;
             }
 
-            scope.model.setDumpState({datatablestate: state});
+            if (scope.model.setDumpState !== undefined) {
+              scope.model.setDumpState({datatablestate: state});
+            }
           }
         });
 

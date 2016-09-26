@@ -36,6 +36,7 @@ describe('Progress Reporting API', function () {
         return browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div.progress-bar', label))), 30000).then(
             function(result){return true;},
             function(error){
+                beakerPO.createScreenshot('progressBar' + label);
                 expect(error).toBe('progress bar should display ' + label);
             });
     };

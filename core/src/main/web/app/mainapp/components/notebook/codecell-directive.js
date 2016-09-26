@@ -74,6 +74,49 @@
           }
         };
         
+        $scope.onGutterClick = function(cm, line, gutter, e) {
+          if (gutter !== 'CodeMirror-linenumbers') return;
+
+          var prev = (e.ctrlKey || e.shiftKey) || e.metaKey ? cm.listSelections() : [];
+          var anchor = line;
+          var head = line + 1;
+
+          function update() {
+            var curr = {
+              anchor: CodeMirror.Pos(anchor, head > anchor ? 0 : null),
+              head: CodeMirror.Pos(head, 0)
+            };
+            if (e.shiftKey) {
+              if (prev[0].anchor.line >= head) {
+                cm.extendSelection(curr.anchor, prev[0].head, {origin: "*mouse"});
+              } else {
+                cm.extendSelection(prev[0].anchor, curr.head, {origin: "*mouse"});
+              }
+            } else {
+              cm.setSelections(prev.concat([curr]), prev.length, {origin: "*mouse"});
+            }
+            $scope.focus();
+          }
+          function onMouseMove(e) {
+            var currLine = cm.lineAtHeight(e.clientY, "client");
+            if (head > anchor) {
+              currLine++;
+            }
+            if (currLine != head) {
+              head = currLine;
+              update();
+            }
+          }
+          function onMouseUp(e) {
+            removeEventListener("mouseup", onMouseUp);
+            removeEventListener("mousemove", onMouseMove);
+          }
+
+          update();
+          addEventListener("mousemove", onMouseMove);
+          addEventListener("mouseup", onMouseUp);
+        };
+        
         $scope.cellview = {
           inputMenu: [],
           displays: []
@@ -517,7 +560,7 @@
               scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
             }
           });
-          scope.cm.on('gutterClick', onGutterClick);
+          scope.cm.on('gutterClick', scope.onGutterClick);
           bkDragAndDropHelper.configureDropEventHandlingForCodeMirror(scope.cm, function () {
             return scope.cm.getOption('mode') === 'htmlmixed';
           });
@@ -550,49 +593,6 @@
             scope.cm.clearHistory();
           }
         });
-
-        var onGutterClick = function(cm, line, gutter, e) {
-          if (gutter !== 'CodeMirror-linenumbers') return;
-
-          var prev = (e.ctrlKey || e.shiftKey) || e.metaKey ? cm.listSelections() : [];
-          var anchor = line;
-          var head = line + 1;
-
-          function update() {
-            var curr = {
-              anchor: CodeMirror.Pos(anchor, head > anchor ? 0 : null),
-              head: CodeMirror.Pos(head, 0)
-            };
-            if (e.shiftKey) {
-              if (prev[0].anchor.line >= head) {
-                cm.extendSelection(curr.anchor, prev[0].head, {origin: "*mouse"});
-              } else {
-                cm.extendSelection(prev[0].anchor, curr.head, {origin: "*mouse"});
-              }
-            } else {
-              cm.setSelections(prev.concat([curr]), prev.length, {origin: "*mouse"});
-            }
-            scope.focus();
-          }
-          function onMouseMove(e) {
-            var currLine = cm.lineAtHeight(e.clientY, "client");
-            if (head > anchor) {
-              currLine++;
-            }
-            if (currLine != head) {
-              head = currLine;
-              update();
-            }
-          }
-          function onMouseUp(e) {
-            removeEventListener("mouseup", onMouseUp);
-            removeEventListener("mousemove", onMouseMove);
-          }
-
-          update();
-          addEventListener("mousemove", onMouseMove);
-          addEventListener("mouseup", onMouseUp);
-        };
 
         var inputMenuDiv = element.find('.bkcell').first();
         scope.popupMenu = function(event) {

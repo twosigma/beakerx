@@ -10,7 +10,7 @@
     "angular-touch": "1.5.5",
     "angular-mocks": "1.5.5",
     "lodash": "3.10.1",
-    "d3": "3.5.10",
+    "d3": "4.2.6",
     "codemirror": "5.2.0",
     "q": "0.9.7",
     "angular-bootstrap": "1.0.3",

@@ -56,22 +56,21 @@
         var data = this.splitWithDelimiters(text, delimiters);
         var fragment = document.createDocumentFragment();
         for(var i = 0; i<data.length; i++){
+          var element = document.createElement("span");
           if (data[i].type === "text"){
-            fragment.appendChild(document.createTextNode(data[i].data));
+            element.appendChild(document.createTextNode(data[i].data));
           } else {
-            var element = document.createElement("span");
             fragment.appendChild(element);
             var math = data[i].data;
             try {
-              katex.render(math, element, {throwOnError: false});
+              katex.render(math, element);
             } catch(err) {
-              var errorElement = document.createElement('span');
-              errorElement.style.color = '#cc0000';
-              errorElement.title = err.message;
-              errorElement.appendChild(document.createTextNode(data[i].rawData));
-              fragment.appendChild(errorElement);
+              element.style.color = '#cc0000';
+              element.title = err.message;
+              element.appendChild(document.createTextNode(data[i].rawData));
             }
           }
+          fragment.appendChild(element);
         }
         return fragment;
       },

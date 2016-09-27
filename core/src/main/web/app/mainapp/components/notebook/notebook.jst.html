@@ -22,6 +22,57 @@
       <a class="dropdown-toggle" data-toggle="dropdown"></a>
     </div>
   </div>
+  <div id="search_replace_window" ng-show="isShowingSearchReplace()" class="searchreplace-container" ng-keyup="($event.which==27)?hideSearchReplace():return" tabindex="0">
+    <div class="search-replace">
+      <table class="table">
+        <tbody>
+          <tr>
+            <td style="border-top:none"><label for="find_field" class="cursor_hand">Find:</label></td>
+            <td style="border-top:none">
+               <input type="text" id="find_field" class="field cursor_hand" placeholder="Find" ng-model="searchReplaceData.find"
+                ng-keyup="($event.which==13)?findNextFunction(searchReplaceData):findALLFunction(searchReplaceData)"></input>
+            </td>
+            <td style="border-top:none"><label for="replace_field" class="cursor_hand">Replace:</label></td>
+            <td style="border-top:none">
+              <input type="text" id="replace_field" class="field cursor_hand" placeholder="Replace" ng-model="searchReplaceData.replace"
+                ng-keyup="($event.which==13)?replaceFunction(searchReplaceData):return"></input>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td style="border-top:none">
+              <select 
+                class="cursor_hand"
+                ng-model="searchReplaceData.searchCellFilter" 
+                ng-change="findALLFunction(searchReplaceData)"
+                ng-options="option.value as option.name for option in availableSearchCellOptions">
+              </select>
+            </td>
+            <td style="border-top:none">
+              <input type="checkbox" id="case_sensitive" ng-model="searchReplaceData.caseSensitive"
+                ng-change="findALLFunction(searchReplaceData)" class="cursor_hand">
+              <label for="case_sensitive" class="cursor_hand">Case sensitive</label>
+            </td>
+            <td style="border-top:none">
+              <input type="checkbox" id="wrap_search" ng-model="searchReplaceData.wrapSearch" class="cursor_hand">
+              <label for="wrap_search" class="cursor_hand">Wrap search</label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div align="center">
+        <button class="cancel btn btn-default" ng-click="hideSearchReplace()">Done</button>
+        <button class="yes btn btn-default" ng-click="findNextFunction(searchReplaceData)">Find next</button>
+        <button class="yes btn btn-default" ng-click="findPreviousFunction(searchReplaceData)">Find previous</button>
+        <button class="yes btn btn-default" ng-click="replaceFunction(searchReplaceData)">Replace</button>
+        <button class="yes btn btn-default" ng-click="replaceAllFunction(searchReplaceData)">Replace all</button>
+      </div>
+    </div>
+  </div>
+  
   <div ng-show="isShowingOutput()" class="outputlogbox"></div>
   <div ng-show="isShowingOutput()" class="outputlogcontainer">
     <div class="outputloghandle"></div>

@@ -36,6 +36,17 @@
     }
   }
 
+  $cm-search-mark-all-color:  #2060f0;
+  $cm-search-mark-color:      #F26D00;
+  
+  .search-find-all-selected-background{
+    background-color: $cm-search-mark-all-color;
+  }
+  
+  .search-selected-background{
+    background-color: $cm-search-mark-color;
+  }
+
   header {
     .navbar-left {
       color: $std-fg-color !important;
@@ -369,6 +380,12 @@
     }
   }
 
+  .searchreplace-container {
+    color: $std-fg-color;
+    background-color: $std-bg-color;
+    border-color: $cell-border;
+  }
+  
   //datatable
 
   .dataTable, table.dataTable thead th {

@@ -315,6 +315,9 @@
           bkHelper.setThemeToBeakerObject();
         },
         getTheme: function () {
+          if (this.theme === undefined) {
+            return "default";
+          }
           return this.theme;
         },
         setFSOrderBy: function (fs_order_by) {
@@ -700,6 +703,10 @@
           bkHelper.setFullScreen(cm, !bkHelper.isFullScreen(cm));
         };
 
+        var findReplace = function (cm) {
+          bkHelper.getBkNotebookViewModel().showSearchReplace(cm, scope.cellmodel);
+        }
+        
         CodeMirror.commands.save = function (){
 	        bkHelper.saveNotebook();
         };
@@ -743,6 +750,12 @@
           keys["Ctrl-C"] = cancel;
         }else{
           keys["Alt-C"] = cancel;
+        }
+        
+        if(bkHelper.isMacOS){
+          keys["Ctrl-F"] = findReplace;
+        }else{
+          keys["Alt-F"] = findReplace;
         }
 
         if (codeMirrorExtension.extraKeys !== undefined) {
@@ -1338,14 +1351,14 @@
       $timeout(function() {
         // there's a race condition in calling setTheme during bootstrap
         bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
-      }, 100);
+      }, 0);
     } else {
       bkCoreManager._prefs.fs_order_by = window.beakerRegister.prefsPreset.fs_order_by;
       bkCoreManager._prefs.fs_reverse = window.beakerRegister.prefsPreset.fs_reverse;
       $timeout(function() {
         // there's a race condition in calling setTheme during bootstrap
         bkCoreManager._prefs.setTheme(window.beakerRegister.prefsPreset.theme);
-      }, 100);
+      }, 0);
     }
 
     return bkCoreManager;

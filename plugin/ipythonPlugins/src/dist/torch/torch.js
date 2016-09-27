@@ -161,6 +161,7 @@ define(function(require, exports, module) {
       },
       evaluate: function(code, modelOutput, refreshObj) {
         var deferred = bkHelper.newDeferred();
+        var start = new Date();
 
         if (_theCancelFunction) {
           deferred.reject("An evaluation is already in progress");
@@ -193,7 +194,7 @@ define(function(require, exports, module) {
           else
             bkHelper.refreshRootScope();       
           finalStuff = undefined;
-        }
+        };
 
         var execute_reply = function(msg) {
           if (_theCancelFunction === null)
@@ -242,9 +243,10 @@ define(function(require, exports, module) {
               evaluation.payload = "<pre>" + result + "</pre>";
             }
             finalStuff = evaluation;
-            bkHelper.timeout(doFinish,250);
+            var duration = new Date() - start;
+            bkHelper.timeout(doFinish, duration/3);
           }
-        }
+        };
         var output = function output(a0, a1) {
           if (_theCancelFunction === null || gotError)
             return;
@@ -355,7 +357,7 @@ define(function(require, exports, module) {
           }
           if (finalStuff === undefined) {            
             finalStuff = evaluation;
-            bkHelper.timeout(doFinish,150);
+            bkHelper.timeout(doFinish,250);
           }
         };
         var callbacks = (ipyVersion == '1') ? {

@@ -27,7 +27,7 @@
     var params = [];
     var cm;
     var scope;
-    var currentParam;
+    var currentParam, initialValues = [], currentValues = [];
     var args = [];
     var DOCUMENTATION_WIDTH = 500;
 
@@ -49,6 +49,10 @@
       }
 
       if (cursorInRange(args[currentParam].find())) {
+        // if not initialized
+        if (initialValues.length == 0) {
+          initialValues = getAllValues();
+        }
         return showParameterDocumentation(params[currentParam]);
       }
 
@@ -128,14 +132,51 @@
     }
 
     function endCompletion() {
+      removeOptionalParams();
       cm.off('cursorActivity', endCompletionIfCursorOutOfRange);
       hideParameterDocumentation();
-      clearMarks()
+      clearMarks();
       cm = void 0;
       currentParam = void 0;
       scope = void 0;
       params = [];
       args = [];
+    }
+
+    function getAllValues() {
+      var currentValues = [];
+      for (var i = 0; i < args.length; ++i) {
+        var arg = args[i].find();
+        currentValues[i] = cm.doc.getRange(arg.from, arg.to);
+      }
+      return currentValues;
+    }
+
+    function getIndexOfLastChangedParam() {
+      for (var i = initialValues.length - 1; i >= 0; --i) {
+        // that means value was changed
+        if (initialValues[i] !== currentValues[i]) {
+          return i;
+        }
+      }
+      return 0;
+    }
+
+    function removeOptionalParams() {
+      try {
+        currentValues = getAllValues();
+        // last changed parameter
+        var lastParamIndex = getIndexOfLastChangedParam();
+        var lastParam = args[lastParamIndex].find();
+        // last argument for current params suggestion
+        var lastArg = _.last(args).find();
+        // get selection of optional params
+        cm.doc.setSelection(lastParam.to, lastArg.to);
+        cm.doc.replaceSelection('');
+      } catch(e) {
+        // if we get here than there is error in editor
+        console.log('unable to get selection for removing optional parameters');
+      }
     }
 
     function endCompletionAndMoveCursor() {

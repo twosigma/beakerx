@@ -1264,8 +1264,18 @@
           });
         }
 
+        var sizeOfWindowWithoutTheMenusAtTop = function() {
+          return ($(window).height() - $('.navbar-fixed-top').height());
+        };
+
         var keydownHandler = function(e) {
-          if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
+          if (bkHelper.isPageUpKey(e)) {
+            window.scrollBy(0, - sizeOfWindowWithoutTheMenusAtTop());
+            return false;
+          } else if (bkHelper.isPageDownKey(e)) {
+            window.scrollBy(0, sizeOfWindowWithoutTheMenusAtTop());
+            return false;
+          }else if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();
             _impl.saveNotebook();
             $scope.$apply();
@@ -1274,6 +1284,10 @@
             bkUtils.fcall(function() {
               bkCoreManager.newSession(false);
             });
+            return false;
+          } else if (bkHelper.isSearchReplace(e)) { // Alt + f
+            e.preventDefault();
+            bkHelper.getBkNotebookViewModel().showSearchReplace();
             return false;
           } else if (bkHelper.isNewNotebookShortcut(e)) { // Ctrl/Alt + n
             bkUtils.fcall(function() {

@@ -2,6 +2,7 @@ $border-color: #D4D0D0;
 
 .dtcontainer {
   position: relative;
+  width: 96%;
   .dropdown-menu {
     margin-top: 1px;
   }
@@ -192,10 +193,29 @@ a.dtmenu {
   text-overflow: ellipsis;
 }
 
+.dt-bar-data-cell {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+.dt-bar-data-value-cell {
+  height: 100%;
+  width: 50%;
+  position: relative;
+  float: left;
+}
+
 .dt-bar-data {
   background-color: #6ba2c7;
   height: 100%;
   position: absolute;
+}
+
+.dt-bar-data-negative {
+  background-color: #6ba2c7;
+  height: 100%;
+  position: absolute;
+  right: 0;
 }
 
 .bko-table-use-pagination {
@@ -268,3 +288,33 @@ $fix-col-separator-width: 3px;
   text-align: left;
 }
 
+.table_modal {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+  animation: 1s fadeIn;
+  animation-fill-mode: forwards;
+  .modal-dialog{
+    width: 300px;
+  }
+  .modal-content{
+    border: none;
+  }
+  .modal-body{
+    padding-top: 25px;
+  }
+
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    visibility: visible;
+    opacity: 1;
+  }
+}

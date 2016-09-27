@@ -62,6 +62,61 @@
       template: JST['mainapp/components/notebook/codecell'](),
       scope: {cellmodel: '=', cellmenu: '='},
       controller: function($scope) {
+        
+        $scope.changeHandler = function(cm, e) {
+          if ($scope.cellmodel.input.body !== cm.getValue()) {
+            $scope.cellmodel.lineCount = cm.lineCount();
+            $scope.cellmodel.input.body = cm.getValue();
+            if (!bkSessionManager.isNotebookModelEdited()) {
+              bkSessionManager.setNotebookModelEdited(true);
+              bkUtils.refreshRootScope();
+            }
+          }
+        };
+        
+        $scope.onGutterClick = function(cm, line, gutter, e) {
+          if (gutter !== 'CodeMirror-linenumbers') return;
+
+          var prev = (e.ctrlKey || e.shiftKey) || e.metaKey ? cm.listSelections() : [];
+          var anchor = line;
+          var head = line + 1;
+
+          function update() {
+            var curr = {
+              anchor: CodeMirror.Pos(anchor, head > anchor ? 0 : null),
+              head: CodeMirror.Pos(head, 0)
+            };
+            if (e.shiftKey) {
+              if (prev[0].anchor.line >= head) {
+                cm.extendSelection(curr.anchor, prev[0].head, {origin: "*mouse"});
+              } else {
+                cm.extendSelection(prev[0].anchor, curr.head, {origin: "*mouse"});
+              }
+            } else {
+              cm.setSelections(prev.concat([curr]), prev.length, {origin: "*mouse"});
+            }
+            $scope.focus();
+          }
+          function onMouseMove(e) {
+            var currLine = cm.lineAtHeight(e.clientY, "client");
+            if (head > anchor) {
+              currLine++;
+            }
+            if (currLine != head) {
+              head = currLine;
+              update();
+            }
+          }
+          function onMouseUp(e) {
+            removeEventListener("mouseup", onMouseUp);
+            removeEventListener("mousemove", onMouseMove);
+          }
+
+          update();
+          addEventListener("mousemove", onMouseMove);
+          addEventListener("mouseup", onMouseUp);
+        };
+        
         $scope.cellview = {
           inputMenu: [],
           displays: []
@@ -113,6 +168,14 @@
           }
         });
 
+        $scope.prepareForSearch = function() {
+          delete $scope.cellmodel.output.hidden;
+          $scope.cm.off('change', $scope.changeHandler);
+        };
+        
+        $scope.afterSearchActions = function() {
+          $scope.cm.on('change', $scope.changeHandler);
+        };
 
         $scope.isHiddenOutput = function() {
           return $scope.cellmodel.output.selectedType == 'Hidden';
@@ -463,6 +526,14 @@
           },
           'Shift-Cmd-Enter':  function(cm) {
             scope.evaluateSelection(cm);
+          },
+          'PageDown': function (cm) {
+            //override default behaviour of codemirror control
+            //do nothing
+          },
+          'PageUp': function (cm) {
+            //override default behaviour of codemirror control
+            //do nothing
           }
 
         });
@@ -478,7 +549,7 @@
 
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
-          scope.cm.on('change', changeHandler);
+          scope.cm.on('change', scope.changeHandler);
           scope.cm.on('blur', function () {
             if ($('.CodeMirror-hint').length > 0) {
               //codecomplete is up, skip
@@ -489,7 +560,7 @@
               scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});
             }
           });
-          scope.cm.on('gutterClick', onGutterClick);
+          scope.cm.on('gutterClick', scope.onGutterClick);
           bkDragAndDropHelper.configureDropEventHandlingForCodeMirror(scope.cm, function () {
             return scope.cm.getOption('mode') === 'htmlmixed';
           });
@@ -503,13 +574,8 @@
           }
         };
 
-        scope.displayOutput = false;
-        Scrollin.track(element[0], function() {
-          $timeout(function() {
-            initCodeMirror();
-            scope.displayOutput = true;
-          }, 1);
-        }, {top: -GLOBALS.CELL_INSTANTIATION_DISTANCE});
+        initCodeMirror();
+        scope.displayOutput = true;
 
         scope.focus = function() {
           if (scope.cm) scope.cm.focus();
@@ -527,60 +593,6 @@
             scope.cm.clearHistory();
           }
         });
-        // cellmodel.body <-- CodeMirror
-        var changeHandler = function(cm, e) {
-          if (scope.cellmodel.input.body !== cm.getValue()) {
-            scope.cellmodel.lineCount = cm.lineCount();
-            scope.cellmodel.input.body = cm.getValue();
-            if (!bkSessionManager.isNotebookModelEdited()) {
-              bkSessionManager.setNotebookModelEdited(true);
-              bkUtils.refreshRootScope();
-            }
-          }
-        };
-
-        var onGutterClick = function(cm, line, gutter, e) {
-          if (gutter !== 'CodeMirror-linenumbers') return;
-
-          var prev = (e.ctrlKey || e.shiftKey) || e.metaKey ? cm.listSelections() : [];
-          var anchor = line;
-          var head = line + 1;
-
-          function update() {
-            var curr = {
-              anchor: CodeMirror.Pos(anchor, head > anchor ? 0 : null),
-              head: CodeMirror.Pos(head, 0)
-            };
-            if (e.shiftKey) {
-              if (prev[0].anchor.line >= head) {
-                cm.extendSelection(curr.anchor, prev[0].head, {origin: "*mouse"});
-              } else {
-                cm.extendSelection(prev[0].anchor, curr.head, {origin: "*mouse"});
-              }
-            } else {
-              cm.setSelections(prev.concat([curr]), prev.length, {origin: "*mouse"});
-            }
-            scope.focus();
-          }
-          function onMouseMove(e) {
-            var currLine = cm.lineAtHeight(e.clientY, "client");
-            if (head > anchor) {
-              currLine++;
-            }
-            if (currLine != head) {
-              head = currLine;
-              update();
-            }
-          }
-          function onMouseUp(e) {
-            removeEventListener("mouseup", onMouseUp);
-            removeEventListener("mousemove", onMouseMove);
-          }
-
-          update();
-          addEventListener("mousemove", onMouseMove);
-          addEventListener("mouseup", onMouseUp);
-        };
 
         var inputMenuDiv = element.find('.bkcell').first();
         scope.popupMenu = function(event) {
@@ -675,7 +687,8 @@
         scope.$on('$destroy', function() {
           Scrollin.untrack(element[0]);
           CodeMirror.off(window, 'resize', resizeHandler);
-          CodeMirror.off('change', changeHandler);
+          //CodeMirror.off('change', changeHandler);
+          scope.cm.off('change', scope.changeHandler);
           if (scope.cm) {
             scope.cm.off();
           }

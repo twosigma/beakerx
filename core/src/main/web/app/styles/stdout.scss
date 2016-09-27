@@ -62,7 +62,28 @@
   width: 100%;
   z-index: 1000;
   bottom: 0;
-  height: 300px;
+  height: 250px;
+}
+
+.search-replace {
+  width: 90%;
+  height: 90%;
+  margin: auto;
+  margin-top: 30px;
+}
+
+.searchreplace-container {
+  outline: none;
+  background-color: #eff2f8;
+  position: fixed;
+  right: 0;
+  width: 600px;
+  z-index: 1000;
+  bottom: 0;
+  height: 210px;
+  border-style: solid;
+  border-width: 5px;
+  border-color: #DDE0E6;
 }
 
 .prelog {

@@ -511,6 +511,10 @@
           }
         };
 
+        $scope.isEmbedded = window.beakerRegister.isEmbedded ? true : false;
+        $scope.isPublication = window.beakerRegister.isPublication ? true : false;
+        $scope.isIFrame = (window.location != window.parent.location) ? true : false;
+
         $scope.getCellIdx      =  [];
         $scope.getCellNam      =  [];
         $scope.getCellSho      =  [];
@@ -1485,8 +1489,9 @@
             return;
           }
           for (var colInd = 0; colInd < scope.columns.length; colInd++) {
-            var max = scope.table.column(colInd).data().max();
-            var min = scope.table.column(colInd).data().min();
+
+            var max = Math.max(scope.table.column(colInd).data().max(), Math.abs(scope.table.column(colInd).data().min()));
+
             scope.table.column(colInd).nodes().each(function (td) {
               var value = $(td).text();
               if ($.isNumeric(value)) {
@@ -1500,12 +1505,42 @@
                     "class": "dt-cell-text"
                   }).text(value);
 
-                  var percent = (parseFloat(value) / max) * 100;
                   var barsBkg = $("<div></div>", {
-                    "class": "dt-bar-data "
-                  }).css({
-                    "width": percent + "%"
+                    "class": "dt-bar-data-cell"
                   });
+
+                  var barsBkgPositiveValueCell = $("<div></div>", {
+                    "class": "dt-bar-data-value-cell"
+                  });
+
+                  var barsBkgNegativeValueCell = $("<div></div>", {
+                    "class": "dt-bar-data-value-cell"
+                  });
+
+                  var percent = (parseFloat(Math.abs(value)) / max) * 100;
+
+                  if(value>0){
+                    var barsBkgPositiveValues = $("<div></div>", {
+                      "class": "dt-bar-data "
+                    }).css({
+                      "width": percent + "%"
+                    });
+
+                    barsBkgPositiveValueCell.append(barsBkgPositiveValues);
+
+                  }else if(value<0){
+                    var barsBkgNegativeValues = $("<div></div>", {
+                      "class": "dt-bar-data-negative "
+                    }).css({
+                      "width": percent + "%"
+                    });
+
+                    barsBkgNegativeValueCell.append(barsBkgNegativeValues)
+                  }
+
+                  barsBkg.append(barsBkgNegativeValueCell);
+                  barsBkg.append(barsBkgPositiveValueCell);
+
                   cellDiv.append(barsBkg);
                   if (!barsRenderer.includeText) {
                     textSpan.hide();
@@ -1523,7 +1558,6 @@
             }
           }
         };
-
         scope.addInteractionListeners = function () {
           if (!scope.interactionListeners) {
             $(scope.table.table().container())
@@ -2186,7 +2220,8 @@
             var al = scope.actualalign[i];
             var col = {
               'title' : '<span class="header-text">' + scope.columnNames[i] +'</span>',
-              'header': { 'menu': headerMenuItems }
+              'header': { 'menu': headerMenuItems },
+              'visible': i<50,
             };
             col.createdCell = function (td, cellData, rowData, row, col) {
               if(!_.isEmpty(scope.tooltips)){
@@ -2617,6 +2652,19 @@
           }
         };
 
+        scope.showHeaderMenu = function() {
+          $('#' + scope.id + '_modal_dialog').hide();
+          bkHelper.timeout(function() {
+            $('#' + scope.id + '_dropdown_menu').click();
+            $('#' + scope.id + '_show_column > .dropdown-menu').css('display', 'block');
+          }, 0);
+        };
+
+        scope.hideModal = function(){
+          var id = scope.id + '_modal_dialog';
+          $('#'+id).hide()
+        };
+
         scope.getDumpState = function() {
           return scope.model.getDumpState();
         };
@@ -2709,7 +2757,9 @@
               state.headersVertical = scope.headersVertical;
             }
 
-            scope.model.setDumpState({datatablestate: state});
+            if (scope.model.setDumpState !== undefined) {
+              scope.model.setDumpState({datatablestate: state});
+            }
           }
         });
 

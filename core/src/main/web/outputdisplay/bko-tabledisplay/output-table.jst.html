@@ -15,12 +15,12 @@
 -->
 <div class="dtcontainer">
   <!-- Modal -->
-  <div ng-if="columns.length > 50">
+  <div ng-if="columns.length-1 > outputColumnLimit">
     <div class="table_modal" id="{{id}}_modal_dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-body">
-            Too many columns, hiding those numbered 50 to {{columnNames.length}}. Open list of all columns to show selectively?
+            Too many columns, hiding those numbered {{outputColumnLimit}} to {{columnNames.length}}. Open list of all columns to show selectively?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" ng-click="showHeaderMenu()">OK</button>

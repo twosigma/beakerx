@@ -2216,19 +2216,16 @@
           }
 
           var beakerObj = bkHelper.getBeakerObject().beakerObj;
-          var outputColumnLimit = beakerObj.prefs
-          && beakerObj.prefs.outputColumnLimit ? beakerObj.prefs.outputColumnLimit : 50;
-          if(outputColumnLimit == -1){
-            outputColumnLimit = scope.columnNames.length;
-          }
-          scope.outputColumnLimit = outputColumnLimit;
+          scope.outputColumnLimit = beakerObj.prefs && beakerObj.prefs.outputColumnLimit
+            ? beakerObj.prefs.outputColumnLimit : scope.columnNames.length;
+
           for (i = 0; i < scope.columnNames.length; i++) {
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
             var col = {
               'title' : '<span class="header-text">' + scope.columnNames[i] +'</span>',
               'header': { 'menu': headerMenuItems },
-              'visible': i<outputColumnLimit,
+              'visible': i<scope.outputColumnLimit,
             };
             col.createdCell = function (td, cellData, rowData, row, col) {
               if(!_.isEmpty(scope.tooltips)){

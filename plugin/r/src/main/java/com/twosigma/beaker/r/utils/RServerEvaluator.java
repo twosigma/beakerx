@@ -488,16 +488,16 @@ public class RServerEvaluator {
             // direct graphical output
             String tryCode;
             connection.eval("do.call(svg,c(list('" + file + "'), beaker::saved_svg_options))");
-            tryCode = "warn <- {};\n"
-                + "err <- {};\n"
+            tryCode = "beaker_warn_ <- {};\n"
+                + "beaker_err_ <- {};\n"
                 + " beaker_eval_=withVisible(tryCatch({ " + j.codeToBeExecuted + "\n}"
-                    + ", warning = function(w){warn <<- w }"
-                    + ", error = function(e){err <<- e } ))\n"+
+                    + ", warning = function(w){beaker_warn_ <<- w }"
+                    + ", error = function(e){beaker_err_ <<- e } ))\n"+
                 "list(beaker_eval_, beaker:::convertToJSON(beaker_eval_$value, beaker:::collapse_unit_vectors))";
             
             REXP result = connection.eval(tryCode);
-            REXP e = connection.eval("err");
-            REXP w = connection.eval("warn");
+            REXP e = connection.eval("beaker_err_");
+            REXP w = connection.eval("beaker_warn_");
             
             if (result!= null) {
               logger.trace("RESULT: {}", result);

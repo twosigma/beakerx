@@ -45,6 +45,7 @@ describe('Progress Reporting API', function () {
         return browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div[ng-if="hasMessage()"]', label))), 30000).then(
             function(result){return true;},
             function(error){
+                beakerPO.createScreenshot('progressMsg' + label);
                 expect(error).toBe('progress message should display ' + label);
             });
     };

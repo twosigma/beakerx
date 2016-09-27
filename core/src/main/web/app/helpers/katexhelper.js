@@ -35,7 +35,7 @@
  *LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *SOFTWARE.
-*/
+ */
 
 (function() {
   'use strict';
@@ -63,7 +63,7 @@
             fragment.appendChild(element);
             var math = data[i].data;
             try {
-              katex.render(math, element, {throwOnError:false});
+              katex.render(math, element, {throwOnError: false});
             } catch(err) {
               var errorElement = document.createElement('span');
               errorElement.style.color = '#cc0000';
@@ -84,15 +84,8 @@
             i += frag.childNodes.length - 1;
             elem.replaceChild(frag, childNode);
           } else if (childNode.nodeType === 1){
-            // Element node
-            if (ignoredTags || ignoredTags != undefined){
-              var shouldRender = ignoredTags.indexOf(
-                  childNode.nodeName.toLowerCase()) === -1;
-            }
-
-            if (shouldRender){
-              this.renderElem(childNode, delimiters, ignoredTags);
-            }
+            //because all tags are ignored we don't care about those. if the node is element - render child is called
+            this.renderElem(childNode, delimiters, ignoredTags);
           }
           // Otherwise, it's something else, and ignore it.
         }

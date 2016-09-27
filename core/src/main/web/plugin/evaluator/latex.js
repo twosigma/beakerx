@@ -32,7 +32,7 @@ define(function(require, exports, module) {
       var startTime = new Date().getTime();
       var deferred = bkHelper.newDeferred();
 
-      modelOutput.result = {
+      var progressObj = {
         type: "BeakerDisplay",
         innertype: "Progress",
         object: {
@@ -41,6 +41,7 @@ define(function(require, exports, module) {
           outputdata: []
         }
       };
+      modelOutput.result = progressObj;
 
       bkHelper.timeout(function() {
         try {

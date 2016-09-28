@@ -1,14 +1,11 @@
 // https://d3js.org Version 4.2.6. Copyright 2016 Mike Bostock.
-  
-//(function (global, factory) {
+(function (global, factory) {
 /*  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (factory((global.d3 = global.d3 || {})));
-}(this, (*/
-    
-!function () { 'use strict';
+  (factory((global.d3 = global.d3 || {})));*/
+  factory((global.d3 = global.d3 || {})); //HACK to make it global
+}(this, (function (exports) { 'use strict';
 
-var exports = {};
 var version = "4.2.6";
 
 var ascending = function(a, b) {
@@ -16285,8 +16282,4 @@ exports.geoTransverseMercatorRaw = transverseMercatorRaw;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-d3 = exports; // making d3 global
-}();
-
-var d3 = {}; // making d3 global
-//    )));
+})));

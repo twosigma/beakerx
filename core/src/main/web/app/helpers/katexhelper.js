@@ -125,17 +125,9 @@
         var delimLength = delimiter.length;
 
         while(index<text.length) {
-          var character = text[index];
 
-          if (braceLevel<=0 &&
-            text.slice(index, index + delimLength) === delimiter){
+          if (text.slice(index, index + delimLength) === delimiter){
             return index;
-          } else if (character === "\\"){
-            index++;
-          } else if (character === "{"){
-            braceLevel++;
-          } else if (character === "}"){
-            braceLevel--;
           }
 
           index++;

@@ -95,6 +95,7 @@ HeaderMenu.prototype = {
     var that = this;
 
     $(this.s.dt.table().container()).on('click.headermenu', '.bko-column-header-menu', function(e) {
+      $('.dropdown-menu').removeAttr('style');
       var colIdx = $(this).parent().index();
       var fixedCols = that.s.dt.settings()[0]._oFixedColumns;
       var rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;

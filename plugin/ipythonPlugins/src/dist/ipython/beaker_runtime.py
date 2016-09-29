@@ -414,7 +414,10 @@ class Beaker:
             args['value'] = json.dumps(val, cls=DataFrameEncoder)
         req = urllib2.Request('http://' + self.core_url + '/rest/namespace/set',
                               urllib.urlencode(args))
-        conn = self._beaker_url_opener.open(req)
+        try:
+            conn = self._beaker_url_opener.open(req)
+        except Exception:
+            raise NameError("Server error, likely memory exceeded")
         reply = conn.read()
         if reply != 'ok':
             raise NameError(reply)

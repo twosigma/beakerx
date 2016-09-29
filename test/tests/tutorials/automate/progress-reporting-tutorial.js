@@ -61,7 +61,7 @@ describe('Progress Reporting API', function () {
     it('Display progress by Groovy', function () {
         var idCell = "codeXnQmyX";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
+        beakerPO.runBkCellDefaultButtonByIdCell(idCell);
         checkProgressMessage(idCell, 'starting')
             .then(checkProgressBar.bind(this, idCell, '20 %'))
             .then(checkProgressMessage.bind(this, idCell, 'about to finish'));
@@ -71,7 +71,7 @@ describe('Progress Reporting API', function () {
     it('Display progress by Java', function () {
         var idCell = "codefgkSlJ";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
+        beakerPO.runBkCellDefaultButtonByIdCell(idCell);
         checkProgressMessage(idCell, 'starting')
             .then(checkProgressBar.bind(this, idCell, '20 %'))
             .then(checkProgressMessage.bind(this, idCell, 'about to finish'));

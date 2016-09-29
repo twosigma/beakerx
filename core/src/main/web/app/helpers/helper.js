@@ -129,6 +129,16 @@
         }
         return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Cmd + Shift + U
       },
+      isSaveNotebookAsShortcut: function (e){
+        if (this.isMacOS){
+          if(e.metaKey && !e.ctrlKey && e.altKey && (e.which === 83)){// Shift + Cmd + s
+            return true;
+          }else{
+            return false;
+          }
+        }
+        return e.ctrlKey && !e.altKey && (e.which === 83);// Ctrl + shift + s
+      },
       isSaveNotebookShortcut: function (e){
         if (this.isMacOS){
           return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + s

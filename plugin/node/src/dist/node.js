@@ -43,7 +43,7 @@ define(function(require, exports, module) {
             }
             //verify server is up and running before a new shell call is attempted
             function checkNodeServerRunning() {
-              bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/pulse"))
+              bkHelper.httpGet(bkHelper.serverUrl(serviceBase + "/pulse"))
                 .error(function(){
                     setTimeout(function () {
                         checkNodeServerRunning();

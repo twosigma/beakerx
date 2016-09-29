@@ -1,11 +1,9 @@
 /* eslint no-console:0 */
 
-
 /*
  *copied from https://github.com/Khan/KaTeX/tree/master/contrib/auto-render
  *until https://github.com/Khan/KaTeX/issues/425 is resolved.
  */
-
 
 /*
  *The MIT License (MIT)
@@ -55,23 +53,25 @@
       renderMathInText: function(text, delimiters) {
         var data = this.splitWithDelimiters(text, delimiters);
         var fragment = document.createDocumentFragment();
+
         for(var i = 0; i<data.length; i++){
-          var element = document.createElement("span");
           if (data[i].type === "text"){
-            element.appendChild(document.createTextNode(data[i].data));
+            fragment.appendChild(document.createTextNode(data[i].data));
           } else {
-            fragment.appendChild(element);
+            var element = document.createElement("span");
             var math = data[i].data;
             try {
               katex.render(math, element);
+              fragment.appendChild(element);
             } catch(err) {
               element.style.color = '#cc0000';
               element.title = err.message;
               element.appendChild(document.createTextNode(data[i].rawData));
+              fragment.appendChild(element);
             }
           }
-          fragment.appendChild(element);
         }
+
         return fragment;
       },
       renderElem: function(elem, delimiters, ignoredTags) {

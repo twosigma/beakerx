@@ -36,6 +36,7 @@ describe('Progress Reporting API', function () {
         return browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div.progress-bar', label))), 30000).then(
             function(result){return true;},
             function(error){
+                beakerPO.createScreenshot('progressBar' + label);
                 expect(error).toBe('progress bar should display ' + label);
             });
     };
@@ -44,6 +45,7 @@ describe('Progress Reporting API', function () {
         return browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div[ng-if="hasMessage()"]', label))), 30000).then(
             function(result){return true;},
             function(error){
+                beakerPO.createScreenshot('progressMsg' + label);
                 expect(error).toBe('progress message should display ' + label);
             });
     };
@@ -59,7 +61,7 @@ describe('Progress Reporting API', function () {
     it('Display progress by Groovy', function () {
         var idCell = "codeXnQmyX";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
+        beakerPO.runBkCellDefaultButtonByIdCell(idCell);
         checkProgressMessage(idCell, 'starting')
             .then(checkProgressBar.bind(this, idCell, '20 %'))
             .then(checkProgressMessage.bind(this, idCell, 'about to finish'));
@@ -69,7 +71,7 @@ describe('Progress Reporting API', function () {
     it('Display progress by Java', function () {
         var idCell = "codefgkSlJ";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
+        beakerPO.runBkCellDefaultButtonByIdCell(idCell);
         checkProgressMessage(idCell, 'starting')
             .then(checkProgressBar.bind(this, idCell, '20 %'))
             .then(checkProgressMessage.bind(this, idCell, 'about to finish'));

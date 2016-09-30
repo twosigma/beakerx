@@ -129,11 +129,17 @@
         }
         return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Cmd + Shift + U
       },
+      isSaveNotebookAsShortcut: function (e){
+        if (this.isMacOS){
+          return e.shiftKey && e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + shift + s
+        }
+        return e.ctrlKey && e.shiftKey && e.altKey && (e.which === 83);// Ctrl + shift + s
+      },
       isSaveNotebookShortcut: function (e){
         if (this.isMacOS){
-          return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + s
+          return e.metaKey && !e.shiftKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + s
         }
-        return e.ctrlKey && !e.altKey && (e.which === 83);// Ctrl + s
+        return e.ctrlKey && !e.shiftKey && !e.altKey && (e.which === 83);// Ctrl + s
       },
       isLanguageManagerShortcut: function (e) {
         if (this.isMacOS) {

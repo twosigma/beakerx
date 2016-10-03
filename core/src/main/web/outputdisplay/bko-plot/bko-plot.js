@@ -1536,16 +1536,28 @@
           }
           scope.enableZoom();
         };
+
         scope.zoomStart = function(d) {
+
           if (scope.interactMode === "other") { return; }
           scope.zoomed = false;
           scope.lastx = scope.lasty = 0;
           scope.lastscale = 1.0;
-          scope.zoomObj.scale(1.0);
-          scope.zoomObj.translate([0, 0]);
+          //scope.zoomObj.scale(1.0);
+         // d3.zoomTransform(scope.svg._groups[0][0]).scale(1.0);
+          //scope.zoomObj.translate([0, 0]);
+          //d3.zoomTransform(scope.svg._groups[0][0]).translate(0, 0);
+          
+         // d3.zoomIdentity.translate(0, 0).scale(1);
+          
+          d3.zoom()
+          .scaleExtent([1, 40])
+          .translateExtent([[-100, -100], [600, 600]])
+          .on("zoom", function() {console.log('fff a')});
+          
           scope.mousep1 = {
-            "x" : d3.mouse(scope.svg[0][0])[0],
-            "y" : d3.mouse(scope.svg[0][0])[1]
+            "x" : d3.mouse(scope.svg._groups[0][0])[0],
+            "y" : d3.mouse(scope.svg._groups[0][0])[1]
           };
           scope.mousep2 = {};
           _.extend(scope.mousep2, scope.mousep1);
@@ -1556,15 +1568,15 @@
             // left click zoom
             var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
             var W = plotUtils.safeWidth(scope.jqsvg) - lMargin, H = plotUtils.safeHeight(scope.jqsvg) - bMargin;
-            var d3trans = d3.event.translate, d3scale = d3.event.scale;
-            var dx = d3trans[0] - scope.lastx, dy = d3trans[1] - scope.lasty,
+            var d3trans = d3.event.transform, d3scale = d3.event.scale;
+            var dx = d3trans.x - scope.lastx, dy = d3trans.y - scope.lasty,
                 ds = this.lastscale / d3scale;
-            scope.lastx = d3trans[0];
-            scope.lasty = d3trans[1];
+            scope.lastx = d3trans.x;
+            scope.lasty = d3trans.y;
             scope.lastscale = d3scale;
 
             var focus = scope.focus;
-            var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
+            var mx = d3.mouse(scope.svg._groups[0][0])[0], my = d3.mouse(scope.svg._groups[0][0])[1];
             if (Math.abs(mx - scope.mousep1.x) > 0 || Math.abs(my - scope.mousep1.y) > 0) {
               scope.zoomed = true;
             }
@@ -1647,18 +1659,24 @@
             scope.update();
           } else if (scope.interactMode === "locate") {
             // right click zoom
-            scope.mousep2 = {
+/*            scope.mousep2 = {
               "x" : d3.mouse(scope.svg[0][0])[0],
               "y" : d3.mouse(scope.svg[0][0])[1]
-            };
+            };*/
+            scope.mousep2 = {
+                "x" : d3.mouse(scope.svg._groups[0][0])[0],
+                "y" : d3.mouse(scope.svg._groups[0][0])[1]
+              };
             scope.calcLocateBox();
             scope.rpipeRects = [];
             scope.renderLocateBox();
           }
         };
         scope.zoomEnd = function(d) {
-          scope.zoomObj.scale(1.0);
-          scope.zoomObj.translate([0, 0]);
+          //scope.zoomObj.scale(1.0);
+          d3.zoomTransform(this).scale(1.0);
+          //scope.zoomObj.translate([0, 0]);
+          d3.zoomTransform(this).translate(0, 0);
           if (scope.interactMode === "locate") {
             scope.locateFocus();
             scope.locateBox = null;
@@ -1682,7 +1700,7 @@
           }
         };
         scope.resetFocus = function() {
-          var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
+          var mx = d3.mouse(scope.svg._groups[0][0])[0], my = d3.mouse(scope.svg._groups[0][0])[1];
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
           var W = plotUtils.safeWidth(scope.jqsvg), H = plotUtils.safeHeight(scope.jqsvg);
           if (mx < lMargin && my < H - bMargin) {
@@ -1733,20 +1751,24 @@
           scope.rpipeTexts = [];
           scope.rpipeTicks = [];
         };
+
         scope.enableZoom = function() {
-          scope.svg.call(scope.zoomObj.on("zoomstart", function(d) {
+          scope.svg.call(scope.zoomObj.on("start", function(d) {
             return scope.zoomStart(d);
           }).on("zoom", function(d) {
             return scope.zooming(d);
-          }).on("zoomend", function(d) {
+          }).on("end", function(d) {
             return scope.zoomEnd(d);
           }));
+          scope.svg.on("wheel", function() {
+            return scope.zooming();
+          });
           scope.svg.on("dblclick.zoom", function() {
             return scope.resetFocus();
           });
         };
         scope.disableZoom = function() {
-          scope.svg.call(scope.zoomObj.on("zoomstart", null).on("zoom", null).on("zoomend", null));
+          scope.svg.call(scope.zoomObj.on("start", null).on("zoom", null).on("end", null));
         };
         scope.disableWheelZoom = function() {
           scope.svg.on("wheel.zoom", null);
@@ -1773,21 +1795,21 @@
             });
           }
           scope.data2scrY =
-            d3.scale.linear().domain([focus.yl, focus.yr]).range([H - bMargin, tMargin]);
+            d3.scaleLinear().domain([focus.yl, focus.yr]).range([H - bMargin, tMargin]);
           scope.data2scrYp =
-            d3.scale.linear().domain([focus.yl, focus.yr]).range([1, 0]);
+            d3.scaleLinear().domain([focus.yl, focus.yr]).range([1, 0]);
           scope.scr2dataY =
-            d3.scale.linear().domain([tMargin, H - bMargin]).range([focus.yr, focus.yl]);
+            d3.scaleLinear().domain([tMargin, H - bMargin]).range([focus.yr, focus.yl]);
           scope.scr2dataYp =
-            d3.scale.linear().domain([tMargin, H - bMargin]).range([1, 0]);
+            d3.scaleLinear().domain([tMargin, H - bMargin]).range([1, 0]);
           scope.data2scrX =
-            d3.scale.linear().domain([focus.xl, focus.xr]).range([lMargin, W - rMargin]);
+            d3.scaleLinear().domain([focus.xl, focus.xr]).range([lMargin, W - rMargin]);
           scope.data2scrXp =
-            d3.scale.linear().domain([focus.xl, focus.xr]).range([0, 1]);
+            d3.scaleLinear().domain([focus.xl, focus.xr]).range([0, 1]);
           scope.scr2dataX =
-            d3.scale.linear().domain([lMargin, W-rMargin]).range([focus.xl, focus.xr]);
+            d3.scaleLinear().domain([lMargin, W-rMargin]).range([focus.xl, focus.xr]);
           scope.scr2dataXp =
-            d3.scale.linear().domain([lMargin, W-rMargin]).range([0, 1]);
+            d3.scaleLinear().domain([lMargin, W-rMargin]).range([0, 1]);
 
           scope.data2scrXi = function(val) {
             return Number(scope.data2scrX(val).toFixed(scope.renderFixed));
@@ -1908,7 +1930,7 @@
           scope.initLayout();
 
           scope.resetSvg();
-          scope.zoomObj = d3.behavior.zoom();
+          scope.zoomObj = d3.zoom();
 
           // set zoom object
           scope.svg.on("mousedown", function() {

@@ -28,15 +28,44 @@ define(function(require, exports, module) {
     borderColor: "3D4444",
     shortName: "Tx",
     tooltip: "TeX is Donald Knuth's mathematical typesetting language.",
-    evaluate: function(code, modelOutput) {
+    evaluate: function(code, modelOutput, refreshObj) {
       var startTime = new Date().getTime();
-      return bkHelper.fcall(function() {
-        modelOutput.result = {
-          type: "BeakerDisplay",
-          innertype: "Latex",
-          object: code};
-        modelOutput.elapsedTime = new Date().getTime() - startTime;
-      });
+      var deferred = bkHelper.newDeferred();
+
+      var progressObj = {
+        type: "BeakerDisplay",
+        innertype: "Progress",
+        object: {
+          message: "running...",
+          startTime: new Date().getTime(),
+          outputdata: []
+        }
+      };
+      modelOutput.result = progressObj;
+
+      bkHelper.timeout(function() {
+        try {
+          var tempElement = document.createElement('span');
+          katex.render(code, tempElement, {throwOnError: false});
+          deferred.resolve(code);
+          return bkHelper.fcall(function() {
+            modelOutput.result = {
+              type: "BeakerDisplay",
+              innertype: "Latex",
+              object: code
+            };
+            modelOutput.elapsedTime = new Date().getTime() - startTime;
+          });
+        } catch (err) {
+          var r = err.message;
+          bkHelper.receiveEvaluationUpdate(modelOutput,
+            {status: "ERROR", payload: r},
+            PLUGIN_NAME);
+          deferred.reject(r);
+        }
+      }, 0);
+
+      return deferred.promise;
     },
     spec: {
     }

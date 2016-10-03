@@ -73,6 +73,7 @@
 }
 
 .searchreplace-container {
+  outline: none;
   background-color: #eff2f8;
   position: fixed;
   right: 0;
@@ -81,8 +82,8 @@
   bottom: 0;
   height: 210px;
   border-style: solid;
-  border-image: linear-gradient(#DDE0E6, #EFF2F8, #DDE0E6) 10 repeat stretch;
-  border-image-width: 5px;
+  border-width: 5px;
+  border-color: #DDE0E6;
 }
 
 .prelog {

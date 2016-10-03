@@ -925,9 +925,8 @@ var BeakerPageObject = function() {
         element(by.id('file-dlg-selected-path')).sendKeys(filename);
         element(by.cssContainingText('button', 'Save')).click();
         var filenameCsv = path.join(dir, (filename));
-        browser.wait(fs.existsSync.bind(this, filenameCsv), 10000).then(function(){
-          expect(fs.statSync(filenameCsv).isFile() && fs.existsSync(filenameCsv)).toBe(true);
-          browser.actions().sendKeys(protractor.Key.ESCAPE).perform();
+        browser.wait(fs.existsSync.bind(this, filenameCsv), 20000).then(function(){
+          expect(fs.statSync(filenameCsv).isFile()).toBe(true);
         });
       });
     });

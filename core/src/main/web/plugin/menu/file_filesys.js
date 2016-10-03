@@ -35,39 +35,6 @@ define(function(require, exports, module) {
           }
         }
       ]
-    },
-    {
-      parent: "File",
-      id: "file-menu",
-      submenu: "Save As",
-      shortcut: ["Ctrl-Shift-S", "Shift-Cmd-S"],
-      items: [
-        {
-          name: "Save as... (file)",
-          id: "save-as-menuitem",
-          reducedName: "Save as...",
-          tooltip: "Save a file from file system",
-          sortorder: 100,
-          action: function() {
-            if (bkHelper.isElectron){
-              bkHelper.showElectronSaveDialog().then(function(path) {
-                // Save cancelled
-                if (path == undefined)
-                  return;
-                return bkHelper.saveNotebookAs(path, 'file');
-              })
-            } else {
-              bkHelper.showFileSaveDialog({
-                extension: "bkr"
-              }).then(function (ret) {
-                if (ret.uri) {
-                  return bkHelper.saveNotebookAs(ret.uri, ret.uriType);
-                }
-              });
-            }
-          }
-        }
-      ]
     }
   ];
 

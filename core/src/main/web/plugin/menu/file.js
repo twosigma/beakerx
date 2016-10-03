@@ -75,7 +75,7 @@ define(function(require, exports, module) {
     },
     {
       name: "Save as...",
-      shortcut: ["Ctrl-Shift-S", "Shift-Cmd-S"],
+      shortcut: ["Ctrl-Shift-S", "Cmd-Shift-S"],
       id: "save-as-menuitem",
       sortorder: 140,
       tooltip: "Save a file to file system",

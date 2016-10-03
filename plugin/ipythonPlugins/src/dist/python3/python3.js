@@ -32,11 +32,6 @@ define(function(require, exports, module) {
   var now = function() {
     return new Date().getTime();
   };
-
-  function isIpythonVersion3OrAbove() {
-    return ipyVersion == '3' || ipyVersion == '4' || ipyVersion == '5';
-  }
-
   var Python3Proto = {
       pluginName: PLUGIN_NAME,
       cmMode: "python",
@@ -163,7 +158,6 @@ define(function(require, exports, module) {
       },
       evaluate: function(code, modelOutput, refreshObj) {
         var deferred = bkHelper.newDeferred();
-        var start = new Date();
 
         if (_theCancelFunction) {
           deferred.reject("An evaluation is already in progress");
@@ -219,7 +213,7 @@ define(function(require, exports, module) {
           var result = _(msg.payload).map(function(payload) {
             // XXX can other mime types appear here?
             var text = "";
-            if (isIpythonVersion3OrAbove()) {
+            if (ipyVersion == '3' || ipyVersion == '4') {
               text = payload.data ? payload.data["text/plain"] : "";
             } else {
               text = payload.text;
@@ -245,10 +239,9 @@ define(function(require, exports, module) {
               evaluation.payload = "<pre>" + result + "</pre>";
             }
             finalStuff = evaluation;
-            var duration = new Date() - start;
-            bkHelper.timeout(doFinish, duration/3);
+            bkHelper.timeout(doFinish,250);
           }
-        };
+        }
         var output = function output(a0, a1) {
           if (_theCancelFunction === null || gotError)
             return;
@@ -266,7 +259,7 @@ define(function(require, exports, module) {
           var evaluation = { };
           evaluation.status = "RUNNING";
 
-          if (isIpythonVersion3OrAbove() ? (type === "error") : (type === "pyerr")) {
+          if ((ipyVersion == '3' || ipyVersion == '4') ? (type === "error") : (type === "pyerr")) {
             gotError = true;
             var trace = _.reduce(content.traceback, function(memo, line) {
               return  memo + "<br>" + myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(line));
@@ -281,7 +274,7 @@ define(function(require, exports, module) {
             evaluation.outputdata = [];
             if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
               evaluation.outputdata = finalStuff.outputdata;
-            var text = isIpythonVersion3OrAbove() ? content.text : content.data;
+            var text = (ipyVersion == '3' || ipyVersion == '4') ? content.text : content.data;
             evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
                 value: text});
           } else {
@@ -324,7 +317,7 @@ define(function(require, exports, module) {
               }
               evaluation.jsonres = jsonres;
               var elem = $(document.createElement("div"));
-              var oa = isIpythonVersion3OrAbove() ?
+              var oa = (ipyVersion == '3' || ipyVersion == '4') ?
                   (new myPython.OutputArea({events: {trigger: function(){}},
                     keyboard_manager: {register_events: function(){}}})) :
                       (new myPython.OutputArea(elem));
@@ -363,7 +356,7 @@ define(function(require, exports, module) {
           }
           if (finalStuff === undefined) {            
             finalStuff = evaluation;
-            bkHelper.timeout(doFinish,250);
+            bkHelper.timeout(doFinish,150);
           }
         };
         var callbacks = (ipyVersion == '1') ? {
@@ -450,7 +443,7 @@ define(function(require, exports, module) {
         bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
         kernel.restart(function () {
           var waitForKernel = function() {
-            if (isIpythonVersion3OrAbove() ?
+            if ((ipyVersion == '3' || ipyVersion == '4') ?
                 (kernel.ws.readyState == 1) :
                   (kernel.shell_channel.readyState == 1 &&
                       kernel.stdin_channel.readyState == 1 &&
@@ -461,7 +454,7 @@ define(function(require, exports, module) {
               }, function(err) {
                 bkHelper.hideLanguageManagerSpinner(err);
                 deferred.reject(err);
-                bkHelper.showErrorModal('ERROR: ' + err[0], PLUGIN_NAME + ' kernel restart failed', err[1]);
+                bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' kernel restart failed');
               });
             } else {
               setTimeout(waitForKernel, 50);
@@ -512,7 +505,7 @@ define(function(require, exports, module) {
       return '';
     }
     start += sectionName.length + 1;
-    var stop = documentation.lastIndexOf('\n', documentation.indexOf(':', start));
+    stop = documentation.lastIndexOf('\n', documentation.indexOf(':', start));
     if (stop === -1) {
       return documentation.substr(start);
     }
@@ -546,19 +539,13 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     var onSuccess = function() {
-      if (ipyVersion == '3') {
+      if (ipyVersion == '3' || ipyVersion == '4') {
         require('ipython3_namespace');
         require('ipython3_kernel');
         require('ipython3_utils');
         require('ipython3_outputarea');
-      } else if(ipyVersion == '4' || ipyVersion == '5') {
-        require('base/js/namespace');
-        require('services/kernels/kernel');
-        require('base/js/utils');
-        require('notebook/js/outputarea');
-        require('jupyter-js-widgets');
       }
-      myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : ((ipyVersion == '3') ? IPython3 : IPython));
+      myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
@@ -567,21 +554,21 @@ define(function(require, exports, module) {
         var Python3Shell = function(settings, doneCB, ecb) {
           var self = this;
           var setShellIdCB = function(shellID) {
-            var isNewShell = (shellID !== settings.shellID);
             settings.shellID = shellID;
             if (!("setup" in settings)) {
               settings.setup = defaultSetup;
             }
             self.settings = settings;
             var finish = function () {
-              if (bkHelper.hasSessionId() && isNewShell) {
+              if (bkHelper.hasSessionId()) {
                 self.evaluate(self.initCode(), {}).then(function () {
                   if (doneCB) {
                     doneCB(self);
                   }}, function(err) {
                     var errorHtml =
                       'See <a target="_blank" href="https://github.com/twosigma/beaker-notebook/wiki/Python-Mismatch-Errors">our wiki</a> for how to handle this.';
-                    bkHelper.showErrorModal('ERROR: ' + err[0].replace('_beaker_python_mismatch_', errorHtml), 'Python3 initialization failed', err[1]);  
+                    bkHelper.show1ButtonModal('ERROR: '+err[0].replace('_beaker_python_mismatch_', errorHtml),
+                                              'Python3 initialization failed');
                     if (doneCB) {
                       doneCB(self);
                     }});
@@ -593,7 +580,7 @@ define(function(require, exports, module) {
             };
             var kernel = kernels[shellID];
             var waitForKernel = function () {
-              if (isIpythonVersion3OrAbove() ?
+              if ((ipyVersion == '3' || ipyVersion == '4') ?
                   (kernel.ws.readyState == 1) :
                     (kernel.shell_channel.readyState == 1 &&
                         kernel.stdin_channel.readyState == 1 &&
@@ -650,7 +637,7 @@ define(function(require, exports, module) {
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/comm.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/outputarea.js")
                                ], onSuccess, onFail);
-          } else if (ipyVersion == '3') {
+          } else {
             bkHelper.loadList([bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/namespace.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/utils.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/kernel.js"),
@@ -658,13 +645,6 @@ define(function(require, exports, module) {
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/comm.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js")
-                               ], onSuccess, onFail);
-          } else {
-            bkHelper.loadList([bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/namespace.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/kernel.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/utils.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/outputarea.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/jupyter-js-widgets.js"),
                                ], onSuccess, onFail);
           }
         }).error(function() {

@@ -19,16 +19,14 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
+import com.twosigma.beaker.core.module.config.BeakerConfigPref;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.jvnet.winp.WinProcess;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -39,14 +37,17 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,9 +68,6 @@ import java.util.concurrent.ExecutionException;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class PluginServiceLocatorRest {
-
-  private static final Logger logger = LoggerFactory.getLogger(PluginServiceLocatorRest.class.getName());
-
   // these 3 times are in millis
   private static final int RESTART_ENSURE_RETRY_MAX_WAIT = 30*1000;
   private static final int RESTART_ENSURE_RETRY_INTERVAL = 10;
@@ -255,9 +253,9 @@ public class PluginServiceLocatorRest {
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
-        logger.info("shutting down beaker");
+        System.out.println("\nshutting down beaker");
         shutdown();
-        logger.info("done, exiting");
+        System.out.println("done, exiting");
       }
     });
 
@@ -311,7 +309,7 @@ public class PluginServiceLocatorRest {
 
   private void startReverseProxy() throws InterruptedException, IOException {
     generateNginxConfig();
-    logger.info("starting nginx instance (" + this.nginxDir +")");
+    System.out.println("starting nginx instance (" + this.nginxDir +")");
     Process proc = Runtime.getRuntime().exec(this.nginxCommand, this.nginxEnv);
     startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;
@@ -416,7 +414,8 @@ public class PluginServiceLocatorRest {
       
     PluginConfig pConfig = this.plugins.get(pluginId);
     if (pConfig != null && pConfig.isStarted()) {
-      logger.info("plugin service " + pluginId + " already started at" + pConfig.getBaseUrl());
+      System.out.println("plugin service " + pluginId +
+          " already started at" + pConfig.getBaseUrl());
       return buildResponse(pConfig.getBaseUrl(), false);
     }
 
@@ -439,10 +438,6 @@ public class PluginServiceLocatorRest {
 
       if (nginxRules.startsWith("ipython")) {
         generateIPythonConfig(pluginId, port, password, command);
-
-        if (isIPython4OrNewer(getIPythonVersion(pluginId, command))) {
-          new JupyterWidgetsExtensionProcessor(pluginId, this.pluginDir).copyJupyterExtensionIfExists();
-        }
       }
 
       // reload nginx config
@@ -473,12 +468,12 @@ public class PluginServiceLocatorRest {
       String[] env = buildEnv(pluginId, password);
 
       if (windows()) {
-        String python = this.config.getInstallDirectory() + "\\python\\python";
+	String python = this.config.getInstallDirectory() + "\\python\\python";
         fullCommand.add(0, python);
       }
-      logger.info("Running");
+      System.out.println("Running");
       for (int i = 0; i < fullCommand.size(); i++) {
-        logger.info(i + ": " + fullCommand.get(i));
+        System.out.println(i + ": " + fullCommand.get(i));
       }
       proc = Runtime.getRuntime().exec(listToArray(fullCommand), env);
     }
@@ -490,9 +485,9 @@ public class PluginServiceLocatorRest {
       BufferedReader br = new BufferedReader(ir);
       String line = "";
       while ((line = br.readLine()) != null) {
-        logger.info("looking on " + startedIndicatorStream + " found:" + line);
+        System.out.println("looking on " + startedIndicatorStream + " found:" + line);
         if (line.indexOf(startedIndicator) >= 0) {
-          logger.info("Acknowledge " + pluginId + " plugin started due to "+startedIndicator);
+          System.out.println("Acknowledge " + pluginId + " plugin started due to "+startedIndicator);
           break;
         }
       }
@@ -509,7 +504,7 @@ public class PluginServiceLocatorRest {
     try {
       spinCheck(url);
     } catch (Throwable t) {
-      logger.warn("time out plugin = {}", pluginId);
+      System.err.println("time out plugin =" + pluginId);
       this.plugins.remove(pluginId);
       if (windows()) {
         new WinProcess(proc).killRecursively();
@@ -520,7 +515,7 @@ public class PluginServiceLocatorRest {
     }
 
     pConfig.setProcess(proc);
-    logger.info("Done starting " + pluginId);
+    System.out.println("Done starting " + pluginId);
 
     return buildResponse(pConfig.getBaseUrl(), true);
   }
@@ -702,7 +697,7 @@ public class PluginServiceLocatorRest {
       // XXX should allow name to be set by user in bkConfig
       hostName = InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException e) {
-      logger.warn("warning: UnknownHostException from InetAddress.getLocalHost().getHostName(), ignored");
+      System.err.println("warning: UnknownHostException from InetAddress.getLocalHost().getHostName(), ignored");
     }
     if (this.listenInterface != null && !this.listenInterface.equals("*")) {
       hostName = this.listenInterface;
@@ -907,149 +902,5 @@ public class PluginServiceLocatorRest {
         new StreamGobbler(proc.getInputStream(), "stdout", name,
         outputLogService);
     outputGobbler.start();
-  }
-
-  private boolean isIPython4OrNewer(String iPythonVersion) {
-    return iPythonVersion != null && (iPythonVersion.startsWith("4.") || iPythonVersion.startsWith("5."));
-  }
-
-  private class JupyterWidgetsExtensionProcessor {
-    private String pluginId;
-    private String pluginDir;
-
-    JupyterWidgetsExtensionProcessor(String pluginId, String pluginDir) {
-      this.pluginId = pluginId;
-      this.pluginDir = pluginDir;
-    }
-
-    void copyJupyterExtensionIfExists() throws IOException, InterruptedException {
-      boolean fileProcessed = copyExtensionFileFromPythonDist();
-
-      if (!fileProcessed) {
-        try {
-          Files.copy(Paths.get(getDefaultExtensionPath()), Paths.get(getTargetExtensionPath()), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-          //e.printStackTrace();
-        }
-      }
-    }
-
-    private boolean copyExtensionFileFromPythonDist() {
-      try {
-        String plugPath = config.getPluginPath(pluginId);
-        Process jupyterPathsProcess = Runtime.getRuntime().exec(new String[]{getJupyterCommand(plugPath), "--paths"}, buildEnv(pluginId, null));
-        jupyterPathsProcess.waitFor();
-        List<String> jupyterDataPaths = parseJupyterDataPaths(jupyterPathsProcess);
-        for (String jupyterDataPath : jupyterDataPaths) {
-          java.nio.file.Path jupyterExtensionJsPath = getJupyterExtensionPath(jupyterDataPath);
-          if (jupyterExtensionJsPath != null) {
-            copyExtension(jupyterExtensionJsPath);
-            return true;
-          }
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      return false;
-    }
-
-    private String getJupyterCommand(String plugPath) {
-      String command = "jupyter";
-      if (!StringUtils.isBlank(plugPath)) {
-        if (windows()) {
-          plugPath += "/Scripts";
-        }
-        command = plugPath + '/' + command;
-      }
-      return command;
-    }
-
-    private java.nio.file.Path getJupyterExtensionPath(String jupyterDataPath) {
-      java.nio.file.Path jupyterPath = Paths.get(jupyterDataPath);
-      if (Files.exists(jupyterPath)) {
-        java.nio.file.Path jupyterExtensionJsPath = jupyterPath.resolve("nbextensions/jupyter-js-widgets/extension.js");
-        if (Files.exists(jupyterExtensionJsPath)) {
-          return jupyterExtensionJsPath;
-        }
-      }
-      return null;
-    }
-
-    private void copyExtension(java.nio.file.Path jupyterExtensionJsPath) throws IOException {
-      try (
-          final BufferedReader bufferedReader = new BufferedReader(new FileReader(jupyterExtensionJsPath.toFile()));
-          BufferedWriter writer = new BufferedWriter(new FileWriter(getTargetExtensionPath()));
-      ) {
-        String line;
-        for (int lineIndex = 0; (line = bufferedReader.readLine()) != null; lineIndex++) {
-          writer.write(processLine(line, lineIndex));
-          writer.newLine();
-        }
-      }
-    }
-
-    private String getTargetExtensionPath() {
-      return getExtensionPath(false);
-    }
-
-    private String getDefaultExtensionPath() {
-      return getExtensionPath(true);
-    }
-
-    private String getExtensionPath(boolean defaultFile) {
-      String fileName = "extension.js";
-      if (defaultFile) {
-        fileName = "_" + fileName;
-      }
-      return this.pluginDir + "/ipythonPlugins/vendor/ipython4/" +
-          fileName;
-    }
-
-    private String processLine(String line, int lineIndex) {
-      if (lineIndex == 0 && line.startsWith("define(")) {
-        line = line.replace("define(", "define('nbextensions/jupyter-js-widgets/extension', ");
-      } else if (line.contains("this._init_menu();")) {
-        line = "//" + line;
-      } else if (line.contains("this.state_change = this.state_change.then(function() {")) {
-        line = "            var elem = $(document.createElement(\"div\"));\n" +
-               "            elem.addClass('ipy-output');\n" +
-               "            elem.attr('data-msg-id', msg.parent_header.msg_id);\n" +
-               "            var widget_area = $(document.createElement(\"div\"));\n" +
-               "            widget_area.addClass('widget-area');\n" +
-               "            var widget_subarea = $(document.createElement(\"div\"));\n" +
-               "            widget_subarea.addClass('widget-subarea');\n" +
-               "            widget_subarea.appendTo(widget_area);\n" +
-               "            widget_area.appendTo(elem);\n" +
-               "            var kernel = this.widget_manager.comm_manager.kernel;\n" +
-               "            if (kernel) {\n" +
-               "              //This cause fail on plot display\n" +
-               "              //kernel.appendToWidgetOutput = true;\n" +
-               "              var callbacks = kernel.get_callbacks_for_msg(msg.parent_header.msg_id);\n" +
-               "              if (callbacks && callbacks.iopub) {\n" +
-               "                msg.content.data['text/html'] = elem[0].outerHTML;\n" +
-               "                callbacks.iopub.output(msg);\n" +
-               "              }\n" +
-               "            }\n" +
-               "            " + line;
-      }
-      return line;
-    }
-
-    private List<String> parseJupyterDataPaths(Process jupyterPathsProcess) throws IOException {
-      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(jupyterPathsProcess.getInputStream()));
-      boolean data = false;
-      String line;
-      List<String> jupyterDataPaths = new ArrayList<>();
-      while ((line = bufferedReader.readLine()) != null) {
-        if (line.startsWith("data:")) {
-          data = true;
-        } else if (line.startsWith("runtime:")) {
-          break;
-        } else if (data) {
-          jupyterDataPaths.add(line.trim());
-        }
-      }
-      return jupyterDataPaths;
-    }
   }
 }

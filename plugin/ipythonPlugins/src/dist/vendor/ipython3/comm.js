@@ -4,7 +4,7 @@
 define('ipython3_comm', [
     'ipython3_namespace',
     'ipython3_utils'
-], function(IPython3, utils) {
+], function(IPython, utils) {
     "use strict";
 
     //-----------------------------------------------------------------------
@@ -206,8 +206,8 @@ define('ipython3_comm', [
     };
     
     // For backwards compatability.
-    IPython3.CommManager = CommManager;
-    IPython3.Comm = Comm;
+    IPython.CommManager = CommManager;
+    IPython.Comm = Comm;
 
     return {
         'CommManager': CommManager,

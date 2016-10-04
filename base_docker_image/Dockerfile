@@ -68,7 +68,7 @@ RUN pip install 'ipython<3.9' jinja2 tornado pyzmq pandas jsonschema jupyter
 RUN apt-get install -y python-virtualenv python3-dev pkgconf libfreetype6-dev libfreetype6 \
     	    libxft-dev libblas-dev liblapack-dev gfortran libyaml-dev && \
     virtualenv /home/beaker/py3k -p python3 && \
-    /home/beaker/py3k/bin/pip install 'ipython[notebook]<3.9' jupyter && \
+    /home/beaker/py3k/bin/pip install 'ipython[notebook]' jupyter && \
     /home/beaker/py3k/bin/pip install numpy matplotlib scipy jinja2 tornado pyzmq pandas pyaml && \
     /home/beaker/py3k/bin/ipython kernelspec install-self
 

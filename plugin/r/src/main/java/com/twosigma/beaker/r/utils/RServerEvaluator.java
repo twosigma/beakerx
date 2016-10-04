@@ -570,6 +570,10 @@ public class RServerEvaluator {
               j.outputObject.error("from dev.off(): " + e.getMessage());
           }
 
+          if(resultjson != null && !resultjson.isEmpty() && !resultjson.startsWith("\"" ) && !resultjson.endsWith("\"")){
+            resultjson = "\"" + resultjson + "\"";
+          }
+          
           if (!isfinished) {
             Object svg = getSvgResults(file);
             if (svg != null) {

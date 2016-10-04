@@ -449,7 +449,10 @@ class Beaker:
                                      urllib.parse.urlencode({
                                          'name': var,
                                          'session':self.session_id}))
-        conn = self._beaker_url_opener.open(req)
+        try:
+            conn = self._beaker_url_opener.open(req)
+        except Exception:
+            raise NameError("Server error, the 16MB autotranslation limit has been exceeded")
         result = json.loads(conn.read().decode())
         return result
 

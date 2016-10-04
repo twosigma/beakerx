@@ -553,16 +553,27 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     var onSuccess = function() {
-      if (ipyVersion == '3' || ipyVersion == '4') {
+      var events;
+      if (ipyVersion == '3') {
         require('ipython3_namespace');
         require('ipython3_kernel');
         require('ipython3_utils');
         require('ipython3_outputarea');
         require('ipython3_keyboardmanager');
-        var events = require('ipython3_events');
+        events = require('ipython3_events');
+      } else if (ipyVersion == '4') {
+        require('base/js/namespace');
+        require('services/kernels/kernel');
+        require('base/js/utils');
+        require('notebook/js/keyboardmanager');
+        require('notebook/js/outputarea');
+        require('jupyter-js-widgets');
+        events = require('base/js/events');
+      }
+      if (events) {
         keyboard_manager = new IPython.KeyboardManager({events: events});
       }
-      myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
+      myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : ((ipyVersion == '3') ? IPython3 : IPython));
 
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
@@ -656,7 +667,7 @@ define(function(require, exports, module) {
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/comm.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/outputarea.js")
                                ], onSuccess, onFail);
-          } else {
+          } else if (ipyVersion == '3') {
             bkHelper.loadList([bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/namespace.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/utils.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/kernel.js"),
@@ -664,6 +675,17 @@ define(function(require, exports, module) {
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/comm.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js")
+                               ], onSuccess, onFail);
+          } else {
+            bkHelper.loadList([bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/namespace.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/kernel.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/utils.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/outputarea.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/keyboardmanager.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/events.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/serialize.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/session.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/jupyter-js-widgets.js"),
                                ], onSuccess, onFail);
           }
         }).error(function() {

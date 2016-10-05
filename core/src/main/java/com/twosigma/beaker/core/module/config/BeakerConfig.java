@@ -108,6 +108,11 @@ public interface BeakerConfig {
    */
   public String getListenInterface();
   /**
+   * Hostname that user should connect to.
+   * @return
+   */
+  public String getConnectHost();
+  /**
    * Auth cookie
    * @return
    */

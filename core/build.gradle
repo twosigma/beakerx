@@ -299,7 +299,6 @@ copyVendorStuff.dependsOn copyGGVis
 copyVendorStuff.dependsOn copyDiagrammer
 copyVendorStuff.dependsOn copyPlotly
 copyVendorStuff.dependsOn addevalplugins
-copyVendorStuff.dependsOn addpluginsconfiguration
 
 
 task (compileAssets, type: Exec) {
@@ -380,6 +379,7 @@ updatePackages.dependsOn bowerInstall
 updatePackages.dependsOn copyStuff
 copyStuff.mustRunAfter bowerInstall
 build.dependsOn compileAssets
+build.dependsOn addpluginsconfiguration
 buildembed.dependsOn compileAssetsEmbed
 publishAssets.dependsOn buildembed
 builddebug.dependsOn compileAssetsDebug

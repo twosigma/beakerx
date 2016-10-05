@@ -324,12 +324,21 @@ public class PluginServiceLocatorRest {
     String pluginsconfiguration = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("pluginsconfiguration.config"));
     Gson gson = new Gson();
     PluginConfigDescriptions pluginConfigDescriptions = gson.fromJson(pluginsconfiguration, PluginConfigDescriptions.class);
+    BeakerPorts portsFromEnv = new BeakerPorts();
     for (PluginConfigDescription pcd: pluginConfigDescriptions.getPlugins() ) {
       String nginxRules = pcd.getNginxRules();
       if (pcd.getNginxRules().startsWith("ipython")){
         nginxRules = (getIPythonVersion(pcd.getPluginId(), pcd.getCommand()).equals("1")) ? "ipython1" : "ipython2";
       }
-      createPluginConfig(pcd.getPluginId(), pcd.getCommand(), nginxRules);
+      int port;
+      if (portsFromEnv.hasNext()) {
+        port = portsFromEnv.next();
+      } else {
+        port = getNextAvailablePort(this.portSearchStart);
+        this.portSearchStart = port + 1;
+      }
+
+      createPluginConfig(pcd.getPluginId(), pcd.getCommand(), nginxRules, port);
     }
   }
 
@@ -448,7 +457,9 @@ public class PluginServiceLocatorRest {
     synchronized (this) {
       isNginxRestarted = false;
       if (pConfig == null) {
-        pConfig = createPluginConfig(pluginId, command, nginxRules);
+        final int port = getNextAvailablePort(this.portSearchStart);
+        pConfig = createPluginConfig(pluginId, command, nginxRules, port);
+        this.portSearchStart = pConfig.port + 1;
         // reload nginx config
         restartId = generateNginxConfig();
         isNginxRestarted = true;
@@ -535,13 +546,11 @@ public class PluginServiceLocatorRest {
     }
   }
 
-  private PluginConfig createPluginConfig(final String pluginId, final String command, final String nginxRules) throws IOException, InterruptedException, ExecutionException {
+  private PluginConfig createPluginConfig(final String pluginId, final String command, final String nginxRules, final int port) throws IOException, InterruptedException, ExecutionException {
     String password = RandomStringUtils.random(40, true, true);
     PluginConfig pConfig;// find a port to use for proxypass between nginx and the plugin
-    final int port = getNextAvailablePort(this.portSearchStart);
     final String baseUrl = generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
     pConfig = new PluginConfig(port, nginxRules, baseUrl, password);
-    this.portSearchStart = pConfig.port + 1;
     this.plugins.put(pluginId, pConfig);
 
     if (nginxRules.startsWith("ipython")) {

@@ -21,6 +21,7 @@
 define(function(require, exports, module) {
   'use strict';
 
+  var PLUGIN_ID = "Julia";
   var PLUGIN_NAME = "Julia";
   var COMMAND = "ipythonPlugins/julia/juliaPlugin";
   var kernels = {};
@@ -466,7 +467,7 @@ define(function(require, exports, module) {
         require('jupyter-js-widgets');
       }
       myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : ((ipyVersion == '3') ? IPython3 : IPython));
-      bkHelper.locatePluginService(PLUGIN_NAME, {
+      bkHelper.locatePluginService(PLUGIN_ID, {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
       }).success(function(ret) {

@@ -19,6 +19,7 @@
  */
 define(function(require, exports, module) {
   'use strict';
+  var PLUGIN_ID = 'cpp';
   var PLUGIN_NAME = 'C++';
   var COMMAND = 'cpp/cppPlugin';
   var serviceBase = null;
@@ -143,7 +144,7 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
 
   var init = function() {
-    bkHelper.locatePluginService('cpp', {
+    bkHelper.locatePluginService(PLUGIN_ID, {
       command: COMMAND,
       waitfor: 'Started SelectChannelConnector',
       recordOutput: 'true'

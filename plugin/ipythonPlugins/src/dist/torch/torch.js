@@ -21,6 +21,7 @@
 define(function(require, exports, module) {
   'use strict';
 
+  var PLUGIN_ID = "Torch";
   var PLUGIN_NAME = "Torch";
   var COMMAND = "ipythonPlugins/torch/torchPlugin";
   var kernels = {};
@@ -480,7 +481,7 @@ define(function(require, exports, module) {
         require('jupyter-js-widgets');
       }
       myTorch = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : ((ipyVersion == '3') ? IPython3 : IPython));
-      bkHelper.locatePluginService(PLUGIN_NAME, {
+      bkHelper.locatePluginService(PLUGIN_ID, {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
       }).success(function(ret) {

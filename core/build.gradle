@@ -67,21 +67,19 @@ def generatePluginsConfiguration(){
     def map = [:]
     def lines = file.readLines();
     lines.each { String line ->
-      if (line.contains("var PLUGIN_NAME = ")){
+      if (line.contains("var PLUGIN_ID = ")){
+        map['pluginId'] = getPluginKeyValue(line);
+      } else if(line.contains("var PLUGIN_NAME = ")){
         map['pluginName'] = getPluginKeyValue(line);
       }
       if (line.contains('var COMMAND = ')){
         def command = getPluginKeyValue(line);
         map['command'] = command;
-        if(map['command'].contains("python")){
-          map['nginxRules'] = "ipython";
-        }else {
-          map['nginxRules'] = "rest";
-        }
+        map['nginxRules'] = map['command'].contains("python") ? "ipython": "rest";
       }
     }
     def pluginDescription = String.format("{\"pluginId\" :\"%s\", \"command\": \"%s\", \"nginxRules\": \"%s\"},\n"
-            , map['pluginName']
+            , map['pluginId'] != null ? map['pluginId'] : map['pluginName']
             , map['command']
             , map['nginxRules'])
     pluginDescriptions += pluginDescription;

@@ -399,6 +399,8 @@ class DataFrameEncoder(json.JSONEncoder):
                 out['values'] = values
                 return out
             return obj.to_dict()
+        if type(obj).__name__ == 'Timedelta' or type(obj).__name__ == 'TimedeltaIndex':
+            return
         return json.JSONEncoder.default(self, obj)
 
 class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
@@ -428,7 +430,10 @@ class Beaker:
             args['value'] = json.dumps(val, cls=DataFrameEncoder)
         req = urllib.request.Request('http://' + self.core_url + '/rest/namespace/set',
                                      urllib.parse.urlencode(args).encode('utf8'))
-        conn = self._beaker_url_opener.open(req)
+        try:
+            conn = self._beaker_url_opener.open(req)
+        except Exception:
+            raise NameError("Server error, likely memory exceeded")
         reply = conn.read().decode("utf-8")
         if reply != 'ok':
             raise NameError(reply)
@@ -444,7 +449,10 @@ class Beaker:
                                      urllib.parse.urlencode({
                                          'name': var,
                                          'session':self.session_id}))
-        conn = self._beaker_url_opener.open(req)
+        try:
+            conn = self._beaker_url_opener.open(req)
+        except Exception:
+            raise NameError("Server error, the 16MB autotranslation limit has been exceeded")
         result = json.loads(conn.read().decode())
         return result
 

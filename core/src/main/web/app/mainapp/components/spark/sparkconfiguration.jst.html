@@ -14,42 +14,19 @@
     limitations under the License.
   -->
   <div class="modal-header">
-    <h1 class="spark-configuration">Spark Configuration</h1>
+    <h1 class="spark-configuration">
+      Spark Configuration
+      <b ng-if="edited()">*</b>
+    </h1>
     <div class="spark-configuration status-line">
-      <span ng-if="isConnecting()">
-        <span class="plugin-status plugin-loading">●</span>
-        SparkContext is starting...
-      </span>
-      <span ng-if="!$scope.isConnected() && isDisconnecting()">
-        <span class="plugin-status plugin-loading">●</span>
-        SparkContext is stopping...
-      </span>
-      <span ng-if="isFailed()">
-        <span class="plugin-status plugin-error">●</span>
-        SparkContext encountered an error
-      </span>
-      <span ng-if="isOffline() && !isFailed()">
-        <span class="plugin-status plugin-known">●</span>
-        SparkContext has not been started
-      </span>
-      <span ng-if="isConnected() && running() <= 0">
-        <span class="plugin-status plugin-active">●</span>
-        SparkContext has been started, no jobs are running
-      </span>
-      <span ng-if="isConnected() && running() == 1">
-        <span class="plugin-status plugin-active">●</span>
-        SparkContext has been started, one job is running
-      </span>
-      <span ng-if="isConnected() && running() > 1">
-        <span class="plugin-status plugin-active">●</span>
-        SparkContext has been started, {{running()}} jobs are running
-      </span>
+      <bk-spark-status></bk-spark-status>
     </div>
     <br style="clear:both" />
+    <!--
     <div class="spark-configuration template-selector">
       <form class="form-inline">
         <div class="form-group">
-          <select class="form-control" ng-disabled="!isOffline()">
+          <select class="form-control" ng-disabled="isDisabled()">
             <option>small</option>
             <option>medium</option>
             <option>big</option>
@@ -57,30 +34,34 @@
         </div>
       </form>
     </div>
+    -->
   </div>
 
   <div class="modal-body">
+    <div class="alert alert-danger" ng-if="error() !== ''">
+      {{error()}}
+    </div>
     <fieldset class="spark-configuration">
       <form>
         <table border="0" width="100%">
           <tr>
             <td><label class="col-sm-1 form-control-label">Executor cores</label></td>
             <td>
-              <input type="text" class="form-control" ng-model="configuration.executorCores.value" maxlength="3" ng-disabled="!isOffline()" />
+              <input type="text" class="form-control" ng-model="configuration.executorCores.value" maxlength="3" ng-disabled="isDisabled()" />
             </td>
 
             <td class="spacing"></td>
 
-            <td><label class="col-sm-1 form-control-label">Executor Memory (GB)</label></td>
+            <td><label class="col-sm-1 form-control-label">Executor Memory</label></td>
             <td>
-              <input type="text" class="form-control" ng-model="configuration.executorMemory.value" maxlength="3" ng-disabled="!isOffline()" />
+              <input type="text" class="form-control" ng-model="configuration.executorMemory.value" maxlength="3" ng-disabled="isDisabled()" />
             </td>
           </tr>
 
           <tr>
             <td><label class="col-sm-1 form-control-label">Datacenter</label></td>
             <td>
-              <select class="form-control" ng-model="configuration.datacenter.value" ng-options="option for option in ::configuration.datacenter.options" ng-disabled="!isOffline()">
+              <select class="form-control" ng-model="configuration.datacenter.value" ng-options="option for option in ::configuration.datacenter.options" ng-disabled="isDisabled()">
               </select>
             </td>
             <td></td>
@@ -94,134 +75,32 @@
           <hr />
 
           <table border="0" width="100%">
-            <tr>
-              <td width="35%"><label class="col-sm-1 form-control-label">Verbose</label></td>
-              <td>
-                <input type="checkbox" class="checkbox" />
+            <tr ng-repeat="co in configuration.advanced">
+              <td width="35%">
+                <label class="col-sm-1 form-control-label">{{co.name}}</label>
               </td>
 
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">Debug</label></td>
-              <td>
-                <input type="checkbox" />
+              <td ng-if="co.type === 'string'">
+                <input type="text" class="form-control" ng-model="co.value" ng-disabled="isDisabled()" />
               </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">Driver Memory (GB)</label></td>
-              <td>
-                <input type="text" class="form-control" value="1" />
-              </td>
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">SparkContext alias</label></td>
-              <td>
-                <input type="text" class="form-control" value="sc" />
-              </td> 
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">priority</label></td>
-              <td>
-                <input type="text" class="form-control" value="75" />
-              </td>          
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">min_resource_ratio</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td>
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">additional_jars</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">ld_libraries</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-            </tr>
-
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">ld_library_dirs</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">logfile</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td>
-            </tr>
-
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">loglevel</label></td>
-              <td>
-                <select class="form-control">
-                  <option>ERROR</option>
-                  <option>WARNING</option>
-                  <option>DEBUG</option>
-                  <option>INFO</option>
+              <td ng-if="co.type === 'choice'">
+                <select class="form-control" ng-model="co.value" ng-options="option for option in ::co.options" ng-disabled="isDisabled()">
                 </select>
               </td>
-
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">executor_java_options</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-            <tr>
-
-              <td><label class="col-sm-1 form-control-label">driver_java_options</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
+              <td ng-if="co.type === 'boolean'">
+                <input type="checkbox" class="checkbox" ng-model="co.value" ng-disabled="isDisabled()" />
               </td>
             </tr>
 
-            <tr>
-              <td><label class="col-sm-1 form-control-label">spark_conf</label></td>
+            <tr ng-repeat="property in sparkConf" class="spark-property">
+              <td width="35%" class="spark-property-key">
+                <input type="text" class="form-control" ng-model="property.key" ng-disabled="isDisabled() || isFixedProperty(property.key)" placeholder="spark.property">
+              </td>
               <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">app_name</label></td>
-              <td>
-                <input type="text" class="form-control" value="" />
-              </td> 
-
-            </tr>
-
-            <tr>
-              <td><label class="col-sm-1 form-control-label">App name</label></td>
-              <td>
-                <input type="text" class="form-control" value="beaker" />
+                <span class="fa fa-times" title="Remove Spark property" ng-click="removeSparkConfProperty(property)" ng-disabled="isDisabled()" eat-click ng-if="property.key !== '' && !isFixedProperty(property.key)"></span>
+                <input type="text" class="form-control spark-property-value" ng-model="property.value" ng-disabled="isDisabled()">
               </td>
             </tr>
-
           </table>
         </div>
 

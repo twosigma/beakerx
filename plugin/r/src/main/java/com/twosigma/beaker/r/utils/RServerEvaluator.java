@@ -31,19 +31,20 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.codec.png.PNGRegistryEntry;
 import org.apache.batik.ext.awt.image.codec.tiff.TIFFRegistryEntry;
+import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -53,20 +54,18 @@ import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.r.module.ErrorGobbler;
 import com.twosigma.beaker.r.module.ROutputHandler;
 
-import org.apache.batik.transcoder.image.ImageTranscoder;
-import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.TranscoderInput;
-
 public class RServerEvaluator {
   protected static final String BEGIN_MAGIC = "**beaker_begin_magic**";
   protected static final String END_MAGIC = "**beaker_end_magic**";
-  private final static Logger logger = Logger.getLogger(RServerEvaluator.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(RServerEvaluator.class.getName());
 
   protected final String shellId;
   protected final String sessionId;
@@ -107,7 +106,7 @@ public class RServerEvaluator {
   protected BeakerObjectConverter objSerializer;
 
   public RServerEvaluator(String id, String sId, int cp, BeakerObjectConverter os) {
-    logger.fine("created");
+    logger.debug("created");
     shellId = id;
     sessionId = sId;
     exit = false;
@@ -128,32 +127,32 @@ public class RServerEvaluator {
   protected void startWorker() {
     myWorker = new workerThread();
     myWorker.start();
-    logger.fine("worker started");
+    logger.debug("worker started");
   }
 
   public String getShellId() { return shellId; }
 
   public void cancelExecution() {
-    logger.fine("cancelling");
+    logger.debug("cancelling");
     myWorker.cancelExecution();
   }
 
   public void exit() {
-    logger.fine("exiting");
+    logger.debug("exiting");
     exit = true;
     cancelExecution();
     syncObject.release();
   }
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
-    logger.fine("evaluating");
+    logger.debug("evaluating");
     // send job to thread
     jobQueue.add(new jobDescriptor(code,seo));
     syncObject.release();
   }
 
   public List<String> autocomplete(String code, int caretPosition) {
-    logger.fine("autocomplete");
+    logger.debug("autocomplete");
     return myWorker.autocomplete(code,caretPosition);
   }
 
@@ -176,7 +175,7 @@ public class RServerEvaluator {
       Files.setPosixFilePermissions(tmp.toPath(), perms);
     }
     String r = tmp.getAbsolutePath();
-    logger.fine("returns "+r);
+    logger.debug("returns {}", r);
     return r;
   }
 
@@ -204,7 +203,7 @@ public class RServerEvaluator {
     bw.write("run.Rserve(auth=\"required\", plaintext=\"enable\", port=" +
         port + ", pwdfile=\"" + pwlocation + "\")\n");
     bw.close();
-    logger.fine("script is "+location);
+    logger.debug("script is {}", location);
     return location;
   }
 
@@ -256,12 +255,12 @@ public class RServerEvaluator {
           fis.read(data);
           fis.close();
           String contents = new String(data, "UTF-8");
-          logger.fine("returning svg content");
+          logger.debug("returning svg content");
           Object r = fixSvgResults(contents);
           file.delete();
           return r;
         } catch (Exception e) {
-          logger.log(Level.SEVERE,"ERROR reading SVG results",e);
+          logger.error("ERROR reading SVG results", e);
         }
       } else {
         try {
@@ -272,7 +271,7 @@ public class RServerEvaluator {
           file.delete();
           return image;
         } catch(Exception e) {
-          logger.log(Level.SEVERE,"ERROR converting SVG results",e);
+          logger.error("ERROR converting SVG results", e);
         }
       }
       file.delete();
@@ -280,30 +279,11 @@ public class RServerEvaluator {
     return null;
   }
 
-  protected boolean isError(REXP result, SimpleEvaluationObject obj) {
-    try {
-      REXP value = result.asList().at(0);
-      if (value.inherits("try-error")) {
-        String prefix = "Error in try({ : ";
-        String rs = value.asString();
-        if (rs.substring(0, prefix.length()).equals(prefix)) {
-          rs = rs.substring(prefix.length());
-        }
-        logger.fine("is an error");
-        obj.error(rs);
-        return true;
-      }
-    } catch (REXPMismatchException e) {
-    } catch (NullPointerException e) {
-    }
-    return false;
-  }
-
   protected boolean isVisible(REXP result, SimpleEvaluationObject obj) {
     try {
       int[] asInt = result.asList().at(1).asIntegers();
       if (asInt.length == 1 && asInt[0] != 0) {
-        logger.fine("is visible");
+        logger.debug("is visible");
         return true;
       }
     } catch (REXPMismatchException e) {
@@ -352,7 +332,7 @@ public class RServerEvaluator {
           try {
             result = connection.eval(tryCode);
             if (result!= null) {
-              logger.finest("RESULT: "+result);
+              logger.trace("RESULT: {}", result);
               
               String[] value = result.asList().at(0).asStrings();
               
@@ -363,10 +343,8 @@ public class RServerEvaluator {
               mutex.release();
               return r;
             }
-          } catch (RserveException e) {
-            logger.log(Level.SEVERE, "Exception in autocomplete", e);
-          } catch (REXPMismatchException e) {
-            logger.log(Level.SEVERE, "Exception in autocomplete", e);
+          } catch (RserveException | REXPMismatchException e) {
+            logger.error("Exception in autocomplete", e);
           }
           mutex.release();
           return null;
@@ -385,10 +363,10 @@ public class RServerEvaluator {
       }
       if (pid >0) {
         try {
-          logger.fine("sending signal");
+          logger.debug("sending signal");
           Runtime.getRuntime().exec("kill -SIGINT " + pid);
         } catch (IOException e) {
-          logger.log(Level.SEVERE, "exception sending signal: ", e);
+          logger.error("exception sending signal: ", e);
         }
       }
     }
@@ -444,7 +422,7 @@ public class RServerEvaluator {
         connection.eval(initCode);
         mutex.release();
       } catch(Exception e) {
-        logger.log(Level.SEVERE, "exception starting RServe", e);
+        logger.error("exception starting RServe", e);
         if (connection != null)
           mutex.release();
         if (rServe!=null) {
@@ -510,31 +488,64 @@ public class RServerEvaluator {
             // direct graphical output
             String tryCode;
             connection.eval("do.call(svg,c(list('" + file + "'), beaker::saved_svg_options))");
-            tryCode = "beaker_eval_=withVisible(try({ " + j.codeToBeExecuted + "\n},silent=TRUE))\n"+
-                    "list(beaker_eval_, beaker:::convertToJSON(beaker_eval_$value, beaker:::collapse_unit_vectors))";
+            tryCode = "beaker_warn_ <- {};\n"
+                + "beaker_err_ <- {};\n"
+                + " beaker_eval_=withVisible(tryCatch({ " + j.codeToBeExecuted + "\n}"
+                    + ", warning = function(w){beaker_warn_ <<- w }"
+                    + ", error = function(e){beaker_err_ <<- e } ))\n"+
+                "list(beaker_eval_, beaker:::convertToJSON(beaker_eval_$value, beaker:::collapse_unit_vectors))";
+            
             REXP result = connection.eval(tryCode);
+            REXP e = connection.eval("beaker_err_");
+            REXP w = connection.eval("beaker_warn_");
             
             if (result!= null) {
-              logger.finest("RESULT: "+result);
+              logger.trace("RESULT: {}", result);
               resultjson=result.asList().at(1).asString();
-              logger.finest("JSON: "+resultjson);
+              logger.trace("JSON: {}", resultjson);
               result = result.asList().at(0);
             }
             
             if (null == result) {
-              logger.fine("null result");;
+              logger.debug("null result");;
               oresult = "";
               resultjson = null;
-            } else if (isError(result, j.outputObject)) {
+              
+              if(!w.isNull() && w.asList().at(0).isString()){
+                String warning = w.asList().at(0).asString();
+                j.outputObject.error(warning);
+                isfinished = true;
+              }
+              
+            } else if (!e.isNull() && e.asList().at(0).isString() || !w.isNull() && w.asList().at(0).isString()) {
+              String error = null;
+              if(!e.isNull() && e.asList().at(0).isString()){
+                error = e.asList().at(0).asString();
+              }
+              String warning = null;
+              if(!w.isNull() && w.asList().at(0).isString()){
+                warning = w.asList().at(0).asString();
+              }
+              String meaage = "";
+              if(error != null){
+                meaage += error;
+              }
+              if(warning != null){
+                if(meaage != null && !meaage.isEmpty()){
+                  error += "\n";
+                }
+                meaage += warning;
+              }
+              j.outputObject.error(meaage);
               isfinished = true;
             } else if (resultjson!=null && !resultjson.isEmpty() && resultjson.startsWith("{ \"type\":" )) {
-              logger.fine("is a beaker object");
+              logger.debug("is a beaker object");
               oresult = null;
             } else if (!isVisible(result, j.outputObject)) {
-              logger.fine("is not visible");
+              logger.debug("is not visible");
               oresult = "";
             } else {
-              logger.fine("capturing from output handler");
+              logger.debug("capturing from output handler");
               String finish = "print(\"" + BEGIN_MAGIC + "\")\n" +
                   "print(beaker_eval_$value)\n" +
                   "print(\"" + END_MAGIC + "\")\n";
@@ -572,10 +583,10 @@ public class RServerEvaluator {
           mutex.release();
 
         } catch(Throwable e) {
-          logger.log(Level.SEVERE, "exception in worker:", e);
+          logger.error("exception in worker:", e);
         }
       }
-      logger.fine("destroying worker");
+      logger.debug("destroying worker");
       if (rServe!=null && connection!=null) {
         try {
           mutex.acquire();
@@ -588,7 +599,7 @@ public class RServerEvaluator {
         try {
           rServe.waitFor();
         } catch (InterruptedException e) {
-          logger.log(Level.SEVERE, "exception waiting for process termination", e);
+          logger.error("exception waiting for process termination", e);
         }
       }
       logger.info("DONE");

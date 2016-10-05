@@ -16,24 +16,29 @@
 
 package com.twosigma.beaker.sqlsh.utils;
 
-import javax.sql.DataSource;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
-import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.Set;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JDBCClient {
+
+  private final static Logger logger = LoggerFactory.getLogger(JDBCClient.class.getName());
 
   private Map<String, BasicDataSource> dsMap = new HashMap<>();
   private Set<Driver> drivers = new HashSet<>();
@@ -42,7 +47,7 @@ public class JDBCClient {
     loadDrivers(null);
   }
 
-  public DataSource getDataSource(String uri) throws DBConnectionException {
+  public BasicDataSource getDataSource(String uri) throws DBConnectionException {
     synchronized (this) {
       try {
 
@@ -87,7 +92,7 @@ public class JDBCClient {
           try {
             urlSet.add(toURL(s));
           } catch (MalformedURLException e) {
-            Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+            logger.error(e.getMessage());
           }
         }
       }
@@ -101,7 +106,7 @@ public class JDBCClient {
           try {
             urlSet.add(toURL(path));
           } catch (MalformedURLException e) {
-            Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+            logger.error(e.getMessage());
           }
         }
       }
@@ -116,7 +121,7 @@ public class JDBCClient {
           drivers.add(d);
         }
       } catch (Throwable t) {
-        Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, t);
+        logger.error(t.getMessage());
       }
     }
   }
@@ -129,7 +134,7 @@ public class JDBCClient {
       try {
         url = Paths.get(s).toUri().toURL();
       } catch (Exception e) {
-        Logger.getLogger(JDBCClient.class.getName()).log(Level.SEVERE, null, e);
+        logger.error(e.getMessage());
       }
 
     }

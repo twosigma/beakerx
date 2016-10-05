@@ -41,6 +41,15 @@ describe('R Tutorial', function (done) {
         });
     });
 
+    describe('Autocomplete', function(){
+        it('Should hint "rnorm" ', function() {
+            beakerPO.insertNewDefaultCell('R');
+            browser.actions().sendKeys("rn").perform();
+            beakerPO.checkAutocomplete('rnorm');
+            beakerPO.selectItem('rnorm');
+        });
+    });
+
     describe('R Examples', function () {
 
         it('Histogram', function () {

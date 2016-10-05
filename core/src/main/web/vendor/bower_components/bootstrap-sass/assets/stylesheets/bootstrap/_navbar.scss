@@ -360,10 +360,13 @@
   @include navbar-vertical-align($line-height-computed);
 
   @media (min-width: $grid-float-breakpoint) {
-    float: left;
     margin-left: $navbar-padding-horizontal;
     margin-right: $navbar-padding-horizontal;
   }
+}
+
+.left-float{
+  float:left;
 }
 
 

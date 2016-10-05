@@ -323,7 +323,7 @@
           $scope.model.resetShareMenuItems(newItems);
         });
 
-        $scope.exportTo = function(rows, format) {
+        $scope.exportTo = function(rows, format) {        
           var data = rows.data();
           var settings = $scope.table.settings()[0];
           var rowIndexes = rows[0];
@@ -399,32 +399,44 @@
           }
           return out;
         };
-
-        $scope.doCSVExport = function(all) {
+        
+        $scope.getCSV = function(selectedRows) {
           var data;
+          var filename;
           var isFiltered = function (index) {
             return $scope.table.settings()[0].aiDisplay.indexOf(index) > -1;
           };
-          if (!all) {
+          if (!selectedRows) {
             data = $scope.table.rows(isFiltered).data();
           } else {
             data = $scope.table.rows(function(index, data, node) {
               return $scope.selected[index] && isFiltered(index);
-            }).data();
+            });
           }
-          var out = $scope.exportTo(data, 'csv');
+          return $scope.exportTo(data, 'csv');
+        }
+        
+        $scope.doCSVDownload = function(selectedRows) {
+          var anchor = angular.element('<a/>');
+          anchor.attr({
+            href: 'data:attachment/csv;charset=utf-8,' + encodeURI($scope.getCSV(selectedRows)),
+            target: '_blank',
+            download: 'tableRows.csv'
+          })[0].click();  
+        };
 
+        $scope.doCSVExport = function(selectedRows) {
           bkHelper.showFileSaveDialog({
             extension: "csv",
             title: 'Select name for CSV file to save',
             saveButtonTitle : 'Save'
           }).then(function (ret) {
             if (ret.uri) {
-              return bkHelper.saveFile(ret.uri, out, true);
+              return bkHelper.saveFile(ret.uri, $scope.getCSV(selectedRows), true);
             }
           });
         };
-
+        
         // reset table state
         $scope.doResetAll = function () {
           $scope.table.state.clear();
@@ -498,6 +510,10 @@
             executeCopy(data);
           }
         };
+
+        $scope.isEmbedded = window.beakerRegister.isEmbedded ? true : false;
+        $scope.isPublication = window.beakerRegister.isPublication ? true : false;
+        $scope.isIFrame = (window.location != window.parent.location) ? true : false;
 
         $scope.getCellIdx      =  [];
         $scope.getCellNam      =  [];
@@ -1473,8 +1489,9 @@
             return;
           }
           for (var colInd = 0; colInd < scope.columns.length; colInd++) {
-            var max = scope.table.column(colInd).data().max();
-            var min = scope.table.column(colInd).data().min();
+
+            var max = Math.max(scope.table.column(colInd).data().max(), Math.abs(scope.table.column(colInd).data().min()));
+
             scope.table.column(colInd).nodes().each(function (td) {
               var value = $(td).text();
               if ($.isNumeric(value)) {
@@ -1488,12 +1505,42 @@
                     "class": "dt-cell-text"
                   }).text(value);
 
-                  var percent = (parseFloat(value) / max) * 100;
                   var barsBkg = $("<div></div>", {
-                    "class": "dt-bar-data "
-                  }).css({
-                    "width": percent + "%"
+                    "class": "dt-bar-data-cell"
                   });
+
+                  var barsBkgPositiveValueCell = $("<div></div>", {
+                    "class": "dt-bar-data-value-cell"
+                  });
+
+                  var barsBkgNegativeValueCell = $("<div></div>", {
+                    "class": "dt-bar-data-value-cell"
+                  });
+
+                  var percent = (parseFloat(Math.abs(value)) / max) * 100;
+
+                  if(value>0){
+                    var barsBkgPositiveValues = $("<div></div>", {
+                      "class": "dt-bar-data "
+                    }).css({
+                      "width": percent + "%"
+                    });
+
+                    barsBkgPositiveValueCell.append(barsBkgPositiveValues);
+
+                  }else if(value<0){
+                    var barsBkgNegativeValues = $("<div></div>", {
+                      "class": "dt-bar-data-negative "
+                    }).css({
+                      "width": percent + "%"
+                    });
+
+                    barsBkgNegativeValueCell.append(barsBkgNegativeValues)
+                  }
+
+                  barsBkg.append(barsBkgNegativeValueCell);
+                  barsBkg.append(barsBkgPositiveValueCell);
+
                   cellDiv.append(barsBkg);
                   if (!barsRenderer.includeText) {
                     textSpan.hide();
@@ -1511,7 +1558,6 @@
             }
           }
         };
-
         scope.addInteractionListeners = function () {
           if (!scope.interactionListeners) {
             $(scope.table.table().container())
@@ -1966,6 +2012,11 @@
               var order = scope.table.order();
               var colIdx = container.data('columnIndex');
 
+              // server ordering
+              if (0 === order.length) {
+                return false;
+              }
+
               if (_.includes(['asc', 'desc'], direction)) {
                 return (order[0][0] == colIdx && order[0][1] == direction);
               } else {
@@ -2164,12 +2215,17 @@
             cols.push({'title': '    ', 'className': 'dtright', 'render': converter, createdCell: createdCell});
           }
 
+          var beakerObj = bkHelper.getBeakerObject().beakerObj;
+          scope.outputColumnLimit = beakerObj.prefs && beakerObj.prefs.outputColumnLimit
+            ? beakerObj.prefs.outputColumnLimit : scope.columnNames.length;
+
           for (i = 0; i < scope.columnNames.length; i++) {
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
             var col = {
               'title' : '<span class="header-text">' + scope.columnNames[i] +'</span>',
-              'header': { 'menu': headerMenuItems }
+              'header': { 'menu': headerMenuItems },
+              'visible': i<scope.outputColumnLimit,
             };
             col.createdCell = function (td, cellData, rowData, row, col) {
               if(!_.isEmpty(scope.tooltips)){
@@ -2221,7 +2277,8 @@
             'stateSave': true,
             'processing': true,
             'autoWidth': true,
-            'order': scope.tableOrder ? _.cloneDeep(scope.tableOrder) : [[0, 'asc']],
+            'ordering': true,
+            'order': scope.tableOrder ? _.cloneDeep(scope.tableOrder) : [],
             'scrollX': '10%',
             'searching': true,
             'deferRender': true,
@@ -2599,6 +2656,19 @@
           }
         };
 
+        scope.showHeaderMenu = function() {
+          $('#' + scope.id + '_modal_dialog').hide();
+          bkHelper.timeout(function() {
+            $('#' + scope.id + '_dropdown_menu').click();
+            $('#' + scope.id + '_show_column > .dropdown-menu').css('display', 'block');
+          }, 0);
+        };
+
+        scope.hideModal = function(){
+          var id = scope.id + '_modal_dialog';
+          $('#'+id).hide()
+        };
+
         scope.getDumpState = function() {
           return scope.model.getDumpState();
         };
@@ -2691,7 +2761,9 @@
               state.headersVertical = scope.headersVertical;
             }
 
-            scope.model.setDumpState({datatablestate: state});
+            if (scope.model.setDumpState !== undefined) {
+              scope.model.setDumpState({datatablestate: state});
+            }
           }
         });
 

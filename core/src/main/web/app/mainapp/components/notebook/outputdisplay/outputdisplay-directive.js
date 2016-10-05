@@ -35,22 +35,13 @@
       },
       controllerAs: 'outputDisplayCtrl',
       controller: function ($scope) {
+
         var evaluationCompleteNotificationMethods = [];
+        
         this.initAvailableNotificationMethods = function () {
-          evaluationCompleteNotificationMethods = [{
-            title: 'Notify when done',
-            checkPermissions: function () {
-              bkNotificationService.checkPermissions();
-            },
-            action: bkNotificationService.showNotification
-          }];
-          if (bkUtils.getEvaluationFinishedNotificationUrl() != null) {
-            evaluationCompleteNotificationMethods.push({
-              title: 'Send email when done',
-              action: bkNotificationService.sendEmailNotification
-            });
-          }
+          evaluationCompleteNotificationMethods = bkNotificationService.initAvailableNotificationMethods();
         };
+        
         this.getAvailableNotificationMethods = function () {
           return evaluationCompleteNotificationMethods;
         };

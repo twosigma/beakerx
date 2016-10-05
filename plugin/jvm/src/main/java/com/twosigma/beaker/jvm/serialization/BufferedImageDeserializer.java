@@ -16,16 +16,16 @@
 package com.twosigma.beaker.jvm.serialization;
 
 import java.io.ByteArrayInputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BufferedImageDeserializer implements ObjectDeserializer {
-  private final static Logger logger = Logger.getLogger(BufferedImageDeserializer.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(BufferedImageDeserializer.class.getName());
   
   public BufferedImageDeserializer(BeakerObjectConverter p) {
     p.addKnownBeakerType("ImageIcon");
@@ -46,7 +46,7 @@ public class BufferedImageDeserializer implements ObjectDeserializer {
         o = ImageIO.read(bais);
       }      
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "exception deserializing ImageIcon ", e);
+      logger.error("exception deserializing ImageIcon ", e);
     }
     return o;
   }

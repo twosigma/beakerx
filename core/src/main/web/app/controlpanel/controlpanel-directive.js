@@ -79,7 +79,8 @@
           bkHelper.openWithDialog('bkr');
         };
         $scope.openTutorial = function() {
-          bkHelper.openNotebookInNewWindow('file:config/tutorial.bkr', 'file', true, 'bkr');
+          var uri = window.beakerRegister.tutorialUri || 'file:config/tutorial.bkr'
+          bkHelper.openNotebookInNewWindow(uri, 'file', true, 'bkr');
         };
 
         $scope.getElectronMode = function() {

@@ -73,6 +73,8 @@ def isPrimitiveType(typ):
         return True
     if typ.startswith("str"):
         return True
+    if typ.startswith("unicode"):
+        return True
     return False
 
 def isListOfMaps(data):
@@ -143,8 +145,6 @@ def fixNaNsBack(obj):
             obj[x] = float('-inf')
 
 def transform(obj):
-    if type(obj) == unicode:
-        return str(obj)
     if isListOfMaps(obj):
         out = {}
         out['type'] = "TableDisplay"
@@ -206,8 +206,6 @@ def transform(obj):
     return transformNaN(obj)
 
 def transformNR(obj):
-    if type(obj) == unicode:
-        return str(obj)
     if type(obj) == dict:
         out = {}
         for k,v in obj.iteritems():
@@ -385,6 +383,8 @@ class DataFrameEncoder(json.JSONEncoder):
                 out['values'] = values
                 return out
             return obj.to_dict()
+        if type(obj).__name__ == 'Timedelta' or type(obj).__name__ == 'TimedeltaIndex':
+            return
         return json.JSONEncoder.default(self, obj)
 
 class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
@@ -414,7 +414,10 @@ class Beaker:
             args['value'] = json.dumps(val, cls=DataFrameEncoder)
         req = urllib2.Request('http://' + self.core_url + '/rest/namespace/set',
                               urllib.urlencode(args))
-        conn = self._beaker_url_opener.open(req)
+        try:
+            conn = self._beaker_url_opener.open(req)
+        except Exception:
+            raise NameError("Server error, likely memory exceeded")
         reply = conn.read()
         if reply != 'ok':
             raise NameError(reply)
@@ -428,7 +431,10 @@ class Beaker:
     def _getRaw(self, var):
         req = urllib2.Request('http://' + self.core_url + '/rest/namespace/get?' +
                               urllib.urlencode({'name': var, 'session': self.session_id}))
-        conn = self._beaker_url_opener.open(req)
+        try:
+            conn = self._beaker_url_opener.open(req)
+        except Exception:
+            raise NameError("Server error, the 16MB autotranslation limit has been exceeded")
         result = json.loads(conn.read())
         return result
 

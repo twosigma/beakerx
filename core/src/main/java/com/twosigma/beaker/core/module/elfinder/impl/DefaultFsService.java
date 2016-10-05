@@ -22,6 +22,8 @@ import com.twosigma.beaker.core.module.elfinder.service.FsService;
 import com.twosigma.beaker.core.module.elfinder.service.FsServiceConfig;
 import com.twosigma.beaker.core.module.elfinder.service.FsVolume;
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,9 +32,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 
 public class DefaultFsService implements FsService {
+
+  private final static Logger logger = LoggerFactory.getLogger(DefaultFsService.class.getName());
 
   private FsSecurityChecker securityChecker;
   private FsServiceConfig   serviceConfig;
@@ -170,16 +173,17 @@ public class DefaultFsService implements FsService {
    * @deprecated {@link #setVolumeMap(Map)}
    */
   public void setVolumes(FsVolume[] volumes) throws IOException {
-    Logger.getLogger(this.getClass().getName()).warning(
-      "calling setVolumes() is deprecated, please use setVolumeMap() to specify volume id explicitly");
+    logger.warn("calling setVolumes() is deprecated, please use setVolumeMap() to specify volume id explicitly");
     char vid = 'A';
     for (FsVolume volume : volumes) {
       volumeMap.put("" + vid, volume);
+      logger.info(String.format("mounted %s: %s", "" + vid, volume));
       vid++;
     }
   }
 
   public void addVolume(String name, FsVolume fsVolume) {
     volumeMap.put(name, fsVolume);
+    logger.info(String.format("mounted %s: %s", name, fsVolume));
   }
 }

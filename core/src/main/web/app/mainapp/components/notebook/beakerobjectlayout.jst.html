@@ -20,7 +20,7 @@
       <a class="dropdown-toggle bk-object-label-menu bkr" data-toggle="dropdown">
         <b class="bkr">{{model.getCellModel().labels[$index]}}</b>
       </a>
-      <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" ng-if="isPublication == false">
         <li ng-repeat="item in bkoMenuItems">
           <a href="#"
             tabindex="-1"

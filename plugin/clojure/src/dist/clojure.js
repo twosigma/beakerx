@@ -49,20 +49,9 @@ define(function(require, exports, module) {
         var deferred = Q.defer();
         var self = this;
         bkHelper.setupProgressOutput(modelOutput);
-
-        $.ajax({
-          type: "POST",
-          datatype: "json",
-          url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/evaluate"),
-          data: {shellId: self.settings.shellID, code: code}
-        }).done(function(ret) {
+        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/evaluate"), {shellId: self.settings.shellID, code: code}).success(function(ret) {
           cancelFunction = function () {
-            $.ajax({
-              type: "POST",
-              datatype: "json",
-              url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/cancelExecution"),
-              data: {shellId: self.settings.shellID}
-            }).done(function (ret) {
+            bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/cancelExecution"), {shellId: self.settings.shellID}).success(function (ret) {
               console.log("done cancelExecution",ret);
             });
             bkHelper.setupCancellingOutput(modelOutput);
@@ -120,23 +109,13 @@ define(function(require, exports, module) {
       },
       autocomplete: function(code, cpos, cb) {
         var self = this;
-        $.ajax({
-          type: "POST",
-          datatype: "json",
-          url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/autocomplete"),
-          data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
-        }).done(function(x) {
+        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/autocomplete"), {shellId: self.settings.shellID, code: code, caretPosition: cpos}).success(function(x) {
           cb(x, undefined, false);
         });
       },
       exit: function(cb) {
         var self = this;
-        $.ajax({
-          type: "POST",
-          datatype: "json",
-          url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/exit"),
-          data: { shellId: self.settings.shellID }
-        }).done(cb);
+        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/exit"), { shellId: self.settings.shellID }).success(cb);
       },
       updateShell: function (cb) {
         bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);

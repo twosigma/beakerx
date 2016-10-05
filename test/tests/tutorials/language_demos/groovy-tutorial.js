@@ -24,12 +24,27 @@ describe('Groovy Tutorial', function () {
     beforeAll(function (done) {
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&readOnly=true").then(done);
-        beakerPO.waitUntilLoadingFinished();
+
+        var start = new Date().getTime();
+        beakerPO.waitUntilLoadingFinished().then(function() {
+            var stop = new Date().getTime();
+            var len = stop - start;
+            console.log('Starting Groovy language: ' + len + ' milliSeconds');
+        });
     });
 
     afterAll(function(done){
         beakerPO.createScreenshot('groovyTutorial');
         done();
+    });
+
+    describe('Autocomplete', function(){
+        it('Should hint "toUpperCase()" ', function() {
+            beakerPO.insertNewDefaultCell('Groovy');
+            browser.actions().sendKeys("String str = \'test\';\nstr.to").perform();
+            beakerPO.checkAutocomplete('toUpperCase()');
+            beakerPO.selectItem('toUpperCase()');
+        });
     });
 
     describe('Groovy examples', function () {

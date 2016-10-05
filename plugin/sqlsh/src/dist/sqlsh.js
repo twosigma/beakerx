@@ -44,30 +44,19 @@ define(function(require, exports, module) {
             ecb("failed to create shell");
           });
     },
-    evaluate: function(code, modelOutput,refreshObj) {
-      var deferred = Q.defer();
-      
+    
+    evaluateWithPassword : function(code, modelOutput, refreshObj, deferred) {
       if (SqlShCancelFunction) {
         deferred.reject("An evaluation is already in progress");
         return deferred.promise;
       }
-
       var self = this;
-      bkHelper.setupProgressOutput(modelOutput);
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/evaluate"),
-        data: {shellId: self.settings.shellID, code: code}
-      }).done(function(ret) {
-        SqlShCancelFunction = function () {
-          $.ajax({
-            type: "POST",
-            datatype: "json",
-            url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/cancelExecution"),
-            data: {shellId: self.settings.shellID}
-          }).done(function (ret) {
-            console.log("done cancelExecution",ret);
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/evaluate"), {shellId: self.settings.shellID, code: code})
+      .success(function(ret) {
+        SqlShCancelFunction = function() {
+          bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/cancelExecution"), {shellId : self.settings.shellID})
+          .success(function(ret) {
+            console.log("done cancelExecution", ret);
           });
           bkHelper.setupCancellingOutput(modelOutput);
         }
@@ -90,8 +79,59 @@ define(function(require, exports, module) {
           cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
         }
       });
+    },
+    
+    
+    evaluate : function(code, modelOutput, refreshObj) {
+
+      var self = this;
+      var deferred = Q.defer();
+      
+      var promise = new Promise(function(resolve, reject) {
+        
+        getListOfConnectiononWhoNeedDialog(self.settings.shellID).success(function(ret) {
+
+          if (ret.length > 0) {
+            for (var i = 0; i < ret.length; i++) {
+
+              bkHelper.showSQLLoginModalDialog(ret[i].connectionName, 
+                  ret[i].connectionString, 
+                  ret[i].user, 
+                  function(sqlConnectionData) {
+                    setShellUserPassword(self.settings.shellID, 
+                      sqlConnectionData.connectionName, 
+                      sqlConnectionData.user, 
+                      sqlConnectionData.password
+                    ).success(function() {
+                      resolve("OK");
+                    })
+              }, function() {
+                resolve("CANCEL");
+              });
+              
+            }
+          } else {
+            resolve("OK");
+          }
+        });
+        
+      });
+      
+      promise.then(
+          result => {
+            if(result == "OK"){
+              bkHelper.setupProgressOutput(modelOutput);
+              self.evaluateWithPassword(code, modelOutput, refreshObj, deferred);
+            }else{
+              bkHelper.printCanceledAnswer(modelOutput);
+              deferred.reject();
+            }
+          }
+      );
+      
       return deferred.promise;
     },
+    
     interrupt: function() {
       this.cancelExecution();
     },
@@ -102,37 +142,25 @@ define(function(require, exports, module) {
     },
     resetEnvironment: function () {
       var deferred = bkHelper.newDeferred();
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/resetEnvironment"),
-        data: {shellId: this.settings.shellID}
-      }).done(function (ret) {
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/resetEnvironment"), {shellId: this.settings.shellID})
+      .success(function (ret) {
         console.log("done resetEnvironment",ret);
         deferred.resolve();
-      }).fail(function (err) {
+      }).error(function (err) {
         deferred.reject(err);
       });
       return deferred.promise;
     },
     killAllThreads: function () {
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/killAllThreads"),
-        data: {shellId: this.settings.shellID}
-      }).done(function (ret) {
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/killAllThreads"), {shellId: this.settings.shellID})
+      .success(function (ret) {
         console.log("done killAllThreads",ret);
       });
     },
     autocomplete: function(code, cpos, cb) {
       var self = this;
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/autocomplete"),
-        data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
-      }).done(function(x) {
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/autocomplete"), {shellId: self.settings.shellID, code: code, caretPosition: cpos})
+      .success(function(x) {
         cb(x, undefined, true);
       });
     },
@@ -140,12 +168,8 @@ define(function(require, exports, module) {
       var self = this;
       this.cancelExecution();
       SqlShCancelFunction = null;
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/sqlsh/exit"),
-        data: { shellId: self.settings.shellID }
-      }).done(cb);
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/exit"), { shellId: self.settings.shellID })
+      .success(cb);
     },
     updateShell: function (cb) {
       bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
@@ -176,7 +200,26 @@ define(function(require, exports, module) {
   var defaultImports = [];
   var shellReadyDeferred = bkHelper.newDeferred();
 
+  
+  var setShellUserPassword = function(shellID, namedConnection, user, password) {
+      return bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/setShellUserPassword"), {
+          shellId: shellID,
+          namedConnection: namedConnection,
+          user: user,
+          password:password
+         })
+  }
+  
+  var getListOfConnectiononWhoNeedDialog = function(shellID) {
+      return bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/getListOfConnectiononWhoNeedDialog"), {
+          shellId: shellID
+         }).success(function(ret) {
+          return ret;
+        })
+   };
+  
   var init = function() {
+
     bkHelper.locatePluginService(PLUGIN_NAME, {
       command: COMMAND,
       waitfor: "Started SelectChannelConnector",
@@ -193,7 +236,7 @@ define(function(require, exports, module) {
         }
         window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
         cometdUtil.init(PLUGIN_NAME, serviceBase);
-
+        
         var SqlShell = function(settings, doneCB, ecb) {
           var self = this;
           var setShellIdCB = function(id) {

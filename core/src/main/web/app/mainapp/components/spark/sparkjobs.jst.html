@@ -1,0 +1,109 @@
+<!--
+  Copyright 2016 TWO SIGMA OPEN SOURCE, LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<div class="modal-header">
+  <h1>Spark Jobs</h1>
+  <div class="spark-jobs-controls" ng-if="jobs != null && jobs.length > 0">
+    <button class="btn btn-default" ng-click="expandAll()">Expand all</button>
+    <button class="btn btn-default" ng-click="collapseAll()">Collapse all</button>
+  </div>
+</div>
+
+<div class="modal-body">
+  <div class="spark-jobs">
+    <div ng-if="!jobs || jobs.length == 0" class="alert alert-info" role="alert">
+      No Spark jobs were executed.
+    </div>
+
+    <div ng-if="jobs.length > 0">
+      <div class="panel panel-default" ng-repeat="job in jobs">
+        <div class="panel-heading" ng-click="toggle(job)" eat-click>
+          <div class="panel-title">
+            <span class="fa" ng-class="job.expanded ? 'fa-chevron-up' : 'fa-chevron-down'"></span>
+            <span class="spark-job-name">Spark Job {{job.id}}</span>
+
+            <span class="spark-job-status spark-job-status-animated" ng-if="job.running && job.failedTasks == 0">
+              <span class="fa fa-refresh fa-spin"></span> Running
+            </span>
+            <span class="spark-job-status spark-job-status-animated" ng-if="job.running && job.failedTasks > 0">
+              <span class="fa fa-refresh fa-spin"></span> <span class="text-danger">Failing</span>
+            </span>
+            <span class="spark-job-status" ng-if="!job.running && job.failedTasks == 0 && job.totalTasks == job.succeededTasks && job.totalTasks > 0">
+              <span class="plugin-status plugin-active">●</span> Succeeded
+            </span>
+            <span class="spark-job-status" ng-if="!job.running && job.failedTasks > 0">
+              <span class="plugin-status plugin-error">●</span> Failed
+            </span>
+            <span class="spark-job-status" ng-if="!job.running && job.failedTasks == 0 && job.activeTasks == 0 && job.totalTasks > 0 && job.succeededTasks == 0">
+              <span class="plugin-status plugin-known">●</span> Submitted
+            </span>
+            <span class="spark-job-status" ng-if="!job.running && job.failedTasks == 0 && job.activeTasks == 0 && job.totalTasks == 0">
+              <span class="plugin-status plugin-known">●</span> Inactive
+            </span>
+
+            <span class="spark-job-link">
+              <a href="{{job.url}}" target="_blank" title="Show native Spark UI of this job" ng-click="openUrl($event, job.url)" eat-click>Spark UI</a>
+            </span>
+          </div>
+        </div>
+
+        <div class="panel-body spark-progress" ng-if="job.expanded">
+          <table border="0" width="100%">
+            <tr ng-repeat="stage in job.stages">
+              <td class="spark-stage-name">
+                <a href="{{stage.url}}" target="_blank" title="Show native Spark UI of this stage">
+                  Stage {{stage.id}}
+                </a>
+              </td>
+              <td class="spark-stage-progress">   
+                <div class="total-progress progress" title="{{stage.total}} executed tasks">
+                  <span class="spark-tasks-total">{{stage.total}}</span>
+                  <div class="progress-bar spark-tasks-error" role="progressbar"
+                      aria-valuenow="{{stage.failedP}}"
+                      aria-valuemin="0" aria-valuemax="100"
+                      style="width: {{stage.failedP}}%;"
+                      title="{{stage.failed}} failed tasks"
+                      ng-show="stage.failed">
+                      {{stage.failed}}
+                  </div>
+                  <div class="progress-bar spark-tasks-completed" role="progressbar"
+                      aria-valuenow="{{stage.completedP}}"
+                      aria-valuemin="0" aria-valuemax="100"
+                      style="width: {{stage.completedP}}%;"
+                      title="{{stage.completed}} completed tasks"
+                      ng-show="stage.completed">
+                      {{stage.completed}}
+                  </div>
+                  <div class="progress-bar spark-tasks-active" role="progressbar"
+                      aria-valuenow="{{stage.activeP}}"
+                      aria-valuemin="0" aria-valuemax="100"
+                      style="width: {{stage.activeP}}%;"
+                      title="{{stage.active}} active tasks"
+                      ng-show="stage.active">
+                      {{stage.active}}
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button ng-click="doClose()" class="btn btn-default" title="Closes this dialog">Close</button>
+</div>

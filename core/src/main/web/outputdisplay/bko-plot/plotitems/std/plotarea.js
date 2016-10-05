@@ -64,9 +64,8 @@
       }
       this.filter(scope);
       this.prepare(scope);
-      if (this.vlength === 0) {
-        this.clear(scope);
-      } else {
+      this.clear(scope);
+      if (this.vlength !== 0) {
         this.draw(scope);
       }
     };

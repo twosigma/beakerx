@@ -67,7 +67,9 @@
       bkElectron,
       $location,
       bkFileManipulation,
-      bkSparkContextManager) {
+      bkSparkContextManager,
+      bkNotificationService
+      ) {
 
     return {
       restrict: 'E',
@@ -84,13 +86,50 @@
         
         $scope.totalCells = 0;
         $scope.completedCells = 0;
+        $scope.evaluationCompleteNotificationMethods = [];
+        $scope.runAllRunning = false;
+        
+        $scope.initAvailableNotificationMethods = function () {
+          $scope.evaluationCompleteNotificationMethods = bkNotificationService.initAvailableNotificationMethods();
+        };
+        
+        $scope.notifyThatRunAllFinished = function () {
+          _.filter($scope.evaluationCompleteNotificationMethods, 'selected').forEach(function (notificationMethod) {
+            notificationMethod.action.call(notificationMethod,'Evaluation completed', 'Run all finished');
+          });
+        }
+                
+        $scope.isRunAllFinished  = function() {
+          return bkEvaluateJobManager.isAnyInProgress();
+        }
         
         $scope.isShowProgressBar  = function() {
-          return bkEvaluateJobManager.isAnyInProgress() && $scope.totalCells > 1;
+          return $scope.runAllRunning && $scope.totalCells > 1;
         }
+
+        $scope.$watch("isRunAllFinished()", function(newType, oldType) {
+          if(newType === false && oldType === true){ // there are some "false" , "false" events
+              $timeout(function(){
+                $scope.runAllRunning = false;
+              }, 2000); 
+            
+            $scope.notifyThatRunAllFinished();
+          }
+        });
         
         $scope.getProgressBar  = function() {
           return Math.round(100/$scope.totalCells * $scope.completedCells);
+        }
+
+        $scope.toggleNotifyWhenDone = function (notificationMethod) {
+          notificationMethod.selected = !notificationMethod.selected;
+          if(notificationMethod.selected && notificationMethod.checkPermissions) {
+            notificationMethod.checkPermissions();
+          }
+        }
+        
+        $scope.isNotifyWhenDone = function (notificationMethod) {
+          return notificationMethod.selected;
         }
         
         $scope.cancel  = function() {
@@ -635,13 +674,15 @@
               showLoadingStatusMessage("Renaming");
               return bkFileManipulation.renameNotebook(notebookUri, uriType).then(getRenameDoneCallback(), renameFailed);
             },
-            saveNotebookAs: function(notebookUri, uriType) {
-              if (_.isEmpty(notebookUri)) {
-                console.error("cannot save notebook, notebookUri is empty");
-                return;
-              }
-              saveStart();
-              return bkFileManipulation.saveNotebookAs(notebookUri, uriType).then(saveDone, saveFailed);
+            saveNotebookAs: function() {
+              bkHelper.showFileSaveDialog({
+                extension: "bkr"
+              }).then(function (ret) {
+                if (ret.uri) {
+                  return bkFileManipulation.saveNotebookAs(ret.uri, ret.uriType).then(saveDone, saveFailed);
+                }
+              });
+
             },
             runAllCellsInNotebook: function () {
               bkHelper.evaluateRoot('root').then(function (res) {
@@ -830,6 +871,8 @@
               }
               
               $scope.completedCells = 0;
+              $scope.runAllRunning = true;
+              $scope.initAvailableNotificationMethods();
               
               if (!_.isArray(toEval)) {
                 
@@ -1223,16 +1266,35 @@
           });
         }
 
+        var sizeOfWindowWithoutTheMenusAtTop = function() {
+          return ($(window).height() - $('.navbar-fixed-top').height());
+        };
+
         var keydownHandler = function(e) {
-          if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
+          if (bkHelper.isPageUpKey(e)) {
+            window.scrollBy(0, - sizeOfWindowWithoutTheMenusAtTop());
+            return false;
+          } else if (bkHelper.isPageDownKey(e)) {
+            window.scrollBy(0, sizeOfWindowWithoutTheMenusAtTop());
+            return false;
+          }else if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();
             _impl.saveNotebook();
             $scope.$apply();
             return false;
-          }  else if (bkHelper.isNewDefaultNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
+          } else if(bkHelper.isSaveNotebookAsShortcut(e)){
+            e.preventDefault();
+            _impl.saveNotebookAs();
+            $scope.$apply();
+            return false;
+          } else if (bkHelper.isNewDefaultNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
             bkUtils.fcall(function() {
               bkCoreManager.newSession(false);
             });
+            return false;
+          } else if (bkHelper.isSearchReplace(e)) { // Alt + f
+            e.preventDefault();
+            bkHelper.getBkNotebookViewModel().showSearchReplace();
             return false;
           } else if (bkHelper.isNewNotebookShortcut(e)) { // Ctrl/Alt + n
             bkUtils.fcall(function() {

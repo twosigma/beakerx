@@ -2,6 +2,8 @@ package com.twosigma.beaker.javash.autocomplete.test;
 
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,6 +14,8 @@ import java.util.List;
 
 
 class TestJava {
+
+	private static final Logger logger = LoggerFactory.getLogger(TestJava.class.getName());
 
 	public static boolean profile = false;
 	public static boolean notree = false;
@@ -50,7 +54,7 @@ class TestJava {
 			}
 		}
 		catch(Exception e) {
-			System.err.println("exception: "+e);
+			logger.warn("exception: {}", e.getMessage());
 			e.printStackTrace(System.err);   // so we can get stack trace
 		}
 	}
@@ -78,16 +82,16 @@ class TestJava {
 					expect = line.substring(8);
 					String result = parseFile(source,cursor,cps);
 					if(!expect.equals(result))
-						System.out.println("ERROR: expecting \""+expect+"\" but got \""+result+"\"");
+						logger.warn("ERROR: expecting \"{}\" but got \"{}\"", expect, result);
 					else
-						System.out.println("PASS");
+						logger.info("PASS");
 				}
 			}
 		 
 			br.close();
 		}
 		long parserStop = System.currentTimeMillis();
-		System.out.println("Total lexer+parser time " + (parserStop - parserStart) + "ms.");
+		logger.info("Total lexer+parser time {}ms.", (parserStop - parserStart));
 	}
 
 	public static String parseFile(String f, int cursor, ClasspathScanner cps) {

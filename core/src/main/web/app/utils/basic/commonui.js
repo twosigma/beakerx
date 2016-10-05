@@ -147,7 +147,6 @@
         $(document).on('keydown', keydownListener);
 
         var dropdown = element.find('.dropdown-menu').first();
-        var toggle = element.find('.dropdown-toggle').first();
 
         element.on('click', '.dropdown-toggle', toggleDropdown);
 
@@ -155,13 +154,13 @@
           if ($(dropdown).is(':visible')) {
             return hideDropdown();
           }
-
           showDropdown();
         }
 
         var showDropdown = function() {
           window.requestAnimationFrame(function() {
             var notebook = bkHelper.getNotebookElement(scope);
+            var toggle = element.find('.dropdown-toggle').first();
             var togglePosition = toggle.offset();
             var notebookPosition = notebook.offset();
 
@@ -241,6 +240,9 @@
                 result.push('disabled-link');
               }
             }
+          }
+          if(item.separator){
+            result.push('menu-separator');
           }
           result.push(item.id);
           return result.join(' ');

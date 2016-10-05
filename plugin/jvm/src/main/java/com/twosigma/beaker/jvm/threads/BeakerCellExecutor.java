@@ -24,8 +24,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class BeakerCellExecutor {
+
+  private static final Logger logger = LoggerFactory.getLogger(BeakerCellExecutor.class.getName());
 
   private final String prefix;
   private final ReentrantLock theLock;
@@ -76,29 +81,17 @@ public class BeakerCellExecutor {
  
   @SuppressWarnings("deprecation")
   public void cancelExecution() {
-    // stop current execution (if any)
-    theLock.lock();
-    worker.shutdownNow();
-    Thread thr = thrFactory.getTheThread();
-    if (thr != null) {
-      int repeat = 5;
-      while(repeat>0 && !thr.getState().equals(State.TERMINATED)) {
-        repeat--;
-        try {  Thread.sleep(100);  } catch (Throwable t) { }
-      }
-      if(!thr.getState().equals(State.TERMINATED)) {
-        repeat = 15;
-        while(repeat>0 && !thr.getState().equals(State.TERMINATED)) {
-          repeat--;
-          thr.stop();
-          try {  Thread.sleep(100);  } catch (Throwable t) { }
-        }
-      }
+    //logger.info("cancelExecution begin");
+    try {
+      theLock.lock();
+      worker.shutdownNow();
+      Thread thr = thrFactory.getTheThread();
+      killThread(thr);
+    } finally {
+      theLock.unlock();
+      reset();
+      //logger.info("cancelExecution done");
     }
-    theLock.unlock();
-    
-    // reset executor service
-    reset();
   }
   
   public List<Thread> getThreadList() { 
@@ -114,58 +107,41 @@ public class BeakerCellExecutor {
     } while ( n == nAlloc );
     return Arrays.asList(threads);
   }
+
+  private void killThread(Thread thr) {
+    if (null == thr) return;
+    //logger.info("interrupting");
+    thr.interrupt();
+    try {
+      Thread.sleep(2000);
+    } catch (InterruptedException ex) {
+    }
+    if (!thr.getState().equals(State.TERMINATED)) {
+      //logger.info("stopping");
+      thr.stop();
+    }
+  }
   
   @SuppressWarnings("deprecation")
   public void killAllThreads() {
-    // first stop current execution (if any)
-    theLock.lock();
-    worker.shutdownNow();
-    Thread thr = thrFactory.getTheThread();
-    int repeat;
-    if(thr != null) {
-      repeat = 5;
-      while(repeat>0 && !thr.getState().equals(State.TERMINATED)) {
-        repeat--;
-        try {  Thread.sleep(100);  } catch (Throwable t) { }
-      }
-      if(!thr.getState().equals(State.TERMINATED)) {
-        repeat = 15;
-        while(repeat>0 && !thr.getState().equals(State.TERMINATED)) {
-          repeat--;
-          thr.stop();
-          try {  Thread.sleep(100);  } catch (Throwable t) { }
-        }
-      }
-    }
-    
-    // then kill all remaining threads in the threadpool
-    List<Thread> tlist = getThreadList();
-    
-    for (Thread t : tlist) {
-      if (t!=null)
-        t.interrupt();
-    }
+    //logger.info("killAllThreads begin");
+    try {
+      theLock.lock();
+      worker.shutdownNow();
+      Thread thr = thrFactory.getTheThread();
+      killThread(thr);
 
-    repeat = 15;
-    while(repeat>0) {
-      boolean finished = true;
+      // then kill all remaining threads in the threadpool
+      List<Thread> tlist = getThreadList();
+    
       for (Thread t : tlist) {
-        if (t!=null && ! t.getState().equals(State.TERMINATED) ) {
-          finished = false;
-          t.stop();
-        }
+	killThread(t);
       }
-      if (finished)
-        break;
-      repeat--;
-      try {  Thread.sleep(100);  } catch (Throwable t) { }
+      
+    } finally {
+      theLock.unlock();
+      reset();
+      //logger.info("killAllThreads done");
     }
-
-    theLock.unlock();
-
-    // reset executor service
-    reset();
   }
-  
-  
 }

@@ -38,9 +38,12 @@
 
         $scope.cellmodel.collapsed = $scope.cellmodel.collapsed || false;
 
+        bkCoreManager.getBkApp().getBkNotebookWidget().registerSectioncell($scope.cellmodel.id, $scope);
+        
         $scope.toggleShowChildren = function() {
           $scope.cellmodel.collapsed = !$scope.cellmodel.collapsed;
           $scope.$broadcast('beaker.section.toggled', $scope.cellmodel.collapsed);
+          bkSessionManager.setNotebookModelEdited(true);
         };
 
         $scope.isLeaf = function() {
@@ -57,7 +60,7 @@
           var hasSiblingSection = notebookCellOp.getNextSibling($scope.cellmodel.id) !== null;
           var hasChildSections = _.any(notebookCellOp.getAllDescendants($scope.cellmodel.id), function(child) {
             return child.type === 'section';
-          })
+          });
 
           return hasSiblingSection || hasChildSections;
         };
@@ -72,6 +75,14 @@
           $scope.cellmodel.title = newTitle;
           bkUtils.refreshRootScope();
         };
+        $scope.prepareForSearch = function() {
+          if(!$scope.isShowChildren()){
+            $scope.toggleShowChildren();
+          }
+        };
+        $scope.afterSearchActions = function() {
+          //nothing to do
+        };
         var editedListener = function(newValue, oldValue) {
           if (newValue !== oldValue) {
             bkSessionManager.setNotebookModelEdited(true);
@@ -79,20 +90,10 @@
         };
         $scope.$watch('cellmodel.title', editedListener);
         $scope.$watch('cellmodel.initialization', editedListener);
-
-        $scope.cellview.menu.renameItem({
-          name: 'Delete cell',
-          newName: 'Delete heading and keep contents'
-        });
-
-        $scope.cellview.menu.addItemToHead({
-          name: 'Delete section and all sub-sections',
-          action: function() {
-            notebookCellOp.deleteSection($scope.cellmodel.id, true);
-          }
-        });
+        
         $scope.cellview.menu.addItem({
           name: 'Change Header Level',
+          sortorder: 100,
           items: [1,2,3,4].map(function(level) {
             return {
               name: 'Level ' + level,
@@ -105,6 +106,26 @@
               }};
           })
         });
+
+        $scope.cellview.menu.addItem({
+          name: 'Options...',
+          sortorder: 130,
+          action: function() {
+            bkCoreManager.showFullModalDialog(function cb(r) { } ,
+              'app/mainapp/dialogs/codecelloptions.jst.html', 'CodeCellOptionsController', $scope.cellmodel);
+          },
+          locked: function () {
+            return $scope.isLockedCell();
+          }
+        });
+
+        $scope.cellview.menu.addItemToHead({
+          name: 'Delete section and all sub-sections',
+          action: function() {
+            notebookCellOp.deleteSection($scope.cellmodel.id, true);
+          }
+        });
+       
 
         $scope.getPublishData = function() {
           var cells = [$scope.cellmodel]
@@ -125,8 +146,10 @@
             });
           return bkUtils.generateNotebook(evaluators, cells, $scope.cellmodel.metadata);
         };
+
         $scope.cellview.menu.addItem({
           name: 'Run all',
+          sortorder: 190,
           action: function() {
             bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel.id).
               catch(function(data) {
@@ -134,11 +157,14 @@
               });
           }
         });
+
         $scope.isInitializationCell = function() {
           return $scope.cellmodel.initialization;
         };
+
         $scope.cellview.menu.addItem({
           name: 'Initialization Cell',
+          sortorder:110,
           isChecked: function() {
             return $scope.isInitializationCell();
           },
@@ -151,6 +177,29 @@
             notebookCellOp.reset();
           }
         });
+
+        $scope.cellview.menu.addItem({
+          name: 'Show section',
+          sortorder:200,
+          disabled: function() {
+            return $scope.isShowChildren();
+          },
+          action: function() {
+            $scope.toggleShowChildren();
+          }
+        });
+
+        $scope.cellview.menu.addItem({
+          name: 'Hide section',
+          sortorder:210,
+          disabled: function() {
+            return !$scope.isShowChildren();
+          },
+          action: function() {
+            $scope.toggleShowChildren();
+          }
+        });
+
         $scope.newCellMenuConfig = {
           isShow: function() {
             if (bkSessionManager.isNotebookLocked()) {
@@ -197,6 +246,61 @@
         };
 
         bkPublicationHelper.helper(CELL_TYPE, $scope);
+
+        $scope.cellview.menu.changeSortOrder({
+          name: "Lock Cell",
+          sortorder: 120
+        });
+
+        $scope.cellview.menu.changeSortOrder({
+          name: "cut",
+          sortorder: 150
+        });
+
+        $scope.cellview.menu.changeSortOrder({
+          name: "Paste (append after)",
+          sortorder: 160
+        });
+
+        $scope.cellview.menu.changeSortOrder({
+          name: "Publish...",
+          sortorder: 170
+        });
+        
+        $scope.cellview.menu.changeSortOrder({
+          name: "Move up",
+          sortorder: 220
+        });
+
+
+        $scope.cellview.menu.changeSortOrder({
+          name: "Move down",
+          sortorder: 230
+        });
+
+        $scope.cellview.menu.renameItem({
+          name: 'Delete cell',
+          newName: 'Delete heading and keep contents'
+        });
+
+        $scope.cellview.menu.changeSortOrder({
+          name: 'Delete heading and keep contents',
+          sortorder: 240
+        });
+
+        $scope.cellview.menu.changeSortOrder({
+          name: 'Delete section and all sub-sections',
+          sortorder: 250
+        });
+
+        $scope.cellview.menu.addSeparator("Cut");
+
+        $scope.cellview.menu.addSeparator("Run all");
+        
+        $scope.$on('$destroy', function() {
+          bkCoreManager.getBkApp().getBkNotebookWidget().unregisterSectioncell($scope.cellmodel.id);
+        });
+
       }
     };
   });

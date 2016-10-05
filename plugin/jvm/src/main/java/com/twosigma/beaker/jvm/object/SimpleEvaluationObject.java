@@ -28,8 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.twosigma.beaker.shared.module.util.ControlCharacterUtils;
 import org.codehaus.jackson.JsonGenerator;
@@ -39,12 +37,14 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializerProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstraction around an evaluation, for communication of the state over REST to the plugin.
  */
 public class SimpleEvaluationObject extends Observable {
-  private final static Logger logger = Logger.getLogger(SimpleEvaluationObject.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(SimpleEvaluationObject.class.getName());
   private static final int OUTPUT_QUEUE_SIZE = 20;
   private static final int MAX_LINE_LENGTH = 240;
   
@@ -237,7 +237,7 @@ public class SimpleEvaluationObject extends Observable {
           }
         }
         if (value.getJsonRes() != null && value.getPayload() != null && value.getPayload().getValue() != null) {
-          logger.finest("adding raw json data: '" + value.getJsonRes() + "'");
+          logger.trace("adding raw json data: '" + value.getJsonRes() + "'");
           jgen.writeFieldName("jsonres");
           if (ControlCharacterUtils.containsControlCharacters(value.getJsonRes())) {
             jgen.writeRawValue(ControlCharacterUtils.escapeControlCharacters(value.getJsonRes()));
@@ -314,7 +314,7 @@ public class SimpleEvaluationObject extends Observable {
         }
         
       } catch (Exception e) {
-        logger.log(Level.SEVERE, "exception deserializing SimpleEvaluationObject ", e);
+        logger.error("exception deserializing SimpleEvaluationObject ", e);
       }
       return o;
     }

@@ -18,11 +18,12 @@
 var BeakerPageObject = require('../../beaker.po.js');
 var beakerPO;
 
-describe('Progress Reporting API', function (done) {
+describe('Progress Reporting API', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2FprogressUpdate.bkr&readOnly=true").then(done);
+        beakerPO.waitUntilLoadingFinished();
         beakerPO.waitUntilLoadingCellOutput();
     });
 
@@ -32,23 +33,25 @@ describe('Progress Reporting API', function (done) {
     });
 
     function checkProgressBar(idCell, label){
-        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div.progress-bar', label))), 5000).then(
+        return browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div.progress-bar', label))), 30000).then(
             function(result){return true;},
             function(error){
+                beakerPO.createScreenshot('progressBar' + label);
                 expect(error).toBe('progress bar should display ' + label);
             });
     };
 
     function checkProgressMessage(idCell, label){
-        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div[ng-if="hasMessage()"]', label))), 5000).then(
+        return browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('div[ng-if="hasMessage()"]', label))), 30000).then(
             function(result){return true;},
             function(error){
+                beakerPO.createScreenshot('progressMsg' + label);
                 expect(error).toBe('progress message should display ' + label);
             });
     };
 
     function checkProgressTopBar(idCell, label){
-        browser.wait(beakerPO.EC.presenceOf(element(by.cssContainingText('div.navbar-text', label))), 5000).then(
+        return browser.wait(beakerPO.EC.presenceOf(element(by.cssContainingText('div.navbar-text', label))), 30000).then(
             function(result){return true;},
             function(error){
                 expect(error).toBe('progress top Beaker bar should display ' + label);
@@ -58,17 +61,20 @@ describe('Progress Reporting API', function (done) {
     it('Display progress by Groovy', function () {
         var idCell = "codeXnQmyX";
         beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
-        checkProgressMessage(idCell, 'starting');
-        checkProgressBar(idCell, '20 %');
-        checkProgressMessage(idCell, 'started');
-        checkProgressBar(idCell, '40 %');
-        checkProgressMessage(idCell, 'begin');
-        checkProgressBar(idCell, '60 %');
-        checkProgressMessage(idCell, 'middle');
-        checkProgressBar(idCell, '80 %');
-        checkProgressMessage(idCell, 'about to finish');
-        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'finished'))), 5000);
+        beakerPO.runBkCellDefaultButtonByIdCell(idCell);
+        checkProgressMessage(idCell, 'starting')
+            .then(checkProgressBar.bind(this, idCell, '20 %'))
+            .then(checkProgressMessage.bind(this, idCell, 'about to finish'));
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'finished'))), 20000);
+    });
+
+    it('Display progress by Java', function () {
+        var idCell = "codefgkSlJ";
+        beakerPO.scrollToBkCellByIdCell(idCell);
+        beakerPO.runBkCellDefaultButtonByIdCell(idCell);
+        checkProgressMessage(idCell, 'starting')
+            .then(checkProgressBar.bind(this, idCell, '20 %'))
+            .then(checkProgressMessage.bind(this, idCell, 'about to finish'));
     });
 
     it('Display progress by JavaScript', function () {
@@ -89,21 +95,6 @@ describe('Progress Reporting API', function (done) {
         browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'FINISHED (finally)'))), 25000);
     });
 
-    it('Display progress by Java', function () {
-        var idCell = "codefgkSlJ";
-        beakerPO.scrollToBkCellByIdCell(idCell);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Progress');
-        checkProgressMessage(idCell, 'starting');
-        checkProgressBar(idCell, '20 %');
-        checkProgressMessage(idCell, 'started');
-        checkProgressBar(idCell, '40 %');
-        checkProgressMessage(idCell, 'begin');
-        checkProgressBar(idCell, '60 %');
-        checkProgressMessage(idCell, 'middle');
-        checkProgressBar(idCell, '80 %');
-        checkProgressMessage(idCell, 'about to finish');
-    });
-
     it('Display progress on top Beaker bar', function () {
         var idCell = "codeJg1qDx";
         beakerPO.scrollToBkCellByIdCell(idCell);
@@ -116,7 +107,7 @@ describe('Progress Reporting API', function (done) {
          checkProgressTopBar(idCell, 'still working at 60');
          checkProgressTopBar(idCell, 'still working at 80');
          */
-        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'FINISHED (finally)'))), 25000);
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.cssContainingText('pre', 'FINISHED (finally)'))), 50000);
     });
 
 });

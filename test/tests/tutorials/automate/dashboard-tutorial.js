@@ -39,7 +39,7 @@ describe('Dashboard API', function (done) {
     var idCellDash = "code4cQqUL";
     it('Create dashboard', function () {
         beakerPO.scrollToBkCellByIdCell(idCellDash);
-        beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'BeakerDashboard');
+        beakerPO.clickCodeCellInputButtonByIdCell(idCellDash, 'BeakerDashboard');
         var row1 = beakerPO.getCodeCellOutputByIdCell(idCellDash).all(by.css('.row')).get(1);
         expect(row1.all(by.css('bk-output-display[type="Plot"]')).count()).toBe(3);
     });

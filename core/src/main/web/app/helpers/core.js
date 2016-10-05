@@ -76,6 +76,16 @@
       };
     };
 
+    var  FilePermissionsStrategy = function (data) {
+      var newStrategy = this;
+      newStrategy.permissions = data.permissions;
+      newStrategy.owner = data.owner;
+      newStrategy.group = data.group;
+      newStrategy.title = data.title;
+      newStrategy.path = data.path;
+      newStrategy.okButtonTitle = data.okButtonTitle;
+    };
+
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
       newStrategy.manualName = '';
@@ -305,6 +315,9 @@
           bkHelper.setThemeToBeakerObject();
         },
         getTheme: function () {
+          if (this.theme === undefined) {
+            return "default";
+          }
           return this.theme;
         },
         setFSOrderBy: function (fs_order_by) {
@@ -690,10 +703,14 @@
           bkHelper.setFullScreen(cm, !bkHelper.isFullScreen(cm));
         };
 
+        var findReplace = function (cm) {
+          bkHelper.getBkNotebookViewModel().showSearchReplace(cm, scope.cellmodel);
+        }
+        
         CodeMirror.commands.save = function (){
 	        bkHelper.saveNotebook();
         };
-        
+
         var keys = {
             "Up" : goUpOrMoveFocusUp,
             "Down" : goDownOrMoveFocusDown,
@@ -734,6 +751,12 @@
         }else{
           keys["Alt-C"] = cancel;
         }
+        
+        if(bkHelper.isMacOS){
+          keys["Ctrl-F"] = findReplace;
+        }else{
+          keys["Alt-F"] = findReplace;
+        }
 
         if (codeMirrorExtension.extraKeys !== undefined) {
           _.extend(keys, codeMirrorExtension.extraKeys);
@@ -773,6 +796,43 @@
       },
       getNotebookCellManager: function() {
         return bkNotebookCellModelManager;
+      },
+
+      showFilePermissionsDialog: function(path, permissionsSettings) {
+        var deferred = bkUtils.newDeferred();
+
+        var data = {
+          permissions: permissionsSettings.permissions,
+          owner: permissionsSettings.owner,
+          group: permissionsSettings.group,
+          title:'Permissions',
+          path: path
+        };
+
+        var dd = $uibModal.open({
+          templateUrl: "app/template/filepermissionsdialog.jst.html",
+          controller: 'filePermissionsDialogCtrl',
+          windowClass: 'beaker-sandbox',
+          backdropClass: 'beaker-sandbox',
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          size: 'sm',
+          resolve: {
+            strategy: function () {
+              return new FilePermissionsStrategy(data);
+            }
+          }
+        });
+        dd.result.then(
+          function (result) {
+            deferred.resolve(result);
+          }, function () {
+            deferred.reject();
+          }).catch(function () {
+          deferred.reject();
+        });
+        return deferred.promise;
       },
 
       showFileOpenDialog: function(extension) {
@@ -927,6 +987,67 @@
           removeSubmitListener();
         });
 
+        return dd;
+      },
+      showSQLLoginModalDialog: function(
+          connectionName,
+          connectionString,
+          user,
+          okCB,
+          cancelCB) {
+
+        var options = {
+            windowClass: 'beaker-sandbox',
+            backdropClass: 'beaker-sandbox',
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            controller: 'SQLLoginController',
+            templateUrl: 'app/helpers/sql-login-template.jst.html',
+            resolve: {
+              connectionName: function () {
+                return connectionName;
+              },
+              connectionString : function () {
+                return connectionString;
+              },
+              user : function () {
+                return user;
+              }
+            }
+        };
+
+        var attachSubmitListener = function() {
+          $document.on('keydown.modal', function (e) {
+            if (e.which === 13) {
+              var modal_submit = $('.modal .modal-submit');
+              if (modal_submit.length > 0)
+                modal_submit[0].click();
+            }
+          });
+        };
+
+        var removeSubmitListener = function() {
+          $document.off('keydown.modal');
+        };
+        attachSubmitListener();
+
+        var dd = $uibModal.open(options);
+        dd.result.then(function(result) {
+          if (okCB && (result != -1)) {
+            okCB(result);
+          }else{
+            cancelCB();
+          }
+          //Trigger when modal is closed
+          removeSubmitListener();
+        }, function(result) {
+          //Trigger when modal is dismissed
+          removeSubmitListener();
+          cancelCB();
+        }).catch(function() {
+          removeSubmitListener();
+        });
         return dd;
       },
       show0ButtonModal: function(msgBody, msgHeader) {
@@ -1230,14 +1351,14 @@
       $timeout(function() {
         // there's a race condition in calling setTheme during bootstrap
         bkCoreManager._prefs.setTheme(GLOBALS.THEMES.DEFAULT);
-      }, 100);
+      }, 0);
     } else {
       bkCoreManager._prefs.fs_order_by = window.beakerRegister.prefsPreset.fs_order_by;
       bkCoreManager._prefs.fs_reverse = window.beakerRegister.prefsPreset.fs_reverse;
       $timeout(function() {
         // there's a race condition in calling setTheme during bootstrap
         bkCoreManager._prefs.setTheme(window.beakerRegister.prefsPreset.theme);
-      }, 100);
+      }, 0);
     }
 
     return bkCoreManager;
@@ -1254,6 +1375,70 @@
       }
     };
   });
+
+  module.controller('filePermissionsDialogCtrl', function ($scope, $rootScope, $uibModalInstance,
+                                                           bkUtils, strategy) {
+
+    $scope.getStrategy = function () {
+      return strategy;
+    };
+
+    $scope.ownerEdit = false;
+    $scope.groupEdit = false;
+
+    $scope.editOwner = function () {
+      $scope.ownerEdit = true;
+    };
+
+    $scope.editGroup = function () {
+      $scope.groupEdit = true;
+    };
+
+    $scope.model = {
+      OWNER_READ: strategy.permissions.indexOf('OWNER_READ') !== -1,
+      OWNER_WRITE: strategy.permissions.indexOf('OWNER_WRITE') !== -1,
+      OWNER_EXECUTE: strategy.permissions.indexOf('OWNER_EXECUTE') !== -1,
+      GROUP_READ: strategy.permissions.indexOf('GROUP_READ') !== -1,
+      GROUP_WRITE: strategy.permissions.indexOf('GROUP_WRITE') !== -1,
+      GROUP_EXECUTE: strategy.permissions.indexOf('GROUP_EXECUTE') !== -1,
+      OTHERS_READ: strategy.permissions.indexOf('OTHERS_READ') !== -1,
+      OTHERS_WRITE: strategy.permissions.indexOf('OTHERS_WRITE') !== -1,
+      OTHERS_EXECUTE: strategy.permissions.indexOf('OTHERS_EXECUTE') !== -1,
+
+      owner: strategy.owner,
+      group: strategy.group,
+
+      collectResult: function () {
+        var permissions = [];
+        if (this.OWNER_READ === true) permissions.push('OWNER_READ');
+        if (this.OWNER_WRITE === true) permissions.push('OWNER_WRITE');
+        if (this.OWNER_EXECUTE === true) permissions.push('OWNER_EXECUTE');
+        if (this.GROUP_READ === true) permissions.push('GROUP_READ');
+        if (this.GROUP_WRITE === true) permissions.push('GROUP_WRITE');
+        if (this.GROUP_EXECUTE === true)  permissions.push('GROUP_EXECUTE');
+        if (this.OTHERS_READ === true) permissions.push('OTHERS_READ');
+        if (this.OTHERS_WRITE === true) permissions.push('OTHERS_WRITE');
+        if (this.OTHERS_EXECUTE === true) permissions.push('OTHERS_EXECUTE');
+        return {
+          permissions: permissions,
+          owner: this.owner,
+          group: this.group
+        };
+      }
+    };
+
+
+    $scope.ok = function () {
+      $uibModalInstance.close($scope.model.collectResult());
+    };
+
+    $scope.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+
+  });
+
+
 
   module.controller('fileDialogCtrl', function ($scope, $rootScope, $uibModalInstance, $timeout, bkCoreManager, bkUtils, strategy) {
 
@@ -1338,6 +1523,22 @@
       return deferred.promise;
     };
 
+    $scope.$watch('selected.path', function(newVal){
+      $scope.selected.path = newVal;
+      var disabled = false;
+      if ($scope.selected.path){
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/analysePath"), {path: $scope.selected.path})
+        .success(function(result) {
+          if (result.exist === true){
+            disabled = (result.isDirectory === true);
+          }else{
+            disabled = ($scope.getStrategy().type !== "SAVE");
+          }
+          angular.element(document.getElementById('okButton'))[0].disabled = disabled;
+        });
+      }
+    });
+
     $scope.getStrategy = function () {
       return strategy;
     };
@@ -1351,6 +1552,35 @@
 
 
     $scope.init = function () {
+
+      elFinder.prototype.commands.editpermissions = function() {
+        this.exec = function (hashes) {
+          var path = $scope.selected.path;
+          bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/file-io/getPosixFileOwnerAndPermissions"), {path: path})
+            .then(function (response) {
+              bkCoreManager.showFilePermissionsDialog(path, response.data).then(function(result){
+                var postData = {
+                  path: $scope.selected.path,
+                  permissions: result.permissions
+                };
+                if(result.owner !== response.data.owner) {
+                  postData.owner = result.owner;
+                }
+                if(result.group !== response.data.group) {
+                  postData.group = result.group;
+                }
+                bkUtils.httpPost('rest/file-io/setPosixFileOwnerAndPermissions', postData).catch(function (response) {
+                  bkHelper.show1ButtonModal(response.data, 'Permissions change filed');
+                })
+              });
+            })
+        };
+        this.getstate = function (hashes) {
+          //return 0 to enable, -1 to disable icon access
+          return $scope.selected.path && $scope.selected.path.length > 0 && !bkUtils.serverOS.isWindows() ? 0 : -1;
+        }
+      };
+
       var $elfinder = $('#elfinder');
 
       var selectCallback = function (event, elfinderInstance) {
@@ -1525,7 +1755,7 @@
         onKey(keyEvent);
       }
     };
-
+    
     var ok = function () {
       if ($scope.getStrategy().type === "SAVE") {
         var filename = getFilename($scope.selected.path);
@@ -1610,6 +1840,35 @@
     };
   });
 
+  module.controller('SQLLoginController', function($scope, $rootScope, $uibModalInstance, modalDialogOp, bkUtils, connectionName, connectionString, user) {
+
+    $scope.sqlConnectionData = {
+      connectionName: connectionName,
+      connectionString: connectionString,
+      user: user,
+      password: null
+    }
+
+    $scope.cancelFunction = function() {
+      $uibModalInstance.close(-1);
+    };
+
+    $scope.okFunction = function() {
+      $uibModalInstance.close($scope.sqlConnectionData);
+    };
+
+    $scope.getStrategy = function() {
+      return modalDialogOp.getStrategy();
+    };
+    $scope.isWindows = function() {
+      return bkUtils.isWindows;
+    };
+    $rootScope.$on('modal.submit', function() {
+      $scope.close($scope.getStrategy().getResult());
+    });
+
+  });
+
   /**
    * Directive to show a modal dialog that does filename input.
    */
@@ -1622,7 +1881,7 @@
       }
     };
   });
-  
+
   module.factory('bkAnsiColorHelper', function () {
     function getChunks(text) {
       return text.split(/\033\[/);
@@ -1643,7 +1902,7 @@
       }
     };
   });
-  
+
   module.factory('bkDragAndDropHelper', function (bkUtils) {
     function wrapImageDataUrl(dataUrl) {
       return '<img src="' + dataUrl + '" />';
@@ -1726,7 +1985,7 @@
 
   module.factory('bkNotificationService', function (bkUtils) {
     var _notificationSound = null;
-    
+
     function checkPermissionsForNotification() {
       var deferred = bkUtils.newDeferred();
       if (Notification.permission === "granted") {
@@ -1738,7 +1997,7 @@
       }
       return deferred.promise;
     }
-    
+
     function playNotificationSound() {
       if(!_notificationSound) {
         _notificationSound = new Audio('app/sound/notification.wav');
@@ -1746,48 +2005,78 @@
       _notificationSound.play();
     }
 
+    function sendEmailNotification(title, body) {
+      var url = bkUtils.getEvaluationFinishedNotificationUrl();
+      if (!!url) {
+        bkUtils.httpGet(url, {
+          title: title,
+          body: body
+        });
+      }
+    }
+
+    function showNotification(title, body, tag) {
+      checkPermissionsForNotification().then(function (granted) {
+        if (granted) {
+          var options = {
+            body: body,
+            icon: '/static/favicon.png'
+          };
+          if(tag) {
+            options.tag = tag;
+          }
+          var notification = new Notification(title, options);
+          notification.onclick = function () {
+            notification.close();
+            window.focus();
+          };
+          //we need to play sound this way because notification's 'options.sound' parameter is not supported yet
+          playNotificationSound();
+        }
+      });
+    }
+
+    function initAvailableNotificationMethods() {
+
+      var evaluationCompleteNotificationMethods = [];
+
+      evaluationCompleteNotificationMethods = [{
+        title: 'Notify when done',
+        checkPermissions: function () {
+          checkPermissionsForNotification();
+        },
+        action: showNotification
+      }];
+      if (bkUtils.getEvaluationFinishedNotificationUrl() != null) {
+        evaluationCompleteNotificationMethods.push({
+          title: 'Send email when done',
+          action: sendEmailNotification
+        });
+      }
+
+      return evaluationCompleteNotificationMethods;
+    }
+
+    function getAvailableNotificationMethods() {
+      return evaluationCompleteNotificationMethods;
+    }
+
     return {
       checkPermissions: checkPermissionsForNotification,
-      showNotification: function (title, body, tag) {
-        checkPermissionsForNotification().then(function (granted) {
-          if (granted) {
-            var options = {
-              body: body,
-              icon: '/static/favicon.png'
-            };
-            if(tag) {
-              options.tag = tag;
-            }
-            var notification = new Notification(title, options);
-            notification.onclick = function () {
-              notification.close();
-              window.focus();
-            };
-            //we need to play sound this way because notification's 'options.sound' parameter is not supported yet
-            playNotificationSound();
-          }
-        });
-      },
-      sendEmailNotification: function (title, body) {
-        var url = bkUtils.getEvaluationFinishedNotificationUrl();
-        if (!!url) {
-          bkUtils.httpGet(url, {
-            title: title,
-            body: body
-          });
-        }
-      }
+      initAvailableNotificationMethods: initAvailableNotificationMethods,
+      sendEmailNotification: sendEmailNotification,
+      showNotification: showNotification
     };
   });
 
   function getImportNotebookFileTypePattern() {
     return "^((?!image\/((png)|(jpg)|(jpeg))).)*?$";
   }
-  
+
   function isImageFile(file) {
     return file && file.type && new RegExp(getImageFileTypePattern(), 'i').test(file.type);
   }
-  
+
   function getImageFileTypePattern() {
     return "image/((png)|(jpg)|(jpeg))";
   }

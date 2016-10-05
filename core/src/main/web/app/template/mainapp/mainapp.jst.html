@@ -13,31 +13,58 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<header class="navbar-fixed-top" ng-class="{'electron-hide': getElectronMode()}">
+<header class="navbar-fixed-top" ng-class="{'electron-hide': getElectronMode()}" id="notebook_header">
   <div class="navbar navbar-inverse">
-    <bk-brand-logo reference="/beaker/#/control" on-click="gotoControlPanel(event)"></bk-brand-logo>
-    <div ng-switch="renamingAllowed()">
-      <a ng-switch-when="true" href="#" class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}" ng-click="renameNotebook()" eat-click>{{pathname()}}</a>
-      <p ng-switch-default class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}">{{pathname()}}</p>
-    </div>
-    <div class="navbar-text text-white loadingmsg" ng-if="isShowProgressBar()">
-      <div class="fa fa-times-circle fa-lg cursor_hand bkr" style="color: #e48d71 !important;" ng-click="cancel()" title="cancel"></div>
-    </div>
-    <div class="navbar-text text-white loadingmsg" ng-if="isShowProgressBar()">
-      <div class="progress" style="width: 150px; margin-bottom: inherit; height: 16px; background-color:#505050">
-        <div class="progress-bar" role="progressbar"
-             aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100"
-             style="width: {{getProgressBar()}}%; display: inline-block; line-height: 20px;">
-          {{getProgressBar()}} %
-        </div>
-      </div>
-    </div>
-    <div class="navbar-text text-white loadingmsg" ng-if="loading || !!loadingmsg">
-      <span class="loading-spin">
-       <i class='fa fa-refresh fa-spin text-white'></i>
-      </span>
-      {{loadingmsg}}
-    </div>
+    <table>
+      <tr>
+        <td>
+          <bk-brand-logo reference="/beaker/#/control" on-click="gotoControlPanel(event)"></bk-brand-logo>
+        </td>
+        <td>
+          <div ng-switch="renamingAllowed()" style="padding-top: 10px">
+            <a ng-switch-when="true" href="#" class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}"
+               ng-click="renameNotebook()" eat-click>{{pathname()}}</a>
+            <p ng-switch-default class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}">
+              {{pathname()}}</p>
+          </div>
+        </td>
+        <td>
+          <div>
+            <div class="navbar-text text-white loadingmsg left-float" ng-if="isShowProgressBar()">
+              <div class="fa fa-times-circle fa-lg cursor_hand bkr" style="color: #e48d71 !important;"
+                   ng-click="cancel()"
+                   title="cancel"></div>
+            </div>
+            <div class="navbar-text text-white loadingmsg left-float" ng-if="isShowProgressBar()">
+              <div class="progress"
+                   style="width: 150px; margin-bottom: inherit; height: 16px; background-color:#505050">
+                <div class="progress-bar" role="progressbar"
+                     aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100"
+                     style="width: {{getProgressBar()}}%; display: inline-block; line-height: 20px;">
+                  {{getProgressBar()}} %
+                </div>
+              </div>
+            </div>
+            <div class="navbar-text text-white loadingmsg left-float" ng-if="loading || !!loadingmsg">
+              <a data-toggle="dropdown" class="loading-spin dtmenu" ng-if="isShowProgressBar()">
+                <i class='fa fa-refresh fa-spin text-white'></i>
+              </a>
+              <ul class="dropdown-menu" ng-if="isShowProgressBar()" style="left: inherit; top: inherit;">
+                <li ng-repeat="notificationMethod in evaluationCompleteNotificationMethods">
+                  <a ng-click="toggleNotifyWhenDone(notificationMethod)">{{notificationMethod.title}}</a>
+                  <i class="glyphicon glyphicon-ok bkr ng-hide" ng-show="notificationMethod.selected"
+                     style="color: #333333"></i>
+                </li>
+              </ul>
+              <a ng-if="!isShowProgressBar()">
+                <i class='fa fa-refresh fa-spin text-white'></i>
+              </a>
+              {{loadingmsg}}
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
   </div>
   <div class="navbar navbar-default">
     <ul class="nav navbar-nav">

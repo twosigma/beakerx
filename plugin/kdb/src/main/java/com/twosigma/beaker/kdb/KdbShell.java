@@ -25,12 +25,12 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.http.client.fluent.Request;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static kx.c.Dict;
 import static kx.c.Flip;
@@ -39,7 +39,7 @@ import static kx.c.Flip;
  * Wraps a kdb process and manages communication with it.
  */
 public class KdbShell {
-  private final static Logger logger = Logger.getLogger(KdbShell.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(KdbShell.class.getName());
 
   // Shell configuration.
   protected final String                shellId;
@@ -120,7 +120,7 @@ public class KdbShell {
     try {
       kdbClient.interruptQuery();
     } catch (Exception e) {
-      logger.log(Level.WARNING, "Interrupt failed", e);
+      logger.warn("Interrupt failed", e);
     }
   }
 

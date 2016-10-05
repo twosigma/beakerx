@@ -54,22 +54,14 @@ define(function(require, exports, module) {
       bkHelper.setupProgressOutput(modelOutput);
       
       kdbCancelFunction = function () {
-        $.ajax({
-          type: "POST",
-          datatype: "json",
-          url: bkHelper.serverUrl(serviceBase + "/rest/kdb/interrupt"),
-          data: {shellID: self.settings.shellID}
-        }).done(function (ret) {
+        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/kdb/interrupt"), {shellID: self.settings.shellID})
+        .success(function (ret) {
           console.log("done cancelExecution",ret);
         });
         bkHelper.setupCancellingOutput(modelOutput);
       }
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/kdb/evaluate"),
-        data: {shellID: self.settings.shellID, code: code }
-      }).done(function(ret) {
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/kdb/evaluate"), {shellID: self.settings.shellID, code: code })
+      .success(function(ret) {
         var onEvalStatusUpdate = function(evaluation) {
           if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
             cometdUtil.unsubscribe(evaluation.update_id);
@@ -93,12 +85,8 @@ define(function(require, exports, module) {
     },
     autocomplete: function(code, cpos, cb) {
       var self = this;
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/kdb/autocomplete"),
-        data: {shellID: self.settings.shellID, code: code, caretPosition: cpos}
-      }).done(function(x) {
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/kdb/autocomplete"), {shellID: self.settings.shellID, code: code, caretPosition: cpos})
+      .success(function(x) {
         var matchedText = undefined;
         if (x !== undefined) {
           var i, shortest;
@@ -137,12 +125,8 @@ define(function(require, exports, module) {
       this.cancelExecution();
       kdbCancelFunction = null;
       var self = this;
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: bkHelper.serverUrl(serviceBase + "/rest/kdb/exit"),
-        data: { shellID: self.settings.shellID }
-      }).done(cb);
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/kdb/exit"), { shellID: self.settings.shellID })
+      .success(cb);
     },
     interrupt: function() {
       this.cancelExecution();

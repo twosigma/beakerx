@@ -32,9 +32,11 @@ public class BeakerPorts {
 
   private int portSearchStart;
   private Iterator<Integer> portFromEnv;
+  private boolean usedEnvar;
 
   public BeakerPorts(final Integer portSearchStart) {
     this.portSearchStart = portSearchStart;
+    this.usedEnvar = false;
     portFromEnv = initPortFromEnv();
   }
 
@@ -45,9 +47,11 @@ public class BeakerPorts {
         return nextPort;
       }
     }
-
     int port = getNextGeneratedAvailablePort(this.portSearchStart);
     this.portSearchStart = port + 1;
+    if (usedEnvar) {
+      logger.warn("ran out of ports in beaker_ports, dynamically allocated " + port);
+    }
     return port;
   }
 
@@ -85,7 +89,9 @@ public class BeakerPorts {
   private Iterator<Integer> initPortFromEnv() {
     String beaker_ports = System.getenv("beaker_ports");
     List<Integer> ports = new ArrayList<>();
+    usedEnvar = false;
     if (beaker_ports != null) {
+      usedEnvar = true;
       for (String portStr : beaker_ports.split(SEPARATOR)) {
         try {
           int port = Integer.parseInt(portStr);

@@ -19,6 +19,7 @@
  */
 define(function(require, exports, module) {
   'use strict';
+  var PLUGIN_ID = "R";
   var PLUGIN_NAME = "R";
   var COMMAND = "r/rPlugin";
   var serviceBase = null;
@@ -157,7 +158,7 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   
   var init = function() {
-    bkHelper.locatePluginService(PLUGIN_NAME, {
+    bkHelper.locatePluginService(PLUGIN_ID, {
         command: COMMAND,
         waitfor: "Started SelectChannelConnector",
         recordOutput: "true"

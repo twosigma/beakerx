@@ -19,6 +19,7 @@
  */
 define(function(require, exports, module) {
   'use strict';
+  var PLUGIN_ID = "SQL";
   var PLUGIN_NAME = "SQL";
   var COMMAND = "sqlsh/sqlshPlugin";
   var serviceBase = null;
@@ -220,7 +221,7 @@ define(function(require, exports, module) {
   
   var init = function() {
 
-    bkHelper.locatePluginService(PLUGIN_NAME, {
+    bkHelper.locatePluginService(PLUGIN_ID, {
       command: COMMAND,
       waitfor: "Started SelectChannelConnector",
       recordOutput: "true"

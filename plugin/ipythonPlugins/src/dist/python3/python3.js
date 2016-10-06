@@ -363,7 +363,7 @@ define(function(require, exports, module) {
           }
           if (finalStuff === undefined) {            
             finalStuff = evaluation;
-            bkHelper.timeout(doFinish,250);
+            bkHelper.timeout(doFinish,150);
           }
         };
         var callbacks = (ipyVersion == '1') ? {
@@ -581,7 +581,7 @@ define(function(require, exports, module) {
                   }}, function(err) {
                     var errorHtml =
                       'See <a target="_blank" href="https://github.com/twosigma/beaker-notebook/wiki/Python-Mismatch-Errors">our wiki</a> for how to handle this.';
-                    bkHelper.showErrorModal('ERROR: ' + err[0].replace('_beaker_python_mismatch_', errorHtml), 'Python3 initialization failed', err[1]);  
+                    bkHelper.showErrorModal('ERROR: ' + err[0].replace('_beaker_python_mismatch_', errorHtml), 'Python3 initialization failed', err[1]);
                     if (doneCB) {
                       doneCB(self);
                     }});

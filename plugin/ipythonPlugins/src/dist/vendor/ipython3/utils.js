@@ -3,7 +3,7 @@
 
 define('ipython3_utils', [
     'ipython3_namespace'
-], function(IPython3) {
+], function(IPython) {
     "use strict";
 
     var load_extensions = function () {
@@ -34,7 +34,22 @@ define('ipython3_utils', [
         );
     };
 
-    IPython3.load_extensions = load_extensions;
+    IPython.load_extensions = load_extensions;
+
+    /**
+     * Return a list of extensions that should be active
+     * The config for nbextensions comes in as a dict where keys are 
+     * nbextensions paths and the values are a bool indicating if it 
+     * should be active. This returns a list of nbextension paths
+     * where the value is true
+     */
+    function filter_extensions(nbext_config) {
+        var active = [];
+        Object.keys(nbext_config).forEach(function (nbext) {
+            if (nbext_config[nbext]) {active.push(nbext);}
+        });
+        return active;
+    }
 
     /**
      * Wait for a config section to load, and then load the extensions specified
@@ -883,7 +898,7 @@ define('ipython3_utils', [
     };
 
     // Backwards compatability.
-    IPython3.utils = utils;
+    IPython.utils = utils;
 
     return utils;
 });

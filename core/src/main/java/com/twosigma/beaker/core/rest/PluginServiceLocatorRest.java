@@ -19,11 +19,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
+import com.twosigma.beaker.core.module.config.BeakerConfigPref;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.jvnet.winp.WinProcess;
@@ -39,14 +39,17 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -439,10 +442,6 @@ public class PluginServiceLocatorRest {
 
       if (nginxRules.startsWith("ipython")) {
         generateIPythonConfig(pluginId, port, password, command);
-
-        if (isIPython4OrNewer(getIPythonVersion(pluginId, command))) {
-          new JupyterWidgetsExtensionProcessor(pluginId, this.pluginDir).copyJupyterExtensionIfExists();
-        }
       }
 
       // reload nginx config
@@ -907,149 +906,5 @@ public class PluginServiceLocatorRest {
         new StreamGobbler(proc.getInputStream(), "stdout", name,
         outputLogService);
     outputGobbler.start();
-  }
-
-  private boolean isIPython4OrNewer(String iPythonVersion) {
-    return iPythonVersion != null && (iPythonVersion.startsWith("4.") || iPythonVersion.startsWith("5."));
-  }
-
-  private class JupyterWidgetsExtensionProcessor {
-    private String pluginId;
-    private String pluginDir;
-
-    JupyterWidgetsExtensionProcessor(String pluginId, String pluginDir) {
-      this.pluginId = pluginId;
-      this.pluginDir = pluginDir;
-    }
-
-    void copyJupyterExtensionIfExists() throws IOException, InterruptedException {
-      boolean fileProcessed = copyExtensionFileFromPythonDist();
-
-      if (!fileProcessed) {
-        try {
-          Files.copy(Paths.get(getDefaultExtensionPath()), Paths.get(getTargetExtensionPath()), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-          //e.printStackTrace();
-        }
-      }
-    }
-
-    private boolean copyExtensionFileFromPythonDist() {
-      try {
-        String plugPath = config.getPluginPath(pluginId);
-        Process jupyterPathsProcess = Runtime.getRuntime().exec(new String[]{getJupyterCommand(plugPath), "--paths"}, buildEnv(pluginId, null));
-        jupyterPathsProcess.waitFor();
-        List<String> jupyterDataPaths = parseJupyterDataPaths(jupyterPathsProcess);
-        for (String jupyterDataPath : jupyterDataPaths) {
-          java.nio.file.Path jupyterExtensionJsPath = getJupyterExtensionPath(jupyterDataPath);
-          if (jupyterExtensionJsPath != null) {
-            copyExtension(jupyterExtensionJsPath);
-            return true;
-          }
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      return false;
-    }
-
-    private String getJupyterCommand(String plugPath) {
-      String command = "jupyter";
-      if (!StringUtils.isBlank(plugPath)) {
-        if (windows()) {
-          plugPath += "/Scripts";
-        }
-        command = plugPath + '/' + command;
-      }
-      return command;
-    }
-
-    private java.nio.file.Path getJupyterExtensionPath(String jupyterDataPath) {
-      java.nio.file.Path jupyterPath = Paths.get(jupyterDataPath);
-      if (Files.exists(jupyterPath)) {
-        java.nio.file.Path jupyterExtensionJsPath = jupyterPath.resolve("nbextensions/jupyter-js-widgets/extension.js");
-        if (Files.exists(jupyterExtensionJsPath)) {
-          return jupyterExtensionJsPath;
-        }
-      }
-      return null;
-    }
-
-    private void copyExtension(java.nio.file.Path jupyterExtensionJsPath) throws IOException {
-      try (
-          final BufferedReader bufferedReader = new BufferedReader(new FileReader(jupyterExtensionJsPath.toFile()));
-          BufferedWriter writer = new BufferedWriter(new FileWriter(getTargetExtensionPath()));
-      ) {
-        String line;
-        for (int lineIndex = 0; (line = bufferedReader.readLine()) != null; lineIndex++) {
-          writer.write(processLine(line, lineIndex));
-          writer.newLine();
-        }
-      }
-    }
-
-    private String getTargetExtensionPath() {
-      return getExtensionPath(false);
-    }
-
-    private String getDefaultExtensionPath() {
-      return getExtensionPath(true);
-    }
-
-    private String getExtensionPath(boolean defaultFile) {
-      String fileName = "extension.js";
-      if (defaultFile) {
-        fileName = "_" + fileName;
-      }
-      return this.pluginDir + "/ipythonPlugins/vendor/ipython4/" +
-          fileName;
-    }
-
-    private String processLine(String line, int lineIndex) {
-      if (lineIndex == 0 && line.startsWith("define(")) {
-        line = line.replace("define(", "define('nbextensions/jupyter-js-widgets/extension', ");
-      } else if (line.contains("this._init_menu();")) {
-        line = "//" + line;
-      } else if (line.contains("this.state_change = this.state_change.then(function() {")) {
-        line = "            var elem = $(document.createElement(\"div\"));\n" +
-               "            elem.addClass('ipy-output');\n" +
-               "            elem.attr('data-msg-id', msg.parent_header.msg_id);\n" +
-               "            var widget_area = $(document.createElement(\"div\"));\n" +
-               "            widget_area.addClass('widget-area');\n" +
-               "            var widget_subarea = $(document.createElement(\"div\"));\n" +
-               "            widget_subarea.addClass('widget-subarea');\n" +
-               "            widget_subarea.appendTo(widget_area);\n" +
-               "            widget_area.appendTo(elem);\n" +
-               "            var kernel = this.widget_manager.comm_manager.kernel;\n" +
-               "            if (kernel) {\n" +
-               "              //This cause fail on plot display\n" +
-               "              //kernel.appendToWidgetOutput = true;\n" +
-               "              var callbacks = kernel.get_callbacks_for_msg(msg.parent_header.msg_id);\n" +
-               "              if (callbacks && callbacks.iopub) {\n" +
-               "                msg.content.data['text/html'] = elem[0].outerHTML;\n" +
-               "                callbacks.iopub.output(msg);\n" +
-               "              }\n" +
-               "            }\n" +
-               "            " + line;
-      }
-      return line;
-    }
-
-    private List<String> parseJupyterDataPaths(Process jupyterPathsProcess) throws IOException {
-      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(jupyterPathsProcess.getInputStream()));
-      boolean data = false;
-      String line;
-      List<String> jupyterDataPaths = new ArrayList<>();
-      while ((line = bufferedReader.readLine()) != null) {
-        if (line.startsWith("data:")) {
-          data = true;
-        } else if (line.startsWith("runtime:")) {
-          break;
-        } else if (data) {
-          jupyterDataPaths.add(line.trim());
-        }
-      }
-      return jupyterDataPaths;
-    }
   }
 }

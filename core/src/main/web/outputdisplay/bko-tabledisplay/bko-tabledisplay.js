@@ -1992,9 +1992,34 @@
               var container = el.closest('.bko-header-menu');
               var colIdx = container.data('columnIndex');
 
+              //table variables
+              var table = $('#' + scope.id).DataTable();
+              var bodyColumn = table.column(colIdx).nodes().to$();
+              var headerColumn = $(table.column(colIdx).header());
+              //remove align class
+              bodyColumn.removeClass('dtleft').removeClass('dtcenter').removeClass('dtright');
+              headerColumn.removeClass('dtleft').removeClass('dtcenter').removeClass('dtright');
+
+              //add align class
+              switch (key){
+                case 'L':
+                  bodyColumn.addClass('dtleft');
+                  headerColumn.addClass('dtleft');
+                  break;
+                case 'C':
+                  bodyColumn.addClass('dtcenter');
+                  headerColumn.addClass('dtcenter');
+                  break;
+                case 'R':
+                  bodyColumn.addClass('dtright');
+                  headerColumn.addClass('dtright');
+                  break;
+              }
+
+              //update align
               scope.getCellAlign[scope.colorder[colIdx] - 1] = key;
               scope.actualalign[scope.colorder[colIdx] - 1] = key;
-              scope.applyChanges();
+              bkSessionManager.setNotebookModelEdited(true);
             },
             checkAlignment: function(container, key) {
               var colIdx = container.data('columnIndex');

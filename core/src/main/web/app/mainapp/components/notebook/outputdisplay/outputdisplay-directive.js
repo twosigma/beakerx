@@ -116,7 +116,8 @@
                 break;
               case 'Table':
               case 'TableDisplay':
-                return 'a table with ' + result.values.length + ' rows and ' + result.columnNames.length + ' columns';
+                var names = result.columnNames.join(", ");
+                return 'a table with ' + result.values.length + ' rows and ' + result.columnNames.length + ' columns (' + names + ')';
               case 'Results':
                 var out = 0, err = 0;
                 if (result.outputdata && result.outputdata.length > 0) {

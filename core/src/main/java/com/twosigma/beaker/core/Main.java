@@ -102,6 +102,7 @@ public class Main {
     opts.addOption(null, "require-password", false, "Ask for password when connecting");
     opts.addOption(null, "password", true, "Password for public server");
     opts.addOption(null, "listen-interface", true, "Interface to listen on - requires ip address or '*'");
+    opts.addOption(null, "connect-host", true, "When the server is ready, make the URL for the user with this hostname.");
     opts.addOption(null, "portable", false, "Configuration and runtime files located in application instead of user home directory.");
     opts.addOption(null, "show-zombie-logging", false, "Show distracting logging by clients of previous server instances.");
     
@@ -186,6 +187,8 @@ public class Main {
     final String password = options.hasOption("password") ? options.getOptionValue("password") : null;
     final String listenInterface = options.hasOption("listen-interface") ?
         options.getOptionValue("listen-interface") : null;
+    final String connectHost = options.hasOption("connect-host") ?
+        options.getOptionValue("connect-host") : null;
     final Boolean portable = options.hasOption("portable");
     final Boolean showZombieLogging = options.hasOption("show-zombie-logging");
     
@@ -203,6 +206,7 @@ public class Main {
         requirePassword,
         password,
         listenInterface,
+        connectHost,
         portable,
         showZombieLogging);
 
@@ -257,6 +261,7 @@ public class Main {
       final Boolean requirePassword,
       final String password,
       final String listenInterface,
+      final String connectHost,
       final Boolean portable,
       final Boolean showZombieLogging) {
     return new BeakerConfigPref() {
@@ -310,6 +315,11 @@ public class Main {
       @Override
       public String getListenInterface() {
         return listenInterface;
+      }
+
+      @Override
+      public String getConnectHost() {
+        return connectHost;
       }
 
       @Override

@@ -709,15 +709,35 @@
         $scope.unregisters.push($rootScope.$on(GLOBALS.EVENTS.FILE_DROPPED, function (e, data) {
           if (bkDragAndDropHelper.isImageFile(data.file)) {
             bkDragAndDropHelper.loadImageFileAsString(data.file).then(function (imageTag) {
-              var markdownCell = bkSessionManager.getNotebookNewCellFactory().newMarkdownCell();
-              markdownCell.body = imageTag;
+              
               var notebookCellOp = bkSessionManager.getNotebookCellOp();
-              var cells = notebookCellOp.getCells();
-              if (cells.length === 0) {
-                notebookCellOp.insertFirst(markdownCell, true);
-              } else {
-                notebookCellOp.insertAfter(cells[cells.length - 1].id, markdownCell, true);
+              var markdownCell = null;
+
+              for (var index = 0; notebookCellOp.getCellsSize() > index; index++) {
+                var theCell = notebookCellOp.getCellAtIndex(index);
+                if (theCell){
+                  var theCM = _impl.getCM(theCell.id);
+                  if (theCM && theCM.hasFocus()){
+                    markdownCell = theCell;
+                    var markdownCM = theCM; 
+                    var pozition = {line: markdownCM.lineCount() - 1, ch: markdownCM.getLine(markdownCM.lastLine()).length};
+                    markdownCM.replaceRange(imageTag, pozition);
+                    break;
+                  }
+                }
               }
+
+              if(!markdownCell){
+                markdownCell = bkSessionManager.getNotebookNewCellFactory().newMarkdownCell();
+                markdownCell.body = imageTag;
+                var cells = notebookCellOp.getCells();
+                if (cells.length === 0) {
+                  notebookCellOp.insertFirst(markdownCell, true);
+                } else {
+                  notebookCellOp.insertAfter(cells[cells.length - 1].id, markdownCell, true);
+                }
+              }
+
             });
           }
         }));

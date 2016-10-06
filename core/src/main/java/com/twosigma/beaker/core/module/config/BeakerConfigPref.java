@@ -43,6 +43,7 @@ public interface BeakerConfigPref {
   public String getUseHttpsCert();
   public String getUseHttpsKey();
   public String getListenInterface();
+  public String getConnectHost();
   
   /**
    * Gets the url of the default notebook

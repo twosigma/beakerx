@@ -451,6 +451,7 @@ public class PluginServiceLocatorRest {
         // reload nginx config
         restartId = generateNginxConfig();
         isNginxRestarted = true;
+        logger.warn("restarting nginx");
         Process restartproc = Runtime.getRuntime().exec(this.nginxRestartCommand, this.nginxEnv);
         startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
         restartproc.waitFor();

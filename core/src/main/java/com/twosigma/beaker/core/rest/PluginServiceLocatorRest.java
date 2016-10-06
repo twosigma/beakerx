@@ -43,7 +43,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
@@ -173,7 +172,7 @@ public class PluginServiceLocatorRest {
   private final String ipythonTemplate;
   private final Map<String, PluginConfig> plugins = new HashMap<>();
   private Process nginxProc;
-  private int portSearchStart;
+  private BeakerPorts beakerPorts;
   private BeakerConfig config;
   private String authToken;
 
@@ -263,7 +262,7 @@ public class PluginServiceLocatorRest {
       }
     });
 
-    portSearchStart = this.portBase + this.reservedPortCount;
+    this.beakerPorts= new BeakerPorts(this.portBase + this.reservedPortCount);
 
     // on MacOS add library search path
     if (macosx()) {
@@ -324,21 +323,12 @@ public class PluginServiceLocatorRest {
     String pluginsconfiguration = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("pluginsconfiguration.config"));
     Gson gson = new Gson();
     PluginConfigDescriptions pluginConfigDescriptions = gson.fromJson(pluginsconfiguration, PluginConfigDescriptions.class);
-    BeakerPorts portsFromEnv = new BeakerPorts();
     for (PluginConfigDescription pcd: pluginConfigDescriptions.getPlugins() ) {
       String nginxRules = pcd.getNginxRules();
       if (pcd.getNginxRules().startsWith("ipython")){
         nginxRules = (getIPythonVersion(pcd.getPluginId(), pcd.getCommand()).equals("1")) ? "ipython1" : "ipython2";
       }
-      int port;
-      if (portsFromEnv.hasNext()) {
-        port = portsFromEnv.next();
-      } else {
-        port = getNextAvailablePort(this.portSearchStart);
-        this.portSearchStart = port + 1;
-      }
-
-      createPluginConfig(pcd.getPluginId(), pcd.getCommand(), nginxRules, port);
+      createPluginConfig(pcd.getPluginId(), pcd.getCommand(), nginxRules, beakerPorts.getNextAvailablePort());
     }
   }
 
@@ -457,9 +447,7 @@ public class PluginServiceLocatorRest {
     synchronized (this) {
       isNginxRestarted = false;
       if (pConfig == null) {
-        final int port = getNextAvailablePort(this.portSearchStart);
-        pConfig = createPluginConfig(pluginId, command, nginxRules, port);
-        this.portSearchStart = pConfig.port + 1;
+        pConfig = createPluginConfig(pluginId, command, nginxRules, beakerPorts.getNextAvailablePort());
         // reload nginx config
         restartId = generateNginxConfig();
         isNginxRestarted = true;
@@ -568,7 +556,7 @@ public class PluginServiceLocatorRest {
   public int getAvailablePort() {
     int port;
     synchronized (this) {
-      port = getNextAvailablePort(this.portSearchStart++);
+      port = beakerPorts.getNextAvailablePort();
     }
     return port;
   }
@@ -809,17 +797,6 @@ public class PluginServiceLocatorRest {
     return restartId;
   }
 
-  private static int getNextAvailablePort(int start) {
-    final int SEARCH_LIMIT = 100;
-    for (int p = start; p < start + SEARCH_LIMIT; ++p) {
-      if (isPortAvailable(p)) {
-        return p;
-      }
-    }
-
-    throw new RuntimeException("out of ports error");
-  }
-
   private static String generatePrefixedRandomString(String prefix, int randomPartLength) {
     // Use lower case due to nginx bug handling mixed case locations
     // (fixed in 1.5.6 but why depend on it).
@@ -907,28 +884,6 @@ public class PluginServiceLocatorRest {
       }
     }
 
-  }
-
-  private static boolean isPortAvailable(int port) {
-
-    ServerSocket ss = null;
-    try {
-      InetAddress address = InetAddress.getByName("127.0.0.1");
-      ss = new ServerSocket(port, 1, address);
-      // ss = new ServerSocket(port);
-      ss.setReuseAddress(true);
-      return true;
-    } catch (IOException e) {
-    } finally {
-      if (ss != null) {
-        try {
-          ss.close();
-        } catch (IOException e) {
-          /* should not be thrown */
-        }
-      }
-    }
-    return false;
   }
 
   private static void startGobblers(

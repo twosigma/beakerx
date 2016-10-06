@@ -15,38 +15,87 @@
  */
 package com.twosigma.beaker.core.rest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class BeakerPorts implements Iterator<Integer> {
+public class BeakerPorts {
 
-  public static final String SEPARATOR = " ";
-  private Iterator<Integer> iterator;
+  private static final Logger logger = LoggerFactory.getLogger(BeakerPorts.class.getName());
+  private static final String SEPARATOR = " ";
 
-  public BeakerPorts() {
+  private int portSearchStart;
+  private Iterator<Integer> portFromEnv;
+
+  public BeakerPorts(final Integer portSearchStart) {
+    this.portSearchStart = portSearchStart;
+    portFromEnv = initPortFromEnv();
+  }
+
+  public int getNextAvailablePort() {
+    while (portFromEnv.hasNext()) {
+      Integer nextPort = portFromEnv.next();
+      if (isPortAvailable(nextPort)) {
+        return nextPort;
+      }
+    }
+
+    int port = getNextGeneratedAvailablePort(this.portSearchStart);
+    this.portSearchStart = port + 1;
+    return port;
+  }
+
+  private static int getNextGeneratedAvailablePort(int start) {
+    final int SEARCH_LIMIT = 100;
+    for (int p = start; p < start + SEARCH_LIMIT; ++p) {
+      if (isPortAvailable(p)) {
+        return p;
+      }
+    }
+    throw new RuntimeException("out of ports error");
+  }
+
+  private static boolean isPortAvailable(int port) {
+    ServerSocket ss = null;
+    try {
+      InetAddress address = InetAddress.getByName("127.0.0.1");
+      ss = new ServerSocket(port, 1, address);
+      // ss = new ServerSocket(port);
+      ss.setReuseAddress(true);
+      return true;
+    } catch (IOException e) {
+    } finally {
+      if (ss != null) {
+        try {
+          ss.close();
+        } catch (IOException e) {
+          /* should not be thrown */
+        }
+      }
+    }
+    return false;
+  }
+
+  private Iterator<Integer> initPortFromEnv() {
     String beaker_ports = System.getenv("beaker_ports");
     List<Integer> ports = new ArrayList<>();
     if (beaker_ports != null) {
       for (String portStr : beaker_ports.split(SEPARATOR)) {
-        ports.add(Integer.parseInt(portStr));
+        try {
+          int port = Integer.parseInt(portStr);
+          ports.add(port);
+        } catch (Exception ex) {
+          logger.warn("warning: " + ex.toString());
+        }
       }
     }
-    iterator = ports.iterator();
+    return ports.iterator();
   }
 
-  @Override
-  public boolean hasNext() {
-    return iterator.hasNext();
-  }
-
-  @Override
-  public Integer next() {
-    return iterator.next();
-  }
-
-  @Override
-  public void remove() {
-    throw new RuntimeException("Not implemented.");
-  }
 }

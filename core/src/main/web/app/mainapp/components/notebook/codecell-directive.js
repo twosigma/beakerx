@@ -692,7 +692,7 @@
           if (scope.cm) {
             scope.cm.off();
           }
-          CodeMirror.off('gutterClick', onGutterClick);
+          CodeMirror.off('gutterClick', scope.onGutterClick);
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id);
           scope.bkNotebook = null;

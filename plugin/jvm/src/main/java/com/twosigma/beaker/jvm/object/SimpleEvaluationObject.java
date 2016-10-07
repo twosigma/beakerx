@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Observable;
 
 import com.twosigma.beaker.shared.module.util.ControlCharacterUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -208,7 +208,7 @@ public class SimpleEvaluationObject extends Observable {
     
     @Override
     public void serialize(SimpleEvaluationObject value,  JsonGenerator jgen,  SerializerProvider provider)
-        throws IOException, JsonProcessingException {
+        throws IOException {
 
       synchronized (value) {
         String id = getUpdateManager().register(value);
@@ -225,8 +225,12 @@ public class SimpleEvaluationObject extends Observable {
           EvaluationResult o = value.getPayload();
           if (o != null && o.getValue() !=null ) {
             jgen.writeFieldName("payload");
-            if (!getObjectSerializer().writeObject(o, jgen, true))
-              jgen.writeObject(o.toString());
+            try{
+              if (!getObjectSerializer().writeObject(o, jgen, true))
+                jgen.writeObject(o.toString());
+            }catch(Exception e){
+              jgen.writeObject(ExceptionUtils.getStackTrace(e));
+            }
           } else if (value.getJsonRes() != null) {
             jgen.writeFieldName("payload");
             if (ControlCharacterUtils.containsControlCharacters(value.getJsonRes())) {

@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Observable;
 
 import com.twosigma.beaker.shared.module.util.ControlCharacterUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -47,7 +47,7 @@ public class SimpleEvaluationObject extends Observable {
   private final static Logger logger = LoggerFactory.getLogger(SimpleEvaluationObject.class.getName());
   private static final int OUTPUT_QUEUE_SIZE = 20;
   private static final int MAX_LINE_LENGTH = 240;
-  
+
   public class EvaluationStdOutput {
     public String payload;
     public EvaluationStdOutput(String s) { payload = s; }
@@ -57,7 +57,7 @@ public class SimpleEvaluationObject extends Observable {
     public String payload;
     public EvaluationStdError(String s) { payload = s; }
   }
-  
+
   private EvaluationStatus status;
   private List<Object> outputdata;
   private int outputdataCount;
@@ -88,7 +88,7 @@ public class SimpleEvaluationObject extends Observable {
     setChanged();
     notifyObservers();
   }
-  
+
   public synchronized void finished(Object r) {
     doFlush();
     clrOutputHandler();
@@ -164,7 +164,7 @@ public class SimpleEvaluationObject extends Observable {
   public synchronized boolean getPayloadChanged() {
     return payload_changed;
   }
-  
+
   @JsonProperty("outputdata")
   public synchronized List<Object> getOutputdata() {
     List<Object> o = new ArrayList<Object>(outputdata);
@@ -201,14 +201,14 @@ public class SimpleEvaluationObject extends Observable {
     private UpdateManager getUpdateManager() {
       return this.updateManagerProvider.get();
     }
-    
+
     private BeakerObjectConverter getObjectSerializer() {
       return objectSerializerProvider.get();
     }
-    
+
     @Override
     public void serialize(SimpleEvaluationObject value,  JsonGenerator jgen,  SerializerProvider provider)
-        throws IOException {
+        throws IOException, JsonProcessingException {
 
       synchronized (value) {
         String id = getUpdateManager().register(value);
@@ -225,12 +225,8 @@ public class SimpleEvaluationObject extends Observable {
           EvaluationResult o = value.getPayload();
           if (o != null && o.getValue() !=null ) {
             jgen.writeFieldName("payload");
-            try{
-              if (!getObjectSerializer().writeObject(o, jgen, true))
-                jgen.writeObject(o.toString());
-            }catch(Exception e){
-              jgen.writeObject(ExceptionUtils.getStackTrace(e));
-            }
+            if (!getObjectSerializer().writeObject(o, jgen, true))
+              jgen.writeObject(o.toString());
           } else if (value.getJsonRes() != null) {
             jgen.writeFieldName("payload");
             if (ControlCharacterUtils.containsControlCharacters(value.getJsonRes())) {

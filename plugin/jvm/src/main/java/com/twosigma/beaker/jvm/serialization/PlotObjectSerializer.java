@@ -29,16 +29,17 @@ import java.io.IOException;
 
 import net.sf.jtreemap.swing.TreeMapNode;
 import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PlotObjectSerializer extends BasicObjectSerializer {
 
   private final static Logger logger = LoggerFactory.getLogger(PlotObjectSerializer.class.getName());
-  
+
   @Override
   public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand)
-      throws IOException  {
+      throws IOException, JsonProcessingException  {
 
     try {
       if (super.writeObject(obj, jgen, expand)) {
@@ -66,7 +67,7 @@ public class PlotObjectSerializer extends BasicObjectSerializer {
       }
     } catch (Exception e) {
       logger.error("exception in serialization", e);
-      throw new RuntimeException(e);
+      return false;
     }
     return true;
   }

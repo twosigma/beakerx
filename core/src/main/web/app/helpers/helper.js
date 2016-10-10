@@ -20,7 +20,7 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.debug', 'bk.electron', 'bk.publication']);
+  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.debug', 'bk.electron', 'bk.publication','bk.katexhelper']);
   /**
    * bkHelper
    * - should be the only thing plugins depend on to interact with general beaker stuffs (other than
@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, $uibModal,  bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, GLOBALS) {
+  module.factory('bkHelper', function($location, $rootScope, $httpParamSerializer, $uibModal,  bkUtils, bkCoreManager, bkSessionManager, bkEvaluatorManager, bkDebug, bkElectron, bkPublicationAuth, katexhelper, GLOBALS) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -129,11 +129,17 @@
         }
         return e.ctrlKey && !e.altKey && e.shiftKey && (e.which === 85);// Cmd + Shift + U
       },
+      isSaveNotebookAsShortcut: function (e){
+        if (this.isMacOS){
+          return e.shiftKey && e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + shift + s
+        }
+        return e.ctrlKey && e.shiftKey && e.altKey && (e.which === 83);// Ctrl + shift + s
+      },
       isSaveNotebookShortcut: function (e){
         if (this.isMacOS){
-          return e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + s
+          return e.metaKey && !e.shiftKey && !e.ctrlKey && !e.altKey && (e.which === 83);// Cmd + s
         }
-        return e.ctrlKey && !e.altKey && (e.which === 83);// Ctrl + s
+        return e.ctrlKey && !e.shiftKey && !e.altKey && (e.which === 83);// Ctrl + s
       },
       isLanguageManagerShortcut: function (e) {
         if (this.isMacOS) {
@@ -573,7 +579,7 @@
       },        
       typeset: function(element) {
         try {
-          renderMathInElement(element[0], {
+          katexhelper.renderElem(element[0], {
             delimiters: [
               {left: "$$", right: "$$", display: true},
               {left: "$", right:  "$", display: false},

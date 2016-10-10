@@ -57,7 +57,7 @@ var config = {
     'tests/tutorials/table_display/tableGroovy-tutorial.js',
     'tests/tutorials/standard_visual_api/d3js-tutorial.js',
     'tests/tutorials/standard_visual_api/p5js-tutorial.js',
-    //'tests/tutorials/automate/progress-reporting-tutorial.js',
+    'tests/tutorials/automate/progress-reporting-tutorial.js',
     'tests/tutorials/automate/notebookControl-tutorial.js',
     'tests/tutorials/automate/notebook-reflection-tutorial.js',
     'tests/tutorials/automate/dashboard-tutorial.js',

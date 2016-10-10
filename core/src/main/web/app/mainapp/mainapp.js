@@ -674,13 +674,15 @@
               showLoadingStatusMessage("Renaming");
               return bkFileManipulation.renameNotebook(notebookUri, uriType).then(getRenameDoneCallback(), renameFailed);
             },
-            saveNotebookAs: function(notebookUri, uriType) {
-              if (_.isEmpty(notebookUri)) {
-                console.error("cannot save notebook, notebookUri is empty");
-                return;
-              }
-              saveStart();
-              return bkFileManipulation.saveNotebookAs(notebookUri, uriType).then(saveDone, saveFailed);
+            saveNotebookAs: function() {
+              bkHelper.showFileSaveDialog({
+                extension: "bkr"
+              }).then(function (ret) {
+                if (ret.uri) {
+                  return bkFileManipulation.saveNotebookAs(ret.uri, ret.uriType).then(saveDone, saveFailed);
+                }
+              });
+
             },
             runAllCellsInNotebook: function () {
               bkHelper.evaluateRoot('root').then(function (res) {
@@ -1280,7 +1282,12 @@
             _impl.saveNotebook();
             $scope.$apply();
             return false;
-          }  else if (bkHelper.isNewDefaultNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
+          } else if(bkHelper.isSaveNotebookAsShortcut(e)){
+            e.preventDefault();
+            _impl.saveNotebookAs();
+            $scope.$apply();
+            return false;
+          } else if (bkHelper.isNewDefaultNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
             bkUtils.fcall(function() {
               bkCoreManager.newSession(false);
             });

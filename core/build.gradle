@@ -60,6 +60,33 @@ def getPluginKeyValue(line){
   return ''
 }
 
+def generatePluginsConfiguration(){
+  def pluginDescriptions = '{ "plugins": [';
+  def plugins = collectPlugins('../plugin')
+  plugins.each { file ->
+    def map = [:]
+    def lines = file.readLines();
+    lines.each { String line ->
+      if (line.contains("var PLUGIN_ID = ")){
+        map['pluginId'] = getPluginKeyValue(line);
+      } else if(line.contains("var PLUGIN_NAME = ")){
+        map['pluginName'] = getPluginKeyValue(line);
+      }
+      if (line.contains('var COMMAND = ')){
+        def command = getPluginKeyValue(line);
+        map['command'] = command;
+        map['nginxRules'] = map['command'].contains("python") ? "ipython": "rest";
+      }
+    }
+    def pluginDescription = String.format("{\"pluginId\" :\"%s\", \"command\": \"%s\", \"nginxRules\": \"%s\"},\n"
+            , map['pluginId'] != null ? map['pluginId'] : map['pluginName']
+            , map['command']
+            , map['nginxRules'])
+    pluginDescriptions += pluginDescription;
+  }
+  return pluginDescriptions.substring(0, pluginDescriptions.length() - 2) + "]}";
+}
+
 def generatePluginDescriptions(){
   def pluginDescriptions = '';
   def pluginKeys = [
@@ -123,6 +150,8 @@ dependencies {
   compile group: 'org.json', name: 'json', version: '20090211'
   compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.1'
   compile group: 'commons-io', name: 'commons-io', version: '2.4'
+
+  compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
 
   compile project(':shared')
 }
@@ -244,6 +273,20 @@ task addevalplugins(dependsOn: []) {
   }
 }
 
+task addpluginsconfiguration(dependsOn: []) {
+  doLast {
+    copy {
+      from 'templates/addpluginsconfiguration.template'
+      into '.'
+      rename { String fileName ->
+        "src/main/resources/pluginsconfiguration.config"
+      }
+      filter(ReplaceTokens, tokens: [pluginsConfiguration: generatePluginsConfiguration()])
+    }
+  }
+}
+
+
 
 task copyVendorStuff
 copyVendorStuff.dependsOn copyKatex
@@ -254,6 +297,7 @@ copyVendorStuff.dependsOn copyGGVis
 copyVendorStuff.dependsOn copyDiagrammer
 copyVendorStuff.dependsOn copyPlotly
 copyVendorStuff.dependsOn addevalplugins
+
 
 task (compileAssets, type: Exec) {
   commandLine(*(winOrUnix('npm', 'run-script', 'compile')))
@@ -333,6 +377,7 @@ updatePackages.dependsOn bowerInstall
 updatePackages.dependsOn copyStuff
 copyStuff.mustRunAfter bowerInstall
 build.dependsOn compileAssets
+build.dependsOn addpluginsconfiguration
 buildembed.dependsOn compileAssetsEmbed
 publishAssets.dependsOn buildembed
 builddebug.dependsOn compileAssetsDebug

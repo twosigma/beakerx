@@ -540,7 +540,7 @@
           scope.svg.selectAll(".plot-resp")
             .on('mouseenter', function(d) {
               scope.drawLegendPointer(d);
-              return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
+              return plotTip.tooltip(scope, d, d3.mouse(scope.svg._groups[0][0]));
             })
             .on('mousemove', function(d) {
 
@@ -548,7 +548,7 @@
               plotTip.untooltip(scope, d);
 
               scope.drawLegendPointer(d);
-              return plotTip.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
+              return plotTip.tooltip(scope, d, d3.mouse(scope.svg._groups[0][0]));
             })
             .on("mouseleave", function(d) {
               scope.removeLegendPointer();
@@ -1543,18 +1543,20 @@
           scope.zoomed = false;
           scope.lastx = scope.lasty = 0;
           scope.lastscale = 1.0;
-          //scope.zoomObj.scale(1.0);
-         // d3.zoomTransform(scope.svg._groups[0][0]).scale(1.0);
+          // scope.zoom().scale(1.0);
+
+          // d3.zoomTransform(scope.svg._groups[0][0]).scale(1.0);
           //scope.zoomObj.translate([0, 0]);
           //d3.zoomTransform(scope.svg._groups[0][0]).translate(0, 0);
-          
-         // d3.zoomIdentity.translate(0, 0).scale(1);
-          
+          // d3.zoomIdentity.translate(0, 0).scale(1);
+
           d3.zoom()
           .scaleExtent([1, 40])
           .translateExtent([[-100, -100], [600, 600]])
-          .on("zoom", function() {console.log('fff a')});
-          
+          .on("zoom", function() {
+            console.log('fff a')}
+          );
+
           scope.mousep1 = {
             "x" : d3.mouse(scope.svg._groups[0][0])[0],
             "y" : d3.mouse(scope.svg._groups[0][0])[1]
@@ -1566,23 +1568,34 @@
           if (scope.interactMode === "other") { return; }
           if (scope.interactMode === "zoom") {
             // left click zoom
-            var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
-            var W = plotUtils.safeWidth(scope.jqsvg) - lMargin, H = plotUtils.safeHeight(scope.jqsvg) - bMargin;
-            var d3trans = d3.event.transform, d3scale = d3.event.scale;
-            var dx = d3trans.x - scope.lastx, dy = d3trans.y - scope.lasty,
+            var lMargin = scope.layout.leftLayoutMargin,
+                bMargin = scope.layout.bottomLayoutMargin;
+
+            var W = plotUtils.safeWidth(scope.jqsvg) - lMargin,
+                H = plotUtils.safeHeight(scope.jqsvg) - bMargin;
+
+            var d3trans = d3.event,
+              d3scale = d3.zoomIdentity.k;
+
+
+            var dx = d3trans.x - scope.lastx,
+                dy = d3trans.y - scope.lasty,
                 ds = this.lastscale / d3scale;
+
             scope.lastx = d3trans.x;
             scope.lasty = d3trans.y;
             scope.lastscale = d3scale;
 
             var focus = scope.focus;
-            var mx = d3.mouse(scope.svg._groups[0][0])[0], my = d3.mouse(scope.svg._groups[0][0])[1];
+            var mx = d3.mouse(scope.svg._groups[0][0])[0],
+                my = d3.mouse(scope.svg._groups[0][0])[1];
             if (Math.abs(mx - scope.mousep1.x) > 0 || Math.abs(my - scope.mousep1.y) > 0) {
               scope.zoomed = true;
             }
             if (ds == 1.0) {
               // translate only
-              var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan;
+              var tx = -dx / W * focus.xspan,
+                  ty = dy / H * focus.yspan;
               if (focus.xl + tx >= 0 && focus.xr + tx <= 1) {
                 focus.xl += tx;
                 focus.xr += tx;
@@ -1614,7 +1627,8 @@
               if (my <= plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin) {
                 // scale y
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
-                var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym),
+                var nyl = ym - ds * (ym - focus.yl),
+                    nyr = ym + ds * (focus.yr - ym),
                     nyspan = nyr - nyl;
 
                 if (nyspan >= level.minSpanY && nyspan <= level.maxScaleY) {
@@ -1633,7 +1647,8 @@
               if (mx >= scope.layout.leftLayoutMargin) {
                 // scale x
                 var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
-                var nxl = xm - ds * (xm - focus.xl), nxr = xm + ds * (focus.xr - xm),
+                var nxl = xm - ds * (xm - focus.xl),
+                    nxr = xm + ds * (focus.xr - xm),
                     nxspan = nxr - nxl;
                 if (nxspan >= level.minSpanX && nxspan <= level.maxScaleX) {
                   focus.xl = nxl;
@@ -1649,6 +1664,7 @@
                 }
               }
               scope.emitZoomLevelChange();
+              console.log(focus);
               scope.fixFocus(focus);
             }
             scope.calcMapping(true);
@@ -1700,9 +1716,12 @@
           }
         };
         scope.resetFocus = function() {
-          var mx = d3.mouse(scope.svg._groups[0][0])[0], my = d3.mouse(scope.svg._groups[0][0])[1];
-          var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
-          var W = plotUtils.safeWidth(scope.jqsvg), H = plotUtils.safeHeight(scope.jqsvg);
+          var mx = d3.mouse(scope.svg._groups[0][0])[0],
+              my = d3.mouse(scope.svg._groups[0][0])[1];
+          var lMargin = scope.layout.leftLayoutMargin,
+              bMargin = scope.layout.bottomLayoutMargin;
+          var W = plotUtils.safeWidth(scope.jqsvg),
+              H = plotUtils.safeHeight(scope.jqsvg);
           if (mx < lMargin && my < H - bMargin) {
             _.extend(scope.focus, _.pick(scope.defaultFocus, "yl", "yr", "yspan"));
           } else if (my > H - bMargin && mx > lMargin) {

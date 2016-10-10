@@ -380,6 +380,8 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
           instance.setBinding(scriptBinding);
           
           result = instance.run();
+
+          checkToStringMethod(result);
            
           if(LOCAL_DEV) { 
             logger.info("Result: {}", result);
@@ -412,7 +414,16 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
         theOutput.clrOutputHandler();
         Thread.currentThread().setContextClassLoader(oldld);
       }
-    };
+
+      private void checkToStringMethod(Object result) {
+        // the toString method is used by EvaluationResult.Serializer.class,
+        // so we have to check if the method works
+        if(result!=null){
+          result.toString();
+        }
+      }
+
+    }
     
     protected ClassLoader newClassLoader() throws MalformedURLException
     {

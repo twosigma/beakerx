@@ -17,7 +17,7 @@
     "bootstrap-sass": "3.3.5",
     "moment": "2.10.3",
     "moment-timezone": "0.4.0",
-    "ngstorage": "0.3.0",
+    "ngstorage": "0.3.11",
     "font-awesome": "4.0.3",
     "big.js": "~2.5.1",
     "markdown-it": "6.0.1",

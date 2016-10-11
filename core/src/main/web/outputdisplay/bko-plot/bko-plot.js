@@ -1574,8 +1574,8 @@
             var W = plotUtils.safeWidth(scope.jqsvg) - lMargin,
                 H = plotUtils.safeHeight(scope.jqsvg) - bMargin;
 
-            var d3trans = d3.event,
-              d3scale = d3.zoomIdentity.k;
+            var d3trans = d3.event;
+            var d3scale = d3.zoomTransform(this).k;
 
 
             var dx = d3trans.x - scope.lastx,

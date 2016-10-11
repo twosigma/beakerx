@@ -19,17 +19,23 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('SQL Tutorial', function (done) {
+describe('SQL Tutorial', function () {
 
-    beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fsql-examples.bkr&readOnly=true").then(done);
-    beakerPO.waitUntilLoadingCellOutput();
+    beforeAll(function(done){
+        beakerPO = new BeakerPageObject();
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fsql-examples.bkr&readOnly=true").then(done);
+        beakerPO.waitUntilLoadingFinished();
+    });
+
+    afterAll(function(done){
+        beakerPO.createScreenshot('sqlTutorial');
+        done();
+    });
 
     it('Basic Query', function () {
         var idCell = "codef4U7zn";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-        beakerPO.checkDtContainerByIdCell(idCell);
         beakerPO.checkDataTableHeadByIdCell(idCell, 'ID\nNAME\nCODE');
         beakerPO.checkDataTableBodyByIdCell(idCell, 5, '0 1001 AliceBlue #F0F8FF');
     });
@@ -38,13 +44,11 @@ describe('SQL Tutorial', function (done) {
         var idCell = "codeRXzfau";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
-        beakerPO.scrollToCodeCellOutputByIdCell(idCell);
         expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(By.css('pre')).getText()).toBe('1003');
 
         idCell = "code3jTM1a";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-        beakerPO.checkDtContainerByIdCell(idCell);
         beakerPO.checkDataTableHeadByIdCell(idCell, 'Key\nValue');
         beakerPO.checkDataTableBodyByIdCell(idCell, 3, '0 ID 1003');
     });
@@ -57,7 +61,6 @@ describe('SQL Tutorial', function (done) {
         idCell = "codeDbiIzh";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-        beakerPO.checkDtContainerByIdCell(idCell);
         beakerPO.checkDataTableHeadByIdCell(idCell, 'ID\nNAME\nCODE');
         beakerPO.checkDataTableBodyByIdCell(idCell, 8, '0 1001 AliceBlue #F0F8FF');
     });
@@ -66,12 +69,11 @@ describe('SQL Tutorial', function (done) {
         var idCell = "code506tI8";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-        beakerPO.checkDtContainerByIdCell(idCell);
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getDataTablesScrollHeadByIdCell(idCell)), 10000);
         beakerPO.checkDataTableHeadByIdCell(idCell, 'NAME\nBORN');
         beakerPO.checkDataTableBodyByIdCell(idCell, 4, '0 Jacob Berzelius 1779');
 
         idCell = "codeVDv9Mf";
-        beakerPO.checkDtContainerByIdCell(idCell);
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
         beakerPO.checkDataTableHeadByIdCell(idCell, 'NAME\nMOLARMASS');

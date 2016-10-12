@@ -534,8 +534,10 @@
           'PageUp': function (cm) {
             //override default behaviour of codemirror control
             //do nothing
+          },
+          'Shift-MouseDown': function(cm) {
+            console.log("here");
           }
-
         });
 
         var initCodeMirror = function() {

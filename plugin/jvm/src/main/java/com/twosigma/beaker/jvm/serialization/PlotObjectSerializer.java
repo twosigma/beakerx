@@ -66,7 +66,6 @@ public class PlotObjectSerializer extends BasicObjectSerializer {
         return false;
       }
     } catch (Exception e) {
-      logger.error("exception in serialization", e);
       throw new RuntimeException(e);
     }
     return true;

@@ -36,9 +36,15 @@
       controller: function($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
 
+        var getBkNotebookWidget = function() {
+          return bkCoreManager.getBkApp().getBkNotebookWidget();
+        };
+        
+        $scope.bkNotebook = getBkNotebookWidget();
+        
         $scope.cellmodel.collapsed = $scope.cellmodel.collapsed || false;
 
-        bkCoreManager.getBkApp().getBkNotebookWidget().registerSectioncell($scope.cellmodel.id, $scope);
+        $scope.bkNotebook.registerSectioncell($scope.cellmodel.id, $scope);
         
         $scope.toggleShowChildren = function() {
           $scope.cellmodel.collapsed = !$scope.cellmodel.collapsed;
@@ -298,7 +304,7 @@
         $scope.cellview.menu.addSeparator("Run all");
         
         $scope.$on('$destroy', function() {
-          bkCoreManager.getBkApp().getBkNotebookWidget().unregisterSectioncell($scope.cellmodel.id);
+          $scope.bkNotebook.unregisterSectioncell($scope.cellmodel.id);
         });
 
       }

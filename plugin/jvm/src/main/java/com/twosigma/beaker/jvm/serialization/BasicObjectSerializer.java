@@ -206,7 +206,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
                                                                                    expand);
     } catch (Exception e) {
       logger.error("exception in serialization", e);
-      return false;
+      throw new RuntimeException(e);
     }
     return true;
   }

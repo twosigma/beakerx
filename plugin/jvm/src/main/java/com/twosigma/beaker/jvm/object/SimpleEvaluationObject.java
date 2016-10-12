@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Observable;
 
 import com.twosigma.beaker.shared.module.util.ControlCharacterUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
@@ -225,8 +226,12 @@ public class SimpleEvaluationObject extends Observable {
           EvaluationResult o = value.getPayload();
           if (o != null && o.getValue() !=null ) {
             jgen.writeFieldName("payload");
-            if (!getObjectSerializer().writeObject(o, jgen, true))
-              jgen.writeObject(o.toString());
+            try{
+              if (!getObjectSerializer().writeObject(o, jgen, true))
+                jgen.writeObject(o.toString());
+            }catch (Exception e){
+              handleError(jgen, o, e);
+            }
           } else if (value.getJsonRes() != null) {
             jgen.writeFieldName("payload");
             if (ControlCharacterUtils.containsControlCharacters(value.getJsonRes())) {
@@ -263,6 +268,13 @@ public class SimpleEvaluationObject extends Observable {
         jgen.writeEndArray();
         jgen.writeEndObject();
       }
+    }
+
+    private void handleError(JsonGenerator jgen, EvaluationResult o, Exception e) throws IOException {
+      if (!getObjectSerializer().writeObject(new EvaluationResult(ExceptionUtils.getStackTrace(e)), jgen, true)){
+        jgen.writeObject(o.toString());
+      }
+      jgen.writeObjectField("status", EvaluationStatus.ERROR);
     }
   }
 

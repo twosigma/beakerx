@@ -29,19 +29,13 @@ import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 public class EvaluationResult {
 
   private final Object value;
-  private final String valueAsString;
 
-  public EvaluationResult(Object v, String valueAsString) {
+  public EvaluationResult(Object v) {
     value = v;
-    this.valueAsString = valueAsString;
   }
 
   public Object getValue() {
     return value;
-  }
-
-  protected String getValueAsString() {
-    return valueAsString;
   }
 
   public static class Serializer extends JsonSerializer<EvaluationResult> {
@@ -63,7 +57,7 @@ public class EvaluationResult {
 
       Object obj = evalResult.getValue();
       if (!getObjectSerializer().writeObject(obj, jgen, true))
-        jgen.writeObject(evalResult.getValueAsString());
+        jgen.writeObject(obj.toString());
     }
   }
 }

@@ -93,7 +93,7 @@ public class SimpleEvaluationObject extends Observable {
     doFlush();
     clrOutputHandler();
     this.status = EvaluationStatus.FINISHED;
-    payload = new EvaluationResult(r, objectAsString(r));
+    payload = new EvaluationResult(r);
     payload_changed = true;
     setChanged();
     notifyObservers();
@@ -104,7 +104,7 @@ public class SimpleEvaluationObject extends Observable {
     clrOutputHandler();
     this.jsonres = json;
     this.status = EvaluationStatus.FINISHED;
-    payload = new EvaluationResult(r, objectAsString(r));
+    payload = new EvaluationResult(r);
     payload_changed = true;
     setChanged();
     notifyObservers();
@@ -114,7 +114,7 @@ public class SimpleEvaluationObject extends Observable {
     doFlush();
     clrOutputHandler();
     this.status = EvaluationStatus.ERROR;
-    payload = new EvaluationResult(r, objectAsString(r));
+    payload = new EvaluationResult(r);
     payload_changed = true;
     setChanged();
     notifyObservers();
@@ -122,7 +122,7 @@ public class SimpleEvaluationObject extends Observable {
 
   public synchronized void update(Object r) {
     this.status = EvaluationStatus.RUNNING;
-    payload = new EvaluationResult(r, objectAsString(r));
+    payload = new EvaluationResult(r);
     payload_changed = true;
     setChanged();
     notifyObservers();
@@ -133,15 +133,11 @@ public class SimpleEvaluationObject extends Observable {
     this.message = upd.message;
     this.progressBar = upd.progressBar;
     if (upd.payload != null) {
-      payload = new EvaluationResult(upd.payload, objectAsString(upd.payload));
+      payload = new EvaluationResult(upd.payload);
       payload_changed = true;
     }
     setChanged();
     notifyObservers();
-  }
-
-  private String objectAsString(Object r) {
-    return (r!=null)?r.toString():null;
   }
 
   @JsonProperty("expression")

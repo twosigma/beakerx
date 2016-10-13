@@ -1,0 +1,147 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "HTML",
+            "plugin": "HTML",
+            "view": {
+                "cm": {
+                    "mode": "smartHTMLMode"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            },
+            "languageVersion": "ES2015"
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "graxxia.*\njava.util.concurrent.TimeUnit\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.chart.KeyboardCodes\ncom.twosigma.beaker.jvm.object.*\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*\ncom.twosigma.beaker.table.*\ncom.twosigma.beaker.table.format.*\ncom.twosigma.beaker.table.renderer.*\ncom.twosigma.beaker.table.highlight.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "codeAL4o76",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "class Qux {",
+                    "  public String toString() {",
+                    "    return this.failmenow()",
+                    "  }",
+                    "}",
+                    "qux = new Qux()"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Error",
+                    "object": [
+                        "java.lang.RuntimeException: java.lang.RuntimeException: org.codehaus.jackson.map.JsonMappingException: No signature of method: Qux.failmenow() is applicable for argument types: () values: []\r<br/>",
+                        "\tat com.twosigma.beaker.jvm.serialization.PlotObjectSerializer.writeObject(PlotObjectSerializer.java:69)\r",
+                        "\tat com.twosigma.beaker.jvm.object.SimpleEvaluationObject$Serializer.serialize(SimpleEvaluationObject.java:230)\r",
+                        "\tat com.twosigma.beaker.jvm.object.SimpleEvaluationObject$Serializer.serialize(SimpleEvaluationObject.java:191)\r",
+                        "\tat org.codehaus.jackson.map.ser.std.MapSerializer.serializeFields(MapSerializer.java:262)\r",
+                        "\tat org.codehaus.jackson.map.ser.std.MapSerializer.serialize(MapSerializer.java:186)\r",
+                        "\tat org.codehaus.jackson.map.ser.std.MapSerializer.serialize(MapSerializer.java:23)\r",
+                        "\tat org.codehaus.jackson.map.ser.StdSerializerProvider._serializeValue(StdSerializerProvider.java:610)\r",
+                        "\tat org.codehaus.jackson.map.ser.StdSerializerProvider.serializeValue(StdSerializerProvider.java:256)\r",
+                        "\tat org.codehaus.jackson.map.ObjectMapper._configAndWriteValue(ObjectMapper.java:2575)\r",
+                        "\tat org.codehaus.jackson.map.ObjectMapper.writeValueAsString(ObjectMapper.java:2097)\r",
+                        "\tat org.cometd.common.JacksonJSONContext.generate(JacksonJSONContext.java:85)\r",
+                        "\tat org.cometd.server.BayeuxServerImpl.freeze(BayeuxServerImpl.java:863)\r",
+                        "\tat org.cometd.server.ServerSessionImpl.doDeliver(ServerSessionImpl.java:261)\r",
+                        "\tat org.cometd.server.ServerSessionImpl.deliver(ServerSessionImpl.java:232)\r",
+                        "\tat org.cometd.server.ServerSessionImpl.deliver(ServerSessionImpl.java:241)\r",
+                        "\tat com.twosigma.beaker.jvm.updater.Updater.deliverUpdate(Updater.java:37)\r",
+                        "\tat com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory$ObservableUpdater.run(ObservableUpdaterFactory.java:77)\r",
+                        "\tat java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)\r",
+                        "\tat java.util.concurrent.FutureTask.run(FutureTask.java:266)\r",
+                        "\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180)\r",
+                        "\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293)\r",
+                        "\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)\r",
+                        "\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)\r",
+                        "\tat java.lang.Thread.run(Thread.java:745)\r",
+                        "Caused by: java.lang.RuntimeException: org.codehaus.jackson.map.JsonMappingException: No signature of method: Qux.failmenow() is applicable for argument types: () values: []\r",
+                        "\tat com.twosigma.beaker.jvm.serialization.BasicObjectSerializer.writeObject(BasicObjectSerializer.java:208)\r",
+                        "\tat com.twosigma.beaker.jvm.serialization.PlotObjectSerializer.writeObject(PlotObjectSerializer.java:45)\r",
+                        "\t... 23 more\r",
+                        "Caused by: org.codehaus.jackson.map.JsonMappingException: No signature of method: Qux.failmenow() is applicable for argument types: () values: []\r",
+                        "\tat org.codehaus.jackson.map.ser.StdSerializerProvider._serializeValue(StdSerializerProvider.java:625)\r",
+                        "\tat org.codehaus.jackson.map.ser.StdSerializerProvider.serializeValue(StdSerializerProvider.java:256)\r",
+                        "\tat org.codehaus.jackson.map.ObjectMapper.writeValue(ObjectMapper.java:1613)\r",
+                        "\tat org.codehaus.jackson.impl.JsonGeneratorBase.writeObject(JsonGeneratorBase.java:314)\r",
+                        "\tat com.twosigma.beaker.jvm.serialization.BasicObjectSerializer.writeObject(BasicObjectSerializer.java:202)\r",
+                        "\t... 24 more\r",
+                        "Caused by: groovy.lang.MissingMethodException: No signature of method: Qux.failmenow() is applicable for argument types: () values: []\r",
+                        "\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.unwrap(ScriptBytecodeAdapter.java:55)\r",
+                        "\tat org.codehaus.groovy.runtime.callsite.PogoMetaClassSite.callCurrent(PogoMetaClassSite.java:78)\r",
+                        "\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)\r",
+                        "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:133)\r",
+                        "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:137)\r",
+                        "\tat Qux.toString(script14763671739911657644455.groovy:3)\r",
+                        "\tat com.twosigma.beaker.jvm.object.EvaluationResult$Serializer.serialize(EvaluationResult.java:60)\r",
+                        "\tat com.twosigma.beaker.jvm.object.EvaluationResult$Serializer.serialize(EvaluationResult.java:41)\r",
+                        "\tat org.codehaus.jackson.map.ser.StdSerializerProvider._serializeValue(StdSerializerProvider.java:610)\r",
+                        "\t... 28 more\r",
+                        ""
+                    ]
+                },
+                "selectedType": "BeakerDisplay",
+                "pluginName": "Groovy",
+                "shellId": "6f1872b7-9c83-4600-979c-d8cc60ec3281",
+                "elapsedTime": 571,
+                "height": 97
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
+        },
+        {
+            "id": "codefSFdqZ",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "[qux, qux]"
+                ]
+            },
+            "output": {
+                "state": {}
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeVjifQP",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "[\"a\" : qux]"
+                ]
+            },
+            "output": {
+                "state": {}
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        }
+    ],
+    "namespace": {}
+}

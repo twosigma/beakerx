@@ -29,7 +29,6 @@ import java.io.IOException;
 
 import net.sf.jtreemap.swing.TreeMapNode;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +38,8 @@ public class PlotObjectSerializer extends BasicObjectSerializer {
 
   @Override
   public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand)
-      throws IOException, JsonProcessingException  {
+      throws IOException  {
 
-    try {
       if (super.writeObject(obj, jgen, expand)) {
         return true;
       } else if (expand && obj instanceof XYChart) {
@@ -65,9 +63,6 @@ public class PlotObjectSerializer extends BasicObjectSerializer {
       } else {
         return false;
       }
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
     return true;
   }
 }

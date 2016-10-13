@@ -34,31 +34,7 @@
                          $compile) {
     var CELL_TYPE = "bko-plot";
     return {
-      template :
-          "<canvas></canvas>" +
-          "<div id='plotTitle' class='plot-title'></div>" +
-          "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
-          "<div class='plot-plotcontainer' oncontextmenu='return false;'>" +
-          "<svg id='svgg'>"  +
-          "<defs>" +
-            "<marker id='Triangle' class='text-line-style' viewBox='0 0 10 10' refX='1' refY='5' markerWidth='6' markerHeight='6' orient='auto'>" +
-            "<path d='M 0 0 L 10 5 L 0 10 z' />" +
-            "</marker>" +
-            "<filter id='svgfilter'>" +
-              "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
-              "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
-            "</filter>" +
-            "<filter id='svgAreaFilter'>" +
-              "<feMorphology operator='dilate' result='blurOut' in='SourceGraphic' radius='2' />" +
-              "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
-            "</filter>" +
-          "</defs>" +
-          "<g id='gridg'></g>" +
-          "<g id='maing'></g>" +
-          "<g id='labelg'></g> " +
-          "</svg>" +
-          "</div>" +
-          "</div>",
+      template: JST['bko-plot/bko-plot'],
       controller : function($scope) {
         $scope.getShareMenuPlugin = function() {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
@@ -67,7 +43,7 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
-        
+
         function modelHasPlotSpecificMethods(model) {
           return model.getSvgToSave && model.saveAsSvg && model.saveAsPng && model.updateLegendPosition;
         }
@@ -96,12 +72,12 @@
         $scope.fillCellModelWithPlotMethods();
       },
       link : function(scope, element, attrs) {
-        // rendering code
-        element.find(".plot-plotcontainer").resizable({
-          maxWidth : element.width(), // no wider than the width of the cell
-          minWidth : 450,
+        var plotContainer = element.find('.plot-plotcontainer');
+        plotContainer.resizable({
+          maxWidth: element.width(), // no wider than the width of the cell
+          minWidth: 450,
           minHeight: 150,
-          handles : "e, s, se",
+          handles: "e, s, se",
           resize : function(event, ui) {
             scope.width = ui.size.width;
             scope.height = ui.size.height;
@@ -126,7 +102,6 @@
           }
         });
 
-
         scope.resizeFunction = function() {
           // update resize maxWidth when the browser window resizes
           var width = element.width();
@@ -141,10 +116,10 @@
           $.contextMenu({
             selector: '#' + scope.id,
             zIndex: 3,
-            items: plotUtils.getSavePlotAsContextMenuItems(scope) 
+            items: plotUtils.getSavePlotAsContextMenuItems(scope)
           });
         }
-
+//
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
@@ -1554,9 +1529,8 @@
           .scaleExtent([1, 40])
           .translateExtent([[-100, -100], [600, 600]])
           .on("zoom", function() {
-            console.log('fff a')}
-          );
-
+            console.log('fff a');
+          });
           scope.mousep1 = {
             "x" : d3.mouse(scope.svg._groups[0][0])[0],
             "y" : d3.mouse(scope.svg._groups[0][0])[1]
@@ -1575,12 +1549,13 @@
                 H = plotUtils.safeHeight(scope.jqsvg) - bMargin;
 
             var d3trans = d3.event;
-            var d3scale = d3.zoomTransform(this).k;
-
+            var e = window.event || e; // old IE support
+            var d3scale = e.wheelDelta || -e.detail;
 
             var dx = d3trans.x - scope.lastx,
                 dy = d3trans.y - scope.lasty,
-                ds = this.lastscale / d3scale;
+                ds = (this.lastscale / d3scale)/100 ;
+            ds = e.wheelDelta/120 > 0 ? 1+ ds : 1-ds;
 
             scope.lastx = d3trans.x;
             scope.lasty = d3trans.y;
@@ -1592,7 +1567,7 @@
             if (Math.abs(mx - scope.mousep1.x) > 0 || Math.abs(my - scope.mousep1.y) > 0) {
               scope.zoomed = true;
             }
-            if (ds == 1.0) {
+            if (Math.abs(d3scale) == 0) {
               // translate only
               var tx = -dx / W * focus.xspan,
                   ty = dy / H * focus.yspan;
@@ -1664,7 +1639,6 @@
                 }
               }
               scope.emitZoomLevelChange();
-              console.log(focus);
               scope.fixFocus(focus);
             }
             scope.calcMapping(true);
@@ -1785,6 +1759,7 @@
           scope.svg.on("dblclick.zoom", function() {
             return scope.resetFocus();
           });
+
         };
         scope.disableZoom = function() {
           scope.svg.call(scope.zoomObj.on("start", null).on("zoom", null).on("end", null));
@@ -1918,7 +1893,7 @@
         };
 
         scope.init = function() {
-          
+
           // first standardize data
           scope.standardizeData();
           // init flags
@@ -2239,6 +2214,7 @@
         }
 
       }
+
     };
   };
   beakerRegister.bkoDirective("Plot", [

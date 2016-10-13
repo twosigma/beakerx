@@ -141,6 +141,13 @@ public class SimpleEvaluationObject extends Observable {
     notifyObservers();
   }
 
+  public static SimpleEvaluationObject createError(String error) {
+    SimpleEvaluationObject simpleEvaluationObject = new SimpleEvaluationObject("Error");
+    simpleEvaluationObject.status = EvaluationStatus.ERROR;
+    simpleEvaluationObject.payload = new EvaluationResult(error);
+    return simpleEvaluationObject;
+  }
+
   @JsonProperty("expression")
   public String getExpression() {
     return expression;
@@ -226,12 +233,8 @@ public class SimpleEvaluationObject extends Observable {
           EvaluationResult o = value.getPayload();
           if (o != null && o.getValue() !=null ) {
             jgen.writeFieldName("payload");
-            try{
               if (!getObjectSerializer().writeObject(o, jgen, true))
                 jgen.writeObject(o.toString());
-            }catch (Exception e){
-              handleError(jgen, o, e);
-            }
           } else if (value.getJsonRes() != null) {
             jgen.writeFieldName("payload");
             if (ControlCharacterUtils.containsControlCharacters(value.getJsonRes())) {
@@ -268,13 +271,6 @@ public class SimpleEvaluationObject extends Observable {
         jgen.writeEndArray();
         jgen.writeEndObject();
       }
-    }
-
-    private void handleError(JsonGenerator jgen, EvaluationResult o, Exception e) throws IOException {
-      if (!getObjectSerializer().writeObject(new EvaluationResult(ExceptionUtils.getStackTrace(e)), jgen, true)){
-        jgen.writeObject(o.toString());
-      }
-      jgen.writeObjectField("status", EvaluationStatus.ERROR);
     }
   }
 

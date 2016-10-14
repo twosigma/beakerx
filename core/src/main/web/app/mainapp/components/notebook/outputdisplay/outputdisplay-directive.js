@@ -120,7 +120,7 @@
                   var names = result.columnNames.join(", ");
                   return 'a table with ' + result.values.length + ' rows and ' + result.columnNames.length + ' columns (' + names + ')';
                 } else {
-                  return 'a table with ' + result.values.length + ' rows';
+                  return 'a table with ' + _.keys(result).length + ' rows';
                 }
               case 'Results':
                 var out = 0, err = 0;

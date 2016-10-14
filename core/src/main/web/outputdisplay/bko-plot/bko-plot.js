@@ -1524,19 +1524,17 @@
           //scope.zoomObj.translate([0, 0]);
           //d3.zoomTransform(scope.svg._groups[0][0]).translate(0, 0);
           // d3.zoomIdentity.translate(0, 0).scale(1);
-
-          d3.zoom()
-          .scaleExtent([1, 40])
-          .translateExtent([[-100, -100], [600, 600]])
-          .on("zoom", function() {
-            console.log('fff a');
-          });
           scope.mousep1 = {
             "x" : d3.mouse(scope.svg._groups[0][0])[0],
             "y" : d3.mouse(scope.svg._groups[0][0])[1]
           };
           scope.mousep2 = {};
           _.extend(scope.mousep2, scope.mousep1);
+          d3.zoom()
+          .scaleExtent([1, 40])
+          .translateExtent([[-100, -100], [600, 600]])
+          .on("zoom", scope.zooming());
+
         };
         scope.zooming = function(d) {
           if (scope.interactMode === "other") { return; }

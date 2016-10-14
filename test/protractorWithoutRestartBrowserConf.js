@@ -62,6 +62,7 @@ var config = {
     'tests/tutorials/automate/notebook-reflection-tutorial.js',
     'tests/tutorials/automate/dashboard-tutorial.js',
     'tests/tables.js',
+    // 'tests/badToStringTest.js',
     'tests/tutorials/native_plotting/jscriptPlot-tutorial.js',
     'tests/tutorials/feature_overview/autotranslation-tutorial.js',
     'tests/tutorials/feature_overview/codeReuse-tutorial.js',

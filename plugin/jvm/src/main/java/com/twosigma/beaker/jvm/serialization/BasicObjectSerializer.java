@@ -175,9 +175,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
 
   @Override
   public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand)
-      throws IOException, JsonProcessingException  {
+      throws IOException  {
 
-    try {
       if (obj == null) {
         jgen.writeNull();
       } else if ((obj instanceof TableDisplay) ||
@@ -203,11 +202,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
       } else
         return runThreadSerializers(obj, jgen, expand) || runConfiguredSerializers(obj,
                                                                                    jgen,
-                                                                                   expand);
-    } catch (Exception e) {
-      logger.error("exception in serialization", e);
-      return false;
-    }
+                                                                                  expand);
     return true;
   }
 
@@ -229,12 +224,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
   
   public boolean runConfiguredSerializers(Object obj, JsonGenerator jgen, boolean expand) throws IOException, JsonProcessingException {
     for (ObjectSerializer s : supportedSerializers) {
-      try {
         if (s.canBeUsed(obj, expand) && s.writeObject(obj, jgen, expand))
           return true;
-      } catch (Exception e) {
-        logger.error("exception in serialization",e);
-      }
     }
     return false;
   }

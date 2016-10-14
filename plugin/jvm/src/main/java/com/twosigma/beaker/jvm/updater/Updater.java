@@ -15,6 +15,8 @@
  */
 package com.twosigma.beaker.jvm.updater;
 
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerSession;
 
@@ -34,6 +36,15 @@ public abstract class Updater {
   }
 
   final protected void deliverUpdate(Object update) {
-    this.session.deliver(this.localSession, this.channelId, update, null);
+    try{
+      this.session.deliver(this.localSession, this.channelId, update, null);
+    }catch (Exception e){
+      deliverError(e);
+    }
+  }
+
+  private void deliverError(Exception e) {
+    SimpleEvaluationObject error = SimpleEvaluationObject.createError(ExceptionUtils.getStackTrace(e));
+    this.session.deliver(this.localSession, this.channelId, error, null);
   }
 }

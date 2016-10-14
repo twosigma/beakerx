@@ -551,7 +551,7 @@ public class PluginServiceLocatorRest {
       generateIPythonConfig(pluginId, port, password, command);
 
       if (isIPython4OrNewer(getIPythonVersion(pluginId, command))) {
-        new JupyterWidgetsExtensionProcessor(pluginId, this.pluginDir).copyJupyterExtensionIfExists();
+        //new JupyterWidgetsExtensionProcessor(pluginId, this.pluginDir).copyJupyterExtensionIfExists();
       }
     }
     return pConfig;

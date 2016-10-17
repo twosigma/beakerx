@@ -452,7 +452,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
       for (Object entry : eset) {
         Entry<?,?> e = (Entry<?, ?>) entry;
         List<Object> l = new ArrayList<Object>();
-        l.add(e.getKey().toString());
+        Object o = e.getKey();
+        l.add(null==o?"null":o.toString());
         l.add(e.getValue());
         values.add(l);
       }
@@ -546,7 +547,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
       else {
         jgen.writeStartObject();
         for (Object k : kset) {
-          jgen.writeFieldName(k.toString());
+          jgen.writeFieldName((null==k)?"null":k.toString());
           if (!parent.writeObject(m.get(k), jgen, false))
             jgen.writeObject(m.get(k)!=null ? (m.get(k).toString()) : "null");
         }

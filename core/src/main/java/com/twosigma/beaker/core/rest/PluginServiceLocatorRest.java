@@ -128,8 +128,13 @@ public class PluginServiceLocatorRest {
     "  proxy_pass http://127.0.0.1:%(port)s/api/sessions;\n" +
     "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
     "}\n" +
-    "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/ {\n" +
-    IPYTHON_RULES_BASE;
+    "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/channels {\n" +
+    IPYTHON_RULES_BASE+
+    "location ~ %(base_url)s/api/kernels/[0-9a-f-]+ {\n" +
+    "  rewrite ^%(base_url)s/(.*)$ /$1 break;\n" +
+    "  proxy_pass http://127.0.0.1:%(port)s;\n" +
+    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
+    "}\n" ;
 
   private static final String CATCH_OUTDATED_REQUESTS_RULE =
       "location ~ /%(urlhash)s[a-z0-9]+\\.\\d+/cometd/ {\n" +
@@ -546,7 +551,7 @@ public class PluginServiceLocatorRest {
       generateIPythonConfig(pluginId, port, password, command);
 
       if (isIPython4OrNewer(getIPythonVersion(pluginId, command))) {
-        new JupyterWidgetsExtensionProcessor(pluginId, this.pluginDir).copyJupyterExtensionIfExists();
+        //new JupyterWidgetsExtensionProcessor(pluginId, this.pluginDir).copyJupyterExtensionIfExists();
       }
     }
     return pConfig;

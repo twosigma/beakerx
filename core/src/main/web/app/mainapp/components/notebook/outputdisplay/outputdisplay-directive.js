@@ -116,11 +116,11 @@
                 break;
               case 'Table':
               case 'TableDisplay':
-                if (result.columnNames) {
+                if (result.values) {
                   var names = result.columnNames.join(", ");
-                  return 'a table with ' + result.values.length + ' rows and ' + result.columnNames.length + ' columns (' + names + ')';
+                  return 'a table with ' + result.values.length + ' row(s) and ' + result.columnNames.length + ' columns (' + names + ')';
                 } else {
-                  return 'a table with ' + _.keys(result).length + ' rows';
+                  return 'a table with ' + _.keys(result).length + ' row(s)';
                 }
               case 'Results':
                 var out = 0, err = 0;

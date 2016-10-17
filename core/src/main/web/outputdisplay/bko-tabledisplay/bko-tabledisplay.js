@@ -1093,6 +1093,40 @@
 
           var i;
 
+          // parse model for JSON with objects as value type
+          if (!model.columnNames) {
+            // calculate total width of the table
+            var columnLength = 0;
+            for (var l = 0; l < model.length; ++l) {
+              columnLength += _.keys(model[l]).length;
+            }
+            model.columnNames = [];
+            model.values = [];
+            var position = 0;
+            // get model with keys and values: keys are column names
+            for (var j = 0; j < model.length; ++j) {
+              model.values[j] = [];
+              for (var s = 0; s < columnLength; ++s) {
+                model.values[j][s] = null;
+              }
+              var keys = _.keys(model[j]);
+              for (var k = 0; k < keys.length; ++k) {
+                var key = keys[k];
+                model.columnNames.push(key);
+                var value;
+                // replace object values with string representation
+                if (typeof model[j][key] === 'object') {
+                  value = JSON.stringify(model[j][key]).replace(':', '=');
+                } else {
+                  value = model[j][key];
+                }
+                model.values[j][k + position] = value;
+              }
+              // shift to the next value
+              position += keys.length;
+            }
+          }
+
           // validate saved state (if any) by using column \Names
           var modelColumnNames;
           if (model.columnNames) {
@@ -2293,7 +2327,6 @@
           }
 
           scope.columns = cols;
-
           var id = '#' + scope.id;
           var init = {
             'destroy' : true,

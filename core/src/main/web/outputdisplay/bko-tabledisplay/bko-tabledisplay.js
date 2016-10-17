@@ -1093,6 +1093,7 @@
 
           var i;
 
+          // TODO: this not work
           // parse model for JSON with objects as value type
           if (!model.columnNames) {
             // calculate total width of the table

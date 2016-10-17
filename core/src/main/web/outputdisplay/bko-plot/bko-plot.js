@@ -1468,7 +1468,7 @@
           scope.svg.selectAll("#locatebox").remove();
           if (scope.locateBox != null) {
             var box = scope.locateBox;
-            scope.svg.selectAll("#locatebox").data([{}]).enter().append("rect")
+            scope.view = scope.svg.selectAll("#locatebox").data([{}]).enter().append("rect")
               .attr("id", "locatebox")
               .attr("class", "plot-locatebox")
               .attr("x", box.x)
@@ -1516,8 +1516,9 @@
 
           if (scope.interactMode === "other") { return; }
           scope.zoomed = false;
-          scope.lastx = scope.lasty = 0;
           scope.lastscale = 1.0;
+          scope.lastx = scope.lasty = 0;
+
           // scope.zoom().scale(1.0);
 
           // d3.zoomTransform(scope.svg._groups[0][0]).scale(1.0);
@@ -1533,132 +1534,199 @@
           d3.zoom()
           .scaleExtent([1, 40])
           .translateExtent([[-100, -100], [600, 600]])
-          .on("zoom", scope.zooming());
+          .on("zoom", function(){
+            console.log('aafff')
+          });
 
         };
         scope.zooming = function(d) {
-          if (scope.interactMode === "other") { return; }
-          if (scope.interactMode === "zoom") {
-            // left click zoom
+          if (scope.interactMode === "other"){
+            return;
+          } else if (scope.interactMode === "zoom"){
             var lMargin = scope.layout.leftLayoutMargin,
-                bMargin = scope.layout.bottomLayoutMargin;
+              bMargin = scope.layout.bottomLayoutMargin;
 
             var W = plotUtils.safeWidth(scope.jqsvg) - lMargin,
-                H = plotUtils.safeHeight(scope.jqsvg) - bMargin;
+              H = plotUtils.safeHeight(scope.jqsvg) - bMargin;
 
-            var d3trans = d3.event;
-            var e = window.event || e; // old IE support
-            var d3scale = e.wheelDelta || -e.detail;
-
+            var d3trans = d3.event.transform || d3.event;
             var dx = d3trans.x - scope.lastx,
-                dy = d3trans.y - scope.lasty,
-                ds = (this.lastscale / d3scale)/100 ;
-            ds = e.wheelDelta/120 > 0 ? 1+ ds : 1-ds;
-
-            scope.lastx = d3trans.x;
-            scope.lasty = d3trans.y;
-            scope.lastscale = d3scale;
+              dy = d3trans.y - scope.lasty;
 
             var focus = scope.focus;
             var mx = d3.mouse(scope.svg._groups[0][0])[0],
                 my = d3.mouse(scope.svg._groups[0][0])[1];
-            if (Math.abs(mx - scope.mousep1.x) > 0 || Math.abs(my - scope.mousep1.y) > 0) {
+            if (Math.abs(mx - scope.mousep1.x)>0 || Math.abs(my - scope.mousep1.y)>0){
               scope.zoomed = true;
             }
-            if (Math.abs(d3scale) == 0) {
-              // translate only
-              var tx = -dx / W * focus.xspan,
-                  ty = dy / H * focus.yspan;
-              if (focus.xl + tx >= 0 && focus.xr + tx <= 1) {
-                focus.xl += tx;
-                focus.xr += tx;
-              } else {
-                if (focus.xl + tx < 0) {
-                  focus.xl = 0;
-                  focus.xr = focus.xl + focus.xspan;
-                } else if (focus.xr + tx > 1) {
-                  focus.xr = 1;
-                  focus.xl = focus.xr - focus.xspan;
-                }
-              }
-              if (focus.yl + ty >= 0 && focus.yr + ty <= 1) {
-                focus.yl += ty;
-                focus.yr += ty;
-              } else {
-                if (focus.yl + ty < 0) {
-                  focus.yl = 0;
-                  focus.yr = focus.yl + focus.yspan;
-                } else if (focus.yr + ty > 1) {
-                  focus.yr = 1;
-                  focus.yl = focus.yr - focus.yspan;
-                }
-              }
-              scope.jqsvg.css("cursor", "move");
-            } else {
-              // scale only
-              var level = scope.zoomLevel;
-              if (my <= plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin) {
-                // scale y
-                var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
-                var nyl = ym - ds * (ym - focus.yl),
-                    nyr = ym + ds * (focus.yr - ym),
-                    nyspan = nyr - nyl;
+            console.log('zoomed' + scope.zoomed);
+            scope.lastx = dx;
+            scope.lasty = dy;
 
-                if (nyspan >= level.minSpanY && nyspan <= level.maxScaleY) {
-                  focus.yl = nyl;
-                  focus.yr = nyr;
-                  focus.yspan = nyspan;
-                } else {
-                  if (nyspan > level.maxScaleY) {
-                    focus.yr = focus.yl + level.maxScaleY;
-                  } else if (nyspan < level.minSpanY) {
-                    focus.yr = focus.yl + level.minSpanY;
-                  }
-                  focus.yspan = focus.yr - focus.yl;
-                }
+            var tx = -dx / W * focus.xspan,
+                ty = dy / H * focus.yspan;
+                console.log(focus.xspan +  " :: " + focus.yspan);
+
+
+            if (focus.xl + tx>=0 && focus.xr + tx<=1){
+              focus.xl += tx / 10;
+              focus.xr += tx / 10;
+              console.log(focus.xl +  " :: " + focus.xr);
+            } else {
+              if (focus.xl + tx<0){
+                focus.xl = 0;
+                focus.xr = focus.xl + focus.xspan;
+              } else if (focus.xr + tx>1){
+                focus.xr = 1;
+                focus.xl = focus.xr - focus.xspan;
               }
-              if (mx >= scope.layout.leftLayoutMargin) {
-                // scale x
-                var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
-                var nxl = xm - ds * (xm - focus.xl),
-                    nxr = xm + ds * (focus.xr - xm),
-                    nxspan = nxr - nxl;
-                if (nxspan >= level.minSpanX && nxspan <= level.maxScaleX) {
-                  focus.xl = nxl;
-                  focus.xr = nxr;
-                  focus.xspan = nxspan;
-                } else {
-                  if (nxspan > level.maxScaleX) {
-                    focus.xr = focus.xl + level.maxScaleX;
-                  } else if (nxspan < level.minSpanX) {
-                    focus.xr = focus.xl + level.minSpanX;
-                  }
-                  focus.xspan = focus.xr - focus.xl;
-                }
-              }
-              scope.emitZoomLevelChange();
-              scope.fixFocus(focus);
             }
+
             scope.calcMapping(true);
             scope.renderCursor({
-              offsetX : mx,
-              offsetY : my
+              offsetX: mx,
+              offsetY: my
             });
-            scope.update();
-          } else if (scope.interactMode === "locate") {
-            // right click zoom
-/*            scope.mousep2 = {
-              "x" : d3.mouse(scope.svg[0][0])[0],
-              "y" : d3.mouse(scope.svg[0][0])[1]
-            };*/
-            scope.mousep2 = {
-                "x" : d3.mouse(scope.svg._groups[0][0])[0],
-                "y" : d3.mouse(scope.svg._groups[0][0])[1]
-              };
-            scope.calcLocateBox();
-            scope.rpipeRects = [];
-            scope.renderLocateBox();
+            scope.fixFocus(scope.focus);
+            // scope.update();
+
+            // if (focus.yl + ty>=0 && focus.yr + ty<=1){
+            //   focus.yl += ty;
+            //   focus.yr += ty;
+            // } else {
+            //   if (focus.yl + ty<0){
+            //     focus.yl = 0;
+            //     focus.yr = focus.yl + focus.yspan;
+            //   } else if (focus.yr + ty>1){
+            //     focus.yr = 1;
+            //     focus.yl = focus.yr - focus.yspan;
+            //   }
+            // }
+          //   scope.jqsvg.css("cursor", "move");
           }
+
+
+          // focus.xr = focus.xl = 0;
+
+//           if (scope.interactMode === "zoom") {
+//             // left click zoom
+//             var lMargin = scope.layout.leftLayoutMargin,
+//                 bMargin = scope.layout.bottomLayoutMargin;
+//
+//             var W = plotUtils.safeWidth(scope.jqsvg) - lMargin,
+//                 H = plotUtils.safeHeight(scope.jqsvg) - bMargin;
+//
+//             var d3trans = d3.event;
+//             var d3scale = d3.event.scale();
+//
+//             var dx = d3trans.x - scope.lastx,
+//                 dy = d3trans.y - scope.lasty,
+//                 ds = (this.lastscale / d3scale) ;
+//
+//             scope.lastx = d3trans.x;
+//             scope.lasty = d3trans.y;
+//             scope.lastscale = d3scale;
+//
+//             var focus = scope.focus;
+//             var mx = d3.mouse(scope.svg._groups[0][0])[0],
+//                 my = d3.mouse(scope.svg._groups[0][0])[1];
+//             if (Math.abs(mx - scope.mousep1.x) > 0 || Math.abs(my - scope.mousep1.y) > 0) {
+//               scope.zoomed = true;
+//             }
+//             if (Math.abs(d3scale) == 0) {
+//               // translate only
+//               var tx = -dx / W * focus.xspan,
+//                   ty = dy / H * focus.yspan;
+//               if (focus.xl + tx >= 0 && focus.xr + tx <= 1) {
+//                 focus.xl += tx;
+//                 focus.xr += tx;
+//               } else {
+//                 if (focus.xl + tx < 0) {
+//                   focus.xl = 0;
+//                   focus.xr = focus.xl + focus.xspan;
+//                 } else if (focus.xr + tx > 1) {
+//                   focus.xr = 1;
+//                   focus.xl = focus.xr - focus.xspan;
+//                 }
+//               }
+//               if (focus.yl + ty >= 0 && focus.yr + ty <= 1) {
+//                 focus.yl += ty;
+//                 focus.yr += ty;
+//               } else {
+//                 if (focus.yl + ty < 0) {
+//                   focus.yl = 0;
+//                   focus.yr = focus.yl + focus.yspan;
+//                 } else if (focus.yr + ty > 1) {
+//                   focus.yr = 1;
+//                   focus.yl = focus.yr - focus.yspan;
+//                 }
+//               }
+//               scope.jqsvg.css("cursor", "move");
+//             } else {
+//               // scale only
+//               var level = scope.zoomLevel;
+//               if (my <= plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin) {
+//                 // scale y
+//                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
+//                 var nyl = ym - ds * (ym - focus.yl),
+//                     nyr = ym + ds * (focus.yr - ym),
+//                     nyspan = nyr - nyl;
+//
+//                 if (nyspan >= level.minSpanY && nyspan <= level.maxScaleY) {
+//                   focus.yl = nyl;
+//                   focus.yr = nyr;
+//                   focus.yspan = nyspan;
+//                 } else {
+//                   if (nyspan > level.maxScaleY) {
+//                     focus.yr = focus.yl + level.maxScaleY;
+//                   } else if (nyspan < level.minSpanY) {
+//                     focus.yr = focus.yl + level.minSpanY;
+//                   }
+//                   focus.yspan = focus.yr - focus.yl;
+//                 }
+//               }
+//               if (mx >= scope.layout.leftLayoutMargin) {
+//                 // scale x
+//                 var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
+//                 var nxl = xm - ds * (xm - focus.xl),
+//                     nxr = xm + ds * (focus.xr - xm),
+//                     nxspan = nxr - nxl;
+//                 if (nxspan >= level.minSpanX && nxspan <= level.maxScaleX) {
+//                   focus.xl = nxl;
+//                   focus.xr = nxr;
+//                   focus.xspan = nxspan;
+//                 } else {
+//                   if (nxspan > level.maxScaleX) {
+//                     focus.xr = focus.xl + level.maxScaleX;
+//                   } else if (nxspan < level.minSpanX) {
+//                     focus.xr = focus.xl + level.minSpanX;
+//                   }
+//                   focus.xspan = focus.xr - focus.xl;
+//                 }
+//               }
+//               scope.emitZoomLevelChange();
+//               scope.fixFocus(focus);
+//             }
+//             scope.calcMapping(true);
+//             scope.renderCursor({
+//               offsetX : mx,
+//               offsetY : my
+//             });
+//             scope.update();
+//           } else if (scope.interactMode === "locate") {
+//             // right click zoom
+// /*            scope.mousep2 = {
+//               "x" : d3.mouse(scope.svg[0][0])[0],
+//               "y" : d3.mouse(scope.svg[0][0])[1]
+//             };*/
+//             scope.mousep2 = {
+//                 "x" : d3.mouse(scope.svg._groups[0][0])[0],
+//                 "y" : d3.mouse(scope.svg._groups[0][0])[1]
+//               };
+//             scope.calcLocateBox();
+//             scope.rpipeRects = [];
+//             scope.renderLocateBox();
+//           }
         };
         scope.zoomEnd = function(d) {
           //scope.zoomObj.scale(1.0);

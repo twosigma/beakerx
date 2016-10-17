@@ -1102,27 +1102,29 @@
             }
             model.columnNames = [];
             model.values = [];
+            // start column for a row of data
             var position = 0;
             // get model with keys and values: keys are column names
-            for (var j = 0; j < model.length; ++j) {
-              model.values[j] = [];
-              for (var s = 0; s < columnLength; ++s) {
-                model.values[j][s] = null;
+            for (var row = 0; row < model.length; ++row) {
+              model.values[row] = [];
+              // set cells to null is for DataTable - all cells should have some value
+              for (var j = 0; j < columnLength; ++j) {
+                model.values[row][j] = null;
               }
-              var keys = _.keys(model[j]);
+              var keys = _.keys(model[row]);
               for (var k = 0; k < keys.length; ++k) {
                 var key = keys[k];
                 model.columnNames.push(key);
                 var value;
                 // replace object values with string representation
-                if (typeof model[j][key] === 'object') {
-                  value = JSON.stringify(model[j][key]).replace(':', '=');
+                if (typeof model[row][key] === 'object') {
+                  value = JSON.stringify(model[row][key]).replace(':', '=').replace(/"/g, '');
                 } else {
-                  value = model[j][key];
+                  value = model[row][key];
                 }
-                model.values[j][k + position] = value;
+                model.values[row][k + position] = value;
               }
-              // shift to the next value
+              // shift for the next row of values
               position += keys.length;
             }
           }

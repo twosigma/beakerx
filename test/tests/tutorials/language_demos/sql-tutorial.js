@@ -76,6 +76,7 @@ describe('SQL Tutorial', function () {
         idCell = "codeVDv9Mf";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getDataTablesScrollHeadByIdCell(idCell)), 10000);
         beakerPO.checkDataTableHeadByIdCell(idCell, 'NAME\nMOLARMASS');
         beakerPO.checkDataTableBodyByIdCell(idCell, 4, '0 Water 18.01');
     });

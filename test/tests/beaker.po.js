@@ -924,9 +924,8 @@ var BeakerPageObject = function() {
   }
 
   this.checkAutocomplete = function(nameHint) {
-    browser.actions().sendKeys(protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SPACE)).perform().then(function(){
-      expect(element(by.cssContainingText('li.CodeMirror-hint', nameHint)).isPresent()).toBe(true);
-    });
+    browser.actions().sendKeys(protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SPACE)).perform();
+    browser.wait(this.EC.presenceOf(element(by.cssContainingText('li.CodeMirror-hint', nameHint))), 10000);
   };
 
   this.insertNewDefaultCell = function(language){

@@ -35,7 +35,7 @@
       <span class="bko-menu" aria-hidden="true" ng-class="{ sorting_desc: isIndexColumnDesc }"></span>
     </a>
     <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
-      <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(true)" class="dt-show-all menu-separator" eat-click>Show All Columns</a></li>
+      <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(true)" class="dt-show-all" eat-click>Show All Columns</a></li>
       <li class="dropdown-submenu" id="{{id}}_show_column">
         <a tabindex="-1" href="" class="dt-show-columns" data-toggle="dropdown" eat-click>Show Column</a>
         <div class="dropdown-menu dropdown-menu-search" ng-if="showColumnMenu.searchable()" stop-click>
@@ -55,7 +55,7 @@
         </ul>
       </li>
       <li><a tabindex="-1" href="#" ng-click="toggleColumnsVisibility(false)" class="dt-hide-all" eat-click>Hide All Columns</a></li>
-      <li><a tabindex="-1" href="#" ng-click="doResetAll()" class="dt-reset-all" eat-click>Reset All Interactions</a></li>
+      <li><a tabindex="-1" href="#" ng-click="doResetAll()" class="dt-reset-all menu-separator" eat-click>Reset All Interactions</a></li>
       <li>
         <a tabindex="-1" href="#" ng-click="doUsePagination()" class="dt-use-pagination" eat-click>Use pagination</a>
         <i class="glyphicon glyphicon-ok" ng-show="pagination.use"></i>
@@ -69,7 +69,7 @@
           </li>
         </ul>
       </li>
-      <li><a tabindex="-1" href="#" ng-click="doSelectAll()" class="dt-select-all menu-separator" eat-click>Select All Rows</a></li>
+      <li><a tabindex="-1" href="#" ng-click="doSelectAll()" class="dt-select-all" eat-click>Select All Rows</a></li>
       <li><a tabindex="-1" href="#" ng-click="doDeselectAll()" class="dt-deselect-all" eat-click>Deselect All Rows</a></li>
       <li><a tabindex="-1" href="#" ng-click="doReverseSelection()" class="dt-reverse-selection" eat-click>Reverse Selection</a></li>
       <li><a tabindex="-1" href="#" ng-click="doCopyToClipboard()" class="menu-separator"  id="{{id}}_dt_copy" eat-click>Copy to Clipboard</a></li>

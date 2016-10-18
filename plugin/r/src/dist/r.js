@@ -124,7 +124,7 @@ define(function(require, exports, module) {
       this.cancelExecution();
       RCancelFunction = null;
       var self = this;
-      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/rsh/exit"), { shellID: self.settings.shellID }).success(cb);
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/rsh/exit"), { shellID: self.settings.shellID });
     },
     resetEnvironment: function () {
       var deferred = bkHelper.newDeferred();

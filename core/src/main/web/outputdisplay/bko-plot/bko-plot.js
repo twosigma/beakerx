@@ -1521,12 +1521,6 @@
           scope.lastx = d3trans.x;
           scope.lasty = d3trans.y;
 
-          // scope.zoom().scale(1.0);
-
-          // d3.zoomTransform(scope.svg._groups[0][0]).scale(1.0);
-          //scope.zoomObj.translate([0, 0]);
-          //d3.zoomTransform(scope.svg._groups[0][0]).translate(0, 0);
-          // d3.zoomIdentity.translate(0, 0).scale(1);
           scope.mousep1 = {
             "x" : d3.mouse(scope.svg._groups[0][0])[0],
             "y" : d3.mouse(scope.svg._groups[0][0])[1]
@@ -1596,10 +1590,12 @@
               }
               scope.jqsvg.css("cursor", "move");
             }else{
-              console.log(d3trans)
               var deltaX = d3trans.deltaX;
               var deltaY = d3trans.deltaY;
-              console.log(deltaX + " ::: " + deltaY)
+
+              var ds = deltaX + deltaY;
+
+              console.log(ds)
               console.log("scale the zucker")
             }
             scope.calcMapping(true);

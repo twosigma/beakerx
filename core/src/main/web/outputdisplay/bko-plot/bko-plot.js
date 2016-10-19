@@ -1517,7 +1517,9 @@
           if (scope.interactMode === "other") { return; }
           scope.zoomed = false;
           scope.lastscale = 1.0;
-          scope.lastx = scope.lasty = 0;
+          var d3trans = d3.event.transform || d3.event;
+          scope.lastx = d3trans.x;
+          scope.lasty = d3trans.y;
 
           // scope.zoom().scale(1.0);
 
@@ -1534,9 +1536,7 @@
           d3.zoom()
           .scaleExtent([1, 40])
           .translateExtent([[-100, -100], [600, 600]])
-          .on("zoom", function(){
-            console.log('aafff')
-          });
+          .on("zoom", scope.zooming);
 
         };
         scope.zooming = function(d) {
@@ -1550,59 +1550,65 @@
               H = plotUtils.safeHeight(scope.jqsvg) - bMargin;
 
             var d3trans = d3.event.transform || d3.event;
-            var dx = d3trans.x - scope.lastx,
-              dy = d3trans.y - scope.lasty;
 
-            var focus = scope.focus;
             var mx = d3.mouse(scope.svg._groups[0][0])[0],
                 my = d3.mouse(scope.svg._groups[0][0])[1];
             if (Math.abs(mx - scope.mousep1.x)>0 || Math.abs(my - scope.mousep1.y)>0){
               scope.zoomed = true;
             }
-            console.log('zoomed' + scope.zoomed);
-            scope.lastx = dx;
-            scope.lasty = dy;
+
+            var dx = d3trans.x - scope.lastx,
+              dy = d3trans.y - scope.lasty;
+
+            scope.lastx = d3trans.x;
+            scope.lasty = d3trans.y;
+
+            var focus = scope.focus;
 
             var tx = -dx / W * focus.xspan,
                 ty = dy / H * focus.yspan;
-                console.log(focus.xspan +  " :: " + focus.yspan);
 
-
-            if (focus.xl + tx>=0 && focus.xr + tx<=1){
-              focus.xl += tx / 10;
-              focus.xr += tx / 10;
-              console.log(focus.xl +  " :: " + focus.xr);
-            } else {
-              if (focus.xl + tx<0){
-                focus.xl = 0;
-                focus.xr = focus.xl + focus.xspan;
-              } else if (focus.xr + tx>1){
-                focus.xr = 1;
-                focus.xl = focus.xr - focus.xspan;
+            if(d3trans.k === 1){
+              if (focus.xl + tx>=0 && focus.xr + tx<=1){
+                focus.xl += tx;
+                focus.xr += tx;
+              } else {
+                if (focus.xl + tx<0){
+                  focus.xl = 0;
+                  focus.xr = focus.xl + focus.xspan;
+                } else if (focus.xr + tx>1){
+                  focus.xr = 1;
+                  focus.xl = focus.xr - focus.xspan;
+                }
               }
-            }
 
+              if (focus.yl + ty>=0 && focus.yr + ty<=1){
+                focus.yl += ty;
+                focus.yr += ty;
+              } else {
+                if (focus.yl + ty<0){
+                  focus.yl = 0;
+                  focus.yr = focus.yl + focus.yspan;
+                } else if (focus.yr + ty>1){
+                  focus.yr = 1;
+                  focus.yl = focus.yr - focus.yspan;
+                }
+              }
+              scope.jqsvg.css("cursor", "move");
+            }else{
+              console.log(d3trans)
+              var deltaX = d3trans.deltaX;
+              var deltaY = d3trans.deltaY;
+              console.log(deltaX + " ::: " + deltaY)
+              console.log("scale the zucker")
+            }
             scope.calcMapping(true);
             scope.renderCursor({
               offsetX: mx,
               offsetY: my
             });
             scope.fixFocus(scope.focus);
-            // scope.update();
-
-            // if (focus.yl + ty>=0 && focus.yr + ty<=1){
-            //   focus.yl += ty;
-            //   focus.yr += ty;
-            // } else {
-            //   if (focus.yl + ty<0){
-            //     focus.yl = 0;
-            //     focus.yr = focus.yl + focus.yspan;
-            //   } else if (focus.yr + ty>1){
-            //     focus.yr = 1;
-            //     focus.yl = focus.yr - focus.yspan;
-            //   }
-            // }
-          //   scope.jqsvg.css("cursor", "move");
+            scope.update();
           }
 
 

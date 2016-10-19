@@ -35,20 +35,7 @@ RUN add-apt-repository -y ppa:webupd8team/java && \
     add-apt-repository -y ppa:nginx/stable && \
     add-apt-repository -y ppa:brightbox/ruby-ng
 
-RUN apt-get update && apt-get install -y nginx gradle-3.0 python g++ make git
-
-##########
-#  C++   #
-##########
-
-RUN apt-get install -y clang
-
-##########
-#  Java  #
-##########
-
-RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
-RUN apt-get install -y oracle-java8-installer
+RUN apt-get update && apt-get install -y nginx gradle-3.0 cython python g++ make git
 
 ############
 #  Python  #
@@ -72,6 +59,13 @@ RUN apt-get install -y python-virtualenv python3-dev pkgconf libfreetype6-dev li
     /home/beaker/py3k/bin/pip install ipython[notebook] jupyter && \
     /home/beaker/py3k/bin/pip install numpy matplotlib scipy jinja2 tornado pyzmq pandas pyaml && \
     /home/beaker/py3k/bin/ipython kernel install
+
+##########
+#  Java  #
+##########
+
+RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+RUN apt-get install -y oracle-java8-installer
 
 #######
 #  R  #
@@ -97,6 +91,12 @@ RUN apt-get install -y julia cmake && \
     julia --eval 'Pkg.add("IJulia")' && \
     julia --eval 'Pkg.add("Requests")' && \
     julia --eval 'Pkg.add("Gadfly")'
+
+##########
+#  C++   #
+##########
+
+RUN apt-get install -y clang
 
 ##########
 #  Ruby  #

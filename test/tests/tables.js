@@ -147,8 +147,8 @@ describe('Beaker Tables', function () {
         'Reset All Interactions',
         'Use pagination',
         'Rows to Show',
-        'Select All',
-        'Deselect All',
+        'Select All Rows',
+        'Deselect All Rows',
         'Reverse Selection',
         'Copy to Clipboard',
         'Save All as CSV',
@@ -274,7 +274,7 @@ describe('Beaker Tables', function () {
         beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
           beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
           beakerPO.getDataTableMenuToggle(section).click();
-          var selectAllMenu = beakerPO.getDataTableMenuItem(section, 'Select All');
+          var selectAllMenu = beakerPO.getDataTableMenuItem(section, 'Select All Rows');
           selectAllMenu.element(by.css('a[ng-click="doSelectAll()"]')).click();
           beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
             beakerPO.checkClass(row, 'selected');
@@ -289,7 +289,7 @@ describe('Beaker Tables', function () {
         beakerPO.getCodeOutputCellIdBySectionTitle(sectionTitle).then(function (v) {
           beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
           beakerPO.getDataTableMenuToggle(sectionTitle).click();
-          var deselectAllMenu = beakerPO.getDataTableMenuItem(sectionTitle, 'Deselect All');
+          var deselectAllMenu = beakerPO.getDataTableMenuItem(sectionTitle, 'Deselect All Rows');
           deselectAllMenu.element(by.css('a[ng-click="doDeselectAll()"]')).click();
         });
       };

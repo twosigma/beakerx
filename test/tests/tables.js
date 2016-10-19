@@ -141,6 +141,9 @@ describe('Beaker Tables', function () {
 
     it('should contain items', function (done) {
       var expectedItems = [
+        'Show All Columns',
+        'Show Column',
+        'Hide All Columns',
         'Reset All Interactions',
         'Use pagination',
         'Rows to Show',
@@ -152,9 +155,6 @@ describe('Beaker Tables', function () {
         'Save Selected as CSV',
         'Download All as CSV',
         'Download Selected as CSV',
-        'Show All Columns',
-        'Show Column',
-        'Hide All Columns',
         'Search...',
         'Filter...',
         'Hide Filter'

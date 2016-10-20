@@ -81,6 +81,17 @@ http {
       return 301 $scheme://$http_host%(start_page)s;
     }
 
+	# access to beaker status
+ 	location /beakerstatus {
+	  add_header Content-Type application/json;
+       return 200 '{ "result" : "ok", "message" : "" }';
+ 	}
+
+	location /%(urlhash)sbeakerstatus {
+ 	  add_header Content-Type application/json;
+      return 200 '{ "result" : "ok", "message" : "" }';
+ 	}
+  
     # version get request
     location = /version {
       add_header Access-Control-Allow-Origin *;
@@ -109,7 +120,7 @@ http {
       %(auth_cookie_rule)s
       proxy_pass http://127.0.0.1:%(port_beaker)s/rest/util/getMainPage;
       proxy_set_header Authorization "Basic %(auth)s";
-      add_header Set-Cookie "XSRF-TOKEN=%(sessionauth)s; path=/";
+      add_header Set-Cookie "beakerauth=%(sessionauth)s; path=/";
     }
     location = /%(urlhash)s/beaker/ {
       return 301 $scheme://$http_host%(start_page)s;
@@ -144,7 +155,7 @@ http {
 
     # forward all other urls
     location @dopass {
-      if ($http_x_xsrf_token != "%(sessionauth)s") {
+      if ($cookie_beakerauth != "%(sessionauth)s") {
         return 403;
       }
       %(auth_cookie_rule)s

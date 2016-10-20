@@ -162,7 +162,6 @@
         addPublishMenuItem();
         initWatcher();
       };
-
       if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
         initPublishDataAction();
       }

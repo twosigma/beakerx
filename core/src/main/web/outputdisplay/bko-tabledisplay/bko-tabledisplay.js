@@ -1093,41 +1093,48 @@
 
           var i;
 
-          // TODO: this not work
-          // parse model for JSON with objects as value type
+          // JSON values are not primitive types
           if (!model.columnNames) {
-            // calculate total width of the table
-            var columnLength = 0;
-            for (var l = 0; l < model.length; ++l) {
-              columnLength += _.keys(model[l]).length;
-            }
-            model.columnNames = [];
-            model.values = [];
-            // start column for a row of data
-            var position = 0;
-            // get model with keys and values: keys are column names
-            for (var row = 0; row < model.length; ++row) {
-              model.values[row] = [];
-              // set cells to null is for DataTable - all cells should have some value
-              for (var j = 0; j < columnLength; ++j) {
-                model.values[row][j] = null;
-              }
-              var keys = _.keys(model[row]);
-              for (var k = 0; k < keys.length; ++k) {
-                var key = keys[k];
-                model.columnNames.push(key);
-                var value;
-                // replace object values with string representation
-                if (typeof model[row][key] === 'object') {
-                  value = JSON.stringify(model[row][key]).replace(':', '=').replace(/"/g, '');
-                } else {
-                  value = model[row][key];
+            var row, col;
+            var columns = [];
+            var values = [];
+
+            // get all columns
+            for (row = 0; row < model.length; ++row) {
+              var currentColumns = _.keys(model[row]);
+              currentColumns.sort();
+              _.each(currentColumns, function (key) {
+                if (_.indexOf(columns, key) < 0) {
+                  columns.push(key);
                 }
-                model.values[row][k + position] = value;
-              }
-              // shift for the next row of values
-              position += keys.length;
+              });
             }
+            model.columnNames = columns;
+
+            // init new model by null values - for DataTables
+            for (row = 0; row < model.length; ++row) {
+              if (_.isUndefined(values[row])) {
+                values[row] = [];
+              }
+              for (col = 0; col < columns.length; ++col) {
+                values[row][col] = null;
+              }
+            }
+
+            // set values for each row
+            for (row = 0; row < model.length; ++row) {
+              var keys = _.keys(model[row]);
+              _.each(keys, function (key) {
+                var position = _.indexOf(columns, key);
+                var value = model[row][key];
+                // for not primitive type - make its String representation
+                if (_.isObject(model[row][key])) {
+                  value = JSON.stringify(model[row][key]).replace(':', '=').replace(/"/g, '');
+                }
+                values[row][position] = value;
+              });
+            }
+            model.values = values;
           }
 
           // validate saved state (if any) by using column \Names

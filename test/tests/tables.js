@@ -139,33 +139,6 @@ describe('Beaker Tables', function () {
       });
     }
 
-    it('should contain items', function (done) {
-      var expectedItems = [
-        'Show All Columns',
-        'Show Column',
-        'Hide All Columns',
-        'Reset All Interactions',
-        'Use pagination',
-        'Rows to Show',
-        'Select All Rows',
-        'Deselect All Rows',
-        'Reverse Selection',
-        'Copy to Clipboard',
-        'Save All as CSV',
-        'Save Selected as CSV',
-        'Download All as CSV',
-        'Download Selected as CSV',
-        'Search...',
-        'Filter...',
-        'Hide Filter'
-      ];
-      beakerPO.getCodeOutputCellIdBySectionTitle('Table Header').then(function (v) {
-        beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
-      });
-      var firstLevelItems = beakerPO.getDataTableMenuFirstLevelItems('Table Header');
-      checkMenus(expectedItems, firstLevelItems, done);
-    });
-
     it('should contain Rows to Show submenus', function (done) {
       var menusExpected = ['10', '25', '50', '100', 'All'];
       var menusActual = beakerPO.getDataTableSubmenu('Table Header', 'Rows to Show').all(by.css('a'));

@@ -323,7 +323,7 @@
           $scope.model.resetShareMenuItems(newItems);
         });
 
-        $scope.exportTo = function(rows, format) {        
+        $scope.exportTo = function(rows, format) {
           var data = rows.data();
           var settings = $scope.table.settings()[0];
           var rowIndexes = rows[0];
@@ -382,12 +382,11 @@
               }
               var d = row[j];
               if ($scope.columns[order].render !== undefined) {
-                d = $scope.columns[order].render(d, 'display', null,
-                  {
-                    settings: settings,
-                    row: rowIndexes[i],
-                    col: order
-                  });
+                d = $scope.columns[order].render(
+                    d
+                    ,null // use 'display' to escape HTML 
+                    ,null,
+                  { settings: settings,row: rowIndexes[i],col: order });
               }
               if (d == null) {
                 d = '';

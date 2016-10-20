@@ -382,11 +382,10 @@
               }
               var d = row[j];
               if ($scope.columns[order].render !== undefined) {
-                d = $scope.columns[order].render(
-                  d
-                  ,null // use 'display' to escape HTML
-                  ,null
-                  ,{ settings: settings,row: rowIndexes[i],col: order });
+                d = $scope.columns[order].render(d, null, null,
+                                                 {settings: settings,
+                                                  row: rowIndexes[i],
+                                                  col: order});
               }
               if (d == null) {
                 d = '';

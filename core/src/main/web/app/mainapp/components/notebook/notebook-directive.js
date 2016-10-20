@@ -55,6 +55,7 @@
             _editMode: 'default',
             hideSearchReplace: function () {
               this._showSearchReplace = false;
+              hideCurrentCellModelWhenWasHiddenAtTheBeginningOfSearch();
             },
             showSearchReplace: function (cm, cellmodel) {
               this._showSearchReplace = true;
@@ -219,6 +220,7 @@
         var previousFilter = {};
         var currentCm = null;
         var currentCellmodel = null;
+        var previousCellmodel = {};
         var clearCursorPozition = true;
         var currentMarker = null;
 
@@ -379,17 +381,40 @@
           }
         }
 
+        function openCurrentCellModel() {
+          if (currentCellmodel.locked){
+            currentCellmodel.locked = false;
+          }
+          if (currentCellmodel.input.hidden) {
+            currentCellmodel.input.hidden = false;
+          }
+        }
+
+        function hideCurrentCellModelWhenWasHiddenAtTheBeginningOfSearch() {
+            if (previousCellmodel.locked){
+              currentCellmodel.locked = true;
+            }
+            if (previousCellmodel.input && previousCellmodel.input.hidden) {
+              currentCellmodel.input.hidden = true;
+            }
+        }
+
+        function storePreviousCellModel() {
+          angular.copy(currentCellmodel, previousCellmodel);
+        }
+
         $scope.findFunction = function (result, reversive) {
-          if(result.find){
-            var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
+          if(result.find  && currentCm ){
+
+            var createNewCursor = result.caseSensitive != previousFilter.caseSensitive
               || result.find != previousFilter.find;
             angular.copy(result, previousFilter);
-  
+
             if(createNewCursor){
               cursor = getSearchCursor(result, cursor, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
               clearCursorPozition = false;
             }
-  
+
             var cellmodelId = currentCellmodel.id;
 
             if(cursor != null && cursor.find(reversive)){
@@ -397,9 +422,15 @@
                 currentMarker.clear();
               }
               currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
-              scrollToChar(currentCm, cursor.to());
+
+              openCurrentCellModel();
+
+              $timeout(function() {
+                scrollToChar(currentCm, cursor.to());
+              }, 10);
+
             }else {
-              
+
               var search = true;
               do{
                 
@@ -410,18 +441,26 @@
                 var find = null;
                 if(cursor != null){
                   find = cursor.find(reversive);
-                  search = !find && cellmodelId != currentCellmodel.id; 
+                  search = !find && cellmodelId != currentCellmodel.id;
                 }else{
                   search = false;
                 }
-                
+
                 if(find){
                   if(currentMarker){
                     currentMarker.clear();
                   }
                   currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
+
+                  openCurrentCellModel();
+
+                  $timeout(function() {
+                    scrollToChar(currentCm, cursor.to());
+                  }, 10);
+
                   scrollToChar(currentCm, cursor.to());
                 }
+
               }while(search);
               
             }
@@ -443,9 +482,9 @@
             $scope.findNextFunction(result);
           }
         }
-        
-        $scope.prepareNotebookeForSearch = function (cm, cellmodel) {
 
+        $scope.prepareNotebookeForSearch = function (cm, cellmodel) {
+          hideCurrentCellModelWhenWasHiddenAtTheBeginningOfSearch();
           if(cm && cellmodel){
             currentCm = cm;
             currentCellmodel = cellmodel;
@@ -459,7 +498,7 @@
               }
             }
           }
-          
+          storePreviousCellModel();
           clearCursorPozition = true;
 
           var element = $window.document.getElementById("find_field");
@@ -557,7 +596,9 @@
                 if (nextCm){
                   doPostSearchCellActions(currentCm);
                   currentCm = nextCm;
+                  hideCurrentCellModelWhenWasHiddenAtTheBeginningOfSearch();
                   currentCellmodel = nextCell;
+                  storePreviousCellModel()
                   ret = getSearchCursor(filter, null, reversive ? 'MAX' : 'MIN', nextCm);
                 }
               }

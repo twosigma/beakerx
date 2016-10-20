@@ -101,7 +101,7 @@
 
       isNewNotebookShortcut: function (e){
         if (this.isMacOS){
-          return e.ctrlKey && (e.which === 78);// Ctrl + n
+          return false; //issue #4722 e.ctrlKey && (e.which === 78);// Ctrl + n
         }
         return e.altKey && (e.which === 78);// Alt + n
       },
@@ -175,7 +175,7 @@
       },
       isSearchReplace: function (e){
         if (this.isMacOS){
-          return e.ctrlKey && (e.which === 70);// Ctrl + f
+          return e.ctrlKey && (e.which === 83);// Ctrl + f
         }
         return e.altKey && (e.which === 70);// Alt + f
       },

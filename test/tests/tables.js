@@ -233,6 +233,7 @@ describe('Beaker Tables', function () {
       });
 
       it('should display 10 rows', function (done) {
+        var rowsCount = 10;
         var section = 'Table with pagination';
         var rowsToShowMenu = beakerPO.getDataTableMenuItem(section, 'Rows to Show');
 
@@ -242,10 +243,10 @@ describe('Beaker Tables', function () {
             browser.actions().mouseMove(rowsToShowMenu).perform();
             var show10 = beakerPO.getDataTableSubMenuItem(rowsToShowMenu, '10');
             show10.element(by.css('a[ng-click="changePageLength(length)"]')).click().then(function () {
-                expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 10)).toBe(true);
-                expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 11)).toBe(false);
-                done();
+              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), rowsCount)).toBe(true);
+              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 11)).toBe(false);
             });
+            done();
           });
         });
       });

@@ -1520,7 +1520,10 @@
           var d3trans = d3.event.transform || d3.event;
           scope.lastx = d3trans.x;
           scope.lasty = d3trans.y;
-
+          if(d3trans.deltaY){
+            scope.deltaS = d3trans.deltaY;
+          }
+          scope.deltaS =
           scope.mousep1 = {
             "x" : d3.mouse(scope.svg._groups[0][0])[0],
             "y" : d3.mouse(scope.svg._groups[0][0])[1]
@@ -1592,27 +1595,35 @@
             }else{
               var deltaX = d3trans.deltaX;
               var deltaY = d3trans.deltaY;
-              // var ds = Math.sqrt((deltaX*deltaX) + (deltaY*deltaY));
-              var ds = deltaY;
+              if(!scope.deltaS) scope.deltaS = deltaY;
+
+              var ds = 1 + deltaY/scope.deltaS;
               var level = scope.zoomLevel;
               if (my <= plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin) {
                 // scale y
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
-                var nyl = ym - deltaY * (ym - focus.yl),
-                    nyr = ym + deltaY * (focus.yr - ym),
+                var nyl = ym - ds * (ym - focus.yl),
+                    nyr = ym + ds * (focus.yr - ym),
                     nyspan = (nyr - nyl);
+                console.log(nyl + " :: " + nyr  + "  :::::: " + nyspan);
+                scope.deltaS  = deltaY;
+                console.log("ds" + ds);
 
                 if (nyspan >= level.minSpanY && nyspan <= level.maxScaleY) {
-                  focus.yl = nyl;
-                  focus.yr = nyr;
+                  // focus.yl = nyl;
+                  // focus.yr = nyr;
                   focus.yspan = nyspan;
-                } else {
+                }
+                else {
                   if (nyspan > level.maxScaleY) {
-                    focus.yr = focus.yl + level.maxScaleY;
+                    console.log("bigger than allowed");
+                    // focus.yr = focus.yl + level.maxScaleY;
                   } else if (nyspan < level.minSpanY) {
-                    focus.yr = focus.yl + level.minSpanY;
+                    console.log("smaller than allowed");
+                    // focus.yr = focus.yl + level.minSpanY;
                   }
-                  focus.yspan = focus.yr - focus.yl;
+                  console.log("ei ole oiges moodus");
+                  // focus.yspan = focus.yr - focus.yl;
                 }
               }
               // if (mx >= scope.layout.leftLayoutMargin) {
@@ -1635,7 +1646,6 @@
               //   }
               // }
               scope.emitZoomLevelChange();
-              console.log(ds);
               console.log("scale the zucker")
             }
             scope.calcMapping(true);

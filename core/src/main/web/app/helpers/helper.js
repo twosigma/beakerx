@@ -100,7 +100,7 @@
       var bkHelper = {
 
       isNewNotebookShortcut: function (e){
-        if (this.isMacOS){
+        if (this.isMacOS || this.getInputCellKeyMapMode() === "emacs"){
           return false; //issue #4722 e.ctrlKey && (e.which === 78);// Ctrl + n
         }
         return e.altKey && (e.which === 78);// Alt + n
@@ -174,8 +174,8 @@
           ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
       },
       isSearchReplace: function (e){
-        if (this.isMacOS){
-          return e.ctrlKey && (e.which === 83);// Ctrl + f
+        if (this.isMacOS || this.getInputCellKeyMapMode() === "emacs"){
+          return e.ctrlKey && (e.which === 83);// Ctrl + s
         }
         return e.altKey && (e.which === 70);// Alt + f
       },

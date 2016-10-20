@@ -100,8 +100,12 @@
       var bkHelper = {
 
       isNewNotebookShortcut: function (e){
-        if (this.isMacOS || this.getInputCellKeyMapMode() === "emacs"){
-          return false; //issue #4722 e.ctrlKey && (e.which === 78);// Ctrl + n
+        if (this.isMacOS){
+          if(this.getInputCellKeyMapMode() === "emacs"){
+            return false; //issue #4722 
+          }else{
+            return returne.ctrlKey && (e.which === 78);// Ctrl + n
+          }
         }
         return e.altKey && (e.which === 78);// Alt + n
       },
@@ -174,8 +178,12 @@
           ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
       },
       isSearchReplace: function (e){
-        if (this.isMacOS || this.getInputCellKeyMapMode() === "emacs"){
-          return e.ctrlKey && (e.which === 83);// Ctrl + s
+        if (this.isMacOS){
+          if(this.getInputCellKeyMapMode() === "emacs"){
+            return e.ctrlKey && (e.which === 83);// Ctrl + s
+          }else{
+            return e.ctrlKey && (e.which === 70);// Ctrl + f
+          }
         }
         return e.altKey && (e.which === 70);// Alt + f
       },

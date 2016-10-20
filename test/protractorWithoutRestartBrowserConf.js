@@ -53,7 +53,7 @@ var config = {
     'tests/tutorials/language_demos/python-tutorial.js',
     'tests/tutorials/language_demos/jscript-tutorial.js',
     'tests/tutorials/language_demos/R-tutorial.js',
-    'tests/tutorials/language_demos/nodejs-tutorial.js'
+    //'tests/tutorials/language_demos/nodejs-tutorial.js'
     //'tests/tutorials/table_display/tableGroovy-tutorial.js',
     //'tests/tutorials/standard_visual_api/d3js-tutorial.js',
     //'tests/tutorials/standard_visual_api/p5js-tutorial.js',
@@ -61,7 +61,7 @@ var config = {
     //'tests/tutorials/automate/notebookControl-tutorial.js',
     //'tests/tutorials/automate/notebook-reflection-tutorial.js',
     //'tests/tutorials/automate/dashboard-tutorial.js',
-    //'tests/tables.js',
+    'tests/tables.js',
     //'tests/tutorials/native_plotting/jscriptPlot-tutorial.js',
     //'tests/tutorials/feature_overview/autotranslation-tutorial.js',
     //'tests/tutorials/feature_overview/codeReuse-tutorial.js',

@@ -99,25 +99,22 @@ public class TableDisplay extends ObservableTableDisplay {
     }
 
     // now build values
-    for(Map<?,?> m : v) {
-      List<Object> vals = new ArrayList<Object>();
+    for (Map<?, ?> m : v) {
+      List<Object> vals = new ArrayList<>();
       for (String cn : columns) {
-        if (m.containsKey(cn)){
+        if (m.containsKey(cn)) {
           // make Map as String of {key=val}
           if (m.get(cn) instanceof Map) {
             Joiner.MapJoiner mapJoiner = Joiner.on(',').withKeyValueSeparator("=");
-            String value =
-                new StringBuilder("{")
-                    .append(mapJoiner.join((Map<?, ?>) m.get(cn)))
-                    .append("}").toString();
+            String value = "{" + mapJoiner.join((Map<?, ?>) m.get(cn)) + "}";
             vals.add(getValueForSerializer(value, serializer));
+            // make List as String [vals,...]
           } else if (m.get(cn) instanceof List) {
             vals.add(getValueForSerializer((m.get(cn)).toString(), serializer));
           } else {
             vals.add(getValueForSerializer(m.get(cn), serializer));
           }
-        }
-        else
+        } else
           vals.add(null);
       }
       values.add(vals);

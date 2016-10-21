@@ -79,25 +79,31 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     if (c.isEmpty())
       return false;
     for (Object obj : c) {
-      if (obj != null && !isPrimitiveTypeMap(obj)) {
+      if (obj != null && !isPrimitiveTypeMap(obj, true)) {
         return false;
       }
     }
     return true;
   }
 
+  protected boolean isPrimitiveTypeMap(Object o, boolean forCollection) {
+    if (forCollection)
+      return o instanceof Map<?, ?>;
+    else
+      return isPrimitiveTypeMap(o);
+  }
+
   protected boolean isPrimitiveTypeMap(Object o) {
     if (!(o instanceof Map<?, ?>))
       return false;
     Map<?, ?> m = (Map<?, ?>) o;
-    return true;
-    /*Set<?> eset = m.entrySet();
+    Set<?> eset = m.entrySet();
     for (Object entry : eset) {
       Entry<?, ?> e = (Entry<?, ?>) entry;
       if (e.getValue() != null && !isPrimitiveType(e.getValue().getClass().getName()))
         return false;
     }
-    return true;*/
+    return true;
   }
 
 

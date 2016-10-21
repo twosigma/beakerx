@@ -103,10 +103,13 @@ public class TableDisplay extends ObservableTableDisplay {
       List<Object> vals = new ArrayList<Object>();
       for (String cn : columns) {
         if (m.containsKey(cn)){
+          // make Map as String of {key=val}
           if (m.get(cn) instanceof Map) {
             Joiner.MapJoiner mapJoiner = Joiner.on(',').withKeyValueSeparator("=");
-            String value = new StringBuilder("[")
-              .append(mapJoiner.join((Map<?, ?>) m.get(cn))).append("]").toString();
+            String value =
+                new StringBuilder("{")
+                    .append(mapJoiner.join((Map<?, ?>) m.get(cn)))
+                    .append("}").toString();
             vals.add(getValueForSerializer(value, serializer));
           } else {
             vals.add(getValueForSerializer(m.get(cn), serializer));

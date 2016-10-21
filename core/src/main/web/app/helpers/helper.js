@@ -104,7 +104,7 @@
           if(this.getInputCellKeyMapMode() === "emacs"){
             return false; //issue #4722 
           }else{
-            return returne.ctrlKey && (e.which === 78);// Ctrl + n
+            return e.ctrlKey && (e.which === 78);// Ctrl + n
           }
         }
         return e.altKey && (e.which === 78);// Alt + n

@@ -19,5 +19,18 @@
   window.beakerRegister.postHelperHooks = [];
   window.beakerRegister.isEmbedded = true;
   window.beakerRegister.disablePluginLoadFromUrl = true;
+  if (window.beakerRegister.hooks === undefined) {
+    window.beakerRegister.hooks = {};
+  }
+  window.beakerRegister.hooks.evaluate = function(a,d) {
+    // TODO setup beakerLab object
+    console.log('pre-evaluate',a,d);
+    
+  };
+  window.beakerRegister.hooks.edited = function(edited) {
+    // inform beakerLab about edited flag
+    console.log('edited');
+    parent.$(parent.document).trigger('beaker.embedded.notebookChanged', [edited]);
+  };
 
 })();

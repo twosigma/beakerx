@@ -27,7 +27,7 @@ define(function(require, exports, module) {
       sortorder: 100,
       id: "new-notebook-menuitem",
       action: function() {
-        bkHelper.newSession(true);
+        parent.$(parent.document).trigger('beaker.embedded.newNotebook', []);
       },
       tooltip: "Open a new empty notebook, add the languages of your choice"
     },
@@ -45,9 +45,57 @@ define(function(require, exports, module) {
       shortcut: ["Ctrl-Shift-S", "Cmd-Shift-S"],
       id: "save-as-menuitem",
       sortorder: 140,
-      tooltip: "Save a file to file system",
+      tooltip: "Save notebook with new name",
       action: function() {
-
+        parent.$(parent.document).trigger('beaker.embedded.saveAs', []);
+      }
+    },
+    {
+      name: "Save with comments...",
+      id: "save-with-comment-menuitem",
+      sortorder: 150,
+      tooltip: "Save notebook and add comment",
+      action: function() {
+        parent.$(parent.document).trigger('beaker.embedded.saveWithComments', []);
+      }
+    },
+    {
+      name: "Rename...",
+      id: "rename-menuitem",
+      sortorder: 160,
+      tooltip: "Rename notebook",
+      action: function() {
+        // TODO save it first
+        parent.$(parent.document).trigger('beaker.embedded.rename', []);
+      }
+    },
+    {
+      name: "Export...",
+      id: "export-menuitem",
+      sortorder: 170,
+      tooltip: "Export notebook",
+      action: function() {
+        // TODO save it first
+        parent.$(parent.document).trigger('beaker.embedded.export', []);
+      }
+    },
+    {
+      name: "Send...",
+      id: "send-menuitem",
+      sortorder: 180,
+      tooltip: "Send notebook",
+      action: function() {
+        // TODO save it first
+        parent.$(parent.document).trigger('beaker.embedded.send', []);
+      }
+    },
+    {
+      name: "View History...",
+      id: "history-menuitem",
+      sortorder: 190,
+      tooltip: "View History",
+      action: function() {
+        parent.$(parent.document).trigger('beaker.embedded.history', []);
       }
     },
 /*
@@ -64,9 +112,9 @@ define(function(require, exports, module) {
     {
       name: "Close",
       id: "close-menuitem",
-      sortorder: 160,
+      sortorder: 200,
       action: function() {
-
+        parent.$(parent.document).trigger('beaker.embedded.close', []);
       }
     }
   ];

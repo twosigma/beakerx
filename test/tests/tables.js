@@ -26,6 +26,7 @@ describe('Beaker Tables', function () {
     browser.get(beakerPO.baseURL);
     browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:..%2Ftest%2Fnotebooks%2Ftables-test.bkr&readOnly=true");
     beakerPO.waitUntilLoadingFinished().then(done);
+    browser.driver.manage().window().maximize();
   });
 
   afterAll(function (done) {
@@ -227,7 +228,6 @@ describe('Beaker Tables', function () {
       var allRowsCount = 50;
       it('should display All rows', function (done) {
         var section = 'Table with pagination';
-        browser.driver.manage().window().maximize();
         var rowsToShowMenu = beakerPO.getDataTableMenuItem(section, 'Rows to Show');
 
         beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {

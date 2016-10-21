@@ -26,7 +26,6 @@ describe('Beaker Tables', function () {
     browser.get(beakerPO.baseURL);
     browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:..%2Ftest%2Fnotebooks%2Ftables-test.bkr&readOnly=true");
     beakerPO.waitUntilLoadingFinished().then(done);
-    browser.driver.manage().window().maximize();
   });
 
   afterAll(function (done) {
@@ -141,6 +140,7 @@ describe('Beaker Tables', function () {
     }
 
     it('should contain Rows to Show submenus', function (done) {
+      browser.driver.manage().window().maximize();
       var menusExpected = ['10', '25', '50', '100', 'All'];
       var menusActual = beakerPO.getDataTableSubmenu('Table Header', 'Rows to Show').all(by.css('a'));
       checkMenus(menusExpected, menusActual, done);

@@ -1,8 +1,9 @@
 {
   "conf-format": "1",
   "edit-mode": "default",
-  "allow-anonymous-usage-tracking": true,
+  "allow-anonymous-usage-tracking": false,
   "init": [
+    "./plugin/beakerlab/init.js",
     "./plugin/init/track.js",
     "./app/genweb/addevalplugins.js",
     "./plugin/init/addoutputdisplays.js"

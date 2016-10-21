@@ -380,26 +380,26 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
           instance.setBinding(scriptBinding);
           
           result = instance.run();
-           
-          if(LOCAL_DEV) { 
+
+          if(LOCAL_DEV) {
             logger.info("Result: {}", result);
             logger.info("Variables: {}", scriptBinding.getVariables());
           }
-            
+
           theOutput.finished(result);
-            
+
         } catch(Throwable e) {
-          
+
           if(LOCAL_DEV) {
               logger.warn(e.getMessage());
               e.printStackTrace();
           }
-          
+
           //unwrap ITE
           if(e instanceof InvocationTargetException) {
             e = ((InvocationTargetException)e).getTargetException();
           }
-          
+
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
             theOutput.error("... cancelled!");
           } else {

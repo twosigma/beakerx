@@ -30,7 +30,7 @@ ENV HOME /home/beaker
 
 RUN chown -R beaker:beaker /home/beaker
 
-RUN su -m beaker -c "cd /home/beaker/src  && gradle build"
+RUN su -m beaker -c "cd /home/beaker/src && gradle realclean && gradle build"
 
 ###################
 #      Setup      #

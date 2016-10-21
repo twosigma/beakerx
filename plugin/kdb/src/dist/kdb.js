@@ -18,6 +18,7 @@
  */
 define(function(require, exports, module) {
   'use strict';
+  var PLUGIN_ID = "Kdb";
   var PLUGIN_NAME = "Kdb";
   var COMMAND = "kdb/kdbPlugin";
   var serviceBase = null;
@@ -125,8 +126,7 @@ define(function(require, exports, module) {
       this.cancelExecution();
       kdbCancelFunction = null;
       var self = this;
-      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/kdb/exit"), { shellID: self.settings.shellID })
-      .success(cb);
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/kdb/exit"), { shellID: self.settings.shellID });
     },
     interrupt: function() {
       this.cancelExecution();
@@ -142,7 +142,7 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   
   var init = function() {
-    bkHelper.locatePluginService(PLUGIN_NAME, {
+    bkHelper.locatePluginService(PLUGIN_ID, {
         command: COMMAND,
         waitfor: "Started SelectChannelConnector",
         recordOutput: "true"

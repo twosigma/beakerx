@@ -19,6 +19,7 @@
  */
 define(function(require, exports, module) {
   'use strict';
+  var PLUGIN_ID = "Groovy";
   var PLUGIN_NAME = "Groovy";
   var COMMAND = "groovy/groovyPlugin";
   var serviceBase = null;
@@ -140,8 +141,7 @@ define(function(require, exports, module) {
       var self = this;
       this.cancelExecution();
       GroovyCancelFunction = null;
-      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/groovysh/exit"), { shellId: self.settings.shellID })
-      .success(cb);
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/groovysh/exit"), { shellId: self.settings.shellID });
     },
     updateShell: function (cb) {
       bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
@@ -199,7 +199,7 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   
   var init = function() {
-    bkHelper.locatePluginService(PLUGIN_NAME, {
+    bkHelper.locatePluginService(PLUGIN_ID, {
       command: COMMAND,
       waitfor: "Started SelectChannelConnector",
       recordOutput: "true"

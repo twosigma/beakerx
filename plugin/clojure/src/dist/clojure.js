@@ -19,6 +19,7 @@
  */
 define(function(require, exports, module) {
   'use strict';
+  var PLUGIN_ID = "Clojure";
   var PLUGIN_NAME = "Clojure";
   var COMMAND = "clojure/clojurePlugin";
   var serviceBase = null;
@@ -115,7 +116,7 @@ define(function(require, exports, module) {
       },
       exit: function(cb) {
         var self = this;
-        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/exit"), { shellId: self.settings.shellID }).success(cb);
+        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/exit"), { shellId: self.settings.shellID });
       },
       updateShell: function (cb) {
         bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);
@@ -156,7 +157,7 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
 
   var init = function() {
-    bkHelper.locatePluginService(PLUGIN_NAME, {
+    bkHelper.locatePluginService(PLUGIN_ID, {
       command: COMMAND,
       waitfor: "Started SelectChannelConnector",
       recordOutput: "true"

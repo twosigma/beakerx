@@ -21,6 +21,7 @@
 define(function(require, exports, module) {
   'use strict';
 
+  var PLUGIN_ID = "IPython";
   var PLUGIN_NAME = "IPython";
   var COMMAND = "ipythonPlugins/ipython/ipythonPlugin";
   var kernels = {};
@@ -575,7 +576,7 @@ define(function(require, exports, module) {
       }
       myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : ((ipyVersion == '3') ? IPython3 : IPython));
 
-      bkHelper.locatePluginService(PLUGIN_NAME, {
+      bkHelper.locatePluginService(PLUGIN_ID, {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
       }).success(function(ret) {

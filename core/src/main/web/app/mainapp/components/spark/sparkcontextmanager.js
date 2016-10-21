@@ -24,7 +24,8 @@
   .factory('bkSparkContextManager', function(
       $timeout, $rootScope, $http, bkUtils, bkHelper, bkSessionManager,
       bkEvaluatorManager, bkEvaluatePluginManager, GLOBALS) {
-    
+
+    var PLUGIN_ID = "Scala";
     var PLUGIN_NAME = "Scala";
     var COMMAND = "scala/scalaPlugin";
     var serviceBase = null;
@@ -204,7 +205,7 @@
         serviceBase = null;
         return;
       }
-      bkHelper.locatePluginService(PLUGIN_NAME, {
+      bkHelper.locatePluginService(PLUGIN_ID, {
         command: COMMAND,
         recordOutput: "true"
       }).success(function(ret) {

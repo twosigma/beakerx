@@ -21,6 +21,7 @@
  */
 define(function(require, exports, module) {
     'use strict';
+    var PLUGIN_ID = "Node";
     var PLUGIN_NAME = "Node";
     var COMMAND = "node/nodePlugin";
 
@@ -128,7 +129,7 @@ define(function(require, exports, module) {
 
     var shellReadyDeferred = bkHelper.newDeferred();
     var init = function () {
-      bkHelper.locatePluginService(PLUGIN_NAME, {
+      bkHelper.locatePluginService(PLUGIN_ID, {
         command: COMMAND,
         startedIndicator: "Server Starting",
         recordOutput: "true"

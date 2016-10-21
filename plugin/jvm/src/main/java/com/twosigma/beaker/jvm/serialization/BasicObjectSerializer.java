@@ -90,14 +90,14 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     if (!(o instanceof Map<?, ?>))
       return false;
     Map<?, ?> m = (Map<?, ?>) o;
-
-    Set<?> eset = m.entrySet();
+    return true;
+    /*Set<?> eset = m.entrySet();
     for (Object entry : eset) {
       Entry<?, ?> e = (Entry<?, ?>) entry;
       if (e.getValue() != null && !isPrimitiveType(e.getValue().getClass().getName()))
         return false;
     }
-    return true;
+    return true;*/
   }
 
 

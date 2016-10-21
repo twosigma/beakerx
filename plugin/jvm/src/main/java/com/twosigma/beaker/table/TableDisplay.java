@@ -111,6 +111,8 @@ public class TableDisplay extends ObservableTableDisplay {
                     .append(mapJoiner.join((Map<?, ?>) m.get(cn)))
                     .append("}").toString();
             vals.add(getValueForSerializer(value, serializer));
+          } else if (m.get(cn) instanceof List) {
+            vals.add(getValueForSerializer((m.get(cn)).toString(), serializer));
           } else {
             vals.add(getValueForSerializer(m.get(cn), serializer));
           }

@@ -1247,6 +1247,9 @@
         };
         $scope.$watch('isEdited()', function(edited, oldValue) {
           if (edited === oldValue) return;
+          if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.edited !== undefined) {
+            window.beakerRegister.hooks.edited(edited);
+          }
           setDocumentTitle();
         });
         $scope.$watch('filename()', function(newVal, oldVal) {

@@ -514,9 +514,16 @@
           return false;
         }
       },
-      saveNotebookAs: function(notebookUri, uriType) {
+      saveNotebookAs: function() {
         if (getCurrentApp() && getCurrentApp().saveNotebookAs) {
-          return getCurrentApp().saveNotebookAs(notebookUri, uriType);
+          return getCurrentApp().saveNotebookAs();
+        } else {
+          return false;
+        }
+      },
+      saveNotebookAsUri: function(notebookUri, uriType) {
+        if (getCurrentApp() && getCurrentApp().saveNotebookAsUri) {
+          return getCurrentApp().saveNotebookAsUri(notebookUri, uriType);
         } else {
           return false;
         }

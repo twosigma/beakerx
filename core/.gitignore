@@ -16,3 +16,5 @@ build.xml
 manifest.mf
 src/main/resources/pluginsconfiguration.config
 
+/bin/
+/python/

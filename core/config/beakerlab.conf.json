@@ -1,0 +1,20 @@
+{
+  "conf-format": "1",
+  "edit-mode": "default",
+  "allow-anonymous-usage-tracking": true,
+  "init": [
+    "./plugin/init/track.js",
+    "./app/genweb/addevalplugins.js",
+    "./plugin/init/addoutputdisplays.js"
+  ],
+  "control-panel-menu-plugins": [
+  ],
+  "notebook-app-menu-plugins":[
+    "./plugin/beakerlab/file.js",
+    "./plugin/beakerlab/view.js",
+    "./plugin/beakerlab/notebook.js"
+  ],
+  "notebook-cell-menu-plugins": [
+    "./plugin/beakerlab/cellmenu.js"
+  ]
+}

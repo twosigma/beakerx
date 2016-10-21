@@ -103,7 +103,7 @@
       var isUnix = false;
       var osName = 'unknown';
 
-      if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
+      if (window.beakerRegister === undefined || window.beakerRegister.isPublication === undefined) {
         angularUtils.httpGet(serverUrl("beaker/rest/util/version"))
           .success(function (result) {
             isWindows = _isWindows(result);

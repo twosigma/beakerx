@@ -1314,7 +1314,7 @@
       }
     };
 
-    if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
+    if (window.beakerRegister === undefined || window.beakerRegister.isPublication === undefined) {
       bkUtils.getBeakerPreference('fs-order-by').then(function (fs_order_by) {
         bkCoreManager._prefs.fs_order_by = !fs_order_by || fs_order_by.length === 0 ? 'uri' : fs_order_by;
       }).catch(function (response) {

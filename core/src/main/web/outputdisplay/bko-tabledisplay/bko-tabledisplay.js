@@ -1128,8 +1128,8 @@
                 var position = _.indexOf(columns, key);
                 var value = model[row][key];
                 // for not primitive type - make its String representation
-                if (_.isObject(model[row][key])) {
-                  value = JSON.stringify(model[row][key]).replace(':', '=').replace(/"/g, '');
+                if (_.isObject(value)) {
+                  value = JSON.stringify(value).replace(':', '=').replace(/"/g, '');
                 }
                 values[row][position] = value;
               });

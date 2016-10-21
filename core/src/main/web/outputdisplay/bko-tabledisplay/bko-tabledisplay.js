@@ -1093,50 +1093,6 @@
 
           var i;
 
-          // JSON values are not primitive types
-          if (!model.columnNames) {
-            var row, col;
-            var columns = [];
-            var values = [];
-
-            // get all columns
-            for (row = 0; row < model.length; ++row) {
-              var currentColumns = _.keys(model[row]);
-              currentColumns.sort();
-              _.each(currentColumns, function (key) {
-                if (_.indexOf(columns, key) < 0) {
-                  columns.push(key);
-                }
-              });
-            }
-            model.columnNames = columns;
-
-            // init new model by null values - for DataTables
-            for (row = 0; row < model.length; ++row) {
-              if (_.isUndefined(values[row])) {
-                values[row] = [];
-              }
-              for (col = 0; col < columns.length; ++col) {
-                values[row][col] = null;
-              }
-            }
-
-            // set values for each row
-            for (row = 0; row < model.length; ++row) {
-              var keys = _.keys(model[row]);
-              _.each(keys, function (key) {
-                var position = _.indexOf(columns, key);
-                var value = model[row][key];
-                // for not primitive type - make its String representation
-                if (_.isObject(value)) {
-                  value = JSON.stringify(value).replace(':', '=').replace(/"/g, '');
-                }
-                values[row][position] = value;
-              });
-            }
-            model.values = values;
-          }
-
           // validate saved state (if any) by using column \Names
           var modelColumnNames;
           if (model.columnNames) {

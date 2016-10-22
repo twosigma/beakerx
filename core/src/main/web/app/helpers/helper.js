@@ -592,6 +592,9 @@
           return false;
         }
       },        
+      backupNotebook: function() {
+        return bkSessionManager.backup();
+      },
       typeset: function(element) {
         try {
           katexhelper.renderElem(element[0], {

@@ -987,7 +987,11 @@
         bkRecentMenu.updateRecentDocument(oldUrl, generateRecentDocumentItem());
       },
       getNotebookPath: function() {
-        if (_notebookUri.get()) {
+        if (_uriType === 'ajax') {
+          var pieces = _notebookUri.get().split(":");
+          return pieces[3];
+        }
+        else if (_notebookUri.get()) {
           return _notebookUri.get();
         } else {
           return "New Notebook";

@@ -15,7 +15,7 @@
   limitations under the License.
 -->
 <div ng-class="(isLocked() || isLockedCell()) && 'locked'" class="bkcell {{cellmodel.type}}">
-  <div class="toggle-menu" ng-class="{'locked-cell-menu': isLockedCell() && 'locked-cell-menu', 'wide' : wideMenu()}">
+  <div class="toggle-menu" ng-class="{'locked-cell-menu': cellmodel.locked && 'locked-cell-menu', 'wide' : wideMenu()}">
     <div class="toggle-menu-items">
       <div class="dropdown dropdown-promoted" data-toggle="dropdown" style="float: right;">
         <div class="cell-menu-item cell-dropdown dropdown-toggle" title="cell menu"></div>

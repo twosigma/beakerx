@@ -27,7 +27,9 @@ define(function(require, exports, module) {
       sortorder: 100,
       id: "new-notebook-menuitem",
       action: function() {
-        parent.$(parent.document).trigger('beaker.embedded.newNotebook', []);
+        bkHelper.backup().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.newNotebook', []);
+        });
       },
       tooltip: "Open a new empty notebook, add the languages of your choice"
     },
@@ -47,7 +49,9 @@ define(function(require, exports, module) {
       sortorder: 140,
       tooltip: "Save notebook with new name",
       action: function() {
-        parent.$(parent.document).trigger('beaker.embedded.saveAs', []);
+        bkHelper.backup().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.saveAs', []);
+        });
       }
     },
     {
@@ -56,7 +60,9 @@ define(function(require, exports, module) {
       sortorder: 150,
       tooltip: "Save notebook and add comment",
       action: function() {
-        parent.$(parent.document).trigger('beaker.embedded.saveWithComments', []);
+        bkHelper.backup().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.saveWithComments', []);
+        });
       }
     },
     {
@@ -65,8 +71,9 @@ define(function(require, exports, module) {
       sortorder: 160,
       tooltip: "Rename notebook",
       action: function() {
-        // TODO save it first
-        parent.$(parent.document).trigger('beaker.embedded.rename', []);
+        bkHelper.saveNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.rename', []);
+        });
       }
     },
     {
@@ -75,8 +82,9 @@ define(function(require, exports, module) {
       sortorder: 170,
       tooltip: "Export notebook",
       action: function() {
-        // TODO save it first
-        parent.$(parent.document).trigger('beaker.embedded.export', []);
+        bkHelper.saveNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.export', []);
+        });
       }
     },
     {
@@ -86,7 +94,9 @@ define(function(require, exports, module) {
       tooltip: "Send notebook",
       action: function() {
         // TODO save it first
-        parent.$(parent.document).trigger('beaker.embedded.send', []);
+        bkHelper.saveNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.send', []);
+        });
       }
     },
     {
@@ -95,7 +105,9 @@ define(function(require, exports, module) {
       sortorder: 190,
       tooltip: "View History",
       action: function() {
-        parent.$(parent.document).trigger('beaker.embedded.history', []);
+        bkHelper.backup().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.history', []);
+        });
       }
     },
 /*

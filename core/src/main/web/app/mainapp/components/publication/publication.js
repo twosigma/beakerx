@@ -254,7 +254,7 @@
       };
 
       $scope.signupUrl = function() {
-        return $scope.baseUrl + '#/sign_up?redirect=' + encodeURIComponent($location.absUrl());
+        return $scope.baseUrl + '/sign_up?redirect=' + encodeURIComponent($location.absUrl());
       };
 
       $scope.removeAttachment = function() {

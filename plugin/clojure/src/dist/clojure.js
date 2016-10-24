@@ -116,7 +116,7 @@ define(function(require, exports, module) {
       },
       exit: function(cb) {
         var self = this;
-        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/exit"), { shellId: self.settings.shellID }).success(cb);
+        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/exit"), { shellId: self.settings.shellID });
       },
       updateShell: function (cb) {
         bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);

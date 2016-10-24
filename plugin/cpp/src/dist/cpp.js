@@ -116,7 +116,7 @@ define(function(require, exports, module) {
       var self = this;
       this.cancelExecution();
       CppCancelFunction = null;
-      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + '/rest/cpp/exit'), {shellId: self.settings.shellID}).success(cb);
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + '/rest/cpp/exit'), {shellId: self.settings.shellID});
     },
     updateShell: function(cb) {
       bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);

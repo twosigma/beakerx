@@ -212,6 +212,7 @@
         $scope.hideSearchReplace = function () {
           doPostSearchNotebookActions();
           _impl._viewModel.hideSearchReplace();
+          showHideCellManager.hideCellModel();
         };
 
         var cursor = null;
@@ -265,22 +266,75 @@
         
         $scope.cmArray = [];
         $scope.markAllInterval = null;
-        
+
+        var showHideCellManager = {
+
+          cellModels : [],
+
+          copyCellModel : function(currentCellmodel) {
+            var previousCellmodel = {};
+            angular.copy(currentCellmodel, previousCellmodel);
+            return {original:currentCellmodel, copy: previousCellmodel};
+          },
+
+          openCellModels : function() {
+            for (var i = 0; i < this.cellModels.length; i++) {
+              var cellModel = this.cellModels[i];
+              if (cellModel.copy.locked) {
+                cellModel.original.locked = false;
+              }
+              if (cellModel.copy.input.hidden) {
+                cellModel.original.input.hidden = false;
+              }
+            }
+          },
+
+          hideCellModel :function () {
+            for (var i = 0; i < this.cellModels.length; i++) {
+              var cellModel = this.cellModels[i];
+              if (cellModel.copy.locked) {
+                cellModel.original.locked = true;
+              }
+              if (cellModel.copy.input && cellModel.copy.input.hidden) {
+                cellModel.original.input.hidden = true;
+              }
+            }
+          },
+
+          clear : function () {
+            this.cellModels = []
+          },
+
+          registerCell : function (theCell) {
+            var exists = _.filter(this.cellModels, function(o) { return o.original.id==theCell.id; });
+            if(exists.length==0){
+              this.cellModels.push(this.copyCellModel(theCell));
+            }
+          }
+        }
+
         $scope.findALLFunction = function (result) {
           
           $scope.cmArray = [];
+
+          showHideCellManager.hideCellModel()
+          showHideCellManager.clear();
+
           if($scope.markAllInterval){
             clearInterval($scope.markAllInterval);
           }
           
           $scope.findAllFunctionTemplate(
               result,
-              function(theCursor,theCM){
+              function(theCursor,theCM, theCell){
                 //markText is too slow to put it directly in here.
                 $scope.cmArray.push({theCM : theCM, from: theCursor.from(), to: theCursor.to()});
+                showHideCellManager.registerCell(theCell);
               }
           );
-          
+
+          showHideCellManager.openCellModels();
+
           if($scope.cmArray && $scope.cmArray.length > 0){
             var index = 0;
             $scope.markAllInterval = setInterval(function(){
@@ -300,11 +354,12 @@
         $scope.replaceAllFunction = function (result) {
           $scope.findAllFunctionTemplate(
               result,
-              function(theCursor,theCM){
+              function(theCursor,theCM,theCell){
                 theCursor.replace(result.replace, result.find);
                 theCM.addSelection(theCursor.from(), theCursor.to());
               }
           );
+          showHideCellManager.hideCellModel()
         }
         
         $scope.findAllFunctionTemplate = function (result, action) {
@@ -318,7 +373,7 @@
                 if(result.find && result.searchCellFilter.allNotebook){
                   if(isCellMatchSearchCellFilter(theCell, result.searchCellFilter)){
                     for (theCursor = getSearchCursor(result, theCursor, 'MIN', theCM); theCursor.findNext();) {
-                      action(theCursor, theCM);
+                      action(theCursor, theCM, theCell);
                     }
                   }
                 }
@@ -380,16 +435,17 @@
         }
 
         $scope.findFunction = function (result, reversive) {
-          if(result.find){
-            var createNewCursor = result.caseSensitive != previousFilter.caseSensitive 
+          if(result.find  && currentCm ){
+
+            var createNewCursor = result.caseSensitive != previousFilter.caseSensitive
               || result.find != previousFilter.find;
             angular.copy(result, previousFilter);
-  
+
             if(createNewCursor){
               cursor = getSearchCursor(result, cursor, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
               clearCursorPozition = false;
             }
-  
+
             var cellmodelId = currentCellmodel.id;
 
             if(cursor != null && cursor.find(reversive)){
@@ -397,9 +453,11 @@
                 currentMarker.clear();
               }
               currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
+
               scrollToChar(currentCm, cursor.to());
+
             }else {
-              
+
               var search = true;
               do{
                 
@@ -410,18 +468,20 @@
                 var find = null;
                 if(cursor != null){
                   find = cursor.find(reversive);
-                  search = !find && cellmodelId != currentCellmodel.id; 
+                  search = !find && cellmodelId != currentCellmodel.id;
                 }else{
                   search = false;
                 }
-                
+
                 if(find){
                   if(currentMarker){
                     currentMarker.clear();
                   }
                   currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
+
                   scrollToChar(currentCm, cursor.to());
                 }
+
               }while(search);
               
             }
@@ -441,11 +501,11 @@
             cursor.replace(result.replace, result.find);
             currentCm.setSelection(cursor.from(), cursor.to());
             $scope.findNextFunction(result);
+            showHideCellManager.hideCellModel()
           }
         }
-        
-        $scope.prepareNotebookeForSearch = function (cm, cellmodel) {
 
+        $scope.prepareNotebookeForSearch = function (cm, cellmodel) {
           if(cm && cellmodel){
             currentCm = cm;
             currentCellmodel = cellmodel;
@@ -459,7 +519,6 @@
               }
             }
           }
-          
           clearCursorPozition = true;
 
           var element = $window.document.getElementById("find_field");

@@ -141,8 +141,7 @@ define(function(require, exports, module) {
       var self = this;
       this.cancelExecution();
       GroovyCancelFunction = null;
-      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/groovysh/exit"), { shellId: self.settings.shellID })
-      .success(cb);
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/groovysh/exit"), { shellId: self.settings.shellID });
     },
     updateShell: function (cb) {
       bkHelper.showLanguageManagerSpinner(PLUGIN_NAME);

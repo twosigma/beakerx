@@ -174,6 +174,7 @@
         };
         
         $scope.afterSearchActions = function() {
+          $scope.changeHandler($scope.cm, null);
           $scope.cm.on('change', $scope.changeHandler);
         };
 

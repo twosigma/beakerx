@@ -674,6 +674,14 @@
               showLoadingStatusMessage("Renaming");
               return bkFileManipulation.renameNotebook(notebookUri, uriType).then(getRenameDoneCallback(), renameFailed);
             },
+            saveNotebookAsUri: function(notebookUri, uriType) {
+              if (_.isEmpty(notebookUri)) {
+                console.error("cannot save notebook, notebookUri is empty");
+                return;
+              }
+              saveStart();
+              return bkFileManipulation.saveNotebookAs(notebookUri, uriType).then(saveDone, saveFailed);
+            },
             saveNotebookAs: function() {
               bkHelper.showFileSaveDialog({
                 extension: "bkr"

@@ -44,7 +44,7 @@ RUN su -m beaker -c "julia --eval 'Pkg.rm(\"IJulia\")'" && \
     su -m beaker -c "julia --eval 'import ZMQ'" && \
     su -m beaker -c "julia --eval 'import Nettle'"
 
-RUN cp -r /home/beaker/.local/share/jupyter/kernels/julia-0.4 \
+RUN cp -r /home/beaker/.local/share/jupyter/kernels/julia-0.5 \
           /usr/local/share/jupyter/kernels/
 
 RUN mkdir -p /home/beaker/.beaker/v1/config && \

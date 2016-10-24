@@ -174,8 +174,11 @@
         };
         
         $scope.afterSearchActions = function() {
-          $scope.changeHandler($scope.cm, null);
           $scope.cm.on('change', $scope.changeHandler);
+        };
+        
+        $scope.doPostSearchCellActions = function() {
+          $scope.changeHandler($scope.cm, null);
         };
 
         $scope.isHiddenOutput = function() {

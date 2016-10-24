@@ -355,6 +355,7 @@
           $scope.findAllFunctionTemplate(
               result,
               function(theCursor,theCM,theCell){
+                doPostSearchCellActions(theCell);
                 theCursor.replace(result.replace, result.find);
                 theCM.addSelection(theCursor.from(), theCursor.to());
               }
@@ -562,8 +563,12 @@
           previousFilter = {};
         }
         
-        var doPostSearchCellActions = function (cmToUse) {
-          cmToUse.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
+        var doPostSearchCellActions = function (cell) {
+          var theCM = _impl.getCM(cell.id);
+          theCM.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
+          if (typeof _impl._focusables[cell.id].afterSearchActions == 'function') {
+            _impl._focusables[cell.id].afterSearchActions();
+          }
         }
         
         var getSearchCursor = function (filter, oldCursor, positionType, cmToUSe) {
@@ -614,7 +619,7 @@
               if (nextCell){
                 var nextCm = _impl.getCM(nextCell.id);
                 if (nextCm){
-                  doPostSearchCellActions(currentCm);
+                  doPostSearchCellActions(nextCell);
                   currentCm = nextCm;
                   currentCellmodel = nextCell;
                   ret = getSearchCursor(filter, null, reversive ? 'MAX' : 'MIN', nextCm);

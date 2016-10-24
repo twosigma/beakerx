@@ -237,6 +237,20 @@
         var isHTML = function(value) {
           return /^<[a-z][\s\S]*>/i.test(value);
         };
+
+        var needCorrectionForTableWithJson = function (value) {
+          if (!value) {
+            return false;
+          }
+          // used simple `for` as `_.each()` can't be stopped by `return` or `break`
+          for (var i = 0; i < value.length; ++i) {
+            return !!_.find(value[i], function (current) {
+              return _.isObject(current);
+            });
+          }
+          return false;
+        };
+
         return function(result) {
           if (result === undefined) {
             return ["Hidden"];
@@ -251,7 +265,10 @@
             }
             if (_.isArray(result)) {
               if (_.isObject(result[0])) {
-                ret.push("Table");
+                if (needCorrectionForTableWithJson(result))
+                  ret.unshift("Table");
+                else
+                  ret.push("Table");
               }
             }
             return ret;

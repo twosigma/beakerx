@@ -214,7 +214,7 @@
         .then(function(publicationId) {
           $scope.saving = false;
           publicId = publicationId;
-          tab.location = bkPublicationApi.getBaseUrl() + '/#/publications/' + publicationId;
+          tab.location = bkPublicationApi.getBaseUrl() + '/publications/' + publicationId;
         })
         .then(function() {
           if ($scope.deletedAttachment && !skipAttachmentDeletion) {

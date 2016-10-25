@@ -355,8 +355,10 @@
           $scope.findAllFunctionTemplate(
               result,
               function(theCursor,theCM,theCell){
+                prepareForSearchCellActions(theCell);
                 theCursor.replace(result.replace, result.find);
                 theCM.addSelection(theCursor.from(), theCursor.to());
+                doPostSearchCellActions(theCell);
               }
           );
           showHideCellManager.hideCellModel()
@@ -478,7 +480,6 @@
                     currentMarker.clear();
                   }
                   currentMarker = currentCm.markText(cursor.from(), cursor.to(), {className: "search-selected-background"});
-
                   scrollToChar(currentCm, cursor.to());
                 }
 
@@ -498,10 +499,12 @@
         
         $scope.replaceFunction = function (result) {
           if(cursor && cursor.from() && cursor.to()){
+            prepareForSearchCellActions(currentCellmodel);
             cursor.replace(result.replace, result.find);
             currentCm.setSelection(cursor.from(), cursor.to());
             $scope.findNextFunction(result);
-            showHideCellManager.hideCellModel()
+            showHideCellManager.hideCellModel();
+            doPostSearchCellActions(currentCellmodel);
           }
         }
 
@@ -560,10 +563,22 @@
           }
           
           previousFilter = {};
+        }       
+        
+        var prepareForSearchCellActions = function(cell) {
+          var theCM = _impl.getCM(cell.id);
+          theCM.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
+          if (typeof _impl._focusables[cell.id].prepareForSearchCellActions == 'function') {
+            _impl._focusables[cell.id].prepareForSearchCellActions();
+          }
         }
         
-        var doPostSearchCellActions = function (cmToUse) {
-          cmToUse.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
+        var doPostSearchCellActions = function (cell) {
+          var theCM = _impl.getCM(cell.id);
+          theCM.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
+          if (typeof _impl._focusables[cell.id].doPostSearchCellActions == 'function') {
+            _impl._focusables[cell.id].doPostSearchCellActions();
+          }
         }
         
         var getSearchCursor = function (filter, oldCursor, positionType, cmToUSe) {
@@ -614,7 +629,6 @@
               if (nextCell){
                 var nextCm = _impl.getCM(nextCell.id);
                 if (nextCm){
-                  doPostSearchCellActions(currentCm);
                   currentCm = nextCm;
                   currentCellmodel = nextCell;
                   ret = getSearchCursor(filter, null, reversive ? 'MAX' : 'MIN', nextCm);

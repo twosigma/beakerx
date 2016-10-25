@@ -295,6 +295,9 @@
       getBaseUrl: function () {
         return bkUtils.getBaseUrl();
       },
+      getNotebookUri: function() {
+        return bkSessionManager.getNotebookUri();
+      },
       openNotebookInNewWindow: function (notebookUri, uriType, readOnly, format) {
         var params = {
           'uri': notebookUri
@@ -594,6 +597,9 @@
       },        
       backupNotebook: function() {
         return bkSessionManager.backup();
+      },
+      isNotebookModelEdited: function () {
+        return bkSessionManager.isNotebookModelEdited();
       },
       typeset: function(element) {
         try {

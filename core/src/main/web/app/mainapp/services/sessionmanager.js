@@ -1000,6 +1000,9 @@
       getNotebookUriType: function() {
         return _uriType;
       },
+      getNotebookUri: function() {
+        return _notebookUri.get();
+      },
       getNotebookTitle: function() {
         if (_uriType === 'ajax') {
           var pieces = _notebookUri.get().split(":");

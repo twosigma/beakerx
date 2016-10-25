@@ -35,7 +35,7 @@ RUN add-apt-repository -y ppa:webupd8team/java && \
     add-apt-repository -y ppa:nginx/stable && \
     add-apt-repository -y ppa:brightbox/ruby-ng
 
-RUN apt-get update && apt-get install -y nginx gradle-3.0 cython python g++ make git
+RUN apt-get update && apt-get install -y nginx gradle-3.0 python g++ make git
 
 ############
 #  Python  #
@@ -45,7 +45,7 @@ RUN apt-get install -y libzmq3-dbg libzmq3-dev libzmq3 \
                        python-pip python-dev python-yaml \
                        python-matplotlib python-scipy
 
-RUN pip install ipython jinja2 tornado pyzmq pandas jsonschema jupyter && \
+RUN pip install ipython jinja2 tornado pyzmq cython pandas jsonschema jupyter && \
     ipython kernel install
 
 #############
@@ -57,7 +57,7 @@ RUN apt-get install -y python-virtualenv python3-dev pkgconf libfreetype6-dev li
     	    libxft-dev libblas-dev liblapack-dev gfortran libyaml-dev && \
     virtualenv /home/beaker/py3k -p python3 && \
     /home/beaker/py3k/bin/pip install ipython[notebook] jupyter && \
-    /home/beaker/py3k/bin/pip install numpy matplotlib scipy jinja2 tornado pyzmq pandas pyaml && \
+    /home/beaker/py3k/bin/pip install numpy matplotlib scipy jinja2 tornado pyzmq cython pandas pyaml && \
     /home/beaker/py3k/bin/ipython kernel install
 
 ##########

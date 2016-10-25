@@ -60,6 +60,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
   public static final String TYPE_BOOLEAN = "boolean";
   public static final String TYPE_TIME    = "time";
   public static final String TYPE_SELECT  = "select";
+  public static final String TYPE_MAP     = "map";
+  public static final String TYPE_LIST    = "list";
 
   private final static Logger logger = LoggerFactory.getLogger(BasicObjectSerializer.class.getName());
 
@@ -157,6 +159,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     addTypeConversion("java.math.BigDecimal", TYPE_DOUBLE);
     addTypeConversion("java.math.BigInteger", TYPE_BIGINT);
     addTypeConversion("org.codehaus.groovy.runtime.GStringImpl", TYPE_STRING);
+    addTypeConversion("groovy.json.internal.LazyMap", TYPE_MAP);
+    addTypeConversion("java.util.ArrayList", TYPE_LIST);
 
     addTypeSerializer(new PrimitiveTypeSerializer());
     addTypeSerializer(new ListOfPrimitiveTypeMapsSerializer(this));

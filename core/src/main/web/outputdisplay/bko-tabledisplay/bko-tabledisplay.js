@@ -2326,11 +2326,29 @@
             cols.push(col);
           }
 
+          var _data = [];
+          if (model.type && model.type == 'TableDisplay' && model.hasMapValues) {
+            for (var i = 0; i < scope.data.length; ++i) {
+              for (var j = 0; j < scope.data[i].length; ++j) {
+                if (_.isUndefined(_data[i])) {
+                  _data[i] = [];
+                }
+                var value = scope.data[i][j];
+                if (_.isObject(value)) {
+                  value = JSON.stringify(value).replace(':', '=').replace(/"/g, '');
+                }
+                _data[i][j] = value;
+              }
+            }
+          } else {
+            _data = scope.data;
+          }
+
           scope.columns = cols;
           var id = '#' + scope.id;
           var init = {
             'destroy' : true,
-            'data': scope.data,
+            'data': _data,
             'columns': scope.columns,
             'stateSave': true,
             'processing': true,

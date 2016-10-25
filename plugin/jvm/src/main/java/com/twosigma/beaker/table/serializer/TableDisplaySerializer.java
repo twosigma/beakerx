@@ -58,6 +58,7 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       }
       jgen.writeBooleanField("headersVertical", value.getHeadersVertical());
       jgen.writeObjectField("values", value.getValues());
+      jgen.writeObjectField("hasMapValues", value.isHasMapValues());
       jgen.writeEndObject();
     }
   }

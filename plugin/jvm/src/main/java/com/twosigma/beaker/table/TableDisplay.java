@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.table;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import com.twosigma.beaker.table.format.ValueStringFormat;
 import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beaker.table.highlight.ValueHighlighter;
 import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +67,7 @@ public class TableDisplay extends ObservableTableDisplay {
   private List<List<Color>> fontColor = new ArrayList<>();
   private List<List<?>> filteredValues;
   private boolean headersVertical;
+  private boolean hasMapValues = false;
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -98,13 +101,23 @@ public class TableDisplay extends ObservableTableDisplay {
     }
 
     // now build values
-    for(Map<?,?> m : v) {
-      List<Object> vals = new ArrayList<Object>();
+    for (Map<?, ?> m : v) {
+      List<Object> vals = new ArrayList<>();
       for (String cn : columns) {
-        if (m.containsKey(cn)){
-          vals.add(getValueForSerializer( m.get(cn), serializer));
-        }
-        else
+        if (m.containsKey(cn)) {
+          if (m.get(cn) instanceof Map || m.get(cn) instanceof List) {
+            this.hasMapValues = true;
+            final ObjectMapper mapper = new ObjectMapper();
+            try {
+              final String val = mapper.writeValueAsString(m.get(cn));
+              vals.add(val);
+            } catch (IOException e) {
+              logger.warn("cannot serialize", m.get(cn));
+            }
+          } else {
+            vals.add(getValueForSerializer(m.get(cn), serializer));
+          }
+        } else
           vals.add(null);
       }
       values.add(vals);
@@ -401,4 +414,7 @@ public class TableDisplay extends ObservableTableDisplay {
     return subtype;
   }
 
+  public boolean isHasMapValues() {
+    return hasMapValues;
+  }
 }

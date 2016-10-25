@@ -79,11 +79,19 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     if (c.isEmpty())
       return false;
     for (Object obj : c) {
-      if (obj != null && !isPrimitiveTypeMap(obj)) {
+      if (obj != null && !isPrimitiveTypeMap(obj, true)) {
         return false;
       }
     }
     return true;
+  }
+
+  protected boolean isPrimitiveTypeMap(Object o, boolean forCollection) {
+    if (forCollection) {
+      return o instanceof Map<?, ?>;
+    } else {
+      return isPrimitiveTypeMap(o);
+    }
   }
 
   protected boolean isPrimitiveTypeMap(Object o) {

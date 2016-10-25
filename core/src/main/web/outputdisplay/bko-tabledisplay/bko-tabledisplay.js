@@ -1108,58 +1108,11 @@
             }
           }
 
-          // JSON values are not primitive types
-          // if (!model.columnNames) {
-          //   var row, col;
-          //   var columns = [];
-          //   var values = [];
-          //
-          //   // get all columns
-          //   for (row = 0; row < model.length; ++row) {
-          //     var currentColumns = _.keys(model[row]);
-          //     currentColumns.sort();
-          //     _.each(currentColumns, function (key) {
-          //       if (_.indexOf(columns, key) < 0) {
-          //         columns.push(key);
-          //       }
-          //     });
-          //   }
-          //   model.columnNames = columns;
-          //
-          //   // init new model by null values - for DataTables
-          //   for (row = 0; row < model.length; ++row) {
-          //     if (_.isUndefined(values[row])) {
-          //       values[row] = [];
-          //     }
-          //     for (col = 0; col < columns.length; ++col) {
-          //       values[row][col] = null;
-          //     }
-          //   }
-          //
-          //   for (row = 0; row < model.length; ++row) {
-          //     var keys = _.keys(model[row]);
-          //     _.each(keys, function (key) {
-          //       var position = _.indexOf(columns, key);
-          //       var value = model[row][key];
-          //       // for not primitive type - make its String representation
-          //       if (_.isObject(value)) {
-          //         value = JSON.stringify(value).replace(':', '=').replace(/"/g, '');
-          //       }
-          //       values[row][position] = value;
-          //     });
-          //   }
-          //   model.values = values;
-          // }
-
           // validate saved state (if any) by using column \Names
           var modelColumnNames;
           if (model.columnNames) {
             modelColumnNames = model.columnNames.slice(0);
             if (model.hasIndex === 'true') {
-
-              //model.type = 'TableDisplay';
-              //model.subtype = 'ListOfMaps';
-              // set values for each row
               modelColumnNames.shift();
             }
           }
@@ -1427,6 +1380,25 @@
         scope.doCreateData = function(model) {
           // create a dummy column to keep server ordering if not already present
           var values = model.hasOwnProperty('filteredValues') ? model.filteredValues : model.values;
+
+          if (model.type && model.type == 'TableDisplay' && model.hasMapValues) {
+            var _values = [];
+            for (var row = 0; row < values.length; ++row) {
+              var keys = _.keys(values[row]);
+              _.each(keys, function (key) {
+                if (_.isUndefined(_values[row])) {
+                  _values[row] = [];
+                }
+                var value = values[row][key];
+                if (_.isObject(value)) {
+                  value = JSON.stringify(value).replace(':', '=').replace(/"/g, '');
+                }
+                _values[row][key] = value;
+              });
+            }
+            values = _values;
+          }
+
           if (!scope.hasIndex) {
             var data = [];
             var r;

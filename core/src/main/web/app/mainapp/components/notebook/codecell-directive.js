@@ -170,14 +170,18 @@
 
         $scope.prepareForSearch = function() {
           delete $scope.cellmodel.output.hidden;
-          $scope.cm.off('change', $scope.changeHandler);
         };
         
         $scope.afterSearchActions = function() {
-          $scope.cm.on('change', $scope.changeHandler);
+          //nothing to do
+        };
+        
+        $scope.prepareForSearchCellActions = function() {
+          $scope.cm.off('change', $scope.changeHandler);
         };
         
         $scope.doPostSearchCellActions = function() {
+          $scope.cm.on('change', $scope.changeHandler);
           $scope.changeHandler($scope.cm, null);
         };
 

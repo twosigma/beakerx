@@ -27,8 +27,8 @@ define(function(require, exports, module) {
       sortorder: 100,
       id: "new-notebook-menuitem",
       action: function() {
-        bkHelper.backup().then(function() {
-          parent.$(parent.document).trigger('beaker.embedded.newNotebook', []);
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.newNotebook', [window.beakerRegister.bunsenNotebookId]);
         });
       },
       tooltip: "Open a new empty notebook, add the languages of your choice"
@@ -49,8 +49,8 @@ define(function(require, exports, module) {
       sortorder: 140,
       tooltip: "Save notebook with new name",
       action: function() {
-        bkHelper.backup().then(function() {
-          parent.$(parent.document).trigger('beaker.embedded.saveAs', []);
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.saveAs', [window.beakerRegister.bunsenNotebookId]);
         });
       }
     },
@@ -60,8 +60,8 @@ define(function(require, exports, module) {
       sortorder: 150,
       tooltip: "Save notebook and add comment",
       action: function() {
-        bkHelper.backup().then(function() {
-          parent.$(parent.document).trigger('beaker.embedded.saveWithComments', []);
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.saveWithComments', [window.beakerRegister.bunsenNotebookId]);
         });
       }
     },
@@ -71,8 +71,8 @@ define(function(require, exports, module) {
       sortorder: 160,
       tooltip: "Rename notebook",
       action: function() {
-        bkHelper.saveNotebook().then(function() {
-          parent.$(parent.document).trigger('beaker.embedded.rename', []);
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.rename', [window.beakerRegister.bunsenNotebookId]);
         });
       }
     },
@@ -82,8 +82,8 @@ define(function(require, exports, module) {
       sortorder: 170,
       tooltip: "Export notebook",
       action: function() {
-        bkHelper.saveNotebook().then(function() {
-          parent.$(parent.document).trigger('beaker.embedded.export', []);
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.export', [window.beakerRegister.bunsenNotebookId]);
         });
       }
     },
@@ -93,9 +93,8 @@ define(function(require, exports, module) {
       sortorder: 180,
       tooltip: "Send notebook",
       action: function() {
-        // TODO save it first
-        bkHelper.saveNotebook().then(function() {
-          parent.$(parent.document).trigger('beaker.embedded.send', []);
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.send', [window.beakerRegister.bunsenNotebookId]);
         });
       }
     },
@@ -105,8 +104,8 @@ define(function(require, exports, module) {
       sortorder: 190,
       tooltip: "View History",
       action: function() {
-        bkHelper.backup().then(function() {
-          parent.$(parent.document).trigger('beaker.embedded.history', []);
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.history', [window.beakerRegister.bunsenNotebookId]);
         });
       }
     },
@@ -126,7 +125,9 @@ define(function(require, exports, module) {
       id: "close-menuitem",
       sortorder: 200,
       action: function() {
-        parent.$(parent.document).trigger('beaker.embedded.close', []);
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.close', [window.beakerRegister.bunsenNotebookId]);
+        });
       }
     }
   ];

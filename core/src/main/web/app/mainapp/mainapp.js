@@ -345,6 +345,10 @@
                 notebookUri, uriType, readOnly, format,
                 notebookModel, edited, sessionId);
 
+            if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.loadFinished !== undefined) {
+              window.beakerRegister.hooks.loadFinished();
+            }
+
             var mustwait;
             if (!isExistingSession && bkHelper.hasCodeCell("initialization")) {
               mustwait = bkCoreManager.show0ButtonModal("This notebook has initialization cells... waiting for their completion.", "Please Wait");
@@ -453,6 +457,9 @@
                   setDocumentTitle();
                 }).catch(function(data, status, headers, config) {
                   var message = typeof(data) === 'string' ? data : "Not a valid Beaker notebook";
+                  if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.loadFailed !== undefined) {
+                    window.beakerRegister.hooks.loadFailed(message);
+                  }
                   bkHelper.show1ButtonModal(message, "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();
                   });

@@ -107,16 +107,8 @@ public class TableDisplay extends ObservableTableDisplay {
         if (m.containsKey(cn)) {
           if (m.get(cn) instanceof Map || m.get(cn) instanceof List) {
             this.hasMapValues = true;
-            final ObjectMapper mapper = new ObjectMapper();
-            try {
-              final String val = mapper.writeValueAsString(m.get(cn));
-              vals.add(val);
-            } catch (IOException e) {
-              logger.warn("cannot serialize", m.get(cn));
-            }
-          } else {
-            vals.add(getValueForSerializer(m.get(cn), serializer));
           }
+          vals.add(getValueForSerializer(m.get(cn), serializer));
         } else
           vals.add(null);
       }

@@ -1091,22 +1091,48 @@
 
           var i;
 
-          // convert `string` to `object` for arrays with maps as values
-          if (model.type && model.type == 'TableDisplay' && model.hasMapValues) {
-            for (var row = 0; row < model.values.length; ++row) {
-              var keys = _.keys(model.values[row]);
-              _.each(keys, function (key) {
-                var value = model.values[row][key];
-                if (_.isString(value) && /[{\[]/.test(value)) {
-                  try {
-                    model.values[row][key] = JSON.parse(value);
-                  } catch (err) {
-                    //ignore
-                  }
+          //JSON values are not primitive types
+          /*if (!model.columnNames) {
+            var row, col;
+            var columns = [];
+            var values = [];
+
+            // get all columns
+            for (row = 0; row < model.length; ++row) {
+              var currentColumns = _.keys(model[row]);
+              currentColumns.sort();
+              _.each(currentColumns, function (key) {
+                if (_.indexOf(columns, key) < 0) {
+                  columns.push(key);
                 }
               });
             }
-          }
+            model.columnNames = columns;
+
+            // init new model by null values - for DataTables
+            for (row = 0; row < model.length; ++row) {
+              if (_.isUndefined(values[row])) {
+                values[row] = [];
+              }
+              for (col = 0; col < columns.length; ++col) {
+                values[row][col] = null;
+              }
+            }
+
+            for (row = 0; row < model.length; ++row) {
+              var keys = _.keys(model[row]);
+              _.each(keys, function (key) {
+                var position = _.indexOf(columns, key);
+                var value = model[row][key];
+                // for not primitive type - make its String representation
+                if (_.isObject(value)) {
+                  value = JSON.stringify(value).replace(':', '=').replace(/"/g, '');
+                }
+                values[row][position] = value;
+              });
+            }
+            model.values = values;
+          }*/
 
           // validate saved state (if any) by using column \Names
           var modelColumnNames;
@@ -1380,24 +1406,6 @@
         scope.doCreateData = function(model) {
           // create a dummy column to keep server ordering if not already present
           var values = model.hasOwnProperty('filteredValues') ? model.filteredValues : model.values;
-
-          if (model.type && model.type == 'TableDisplay' && model.hasMapValues) {
-            var _values = [];
-            for (var row = 0; row < values.length; ++row) {
-              var keys = _.keys(values[row]);
-              _.each(keys, function (key) {
-                if (_.isUndefined(_values[row])) {
-                  _values[row] = [];
-                }
-                var value = values[row][key];
-                if (_.isObject(value)) {
-                  value = JSON.stringify(value).replace(':', '=').replace(/"/g, '');
-                }
-                _values[row][key] = value;
-              });
-            }
-            values = _values;
-          }
 
           if (!scope.hasIndex) {
             var data = [];
@@ -2326,9 +2334,11 @@
             cols.push(col);
           }
 
+          // format Object toString to be presented like {a=1}
           var _data = [];
-          if (model.type && model.type == 'TableDisplay' && model.hasMapValues) {
-            for (var i = 0; i < scope.data.length; ++i) {
+          if (model.type && (model.type == 'Table' || model.type == 'TableDisplay')
+              && model.hasMapValues) {
+            for (i = 0; i < scope.data.length; ++i) {
               for (var j = 0; j < scope.data[i].length; ++j) {
                 if (_.isUndefined(_data[i])) {
                   _data[i] = [];

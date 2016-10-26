@@ -988,8 +988,10 @@
       },
       getNotebookPath: function() {
         if (_uriType === 'ajax') {
-          var pieces = _notebookUri.get().split(":");
-          return pieces[3];
+          if (window.beakerRegister.notebookName !== undefined) {
+            return window.beakerRegister.notebookName;
+          }
+          return '';
         }
         else if (_notebookUri.get()) {
           return _notebookUri.get();
@@ -1005,8 +1007,10 @@
       },
       getNotebookTitle: function() {
         if (_uriType === 'ajax') {
-          var pieces = _notebookUri.get().split(":");
-          return pieces[3];
+          if (window.beakerRegister.notebookName !== undefined) {
+            return window.beakerRegister.notebookName;
+          }
+          return '';
         }
         else if (_notebookUri.get()) {
           return _notebookUri.get().replace(/^.*[\\\/]/, '');

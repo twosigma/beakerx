@@ -91,8 +91,8 @@ describe('Text, Formatting, and Equations tutorial', function (done) {
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(18), "into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(19), "");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(20), "You can write unicode with your native keyboard, o", 0, 50);
-            beakerPO.checkHexCharCodeSubString(elemEditPreArr.get(20), 90, 91, '73bb');
-            beakerPO.checkHexCharCodeSubString(elemEditPreArr.get(20), 91, 92, '7483');
+            //beakerPO.checkHexCharCodeSubString(elemEditPreArr.get(20), 90, 91, '73bb');
+            //beakerPO.checkHexCharCodeSubString(elemEditPreArr.get(20), 91, 92, '7483');
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(21), "Plus you can enter HTML entities like &amp;dagger; for &dagger;.");
             beakerPO.checkSubStringIfDisplayed(elemEditPreArr.get(22), "In fact, many basic HTML elements work, like super&lt;sup&gt;scripts&lt;/sup&gt; for super<sup>scrip");
         });

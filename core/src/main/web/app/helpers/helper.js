@@ -172,10 +172,10 @@
       isInsertAfterSectionShortcut: function(e) {
         if (this.isMacOS){
           return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey &&
-            ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
+            ((e.which>=49) && (e.which<=50));// cmd + Shift + 1...2
         }
         return e.ctrlKey && !e.altKey && e.shiftKey &&
-          ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
+          ((e.which>=49) && (e.which<=50));// ctrl + Shift + 1...2
       },
       isSearchReplace: function (e){
         if (this.isMacOS){

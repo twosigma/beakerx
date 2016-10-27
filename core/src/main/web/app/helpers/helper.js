@@ -101,7 +101,11 @@
 
       isNewNotebookShortcut: function (e){
         if (this.isMacOS){
-          return e.ctrlKey && (e.which === 78);// Ctrl + n
+          if(this.getInputCellKeyMapMode() === "emacs"){
+            return false; //issue #4722 
+          }else{
+            return e.ctrlKey && (e.which === 78);// Ctrl + n
+          }
         }
         return e.altKey && (e.which === 78);// Alt + n
       },
@@ -168,14 +172,18 @@
       isInsertAfterSectionShortcut: function(e) {
         if (this.isMacOS){
           return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey &&
-            ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
+            ((e.which>=49) && (e.which<=50));// cmd + Shift + 1...2
         }
         return e.ctrlKey && !e.altKey && e.shiftKey &&
-          ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
+          ((e.which>=49) && (e.which<=50));// ctrl + Shift + 1...2
       },
       isSearchReplace: function (e){
         if (this.isMacOS){
-          return e.ctrlKey && (e.which === 70);// Ctrl + f
+          if(this.getInputCellKeyMapMode() === "emacs"){
+            return e.ctrlKey && (e.which === 83);// Ctrl + s
+          }else{
+            return e.ctrlKey && (e.which === 70);// Ctrl + f
+          }
         }
         return e.altKey && (e.which === 70);// Alt + f
       },

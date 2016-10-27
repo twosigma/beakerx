@@ -271,10 +271,23 @@ function transform(v, norecurse) {
           break;
         }
       }
+
+      var hasMapValues = false;
+      if (_.isArray(v) && v.length > 0) {
+        doit = true;
+        for (var i = 0; i < v.length; ++i) {
+          if(_.isObject(v[i])) {
+            hasMapValues = true;
+            break;
+          }
+        }
+      }
+
       if (doit && norecurse === undefined) {
         var o = {};
         o.type = "TableDisplay";
         o.subtype = "ListOfMaps";
+        o.hasMapValues = hasMapValues;
         o.columnNames = [];
         for (var i in v) {
           for (var j in v[i]) {

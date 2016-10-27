@@ -303,10 +303,10 @@
           }
 
           var hasMapValues = false;
-          if (_.isArray(v) && v.length>0) {
+          if (_.isArray(v) && v.length > 0) {
+            doit = true;
             for (var i = 0; i < v.length; ++i) {
               if(_.isObject(v[i])) {
-                doit = true;
                 hasMapValues = true;
                 break;
               }

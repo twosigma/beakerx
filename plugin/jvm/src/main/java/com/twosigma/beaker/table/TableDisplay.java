@@ -105,7 +105,7 @@ public class TableDisplay extends ObservableTableDisplay {
       List<Object> vals = new ArrayList<>();
       for (String cn : columns) {
         if (m.containsKey(cn)) {
-          if (m.get(cn) instanceof Map || m.get(cn) instanceof List) {
+          if (!serializer.isPrimitiveType(m.get(cn).toString())) {
             this.hasMapValues = true;
           }
           vals.add(getValueForSerializer(m.get(cn), serializer));

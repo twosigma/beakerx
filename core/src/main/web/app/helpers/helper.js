@@ -607,9 +607,35 @@
         if (!evaluateFn) {
           evaluateFn = this.evaluateCode;
         }
+
+        var omitContentInsideBackquotsFromKatexTransformation = function(content) {
+          var contentCopy = angular.copy(content);
+          var result = "";
+          var contentList = contentCopy.match(/`.*?\$.*?`/g);
+          if (contentList) {
+            for (var i = 0; i < contentList.length; i++) {
+              var matchContent = contentList[i];
+              var indexOf = contentCopy.indexOf(matchContent);
+              var contentForKatexTransformation = contentCopy.substring(0, indexOf);
+              var contentInsideBackquots = contentCopy.substring(indexOf, indexOf + matchContent.length);
+              var contentForKatexTransformationDiv = $('<div>' + contentForKatexTransformation + '</div>');
+              bkHelper.typeset(contentForKatexTransformationDiv);
+              result += contentForKatexTransformationDiv.html() + contentInsideBackquots;
+              contentCopy = contentCopy.substring(indexOf + matchContent.length, contentCopy.length);
+            }
+            var contentCopyDiv = $('<div>' + contentCopy + '</div>');
+            bkHelper.typeset(contentCopyDiv);
+            result += contentCopyDiv.html();
+          } else {
+            var markdownFragment = $('<div>' + contentCopy + '</div>');
+            bkHelper.typeset(markdownFragment);
+            result = markdownFragment.html();
+          }
+          return result;
+        };
+
         var markIt = function(content) {
-          var markdownFragment = $('<div>' + content + '</div>');
-          bkHelper.typeset(markdownFragment);
+          var markdownFragment = $('<div>' + omitContentInsideBackquotsFromKatexTransformation(content) + '</div>');
           var escapedHtmlContent = angular.copy(markdownFragment.html());
           markdownFragment.remove();
           var unescapedGtCharacter = escapedHtmlContent.replace(/&gt;/g, '>');

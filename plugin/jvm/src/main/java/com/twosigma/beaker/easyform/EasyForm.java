@@ -29,17 +29,18 @@ import com.twosigma.beaker.easyform.formitem.TextArea;
 import com.twosigma.beaker.easyform.formitem.TextField;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
-public class EasyForm extends ObservableMap<String, String> {
+public class EasyForm extends ObservableMap<String, Object> {
 
   public static final Integer HORIZONTAL = 1;
   public static final Integer VERTICAL = 2;
   private static final Integer AUTO_WIDTH = -1;
+
+  private static final String DATE_FORMAT = "yyyyMMdd";
+  private static final SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
 
   private final String caption;
   private String id;
@@ -271,26 +272,36 @@ public class EasyForm extends ObservableMap<String, String> {
     return caption;
   }
 
-  private HashMap<String, String> getValuesMap() {
+  private HashMap<String, Object> getValuesMap() {
     return this.mapInstance;
   }
 
+  @Override
   public String get(final Object key) {
     checkComponentExists((String) key);
     return getComponentMap().get(key).getValue();
   }
 
-  public String put(final String key, final String value) {
+  @Override
+  public String put(final String key, final Object value) {
+    String _value;
+    if (value instanceof String) {
+      _value = String.class.cast(value);
+    } else if (value instanceof Date) {
+      _value = formatDate(Date.class.cast(value));
+    } else {
+      _value = value.toString();
+    }
     checkComponentExists(key);
     EasyFormComponent component = getComponentMap().get(key);
-    if (!component.checkValue(value)) {
+    if (!component.checkValue(_value)) {
       throw new IllegalArgumentException(
           String.format("\"%s\" is not a valid option for %s \"%s\".",
-              value, component.getClass().getSimpleName(), key));
+              _value, component.getClass().getSimpleName(), key));
     }
     String previousValue = component.getValue();
-    component.setValue(value);
-    getValuesMap().put(key, value);
+    component.setValue(_value);
+    getValuesMap().put(key, _value);
     setChanged();
     notifyObservers();
     component.fireChanged();
@@ -332,6 +343,10 @@ public class EasyForm extends ObservableMap<String, String> {
 
   public void setNotReady() {
     this.ready = Boolean.FALSE;
+  }
+
+  private String formatDate(final Date date) {
+    return EasyForm.format.format(date);
   }
 
 }

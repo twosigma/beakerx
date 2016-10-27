@@ -697,8 +697,11 @@
                   return bkFileManipulation.saveNotebookAs(ret.uri, ret.uriType).then(saveDone, saveFailed);
                 }
               });
-
             },
+            saveNotebookAsUri: function(uri, uriType) {
+              return bkFileManipulation.saveNotebookAs(uri, uriType).then(saveDone, saveFailed);
+            },
+            
             runAllCellsInNotebook: function () {
               bkHelper.evaluateRoot('root').then(function (res) {
                 bkHelper.go2FirstErrorCodeCell();
@@ -1297,27 +1300,43 @@
             return false;
           }else if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();
-            _impl.saveNotebook();
+            if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.saveNotebookShortcut !== undefined) {
+              window.beakerRegister.hooks.saveNotebookShortcut();
+            } else {
+              _impl.saveNotebook();
+            }
             $scope.$apply();
             return false;
           } else if(bkHelper.isSaveNotebookAsShortcut(e)){
             e.preventDefault();
-            _impl.saveNotebookAs();
+            if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.saveNotebookAsShortcut !== undefined) {
+              window.beakerRegister.hooks.saveNotebookAsShortcut();
+            } else {
+              _impl.saveNotebookAs();
+            }
             $scope.$apply();
             return false;
           } else if (bkHelper.isNewDefaultNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
-            bkUtils.fcall(function() {
-              bkCoreManager.newSession(false);
-            });
+            if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.newDefaultNotebookShortcut !== undefined) {
+              window.beakerRegister.hooks.newDefaultNotebookShortcut();
+            } else {
+              bkUtils.fcall(function() {
+                bkCoreManager.newSession(false);
+              });
+            }
             return false;
           } else if (bkHelper.isSearchReplace(e)) { // Alt + f
             e.preventDefault();
             bkHelper.getBkNotebookViewModel().showSearchReplace();
             return false;
           } else if (bkHelper.isNewNotebookShortcut(e)) { // Ctrl/Alt + n
-            bkUtils.fcall(function() {
-              bkCoreManager.newSession(true);
-            });
+            if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.newNotebookShortcut !== undefined) {
+              window.beakerRegister.hooks.newNotebookShortcut();
+            } else {
+              bkUtils.fcall(function() {
+                bkCoreManager.newSession(true);
+              });
+            }
             return false;
           } else if (bkHelper.isAppendCodeCellShortcut(e)) {
             bkUtils.fcall(function() {
@@ -1425,12 +1444,16 @@
 
         $scope.$on("$destroy", onDestroy);
         window.onbeforeunload = function(e) {
-          bkSessionManager.backup();
-          if (bkSessionManager.isNotebookModelEdited()) {
-            return "Your notebook has been edited but not saved, if you close the page your changes may be lost";
-          }
-          if (bkEvaluateJobManager.isAnyInProgress()) {
-            return "Some cells are still running. Leaving the page now will cause cancelling and result be lost";
+          if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.onbeforeunload !== undefined) {
+            window.beakerRegister.hooks.onbeforeunload();
+          } else {
+            bkSessionManager.backup();
+            if (bkSessionManager.isNotebookModelEdited()) {
+              return "Your notebook has been edited but not saved, if you close the page your changes may be lost";
+            }
+            if (bkEvaluateJobManager.isAnyInProgress()) {
+              return "Some cells are still running. Leaving the page now will cause cancelling and result be lost";
+            }
           }
           onDestroy();
         };

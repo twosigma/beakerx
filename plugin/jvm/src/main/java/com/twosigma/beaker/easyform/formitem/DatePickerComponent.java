@@ -38,11 +38,15 @@ public class DatePickerComponent extends EasyFormComponent {
 
   @Override
   protected boolean checkValue(final Object value) {
-    return value instanceof Date;
+    return value instanceof Date || value instanceof String;
   }
 
   @Override
   public String formatValue(Object value) {
-    return dateFormat.format(value);
+    if (value instanceof Date) {
+      return dateFormat.format(value);
+    } else {
+      return String.class.cast(value);
+    }
   }
 }

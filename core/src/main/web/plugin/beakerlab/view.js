@@ -67,7 +67,46 @@ define(function(require, exports, module) {
       name: 'Theme',
       sortorder: 150,
       id: 'theme-menuitem'
+    },
+    {
+      name: "View History...",
+      id: "history-menuitem",
+      sortorder: 180,
+      tooltip: "View History",
+      action: function() {
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.history', [window.beakerRegister.bunsenNotebookId]);
+        });
+      }
+    },
+    {
+      name: "View Published Version...",
+      id: "viewpublished-menuitem",
+      sortorder: 180,
+      tooltip: "View Published Version",
+      action: function() {
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.viewpublished', [window.beakerRegister.bunsenNotebookId]);
+        });
+      },
+      locked: function() {
+        return window.beakerRegister.isPublished !== true;
+      }
+    },
+    {
+      name: "Toggle FullScreen",
+      id: "fullscreen-menuitem",
+      sortorder: 190,
+      tooltip: "Toggle FullScreen",
+      isChecked: function() {
+        return window.beakerRegister.isFullScreen;
+      },
+      action: function() {
+        parent.$(parent.document).trigger('beaker.embedded.fullscreen', [window.beakerRegister.bunsenNotebookId, !window.beakerRegister.isFullScreen]);
+        window.beakerRegister.isFullScreen = !window.beakerRegister.isFullScreen;
+      }
     }
+    
   ];
   var toAdd = [
     {

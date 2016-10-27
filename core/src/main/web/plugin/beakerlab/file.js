@@ -99,27 +99,33 @@ define(function(require, exports, module) {
       }
     },
     {
-      name: "View History...",
-      id: "history-menuitem",
+      name: "Publish...",
+      id: "publish-menuitem",
       sortorder: 190,
-      tooltip: "View History",
+      tooltip: "Publish notebook",
       action: function() {
         bkHelper.backupNotebook().then(function() {
-          parent.$(parent.document).trigger('beaker.embedded.history', [window.beakerRegister.bunsenNotebookId]);
+          parent.$(parent.document).trigger('beaker.embedded.publish', [window.beakerRegister.bunsenNotebookId]);
         });
+      },
+      locked: function() {
+        return window.beakerRegister.canPublish !== true;
       }
     },
-/*
-{
-      name: "Publish...",
-      sortorder: 145,
-      id: "publish-menuitem",
-      action: function () {
-        bkHelper.showPublishForm();
+    {
+      name: "Publish As Blog...",
+      id: "blog-menuitem",
+      sortorder: 200,
+      tooltip: "Publish notebook as blog post",
+      action: function() {
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.blog', [window.beakerRegister.bunsenNotebookId]);
+        });
       },
-      tooltip: "Publish the notebook to Beaker Publications"
+      locked: function() {
+        return window.beakerRegister.canBlog !== true;
+      }
     },
-    */
     {
       name: "Close",
       id: "close-menuitem",

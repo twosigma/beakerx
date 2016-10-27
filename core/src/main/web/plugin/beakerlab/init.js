@@ -34,8 +34,7 @@
   window.beakerRegister.hooks.loadFailed = function(message) {
     var uri = bkHelper.getNotebookUri();
     var up = uri.split(':');
-    window.beakerRegister.bunsenNotebookId = up[4];
-    console.log('my id is ',window.beakerRegister.bunsenNotebookId);
+    window.beakerRegister.bunsenNotebookId = up[3];
     // inform beakerLab loading did fail
     parent.$(parent.document).trigger('beaker.embedded.notebookLoadFailed', [window.beakerRegister.bunsenNotebookId, message]);
   };
@@ -43,27 +42,85 @@
   window.beakerRegister.hooks.loadFinished = function(edited) {
     var uri = bkHelper.getNotebookUri();
     var up = uri.split(':');
-    window.beakerRegister.bunsenNotebookId = up[4];
-    console.log('my id is ',window.beakerRegister.bunsenNotebookId);
+    window.beakerRegister.bunsenNotebookId = up[3];
     // inform beakerLab loading is done
     parent.$(parent.document).trigger('beaker.embedded.notebookLoaded', [window.beakerRegister.bunsenNotebookId, bkHelper.isNotebookModelEdited()]);
   };
 
-  // beakerlab is asking beaker to save the notebook
-  $('body').bind('beaker.embedded.setBeakerLabObject', function(e, data) {
-    window.beakerRegister.bunsenObject = data;
-  });
+  window.beakerRegister.hooks.saveNotebookAsShortcut = function() {
+    bkHelper.backupNotebook().then(function() {
+      parent.$(parent.document).trigger('beaker.embedded.saveAs', [window.beakerRegister.bunsenNotebookId]);
+    });
+  };
+  window.beakerRegister.hooks.newDefaultNotebookShortcut = function() {
+    bkHelper.backupNotebook().then(function() {
+      parent.$(parent.document).trigger('beaker.embedded.newNotebook', [window.beakerRegister.bunsenNotebookId]);
+    });
+  };
+  window.beakerRegister.hooks.newNotebookShortcut = function() {
+    bkHelper.backupNotebook().then(function() {
+      parent.$(parent.document).trigger('beaker.embedded.newNotebook', [window.beakerRegister.bunsenNotebookId]);
+    });
+  };
+  window.beakerRegister.hooks.onbeforeunload = function() {
+  };
+  window.beakerRegister.hooks.disableDragAndDropImport = function() {
+    return true;
+  };
+  window.beakerRegister.hooks.codemirrorEventConfig = function(cm, allowImageDropping) {
+    var cmm = cm;
+    $(cm.display.sizer).on('beaker.embedded.dropItem', function (e, d) {
+      e.preventDefault();
+      e.stopPropagation();
+      var display = cmm.display;
+      var x, y, space = display.lineSpace.getBoundingClientRect();
+      try { x = e.clientX - space.left; y = e.clientY - space.top; }
+      catch (e) { return; }
+      var pos =  cm.coordsChar({left: x, top: y}, "div");
+      cm.setSelection(cm.clipPos(pos));
+      cm.replaceSelection(d.payload);
+    });
+  };
   
+  // beakerlab is ending some data to beaker   
+  $('body').bind('beaker.embedded.setBeakerLabObject', function(e, notebookId, notebookName, bkLabObj, isFullScreen, canPublish, isPublished, canBlog) {
+    window.beakerRegister.notebookName = notebookName;
+    window.beakerRegister.bunsenObject = bkLabObj;
+    window.beakerRegister.isFullScreen = isFullScreen;
+    window.beakerRegister.canPublish   = canPublish;
+    window.beakerRegister.isPublished  = isPublished;
+    window.beakerRegister.canBlog      = canBlog;
+  });
+
   // beakerlab is asking beaker to save the notebook
-  $('body').bind('beaker.embedded.doSave', function(e, data) {
+  $('body').bind('beaker.embedded.doSave', function(e, data, comment) {
     parent.$(parent.document).trigger('beaker.embedded.saveStarted', [window.beakerRegister.bunsenNotebookId, data]);
-    bkHelper.saveNotebook().then(function() { 
+    window.beakerRegister.bunsenComment = comment;
+    bkHelper.saveNotebook().then(function() {
       parent.$(parent.document).trigger('beaker.embedded.saveDone', [window.beakerRegister.bunsenNotebookId, data]);
       parent.$(parent.document).trigger('beaker.embedded.notebookChanged', [window.beakerRegister.bunsenNotebookId, bkHelper.isNotebookModelEdited()]);
     },
     function(e) {
       parent.$(parent.document).trigger('beaker.embedded.saveFail', [window.beakerRegister.bunsenNotebookId, data, e]);
     });
+  });
+
+  // beakerlab is informing about a rename
+  $('body').bind('beaker.embedded.renameDone', function(e, nid, newName) {
+    window.beakerRegister.notebookName = newName;
+  });
+
+  // beakerlab is informing about a drag operation start
+  $('body').bind('beaker.embedded.dragStart', function(e, nid, path) {
+    window.beakerRegister.draggingPath = path;
+  });
+
+  // beakerlab is informing about a drag operation drop
+  $('body').bind('beaker.embedded.dropped', function(e, nid, cX, cY) {
+    if (window.beakerRegister.draggingPath !== undefined) {
+      $(document.elementFromPoint(cX, cY)).trigger('beaker.embedded.dropItem', { 'payload': window.beakerRegister.draggingPath, 'cX': cX, 'cY': cY });
+      window.beakerRegister.draggingPath = undefined;
+    }
   });
 
 })();

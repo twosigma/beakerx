@@ -26,6 +26,7 @@ var config = {
         print: function() {}
     },
     capabilities: {
+        shardTestFiles: false,
         maxInstances: 1,
         browserName: 'firefox'
     },

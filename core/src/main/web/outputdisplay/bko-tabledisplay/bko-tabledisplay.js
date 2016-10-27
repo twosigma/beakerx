@@ -382,7 +382,7 @@
               }
               var d = row[j];
               if ($scope.columns[order].render !== undefined) {
-                d = $scope.columns[order].render(d, null, null,
+                d = $scope.columns[order].render(d, 'display', null,
                                                  {settings: settings,
                                                   row: rowIndexes[i],
                                                   col: order});
@@ -772,9 +772,9 @@
             if (_.isObject(value) && value.type === 'Date') {
               value = moment(value.timestamp).format('YYYYMMDD HH:mm:ss.SSS ZZ');
             }
-            if (type === 'display' && value !== null && value !== undefined) {
+/*            if (type === 'display' && value !== null && value !== undefined) {
               return $scope.escapeHTML(value);
-            }
+            }*/
             return value;
           },
           // integer

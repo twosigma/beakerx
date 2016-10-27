@@ -284,14 +284,7 @@ public class EasyForm extends ObservableMap<String, Object> {
 
   @Override
   public String put(final String key, final Object value) {
-    String _value;
-    if (value instanceof String) {
-      _value = String.class.cast(value);
-    } else if (value instanceof Date) {
-      _value = formatDate(Date.class.cast(value));
-    } else {
-      _value = value.toString();
-    }
+    String _value = processValue(value);
     checkComponentExists(key);
     EasyFormComponent component = getComponentMap().get(key);
     if (!component.checkValue(_value)) {
@@ -306,6 +299,19 @@ public class EasyForm extends ObservableMap<String, Object> {
     notifyObservers();
     component.fireChanged();
     return previousValue;
+  }
+
+  private String processValue(final Object value) {
+    // String
+    if (value instanceof String) {
+      return String.class.cast(value);
+    // Date
+    } else if (value instanceof Date) {
+      return formatDate(Date.class.cast(value));
+    // any other type
+    } else {
+      return value.toString();
+    }
   }
 
   private void checkComponentExists(final String key) {

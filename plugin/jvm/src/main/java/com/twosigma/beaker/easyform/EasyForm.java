@@ -290,7 +290,7 @@ public class EasyForm extends ObservableMap<String, Object> {
           String.format("\"%s\" is not a valid option for %s \"%s\".",
               value, component.getClass().getSimpleName(), key));
     }
-    final String currentValue = getValue(component, value);
+    final String currentValue = component.formatValue(value);
     final String previousValue = component.getValue();
     component.setValue(currentValue);
     getValuesMap().put(key, currentValue);
@@ -298,10 +298,6 @@ public class EasyForm extends ObservableMap<String, Object> {
     notifyObservers();
     component.fireChanged();
     return previousValue;
-  }
-
-  private String getValue(final EasyFormComponent component, final Object value) {
-    return String.class.cast(component.formatValue(value));
   }
 
   private void checkComponentExists(final String key) {

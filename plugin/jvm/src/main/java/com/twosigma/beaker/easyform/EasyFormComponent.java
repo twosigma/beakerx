@@ -110,8 +110,8 @@ public class EasyFormComponent {
     this.value = value;
   }
 
-  public Object formatValue(final Object value) {
-    return value;
+  public String formatValue(final Object value) {
+    return String.class.cast(value);
   }
 
   /**

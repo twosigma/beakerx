@@ -38,8 +38,9 @@ var config = {
         }));
     },
     specs: [
-        'tests/tutorials/feature_overview/text-tutorial.js',
-        'tests/badToStringTest.js'
+        'tests/badToStringTest.js',
+        'tests/tutorials/language_demos/sql-tutorial.js',
+        'tests/tutorials/feature_overview/text-tutorial.js'
     ]
 };
 

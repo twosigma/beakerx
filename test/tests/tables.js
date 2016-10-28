@@ -139,34 +139,8 @@ describe('Beaker Tables', function () {
       });
     }
 
-    it('should contain items', function (done) {
-      var expectedItems = [
-        'Reset All Interactions',
-        'Use pagination',
-        'Rows to Show',
-        'Select All',
-        'Deselect All',
-        'Reverse Selection',
-        'Copy to Clipboard',
-        'Save All as CSV',
-        'Save Selected as CSV',
-        'Download All as CSV',
-        'Download Selected as CSV',
-        'Show All Columns',
-        'Show Column',
-        'Hide All Columns',
-        'Search...',
-        'Filter...',
-        'Hide Filter'
-      ];
-      beakerPO.getCodeOutputCellIdBySectionTitle('Table Header').then(function (v) {
-        beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
-      });
-      var firstLevelItems = beakerPO.getDataTableMenuFirstLevelItems('Table Header');
-      checkMenus(expectedItems, firstLevelItems, done);
-    });
-
     it('should contain Rows to Show submenus', function (done) {
+      browser.driver.manage().window().maximize();
       var menusExpected = ['10', '25', '50', '100', 'All'];
       var menusActual = beakerPO.getDataTableSubmenu('Table Header', 'Rows to Show').all(by.css('a'));
       checkMenus(menusExpected, menusActual, done);
@@ -233,6 +207,7 @@ describe('Beaker Tables', function () {
       });
 
       it('should display 10 rows', function (done) {
+        var rowsCount = 10;
         var section = 'Table with pagination';
         var rowsToShowMenu = beakerPO.getDataTableMenuItem(section, 'Rows to Show');
 
@@ -242,10 +217,10 @@ describe('Beaker Tables', function () {
             browser.actions().mouseMove(rowsToShowMenu).perform();
             var show10 = beakerPO.getDataTableSubMenuItem(rowsToShowMenu, '10');
             show10.element(by.css('a[ng-click="changePageLength(length)"]')).click().then(function () {
-                expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 10)).toBe(true);
-                expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 11)).toBe(false);
-                done();
+              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), rowsCount)).toBe(true);
+              expect(beakerPO.isDTRowInViewPort(beakerPO.getDataTablesScrollBodyByIdCell(v, 0), 11)).toBe(false);
             });
+            done();
           });
         });
       });
@@ -253,7 +228,6 @@ describe('Beaker Tables', function () {
       var allRowsCount = 50;
       it('should display All rows', function (done) {
         var section = 'Table with pagination';
-        browser.driver.manage().window().maximize();
         var rowsToShowMenu = beakerPO.getDataTableMenuItem(section, 'Rows to Show');
 
         beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
@@ -274,7 +248,7 @@ describe('Beaker Tables', function () {
         beakerPO.getCodeOutputCellIdBySectionTitle(section).then(function (v) {
           beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
           beakerPO.getDataTableMenuToggle(section).click();
-          var selectAllMenu = beakerPO.getDataTableMenuItem(section, 'Select All');
+          var selectAllMenu = beakerPO.getDataTableMenuItem(section, 'Select All Rows');
           selectAllMenu.element(by.css('a[ng-click="doSelectAll()"]')).click();
           beakerPO.getDataTablesTBodyByIdCell(v).each(function (row, index) {
             beakerPO.checkClass(row, 'selected');
@@ -289,7 +263,7 @@ describe('Beaker Tables', function () {
         beakerPO.getCodeOutputCellIdBySectionTitle(sectionTitle).then(function (v) {
           beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
           beakerPO.getDataTableMenuToggle(sectionTitle).click();
-          var deselectAllMenu = beakerPO.getDataTableMenuItem(sectionTitle, 'Deselect All');
+          var deselectAllMenu = beakerPO.getDataTableMenuItem(sectionTitle, 'Deselect All Rows');
           deselectAllMenu.element(by.css('a[ng-click="doDeselectAll()"]')).click();
         });
       };

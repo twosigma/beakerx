@@ -175,9 +175,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
 
   @Override
   public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand)
-      throws IOException, JsonProcessingException  {
+      throws IOException  {
 
-    try {
       if (obj == null) {
         jgen.writeNull();
       } else if ((obj instanceof TableDisplay) ||
@@ -203,11 +202,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
       } else
         return runThreadSerializers(obj, jgen, expand) || runConfiguredSerializers(obj,
                                                                                    jgen,
-                                                                                   expand);
-    } catch (Exception e) {
-      logger.error("exception in serialization", e);
-      return false;
-    }
+                                                                                  expand);
     return true;
   }
 
@@ -229,12 +224,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
   
   public boolean runConfiguredSerializers(Object obj, JsonGenerator jgen, boolean expand) throws IOException, JsonProcessingException {
     for (ObjectSerializer s : supportedSerializers) {
-      try {
         if (s.canBeUsed(obj, expand) && s.writeObject(obj, jgen, expand))
           return true;
-      } catch (Exception e) {
-        logger.error("exception in serialization",e);
-      }
     }
     return false;
   }
@@ -461,7 +452,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
       for (Object entry : eset) {
         Entry<?,?> e = (Entry<?, ?>) entry;
         List<Object> l = new ArrayList<Object>();
-        l.add(e.getKey().toString());
+        Object o = e.getKey();
+        l.add(null==o?"null":o.toString());
         l.add(e.getValue());
         values.add(l);
       }
@@ -555,7 +547,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
       else {
         jgen.writeStartObject();
         for (Object k : kset) {
-          jgen.writeFieldName(k.toString());
+          jgen.writeFieldName((null==k)?"null":k.toString());
           if (!parent.writeObject(m.get(k), jgen, false))
             jgen.writeObject(m.get(k)!=null ? (m.get(k).toString()) : "null");
         }

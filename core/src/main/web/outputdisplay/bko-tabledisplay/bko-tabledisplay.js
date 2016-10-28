@@ -416,30 +416,18 @@
         
         $scope.doCSVDownload = function(selectedRows) {
           var href = 'data:attachment/csv;charset=utf-8,' + encodeURI($scope.getCSV(selectedRows));
-          var target  = '_black';
+          var target = '_black';
           var filename = 'tableRows.csv';
-          if (bkHelper.isFirefox){
-            var template =
-              "<div><style>.modal-dialog{width: 350px; height:150px;}</style></div>" +
-              "<div class='modal-header'>" +
-                "<h1>" + "Download CSV" + "</h1>" +
-              "</div>" +
-              "<div class='modal-body'><p>" + "Download data as CSV" + "</p></div>" +
-                '<div class="modal-footer">' +
-                  " <a class='Yes btn' ng-click='close(0)' href=" + href +
-                    " target=" + target + " download=" + filename +
-                    ' style="color: #FFF; background-color: #39a9ed; border-color: #229feb" >' + "Download" + "</a>" +
-                  " <button class='Cancel btn' ng-click='close()'>" + "Cancel" + "</button>" +
-                "</div>";
-            bkHelper.showModalDialog(null, template);
-          }else{
-          var anchor = angular.element('<a/>');
-          anchor.attr({
-            href: href,
-            target: target,
-            download: filename
-          })[0].click();
-          }
+          var anchor = document.createElement('a');
+          anchor.href = href;
+          anchor.target = target;
+          anchor.download = filename;
+          var event = document.createEvent("MouseEvents");
+          event.initEvent(
+            "click", true, false
+          );
+          anchor.dispatchEvent(event);
+
         };
 
         $scope.doCSVExport = function(selectedRows) {

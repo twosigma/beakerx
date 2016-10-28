@@ -940,5 +940,13 @@ var BeakerPageObject = function() {
     item.click();
     browser.actions().doubleClick(item).perform();
   }
+
+  this.checkDownload = function(){
+    var dir = path.join(__dirname, '../' ,"tmp");
+    if(!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
+  }
+
 };
 module.exports = BeakerPageObject;

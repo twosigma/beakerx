@@ -37,7 +37,7 @@ describe('Table Display (Groovy API)', function (done) {
     }
 
     describe('Programmatic control of visual formatting', function(){
-        it('Built-in formatters', function () {
+     /*   it('Built-in formatters', function () {
             var idCell = "codeaWwWKg";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table', 'tableGroovyBuiltInFormatters', 60000);
@@ -195,7 +195,7 @@ describe('Table Display (Groovy API)', function (done) {
             var thHeader = beakerPO.getDataTablesTHeadByIdCell(idCell).get(0).all(by.css('th'));
             expect(thHeader.get(1).getCssValue('vertical-align')).toBe('bottom');
             expect(thHeader.get(1).getCssValue('font-size')).toBe('30px');
-        });
+        });          */
         it('Run tags', function () {
             var idCell = "codeYEb1OS";
             beakerPO.scrollToBkCellByIdCell(idCell);
@@ -213,6 +213,15 @@ describe('Table Display (Groovy API)', function (done) {
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Results');
             beakerPO.scrollToCodeCellOutputByIdCell(idCell);
             beakerPO.checkCellOutputTextByIdCell(idCell, 'You clicked on the cell [0, 1]');
+        });
+    });
+
+    describe('EscapeHTML function', function(){
+        it('Downloaded file should contain only regular ascii', function(){
+            idCell="codeb4y5Z8";
+            this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')).click()
+                .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVDownload(false)"]')).click);
+            beakerPO.checkDownload();
         });
     });
 });

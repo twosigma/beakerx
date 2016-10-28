@@ -57,12 +57,18 @@
               this._showSearchReplace = false;
             },
             showSearchReplace: function (cm, cellmodel) {
-              this._showSearchReplace = true;
               this.hideOutput();
               if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
                 $scope.$apply();
               }
-              $scope.prepareNotebookeForSearch(cm, cellmodel);
+              if(this._showSearchReplace){
+                if(cm){
+                  $scope.prepareNotebookeForSearch(cm, cellmodel);
+                }
+              }else{
+                $scope.prepareNotebookeForSearch(cm, cellmodel);
+              }
+              this._showSearchReplace = true;
               if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
                 $scope.$apply();
               }
@@ -219,8 +225,8 @@
         
         var previousFilter = {};
         var currentCm = null;
+        var cursorPozitionFromCm = {};
         var currentCellmodel = null;
-        var clearCursorPozition = true;
         var currentMarker = null;
 
         $scope.availableSearchCellOptions =
@@ -283,7 +289,7 @@
               if (cellModel.copy.locked) {
                 cellModel.original.locked = false;
               }
-              if (cellModel.copy.input.hidden) {
+              if (cellModel.copy.input && cellModel.copy.input.hidden) {
                 cellModel.original.input.hidden = false;
               }
             }
@@ -374,7 +380,7 @@
                 clearMarcs(theCM);     
                 if(result.find && result.searchCellFilter.allNotebook){
                   if(isCellMatchSearchCellFilter(theCell, result.searchCellFilter)){
-                    for (theCursor = getSearchCursor(result, theCursor, 'MIN', theCM); theCursor.findNext();) {
+                    for (theCursor = getSearchCursor(result, null, 'MIN', theCM); theCursor.findNext();) {
                       action(theCursor, theCM, theCell);
                     }
                   }
@@ -384,7 +390,7 @@
           }
           if(!result.searchCellFilter.allNotebook){
             if(result.find){
-              for (theCursor = getSearchCursor(result, theCursor, 'MIN', currentCm); theCursor.findNext();) {
+              for (theCursor = getSearchCursor(result, null, 'MIN', currentCm); theCursor.findNext();) {
                 action(theCursor, currentCm);
               }
             }
@@ -439,13 +445,14 @@
         $scope.findFunction = function (result, reversive) {
           if(result.find  && currentCm ){
 
+            var clearCursorPozition = !cursorPozitionFromCm.line;
+            
             var createNewCursor = result.caseSensitive != previousFilter.caseSensitive
               || result.find != previousFilter.find;
             angular.copy(result, previousFilter);
-
+            
             if(createNewCursor){
-              cursor = getSearchCursor(result, cursor, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
-              clearCursorPozition = false;
+              cursor = getSearchCursor(result, cursorPozitionFromCm, clearCursorPozition ? 'MIN' : 'COPY', currentCm);
             }
 
             var cellmodelId = currentCellmodel.id;
@@ -512,6 +519,7 @@
           if(cm && cellmodel){
             currentCm = cm;
             currentCellmodel = cellmodel;
+            cursorPozitionFromCm = { line: cm.getCursor().line , ch : cm.getCursor().ch }; 
           }else{
             var theCell = notebookCellOp.getCellAtIndex(0);
             if (theCell){
@@ -522,7 +530,6 @@
               }
             }
           }
-          clearCursorPozition = true;
 
           var element = $window.document.getElementById("find_field");
           if(element){
@@ -563,7 +570,11 @@
           }
           
           previousFilter = {};
-        }       
+          currentCm = null;
+          currentCellmodel = null;
+          cursorPozitionFromCm = {};
+          cursor = null;
+        }
         
         var prepareForSearchCellActions = function(cell) {
           var theCM = _impl.getCM(cell.id);
@@ -581,11 +592,11 @@
           }
         }
         
-        var getSearchCursor = function (filter, oldCursor, positionType, cmToUSe) {
+        var getSearchCursor = function (filter, cursorPozition, positionType, cmToUSe) {
           var from = {line: 0, ch: 0};
           if(positionType == 'COPY'){
-            if(oldCursor){
-              from = oldCursor.to();
+            if(cursorPozition){
+              from = {line: cursorPozition.line , ch: cursorPozition.ch};
             }
           }else if(positionType == 'MIN'){
             from = {line: 0, ch: 0};
@@ -638,7 +649,7 @@
 
           }else{
             if(filter.wrapSearch){
-              ret = getSearchCursor(filter, cursor, reversive ? 'MAX' : 'MIN', cmToUSe);
+              ret = getSearchCursor(filter, null, reversive ? 'MAX' : 'MIN', cmToUSe);
             }
             //else null
           }

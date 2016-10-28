@@ -1530,11 +1530,19 @@
           };
           scope.mousep2 = {};
           _.extend(scope.mousep2, scope.mousep1);
-          d3.zoom()
+          var d3Zoom = d3.zoom()
           .scaleExtent([1, 40])
           .translateExtent([[-100, -100], [600, 600]])
           .on("zoom", scope.zooming);
+          scope.jqsvg.css("cursor", "auto");
 
+          $('body').css('overflow','hidden');
+          $('svg').on('mouseleave', function() {
+            d3Zoom.on('zoom',function(){});
+            $('body').css('overflow','visible');
+          }).on('mouseenter',function(){
+            $('body').css('overflow','hidden');
+          });
         };
         scope.zooming = function(d) {
           if (scope.interactMode === "other"){
@@ -1597,7 +1605,7 @@
               var deltaY = d3trans.deltaY;
               if(!scope.deltaS) scope.deltaS = deltaY;
 
-              var ds = 1 + deltaY/scope.deltaS;
+              var ds = 1 + ((Math.abs(deltaY)/scope.deltaS)/25);
               var level = scope.zoomLevel;
               if (my <= plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin) {
                 // scale y
@@ -1605,48 +1613,44 @@
                 var nyl = ym - ds * (ym - focus.yl),
                     nyr = ym + ds * (focus.yr - ym),
                     nyspan = (nyr - nyl);
-                console.log(nyl + " :: " + nyr  + "  :::::: " + nyspan);
                 scope.deltaS  = deltaY;
-                console.log("ds" + ds);
+
 
                 if (nyspan >= level.minSpanY && nyspan <= level.maxScaleY) {
-                  // focus.yl = nyl;
-                  // focus.yr = nyr;
+                  focus.yl = nyl;
+                  focus.yr = nyr;
                   focus.yspan = nyspan;
                 }
                 else {
                   if (nyspan > level.maxScaleY) {
-                    console.log("bigger than allowed");
-                    // focus.yr = focus.yl + level.maxScaleY;
+                    focus.yr = focus.yl + level.maxScaleY;
                   } else if (nyspan < level.minSpanY) {
-                    console.log("smaller than allowed");
-                    // focus.yr = focus.yl + level.minSpanY;
+                    focus.yr = focus.yl + level.minSpanY;
                   }
-                  console.log("ei ole oiges moodus");
-                  // focus.yspan = focus.yr - focus.yl;
+                  focus.yspan = focus.yr - focus.yl;
                 }
               }
-              // if (mx >= scope.layout.leftLayoutMargin) {
-              //   // scale x
-              //   var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
-              //   var nxl = xm - ds * (xm - focus.xl),
-              //       nxr = xm + ds * (focus.xr - xm),
-              //       nxspan = nxr - nxl;
-              //   if (nxspan >= level.minSpanX && nxspan <= level.maxScaleX) {
-              //     focus.xl = nxl;
-              //     focus.xr = nxr;
-              //     focus.xspan = nxspan;
-              //   } else {
-              //     if (nxspan > level.maxScaleX) {
-              //       focus.xr = focus.xl + level.maxScaleX;
-              //     } else if (nxspan < level.minSpanX) {
-              //       focus.xr = focus.xl + level.minSpanX;
-              //     }
-              //     focus.xspan = focus.xr - focus.xl;
-              //   }
-              // }
+              if (mx >= scope.layout.leftLayoutMargin) {
+                // scale x
+                var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
+                var nxl = xm - ds * (xm - focus.xl),
+                    nxr = xm + ds * (focus.xr - xm),
+                    nxspan = nxr - nxl;
+                
+                if (nxspan >= level.minSpanX && nxspan <= level.maxScaleX) {
+                  focus.xl = nxl;
+                  focus.xr = nxr;
+                  focus.xspan = nxspan;
+                } else {
+                  if (nxspan > level.maxScaleX) {
+                    focus.xr = focus.xl + level.maxScaleX;
+                  } else if (nxspan < level.minSpanX) {
+                    focus.xr = focus.xl + level.minSpanX;
+                  }
+                  focus.xspan = focus.xr - focus.xl;
+                }
+              }
               scope.emitZoomLevelChange();
-              console.log("scale the zucker")
             }
             scope.calcMapping(true);
             scope.renderCursor({
@@ -1669,7 +1673,6 @@
             scope.update();
             scope.interactMode = "zoom";
           }
-          scope.jqsvg.css("cursor", "auto");
         };
         scope.fixFocus = function(focus) {
           focus.xl = focus.xl < 0 ? 0 : focus.xl;

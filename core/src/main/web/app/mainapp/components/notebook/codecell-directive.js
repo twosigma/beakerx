@@ -210,14 +210,24 @@
           // Even better would be to detect left/right and move to
           // beginning or end of line, but we can live with this for now.
           var cm = $scope.cm;
-          setTimeout(function(){
-            if (event.pageY < (top + bottom) / 2) {
-              cm.setCursor(0, 0);
+          setTimeout(function() {
+            // click-shiftKey handling - select from current position to the end
+            if (event.shiftKey) {
+              var cursor = cm.lastPositon || {"line" : 0, "ch" : 0};
+              var lastPosition = {
+                "line" : cm.lineCount() - 1,
+                "ch" : cm.getLine(cm.lastLine()).length
+              };
+              cm.setSelection(cursor, lastPosition);
             } else {
-              cm.setCursor(cm.lineCount() - 1,
-                cm.getLine(cm.lastLine()).length);
+              if (event.pageY < (top + bottom) / 2) {
+                cm.setCursor(0, 0);
+              } else {
+                cm.setCursor(cm.lineCount() - 1,
+                    cm.getLine(cm.lastLine()).length);
+              }
+              cm.focus();
             }
-            cm.focus();
           }, 0);
 
         };
@@ -542,9 +552,6 @@
           'PageUp': function (cm) {
             //override default behaviour of codemirror control
             //do nothing
-          },
-          'Shift-MouseDown': function(cm) {
-            console.log("here");
           }
         });
 
@@ -565,6 +572,7 @@
               //codecomplete is up, skip
               return;
             }
+            scope.cm.lastPositon = scope.cm.getCursor('anchor');
             if(document.hasFocus()){
               // This is involved in issue #4397, but we do not have a good fix.
               scope.cm.setSelection({line: 0, ch: 0 }, {line: 0, ch: 0 }, {scroll: false});

@@ -42,7 +42,7 @@ public class DatePickerComponent extends EasyFormComponent {
   }
 
   @Override
-  public String formatValue(Object value) {
+  public String formatValue(final Object value) {
     if (value instanceof Date) {
       return dateFormat.format(value);
     } else {

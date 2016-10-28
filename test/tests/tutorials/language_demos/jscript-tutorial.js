@@ -147,5 +147,15 @@ describe('JavaScript Tutorial', function () {
                 beakerPO.checkTablesRowsByIdCell(idCell, 3);
             });
         });
+
+        describe('EscapeHTML function', function(){
+            it('1st row should display "0 u<p"', function(){
+                var idCell = "codevIQ0Ao";
+                beakerPO.scrollToBkCellByIdCell(idCell);
+                beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+                expect(beakerPO.getDataTablesTBodyByIdCell(idCell).get(0).getText()).toBe('0 u<p');
+            });
+        });
+
     });
 });

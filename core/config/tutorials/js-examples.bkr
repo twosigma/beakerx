@@ -6,7 +6,7 @@
             "plugin": "HTML",
             "view": {
                 "cm": {
-                    "mode": "htmlmixed"
+                    "mode": "smartHTMLMode"
                 }
             }
         },
@@ -29,7 +29,8 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            }
+            },
+            "languageVersion": "ES2015"
         }
     ],
     "cells": [
@@ -98,7 +99,7 @@
                 },
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 0,
-                "height": 304
+                "height": 321
             },
             "evaluatorReader": true,
             "lineCount": 22
@@ -201,7 +202,7 @@
                 "result": "ratio = 0.112",
                 "pluginName": "JavaScript",
                 "elapsedTime": 12149,
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 70
@@ -250,7 +251,7 @@
                 "selectedType": "Results",
                 "pluginName": "JavaScript",
                 "elapsedTime": 237,
-                "height": 86
+                "height": 106
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -290,7 +291,7 @@
                     "datatablestate": {
                         "pagination": {
                             "use": true,
-                            "rowsToDisplay": 50,
+                            "rowsToDisplay": 25,
                             "fixLeft": 0,
                             "fixRight": 0
                         },
@@ -298,6 +299,11 @@
                             "name",
                             "mass",
                             "charge3"
+                        ],
+                        "actualtype": [
+                            0,
+                            "4.4",
+                            2
                         ],
                         "actualalign": [
                             "L",
@@ -314,7 +320,18 @@
                             true,
                             true,
                             true
-                        ]
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -361,8 +378,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 48,
-                "height": 190
+                "elapsedTime": 47,
+                "height": 210
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -382,13 +399,17 @@
                     "datatablestate": {
                         "pagination": {
                             "use": true,
-                            "rowsToDisplay": 50,
+                            "rowsToDisplay": 25,
                             "fixLeft": 0,
                             "fixRight": 0
                         },
                         "columnNames": [
                             "mass",
                             "charge3"
+                        ],
+                        "actualtype": [
+                            "4.4",
+                            2
                         ],
                         "actualalign": [
                             "R",
@@ -402,7 +423,18 @@
                         "getCellSho": [
                             true,
                             true
-                        ]
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -454,8 +486,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 22,
-                "height": 217
+                "elapsedTime": 23,
+                "height": 237
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -474,8 +506,8 @@
                 "result": "DataFrame:  Rows: 6\n  Data columns (total 3 columns):\n    name   string *Index*\n    mass   double\n    charge3   integer\n",
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 27,
-                "height": 100
+                "elapsedTime": 17,
+                "height": 120
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -498,8 +530,8 @@
                 ],
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 20,
-                "height": 36
+                "elapsedTime": 13,
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -522,8 +554,8 @@
                 ],
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 19,
-                "height": 36
+                "elapsedTime": 16,
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -549,8 +581,8 @@
                 ],
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 20,
-                "height": 36
+                "elapsedTime": 18,
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -569,13 +601,17 @@
                     "datatablestate": {
                         "pagination": {
                             "use": true,
-                            "rowsToDisplay": 50,
+                            "rowsToDisplay": 25,
                             "fixLeft": 0,
                             "fixRight": 0
                         },
                         "columnNames": [
                             "Key",
                             "Value"
+                        ],
+                        "actualtype": [
+                            0,
+                            0
                         ],
                         "actualalign": [
                             "L",
@@ -589,7 +625,18 @@
                         "getCellSho": [
                             true,
                             true
-                        ]
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -616,8 +663,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 26,
-                "height": 136
+                "elapsedTime": 17,
+                "height": 156
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -637,8 +684,8 @@
                 "result": 6,
                 "selectedType": "Text",
                 "pluginName": "JavaScript",
-                "elapsedTime": 19,
-                "height": 36
+                "elapsedTime": 14,
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -658,12 +705,15 @@
                     "datatablestate": {
                         "pagination": {
                             "use": true,
-                            "rowsToDisplay": 50,
+                            "rowsToDisplay": 25,
                             "fixLeft": 0,
                             "fixRight": 0
                         },
                         "columnNames": [
                             "mass"
+                        ],
+                        "actualtype": [
+                            "4.4"
                         ],
                         "actualalign": [
                             "R"
@@ -674,7 +724,18 @@
                         ],
                         "getCellSho": [
                             true
-                        ]
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -718,8 +779,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 25,
-                "height": 217
+                "elapsedTime": 17,
+                "height": 237
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -740,13 +801,17 @@
                     "datatablestate": {
                         "pagination": {
                             "use": true,
-                            "rowsToDisplay": 50,
+                            "rowsToDisplay": 25,
                             "fixLeft": 0,
                             "fixRight": 0
                         },
                         "columnNames": [
                             "c0",
                             "c1"
+                        ],
+                        "actualtype": [
+                            0,
+                            0
                         ],
                         "actualalign": [
                             "L",
@@ -760,7 +825,18 @@
                         "getCellSho": [
                             true,
                             true
-                        ]
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -791,8 +867,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 36,
-                "height": 136
+                "elapsedTime": 19,
+                "height": 156
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -812,13 +888,17 @@
                     "datatablestate": {
                         "pagination": {
                             "use": true,
-                            "rowsToDisplay": 50,
+                            "rowsToDisplay": 25,
                             "fixLeft": 0,
                             "fixRight": 0
                         },
                         "columnNames": [
                             "Key",
                             "Value"
+                        ],
+                        "actualtype": [
+                            0,
+                            0
                         ],
                         "actualalign": [
                             "L",
@@ -832,7 +912,18 @@
                         "getCellSho": [
                             true,
                             true
-                        ]
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "result": {
@@ -860,10 +951,95 @@
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
                 "elapsedTime": 19,
-                "height": 136
+                "height": 156
             },
             "evaluatorReader": true,
             "lineCount": 2
+        },
+        {
+            "id": "codevIQ0Ao",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var quarks = new beaker.DataFrame();",
+                    "quarks.addColumn(\"name\", [\"u<p\", \"charm\", \"top\", \"down\", \"strange\"]);",
+                    "quarks"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "name"
+                        ],
+                        "actualtype": [
+                            0
+                        ],
+                        "actualalign": [
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1
+                        ],
+                        "getCellSho": [
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "TableDisplay",
+                    "hasIndex": "false",
+                    "values": [
+                        [
+                            "u<p"
+                        ],
+                        [
+                            "charm"
+                        ],
+                        [
+                            "top"
+                        ],
+                        [
+                            "down"
+                        ],
+                        [
+                            "strange"
+                        ]
+                    ],
+                    "types": [
+                        "string"
+                    ],
+                    "columnNames": [
+                        "name"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 20,
+                "height": 210
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         }
     ],
     "namespace": {

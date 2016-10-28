@@ -382,7 +382,7 @@
               }
               var d = row[j];
               if ($scope.columns[order].render !== undefined) {
-                d = $scope.columns[order].render(d, null, null,
+                d = $scope.columns[order].render(d, 'csv', null,
                                                  {settings: settings,
                                                   row: rowIndexes[i],
                                                   col: order});
@@ -851,7 +851,7 @@
             if ($scope.timeStrings) {
               return $scope.timeStrings[meta.row];
             }
-            if (type === 'display') {
+            if (type === 'display' || type === 'csv') {
               var format = _.isEmpty($scope.formatForTimes) ?
                 TIME_UNIT_FORMATS.DATETIME.format : TIME_UNIT_FORMATS[$scope.formatForTimes].format;
               if (_.isObject(value) && value.type === 'Date') {

@@ -484,7 +484,7 @@
                 "body": [
                     "# dataframe - 5",
                     "import pandas as pd",
-                    "import pandas.io.data",
+                    "import pandas_datareader.data",
                     "from pandas import Series, DataFrame",
                     "aapl = pd.io.data.get_data_yahoo('AAPL', ",
                     "                                 start=datetime.datetime(2010, 11, 1), ",

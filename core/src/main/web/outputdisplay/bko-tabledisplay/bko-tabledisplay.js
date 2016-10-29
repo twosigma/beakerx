@@ -412,15 +412,22 @@
             });
           }
           return $scope.exportTo(data, 'csv');
-        }
+        };
         
         $scope.doCSVDownload = function(selectedRows) {
-          var anchor = angular.element('<a/>');
-          anchor.attr({
-            href: 'data:attachment/csv;charset=utf-8,' + encodeURI($scope.getCSV(selectedRows)),
-            target: '_blank',
-            download: 'tableRows.csv'
-          })[0].click();  
+          var href = 'data:attachment/csv;charset=utf-8,' + encodeURI($scope.getCSV(selectedRows));
+          var target = '_black';
+          var filename = 'tableRows.csv';
+          var anchor = document.createElement('a');
+          anchor.href = href;
+          anchor.target = target;
+          anchor.download = filename;
+          var event = document.createEvent("MouseEvents");
+          event.initEvent(
+            "click", true, false
+          );
+          anchor.dispatchEvent(event);
+
         };
 
         $scope.doCSVExport = function(selectedRows) {

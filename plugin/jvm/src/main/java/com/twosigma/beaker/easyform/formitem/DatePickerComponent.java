@@ -18,7 +18,13 @@ package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class DatePickerComponent extends EasyFormComponent {
+
+  private static final String DATE_FORMAT = "yyyyMMdd";
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
   private Boolean showTime;
 
@@ -28,5 +34,19 @@ public class DatePickerComponent extends EasyFormComponent {
 
   public Boolean getShowTime() {
     return showTime;
+  }
+
+  @Override
+  protected boolean checkValue(final Object value) {
+    return value instanceof Date || value instanceof String;
+  }
+
+  @Override
+  public String formatValue(final Object value) {
+    if (value instanceof Date) {
+      return dateFormat.format(value);
+    } else {
+      return String.class.cast(value);
+    }
   }
 }

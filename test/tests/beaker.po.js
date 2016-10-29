@@ -732,10 +732,9 @@ var BeakerPageObject = function() {
   this.checkEditBkCellByIdCell = function(idCell){
     this.getBkCellByIdCell(idCell).element(by.css('[ng-click="edit($event)"]')).click();
     browser.wait(this.EC.visibilityOf($('bk-cell[cellid=' + idCell + '] div[ng-show="mode==\'edit\'"'), 10000));
-    var elemEdit = this.getEditBkCellByIdCell(idCell);
     expect(this.getPreviewBkCellByIdCell(idCell).isDisplayed()).toBe(false);
-    expect(elemEdit.isDisplayed()).toBe(true);
-    return elemEdit;
+    expect(this.getEditBkCellByIdCell(idCell).isDisplayed()).toBe(true);
+    return this.getEditBkCellByIdCell(idCell);
   }
 
   this.getFormulaSubElement = function(elemPromise, subIndex){

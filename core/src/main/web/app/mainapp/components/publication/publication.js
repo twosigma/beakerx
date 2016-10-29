@@ -214,7 +214,7 @@
         .then(function(publicationId) {
           $scope.saving = false;
           publicId = publicationId;
-          tab.location = bkPublicationApi.getBaseUrl() + '/#/publications/' + publicationId;
+          tab.location = bkPublicationApi.getBaseUrl() + '/publications/' + publicationId;
         })
         .then(function() {
           if ($scope.deletedAttachment && !skipAttachmentDeletion) {
@@ -254,7 +254,7 @@
       };
 
       $scope.signupUrl = function() {
-        return $scope.baseUrl + '#/sign_up?redirect=' + encodeURIComponent($location.absUrl());
+        return $scope.baseUrl + '/sign_up?redirect=' + encodeURIComponent($location.absUrl());
       };
 
       $scope.removeAttachment = function() {

@@ -702,10 +702,6 @@
         var setFullScreen = function (cm) {
           bkHelper.setFullScreen(cm, !bkHelper.isFullScreen(cm));
         };
-
-        var findReplace = function (cm) {
-          bkHelper.getBkNotebookViewModel().showSearchReplace(cm, scope.cellmodel);
-        }
         
         CodeMirror.commands.save = function (){
 	        bkHelper.saveNotebook();
@@ -750,12 +746,6 @@
           keys["Ctrl-C"] = cancel;
         }else{
           keys["Alt-C"] = cancel;
-        }
-        
-        if(bkHelper.isMacOS){
-          keys["Ctrl-F"] = findReplace;
-        }else{
-          keys["Alt-F"] = findReplace;
         }
 
         if (codeMirrorExtension.extraKeys !== undefined) {

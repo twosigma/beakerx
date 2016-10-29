@@ -46,7 +46,6 @@ var config = {
     'tests/tutorials/groovy_plotting/histogram-tutorial.js',
     'tests/tutorials/groovy_plotting/levelsOfDetail-tutorial.js',
     'tests/tutorials/groovy_plotting/plotActions-tutorial.js',
-    'tests/tutorials/language_demos/sql-tutorial.js',
     'tests/tutorials/language_demos/java-tutorial.js',
     'tests/tutorials/language_demos/groovy-tutorial.js',
     'tests/tutorials/language_demos/clojure-tutorial.js',
@@ -67,9 +66,7 @@ var config = {
     'tests/tutorials/feature_overview/codeReuse-tutorial.js',
     'tests/tutorials/feature_overview/beakerObject-tutorial.js',
     'tests/tutorials/feature_overview/outputContainer-tutorial.js',
-    'tests/tutorials/feature_overview/bigIntegerTables-tutorial.js',
-    'tests/tutorials/feature_overview/text-tutorial.js',
-    'tests/badToStringTest.js'
+    'tests/tutorials/feature_overview/bigIntegerTables-tutorial.js'
   ]
 };
 

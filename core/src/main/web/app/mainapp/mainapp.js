@@ -733,9 +733,6 @@
               saveStart();
               bkFileManipulation.saveNotebook(saveFailed).then(
                   function(ret){
-                    //bkSessionManager.close();
-                    //bkCoreManager.gotoControlPanel();
-                    
                     if (bkEvaluateJobManager.isAnyInProgress() ) {
                       bkCoreManager.show2ButtonModal(
                           "All running and pending cells will be cancelled.",

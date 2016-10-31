@@ -1485,6 +1485,9 @@
         };
         startAutoBackup();
         $scope.gotoControlPanel = function(event) {
+          if (window.beakerRegister !== undefined && window.beakerRegister.isEmbedded === true) {
+            return;
+          }
           if (bkUtils.isMiddleClick(event)) {
             window.open($location.absUrl() + '/beaker');
           } else {

@@ -11,7 +11,7 @@
                     "mode": "python"
                 }
             },
-            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\nimport pandas as pd\nimport pandas.io.data\nfrom pandas import Series, DataFrame"
+            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\nimport pandas as pd\nfrom pandas import Series, DataFrame"
         },
         {
             "name": "JavaScript",
@@ -23,7 +23,8 @@
                     "mode": "javascript",
                     "background": "#FFE0F0"
                 }
-            }
+            },
+            "languageVersion": "ES2015"
         }
     ],
     "cells": [
@@ -88,7 +89,7 @@
                         null
                     ]
                 },
-                "height": 34
+                "height": 365
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -235,6 +236,17 @@
                             "10 yr",
                             "30 yr"
                         ],
+                        "actualtype": [
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4"
+                        ],
                         "actualalign": [
                             "R",
                             "R",
@@ -268,12 +280,20 @@
                             true,
                             true,
                             true
-                        ]
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": []
                     }
                 },
                 "pluginName": "IPython",
                 "shellId": "4770FD9B872B46028C17DB4FA45B48C3",
-                "height": 190
+                "height": 210
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -297,7 +317,7 @@
                 "state": {},
                 "pluginName": "IPython",
                 "shellId": "4770FD9B872B46028C17DB4FA45B48C3",
-                "height": 344
+                "height": 364
             },
             "evaluatorReader": true,
             "lineCount": 3

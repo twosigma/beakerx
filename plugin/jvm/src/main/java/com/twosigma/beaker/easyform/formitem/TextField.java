@@ -30,4 +30,9 @@ public class TextField extends EasyFormComponent {
     this.width = width;
     return this;
   }
+
+  @Override
+  protected boolean checkValue(final Object value) {
+    return value instanceof String;
+  }
 }

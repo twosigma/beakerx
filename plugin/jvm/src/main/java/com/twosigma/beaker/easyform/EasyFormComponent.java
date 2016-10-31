@@ -110,6 +110,10 @@ public class EasyFormComponent {
     this.value = value;
   }
 
+  public String formatValue(final Object value) {
+    return String.class.cast(value);
+  }
+
   /**
    * Throw IllegalArgumentException if such value can't be set to this component
    */

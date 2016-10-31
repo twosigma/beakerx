@@ -703,15 +703,8 @@
           bkHelper.setFullScreen(cm, !bkHelper.isFullScreen(cm));
         };
 
-
-        CodeMirror.commands.save = function (){
-          bkHelper.saveNotebook();
-        };
-        
-        CodeMirror.Vim.defineEx('wquit', 'wq', function(){
-          bkCoreManager.getBkApp().saveNotebookAndClose();
-        });
-        
+        CodeMirror.commands.save = bkHelper.saveNotebook;
+        CodeMirror.Vim.defineEx('wquit', 'wq', bkCoreManager.getBkApp().saveNotebookAndClose);
         CodeMirror.Vim.defineEx('quit', 'q', bkHelper.closeNotebook);
         
         var keys = {

@@ -605,19 +605,20 @@
               );
             }
           };
-
-          function closeNotebook(destroy) {
+          
+          var closeNotebookWithJobProgress = function (closeImplementation) {
             if (bkEvaluateJobManager.isAnyInProgress() ) {
               bkCoreManager.show2ButtonModal(
                   "All running and pending cells will be cancelled.",
                   "Warning!",
                   function() {
                     bkEvaluateJobManager.cancelAll().then(function() {
-                      _impl._closeNotebook(destroy);
+                      closeImplementation();
                     }
                   ); });
-            } else
-              _closeNotebook(destroy);
+            } else{
+              closeImplementation();
+            }
           };
 
           var go = function(id) {
@@ -631,7 +632,9 @@
           if (bkUtils.isElectron) {
             bkElectron.IPC.removeAllListeners('close-window');
             bkElectron.IPC.on('close-window', function(){
-              closeNotebook(true);
+              closeNotebookWithJobProgress(function(){
+                _closeNotebook(true);
+              });
             });
           }
 
@@ -733,21 +736,17 @@
               saveStart();
               bkFileManipulation.saveNotebook(saveFailed).then(
                   function(ret){
-                    if (bkEvaluateJobManager.isAnyInProgress() ) {
-                      bkCoreManager.show2ButtonModal(
-                          "All running and pending cells will be cancelled.",
-                          "Warning!",
-                          function() {
-                            bkEvaluateJobManager.cancelAll().then(function() {
-                              bkCoreManager.gotoControlPanel();
-                            }
-                          ); });
-                    } else {
+                    closeNotebookWithJobProgress(function(){
                       bkCoreManager.gotoControlPanel();
-                    }
+                    })
+                    
                   }, saveFailed);
             },
-            closeNotebook: closeNotebook,
+            closeNotebook: function(){
+              closeNotebookWithJobProgress(function(){
+                _closeNotebook(false);
+              });
+            },
             _closeNotebook: _closeNotebook,
             collapseAllSections: function() {
               _.each(this.getNotebookModel().cells, function(cell) {

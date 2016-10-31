@@ -326,6 +326,9 @@
       var lastAction = new Date();
       var beakerRootOp = {
         gotoControlPanel: function() {
+          if (window.beakerRegister !== undefined && window.beakerRegister.isEmbedded === true) {
+            return;
+          }
           var ret = $location.path("/control").search({});
           if (bkUtils.isElectron && !$rootScope.$$phase) {
             $rootScope.$apply();

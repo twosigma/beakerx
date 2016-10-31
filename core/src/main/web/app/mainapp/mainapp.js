@@ -745,7 +745,6 @@
                     } else {
                       bkCoreManager.gotoControlPanel();
                     }
-                 
                   }, saveFailed);
             },
             closeNotebook: closeNotebook,

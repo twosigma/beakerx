@@ -941,11 +941,17 @@ var BeakerPageObject = function() {
     browser.actions().doubleClick(item).perform();
   }
 
-  this.checkDownload = function(){
-    var dir = path.join(__dirname, '../' ,"tmp");
-    if(!fs.existsSync(dir)){
-      fs.mkdirSync(dir);
-    }
+  this.checkDownloadCSV = function(){
+    var self = this;
+    var dir = this.clearTmpDir();
+    this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')).click()
+        .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVDownload(false)"]')).click);
+    var filename = path.join(dir, "tableRows.csv");
+    browser.driver.wait(fs.existsSync.bind(this, filename), 20000).then(
+        function() {
+          expect(fs.readFileSync(filename, { encoding: 'utf8' }).replace(/[\n\r]/g,'')).toEqual('"col1","col2","col3""This & that","This / that","This > that"');
+        }
+    );
   }
 
 };

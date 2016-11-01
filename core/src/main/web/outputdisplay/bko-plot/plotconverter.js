@@ -586,8 +586,13 @@
                 item.bases = [];
               }
 
-              if(list.length > 1){
-                item.display_name = "dataset" + (i + 1);
+              if(list.length > 1) {
+                if(model.displayNames && model.displayNames.length>0) {
+                    item.display_name = model.displayNames[i]
+                }
+                else {
+                    item.display_name = "dataset" + (i + 1);
+                }
               }
 
               var histvalues = plotUtils.histogram().

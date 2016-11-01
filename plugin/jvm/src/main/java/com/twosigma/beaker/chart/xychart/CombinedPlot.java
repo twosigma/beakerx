@@ -32,6 +32,8 @@ public class CombinedPlot extends ObservableChart{
   private String xLabel;
   private List<XYChart> subplots = new ArrayList<>();
   private List<Integer> weights = new ArrayList<>();
+  private boolean xTickLabelsVisible = true;
+  private boolean yTickLabelsVisible = true;
 
   public CombinedPlot setInitWidth(int w) {
     this.initWidth = w;
@@ -108,4 +110,21 @@ public class CombinedPlot extends ObservableChart{
   public List<Integer> getWeights() {
     return this.weights;
   }
+
+  public boolean isyTickLabelsVisible() {
+    return yTickLabelsVisible;
+  }
+
+  public void setyTickLabelsVisible(boolean yTickLabelsVisible) {
+    this.yTickLabelsVisible = yTickLabelsVisible;
+  }
+
+  public boolean isxTickLabelsVisible() {
+    return xTickLabelsVisible;
+  }
+
+  public void setxTickLabelsVisible(boolean xTickLabelsVisible) {
+    this.xTickLabelsVisible = xTickLabelsVisible;
+  }
+  
 }

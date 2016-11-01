@@ -575,19 +575,21 @@
               showTransientStatusMessage("Rename Failed");
             }
           };
+          
+          var closeSession = function(destroy) {
+            bkSessionManager.close().then(function(destroy) {
+              if(destroy){
+                if (bkUtils.isElectron) {
+                  bkElectron.thisWindow.destroy();
+                }
+              } else {
+                bkCoreManager.gotoControlPanel();
+              }
+            });
+          };
 
           function _closeNotebook(destroy) {
-            var closeSession = function() {
-              bkSessionManager.close().then(function() {
-                if(destroy){
-                  if (bkUtils.isElectron) {
-                    bkElectron.thisWindow.destroy();
-                  }
-                } else {
-                  bkCoreManager.gotoControlPanel();
-                }
-              });
-            };
+
             if (bkSessionManager.isNotebookModelEdited() === false) {
               closeSession();
             } else {
@@ -596,10 +598,14 @@
                   "Do you want to save " + notebookTitle + "?",
                   "Confirm close",
                   function() {
-                    _impl.saveNotebook().then(closeSession);
+                    _impl.saveNotebook().then(
+                        function() {
+                          closeSession(destroy);
+                        }
+                    );
                   },
                   function() {
-                    closeSession();
+                    closeSession(destroy);
                   },
                   null, "Save", "Don't save"
               );
@@ -737,7 +743,7 @@
               bkFileManipulation.saveNotebook(saveFailed).then(
                   function(ret){
                     closeNotebookWithJobProgress(function(){
-                      bkCoreManager.gotoControlPanel();
+                      closeSession(true);
                     })
                     
                   }, saveFailed);

@@ -218,10 +218,10 @@ describe('Table Display (Groovy API)', function (done) {
 
     describe('EscapeHTML function', function(){
         it('Downloaded file should contain only regular ascii', function(){
-            idCell="codeb4y5Z8";
+            var idCell = "codeb4y5Z8";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-            beakerPO.checkDownloadCSV();
+            beakerPO.checkDownloadCSV(idCell);
         });
     });
 });

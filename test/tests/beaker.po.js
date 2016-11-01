@@ -941,7 +941,7 @@ var BeakerPageObject = function() {
     browser.actions().doubleClick(item).perform();
   }
 
-  this.checkDownloadCSV = function(){
+  this.checkDownloadCSV = function(idCell){
     var self = this;
     var dir = this.clearTmpDir();
     this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')).click()

@@ -81,7 +81,13 @@
       cm.replaceSelection(d.payload);
     });
   };
-  
+  window.beakerRegister.hooks.preSave = function(nb) {
+    if (window.beakerRegister.bunsenComment !== undefined) {
+      nb.comment = window.beakerRegister.bunsenComment;
+    }
+    return nb;
+  };
+
   // beakerlab is ending some data to beaker   
   $('body').bind('beaker.embedded.setBeakerLabObject', function(e, notebookId, notebookName, bkLabObj, isFullScreen, canPublish, isPublished, canBlog) {
     window.beakerRegister.notebookName = notebookName;
@@ -99,6 +105,7 @@
     bkHelper.saveNotebook().then(function() {
       parent.$(parent.document).trigger('beaker.embedded.saveDone', [window.beakerRegister.bunsenNotebookId, data]);
       parent.$(parent.document).trigger('beaker.embedded.notebookChanged', [window.beakerRegister.bunsenNotebookId, bkHelper.isNotebookModelEdited()]);
+      window.beakerRegister.bunsenComment = undefined;
     },
     function(e) {
       parent.$(parent.document).trigger('beaker.embedded.saveFail', [window.beakerRegister.bunsenNotebookId, data, e]);

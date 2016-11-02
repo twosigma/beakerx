@@ -197,6 +197,12 @@
 
     this.buildUI = function () {};
 
+    this.initValue = function (component) {
+      if (component.value) {
+        scope[scope.ngModelAttr] = component.value;
+      }
+    };
+
     this.init = function() {
       component = scope.component;
       scope.componentId = component.label;
@@ -205,9 +211,7 @@
 
       this.buildUI();
 
-      if (component.value) {
-        scope[scope.ngModelAttr] = component.value;
-      }
+      this.initValue(component);
 
       if (scope.evaluatorExist) {
         scope.$watch(this.watchedExpression,
@@ -568,8 +572,21 @@
                 "</div>",
             link: function (scope, element, attrs) {
 
+              var setListComponentValue = function(component) {
+                if (component.value) {
+                  scope[scope.ngModelAttr] =
+                    'true' === efc.getComponent().multipleSelection
+                      ? component.value.substring(1, component.value.length - 1).split(', ')
+                      : component.value;
+                }
+              };
+
               var efc = new EasyFormComponent(
                   scope, element, EasyFormConstants, EasyFormService, bkUtils);
+
+              efc.initValue = function (component) {
+                setListComponentValue(component);
+              };
 
               efc.buildUI = function() {
                 element.find('.easyform-label').text(efc.getComponent().label);
@@ -616,12 +633,7 @@
                   args.components.forEach(function(component) {
                     if (component.label === scope.componentId) {
                       scope.$apply(function() {
-                        if (component.value) {
-                          scope[scope.ngModelAttr] =
-                                  'true' === efc.getComponent().multipleSelection
-                              ? component.value.substring(1, component.value.length - 1).split(', ')
-                              : component.value;
-                        }
+                        setListComponentValue(component);
                         scope.component.enabled = component.enabled;
                       });
                     }

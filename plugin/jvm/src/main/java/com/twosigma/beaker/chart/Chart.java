@@ -16,12 +16,17 @@
 
 package com.twosigma.beaker.chart;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 
 public class Chart extends ObservableChart{
   protected int initWidth  = 640;
   protected int initHeight = 480;
+  protected List<String> customStyles = new ArrayList();
+
   protected String  title;
   protected Boolean showLegend;
   protected boolean        useToolTip     = true;
@@ -90,4 +95,13 @@ public class Chart extends ObservableChart{
     this.legendLayout = legendLayout;
     return this;
   }
+  
+  public List<String> getCustomStyles() {
+    return customStyles;
+  }
+
+  public void setCustomStyles(List<String> customStyle) {
+        this.customStyles = customStyle;
+  }
+
 }

@@ -574,7 +574,7 @@
         return elementStyles;
       },
 
-      addInlineStyles: function(element) {
+      addInlineStyles: function(element, extraStyles) {
         var styleEl = document.createElement('style');
         styleEl.setAttribute('type', 'text/css');
         var elementStyles = this.getElementStyles(element);
@@ -590,8 +590,13 @@
           fontWeight: 'bold',
           fontStyle: 'normal'
         });
+        
+        var extraStylesCss = '';
+        if(extraStyles) {
+            extraStylesCss = extraStyles.join('\n');
+        }
 
-        styleEl.innerHTML = '<![CDATA[\n' + elementStyles + '\n]]>';
+        styleEl.innerHTML = '<![CDATA[\n' + elementStyles + '\n' + extraStylesCss + '\n]]>';
         var defsEl = document.createElement('defs');
         defsEl.appendChild(styleEl);
         element.insertBefore(defsEl, element.firstChild);

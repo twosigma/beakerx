@@ -176,6 +176,12 @@
 
           $(window).resize(scope.resizeFunction);
 
+          if(model['customStyles']) {
+              $("<style>"+model['customStyles'].map(function(s) { 
+                  return "#" + scope.id + ' ' + s; 
+              }).join('\n') + "\n</style>").prependTo(element.find('.plot-plotcontainer'));
+          }
+
           // set title
           scope.jqplottitle = element.find("#plotTitle");
           scope.jqplottitle.text(model.title).css("width", plotSize.width);
@@ -608,7 +614,7 @@
               var y = mapY(scope.focus.yl) + scope.labelPadding.y;
 							var rpipeText = {
                 "id": "label_x_" + i,
-                "class": "plot-label",
+                "class": "plot-label plot-label-x",
                 "text": labels[i],
                 "x": x,
                 "y": y,
@@ -645,7 +651,7 @@
 
 							var rpipeText = {
                 "id": "label_y_" + i,
-                "class": "plot-label",
+                "class": "plot-label plot-label-y",
                 "text": labels[i],
                 "x": x,
                 "y": y,
@@ -2080,7 +2086,11 @@
             width: plotTitle.width(),
             height: plotUtils.getActualCss(plotTitle, 'outerHeight')
           });
-          plotUtils.addInlineStyles(svg);
+
+          // Custom styles added by user
+          var cellModel = scope.getCellModel();
+          var extraStyles = cellModel['custom_styles'] ? cellModel['custom_styles'] : '';
+          plotUtils.addInlineStyles(svg, extraStyles);
 
           return svg;
         };

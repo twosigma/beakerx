@@ -6,7 +6,7 @@
             "plugin": "HTML",
             "view": {
                 "cm": {
-                    "mode": "htmlmixed"
+                    "mode": "smartHTMLMode"
                 }
             }
         },
@@ -15423,12 +15423,107 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "m3",
+                            "y30",
+                            "y1",
+                            "m6",
+                            "y2",
+                            "y10",
+                            "y3",
+                            "time",
+                            "y5",
+                            "y7"
+                        ],
+                        "actualtype": [
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            8,
+                            "4.4",
+                            "4.4"
+                        ],
+                        "actualalign": [
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "C",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            10
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [
+                            {
+                                "style": "FULL_ROW",
+                                "colInd": 1,
+                                "type": "HeatmapHighlighter",
+                                "minVal": 0.011428571428571429,
+                                "maxVal": 8.17,
+                                "minColor": "#5da5da",
+                                "maxColor": "#f15854"
+                            }
+                        ],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": [],
+                        "headerFontSize": null,
+                        "dataFontSize": null,
+                        "fontColor": [],
+                        "headersVertical": false
+                    }
+                },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
                 "shellId": "337ae309-dae0-4f75-ad23-6806b42cbbbd",
                 "elapsedTime": 903,
-                "height": 813,
+                "height": 776,
                 "result": {
                     "hasDoubleClickAction": false,
                     "contextMenuItems": [],
@@ -20184,7 +20279,7 @@
                     ]
                 }
             },
-            "evaluatorReader": false,
+            "evaluatorReader": true,
             "lineCount": 10
         },
         {
@@ -20216,7 +20311,68 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "a",
+                            "b",
+                            "c"
+                        ],
+                        "actualtype": [
+                            2,
+                            2,
+                            2
+                        ],
+                        "actualalign": [
+                            "R",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [
+                            {
+                                "style": "SINGLE_COLUMN",
+                                "colInd": 3,
+                                "type": "ValueHighlighter",
+                                "colors": [
+                                    "#FFFF0000",
+                                    "#FF00FF00",
+                                    "#FF00FF00"
+                                ]
+                            }
+                        ],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": [],
+                        "headerFontSize": null,
+                        "dataFontSize": null,
+                        "fontColor": [],
+                        "headersVertical": false
+                    }
+                },
                 "result": {
                     "hasDoubleClickAction": false,
                     "contextMenuItems": [],
@@ -20281,9 +20437,9 @@
                 "pluginName": "Groovy",
                 "shellId": "337ae309-dae0-4f75-ad23-6806b42cbbbd",
                 "elapsedTime": 1513,
-                "height": 193
+                "height": 156
             },
-            "evaluatorReader": false,
+            "evaluatorReader": true,
             "lineCount": 12
         },
         {
@@ -20312,7 +20468,122 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "m3",
+                            "y30",
+                            "y1",
+                            "m6",
+                            "y2",
+                            "y10",
+                            "y3",
+                            "time",
+                            "y5",
+                            "y7"
+                        ],
+                        "actualtype": [
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            "4.4",
+                            8,
+                            "4.4",
+                            "4.4"
+                        ],
+                        "actualalign": [
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "C",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            10
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [
+                            {
+                                "style": "FULL_ROW",
+                                "colInd": 1,
+                                "type": "HeatmapHighlighter",
+                                "minVal": 0,
+                                "maxVal": 8,
+                                "minColor": "#FFC800",
+                                "maxColor": "#FFAFAF"
+                            },
+                            {
+                                "style": "SINGLE_COLUMN",
+                                "colInd": 3,
+                                "type": "ThreeColorHeatmapHighlighter",
+                                "minVal": 4,
+                                "maxVal": 8,
+                                "minColor": "#F76A6A",
+                                "maxColor": "#64BD7A",
+                                "midVal": 6,
+                                "midColor": "#EFDA52"
+                            },
+                            {
+                                "style": "SINGLE_COLUMN",
+                                "colInd": 4,
+                                "type": "HeatmapHighlighter",
+                                "minVal": 6,
+                                "maxVal": 8,
+                                "minColor": "#000000",
+                                "maxColor": "#FFAFAF"
+                            }
+                        ],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": [],
+                        "headerFontSize": null,
+                        "dataFontSize": null,
+                        "fontColor": [],
+                        "headersVertical": false
+                    }
+                },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
                 "shellId": "337ae309-dae0-4f75-ad23-6806b42cbbbd",
@@ -25091,9 +25362,9 @@
                         ]
                     ]
                 },
-                "height": 813
+                "height": 776
             },
-            "evaluatorReader": false,
+            "evaluatorReader": true,
             "lineCount": 9
         },
         {
@@ -25377,8 +25648,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "a548ebf0-f3ab-4169-a537-d065d0eb3f11",
-                "elapsedTime": 686,
+                "shellId": "bf84acea-fff8-448c-a638-f1a243574a4e",
+                "elapsedTime": 2262,
                 "height": 156,
                 "result": {
                     "hasDoubleClickAction": true,
@@ -25824,9 +26095,9 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "d88e51a4-ea08-4cad-95ca-06e02900617d",
-                "elapsedTime": 743,
-                "height": 121
+                "shellId": "bf84acea-fff8-448c-a638-f1a243574a4e",
+                "elapsedTime": 900,
+                "height": 156
             },
             "evaluatorReader": true,
             "lineCount": 10,
@@ -25849,10 +26120,139 @@
                     "}"
                 ]
             },
-            "output": {},
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "You clicked on the cell [0, 0]\n"
+                        }
+                    ]
+                },
+                "selectedType": "Results",
+                "pluginName": "Groovy",
+                "shellId": "bf84acea-fff8-448c-a638-f1a243574a4e",
+                "elapsedTime": 891,
+                "height": 55
+            },
             "evaluatorReader": true,
             "lineCount": 9,
             "tags": "tagged_cell"
+        },
+        {
+            "id": "codeb4y5Z8",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "displayHtml = new TableDisplay([[col1: \"This & that\", col2: \"This / that\", col3: \"This > that\"]]);",
+                    "displayHtml"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 25,
+                            "fixLeft": 0,
+                            "fixRight": 0
+                        },
+                        "columnNames": [
+                            "col1",
+                            "col2",
+                            "col3"
+                        ],
+                        "actualtype": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ],
+                        "barsOnColumn": {},
+                        "cellHighlightersData": [],
+                        "tableFilter": "",
+                        "showFilter": false,
+                        "columnSearchActive": false,
+                        "columnFilter": [],
+                        "columnWidth": [],
+                        "formatForTimes": {},
+                        "stringFormatForType": {},
+                        "stringFormatForColumn": {},
+                        "tooltips": [],
+                        "headerFontSize": null,
+                        "dataFontSize": null,
+                        "fontColor": [],
+                        "headersVertical": false
+                    }
+                },
+                "result": {
+                    "hasDoubleClickAction": false,
+                    "doubleClickTag": null,
+                    "contextMenuItems": [],
+                    "contextMenuTags": {},
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "col1",
+                        "col2",
+                        "col3"
+                    ],
+                    "types": [
+                        "string",
+                        "string",
+                        "string"
+                    ],
+                    "subtype": "ListOfMaps",
+                    "stringFormatForTimes": null,
+                    "stringFormatForType": {},
+                    "stringFormatForColumn": {},
+                    "rendererForType": {},
+                    "rendererForColumn": {},
+                    "alignmentForType": {},
+                    "alignmentForColumn": {},
+                    "columnsFrozen": {},
+                    "columnsFrozenRight": {},
+                    "columnsVisible": {},
+                    "columnOrder": [],
+                    "cellHighlighters": [],
+                    "tooltips": [],
+                    "dataFontSize": null,
+                    "headerFontSize": null,
+                    "fontColor": [],
+                    "headersVertical": false,
+                    "values": [
+                        [
+                            "This & that",
+                            "This / that",
+                            "This > that"
+                        ]
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "bf84acea-fff8-448c-a638-f1a243574a4e",
+                "elapsedTime": 867,
+                "height": 102
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         }
     ],
     "namespace": {

@@ -575,19 +575,21 @@
               showTransientStatusMessage("Rename Failed");
             }
           };
+          
+          var closeSession = function(destroy) {
+            bkSessionManager.close().then(function(destroy) {
+              if(destroy){
+                if (bkUtils.isElectron) {
+                  bkElectron.thisWindow.destroy();
+                }
+              } else {
+                bkCoreManager.gotoControlPanel();
+              }
+            });
+          };
 
           function _closeNotebook(destroy) {
-            var closeSession = function() {
-              bkSessionManager.close().then(function() {
-                if(destroy){
-                  if (bkUtils.isElectron) {
-                    bkElectron.thisWindow.destroy();
-                  }
-                } else {
-                  bkCoreManager.gotoControlPanel();
-                }
-              });
-            };
+
             if (bkSessionManager.isNotebookModelEdited() === false) {
               closeSession();
             } else {
@@ -596,28 +598,33 @@
                   "Do you want to save " + notebookTitle + "?",
                   "Confirm close",
                   function() {
-                    _impl.saveNotebook().then(closeSession);
+                    _impl.saveNotebook().then(
+                        function() {
+                          closeSession(destroy);
+                        }
+                    );
                   },
                   function() {
-                    closeSession();
+                    closeSession(destroy);
                   },
                   null, "Save", "Don't save"
               );
             }
           };
-
-          function closeNotebook(destroy) {
+          
+          var closeNotebookWithJobProgress = function (closeImplementation) {
             if (bkEvaluateJobManager.isAnyInProgress() ) {
               bkCoreManager.show2ButtonModal(
                   "All running and pending cells will be cancelled.",
                   "Warning!",
                   function() {
                     bkEvaluateJobManager.cancelAll().then(function() {
-                      _impl._closeNotebook(destroy);
+                      closeImplementation();
                     }
                   ); });
-            } else
-              _closeNotebook(destroy);
+            } else{
+              closeImplementation();
+            }
           };
 
           var go = function(id) {
@@ -631,7 +638,9 @@
           if (bkUtils.isElectron) {
             bkElectron.IPC.removeAllListeners('close-window');
             bkElectron.IPC.on('close-window', function(){
-              closeNotebook(true);
+              closeNotebookWithJobProgress(function(){
+                _closeNotebook(true);
+              });
             });
           }
 
@@ -729,7 +738,21 @@
                 }
               }
             },
-            closeNotebook: closeNotebook,
+            saveNotebookAndClose: function() {
+              saveStart();
+              bkFileManipulation.saveNotebook(saveFailed).then(
+                  function(ret){
+                    closeNotebookWithJobProgress(function(){
+                      closeSession(true);
+                    })
+                    
+                  }, saveFailed);
+            },
+            closeNotebook: function(){
+              closeNotebookWithJobProgress(function(){
+                _closeNotebook(false);
+              });
+            },
             _closeNotebook: _closeNotebook,
             collapseAllSections: function() {
               _.each(this.getNotebookModel().cells, function(cell) {

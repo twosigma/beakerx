@@ -702,11 +702,11 @@
         var setFullScreen = function (cm) {
           bkHelper.setFullScreen(cm, !bkHelper.isFullScreen(cm));
         };
-        
-        CodeMirror.commands.save = function (){
-	        bkHelper.saveNotebook();
-        };
 
+        CodeMirror.commands.save = bkHelper.saveNotebook;
+        CodeMirror.Vim.defineEx('wquit', 'wq', bkCoreManager.getBkApp().saveNotebookAndClose);
+        CodeMirror.Vim.defineEx('quit', 'q', bkHelper.closeNotebook);
+        
         var keys = {
             "Up" : goUpOrMoveFocusUp,
             "Down" : goDownOrMoveFocusDown,

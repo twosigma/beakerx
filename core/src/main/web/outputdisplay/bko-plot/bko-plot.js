@@ -147,6 +147,14 @@
 
         scope.initLayout = function() {
           var model = scope.stdmodel;
+          
+          if(scope.model.getCellModel().x_tickLabels_visible !== undefined){
+            model.xAxis.showGridlineLabels = scope.model.getCellModel().x_tickLabels_visible;
+          }
+            
+          if(scope.model.getCellModel().y_tickLabels_visible !== undefined){
+            model.yAxis.showGridlineLabels = scope.model.getCellModel().y_tickLabels_visible;
+          }
 
           element.find(".ui-icon-gripsmall-diagonal-se")
             .removeClass("ui-icon-gripsmall-diagonal-se")
@@ -219,7 +227,7 @@
           };
 
           scope.gridlineTickLength = 3;
-
+          
           var factor = 2.0;
           if (model.xAxis.label == null) { factor -= 1.0; }
           if (model.xAxis.showGridlineLabels === false) { factor -= 1.0; }

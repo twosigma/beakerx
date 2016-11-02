@@ -54,6 +54,8 @@ public class CombinedPlotSerializer extends ObservableChartSerializer<CombinedPl
     jgen.writeObjectField("plots", subplots);
     jgen.writeObjectField("weights", plot.getWeights());
     jgen.writeObjectField("version", "groovy");
+    jgen.writeObjectField("x_tickLabels_visible", plot.isxTickLabelsVisible());
+    jgen.writeObjectField("y_tickLabels_visible", plot.isyTickLabelsVisible());
     jgen.writeEndObject();
   }
 

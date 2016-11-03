@@ -219,14 +219,14 @@
                 "ch" : cm.getLine(cm.lastLine()).length
               };
               cm.setSelection(cursor, lastPosition);
+              cm.focus();
             } else {
               if (event.pageY < (top + bottom) / 2) {
                 cm.setCursor(0, 0);
               } else {
                 cm.setCursor(cm.lineCount() - 1,
-                    cm.getLine(cm.lastLine()).length);
+                   cm.getLine(cm.lastLine()).length);
               }
-              cm.focus();
             }
           }, 0);
 

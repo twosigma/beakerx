@@ -35,6 +35,8 @@ abstract public class XYChart extends AbstractChart{
   private boolean logX = false;
   private double xLogBase = 10;
   private Integer lodThreshold = null;
+  private boolean xTickLabelsVisible = true;
+  private boolean yTickLabelsVisible = true;
 
   public XYChart add(XYGraphics graphics) {
     graphics.setPlotType(this.getClass());
@@ -190,5 +192,21 @@ abstract public class XYChart extends AbstractChart{
 
   public void setLodThreshold(Integer lodThreshold) {
     this.lodThreshold = lodThreshold;
+  }
+
+  public boolean isxTickLabelsVisible() {
+    return xTickLabelsVisible;
+  }
+
+  public void setxTickLabelsVisible(boolean xTickLabelsVisible) {
+    this.xTickLabelsVisible = xTickLabelsVisible;
+  }
+
+  public boolean isyTickLabelsVisible() {
+    return yTickLabelsVisible;
+  }
+
+  public void setyTickLabelsVisible(boolean yTickLabelsVisible) {
+    this.yTickLabelsVisible = yTickLabelsVisible;
   }
 }

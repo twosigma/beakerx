@@ -95,8 +95,6 @@
       defaultEvaluator = data;
     });
 
-
-
       var bkHelper = {
 
       isNewNotebookShortcut: function (e){

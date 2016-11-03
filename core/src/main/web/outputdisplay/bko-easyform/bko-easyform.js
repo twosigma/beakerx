@@ -807,9 +807,14 @@
                 }
               };
 
+              var findButtonComponent = function () {
+                return element.find('div.button-component-container button');
+              };
+
               var actionPerformed = function () {
                 EasyFormService.sendActionPerformed(scope.formId, scope.evaluatorId,
                     component.label);
+                findButtonComponent().blur();
               };
 
               var saveValues = function () {
@@ -824,7 +829,7 @@
                 });
               };
 
-              var buttonComponent = element.find('div.button-component-container button');
+              var buttonComponent = findButtonComponent();
 
               if (EasyFormConstants.Components.ButtonComponent.type == component.type) {
                 buttonComponent.text(component.label);

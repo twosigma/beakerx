@@ -1501,20 +1501,16 @@
         };
 
         $scope.renameNotebook = function() {
-          var saveFn = bkHelper.saveNotebookAs;
-          var saveButtonTitle = "Save";
-          var initUri = bkSessionManager.getNotebookPath();
           if (bkSessionManager.isSavable()) {
-            saveFn = bkHelper.renameNotebookTo;
-            saveButtonTitle = "Rename";
+            var initUri = bkSessionManager.getNotebookPath();
+            bkHelper.showFileSaveDialog({initUri: initUri, saveButtonTitle: "Rename"}).then(function (ret) {
+              if (ret.uri) {
+                return bkHelper.renameNotebookTo(ret.uri, ret.uriType);
+              }
+            });
           } else {
-            initUri = null;
+            bkHelper.saveNotebookAs();
           }
-          bkHelper.showFileSaveDialog({initUri: initUri, saveButtonTitle: saveButtonTitle}).then(function (ret) {
-            if (ret.uri) {
-              return saveFn(ret.uri, ret.uriType);
-            }
-          });
         };
 
         $scope.getElectronMode = function() {

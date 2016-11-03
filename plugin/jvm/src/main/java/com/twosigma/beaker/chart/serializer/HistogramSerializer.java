@@ -56,7 +56,7 @@ public class HistogramSerializer extends AbstractChartSerializer<Histogram> {
     jgen.writeObjectField("normed", histogram.getNormed());
     jgen.writeObjectField("log", histogram.getLog());
     jgen.writeObjectField("displayMode", histogram.getDisplayMode());
-    jgen.writeObjectField("displayNames", histogram.getDisplayNames());
+    jgen.writeObjectField("names", histogram.getNames());
 
     jgen.writeEndObject();
 

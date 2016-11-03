@@ -40,7 +40,7 @@ public class Histogram extends AbstractChart {
   private   List<Color>        colors;
   protected List<Number>       data;
   private   List<List<Number>> listData;
-  private List<String> displayNames;
+  private List<String> names;
 
 
   private DisplayMode displayMode = DisplayMode.OVERLAP;
@@ -171,11 +171,11 @@ public class Histogram extends AbstractChart {
     return listData;
   }
 
-  public List<String> getDisplayNames() {
-        return displayNames;
+  public List<String> getNames() {
+        return names;
   }
 
-  public void setDisplayNames(List<String> displayNames) {
-        this.displayNames = displayNames;
+  public void setNames(List<String> names) {
+        this.names = names;
   }
 }

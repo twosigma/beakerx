@@ -587,8 +587,8 @@
               }
 
               if(list.length > 1) {
-                if(model.displayNames && model.displayNames.length>0) {
-                    item.display_name = model.displayNames[i]
+                if(model.names && model.names.length>0) {
+                    item.display_name = model.names[i]
                 }
                 else {
                     item.display_name = "dataset" + (i + 1);

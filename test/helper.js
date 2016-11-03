@@ -30,7 +30,7 @@ exports.getFirefoxProfile = function() {
     firefoxProfile.encoded(function(encodedProfile) {
         var multiCapabilities = [{
             shardTestFiles: true,
-            maxInstances: 3,
+            maxInstances: 4,
             browserName: 'firefox',
             firefox_profile : encodedProfile
         }];

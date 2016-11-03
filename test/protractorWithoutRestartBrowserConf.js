@@ -25,11 +25,6 @@ var config = {
     defaultTimeoutInterval: 100000,
     print: function() {}
   },
-  capabilities: {
-    shardTestFiles: true,
-    maxInstances: 3,
-    browserName: 'firefox'
-  },
   getMultiCapabilities: helper.getFirefoxProfile,
   onPrepare: function() {
     var SpecReporter = require('jasmine-spec-reporter');

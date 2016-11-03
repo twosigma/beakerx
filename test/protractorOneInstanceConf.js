@@ -30,7 +30,6 @@ var config = {
         maxInstances: 1,
         browserName: 'firefox'
     },
-    getMultiCapabilities: helper.getFirefoxProfile,
     onPrepare: function() {
         var SpecReporter = require('jasmine-spec-reporter');
         jasmine.getEnv().addReporter(new SpecReporter({

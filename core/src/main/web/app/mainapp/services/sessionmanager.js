@@ -987,7 +987,13 @@
         bkRecentMenu.updateRecentDocument(oldUrl, generateRecentDocumentItem());
       },
       getNotebookPath: function() {
-        if (_notebookUri.get()) {
+        if (_uriType === 'ajax') {
+          if (window.beakerRegister.notebookName !== undefined) {
+            return window.beakerRegister.notebookName;
+          }
+          return '';
+        }
+        else if (_notebookUri.get()) {
           return _notebookUri.get();
         } else {
           return "New Notebook";
@@ -996,8 +1002,17 @@
       getNotebookUriType: function() {
         return _uriType;
       },
+      getNotebookUri: function() {
+        return _notebookUri.get();
+      },
       getNotebookTitle: function() {
-        if (_notebookUri.get()) {
+        if (_uriType === 'ajax') {
+          if (window.beakerRegister.notebookName !== undefined) {
+            return window.beakerRegister.notebookName;
+          }
+          return '';
+        }
+        else if (_notebookUri.get()) {
           return _notebookUri.get().replace(/^.*[\\\/]/, '');
         } else {
           return "New Notebook";

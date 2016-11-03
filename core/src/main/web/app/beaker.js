@@ -326,6 +326,9 @@
       var lastAction = new Date();
       var beakerRootOp = {
         gotoControlPanel: function() {
+          if (window.beakerRegister !== undefined && window.beakerRegister.isEmbedded === true) {
+            return;
+          }
           var ret = $location.path("/control").search({});
           if (bkUtils.isElectron && !$rootScope.$$phase) {
             $rootScope.$apply();
@@ -411,27 +414,36 @@
       $rootScope.hasScroll = function () {
         return window.innerHeight < document.body.clientHeight;
       };
-      $document.bind('drop dragover', function (e) {
-        e.preventDefault();
-      });
-      var counter = 0;
-      $document.bind('dragenter', function (e) {
-        if (bkDragAndDropHelper.isFileForImportDragging(e)) {
-          counter++;
-          $('body').addClass('dragover');
+      var doit = true;
+      if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.disableDragAndDropImport !== undefined) {
+        if (!window.beakerRegister.hooks.disableDragAndDropImport()) {
+          doit = false;
         }
-      });
-      $document.bind('dragleave', function (e) {
-        if (bkDragAndDropHelper.isFileForImportDragging(e)) {
-          counter--;
-          if (counter === 0) {
-            $('body').removeClass('dragover');
+      }
+      if (doit) {
+        $document.bind('drop dragover', function (e) {
+          e.preventDefault();
+        });
+        var counter = 0;
+        $document.bind('dragenter', function (e) {
+          if (bkDragAndDropHelper.isFileForImportDragging(e)) {
+            counter++;
+            $('body').addClass('dragover');
           }
-        }
-      });
-      $document.bind('drop', function() {
-        $('body').removeClass('dragover');
-      });
+        });
+        $document.bind('dragleave', function (e) {
+          if (bkDragAndDropHelper.isFileForImportDragging(e)) {
+            counter--;
+            if (counter === 0) {
+              $('body').removeClass('dragover');
+            }
+          }
+        });
+        $document.bind('drop', function() {
+          $('body').removeClass('dragover');
+        });
+      }
+      
       window.bkHelper = bkHelper;
       for (var i in window.beakerRegister.postHelperHooks) {
         window.beakerRegister.postHelperHooks[i]();

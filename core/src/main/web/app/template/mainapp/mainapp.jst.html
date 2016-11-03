@@ -24,7 +24,7 @@
           <div ng-switch="renamingAllowed()" style="padding-top: 10px">
             <a ng-switch-when="true" href="#" class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}"
                ng-click="renameNotebook()" eat-click>{{pathname()}}</a>
-            <a ng-switch-default class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}"
+            <a ng-switch-default href="#" class="navbar-text path-name" ng-class="{full: !loading && !loadingmsg}"
                ng-click="" eat-click>{{pathname()}}</a>
           </div>
         </td>

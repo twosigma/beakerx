@@ -513,7 +513,16 @@ public class UtilRest {
   @Produces(MediaType.TEXT_HTML)
   public String getMainPage(@Context HttpServletRequest request) {
     String data = utils.readFile(bkConfig.getMainPageFileName());
-    data = data.replace("URL-HASH-TO-REPLACE", bkConfig.getHash());
+    String s = System.getenv("BAMBOO_PATH");
+    if (s != null) {
+      if (s.startsWith("/"))
+        s = s.substring(1);
+      if (s.endsWith("/"))
+        s = s.substring(0, s.length()-1);
+      data = data.replace("URL-HASH-TO-REPLACE", s);
+    } else {
+      data = data.replace("URL-HASH-TO-REPLACE", bkConfig.getHash());
+    }
     return data;
   }
 

@@ -63,7 +63,10 @@
     // ajax:/loading/path:/saving/path
     function parseAjaxLocator(locator) {
       var pieces = locator.split(":");
-      return { source: pieces[1], destination: pieces[2] }
+      var prefix = window.location.protocol + '//' + window.location.host + '/';
+      var src = prefix + pieces[1];
+      var dest = prefix + pieces[2];
+      return { source:  src, destination: dest }
     }
 
     var getServerOS = function () {
@@ -100,7 +103,7 @@
       var isUnix = false;
       var osName = 'unknown';
 
-      if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
+      if (window.beakerRegister === undefined || window.beakerRegister.isPublication === undefined) {
         angularUtils.httpGet(serverUrl("beaker/rest/util/version"))
           .success(function (result) {
             isWindows = _isWindows(result);

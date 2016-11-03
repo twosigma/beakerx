@@ -2671,7 +2671,8 @@
             queryCommandEnabled = false;
           }
 
-          if ((!bkUtils.isElectron) && (scope.clipclient === undefined) && !queryCommandEnabled) {
+          if (((!bkUtils.isElectron) && (scope.clipclient === undefined) && !queryCommandEnabled)
+            || bkHelper.isSafari) {
             scope.clipclient = new ZeroClipboard();
             var d = document.getElementById(scope.id + '_dt_copy');
             scope.clipclient.clip(d);

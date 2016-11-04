@@ -25,7 +25,7 @@ var config = {
     defaultTimeoutInterval: 100000,
     print: function() {}
   },
-  getMultiCapabilities: helper.getFirefoxProfile,
+  getMultiCapabilities: helper.getFirefoxProfile.bind(this, 4),
   onPrepare: function() {
     var SpecReporter = require('jasmine-spec-reporter');
     jasmine.getEnv().addReporter(new SpecReporter({
@@ -46,7 +46,6 @@ var config = {
     'tests/tutorials/language_demos/jscript-tutorial.js',
     'tests/tutorials/language_demos/R-tutorial.js',
     'tests/tutorials/language_demos/nodejs-tutorial.js',
-    'tests/tutorials/table_display/tableGroovy-tutorial.js',
     'tests/tutorials/standard_visual_api/d3js-tutorial.js',
     'tests/tutorials/standard_visual_api/p5js-tutorial.js',
     'tests/tutorials/automate/progress-reporting-tutorial.js',

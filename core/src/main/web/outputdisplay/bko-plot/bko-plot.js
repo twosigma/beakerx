@@ -137,6 +137,8 @@
 
         scope.id = 'bko-plot-' + bkUtils.generateId(6);
         element.find('.plot-plotcontainer').attr('id', scope.id);
+        element.find('.plot-title').attr('class', 'plot-title ' + 'plot-title-' + scope.id);
+
         if (!scope.model.disableContextMenu) {
           $.contextMenu({
             selector: '#' + scope.id,
@@ -176,6 +178,7 @@
 
           $(window).resize(scope.resizeFunction);
 
+          // Apply  advanced custom styles set directly by user
           if(model['customStyles']) {
               $("<style>"+model['customStyles'].map(function(s) { 
                   return "#" + scope.id + ' ' + s; 
@@ -185,6 +188,23 @@
           // set title
           scope.jqplottitle = element.find("#plotTitle");
           scope.jqplottitle.text(model.title).css("width", plotSize.width);
+
+          // Apply any specific element styles (labelStyle,elementStyle, etc)
+          if(model['elementStyles']) {
+              var styles = [];
+              for(var style in model['elementStyles']) {
+                  styles.push('#' + scope.id + ' ' + style + ' { ' + model['elementStyles'][style] + '}');
+              }
+              $("<style>\n" + styles.join('\n') + "\n</style>").prependTo(element.find('.plot-plotcontainer'));
+
+              // Title style has to be handlded separately because it sits in a separate
+              // div outside the hierachy the rest of the plot is in
+              if(model['elementStyles']['.plot-title']) {
+                  $("<style>\n" + '.plot-title-' + scope.id + ' { ' + 
+                          model['elementStyles']['.plot-title'] + 
+                          "}\n</style>").prependTo(element.find('.plot-title-' + scope.id));
+              }
+          }
 
           scope.maing = d3.select(element[0]).select("#maing");
           scope.gridg = d3.select(element[0]).select("#gridg");
@@ -2084,12 +2104,21 @@
           plotUtils.translateChildren(svg, 0, titleOuterHeight);
           plotUtils.addTitleToSvg(svg, plotTitle, {
             width: plotTitle.width(),
-            height: plotUtils.getActualCss(plotTitle, 'outerHeight')
+            height: plotUtils.getActualCss(plotTitle, 'outerHeight') 
           });
 
           // Custom styles added by user
           var cellModel = scope.getCellModel();
-          var extraStyles = cellModel['custom_styles'] ? cellModel['custom_styles'] : '';
+          var extraStyles = [];
+          if(cellModel.elementStyles) {
+              for(var style in cellModel.elementStyles) {
+                  elementStyles.push(style + ' {' + cellModel.elementStyles[style] + '}');
+              }
+          }
+
+          if(cellModel.custom_styles) 
+              extraStyles.append(customStyles);
+
           plotUtils.addInlineStyles(svg, extraStyles);
 
           return svg;

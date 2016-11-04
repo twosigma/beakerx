@@ -21,7 +21,7 @@
   var completionActive = false;
   var currentDocumentation = {};
   var autocompleteParameters = true;
-  if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
+  if (window.beakerRegister === undefined || window.beakerRegister.isPublication === undefined) {
     bkUtils.getBeakerPreference('autocomplete-parameters').then(function(autocompleteParametersPref) {
       if (autocompleteParametersPref === "false") {
         autocompleteParameters = false;

@@ -129,8 +129,13 @@ public class DefaultBeakerConfig implements BeakerConfig {
     String configDir = this.dotDir + "/config";
     utils.ensureDirectoryExists(configDir);
 
-    final String defaultConfigFile = this.installDir + "/config/beaker.conf.json";
-    this.configFileUrl = defaultConfigFile;
+    String cffile = System.getenv("BEAKER_CONFIG_FILE");
+    if (cffile == null) {
+      final String defaultConfigFile = this.installDir + "/config/beaker.conf.json";
+      this.configFileUrl = defaultConfigFile;
+    } else {
+      this.configFileUrl = cffile;
+    }
 
     final String defaultPreferenceFile = this.installDir + "/config/beaker.pref.json";
     final String preferenceFile = configDir + "/beaker.pref.json";

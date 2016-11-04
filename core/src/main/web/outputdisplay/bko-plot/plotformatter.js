@@ -37,8 +37,9 @@
             "width": model.init_width != null ? model.init_width : 1200,
             "height": model.init_height != null ? model.init_height : 350
           },
-          customStyles: model.custom_styles ? model.custom_styles : ''
-        };
+          customStyles: model.custom_styles ? model.custom_styles : '',
+          elementStyles: model.element_styles ? model.element_styles : ''
+        }
       } else {
         newmodel = {
           showLegend: model.showLegend,

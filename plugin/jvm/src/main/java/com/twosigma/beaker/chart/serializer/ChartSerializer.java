@@ -44,5 +44,6 @@ public abstract class ChartSerializer<T extends Chart> extends ObservableChartSe
     jgen.writeObjectField("legend_position", chart.getLegendPosition());
     jgen.writeObjectField("legend_layout", chart.getLegendLayout());
     jgen.writeObjectField("custom_styles", chart.getCustomStyles());
+    jgen.writeObjectField("element_styles", chart.getElementStyles());
   }
 }

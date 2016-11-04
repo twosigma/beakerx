@@ -345,6 +345,10 @@
                 notebookUri, uriType, readOnly, format,
                 notebookModel, edited, sessionId);
 
+            if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.loadFinished !== undefined) {
+              window.beakerRegister.hooks.loadFinished();
+            }
+
             var mustwait;
             if (!isExistingSession && bkHelper.hasCodeCell("initialization")) {
               mustwait = bkCoreManager.show0ButtonModal("This notebook has initialization cells... waiting for their completion.", "Please Wait");
@@ -453,6 +457,9 @@
                   setDocumentTitle();
                 }).catch(function(data, status, headers, config) {
                   var message = typeof(data) === 'string' ? data : "Not a valid Beaker notebook";
+                  if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.loadFailed !== undefined) {
+                    window.beakerRegister.hooks.loadFailed(message);
+                  }
                   bkHelper.show1ButtonModal(message, "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();
                   });
@@ -575,19 +582,21 @@
               showTransientStatusMessage("Rename Failed");
             }
           };
+          
+          var closeSession = function(destroy) {
+            bkSessionManager.close().then(function(destroy) {
+              if(destroy){
+                if (bkUtils.isElectron) {
+                  bkElectron.thisWindow.destroy();
+                }
+              } else {
+                bkCoreManager.gotoControlPanel();
+              }
+            });
+          };
 
           function _closeNotebook(destroy) {
-            var closeSession = function() {
-              bkSessionManager.close().then(function() {
-                if(destroy){
-                  if (bkUtils.isElectron) {
-                    bkElectron.thisWindow.destroy();
-                  }
-                } else {
-                  bkCoreManager.gotoControlPanel();
-                }
-              });
-            };
+
             if (bkSessionManager.isNotebookModelEdited() === false) {
               closeSession();
             } else {
@@ -596,28 +605,33 @@
                   "Do you want to save " + notebookTitle + "?",
                   "Confirm close",
                   function() {
-                    _impl.saveNotebook().then(closeSession);
+                    _impl.saveNotebook().then(
+                        function() {
+                          closeSession(destroy);
+                        }
+                    );
                   },
                   function() {
-                    closeSession();
+                    closeSession(destroy);
                   },
                   null, "Save", "Don't save"
               );
             }
           };
-
-          function closeNotebook(destroy) {
+          
+          var closeNotebookWithJobProgress = function (closeImplementation) {
             if (bkEvaluateJobManager.isAnyInProgress() ) {
               bkCoreManager.show2ButtonModal(
                   "All running and pending cells will be cancelled.",
                   "Warning!",
                   function() {
                     bkEvaluateJobManager.cancelAll().then(function() {
-                      _impl._closeNotebook(destroy);
+                      closeImplementation();
                     }
                   ); });
-            } else
-              _closeNotebook(destroy);
+            } else{
+              closeImplementation();
+            }
           };
 
           var go = function(id) {
@@ -631,7 +645,9 @@
           if (bkUtils.isElectron) {
             bkElectron.IPC.removeAllListeners('close-window');
             bkElectron.IPC.on('close-window', function(){
-              closeNotebook(true);
+              closeNotebookWithJobProgress(function(){
+                _closeNotebook(true);
+              });
             });
           }
 
@@ -690,8 +706,11 @@
                   return bkFileManipulation.saveNotebookAs(ret.uri, ret.uriType).then(saveDone, saveFailed);
                 }
               });
-
             },
+            saveNotebookAsUri: function(uri, uriType) {
+              return bkFileManipulation.saveNotebookAs(uri, uriType).then(saveDone, saveFailed);
+            },
+            
             runAllCellsInNotebook: function () {
               bkHelper.evaluateRoot('root').then(function (res) {
                 bkHelper.go2FirstErrorCodeCell();
@@ -729,7 +748,21 @@
                 }
               }
             },
-            closeNotebook: closeNotebook,
+            saveNotebookAndClose: function() {
+              saveStart();
+              bkFileManipulation.saveNotebook(saveFailed).then(
+                  function(ret){
+                    closeNotebookWithJobProgress(function(){
+                      closeSession(true);
+                    })
+                    
+                  }, saveFailed);
+            },
+            closeNotebook: function(){
+              closeNotebookWithJobProgress(function(){
+                _closeNotebook(false);
+              });
+            },
             _closeNotebook: _closeNotebook,
             collapseAllSections: function() {
               _.each(this.getNotebookModel().cells, function(cell) {
@@ -1247,6 +1280,9 @@
         };
         $scope.$watch('isEdited()', function(edited, oldValue) {
           if (edited === oldValue) return;
+          if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.edited !== undefined) {
+            window.beakerRegister.hooks.edited(edited);
+          }
           setDocumentTitle();
         });
         $scope.$watch('filename()', function(newVal, oldVal) {
@@ -1287,27 +1323,43 @@
             return false;
           }else if (bkHelper.isSaveNotebookShortcut(e)) { // Ctrl/Cmd + s
             e.preventDefault();
-            _impl.saveNotebook();
+            if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.saveNotebookShortcut !== undefined) {
+              window.beakerRegister.hooks.saveNotebookShortcut();
+            } else {
+              _impl.saveNotebook();
+            }
             $scope.$apply();
             return false;
           } else if(bkHelper.isSaveNotebookAsShortcut(e)){
             e.preventDefault();
-            _impl.saveNotebookAs();
+            if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.saveNotebookAsShortcut !== undefined) {
+              window.beakerRegister.hooks.saveNotebookAsShortcut();
+            } else {
+              _impl.saveNotebookAs();
+            }
             $scope.$apply();
             return false;
           } else if (bkHelper.isNewDefaultNotebookShortcut(e)) { // Ctrl/Alt + Shift + n
-            bkUtils.fcall(function() {
-              bkCoreManager.newSession(false);
-            });
+            if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.newDefaultNotebookShortcut !== undefined) {
+              window.beakerRegister.hooks.newDefaultNotebookShortcut();
+            } else {
+              bkUtils.fcall(function() {
+                bkCoreManager.newSession(false);
+              });
+            }
             return false;
           } else if (bkHelper.isSearchReplace(e)) { // Alt + f
             e.preventDefault();
             bkHelper.getBkNotebookViewModel().showSearchReplace();
             return false;
           } else if (bkHelper.isNewNotebookShortcut(e)) { // Ctrl/Alt + n
-            bkUtils.fcall(function() {
-              bkCoreManager.newSession(true);
-            });
+            if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.newNotebookShortcut !== undefined) {
+              window.beakerRegister.hooks.newNotebookShortcut();
+            } else {
+              bkUtils.fcall(function() {
+                bkCoreManager.newSession(true);
+              });
+            }
             return false;
           } else if (bkHelper.isAppendCodeCellShortcut(e)) {
             bkUtils.fcall(function() {
@@ -1415,12 +1467,16 @@
 
         $scope.$on("$destroy", onDestroy);
         window.onbeforeunload = function(e) {
-          bkSessionManager.backup();
-          if (bkSessionManager.isNotebookModelEdited()) {
-            return "Your notebook has been edited but not saved, if you close the page your changes may be lost";
-          }
-          if (bkEvaluateJobManager.isAnyInProgress()) {
-            return "Some cells are still running. Leaving the page now will cause cancelling and result be lost";
+          if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.onbeforeunload !== undefined) {
+            window.beakerRegister.hooks.onbeforeunload();
+          } else {
+            bkSessionManager.backup();
+            if (bkSessionManager.isNotebookModelEdited()) {
+              return "Your notebook has been edited but not saved, if you close the page your changes may be lost";
+            }
+            if (bkEvaluateJobManager.isAnyInProgress()) {
+              return "Some cells are still running. Leaving the page now will cause cancelling and result be lost";
+            }
           }
           onDestroy();
         };
@@ -1429,6 +1485,9 @@
         };
         startAutoBackup();
         $scope.gotoControlPanel = function(event) {
+          if (window.beakerRegister !== undefined && window.beakerRegister.isEmbedded === true) {
+            return;
+          }
           if (bkUtils.isMiddleClick(event)) {
             window.open($location.absUrl() + '/beaker');
           } else {
@@ -1442,20 +1501,16 @@
         };
 
         $scope.renameNotebook = function() {
-          var saveFn = bkHelper.saveNotebookAs;
-          var saveButtonTitle = "Save";
-          var initUri = bkSessionManager.getNotebookPath();
           if (bkSessionManager.isSavable()) {
-            saveFn = bkHelper.renameNotebookTo;
-            saveButtonTitle = "Rename";
+            var initUri = bkSessionManager.getNotebookPath();
+            bkHelper.showFileSaveDialog({initUri: initUri, saveButtonTitle: "Rename"}).then(function (ret) {
+              if (ret.uri) {
+                return bkHelper.renameNotebookTo(ret.uri, ret.uriType);
+              }
+            });
           } else {
-            initUri = null;
+            bkHelper.saveNotebookAs();
           }
-          bkHelper.showFileSaveDialog({initUri: initUri, saveButtonTitle: saveButtonTitle}).then(function (ret) {
-            if (ret.uri) {
-              return saveFn(ret.uri, ret.uriType);
-            }
-          });
         };
 
         $scope.getElectronMode = function() {
@@ -1600,7 +1655,7 @@
         bkSessionManager.clear();
 
         bkMenuPluginManager.clear();
-        if (window.beakerRegister === undefined || window.beakerRegister.isEmbedded === undefined) {
+        if (window.beakerRegister === undefined || window.beakerRegister.isPublication === undefined) {
           bkUtils.httpGet('../beaker/rest/util/getMenuPlugins')
           .success(function(menuUrls) {
             menuUrls.forEach(function(url) {

@@ -95,8 +95,6 @@
       defaultEvaluator = data;
     });
 
-
-
       var bkHelper = {
 
       isNewNotebookShortcut: function (e){
@@ -294,6 +292,9 @@
       },
       getBaseUrl: function () {
         return bkUtils.getBaseUrl();
+      },
+      getNotebookUri: function() {
+        return bkSessionManager.getNotebookUri();
       },
       openNotebookInNewWindow: function (notebookUri, uriType, readOnly, format) {
         var params = {
@@ -592,6 +593,12 @@
           return false;
         }
       },        
+      backupNotebook: function() {
+        return bkSessionManager.backup();
+      },
+      isNotebookModelEdited: function () {
+        return bkSessionManager.isNotebookModelEdited();
+      },
       typeset: function(element) {
         try {
           katexhelper.renderElem(element[0], {
@@ -1237,6 +1244,11 @@
           if (_.isObject(evaluator)) delete evaluator.shellID;
         });
 
+        // apply hooks
+        if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.preSave !== undefined) {
+          notebookModelCopy = window.beakerRegister.hooks.preSave(notebookModelCopy);
+        }
+        
         // generate pretty JSON
         var prettyJson = bkUtils.toPrettyJson(notebookModelCopy);
         return prettyJson;

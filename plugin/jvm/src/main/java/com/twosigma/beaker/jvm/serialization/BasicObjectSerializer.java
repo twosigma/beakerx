@@ -88,7 +88,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
 
   protected boolean isPrimitiveTypeMap(Object o, boolean forCollection) {
     if (forCollection) {
-      return o instanceof Map<?, ?> || o instanceof List<?>;
+      return !(o instanceof BeakerCodeCell) && (o instanceof Map<?, ?> || o instanceof List<?>);
     } else {
       return isPrimitiveTypeMap(o);
     }

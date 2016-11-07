@@ -584,7 +584,7 @@
           };
           
           var closeSession = function(destroy) {
-            bkSessionManager.close().then(function(destroy) {
+            bkSessionManager.close().then(function() {
               if(destroy){
                 if (bkUtils.isElectron) {
                   bkElectron.thisWindow.destroy();
@@ -598,7 +598,7 @@
           function _closeNotebook(destroy) {
 
             if (bkSessionManager.isNotebookModelEdited() === false) {
-              closeSession();
+              closeSession(destroy);
             } else {
               var notebookTitle = bkSessionManager.getNotebookTitle();
               bkHelper.show3ButtonModal(

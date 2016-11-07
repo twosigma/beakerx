@@ -85,7 +85,7 @@ define(function(require, exports, module) {
             // Save cancelled
             if (path == undefined)
               return;
-            return bkHelper.saveNotebookAs(path, 'file');
+            return bkHelper.saveNotebookAsUri(path, 'file');
           })
         } else {
           return bkHelper.saveNotebookAs();

@@ -25,7 +25,7 @@ var config = {
     defaultTimeoutInterval: 100000,
     print: function() {}
   },
-  getMultiCapabilities: helper.getFirefoxProfile.bind(this, 4),
+  getMultiCapabilities: helper.getFirefoxProfile.bind(this, 3),
   onPrepare: function() {
     var SpecReporter = require('jasmine-spec-reporter');
     jasmine.getEnv().addReporter(new SpecReporter({

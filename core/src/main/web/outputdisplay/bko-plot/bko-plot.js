@@ -165,10 +165,10 @@
             legendBoxSize : 10
           };
           scope.zoomLevel = {
-            minSpanX : 1E-12,
-            minSpanY : 1E-12,
-            maxScaleX : 1E9,
-            maxScaleY : 1E9
+            minSpanX : 1E-4,
+            minSpanY : 1E-4,
+            maxScaleX : 1,
+            maxScaleY : 1
           };
           scope.labelPadding = {
             x : 10,
@@ -1513,7 +1513,6 @@
         };
 
         scope.zoomStart = function(d) {
-
           if (scope.interactMode === "other") { return; }
           scope.zoomed = false;
           scope.lastscale = 1.0;
@@ -1537,12 +1536,14 @@
           scope.jqsvg.css("cursor", "auto");
 
           $('body').css('overflow','hidden');
-          $('svg').on('mouseleave', function() {
+          
+          $(scope.jqsvg).on('mouseleave', function() {
             d3Zoom.on('zoom',function(){});
             $('body').css('overflow','visible');
           }).on('mouseenter',function(){
             $('body').css('overflow','hidden');
           });
+
         };
         scope.zooming = function(d) {
           if (scope.interactMode === "other"){
@@ -1574,6 +1575,7 @@
                 ty = dy / H * focus.yspan;
 
             if(d3trans.k === 1){
+              // for translating, moving the graph
               if (focus.xl + tx>=0 && focus.xr + tx<=1){
                 focus.xl += tx;
                 focus.xr += tx;
@@ -1601,11 +1603,13 @@
               }
               scope.jqsvg.css("cursor", "move");
             }else{
-              var deltaX = d3trans.deltaX;
+              //for scaling the graph
               var deltaY = d3trans.deltaY;
               if(!scope.deltaS) scope.deltaS = deltaY;
 
               var ds = 1 + ((Math.abs(deltaY)/scope.deltaS)/25);
+              if(ds>1.3) return;
+              scope.deltaS  = deltaY;
               var level = scope.zoomLevel;
               if (my <= plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin) {
                 // scale y
@@ -1613,22 +1617,23 @@
                 var nyl = ym - ds * (ym - focus.yl),
                     nyr = ym + ds * (focus.yr - ym),
                     nyspan = (nyr - nyl);
-                scope.deltaS  = deltaY;
-
 
                 if (nyspan >= level.minSpanY && nyspan <= level.maxScaleY) {
                   focus.yl = nyl;
                   focus.yr = nyr;
                   focus.yspan = nyspan;
-                }
-                else {
+                } else {
                   if (nyspan > level.maxScaleY) {
-                    focus.yr = focus.yl + level.maxScaleY;
+                    focus.yl = 0;
+                    focus.yr = 1;
                   } else if (nyspan < level.minSpanY) {
+                    return;
                     focus.yr = focus.yl + level.minSpanY;
                   }
                   focus.yspan = focus.yr - focus.yl;
                 }
+                console.log(focus.yspan)
+
               }
               if (mx >= scope.layout.leftLayoutMargin) {
                 // scale x
@@ -1643,8 +1648,11 @@
                   focus.xspan = nxspan;
                 } else {
                   if (nxspan > level.maxScaleX) {
-                    focus.xr = focus.xl + level.maxScaleX;
-                  } else if (nxspan < level.minSpanX) {
+                    focus.xl = 0;
+                    focus.xr = 1;
+                    focus.xspan = focus.xr - focus.xl;
+                  }else if (nxspan < level.minSpanX) {
+                    return;
                     focus.xr = focus.xl + level.minSpanX;
                   }
                   focus.xspan = focus.xr - focus.xl;

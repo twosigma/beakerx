@@ -18,7 +18,7 @@ var q = require('q');
 var FirefoxProfile = require('firefox-profile');
 var path = require('path');
 
-exports.getFirefoxProfile = function() {
+exports.getFirefoxProfile = function(maxInstances) {
     var deferred = q.defer();
 
     var firefoxProfile = new FirefoxProfile();
@@ -30,7 +30,7 @@ exports.getFirefoxProfile = function() {
     firefoxProfile.encoded(function(encodedProfile) {
         var multiCapabilities = [{
             shardTestFiles: true,
-            maxInstances: 3,
+            maxInstances: maxInstances,
             browserName: 'firefox',
             firefox_profile : encodedProfile
         }];

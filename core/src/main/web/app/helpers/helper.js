@@ -1666,7 +1666,7 @@
         function getFileContextMenuItems() {
           var items = [
             'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
-            'rm'
+            'rm', 'rename'
           ];
           if(!bkUtils.serverOS.isWindows()) {
             items.push('|', 'editpermissions');

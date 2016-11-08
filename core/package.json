@@ -20,7 +20,7 @@
     "gulp-template": "",
     "gulp-concat": "^2.3.4",
     "gulp-htmlmin": "^0.1.3",
-    "gulp-debug" : "",
+    "gulp-debug" : "2.1.2",
     "gulp-import-css": "",
     "gulp-strip-css-comments": "",
     "gulp-header" : "1.8.2",

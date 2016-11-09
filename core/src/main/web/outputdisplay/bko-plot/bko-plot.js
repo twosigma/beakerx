@@ -173,8 +173,8 @@
             legendBoxSize : 10
           };
           scope.zoomLevel = {
-            minSpanX : 1E-4,
-            minSpanY : 1E-4,
+            minSpanX : 1E-8,
+            minSpanY : 1E-8,
             maxScaleX : 1,
             maxScaleY : 1
           };
@@ -1522,6 +1522,7 @@
 
         scope.zoomStart = function(d) {
           if (scope.interactMode === "other") { return; }
+          scope.zoom = true;
           scope.zoomed = false;
           scope.lastscale = 1.0;
           var d3trans = d3.event.transform || d3.event;
@@ -1546,15 +1547,13 @@
           $('body').css('overflow','hidden');
           
           $(scope.jqsvg).on('mouseleave', function() {
-            d3Zoom.on('zoom',function(){});
+            scope.zoom = false;
             $('body').css('overflow','visible');
-          }).on('mouseenter',function(){
-            $('body').css('overflow','hidden');
-          });
-
+          })
+          
         };
         scope.zooming = function(d) {
-          if (scope.interactMode === "other"){
+          if (scope.interactMode === "other" || !scope.zoom){
             return;
           } else if (scope.interactMode === "zoom"){
             var lMargin = scope.layout.leftLayoutMargin,

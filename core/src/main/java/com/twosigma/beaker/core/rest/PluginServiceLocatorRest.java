@@ -128,8 +128,13 @@ public class PluginServiceLocatorRest {
     "  proxy_pass http://127.0.0.1:%(port)s/api/sessions;\n" +
     "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
     "}\n" +
-    "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/ {\n" +
-    IPYTHON_RULES_BASE;
+    "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/channels {\n" +
+    IPYTHON_RULES_BASE+
+    "location ~ %(base_url)s/api/kernels/[0-9a-f-]+ {\n" +
+    "  rewrite ^%(base_url)s/(.*)$ /$1 break;\n" +
+    "  proxy_pass http://127.0.0.1:%(port)s;\n" +
+    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
+    "}\n" ;
 
   private static final String CATCH_OUTDATED_REQUESTS_RULE =
       "location ~ /%(urlhash)s[a-z0-9]+\\.\\d+/cometd/ {\n" +
@@ -326,7 +331,7 @@ public class PluginServiceLocatorRest {
     for (PluginConfigDescription pcd: pluginConfigDescriptions.getPlugins() ) {
       String nginxRules = pcd.getNginxRules();
       if (pcd.getNginxRules().startsWith("ipython")){
-        nginxRules = (getIPythonVersion(pcd.getPluginId(), pcd.getCommand()).equals("1")) ? "ipython1" : "ipython2";
+        nginxRules = "ipython2";
       }
       createPluginConfig(pcd.getPluginId(), pcd.getCommand(), nginxRules, beakerPorts.getNextAvailablePort());
     }
@@ -457,6 +462,14 @@ public class PluginServiceLocatorRest {
         restartproc.waitFor();
       }
 
+      if (nginxRules.startsWith("ipython")) {
+        generateIPythonConfig(pluginId, pConfig.getPort(), pConfig.getPassword(), command);
+
+        if (isIPython4OrNewer(getIPythonVersion(pluginId, command))) {
+          //new JupyterWidgetsExtensionProcessor(pluginId, this.pluginDir).copyJupyterExtensionIfExists();
+        }
+      }
+
       ArrayList<String> fullCommand =
         new ArrayList<String>(Arrays.asList(command.split("\\s+")));
 
@@ -541,14 +554,6 @@ public class PluginServiceLocatorRest {
     final String baseUrl = generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
     pConfig = new PluginConfig(port, nginxRules, baseUrl, password);
     this.plugins.put(pluginId, pConfig);
-
-    if (nginxRules.startsWith("ipython")) {
-      generateIPythonConfig(pluginId, port, password, command);
-
-      if (isIPython4OrNewer(getIPythonVersion(pluginId, command))) {
-        new JupyterWidgetsExtensionProcessor(pluginId, this.pluginDir).copyJupyterExtensionIfExists();
-      }
-    }
     return pConfig;
   }
 

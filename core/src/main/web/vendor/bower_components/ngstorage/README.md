@@ -1,6 +1,10 @@
 ngStorage
 =========
 
+[![Build Status](https://travis-ci.org/gsklee/ngStorage.svg)](https://travis-ci.org/gsklee/ngStorage)
+[![Dependency Status](https://david-dm.org/gsklee/ngStorage.svg)](https://david-dm.org/gsklee/ngStorage)
+[![devDependency Status](https://david-dm.org/gsklee/ngStorage/dev-status.svg)](https://david-dm.org/gsklee/ngStorage#info=devDependencies)
+
 An [AngularJS](https://github.com/angular/angular.js) module that makes Web Storage working in the *Angular Way*. Contains two services: `$localStorage` and `$sessionStorage`.
 
 ### Differences with Other Implementations
@@ -10,14 +14,55 @@ An [AngularJS](https://github.com/angular/angular.js) module that makes Web Stor
 * **sessionStorage** - We got this often-overlooked buddy covered.
 
 * **Cleanly-Authored Code** - Written in the *Angular Way*, well-structured with testability in mind.
- 
-* **No Cookie Fallback** - With Web Storage being [readily available](http://caniuse.com/namevalue-storage) in [all the browsers AngularJS officially supports](http://docs.angularjs.org/misc/faq#canidownloadthesourcebuildandhosttheangularjsenvironmentlocally), such fallback is largely redundant. 
+
+* **No Cookie Fallback** - With Web Storage being [readily available](http://caniuse.com/namevalue-storage) in [all the browsers AngularJS officially supports](http://docs.angularjs.org/misc/faq#canidownloadthesourcebuildandhosttheangularjsenvironmentlocally), such fallback is largely redundant.
 
 Install
 =======
 
+### Bower
+
 ```bash
 bower install ngstorage
+```
+
+*NOTE:* We are `ngstorage` and *NOT* `ngStorage`. The casing is important!
+
+### NPM
+```bash
+npm install ngstorage
+```
+
+*NOTE:* We are `ngstorage` and *NOT* `ngStorage`. The casing is important!
+
+### nuget
+
+```bash
+Install-Package gsklee.ngStorage
+```
+
+Or search for `Angular ngStorage` in the nuget package manager. <https://www.nuget.org/packages/gsklee.ngStorage>
+
+CDN
+===
+
+### cdnjs
+cdnjs now hosts ngStorage at <https://cdnjs.com/libraries/ngStorage>
+
+To use it
+
+``` html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+```
+
+### jsDelivr
+
+jsDelivr hosts ngStorage at <http://www.jsdelivr.com/#!ngstorage>
+
+To use is
+
+``` html
+<script src="https://cdn.jsdelivr.net/ngstorage/0.3.6/ngStorage.min.js"></script>
 ```
 
 Usage
@@ -116,8 +161,96 @@ You can store anything except those [not supported by JSON](http://www.json.org/
 * `Infinity`, `NaN` - Will be replaced with `null`.
 * `undefined`, Function - Will be removed.
 
+### Usage from config phase
+
+To read and set values during the Angular config phase use the `.get/.set`
+functions provided by the provider.
+
+```javascript
+var app = angular.module('app', ['ngStorage'])
+.config(['$localStorageProvider',
+    function ($localStorageProvider) {
+        $localStorageProvider.get('MyKey');
+
+        $localStorageProvider.set('MyKey', { k: 'value' });
+    }]);
+```
+
+### Prefix
+
+To change the prefix used by ngStorage use the provider function `setKeyPrefix`
+during the config phase.
+
+```javascript
+var app = angular.module('app', ['ngStorage'])
+.config(['$localStorageProvider',
+    function ($localStorageProvider) {
+        $localStorageProvider.setKeyPrefix('NewPrefix');
+    }])
+```
+
+### Custom serialization
+
+To change how ngStorage serializes and deserializes values (uses JSON by default) you can use your own functions.
+
+```javascript
+angular.module('app', ['ngStorage'])
+.config(['$localStorageProvider', 
+  function ($localStorageProvider) {
+    var mySerializer = function (value) {
+      // Do what you want with the value.
+      return value;
+    };
+    
+    var myDeserializer = function (value) {
+      return value;
+    };
+
+    $localStorageProvider.setSerializer(mySerializer);
+    $localStorageProvider.setDeserializer(myDeserializer);
+  }];)
+```
+
 ### Minification
 Just run `$ npm install` to install dependencies.  Then run `$ grunt` for minification.
+
+### Hints
+
+#### Watch the watch
+
+ngStorage internally uses an Angular watch to monitor changes to the `$storage`/`$localStorage` objects. That means that a digest cycle is required to persist your new values into the browser local storage.
+Normally this is not a problem, but, for example, if you launch a new window after saving a value...
+
+```javascript
+$scope.$storage.school = theSchool;
+$log.debug("launching " + url);
+var myWindow = $window.open("", "_self");
+myWindow.document.write(response.data);
+```
+
+the new values will not reliably be saved into the browser local storage. Allow a digest cycle to occur by using a zero-value `$timeout` as:
+
+```javascript
+$scope.$storage.school = theSchool;
+$log.debug("launching and saving the new value" + url);
+$timeout(function(){
+   var myWindow = $window.open("", "_self");
+   myWindow.document.write(response.data);
+});
+```
+
+or better using `$scope.$evalAsync` as:
+
+```javascript
+$scope.$storage.school = theSchool;
+$log.debug("launching and saving the new value" + url);
+$scope.$evalAsync(function(){
+   var myWindow = $window.open("", "_self");
+   myWindow.document.write(response.data);
+});
+```
+
+And your new values will be persisted correctly.
 
 Todos
 =====

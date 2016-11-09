@@ -126,8 +126,7 @@ define(function(require, exports, module) {
       this.cancelExecution();
       kdbCancelFunction = null;
       var self = this;
-      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/kdb/exit"), { shellID: self.settings.shellID })
-      .success(cb);
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/kdb/exit"), { shellID: self.settings.shellID });
     },
     interrupt: function() {
       this.cancelExecution();

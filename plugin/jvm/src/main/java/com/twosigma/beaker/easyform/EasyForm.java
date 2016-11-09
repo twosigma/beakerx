@@ -35,7 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public class EasyForm extends ObservableMap<String, String> {
+public class EasyForm extends ObservableMap<String, Object> {
 
   public static final Integer HORIZONTAL = 1;
   public static final Integer VERTICAL = 2;
@@ -271,26 +271,29 @@ public class EasyForm extends ObservableMap<String, String> {
     return caption;
   }
 
-  private HashMap<String, String> getValuesMap() {
+  private HashMap<String, Object> getValuesMap() {
     return this.mapInstance;
   }
 
+  @Override
   public String get(final Object key) {
     checkComponentExists((String) key);
     return getComponentMap().get(key).getValue();
   }
 
-  public String put(final String key, final String value) {
+  @Override
+  public String put(final String key, final Object value) {
     checkComponentExists(key);
-    EasyFormComponent component = getComponentMap().get(key);
+    final EasyFormComponent component = getComponentMap().get(key);
     if (!component.checkValue(value)) {
       throw new IllegalArgumentException(
           String.format("\"%s\" is not a valid option for %s \"%s\".",
               value, component.getClass().getSimpleName(), key));
     }
-    String previousValue = component.getValue();
-    component.setValue(value);
-    getValuesMap().put(key, value);
+    final String currentValue = component.formatValue(value);
+    final String previousValue = component.getValue();
+    component.setValue(currentValue);
+    getValuesMap().put(key, currentValue);
     setChanged();
     notifyObservers();
     component.fireChanged();

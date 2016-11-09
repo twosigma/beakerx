@@ -48,7 +48,8 @@ public class XYChartSerializer extends AbstractChartSerializer<XYChart> {
     if (xychart.getLodThreshold() != null) {
       jgen.writeObjectField("lodThreshold", xychart.getLodThreshold());
     }
-
+    jgen.writeObjectField("x_tickLabels_visible", xychart.isxTickLabelsVisible());
+    jgen.writeObjectField("y_tickLabels_visible", xychart.isyTickLabelsVisible());
     jgen.writeEndObject();
   }
 

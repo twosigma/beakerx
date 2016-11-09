@@ -95,6 +95,10 @@
           for (var i = 0; i < plots.length; i++) {
 
             var plotmodel = plots[i];
+
+            plotmodel.xAxis.showGridlineLabels = scope.model.getCellModel().x_tickLabels_visible;
+            plotmodel.yAxis.showGridlineLabels = scope.model.getCellModel().y_tickLabels_visible;
+            
             plotmodel.plotIndex = i;
             var pl = {
               model : plotmodel,

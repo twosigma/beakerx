@@ -102,14 +102,8 @@ var BeakerPageObject = function() {
   };
 
   this.setNormalEditMode = function() {
-    var self = this;
-    element(by.css('.notebook-menu')).click()
-        .then(function(){self.activateEditModeMenuItem();})
-        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#edit-mode-menuitem'))), 5000);})
-        .then(function(){browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform(); browser.sleep(1000);})
-        .then(function(){self.activateNormalEditModeMenuItem(); browser.sleep(1000);})
-        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#normal-edit-mode-menuitem'))), 5000);})
-        .then(function(){console.log('normal-edit-mode-menuitem is visible'); element(by.css('#normal-edit-mode-menuitem')).click();});
+    this.setEditMode();
+    element(by.css('#normal-edit-mode-menuitem')).click();
   };
 
   this.setEmacsEditMode = function() {
@@ -118,48 +112,8 @@ var BeakerPageObject = function() {
   };
 
   this.setVimEditMode = function () {
-    var self = this;
-    element(by.css('.notebook-menu')).click()
-        .then(function(){self.activateEditModeMenuItem();})
-        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#edit-mode-menuitem'))), 5000);})
-        .then(function(){browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform(); browser.sleep(1000);})
-        .then(function(){self.activateVimEditModeMenuItem(); browser.sleep(1000);})
-        .then(function(){browser.wait(self.EC.visibilityOf(element(by.css('#vim-edit-mode-menuitem'))), 5000);})
-        .then(function(){console.log('vim-edit-mode-menuitem is visible'); element(by.css('#vim-edit-mode-menuitem')).click();});
-  };
-
-  this.activateEditModeMenuItem = function() {
-    element(by.css('#edit-mode-menuitem')).isDisplayed()
-        .then(function(isVisible) {
-          console.log('EditModeMenuItem dislayed - ' + isVisible);
-          if (!isVisible) {
-            return element(by.css('.notebook-menu')).click();
-          }
-        }.bind(this));
-  };
-
-  this.activateVimEditModeMenuItem = function() {
-    var self = this;
-    element(by.css('#vim-edit-mode-menuitem')).isDisplayed()
-        .then(function(isVisible) {
-          console.log('VimEditModeMenuItem dislayed - ' + isVisible);
-          if (!isVisible) {
-            self.activateEditModeMenuItem();
-            return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
-          }
-        }.bind(this));
-  };
-
-  this.activateNormalEditModeMenuItem = function() {
-    var self = this;
-    element(by.css('#normal-edit-mode-menuitem')).isDisplayed()
-        .then(function(isVisible) {
-          console.log('NormalEditModeMenuItem dislayed - ' + isVisible);
-          if (!isVisible) {
-            self.activateEditModeMenuItem();
-            return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
-          }
-        }.bind(this));
+    this.setEditMode();
+    element(by.css('#vim-edit-mode-menuitem')).click();
   };
 
   this.setSublimeEditMode = function() {
@@ -778,10 +732,9 @@ var BeakerPageObject = function() {
   this.checkEditBkCellByIdCell = function(idCell){
     this.getBkCellByIdCell(idCell).element(by.css('[ng-click="edit($event)"]')).click();
     browser.wait(this.EC.visibilityOf($('bk-cell[cellid=' + idCell + '] div[ng-show="mode==\'edit\'"'), 10000));
-    var elemEdit = this.getEditBkCellByIdCell(idCell);
     expect(this.getPreviewBkCellByIdCell(idCell).isDisplayed()).toBe(false);
-    expect(elemEdit.isDisplayed()).toBe(true);
-    return elemEdit;
+    expect(this.getEditBkCellByIdCell(idCell).isDisplayed()).toBe(true);
+    return this.getEditBkCellByIdCell(idCell);
   }
 
   this.getFormulaSubElement = function(elemPromise, subIndex){
@@ -970,9 +923,8 @@ var BeakerPageObject = function() {
   }
 
   this.checkAutocomplete = function(nameHint) {
-    browser.actions().sendKeys(protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SPACE)).perform().then(function(){
-      expect(element(by.cssContainingText('li.CodeMirror-hint', nameHint)).isPresent()).toBe(true);
-    });
+    browser.actions().sendKeys(protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SPACE)).perform();
+    browser.wait(this.EC.presenceOf(element(by.cssContainingText('li.CodeMirror-hint', nameHint))), 10000);
   };
 
   this.insertNewDefaultCell = function(language){
@@ -988,5 +940,19 @@ var BeakerPageObject = function() {
     item.click();
     browser.actions().doubleClick(item).perform();
   }
+
+  this.checkDownloadCSV = function(idCell){
+    var self = this;
+    var dir = this.clearTmpDir();
+    this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')).click()
+        .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVDownload(false)"]')).click);
+    var filename = path.join(dir, "tableRows.csv");
+    browser.driver.wait(fs.existsSync.bind(this, filename), 20000).then(
+        function() {
+          expect(fs.readFileSync(filename, { encoding: 'utf8' }).replace(/[\n\r]/g,'')).toEqual('"col1","col2","col3""This & that","This / that","This > that"');
+        }
+    );
+  }
+
 };
 module.exports = BeakerPageObject;

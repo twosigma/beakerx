@@ -215,4 +215,13 @@ describe('Table Display (Groovy API)', function (done) {
             beakerPO.checkCellOutputTextByIdCell(idCell, 'You clicked on the cell [0, 1]');
         });
     });
+
+    describe('EscapeHTML function', function(){
+        it('Downloaded file should contain only regular ascii', function(){
+            var idCell = "codeb4y5Z8";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            beakerPO.checkDownloadCSV(idCell);
+        });
+    });
 });

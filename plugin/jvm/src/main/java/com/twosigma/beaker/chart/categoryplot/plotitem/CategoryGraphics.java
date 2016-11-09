@@ -212,7 +212,7 @@ public abstract class CategoryGraphics extends Graphics {
           this.value[i] = a.toArray(new Number[a.size()]);
         }
       }else{
-        this.value = new Number[][]{Arrays.copyOf(value, value.length, Integer[].class)};
+        this.value = new Number[][]{Arrays.copyOf(value, value.length, Number[].class)};
       }
     }
   }

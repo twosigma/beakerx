@@ -251,12 +251,12 @@ task copyPlotly << {
 
 task (copyJQueryUIImages, type: Copy) {
     from 'src/main/web/vendor/jquery-ui/css/smoothness/images/'
-    into 'src/main/web/app/dist/images/'
+    into 'src/main/web/app/vendor/jquery-ui/css/smoothness/images/'
 }
 
 task (copyElFinderImages, type: Copy) {
   from 'src/main/web/vendor/bower_components/elfinder/img/'
-  into 'src/main/web/app/img/'
+  into 'src/main/web/app/vendor/bower_components/elfinder/img/'
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens

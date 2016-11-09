@@ -95,13 +95,15 @@
       defaultEvaluator = data;
     });
 
-
-
       var bkHelper = {
 
       isNewNotebookShortcut: function (e){
         if (this.isMacOS){
-          return e.ctrlKey && (e.which === 78);// Ctrl + n
+          if(this.getInputCellKeyMapMode() === "emacs"){
+            return false; //issue #4722 
+          }else{
+            return e.ctrlKey && (e.which === 78);// Ctrl + n
+          }
         }
         return e.altKey && (e.which === 78);// Alt + n
       },
@@ -168,14 +170,18 @@
       isInsertAfterSectionShortcut: function(e) {
         if (this.isMacOS){
           return e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey &&
-            ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
+            ((e.which>=49) && (e.which<=50));// cmd + Shift + 1...2
         }
         return e.ctrlKey && !e.altKey && e.shiftKey &&
-          ((e.which>=49) && (e.which<=50));// alt + Shift + 1...2
+          ((e.which>=49) && (e.which<=50));// ctrl + Shift + 1...2
       },
       isSearchReplace: function (e){
         if (this.isMacOS){
-          return e.ctrlKey && (e.which === 70);// Ctrl + f
+          if(this.getInputCellKeyMapMode() === "emacs"){
+            return e.ctrlKey && (e.which === 83);// Ctrl + s
+          }else{
+            return e.ctrlKey && (e.which === 70);// Ctrl + f
+          }
         }
         return e.altKey && (e.which === 70);// Alt + f
       },
@@ -286,6 +292,9 @@
       },
       getBaseUrl: function () {
         return bkUtils.getBaseUrl();
+      },
+      getNotebookUri: function() {
+        return bkSessionManager.getNotebookUri();
       },
       openNotebookInNewWindow: function (notebookUri, uriType, readOnly, format) {
         var params = {
@@ -514,9 +523,16 @@
           return false;
         }
       },
-      saveNotebookAs: function(notebookUri, uriType) {
+      saveNotebookAs: function() {
         if (getCurrentApp() && getCurrentApp().saveNotebookAs) {
-          return getCurrentApp().saveNotebookAs(notebookUri, uriType);
+          return getCurrentApp().saveNotebookAs();
+        } else {
+          return false;
+        }
+      },
+      saveNotebookAsUri: function(notebookUri, uriType) {
+        if (getCurrentApp() && getCurrentApp().saveNotebookAsUri) {
+          return getCurrentApp().saveNotebookAsUri(notebookUri, uriType);
         } else {
           return false;
         }
@@ -577,6 +593,12 @@
           return false;
         }
       },        
+      backupNotebook: function() {
+        return bkSessionManager.backup();
+      },
+      isNotebookModelEdited: function () {
+        return bkSessionManager.isNotebookModelEdited();
+      },
       typeset: function(element) {
         try {
           katexhelper.renderElem(element[0], {
@@ -600,9 +622,35 @@
         if (!evaluateFn) {
           evaluateFn = this.evaluateCode;
         }
+
+        var omitContentInsideBackquotsFromKatexTransformation = function(content) {
+          var contentCopy = angular.copy(content);
+          var result = "";
+          var contentList = contentCopy.match(/`.*?\$.*?`/g);
+          if (contentList) {
+            for (var i = 0; i < contentList.length; i++) {
+              var matchContent = contentList[i];
+              var indexOf = contentCopy.indexOf(matchContent);
+              var contentForKatexTransformation = contentCopy.substring(0, indexOf);
+              var contentInsideBackquots = contentCopy.substring(indexOf, indexOf + matchContent.length);
+              var contentForKatexTransformationDiv = $('<div>' + contentForKatexTransformation + '</div>');
+              bkHelper.typeset(contentForKatexTransformationDiv);
+              result += contentForKatexTransformationDiv.html() + contentInsideBackquots;
+              contentCopy = contentCopy.substring(indexOf + matchContent.length, contentCopy.length);
+            }
+            var contentCopyDiv = $('<div>' + contentCopy + '</div>');
+            bkHelper.typeset(contentCopyDiv);
+            result += contentCopyDiv.html();
+          } else {
+            var markdownFragment = $('<div>' + contentCopy + '</div>');
+            bkHelper.typeset(markdownFragment);
+            result = markdownFragment.html();
+          }
+          return result;
+        };
+
         var markIt = function(content) {
-          var markdownFragment = $('<div>' + content + '</div>');
-          bkHelper.typeset(markdownFragment);
+          var markdownFragment = $('<div>' + omitContentInsideBackquotsFromKatexTransformation(content) + '</div>');
           var escapedHtmlContent = angular.copy(markdownFragment.html());
           markdownFragment.remove();
           var unescapedGtCharacter = escapedHtmlContent.replace(/&gt;/g, '>');
@@ -1196,6 +1244,11 @@
           if (_.isObject(evaluator)) delete evaluator.shellID;
         });
 
+        // apply hooks
+        if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.preSave !== undefined) {
+          notebookModelCopy = window.beakerRegister.hooks.preSave(notebookModelCopy);
+        }
+        
         // generate pretty JSON
         var prettyJson = bkUtils.toPrettyJson(notebookModelCopy);
         return prettyJson;
@@ -1613,7 +1666,7 @@
         function getFileContextMenuItems() {
           var items = [
             'copy', 'copypath', 'cut', 'paste', 'duplicate', '|',
-            'rm'
+            'rm', 'rename'
           ];
           if(!bkUtils.serverOS.isWindows()) {
             items.push('|', 'editpermissions');

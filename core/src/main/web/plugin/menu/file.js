@@ -85,16 +85,10 @@ define(function(require, exports, module) {
             // Save cancelled
             if (path == undefined)
               return;
-            return bkHelper.saveNotebookAs(path, 'file');
+            return bkHelper.saveNotebookAsUri(path, 'file');
           })
         } else {
-          bkHelper.showFileSaveDialog({
-            extension: "bkr"
-          }).then(function (ret) {
-            if (ret.uri) {
-              return bkHelper.saveNotebookAs(ret.uri, ret.uriType);
-            }
-          });
+          return bkHelper.saveNotebookAs();
         }
       }
     },

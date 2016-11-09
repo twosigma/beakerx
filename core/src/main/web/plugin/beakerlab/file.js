@@ -113,10 +113,10 @@ define(function(require, exports, module) {
       }
     },
     {
-      name: "Publish As Blog...",
+      name: "Create Blog Entry...",
       id: "blog-menuitem",
       sortorder: 200,
-      tooltip: "Publish notebook as blog post",
+      tooltip: "Create blog post from notebook",
       action: function() {
         bkHelper.backupNotebook().then(function() {
           parent.$(parent.document).trigger('beaker.embedded.blog', [window.beakerRegister.bunsenNotebookId]);

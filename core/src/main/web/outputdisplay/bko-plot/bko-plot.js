@@ -2117,7 +2117,7 @@
           }
 
           if(cellModel.custom_styles) 
-              extraStyles.append(customStyles);
+              extraStyles = extraStyles.concat(cellModel.custom_styles);
 
           plotUtils.addInlineStyles(svg, extraStyles);
 

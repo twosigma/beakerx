@@ -1634,7 +1634,6 @@
                     focus.yl = 0;
                     focus.yr = 1;
                   } else if (nyspan < level.minSpanY) {
-                    return;
                     focus.yr = focus.yl + level.minSpanY;
                   }
                   focus.yspan = focus.yr - focus.yl;
@@ -1659,7 +1658,6 @@
                     focus.xr = 1;
                     focus.xspan = focus.xr - focus.xl;
                   }else if (nxspan < level.minSpanX) {
-                    return;
                     focus.xr = focus.xl + level.minSpanX;
                   }
                   focus.xspan = focus.xr - focus.xl;

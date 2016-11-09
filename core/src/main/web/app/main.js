@@ -16,33 +16,9 @@
 
 define('jquery',[], function() {return $;});
 define('underscore',[], function() {return _;});
-define("html-css-sanitizer-minified", function(){});
-define("bootstrap", function(){});
-define("jquery-ui",[], function() {return $;});
 
 requirejs.config({
   paths: {
-    'base/js/utils':                "../plugins/eval/ipythonPlugins/vendor/ipython4/utils",
-    'base/js/events':               "../plugins/eval/ipythonPlugins/vendor/ipython4/events",
-    'base/js/namespace':            "../plugins/eval/ipythonPlugins/vendor/ipython4/namespace",
-    'base/js/security':             "../plugins/eval/ipythonPlugins/vendor/ipython4/security",
-    'base/js/keyboard':             "../plugins/eval/ipythonPlugins/vendor/ipython4/keyboard",
-    'base/js/dialog':               "../plugins/eval/ipythonPlugins/vendor/ipython4/dialog",
-    'services/kernels/comm':                  "../plugins/eval/ipythonPlugins/vendor/ipython4/comm",
-    'kernel/serialize':             "../plugins/eval/ipythonPlugins/vendor/ipython4/serialize",
-    'services/kernels/kernel':      "../plugins/eval/ipythonPlugins/vendor/ipython4/kernel",
-    'notebook/js/outputarea':       "../plugins/eval/ipythonPlugins/vendor/ipython4/outputarea",
-    'notebook/js/mathjaxutils':     "../plugins/eval/ipythonPlugins/vendor/ipython4/mathjaxutils",
-    'notebook/js/keyboardmanager':  "../plugins/eval/ipythonPlugins/vendor/ipython4/keyboardmanager",
-    'jupyter-js-widgets':           "../plugins/eval/ipythonPlugins/vendor/ipython4/jupyter-js-widgets",
-
-    'codemirror/lib/codemirror':        "../plugins/eval/ipythonPlugins/vendor/ipython4/components/codemirror",
-    'components/marked/lib/marked':     "../plugins/eval/ipythonPlugins/vendor/ipython4/components/marked",
-    'html-css-sanitizer-minified':
-      "../plugins/eval/ipythonPlugins/vendor/ipython4/components/html-css-sanitizer-minified",
-    'jquery-ui':                        "../plugins/eval/ipythonPlugins/vendor/ipython4/components/jquery-ui.min",
-    'bootstrap':                        "../plugins/eval/ipythonPlugins/vendor/ipython4/components/bootstrap.min",
-
     'ipython3_comm':             "../plugins/eval/ipythonPlugins/vendor/ipython3/comm",
     'ipython3_namespace':        "../plugins/eval/ipythonPlugins/vendor/ipython3/namespace",
     'ipython3_kernel':           "../plugins/eval/ipythonPlugins/vendor/ipython3/kernel",
@@ -72,3 +48,4 @@ requirejs.config({
     'ipython3_events':    "../plugins/eval/ipythonPlugins/vendor/ipython3/events"
   }
 });
+

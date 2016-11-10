@@ -135,10 +135,10 @@ describe('Category Plots (Bar Charts)', function (done) {
       var idCell = "codem4cZE9";
       beakerPO.scrollToBkCellByIdCell(idCell);
       beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
-      var style = 'fill: rgb(255, 175, 175); fill-opacity: 1; stroke-opacity: 0;';
-      expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0).getAttribute('style')).toBe(style);
-      expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1).getAttribute('style')).toBe(style);
-      expect(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 2).getAttribute('style')).toBe(style);
+      beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i0')).getCssValue('fill').then(function(rgb){
+        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i1')).getCssValue('fill')).toBe(rgb);
+        expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i2')).getCssValue('fill')).toBe(rgb);
+      });
     });
 
     it('Color per Series', function () {

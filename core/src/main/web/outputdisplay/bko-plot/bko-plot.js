@@ -1615,7 +1615,6 @@
               if(!scope.deltaS) scope.deltaS = deltaY;
 
               var ds = 1 + ((Math.abs(deltaY)/scope.deltaS)/25);
-              if(ds>1.3) return;
               scope.deltaS  = deltaY;
               var level = scope.zoomLevel;
               if (my <= plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin) {

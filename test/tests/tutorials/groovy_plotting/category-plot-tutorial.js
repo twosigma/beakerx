@@ -113,12 +113,18 @@ describe('Category Plots (Bar Charts)', function (done) {
       expect(label_x_2.getAttribute('transform')).toContain('rotate');
     });
 
-      it('Category Margin', function () {
+      it('Should display 200% Category Margin', function () {
         var idCell = "codeS15uez";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
-        beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 0), 'plot-bar');
-        beakerPO.checkClass(beakerPO.getPlotSvgElementByIndexByIdCell(idCell, 0, 1), 'plot-bar');
+        var rect00 = beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0'));
+        rect00.getAttribute('width').then(function(w00){
+          rect00.getAttribute('x').then(function(x00){
+            beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_1')).getAttribute('x').then(function(x01){
+              expect(Math.round((x01-x00)/w00)).toBe(Math.round(4.0));
+            });
+          });
+        });
       });
 
       it('Single Series (Histogram)', function () {

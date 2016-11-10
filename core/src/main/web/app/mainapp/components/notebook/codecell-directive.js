@@ -477,6 +477,34 @@
           name: "Publish...",
           sortorder: 170
         });
+
+        var getElapsedTimeString = function() {
+          if ($scope.cellmodel.output.elapsedTime || $scope.cellmodel.output.elapsedTime === 0) {
+            var elapsedTime = $scope.cellmodel.output.elapsedTime;
+            return "Elapsed time: " + bkUtils.formatTimeString(elapsedTime);
+          }
+          return '';
+        };
+
+        $scope.cellmenu.addItem({
+          name: getElapsedTimeString,
+          sortorder: 300,
+          action: null,
+          separator: true
+        });
+
+        var getEvaluationSequenceNumber = function() {
+          if ($scope.cellmodel.output.evaluationSequenceNumber) {
+            return "Run Sequence: " + $scope.cellmodel.output.evaluationSequenceNumber;
+          }
+          return '';
+        };
+
+        $scope.cellmenu.addItem({
+          name: getEvaluationSequenceNumber,
+          sortorder: 310,
+          action: null
+        });
         
         $scope.cellmenu.addSeparator("Cut");
 

@@ -139,21 +139,6 @@
             $scope.outputCellMenuModel.refreshMenu();
         });
 
-        var getElapsedTimeString = function() {
-          if ($scope.model.elapsedTime || $scope.model.elapsedTime === 0) {
-            var elapsedTime = $scope.model.elapsedTime;
-            return "Elapsed time: " + bkUtils.formatTimeString(elapsedTime);
-          }
-          return "";
-        };
-
-        var getEvaluationSequenceNumber = function() {
-          if ($scope.model.evaluationSequenceNumber) {
-            return "Run Sequence: " + $scope.model.evaluationSequenceNumber;
-          }
-          return null;
-        };
-
         $scope.isShowOutput = function() {
           if ($scope.$parent !== undefined && $scope.$parent.isShowOutput !== undefined)
             return $scope.$parent.isShowOutput();
@@ -242,14 +227,6 @@
             {
               name: "Save Plot As",
               items: _saveAsItems
-            },
-            {
-              name: getElapsedTimeString,
-              action: null
-            },
-            {
-              name: getEvaluationSequenceNumber,
-              action: null
             }
           ];
         };

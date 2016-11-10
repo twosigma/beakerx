@@ -28,7 +28,8 @@
     'bk.evaluatorManager',
     'bk.electron',
     'bk.plotapi',
-    'bk.categoryplotapi'
+    'bk.categoryplotapi',
+    'bk.delayManager'
   ]);
 
   module.factory('bkSessionManager', function(
@@ -42,7 +43,8 @@
       bkRecentMenu,
       bkElectron,
       bkPlotApi,
-      bkCategoryPlotApi) {
+      bkCategoryPlotApi,
+      bkDelayManager) {
 
     // we have copypasted piece of code from this line up to the end of 'transformBack' method in
     // plugin/node/src/dist/app/transformation.js. If you make some changes there, please bring them
@@ -1060,9 +1062,11 @@
       setNotebookModelEdited: function(edited) {
         _needsBackup = edited;
         _edited = edited;
-        bkUtils.httpPost(bkUtils.serverUrl('beaker/rest/session-backup/setEdited'), {
-          sessionid: _sessionId,
-          edited: edited
+        bkDelayManager.create('setNotebookModelEdited', function() {
+          bkUtils.httpPost(bkUtils.serverUrl('beaker/rest/session-backup/setEdited'), {
+            sessionid: _sessionId,
+            edited: edited
+          });
         });
       },
       isNotebookModelEdited: function() {

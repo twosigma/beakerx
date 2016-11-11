@@ -26,6 +26,7 @@ define(function(require, exports, module) {
   var COMMAND = "ipythonPlugins/iruby/irubyPlugin";
   var kernels = {};
   var _theCancelFunction = null;
+  var _keepaliveInterval = null;
   var gotError = false;
   var serviceBase = null;
   var ipyVersion = false;
@@ -133,7 +134,7 @@ define(function(require, exports, module) {
         // keepalive for the websockets
         var nil = function() {
         };
-        window.setInterval(function() {
+        _keepaliveInterval = window.setInterval(function() {
           // XXX this is wrong (ipy1 layout) maybe it doesn't matter??
           var ignore = {
             execute_reply: nil,
@@ -390,6 +391,9 @@ define(function(require, exports, module) {
       exit: function(cb) {
         this.cancelExecution();
         _theCancelFunction = null;
+        if(_keepaliveInterval){
+          clearInterval(_keepaliveInterval);
+        }
         var kernel = kernels[this.settings.shellID];
         kernel.kill();
       },

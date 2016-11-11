@@ -6,7 +6,7 @@ define('ipython3_widgetmanager', [
   'ipython3_namespace',
   'ipython3_comm',
   'backbone'
-], function (utils, IPython3, comm, Backbone) {
+], function (utils, IPython, comm, Backbone) {
     "use strict";
     //--------------------------------------------------------------------
     // WidgetManager class
@@ -154,7 +154,7 @@ define('ipython3_widgetmanager', [
           var ipy_output = $('.ipy-output[data-msg-id=' + msg.parent_header.msg_id
               + '] .widget-area .widget-subarea');
           view.$el.appendTo(ipy_output);
-          view.oa = new IPython3.OutputArea({
+          view.oa = new IPython.OutputArea({
             selector: '.ipy-output[data-msg-id=' + msg.parent_header.msg_id + ']',
             keyboard_manager: that.keyboard_manager,
             prompt_area: false,
@@ -458,7 +458,7 @@ define('ipython3_widgetmanager', [
     };
 
     // Backwards compatibility.
-    IPython3.WidgetManager = WidgetManager;
+    IPython.WidgetManager = WidgetManager;
 
     return {'WidgetManager': WidgetManager};
 });

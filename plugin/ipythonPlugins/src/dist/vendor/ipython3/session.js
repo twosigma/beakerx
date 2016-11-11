@@ -5,7 +5,7 @@ define('ipython3_session', [
     'ipython3_namespace',
     'ipython3_utils',
     'ipython3_kernel'
-], function(IPython3, utils, kernel) {
+], function(IPython, utils, kernel) {
     "use strict";
 
     /**
@@ -309,7 +309,7 @@ define('ipython3_session', [
     SessionAlreadyStarting.prototype = Error.prototype;
     
     // For backwards compatability.
-    IPython3.Session = Session;
+    IPython.Session = Session;
 
     return {
         Session: Session,

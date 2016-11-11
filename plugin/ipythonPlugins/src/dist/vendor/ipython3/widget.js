@@ -6,7 +6,7 @@ define('ipython3_widget', [
   'ipython3_utils',
   'ipython3_namespace',
   'backbone'
-], function(widgetmanager, utils, IPython3, Backbone){
+], function(widgetmanager, utils, IPython, Backbone){
     "use strict";
 
     var WidgetModel = Backbone.Model.extend({
@@ -775,7 +775,7 @@ define('ipython3_widget', [
     };
 
     // For backwards compatability.
-    $.extend(IPython3, widget);
+    $.extend(IPython, widget);
 
     return widget;
 });

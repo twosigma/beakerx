@@ -26,6 +26,7 @@ define(function(require, exports, module) {
   var COMMAND = "ipythonPlugins/torch/torchPlugin";
   var kernels = {};
   var _theCancelFunction = null;
+  var _keepaliveInterval = null;
   var gotError = false;
   var serviceBase = null;
   var ipyVersion = false;
@@ -134,7 +135,7 @@ define(function(require, exports, module) {
         // keepalive for the websockets
         var nil = function() {
         };
-        window.setInterval(function() {
+        _keepaliveInterval = window.setInterval(function() {
           // XXX this is wrong (ipy1 layout) maybe it doesn't matter??
           var ignore = {
             execute_reply: nil,
@@ -405,6 +406,9 @@ define(function(require, exports, module) {
       exit: function(cb) {
         this.cancelExecution();
         _theCancelFunction = null;
+        if(_keepaliveInterval){
+          clearInterval(_keepaliveInterval);
+        }
         var kernel = kernels[this.settings.shellID];
         kernel.kill();
       },
@@ -468,19 +472,13 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     var onSuccess = function() {
-      if (ipyVersion == '3') {
+      if (ipyVersion == '3' || ipyVersion == '4') {
         require('ipython3_namespace');
         require('ipython3_kernel');
         require('ipython3_utils');
         require('ipython3_outputarea');
-      } else if(ipyVersion == '4') {
-        require('base/js/namespace');
-        require('services/kernels/kernel');
-        require('base/js/utils');
-        require('notebook/js/outputarea');
-        require('jupyter-js-widgets');
       }
-      myTorch = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : ((ipyVersion == '3') ? IPython3 : IPython));
+      myTorch = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
       bkHelper.locatePluginService(PLUGIN_ID, {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
@@ -573,22 +571,15 @@ define(function(require, exports, module) {
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/comm.js"),
                                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/outputarea.js")
                                ], onSuccess, onFail);
-          } else if (ipyVersion == '3') {
-            bkHelper.loadList([bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/namespace.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/utils.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/kernel.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/session.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/comm.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js")
-                               ], onSuccess, onFail);
           } else {
-            bkHelper.loadList([bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/namespace.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/kernel.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/utils.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/outputarea.js"),
-                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython4/jupyter-js-widgets.js"),
-                               ], onSuccess, onFail);
+            bkHelper.loadList([bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/namespace.js"),
+              bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/utils.js"),
+              bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/kernel.js"),
+              bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/session.js"),
+              bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js"),
+              bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/comm.js"),
+              bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js")
+            ], onSuccess, onFail);
           }
         }).error(function() {
           console.log("failed to locate plugin service", PLUGIN_NAME, arguments);

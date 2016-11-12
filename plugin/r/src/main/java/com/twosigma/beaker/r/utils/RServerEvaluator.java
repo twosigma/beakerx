@@ -31,20 +31,17 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
 import org.apache.batik.ext.awt.image.codec.png.PNGRegistryEntry;
 import org.apache.batik.ext.awt.image.codec.tiff.TIFFRegistryEntry;
-import org.apache.batik.ext.awt.image.spi.ImageTagRegistry;
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -54,13 +51,17 @@ import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.r.module.ErrorGobbler;
 import com.twosigma.beaker.r.module.ROutputHandler;
+
+import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RServerEvaluator {
   protected static final String BEGIN_MAGIC = "**beaker_begin_magic**";
@@ -279,6 +280,25 @@ public class RServerEvaluator {
     return null;
   }
 
+  protected boolean isError(REXP result, SimpleEvaluationObject obj) {
+    try {
+      REXP value = result.asList().at(0);
+      if (value.inherits("try-error")) {
+        String prefix = "Error in try({ : ";
+        String rs = value.asString();
+        if (rs.substring(0, prefix.length()).equals(prefix)) {
+          rs = rs.substring(prefix.length());
+        }
+        logger.debug("is an error");
+        obj.error(rs);
+        return true;
+      }
+    } catch (REXPMismatchException e) {
+    } catch (NullPointerException e) {
+    }
+    return false;
+  }
+
   protected boolean isVisible(REXP result, SimpleEvaluationObject obj) {
     try {
       int[] asInt = result.asList().at(1).asIntegers();
@@ -488,16 +508,9 @@ public class RServerEvaluator {
             // direct graphical output
             String tryCode;
             connection.eval("do.call(svg,c(list('" + file + "'), beaker::saved_svg_options))");
-            tryCode = "beaker_warn_ <- {};\n"
-                + "beaker_err_ <- {};\n"
-                + " beaker_eval_=withVisible(tryCatch({ " + j.codeToBeExecuted + "\n}"
-                    + ", warning = function(w){beaker_warn_ <<- w }"
-                    + ", error = function(e){beaker_err_ <<- e } ))\n"+
-                "list(beaker_eval_, beaker:::convertToJSON(beaker_eval_$value, beaker:::collapse_unit_vectors))";
-            
+            tryCode = "beaker_eval_=withVisible(try({ " + j.codeToBeExecuted + "\n},silent=TRUE))\n"+
+                    "list(beaker_eval_, beaker:::convertToJSON(beaker_eval_$value, beaker:::collapse_unit_vectors))";
             REXP result = connection.eval(tryCode);
-            REXP e = connection.eval("beaker_err_");
-            REXP w = connection.eval("beaker_warn_");
             
             if (result!= null) {
               logger.trace("RESULT: {}", result);
@@ -510,33 +523,7 @@ public class RServerEvaluator {
               logger.debug("null result");;
               oresult = "";
               resultjson = null;
-              
-              if(!w.isNull() && w.asList().at(0).isString()){
-                String warning = w.asList().at(0).asString();
-                j.outputObject.error(warning);
-                isfinished = true;
-              }
-              
-            } else if (!e.isNull() && e.asList().at(0).isString() || !w.isNull() && w.asList().at(0).isString()) {
-              String error = null;
-              if(!e.isNull() && e.asList().at(0).isString()){
-                error = e.asList().at(0).asString();
-              }
-              String warning = null;
-              if(!w.isNull() && w.asList().at(0).isString()){
-                warning = w.asList().at(0).asString();
-              }
-              String meaage = "";
-              if(error != null){
-                meaage += error;
-              }
-              if(warning != null){
-                if(meaage != null && !meaage.isEmpty()){
-                  error += "\n";
-                }
-                meaage += warning;
-              }
-              j.outputObject.error(meaage);
+            } else if (isError(result, j.outputObject)) {
               isfinished = true;
             } else if (resultjson!=null && !resultjson.isEmpty() && resultjson.startsWith("{ \"type\":" )) {
               logger.debug("is a beaker object");

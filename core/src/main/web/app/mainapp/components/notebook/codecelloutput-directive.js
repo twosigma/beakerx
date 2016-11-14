@@ -183,13 +183,13 @@
             return !$scope.$parent.cellmodel.output.hidden;
           return true;
         };
-        
+
         $scope.isShowOutputSummary = function () {
           return !$scope.isExpanded() && !bkSessionManager.isNotebookLocked() && $scope.outputDisplayModel.getOutputSummary;
         };
-        
+
         $scope.getOutputSummary = function () {
-          return $scope.outputDisplayModel.getOutputSummary ? $scope.outputDisplayModel.getOutputSummary() : ''; 
+          return $scope.outputDisplayModel.getOutputSummary ? $scope.outputDisplayModel.getOutputSummary() : '';
         };
 
         $scope.getAdditionalMenuItems = function() {

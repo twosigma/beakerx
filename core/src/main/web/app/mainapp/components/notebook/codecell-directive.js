@@ -479,8 +479,8 @@
         });
 
         var getElapsedTimeString = function() {
-          if ($scope.cellmodel.output.elapsedTime || $scope.cellmodel.output.elapsedTime === 0) {
-            var elapsedTime = $scope.cellmodel.output.elapsedTime;
+          var elapsedTime = $scope.cellmodel.output.elapsedTime;
+          if (_.isNumber(elapsedTime) && !$scope.hasOutput()) {
             return "Elapsed time: " + bkUtils.formatTimeString(elapsedTime);
           }
           return '';
@@ -494,8 +494,9 @@
         });
 
         var getEvaluationSequenceNumber = function() {
-          if ($scope.cellmodel.output.evaluationSequenceNumber) {
-            return "Run Sequence: " + $scope.cellmodel.output.evaluationSequenceNumber;
+          var seqNo = $scope.cellmodel.output.evaluationSequenceNumber;
+          if (seqNo && !$scope.hasOutput()) {
+            return "Run Sequence: " + seqNo;
           }
           return '';
         };

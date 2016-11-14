@@ -86,3 +86,11 @@
   line-height: 14px;
   margin: 0;
 }
+
+.section-error {
+  .bk-section-title,
+  .bk-section-title p,
+  .section-toggle {
+    color: $error_red;
+  }
+}

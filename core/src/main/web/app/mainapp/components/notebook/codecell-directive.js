@@ -143,7 +143,10 @@
             type = $scope.cellmodel.output.result.payload.innertype;
           }
 
-          return type == 'Error';
+          var isError = type === 'Error';
+          $scope.cellmodel.isError = isError;
+
+          return isError;
         };
 
         $scope.isShowInput = function() {

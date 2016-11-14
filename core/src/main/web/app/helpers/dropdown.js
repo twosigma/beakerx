@@ -169,7 +169,8 @@
     }
   })
   .on('click', 'html, .dropdown > a, button[data-toggle="dropdown"]', function(event) {
-    if(event != undefined && event.target.className.indexOf('bko-column-header-menu') == -1){
+    var className = event && event.target && event.target.className;
+    if(className && typeof className === 'string' && className.indexOf('bko-column-header-menu') === -1){
       $('.dropdown-menu').removeAttr('style');
     }
   });

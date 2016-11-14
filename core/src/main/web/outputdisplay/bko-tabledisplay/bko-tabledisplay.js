@@ -557,13 +557,24 @@
           return $scope.table.column(index);
         };
 
-        $scope.showColumn = function (initialIndex, event) {
+        $scope.showColumn = function(initialIndex, event) {
           var column = $scope.getColumnByInitialIndex(initialIndex);
           column.visible(!column.visible());
-          if(event){
+          if (event){
             event.stopPropagation();
           }
+
+          if (column.visible()){
+            var table = $('#' + $scope.id).DataTable();
+            angular.element(document.getElementById($scope.id)).parent().scrollLeft(0);
+            window.setTimeout(function() {
+              var distance = $(table.column(initialIndex).header()).offset().left;
+              var width = angular.element(document.getElementById($scope.id)).parent().width() / 2;
+              angular.element(document.getElementById($scope.id)).parent().scrollLeft(distance - width);
+            }, 0)
+          }
         };
+
         $scope.isColumnVisible = function (initialIndex) {
           var column = $scope.getColumnByInitialIndex(initialIndex);
           return column && column.visible();

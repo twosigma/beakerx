@@ -25,8 +25,8 @@ var config = {
   },
 
   capabilities: {
-    shardTestFiles: true,
-    maxInstances: 3,
+    shardTestFiles: false,
+    maxInstances: 1,
     browserName: 'firefox'
   },
   onPrepare: function() {

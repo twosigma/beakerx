@@ -222,6 +222,12 @@ var BeakerPageObject = function() {
         self.cellEvaluatorMenuItem(language).click();});
   };
 
+  this.insertCellByLanguage = function(language) {
+    var self = this;
+    this.getCellEvaluatorMenu().click()
+        .then(function(){ self.cellEvaluatorMenuItem(language).click(); });
+  };
+
   this.activateCellEvaluatorMenu = function(language) {
     this.cellEvaluatorMenuItem(language).isDisplayed()
         .then(function(isVisible) {

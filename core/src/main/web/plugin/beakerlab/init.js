@@ -88,6 +88,16 @@
     return nb;
   };
 
+  window.beakerRegister.hooks.loadAjax = function(locator) {
+    var pieces = locator.split(":");
+    var bl = pieces[4];
+    console.log(bl);
+    if (bl != undefined) {
+      bl = JSON.parse(decodeURIComponent(bl));
+      window.beakerRegister.bunsenObject = bl;
+    }
+  };
+
   // beakerlab is ending some data to beaker   
   $('body').bind('beaker.embedded.setBeakerLabObject', function(e, notebookId, notebookName, bkLabObj, isFullScreen, canPublish, isPublished, canBlog) {
     window.beakerRegister.notebookName = notebookName;

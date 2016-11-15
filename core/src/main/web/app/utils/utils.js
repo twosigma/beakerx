@@ -405,6 +405,10 @@
                 // we don't want this behavior, this is a hack to reverse it
                 content = JSON.stringify(content);
               }
+              // apply hooks
+              if (window.beakerRegister !== undefined && window.beakerRegister.hooks !== undefined && window.beakerRegister.hooks.loadAjax !== undefined) {
+                window.beakerRegister.hooks.loadAjax(ajaxLocator);
+              }
               deferred.resolve(content);
             })
             .error(deferred.reject);

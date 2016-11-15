@@ -119,6 +119,7 @@ var BeakerPageObject = function() {
           element(by.css('#vim-edit-mode-menuitem')).click();
         },
         function(error){
+          console.log('vim-edit-mode-menuitem: ' + error);
           self.setEditMode();
           element(by.css('#vim-edit-mode-menuitem')).click();
         }

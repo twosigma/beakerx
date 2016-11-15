@@ -1498,7 +1498,9 @@
             "h" : yr - yl
           };
         };
+        var down = false;
         scope.mouseDown = function() {
+          down = true;
           if (scope.interactMode === "other") {
             return;
           }
@@ -1510,6 +1512,7 @@
           scope.interactMode = d3.event.button == 0 ? "zoom" : "locate";
         };
         scope.mouseUp = function() {
+          down = false;
           if (scope.interactMode === "remove") {
             scope.interactMode = "other";
             return;
@@ -1538,19 +1541,23 @@
           };
           scope.mousep2 = {};
           _.extend(scope.mousep2, scope.mousep1);
-          var d3Zoom = d3.zoom()
+          d3.zoom()
           .scaleExtent([1, 40])
           .translateExtent([[-100, -100], [600, 600]])
           .on("zoom", scope.zooming);
           scope.jqsvg.css("cursor", "auto");
 
           $('body').css('overflow','hidden');
-          
+
           $(scope.jqsvg).on('mouseleave', function() {
+            if (!down){
+              scope.zoom = false;
+              $('body').css('overflow', 'visible');
+            }
+          });
+          $(document).on('mouseup', function() {
             scope.zoom = false;
-            $('body').css('overflow','visible');
-          })
-          
+          });
         };
         scope.zooming = function(d) {
           if (scope.interactMode === "other" || !scope.zoom){

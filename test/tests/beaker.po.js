@@ -102,8 +102,18 @@ var BeakerPageObject = function() {
   };
 
   this.setNormalEditMode = function() {
+    var self = this;
     this.setEditMode();
-    element(by.css('#normal-edit-mode-menuitem')).click();
+    element(by.css('#normal-edit-mode-menuitem')).isDisplayed().then(
+        function(display){
+          element(by.css('#normal-edit-mode-menuitem')).click();
+        },
+        function(error){
+          console.log('normal-edit-mode-menuitem error: ' + error);
+          self.setEditMode();
+          element(by.css('#normal-edit-mode-menuitem')).click();
+        }
+    );
   };
 
   this.setEmacsEditMode = function() {
@@ -114,12 +124,12 @@ var BeakerPageObject = function() {
   this.setVimEditMode = function () {
     var self = this;
     this.setEditMode();
-    element(by.css('#vim-edit-mode-menuitem')).isPresent().then(
-        function(present){
+    element(by.css('#vim-edit-mode-menuitem')).isDisplayed().then(
+        function(display){
           element(by.css('#vim-edit-mode-menuitem')).click();
         },
         function(error){
-          console.log('vim-edit-mode-menuitem: ' + error);
+          console.log('vim-edit-mode-menuitem error: ' + error);
           self.setEditMode();
           element(by.css('#vim-edit-mode-menuitem')).click();
         }

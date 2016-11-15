@@ -1146,7 +1146,7 @@
             var unit = $(legendLineUnit).appendTo(legend)
               .attr("id", "legend_all")
               .addClass("plot-legendline");
-            $("<input type='checkbox'></input>")
+            $("<input type='checkbox' />")
               .attr("id", "legendcheck_all_" + allLegendId)
               .attr("class", "plot-legendcheckbox beforeCheckbox")
               .prop("checked", scope.showAllItems)
@@ -1188,7 +1188,7 @@
               });
             if(!scope.stdmodel.omitCheckboxes){
               // checkbox
-              $("<input type='checkbox'></input>")
+              $("<input type='checkbox'/>")
                 .attr("id", "legendcheck_" + id)
                 .attr("class", "plot-legendcheckbox beforeCheckbox")
                 .prop("checked", line.showItem)
@@ -2110,9 +2110,9 @@
           // Custom styles added by user
           var cellModel = scope.getCellModel();
           var extraStyles = [];
-          if(cellModel.elementStyles) {
-              for(var style in cellModel.elementStyles) {
-                  elementStyles.push(style + ' {' + cellModel.elementStyles[style] + '}');
+          if(cellModel.element_styles) {
+              for(var style in cellModel.element_styles) {
+                extraStyles.push(style + ' {' + cellModel.element_styles[style] + '}');
               }
           }
 

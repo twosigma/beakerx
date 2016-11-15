@@ -112,8 +112,18 @@ var BeakerPageObject = function() {
   };
 
   this.setVimEditMode = function () {
+    var self = this;
     this.setEditMode();
-    element(by.css('#vim-edit-mode-menuitem')).click();
+    element(by.css('#vim-edit-mode-menuitem')).isPresent().then(
+        function(present){
+          element(by.css('#vim-edit-mode-menuitem')).click();
+        },
+        function(error){
+          self.setEditMode();
+          element(by.css('#vim-edit-mode-menuitem')).click();
+        }
+    );
+
   };
 
   this.setSublimeEditMode = function() {

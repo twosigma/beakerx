@@ -60,7 +60,6 @@ describe('Notebook', function() {
       .then(function(present) {
         expect(present).toEqual(true);
       });
-      beakerPO.createScreenshot('notebookOutputGraphs');
       done();
     });
 
@@ -72,7 +71,6 @@ describe('Notebook', function() {
       .then(function(present) {
         expect(present).toEqual(true);
       });
-      beakerPO.createScreenshot('notebookOutputGraphs');
       done();
     });
   });

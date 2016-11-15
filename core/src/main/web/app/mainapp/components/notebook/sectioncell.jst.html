@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div ng-class="{branch: isBranch(), leaf: isLeaf()}">
+<div ng-class="{branch: isBranch(), leaf: isLeaf(), 'section-error': cellmodel.isError && !isShowChildren()}">
   <div ng-hide='cellmodel.hideTitle'>
     <div class='section-connector' ng-hide="!isAntecedentSectionSiblingPrimogeniture()"></div>
     <span class='bksectiontoggleplus section-toggle' ng-click='toggleShowChildren()' ng-hide='isShowChildren()'>

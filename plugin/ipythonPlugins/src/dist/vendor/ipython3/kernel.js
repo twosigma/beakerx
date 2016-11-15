@@ -7,7 +7,7 @@ define('ipython3_kernel', [
     'ipython3_comm',
     'ipython3_serialize',
     'ipython3_initwidgets'
-], function(IPython3, utils, comm, serialize, widgetmanager) {
+], function(IPython, utils, comm, serialize, widgetmanager) {
     "use strict";
 
     /**
@@ -31,7 +31,7 @@ define('ipython3_kernel', [
 
         this.kernel_service_url = kernel_service_url;
         this.kernel_url = null;
-        this.ws_url = ws_url || IPython3.utils.get_body_data("wsUrl");
+        this.ws_url = ws_url || IPython.utils.get_body_data("wsUrl");
         if (!this.ws_url) {
             // trailing 's' in https will become wss for secure web sockets
             this.ws_url = location.protocol.replace('http', 'ws') + "//" + location.host;
@@ -1045,7 +1045,7 @@ define('ipython3_kernel', [
     };
 
     // Backwards compatability.
-    IPython3.Kernel = Kernel;
+    IPython.Kernel = Kernel;
 
     return {'Kernel': Kernel};
 });

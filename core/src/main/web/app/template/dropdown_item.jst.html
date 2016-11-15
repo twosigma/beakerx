@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<li ng-hide='item.locked() === true' ng-class="getItemClass(item)">
+<li ng-hide='item.locked() === true || getName(item) === ""' ng-class="getItemClass(item)">
   <span ng-if="hasCustomMarkup(item)" ng-bind-html="getCustomMarkup(item)"></span>
   <a href="#"
      tabindex="-1"

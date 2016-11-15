@@ -16,12 +16,20 @@
 
 package com.twosigma.beaker.chart;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 
 public class Chart extends ObservableChart{
   protected int initWidth  = 640;
   protected int initHeight = 480;
+  protected List<String> customStyles = new ArrayList();
+  protected Map<String,String> elementStyles = new HashMap<>();
+
   protected String  title;
   protected Boolean showLegend;
   protected boolean        useToolTip     = true;
@@ -89,5 +97,57 @@ public class Chart extends ObservableChart{
   public Chart setLegendLayout(LegendLayout legendLayout) {
     this.legendLayout = legendLayout;
     return this;
+  }
+  
+  public List<String> getCustomStyles() {
+    return customStyles;
+  }
+
+  public void setCustomStyles(List<String> customStyle) {
+    this.customStyles = customStyle;
+  }
+
+  public String getLabelStyle() {
+      return this.elementStyles.get(".plot-label");
+  }
+  
+  public void setLabelStyle(String style) {
+      this.elementStyles.put(".plot-label", style);
+  }
+  
+  public String getLabelXStyle() {
+      return this.elementStyles.get(".plot-label-x");
+  }
+  
+  public void setLabelXStyle(String style) {
+      this.elementStyles.put(".plot-label-x", style);
+  }
+  
+  public String getLabelYStyle() {
+      return this.elementStyles.get(".plot-label-y");
+  }
+  
+  public void setLabelYStyle(String style) {
+      this.elementStyles.put(".plot-label-y", style);
+  }
+
+  public String getGridLineStyle() {
+      return this.elementStyles.get(".plot-gridline");
+  }
+
+  public void setGridLineStyle(String style) {
+      this.elementStyles.put(".plot-gridline", style);
+  }
+  
+  public String getTitleStyle() {
+      return this.elementStyles.get(".plot-title");
+  }
+
+  public void setTitleStyle(String style) {
+      this.elementStyles.put(".plot-title", style);
+  }
+  
+  public Map<String,String> getElementStyles() {
+      return this.elementStyles;
   }
 }

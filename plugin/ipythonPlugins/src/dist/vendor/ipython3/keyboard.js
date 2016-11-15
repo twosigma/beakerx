@@ -11,7 +11,7 @@
 define('ipython3_keyboard', [
     'ipython3_namespace',
     'ipython3_utils'
-], function(IPython3, utils) {
+], function(IPython, utils) {
     "use strict";
 
 
@@ -446,7 +446,7 @@ define('ipython3_keyboard', [
     };
 
     // For backwards compatibility.
-    IPython3.keyboard = keyboard;
+    IPython.keyboard = keyboard;
 
     return keyboard;
 });

@@ -33,7 +33,7 @@ describe('SQL Tutorial', function () {
     });
 
     function checkDataTablesScrollHeadById(idCell){
-        browser.wait(beakerPO.EC.presenceOf(beakerPO.getDataTablesScrollHeadByIdCell(idCell)), 10000).then(
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getDataTablesScrollHeadByIdCell(idCell)), 60000).then(
             function(result){ return true;},
             function(error){
                 expect(error).toBe('scrollHead is present (' + idCell  +')');

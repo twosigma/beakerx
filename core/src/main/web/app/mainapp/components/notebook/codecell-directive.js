@@ -143,7 +143,10 @@
             type = $scope.cellmodel.output.result.payload.innertype;
           }
 
-          return type == 'Error';
+          var isError = type === 'Error';
+          $scope.cellmodel.isError = isError;
+
+          return isError;
         };
 
         $scope.isShowInput = function() {
@@ -476,6 +479,35 @@
         $scope.cellmenu.changeSortOrder({
           name: "Publish...",
           sortorder: 170
+        });
+
+        var getElapsedTimeString = function() {
+          var elapsedTime = $scope.cellmodel.output.elapsedTime;
+          if (_.isNumber(elapsedTime) && !$scope.hasOutput()) {
+            return "Elapsed time: " + bkUtils.formatTimeString(elapsedTime);
+          }
+          return '';
+        };
+
+        $scope.cellmenu.addItem({
+          name: getElapsedTimeString,
+          sortorder: 300,
+          action: null,
+          separator: true
+        });
+
+        var getEvaluationSequenceNumber = function() {
+          var seqNo = $scope.cellmodel.output.evaluationSequenceNumber;
+          if (seqNo && !$scope.hasOutput()) {
+            return "Run Sequence: " + seqNo;
+          }
+          return '';
+        };
+
+        $scope.cellmenu.addItem({
+          name: getEvaluationSequenceNumber,
+          sortorder: 310,
+          action: null
         });
         
         $scope.cellmenu.addSeparator("Cut");

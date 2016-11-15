@@ -75,7 +75,12 @@
           return !$scope.cellmodel.collapsed;
         };
         $scope.getChildren = function() {
-          return notebookCellOp.getChildren($scope.cellmodel.id);
+          var children = notebookCellOp.getChildren($scope.cellmodel.id),
+            childrenError = checkChildrenErrors(children);
+
+          $scope.cellmodel.isError = childrenError;
+
+          return children;
         };
         $scope.resetTitle = function(newTitle) {
           $scope.cellmodel.title = newTitle;
@@ -306,6 +311,12 @@
         $scope.$on('$destroy', function() {
           $scope.bkNotebook.unregisterSectioncell($scope.cellmodel.id);
         });
+
+        function checkChildrenErrors(list) {
+          return list.some(function(item) {
+            return item.isError;
+          });
+        }
 
       }
     };

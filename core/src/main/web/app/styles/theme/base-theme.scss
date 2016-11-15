@@ -385,6 +385,14 @@
     background-color: $std-bg-color;
     border-color: $cell-border;
   }
+
+  .section-error {
+    .bk-section-title,
+    .bk-section-title p,
+    .section-toggle {
+      color: $std-err-color !important;
+    }
+  }
   
   //datatable
 

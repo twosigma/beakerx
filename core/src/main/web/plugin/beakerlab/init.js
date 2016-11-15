@@ -90,8 +90,8 @@
 
   window.beakerRegister.hooks.loadAjax = function(locator) {
     var pieces = locator.split(":");
-    var bl = pieces[4];
-    console.log(bl);
+    pieces.splice(0,5);
+    var bl = pieces.join(':');
     if (bl != undefined) {
       bl = JSON.parse(decodeURIComponent(bl));
       window.beakerRegister.bunsenObject = bl;

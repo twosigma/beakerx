@@ -1576,13 +1576,14 @@
           $('body').css('overflow','hidden');
 
           $(scope.jqsvg).on('mouseleave', function() {
-            if (!down){
+            if (!down || angular.element(scope.jqsvg).find('.heatmap') != undefined){
               scope.zoom = false;
               $('body').css('overflow', 'visible');
             }
           });
           $(document).on('mouseup', function() {
             scope.zoom = false;
+            $('body').css('overflow', 'visible');
           });
         };
         scope.zooming = function(d) {
@@ -1670,8 +1671,6 @@
                   }
                   focus.yspan = focus.yr - focus.yl;
                 }
-                console.log(focus.yspan)
-
               }
               if (mx >= scope.layout.leftLayoutMargin) {
                 // scale x

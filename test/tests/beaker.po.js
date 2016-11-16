@@ -109,7 +109,7 @@ var BeakerPageObject = function() {
           element(by.css('#normal-edit-mode-menuitem')).click();
         },
         function(error){
-          console.log('normal-edit-mode-menuitem error: ' + error);
+          console.log("normal-edit-mode-menuitem hasn't displayed");
           self.setEditMode();
           element(by.css('#normal-edit-mode-menuitem')).click();
         }
@@ -129,7 +129,7 @@ var BeakerPageObject = function() {
           element(by.css('#vim-edit-mode-menuitem')).click();
         },
         function(error){
-          console.log('vim-edit-mode-menuitem error: ' + error);
+          console.log("vim-edit-mode-menuitem hasn't displayed");
           self.setEditMode();
           element(by.css('#vim-edit-mode-menuitem')).click();
         }

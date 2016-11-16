@@ -46,7 +46,7 @@ describe('SQL Tutorial', function () {
         var idCell = "codef4U7zn";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-        checkDataTablesScrollHeadById(idCell)
+        checkDataTablesScrollHeadById(idCell);
         beakerPO.checkDataTableHeadByIdCell(idCell, 'ID\nNAME\nCODE');
         beakerPO.checkDataTableBodyByIdCell(idCell, 5, '0 1001 AliceBlue #F0F8FF');
     });
@@ -60,7 +60,7 @@ describe('SQL Tutorial', function () {
         idCell = "code3jTM1a";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-        checkDataTablesScrollHeadById(idCell)
+        checkDataTablesScrollHeadById(idCell);
         beakerPO.checkDataTableHeadByIdCell(idCell, 'Key\nValue');
         beakerPO.checkDataTableBodyByIdCell(idCell, 3, '0 ID 1003');
     });
@@ -73,7 +73,7 @@ describe('SQL Tutorial', function () {
         idCell = "codeDbiIzh";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-        checkDataTablesScrollHeadById(idCell)
+        checkDataTablesScrollHeadById(idCell);
         beakerPO.checkDataTableHeadByIdCell(idCell, 'ID\nNAME\nCODE');
         beakerPO.checkDataTableBodyByIdCell(idCell, 8, '0 1001 AliceBlue #F0F8FF');
     });
@@ -82,14 +82,14 @@ describe('SQL Tutorial', function () {
         var idCell = "code506tI8";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-        checkDataTablesScrollHeadById(idCell)
+        checkDataTablesScrollHeadById(idCell);
         beakerPO.checkDataTableHeadByIdCell(idCell, 'NAME\nBORN');
         beakerPO.checkDataTableBodyByIdCell(idCell, 4, '0 Jacob Berzelius 1779');
 
         idCell = "codeVDv9Mf";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-        checkDataTablesScrollHeadById(idCell)
+        checkDataTablesScrollHeadById(idCell);
         beakerPO.checkDataTableHeadByIdCell(idCell, 'NAME\nMOLARMASS');
         beakerPO.checkDataTableBodyByIdCell(idCell, 4, '0 Water 18.01');
     });

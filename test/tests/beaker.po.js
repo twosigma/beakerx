@@ -104,11 +104,11 @@ var BeakerPageObject = function() {
   this.setNormalEditMode = function() {
     var self = this;
     this.setEditMode();
-    element(by.css('#normal-edit-mode-menuitem')).isDisplayed().then(
-        function(display){
-          element(by.css('#normal-edit-mode-menuitem')).click();
+    element(by.css('#normal-edit-mode-menuitem')).click().then(
+        function(resolve){
+          return true;
         },
-        function(error){
+        function(reject){
           console.log("normal-edit-mode-menuitem hasn't displayed");
           self.setEditMode();
           element(by.css('#normal-edit-mode-menuitem')).click();
@@ -124,11 +124,11 @@ var BeakerPageObject = function() {
   this.setVimEditMode = function () {
     var self = this;
     this.setEditMode();
-    element(by.css('#vim-edit-mode-menuitem')).isDisplayed().then(
-        function(display){
-          element(by.css('#vim-edit-mode-menuitem')).click();
+    element(by.css('#vim-edit-mode-menuitem')).click().then(
+        function(resolve){
+          return true;
         },
-        function(error){
+        function(reject){
           console.log("vim-edit-mode-menuitem hasn't displayed");
           self.setEditMode();
           element(by.css('#vim-edit-mode-menuitem')).click();

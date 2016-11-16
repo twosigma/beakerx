@@ -68,7 +68,7 @@ define(function(require, exports, module) {
             bkHelper.setupProgressOutput(modelOutput);
             bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/evaluate"), {shellID: self.settings.shellID, code: encodeURIComponent(code)})
             .success(function(ret) {
-                modelOutput.result = JSON.parse(ret);
+                modelOutput.result = ret;
                 bkHelper.refreshRootScope();
                 deferred.resolve(ret);
             }).error(function(xhr, textStatus, error) {

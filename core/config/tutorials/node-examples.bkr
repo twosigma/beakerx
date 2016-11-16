@@ -6,7 +6,7 @@
             "plugin": "HTML",
             "view": {
                 "cm": {
-                    "mode": "htmlmixed"
+                    "mode": "smartHTMLMode"
                 }
             }
         },
@@ -50,7 +50,8 @@
             "title": "Node Server and JavaScript Client",
             "level": 1,
             "evaluatorReader": false,
-            "collapsed": false
+            "collapsed": false,
+            "isError": false
         },
         {
             "id": "markdownLn3DJ5",
@@ -87,11 +88,12 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "result": "server started",
+                "result": "\"server started\"",
                 "height": 36
             },
             "evaluatorReader": true,
-            "lineCount": 11
+            "lineCount": 11,
+            "isError": false
         },
         {
             "id": "codeYLvzUk",
@@ -114,7 +116,8 @@
                 "height": 35
             },
             "evaluatorReader": true,
-            "lineCount": 1
+            "lineCount": 1,
+            "isError": false
         },
         {
             "id": "code5aRHZP",
@@ -150,7 +153,8 @@
                 "height": 36
             },
             "evaluatorReader": true,
-            "lineCount": 17
+            "lineCount": 17,
+            "isError": false
         },
         {
             "id": "sectiontd8GQg",
@@ -158,7 +162,8 @@
             "title": "Chat with Socket.io",
             "level": 1,
             "evaluatorReader": false,
-            "collapsed": false
+            "collapsed": false,
+            "isError": false
         },
         {
             "id": "markdownf1vLqX",
@@ -210,7 +215,8 @@
                 "height": 36
             },
             "evaluatorReader": true,
-            "lineCount": 21
+            "lineCount": 21,
+            "isError": false
         },
         {
             "id": "codeTBLcVV",
@@ -235,7 +241,8 @@
             },
             "evaluatorReader": true,
             "lineCount": 2,
-            "tags": "result-container"
+            "tags": "result-container",
+            "isError": false
         },
         {
             "id": "codeyG2ERW",
@@ -289,11 +296,12 @@
                 "state": {},
                 "selectedType": "Text",
                 "height": 36,
-                "result": "undefined"
+                "result": "\"undefined\""
             },
             "evaluatorReader": true,
             "lineCount": 39,
-            "initialization": true
+            "initialization": true,
+            "isError": false
         },
         {
             "id": "sectionlDfyQl",
@@ -301,7 +309,8 @@
             "title": "Autotranslation examples",
             "level": 1,
             "evaluatorReader": false,
-            "collapsed": false
+            "collapsed": false,
+            "isError": false
         },
         {
             "id": "markdownF0TJ5D",
@@ -405,7 +414,8 @@
                 "height": 165
             },
             "evaluatorReader": true,
-            "lineCount": 3
+            "lineCount": 3,
+            "isError": false
         },
         {
             "id": "codetbGdCk",
@@ -513,7 +523,8 @@
                 "height": 231
             },
             "evaluatorReader": true,
-            "lineCount": 3
+            "lineCount": 3,
+            "isError": false
         },
         {
             "id": "codeq0vt2s",
@@ -523,19 +534,20 @@
                 "body": [
                     "beaker.get('squares').then(function (squares) {",
                     "  return squares.map(function (s) {",
-                    "    return s[0] + ' * ' + s[0] + ' == ' + s[1];",
-                    "  }).join('\\n');",
+                    "    return s[0] + '^2 = ' + s[1];",
+                    "  }).join(', ');",
                     "})"
                 ]
             },
             "output": {
                 "state": {},
-                "result": "1 * 1 == 1\n2 * 2 == 4\n3 * 3 == 9\n4 * 4 == 16\n5 * 5 == 25\n6 * 6 == 36\n6 * 6 == 36\n7 * 7 == 49",
+                "result": "\"1^2 = 1, 2^2 = 4, 3^2 = 9, 4^2 = 16, 5^2 = 25, 6^2 = 36, 6^2 = 36, 7^2 = 49\"",
                 "selectedType": "Text",
-                "height": 148
+                "height": 36
             },
             "evaluatorReader": true,
-            "lineCount": 5
+            "lineCount": 5,
+            "isError": false
         }
     ],
     "namespace": {

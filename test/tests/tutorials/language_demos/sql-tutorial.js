@@ -36,8 +36,10 @@ describe('SQL Tutorial', function () {
         browser.wait(beakerPO.EC.presenceOf(beakerPO.getDataTablesScrollHeadByIdCell(idCell)), 60000).then(
             function(result){ return true;},
             function(error){
-                expect(error).toBe('scrollHead is present (' + idCell  +')');
-                beakerPO.createScreenshot('sqlError');
+                console.log("dataTable hasn't displayed");
+                beakerPO.createScreenshot('errorSqlTable');
+                beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+                browser.wait(beakerPO.EC.presenceOf(beakerPO.getDataTablesScrollHeadByIdCell(idCell)), 60000);
             }
         );
     }

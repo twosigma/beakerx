@@ -2108,11 +2108,16 @@
           });
 
           // Custom styles added by user
-          var cellModel = scope.getCellModel();
-          var extraStyles = [];
+          var cellModel = scope.getCellModel(),
+            extraStyles = [],
+            styleString = '';
           if(cellModel.element_styles) {
               for(var style in cellModel.element_styles) {
-                extraStyles.push(style + ' {' + cellModel.element_styles[style] + '}');
+                styleString = cellModel.element_styles[style];
+                if (style === '.plot-title') {
+                  styleString = plotUtils.adjustStyleForSvg(styleString);
+                }
+                extraStyles.push(style + ' {' + styleString + '}');
               }
           }
 

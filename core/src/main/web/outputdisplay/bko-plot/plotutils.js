@@ -635,13 +635,24 @@
       },
 
       addTitleToSvg: function(svg, jqtitle, titleSize) {
+        var title = jqtitle.clone();
+        title.find('style').remove();
         d3.select(svg).insert("text", "g")
           .attr("id", jqtitle.attr("id"))
           .attr("class", jqtitle.attr("class"))
           .attr("x", titleSize.width / 2)
           .attr("y", titleSize.height)
           .style("text-anchor", "middle")
-          .text(jqtitle.text());
+          .text(title.text());
+      },
+
+      adjustStyleForSvg: function(styleString) {
+        var colorArr = styleString.match(/color:(.*)\;/g);
+        if (colorArr && colorArr.length) {
+          var fill = colorArr[0].replace('color:', 'fill:');
+          styleString += fill;
+        }
+        return styleString;
       },
 
       drawPng: function(canvas, imgsrc, fileName) {

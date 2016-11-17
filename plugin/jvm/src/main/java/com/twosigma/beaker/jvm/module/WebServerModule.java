@@ -34,7 +34,6 @@ import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
 import javax.servlet.ServletException;
 
@@ -98,7 +97,6 @@ public class WebServerModule extends AbstractModule {
     servletHandler.setInitParameter("maxCacheSize", "0");
     servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");
 
-    WebSocketServerContainerInitializer.configureContext(servletHandler);
     server.setHandler(servletHandler);
 
     return server;

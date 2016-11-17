@@ -71,8 +71,8 @@ define(function(require, exports, module) {
                 modelOutput.result = JSON.parse(ret);
                 bkHelper.refreshRootScope();
                 deferred.resolve(ret);
-            }).error(function(xhr, textStatus, error) {
-              var errorText = xhr.status !== 502 ? xhr.responseText : error;
+            }).error(function(xhr, textStatus, error, config) {
+              var errorText = xhr.status !== 502 ? JSON.parse(xhr) : error;
               modelOutput.result = {
                     type: "BeakerDisplay",
                     innertype: "Error",

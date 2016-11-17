@@ -37,7 +37,7 @@ public abstract class Updater {
 
   final protected void deliverUpdate(Object update) {
     try{
-      this.session.deliver(this.localSession, this.channelId, update, null);
+      this.session.deliver(this.localSession, this.channelId, update);
     }catch (Exception e){
       deliverError(e);
     }
@@ -45,6 +45,6 @@ public abstract class Updater {
 
   private void deliverError(Exception e) {
     SimpleEvaluationObject error = SimpleEvaluationObject.createError(ExceptionUtils.getStackTrace(e));
-    this.session.deliver(this.localSession, this.channelId, error, null);
+    this.session.deliver(this.localSession, this.channelId, error);
   }
 }

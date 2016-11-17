@@ -23,8 +23,9 @@ import com.twosigma.beaker.jvm.rest.ReadyRest;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
+import org.cometd.server.Jackson1JSONContextServer;
+
 import java.util.HashMap;
-import org.cometd.server.JacksonJSONContextServer;
 
 /**
  * The module for configuring servlets, REST binding.
@@ -45,7 +46,7 @@ public class URLConfigModule extends ServletModule {
     bind(GuiceCometdServlet.class);
     serve("/cometd/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
       {
-        put("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
+        put("jsonContext", Jackson1JSONContextServer.class.getCanonicalName());
       }
     });
 

@@ -126,7 +126,7 @@ public class NamespaceService {
     }
     getNames(session).add(name);
     addSocketListener(session);
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     NamespaceBinding binding = getHandoff(session).take(); // blocks
     if (binding.getError() != null) {
       throw new RuntimeException(binding.getError());
@@ -154,7 +154,7 @@ public class NamespaceService {
     }
     getNames(session).add(name);
     addSocketListener(session);
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     if (sync) {
       NamespaceBinding binding = getHandoff(session).take(); // blocks
       if (binding.getError() != null) {

@@ -90,7 +90,7 @@ public class NotebookControlService {
       logger.warn("NotebookControlService.evaluate(): channel not found for session {}", session);
       return null;
     }
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     NotebookControlReply reply = getHandoff(session).take(); // blocks
     return reply.getValue();
   }
@@ -106,7 +106,7 @@ public class NotebookControlService {
       logger.warn("NotebookControlService.evaluateCode(): channel not found for session {}", session);
       return null;
     }
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     NotebookControlReply reply = getHandoff(session).take(); // blocks
     return reply.getValue();
   }
@@ -121,7 +121,7 @@ public class NotebookControlService {
       logger.warn("NotebookControlService.showStatus(): channel not found for session {}", session);
       return null;
     }
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     NotebookControlReply reply = getHandoff(session).take(); // blocks
     return reply.getValue();
   }
@@ -136,7 +136,7 @@ public class NotebookControlService {
       logger.warn("NotebookControlService.clearStatus(): channel not found for session {}", session);
       return null;
     }
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     NotebookControlReply reply = getHandoff(session).take(); // blocks
     return reply.getValue();
   }
@@ -151,7 +151,7 @@ public class NotebookControlService {
       logger.warn("NotebookControlService.showTransientStatus(): channel not found for session {}", session);
       return null;
     }
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     NotebookControlReply reply = getHandoff(session).take(); // blocks
     return reply.getValue();
   }
@@ -165,7 +165,7 @@ public class NotebookControlService {
       logger.warn("NotebookControlService.getEvaluators(): channel not found for session {}", session);
       return null;
     }
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     NotebookControlReply reply = getHandoff(session).take(); // blocks
     return reply.getValue();
   }
@@ -180,7 +180,7 @@ public class NotebookControlService {
       logger.warn("NotebookControlService.getCodeCells(): channel not found for session {}", session);
       return null;
     }
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     NotebookControlReply reply = getHandoff(session).take(); // blocks
     return reply.getValue();
   }
@@ -196,7 +196,7 @@ public class NotebookControlService {
       logger.warn("NotebookControlService.setCodeCellBody(): channel not found for session {}", session);
       return null;
     }
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     NotebookControlReply reply = getHandoff(session).take(); // blocks
     return reply.getValue();
   }
@@ -212,7 +212,7 @@ public class NotebookControlService {
       logger.warn("NotebookControlService.setCodeCellEvaluator(): channel not found for session {}", session);
       return null;
     }
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     NotebookControlReply reply = getHandoff(session).take(); // blocks
     return reply.getValue();
   }
@@ -228,7 +228,7 @@ public class NotebookControlService {
       logger.warn("NotebookControlService.setCodeCellTags(): channel not found for session {}", session);
       return null;
     }
-    channel.publish(this.localSession, data, null);
+    channel.publish(this.localSession, data);
     NotebookControlReply reply = getHandoff(session).take(); // blocks
     return reply.getValue();
   }

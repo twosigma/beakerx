@@ -18,11 +18,11 @@ var BeakerPageObject = require('./beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('notebook', function() {
+describe('Notebook', function() {
 
   function evalInLanguage(language, code, expected, done) {
     beakerPO.activateLanguage(language);
-    beakerPO.insertCellOfType(language);
+    beakerPO.insertCellByLanguage(language);
     beakerPO.setCellInput(code);
     beakerPO.evaluateCell();
     beakerPO.waitForCellOutput();
@@ -45,7 +45,7 @@ describe('notebook', function() {
       beakerPO.notebookMenu.click();
       beakerPO.languageManagerMenuItem.click();
       beakerPO.activateLanguage('Groovy');
-      beakerPO.insertCellOfType('Groovy');
+      beakerPO.insertCellByLanguage('Groovy');
       beakerPO.setCellInput('new Plot()')
       beakerPO.evaluateCell();
     });
@@ -60,7 +60,6 @@ describe('notebook', function() {
       .then(function(present) {
         expect(present).toEqual(true);
       });
-      beakerPO.createScreenshot('notebookOutputGraphs');
       done();
     });
 
@@ -72,7 +71,6 @@ describe('notebook', function() {
       .then(function(present) {
         expect(present).toEqual(true);
       });
-      beakerPO.createScreenshot('notebookOutputGraphs');
       done();
     });
   });

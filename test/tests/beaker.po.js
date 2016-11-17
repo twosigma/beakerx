@@ -102,8 +102,19 @@ var BeakerPageObject = function() {
   };
 
   this.setNormalEditMode = function() {
+    var self = this;
     this.setEditMode();
-    element(by.css('#normal-edit-mode-menuitem')).click();
+    element(by.css('#normal-edit-mode-menuitem')).click().then(
+        function(resolve){
+          return true;
+        },
+        function(reject){
+          console.log("normal-edit-mode-menuitem hasn't displayed");
+          self.createScreenshot('errorSetEditMode');
+          browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
+          element(by.css('#normal-edit-mode-menuitem')).click();
+        }
+    );
   };
 
   this.setEmacsEditMode = function() {
@@ -112,8 +123,20 @@ var BeakerPageObject = function() {
   };
 
   this.setVimEditMode = function () {
+    var self = this;
     this.setEditMode();
-    element(by.css('#vim-edit-mode-menuitem')).click();
+    element(by.css('#vim-edit-mode-menuitem')).click().then(
+        function(resolve){
+          return true;
+        },
+        function(reject){
+          console.log("vim-edit-mode-menuitem hasn't displayed");
+          self.createScreenshot('errorSetEditMode');
+          browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
+          element(by.css('#vim-edit-mode-menuitem')).click();
+        }
+    );
+
   };
 
   this.setSublimeEditMode = function() {
@@ -220,6 +243,12 @@ var BeakerPageObject = function() {
       .then(function(){ browser.wait(self.EC.visibilityOf(self.cellEvaluatorMenuItem(language)), 10000)})
       .then(function(){ console.log('cellEvaluatorMenuItem is visible');
         self.cellEvaluatorMenuItem(language).click();});
+  };
+
+  this.insertCellByLanguage = function(language) {
+    var self = this;
+    this.getCellEvaluatorMenu().click()
+        .then(function(){ self.cellEvaluatorMenuItem(language).click(); });
   };
 
   this.activateCellEvaluatorMenu = function(language) {

@@ -28,6 +28,7 @@ dependencies {
   compile group: 'org.cometd.java', name: 'cometd-java-server', version: '3.0.10'
   compile group: 'org.cometd.java', name: 'cometd-java-websocket-javax-server', version: '3.0.10'
   compile group: 'org.cometd.java', name: 'cometd-java-annotations', version: '3.0.10'
+  compile group: 'org.eclipse.jetty.websocket', name: 'javax-websocket-server-impl', version: '9.2.19.v20160908'
 }
 
 compileJava {

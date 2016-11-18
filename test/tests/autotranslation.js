@@ -24,11 +24,6 @@ describe('autotranslation', function() {
     browser.get(beakerPO.baseURL).then(done);
   });
 
-  afterEach(function(done){
-    beakerPO.createScreenshot('autotranslation');
-    done();
-  });
-
   it('handles JVM notebook', function() {
     browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:..%2Ftest%2Fnotebooks%2Fjvm-autotranslation-test.bkr&readOnly=true");
     beakerPO.waitForInstantiationCells('waitForInstantiationCell');

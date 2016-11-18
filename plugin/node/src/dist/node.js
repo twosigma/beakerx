@@ -69,16 +69,16 @@ define(function(require, exports, module) {
             bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/evaluate"), {shellID: self.settings.shellID, code: encodeURIComponent(code)})
             .success(function(ret) {
 
-              if(!("undefined" == ret || '"undefined"' == ret || "'undefined'" == ret)){
-                modelOutput.result = ret;
-                deferred.resolve(ret);
-              }else{
+              if("undefined" == ret || '"undefined"' == ret || "'undefined'" == ret){
                 modelOutput.result = {
                     type: "HiddenOutputCell",
                     innertype: "Hidden",
                     object: undefined
                 };
                 deferred.reject(ret);
+              }else{
+                modelOutput.result = ret;
+                deferred.resolve(ret);
               }
 
               bkHelper.refreshRootScope();

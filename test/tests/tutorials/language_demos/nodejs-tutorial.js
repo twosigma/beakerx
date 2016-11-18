@@ -38,7 +38,7 @@ describe('Node.js Tutorial', function () {
             var idCell = "codeuBtnh9";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text', 'nodejsStart', 60000);
-            beakerPO.checkCellOutputSubTextByIdCell(idCell, 'server started', 0, 14);
+            beakerPO.checkCellOutputSubTextByIdCell(idCell, '"server started"', 0, 16);
         });
 
         it('Check client', function(){

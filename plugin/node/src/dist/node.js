@@ -62,15 +62,28 @@ define(function(require, exports, module) {
             }
             checkNodeServerRunning();
         },
-        evaluate: function (code, modelOutput) {
+        evaluate: function (code, modelOutput, refreshObj) {
           var deferred = Q.defer();
             var self = this;
             bkHelper.setupProgressOutput(modelOutput);
             bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/evaluate"), {shellID: self.settings.shellID, code: encodeURIComponent(code)})
             .success(function(ret) {
+
+              if(!("undefined" == ret || '"undefined"' == ret || "'undefined'" == ret)){
                 modelOutput.result = ret;
-                bkHelper.refreshRootScope();
                 deferred.resolve(ret);
+              }else{
+                modelOutput.result = {
+                    type: "HiddenOutputCell",
+                    innertype: "Hidden",
+                    object: undefined
+                };
+                deferred.reject(ret);
+              }
+
+              bkHelper.refreshRootScope();
+              refreshObj.outputRefreshed();
+              
             }).error(function(xhr, textStatus, error) {
               var errorText = xhr.status !== 502 ? xhr.responseText : error;
               modelOutput.result = {

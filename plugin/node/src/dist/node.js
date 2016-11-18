@@ -73,12 +73,18 @@ define(function(require, exports, module) {
                 deferred.resolve(ret);
             }).error(function(xhr, textStatus, error, config) {
               var errorText = xhr.status !== 502 ? JSON.parse(xhr) : error;
+              
+              var shortErrorEnd = errorText.indexOf("\n");
+              if (shortErrorEnd < 0) { 
+                shortErrorEnd = errorText.length; 
+              }
+              var shortError = errorText.substring(0, shortErrorEnd + 1);
               modelOutput.result = {
-                    type: "BeakerDisplay",
-                    innertype: "Error",
-                    object: errorText
-                };
-                deferred.reject(errorText);
+                  type: "BeakerDisplay",
+                  innertype: "Error",
+                  object :[ shortError, errorText ]
+              };
+              deferred.reject(errorText);
             });
           return deferred.promise;
         },

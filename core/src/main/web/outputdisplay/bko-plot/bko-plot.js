@@ -1576,7 +1576,7 @@
           $('body').css('overflow','hidden');
 
           $(scope.jqsvg).on('mouseleave', function() {
-            if (!down || angular.element(scope.jqsvg).find('.heatmap') != undefined){
+            if (!down || angular.element(scope.jqsvg).find('.heatmap').size() > 0 ){
               scope.zoom = false;
               $('body').css('overflow', 'visible');
             }

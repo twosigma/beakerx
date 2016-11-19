@@ -71,14 +71,15 @@ define(function(require, exports, module) {
                 modelOutput.result = ret;
                 bkHelper.refreshRootScope();
                 deferred.resolve(ret);
-            }).error(function(xhr, textStatus, error) {
-              var errorText = xhr.status !== 502 ? xhr.responseText : error;
+            }).error(function(xhr, textStatus, error, config) {
+              var errorText = xhr.status !== 502 ? JSON.parse(xhr) : error;
+              var errors = errorText.split(/\r?\n/)
               modelOutput.result = {
-                    type: "BeakerDisplay",
-                    innertype: "Error",
-                    object: errorText
-                };
-                deferred.reject(errorText);
+                  type: "BeakerDisplay",
+                  innertype: "Error",
+                  object: errors
+              };
+              deferred.reject(errorText);
             });
           return deferred.promise;
         },

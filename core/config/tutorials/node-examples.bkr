@@ -89,7 +89,7 @@
                 "state": {},
                 "selectedType": "Text",
                 "result": "\"server started\"",
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 11,
@@ -113,7 +113,7 @@
                     "innertype": "Html",
                     "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<div id=\"message\">Hello from Node 101</div>"
                 },
-                "height": 35
+                "height": 55
             },
             "evaluatorReader": true,
             "lineCount": 1,
@@ -150,7 +150,7 @@
                 "result": "14.44ms per HTTP call",
                 "pluginName": "JavaScript",
                 "elapsedTime": 1514,
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 17,
@@ -204,15 +204,15 @@
                     "  });",
                     "});",
                     "",
-                    "var closable = http.listen(7788);",
+                    "var closable = http.listen(7789);",
                     "'running'"
                 ]
             },
             "output": {
                 "state": {},
-                "result": "running",
+                "result": "\"running\"",
                 "selectedType": "Text",
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 21,
@@ -236,8 +236,8 @@
                     "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<iframe src=\"http://localhost:7788\" width=\"600\" height=\"400\"></iframe>\n<iframe src=\"http://localhost:7788\" width=\"600\" height=\"400\"></iframe>"
                 },
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 0,
-                "height": 423
+                "elapsedTime": 11,
+                "height": 443
             },
             "evaluatorReader": true,
             "lineCount": 2,
@@ -295,7 +295,7 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "height": 36,
+                "height": 56,
                 "result": "\"undefined\""
             },
             "evaluatorReader": true,
@@ -411,7 +411,7 @@
                     ]
                 },
                 "selectedType": "Table",
-                "height": 165
+                "height": 210
             },
             "evaluatorReader": true,
             "lineCount": 3,
@@ -499,10 +499,6 @@
                             36
                         ],
                         [
-                            6,
-                            36
-                        ],
-                        [
                             7,
                             49
                         ]
@@ -519,8 +515,8 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 27,
-                "height": 231
+                "elapsedTime": 154,
+                "height": 264
             },
             "evaluatorReader": true,
             "lineCount": 3,
@@ -541,9 +537,9 @@
             },
             "output": {
                 "state": {},
-                "result": "\"1^2 = 1, 2^2 = 4, 3^2 = 9, 4^2 = 16, 5^2 = 25, 6^2 = 36, 6^2 = 36, 7^2 = 49\"",
+                "result": "\"1^2 = 1, 2^2 = 4, 3^2 = 9, 4^2 = 16, 5^2 = 25, 6^2 = 36, 7^2 = 49\"",
                 "selectedType": "Text",
-                "height": 36
+                "height": 56
             },
             "evaluatorReader": true,
             "lineCount": 5,
@@ -574,10 +570,6 @@
                 [
                     5,
                     25
-                ],
-                [
-                    6,
-                    36
                 ],
                 [
                     6,

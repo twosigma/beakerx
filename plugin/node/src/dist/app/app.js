@@ -92,7 +92,7 @@ function execute(code, shell, response) {
         if(transformation.isCircularObject(result)) {
           transformed = "ERROR: circular objects are not supported";
         } else {
-          if(undefined == result || "undefined" == result || '"undefined"' == result || "'undefined'" == result){
+          if(undefined == result){
             transformed = null;
           }else{
             transformed = transformation.transform(result);
@@ -147,9 +147,6 @@ function processCode(code, shell) {
   var result;
   try {
     result = vm.runInContext(code, shell.context);
-    if (typeof result === "undefined") {
-      result = 'undefined';
-    }
     returnValue = {
       evaluation: result,
       processed: true

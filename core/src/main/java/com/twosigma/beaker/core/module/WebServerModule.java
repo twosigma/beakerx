@@ -97,9 +97,8 @@ public class WebServerModule extends AbstractModule {
     servletHandler.setInitParameter("maxCacheSize", "0");
     servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");
 
-    WebSocketServerContainerInitializer.configureContext(servletHandler);
-
     server.setHandler(servletHandler);
+    WebSocketServerContainerInitializer.configureContext(servletHandler);
 
     return server;
   }

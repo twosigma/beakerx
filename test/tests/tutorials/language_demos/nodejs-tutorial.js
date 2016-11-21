@@ -16,7 +16,6 @@
 
 
 var BeakerPageObject = require('../../beaker.po.js');
-var path = require('path');
 var beakerPO;
 
 describe('Node.js Tutorial', function () {
@@ -60,6 +59,44 @@ describe('Node.js Tutorial', function () {
                 .then(function(value){
                     expect(value.indexOf('Hello from Node')).not.toBe(-1);
                 });
+        });
+
+
+
+        describe('Chat with Socket.io', function(){
+
+            it('Should run server localhost:7788', function(){
+                idCell = "codeCPioL1";
+                beakerPO.scrollToBkCellByIdCell(idCell);
+                beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+                beakerPO.checkCellOutputSubTextByIdCell(idCell, '"running"', 0, 9);
+            });
+
+            it('Should display two frames for chat', function(){
+                idCell = "codeTBLcVV";
+                beakerPO.scrollToBkCellByIdCell(idCell);
+                beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Html');
+                expect(beakerPO.getCodeCellOutputByIdCell(idCell).all(by.css('iframe')).count()).toBe(2);
+            });
+
+            it('Should display messages in chat', function(){
+                browser.switchTo().frame(element.all(by.tagName('iframe')).get(0).getWebElement());
+                browser.ignoreSynchronization = true; //as iframe non-angular, tried this approach as well.
+                element(by.css('input#m')).click();
+                browser.actions().sendKeys("hi").perform();
+                element(by.css('button')).click();
+                expect(element.all(by.css('#messages > li')).get(0).getText()).toBe('me: hi');
+                browser.switchTo().defaultContent();
+
+                browser.switchTo().frame(element.all(by.tagName('iframe')).get(1).getWebElement());
+                browser.ignoreSynchronization = true;
+                element(by.css('input#m')).click();
+                browser.actions().sendKeys("test").perform();
+                element(by.css('button')).click();
+                expect(element.all(by.css('#messages > li')).get(0).getText()).toBe('user1: hi');
+                expect(element.all(by.css('#messages > li')).get(1).getText()).toBe('me: test');
+                browser.switchTo().defaultContent();
+            });
         });
 
     });

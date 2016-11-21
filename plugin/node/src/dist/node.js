@@ -69,7 +69,7 @@ define(function(require, exports, module) {
             bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/evaluate"), {shellID: self.settings.shellID, code: encodeURIComponent(code)})
             .success(function(ret) {
 
-              if("undefined" == ret || '"undefined"' == ret || "'undefined'" == ret){
+              if("" == ret){
                 modelOutput.result = {
                     type: "HiddenOutputCell",
                     innertype: "Hidden",
@@ -85,13 +85,14 @@ define(function(require, exports, module) {
               refreshObj.outputRefreshed();
               
             }).error(function(xhr, textStatus, error) {
-              var errorText = xhr.status !== 502 ? xhr.responseText : error;
+              var errorText = xhr.status !== 502 ? xhr : error;
+              var errors = errorText.split(/\r?\n/)
               modelOutput.result = {
-                    type: "BeakerDisplay",
-                    innertype: "Error",
-                    object: errorText
-                };
-                deferred.reject(errorText);
+                  type: "BeakerDisplay",
+                  innertype: "Error",
+                  object: errors
+              };
+              deferred.reject(errorText);
             });
           return deferred.promise;
         },

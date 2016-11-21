@@ -93,6 +93,7 @@ describe('Node.js Tutorial', function () {
                 expect(element.all(by.css('#messages > li')).get(0).getText()).toBe('user1: hi');
                 expect(element.all(by.css('#messages > li')).get(1).getText()).toBe('me: test');
                 browser.switchTo().defaultContent();
+                browser.ignoreSynchronization = false;
             });
         });
 

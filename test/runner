@@ -24,6 +24,7 @@ import signal
 # make sure everything is properly installed
 os.system("npm install")
 os.system("node_modules/protractor/bin/webdriver-manager update");
+os.system("npm install socket.io");
 
 with open(os.devnull, "w") as fnull:
     webcontrol = subprocess.Popen(["node_modules/protractor/bin/webdriver-manager", "start"], stdout=fnull, stderr=fnull, preexec_fn=os.setsid);

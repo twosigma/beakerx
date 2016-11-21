@@ -24,6 +24,7 @@ import urllib2
 os.system("npm install")
 os.chdir("./node_modules/protractor/bin")
 os.system("node webdriver-manager update");
+os.system("npm install socket.io");
 
 with open(os.devnull, "w") as fnull:
     webcontrol = subprocess.Popen(["node", "webdriver-manager", "start"], stdout=fnull, stderr=fnull);

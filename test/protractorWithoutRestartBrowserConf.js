@@ -32,7 +32,7 @@ var config = {
         displayStacktrace: 'specs'
     }));
   },
-  specs: [
+  specs: [            /*
     'tests/tutorials/groovy_plotting/category-plot-tutorial.js',
     'tests/tutorials/groovy_plotting/charting-tutorial.js',
     'tests/tutorials/groovy_plotting/heatmap-tutorial.js',
@@ -58,7 +58,7 @@ var config = {
     'tests/tutorials/feature_overview/codeReuse-tutorial.js',
     'tests/tutorials/feature_overview/beakerObject-tutorial.js',
     'tests/tutorials/feature_overview/outputContainer-tutorial.js',
-    'tests/tutorials/feature_overview/bigIntegerTables-tutorial.js'
+    'tests/tutorials/feature_overview/bigIntegerTables-tutorial.js'   */
   ]
 };
 

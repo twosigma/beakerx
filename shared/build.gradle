@@ -20,9 +20,11 @@ repositories {
 }
 
 dependencies {
+  compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
   compile group: 'javax.websocket', name: 'javax.websocket-api', version: '1.0'
   compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.13'
-  compile group: 'org.apache.cxf', name: 'cxf-bundle-jaxrs', version: '2.7.7'
+  compile group: 'org.apache.cxf', name: 'cxf-common-utilities', version: '2.5.11'
+  compile group: 'javax.mail', name: 'javax.mail-api', version: '1.5.6'
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
   compile group: 'com.sun.jersey.contribs', name: 'jersey-guice', version: '1.17.1'
   compile group: 'org.cometd.java', name: 'cometd-java-server', version: '3.0.10'

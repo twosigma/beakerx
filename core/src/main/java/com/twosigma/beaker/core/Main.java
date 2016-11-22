@@ -221,7 +221,7 @@ public class Main {
         new GeneralUtilsModule(),
         new WebServerModule(),
         new SerializerModule(),
-        new GuiceCometdModule(),
+        new GuiceCometdModule(beakerCorePref.getAuthToken()),
         new URLConfigModule(beakerCorePref));
 
     PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);

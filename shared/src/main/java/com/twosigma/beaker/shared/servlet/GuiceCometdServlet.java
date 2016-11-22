@@ -16,6 +16,8 @@
 package com.twosigma.beaker.shared.servlet;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -24,8 +26,12 @@ import com.google.inject.Singleton;
 import org.cometd.annotation.AnnotationCometDServlet;
 import org.cometd.annotation.ServerAnnotationProcessor;
 import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ServerTransport;
 import org.cometd.server.BayeuxServerImpl;
+import org.cometd.server.transport.AbstractHttpTransport;
 import org.eclipse.jetty.util.Loader;
+
+import java.io.IOException;
 
 /**
  * Taken from

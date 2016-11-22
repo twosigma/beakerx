@@ -33,15 +33,28 @@ import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.server.AbstractServerTransport;
 import org.cometd.server.BayeuxServerImpl;
 import org.cometd.server.Jackson1JSONContextServer;
+import org.cometd.server.transport.JSONPTransport;
+import org.cometd.server.transport.JSONTransport;
 import org.cometd.websocket.server.WebSocketTransport;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import javax.servlet.ServletContext;
 
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
+
 // Should load from cometd-contrib
 public class GuiceCometdModule extends AbstractModule {
-  
+
+  private String authToken;
+
+  public GuiceCometdModule() {
+  }
+
+  public GuiceCometdModule(String authToken) {
+    this.authToken = authToken;
+  }
+
   @Override
   protected final void configure() {
     
@@ -119,14 +132,14 @@ public class GuiceCometdModule extends AbstractModule {
      * Set the max idle time.
      * @param timeMs the max idle time in MS. Timeout <= 0 implies an infinite timeout
      */
-    server.setOption(WebSocketTransport.IDLE_TIMEOUT_OPTION, 0);
-    
-    server.addTransport(new BkWebSocketTransport(server));
+    //server.setOption(WebSocketTransport.IDLE_TIMEOUT_OPTION, -1);
+
+    server.setTransports(new BkWebSocketTransport(server), new JSONTransport(server), new JSONPTransport(server));
 
     ServletContext servletContext = ((ServletContextHandler) jetty.getHandler()).getServletContext();
 
     server.setOption(ServletContext.class.getName(), servletContext);
-    server.setOption("cometdURLMapping", "/cometd/");
+    server.setOption("ws.cometdURLMapping", getCometdMapping());
 
     server.setOption(AbstractServerTransport.JSON_CONTEXT_OPTION, new Jackson1JSONContextServer() {
       @Override
@@ -153,6 +166,11 @@ public class GuiceCometdModule extends AbstractModule {
   protected void configure(BayeuxServerImpl server) {
 
   }
+
+  private String getCometdMapping() {
+    return isNoneBlank(this.authToken) ? "/cometd-" + this.authToken + "/*":"/cometd/*";
+  }
+
 
   @Provides
   @Singleton

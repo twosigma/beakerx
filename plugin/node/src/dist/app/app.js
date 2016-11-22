@@ -92,7 +92,7 @@ function execute(code, shell, response) {
         if(transformation.isCircularObject(result)) {
           responseObject.result = "ERROR: circular objects are not supported";
         } else {
-          if(undefined == result){
+          if(undefined == result || Infinity == result){
             responseObject.showOutput = false;
           }else{
             responseObject.result = transformation.transform(result);

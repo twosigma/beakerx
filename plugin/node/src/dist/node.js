@@ -68,17 +68,17 @@ define(function(require, exports, module) {
             bkHelper.setupProgressOutput(modelOutput);
             bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/evaluate"), {shellID: self.settings.shellID, code: encodeURIComponent(code)})
             .success(function(ret) {
-
-              if("" == ret){
+              
+              if(ret.showOutput){
+                modelOutput.result = ret.result;
+                deferred.resolve(ret.result);
+              }else{
                 modelOutput.result = {
                     type: "HiddenOutputCell",
                     innertype: "Hidden",
                     object: undefined
                 };
-                deferred.reject(ret);
-              }else{
-                modelOutput.result = ret;
-                deferred.resolve(ret);
+                deferred.reject(ret.result);
               }
 
               bkHelper.refreshRootScope();

@@ -82,7 +82,7 @@ app.post('/session', function (request, response) {
 //Any other result - JSON
 function execute(code, shell, response) {
   var evaluationResult = processCode(code, shell);
-  var transformed;
+  var responseObject = {showOutput:true};
   
   Q.when(evaluationResult.evaluation, function (result) {
     log('result: ' + util.inspect(result));
@@ -90,19 +90,19 @@ function execute(code, shell, response) {
       if (evaluationResult.processed) {
         response.statusCode = 200;
         if(transformation.isCircularObject(result)) {
-          transformed = "ERROR: circular objects are not supported";
+          responseObject.result = "ERROR: circular objects are not supported";
         } else {
           if(undefined == result){
-            transformed = null;
+            responseObject.showOutput = false;
           }else{
-            transformed = transformation.transform(result);
+            responseObject.result = transformation.transform(result);
           }
         }
+        response.send(JSON.stringify(responseObject));
       } else {
-        transformed = result;
         response.statusCode = 422;
+        response.send(result);
       }
-      response.send(transformed);
     } catch (e) {
       response.statusCode = 500;
       response.send(e.message + '\n' + e.stack);

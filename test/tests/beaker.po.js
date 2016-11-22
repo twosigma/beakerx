@@ -104,7 +104,7 @@ var BeakerPageObject = function() {
   this.setNormalEditMode = function() {
     var self = this;
     this.setEditMode();
-    element(by.css('#normal-edit-mode-menuitem')).click().then(
+    $('#normal-edit-mode-menuitem').click().then(
         function(resolve){
           return true;
         },
@@ -112,7 +112,7 @@ var BeakerPageObject = function() {
           console.log("normal-edit-mode-menuitem hasn't displayed");
           self.createScreenshot('errorSetEditMode');
           browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
-          element(by.css('#normal-edit-mode-menuitem')).click();
+          $('#normal-edit-mode-menuitem').click();
         }
     );
   };
@@ -125,7 +125,7 @@ var BeakerPageObject = function() {
   this.setVimEditMode = function () {
     var self = this;
     this.setEditMode();
-    element(by.css('#vim-edit-mode-menuitem')).click().then(
+    $('#vim-edit-mode-menuitem').click().then(
         function(resolve){
           return true;
         },
@@ -133,7 +133,7 @@ var BeakerPageObject = function() {
           console.log("vim-edit-mode-menuitem hasn't displayed");
           self.createScreenshot('errorSetEditMode');
           browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
-          element(by.css('#vim-edit-mode-menuitem')).click();
+          $('#vim-edit-mode-menuitem').click();
         }
     );
 
@@ -144,8 +144,8 @@ var BeakerPageObject = function() {
   };
 
   this.setEditMode = function() {
-    element(by.css('.notebook-menu')).click();
-    return browser.actions().mouseMove(element(by.css('#edit-mode-menuitem'))).perform();
+    $('.notebook-menu').click();
+    return browser.actions().mouseMove($('#edit-mode-menuitem')).perform();
   };
 
   this.isCellMenuOpen = function(opts) {

@@ -34,31 +34,7 @@
                          $compile) {
     var CELL_TYPE = "bko-plot";
     return {
-      template :
-          "<canvas></canvas>" +
-          "<div id='plotTitle' class='plot-title'></div>" +
-          "<div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>" +
-          "<div class='plot-plotcontainer' oncontextmenu='return false;'>" +
-          "<svg id='svgg'>"  +
-          "<defs>" +
-            "<marker id='Triangle' class='text-line-style' viewBox='0 0 10 10' refX='1' refY='5' markerWidth='6' markerHeight='6' orient='auto'>" +
-            "<path d='M 0 0 L 10 5 L 0 10 z' />" +
-            "</marker>" +
-            "<filter id='svgfilter'>" +
-              "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
-              "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
-            "</filter>" +
-            "<filter id='svgAreaFilter'>" +
-              "<feMorphology operator='dilate' result='blurOut' in='SourceGraphic' radius='2' />" +
-              "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
-            "</filter>" +
-          "</defs>" +
-          "<g id='gridg'></g>" +
-          "<g id='maing'></g>" +
-          "<g id='labelg'></g> " +
-          "</svg>" +
-          "</div>" +
-          "</div>",
+      template : JST['bko-plot/bko-plot'],
       controller : function($scope) {
         $scope.getShareMenuPlugin = function() {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
@@ -1976,6 +1952,7 @@
         };
 
         scope.update = function(first) {
+          scope.invalidData = [];
           if (scope.model.isShowOutput !== undefined && scope.model.isShowOutput() === false) {
             return;
           }
@@ -1986,6 +1963,10 @@
           plotUtils.plotGridlines(scope);
 
           scope.renderData();
+          if (scope.invalidData.length>0){
+            scope.plotNotDrawable = true;
+            return;
+          }
           scope.renderGridlineLabels();
           scope.renderGridlineTicks();
           scope.renderCoverBox(); // redraw
@@ -2247,7 +2228,12 @@
             .append("xhtml:body")
             .attr("xmlns", "http://www.w3.org/1999/xhtml")
             .html(legendCopy[0].outerHTML);
-        }
+        };
+        
+        scope.hideModal = function(){
+          var id = scope.id + '_modal_dialog';
+          $('#'+id).hide()
+        };
 
       }
     };

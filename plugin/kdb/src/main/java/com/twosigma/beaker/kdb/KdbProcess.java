@@ -15,19 +15,21 @@
  */
 package com.twosigma.beaker.kdb;
 
-import com.twosigma.beaker.kdb.utils.ErrorGobbler;
-import com.twosigma.beaker.kdb.utils.KdbOutputHandler;
-import org.apache.commons.lang3.SystemUtils;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.SystemUtils;
+
+import com.twosigma.beaker.kdb.utils.ErrorGobbler;
+import com.twosigma.beaker.kdb.utils.KdbOutputHandler;
 
 /**
  * Wraps a kdb process.
  */
 public final class KdbProcess extends Thread {
   // Environment variable names.
+  private static final String BIT_64                = "64";
   private static final String QHOME                = "QHOME";
   private static final String QLIC                 = "QLIC";
   private static final String BEAKER_CORE_PASSWORD = "beaker_core_password";
@@ -90,12 +92,16 @@ public final class KdbProcess extends Thread {
       String bin = null;
       for (String s : binaries) {
         String f = qhome + File.separator + s;
-        if (new File(f).canExecute()) {
-          bin = f;
-          break;
+        File qFile = new File(f);
+        if (qFile.exists() && qFile.canExecute() && qFile.isFile()) {
+          if(bin == null){
+            bin = f;
+          }else if(s.indexOf(BIT_64) > -1){
+            bin = f;
+          }
         }
       }
-
+      
       if (bin == null) {
         throw new Exception("Cannot find q binary");
       } else {

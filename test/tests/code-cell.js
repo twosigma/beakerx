@@ -31,6 +31,7 @@ describe('Code Cell', function() {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL).then(done);
 
+    browser.executeScript("$('a.new-empty-notebook')[0].scrollIntoView();");
     beakerPO.newEmptyNotebook.click();
   });
 
@@ -39,6 +40,7 @@ describe('Code Cell', function() {
   });
 
   it('can set a cell language to Groovy', function(done) {
+    browser.executeScript("$('insert-cell')[0].scrollIntoView();");
     beakerPO.insertCellButton.click();
     loadGroovy();
     browser.wait(beakerPO.EC.presenceOf(beakerPO.getCellEvaluatorMenu()), 10000);

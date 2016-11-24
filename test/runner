@@ -22,6 +22,7 @@ import urllib2
 import signal
 
 # make sure everything is properly installed
+os.system("rm -rf ./node_modules/*")
 os.system("npm install")
 os.system("node_modules/protractor/bin/webdriver-manager update");
 

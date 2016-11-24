@@ -174,7 +174,7 @@ var BeakerPageObject = function() {
     }.bind(this));
   }.bind(this);
 
-  this.newEmptyNotebook = element(by.className('new-empty-notebook'));
+  this.newEmptyNotebook = element(by.css('a.new-empty-notebook'));
 
   this.fileMenu = element(by.className('file-menu'));
   this.viewMenu = element(by.className('view-menu'));

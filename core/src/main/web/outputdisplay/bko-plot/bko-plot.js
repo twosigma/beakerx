@@ -549,7 +549,7 @@
           scope.svg.selectAll(".plot-resp")
             .on('mouseenter', function(d) {
               scope.drawLegendPointer(d);
-              return plotTip.tooltip(scope, d, d3.mouse(scope.svg._groups[0][0]));
+              return plotTip.tooltip(scope, d, d3.mouse(scope.svg.node()));
             })
             .on('mousemove', function(d) {
 
@@ -557,7 +557,7 @@
               plotTip.untooltip(scope, d);
 
               scope.drawLegendPointer(d);
-              return plotTip.tooltip(scope, d, d3.mouse(scope.svg._groups[0][0]));
+              return plotTip.tooltip(scope, d, d3.mouse(scope.svg.node()));
             })
             .on("mouseleave", function(d) {
               scope.removeLegendPointer();
@@ -1551,26 +1551,23 @@
 
         scope.zoomStart = function(d) {
           if (scope.interactMode === "other") { return; }
+
           scope.zoom = true;
           scope.zoomed = false;
-          scope.lastscale = 1.0;
+
           var d3trans = d3.event.transform || d3.event;
           scope.lastx = d3trans.x;
           scope.lasty = d3trans.y;
-          if(d3trans.deltaY){
-            scope.deltaS = d3trans.deltaY;
-          }
-          scope.deltaS =
+          scope.lastk = 1/d3trans.k;
+
+          var svgNode = scope.svg.node();
+
           scope.mousep1 = {
-            "x" : d3.mouse(scope.svg._groups[0][0])[0],
-            "y" : d3.mouse(scope.svg._groups[0][0])[1]
+            "x" : d3.mouse(svgNode)[0],
+            "y" : d3.mouse(svgNode)[1]
           };
           scope.mousep2 = {};
           _.extend(scope.mousep2, scope.mousep1);
-          d3.zoom()
-          .scaleExtent([1, 40])
-          .translateExtent([[-100, -100], [600, 600]])
-          .on("zoom", scope.zooming);
           scope.jqsvg.css("cursor", "auto");
 
           $('body').css('overflow','hidden');
@@ -1587,35 +1584,43 @@
           });
         };
         scope.zooming = function(d) {
+
+
           if (scope.interactMode === "other" || !scope.zoom){
             return;
           } else if (scope.interactMode === "zoom"){
+
             var lMargin = scope.layout.leftLayoutMargin,
-              bMargin = scope.layout.bottomLayoutMargin;
+              bMargin = scope.layout.bottomLayoutMargin,
+              W = plotUtils.safeWidth(scope.jqsvg) - lMargin,
+              H = plotUtils.safeHeight(scope.jqsvg) - bMargin,
 
-            var W = plotUtils.safeWidth(scope.jqsvg) - lMargin,
-              H = plotUtils.safeHeight(scope.jqsvg) - bMargin;
+              d3trans = d3.event.transform || d3.event,
 
-            var d3trans = d3.event.transform || d3.event;
+              svgNode = scope.svg.node(),
+              mx = d3.mouse(svgNode)[0],
+              my = d3.mouse(svgNode)[1],
 
-            var mx = d3.mouse(scope.svg._groups[0][0])[0],
-                my = d3.mouse(scope.svg._groups[0][0])[1];
+              focus = scope.focus,
+              focus0 = scope.focus0;
+
             if (Math.abs(mx - scope.mousep1.x)>0 || Math.abs(my - scope.mousep1.y)>0){
               scope.zoomed = true;
             }
 
             var dx = d3trans.x - scope.lastx,
-              dy = d3trans.y - scope.lasty;
+              dy = d3trans.y - scope.lasty,
+              k = 1 / d3trans.k,
+              kDiff = k - scope.lastk;
 
             scope.lastx = d3trans.x;
             scope.lasty = d3trans.y;
-
-            var focus = scope.focus;
+            scope.lastk = k;
 
             var tx = -dx / W * focus.xspan,
-                ty = dy / H * focus.yspan;
+              ty = dy / H * focus.yspan;
 
-            if(d3trans.k === 1){
+            if(kDiff === 0){
               // for translating, moving the graph
               if (focus.xl + tx>=0 && focus.xr + tx<=1){
                 focus.xl += tx;
@@ -1644,28 +1649,21 @@
               }
               scope.jqsvg.css("cursor", "move");
             }else{
-              //for scaling the graph
-              var deltaY = d3trans.deltaY;
-              if(!scope.deltaS) scope.deltaS = deltaY;
-
-              var ds = 1 + ((Math.abs(deltaY)/scope.deltaS)/25);
-              scope.deltaS  = deltaY;
+              // scale only
               var level = scope.zoomLevel;
               if (my <= plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin) {
                 // scale y
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
-                var nyl = ym - ds * (ym - focus.yl),
-                    nyr = ym + ds * (focus.yr - ym),
-                    nyspan = (nyr - nyl);
-
+                var nyl = ym - k * (ym - focus0.yl),
+                  nyr = ym + k * (focus0.yr - ym),
+                  nyspan = nyr - nyl;
                 if (nyspan >= level.minSpanY && nyspan <= level.maxScaleY) {
                   focus.yl = nyl;
                   focus.yr = nyr;
                   focus.yspan = nyspan;
                 } else {
                   if (nyspan > level.maxScaleY) {
-                    focus.yl = 0;
-                    focus.yr = 1;
+                    focus.yr = focus.yl + level.maxScaleY;
                   } else if (nyspan < level.minSpanY) {
                     focus.yr = focus.yl + level.minSpanY;
                   }
@@ -1675,20 +1673,17 @@
               if (mx >= scope.layout.leftLayoutMargin) {
                 // scale x
                 var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
-                var nxl = xm - ds * (xm - focus.xl),
-                    nxr = xm + ds * (focus.xr - xm),
-                    nxspan = nxr - nxl;
-                
-                if (nxspan >= level.minSpanX && nxspan <= level.maxScaleX) {
+                var nxl = xm - k * (xm - focus0.xl),
+                  nxr = xm + k * (focus0.xr - xm),
+                  nxspan = nxr - nxl;
+                if(nxspan >= level.minSpanX && nxspan <= level.maxScaleX) {
                   focus.xl = nxl;
                   focus.xr = nxr;
                   focus.xspan = nxspan;
                 } else {
-                  if (nxspan > level.maxScaleX) {
-                    focus.xl = 0;
-                    focus.xr = 1;
-                    focus.xspan = focus.xr - focus.xl;
-                  }else if (nxspan < level.minSpanX) {
+                  if(nxspan > level.maxScaleX) {
+                    focus.xr = focus.xl + level.maxScaleX;
+                  } else if(nxspan < level.minSpanX) {
                     focus.xr = focus.xl + level.minSpanX;
                   }
                   focus.xspan = focus.xr - focus.xl;
@@ -1704,13 +1699,8 @@
             scope.fixFocus(scope.focus);
             scope.update();
           }
-
         };
-        scope.zoomEnd = function(d) {
-          //scope.zoomObj.scale(1.0);
-          d3.zoomTransform(this).scale(1.0);
-          //scope.zoomObj.translate([0, 0]);
-          d3.zoomTransform(this).translate(0, 0);
+        scope.zoomEnd = function() {
           if (scope.interactMode === "locate") {
             scope.locateFocus();
             scope.locateBox = null;
@@ -1733,8 +1723,9 @@
           }
         };
         scope.resetFocus = function() {
-          var mx = d3.mouse(scope.svg._groups[0][0])[0],
-              my = d3.mouse(scope.svg._groups[0][0])[1];
+          var svgNode = scope.svg.node(),
+            mx = d3.mouse(svgNode)[0],
+            my = d3.mouse(svgNode)[1];
           var lMargin = scope.layout.leftLayoutMargin,
               bMargin = scope.layout.bottomLayoutMargin;
           var W = plotUtils.safeWidth(scope.jqsvg),
@@ -1789,26 +1780,27 @@
         };
 
         scope.enableZoom = function() {
-          scope.svg.call(scope.zoomObj.on("start", function(d) {
-            return scope.zoomStart(d);
-          }).on("zoom", function(d) {
-            return scope.zooming(d);
-          }).on("end", function(d) {
-            return scope.zoomEnd(d);
-          }));
-          scope.svg.on("wheel", function() {
-            return scope.zooming();
-          });
+          scope.zoomObj
+            .on("start", function(d) {
+              return scope.zoomStart(d);
+            })
+            .on("zoom", function(d) {
+              return scope.zooming(d);
+            })
+            .on("end", function(d) {
+              return scope.zoomEnd(d);
+            });
+
+          scope.svg.call(scope.zoomObj);
           scope.svg.on("dblclick.zoom", function() {
             return scope.resetFocus();
           });
-
         };
         scope.disableZoom = function() {
           scope.svg.call(scope.zoomObj.on("start", null).on("zoom", null).on("end", null));
         };
         scope.disableWheelZoom = function() {
-          scope.svg.on("wheel.zoom", null);
+          // scope.svg.on("wheel.zoom", null);
         };
 
         scope.mouseleaveClear = function() {
@@ -1935,6 +1927,10 @@
           scope.removePipe.length = 0;
         };
 
+        scope.saveFocus0 = function() {
+          scope.focus0 = angular.copy(scope.focus);
+        };
+
         scope.init = function() {
 
           // first standardize data
@@ -1963,11 +1959,16 @@
           }
           scope.doNotLoadState = false;
 
+          scope.saveFocus0();
+
           // create layout elements
           scope.initLayout();
 
           scope.resetSvg();
-          scope.zoomObj = d3.zoom();
+          scope.zoomObj = d3.zoom()
+            .scaleExtent([1, 7]);
+
+          scope.lastk = 1;
 
           // set zoom object
           scope.svg.on("mousedown", function() {
@@ -2000,7 +2001,7 @@
           scope.update();
         };
 
-        scope.update = function(first) {
+        scope.update = function() {
           if (scope.model.isShowOutput !== undefined && scope.model.isShowOutput() === false) {
             return;
           }

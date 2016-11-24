@@ -35,11 +35,12 @@ import org.cometd.server.BayeuxServerImpl;
 import org.cometd.server.Jackson1JSONContextServer;
 import org.cometd.server.transport.JSONPTransport;
 import org.cometd.server.transport.JSONTransport;
-import org.cometd.websocket.server.WebSocketTransport;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 
@@ -126,7 +127,7 @@ public class GuiceCometdModule extends AbstractModule {
 
   @Singleton
   @Provides
-  public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om, final Server jetty) {
+  public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om, final Server jetty) throws ServletException {
     BayeuxServerImpl server = new BayeuxServerImpl();
     /*
      * Set the max idle time.
@@ -136,7 +137,9 @@ public class GuiceCometdModule extends AbstractModule {
 
     server.setTransports(new BkWebSocketTransport(server), new JSONTransport(server), new JSONPTransport(server));
 
-    ServletContext servletContext = ((ServletContextHandler) jetty.getHandler()).getServletContext();
+    ServletContextHandler handler = (ServletContextHandler) jetty.getHandler();
+    ServletContext servletContext = handler.getServletContext();
+    WebSocketServerContainerInitializer.configureContext(servletContext,handler);
 
     server.setOption(ServletContext.class.getName(), servletContext);
     server.setOption("ws.cometdURLMapping", getCometdMapping());

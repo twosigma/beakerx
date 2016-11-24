@@ -24,8 +24,6 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
-import org.eclipse.jetty.server.HttpConfiguration;
-import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
@@ -101,9 +99,7 @@ public class WebServerModule extends AbstractModule {
     servletHandler.setInitParameter("maxCacheSize", "0");
     servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");
 
-
     server.setHandler(servletHandler);
-    WebSocketServerContainerInitializer.configureContext(servletHandler);
 
     return server;
   }

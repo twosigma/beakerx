@@ -178,9 +178,8 @@ var BeakerPageObject = function() {
   this.newEmptyNotebookClick = function() {
     var self = this;
     browser.wait(this.EC.elementToBeClickable($('a.new-empty-notebook')), 10000).then(
-        function(){ return true; },
+        function(isClick){ $('a.new-empty-notebook').click(); },
         function(error){ self.createScreenshot("errorNewEmptyNotebook"); });
-    $('a.new-empty-notebook').click();
   };
 
   this.fileMenu = element(by.className('file-menu'));

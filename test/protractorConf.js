@@ -25,8 +25,8 @@ var config = {
   },
 
   capabilities: {
-    shardTestFiles: true,
-    maxInstances: 2,
+    shardTestFiles: false,
+    maxInstances: 1,
     browserName: 'firefox'
   },
   onPrepare: function() {
@@ -43,7 +43,7 @@ var config = {
     'tests/text-cell.js',
     'tests/language-manager.js',
     'tests/autotranslation.js',
-    'tests/cell-menu.js',
+   // 'tests/cell-menu.js',
     'tests/code-cell.js'
   ]
 };

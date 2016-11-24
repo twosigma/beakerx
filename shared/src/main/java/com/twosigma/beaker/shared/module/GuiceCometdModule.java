@@ -33,8 +33,6 @@ import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.server.AbstractServerTransport;
 import org.cometd.server.BayeuxServerImpl;
 import org.cometd.server.Jackson1JSONContextServer;
-import org.cometd.server.transport.JSONPTransport;
-import org.cometd.server.transport.JSONTransport;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
@@ -135,7 +133,7 @@ public class GuiceCometdModule extends AbstractModule {
      */
     //server.setOption(WebSocketTransport.IDLE_TIMEOUT_OPTION, -1);
 
-    server.setTransports(new BkWebSocketTransport(server), new JSONTransport(server), new JSONPTransport(server));
+    server.addTransport(new BkWebSocketTransport(server));
 
     ServletContextHandler handler = (ServletContextHandler) jetty.getHandler();
     ServletContext servletContext = handler.getServletContext();

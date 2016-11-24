@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-var _ = require('underscore');
+//var _ = require('underscore');
 var path = require('path');
 var fs = require('fs');
 
@@ -194,10 +194,10 @@ var BeakerPageObject = function() {
     });
   }.bind(this);
 
-  this.codeCell = function(index) {
-    return _.extend(element.all(by.css('.bkcell.code')).get(index),
-                    require('./mixins/cell.js'));
-  };
+  //this.codeCell = function(index) {
+  //  return _.extend(element.all(by.css('.bkcell.code')).get(index),
+  //                  require('./mixins/cell.js'));
+  //};
   this.waitForPlugin = function(plugin) {
     var self = this;
     browser.wait(function() {

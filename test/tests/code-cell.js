@@ -48,22 +48,22 @@ describe('Code Cell', function() {
     done();
   });
 
-  it('can hide the input', function(done) {
-    beakerPO.insertCellButton.click();
-    loadGroovy();
-    browser.wait(beakerPO.EC.presenceOf(beakerPO.getCellEvaluatorMenu()), 10000);
-    beakerPO.getCellEvaluatorMenu().click();
-    beakerPO.cellEvaluatorMenuItem('Groovy').click();
-
-    var cell = beakerPO.codeCell(0);
-
-    cell.toggleInput().click();
-
-    expect(cell.inputWrapper().isDisplayed()).toBe(true);
-    expect(cell.input().isDisplayed()).toBe(false);
-    expect(cell.miniCellStatus().isDisplayed()).toBe(true);
-    done();
-  });
+  //it('can hide the input', function(done) {
+  //  beakerPO.insertCellButton.click();
+  //  loadGroovy();
+  //  browser.wait(beakerPO.EC.presenceOf(beakerPO.getCellEvaluatorMenu()), 10000);
+  //  beakerPO.getCellEvaluatorMenu().click();
+  //  beakerPO.cellEvaluatorMenuItem('Groovy').click();
+  //
+  //  var cell = beakerPO.codeCell(0);
+  //
+  //  cell.toggleInput().click();
+  //
+  //  expect(cell.inputWrapper().isDisplayed()).toBe(true);
+  //  expect(cell.input().isDisplayed()).toBe(false);
+  //  expect(cell.miniCellStatus().isDisplayed()).toBe(true);
+  //  done();
+  //});
 
   it('can open a cells language menu in advanced mode', function(done) {
     beakerPO.insertCellButton.click()

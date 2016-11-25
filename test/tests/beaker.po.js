@@ -176,19 +176,7 @@ var BeakerPageObject = function() {
 
   this.newEmptyNotebook = element(by.css('a.new-empty-notebook'));
   this.newEmptyNotebookClick = function() {
-    var self = this;
-    var but = $('a.new-empty-notebook');
-    this.logLocationElement(but, 'before click newEmptyButton');
-    but.click().then(
-        function(result){
-          console.log('newEmptyButton click - OK');
-        },
-        function(error){
-          self.logLocationElement(but, 'error click newEmptyButton');
-          self.scrollHeaderElement();
-          but.click();
-        }
-    );
+    this.clickElementWithHandlingError($('a.new-empty-notebook'), 'newEmptyNotebook');
   };
 
   this.logLocationElement = function(elem, name){
@@ -507,7 +495,6 @@ var BeakerPageObject = function() {
     var self = this;
     element(by.css('header')).getCssValue('height').then(function(height){
       browser.executeScript("window.scrollBy(0, -" + parseInt(height) + ");");
-      self.createScreenshot('scrollHeader');
     });
   }
 
@@ -956,7 +943,22 @@ var BeakerPageObject = function() {
   }
 
   this.runBkCellDefaultButtonByIdCell = function(idCell){
-    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="evaluate($event)"].btn-default')).click();
+    this.clickElementWithHandlingError(this.getBkCellByIdCell(idCell).$('[ng-click="evaluate($event)"].btn-default'), 'CellDefaultButton');
+  }
+
+  this.clickElementWithHandlingError = function(elem, name){
+    var self = this;
+    this.logLocationElement(elem, 'before ' + name);
+    elem.click().then(
+        function(result){
+          console.log(name + ' click - OK');
+        },
+        function(error){
+          self.logLocationElement(elem, 'error click ' + name);
+          self.scrollHeaderElement();
+          elem.click();
+        }
+    );
   }
 
   this.collapseCellMenuByIdCell = function(idCell){

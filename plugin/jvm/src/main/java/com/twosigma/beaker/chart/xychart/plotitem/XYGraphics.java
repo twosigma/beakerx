@@ -28,7 +28,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 abstract public class XYGraphics extends Graphics {
-  private List<Number> xs = new ArrayList<>();
+  private List<Number> xs;
   private List<Number> ys = new ArrayList<>();
   private String displayName = "";
   protected Color       baseColor;

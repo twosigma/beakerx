@@ -490,7 +490,9 @@ var BeakerPageObject = function() {
   this.scrollHeaderElement = function(){
     element(by.css('header')).getCssValue('height').then(function(height){
       browser.executeScript("window.scrollBy(0, -" + parseInt(height) + ");");
+      browser.sleep(1000);
     });
+    this.createScreenshot('scrollHeader');
   }
 
   this.getPlotMaingByIdCell = function (codeCellOutputId, containerIdx) {

@@ -31,7 +31,7 @@ describe('Code Cell', function() {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL).then(done);
 
-    browser.executeScript("$('a.new-empty-notebook')[0].scrollIntoView();");
+    beakerPO.scrollHeaderElement();
     beakerPO.newEmptyNotebook.click();
   });
 
@@ -40,7 +40,7 @@ describe('Code Cell', function() {
   });
 
   it('can set a cell language to Groovy', function(done) {
-    browser.executeScript("$('insert-cell')[0].scrollIntoView();");
+    beakerPO.scrollHeaderElement();
     beakerPO.insertCellButton.click();
     loadGroovy();
     browser.wait(beakerPO.EC.presenceOf(beakerPO.getCellEvaluatorMenu()), 10000);
@@ -68,6 +68,7 @@ describe('Code Cell', function() {
   //});
 
   it('can open a cells language menu in advanced mode', function(done) {
+    beakerPO.scrollHeaderElement();
     beakerPO.insertCellButton.click()
     .then(beakerPO.toggleAdvancedMode)
     .then(function(){ browser.wait(beakerPO.EC.presenceOf(element.all(by.css('.dropdown-toggle bk-language-logo')).get(0)), 10000); })
@@ -81,6 +82,7 @@ describe('Code Cell', function() {
   });
 
   it('can close a cell language menu by clicking off', function(done) {
+    beakerPO.scrollHeaderElement();
     beakerPO.insertCellButton.click()
     .then(beakerPO.toggleAdvancedMode)
     .then(function(){ browser.wait(beakerPO.EC.presenceOf(element.all(by.css('.dropdown-toggle bk-language-logo')).get(0)), 10000); })

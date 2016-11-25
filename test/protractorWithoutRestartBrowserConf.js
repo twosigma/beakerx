@@ -40,7 +40,7 @@ var config = {
     'tests/tutorials/groovy_plotting/histogram-tutorial.js',
     'tests/tutorials/groovy_plotting/levelsOfDetail-tutorial.js',
     'tests/tutorials/language_demos/java-tutorial.js',
-    //'tests/tutorials/language_demos/groovy-tutorial.js',
+    'tests/tutorials/language_demos/groovy-tutorial.js',
     //'tests/tutorials/language_demos/clojure-tutorial.js',
     //'tests/tutorials/language_demos/python-tutorial.js',
     //'tests/tutorials/language_demos/jscript-tutorial.js',

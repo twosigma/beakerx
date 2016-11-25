@@ -39,11 +39,10 @@ for line in iter(beaker.stdout.readline, ''):
 
 os.chdir("../test/node_modules/protractor/bin")
 result = os.system("node protractor ../../../protractorConf.js");
-#result2 = 1
+if not result:
+    result = os.system("node protractor ../../../protractorWithoutRestartBrowserConf.js")
 #if not result:
-#    result2 = os.system("node protractor ../../../protractorWithoutRestartBrowserConf.js")
-#if not result2:
-#    result2 = os.system("node protractor ../../../protractorOneInstanceConf.js")
+#    result = os.system("node protractor ../../../protractorOneInstanceConf.js")
 
 # Skipping memory tests because they hang on Jenkins
 #os.system("node ../../../memory-tests.js")

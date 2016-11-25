@@ -44,7 +44,7 @@ describe('EasyForm', function () {
     e.sendKeys("A").then(function(){
         expect(e.getAttribute('value')).toEqual("A");
     });
-
+    beakerPO.clickElementWithHandlingError(e, 'inputElement');
     //TEST UNDO
     if (os.type() === 'Darwin') {
       //COMMAND:      '\uE03D',  // Apple command key
@@ -55,6 +55,7 @@ describe('EasyForm', function () {
       e.sendKeys("\uE009z");
     }
     expect(e.getAttribute('value')).toEqual("");
+    beakerPO.clickElementWithHandlingError(e, 'inputElement');
     //TEST REDO
     //SHIFT:        '\uE008',
     if (os.type() === 'Darwin') {
@@ -64,18 +65,8 @@ describe('EasyForm', function () {
       //CONTROL:      '\uE009',
       e.sendKeys("\uE008\uE009z");
     }
-    e.getAttribute('value').then(
-        function(result){
-          if(result === ""){
-            if (os.type() === 'Darwin') {
-              e.sendKeys("\uE008\uE03Dz");
-            } else {
-              e.sendKeys("\uE008\uE009z");
-            }
-            beakerPO.createScreenshot('easyFormUndoRedo');
-            expect(e.getAttribute('value')).toEqual("A");
-          }
-    });
+    beakerPO.createScreenshot('easyFormUndoRedo');
+    expect(e.getAttribute('value')).toEqual("A");
   }
 
   beforeEach(function (done) {

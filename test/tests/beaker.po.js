@@ -948,7 +948,6 @@ var BeakerPageObject = function() {
 
   this.clickElementWithHandlingError = function(elem, name){
     var self = this;
-    this.logLocationElement(elem, 'before ' + name);
     elem.click().then(
         function(result){
           console.log(name + ' click - OK');
@@ -962,12 +961,7 @@ var BeakerPageObject = function() {
   }
 
   this.collapseCellMenuByIdCell = function(idCell){
-    var self = this;
-    element(by.css('div[ng-click="collapseCellMenu[cellmodel.type].click()"].collapsed')).isPresent().then(function(collapsed){
-      if(collapsed){
-        self.getBkCellByIdCell(idCell).element(by.css('div[ng-click="collapseCellMenu[cellmodel.type].click()"]')).click();
-      }
-    });
+    this.clickElementWithHandlingError(this.getBkCellByIdCell(idCell).$('div[ng-click="collapseCellMenu[cellmodel.type].click()"]'), 'collapseCellMenu');
   }
 
   this.checkEvaluatorByIdCell = function(idCell, langName){

@@ -64,9 +64,19 @@ describe('EasyForm', function () {
       //CONTROL:      '\uE009',
       e.sendKeys("\uE008\uE009z");
     }
-    beakerPO.createScreenshot('easyFormUndoRedo');
-    expect(e.getAttribute('value')).toEqual("A");
-}
+    e.getAttribute('value').then(
+        function(result){
+          if(result === ""){
+            if (os.type() === 'Darwin') {
+              e.sendKeys("\uE008\uE03Dz");
+            } else {
+              e.sendKeys("\uE008\uE009z");
+            }
+            beakerPO.createScreenshot('easyFormUndoRedo');
+            expect(e.getAttribute('value')).toEqual("A");
+          }
+    });
+  }
 
   beforeEach(function (done) {
     beakerPO = new BeakerPageObject();

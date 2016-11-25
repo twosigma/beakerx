@@ -43,7 +43,7 @@ var config = {
     'tests/text-cell.js',
     'tests/language-manager.js',
     'tests/autotranslation.js',
-   // 'tests/cell-menu.js',
+    'tests/cell-menu.js',
     'tests/code-cell.js'
   ]
 };

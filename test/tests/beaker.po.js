@@ -184,7 +184,6 @@ var BeakerPageObject = function() {
           console.log('newEmptyButton click - OK');
         },
         function(error){
-          console.log('newEmptyButton click - error');
           self.logLocationElement(but, 'error click newEmptyButton');
           self.scrollHeaderElement();
           but.click();
@@ -195,8 +194,7 @@ var BeakerPageObject = function() {
   this.logLocationElement = function(elem, name){
     elem.getLocation().then(
         function(locat){
-          console.log(name + " x : " + locat.x);
-          console.log(name + " y : " + locat.y);
+          console.log(name + " x : " + locat.x + " y : " + locat.y);
         }
     );
   }

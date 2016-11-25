@@ -177,11 +177,29 @@ var BeakerPageObject = function() {
   this.newEmptyNotebook = element(by.css('a.new-empty-notebook'));
   this.newEmptyNotebookClick = function() {
     var self = this;
-    browser.wait(this.EC.elementToBeClickable($('a.new-empty-notebook')), 10000).then(
-        function(isClick){ self.createScreenshot("newEmptyNotebook");
-                           $('a.new-empty-notebook').click(); },
-        function(error){ self.createScreenshot("errorNewEmptyNotebook"); });
+    var but = $('a.new-empty-notebook');
+    this.logLocationElement(but, 'before click newEmptyButton');
+    but.click().then(
+        function(result){
+          console.log('newEmptyButton click - OK');
+        },
+        function(error){
+          console.log('newEmptyButton click - error');
+          self.logLocationElement(but, 'error click newEmptyButton');
+          self.scrollHeaderElement();
+          but.click();
+        }
+    );
   };
+
+  this.logLocationElement = function(elem, name){
+    elem.getLocation().then(
+        function(locat){
+          console.log(name + " x : " + locat.x);
+          console.log(name + " y : " + locat.y);
+        }
+    );
+  }
 
   this.fileMenu = element(by.className('file-menu'));
   this.viewMenu = element(by.className('view-menu'));
@@ -488,11 +506,11 @@ var BeakerPageObject = function() {
   };
 
   this.scrollHeaderElement = function(){
+    var self = this;
     element(by.css('header')).getCssValue('height').then(function(height){
       browser.executeScript("window.scrollBy(0, -" + parseInt(height) + ");");
-      browser.sleep(1000);
+      self.createScreenshot('scrollHeader');
     });
-    this.createScreenshot('scrollHeader');
   }
 
   this.getPlotMaingByIdCell = function (codeCellOutputId, containerIdx) {

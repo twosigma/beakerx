@@ -15,7 +15,6 @@
  */
 
 var BeakerPageObject = require('./beaker.po.js');
-var path = require('path');
 var beakerPO;
 
 function loadGroovy() {
@@ -30,9 +29,7 @@ describe('Code Cell', function() {
   beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL).then(done);
-
-    beakerPO.scrollHeaderElement();
-    beakerPO.newEmptyNotebook.click();
+    beakerPO.newEmptyNotebookClick();
   });
 
   afterEach(function() {
@@ -40,7 +37,6 @@ describe('Code Cell', function() {
   });
 
   it('can set a cell language to Groovy', function(done) {
-    beakerPO.scrollHeaderElement();
     beakerPO.insertCellButton.click();
     loadGroovy();
     browser.wait(beakerPO.EC.presenceOf(beakerPO.getCellEvaluatorMenu()), 10000);

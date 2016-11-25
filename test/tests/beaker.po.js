@@ -879,7 +879,7 @@ var BeakerPageObject = function() {
   }
 
   this.clickCellMenuSavePlotAs = function(idCell, fileExt){
-    this.getCodeCellOutputByIdCell(idCell).element(by.css('.cell-menu-item.cell-dropdown.dropdown-toggle')).click();
+    this.clickElementWithHandlingError(this.getCodeCellOutputByIdCell(idCell).$('.cell-menu-item.cell-dropdown.dropdown-toggle'), 'cellMenuDropdown');
     browser.wait(this.EC.presenceOf(element.all(by.css('bk-notebook > ul.dropdown-menu')).get(0)), 10000);
     var savePlotAs = element.all(by.css('bk-notebook > ul.dropdown-menu')).get(0).element(by.cssContainingText('li', 'Save Plot As'));
     browser.actions().mouseMove(savePlotAs).perform();
@@ -955,7 +955,7 @@ var BeakerPageObject = function() {
         function(error){
           self.logLocationElement(elem, 'error click ' + name);
           self.scrollHeaderElement();
-          elem.click();
+          elem.click().then(null, function(error){ self.scrollHeaderElement(); elem.click(); });
         }
     );
   }

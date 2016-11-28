@@ -549,7 +549,7 @@ var BeakerPageObject = function() {
   }
 
   this.getDataTablesTBodyByIdCell = function (idCell) {
-    return this.getDataTablesScrollBodyByIdCell(idCell).all(By.css('tbody > tr'));
+    return this.getDataTablesScrollBodyByIdCell(idCell).$$('tbody > tr');
   }
 
   this.getDataTablesColumnByIdCell = function (cellId, colIndex) {
@@ -896,7 +896,7 @@ var BeakerPageObject = function() {
         .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVExport(false)"]')).click);
     this.checkSaveTableAsCsv(self, dir, filename + "All.csv");
     // Save Selected as csv
-    this.clickElementWithHandlingError(this.getDataTablesTBodyByIdCell(idCell).get(0).$$('td').get(0), 'tdElement');
+    this.clickElementWithHandlingError(this.getDataTablesTBodyByIdCell(idCell).first(), 'trElement');
     this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')).click()
         .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVExport(true)"]')).click);
     this.checkSaveTableAsCsv(self, dir, filename + "Selected.csv");

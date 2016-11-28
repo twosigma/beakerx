@@ -1586,7 +1586,6 @@
         };
         scope.zooming = function(d) {
 
-
           if (scope.interactMode === "other" || !scope.zoom){
             return;
           } else if (scope.interactMode === "zoom"){
@@ -1961,8 +1960,7 @@
           scope.initLayout();
 
           scope.resetSvg();
-          scope.zoomObj = d3.zoom()
-            .scaleExtent([1, 14]);
+          scope.zoomObj = d3.zoom();
 
           scope.lastk = 1;
 

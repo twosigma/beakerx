@@ -1558,7 +1558,8 @@
           var d3trans = d3.event.transform || d3.event;
           scope.lastx = d3trans.x;
           scope.lasty = d3trans.y;
-          scope.lastk = 1/d3trans.k;
+          var newK = ((d3trans.k-1)*0.5)+1;
+          scope.lastk = 1/newK;
 
           var svgNode = scope.svg.node();
 
@@ -1608,9 +1609,10 @@
               scope.zoomed = true;
             }
 
+            var newK = ((d3trans.k-1)/2)+1;
             var dx = d3trans.x - scope.lastx,
               dy = d3trans.y - scope.lasty,
-              k = 1 / d3trans.k,
+              k = 1 / newK,
               kDiff = k - scope.lastk;
 
             scope.lastx = d3trans.x;

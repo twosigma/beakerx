@@ -1602,8 +1602,7 @@
               mx = d3.mouse(svgNode)[0],
               my = d3.mouse(svgNode)[1],
 
-              focus = scope.focus,
-              focus0 = scope.focus0;
+              focus = scope.focus;
 
             if (Math.abs(mx - scope.mousep1.x)>0 || Math.abs(my - scope.mousep1.y)>0){
               scope.zoomed = true;
@@ -1613,7 +1612,8 @@
             var dx = d3trans.x - scope.lastx,
               dy = d3trans.y - scope.lasty,
               k = 1 / newK,
-              kDiff = k - scope.lastk;
+              kDiff = k - scope.lastk,
+              kNew = k/scope.lastk;
 
             scope.lastx = d3trans.x;
             scope.lasty = d3trans.y;
@@ -1656,8 +1656,8 @@
               if (my <= plotUtils.safeHeight(scope.jqsvg) - scope.layout.bottomLayoutMargin) {
                 // scale y
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
-                var nyl = ym - k * (ym - focus0.yl),
-                  nyr = ym + k * (focus0.yr - ym),
+                var nyl = ym - kNew * (ym - focus.yl),
+                  nyr = ym + kNew * (focus.yr - ym),
                   nyspan = nyr - nyl;
                 if (nyspan >= level.minSpanY && nyspan <= level.maxScaleY) {
                   focus.yl = nyl;
@@ -1675,8 +1675,8 @@
               if (mx >= scope.layout.leftLayoutMargin) {
                 // scale x
                 var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
-                var nxl = xm - k * (xm - focus0.xl),
-                  nxr = xm + k * (focus0.xr - xm),
+                var nxl = xm - kNew * (xm - focus.xl),
+                  nxr = xm + kNew * (focus.xr - xm),
                   nxspan = nxr - nxl;
                 if(nxspan >= level.minSpanX && nxspan <= level.maxScaleX) {
                   focus.xl = nxl;
@@ -1929,10 +1929,6 @@
           scope.removePipe.length = 0;
         };
 
-        scope.saveFocus0 = function() {
-          scope.focus0 = angular.copy(scope.focus);
-        };
-
         scope.init = function() {
 
           // first standardize data
@@ -1960,8 +1956,6 @@
             }
           }
           scope.doNotLoadState = false;
-
-          scope.saveFocus0();
 
           // create layout elements
           scope.initLayout();

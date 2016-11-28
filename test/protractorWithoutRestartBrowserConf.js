@@ -52,13 +52,13 @@ var config = {
     'tests/tutorials/automate/notebookControl-tutorial.js',
     'tests/tutorials/automate/notebook-reflection-tutorial.js',
     'tests/tutorials/automate/dashboard-tutorial.js',
-    //'tests/tables.js',
-    //'tests/tutorials/native_plotting/jscriptPlot-tutorial.js',
-    //'tests/tutorials/feature_overview/autotranslation-tutorial.js',
-    //'tests/tutorials/feature_overview/codeReuse-tutorial.js',
-    //'tests/tutorials/feature_overview/beakerObject-tutorial.js',
-    //'tests/tutorials/feature_overview/outputContainer-tutorial.js',
-    //'tests/tutorials/feature_overview/bigIntegerTables-tutorial.js'
+    'tests/tables.js',
+    'tests/tutorials/native_plotting/jscriptPlot-tutorial.js',
+    'tests/tutorials/feature_overview/autotranslation-tutorial.js',
+    'tests/tutorials/feature_overview/codeReuse-tutorial.js',
+    'tests/tutorials/feature_overview/beakerObject-tutorial.js',
+    'tests/tutorials/feature_overview/outputContainer-tutorial.js',
+    'tests/tutorials/feature_overview/bigIntegerTables-tutorial.js'
   ]
 };
 

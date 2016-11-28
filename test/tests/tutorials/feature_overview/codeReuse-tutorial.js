@@ -18,7 +18,7 @@
 var BeakerPageObject = require('../../beaker.po.js');
 var beakerPO;
 
-describe('Code Reuse with Libraries', function (done) {
+describe('Code Reuse with Libraries', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();

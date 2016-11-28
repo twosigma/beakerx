@@ -134,20 +134,20 @@ describe('EasyForm', function () {
     expect(element.all(by.css('bk-output-display  .combo-box')).count()).toBe(1);
     expect(element.all(by.css('bk-output-display  option')).count()).toBe(4);
   });
-
-  it('Text Areas Undo/Redo', function () {
-    var code = 'f1 = new EasyForm(\"Form\")\\n';
-    code += 'f1.addTextArea(\"Text Area\")\\n';
-    code += 'f1';
-    testUndoRedo(code, 'bk-output-display  .text-area');
-  });
-
-  it('Text Fields Undo/Redo', function () {
-    var code = 'f1 = new EasyForm(\"Form\")\\n';
-    code += 'f1.addTextField(\"first\", 15)\\n';
-    code += 'f1';
-    testUndoRedo(code, 'bk-output-display  .text-field');
-  });
+  //
+  //it('Text Areas Undo/Redo', function () {
+  //  var code = 'f1 = new EasyForm(\"Form\")\\n';
+  //  code += 'f1.addTextArea(\"Text Area\")\\n';
+  //  code += 'f1';
+  //  testUndoRedo(code, 'bk-output-display  .text-area');
+  //});
+  //
+  //it('Text Fields Undo/Redo', function () {
+  //  var code = 'f1 = new EasyForm(\"Form\")\\n';
+  //  code += 'f1.addTextField(\"first\", 15)\\n';
+  //  code += 'f1';
+  //  testUndoRedo(code, 'bk-output-display  .text-field');
+  //});
 
 });
 

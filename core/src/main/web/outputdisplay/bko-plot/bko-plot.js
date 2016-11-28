@@ -1962,7 +1962,7 @@
 
           scope.resetSvg();
           scope.zoomObj = d3.zoom()
-            .scaleExtent([1, 7]);
+            .scaleExtent([1, 14]);
 
           scope.lastk = 1;
 

@@ -18,7 +18,7 @@
 var BeakerPageObject = require('../../beaker.po.js');
 var beakerPO;
 
-describe('Dashboard API', function (done) {
+describe('Dashboard API', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();

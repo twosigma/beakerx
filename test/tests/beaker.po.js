@@ -952,7 +952,11 @@ var BeakerPageObject = function() {
         function(error){
           self.logLocationElement(elem, 'error click ' + name);
           self.scrollHeaderElement();
-          elem.click().then(null, function(error){ self.scrollHeaderElement(); elem.click(); });
+          elem.click().then(null,
+              function(error){
+                self.createScreenshot('error' + name);
+                elem.click();
+              });
         }
     );
   }
@@ -984,7 +988,7 @@ var BeakerPageObject = function() {
 
   this.selectItem = function(itemName){
     var item = element(by.cssContainingText('li.CodeMirror-hint', itemName));
-    item.click();
+    this.clickElementWithHandlingError(item, 'codeMirrorHint');
     browser.actions().doubleClick(item).perform();
   }
 

@@ -896,7 +896,7 @@ var BeakerPageObject = function() {
         .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVExport(false)"]')).click);
     this.checkSaveTableAsCsv(self, dir, filename + "All.csv");
     // Save Selected as csv
-    this.getDataTablesTBodyByIdCell(idCell).get(0).all(by.css('td')).get(0).click();
+    this.clickElementWithHandlingError(this.getDataTablesTBodyByIdCell(idCell).get(0).$$('td').get(0), 'tdElement');
     this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')).click()
         .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVExport(true)"]')).click);
     this.checkSaveTableAsCsv(self, dir, filename + "Selected.csv");
@@ -948,10 +948,7 @@ var BeakerPageObject = function() {
 
   this.clickElementWithHandlingError = function(elem, name){
     var self = this;
-    elem.click().then(
-        function(result){
-          console.log(name + ' click - OK');
-        },
+    elem.click().then(null,
         function(error){
           self.logLocationElement(elem, 'error click ' + name);
           self.scrollHeaderElement();

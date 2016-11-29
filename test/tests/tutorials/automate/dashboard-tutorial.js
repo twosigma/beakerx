@@ -49,6 +49,7 @@ describe('Dashboard API', function () {
         var idCell = "codeAiNo4j";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.runBkCellDefaultButtonByIdCell(idCell);
+        browser.sleep(5000);
         beakerPO.scrollToCodeCellOutputByIdCell(idCellDash);
         expect(row0.$('bk-output-display[type="Html"]').getText()).toBe('this is the changed test');
     });

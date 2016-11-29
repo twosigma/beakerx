@@ -30,7 +30,7 @@ dependencies {
   compile group: 'org.cometd.java', name: 'cometd-java-server', version: '3.0.10'
   compile group: 'org.cometd.java', name: 'cometd-java-websocket-javax-server', version: '3.0.10'
   compile group: 'org.cometd.java', name: 'cometd-java-annotations', version: '3.0.10'
-  compile group: 'org.eclipse.jetty.websocket', name: 'javax-websocket-server-impl', version: '9.3.6.v20151106'
+  compile group: 'org.eclipse.jetty.websocket', name: 'javax-websocket-server-impl', version: '9.3.13.v20161014'
 }
 
 compileJava {

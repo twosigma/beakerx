@@ -955,7 +955,7 @@ var BeakerPageObject = function() {
           elem.click().then(null,
               function(error){
                 self.createScreenshot('error' + name);
-                elem.click();
+                browser.executeScript('return arguments[0].click()', elem.getWebElement());
               });
         }
     );

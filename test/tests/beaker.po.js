@@ -979,7 +979,7 @@ var BeakerPageObject = function() {
   };
 
   this.insertNewDefaultCell = function(language){
-    element.all(by.css('button[ng-click="newDefaultCodeCell()"]')).get(0).click();
+    this.clickElementWithHandlingError($$('button[ng-click="newDefaultCodeCell()"]').first(), 'newDefaultCode');
     this.insertCellOfType(language);
     var bkcell = element.all(by.css('bk-cell')).get(0);
     bkcell.element(by.css('div.CodeMirror-code')).click();

@@ -44,12 +44,12 @@ describe('Dashboard API', function () {
         expect(row1.all(by.css('bk-output-display[type="Plot"]')).count()).toBe(3);
     });
     it('Change dashboard', function () {
-        var row0 = beakerPO.getCodeCellOutputByIdCell(idCellDash).all(by.css('.row')).get(0);
-        expect(row0.element(by.css('bk-output-display[type="Html"]')).getText()).toBe('Updating Random Dashboard');
+        var row0 = beakerPO.getCodeCellOutputByIdCell(idCellDash).$$('.row').first();
+        expect(row0.$('bk-output-display[type="Html"]').getText()).toBe('Updating Random Dashboard');
         var idCell = "codeAiNo4j";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.runBkCellDefaultButtonByIdCell(idCell);
         beakerPO.scrollToCodeCellOutputByIdCell(idCellDash);
-        expect(row0.element(by.css('bk-output-display[type="Html"]')).getText()).toBe('this is the changed test');
+        expect(row0.$('bk-output-display[type="Html"]').getText()).toBe('this is the changed test');
     });
 });

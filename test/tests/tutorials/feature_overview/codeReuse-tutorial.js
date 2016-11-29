@@ -35,16 +35,16 @@ describe('Code Reuse with Libraries', function () {
         var idCell = "codeeYVHl2";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Results');
-        browser.wait(beakerPO.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="Text"]')), 10000).then(function(){
-            expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('bk-output-display[type="Text"] pre')).getText()).toBe('2');
-        });
+        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).$('pre'), 10000).then(function(){
+            expect(beakerPO.getCodeCellOutputByIdCell(idCell).$('pre').getText()).toBe('2');
+        }));
     });
 
     it('Use the libraries', function () {
         var idCell = "codeohgvXK";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
-        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('pre')).getText()).toBe('base calling mission control... base calling mission control... base calling mission control... ');
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).$('pre').getText()).toBe('base calling mission control... base calling mission control... base calling mission control... ');
     });
 
 });

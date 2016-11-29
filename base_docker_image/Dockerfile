@@ -113,8 +113,8 @@ RUN apt-get install -y ruby2.1 ruby2.1-dev libtool && \
 
 RUN apt-get install curl
 
-# Note the new setup script name for Node.js v0.12
-RUN curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash - 
+# Note the new setup script name for Node.js
+RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo bash - 
 RUN sudo apt-get install -y nodejs
 
 ###################

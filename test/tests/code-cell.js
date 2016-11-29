@@ -15,7 +15,6 @@
  */
 
 var BeakerPageObject = require('./beaker.po.js');
-var path = require('path');
 var beakerPO;
 
 function loadGroovy() {
@@ -30,8 +29,7 @@ describe('Code Cell', function() {
   beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL).then(done);
-
-    beakerPO.newEmptyNotebook.click();
+    beakerPO.newEmptyNotebookClick();
   });
 
   afterEach(function() {
@@ -55,13 +53,11 @@ describe('Code Cell', function() {
     beakerPO.getCellEvaluatorMenu().click();
     beakerPO.cellEvaluatorMenuItem('Groovy').click();
 
-    var cell = beakerPO.codeCell(0);
-
-    cell.toggleInput().click();
-
-    expect(cell.inputWrapper().isDisplayed()).toBe(true);
-    expect(cell.input().isDisplayed()).toBe(false);
-    expect(cell.miniCellStatus().isDisplayed()).toBe(true);
+    var cell = $$('.bkcell.code').get(0);
+    beakerPO.clickElementWithHandlingError(cell.$$('.toggle-menu .expand-contract').get(0), 'bkCellToggleMenu');
+    expect(cell.$('.code-cell-input').isDisplayed()).toBe(true);
+    expect(cell.$('.code-cell-input-content').isDisplayed()).toBe(false);
+    expect(cell.$('.mini-cell-stats').isDisplayed()).toBe(true);
     done();
   });
 

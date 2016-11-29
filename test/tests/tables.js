@@ -54,7 +54,8 @@ describe('Beaker Tables', function () {
       beakerPO.getCodeOutputCellIdBySectionTitle('Table with Index column').then(function (v) {
         beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         beakerPO.checkDataTableBodyByIdCell(v, 5, '4 up 2300000.0000');
-        beakerPO.getDataTablesScrollHeadByIdCell(v).all(by.css('th')).get(0).click();
+        var thElem = beakerPO.getDataTablesScrollHeadByIdCell(v).$$('th').first();
+        browser.executeScript('return arguments[0].click()', thElem.getWebElement());
         beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         beakerPO.checkDataTableBodyByIdCell(v, 5, '0 strange 95000000.0000');
         done();

@@ -48,6 +48,16 @@ describe('Python Tutorial', function () {
         });
     });
 
+    describe('Autocomplete', function(){
+        it('Should hint "infty" ', function() {
+            beakerPO.scrollHeaderElement();
+            beakerPO.insertNewDefaultCell('IPython');
+            browser.actions().sendKeys("in").perform();
+            beakerPO.checkAutocomplete('infty');
+            beakerPO.selectItem('infty');
+        });
+    });
+
     describe('IPython Examples', function(){
 
         it('should graph a math function', function () {
@@ -80,15 +90,5 @@ describe('Python Tutorial', function () {
             beakerPO.checkImageByIdCell(idCell);
         });
 
-    });
-
-    describe('Autocomplete', function(){
-        it('Should hint "infty" ', function() {
-            browser.executeScript("window.scrollTo(0, 0);");
-            beakerPO.insertNewDefaultCell('IPython');
-            browser.actions().sendKeys("in").perform();
-            beakerPO.checkAutocomplete('infty');
-            beakerPO.selectItem('infty');
-        });
     });
 });

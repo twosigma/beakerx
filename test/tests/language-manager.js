@@ -20,7 +20,7 @@ describe('language manager', function () {
   beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL).then(done);
-    beakerPO.newEmptyNotebook.click();
+    beakerPO.newEmptyNotebookClick();
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();
   });

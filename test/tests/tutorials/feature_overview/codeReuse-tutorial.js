@@ -35,9 +35,8 @@ describe('Code Reuse with Libraries', function () {
         var idCell = "codeeYVHl2";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Results');
-        browser.wait(beakerPO.EC.presenceOf(beakerPO.getCodeCellOutputByIdCell(idCell).$('[type="Text"] pre'), 10000)).then(function(){
-            expect(beakerPO.getCodeCellOutputByIdCell(idCell).$('[type="Text"] pre').getText()).toBe('2');
-        });
+        browser.sleep(10000);
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).$('[type="Text"]').getText()).toBe('2');
     });
 
     it('Use the libraries', function () {

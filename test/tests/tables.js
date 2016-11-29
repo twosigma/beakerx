@@ -55,7 +55,12 @@ describe('Beaker Tables', function () {
         beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         beakerPO.checkDataTableBodyByIdCell(v, 5, '4 up 2300000.0000');
         var thElem = beakerPO.getDataTablesScrollHeadByIdCell(v).$$('th').first();
-        browser.actions().mouseMove(thElem, 25, 0).click().perform();
+        thElem.getLocation().then(function(locat){
+          beakerPO.createScreenshot('tsbleTh');
+          console.log('th x:' + locat.x + ', y:' + locat.y);
+          browser.actions().mouseMove(thElem, locat.x + 25, locat.y).click().perform();
+        });
+
         beakerPO.waitCodeCellOutputTablePresentByIdCell(v);
         beakerPO.checkDataTableBodyByIdCell(v, 5, '0 strange 95000000.0000');
         done();

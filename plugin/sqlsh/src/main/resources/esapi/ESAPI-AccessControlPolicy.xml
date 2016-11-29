@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<AccessControlPolicy>
+	<AccessControlRules>
+		<AccessControlRule
+			name="AlwaysTrue"
+			description="Access is always granted"
+			class="org.owasp.esapi.reference.accesscontrol.AlwaysTrueACR">
+		</AccessControlRule>
+		<AccessControlRule
+			name="AlwaysFalse"
+			description="Access is always denied"
+			class="org.owasp.esapi.reference.accesscontrol.AlwaysFalseACR">
+		</AccessControlRule>
+		<AccessControlRule
+			name="EchoRuntimeParameter"
+			description="Access depends on the value of the runtime parameter"
+			class="org.owasp.esapi.reference.accesscontrol.EchoRuntimeParameterACR">
+		</AccessControlRule>
+		<AccessControlRule
+			name="EchoPolicyParameter"
+			description="Access depends on the value of the policy parameter: isTrue"
+			class="org.owasp.esapi.reference.accesscontrol.policyloader.EchoDynaBeanPolicyParameterACR">
+			<Parameters>
+				<Parameter name="isTrue" type="Boolean" value="true"/>
+			</Parameters>
+		</AccessControlRule>
+		
+		<!-- 
+			The following Rules are for backwards compatibility with
+			the deprecated AcessController 1.0 reference implementation
+			specification
+		-->
+		<AccessControlRule
+			name="AC 1.0 Data"
+			description="See delegateClass's code comments"
+			class="org.owasp.esapi.reference.accesscontrol.DelegatingACR">
+			<Parameters>
+				<Parameter name="delegateClass" type="String" value="org.owasp.esapi.reference.accesscontrol.FileBasedACRs"/> 
+				<Parameter name="delegateMethod" type="String" value="isAuthorizedForData"/>
+				<Parameter name="parameterClasses" type="StringArray" value="java.lang.String, java.lang.Object"/>
+			</Parameters>
+		</AccessControlRule>
+		<AccessControlRule
+			name="AC 1.0 File"
+			description="See delegateClass's code comments"
+			class="org.owasp.esapi.reference.accesscontrol.DelegatingACR">
+			<Parameters>
+				<Parameter name="delegateClass" type="String" value="org.owasp.esapi.reference.accesscontrol.FileBasedACRs"/>
+				<Parameter name="delegateMethod" type="String" value="isAuthorizedForFile"/>
+				<Parameter name="parameterClasses" type="StringArray" value="java.lang.String"/>
+			</Parameters>
+		</AccessControlRule>
+		<AccessControlRule
+			name="AC 1.0 Function"
+			description="See delegateClass's code comments"
+			class="org.owasp.esapi.reference.accesscontrol.DelegatingACR">
+			<Parameters>
+				<Parameter name="delegateClass" type="String" value="org.owasp.esapi.reference.accesscontrol.FileBasedACRs"/>
+				<Parameter name="delegateMethod" type="String" value="isAuthorizedForFunction"/>
+				<Parameter name="parameterClasses" type="StringArray" value="java.lang.String"/>
+			</Parameters>
+		</AccessControlRule>
+		<AccessControlRule
+			name="AC 1.0 Service"
+			description="See delegateClass's code comments"
+			class="org.owasp.esapi.reference.accesscontrol.DelegatingACR">
+			<Parameters>
+				<Parameter name="delegateClass" type="String" value="org.owasp.esapi.reference.accesscontrol.FileBasedACRs"/>
+				<Parameter name="delegateMethod" type="String" value="isAuthorizedForService"/>
+				<Parameter name="parameterClasses" type="StringArray" value="java.lang.String"/>
+			</Parameters>
+		</AccessControlRule>
+		<AccessControlRule
+			name="AC 1.0 URL"
+			description="See delegateClass's code comments"
+			class="org.owasp.esapi.reference.accesscontrol.DelegatingACR">
+			<Parameters>
+				<Parameter name="delegateClass" type="String" value="org.owasp.esapi.reference.accesscontrol.FileBasedACRs"/>
+				<Parameter name="delegateMethod" type="String" value="isAuthorizedForURL"/>
+				<Parameter name="parameterClasses" type="StringArray" value="java.lang.String"/>
+			</Parameters>
+		</AccessControlRule>
+		
+		<!-- End Rules for backwards compatibility with Access Controller 1.0 -->
+	</AccessControlRules>
+</AccessControlPolicy>
+
+
+
+<!-- 
+We have these as runtime tests, but not as policy file load tests yet.
+		<AccessControlRule
+			name="EchoRuntimeParameterClassCastException"
+			description="Access depends on the value of the runtime parameter"
+			class="org.owasp.esapi.reference.accesscontrol.EchoPolicyParameterACR">
+			<Parameters>
+				<Parameter name="isTrue" type="Boolean" value="This is not a boolean"/>
+			</Parameters>
+		</AccessControlRule>
+		<AccessControlRule
+			name="EchoRuntimeParameterValueNull"
+			description="Access depends on the value of the runtime parameter"
+			class="org.owasp.esapi.reference.accesscontrol.EchoPolicyParameterACR">
+			<Parameters>
+				<Parameter name="isTrue" type="Boolean" value="null"/>
+			</Parameters>
+		</AccessControlRule>
+		<AccessControlRule
+			name="EchoRuntimeParameterValueEmpty"
+			description="Access depends on the value of the runtime parameter"
+			class="org.owasp.esapi.reference.accesscontrol.EchoPolicyParameterACR">
+			<Parameters>
+				<Parameter name="isTrue" type="Boolean" value=""/>
+			</Parameters>
+		</AccessControlRule>
+		<AccessControlRule
+			name="EchoRuntimeParameterValueMissing"
+			description="Access depends on the value of the runtime parameter"
+			class="org.owasp.esapi.reference.accesscontrol.EchoPolicyParameterACR">
+			<Parameters>
+				<Parameter name="isTrue" type="Boolean"/>
+			</Parameters>
+		</AccessControlRule>
+-->
+
+<!-- we should add tests for name and type errors too -->

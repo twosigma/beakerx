@@ -25,6 +25,7 @@ describe('Plot actions Tutorial', function() {
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fplot-actions.bkr&readOnly=true").then(done);
         beakerPO.waitUntilLoadingFinished();
+        browser.driver.manage().window().maximize();
     });
 
     afterAll(function(done){
@@ -146,12 +147,12 @@ describe('Plot actions Tutorial', function() {
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
             beakerPO.checkPlotIsPresentByIdCell(idCell);
             beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).click();
-            var y1 = beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('y');
+            var h1 = beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('height');
             element(by.css('body')).sendKeys(protractor.Key.ARROW_DOWN).then(function(){
-                expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('y')).toBeGreaterThan(y1);
+                expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('height')).toBeLessThan(h1);
             });
             element(by.css('body')).sendKeys(protractor.Key.ARROW_UP).then(function(){
-                expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('y')).toBe(y1);
+                expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('height')).toBe(h1);
             });
             element(by.css('body')).sendKeys("T").then(function(){
                 beakerPO.waitUntilLoadingFinished();

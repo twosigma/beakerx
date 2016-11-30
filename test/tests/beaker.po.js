@@ -911,7 +911,13 @@ var BeakerPageObject = function() {
           element(by.cssContainingText('span', item)).isPresent().then(function(present){
             self.hasClass(element(by.cssContainingText('span', item)), 'elfinder-navbar-expanded').then(function(expand){
               if(present && !expand){
-                element(by.cssContainingText('span', item)).click();
+                element(by.cssContainingText('span', item)).click().then(null,
+                  function(error){
+                    console.log('error click span ' + item);
+                    browser.sleep(1000);
+                    element(by.cssContainingText('span', item)).click();
+                  }
+                );
               }
             })
           })

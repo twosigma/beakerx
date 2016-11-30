@@ -169,7 +169,7 @@ describe('Table Display (Groovy API)', function () {
             var contextMenu =  element(by.css('ul.context-menu-list[style*="z-index: 2"]'));
             var negate = contextMenu.element(by.cssContainingText('span', 'negate'));
             browser.actions().mouseMove(negate).perform();
-            negate.click();
+            beakerPO.clickElementWithHandlingError(negate, 'spanElement');
             beakerPO.checkSubString(arrTd0.get(1), '-6', 0, 2);
 
             browser.actions().mouseMove(arrTd0.get(1)).perform();

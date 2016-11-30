@@ -18,17 +18,16 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Text, Formatting, and Equations tutorial', function (done) {
+describe('Text, Formatting, and Equations tutorial', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Ftext.bkr&readOnly=true").then(done);
         beakerPO.waitUntilLoadingCellOutput();
-        browser.driver.manage().window().maximize();
     });
 
     afterAll(function(done){
-        beakerPO.createScreenshot('tableGroovyTutorial');
+        beakerPO.createScreenshot('textTutorial');
         done();
     });
 

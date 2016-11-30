@@ -54,6 +54,7 @@ describe('Python Tutorial', function () {
             beakerPO.insertNewDefaultCell('IPython');
             browser.actions().sendKeys("in").perform();
             beakerPO.checkAutocomplete('infty');
+            browser.sleep(1000);
             beakerPO.selectItem('infty');
         });
     });

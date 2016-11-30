@@ -40,11 +40,10 @@ describe('Plot actions Tutorial', function() {
             beakerPO.checkPlotIsPresentByIdCell(idCell);
             beakerPO.checkLegendIsPresentByIdCell(idCell);
 
-            browser.wait(beakerPO.EC.textToBePresentInElement(beakerPO.getPlotLegendContainerByIdCell(idCell).all(By.css('#plotLegend label')).get(1), 'line 1'), 10000);
-            beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i0 > path')).click().then(function(){
-                browser.wait(beakerPO.EC.textToBePresentInElement(beakerPO.getPlotLegendContainerByIdCell(idCell).all(By.css('#plotLegend label')).get(1), 'new name'), 10000);
-            });
-
+            expect(beakerPO.getPlotLegendContainerByIdCell(idCell).$$('#plotLegend label').get(1).getText()).toBe('line 1');
+            beakerPO.getPlotSvgByIdCell(idCell).element(by.css('g#i0 > path')).click();
+            browser.sleep(1000);
+            expect(beakerPO.getPlotLegendContainerByIdCell(idCell).$$('#plotLegend label').get(1).getText()).toBe('new name');
         });
         it('Should change opacity', function () {
             var idCell = "codepCGwVI";
@@ -54,10 +53,10 @@ describe('Plot actions Tutorial', function() {
 
             expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getCssValue('fill')).toBe('rgb(255, 0, 0)');
             expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getCssValue('fill-opacity')).toBe('1');
-            beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).click().then(function(){
-                expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getCssValue('fill')).toBe('rgb(255, 0, 0)');
-                expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getCssValue('fill-opacity')).not.toBe('1');
-            });
+            beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).click();
+            browser.sleep(1000);
+            expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getCssValue('fill')).toBe('rgb(255, 0, 0)');
+            expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getCssValue('fill-opacity')).not.toBe('1');
         });
         it('Random Demo Data', function () {
             var idCell = "codehjGu00";
@@ -78,9 +77,9 @@ describe('Plot actions Tutorial', function() {
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Plot');
         beakerPO.checkPlotIsPresentByIdCell(idCell);
-        beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).click().then(function(){
-            beakerPO.waitUntilLoadingFinished();
-        });
+        beakerPO.clickElementWithHandlingError(beakerPO.getPlotSvgByIdCell(idCell).$('rect#i0_0'), 'rectPlot');
+        browser.sleep(1000);
+        beakerPO.waitUntilLoadingFinished();
     });
 
     it('Should display coordinates', function () {
@@ -98,6 +97,7 @@ describe('Plot actions Tutorial', function() {
             beakerPO.checkPlotIsPresentByIdCell(idCell);
             var y1 = beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('y');
             beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).click().then(function(){
+                browser.sleep(1000);
                 expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('y')).toBeLessThan(y1);
             });
         });

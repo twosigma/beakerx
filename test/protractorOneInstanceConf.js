@@ -35,8 +35,8 @@ var config = {
     specs: [
         'tests/tutorials/groovy_plotting/plotActions-tutorial.js',
         'tests/tutorials/table_display/tableGroovy-tutorial.js',
-        'tests/badToStringTest.js',
-        'tests/tutorials/feature_overview/text-tutorial.js'
+        'tests/tutorials/feature_overview/text-tutorial.js',
+        'tests/badToStringTest.js'
     ]
 };
 

@@ -108,6 +108,7 @@ describe('Plot actions Tutorial', function() {
             beakerPO.checkPlotIsPresentByIdCell(idCell);
             expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('text#label_i0_0')).isPresent()).not.toBe(true);
             beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).click().then(function(){
+                browser.sleep(1000);
                 expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('text#label_i0_0')).isPresent()).toBe(true);
             });
         });
@@ -122,6 +123,7 @@ describe('Plot actions Tutorial', function() {
             var yBase1_0 = rect1_0.getAttribute('y') + rect1_0.getAttribute('height');
             expect(yBase0_0).toBe(yBase1_0);
             beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).click().then(function(){
+                browser.sleep(1000);
                 rect0_0 = beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0'));
                 yBase0_0 = rect0_0.getAttribute('y') + rect0_0.getAttribute('height');
                 rect1_0 = beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i1_0'));
@@ -148,12 +150,15 @@ describe('Plot actions Tutorial', function() {
             beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).click();
             var y1 = beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('y');
             element(by.css('body')).sendKeys(protractor.Key.ARROW_DOWN).then(function(){
+                browser.sleep(1000);
                 expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('y')).toBeGreaterThan(y1);
             });
             element(by.css('body')).sendKeys(protractor.Key.ARROW_UP).then(function(){
+                browser.sleep(1000);
                 expect(beakerPO.getPlotSvgByIdCell(idCell).element(by.css('rect#i0_0')).getAttribute('y')).toBe(y1);
             });
             element(by.css('body')).sendKeys("T").then(function(){
+                browser.sleep(1000);
                 beakerPO.waitUntilLoadingFinished();
             });
         });

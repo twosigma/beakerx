@@ -771,7 +771,7 @@ var BeakerPageObject = function() {
   }
 
   this.checkEditBkCellByIdCell = function(idCell){
-    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="edit($event)"]')).click();
+    this.clickElementWithHandlingError(this.getBkCellByIdCell(idCell).$('[ng-click="edit($event)"]'), 'editBkCell');
     browser.wait(this.EC.visibilityOf($('bk-cell[cellid=' + idCell + '] div[ng-show="mode==\'edit\'"'), 10000));
     expect(this.getPreviewBkCellByIdCell(idCell).isDisplayed()).toBe(false);
     expect(this.getEditBkCellByIdCell(idCell).isDisplayed()).toBe(true);
@@ -957,6 +957,17 @@ var BeakerPageObject = function() {
                 self.createScreenshot('error' + name);
                 browser.executeScript('return arguments[0].click()', elem.getWebElement());
               });
+        }
+    );
+  }
+
+  this.doubleClickElementWithHandlingError = function(elem, name){
+    var self = this;
+    browser.actions().doubleClick(elem).perform().then(null,
+        function(error){
+          self.logLocationElement(elem, 'error doubleClick ' + name);
+          self.scrollHeaderElement();
+          browser.actions().doubleClick(elem).perform();
         }
     );
   }

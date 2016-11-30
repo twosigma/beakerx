@@ -45,11 +45,6 @@ describe('Table Display (Groovy API)', function () {
             beakerPO.checkDataTableHeadByIdCell(idCell, 'm3\ny30\ny1\nm6\ny2\ny10\ny3\ntime\ny5\ny7');
             beakerPO.checkDataTableBodyByIdCell(idCell, 25, '0 8 8.258571 7.920952 7.956190 8.085238 8.206667 :) 1990-01-31 8.119524 8.196190');
         });
-        it('Save as csv', function () {
-            var idCell = "codeaWwWKg";
-            beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.checkSaveAsCsvByIdCell(idCell, 'tableGroovy');
-        });
         it('Cell renderer', function () {
             var idCell = "codeROe5NG";
             beakerPO.scrollToBkCellByIdCell(idCell);
@@ -74,6 +69,11 @@ describe('Table Display (Groovy API)', function () {
             beakerPO.checkSubString(arrTd.get(2), '7.92095', 0, 7);
             beakerPO.checkSubString(arrTd.get(3), '8.11952', 0, 7);
             beakerPO.checkSubString(arrTd.get(5), '8.085238', 0, 8);
+        });
+        it('Save as csv', function () {
+            var idCell = "codenPyPvP";
+            beakerPO.scrollToBkCellByIdCell(idCell);
+            beakerPO.checkSaveAsCsvByIdCell(idCell, 'tableGroovy');
         });
         describe('Сell highlighters', function() {
             it('Color the entire table like a heatmap based on column value', function () {
@@ -161,8 +161,7 @@ describe('Table Display (Groovy API)', function () {
             var arrTd0 = getArrayTdElements(idCell, 0);
             expect(arrTd0.count()).toBe(4);
             beakerPO.checkSubString(arrTd0.get(1), '1', 0, 1);
-            browser.actions().mouseMove(arrTd0.get(1)).perform();
-            browser.actions().doubleClick(arrTd0.get(1)).perform();
+            beakerPO.doubleClickElementWithHandlingError(arrTd0.get(1), 'tdElement');
             beakerPO.checkSubString(arrTd0.get(1), '6', 0, 1);
 
             browser.actions().mouseMove(arrTd0.get(1)).perform();
@@ -205,9 +204,10 @@ describe('Table Display (Groovy API)', function () {
             var arrTd0 = getArrayTdElements(idCell, 0);
             expect(arrTd0.count()).toBe(4);
             beakerPO.checkSubString(arrTd0.get(2), '2', 0, 1);
-            browser.actions().doubleClick(arrTd0.get(2)).perform().then(function(){
-                beakerPO.waitUntilLoadingFinished();
-            });
+            beakerPO.doubleClickElementWithHandlingError(arrTd0.get(2), 'tdElement');
+            browser.sleep(1000);
+            beakerPO.waitUntilLoadingFinished();
+
 
             idCell = "codeC8S3M3";
             beakerPO.scrollToBkCellByIdCell(idCell);

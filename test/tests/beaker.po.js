@@ -1006,7 +1006,7 @@ var BeakerPageObject = function() {
   this.selectItem = function(itemName){
     var item = element(by.cssContainingText('li.CodeMirror-hint', itemName));
     this.clickElementWithHandlingError(item, 'codeMirrorHint');
-    browser.actions().doubleClick(item).perform();
+    this.doubleClickElementWithHandlingError(item, 'codeMirrorHint');
   }
 
   this.checkDownloadCSV = function(idCell){

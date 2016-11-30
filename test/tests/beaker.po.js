@@ -972,7 +972,7 @@ var BeakerPageObject = function() {
     browser.actions().doubleClick(elem).perform().then(null,
         function(error){
           self.logLocationElement(elem, 'error doubleClick ' + name);
-          self.createScreenshot('error' + name);
+          self.createScreenshot('errorDoubleClick' + name);
           self.scrollHeaderElement();
           browser.actions().doubleClick(elem).perform();
         }

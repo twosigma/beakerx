@@ -163,7 +163,9 @@ describe('Table Display (Groovy API)', function () {
             beakerPO.checkSubString(arrTd0.get(1), '1', 0, 1);
             beakerPO.doubleClickElementWithHandlingError(arrTd0.get(1), 'tdElement');
             beakerPO.checkSubString(arrTd0.get(1), '6', 0, 1);
-
+            beakerPO.scrollHeaderElement();
+            browser.sleep(1000);
+            arrTd0 = getArrayTdElements(idCell, 0);
             browser.actions().mouseMove(arrTd0.get(1)).perform();
             browser.actions().click(protractor.Button.RIGHT).perform().then(null,
                 function(error){

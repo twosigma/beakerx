@@ -41,8 +41,8 @@ os.chdir("../test/node_modules/protractor/bin")
 result = os.system("node protractor ../../../protractorConf.js");
 if not result:
     result = os.system("node protractor ../../../protractorWithoutRestartBrowserConf.js")
-#if not result:
-#    result = os.system("node protractor ../../../protractorOneInstanceConf.js")
+if not result:
+    result = os.system("node protractor ../../../protractorOneInstanceConf.js")
 
 # Skipping memory tests because they hang on Jenkins
 #os.system("node ../../../memory-tests.js")

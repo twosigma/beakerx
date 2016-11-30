@@ -18,7 +18,7 @@
 var BeakerPageObject = require('../../beaker.po.js');
 var beakerPO;
 
-describe('Table Display (Groovy API)', function (done) {
+describe('Table Display (Groovy API)', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();

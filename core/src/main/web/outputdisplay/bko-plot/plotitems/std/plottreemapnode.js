@@ -53,36 +53,55 @@
       if (!this.isRoot())
         return;
 
+      console.log('THIS', this);
+
       var margin = {top: 0, right: 0, bottom: 0, left: 0},
         width = (scope ? plotUtils.safeWidth(scope.jqsvg) : 300) - margin.left - margin.right,
         height = (scope ? plotUtils.safeHeight(scope.jqsvg) : 200) - margin.top - margin.bottom;
 
-      var treemap = d3.layout.treemap()
-        .round(false)
-        .size([width, height])
-        .sticky(true)
-        .value(function (d) {
-          return d.showItem === true ? scope.stdmodel.valueAccessor === 'VALUE' ? d.doubleValue : d.weight : 0;
-        });
+      // assign ratio
+      this.ratio = scope.stdmodel.ratio === undefined ? 1 : scope.stdmodel.ratio;
 
-      if (scope.stdmodel.mode) {
-        treemap.mode(scope.stdmodel.mode)
-      }
-      if (scope.stdmodel.sticky) {
-        treemap.sticky(scope.stdmodel.sticky)
-      }
-      if (scope.stdmodel.ratio) {
-        treemap.ratio(scope.stdmodel.ratio)
-      }
+      console.log('size', [width, height]);
+      var treemap = d3.treemap()
+        .round(false)
+        .size([width / this.ratio, height]);
+      // .sticky(true)
+
+
+      // mode
+      var currentModeFn = this.getModeFn(scope.stdmodel.mode);
+      treemap.tile(currentModeFn);
+
       if (scope.stdmodel.round) {
         treemap.round(scope.stdmodel.round)
       }
 
-      this.nodes = treemap
-        .nodes(this)
-        .filter(function (d) {
-          return !d.children || d.children.length === 0;
-        });
+      // if (scope.stdmodel.sticky) {
+      //   treemap.sticky(scope.stdmodel.sticky)
+      // }
+
+      console.log('prepare', this);
+
+
+
+      this.hierarchy = d3.hierarchy(this);
+
+      this.hierarchy
+        .sum(function(d) {
+          return d.showItem === true ? scope.stdmodel.valueAccessor === 'VALUE' ? d.doubleValue : d.weight : 0;
+        })
+        .sort(function(a, b) { return a.value - b.value; });
+
+      console.log('hierarchy', this.hierarchy);
+
+      // treemap(this.hierarchy);
+
+      this.nodes = this.hierarchy.leaves();
+      // .filter(function (d) {
+      //   console.log('d',d);
+      //   return !d.children || d.children.length === 0;
+      // });
     };
 
 
@@ -109,9 +128,10 @@
 
 
     PlotTreeMapNode.prototype.draw = function (scope) {
+      var self = this;
 
       var zoomed = function () {
-        svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        svg.attr("transform", d3.event.transform);
         setTextStyles();
       };
 
@@ -119,15 +139,15 @@
         svg.selectAll("text")
           .style('font-size', function (d) {
             var scale = d3.event && d3.event.scale ? d3.event.scale : 1;
-            var size = Math.min(18 / scale, Math.floor(d.dx));
+            var size = Math.min(18 / scale, Math.floor(d.x1 - d.x0));
             return size + "px"
           })
           .attr("textLength", function (d) {
-            return this.getComputedTextLength() < d.dx ? this.getComputedTextLength() : d.dx;
+            return this.getComputedTextLength() < d.x1 - d.x0 ? this.getComputedTextLength() : d.x1 - d.x0;
           })
           .style("opacity", function (d) {
             d.w = this.getComputedTextLength();
-            return d.dx > d.w && d.showItem === true ? 1 : 0;
+            return d.x1 - d.x0 > d.w && d.data.showItem === true ? 1 : 0;
           })
         ;
       };
@@ -137,7 +157,7 @@
 
       this.prepare(scope);
 
-      var zoom = d3.behavior.zoom().scaleExtent([1, 10]);
+      var zoom = d3.zoom().scaleExtent([1, 10]);
 
       var enableZoom = function () {
         scope.maing.call(zoom.on("zoom", zoomed));
@@ -166,6 +186,7 @@
           setTextStyles();
         });
 
+      console.log('LEAVES', this.hierarchy.leaves());
 
       var svg = scope.maing.append("svg:g");
       var cell = svg.selectAll("g")
@@ -173,13 +194,10 @@
           .enter().append('svg:g')
           .attr('class', 'cell')
           .attr("id", function (d) {
-            return d.id;
-          })
-          .attr('transform', function (d) {
-            return 'translate(' + d.x + ',' + d.y + ')';
+            return d.data.id;
           })
           .on("mouseover", function (d) {
-            if (scope.stdmodel.useToolTip === true && d.tooltip) {
+            if (scope.stdmodel.useToolTip === true && d.data.tooltip) {
               scope.tooltip.style("visibility", "visible");
               scope.tooltip.transition().duration(200).style("opacity", 0.9);
             }
@@ -192,8 +210,8 @@
               .style("left", xPosition + "px")
               .style("top", yPosition + "px");
 
-            if (d.tooltip) {
-              scope.tooltip.html(d.tooltip);
+            if (d.data.tooltip) {
+              scope.tooltip.html(d.data.tooltip);
             }
           })
           .on("mouseout", function () {
@@ -203,34 +221,60 @@
 
 
       cell.append("svg:rect")
+        .attr('transform', function (d) {
+          return 'translate(' + d.x0 * self.ratio + ',' + d.y0 + ')';
+        })
         .attr("width", function (d) {
-          return Math.max(0, d.dx - 0.2);
+          return Math.max(0, d.x1 * self.ratio - d.x0 * self.ratio - 0.2);
         })
         .attr("height", function (d) {
-          return Math.max(0, d.dy - 0.2);
+          return Math.max(0, d.y1 - d.y0 - 0.2);
         })
         .style("fill", function (d) {
-          return d.children ? null : d.color;
+          return d.children ? null : d.data.color;
         })
-      ;
+        .style("stroke", '#fff');
 
 
       cell.append("svg:text")
         .attr("x", function (d) {
-          return d.dx / 2;
+          return (d.x0 + ((d.x1 - d.x0) / 2)) * self.ratio;
         })
         .attr("y", function (d) {
-          return d.dy / 2;
+          return d.y0 + ((d.y1 - d.y0) / 2);
         })
         .attr("cursor", "default")
         .attr("text-anchor", "middle")
         .text(function (d) {
-          return d.children ? null : d.label;
+          return d.children ? null : d.data.label;
         });
+
       setTextStyles();
       disableZoom();
     };
 
+    PlotTreeMapNode.prototype.getModeFn = function(modeName) {
+      var res = null;
+
+      modeName = modeName || '';
+
+      if (modeName === 'squarify') {
+        res = d3.treemapSquarify;
+      } else if (modeName === 'dice') {
+        res = d3.treemapDice;
+      } else if (modeName === 'binary') {
+        res = d3.treemapBinary;
+      } else if (modeName === 'slice') {
+        res = d3.treemapSlice;
+      } else if (modeName === 'slice-dic') {
+        res = d3.treemapSliceDice;
+      } else if (modeName === 'resquarify') {
+        res = d3.treemapResquarify;
+      } else {
+        res = d3.treemapSquarify;
+      }
+      return res;
+    };
 
     PlotTreeMapNode.prototype.clear = function (scope) {
       if (!this.isRoot())

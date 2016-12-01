@@ -148,11 +148,13 @@ describe('Table Display (Groovy API)', function () {
         });
         describe('Adding custom actions', function () {
             var idCell = "codex9hziv";
-            beakerPO.scrollToBkCellByIdCell(idCell);
-            beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-            var arrTd0 = getArrayTdElements(idCell, 0);
-            expect(arrTd0.count()).toBe(4);
-
+            var arrTd0;
+            it('Should display table', function(){
+                beakerPO.scrollToBkCellByIdCell(idCell);
+                beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+                arrTd0 = getArrayTdElements(idCell, 0);
+                expect(arrTd0.count()).toBe(4);
+            });
             it('Should sum values to 6', function(){
                 beakerPO.checkSubString(arrTd0.get(1), '1', 0, 1);
                 beakerPO.doubleClickElementWithHandlingError(arrTd0.get(1), 'tdElement');

@@ -41,7 +41,7 @@ describe('Table Display (Groovy API)', function () {
             var idCell = "codeaWwWKg";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table', 'tableGroovyBuiltInFormatters', 60000);
-            beakerPO.checkDtContainerByIdCell(idCell);
+
             beakerPO.checkDataTableHeadByIdCell(idCell, 'm3\ny30\ny1\nm6\ny2\ny10\ny3\ntime\ny5\ny7');
             beakerPO.checkDataTableBodyByIdCell(idCell, 25, '0 8 8.258571 7.920952 7.956190 8.085238 8.206667 :) 1990-01-31 8.119524 8.196190');
         });
@@ -49,7 +49,6 @@ describe('Table Display (Groovy API)', function () {
             var idCell = "codeROe5NG";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-            beakerPO.checkDtContainerByIdCell(idCell);
 
             var arrTd = getArrayTdElements(idCell, 0);
             expect(arrTd.count()).toBe(11);
@@ -61,7 +60,7 @@ describe('Table Display (Groovy API)', function () {
             var idCell = "codenPyPvP";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-            beakerPO.checkDtContainerByIdCell(idCell);
+
             beakerPO.checkDataTableHeadByIdCell(idCell, 'm3\ny1\ny5\ntime\ny2');
             var arrTd = getArrayTdElements(idCell, 0);
             expect(arrTd.count()).toBe(6);
@@ -80,7 +79,6 @@ describe('Table Display (Groovy API)', function () {
                 var idCell = "codeWyrMwb";
                 beakerPO.scrollToBkCellByIdCell(idCell);
                 beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-                beakerPO.checkDtContainerByIdCell(idCell);
 
                 var arrTd = getArrayTdElements(idCell, 0);
                 expect(arrTd.count()).toBe(11);
@@ -96,7 +94,6 @@ describe('Table Display (Groovy API)', function () {
                 var idCell = "code7zZ3sT";
                 beakerPO.scrollToBkCellByIdCell(idCell);
                 beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-                beakerPO.checkDtContainerByIdCell(idCell);
 
                 var arrTd = getArrayTdElements(idCell, 0);
                 expect(arrTd.count()).toBe(4);
@@ -112,7 +109,6 @@ describe('Table Display (Groovy API)', function () {
                 var idCell = "codetHTtD2";
                 beakerPO.scrollToBkCellByIdCell(idCell);
                 beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-                beakerPO.checkDtContainerByIdCell(idCell);
 
                 var arrTd = getArrayTdElements(idCell, 0);
                 expect(arrTd.count()).toBe(11);
@@ -132,7 +128,6 @@ describe('Table Display (Groovy API)', function () {
                 var idCell = "code2KwSKV";
                 beakerPO.scrollToBkCellByIdCell(idCell);
                 beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-                beakerPO.checkDtContainerByIdCell(idCell);
 
                 var rgb0 = 'rgba(245, 188, 188, 1)'
                 var arrTd0 = getArrayTdElements(idCell, 0);
@@ -155,24 +150,14 @@ describe('Table Display (Groovy API)', function () {
             var idCell = "codex9hziv";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-            beakerPO.scrollHeaderElement();
-            beakerPO.checkDtContainerByIdCell(idCell);
 
             var arrTd0 = getArrayTdElements(idCell, 0);
             expect(arrTd0.count()).toBe(4);
             beakerPO.checkSubString(arrTd0.get(1), '1', 0, 1);
             beakerPO.doubleClickElementWithHandlingError(arrTd0.get(1), 'tdElement');
             beakerPO.checkSubString(arrTd0.get(1), '6', 0, 1);
-            beakerPO.scrollHeaderElement();
-            browser.sleep(1000);
-            arrTd0 = getArrayTdElements(idCell, 0);
             browser.actions().mouseMove(arrTd0.get(1)).perform();
-            browser.actions().click(protractor.Button.RIGHT).perform().then(null,
-                function(error){
-                    beakerPO.scrollHeaderElement();
-                    browser.actions().mouseMove(arrTd0.get(1)).perform();
-                    browser.actions().click(protractor.Button.RIGHT).perform();
-                });
+            browser.actions().click(protractor.Button.RIGHT).perform();
             var contextMenu =  element(by.css('ul.context-menu-list[style*="z-index: 2"]'));
             var negate = contextMenu.element(by.cssContainingText('span', 'negate'));
             browser.actions().mouseMove(negate).perform();
@@ -184,6 +169,7 @@ describe('Table Display (Groovy API)', function () {
             var run_misc_formatting = contextMenu.element(by.cssContainingText('span', 'run misc_formatting'));
             browser.actions().mouseMove(run_misc_formatting).perform();
             run_misc_formatting.click().then(function(){
+                browser.sleep(1000);
                 beakerPO.waitUntilLoadingFinished();
             });
         });
@@ -191,7 +177,7 @@ describe('Table Display (Groovy API)', function () {
             var idCell = "code0Xkn1E";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-            beakerPO.checkDtContainerByIdCell(idCell);
+
             var arrTd = getArrayTdElements(idCell, 0);
             expect(arrTd.count()).toBe(4);
             beakerPO.checkSubString(arrTd.get(1), '1', 0, 1);
@@ -207,14 +193,13 @@ describe('Table Display (Groovy API)', function () {
             var idCell = "codeYEb1OS";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-            beakerPO.checkDtContainerByIdCell(idCell);
+
             var arrTd0 = getArrayTdElements(idCell, 0);
             expect(arrTd0.count()).toBe(4);
             beakerPO.checkSubString(arrTd0.get(2), '2', 0, 1);
             beakerPO.doubleClickElementWithHandlingError(arrTd0.get(2), 'tdElement');
             browser.sleep(1000);
             beakerPO.waitUntilLoadingFinished();
-
 
             idCell = "codeC8S3M3";
             beakerPO.scrollToBkCellByIdCell(idCell);

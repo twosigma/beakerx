@@ -22,7 +22,10 @@
 
       convertGroovyData : function(newmodel, model) {
         // set margin
-        newmodel.margin = {};
+        newmodel.margin = {
+          top: 0,
+          bottom: 0
+        };
         // set axis bound as focus
         if (model.x_auto_range === false) {
           if (model.x_lower_bound != null) {

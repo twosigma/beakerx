@@ -24,7 +24,6 @@ describe('Python Tutorial', function () {
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fipython-examples.bkr&readOnly=true").then(done);
-        browser.driver.manage().window().maximize();
 
         var start = new Date().getTime();
         beakerPO.waitUntilLoadingFinished().then(function() {
@@ -55,7 +54,6 @@ describe('Python Tutorial', function () {
             beakerPO.insertNewDefaultCell('IPython');
             browser.actions().sendKeys("in").perform();
             beakerPO.checkAutocomplete('infty');
-            browser.sleep(1000);
             beakerPO.selectItem('infty');
         });
     });

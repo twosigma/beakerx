@@ -33,10 +33,12 @@ var config = {
         }));
     },
     specs: [
+        'tests/tutorials/groovy_plotting/plot-features-tutorial.js',
         'tests/tutorials/groovy_plotting/plotActions-tutorial.js',
         'tests/tutorials/table_display/tableGroovy-tutorial.js',
-        'tests/tutorials/feature_overview/text-tutorial.js',
-        'tests/badToStringTest.js'
+        'tests/badToStringTest.js',
+        'tests/tutorials/language_demos/sql-tutorial.js',
+        'tests/tutorials/feature_overview/text-tutorial.js'
     ]
 };
 

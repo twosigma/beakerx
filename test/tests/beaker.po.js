@@ -771,7 +771,7 @@ var BeakerPageObject = function() {
   }
 
   this.checkEditBkCellByIdCell = function(idCell){
-    this.clickElementWithHandlingError(this.getBkCellByIdCell(idCell).$('[ng-click="edit($event)"]'), 'editBkCell');
+    this.getBkCellByIdCell(idCell).element(by.css('[ng-click="edit($event)"]')).click();
     browser.wait(this.EC.visibilityOf($('bk-cell[cellid=' + idCell + '] div[ng-show="mode==\'edit\'"'), 10000));
     expect(this.getPreviewBkCellByIdCell(idCell).isDisplayed()).toBe(false);
     expect(this.getEditBkCellByIdCell(idCell).isDisplayed()).toBe(true);
@@ -911,13 +911,7 @@ var BeakerPageObject = function() {
           element(by.cssContainingText('span', item)).isPresent().then(function(present){
             self.hasClass(element(by.cssContainingText('span', item)), 'elfinder-navbar-expanded').then(function(expand){
               if(present && !expand){
-                element(by.cssContainingText('span', item)).click().then(null,
-                  function(error){
-                    console.log('error click span ' + item);
-                    browser.sleep(1000);
-                    element(by.cssContainingText('span', item)).click();
-                  }
-                );
+                element(by.cssContainingText('span', item)).click();
               }
             })
           })
@@ -956,25 +950,13 @@ var BeakerPageObject = function() {
     var self = this;
     elem.click().then(null,
         function(error){
+          self.logLocationElement(elem, 'error click ' + name);
           self.scrollHeaderElement();
           elem.click().then(null,
               function(error){
-                self.logLocationElement(elem, 'error click ' + name);
                 self.createScreenshot('error' + name);
                 browser.executeScript('return arguments[0].click()', elem.getWebElement());
               });
-        }
-    );
-  }
-
-  this.doubleClickElementWithHandlingError = function(elem, name){
-    var self = this;
-    browser.actions().doubleClick(elem).perform().then(null,
-        function(error){
-          self.logLocationElement(elem, 'error doubleClick ' + name);
-          self.createScreenshot('errorDoubleClick' + name);
-          self.scrollHeaderElement();
-          browser.actions().doubleClick(elem).perform();
         }
     );
   }
@@ -1007,7 +989,7 @@ var BeakerPageObject = function() {
   this.selectItem = function(itemName){
     var item = element(by.cssContainingText('li.CodeMirror-hint', itemName));
     this.clickElementWithHandlingError(item, 'codeMirrorHint');
-    this.doubleClickElementWithHandlingError(item, 'codeMirrorHint');
+    browser.actions().doubleClick(item).perform();
   }
 
   this.checkDownloadCSV = function(idCell){

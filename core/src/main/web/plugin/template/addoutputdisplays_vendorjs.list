@@ -1,4 +1,1 @@
 vendor/bower_components/d3/d3.js
-vendor/vega/vega.js
-vendor/vega/d3.geo.projection.min.js
-vendor/vega/d3.layout.cloud.js

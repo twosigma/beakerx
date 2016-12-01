@@ -161,12 +161,11 @@ describe('Table Display (Groovy API)', function () {
                 browser.sleep(1000);
                 beakerPO.checkSubString(arrTd0.get(1), '6', 0, 1);
             });
-            it('Should do negative value -6', function(){
+            it('Should make negative value -6', function(){
                 browser.actions().mouseMove(arrTd0.get(1)).perform();
                 browser.actions().click(protractor.Button.RIGHT).perform();
-                browser.sleep(1000);
-                var contextMenu =  element(by.css('ul.context-menu-list[style*="z-index: 2"]'));
-                var negate = contextMenu.element(by.cssContainingText('span', 'negate'));
+                beakerPO.createScreenshot('tableGroovyNegate');
+                var negate = contextMenu.element(by.cssContainingText('li.context-menu-item > span', 'negate'));
                 browser.actions().mouseMove(negate).perform();
                 beakerPO.clickElementWithHandlingError(negate, 'spanElement');
                 beakerPO.checkSubString(arrTd0.get(1), '-6', 0, 2);
@@ -174,9 +173,8 @@ describe('Table Display (Groovy API)', function () {
             it('Should run tagged cell on action', function(){
                 browser.actions().mouseMove(arrTd0.get(1)).perform();
                 browser.actions().click(protractor.Button.RIGHT).perform();
-                browser.sleep(1000);
-                var contextMenu =  element(by.css('ul.context-menu-list[style*="z-index: 2"]'));
-                var run_misc_formatting = contextMenu.element(by.cssContainingText('span', 'run misc_formatting'));
+                beakerPO.createScreenshot('tableGroovyRunTag');
+                var run_misc_formatting = contextMenu.element(by.cssContainingText('li.context-menu-item > span', 'run misc_formatting'));
                 browser.actions().mouseMove(run_misc_formatting).perform();
                 run_misc_formatting.click().then(function(){
                     browser.sleep(1000);

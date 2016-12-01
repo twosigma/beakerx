@@ -102,7 +102,11 @@ define(function(require, exports, module) {
                 };
                 var fakeNotebook = {
                   events: {on: function (){},
-                           trigger: function (){}}
+                           trigger: function (){}},
+                           get_msg_cell: function (){
+                             console.log('get_msg_cell is not implemented');
+                             return undefined; 
+                           }
                 };
                 var ajaxsettings = {
                   processData : false,

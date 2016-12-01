@@ -105,6 +105,16 @@ define(function(require, exports, module) {
                            trigger: function (){}},
                            get_msg_cell: function (){
                              console.log('get_msg_cell is not implemented');
+                             //there is no cell, cell emulation in:
+                             //dist/vendor/ipython3/manager.js#display_widget_view
+                             //dist/vendor/ipython3/manager.js#display_view_in_cell
+                             //dist/vendor/ipython3/manager.js#callbacks -- for text output with widgets 
+                             //dist/vendor/ipython3/widget.js#_handle_comm_msg (case 'display')
+                             
+                             //may be it is simpler to implement this function in future, 
+                             //then no need to modify all this functions, code can be taken from :
+                             //dist/vendor/ipython3/manager.js#display_widget_view
+                             //dist/vendor/ipython3/widget.js#_handle_comm_msg (case 'display')
                              return undefined; 
                            }
                 };

@@ -154,6 +154,8 @@ define('ipython3_widgetmanager', [
       }
   };
   */
+  
+  //MODIFIED !!!
   WidgetManager.prototype.display_view_in_cell = function(msg, model) {
     // Displays a view in a cell.
     var that = this;
@@ -170,6 +172,7 @@ define('ipython3_widgetmanager', [
         }).catch(utils.reject('Could not create or display view', true));
   };
   
+  //MODIFIED !!!
   WidgetManager.prototype.display_widget_view = function(msg, view_promise) {
     // Display the view.
     var that = this;
@@ -184,7 +187,7 @@ define('ipython3_widgetmanager', [
           prompt_area: false,
           events: that.notebook.events
         });
-        if (view.outputBuffer) {
+        if (view.outputBuffer) { //this.widget_manager.callbacks(view).iopub
           var callbacks = that.callbacks(view);
           if (callbacks && callbacks.iopub && callbacks.iopub.output) {
             for (var i = 0; i < view.outputBuffer.length; i++) {
@@ -278,10 +281,28 @@ define('ipython3_widgetmanager', [
       return null;
   };
 
+  
+  //MODIFIED !!!
   WidgetManager.prototype.callbacks = function (view) {
-      /**
-       * callback handlers specific a view
-       */
+    /**
+     * callback handlers specific a view
+     */
+    var callbacks = {};
+    if (view && (view.oa || view.options.parent.oa)) {
+      view.oa = view.oa || view.options.parent.oa;
+      var handle_output = $.proxy(view.oa.handle_output, view.oa);
+      var handle_clear_output = $.proxy(view.oa.handle_clear_output, view.oa);
+      callbacks = {
+        iopub: {
+          output: handle_output,
+          clear_output: handle_clear_output
+        }
+      };
+    }
+    return callbacks;
+  };
+  
+/*  WidgetManager.prototype.callbacks = function_OLD (view) {
       var callbacks = {};
       if (view && view.options.cell) {
 
@@ -311,7 +332,7 @@ define('ipython3_widgetmanager', [
           };
       }
       return callbacks;
-  };
+  };*/
 
   WidgetManager.prototype.get_model = function (model_id) {
       /**

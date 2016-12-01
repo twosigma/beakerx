@@ -179,6 +179,7 @@ define('ipython3_widget', [
           }
           return utils.resolve_promises_dict(deserialized);
       },
+      
       _handle_comm_msg: function (msg) {
           /**
            * Handle incoming comm msg.
@@ -211,6 +212,7 @@ define('ipython3_widget', [
               case 'custom':
                   this.trigger('msg:custom', msg.content.data.content, msg.buffers);
                   break;
+              //MODIFIED !!!
               case 'display':
                 var elem = $(document.createElement("div"));
                 elem.addClass('ipy-output');

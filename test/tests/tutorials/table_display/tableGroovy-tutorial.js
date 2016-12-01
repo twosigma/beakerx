@@ -168,6 +168,7 @@ describe('Table Display (Groovy API)', function () {
                 var negate = element(by.cssContainingText('li.context-menu-item > span', 'negate'));
                 browser.actions().mouseMove(negate).perform();
                 beakerPO.clickElementWithHandlingError(negate, 'spanElement');
+                browser.sleep(1000);
                 beakerPO.checkSubString(arrTd0.get(1), '-6', 0, 2);
             });
             it('Should run tagged cell on action', function(){
@@ -176,10 +177,9 @@ describe('Table Display (Groovy API)', function () {
                 beakerPO.createScreenshot('tableGroovyRunTag');
                 var run_misc_formatting = element(by.cssContainingText('li.context-menu-item > span', 'run misc_formatting'));
                 browser.actions().mouseMove(run_misc_formatting).perform();
-                run_misc_formatting.click().then(function(){
-                    browser.sleep(1000);
-                    beakerPO.waitUntilLoadingFinished();
-                });
+                beakerPO.clickElementWithHandlingError(run_misc_formatting, 'spanElement');
+                browser.sleep(1000);
+                beakerPO.waitUntilLoadingFinished();
             });
         });
         it('Misc formatting', function () {

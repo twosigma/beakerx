@@ -165,7 +165,7 @@ describe('Table Display (Groovy API)', function () {
                 browser.actions().mouseMove(arrTd0.get(1)).perform();
                 browser.actions().click(protractor.Button.RIGHT).perform();
                 beakerPO.createScreenshot('tableGroovyNegate');
-                var negate = contextMenu.element(by.cssContainingText('li.context-menu-item > span', 'negate'));
+                var negate = element(by.cssContainingText('li.context-menu-item > span', 'negate'));
                 browser.actions().mouseMove(negate).perform();
                 beakerPO.clickElementWithHandlingError(negate, 'spanElement');
                 beakerPO.checkSubString(arrTd0.get(1), '-6', 0, 2);
@@ -174,7 +174,7 @@ describe('Table Display (Groovy API)', function () {
                 browser.actions().mouseMove(arrTd0.get(1)).perform();
                 browser.actions().click(protractor.Button.RIGHT).perform();
                 beakerPO.createScreenshot('tableGroovyRunTag');
-                var run_misc_formatting = contextMenu.element(by.cssContainingText('li.context-menu-item > span', 'run misc_formatting'));
+                var run_misc_formatting = element(by.cssContainingText('li.context-menu-item > span', 'run misc_formatting'));
                 browser.actions().mouseMove(run_misc_formatting).perform();
                 run_misc_formatting.click().then(function(){
                     browser.sleep(1000);

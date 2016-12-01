@@ -19,7 +19,7 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Working with d3.js', function (done) {
+describe('Working with d3.js', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();

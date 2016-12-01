@@ -549,7 +549,7 @@ var BeakerPageObject = function() {
   }
 
   this.getDataTablesTBodyByIdCell = function (idCell) {
-    return this.getDataTablesScrollBodyByIdCell(idCell).all(By.css('tbody > tr'));
+    return this.getDataTablesScrollBodyByIdCell(idCell).$$('tbody > tr');
   }
 
   this.getDataTablesColumnByIdCell = function (cellId, colIndex) {
@@ -896,7 +896,7 @@ var BeakerPageObject = function() {
         .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVExport(false)"]')).click);
     this.checkSaveTableAsCsv(self, dir, filename + "All.csv");
     // Save Selected as csv
-    this.getDataTablesTBodyByIdCell(idCell).get(0).all(by.css('td')).get(0).click();
+    this.clickElementWithHandlingError(this.getDataTablesTBodyByIdCell(idCell).first(), 'trElement');
     this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')).click()
         .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVExport(true)"]')).click);
     this.checkSaveTableAsCsv(self, dir, filename + "Selected.csv");
@@ -948,14 +948,15 @@ var BeakerPageObject = function() {
 
   this.clickElementWithHandlingError = function(elem, name){
     var self = this;
-    elem.click().then(
-        function(result){
-          console.log(name + ' click - OK');
-        },
+    elem.click().then(null,
         function(error){
           self.logLocationElement(elem, 'error click ' + name);
           self.scrollHeaderElement();
-          elem.click().then(null, function(error){ self.scrollHeaderElement(); elem.click(); });
+          elem.click().then(null,
+              function(error){
+                self.createScreenshot('error' + name);
+                browser.executeScript('return arguments[0].click()', elem.getWebElement());
+              });
         }
     );
   }
@@ -978,7 +979,7 @@ var BeakerPageObject = function() {
   };
 
   this.insertNewDefaultCell = function(language){
-    element.all(by.css('button[ng-click="newDefaultCodeCell()"]')).get(0).click();
+    this.clickElementWithHandlingError($$('button[ng-click="newDefaultCodeCell()"]').first(), 'newDefaultCode');
     this.insertCellOfType(language);
     var bkcell = element.all(by.css('bk-cell')).get(0);
     bkcell.element(by.css('div.CodeMirror-code')).click();
@@ -987,7 +988,7 @@ var BeakerPageObject = function() {
 
   this.selectItem = function(itemName){
     var item = element(by.cssContainingText('li.CodeMirror-hint', itemName));
-    item.click();
+    this.clickElementWithHandlingError(item, 'codeMirrorHint');
     browser.actions().doubleClick(item).perform();
   }
 

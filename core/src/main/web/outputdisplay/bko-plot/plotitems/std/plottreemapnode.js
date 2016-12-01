@@ -53,8 +53,6 @@
       if (!this.isRoot())
         return;
 
-      console.log('THIS', this);
-
       var margin = {top: 0, right: 0, bottom: 0, left: 0},
         width = (scope ? plotUtils.safeWidth(scope.jqsvg) : 300) - margin.left - margin.right,
         height = (scope ? plotUtils.safeHeight(scope.jqsvg) : 200) - margin.top - margin.bottom;
@@ -81,25 +79,17 @@
       //   treemap.sticky(scope.stdmodel.sticky)
       // }
 
-      console.log('prepare', this);
-
-
-
-      this.hierarchy = d3.hierarchy(this);
-
-      this.hierarchy
+      this.hierarchy = d3.hierarchy(this)
         .sum(function(d) {
           return d.showItem === true ? scope.stdmodel.valueAccessor === 'VALUE' ? d.doubleValue : d.weight : 0;
         })
         .sort(function(a, b) { return a.value - b.value; });
 
-      console.log('hierarchy', this.hierarchy);
-
-      // treemap(this.hierarchy);
+      // activate treemap
+      treemap(this.hierarchy);
 
       this.nodes = this.hierarchy.leaves();
       // .filter(function (d) {
-      //   console.log('d',d);
       //   return !d.children || d.children.length === 0;
       // });
     };
@@ -138,8 +128,8 @@
       var setTextStyles = function () {
         svg.selectAll("text")
           .style('font-size', function (d) {
-            var scale = d3.event && d3.event.scale ? d3.event.scale : 1;
-            var size = Math.min(18 / scale, Math.floor(d.x1 - d.x0));
+            var scale = d3.event && d3.event.transform ? d3.event.transform.k : 1,
+              size = Math.min(18 / scale, Math.floor(d.x1 - d.x0));
             return size + "px"
           })
           .attr("textLength", function (d) {
@@ -186,8 +176,6 @@
           setTextStyles();
         });
 
-      console.log('LEAVES', this.hierarchy.leaves());
-
       var svg = scope.maing.append("svg:g");
       var cell = svg.selectAll("g")
           .data(this.nodes)
@@ -195,6 +183,9 @@
           .attr('class', 'cell')
           .attr("id", function (d) {
             return d.data.id;
+          })
+          .attr('transform', function (d) {
+            return 'translate(' + d.x0 * self.ratio + ',' + d.y0 + ')';
           })
           .on("mouseover", function (d) {
             if (scope.stdmodel.useToolTip === true && d.data.tooltip) {
@@ -216,14 +207,9 @@
           })
           .on("mouseout", function () {
             scope.tooltip.transition().duration(500).style("opacity", 0);
-          })
-        ;
-
+          });
 
       cell.append("svg:rect")
-        .attr('transform', function (d) {
-          return 'translate(' + d.x0 * self.ratio + ',' + d.y0 + ')';
-        })
         .attr("width", function (d) {
           return Math.max(0, d.x1 * self.ratio - d.x0 * self.ratio - 0.2);
         })
@@ -232,16 +218,14 @@
         })
         .style("fill", function (d) {
           return d.children ? null : d.data.color;
-        })
-        .style("stroke", '#fff');
-
+        });
 
       cell.append("svg:text")
         .attr("x", function (d) {
-          return (d.x0 + ((d.x1 - d.x0) / 2)) * self.ratio;
+          return ((d.x1 - d.x0) / 2) * self.ratio;
         })
         .attr("y", function (d) {
-          return d.y0 + ((d.y1 - d.y0) / 2);
+          return (d.y1 - d.y0) / 2;
         })
         .attr("cursor", "default")
         .attr("text-anchor", "middle")

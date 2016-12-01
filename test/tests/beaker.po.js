@@ -956,10 +956,10 @@ var BeakerPageObject = function() {
     var self = this;
     elem.click().then(null,
         function(error){
-          self.logLocationElement(elem, 'error click ' + name);
           self.scrollHeaderElement();
           elem.click().then(null,
               function(error){
+                self.logLocationElement(elem, 'error click ' + name);
                 self.createScreenshot('error' + name);
                 browser.executeScript('return arguments[0].click()', elem.getWebElement());
               });

@@ -105,6 +105,16 @@ define(function(require, exports, module) {
                            trigger: function (){}},
                            get_msg_cell: function (){
                              console.log('get_msg_cell is not implemented');
+                             
+                             //configuration :
+                             //ipywidgets 4.0.3 py35_0
+                             //conda uninstall widgetsnbextension ---- if Ipywidgets 5 was instaled before
+                             //ipython 5.1.0 py35_0
+                             //jupyter 1.0.0 py35_3
+                             //jupyter_client 4.4.0 py35_0
+                             //jupyter_console 5.0.0 py35_0
+                             //jupyter_core 4.2.0 py35_0
+                               
                              //there is no cell, cell emulation in:
                              //dist/vendor/ipython3/manager.js#display_widget_view
                              //dist/vendor/ipython3/manager.js#display_view_in_cell

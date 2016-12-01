@@ -146,7 +146,7 @@ describe('Table Display (Groovy API)', function () {
                 expect(arrTd1.get(2).getCssValue('background-color')).toBe(rgb1);
             });
         });
-        decribe('Adding custom actions', function () {
+        describe('Adding custom actions', function () {
             var idCell = "codex9hziv";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');

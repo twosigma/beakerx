@@ -146,31 +146,40 @@ describe('Table Display (Groovy API)', function () {
                 expect(arrTd1.get(2).getCssValue('background-color')).toBe(rgb1);
             });
         });
-        it('Adding custom actions', function () {
+        decribe('Adding custom actions', function () {
             var idCell = "codex9hziv";
             beakerPO.scrollToBkCellByIdCell(idCell);
             beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-
             var arrTd0 = getArrayTdElements(idCell, 0);
             expect(arrTd0.count()).toBe(4);
-            beakerPO.checkSubString(arrTd0.get(1), '1', 0, 1);
-            beakerPO.doubleClickElementWithHandlingError(arrTd0.get(1), 'tdElement');
-            beakerPO.checkSubString(arrTd0.get(1), '6', 0, 1);
-            browser.actions().mouseMove(arrTd0.get(1)).perform();
-            browser.actions().click(protractor.Button.RIGHT).perform();
-            var contextMenu =  element(by.css('ul.context-menu-list[style*="z-index: 2"]'));
-            var negate = contextMenu.element(by.cssContainingText('span', 'negate'));
-            browser.actions().mouseMove(negate).perform();
-            beakerPO.clickElementWithHandlingError(negate, 'spanElement');
-            beakerPO.checkSubString(arrTd0.get(1), '-6', 0, 2);
 
-            browser.actions().mouseMove(arrTd0.get(1)).perform();
-            browser.actions().click(protractor.Button.RIGHT).perform();
-            var run_misc_formatting = contextMenu.element(by.cssContainingText('span', 'run misc_formatting'));
-            browser.actions().mouseMove(run_misc_formatting).perform();
-            run_misc_formatting.click().then(function(){
+            it('Should sum values to 6', function(){
+                beakerPO.checkSubString(arrTd0.get(1), '1', 0, 1);
+                beakerPO.doubleClickElementWithHandlingError(arrTd0.get(1), 'tdElement');
                 browser.sleep(1000);
-                beakerPO.waitUntilLoadingFinished();
+                beakerPO.checkSubString(arrTd0.get(1), '6', 0, 1);
+            });
+            it('Should do negative value -6', function(){
+                browser.actions().mouseMove(arrTd0.get(1)).perform();
+                browser.actions().click(protractor.Button.RIGHT).perform();
+                browser.sleep(1000);
+                var contextMenu =  element(by.css('ul.context-menu-list[style*="z-index: 2"]'));
+                var negate = contextMenu.element(by.cssContainingText('span', 'negate'));
+                browser.actions().mouseMove(negate).perform();
+                beakerPO.clickElementWithHandlingError(negate, 'spanElement');
+                beakerPO.checkSubString(arrTd0.get(1), '-6', 0, 2);
+            });
+            it('Should run tagged cell on action', function(){
+                browser.actions().mouseMove(arrTd0.get(1)).perform();
+                browser.actions().click(protractor.Button.RIGHT).perform();
+                browser.sleep(1000);
+                var contextMenu =  element(by.css('ul.context-menu-list[style*="z-index: 2"]'));
+                var run_misc_formatting = contextMenu.element(by.cssContainingText('span', 'run misc_formatting'));
+                browser.actions().mouseMove(run_misc_formatting).perform();
+                run_misc_formatting.click().then(function(){
+                    browser.sleep(1000);
+                    beakerPO.waitUntilLoadingFinished();
+                });
             });
         });
         it('Misc formatting', function () {

@@ -109,13 +109,40 @@ define(function(require, exports, module) {
         });
       },
       locked: function() {
-        return window.beakerRegister.canPublish !== true;
+        return window.beakerRegister.isPublished === true;
+      }
+    },
+    {
+      name: "Update Published",
+      id: "publish-menuitem",
+      sortorder: 190,
+      tooltip: "Publish notebook",
+      action: function() {
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.publish', [window.beakerRegister.bunsenNotebookId]);
+        });
+      },
+      locked: function() {
+        return window.beakerRegister.isPublished !== true;
+      }
+    },
+    {
+      name: "Remove published",
+      id: "remove-published-menuitem",
+      sortorder: 200,
+      action: function() {
+        bkHelper.backupNotebook().then(function() {
+          parent.$(parent.document).trigger('beaker.embedded.removepublished', [window.beakerRegister.bunsenNotebookId]);
+        });
+      },
+      locked: function() {
+        return window.beakerRegister.isPublished !== true;
       }
     },
     {
       name: "Create Blog Entry...",
       id: "blog-menuitem",
-      sortorder: 200,
+      sortorder: 210,
       tooltip: "Create blog post from notebook",
       action: function() {
         bkHelper.backupNotebook().then(function() {
@@ -129,7 +156,7 @@ define(function(require, exports, module) {
     {
       name: "Close",
       id: "close-menuitem",
-      sortorder: 200,
+      sortorder: 220,
       action: function() {
         bkHelper.backupNotebook().then(function() {
           parent.$(parent.document).trigger('beaker.embedded.close', [window.beakerRegister.bunsenNotebookId]);

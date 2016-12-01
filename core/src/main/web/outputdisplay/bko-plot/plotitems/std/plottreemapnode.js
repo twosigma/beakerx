@@ -60,7 +60,6 @@
       // assign ratio
       this.ratio = scope.stdmodel.ratio === undefined ? 1 : scope.stdmodel.ratio;
 
-      console.log('size', [width, height]);
       var treemap = d3.treemap()
         .round(false)
         .size([width / this.ratio, height]);
@@ -81,7 +80,7 @@
 
       this.hierarchy = d3.hierarchy(this)
         .sum(function(d) {
-          return d.showItem === true ? scope.stdmodel.valueAccessor === 'VALUE' ? d.doubleValue : d.weight : 0;
+          return hierarchySum(d, scope);
         })
         .sort(function(a, b) { return a.value - b.value; });
 
@@ -266,8 +265,28 @@
       scope.maing.selectAll("*").remove();
     };
 
-
     return PlotTreeMapNode;
+
+    // ----
+
+    function hierarchySum(d, scope) {
+      var res = 0;
+
+      if (d.showItem === true) {
+        var accessorValue = scope.stdmodel.valueAccessor === 'VALUE',
+          hasChildren = d.children && d.children.length;
+
+        if (accessorValue) {
+          res = d.doubleValue;
+        } else if (!hasChildren) {
+          res = d.weight;
+        }
+
+      }
+
+      return res;
+    }
+
   };
   beakerRegister.bkoFactory('PlotTreeMapNode', ['plotUtils', retfunc]);
 })();

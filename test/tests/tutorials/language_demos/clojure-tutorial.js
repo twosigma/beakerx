@@ -25,7 +25,6 @@ describe('Clojure Tutorial', function () {
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fclojure-examples.bkr&readOnly=true").then(done);
         beakerPO.waitUntilLoadingCellOutput();
-        browser.driver.manage().window().maximize();
     });
 
     afterAll(function(done){
@@ -36,7 +35,7 @@ describe('Clojure Tutorial', function () {
     describe('Autocomplete', function(){
         it('Should hint "declare" ', function() {
             beakerPO.insertNewDefaultCell('Clojure');
-            browser.actions().sendKeys("dec").perform();
+            browser.actions().sendKeys("de").perform();
             beakerPO.checkAutocomplete('declare');
             beakerPO.selectItem('declare');
         });

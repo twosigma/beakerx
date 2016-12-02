@@ -897,8 +897,10 @@ var BeakerPageObject = function() {
     this.checkSaveTableAsCsv(self, dir, filename + "All.csv");
     // Save Selected as csv
     this.clickElementWithHandlingError(this.getDataTablesTBodyByIdCell(idCell).first(), 'trElement');
-    this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')).click()
-        .then(self.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVExport(true)"]')).click);
+    this.clickElementWithHandlingError(this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="menuToggle()"]')), 'menuToggle');
+    browser.sleep(1000);
+    this.createScreenshot('saveSelected');
+    this.clickElementWithHandlingError(this.getCodeCellOutputByIdCell(idCell).element(by.css('a[ng-click="doCSVExport(true)"]')), 'saveSelectedMenu');
     this.checkSaveTableAsCsv(self, dir, filename + "Selected.csv");
   }
 

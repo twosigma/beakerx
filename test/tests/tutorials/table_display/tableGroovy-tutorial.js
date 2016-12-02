@@ -164,7 +164,6 @@ describe('Table Display (Groovy API)', function () {
             it('Should make negative value -6', function(){
                 browser.actions().mouseMove(arrTd0.get(1)).perform();
                 browser.actions().click(protractor.Button.RIGHT).perform();
-                beakerPO.createScreenshot('tableGroovyNegate');
                 var negate = element(by.cssContainingText('li.context-menu-item > span', 'negate'));
                 browser.actions().mouseMove(negate).perform();
                 beakerPO.clickElementWithHandlingError(negate, 'spanElement');
@@ -174,7 +173,6 @@ describe('Table Display (Groovy API)', function () {
             it('Should run tagged cell on action', function(){
                 browser.actions().mouseMove(arrTd0.get(1)).perform();
                 browser.actions().click(protractor.Button.RIGHT).perform();
-                beakerPO.createScreenshot('tableGroovyRunTag');
                 var run_misc_formatting = element(by.cssContainingText('li.context-menu-item > span', 'run misc_formatting'));
                 browser.actions().mouseMove(run_misc_formatting).perform();
                 beakerPO.clickElementWithHandlingError(run_misc_formatting, 'spanElement');

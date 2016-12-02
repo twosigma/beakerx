@@ -25,12 +25,12 @@ configurations {
 }
 
 dependencies {
-  provided group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '8.1.13.v20130916'
+  provided group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.3.13.v20161014'
   runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.6'
   provided group: 'com.google.guava', name: 'guava', version: '18.0'
-  provided group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17.1'
-  provided group: 'com.sun.jersey', name: 'jersey-server', version: '1.17.1'
-  provided group: 'com.sun.jersey', name: 'jersey-core', version: '1.17.1'
+  provided group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.19.3'
+  provided group: 'com.sun.jersey', name: 'jersey-server', version: '1.19.3'
+  provided group: 'com.sun.jersey', name: 'jersey-core', version: '1.19.3'
   provided group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
   provided project(':shared')
 }

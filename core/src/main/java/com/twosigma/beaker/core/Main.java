@@ -52,6 +52,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
+import org.cometd.server.BayeuxServerImpl;
 import org.eclipse.jetty.server.Server;
 import org.slf4j.LoggerFactory;
 
@@ -220,7 +221,7 @@ public class Main {
         new GeneralUtilsModule(),
         new WebServerModule(),
         new SerializerModule(),
-        new GuiceCometdModule(),
+        new GuiceCometdModule(beakerCorePref.getAuthToken()),
         new URLConfigModule(beakerCorePref));
 
     PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
@@ -232,6 +233,8 @@ public class Main {
     writePID(bkConfig);
 
     Server server = injector.getInstance(Server.class);
+    injector.getInstance(BayeuxServerImpl.class);
+
     server.start();
 
     // openBrower and show connection instruction message

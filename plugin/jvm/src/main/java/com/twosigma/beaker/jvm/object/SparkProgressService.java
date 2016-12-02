@@ -90,7 +90,7 @@ public class SparkProgressService {
 
     if (channel != null) {
       progress.setExecutorIds(executorIds);
-      channel.publish(this.localSession, progress, null);
+      channel.publish(this.localSession, progress);
     }
   }
 
@@ -117,14 +117,14 @@ public class SparkProgressService {
     ServerChannel channel = this.bayeux.createChannelIfAbsent("/sparkAppProgress").getReference();
     activeAppName = appName;
     if (channel != null) {
-      channel.publish(this.localSession, new ApplicationProgress(appName, true), null);
+      channel.publish(this.localSession, new ApplicationProgress(appName, true));
     }
   }
 
   public void applicationEnd() {
     ServerChannel channel = this.bayeux.createChannelIfAbsent("/sparkAppProgress").getReference();
     if (channel != null) {
-      channel.publish(this.localSession, new ApplicationProgress(activeAppName, false), null);
+      channel.publish(this.localSession, new ApplicationProgress(activeAppName, false));
     }
   }
 

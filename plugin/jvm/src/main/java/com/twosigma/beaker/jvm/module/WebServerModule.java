@@ -24,17 +24,19 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
-import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
+
+import javax.servlet.ServletException;
 
 /**
  * The WebServer Module that sets up the server singleton to be started in Init
@@ -44,16 +46,6 @@ public class WebServerModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(OwnerFilter.class);
-  }
-
-  @Provides
-  @Singleton
-  Connector getConnector(final Injector injector) {
-    final Connector conn = new SelectChannelConnector();
-    WebServerConfig webAppConfig = injector.getInstance(WebServerConfig.class);
-    conn.setPort(webAppConfig.getPort());
-    conn.setHost("127.0.0.1");
-    return conn;
   }
 
   private SecurityHandler makeSecurityHandler(String password) {
@@ -80,11 +72,18 @@ public class WebServerModule extends AbstractModule {
 
   @Provides
   @Singleton
-  public Server getServer(final Injector injector, Connector connector) {
+  public Server getServer(final Injector injector) throws ServletException {
     WebServerConfig webServerConfig = injector.getInstance(WebServerConfig.class);
     String staticDir = webServerConfig.getStaticDirectory();
+
     Server server = new Server();
+
+    ServerConnector connector = new ServerConnector(server);
+    WebServerConfig webAppConfig = injector.getInstance(WebServerConfig.class);
+    connector.setPort(webAppConfig.getPort());
+    connector.setHost("127.0.0.1");
     server.addConnector(connector);
+
     ServletContextHandler servletHandler = new ServletContextHandler();
     servletHandler.addEventListener(new GuiceServletContextListener() {
       @Override

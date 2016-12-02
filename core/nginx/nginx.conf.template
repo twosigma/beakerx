@@ -132,7 +132,7 @@ http {
     }
 
     # forward websockets, auth using path instead of token
-    location /%(urlhash)sbeaker/cometd-%(sessionauth)s/ {
+    location /%(urlhash)sbeaker/cometd-%(sessionauth)s {
       %(auth_cookie_rule)s
       rewrite ^/%(urlhash)sbeaker/(.*)$ /$1 break;
       proxy_pass http://127.0.0.1:%(port_beaker)s/beaker;

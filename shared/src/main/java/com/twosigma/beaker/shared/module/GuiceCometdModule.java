@@ -30,13 +30,30 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.annotation.ServerAnnotationProcessor;
 import org.cometd.annotation.Service;
 import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.server.AbstractServerTransport;
 import org.cometd.server.BayeuxServerImpl;
-import org.cometd.server.JacksonJSONContextServer;
-import org.cometd.websocket.server.WebSocketTransport;
+import org.cometd.server.Jackson1JSONContextServer;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 
 // Should load from cometd-contrib
 public class GuiceCometdModule extends AbstractModule {
-  
+
+  private String authToken;
+
+  public GuiceCometdModule() {
+  }
+
+  public GuiceCometdModule(String authToken) {
+    this.authToken = authToken;
+  }
+
   @Override
   protected final void configure() {
     
@@ -108,17 +125,24 @@ public class GuiceCometdModule extends AbstractModule {
 
   @Singleton
   @Provides
-  public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om) {
+  public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om, final Server jetty) throws ServletException {
     BayeuxServerImpl server = new BayeuxServerImpl();
     /*
      * Set the max idle time.
      * @param timeMs the max idle time in MS. Timeout <= 0 implies an infinite timeout
      */
-    server.setOption(WebSocketTransport.IDLE_TIMEOUT_OPTION, -1);
-    
+    //server.setOption(WebSocketTransport.IDLE_TIMEOUT_OPTION, -1);
+
     server.addTransport(new BkWebSocketTransport(server));
 
-    server.setOption(BayeuxServerImpl.JSON_CONTEXT, new JacksonJSONContextServer() {
+    ServletContextHandler handler = (ServletContextHandler) jetty.getHandler();
+    ServletContext servletContext = handler.getServletContext();
+    WebSocketServerContainerInitializer.configureContext(servletContext,handler);
+
+    server.setOption(ServletContext.class.getName(), servletContext);
+    server.setOption("ws.cometdURLMapping", getCometdMapping());
+
+    server.setOption(AbstractServerTransport.JSON_CONTEXT_OPTION, new Jackson1JSONContextServer() {
       @Override
       public ObjectMapper getObjectMapper() {
         return om;
@@ -143,6 +167,11 @@ public class GuiceCometdModule extends AbstractModule {
   protected void configure(BayeuxServerImpl server) {
 
   }
+
+  private String getCometdMapping() {
+    return isNoneBlank(this.authToken) ? "/cometd-" + this.authToken + "/*":"/cometd/*";
+  }
+
 
   @Provides
   @Singleton

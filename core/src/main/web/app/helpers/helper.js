@@ -1429,7 +1429,7 @@
             init: function(pluginName, serviceBase) {
               if (!this.initialized) {
                 this.cometd = new $.Cometd();
-                this.cometd.init(bkUtils.serverUrl(serviceBase + "/cometd/"));
+                this.cometd.init(bkUtils.serverUrl(serviceBase + "/cometd"));
                 var self = this;
                 this.hlistener = this.cometd.addListener('/meta/handshake', function(message) {
                   if (window.bkDebug) console.log(pluginName+'/meta/handshake');

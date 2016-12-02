@@ -386,7 +386,7 @@
           }
         }
       };
-      bkUtils.initializeCometd(document.baseURI + 'cometd-' + getCookie("XSRF-TOKEN") + '/');
+      bkUtils.initializeCometd(document.baseURI + 'cometd-' + getCookie("XSRF-TOKEN"));
       bkCoreManager.init(beakerRootOp);
       Q.delay(1000).then(function() {
         $.get("../beaker/rest/util/whoami", {}, function(data) {

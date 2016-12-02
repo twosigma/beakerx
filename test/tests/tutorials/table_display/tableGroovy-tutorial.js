@@ -75,21 +75,21 @@ describe('Table Display (Groovy API)', function () {
             beakerPO.checkSaveAsCsvByIdCell(idCell, 'tableGroovy');
         });
         describe('Сell highlighters', function() {
-            it('Color the entire table like a heatmap based on column value', function () {
-                var idCell = "codeWyrMwb";
-                beakerPO.scrollToBkCellByIdCell(idCell);
-                beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-
-                var arrTd = getArrayTdElements(idCell, 0);
-                expect(arrTd.count()).toBe(11);
-                beakerPO.checkSubString(arrTd.get(1), '7.8981', 0, 6);
-                expect(arrTd.get(1).getCssValue('background-color')).toBe('rgba(236, 91, 88, 1)');
-
-                var arrTd20 = getArrayTdElements(idCell, 20);
-                expect(arrTd20.count()).toBe(11);
-                beakerPO.checkSubString(arrTd20.get(1), '5.3735', 0, 6);
-                expect(arrTd20.get(1).getCssValue('background-color')).toBe('rgba(190, 114, 130, 1)');
-            });
+            //it('Color the entire table like a heatmap based on column value', function () {
+            //    var idCell = "codeWyrMwb";
+            //    beakerPO.scrollToBkCellByIdCell(idCell);
+            //    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            //
+            //    var arrTd = getArrayTdElements(idCell, 0);
+            //    expect(arrTd.count()).toBe(11);
+            //    beakerPO.checkSubString(arrTd.get(1), '7.8981', 0, 6);
+            //    expect(arrTd.get(1).getCssValue('background-color')).toBe('rgba(236, 91, 88, 1)');
+            //
+            //    var arrTd20 = getArrayTdElements(idCell, 20);
+            //    expect(arrTd20.count()).toBe(11);
+            //    beakerPO.checkSubString(arrTd20.get(1), '5.3735', 0, 6);
+            //    expect(arrTd20.get(1).getCssValue('background-color')).toBe('rgba(190, 114, 130, 1)');
+            //});
             it('Use a closure to highlight specific values', function () {
                 var idCell = "code7zZ3sT";
                 beakerPO.scrollToBkCellByIdCell(idCell);
@@ -105,25 +105,25 @@ describe('Table Display (Groovy API)', function () {
                 beakerPO.checkSubString(arrTd1.get(3), '6', 0, 1);
                 expect(arrTd1.get(3).getCssValue('background-color')).toBe('rgba(0, 255, 0, 1)');
             });
-            it('Heatmap with custom min/max values and colors', function () {
-                var idCell = "codetHTtD2";
-                beakerPO.scrollToBkCellByIdCell(idCell);
-                beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
-
-                var arrTd = getArrayTdElements(idCell, 0);
-                expect(arrTd.count()).toBe(11);
-                beakerPO.checkSubString(arrTd.get(3), '7.9210', 0, 6);
-                expect(arrTd.get(3).getCssValue('background-color')).toBe('rgba(105, 190, 120, 1)');
-                beakerPO.checkSubString(arrTd.get(4), '7.9562', 0, 6);
-                expect(arrTd.get(4).getCssValue('background-color')).toBe('rgba(249, 171, 171, 1)');
-
-                var arrTd20 = getArrayTdElements(idCell, 20);
-                expect(arrTd20.count()).toBe(11);
-                beakerPO.checkSubString(arrTd20.get(3), '5.5725', 0, 6);
-                expect(arrTd20.get(3).getCssValue('background-color')).toBe('rgba(241, 194, 87, 1)');
-                beakerPO.checkSubString(arrTd20.get(4), '5.4790', 0, 6);
-                expect(arrTd20.get(4).getCssValue('background-color')).toBe('rgba(0, 0, 0, 1)');
-            });
+            //it('Heatmap with custom min/max values and colors', function () {
+            //    var idCell = "codetHTtD2";
+            //    beakerPO.scrollToBkCellByIdCell(idCell);
+            //    beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+            //
+            //    var arrTd = getArrayTdElements(idCell, 0);
+            //    expect(arrTd.count()).toBe(11);
+            //    beakerPO.checkSubString(arrTd.get(3), '7.9210', 0, 6);
+            //    expect(arrTd.get(3).getCssValue('background-color')).toBe('rgba(105, 190, 120, 1)');
+            //    beakerPO.checkSubString(arrTd.get(4), '7.9562', 0, 6);
+            //    expect(arrTd.get(4).getCssValue('background-color')).toBe('rgba(249, 171, 171, 1)');
+            //
+            //    var arrTd20 = getArrayTdElements(idCell, 20);
+            //    expect(arrTd20.count()).toBe(11);
+            //    beakerPO.checkSubString(arrTd20.get(3), '5.5725', 0, 6);
+            //    expect(arrTd20.get(3).getCssValue('background-color')).toBe('rgba(241, 194, 87, 1)');
+            //    beakerPO.checkSubString(arrTd20.get(4), '5.4790', 0, 6);
+            //    expect(arrTd20.get(4).getCssValue('background-color')).toBe('rgba(0, 0, 0, 1)');
+            //});
             it('UniqueEntriesHighlighter', function () {
                 var idCell = "code2KwSKV";
                 beakerPO.scrollToBkCellByIdCell(idCell);
@@ -164,7 +164,6 @@ describe('Table Display (Groovy API)', function () {
             it('Should make negative value -6', function(){
                 browser.actions().mouseMove(arrTd0.get(1)).perform();
                 browser.actions().click(protractor.Button.RIGHT).perform();
-                beakerPO.createScreenshot('tableGroovyNegate');
                 var negate = element(by.cssContainingText('li.context-menu-item > span', 'negate'));
                 browser.actions().mouseMove(negate).perform();
                 beakerPO.clickElementWithHandlingError(negate, 'spanElement');
@@ -174,7 +173,6 @@ describe('Table Display (Groovy API)', function () {
             it('Should run tagged cell on action', function(){
                 browser.actions().mouseMove(arrTd0.get(1)).perform();
                 browser.actions().click(protractor.Button.RIGHT).perform();
-                beakerPO.createScreenshot('tableGroovyRunTag');
                 var run_misc_formatting = element(by.cssContainingText('li.context-menu-item > span', 'run misc_formatting'));
                 browser.actions().mouseMove(run_misc_formatting).perform();
                 beakerPO.clickElementWithHandlingError(run_misc_formatting, 'spanElement');

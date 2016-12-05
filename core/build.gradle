@@ -134,6 +134,14 @@ repositories {
   mavenCentral()
 }
 
+configurations {
+  provided
+}
+
+sourceSets.main {
+  compileClasspath += configurations.provided
+}
+
 dependencies {
   compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
   compile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17.1'
@@ -153,7 +161,7 @@ dependencies {
 
   compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
 
-  compile project(':shared')
+  provided project(':shared')
 }
 
 
@@ -401,8 +409,17 @@ if (mac() || windows()) {
     defaultJvmOpts=['-Dbeaker.nginx.bin.dir=' + './nginx/bin', '-Djava.awt.headless=' + 'true']
     doLast {
       // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
-      windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
+      windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*;%APP_HOME%/../../../config/plugins/eval/sharedLibs/*')
+      unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/lib/*:\\$APP_HOME/../../../config/plugins/eval/sharedLibs/*')
     }
+  }
+} else {
+  startScripts {
+       doLast {
+         // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
+         windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*;%APP_HOME%/../../../config/plugins/eval/sharedLibs/*')
+         unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/lib/*:\\$APP_HOME/../../../config/plugins/eval/sharedLibs/*')
+       }
   }
 }
 

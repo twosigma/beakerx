@@ -36,7 +36,7 @@
         domain.push(this.minValue + valueStep * i);
       }
 
-      this.colorScale = d3.scale.linear()
+      this.colorScale = d3.scaleLinear()
         .domain(domain)
         .range(this.colors);
 

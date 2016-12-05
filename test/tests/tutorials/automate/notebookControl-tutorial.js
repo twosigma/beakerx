@@ -18,7 +18,7 @@
 var BeakerPageObject = require('../../beaker.po.js');
 var beakerPO;
 
-describe('Notebook Control API', function (done) {
+describe('Notebook Control API', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();
@@ -32,7 +32,7 @@ describe('Notebook Control API', function (done) {
     });
 
     function checkTagOption(idCell, tagValue){
-        beakerPO.getBkCellByIdCell(idCell).all(by.css('.cell-menu-item.cell-dropdown.dropdown-toggle')).get(0).click();
+        beakerPO.clickElementWithHandlingError(beakerPO.getBkCellByIdCell(idCell).$$('.cell-menu-item.cell-dropdown.dropdown-toggle').first(), 'dropdownTougle');
         browser.wait(beakerPO.EC.presenceOf(element.all(by.css('bk-notebook > ul.dropdown-menu')).get(0)), 10000);
         element.all(by.css('bk-notebook > ul.dropdown-menu')).get(0).element(by.cssContainingText('a', 'Options...')).click();
         browser.wait(beakerPO.EC.visibilityOf(element(by.css('div.modal-body'))), 10000);
@@ -65,19 +65,19 @@ describe('Notebook Control API', function (done) {
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
         beakerPO.checkCellOutputTextByIdCell(idCell, "got 2 results: AAA this cell is also evaluated,CCC this cell is evaluated");
     });
-    it("AAA cell is is evaluated", function () {
+    it("AAA cell is evaluated", function () {
         var idCell = "codePLMc93";
         beakerPO.scrollToBkCellByIdCell(idCell);
         checkTagOption(idCell, 'mytag');
         beakerPO.checkCellOutputTextByIdCell(idCell, "AAA this cell is also evaluated");
     });
-    it("BBB cell is not is evaluated", function () {
+    it("BBB cell is not evaluated", function () {
         var idCell = "codeQSVv2P";
         beakerPO.scrollToBkCellByIdCell(idCell);
         checkTagOption(idCell, '');
         expect(element(by.css('bk-code-cell-output[cell-id=' + idCell + ']')).isPresent()).toBe(false);
     });
-    it("CCC cell is is evaluated", function () {
+    it("CCC cell is evaluated", function () {
         var idCell = "code3FNleS";
         beakerPO.scrollToBkCellByIdCell(idCell);
         checkTagOption(idCell, 'mytag');

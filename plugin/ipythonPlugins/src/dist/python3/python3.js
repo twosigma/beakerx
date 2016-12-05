@@ -710,11 +710,11 @@ define(function(require, exports, module) {
         function(result) {
           var values = result.split("\n");
           var versions = {};
-          for(i=0;i<values.length;i++){
+          for(var i=0; i<values.length; i++){
             var temp = values[i].split("==");
             versions[temp[0]] = temp[1];
           }
-          ipyVersion = versions.ipython;
+          ipyVersion = versions.ipython[0];
 
           console.log("Using ipython compatibility mode: " + ipyVersion);
           console.log("Using ipywidgets compatibility mode: " + versions.ipywidgets);

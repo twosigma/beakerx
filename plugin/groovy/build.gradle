@@ -26,7 +26,10 @@ mainClassName = 'com.twosigma.beaker.groovy.Main'
 configurations {
   provided
   antlr
-  compile.extendsFrom provided
+}
+
+sourceSets.main {
+    compileClasspath += configurations.provided
 }
 
 dependencies {
@@ -36,7 +39,7 @@ dependencies {
   provided group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.3'
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
   antlr group : 'org.antlr', name :'antlr4', version: '4.5'
-  compile group: 'org.apache.ivy', name:'ivy', version:'2.2.0' 
+  compile group: 'org.apache.ivy', name:'ivy', version:'2.2.0'
   compile 'com.lowagie:itext:2.1.7'
   compile 'org.graxxia:graxxia:0.9'
   compile 'org.apache.commons:commons-math3:3.5'
@@ -71,7 +74,8 @@ startScripts {
   defaultJvmOpts=['-Djava.awt.headless=' + 'true']
   doLast {
     // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
-    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
+    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*;%APP_HOME%/../sharedLibs/*')
+    unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/lib/*:\\$APP_HOME/../sharedLibs/*')
   }
 }
 

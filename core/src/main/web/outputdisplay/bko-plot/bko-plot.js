@@ -102,7 +102,6 @@
           }
         });
 
-
         scope.resizeFunction = function() {
           // update resize maxWidth when the browser window resizes
           var width = element.width();
@@ -1809,6 +1808,21 @@
 
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
+
+          for(var i = 0; i<model.graphics_list.length; i++){
+            for(var j = 0; j<model.graphics_list[i].x.length; j++){
+              if (!$.isNumeric(model.graphics_list[i].x[j])
+                || !$.isNumeric(model.graphics_list[i].y[j])){
+                scope.invalidData.push({
+                  x: model.graphics_list[i].x[j], y: model.graphics_list[i].y[j]
+                });
+                model.graphics_list[i].x.splice(j, 1);
+                model.graphics_list[i].y.splice(j, 1);
+                j--;
+              }
+            }
+          }
+
           scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
         };
 
@@ -1887,7 +1901,8 @@
         };
 
         scope.init = function() {
-          
+          scope.invalidData = [];
+
           // first standardize data
           scope.standardizeData();
           // init flags
@@ -1952,7 +1967,6 @@
         };
 
         scope.update = function(first) {
-          scope.invalidData = [];
           if (scope.model.isShowOutput !== undefined && scope.model.isShowOutput() === false) {
             return;
           }
@@ -1965,7 +1979,6 @@
           scope.renderData();
           if (scope.invalidData.length>0){
             scope.plotNotDrawable = true;
-            return;
           }
           scope.renderGridlineLabels();
           scope.renderGridlineTicks();

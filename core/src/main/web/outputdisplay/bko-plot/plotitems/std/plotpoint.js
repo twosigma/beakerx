@@ -300,7 +300,6 @@
           .style("stroke-dasharray", function(d) { return d.st_da; })
           .style("stroke-width", function(d) { return d.st_w; });
 
-        var invalidObject = {}
         switch (shape) {
           case "circle":
             shapesvg.selectAll(tag)
@@ -317,23 +316,11 @@
           default:  // rect
             shapesvg.selectAll(tag)
               .data(eleprops, function(d) { return d.id; })
-              .attr("x", function(d) {
-                invalidObject.x = d.x;
-                if(isNaN(d.x)) return;
-                return d.x;
-              })
-              .attr("y", function(d) {
-                invalidObject.y = d.y;
-                if(isNaN(d.y)) return;
-                return d.y;
-              })
+              .attr("x", function(d) {return d.x;})
+              .attr("y", function(d) {return d.y;})
               .attr("width", function(d) { return d.w; })
               .attr("height", function(d) { return d.h; });
 
-        }
-        if((invalidObject.x && (invalidObject.x)) ||
-          (invalidObject.y && (invalidObject.y))){
-          scope.invalidData.push(invalidObject)
         }
 
         shapesvg.selectAll("text").remove();

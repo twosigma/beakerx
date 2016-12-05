@@ -44,6 +44,7 @@ describe('EasyForm', function () {
     e.sendKeys("A").then(function(){
         expect(e.getAttribute('value')).toEqual("A");
     });
+    beakerPO.createScreenshot('undoRedoSendA');
     beakerPO.clickElementWithHandlingError(e, 'inputElement');
     //TEST UNDO
     if (os.type() === 'Darwin') {
@@ -54,6 +55,7 @@ describe('EasyForm', function () {
       //CONTROL:      '\uE009',
       e.sendKeys("\uE009z");
     }
+    beakerPO.createScreenshot('undoRedoSendCtrlz');
     expect(e.getAttribute('value')).toEqual("");
     beakerPO.clickElementWithHandlingError(e, 'inputElement');
     //TEST REDO
@@ -65,7 +67,7 @@ describe('EasyForm', function () {
       //CONTROL:      '\uE009',
       e.sendKeys("\uE008\uE009z");
     }
-    beakerPO.createScreenshot('easyFormUndoRedo');
+    beakerPO.createScreenshot('undoRedoSendShftCtrlz');
     expect(e.getAttribute('value')).toEqual("A");
   }
 
@@ -134,20 +136,20 @@ describe('EasyForm', function () {
     expect(element.all(by.css('bk-output-display  .combo-box')).count()).toBe(1);
     expect(element.all(by.css('bk-output-display  option')).count()).toBe(4);
   });
-  //
-  //it('Text Areas Undo/Redo', function () {
-  //  var code = 'f1 = new EasyForm(\"Form\")\\n';
-  //  code += 'f1.addTextArea(\"Text Area\")\\n';
-  //  code += 'f1';
-  //  testUndoRedo(code, 'bk-output-display  .text-area');
-  //});
-  //
-  //it('Text Fields Undo/Redo', function () {
-  //  var code = 'f1 = new EasyForm(\"Form\")\\n';
-  //  code += 'f1.addTextField(\"first\", 15)\\n';
-  //  code += 'f1';
-  //  testUndoRedo(code, 'bk-output-display  .text-field');
-  //});
+
+  it('Text Areas Undo/Redo', function () {
+    var code = 'f1 = new EasyForm(\"Form\")\\n';
+    code += 'f1.addTextArea(\"Text Area\")\\n';
+    code += 'f1';
+    testUndoRedo(code, 'bk-output-display  .text-area');
+  });
+
+  it('Text Fields Undo/Redo', function () {
+    var code = 'f1 = new EasyForm(\"Form\")\\n';
+    code += 'f1.addTextField(\"first\", 15)\\n';
+    code += 'f1';
+    testUndoRedo(code, 'bk-output-display  .text-field');
+  });
 
 });
 

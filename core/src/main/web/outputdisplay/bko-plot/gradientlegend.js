@@ -88,7 +88,7 @@
       });
 
       //ticks and labels
-      var axis = d3.scale.linear().range([0, this.layout.legendWidth]);
+      var axis = d3.scaleLinear().range([0, this.layout.legendWidth]);
       axis.domain([this.data[0].minValue, this.data[0].maxValue]);
       ticks = axis.ticks(labelsCount);
 
@@ -168,7 +168,7 @@
       for (var i = 0; i < elements.length; i++) {
         flatValues.push(elements[i].value);
       }
-      var histValues = d3.layout.histogram().bins(100)(flatValues);
+      var histValues = d3.histogram(100)(flatValues);
       var min = histValues[0].y, max = min;
       for (var i = 0; i < histValues.length; i++) {
         min = Math.min(min, histValues[i].y);
@@ -176,22 +176,22 @@
       }
 
       // the x-scale parameters
-      var x = d3.scale.linear()
+      var x = d3.scaleLinear()
         .domain([this.data[0].minValue, this.data[0].maxValue])
         .range([0, this.layout.legendWidth]);
 
       // the y-scale parameters
       var axisliney = this.layout.colorboxHeight + this.layout.axisPadding;
-      var y = d3.scale.linear()
+      var y = d3.scaleLinear()
         .domain([min, max])
         .range([axisliney, axisliney - this.layout.histHeight]);
 
-      var yreflected = d3.scale.linear()
+      var yreflected = d3.scaleLinear()
         .domain([min, max])
         .range([axisliney, axisliney + this.layout.histHeight]);
 
       var createArea = function(yScale) {
-        return d3.svg.area()
+        return d3.area()
           .x(function(d) { return x(d.x + d.dx / 2); })
           .y0(axisliney)
           .y1(function(d) { return yScale(d.y); });
@@ -209,12 +209,12 @@
 
     GradientLegend.prototype.drawPointer = function(pos) {
       var size = 32;
-      var arc = d3.svg.symbol().type('triangle-down').size(size);
+      var arc = d3.symbol().type(d3.symbolTriangle).size(size);
 
       var height = Math.sqrt(size * Math.sqrt(3));
       var data = [{x: pos, y: this.layout.colorboxHeight + this.layout.axisPadding - height / 2}];
 
-      var x = d3.scale.linear()
+      var x = d3.scaleLinear()
         .domain([this.data[0].minValue, this.data[0].maxValue])
         .range([0, this.layout.legendWidth]);
 
@@ -254,8 +254,8 @@
       this.drawHistogram();
       this.drawAxis();
   
-      legendSvg.attr("width", this.legend[0][0].getBBox().width);
-      var minValueLabelWidth = this.legend.selectAll("#legend-min-text")[0][0].getBBox().width + this.layout.labelHPadding;
+      legendSvg.attr("width", this.legend._groups[0][0].getBBox().width);
+      var minValueLabelWidth = this.legend.selectAll("#legend-min-text")._groups[0][0].getBBox().width + this.layout.labelHPadding;
       this.legend.style("transform", "translate(" + minValueLabelWidth + "px, 0px)");
     };
     

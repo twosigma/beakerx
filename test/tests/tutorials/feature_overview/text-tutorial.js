@@ -18,10 +18,18 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Text, Formatting, and Equations tutorial', function (done) {
+describe('Text, Formatting, and Equations tutorial', function () {
 
-    beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Ftext.bkr&readOnly=true").then(done);
+    beforeAll(function(done){
+        beakerPO = new BeakerPageObject();
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Ftext.bkr&readOnly=true").then(done);
+        beakerPO.waitUntilLoadingCellOutput();
+    });
+
+    afterAll(function(done){
+        beakerPO.createScreenshot('textTutorial');
+        done();
+    });
 
     describe('Formatting', function () {
         var idCell = "markdown8nMuAN";

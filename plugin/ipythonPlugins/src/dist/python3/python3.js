@@ -676,7 +676,7 @@ define(function(require, exports, module) {
          
           if(ipywidgetsVersion){
             if(ipywidgetsVersion[0] == '4'){
-              require(['ipython3_initwidgets'], initwidgetsDone);
+              require(['ipywidgets_init_v4_0_3'], initwidgetsDone);
             }else if (ipywidgetsVersion[0] == '5') {
               //TODO 
             }

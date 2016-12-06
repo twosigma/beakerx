@@ -1,8 +1,8 @@
 // Copyright (c) IPython Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('ipython3_widget_button', [
-  'ipython3_widget'
+define('ipywidgets_widget_button_v4_0_3', [
+  'ipywidgets_widget_v4_0_3'
 ], function (widget) {
 
   var ButtonView = widget.DOMWidgetView.extend({

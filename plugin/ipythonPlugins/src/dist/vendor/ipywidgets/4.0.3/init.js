@@ -1,20 +1,20 @@
 // Copyright (c) IPython Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('ipython3_initwidgets', [
-  'ipython3_widgetmanager',
-  'ipython3_widget',
-  'ipython3_widget_link',
-  'ipython3_widget_bool',
-  'ipython3_widget_button',
-  'ipython3_widget_box',
-  'ipython3_widget_float',
-  'ipython3_widget_image',
-  'ipython3_widget_int',
-  'ipython3_widget_output',
-  'ipython3_widget_selection',
-  'ipython3_widget_selectioncontainer',
-  'ipython3_widget_string'
+define('ipywidgets_init_v4_0_3', [
+  'ipywidgets_manager_v4_0_3',
+  'ipywidgets_widget_v4_0_3',
+  'ipywidgets_widget_link_v4_0_3',
+  'ipywidgets_widget_bool_v4_0_3',
+  'ipywidgets_widget_button_v4_0_3',
+  'ipywidgets_widget_box_v4_0_3',
+  'ipywidgets_widget_float_v4_0_3',
+  'ipywidgets_widget_image_v4_0_3',
+  'ipywidgets_widget_int_v4_0_3',
+  'ipywidgets_widget_output_v4_0_3',
+  'ipywidgets_widget_selection_v4_0_3',
+  'ipywidgets_widget_selectioncontainer_v4_0_3',
+  'ipywidgets_widget_string_v4_0_3'
 ], function(widgetmanager, widget) {
   // Register all of the loaded models and views with the widget manager.
   for (var i = 2; i < arguments.length; i++) {

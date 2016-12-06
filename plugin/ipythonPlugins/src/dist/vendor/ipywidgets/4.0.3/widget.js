@@ -1,8 +1,8 @@
 // Copyright (c) IPython Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('ipython3_widget', [
-  'ipython3_widgetmanager',
+define('ipywidgets_widget_v4_0_3', [
+  'ipywidgets_manager_v4_0_3',
   'ipython3_utils',
   'ipython3_namespace',
   'backbone'

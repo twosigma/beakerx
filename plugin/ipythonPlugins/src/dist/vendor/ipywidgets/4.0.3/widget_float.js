@@ -1,9 +1,9 @@
 // Copyright (c) IPython Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('ipython3_widget_float', [
-  'ipython3_widget',
-  'ipython3_widget_int'
+define('ipywidgets_widget_float_v4_0_3', [
+  'ipywidgets_widget_v4_0_3',
+  'ipywidgets_widget_int_v4_0_3'
 ], function (widget, int_widgets) {
   var IntSliderView = int_widgets.IntSliderView;
   var IntTextView = int_widgets.IntTextView;

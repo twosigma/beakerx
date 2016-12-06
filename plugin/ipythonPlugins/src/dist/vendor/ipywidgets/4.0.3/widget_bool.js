@@ -1,8 +1,8 @@
 // Copyright (c) IPython Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('ipython3_widget_bool', [
-  'ipython3_widget'
+define('ipywidgets_widget_bool_v4_0_3', [
+  'ipywidgets_widget_v4_0_3'
 ], function (widget) {
 
   var CheckboxView = widget.DOMWidgetView.extend({

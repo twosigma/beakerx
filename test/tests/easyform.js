@@ -55,7 +55,6 @@ describe('EasyForm', function () {
       //CONTROL:      '\uE009',
       e.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "z"));
     }
-    beakerPO.createScreenshot('undoRedoSendCtrlz');
     expect(e.getAttribute('value')).toEqual("");
     beakerPO.clickElementWithHandlingError(e, 'inputElement');
     //TEST REDO
@@ -67,7 +66,6 @@ describe('EasyForm', function () {
       //CONTROL:      '\uE009',
       e.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SHIFT, "z"));
     }
-    beakerPO.createScreenshot('undoRedoSendShftCtrlz');
     expect(e.getAttribute('value')).toEqual("A");
   }
 

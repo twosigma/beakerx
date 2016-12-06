@@ -1524,32 +1524,34 @@
             "h" : yr - yl
           };
         };
-        var down = false;
         scope.mouseDown = function() {
-          down = true;
           if (scope.interactMode === "other") {
+            scope.interactMode = "zoom";
+            return;
+          } else if (scope.interactMode === "remove") {
+            scope.interactMode = "other";
             return;
           }
           if (d3.event.target.nodeName.toLowerCase() === "div") {
             scope.interactMode = "other";
-            scope.disableZoom();
+            scope.disableZoomWheel();
             return;
           }
           scope.interactMode = d3.event.button == 0 ? "zoom" : "locate";
+          scope.enableZoomWheel();
         };
-        scope.mouseUp = function() {
-          down = false;
-          if (scope.interactMode === "remove") {
-            scope.interactMode = "other";
-            return;
-          }
-          if (scope.interactMode === "other") {
-            scope.interactMode = "zoom";
-          }
-          scope.enableZoom();
-        };
+        // scope.mouseUp = function() {
+        //   if (scope.interactMode === "remove") {
+        //     scope.interactMode = "other";
+        //     return;
+        //   }
+        //   if (scope.interactMode === "other") {
+        //     scope.interactMode = "zoom";
+        //   }
+        //   scope.enableZoomWheel();
+        // };
 
-        scope.zoomStart = function(d) {
+        scope.zoomStart = function() {
           if (scope.interactMode === "other") { return; }
 
           scope.zoom = true;
@@ -1570,22 +1572,8 @@
           scope.mousep2 = {};
           _.extend(scope.mousep2, scope.mousep1);
           scope.jqsvg.css("cursor", "auto");
-
-          $('body').css('overflow','hidden');
-
-          $(scope.jqsvg).on('mouseleave', function() {
-            if (!down || angular.element(scope.jqsvg).find('.heatmap').size() > 0 ){
-              scope.zoom = false;
-              $('body').css('overflow', 'visible');
-            }
-          });
-          $(document).on('mouseup', function() {
-            scope.zoom = false;
-            $('body').css('overflow', 'visible');
-          });
         };
-        scope.zooming = function(d) {
-
+        scope.zooming = function() {
           if (scope.interactMode === "other" || !scope.zoom){
             return;
           } else if (scope.interactMode === "zoom"){
@@ -1708,6 +1696,8 @@
             scope.update();
             scope.interactMode = "zoom";
           }
+
+          scope.jqsvg.css("cursor", "auto");
         };
         scope.fixFocus = function(focus) {
           focus.xl = focus.xl < 0 ? 0 : focus.xl;
@@ -1780,7 +1770,7 @@
           scope.rpipeTicks = [];
         };
 
-        scope.enableZoom = function() {
+        scope.initZoom = function() {
           scope.zoomObj
             .on("start", function(d) {
               return scope.zoomStart(d);
@@ -1791,17 +1781,19 @@
             .on("end", function(d) {
               return scope.zoomEnd(d);
             });
-
-          scope.svg.call(scope.zoomObj);
           scope.svg.on("dblclick.zoom", function() {
             return scope.resetFocus();
           });
+
+          scope.svg.call(scope.zoomObj);
         };
-        scope.disableZoom = function() {
-          scope.svg.call(scope.zoomObj.on("start", null).on("zoom", null).on("end", null));
+        scope.enableZoomWheel = function() {
+          if (scope._defaultZoomWheelFn) {
+            scope.svg.on('wheel.zoom', scope._defaultZoomWheelFn);
+          }
         };
-        scope.disableWheelZoom = function() {
-          // scope.svg.on("wheel.zoom", null);
+        scope.disableZoomWheel = function() {
+          scope.svg.on('wheel.zoom', null);
         };
 
         scope.mouseleaveClear = function() {
@@ -1965,20 +1957,24 @@
           scope.lastk = 1;
 
           // set zoom object
-          scope.svg.on("mousedown", function() {
-            return scope.mouseDown();
-          }).on("mouseup", function() {
-            return scope.mouseUp();
-          }).on("mouseleave", function() {
-            return scope.disableWheelZoom();
-          });
+          scope.svg
+            .on("mousedown", function() {
+              return scope.mouseDown();
+            })
+          //   .on("mouseup", function() {
+          //   return scope.mouseUp();
+          // })
+            .on("mouseleave", function() {
+              return scope.disableZoomWheel();
+            });
           scope.jqsvg.mousemove(function(e) {
             return scope.renderCursor(e);
           }).mouseleave(function(e) {
             return scope.mouseleaveClear(e);
           });
-          scope.enableZoom();
-          scope.disableWheelZoom();
+          scope.initZoom();
+          scope._defaultZoomWheelFn = scope.svg.on('wheel.zoom');
+          scope.disableZoomWheel();
           scope.calcRange();
 
           // init copies focus to defaultFocus, called only once

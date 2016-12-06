@@ -349,6 +349,7 @@ gulp.task("watch", function() {
 gulp.task("watchClient", function() {
   gulp.watch([srcPath+"outputdisplay/**/*.js"], ["buildOutputDisplayTemplate"]);
   gulp.watch([srcPath+"app/**/*.js", "!"+srcPath+"app/dist/**/*.js"], ["buildIndexTemplate"]);
+  gulp.watch([rootPath+ "/**/*.jst.html",root2Path+ "/**/*.jst.html"], ["compileBeakerTemplates"]);
 });
 
 gulp.task('default', ['compile', 'watch']);

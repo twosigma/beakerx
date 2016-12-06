@@ -62,10 +62,10 @@ describe('EasyForm', function () {
     //SHIFT:        '\uE008',
     if (os.type() === 'Darwin') {
       //COMMAND:      '\uE03D',  // Apple command key
-      e.sendKeys("\uE008\uE03Dz");
+      e.sendKeys("\uE03D\uE008z");
     } else {
       //CONTROL:      '\uE009',
-      e.sendKeys("\uE008\uE009z");
+      e.sendKeys("\uE009\uE008z");
     }
     beakerPO.createScreenshot('undoRedoSendShftCtrlz');
     expect(e.getAttribute('value')).toEqual("A");

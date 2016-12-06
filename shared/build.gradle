@@ -26,6 +26,15 @@ dependencies {
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
   compile group: 'com.sun.jersey.contribs', name: 'jersey-guice', version: '1.17.1'
   compile group: 'org.cometd.java', name: 'cometd-websocket-jetty', version: '2.7.0'
+
+  //jdbc drivers
+  /*
+  *  http://www.mysql.com/about/legal/licensing/foss-exception/
+  */
+  compile group: 'mysql', name: 'mysql-connector-java',  version: '5.1.29'
+  compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1208'
+  compile group: 'com.h2database', name: 'h2', version: '1.4.193'
+  compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.15.1'
 }
 
 compileJava {

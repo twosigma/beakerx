@@ -29,6 +29,8 @@ define(function(require, exports, module) {
   var gotError = false;
   var serviceBase = null;
   var ipyVersion = false;
+  var widgetmanager = null;
+  var ipywidgetsVersion = null;
   var myPython = null;
   var now = function() {
     return new Date().getTime();
@@ -154,7 +156,7 @@ define(function(require, exports, module) {
                 data : JSON.stringify(model),
                 dataType : "json",
                 success : function(data, status, xhr) {
-                  self.kernel = (ipyVersion == '2') ? (new myPython.Kernel(baseurl + "/api/kernels")) : (new myPython.Kernel(baseurl + "/api/kernels", undefined, fakeNotebook, "fakename"));
+                  self.kernel = (ipyVersion == '2') ? (new myPython.Kernel(baseurl + "/api/kernels")) : (new myPython.Kernel(baseurl + "/api/kernels", undefined, fakeNotebook, "fakename", widgetmanager));
                   kernels[shellID] = self.kernel;
                   // the data.id is the session id but it is not used yet
                   if (ipyVersion == '2') {
@@ -626,6 +628,66 @@ define(function(require, exports, module) {
 
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
+    bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonVersion"), {
+      pluginId : PLUGIN_NAME,
+      command : COMMAND
+    }).success(
+        function(result) {
+          var values = result.split("\n");
+          var versions = {};
+          for(var i=0; i<values.length; i++){
+            var temp = values[i].split("==");
+            versions[temp[0]] = temp[1];
+          }
+          ipyVersion = versions.ipython[0];
+          ipywidgetsVersion = versions.ipywidgets === 'NONE' ? null : versions.ipywidgets;
+
+          console.log("Using ipython compatibility mode: " + ipyVersion);
+          console.log("Using ipywidgets compatibility mode: " + versions.ipywidgets);
+
+          var toLoad = []; 
+          
+          if (ipyVersion == '1') {
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/namespace.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/utils.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/kernel.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js"));
+          } else if (ipyVersion == '2') {
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/namespace.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/utils.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/kernel.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/session.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/comm.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/outputarea.js"));
+          } else {
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/namespace.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/utils.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/kernel.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/session.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/comm.js"));
+            toLoad.push(bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js") );
+          }
+          
+          var initwidgetsDone = function(initwidgets) {
+            widgetmanager = initwidgets;
+            bkHelper.loadList(toLoad, onSuccess, onFail);
+          }
+         
+          if(ipywidgetsVersion){
+            if(ipywidgetsVersion[0] == '4'){
+              require(['ipython3_initwidgets'], initwidgetsDone);
+            }else if (ipywidgetsVersion[0] == '5') {
+              //TODO 
+            }
+          }
+
+        }).error(function() {
+      console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
+      shellReadyDeferred.reject("failed to locate plugin service");
+    });
+    
+    
     var onSuccess = function() {
       if (ipyVersion == '3' || ipyVersion == '4') {
         require('ipython3_namespace');
@@ -703,40 +765,6 @@ define(function(require, exports, module) {
       console.log("failed to load ipython libs");
     };
     
-    bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonVersion"), {
-      pluginId : PLUGIN_NAME,
-      command : COMMAND
-    }).success(
-        function(result) {
-          var values = result.split("\n");
-          var versions = {};
-          for(var i=0; i<values.length; i++){
-            var temp = values[i].split("==");
-            versions[temp[0]] = temp[1];
-          }
-          ipyVersion = versions.ipython[0];
-
-          console.log("Using ipython compatibility mode: " + ipyVersion);
-          console.log("Using ipywidgets compatibility mode: " + versions.ipywidgets);
-          
-          if (ipyVersion == '1') {
-            bkHelper.loadList([ bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/namespace.js"), bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/utils.js"),
-                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/kernel.js"), bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js") ], onSuccess, onFail);
-          } else if (ipyVersion == '2') {
-            bkHelper.loadList([ bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/namespace.js"), bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/utils.js"),
-                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/kernel.js"), bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/session.js"),
-                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/comm.js"), bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/outputarea.js") ], onSuccess, onFail);
-          } else {
-            bkHelper.loadList([ bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/namespace.js"), bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/utils.js"),
-                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/kernel.js"), bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/session.js"),
-                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js"), bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/comm.js"),
-                bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js") ], onSuccess, onFail);
-          }
-        }).error(function() {
-      console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
-      shellReadyDeferred.reject("failed to locate plugin service");
-    });
-    ;
   };
   init();
 

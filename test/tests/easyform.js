@@ -49,11 +49,11 @@ describe('EasyForm', function () {
     //TEST UNDO
     if (os.type() === 'Darwin') {
       //COMMAND:      '\uE03D',  // Apple command key
-      e.sendKeys("\uE03Dz");
+      e.sendKeys(protractor.Key.chord(protractor.Key.COMMAND, "z"));
     }
     else {
       //CONTROL:      '\uE009',
-      e.sendKeys("\uE009z");
+      e.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "z"));
     }
     beakerPO.createScreenshot('undoRedoSendCtrlz');
     expect(e.getAttribute('value')).toEqual("");
@@ -62,10 +62,10 @@ describe('EasyForm', function () {
     //SHIFT:        '\uE008',
     if (os.type() === 'Darwin') {
       //COMMAND:      '\uE03D',  // Apple command key
-      e.sendKeys("\uE03D\uE008z");
+      e.sendKeys(protractor.Key.chord(protractor.Key.COMMAND, protractor.Key.SHIFT, "z"));
     } else {
       //CONTROL:      '\uE009',
-      e.sendKeys("\uE009\uE008z");
+      e.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SHIFT, "z"));
     }
     beakerPO.createScreenshot('undoRedoSendShftCtrlz');
     expect(e.getAttribute('value')).toEqual("A");

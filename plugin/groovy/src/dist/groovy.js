@@ -102,6 +102,9 @@ define(function(require, exports, module) {
         GroovyCancelFunction();
       }
     },
+    forceCancel: function() {
+      GroovyCancelFunction = null;
+    },
     resetEnvironment: function () {
       var deferred = bkHelper.newDeferred();
       bkHelper.asyncCallInLanguageManager({

@@ -150,6 +150,9 @@ define(function(require, exports, module) {
         RCancelFunction();
       }
     },
+    forceCancel: function() {
+      RCancelFunction = null;
+    },
     spec: {
       reset: {type: "action", action: "resetEnvironment", name: "Reset Environment"}
     },

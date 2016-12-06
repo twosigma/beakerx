@@ -136,6 +136,9 @@ define(function(require, exports, module) {
         kdbCancelFunction();
       }
     },
+    forceCancel: function() {
+      kdbCancelFunction = null;
+    },
     spec: {},
     cometdUtil: cometdUtil
   };

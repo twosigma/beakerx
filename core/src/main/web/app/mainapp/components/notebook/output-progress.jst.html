@@ -26,6 +26,11 @@
           <a href="#" tabindex="-1" ng-click="toggleNotifyWhenDone(notificationMethod)" eat-click>{{notificationMethod.title}}</a>
           <i class="glyphicon glyphicon-ok" ng-show="isNotifyWhenDone(notificationMethod)"></i>
         </li>
+        <li>
+          <a href="#" tabindex="-1" ng-click="forceCancel()" eat-click>
+            Force cancel
+          </a>
+        </li>
       </ul>
     </div>
     <span class='elapsed-time'> &nbsp; Elapsed: {{getElapsedTime()}} &nbsp; </span>

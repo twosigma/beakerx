@@ -441,6 +441,9 @@ define(function(require, exports, module) {
           _theCancelFunction();
         }
       },
+      forceCancel: function() {
+        _theCancelFunction = null;
+      },
       initCode: function() {
         return ("import beaker_runtime3 as beaker_runtime\n" +
             "beaker = beaker_runtime.Beaker()\n" +

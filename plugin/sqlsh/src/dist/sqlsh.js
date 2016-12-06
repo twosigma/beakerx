@@ -141,6 +141,9 @@ define(function(require, exports, module) {
         SqlShCancelFunction();
       }
     },
+    forceCancel: function() {
+      SqlShCancelFunction = null;
+    },
     resetEnvironment: function () {
       var deferred = bkHelper.newDeferred();
       bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/sqlsh/resetEnvironment"), {shellId: this.settings.shellID})

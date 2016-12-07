@@ -117,7 +117,7 @@
               case 'Table':
               case 'TableDisplay':
                 var names = result.columnNames.join(", ");
-                return 'a table with ' + result.values.length + ' rows and ' + result.columnNames.length + ' columns (' + names + ')';
+                return 'a table with ' + result.values.length + ' row(s) and ' + result.columnNames.length + ' columns (' + names + ')';
               case 'Results':
                 var out = 0, err = 0;
                 if (result.outputdata && result.outputdata.length > 0) {

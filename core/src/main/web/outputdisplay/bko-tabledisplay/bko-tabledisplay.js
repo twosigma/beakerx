@@ -2309,7 +2309,6 @@
           }
 
           scope.columns = cols;
-
           var id = '#' + scope.id;
           var init = {
             'destroy' : true,

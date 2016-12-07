@@ -120,32 +120,11 @@ define(function(require, exports, module) {
                   }
                 },
                 get_msg_cell : function() {
-                  console.log('get_msg_cell is not implemented');
-
-                  // configuration :
-                  // ipywidgets 4.0.3 py35_0
-                  // conda uninstall widgetsnbextension ---- if Ipywidgets 5 was
-                  // instaled before
-                  // ipython 5.1.0 py35_0
-                  // jupyter 1.0.0 py35_3
-                  // jupyter_client 4.4.0 py35_0
-                  // jupyter_console 5.0.0 py35_0
-                  // jupyter_core 4.2.0 py35_0
-
                   // there is no cell, cell emulation in:
                   // dist/vendor/ipython3/manager.js#display_widget_view
                   // dist/vendor/ipython3/manager.js#display_view_in_cell
-                  // dist/vendor/ipython3/manager.js#callbacks -- for text
-                  // output with widgets
-                  // dist/vendor/ipython3/widget.js#_handle_comm_msg (case
-                  // 'display')
-
-                  // may be it is simpler to implement this function in future,
-                  // then no need to modify all this functions, code can be
-                  // taken from :
-                  // dist/vendor/ipython3/manager.js#display_widget_view
-                  // dist/vendor/ipython3/widget.js#_handle_comm_msg (case
-                  // 'display')
+                  // dist/vendor/ipython3/manager.js#callbacks -- for text output with widgets
+                  // dist/vendor/ipython3/widget.js#_handle_comm_msg (case 'display')
                   return undefined;
                 }
               };

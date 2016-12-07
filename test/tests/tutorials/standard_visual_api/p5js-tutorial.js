@@ -17,7 +17,7 @@
 var BeakerPageObject = require('../../beaker.po.js');
 var beakerPO;
 
-describe('Processing with p5.js', function (done) {
+describe('Processing with p5.js', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();

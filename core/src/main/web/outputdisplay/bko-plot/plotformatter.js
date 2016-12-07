@@ -207,10 +207,10 @@
         }
         // map focus region
         var focus = model.userFocus;
-        if (focus.xl != null) { focus.xl = xAxis.getPercent(focus.xl); }
-        if (focus.xr != null) { focus.xr = xAxis.getPercent(focus.xr); }
-        if (focus.yl != null) { focus.yl = yAxis.getPercent(focus.yl); }
-        if (focus.yr != null) { focus.yr = yAxis.getPercent(focus.yr); }
+        if (focus.xl != null) { focus.xl = model.xAxis.getPercent(focus.xl); }
+        if (focus.xr != null) { focus.xr = model.xAxis.getPercent(focus.xr); }
+        if (focus.yl != null) { focus.yl = model.yAxis.getPercent(focus.yl); }
+        if (focus.yr != null) { focus.yr = model.yAxis.getPercent(focus.yr); }
       },
 
       formatTreeMapModel: function (newmodel) {

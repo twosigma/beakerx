@@ -33,7 +33,7 @@ describe('Histogram Tutorial', function() {
     });
 
     it('Random Demo Data', function () {
-        element(by.css('bk-cell[cellid="section912gtQ"] span.bksectiontoggleplus')).click();
+        beakerPO.clickElementWithHandlingError($('bk-cell[cellid="section912gtQ"] span.bksectiontoggleplus'), 'bkSectionTogglePlus');
         var idCell = "codeQ4eHXa";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');

@@ -19,7 +19,7 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('Autotranslation Tutorial', function (done) {
+describe('Autotranslation Tutorial', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();

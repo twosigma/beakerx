@@ -40,7 +40,7 @@ describe('Notebook', function() {
 
   describe('graphs', function() {
     beforeEach(function() {
-      beakerPO.newEmptyNotebook.click();
+      beakerPO.newEmptyNotebookClick();
       beakerPO.insertCellButton.click();
       beakerPO.notebookMenu.click();
       beakerPO.languageManagerMenuItem.click();
@@ -76,13 +76,13 @@ describe('Notebook', function() {
   });
 
   it('can load', function() {
-    beakerPO.newEmptyNotebook.click();
+    beakerPO.newEmptyNotebookClick();
     expect(browser.getTitle()).toEqual('New Notebook');
     beakerPO.closeNotebook();
   });
 
   it('can add a cell', function() {
-    beakerPO.newEmptyNotebook.click();
+    beakerPO.newEmptyNotebookClick();
     beakerPO.insertCellButton.click();
     expect(beakerPO.getEvaluateButton().isDisplayed()).toBe(true);
     beakerPO.closeNotebook();
@@ -90,7 +90,7 @@ describe('Notebook', function() {
 
   describe('evaluating JS', function() {
     beforeEach(function() {
-      beakerPO.newEmptyNotebook.click();
+      beakerPO.newEmptyNotebookClick();
       beakerPO.insertCellButton.click();
       browser.wait(beakerPO.EC.presenceOf(beakerPO.getCellEvaluatorMenu()), 10000);
       beakerPO.getCellEvaluatorMenu().click();
@@ -114,7 +114,7 @@ describe('Notebook', function() {
 
   describe('evaluating languages', function() {
     beforeEach(function() {
-      beakerPO.newEmptyNotebook.click();
+      beakerPO.newEmptyNotebookClick();
       beakerPO.insertCellButton.click();
       beakerPO.notebookMenu.click();
       beakerPO.languageManagerMenuItem.click();

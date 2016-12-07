@@ -19,19 +19,26 @@ var BeakerPageObject = require('../../beaker.po.js');
 var path = require('path');
 var beakerPO;
 
-describe('R Tutorial', function (done) {
+describe('R Tutorial', function () {
 
-    beakerPO = new BeakerPageObject();
-    browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr&readOnly=true").then(done)
-    beakerPO.waitUntilLoadingCellOutput();
-    browser.driver.manage().window().maximize();
+    beforeAll(function(done){
+        beakerPO = new BeakerPageObject();
+        browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr&readOnly=true").then(done)
+        beakerPO.waitUntilLoadingCellOutput();
+        browser.driver.manage().window().maximize();
 
-    var start = new Date().getTime();
-    beakerPO.waitUntilLoadingFinished().then(function() {
-        var stop = new Date().getTime();
-        var len = stop - start;
-        console.log('Starting R language: ' + len + ' milliSeconds');
+        var start = new Date().getTime();
+        beakerPO.waitUntilLoadingFinished().then(function() {
+            var stop = new Date().getTime();
+            var len = stop - start;
+            console.log('Starting R language: ' + len + ' milliSeconds');
+        });
     });
+
+    afterAll(function(done){
+        beakerPO.createScreenshot('rTutorial');
+        done();
+    })
 
     it('R can load', function () {
         element(by.css('div.modal-body')).isPresent().then(function(present){

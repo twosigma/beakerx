@@ -21,7 +21,7 @@ describe('Cell Menu', function() {
   beforeEach(function(done) {
     beakerPO = new BeakerPageObject();
     browser.get(beakerPO.baseURL);
-    beakerPO.newEmptyNotebook.click();
+    beakerPO.newEmptyNotebookClick();
     beakerPO.insertNewCell()
     .then(done);
   });

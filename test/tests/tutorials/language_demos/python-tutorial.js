@@ -24,6 +24,7 @@ describe('Python Tutorial', function () {
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();
         browser.get(beakerPO.baseURL + "beaker/#/open?uri=file:config%2Ftutorials%2Fipython-examples.bkr&readOnly=true").then(done);
+        browser.driver.manage().window().maximize();
 
         var start = new Date().getTime();
         beakerPO.waitUntilLoadingFinished().then(function() {
@@ -45,6 +46,17 @@ describe('Python Tutorial', function () {
                 self.createScreenshot('pythonLoad');
                 expect(element.all(by.css('div.modal-body > p')).get(0).getText()).toBe('IPython have loaded');
             }
+        });
+    });
+
+    describe('Autocomplete', function(){
+        it('Should hint "infty" ', function() {
+            beakerPO.scrollHeaderElement();
+            beakerPO.insertNewDefaultCell('IPython');
+            browser.actions().sendKeys("in").perform();
+            beakerPO.checkAutocomplete('infty');
+            browser.sleep(1000);
+            beakerPO.selectItem('infty');
         });
     });
 
@@ -80,15 +92,5 @@ describe('Python Tutorial', function () {
             beakerPO.checkImageByIdCell(idCell);
         });
 
-    });
-
-    describe('Autocomplete', function(){
-        it('Should hint "infty" ', function() {
-            browser.executeScript("window.scrollTo(0, 0);");
-            beakerPO.insertNewDefaultCell('IPython');
-            browser.actions().sendKeys("in").perform();
-            beakerPO.checkAutocomplete('infty');
-            beakerPO.selectItem('infty');
-        });
     });
 });

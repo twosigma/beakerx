@@ -18,7 +18,7 @@
 var BeakerPageObject = require('../../beaker.po.js');
 var beakerPO;
 
-describe('Notebook Reflection API', function (done) {
+describe('Notebook Reflection API', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();

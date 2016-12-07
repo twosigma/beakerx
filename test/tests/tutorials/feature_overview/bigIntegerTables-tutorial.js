@@ -18,7 +18,7 @@
 var BeakerPageObject = require('../../beaker.po.js');
 var beakerPO;
 
-describe('Large Integers in Tables and Autotranslation', function (done) {
+describe('Large Integers in Tables and Autotranslation', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();

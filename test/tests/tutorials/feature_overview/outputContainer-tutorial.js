@@ -18,7 +18,7 @@
 var BeakerPageObject = require('../../beaker.po.js');
 var beakerPO;
 
-describe('Output containers Tutorial', function (done) {
+describe('Output containers Tutorial', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();

@@ -544,7 +544,8 @@
       },
 
       getHighlightedSize: function(size, highlighted) {
-        return size + this.getHighlightedDiff(highlighted);
+        var newSize = size + this.getHighlightedDiff(highlighted);
+        return newSize.toString();
       },
 
       getHighlightDuration: function() {

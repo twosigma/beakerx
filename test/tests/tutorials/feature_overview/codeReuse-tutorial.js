@@ -18,7 +18,7 @@
 var BeakerPageObject = require('../../beaker.po.js');
 var beakerPO;
 
-describe('Code Reuse with Libraries', function (done) {
+describe('Code Reuse with Libraries', function () {
 
     beforeAll(function(done){
         beakerPO = new BeakerPageObject();
@@ -35,16 +35,15 @@ describe('Code Reuse with Libraries', function (done) {
         var idCell = "codeeYVHl2";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Results');
-        browser.wait(beakerPO.EC.presenceOf($('bk-code-cell-output[cell-id=' + idCell + '] bk-output-display[type="Text"]')), 10000).then(function(){
-            expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('bk-output-display[type="Text"] pre')).getText()).toBe('2');
-        });
+        browser.sleep(10000);
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).$('[type="Text"]').getText()).toBe('2');
     });
 
     it('Use the libraries', function () {
         var idCell = "codeohgvXK";
         beakerPO.scrollToBkCellByIdCell(idCell);
         beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
-        expect(beakerPO.getCodeCellOutputByIdCell(idCell).element(by.css('pre')).getText()).toBe('base calling mission control... base calling mission control... base calling mission control... ');
+        expect(beakerPO.getCodeCellOutputByIdCell(idCell).$('pre').getText()).toBe('base calling mission control... base calling mission control... base calling mission control... ');
     });
 
 });

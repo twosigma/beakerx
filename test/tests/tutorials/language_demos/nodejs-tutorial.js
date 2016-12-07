@@ -61,8 +61,6 @@ describe('Node.js Tutorial', function () {
                 });
         });
 
-
-
         describe('Chat with Socket.io', function(){
 
             it('Should run server localhost:7788', function(){

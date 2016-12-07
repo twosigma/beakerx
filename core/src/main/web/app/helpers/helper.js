@@ -1354,13 +1354,17 @@
         }
 
         // now update payload (if needed)
-        if (evaluation.payload !== undefined && modelOutput.result !== undefined && modelOutput.result.object !== undefined) {
+        if (evaluation.payload !== undefined &&
+            modelOutput.result !== undefined &&
+            modelOutput.result.object !== undefined &&
+            typeof modelOutput.result.object !== 'string') {
+
           modelOutput.result.object.payload = evaluation.payload;
         }
 
         if (modelOutput.result.object !== undefined) {
           if (modelOutput.result.object.payload === undefined) {
-            if (modelOutput.result.object.outputdata.length > 0) {
+            if (modelOutput.result.object.outputdata && modelOutput.result.object.outputdata.length > 0) {
               modelOutput.result.object.payload = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : undefined };
             }
           } else if (modelOutput.result.object.payload.type === "Results") {
@@ -1379,7 +1383,7 @@
           }
           modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime;
 
-          if (modelOutput.result.object.outputdata.length === 0) {
+          if (modelOutput.result.object.outputdata && modelOutput.result.object.outputdata.length === 0) {
             // single output display
             modelOutput.result = evaluation.payload;
           } else {
@@ -1401,7 +1405,7 @@
           }
           modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime;
 
-          if (modelOutput.result.object.outputdata.length === 0) {
+          if (modelOutput.result.object.outputdata && modelOutput.result.object.outputdata.length === 0) {
             // single output display
             modelOutput.result = {
               type: "BeakerDisplay",

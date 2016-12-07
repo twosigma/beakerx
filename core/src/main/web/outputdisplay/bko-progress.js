@@ -82,6 +82,9 @@
         scope.cancel = function() {
           bkEvaluateJobManager.cancel();
         };
+        scope.forceCancel = function() {
+          bkEvaluateJobManager.forceCancel();
+        };
         scope.isCancellable = function() {
           return bkEvaluateJobManager.isCancellable();
         };

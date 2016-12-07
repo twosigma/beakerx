@@ -424,6 +424,9 @@ define(function(require, exports, module) {
           _theCancelFunction();
         }
       },
+      forceCancel: function() {
+        _theCancelFunction = null;
+      },
       initCode: function() {
         return ("package.path = package.path .. ';' .. os.getenv('beaker_torch_init') .. '/?.lua'\n" +
 		"beaker = require 'beaker'\n" +

@@ -409,6 +409,9 @@ define(function(require, exports, module) {
           _theCancelFunction();
         }
       },
+      forceCancel: function() {
+        _theCancelFunction = null;
+      },
       initCode: function() {
         return this.settings.setup + "\n";
       },

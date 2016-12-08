@@ -92,6 +92,9 @@ define(function(require, exports, module) {
         CppCancelFunction();
       }
     },
+    forceCancel: function() {
+      CppCancelFunction = null;
+    },
     resetEnvironment: function() {
       var deferred = bkHelper.newDeferred();
       bkHelper.httpPost(bkHelper.serverUrl(serviceBase + '/rest/cpp/resetEnvironment'), {shellId: this.settings.shellID})

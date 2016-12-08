@@ -89,6 +89,9 @@ define(function(require, exports, module) {
           ScalaCancelFunction();
         }
       },
+      forceCancel: function() {
+        ScalaCancelFunction = null;
+      },
       resetEnvironment: function () {
         var deferred = bkHelper.newDeferred();
         bkHelper.asyncCallInLanguageManager({

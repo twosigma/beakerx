@@ -411,6 +411,9 @@ define(function(require, exports, module) {
           _theCancelFunction();
         }
       },
+      forceCancel: function() {
+        _theCancelFunction = null;
+      },
       initCode: function() {
         return 'include(string(ENV["beaker_julia_init"], "/beaker.jl"))\n' +
 	       'Beaker.setsession("' + bkHelper.getSessionId() + '")\n' +

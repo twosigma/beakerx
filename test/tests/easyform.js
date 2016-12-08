@@ -44,15 +44,16 @@ describe('EasyForm', function () {
     e.sendKeys("A").then(function(){
         expect(e.getAttribute('value')).toEqual("A");
     });
+    beakerPO.createScreenshot('undoRedoSendA');
     beakerPO.clickElementWithHandlingError(e, 'inputElement');
     //TEST UNDO
     if (os.type() === 'Darwin') {
       //COMMAND:      '\uE03D',  // Apple command key
-      e.sendKeys("\uE03Dz");
+      e.sendKeys(protractor.Key.chord(protractor.Key.COMMAND, "z"));
     }
     else {
       //CONTROL:      '\uE009',
-      e.sendKeys("\uE009z");
+      e.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "z"));
     }
     expect(e.getAttribute('value')).toEqual("");
     beakerPO.clickElementWithHandlingError(e, 'inputElement');
@@ -60,12 +61,11 @@ describe('EasyForm', function () {
     //SHIFT:        '\uE008',
     if (os.type() === 'Darwin') {
       //COMMAND:      '\uE03D',  // Apple command key
-      e.sendKeys("\uE008\uE03Dz");
+      e.sendKeys(protractor.Key.chord(protractor.Key.COMMAND, protractor.Key.SHIFT, "z"));
     } else {
       //CONTROL:      '\uE009',
-      e.sendKeys("\uE008\uE009z");
+      e.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SHIFT, "z"));
     }
-    beakerPO.createScreenshot('easyFormUndoRedo');
     expect(e.getAttribute('value')).toEqual("A");
   }
 
@@ -134,20 +134,20 @@ describe('EasyForm', function () {
     expect(element.all(by.css('bk-output-display  .combo-box')).count()).toBe(1);
     expect(element.all(by.css('bk-output-display  option')).count()).toBe(4);
   });
-  //
-  //it('Text Areas Undo/Redo', function () {
-  //  var code = 'f1 = new EasyForm(\"Form\")\\n';
-  //  code += 'f1.addTextArea(\"Text Area\")\\n';
-  //  code += 'f1';
-  //  testUndoRedo(code, 'bk-output-display  .text-area');
-  //});
-  //
-  //it('Text Fields Undo/Redo', function () {
-  //  var code = 'f1 = new EasyForm(\"Form\")\\n';
-  //  code += 'f1.addTextField(\"first\", 15)\\n';
-  //  code += 'f1';
-  //  testUndoRedo(code, 'bk-output-display  .text-field');
-  //});
+
+  it('Text Areas Undo/Redo', function () {
+    var code = 'f1 = new EasyForm(\"Form\")\\n';
+    code += 'f1.addTextArea(\"Text Area\")\\n';
+    code += 'f1';
+    testUndoRedo(code, 'bk-output-display  .text-area');
+  });
+
+  it('Text Fields Undo/Redo', function () {
+    var code = 'f1 = new EasyForm(\"Form\")\\n';
+    code += 'f1.addTextField(\"first\", 15)\\n';
+    code += 'f1';
+    testUndoRedo(code, 'bk-output-display  .text-field');
+  });
 
 });
 

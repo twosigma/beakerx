@@ -86,6 +86,9 @@ define(function(require, exports, module) {
           cancelFunction();
         }
       },
+      forceCancel: function() {
+        cancelFunction = null;
+      },
       resetEnvironment: function () {
         var deferred = bkHelper.newDeferred();
         bkHelper.asyncCallInLanguageManager({

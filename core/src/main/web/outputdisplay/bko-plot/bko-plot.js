@@ -2019,10 +2019,6 @@
           plotUtils.plotGridlines(scope);
 
           scope.renderData();
-          if (scope.invalidData.length>0){
-            scope.plotNotDrawable = true;
-          }
-
           scope.renderGridlineLabels();
           scope.renderGridlineTicks();
           scope.renderCoverBox(); // redraw

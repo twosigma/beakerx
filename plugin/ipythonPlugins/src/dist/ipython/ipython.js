@@ -107,6 +107,14 @@ define(function(require, exports, module) {
                     on: function () {},
                     trigger: function () {}
                   },
+                  get_msg_cell : function() {
+                    // there is no cell, cell emulation in:
+                    // dist/vendor/ipython3/manager.js#display_widget_view
+                    // dist/vendor/ipython3/manager.js#display_view_in_cell
+                    // dist/vendor/ipython3/manager.js#callbacks -- for text output with widgets
+                    // dist/vendor/ipython3/widget.js#_handle_comm_msg (case 'display')
+                    return undefined;
+                  },
                   keyboard_manager: keyboard_manager
                 };
                 var ajaxsettings = {

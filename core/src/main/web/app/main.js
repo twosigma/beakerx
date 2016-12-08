@@ -16,36 +16,39 @@
 
 define('jquery',[], function() {return $;});
 define('underscore',[], function() {return _;});
-
 requirejs.config({
-  paths: {
+  paths: { 
+    //IPywitgets 4.0.3
+    'ipywidgets_init_v4_0_3':                       "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/init",
+    'ipywidgets_manager_v4_0_3':                    "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/manager",
+    'ipywidgets_widget_v4_0_3':                     "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget",
+    'ipywidgets_widget_link_v4_0_3':                "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_link",
+    'ipywidgets_widget_bool_v4_0_3':                "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_bool",
+    'ipywidgets_widget_button_v4_0_3':              "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_button",
+    'ipywidgets_widget_box_v4_0_3':                 "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_box",
+    'ipywidgets_widget_float_v4_0_3':               "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_float",
+    'ipywidgets_widget_image_v4_0_3':               "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_image",
+    'ipywidgets_widget_int_v4_0_3':                 "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_int",
+    'ipywidgets_widget_output_v4_0_3':              "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_output",
+    'ipywidgets_widget_selection_v4_0_3':           "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_selection",
+    'ipywidgets_widget_selectioncontainer_v4_0_3':  "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_selectioncontainer",
+    'ipywidgets_widget_string_v4_0_3':              "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_string",
+    'ipywidgets_widget_color_v4_0_3' :              "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_color",
+    'ipywidgets_widget_controller_v4_0_3' :         "../plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/widget_controller",
+    
+    //IPython
+    'ipython3_kernel':           "../plugins/eval/ipythonPlugins/vendor/ipython3/kernel",
     'ipython3_comm':             "../plugins/eval/ipythonPlugins/vendor/ipython3/comm",
     'ipython3_namespace':        "../plugins/eval/ipythonPlugins/vendor/ipython3/namespace",
-    'ipython3_kernel':           "../plugins/eval/ipythonPlugins/vendor/ipython3/kernel",
     'ipython3_outputarea':       "../plugins/eval/ipythonPlugins/vendor/ipython3/outputarea",
     'ipython3_session':          "../plugins/eval/ipythonPlugins/vendor/ipython3/session",
     'ipython3_serialize':        "../plugins/eval/ipythonPlugins/vendor/ipython3/serialize",
     'ipython3_utils':            "../plugins/eval/ipythonPlugins/vendor/ipython3/utils",
-    'ipython3_initwidgets':      "../plugins/eval/ipythonPlugins/vendor/ipython3/init",
-    'ipython3_keyboard':         "../plugins/eval/ipythonPlugins/vendor/ipython3/keyboard",
-    'ipython3_keyboardmanager':         "../plugins/eval/ipythonPlugins/vendor/ipython3/keyboardmanager",
-    'ipython3_widgetmanager':    "../plugins/eval/ipythonPlugins/vendor/ipython3/manager",
     'backbone':                  "../plugins/eval/ipythonPlugins/vendor/ipython3/backbone-min",
-    'ipython3_widget':           "../plugins/eval/ipythonPlugins/vendor/ipython3/widget",
-    'ipython3_widget_link':      "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_link",
-    'ipython3_widget_bool':      "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_bool",
-    'ipython3_widget_button':    "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_button",
-    'ipython3_widget_box':       "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_box",
-    'ipython3_widget_float':     "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_float",
-    'ipython3_widget_image':     "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_image",
-    'ipython3_widget_int':       "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_int",
-    'ipython3_widget_output':    "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_output",
-    'ipython3_widget_selection': "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_selection",
-    'ipython3_widget_selectioncontainer':
-      "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_selectioncontainer",
-    'ipython3_widget_string':    "../plugins/eval/ipythonPlugins/vendor/ipython3/widget_string",
-    'ipython3_actions':    "../plugins/eval/ipythonPlugins/vendor/ipython3/actions",
-    'ipython3_events':    "../plugins/eval/ipythonPlugins/vendor/ipython3/events"
+    'ipython3_keyboard':         "../plugins/eval/ipythonPlugins/vendor/ipython3/keyboard",
+    'ipython3_keyboardmanager':  "../plugins/eval/ipythonPlugins/vendor/ipython3/keyboardmanager",
+    'ipython3_actions':          "../plugins/eval/ipythonPlugins/vendor/ipython3/actions",
+    'ipython3_events':           "../plugins/eval/ipythonPlugins/vendor/ipython3/events",
   }
 });
 

@@ -199,11 +199,15 @@ var BeakerPageObject = function() {
         .then(function(result) {
           deferred.fulfill(result);
         },
-        function(value){
-          self.createScreenshot('waitForPlugin' + plugin);
+        function(error){
+          deferred.rejected(error);
+
         });
       return deferred.promise;
-    }.bind(this), 50000);
+    }.bind(this), 99000).then(null,
+    function(){
+      self.createScreenshot('waitForPlugin' + plugin);
+    });
   };
 
   this.readMarkdownCell = function() {

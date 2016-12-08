@@ -24,13 +24,23 @@ MAINTAINER Beaker Feedback <beaker-feedback@twosigma.com>
 #      Build      #
 ###################
 
-ADD . /home/beaker/src
+ADD . /home/beaker/src/tmp
 
 ENV HOME /home/beaker
 
-RUN chown -R beaker:beaker /home/beaker
+RUN chown -R beaker:beaker /home/beaker && \
 
-RUN su -m beaker -c "cd /home/beaker/src && gradle realclean && gradle build"
+    su -m beaker -c "cd     /home/beaker/src/tmp && gradle realclean && gradle build" && \
+
+    su -m beaker -c "rm     /home/beaker/src/tmp/core/beaker-notebook*.zip || true" && \
+
+    su -m beaker -c "cd     /home/beaker/src/tmp/core/config/builds/dist && gradle makeDist"  && \
+
+    su -m beaker -c "unzip  /home/beaker/src/tmp/core/beaker-notebook*.zip -d /home/beaker/src/"  && \
+
+    su -m beaker -c "mv     /home/beaker/src/beaker-notebook* /home/beaker/src/beaker_notebook"  && \
+
+    su -m beaker -c "rm -rf /home/beaker/src/tmp"
 
 ###################
 #      Setup      #
@@ -58,4 +68,4 @@ RUN chown -R beaker:beaker /home/beaker/.beaker
 
 EXPOSE 8800
 WORKDIR /home/beaker/src
-CMD su -m beaker -c "export PATH=$PATH:/usr/sbin && /home/beaker/src/core/beaker.command --public-server"
+CMD su -m beaker -c "export PATH=$PATH:/usr/sbin && /home/beaker/src/beaker_notebook/beaker.command --public-server"

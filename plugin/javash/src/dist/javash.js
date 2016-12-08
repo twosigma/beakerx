@@ -93,6 +93,9 @@ define(function(require, exports, module) {
         JavaShCancelFunction();
       }
     },
+    forceCancel: function() {
+      JavaShCancelFunction = null;
+    },
     resetEnvironment: function () {
       var deferred = bkHelper.newDeferred();
       bkHelper.asyncCallInLanguageManager({

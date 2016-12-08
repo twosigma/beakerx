@@ -45,6 +45,7 @@ describe('Text Cell', function() {
     }.bind(this))
     .then(function(txt) {
       expect(txt).toEqual('hello world $');
-    }).then(done);
+    },
+    function(){ beakerPO.createScreenshot('markdownCell'); }).then(done);
   });
 });

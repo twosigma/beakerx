@@ -39,12 +39,17 @@ describe('Text Cell', function() {
       .then(done);
   });
 
-  it('can handle escaping $ in markdown', function(done) {
-    beakerPO.createMarkdownCell('hello world \\$').then(function() {
-      return beakerPO.readMarkdownCell();
-    }.bind(this))
-    .then(function(txt) {
-      expect(txt).toEqual('hello world $');
-    }).then(done);
+  it('can handle escaping $ in markdown', function() {
+    beakerPO.clickElementWithHandlingError($('bk-new-cell-menu .dropdown-toggle'), 'bkNewCell');
+    beakerPO.clickElementWithHandlingError($('.insert-text'), 'insertText');
+    beakerPO.setCellInput('hello world \\$');
+    browser.sleep(1000);
+    beakerPO.readMarkdownCell().then(
+        function(txt) {
+          expect(txt).toEqual('hello world $');
+        },
+        function(err){
+          beakerPO.createScreenshot('markdownCell'); }
+    );
   });
 });

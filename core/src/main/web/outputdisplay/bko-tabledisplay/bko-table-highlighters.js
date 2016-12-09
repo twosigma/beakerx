@@ -88,7 +88,7 @@
         });
 
         this.colorScale = function (min, max) {
-          return d3.scale.linear().domain([min, max]).range([this.minColor, this.maxColor]);
+          return d3.scaleLinear().domain([min, max]).range([this.minColor, this.maxColor]);
         };
 
         this.doHighlight = function (table) {
@@ -130,7 +130,7 @@
           if (this.midVal == null) {
             this.midVal = (min + max) / 2;
           }
-          return d3.scale.linear(min, max).domain([min, this.midVal, max]).range([this.minColor, this.midColor, this.maxColor]);
+          return d3.scaleLinear(min, max).domain([min, this.midVal, max]).range([this.minColor, this.midColor, this.maxColor]);
         };
       };
       //////////ThreeColorHeatmap Highlighter//////////

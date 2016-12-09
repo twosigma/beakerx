@@ -5,9 +5,8 @@ define('ipython3_kernel', [
     'ipython3_namespace',
     'ipython3_utils',
     'ipython3_comm',
-    'ipython3_serialize',
-    'ipython3_initwidgets'
-], function(IPython, utils, comm, serialize, widgetmanager) {
+    'ipython3_serialize'
+], function(IPython, utils, comm, serialize) {
     "use strict";
 
     /**
@@ -22,7 +21,7 @@ define('ipython3_kernel', [
      * @param {Notebook} notebook - notebook object
      * @param {string} name - the kernel type (e.g. python3)
      */
-    var Kernel = function (kernel_service_url, ws_url, notebook, name) {
+    var Kernel = function (kernel_service_url, ws_url, notebook, name, widgetmanager) {
         this.events = notebook.events;
 
         this.id = null;

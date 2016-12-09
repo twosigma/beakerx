@@ -369,6 +369,21 @@
         deferred.resolve();
         return deferred.promise;
       },
+      forceCancel: function() {
+        var currentJob = jobQueue.getCurrentJob();
+
+        if (currentJob) {
+          currentJob.output.result = ERROR_MESSAGE_ON_CANCEL;
+          currentJob.whendone.reject('... cancelled!');
+          currentJob.finished = true;
+
+          if (currentJob.evaluator && currentJob.evaluator.forceCancel) {
+            currentJob.evaluator.forceCancel();
+          }
+
+          jobQueue.tick();
+        }
+      },
       cancelAll: function() {
         var currentJob = jobQueue.getCurrentJob();
         var deferred = bkUtils.newDeferred();

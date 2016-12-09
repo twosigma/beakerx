@@ -125,6 +125,7 @@
   // beakerlab is informing about a rename
   $('body').bind('beaker.embedded.renameDone', function(e, nid, newName) {
     window.beakerRegister.notebookName = newName;
+    $(document.body).injector().get('$rootScope').$apply();
   });
 
   // beakerlab is informing about a drag operation start

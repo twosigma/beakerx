@@ -1841,25 +1841,34 @@
           };
         };
 
-        scope.standardizeData = function() {
-          var model = scope.model.getCellModel();
+        var filterInvalidData = function(model) {
           if (model.graphics_list){
             for(var i = 0; i<model.graphics_list.length; i++){
               if (model.graphics_list[i].x && model.graphics_list[i].y){
                 for(var j = 0; j<model.graphics_list[i].x.length; j++){
-                  if (!$.isNumeric(model.graphics_list[i].x[j])
-                    || !$.isNumeric(model.graphics_list[i].y[j])){
-                    scope.invalidData.push({
-                      x: model.graphics_list[i].x[j], y: model.graphics_list[i].y[j]
-                    });
-                    model.graphics_list[i].x.splice(j, 1);
-                    model.graphics_list[i].y.splice(j, 1);
-                    j--;
+                  if (scope.invalidData.length < 1000){
+                    if (!$.isNumeric(model.graphics_list[i].x[j])
+                      || !$.isNumeric(model.graphics_list[i].y[j])){
+                      scope.invalidData.push({
+                        x: model.graphics_list[i].x[j], y: model.graphics_list[i].y[j]
+                      });
+                      model.graphics_list[i].x.splice(j, 1);
+                      model.graphics_list[i].y.splice(j, 1);
+                      j--;
+                    }
+                  } else {
+                    return model;
                   }
                 }
               }
             }
           }
+          return model;
+        };
+
+        scope.standardizeData = function() {
+          var model = scope.model.getCellModel();
+          model = filterInvalidData(model);
           scope.stdmodel = plotFormatter.standardizeModel(model, scope.prefs);
         };
 

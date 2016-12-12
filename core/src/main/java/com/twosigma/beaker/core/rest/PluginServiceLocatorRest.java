@@ -818,10 +818,20 @@ public class PluginServiceLocatorRest {
     proc = Runtime.getRuntime().exec(listToArray(cmd), buildEnv(pluginId, null));
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-version", null, null).start();
-    String line = br.readLine();
-    return line;
+    
+    String line = null;
+    String ret = "";
+    boolean first = true;
+    while ((line = br.readLine()) != null) {
+      if(!first){
+        ret += "\n";
+      }
+      first = false;
+      ret += line;
+    }
+    return ret;
   }
-
+  
   @GET
   @Path("getIPythonPassword")
   @Produces(MediaType.TEXT_PLAIN)

@@ -160,20 +160,6 @@ var BeakerPageObject = function() {
     });
   };
 
-  this.createMarkdownCell = function(text) {
-    return element(by.css('bk-new-cell-menu .dropdown-toggle'))
-    .click()
-    .then(function() {
-      return element(by.css('.insert-text'));
-    })
-    .then(function(el) {
-      return el.click();
-    })
-    .then(function() {
-      return this.setCellInput(text);
-    }.bind(this));
-  }.bind(this);
-
   this.newEmptyNotebook = element(by.css('a.new-empty-notebook'));
   this.newEmptyNotebookClick = function() {
     this.clickElementWithHandlingError($('a.new-empty-notebook'), 'newEmptyNotebook');
@@ -205,10 +191,6 @@ var BeakerPageObject = function() {
     });
   }.bind(this);
 
-  //this.codeCell = function(index) {
-  //  return _.extend(element.all(by.css('.bkcell.code')).get(index),
-  //                  require('./mixins/cell.js'));
-  //};
   this.waitForPlugin = function(plugin) {
     var self = this;
     browser.wait(function() {
@@ -217,11 +199,15 @@ var BeakerPageObject = function() {
         .then(function(result) {
           deferred.fulfill(result);
         },
-        function(value){
-          self.createScreenshot('waitForPlugin' + plugin);
+        function(error){
+          deferred.rejected(error);
+
         });
       return deferred.promise;
-    }.bind(this), 50000);
+    }.bind(this), 99000).then(null,
+    function(){
+      self.createScreenshot('waitForPlugin' + plugin);
+    });
   };
 
   this.readMarkdownCell = function() {

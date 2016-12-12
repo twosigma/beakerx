@@ -22,7 +22,7 @@ from subprocess import check_output
 if len(sys.argv) > 1:
     arg1 = sys.argv[1]
     if arg1 == "--version":
-        os.execlp("ipython", "ipython", "--version")
+        os.execlp("ipython", "ipython", "-c", "\"import pip; import IPython; arr = list(filter(lambda x : x.key == \'ipywidgets\', pip.get_installed_distributions())); print (\'ipywidgets==%s\' % arr[0].version) if len(arr) > 0 else \'NONE\'; print(\'ipython==\' + str(IPython.version_info[0])  + '.' + str(IPython.version_info[1]) + '.' + str(IPython.version_info[2]))\"");
     elif arg1 == "--hash":
         os.execlp("ipython", "ipython", "-c", "\"from IPython.lib import passwd;print (passwd('" + sys.argv[2] + "'))\"")
     elif arg1 == "--profile":

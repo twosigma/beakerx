@@ -141,18 +141,14 @@ describe('EasyForm', function () {
     var code = 'f1 = new EasyForm(\"Form\")\\n';
     code += 'f1.addTextArea(\"Text Area\")\\n';
     code += 'f1';
-    var result = testUndoRedo(code, 'bk-output-display  .text-area');
-    expect(result.ctrlZ).toBe('');
-    expect(result.ctrlShiftZ).toBe('A');
+    testUndoRedo(code, 'bk-output-display  .text-area');
   });
 
   it('Text Fields Undo/Redo', function () {
     var code = 'f1 = new EasyForm(\"Form\")\\n';
     code += 'f1.addTextField(\"first\", 15)\\n';
     code += 'f1';
-    var result = testUndoRedo(code, 'bk-output-display  .text-field');
-    expect(result.ctrlZ).toBe('');
-    expect(result.ctrlShiftZ).toBe('A');
+    testUndoRedo(code, 'bk-output-display  .text-field');
   });
 
 });

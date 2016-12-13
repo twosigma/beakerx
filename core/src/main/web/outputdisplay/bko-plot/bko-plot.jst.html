@@ -14,6 +14,28 @@
     limitations under the License.
 -->
 <div class="dtcontainer">
+  <!-- Modal -->
+  <div ng-if="invalidData.length > 0">
+    <div class="plot_modal" id="{{id}}_modal_dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            {{invalidData.length}} Invalid rows:
+            <br>
+            <div>
+              <span ng-repeat="data in invalidData track by $index" style="white-space: nowrap;">
+                Point : [ x : {{data.x}} ; y : {{data.y}} ]
+                <br>
+              </span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ng-click="hideModal()">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <canvas></canvas>
   <div id='plotTitle' class='plot-title'></div>
   <div id='plotLegendContainer' class='plot-plotlegendcontainer' oncontextmenu='return false;'>

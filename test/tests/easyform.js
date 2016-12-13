@@ -83,7 +83,7 @@ describe('EasyForm', function () {
     beakerPO.closeNotebook()
       .then(done);
   });
-  /*
+
   it('Text Fields', function () {
     var code = 'f1 = new EasyForm(\"Form\")\\n';
     code += 'f1.addTextField(\"first\", 15)\\n';
@@ -136,7 +136,7 @@ describe('EasyForm', function () {
     expect(element.all(by.css('bk-output-display  .combo-box')).count()).toBe(1);
     expect(element.all(by.css('bk-output-display  option')).count()).toBe(4);
   });
-  */
+
   it('Text Areas Undo/Redo', function () {
     var code = 'f1 = new EasyForm(\"Form\")\\n';
     code += 'f1.addTextArea(\"Text Area\")\\n';

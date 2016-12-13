@@ -55,6 +55,7 @@ describe('EasyForm', function () {
       //CONTROL:      '\uE009',
       e.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "z"));
     }
+    browser.sleep(1000);
     expect(e.getAttribute('value')).toEqual("");
     beakerPO.clickElementWithHandlingError(e, 'inputElement');
     //TEST REDO
@@ -66,6 +67,7 @@ describe('EasyForm', function () {
       //CONTROL:      '\uE009',
       e.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SHIFT, "z"));
     }
+    browser.sleep(1000);
     expect(e.getAttribute('value')).toEqual("A");
   }
 
@@ -81,7 +83,7 @@ describe('EasyForm', function () {
     beakerPO.closeNotebook()
       .then(done);
   });
-
+  /*
   it('Text Fields', function () {
     var code = 'f1 = new EasyForm(\"Form\")\\n';
     code += 'f1.addTextField(\"first\", 15)\\n';
@@ -134,19 +136,23 @@ describe('EasyForm', function () {
     expect(element.all(by.css('bk-output-display  .combo-box')).count()).toBe(1);
     expect(element.all(by.css('bk-output-display  option')).count()).toBe(4);
   });
-
+  */
   it('Text Areas Undo/Redo', function () {
     var code = 'f1 = new EasyForm(\"Form\")\\n';
     code += 'f1.addTextArea(\"Text Area\")\\n';
     code += 'f1';
-    testUndoRedo(code, 'bk-output-display  .text-area');
+    var result = testUndoRedo(code, 'bk-output-display  .text-area');
+    expect(result.ctrlZ).toBe('');
+    expect(result.ctrlShiftZ).toBe('A');
   });
 
   it('Text Fields Undo/Redo', function () {
     var code = 'f1 = new EasyForm(\"Form\")\\n';
     code += 'f1.addTextField(\"first\", 15)\\n';
     code += 'f1';
-    testUndoRedo(code, 'bk-output-display  .text-field');
+    var result = testUndoRedo(code, 'bk-output-display  .text-field');
+    expect(result.ctrlZ).toBe('');
+    expect(result.ctrlShiftZ).toBe('A');
   });
 
 });

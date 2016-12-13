@@ -55,6 +55,7 @@ describe('EasyForm', function () {
       //CONTROL:      '\uE009',
       e.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, "z"));
     }
+    browser.sleep(1000);
     expect(e.getAttribute('value')).toEqual("");
     beakerPO.clickElementWithHandlingError(e, 'inputElement');
     //TEST REDO
@@ -66,6 +67,7 @@ describe('EasyForm', function () {
       //CONTROL:      '\uE009',
       e.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, protractor.Key.SHIFT, "z"));
     }
+    browser.sleep(1000);
     expect(e.getAttribute('value')).toEqual("A");
   }
 

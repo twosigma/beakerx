@@ -237,6 +237,7 @@
         var isHTML = function(value) {
           return /^<[a-z][\s\S]*>/i.test(value);
         };
+
         return function(result) {
           if (result === undefined) {
             return ["Hidden"];
@@ -251,7 +252,7 @@
             }
             if (_.isArray(result)) {
               if (_.isObject(result[0])) {
-                ret.push("Table");
+                ret.unshift("Table");
               }
             }
             return ret;

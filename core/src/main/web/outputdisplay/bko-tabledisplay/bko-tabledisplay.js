@@ -1109,6 +1109,49 @@
 
           var i;
 
+          // for raw data types like array of arrays of arrays
+          if (!model.columnNames) {
+            var row, col;
+            var columns = [];
+            var values = [];
+
+            // get all columns
+            for (row = 0; row < model.length; ++row) {
+              var currentColumns = _.keys(model[row]);
+              currentColumns.sort();
+              _.each(currentColumns, function (key) {
+                if (_.indexOf(columns, key) < 0) {
+                  columns.push(key);
+                }
+              });
+            }
+            model.columnNames = columns;
+
+            // init new model by null values - for DataTables
+            for (row = 0; row < model.length; ++row) {
+              if (_.isUndefined(values[row])) {
+                values[row] = [];
+              }
+              for (col = 0; col < columns.length; ++col) {
+                values[row][col] = null;
+              }
+            }
+
+            for (row = 0; row < model.length; ++row) {
+              var keys = _.keys(model[row]);
+              _.each(keys, function (key) {
+                var position = _.indexOf(columns, key);
+                var value = model[row][key];
+                // for not primitive type - make its String representation
+                if (_.isObject(value)) {
+                  value = JSON.stringify(value).replace(':', '=').replace(/"/g, '');
+                }
+                values[row][position] = value;
+              });
+            }
+            model.values = values;
+          }
+
           // validate saved state (if any) by using column \Names
           var modelColumnNames;
           if (model.columnNames) {
@@ -1381,6 +1424,7 @@
         scope.doCreateData = function(model) {
           // create a dummy column to keep server ordering if not already present
           var values = model.hasOwnProperty('filteredValues') ? model.filteredValues : model.values;
+
           if (!scope.hasIndex) {
             var data = [];
             var r;
@@ -2308,12 +2352,31 @@
             cols.push(col);
           }
 
-          scope.columns = cols;
+          // format Object toString to be presented like {a=1}
+          var _data = [];
+          if (model.type && (model.type == 'Table' || model.type == 'TableDisplay')
+              && model.hasMapValues) {
+            for (i = 0; i < scope.data.length; ++i) {
+              for (var j = 0; j < scope.data[i].length; ++j) {
+                if (_.isUndefined(_data[i])) {
+                  _data[i] = [];
+                }
+                var value = scope.data[i][j];
+                if (_.isObject(value)) {
+                  value = JSON.stringify(value).replace(':', '=').replace(/"/g, '');
+                }
+                _data[i][j] = value;
+              }
+            }
+          } else {
+            _data = scope.data;
+          }
 
+          scope.columns = cols;
           var id = '#' + scope.id;
           var init = {
             'destroy' : true,
-            'data': scope.data,
+            'data': _data,
             'columns': scope.columns,
             'stateSave': true,
             'processing': true,

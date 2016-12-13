@@ -65,6 +65,7 @@ public class TableDisplay extends ObservableTableDisplay {
   private List<List<Color>> fontColor = new ArrayList<>();
   private List<List<?>> filteredValues;
   private boolean headersVertical;
+  private boolean hasMapValues = false;
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -98,13 +99,15 @@ public class TableDisplay extends ObservableTableDisplay {
     }
 
     // now build values
-    for(Map<?,?> m : v) {
-      List<Object> vals = new ArrayList<Object>();
+    for (Map<?, ?> m : v) {
+      List<Object> vals = new ArrayList<>();
       for (String cn : columns) {
-        if (m.containsKey(cn)){
-          vals.add(getValueForSerializer( m.get(cn), serializer));
-        }
-        else
+        if (m.containsKey(cn)) {
+          if (!serializer.isPrimitiveType(m.get(cn).toString())) {
+            this.hasMapValues = true;
+          }
+          vals.add(getValueForSerializer(m.get(cn), serializer));
+        } else
           vals.add(null);
       }
       values.add(vals);
@@ -401,4 +404,7 @@ public class TableDisplay extends ObservableTableDisplay {
     return subtype;
   }
 
+  public boolean isHasMapValues() {
+    return hasMapValues;
+  }
 }

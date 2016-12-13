@@ -114,7 +114,7 @@
       if (this.vlength === 0) {
         this.clear(scope);
       } else {
-        this.draw(scope);
+        this.draw(scope)
       }
     };
 
@@ -316,11 +316,13 @@
           default:  // rect
             shapesvg.selectAll(tag)
               .data(eleprops, function(d) { return d.id; })
-              .attr("x", function(d) { return d.x; })
-              .attr("y", function(d) { return d.y; })
+              .attr("x", function(d) {return d.x;})
+              .attr("y", function(d) {return d.y;})
               .attr("width", function(d) { return d.w; })
               .attr("height", function(d) { return d.h; });
+
         }
+
         shapesvg.selectAll("text").remove();
         shapesvg.selectAll("text")
           .data(this.elementLabels[shape], function(d) { return d.id; }).enter().append("text")

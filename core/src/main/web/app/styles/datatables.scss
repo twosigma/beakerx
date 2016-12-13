@@ -288,7 +288,7 @@ $fix-col-separator-width: 3px;
   text-align: left;
 }
 
-.table_modal {
+.table_modal, .plot_modal {
   position: absolute;
   right: 0;
   left: 0;
@@ -300,13 +300,20 @@ $fix-col-separator-width: 3px;
   .modal-dialog{
     width: 300px;
   }
-  .modal-content{
+  .modal-content {
     border: none;
   }
-  .modal-body{
+  .modal-body {
     padding-top: 25px;
   }
+}
 
+.plot_modal {
+  z-index: 100;
+  .modal-body {
+    overflow-y: auto;
+    max-height: 400px;
+  }
 }
 
 @keyframes fadeIn {

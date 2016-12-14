@@ -28,18 +28,12 @@ ADD . /home/beaker/src/tmp
 
 ENV HOME /home/beaker
 
-RUN chown -R beaker:beaker /home/beaker && \
-
+RUN chown -R beaker:beaker  /home/beaker && \
     su -m beaker -c "cd     /home/beaker/src/tmp && gradle realclean && gradle build" && \
-
-    su -m beaker -c "rm     /home/beaker/src/tmp/core/beaker-notebook*.zip || true" && \
-
-    su -m beaker -c "cd     /home/beaker/src/tmp/core/config/builds/dist && gradle makeDist"  && \
-
-    su -m beaker -c "unzip  /home/beaker/src/tmp/core/beaker-notebook*.zip -d /home/beaker/src/"  && \
-
-    su -m beaker -c "mv     /home/beaker/src/beaker-notebook* /home/beaker/src/beaker_notebook"  && \
-
+    su -m beaker -c "rm -f  /home/beaker/src/tmp/core/beaker-notebook*.zip" && \
+    su -m beaker -c "cd     /home/beaker/src/tmp/core/config/builds/dist && gradle makeDist" && \
+    su -m beaker -c "unzip  /home/beaker/src/tmp/core/beaker-notebook*.zip -d /home/beaker/src/" && \
+    su -m beaker -c "mv     /home/beaker/src/beaker-notebook* /home/beaker/src/beaker_notebook" && \
     su -m beaker -c "rm -rf /home/beaker/src/tmp"
 
 ###################

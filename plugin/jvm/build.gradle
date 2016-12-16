@@ -70,8 +70,6 @@ task generateJavadoc(type: Javadoc) {
   }
 }
 
-
-
 task addFavicon2Javadoc {
 
   doLast{
@@ -113,6 +111,17 @@ if (hasProperty('includeDepsInJar')) {
       exclude "META-INF/*.RSA"
     }
   }
+}
+
+if (hasProperty('evalPluginDir')) {
+
+  task copyDependencies(type: Copy) {
+    from configurations.runtime
+    from jar
+    into new File(evalPluginDir, 'sharedLibs')
+  }
+
+  installDist.finalizedBy copyDependencies
 }
 
 addFavicon2Javadoc.dependsOn(generateJavadoc)

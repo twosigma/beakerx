@@ -18,7 +18,10 @@ mainClassName = 'com.twosigma.beaker.r.Main'
 
 configurations {
   provided
-  compile.extendsFrom provided
+}
+
+sourceSets.main {
+  compileClasspath += configurations.provided
 }
 
 repositories {
@@ -27,7 +30,7 @@ repositories {
 
 dependencies {
   provided project(':plugin:jvm')
-  provided group: 'net.rforge', name: 'Rserve', version: '0.6-8.1'
+  compile group: 'net.rforge', name: 'Rserve', version: '0.6-8.1'
   compile 'org.apache.xmlgraphics:batik-rasterizer:1.8'
   compile 'org.apache.xmlgraphics:batik-codec:1.8'
   compile 'org.apache.xmlgraphics:xmlgraphics-commons:2.0.1'
@@ -54,7 +57,8 @@ startScripts {
   defaultJvmOpts=['-Djava.awt.headless=' + 'true']
   doLast {
     // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
-    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
+    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*;%APP_HOME%/../sharedLibs/*')
+    unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/lib/*:\\$APP_HOME/../sharedLibs/*')
   }
 }
 

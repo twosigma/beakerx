@@ -114,10 +114,14 @@ define(function(require, exports, module) {
                     },
                     get_msg_cell : function() {
                       // there is no cell, cell emulation in:
-                      // dist/vendor/ipython3/manager.js#display_widget_view
-                      // dist/vendor/ipython3/manager.js#display_view_in_cell
-                      // dist/vendor/ipython3/manager.js#callbacks -- for text output with widgets
-                      // dist/vendor/ipython3/widget.js#_handle_comm_msg (case 'display')
+                      // ipywidgets/4.0.3/manager.js#display_widget_view
+                      // ipywidgets/4.0.3/manager.js#display_view_in_cell
+                      // ipywidgets/4.0.3/manager.js#callbacks -- for text output with widgets
+                      // ipywidgets/4.0.3/widget.js#_handle_comm_msg (case 'display')
+                      //jupyter-js-widgets/1.2.0/manager.js#display_view
+                      //jupyter-js-widgets/1.2.0/manager.js#display_widget_view -- added
+                      //jupyter-js-widgets/1.2.0/manager.js#callbacks -- for text output with widgets
+                      //jupyter-js-widgets/1.2.0/widget.js#_handle_comm_msg
                       return undefined;
                     }
                   };

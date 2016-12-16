@@ -136,6 +136,7 @@ var WidgetModel = Backbone.Model.extend({
         this.close(true);
     },
 
+    //MODIFIED !!!
     _handle_comm_msg: function (msg) {
         /**
          * Handle incoming comm msg.

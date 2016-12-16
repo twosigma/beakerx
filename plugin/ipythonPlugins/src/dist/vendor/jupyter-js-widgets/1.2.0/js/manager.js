@@ -26,6 +26,7 @@ window.html2canvas = html2canvas;
 //--------------------------------------------------------------------
 // WidgetManager class
 //--------------------------------------------------------------------
+//MODIFIRED !!!(commented out some function calls)
 var WidgetManager = function (comm_manager, notebook) {
   managerBase.ManagerBase.apply(this);
     WidgetManager._managers.push(this);
@@ -269,6 +270,7 @@ WidgetManager.prototype._init_actions = function() {
 /**
  * Initialize the widget menu
  */
+//MODIFIRED !!!(commented out some function calls) 
 WidgetManager.prototype._init_menu = function() {
 
     // Add a widgets menubar item, before help.

@@ -1,0 +1,536 @@
+.widget-modal-backdrop {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: #000;
+	z-index: 999;
+	opacity: .5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column
+}
+
+.widget-modal-backdrop.widget-modal-hidden {
+	display: none
+}
+
+.widget-modal-backdrop.widget-modal-hide {
+	animation: fadeout .25s
+}
+
+.widget-modal-backdrop.widget-modal-show {
+	animation: fadein .25s
+}
+
+@
+keyframes fadein {
+	from {opacity: 0
+}
+
+to {
+	opacity: .5
+}
+
+}
+@
+keyframes fadeout {
+	from {opacity: .5
+}
+
+to {
+	opacity: 0
+}
+
+}
+.widget-modal-text {
+	color: #fff;
+	font-size: x-large;
+	font-weight: 700
+}
+
+.widget-modal-text div, .widget-modal-text i {
+	display: inline
+}
+
+.widget-modal-text div {
+	padding-left: 1ex
+}
+
+.widget-modal-progress {
+	width: 300px
+}
+
+.jupyter-widgets {
+	margin: 2px
+}
+
+.jupyter-widgets.widget-container {
+	margin: 0
+}
+
+.widget-area {
+	page-break-inside: avoid;
+	-webkit-box-orient: horizontal;
+	-webkit-box-align: stretch;
+	-moz-box-orient: horizontal;
+	-moz-box-align: stretch;
+	box-orient: horizontal;
+	box-align: stretch;
+	display: flex;
+	flex-direction: row;
+	align-items: stretch
+}
+
+.widget-area .widget-subarea {
+	padding: .4em 0;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-webkit-box-flex: 2;
+	-moz-box-flex: 2;
+	box-flex: 2;
+	flex: 2;
+	-webkit-box-orient: vertical;
+	-webkit-box-align: stretch;
+	-moz-box-orient: vertical;
+	-moz-box-align: stretch;
+	box-orient: vertical;
+	box-align: stretch;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch
+}
+
+.widget-area.connection-problems .prompt:after {
+	content: "\F127";
+	font-family: FontAwesome;
+	color: #d9534f;
+	top: 3px;
+	padding: 3px
+}
+
+.slide-track {
+	border: 1px solid #CCC;
+	background: #FFF;
+	border-radius: 2px
+}
+
+.widget-hslider {
+	width: 300px
+}
+
+.widget-hslider .slider-container {
+	padding-left: 8px;
+	padding-right: 2px;
+	overflow: visible;
+	flex-grow: 1;
+	height: 5px;
+	max-height: 5px;
+	margin-top: 15px;
+	margin-bottom: 12px;
+	border: 1px solid #CCC;
+	background: #FFF;
+	border-radius: 2px;
+	-webkit-box-orient: horizontal;
+	-webkit-box-align: stretch;
+	-moz-box-orient: horizontal;
+	-moz-box-align: stretch;
+	box-orient: horizontal;
+	box-align: stretch;
+	display: flex;
+	flex-direction: row;
+	align-items: stretch
+}
+
+.widget-hslider .slider-container .ui-slider {
+	-webkit-box-orient: horizontal;
+	-webkit-box-align: stretch;
+	-moz-box-orient: horizontal;
+	-moz-box-align: stretch;
+	box-orient: horizontal;
+	box-align: stretch;
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	box-flex: 1;
+	flex: 1;
+	border: 0;
+	background: 0 0
+}
+
+.widget-hslider .slider-container .ui-slider .ui-slider-handle {
+	width: 12px;
+	height: 28px;
+	margin-top: -8px;
+	border-radius: 2px
+}
+
+.widget-hslider .slider-container .ui-slider .ui-slider-range {
+	height: 12px;
+	margin-top: -4px
+}
+
+.widget-vslider {
+	width: 50px;
+	height: 250px
+}
+
+.widget-vslider .slider-container {
+	padding-bottom: 5px;
+	overflow: visible;
+	flex-grow: 1;
+	width: 5px;
+	max-width: 5px;
+	margin-left: auto;
+	margin-right: auto;
+	border: 1px solid #CCC;
+	background: #FFF;
+	border-radius: 2px;
+	-webkit-box-orient: vertical;
+	-webkit-box-align: stretch;
+	-moz-box-orient: vertical;
+	-moz-box-align: stretch;
+	box-orient: vertical;
+	box-align: stretch;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch
+}
+
+.widget-vslider .slider-container .ui-slider {
+	-webkit-box-orient: vertical;
+	-webkit-box-align: stretch;
+	-moz-box-orient: vertical;
+	-moz-box-align: stretch;
+	box-orient: vertical;
+	box-align: stretch;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	box-flex: 1;
+	flex: 1;
+	border: 0;
+	background: 0 0;
+	margin-left: -4px;
+	margin-top: 5px
+}
+
+.widget-vslider .slider-container .ui-slider .ui-slider-handle {
+	width: 28px;
+	height: 12px;
+	margin-left: -9px;
+	border-radius: 2px
+}
+
+.widget-vslider .slider-container .ui-slider .ui-slider-range {
+	width: 12px;
+	margin-left: -1px
+}
+
+.widget-colorpicker {
+	width: 300px;
+	display: flex
+}
+
+.widget-colorpicker.short {
+	width: 148px
+}
+
+.widget-colorpicker .input-group {
+	flex-grow: 1
+}
+
+.jupyter-button {
+	width: 148px;
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px
+		rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12)
+}
+
+.jupyter-button.btn, .jupyter-button.btn.hover, .jupyter-button.btn:active,
+	.jupyter-button.btn:focus {
+	outline: 0 !important
+}
+
+.jupyter-button.btn:active {
+	box-shadow: 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0
+		rgba(0, 0, 0, .12), 0 2px 4px -1px rgba(0, 0, 0, .2)
+}
+
+.widget-checkbox {
+	width: 148px
+}
+
+.widget-button, .widget-toggle-button {
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px
+		rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
+	width: 148px;
+	height: 32px
+}
+
+.widget-button.btn, .widget-button.btn.hover, .widget-button.btn:active,
+	.widget-button.btn:focus, .widget-toggle-button.btn,
+	.widget-toggle-button.btn.hover, .widget-toggle-button.btn:active,
+	.widget-toggle-button.btn:focus {
+	outline: 0 !important
+}
+
+.widget-button.btn:active, .widget-toggle-button.btn:active {
+	box-shadow: 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0
+		rgba(0, 0, 0, .12), 0 2px 4px -1px rgba(0, 0, 0, .2)
+}
+
+.widget-play {
+	width: 148px;
+	display: flex;
+	justify-content: space-between
+}
+
+.widget-play button {
+	height: 32px;
+	width: 48px
+}
+
+.widget-toggle-button {
+	width: 148px;
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px
+		rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12)
+}
+
+.widget-toggle-button.btn, .widget-toggle-button.btn.hover,
+	.widget-toggle-button.btn:active, .widget-toggle-button.btn:focus,
+	.widget-toggle-buttons .btn, .widget-toggle-buttons .btn.hover,
+	.widget-toggle-buttons .btn:active, .widget-toggle-buttons .btn:focus {
+	outline: 0 !important
+}
+
+.widget-toggle-buttons .btn.active {
+	box-shadow: none !important
+}
+
+.widget-toggle-buttons .btn-group {
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px
+		rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12)
+}
+
+.widget-text {
+	width: 300px
+}
+
+.widget-textarea {
+	width: 300px
+}
+
+.widget-listbox {
+	width: 300px
+}
+
+.widget-select-multiple {
+	width: 300px
+}
+
+.widget-select-multiple select.form-control {
+	margin-left: 0;
+	margin-right: 0
+}
+
+.widget-dropdown {
+	width: 300px
+}
+
+.widget-dropdown .widget_item {
+	display: flex;
+	flex-grow: 1
+}
+
+.widget-dropdown .widget-combo-btn {
+	flex-grow: 1;
+	min-width: 10px
+}
+
+.widget-dropdown .dropdown-menu {
+	max-height: 200px;
+	overflow: hidden;
+	overflow-y: auto;
+	width: calc(275px)
+}
+
+.widget-hprogress {
+	width: 300px;
+	height: 32px
+}
+
+.widget-hprogress .progress {
+	flex-grow: 1;
+	margin-top: auto;
+	margin-bottom: auto
+}
+
+.widget-hprogress .progress-bar {
+	-webkit-transition: none;
+	-moz-transition: none;
+	-ms-transition: none;
+	-o-transition: none;
+	transition: none
+}
+
+.widget-vprogress {
+	height: 250px;
+	width: 50px
+}
+
+.widget-vprogress .progress {
+	flex-grow: 1;
+	width: 12px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 0
+}
+
+.widget-vprogress .progress-bar {
+	-webkit-transition: none;
+	-moz-transition: none;
+	-ms-transition: none;
+	-o-transition: none;
+	transition: none
+}
+
+.widget-combo-btn {
+	min-width: 123px
+}
+
+.widget_item .dropdown-menu li a {
+	color: inherit
+}
+
+.widget-valid {
+	margin: 8px 5px 16px
+}
+
+.widget-hbox {
+	-webkit-box-orient: horizontal;
+	-webkit-box-align: stretch;
+	-moz-box-orient: horizontal;
+	-moz-box-align: stretch;
+	box-orient: horizontal;
+	box-align: stretch;
+	display: flex;
+	flex-direction: row;
+	align-items: stretch
+}
+
+.widget-hbox input[type=checkbox] {
+	margin-top: 10px;
+	margin-bottom: 10px
+}
+
+.widget-hbox input[type=color] {
+	height: 32px;
+	width: 28px;
+	padding: 1px
+}
+
+.widget-hbox .widget-label {
+	min-width: 10ex;
+	max-width: 10ex;
+	padding-right: 8px;
+	padding-top: 5px;
+	text-align: right;
+	vertical-align: text-top;
+	word-wrap: break-word
+}
+
+.widget-hbox .widget-readout {
+	padding-left: 4px;
+	padding-top: 5px;
+	height: 32px;
+	text-align: center;
+	vertical-align: text-top;
+	min-width: 7em;
+	max-width: 7em;
+	margin-left: 3px;
+	overflow: hidden;
+	white-space: nowrap
+}
+
+.widget-hbox .widget-readout.overflow {
+	-webkit-box-shadow: 0 0 0 1px rgba(77, 0, 0, .15);
+	-moz-box-shadow: 0 0 0 1px rgba(77, 0, 0, .15);
+	box-shadow: 0 0 0 1px rgba(77, 0, 0, .15)
+}
+
+.widget-vbox {
+	-webkit-box-orient: vertical;
+	-webkit-box-align: stretch;
+	-moz-box-orient: vertical;
+	-moz-box-align: stretch;
+	box-orient: vertical;
+	box-align: stretch;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch
+}
+
+.widget-vbox input[type=color] {
+	height: 32px;
+	padding: 1px
+}
+
+.widget-vbox .widget-label {
+	padding-bottom: 5px;
+	text-align: center;
+	vertical-align: text-bottom
+}
+
+.widget-vbox .widget-readout {
+	padding-top: 5px;
+	white-space: nowrap;
+	text-align: center;
+	vertical-align: text-top;
+	margin-top: 4px;
+	overflow: hidden
+}
+
+.widget-vbox .widget-readout.overflow {
+	-webkit-box-shadow: 0 0 0 1px rgba(77, 0, 0, .15);
+	-moz-box-shadow: 0 0 0 1px rgba(77, 0, 0, .15);
+	box-shadow: 0 0 0 1px rgba(77, 0, 0, .15)
+}
+
+.widget-box {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-webkit-box-align: start;
+	-moz-box-align: start;
+	box-align: start;
+	align-items: flex-start
+}
+
+.widget-radio-box {
+	-webkit-box-orient: vertical;
+	-webkit-box-align: stretch;
+	-moz-box-orient: vertical;
+	-moz-box-align: stretch;
+	box-orient: vertical;
+	box-align: stretch;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	padding-top: 4px
+}
+
+.widget-radio-box label {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	margin-left: 22px
+} /*# sourceMappingURL=widgets.min.css.map */

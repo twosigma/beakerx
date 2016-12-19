@@ -24,16 +24,16 @@
 
 <div class="modal-footer fixed" style="height: 68px;">
   <span style="float:left; position:relative;" ng-if="getStrategy().treeViewfs.extension !== undefined">
-     <input class="beforeCheckbox" id="extensionFilter" type="checkbox" style="vertical-align:middle;"
+     <input class="beforeCheckbox" id="extensionFilter" type="checkbox" style="vertical-align:middle; cursor: pointer;"
             ng-model="getStrategy().treeViewfs.applyExtFilter">
-     <label ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .{{
+     <label style="cursor: pointer;" ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .{{
        getStrategy().treeViewfs.extension }} files only</label>
    </span>
   <span style="float:left; position:relative; width: 30px;">&nbsp;</span>
   <span style="float:left; position:relative;">
-     <input class="beforeCheckbox" id="showHiddenFiles" type="checkbox" style="vertical-align:top;"
+     <input class="beforeCheckbox" id="showHiddenFiles" type="checkbox" style="vertical-align:top; cursor: pointer;"
             ng-model="getStrategy().treeViewfs.showHiddenFiles">
-     <label ng-click="getStrategy().treeViewfs.showHiddenFiles = !getStrategy().treeViewfs.showHiddenFiles">show hidden
+     <label style="cursor: pointer;" ng-click="getStrategy().treeViewfs.showHiddenFiles = !getStrategy().treeViewfs.showHiddenFiles">show hidden
        files</label>
    </span>
 

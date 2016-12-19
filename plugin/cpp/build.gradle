@@ -25,7 +25,10 @@ mainClassName = 'com.twosigma.beaker.cpp.Main'
 configurations {
   provided
   antlr
-  compile.extendsFrom provided
+}
+
+sourceSets.main {
+  compileClasspath += configurations.provided
 }
 
 def osName = System.properties['os.name']
@@ -116,7 +119,8 @@ startScripts {
   defaultJvmOpts=['-Djava.awt.headless=' + 'true']
   doLast {
     // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
-    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
+    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*;%APP_HOME%/../sharedLibs/*')
+    unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/lib/*:\\$APP_HOME/../sharedLibs/*')
   }
 }
 

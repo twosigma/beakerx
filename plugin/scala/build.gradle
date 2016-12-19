@@ -26,14 +26,17 @@ mainClassName = 'com.twosigma.beaker.scala.Main'
 
 configurations {
   provided
-  compile.extendsFrom provided
+}
+
+sourceSets.main {
+  compileClasspath += configurations.provided
 }
 
 dependencies {
   provided project(':plugin:jvm')
-  provided group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.8'
-  provided group: 'org.scala-lang', name: 'scala-library', version: '2.11.8'
-  provided group: 'jline', name: 'jline', version: '2.12'
+  compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.8'
+  compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.8'
+  compile group: 'jline', name: 'jline', version: '2.12'
 }
 
 compileScala
@@ -65,7 +68,8 @@ startScripts {
   defaultJvmOpts=['-Djava.awt.headless=' + 'true']
   doLast {
     // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
-    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
+    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*;%APP_HOME%/../sharedLibs/*')
+    unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/lib/*:\\$APP_HOME/../sharedLibs/*')
   }
 }
 

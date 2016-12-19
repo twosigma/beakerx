@@ -62,5 +62,29 @@ describe('Node.js Tutorial', function () {
                 });
         });
 
+         describe('Autotranslation examples', function(){
+
+             it('Should display table (Node.js)', function(){
+                 idCell = "codeDTvhx9";
+                 beakerPO.scrollToBkCellByIdCell(idCell);
+                 beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+                 beakerPO.checkTablesRowsByIdCell(idCell, 5);
+             });
+
+             it('Should display table (JavaScript)', function(){
+                 idCell = "codetbGdCk";
+                 beakerPO.scrollToBkCellByIdCell(idCell);
+                 beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Table');
+                 beakerPO.checkTablesRowsByIdCell(idCell, 7);
+             });
+
+             it('Should display "1^2 = 1 ..." (JavaScript)', function(){
+                 idCell = "codeq0vt2s";
+                 beakerPO.scrollToBkCellByIdCell(idCell);
+                 beakerPO.clickCodeCellInputButtonByIdCell(idCell, 'Text');
+                 beakerPO.checkCellOutputSubTextByIdCell(idCell, '"1^2 = 1, 2^2 = 4, 3^2 = 9, 4^2 = 16, 5^2 = 25, 6^2 = 36, 7^2 = 49"', 0);
+             });
+         });
+
     });
 });

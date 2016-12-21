@@ -329,6 +329,9 @@ define(function(require, exports, module) {
               beakerObj.clearOutput();
             }
           } else {
+            if(typeof output === 'function') {
+                output = output.toString();
+            }
             bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: output}, PLUGIN_NAME);
             deferred.resolve(output);
             beakerObj.clearOutput();

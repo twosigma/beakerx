@@ -141,7 +141,46 @@ define(function(require, exports, module) {
           bkHelper.show1ButtonModal('ERROR: ' + err, PLUGIN_NAME + ' restart failed');
         });
       },
+    setNotebookModelSparkUsage: function (useSpark) {
+      var notebookModel = window.bkHelper.getNotebookModel();
+      if (!notebookModel || !notebookModel.evaluators)
+        return;
+
+      for (var i = 0; i < notebookModel.evaluators.length; ++i) {
+        if (notebookModel.evaluators[i].plugin === "Scala")
+          notebookModel.evaluators[i]["useSpark"] = useSpark;
+      }
+    },
+
+      manageSpark: function(cb) {
+        var self = this;
+        if (!this.settings.useSpark) {
+          if (bkSparkContextManager.isRunning()) {
+            bkHelper.show2ButtonModal(
+              'The SparkContext is currently active. ' +
+              'Do you want to stop it and cancel all executing jobs?',
+              'Stopping active SparkContext',
+              function() {
+                bkSparkContextManager.disconnect();
+                self.setNotebookModelSparkUsage(false);
+              },
+              function() {
+                window.discardPluginManagerChanges();
+                self.settings.useSpark = true;
+                self.setNotebookModelSparkUsage(true);
+              },
+              "Yes", "No", "", "");
+          } else {
+            bkSparkContextManager.disconnect();
+            self.setNotebookModelSparkUsage(false);
+          }
+        } else {
+          self.settings.useSpark = true;
+          self.setNotebookModelSparkUsage(true);
+        }
+      },
       spec: {
+        useSpark:    {type: "settableBoolean", action: "manageSpark", name: "Use Apache Spark in this notebook"},
         outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
         classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
         imports:     {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},

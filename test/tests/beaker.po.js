@@ -834,7 +834,7 @@ var BeakerPageObject = function() {
 
   this.runCellWithoutDisplayResultByIdCell = function(idCell, timeOut){
     if(!timeOut){
-      timeOut = 25000;
+      timeOut = 60000;
     }
     this.scrollToBkCellByIdCell(idCell);
     this.runBkCellDefaultButtonByIdCell(idCell);

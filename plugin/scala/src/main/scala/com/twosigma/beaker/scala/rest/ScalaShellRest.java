@@ -63,8 +63,6 @@ public class ScalaShellRest {
           @FormParam("shellId") String shellId)
           throws InterruptedException {
 
-    BeakerScalaEvaluator beakerScalaEvaluator = injector.getInstance(BeakerScalaEvaluator.class);
-
     if(!BeakerSparkContextManager.isRunning())
       return "offline";
 
@@ -72,9 +70,9 @@ public class ScalaShellRest {
     BeakerSparkConfiguration configuration = BeakerSparkContextManager.getConfiguration();
     evaluate(
             shellId,
-            String.format("import com.twosigma.beaker.plugin.scala.utils.BeakerSparkConfiguration\n" +
-                            "var %s = BeakerSparkConfiguration.getSparkContext\n" +
-                            "var %s = BeakerSparkConfiguration.getSqlContext\n",
+            String.format("import com.twosigma.beaker.scala.utils.BeakerSparkContextManager\n" +
+                            "var %s = BeakerSparkContextManager.getSparkContext\n" +
+                            "var %s = BeakerSparkContextManager.getSqlContext\n",
                     configuration.getSparkContextAlias(),
                     configuration.getSqlContextAlias()
             )
@@ -104,9 +102,9 @@ public class ScalaShellRest {
     BeakerSparkConfiguration config = BeakerSparkContextManager.getConfiguration();
     evaluate(
             shellId,
-            String.format("import com.twosigma.beaker.plugin.scala.utils.BeakerSparkConfiguration\n" +
-                            "var %s = BeakerSparkConfiguration.getSparkContext\n" +
-                            "var %s = BeakerSparkConfiguration.getSqlContext\n",
+            String.format("import com.twosigma.beaker.scala.utils.BeakerSparkContextManager\n" +
+                            "var %s = BeakerSparkContextManager.getSparkContext\n" +
+                            "var %s = BeakerSparkContextManager.getSqlContext\n",
                     config.getSparkContextAlias(),
                     config.getSqlContextAlias()
             )
@@ -155,10 +153,16 @@ public class ScalaShellRest {
       ScalaEvaluator js = injector.getInstance(ScalaEvaluator.class);
       js.initialize(shellId,sessionId);
       js.setupAutoTranslation();
+      initBeakerScalaEvaluator(shellId, sessionId);
       this.shells.put(shellId, js);
       return shellId;
     }
     return shellId;
+  }
+
+  protected void initBeakerScalaEvaluator(final String shellId, final String sessionId) {
+    BeakerScalaEvaluator beakerScalaEvaluator = injector.getInstance(BeakerScalaEvaluator.class);
+    beakerScalaEvaluator.initialize(shellId, sessionId);
   }
 
   @POST

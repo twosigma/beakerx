@@ -56,7 +56,7 @@ object BeakerSparkContextManager {
   //private val universeHash = PackInfo.load().getUniverseHash
 
   private var conf = new SparkConf().setAppName("beaker")
-    .setMaster("XXX")
+    .setMaster("cook://codete@localhost:12321")
     .set("spark.executor.memory", "8g")
     .set("spark.cook.cores.per.job.max", "5")
     .set("spark.driver.memory", "20G")

@@ -16,15 +16,10 @@
 
 package com.twosigma.beaker.scala.utils
 
-import scala.tools._
-import java.util.ArrayList
-import java.util.Map
-import java.io.PrintStream
 import java.io.File
 import java.io.BufferedReader
 import java.io.FileReader
 
-import com.twosigma.beaker.jvm.`object`.SimpleEvaluationObject
 import com.twosigma.beaker.jvm.`object`.SparkProgressService
 
 import scala.collection.JavaConversions._
@@ -32,10 +27,8 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 import org.apache.spark._
-import org.apache.spark.rdd.RDD
 import org.apache.spark.scheduler._
 import org.apache.spark.sql.SQLContext
-import org.apache.log4j._
 import com.google.common.io.Files
 import com.twosigma.beaker.scala.util.{BeakerScalaEvaluator, ScalaEvaluator}
 //import com.twosigma.vats.publicapi.pack.PackInfo

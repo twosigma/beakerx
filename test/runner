@@ -37,10 +37,11 @@ for line in iter(beaker.stdout.readline, ''):
         break
 
 result = os.system("./node_modules/protractor/bin/protractor protractorConf.js");
+result2 = 1
 if not result:
-    result = os.system("./node_modules/protractor/bin/protractor protractorWithoutRestartBrowserConf.js");
-if not result:
-    result = os.system("./node_modules/protractor/bin/protractor protractorOneInstanceConf.js");
+    result2 = os.system("./node_modules/protractor/bin/protractor protractorWithoutRestartBrowserConf.js");
+if not result2:
+    result2 = os.system("./node_modules/protractor/bin/protractor protractorOneInstanceConf.js");
 
 # Skipping memory tests because they hang on Jenkins
 # os.system("node memory-tests.js")
@@ -49,5 +50,5 @@ if not result:
 os.killpg(os.getpgid(beaker.pid), signal.SIGTERM)
 os.killpg(os.getpgid(webcontrol.pid), signal.SIGTERM)
 
-if result:
+if result2:
     sys.exit(20)

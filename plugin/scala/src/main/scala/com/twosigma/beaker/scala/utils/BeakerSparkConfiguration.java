@@ -28,7 +28,6 @@ public class BeakerSparkConfiguration {
   private boolean persistent = false;
   private String sparkContextAlias = "sc";
   private String sqlContextAlias = "sqlContext";
-  private String datacenter = "cook://codete@localhost:12321";
   private Map<String, String> sparkConf = new HashMap<>();
 
   public BeakerSparkConfiguration() {}
@@ -56,20 +55,12 @@ public class BeakerSparkConfiguration {
     sqlContextAlias = s;
   }
 
-  public String getDatacenter() {
-    return datacenter;
-  }
-  public void setDatacenter(String s) {
-    datacenter = s;
-  }
-
   public Map<String, String> getSparkConf() {
     return sparkConf;
   }
   public void setSparkConf(Map<String, String> m) {
     sparkConf.putAll(m);
     persistent = false;
-    datacenter = "cook://codete@localhost:12321";
   }
 
   public String validate() {
@@ -103,7 +94,7 @@ public class BeakerSparkConfiguration {
             configuration.setSqlContextAlias(entry.getValue());
             break;
           case "datacenter":
-            String master = "cook://codete@localhost:12321";
+            String master = entry.getValue();
             configuration.sparkConf.put("spark.master", master);
           default:
             if (entry.getKey().startsWith("spark.")) {

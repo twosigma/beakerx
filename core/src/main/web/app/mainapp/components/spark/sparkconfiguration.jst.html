@@ -47,22 +47,32 @@
           <tr>
             <td><label class="col-sm-1 form-control-label">Executor cores</label></td>
             <td>
-              <input type="text" class="form-control" ng-model="configuration.executorCores.value" maxlength="3" ng-disabled="isDisabled()" />
+              <input type="text"
+                     class="form-control"
+                     ng-model="configuration.executorCores.value"
+                     maxlength="3"
+                     ng-disabled="isDisabled()" />
             </td>
 
             <td class="spacing"></td>
 
             <td><label class="col-sm-1 form-control-label">Executor Memory</label></td>
             <td>
-              <input type="text" class="form-control" ng-model="configuration.executorMemory.value" maxlength="3" ng-disabled="isDisabled()" />
+              <input type="text"
+                     class="form-control"
+                     ng-model="configuration.executorMemory.value"
+                     maxlength="3"
+                     ng-disabled="isDisabled()" />
             </td>
           </tr>
 
           <tr>
-            <td><label class="col-sm-1 form-control-label">Datacenter</label></td>
+            <td><label class="col-sm-1 form-control-label">Master URL</label></td>
             <td>
-              <select class="form-control" ng-model="configuration.datacenter.value" ng-options="option for option in ::configuration.datacenter.options" ng-disabled="isDisabled()">
-              </select>
+              <input type="text"
+                      class="form-control"
+                      ng-model="configuration.datacenter.value"
+                      ng-disabled="isDisabled()"/>
             </td>
             <td></td>
             <td></td>

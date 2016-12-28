@@ -22,25 +22,28 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LocalFsVolume implements FsVolume {
+  private final static Logger logger = Logger.getLogger(LocalFsVolume.class.getName());
+  private static final int MAX_TIME_TO_COLLECT_FOLDER_STRUCTURE = 2000;
 
   private String name;
   private File   rootDir;
   private String csscls;
+  private static final boolean isWindows = System.getProperty("os.name").contains("Windows");
 
   private File asFile(FsItem fsi) {
     return ((LocalFsItem) fsi).getFile();
@@ -176,16 +179,7 @@ public class LocalFsVolume implements FsVolume {
 
   @Override
   public boolean hasChildFolder(FsItem fsi) {
-    File file = asFile(fsi);
-    File[] listFiles = file.listFiles(new FileFilter() {
-
-      @Override
-      public boolean accept(File arg0) {
-        return arg0.isDirectory();
-      }
-    });
-    return file.isDirectory()
-      && listFiles != null && listFiles.length > 0;
+    return fsi.isFolder();
   }
 
   @Override
@@ -201,13 +195,29 @@ public class LocalFsVolume implements FsVolume {
   @Override
   public FsItem[] listChildren(FsItem fsi) {
     List<FsItem> list = new ArrayList<FsItem>();
-    File[]       cs   = asFile(fsi).listFiles();
+    File file = asFile(fsi);
+    String absolutePath = file.getAbsolutePath();
+    File[]       cs   = file.listFiles();
     if (cs == null) {
       return new FsItem[0];
     }
 
+    List<String> pathes = null;
+
+    if (!isWindows) {
+      pathes = collectFolderStructure(absolutePath);
+    }
+
     for (File c : cs) {
-      list.add(fromFile(c));
+      LocalFsItem item = fromFile(c);
+
+      if (!isWindows && c.isDirectory()) {
+        item.setHasChildFolders(pathes == null || isHasChildFolders(pathes, c));
+        // "pathes == null" means that collecting of folder structure took too much time and was interrupted,
+        // so we just assume every folder has subfolders
+      }
+
+      list.add(item);
     }
 
     return list.toArray(new FsItem[list.size()]);
@@ -264,6 +274,41 @@ public class LocalFsVolume implements FsVolume {
   @Override
   public void setCssCls(String csscls) {
     this.csscls = csscls;
+  }
+
+  private boolean isHasChildFolders(List<String> pathes, File c) {
+    String eachPath = c.getAbsolutePath();
+    if (eachPath.endsWith("/")) {
+      eachPath += "/";
+    }
+    int index = Collections.binarySearch(pathes, eachPath);
+    return index >= 0 && index + 1 < pathes.size() && pathes.get(index + 1).startsWith(eachPath);
+  }
+
+  private List<String> collectFolderStructure(String absolutePath) {
+    List<String> pathes = new ArrayList<>();
+    long startTime = System.currentTimeMillis();
+
+    try {
+      Process findProcess = Runtime.getRuntime().exec(new String[]{"find", absolutePath, "-type", "d", "-maxdepth", "2"});
+      try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(findProcess.getInputStream()))) {
+        String path;
+        while ((path = bufferedReader.readLine()) != null) {
+          pathes.add(path);
+
+          if (System.currentTimeMillis() - startTime > MAX_TIME_TO_COLLECT_FOLDER_STRUCTURE) {
+            // Collecting of folder structure takes too much time, interrupted
+            return null;
+          }
+        }
+        Collections.sort(pathes);
+      }
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, "Error getting folder structure", e);
+      return null;
+    }
+
+    return pathes;
   }
 }
 

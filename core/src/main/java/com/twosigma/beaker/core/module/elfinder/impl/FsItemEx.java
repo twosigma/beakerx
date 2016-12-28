@@ -128,6 +128,11 @@ public class FsItemEx implements FsItem {
   }
 
   @Override
+  public Boolean isChildFolderFound() {
+    return f.isChildFolderFound();
+  }
+
+  @Override
   public FsVolume getVolume() {
     return v;
   }

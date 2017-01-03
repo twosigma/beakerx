@@ -109,12 +109,19 @@ define(function(require, exports, module) {
                       trigger : function() {
                       }
                     },
+                    find_cell_index : function(cell) {
+                      return 0;
+                    },
                     get_msg_cell : function() {
                       // there is no cell, cell emulation in:
-                      // dist/vendor/ipython3/manager.js#display_widget_view
-                      // dist/vendor/ipython3/manager.js#display_view_in_cell
-                      // dist/vendor/ipython3/manager.js#callbacks -- for text output with widgets
-                      // dist/vendor/ipython3/widget.js#_handle_comm_msg (case 'display')
+                      // ipywidgets/4.0.3/manager.js#display_widget_view
+                      // ipywidgets/4.0.3/manager.js#display_view_in_cell
+                      // ipywidgets/4.0.3/manager.js#callbacks -- for text output with widgets
+                      // ipywidgets/4.0.3/widget.js#_handle_comm_msg (case 'display')
+                      //jupyter-js-widgets/1.2.0/manager.js#display_view
+                      //jupyter-js-widgets/1.2.0/manager.js#display_widget_view -- added
+                      //jupyter-js-widgets/1.2.0/manager.js#callbacks -- for text output with widgets
+                      //jupyter-js-widgets/1.2.0/widget.js#_handle_comm_msg
                       return undefined;
                     }
                   };
@@ -695,9 +702,11 @@ define(function(require, exports, module) {
          
           if(ipywidgetsVersion){
             if(ipywidgetsVersion[0] == '4'){
+              bkHelper.loadCSS(bkHelper.fileUrl("/plugins/eval/ipythonPlugins/vendor/ipywidgets/4.0.3/css/widget.css"));
               require(['ipywidgets_init_v4_0_3'], initwidgetsDone);
-            }else{
-              require(['ipywidgets_init_v4_0_3'], initwidgetsDone);//TODO implement other versions
+            }else if(ipywidgetsVersion[0] == '5'){
+              bkHelper.loadCSS(bkHelper.fileUrl("/plugins/eval/ipythonPlugins/vendor/jupyter-js-widgets/1.2.0/css/widget.css"));
+              require(['jupyter_js_widgets_manager_v1_2_0','jupyter-js-widgets'], initwidgetsDone);
             }
           }else{
             require(['ipywidgets_init_v4_0_3'], initwidgetsDone);

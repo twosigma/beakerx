@@ -80,4 +80,3 @@ requirejs.config({
     'ipython3_events':           "../plugins/eval/ipythonPlugins/vendor/ipython3/events",
   }
 });
-

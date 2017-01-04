@@ -239,10 +239,10 @@ define(function(require, exports, module) {
         id: "file-menu",
         items: [
           {
-            name: "Open... IPython (.ipynb)",
+            name: "Import from Jupyter... (.ipynb)",
             id: "open-ipython-menuitem",
-            reducedName: "Open...",
-            tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
+            reducedName: "Import...",
+            tooltip: "Import an IPython notebook from file system and convert it to Beaker notebook",
             sortorder: 115,
             action: function() {
               bkHelper.openWithDialog('ipynb', 'file', true, IPYNB_PATH_PREFIX);

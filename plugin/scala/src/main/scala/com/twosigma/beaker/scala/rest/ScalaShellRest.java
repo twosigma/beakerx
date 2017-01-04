@@ -117,8 +117,10 @@ public class ScalaShellRest {
   @Path("stopSparkContext")
   @Produces(MediaType.TEXT_PLAIN)
   public String stopSparkContext(@FormParam("shellId") String shellId) {
-    if(BeakerSparkContextManager.isRunning())
+    if(BeakerSparkContextManager.isRunning()) {
       BeakerSparkContextManager.stop();
+      resetEnvironment(shellId);
+    }
     return "ok";
   }
 

@@ -51,6 +51,12 @@ define(function(require, exports, module) {
         var deferred = Q.defer();
         var self = this;
         bkHelper.setupProgressOutput(modelOutput);
+
+        // register cell for Spark job events
+        if (this.settings.useSpark) {
+          bkSparkContextManager.registerCell(refreshObj.cellId);
+        }
+
         bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/scalash/evaluate"), {shellId: self.settings.shellID, code: code})
         .success(function(ret) {
           ScalaCancelFunction = function () {

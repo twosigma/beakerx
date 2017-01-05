@@ -217,6 +217,9 @@ public class ScalaShellRest {
     if(!this.shells.containsKey(shellId)) {
       return;
     }
+    if(BeakerSparkContextManager.isRunning()) {
+       BeakerSparkContextManager.cancelAllJobs();
+    }
     this.shells.get(shellId).cancelExecution();
   }
 

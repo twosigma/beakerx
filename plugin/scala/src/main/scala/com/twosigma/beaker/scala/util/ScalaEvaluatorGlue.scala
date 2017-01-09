@@ -23,7 +23,7 @@ import com.twosigma.beaker.jvm.`object`.SimpleEvaluationObject
 import scala.tools.jline_embedded.console.completer.Completer
 import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter.Completion.{Candidates, ScalaCompleter}
-import scala.tools.nsc.interpreter.Results.Success
+import scala.tools.nsc.interpreter.Results.{Error, Incomplete, Success}
 import scala.tools.nsc.interpreter.{IMain, JList, PresentationCompilerCompleter}
 
 case class ResetState(val state: String);
@@ -97,7 +97,15 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
       case ex: Throwable => ex.toString();
     }
   }
-  
+
+  def handleError(out: SimpleEvaluationObject, msg: String): Unit = {
+    if (msg.startsWith("java.lang.InterruptedException")) {
+      out.finished("... cancelled!")
+    } else {
+      out.error(msg)
+    }
+  }
+
   def evaluate(out: SimpleEvaluationObject, code: String) {
     baos.reset();
     out.setOutputHandler();
@@ -105,7 +113,8 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     try {
       interpreter.interpret(code) match {
         case Success => out.finished(getOut.asInstanceOf[java.lang.Object]);
-        case _ => out.error(baos.toString());
+        case Error => handleError(out, baos.toString());
+        case Incomplete => out.error(baos.toString());
       }
     } catch {
       case ex: Throwable => out.error(ex);

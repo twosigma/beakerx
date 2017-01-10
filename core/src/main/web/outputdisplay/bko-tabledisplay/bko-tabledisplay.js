@@ -1944,14 +1944,22 @@
                 item.items = getPrecisionSubitems;
               } else {
                 item.action = function(el) {
-                    var container = el.closest('.bko-header-menu');
-                    var colIdx = container.data('columnIndex');
+                  var container = el.closest('.bko-header-menu');
+                  var colIdx = container.data('columnIndex');
+                  var scrollLeft = angular.element(document.getElementById(scope.id)).parent().scrollLeft();
 
-                    scope.getCellDisp[scope.colorder[colIdx] - 1] = obj.type;
-                    scope.actualtype[scope.colorder[colIdx] - 1] = obj.type;
-                    scope.applyChanges();
-                  }
-                };
+                  scope.getCellDisp[scope.colorder[colIdx] - 1] = obj.type;
+                  scope.actualtype[scope.colorder[colIdx] - 1] = obj.type;
+
+                  scope.applyChanges();
+
+                  $.when(scope.applyChanges()).done(function() {
+                    window.setTimeout(function() {
+                      angular.element(document.getElementById(scope.id)).parent().scrollLeft(scrollLeft);
+                    }, 0)
+                  });
+                }
+              }
               items.push(item);
             });
 

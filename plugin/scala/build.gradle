@@ -40,9 +40,6 @@ dependencies {
 
   compile group: 'org.apache.spark', name: 'spark-core_2.11', version: '1.6.1'
   compile group: 'org.apache.spark', name: 'spark-sql_2.11', version: '1.6.1'
-  //compile files('/home/codete/devtools/sparkdk/spark/lib/spark-assembly-1.6.1-hadoop2.4.0.jar')
-  //compile files('/home/codete/devtools/sparkdk/sparkResources/spark/core/target/spark-core_2.11-1.6.1-jar-with-dependencies.jar')
-  //compile files('/home/codete/devtools/sparkdk/sparkResources/spark/sql/core/target/spark-sql_2.11-1.6.1-jar-with-dependencies.jar')
 }
 
 compileScala
@@ -71,7 +68,7 @@ if (hasProperty('includeDepsInJar')) {
 }
 
 startScripts {
-  defaultJvmOpts=['-Djava.awt.headless=' + 'true','-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005']
+  defaultJvmOpts=['-Djava.awt.headless=' + 'true']
   doLast {
     // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
     windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*;%APP_HOME%/../sharedLibs/*')

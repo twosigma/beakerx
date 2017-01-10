@@ -18,7 +18,4 @@ import os
 import sys
 from subprocess import call
 
-call(["jupyter" , "nbextension", "enable", "--py", "--sys-prefix", "widgetsnbextension"])
 sys.exit(call(["jupyter", "notebook", "--config=" + os.environ["beaker_ipython_notebook_config"]]))
-
-

@@ -62,17 +62,30 @@ define(function(require, exports, module) {
             }
             checkNodeServerRunning();
         },
-        evaluate: function (code, modelOutput) {
+        evaluate: function (code, modelOutput, refreshObj) {
           var deferred = Q.defer();
             var self = this;
             bkHelper.setupProgressOutput(modelOutput);
             bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/evaluate"), {shellID: self.settings.shellID, code: encodeURIComponent(code)})
             .success(function(ret) {
-                modelOutput.result = ret;
-                bkHelper.refreshRootScope();
-                deferred.resolve(ret);
-            }).error(function(xhr, textStatus, error, config) {
-              var errorText = xhr.status !== 502 ? JSON.parse(xhr) : error;
+              
+              if(ret.showOutput){
+                modelOutput.result = ret.result;
+                deferred.resolve(ret.result);
+              }else{
+                modelOutput.result = {
+                    type: "HiddenOutputCell",
+                    innertype: "Hidden",
+                    object: undefined
+                };
+                deferred.reject(ret.result);
+              }
+
+              bkHelper.refreshRootScope();
+              refreshObj.outputRefreshed();
+              
+            }).error(function(xhr, textStatus, error) {
+              var errorText = xhr.status !== 502 ? xhr : error;
               var errors = errorText.split(/\r?\n/)
               modelOutput.result = {
                   type: "BeakerDisplay",

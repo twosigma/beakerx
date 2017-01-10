@@ -75,23 +75,38 @@ app.post('/session', function (request, response) {
   response.send('ok');
 });
 
+
+
+
+//Errors - String
+//Any other result - JSON
 function execute(code, shell, response) {
   var evaluationResult = processCode(code, shell);
+  var responseObject = {showOutput:true};
+  
   Q.when(evaluationResult.evaluation, function (result) {
-    if (evaluationResult.processed) {
-      response.statusCode = 200;
-    } else {
-      response.statusCode = 422;
-    }
     log('result: ' + util.inspect(result));
     try {
-      var transformed;
-      if(transformation.isCircularObject(result)) {
-        transformed = "ERROR: circular objects are not supported";
+      if (evaluationResult.processed) {
+        response.statusCode = 200;
+        if(transformation.isCircularObject(result)) {
+          responseObject.result = "ERROR: circular objects are not supported";
+        } else {
+          if(undefined === result){
+            responseObject.showOutput = false;
+          }else if(Infinity === result){
+            responseObject.result = 'Infinity';
+          }else if(null === result){
+            responseObject.result = 'null';
+          }else{
+            responseObject.result = transformation.transform(result);
+          }
+        }
+        response.send(JSON.stringify(responseObject));
       } else {
-        transformed = transformation.transform(result);
+        response.statusCode = 422;
+        response.send(result);
       }
-      response.send(JSON.stringify(transformed));
     } catch (e) {
       response.statusCode = 500;
       response.send(e.message + '\n' + e.stack);
@@ -101,20 +116,24 @@ function execute(code, shell, response) {
     response.send(error.toString());
   });
 }
+
+//Errors - String
+//Any other result - JSON
 app.post('/evaluate', function (request, response) {
   var shellID = request.body.shellID;
   var code = decodeURIComponent(request.body.code);
   var shell = shells[shellID];
-  if(!shell) {
+  if(shell) {
+    trycatch(function () {
+      execute(code, shell, response);
+    }, function (err) {
+      response.statusCode = 500;
+      response.send(err.message + '\n' + err.stack);
+    });
+  }else{
     response.statusCode = 401;
     response.send('cant find shell ' + shellID);
   }
-  trycatch(function () {
-    execute(code, shell, response);
-  }, function (err) {
-    response.statusCode = 500;
-    response.send(err.message);
-  });
 });
 
 app.post('/add-module-path', function (request, response) {
@@ -132,9 +151,6 @@ function processCode(code, shell) {
   var result;
   try {
     result = vm.runInContext(code, shell.context);
-    if (typeof result === "undefined") {
-      result = 'undefined';
-    }
     returnValue = {
       evaluation: result,
       processed: true

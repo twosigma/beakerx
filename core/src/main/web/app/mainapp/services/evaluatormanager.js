@@ -65,7 +65,7 @@
 	      }
 	      evaluatorSettings.view.cm.mode = evaluator.cmMode;
 	      evaluators[evaluatorSettings.name] = evaluator;
-	      if ( evaluatorSettings.deferred !== undefined && evaluatorSettings.deferred.resolve ) {
+	      if ( evaluatorSettings.deferred !== undefined ) {
 	        evaluatorSettings.deferred.resolve(evaluator);
 	        delete evaluatorSettings.deferred;
 	      }

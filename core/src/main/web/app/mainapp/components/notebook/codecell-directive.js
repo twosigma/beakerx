@@ -268,6 +268,11 @@
             console.log('Evaluation failed');
             deferred.reject(error);
           });
+
+          if ($event) {
+            $event.target.blur();
+          }
+
           return deferred.promise;
         };
 

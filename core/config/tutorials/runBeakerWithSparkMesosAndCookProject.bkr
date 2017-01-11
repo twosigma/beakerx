@@ -1,0 +1,191 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "HTML",
+            "plugin": "HTML",
+            "view": {
+                "cm": {
+                    "mode": "smartHTMLMode"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            },
+            "languageVersion": "ES2015"
+        },
+        {
+            "name": "Scala",
+            "plugin": "Scala",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.GradientColor\ncom.twosigma.beaker.chart.legend.*\ncom.twosigma.beaker.chart.Filter\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.chart.categoryplot.*\ncom.twosigma.beaker.chart.categoryplot.plotitem.*\ncom.twosigma.beaker.chart.treemap.*\ncom.twosigma.beaker.chart.treemap.util.*\nnet.sf.jtreemap.swing.*\ncom.twosigma.beaker.chart.histogram.*\ncom.twosigma.beaker.chart.heatmap.HeatMap\ncom.twosigma.beaker.easyform.*\ncom.twosigma.beaker.easyform.formitem.*",
+            "view": {
+                "cm": {
+                    "mode": "text/x-scala"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "markdownSgZVqE",
+            "type": "markdown",
+            "body": [
+                "Run beaker with spark (1.6.1)",
+                "- download and install spark from http://spark.apache.org/downloads.html",
+                "- run spark cluster https://spark.apache.org/docs/1.6.1/spark-standalone.html (test if cluster is running by http://localhost:8080/ )",
+                "- beaker",
+                "   - run scala plugin from language manager and in scala tab check \"Use Apache Spark in this notebook\"",
+                "   - click \"Spark Cluster\" on navigator bar and choose \"configure\" ",
+                "   - in Master URL write dentination of your spark cluster (URL spark cluster on http://localhost:8080/ )",
+                "   - click \"start\" button",
+                "- now you can execute spark tasks"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "markdownaTaURg",
+            "type": "markdown",
+            "body": [
+                "Run beaker with mesos",
+                "- download and install spark from http://spark.apache.org/downloads.html",
+                "- download and build mesos from http://mesos.apache.org/gettingstarted/",
+                "- run mesos (go to **PATH_TO_MESOS**/build/bin)",
+                "  - run master ",
+                "    - sudo ./mesos-master.sh --ip=127.0.0.1 --work_dir=**PATH_TO_MESOS_DATA**/master",
+                "  - run agents",
+                "    - sudo ./mesos-agent.sh --master=127.0.0.1:5050 --port=5051 --work_dir=**PATH_TO_MESOS_DATA**/agent1",
+                "    - sudo ./mesos-agent.sh --master=127.0.0.1:5050 --port=5052 --work_dir=**PATH_TO_MESOS_DATA**/agent2",
+                "    - sudo ./mesos-agent.sh --master=127.0.0.1:5050 --port=5053 --work_dir=**PATH_TO_MESOS_DATA**/agent3",
+                "- beaker",
+                "  - run scala plugin from language manager and in scala tab check \"Use Apache Spark in this notebook\"",
+                "  - click \"Spark Cluster\" on navigator bar and choose \"configure\"",
+                "  - in Master URL write dentination of your mesos cluster \"mesos://127.0.0.1:5050\"",
+                "  - click \"Advanced settings...\" and add spark property \"spark.mesos.executor.home\" to **SPARK_HOME**",
+                "  - click \"start\" button",
+                "- now you can execute spark tasks"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "markdownmz2IMj",
+            "type": "markdown",
+            "body": [
+                "Run beaker with cook ",
+                "- build custom spark distribution (https://github.com/twosigma/Cook/tree/master/spark)",
+                "  - build spark 1.6.1 for scala 2.11 (https://spark.apache.org/docs/1.6.1/building-spark.html#building-for-scala-211)",
+                "  - and in scala/build.gradle replace spark dependecies (spark-core and spark-sql) to your custom spark ```compile files('PATH_TO_PATCHED_SPARK/spark-assembly-1.6.1-hadoop2.4.0.jar')``` and build beaker",
+                "- download and build mesos from http://mesos.apache.org/gettingstarted/",
+                "- download, build and run cook from https://github.com/twosigma/Cook or download a jar file from https://github.com/twosigma/Cook/releases",
+                "- run cook by : java -jar cook-1.0.0-standalone.jar dev-config.edn ",
+                "  - where dev-config.edn",
+                "   <pre>",
+                "   {",
+                "     :port 12321",
+                "     ;; We'll set the user to vagrant, since that's the default for many Vagrant-based Mesos setups",
+                "     :authorization {:one-user <b>YOUR_USER</b>}",
+                "     :database {:datomic-uri \"datomic:mem://cook-jobs\"}",
+                "     :zookeeper {",
+                "                        :local? true",
+                "                        ;:local-port 3291 ; Uncomment to change the default port",
+                "                        }",
+                "     :scheduler {:offer-incubate-ms 15000",
+                "                 :task-constraints {:timeout-hours 1",
+                "                                    :timeout-interval-minutes 1",
+                "                                    :memory-gb 48",
+                "                                    :cpus 6}}",
+                "     :rebalancer {:dru-scale 1}",
+                "     :mesos {:master \"zk://localhost:3291/mesos\" ; Assuming Mesos is configured to use Zookeeper and is running locally",
+                "             :failover-timeout-ms nil ; When we close the instance of Cook, all its tasks are killed by Mesos",
+                "             :leader-path \"/cook-scheduler\"}",
+                "     :unhandled-exceptions {:log-level :error}",
+                "     :metrics {:jmx true}",
+                "     :nrepl {:enabled? true",
+                "     :port 8888}",
+                "     :log {:file \"log/cook.log\"",
+                "           :levels {\"datomic.db\" :warn",
+                "                    \"datomic.peer\" :warn",
+                "                    \"datomic.kv-cluster\" :warn",
+                "                    :default :info}",
+                "             } ",
+                "    }   ",
+                "   </pre>",
+                " - run mesos (go to **PATH_TO_MESOS**/build/bin)",
+                "   - run master ",
+                "     - sudo ./mesos-master.sh --ip=127.0.0.1 --work_dir=**PATH_TO_MESOS_DATA**/master --zk=zk://localhost:3291/mesos --quorum=1",
+                "   - run agents",
+                "     - sudo ./mesos-agent.sh --master=127.0.0.1:5050 --port=5051 --work_dir=**PATH_TO_MESOS_DATA**/agent1",
+                "     - sudo ./mesos-agent.sh --master=127.0.0.1:5050 --port=5052 --work_dir=**PATH_TO_MESOS_DATA**/agent2",
+                "     - sudo ./mesos-agent.sh --master=127.0.0.1:5050 --port=5053 --work_dir=**PATH_TO_MESOS_DATA**/agent3\t",
+                " - beaker",
+                "   - run scala plugin from language manager and in scala tab check \"Use Apache Spark in this notebook\"",
+                "   - click \"Spark Cluster\" on navigator bar and choose \"configure\"",
+                "   - in Master URL write dentination of your cook cluster cook://**YOUR_USER_from_dev-config.edn**@localhost:12321",
+                "   - click \"Advanced settings...\" and add spark property \"spark.mesos.executor.home\" to **SPARK_HOME**",
+                "   - click \"start\" button",
+                "- now you can execute spark tasks"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "markdown15DDnA",
+            "type": "markdown",
+            "body": [
+                "Examples"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codenPiCR7",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "/**  Run spark task */",
+                    "val NUM_SAMPLES = 10000000",
+                    "val count = sc.parallelize(1 to NUM_SAMPLES).map{i =>",
+                    "  val x = Math.random()",
+                    "  val y = Math.random()",
+                    "  if (x*x + y*y < 1) 1 else 0",
+                    "}.reduce(_ + _)",
+                    "println(\"Pi is roughly \" + 4.0 * count / NUM_SAMPLES)"
+                ]
+            },
+            "output": {
+                "state": {}
+            },
+            "evaluatorReader": true,
+            "lineCount": 8
+        },
+        {
+            "id": "codeKGmjh7",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "/**  Run and cancel spark task */",
+                    "val NUM_SAMPLES = 10000000",
+                    "val count = sc.parallelize(1 to NUM_SAMPLES).map{i =>",
+                    "  Thread.sleep(1000)                                                 ",
+                    "  val x = Math.random()",
+                    "  val y = Math.random()",
+                    "  if (x*x + y*y < 1) 1 else 0",
+                    "}.reduce(_ + _)",
+                    "println(\"Pi is roughly \" + 4.0 * count / NUM_SAMPLES)"
+                ]
+            },
+            "output": {
+                "state": {}
+            },
+            "evaluatorReader": true,
+            "lineCount": 9
+        }
+    ],
+    "namespace": {}
+}

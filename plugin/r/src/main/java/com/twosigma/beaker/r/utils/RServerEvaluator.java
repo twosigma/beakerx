@@ -47,6 +47,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Request;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.Rserve.RConnection;
@@ -556,7 +557,15 @@ public class RServerEvaluator {
             if (!isfinished)
               j.outputObject.error("from dev.off(): " + e.getMessage());
           }
-
+          
+          if(resultjson != null && !resultjson.isEmpty() && !isJSONValid(resultjson)){
+            if(resultjson.startsWith("\"" ) && resultjson.endsWith("\"")){
+              resultjson = resultjson.substring(1, resultjson.length()-1);
+            }
+            resultjson = resultjson.replaceAll("\"", "'");
+            resultjson = "\"" + resultjson + "\"";
+          }
+          
           if (!isfinished) {
             Object svg = getSvgResults(file);
             if (svg != null) {
@@ -591,5 +600,15 @@ public class RServerEvaluator {
       }
       logger.info("DONE");
     }  
+  }
+  
+  public static boolean isJSONValid(String jsonInString ) {
+    try {
+       final ObjectMapper mapper = new ObjectMapper();
+       mapper.readTree(jsonInString);
+       return true;
+    } catch (IOException e) {
+       return false;
+    }
   }
 }

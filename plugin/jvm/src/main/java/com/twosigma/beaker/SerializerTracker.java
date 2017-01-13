@@ -21,17 +21,17 @@ import java.util.HashSet;
 public class SerializerTracker {
   static HashSet<Object> set;
   static public void add(Object o) {
-    synchronized (o) {
+    synchronized (set) {
       set.add(o);
     }
   }
   static public void remove(Object o) {
-    synchronized (o) {
+    synchronized (set) {
       set.remove(o);
     }
   }
   static public boolean contains(Object o) {
-    synchronized (o) {
+    synchronized (set) {
       return set.contains(o);
     }
   }

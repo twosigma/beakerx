@@ -1,19 +1,17 @@
 define([
   'nbextensions/beaker/plot/libs/d3.min',
-  'nbextensions/beaker/plot/_mocks',
   'nbextensions/beaker/plot/plotUtils',
   'nbextensions/beaker/plot/plotTip',
   'nbextensions/beaker/plot/plotConverter',
   'nbextensions/beaker/plot/plotFormatter',
   'nbextensions/beaker/plot/plotFactory',
-  'nbextensions/beaker/plot/bkUtils',
-  'nbextensions/beaker/plot/bkHelper',
+  'nbextensions/beaker/shared/bkUtils',
+  'nbextensions/beaker/shared/bkHelper',
   'nbextensions/beaker/plot/gradientlegend',
   'nbextensions/beaker/plot/chartExtender',
   'nbextensions/beaker/plot/libs/jquery.contextMenu.min'
 ], function(
   d3,
-  _mocks,
   plotUtils,
   plotTip,
   plotConverter,

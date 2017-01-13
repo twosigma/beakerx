@@ -1,0 +1,13 @@
+*~
+*.pyc
+.idea/
+.metadata/
+.recommenders/
+RemoteSystemsTempFiles/
+jupyter_contrib_nbextensions/
+Groovier-1.0.0.jar
+jupyter-groovy-kernel.log
+jupyter-groovy-kernel-1.0.0.jar
+jupyter-groovy-kernel.log
+.ipynb_checkpoints/
+/*.ipynb

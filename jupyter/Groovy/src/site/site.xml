@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/DECORATION/1.7.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.7.0 http://maven.apache.org/xsd/decoration-1.7.0.xsd"
+         name="${project.name}">
+    <bannerLeft>
+        <name>${project.name}</name>
+    </bannerLeft>
+    <body>
+        <links>
+            <item name="${project.name}" href="${project.url}"/>
+        </links>
+        <menu ref="parent" />
+        <menu ref="modules" />
+        <menu ref="scm"/>
+        <menu ref="issue-tracking"/>
+        <menu ref="license"/>
+        <menu ref="plugins"/>
+        <menu ref="project-team"/>
+        <menu ref="reports"/>
+        <menu name="API Documentation">
+            <item collapse="true" name="GroovyDocs" href="groovydoc/index.html"/>
+        </menu>
+    </body>
+</project>

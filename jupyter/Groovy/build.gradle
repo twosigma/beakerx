@@ -1,0 +1,82 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+def final kernelIdName = 'groovy'
+def final toReplace = '__PATH__'
+
+mainClassName = 'org.lappsgrid.jupyter.groovy.GroovyKernel'
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile group: "org.codehaus.jackson", name: "jackson-jaxrs", version : "1.9.13"
+  compile group: "com.fasterxml.jackson.core", name: "jackson-annotations", version : "2.5.1"
+  compile group: "com.fasterxml.jackson.core", name: "jackson-databind", version : "2.5.1"
+  compile group: "org.apache.commons", name: "commons-lang3", version : "3.3"
+  compile group: "com.sun.jersey.contribs", name: "jersey-guice", version : "1.17.1"
+  compile group: "org.codehaus.groovy", name: "groovy-all", version : "2.4.3"
+  compile group: "org.zeromq", name: "jeromq", version : "0.3.5"
+  compile group: "commons-codec", name: "commons-codec", version : "1.9"
+  compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.22'
+  compile group: 'com.opencsv', name: 'opencsv', version: '3.8'
+
+  testCompile group: 'junit', name: 'junit', version: '4.11'
+  testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
+}
+
+jar {
+  manifest { 
+    attributes "Main-Class": "$mainClassName"
+  }  
+
+  from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+}
+
+task prepareJson(dependsOn: 'build'){
+  doLast {
+    println "Prepare JSON for Jupyter notebook"
+    println "Copy kernel.json to build/libs/json/ and replasing PATH with Groovy.jar parh"
+    
+    def jarLocation = new File('build/libs/Groovy.jar').getAbsolutePath()
+    jarLocation = jarLocation.replace("\\","/");
+    def text = new File('kernel.json').text.replace(toReplace, jarLocation)
+    
+    def folder = new File('build/libs/json')
+    if( !folder.exists() ) {
+      println "Creating folder build/libs/json"
+      folder.mkdirs()
+      }
+    
+    new File('build/libs/json/kernel.json').withWriter { w ->
+      w << text
+    }
+  }
+}
+
+task kernelInstall(dependsOn: 'prepareJson'){
+  doLast {
+    println "Installing Groovier to jupyter totebook"
+    
+    def hashStdOut = new ByteArrayOutputStream()
+    def jsonFolder = new File('build/libs/json/').getAbsolutePath();
+    exec {
+      commandLine "jupyter",
+        "kernelspec",
+        "install",
+        "--user",
+        "--replace",
+        "--name",
+        kernelIdName,
+        jsonFolder;
+      standardOutput = hashStdOut
+    }
+    println hashStdOut.toString().trim();
+    println "DONE"
+  }
+}

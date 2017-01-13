@@ -1,0 +1,16 @@
+.idea
+*.iml
+*.log
+*.tgz
+target
+VERSION
+src/java/main/**/Version.java
+groovy-kernel.properties
+jupyter-groovy-kernel
+*~
+/bin/
+/.settings/
+/.classpath
+/.project
+/build/
+/.gradle/

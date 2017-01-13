@@ -1,0 +1,7 @@
+Type: IPython Notebook Extension
+Name: Beaker
+Description: Provides Autotranslation
+Link: README.md
+Icon: icon.png
+Main: main.js
+Compatibility: 4.x

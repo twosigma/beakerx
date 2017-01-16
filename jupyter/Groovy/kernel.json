@@ -1,5 +1,5 @@
 {
-  "argv": [ "java", "-jar", "__PATH__", "{connection_file}" ],
+  "argv": [ "java", "-jar", "__PATH__", "{connection_file}","__BEAKER_FILES__" ],
   "display_name": "Groovy",
   "language": "groovy",
   "env": { "PS1":"groovy>"}

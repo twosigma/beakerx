@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import groovy.lang.ExpandoMetaClass;
+import groovy.lang.MetaClass;
+import org.codehaus.groovy.control.CompilerConfiguration;
 import org.lappsgrid.jupyter.groovy.context.DefaultGroovyContext;
 import org.lappsgrid.jupyter.groovy.context.GroovyContext;
 import org.lappsgrid.jupyter.groovy.handler.CompleteHandler;
@@ -261,9 +264,9 @@ public class GroovyKernel {
     }
 
     public static void main(final String[] args) throws InterruptedException, IOException {
-        if (args.length != 1) {
+        if (args.length != 2) {
         	System.out.println("Invalid parameters passed to the Groovy kernel.");
-        	System.out.println("Expected one parameter, found " + String.valueOf(args.length));
+        	System.out.println("Expected two parameter, found " + String.valueOf(args.length));
         	for (String string : args) {
         		System.out.println(string);
 			}
@@ -276,8 +279,24 @@ public class GroovyKernel {
             System.exit(1);
         }
 
+      String classPath = args[1];
 
-        GroovyKernel kernel = new GroovyKernel();
+
+      GroovyKernel kernel = new GroovyKernel(new GroovyContext() {
+        @Override
+        public CompilerConfiguration getCompilerConfiguration() {
+          CompilerConfiguration compilerConfiguration = new CompilerConfiguration();
+          compilerConfiguration.setClasspathList(Arrays.asList(classPath));
+          return compilerConfiguration;
+        }
+
+        @Override
+        public MetaClass getMetaClass(Class aClass) {
+          MetaClass mc = new ExpandoMetaClass(aClass, false);
+          ((ExpandoMetaClass) mc).initialize();
+          return mc;
+        }
+      });
         kernel.connectionFile = config;
         kernel.run();
     }

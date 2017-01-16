@@ -55,7 +55,7 @@ task linkBeakerNbextension(dependsOn: 'installNbextensions') {
 			commandLine "jupyter", "--data-dir";
 			standardOutput = out
 		}
-		def jupyterFolder = out.toString().trim() + '\\' + nbextensionsFolderName + "\\" + beakerLinkName
+		def jupyterFolder = out.toString().trim() + '//' + nbextensionsFolderName + "//" + beakerLinkName
 		def from = new File(jupyterFolder).getAbsolutePath()
 		def to = new File(beakerNbextensionFolder).getAbsolutePath()
 

@@ -52,7 +52,7 @@ task prepareJson(dependsOn: 'build'){
     def jarLocation = new File('build/libs/Groovy.jar').getAbsolutePath()
     jarLocation = jarLocation.replace("\\","/");
     def text = new File('kernel.json').text.replace(toReplace, jarLocation)
-    
+    text = text.replace("__BEAKER_FILES__","../../core/config/plugins/eval/sharedLibs/jvm.jar")
     def folder = new File('build/libs/json')
     if( !folder.exists() ) {
       println "Creating folder build/libs/json"

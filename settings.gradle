@@ -13,12 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+include 'shared'
+include 'plugin'
+include 'jupyter'
+include 'jupyter:Groovy'
+include 'plugin:jvm',
+        'plugin:groovy',
+        'plugin:javash',
+        'plugin:ipython',
+        'plugin:python3',
+        'plugin:iruby',
+        'plugin:julia',
+        'plugin:node',
+        'plugin:r',
+        'plugin:scala',
+        'plugin:clojure',
+        'plugin:kdb',
+        'plugin:cpp',
+        'plugin:sqlsh'
+include 'core'
 
-
-package com.twosigma.beaker.chart.xychart.plotitem;
-
-
-public enum PlotOrientationType {
-  VERTICAL,
-  HORIZONTAL
-}

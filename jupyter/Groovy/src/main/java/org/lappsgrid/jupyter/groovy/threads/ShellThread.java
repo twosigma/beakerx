@@ -14,29 +14,29 @@ import org.zeromq.ZMQ;
  * @author Keith Suderman
  */
 public class ShellThread extends AbstractThread {
-    public ShellThread(ZMQ.Socket socket, GroovyKernel kernel) {
-        super(socket, kernel);
-    }
 
-    public void run() {
-        while (getRunning()) {
-            Message message = readMessage();
-            IHandler handler = getKernel().getHandler(message.type());
-            if (DefaultGroovyMethods.asBoolean(handler)) {
-                try {
-					handler.handle(message);
-				} catch (NoSuchAlgorithmException e) {
-					System.out.println(e);
-					logger.error(e.getMessage());
-				}
-            } else {
-                logger.warn("Unhandled message type: {}", message.type());
-            }
+  public static Logger logger = LoggerFactory.getLogger(ShellThread.class);
 
+  public ShellThread(ZMQ.Socket socket, GroovyKernel kernel) {
+    super(socket, kernel);
+  }
+
+  public void run() {
+    while (getRunning()) {
+      Message message = readMessage();
+      logger.info("Processing message = " + message.type());
+      IHandler handler = getKernel().getHandler(message.type());
+      if (handler != null) {
+        try {
+          handler.handle(message);
+        } catch (NoSuchAlgorithmException e) {
+          System.out.println(e);
+          logger.error(e.getMessage());
         }
-
-        logger.info("ShellThread shutdown.");
+      } else {
+        logger.warn("Unhandled message type: {}", message.type());
+      }
     }
-
-    public static Logger logger = LoggerFactory.getLogger(ShellThread.class);
+    logger.info("ShellThread shutdown.");
+  }
 }

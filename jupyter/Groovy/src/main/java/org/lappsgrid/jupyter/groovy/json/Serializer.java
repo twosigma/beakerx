@@ -39,7 +39,7 @@ public class Serializer {
     public static <T> T parse(String json, Class<T> theClass) {
         T result = null;
         try {
-            result = (T) mapper.readValue(json, theClass);
+            result = mapper.readValue(json, theClass);
         } catch (Exception e) {
             // Ignored. We return null to indicate an error.
         }

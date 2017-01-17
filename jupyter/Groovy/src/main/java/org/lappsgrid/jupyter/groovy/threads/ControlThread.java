@@ -7,8 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
-import static org.lappsgrid.jupyter.groovy.msg.Message.Type.SHUTDOWN_REPLY;
-import static org.lappsgrid.jupyter.groovy.msg.Message.Type.SHUTDOWN_REQUEST;
+import com.twosigma.jupyter.groovy.msg.Type;
+
+import static com.twosigma.jupyter.groovy.msg.Type.SHUTDOWN_REPLY;
+import static com.twosigma.jupyter.groovy.msg.Type.SHUTDOWN_REQUEST;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -16,35 +18,37 @@ import java.security.NoSuchAlgorithmException;
  * @author Keith Suderman
  */
 public class ControlThread extends AbstractThread {
-    public ControlThread(ZMQ.Socket socket, GroovyKernel kernel) {
-        super(socket, kernel);
-    }
 
-    public void run() {
-        while (getRunning()) {
-            Message message = readMessage();
-            String type = message.getHeader().getType();
-            if (type.equals(SHUTDOWN_REQUEST)) {
-                logger.info("Control handler received a shutdown request");
-                getKernel().shutdown();
-                Message reply = new Message();
-                reply.setHeader(new Header(SHUTDOWN_REPLY, message));
-                reply.setParentHeader(message.getHeader());
-                reply.setContent(message.getContent());
-                try {
-					send(reply);
-				} catch (NoSuchAlgorithmException e) {
-					System.out.println(e);
-					logger.error(e.getMessage());
-				}
-            } else {
-                logger.warn("Unhandled control message: {}", type);
-            }
+  public static final Logger logger = LoggerFactory.getLogger(ControlThread.class);
 
+  public ControlThread(ZMQ.Socket socket, GroovyKernel kernel) {
+    super(socket, kernel);
+  }
+
+  public void run() {
+    while (getRunning()) {
+      Message message = readMessage();
+      Type type = message.getHeader().getTypeEnum();
+      if (type.equals(SHUTDOWN_REQUEST)) {
+        logger.info("Control handler received a shutdown request");
+        getKernel().shutdown();
+        Message reply = new Message();
+        reply.setHeader(new Header(SHUTDOWN_REPLY, message.getHeader().getSession()));
+        reply.setParentHeader(message.getHeader());
+        reply.setContent(message.getContent());
+        try {
+          send(reply);
+        } catch (NoSuchAlgorithmException e) {
+          System.out.println(e);
+          logger.error(e.getMessage());
         }
+      } else {
+        logger.warn("Unhandled control message: {}", type);
+      }
 
-        logger.info("ControlThread shutdown.");
     }
 
-    public static final Logger logger = LoggerFactory.getLogger(ControlThread.class);
+    logger.info("ControlThread shutdown.");
+  }
+
 }

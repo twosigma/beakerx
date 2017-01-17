@@ -14,9 +14,8 @@ task installNbextensions() {
       def out = new ByteArrayOutputStream()
       exec {
         commandLine "git",
-                "clone",
-                "install",
-                nbextensionsGit;
+         "clone",
+         nbextensionsGit;
         standardOutput = out
       }
       println out.toString().trim()
@@ -28,8 +27,8 @@ task installNbextensions() {
     exec {
       workingDir 'jupyter_contrib_nbextensions'
       commandLine "pip",
-              "install",
-              ".";
+        "install",
+        ".";
       standardOutput = out
     }
     println out.toString().trim();
@@ -38,10 +37,10 @@ task installNbextensions() {
     exec {
       workingDir 'jupyter_contrib_nbextensions'
       commandLine "jupyter",
-              "contrib",
-              "nbextension",
-              "install",
-              "--user";
+        "contrib",
+        "nbextension",
+        "install",
+        "--user";
       standardOutput = out
     }
     println out.toString().trim()

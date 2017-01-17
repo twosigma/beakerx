@@ -274,6 +274,72 @@ table.dataTable.DTFC_Cloned.display tbody tr.selected {
   height: 20px;
   padding: 0 10px; }
 
+.dropdown-menu > li {
+  position: relative; }
+
+.glyphicon {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+.dropdown-menu > li {
+  list-style: none; }
+.dropdown-menu > li > a:link {
+  text-decoration: none; }
+.dropdown-menu .glyphicon {
+  position: absolute;
+  padding: 3px 4px;
+  z-index: 1; }
+.dropdown-menu .fa {
+  position: absolute;
+  top: 1px;
+  padding: 4px 4px; }
+
+.dtmenu .bko-menu {
+  display: block; }
+  .dtmenu .bko-menu:hover {
+    background-image: url("../../shared/images/menu_white@2x.png"); }
+  .dtmenu .bko-menu.sorting_desc {
+    background-image: url("../../shared/images/sort_desc.png");
+    background-size: 20px;
+    opacity: 1; }
+    .dtmenu .bko-menu.sorting_desc:hover {
+      background-image: url("../../shared/images/sort_desc_white.png"); }
+
+.dataTables_scrollHead table thead th, .DTFC_LeftHeadWrapper table thead th, .DTFC_RightHeadWrapper table thead th {
+  cursor: pointer; }
+  .dataTables_scrollHead table thead th .bko-menu, .DTFC_LeftHeadWrapper table thead th .bko-menu, .DTFC_RightHeadWrapper table thead th .bko-menu {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    opacity: 0;
+    transition: opacity 0.5s; }
+  .dataTables_scrollHead table thead th:hover .bko-menu, .DTFC_LeftHeadWrapper table thead th:hover .bko-menu, .DTFC_RightHeadWrapper table thead th:hover .bko-menu {
+    opacity: 1; }
+    .dataTables_scrollHead table thead th:hover .bko-menu:hover, .DTFC_LeftHeadWrapper table thead th:hover .bko-menu:hover, .DTFC_RightHeadWrapper table thead th:hover .bko-menu:hover {
+      background-color: #39a9ed;
+      background-image: url("../../shared/images/menu_white@2x.png"); }
+  .dataTables_scrollHead table thead th.sorting_asc > .bko-menu, .DTFC_LeftHeadWrapper table thead th.sorting_asc > .bko-menu, .DTFC_RightHeadWrapper table thead th.sorting_asc > .bko-menu {
+    background-image: url("../../shared/images/sort_asc.png");
+    background-size: 20px;
+    opacity: 1; }
+    .dataTables_scrollHead table thead th.sorting_asc > .bko-menu:hover, .DTFC_LeftHeadWrapper table thead th.sorting_asc > .bko-menu:hover, .DTFC_RightHeadWrapper table thead th.sorting_asc > .bko-menu:hover {
+      background-image: url("../../shared/images/sort_asc_white.png"); }
+  .dataTables_scrollHead table thead th.sorting_desc > .bko-menu, .DTFC_LeftHeadWrapper table thead th.sorting_desc > .bko-menu, .DTFC_RightHeadWrapper table thead th.sorting_desc > .bko-menu {
+    background-image: url("../../shared/images/sort_desc.png");
+    background-size: 20px;
+    opacity: 1; }
+    .dataTables_scrollHead table thead th.sorting_desc > .bko-menu:hover, .DTFC_LeftHeadWrapper table thead th.sorting_desc > .bko-menu:hover, .DTFC_RightHeadWrapper table thead th.sorting_desc > .bko-menu:hover {
+      background-image: url("../../shared/images/sort_desc_white.png"); }
+.dataTables_scrollHead table thead .sorting, .dataTables_scrollHead .sorting_asc, .dataTables_scrollHead .sorting_desc, .DTFC_LeftHeadWrapper table thead .sorting, .DTFC_LeftHeadWrapper .sorting_asc, .DTFC_LeftHeadWrapper .sorting_desc, .DTFC_RightHeadWrapper table thead .sorting, .DTFC_RightHeadWrapper .sorting_asc, .DTFC_RightHeadWrapper .sorting_desc {
+  background-image: none !important; }
+
 @keyframes fadeIn {
   0% {
     opacity: 0; }

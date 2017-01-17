@@ -15,7 +15,8 @@ define([
   'nbextensions/beaker/tableDisplay/libs/datatables-colresize/dataTables.colResize',
   'nbextensions/beaker/plot/libs/moment-timezone-with-data.min',
   'nbextensions/beaker/tableDisplay/libs/jquery.ba-throttle-debounce/jquery.ba-throttle-debounce.min',
-  'nbextensions/beaker/tableDisplay/buildTemplate'
+  'nbextensions/beaker/tableDisplay/buildTemplate',
+  'nbextensions/beaker/tableDisplay/datatablesHeadermenu'
 ], function(
   bkUtils,
   cellHighlighters,
@@ -27,7 +28,8 @@ define([
   dataTablesColResize,
   moment,
   throttleDebounce,
-  buildTemplate
+  buildTemplate,
+  datatablesHeadermenu
 ) {
 
   return {
@@ -1205,6 +1207,7 @@ define([
         }
       } else {
         scope.showFilter = true;
+        scope.showFilterElements();
         redrawFixCols = true;
       }
       scope.columnSearchActive = isSearch;
@@ -1231,6 +1234,7 @@ define([
     scope.hideFilter = function () {
       scope.clearFilters();
       scope.showFilter = false;
+      scope.hideFilterElements();
       // if (!(scope.$$phase || $rootScope.$$phase)) {
       //   scope.$apply();
       // }
@@ -2602,11 +2606,127 @@ define([
       return text;
     };
 
+    scope.applyChanges = function() {
+      scope.doDestroy(false);
+      scope.update = true;
+      // reorder the table data
+      var model = scope.model.getCellModel();
+      scope.doCreateData(model);
+      scope.doCreateTable(model);
+    };
+
+    scope.getScrollY = function () {
+      var notebookViewModel = bkHelper.getBkNotebookViewModel() || {};
+      var rowHeight = notebookViewModel.isAdvancedMode && notebookViewModel.isAdvancedMode() ? ROW_HEIGHT_ADVANCED_MODE : ROW_HEIGHT;
+      var rowsNumber = scope.pagination.rowsToDisplay > 0 ? scope.pagination.rowsToDisplay : scope.data.length;
+      return rowsNumber * rowHeight;
+    };
+    
+    scope.getCSV = function(selectedRows) {
+      var data;
+      var filename;
+      var isFiltered = function (index) {
+        return scope.table.settings()[0].aiDisplay.indexOf(index) > -1;
+      };
+      if (!selectedRows) {
+        data = scope.table.rows(isFiltered).data();
+      } else {
+        data = scope.table.rows(function(index, data, node) {
+          return scope.selected[index] && isFiltered(index);
+        });
+      }
+      return scope.exportTo(data, 'csv');
+    };
+    
+    scope.exportTo = function(rows, format) {
+      var data = rows.data();
+      var settings = scope.table.settings()[0];
+      var rowIndexes = rows[0];
+      var i;
+      var j;
+      var startingColumnIndex = 1;
+      var order;
+      var out = '';
+      var eol = '\n';
+      var sep = ',';
+      var qot = '"';
+      var fix = function(s) { return s.replace(/"/g, '""');};
+      var model = scope.model.getCellModel();
+      var hasIndex = model.hasIndex === "true";
+      if (hasIndex) {
+        startingColumnIndex = 0;
+      }
+
+      if (format === 'tabs') {
+        sep = '\t';
+        qot = '';
+        fix = function(s) { return s.replace(/\t/g, ' ');};
+      }
+      if (navigator.appVersion.indexOf('Win') !== -1) {
+        eol = '\r\n';
+      }
+
+      for (i = startingColumnIndex; i < scope.columns.length; i++) {
+        order = scope.colorder[i];
+        if (!scope.table.column(i).visible()) {
+          continue;
+        }
+        if (out !== '') {
+          out = out + sep;
+        }
+        var columnTitle
+          = (hasIndex && i === startingColumnIndex)
+          ? "Index"
+          : fix($(scope.columns[order].title).text());
+        out = out + qot + columnTitle + qot;
+      }
+      out = out + eol;
+
+      for (i = 0; i < data.length; i++) {
+        var row = data[i];
+        var some = false;
+        for (j = startingColumnIndex; j < row.length; j++) {
+          order = scope.colorder[j];
+          if (!scope.table.column(j).visible()) {
+            continue;
+          }
+          if (!some) {
+            some = true;
+          } else {
+            out = out + sep;
+          }
+          var d = row[j];
+          if (scope.columns[order].render !== undefined) {
+            d = scope.columns[order].render(d, 'csv', null,
+              {settings: settings,
+                row: rowIndexes[i],
+                col: order});
+          }
+          if (d == null) {
+            d = '';
+          }
+          d = d + '';
+          out = out + qot + (d !== undefined && d !== null ? fix(d) : '') + qot;
+        }
+        out = out + eol;
+      }
+      return out;
+    };
+
+    scope.showFilterElements = function() {
+      element.find('tr.filterRow').show();
+    };
+
+    scope.hideFilterElements = function() {
+      element.find('tr.filterRow').hide();
+    };
+
 
     
     scope.run = function() {
       scope.init(cellModel, true);
       tableChanged = true;
+      scope.bindTableActions();
     };
 
 
@@ -2656,6 +2776,178 @@ define([
           trs.eq(1).append(filterTd);
         });
       }
+    };
+
+    scope.bindTableActions = function() {
+      element.find('div.dtmenu ul.dropdown-menu').on('click', function(ev) {
+        var dtAction = $(ev.target).attr('data-dtAction');
+        switch (dtAction) {
+          case 'dt-show-all':
+            scope.toggleColumnsVisibility(true);
+            break;
+          case 'dt-hide-all':
+            scope.toggleColumnsVisibility(false);
+            break;
+          case 'dt-use-pagination':
+            scope.doUsePagination();
+            break;
+          case 'dt-select-all':
+            scope.doSelectAll();
+            break;
+          case 'dt-deselect-all':
+            scope.doDeselectAll();
+            break;
+          case 'dt-reverse-selection':
+            scope.doReverseSelection();
+            break;
+          case 'dt-copy-to-clipboard':
+            scope.doCopyToClipboard();
+            break;
+          case 'dt-save-all':
+            scope.doCSVExport(false);
+            break;
+          case 'dt-save-selected':
+            scope.doCSVExport(true);
+            break;
+          case 'dt-download-all':
+            scope.doCSVDownload(false);
+            break;
+          case 'dt-download-selected':
+            scope.doCSVDownload(true);
+            break;
+          case 'dt-search':
+            scope.doShowFilter(scope.table.column(0), true);
+            break;
+          case 'dt-filter':
+            scope.doShowFilter(scope.table.column(0), false);
+            break;
+          case 'dt-hide-filter':
+            scope.hideFilter();
+            break;
+          case 'dt-reset-all':
+            scope.doResetAll();
+            break;
+          default:
+        }
+      })
+    };
+
+    scope.toggleColumnsVisibility = function(visible) {
+      if (!scope.table) {
+        return;
+      }
+
+      var table = scope.table;
+      var cLength = [];
+      for (var i = 1; i < scope.columns.length; i++) {
+        cLength.push(i);
+      }
+      table.columns(cLength).visible(visible);
+    };
+    scope.doUsePagination = function () {
+      scope.pagination.use = !scope.pagination.use;
+      if(!scope.pagination.use){
+        scope.pagination.rowsToDisplay = scope.table.settings()[0]._iDisplayLength;
+        console.log('set rowsToDisplay', scope.pagination.rowsToDisplay);
+      }
+      // reorder the table data
+      scope.applyChanges();
+    };
+    scope.doSelectAll = function() {
+      if (scope.table === undefined) {
+        return;
+      }
+      for (var i in scope.selected) {
+        scope.selected[i] = true;
+      }
+      //jscs:disable
+      scope.update_selected();
+      //jscs:enable
+    };
+    scope.doDeselectAll = function() {
+      if (scope.table === undefined) {
+        return;
+      }
+      for (var i in scope.selected) {
+        scope.selected[i] = false;
+      }
+      //jscs:disable
+      scope.update_selected();
+      //jscs:enable
+    };
+    scope.doReverseSelection = function() {
+      if (scope.table === undefined) {
+        return;
+      }
+      for (var i in scope.selected) {
+        scope.selected[i] = !scope.selected[i];
+      }
+      //jscs:disable
+      scope.update_selected();
+      //jscs:enable
+    };
+    scope.doCopyToClipboard = function() {
+      var queryCommandEnabled = true;
+      try {
+        document.execCommand('Copy');
+      } catch (e) {
+        queryCommandEnabled = false;
+      }
+      if (!bkUtils.isElectron && queryCommandEnabled) {
+        var getTableData = function() {
+          var isFiltered = function (index) {
+            return scope.table.settings()[0].aiDisplay.indexOf(index) > -1;
+          };
+          var rows = scope.table.rows(function(index, data, node) {
+            return isFiltered(index) && scope.selected[index];
+          });
+          if (rows === undefined || rows.indexes().length === 0) {
+            rows = scope.table.rows(isFiltered);
+          }
+          var out = scope.exportTo(rows, 'tabs');
+          return out;
+        };
+        var executeCopy = function (text) {
+          var input = document.createElement('textarea');
+          document.body.appendChild(input);
+          input.value = text;
+          input.select();
+          document.execCommand('Copy');
+          input.remove();
+        };
+        var data = getTableData();
+        executeCopy(data);
+      }
+    };
+    scope.doCSVExport = function(selectedRows) {
+      bkHelper.showFileSaveDialog({
+        extension: "csv",
+        title: 'Select name for CSV file to save',
+        saveButtonTitle : 'Save'
+      }).then(function (ret) {
+        if (ret.uri) {
+          return bkHelper.saveFile(ret.uri, scope.getCSV(selectedRows), true);
+        }
+      });
+    };
+    scope.doCSVDownload = function(selectedRows) {
+      var href = 'data:attachment/csv;charset=utf-8,' + encodeURI(scope.getCSV(selectedRows));
+      var target = '_black';
+      var filename = 'tableRows.csv';
+      var anchor = document.createElement('a');
+      anchor.href = href;
+      anchor.target = target;
+      anchor.download = filename;
+      var event = document.createEvent("MouseEvents");
+      event.initEvent(
+        "click", true, false
+      );
+      anchor.dispatchEvent(event);
+
+    };
+    scope.doResetAll= function() {
+      scope.table.state.clear();
+      scope.init(scope.getCellModel(), false);
     };
 
     return scope;

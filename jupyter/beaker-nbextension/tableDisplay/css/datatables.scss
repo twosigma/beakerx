@@ -1,4 +1,5 @@
 $border-color: #D4D0D0;
+$highlight-blue: #39a9ed;
 
 .dtcontainer {
   position: relative;
@@ -355,6 +356,106 @@ $fix-col-separator-width: 3px;
   height: 20px;
   padding: 0 10px;
 }
+
+.dropdown-menu > li {
+  position: relative;
+}
+
+
+.glyphicon {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dropdown-menu {
+  & > li {
+    list-style: none;
+  }
+
+  & > li > a:link {
+    text-decoration: none;
+  }
+
+  .glyphicon {
+    position: absolute;
+    padding: 3px 4px;
+    z-index: 1;
+  }
+
+  .fa {
+    position: absolute;
+    top: 1px;
+    padding: 4px 4px;
+  }
+}
+
+.dtmenu .bko-menu {
+  display: block;
+  &:hover {
+    background-image: url("../../shared/images/menu_white@2x.png");
+  }
+  &.sorting_desc {
+    background-image: url("../../shared/images/sort_desc.png");
+    background-size: 20px;
+    opacity: 1;
+    &:hover {
+      background-image: url("../../shared/images/sort_desc_white.png");
+    }
+  }
+}
+
+.dataTables_scrollHead, .DTFC_LeftHeadWrapper, .DTFC_RightHeadWrapper {
+  table thead th {
+    cursor:       pointer;
+    .bko-menu {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      opacity:    0;
+      transition: opacity 0.5s;
+    }
+
+    &:hover {
+      .bko-menu {
+        opacity: 1;
+        &:hover {
+          background-color: $highlight-blue;
+          background-image: url("../../shared/images/menu_white@2x.png");
+        }
+      }
+    }
+
+    &.sorting_asc > .bko-menu {
+      background-image: url("../../shared/images/sort_asc.png");
+      background-size:  20px;
+      opacity:          1;
+      &:hover {
+        background-image: url("../../shared/images/sort_asc_white.png");
+      }
+    }
+
+    &.sorting_desc > .bko-menu {
+      background-image: url("../../shared/images/sort_desc.png");
+      background-size:  20px;
+      opacity:          1;
+      &:hover {
+        background-image: url("../../shared/images/sort_desc_white.png");
+      }
+    }
+  }
+
+  table thead .sorting, .sorting_asc, .sorting_desc {
+    background-image: none !important;
+  }
+}
+
 
 @keyframes fadeIn {
   0% {

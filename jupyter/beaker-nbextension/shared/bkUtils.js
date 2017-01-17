@@ -26,6 +26,9 @@ define([
     },
     timeout: function(fn, ms) {
       return setTimeout(fn, ms);
+    },
+    newDeferred: function() {
+      return jQuery.Deferred();
     }
   };
 

@@ -61,6 +61,15 @@ define([
     return bkCoreManager.getBkApp();
   };
 
+
+  var getBkNotebookWidget = function() {
+    if (getCurrentApp() && getCurrentApp().getBkNotebookWidget) {
+      return getCurrentApp().getBkNotebookWidget();
+    } else {
+      return undefined;
+    }
+  };
+
   var bkHelper = {
     isChrome: !!window.chrome && !!window.chrome.webstore,
     defaultPlotColors: defaultPlotColors,
@@ -104,6 +113,15 @@ define([
     },
     timeout: function(func, ms) {
       return bkUtils.timeout(func,ms);
+    },
+    getBkNotebookViewModel: function() {
+      var bkNotebook = getBkNotebookWidget();
+      if (bkNotebook) {
+        return bkNotebook.getViewModel();
+      }
+    },
+    showFileSaveDialog: function(data) {
+      return bkCoreManager.showFileSaveDialog(data);
     }
   };
 

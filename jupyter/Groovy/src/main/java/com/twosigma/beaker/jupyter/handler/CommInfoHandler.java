@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-package com.twosigma.jupyter.groovy.handler;
+package com.twosigma.beaker.jupyter.handler;
 
-import static com.twosigma.jupyter.groovy.msg.Type.COMM_INFO_REPLY;
+import static com.twosigma.beaker.jupyter.msg.Type.COMM_INFO_REPLY;
 
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
@@ -28,7 +28,7 @@ import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.jupyter.groovy.Comm;
+import com.twosigma.beaker.jupyter.Comm;
 
 /**
  * 

@@ -1,14 +1,14 @@
 package org.lappsgrid.jupyter.groovy.handler;
 
-import static com.twosigma.jupyter.groovy.GroovyDefaultVariables.CLASS_PATH;
-import static com.twosigma.jupyter.groovy.GroovyDefaultVariables.IMPORSTS;
-import static com.twosigma.jupyter.groovy.GroovyDefaultVariables.OUT_DIR;
-import static com.twosigma.jupyter.groovy.Utils.timestamp;
-import static com.twosigma.jupyter.groovy.msg.Type.EXECUTE_INPUT;
-import static com.twosigma.jupyter.groovy.msg.Type.EXECUTE_REPLY;
-import static com.twosigma.jupyter.groovy.msg.Type.EXECUTE_RESULT;
-import static com.twosigma.jupyter.groovy.msg.Type.STATUS;
-import static com.twosigma.jupyter.groovy.msg.Type.STREAM;
+import static com.twosigma.beaker.groovy.GroovyDefaultVariables.CLASS_PATH;
+import static com.twosigma.beaker.groovy.GroovyDefaultVariables.IMPORTS;
+import static com.twosigma.beaker.groovy.GroovyDefaultVariables.OUT_DIR;
+import static com.twosigma.beaker.jupyter.Utils.timestamp;
+import static com.twosigma.beaker.jupyter.msg.Type.EXECUTE_INPUT;
+import static com.twosigma.beaker.jupyter.msg.Type.EXECUTE_REPLY;
+import static com.twosigma.beaker.jupyter.msg.Type.EXECUTE_RESULT;
+import static com.twosigma.beaker.jupyter.msg.Type.STATUS;
+import static com.twosigma.beaker.jupyter.msg.Type.STREAM;
 
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
@@ -22,7 +22,8 @@ import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.LoggerFactory;
 
 import com.twosigma.beaker.SerializeToString;
-import com.twosigma.jupyter.groovy.GroovyEvaluatorManager;
+import com.twosigma.beaker.groovy.GroovyEvaluatorManager;
+import com.twosigma.beaker.jupyter.Compiler;
 
 /**
  * Does the actual work of executing user code.
@@ -32,12 +33,12 @@ import com.twosigma.jupyter.groovy.GroovyEvaluatorManager;
 public class ExecuteHandler extends AbstractHandler {
 
   private int executionCount;
-  private GroovyEvaluatorManager evaluatorManager;
+  private Compiler evaluatorManager;
 
   public ExecuteHandler(GroovyKernel kernel) {
     super(kernel);
     logger = LoggerFactory.getLogger(ExecuteHandler.class);
-    evaluatorManager = new GroovyEvaluatorManager(CLASS_PATH, IMPORSTS, OUT_DIR);
+    evaluatorManager = new GroovyEvaluatorManager(CLASS_PATH, IMPORTS, OUT_DIR);
     executionCount = 0;
   }
 

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.jupyter.groovy;
+package com.twosigma.beaker.groovy;
 
 /**
  * 
@@ -26,7 +26,7 @@ public class GroovyDefaultVariables {
    * Default imports
    */
   //TODO add to kernel this classes, then uncomment
-  public static final String IMPORSTS = 
+  public static final String IMPORTS = 
       "static java.lang.Math.*" + 
       //"\ngraxxia.*" + 
       //"\ncom.twosigma.beaker.NamespaceClient" + 

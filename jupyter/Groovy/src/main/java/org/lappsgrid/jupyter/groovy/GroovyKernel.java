@@ -1,6 +1,6 @@
 package org.lappsgrid.jupyter.groovy;
 
-import static com.twosigma.jupyter.groovy.Utils.uuid;
+import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,11 +32,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
-import com.twosigma.jupyter.groovy.Comm;
-import com.twosigma.jupyter.groovy.handler.CommCloseHandler;
-import com.twosigma.jupyter.groovy.handler.CommInfoHandler;
-import com.twosigma.jupyter.groovy.handler.CommOpenHandler;
-import com.twosigma.jupyter.groovy.msg.Type;;
+import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.handler.CommCloseHandler;
+import com.twosigma.beaker.jupyter.handler.CommInfoHandler;
+import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
+import com.twosigma.beaker.jupyter.msg.Type;;
 
 /**
  * The entry point for the Jupyter kernel.

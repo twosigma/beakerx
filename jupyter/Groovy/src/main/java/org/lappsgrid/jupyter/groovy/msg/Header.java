@@ -1,13 +1,13 @@
 package org.lappsgrid.jupyter.groovy.msg;
 
-import static com.twosigma.jupyter.groovy.Utils.timestamp;
-import static com.twosigma.jupyter.groovy.Utils.uuid;
+import static com.twosigma.beaker.jupyter.Utils.timestamp;
+import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 import org.lappsgrid.jupyter.groovy.json.Serializer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.twosigma.jupyter.groovy.msg.Type;
+import com.twosigma.beaker.jupyter.msg.Type;
 
 /**
  * The ZMQ header included with each message.

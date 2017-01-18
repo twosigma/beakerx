@@ -7,10 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
-import com.twosigma.jupyter.groovy.msg.Type;
+import com.twosigma.beaker.jupyter.msg.Type;
 
-import static com.twosigma.jupyter.groovy.msg.Type.SHUTDOWN_REPLY;
-import static com.twosigma.jupyter.groovy.msg.Type.SHUTDOWN_REQUEST;
+import static com.twosigma.beaker.jupyter.msg.Type.SHUTDOWN_REPLY;
+import static com.twosigma.beaker.jupyter.msg.Type.SHUTDOWN_REQUEST;
 
 import java.security.NoSuchAlgorithmException;
 

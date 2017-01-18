@@ -1,6 +1,6 @@
 package org.lappsgrid.jupyter.groovy.handler;
 
-import static com.twosigma.jupyter.groovy.msg.Type.KERNEL_INFO_REPLY;
+import static com.twosigma.beaker.jupyter.msg.Type.KERNEL_INFO_REPLY;
 
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;

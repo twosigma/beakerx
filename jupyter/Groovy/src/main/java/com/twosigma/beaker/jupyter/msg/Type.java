@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.jupyter.groovy.msg;
+package com.twosigma.beaker.jupyter.msg;
 
 /**
  * Definitions of the strings used as message type values.

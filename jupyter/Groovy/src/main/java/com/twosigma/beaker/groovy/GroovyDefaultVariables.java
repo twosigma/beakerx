@@ -57,8 +57,7 @@ public class GroovyDefaultVariables {
   /**
    * Default class path
    */
-  public static final String CLASS_PATH = 
-      "C:\\processing.jar";
+  public static final String CLASS_PATH = "";
   /**
    * Default dynamic classes directory
    */

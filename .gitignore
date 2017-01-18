@@ -16,6 +16,7 @@ plugin/jvm/src/main/dist/
 *~
 .gradle
 .idea
+.metadata
 src/main/main.iml
 *.iml
 *.ipr

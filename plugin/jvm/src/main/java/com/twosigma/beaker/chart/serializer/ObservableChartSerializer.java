@@ -33,9 +33,9 @@ public abstract class ObservableChartSerializer<T extends ObservableChart> exten
   private Provider<UpdateManager> updateManagerProvider;
 
   protected void serialize(T chart, JsonGenerator jgen) throws IOException {
-    String id = updateManagerProvider.get().register(chart);
-    chartObjectManagerProvider.get().registerChart(id, chart);
-    jgen.writeStringField("update_id", id);
+//    String id = updateManagerProvider.get().register(chart);
+//    chartObjectManagerProvider.get().registerChart(id, chart);
+//    jgen.writeStringField("update_id", id);
   }
 
 }

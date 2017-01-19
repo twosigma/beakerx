@@ -30,10 +30,10 @@ define(function() {
                '            <li><a tabindex="-1" href="#" data-dtAction="dt-deselect-all" class="dt-deselect-all">Deselect All Rows</a></li>'+
                '            <li><a tabindex="-1" href="#" data-dtAction="dt-reverse-selection" class="dt-reverse-selection">Reverse Selection</a></li>'+
                '            <li><a tabindex="-1" href="#" data-dtAction="dt-copy-to-clipboard" class="menu-separator" id="' + scopeId + '_dt_copy">Copy to Clipboard</a></li>'+ // ????
-               '            <li><a tabindex="-1" href="#" data-dtAction="dt-save-all" class="dt-save-all">Save All as CSV</a></li>'+
-               '            <li><a tabindex="-1" href="#" data-dtAction="dt-save-selected" class="dt-save-selected">Save Selected as CSV</a></li>'+
-               // '            <li><a tabindex="-1" href="#" data-dtAction="dt-download-all" class="dt-download-all">Download All as CSV</a></li>'+
-               // '            <li><a tabindex="-1" href="#" data-dtAction="dt-download-selected" class="dt-download-selected">Download Selected as CSV</a></li>'+
+               // '            <li><a tabindex="-1" href="#" data-dtAction="dt-save-all" class="dt-save-all">Save All as CSV</a></li>'+
+               // '            <li><a tabindex="-1" href="#" data-dtAction="dt-save-selected" class="dt-save-selected">Save Selected as CSV</a></li>'+
+               '            <li><a tabindex="-1" href="#" data-dtAction="dt-download-all" class="dt-download-all">Download All as CSV</a></li>'+
+               '            <li><a tabindex="-1" href="#" data-dtAction="dt-download-selected" class="dt-download-selected">Download Selected as CSV</a></li>'+
                '            <li>'+
                '                <a tabindex="-1" href="#" data-dtAction="dt-search" class="dt-search menu-separator" title="search the whole table for a substring">Search...</a>'+
                '                <i class="fa fa-search"></i>'+

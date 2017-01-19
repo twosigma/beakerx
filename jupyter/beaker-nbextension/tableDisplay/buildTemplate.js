@@ -10,11 +10,11 @@ define(function() {
                '            <li><a tabindex="-1" href="#" class="dt-show-all" data-dtAction="dt-show-all">Show All Columns</a></li>'+
                '            <li class="dropdown-submenu" id="' + scopeId + '_show_column">'+
                '                <a tabindex="-1" href="" class="dt-show-columns" data-toggle="dropdown">Show Column</a>'+
-               '                <div class="dropdown-menu dropdown-menu-search">'+
-               '                    <i class="fa fa-search"></i>'+
-               '                    <input placeholder="search...">'+
-               '                </div>'+
-               '                <ul class="dropdown-menu dropdown-submenu-scrollable" role="menu" aria-labelledby="dLabel">'+
+               // '                <div class="dropdown-menu dropdown-menu-search">'+
+               // '                    <i class="fa fa-search"></i>'+
+               // '                    <input placeholder="search...">'+
+               // '                </div>'+
+               '                <ul class="dropdown-menu dropdown-submenu-scrollable list-showcolumn" role="menu" aria-labelledby="dLabel">'+
                '                </ul>'+
                '            </li>'+
                '            <li><a tabindex="-1" href="#" class="dt-hide-all" data-dtAction="dt-hide-all">Hide All Columns</a></li>'+
@@ -24,7 +24,7 @@ define(function() {
                '            </li>'+
                '            <li class="dropdown-submenu">'+
                '                <a tabindex="-1" href="" class="dt-rows-to-show" data-toggle="dropdown">Rows to Show</a>'+
-               '                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel"></ul>'+
+               '                <ul class="dropdown-menu list-rowstoshow" role="menu" aria-labelledby="dLabel"></ul>'+
                '            </li>'+
                '            <li><a tabindex="-1" href="#" data-dtAction="dt-select-all" class="dt-select-all">Select All Rows</a></li>'+
                '            <li><a tabindex="-1" href="#" data-dtAction="dt-deselect-all" class="dt-deselect-all">Deselect All Rows</a></li>'+
@@ -32,8 +32,8 @@ define(function() {
                '            <li><a tabindex="-1" href="#" data-dtAction="dt-copy-to-clipboard" class="menu-separator" id="' + scopeId + '_dt_copy">Copy to Clipboard</a></li>'+ // ????
                '            <li><a tabindex="-1" href="#" data-dtAction="dt-save-all" class="dt-save-all">Save All as CSV</a></li>'+
                '            <li><a tabindex="-1" href="#" data-dtAction="dt-save-selected" class="dt-save-selected">Save Selected as CSV</a></li>'+
-               '            <li><a tabindex="-1" href="#" data-dtAction="dt-download-all" class="dt-download-all">Download All as CSV</a></li>'+
-               '            <li><a tabindex="-1" href="#" data-dtAction="dt-download-selected" class="dt-download-selected">Download Selected as CSV</a></li>'+
+               // '            <li><a tabindex="-1" href="#" data-dtAction="dt-download-all" class="dt-download-all">Download All as CSV</a></li>'+
+               // '            <li><a tabindex="-1" href="#" data-dtAction="dt-download-selected" class="dt-download-selected">Download Selected as CSV</a></li>'+
                '            <li>'+
                '                <a tabindex="-1" href="#" data-dtAction="dt-search" class="dt-search menu-separator" title="search the whole table for a substring">Search...</a>'+
                '                <i class="fa fa-search"></i>'+

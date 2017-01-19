@@ -1,6 +1,11 @@
 require.config({
   paths: {
     'datatables.net': '/nbextensions/beaker/tableDisplay/libs/DataTables-1.10.13/js/jquery.dataTables'
+  },
+  shim: {
+    'nbextensions/beaker/tableDisplay/datatablesHeadermenu': [
+      'nbextensions/beaker/tableDisplay/libs/DataTables-1.10.13/js/jquery.dataTables'
+    ]
   }
 });
 
@@ -1829,6 +1834,7 @@ define([
       scope.columns = cols;
 
       scope.createTableElements();
+      scope.createTableMenuElements();
 
       var id = '#' + scope.id;
       var init = {
@@ -2113,6 +2119,9 @@ define([
           })
           .on( 'column-sizing.dt', function ( e, settings ) {
             scope.updateTableWidth();
+          })
+          .on('draw.dt', function() {
+            scope.updateRowDisplayBtts();
           });
 
         function updateSize() {
@@ -2721,115 +2730,43 @@ define([
       element.find('tr.filterRow').hide();
     };
 
+    scope.showColumn = function(initialIndex, event) {
+      var column = scope.getColumnByInitialIndex(initialIndex);
+      var visible = !column.visible();
+      column.visible(visible);
+      if (event){
+        event.stopPropagation();
+      }
 
-    
-    scope.run = function() {
-      scope.init(cellModel, true);
-      tableChanged = true;
-      scope.bindTableActions();
-    };
+      scope.updateToggleColumnBtts();
 
-
-
-    scope.setModelData = function(data) {
-      cellModel = data;
-    };
-
-    scope.buildTemplate = function() {
-      element = $('div#'+scope.wrapperId);
-
-      var tmpl = buildTemplate(scope.id);
-
-      // var tmpl = '<div class="dtcontainer">' +
-      //              '<table cellpadding="0" class="display" border="0" cellspacing="0" width="10%" id="' + scope.id + '">' +
-      //               '<thead>' +
-      //                 '<tr></tr>' +
-      //                 '<tr class="filterRow" ng-show="showFilter"></tr>' +
-      //                '</thead>' +
-      //              '</table>' +
-      //            '</div>';
-
-      element.append(tmpl);
-    };
-
-    scope.createTableElements = function() {
-      if (scope.columns) {
-        var trs = element.find('table thead tr');
-
-        trs.eq(0).empty();
-
-        var filterTd =
-          '<th>' +
-            '<div class="input-clear-growing">' +
-              '<div class="input-clear">' +
-                '<span class="fa filter-icon"></span>' +
-                '<input class="filter-input" type="text">' +
-                '<span class="fa fa-times clear-filter"></span>' +
-              '</div>' +
-              '<input tabindex="-1" class="hidden-filter hidden-filter-input">' +
-              '<span class="hidden-length"></span>' +
-            '</div>' +
-          '</th>';
-
-        scope.columns.forEach(function() {
-          trs.eq(0).append('<th />');
-          trs.eq(1).append(filterTd);
-        });
+      if (column.visible()){
+        var el = $('#' + scope.id);
+        var table = el.DataTable();
+        el.parent().scrollLeft(0);
+        window.setTimeout(function() {
+          var distance = $(table.column(initialIndex).header()).offset().left;
+          var width = el.parent().width() / 2;
+          el.parent().scrollLeft(distance - width);
+        }, 0)
       }
     };
 
-    scope.bindTableActions = function() {
-      element.find('div.dtmenu ul.dropdown-menu').on('click', function(ev) {
-        var dtAction = $(ev.target).attr('data-dtAction');
-        switch (dtAction) {
-          case 'dt-show-all':
-            scope.toggleColumnsVisibility(true);
-            break;
-          case 'dt-hide-all':
-            scope.toggleColumnsVisibility(false);
-            break;
-          case 'dt-use-pagination':
-            scope.doUsePagination();
-            break;
-          case 'dt-select-all':
-            scope.doSelectAll();
-            break;
-          case 'dt-deselect-all':
-            scope.doDeselectAll();
-            break;
-          case 'dt-reverse-selection':
-            scope.doReverseSelection();
-            break;
-          case 'dt-copy-to-clipboard':
-            scope.doCopyToClipboard();
-            break;
-          case 'dt-save-all':
-            scope.doCSVExport(false);
-            break;
-          case 'dt-save-selected':
-            scope.doCSVExport(true);
-            break;
-          case 'dt-download-all':
-            scope.doCSVDownload(false);
-            break;
-          case 'dt-download-selected':
-            scope.doCSVDownload(true);
-            break;
-          case 'dt-search':
-            scope.doShowFilter(scope.table.column(0), true);
-            break;
-          case 'dt-filter':
-            scope.doShowFilter(scope.table.column(0), false);
-            break;
-          case 'dt-hide-filter':
-            scope.hideFilter();
-            break;
-          case 'dt-reset-all':
-            scope.doResetAll();
-            break;
-          default:
-        }
-      })
+    scope.isColumnVisible = function (initialIndex) {
+      var column = scope.getColumnByInitialIndex(initialIndex);
+      return column && column.visible();
+    };
+    
+    scope.changePageLength = function (len) {
+      scope.pagination.rowsToDisplay = len;
+      if (scope.pagination.use) {
+        scope.table.page.len(len).draw();
+        scope.updateRowDisplayBtts();
+      } else {
+        var scrollBody = $('#' + scope.id).parent();
+        scrollBody.css('max-height', scope.getScrollY());
+        scope.update_size();
+      }
     };
 
     scope.toggleColumnsVisibility = function(visible) {
@@ -2843,6 +2780,7 @@ define([
         cLength.push(i);
       }
       table.columns(cLength).visible(visible);
+      scope.updateToggleColumnBtts();
     };
     scope.doUsePagination = function () {
       scope.pagination.use = !scope.pagination.use;
@@ -2948,6 +2886,207 @@ define([
     scope.doResetAll= function() {
       scope.table.state.clear();
       scope.init(scope.getCellModel(), false);
+    };
+
+
+
+
+    
+    scope.run = function() {
+      scope.init(cellModel, true);
+      tableChanged = true;
+      scope.bindTableActions();
+    };
+
+
+
+
+
+    scope.setModelData = function(data) {
+      cellModel = data;
+    };
+
+    scope.buildTemplate = function() {
+      element = $('div#'+scope.wrapperId);
+
+      var tmpl = buildTemplate(scope.id);
+
+      // var tmpl = '<div class="dtcontainer">' +
+      //              '<table cellpadding="0" class="display" border="0" cellspacing="0" width="10%" id="' + scope.id + '">' +
+      //               '<thead>' +
+      //                 '<tr></tr>' +
+      //                 '<tr class="filterRow" ng-show="showFilter"></tr>' +
+      //                '</thead>' +
+      //              '</table>' +
+      //            '</div>';
+
+      element.append(tmpl);
+    };
+
+    scope.createTableElements = function() {
+      if (scope.columns) {
+        var trs = element.find('table thead tr');
+
+        trs.eq(0).empty();
+
+        var filterTd =
+          '<th>' +
+            '<div class="input-clear-growing">' +
+              '<div class="input-clear">' +
+                '<span class="fa filter-icon"></span>' +
+                '<input class="filter-input" type="text">' +
+                '<span class="fa fa-times clear-filter"></span>' +
+              '</div>' +
+              '<input tabindex="-1" class="hidden-filter hidden-filter-input">' +
+              '<span class="hidden-length"></span>' +
+            '</div>' +
+          '</th>';
+
+        scope.columns.forEach(function(col) {
+          trs.eq(0).append('<th />');
+          trs.eq(1).append(filterTd);
+        });
+
+      }
+    };
+
+    scope.createTableMenuElements = function() {
+      if (scope.columnNames) {
+        var globalDropdownMenu = element.find('.dtmenu > ul.dropdown-menu');
+        var showColumnMenu = globalDropdownMenu.find('ul.list-showcolumn');
+        var rowsToShowMenu = globalDropdownMenu.find('ul.list-rowstoshow');
+        var toggleColummBtt = null;
+        var rowDisplayBtt = null;
+
+        showColumnMenu.empty();
+
+        scope.columnNames.forEach(function(col, i) {
+          toggleColummBtt = scope.createToggleColumnBtt(col, i);
+          showColumnMenu.append(toggleColummBtt);
+        });
+
+        scope.rowsToDisplayMenu[0].forEach(function(item, i) {
+          rowDisplayBtt = scope.createRowDisplayBtt(item, i);
+          rowsToShowMenu.append(rowDisplayBtt);
+        });
+
+        scope.updateRowDisplayBtts();
+      }
+    };
+
+    scope.createToggleColumnBtt = function(colName, index) {
+      var elem = $('<li>' +
+                     '<a tabindex="-1">'+colName+'</a>' +
+                     '<input type="checkbox" id="'+scope.id+'-'+index+'-visible" class="beforeCheckbox" checked="'+scope.isColumnVisible(index+1)+'" />' +
+                     '<label for="'+scope.id+'-'+index+'-visible" class="checkbox-label"></label>' +
+                   '</li>');
+      
+      elem.on('click', 'a, input', function(ev) {
+        scope.showColumn(index+1, ev);
+      });
+      
+      return elem;
+    };
+
+    scope.createRowDisplayBtt = function(val, index) {
+      var elem = $('<li>' +
+                     '<a tabindex="-1">'+scope.rowsToDisplayMenu[1][index]+'</a>' +
+                     '<i class="glyphicon glyphicon-ok"></i>' +
+                   '</li>');
+
+      elem.on('click', 'a', function() {
+        scope.changePageLength(val);
+      });
+
+      return elem;
+    };
+
+    scope.updateToggleColumnBtts = function() {
+      var list = element.find('.dtmenu > ul.dropdown-menu ul.list-showcolumn li');
+
+      list.each(function(i) {
+        var checked = scope.isColumnVisible(i+1);
+        $(this).children('input[type="checkbox"]').prop('checked', checked);
+      });
+    };
+
+    scope.updateRowDisplayBtts = function() {
+      var list = element.find('.dtmenu > ul.dropdown-menu ul.list-rowstoshow li');
+      var currentValue = null;
+
+      if (scope.table) {
+        var len = scope.table.page.len();
+        var itemIndex = scope.rowsToDisplayMenu[0].indexOf(len);
+        var title =  scope.rowsToDisplayMenu[1][itemIndex];
+        currentValue = title.toString();
+        // var settings = scope.table.settings()[0];
+        // currentValue = settings._iDisplayLength.toString();
+      }
+
+      list.each(function(i) {
+        var thisText = $(this).children('a').text();
+        var checked =  currentValue === thisText;
+        var iElem = $(this).children('i');
+        if (checked) {
+          iElem.show();
+        } else {
+          iElem.hide();
+        }
+      });
+    };
+
+    scope.bindTableActions = function() {
+      element.find('div.dtmenu ul.dropdown-menu').on('click', function(ev) {
+        var dtAction = $(ev.target).attr('data-dtAction');
+        switch (dtAction) {
+          case 'dt-show-all':
+            scope.toggleColumnsVisibility(true);
+            break;
+          case 'dt-hide-all':
+            scope.toggleColumnsVisibility(false);
+            break;
+          case 'dt-use-pagination':
+            scope.doUsePagination();
+            break;
+          case 'dt-select-all':
+            scope.doSelectAll();
+            break;
+          case 'dt-deselect-all':
+            scope.doDeselectAll();
+            break;
+          case 'dt-reverse-selection':
+            scope.doReverseSelection();
+            break;
+          case 'dt-copy-to-clipboard':
+            scope.doCopyToClipboard();
+            break;
+          case 'dt-save-all':
+            scope.doCSVExport(false);
+            break;
+          case 'dt-save-selected':
+            scope.doCSVExport(true);
+            break;
+          case 'dt-download-all':
+            scope.doCSVDownload(false);
+            break;
+          case 'dt-download-selected':
+            scope.doCSVDownload(true);
+            break;
+          case 'dt-search':
+            scope.doShowFilter(scope.table.column(0), true);
+            break;
+          case 'dt-filter':
+            scope.doShowFilter(scope.table.column(0), false);
+            break;
+          case 'dt-hide-filter':
+            scope.hideFilter();
+            break;
+          case 'dt-reset-all':
+            scope.doResetAll();
+            break;
+          default:
+        }
+      })
     };
 
     return scope;

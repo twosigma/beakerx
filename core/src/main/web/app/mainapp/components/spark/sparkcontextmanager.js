@@ -98,11 +98,10 @@
         '8g',
         'Executor memory'
       ),
-      datacenter: new ConfigurationChoice(
+      datacenter: new ConfigurationString(
         'datacenter',
-        'dft',
-        'Datacenter',
-        window.beakerRegister.sparkDatacenters || ['aws', 'local']
+        '',
+        'Datacenter'
       ),
       advanced: {
         persistent: new ConfigurationBoolean(

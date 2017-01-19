@@ -19,7 +19,11 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.object.SparkProgressService;
+import com.twosigma.beaker.scala.util.BeakerScalaEvaluator;
 import com.twosigma.beaker.scala.util.ScalaEvaluator;
+import com.twosigma.beaker.scala.utils.BeakerSparkConfiguration;
+import com.twosigma.beaker.scala.utils.BeakerSparkContextManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +41,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 @Path("scalash")
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
@@ -46,7 +52,88 @@ public class ScalaShellRest {
   private final Map<String, ScalaEvaluator> shells = new HashMap<>();
   private final static Logger logger = LoggerFactory.getLogger(ScalaShellRest.class.getName());
       
-  public ScalaShellRest() throws IOException {}
+  public ScalaShellRest() throws IOException {
+
+  }
+
+  @POST
+  @Path("configuration")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String getConfiguration(
+          @FormParam("shellId") String shellId)
+          throws InterruptedException {
+
+    if(!BeakerSparkContextManager.isRunning())
+      return "offline";
+
+    // make sure contexts are available in current shell
+    BeakerSparkConfiguration configuration = BeakerSparkContextManager.getConfiguration();
+    evaluate(
+            shellId,
+            String.format("import com.twosigma.beaker.scala.utils.BeakerSparkContextManager\n" +
+                            "var %s = BeakerSparkContextManager.getSparkContext\n" +
+                            "var %s = BeakerSparkContextManager.getSqlContext\n",
+                    configuration.getSparkContextAlias(),
+                    configuration.getSqlContextAlias()
+            )
+    );
+
+    return configuration.toString();
+  }
+
+  @POST
+  @Path("startSparkContext")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String startSparkContext(
+          @FormParam("shellId") String shellId,
+          @FormParam("configuration") String configuration)
+          throws InterruptedException {
+
+    if(!BeakerSparkContextManager.isRunning()) {
+      BeakerSparkContextManager.configure(BeakerSparkConfiguration.fromJSON(configuration));
+      SparkProgressService progressService = injector.getInstance(SparkProgressService.class);
+      progressService.clear();
+      BeakerSparkContextManager.start(progressService);
+      if(!BeakerSparkContextManager.isRunning()) {
+        return BeakerSparkContextManager.getError();
+      }
+    }
+
+    BeakerSparkConfiguration config = BeakerSparkContextManager.getConfiguration();
+    evaluate(
+            shellId,
+            String.format("import com.twosigma.beaker.scala.utils.BeakerSparkContextManager\n" +
+                            "var %s = BeakerSparkContextManager.getSparkContext\n" +
+                            "var %s = BeakerSparkContextManager.getSqlContext\n",
+                    config.getSparkContextAlias(),
+                    config.getSqlContextAlias()
+            )
+    );
+
+    return config.toString();
+  }
+
+  @POST
+  @Path("stopSparkContext")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String stopSparkContext(@FormParam("shellId") String shellId) {
+    if(BeakerSparkContextManager.isRunning()) {
+      BeakerSparkContextManager.stop();
+      resetEnvironment(shellId);
+    }
+    return "ok";
+  }
+
+  @GET
+  @Path("sparkExecutorIds")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String sparkExecutorIds() throws IOException {
+    if(!BeakerSparkContextManager.isRunning())
+      return "[]";
+    ObjectMapper mapper = new ObjectMapper();
+    return mapper.writeValueAsString(BeakerSparkContextManager.getCookJobIds());
+  }
+
 
   @GET
   @Path("ready")
@@ -68,10 +155,16 @@ public class ScalaShellRest {
       ScalaEvaluator js = injector.getInstance(ScalaEvaluator.class);
       js.initialize(shellId,sessionId);
       js.setupAutoTranslation();
+      initBeakerScalaEvaluator(shellId, sessionId);
       this.shells.put(shellId, js);
       return shellId;
     }
     return shellId;
+  }
+
+  protected void initBeakerScalaEvaluator(final String shellId, final String sessionId) {
+    BeakerScalaEvaluator beakerScalaEvaluator = injector.getInstance(BeakerScalaEvaluator.class);
+    beakerScalaEvaluator.initialize(shellId, sessionId);
   }
 
   @POST
@@ -123,6 +216,9 @@ public class ScalaShellRest {
     logger.debug("shellId="+shellId);
     if(!this.shells.containsKey(shellId)) {
       return;
+    }
+    if(BeakerSparkContextManager.isRunning()) {
+       BeakerSparkContextManager.cancelAllJobs();
     }
     this.shells.get(shellId).cancelExecution();
   }

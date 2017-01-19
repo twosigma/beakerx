@@ -13,6 +13,8 @@ repositories {
 }
 
 dependencies {
+  compile project(':plugin:jvm')
+
   compile group: "org.codehaus.jackson", name: "jackson-jaxrs", version : "1.9.13"
   compile group: "com.fasterxml.jackson.core", name: "jackson-annotations", version : "2.5.1"
   compile group: "com.fasterxml.jackson.core", name: "jackson-databind", version : "2.5.1"
@@ -52,7 +54,6 @@ task prepareJson(dependsOn: 'build'){
     def jarLocation = new File('build/libs/Groovy.jar').getAbsolutePath()
     jarLocation = jarLocation.replace("\\","/");
     def text = new File('kernel.json').text.replace(toReplace, jarLocation)
-    
     def folder = new File('build/libs/json')
     if( !folder.exists() ) {
       println "Creating folder build/libs/json"

@@ -14,34 +14,39 @@ import org.zeromq.ZMQ;
  * @author Keith Suderman
  */
 public abstract class AbstractHandler implements IHandler {
-    public AbstractHandler(GroovyKernel kernel) {
-        this.kernel = kernel;
-    }
 
-    /**
-     * Sends to the shell socket by default.
-     * @throws NoSuchAlgorithmException 
-     */
-    public void send(Message message) throws NoSuchAlgorithmException {
-        kernel.send(message);
-    }
+  protected Logger logger;
+  protected GroovyKernel kernel;
 
-    /**
-     * Sends a message to the specified socket.
-     * @throws NoSuchAlgorithmException 
-     */
-    public void send(ZMQ.Socket socket, Message message) throws NoSuchAlgorithmException {
-        kernel.send(socket, message);
-    }
+  public AbstractHandler(GroovyKernel kernel) {
+    this.kernel = kernel;
+  }
 
-    /**
-     * Sends the message to the IOPub socket.
-     * @throws NoSuchAlgorithmException 
-     */
-    public void publish(Message message) throws NoSuchAlgorithmException {
-        kernel.publish(message);
-    }
+  /**
+   * Sends to the shell socket by default.
+   * 
+   * @throws NoSuchAlgorithmException
+   */
+  public void send(Message message) throws NoSuchAlgorithmException {
+    kernel.send(message);
+  }
 
-    protected Logger logger;
-    protected GroovyKernel kernel;
+  /**
+   * Sends a message to the specified socket.
+   * 
+   * @throws NoSuchAlgorithmException
+   */
+  public void send(ZMQ.Socket socket, Message message) throws NoSuchAlgorithmException {
+    kernel.send(socket, message);
+  }
+
+  /**
+   * Sends the message to the IOPub socket.
+   * 
+   * @throws NoSuchAlgorithmException
+   */
+  public void publish(Message message) throws NoSuchAlgorithmException {
+    kernel.publish(message);
+  }
+
 }

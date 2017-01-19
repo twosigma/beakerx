@@ -23,6 +23,12 @@ define([
         num = 0xFFFFFFFF + num + 1;
       }
       return "#" + num.toString(16);
+    },
+    timeout: function(fn, ms) {
+      return setTimeout(fn, ms);
+    },
+    newDeferred: function() {
+      return jQuery.Deferred();
     }
   };
 

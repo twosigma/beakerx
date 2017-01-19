@@ -1,9 +1,11 @@
 define([
-  'nbextensions/beaker/plot/bkGlobals',
-  'nbextensions/beaker/plot/bkCoreManager',
+  'nbextensions/beaker/shared/bkGlobals',
+  'nbextensions/beaker/shared/bkCoreManager',
+  'nbextensions/beaker/shared/bkUtils',
 ], function(
   bkGlobals,
-  bkCoreManager
+  bkCoreManager,
+  bkUtils
 ) {
 
   var defaultPlotColors = {},
@@ -55,6 +57,19 @@ define([
     "#FF9EDAE5"
   ];
 
+  var getCurrentApp = function() {
+    return bkCoreManager.getBkApp();
+  };
+
+
+  var getBkNotebookWidget = function() {
+    if (getCurrentApp() && getCurrentApp().getBkNotebookWidget) {
+      return getCurrentApp().getBkNotebookWidget();
+    } else {
+      return undefined;
+    }
+  };
+
   var bkHelper = {
     isChrome: !!window.chrome && !!window.chrome.webstore,
     defaultPlotColors: defaultPlotColors,
@@ -88,6 +103,25 @@ define([
         out += CHARS.charAt(c3 & 0x3F);
       }
       return out;
+    },
+    getBeakerObject: function() {
+      if (getCurrentApp() && getCurrentApp().getBeakerObject) {
+        return getCurrentApp().getBeakerObject();
+      } else {
+        return { };
+      }
+    },
+    timeout: function(func, ms) {
+      return bkUtils.timeout(func,ms);
+    },
+    getBkNotebookViewModel: function() {
+      var bkNotebook = getBkNotebookWidget();
+      if (bkNotebook) {
+        return bkNotebook.getViewModel();
+      }
+    },
+    showFileSaveDialog: function(data) {
+      return bkCoreManager.showFileSaveDialog(data);
     }
   };
 

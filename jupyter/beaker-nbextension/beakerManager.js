@@ -1,9 +1,11 @@
 define([
   'nbextensions/beaker/plot/plot',
-  'nbextensions/beaker/plot/combinedPlot'
+  'nbextensions/beaker/plot/combinedPlot',
+  'nbextensions/beaker/tableDisplay/tableDisplay'
 ], function(
   plot,
-  combinedPlot
+  combinedPlot,
+  tableDisplay
 ) {
 
   var currentWrapperId = null;
@@ -17,8 +19,13 @@ define([
   function init(data, wrapId) {
     currentWrapperId = wrapId;
 
+    console.log('manager init', data);
+
     var type = data.type || 'Text';
     switch (type) {
+      case 'TableDisplay':
+        initTableDisplay(data);
+        break;
       case 'CombinedPlot':
         initCombinedPlot(data);
         break;
@@ -44,6 +51,13 @@ define([
     currentScope.buildTemplate();
     currentScope.setModelData(data);
     currentScope.init();
+  }
+
+  function initTableDisplay(data) {
+    var currentScope = tableDisplay.createScope(currentWrapperId);
+    currentScope.buildTemplate();
+    currentScope.setModelData(data);
+    currentScope.run();
   }
 
 });

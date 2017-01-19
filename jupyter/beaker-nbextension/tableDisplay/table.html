@@ -1,0 +1,85 @@
+<div class="dtcontainer">
+
+    <!-- Modal -->
+    <!--<div>-->
+        <!--<div class="table_modal">-->
+            <!--<div class="modal-dialog" role="document">-->
+                <!--<div class="modal-content">-->
+                    <!--<div class="modal-body">-->
+                        <!--Too many columns, hiding those numbered {{outputColumnLimit}} to {{columnNames.length}}. Open list of all columns to show selectively?-->
+                    <!--</div>-->
+                    <!--<div class="modal-footer">-->
+                        <!--<button type="button" class="btn btn-primary">OK</button>-->
+                        <!--<button type="button" class="btn btn-secondary">Cancel</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <div class="dropdown dtmenu clearfix" style="float: left; z-index: 10">
+        <a class="dropdown-toggle" data-toggle="dropdown">
+            <span class="bko-menu" aria-hidden="true"></span>
+        </a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <li><a tabindex="-1" href="#" class="dt-show-all">Show All Columns</a></li>
+            <li class="dropdown-submenu">
+                <a tabindex="-1" href="" class="dt-show-columns" data-toggle="dropdown">Show Column</a>
+                <div class="dropdown-menu dropdown-menu-search">
+                    <i class="fa fa-search"></i>
+                    <input placeholder="search...">
+                </div>
+                <ul class="dropdown-menu dropdown-submenu-scrollable" role="menu" aria-labelledby="dLabel">
+                    <!--<li ng-repeat="title in columnNames | filter: showColumnMenu.search">-->
+                        <!--<a tabindex="-1" href="" ng-click="showColumn($index+1, $event)">-->
+                            <!--{{title}}-->
+                        <!--</a>-->
+                        <!--<input type="checkbox" id="{{id}}-{{$index}}-visible" class="beforeCheckbox"-->
+                               <!--ng-click="showColumn($index+1, $event)" ng-checked="isColumnVisible($index+1)">-->
+                        <!--<label for="{{id}}-{{$index}}-visible" class="checkbox-label"></label>-->
+                    <!--</li>-->
+                </ul>
+            </li>
+            <li><a tabindex="-1" href="#" class="dt-hide-all">Hide All Columns</a></li>
+            <li>
+                <a tabindex="-1" href="#" class="dt-use-pagination menu-separator">Use pagination</a>
+                <i class="glyphicon glyphicon-ok"></i>
+            </li>
+            <li class="dropdown-submenu">
+                <a tabindex="-1" href="" class="dt-rows-to-show" data-toggle="dropdown">Rows to Show</a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                    <!--<li ng-repeat="length in rowsToDisplayMenu[0]">-->
+                        <!--<a tabindex="-1" href="" ng-click="changePageLength(length)"> {{rowsToDisplayMenu[1][$index]}}</a>-->
+                        <!--<i class="glyphicon glyphicon-ok" ng-show="pagination.rowsToDisplay === length"></i>-->
+                    <!--</li>-->
+                </ul>
+            </li>
+            <li><a tabindex="-1" href="#" class="dt-select-all">Select All Rows</a></li>
+            <li><a tabindex="-1" href="#" class="dt-deselect-all">Deselect All Rows</a></li>
+            <li><a tabindex="-1" href="#" class="dt-reverse-selection" >Reverse Selection</a></li>
+            <li><a tabindex="-1" href="#" class="menu-separator" id="{{id}}_dt_copy">Copy to Clipboard</a></li>
+            <li><a tabindex="-1" href="#" class="dt-save-all">Save All as CSV</a></li>
+            <li><a tabindex="-1" href="#" class="dt-save-selected">Save Selected as CSV</a></li>
+            <li><a tabindex="-1" href="#" class="dt-download-all" >Download All as CSV</a></li>
+            <li><a tabindex="-1" href="#" class="dt-download-selected" >Download Selected as CSV</a></li>
+            <li>
+                <a tabindex="-1" href="#" class="dt-search menu-separator" title="search the whole table for a substring" >Search...</a>
+                <i class="fa fa-search"></i>
+            </li>
+            <li>
+                <a tabindex="-1" href="#" class="dt-filter"
+                   title="filter with an expression with a variable defined for each column">Filter...</a>
+                <i class="fa fa-filter"></i>
+            </li>
+            <li><a tabindex="-1" href="#" class="dt-hide-filter" >Hide Filter</a></li>
+            <li><a tabindex="-1" href="#" class="dt-reset-all menu-separator" >Reset All Interactions</a></li>
+        </ul>
+    </div>
+
+    <table cellpadding="0" class="display" border="0" cellspacing="0" width="10%">
+        <thead>
+            <tr></tr>
+            <tr class="filterRow"></tr>
+        </thead>
+    </table>
+</div>

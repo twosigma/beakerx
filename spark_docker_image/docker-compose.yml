@@ -1,0 +1,34 @@
+master:
+  image: beakernotebook/beaker-spark
+  hostname: master
+  environment:
+    MASTER: spark://master:7077
+  ports:
+    - 4040:4040
+    - 6066:6066
+    - 7077:7077
+    - 8080:8080
+
+worker:
+  image: beakernotebook/beaker-spark
+  command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://master:7077
+  hostname: worker
+  environment:
+    SPARK_WORKER_CORES: 10
+    SPARK_WORKER_MEMORY: 8g
+    SPARK_WORKER_PORT: 8881
+    SPARK_WORKER_WEBUI_PORT: 8081
+    SPARK_PUBLIC_DNS: localhost
+  links:
+    - master
+  ports:
+    - 8081:8081
+
+beaker:
+  image: beakernotebook/beaker
+  environment:
+       SPARK_PUBLIC_DNS: localhost
+  links:
+    - master
+  ports:
+    - 8800:8800

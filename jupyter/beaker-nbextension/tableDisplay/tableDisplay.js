@@ -50,7 +50,6 @@ define([
         }
       }
     };
-
     var element = null;
 
     (function($) {
@@ -348,6 +347,7 @@ define([
       {type: 9, name: 'boolean'}];
 
     scope.renderMenu = false;
+    scope.tableElementsCreated = false;
 
     scope.id = 'table_' + bkUtils.generateId(6);
 
@@ -1833,8 +1833,11 @@ define([
 
       scope.columns = cols;
 
-      scope.createTableElements();
-      scope.createTableMenuElements();
+      if (scope.tableElementsCreated === false) {
+        scope.createTableElements();
+        scope.createTableMenuElements();
+        scope.tableElementsCreated = true;
+      }
 
       var id = '#' + scope.id;
       var init = {
@@ -2340,7 +2343,6 @@ define([
     // });
 
     scope.getCellModel = function() {
-      console.log('stringModel', JSON.stringify(scope.model.getCellModel()));
       return scope.model.getCellModel();
     };
     scope.isShowOutput = function() {

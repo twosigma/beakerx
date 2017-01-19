@@ -1,6 +1,6 @@
 .dtcontainer {
   position: relative;
-  width: 96%; }
+  width: 100%; }
   .dtcontainer .dropdown-menu {
     margin-top: 1px; }
   .dtcontainer .dtmenu input[type='checkbox'] {

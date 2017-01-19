@@ -21,6 +21,8 @@ import java.io.StringWriter;
 import java.util.Hashtable;
 import java.util.Map;
 
+import com.twosigma.beaker.table.TableDisplay;
+import com.twosigma.beaker.table.serializer.*;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -59,7 +61,6 @@ import com.twosigma.beaker.chart.serializer.TextSerializer;
 import com.twosigma.beaker.chart.serializer.XYChartSerializer;
 import com.twosigma.beaker.chart.serializer.YAxisSerializer;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
-import com.twosigma.beaker.chart.xychart.TimePlot;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.Area;
 import com.twosigma.beaker.chart.xychart.plotitem.Bars;
@@ -73,7 +74,6 @@ import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 
 
-
 public class SerializeToString {
 	
   private static int count = 0;
@@ -82,6 +82,7 @@ public class SerializeToString {
 
   static {
 
+    serializerMap.put(TableDisplay.class, new TableDisplaySerializer());
     serializerMap.put(Color.class, new ColorSerializer());
     serializerMap.put(XYChart.class, new XYChartSerializer());
     serializerMap.put(CombinedPlot.class, new CombinedPlotSerializer());

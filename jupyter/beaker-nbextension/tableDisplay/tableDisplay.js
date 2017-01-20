@@ -1558,7 +1558,7 @@ define([
           //update align
           scope.getCellAlign[scope.colorder[colIdx] - 1] = key;
           scope.actualalign[scope.colorder[colIdx] - 1] = key;
-          bkSessionManager.setNotebookModelEdited(true);
+          // bkSessionManager.setNotebookModelEdited(true); //TODO - check if needed
         },
         checkAlignment: function(container, key) {
           var colIdx = container.data('columnIndex');
@@ -1568,7 +1568,7 @@ define([
           var container = el.closest('.bko-header-menu');
           var colIdx = container.data('columnIndex');
 
-          if (_.includes(['asc', 'desc'], direction)) {
+          if (_.contains(['asc', 'desc'], direction)) {
             scope.table.order([colIdx, direction]).draw();
           }
         },
@@ -1581,7 +1581,7 @@ define([
             return false;
           }
 
-          if (_.includes(['asc', 'desc'], direction)) {
+          if (_.contains(['asc', 'desc'], direction)) {
             return (order[0][0] == colIdx && order[0][1] == direction);
           } else {
             return (order[0][0] !== colIdx);
@@ -2125,6 +2125,7 @@ define([
           })
           .on('draw.dt', function() {
             scope.updateRowDisplayBtts();
+            scope.updateToggleColumnBtts();
           });
 
         function updateSize() {
@@ -2771,6 +2772,21 @@ define([
       }
     };
 
+    scope.getCellIdx      =  [];
+    scope.getCellNam      =  [];
+    scope.getCellSho      =  [];
+    scope.getCellAlign    =  [];
+    scope.getCellDisp     =  [];
+    scope.getCellDispOpts =  [];
+
+    scope.getCellDispOptsF = function(i) {
+      return scope.getCellDispOpts[i];
+    };
+
+    scope.getActualTypeByPrecision = function(precision){
+      return '4.' + precision;
+    };
+
     scope.toggleColumnsVisibility = function(visible) {
       if (!scope.table) {
         return;
@@ -2792,6 +2808,7 @@ define([
       }
       // reorder the table data
       scope.applyChanges();
+      scope.updateUsePaginationBtt();
     };
     scope.doSelectAll = function() {
       if (scope.table === undefined) {
@@ -3001,6 +3018,16 @@ define([
       });
 
       return elem;
+    };
+
+    scope.updateUsePaginationBtt = function() {
+      var check = element.find('.dtmenu > ul.dropdown-menu li.dt-use-pagination-wrapper i');
+
+      if (scope.pagination.use) {
+        check.show();
+      } else {
+        check.hide();
+      }
     };
 
     scope.updateToggleColumnBtts = function() {

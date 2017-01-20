@@ -377,10 +377,16 @@ $fix-col-separator-width: 3px;
 .dropdown-menu {
   & > li {
     list-style: none;
-  }
 
-  & > li > a:link {
-    text-decoration: none;
+    & > a:link {
+      text-decoration: none;
+    }
+
+    & a > .menu-shortcut {
+      position: absolute;
+      right: 10px;
+      top: 4px;
+    }
   }
 
   .glyphicon {

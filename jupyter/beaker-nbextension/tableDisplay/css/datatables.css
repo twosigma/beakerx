@@ -290,8 +290,12 @@ table.dataTable.DTFC_Cloned.display tbody tr.selected {
 
 .dropdown-menu > li {
   list-style: none; }
-.dropdown-menu > li > a:link {
-  text-decoration: none; }
+  .dropdown-menu > li > a:link {
+    text-decoration: none; }
+  .dropdown-menu > li a > .menu-shortcut {
+    position: absolute;
+    right: 10px;
+    top: 4px; }
 .dropdown-menu .glyphicon {
   position: absolute;
   padding: 3px 4px;

@@ -5,19 +5,20 @@ define([
   'base/js/utils',
   'base/js/namespace',
   'base/js/events',
-  'nbextensions/beaker/plot/plotManager'
+  'nbextensions/beaker/beakerManager'
 ], function(
   configmod,
   comm,
   utils,
   Jupyter,
   events,
-  plotManager
+  beakerManager
 ) {
   "use strict";
 
   window.initPlotd = function(data, wrapperId) {
-    plotManager.init(data, wrapperId);
+    console.log('init plotd');
+    beakerManager.init(data, wrapperId);
   };
 
   var base_url = utils.get_body_data('baseUrl');
@@ -39,9 +40,14 @@ define([
   });
 
   var load_ipython_extension = function() {
-    load_css('libs/jquery.contextMenu.min.css');
-    load_css('bko-combinedplot.css');
-    load_css('bko-plot.css');
+    load_css('tableDisplay/libs/DataTables-1.10.13/css/jquery.dataTables.css');
+    load_css('tableDisplay/libs/ColReorder-1.3.2/css/colReorder.dataTables.css');
+    load_css('tableDisplay/libs/FixedColumns-3.2.2/css/fixedColumns.dataTables.css');
+    load_css('tableDisplay/libs/KeyTable-2.2.0/css/keyTable.dataTables.css');
+    load_css('plot/libs/jquery.contextMenu.min.css');
+    load_css('plot/bko-combinedplot.css');
+    load_css('plot/bko-plot.css');
+    load_css('tableDisplay/css/datatables.css');
     start();
   };
 
@@ -49,7 +55,7 @@ define([
     var link = document.createElement("link");
     link.type = "text/css";
     link.rel = "stylesheet";
-    link.href = require.toUrl("nbextensions/beaker/plot/"+name);
+    link.href = require.toUrl("nbextensions/beaker/"+name);
     document.getElementsByTagName("head")[0].appendChild(link);
   }
 

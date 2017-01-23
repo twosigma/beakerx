@@ -152,7 +152,7 @@
   color: #73be3b;
   cursor: pointer;
   display: inline-block;
-  background: url("images/down@2x.png") no-repeat center right;
+  background: url("../shared/images/down@2x.png") no-repeat center right;
   padding-right: 13px;
   background-size: 8px;
 }

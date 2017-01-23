@@ -32,9 +32,9 @@ public abstract class ObservableTableDisplaySerializer<T extends ObservableTable
   private Provider<UpdateManager> updateManagerProvider;
 
   protected void serialize(T tableDisplay, JsonGenerator jgen) throws IOException {
-    String id = updateManagerProvider.get().register(tableDisplay);
-    tableObjectManagerProvider.get().registerTableDisplay(id, tableDisplay);
-    jgen.writeStringField("update_id", id);
+//    String id = updateManagerProvider.get().register(tableDisplay);
+//    tableObjectManagerProvider.get().registerTableDisplay(id, tableDisplay);
+//    jgen.writeStringField("update_id", id);
     jgen.writeBooleanField("hasDoubleClickAction", tableDisplay.hasDoubleClickAction());
     jgen.writeStringField("doubleClickTag", tableDisplay.getDoubleClickTag());
     jgen.writeObjectField("contextMenuItems", tableDisplay.getContextMenuItems());

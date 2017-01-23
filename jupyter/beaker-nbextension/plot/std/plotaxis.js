@@ -1,7 +1,7 @@
 define([
   'nbextensions/beaker/plot/libs/big.min',
   'nbextensions/beaker/plot/plotUtils',
-  'nbextensions/beaker/plot/bkUtils'
+  'nbextensions/beaker/shared/bkUtils'
 ], function(
   Big,
   plotUtils,

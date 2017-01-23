@@ -11,18 +11,19 @@ import org.zeromq.ZMQ;
  * @author Keith Suderman
  */
 public class StdinThread extends AbstractThread {
-    public StdinThread(ZMQ.Socket socket, GroovyKernel kernel) {
-        super(socket, kernel);
+
+  public static final Logger logger = LoggerFactory.getLogger(StdinThread.class);
+
+  public StdinThread(ZMQ.Socket socket, GroovyKernel kernel) {
+    super(socket, kernel);
+  }
+
+  public void run() {
+    while (getRunning()) {
+      byte[] buffer = getSocket().recv();
+      logger.info("Stdin: {}", new String(buffer));
     }
 
-    public void run() {
-        while (getRunning()) {
-            byte[] buffer = getSocket().recv();
-            logger.info("Stdin: {}", new String(buffer));
-        }
-
-        logger.info("StdinThread shutdown.");
-    }
-
-    public static final Logger logger = LoggerFactory.getLogger(StdinThread.class);
+    logger.info("StdinThread shutdown.");
+  }
 }

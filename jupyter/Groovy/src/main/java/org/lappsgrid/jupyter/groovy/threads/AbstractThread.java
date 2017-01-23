@@ -10,57 +10,47 @@ import org.zeromq.ZMQ;
  * @author Keith Suderman
  */
 public abstract class AbstractThread extends Thread {
-    public AbstractThread(ZMQ.Socket socket, GroovyKernel kernel) {
-        this.socket = socket;
-        this.kernel = kernel;
-    }
 
-    public void start() {
-        running = true;
-        super.start();
-    }
+  private boolean running = false;
+  private ZMQ.Socket socket;
+  private GroovyKernel kernel;
 
-    public void halt() {
-        running = false;
-    }
+  public AbstractThread(ZMQ.Socket socket, GroovyKernel kernel) {
+    this.socket = socket;
+    this.kernel = kernel;
+  }
 
-    public Message readMessage() {
-        return kernel.readMessage(socket);
-    }
+  public void start() {
+    running = true;
+    super.start();
+  }
 
-    public void send(Message message) throws NoSuchAlgorithmException {
-        kernel.send(socket, message);
-    }
+  public void halt() {
+    running = false;
+  }
 
-    public boolean getRunning() {
-        return running;
-    }
+  public Message readMessage() {
+    return kernel.readMessage(socket);
+  }
 
-    public boolean isRunning() {
-        return running;
-    }
+  public void send(Message message) throws NoSuchAlgorithmException {
+    kernel.send(socket, message);
+  }
 
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
+  public boolean getRunning() {
+    return running;
+  }
 
-    public ZMQ.Socket getSocket() {
-        return socket;
-    }
+  public void setRunning(boolean running) {
+    this.running = running;
+  }
 
-    public void setSocket(ZMQ.Socket socket) {
-        this.socket = socket;
-    }
+  public ZMQ.Socket getSocket() {
+    return socket;
+  }
 
-    public GroovyKernel getKernel() {
-        return kernel;
-    }
+  public GroovyKernel getKernel() {
+    return kernel;
+  }
 
-    public void setKernel(GroovyKernel kernel) {
-        this.kernel = kernel;
-    }
-
-    private boolean running = false;
-    private ZMQ.Socket socket;
-    private GroovyKernel kernel;
 }

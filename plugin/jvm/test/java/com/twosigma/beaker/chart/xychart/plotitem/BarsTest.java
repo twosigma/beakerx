@@ -36,22 +36,20 @@ public class BarsTest {
     }
 
     @Test
-    public void setWidthWithIntegerList_hasWidthIsNullAndWidthListIsNotNull(){
+    public void setWidthWithIntegerList_hasWidthListIsNotNull(){
         //when
         Bars bars = new Bars();
         bars.setWidth(Arrays.asList(new Integer(486), new Integer(528)));
         //then
-        Assertions.assertThat(bars.getWidth()).isNull();
         Assertions.assertThat(bars.getWidths()).isNotNull();
     }
 
     @Test
-    public void setOutlineColorWithList_hasOutlineColorIsNullAndOutlineColorListIsNotNull(){
+    public void setOutlineColorWithList_hasOutlineColorListIsNotNull(){
         //when
         Bars bars = new Bars();
         bars.setOutlineColor(Arrays.asList(Color.BLUE, Color.GREEN));
         //then
-        Assertions.assertThat(bars.getOutlineColor()).isNull();
         Assertions.assertThat(bars.getOutlineColors()).isNotNull();
     }
 }

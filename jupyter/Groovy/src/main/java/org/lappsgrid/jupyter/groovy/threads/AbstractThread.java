@@ -6,50 +6,33 @@ import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.zeromq.ZMQ;
 
+import com.twosigma.beaker.jupyter.threads.AbstractNoSocketThread;
+
 /**
  * @author Keith Suderman
  */
-public abstract class AbstractThread extends Thread {
+public abstract class AbstractThread extends AbstractNoSocketThread {
 
-  private boolean running = false;
   private ZMQ.Socket socket;
   private GroovyKernel kernel;
 
   public AbstractThread(ZMQ.Socket socket, GroovyKernel kernel) {
-    this.socket = socket;
     this.kernel = kernel;
-  }
-
-  @Override
-  public void start() {
-    running = true;
-    super.start();
-  }
-
-  public void halt() {
-    running = false;
+    this.socket = socket;
   }
 
   public Message readMessage() {
-    return kernel.readMessage(socket);
+    return getKernel().readMessage(socket);
   }
 
   public void send(Message message) throws NoSuchAlgorithmException {
-    kernel.send(socket, message);
-  }
-
-  public boolean getRunning() {
-    return running;
-  }
-
-  public void setRunning(boolean running) {
-    this.running = running;
+    getKernel().send(socket, message);
   }
 
   public ZMQ.Socket getSocket() {
     return socket;
   }
-
+  
   public GroovyKernel getKernel() {
     return kernel;
   }

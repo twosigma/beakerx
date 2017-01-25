@@ -11,8 +11,6 @@ import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beaker.jupyter.threads.ExecuteResultThread;
-
 public class GroovyEvaluatorManager {
   
   public static Logger logger = LoggerFactory.getLogger(GroovyEvaluatorManager.class);
@@ -35,8 +33,7 @@ public class GroovyEvaluatorManager {
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     seo.setJupyterMessage(message);
     seo.setExecutionCount(executionCount);
-    ExecuteResultThread observer = ((ExecuteResultThread)kernel.getThreadByClassName(ExecuteResultThread.class.getSimpleName()));
-    seo.addObserver(observer);
+    seo.addObserver(kernel.getExecutionResultSender());
     groovyEvaluator.evaluate(seo, code);
   }
   

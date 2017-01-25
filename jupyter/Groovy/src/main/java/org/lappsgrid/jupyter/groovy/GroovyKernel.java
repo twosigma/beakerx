@@ -38,7 +38,7 @@ import com.twosigma.beaker.jupyter.handler.CommInfoHandler;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.handler.ExecuteRequestHandler;
 import com.twosigma.beaker.jupyter.msg.Type;
-import com.twosigma.beaker.jupyter.threads.ExecuteResultThread;
+import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 
 /**
  * The entry point for the Jupyter kernel.
@@ -70,6 +70,7 @@ public class GroovyKernel {
   private Map<Type, AbstractHandler<Message>> handlers;
   private Map<String, AbstractThread> threads = new HashMap<>();
   private Map<String, Comm> comm;
+  private ExecutionResultSender executionResultSender;
   
   private ZMQ.Socket hearbeatSocket;
   private ZMQ.Socket controlSocket;
@@ -81,6 +82,7 @@ public class GroovyKernel {
     id = uuid();
     installHandlers();
     comm = new HashMap<>();
+    executionResultSender = new ExecutionResultSender(this);
   }
 
   //TODO close kernel comms 
@@ -121,14 +123,6 @@ public class GroovyKernel {
     if(isCommPresent(hash)){
       comm.remove(hash);
     }
-  }
-  
-  public AbstractThread getThreadByClassName(String className){
-    AbstractThread ret = null;
-    if(className != null){
-      ret = threads.get(className);
-    }
-    return ret;
   }
   
   /**
@@ -275,7 +269,6 @@ public class GroovyKernel {
     threads.put(ControlThread.class.getSimpleName(),new ControlThread(controlSocket, this));
     threads.put(StdinThread.class.getSimpleName(),new StdinThread(stdinSocket, this));
     threads.put(ShellThread.class.getSimpleName(),new ShellThread(shellSocket, this));
-    threads.put(ExecuteResultThread.class.getSimpleName(),new ExecuteResultThread(shellSocket, this));
 
     // Start all the socket handler threads
     for (AbstractThread thread : threads.values()) {
@@ -290,6 +283,10 @@ public class GroovyKernel {
     
     for (AbstractHandler<Message> handler : handlers.values()) {
       handler.exit();
+    }
+    
+    if(executionResultSender != null){
+      executionResultSender.exit();
     }
 
     // Signal all threads that it is time to stop and then wait for
@@ -328,5 +325,8 @@ public class GroovyKernel {
   public String getId() {
     return id;
   }
-  
+
+  public ExecutionResultSender getExecutionResultSender() {
+    return executionResultSender;
+  }
 }

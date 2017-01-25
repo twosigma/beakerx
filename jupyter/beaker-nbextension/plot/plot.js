@@ -77,7 +77,7 @@ define([
       // Apply  advanced custom styles set directly by user
       if(model.customStyles) {
         var customStyleString = model.customStyles.map(function(s) {
-          return '#' + scope.id + ' ' + s;
+          return '#' + scope.wrapperId + ' #' + scope.scopeId + ' ' + s;
         }).join('\n');
         var styleString = "<style>"+ customStyleString + "\n</style>";
 
@@ -92,7 +92,7 @@ define([
       if(model['elementStyles']) {
         var styles = [];
         for(var style in model['elementStyles']) {
-          styles.push('#' + scope.id + ' ' + style + ' { ' + model['elementStyles'][style] + '}');
+          styles.push('#' + scope.wrapperId + ' #' + scope.id + ' ' + style + ' { ' + model['elementStyles'][style] + '}');
         }
         $("<style>\n" + styles.join('\n') + "\n</style>").prependTo(element.find('.plot-plotcontainer'));
 

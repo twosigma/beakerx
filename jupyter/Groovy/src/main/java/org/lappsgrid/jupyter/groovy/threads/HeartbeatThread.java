@@ -16,6 +16,7 @@ public class HeartbeatThread extends AbstractThread {
     super(socket, kernel);
   }
 
+  @Override
   public void run() {
     while (getRunning()) {
       byte[] buffer = getSocket().recv(0);

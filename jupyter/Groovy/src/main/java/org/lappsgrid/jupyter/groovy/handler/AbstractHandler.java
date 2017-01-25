@@ -13,7 +13,7 @@ import org.zeromq.ZMQ;
  *
  * @author Keith Suderman
  */
-public abstract class AbstractHandler implements IHandler {
+public abstract class AbstractHandler <T> implements IHandler<T> {
 
   protected Logger logger;
   protected GroovyKernel kernel;
@@ -47,6 +47,12 @@ public abstract class AbstractHandler implements IHandler {
    */
   public void publish(Message message) throws NoSuchAlgorithmException {
     kernel.publish(message);
+  }
+  
+  /**
+   * Override if needed.
+   */
+  public void exit(){
   }
 
 }

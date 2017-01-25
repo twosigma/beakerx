@@ -20,6 +20,7 @@ public abstract class AbstractThread extends Thread {
     this.kernel = kernel;
   }
 
+  @Override
   public void start() {
     running = true;
     super.start();

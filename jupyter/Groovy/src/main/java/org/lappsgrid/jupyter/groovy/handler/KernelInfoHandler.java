@@ -20,13 +20,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author Keith Suderman
  */
-public class KernelInfoHandler extends AbstractHandler {
+public class KernelInfoHandler extends AbstractHandler<Message> {
 
   public KernelInfoHandler(GroovyKernel kernel) {
     super(kernel);
     logger = LoggerFactory.getLogger(KernelInfoHandler.class);
   }
 
+  @Override
   public void handle(Message message) throws NoSuchAlgorithmException {
     logger.info("Processing kernel info request");
     Message reply = new Message();

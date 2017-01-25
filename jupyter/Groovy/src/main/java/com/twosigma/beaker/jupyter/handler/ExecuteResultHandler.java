@@ -1,10 +1,21 @@
-package org.lappsgrid.jupyter.groovy.handler;
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package com.twosigma.beaker.jupyter.handler;
 
-import static com.twosigma.beaker.groovy.GroovyDefaultVariables.CLASS_PATH;
-import static com.twosigma.beaker.groovy.GroovyDefaultVariables.IMPORTS;
-import static com.twosigma.beaker.groovy.GroovyDefaultVariables.OUT_DIR;
 import static com.twosigma.beaker.jupyter.Utils.timestamp;
-import static com.twosigma.beaker.jupyter.msg.Type.EXECUTE_INPUT;
 import static com.twosigma.beaker.jupyter.msg.Type.EXECUTE_REPLY;
 import static com.twosigma.beaker.jupyter.msg.Type.EXECUTE_RESULT;
 import static com.twosigma.beaker.jupyter.msg.Type.STATUS;
@@ -14,92 +25,65 @@ import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
+import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.LoggerFactory;
 
 import com.twosigma.beaker.SerializeToString;
-import com.twosigma.beaker.groovy.GroovyEvaluatorManager;
-import com.twosigma.beaker.jupyter.Compiler;
+import com.twosigma.beaker.groovy.SimpleEvaluationObject;
+import com.twosigma.beaker.groovy.SimpleEvaluationObject.EvaluationStatus;
 
 /**
- * Does the actual work of executing user code.
- *
- * @author Keith Suderman
+ * Does the actual work of showing
+ * 
+ * @author konst
  */
-public class ExecuteHandler extends AbstractHandler {
+public class ExecuteResultHandler extends AbstractHandler<SimpleEvaluationObject> {
 
-  private int executionCount;
-  private Compiler evaluatorManager;
-
-  public ExecuteHandler(GroovyKernel kernel) {
+  public ExecuteResultHandler(GroovyKernel kernel) {
     super(kernel);
-    logger = LoggerFactory.getLogger(ExecuteHandler.class);
-    evaluatorManager = new GroovyEvaluatorManager(CLASS_PATH, IMPORTS, OUT_DIR);
-    executionCount = 0;
+    logger = LoggerFactory.getLogger(this.getClass());
   }
+  
+  @Override
+  public void handle(SimpleEvaluationObject seo) throws NoSuchAlgorithmException {
+    logger.info("Processing execute result");
 
-  public void handle(Message message) throws NoSuchAlgorithmException {
-    logger.info("Processing execute request");
+    Message message = seo.getJupyterMessage();
+    Object result = seo.getPayload().getValue();
+    
     Message reply = new Message();
-    Map<String, Serializable> map = new HashMap<String, Serializable>(1);
-    map.put("execution_state", "busy");
-    reply.setContent(map);
-    reply.setHeader(new Header(STATUS, message.getHeader().getSession()));
     reply.setParentHeader(message.getHeader());
     reply.setIdentities(message.getIdentities());
-    publish(reply);
 
-    // Get the code to be executed from the message.
-    String code = ((String) message.getContent().get("code")).trim();
-
-    // Announce that we have the code.
-    reply.setHeader(new Header(EXECUTE_INPUT, message.getHeader().getSession()));
-    Map<String, Serializable> map1 = new HashMap<String, Serializable>(2);
-    map1.put("execution_count", executionCount);
-    map1.put("code", code);
-    reply.setContent(map1);
-    publish(reply);
-
-    // Now try compiling and running the code.
-    Exception error = null;
-    try {
-
-      Object result = evaluatorManager.executeCode(code);
-      
-      if (result == null) {
-        result = "Cell returned null."; //TODO is it needed ?
-      }
-
-      ++executionCount;
-
+    if(EvaluationStatus.ERROR != seo.getStatus()){
       // Publish the result of the execution.
       reply.setHeader(new Header(EXECUTE_RESULT, message.getHeader().getSession()));
       String resultString = SerializeToString.doit(result);
 
       Boolean resultHtml = resultString.startsWith("<html>") && resultString.endsWith("</html>");
       Hashtable<String, Serializable> map2 = new Hashtable<String, Serializable>(3);
-      map2.put("execution_count", executionCount);
+      map2.put("execution_count", seo.getExecutionCount());
       Hashtable<String, String> map3 = new Hashtable<String, String>(1);
       map3.put(resultHtml ? "text/html" : "text/plain", resultString);
       map2.put("data", map3);
       map2.put("metadata", new Hashtable());
       reply.setContent(map2);
       publish(reply);
-    } catch (Exception e) {
+    }else{
       // e.printStackTrace()
-      logger.error("Unable to execute code block.", e);
-      error = e;
+      logger.error("Unable to execute code block.", result);
       reply.setHeader(new Header(STREAM, message.getHeader().getSession()));
       Hashtable<String, Serializable> map4 = new Hashtable<String, Serializable>(2);
       map4.put("name", "stderr");
-      map4.put("text", e.getMessage());
+      map4.put("text", (String)result);
       reply.setContent(map4);
       publish(reply);
     }
+
 
     // Tell Jupyter that this kernel is idle again.
     reply.setHeader(new Header(STATUS, message.getHeader().getSession()));
@@ -118,13 +102,13 @@ public class ExecuteHandler extends AbstractHandler {
     map6.put("started", timestamp());
     reply.setMetadata(map6);
     Hashtable<String, Serializable> map7 = new Hashtable<String, Serializable>(1);
-    map7.put("execution_count", executionCount);
+    map7.put("execution_count", seo.getExecutionCount());
     reply.setContent(map7);
-    if (error != null) {
+    if (EvaluationStatus.ERROR == seo.getStatus()) {
       reply.getMetadata().put("status", "error");
       reply.getContent().put("status", "error");
-      reply.getContent().put("ename", error.getClass().getName());
-      reply.getContent().put("evalue", error.getMessage());
+      reply.getContent().put("ename", (String)seo.getPayload().getValue());//TODO seams nothing put here, was: error.getClass().getName()
+      reply.getContent().put("evalue", (String)seo.getPayload().getValue());
     } else {
       reply.getMetadata().put("status", "ok");
       reply.getContent().put("status", "ok");

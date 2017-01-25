@@ -2,7 +2,6 @@ package org.lappsgrid.jupyter.groovy.threads;
 
 import java.security.NoSuchAlgorithmException;
 
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.lappsgrid.jupyter.groovy.handler.IHandler;
 import org.lappsgrid.jupyter.groovy.msg.Message;
@@ -21,11 +20,12 @@ public class ShellThread extends AbstractThread {
     super(socket, kernel);
   }
 
+  @Override
   public void run() {
     while (getRunning()) {
       Message message = readMessage();
       logger.info("Processing message = " + message.type());
-      IHandler handler = getKernel().getHandler(message.type());
+      IHandler<Message> handler = getKernel().getHandler(message.type());
       if (handler != null) {
         try {
           handler.handle(message);

@@ -8,7 +8,7 @@ import org.lappsgrid.jupyter.groovy.msg.Message;
  *
  * @author Keith Suderman
  */
-public class HistoryHandler extends AbstractHandler {
+public class HistoryHandler extends AbstractHandler<Message> {
     public HistoryHandler(GroovyKernel kernel) {
         super(kernel);
     }

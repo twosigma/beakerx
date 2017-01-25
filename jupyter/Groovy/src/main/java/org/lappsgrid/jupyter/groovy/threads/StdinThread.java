@@ -18,6 +18,7 @@ public class StdinThread extends AbstractThread {
     super(socket, kernel);
   }
 
+  @Override
   public void run() {
     while (getRunning()) {
       byte[] buffer = getSocket().recv();

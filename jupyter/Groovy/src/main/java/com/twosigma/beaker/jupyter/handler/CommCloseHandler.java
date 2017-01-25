@@ -36,7 +36,7 @@ import com.twosigma.beaker.jupyter.Comm;
  * @author konst
  *
  */
-public class CommCloseHandler extends AbstractHandler {
+public class CommCloseHandler extends AbstractHandler<Message> {
 
   public static final String COMM_ID = "comm_id";
   public static final String TARGET_NAME = "target_name";
@@ -47,6 +47,7 @@ public class CommCloseHandler extends AbstractHandler {
     logger = LoggerFactory.getLogger(CommCloseHandler.class);
   }
 
+  @Override
   public void handle(Message message) throws NoSuchAlgorithmException {
 
     logger.info("Processing CommCloseHandler");

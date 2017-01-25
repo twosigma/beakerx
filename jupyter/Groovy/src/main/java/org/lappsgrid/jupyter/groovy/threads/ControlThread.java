@@ -25,6 +25,7 @@ public class ControlThread extends AbstractThread {
     super(socket, kernel);
   }
 
+  @Override
   public void run() {
     while (getRunning()) {
       Message message = readMessage();

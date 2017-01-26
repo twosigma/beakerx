@@ -301,7 +301,7 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
               nc.setOutputObj(j.outputObject);
           }
 
-          Boolean useOutputPanel = nc != null ? BeakerPrefsUtils.isUseOutputPanel(nc) : false;
+          Boolean useOutputPanel = false;
           if (useOutputPanel) {
             j.outputObject.clrOutputHandler();
             BeakerStdOutErrHandler.fini();

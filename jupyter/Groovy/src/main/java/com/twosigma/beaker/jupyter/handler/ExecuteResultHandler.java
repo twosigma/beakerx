@@ -53,7 +53,7 @@ public class ExecuteResultHandler extends AbstractHandler<SimpleEvaluationObject
     logger.info("Processing execute result");
 
     Message message = seo.getJupyterMessage();
-    Object result = seo.getPayload().getValue();
+    Object result = seo.getPayload();
     
     Message reply = new Message();
     reply.setParentHeader(message.getHeader());
@@ -63,8 +63,15 @@ public class ExecuteResultHandler extends AbstractHandler<SimpleEvaluationObject
       // Publish the result of the execution.
       reply.setHeader(new Header(EXECUTE_RESULT, message.getHeader().getSession()));
       String resultString = SerializeToString.doit(result);
-
-      Boolean resultHtml = resultString.startsWith("<html>") && resultString.endsWith("</html>");
+      boolean resultHtml = resultString != null && resultString.startsWith("<html>") && resultString.endsWith("</html>");
+      
+      if(!resultHtml && seo.getBuildingout() != null && !seo.getBuildingout().isEmpty()){
+        if(resultString == null){
+          resultString = "";
+        }
+        resultString += seo.getBuildingout();
+      }
+      
       Hashtable<String, Serializable> map2 = new Hashtable<String, Serializable>(3);
       map2.put("execution_count", seo.getExecutionCount());
       Hashtable<String, String> map3 = new Hashtable<String, String>(1);
@@ -107,8 +114,8 @@ public class ExecuteResultHandler extends AbstractHandler<SimpleEvaluationObject
     if (EvaluationStatus.ERROR == seo.getStatus()) {
       reply.getMetadata().put("status", "error");
       reply.getContent().put("status", "error");
-      reply.getContent().put("ename", (String)seo.getPayload().getValue());//TODO seams nothing put here, was: error.getClass().getName()
-      reply.getContent().put("evalue", (String)seo.getPayload().getValue());
+      reply.getContent().put("ename", (String)seo.getBuildingerr());//TODO seams nothing put here, was: error.getClass().getName()
+      reply.getContent().put("evalue", (String)seo.getBuildingerr());
     } else {
       reply.getMetadata().put("status", "ok");
       reply.getContent().put("status", "ok");

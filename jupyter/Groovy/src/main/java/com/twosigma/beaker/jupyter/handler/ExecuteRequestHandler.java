@@ -29,7 +29,7 @@ import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beaker.groovy.GroovyEvaluatorManager;
+import com.twosigma.beaker.groovy.evaluator.GroovyEvaluatorManager;
 
 /**
  * Does the actual work of executing user code.

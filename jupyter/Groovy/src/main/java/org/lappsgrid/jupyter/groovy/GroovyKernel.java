@@ -23,7 +23,6 @@ import org.lappsgrid.jupyter.groovy.json.Serializer;
 import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.lappsgrid.jupyter.groovy.security.HmacSigner;
-import org.lappsgrid.jupyter.groovy.threads.AbstractThread;
 import org.lappsgrid.jupyter.groovy.threads.ControlThread;
 import org.lappsgrid.jupyter.groovy.threads.HeartbeatThread;
 import org.lappsgrid.jupyter.groovy.threads.ShellThread;
@@ -38,6 +37,7 @@ import com.twosigma.beaker.jupyter.handler.CommInfoHandler;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.handler.ExecuteRequestHandler;
 import com.twosigma.beaker.jupyter.msg.Type;
+import com.twosigma.beaker.jupyter.threads.AbstractMessageReaderThread;
 import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 
 /**
@@ -68,7 +68,7 @@ public class GroovyKernel {
    * Message handlers. All sockets listeners will dispatch to these handlers.
    */
   private Map<Type, AbstractHandler<Message>> handlers;
-  private Map<String, AbstractThread> threads = new HashMap<>();
+  private Map<String, AbstractMessageReaderThread> threads = new HashMap<>();
   private Map<String, Comm> comm;
   private ExecutionResultSender executionResultSender;
   
@@ -271,7 +271,7 @@ public class GroovyKernel {
     threads.put(ShellThread.class.getSimpleName(),new ShellThread(shellSocket, this));
 
     // Start all the socket handler threads
-    for (AbstractThread thread : threads.values()) {
+    for (AbstractMessageReaderThread thread : threads.values()) {
       thread.start();
     }
 
@@ -292,10 +292,10 @@ public class GroovyKernel {
     // Signal all threads that it is time to stop and then wait for
     // them to finish.
     logger.info("Shutting down");
-    for (AbstractThread thread : threads.values()) {
+    for (AbstractMessageReaderThread thread : threads.values()) {
       thread.halt();
     }
-    for (AbstractThread thread : threads.values()) {
+    for (AbstractMessageReaderThread thread : threads.values()) {
       thread.join();
     }
     logger.info("Done");

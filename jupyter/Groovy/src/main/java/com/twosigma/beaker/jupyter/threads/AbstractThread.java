@@ -20,7 +20,7 @@ package com.twosigma.beaker.jupyter.threads;
  * @author konst
  *
  */
-public abstract class AbstractNoSocketThread extends Thread {
+public abstract class AbstractThread extends Thread {
 
   protected boolean running = false;
 

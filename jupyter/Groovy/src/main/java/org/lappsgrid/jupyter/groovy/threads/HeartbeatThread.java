@@ -5,10 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
+import com.twosigma.beaker.jupyter.threads.AbstractMessageReaderThread;
+
 /**
  * @author Keith Suderman
  */
-public class HeartbeatThread extends AbstractThread {
+public class HeartbeatThread extends AbstractMessageReaderThread {
 
   public static final Logger logger = LoggerFactory.getLogger(HeartbeatThread.class);
 

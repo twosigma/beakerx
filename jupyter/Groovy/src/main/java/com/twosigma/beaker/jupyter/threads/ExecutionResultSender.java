@@ -20,7 +20,7 @@ public class ExecutionResultSender implements Observer{
   
   protected AbstractHandler<SimpleEvaluationObject> handler = null;
   protected final ConcurrentLinkedQueue<SimpleEvaluationObject> jobQueue = new ConcurrentLinkedQueue<>();
-  protected AbstractNoSocketThread workingThread = null;
+  protected AbstractThread workingThread = null;
   
   public ExecutionResultSender(GroovyKernel kernel) {
     handler = new ExecuteResultHandler(kernel);
@@ -38,7 +38,7 @@ public class ExecutionResultSender implements Observer{
     }
   }
   
-  protected class MyRunnable extends AbstractNoSocketThread {
+  protected class MyRunnable extends AbstractThread {
 
     @Override
     public boolean getRunning() {

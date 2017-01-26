@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy;
+package com.twosigma.beaker.groovy.evaluator;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +39,8 @@ import org.codehaus.groovy.runtime.StackTraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.twosigma.beaker.groovy.NamespaceClient;
+import com.twosigma.beaker.groovy.SimpleEvaluationObject;
 import com.twosigma.beaker.groovy.threads.BeakerCellExecutor;
 import com.twosigma.beaker.groovy.threads.BeakerStdOutErrHandler;
 

@@ -33,6 +33,9 @@ dependencies {
   provided group: 'com.sun.jersey', name: 'jersey-core', version: '1.17.1'
   provided group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
   provided project(':shared')
+
+  testCompile group: 'junit', name: 'junit', version: '4.11'
+  testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
 }
 
 

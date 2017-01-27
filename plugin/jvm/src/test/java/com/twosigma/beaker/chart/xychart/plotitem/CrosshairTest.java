@@ -14,26 +14,28 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.chart.xychart;
+package com.twosigma.beaker.chart.xychart.plotitem;
 
-import com.twosigma.beaker.fileloader.CsvPlotReader;
+import com.twosigma.beaker.chart.Color;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+public class CrosshairTest {
 
-public class SimpleTimePlotTest {
+    @Test
+    public void createCrosshairByEmptyConstructor_hasStrokeTypeIsNull(){
+        //when
+        Crosshair crosshair = new Crosshair();
+        //then
+        Assertions.assertThat(crosshair.getStyle()).isNull();
+    }
 
-  @Test
-  public void shouldCreateSimpleTimePlot() throws Exception {
-    //given
-    String pathToTableRowTest = getClass().getClassLoader().getResource("tableRowsTest.csv").getPath();
-    List<Map<String, Object>> rates = new CsvPlotReader().read(pathToTableRowTest);
-    //when
-    SimpleTimePlot simpleTimePlot = new SimpleTimePlot(rates, Arrays.asList("y1", "y10"));
-    //then
-    Assertions.assertThat(simpleTimePlot).isNotNull();
-  }
+    @Test
+    public void setColorWithAwtColor_crosshairHasBeakerColor(){
+        //when
+        Crosshair crosshair = new Crosshair();
+        crosshair.setColor(java.awt.Color.GREEN);
+        //then
+        Assertions.assertThat(crosshair.getColor() instanceof Color).isTrue();
+    }
 }

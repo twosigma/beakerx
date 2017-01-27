@@ -29,6 +29,7 @@ public class CsvPlotReaderTest {
   public void shouldReturnDataForPlot() throws Exception {
     //given
     String pathToTableRowTest = getClass().getClassLoader().getResource("tableRowsTest.csv").getPath();
+    System.out.println("XXX pathToTableRowTest=" + pathToTableRowTest);
     //when
     List<Map<String, Object>> values = new CsvPlotReader().read(pathToTableRowTest);
     //then

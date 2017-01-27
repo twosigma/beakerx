@@ -33,6 +33,7 @@ import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.LoggerFactory;
 
 import com.twosigma.beaker.SerializeToString;
+import com.twosigma.beaker.groovy.ConsoleOutput;
 import com.twosigma.beaker.groovy.SimpleEvaluationObject;
 import com.twosigma.beaker.groovy.SimpleEvaluationObject.EvaluationStatus;
 
@@ -53,7 +54,106 @@ public class ExecuteResultHandler extends AbstractHandler<SimpleEvaluationObject
     logger.info("Processing execute result");
 
     Message message = seo.getJupyterMessage();
+    
+    Message reply = new Message();
+    reply.setParentHeader(message.getHeader());
+    reply.setIdentities(message.getIdentities());
+    
+    if(seo.getConsoleOutput() != null && !seo.getConsoleOutput().isEmpty()){
+      while(!seo.getConsoleOutput().isEmpty()){
+        ConsoleOutput co = seo.getConsoleOutput().poll(); //FIFO : peek to see, poll -- removes the data 
+        reply.setHeader(new Header(STREAM, message.getHeader().getSession()));
+        reply.setContent(new Hashtable<String, Serializable>());
+        reply.getContent().put("name", co.isError() ? "stderr" : "stdout");
+        reply.getContent().put("text", co.getText());
+        logger.info("Console output:", "Error: " + co.isError(), co.getText());
+        publish(reply);
+      }
+    }
+    
+    if(EvaluationStatus.FINISHED == seo.getStatus() || EvaluationStatus.ERROR == seo.getStatus()){
+      
+      switch (seo.getStatus()) {
+        case FINISHED:{
+          // Publish the result of the execution.
+          reply.setHeader(new Header(EXECUTE_RESULT, message.getHeader().getSession()));
+          String resultString = SerializeToString.doit(seo.getPayload());
+          boolean resultHtml = resultString != null && resultString.startsWith("<html>") && resultString.endsWith("</html>");
+          reply.setContent(new Hashtable<String, Serializable>(3));
+          reply.getContent().put("execution_count", seo.getExecutionCount());
+          if(resultString != null){
+            Hashtable<String, String> map3 = new Hashtable<String, String>(1);
+            map3.put(resultHtml ? "text/html" : "text/plain", resultString);
+            reply.getContent().put("data", map3);
+          }
+          reply.getContent().put("metadata", new Hashtable());
+          publish(reply);
+          logger.info("Execution result is: " + (resultString == null ? "null" : "") + (resultHtml ? "HTML" : "") );
+        }break;
+  
+        case ERROR:{
+          logger.error("Execution result ERROR: " + seo.getPayload());
+          reply.setHeader(new Header(STREAM, message.getHeader().getSession()));
+          Hashtable<String, Serializable> map4 = new Hashtable<String, Serializable>(2);
+          map4.put("name", "stderr");
+          map4.put("text", (String)seo.getPayload());
+          reply.setContent(map4);
+          publish(reply);
+        }break;
+        
+        default:{
+          logger.error("Unhandled status of SimpleEvaluationObject : " + seo.getStatus());
+        }break;
+        
+      }
+
+      // Tell Jupyter that this kernel is idle again.
+      reply.setHeader(new Header(STATUS, message.getHeader().getSession()));
+      Hashtable<String, Serializable> map5 = new Hashtable<String, Serializable>(1);
+      map5.put("execution_state", "idle");
+      reply.setContent(map5);
+      publish(reply);
+    
+      // Send the REPLY to the original message. This is NOT the result of
+      // executing the cell. This is the equivalent of 'exit 0' or 'exit 1'
+      // at the end of a shell script.
+      reply.setHeader(new Header(EXECUTE_REPLY, message.getHeader().getSession()));
+      Hashtable<String, Serializable> map6 = new Hashtable<String, Serializable>(3);
+      map6.put("dependencies_met", true);
+      map6.put("engine", kernel.getId());
+      map6.put("started", timestamp());
+      reply.setMetadata(map6);
+      Hashtable<String, Serializable> map7 = new Hashtable<String, Serializable>(1);
+      map7.put("execution_count", seo.getExecutionCount());
+      reply.setContent(map7);
+      if (EvaluationStatus.ERROR == seo.getStatus()) {
+        reply.getMetadata().put("status", "error");
+        reply.getContent().put("status", "error");
+        //reply.getContent().put("ename", error.getClass().getName());
+        //reply.getContent().put("evalue", error.text);
+      } else {
+        reply.getMetadata().put("status", "ok");
+        reply.getContent().put("status", "ok");
+        reply.getContent().put("user_expressions", new HashMap<>());
+      }
+  
+      send(reply);
+    }
+  }
+  
+  //TODO delete
+/*  public void handle_OLD(SimpleEvaluationObject seo) throws NoSuchAlgorithmException {
+    logger.info("Processing execute result");
+
+    Message message = seo.getJupyterMessage();
     Object result = seo.getPayload();
+    
+    if(seo.getConsoleOutput() != null && !seo.getConsoleOutput().isEmpty()){
+      
+    }
+    if(EvaluationStatus.FINISHED == seo.getStatus() || EvaluationStatus.ERROR == seo.getStatus()){
+      
+    }
     
     Message reply = new Message();
     reply.setParentHeader(message.getHeader());
@@ -114,8 +214,8 @@ public class ExecuteResultHandler extends AbstractHandler<SimpleEvaluationObject
     if (EvaluationStatus.ERROR == seo.getStatus()) {
       reply.getMetadata().put("status", "error");
       reply.getContent().put("status", "error");
-      reply.getContent().put("ename", (String)seo.getBuildingerr());//TODO seams nothing put here, was: error.getClass().getName()
-      reply.getContent().put("evalue", (String)seo.getBuildingerr());
+      reply.getContent().put("ename", seo.getBuildingerr());//TODO seams nothing put here, was: error.getClass().getName()
+      reply.getContent().put("evalue", seo.getBuildingerr());
     } else {
       reply.getMetadata().put("status", "ok");
       reply.getContent().put("status", "ok");
@@ -123,6 +223,6 @@ public class ExecuteResultHandler extends AbstractHandler<SimpleEvaluationObject
     }
 
     send(reply);
-  }
+  }*/
 
 }

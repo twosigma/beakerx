@@ -16,6 +16,8 @@
 package com.twosigma.beaker.groovy;
 
 import java.util.Observable;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.Logger;
@@ -38,9 +40,8 @@ public class SimpleEvaluationObject extends Observable {
   private Object payload;
   private BeakerOutputHandler stdout;
   private BeakerOutputHandler stderr;
-  private String buildingout;
-  private String buildingerr;
-
+  private Queue<ConsoleOutput> consoleOutput = new ConcurrentLinkedQueue<ConsoleOutput>();
+  
   public SimpleEvaluationObject(String e) {
     expression = e;
     status = EvaluationStatus.QUEUED;
@@ -106,49 +107,25 @@ public class SimpleEvaluationObject extends Observable {
     public void write(int b) {
       byte [] ba = new byte[1];
       ba[0] = (byte) b;
-      if(error){
-        if(buildingerr == null){
-          buildingerr = "";
-        }
-        buildingerr += new String(ba);
-      }else{
-        if(buildingout == null){
-          buildingout = "";
-        }
-        buildingout += new String(ba);
-      }
-
+      consoleOutput.add(new ConsoleOutput(error, new String(ba)));
+      setChanged();
+      notifyObservers();
     }
 
     @Override
     public void write(byte[] b) {
-      if(error){
-        if(buildingerr == null){
-          buildingerr = "";
-        }
-        buildingerr += new String(b);
-      }else{
-        if(buildingout == null){
-          buildingout = "";
-        }
-        buildingout += new String(b);
-      }
+      consoleOutput.add(new ConsoleOutput(error, new String(b)));
+      setChanged();
+      notifyObservers();
     }
 
     @Override
     public void write(byte[] b, int off, int len) {
-      if(error){
-        if(buildingerr == null){
-          buildingerr = "";
-        }
-        buildingerr += new String(b,off,len);
-      }else{
-        if(buildingout == null){
-          buildingout = "";
-        }
-        buildingout += new String(b,off,len);
-      }
+      consoleOutput.add(new ConsoleOutput(error, new String(b,off,len)));
+      setChanged();
+      notifyObservers();
     }
+    
   }
 
   public synchronized BeakerOutputHandler getStdOutputHandler() {
@@ -186,13 +163,14 @@ public class SimpleEvaluationObject extends Observable {
   public void setExecutionCount(int executionCount) {
     this.executionCount = executionCount;
   }
-
-  public String getBuildingout() {
-    return buildingout;
+  
+  public Queue<ConsoleOutput> getConsoleOutput() {
+    return consoleOutput;
   }
-
-  public String getBuildingerr() {
-    return buildingerr;
+  
+  @Override
+  public String toString() {
+    return status.toString() + " Console messages size = " + consoleOutput.size();
   }
   
 }

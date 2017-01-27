@@ -26,10 +26,22 @@ public class ExecutionResultSender implements Observer{
     handler = new ExecuteResultHandler(kernel);
   }
   
+  //TODO delete
+/*  public synchronized void update_OLD(Observable o, Object arg) {
+    SimpleEvaluationObject seo = (SimpleEvaluationObject)o;
+    if(seo != null && (EvaluationStatus.FINISHED == seo.getStatus() || EvaluationStatus.ERROR == seo.getStatus())){
+      jobQueue.add(seo);
+      if(workingThread == null || !workingThread.isAlive()){
+        workingThread = new MyRunnable();
+        workingThread.start();
+      }
+    }
+  }*/
+  
   @Override
   public synchronized void update(Observable o, Object arg) {
     SimpleEvaluationObject seo = (SimpleEvaluationObject)o;
-    if(seo != null && (EvaluationStatus.FINISHED == seo.getStatus() || EvaluationStatus.ERROR == seo.getStatus())){
+    if(seo != null){
       jobQueue.add(seo);
       if(workingThread == null || !workingThread.isAlive()){
         workingThread = new MyRunnable();

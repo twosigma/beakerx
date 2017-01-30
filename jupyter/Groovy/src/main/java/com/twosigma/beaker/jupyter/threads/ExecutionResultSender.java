@@ -6,64 +6,59 @@ import java.util.Observer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
-import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.twosigma.beaker.groovy.SimpleEvaluationObject;
-import com.twosigma.beaker.groovy.SimpleEvaluationObject.EvaluationStatus;
-import com.twosigma.beaker.jupyter.handler.ExecuteResultHandler;
+import com.twosigma.beaker.jupyter.msg.MessageCreator;
+import com.twosigma.beaker.jupyter.msg.MessageHolder;
+import com.twosigma.beaker.jupyter.SocketEnum;
 
 public class ExecutionResultSender implements Observer{
 
   public static Logger logger = LoggerFactory.getLogger(ExecutionResultSender.class);
   
-  protected AbstractHandler<SimpleEvaluationObject> handler = null;
-  protected final ConcurrentLinkedQueue<SimpleEvaluationObject> jobQueue = new ConcurrentLinkedQueue<>();
+  protected MessageCreator handler = null;
+  protected final ConcurrentLinkedQueue<MessageHolder> messageQueue = new ConcurrentLinkedQueue<>();
   protected AbstractThread workingThread = null;
+  protected GroovyKernel kernel;
   
   public ExecutionResultSender(GroovyKernel kernel) {
-    handler = new ExecuteResultHandler(kernel);
+    this.kernel = kernel;
+    handler = new MessageCreator(kernel);
   }
-  
-  //TODO delete
-/*  public synchronized void update_OLD(Observable o, Object arg) {
-    SimpleEvaluationObject seo = (SimpleEvaluationObject)o;
-    if(seo != null && (EvaluationStatus.FINISHED == seo.getStatus() || EvaluationStatus.ERROR == seo.getStatus())){
-      jobQueue.add(seo);
-      if(workingThread == null || !workingThread.isAlive()){
-        workingThread = new MyRunnable();
-        workingThread.start();
-      }
-    }
-  }*/
   
   @Override
   public synchronized void update(Observable o, Object arg) {
     SimpleEvaluationObject seo = (SimpleEvaluationObject)o;
     if(seo != null){
-      jobQueue.add(seo);
+      messageQueue.addAll(handler.createMessage(seo));
       if(workingThread == null || !workingThread.isAlive()){
-        workingThread = new MyRunnable();
+        workingThread = new MessageRunnable();
         workingThread.start();
       }
     }
   }
   
-  protected class MyRunnable extends AbstractThread {
+  protected class MessageRunnable extends AbstractThread {
 
     @Override
     public boolean getRunning() {
-      return running && !jobQueue.isEmpty();
+      return running && !messageQueue.isEmpty();
     }
     
     @Override
     public void run() {
       while (getRunning()) {
-        SimpleEvaluationObject job = jobQueue.poll();
+        MessageHolder job = messageQueue.poll();
+        
         if (handler != null && job != null) {
           try {
-            handler.handle(job);
+            if (SocketEnum.IOPUB_SOCKET.equals(job.getSocketType())) {
+              kernel.publish(job.getMessage());
+            } else if (SocketEnum.SHELL_SOCKET.equals(job.getSocketType())) {
+              kernel.send(job.getMessage());
+            }
           } catch (NoSuchAlgorithmException e) {
             System.out.println(e);
             logger.error(e.getMessage());

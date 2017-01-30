@@ -15,8 +15,8 @@
  */
 package com.twosigma.beaker.jupyter.handler;
 
-import static com.twosigma.beaker.jupyter.msg.Type.EXECUTE_INPUT;
-import static com.twosigma.beaker.jupyter.msg.Type.STATUS;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.EXECUTE_INPUT;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STATUS;
 
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;

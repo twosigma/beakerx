@@ -11,7 +11,7 @@ import org.lappsgrid.jupyter.groovy.json.Serializer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.twosigma.beaker.jupyter.msg.Type;
+import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 
 /**
  * Defines the wire protocol used for messages exchanged with Jupyter.
@@ -33,7 +33,7 @@ public class Message {
     header.setDate(timestamp());
   }
 
-  public Type type() {
+  public JupyterMessages type() {
     return (header != null && header.getTypeEnum() != null) ? header.getTypeEnum() : null;
   }
 

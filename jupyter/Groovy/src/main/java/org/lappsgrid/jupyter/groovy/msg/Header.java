@@ -7,7 +7,7 @@ import org.lappsgrid.jupyter.groovy.json.Serializer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.twosigma.beaker.jupyter.msg.Type;
+import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 
 /**
  * The ZMQ header included with each message.
@@ -23,7 +23,7 @@ public class Header {
   private String username;
   private String session;
   @JsonProperty("msg_type")
-  private Type type;
+  private JupyterMessages type;
   private String version;
 
   public Header() {
@@ -38,7 +38,7 @@ public class Header {
     this.version = header.version;
   }
 
-  public Header(Type type, String session) {
+  public Header(JupyterMessages type, String session) {
     date = timestamp();
     id = uuid();
     username = "kernel";
@@ -91,16 +91,16 @@ public class Header {
     return type != null ? type.getName() : null;
   }
   
-  public Type getTypeEnum() {
+  public JupyterMessages getTypeEnum() {
     return type;
   }
 
-  public void setTypeEnum(Type type) {
+  public void setTypeEnum(JupyterMessages type) {
     this.type = type;
   }
   
   public void setType(String type) {
-    this.type = Type.getType(type);
+    this.type = JupyterMessages.getType(type);
   }
 
   public String getVersion() {

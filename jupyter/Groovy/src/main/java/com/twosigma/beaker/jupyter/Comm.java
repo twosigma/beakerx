@@ -15,8 +15,6 @@
  */
 package com.twosigma.beaker.jupyter;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Comm {
 
   private String commId;

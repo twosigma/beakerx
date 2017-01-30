@@ -7,11 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
-import com.twosigma.beaker.jupyter.msg.Type;
+import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.threads.AbstractMessageReaderThread;
 
-import static com.twosigma.beaker.jupyter.msg.Type.SHUTDOWN_REPLY;
-import static com.twosigma.beaker.jupyter.msg.Type.SHUTDOWN_REQUEST;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.SHUTDOWN_REPLY;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.SHUTDOWN_REQUEST;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -30,7 +30,7 @@ public class ControlThread extends AbstractMessageReaderThread {
   public void run() {
     while (getRunning()) {
       Message message = readMessage();
-      Type type = message.getHeader().getTypeEnum();
+      JupyterMessages type = message.getHeader().getTypeEnum();
       if (type.equals(SHUTDOWN_REQUEST)) {
         logger.info("Control handler received a shutdown request");
         getKernel().shutdown();

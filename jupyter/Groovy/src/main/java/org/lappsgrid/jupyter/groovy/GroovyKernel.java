@@ -37,7 +37,7 @@ import com.twosigma.beaker.jupyter.handler.CommInfoHandler;
 import com.twosigma.beaker.jupyter.handler.CommMsgHandler;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.handler.ExecuteRequestHandler;
-import com.twosigma.beaker.jupyter.msg.Type;
+import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.threads.AbstractMessageReaderThread;
 import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 
@@ -68,7 +68,7 @@ public class GroovyKernel {
   /**
    * Message handlers. All sockets listeners will dispatch to these handlers.
    */
-  private Map<Type, AbstractHandler<Message>> handlers;
+  private Map<JupyterMessages, AbstractHandler<Message>> handlers;
   private Map<String, AbstractMessageReaderThread> threads = new HashMap<>();
   private Map<String, Comm> comm;
   private ExecutionResultSender executionResultSender;
@@ -93,14 +93,14 @@ public class GroovyKernel {
 
   private void installHandlers() {
     handlers = new HashMap<>();
-    handlers.put(Type.EXECUTE_REQUEST, new ExecuteRequestHandler(this));
-    handlers.put(Type.KERNEL_INFO_REQUEST, new KernelInfoHandler(this));
-    handlers.put(Type.COMPLETE_REQUEST, new CompleteHandler(this));
-    handlers.put(Type.HISTORY_REQUEST, new HistoryHandler(this));
-    handlers.put(Type.COMM_OPEN, new CommOpenHandler(this));
-    handlers.put(Type.COMM_INFO_REQUEST, new CommInfoHandler(this));
-    handlers.put(Type.COMM_CLOSE, new CommCloseHandler(this));
-    handlers.put(Type.COMM_MSG, new CommMsgHandler(this));
+    handlers.put(JupyterMessages.EXECUTE_REQUEST, new ExecuteRequestHandler(this));
+    handlers.put(JupyterMessages.KERNEL_INFO_REQUEST, new KernelInfoHandler(this));
+    handlers.put(JupyterMessages.COMPLETE_REQUEST, new CompleteHandler(this));
+    handlers.put(JupyterMessages.HISTORY_REQUEST, new HistoryHandler(this));
+    handlers.put(JupyterMessages.COMM_OPEN, new CommOpenHandler(this));
+    handlers.put(JupyterMessages.COMM_INFO_REQUEST, new CommInfoHandler(this));
+    handlers.put(JupyterMessages.COMM_CLOSE, new CommCloseHandler(this));
+    handlers.put(JupyterMessages.COMM_MSG, new CommMsgHandler(this));
   }
 
   public boolean isCommPresent(String hash){
@@ -232,7 +232,7 @@ public class GroovyKernel {
     return message;
   }
 
-  public IHandler<Message> getHandler(Type type) {
+  public IHandler<Message> getHandler(JupyterMessages type) {
     return handlers.get(type);
   }
 

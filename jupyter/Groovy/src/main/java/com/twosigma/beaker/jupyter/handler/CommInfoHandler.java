@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import static com.twosigma.beaker.jupyter.msg.Type.COMM_INFO_REPLY;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_INFO_REPLY;
 
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;

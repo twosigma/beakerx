@@ -27,4 +27,9 @@ public class ConsoleOutput {
     this.printed = printed;
   }
 
+  @Override
+  public String toString() {
+    return "Error: " + error + " Text: " + text;
+  }
+  
 }

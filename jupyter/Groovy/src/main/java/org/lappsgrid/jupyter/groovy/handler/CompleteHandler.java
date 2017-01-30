@@ -1,6 +1,6 @@
 package org.lappsgrid.jupyter.groovy.handler;
 
-import static com.twosigma.beaker.jupyter.msg.Type.COMPLETE_REPLY;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMPLETE_REPLY;
 
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;

@@ -17,6 +17,7 @@ package com.twosigma.beaker.fileloader;
 
 import org.junit.Test;
 
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +29,9 @@ public class CsvPlotReaderTest {
   @Test
   public void shouldReturnDataForPlot() throws Exception {
     //given
-    String pathToTableRowTest = getClass().getClassLoader().getResource("tableRowsTest.csv").getPath();
-    System.out.println(pathToTableRowTest);
+    URI pathToTableRowTest = getClass().getClassLoader().getResource("tableRowsTest.csv").toURI();
     //when
-    List<Map<String, Object>> values = new CsvPlotReader().read(pathToTableRowTest);
+    List<Map<String, Object>> values = new CsvPlotReader().read(pathToTableRowTest.getSchemeSpecificPart());
     //then
     assertThat(values.get(2).get("m3")).isEqualTo(8.0f);
     assertThat(values.get(2).get("time")).isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31").getTime());

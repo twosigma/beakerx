@@ -34,6 +34,7 @@ import org.zeromq.ZMQ;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.jupyter.handler.CommCloseHandler;
 import com.twosigma.beaker.jupyter.handler.CommInfoHandler;
+import com.twosigma.beaker.jupyter.handler.CommMsgHandler;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.handler.ExecuteRequestHandler;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
@@ -99,6 +100,7 @@ public class GroovyKernel {
     handlers.put(JupyterMessages.COMM_OPEN, new CommOpenHandler(this));
     handlers.put(JupyterMessages.COMM_INFO_REQUEST, new CommInfoHandler(this));
     handlers.put(JupyterMessages.COMM_CLOSE, new CommCloseHandler(this));
+    handlers.put(JupyterMessages.COMM_MSG, new CommMsgHandler(this));
   }
 
   public boolean isCommPresent(String hash){
@@ -130,7 +132,7 @@ public class GroovyKernel {
    * 
    * @throws NoSuchAlgorithmException
    */
-  public synchronized void publish(Message message) throws NoSuchAlgorithmException {
+  public void publish(Message message) throws NoSuchAlgorithmException {
     send(iopubSocket, message);
   }
 

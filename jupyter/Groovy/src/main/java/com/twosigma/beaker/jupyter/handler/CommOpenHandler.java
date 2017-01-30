@@ -70,7 +70,7 @@ public class CommOpenHandler extends AbstractHandler<Message> {
     }
 
     if(newComm != null){
-      kernel.addComm(newComm.getCommHash(), newComm);
+      kernel.addComm(newComm.getCommId(), newComm);
     }
 
     reply.setContent(map);
@@ -85,7 +85,7 @@ public class CommOpenHandler extends AbstractHandler<Message> {
 
   protected Comm readComm(Map<String, Serializable> map) {
     Comm ret = new Comm(getString(map, COMM_ID), getString(map, TARGET_NAME));
-    //ret.setData(getString(map, DATA)); //TODO
+    ret.setData(map.get(DATA));
     ret.setTargetModule(getString(map, TARGET_MODULE));
     return ret;
   }
@@ -94,7 +94,7 @@ public class CommOpenHandler extends AbstractHandler<Message> {
     boolean ret = true;
     ret = ret && map.get(COMM_ID) != null && map.get(COMM_ID) instanceof String;
     ret = ret && map.get(TARGET_NAME) != null && map.get(TARGET_NAME) instanceof String;
-    ret = ret && !kernel.isCommPresent(Comm.getCommHash(getString(map, COMM_ID), getString(map, TARGET_NAME)));
+    ret = ret && !kernel.isCommPresent(getString(map, COMM_ID));
     return ret;
   }
 

@@ -34,6 +34,7 @@ import org.zeromq.ZMQ;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.jupyter.handler.CommCloseHandler;
 import com.twosigma.beaker.jupyter.handler.CommInfoHandler;
+import com.twosigma.beaker.jupyter.handler.CommMsgHandler;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.handler.ExecuteRequestHandler;
 import com.twosigma.beaker.jupyter.msg.Type;
@@ -99,6 +100,7 @@ public class GroovyKernel {
     handlers.put(Type.COMM_OPEN, new CommOpenHandler(this));
     handlers.put(Type.COMM_INFO_REQUEST, new CommInfoHandler(this));
     handlers.put(Type.COMM_CLOSE, new CommCloseHandler(this));
+    handlers.put(Type.COMM_MSG, new CommMsgHandler(this));
   }
 
   public boolean isCommPresent(String hash){

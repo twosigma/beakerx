@@ -53,7 +53,7 @@ public class CommCloseHandler extends AbstractHandler<Message> {
     logger.info("Processing CommCloseHandler");
     Map<String, Serializable> commMap = message.getContent();
 
-    kernel.removeComm(Comm.getCommHash(getString(commMap, COMM_ID), getString(commMap, TARGET_NAME)));
+    kernel.removeComm(getString(commMap, COMM_ID));
 
     Message reply = new Message();
     reply.setHeader(new Header(COMM_CLOSE, message.getHeader().getSession()));
@@ -66,7 +66,11 @@ public class CommCloseHandler extends AbstractHandler<Message> {
   }
 
   public static String getString(Map<String, Serializable> map, String name) {
-    return (String) map.get(name);
+    String ret = null;
+    if (map != null && name != null && map.containsKey(name)) {
+      ret = (String) map.get(name);
+    }
+    return ret;
   }
 
 }

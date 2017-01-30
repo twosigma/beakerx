@@ -42,6 +42,7 @@ public enum Type {
   COMM_CLOSE,
   COMM_INFO_REQUEST,
   COMM_INFO_REPLY,
+  COMM_MSG,
   UNDEFINED;
   
   public String getName() {

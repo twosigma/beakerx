@@ -116,8 +116,8 @@ public class SerializeToString {
   }
   
   protected static boolean isBeakerChart(Object result){
-    boolean ret = result != null && serializerMap.containsKey(result.getClass());
-    if(!ret){
+    boolean ret = false; 
+    if(result != null){
       for (Class<?> clazz : serializerMap.keySet()) {
         ret = clazz.isAssignableFrom(result.getClass());
         if(ret){
@@ -146,7 +146,7 @@ public class SerializeToString {
 	        return w.toString();
 	      }
 	  } 
-	  return result.toString();
+	  return result != null ? result.toString() : null;
   }
 
 }

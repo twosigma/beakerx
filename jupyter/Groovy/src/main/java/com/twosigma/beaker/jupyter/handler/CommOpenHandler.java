@@ -37,7 +37,7 @@ import com.twosigma.beaker.jupyter.Comm;
  * @author konst
  *
  */
-public class CommOpenHandler extends AbstractHandler {
+public class CommOpenHandler extends AbstractHandler<Message> {
 
   public static final String COMM_ID = "comm_id";
   public static final String TARGET_NAME = "target_name";
@@ -49,8 +49,8 @@ public class CommOpenHandler extends AbstractHandler {
     logger = LoggerFactory.getLogger(CommOpenHandler.class);
   }
 
+  @Override
   public void handle(Message message) throws NoSuchAlgorithmException {
-    
     logger.info("Processing CommOpenHandler");
     Message reply = new Message();
     HashMap<String, Serializable> map = new HashMap<>(6);

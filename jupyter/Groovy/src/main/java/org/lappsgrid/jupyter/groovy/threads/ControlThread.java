@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
 import com.twosigma.beaker.jupyter.msg.Type;
+import com.twosigma.beaker.jupyter.threads.AbstractMessageReaderThread;
 
 import static com.twosigma.beaker.jupyter.msg.Type.SHUTDOWN_REPLY;
 import static com.twosigma.beaker.jupyter.msg.Type.SHUTDOWN_REQUEST;
@@ -17,7 +18,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * @author Keith Suderman
  */
-public class ControlThread extends AbstractThread {
+public class ControlThread extends AbstractMessageReaderThread {
 
   public static final Logger logger = LoggerFactory.getLogger(ControlThread.class);
 
@@ -25,6 +26,7 @@ public class ControlThread extends AbstractThread {
     super(socket, kernel);
   }
 
+  @Override
   public void run() {
     while (getRunning()) {
       Message message = readMessage();

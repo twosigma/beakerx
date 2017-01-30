@@ -2,7 +2,6 @@ package org.lappsgrid.jupyter.groovy.threads;
 
 import java.security.NoSuchAlgorithmException;
 
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.lappsgrid.jupyter.groovy.handler.IHandler;
 import org.lappsgrid.jupyter.groovy.msg.Message;
@@ -10,10 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
+import com.twosigma.beaker.jupyter.threads.AbstractMessageReaderThread;
+
 /**
  * @author Keith Suderman
  */
-public class ShellThread extends AbstractThread {
+public class ShellThread extends AbstractMessageReaderThread {
 
   public static Logger logger = LoggerFactory.getLogger(ShellThread.class);
 
@@ -21,11 +22,12 @@ public class ShellThread extends AbstractThread {
     super(socket, kernel);
   }
 
+  @Override
   public void run() {
     while (getRunning()) {
       Message message = readMessage();
       logger.info("Processing message = " + message.type());
-      IHandler handler = getKernel().getHandler(message.type());
+      IHandler<Message> handler = getKernel().getHandler(message.type());
       if (handler != null) {
         try {
           handler.handle(message);

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.groovy;
+package com.twosigma.beaker.groovy.evaluator;
 
 import java.io.File;
 import java.io.FileInputStream;

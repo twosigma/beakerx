@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.handler.CompleteHandler;
-import org.lappsgrid.jupyter.groovy.handler.ExecuteHandler;
 import org.lappsgrid.jupyter.groovy.handler.HistoryHandler;
 import org.lappsgrid.jupyter.groovy.handler.IHandler;
 import org.lappsgrid.jupyter.groovy.handler.KernelInfoHandler;
@@ -23,7 +23,6 @@ import org.lappsgrid.jupyter.groovy.json.Serializer;
 import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.lappsgrid.jupyter.groovy.security.HmacSigner;
-import org.lappsgrid.jupyter.groovy.threads.AbstractThread;
 import org.lappsgrid.jupyter.groovy.threads.ControlThread;
 import org.lappsgrid.jupyter.groovy.threads.HeartbeatThread;
 import org.lappsgrid.jupyter.groovy.threads.ShellThread;
@@ -36,7 +35,10 @@ import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.jupyter.handler.CommCloseHandler;
 import com.twosigma.beaker.jupyter.handler.CommInfoHandler;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
-import com.twosigma.beaker.jupyter.msg.Type;;
+import com.twosigma.beaker.jupyter.handler.ExecuteRequestHandler;
+import com.twosigma.beaker.jupyter.msg.Type;
+import com.twosigma.beaker.jupyter.threads.AbstractMessageReaderThread;
+import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 
 /**
  * The entry point for the Jupyter kernel.
@@ -65,8 +67,10 @@ public class GroovyKernel {
   /**
    * Message handlers. All sockets listeners will dispatch to these handlers.
    */
-  private Map<Type, IHandler> handlers;
+  private Map<Type, AbstractHandler<Message>> handlers;
+  private Map<String, AbstractMessageReaderThread> threads = new HashMap<>();
   private Map<String, Comm> comm;
+  private ExecutionResultSender executionResultSender;
   
   private ZMQ.Socket hearbeatSocket;
   private ZMQ.Socket controlSocket;
@@ -78,15 +82,17 @@ public class GroovyKernel {
     id = uuid();
     installHandlers();
     comm = new HashMap<>();
+    executionResultSender = new ExecutionResultSender(this);
   }
 
+  //TODO close kernel comms 
   public void shutdown() {
     running = false;
   }
 
   private void installHandlers() {
     handlers = new HashMap<>();
-    handlers.put(Type.EXECUTE_REQUEST, new ExecuteHandler(this));
+    handlers.put(Type.EXECUTE_REQUEST, new ExecuteRequestHandler(this));
     handlers.put(Type.KERNEL_INFO_REQUEST, new KernelInfoHandler(this));
     handlers.put(Type.COMPLETE_REQUEST, new CompleteHandler(this));
     handlers.put(Type.HISTORY_REQUEST, new HistoryHandler(this));
@@ -128,7 +134,7 @@ public class GroovyKernel {
     send(iopubSocket, message);
   }
 
-  public void send(Message message) throws NoSuchAlgorithmException {
+  public synchronized void send(Message message) throws NoSuchAlgorithmException {
     send(shellSocket, message);
   }
 
@@ -224,7 +230,7 @@ public class GroovyKernel {
     return message;
   }
 
-  public IHandler getHandler(Type type) {
+  public IHandler<Message> getHandler(Type type) {
     return handlers.get(type);
   }
 
@@ -258,14 +264,14 @@ public class GroovyKernel {
     shellSocket = getNewSocket(ZMQ.ROUTER, configuration.getShell(), connection, context);
 
     // Create all the threads that respond to ZMQ messages.
-    AbstractThread heartbeat = new HeartbeatThread(hearbeatSocket, this);
-    AbstractThread control = new ControlThread(controlSocket, this);
-    AbstractThread stdin = new StdinThread(stdinSocket, this);
-    AbstractThread shell = new ShellThread(shellSocket, this);
+
+    threads.put(HeartbeatThread.class.getSimpleName(), new HeartbeatThread(hearbeatSocket, this));
+    threads.put(ControlThread.class.getSimpleName(),new ControlThread(controlSocket, this));
+    threads.put(StdinThread.class.getSimpleName(),new StdinThread(stdinSocket, this));
+    threads.put(ShellThread.class.getSimpleName(),new ShellThread(shellSocket, this));
 
     // Start all the socket handler threads
-    List<AbstractThread> threads = new ArrayList<AbstractThread>(Arrays.asList(heartbeat, control, stdin, shell));
-    for (Thread thread : threads) {
+    for (AbstractMessageReaderThread thread : threads.values()) {
       thread.start();
     }
 
@@ -274,14 +280,22 @@ public class GroovyKernel {
       // running == false
       Thread.sleep(1000);
     }
+    
+    for (AbstractHandler<Message> handler : handlers.values()) {
+      handler.exit();
+    }
+    
+    if(executionResultSender != null){
+      executionResultSender.exit();
+    }
 
     // Signal all threads that it is time to stop and then wait for
     // them to finish.
     logger.info("Shutting down");
-    for (AbstractThread thread : threads) {
+    for (AbstractMessageReaderThread thread : threads.values()) {
       thread.halt();
     }
-    for (AbstractThread thread : threads) {
+    for (AbstractMessageReaderThread thread : threads.values()) {
       thread.join();
     }
     logger.info("Done");
@@ -311,5 +325,8 @@ public class GroovyKernel {
   public String getId() {
     return id;
   }
-  
+
+  public ExecutionResultSender getExecutionResultSender() {
+    return executionResultSender;
+  }
 }

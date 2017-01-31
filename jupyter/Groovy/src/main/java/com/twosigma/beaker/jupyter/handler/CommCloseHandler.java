@@ -16,6 +16,8 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
+import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
+import static com.twosigma.beaker.jupyter.Comm.DATA;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 
 import java.io.Serializable;
@@ -29,18 +31,12 @@ import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beaker.jupyter.Comm;
-
 /**
  * 
  * @author konst
  *
  */
 public class CommCloseHandler extends AbstractHandler<Message> {
-
-  public static final String COMM_ID = "comm_id";
-  public static final String TARGET_NAME = "target_name";
-  public static final String DATA = "data";
 
   public CommCloseHandler(GroovyKernel kernel) {
     super(kernel);

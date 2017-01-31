@@ -16,6 +16,8 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
+import static com.twosigma.beaker.jupyter.Comm.COMMS;
+import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_INFO_REPLY;
 
 import java.io.Serializable;
@@ -36,9 +38,6 @@ import com.twosigma.beaker.jupyter.Comm;
  *
  */
 public class CommInfoHandler extends AbstractHandler<Message> {
-
-  public static final String COMMS = "comms";
-  public static final String TARGET_NAME = "target_name";
 
   public CommInfoHandler(GroovyKernel kernel) {
     super(kernel);

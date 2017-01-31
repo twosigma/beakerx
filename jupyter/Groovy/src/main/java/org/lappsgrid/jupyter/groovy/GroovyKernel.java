@@ -86,9 +86,15 @@ public class GroovyKernel {
     executionResultSender = new ExecutionResultSender(this);
   }
 
-  //TODO close kernel comms 
   public void shutdown() {
     running = false;
+    for (Comm com : comm.values()) {
+      try {
+        com.close();
+      } catch (NoSuchAlgorithmException e) {
+        logger.info("Comm close error, Comm info = " + com );
+      }
+    }
   }
 
   private void installHandlers() {

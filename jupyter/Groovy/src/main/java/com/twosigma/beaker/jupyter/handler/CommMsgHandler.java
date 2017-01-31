@@ -1,5 +1,7 @@
 package com.twosigma.beaker.jupyter.handler;
 
+import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
+import static com.twosigma.beaker.jupyter.Comm.DATA;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;
 
 import java.io.Serializable;
@@ -18,40 +20,37 @@ import com.twosigma.beaker.jupyter.Comm;
 
 public class CommMsgHandler extends AbstractHandler<Message> {
 
-  public static final String COMM_ID = "comm_id";
-  public static final String TARGET_NAME = "target_name";
-  public static final String DATA = "data";
-  public static final String TARGET_MODULE = "target_module";
-
   public CommMsgHandler(GroovyKernel kernel) {
     super(kernel);
     logger = LoggerFactory.getLogger(CommMsgHandler.class);
   }
 
-  // TODO remove System.out.println
+  // TODO remove all body : should be some real logic in here
+  @Deprecated
+  @Override
   public void handle(Message message) throws NoSuchAlgorithmException {
     Map<String, Serializable> commMap = message.getContent();
 
     Comm comm = kernel.getComm(getString(commMap, COMM_ID));
-    comm.setData((HashMap<?,?> )commMap.get(DATA));
+    comm.setData((HashMap<?, ?>) commMap.get(DATA));
     if (comm.getData() != null) {
       hangleData(comm.getData());
     } else {
       logger.info("Comm message contend is null");
     }
-    publish(createReplayMessage(message)); //TODO remove : it is a test
-    //static/notebook/js/services/kernels/kernel.js
+    publish(createReplayMessage(message)); // TODO remove : it is a test
+    // static/notebook/js/services/kernels/kernel.js
   }
-  
-  private Message createReplayMessage(Message message){
+
+  private Message createReplayMessage(Message message) {
     Message ret = null;
-    if(message != null){
+    if (message != null) {
       ret = new Message();
       Map<String, Serializable> commMap = message.getContent();
       ret.setHeader(new Header(COMM_MSG, message.getHeader().getSession()));
       HashMap<String, Serializable> map = new HashMap<>(6);
       map.put(COMM_ID, getString(commMap, COMM_ID));
-      HashMap<String,String> data = new HashMap<>();
+      HashMap<String, String> data = new HashMap<>();
       data.put("abc", "HELL0!!!");
       map.put(DATA, data);
       ret.setContent(map);

@@ -70,7 +70,7 @@ public class GroovyKernel {
    */
   private Map<JupyterMessages, AbstractHandler<Message>> handlers;
   private Map<String, AbstractMessageReaderThread> threads = new HashMap<>();
-  private Map<String, Comm> comm;
+  private Map<String, Comm> commMap;
   private ExecutionResultSender executionResultSender;
   
   private ZMQ.Socket hearbeatSocket;
@@ -82,13 +82,19 @@ public class GroovyKernel {
   public GroovyKernel() {
     id = uuid();
     installHandlers();
-    comm = new HashMap<>();
+    commMap = new HashMap<>();
     executionResultSender = new ExecutionResultSender(this);
   }
 
-  //TODO close kernel comms 
   public void shutdown() {
     running = false;
+    for (Comm comm : commMap.values()) {
+      try {
+        comm.close();
+      } catch (NoSuchAlgorithmException e) {
+        logger.info("Comm close error, Comm info = " + comm );
+      }
+    }
   }
 
   private void installHandlers() {
@@ -104,26 +110,26 @@ public class GroovyKernel {
   }
 
   public boolean isCommPresent(String hash){
-    return comm.containsKey(hash);
+    return commMap.containsKey(hash);
   }
   
   public Set<String> getCommHashSet(){
-    return comm.keySet();
+    return commMap.keySet();
   }
   
   public void addComm(String hash, Comm commObject){
     if(!isCommPresent(hash)){
-      comm.put(hash, commObject);
+      commMap.put(hash, commObject);
     }
   }
   
   public Comm getComm(String hash){
-    return comm.get(hash);
+    return commMap.get(hash);
   }
   
   public void removeComm(String hash){
     if(isCommPresent(hash)){
-      comm.remove(hash);
+      commMap.remove(hash);
     }
   }
   

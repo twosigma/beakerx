@@ -33,6 +33,7 @@ public class Comm {
   public static final String TARGET_NAME = "target_name";
   public static final String DATA = "data";
   public static final String TARGET_MODULE = "target_module";
+  public static final String COMMS = "comms";
 
 
   private String commId;

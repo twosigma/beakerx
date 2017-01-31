@@ -16,6 +16,10 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
+import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
+import static com.twosigma.beaker.jupyter.Comm.DATA;
+import static com.twosigma.beaker.jupyter.Comm.TARGET_MODULE;
+import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
 
@@ -38,11 +42,6 @@ import com.twosigma.beaker.jupyter.Comm;
  *
  */
 public class CommOpenHandler extends AbstractHandler<Message> {
-
-  public static final String COMM_ID = "comm_id";
-  public static final String TARGET_NAME = "target_name";
-  public static final String DATA = "data";
-  public static final String TARGET_MODULE = "target_module";
 
   public CommOpenHandler(GroovyKernel kernel) {
     super(kernel);

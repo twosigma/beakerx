@@ -15,40 +15,57 @@
  */
 package com.twosigma.beaker.jupyter;
 
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
+
+import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+
+import org.lappsgrid.jupyter.groovy.GroovyKernel;
+import org.lappsgrid.jupyter.groovy.msg.Header;
+import org.lappsgrid.jupyter.groovy.msg.Message;
+
 public class Comm {
+  
+  public static final String COMM_ID = "comm_id";
+  public static final String TARGET_NAME = "target_name";
+  public static final String DATA = "data";
+  public static final String TARGET_MODULE = "target_module";
+
 
   private String commId;
   private String targetName;
-  private Object data;
+  private HashMap<?,?> data;
   private String targetModule;
+  private GroovyKernel kernel;
 
-  public Comm(String commId, String targetName) {
+  public Comm(String commId, String targetName, GroovyKernel kernel) {
     super();
-    this.setCommId(commId);
-    this.setTargetName(targetName);
+    this.kernel = kernel;
+    this.commId = commId;
+    this.targetName = targetName;
+    this.data = new HashMap<>();
   }
-
+  
+  public Comm(String commId, CommNamesEnum targetName, GroovyKernel kernel) {
+    this(commId, targetName.getTargetName(), kernel);
+  }
+  
   public String getCommId() {
     return commId;
-  }
-
-  public void setCommId(String commId) {
-    this.commId = commId;
   }
 
   public String getTargetName() {
     return targetName;
   }
 
-  public void setTargetName(String targetName) {
-    this.targetName = targetName;
-  }
-
-  public Object  getData() {
+  public HashMap<?,?> getData() {
     return data;
   }
 
-  public void setData(Object  data) {
+  public void setData(HashMap<?,?> data) {
     this.data = data;
   }
 
@@ -58,6 +75,39 @@ public class Comm {
 
   public void setTargetModule(String targetModule) {
     this.targetModule = targetModule;
+  }
+  
+  public void open() throws NoSuchAlgorithmException{
+    Message message = new Message();
+    message.setHeader(new Header(COMM_OPEN, null)); // TODO put session ID, if needed
+    HashMap<String, Serializable> map = new HashMap<>();
+    map.put(COMM_ID, getCommId());
+    map.put(TARGET_NAME, getTargetName());
+    map.put(DATA, data);
+    map.put(TARGET_MODULE, getTargetModule());
+    message.setContent(map);
+    kernel.publish(message);
+    kernel.addComm(getCommId(), this);
+  }
+  
+  public void close() throws NoSuchAlgorithmException{
+    Message message = new Message();
+    message.setHeader(new Header(COMM_CLOSE, null));  // TODO put session ID, if needed
+    HashMap<String, Serializable> map = new HashMap<>();
+    map.put(DATA, new HashMap<>());
+    message.setContent(map);
+    kernel.removeComm(getCommId());
+    kernel.publish(message);
+  }
+  
+  public void send() throws NoSuchAlgorithmException{
+    Message message = new Message();
+    message.setHeader(new Header(COMM_MSG, null)); // TODO put session ID, if needed
+    HashMap<String, Serializable> map = new HashMap<>(6);
+    map.put(COMM_ID, getCommId());
+    map.put(DATA, data);
+    message.setContent(map);
+    kernel.send(message); //TODO check if right ?
   }
   
   @Override

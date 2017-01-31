@@ -1,12 +1,16 @@
 package com.twosigma.beaker.jupyter.handler;
 
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;
+
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
+import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.LoggerFactory;
 
@@ -29,12 +33,30 @@ public class CommMsgHandler extends AbstractHandler<Message> {
     Map<String, Serializable> commMap = message.getContent();
 
     Comm comm = kernel.getComm(getString(commMap, COMM_ID));
-    comm.setData(commMap.get(DATA));
+    comm.setData((HashMap<?,?> )commMap.get(DATA));
     if (comm.getData() != null) {
       hangleData(comm.getData());
     } else {
-      System.out.println("Comm message contend is null");
+      logger.info("Comm message contend is null");
     }
+    publish(createReplayMessage(message)); //TODO remove : it is a test
+    //static/notebook/js/services/kernels/kernel.js
+  }
+  
+  private Message createReplayMessage(Message message){
+    Message ret = null;
+    if(message != null){
+      ret = new Message();
+      Map<String, Serializable> commMap = message.getContent();
+      ret.setHeader(new Header(COMM_MSG, message.getHeader().getSession()));
+      HashMap<String, Serializable> map = new HashMap<>(6);
+      map.put(COMM_ID, getString(commMap, COMM_ID));
+      HashMap<String,String> data = new HashMap<>();
+      data.put("abc", "HELL0!!!");
+      map.put(DATA, data);
+      ret.setContent(map);
+    }
+    return ret;
   }
 
   public static String getString(Map<String, Serializable> map, String name) {
@@ -46,26 +68,25 @@ public class CommMsgHandler extends AbstractHandler<Message> {
   }
 
   // TODO read and handle comm message
-  // TODO remove System.out.println
   public void hangleData(Object data) {
-    System.out.println("Handing comm messahe content:");
+    logger.info("Handing comm messahe content:");
     if (data instanceof Map<?, ?>) {
-      System.out.println("Comm content is map, key list:");
+      logger.info("Comm content is map, key list:");
       for (Object key : ((Map<?, ?>) data).keySet()) {
-        System.out.println(key);
+        logger.info(key.toString());
       }
     } else if (data instanceof Collection<?>) {
       System.out.println("Comm content is Collection, content is:");
       for (Object value : ((Collection<?>) data)) {
-        System.out.println(value);
+        logger.info(value.toString());
       }
     } else {
-      System.out.println("Comm mesage content Class is:");
-      System.out.println(data.getClass().getName());
-      System.out.println("Comm mesage content value toString():");
-      System.out.println(data);
+      logger.info("Comm mesage content Class is:");
+      logger.info(data.getClass().getName());
+      logger.info("Comm mesage content value toString():");
+      logger.info(data.toString());
     }
-    System.out.println("Handing comm messahe content END");
+    logger.info("Handing comm messahe content END");
   }
 
 }

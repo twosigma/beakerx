@@ -28,7 +28,9 @@ public class CommMsgHandler extends AbstractHandler<Message> {
     logger = LoggerFactory.getLogger(CommMsgHandler.class);
   }
 
-  // TODO remove System.out.println
+  // TODO remove all body : should be some real logic in here
+  @Deprecated
+  @Override
   public void handle(Message message) throws NoSuchAlgorithmException {
     Map<String, Serializable> commMap = message.getContent();
 

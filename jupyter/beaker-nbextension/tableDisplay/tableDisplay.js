@@ -1,31 +1,17 @@
-require.config({
-  paths: {
-    'datatables.net': '/nbextensions/beaker/tableDisplay/libs/DataTables-1.10.13/js/jquery.dataTables'
-  },
-  shim: {
-    'nbextensions/beaker/tableDisplay/datatablesHeadermenu': [
-      'nbextensions/beaker/tableDisplay/libs/DataTables-1.10.13/js/jquery.dataTables'
-    ]
-  }
-});
-
 define([
+  'datatables.net',
+  'nbextensions/beaker/bower_components/datatables.net-colreorder/js/dataTables.colReorder.min',
+  'nbextensions/beaker/bower_components/datatables.net-fixedcolumns/js/dataTables.fixedColumns.min',
+  'nbextensions/beaker/bower_components/datatables.net-keytable/js/dataTables.keyTable.min',
+  'nbextensions/beaker/shared/libs/datatables-colresize/dataTables.colResize',
+  'nbextensions/beaker/bower_components/moment-timezone/builds/moment-timezone-with-data.min',
+  'nbextensions/beaker/bower_components/jquery-throttle-debounce/jquery.ba-throttle-debounce.min',
   'nbextensions/beaker/shared/bkUtils',
   'nbextensions/beaker/tableDisplay/cellHighlighters',
   'nbextensions/beaker/shared/bkHelper',
-  'nbextensions/beaker/tableDisplay/libs/DataTables-1.10.13/js/jquery.dataTables',
-  'nbextensions/beaker/tableDisplay/libs/ColReorder-1.3.2/js/dataTables.colReorder.min',
-  'nbextensions/beaker/tableDisplay/libs/FixedColumns-3.2.2/js/dataTables.fixedColumns.min',
-  'nbextensions/beaker/tableDisplay/libs/KeyTable-2.2.0/js/dataTables.keyTable.min',
-  'nbextensions/beaker/tableDisplay/libs/datatables-colresize/dataTables.colResize',
-  'nbextensions/beaker/plot/libs/moment-timezone-with-data.min',
-  'nbextensions/beaker/tableDisplay/libs/jquery.ba-throttle-debounce/jquery.ba-throttle-debounce.min',
   'nbextensions/beaker/tableDisplay/buildTemplate',
   'nbextensions/beaker/tableDisplay/datatablesHeadermenu'
 ], function(
-  bkUtils,
-  cellHighlighters,
-  bkHelper,
   dataTables,
   dataTablesColReorder,
   dataTablesFixedColumns,
@@ -33,6 +19,9 @@ define([
   dataTablesColResize,
   moment,
   throttleDebounce,
+  bkUtils,
+  cellHighlighters,
+  bkHelper,
   buildTemplate,
   datatablesHeadermenu
 ) {

@@ -1,5 +1,5 @@
 define([
-  'nbextensions/beaker/plot/libs/d3.min',
+  'nbextensions/beaker/bower_components/d3/d3.min',
   'nbextensions/beaker/plot/plotUtils',
   'nbextensions/beaker/plot/plotTip',
   'nbextensions/beaker/plot/plotConverter',
@@ -9,7 +9,7 @@ define([
   'nbextensions/beaker/shared/bkHelper',
   'nbextensions/beaker/plot/gradientlegend',
   'nbextensions/beaker/plot/chartExtender',
-  'nbextensions/beaker/plot/libs/jquery.contextMenu.min'
+  'nbextensions/beaker/bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min'
 ], function(
   d3,
   plotUtils,

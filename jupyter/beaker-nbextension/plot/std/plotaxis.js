@@ -1,5 +1,5 @@
 define([
-  'nbextensions/beaker/plot/libs/big.min',
+  'nbextensions/beaker/bower_components/big.js/big.min',
   'nbextensions/beaker/plot/plotUtils',
   'nbextensions/beaker/shared/bkUtils'
 ], function(

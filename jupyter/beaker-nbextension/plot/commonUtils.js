@@ -1,5 +1,5 @@
 define([
-  'nbextensions/beaker/plot/libs/moment-timezone-with-data.min'
+  'nbextensions/beaker/bower_components/moment-timezone/builds/moment-timezone-with-data.min'
 ], function(moment) {
   return {
     applyTimezone: function(timestamp, tz) {

@@ -1,0 +1,27 @@
+def windows() {
+  return System.getProperty('os.name').contains('Windows')
+}
+
+def winOrUnix(Object... args) {
+  if (windows()) {
+    return (['cmd', '/c'] << args).flatten()
+  }
+  else {
+    return args
+  }
+}
+
+task bowerInstall() {
+  doLast {
+    exec {
+      commandLine(*(winOrUnix('npm', 'install')))
+    }
+    exec {
+      if (windows()) {
+        commandLine 'cmd', '/c', 'bower', 'install'
+      } else {
+        commandLine './node_modules/bower/bin/bower', 'install'
+      }
+    }
+  }
+}

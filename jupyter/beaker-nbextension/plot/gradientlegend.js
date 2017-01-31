@@ -1,5 +1,5 @@
 define([
-  'nbextensions/beaker/plot/libs/d3.min'
+  'nbextensions/beaker/bower_components/d3/d3.min'
 ], function(
   d3
 ) {

@@ -68,6 +68,7 @@ task linkBeakerNbextension(dependsOn: 'installNbextensions') {
       println "from = " + from
       println "to = " + to
     }
+    project('beaker-nbextension').tasks.bowerInstall.execute()
   }
 }
 

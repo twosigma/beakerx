@@ -1,8 +1,8 @@
 define([
-  'nbextensions/beaker/plot/libs/big.min',
+  'nbextensions/beaker/bower_components/big.js/big.min',
   'nbextensions/beaker/shared/bkHelper',
   'nbextensions/beaker/shared/bkUtils',
-  'nbextensions/beaker/plot/libs/d3.min'
+  'nbextensions/beaker/bower_components/d3/d3.min'
 ], function(
   Big,
   bkHelper,

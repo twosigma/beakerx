@@ -248,8 +248,7 @@ public class GroovyKernel {
     running = true;
 
     logger.debug("Parsing the connection file.");
-    // System.out.println("Path to config file : " +
-    // connectionFile.getAbsolutePath());
+    logger.info("Path to config file : " + connectionFile.getAbsolutePath());
     configuration = Serializer.parse(new String(Files.readAllBytes(connectionFile.toPath())), Config.class);
 
     logger.debug("Creating signing hmac with: {}", configuration.getKey());

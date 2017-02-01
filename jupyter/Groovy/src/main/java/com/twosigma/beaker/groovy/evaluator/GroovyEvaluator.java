@@ -203,7 +203,79 @@ public class GroovyEvaluator {
 
     resetEnvironment();
   }
-  
+
+  protected ClassLoader newClassLoader() throws MalformedURLException
+  {
+    loader=new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+    loader.addJars(classPath);
+    loader.addDynamicDir(outDir);
+    return loader;
+  }
+
+  protected GroovyClassLoader newEvaluator() throws MalformedURLException
+  {
+
+    try {
+      Class.forName("org.codehaus.groovy.control.customizers.ImportCustomizer");
+    } catch (ClassNotFoundException e1) {
+      String gjp = System.getenv(GROOVY_JAR_PATH);
+      String errorMsg = null;
+      if(gjp != null && !gjp.isEmpty()) {
+        errorMsg = "Groovy libary not found, GROOVY_JAR_PATH = " + gjp;
+      } else {
+        errorMsg = "Default groovy libary not found. No GROOVY_JAR_PATH variable set.";
+      }
+      throw new GroovyNotFoundException(errorMsg);
+    }
+
+    ImportCustomizer icz = new ImportCustomizer();
+
+    if (!imports.isEmpty()) {
+      for (String importLine : imports) {
+        if (importLine.startsWith(STATIC_WORD_WITH_SPACE)) {
+
+          String pureImport = importLine
+                  .replace(STATIC_WORD_WITH_SPACE, StringUtils.EMPTY)
+                  .replace(DOT_STAR_POSTFIX, StringUtils.EMPTY);
+
+          if (importLine.endsWith(DOT_STAR_POSTFIX)) {
+            icz.addStaticStars(pureImport);
+          } else {
+            int index = pureImport.lastIndexOf('.');
+            if (index == -1) {
+              continue;
+            }
+            icz.addStaticImport(pureImport.substring(0, index), pureImport.substring(index + 1));
+          }
+
+        } else {
+
+          if (importLine.endsWith(DOT_STAR_POSTFIX)) {
+            icz.addStarImports(importLine.replace(DOT_STAR_POSTFIX, StringUtils.EMPTY));
+          } else {
+            icz.addImports(importLine);
+          }
+
+        }
+      }
+    }
+    CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
+
+    String acloader_cp = "";
+    for (int i = 0; i < classPath.size(); i++) {
+      acloader_cp += classPath.get(i);
+      acloader_cp += File.pathSeparatorChar;
+    }
+    acloader_cp += outDir;
+
+    config.setClasspath(acloader_cp);
+
+    compilerConfiguration = config;
+
+    scriptBinding = new Binding();
+    return new GroovyClassLoader(newClassLoader(), compilerConfiguration);
+  }
+
   static String envVariablesFilter(String p, Map<String, String> env) {
 
     if(p == null) return p;
@@ -292,7 +364,8 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
 
           if(groovyClassLoader == null) {
             updateLoader = false;
-            newEvaluator();
+            //reload classloader
+            groovyClassLoader = newEvaluator();
           }
         
           //if(loader!=null)
@@ -409,80 +482,7 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
         Thread.currentThread().setContextClassLoader(oldld);
       }
     };
-    
-    protected ClassLoader newClassLoader() throws MalformedURLException
-    {
-      loader=new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-      loader.addJars(classPath);
-      loader.addDynamicDir(outDir);
-      return loader;
-    }
 
-    protected void newEvaluator() throws MalformedURLException
-    {
-    
-      try {
-        Class.forName("org.codehaus.groovy.control.customizers.ImportCustomizer");
-      } catch (ClassNotFoundException e1) {
-        String gjp = System.getenv(GROOVY_JAR_PATH);
-        String errorMsg = null;
-        if(gjp != null && !gjp.isEmpty()) {
-          errorMsg = "Groovy libary not found, GROOVY_JAR_PATH = " + gjp;
-        } else {
-          errorMsg = "Default groovy libary not found. No GROOVY_JAR_PATH variable set.";
-        }
-        throw new GroovyNotFoundException(errorMsg);
-      }
-      
-      ImportCustomizer icz = new ImportCustomizer();
-
-      if (!imports.isEmpty()) {
-        for (String importLine : imports) {
-          if (importLine.startsWith(STATIC_WORD_WITH_SPACE)) {
-
-            String pureImport = importLine
-                .replace(STATIC_WORD_WITH_SPACE, StringUtils.EMPTY)
-                .replace(DOT_STAR_POSTFIX, StringUtils.EMPTY);
-
-            if (importLine.endsWith(DOT_STAR_POSTFIX)) {
-              icz.addStaticStars(pureImport);
-            } else {
-              int index = pureImport.lastIndexOf('.');
-              if (index == -1) {
-                continue;
-              }
-              icz.addStaticImport(pureImport.substring(0, index), pureImport.substring(index + 1));
-            }
-
-          } else {
-
-            if (importLine.endsWith(DOT_STAR_POSTFIX)) {
-              icz.addStarImports(importLine.replace(DOT_STAR_POSTFIX, StringUtils.EMPTY));
-            } else {
-              icz.addImports(importLine);
-            }
-
-          }
-        }
-      }
-      CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
-
-      String acloader_cp = "";
-      for (int i = 0; i < classPath.size(); i++) {
-        acloader_cp += classPath.get(i);
-        acloader_cp += File.pathSeparatorChar;
-      }
-      acloader_cp += outDir;
-
-      config.setClasspath(acloader_cp);
-      
-      compilerConfiguration = config;
-        
-      //reload classloader
-      groovyClassLoader = new GroovyClassLoader(newClassLoader(), compilerConfiguration);
-      scriptBinding = new Binding();
-          
-    }
   }
 
   static class GroovyNotFoundException extends RuntimeException {

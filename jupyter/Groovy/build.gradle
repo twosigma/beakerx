@@ -19,7 +19,7 @@ dependencies {
   compile group: "com.fasterxml.jackson.core", name: "jackson-annotations", version : "2.5.1"
   compile group: "com.fasterxml.jackson.core", name: "jackson-databind", version : "2.5.1"
   compile group: "org.apache.commons", name: "commons-lang3", version : "3.3"
-  compile group: "com.sun.jersey.contribs", name: "jersey-guice", version : "1.17.1"
+  compile group: "com.sun.jersey.contribs", name: "jersey-guice", version : "1.18.1"
   compile group: "org.codehaus.groovy", name: "groovy-all", version : "2.4.3"
   compile group: "org.zeromq", name: "jeromq", version : "0.3.5"
   compile group: "commons-codec", name: "commons-codec", version : "1.9"

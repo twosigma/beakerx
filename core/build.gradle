@@ -146,9 +146,9 @@ dependencies {
   compile ('com.googlecode.json-simple:json-simple:1.1.1') {
     exclude module: 'junit' //artifact has compiled junit transitive dependency
   }
-  compile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17.1'
-  compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.17.1'
-  compile group: 'com.sun.jersey', name: 'jersey-core', version: '1.17.1'
+  compile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.18.1'
+  compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.18.1'
+  compile group: 'com.sun.jersey', name: 'jersey-core', version: '1.18.1'
   compile group: 'commons-cli', name: 'commons-cli', version: '1.2'
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
   compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'

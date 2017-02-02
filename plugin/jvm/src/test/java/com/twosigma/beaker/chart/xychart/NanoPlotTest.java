@@ -31,8 +31,8 @@ public class NanoPlotTest {
 
     @Before
     public void initStubData() {
-        BigInteger val1 = BigInteger.valueOf(1234567890123456789L * 1000);
-        BigInteger val2 = BigInteger.valueOf(1234567890123456789L * 2000);
+        BigInteger val1 = new BigInteger("12345678901234567891000");
+        BigInteger val2 = new BigInteger("12345678901234567892000");
         points = new Points();
         points.setX(Arrays.asList(val1, val2));
         points.setY(Arrays.asList(2, 3));

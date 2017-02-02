@@ -59,5 +59,4 @@ define([
     currentScope.setModelData(data);
     currentScope.run();
   }
-
 });

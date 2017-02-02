@@ -22,10 +22,7 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STATUS;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STREAM;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.lappsgrid.jupyter.groovy.msg.Header;
@@ -37,7 +34,6 @@ import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.groovy.ConsoleOutput;
 import com.twosigma.beaker.groovy.SimpleEvaluationObject;
 import com.twosigma.beaker.groovy.SimpleEvaluationObject.EvaluationStatus;
-import com.twosigma.beaker.jupyter.msg.MessageHolder;
 import com.twosigma.beaker.jupyter.SocketEnum;
 
 /**
@@ -46,7 +42,10 @@ import com.twosigma.beaker.jupyter.SocketEnum;
  * @author konst
  */
 public class MessageCreator {
-  
+
+  public static final String EXECUTION_STATE = "execution_state";
+  public static final String BUSY = "busy";
+  public static final String IDLE = "idle";
   public static Logger logger = LoggerFactory.getLogger(MessageCreator.class);
   protected GroovyKernel kernel;
   
@@ -115,14 +114,7 @@ public class MessageCreator {
         
       }
 
-      Message reply = new Message();
-      reply.setParentHeader(message.getHeader());
-      reply.setIdentities(message.getIdentities());
-      // Tell Jupyter that this kernel is idle again.
-      reply.setHeader(new Header(STATUS, message.getHeader().getSession()));
-      Hashtable<String, Serializable> map5 = new Hashtable<String, Serializable>(1);
-      map5.put("execution_state", "idle");
-      reply.setContent(map5);
+      Message reply = createIdleMessage(message);
       ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, reply));
     
       // Send the REPLY to the original message. This is NOT the result of
@@ -154,6 +146,25 @@ public class MessageCreator {
       ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, reply));
     }
     return ret;
+  }
+
+  public Message createBusyMessage(Message parentMessage) {
+    return getExecutionStateMessage(parentMessage, BUSY);
+  }
+
+  public Message createIdleMessage(Message parentMessage) {
+    return getExecutionStateMessage(parentMessage, IDLE);
+  }
+
+  private Message getExecutionStateMessage(Message parentMessage, String state) {
+    Map<String, Serializable> map1 = new HashMap<String, Serializable>(1);
+    map1.put(EXECUTION_STATE, state);
+    Message reply = new Message();
+    reply.setContent(map1);
+    reply.setHeader(new Header(STATUS, parentMessage.getHeader().getSession()));
+    reply.setParentHeader(parentMessage.getHeader());
+    reply.setIdentities(parentMessage.getIdentities());
+    return reply;
   }
 
 }

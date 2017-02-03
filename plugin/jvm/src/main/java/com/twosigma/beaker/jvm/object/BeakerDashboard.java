@@ -26,10 +26,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.beaker.jvm.updater.UpdateManager;
 
 public class BeakerDashboard extends Observable {
 
@@ -159,41 +156,19 @@ public class BeakerDashboard extends Observable {
   public void redraw() { setChanged(); notifyObservers(); }
 
   public static class Serializer extends JsonSerializer<BeakerDashboard> {
-    private final Provider<UpdateManager> updateManagerProvider;
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
-
-    @Inject
-    private Serializer(Provider<UpdateManager> ump, Provider<BeakerObjectConverter> osp) {
-      this.updateManagerProvider = ump;
-      this.objectSerializerProvider = osp;
-    }
-
-    private UpdateManager getUpdateManager() {
-      return this.updateManagerProvider.get();
-    }
-
-    private BeakerObjectConverter getObjectSerializer() {
-      return objectSerializerProvider.get();
-    }
 
     @Override
     public void serialize(BeakerDashboard value, JsonGenerator jgen, SerializerProvider provider)
         throws IOException, JsonProcessingException
     {
-      UpdateManager um = getUpdateManager();
       synchronized(value) {
-        String id = um.register(value);
         jgen.writeStartObject();
-        jgen.writeObjectField("update_id", id);
         jgen.writeObjectField("update_time", System.currentTimeMillis());
         jgen.writeObjectField("type", value.getClass().getSimpleName());
 
         if (value.getTheStyle()!=null) jgen.writeStringField("thestyle", value.getTheStyle());
         if (value.getTheClass()!=null) jgen.writeStringField("theclass", value.getTheClass());
-
         jgen.writeArrayFieldStart("rows");
-        for (dashRow r : value.getRows())
-          r.serialize(jgen,getObjectSerializer());
         jgen.writeEndArray();
         jgen.writeEndObject();
       }

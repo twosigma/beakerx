@@ -29,7 +29,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
-import com.twosigma.beaker.jvm.updater.UpdateManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,22 +51,6 @@ public class UpdatableEvaluationResult extends Observable {
   }
   
   public static class Serializer extends JsonSerializer<UpdatableEvaluationResult> {
-    private final Provider<UpdateManager> updateManagerProvider;
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
-
-    @Inject
-    private Serializer(Provider<UpdateManager> ump, Provider<BeakerObjectConverter> osp) {
-      this.updateManagerProvider = ump;
-      objectSerializerProvider = osp;
-    }
-
-    private BeakerObjectConverter getObjectSerializer() {
-      return objectSerializerProvider.get();
-    }
-
-    private UpdateManager getUpdateManager() {
-      return this.updateManagerProvider.get();
-    }
 
     @Override
     public void serialize(
@@ -75,14 +58,10 @@ public class UpdatableEvaluationResult extends Observable {
         JsonGenerator jgen,
         SerializerProvider sp) throws IOException, JsonProcessingException {
       synchronized (v) {
-        String id = getUpdateManager().register(v);
         jgen.writeStartObject();
-        jgen.writeStringField("update_id", id);
         jgen.writeStringField("type", "UpdatableEvaluationResult");
         jgen.writeFieldName("payload");
         Object obj = v.getValue();
-        if (!getObjectSerializer().writeObject(obj, jgen, true))
-          jgen.writeObject(obj.toString());
         jgen.writeEndObject();
       }
     }

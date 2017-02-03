@@ -15,10 +15,7 @@
  */
 package com.twosigma.beaker.easyform;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import com.twosigma.beaker.jvm.updater.UpdateManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,17 +24,8 @@ import java.util.Map;
 
 @Singleton
 public class EasyFormObjectManager {
-  private final Map<String, EasyForm> _forms;
-  private final Map<String, String> _shellToId;
-
-  private final Provider<UpdateManager> _updateManagerProvider;
-
-  @Inject
-  public EasyFormObjectManager(final Provider<UpdateManager> ump) {
-    this._forms = new HashMap<>();
-    this._shellToId = new HashMap<>();
-    this._updateManagerProvider = ump;
-  }
+  private final Map<String, EasyForm> _forms = new HashMap<>();
+  private final Map<String, String> _shellToId = new HashMap<>();
 
   public void registerForm(final String id, final EasyForm form) {
     _forms.put(id, form);
@@ -61,7 +49,6 @@ public class EasyFormObjectManager {
       if (_shellToId.get(s).equals(shellId)) {
         _shellToId.remove(s);
         _forms.remove(s);
-        _updateManagerProvider.get().unregister(s);
       }
     }
   }

@@ -17,39 +17,20 @@ package com.twosigma.beaker.jvm.object;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.cometd.annotation.Listener;
-import org.cometd.annotation.Service;
-import org.cometd.bayeux.server.BayeuxServer;
-import org.cometd.bayeux.server.BayeuxContext;
-import org.cometd.bayeux.server.LocalSession;
-import org.cometd.bayeux.server.ServerChannel;
-import org.cometd.bayeux.server.ServerMessage;
-import org.cometd.bayeux.server.ServerSession;
-import org.cometd.bayeux.server.ServerTransport;
 
 /**
  * The SparkProgressService reports the progress of tasks and stages
  * during a running Spark job.
  */
-@Service
 @Singleton
 public class SparkProgressService {
   private final static Logger logger = Logger.getLogger(SparkProgressService.class.getName());
-  
-  private BayeuxServer bayeux;
-  private LocalSession localSession;
 
   private volatile SparkProgress progress = new SparkProgress();
   private int activeJobId;
@@ -62,37 +43,6 @@ public class SparkProgressService {
   private Map<Integer, List<Integer>> stagesPerJob = new HashMap<>();
 
   private List<String> executorIds = new ArrayList<String>();
-
-  @Inject
-  public SparkProgressService(BayeuxServer bayeuxServer) {
-    this.bayeux = bayeuxServer;
-    this.localSession = bayeuxServer.newLocalSession(getClass().getCanonicalName());
-    this.localSession.handshake();
-  }
-
-  public void reportProgress() {
-    ServerChannel channel = this.bayeux.createChannelIfAbsent("/sparkJobProgress").getReference();
-    progress.clear();
-    for (Integer jobId : jobs) {
-      JobProgress jp = new JobProgress(jobId, false);
-      for (Integer stageId : stagesPerJob.get(jobId)) {
-        StageProgress sp = stages.get(stageId);
-        if (sp.isRunning())
-          jp.setRunning(true);
-        // update number of tasks
-        sp.setActiveTasks(activeTasks.getOrDefault(stageId, new ArrayList<Long>()).size());
-        sp.setFailedTasks(failedTasks.getOrDefault(stageId, new ArrayList<Long>()).size());
-        sp.setSucceededTasks(succeededTasks.getOrDefault(stageId, new ArrayList<Long>()).size());
-        jp.getStages().add(sp);
-      }
-      progress.getJobs().add(jp);
-    }
-
-    if (channel != null) {
-      progress.setExecutorIds(executorIds);
-      channel.publish(this.localSession, progress, null);
-    }
-  }
 
   public SparkProgress getProgress() {
     return this.progress;
@@ -107,27 +57,6 @@ public class SparkProgressService {
     this.succeededTasks.clear();
     this.stages.clear();
   }
-
-
-  /*
-   * Event handlers for SparkListener events
-   */
-
-  public void applicationStart(String appName) {
-    ServerChannel channel = this.bayeux.createChannelIfAbsent("/sparkAppProgress").getReference();
-    activeAppName = appName;
-    if (channel != null) {
-      channel.publish(this.localSession, new ApplicationProgress(appName, true), null);
-    }
-  }
-
-  public void applicationEnd() {
-    ServerChannel channel = this.bayeux.createChannelIfAbsent("/sparkAppProgress").getReference();
-    if (channel != null) {
-      channel.publish(this.localSession, new ApplicationProgress(activeAppName, false), null);
-    }
-  }
-
 
   public void jobStart(int jobId, List<String> executorIds) {
     activeJobId = jobId;
@@ -169,8 +98,6 @@ public class SparkProgressService {
     activeTasks.put(stageId, new ArrayList<Long>());
     failedTasks.put(stageId, new ArrayList<Long>());
     succeededTasks.put(stageId, new ArrayList<Long>());
-    
-    reportProgress();
   }
 
   public void stageEnd(int stageId, String failureReason) {
@@ -182,8 +109,6 @@ public class SparkProgressService {
     sp.setRunning(false);
     sp.setFailureReason(failureReason);
     stages.put(stageId, sp);
-
-    reportProgress();
   }
 
 
@@ -216,8 +141,6 @@ public class SparkProgressService {
     List<Long> at = activeTasks.getOrDefault(stageId, new ArrayList<Long>());
     at.add(taskId);
     activeTasks.put(stageId, at);
-
-    reportProgress();
   }
 
   public void taskEnd(int stageId, long taskId, boolean failed) {
@@ -225,10 +148,6 @@ public class SparkProgressService {
       logger.warning(String.format("Spark stage %d could not be found for task progress reporting.", stageId));
       return;
     }
-    if (bayeux == null) {
-      logger.severe("Bayeux server is null");
-      return;
-    }  
     removeTask(stageId, taskId);
     if (failed) {
       List<Long> ft = failedTasks.getOrDefault(stageId, new ArrayList<Long>());
@@ -239,8 +158,6 @@ public class SparkProgressService {
       st.add(taskId);
       succeededTasks.put(stageId, st);
     }
-
-    reportProgress();
   }
 
 

@@ -22,7 +22,6 @@ import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beaker.jvm.threads.BeakerOutputHandler;
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
-import com.twosigma.beaker.jvm.updater.UpdateManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -197,32 +196,13 @@ public class SimpleEvaluationObject extends Observable {
 
   public static class Serializer extends JsonSerializer<SimpleEvaluationObject> {
 
-    private final Provider<UpdateManager> updateManagerProvider;
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
-
-    @Inject
-    private Serializer(Provider<UpdateManager> ump, Provider<BeakerObjectConverter> osp) {
-      updateManagerProvider    = ump;
-      objectSerializerProvider = osp;
-    }
-
-    private UpdateManager getUpdateManager() {
-      return this.updateManagerProvider.get();
-    }
-
-    private BeakerObjectConverter getObjectSerializer() {
-      return objectSerializerProvider.get();
-    }
-
     @Override
     public void serialize(SimpleEvaluationObject value,  JsonGenerator jgen,  SerializerProvider provider)
         throws IOException, JsonProcessingException {
 
       synchronized (value) {
-        String id = getUpdateManager().register(value);
         jgen.writeStartObject();
         jgen.writeObjectField("type", "SimpleEvaluationObject");
-        jgen.writeStringField("update_id", id);
         jgen.writeStringField("expression", value.getExpression());
         jgen.writeObjectField("status", value.getStatus());
         if (value.getMessage() != null)
@@ -233,8 +213,6 @@ public class SimpleEvaluationObject extends Observable {
           EvaluationResult o = value.getPayload();
           if (o != null && o.getValue() !=null ) {
             jgen.writeFieldName("payload");
-              if (!getObjectSerializer().writeObject(o, jgen, true))
-                jgen.writeObject(o.toString());
           } else if (value.getJsonRes() != null) {
             jgen.writeFieldName("payload");
             if (ControlCharacterUtils.containsControlCharacters(value.getJsonRes())) {

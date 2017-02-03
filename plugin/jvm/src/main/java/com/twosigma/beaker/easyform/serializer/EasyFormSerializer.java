@@ -16,13 +16,11 @@
 
 package com.twosigma.beaker.easyform.serializer;
 
-import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.easyform.EasyFormComponent;
 import com.twosigma.beaker.easyform.EasyFormObjectManager;
-import com.twosigma.beaker.jvm.updater.UpdateManager;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
@@ -32,30 +30,15 @@ import java.io.IOException;
 @Singleton
 public class EasyFormSerializer extends JsonSerializer<EasyForm> {
 
-  private Provider<UpdateManager> _umProvider;
   private Provider<EasyFormObjectManager> _easyFormObjectManagerProvider;
-
-  @Inject
-  public EasyFormSerializer(final Provider<UpdateManager> _umProvider,
-                            final Provider<EasyFormObjectManager> _easyFormObjectManagerProvider) {
-    this._umProvider = _umProvider;
-    this._easyFormObjectManagerProvider = _easyFormObjectManagerProvider;
-  }
 
   @Override
   public void serialize(final EasyForm easyForm,
                         final JsonGenerator jgen,
                         final SerializerProvider serializerProvider) throws IOException {
     EasyFormObjectManager easyFormObjectManager = _easyFormObjectManagerProvider.get();
-    UpdateManager um = _umProvider.get();
-
     synchronized (easyForm) {
-      String id = um.register(easyForm);
-      easyFormObjectManager.registerForm(id, easyForm);
-      easyForm.setId(id);
-
       jgen.writeStartObject();
-      jgen.writeStringField("update_id", id);
       jgen.writeObjectField("update_time", System.currentTimeMillis());
       jgen.writeObjectField("type", easyForm.getClass().getSimpleName());
       jgen.writeStringField("caption", easyForm.getCaption());

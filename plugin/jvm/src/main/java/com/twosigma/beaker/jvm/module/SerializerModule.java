@@ -136,8 +136,6 @@ import com.twosigma.beaker.jvm.serialization.SimpleLayoutManagerSerializer;
 import com.twosigma.beaker.jvm.serialization.TabbedOutputContainerLayoutManagerDeserializer;
 import com.twosigma.beaker.jvm.serialization.TabbedOutputContainerLayoutManagerSerializer;
 import com.twosigma.beaker.jvm.serialization.DashboardLayoutManagerSerializer;
-import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
-import com.twosigma.beaker.jvm.updater.UpdateManager;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
 import com.twosigma.beaker.table.TableDisplayAlignmentProvider;
@@ -166,7 +164,6 @@ import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
-import org.cometd.bayeux.server.BayeuxServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -189,15 +186,6 @@ public class SerializerModule extends AbstractModule {
     bind(BeakerProgressUpdate.Serializer.class);
     bind(EasyFormObjectManager.class);
     bind(EasyFormSerializer.class);
-  }
-
-  @Provides
-  @Singleton
-  public UpdateManager getUpdateManager(Injector injector) {
-    BayeuxServer bayeuxServer = injector.getInstance(BayeuxServer.class);
-    UpdateManager updateManager = new UpdateManager(bayeuxServer);
-    updateManager.addUpdaterFactory(new ObservableUpdaterFactory());
-    return updateManager;
   }
 
   @Provides

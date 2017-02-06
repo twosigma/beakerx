@@ -33,6 +33,8 @@ import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.twosigma.beaker.groovy.NamespaceClient;
+
 public class Comm {
   
   private static final Logger logger = LoggerFactory.getLogger(GroovyKernel.class);
@@ -61,6 +63,14 @@ public class Comm {
   
   public Comm(String commId, CommNamesEnum targetName) {
     this(commId, targetName.getTargetName());
+  }
+  
+  public Comm(CommNamesEnum targetName) {
+    this(Utils.uuid(), targetName.getTargetName());
+  }
+  
+  public Comm(String targetName) {
+    this(Utils.uuid(), targetName);
   }
   
   public String getCommId() {
@@ -112,9 +122,12 @@ public class Comm {
   }
   
   public void open() throws NoSuchAlgorithmException{
+    Message parentMessage = getParentMessage();// can be null
     Message message = new Message();
-    message.setHeader(new Header(COMM_OPEN, kernel.getParentMessage().getHeader().getSession()));
-    message.setParentHeader(kernel.getParentMessage().getHeader());
+    message.setHeader(new Header(COMM_OPEN, parentMessage != null ? parentMessage.getHeader().getSession() : null));
+    if(parentMessage != null){
+      message.setParentHeader(getParentMessage().getHeader()); 
+    }
     HashMap<String, Serializable> map = new HashMap<>();
     map.put(COMM_ID, getCommId());
     map.put(TARGET_NAME, getTargetName());
@@ -125,15 +138,19 @@ public class Comm {
     kernel.addComm(getCommId(), this);
   }
   
-  public void close(Message parentMessage) throws NoSuchAlgorithmException{
+  public void close() throws NoSuchAlgorithmException{
+    Message parentMessage = getParentMessage();// can be null
+    
     if(this.getCloseCallbackList() != null && !this.getMsgCallbackList().isEmpty()){
       for (IHandler<Message> handler : getMsgCallbackList()) {
         handler.handle(parentMessage);
       }
     }
     Message message = new Message();
-    message.setHeader(new Header(COMM_CLOSE, parentMessage.getHeader().getSession()));
-    message.setParentHeader(parentMessage.getHeader());
+    message.setHeader(new Header(COMM_CLOSE, parentMessage != null ? parentMessage.getHeader().getSession() : null));
+    if(parentMessage != null){
+      message.setParentHeader(parentMessage.getHeader());
+    }
     HashMap<String, Serializable> map = new HashMap<>();
     map.put(DATA, new HashMap<>());
     message.setContent(map);
@@ -142,14 +159,21 @@ public class Comm {
   }
   
   public void send() throws NoSuchAlgorithmException{
+    Message parentMessage = getParentMessage();// can be null
     Message message = new Message();
-    message.setHeader(new Header(COMM_MSG, kernel.getParentMessage().getHeader().getSession()));
-    message.setParentHeader(kernel.getParentMessage().getHeader());
+    message.setHeader(new Header(COMM_MSG, parentMessage != null ? parentMessage.getHeader().getSession() : null));
+    if(parentMessage != null){
+      message.setParentHeader(getParentMessage().getHeader()); 
+    }
     HashMap<String, Serializable> map = new HashMap<>(6);
     map.put(COMM_ID, getCommId());
     map.put(DATA, data);
     message.setContent(map);
-    kernel.publish(message); //TODO check if right ?
+    kernel.publish(message);
+  }
+  
+  protected Message getParentMessage(){
+    return NamespaceClient.getBeaker().getOutputObj() != null ? NamespaceClient.getBeaker().getOutputObj().getJupyterMessage() : null;
   }
   
   public void handleMsg(Message parentMessage) throws NoSuchAlgorithmException{

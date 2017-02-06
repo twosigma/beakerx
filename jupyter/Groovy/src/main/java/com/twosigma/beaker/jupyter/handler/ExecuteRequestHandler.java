@@ -23,7 +23,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.twosigma.beaker.jupyter.GroovyKernelManager;
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.msg.Header;
@@ -71,8 +70,6 @@ public class ExecuteRequestHandler extends AbstractHandler<Message> {
     map1.put("code", code);
     reply.setContent(map1);
     publish(reply);
-
-    GroovyKernelManager.setParentMessage(message);
 
     ++executionCount;
     evaluatorManager.executeCode(code, message, executionCount);

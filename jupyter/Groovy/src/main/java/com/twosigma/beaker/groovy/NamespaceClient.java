@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,45 +13,38 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.groovy;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class NamespaceClient {
-
-  private SimpleEvaluationObject seo;
-
-
-  /*
-   *  this is meant to be used by the runtime
-   */
   
-  public synchronized void setOutputObj(SimpleEvaluationObject o) {
-    seo = o;
-  }
-
-  /*
-   * per-session singleton: one instance of this object for each session
-   */
-  
-  private static Map<String,NamespaceClient> nsClients = new HashMap<String,NamespaceClient>();
-
+  private static Map<String,NamespaceClient> nsClients = new ConcurrentHashMap<String,NamespaceClient>();
   private static String currentSession;
   
-  public synchronized static NamespaceClient getBeaker() {
-    if (currentSession!=null)
-      return nsClients.get(currentSession);
-    return null;
+  private SimpleEvaluationObject currentCeo = null;
+  
+  public SimpleEvaluationObject getOutputObj() {
+    return currentCeo;
   }
 
-  public synchronized static NamespaceClient getBeaker(String s) {
-    if (!nsClients.containsKey(s)) {
-      NamespaceClient c = new NamespaceClient();
-      nsClients.put(s, new NamespaceClient());
+  public synchronized void setOutputObj(SimpleEvaluationObject input) {
+    currentCeo = input;
+  }
+  
+  public synchronized static NamespaceClient getBeaker() {
+    if (currentSession!=null){
+      return nsClients.get(currentSession);
     }
-    currentSession = s;
+    return null;
+  }
+  
+  public synchronized static NamespaceClient getBeaker(String session) {
+    currentSession = session;
+    if (!nsClients.containsKey(session)) {
+      nsClients.put(session, new NamespaceClient());
+    }
     return nsClients.get(currentSession);
   }
  

@@ -17,7 +17,6 @@
 package com.twosigma.beaker.jupyter;
 
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
-import org.lappsgrid.jupyter.groovy.msg.Message;
 
 public class GroovyKernelManager {
 
@@ -31,7 +30,4 @@ public class GroovyKernelManager {
     return groovyKernelInst;
   }
 
-  public static void setParentMessage(Message parentMessage) {
-    groovyKernelInst.setParentMessage(parentMessage);
-  }
 }

@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.twosigma.beaker.jupyter.GroovyKernelManager;
-import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.handler.CompleteHandler;
 import org.lappsgrid.jupyter.groovy.handler.HistoryHandler;
@@ -34,12 +32,15 @@ import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
 import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.CommNamesEnum;
+import com.twosigma.beaker.jupyter.GroovyKernelManager;
 import com.twosigma.beaker.jupyter.handler.CommCloseHandler;
 import com.twosigma.beaker.jupyter.handler.CommInfoHandler;
 import com.twosigma.beaker.jupyter.handler.CommMsgHandler;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.handler.ExecuteRequestHandler;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
+import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.beaker.jupyter.threads.AbstractMessageReaderThread;
 import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 
@@ -74,14 +75,12 @@ public class GroovyKernel {
   private Map<String, AbstractMessageReaderThread> threads = new HashMap<>();
   private Map<String, Comm> commMap;
   private ExecutionResultSender executionResultSender;
-
+  
   private ZMQ.Socket hearbeatSocket;
   private ZMQ.Socket controlSocket;
   private ZMQ.Socket shellSocket;
   private ZMQ.Socket iopubSocket;
   private ZMQ.Socket stdinSocket;
-
-  private Message parentMessage;
 
   public GroovyKernel() {
     id = uuid();
@@ -94,7 +93,7 @@ public class GroovyKernel {
     running = false;
     for (Comm comm : commMap.values()) {
       try {
-        comm.close(null);
+        comm.close();
       } catch (NoSuchAlgorithmException e) {
         logger.info("Comm close error, Comm info = " + comm );
       }
@@ -116,30 +115,46 @@ public class GroovyKernel {
   public boolean isCommPresent(String hash){
     return commMap.containsKey(hash);
   }
-
+  
   public Set<String> getCommHashSet(){
     return commMap.keySet();
   }
-
+  
   public void addComm(String hash, Comm commObject){
     if(!isCommPresent(hash)){
       commMap.put(hash, commObject);
     }
   }
-
+  
   public Comm getComm(String hash){
     return commMap.get(hash);
   }
-
+  
+  public List<Comm> getCommByTargetName(String targetName){
+    List<Comm> ret = new ArrayList<>();
+    if(targetName != null){
+      for (Comm comm : commMap.values()) {
+        if(comm.getTargetName().equals(targetName)){
+          ret.add(comm);
+        }
+      }
+    }
+    return ret;
+  }
+  
+  public  List<Comm> getCommByTargetName(CommNamesEnum targetName){
+    return targetName != null ? getCommByTargetName(targetName.getTargetName()) : new ArrayList<>() ;
+  }
+  
   public void removeComm(String hash){
     if(isCommPresent(hash)){
       commMap.remove(hash);
     }
   }
-
+  
   /**
    * Sends a Message to the iopub socket.
-   *
+   * 
    * @throws NoSuchAlgorithmException
    */
   public void publish(Message message) throws NoSuchAlgorithmException {
@@ -291,11 +306,11 @@ public class GroovyKernel {
       // running == false
       Thread.sleep(1000);
     }
-
+    
     for (AbstractHandler<Message> handler : handlers.values()) {
       handler.exit();
     }
-
+    
     if(executionResultSender != null){
       executionResultSender.exit();
     }
@@ -340,13 +355,5 @@ public class GroovyKernel {
 
   public ExecutionResultSender getExecutionResultSender() {
     return executionResultSender;
-  }
-
-  public void setParentMessage(Message parentMessage) {
-    this.parentMessage = parentMessage;
-  }
-
-  public Message getParentMessage() {
-    return parentMessage;
   }
 }

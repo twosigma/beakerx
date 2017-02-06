@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -31,11 +31,15 @@ public class IntSlider implements Widget {
   private String _view_name = "IntSliderView";
   private String _model_name = "IntSliderModel";
   private String _model_module = "jupyter-js-widgets";
+  private String _view_module = "jupyter-js-widgets";
+
   private Comm comm;
   private int value;
+  private Layout layout;
 
   public IntSlider() throws NoSuchAlgorithmException {
     comm = new Comm(Utils.uuid(), CommNamesEnum.JUPYTER_WIDGET);
+    layout = new Layout();
     openComm(comm);
   }
 
@@ -79,9 +83,9 @@ public class IntSlider implements Widget {
     HashMap<String, Serializable> content = new HashMap<>();
     content.put("_model_module", _model_module);
     content.put("_model_name", _model_name);
-    content.put("_range", false);
-    content.put("_view_module", "jupyter-js-widgets");
+    content.put("_view_module", _view_module);
     content.put("_view_name", _view_name);
+    content.put("_range", false);
     content.put("background_color", null);
     content.put("continuous_update", true);
     content.put("description", "");
@@ -90,7 +94,7 @@ public class IntSlider implements Widget {
     content.put("font_size", "");
     content.put("font_style", "");
     content.put("font_weight", "");
-    content.put("layout", "???");
+    content.put("layout", "IPY_MODEL_"+layout.getComm().getCommId());
     content.put("max", 100);
     content.put("min", 0);
     content.put("msg_throttle", 3);

@@ -20,11 +20,11 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.StrokeType;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class StemsSerializerTest {
         //when
         Stems stems = new Stems();
         stems.setColor(Arrays.asList(Color.BLUE, Color.GREEN, Color.BLACK));
-        stemsSerializer.serialize(stems, jgen, new StdSerializerProvider());
+        stemsSerializer.serialize(stems, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -71,7 +71,7 @@ public class StemsSerializerTest {
         //when
         Stems stems = new Stems();
         stems.setColor(Color.GREEN);
-        stemsSerializer.serialize(stems, jgen, new StdSerializerProvider());
+        stemsSerializer.serialize(stems, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -84,7 +84,7 @@ public class StemsSerializerTest {
         //when
         Stems stems = new Stems();
         stems.setWidth(11f);
-        stemsSerializer.serialize(stems, jgen, new StdSerializerProvider());
+        stemsSerializer.serialize(stems, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -97,7 +97,7 @@ public class StemsSerializerTest {
         //when
         Stems stems = new Stems();
         stems.setStyle(StrokeType.SOLID);
-        stemsSerializer.serialize(stems, jgen, new StdSerializerProvider());
+        stemsSerializer.serialize(stems, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -110,7 +110,7 @@ public class StemsSerializerTest {
         //when
         Stems stems = new Stems();
         stems.setStyle(Arrays.asList(StrokeType.SOLID, StrokeType.DASHDOT));
-        stemsSerializer.serialize(stems, jgen, new StdSerializerProvider());
+        stemsSerializer.serialize(stems, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

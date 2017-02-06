@@ -19,11 +19,11 @@ package com.twosigma.beaker.chart.serializer;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.histogram.Histogram;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class HistogramSerializerTest {
     public void serializeColorOfHistogram_resultJsonHasColor() throws IOException{
         //when
         histogram.setColor(Color.GREEN);
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -69,7 +69,7 @@ public class HistogramSerializerTest {
     public void serializeColorsOfHistogram_resultJsonHasColors() throws IOException{
         //when
         histogram.setColor(Arrays.asList(Color.GREEN, Color.BLUE));
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -81,7 +81,7 @@ public class HistogramSerializerTest {
     public void serializeDataListOfHistogram_resultJsonHasGraphicsList() throws IOException{
         //when
         histogram.setData(Arrays.asList(1, 2));
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -93,7 +93,7 @@ public class HistogramSerializerTest {
     public void serializeDataListListOfHistogram_resultJsonHasGraphicsList() throws IOException{
         //when
         histogram.setData(Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3, 4)));
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -105,7 +105,7 @@ public class HistogramSerializerTest {
     public void serializeRightCloseOfHistogram_resultJsonHasRightClose() throws IOException{
         //when
         histogram.setRightClose(true);
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -117,7 +117,7 @@ public class HistogramSerializerTest {
     public void serializeRangeMinOfHistogram_resultJsonHasRangeMin() throws IOException{
         //when
         histogram.setRangeMin(11);
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -129,7 +129,7 @@ public class HistogramSerializerTest {
     public void serializeRangeMaxOfHistogram_resultJsonHasRangeMax() throws IOException{
         //when
         histogram.setRangeMax(11);
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -141,7 +141,7 @@ public class HistogramSerializerTest {
     public void serializeBinCountOfHistogram_resultJsonHasBinCount() throws IOException{
         //when
         histogram.setBinCount(11);
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -153,7 +153,7 @@ public class HistogramSerializerTest {
     public void serializeCumulativeOfHistogram_resultJsonHasCumulative() throws IOException{
         //when
         histogram.setCumulative(true);
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -165,7 +165,7 @@ public class HistogramSerializerTest {
     public void serializeNormedOfHistogram_resultJsonHasNormed() throws IOException{
         //when
         histogram.setNormed(true);
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -177,7 +177,7 @@ public class HistogramSerializerTest {
     public void serializeLogOfHistogram_resultJsonHasLog() throws IOException{
         //when
         histogram.setLog(true);
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -189,7 +189,7 @@ public class HistogramSerializerTest {
     public void serializeDisplayModeOfHistogram_resultJsonHasDisplayMode() throws IOException{
         //when
         histogram.setDisplayMode(Histogram.DisplayMode.STACK);
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -201,7 +201,7 @@ public class HistogramSerializerTest {
     public void serializeNamesOfHistogram_resultJsonHasNames() throws IOException{
         //when
         histogram.setNames(Arrays.asList("name1", "name2"));
-        histogramSerializer.serialize(histogram, jgen, new StdSerializerProvider());
+        histogramSerializer.serialize(histogram, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

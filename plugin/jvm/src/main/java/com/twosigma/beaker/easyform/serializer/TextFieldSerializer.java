@@ -17,7 +17,7 @@
 package com.twosigma.beaker.easyform.serializer;
 
 import com.twosigma.beaker.easyform.formitem.TextField;
-import org.codehaus.jackson.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 import java.io.IOException;
 

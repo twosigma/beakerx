@@ -19,7 +19,7 @@ package com.twosigma.beaker.chart.serializer;
 
 
 import com.twosigma.beaker.chart.AbstractChart;
-import org.codehaus.jackson.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 import java.io.IOException;
 

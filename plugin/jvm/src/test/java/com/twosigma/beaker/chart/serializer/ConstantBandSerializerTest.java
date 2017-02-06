@@ -20,11 +20,11 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.NanoPlot;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantBand;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class ConstantBandSerializerTest {
     public void serializeConstantBand_resultJsonHasType() throws IOException{
         //when
         ConstantBand constantBand = new ConstantBand();
-        constantBandSerializer.serialize(constantBand, jgen, new StdSerializerProvider());
+        constantBandSerializer.serialize(constantBand, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -70,7 +70,7 @@ public class ConstantBandSerializerTest {
         //when
         ConstantBand constantBand = new ConstantBand();
         constantBand.setX(Arrays.asList(1, 2, 3));
-        constantBandSerializer.serialize(constantBand, jgen, new StdSerializerProvider());
+        constantBandSerializer.serialize(constantBand, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -87,7 +87,7 @@ public class ConstantBandSerializerTest {
                 new BigInteger("12345678901234567892000"))
         );
         constantBand.setPlotType(NanoPlot.class);
-        constantBandSerializer.serialize(constantBand, jgen, new StdSerializerProvider());
+        constantBandSerializer.serialize(constantBand, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -101,7 +101,7 @@ public class ConstantBandSerializerTest {
         //when
         ConstantBand constantBand = new ConstantBand();
         constantBand.setY(Arrays.asList(1, 2, 3));
-        constantBandSerializer.serialize(constantBand, jgen, new StdSerializerProvider());
+        constantBandSerializer.serialize(constantBand, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -114,7 +114,7 @@ public class ConstantBandSerializerTest {
         //when
         ConstantBand constantBand = new ConstantBand();
         constantBand.setVisible(true);
-        constantBandSerializer.serialize(constantBand, jgen, new StdSerializerProvider());
+        constantBandSerializer.serialize(constantBand, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -127,7 +127,7 @@ public class ConstantBandSerializerTest {
         //when
         ConstantBand constantBand = new ConstantBand();
         constantBand.setyAxis("Y Axis name");
-        constantBandSerializer.serialize(constantBand, jgen, new StdSerializerProvider());
+        constantBandSerializer.serialize(constantBand, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -140,7 +140,7 @@ public class ConstantBandSerializerTest {
         //when
         ConstantBand constantBand = new ConstantBand();
         constantBand.setColor(Color.GREEN);
-        constantBandSerializer.serialize(constantBand, jgen, new StdSerializerProvider());
+        constantBandSerializer.serialize(constantBand, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

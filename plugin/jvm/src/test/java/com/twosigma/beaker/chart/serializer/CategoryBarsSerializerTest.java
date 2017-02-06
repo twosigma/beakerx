@@ -20,11 +20,11 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beaker.chart.xychart.plotitem.LabelPositionType;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class CategoryBarsSerializerTest {
         //when
         CategoryBars categoryBars = new CategoryBars();
         categoryBars.setBase(Arrays.asList(11, 22, 33));
-        categoryBarsSerializer.serialize(categoryBars, jgen, new StdSerializerProvider());
+        categoryBarsSerializer.serialize(categoryBars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -71,7 +71,7 @@ public class CategoryBarsSerializerTest {
         //when
         CategoryBars categoryBars = new CategoryBars();
         categoryBars.setBase(11);
-        categoryBarsSerializer.serialize(categoryBars, jgen, new StdSerializerProvider());
+        categoryBarsSerializer.serialize(categoryBars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -84,7 +84,7 @@ public class CategoryBarsSerializerTest {
         //when
         CategoryBars categoryBars = new CategoryBars();
         categoryBars.setWidth(11);
-        categoryBarsSerializer.serialize(categoryBars, jgen, new StdSerializerProvider());
+        categoryBarsSerializer.serialize(categoryBars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -97,7 +97,7 @@ public class CategoryBarsSerializerTest {
         //when
         CategoryBars categoryBars = new CategoryBars();
         categoryBars.setWidth(Arrays.asList(11, 22, 33));
-        categoryBarsSerializer.serialize(categoryBars, jgen, new StdSerializerProvider());
+        categoryBarsSerializer.serialize(categoryBars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -111,7 +111,7 @@ public class CategoryBarsSerializerTest {
         //when
         CategoryBars categoryBars = new CategoryBars();
         categoryBars.setOutlineColor(Color.GREEN);
-        categoryBarsSerializer.serialize(categoryBars, jgen, new StdSerializerProvider());
+        categoryBarsSerializer.serialize(categoryBars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -124,7 +124,7 @@ public class CategoryBarsSerializerTest {
         //when
         CategoryBars categoryBars = new CategoryBars();
         categoryBars.setOutlineColor(Arrays.asList(Color.BLUE, Color.GREEN, Color.BLACK));
-        categoryBarsSerializer.serialize(categoryBars, jgen, new StdSerializerProvider());
+        categoryBarsSerializer.serialize(categoryBars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -138,7 +138,7 @@ public class CategoryBarsSerializerTest {
         //when
         CategoryBars categoryBars = new CategoryBars();
         categoryBars.setFill(true);
-        categoryBarsSerializer.serialize(categoryBars, jgen, new StdSerializerProvider());
+        categoryBarsSerializer.serialize(categoryBars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -151,7 +151,7 @@ public class CategoryBarsSerializerTest {
         //when
         CategoryBars categoryBars = new CategoryBars();
         categoryBars.setFill(Arrays.asList(false, true, false));
-        categoryBarsSerializer.serialize(categoryBars, jgen, new StdSerializerProvider());
+        categoryBarsSerializer.serialize(categoryBars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -165,7 +165,7 @@ public class CategoryBarsSerializerTest {
         //when
         CategoryBars categoryBars = new CategoryBars();
         categoryBars.setDrawOutline(true);
-        categoryBarsSerializer.serialize(categoryBars, jgen, new StdSerializerProvider());
+        categoryBarsSerializer.serialize(categoryBars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -178,7 +178,7 @@ public class CategoryBarsSerializerTest {
         //when
         CategoryBars categoryBars = new CategoryBars();
         categoryBars.setDrawOutline(Arrays.asList(false, true, false));
-        categoryBarsSerializer.serialize(categoryBars, jgen, new StdSerializerProvider());
+        categoryBarsSerializer.serialize(categoryBars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -192,7 +192,7 @@ public class CategoryBarsSerializerTest {
         //when
         CategoryBars categoryBars = new CategoryBars();
         categoryBars.setLabelPosition(LabelPositionType.CENTER);
-        categoryBarsSerializer.serialize(categoryBars, jgen, new StdSerializerProvider());
+        categoryBarsSerializer.serialize(categoryBars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

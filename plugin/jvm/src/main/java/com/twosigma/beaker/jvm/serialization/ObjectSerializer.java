@@ -17,8 +17,8 @@ package com.twosigma.beaker.jvm.serialization;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 public interface ObjectSerializer {
   public boolean canBeUsed(Object obj, boolean expand);

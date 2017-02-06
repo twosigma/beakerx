@@ -19,11 +19,11 @@ package com.twosigma.beaker.chart.serializer;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.plotitem.Bars;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class BarsSerializerTest {
         //when
         Bars bars = new Bars();
         bars.setWidth(11);
-        barsSerializer.serialize(bars, jgen, new StdSerializerProvider());
+        barsSerializer.serialize(bars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -69,7 +69,7 @@ public class BarsSerializerTest {
         //when
         Bars bars = new Bars();
         bars.setWidth(Arrays.asList(11, 22, 33));
-        barsSerializer.serialize(bars, jgen, new StdSerializerProvider());
+        barsSerializer.serialize(bars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -83,7 +83,7 @@ public class BarsSerializerTest {
         //when
         Bars bars = new Bars();
         bars.setColor(Color.GREEN);
-        barsSerializer.serialize(bars, jgen, new StdSerializerProvider());
+        barsSerializer.serialize(bars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -96,7 +96,7 @@ public class BarsSerializerTest {
         //when
         Bars bars = new Bars();
         bars.setColor(Arrays.asList(Color.BLUE, Color.GREEN, Color.BLACK));
-        barsSerializer.serialize(bars, jgen, new StdSerializerProvider());
+        barsSerializer.serialize(bars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -110,7 +110,7 @@ public class BarsSerializerTest {
         //when
         Bars bars = new Bars();
         bars.setOutlineColor(Color.GREEN);
-        barsSerializer.serialize(bars, jgen, new StdSerializerProvider());
+        barsSerializer.serialize(bars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -123,7 +123,7 @@ public class BarsSerializerTest {
         //when
         Bars bars = new Bars();
         bars.setOutlineColor(Arrays.asList(Color.BLUE, Color.GREEN, Color.BLACK));
-        barsSerializer.serialize(bars, jgen, new StdSerializerProvider());
+        barsSerializer.serialize(bars, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

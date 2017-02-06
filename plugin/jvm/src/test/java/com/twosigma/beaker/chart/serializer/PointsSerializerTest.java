@@ -20,11 +20,11 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.plotitem.Points;
 import com.twosigma.beaker.chart.xychart.plotitem.ShapeType;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class PointsSerializerTest {
     public void serializeSizePoints_resultJsonHasSize() throws IOException{
         //when
         points.setSize(new Integer(11));
-        pointsSerializer.serialize(points, jgen, new StdSerializerProvider());
+        pointsSerializer.serialize(points, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -70,7 +70,7 @@ public class PointsSerializerTest {
     public void serializeSizesPoints_resultJsonHasSizes() throws IOException{
         //when
         points.setSize(Arrays.asList(11, 22, 33));
-        pointsSerializer.serialize(points, jgen, new StdSerializerProvider());
+        pointsSerializer.serialize(points, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -83,7 +83,7 @@ public class PointsSerializerTest {
     public void serializeShapePoints_resultJsonHasShape() throws IOException{
         //when
         points.setShape(ShapeType.CIRCLE);
-        pointsSerializer.serialize(points, jgen, new StdSerializerProvider());
+        pointsSerializer.serialize(points, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -95,7 +95,7 @@ public class PointsSerializerTest {
     public void serializeShapesPoints_resultJsonHasShapes() throws IOException{
         //when
         points.setShape(Arrays.asList(ShapeType.CIRCLE, ShapeType.CROSS));
-        pointsSerializer.serialize(points, jgen, new StdSerializerProvider());
+        pointsSerializer.serialize(points, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -108,7 +108,7 @@ public class PointsSerializerTest {
     public void serializeFillPoints_resultJsonHasFill() throws IOException{
         //when
         points.setFill(true);
-        pointsSerializer.serialize(points, jgen, new StdSerializerProvider());
+        pointsSerializer.serialize(points, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -120,7 +120,7 @@ public class PointsSerializerTest {
     public void serializeFillsPoints_resultJsonHasFills() throws IOException{
         //when
         points.setFill(Arrays.asList(false, true, false));
-        pointsSerializer.serialize(points, jgen, new StdSerializerProvider());
+        pointsSerializer.serialize(points, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -133,7 +133,7 @@ public class PointsSerializerTest {
     public void serializeColorPoints_resultJsonHasColor() throws IOException{
         //when
         points.setColor(Color.GREEN);
-        pointsSerializer.serialize(points, jgen, new StdSerializerProvider());
+        pointsSerializer.serialize(points, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -145,7 +145,7 @@ public class PointsSerializerTest {
     public void serializeColorsPoints_resultJsonHasColors() throws IOException{
         //when
         points.setColor(Arrays.asList(Color.GREEN, Color.BLUE));
-        pointsSerializer.serialize(points, jgen, new StdSerializerProvider());
+        pointsSerializer.serialize(points, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -158,7 +158,7 @@ public class PointsSerializerTest {
     public void serializeOutlineColorPoints_resultJsonHasOutlineColor() throws IOException{
         //when
         points.setOutlineColor(Color.GREEN);
-        pointsSerializer.serialize(points, jgen, new StdSerializerProvider());
+        pointsSerializer.serialize(points, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -170,7 +170,7 @@ public class PointsSerializerTest {
     public void serializeOutlineColorsPoints_resultJsonHasOutlineColors() throws IOException{
         //when
         points.setOutlineColor(Arrays.asList(Color.GREEN, Color.BLUE));
-        pointsSerializer.serialize(points, jgen, new StdSerializerProvider());
+        pointsSerializer.serialize(points, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

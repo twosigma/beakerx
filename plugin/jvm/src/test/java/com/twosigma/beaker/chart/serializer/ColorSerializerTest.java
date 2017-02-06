@@ -18,11 +18,10 @@ package com.twosigma.beaker.chart.serializer;
 
 import com.twosigma.beaker.chart.Color;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,7 +51,7 @@ public class ColorSerializerTest {
     @Test
     public void serializeColor_resultJsonHasColor() throws IOException{
         //when
-        colorSerializer.serialize(Color.GREEN, jgen, new StdSerializerProvider());
+        colorSerializer.serialize(Color.GREEN, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

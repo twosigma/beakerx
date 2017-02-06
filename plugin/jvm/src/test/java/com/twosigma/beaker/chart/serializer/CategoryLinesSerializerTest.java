@@ -19,11 +19,11 @@ package com.twosigma.beaker.chart.serializer;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryLines;
 import com.twosigma.beaker.chart.xychart.plotitem.StrokeType;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class CategoryLinesSerializerTest {
         //when
         CategoryLines categoryLines = new CategoryLines();
         categoryLines.setWidth(11f);
-        categoryLinesSerializer.serialize(categoryLines, jgen, new StdSerializerProvider());
+        categoryLinesSerializer.serialize(categoryLines, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -69,7 +69,7 @@ public class CategoryLinesSerializerTest {
         //when
         CategoryLines categoryLines = new CategoryLines();
         categoryLines.setStyle(StrokeType.SOLID);
-        categoryLinesSerializer.serialize(categoryLines, jgen, new StdSerializerProvider());
+        categoryLinesSerializer.serialize(categoryLines, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -82,7 +82,7 @@ public class CategoryLinesSerializerTest {
         //when
         CategoryLines categoryLines = new CategoryLines();
         categoryLines.setStyle(Arrays.asList(StrokeType.SOLID, StrokeType.DASHDOT));
-        categoryLinesSerializer.serialize(categoryLines, jgen, new StdSerializerProvider());
+        categoryLinesSerializer.serialize(categoryLines, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -96,7 +96,7 @@ public class CategoryLinesSerializerTest {
         //when
         CategoryLines categoryLines = new CategoryLines();
         categoryLines.setInterpolation(1);
-        categoryLinesSerializer.serialize(categoryLines, jgen, new StdSerializerProvider());
+        categoryLinesSerializer.serialize(categoryLines, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

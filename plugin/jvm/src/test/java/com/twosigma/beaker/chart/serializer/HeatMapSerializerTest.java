@@ -20,10 +20,10 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.heatmap.HeatMap;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -59,7 +59,7 @@ public class HeatMapSerializerTest {
                 new Integer[]{ new Integer(1), new Integer(2)},
                 new Integer[]{ new Integer(3), new Integer(4)}
         });
-        heatMapSerializer.serialize(heatMap, jgen, new StdSerializerProvider());
+        heatMapSerializer.serialize(heatMap, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -72,7 +72,7 @@ public class HeatMapSerializerTest {
         //when
         HeatMap heatMap = new HeatMap();
         heatMap.setColor(new GradientColor(Arrays.asList(Color.GREEN, Color.BLUE)));
-        heatMapSerializer.serialize(heatMap, jgen, new StdSerializerProvider());
+        heatMapSerializer.serialize(heatMap, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

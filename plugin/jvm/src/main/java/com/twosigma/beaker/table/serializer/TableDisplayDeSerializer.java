@@ -21,8 +21,8 @@ import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beaker.table.TableDisplay;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +62,7 @@ public class TableDisplayDeSerializer implements ObjectDeserializer {
     List<List<?>> values = null;
     List<String> classes = null;
     if (n.has("types"))
-      classes = mapper.readValue(n.get("types"), List.class);
+      classes = mapper.readValue(n.get("types").asText(), List.class);
     if (n.has("values")) {
       JsonNode nn = n.get("values");
       values = new ArrayList<List<?>>();
@@ -87,7 +87,7 @@ public class TableDisplayDeSerializer implements ObjectDeserializer {
   public static List<String> getColumns(JsonNode n, ObjectMapper mapper) throws IOException {
     List<String> columns = null;
     if (n.has("columnNames"))
-      columns = mapper.readValue(n.get("columnNames"), List.class);
+      columns = mapper.readValue(n.get("columnNames").asText(), List.class);
     return columns;
   }
 
@@ -95,7 +95,7 @@ public class TableDisplayDeSerializer implements ObjectDeserializer {
   public static List<String> getClasses(JsonNode n, ObjectMapper mapper) throws IOException {
     List<String> classes = null;
     if (n.has("types"))
-      classes = mapper.readValue(n.get("types"), List.class);
+      classes = mapper.readValue(n.get("types").asText(), List.class);
     return classes;
   }
 
@@ -119,7 +119,7 @@ public class TableDisplayDeSerializer implements ObjectDeserializer {
       List<String> classes = TableDisplayDeSerializer.getClasses(n, mapper);
 
       if (n.has("subtype"))
-        subtype = mapper.readValue(n.get("subtype"), String.class);
+        subtype = mapper.readValue(n.get("subtype").asText(), String.class);
 
       if (subtype != null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
         o = getValuesAsDictionary(parent, n, mapper);
@@ -129,7 +129,7 @@ public class TableDisplayDeSerializer implements ObjectDeserializer {
         o = getValuesAsMatrix(parent, n, mapper);
       }
       if (o == null) {
-        if (n.has("hasIndex") && mapper.readValue(n.get("hasIndex"), String.class).equals("true")
+        if (n.has("hasIndex") && mapper.readValue(n.get("hasIndex").asText(), String.class).equals("true")
           && columns != null && values != null) {
           columns.remove(0);
           classes.remove(0);

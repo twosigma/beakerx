@@ -20,10 +20,10 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.plotitem.Crosshair;
 import com.twosigma.beaker.chart.xychart.plotitem.StrokeType;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class CrosshairSerializerTest {
     public void serializeCrosshair_resultJsonHasType() throws IOException{
         //when
         Crosshair crosshair = new Crosshair();
-        crosshairSerializer.serialize(crosshair, jgen, new StdSerializerProvider());
+        crosshairSerializer.serialize(crosshair, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -67,7 +67,7 @@ public class CrosshairSerializerTest {
         //when
         Crosshair crosshair = new Crosshair();
         crosshair.setColor(Color.GREEN);
-        crosshairSerializer.serialize(crosshair, jgen, new StdSerializerProvider());
+        crosshairSerializer.serialize(crosshair, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -80,7 +80,7 @@ public class CrosshairSerializerTest {
         //when
         Crosshair crosshair = new Crosshair();
         crosshair.setStyle(StrokeType.DASH);
-        crosshairSerializer.serialize(crosshair, jgen, new StdSerializerProvider());
+        crosshairSerializer.serialize(crosshair, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -93,7 +93,7 @@ public class CrosshairSerializerTest {
         //when
         Crosshair crosshair = new Crosshair();
         crosshair.setWidth(2f);
-        crosshairSerializer.serialize(crosshair, jgen, new StdSerializerProvider());
+        crosshairSerializer.serialize(crosshair, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

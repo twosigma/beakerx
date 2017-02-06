@@ -20,10 +20,10 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.NanoPlot;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class TextSerializerTest {
     @Test
     public void serializeText_resultJsonHasType() throws IOException{
         //when
-        textSerializer.serialize(text, jgen, new StdSerializerProvider());
+        textSerializer.serialize(text, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -68,7 +68,7 @@ public class TextSerializerTest {
     public void serializeXText_resultJsonHasX() throws IOException{
         //when
         text.setX(new Integer(11));
-        textSerializer.serialize(text, jgen, new StdSerializerProvider());
+        textSerializer.serialize(text, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -81,7 +81,7 @@ public class TextSerializerTest {
         //when
         text.setX(new BigInteger("12345678901234567891000"));
         text.setPlotType(NanoPlot.class);
-        textSerializer.serialize(text, jgen, new StdSerializerProvider());
+        textSerializer.serialize(text, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -93,7 +93,7 @@ public class TextSerializerTest {
     public void serializeYText_resultJsonHasY() throws IOException{
         //when
         text.setY(new Integer(22));
-        textSerializer.serialize(text, jgen, new StdSerializerProvider());
+        textSerializer.serialize(text, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -105,7 +105,7 @@ public class TextSerializerTest {
     public void serializeShowPointerText_resultJsonHasShowPointer() throws IOException{
         //when
         text.setShowPointer(true);
-        textSerializer.serialize(text, jgen, new StdSerializerProvider());
+        textSerializer.serialize(text, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -117,7 +117,7 @@ public class TextSerializerTest {
     public void serializeTextOfText_resultJsonHasText() throws IOException{
         //when
         text.setText("some text");
-        textSerializer.serialize(text, jgen, new StdSerializerProvider());
+        textSerializer.serialize(text, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -129,7 +129,7 @@ public class TextSerializerTest {
     public void serializePointerAngleOfText_resultJsonHasPointerAngle() throws IOException{
         //when
         text.setPointerAngle(0.5);
-        textSerializer.serialize(text, jgen, new StdSerializerProvider());
+        textSerializer.serialize(text, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -141,7 +141,7 @@ public class TextSerializerTest {
     public void serializeColorOfText_resultJsonHasColor() throws IOException{
         //when
         text.setColor(Color.GREEN);
-        textSerializer.serialize(text, jgen, new StdSerializerProvider());
+        textSerializer.serialize(text, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -153,7 +153,7 @@ public class TextSerializerTest {
     public void serializeSizeOfText_resultJsonHasSize() throws IOException{
         //when
         text.setSize(11);
-        textSerializer.serialize(text, jgen, new StdSerializerProvider());
+        textSerializer.serialize(text, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

@@ -20,10 +20,10 @@ import com.twosigma.beaker.chart.actions.GraphicsActionListener;
 import com.twosigma.beaker.chart.actions.GraphicsActionObject;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class GraphicsSerializerTest {
     public void serializeLineGraphics_resultJsonHasType() throws IOException{
         //when
         Line line = new Line();
-        graphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -66,7 +66,7 @@ public class GraphicsSerializerTest {
     public void serializeLineGraphics_resultJsonHasUid() throws IOException{
         //when
         Line line = new Line();
-        graphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -79,7 +79,7 @@ public class GraphicsSerializerTest {
         //when
         Line line = new Line();
         line.setVisible(true);
-        graphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -92,7 +92,7 @@ public class GraphicsSerializerTest {
         //when
         Line line = new Line();
         line.setyAxis("Y Axis name");
-        graphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -109,7 +109,7 @@ public class GraphicsSerializerTest {
             public void execute(GraphicsActionObject actionObject) {
             }
         });
-        graphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -122,7 +122,7 @@ public class GraphicsSerializerTest {
         //when
         Line line = new Line();
         line.onClick("some click tag");
-        graphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -135,7 +135,7 @@ public class GraphicsSerializerTest {
         //when
         Line line = new Line();
         line.onKey("key01", "tag01");
-        graphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -152,7 +152,7 @@ public class GraphicsSerializerTest {
             public void execute(GraphicsActionObject actionObject) {
             }
         });
-        graphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

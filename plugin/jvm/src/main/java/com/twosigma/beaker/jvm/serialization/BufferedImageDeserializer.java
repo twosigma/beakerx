@@ -19,8 +19,9 @@ import java.io.ByteArrayInputStream;
 
 import javax.imageio.ImageIO;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public class BufferedImageDeserializer implements ObjectDeserializer {
     Object o = null;
     try {
       if (n.has("imageData")) {
-        byte [] data = n.get("imageData").getBinaryValue();
+        byte [] data = n.get("imageData").binaryValue();
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         o = ImageIO.read(bais);
       }      

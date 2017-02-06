@@ -18,7 +18,7 @@ package com.twosigma.beaker.jvm.serialization;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beaker.jvm.object.CyclingOutputContainerLayoutManager;
-import org.codehaus.jackson.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 import java.io.IOException;
 

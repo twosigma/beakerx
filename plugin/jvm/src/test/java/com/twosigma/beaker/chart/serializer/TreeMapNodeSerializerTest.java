@@ -20,11 +20,12 @@ import com.twosigma.beaker.chart.Color;
 import net.sf.jtreemap.swing.DefaultValue;
 import net.sf.jtreemap.swing.TreeMapNode;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,10 +46,10 @@ public class TreeMapNodeSerializerTest {
     @BeforeClass
     public static void initClassStubData(){
         mapper = new ObjectMapper();
-        mapper.disable(SerializationConfig.Feature.AUTO_DETECT_GETTERS);
-        mapper.disable(SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS);
-        mapper.disable(SerializationConfig.Feature.AUTO_DETECT_FIELDS);
-        mapper.disable(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS);
+        mapper.disable(MapperFeature.AUTO_DETECT_GETTERS);
+        mapper.disable(MapperFeature.AUTO_DETECT_IS_GETTERS);
+        mapper.disable(MapperFeature.AUTO_DETECT_FIELDS);
+        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         treeMapNodeSerializer = new TreeMapNodeSerializer();
     }
 
@@ -66,7 +67,7 @@ public class TreeMapNodeSerializerTest {
     public void serializeTreeMapNode_resultJsonHasType() throws IOException{
         //when
         TreeMapNode treeMapNode = new TreeMapNode("label");
-        treeMapNodeSerializer.serialize(treeMapNode, jgen, new StdSerializerProvider());
+        treeMapNodeSerializer.serialize(treeMapNode, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -79,7 +80,7 @@ public class TreeMapNodeSerializerTest {
         //when
         TreeMapNode treeMapNode = new TreeMapNode("label");
         treeMapNode.setWeight(0.5);
-        treeMapNodeSerializer.serialize(treeMapNode, jgen, new StdSerializerProvider());
+        treeMapNodeSerializer.serialize(treeMapNode, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -92,7 +93,7 @@ public class TreeMapNodeSerializerTest {
         //when
         TreeMapNode treeMapNode = new TreeMapNode("010", 1, new DefaultValue(1.5));
         treeMapNode.setUserObject(values);
-        treeMapNodeSerializer.serialize(treeMapNode, jgen, new StdSerializerProvider());
+        treeMapNodeSerializer.serialize(treeMapNode, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -105,7 +106,7 @@ public class TreeMapNodeSerializerTest {
         //when
         TreeMapNode treeMapNode = new TreeMapNode("010", 1, new DefaultValue(1.5));
         treeMapNode.setUserObject(values);
-        treeMapNodeSerializer.serialize(treeMapNode, jgen, new StdSerializerProvider());
+        treeMapNodeSerializer.serialize(treeMapNode, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -118,7 +119,7 @@ public class TreeMapNodeSerializerTest {
         //when
         TreeMapNode treeMapNode = new TreeMapNode("010", 1, new DefaultValue(1.5));
         treeMapNode.setUserObject(values);
-        treeMapNodeSerializer.serialize(treeMapNode, jgen, new StdSerializerProvider());
+        treeMapNodeSerializer.serialize(treeMapNode, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -131,7 +132,7 @@ public class TreeMapNodeSerializerTest {
         //when
         TreeMapNode treeMapNode = new TreeMapNode("010", 1, new DefaultValue(1.5));
         treeMapNode.setUserObject(values);
-        treeMapNodeSerializer.serialize(treeMapNode, jgen, new StdSerializerProvider());
+        treeMapNodeSerializer.serialize(treeMapNode, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -143,7 +144,7 @@ public class TreeMapNodeSerializerTest {
         //when
         TreeMapNode treeMapNode = new TreeMapNode("010", 1, new DefaultValue(1.5));
         treeMapNode.setUserObject(values);
-        treeMapNodeSerializer.serialize(treeMapNode, jgen, new StdSerializerProvider());
+        treeMapNodeSerializer.serialize(treeMapNode, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -157,7 +158,7 @@ public class TreeMapNodeSerializerTest {
         TreeMapNode treeMapNodeRoot = new TreeMapNode("001");
         treeMapNodeRoot.add( new TreeMapNode("010", 1, new DefaultValue(1.5)));
         treeMapNodeRoot.add( new TreeMapNode("020", 2, new DefaultValue(2.5)));
-        treeMapNodeSerializer.serialize(treeMapNodeRoot, jgen, new StdSerializerProvider());
+        treeMapNodeSerializer.serialize(treeMapNodeRoot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

@@ -22,10 +22,10 @@ import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class XYChartSerializerTest {
         line.setY(Arrays.asList(2, 3, 4));
         plot.add(line);
         //when
-        xyChartSerializer.serialize(plot, jgen, new StdSerializerProvider());
+        xyChartSerializer.serialize(plot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -77,7 +77,7 @@ public class XYChartSerializerTest {
         ConstantLine constantLine = new ConstantLine();
         plot.add(constantLine);
         //when
-        xyChartSerializer.serialize(plot, jgen, new StdSerializerProvider());
+        xyChartSerializer.serialize(plot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -91,7 +91,7 @@ public class XYChartSerializerTest {
         ConstantBand constantBand = new ConstantBand();
         plot.add(constantBand);
         //when
-        xyChartSerializer.serialize(plot, jgen, new StdSerializerProvider());
+        xyChartSerializer.serialize(plot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -104,7 +104,7 @@ public class XYChartSerializerTest {
         //given
         plot.add(new Text());
         //when
-        xyChartSerializer.serialize(plot, jgen, new StdSerializerProvider());
+        xyChartSerializer.serialize(plot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -117,7 +117,7 @@ public class XYChartSerializerTest {
     public void serializeXAutoRangeOfXYChartPlot_resultJsonHasXAutoRange() throws IOException{
         //when
         plot.setXAutoRange(true);
-        xyChartSerializer.serialize(plot, jgen, new StdSerializerProvider());
+        xyChartSerializer.serialize(plot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -129,7 +129,7 @@ public class XYChartSerializerTest {
     public void serializeXLowerBoundOfXYChartPlot_resultJsonHasXLowerBound() throws IOException{
         //when
         plot.setXBound(0.5, 1.5);
-        xyChartSerializer.serialize(plot, jgen, new StdSerializerProvider());
+        xyChartSerializer.serialize(plot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -141,7 +141,7 @@ public class XYChartSerializerTest {
     public void serializeXUpperBoundOfXYChartPlot_resultJsonHasXUpperBound() throws IOException{
         //when
         plot.setXBound(0.5, 1.5);
-        xyChartSerializer.serialize(plot, jgen, new StdSerializerProvider());
+        xyChartSerializer.serialize(plot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -153,7 +153,7 @@ public class XYChartSerializerTest {
     public void serializeLogXOfXYChartPlot_resultJsonHasLogX() throws IOException{
         //when
         plot.setLogX(true);
-        xyChartSerializer.serialize(plot, jgen, new StdSerializerProvider());
+        xyChartSerializer.serialize(plot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -165,7 +165,7 @@ public class XYChartSerializerTest {
     public void serializeXLogBaseOfXYChartPlot_resultJsonHasXLogBase() throws IOException{
         //when
         plot.setxLogBase(1.5);
-        xyChartSerializer.serialize(plot, jgen, new StdSerializerProvider());
+        xyChartSerializer.serialize(plot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -177,7 +177,7 @@ public class XYChartSerializerTest {
     public void serializeLodThresholdOfXYChartPlot_resultJsonHasLodThreshold() throws IOException{
         //when
         plot.setLodThreshold(11);
-        xyChartSerializer.serialize(plot, jgen, new StdSerializerProvider());
+        xyChartSerializer.serialize(plot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -189,7 +189,7 @@ public class XYChartSerializerTest {
     public void serializeXTickLabelsVisibleOfXYChartPlot_resultJsonHasXTickLabelsVisible() throws IOException{
         //when
         plot.setxTickLabelsVisible(true);
-        xyChartSerializer.serialize(plot, jgen, new StdSerializerProvider());
+        xyChartSerializer.serialize(plot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -201,7 +201,7 @@ public class XYChartSerializerTest {
     public void serializeYTickLabelsVisibleOfXYChartPlot_resultJsonHasYTickLabelsVisible() throws IOException{
         //when
         plot.setyTickLabelsVisible(true);
-        xyChartSerializer.serialize(plot, jgen, new StdSerializerProvider());
+        xyChartSerializer.serialize(plot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

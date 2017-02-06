@@ -19,10 +19,10 @@ package com.twosigma.beaker.chart.serializer;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.plotitem.Area;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class AreaSerializerTest {
         //when
         Area area = new Area();
         area.setInterpolation(1);
-        areaSerializer.serialize(area, jgen, new StdSerializerProvider());
+        areaSerializer.serialize(area, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -67,7 +67,7 @@ public class AreaSerializerTest {
         //when
         Area area = new Area();
         area.setColor(Color.GREEN);
-        areaSerializer.serialize(area, jgen, new StdSerializerProvider());
+        areaSerializer.serialize(area, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

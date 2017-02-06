@@ -30,7 +30,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.cxf.helpers.IOUtils;
+import com.google.common.io.ByteStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +101,7 @@ public class DynamicClassLoaderSimple extends ClassLoader {
         try {
           //System.out.println("found on dynloader");
           fis = new FileInputStream(f);
-          byte[] bytes = IOUtils.readBytesFromStream(fis);
+          byte[] bytes = ByteStreams.toByteArray(fis);
           Class<?> result = getClass(name, bytes, true);
           
           if (result != null) {
@@ -120,7 +120,7 @@ public class DynamicClassLoaderSimple extends ClassLoader {
         InputStream is = myloader.getResourceAsStream(cname);
         if (is != null) {
           try {
-            byte[] bytes = IOUtils.readBytesFromStream(is);
+            byte[] bytes = ByteStreams.toByteArray(is);
             result = getClass(name, bytes, true);
             
             if (result != null) {

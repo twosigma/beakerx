@@ -15,7 +15,6 @@
  */
 package com.twosigma.beaker.chart;
 
-import org.apache.cxf.common.util.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -47,7 +46,7 @@ public class GradientColor implements Serializable{
   }
 
   public GradientColor(List<Object> colors){
-    if (!CollectionUtils.isEmpty(colors)) {
+    if (!colors.isEmpty()) {
       this.colors = new Color[colors.size()];
       for (int i = 0; i < colors.size(); i++) {
         Object c = colors.get(i);

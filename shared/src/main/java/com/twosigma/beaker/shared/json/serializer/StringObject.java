@@ -16,10 +16,10 @@
 package com.twosigma.beaker.shared.json.serializer;
 
 import java.io.IOException;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
 /**
  * A thin wrapper for java String for serializing a String as a JSON object
@@ -29,7 +29,7 @@ public class StringObject {
   private String text;
 
   public StringObject() { }
-  
+
   public StringObject(String s) {
     this.text = s;
   }
@@ -39,7 +39,7 @@ public class StringObject {
   }
 
   public void setText(String s) { text=s; }
-  
+
   public static class Serializer extends JsonSerializer<StringObject> {
 
     @Override

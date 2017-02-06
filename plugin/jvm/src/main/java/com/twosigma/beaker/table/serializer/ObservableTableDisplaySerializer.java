@@ -19,8 +19,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beaker.table.ObservableTableDisplay;
 import com.twosigma.beaker.table.action.TableDisplayObjectManager;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.JsonSerializer;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
 
 import java.io.IOException;
 

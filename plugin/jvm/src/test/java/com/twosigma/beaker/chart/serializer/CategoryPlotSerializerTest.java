@@ -21,11 +21,11 @@ import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryPoints;
 import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class CategoryPlotSerializerTest {
         //when
         CategoryPlot categoryPlot = new CategoryPlot();
         categoryPlot.setCategoryNames(Arrays.asList("name1", "name2"));
-        categoryPlotSerializer.serialize(categoryPlot, jgen, new StdSerializerProvider());
+        categoryPlotSerializer.serialize(categoryPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -72,7 +72,7 @@ public class CategoryPlotSerializerTest {
         //when
         CategoryPlot categoryPlot = new CategoryPlot();
         categoryPlot.add(Arrays.asList(new CategoryBars(), new CategoryPoints()));
-        categoryPlotSerializer.serialize(categoryPlot, jgen, new StdSerializerProvider());
+        categoryPlotSerializer.serialize(categoryPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -86,7 +86,7 @@ public class CategoryPlotSerializerTest {
         //when
         CategoryPlot categoryPlot = new CategoryPlot();
         categoryPlot.setOrientation(PlotOrientationType.VERTICAL);
-        categoryPlotSerializer.serialize(categoryPlot, jgen, new StdSerializerProvider());
+        categoryPlotSerializer.serialize(categoryPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -99,7 +99,7 @@ public class CategoryPlotSerializerTest {
         //when
         CategoryPlot categoryPlot = new CategoryPlot();
         categoryPlot.setCategoryMargin(0.5);
-        categoryPlotSerializer.serialize(categoryPlot, jgen, new StdSerializerProvider());
+        categoryPlotSerializer.serialize(categoryPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -112,7 +112,7 @@ public class CategoryPlotSerializerTest {
         //when
         CategoryPlot categoryPlot = new CategoryPlot();
         categoryPlot.setCategoryNamesLabelAngle(0.5);
-        categoryPlotSerializer.serialize(categoryPlot, jgen, new StdSerializerProvider());
+        categoryPlotSerializer.serialize(categoryPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

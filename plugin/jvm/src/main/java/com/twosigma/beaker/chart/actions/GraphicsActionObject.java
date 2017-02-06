@@ -17,8 +17,8 @@
 package com.twosigma.beaker.chart.actions;
 
 import com.twosigma.beaker.chart.Graphics;
-import org.codehaus.jackson.annotate.JsonSubTypes;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.io.Serializable;
 

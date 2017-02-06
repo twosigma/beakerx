@@ -20,22 +20,8 @@ repositories {
 }
 
 dependencies {
-  compile ('org.apache.cxf:cxf-bundle-jaxrs:2.7.7') {
-    exclude group: 'com.sun.xml.bind', module: 'jaxb-impl'
-    exclude group: 'org.eclipse.jetty', module: 'jetty-server'
-    exclude group: 'org.eclipse.jetty', module: 'jetty-continuation'
-    exclude group: 'org.eclipse.jetty', module: 'jetty-http'
-    exclude group: 'org.eclipse.jetty', module: 'jetty-io'
-    exclude group: 'org.eclipse.jetty', module: 'jetty-util'
-    exclude group: 'org.eclipse.jetty', module: 'jetty-security'
-    exclude group: 'org.apache.geronimo.specs', module: 'geronimo-javamail_1.4_spec'
-    exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-asl'
-    exclude group: 'org.codehaus.woodstox', module: 'stax2-api'
-    exclude group: 'org.apache.ws.xmlschema', module: 'xmlschema-core'
-    exclude group: 'wsdl4j', module: 'wsdl4j'
-    exclude group: 'javax.ws.rs', module: 'javax.ws.rs-api'
-  }
-  compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.13'
+  compile group: "org.slf4j", name:"slf4j-api", version:"1.7.5"
+  compile group: "com.fasterxml.jackson.jaxrs", name: "jackson-jaxrs-json-provider", version : "2.7.4"
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
   compile('com.sun.jersey.contribs:jersey-guice:1.18.1') {
     exclude group: 'com.sun.jersey', module: 'jersey-servlet'

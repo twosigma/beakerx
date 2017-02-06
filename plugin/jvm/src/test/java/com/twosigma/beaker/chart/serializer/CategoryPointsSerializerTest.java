@@ -20,11 +20,11 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryPoints;
 import com.twosigma.beaker.chart.xychart.plotitem.ShapeType;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class CategoryPointsSerializerTest {
         //when
         CategoryPoints categoryPoints = new CategoryPoints();
         categoryPoints.setSize(11);
-        categoryPointsSerializer.serialize(categoryPoints, jgen, new StdSerializerProvider());
+        categoryPointsSerializer.serialize(categoryPoints, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -70,7 +70,7 @@ public class CategoryPointsSerializerTest {
         //when
         CategoryPoints categoryPoints = new CategoryPoints();
         categoryPoints.setSize(Arrays.asList(11, 22, 33));
-        categoryPointsSerializer.serialize(categoryPoints, jgen, new StdSerializerProvider());
+        categoryPointsSerializer.serialize(categoryPoints, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -84,7 +84,7 @@ public class CategoryPointsSerializerTest {
         //when
         CategoryPoints categoryPoints = new CategoryPoints();
         categoryPoints.setShape(ShapeType.CIRCLE);
-        categoryPointsSerializer.serialize(categoryPoints, jgen, new StdSerializerProvider());
+        categoryPointsSerializer.serialize(categoryPoints, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -97,7 +97,7 @@ public class CategoryPointsSerializerTest {
         //when
         CategoryPoints categoryPoints = new CategoryPoints();
         categoryPoints.setShape(Arrays.asList(ShapeType.CIRCLE, ShapeType.TRIANGLE));
-        categoryPointsSerializer.serialize(categoryPoints, jgen, new StdSerializerProvider());
+        categoryPointsSerializer.serialize(categoryPoints, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -111,7 +111,7 @@ public class CategoryPointsSerializerTest {
         //when
         CategoryPoints categoryPoints = new CategoryPoints();
         categoryPoints.setFill(true);
-        categoryPointsSerializer.serialize(categoryPoints, jgen, new StdSerializerProvider());
+        categoryPointsSerializer.serialize(categoryPoints, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -124,7 +124,7 @@ public class CategoryPointsSerializerTest {
         //when
         CategoryPoints categoryPoints = new CategoryPoints();
         categoryPoints.setFill(Arrays.asList(false, true, false));
-        categoryPointsSerializer.serialize(categoryPoints, jgen, new StdSerializerProvider());
+        categoryPointsSerializer.serialize(categoryPoints, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -138,7 +138,7 @@ public class CategoryPointsSerializerTest {
         //when
         CategoryPoints categoryPoints = new CategoryPoints();
         categoryPoints.setOutlineColor(Color.GREEN);
-        categoryPointsSerializer.serialize(categoryPoints, jgen, new StdSerializerProvider());
+        categoryPointsSerializer.serialize(categoryPoints, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -151,7 +151,7 @@ public class CategoryPointsSerializerTest {
         //when
         CategoryPoints categoryPoints = new CategoryPoints();
         categoryPoints.setOutlineColor(Arrays.asList(Color.BLUE, Color.GREEN, Color.BLACK));
-        categoryPointsSerializer.serialize(categoryPoints, jgen, new StdSerializerProvider());
+        categoryPointsSerializer.serialize(categoryPoints, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

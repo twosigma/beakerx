@@ -14,10 +14,7 @@ repositories {
 
 dependencies {
   compile project(':plugin:jvm')
-
-  compile group: "org.codehaus.jackson", name: "jackson-jaxrs", version : "1.9.13"
-  compile group: "com.fasterxml.jackson.core", name: "jackson-annotations", version : "2.5.1"
-  compile group: "com.fasterxml.jackson.core", name: "jackson-databind", version : "2.5.1"
+  
   compile group: "org.apache.commons", name: "commons-lang3", version : "3.3"
   compile group: "org.codehaus.groovy", name: "groovy-all", version : "2.4.3"
   compile group: "org.zeromq", name: "jeromq", version : "0.3.5"

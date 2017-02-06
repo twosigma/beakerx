@@ -28,7 +28,7 @@ import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 import java.io.IOException;
 
 import net.sf.jtreemap.swing.TreeMapNode;
-import org.codehaus.jackson.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

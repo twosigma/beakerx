@@ -20,10 +20,11 @@ import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.chart.xychart.SimpleTimePlot;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -59,7 +60,7 @@ public class CombinedPlotSerializerTest {
     public void serializeCombinedPlot_resultJsonHasType() throws IOException{
         //when
         CombinedPlot combinedPlot = new CombinedPlot();
-        combinedPlotSerializer.serialize(combinedPlot, jgen, new StdSerializerProvider());
+        combinedPlotSerializer.serialize(combinedPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -72,7 +73,7 @@ public class CombinedPlotSerializerTest {
         //when
         CombinedPlot combinedPlot = new CombinedPlot();
         combinedPlot.setInitWidth(600);
-        combinedPlotSerializer.serialize(combinedPlot, jgen, new StdSerializerProvider());
+        combinedPlotSerializer.serialize(combinedPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -85,7 +86,7 @@ public class CombinedPlotSerializerTest {
         //when
         CombinedPlot combinedPlot = new CombinedPlot();
         combinedPlot.setInitHeight(300);
-        combinedPlotSerializer.serialize(combinedPlot, jgen, new StdSerializerProvider());
+        combinedPlotSerializer.serialize(combinedPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -98,7 +99,7 @@ public class CombinedPlotSerializerTest {
         //when
         CombinedPlot combinedPlot = new CombinedPlot();
         combinedPlot.setTitle("Some title");
-        combinedPlotSerializer.serialize(combinedPlot, jgen, new StdSerializerProvider());
+        combinedPlotSerializer.serialize(combinedPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -111,7 +112,7 @@ public class CombinedPlotSerializerTest {
         //when
         CombinedPlot combinedPlot = new CombinedPlot();
         combinedPlot.setXLabel("X label name");
-        combinedPlotSerializer.serialize(combinedPlot, jgen, new StdSerializerProvider());
+        combinedPlotSerializer.serialize(combinedPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -125,7 +126,7 @@ public class CombinedPlotSerializerTest {
         CombinedPlot combinedPlot = new CombinedPlot();
         combinedPlot.add(new Plot());
         combinedPlot.add(new Plot());
-        combinedPlotSerializer.serialize(combinedPlot, jgen, new StdSerializerProvider());
+        combinedPlotSerializer.serialize(combinedPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -138,7 +139,7 @@ public class CombinedPlotSerializerTest {
         //when
         CombinedPlot combinedPlot = new CombinedPlot();
         combinedPlot.add(new SimpleTimePlot(createDataForSimpleTimePlot(), Arrays.asList("m3", "time")));
-        combinedPlotSerializer.serialize(combinedPlot, jgen, new StdSerializerProvider());
+        combinedPlotSerializer.serialize(combinedPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -152,7 +153,7 @@ public class CombinedPlotSerializerTest {
         CombinedPlot combinedPlot = new CombinedPlot();
         combinedPlot.add(new Plot());
         combinedPlot.add(new Plot());
-        combinedPlotSerializer.serialize(combinedPlot, jgen, new StdSerializerProvider());
+        combinedPlotSerializer.serialize(combinedPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -166,7 +167,7 @@ public class CombinedPlotSerializerTest {
         CombinedPlot combinedPlot = new CombinedPlot();
         combinedPlot.add(new Plot(), 3);
         combinedPlot.add(new Plot(), 3);
-        combinedPlotSerializer.serialize(combinedPlot, jgen, new StdSerializerProvider());
+        combinedPlotSerializer.serialize(combinedPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -178,7 +179,7 @@ public class CombinedPlotSerializerTest {
     public void serializeCombinedPlot_resultJsonHasVersion() throws IOException{
         //when
         CombinedPlot combinedPlot = new CombinedPlot();
-        combinedPlotSerializer.serialize(combinedPlot, jgen, new StdSerializerProvider());
+        combinedPlotSerializer.serialize(combinedPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -191,7 +192,7 @@ public class CombinedPlotSerializerTest {
         //when
         CombinedPlot combinedPlot = new CombinedPlot();
         combinedPlot.setxTickLabelsVisible(true);
-        combinedPlotSerializer.serialize(combinedPlot, jgen, new StdSerializerProvider());
+        combinedPlotSerializer.serialize(combinedPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -204,7 +205,7 @@ public class CombinedPlotSerializerTest {
         //when
         CombinedPlot combinedPlot = new CombinedPlot();
         combinedPlot.setyTickLabelsVisible(true);
-        combinedPlotSerializer.serialize(combinedPlot, jgen, new StdSerializerProvider());
+        combinedPlotSerializer.serialize(combinedPlot, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

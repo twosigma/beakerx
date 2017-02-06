@@ -15,14 +15,13 @@
  */
 package com.twosigma.beaker.jvm.object;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.logging.Logger;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 /**
  * The SparkProgressService reports the progress of tasks and stages

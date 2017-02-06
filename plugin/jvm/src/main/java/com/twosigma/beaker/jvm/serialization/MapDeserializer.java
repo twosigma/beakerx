@@ -19,8 +19,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ public class MapDeserializer implements ObjectDeserializer {
     HashMap<String, Object> o = new HashMap<String,Object>();
     try {
       logger.debug("using custom map deserializer");
-      Iterator<Entry<String, JsonNode>> e = n.getFields();
+      Iterator<Entry<String, JsonNode>> e = n.fields();
       while(e.hasNext()) {
         Entry<String, JsonNode> ee = e.next();
         o.put(ee.getKey(), parent.deserialize(ee.getValue(),mapper));

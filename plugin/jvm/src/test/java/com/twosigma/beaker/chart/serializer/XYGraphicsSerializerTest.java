@@ -20,11 +20,11 @@ import com.twosigma.beaker.chart.Filter;
 import com.twosigma.beaker.chart.xychart.NanoPlot;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -59,7 +59,7 @@ public class XYGraphicsSerializerTest {
     public void serializeXOfXYGraphicsLine_resultJsonHasX() throws IOException{
         //when
         line.setX(Arrays.asList(1, 2, 3));
-        xyGraphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        xyGraphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -75,7 +75,7 @@ public class XYGraphicsSerializerTest {
                 new BigInteger("12345678901234567891000"))
         );
         line.setPlotType(NanoPlot.class);
-        xyGraphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        xyGraphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -88,7 +88,7 @@ public class XYGraphicsSerializerTest {
     public void serializeYOfXYGraphicsLine_resultJsonHasY() throws IOException{
         //when
         line.setY(Arrays.asList(1, 2, 3));
-        xyGraphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        xyGraphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -100,7 +100,7 @@ public class XYGraphicsSerializerTest {
     public void serializeDisplayNameOfXYGraphicsLine_resultJsonHasDisplayName() throws IOException{
         //when
         line.setDisplayName("some display name");
-        xyGraphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        xyGraphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -112,7 +112,7 @@ public class XYGraphicsSerializerTest {
     public void serializeLodFilterOfXYGraphicsLine_resultJsonHasLodFilter() throws IOException{
         //when
         line.setLodFilter(Filter.LINE);
-        xyGraphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        xyGraphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -124,7 +124,7 @@ public class XYGraphicsSerializerTest {
     public void serializeTooltipsOfXYGraphicsLine_resultJsonHastooltips() throws IOException{
         //when
         line.setToolTip(Arrays.asList("one", "two"));
-        xyGraphicsSerializer.serialize(line, jgen, new StdSerializerProvider());
+        xyGraphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

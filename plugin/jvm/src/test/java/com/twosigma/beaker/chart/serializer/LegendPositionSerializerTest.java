@@ -18,10 +18,10 @@ package com.twosigma.beaker.chart.serializer;
 
 import com.twosigma.beaker.chart.legend.LegendPosition;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class LegendPositionSerializerTest {
     @Test
     public void serializeLegendPosition_resultJsonHasType() throws IOException{
         //when
-        legendPositionSerializer.serialize(legendPosition, jgen, new StdSerializerProvider());
+        legendPositionSerializer.serialize(legendPosition, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -65,7 +65,7 @@ public class LegendPositionSerializerTest {
     public void serializePositionOfLegendPosition_resultJsonHasPosition() throws IOException{
         //when
         legendPosition.setPosition(LegendPosition.Position.LEFT);
-        legendPositionSerializer.serialize(legendPosition, jgen, new StdSerializerProvider());
+        legendPositionSerializer.serialize(legendPosition, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -77,7 +77,7 @@ public class LegendPositionSerializerTest {
     public void serializeXLegendPosition_resultJsonHasX() throws IOException{
         //when
         LegendPosition legendPositionX = new LegendPosition(new int[] {11, 22});
-        legendPositionSerializer.serialize(legendPositionX, jgen, new StdSerializerProvider());
+        legendPositionSerializer.serialize(legendPositionX, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -89,7 +89,7 @@ public class LegendPositionSerializerTest {
     public void serializeYLegendPosition_resultJsonHasY() throws IOException{
         //when
         LegendPosition legendPositionY = new LegendPosition(new int[] {11, 22});
-        legendPositionSerializer.serialize(legendPositionY, jgen, new StdSerializerProvider());
+        legendPositionSerializer.serialize(legendPositionY, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

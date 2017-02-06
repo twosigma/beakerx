@@ -21,10 +21,10 @@ import com.twosigma.beaker.chart.Filter;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.StrokeType;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class LineSerializerTest {
         //when
         Line line = new Line();
         line.setWidth(1f);
-        lineSerializer.serialize(line, jgen, new StdSerializerProvider());
+        lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -69,7 +69,7 @@ public class LineSerializerTest {
         //when
         Line line = new Line();
         line.setColor(Color.GREEN);
-        lineSerializer.serialize(line, jgen, new StdSerializerProvider());
+        lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -82,7 +82,7 @@ public class LineSerializerTest {
         //when
         Line line = new Line();
         line.setStyle(StrokeType.SOLID);
-        lineSerializer.serialize(line, jgen, new StdSerializerProvider());
+        lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -95,7 +95,7 @@ public class LineSerializerTest {
         //when
         Line line = new Line();
         line.setInterpolation(1);
-        lineSerializer.serialize(line, jgen, new StdSerializerProvider());
+        lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -107,7 +107,7 @@ public class LineSerializerTest {
     public void serializeLodFilterLine_resultJsonHasLodFilter() throws IOException{
         Line line = new Line();
         line.setLodFilter(Filter.LINE);
-        lineSerializer.serialize(line, jgen, new StdSerializerProvider());
+        lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

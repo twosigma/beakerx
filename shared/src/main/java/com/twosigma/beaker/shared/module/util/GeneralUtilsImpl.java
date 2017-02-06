@@ -16,7 +16,6 @@
 
 package com.twosigma.beaker.shared.module.util;
 
-import org.apache.cxf.helpers.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -310,7 +309,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
             public FileVisitResult visitFile(Path file,
                 @SuppressWarnings("unused") BasicFileAttributes attrs)
                 throws IOException {
-              FileUtils.delete(file.toFile());
+              Files.deleteIfExists(file);
               return FileVisitResult.CONTINUE;
             }
 
@@ -318,7 +317,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
             public FileVisitResult postVisitDirectory(Path dir, IOException e)
                 throws IOException {
               if (e == null) {
-                FileUtils.delete(dir.toFile());
+                Files.deleteIfExists(dir);
                 return FileVisitResult.CONTINUE;
               }
               throw e;

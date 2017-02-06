@@ -30,10 +30,10 @@ import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.jvm.object.UpdatableEvaluationResult;
 import com.twosigma.beaker.jvm.object.DashboardLayoutManager;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -273,7 +273,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     if (obj==null) {
       logger.debug("using standard deserialization");
       try {
-        obj = mapper.readValue(n, Object.class);
+        obj = mapper.readValue(n.asText(), Object.class);
       } catch (Exception e) {
         logger.error("exception in auto deserialization",e);
         obj = null;

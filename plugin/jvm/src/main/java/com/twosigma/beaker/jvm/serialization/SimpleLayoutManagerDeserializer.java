@@ -17,7 +17,7 @@
 package com.twosigma.beaker.jvm.serialization;
 
 import com.twosigma.beaker.jvm.object.SimpleLayoutManager;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class SimpleLayoutManagerDeserializer extends OutputContainerLayoutManagerDeserializer<SimpleLayoutManager> {
 

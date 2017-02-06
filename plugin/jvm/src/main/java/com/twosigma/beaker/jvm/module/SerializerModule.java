@@ -15,6 +15,8 @@
  */
 package com.twosigma.beaker.jvm.module;
 
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
@@ -159,11 +161,10 @@ import com.twosigma.beaker.table.serializer.UniqueEntriesHighlighterSerializer;
 import com.twosigma.beaker.table.serializer.ValueHighlighterSerializer;
 import com.twosigma.beaker.table.serializer.ValueStringFormatSerializer;
 import net.sf.jtreemap.swing.TreeMapNode;
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.module.SimpleModule;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -307,13 +308,13 @@ public class SerializerModule extends AbstractModule {
 
       mapper.registerModule(module);
 
-      mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
+      mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
       // Manually serialize everything, either through mixin or serializer
-      mapper.disable(SerializationConfig.Feature.AUTO_DETECT_GETTERS);
-      mapper.disable(SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS);
-      mapper.disable(SerializationConfig.Feature.AUTO_DETECT_FIELDS);
-      mapper.disable(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS);
+      mapper.disable(MapperFeature.AUTO_DETECT_GETTERS);
+      mapper.disable(MapperFeature.AUTO_DETECT_IS_GETTERS);
+      mapper.disable(MapperFeature.AUTO_DETECT_FIELDS);
+      mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
       NamespaceClient.setInjector(injector);
     } catch(Exception e) {

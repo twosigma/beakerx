@@ -21,10 +21,10 @@ import com.twosigma.beaker.chart.xychart.NanoPlot;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beaker.chart.xychart.plotitem.StrokeType;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class ConstantLineSerializerTest {
     public void serializeConstantLine_resultJsonHasType() throws IOException{
         //when
         ConstantLine constantLine = new ConstantLine();
-        constantLineSerializer.serialize(constantLine, jgen, new StdSerializerProvider());
+        constantLineSerializer.serialize(constantLine, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -69,7 +69,7 @@ public class ConstantLineSerializerTest {
         //when
         ConstantLine constantLine = new ConstantLine();
         constantLine.setX(1);
-        constantLineSerializer.serialize(constantLine, jgen, new StdSerializerProvider());
+        constantLineSerializer.serialize(constantLine, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -83,7 +83,7 @@ public class ConstantLineSerializerTest {
         ConstantLine constantLine = new ConstantLine();
         constantLine.setX(new BigInteger("12345678901234567891000"));
         constantLine.setPlotType(NanoPlot.class);
-        constantLineSerializer.serialize(constantLine, jgen, new StdSerializerProvider());
+        constantLineSerializer.serialize(constantLine, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -96,7 +96,7 @@ public class ConstantLineSerializerTest {
         //when
         ConstantLine constantLine = new ConstantLine();
         constantLine.setY(1);
-        constantLineSerializer.serialize(constantLine, jgen, new StdSerializerProvider());
+        constantLineSerializer.serialize(constantLine, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -109,7 +109,7 @@ public class ConstantLineSerializerTest {
         //when
         ConstantLine constantLine = new ConstantLine();
         constantLine.setVisible(true);
-        constantLineSerializer.serialize(constantLine, jgen, new StdSerializerProvider());
+        constantLineSerializer.serialize(constantLine, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -122,7 +122,7 @@ public class ConstantLineSerializerTest {
         //when
         ConstantLine constantLine = new ConstantLine();
         constantLine.setyAxis("Y Axis name");
-        constantLineSerializer.serialize(constantLine, jgen, new StdSerializerProvider());
+        constantLineSerializer.serialize(constantLine, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -135,7 +135,7 @@ public class ConstantLineSerializerTest {
         //when
         ConstantLine constantLine = new ConstantLine();
         constantLine.setShowLabel(true);
-        constantLineSerializer.serialize(constantLine, jgen, new StdSerializerProvider());
+        constantLineSerializer.serialize(constantLine, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -148,7 +148,7 @@ public class ConstantLineSerializerTest {
         //when
         ConstantLine constantLine = new ConstantLine();
         constantLine.setWidth(2f);
-        constantLineSerializer.serialize(constantLine, jgen, new StdSerializerProvider());
+        constantLineSerializer.serialize(constantLine, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -161,7 +161,7 @@ public class ConstantLineSerializerTest {
         //when
         ConstantLine constantLine = new ConstantLine();
         constantLine.setStyle(StrokeType.SOLID);
-        constantLineSerializer.serialize(constantLine, jgen, new StdSerializerProvider());
+        constantLineSerializer.serialize(constantLine, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -174,7 +174,7 @@ public class ConstantLineSerializerTest {
         //when
         ConstantLine constantLine = new ConstantLine();
         constantLine.setColor(Color.GREEN);
-        constantLineSerializer.serialize(constantLine, jgen, new StdSerializerProvider());
+        constantLineSerializer.serialize(constantLine, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

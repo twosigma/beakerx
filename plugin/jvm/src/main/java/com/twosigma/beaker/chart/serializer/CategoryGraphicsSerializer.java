@@ -17,9 +17,8 @@
 package com.twosigma.beaker.chart.serializer;
 
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 import java.io.IOException;
 import java.util.List;

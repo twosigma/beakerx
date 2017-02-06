@@ -19,10 +19,10 @@ package com.twosigma.beaker.chart.serializer;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.GradientColor;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class GradientColorSerializerTest {
     public void serializeGradientColor_resultJsonHasGradientColor() throws IOException{
         //when
         GradientColor gradientColor = new GradientColor(Arrays.asList(Color.GREEN, Color.BLUE));
-        gradientColorSerializer.serialize(gradientColor, jgen, new StdSerializerProvider());
+        gradientColorSerializer.serialize(gradientColor, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         ArrayNode arrayNode = (ArrayNode) mapper.readTree(sw.toString());

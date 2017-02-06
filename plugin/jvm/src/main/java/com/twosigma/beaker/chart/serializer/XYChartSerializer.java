@@ -18,9 +18,9 @@ package com.twosigma.beaker.chart.serializer;
 
 import com.twosigma.beaker.chart.xychart.XYChart;
 import java.io.IOException;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.SerializerProvider;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * XYChartSerializer

@@ -18,10 +18,10 @@ package com.twosigma.beaker.chart.serializer;
 
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import org.assertj.core.api.Assertions;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class YAxisSerializerTest {
     @Test
     public void serializeYAxis_resultJsonHasType() throws IOException{
         //when
-        yAxisSerializer.serialize(yAxis, jgen, new StdSerializerProvider());
+        yAxisSerializer.serialize(yAxis, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -65,7 +65,7 @@ public class YAxisSerializerTest {
     public void serializeLabelOfYAxis_resultJsonHasLabel() throws IOException{
         //when
         yAxis.setLabel("some label");
-        yAxisSerializer.serialize(yAxis, jgen, new StdSerializerProvider());
+        yAxisSerializer.serialize(yAxis, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -77,7 +77,7 @@ public class YAxisSerializerTest {
     public void serializeAutoRangeOfYAxis_resultJsonHasAutoRange() throws IOException{
         //when
         yAxis.setAutoRange(true);
-        yAxisSerializer.serialize(yAxis, jgen, new StdSerializerProvider());
+        yAxisSerializer.serialize(yAxis, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -89,7 +89,7 @@ public class YAxisSerializerTest {
     public void serializeAutoRangeIncludesZeroOfYAxis_resultJsonHasAutoRangeIncludesZero() throws IOException{
         //when
         yAxis.setAutoRangeIncludesZero(true);
-        yAxisSerializer.serialize(yAxis, jgen, new StdSerializerProvider());
+        yAxisSerializer.serialize(yAxis, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -101,7 +101,7 @@ public class YAxisSerializerTest {
     public void serializeLowerMarginOfYAxis_resultJsonHasLowerMargin() throws IOException{
         //when
         yAxis.setLowerMargin(1.5);
-        yAxisSerializer.serialize(yAxis, jgen, new StdSerializerProvider());
+        yAxisSerializer.serialize(yAxis, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -113,7 +113,7 @@ public class YAxisSerializerTest {
     public void serializeUpperMarginOfYAxis_resultJsonHasUpperMargin() throws IOException{
         //when
         yAxis.setUpperMargin(2.5);
-        yAxisSerializer.serialize(yAxis, jgen, new StdSerializerProvider());
+        yAxisSerializer.serialize(yAxis, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -125,7 +125,7 @@ public class YAxisSerializerTest {
     public void serializeLogOfYAxis_resultJsonHasLog() throws IOException{
         //when
         yAxis.setLog(true);
-        yAxisSerializer.serialize(yAxis, jgen, new StdSerializerProvider());
+        yAxisSerializer.serialize(yAxis, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());
@@ -137,7 +137,7 @@ public class YAxisSerializerTest {
     public void serializeLogBaseOfYAxis_resultJsonHasLogBase() throws IOException{
         //when
         yAxis.setLogBase(1.5);
-        yAxisSerializer.serialize(yAxis, jgen, new StdSerializerProvider());
+        yAxisSerializer.serialize(yAxis, jgen, new DefaultSerializerProvider.Impl());
         jgen.flush();
         //then
         JsonNode actualObj = mapper.readTree(sw.toString());

@@ -15,9 +15,8 @@
  */
 package com.twosigma.beaker.jvm.serialization;
 
-
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.twosigma.beaker.chart.Color;
 import org.slf4j.Logger;

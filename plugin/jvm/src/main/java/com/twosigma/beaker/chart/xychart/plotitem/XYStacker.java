@@ -15,8 +15,6 @@
  */
 package com.twosigma.beaker.chart.xychart.plotitem;
 
-import org.apache.cxf.common.util.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,7 +28,7 @@ public class XYStacker {
   }
 
   private static List<BasedXYGraphics> transformGraphicsList(List<BasedXYGraphics> graphicsList) {
-    if (CollectionUtils.isEmpty(graphicsList) || graphicsList.size() == 1){
+    if (graphicsList.isEmpty() || graphicsList.size() == 1){
       return graphicsList;
     } else {
       BasedXYGraphics graphicsWithMaxElements = Collections.max(graphicsList, new Comparator<BasedXYGraphics>() {

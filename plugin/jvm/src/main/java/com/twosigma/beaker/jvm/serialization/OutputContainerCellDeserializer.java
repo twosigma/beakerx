@@ -18,7 +18,7 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.OutputContainerCell;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
 

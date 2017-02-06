@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.shared;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 @JsonAutoDetect
 public class NamespaceBinding {

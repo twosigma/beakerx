@@ -18,7 +18,6 @@ package com.twosigma.beaker.groovy.evaluator;
 
 import groovy.lang.GroovyRuntimeException;
 import groovy.lang.MissingPropertyException;
-import groovy.lang.Script;
 import org.codehaus.groovy.control.MultipleCompilationErrorsException;
 import org.codehaus.groovy.runtime.typehandling.GroovyCastException;
 import org.junit.Test;
@@ -26,85 +25,68 @@ import org.junit.Test;
 public class GroovyEvaluatorExceptionTest extends GroovyEvaluatorTest {
 
     @Test(expected = MultipleCompilationErrorsException.class)
-    public void parseNotExistingClassScript_throwMultipleCompilationErrorsException() throws IllegalAccessException, InstantiationException {
+    public void parseNotExistingClassScript_throwMultipleCompilationErrorsException() {
         //when
-        Class<?> parsedClass = groovyClassLoader.parseClass("def plot = new NotExistPlot()");
-        Script instance = (Script) parsedClass.newInstance();
-        instance.run();
+        parseClassFromScript("def plot = new NotExistPlot()");
     }
 
     @Test(expected = MissingPropertyException.class)
-    public void parseNotExistingPropertyScript_throwMissingPropertyException() throws IllegalAccessException, InstantiationException {
+    public void parseNotExistingPropertyScript_throwMissingPropertyException() {
         //when
-        Class<?> parsedClass = groovyClassLoader.parseClass("def plot = new Plot() \n plot << line");
-        Script instance = (Script) parsedClass.newInstance();
-        instance.run();
+        parseClassFromScript(
+                "def plot = new Plot() \n " +
+                "plot << line");
     }
 
     @Test(expected = NullPointerException.class)
-    public void parseNullObjectScript_throwNullPointerException() throws IllegalAccessException, InstantiationException {
+    public void parseNullObjectScript_throwNullPointerException() {
         //when
-        Class<?> parsedClass = groovyClassLoader.parseClass(
+        parseClassFromScript(
                 "def plot = new Plot() \n" +
                 "Line line = null \n " +
                 "plot << line");
-        Script instance = (Script) parsedClass.newInstance();
-        instance.run();
     }
 
     @Test(expected = GroovyCastException.class)
-    public void parseCastWrongClassScript_throwGroovyCastException() throws IllegalAccessException, InstantiationException {
+    public void parseCastWrongClassScript_throwGroovyCastException() {
         //when
-        Class<?> parsedClass = groovyClassLoader.parseClass(
+        parseClassFromScript(
                 "def plot = new Plot() \n" +
                 "Line line = (Line) Plot ");
-        Script instance = (Script) parsedClass.newInstance();
-        instance.run();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void parseIllegalArgumentScript_throwIllegalArgumentException() throws IllegalAccessException, InstantiationException {
+    public void parseIllegalArgumentScript_throwIllegalArgumentException() {
         //when
-        Class<?> parsedClass = groovyClassLoader.parseClass(
+        parseClassFromScript(
                 "def plot = new Plot() \n" +
                 "plot.setYBound(Arrays.asList(1, 2, 3)) ");
-        Script instance = (Script) parsedClass.newInstance();
-        instance.run();
     }
 
     @Test(expected = NumberFormatException.class)
-    public void parseWrongNumberFormatScript_throwNumberFormatException() throws IllegalAccessException, InstantiationException {
+    public void parseWrongNumberFormatScript_throwNumberFormatException() {
         //when
-        Class<?> parsedClass = groovyClassLoader.parseClass(
-                "def intval = Color.decode(\"FF00FF\"); ");
-        Script instance = (Script) parsedClass.newInstance();
-        instance.run();
+        parseClassFromScript("def intval = Color.decode(\"FF00FF\"); ");
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
-    public void parseIndexOutOfBoundsScript_throwIndexOutOfBoundsException() throws IllegalAccessException, InstantiationException {
+    public void parseIndexOutOfBoundsScript_throwIndexOutOfBoundsException() {
         //when
-        Class<?> parsedClass = groovyClassLoader.parseClass(
+        parseClassFromScript(
                 "def arr = new ArrayList() \n" +
                 "arr.get(5) ");
-        Script instance = (Script) parsedClass.newInstance();
-        instance.run();
     }
 
     @Test(expected = GroovyRuntimeException.class)
-    public void parseNotExistingConstructorScript_throwGroovyRuntimeException() throws IllegalAccessException, InstantiationException {
+    public void parseNotExistingConstructorScript_throwGroovyRuntimeException() {
         //when
-        Class<?> parsedClass = groovyClassLoader.parseClass("def plot = new Plot(123)");
-        Script instance = (Script) parsedClass.newInstance();
-        instance.run();
+        parseClassFromScript("def plot = new Plot(123)");
     }
 
     @Test(expected = ArithmeticException.class)
-    public void parseDivisionByZeroScript_throwArithmeticException() throws IllegalAccessException, InstantiationException {
+    public void parseDivisionByZeroScript_throwArithmeticException() {
         //when
-        Class<?> parsedClass = groovyClassLoader.parseClass("1/0 ");
-        Script instance = (Script) parsedClass.newInstance();
-        instance.run();
+        parseClassFromScript("1/0 ");
     }
 
 }

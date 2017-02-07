@@ -16,14 +16,9 @@
 
 package com.twosigma.beaker.groovy.evaluator;
 
-import com.twosigma.beaker.chart.xychart.Plot;
-import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
-import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.IOException;
 
 import static com.twosigma.beaker.groovy.GroovyDefaultVariables.CLASS_PATH;
@@ -41,33 +36,16 @@ public class GroovyEvaluatorTest {
         groovyClassLoader = groovyEvaluator.newEvaluator();
     }
 
-    @Test
-    public void parsePlotWithTitleScript_returnPlotObjectWithTitle() throws IllegalAccessException, InstantiationException {
-        //when
-        Class<?> parsedClass = groovyClassLoader.parseClass(
-                "def plot = new Plot(title: \"Setting line properties\")");
-        Script instance = (Script) parsedClass.newInstance();
-        Object result = instance.run();
-        //then
-        Assertions.assertThat(result instanceof Plot).isTrue();
-        Plot plot = (Plot) result;
-        Assertions.assertThat(plot.getTitle()).isEqualTo("Setting line properties");
-    }
-
-    @Test
-    public void parsePlotWithLineScript_returnPlotObjectWithLine() throws IllegalAccessException, InstantiationException {
-        //when
-        Class<?> parsedClass = groovyClassLoader.parseClass(
-                "def plot = new Plot()\n" +
-                "def ys = [0, 1, 6, 5, 2, 8]\n" +
-                "def ys2 = [0, 2, 7, 6, 3, 8]\n" +
-                "plot << new Line(y: ys, width: 10, color: Color.red)");
-        Script instance = (Script) parsedClass.newInstance();
-        Object result = instance.run();
-        //then
-        Assertions.assertThat(result instanceof Plot).isTrue();
-        Plot plot = (Plot) result;
-        Assertions.assertThat(plot.getGraphics()).isNotEmpty();
-        Assertions.assertThat(plot.getGraphics().get(0) instanceof Line).isTrue();
+    public Object parseClassFromScript(String script){
+        Class<?> parsedClass = groovyClassLoader.parseClass(script);
+        Script instance = null;
+        try {
+            instance = (Script) parsedClass.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return instance.run();
     }
 }

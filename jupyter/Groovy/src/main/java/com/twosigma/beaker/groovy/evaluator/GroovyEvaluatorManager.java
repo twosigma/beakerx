@@ -21,12 +21,11 @@ import static com.twosigma.beaker.groovy.GroovyDefaultVariables.OUT_DIR;
 
 import java.io.IOException;
 
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.twosigma.beaker.groovy.SimpleEvaluationObject;
 
 public class GroovyEvaluatorManager {
   

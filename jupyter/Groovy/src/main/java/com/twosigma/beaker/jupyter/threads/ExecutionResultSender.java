@@ -5,11 +5,11 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beaker.groovy.SimpleEvaluationObject;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.beaker.jupyter.msg.MessageHolder;
 import com.twosigma.beaker.jupyter.SocketEnum;

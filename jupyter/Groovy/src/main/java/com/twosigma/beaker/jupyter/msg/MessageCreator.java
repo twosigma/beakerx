@@ -24,6 +24,8 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STREAM;
 import java.io.Serializable;
 import java.util.*;
 
+import com.twosigma.beaker.jvm.object.ConsoleOutput;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
@@ -31,9 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.twosigma.beaker.SerializeToString;
-import com.twosigma.beaker.groovy.ConsoleOutput;
-import com.twosigma.beaker.groovy.SimpleEvaluationObject;
-import com.twosigma.beaker.groovy.SimpleEvaluationObject.EvaluationStatus;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus;
 import com.twosigma.beaker.jupyter.SocketEnum;
 
 /**
@@ -57,11 +57,11 @@ public class MessageCreator {
     logger.info("Creating message responce message from: " + seo);
 
     List<MessageHolder> ret = new ArrayList<>();
-    Message message = seo.getJupyterMessage();
+    Message message = (Message)seo.getJupyterMessage();
     
     if(seo.getConsoleOutput() != null && !seo.getConsoleOutput().isEmpty()){
       while(!seo.getConsoleOutput().isEmpty()){
-        ConsoleOutput co = seo.getConsoleOutput().poll(); //FIFO : peek to see, poll -- removes the data 
+        ConsoleOutput co = seo.getConsoleOutput().poll(); //FIFO : peek to see, poll -- removes the data
         Message reply = new Message();
         reply.setParentHeader(message.getHeader());
         reply.setIdentities(message.getIdentities());

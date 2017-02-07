@@ -9,5 +9,7 @@ import java.security.NoSuchAlgorithmException;
  * @author Keith Suderman
  */
 public interface IHandler <T>{
-  public abstract void handle(T message) throws NoSuchAlgorithmException;
+  
+   void handle(T message) throws NoSuchAlgorithmException;
+   
 }

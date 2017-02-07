@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
-public class Layout implements Widget {
+public class Layout extends Widget {
 
   private String _view_name = "LayoutView";
   private String _model_name = "LayoutModel";

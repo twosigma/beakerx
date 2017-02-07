@@ -17,8 +17,25 @@ package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.jupyter.Comm;
 
-public interface Widget {
+import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 
-  Comm getComm();
+public abstract class Widget {
 
+  public abstract Comm getComm();
+
+  public void sendUpdate(String propertyName, Object value) {
+    HashMap<String, Serializable> content = new HashMap<>();
+    content.put("method", "update");
+    HashMap<Object, Object> state = new HashMap<>();
+    state.put(propertyName, value);
+    content.put("state", state);
+    getComm().setData(content);
+    try {
+      getComm().send();
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

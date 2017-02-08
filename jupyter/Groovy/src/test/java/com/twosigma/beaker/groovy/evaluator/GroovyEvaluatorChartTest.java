@@ -17,6 +17,11 @@
 package com.twosigma.beaker.groovy.evaluator;
 
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
+import com.twosigma.beaker.chart.legend.LegendLayout;
+import com.twosigma.beaker.chart.legend.LegendPosition;
+import com.twosigma.beaker.chart.xychart.NanoPlot;
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.chart.xychart.plotitem.*;
 import org.assertj.core.api.Assertions;
@@ -183,6 +188,169 @@ public class GroovyEvaluatorChartTest extends GroovyEvaluatorTest {
         Plot plot = (Plot) result;
         Assertions.assertThat(plot.getTexts()).isNotEmpty();
         Assertions.assertThat(plot.getTexts().get(0)).isNotNull();
+    }
+
+    @Test
+    public void parsePlotWithCrosshairScript_returnPlotObjectWithCrosshair() {
+        //when
+        Object result = parseClassFromScript(
+                "def plot = new Plot(crosshair: new Crosshair(color: Color.BLUE))");
+        //then
+        Assertions.assertThat(result instanceof Plot).isTrue();
+        Plot plot = (Plot) result;
+        Assertions.assertThat(plot.getCrosshair()).isNotNull();
+    }
+
+    @Test
+    public void parsePlotWithLegendLayoutScript_returnPlotObjectWithLegendLayout() {
+        //when
+        Object result = parseClassFromScript(
+                "def pp = new Plot(legendLayout: LegendLayout.HORIZONTAL)");
+        //then
+        Assertions.assertThat(result instanceof Plot).isTrue();
+        Plot plot = (Plot) result;
+        Assertions.assertThat(plot.getLegendLayout()).isEqualTo(LegendLayout.HORIZONTAL);
+    }
+
+    @Test
+    public void parsePlotWithLegendPositionScript_returnPlotObjectWithLegendPosition() {
+        //when
+        Object result = parseClassFromScript(
+                "def pp = new Plot(legendPosition: LegendPosition.TOP)");
+        //then
+        Assertions.assertThat(result instanceof Plot).isTrue();
+        Plot plot = (Plot) result;
+        Assertions.assertThat(plot.getLegendPosition()).isEqualTo(LegendPosition.TOP);
+    }
+
+    @Test
+    public void parsePlotWithBaseOfAreaScript_returnPlotObjectWithBaseOfArea() {
+        //when
+        Object result = parseClassFromScript(
+                "def plot = new Plot()\n" +
+                "def y = [3, 5, 2, 3]\n" +
+                "def x0 = [0, 1, 2, 3]\n" +
+                "plot << new Area(x: x0, y: y, base: 1)");
+        //then
+        Assertions.assertThat(result instanceof Plot).isTrue();
+        Plot plot = (Plot) result;
+        Assertions.assertThat(((Area)plot.getGraphics().get(0)).getBase().intValue()).isGreaterThan(0);
+    }
+
+    @Test
+    public void parsePlotWithXYStackerScript_returnPlotObjectWithGraphics() {
+        //when
+        Object result = parseClassFromScript(
+                "def y1 = [1,5,3,2,3]\n" +
+                "def y2 = [7,2,4,1,3]\n" +
+                "def p = new Plot()\n" +
+                "def a1 = new Area(y: y1, displayName: 'y1')\n" +
+                "def a2 = new Area(y: y2, displayName: 'y2')\n" +
+                "p << XYStacker.stack([a1, a2])");
+        //then
+        Assertions.assertThat(result instanceof Plot).isTrue();
+        Plot plot = (Plot) result;
+        Assertions.assertThat(plot.getGraphics()).isNotEmpty();
+    }
+
+    @Test
+    public void parseCategoryPlotWithCategoryBarsScript_returnCategoryPlotObjectWithCategoryBars() {
+        //when
+        Object result = parseClassFromScript(
+                "def bars = new CategoryBars(value: [[1, 2, 3], [1, 3, 5]])\n" +
+                "new CategoryPlot() << bars");
+        //then
+        Assertions.assertThat(result instanceof CategoryPlot).isTrue();
+        CategoryPlot categoryPlot = (CategoryPlot) result;
+        Assertions.assertThat(categoryPlot.getCategoryGraphics()).isNotEmpty();
+    }
+
+    @Test
+    public void parseCategoryPlotWithHorizontalOrientationScript_returnCategoryPlotObjectWithHorizontalOrientation() {
+        //when
+        Object result = parseClassFromScript(
+                "def plot = new CategoryPlot(orientation: PlotOrientationType.HORIZONTAL)\n" +
+                "plot << new CategoryBars(value:[[1, 2, 3], [1, 3, 5]])");
+        //then
+        Assertions.assertThat(result instanceof CategoryPlot).isTrue();
+        CategoryPlot categoryPlot = (CategoryPlot) result;
+        Assertions.assertThat(categoryPlot.getOrientation()).isEqualTo(PlotOrientationType.HORIZONTAL);
+    }
+
+    @Test
+    public void parseCategoryPlotWithCategoryStemsScript_returnCategoryPlotObjectWithCategoryStems() {
+        //when
+        Object result = parseClassFromScript(
+                "new CategoryPlot() << new CategoryStems(value: [[1, 2, 4], [4, 5, 8]])");
+        //then
+        Assertions.assertThat(result instanceof CategoryPlot).isTrue();
+        CategoryPlot categoryPlot = (CategoryPlot) result;
+        Assertions.assertThat(categoryPlot.getCategoryGraphics()).isNotEmpty();
+    }
+
+    @Test
+    public void parseCategoryPlotWithCategoryPointsScript_returnCategoryPlotObjectWithCategoryPoints() {
+        //when
+        Object result = parseClassFromScript(
+                "new CategoryPlot() << new CategoryPoints(value: [[1, 2, 4], [4, 5, 8]])");
+        //then
+        Assertions.assertThat(result instanceof CategoryPlot).isTrue();
+        CategoryPlot categoryPlot = (CategoryPlot) result;
+        Assertions.assertThat(categoryPlot.getCategoryGraphics()).isNotEmpty();
+    }
+
+    @Test
+    public void parseCategoryPlotWithCategoryLinesScript_returnCategoryPlotObjectWithCategoryLines() {
+        //when
+        Object result = parseClassFromScript(
+                "new CategoryPlot() << new CategoryLines(value: [[1, 2, 4], [4, 5, 8]])");
+        //then
+        Assertions.assertThat(result instanceof CategoryPlot).isTrue();
+        CategoryPlot categoryPlot = (CategoryPlot) result;
+        Assertions.assertThat(categoryPlot.getCategoryGraphics()).isNotEmpty();
+    }
+
+    @Test
+    public void parseCategoryPlotWithYAxisScript_returnCategoryPlotObjectWithYAxis() {
+        //when
+        Object result = parseClassFromScript(
+                "def p = new CategoryPlot()\n" +
+                "p << new YAxis(label: \"Volume\", upperMargin: 1)");
+        //then
+        Assertions.assertThat(result instanceof CategoryPlot).isTrue();
+        CategoryPlot categoryPlot = (CategoryPlot) result;
+        Assertions.assertThat(categoryPlot.getYAxes()).isNotEmpty();
+    }
+
+    @Test
+    public void parseCategoryBarsWithLabelPositionScript_returnCategoryBarsObjectWithLabelPosition() {
+        //when
+        Object result = parseClassFromScript(
+                "def p = new CategoryPlot()\n" +
+                "p << new CategoryBars(value: [[1500, 2200, 2500, 4000]], width: 0.6,\n" +
+                "                      color: Color.PINK, yAxis: \"Volume\", showItemLabel: true,\n" +
+                "                      labelPosition: LabelPositionType.VALUE_INSIDE)");
+        //then
+        Assertions.assertThat(result instanceof CategoryPlot).isTrue();
+        CategoryPlot categoryPlot = (CategoryPlot) result;
+        Assertions.assertThat(categoryPlot.getCategoryGraphics()).isNotEmpty();
+        CategoryBars categoryBars = (CategoryBars)categoryPlot.getCategoryGraphics().get(0);
+        Assertions.assertThat(categoryBars.getLabelPosition()).isEqualTo(LabelPositionType.VALUE_INSIDE);
+    }
+
+    @Test
+    public void parseNanoPlotWithPointsScript_returnNanoPlotObjectWithPoints() {
+        //when
+        Object result = parseClassFromScript(
+                "def today  = new Date()\n" +
+                "def millis = today.time\n" +
+                "def nanos  = millis * 1000 * 1000g // g makes it arbitrary precision\n" +
+                "def np = new NanoPlot()\n" +
+                "np << new Points(x:(0..10).collect{nanos + 7 * it}, y:(0..10))");
+        //then
+        Assertions.assertThat(result instanceof NanoPlot).isTrue();
+        NanoPlot nanoPlot = (NanoPlot) result;
+        Assertions.assertThat(nanoPlot.getGraphics()).isNotEmpty();
     }
 
 }

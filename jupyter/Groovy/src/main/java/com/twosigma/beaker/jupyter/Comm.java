@@ -173,7 +173,7 @@ public class Comm {
   }
   
   protected Message getParentMessage(){
-    return NamespaceClient.getBeaker().getOutputObj() != null ? (Message)NamespaceClient.getBeaker().getOutputObj().getJupyterMessage() : null;
+    return NamespaceClient.getBeaker() != null && NamespaceClient.getBeaker().getOutputObj() != null ? (Message)NamespaceClient.getBeaker().getOutputObj().getJupyterMessage() : null;
   }
   
   public void handleMsg(Message parentMessage) throws NoSuchAlgorithmException{

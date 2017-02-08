@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.handler.CompleteHandler;
@@ -85,7 +86,7 @@ public class GroovyKernel {
   public GroovyKernel() {
     id = uuid();
     installHandlers();
-    commMap = new HashMap<>();
+    commMap = new ConcurrentHashMap<>();
     executionResultSender = new ExecutionResultSender(this);
   }
 
@@ -112,7 +113,7 @@ public class GroovyKernel {
     handlers.put(JupyterMessages.COMM_MSG, new CommMsgHandler(this, new MessageCreator(this)));
   }
 
-  public boolean isCommPresent(String hash){
+  public synchronized boolean isCommPresent(String hash){
     return commMap.containsKey(hash);
   }
   
@@ -120,17 +121,17 @@ public class GroovyKernel {
     return commMap.keySet();
   }
   
-  public void addComm(String hash, Comm commObject){
+  public synchronized void addComm(String hash, Comm commObject){
     if(!isCommPresent(hash)){
       commMap.put(hash, commObject);
     }
   }
   
-  public Comm getComm(String hash){
+  public synchronized Comm getComm(String hash){
     return commMap.get(hash);
   }
   
-  public List<Comm> getCommByTargetName(String targetName){
+  public synchronized List<Comm> getCommByTargetName(String targetName){
     List<Comm> ret = new ArrayList<>();
     if(targetName != null){
       for (Comm comm : commMap.values()) {
@@ -142,11 +143,11 @@ public class GroovyKernel {
     return ret;
   }
   
-  public  List<Comm> getCommByTargetName(CommNamesEnum targetName){
+  public synchronized List<Comm> getCommByTargetName(CommNamesEnum targetName){
     return targetName != null ? getCommByTargetName(targetName.getTargetName()) : new ArrayList<>() ;
   }
   
-  public void removeComm(String hash){
+  public synchronized void removeComm(String hash){
     if(isCommPresent(hash)){
       commMap.remove(hash);
     }

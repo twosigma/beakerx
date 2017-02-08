@@ -22,16 +22,17 @@ define([
 
   config.loaded.then(function() {
     console.log('beaker extension loaded');
+  });
+
+  Jupyter.notebook.events.on('kernel_ready.Kernel', function() {
     var kernel = Jupyter.notebook.kernel;
     window.beaker = {};
     kernel.comm_manager.register_target('beaker.autotranslation',
-                                        function(comm, msg) {
-                                          comm.on_msg(function(msg) {
-                                            console.log('comm.on_msg');
-                                            console.log(msg);
-                                            window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
-                                          });
-                                        });
+      function(comm, msg) {
+        comm.on_msg(function(msg) {
+          window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
+        });
+      });
   });
 
   var load_ipython_extension = function() {

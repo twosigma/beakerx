@@ -15,6 +15,19 @@
  */
 package com.twosigma.beaker.groovy;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.CommNamesEnum;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
+import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beaker.shared.NamespaceBinding;
+import org.lappsgrid.jupyter.groovy.handler.IHandler;
+import org.lappsgrid.jupyter.groovy.msg.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -23,27 +36,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
-import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
-import org.lappsgrid.jupyter.groovy.handler.IHandler;
-import org.lappsgrid.jupyter.groovy.msg.Message;
-
-import com.twosigma.beaker.jupyter.Comm;
-import com.twosigma.beaker.jupyter.CommNamesEnum;
-
 public class NamespaceClient {
+
+  private static final Logger logger = LoggerFactory.getLogger(NamespaceClient.class.getName());
   
-  private static Map<String,NamespaceClient> nsClients = new ConcurrentHashMap<String,NamespaceClient>();
+  private static Map<String,NamespaceClient> nsClients = new ConcurrentHashMap<>();
   private static String currentSession;
   
   private ObjectMapper objectMapper;
   private BeakerObjectConverter objectSerializer;
   private SimpleEvaluationObject currentCeo = null;
   private Comm autotranslationComm = null;
-  
+
   public NamespaceClient() {
     objectMapper = new ObjectMapper();
     objectSerializer = new BasicObjectSerializer();
@@ -77,7 +81,7 @@ public class NamespaceClient {
     currentSession = null;
   }
   
-  public Object set(String name, Object value) throws IOException {
+  public synchronized Object set(String name, Object value) throws IOException {
     try {
       Comm c = getAutotranslationComm();
       HashMap<String, Serializable> data = new HashMap<>();
@@ -92,7 +96,6 @@ public class NamespaceClient {
     return value;
   }
   
-  
   protected String getJson(Object value) throws IOException{
     StringWriter sw = new StringWriter();
     JsonGenerator jgen = objectMapper.getFactory().createGenerator(sw);
@@ -101,38 +104,20 @@ public class NamespaceClient {
     sw.flush();
     return sw.toString();
   }
-  
 
+  //TODO : Not Implemented
   public Object setFast(String name, Object value) {
     return "setFast:" + name + "/" +value;
   }
 
+  //TODO : Not Implemented
   public Object unset(String name) {
     return "unset:" + name;
   }
 
   //TODO : Not Implemented
-  public Object get(final String name) {
-    final ObjectHolder<Object> ret = new ObjectHolder<Object>();
-    try {
-      Comm c = getAutotranslationComm();
-      HashMap<String, Serializable> data = new HashMap<>();
-      data.put("name", name);
-      //data.put("value", value.toString());
-      //data.put("sync", true);
-      c.setData(data);
-      c.addMsgCallbackList(new IHandler<Message>() {
-        
-        public void handle(Message message) throws NoSuchAlgorithmException{
-          ret.setValue(message.getContent());
-        }
-        
-      });
-      c.send();
-    } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
-    }
-    return ret.getValue();
+  public synchronized Object get(final String name) {
+    throw new RuntimeException("This option is not implemented now") ;
   }
 
   protected Comm getAutotranslationComm() throws NoSuchAlgorithmException{

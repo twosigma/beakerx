@@ -32,7 +32,9 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -42,7 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.twosigma.beaker.groovy.NamespaceClient;
-import com.twosigma.beaker.groovy.threads.BeakerCellExecutor;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;

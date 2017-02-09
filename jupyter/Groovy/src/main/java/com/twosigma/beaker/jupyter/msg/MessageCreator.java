@@ -22,7 +22,11 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STATUS;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STREAM;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.twosigma.beaker.jvm.object.ConsoleOutput;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;

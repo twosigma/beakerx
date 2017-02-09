@@ -130,24 +130,24 @@ public class SerializeToString {
   }
   
   public static String doit(Object result) {
-	  if (mapper != null && isBeakerChart(result)) {
-		  try {
-	        String s = mapper.writeValueAsString(result);
-	        count++;
-	        s = "<html><div id='beakerChart" + count + 
-	            "'></div><script>var j = " + s + 
-	            "; console.log('plot this:'); console.log(j); window.initPlotd(j,'beakerChart" + count +
-	            "');</script></html>";
-	        return s;
-	      } catch (Exception e) {
-	        StringWriter w = new StringWriter();
-	        PrintWriter printWriter = new PrintWriter( w );
-	        e.printStackTrace( printWriter );
-	        printWriter.flush();
-	        return w.toString();
-	      }
-	  } 
-	  return result != null ? result.toString() : null;
+    if (mapper != null && isBeakerChart(result)) {
+      try {
+        String s = mapper.writeValueAsString(result);
+        count++;
+        s = "<html><div id='beakerChart" + count + 
+          "'></div><script>var j = " + s + 
+          "; console.log('plot this:'); console.log(j); window.initPlotd(j,'beakerChart" + count +
+          "');</script></html>";
+        return s;
+      } catch (Exception e) {
+        StringWriter w = new StringWriter();
+        PrintWriter printWriter = new PrintWriter( w );
+        e.printStackTrace( printWriter );
+        printWriter.flush();
+        return w.toString();
+      }
+    } 
+    return result != null ? result.toString() : null;
   }
 
 }

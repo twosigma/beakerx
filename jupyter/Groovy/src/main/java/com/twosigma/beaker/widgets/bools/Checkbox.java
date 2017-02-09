@@ -13,21 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beaker.widgets.bools;
 
-package com.twosigma.beaker.jupyter;
+import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 
-import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
+public class Checkbox extends BoolWidget {
 
-public class GroovyKernelManager {
+  public static String VIEW_NAME_VALUE = "CheckboxView";
+  public static String MODEL_NAME_VALUE = "CheckboxModel";
 
-  private static GroovyKernelFunctionality groovyKernelInst;
-
-  public static void register(GroovyKernelFunctionality groovyKernel) {
-    groovyKernelInst = groovyKernel;
+  public Checkbox() throws NoSuchAlgorithmException {
+    super();
+    init();
   }
 
-  public static GroovyKernelFunctionality get() {
-    return groovyKernelInst;
+  @Override
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+    super.content(content);
+    content.put(MODEL_NAME, MODEL_NAME_VALUE);
+    content.put(VIEW_NAME, VIEW_NAME_VALUE);
+    return content;
   }
-
 }

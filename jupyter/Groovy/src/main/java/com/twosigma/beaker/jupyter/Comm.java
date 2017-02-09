@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
+import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.handler.IHandler;
 import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
@@ -49,7 +50,7 @@ public class Comm {
   private String targetName;
   private HashMap<?,?> data;
   private String targetModule;
-  private GroovyKernel kernel;
+  private GroovyKernelFunctionality kernel;
   private List<IHandler<Message>> msgCallbackList = new ArrayList<>();
   private List<IHandler<Message>> closeCallbackList  = new ArrayList<>(); 
   
@@ -171,11 +172,11 @@ public class Comm {
     message.setContent(map);
     kernel.publish(message);
   }
-  
-  protected Message getParentMessage(){
-    return NamespaceClient.getBeaker() != null && NamespaceClient.getBeaker().getOutputObj() != null ? (Message)NamespaceClient.getBeaker().getOutputObj().getJupyterMessage() : null;
+
+  protected Message getParentMessage() {
+    return this.kernel.getParentMessage();
   }
-  
+
   public void handleMsg(Message parentMessage) throws NoSuchAlgorithmException{
     if(this.getMsgCallbackList() != null && !this.getMsgCallbackList().isEmpty()){
       for (IHandler<Message> handler : getMsgCallbackList()) {

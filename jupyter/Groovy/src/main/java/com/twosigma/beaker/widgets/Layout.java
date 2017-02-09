@@ -15,43 +15,26 @@
  */
 package com.twosigma.beaker.widgets;
 
-import com.twosigma.beaker.jupyter.Comm;
-import com.twosigma.beaker.jupyter.CommNamesEnum;
-import com.twosigma.beaker.jupyter.Utils;
-
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class Layout extends Widget {
 
+  public static final String IPY_MODEL = "IPY_MODEL_";
+  public static final String LAYOUT = "layout";
+
   private String _view_name = "LayoutView";
   private String _model_name = "LayoutModel";
-  private String _model_module = "jupyter-js-widgets";
-  private String _view_module = "jupyter-js-widgets";
-
-  private Comm comm;
 
   public Layout() throws NoSuchAlgorithmException {
-    comm = new Comm(Utils.uuid(), CommNamesEnum.JUPYTER_WIDGET);
-    openComm(comm);
-  }
-
-  private void openComm(final Comm comm) throws NoSuchAlgorithmException {
-    comm.setData(content());
-    comm.open();
+    super();
+    init();
   }
 
   @Override
-  public Comm getComm() {
-    return this.comm;
-  }
-
-  private HashMap<String, Serializable> content() {
-    HashMap<String, Serializable> content = new HashMap<>();
-    content.put("_model_module", _model_module);
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     content.put("_model_name", _model_name);
-    content.put("_view_module", _view_module);
     content.put("_view_name", _view_name);
     content.put("align_content", "");
     content.put("align_items", "");

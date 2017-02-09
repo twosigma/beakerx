@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.twosigma.beaker.groovy.NamespaceClient;
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.handler.CompleteHandler;
 import org.lappsgrid.jupyter.groovy.handler.HistoryHandler;
@@ -50,7 +51,7 @@ import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
  *
  * @author Keith Suderman
  */
-public class GroovyKernel {
+public class GroovyKernel implements GroovyKernelFunctionality{
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyKernel.class);
 
@@ -357,4 +358,9 @@ public class GroovyKernel {
   public ExecutionResultSender getExecutionResultSender() {
     return executionResultSender;
   }
+
+  public Message getParentMessage(){
+    return NamespaceClient.getBeaker() != null && NamespaceClient.getBeaker().getOutputObj() != null ? (Message)NamespaceClient.getBeaker().getOutputObj().getJupyterMessage() : null;
+  }
+
 }

@@ -107,12 +107,12 @@ public class NamespaceClient {
 
   //TODO : Not Implemented
   public Object setFast(String name, Object value) {
-    return "setFast:" + name + "/" +value;
+    throw new RuntimeException("This option is not implemented now") ;
   }
 
   //TODO : Not Implemented
   public Object unset(String name) {
-    return "unset:" + name;
+    throw new RuntimeException("This option is not implemented now") ;
   }
 
   //TODO : Not Implemented

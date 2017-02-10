@@ -22,6 +22,8 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -107,7 +109,7 @@ public class GroovyEvaluator {
     updateLoader = false;
     currentClassPath = "";
     currentImports = "";
-    outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
+    outDir = createJupyterTempFolder().toString();
     outDir = envVariablesFilter(outDir, System.getenv());
     outDirInput = outDir;
     try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
@@ -161,13 +163,21 @@ public class GroovyEvaluator {
     syncObject.release();
   }
 
+  public static Path createJupyterTempFolder(){
+    Path ret = null;
+    try {
+      ret = Files.createTempDirectory("beaker");
+    } catch (IOException e) {
+      logger.error("No temp folder set for beaker", e);
+    }
+    return ret.toAbsolutePath();
+  }
+
   public void setShellOptions(String cp, String in, String od) throws IOException {
     if (od==null || od.isEmpty()) {
-      od = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
-    } else {
-      od = od.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
+      od = outDirInput;
     }
-    
+    logger.info("Dynamic folder is = " + od);
     // check if we are not changing anything
     if (currentClassPath.equals(cp) && currentImports.equals(in) && outDirInput.equals(od))
       return;

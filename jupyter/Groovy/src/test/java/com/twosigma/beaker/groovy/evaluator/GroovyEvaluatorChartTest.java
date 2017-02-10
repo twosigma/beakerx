@@ -19,10 +19,11 @@ package com.twosigma.beaker.groovy.evaluator;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
+import com.twosigma.beaker.chart.heatmap.HeatMap;
+import com.twosigma.beaker.chart.histogram.Histogram;
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
-import com.twosigma.beaker.chart.xychart.NanoPlot;
-import com.twosigma.beaker.chart.xychart.Plot;
+import com.twosigma.beaker.chart.xychart.*;
 import com.twosigma.beaker.chart.xychart.plotitem.*;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -351,6 +352,111 @@ public class GroovyEvaluatorChartTest extends GroovyEvaluatorTest {
         Assertions.assertThat(result instanceof NanoPlot).isTrue();
         NanoPlot nanoPlot = (NanoPlot) result;
         Assertions.assertThat(nanoPlot.getGraphics()).isNotEmpty();
+    }
+
+    @Test
+    public void parseSimpleTimePlotScript_returnSimpleTimePlotObjectWithData() {
+        //when
+        Object result = parseClassFromScript(
+                "def rates = (1..10).collect{[\"y1\": 1 + it, \"y10\": 2 + it, \"time\" : 633733200000 + 10000*it]}\n" +
+                        "new SimpleTimePlot(rates, [\"y1\", \"y10\"],\n" +
+                        "                   yLabel: \"Price\", \n" +
+                        "                   displayNames: [\"1 Year\", \"10 Year\"])");
+        //then
+        Assertions.assertThat(result instanceof SimpleTimePlot).isTrue();
+        SimpleTimePlot simpleTimePlot = (SimpleTimePlot) result;
+        Assertions.assertThat(simpleTimePlot.getData()).isNotEmpty();
+    }
+
+    @Test
+    public void parseCombinedPlotScript_returnCombinedPlotObjectWithSubplots() {
+        //when
+        Object result = parseClassFromScript(
+                "def cplot = new CombinedPlot(xLabel: \"Linear\");\n" +
+                "cplot.add(new Plot())\n" +
+                "cplot.add(new Plot())\n" +
+                "cplot");
+        //then
+        Assertions.assertThat(result instanceof CombinedPlot).isTrue();
+        CombinedPlot combinedPlot = (CombinedPlot) result;
+        Assertions.assertThat(combinedPlot.getSubplots()).isNotEmpty();
+    }
+
+    @Test
+    public void parseTimePlotScript_returnTimePlotObject() {
+        //when
+        Object result = parseClassFromScript(
+                "def today = new Date();\n" +
+                "def millis = today.time;\n" +
+                "def hour = 1000 * 60 * 60;\n" +
+                "def plot = new TimePlot( timeZone: new SimpleTimeZone(10800000, \"America/New_York\"));\n" +
+                "plot << new Points(x:(0..10).collect{millis + hour * it}, y:(0..10));");
+        //then
+        Assertions.assertThat(result instanceof TimePlot).isTrue();
+        TimePlot timePlot = (TimePlot) result;
+        Assertions.assertThat(timePlot.getGraphics()).isNotEmpty();
+    }
+
+    @Test
+    public void parseHistogramScript_returnHistogramObject() {
+        //when
+        Object result = parseClassFromScript(
+                "Random random = new Random();\n" +
+                "data3 = [];\n" +
+                "(1..10000).each { data3 << random.nextGaussian();}\n" +
+                "new Histogram(data: data3, binCount: 25);");
+        //then
+        Assertions.assertThat(result instanceof Histogram).isTrue();
+        Histogram histogram = (Histogram) result;
+        Assertions.assertThat(histogram.getData()).isNotEmpty();
+    }
+
+    @Test
+    public void parseHeatmapScript_returnHeatmapObject() {
+        //when
+        Object result = parseClassFromScript(
+                "data4 = [[1, 2, 3], [3, 2, 1], [2, 2, 1]]\n" +
+                "new HeatMap(data: data4)");
+        //then
+        Assertions.assertThat(result instanceof HeatMap).isTrue();
+        HeatMap heatMap = (HeatMap) result;
+        Assertions.assertThat(heatMap.getData()).isNotEmpty();
+    }
+
+    @Test
+    public void parseHeatmapWithGradientColorScript_returnHeatmapObject() {
+        //when
+        Object result = parseClassFromScript(
+                "data4 = [[1, 2, 3], [3, 2, 1], [2, 2, 1]]\n" +
+                "new HeatMap(data: data4, color: GradientColor.GREEN_YELLOW_WHITE)");
+        //then
+        Assertions.assertThat(result instanceof HeatMap).isTrue();
+        HeatMap heatMap = (HeatMap) result;
+        Assertions.assertThat(heatMap.getData()).isNotEmpty();
+    }
+
+    @Test
+    public void parseLodFilterScript_returnLineObjectWithLodFilter() {
+        //when
+        Object result = parseClassFromScript(
+                "new Plot() << new Line(y: (0..10), lodFilter: Filter.LINE); ");
+        //then
+        Assertions.assertThat(result instanceof Plot).isTrue();
+        Plot plot = (Plot) result;
+        Assertions.assertThat(plot.getGraphics()).isNotEmpty();
+    }
+
+    @Test
+    public void parseKeyboardCodesScript_returnLineObjectWithKeyTags() {
+        //when
+        Object result = parseClassFromScript(
+                "line = new Line(y: (0..10))\n" +
+                "line.onKey(KeyboardCodes.F1, \"tag1\")\n" +
+                "new Plot() << line   ");
+        //then
+        Assertions.assertThat(result instanceof Plot).isTrue();
+        Plot plot = (Plot) result;
+        Assertions.assertThat(plot.getGraphics().get(0).getKeyTags()).isNotEmpty();
     }
 
 }

@@ -16,6 +16,9 @@
 
 package com.twosigma.beaker.groovy.evaluator;
 
+import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.groovy.NamespaceClient;
+import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
 import org.junit.BeforeClass;
@@ -28,12 +31,16 @@ import static com.twosigma.beaker.groovy.GroovyDefaultVariables.OUT_DIR;
 public class GroovyEvaluatorTest {
 
     static GroovyClassLoader groovyClassLoader;
+    static GroovyKernelTest groovyKernel;
+    static Binding scriptBinding;
 
     @BeforeClass
     public static void initClassStubData() throws IOException {
         GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345");
         groovyEvaluator.setShellOptions(CLASS_PATH, IMPORTS, OUT_DIR);
         groovyClassLoader = groovyEvaluator.newEvaluator();
+        scriptBinding = new Binding();
+        scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));
     }
 
     public Object parseClassFromScript(String script){
@@ -41,6 +48,7 @@ public class GroovyEvaluatorTest {
         Script instance = null;
         try {
             instance = (Script) parsedClass.newInstance();
+            instance.setBinding(scriptBinding);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

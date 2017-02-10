@@ -15,12 +15,11 @@
  */
 package com.twosigma.beaker.fileloader;
 
+import com.github.lwhite1.tablesaw.api.Table;
 import org.junit.Test;
 
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,9 +30,10 @@ public class CsvPlotReaderTest {
     //given
     URI pathToTableRowTest = getClass().getClassLoader().getResource("tableRowsTest.csv").toURI();
     //when
-    List<Map<String, Object>> values = new CsvPlotReader().read(pathToTableRowTest.getSchemeSpecificPart());
+    CsvPlotReader reader = new CsvPlotReader();
+    Table values = reader.read(pathToTableRowTest.getSchemeSpecificPart());
     //then
-    assertThat(values.get(2).get("m3")).isEqualTo(8.0f);
-    assertThat(values.get(2).get("time")).isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31").getTime());
+    assertThat(reader.convert(values).get(2).get("m3")).isEqualTo(8.0f);
+    assertThat(reader.convert(values).get(2).get("time")).isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31").getTime());
   }
 }

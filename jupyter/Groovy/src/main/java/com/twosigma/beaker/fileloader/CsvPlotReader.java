@@ -16,10 +16,9 @@
 
 package com.twosigma.beaker.fileloader;
 
-import com.opencsv.CSVReader;
+import com.github.lwhite1.tablesaw.api.Table;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,26 +27,26 @@ import java.util.*;
 public class CsvPlotReader {
   private static String TIME_COLUMN = "time";
 
-
-  public List<Map<String, Object>> read(String fileName) throws IOException {
-    CSVReader reader = new CSVReader(new FileReader(fileName));
-
+  public List<Map<String, Object>> convert(Table table) throws IOException {
     List<Map<String, Object>> result = new ArrayList<>();
-    String[] header = getHeader(reader);
-    String[] row;
-    while ((row = reader.readNext()) != null) {
+    for (int r = 0; r < table.rowCount(); r++) {
       Map<String, Object> entry = new HashMap<>();
-      int index = 0;
-      for (String hc : header) {
-        if (hc.equals(TIME_COLUMN)){
-          entry.put(hc,convertDate(row[index++]));
+      for (int c = 0; c < table.columnCount(); c++) {
+        Object value = table.get(c, r);
+        String headerName = table.columnNames().get(c);
+        if (headerName.equals(TIME_COLUMN)) {
+          entry.put(headerName, convertDate(value));
         } else {
-          entry.put(hc, convertToNumber(row[index++]));
+          entry.put(headerName, convertToNumber(value));
         }
       }
       result.add(entry);
     }
     return result;
+  }
+
+  public Table read(String fileName) throws IOException {
+    return Table.createFromCsv(fileName);
   }
 
   private Object convertToNumber(Object value){
@@ -76,10 +75,5 @@ public class CsvPlotReader {
       throw new IllegalArgumentException("time column accepts numbers or java.util.Date objects or String date in a following format yyyy-MM-dd");
     }
   }
-
-  private String[] getHeader(CSVReader reader) throws IOException {
-    return reader.readNext();
-  }
-
 
 }

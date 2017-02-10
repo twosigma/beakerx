@@ -26,7 +26,7 @@ configurations {
 
 dependencies {
   runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.6'
-  provided group: 'com.google.guava', name: 'guava', version: '21.0'
+  provided group: 'com.google.guava', name: 'guava', version: '18.0'
   provided group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
   provided project(':shared')
 

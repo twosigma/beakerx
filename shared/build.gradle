@@ -22,7 +22,7 @@ repositories {
 dependencies {
   compile group: "org.slf4j", name:"slf4j-api", version:"1.7.5"
   compile group: "com.fasterxml.jackson.jaxrs", name: "jackson-jaxrs-json-provider", version : "2.7.4"
-  compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
+  compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.2'
   compile('com.sun.jersey.contribs:jersey-guice:1.18.1') {
     exclude group: 'com.sun.jersey', module: 'jersey-servlet'
   }

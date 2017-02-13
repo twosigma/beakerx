@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 apply plugin: 'java'
+apply plugin: 'jacoco'
 
 repositories {
   mavenCentral()
@@ -129,3 +130,17 @@ installDist.dependsOn(addFavicon2Javadoc)
 
 task realclean
 realclean.dependsOn(clean)
+
+jacoco {
+  toolVersion = "0.7.8"
+}
+
+jacocoTestReport {
+  reports {
+    html.enabled = true
+    xml.enabled = false
+    csv.enabled = false
+  }
+}
+
+test.finalizedBy jacocoTestReport

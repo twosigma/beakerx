@@ -25,13 +25,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CsvPlotReaderTest {
 
+  private static final boolean IS_WINDOWS = System.getProperty("os.name").contains("indow");
+
   @Test
   public void shouldReturnDataForPlot() throws Exception {
     //given
-    URI pathToTableRowTest = getClass().getClassLoader().getResource("tableRowsTest.csv").toURI();
+    URI uriToTableRowTest = getClass().getClassLoader().getResource("tableRowsTest.csv").toURI();
+    String osAppropriatePath = IS_WINDOWS ?
+            uriToTableRowTest.getSchemeSpecificPart().substring(1) : uriToTableRowTest.getSchemeSpecificPart();
     //when
     CsvPlotReader reader = new CsvPlotReader();
-    Table values = reader.read(pathToTableRowTest.getSchemeSpecificPart());
+    Table values = reader.read(osAppropriatePath);
     //then
     assertThat(reader.convert(values).get(2).get("m3")).isEqualTo(8.0f);
     assertThat(reader.convert(values).get(2).get("time")).isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31").getTime());

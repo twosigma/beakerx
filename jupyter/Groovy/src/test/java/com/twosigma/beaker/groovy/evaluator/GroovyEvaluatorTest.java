@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.groovy.evaluator;
 
-import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.groovy.GroovyKernelEvaluatorTest;
 import com.twosigma.beaker.groovy.NamespaceClient;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
@@ -31,7 +31,7 @@ import static com.twosigma.beaker.groovy.GroovyDefaultVariables.OUT_DIR;
 public class GroovyEvaluatorTest {
 
     static GroovyClassLoader groovyClassLoader;
-    static GroovyKernelTest groovyKernel;
+    static GroovyKernelEvaluatorTest groovyKernel;
     static Binding scriptBinding;
 
     @BeforeClass

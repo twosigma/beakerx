@@ -18,10 +18,12 @@ package com.twosigma.beaker.widgets;
 import com.twosigma.beaker.jupyter.Comm;
 import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.msg.Message;
+import org.zeromq.ZMQ;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class GroovyKernelTest implements GroovyKernelFunctionality {
 
@@ -44,6 +46,31 @@ public class GroovyKernelTest implements GroovyKernelFunctionality {
 
   @Override
   public Message getParentMessage() {
+    return null;
+  }
+
+  @Override
+  public void send(Message message) throws NoSuchAlgorithmException {
+
+  }
+
+  @Override
+  public void send(ZMQ.Socket socket, Message message) throws NoSuchAlgorithmException {
+
+  }
+
+  @Override
+  public boolean isCommPresent(String string) {
+    return false;
+  }
+
+  @Override
+  public Comm getComm(String string) {
+    return null;
+  }
+
+  @Override
+  public Set<String> getCommHashSet() {
     return null;
   }
 

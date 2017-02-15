@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.groovy.evaluator;
 
-import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.groovy.GroovyKernelEvaluatorTest;
 import com.twosigma.beaker.jupyter.GroovyKernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -27,7 +27,7 @@ public class GroovyEvaluatorAutotranslationTest extends GroovyEvaluatorTest{
 
     @Before
     public void setUp() throws Exception {
-        groovyKernel = new GroovyKernelTest();
+        groovyKernel = new GroovyKernelEvaluatorTest();
         GroovyKernelManager.register(groovyKernel);
     }
 

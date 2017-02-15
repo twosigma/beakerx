@@ -28,12 +28,12 @@ public class NamespaceClientTest {
 
     private static String SESSION_ID = "sessionId";
     private NamespaceClient namespaceClient;
-    private GroovyKernelTest groovyKernel;
+    private GroovyKernelEvaluatorTest groovyKernel;
 
     @Before
     public void setUp(){
         namespaceClient = NamespaceClient.getBeaker(SESSION_ID);
-        groovyKernel = new GroovyKernelTest();
+        groovyKernel = new GroovyKernelEvaluatorTest();
         GroovyKernelManager.register(groovyKernel);
     }
 

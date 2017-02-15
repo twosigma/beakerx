@@ -48,7 +48,14 @@ public class GroovyDefaultVariables {
       "\ncom.twosigma.beaker.chart.heatmap.HeatMap"+
       //"\ncom.twosigma.beaker.jvm.object.*"+
       "\ncom.twosigma.beaker.chart.KeyboardCodes"+
-      "\njava.util.concurrent.TimeUnit";//+
+      "\njava.util.concurrent.TimeUnit" +
+      "\ncom.github.lwhite1.tablesaw.api.*" +
+      "\ncom.github.lwhite1.tablesaw.columns.*" +
+      "\ncom.github.lwhite1.tablesaw.api.ml.clustering.*" +
+      "\ncom.github.lwhite1.tablesaw.reducing.*" +
+      "\ncom.github.lwhite1.tablesaw.api.ml.regression.*" +
+      "\nstatic com.github.lwhite1.tablesaw.api.QueryHelper.*" +
+      "\ncom.github.lwhite1.tablesaw.filtering.*";//+
       //"\ncom.twosigma.beaker.table.*"+
       //"\ncom.twosigma.beaker.table.format.*"+
       //"\ncom.twosigma.beaker.table.renderer.*"+

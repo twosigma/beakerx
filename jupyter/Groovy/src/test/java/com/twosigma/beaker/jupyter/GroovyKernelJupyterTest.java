@@ -76,6 +76,7 @@ public class GroovyKernelJupyterTest extends GroovyKernel {
         return groovyEvaluatorManagerExit;
     }
 
+    @SuppressWarnings("unchecked")
     private Message copyMessage(Message origin){
         Message copy = new Message();
         for (byte[] list : origin.getIdentities()) {

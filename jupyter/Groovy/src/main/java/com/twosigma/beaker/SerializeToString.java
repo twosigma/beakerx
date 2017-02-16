@@ -76,7 +76,7 @@ import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 
 
 public class SerializeToString {
-	
+
   private static int count = 0;
   private static ObjectMapper mapper;
   private static Map<Class<?>, JsonSerializer> serializerMap = new Hashtable<>();
@@ -106,8 +106,8 @@ public class SerializeToString {
     serializerMap.put(GradientColor.class, new GradientColorSerializer());
     serializerMap.put(Histogram.class, new HistogramSerializer());
     serializerMap.put(HeatMap.class, new HeatMapSerializer());
-    
-    SimpleModule module = new SimpleModule("MySerializer", new Version(1, 0, 0, null));
+
+    SimpleModule module = new SimpleModule("MySerializer", new Version(1, 0, 0, null, null, null));
     serializerMap.forEach((k, v) -> {
       module.addSerializer(k, v);
     });
@@ -115,38 +115,38 @@ public class SerializeToString {
     mapper = new ObjectMapper();
     mapper.registerModule(module);
   }
-  
-  protected static boolean isBeakerChart(Object result){
-    boolean ret = false; 
-    if(result != null){
+
+  protected static boolean isBeakerChart(Object result) {
+    boolean ret = false;
+    if (result != null) {
       for (Class<?> clazz : serializerMap.keySet()) {
         ret = clazz.isAssignableFrom(result.getClass());
-        if(ret){
+        if (ret) {
           break;
         }
       }
     }
     return ret;
   }
-  
+
   public static String doit(Object result) {
     if (mapper != null && isBeakerChart(result)) {
       try {
         String s = mapper.writeValueAsString(result);
         count++;
-        s = "<html><div id='beakerChart" + count + 
-          "'></div><script>var j = " + s + 
-          "; console.log('plot this:'); console.log(j); window.initPlotd(j,'beakerChart" + count +
-          "');</script></html>";
+        s = "<html><div id='beakerChart" + count +
+                "'></div><script>var j = " + s +
+                "; console.log('plot this:'); console.log(j); window.initPlotd(j,'beakerChart" + count +
+                "');</script></html>";
         return s;
       } catch (Exception e) {
         StringWriter w = new StringWriter();
-        PrintWriter printWriter = new PrintWriter( w );
-        e.printStackTrace( printWriter );
+        PrintWriter printWriter = new PrintWriter(w);
+        e.printStackTrace(printWriter);
         printWriter.flush();
         return w.toString();
       }
-    } 
+    }
     return result != null ? result.toString() : null;
   }
 

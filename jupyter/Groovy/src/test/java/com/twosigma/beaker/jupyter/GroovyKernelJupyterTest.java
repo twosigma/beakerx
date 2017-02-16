@@ -34,6 +34,7 @@ public class GroovyKernelJupyterTest extends GroovyKernel {
     private List<Message> sendMessages = new ArrayList<>();
     private SimpleEvaluationObject simpleEvaluationObject;
     private Boolean groovyEvaluatorManagerExit;
+    private Boolean removeComm;
 
     @Override
     public void publish(Message message) throws NoSuchAlgorithmException {
@@ -48,6 +49,12 @@ public class GroovyKernelJupyterTest extends GroovyKernel {
     @Override
     public void send(ZMQ.Socket socket, Message message) throws NoSuchAlgorithmException {
         this.sendMessages.add(copyMessage(message));
+    }
+
+    @Override
+    public synchronized void removeComm(String hash) {
+        removeComm = Boolean.TRUE;
+        super.removeComm(hash);
     }
 
     public List<Message> getPublishMessages() {
@@ -76,7 +83,10 @@ public class GroovyKernelJupyterTest extends GroovyKernel {
         return groovyEvaluatorManagerExit;
     }
 
-    @SuppressWarnings("unchecked")
+    public Boolean getRemoveComm() {
+        return removeComm;
+    }
+
     private Message copyMessage(Message origin){
         Message copy = new Message();
         for (byte[] list : origin.getIdentities()) {

@@ -17,6 +17,7 @@ package com.twosigma.beaker.jupyter.handler;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.EXECUTE_INPUT;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STATUS;
+import com.twosigma.beaker.jupyter.msg.MessageCreator;
 
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
@@ -40,11 +41,13 @@ public class ExecuteRequestHandler extends AbstractHandler<Message> {
 
   protected int executionCount;
   protected GroovyEvaluatorManager evaluatorManager;
+  private MessageCreator messageCreator;
 
   public ExecuteRequestHandler(GroovyKernel kernel) {
     super(kernel);
     logger = LoggerFactory.getLogger(this.getClass());
     evaluatorManager = new GroovyEvaluatorManager(kernel);
+    messageCreator = new MessageCreator(kernel);
     executionCount = 0;
   }
 
@@ -72,8 +75,12 @@ public class ExecuteRequestHandler extends AbstractHandler<Message> {
     publish(reply);
 
     ++executionCount;
-    evaluatorManager.executeCode(code, message, executionCount);
-    // execution response in ExecuteResultHandler
+    if (!code.startsWith("%%javascript")) {
+      evaluatorManager.executeCode(code, message, executionCount);
+      // execution response in ExecuteResultHandler
+    } else {
+      messageCreator.createMessageJS(code, executionCount,message);
+    }
   }
 
   @Override

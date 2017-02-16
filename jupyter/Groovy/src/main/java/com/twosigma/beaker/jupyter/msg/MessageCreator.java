@@ -22,6 +22,7 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STATUS;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STREAM;
 
 import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -56,54 +57,82 @@ public class MessageCreator {
   public MessageCreator(GroovyKernel kernel){
     this.kernel = kernel;
   }
+
+  private Message initMessage(JupyterMessages type, Message message) {
+    Message reply = new Message();
+    reply.setParentHeader(message.getHeader());
+    reply.setIdentities(message.getIdentities());
+    reply.setHeader(new Header(type, message.getHeader().getSession()));
+    return reply;
+  }
+
+  private Message buildMessage(Message message, String code, int executionCount) {
+    Message reply = initMessage(EXECUTE_RESULT,message);
+    reply.setContent(new HashMap<String, Serializable>());
+    reply.getContent().put("execution_count", executionCount);
+    if(code != null){
+      boolean resultHtml = code.startsWith("<html>") && code.endsWith("</html>");
+      HashMap<String, String> map3 = new HashMap<>();
+      map3.put(resultHtml ? "text/html" : "text/plain", code);
+      reply.getContent().put("data", map3);
+    }
+    reply.getContent().put("metadata", new HashMap<>());
+    return reply;
+  }
+
+  private Message buildReply(Message message, int executionCount, List<MessageHolder> ret){
+    Message reply = createIdleMessage(message);
+    ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, reply));
+    // Send the REPLY to the original message. This is NOT the result of
+    // executing the cell. This is the equivalent of 'exit 0' or 'exit 1'
+    // at the end of a shell script.
+    reply = initMessage(EXECUTE_REPLY,message);
+    Hashtable<String, Serializable> map6 = new Hashtable<String, Serializable>(3);
+    map6.put("dependencies_met", true);
+    map6.put("engine", kernel.getId());
+    map6.put("started", timestamp());
+    reply.setMetadata(map6);
+    Hashtable<String, Serializable> map7 = new Hashtable<String, Serializable>(1);
+    map7.put("execution_count", executionCount);
+    reply.setContent(map7);
+
+    return reply;
+  }
+
+  public synchronized void createMessageJS(String code, int executionCount, Message message) throws NoSuchAlgorithmException {
+    List<MessageHolder> ret = new ArrayList<>();
+    code = "<html><script>" + code.replace("%%javascript","") + "</script></html>";
+    logger.info("Execution result is: " + (code == null ? "null" : "") + "HTML");
+    kernel.publish(buildMessage(message,code,executionCount));
+    kernel.publish(buildReply(message, executionCount,ret));
+  }
   
   public synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo){
     logger.info("Creating message responce message from: " + seo);
-
     List<MessageHolder> ret = new ArrayList<>();
     Message message = (Message)seo.getJupyterMessage();
     
     if(seo.getConsoleOutput() != null && !seo.getConsoleOutput().isEmpty()){
       while(!seo.getConsoleOutput().isEmpty()){
         ConsoleOutput co = seo.getConsoleOutput().poll(); //FIFO : peek to see, poll -- removes the data
-        Message reply = new Message();
-        reply.setParentHeader(message.getHeader());
-        reply.setIdentities(message.getIdentities());
-        reply.setHeader(new Header(STREAM, message.getHeader().getSession()));
-        reply.setContent(new Hashtable<String, Serializable>());
+        Message reply = initMessage(STREAM, message);
+        reply.setContent(new HashMap<String, Serializable>());
         reply.getContent().put("name", co.isError() ? "stderr" : "stdout");
         reply.getContent().put("text", co.getText());
         logger.info("Console output:", "Error: " + co.isError(), co.getText());
         ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, reply));
       }
     }else if(EvaluationStatus.FINISHED == seo.getStatus() || EvaluationStatus.ERROR == seo.getStatus()){
-      
+
       switch (seo.getStatus()) {
         case FINISHED:{
           // Publish the result of the execution.
-          Message reply = new Message();
-          reply.setParentHeader(message.getHeader());
-          reply.setIdentities(message.getIdentities());
-          reply.setHeader(new Header(EXECUTE_RESULT, message.getHeader().getSession()));
           String resultString = SerializeToString.doit(seo.getPayload());
-          boolean resultHtml = resultString != null && resultString.startsWith("<html>") && resultString.endsWith("</html>");
-          reply.setContent(new HashMap<String, Serializable>());
-          reply.getContent().put("execution_count", seo.getExecutionCount());
-          if(resultString != null){
-            HashMap<String, String> map3 = new HashMap<>();
-            map3.put(resultHtml ? "text/html" : "text/plain", resultString);
-            reply.getContent().put("data", map3);
-          }
-          reply.getContent().put("metadata", new HashMap<>());
-          ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, reply));
+          ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, buildMessage(message,resultString,seo.getExecutionCount())));
         }break;
-  
         case ERROR:{
           logger.info("Execution result ERROR: " + seo.getPayload().toString().split("\n")[0]);
-          Message reply = new Message();
-          reply.setParentHeader(message.getHeader());
-          reply.setIdentities(message.getIdentities());
-          reply.setHeader(new Header(STREAM, message.getHeader().getSession()));
+          Message reply = initMessage(STREAM,message);
           Hashtable<String, Serializable> map4 = new Hashtable<String, Serializable>(2);
           map4.put("name", "stderr");
           map4.put("text", (String)seo.getPayload());
@@ -116,25 +145,7 @@ public class MessageCreator {
         }break;
         
       }
-
-      Message reply = createIdleMessage(message);
-      ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, reply));
-    
-      // Send the REPLY to the original message. This is NOT the result of
-      // executing the cell. This is the equivalent of 'exit 0' or 'exit 1'
-      // at the end of a shell script.
-      reply = new Message();
-      reply.setParentHeader(message.getHeader());
-      reply.setIdentities(message.getIdentities());
-      reply.setHeader(new Header(EXECUTE_REPLY, message.getHeader().getSession()));
-      Hashtable<String, Serializable> map6 = new Hashtable<String, Serializable>(3);
-      map6.put("dependencies_met", true);
-      map6.put("engine", kernel.getId());
-      map6.put("started", timestamp());
-      reply.setMetadata(map6);
-      Hashtable<String, Serializable> map7 = new Hashtable<String, Serializable>(1);
-      map7.put("execution_count", seo.getExecutionCount());
-      reply.setContent(map7);
+      Message reply = buildReply(message, seo.getExecutionCount(),ret);
       if (EvaluationStatus.ERROR == seo.getStatus()) {
         reply.getMetadata().put("status", "error");
         reply.getContent().put("status", "error");
@@ -145,7 +156,6 @@ public class MessageCreator {
         reply.getContent().put("status", "ok");
         reply.getContent().put("user_expressions", new HashMap<>());
       }
-  
       ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, reply));
     }
     return ret;
@@ -162,11 +172,8 @@ public class MessageCreator {
   private Message getExecutionStateMessage(Message parentMessage, String state) {
     Map<String, Serializable> map1 = new HashMap<String, Serializable>(1);
     map1.put(EXECUTION_STATE, state);
-    Message reply = new Message();
+    Message reply = initMessage(STATUS,parentMessage);
     reply.setContent(map1);
-    reply.setHeader(new Header(STATUS, parentMessage.getHeader().getSession()));
-    reply.setParentHeader(parentMessage.getHeader());
-    reply.setIdentities(parentMessage.getIdentities());
     return reply;
   }
 

@@ -95,12 +95,11 @@ public class MessageCreator {
             reply.getContent().put("data", map3);
           }
           reply.getContent().put("metadata", new HashMap<>());
-          logger.info("Execution result is: " + (resultString == null ? "null" : "") + (resultHtml ? "HTML" : "") );
           ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, reply));
         }break;
   
         case ERROR:{
-          logger.error("Execution result ERROR: " + seo.getPayload());
+          logger.info("Execution result ERROR: " + seo.getPayload().toString().split("\n")[0]);
           Message reply = new Message();
           reply.setParentHeader(message.getHeader());
           reply.setIdentities(message.getIdentities());

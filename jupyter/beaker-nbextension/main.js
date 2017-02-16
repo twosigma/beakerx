@@ -59,7 +59,6 @@ define([
     require(['nbextensions/beaker/reqConfig', 'require'], function(conf, require) {
       require(['nbextensions/beaker/beakerManager'], function(beakerManager) {
         window.initPlotd = function(data, wrapperId) {
-          console.log('init plotd');
           beakerManager.init(data, wrapperId);
         };
       });

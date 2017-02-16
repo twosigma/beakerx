@@ -19,8 +19,6 @@ define([
   function init(data, wrapId) {
     currentWrapperId = wrapId;
 
-    console.log('manager init', data);
-
     var type = data.type || 'Text';
     switch (type) {
       case 'TableDisplay':

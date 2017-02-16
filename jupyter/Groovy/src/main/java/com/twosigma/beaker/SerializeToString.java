@@ -134,10 +134,10 @@ public class SerializeToString {
       try {
         String s = mapper.writeValueAsString(result);
         count++;
-        s = "<html><div id='beakerChart" + count +
-                "'></div><script>var j = " + s +
-                "; console.log('plot this:'); console.log(j); window.initPlotd(j,'beakerChart" + count +
-                "');</script></html>";
+        s = "<html><div id='beakerChart" + count + 
+          "'></div><script>var j = " + s + 
+          "; window.initPlotd(j,'beakerChart" + count +
+          "');</script></html>";
         return s;
       } catch (Exception e) {
         StringWriter w = new StringWriter();

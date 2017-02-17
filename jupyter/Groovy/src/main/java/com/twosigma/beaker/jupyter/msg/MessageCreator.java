@@ -31,7 +31,7 @@ import java.util.Map;
 
 import com.twosigma.beaker.jvm.object.ConsoleOutput;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import org.lappsgrid.jupyter.groovy.GroovyKernel;
+import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.Logger;
@@ -51,10 +51,13 @@ public class MessageCreator {
   public static final String EXECUTION_STATE = "execution_state";
   public static final String BUSY = "busy";
   public static final String IDLE = "idle";
+  public static final String TEXT_PLAIN = "text/plain";
+  public static final String NULL_RESULT = "null";
+
   public static Logger logger = LoggerFactory.getLogger(MessageCreator.class);
-  protected GroovyKernel kernel;
+  protected GroovyKernelFunctionality kernel;
   
-  public MessageCreator(GroovyKernel kernel){
+  public MessageCreator(GroovyKernelFunctionality kernel){
     this.kernel = kernel;
   }
 
@@ -70,12 +73,14 @@ public class MessageCreator {
     Message reply = initMessage(EXECUTE_RESULT,message);
     reply.setContent(new HashMap<String, Serializable>());
     reply.getContent().put("execution_count", executionCount);
+    HashMap<String, String> map3 = new HashMap<>();
     if(code != null){
       boolean resultHtml = code.startsWith("<html>") && code.endsWith("</html>");
-      HashMap<String, String> map3 = new HashMap<>();
-      map3.put(resultHtml ? "text/html" : "text/plain", code);
-      reply.getContent().put("data", map3);
+      map3.put(resultHtml ? "text/html" : TEXT_PLAIN, code);
+    }else {
+      map3.put(TEXT_PLAIN, NULL_RESULT);
     }
+    reply.getContent().put("data", map3);
     reply.getContent().put("metadata", new HashMap<>());
     return reply;
   }

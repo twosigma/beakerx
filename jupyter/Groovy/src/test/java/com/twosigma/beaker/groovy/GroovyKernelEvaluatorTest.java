@@ -21,6 +21,7 @@ import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.zeromq.ZMQ;
 
+import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +73,11 @@ public class GroovyKernelEvaluatorTest implements GroovyKernelFunctionality {
 
     @Override
     public Set<String> getCommHashSet() {
+        return null;
+    }
+
+    @Override
+    public Serializable getId() {
         return null;
     }
 

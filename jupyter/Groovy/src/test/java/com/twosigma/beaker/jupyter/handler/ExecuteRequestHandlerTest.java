@@ -23,19 +23,13 @@ import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
-
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class ExecuteRequestHandlerTest {
 
     private GroovyKernelJupyterTest groovyKernel;
     private ExecuteRequestHandler executeRequestHandler;
-    private String messageCode = "new Plot() << new Line(x: (0..5), y: [0, 1, 6, 5, 2, 8])";
+    private Message message;
 
     @Before
     public void setUp(){
@@ -52,12 +46,11 @@ public class ExecuteRequestHandlerTest {
                 groovyKernel.groovyEvaluatorManagerExit();
             }
         };
+        message = JupyterHandlerTest.initExecuteRequestMessage();
     }
 
     @Test
     public void handleMessage_shouldSendTwoMessages() throws Exception {
-        //given
-        Message message = initMessage();
         //when
         executeRequestHandler.handle(message);
         //then
@@ -67,8 +60,6 @@ public class ExecuteRequestHandlerTest {
 
     @Test
     public void handleMessage_firstSentMessageHasExecutionStateIsBusy() throws Exception {
-        //given
-        Message message = initMessage();
         //when
         executeRequestHandler.handle(message);
         //then
@@ -80,19 +71,17 @@ public class ExecuteRequestHandlerTest {
     @Test
     public void handleMessage_firstSentMessageHasSessionId() throws Exception {
         //given
-        Message message = initMessage();
+        String expectedSessionId = message.getHeader().getSession();
         //when
         executeRequestHandler.handle(message);
         //then
         Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
         Message publishMessage = groovyKernel.getPublishMessages().get(0);
-        Assertions.assertThat(publishMessage.getHeader().getSession()).isEqualTo("sessionId");
+        Assertions.assertThat(publishMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
     }
 
     @Test
     public void handleMessage_firstSentMessageHasTypeIsStatus() throws Exception {
-        //given
-        Message message = initMessage();
         //when
         executeRequestHandler.handle(message);
         //then
@@ -104,43 +93,41 @@ public class ExecuteRequestHandlerTest {
     @Test
     public void handleMessage_firstSentMessageHasParentHeader() throws Exception {
         //given
-        Message message = initMessage();
+        String expectedHeader = message.getHeader().asJson();
         //when
         executeRequestHandler.handle(message);
         //then
         Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
         Message publishMessage = groovyKernel.getPublishMessages().get(0);
-        Assertions.assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(message.getHeader().asJson());
+        Assertions.assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
     }
 
     @Test
     public void handleMessage_firstSentMessageHasIdentities() throws Exception {
         //given
-        Message message = initMessage();
+        String expectedIdentities = new String(message.getIdentities().get(0));
         //when
         executeRequestHandler.handle(message);
         //then
         Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
         Message publishMessage = groovyKernel.getPublishMessages().get(0);
-        Assertions.assertThat(new String(publishMessage.getIdentities().get(0))).isEqualTo("identities");
+        Assertions.assertThat(new String(publishMessage.getIdentities().get(0))).isEqualTo(expectedIdentities);
     }
 
     @Test
     public void handleMessage_secondSentMessageHasSessionId() throws Exception {
         //given
-        Message message = initMessage();
+        String expectedSessionId = message.getHeader().getSession();
         //when
         executeRequestHandler.handle(message);
         //then
         Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
         Message publishMessage = groovyKernel.getPublishMessages().get(1);
-        Assertions.assertThat(publishMessage.getHeader().getSession()).isEqualTo("sessionId");
+        Assertions.assertThat(publishMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
     }
 
     @Test
     public void handleMessage_secondSendMessageHasTypeIsExecutionInput() throws Exception {
-        //given
-        Message message = initMessage();
         //when
         executeRequestHandler.handle(message);
         //then
@@ -152,19 +139,17 @@ public class ExecuteRequestHandlerTest {
     @Test
     public void handleMessage_secondSentMessageHasContentCode() throws Exception {
         //given
-        Message message = initMessage();
+        String expectedCode = (String) message.getContent().get("code");
         //when
         executeRequestHandler.handle(message);
         //then
         Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
         Message publishMessage = groovyKernel.getPublishMessages().get(1);
-        Assertions.assertThat(publishMessage.getContent().get("code")).isEqualTo(messageCode);
+        Assertions.assertThat(publishMessage.getContent().get("code")).isEqualTo(expectedCode);
     }
 
     @Test
     public void handleMessage_secondSentMessageHasContentExecutionCount() throws Exception {
-        //given
-        Message message = initMessage();
         //when
         executeRequestHandler.handle(message);
         //then
@@ -176,37 +161,37 @@ public class ExecuteRequestHandlerTest {
     @Test
     public void handleMessage_secondSentMessageHasParentHeader() throws Exception {
         //given
-        Message message = initMessage();
+        String expectedHeader = message.getHeader().asJson();
         //when
         executeRequestHandler.handle(message);
         //then
         Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
         Message publishMessage = groovyKernel.getPublishMessages().get(1);
-        Assertions.assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(message.getHeader().asJson());
+        Assertions.assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
     }
 
     @Test
     public void handleMessage_secondSentMessageHasIdentities() throws Exception {
         //given
-        Message message = initMessage();
+        String expectedIdentities = new String(message.getIdentities().get(0));
         //when
         executeRequestHandler.handle(message);
         //then
         Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
         Message publishMessage = groovyKernel.getPublishMessages().get(1);
-        Assertions.assertThat(new String(publishMessage.getIdentities().get(0))).isEqualTo("identities");
+        Assertions.assertThat(new String(publishMessage.getIdentities().get(0))).isEqualTo(expectedIdentities);
     }
 
     @Test
     public void handleMessage_passCodeAndMessageAndExecCountToGroovyEvaluatorManager() throws Exception {
         //given
-        Message message = initMessage();
+        String expectedCode = (String) message.getContent().get("code");
         //when
         executeRequestHandler.handle(message);
         //then
         Assertions.assertThat(groovyKernel.getSimpleEvaluationObject()).isNotNull();
         SimpleEvaluationObject simpleEvaluationObject = groovyKernel.getSimpleEvaluationObject();
-        Assertions.assertThat(simpleEvaluationObject.getExpression()).isEqualTo(messageCode);
+        Assertions.assertThat(simpleEvaluationObject.getExpression()).isEqualTo(expectedCode);
         Assertions.assertThat(simpleEvaluationObject.getExecutionCount()).isNotZero();
         Assertions.assertThat(simpleEvaluationObject.getJupyterMessage()).isNotNull();
     }
@@ -217,31 +202,6 @@ public class ExecuteRequestHandlerTest {
         executeRequestHandler.exit();
         //then
         Assertions.assertThat(groovyKernel.getGroovyEvaluatorManagerExit()).isTrue();
-    }
-
-    public Message initMessage(){
-        Header header = new Header();
-        header.setId("messageId");
-        header.setUsername("username");
-        header.setSession("sessionId");
-        header.setType(JupyterMessages.EXECUTE_REQUEST.getName());
-        header.setVersion("5.0");
-
-        Map<String, Serializable> content = new  LinkedHashMap<>();
-        content.put("allow_stdin", Boolean.TRUE);
-        content.put("code", messageCode);
-        content.put("stop_on_error", Boolean.TRUE);
-        content.put("user_expressions", new  LinkedHashMap<>());
-        content.put("silent", Boolean.FALSE);
-        content.put("store_history", Boolean.TRUE);
-
-        Message message = new Message();
-        message.setIdentities(Arrays.asList("identities".getBytes()));
-        message.setHeader(header);
-        message.setParentHeader(null);
-        message.setMetadata(new LinkedHashMap<>());
-        message.setContent(content);
-        return message;
     }
 
 }

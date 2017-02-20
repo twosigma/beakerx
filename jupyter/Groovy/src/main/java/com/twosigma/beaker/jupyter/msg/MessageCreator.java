@@ -104,14 +104,14 @@ public class MessageCreator {
     return reply;
   }
 
-  public synchronized void createMessageJS(String code, int executionCount, Message message) throws NoSuchAlgorithmException {
+  public synchronized void createMagicMessage(String code, int executionCount, Message message) throws NoSuchAlgorithmException {
     List<MessageHolder> ret = new ArrayList<>();
-    code = "<html><script>" + code.replace("%%javascript","") + "</script></html>";
+    code = code.startsWith("%%javascript") ? "<html><script>" + code.replace("%%javascript", "") + "</script></html>" : "<html>" + code.replace("%%html", "") + "</html>";
     logger.info("Execution result is: " + (code == null ? "null" : "") + "HTML");
     kernel.publish(buildMessage(message,code,executionCount));
     kernel.publish(buildReply(message, executionCount,ret));
   }
-  
+
   public synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo){
     logger.info("Creating message responce message from: " + seo);
     List<MessageHolder> ret = new ArrayList<>();

@@ -75,11 +75,11 @@ public class ExecuteRequestHandler extends AbstractHandler<Message> {
     publish(reply);
 
     ++executionCount;
-    if (!code.startsWith("%%javascript")) {
+    if (!code.startsWith("%%")) {
       evaluatorManager.executeCode(code, message, executionCount);
       // execution response in ExecuteResultHandler
     } else {
-      messageCreator.createMessageJS(code, executionCount,message);
+      messageCreator.createMagicMessage(code, executionCount,message);
     }
   }
 

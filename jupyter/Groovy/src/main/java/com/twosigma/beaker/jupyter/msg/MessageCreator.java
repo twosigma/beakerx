@@ -43,7 +43,7 @@ import com.twosigma.beaker.jupyter.SocketEnum;
 
 /**
  * Converts SimpleEvaluationObject to Message
- * 
+ *
  * @author konst
  */
 public class MessageCreator {
@@ -56,7 +56,7 @@ public class MessageCreator {
 
   public static Logger logger = LoggerFactory.getLogger(MessageCreator.class);
   protected GroovyKernelFunctionality kernel;
-  
+
   public MessageCreator(GroovyKernelFunctionality kernel){
     this.kernel = kernel;
   }

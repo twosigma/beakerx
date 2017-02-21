@@ -22,7 +22,6 @@ import com.twosigma.beaker.cpp.utils.CppEvaluator;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,7 +30,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("cpp")
 @Produces(MediaType.APPLICATION_JSON)
@@ -147,7 +148,14 @@ public class CppShellRest {
     if(!this.shells.containsKey(shellId)) {
       return;
     }
-    this.shells.get(shellId).setShellOptions(flags);
+    try {
+      this.shells.get(shellId).setShellOptions(flags);
+    } catch (Throwable x) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+                                                .entity(x.getMessage())
+                                                .type(MediaType.TEXT_PLAIN)
+                                                .build());
+    }
   }
 
 }

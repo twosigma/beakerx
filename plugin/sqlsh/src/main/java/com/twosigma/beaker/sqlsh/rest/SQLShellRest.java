@@ -27,7 +27,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -147,7 +149,14 @@ public class SQLShellRest {
         if (!this.shells.containsKey(shellId)) {
             return;
         }
-        this.shells.get(shellId).setShellOptions(classPath, defaultDatasource, datasorces);
+        try {
+            this.shells.get(shellId).setShellOptions(classPath, defaultDatasource, datasorces);
+        } catch (Throwable x) {
+            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+                                                      .entity(x.getMessage())
+                                                      .type(MediaType.TEXT_PLAIN)
+                                                      .build());
+        }
     }
     
     @POST

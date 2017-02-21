@@ -33,7 +33,9 @@ define([
           window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
+      sendNotebookMetadataToKernel();
   });
+
 
   var load_ipython_extension = function() {
     load_css('bower_components/datatables/media/css/jquery.dataTables.min.css');
@@ -65,6 +67,50 @@ define([
     });
 
     config.load();
+  }
+
+  function sendNotebookMetadataToKernel() {
+
+    if(!Jupyter.notebook.metadata.kernelspec.language.toUpperCase().includes('PYTHON')){
+
+      var kernel_control_target_name = "kernel.control.channel";
+      var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
+
+      var newNotebook = undefined == Jupyter.notebook.metadata.imports || undefined == Jupyter.notebook.metadata.classpath;
+
+      if(newNotebook){
+        comm.on_msg(function(resp){
+          if(undefined != resp.content.data.kernel_control_response){
+            if("OK" === resp.content.data.kernel_control_response){
+            }else if(undefined != resp.content.data.kernel_control_response.imports &&
+                undefined != resp.content.data.kernel_control_response.classpath){
+              Jupyter.notebook.metadata.imports = resp.content.data.kernel_control_response.imports;
+              Jupyter.notebook.metadata.classpath = resp.content.data.kernel_control_response.classpath;
+
+              var theData = {};
+              if(Jupyter.notebook && Jupyter.notebook.metadata){
+                theData.imports = Jupyter.notebook.metadata.imports;
+                theData.classpath = Jupyter.notebook.metadata.classpath;
+              }
+              comm.send(theData);
+              comm.close();
+            }
+          }
+        });
+
+        var data = {};
+        data.get_default_shell = true;
+        comm.send(data);
+      }else{
+        var data = {};
+        if(Jupyter.notebook && Jupyter.notebook.metadata){
+          data.imports = Jupyter.notebook.metadata.imports;
+          data.classpath = Jupyter.notebook.metadata.classpath;
+        }
+        comm.send(data);
+        comm.close();
+      }
+    }
   }
 
   return {

@@ -15,13 +15,27 @@
  */
 package com.twosigma.beaker.groovy.evaluator;
 
+import com.twosigma.beaker.groovy.NamespaceClient;
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
+import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.Script;
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import org.codehaus.groovy.runtime.StackTraceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -33,23 +47,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
-import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
-import org.apache.commons.lang3.StringUtils;
-import org.codehaus.groovy.control.CompilerConfiguration;
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import org.codehaus.groovy.runtime.StackTraceUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.twosigma.beaker.groovy.NamespaceClient;
-
-import groovy.lang.Binding;
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.Script;
 
 public class GroovyEvaluator {
 
@@ -63,6 +60,7 @@ public class GroovyEvaluator {
   protected List<String> classPath;
   protected List<String> imports;
   //user entered source value
+  protected String outDirDefault;
   protected String outDirInput;
   protected String outDir;
   //protected GroovyClasspathScanner cps;
@@ -103,13 +101,14 @@ public class GroovyEvaluator {
     sessionId = sId;
     //cps = new GroovyClasspathScanner();
     //gac = createGroovyAutocomplete(cps);
-    classPath = new ArrayList<String>();
-    imports = new ArrayList<String>();
+    classPath = new ArrayList<>();
+    imports = new ArrayList<>();
     exit = false;
     updateLoader = false;
     currentClassPath = "";
     currentImports = "";
-    outDir = createJupyterTempFolder().toString();
+    outDirDefault = createJupyterTempFolder().toString();
+    outDir = new String(outDirDefault);
     outDir = envVariablesFilter(outDir, System.getenv());
     outDirInput = outDir;
     try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
@@ -174,12 +173,12 @@ public class GroovyEvaluator {
   }
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
-    if (od==null || od.isEmpty()) {
-      od = outDirInput;
+    if (od == null || od.isEmpty()) {
+      od = new String(outDirDefault);
     }
     logger.info("Dynamic folder is = " + od);
     // check if we are not changing anything
-    if (currentClassPath.equals(cp) && currentImports.equals(in) && outDirInput.equals(od))
+    if (StringUtils.equals(currentClassPath, cp) && StringUtils.equals(currentImports, in) && StringUtils.equals(outDirInput, od))
       return;
   
     currentClassPath = cp;
@@ -188,10 +187,10 @@ public class GroovyEvaluator {
     outDirInput = od;
     outDir = envVariablesFilter(od, env);
     
-    if(cp.isEmpty())
-      classPath = new ArrayList<String>();
+    if(cp == null || cp.isEmpty())
+      classPath = new ArrayList<>();
     else {
-      List<String> cpList = new ArrayList<String>();
+      List<String> cpList = new ArrayList<>();
       for(String p : Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"))) {
 
         p = envVariablesFilter(p, env);
@@ -201,7 +200,7 @@ public class GroovyEvaluator {
       classPath = cpList;
     }
 
-    if (!in.isEmpty()) {
+    if (in != null && !in.isEmpty()) {
       String[] importLines = in.split("\\n+");
       for (String line : importLines) {
         if (!line.trim().isEmpty()) {

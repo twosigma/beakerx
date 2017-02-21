@@ -1,21 +1,19 @@
 package org.lappsgrid.jupyter.groovy;
 
-import static com.twosigma.beaker.jupyter.Utils.uuid;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.twosigma.beaker.groovy.NamespaceClient;
+import com.twosigma.beaker.groovy.evaluator.GroovyEvaluatorManager;
+import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.CommNamesEnum;
+import com.twosigma.beaker.jupyter.GroovyKernelManager;
+import com.twosigma.beaker.jupyter.handler.CommCloseHandler;
+import com.twosigma.beaker.jupyter.handler.CommInfoHandler;
+import com.twosigma.beaker.jupyter.handler.CommMsgHandler;
+import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
+import com.twosigma.beaker.jupyter.handler.ExecuteRequestHandler;
+import com.twosigma.beaker.jupyter.msg.JupyterMessages;
+import com.twosigma.beaker.jupyter.msg.MessageCreator;
+import com.twosigma.beaker.jupyter.threads.AbstractMessageReaderThread;
+import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.handler.CompleteHandler;
 import org.lappsgrid.jupyter.groovy.handler.HistoryHandler;
@@ -33,18 +31,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
-import com.twosigma.beaker.jupyter.Comm;
-import com.twosigma.beaker.jupyter.CommNamesEnum;
-import com.twosigma.beaker.jupyter.GroovyKernelManager;
-import com.twosigma.beaker.jupyter.handler.CommCloseHandler;
-import com.twosigma.beaker.jupyter.handler.CommInfoHandler;
-import com.twosigma.beaker.jupyter.handler.CommMsgHandler;
-import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
-import com.twosigma.beaker.jupyter.handler.ExecuteRequestHandler;
-import com.twosigma.beaker.jupyter.msg.JupyterMessages;
-import com.twosigma.beaker.jupyter.msg.MessageCreator;
-import com.twosigma.beaker.jupyter.threads.AbstractMessageReaderThread;
-import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 /**
  * The entry point for the Jupyter kernel.
@@ -77,6 +77,7 @@ public class GroovyKernel implements GroovyKernelFunctionality{
   private Map<String, AbstractMessageReaderThread> threads = new HashMap<>();
   private Map<String, Comm> commMap;
   private ExecutionResultSender executionResultSender;
+  private GroovyEvaluatorManager groovyEvaluatorManager;
   
   private ZMQ.Socket hearbeatSocket;
   private ZMQ.Socket controlSocket;
@@ -86,9 +87,10 @@ public class GroovyKernel implements GroovyKernelFunctionality{
 
   public GroovyKernel() {
     id = uuid();
-    installHandlers();
     commMap = new ConcurrentHashMap<>();
     executionResultSender = new ExecutionResultSender(this);
+    groovyEvaluatorManager = new GroovyEvaluatorManager(this);
+    installHandlers();
   }
 
   public void shutdown() {
@@ -104,7 +106,7 @@ public class GroovyKernel implements GroovyKernelFunctionality{
 
   private void installHandlers() {
     handlers = new HashMap<>();
-    handlers.put(JupyterMessages.EXECUTE_REQUEST, new ExecuteRequestHandler(this));
+    handlers.put(JupyterMessages.EXECUTE_REQUEST, new ExecuteRequestHandler(this, groovyEvaluatorManager));
     handlers.put(JupyterMessages.KERNEL_INFO_REQUEST, new KernelInfoHandler(this));
     handlers.put(JupyterMessages.COMPLETE_REQUEST, new CompleteHandler(this));
     handlers.put(JupyterMessages.HISTORY_REQUEST, new HistoryHandler(this));
@@ -112,6 +114,10 @@ public class GroovyKernel implements GroovyKernelFunctionality{
     handlers.put(JupyterMessages.COMM_INFO_REQUEST, new CommInfoHandler(this));
     handlers.put(JupyterMessages.COMM_CLOSE, new CommCloseHandler(this));
     handlers.put(JupyterMessages.COMM_MSG, new CommMsgHandler(this, new MessageCreator(this)));
+  }
+
+  public synchronized void setShellOptions(String cp, String in, String od){
+    groovyEvaluatorManager.setShellOptions(cp, in, od);
   }
 
   public synchronized boolean isCommPresent(String hash){

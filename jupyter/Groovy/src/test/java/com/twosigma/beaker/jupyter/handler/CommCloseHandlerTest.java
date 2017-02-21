@@ -34,7 +34,8 @@ public class CommCloseHandlerTest {
         groovyKernel = new GroovyKernelJupyterTest();
         commCloseHandler = new CommCloseHandler(groovyKernel);
         message = JupyterHandlerTest.initCloseMessage();
-    }
+        JupyterHandlerTest.initKernelCommMapWithOneComm(groovyKernel);
+      }
 
     @Test
     public void handleMessage_shouldSendShellSocketMessage() throws Exception {

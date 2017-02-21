@@ -15,6 +15,8 @@
  */
 package com.twosigma.beaker.groovy;
 
+import java.util.List;
+
 /**
  * 
  * @author konst
@@ -26,48 +28,59 @@ public class GroovyDefaultVariables {
    * Default imports
    */
   //TODO add to kernel this classes, then uncomment
-  public static final String IMPORTS = 
-      "static java.lang.Math.*" + 
-      //"\ngraxxia.*" + 
-      //"\ncom.twosigma.beaker.NamespaceClient" + 
-      //"\ncom.twosigma.beaker.BeakerProgressUpdate"+
-      "\ncom.twosigma.beaker.chart.Color"+ 
-      "\ncom.twosigma.beaker.chart.xychart.*"+
-      "\ncom.twosigma.beaker.chart.xychart.plotitem.*"+
-      "\ncom.twosigma.beaker.chart.legend.*"+
-      "\ncom.twosigma.beaker.chart.Filter"+
-      //"\ncom.twosigma.beaker.easyform.*"+
-      //"\ncom.twosigma.beaker.easyform.formitem.*"+
-      "\ncom.twosigma.beaker.chart.GradientColor"+
-      "\ncom.twosigma.beaker.chart.categoryplot.*"+
-      "\ncom.twosigma.beaker.chart.categoryplot.plotitem.*"+
-      "\ncom.twosigma.beaker.chart.histogram.*"+
-      //"\ncom.twosigma.beaker.chart.treemap.*"+
-      //"\ncom.twosigma.beaker.chart.treemap.util.*"+
-      //"\nnet.sf.jtreemap.swing.*"+
-      "\ncom.twosigma.beaker.chart.heatmap.HeatMap"+
-      //"\ncom.twosigma.beaker.jvm.object.*"+
-      "\ncom.twosigma.beaker.chart.KeyboardCodes"+
-      "\njava.util.concurrent.TimeUnit" +
-      "\ncom.github.lwhite1.tablesaw.api.*" +
-      "\ncom.github.lwhite1.tablesaw.columns.*" +
-      "\ncom.github.lwhite1.tablesaw.api.ml.clustering.*" +
-      "\ncom.github.lwhite1.tablesaw.reducing.*" +
-      "\ncom.github.lwhite1.tablesaw.api.ml.regression.*" +
-      "\nstatic com.github.lwhite1.tablesaw.api.QueryHelper.*" +
-      "\ncom.github.lwhite1.tablesaw.filtering.*";//+
-      //"\ncom.twosigma.beaker.table.*"+
-      //"\ncom.twosigma.beaker.table.format.*"+
-      //"\ncom.twosigma.beaker.table.renderer.*"+
-      //"\ncom.twosigma.beaker.table.highlight.*";
-      
+  public static final String[] IMPORTS ={
+      "static java.lang.Math.*",
+      //"graxxia.*",
+      //"com.twosigma.beaker.NamespaceClient",
+      //"com.twosigma.beaker.BeakerProgressUpdate",
+      "com.twosigma.beaker.chart.Color",
+      "com.twosigma.beaker.chart.xychart.*",
+      "com.twosigma.beaker.chart.xychart.plotitem.*",
+      "com.twosigma.beaker.chart.legend.*",
+      "com.twosigma.beaker.chart.Filter",
+      //"com.twosigma.beaker.easyform.*",
+      //"com.twosigma.beaker.easyform.formitem.*",
+      "com.twosigma.beaker.chart.GradientColor",
+      "com.twosigma.beaker.chart.categoryplot.*",
+      "com.twosigma.beaker.chart.categoryplot.plotitem.*",
+      "com.twosigma.beaker.chart.histogram.*",
+      //"com.twosigma.beaker.chart.treemap.*",
+      //"com.twosigma.beaker.chart.treemap.util.*",
+      //"net.sf.jtreemap.swing.*",
+      "com.twosigma.beaker.chart.heatmap.HeatMap",
+      //"com.twosigma.beaker.jvm.object.*",
+      "com.twosigma.beaker.chart.KeyboardCodes",
+      "java.util.concurrent.TimeUnit",
+      "com.github.lwhite1.tablesaw.api.*",
+      "com.github.lwhite1.tablesaw.columns.*",
+      "com.github.lwhite1.tablesaw.api.ml.clustering.*",
+      "com.github.lwhite1.tablesaw.reducing.*",
+      "com.github.lwhite1.tablesaw.api.ml.regression.*",
+      "static com.github.lwhite1.tablesaw.api.QueryHelper.*",
+      "com.github.lwhite1.tablesaw.filtering.*"//,
+      //"com.twosigma.beaker.table.*",
+      //"com.twosigma.beaker.table.format.*",
+      //"com.twosigma.beaker.table.renderer.*",
+      //"com.twosigma.beaker.table.highlight.*";
+      };
+
   /**
    * Default class path
    */
-  public static final String CLASS_PATH = "";
-  /**
-   * Default dynamic classes directory
-   */
-  public static final String OUT_DIR = "";
+  public static final String[] CLASS_PATH = {};
+
+  public static String getUsString(String[] input){
+    StringBuilder ret = new StringBuilder();
+    if(input != null && input.length > 0){
+      for (String s: input) {
+        ret.append(s + "\n");
+      }
+    }
+    return ret.toString();
+  }
+
+  public static String getUsString(List<String> input){
+    return getUsString(input.toArray(new String[input.size()]));
+  }
   
 }

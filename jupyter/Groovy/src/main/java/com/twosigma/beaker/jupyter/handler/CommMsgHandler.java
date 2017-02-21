@@ -15,18 +15,18 @@
  */
 package com.twosigma.beaker.jupyter.handler;
 
-import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
-import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-
+import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beaker.jupyter.Comm;
+import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+
+import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
 
 public class CommMsgHandler extends AbstractHandler<Message> {
 
@@ -43,8 +43,10 @@ public class CommMsgHandler extends AbstractHandler<Message> {
 
     Map<String, Serializable> commMap = message.getContent();
     Comm comm = kernel.getComm(getString(commMap, COMM_ID));
-    comm.handleMsg(message);
-
+    logger.info("Comm message handling, target name: " + (comm != null ? comm.getTargetName() : "undefined"));
+    if(comm != null){
+      comm.handleMsg(message);
+    }
     publish(this.messageCreator.createIdleMessage(message));
   }
 

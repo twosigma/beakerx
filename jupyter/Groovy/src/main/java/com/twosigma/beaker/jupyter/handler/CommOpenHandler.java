@@ -16,25 +16,27 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
-import static com.twosigma.beaker.jupyter.Comm.DATA;
-import static com.twosigma.beaker.jupyter.Comm.TARGET_MODULE;
-import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
-
-import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.CommKernelControlGetDefaultShellHandler;
+import com.twosigma.beaker.jupyter.CommKernelControlSetShellHandler;
+import com.twosigma.beaker.jupyter.CommNamesEnum;
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beaker.jupyter.Comm;
+import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
+import static com.twosigma.beaker.jupyter.Comm.DATA;
+import static com.twosigma.beaker.jupyter.Comm.TARGET_MODULE;
+import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
 
 /**
  * 
@@ -69,6 +71,11 @@ public class CommOpenHandler extends AbstractHandler<Message> {
     }
 
     if(newComm != null){
+      logger.info("Comm opened, target name = " + newComm.getTargetName());
+      if(CommNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName().equalsIgnoreCase(newComm.getTargetName())){
+        newComm.addMsgCallbackList(new CommKernelControlSetShellHandler(kernel));
+        newComm.addMsgCallbackList(new CommKernelControlGetDefaultShellHandler(kernel));
+      }
       kernel.addComm(newComm.getCommId(), newComm);
     }
 

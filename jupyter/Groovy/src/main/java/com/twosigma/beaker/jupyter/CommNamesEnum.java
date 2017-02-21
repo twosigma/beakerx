@@ -19,7 +19,8 @@ public enum CommNamesEnum {
 
   BEAKER_AUTOTRANSLATION("beaker.autotranslation"),
   JUPYTER_WIDGET("jupyter.widget"),
-  JUPYTER_WIDGET_VERSION("jupyter.widget.version");
+  JUPYTER_WIDGET_VERSION("jupyter.widget.version"),
+  KERNEL_CONTROL_CHANNEL("kernel.control.channel");
 
   private String targetName;
 

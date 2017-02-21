@@ -16,20 +16,20 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
-import static com.twosigma.beaker.jupyter.Comm.DATA;
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
+import org.lappsgrid.jupyter.groovy.GroovyKernel;
+import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
+import org.lappsgrid.jupyter.groovy.msg.Header;
+import org.lappsgrid.jupyter.groovy.msg.Message;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lappsgrid.jupyter.groovy.GroovyKernel;
-import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
-import org.lappsgrid.jupyter.groovy.msg.Header;
-import org.lappsgrid.jupyter.groovy.msg.Message;
-import org.slf4j.LoggerFactory;
+import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
+import static com.twosigma.beaker.jupyter.Comm.DATA;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 
 /**
  * 
@@ -49,6 +49,7 @@ public class CommCloseHandler extends AbstractHandler<Message> {
     logger.info("Processing CommCloseHandler");
     Map<String, Serializable> commMap = message.getContent();
 
+    String targetName = kernel.getComm(getString(commMap, COMM_ID)).getTargetName();
     kernel.removeComm(getString(commMap, COMM_ID));
 
     Message reply = new Message();
@@ -59,6 +60,7 @@ public class CommCloseHandler extends AbstractHandler<Message> {
     reply.setParentHeader(message.getHeader());
     reply.setIdentities(message.getIdentities());
     send(reply);
+    logger.info("Comm closed, target name = " + targetName);
   }
 
   public static String getString(Map<String, Serializable> map, String name) {

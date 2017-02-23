@@ -31,13 +31,16 @@ public class CsvPlotReaderTest {
   public void shouldReturnDataForPlot() throws Exception {
     //given
     URI uriToTableRowTest = getClass().getClassLoader().getResource("tableRowsTest.csv").toURI();
-    String osAppropriatePath = IS_WINDOWS ?
-            uriToTableRowTest.getSchemeSpecificPart().substring(1) : uriToTableRowTest.getSchemeSpecificPart();
+    String osAppropriatePath =
+        IS_WINDOWS
+            ? uriToTableRowTest.getSchemeSpecificPart().substring(1)
+            : uriToTableRowTest.getSchemeSpecificPart();
     //when
     CsvPlotReader reader = new CsvPlotReader();
     Table values = reader.read(osAppropriatePath);
     //then
     assertThat(reader.convert(values).get(2).get("m3")).isEqualTo(8.0f);
-    assertThat(reader.convert(values).get(2).get("time")).isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31").getTime());
+    assertThat(reader.convert(values).get(2).get("time"))
+        .isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31").getTime());
   }
 }

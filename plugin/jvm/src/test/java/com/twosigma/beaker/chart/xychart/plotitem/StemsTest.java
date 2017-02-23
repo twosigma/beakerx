@@ -23,30 +23,29 @@ import java.util.Arrays;
 
 public class StemsTest {
 
-    @Test
-    public void createStemsByEmptyConstructor_hasWidthAndStyleAreNotNulls(){
-        //when
-        Stems stems = new Stems();
-        //then
-        Assertions.assertThat(stems.getWidth()).isNotNull();
-        Assertions.assertThat(stems.getStyle()).isNotNull();
-    }
+  @Test
+  public void createStemsByEmptyConstructor_hasWidthAndStyleAreNotNulls() {
+    //when
+    Stems stems = new Stems();
+    //then
+    Assertions.assertThat(stems.getWidth()).isNotNull();
+    Assertions.assertThat(stems.getStyle()).isNotNull();
+  }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void setStyleWithShapeTypeParam_throwIllegalArgumentException(){
-        //when
-        Stems stems = new Stems();
-        //then
-        stems.setStyle(ShapeType.DEFAULT);
-    }
+  @Test(expected = IllegalArgumentException.class)
+  public void setStyleWithShapeTypeParam_throwIllegalArgumentException() {
+    //when
+    Stems stems = new Stems();
+    //then
+    stems.setStyle(ShapeType.DEFAULT);
+  }
 
-    @Test
-    public void setStyleWithStrokeTypeListParam_hasStyleListIsNotNull(){
-        //when
-        Stems stems = new Stems();
-        stems.setStyle(Arrays.asList(StrokeType.values()));
-        //then
-        Assertions.assertThat(stems.getStyles()).isNotNull();
-    }
-
+  @Test
+  public void setStyleWithStrokeTypeListParam_hasStyleListIsNotNull() {
+    //when
+    Stems stems = new Stems();
+    stems.setStyle(Arrays.asList(StrokeType.values()));
+    //then
+    Assertions.assertThat(stems.getStyles()).isNotNull();
+  }
 }

@@ -16,13 +16,13 @@
 
 package com.twosigma.beaker.chart.serializer;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.GradientColor;
 import org.assertj.core.api.Assertions;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,33 +33,32 @@ import java.util.Arrays;
 
 public class GradientColorSerializerTest {
 
-    static ObjectMapper mapper;
-    static GradientColorSerializer gradientColorSerializer;
-    JsonGenerator jgen;
-    StringWriter sw;
+  static ObjectMapper mapper;
+  static GradientColorSerializer gradientColorSerializer;
+  JsonGenerator jgen;
+  StringWriter sw;
 
-    @BeforeClass
-    public static void initClassStubData(){
-        mapper = new ObjectMapper();
-        gradientColorSerializer = new GradientColorSerializer();
-    }
+  @BeforeClass
+  public static void initClassStubData() {
+    mapper = new ObjectMapper();
+    gradientColorSerializer = new GradientColorSerializer();
+  }
 
-    @Before
-    public void initTestStubData() throws IOException {
-        sw = new StringWriter();
-        jgen = mapper.getJsonFactory().createJsonGenerator(sw);
-    }
+  @Before
+  public void initTestStubData() throws IOException {
+    sw = new StringWriter();
+    jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+  }
 
-    @Test
-    public void serializeGradientColor_resultJsonHasGradientColor() throws IOException{
-        //when
-        GradientColor gradientColor = new GradientColor(Arrays.asList(Color.GREEN, Color.BLUE));
-        gradientColorSerializer.serialize(gradientColor, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        ArrayNode arrayNode = (ArrayNode) mapper.readTree(sw.toString());
-        Assertions.assertThat(arrayNode).isNotEmpty();
-        Assertions.assertThat(arrayNode.get(0).get("rgb").asInt()).isEqualTo(Color.GREEN.getRGB());
-    }
-
+  @Test
+  public void serializeGradientColor_resultJsonHasGradientColor() throws IOException {
+    //when
+    GradientColor gradientColor = new GradientColor(Arrays.asList(Color.GREEN, Color.BLUE));
+    gradientColorSerializer.serialize(gradientColor, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    ArrayNode arrayNode = (ArrayNode) mapper.readTree(sw.toString());
+    Assertions.assertThat(arrayNode).isNotEmpty();
+    Assertions.assertThat(arrayNode.get(0).get("rgb").asInt()).isEqualTo(Color.GREEN.getRGB());
+  }
 }

@@ -24,30 +24,29 @@ import java.util.Arrays;
 
 public class CategoryLinesTest {
 
-    @Test
-    public void createCategoryLinesByEmptyConstructor_hasWidthIsNotNull(){
-        //when
-        CategoryLines categoryLines = new CategoryLines();
-        //then
-        Assertions.assertThat(categoryLines.getWidth()).isNotNull();
-    }
+  @Test
+  public void createCategoryLinesByEmptyConstructor_hasWidthIsNotNull() {
+    //when
+    CategoryLines categoryLines = new CategoryLines();
+    //then
+    Assertions.assertThat(categoryLines.getWidth()).isNotNull();
+  }
 
-    @Test
-    public void setStyleWithStrokeTypeList_hasStylesListIsNotEmpty(){
-        //when
-        CategoryLines categoryLines = new CategoryLines();
-        categoryLines.setStyle(Arrays.asList(StrokeType.values()));
-        //then
-        Assertions.assertThat(categoryLines.getStyles()).isNotEmpty();
-    }
+  @Test
+  public void setStyleWithStrokeTypeList_hasStylesListIsNotEmpty() {
+    //when
+    CategoryLines categoryLines = new CategoryLines();
+    categoryLines.setStyle(Arrays.asList(StrokeType.values()));
+    //then
+    Assertions.assertThat(categoryLines.getStyles()).isNotEmpty();
+  }
 
-    @Test
-    public void setValueWithIntegerArrayParam_hasValueIsNotEmpty(){
-        //when
-        CategoryLines categoryLines = new CategoryLines();
-        categoryLines.setValue(new Integer[]{ new Integer(1), new Integer(2) });
-        //then
-        Assertions.assertThat(categoryLines.getValue()).isNotEmpty();
-    }
-
+  @Test
+  public void setValueWithIntegerArrayParam_hasValueIsNotEmpty() {
+    //when
+    CategoryLines categoryLines = new CategoryLines();
+    categoryLines.setValue(new Integer[] {new Integer(1), new Integer(2)});
+    //then
+    Assertions.assertThat(categoryLines.getValue()).isNotEmpty();
+  }
 }

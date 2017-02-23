@@ -24,39 +24,38 @@ import java.util.Arrays;
 
 public class CategoryPointsTest {
 
-    @Test
-    public void createCategoryPointsByEmptyConstructor_hasSizeGreaterThanZero(){
-        //when
-        CategoryPoints categoryPoints = new CategoryPoints();
-        //then
-        Assertions.assertThat(categoryPoints.getSize()).isGreaterThan(0);
-    }
+  @Test
+  public void createCategoryPointsByEmptyConstructor_hasSizeGreaterThanZero() {
+    //when
+    CategoryPoints categoryPoints = new CategoryPoints();
+    //then
+    Assertions.assertThat(categoryPoints.getSize()).isGreaterThan(0);
+  }
 
-    @Test
-    public void setSizeWithIntegerList_hasSizesLstIsNotEmpty(){
-        //when
-        CategoryPoints categoryPoints = new CategoryPoints();
-        categoryPoints.setSize(Arrays.asList(new Integer(1), new Integer(2)));
-        //then
-        Assertions.assertThat(categoryPoints.getSizes()).isNotEmpty();
-    }
+  @Test
+  public void setSizeWithIntegerList_hasSizesLstIsNotEmpty() {
+    //when
+    CategoryPoints categoryPoints = new CategoryPoints();
+    categoryPoints.setSize(Arrays.asList(new Integer(1), new Integer(2)));
+    //then
+    Assertions.assertThat(categoryPoints.getSizes()).isNotEmpty();
+  }
 
-    @Test
-    public void setShapeWithShapeTypeList_hasShapesListIsNotEmpty(){
-        //when
-        CategoryPoints categoryPoints = new CategoryPoints();
-        categoryPoints.setShape(Arrays.asList(ShapeType.values()));
-        //then
-        Assertions.assertThat(categoryPoints.getShapes()).isNotEmpty();
-    }
+  @Test
+  public void setShapeWithShapeTypeList_hasShapesListIsNotEmpty() {
+    //when
+    CategoryPoints categoryPoints = new CategoryPoints();
+    categoryPoints.setShape(Arrays.asList(ShapeType.values()));
+    //then
+    Assertions.assertThat(categoryPoints.getShapes()).isNotEmpty();
+  }
 
-    @Test
-    public void setValueWithIntegerArrayParam_hasValueIsNotEmpty(){
-        //when
-        CategoryPoints categoryPoints = new CategoryPoints();
-        categoryPoints.setValue(new Integer[]{ new Integer(1), new Integer(2) });
-        //then
-        Assertions.assertThat(categoryPoints.getValue()).isNotEmpty();
-    }
-
+  @Test
+  public void setValueWithIntegerArrayParam_hasValueIsNotEmpty() {
+    //when
+    CategoryPoints categoryPoints = new CategoryPoints();
+    categoryPoints.setValue(new Integer[] {new Integer(1), new Integer(2)});
+    //then
+    Assertions.assertThat(categoryPoints.getValue()).isNotEmpty();
+  }
 }

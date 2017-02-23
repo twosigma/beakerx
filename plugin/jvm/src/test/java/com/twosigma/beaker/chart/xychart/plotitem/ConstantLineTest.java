@@ -24,31 +24,30 @@ import java.util.Date;
 
 public class ConstantLineTest {
 
-    @Test
-    public void createConstantLineByEmptyConstructor_hasXandYisNull(){
-        //when
-        ConstantLine constantLine = new ConstantLine();
-        //then
-        Assertions.assertThat(constantLine.getX()).isNull();
-        Assertions.assertThat(constantLine.getY()).isNull();
-    }
+  @Test
+  public void createConstantLineByEmptyConstructor_hasXandYisNull() {
+    //when
+    ConstantLine constantLine = new ConstantLine();
+    //then
+    Assertions.assertThat(constantLine.getX()).isNull();
+    Assertions.assertThat(constantLine.getY()).isNull();
+  }
 
-    @Test
-    public void setXWithDateParam_constantLineHasNumberX(){
-        //when
-        ConstantLine constantLine = new ConstantLine();
-        constantLine.setX(new Date());
-        //then
-        Assertions.assertThat(constantLine.getX() instanceof Number).isTrue();
-    }
+  @Test
+  public void setXWithDateParam_constantLineHasNumberX() {
+    //when
+    ConstantLine constantLine = new ConstantLine();
+    constantLine.setX(new Date());
+    //then
+    Assertions.assertThat(constantLine.getX() instanceof Number).isTrue();
+  }
 
-    @Test
-    public void setColorWithAwtColor_constantLineHasBeakerColor(){
-        //when
-        ConstantLine constantLine = new ConstantLine();
-        constantLine.setColor(java.awt.Color.GREEN);
-        //then
-        Assertions.assertThat(constantLine.getColor() instanceof Color).isTrue();
-    }
-
+  @Test
+  public void setColorWithAwtColor_constantLineHasBeakerColor() {
+    //when
+    ConstantLine constantLine = new ConstantLine();
+    constantLine.setColor(java.awt.Color.GREEN);
+    //then
+    Assertions.assertThat(constantLine.getColor() instanceof Color).isTrue();
+  }
 }

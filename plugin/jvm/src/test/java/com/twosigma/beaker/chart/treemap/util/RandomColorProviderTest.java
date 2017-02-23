@@ -25,41 +25,41 @@ import org.junit.Test;
 
 public class RandomColorProviderTest {
 
-    TreeMapNode node01, node02;
+  TreeMapNode node01, node02;
 
-    @Before
-    public void initStubData(){
-        node01 = new TreeMapNode("010", 1, new DefaultValue(1));
-        node02 = new TreeMapNode("021");
-        node02.setWeight(2.0);
-        node02.setValue(new DefaultValue(2));
-    }
+  @Before
+  public void initStubData() {
+    node01 = new TreeMapNode("010", 1, new DefaultValue(1));
+    node02 = new TreeMapNode("021");
+    node02.setWeight(2.0);
+    node02.setValue(new DefaultValue(2));
+  }
 
-    @Test
-    public void createProviderWithEmptyConstructor_getColorWithNodeReturnBeakerColorWithRGB(){
-        //when
-        RandomColorProvider randomColorProvider = new RandomColorProvider();
-        //then
-        Assertions.assertThat(randomColorProvider.getColor(node01).getRGB()).isNotZero();
-        Assertions.assertThat(randomColorProvider.getColor(node02).getRGB()).isNotZero();
-    }
+  @Test
+  public void createProviderWithEmptyConstructor_getColorWithNodeReturnBeakerColorWithRGB() {
+    //when
+    RandomColorProvider randomColorProvider = new RandomColorProvider();
+    //then
+    Assertions.assertThat(randomColorProvider.getColor(node01).getRGB()).isNotZero();
+    Assertions.assertThat(randomColorProvider.getColor(node02).getRGB()).isNotZero();
+  }
 
-    @Test
-    public void createProviderWithEmptyConstructor_getValueWithNodeReturnDoubleIsNotZero(){
-        //when
-        RandomColorProvider randomColorProvider = new RandomColorProvider();
-        //then
-        Assertions.assertThat(randomColorProvider.getValue(node01)).isNotZero();
-        Assertions.assertThat(randomColorProvider.getValue(node02)).isNotZero();
-    }
+  @Test
+  public void createProviderWithEmptyConstructor_getValueWithNodeReturnDoubleIsNotZero() {
+    //when
+    RandomColorProvider randomColorProvider = new RandomColorProvider();
+    //then
+    Assertions.assertThat(randomColorProvider.getValue(node01)).isNotZero();
+    Assertions.assertThat(randomColorProvider.getValue(node02)).isNotZero();
+  }
 
-    @Test
-    public void createProviderWithColorArrayParam_getColorWithNodeReturnBeakerColorWithRGB(){
-        //when
-        RandomColorProvider randomColorProvider = new RandomColorProvider(new Color[]{Color.BLUE, Color.GREEN});
-        //then
-        Assertions.assertThat(randomColorProvider.getColor(node01).getRGB()).isNotZero();
-        Assertions.assertThat(randomColorProvider.getColor(node02).getRGB()).isNotZero();
-    }
-
+  @Test
+  public void createProviderWithColorArrayParam_getColorWithNodeReturnBeakerColorWithRGB() {
+    //when
+    RandomColorProvider randomColorProvider =
+        new RandomColorProvider(new Color[] {Color.BLUE, Color.GREEN});
+    //then
+    Assertions.assertThat(randomColorProvider.getColor(node01).getRGB()).isNotZero();
+    Assertions.assertThat(randomColorProvider.getColor(node02).getRGB()).isNotZero();
+  }
 }

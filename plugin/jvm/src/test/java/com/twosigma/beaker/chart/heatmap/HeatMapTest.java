@@ -21,25 +21,25 @@ import org.junit.Test;
 
 public class HeatMapTest {
 
-    @Test
-    public void createHeatMapByEmptyConstructor_hasLegendPositionAndLayoutAreNotNulls(){
-        //when
-        HeatMap heatMap = new HeatMap();
-        //then
-        Assertions.assertThat(heatMap.getLegendPosition()).isNotNull();
-        Assertions.assertThat(heatMap.getLegendLayout()).isNotNull();
-    }
+  @Test
+  public void createHeatMapByEmptyConstructor_hasLegendPositionAndLayoutAreNotNulls() {
+    //when
+    HeatMap heatMap = new HeatMap();
+    //then
+    Assertions.assertThat(heatMap.getLegendPosition()).isNotNull();
+    Assertions.assertThat(heatMap.getLegendLayout()).isNotNull();
+  }
 
-    @Test
-    public void setDataWith2DIntegerArrayParam_hasDataIsNotEmpty(){
-        //when
-        HeatMap heatMap = new HeatMap();
-        heatMap.setData(new Integer[][]{
-                new Integer[]{ new Integer(1), new Integer(2)},
-                new Integer[]{ new Integer(3), new Integer(4)}
+  @Test
+  public void setDataWith2DIntegerArrayParam_hasDataIsNotEmpty() {
+    //when
+    HeatMap heatMap = new HeatMap();
+    heatMap.setData(
+        new Integer[][] {
+          new Integer[] {new Integer(1), new Integer(2)},
+          new Integer[] {new Integer(3), new Integer(4)}
         });
-        //then
-        Assertions.assertThat(heatMap.getData()).isNotEmpty();
-    }
-
+    //then
+    Assertions.assertThat(heatMap.getData()).isNotEmpty();
+  }
 }

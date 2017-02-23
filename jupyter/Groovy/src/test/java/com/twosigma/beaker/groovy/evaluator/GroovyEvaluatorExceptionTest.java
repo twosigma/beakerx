@@ -24,69 +24,57 @@ import org.junit.Test;
 
 public class GroovyEvaluatorExceptionTest extends GroovyEvaluatorTest {
 
-    @Test(expected = MultipleCompilationErrorsException.class)
-    public void parseNotExistingClassScript_throwMultipleCompilationErrorsException() {
-        //when
-        parseClassFromScript("def plot = new NotExistPlot()");
-    }
+  @Test(expected = MultipleCompilationErrorsException.class)
+  public void parseNotExistingClassScript_throwMultipleCompilationErrorsException() {
+    //when
+    parseClassFromScript("def plot = new NotExistPlot()");
+  }
 
-    @Test(expected = MissingPropertyException.class)
-    public void parseNotExistingPropertyScript_throwMissingPropertyException() {
-        //when
-        parseClassFromScript(
-                "def plot = new Plot() \n " +
-                "plot << line");
-    }
+  @Test(expected = MissingPropertyException.class)
+  public void parseNotExistingPropertyScript_throwMissingPropertyException() {
+    //when
+    parseClassFromScript("def plot = new Plot() \n " + "plot << line");
+  }
 
-    @Test(expected = NullPointerException.class)
-    public void parseNullObjectScript_throwNullPointerException() {
-        //when
-        parseClassFromScript(
-                "def plot = new Plot() \n" +
-                "Line line = null \n " +
-                "plot << line");
-    }
+  @Test(expected = NullPointerException.class)
+  public void parseNullObjectScript_throwNullPointerException() {
+    //when
+    parseClassFromScript("def plot = new Plot() \n" + "Line line = null \n " + "plot << line");
+  }
 
-    @Test(expected = GroovyCastException.class)
-    public void parseCastWrongClassScript_throwGroovyCastException() {
-        //when
-        parseClassFromScript(
-                "def plot = new Plot() \n" +
-                "Line line = (Line) Plot ");
-    }
+  @Test(expected = GroovyCastException.class)
+  public void parseCastWrongClassScript_throwGroovyCastException() {
+    //when
+    parseClassFromScript("def plot = new Plot() \n" + "Line line = (Line) Plot ");
+  }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void parseIllegalArgumentScript_throwIllegalArgumentException() {
-        //when
-        parseClassFromScript(
-                "def plot = new Plot() \n" +
-                "plot.setYBound(Arrays.asList(1, 2, 3)) ");
-    }
+  @Test(expected = IllegalArgumentException.class)
+  public void parseIllegalArgumentScript_throwIllegalArgumentException() {
+    //when
+    parseClassFromScript("def plot = new Plot() \n" + "plot.setYBound(Arrays.asList(1, 2, 3)) ");
+  }
 
-    @Test(expected = NumberFormatException.class)
-    public void parseWrongNumberFormatScript_throwNumberFormatException() {
-        //when
-        parseClassFromScript("def intval = Color.decode(\"FF00FF\"); ");
-    }
+  @Test(expected = NumberFormatException.class)
+  public void parseWrongNumberFormatScript_throwNumberFormatException() {
+    //when
+    parseClassFromScript("def intval = Color.decode(\"FF00FF\"); ");
+  }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void parseIndexOutOfBoundsScript_throwIndexOutOfBoundsException() {
-        //when
-        parseClassFromScript(
-                "def arr = new ArrayList() \n" +
-                "arr.get(5) ");
-    }
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void parseIndexOutOfBoundsScript_throwIndexOutOfBoundsException() {
+    //when
+    parseClassFromScript("def arr = new ArrayList() \n" + "arr.get(5) ");
+  }
 
-    @Test(expected = GroovyRuntimeException.class)
-    public void parseNotExistingConstructorScript_throwGroovyRuntimeException() {
-        //when
-        parseClassFromScript("def plot = new Plot(123)");
-    }
+  @Test(expected = GroovyRuntimeException.class)
+  public void parseNotExistingConstructorScript_throwGroovyRuntimeException() {
+    //when
+    parseClassFromScript("def plot = new Plot(123)");
+  }
 
-    @Test(expected = ArithmeticException.class)
-    public void parseDivisionByZeroScript_throwArithmeticException() {
-        //when
-        parseClassFromScript("1/0 ");
-    }
-
+  @Test(expected = ArithmeticException.class)
+  public void parseDivisionByZeroScript_throwArithmeticException() {
+    //when
+    parseClassFromScript("1/0 ");
+  }
 }

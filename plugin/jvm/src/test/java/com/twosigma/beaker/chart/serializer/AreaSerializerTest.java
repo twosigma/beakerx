@@ -16,13 +16,13 @@
 
 package com.twosigma.beaker.chart.serializer;
 
-import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.chart.xychart.plotitem.Area;
-import org.assertj.core.api.Assertions;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.xychart.plotitem.Area;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,47 +32,47 @@ import java.io.StringWriter;
 
 public class AreaSerializerTest {
 
-    static ObjectMapper mapper;
-    static AreaSerializer areaSerializer;
-    JsonGenerator jgen;
-    StringWriter sw;
+  static ObjectMapper mapper;
+  static AreaSerializer areaSerializer;
+  JsonGenerator jgen;
+  StringWriter sw;
 
-    @BeforeClass
-    public static void initClassStubData(){
-        mapper = new ObjectMapper();
-        areaSerializer = new AreaSerializer();
-    }
+  @BeforeClass
+  public static void initClassStubData() {
+    mapper = new ObjectMapper();
+    areaSerializer = new AreaSerializer();
+  }
 
-    @Before
-    public void initTestStubData() throws IOException {
-        sw = new StringWriter();
-        jgen = mapper.getJsonFactory().createJsonGenerator(sw);
-    }
+  @Before
+  public void initTestStubData() throws IOException {
+    sw = new StringWriter();
+    jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+  }
 
-    @Test
-    public void serializeInterpolationArea_resultJsonHasInterpolation() throws IOException{
-        //when
-        Area area = new Area();
-        area.setInterpolation(1);
-        areaSerializer.serialize(area, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("interpolation")).isTrue();
-        Assertions.assertThat(actualObj.get("interpolation").asInt()).isEqualTo(1);
-    }
+  @Test
+  public void serializeInterpolationArea_resultJsonHasInterpolation() throws IOException {
+    //when
+    Area area = new Area();
+    area.setInterpolation(1);
+    areaSerializer.serialize(area, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("interpolation")).isTrue();
+    Assertions.assertThat(actualObj.get("interpolation").asInt()).isEqualTo(1);
+  }
 
-    @Test
-    public void serializeColorArea_resultJsonHasColor() throws IOException{
-        //when
-        Area area = new Area();
-        area.setColor(Color.GREEN);
-        areaSerializer.serialize(area, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("color")).isTrue();
-        Assertions.assertThat(actualObj.get("color").get("rgb").asInt()).isEqualTo(Color.GREEN.getRGB());
-    }
-
+  @Test
+  public void serializeColorArea_resultJsonHasColor() throws IOException {
+    //when
+    Area area = new Area();
+    area.setColor(Color.GREEN);
+    areaSerializer.serialize(area, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("color")).isTrue();
+    Assertions.assertThat(actualObj.get("color").get("rgb").asInt())
+        .isEqualTo(Color.GREEN.getRGB());
+  }
 }

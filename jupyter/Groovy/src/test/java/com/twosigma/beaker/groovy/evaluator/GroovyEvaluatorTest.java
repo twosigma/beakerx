@@ -29,33 +29,32 @@ import static com.twosigma.beaker.groovy.GroovyDefaultVariables.CLASS_PATH;
 import static com.twosigma.beaker.groovy.GroovyDefaultVariables.IMPORTS;
 import static com.twosigma.beaker.groovy.GroovyDefaultVariables.getUsString;
 
-
 public class GroovyEvaluatorTest {
 
-    static GroovyClassLoader groovyClassLoader;
-    static GroovyKernelEvaluatorTest groovyKernel;
-    static Binding scriptBinding;
+  static GroovyClassLoader groovyClassLoader;
+  static GroovyKernelEvaluatorTest groovyKernel;
+  static Binding scriptBinding;
 
-    @BeforeClass
-    public static void initClassStubData() throws IOException {
-        GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345");
-        groovyEvaluator.setShellOptions(getUsString(CLASS_PATH), getUsString(IMPORTS), null);
-        groovyClassLoader = groovyEvaluator.newEvaluator();
-        scriptBinding = new Binding();
-        scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));
-    }
+  @BeforeClass
+  public static void initClassStubData() throws IOException {
+    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345");
+    groovyEvaluator.setShellOptions(getUsString(CLASS_PATH), getUsString(IMPORTS), null);
+    groovyClassLoader = groovyEvaluator.newEvaluator();
+    scriptBinding = new Binding();
+    scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));
+  }
 
-    public Object parseClassFromScript(String script){
-        Class<?> parsedClass = groovyClassLoader.parseClass(script);
-        Script instance = null;
-        try {
-            instance = (Script) parsedClass.newInstance();
-            instance.setBinding(scriptBinding);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return instance.run();
+  public Object parseClassFromScript(String script) {
+    Class<?> parsedClass = groovyClassLoader.parseClass(script);
+    Script instance = null;
+    try {
+      instance = (Script) parsedClass.newInstance();
+      instance.setBinding(scriptBinding);
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
     }
+    return instance.run();
+  }
 }

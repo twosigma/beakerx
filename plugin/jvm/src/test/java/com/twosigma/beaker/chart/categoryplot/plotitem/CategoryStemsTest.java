@@ -24,39 +24,38 @@ import java.util.Arrays;
 
 public class CategoryStemsTest {
 
-    @Test
-    public void createCategoryStemsByEmptyConstructor_hasWidthGreaterThanZero(){
-        //when
-        CategoryStems categoryStems = new CategoryStems();
-        //then
-        Assertions.assertThat(categoryStems.getWidth()).isGreaterThan(0);
-    }
+  @Test
+  public void createCategoryStemsByEmptyConstructor_hasWidthGreaterThanZero() {
+    //when
+    CategoryStems categoryStems = new CategoryStems();
+    //then
+    Assertions.assertThat(categoryStems.getWidth()).isGreaterThan(0);
+  }
 
-    @Test
-    public void setBaseIntegerListParam_hasBasesListIsNotEmpty(){
-        //when
-        CategoryStems categoryStems = new CategoryStems();
-        categoryStems.setBase(Arrays.asList(new Integer(1), new Integer(2)));
-        //then
-        Assertions.assertThat(categoryStems.getBases()).isNotEmpty();
-    }
+  @Test
+  public void setBaseIntegerListParam_hasBasesListIsNotEmpty() {
+    //when
+    CategoryStems categoryStems = new CategoryStems();
+    categoryStems.setBase(Arrays.asList(new Integer(1), new Integer(2)));
+    //then
+    Assertions.assertThat(categoryStems.getBases()).isNotEmpty();
+  }
 
-    @Test
-    public void setStyleWithStrokeTypeListParam_hasStylesListIsNotEmpty(){
-        //when
-        CategoryStems categoryStems = new CategoryStems();
-        categoryStems.setStyle(Arrays.asList(StrokeType.values()));
-        //then
-        Assertions.assertThat(categoryStems.getStyles()).isNotEmpty();
-    }
+  @Test
+  public void setStyleWithStrokeTypeListParam_hasStylesListIsNotEmpty() {
+    //when
+    CategoryStems categoryStems = new CategoryStems();
+    categoryStems.setStyle(Arrays.asList(StrokeType.values()));
+    //then
+    Assertions.assertThat(categoryStems.getStyles()).isNotEmpty();
+  }
 
-    @Test
-    public void setValueWithIntegerArrayParam_hasValueIsNotEmpty(){
-        //when
-        CategoryStems categoryStems = new CategoryStems();
-        categoryStems.setValue(new Integer[]{ new Integer(1), new Integer(2) });
-        //then
-        Assertions.assertThat(categoryStems.getValue()).isNotEmpty();
-    }
-
+  @Test
+  public void setValueWithIntegerArrayParam_hasValueIsNotEmpty() {
+    //when
+    CategoryStems categoryStems = new CategoryStems();
+    categoryStems.setValue(new Integer[] {new Integer(1), new Integer(2)});
+    //then
+    Assertions.assertThat(categoryStems.getValue()).isNotEmpty();
+  }
 }

@@ -16,15 +16,15 @@
 
 package com.twosigma.beaker.chart.serializer;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.StrokeType;
 import org.assertj.core.api.Assertions;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,85 +34,85 @@ import java.io.StringWriter;
 
 public class LineSerializerTest {
 
-    static ObjectMapper mapper;
-    static LineSerializer lineSerializer;
-    JsonGenerator jgen;
-    StringWriter sw;
+  static ObjectMapper mapper;
+  static LineSerializer lineSerializer;
+  JsonGenerator jgen;
+  StringWriter sw;
 
-    @BeforeClass
-    public static void initClassStubData(){
-        mapper = new ObjectMapper();
-        lineSerializer = new LineSerializer();
-    }
+  @BeforeClass
+  public static void initClassStubData() {
+    mapper = new ObjectMapper();
+    lineSerializer = new LineSerializer();
+  }
 
-    @Before
-    public void initTestStubData() throws IOException{
-        sw = new StringWriter();
-        jgen = mapper.getJsonFactory().createJsonGenerator(sw);
-    }
+  @Before
+  public void initTestStubData() throws IOException {
+    sw = new StringWriter();
+    jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+  }
 
-    @Test
-    public void serializeWidthLine_resultJsonHasWidth() throws IOException{
-        //when
-        Line line = new Line();
-        line.setWidth(1f);
-        lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("width")).isTrue();
-        Assertions.assertThat(actualObj.get("width").asDouble()).isEqualTo(1.0);
-    }
+  @Test
+  public void serializeWidthLine_resultJsonHasWidth() throws IOException {
+    //when
+    Line line = new Line();
+    line.setWidth(1f);
+    lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("width")).isTrue();
+    Assertions.assertThat(actualObj.get("width").asDouble()).isEqualTo(1.0);
+  }
 
-    @Test
-    public void serializeColorLine_resultJsonHasColor() throws IOException{
-        //when
-        Line line = new Line();
-        line.setColor(Color.GREEN);
-        lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("color")).isTrue();
-        Assertions.assertThat(actualObj.get("color").get("rgb").asInt()).isEqualTo(Color.GREEN.getRGB());
-    }
+  @Test
+  public void serializeColorLine_resultJsonHasColor() throws IOException {
+    //when
+    Line line = new Line();
+    line.setColor(Color.GREEN);
+    lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("color")).isTrue();
+    Assertions.assertThat(actualObj.get("color").get("rgb").asInt())
+        .isEqualTo(Color.GREEN.getRGB());
+  }
 
-    @Test
-    public void serializeStrokeTypeLine_resultJsonHasStyle() throws IOException{
-        //when
-        Line line = new Line();
-        line.setStyle(StrokeType.SOLID);
-        lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("style")).isTrue();
-        Assertions.assertThat(actualObj.get("style").asText()).isEqualTo("SOLID");
-    }
+  @Test
+  public void serializeStrokeTypeLine_resultJsonHasStyle() throws IOException {
+    //when
+    Line line = new Line();
+    line.setStyle(StrokeType.SOLID);
+    lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("style")).isTrue();
+    Assertions.assertThat(actualObj.get("style").asText()).isEqualTo("SOLID");
+  }
 
-    @Test
-    public void serializeInterpolationLine_resultJsonHasInterpolation() throws IOException{
-        //when
-        Line line = new Line();
-        line.setInterpolation(1);
-        lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("interpolation")).isTrue();
-        Assertions.assertThat(actualObj.get("interpolation").asInt()).isEqualTo(1);
-    }
+  @Test
+  public void serializeInterpolationLine_resultJsonHasInterpolation() throws IOException {
+    //when
+    Line line = new Line();
+    line.setInterpolation(1);
+    lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("interpolation")).isTrue();
+    Assertions.assertThat(actualObj.get("interpolation").asInt()).isEqualTo(1);
+  }
 
-    @Test
-    public void serializeLodFilterLine_resultJsonHasLodFilter() throws IOException{
-        Line line = new Line();
-        line.setLodFilter(Filter.LINE);
-        lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("lod_filter")).isTrue();
-        Assertions.assertThat(actualObj.get("lod_filter").asText()).isEqualTo("line");
-    }
-
+  @Test
+  public void serializeLodFilterLine_resultJsonHasLodFilter() throws IOException {
+    Line line = new Line();
+    line.setLodFilter(Filter.LINE);
+    lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("lod_filter")).isTrue();
+    Assertions.assertThat(actualObj.get("lod_filter").asText()).isEqualTo("line");
+  }
 }

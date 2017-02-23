@@ -21,37 +21,37 @@ import org.junit.Test;
 
 public class LegendPositionTest {
 
-    @Test
-    public void createLegendPositionByEmptyConstructor_hasPositionIsNotNull(){
-        //when
-        LegendPosition legendPosition = new LegendPosition();
-        //then
-        Assertions.assertThat(legendPosition.getPosition()).isNotNull();
-    }
+  @Test
+  public void createLegendPositionByEmptyConstructor_hasPositionIsNotNull() {
+    //when
+    LegendPosition legendPosition = new LegendPosition();
+    //then
+    Assertions.assertThat(legendPosition.getPosition()).isNotNull();
+  }
 
-    @Test
-    public void createLegendPositionWithLeftPositionParam_hasLeftPosition(){
-        //when
-        LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.LEFT);
-        //then
-        Assertions.assertThat(legendPosition.getPosition()).isEqualTo(LegendPosition.Position.LEFT);
-    }
+  @Test
+  public void createLegendPositionWithLeftPositionParam_hasLeftPosition() {
+    //when
+    LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.LEFT);
+    //then
+    Assertions.assertThat(legendPosition.getPosition()).isEqualTo(LegendPosition.Position.LEFT);
+  }
 
-    @Test
-    public void createLegendPositionWithOneLengthIntArrayParam_hasXNotZeroYIsZero(){
-        //when
-        LegendPosition legendPosition = new LegendPosition(new int[]{1});
-        //then
-        Assertions.assertThat(legendPosition.getX()).isNotZero();
-        Assertions.assertThat(legendPosition.getY()).isZero();
-    }
+  @Test
+  public void createLegendPositionWithOneLengthIntArrayParam_hasXNotZeroYIsZero() {
+    //when
+    LegendPosition legendPosition = new LegendPosition(new int[] {1});
+    //then
+    Assertions.assertThat(legendPosition.getX()).isNotZero();
+    Assertions.assertThat(legendPosition.getY()).isZero();
+  }
 
-    @Test
-    public void createLegendPositionWithTwoLengthIntArrayParam_hasXAndYNotEqualZero(){
-        //when
-        LegendPosition legendPosition = new LegendPosition(new int[]{1, 2});
-        //then
-        Assertions.assertThat(legendPosition.getX()).isNotZero();
-        Assertions.assertThat(legendPosition.getY()).isNotZero();
-    }
+  @Test
+  public void createLegendPositionWithTwoLengthIntArrayParam_hasXAndYNotEqualZero() {
+    //when
+    LegendPosition legendPosition = new LegendPosition(new int[] {1, 2});
+    //then
+    Assertions.assertThat(legendPosition.getX()).isNotZero();
+    Assertions.assertThat(legendPosition.getY()).isNotZero();
+  }
 }

@@ -32,161 +32,163 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.twosigma.beaker.jupyter.Comm.COMMS;
 import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
-import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
 import static com.twosigma.beaker.jupyter.Comm.DATA;
 import static com.twosigma.beaker.jupyter.Comm.TARGET_MODULE;
-import static com.twosigma.beaker.jupyter.Comm.COMMS;
+import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
 
 public class JupyterHandlerTest {
 
-    private GroovyKernelJupyterTest groovyKernel;
-    private CommOpenHandler commOpenHandler;
-    private CommCloseHandler commCloseHandler;
-    private CommInfoHandler commInfoHandler;
+  private GroovyKernelJupyterTest groovyKernel;
+  private CommOpenHandler commOpenHandler;
+  private CommCloseHandler commCloseHandler;
+  private CommInfoHandler commInfoHandler;
 
-    @Before
-    public void setUp(){
-        groovyKernel = new GroovyKernelJupyterTest();
-        commOpenHandler = new CommOpenHandler(groovyKernel);
-        commCloseHandler = new CommCloseHandler(groovyKernel);
-        commInfoHandler = new CommInfoHandler(groovyKernel);
-    }
+  public static Message initCloseMessage() {
+    Map<String, Serializable> content = new LinkedHashMap<>();
+    content.put(DATA, new HashMap<>());
+    content.put(COMM_ID, "commId");
+    content.put(TARGET_NAME, "targetName");
+    content.put(TARGET_MODULE, "targetModule");
 
-    @Test
-    public void handleOpenCommMessage_shouldAddCommMessageToStorageMap() throws Exception {
-        //given
-        Message message = initCloseMessage();
-        String commId = (String) message.getContent().get(COMM_ID);
-        //when
-        commOpenHandler.handle(message);
-        //then
-        Assertions.assertThat(groovyKernel.isCommPresent(commId)).isTrue();
-    }
+    Message message = new Message();
+    message.setIdentities(Arrays.asList("identities".getBytes()));
+    message.setHeader(initHeader(JupyterMessages.COMM_CLOSE));
+    message.setContent(content);
+    return message;
+  }
 
-    @Test
-    public void handleCloseCommMessage_shouldRemoveCommMessageFromStorageMap() throws Exception {
-        //given
-        String commId = initKernelCommMapWithOneComm(groovyKernel);
-        //when
-        commCloseHandler.handle(initCloseMessage());
-        //then
-        Assertions.assertThat(groovyKernel.isCommPresent(commId)).isFalse();
-    }
+  public static Message initOpenMessage() {
+    Map<String, Serializable> content = new LinkedHashMap<>();
+    content.put(DATA, new HashMap<>());
+    content.put(COMM_ID, "commId");
+    content.put(TARGET_NAME, "targetName");
+    content.put(TARGET_MODULE, "targetModule");
 
-    @Test
-    public void handleOpenThenCloseCommMessages_shouldRemoveCommMessageFromStorageMap() throws Exception {
-        //given
-        Message openMessage = initOpenMessage();
-        String commId = (String) openMessage.getContent().get(COMM_ID);
-        //when
-        commOpenHandler.handle(openMessage);
-        commCloseHandler.handle(initCloseMessage());
-        //then
-        Assertions.assertThat(groovyKernel.isCommPresent(commId)).isFalse();
-    }
+    Message message = new Message();
+    message.setIdentities(Arrays.asList("identities".getBytes()));
+    message.setHeader(initHeader(JupyterMessages.COMM_OPEN));
+    message.setContent(content);
+    return message;
+  }
 
-    @Test
-    public void handleInfoCommMessages_replyCommMessageHasCommsInfoContent() throws Exception {
-        //given
-        initKernelCommMapWithOneComm(groovyKernel);
-        //when
-        commInfoHandler.handle(initInfoMessage());
-        //then
-        Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-        Message sendMessage = groovyKernel.getSendMessages().get(0);
-        Assertions.assertThat((Map)sendMessage.getContent().get(COMMS)).isNotEmpty();
-    }
+  public static Message initCommMessage() {
+    Map<String, Serializable> content = new LinkedHashMap<>();
+    content.put(DATA, new HashMap<>());
+    content.put(COMM_ID, "commId");
+    content.put(TARGET_NAME, "targetName");
+    content.put(TARGET_MODULE, "targetModule");
 
-    public static Message initCloseMessage(){
-        Map<String, Serializable> content = new LinkedHashMap<>();
-        content.put(DATA, new HashMap<>());
-        content.put(COMM_ID, "commId");
-        content.put(TARGET_NAME, "targetName");
-        content.put(TARGET_MODULE, "targetModule");
+    Message message = new Message();
+    message.setIdentities(Arrays.asList("identities".getBytes()));
+    message.setHeader(initHeader(JupyterMessages.COMM_MSG));
+    message.setContent(content);
+    return message;
+  }
 
-        Message message = new Message();
-        message.setIdentities(Arrays.asList("identities".getBytes()));
-        message.setHeader(initHeader(JupyterMessages.COMM_CLOSE));
-        message.setContent(content);
-        return message;
-    }
+  public static Message initExecuteRequestMessage() {
+    Map<String, Serializable> content = new LinkedHashMap<>();
+    content.put("allow_stdin", Boolean.TRUE);
+    content.put("code", "new Plot() << new Line(x: (0..5), y: [0, 1, 6, 5, 2, 8])");
+    content.put("stop_on_error", Boolean.TRUE);
+    content.put("user_expressions", new LinkedHashMap<>());
+    content.put("silent", Boolean.FALSE);
+    content.put("store_history", Boolean.TRUE);
 
-    public static Message initOpenMessage(){
-        Map<String, Serializable> content = new LinkedHashMap<>();
-        content.put(DATA, new HashMap<>());
-        content.put(COMM_ID, "commId");
-        content.put(TARGET_NAME, "targetName");
-        content.put(TARGET_MODULE, "targetModule");
+    Message message = new Message();
+    message.setIdentities(Arrays.asList("identities".getBytes()));
+    message.setHeader(initHeader(JupyterMessages.EXECUTE_REQUEST));
+    message.setParentHeader(null);
+    message.setMetadata(new LinkedHashMap<>());
+    message.setContent(content);
+    return message;
+  }
 
-        Message message = new Message();
-        message.setIdentities(Arrays.asList("identities".getBytes()));
-        message.setHeader(initHeader(JupyterMessages.COMM_OPEN));
-        message.setContent(content);
-        return message;
-    }
+  public static Message initInfoMessage() {
+    Message message = new Message();
+    message.setIdentities(Arrays.asList("identities".getBytes()));
+    message.setHeader(initHeader(JupyterMessages.COMM_INFO_REQUEST));
+    return message;
+  }
 
-    public static Message initCommMessage(){
-        Map<String, Serializable> content = new LinkedHashMap<>();
-        content.put(DATA, new HashMap<>());
-        content.put(COMM_ID, "commId");
-        content.put(TARGET_NAME, "targetName");
-        content.put(TARGET_MODULE, "targetModule");
+  private static Header initHeader(JupyterMessages jupyterMessages) {
+    Header header = new Header();
+    header.setId("messageId");
+    header.setUsername("username");
+    header.setSession("sessionId" + jupyterMessages.getName());
+    header.setType(jupyterMessages.getName());
+    header.setVersion("5.0");
+    return header;
+  }
 
-        Message message = new Message();
-        message.setIdentities(Arrays.asList("identities".getBytes()));
-        message.setHeader(initHeader(JupyterMessages.COMM_MSG));
-        message.setContent(content);
-        return message;
-    }
-
-    public static Message initExecuteRequestMessage(){
-        Map<String, Serializable> content = new  LinkedHashMap<>();
-        content.put("allow_stdin", Boolean.TRUE);
-        content.put("code", "new Plot() << new Line(x: (0..5), y: [0, 1, 6, 5, 2, 8])");
-        content.put("stop_on_error", Boolean.TRUE);
-        content.put("user_expressions", new  LinkedHashMap<>());
-        content.put("silent", Boolean.FALSE);
-        content.put("store_history", Boolean.TRUE);
-
-        Message message = new Message();
-        message.setIdentities(Arrays.asList("identities".getBytes()));
-        message.setHeader(initHeader(JupyterMessages.EXECUTE_REQUEST));
-        message.setParentHeader(null);
-        message.setMetadata(new LinkedHashMap<>());
-        message.setContent(content);
-        return message;
-    }
-
-    public static Message initInfoMessage(){
-        Message message = new Message();
-        message.setIdentities(Arrays.asList("identities".getBytes()));
-        message.setHeader(initHeader(JupyterMessages.COMM_INFO_REQUEST));
-        return message;
-    }
-
-    private static Header initHeader(JupyterMessages jupyterMessages){
-        Header header = new Header();
-        header.setId("messageId");
-        header.setUsername("username");
-        header.setSession("sessionId" + jupyterMessages.getName());
-        header.setType(jupyterMessages.getName());
-        header.setVersion("5.0");
-        return header;
-    }
-
-    public static String initKernelCommMapWithOneComm(GroovyKernelJupyterTest groovyKernelJupyterTest){
-        Message openMessage = initOpenMessage();
-        String commId = (String) openMessage.getContent().get(COMM_ID);
-        String targetName = (String) openMessage.getContent().get(TARGET_NAME);
-        Comm comm = new Comm(commId, targetName){
-            @Override
-            public void handleMsg(Message parentMessage) throws NoSuchAlgorithmException {
-                groovyKernelJupyterTest.commHandleMessage();
-            }
+  public static String initKernelCommMapWithOneComm(
+      GroovyKernelJupyterTest groovyKernelJupyterTest) {
+    Message openMessage = initOpenMessage();
+    String commId = (String) openMessage.getContent().get(COMM_ID);
+    String targetName = (String) openMessage.getContent().get(TARGET_NAME);
+    Comm comm =
+        new Comm(commId, targetName) {
+          @Override
+          public void handleMsg(Message parentMessage) throws NoSuchAlgorithmException {
+            groovyKernelJupyterTest.commHandleMessage();
+          }
         };
-        groovyKernelJupyterTest.addComm(commId, comm);
-        return commId;
-    }
+    groovyKernelJupyterTest.addComm(commId, comm);
+    return commId;
+  }
 
+  @Before
+  public void setUp() {
+    groovyKernel = new GroovyKernelJupyterTest();
+    commOpenHandler = new CommOpenHandler(groovyKernel);
+    commCloseHandler = new CommCloseHandler(groovyKernel);
+    commInfoHandler = new CommInfoHandler(groovyKernel);
+  }
+
+  @Test
+  public void handleOpenCommMessage_shouldAddCommMessageToStorageMap() throws Exception {
+    //given
+    Message message = initCloseMessage();
+    String commId = (String) message.getContent().get(COMM_ID);
+    //when
+    commOpenHandler.handle(message);
+    //then
+    Assertions.assertThat(groovyKernel.isCommPresent(commId)).isTrue();
+  }
+
+  @Test
+  public void handleCloseCommMessage_shouldRemoveCommMessageFromStorageMap() throws Exception {
+    //given
+    String commId = initKernelCommMapWithOneComm(groovyKernel);
+    //when
+    commCloseHandler.handle(initCloseMessage());
+    //then
+    Assertions.assertThat(groovyKernel.isCommPresent(commId)).isFalse();
+  }
+
+  @Test
+  public void handleOpenThenCloseCommMessages_shouldRemoveCommMessageFromStorageMap()
+      throws Exception {
+    //given
+    Message openMessage = initOpenMessage();
+    String commId = (String) openMessage.getContent().get(COMM_ID);
+    //when
+    commOpenHandler.handle(openMessage);
+    commCloseHandler.handle(initCloseMessage());
+    //then
+    Assertions.assertThat(groovyKernel.isCommPresent(commId)).isFalse();
+  }
+
+  @Test
+  public void handleInfoCommMessages_replyCommMessageHasCommsInfoContent() throws Exception {
+    //given
+    initKernelCommMapWithOneComm(groovyKernel);
+    //when
+    commInfoHandler.handle(initInfoMessage());
+    //then
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat((Map) sendMessage.getContent().get(COMMS)).isNotEmpty();
+  }
 }

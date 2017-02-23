@@ -26,40 +26,42 @@ import org.junit.Test;
 
 public class GradientColorProviderTest {
 
-    TreeMap treeMap;
-    TreeMapNode node01;
+  TreeMap treeMap;
+  TreeMapNode node01;
 
-    @Before
-    public void initStubData(){
-        treeMap = new TreeMap();
-        treeMap.setRoot(new TreeMapNode("020", 2, new DefaultValue(2)));
-        node01 = new TreeMapNode("010", 1, new DefaultValue(1));
-    }
+  @Before
+  public void initStubData() {
+    treeMap = new TreeMap();
+    treeMap.setRoot(new TreeMapNode("020", 2, new DefaultValue(2)));
+    node01 = new TreeMapNode("010", 1, new DefaultValue(1));
+  }
 
-    @Test
-    public void createProviderWithTreeMapParam_getColorWithNodeReturnBeakerColorWithRGB(){
-        //when
-        GradientColorProvider gradientColorProvider = new GradientColorProvider(treeMap);
-        //then
-        Assertions.assertThat(gradientColorProvider.getColor(treeMap.getRoot()).getRGB()).isNotZero();
-        Assertions.assertThat(gradientColorProvider.getColor(node01).getRGB()).isNotZero();
-    }
+  @Test
+  public void createProviderWithTreeMapParam_getColorWithNodeReturnBeakerColorWithRGB() {
+    //when
+    GradientColorProvider gradientColorProvider = new GradientColorProvider(treeMap);
+    //then
+    Assertions.assertThat(gradientColorProvider.getColor(treeMap.getRoot()).getRGB()).isNotZero();
+    Assertions.assertThat(gradientColorProvider.getColor(node01).getRGB()).isNotZero();
+  }
 
-    @Test
-    public void createProviderWithTreeMapParam_getValueWithNodeReturnDoubleIsNotZero(){
-        //when
-        GradientColorProvider gradientColorProvider = new GradientColorProvider(treeMap);
-        //then
-        Assertions.assertThat(gradientColorProvider.getValue(treeMap.getRoot())).isNotZero();
-        Assertions.assertThat(gradientColorProvider.getValue(node01)).isNotZero();
-    }
+  @Test
+  public void createProviderWithTreeMapParam_getValueWithNodeReturnDoubleIsNotZero() {
+    //when
+    GradientColorProvider gradientColorProvider = new GradientColorProvider(treeMap);
+    //then
+    Assertions.assertThat(gradientColorProvider.getValue(treeMap.getRoot())).isNotZero();
+    Assertions.assertThat(gradientColorProvider.getValue(node01)).isNotZero();
+  }
 
-    @Test
-    public void createProviderWithTreeMapAndTwoColorsParams_getColorWithNodeReturnBeakerColorWithRGB(){
-        //when
-        GradientColorProvider gradientColorProvider = new GradientColorProvider(treeMap, Color.BLUE, Color.GREEN);
-        //then
-        Assertions.assertThat(gradientColorProvider.getColor(treeMap.getRoot()).getRGB()).isNotZero();
-        Assertions.assertThat(gradientColorProvider.getColor(node01).getRGB()).isNotZero();
-    }
+  @Test
+  public void
+      createProviderWithTreeMapAndTwoColorsParams_getColorWithNodeReturnBeakerColorWithRGB() {
+    //when
+    GradientColorProvider gradientColorProvider =
+        new GradientColorProvider(treeMap, Color.BLUE, Color.GREEN);
+    //then
+    Assertions.assertThat(gradientColorProvider.getColor(treeMap.getRoot()).getRGB()).isNotZero();
+    Assertions.assertThat(gradientColorProvider.getColor(node01).getRGB()).isNotZero();
+  }
 }

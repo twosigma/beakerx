@@ -21,35 +21,34 @@ import org.junit.Test;
 
 public class AreaTest {
 
-    @Test
-    public void createAreaByEmptyConstructor_hasInterpolationIsNull(){
-        //when
-        Area area = new Area();
-        //then
-        Assertions.assertThat(area.getInterpolation()).isNull();
-    }
+  @Test
+  public void createAreaByEmptyConstructor_hasInterpolationIsNull() {
+    //when
+    Area area = new Area();
+    //then
+    Assertions.assertThat(area.getInterpolation()).isNull();
+  }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void setInterpolationWithPositive2_throwIllegalArgumentException(){
-        //when
-        Area area = new Area();
-        area.setInterpolation(new Integer(-2));
-    }
+  @Test(expected = IllegalArgumentException.class)
+  public void setInterpolationWithPositive2_throwIllegalArgumentException() {
+    //when
+    Area area = new Area();
+    area.setInterpolation(new Integer(-2));
+  }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void setInterpolationWithNegative2_throwIllegalArgumentException(){
-        //when
-        Area area = new Area();
-        area.setInterpolation(new Integer(2));
-    }
+  @Test(expected = IllegalArgumentException.class)
+  public void setInterpolationWithNegative2_throwIllegalArgumentException() {
+    //when
+    Area area = new Area();
+    area.setInterpolation(new Integer(2));
+  }
 
-    @Test
-    public void setInterpolationWithZeroOrOne_getInterpolationWithZeroOrOne(){
-        Area area = new Area();
-        area.setInterpolation(new Integer(0));
-        Assertions.assertThat(area.getInterpolation()).isEqualTo(0);
-        area.setInterpolation(new Integer(1));
-        Assertions.assertThat(area.getInterpolation()).isEqualTo(1);
-    }
-
+  @Test
+  public void setInterpolationWithZeroOrOne_getInterpolationWithZeroOrOne() {
+    Area area = new Area();
+    area.setInterpolation(new Integer(0));
+    Assertions.assertThat(area.getInterpolation()).isEqualTo(0);
+    area.setInterpolation(new Integer(1));
+    Assertions.assertThat(area.getInterpolation()).isEqualTo(1);
+  }
 }

@@ -24,32 +24,32 @@ import java.util.Arrays;
 
 public class BarsTest {
 
-    @Test
-    public void createBarsByEmptyConstructor_hasWidthAndColorValuesAreNulls(){
-        //when
-        Bars bars = new Bars();
-        //then
-        Assertions.assertThat(bars.getWidth()).isNull();
-        Assertions.assertThat(bars.getWidths()).isNull();
-        Assertions.assertThat(bars.getOutlineColor()).isNull();
-        Assertions.assertThat(bars.getOutlineColors()).isNull();
-    }
+  @Test
+  public void createBarsByEmptyConstructor_hasWidthAndColorValuesAreNulls() {
+    //when
+    Bars bars = new Bars();
+    //then
+    Assertions.assertThat(bars.getWidth()).isNull();
+    Assertions.assertThat(bars.getWidths()).isNull();
+    Assertions.assertThat(bars.getOutlineColor()).isNull();
+    Assertions.assertThat(bars.getOutlineColors()).isNull();
+  }
 
-    @Test
-    public void setWidthWithIntegerList_hasWidthListIsNotNull(){
-        //when
-        Bars bars = new Bars();
-        bars.setWidth(Arrays.asList(new Integer(486), new Integer(528)));
-        //then
-        Assertions.assertThat(bars.getWidths()).isNotNull();
-    }
+  @Test
+  public void setWidthWithIntegerList_hasWidthListIsNotNull() {
+    //when
+    Bars bars = new Bars();
+    bars.setWidth(Arrays.asList(new Integer(486), new Integer(528)));
+    //then
+    Assertions.assertThat(bars.getWidths()).isNotNull();
+  }
 
-    @Test
-    public void setOutlineColorWithList_hasOutlineColorListIsNotNull(){
-        //when
-        Bars bars = new Bars();
-        bars.setOutlineColor(Arrays.asList(Color.BLUE, Color.GREEN));
-        //then
-        Assertions.assertThat(bars.getOutlineColors()).isNotNull();
-    }
+  @Test
+  public void setOutlineColorWithList_hasOutlineColorListIsNotNull() {
+    //when
+    Bars bars = new Bars();
+    bars.setOutlineColor(Arrays.asList(Color.BLUE, Color.GREEN));
+    //then
+    Assertions.assertThat(bars.getOutlineColors()).isNotNull();
+  }
 }

@@ -33,7 +33,7 @@ public class SimpleTimePlotTest {
   List<String> columns;
 
   @Before
-  public void initStubData(){
+  public void initStubData() {
     createDataForSimpleTimePlot();
   }
 
@@ -48,7 +48,8 @@ public class SimpleTimePlotTest {
   @Test
   public void callConstructorWithParamsAndDataAndColumns_shouldCreateSimpleTimePlot() {
     //when
-    SimpleTimePlot simpleTimePlot = new SimpleTimePlot(parameters, rates, Arrays.asList("m3", "time", "num"));
+    SimpleTimePlot simpleTimePlot =
+        new SimpleTimePlot(parameters, rates, Arrays.asList("m3", "time", "num"));
     //then
     Assertions.assertThat(simpleTimePlot).isNotNull();
   }
@@ -58,30 +59,33 @@ public class SimpleTimePlotTest {
     new SimpleTimePlot(rates, Arrays.asList("m3", "str", "time", "num"));
   }
 
-  private void createDataForSimpleTimePlot(){
-    columns =  Arrays.asList("m3", "name", "time", "num");
+  private void createDataForSimpleTimePlot() {
+    columns = Arrays.asList("m3", "name", "time", "num");
     rates = new ArrayList<>();
-    rates.add(new HashMap<String, Object>(){
-      {
-        put(columns.get(0), new Float(8.25));
-        put(columns.get(1), "one");
-        put(columns.get(2), new Long(633733200000L));
-        put(columns.get(3), 123);
-      }
-    });
-    rates.add(new HashMap<String, Object>(){
-      {
-        put(columns.get(0), new Float(9.0));
-        put(columns.get(1), "two");
-        put(columns.get(2), new Long(605733200000L));
-        put(columns.get(3), 345);
-      }
-    });
-    parameters = new HashMap<String, Object>(){
-      {
-        put("displayPoints", Boolean.TRUE);
-        put("anyParam", Boolean.TRUE);
-      }
-    };
+    rates.add(
+        new HashMap<String, Object>() {
+          {
+            put(columns.get(0), new Float(8.25));
+            put(columns.get(1), "one");
+            put(columns.get(2), new Long(633733200000L));
+            put(columns.get(3), 123);
+          }
+        });
+    rates.add(
+        new HashMap<String, Object>() {
+          {
+            put(columns.get(0), new Float(9.0));
+            put(columns.get(1), "two");
+            put(columns.get(2), new Long(605733200000L));
+            put(columns.get(3), 345);
+          }
+        });
+    parameters =
+        new HashMap<String, Object>() {
+          {
+            put("displayPoints", Boolean.TRUE);
+            put("anyParam", Boolean.TRUE);
+          }
+        };
   }
 }

@@ -26,123 +26,126 @@ import org.lappsgrid.jupyter.groovy.msg.Message;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
-import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
 import static com.twosigma.beaker.jupyter.Comm.DATA;
 import static com.twosigma.beaker.jupyter.Comm.TARGET_MODULE;
+import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
 
 public class CommOpenHandlerTest {
 
-    private GroovyKernelJupyterTest groovyKernel;
-    private CommOpenHandler commOpenHandler;
-    private Message message;
+  private GroovyKernelJupyterTest groovyKernel;
+  private CommOpenHandler commOpenHandler;
+  private Message message;
 
-    @Before
-    public void setUp(){
-        groovyKernel = new GroovyKernelJupyterTest();
-        commOpenHandler = new CommOpenHandler(groovyKernel);
-        message = JupyterHandlerTest.initOpenMessage();
-    }
+  @Before
+  public void setUp() {
+    groovyKernel = new GroovyKernelJupyterTest();
+    commOpenHandler = new CommOpenHandler(groovyKernel);
+    message = JupyterHandlerTest.initOpenMessage();
+  }
 
-    @Test
-    public void handleMessage_shouldSendShellSocketMessage() throws Exception {
-        //when
-        commOpenHandler.handle(message);
-        //then
-        Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-    }
+  @Test
+  public void handleMessage_shouldSendShellSocketMessage() throws Exception {
+    //when
+    commOpenHandler.handle(message);
+    //then
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+  }
 
-    @Test
-    public void handleMessageWithoutCommId_shouldSendCloseCommMessage() throws Exception {
-        //given
-        message.getContent().remove(COMM_ID);
-        //when
-        commOpenHandler.handle(message);
-        //then
-        Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-        Message sendMessage = groovyKernel.getSendMessages().get(0);
-        Assertions.assertThat(sendMessage.getHeader().getType()).isEqualTo(JupyterMessages.COMM_CLOSE.getName());
-    }
+  @Test
+  public void handleMessageWithoutCommId_shouldSendCloseCommMessage() throws Exception {
+    //given
+    message.getContent().remove(COMM_ID);
+    //when
+    commOpenHandler.handle(message);
+    //then
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat(sendMessage.getHeader().getType())
+        .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
+  }
 
-    @Test
-    public void handleMessageWithoutTargetName_shouldSendCloseCommMessage() throws Exception {
-        //given
-        message.getContent().remove(TARGET_NAME);
-        //when
-        commOpenHandler.handle(message);
-        //then
-        Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-        Message sendMessage = groovyKernel.getSendMessages().get(0);
-        Assertions.assertThat(sendMessage.getHeader().getType()).isEqualTo(JupyterMessages.COMM_CLOSE.getName());
-    }
+  @Test
+  public void handleMessageWithoutTargetName_shouldSendCloseCommMessage() throws Exception {
+    //given
+    message.getContent().remove(TARGET_NAME);
+    //when
+    commOpenHandler.handle(message);
+    //then
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat(sendMessage.getHeader().getType())
+        .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
+  }
 
-    @Test
-    public void handleMessage_sentMessageHasCommId() throws Exception {
-        //given
-        String expectedCommId = (String) message.getContent().get(COMM_ID);
-        //when
-        commOpenHandler.handle(message);
-        //then
-        Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-        Message sendMessage = groovyKernel.getSendMessages().get(0);
-        Assertions.assertThat(sendMessage.getContent().get(COMM_ID)).isEqualTo(expectedCommId);
-    }
+  @Test
+  public void handleMessage_sentMessageHasCommId() throws Exception {
+    //given
+    String expectedCommId = (String) message.getContent().get(COMM_ID);
+    //when
+    commOpenHandler.handle(message);
+    //then
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat(sendMessage.getContent().get(COMM_ID)).isEqualTo(expectedCommId);
+  }
 
-    @Test
-    public void handleMessage_sentMessageHasTargetName() throws Exception {
-        //given
-        String expectedTargetName = (String) message.getContent().get(TARGET_NAME);
-        //when
-        commOpenHandler.handle(message);
-        //then
-        Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-        Message sendMessage = groovyKernel.getSendMessages().get(0);
-        Assertions.assertThat(sendMessage.getContent().get(TARGET_NAME)).isEqualTo(expectedTargetName);
-    }
+  @Test
+  public void handleMessage_sentMessageHasTargetName() throws Exception {
+    //given
+    String expectedTargetName = (String) message.getContent().get(TARGET_NAME);
+    //when
+    commOpenHandler.handle(message);
+    //then
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat(sendMessage.getContent().get(TARGET_NAME)).isEqualTo(expectedTargetName);
+  }
 
-    @Test
-    public void handleMessage_sentMessageHasEmptyData() throws Exception {
-        //when
-        commOpenHandler.handle(message);
-        //then
-        Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-        Message sendMessage = groovyKernel.getSendMessages().get(0);
-        Assertions.assertThat((Map)sendMessage.getContent().get(DATA)).isEmpty();
-    }
+  @Test
+  public void handleMessage_sentMessageHasEmptyData() throws Exception {
+    //when
+    commOpenHandler.handle(message);
+    //then
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat((Map) sendMessage.getContent().get(DATA)).isEmpty();
+  }
 
-    @Test
-    public void handleMessage_sentMessageHasTargetModule() throws Exception {
-        //given
-        String expectedTargetModule = (String) message.getContent().get(TARGET_MODULE);
-        //when
-        commOpenHandler.handle(message);
-        //then
-        Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-        Message sendMessage = groovyKernel.getSendMessages().get(0);
-        Assertions.assertThat(sendMessage.getContent().get(TARGET_MODULE)).isEqualTo(expectedTargetModule);
-    }
+  @Test
+  public void handleMessage_sentMessageHasTargetModule() throws Exception {
+    //given
+    String expectedTargetModule = (String) message.getContent().get(TARGET_MODULE);
+    //when
+    commOpenHandler.handle(message);
+    //then
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat(sendMessage.getContent().get(TARGET_MODULE))
+        .isEqualTo(expectedTargetModule);
+  }
 
-    @Test
-    public void handleMessage_sentMessageHasParentHeader() throws Exception {
-        //given
-        String expectedHeader = message.getHeader().asJson();
-        //when
-        commOpenHandler.handle(message);
-        //then
-        Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-        Message sendMessage = groovyKernel.getSendMessages().get(0);
-        Assertions.assertThat(sendMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
-    }
+  @Test
+  public void handleMessage_sentMessageHasParentHeader() throws Exception {
+    //given
+    String expectedHeader = message.getHeader().asJson();
+    //when
+    commOpenHandler.handle(message);
+    //then
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat(sendMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
+  }
 
-    @Test
-    public void handleMessage_sentMessageHasIdentities() throws Exception {
-        //given
-        String expectedIdentities = new String(message.getIdentities().get(0));
-        //when
-        commOpenHandler.handle(message);
-        //then
-        Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-        Message sendMessage = groovyKernel.getSendMessages().get(0);
-        Assertions.assertThat(new String(sendMessage.getIdentities().get(0))).isEqualTo(expectedIdentities);
-    }
-
+  @Test
+  public void handleMessage_sentMessageHasIdentities() throws Exception {
+    //given
+    String expectedIdentities = new String(message.getIdentities().get(0));
+    //when
+    commOpenHandler.handle(message);
+    //then
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat(new String(sendMessage.getIdentities().get(0)))
+        .isEqualTo(expectedIdentities);
+  }
 }

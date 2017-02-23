@@ -23,22 +23,22 @@ import java.util.Arrays;
 
 public class GradientColorTest {
 
-    @Test
-    public void createGradientColorWithArrayBeakerColorParam_hasArrayBeakerColorsIsNotEmpty(){
-        //when
-        GradientColor gradientColor = new GradientColor(new Color[]{Color.black, Color.blue});
-        //then
-        Assertions.assertThat(gradientColor.getColors()[0] instanceof Color).isTrue();
-        Assertions.assertThat(gradientColor.getColors()[1] instanceof Color).isTrue();
-    }
+  @Test
+  public void createGradientColorWithArrayBeakerColorParam_hasArrayBeakerColorsIsNotEmpty() {
+    //when
+    GradientColor gradientColor = new GradientColor(new Color[] {Color.black, Color.blue});
+    //then
+    Assertions.assertThat(gradientColor.getColors()[0] instanceof Color).isTrue();
+    Assertions.assertThat(gradientColor.getColors()[1] instanceof Color).isTrue();
+  }
 
-    @Test
-    public void createGradientColorWithArraylistAwtColorParam_hasArrayBeakerColorsIsNotEmpty(){
-        //when
-        GradientColor gradientColor = new GradientColor(Arrays.asList(java.awt.Color.GREEN, java.awt.Color.BLUE));
-        //then
-        Assertions.assertThat(gradientColor.getColors()[0] instanceof Color).isTrue();
-        Assertions.assertThat(gradientColor.getColors()[1] instanceof Color).isTrue();
-    }
-
+  @Test
+  public void createGradientColorWithArraylistAwtColorParam_hasArrayBeakerColorsIsNotEmpty() {
+    //when
+    GradientColor gradientColor =
+        new GradientColor(Arrays.asList(java.awt.Color.GREEN, java.awt.Color.BLUE));
+    //then
+    Assertions.assertThat(gradientColor.getColors()[0] instanceof Color).isTrue();
+    Assertions.assertThat(gradientColor.getColors()[1] instanceof Color).isTrue();
+  }
 }

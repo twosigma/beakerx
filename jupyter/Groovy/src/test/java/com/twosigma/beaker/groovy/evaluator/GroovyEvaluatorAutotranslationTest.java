@@ -23,35 +23,34 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class GroovyEvaluatorAutotranslationTest extends GroovyEvaluatorTest{
+public class GroovyEvaluatorAutotranslationTest extends GroovyEvaluatorTest {
 
-    @Before
-    public void setUp() throws Exception {
-        groovyKernel = new GroovyKernelEvaluatorTest();
-        GroovyKernelManager.register(groovyKernel);
-    }
+  @Before
+  public void setUp() throws Exception {
+    groovyKernel = new GroovyKernelEvaluatorTest();
+    GroovyKernelManager.register(groovyKernel);
+  }
 
-    @After
-    public void tearDown() throws Exception {
-        GroovyKernelManager.register(null);
-    }
+  @After
+  public void tearDown() throws Exception {
+    GroovyKernelManager.register(null);
+  }
 
-    @Test
-    public void parseSetBeakerObjectScript_returnBeakerObjectValue() {
-        //when
-        Object result = parseClassFromScript("beaker.x = 10 ");
-        //then
-        Assertions.assertThat(result instanceof Number).isTrue();
-    }
+  @Test
+  public void parseSetBeakerObjectScript_returnBeakerObjectValue() {
+    //when
+    Object result = parseClassFromScript("beaker.x = 10 ");
+    //then
+    Assertions.assertThat(result instanceof Number).isTrue();
+  }
 
-    //TODO : After NamespaceClient.get() will be implemented - remove expected exception
-    @Test(expected = java.lang.RuntimeException.class)
-    public void parseGetBeakerObjectScript_returnBeakerObjectValue(){
-        //when
-        parseClassFromScript("beaker.x = 10 ");
-        Object result = parseClassFromScript("beaker.x");
-        //then
-        Assertions.assertThat(result instanceof Number).isTrue();
-    }
-
+  //TODO : After NamespaceClient.get() will be implemented - remove expected exception
+  @Test(expected = java.lang.RuntimeException.class)
+  public void parseGetBeakerObjectScript_returnBeakerObjectValue() {
+    //when
+    parseClassFromScript("beaker.x = 10 ");
+    Object result = parseClassFromScript("beaker.x");
+    //then
+    Assertions.assertThat(result instanceof Number).isTrue();
+  }
 }

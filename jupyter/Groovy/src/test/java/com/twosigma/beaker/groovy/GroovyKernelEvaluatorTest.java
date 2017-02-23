@@ -29,63 +29,55 @@ import java.util.Set;
 
 public class GroovyKernelEvaluatorTest implements GroovyKernelFunctionality {
 
-    private List<Message> messages = new ArrayList<>();
+  private List<Message> messages = new ArrayList<>();
 
-    @Override
-    public void publish(Message message) throws NoSuchAlgorithmException {
-        this.messages.add(message);
-    }
+  @Override
+  public void publish(Message message) throws NoSuchAlgorithmException {
+    this.messages.add(message);
+  }
 
-    @Override
-    public void addComm(String commId, Comm comm) {
+  @Override
+  public void addComm(String commId, Comm comm) {}
 
-    }
+  @Override
+  public void removeComm(String commId) {}
 
-    @Override
-    public void removeComm(String commId) {
+  @Override
+  public Message getParentMessage() {
+    return null;
+  }
 
-    }
+  @Override
+  public void send(Message message) throws NoSuchAlgorithmException {}
 
-    @Override
-    public Message getParentMessage() {
-        return null;
-    }
+  @Override
+  public void send(ZMQ.Socket socket, Message message) throws NoSuchAlgorithmException {}
 
-    @Override
-    public void send(Message message) throws NoSuchAlgorithmException {
+  @Override
+  public boolean isCommPresent(String string) {
+    return false;
+  }
 
-    }
+  @Override
+  public Comm getComm(String string) {
+    return null;
+  }
 
-    @Override
-    public void send(ZMQ.Socket socket, Message message) throws NoSuchAlgorithmException {
+  @Override
+  public Set<String> getCommHashSet() {
+    return null;
+  }
 
-    }
+  @Override
+  public Serializable getId() {
+    return null;
+  }
 
-    @Override
-    public boolean isCommPresent(String string) {
-        return false;
-    }
+  public List<Message> getMessages() {
+    return messages;
+  }
 
-    @Override
-    public Comm getComm(String string) {
-        return null;
-    }
-
-    @Override
-    public Set<String> getCommHashSet() {
-        return null;
-    }
-
-    @Override
-    public Serializable getId() {
-        return null;
-    }
-
-    public List<Message> getMessages() {
-        return messages;
-    }
-
-    public void clearMessages(){
-        this.messages = new ArrayList<>();
-    }
+  public void clearMessages() {
+    this.messages = new ArrayList<>();
+  }
 }

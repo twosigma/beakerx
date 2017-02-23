@@ -27,35 +27,34 @@ import java.util.Date;
 
 public class TimePlotTest {
 
-    Date lowerBound, upperBound;
+  Date lowerBound, upperBound;
 
-    @Before
-    public void initStubData() throws ParseException{
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        lowerBound = sdf.parse("01-01-2000");
-        upperBound = sdf.parse("05-05-2005");
-    }
+  @Before
+  public void initStubData() throws ParseException {
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    lowerBound = sdf.parse("01-01-2000");
+    upperBound = sdf.parse("05-05-2005");
+  }
 
-    @Test
-    public void setXBoundWithTwoDatesParams_shouldSetXBoundParams(){
-        //when
-        TimePlot timePlot = new TimePlot();
-        timePlot.setXBound(lowerBound, upperBound);
-        //then
-        Assertions.assertThat(timePlot.getXLowerBound()).isGreaterThan(0);
-        Assertions.assertThat(timePlot.getXUpperBound()).isGreaterThan(0);
-        Assertions.assertThat(timePlot.getXAutoRange()).isFalse();
-    }
+  @Test
+  public void setXBoundWithTwoDatesParams_shouldSetXBoundParams() {
+    //when
+    TimePlot timePlot = new TimePlot();
+    timePlot.setXBound(lowerBound, upperBound);
+    //then
+    Assertions.assertThat(timePlot.getXLowerBound()).isGreaterThan(0);
+    Assertions.assertThat(timePlot.getXUpperBound()).isGreaterThan(0);
+    Assertions.assertThat(timePlot.getXAutoRange()).isFalse();
+  }
 
-    @Test
-    public void setXBoundWithListParam_shouldSetXBoundParams(){
-        //when
-        TimePlot timePlot = new TimePlot();
-        timePlot.setXBound(Arrays.asList(lowerBound, upperBound));
-        //then
-        Assertions.assertThat(timePlot.getXLowerBound()).isGreaterThan(0);
-        Assertions.assertThat(timePlot.getXUpperBound()).isGreaterThan(0);
-        Assertions.assertThat(timePlot.getXAutoRange()).isFalse();
-    }
-
+  @Test
+  public void setXBoundWithListParam_shouldSetXBoundParams() {
+    //when
+    TimePlot timePlot = new TimePlot();
+    timePlot.setXBound(Arrays.asList(lowerBound, upperBound));
+    //then
+    Assertions.assertThat(timePlot.getXLowerBound()).isGreaterThan(0);
+    Assertions.assertThat(timePlot.getXUpperBound()).isGreaterThan(0);
+    Assertions.assertThat(timePlot.getXAutoRange()).isFalse();
+  }
 }

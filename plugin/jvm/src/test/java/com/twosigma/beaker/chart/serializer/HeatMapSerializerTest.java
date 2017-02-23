@@ -16,14 +16,14 @@
 
 package com.twosigma.beaker.chart.serializer;
 
-import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.chart.GradientColor;
-import com.twosigma.beaker.chart.heatmap.HeatMap;
-import org.assertj.core.api.Assertions;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.GradientColor;
+import com.twosigma.beaker.chart.heatmap.HeatMap;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,50 +34,50 @@ import java.util.Arrays;
 
 public class HeatMapSerializerTest {
 
-    static ObjectMapper mapper;
-    static HeatMapSerializer heatMapSerializer;
-    JsonGenerator jgen;
-    StringWriter sw;
+  static ObjectMapper mapper;
+  static HeatMapSerializer heatMapSerializer;
+  JsonGenerator jgen;
+  StringWriter sw;
 
-    @BeforeClass
-    public static void initClassStubData(){
-        mapper = new ObjectMapper();
-        heatMapSerializer = new HeatMapSerializer();
-    }
+  @BeforeClass
+  public static void initClassStubData() {
+    mapper = new ObjectMapper();
+    heatMapSerializer = new HeatMapSerializer();
+  }
 
-    @Before
-    public void initTestStubData() throws IOException {
-        sw = new StringWriter();
-        jgen = mapper.getJsonFactory().createJsonGenerator(sw);
-    }
+  @Before
+  public void initTestStubData() throws IOException {
+    sw = new StringWriter();
+    jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+  }
 
-    @Test
-    public void serializeDataOfHeatMap_resultJsonHasGraphicsList() throws IOException{
-        //when
-        HeatMap heatMap = new HeatMap();
-        heatMap.setData(new Integer[][]{
-                new Integer[]{ new Integer(1), new Integer(2)},
-                new Integer[]{ new Integer(3), new Integer(4)}
+  @Test
+  public void serializeDataOfHeatMap_resultJsonHasGraphicsList() throws IOException {
+    //when
+    HeatMap heatMap = new HeatMap();
+    heatMap.setData(
+        new Integer[][] {
+          new Integer[] {new Integer(1), new Integer(2)},
+          new Integer[] {new Integer(3), new Integer(4)}
         });
-        heatMapSerializer.serialize(heatMap, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("graphics_list")).isTrue();
-        Assertions.assertThat(actualObj.get("graphics_list")).isNotEmpty();
-    }
+    heatMapSerializer.serialize(heatMap, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("graphics_list")).isTrue();
+    Assertions.assertThat(actualObj.get("graphics_list")).isNotEmpty();
+  }
 
-    @Test
-    public void serializeColorOfHeatMap_resultJsonHasColor() throws IOException{
-        //when
-        HeatMap heatMap = new HeatMap();
-        heatMap.setColor(new GradientColor(Arrays.asList(Color.GREEN, Color.BLUE)));
-        heatMapSerializer.serialize(heatMap, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("color")).isTrue();
-        Assertions.assertThat(actualObj.get("color").get("colors")).isNotEmpty();
-    }
-
+  @Test
+  public void serializeColorOfHeatMap_resultJsonHasColor() throws IOException {
+    //when
+    HeatMap heatMap = new HeatMap();
+    heatMap.setColor(new GradientColor(Arrays.asList(Color.GREEN, Color.BLUE)));
+    heatMapSerializer.serialize(heatMap, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("color")).isTrue();
+    Assertions.assertThat(actualObj.get("color").get("colors")).isNotEmpty();
+  }
 }

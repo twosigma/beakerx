@@ -25,32 +25,30 @@ import java.util.Date;
 
 public class ConstantBandTest {
 
-    @Test
-    public void createConstantBandByEmptyConstructor_hasXsAndYsListsAreNulls(){
-        //when
-        ConstantBand constantBand = new ConstantBand();
-        //then
-        Assertions.assertThat(constantBand.getX()).isNull();
-        Assertions.assertThat(constantBand.getY()).isNull();
-    }
+  @Test
+  public void createConstantBandByEmptyConstructor_hasXsAndYsListsAreNulls() {
+    //when
+    ConstantBand constantBand = new ConstantBand();
+    //then
+    Assertions.assertThat(constantBand.getX()).isNull();
+    Assertions.assertThat(constantBand.getY()).isNull();
+  }
 
-    @Test
-    public void setXWithIntegerFloatDateListParam_hasXsListAreNotNulls(){
-        //when
-        ConstantBand constantBand = new ConstantBand();
-        constantBand.setX(Arrays.asList(new Integer(123), new Float(123.0), new Date()));
-        //then
-        Assertions.assertThat(constantBand.getX()).isNotNull();
-    }
+  @Test
+  public void setXWithIntegerFloatDateListParam_hasXsListAreNotNulls() {
+    //when
+    ConstantBand constantBand = new ConstantBand();
+    constantBand.setX(Arrays.asList(new Integer(123), new Float(123.0), new Date()));
+    //then
+    Assertions.assertThat(constantBand.getX()).isNotNull();
+  }
 
-    @Test
-    public void setColorWithAwtColor_constantBandHasBeakerColor(){
-        //when
-        ConstantBand constantBand = new ConstantBand();
-        constantBand.setColor(java.awt.Color.GREEN);
-        //then
-        Assertions.assertThat(constantBand.getColor() instanceof Color).isTrue();
-    }
-
-
+  @Test
+  public void setColorWithAwtColor_constantBandHasBeakerColor() {
+    //when
+    ConstantBand constantBand = new ConstantBand();
+    constantBand.setColor(java.awt.Color.GREEN);
+    //then
+    Assertions.assertThat(constantBand.getColor() instanceof Color).isTrue();
+  }
 }

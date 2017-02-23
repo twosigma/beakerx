@@ -26,55 +26,54 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 public class NanoPlotTest {
-    Line line;
-    Points points;
+  Line line;
+  Points points;
 
-    @Before
-    public void initStubData() {
-        BigInteger val1 = new BigInteger("12345678901234567891000");
-        BigInteger val2 = new BigInteger("12345678901234567892000");
-        points = new Points();
-        points.setX(Arrays.asList(val1, val2));
-        points.setY(Arrays.asList(2, 3));
-        line = new Line();
-        line.setX(Arrays.asList(val1, val1));
-        line.setY(Arrays.asList(2, 3));
-    }
+  @Before
+  public void initStubData() {
+    BigInteger val1 = new BigInteger("12345678901234567891000");
+    BigInteger val2 = new BigInteger("12345678901234567892000");
+    points = new Points();
+    points.setX(Arrays.asList(val1, val2));
+    points.setY(Arrays.asList(2, 3));
+    line = new Line();
+    line.setX(Arrays.asList(val1, val1));
+    line.setY(Arrays.asList(2, 3));
+  }
 
-    @Test
-    public void createNanoPlotByEmptyConstructor_nanoPlotHasGraphicsListIsEmpty(){
-        //when
-        NanoPlot nanoPlot = new NanoPlot();
-        //then
-        Assertions.assertThat(nanoPlot.getGraphics().size()).isEqualTo(0);
-    }
+  @Test
+  public void createNanoPlotByEmptyConstructor_nanoPlotHasGraphicsListIsEmpty() {
+    //when
+    NanoPlot nanoPlot = new NanoPlot();
+    //then
+    Assertions.assertThat(nanoPlot.getGraphics().size()).isEqualTo(0);
+  }
 
-    @Test
-    public void addPointsToNanoPlot_nanoPlotHasGraphicsListSizeIsOne(){
-        NanoPlot nanoPlot = new NanoPlot();
-        //when
-        nanoPlot.add(points);
-        //then
-        Assertions.assertThat(nanoPlot.getGraphics().size()).isEqualTo(1);
-    }
+  @Test
+  public void addPointsToNanoPlot_nanoPlotHasGraphicsListSizeIsOne() {
+    NanoPlot nanoPlot = new NanoPlot();
+    //when
+    nanoPlot.add(points);
+    //then
+    Assertions.assertThat(nanoPlot.getGraphics().size()).isEqualTo(1);
+  }
 
-    @Test
-    public void addLineToNanoPlot_nanoPlotHasGraphicsListSizeIsOne(){
-        NanoPlot nanoPlot = new NanoPlot();
-        //when
-        nanoPlot.add(line);
-        //then
-        Assertions.assertThat(nanoPlot.getGraphics().size()).isEqualTo(1);
-    }
+  @Test
+  public void addLineToNanoPlot_nanoPlotHasGraphicsListSizeIsOne() {
+    NanoPlot nanoPlot = new NanoPlot();
+    //when
+    nanoPlot.add(line);
+    //then
+    Assertions.assertThat(nanoPlot.getGraphics().size()).isEqualTo(1);
+  }
 
-    @Test
-    public void addPointsAndLineToNanoPlot_nanoPlotHasGraphicsListSizeIsTwo(){
-        NanoPlot nanoPlot = new NanoPlot();
-        //when
-        nanoPlot.add(points);
-        nanoPlot.add(line);
-        //then
-        Assertions.assertThat(nanoPlot.getGraphics().size()).isEqualTo(2);
-    }
-
+  @Test
+  public void addPointsAndLineToNanoPlot_nanoPlotHasGraphicsListSizeIsTwo() {
+    NanoPlot nanoPlot = new NanoPlot();
+    //when
+    nanoPlot.add(points);
+    nanoPlot.add(line);
+    //then
+    Assertions.assertThat(nanoPlot.getGraphics().size()).isEqualTo(2);
+  }
 }

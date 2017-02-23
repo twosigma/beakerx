@@ -16,12 +16,12 @@
 
 package com.twosigma.beaker.chart.serializer;
 
-import com.twosigma.beaker.chart.legend.LegendPosition;
-import org.assertj.core.api.Assertions;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.twosigma.beaker.chart.legend.LegendPosition;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,70 +31,69 @@ import java.io.StringWriter;
 
 public class LegendPositionSerializerTest {
 
-    static ObjectMapper mapper;
-    static LegendPositionSerializer legendPositionSerializer;
-    JsonGenerator jgen;
-    StringWriter sw;
-    LegendPosition legendPosition;
+  static ObjectMapper mapper;
+  static LegendPositionSerializer legendPositionSerializer;
+  JsonGenerator jgen;
+  StringWriter sw;
+  LegendPosition legendPosition;
 
-    @BeforeClass
-    public static void initClassStubData(){
-        mapper = new ObjectMapper();
-        legendPositionSerializer = new LegendPositionSerializer();
-    }
+  @BeforeClass
+  public static void initClassStubData() {
+    mapper = new ObjectMapper();
+    legendPositionSerializer = new LegendPositionSerializer();
+  }
 
-    @Before
-    public void initTestStubData() throws IOException {
-        sw = new StringWriter();
-        jgen = mapper.getJsonFactory().createJsonGenerator(sw);
-        legendPosition = new LegendPosition();
-    }
+  @Before
+  public void initTestStubData() throws IOException {
+    sw = new StringWriter();
+    jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+    legendPosition = new LegendPosition();
+  }
 
-    @Test
-    public void serializeLegendPosition_resultJsonHasType() throws IOException{
-        //when
-        legendPositionSerializer.serialize(legendPosition, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("type")).isTrue();
-        Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("LegendPosition");
-    }
+  @Test
+  public void serializeLegendPosition_resultJsonHasType() throws IOException {
+    //when
+    legendPositionSerializer.serialize(legendPosition, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("type")).isTrue();
+    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("LegendPosition");
+  }
 
-    @Test
-    public void serializePositionOfLegendPosition_resultJsonHasPosition() throws IOException{
-        //when
-        legendPosition.setPosition(LegendPosition.Position.LEFT);
-        legendPositionSerializer.serialize(legendPosition, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("position")).isTrue();
-        Assertions.assertThat(actualObj.get("position").asText()).isEqualTo("LEFT");
-    }
+  @Test
+  public void serializePositionOfLegendPosition_resultJsonHasPosition() throws IOException {
+    //when
+    legendPosition.setPosition(LegendPosition.Position.LEFT);
+    legendPositionSerializer.serialize(legendPosition, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("position")).isTrue();
+    Assertions.assertThat(actualObj.get("position").asText()).isEqualTo("LEFT");
+  }
 
-    @Test
-    public void serializeXLegendPosition_resultJsonHasX() throws IOException{
-        //when
-        LegendPosition legendPositionX = new LegendPosition(new int[] {11, 22});
-        legendPositionSerializer.serialize(legendPositionX, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("x")).isTrue();
-        Assertions.assertThat(actualObj.get("x").asInt()).isEqualTo(11);
-    }
+  @Test
+  public void serializeXLegendPosition_resultJsonHasX() throws IOException {
+    //when
+    LegendPosition legendPositionX = new LegendPosition(new int[] {11, 22});
+    legendPositionSerializer.serialize(legendPositionX, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("x")).isTrue();
+    Assertions.assertThat(actualObj.get("x").asInt()).isEqualTo(11);
+  }
 
-    @Test
-    public void serializeYLegendPosition_resultJsonHasY() throws IOException{
-        //when
-        LegendPosition legendPositionY = new LegendPosition(new int[] {11, 22});
-        legendPositionSerializer.serialize(legendPositionY, jgen, new DefaultSerializerProvider.Impl());
-        jgen.flush();
-        //then
-        JsonNode actualObj = mapper.readTree(sw.toString());
-        Assertions.assertThat(actualObj.has("y")).isTrue();
-        Assertions.assertThat(actualObj.get("y").asInt()).isEqualTo(22);
-    }
-
+  @Test
+  public void serializeYLegendPosition_resultJsonHasY() throws IOException {
+    //when
+    LegendPosition legendPositionY = new LegendPosition(new int[] {11, 22});
+    legendPositionSerializer.serialize(legendPositionY, jgen, new DefaultSerializerProvider.Impl());
+    jgen.flush();
+    //then
+    JsonNode actualObj = mapper.readTree(sw.toString());
+    Assertions.assertThat(actualObj.has("y")).isTrue();
+    Assertions.assertThat(actualObj.get("y").asInt()).isEqualTo(22);
+  }
 }

@@ -22,28 +22,29 @@ import org.junit.Test;
 
 public class ColorUtilsTest {
 
-    @Test
-    public void callInterpolateColorWithGreenBlueColors_returnBeakerColorWithRGB(){
-        //when
-        Color color = ColorUtils.interpolateColor(java.awt.Color.GREEN, java.awt.Color.BLUE, 0.1f);
-        //then
-        Assertions.assertThat(color.getRGB()).isNotZero();
-    }
+  @Test
+  public void callInterpolateColorWithGreenBlueColors_returnBeakerColorWithRGB() {
+    //when
+    Color color = ColorUtils.interpolateColor(java.awt.Color.GREEN, java.awt.Color.BLUE, 0.1f);
+    //then
+    Assertions.assertThat(color.getRGB()).isNotZero();
+  }
 
-    @Test
-    public void callInterpolateColorWithGreenBlueColorsAndFractionIsZero_returnBeakerColorWithGreenValue(){
-        //when
-        Color color = ColorUtils.interpolateColor(java.awt.Color.GREEN, java.awt.Color.BLUE, 0f);
-        //then
-        Assertions.assertThat(color).isEqualTo(Color.GREEN);
-    }
+  @Test
+  public void
+      callInterpolateColorWithGreenBlueColorsAndFractionIsZero_returnBeakerColorWithGreenValue() {
+    //when
+    Color color = ColorUtils.interpolateColor(java.awt.Color.GREEN, java.awt.Color.BLUE, 0f);
+    //then
+    Assertions.assertThat(color).isEqualTo(Color.GREEN);
+  }
 
-    @Test
-    public void callInterpolateColorWithGreenBlueColorsAndFractionIsOne_returnBeakerColorWithBlueValue(){
-        //when
-        Color color = ColorUtils.interpolateColor(java.awt.Color.GREEN, java.awt.Color.BLUE, 1f);
-        //then
-        Assertions.assertThat(color).isEqualTo(Color.BLUE);
-    }
-
+  @Test
+  public void
+      callInterpolateColorWithGreenBlueColorsAndFractionIsOne_returnBeakerColorWithBlueValue() {
+    //when
+    Color color = ColorUtils.interpolateColor(java.awt.Color.GREEN, java.awt.Color.BLUE, 1f);
+    //then
+    Assertions.assertThat(color).isEqualTo(Color.BLUE);
+  }
 }

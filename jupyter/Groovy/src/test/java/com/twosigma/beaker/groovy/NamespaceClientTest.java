@@ -26,82 +26,81 @@ import java.util.Map;
 
 public class NamespaceClientTest {
 
-    private static String SESSION_ID = "sessionId";
-    private NamespaceClient namespaceClient;
-    private GroovyKernelEvaluatorTest groovyKernel;
+  private static String SESSION_ID = "sessionId";
+  private NamespaceClient namespaceClient;
+  private GroovyKernelEvaluatorTest groovyKernel;
 
-    @Before
-    public void setUp(){
-        namespaceClient = NamespaceClient.getBeaker(SESSION_ID);
-        groovyKernel = new GroovyKernelEvaluatorTest();
-        GroovyKernelManager.register(groovyKernel);
-    }
+  @Before
+  public void setUp() {
+    namespaceClient = NamespaceClient.getBeaker(SESSION_ID);
+    groovyKernel = new GroovyKernelEvaluatorTest();
+    GroovyKernelManager.register(groovyKernel);
+  }
 
-    @After
-    public void tearDown() throws Exception {
-        GroovyKernelManager.register(null);
-    }
+  @After
+  public void tearDown() throws Exception {
+    GroovyKernelManager.register(null);
+  }
 
-    @Test
-    public void getNamespaceClientBySessionId_returnNamespaceClient(){
-        //when
-        NamespaceClient curNamespaceClient = NamespaceClient.getBeaker(SESSION_ID);
-        //then
-        Assertions.assertThat(namespaceClient).isNotNull();
-        Assertions.assertThat(curNamespaceClient).isEqualTo(namespaceClient);
-    }
+  @Test
+  public void getNamespaceClientBySessionId_returnNamespaceClient() {
+    //when
+    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker(SESSION_ID);
+    //then
+    Assertions.assertThat(namespaceClient).isNotNull();
+    Assertions.assertThat(curNamespaceClient).isEqualTo(namespaceClient);
+  }
 
-    @Test
-    public void getNamespaceClientByCurrentSessionId_returnNamespaceClient(){
-        //when
-        NamespaceClient curNamespaceClient = NamespaceClient.getBeaker();
-        //then
-        Assertions.assertThat(curNamespaceClient).isNotNull();
-        Assertions.assertThat(curNamespaceClient).isEqualTo(namespaceClient);
-    }
+  @Test
+  public void getNamespaceClientByCurrentSessionId_returnNamespaceClient() {
+    //when
+    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker();
+    //then
+    Assertions.assertThat(curNamespaceClient).isNotNull();
+    Assertions.assertThat(curNamespaceClient).isEqualTo(namespaceClient);
+  }
 
-    @Test
-    public void deleteNamespaceClientBySessionId_deleteNamespaceClient(){
-        //when
-        NamespaceClient.delBeaker(SESSION_ID);
-        NamespaceClient curNamespaceClient = NamespaceClient.getBeaker();
-        //then
-        Assertions.assertThat(curNamespaceClient).isNull();
-    }
+  @Test
+  public void deleteNamespaceClientBySessionId_deleteNamespaceClient() {
+    //when
+    NamespaceClient.delBeaker(SESSION_ID);
+    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker();
+    //then
+    Assertions.assertThat(curNamespaceClient).isNull();
+  }
 
-    @Test
-    public void setData_returnValue() throws Exception {
-        //given
-        NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("returnValue");
-        //when
-        Object value = curNamespaceClient.set("x", new Integer(10));
-        //then
-        Assertions.assertThat(value).isNotNull();
-        Assertions.assertThat(value).isEqualTo(new Integer(10));
-    }
+  @Test
+  public void setData_returnValue() throws Exception {
+    //given
+    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("returnValue");
+    //when
+    Object value = curNamespaceClient.set("x", new Integer(10));
+    //then
+    Assertions.assertThat(value).isNotNull();
+    Assertions.assertThat(value).isEqualTo(new Integer(10));
+  }
 
-    @Test
-    public void setData_setAutotranslationData() throws Exception {
-        //given
-        NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("setAutotranslationData");
-        //when
-        curNamespaceClient.set("x", new Integer(10));
-        //then
-        Assertions.assertThat(groovyKernel.getMessages()).isNotEmpty();
-        Map data = (Map) groovyKernel.getMessages().get(1).getContent().get("data");
-        Assertions.assertThat(data.get("name")).isEqualTo("x");
-        Assertions.assertThat(data.get("value")).isEqualTo("10");
-        Assertions.assertThat(data.get("sync")).isEqualTo(Boolean.TRUE);
-    }
+  @Test
+  public void setData_setAutotranslationData() throws Exception {
+    //given
+    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("setAutotranslationData");
+    //when
+    curNamespaceClient.set("x", new Integer(10));
+    //then
+    Assertions.assertThat(groovyKernel.getMessages()).isNotEmpty();
+    Map data = (Map) groovyKernel.getMessages().get(1).getContent().get("data");
+    Assertions.assertThat(data.get("name")).isEqualTo("x");
+    Assertions.assertThat(data.get("value")).isEqualTo("10");
+    Assertions.assertThat(data.get("sync")).isEqualTo(Boolean.TRUE);
+  }
 
-    @Test
-    public void setData_sendCommMessage() throws Exception {
-        //given
-        NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("sendCommMessage");
-        //when
-        curNamespaceClient.set("x", new Integer(10));
-        //then
-        Assertions.assertThat(groovyKernel.getMessages()).isNotEmpty();
-    }
-
+  @Test
+  public void setData_sendCommMessage() throws Exception {
+    //given
+    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("sendCommMessage");
+    //when
+    curNamespaceClient.set("x", new Integer(10));
+    //then
+    Assertions.assertThat(groovyKernel.getMessages()).isNotEmpty();
+  }
 }

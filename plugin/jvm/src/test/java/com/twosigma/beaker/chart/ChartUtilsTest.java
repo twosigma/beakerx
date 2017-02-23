@@ -24,20 +24,21 @@ import java.util.List;
 
 public class ChartUtilsTest {
 
-    @Test
-    public void callConvertColorsWithAwtColorListParam_shouldReturnBeakerChartColorList(){
-        //when
-        List<Object> outlineColors = ChartUtils.convertColors(
-                Arrays.asList(java.awt.Color.BLACK, java.awt.Color.GREEN),
-                "takes Color or List of Color");
-        //then
-        Assertions.assertThat(outlineColors.get(0) instanceof Color).isTrue();
-        Assertions.assertThat(outlineColors.get(1) instanceof Color).isTrue();
-    }
+  @Test
+  public void callConvertColorsWithAwtColorListParam_shouldReturnBeakerChartColorList() {
+    //when
+    List<Object> outlineColors =
+        ChartUtils.convertColors(
+            Arrays.asList(java.awt.Color.BLACK, java.awt.Color.GREEN),
+            "takes Color or List of Color");
+    //then
+    Assertions.assertThat(outlineColors.get(0) instanceof Color).isTrue();
+    Assertions.assertThat(outlineColors.get(1) instanceof Color).isTrue();
+  }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void callConvertColorsWithNumberListParam_throwIllegalArgumentException(){
-        //when
-        ChartUtils.convertColors(Arrays.asList(100, 200), "takes Color or List of Color");
-    }
+  @Test(expected = IllegalArgumentException.class)
+  public void callConvertColorsWithNumberListParam_throwIllegalArgumentException() {
+    //when
+    ChartUtils.convertColors(Arrays.asList(100, 200), "takes Color or List of Color");
+  }
 }

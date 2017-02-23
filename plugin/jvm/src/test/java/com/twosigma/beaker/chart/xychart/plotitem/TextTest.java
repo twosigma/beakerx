@@ -23,38 +23,38 @@ import java.util.Date;
 
 public class TextTest {
 
-    @Test
-    public void createTextByEmptyConstructor_hasXYValuesEqualsZero(){
-        //when
-        Text text = new Text();
-        //then
-        Assertions.assertThat(text.getX()).isEqualTo(0.0);
-        Assertions.assertThat(text.getY()).isEqualTo(0.0);
-    }
+  @Test
+  public void createTextByEmptyConstructor_hasXYValuesEqualsZero() {
+    //when
+    Text text = new Text();
+    //then
+    Assertions.assertThat(text.getX()).isEqualTo(0.0);
+    Assertions.assertThat(text.getY()).isEqualTo(0.0);
+  }
 
-    @Test
-    public void createTextByEmptyConstructor_hasSizeValueGreaterThanZero(){
-        //when
-        Text text = new Text();
-        //then
-        Assertions.assertThat(text.getSize()).isGreaterThan(0);
-    }
+  @Test
+  public void createTextByEmptyConstructor_hasSizeValueGreaterThanZero() {
+    //when
+    Text text = new Text();
+    //then
+    Assertions.assertThat(text.getSize()).isGreaterThan(0);
+  }
 
-    @Test
-    public void setXWithDateParam_hasXWithNumberValue(){
-        //when
-        Text text = new Text();
-        text.setX(new Date());
-        //then
-        Assertions.assertThat(text.getX() instanceof Number).isTrue();
-    }
+  @Test
+  public void setXWithDateParam_hasXWithNumberValue() {
+    //when
+    Text text = new Text();
+    text.setX(new Date());
+    //then
+    Assertions.assertThat(text.getX() instanceof Number).isTrue();
+  }
 
-    @Test
-    public void setXWithIntegerParam_hasXWithNumberValue(){
-        //when
-        Text text = new Text();
-        text.setX(new Integer(10));
-        //then
-        Assertions.assertThat(text.getX() instanceof Number).isTrue();
-    }
+  @Test
+  public void setXWithIntegerParam_hasXWithNumberValue() {
+    //when
+    Text text = new Text();
+    text.setX(new Integer(10));
+    //then
+    Assertions.assertThat(text.getX() instanceof Number).isTrue();
+  }
 }

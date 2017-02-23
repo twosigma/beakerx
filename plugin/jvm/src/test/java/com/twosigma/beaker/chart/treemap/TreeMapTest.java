@@ -22,34 +22,36 @@ import org.junit.Test;
 
 public class TreeMapTest {
 
-    @Test
-    public void createTreeMapByDefaultConstructor_hasColorProviderNotNullShowLegendIsFalseRootIsNull(){
-        //when
-        TreeMap treeMap = new TreeMap();
-        //then
-        Assertions.assertThat(treeMap.getColorProvider()).isNotNull();
-        Assertions.assertThat(treeMap.getShowLegend()).isFalse();
-        Assertions.assertThat(treeMap.getRoot()).isNull();
-    }
+  @Test
+  public void
+      createTreeMapByDefaultConstructor_hasColorProviderNotNullShowLegendIsFalseRootIsNull() {
+    //when
+    TreeMap treeMap = new TreeMap();
+    //then
+    Assertions.assertThat(treeMap.getColorProvider()).isNotNull();
+    Assertions.assertThat(treeMap.getShowLegend()).isFalse();
+    Assertions.assertThat(treeMap.getRoot()).isNull();
+  }
 
-    @Test
-    public void createTreeMapWithTreeMapNodeParam_hasColorProviderNotNullShowLegendIsFalseRootInNotNull(){
-        //when
-        TreeMap treeMap = new TreeMap(new TreeMapNode("label"));
-        //then
-        Assertions.assertThat(treeMap.getColorProvider()).isNotNull();
-        Assertions.assertThat(treeMap.getShowLegend()).isFalse();
-        Assertions.assertThat(treeMap.getRoot()).isNotNull();
-    }
+  @Test
+  public void
+      createTreeMapWithTreeMapNodeParam_hasColorProviderNotNullShowLegendIsFalseRootInNotNull() {
+    //when
+    TreeMap treeMap = new TreeMap(new TreeMapNode("label"));
+    //then
+    Assertions.assertThat(treeMap.getColorProvider()).isNotNull();
+    Assertions.assertThat(treeMap.getShowLegend()).isFalse();
+    Assertions.assertThat(treeMap.getRoot()).isNotNull();
+  }
 
-    @Test
-    public void createTreeMapByDefaultConstructor_hasModeAndStickyAndRoundAndRatioAreNulls(){
-        //when
-        TreeMap treeMap = new TreeMap();
-        //then
-        Assertions.assertThat(treeMap.getMode()).isNull();
-        Assertions.assertThat(treeMap.getRatio()).isNull();
-        Assertions.assertThat(treeMap.getSticky()).isNull();
-        Assertions.assertThat(treeMap.getRound()).isNull();
-    }
+  @Test
+  public void createTreeMapByDefaultConstructor_hasModeAndStickyAndRoundAndRatioAreNulls() {
+    //when
+    TreeMap treeMap = new TreeMap();
+    //then
+    Assertions.assertThat(treeMap.getMode()).isNull();
+    Assertions.assertThat(treeMap.getRatio()).isNull();
+    Assertions.assertThat(treeMap.getSticky()).isNull();
+    Assertions.assertThat(treeMap.getRound()).isNull();
+  }
 }

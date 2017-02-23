@@ -26,58 +26,55 @@ import java.util.List;
 
 public class HistogramTest {
 
-    List<Integer> list1, list2;
+  List<Integer> list1, list2;
 
-    @Before
-    public void initStubData(){
-        list1 = Arrays.asList(new Integer(1), new Integer(2));
-        list2 = Arrays.asList(new Integer(3), new Integer(4));
-    }
+  @Before
+  public void initStubData() {
+    list1 = Arrays.asList(new Integer(1), new Integer(2));
+    list2 = Arrays.asList(new Integer(3), new Integer(4));
+  }
 
-    @Test
-    public void createHistogramByEmptyConstructor_hasDisplayModeIsNotNull(){
-        //when
-        Histogram histogram = new Histogram();
-        //then
-        Assertions.assertThat(histogram.getDisplayMode()).isNotNull();
-    }
+  @Test
+  public void createHistogramByEmptyConstructor_hasDisplayModeIsNotNull() {
+    //when
+    Histogram histogram = new Histogram();
+    //then
+    Assertions.assertThat(histogram.getDisplayMode()).isNotNull();
+  }
 
-    @Test
-    public void setDataWithListOfIntegerListsParam_hasListDataIsNotEmpty(){
-        //when
-        Histogram histogram = new Histogram();
-        histogram.setData(Arrays.asList(list1, list2));
-        //then
-        Assertions.assertThat(histogram.getListData()).isNotEmpty();
+  @Test
+  public void setDataWithListOfIntegerListsParam_hasListDataIsNotEmpty() {
+    //when
+    Histogram histogram = new Histogram();
+    histogram.setData(Arrays.asList(list1, list2));
+    //then
+    Assertions.assertThat(histogram.getListData()).isNotEmpty();
+  }
 
-    }
+  @Test
+  public void setDataWithIntegerListParam_hasDataIsNotEmpty() {
+    //when
+    Histogram histogram = new Histogram();
+    histogram.setData(list1);
+    //then
+    Assertions.assertThat(histogram.getData()).isNotEmpty();
+  }
 
-    @Test
-    public void setDataWithIntegerListParam_hasDataIsNotEmpty(){
-        //when
-        Histogram histogram = new Histogram();
-        histogram.setData(list1);
-        //then
-        Assertions.assertThat(histogram.getData()).isNotEmpty();
-    }
+  @Test
+  public void setColorWithAwtColorParam_colorHasBeakerColorType() {
+    //when
+    Histogram histogram = new Histogram();
+    histogram.setColor(java.awt.Color.GREEN);
+    //then
+    Assertions.assertThat(histogram.getColor() instanceof Color).isTrue();
+  }
 
-    @Test
-    public void setColorWithAwtColorParam_colorHasBeakerColorType(){
-        //when
-        Histogram histogram = new Histogram();
-        histogram.setColor(java.awt.Color.GREEN);
-        //then
-        Assertions.assertThat(histogram.getColor() instanceof Color).isTrue();
-    }
-
-    @Test
-    public void setColorWithAwtColorListParam_hasBeakerColorsIsNotEmpty(){
-        //when
-        Histogram histogram = new Histogram();
-        histogram.setColor(Arrays.asList(java.awt.Color.GREEN, java.awt.Color.BLUE));
-        //then
-        Assertions.assertThat(histogram.getColors()).isNotEmpty();
-    }
-
-
+  @Test
+  public void setColorWithAwtColorListParam_hasBeakerColorsIsNotEmpty() {
+    //when
+    Histogram histogram = new Histogram();
+    histogram.setColor(Arrays.asList(java.awt.Color.GREEN, java.awt.Color.BLUE));
+    //then
+    Assertions.assertThat(histogram.getColors()).isNotEmpty();
+  }
 }

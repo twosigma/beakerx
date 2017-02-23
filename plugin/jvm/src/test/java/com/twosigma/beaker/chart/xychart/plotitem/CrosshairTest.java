@@ -22,20 +22,20 @@ import org.junit.Test;
 
 public class CrosshairTest {
 
-    @Test
-    public void createCrosshairByEmptyConstructor_hasStrokeTypeIsNull(){
-        //when
-        Crosshair crosshair = new Crosshair();
-        //then
-        Assertions.assertThat(crosshair.getStyle()).isNull();
-    }
+  @Test
+  public void createCrosshairByEmptyConstructor_hasStrokeTypeIsNull() {
+    //when
+    Crosshair crosshair = new Crosshair();
+    //then
+    Assertions.assertThat(crosshair.getStyle()).isNull();
+  }
 
-    @Test
-    public void setColorWithAwtColor_crosshairHasBeakerColor(){
-        //when
-        Crosshair crosshair = new Crosshair();
-        crosshair.setColor(java.awt.Color.GREEN);
-        //then
-        Assertions.assertThat(crosshair.getColor() instanceof Color).isTrue();
-    }
+  @Test
+  public void setColorWithAwtColor_crosshairHasBeakerColor() {
+    //when
+    Crosshair crosshair = new Crosshair();
+    crosshair.setColor(java.awt.Color.GREEN);
+    //then
+    Assertions.assertThat(crosshair.getColor() instanceof Color).isTrue();
+  }
 }

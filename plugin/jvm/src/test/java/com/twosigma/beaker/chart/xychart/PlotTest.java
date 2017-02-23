@@ -26,53 +26,52 @@ import java.util.Arrays;
 
 public class PlotTest {
 
-    Line line;
-    Area area;
+  Line line;
+  Area area;
 
-    @Before
-    public void initStubData(){
-        line = new Line();
-        line.setX(Arrays.asList(1, 2, 3));
-        line.setY(Arrays.asList(2, 3, 4));
-        area = new Area();
-        area.setX(Arrays.asList(1, 2, 3));
-        area.setY(Arrays.asList(2, 3, 4));
-    }
+  @Before
+  public void initStubData() {
+    line = new Line();
+    line.setX(Arrays.asList(1, 2, 3));
+    line.setY(Arrays.asList(2, 3, 4));
+    area = new Area();
+    area.setX(Arrays.asList(1, 2, 3));
+    area.setY(Arrays.asList(2, 3, 4));
+  }
 
-    @Test
-    public void createPlotByEmptyConstructor_plotHasGraphicsListIsEmpty(){
-        //when
-        Plot plot = new Plot();
-        //then
-        Assertions.assertThat(plot.getGraphics().size()).isEqualTo(0);
-    }
+  @Test
+  public void createPlotByEmptyConstructor_plotHasGraphicsListIsEmpty() {
+    //when
+    Plot plot = new Plot();
+    //then
+    Assertions.assertThat(plot.getGraphics().size()).isEqualTo(0);
+  }
 
-    @Test
-    public void addLineToPlot_plotHasGraphicsListSizeIsOne(){
-        Plot plot = new Plot();
-        //when
-        plot.add(line);
-        //then
-        Assertions.assertThat(plot.getGraphics().size()).isEqualTo(1);
-    }
+  @Test
+  public void addLineToPlot_plotHasGraphicsListSizeIsOne() {
+    Plot plot = new Plot();
+    //when
+    plot.add(line);
+    //then
+    Assertions.assertThat(plot.getGraphics().size()).isEqualTo(1);
+  }
 
-    @Test
-    public void addAreaToPlot_plotHasGraphicsListSizeIsOne(){
-        Plot plot = new Plot();
-        //when
-        plot.add(area);
-        //then
-        Assertions.assertThat(plot.getGraphics().size()).isEqualTo(1);
-    }
+  @Test
+  public void addAreaToPlot_plotHasGraphicsListSizeIsOne() {
+    Plot plot = new Plot();
+    //when
+    plot.add(area);
+    //then
+    Assertions.assertThat(plot.getGraphics().size()).isEqualTo(1);
+  }
 
-    @Test
-    public void addLineAndAreaToPlot_plotHasGraphicsListSizeIsTwo(){
-        Plot plot = new Plot();
-        //when
-        plot.add(line);
-        plot.add(area);
-        //then
-        Assertions.assertThat(plot.getGraphics().size()).isEqualTo(2);
-    }
-
+  @Test
+  public void addLineAndAreaToPlot_plotHasGraphicsListSizeIsTwo() {
+    Plot plot = new Plot();
+    //when
+    plot.add(line);
+    plot.add(area);
+    //then
+    Assertions.assertThat(plot.getGraphics().size()).isEqualTo(2);
+  }
 }

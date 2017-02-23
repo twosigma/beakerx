@@ -21,55 +21,54 @@ import org.junit.Test;
 
 public class YAxisTest {
 
-    @Test
-    public void createYAxisByEmptyConstructor_hasLabelAndMarginsAreNotNulls(){
-        //when
-        YAxis yAxis = new YAxis();
-        //then
-        Assertions.assertThat(yAxis.getLabel()).isNotNull();
-        Assertions.assertThat(yAxis.getLowerMargin()).isNotNull();
-        Assertions.assertThat(yAxis.getUpperMargin()).isNotNull();
-    }
+  @Test
+  public void createYAxisByEmptyConstructor_hasLabelAndMarginsAreNotNulls() {
+    //when
+    YAxis yAxis = new YAxis();
+    //then
+    Assertions.assertThat(yAxis.getLabel()).isNotNull();
+    Assertions.assertThat(yAxis.getLowerMargin()).isNotNull();
+    Assertions.assertThat(yAxis.getUpperMargin()).isNotNull();
+  }
 
-    @Test
-    public void createYAxisWithStringParam_hasLabelAndMarginsValues(){
-        //when
-        YAxis yAxis = new YAxis("string param");
-        //then
-        Assertions.assertThat(yAxis.getLabel()).isEqualTo("string param");
-        Assertions.assertThat(yAxis.getLowerMargin()).isEqualTo(0);
-        Assertions.assertThat(yAxis.getUpperMargin()).isEqualTo(0);
-    }
+  @Test
+  public void createYAxisWithStringParam_hasLabelAndMarginsValues() {
+    //when
+    YAxis yAxis = new YAxis("string param");
+    //then
+    Assertions.assertThat(yAxis.getLabel()).isEqualTo("string param");
+    Assertions.assertThat(yAxis.getLowerMargin()).isEqualTo(0);
+    Assertions.assertThat(yAxis.getUpperMargin()).isEqualTo(0);
+  }
 
-    @Test
-    public void createYAxisWithTwoDoubleParams_hasLabelIsEmptyAndMarginsValues(){
-        //when
-        YAxis yAxis = new YAxis(1, 2);
-        //then
-        Assertions.assertThat(yAxis.getLabel()).isEmpty();
-        Assertions.assertThat(yAxis.getLowerMargin()).isEqualTo(1);
-        Assertions.assertThat(yAxis.getUpperMargin()).isEqualTo(2);
-    }
+  @Test
+  public void createYAxisWithTwoDoubleParams_hasLabelIsEmptyAndMarginsValues() {
+    //when
+    YAxis yAxis = new YAxis(1, 2);
+    //then
+    Assertions.assertThat(yAxis.getLabel()).isEmpty();
+    Assertions.assertThat(yAxis.getLowerMargin()).isEqualTo(1);
+    Assertions.assertThat(yAxis.getUpperMargin()).isEqualTo(2);
+  }
 
-    @Test
-    public void createYAxisWithOneStringAndTwoDoubleParams_hasLabelAndMarginsValues(){
-        //when
-        YAxis yAxis = new YAxis("string param", 1, 2);
-        //then
-        Assertions.assertThat(yAxis.getLabel()).isEqualTo("string param");
-        Assertions.assertThat(yAxis.getLowerMargin()).isEqualTo(1);
-        Assertions.assertThat(yAxis.getUpperMargin()).isEqualTo(2);
-    }
+  @Test
+  public void createYAxisWithOneStringAndTwoDoubleParams_hasLabelAndMarginsValues() {
+    //when
+    YAxis yAxis = new YAxis("string param", 1, 2);
+    //then
+    Assertions.assertThat(yAxis.getLabel()).isEqualTo("string param");
+    Assertions.assertThat(yAxis.getLowerMargin()).isEqualTo(1);
+    Assertions.assertThat(yAxis.getUpperMargin()).isEqualTo(2);
+  }
 
-    @Test
-    public void setBoundsWithTwoDoubleParams_hasBoundsValuesAndHasAutoRangeIsFalse(){
-        //when
-        YAxis yAxis = new YAxis();
-        yAxis.setBound(1, 2);
-        //then
-        Assertions.assertThat(yAxis.getAutoRange()).isEqualTo(false);
-        Assertions.assertThat(yAxis.getLowerBound()).isEqualTo(1);
-        Assertions.assertThat(yAxis.getUpperBound()).isEqualTo(2);
-    }
-
+  @Test
+  public void setBoundsWithTwoDoubleParams_hasBoundsValuesAndHasAutoRangeIsFalse() {
+    //when
+    YAxis yAxis = new YAxis();
+    yAxis.setBound(1, 2);
+    //then
+    Assertions.assertThat(yAxis.getAutoRange()).isEqualTo(false);
+    Assertions.assertThat(yAxis.getLowerBound()).isEqualTo(1);
+    Assertions.assertThat(yAxis.getUpperBound()).isEqualTo(2);
+  }
 }

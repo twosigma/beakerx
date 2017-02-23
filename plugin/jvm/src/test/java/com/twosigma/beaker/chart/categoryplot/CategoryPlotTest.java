@@ -16,7 +16,11 @@
 
 package com.twosigma.beaker.chart.categoryplot;
 
-import com.twosigma.beaker.chart.categoryplot.plotitem.*;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryLines;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryPoints;
+import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryStems;
 import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -27,64 +31,65 @@ import java.util.List;
 
 public class CategoryPlotTest {
 
-    Integer[] array1, array2;
-    CategoryGraphics categoryBars, categoryLines, categoryPoints, categoryStems;
+  Integer[] array1, array2;
+  CategoryGraphics categoryBars, categoryLines, categoryPoints, categoryStems;
 
-    @Before
-    public void initStubData(){
-        array1 = new Integer[]{ new Integer(1), new Integer(2) };
-        array2 = new Integer[]{ new Integer(3), new Integer(4) };
-        categoryBars = new CategoryBars();
-        categoryBars.setValue(new List[]{Arrays.asList(array1), Arrays.asList(array2)});
-        categoryLines = new CategoryLines();
-        categoryLines.setValue(new List[]{Arrays.asList(array1), Arrays.asList(array2)});
-        categoryPoints = new CategoryPoints();
-        categoryPoints.setValue(new List[]{Arrays.asList(array1), Arrays.asList(array2)});
-        categoryStems = new CategoryStems();
-        categoryStems.setValue(new List[]{Arrays.asList(array1), Arrays.asList(array2)});
-    }
+  @Before
+  public void initStubData() {
+    array1 = new Integer[] {new Integer(1), new Integer(2)};
+    array2 = new Integer[] {new Integer(3), new Integer(4)};
+    categoryBars = new CategoryBars();
+    categoryBars.setValue(new List[] {Arrays.asList(array1), Arrays.asList(array2)});
+    categoryLines = new CategoryLines();
+    categoryLines.setValue(new List[] {Arrays.asList(array1), Arrays.asList(array2)});
+    categoryPoints = new CategoryPoints();
+    categoryPoints.setValue(new List[] {Arrays.asList(array1), Arrays.asList(array2)});
+    categoryStems = new CategoryStems();
+    categoryStems.setValue(new List[] {Arrays.asList(array1), Arrays.asList(array2)});
+  }
 
-    @Test
-    public void createCategoryPlotByEmptyConstructor_hasVerticalOrientation(){
-        //when
-        CategoryPlot categoryPlot = new CategoryPlot();
-        //then
-        Assertions.assertThat(categoryPlot.getOrientation()).isEqualTo(PlotOrientationType.VERTICAL);
-    }
+  @Test
+  public void createCategoryPlotByEmptyConstructor_hasVerticalOrientation() {
+    //when
+    CategoryPlot categoryPlot = new CategoryPlot();
+    //then
+    Assertions.assertThat(categoryPlot.getOrientation()).isEqualTo(PlotOrientationType.VERTICAL);
+  }
 
-    @Test
-    public void addWithListOfCategoryBarsPointsAndStemsParam_hasCategoryGraphicsListSizeIsThree(){
-        //when
-        CategoryPlot categoryPlot = new CategoryPlot();
-        categoryPlot.add(Arrays.asList(categoryBars, categoryPoints, categoryStems));
-        //then
-        Assertions.assertThat(categoryPlot.getGraphics().size()).isEqualTo(3);
-    }
+  @Test
+  public void addWithListOfCategoryBarsPointsAndStemsParam_hasCategoryGraphicsListSizeIsThree() {
+    //when
+    CategoryPlot categoryPlot = new CategoryPlot();
+    categoryPlot.add(Arrays.asList(categoryBars, categoryPoints, categoryStems));
+    //then
+    Assertions.assertThat(categoryPlot.getGraphics().size()).isEqualTo(3);
+  }
 
-    @Test
-    public void addWithCategoryLinesParam_hasCategoryGraphicsListSizeIsOne(){
-        //when
-        CategoryPlot categoryPlot = new CategoryPlot();
-        categoryPlot.add(categoryLines);
-        //then
-        Assertions.assertThat(categoryPlot.getGraphics().size()).isEqualTo(1);
-    }
+  @Test
+  public void addWithCategoryLinesParam_hasCategoryGraphicsListSizeIsOne() {
+    //when
+    CategoryPlot categoryPlot = new CategoryPlot();
+    categoryPlot.add(categoryLines);
+    //then
+    Assertions.assertThat(categoryPlot.getGraphics().size()).isEqualTo(1);
+  }
 
-    @Test
-    public void threeCallsLeftShiftWithCategoryBarsPointsAndStemsParam_hasCategoryGraphicsListSizeIsThree(){
-        //when
-        CategoryPlot categoryPlot = new CategoryPlot();
-        categoryPlot.leftShift(categoryBars).leftShift(categoryPoints).leftShift(categoryStems);
-        //then
-        Assertions.assertThat(categoryPlot.getGraphics().size()).isEqualTo(3);
-    }
+  @Test
+  public void
+      threeCallsLeftShiftWithCategoryBarsPointsAndStemsParam_hasCategoryGraphicsListSizeIsThree() {
+    //when
+    CategoryPlot categoryPlot = new CategoryPlot();
+    categoryPlot.leftShift(categoryBars).leftShift(categoryPoints).leftShift(categoryStems);
+    //then
+    Assertions.assertThat(categoryPlot.getGraphics().size()).isEqualTo(3);
+  }
 
-    @Test
-    public void leftShiftWithCategoryLinesParam_hasCategoryGraphicsListSizeIsOne(){
-        //when
-        CategoryPlot categoryPlot = new CategoryPlot();
-        categoryPlot.leftShift(categoryLines);
-        //then
-        Assertions.assertThat(categoryPlot.getGraphics().size()).isEqualTo(1);
-    }
+  @Test
+  public void leftShiftWithCategoryLinesParam_hasCategoryGraphicsListSizeIsOne() {
+    //when
+    CategoryPlot categoryPlot = new CategoryPlot();
+    categoryPlot.leftShift(categoryLines);
+    //then
+    Assertions.assertThat(categoryPlot.getGraphics().size()).isEqualTo(1);
+  }
 }

@@ -25,56 +25,55 @@ import java.util.List;
 
 public class CategoryBarsTest {
 
-    Integer[] array1, array2;
+  Integer[] array1, array2;
 
-    @Before
-    public void initStubData(){
-        array1 = new Integer[]{ new Integer(1), new Integer(2) };
-        array2 = new Integer[]{ new Integer(3), new Integer(4) };
-    }
+  @Before
+  public void initStubData() {
+    array1 = new Integer[] {new Integer(1), new Integer(2)};
+    array2 = new Integer[] {new Integer(3), new Integer(4)};
+  }
 
-    @Test
-    public void createCategoryBarsByEmptyConstructor_hasBaseBaseEqualsZero(){
-        //when
-        CategoryBars categoryBars = new CategoryBars();
-        //then
-        Assertions.assertThat(categoryBars.getBase()).isEqualTo(0.0);
-    }
+  @Test
+  public void createCategoryBarsByEmptyConstructor_hasBaseBaseEqualsZero() {
+    //when
+    CategoryBars categoryBars = new CategoryBars();
+    //then
+    Assertions.assertThat(categoryBars.getBase()).isEqualTo(0.0);
+  }
 
-    @Test
-    public void setValueWithIntegerArrayParam_hasValueIsNotEmpty(){
-        //when
-        CategoryBars categoryBars = new CategoryBars();
-        categoryBars.setValue(array1);
-        //then
-        Assertions.assertThat(categoryBars.getValue()).isNotEmpty();
-    }
+  @Test
+  public void setValueWithIntegerArrayParam_hasValueIsNotEmpty() {
+    //when
+    CategoryBars categoryBars = new CategoryBars();
+    categoryBars.setValue(array1);
+    //then
+    Assertions.assertThat(categoryBars.getValue()).isNotEmpty();
+  }
 
-    @Test
-    public void setValueWithIntegerArrayOfListsParam_hasValueIsNotEmpty(){
-        //when
-        CategoryBars categoryBars = new CategoryBars();
-        categoryBars.setValue(new List[]{Arrays.asList(array1), Arrays.asList(array2)});
-        //then
-        Assertions.assertThat(categoryBars.getValue()).isNotEmpty();
-    }
+  @Test
+  public void setValueWithIntegerArrayOfListsParam_hasValueIsNotEmpty() {
+    //when
+    CategoryBars categoryBars = new CategoryBars();
+    categoryBars.setValue(new List[] {Arrays.asList(array1), Arrays.asList(array2)});
+    //then
+    Assertions.assertThat(categoryBars.getValue()).isNotEmpty();
+  }
 
-    @Test
-    public void setBaseWithIntegerListParam_hasBasesIsNotEmpty(){
-        //when
-        CategoryBars categoryBars = new CategoryBars();
-        categoryBars.setBase(Arrays.asList(array1));
-        //then
-        Assertions.assertThat(categoryBars.getBases()).isNotEmpty();
-    }
+  @Test
+  public void setBaseWithIntegerListParam_hasBasesIsNotEmpty() {
+    //when
+    CategoryBars categoryBars = new CategoryBars();
+    categoryBars.setBase(Arrays.asList(array1));
+    //then
+    Assertions.assertThat(categoryBars.getBases()).isNotEmpty();
+  }
 
-    @Test
-    public void setWidthIntegerListParam_hasWidthsIsNotEmpty(){
-        //when
-        CategoryBars categoryBars = new CategoryBars();
-        categoryBars.setWidth(Arrays.asList(array2));
-        //then
-        Assertions.assertThat(categoryBars.getWidths()).isNotEmpty();
-    }
-
+  @Test
+  public void setWidthIntegerListParam_hasWidthsIsNotEmpty() {
+    //when
+    CategoryBars categoryBars = new CategoryBars();
+    categoryBars.setWidth(Arrays.asList(array2));
+    //then
+    Assertions.assertThat(categoryBars.getWidths()).isNotEmpty();
+  }
 }

@@ -16,7 +16,10 @@
 
 package com.twosigma.beaker.chart.xychart;
 
+import com.twosigma.beaker.jupyter.GroovyKernelManager;
+import com.twosigma.beaker.widgets.GroovyKernelTest;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,9 +34,15 @@ public class TimePlotTest {
 
   @Before
   public void initStubData() throws ParseException {
+    GroovyKernelManager.register(new GroovyKernelTest());
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     lowerBound = sdf.parse("01-01-2000");
     upperBound = sdf.parse("05-05-2005");
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    GroovyKernelManager.register(null);
   }
 
   @Test

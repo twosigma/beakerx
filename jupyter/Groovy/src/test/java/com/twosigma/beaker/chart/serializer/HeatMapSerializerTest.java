@@ -23,7 +23,10 @@ import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.heatmap.HeatMap;
+import com.twosigma.beaker.jupyter.GroovyKernelManager;
+import com.twosigma.beaker.widgets.GroovyKernelTest;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,7 +52,14 @@ public class HeatMapSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+    GroovyKernelManager.register(new GroovyKernelTest());
   }
+
+  @After
+  public void tearDown() throws Exception {
+    GroovyKernelManager.register(null);
+  }
+
 
   @Test
   public void serializeDataOfHeatMap_resultJsonHasGraphicsList() throws IOException {

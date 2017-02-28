@@ -18,7 +18,10 @@ package com.twosigma.beaker.chart.xychart;
 
 import com.twosigma.beaker.chart.xychart.plotitem.Area;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
+import com.twosigma.beaker.jupyter.GroovyKernelManager;
+import com.twosigma.beaker.widgets.GroovyKernelTest;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,12 +34,18 @@ public class PlotTest {
 
   @Before
   public void initStubData() {
+    GroovyKernelManager.register(new GroovyKernelTest());
     line = new Line();
     line.setX(Arrays.asList(1, 2, 3));
     line.setY(Arrays.asList(2, 3, 4));
     area = new Area();
     area.setX(Arrays.asList(1, 2, 3));
     area.setY(Arrays.asList(2, 3, 4));
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    GroovyKernelManager.register(null);
   }
 
   @Test

@@ -25,6 +25,7 @@ import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
 import com.twosigma.beaker.jupyter.GroovyKernelManager;
 import com.twosigma.beaker.widgets.GroovyKernelTest;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,6 +50,11 @@ public class CategoryPlotTest {
     categoryStems = new CategoryStems();
     categoryStems.setValue(new List[] {Arrays.asList(array1), Arrays.asList(array2)});
     GroovyKernelManager.register(new GroovyKernelTest());
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    GroovyKernelManager.register(null);
   }
 
   @Test

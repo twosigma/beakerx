@@ -16,25 +16,10 @@
 
 package com.twosigma.beaker.groovy.evaluator;
 
-import com.twosigma.beaker.groovy.GroovyKernelEvaluatorTest;
-import com.twosigma.beaker.jupyter.GroovyKernelManager;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class GroovyEvaluatorAutotranslationTest extends GroovyEvaluatorTest {
-
-  @Before
-  public void setUp() throws Exception {
-    groovyKernel = new GroovyKernelEvaluatorTest();
-    GroovyKernelManager.register(groovyKernel);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    GroovyKernelManager.register(null);
-  }
 
   @Test
   public void parseSetBeakerObjectScript_returnBeakerObjectValue() {

@@ -25,7 +25,10 @@ import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryPoints;
 import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
+import com.twosigma.beaker.jupyter.GroovyKernelManager;
+import com.twosigma.beaker.widgets.GroovyKernelTest;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,7 +54,14 @@ public class CategoryPlotSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+    GroovyKernelManager.register(new GroovyKernelTest());
   }
+
+  @After
+  public void tearDown() throws Exception {
+    GroovyKernelManager.register(null);
+  }
+
 
   @Test
   public void serializeCategoryNamesOfCategoryPlot_resultJsonHasCategoryNames() throws IOException {

@@ -19,6 +19,7 @@ package com.twosigma.beaker.chart.heatmap;
 import com.twosigma.beaker.jupyter.GroovyKernelManager;
 import com.twosigma.beaker.widgets.GroovyKernelTest;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,6 +28,11 @@ public class HeatMapTest {
   @Before
   public void setUp() throws Exception {
     GroovyKernelManager.register(new GroovyKernelTest());
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    GroovyKernelManager.register(null);
   }
 
   @Test

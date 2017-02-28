@@ -16,7 +16,10 @@
 
 package com.twosigma.beaker.chart.xychart;
 
+import com.twosigma.beaker.jupyter.GroovyKernelManager;
+import com.twosigma.beaker.widgets.GroovyKernelTest;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +37,13 @@ public class SimpleTimePlotTest {
 
   @Before
   public void initStubData() {
+    GroovyKernelManager.register(new GroovyKernelTest());
     createDataForSimpleTimePlot();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    GroovyKernelManager.register(null);
   }
 
   @Test

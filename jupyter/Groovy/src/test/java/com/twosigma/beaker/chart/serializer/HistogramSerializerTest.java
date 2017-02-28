@@ -23,7 +23,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.histogram.Histogram;
+import com.twosigma.beaker.jupyter.GroovyKernelManager;
+import com.twosigma.beaker.widgets.GroovyKernelTest;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,9 +51,15 @@ public class HistogramSerializerTest {
 
   @Before
   public void initTestStubData() throws IOException {
+    GroovyKernelManager.register(new GroovyKernelTest());
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
     histogram = new Histogram();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    GroovyKernelManager.register(null);
   }
 
   @Test

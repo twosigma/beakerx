@@ -64,7 +64,7 @@ public class ExecuteRequestHandler extends AbstractHandler<Message> {
     publish(reply);
 
     // Get the code to be executed from the message.
-    String code = null;
+    String code = "";
     if(message.getContent() != null && message.getContent().containsKey("code")){
       code = ((String) message.getContent().get("code")).trim();
     }

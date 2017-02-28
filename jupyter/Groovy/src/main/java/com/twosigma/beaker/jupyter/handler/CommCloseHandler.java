@@ -31,16 +31,20 @@ import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
 import static com.twosigma.beaker.jupyter.Comm.DATA;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 
-/**
- * 
- * @author konst
- *
- */
+/** @author konst */
 public class CommCloseHandler extends AbstractHandler<Message> {
 
   public CommCloseHandler(GroovyKernel kernel) {
     super(kernel);
     logger = LoggerFactory.getLogger(CommCloseHandler.class);
+  }
+
+  public static String getString(Map<String, Serializable> map, String name) {
+    String ret = null;
+    if (map != null && name != null && map.containsKey(name)) {
+      ret = (String) map.get(name);
+    }
+    return ret;
   }
 
   @Override
@@ -49,7 +53,10 @@ public class CommCloseHandler extends AbstractHandler<Message> {
     logger.info("Processing CommCloseHandler");
     Map<String, Serializable> commMap = message.getContent();
 
-    String targetName = kernel.getComm(getString(commMap, COMM_ID)).getTargetName();
+    String targetName =
+        (kernel.getComm(getString(commMap, COMM_ID)) != null)
+            ? kernel.getComm(getString(commMap, COMM_ID)).getTargetName()
+            : "";
     kernel.removeComm(getString(commMap, COMM_ID));
 
     Message reply = new Message();
@@ -62,13 +69,4 @@ public class CommCloseHandler extends AbstractHandler<Message> {
     send(reply);
     logger.info("Comm closed, target name = " + targetName);
   }
-
-  public static String getString(Map<String, Serializable> map, String name) {
-    String ret = null;
-    if (map != null && name != null && map.containsKey(name)) {
-      ret = (String) map.get(name);
-    }
-    return ret;
-  }
-
 }

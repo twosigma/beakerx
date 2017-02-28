@@ -205,7 +205,7 @@ public class GroovyKernel implements GroovyKernelFunctionality{
   }
 
   public <T> T parse(byte[] bytes, Class<T> theClass) {
-    return Serializer.parse(new String(bytes), theClass);
+    return bytes != null ? Serializer.parse(new String(bytes), theClass) : null;
   }
 
   /**

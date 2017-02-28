@@ -64,7 +64,10 @@ public class ExecuteRequestHandler extends AbstractHandler<Message> {
     publish(reply);
 
     // Get the code to be executed from the message.
-    String code = ((String) message.getContent().get("code")).trim();
+    String code = null;
+    if(message.getContent() != null && message.getContent().containsKey("code")){
+      code = ((String) message.getContent().get("code")).trim();
+    }
 
     // Announce that we have the code.
     reply.setHeader(new Header(EXECUTE_INPUT, message.getHeader().getSession()));

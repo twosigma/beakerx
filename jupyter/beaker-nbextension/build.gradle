@@ -11,17 +11,17 @@ def winOrUnix(Object... args) {
   }
 }
 
-task bowerInstall() {
+task install() {
   doLast {
     exec {
-      commandLine(*(winOrUnix('npm', 'install')))
+      commandLine(*(winOrUnix('pip', "install", "-e", ".")))
     }
     exec {
-      if (windows()) {
-        commandLine 'cmd', '/c', 'bower', 'install'
-      } else {
-        commandLine './node_modules/bower/bin/bower', 'install'
-      }
+      commandLine(*(winOrUnix("jupyter", "nbextension", "install", "--py", "--symlink", "--sys-prefix", "beaker-nbextension")))
     }
+    exec {
+      commandLine(*(winOrUnix("jupyter", "nbextension", "enable", "--py", "--sys-prefix", "beaker-nbextension")))
+    }
+    project('js').tasks.install.execute()
   }
 }

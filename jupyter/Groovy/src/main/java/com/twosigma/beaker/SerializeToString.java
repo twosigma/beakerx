@@ -73,6 +73,8 @@ import com.twosigma.beaker.chart.xychart.plotitem.Points;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
+import com.twosigma.beaker.widgets.DisplayWidget;
+import com.twosigma.beaker.widgets.internal.InternalWidget;
 
 
 public class SerializeToString {
@@ -80,8 +82,20 @@ public class SerializeToString {
   private static int count = 0;
   private static ObjectMapper mapper;
   private static Map<Class<?>, JsonSerializer> serializerMap = new Hashtable<>();
+  private static Map<Class<?>, Object> internalWidgetMap = new Hashtable<>();
 
   static {
+
+    internalWidgetMap.put(com.twosigma.beaker.table.TableDisplay.class, new Object());
+    internalWidgetMap.put(com.twosigma.beaker.chart.categoryplot.CategoryPlot.class, new Object());
+    internalWidgetMap.put(com.twosigma.beaker.chart.heatmap.HeatMap.class, new Object());
+    internalWidgetMap.put(com.twosigma.beaker.chart.histogram.Histogram.class, new Object());
+    internalWidgetMap.put(com.twosigma.beaker.chart.xychart.TimePlot.class, new Object());
+    internalWidgetMap.put(com.twosigma.beaker.chart.xychart.Plot.class, new Object());
+    internalWidgetMap.put(com.twosigma.beaker.chart.xychart.SimpleTimePlot.class, new Object());
+    internalWidgetMap.put(com.twosigma.beaker.chart.xychart.CombinedPlot.class, new Object());
+    internalWidgetMap.put(com.twosigma.beaker.chart.xychart.NanoPlot.class, new Object());
+
 
     serializerMap.put(TableDisplay.class, new TableDisplaySerializer());
     serializerMap.put(Color.class, new ColorSerializer());
@@ -107,7 +121,7 @@ public class SerializeToString {
     serializerMap.put(Histogram.class, new HistogramSerializer());
     serializerMap.put(HeatMap.class, new HeatMapSerializer());
 
-    SimpleModule module = new SimpleModule("MySerializer", new Version(1, 0, 0, null, null, null));
+    SimpleModule module = new SimpleModule("MySerializer", new Version(1, 0, 0, null));
     serializerMap.forEach((k, v) -> {
       module.addSerializer(k, v);
     });
@@ -116,12 +130,25 @@ public class SerializeToString {
     mapper.registerModule(module);
   }
 
-  protected static boolean isBeakerChart(Object result) {
+  protected static boolean isInternalWidget(Object result){
     boolean ret = false;
-    if (result != null) {
+    if(result != null && result instanceof InternalWidget ){
+      for (Class<?> clazz : internalWidgetMap.keySet()) {
+        ret = clazz.isAssignableFrom(result.getClass());
+        if(ret){
+          break;
+        }
+      }
+    }
+    return ret;
+  }
+
+  protected static boolean isBeakerChart(Object result){
+    boolean ret = false;
+    if(result != null){
       for (Class<?> clazz : serializerMap.keySet()) {
         ret = clazz.isAssignableFrom(result.getClass());
-        if (ret) {
+        if(ret){
           break;
         }
       }
@@ -130,24 +157,45 @@ public class SerializeToString {
   }
 
   public static String doit(Object result) {
+    if (isInternalWidget(result)) {
+      showInternalWidget(result);
+      return "";
+    }
     if (mapper != null && isBeakerChart(result)) {
       try {
         String s = mapper.writeValueAsString(result);
         count++;
-        s = "<html><div id='beakerChart" + count + 
-          "'></div><script>var j = " + s + 
-          "; window.initPlotd(j,'beakerChart" + count +
-          "');</script></html>";
+        s = "<html><div id='beakerChart" + count +
+                "'></div><script>var j = " + s +
+                "; console.log('plot this:'); console.log(j); window.initPlotd(j,'beakerChart" + count +
+                "');</script></html>";
         return s;
       } catch (Exception e) {
-        StringWriter w = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(w);
-        e.printStackTrace(printWriter);
-        printWriter.flush();
-        return w.toString();
+        return exceptionToString(e);
       }
     }
     return result != null ? result.toString() : null;
   }
 
+  private static void showInternalWidget(Object result) {
+    InternalWidget widget = (InternalWidget) result;
+    widget.sendModel();
+    DisplayWidget.display(widget);
+  }
+
+  protected static String exceptionToString(Exception e) {
+    StringWriter w = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(w);
+    e.printStackTrace(printWriter);
+    printWriter.flush();
+    return w.toString();
+  }
+
+  protected static Map<Class<?>, JsonSerializer> getSerializerMap() {
+    return serializerMap;
+  }
+
+  protected static ObjectMapper getMapper() {
+    return mapper;
+  }
 }

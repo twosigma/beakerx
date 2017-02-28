@@ -26,7 +26,7 @@ outputdisplay/bko-plot/plotitems/std/plotconstband.js
 outputdisplay/bko-plot/plotitems/std/plottext.js
 outputdisplay/bko-plot/plotitems/std/plottreemapnode.js
 outputdisplay/bko-plot/plotitems/std/heatmap.js
-outputdisplay/bko-plot/plotitems/lod/plotlodline.js
+outputdisplay/bko-plot/plotitems/lod/plotLodLine.js
 outputdisplay/bko-plot/plotitems/lod/plotlodriver.js
 outputdisplay/bko-plot/plotitems/lod/plotlodbox.js
 outputdisplay/bko-plot/plotitems/lod/plotlodpoint.js

@@ -1,0 +1,7 @@
+task install() {
+  doLast {
+    exec {
+      commandLine(*(winOrUnix("npm", "i")))
+    }
+  }
+}

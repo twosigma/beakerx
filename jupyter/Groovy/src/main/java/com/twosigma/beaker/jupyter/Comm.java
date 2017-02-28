@@ -34,12 +34,15 @@ import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beaker.groovy.NamespaceClient;
 
 public class Comm {
   
   private static final Logger logger = LoggerFactory.getLogger(GroovyKernel.class);
-  
+
+  public static final String METHOD = "method";
+  public static final String UPDATE = "update";
+  public static final String STATE = "state";
+
   public static final String COMM_ID = "comm_id";
   public static final String TARGET_NAME = "target_name";
   public static final String DATA = "data";
@@ -171,6 +174,20 @@ public class Comm {
     map.put(DATA, data);
     message.setContent(map);
     kernel.publish(message);
+  }
+
+  public void sendUpdate(final String propertyName, final Object value) {
+    HashMap<String, Serializable> content = new HashMap<>();
+    content.put(METHOD, UPDATE);
+    HashMap<Object, Object> state = new HashMap<>();
+    state.put(propertyName, value);
+    content.put(STATE, state);
+    this.setData(content);
+    try {
+      this.send();
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   protected Message getParentMessage() {

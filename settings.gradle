@@ -17,6 +17,7 @@ include 'shared'
 include 'plugin'
 include 'jupyter'
 include 'jupyter:beaker-nbextension'
+include 'jupyter:beaker-nbextension:js'
 include 'jupyter:Groovy'
 include 'plugin:jvm',
         'plugin:groovy',

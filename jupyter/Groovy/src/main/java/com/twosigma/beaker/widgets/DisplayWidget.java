@@ -21,11 +21,18 @@ import java.util.HashMap;
 
 public class DisplayWidget {
 
-  public static void display(final Widget widget) throws NoSuchAlgorithmException {
+  public static final String METHOD = "method";
+  public static final String DISPLAY = "display";
+
+  public static void display(final CommFunctionality widget) {
     HashMap<String, Serializable> content = new HashMap<>();
-    content.put("method", "display");
+    content.put(METHOD, DISPLAY);
     widget.getComm().setData(content);
-    widget.getComm().send();
+    try {
+      widget.getComm().send();
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }

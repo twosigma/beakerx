@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
-public abstract class Widget {
+public abstract class Widget implements CommFunctionality {
 
   public static final String MODEL_MODULE = "_model_module";
   public static final String MODEL_NAME = "_model_name";
@@ -32,9 +32,6 @@ public abstract class Widget {
 
   public static final String MODEL_MODULE_VALUE = "jupyter-js-widgets";
   public static final String VIEW_MODULE_VALUE = "jupyter-js-widgets";
-  public static final String METHOD = "method";
-  public static final String UPDATE = "update";
-  public static final String STATE = "state";
 
   public static final String VALUE = "value";
   public static final String DISABLED = "disabled";
@@ -76,27 +73,18 @@ public abstract class Widget {
     return result;
   }
 
-  protected void addValueChangeMsgCallback(final Comm comm){
+  protected void addValueChangeMsgCallback(final Comm comm) {
   }
 
   protected abstract HashMap<String, Serializable> content(HashMap<String, Serializable> content);
 
+  @Override
   public Comm getComm() {
     return this.comm;
   }
 
-  public void sendUpdate(String propertyName, Object value) {
-    HashMap<String, Serializable> content = new HashMap<>();
-    content.put(METHOD, UPDATE);
-    HashMap<Object, Object> state = new HashMap<>();
-    state.put(propertyName, value);
-    content.put(STATE, state);
-    getComm().setData(content);
-    try {
-      getComm().send();
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
+  protected void sendUpdate(String propertyName, Object value) {
+   this.comm.sendUpdate(propertyName,value);
   }
 
   public Boolean getDisabled() {

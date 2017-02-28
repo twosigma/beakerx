@@ -49,6 +49,10 @@ public class CsvPlotReader {
     return Table.createFromCsv(fileName);
   }
 
+  public List<Map<String, Object>> readAsList(String fileName) throws IOException {
+    return convert(Table.createFromCsv(fileName));
+  }
+
   private Object convertToNumber(Object value){
     if(value instanceof String && NumberUtils.isNumber((String) value)){
       return Float.parseFloat((String)value);

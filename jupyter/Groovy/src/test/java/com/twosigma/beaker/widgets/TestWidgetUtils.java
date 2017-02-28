@@ -27,6 +27,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestWidgetUtils {
 
+  public static final String RESULT_JSON_JOINER = "\":";
+
   public static void verifyOpenCommMsg(List<Message> messages, String modelNameValue, String viewNameValue) {
     assertThat(messages.size()).isEqualTo(2);
     Message layout = messages.get(0);
@@ -40,17 +42,33 @@ public class TestWidgetUtils {
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
-
+  @SuppressWarnings("unchecked")
   public static Map getData(Message message) {
-    Map<String, Serializable> content = message.getContent();
+    Map<String, Serializable> content = getContent(message);
     return (Map) content.get(Comm.DATA);
   }
 
-  public static void verifyMsgForProperty(GroovyKernelTest groovyKernel, String propertyName, Object expected) {
+  public static Map getContent(Message message) {
+    return message.getContent();
+  }
+
+
+  public static <T> void verifyMsgForProperty(GroovyKernelTest groovyKernel, String propertyName, T expected) {
+    Object actual = getValueForProperty(groovyKernel, propertyName, expected.getClass());
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  public static <T> T getValueForProperty(GroovyKernelTest groovyKernel, String propertyName, Class<T> clazz) {
     assertThat(groovyKernel.getMessages().size()).isEqualTo(1);
-    Map data = TestWidgetUtils.getData(groovyKernel.getMessages().get(0));
-    assertThat(data.get(Widget.METHOD)).isEqualTo(Widget.UPDATE);
-    assertThat(((Map) data.get(Widget.STATE)).get(propertyName)).isEqualTo(expected);
+    Message message = groovyKernel.getMessages().get(0);
+    return getValueForProperty(message, propertyName, clazz);
+  }
+
+  public static <T> T getValueForProperty(Message message, String propertyName, Class<T> clazz) {
+    Map data = TestWidgetUtils.getData(message);
+    assertThat(data.get(Comm.METHOD)).isEqualTo(Comm.UPDATE);
+    Object o = ((Map) data.get(Comm.STATE)).get(propertyName);
+    return clazz.cast(o);
   }
 
 }

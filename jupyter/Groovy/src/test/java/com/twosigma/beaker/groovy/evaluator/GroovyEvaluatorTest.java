@@ -18,6 +18,7 @@ package com.twosigma.beaker.groovy.evaluator;
 
 import com.twosigma.beaker.groovy.GroovyKernelEvaluatorTest;
 import com.twosigma.beaker.groovy.NamespaceClient;
+import com.twosigma.beaker.jupyter.GroovyKernelManager;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
@@ -42,6 +43,8 @@ public class GroovyEvaluatorTest {
     groovyClassLoader = groovyEvaluator.newEvaluator();
     scriptBinding = new Binding();
     scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));
+    groovyKernel = new GroovyKernelEvaluatorTest();
+    GroovyKernelManager.register(groovyKernel);
   }
 
   public Object parseClassFromScript(String script) {

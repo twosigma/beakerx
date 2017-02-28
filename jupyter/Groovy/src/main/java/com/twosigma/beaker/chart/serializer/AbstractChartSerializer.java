@@ -1,0 +1,52 @@
+/*
+ *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+
+package com.twosigma.beaker.chart.serializer;
+
+
+import com.twosigma.beaker.chart.AbstractChart;
+import com.fasterxml.jackson.core.JsonGenerator;
+
+import java.io.IOException;
+
+public abstract class AbstractChartSerializer<T extends AbstractChart> extends ChartSerializer<T> {
+
+
+  public static final String DOMAIN_AXIS_LABEL = "domain_axis_label";
+  public static final String Y_LABEL = "y_label";
+
+  protected void serialize(T chart, JsonGenerator jgen) throws IOException {
+
+    super.serialize(chart, jgen);
+
+    jgen.writeObjectField(DOMAIN_AXIS_LABEL, chart.getXLabel());
+    jgen.writeObjectField(Y_LABEL, chart.getYLabel());
+    jgen.writeObjectField("rangeAxes", chart.getYAxes());
+    jgen.writeObjectField("x_lower_margin", chart.getXLowerMargin());
+    jgen.writeObjectField("x_upper_margin", chart.getXUpperMargin());
+    jgen.writeObjectField("y_auto_range", chart.getYAutoRange());
+    jgen.writeObjectField("y_auto_range_includes_zero", chart.getYAutoRangeIncludesZero());
+    jgen.writeObjectField("y_lower_margin", chart.getYLowerMargin());
+    jgen.writeObjectField("y_upper_margin", chart.getYUpperMargin());
+    jgen.writeObjectField("y_lower_bound", chart.getYLowerBound());
+    jgen.writeObjectField("y_upper_bound", chart.getYUpperBound());
+    jgen.writeObjectField("log_y", chart.getLogY());
+    jgen.writeObjectField("timezone", chart.getTimeZone());
+    jgen.writeObjectField("crosshair", chart.getCrosshair());
+    jgen.writeObjectField("omit_checkboxes", chart.getOmitCheckboxes());
+  }
+}

@@ -32,14 +32,9 @@ public class CsvPlotReaderTest {
   @Test
   public void shouldReturnDataForPlot() throws Exception {
     //given
-    URI uriToTableRowTest = getClass().getClassLoader().getResource("tableRowsTest.csv").toURI();
-    String osAppropriatePath =
-        IS_WINDOWS
-            ? uriToTableRowTest.getSchemeSpecificPart().substring(1)
-            : uriToTableRowTest.getSchemeSpecificPart();
-    //when
     CsvPlotReader reader = new CsvPlotReader();
-    Table values = reader.read(osAppropriatePath);
+    //when
+    Table values = reader.read(getOsAppropriatePath("tableRowsTest.csv"));
     //then
     assertThat(reader.convert(values).get(2).get("m3")).isEqualTo(8.0f);
     assertThat(reader.convert(values).get(2).get("time"))
@@ -48,14 +43,19 @@ public class CsvPlotReaderTest {
 
   @Test
   public void shouldReturnDataAsListForPlot() throws Exception {
-    //given
-    URI pathToTableRowTest = getClass().getClassLoader().getResource("tableRowsTest.csv").toURI();
     //when
-    List<Map<String, Object>> values = new CsvPlotReader().readAsList(pathToTableRowTest.getSchemeSpecificPart());
+    List<Map<String, Object>> values =
+        new CsvPlotReader().readAsList(getOsAppropriatePath("tableRowsTest.csv"));
     //then
     assertThat(values.get(2).get("m3")).isEqualTo(8.0f);
-    assertThat(values.get(2).get("time")).isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31").getTime());
+    assertThat(values.get(2).get("time"))
+        .isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31").getTime());
   }
 
-
+  private String getOsAppropriatePath(String fileName) throws Exception {
+    URI uriToFile = getClass().getClassLoader().getResource(fileName).toURI();
+    return IS_WINDOWS
+        ? uriToFile.getSchemeSpecificPart().substring(1)
+        : uriToFile.getSchemeSpecificPart();
+  }
 }

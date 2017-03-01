@@ -34,7 +34,7 @@ public class MessageCreatorTest {
 
   @Before
   public void setUp() throws Exception {
-    GroovyKernelTest kernel = new GroovyKernelTest();
+    GroovyKernelTest kernel = new GroovyKernelTest("id1");
     messageCreator = new MessageCreator(kernel);
   }
 

@@ -55,8 +55,12 @@ public class ExecuteRequestHandler extends AbstractHandler<Message> {
   @Override
   public void handle(Message message) throws NoSuchAlgorithmException {
     logger.info("Processing execute request");
+    handleMessage(message);
+  }
+
+  private synchronized void handleMessage(Message message) throws NoSuchAlgorithmException {
     Message reply = new Message();
-    Map<String, Serializable> map = new HashMap<String, Serializable>(1);
+    Map<String, Serializable> map = new HashMap<>(1);
     map.put("execution_state", "busy");
     reply.setContent(map);
     reply.setHeader(new Header(STATUS, message.getHeader().getSession()));

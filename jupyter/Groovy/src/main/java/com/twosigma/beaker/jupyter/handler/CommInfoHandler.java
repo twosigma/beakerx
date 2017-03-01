@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
-import org.lappsgrid.jupyter.groovy.GroovyKernel;
+import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
@@ -39,7 +39,7 @@ import com.twosigma.beaker.jupyter.Comm;
  */
 public class CommInfoHandler extends AbstractHandler<Message> {
 
-  public CommInfoHandler(GroovyKernel kernel) {
+  public CommInfoHandler(GroovyKernelFunctionality kernel) {
     super(kernel);
     logger = LoggerFactory.getLogger(CommInfoHandler.class);
   }

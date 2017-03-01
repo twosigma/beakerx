@@ -16,19 +16,30 @@
 package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.zeromq.ZMQ;
 
-import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observer;
 import java.util.Set;
 
 public class GroovyKernelTest implements GroovyKernelFunctionality {
 
   private List<Message> messages = new ArrayList<>();
+  private String id;
+  private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
+
+  public GroovyKernelTest() {
+    this("groovyKernelTestId1");
+  }
+
+  public GroovyKernelTest(String id) {
+    this.id = id;
+  }
 
   @Override
   public void publish(Message message) throws NoSuchAlgorithmException {
@@ -46,23 +57,21 @@ public class GroovyKernelTest implements GroovyKernelFunctionality {
   }
 
   @Override
-  public Message getParentMessage() {
-    return null;
+  public String getId() {
+    return this.id;
   }
 
   @Override
-  public void send(Message message) throws NoSuchAlgorithmException {
-
+  public Observer getExecutionResultSender() {
+    return this.executionResultSender;
   }
 
   @Override
   public void send(ZMQ.Socket socket, Message message) throws NoSuchAlgorithmException {
-
   }
 
   @Override
-  public boolean isCommPresent(String string) {
-    return false;
+  public void send(Message message) throws NoSuchAlgorithmException {
   }
 
   @Override
@@ -71,13 +80,17 @@ public class GroovyKernelTest implements GroovyKernelFunctionality {
   }
 
   @Override
+  public boolean isCommPresent(String string) {
+    return false;
+  }
+
+  @Override
   public Set<String> getCommHashSet() {
     return null;
   }
 
   @Override
-  public Serializable getId() {
-    return "";
+  public void setShellOptions(String usString, String usString1, String o) {
   }
 
   public List<Message> getMessages() {

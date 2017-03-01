@@ -16,7 +16,7 @@
 package com.twosigma.beaker.jupyter;
 
 import com.twosigma.beaker.groovy.GroovyDefaultVariables;
-import org.lappsgrid.jupyter.groovy.GroovyKernel;
+import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
@@ -46,7 +46,7 @@ public class CommKernelControlGetDefaultShellHandler extends AbstractHandler<Mes
 
   private static final Logger logger = LoggerFactory.getLogger(CommKernelControlGetDefaultShellHandler.class);
 
-  public CommKernelControlGetDefaultShellHandler(GroovyKernel kernel) {
+  public CommKernelControlGetDefaultShellHandler(GroovyKernelFunctionality kernel) {
     super(kernel);
   }
 

@@ -2,7 +2,7 @@ package org.lappsgrid.jupyter.groovy.handler;
 
 import java.security.NoSuchAlgorithmException;
 
-import org.lappsgrid.jupyter.groovy.GroovyKernel;
+import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.Logger;
 import org.zeromq.ZMQ;
@@ -16,9 +16,9 @@ import org.zeromq.ZMQ;
 public abstract class AbstractHandler <T> implements IHandler<T> {
 
   protected Logger logger;
-  protected GroovyKernel kernel;
+  protected GroovyKernelFunctionality kernel;
 
-  public AbstractHandler(GroovyKernel kernel) {
+  public AbstractHandler(GroovyKernelFunctionality kernel) {
     this.kernel = kernel;
   }
 

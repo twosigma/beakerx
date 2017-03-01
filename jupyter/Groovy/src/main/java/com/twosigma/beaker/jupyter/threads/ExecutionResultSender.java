@@ -6,7 +6,7 @@ import java.util.Observer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import org.lappsgrid.jupyter.groovy.GroovyKernel;
+import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +21,9 @@ public class ExecutionResultSender implements Observer{
   protected MessageCreator handler = null;
   protected final ConcurrentLinkedQueue<MessageHolder> messageQueue = new ConcurrentLinkedQueue<>();
   protected AbstractThread workingThread = null;
-  protected GroovyKernel kernel;
+  protected GroovyKernelFunctionality kernel;
   
-  public ExecutionResultSender(GroovyKernel kernel) {
+  public ExecutionResultSender(GroovyKernelFunctionality kernel) {
     this.kernel = kernel;
     handler = new MessageCreator(kernel);
   }

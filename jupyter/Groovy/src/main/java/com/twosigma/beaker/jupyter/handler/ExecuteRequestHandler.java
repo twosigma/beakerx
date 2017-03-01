@@ -16,21 +16,22 @@
 package com.twosigma.beaker.jupyter.handler;
 
 
-import com.twosigma.beaker.groovy.evaluator.GroovyEvaluatorManager;
-import com.twosigma.beaker.jupyter.msg.MessageCreator;
-import org.lappsgrid.jupyter.groovy.GroovyKernel;
-import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
-import org.lappsgrid.jupyter.groovy.msg.Header;
-import org.lappsgrid.jupyter.groovy.msg.Message;
-import org.slf4j.LoggerFactory;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.EXECUTE_INPUT;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STATUS;
+import com.twosigma.beaker.jupyter.commands.MagicCommand;
 
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.EXECUTE_INPUT;
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STATUS;
+import com.twosigma.beaker.groovy.evaluator.GroovyEvaluatorManager;
+import org.lappsgrid.jupyter.groovy.GroovyKernel;
+import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
+import org.lappsgrid.jupyter.groovy.msg.Header;
+import org.lappsgrid.jupyter.groovy.msg.Message;
+import org.slf4j.LoggerFactory;
 
 /**
  * Does the actual work of executing user code.
@@ -41,13 +42,13 @@ public class ExecuteRequestHandler extends AbstractHandler<Message> {
 
   protected int executionCount;
   protected GroovyEvaluatorManager evaluatorManager;
-  private MessageCreator messageCreator;
+  private MagicCommand magicCommand;
 
   public ExecuteRequestHandler(GroovyKernel kernel, GroovyEvaluatorManager evaluatorManager) {
     super(kernel);
     logger = LoggerFactory.getLogger(this.getClass());
     this.evaluatorManager = evaluatorManager;
-    messageCreator = new MessageCreator(kernel);
+    magicCommand = new MagicCommand(kernel);
     executionCount = 0;
   }
 
@@ -78,11 +79,16 @@ public class ExecuteRequestHandler extends AbstractHandler<Message> {
     publish(reply);
 
     ++executionCount;
-    if (!code.startsWith("%%")) {
+    if (!code.startsWith("%")) {
       evaluatorManager.executeCode(code, message, executionCount);
       // execution response in ExecuteResultHandler
     } else {
-      messageCreator.createMagicMessage(code, executionCount,message);
+      String command = new Scanner(code).next();
+      if (magicCommand.commands.containsKey(command)) {
+        magicCommand.commands.get(command).process(code, message, executionCount);
+      } else {
+        magicCommand.processUnknownCommand(command, message, executionCount);
+      }
     }
   }
 

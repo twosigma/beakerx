@@ -69,7 +69,7 @@ public class MessageCreator {
     return reply;
   }
 
-  private Message buildMessage(Message message, String code, int executionCount) {
+  public Message buildMessage(Message message, String code, int executionCount) {
     Message reply = initMessage(EXECUTE_RESULT,message);
     reply.setContent(new HashMap<String, Serializable>());
     reply.getContent().put("execution_count", executionCount);
@@ -104,12 +104,23 @@ public class MessageCreator {
     return reply;
   }
 
-  public synchronized void createMagicMessage(String code, int executionCount, Message message) throws NoSuchAlgorithmException {
+  public Message buildOutputMessage(Message message, String text, boolean hasError) {
+    Message reply = initMessage(STREAM, message);
+    reply.setContent(new HashMap<String, Serializable>());
+    reply.getContent().put("name", hasError ? "stderr" : "stdout");
+    reply.getContent().put("text", text);
+    logger.info("Console output:", "Error: " + hasError, text);
+    return reply;
+  }
+
+  public synchronized void createMagicMessage(Message reply, int executionCount, Message message)  {
     List<MessageHolder> ret = new ArrayList<>();
-    code = code.startsWith("%%javascript") ? "<html><script>" + code.replace("%%javascript", "") + "</script></html>" : "<html>" + code.replace("%%html", "") + "</html>";
-    logger.info("Execution result is: " + (code == null ? "null" : "") + "HTML");
-    kernel.publish(buildMessage(message,code,executionCount));
-    kernel.publish(buildReply(message, executionCount,ret));
+    try {
+      kernel.publish(reply);
+      kernel.publish(buildReply(message, executionCount, ret));
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+    }
   }
 
   public synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo){
@@ -120,12 +131,7 @@ public class MessageCreator {
     if(seo.getConsoleOutput() != null && !seo.getConsoleOutput().isEmpty()){
       while(!seo.getConsoleOutput().isEmpty()){
         ConsoleOutput co = seo.getConsoleOutput().poll(); //FIFO : peek to see, poll -- removes the data
-        Message reply = initMessage(STREAM, message);
-        reply.setContent(new HashMap<String, Serializable>());
-        reply.getContent().put("name", co.isError() ? "stderr" : "stdout");
-        reply.getContent().put("text", co.getText());
-        logger.info("Console output:", "Error: " + co.isError(), co.getText());
-        ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, reply));
+        ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, buildOutputMessage(message,co.getText(),co.isError())));
       }
     }else if(EvaluationStatus.FINISHED == seo.getStatus() || EvaluationStatus.ERROR == seo.getStatus()){
 

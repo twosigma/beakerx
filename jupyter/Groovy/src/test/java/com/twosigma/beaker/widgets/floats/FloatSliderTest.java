@@ -47,7 +47,7 @@ public class FloatSliderTest {
     //when
     new FloatSlider();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), FloatSlider.MODEL_NAME_VALUE, FloatSlider.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), FloatSlider.MODEL_NAME_VALUE, FloatSlider.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -132,7 +132,7 @@ public class FloatSliderTest {
 
   private FloatSlider floatSlider() throws NoSuchAlgorithmException {
     FloatSlider widget = new FloatSlider();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
 

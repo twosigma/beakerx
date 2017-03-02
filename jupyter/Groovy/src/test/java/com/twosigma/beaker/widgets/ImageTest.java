@@ -46,7 +46,7 @@ public class ImageTest {
     //when
     new Image();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), Image.MODEL_NAME_VALUE, Image.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Image.MODEL_NAME_VALUE, Image.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -91,7 +91,7 @@ public class ImageTest {
 
   private Image image() throws NoSuchAlgorithmException {
     Image widget = new Image();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
 

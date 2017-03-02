@@ -47,7 +47,7 @@ public class CheckboxTest {
     //when
     new Checkbox();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), Checkbox.MODEL_NAME_VALUE, Checkbox.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Checkbox.MODEL_NAME_VALUE, Checkbox.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -62,7 +62,7 @@ public class CheckboxTest {
 
   private Checkbox checkbox() throws NoSuchAlgorithmException {
     Checkbox widget = new Checkbox();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
 

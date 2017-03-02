@@ -15,13 +15,14 @@
  */
 package com.twosigma.beaker.groovy.evaluator;
 
+import java.io.IOException;
+
+import com.twosigma.beaker.groovy.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 public class GroovyEvaluatorManager {
   
@@ -36,19 +37,24 @@ public class GroovyEvaluatorManager {
     groovyEvaluator.startWorker();
   }
 
-  public synchronized void setShellOptions(String cp, String in, String od){
+  public synchronized void setShellOptions(String cp, String in, String od) {
     try {
       groovyEvaluator.setShellOptions(cp, in, od);
     } catch (IOException e) {
       logger.error("Error while setting Shell Options", e);
     }
+    groovyEvaluator.startWorker();
   }
 
-  public synchronized void killAllThreads(){
+  public AutocompleteResult autocomplete(String code, int caretPosition) {
+    return groovyEvaluator.autocomplete(code,caretPosition);
+  }
+
+  public synchronized void killAllThreads() {
     groovyEvaluator.killAllThreads();
   }
 
-  public synchronized void executeCode(String code, Message message, int executionCount){
+  public synchronized void executeCode(String code, Message message, int executionCount) {
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     seo.setJupyterMessage(message);
     seo.setExecutionCount(executionCount);

@@ -23,18 +23,18 @@ import com.twosigma.beaker.easyform.EasyFormComponent;
 import com.twosigma.beaker.easyform.EasyFormObjectManager;
 import com.twosigma.beaker.easyform.formitem.ButtonComponent;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
+//import javax.ws.rs.FormParam;
+//import javax.ws.rs.GET;
+//import javax.ws.rs.POST;
+//import javax.ws.rs.Path;
+//import javax.ws.rs.PathParam;
+//import javax.ws.rs.Produces;
+//import javax.ws.rs.QueryParam;
+//import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
-@Path("groovysh/easyform")
-@Produces(MediaType.APPLICATION_JSON)
+//@Path("groovysh/easyform")
+//@Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class EasyFormRest {
 
@@ -45,52 +45,52 @@ public class EasyFormRest {
     _easyFormObjectManager = easyFormObjectManager;
   }
 
-  @GET
-  @Path("get")
-  public String get(@QueryParam("id") String id,
-                    @QueryParam("key") String key)
-      throws Exception {
-    EasyForm easyForm = _easyFormObjectManager.getForm(id);
-    if (easyForm == null) {
-      return null;
-    }
-    return easyForm.get(key);
-  }
-
-  @POST
-  @Path("set")
-  public void set(@FormParam("id") String id,
-                    @FormParam("key") String key,
-                    @FormParam("value") String value)
-      throws IOException, InterruptedException {
-    EasyForm easyForm = _easyFormObjectManager.getForm(id);
-    if (easyForm == null || !easyForm.isReady()) {
-      return;
-    }
-    easyForm.put(key, value);
-  }
-
-  @POST
-  @Path("setReady/{id}")
-  public void setReady(@PathParam("id") String id) throws IOException, InterruptedException {
-    EasyForm easyForm = _easyFormObjectManager.getForm(id);
-    if (easyForm == null) {
-      return;
-    }
-    easyForm.setReady();
-  }
-
-  @POST
-  @Path("actionPerformed/{id}")
-  public void setReady(@PathParam("id") String id,
-                       @FormParam("label") String label) throws IOException, InterruptedException {
-    EasyForm easyForm = _easyFormObjectManager.getForm(id);
-    if (easyForm == null) {
-      return;
-    }
-    EasyFormComponent buttonComponent = easyForm.getComponentMap().get(label);
-    if (buttonComponent != null && buttonComponent instanceof ButtonComponent) {
-      ((ButtonComponent) buttonComponent).fireActionPerformed();
-    }
-  }
+//  @GET
+//  @Path("get")
+//  public String get(@QueryParam("id") String id,
+//                    @QueryParam("key") String key)
+//      throws Exception {
+//    EasyForm easyForm = _easyFormObjectManager.getForm(id);
+//    if (easyForm == null) {
+//      return null;
+//    }
+//    return easyForm.get(key);
+//  }
+//
+//  @POST
+//  @Path("set")
+//  public void set(@FormParam("id") String id,
+//                    @FormParam("key") String key,
+//                    @FormParam("value") String value)
+//      throws IOException, InterruptedException {
+//    EasyForm easyForm = _easyFormObjectManager.getForm(id);
+//    if (easyForm == null || !easyForm.isReady()) {
+//      return;
+//    }
+//    easyForm.put(key, value);
+//  }
+//
+//  @POST
+//  @Path("setReady/{id}")
+//  public void setReady(@PathParam("id") String id) throws IOException, InterruptedException {
+//    EasyForm easyForm = _easyFormObjectManager.getForm(id);
+//    if (easyForm == null) {
+//      return;
+//    }
+//    easyForm.setReady();
+//  }
+//
+//  @POST
+//  @Path("actionPerformed/{id}")
+//  public void setReady(@PathParam("id") String id,
+//                       @FormParam("label") String label) throws IOException, InterruptedException {
+//    EasyForm easyForm = _easyFormObjectManager.getForm(id);
+//    if (easyForm == null) {
+//      return;
+//    }
+//    EasyFormComponent buttonComponent = easyForm.getComponentMap().get(label);
+//    if (buttonComponent != null && buttonComponent instanceof ButtonComponent) {
+//      ((ButtonComponent) buttonComponent).fireActionPerformed();
+//    }
+//  }
 }

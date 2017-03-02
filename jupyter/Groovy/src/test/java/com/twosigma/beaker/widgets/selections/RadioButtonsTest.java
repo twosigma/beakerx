@@ -47,7 +47,7 @@ public class RadioButtonsTest {
     //when
     new RadioButtons();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), RadioButtons.MODEL_NAME_VALUE, RadioButtons.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), RadioButtons.MODEL_NAME_VALUE, RadioButtons.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -72,7 +72,7 @@ public class RadioButtonsTest {
 
   private RadioButtons radioButtons() throws NoSuchAlgorithmException {
     RadioButtons widget = new RadioButtons();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
 }

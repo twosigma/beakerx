@@ -1,4 +1,3 @@
-
 /*
  *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -14,29 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.chart.histogram;
+package com.twosigma.beaker.groovy.autocomplete;
 
-import com.twosigma.beaker.chart.histogram.Histogram;
-import com.twosigma.beaker.widgets.internal.InternalWidget;
-import com.twosigma.beaker.widgets.internal.InternalWidgetTest;
+import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
-public class HistogramTest extends InternalWidgetTest {
+public class AutocompleteResult {
 
-  @Override
-  public InternalWidget create() throws NoSuchAlgorithmException {
-    return  new Histogram();
+  private List<String> matches;
+  private int startIndex;
+
+  public AutocompleteResult(List<String> matches, int startIndex) {
+    this.matches = matches;
+    this.startIndex = startIndex;
   }
 
-  @Override
-  public String getModelNameValue() {
-    return Histogram.MODEL_NAME_VALUE;
+  public List<String> getMatches() {
+    return matches;
   }
 
-  @Override
-  public String getViewNameValue() {
-    return Histogram.VIEW_NAME_VALUE;
+  public int getStartIndex() {
+    return startIndex;
   }
 
+  public static int getStartIndex(ParserRuleContext ctx) {
+    return ctx.getStop().getStartIndex();
+  }
 }

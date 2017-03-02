@@ -96,7 +96,6 @@ public class SerializeToString {
     internalWidgetMap.put(com.twosigma.beaker.chart.xychart.CombinedPlot.class, new Object());
     internalWidgetMap.put(com.twosigma.beaker.chart.xychart.NanoPlot.class, new Object());
 
-
     serializerMap.put(TableDisplay.class, new TableDisplaySerializer());
     serializerMap.put(Color.class, new ColorSerializer());
     serializerMap.put(XYChart.class, new XYChartSerializer());

@@ -121,15 +121,21 @@ import com.twosigma.beaker.groovy.autocomplete.GroovyParser.WhileStatementContex
 
 public class GroovyAbstractListener implements GroovyParserListener {
   protected List<AutocompleteCandidate> query;
+  private int startIndex;
   
-  protected void addQuery(AutocompleteCandidate c) {
+  protected void addQuery(AutocompleteCandidate c,int startIndex) {
       if(c==null)
           return;
       if (query==null)
           query = new ArrayList<AutocompleteCandidate>();
+      this.startIndex = startIndex;
       query.add(c);
   }
-  
+
+  public int getStartIndex() {
+    return startIndex;
+  }
+
   public List<AutocompleteCandidate> getQuery() { return query; }
 
   @Override

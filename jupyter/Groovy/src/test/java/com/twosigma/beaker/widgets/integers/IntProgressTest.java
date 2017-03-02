@@ -47,7 +47,7 @@ public class IntProgressTest {
     //when
     new IntProgress();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), IntProgress.MODEL_NAME_VALUE, IntProgress.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), IntProgress.MODEL_NAME_VALUE, IntProgress.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -62,7 +62,7 @@ public class IntProgressTest {
 
   private IntProgress intProgress() throws NoSuchAlgorithmException {
     IntProgress progress = new IntProgress();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return progress;
   }
 

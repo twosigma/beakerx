@@ -47,7 +47,7 @@ public class TextareaTest {
     //when
     new Textarea();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), Textarea.MODEL_NAME_VALUE, Textarea.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Textarea.MODEL_NAME_VALUE, Textarea.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -62,7 +62,7 @@ public class TextareaTest {
 
   private Textarea textarea() throws NoSuchAlgorithmException {
     Textarea widget = new Textarea();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
 

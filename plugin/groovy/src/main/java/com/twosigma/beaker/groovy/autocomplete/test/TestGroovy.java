@@ -133,7 +133,7 @@ class TestGroovy {
 			
 		GroovyAutocomplete jac = new GroovyAutocomplete(cps);
 				
-		List<String> ret = jac.doAutocomplete(f, cursor, null);
+		List<String> ret = jac.doAutocomplete(f, cursor, null).getMatches();
 		for(String s : ret ) {
 			res += s + " ";
 		}

@@ -47,7 +47,7 @@ public class TextTest {
     //when
     new Text();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), Text.MODEL_NAME_VALUE, Text.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Text.MODEL_NAME_VALUE, Text.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -62,7 +62,7 @@ public class TextTest {
 
   private Text text() throws NoSuchAlgorithmException {
     Text widget = new Text();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
 }

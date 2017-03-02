@@ -29,7 +29,8 @@ import java.util.Set;
 
 public class GroovyKernelTest implements GroovyKernelFunctionality {
 
-  private List<Message> messages = new ArrayList<>();
+  private List<Message> publishedMessages = new ArrayList<>();
+  private List<Message> sentMessages = new ArrayList<>();
   private String id;
   private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
 
@@ -43,8 +44,23 @@ public class GroovyKernelTest implements GroovyKernelFunctionality {
 
   @Override
   public void publish(Message message) throws NoSuchAlgorithmException {
-    this.messages.add(message);
+    this.publishedMessages.add(message);
   }
+
+  @Override
+  public void send(Message message) throws NoSuchAlgorithmException {
+    this.sentMessages.add(message);
+  }
+
+  @Override
+  public String getId() {
+    return this.id;
+  }
+
+  public Observer getExecutionResultSender() {
+    return this.executionResultSender;
+  }
+
 
   @Override
   public void addComm(String commId, Comm comm) {
@@ -57,21 +73,8 @@ public class GroovyKernelTest implements GroovyKernelFunctionality {
   }
 
   @Override
-  public String getId() {
-    return this.id;
-  }
-
-  @Override
-  public Observer getExecutionResultSender() {
-    return this.executionResultSender;
-  }
-
-  @Override
   public void send(ZMQ.Socket socket, Message message) throws NoSuchAlgorithmException {
-  }
 
-  @Override
-  public void send(Message message) throws NoSuchAlgorithmException {
   }
 
   @Override
@@ -89,16 +92,23 @@ public class GroovyKernelTest implements GroovyKernelFunctionality {
     return null;
   }
 
-  @Override
   public void setShellOptions(String usString, String usString1, String o) {
+
   }
 
-  public List<Message> getMessages() {
-    return messages;
+  public List<Message> getPublishedMessages() {
+    return publishedMessages;
   }
 
-  public void clearMessages(){
-    this.messages = new ArrayList<>();
+  public List<Message> getSentMessages() {
+    return sentMessages;
+  }
+
+  public void clearPublishedMessages(){
+    this.publishedMessages = new ArrayList<>();
+  }
+  public void clearSentMessages(){
+    this.sentMessages = new ArrayList<>();
   }
 
   public void cancelExecution(){}

@@ -47,7 +47,7 @@ public class ToggleButtonTest {
     //when
     new ToggleButton();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), ToggleButton.MODEL_NAME_VALUE, ToggleButton.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), ToggleButton.MODEL_NAME_VALUE, ToggleButton.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -73,7 +73,7 @@ public class ToggleButtonTest {
 
   private ToggleButton toggleButton() throws NoSuchAlgorithmException {
     ToggleButton widget = new ToggleButton();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
 }

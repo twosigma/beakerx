@@ -16,11 +16,9 @@
 
 package com.twosigma.beaker.easyform.serializer;
 
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.easyform.EasyFormComponent;
-import com.twosigma.beaker.easyform.EasyFormObjectManager;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -30,13 +28,10 @@ import java.io.IOException;
 @Singleton
 public class EasyFormSerializer extends JsonSerializer<EasyForm> {
 
-  private Provider<EasyFormObjectManager> _easyFormObjectManagerProvider;
-
   @Override
   public void serialize(final EasyForm easyForm,
                         final JsonGenerator jgen,
                         final SerializerProvider serializerProvider) throws IOException {
-    EasyFormObjectManager easyFormObjectManager = _easyFormObjectManagerProvider.get();
     synchronized (easyForm) {
       jgen.writeStartObject();
       jgen.writeObjectField("update_time", System.currentTimeMillis());

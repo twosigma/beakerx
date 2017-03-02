@@ -48,7 +48,7 @@ public class HTMLTest {
     //when
     new HTML();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), HTML.MODEL_NAME_VALUE, HTML.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), HTML.MODEL_NAME_VALUE, HTML.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -63,7 +63,7 @@ public class HTMLTest {
 
   private HTML html() throws NoSuchAlgorithmException {
     HTML widget = new HTML();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
 

@@ -48,7 +48,7 @@ public class IntSliderTest {
     //when
     new IntSlider();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), IntSlider.MODEL_NAME_VALUE, IntSlider.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), IntSlider.MODEL_NAME_VALUE, IntSlider.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -173,7 +173,7 @@ public class IntSliderTest {
 
   private IntSlider intSlider() throws NoSuchAlgorithmException {
     IntSlider intSlider = new IntSlider();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return intSlider;
   }
 

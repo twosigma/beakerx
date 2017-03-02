@@ -65,9 +65,9 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
         String [] txtv = (st+"X").split("\\.");
         txtv[txtv.length-1] = "";
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
-        addQuery(c);
+        addQuery(c, AutocompleteResult.getStartIndex(ctx));
         c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
-        addQuery(c);
+        addQuery(c, AutocompleteResult.getStartIndex(ctx));
       } else {
         // looking to autocomplete a package name
         String st = ctx.getText();
@@ -76,9 +76,9 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
         if(GroovyCompletionTypes.debug) logger.info("wants to finish package name for {}", st);
         String [] txtv = st.split("\\.");
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
-        addQuery(c);
+        addQuery(c, AutocompleteResult.getStartIndex(ctx));
         c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
-        addQuery(c);
+        addQuery(c, AutocompleteResult.getStartIndex(ctx));
       }
     } else {
       // add this import declaration

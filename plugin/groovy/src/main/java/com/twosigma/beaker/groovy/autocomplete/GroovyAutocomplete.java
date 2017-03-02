@@ -311,7 +311,7 @@ public class GroovyAutocomplete {
 
   protected ClassUtils createClassUtils(ClassLoader l) { return new GroovyClassUtils(cps, l); }
 
-  public List<String> doAutocomplete(String txt, int cur, ClassLoader l) {
+  public AutocompleteResult doAutocomplete(String txt, int cur, ClassLoader l) {
     ClassUtils cu = createClassUtils(l);
     setup(cu, registry);
     registry.clearForType(GroovyCompletionTypes.CUSTOM_TYPE);
@@ -376,7 +376,20 @@ public class GroovyAutocomplete {
     // this shows the GUI
     if(GroovyCompletionTypes.debug)
       t.inspect(parser);
-    return ret;
+    return new AutocompleteResult(ret, getStartIndex(extractor,extractor2,extractor3));
+  }
+
+  private int getStartIndex(GroovyImportDeclarationCompletion extractor, GroovyNameBuilder extractor2, GroovyNodeCompletion extractor3) {
+    if (extractor.getQuery()!=null){
+      return extractor.getStartIndex();
+    }
+    if (extractor2.getQuery()!=null){
+      return extractor2.getStartIndex();
+    }
+    if (extractor3.getQuery()!=null){
+      return extractor3.getStartIndex();
+    }
+    return 0;
   }
 
 }

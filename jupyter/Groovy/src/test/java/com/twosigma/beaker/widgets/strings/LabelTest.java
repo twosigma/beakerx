@@ -47,7 +47,7 @@ public class LabelTest {
     //when
     new Label();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), Label.MODEL_NAME_VALUE, Label.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Label.MODEL_NAME_VALUE, Label.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -62,7 +62,7 @@ public class LabelTest {
 
   private Label label() throws NoSuchAlgorithmException {
     Label widget = new Label();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
 

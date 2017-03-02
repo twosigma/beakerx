@@ -47,7 +47,7 @@ public class DropdownTest {
     //when
     new Dropdown();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), Dropdown.MODEL_NAME_VALUE, Dropdown.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Dropdown.MODEL_NAME_VALUE, Dropdown.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -72,7 +72,7 @@ public class DropdownTest {
 
   private Dropdown dropdown() throws NoSuchAlgorithmException {
     Dropdown widget = new Dropdown();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
 

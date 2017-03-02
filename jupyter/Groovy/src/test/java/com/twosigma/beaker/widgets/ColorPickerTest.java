@@ -46,7 +46,7 @@ public class ColorPickerTest {
     //when
     new ColorPicker();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), ColorPicker.MODEL_NAME_VALUE, ColorPicker.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), ColorPicker.MODEL_NAME_VALUE, ColorPicker.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -72,7 +72,7 @@ public class ColorPickerTest {
 
   private ColorPicker colorPicker() throws NoSuchAlgorithmException {
     ColorPicker widget = new ColorPicker();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
 

@@ -47,7 +47,7 @@ public class SelectTest {
     //when
     new Select();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), Select.MODEL_NAME_VALUE, Select.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Select.MODEL_NAME_VALUE, Select.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -72,7 +72,7 @@ public class SelectTest {
 
   private Select select() throws NoSuchAlgorithmException {
     Select widget = new Select();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
 

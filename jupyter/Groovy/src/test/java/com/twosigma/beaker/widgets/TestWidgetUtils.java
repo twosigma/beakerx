@@ -59,8 +59,8 @@ public class TestWidgetUtils {
   }
 
   public static <T> T getValueForProperty(GroovyKernelTest groovyKernel, String propertyName, Class<T> clazz) {
-    assertThat(groovyKernel.getMessages().size()).isEqualTo(1);
-    Message message = groovyKernel.getMessages().get(0);
+    assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(1);
+    Message message = groovyKernel.getPublishedMessages().get(0);
     return getValueForProperty(message, propertyName, clazz);
   }
 

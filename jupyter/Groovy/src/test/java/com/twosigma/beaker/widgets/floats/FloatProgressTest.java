@@ -47,7 +47,7 @@ public class FloatProgressTest {
     //when
     new FloatProgress();
     //then
-    verifyOpenCommMsg(groovyKernel.getMessages(), FloatProgress.MODEL_NAME_VALUE, FloatProgress.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), FloatProgress.MODEL_NAME_VALUE, FloatProgress.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -62,7 +62,7 @@ public class FloatProgressTest {
 
   private FloatProgress floatProgress() throws NoSuchAlgorithmException {
     FloatProgress progress = new FloatProgress();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     return progress;
   }
 

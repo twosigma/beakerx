@@ -51,7 +51,7 @@ public class DisplayWidgetTest {
   public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     IntSlider widget = new IntSlider();
-    groovyKernel.clearMessages();
+    groovyKernel.clearPublishedMessages();
     //when
     DisplayWidget.display(widget);
     //then
@@ -59,8 +59,8 @@ public class DisplayWidgetTest {
   }
 
   private void verifyCommDisplayMsg(IntSlider widget) {
-    assertThat(groovyKernel.getMessages().size()).isEqualTo(1);
-    Message message = groovyKernel.getMessages().get(0);
+    assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(1);
+    Message message = groovyKernel.getPublishedMessages().get(0);
     assertThat(message.getHeader().getType()).isEqualTo(COMM_MSG.getName());
     Map data = getData(message);
     assertThat(data.get(METHOD)).isEqualTo(DISPLAY);

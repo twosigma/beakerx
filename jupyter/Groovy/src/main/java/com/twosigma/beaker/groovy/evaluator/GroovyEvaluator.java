@@ -48,6 +48,26 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.twosigma.beaker.groovy.autocomplete.AutocompleteResult;
+import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
+import com.twosigma.beaker.groovy.autocomplete.GroovyClasspathScanner;
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import org.codehaus.groovy.runtime.StackTraceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.twosigma.beaker.groovy.NamespaceClient;
+
+import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.Script;
+
 public class GroovyEvaluator {
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyEvaluator.class.getName());
@@ -63,19 +83,19 @@ public class GroovyEvaluator {
   protected String outDirDefault;
   protected String outDirInput;
   protected String outDir;
-  //protected GroovyClasspathScanner cps;
+  protected GroovyClasspathScanner cps;
   protected boolean exit;
   protected boolean updateLoader;
   protected final BeakerCellExecutor executor;
   protected workerThread myWorker;
-  //protected GroovyAutocomplete gac;
+  protected GroovyAutocomplete gac;
   protected String currentClassPath;
   protected String currentImports;
 
   public static boolean LOCAL_DEV = false;
-  
-  public static String GROOVY_JAR_PATH = "GROOVY_JAR_PATH"; 
-  
+
+  public static String GROOVY_JAR_PATH = "GROOVY_JAR_PATH";
+
   private Binding scriptBinding = null;
   
   protected class jobDescriptor {
@@ -99,10 +119,10 @@ public class GroovyEvaluator {
   public GroovyEvaluator(String id, String sId) {
     shellId = id;
     sessionId = sId;
-    //cps = new GroovyClasspathScanner();
-    //gac = createGroovyAutocomplete(cps);
     classPath = new ArrayList<>();
     imports = new ArrayList<>();
+    cps = new GroovyClasspathScanner();
+    gac = createGroovyAutocomplete(cps);
     exit = false;
     updateLoader = false;
     currentClassPath = "";
@@ -121,10 +141,9 @@ public class GroovyEvaluator {
     myWorker.start();
   }
 
-/*  protected GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c)
-  {
+  protected GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c){
     return new GroovyAutocomplete(c);
-  }*/
+  }
 
   public String getShellId() { return shellId; }
 
@@ -146,11 +165,11 @@ public class GroovyEvaluator {
     }
     cpp += File.pathSeparator;
     cpp += System.getProperty("java.class.path");
-    //cps = new GroovyClasspathScanner(cpp);
-    //gac = createGroovyAutocomplete(cps);
-    
-    //for(String st : imports)
-    //  gac.addImport(st);
+    cps = new GroovyClasspathScanner(cpp);
+    gac = createGroovyAutocomplete(cps);
+
+    for(String st : imports)
+      gac.addImport(st);
 
     updateLoader=true;
     syncObject.release();
@@ -328,9 +347,9 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
     syncObject.release();
   }
 
-/*  public List<String> autocomplete(String code, int caretPosition) {    
-    return gac.doAutocomplete(code, caretPosition,loader);
-  }*/
+  public AutocompleteResult autocomplete(String code, int caretPosition) {
+     return gac.doAutocomplete(code, caretPosition, loader);
+  }
 
   protected DynamicClassLoaderSimple loader = null;
 
@@ -506,5 +525,5 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
     }
 
   }
-  
+
 }

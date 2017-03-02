@@ -15,59 +15,37 @@
  */
 package com.twosigma.beaker.widgets.internal;
 
-
-import com.twosigma.beaker.jupyter.GroovyKernelManager;
-import com.twosigma.beaker.widgets.GroovyKernelTest;
-import org.junit.After;
-import org.junit.Before;
+import com.twosigma.beaker.widgets.InternalWidgetsTestRunner;
 import org.junit.Test;
-
-import java.security.NoSuchAlgorithmException;
 
 import static com.twosigma.beaker.widgets.InternalWidgetsTestUtils.verifyOpenCommMsgInternalWidgets;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beaker.widgets.internal.InternalWidget.MODEL;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class InternalWidgetTest {
+public class InternalWidgetTest {
 
-  private GroovyKernelTest groovyKernel;
-
-  @Before
-  public void setUp() throws Exception {
-    groovyKernel = new GroovyKernelTest();
-    GroovyKernelManager.register(groovyKernel);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    GroovyKernelManager.register(null);
+  @Test
+  public void shouldSendCommOpenWhenCreateForAllClassesWhichImplementInternalWidgetInterface() throws Exception {
+    new InternalWidgetsTestRunner().test((clazz, groovyKernel) -> {
+      //given
+      //when
+      InternalWidget widget = clazz.newInstance();
+      //then
+      verifyOpenCommMsgInternalWidgets(groovyKernel.getPublishedMessages(), widget.getModelNameValue(), widget.getViewNameValue());
+    });
   }
 
   @Test
-  public void shouldSendCommOpenWhenCreate() throws Exception {
-    //given
-    //when
-    create();
-    //then
-    verifyOpenCommMsgInternalWidgets(groovyKernel.getMessages(), getModelNameValue(), getViewNameValue());
+  public void shouldSendCommMsgForSendModelForAllClassesWhichImplementInternalWidgetInterface() throws Exception {
+    new InternalWidgetsTestRunner().test((clazz, groovyKernel) -> {
+      InternalWidget widget = clazz.newInstance();
+      //when
+      widget.sendModel();
+      //then
+      String valueForProperty = getValueForProperty(groovyKernel.getPublishedMessages().get(1), MODEL, String.class);
+      assertThat(valueForProperty).isNotNull();
+    });
   }
 
-  @Test
-  public void shouldSendCommMsgForSendModel() throws Exception {
-    //given
-    InternalWidget internalWidget = create();
-    groovyKernel.clearMessages();
-    //when
-    internalWidget.sendModel();
-    //then
-    String valueForProperty = getValueForProperty(groovyKernel, MODEL, String.class);
-    assertThat(valueForProperty).isNotNull();
-  }
-
-  public abstract InternalWidget create() throws NoSuchAlgorithmException;
-
-  public abstract String getModelNameValue();
-
-  public abstract String getViewNameValue();
 }

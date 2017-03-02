@@ -85,6 +85,17 @@ public class TableDisplay extends ObservableTableDisplay implements InternalWidg
     return this.comm;
   }
 
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
+  }
+
+
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
@@ -98,8 +109,8 @@ public class TableDisplay extends ObservableTableDisplay implements InternalWidg
     this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
       @Override
       public void addContent(HashMap<String, Serializable> content) {
-        content.put(InternalWidgetUtils.MODEL_NAME, MODEL_NAME_VALUE);
-        content.put(InternalWidgetUtils.VIEW_NAME, VIEW_NAME_VALUE);
+        content.put(InternalWidgetUtils.MODEL_NAME, getModelNameValue());
+        content.put(InternalWidgetUtils.VIEW_NAME, getViewNameValue());
       }
     });
   }

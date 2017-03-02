@@ -45,10 +45,20 @@ public class CategoryPlot extends AbstractChart implements InternalWidget, Inter
     this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
       @Override
       public void addContent(HashMap<String, Serializable> content) {
-        content.put(InternalWidgetUtils.MODEL_NAME, MODEL_NAME_VALUE);
-        content.put(InternalWidgetUtils.VIEW_NAME, VIEW_NAME_VALUE);
+        content.put(InternalWidgetUtils.MODEL_NAME, getModelNameValue());
+        content.put(InternalWidgetUtils.VIEW_NAME, getViewNameValue());
       }
     });
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 
   @Override

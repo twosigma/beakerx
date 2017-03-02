@@ -15,16 +15,16 @@
  */
 package com.twosigma.beaker.groovy.module;
 
-import com.twosigma.beaker.groovy.rest.ChartRest;
-import com.twosigma.beaker.groovy.rest.EasyFormRest;
-import com.twosigma.beaker.groovy.rest.GroovyShellRest;
-import com.twosigma.beaker.groovy.rest.TableDisplayRest;
-import com.twosigma.beaker.jvm.rest.ReadyRest;
+//import com.twosigma.beaker.groovy.rest.ChartRest;
+//import com.twosigma.beaker.groovy.rest.EasyFormRest;
+//import com.twosigma.beaker.groovy.rest.GroovyShellRest;
+//import com.twosigma.beaker.groovy.rest.TableDisplayRest;
+//import com.twosigma.beaker.jvm.rest.ReadyRest;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
-import java.util.HashMap;
-import org.cometd.server.JacksonJSONContextServer;
+//import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
+//import java.util.HashMap;
+//import org.cometd.server.JacksonJSONContextServer;
 
 /**
  * The module for configuring servlets, REST binding.
@@ -36,24 +36,24 @@ public class URLConfigModule extends ServletModule {
   protected void configureServlets() {
 
     bind(GuiceContainer.class);
-    serve("/rest/*").with(GuiceContainer.class, new HashMap<String, String>() {
-      {
-        // put config that is normally in web.xml here
-      }
-    });
-
-    bind(GuiceCometdServlet.class);
-    serve("/cometd/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
-      {
-        put("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
-      }
-    });
-
-    // REST binding
-    bind(GroovyShellRest.class);
-    bind(ReadyRest.class);
-    bind(EasyFormRest.class);
-    bind(ChartRest.class);
-    bind(TableDisplayRest.class);
+//    serve("/rest/*").with(GuiceContainer.class, new HashMap<String, String>() {
+//      {
+//        // put config that is normally in web.xml here
+//      }
+//    });
+//
+//    bind(GuiceCometdServlet.class);
+//    serve("/cometd/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
+//      {
+//        put("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
+//      }
+//    });
+//
+//    // REST binding
+//    bind(GroovyShellRest.class);
+//    bind(ReadyRest.class);
+//    bind(EasyFormRest.class);
+//    bind(ChartRest.class);
+//    bind(TableDisplayRest.class);
   }
 }

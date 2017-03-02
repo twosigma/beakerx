@@ -16,66 +16,55 @@
 package com.twosigma.beaker;
 
 import com.twosigma.beaker.jupyter.Comm;
-import com.twosigma.beaker.jupyter.GroovyKernelManager;
-import com.twosigma.beaker.widgets.GroovyKernelTest;
+import com.twosigma.beaker.widgets.InternalWidgetsTestRunner;
 import com.twosigma.beaker.widgets.TestWidgetUtils;
-import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
 
-import java.security.NoSuchAlgorithmException;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
+
+import org.lappsgrid.jupyter.groovy.msg.Message;
+
 import java.util.Map;
 
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
 import static com.twosigma.beaker.widgets.DisplayWidget.DISPLAY;
-import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beaker.widgets.internal.InternalWidget.MODEL;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class SerializeToStringInternalWidgetsTest {
 
-  private GroovyKernelTest groovyKernel;
-
-  @Before
-  public void setUp() throws Exception {
-    groovyKernel = new GroovyKernelTest();
-    GroovyKernelManager.register(groovyKernel);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    GroovyKernelManager.register(null);
-  }
-
   @Test
-  public void shouldSendModelMsg() throws Exception {
-    //give
-    InternalWidget widget = createInternalWidget();
-    //when
-    SerializeToString.doit(widget);
-    //then
-    assertThat(groovyKernel.getMessages().size()).isEqualTo(2);
-    String model = getValueForProperty(groovyKernel.getMessages().get(0), MODEL, String.class);
-    assertThat(model).isNotNull();
+  public void shouldSend3MessagesForAllClassesWhichImplementInternalWidgetInterface() throws Exception {
+    new InternalWidgetsTestRunner().test((clazz, groovyKernel) -> {
+      //give
+      InternalWidget internalWidget = clazz.newInstance();
+      //when
+      SerializeToString.doit(internalWidget);
+      //then
+      assertEquals("Should be 3 messages for " + clazz, groovyKernel.getPublishedMessages().size(), 3);
+      assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(3);
+      verifyOpenMsg(groovyKernel.getPublishedMessages().get(0), clazz);
+      verifyModelMsg(groovyKernel.getPublishedMessages().get(1), clazz);
+      verifyDisplayMsg(groovyKernel.getPublishedMessages().get(2), clazz);
+    });
   }
 
-  @Test
-  public void shouldSendDisplayMsg() throws Exception {
-    //give
-    InternalWidget widget = createInternalWidget();
-    //when
-    SerializeToString.doit(widget);
-    //then
-    assertThat(groovyKernel.getMessages().size()).isEqualTo(2);
-    Map data = TestWidgetUtils.getData(groovyKernel.getMessages().get(1));
-    assertThat(data.get(Comm.METHOD)).isEqualTo(DISPLAY);
+  private void verifyOpenMsg(Message message, Class clazz) {
+    assertEquals("Type is not equal to COMM_OPEN for  " + clazz, message.getHeader().getType(), COMM_OPEN.getName());
   }
 
-  private InternalWidget createInternalWidget() throws NoSuchAlgorithmException {
-    Plot plot = new Plot();
-    groovyKernel.clearMessages();
-    return plot;
+  private void verifyDisplayMsg(Message message, Class clazz) {
+    Map data = TestWidgetUtils.getData(message);
+    assertEquals("Method is not equal to DISPLAY for  " + clazz, data.get(Comm.METHOD), DISPLAY);
   }
+
+  private void verifyModelMsg(Message message, Class clazz) {
+    String model = getValueForProperty(message, MODEL, String.class);
+    Assert.assertNotNull("Model should not be null for  " + clazz, model);
+  }
+
 
 }

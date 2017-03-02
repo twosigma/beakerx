@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.jupyter;
 
-import com.twosigma.beaker.groovy.GroovyDefaultVariables;
+import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.msg.Header;
@@ -30,33 +30,39 @@ import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
 import static com.twosigma.beaker.jupyter.Comm.DATA;
-import static com.twosigma.beaker.jupyter.CommKernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beaker.jupyter.CommKernelControlSetShellHandler.IMPORTS;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;
 
 /**
  * @author konst
  */
-public class CommKernelControlGetDefaultShellHandler extends AbstractHandler<Message> {
+public class CommKernelControlInterrupt extends AbstractHandler<Message> {
 
-  public static final String GET_DEFAULT_SHELL = "get_default_shell";
+  public static final String KERNEL_INTERRUPT = "kernel_interrupt";
   public static final String KERNEL_CONTROL_RESPONSE = "kernel_control_response";
+  public static final String TRUE = "true";
+  public static final String FALSE = "false";
 
-  private static final Logger logger = LoggerFactory.getLogger(CommKernelControlGetDefaultShellHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(CommKernelControlInterrupt.class);
 
-  public CommKernelControlGetDefaultShellHandler(GroovyKernelFunctionality kernel) {
+  public CommKernelControlInterrupt(GroovyKernelFunctionality kernel) {
     super(kernel);
   }
 
   @Override
   public void handle(Message message) throws NoSuchAlgorithmException {
-    logger.info("Handing comm message content");
+    logger.info("Handing comm message content (Interrupt)");
     if (message != null) {
       Map<String, Serializable> commMap = message.getContent();
       HashMap<String, Boolean> messageData = (HashMap<String, Boolean>) commMap.get(DATA);
-      Object okObject = messageData != null ? messageData.get(GET_DEFAULT_SHELL) : null;
+      Object okObject = messageData != null ? messageData.get(KERNEL_INTERRUPT) : null;
       if (okObject != null && okObject instanceof Boolean && ((Boolean) okObject).booleanValue()) {
-        Message replay = createReplyMessage(message, true);
+        boolean ok = GroovyKernel.isWindows();
+        if(ok){
+          kernel.cancelExecution();
+        }else{
+          logger.info("Cell execution interrupt not performed, done by SIGINT");
+        }
+        Message replay = createReplyMessage(message, ok);
         publish(replay);
       }
     } else {
@@ -74,10 +80,9 @@ public class CommKernelControlGetDefaultShellHandler extends AbstractHandler<Mes
       map.put(COMM_ID, getString(commMap, COMM_ID));
       HashMap<String, Serializable> data = new HashMap<>();
       if (ok) {
-        HashMap<String, String[]> shell = new HashMap<>();
-        shell.put(IMPORTS, GroovyDefaultVariables.IMPORTS);
-        shell.put(CLASSPATH, GroovyDefaultVariables.CLASS_PATH);
-        data.put(KERNEL_CONTROL_RESPONSE, shell);
+        HashMap<String, String> body = new HashMap<>();
+        body.put(KERNEL_INTERRUPT, ok ? TRUE : FALSE);
+        data.put(KERNEL_CONTROL_RESPONSE, body);
         logger.info("Response OK");
       }
       map.put(DATA, data);

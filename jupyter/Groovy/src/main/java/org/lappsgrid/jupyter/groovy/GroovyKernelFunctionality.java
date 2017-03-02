@@ -20,8 +20,8 @@ import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.zeromq.ZMQ;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.Set;
 import java.util.Observer;
+import java.util.Set;
 
 public interface GroovyKernelFunctionality {
 
@@ -46,4 +46,6 @@ public interface GroovyKernelFunctionality {
   Set<String> getCommHashSet();
 
   void setShellOptions(String usString, String usString1, String o);
+
+  void cancelExecution();
 }

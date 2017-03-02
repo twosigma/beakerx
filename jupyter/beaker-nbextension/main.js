@@ -36,6 +36,19 @@ define([
       sendNotebookMetadataToKernel();
   });
 
+  Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
+    if(!Jupyter.notebook.metadata.kernelspec.language.toUpperCase().includes('PYTHON')){
+      var kernel = Jupyter.notebook.kernel;
+      var kernel_control_target_name = "kernel.control.channel";
+      var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
+      var data = {};
+      data.kernel_interrupt = true;
+      comm.send(data);
+      comm.close();
+    }
+  });
+
+
 
   var load_ipython_extension = function() {
   };

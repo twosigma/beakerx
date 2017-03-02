@@ -18,6 +18,7 @@ package com.twosigma.beaker.jupyter.handler;
 
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.jupyter.CommKernelControlGetDefaultShellHandler;
+import com.twosigma.beaker.jupyter.CommKernelControlInterrupt;
 import com.twosigma.beaker.jupyter.CommKernelControlSetShellHandler;
 import com.twosigma.beaker.jupyter.CommNamesEnum;
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
@@ -76,6 +77,7 @@ public class CommOpenHandler extends AbstractHandler<Message> {
       if(CommNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName().equalsIgnoreCase(newComm.getTargetName())){
         newComm.addMsgCallbackList(new CommKernelControlSetShellHandler(kernel));
         newComm.addMsgCallbackList(new CommKernelControlGetDefaultShellHandler(kernel));
+        newComm.addMsgCallbackList(new CommKernelControlInterrupt(kernel));
       }
       kernel.addComm(newComm.getCommId(), newComm);
     }

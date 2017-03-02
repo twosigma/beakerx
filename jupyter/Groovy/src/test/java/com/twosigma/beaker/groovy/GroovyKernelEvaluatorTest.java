@@ -85,4 +85,6 @@ public class GroovyKernelEvaluatorTest implements GroovyKernelFunctionality {
   public void clearMessages() {
     this.messages = new ArrayList<>();
   }
+
+  public void cancelExecution(){}
 }

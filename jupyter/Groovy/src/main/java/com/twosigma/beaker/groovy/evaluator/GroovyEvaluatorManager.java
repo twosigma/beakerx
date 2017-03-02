@@ -43,7 +43,11 @@ public class GroovyEvaluatorManager {
       logger.error("Error while setting Shell Options", e);
     }
   }
-  
+
+  public synchronized void killAllThreads(){
+    groovyEvaluator.killAllThreads();
+  }
+
   public synchronized void executeCode(String code, Message message, int executionCount){
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     seo.setJupyterMessage(message);

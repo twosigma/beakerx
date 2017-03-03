@@ -393,11 +393,17 @@ define([
   };
   PlotAxis.prototype.getString = function(pct, span) {
     if (this.axisType != "time" && this.axisType != "nanotime") {
+      var standardResult = 0;
       if (this.axisType === "log") {
-        return "" + Math.pow(this.axisBase, this.getValue(pct)).toFixed(this.axisFixed);
+        standardResult = Math.pow(this.axisBase, this.getValue(pct));
       } else {
-        return "" + this.getValue(pct).toFixed(this.axisFixed);
+        standardResult = this.getValue(pct);
       }
+
+      return standardResult.toLocaleString(undefined, {
+        minimumFractionDigits: this.axisFixed,
+        maximumFractionDigits: this.axisFixed
+      });
     }
     var val = this.getValue(pct);
 

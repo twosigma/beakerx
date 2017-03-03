@@ -27,8 +27,8 @@ import java.util.*;
 public class CsvPlotReader {
   private static String TIME_COLUMN = "time";
 
-  public List<Map<String, Object>> convert(Table table) throws IOException {
-    List<Map<String, Object>> result = new ArrayList<>();
+  public List<Map<?, ?>> convert(Table table) {
+    List<Map<?, ?>> result = new ArrayList<>();
     for (int r = 0; r < table.rowCount(); r++) {
       Map<String, Object> entry = new HashMap<>();
       for (int c = 0; c < table.columnCount(); c++) {
@@ -49,7 +49,7 @@ public class CsvPlotReader {
     return Table.createFromCsv(fileName);
   }
 
-  public List<Map<String, Object>> readAsList(String fileName) throws IOException {
+  public List<Map<?, ?>> readAsList(String fileName) throws IOException {
     return convert(Table.createFromCsv(fileName));
   }
 

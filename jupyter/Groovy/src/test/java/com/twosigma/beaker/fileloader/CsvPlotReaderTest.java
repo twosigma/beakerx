@@ -44,7 +44,7 @@ public class CsvPlotReaderTest {
   @Test
   public void shouldReturnDataAsListForPlot() throws Exception {
     //when
-    List<Map<String, Object>> values =
+    List<Map<?, ?>> values =
         new CsvPlotReader().readAsList(getOsAppropriatePath("tableRowsTest.csv"));
     //then
     assertThat(values.get(2).get("m3")).isEqualTo(8.0f);

@@ -15,7 +15,7 @@
  */
 package org.lappsgrid.jupyter.groovy.handler;
 
-import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
+import com.twosigma.beaker.widgets.GroovyKernelTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.lappsgrid.jupyter.groovy.msg.Message;

@@ -13,21 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.lappsgrid.jupyter.groovy;
+package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
-import it.unimi.dsi.fastutil.chars.CharSets;
 import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.zeromq.ZMQ;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Observer;
 import java.util.Set;
 
@@ -37,8 +33,6 @@ public class GroovyKernelTest implements GroovyKernelFunctionality {
   private List<Message> sentMessages = new ArrayList<>();
   private String id;
   private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
-  private Boolean setShellOptions;
-  private Map<String, Comm> commMap = new HashMap<>();;
 
   public GroovyKernelTest() {
     this("groovyKernelTestId1");
@@ -69,17 +63,13 @@ public class GroovyKernelTest implements GroovyKernelFunctionality {
 
 
   @Override
-  public void addComm(String hash, Comm commObject) {
-    if(!isCommPresent(hash)){
-      commMap.put(hash, commObject);
-    }
+  public void addComm(String commId, Comm comm) {
+
   }
 
   @Override
-  public void removeComm(String hash) {
-    if(hash != null && isCommPresent(hash)){
-      commMap.remove(hash);
-    }
+  public void removeComm(String commId) {
+
   }
 
   @Override
@@ -88,26 +78,22 @@ public class GroovyKernelTest implements GroovyKernelFunctionality {
   }
 
   @Override
-  public Comm getComm(String hash) {
-    return commMap.get(hash != null ? hash : "");
+  public Comm getComm(String string) {
+    return null;
   }
 
   @Override
-  public boolean isCommPresent(String hash) {
-    return commMap.containsKey(hash);
+  public boolean isCommPresent(String string) {
+    return false;
   }
 
   @Override
   public Set<String> getCommHashSet() {
-    return commMap.keySet();
+    return null;
   }
 
   public void setShellOptions(String usString, String usString1, String o) {
-    setShellOptions = Boolean.TRUE;
-  }
 
-  public Boolean isSetShellOptions() {
-    return setShellOptions;
   }
 
   public List<Message> getPublishedMessages() {

@@ -17,7 +17,6 @@ package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.jupyter.GroovyKernelManager;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
-import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
 import org.reflections.Reflections;
 
 import java.util.Set;

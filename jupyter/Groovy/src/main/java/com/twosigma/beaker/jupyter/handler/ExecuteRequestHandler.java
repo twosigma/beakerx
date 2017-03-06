@@ -28,7 +28,6 @@ import java.util.Scanner;
 
 import com.twosigma.beaker.groovy.evaluator.GroovyEvaluatorManager;
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
-import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
@@ -45,7 +44,7 @@ public class ExecuteRequestHandler extends AbstractHandler<Message> {
   protected GroovyEvaluatorManager evaluatorManager;
   private MagicCommand magicCommand;
 
-  public ExecuteRequestHandler(GroovyKernelFunctionality kernel, GroovyEvaluatorManager evaluatorManager) {
+  public ExecuteRequestHandler(GroovyKernel kernel, GroovyEvaluatorManager evaluatorManager) {
     super(kernel);
     logger = LoggerFactory.getLogger(this.getClass());
     this.evaluatorManager = evaluatorManager;

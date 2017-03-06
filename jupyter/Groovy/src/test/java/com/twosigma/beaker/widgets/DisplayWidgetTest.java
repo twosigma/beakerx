@@ -20,7 +20,6 @@ import com.twosigma.beaker.widgets.integers.IntSlider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 
 import static com.twosigma.beaker.jupyter.Comm.COMM_ID;

@@ -16,7 +16,7 @@
 package com.twosigma.beaker.widgets.floats;
 
 import com.twosigma.beaker.jupyter.GroovyKernelManager;
-import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
+import com.twosigma.beaker.widgets.GroovyKernelTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

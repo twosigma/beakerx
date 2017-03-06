@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
+import org.lappsgrid.jupyter.groovy.GroovyKernel;
 import org.lappsgrid.jupyter.groovy.handler.AbstractHandler;
 import org.lappsgrid.jupyter.groovy.msg.Header;
 import org.lappsgrid.jupyter.groovy.msg.Message;
@@ -34,7 +34,7 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 /** @author konst */
 public class CommCloseHandler extends AbstractHandler<Message> {
 
-  public CommCloseHandler(GroovyKernelFunctionality kernel) {
+  public CommCloseHandler(GroovyKernel kernel) {
     super(kernel);
     logger = LoggerFactory.getLogger(CommCloseHandler.class);
   }

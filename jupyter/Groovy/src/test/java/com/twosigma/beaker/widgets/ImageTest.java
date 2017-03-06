@@ -19,7 +19,6 @@ import com.twosigma.beaker.jupyter.GroovyKernelManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
 
 import java.security.NoSuchAlgorithmException;
 

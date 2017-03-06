@@ -16,22 +16,22 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
+import com.twosigma.beaker.jupyter.GroovyKernelJupyterTest;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 
 public class CommInfoHandlerTest {
 
-  private GroovyKernelTest groovyKernel;
+  private GroovyKernelJupyterTest groovyKernel;
   private CommInfoHandler commInfoHandler;
   private Message message;
 
   @Before
   public void setUp() {
-    groovyKernel = new GroovyKernelTest();
+    groovyKernel = new GroovyKernelJupyterTest();
     commInfoHandler = new CommInfoHandler(groovyKernel);
     message = JupyterHandlerTest.initInfoMessage();
   }
@@ -41,7 +41,7 @@ public class CommInfoHandlerTest {
     //when
     commInfoHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
   }
 
   @Test
@@ -49,8 +49,8 @@ public class CommInfoHandlerTest {
     //when
     commInfoHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSentMessages().get(0);
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getType())
         .isEqualTo(JupyterMessages.COMM_INFO_REPLY.getName());
   }
@@ -62,8 +62,8 @@ public class CommInfoHandlerTest {
     //when
     commInfoHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSentMessages().get(0);
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
@@ -74,8 +74,8 @@ public class CommInfoHandlerTest {
     //when
     commInfoHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSentMessages().get(0);
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
     Assertions.assertThat(sendMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
@@ -86,8 +86,8 @@ public class CommInfoHandlerTest {
     //when
     commInfoHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSentMessages().get(0);
+    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSendMessages().get(0);
     Assertions.assertThat(new String(sendMessage.getIdentities().get(0)))
         .isEqualTo(expectedIdentities);
   }

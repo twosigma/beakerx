@@ -18,7 +18,6 @@ package com.twosigma.beaker.jupyter.commands;
 
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import org.lappsgrid.jupyter.groovy.GroovyKernel;
-import org.lappsgrid.jupyter.groovy.GroovyKernelFunctionality;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 
 import java.io.BufferedReader;
@@ -37,7 +36,7 @@ public class MagicCommand {
   public Map<String, MagicCommandFunctionality> commands = new HashMap<String, MagicCommandFunctionality>();
   private MessageCreator messageCreator;
 
-  public MagicCommand(GroovyKernelFunctionality kernel) {
+  public MagicCommand(GroovyKernel kernel) {
     messageCreator = new MessageCreator(kernel);
     buildCommands();
   }

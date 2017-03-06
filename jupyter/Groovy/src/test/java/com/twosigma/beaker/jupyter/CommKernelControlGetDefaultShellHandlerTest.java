@@ -19,22 +19,22 @@ package com.twosigma.beaker.jupyter;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CommKernelControlGetDefaultShellHandlerTest {
 
   private CommKernelControlGetDefaultShellHandler commHandler;
-  private GroovyKernelTest groovyKernel;
+  private GroovyKernelJupyterTest groovyKernel;
   private Message message;
 
   @Before
   public void setUp() {
-    groovyKernel = new GroovyKernelTest();
+    groovyKernel = new GroovyKernelJupyterTest();
     commHandler = new CommKernelControlGetDefaultShellHandler(groovyKernel);
     message = new Message();
   }
@@ -46,7 +46,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
   }
 
   @Test
@@ -58,30 +58,30 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isEmpty();
+    Assertions.assertThat(groovyKernel.getPublishMessages()).isEmpty();
   }
 
   @Test
-  public void handleGetDefaultShellMessage_publishedMessageHasCommId() throws Exception {
+  public void handleGetDefaultShellMessage_sentMessageHasCommId() throws Exception {
     //given
     initMessageData(message);
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishMessages().get(0);
     Assertions.assertThat((String) sendMessage.getContent().get(Comm.COMM_ID)).isNotEmpty();
   }
 
   @Test
-  public void handleGetDefaultShellMessage_publishedMessageHasKernelControlResponse() throws Exception {
+  public void handleGetDefaultShellMessage_sentMessageHasKernelControlResponse() throws Exception {
     //given
     initMessageData(message);
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishMessages().get(0);
     Assertions.assertThat((Map) sendMessage.getContent().get(Comm.DATA)).isNotEmpty();
     Map<String, Serializable> shell = (Map) sendMessage.getContent().get(Comm.DATA);
     Assertions.assertThat(
@@ -90,31 +90,32 @@ public class CommKernelControlGetDefaultShellHandlerTest {
   }
 
   @Test
-  public void handleGetDefaultShellMessage_publishedMessageHasImportsData() throws Exception {
+  public void handleGetDefaultShellMessage_sentMessageHasImportsData() throws Exception {
     //given
     initMessageData(message);
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishMessages().get(0);
     Map<String, Serializable> response =
         (Map)
             ((Map) sendMessage.getContent().get(Comm.DATA))
                 .get(CommKernelControlGetDefaultShellHandler.KERNEL_CONTROL_RESPONSE);
     Assertions.assertThat(response.containsKey(CommKernelControlSetShellHandler.IMPORTS)).isTrue();
-    Assertions.assertThat(response.get(CommKernelControlSetShellHandler.IMPORTS)).isNotNull();
+    Assertions.assertThat((List) response.get(CommKernelControlSetShellHandler.IMPORTS))
+        .isNotEmpty();
   }
 
   @Test
-  public void handleGetDefaultShellMessage_publishedMessageHasClasspathData() throws Exception {
+  public void handleGetDefaultShellMessage_sentMessageHasClasspathData() throws Exception {
     //given
     initMessageData(message);
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishMessages().get(0);
     Map<String, Serializable> response =
         (Map)
             ((Map) sendMessage.getContent().get(Comm.DATA))

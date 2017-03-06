@@ -24,7 +24,7 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.heatmap.HeatMap;
 import com.twosigma.beaker.jupyter.GroovyKernelManager;
-import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
+import com.twosigma.beaker.widgets.GroovyKernelTest;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

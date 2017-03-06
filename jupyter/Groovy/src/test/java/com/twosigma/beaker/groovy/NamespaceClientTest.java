@@ -21,7 +21,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
 
 import java.util.Map;
 
@@ -29,12 +28,12 @@ public class NamespaceClientTest {
 
   private static String SESSION_ID = "sessionId";
   private NamespaceClient namespaceClient;
-  private GroovyKernelTest groovyKernel;
+  private GroovyKernelEvaluatorTest groovyKernel;
 
   @Before
   public void setUp() {
     namespaceClient = NamespaceClient.getBeaker(SESSION_ID);
-    groovyKernel = new GroovyKernelTest();
+    groovyKernel = new GroovyKernelEvaluatorTest();
     GroovyKernelManager.register(groovyKernel);
   }
 
@@ -88,8 +87,8 @@ public class NamespaceClientTest {
     //when
     curNamespaceClient.set("x", new Integer(10));
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Map data = (Map) groovyKernel.getPublishedMessages().get(1).getContent().get("data");
+    Assertions.assertThat(groovyKernel.getMessages()).isNotEmpty();
+    Map data = (Map) groovyKernel.getMessages().get(1).getContent().get("data");
     Assertions.assertThat(data.get("name")).isEqualTo("x");
     Assertions.assertThat(data.get("value")).isEqualTo("10");
     Assertions.assertThat(data.get("sync")).isEqualTo(Boolean.TRUE);
@@ -102,6 +101,6 @@ public class NamespaceClientTest {
     //when
     curNamespaceClient.set("x", new Integer(10));
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Assertions.assertThat(groovyKernel.getMessages()).isNotEmpty();
   }
 }

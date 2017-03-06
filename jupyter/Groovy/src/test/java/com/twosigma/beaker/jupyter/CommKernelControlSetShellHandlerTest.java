@@ -19,6 +19,7 @@ package com.twosigma.beaker.jupyter;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
+import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 
 import java.io.Serializable;
@@ -30,12 +31,12 @@ import java.util.Map;
 public class CommKernelControlSetShellHandlerTest {
 
   private CommKernelControlSetShellHandler commHandler;
-  private GroovyKernelJupyterTest groovyKernel;
+  private GroovyKernelTest groovyKernel;
   private Message message;
 
   @Before
   public void setUp() {
-    groovyKernel = new GroovyKernelJupyterTest();
+    groovyKernel = new GroovyKernelTest();
     commHandler = new CommKernelControlSetShellHandler(groovyKernel);
     message = new Message();
   }
@@ -47,7 +48,7 @@ public class CommKernelControlSetShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
   }
 
   @Test
@@ -59,7 +60,7 @@ public class CommKernelControlSetShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isEmpty();
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isEmpty();
   }
 
   @Test

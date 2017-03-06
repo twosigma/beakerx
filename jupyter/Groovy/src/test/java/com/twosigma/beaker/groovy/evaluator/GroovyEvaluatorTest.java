@@ -16,15 +16,14 @@
 
 package com.twosigma.beaker.groovy.evaluator;
 
-import com.twosigma.beaker.groovy.GroovyKernelEvaluatorTest;
 import com.twosigma.beaker.groovy.NamespaceClient;
 import com.twosigma.beaker.jupyter.GroovyKernelManager;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
 
 import java.io.IOException;
 
@@ -35,7 +34,7 @@ import static com.twosigma.beaker.groovy.GroovyDefaultVariables.getUsString;
 public class GroovyEvaluatorTest {
 
   static GroovyClassLoader groovyClassLoader;
-  static GroovyKernelEvaluatorTest groovyKernel;
+  static GroovyKernelTest groovyKernel;
   static Binding scriptBinding;
 
   @BeforeClass
@@ -45,7 +44,7 @@ public class GroovyEvaluatorTest {
     groovyClassLoader = groovyEvaluator.newEvaluator();
     scriptBinding = new Binding();
     scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));
-    groovyKernel = new GroovyKernelEvaluatorTest();
+    groovyKernel = new GroovyKernelTest();
     GroovyKernelManager.register(groovyKernel);
   }
 

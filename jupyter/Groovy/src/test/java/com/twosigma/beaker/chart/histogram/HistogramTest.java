@@ -18,7 +18,7 @@ package com.twosigma.beaker.chart.histogram;
 
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.jupyter.GroovyKernelManager;
-import com.twosigma.beaker.widgets.GroovyKernelTest;
+import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

@@ -17,7 +17,7 @@ package com.twosigma.beaker.jupyter.msg;
 
 import com.twosigma.beaker.jupyter.SocketEnum;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.widgets.GroovyKernelTest;
+import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
 import com.twosigma.beaker.widgets.TestWidgetUtils;
 import org.junit.Before;
 import org.junit.Test;

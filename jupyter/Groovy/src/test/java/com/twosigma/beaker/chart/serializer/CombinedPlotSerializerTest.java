@@ -24,7 +24,7 @@ import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.chart.xychart.SimpleTimePlot;
 import com.twosigma.beaker.jupyter.GroovyKernelManager;
-import com.twosigma.beaker.widgets.GroovyKernelTest;
+import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

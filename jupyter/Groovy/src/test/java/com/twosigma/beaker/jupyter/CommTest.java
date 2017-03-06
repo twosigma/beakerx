@@ -21,6 +21,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.lappsgrid.jupyter.groovy.GroovyKernelTest;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 
 import java.io.Serializable;
@@ -30,12 +31,12 @@ import java.util.Map;
 
 public class CommTest {
 
-  private GroovyKernelJupyterTest groovyKernel;
+  private GroovyKernelTest groovyKernel;
   private Comm comm;
 
   @Before
   public void setUp() {
-    groovyKernel = new GroovyKernelJupyterTest();
+    groovyKernel = new GroovyKernelTest();
     GroovyKernelManager.register(groovyKernel);
     comm = new Comm("targetName");
   }
@@ -50,8 +51,8 @@ public class CommTest {
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Assertions.assertThat(groovyKernel.getPublishMessages().get(0)).isNotNull();
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Assertions.assertThat(groovyKernel.getPublishedMessages().get(0)).isNotNull();
   }
 
   @Test
@@ -63,56 +64,56 @@ public class CommTest {
   }
 
   @Test
-  public void commOpen_sentMessageHasTypeIsCommOpen() throws NoSuchAlgorithmException {
+  public void commOpen_publishedMessageHasTypeIsCommOpen() throws NoSuchAlgorithmException {
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getType())
         .isEqualTo(JupyterMessages.COMM_OPEN.getName());
   }
 
   @Test
-  public void commOpen_sentMessageHasCommId() throws NoSuchAlgorithmException {
+  public void commOpen_publishedMessageHasCommId() throws NoSuchAlgorithmException {
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
     Assertions.assertThat((String) sendMessage.getContent().get(Comm.COMM_ID)).isNotEmpty();
   }
 
   @Test
-  public void commOpen_sentMessageHasTargetName() throws NoSuchAlgorithmException {
+  public void commOpen_publishedMessageHasTargetName() throws NoSuchAlgorithmException {
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
     Assertions.assertThat((String) sendMessage.getContent().get(Comm.TARGET_NAME)).isNotEmpty();
   }
 
   @Test
-  public void commOpen_sentMessageHasData() throws NoSuchAlgorithmException {
+  public void commOpen_publishedMessageHasData() throws NoSuchAlgorithmException {
     initCommData(comm);
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
     Assertions.assertThat((Map) sendMessage.getContent().get(Comm.DATA)).isNotEmpty();
   }
 
   @Test
-  public void commOpen_sentMessageHasTargetModule() throws NoSuchAlgorithmException {
+  public void commOpen_publishedMessageHasTargetModule() throws NoSuchAlgorithmException {
     //given
     comm.setTargetModule("targetModuleName");
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
     Assertions.assertThat((String) sendMessage.getContent().get(Comm.TARGET_MODULE)).isNotEmpty();
   }
 
@@ -121,8 +122,8 @@ public class CommTest {
     //when
     comm.close();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Assertions.assertThat(groovyKernel.getPublishMessages().get(0)).isNotNull();
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Assertions.assertThat(groovyKernel.getPublishedMessages().get(0)).isNotNull();
   }
 
   @Test
@@ -134,24 +135,24 @@ public class CommTest {
   }
 
   @Test
-  public void commClose_sentMessageHasTypeIsCommClose() throws NoSuchAlgorithmException {
+  public void commClose_publishedMessageHasTypeIsCommClose() throws NoSuchAlgorithmException {
     //when
     comm.close();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getType())
         .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
   }
 
   @Test
-  public void commClose_sentMessageHasEmptyData() throws NoSuchAlgorithmException {
+  public void commClose_publishedMessageHasEmptyData() throws NoSuchAlgorithmException {
     initCommData(comm);
     //when
     comm.close();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
     Assertions.assertThat((Map) sendMessage.getContent().get(Comm.DATA)).isEmpty();
   }
 
@@ -160,39 +161,39 @@ public class CommTest {
     //when
     comm.send();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Assertions.assertThat(groovyKernel.getPublishMessages().get(0)).isNotNull();
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Assertions.assertThat(groovyKernel.getPublishedMessages().get(0)).isNotNull();
   }
 
   @Test
-  public void commSend_sentMessageHasTypeIsCommClose() throws NoSuchAlgorithmException {
+  public void commSend_publishedMessageHasTypeIsCommClose() throws NoSuchAlgorithmException {
     //when
     comm.send();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getType())
         .isEqualTo(JupyterMessages.COMM_MSG.getName());
   }
 
   @Test
-  public void commSend_sentMessageHasCommId() throws NoSuchAlgorithmException {
+  public void commSend_publishedMessageHasCommId() throws NoSuchAlgorithmException {
     //when
     comm.send();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
     Assertions.assertThat((String) sendMessage.getContent().get(Comm.COMM_ID)).isNotEmpty();
   }
 
   @Test
-  public void commClose_sentMessageHasData() throws NoSuchAlgorithmException {
+  public void commSend_publishedMessageHasData() throws NoSuchAlgorithmException {
     initCommData(comm);
     //when
     comm.send();
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishMessages().get(0);
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
     Assertions.assertThat((Map) sendMessage.getContent().get(Comm.DATA)).isNotEmpty();
   }
 

@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class ColorPicker extends DOMWidget {
@@ -28,7 +27,7 @@ public class ColorPicker extends DOMWidget {
   private String value = "";
   private Boolean concise = false;
 
-  public ColorPicker() throws NoSuchAlgorithmException {
+  public ColorPicker() {
     super();
     init();
   }

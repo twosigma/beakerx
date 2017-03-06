@@ -16,6 +16,7 @@
 package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 
 import java.io.Serializable;
@@ -23,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.beaker.widgets.DisplayWidget.DISPLAY;
+import static com.twosigma.beaker.widgets.DisplayWidget.METHOD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestWidgetUtils {
@@ -34,7 +37,7 @@ public class TestWidgetUtils {
     Message layout = messages.get(0);
     Message widget = messages.get(1);
 
-    assertThat(widget.getHeader().getType()).isEqualTo(COMM_OPEN.getName());
+    verifyTypeMsg(widget,COMM_OPEN);
     Map data = getData(widget);
     assertThat(data.get(Layout.LAYOUT)).isEqualTo(Layout.IPY_MODEL + layout.getContent().get(Comm.COMM_ID));
     assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(Widget.MODEL_MODULE_VALUE);
@@ -42,6 +45,11 @@ public class TestWidgetUtils {
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
+
+  public static void verifyTypeMsg(Message widget, JupyterMessages jupyterMessages) {
+    assertThat(widget.getHeader().getType()).isEqualTo(jupyterMessages.getName());
+  }
+
   @SuppressWarnings("unchecked")
   public static Map getData(Message message) {
     Map<String, Serializable> content = getContent(message);
@@ -69,6 +77,11 @@ public class TestWidgetUtils {
     assertThat(data.get(Comm.METHOD)).isEqualTo(Comm.UPDATE);
     Object o = ((Map) data.get(Comm.STATE)).get(propertyName);
     return clazz.cast(o);
+  }
+
+  public static void verifyDisplayMsg(Message message) {
+    Map data = getData(message);
+    assertThat(data.get(METHOD)).isEqualTo(DISPLAY);
   }
 
 }

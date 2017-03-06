@@ -18,14 +18,13 @@ package com.twosigma.beaker.widgets.floats;
 import com.twosigma.beaker.widgets.DOMWidget;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class FloatWidget extends DOMWidget {
 
   private Double value = 0.0;
 
-  public FloatWidget() throws NoSuchAlgorithmException {
+  public FloatWidget() {
     super();
   }
 

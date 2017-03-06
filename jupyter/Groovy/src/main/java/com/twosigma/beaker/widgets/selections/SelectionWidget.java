@@ -18,7 +18,6 @@ package com.twosigma.beaker.widgets.selections;
 import com.twosigma.beaker.widgets.DOMWidget;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public abstract class SelectionWidget extends DOMWidget {
@@ -28,7 +27,7 @@ public abstract class SelectionWidget extends DOMWidget {
   private String value = "";
   private String[] options = new String[0];
 
-  public SelectionWidget() throws NoSuchAlgorithmException {
+  public SelectionWidget() {
   }
 
   @Override

@@ -23,11 +23,15 @@ public class InternalVariable {
   private static ThreadLocal<SimpleEvaluationObject> threadLocal = new ThreadLocal();
 
   public static Message getParentHeader() {
-    SimpleEvaluationObject simpleEvaluationObject = threadLocal.get();
+    SimpleEvaluationObject simpleEvaluationObject = getSimpleEvaluationObject();
     if (simpleEvaluationObject != null && simpleEvaluationObject.getJupyterMessage() != null) {
       return (Message)simpleEvaluationObject.getJupyterMessage();
     }
     return null;
+  }
+
+  public static SimpleEvaluationObject getSimpleEvaluationObject() {
+    return threadLocal.get();
   }
 
   public static void setValue(SimpleEvaluationObject value) {

@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets.integers;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 
@@ -35,7 +34,7 @@ public class IntSlider extends BoundedIntWidget {
   private Boolean readOut = true;
   private Boolean continuous_update = true;
 
-  public IntSlider() throws NoSuchAlgorithmException {
+  public IntSlider() {
     super();
     init();
   }

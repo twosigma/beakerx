@@ -18,14 +18,13 @@ package com.twosigma.beaker.widgets.bools;
 import com.twosigma.beaker.widgets.DOMWidget;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public abstract class BoolWidget extends DOMWidget {
 
   private Boolean value = false;
 
-  public BoolWidget() throws NoSuchAlgorithmException {
+  public BoolWidget() {
   }
 
   @Override

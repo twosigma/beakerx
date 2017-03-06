@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets.integers;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public abstract class BoundedIntWidget extends IntWidget {
@@ -29,7 +28,7 @@ public abstract class BoundedIntWidget extends IntWidget {
   private Integer max = 100;
   private Integer min = 0;
 
-  public BoundedIntWidget() throws NoSuchAlgorithmException {
+  public BoundedIntWidget() {
     super();
   }
 

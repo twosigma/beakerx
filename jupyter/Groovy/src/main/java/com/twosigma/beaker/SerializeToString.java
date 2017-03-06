@@ -182,7 +182,7 @@ public class SerializeToString {
     return result != null ? result.toString() : null;
   }
 
-  private static void showInternalWidget(Object result) {
+  public static void showInternalWidget(Object result) {
     InternalWidget widget = (InternalWidget) result;
     widget.sendModel();
     DisplayWidget.display(widget);

@@ -17,14 +17,12 @@ package com.twosigma.beaker.groovy;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twosigma.beaker.groovy.evaluator.InternalVariable;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.jupyter.CommNamesEnum;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.beaker.shared.NamespaceBinding;
-import org.lappsgrid.jupyter.groovy.handler.IHandler;
-import org.lappsgrid.jupyter.groovy.msg.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +50,12 @@ public class NamespaceClient {
     objectMapper = new ObjectMapper();
     objectSerializer = new BasicObjectSerializer();
   }
-  
+
+  public synchronized void showProgressUpdate(String message, int progress) {
+    SimpleEvaluationObject seo = InternalVariable.getSimpleEvaluationObject();
+    seo.structuredUpdate(message, progress);
+  }
+
   public SimpleEvaluationObject getOutputObj() {
     return currentCeo;
   }

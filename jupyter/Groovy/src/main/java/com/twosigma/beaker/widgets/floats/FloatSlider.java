@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets.floats;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class FloatSlider extends BoundedFloatWidget {
@@ -34,7 +33,7 @@ public class FloatSlider extends BoundedFloatWidget {
   private Boolean readOut = true;
   private Boolean continuous_update = true;
 
-  public FloatSlider() throws NoSuchAlgorithmException {
+  public FloatSlider() {
     super();
     init();
   }

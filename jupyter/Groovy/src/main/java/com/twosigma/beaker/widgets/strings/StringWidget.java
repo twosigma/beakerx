@@ -15,21 +15,15 @@
  */
 package com.twosigma.beaker.widgets.strings;
 
-import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.widgets.DOMWidget;
-import org.lappsgrid.jupyter.groovy.handler.IHandler;
-import org.lappsgrid.jupyter.groovy.msg.Message;
-
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.Map;
 
 public abstract class StringWidget extends DOMWidget {
 
   private String value = "";
 
-  public StringWidget() throws NoSuchAlgorithmException {
+  public StringWidget() {
   }
 
   @Override

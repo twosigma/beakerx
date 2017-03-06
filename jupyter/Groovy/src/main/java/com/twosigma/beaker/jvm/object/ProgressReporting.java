@@ -13,27 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.strings;
+package com.twosigma.beaker.jvm.object;
 
-import java.io.Serializable;
-import java.util.HashMap;
+import com.twosigma.beaker.widgets.DisplayWidget;
+import com.twosigma.beaker.widgets.integers.IntProgress;
 
-public class Textarea extends StringWidget {
+public class ProgressReporting {
 
-  public static final String VIEW_NAME_VALUE = "TextareaView";
-  public static final String MODEL_NAME_VALUE = "TextareaModel";
+  private IntProgress progressBar;
 
-  public Textarea() {
-    super();
-    init();
+  public void structuredUpdate(String message, int progress) {
+    if (progressBar == null) {
+      progressBar = new IntProgress();
+      DisplayWidget.display(progressBar);
+    }
+    progressBar.setValue(progress);
+    progressBar.setDescription(message);
   }
 
-  @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
-    return content;
+  public void close() {
+    if (progressBar != null) {
+      progressBar.close();
+      progressBar = null;
+    }
   }
-
 }

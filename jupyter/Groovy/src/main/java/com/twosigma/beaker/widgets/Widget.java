@@ -49,15 +49,29 @@ public abstract class Widget implements CommFunctionality {
   public Widget() {
   }
 
-  public void init() throws NoSuchAlgorithmException {
+  public void init() {
     comm = new Comm(Utils.uuid(), CommNamesEnum.JUPYTER_WIDGET);
     openComm(comm);
   }
 
-  private void openComm(final Comm comm) throws NoSuchAlgorithmException {
+  private void openComm(final Comm comm) {
     comm.setData(createContent());
     addValueChangeMsgCallback(comm);
-    comm.open();
+    try {
+      comm.open();
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void close(){
+    if(this.comm!= null) {
+      try {
+        this.comm.close();
+      } catch (NoSuchAlgorithmException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 
   private HashMap<String, Serializable> createContent() {

@@ -31,7 +31,7 @@ public abstract class DOMWidget extends Widget {
 
   private Layout layout;
 
-  public DOMWidget() throws NoSuchAlgorithmException {
+  public DOMWidget() {
     super();
     layout = new Layout();
   }

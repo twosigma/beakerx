@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets.integers;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 
@@ -28,7 +27,7 @@ public class IntProgress extends BoundedIntWidget {
 
   private String orientation = "horizontal";
 
-  public IntProgress() throws NoSuchAlgorithmException {
+  public IntProgress() {
     super();
     init();
   }

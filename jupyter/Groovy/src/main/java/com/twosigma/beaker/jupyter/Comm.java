@@ -157,6 +157,7 @@ public class Comm {
       message.setParentHeader(parentMessage.getHeader());
     }
     HashMap<String, Serializable> map = new HashMap<>();
+    map.put(COMM_ID, getCommId());
     map.put(DATA, new HashMap<>());
     message.setContent(map);
     kernel.removeComm(getCommId());

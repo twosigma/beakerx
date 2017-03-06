@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets.bools;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class ToggleButton extends BoolWidget {
@@ -27,7 +26,7 @@ public class ToggleButton extends BoolWidget {
 
   private String tooltip = "";
 
-  public ToggleButton() throws NoSuchAlgorithmException {
+  public ToggleButton() {
     super();
     init();
   }

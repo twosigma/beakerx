@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class Image extends DOMWidget {
@@ -33,7 +32,7 @@ public class Image extends DOMWidget {
   private String height = "";
   private byte[] value;
 
-  public Image() throws NoSuchAlgorithmException {
+  public Image() {
     super();
     init();
   }

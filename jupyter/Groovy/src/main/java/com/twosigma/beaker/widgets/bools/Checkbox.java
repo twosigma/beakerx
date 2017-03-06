@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets.bools;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class Checkbox extends BoolWidget {
@@ -24,7 +23,7 @@ public class Checkbox extends BoolWidget {
   public static String VIEW_NAME_VALUE = "CheckboxView";
   public static String MODEL_NAME_VALUE = "CheckboxModel";
 
-  public Checkbox() throws NoSuchAlgorithmException {
+  public Checkbox() {
     super();
     init();
   }

@@ -15,29 +15,12 @@
  */
 package com.twosigma.beaker.jvm.object;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.twosigma.beaker.BeakerProgressUpdate;
-import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beaker.jvm.threads.BeakerOutputHandler;
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import com.twosigma.beaker.shared.module.util.ControlCharacterUtils;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +40,8 @@ public class SimpleEvaluationObject extends Observable {
   private BeakerOutputHandler stdout;
   private BeakerOutputHandler stderr;
   private Queue<ConsoleOutput> consoleOutput = new ConcurrentLinkedQueue<ConsoleOutput>();
+  private ProgressReporting progressReporting;
+
 
   public SimpleEvaluationObject(String e) {
     expression = e;
@@ -94,7 +79,6 @@ public class SimpleEvaluationObject extends Observable {
     notifyObservers();
   }
 
-
   public String getExpression() {
     return expression;
   }
@@ -105,6 +89,13 @@ public class SimpleEvaluationObject extends Observable {
 
   public synchronized Object getPayload() {
     return payload;
+  }
+
+  public void structuredUpdate(String message, int progress) {
+    if(progressReporting ==null){
+      progressReporting = new ProgressReporting();
+    }
+    progressReporting.structuredUpdate(message,progress);
   }
 
   public static enum EvaluationStatus {
@@ -161,7 +152,15 @@ public class SimpleEvaluationObject extends Observable {
   }
 
   public void clrOutputHandler() {
+    closeProgressUpdater();
     BeakerStdOutErrHandler.clrOutputHandler();
+  }
+
+  private void closeProgressUpdater() {
+    if (progressReporting != null) {
+      progressReporting.close();
+      progressReporting = null;
+    }
   }
 
   //TODO put Message back

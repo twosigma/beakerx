@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets.selections;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class Dropdown extends SelectionWidget {
@@ -24,7 +23,7 @@ public class Dropdown extends SelectionWidget {
   public static final String VIEW_NAME_VALUE = "DropdownView";
   public static final String MODEL_NAME_VALUE = "DropdownModel";
 
-  public Dropdown() throws NoSuchAlgorithmException {
+  public Dropdown() {
     super();
     init();
   }

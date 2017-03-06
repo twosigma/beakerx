@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets.floats;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class FloatProgress extends BoundedFloatWidget{
@@ -27,7 +26,7 @@ public class FloatProgress extends BoundedFloatWidget{
 
   private String orientation = "horizontal";
 
-  public FloatProgress() throws NoSuchAlgorithmException {
+  public FloatProgress() {
     super();
     init();
   }

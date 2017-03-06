@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets.selections;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class RadioButtons extends SelectionWidget {
@@ -24,7 +23,7 @@ public class RadioButtons extends SelectionWidget {
   public static String VIEW_NAME_VALUE = "RadioButtonsView";
   public static String MODEL_NAME_VALUE = "RadioButtonsModel";
 
-  public RadioButtons() throws NoSuchAlgorithmException {
+  public RadioButtons() {
     super();
     init();
   }

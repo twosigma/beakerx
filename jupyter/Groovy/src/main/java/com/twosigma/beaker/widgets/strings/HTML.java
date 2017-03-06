@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets.strings;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class HTML extends  StringWidget{
@@ -24,7 +23,7 @@ public class HTML extends  StringWidget{
   public static final String VIEW_NAME_VALUE = "HTMLView";
   public static final String MODEL_NAME_VALUE = "HTMLModel";
 
-  public HTML() throws NoSuchAlgorithmException {
+  public HTML() {
     super();
     init();
   }

@@ -13,27 +13,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets;
+package com.twosigma.beaker.groovy;
 
+import com.twosigma.beaker.groovy.evaluator.InternalVariable;
 import com.twosigma.beaker.jupyter.GroovyKernelManager;
-import com.twosigma.beaker.widgets.integers.IntSlider;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.widgets.GroovyKernelTest;
+import com.twosigma.beaker.widgets.integers.IntProgress;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.lappsgrid.jupyter.groovy.msg.Message;
 
-import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;
-import static com.twosigma.beaker.widgets.TestWidgetUtils.getContent;
+import java.util.List;
+
+import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyDisplayMsg;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DisplayWidgetTest {
+public class NamespaceClientShowProgressReportingTest {
 
+  private static String SESSION_ID = "sessionId";
+  private NamespaceClient namespaceClient;
   private GroovyKernelTest groovyKernel;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
+    namespaceClient = NamespaceClient.getBeaker(SESSION_ID);
     groovyKernel = new GroovyKernelTest();
     GroovyKernelManager.register(groovyKernel);
   }
@@ -44,21 +52,14 @@ public class DisplayWidgetTest {
   }
 
   @Test
-  public void shouldSendCommOpenWhenCreate() throws Exception {
+  public void updateProgressReporting() throws Exception {
     //given
-    IntSlider widget = new IntSlider();
-    groovyKernel.clearPublishedMessages();
+    InternalVariable.setValue(new SimpleEvaluationObject("code"));
     //when
-    DisplayWidget.display(widget);
+    namespaceClient.showProgressUpdate("msg1", 20);
+    namespaceClient.showProgressUpdate("msg2", 40);
     //then
-    verifyCommDisplayMsg(widget);
+    assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
   }
 
-  private void verifyCommDisplayMsg(IntSlider widget) {
-    assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(1);
-    Message message = groovyKernel.getPublishedMessages().get(0);
-    assertThat(message.getHeader().getType()).isEqualTo(COMM_MSG.getName());
-    verifyDisplayMsg(message);
-    assertThat(getContent(message).get(COMM_ID)).isEqualTo(widget.getComm().getCommId());
-  }
 }

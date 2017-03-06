@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets.strings;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class Text extends StringWidget {
@@ -24,7 +23,7 @@ public class Text extends StringWidget {
   public static final String VIEW_NAME_VALUE = "TextView";
   public static final String MODEL_NAME_VALUE = "TextModel";
 
-  public Text() throws NoSuchAlgorithmException {
+  public Text() {
     super();
     init();
   }

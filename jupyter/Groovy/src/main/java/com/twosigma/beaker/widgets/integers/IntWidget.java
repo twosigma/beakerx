@@ -18,14 +18,13 @@ package com.twosigma.beaker.widgets.integers;
 import com.twosigma.beaker.widgets.DOMWidget;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public abstract class IntWidget extends DOMWidget {
 
   private Integer value = 0;
 
-  public IntWidget() throws NoSuchAlgorithmException {
+  public IntWidget() {
     super();
   }
 

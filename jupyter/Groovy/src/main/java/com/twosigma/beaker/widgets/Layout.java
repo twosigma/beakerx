@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class Layout extends Widget {
@@ -27,7 +26,7 @@ public class Layout extends Widget {
   private String _view_name = "LayoutView";
   private String _model_name = "LayoutModel";
 
-  public Layout() throws NoSuchAlgorithmException {
+  public Layout() {
     super();
     init();
   }

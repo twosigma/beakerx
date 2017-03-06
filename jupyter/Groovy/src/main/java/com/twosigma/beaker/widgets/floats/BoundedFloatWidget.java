@@ -16,7 +16,6 @@
 package com.twosigma.beaker.widgets.floats;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class BoundedFloatWidget extends FloatWidget {
@@ -29,7 +28,7 @@ public class BoundedFloatWidget extends FloatWidget {
   private Double max = 100.0;
   private Double min = 0.0;
 
-  public BoundedFloatWidget() throws NoSuchAlgorithmException {
+  public BoundedFloatWidget() {
     super();
   }
 

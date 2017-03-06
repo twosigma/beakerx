@@ -9,6 +9,10 @@ mainClassName = 'org.lappsgrid.jupyter.groovy.GroovyKernel'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
+configurations {
+  antlr
+}
+
 repositories {
   mavenCentral()
 }
@@ -25,11 +29,28 @@ dependencies {
   compile group: 'com.google.guava', name: 'guava', version: '18.0'
   compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
   compile group: 'com.google.inject', name: 'guice', version: '3.0'
+  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
+  antlr group : 'org.antlr', name :'antlr4', version: '4.5'
 
   testCompile group: 'junit', name: 'junit', version: '4.11'
   testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
   testCompile group: 'org.reflections', name: 'reflections', version: '0.9.10'
 }
+
+task antlr4_groovy_lexer(type: JavaExec) {
+    main = "org.antlr.v4.Tool"
+    workingDir = "src/main/antlr4/"
+    args = ["GroovyLexer.g4", "-o", "../java/com/twosigma/beaker/groovy/autocomplete","-listener", "-no-visitor", "-package", "com.twosigma.beaker.groovy.autocomplete", "-encoding", "UTF-8" ]
+    classpath =  configurations.antlr
+}
+task antlr4_groovy_parser(type: JavaExec) {
+    main = "org.antlr.v4.Tool"
+    workingDir = "src/main/antlr4/"
+    args = ["GroovyParser.g4", "-o", "../java/com/twosigma/beaker/groovy/autocomplete","-listener", "-no-visitor", "-package", "com.twosigma.beaker.groovy.autocomplete", "-encoding", "UTF-8" ]
+    classpath =  configurations.antlr
+}
+compileJava.dependsOn antlr4_groovy_lexer
+compileJava.dependsOn antlr4_groovy_parser
 
 jar {
   manifest { 
@@ -98,6 +119,12 @@ jacocoTestReport {
     csv.enabled = false
   }
 }
+
+task realclean
+realclean.dependsOn(clean)
+// should also remove
+// GroovyLexer.java GroovyLexer.tokens GroovyParser.java GroovyParser.tokens
+// GroovyParserBaseListener.java GroovyParserListener.java
 
 test.finalizedBy jacocoTestReport
 

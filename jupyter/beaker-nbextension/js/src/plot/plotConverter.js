@@ -321,6 +321,16 @@ define([
             newmodel.userFocus.yr = axis.upper_bound;
           }
         }
+        var axisR = model.rangeAxes[1];
+        if (axisR && axisR.auto_range === false) {
+          if (axisR.lower_bound != null) {
+            newmodel.userFocus.yl_r = axisR.lower_bound;
+          }
+          if (axis.upper_bound != null) {
+            newmodel.userFocus.yr_r = axisR.upper_bound;
+          }
+        }
+
       }
 
       if (model.crosshair != null) {
@@ -574,6 +584,7 @@ define([
             }
 
             item.elements = elements;
+            item.yAxisLabel = item.yAxis;
 
             newmodel.data.push(item);
           }

@@ -199,6 +199,7 @@ define([
     var lines, labels;
 
     lines = this.calcLines(pl, pr, w);
+    console.log('lines', lines);
 
     var margins = plotUtils.plus(this.axisMarginValL, this.axisMarginValR);
     span = plotUtils.mult(this.axisPctSpan, plotUtils.minus(this.axisValSpan, margins));
@@ -220,6 +221,7 @@ define([
 
   };
   PlotAxis.prototype.calcLines = function (pl, pr, w) {
+    console.log('calcLines', pl, pr, w);
 
     var self = this;
 

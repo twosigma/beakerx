@@ -112,12 +112,21 @@ define([
     this.vlength = r - l + 1;
   };
 
+  PlotArea.prototype.useSecondYAxis = function(scope) {
+    var axisLabelExist = this.yAxisLabel !== undefined && this.yAxisLabel !== null;
+    return axisLabelExist && scope.data2scrYi_r;
+  };
+
+  PlotArea.prototype.getYMapper = function(scope) {
+    return this.useSecondYAxis(scope) ? scope.data2scrYi_r : scope.data2scrYi;
+  };
+
   PlotArea.prototype.prepare = function(scope) {
     var focus = scope.focus;
     var eles = this.elements,
       eleprops = this.elementProps;
     var mapX = scope.data2scrXi,
-      mapY = scope.data2scrYi;
+      mapY = this.getYMapper(scope);
     var pstr = "";
 
     eleprops.length = 0;

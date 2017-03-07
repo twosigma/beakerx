@@ -107,11 +107,20 @@ define([
     this.vlength = r - l + 1;
   };
 
+  PlotBar.prototype.useSecondYAxis = function(scope) {
+    var axisLabelExist = this.yAxisLabel !== undefined && this.yAxisLabel !== null;
+    return axisLabelExist && scope.data2scrYi_r;
+  };
+
+  PlotBar.prototype.getYMapper = function(scope) {
+    return this.useSecondYAxis(scope) ? scope.data2scrYi_r : scope.data2scrYi;
+  };
+
   PlotBar.prototype.prepare = function(scope) {
     var w = this.width, sw;
     var focus = scope.focus;
     var mapX = scope.data2scrXi,
-      mapY = scope.data2scrYi;
+      mapY = this.getYMapper(scope);
     var eleprops = this.elementProps,
       eles = this.elements;
     var elelabels = this.elementLabels;

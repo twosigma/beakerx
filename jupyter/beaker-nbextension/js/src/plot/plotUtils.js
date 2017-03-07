@@ -140,6 +140,8 @@ define([
       return n1 instanceof Big ? n1.div(n2) : n1 / n2;
     },
     getDataRange : function(data) { // data range is in [0,1] x [0,1]
+      console.log('data', data);
+
       var datarange = {
         xl : Infinity,
         xr : -Infinity,
@@ -156,6 +158,7 @@ define([
         var itemrange = data[i].getRange();
         this.updateRange(datarange, itemrange);
       }
+
       if (datarange.xl === Infinity && datarange.xr !== -Infinity) {
         datarange.xl = datarange.xr - 1;
       } else if (datarange.xr === -Infinity && datarange.xl !== Infinity) {
@@ -201,6 +204,7 @@ define([
 
       datarange.xspan = this.minus(datarange.xr, datarange.xl);
       datarange.yspan = datarange.yr - datarange.yl;
+
       return {
         "datarange" : datarange,
         "visibleItem" : visibleItem,
@@ -248,19 +252,37 @@ define([
       tooltipWidth : 10
     },
     getDefaultFocus : function(model) {
-      var ret = this.getDataRange(model.data);
-      var range = ret.datarange, margin = model.margin;
+      var yAxisData = [], yAxisRData = [];
+      for (var i = 0; i < model.data.length; i++) {
+        var item = model.data[i];
+        if(plotUtils.useYAxisR(model, item)){
+          yAxisRData.push(item);
+        }else{
+          yAxisData.push(item);
+        }
+      }
+
+      var ret = this.getDataRange(yAxisData);
+      var retR = this.getDataRange(yAxisRData);
+      var range = ret.datarange;
+      var rangeR = ret.datarange;
+      var margin = model.margin;
+
       if(ret.visibleItem === 0) { // for empty plot, focus needs to be adjusted
         range.xl = model.xAxis.getPercent(range.xl);
         range.xr = model.xAxis.getPercent(range.xr);
         range.yl = model.yAxis.getPercent(range.yl);
         range.yr = model.yAxis.getPercent(range.yr);
+        rangeR.yl = model.yAxisR.getPercent(rangeR.yl);
+        rangeR.yr = model.yAxisR.getPercent(rangeR.yr);
       }
       var focus = {
         xl : model.userFocus.xl,
         xr : model.userFocus.xr,
         yl : model.userFocus.yl,
-        yr : model.userFocus.yr
+        yr : model.userFocus.yr,
+        yl_r : model.userFocus.yl_r,
+        yr_r : model.userFocus.yr_r
       };
 
       if (focus.xl == null) {
@@ -289,8 +311,24 @@ define([
       if (focus.yr == null) {
         focus.yr = range.yr + range.yspan * margin.top;
       }
+
+      if (focus.yl_r == null) {
+        if (model.yIncludeZero === true) {
+          var yl_r = model.vrangeR.yspan * rangeR.yl + model.vrangeR.yl;
+          if(yl_r > 0){
+            rangeR.yl = (0 - model.vrangeR.yl) / model.vrangeR.yspan;
+            rangeR.yspan = rangeR.yr - rangeR.yl;
+          }
+        }
+        focus.yl_r = rangeR.yl - rangeR.yspan * margin.bottom;
+      }
+      if (focus.yr_r == null) {
+        focus.yr_r = rangeR.yr + rangeR.yspan * margin.top;
+      }
+
       focus.xspan = focus.xr - focus.xl;
       focus.yspan = focus.yr - focus.yl;
+      focus.yspan_r = focus.yr_r - focus.yl_r;
       var result = {};
       result.defaultFocus = focus;
       _.extend(result, _.omit(ret, "datarange"));

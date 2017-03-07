@@ -153,11 +153,20 @@ define([
     this.vlength = r - l + 1;
   };
 
+  PlotPoint.prototype.useSecondYAxis = function(scope) {
+    var axisLabelExist = this.yAxisLabel !== undefined && this.yAxisLabel !== null;
+    return axisLabelExist && scope.data2scrYi_r;
+  };
+
+  PlotPoint.prototype.getYMapper = function(scope) {
+    return this.useSecondYAxis(scope) ? scope.data2scrYi_r : scope.data2scrYi;
+  };
+
   PlotPoint.prototype.prepare = function(scope) {
     var focus = scope.focus;
     var eles = this.elements;
     var mapX = scope.data2scrXi,
-      mapY = scope.data2scrYi;
+      mapY = this.getYMapper(scope);
 
     _.each(this.elementProps, function(val) {
       val.length = 0;

@@ -109,13 +109,21 @@ define([
     return metrics.width;
   };
 
+  PlotText.prototype.useSecondYAxis = function(scope) {
+    var axisLabelExist = this.yAxisLabel !== undefined && this.yAxisLabel !== null;
+    return axisLabelExist && scope.data2scrYi_r;
+  };
+
+  PlotText.prototype.getYMapper = function(scope) {
+    return this.useSecondYAxis(scope) ? scope.data2scrYi_r : scope.data2scrYi;
+  };
 
   PlotText.prototype.prepare = function(scope) {
     var focus = scope.focus;
     var eles = this.elements,
       eleprops = this.elementProps;
     var mapX = scope.data2scrXi,
-      mapY = scope.data2scrYi;
+      mapY = this.getYMapper(scope);
 
     eleprops.length = 0;
     for (var i = this.vindexL; i <= this.vindexR; i++) {

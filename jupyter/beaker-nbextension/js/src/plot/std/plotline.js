@@ -81,6 +81,7 @@ define([
   PlotLine.prototype.applyAxis = function(xAxis, yAxis) {
     this.xAxis = xAxis;
     this.yAxis = yAxis;
+
     for (var i = 0; i < this.elements.length; i++) {
       var ele = this.elements[i];
       ele.x = xAxis.getPercent(ele.x);
@@ -108,9 +109,19 @@ define([
       l = 0;
       r = -1;
     }
+
     this.vindexL = l;
     this.vindexR = r;
     this.vlength = r - l + 1;
+  };
+
+  PlotLine.prototype.useSecondYAxis = function(scope) {
+    var axisLabelExist = this.yAxisLabel !== undefined && this.yAxisLabel !== null;
+    return axisLabelExist && scope.data2scrYi_r;
+  };
+
+  PlotLine.prototype.getYMapper = function(scope) {
+    return this.useSecondYAxis(scope) ? scope.data2scrYi_r : scope.data2scrYi;
   };
 
   PlotLine.prototype.prepare = function(scope) {
@@ -120,7 +131,7 @@ define([
       elelabels = this.elementLabels,
       tipids = this.tipIds;
     var mapX = scope.data2scrXi,
-      mapY = scope.data2scrYi;
+      mapY = this.getYMapper(scope);
     var pstr = "";
 
     eleprops.length = 0;

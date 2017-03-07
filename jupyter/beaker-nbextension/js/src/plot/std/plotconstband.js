@@ -99,13 +99,21 @@ define([
     this.vlength = r - l + 1;
   };
 
+  PlotConstband.prototype.useSecondYAxis = function(scope) {
+    var axisLabelExist = this.yAxisLabel !== undefined && this.yAxisLabel !== null;
+    return axisLabelExist && scope.data2scrYi_r;
+  };
+
+  PlotConstband.prototype.getYMapper = function(scope) {
+    return this.useSecondYAxis(scope) ? scope.data2scrYi_r : scope.data2scrYi;
+  };
 
   PlotConstband.prototype.prepare = function(scope) {
     var focus = scope.focus;
     var eles = this.elements,
       eleprops = this.elementProps;
     var mapX = scope.data2scrXi,
-      mapY = scope.data2scrYi;
+      mapY = this.getYMapper(scope);
     var lMargin = scope.layout.leftLayoutMargin,
       bMargin = scope.layout.bottomLayoutMargin,
       tMargin = scope.layout.topLayoutMargin,

@@ -1,0 +1,118 @@
+apply plugin: 'application'
+apply plugin: 'jacoco'
+apply plugin: 'java'
+
+def final kernelIdName = 'groovy'
+def final toReplace = '__PATH__'
+
+mainClassName = 'com.twosigma.beaker.groovy.GroovyKernel'
+
+configurations {
+  antlr
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile project(':jupyter:kernel:base')
+  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
+  antlr group: 'org.antlr', name: 'antlr4', version: '4.5'
+
+  testCompile group: 'junit', name: 'junit', version: '4.11'
+  testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
+  testCompile group: 'org.reflections', name: 'reflections', version: '0.9.10'
+}
+
+task antlr4_groovy_lexer(type: JavaExec) {
+  main = "org.antlr.v4.Tool"
+  workingDir = "src/main/antlr4/"
+  args = ["GroovyLexer.g4", "-o", "../java/com/twosigma/beaker/groovy/autocomplete", "-listener", "-no-visitor", "-package", "com.twosigma.beaker.groovy.autocomplete", "-encoding", "UTF-8"]
+  classpath = configurations.antlr
+}
+task antlr4_groovy_parser(type: JavaExec) {
+  main = "org.antlr.v4.Tool"
+  workingDir = "src/main/antlr4/"
+  args = ["GroovyParser.g4", "-o", "../java/com/twosigma/beaker/groovy/autocomplete", "-listener", "-no-visitor", "-package", "com.twosigma.beaker.groovy.autocomplete", "-encoding", "UTF-8"]
+  classpath = configurations.antlr
+}
+compileJava.dependsOn antlr4_groovy_lexer
+compileJava.dependsOn antlr4_groovy_parser
+
+jar {
+  manifest {
+    attributes "Main-Class": "$mainClassName"
+  }
+
+  from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  } {
+    exclude "META-INF/*.SF"
+    exclude "META-INF/*.DSA"
+    exclude "META-INF/*.RSA"
+  }
+}
+
+task prepareJson(dependsOn: 'build') {
+  doLast {
+    println "Prepare JSON for Jupyter notebook"
+    println "Copy kernel.json to build/libs/json/ and replasing PATH with groovy.jar parh"
+
+    def jarLocation = new File('build/libs/groovy.jar').getAbsolutePath()
+    jarLocation = jarLocation.replace("\\", "/");
+    def text = new File('kernel.json').text.replace(toReplace, jarLocation)
+    def folder = new File('build/libs/json')
+    if (!folder.exists()) {
+      println "Creating folder build/libs/json"
+      folder.mkdirs()
+    }
+
+    new File('build/libs/json/kernel.json').withWriter { w ->
+      w << text
+    }
+  }
+}
+
+task kernelInstall(dependsOn: 'prepareJson') {
+  doLast {
+    println "Installing 'groovy' to jupyter notebook"
+
+    def hashStdOut = new ByteArrayOutputStream()
+    def jsonFolder = new File('build/libs/json/').getAbsolutePath();
+    exec {
+      commandLine "jupyter",
+              "kernelspec",
+              "install",
+              "--user",
+              "--replace",
+              "--name",
+              kernelIdName,
+              jsonFolder;
+      standardOutput = hashStdOut
+    }
+    println hashStdOut.toString().trim();
+    println "DONE"
+  }
+}
+
+jacoco {
+  toolVersion = "0.7.8"
+}
+
+jacocoTestReport {
+  reports {
+    html.enabled = true
+    xml.enabled = false
+    csv.enabled = false
+  }
+}
+
+task realclean
+realclean.dependsOn(clean)
+// should also remove
+// GroovyLexer.java GroovyLexer.tokens GroovyParser.java GroovyParser.tokens
+// GroovyParserBaseListener.java GroovyParserListener.java
+
+test.finalizedBy jacocoTestReport
+

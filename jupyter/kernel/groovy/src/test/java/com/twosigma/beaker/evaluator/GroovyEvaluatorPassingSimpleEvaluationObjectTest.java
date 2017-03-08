@@ -17,6 +17,7 @@ package com.twosigma.beaker.evaluator;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.junit.Before;
+import org.junit.Test;
 import org.lappsgrid.jupyter.msg.Message;
 
 import static com.twosigma.beaker.evaluator.GroovyEvaluatorResultTestWatcher.waitForResult;
@@ -31,11 +32,11 @@ public class GroovyEvaluatorPassingSimpleEvaluationObjectTest {
     groovyEvaluator = new GroovyEvaluator("shellId1", "sessionId1");
   }
 
-  //@Test
+  @Test
   public void shouldPassSimpleEvaluationObjectToShell() throws Exception {
     //given
     String code = "" +
-            "import InternalVariable\n" +
+            "import com.twosigma.beaker.evaluator.InternalVariable\n" +
             "InternalVariable.getParentHeader()";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     Message message = new Message();

@@ -41,7 +41,7 @@ public class KernelInfoHandler extends AbstractHandler<Message> {
     map1.put("mimetype", "");
     map1.put("file_extension", ".groovy");
     map1.put("pygments_lexer", "");
-    map1.put("codemirror_mode", "");
+    map1.put("codemirror_mode", "groovy");
     map1.put("nbconverter_exporter", "");
     map.put("language_info", map1);
     map.put("banner", "BeakerX kernel for Apache Groovy");

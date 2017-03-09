@@ -18,7 +18,6 @@ package com.twosigma.beaker.widgets;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-
 public class DisplayWidget {
 
   public static final String METHOD = "method";
@@ -34,5 +33,4 @@ public class DisplayWidget {
       throw new RuntimeException(e);
     }
   }
-
 }

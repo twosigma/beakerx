@@ -21,14 +21,13 @@ import com.twosigma.beaker.widgets.internal.InternalWidget;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
-
 import org.lappsgrid.jupyter.msg.Message;
 
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
 import static com.twosigma.beaker.widgets.DisplayWidget.DISPLAY;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beaker.widgets.internal.InternalWidget.MODEL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;

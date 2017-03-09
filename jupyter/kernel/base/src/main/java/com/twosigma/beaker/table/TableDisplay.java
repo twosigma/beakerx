@@ -16,15 +16,15 @@
 package com.twosigma.beaker.table;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
-import java.util.Set;
 
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.jupyter.Comm;
@@ -42,6 +42,8 @@ import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Arrays.asList;
+
 public class TableDisplay extends ObservableTableDisplay implements InternalWidget {
 
 
@@ -54,9 +56,9 @@ public class TableDisplay extends ObservableTableDisplay implements InternalWidg
   public static final String DICTIONARY_SUBTYPE = "Dictionary";
   private final static Logger logger = LoggerFactory.getLogger(TableDisplay.class.getName());
   private final List<List<?>> values;
-  private final List<String> columns;
+  private List<String> columns;
   private final List<String> classes;
-  private final String subtype;
+  private String subtype;
 
   private TimeUnit stringFormatForTimes;
   private Map<ColumnType, TableDisplayStringFormat> stringFormatForType = new HashMap<>();
@@ -96,7 +98,6 @@ public class TableDisplay extends ObservableTableDisplay implements InternalWidg
   }
 
 
-
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
     columns = co;
@@ -106,13 +107,7 @@ public class TableDisplay extends ObservableTableDisplay implements InternalWidg
 
   public TableDisplay(Collection<Map<?,?>> v) {
     this(v, new BasicObjectSerializer());
-    this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
-      @Override
-      public void addContent(HashMap<String, Serializable> content) {
-        content.put(InternalWidgetUtils.MODEL_NAME, getModelNameValue());
-        content.put(InternalWidgetUtils.VIEW_NAME, getViewNameValue());
-      }
-    });
+    open();
   }
 
   public TableDisplay(Collection<Map<?,?>> v, BeakerObjectConverter serializer) {
@@ -148,6 +143,34 @@ public class TableDisplay extends ObservableTableDisplay implements InternalWidg
       values.add(vals);
     }
   }
+
+  private TableDisplay(Map<?, ?> v) {
+    this.values = new ArrayList<List<?>>();
+    this.columns = Arrays.asList("Key", "Value");
+    this.classes = new ArrayList<String>();
+    this.subtype = DICTIONARY_SUBTYPE;
+    Set<?> w = v.entrySet();
+    for (Object s : w) {
+      Entry<?, ?> e = (Entry<?, ?>) s;
+      values.add(asList(e.getKey().toString(), e.getValue()));
+    }
+    open();
+  }
+
+  public static TableDisplay createTableDisplayForMap(Map<?,?> v){
+    return new TableDisplay(v);
+  }
+
+  private void open() {
+    this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
+      @Override
+      public void addContent(HashMap<String, Serializable> content) {
+        content.put(InternalWidgetUtils.MODEL_NAME, getModelNameValue());
+        content.put(InternalWidgetUtils.VIEW_NAME, getViewNameValue());
+      }
+    });
+  }
+
 
   public TimeUnit getStringFormatForTimes() {
     return stringFormatForTimes;

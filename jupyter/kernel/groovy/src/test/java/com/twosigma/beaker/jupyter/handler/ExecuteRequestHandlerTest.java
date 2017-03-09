@@ -37,8 +37,8 @@ public class ExecuteRequestHandlerTest {
     EvaluatorManager evaluatorManager =
         new EvaluatorManager(groovyKernel, new GroovyEvaluator("id", "sid")) {
           @Override
-          public void executeCode(String code, Message message, int executionCount) {
-            groovyKernel.groovyEvaluatorManagerExecuteCode(code, message, executionCount);
+          public SimpleEvaluationObject executeCode(String code, Message message, int executionCount) {
+            return groovyKernel.groovyEvaluatorManagerExecuteCode(code, message, executionCount);
           }
 
           @Override

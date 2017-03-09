@@ -15,10 +15,11 @@
  */
 package com.twosigma.beaker.widgets;
 
+import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.Comm;
-import org.lappsgrid.jupyter.msg.Message;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
+import org.lappsgrid.jupyter.msg.Message;
 
 import java.io.Serializable;
 import java.util.List;
@@ -32,7 +33,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TestWidgetUtils {
 
   public static void verifyOpenCommMsg(List<Message> messages, String modelNameValue, String viewNameValue) {
-    assertThat(messages.size()).isEqualTo(2);
     Message layout = messages.get(0);
     Message widget = messages.get(1);
 
@@ -69,12 +69,12 @@ public class TestWidgetUtils {
   }
 
 
-  public static <T> void verifyMsgForProperty(GroovyKernelTest groovyKernel, String propertyName, T expected) {
+  public static <T> void verifyMsgForProperty(KernelTest groovyKernel, String propertyName, T expected) {
     Object actual = getValueForProperty(groovyKernel, propertyName, expected.getClass());
     assertThat(actual).isEqualTo(expected);
   }
 
-  public static <T> T getValueForProperty(GroovyKernelTest groovyKernel, String propertyName, Class<T> clazz) {
+  public static <T> T getValueForProperty(KernelTest groovyKernel, String propertyName, Class<T> clazz) {
     assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(1);
     Message message = groovyKernel.getPublishedMessages().get(0);
     return getValueForProperty(message, propertyName, clazz);
@@ -91,5 +91,6 @@ public class TestWidgetUtils {
     Map data = getData(message);
     assertThat(data.get(METHOD)).isEqualTo(DISPLAY);
   }
+
 
 }

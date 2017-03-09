@@ -54,12 +54,13 @@ public class EvaluatorManager {
     evaluator.killAllThreads();
   }
 
-  public synchronized void executeCode(String code, Message message, int executionCount) {
+  public synchronized SimpleEvaluationObject executeCode(String code, Message message, int executionCount) {
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     seo.setJupyterMessage(message);
     seo.setExecutionCount(executionCount);
     seo.addObserver(kernel.getExecutionResultSender());
     evaluator.evaluate(seo, code);
+    return seo;
   }
   
   public void exit() {

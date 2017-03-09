@@ -86,10 +86,11 @@ public class GroovyKernelJupyterTest extends Kernel {
     return simpleEvaluationObject;
   }
 
-  public void groovyEvaluatorManagerExecuteCode(String code, Message message, int executionCount) {
+  public SimpleEvaluationObject groovyEvaluatorManagerExecuteCode(String code, Message message, int executionCount) {
     simpleEvaluationObject = new SimpleEvaluationObject(code);
     simpleEvaluationObject.setJupyterMessage(message);
     simpleEvaluationObject.setExecutionCount(executionCount);
+    return simpleEvaluationObject;
   }
 
   public void groovyEvaluatorManagerExit() {

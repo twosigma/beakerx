@@ -42,4 +42,10 @@ This installs the kernel for groovy into the current conda environment.
 
 * `cd beaker-nbextension/js; webpack`
 
+If webpack gives an error like
+
+> ERROR in jquery-ui (bower component) Module not found: Error: Cannot resolve 'file' or 'directory' ./ui/jquery-ui.js
+
+Then run `rm -rf bower_components && bower install`.
+
 <img width="631" alt="screen shot 2016-12-10 at 10 43 22 pm" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">

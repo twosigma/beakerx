@@ -17,11 +17,18 @@
 
 # Dependencies
 
-* Java8
+* oracle Java8 JDK
 * gradle
 * npm
 * webpack
-* an active conda environment with jupyter
+* conda
+
+```
+conda create -n beakerx python=3.5 jupyter
+source activate beakerx
+(cd beaker-notebook-private/jupyter/kernel/groovy; gradle kernelInstall)
+gradle environmentVariables # set PYTHONPATH as directed
+jupyter notebook # make sure Beaker extension is enabled
 
 # Build and install groovy kernel
 This installs the kernel for groovy into the current conda environment.

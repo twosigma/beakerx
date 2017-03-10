@@ -2,8 +2,17 @@ define([
   './../plot/commonUtils'
 ], function(commonUtils) {
   var bkUtils = {
-    generateId: function(a) {
-      return 'a'+a;
+    generateId: function(length) {
+      var text = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+      if (_.isUndefined(length)) {
+        length = 6;
+      }
+      for (var i = 0; i < length; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      return text;
     },
     applyTimezone: function(timestamp, tz) {
       return commonUtils.applyTimezone(timestamp, tz);

@@ -1,6 +1,6 @@
 Type: IPython Notebook Extension
-Name: Beaker-old
-Description: Provides Autotranslation
+Name: Beaker
+Description: Part of BeakerX, see http://BeakerNotebook.com
 Link: README.md
 Icon: icon.png
 Main: main.js

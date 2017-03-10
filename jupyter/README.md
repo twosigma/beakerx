@@ -28,7 +28,10 @@ conda create -n beakerx python=3.5 jupyter
 source activate beakerx
 (cd beaker-notebook-private/jupyter/kernel/groovy; gradle kernelInstall)
 gradle environmentVariables # set PYTHONPATH as directed
-jupyter notebook # make sure Beaker extension is enabled
+jupyter notebook
+```
+
+make sure both Beaker extensions are enabled in the nbextensions tab (Beaker and beaker-nbextension/extension).
 
 # Build and install groovy kernel
 This installs the kernel for groovy into the current conda environment.

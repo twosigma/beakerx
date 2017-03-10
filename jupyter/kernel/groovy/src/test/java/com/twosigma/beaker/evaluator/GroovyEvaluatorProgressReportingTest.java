@@ -22,7 +22,7 @@ import com.twosigma.beaker.widgets.integers.IntProgress;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.message.Message;
 
 import java.util.List;
 

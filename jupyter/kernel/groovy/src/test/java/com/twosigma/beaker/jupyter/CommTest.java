@@ -20,7 +20,7 @@ import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.message.Message;
 
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;

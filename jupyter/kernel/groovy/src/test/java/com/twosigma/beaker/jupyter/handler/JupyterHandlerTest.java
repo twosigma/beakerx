@@ -16,8 +16,6 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import com.twosigma.beaker.evaluator.EvaluatorManager;
-import com.twosigma.beaker.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.jupyter.CommKernelControlGetDefaultShellHandler;
 import com.twosigma.beaker.jupyter.CommKernelControlSetShellHandler;
@@ -26,13 +24,12 @@ import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import org.lappsgrid.jupyter.handler.IHandler;
-import org.lappsgrid.jupyter.msg.Header;
-import org.lappsgrid.jupyter.msg.Message;
-import org.lappsgrid.jupyter.msg.MessageTest;
+import com.twosigma.jupyter.handler.Handler;
+import com.twosigma.jupyter.message.Header;
+import com.twosigma.jupyter.message.Message;
+import com.twosigma.jupyter.message.MessageTest;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -138,7 +135,7 @@ public class JupyterHandlerTest {
     Comm comm =
         new Comm(commId, targetName) {
           @Override
-          public void handleMsg(Message parentMessage) throws NoSuchAlgorithmException {
+          public void handleMsg(Message parentMessage) {
             groovyKernelJupyterTest.commHandleMessage();
           }
         };
@@ -151,7 +148,7 @@ public class JupyterHandlerTest {
     groovyKernel = new GroovyKernelJupyterTest();
     commOpenHandler = new CommOpenHandler(groovyKernel) {
       @Override
-      public IHandler<Message>[] getKernelControlChanelHandlers(String targetName) {
+      public Handler<Message>[] getKernelControlChanelHandlers(String targetName) {
         return null;
       }
     };
@@ -159,7 +156,7 @@ public class JupyterHandlerTest {
     commInfoHandler = new CommInfoHandler(groovyKernel);
     commMsgHandler = new CommMsgHandler(groovyKernel, new MessageCreator(groovyKernel));
     executeRequestHandler =
-        new ExecuteRequestHandler(groovyKernel, new EvaluatorManager(groovyKernel, new GroovyEvaluator("id", "sid")));
+        new ExecuteRequestHandler(groovyKernel);
   }
 
 //  @Test

@@ -16,7 +16,7 @@
 package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.jupyter.Comm;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.message.Message;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 

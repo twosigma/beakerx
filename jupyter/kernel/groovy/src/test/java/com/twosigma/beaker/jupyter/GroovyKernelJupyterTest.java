@@ -17,18 +17,21 @@
 package com.twosigma.beaker.jupyter;
 
 import com.twosigma.beaker.evaluator.Evaluator;
+import com.twosigma.beaker.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import org.lappsgrid.jupyter.Kernel;
-import org.lappsgrid.jupyter.json.Serializer;
-import org.lappsgrid.jupyter.msg.Header;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.Config;
+import com.twosigma.jupyter.Kernel;
+import com.twosigma.jupyter.message.Header;
+import com.twosigma.jupyter.message.Message;
 import org.zeromq.ZMQ;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import static com.twosigma.jupyter.message.MessageSerializer.parse;
+import static com.twosigma.jupyter.message.MessageSerializer.toJson;
 
 public class GroovyKernelJupyterTest extends Kernel {
 
@@ -39,24 +42,27 @@ public class GroovyKernelJupyterTest extends Kernel {
   private Boolean commHandleMessage;
   private Boolean setShellOptions;
 
+  public GroovyKernelJupyterTest() {
+    this("1", new GroovyEvaluator("1", "1"));
+  }
+
+  public GroovyKernelJupyterTest(String id, Evaluator evaluator) {
+    super(id, evaluator, Config::new);
+  }
+
   @Override
-  public void publish(Message message) throws NoSuchAlgorithmException {
+  public void publish(Message message) {
     this.publishMessages.add(copyMessage(message));
   }
 
   @Override
-  public void send(Message message) throws NoSuchAlgorithmException {
+  public void send(Message message) {
     this.sendMessages.add(copyMessage(message));
   }
 
   @Override
-  public void send(ZMQ.Socket socket, Message message) throws NoSuchAlgorithmException {
+  public void send(ZMQ.Socket socket, Message message) {
     this.sendMessages.add(copyMessage(message));
-  }
-
-  @Override
-  public Evaluator getEvaluator(Kernel kernel) {
-    return null;
   }
 
   @Override
@@ -114,14 +120,14 @@ public class GroovyKernelJupyterTest extends Kernel {
     for (byte[] list : origin.getIdentities()) {
       copy.getIdentities().add(list.clone());
     }
-    String header = Serializer.toJson(origin.getHeader());
-    String parent = Serializer.toJson(origin.getParentHeader());
-    String metadata = Serializer.toJson(origin.getMetadata());
-    String content = Serializer.toJson(origin.getContent());
-    copy.setHeader(Serializer.parse(header, Header.class));
-    copy.setParentHeader(Serializer.parse(parent, Header.class));
-    copy.setMetadata(Serializer.parse(metadata, LinkedHashMap.class));
-    copy.setContent(Serializer.parse(content, LinkedHashMap.class));
+    String header = toJson(origin.getHeader());
+    String parent = toJson(origin.getParentHeader());
+    String metadata = toJson(origin.getMetadata());
+    String content = toJson(origin.getContent());
+    copy.setHeader(parse(header, Header.class));
+    copy.setParentHeader(parse(parent, Header.class));
+    copy.setMetadata(parse(metadata, LinkedHashMap.class));
+    copy.setContent(parse(content, LinkedHashMap.class));
     return copy;
   }
 }

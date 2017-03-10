@@ -17,14 +17,14 @@
 package com.twosigma.beaker.jupyter.handler;
 
 import com.twosigma.beaker.jupyter.Comm;
-import org.lappsgrid.jupyter.handler.AbstractHandler;
-import org.lappsgrid.jupyter.handler.IHandler;
-import org.lappsgrid.jupyter.msg.Header;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.handler.KernelHandler;
+import com.twosigma.jupyter.handler.Handler;
+import com.twosigma.jupyter.message.Header;
+import com.twosigma.jupyter.message.Message;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,21 +35,22 @@ import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
 
-import org.lappsgrid.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.KernelFunctionality;
 /**
  * 
  * @author konst
  *
  */
-public abstract class CommOpenHandler extends AbstractHandler<Message> {
+public abstract class CommOpenHandler extends KernelHandler<Message> {
+
+  private final static Logger logger = LoggerFactory.getLogger(CommOpenHandler.class);
 
   public CommOpenHandler(KernelFunctionality kernel) {
     super(kernel);
-    logger = LoggerFactory.getLogger(CommOpenHandler.class);
   }
 
   @Override
-  public void handle(Message message) throws NoSuchAlgorithmException {
+  public void handle(Message message)  {
     logger.info("Processing CommOpenHandler");
     Message reply = new Message();
     HashMap<String, Serializable> map = new HashMap<>(6);
@@ -70,7 +71,7 @@ public abstract class CommOpenHandler extends AbstractHandler<Message> {
 
     if(newComm != null){
       logger.info("Comm opened, target name = " + newComm.getTargetName());
-      for (IHandler<Message> handler : getKernelControlChanelHandlers(newComm.getTargetName())) {
+      for (Handler<Message> handler : getKernelControlChanelHandlers(newComm.getTargetName())) {
         newComm.addMsgCallbackList(handler);
       }
       kernel.addComm(newComm.getCommId(), newComm);
@@ -82,7 +83,7 @@ public abstract class CommOpenHandler extends AbstractHandler<Message> {
     send(reply);
   }
   
-  public abstract IHandler<Message>[] getKernelControlChanelHandlers(String targetName);
+  public abstract Handler<Message>[] getKernelControlChanelHandlers(String targetName);
   
   public static String getString(Map<String, Serializable> map, String name) {
     return (String) map.get(name);

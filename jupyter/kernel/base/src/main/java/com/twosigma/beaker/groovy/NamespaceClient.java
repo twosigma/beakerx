@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -83,19 +82,15 @@ public class NamespaceClient {
     nsClients.remove(sessionId);
     currentSession = null;
   }
-  
+
   public synchronized Object set(String name, Object value) throws IOException {
-    try {
-      Comm c = getAutotranslationComm();
-      HashMap<String, Serializable> data = new HashMap<>();
-      data.put("name", name);
-      data.put("value", getJson(value));
-      data.put("sync", true);
-      c.setData(data);
-      c.send();
-    } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
-    }
+    Comm c = getAutotranslationComm();
+    HashMap<String, Serializable> data = new HashMap<>();
+    data.put("name", name);
+    data.put("value", getJson(value));
+    data.put("sync", true);
+    c.setData(data);
+    c.send();
     return value;
   }
   
@@ -123,7 +118,7 @@ public class NamespaceClient {
     throw new RuntimeException("This option is not implemented now") ;
   }
 
-  protected Comm getAutotranslationComm() throws NoSuchAlgorithmException{
+  protected Comm getAutotranslationComm() {
     if(autotranslationComm == null){
       autotranslationComm = new Comm(CommNamesEnum.BEAKER_AUTOTRANSLATION);
       autotranslationComm.open();

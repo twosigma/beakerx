@@ -18,7 +18,7 @@ package com.twosigma.beaker.jupyter;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.message.Message;
 
 import java.io.Serializable;
 import java.util.ArrayList;

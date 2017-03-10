@@ -1,6 +1,6 @@
 package com.twosigma.beaker.groovy.comm;
 
-import org.lappsgrid.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.KernelFunctionality;
 
 import com.twosigma.beaker.groovy.GroovyDefaultVariables;
 import com.twosigma.beaker.jupyter.CommKernelControlGetDefaultShellHandler;

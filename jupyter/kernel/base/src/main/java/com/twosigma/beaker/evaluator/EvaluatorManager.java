@@ -17,8 +17,8 @@ package com.twosigma.beaker.evaluator;
 
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import org.lappsgrid.jupyter.KernelFunctionality;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -23,7 +23,7 @@ import com.twosigma.beaker.widgets.strings.Text;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.message.Message;
 
 import java.util.List;
 import java.util.Map;

@@ -20,7 +20,6 @@ import com.twosigma.beaker.jupyter.CommNamesEnum;
 import com.twosigma.beaker.jupyter.Utils;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public abstract class Widget implements CommFunctionality {
@@ -57,20 +56,12 @@ public abstract class Widget implements CommFunctionality {
   private void openComm(final Comm comm) {
     comm.setData(createContent());
     addValueChangeMsgCallback(comm);
-    try {
-      comm.open();
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
+    comm.open();
   }
 
-  public void close(){
-    if(this.comm!= null) {
-      try {
-        this.comm.close();
-      } catch (NoSuchAlgorithmException e) {
-        throw new RuntimeException(e);
-      }
+  public void close() {
+    if (this.comm != null) {
+      this.comm.close();
     }
   }
 
@@ -98,7 +89,7 @@ public abstract class Widget implements CommFunctionality {
   }
 
   protected void sendUpdate(String propertyName, Object value) {
-   this.comm.sendUpdate(propertyName,value);
+    this.comm.sendUpdate(propertyName, value);
   }
 
   public Boolean getDisabled() {

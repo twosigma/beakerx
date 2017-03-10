@@ -38,8 +38,4 @@ public abstract class AbstractThread extends Thread {
     return running;
   }
 
-  public void setRunning(boolean running) {
-    this.running = running;
-  }
-
 }

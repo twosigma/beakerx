@@ -20,7 +20,7 @@ import com.twosigma.beaker.widgets.integers.IntSlider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.message.Message;
 
 import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;

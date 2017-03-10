@@ -26,7 +26,7 @@ import com.twosigma.beaker.widgets.selectioncontainer.Tab;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.message.Message;
 
 import java.util.Arrays;
 import java.util.List;

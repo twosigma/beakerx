@@ -16,8 +16,8 @@
 package com.twosigma.beaker.widgets;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+
 public class DisplayWidget {
 
   public static final String METHOD = "method";
@@ -27,10 +27,6 @@ public class DisplayWidget {
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, DISPLAY);
     widget.getComm().setData(content);
-    try {
-      widget.getComm().send();
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
+    widget.getComm().send();
   }
 }

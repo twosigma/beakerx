@@ -16,16 +16,15 @@
 package com.twosigma.beaker.jupyter;
 
 import com.twosigma.beaker.evaluator.InternalVariable;
-import org.lappsgrid.jupyter.Kernel;
-import org.lappsgrid.jupyter.KernelFunctionality;
-import org.lappsgrid.jupyter.handler.IHandler;
-import org.lappsgrid.jupyter.msg.Header;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.Kernel;
+import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.handler.Handler;
+import com.twosigma.jupyter.message.Header;
+import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,7 +36,7 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
 
 
 public class Comm {
-  
+
   private static final Logger logger = LoggerFactory.getLogger(Kernel.class);
 
   public static final String METHOD = "method";
@@ -52,12 +51,12 @@ public class Comm {
 
   private String commId;
   private String targetName;
-  private HashMap<?,?> data;
+  private HashMap<?, ?> data;
   private String targetModule;
   private KernelFunctionality kernel;
-  private List<IHandler<Message>> msgCallbackList = new ArrayList<>();
-  private List<IHandler<Message>> closeCallbackList  = new ArrayList<>(); 
-  
+  private List<Handler<Message>> msgCallbackList = new ArrayList<>();
+  private List<Handler<Message>> closeCallbackList = new ArrayList<>();
+
   public Comm(String commId, String targetName) {
     super();
     this.kernel = KernelManager.get();
@@ -65,19 +64,19 @@ public class Comm {
     this.targetName = targetName;
     this.data = new HashMap<>();
   }
-  
+
   public Comm(String commId, CommNamesEnum targetName) {
     this(commId, targetName.getTargetName());
   }
-  
+
   public Comm(CommNamesEnum targetName) {
     this(Utils.uuid(), targetName.getTargetName());
   }
-  
+
   public Comm(String targetName) {
     this(Utils.uuid(), targetName);
   }
-  
+
   public String getCommId() {
     return commId;
   }
@@ -86,11 +85,11 @@ public class Comm {
     return targetName;
   }
 
-  public HashMap<?,?> getData() {
+  public HashMap<?, ?> getData() {
     return data;
   }
 
-  public void setData(HashMap<?,?> data) {
+  public void setData(HashMap<?, ?> data) {
     this.data = data;
   }
 
@@ -101,37 +100,37 @@ public class Comm {
   public void setTargetModule(String targetModule) {
     this.targetModule = targetModule;
   }
-  
-  public List<IHandler<Message>> getMsgCallbackList() {
+
+  public List<Handler<Message>> getMsgCallbackList() {
     return msgCallbackList;
   }
 
-  public void addMsgCallbackList(IHandler<Message> ... handlers) {
+  public void addMsgCallbackList(Handler<Message>... handlers) {
     this.msgCallbackList.addAll(Arrays.asList(handlers));
   }
-  
+
   public void clearMsgCallbackList() {
     this.msgCallbackList = new ArrayList<>();
   }
 
-  public List<IHandler<Message>> getCloseCallbackList() {
+  public List<Handler<Message>> getCloseCallbackList() {
     return closeCallbackList;
   }
 
-  public void addCloseCallbackList(IHandler<Message> ... handlers) {
+  public void addCloseCallbackList(Handler<Message>... handlers) {
     this.closeCallbackList.addAll(Arrays.asList(handlers));
   }
-  
+
   public void clearCloseCallbackList() {
     this.closeCallbackList = new ArrayList<>();
   }
-  
-  public void open() throws NoSuchAlgorithmException{
+
+  public void open() {
     Message parentMessage = getParentMessage();// can be null
     Message message = new Message();
     message.setHeader(new Header(COMM_OPEN, parentMessage != null ? parentMessage.getHeader().getSession() : null));
-    if(parentMessage != null){
-      message.setParentHeader(getParentMessage().getHeader()); 
+    if (parentMessage != null) {
+      message.setParentHeader(getParentMessage().getHeader());
     }
     HashMap<String, Serializable> map = new HashMap<>();
     map.put(COMM_ID, getCommId());
@@ -142,18 +141,18 @@ public class Comm {
     kernel.publish(message);
     kernel.addComm(getCommId(), this);
   }
-  
-  public void close() throws NoSuchAlgorithmException{
+
+  public void close() {
     Message parentMessage = getParentMessage();// can be null
-    
-    if(this.getCloseCallbackList() != null && !this.getMsgCallbackList().isEmpty()){
-      for (IHandler<Message> handler : getMsgCallbackList()) {
+
+    if (this.getCloseCallbackList() != null && !this.getMsgCallbackList().isEmpty()) {
+      for (Handler<Message> handler : getMsgCallbackList()) {
         handler.handle(parentMessage);
       }
     }
     Message message = new Message();
     message.setHeader(new Header(COMM_CLOSE, parentMessage != null ? parentMessage.getHeader().getSession() : null));
-    if(parentMessage != null){
+    if (parentMessage != null) {
       message.setParentHeader(parentMessage.getHeader());
     }
     HashMap<String, Serializable> map = new HashMap<>();
@@ -163,13 +162,13 @@ public class Comm {
     kernel.removeComm(getCommId());
     kernel.publish(message);
   }
-  
-  public void send() throws NoSuchAlgorithmException{
+
+  public void send() {
     Message parentMessage = getParentMessage();// can be null
     Message message = new Message();
     message.setHeader(new Header(COMM_MSG, parentMessage != null ? parentMessage.getHeader().getSession() : null));
-    if(parentMessage != null){
-      message.setParentHeader(getParentMessage().getHeader()); 
+    if (parentMessage != null) {
+      message.setParentHeader(getParentMessage().getHeader());
     }
     HashMap<String, Serializable> map = new HashMap<>(6);
     map.put(COMM_ID, getCommId());
@@ -185,28 +184,24 @@ public class Comm {
     state.put(propertyName, value);
     content.put(STATE, state);
     this.setData(content);
-    try {
-      this.send();
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
+    this.send();
   }
 
   protected Message getParentMessage() {
     return InternalVariable.getParentHeader();
   }
 
-  public void handleMsg(Message parentMessage) throws NoSuchAlgorithmException{
-    if(this.getMsgCallbackList() != null && !this.getMsgCallbackList().isEmpty()){
-      for (IHandler<Message> handler : getMsgCallbackList()) {
+  public void handleMsg(Message parentMessage) {
+    if (this.getMsgCallbackList() != null && !this.getMsgCallbackList().isEmpty()) {
+      for (Handler<Message> handler : getMsgCallbackList()) {
         handler.handle(parentMessage);
       }
     }
   }
-  
+
   @Override
   public String toString() {
-    return commId + "/" + targetName + "/" + (targetModule != null && !targetModule.isEmpty()? targetModule : "");
+    return commId + "/" + targetName + "/" + (targetModule != null && !targetModule.isEmpty() ? targetModule : "");
   }
 
 }

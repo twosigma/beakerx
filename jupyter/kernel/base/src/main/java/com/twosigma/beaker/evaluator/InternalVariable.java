@@ -16,7 +16,7 @@
 package com.twosigma.beaker.evaluator;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.message.Message;
 
 public class InternalVariable {
 

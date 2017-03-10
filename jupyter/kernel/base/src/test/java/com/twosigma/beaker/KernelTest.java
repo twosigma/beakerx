@@ -15,15 +15,13 @@
  */
 package com.twosigma.beaker;
 
-import com.twosigma.beaker.evaluator.Evaluator;
+import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
-import org.lappsgrid.jupyter.Kernel;
-import org.lappsgrid.jupyter.KernelFunctionality;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.message.Message;
 import org.zeromq.ZMQ;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
@@ -45,17 +43,16 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public void publish(Message message) throws NoSuchAlgorithmException {
+  public void publish(Message message) {
     this.publishedMessages.add(message);
   }
 
   @Override
-  public void send(Message message) throws NoSuchAlgorithmException {
+  public void send(Message message) {
     this.sentMessages.add(message);
   }
 
-  @Override
-  public String getId() {
+  public String getSessionId() {
     return this.id;
   }
 
@@ -75,17 +72,12 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public void send(ZMQ.Socket socket, Message message) throws NoSuchAlgorithmException {
+  public void send(ZMQ.Socket socket, Message message) {
 
   }
 
   @Override
   public Comm getComm(String string) {
-    return null;
-  }
-
-  @Override
-  public Evaluator getEvaluator(Kernel kernel) {
     return null;
   }
 
@@ -119,4 +111,9 @@ public class KernelTest implements KernelFunctionality {
   }
 
   public void cancelExecution(){}
+
+  @Override
+  public EvaluatorManager getEvaluatorManager() {
+    return null;
+  }
 }

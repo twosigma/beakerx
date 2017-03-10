@@ -20,7 +20,6 @@ import com.twosigma.beaker.jupyter.CommNamesEnum;
 import com.twosigma.beaker.jupyter.Utils;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 
@@ -37,11 +36,7 @@ public class InternalWidgetUtils {
   public static Comm createComm(final InternalWidget widget, final InternalWidgetContent content) {
     Comm comm = new Comm(Utils.uuid(), CommNamesEnum.JUPYTER_WIDGET);
     comm.setData(createContent(widget, content));
-    try {
-      comm.open();
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
+    comm.open();
     return comm;
   }
 

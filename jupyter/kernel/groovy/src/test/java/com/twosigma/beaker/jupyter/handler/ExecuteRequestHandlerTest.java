@@ -16,14 +16,13 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import com.twosigma.beaker.evaluator.EvaluatorManager;
-import com.twosigma.beaker.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jupyter.GroovyKernelJupyterTest;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import org.lappsgrid.jupyter.msg.Message;
+import org.junit.Test;
+import com.twosigma.jupyter.message.Message;
 
 public class ExecuteRequestHandlerTest {
 
@@ -34,23 +33,11 @@ public class ExecuteRequestHandlerTest {
   @Before
   public void setUp() {
     groovyKernel = new GroovyKernelJupyterTest();
-    EvaluatorManager evaluatorManager =
-        new EvaluatorManager(groovyKernel, new GroovyEvaluator("id", "sid")) {
-          @Override
-          public SimpleEvaluationObject executeCode(String code, Message message, int executionCount) {
-            return groovyKernel.groovyEvaluatorManagerExecuteCode(code, message, executionCount);
-          }
-
-          @Override
-          public void exit() {
-            groovyKernel.groovyEvaluatorManagerExit();
-          }
-        };
-    executeRequestHandler = new ExecuteRequestHandler(groovyKernel, evaluatorManager);
+    executeRequestHandler = new ExecuteRequestHandler(groovyKernel);
     message = JupyterHandlerTest.initExecuteRequestMessage();
   }
 
-//  @Test
+  @Test
   public void handleMessage_shouldSendTwoMessages() throws Exception {
     //when
     executeRequestHandler.handle(message);
@@ -59,7 +46,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(groovyKernel.getPublishMessages().size()).isEqualTo(2);
   }
 
-//  @Test
+  @Test
   public void handleMessage_firstSentMessageHasExecutionStateIsBusy() throws Exception {
     //when
     executeRequestHandler.handle(message);
@@ -69,7 +56,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(publishMessage.getContent().get("execution_state")).isEqualTo("busy");
   }
 
-//  @Test
+  @Test
   public void handleMessage_firstSentMessageHasSessionId() throws Exception {
     //given
     String expectedSessionId = message.getHeader().getSession();
@@ -81,7 +68,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(publishMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
-//  @Test
+  @Test
   public void handleMessage_firstSentMessageHasTypeIsStatus() throws Exception {
     //when
     executeRequestHandler.handle(message);
@@ -92,7 +79,7 @@ public class ExecuteRequestHandlerTest {
         .isEqualTo(JupyterMessages.STATUS.getName());
   }
 
-//  @Test
+  @Test
   public void handleMessage_firstSentMessageHasParentHeader() throws Exception {
     //given
     String expectedHeader = message.getHeader().asJson();
@@ -104,7 +91,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
-//  @Test
+  @Test
   public void handleMessage_firstSentMessageHasIdentities() throws Exception {
     //given
     String expectedIdentities = new String(message.getIdentities().get(0));
@@ -117,7 +104,7 @@ public class ExecuteRequestHandlerTest {
         .isEqualTo(expectedIdentities);
   }
 
-//  @Test
+  @Test
   public void handleMessage_secondSentMessageHasSessionId() throws Exception {
     //given
     String expectedSessionId = message.getHeader().getSession();
@@ -129,7 +116,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(publishMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
-//  @Test
+  @Test
   public void handleMessage_secondSendMessageHasTypeIsExecutionInput() throws Exception {
     //when
     executeRequestHandler.handle(message);
@@ -140,7 +127,7 @@ public class ExecuteRequestHandlerTest {
         .isEqualTo(JupyterMessages.EXECUTE_INPUT.getName());
   }
 
-//  @Test
+  @Test
   public void handleMessage_secondSentMessageHasContentCode() throws Exception {
     //given
     String expectedCode = (String) message.getContent().get("code");
@@ -152,7 +139,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(publishMessage.getContent().get("code")).isEqualTo(expectedCode);
   }
 
-//  @Test
+  @Test
   public void handleMessage_secondSentMessageHasContentExecutionCount() throws Exception {
     //when
     executeRequestHandler.handle(message);
@@ -162,7 +149,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(publishMessage.getContent().get("execution_count")).isNotNull();
   }
 
-//  @Test
+  @Test
   public void handleMessage_secondSentMessageHasParentHeader() throws Exception {
     //given
     String expectedHeader = message.getHeader().asJson();
@@ -174,7 +161,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
-//  @Test
+  @Test
   public void handleMessage_secondSentMessageHasIdentities() throws Exception {
     //given
     String expectedIdentities = new String(message.getIdentities().get(0));
@@ -187,7 +174,7 @@ public class ExecuteRequestHandlerTest {
         .isEqualTo(expectedIdentities);
   }
 
-//  @Test
+  //@Test
   public void handleMessage_passCodeAndMessageAndExecCountToGroovyEvaluatorManager()
       throws Exception {
     //given
@@ -202,7 +189,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(simpleEvaluationObject.getJupyterMessage()).isNotNull();
   }
 
-//  @Test
+  //@Test
   public void callExit_shouldGroovyEvaluatorManagerExit() throws Exception {
     //when
     executeRequestHandler.exit();

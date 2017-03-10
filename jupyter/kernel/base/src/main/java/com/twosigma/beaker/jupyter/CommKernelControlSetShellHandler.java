@@ -15,15 +15,14 @@
  */
 package com.twosigma.beaker.jupyter;
 
-import org.lappsgrid.jupyter.KernelFunctionality;
-import org.lappsgrid.jupyter.handler.AbstractHandler;
-import org.lappsgrid.jupyter.msg.Header;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.handler.KernelHandler;
+import com.twosigma.jupyter.message.Header;
+import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,7 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;
 /**
  * @author konst
  */
-public class CommKernelControlSetShellHandler extends AbstractHandler<Message> {
+public class CommKernelControlSetShellHandler extends KernelHandler<Message> {
 
   public static final String IMPORTS = "imports";
   public static final String CLASSPATH = "classpath";
@@ -52,7 +51,7 @@ public class CommKernelControlSetShellHandler extends AbstractHandler<Message> {
   }
 
   @Override
-  public void handle(Message message) throws NoSuchAlgorithmException {
+  public void handle(Message message)  {
     logger.info("Handing comm message content");
     if(message != null){
       Map<String, Serializable> commMap = message.getContent();

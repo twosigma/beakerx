@@ -21,7 +21,7 @@ import com.twosigma.beaker.widgets.internal.InternalWidget;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.message.Message;
 
 import java.util.Map;
 

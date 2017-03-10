@@ -22,7 +22,6 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STATUS;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STREAM;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -31,9 +30,9 @@ import java.util.Map;
 
 import com.twosigma.beaker.jvm.object.ConsoleOutput;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import org.lappsgrid.jupyter.KernelFunctionality;
-import org.lappsgrid.jupyter.msg.Header;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.message.Header;
+import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +56,7 @@ public class MessageCreator {
   public static Logger logger = LoggerFactory.getLogger(MessageCreator.class);
   protected KernelFunctionality kernel;
 
-  public MessageCreator(KernelFunctionality kernel){
+  public MessageCreator(KernelFunctionality kernel) {
     this.kernel = kernel;
   }
 
@@ -70,14 +69,14 @@ public class MessageCreator {
   }
 
   public Message buildMessage(Message message, String code, int executionCount) {
-    Message reply = initMessage(EXECUTE_RESULT,message);
+    Message reply = initMessage(EXECUTE_RESULT, message);
     reply.setContent(new HashMap<String, Serializable>());
     reply.getContent().put("execution_count", executionCount);
     HashMap<String, String> map3 = new HashMap<>();
-    if(code != null){
+    if (code != null) {
       boolean resultHtml = code.startsWith("<html>") && code.endsWith("</html>");
       map3.put(resultHtml ? "text/html" : TEXT_PLAIN, code);
-    }else {
+    } else {
       map3.put(TEXT_PLAIN, NULL_RESULT);
     }
     reply.getContent().put("data", map3);
@@ -85,16 +84,16 @@ public class MessageCreator {
     return reply;
   }
 
-  private Message buildReply(Message message, int executionCount, List<MessageHolder> ret){
+  private Message buildReply(Message message, int executionCount, List<MessageHolder> ret) {
     Message reply = createIdleMessage(message);
     ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, reply));
     // Send the REPLY to the original message. This is NOT the result of
     // executing the cell. This is the equivalent of 'exit 0' or 'exit 1'
     // at the end of a shell script.
-    reply = initMessage(EXECUTE_REPLY,message);
+    reply = initMessage(EXECUTE_REPLY, message);
     Hashtable<String, Serializable> map6 = new Hashtable<String, Serializable>(3);
     map6.put("dependencies_met", true);
-    map6.put("engine", kernel.getId());
+    map6.put("engine", kernel.getSessionId());
     map6.put("started", timestamp());
     reply.setMetadata(map6);
     Hashtable<String, Serializable> map7 = new Hashtable<String, Serializable>(1);
@@ -113,50 +112,49 @@ public class MessageCreator {
     return reply;
   }
 
-  public synchronized void createMagicMessage(Message reply, int executionCount, Message message)  {
+  public synchronized void createMagicMessage(Message reply, int executionCount, Message message) {
     List<MessageHolder> ret = new ArrayList<>();
-    try {
-      kernel.publish(reply);
-      kernel.publish(buildReply(message, executionCount, ret));
-    } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
-    }
+    kernel.publish(reply);
+    kernel.publish(buildReply(message, executionCount, ret));
   }
 
-  public synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo){
+  public synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo) {
     logger.info("Creating message responce message from: " + seo);
     List<MessageHolder> ret = new ArrayList<>();
-    Message message = (Message)seo.getJupyterMessage();
-    
-    if(seo.getConsoleOutput() != null && !seo.getConsoleOutput().isEmpty()){
-      while(!seo.getConsoleOutput().isEmpty()){
+    Message message = (Message) seo.getJupyterMessage();
+
+    if (seo.getConsoleOutput() != null && !seo.getConsoleOutput().isEmpty()) {
+      while (!seo.getConsoleOutput().isEmpty()) {
         ConsoleOutput co = seo.getConsoleOutput().poll(); //FIFO : peek to see, poll -- removes the data
-        ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, buildOutputMessage(message,co.getText(),co.isError())));
+        ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, buildOutputMessage(message, co.getText(), co.isError())));
       }
-    }else if(EvaluationStatus.FINISHED == seo.getStatus() || EvaluationStatus.ERROR == seo.getStatus()){
+    } else if (EvaluationStatus.FINISHED == seo.getStatus() || EvaluationStatus.ERROR == seo.getStatus()) {
 
       switch (seo.getStatus()) {
-        case FINISHED:{
+        case FINISHED: {
           // Publish the result of the execution.
           String resultString = SerializeToString.doit(seo.getPayload());
-          ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, buildMessage(message,resultString,seo.getExecutionCount())));
-        }break;
-        case ERROR:{
+          ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, buildMessage(message, resultString, seo.getExecutionCount())));
+        }
+        break;
+        case ERROR: {
           logger.info("Execution result ERROR: " + seo.getPayload().toString().split("\n")[0]);
-          Message reply = initMessage(STREAM,message);
+          Message reply = initMessage(STREAM, message);
           Hashtable<String, Serializable> map4 = new Hashtable<String, Serializable>(2);
           map4.put("name", "stderr");
-          map4.put("text", (String)seo.getPayload());
+          map4.put("text", (String) seo.getPayload());
           reply.setContent(map4);
           ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, reply));
-        }break;
-        
-        default:{
+        }
+        break;
+
+        default: {
           logger.error("Unhandled status of SimpleEvaluationObject : " + seo.getStatus());
-        }break;
-        
+        }
+        break;
+
       }
-      Message reply = buildReply(message, seo.getExecutionCount(),ret);
+      Message reply = buildReply(message, seo.getExecutionCount(), ret);
       if (EvaluationStatus.ERROR == seo.getStatus()) {
         reply.getMetadata().put("status", "error");
         reply.getContent().put("status", "error");
@@ -183,7 +181,7 @@ public class MessageCreator {
   private Message getExecutionStateMessage(Message parentMessage, String state) {
     Map<String, Serializable> map1 = new HashMap<String, Serializable>(1);
     map1.put(EXECUTION_STATE, state);
-    Message reply = initMessage(STATUS,parentMessage);
+    Message reply = initMessage(STATUS, parentMessage);
     reply.setContent(map1);
     return reply;
   }

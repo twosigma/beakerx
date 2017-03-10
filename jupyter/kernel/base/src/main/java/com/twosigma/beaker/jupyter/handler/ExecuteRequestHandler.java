@@ -18,14 +18,14 @@ package com.twosigma.beaker.jupyter.handler;
 
 import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.commands.MagicCommand;
-import org.lappsgrid.jupyter.Kernel;
-import org.lappsgrid.jupyter.handler.AbstractHandler;
-import org.lappsgrid.jupyter.msg.Header;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.handler.KernelHandler;
+import com.twosigma.jupyter.message.Header;
+import com.twosigma.jupyter.message.Message;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -38,27 +38,28 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STATUS;
  *
  * @author konst
  */
-public class ExecuteRequestHandler extends AbstractHandler<Message> {
+public class ExecuteRequestHandler extends KernelHandler<Message> {
+
+  private final static Logger logger = LoggerFactory.getLogger(ExecuteRequestHandler.class);
 
   protected int executionCount;
   protected EvaluatorManager evaluatorManager;
   private MagicCommand magicCommand;
 
-  public ExecuteRequestHandler(Kernel kernel, EvaluatorManager evaluatorManager) {
+  public ExecuteRequestHandler(KernelFunctionality kernel) {
     super(kernel);
-    logger = LoggerFactory.getLogger(this.getClass());
-    this.evaluatorManager = evaluatorManager;
+    this.evaluatorManager = kernel.getEvaluatorManager();
     magicCommand = new MagicCommand(kernel);
     executionCount = 0;
   }
 
   @Override
-  public void handle(Message message) throws NoSuchAlgorithmException {
+  public void handle(Message message) {
     logger.info("Processing execute request");
     handleMessage(message);
   }
 
-  private synchronized void handleMessage(Message message) throws NoSuchAlgorithmException {
+  private synchronized void handleMessage(Message message) {
     Message reply = new Message();
     Map<String, Serializable> map = new HashMap<>(1);
     map.put("execution_state", "busy");
@@ -70,7 +71,7 @@ public class ExecuteRequestHandler extends AbstractHandler<Message> {
 
     // Get the code to be executed from the message.
     String code = "";
-    if(message.getContent() != null && message.getContent().containsKey("code")){
+    if (message.getContent() != null && message.getContent().containsKey("code")) {
       code = ((String) message.getContent().get("code")).trim();
     }
 
@@ -100,5 +101,5 @@ public class ExecuteRequestHandler extends AbstractHandler<Message> {
   public void exit() {
     evaluatorManager.exit();
   }
-  
+
 }

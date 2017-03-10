@@ -16,14 +16,14 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import org.lappsgrid.jupyter.Kernel;
-import org.lappsgrid.jupyter.handler.AbstractHandler;
-import org.lappsgrid.jupyter.msg.Header;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.handler.KernelHandler;
+import com.twosigma.jupyter.message.Header;
+import com.twosigma.jupyter.message.Message;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,11 +32,12 @@ import static com.twosigma.beaker.jupyter.Comm.DATA;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 
 /** @author konst */
-public class CommCloseHandler extends AbstractHandler<Message> {
+public class CommCloseHandler extends KernelHandler<Message> {
 
-  public CommCloseHandler(Kernel kernel) {
+  private final static Logger logger = LoggerFactory.getLogger(CommCloseHandler.class);;
+
+  public CommCloseHandler(KernelFunctionality kernel) {
     super(kernel);
-    logger = LoggerFactory.getLogger(CommCloseHandler.class);
   }
 
   public static String getString(Map<String, Serializable> map, String name) {
@@ -48,7 +49,7 @@ public class CommCloseHandler extends AbstractHandler<Message> {
   }
 
   @Override
-  public void handle(Message message) throws NoSuchAlgorithmException {
+  public void handle(Message message)  {
 
     logger.info("Processing CommCloseHandler");
     Map<String, Serializable> commMap = message.getContent();

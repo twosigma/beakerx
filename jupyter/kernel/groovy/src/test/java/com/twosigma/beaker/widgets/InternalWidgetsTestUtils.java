@@ -16,7 +16,7 @@
 package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
-import org.lappsgrid.jupyter.msg.Message;
+import com.twosigma.jupyter.message.Message;
 
 import java.util.List;
 import java.util.Map;

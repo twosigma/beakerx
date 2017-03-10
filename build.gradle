@@ -1,103 +1,93 @@
-/*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+import org.apache.tools.ant.taskdefs.condition.Os
 
-def mainGradle = 'core/config/builds/dev/build.gradle'
+def final nbextensionsGit = "https://github.com/ipython-contrib/jupyter_contrib_nbextensions.git"
+def final nbextensionsFolderName = "nbextensions"
+def final beakerLinkName = "beaker"
+def final beakerNbextensionFolder = "beaker-nbextension"
+def final PYTHONPATH = "beaker"
 
-task build (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['build']
+task installNbextensions() {
+  doLast {
+    println "Installing bextensions"
+    def folder = new File('jupyter_contrib_nbextensions')
+    if (!folder.exists()) {
+      def out = new ByteArrayOutputStream()
+      exec {
+        commandLine "git",
+         "clone",
+         nbextensionsGit;
+        standardOutput = out
+      }
+      println out.toString().trim()
+    } else {
+      println "jupyter_contrib_nbextensions already exists!"
+    }
+
+    def out = new ByteArrayOutputStream()
+    exec {
+      workingDir 'jupyter_contrib_nbextensions'
+      commandLine "pip",
+        "install",
+        ".";
+      standardOutput = out
+    }
+    println out.toString().trim();
+
+    out = new ByteArrayOutputStream()
+    exec {
+      workingDir 'jupyter_contrib_nbextensions'
+      commandLine "jupyter",
+        "contrib",
+        "nbextension",
+        "install",
+        "--user";
+      standardOutput = out
+    }
+    println out.toString().trim()
+  }
 }
 
-task builddebug (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['builddebug']
+task linkBeakerNbextension(dependsOn: 'installNbextensions') {
+  doLast {
+    def out = new ByteArrayOutputStream()
+    exec {
+      commandLine "jupyter", "--data-dir";
+      standardOutput = out
+    }
+    def jupyterFolder = out.toString().trim() + '//' + nbextensionsFolderName + "//" + beakerLinkName
+    def from = new File(jupyterFolder).getAbsolutePath()
+    def to = new File(beakerNbextensionFolder).getAbsolutePath()
+
+    if (!java.nio.file.Files.isSymbolicLink(new File(from).toPath())) {
+      println "Creating symbolic link:"
+      println "from = " + from
+      println "to = " + to
+      java.nio.file.Files.createSymbolicLink(new File(from).toPath(), new File(to).toPath())
+    } else {
+      println "Symbolic link lready present, should be like this:"
+      println "from = " + from
+      println "to = " + to
+    }
+    project('beaker-nbextension').tasks.install.execute()
+  }
 }
 
-task buildembed (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['buildembed']
-}
-
-task check (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['check']
-}
-
-task checkregular (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['checkregular']
-}
-
-task checkembed (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['checkembed']
-}
-
-
-task installDist (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['installDist']
-}
-
-task clean (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['clean']
-}
-
-task realclean (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['realclean']
-}
-
-task run (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['run']
-}
-
-task runembed (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['runembed']
-}
-
-task debug (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['debug']
-}
-
-task assemble (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['assemble']
-}
-
-task updatePackages (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['updatePackages']
-}
-
-task zipPackages (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['zipPackages']
-}
-
-task copyVendorStuff (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['copyVendorStuff']
-}
-
-task publishAssets (type: GradleBuild) {
-  buildFile = mainGradle
-  tasks = ['publishAssets']
+task environmentVariables(dependsOn: 'linkBeakerNbextension') {
+  doLast {
+    if (!System.getenv("PYTHONPATH")) {
+      println "You should define environment variables PYTHONPATH"
+      println "please define it like so:"
+      if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        println "set PYTHONPATH=" + new File(PYTHONPATH).getAbsolutePath()
+      } else if (Os.isFamily(Os.FAMILY_MAC) || Os.isFamily(Os.FAMILY_UNIX)) {
+        println "export PYTHONPATH=" + new File(PYTHONPATH).getAbsolutePath()
+      }
+    } else {
+      println "PYTHONPATH already defined"
+      println "PYTHONPATH now set to:"
+      println "PYTHONPATH=" + System.getenv("PYTHONPATH")
+      println "PYTHONPATH should be:"
+      println "PYTHONPATH=" + new File(PYTHONPATH).getAbsolutePath()
+    }
+  }
 }

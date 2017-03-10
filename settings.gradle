@@ -13,28 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-include 'shared'
-include 'plugin'
-include 'jupyter'
-include 'jupyter:beaker-nbextension'
-include 'jupyter:beaker-nbextension:js'
-include 'jupyter:kernel'
-include 'jupyter:kernel:base'
-include 'jupyter:kernel:groovy'
-include 'jupyter:kernel:scala'
-include 'plugin:jvm',
-        'plugin:groovy',
-        'plugin:javash',
-        'plugin:ipython',
-        'plugin:python3',
-        'plugin:iruby',
-        'plugin:julia',
-        'plugin:node',
-        'plugin:r',
-        'plugin:scala',
-        'plugin:clojure',
-        'plugin:kdb',
-        'plugin:cpp',
-        'plugin:sqlsh'
-include 'core'
 
+include 'beaker-nbextension'
+include 'beaker-nbextension:js'
+include 'kernel'
+include 'kernel:base'
+include 'kernel:groovy'
+include 'kernel:scala'

@@ -1,0 +1,106 @@
+apply plugin: 'application'
+apply plugin: 'jacoco'
+apply plugin: 'java'
+apply plugin: 'scala'
+
+def final kernelIdName = 'scala'
+def final toReplace = '__PATH__'
+
+mainClassName = 'com.twosigma.beaker.groovy.ScalaEvaluator'
+
+configurations {
+  antlr
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile project(':kernel:base')
+  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
+  compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.8'
+  compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.8'
+  compile group: 'jline', name: 'jline', version: '2.12'
+
+  testCompile group: 'junit', name: 'junit', version: '4.11'
+  testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
+  testCompile group: 'org.reflections', name: 'reflections', version: '0.9.10'
+}
+
+jar {
+  manifest {
+    attributes "Main-Class": "$mainClassName"
+  }
+
+  from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  } {
+    exclude "META-INF/*.SF"
+    exclude "META-INF/*.DSA"
+    exclude "META-INF/*.RSA"
+  }
+}
+
+task prepareJson(dependsOn: 'build') {
+  doLast {
+    println "Prepare JSON for Jupyter notebook"
+    println "Copy kernel.json to build/libs/json/ and replasing PATH with scala.jar parh"
+
+    def jarLocation = new File('build/libs/groovy.jar').getAbsolutePath()
+    jarLocation = jarLocation.replace("\\", "/");
+    def text = new File('kernel.json').text.replace(toReplace, jarLocation)
+    def folder = new File('build/libs/json')
+    if (!folder.exists()) {
+      println "Creating folder build/libs/json"
+      folder.mkdirs()
+    }
+
+    new File('build/libs/json/kernel.json').withWriter { w ->
+      w << text
+    }
+  }
+}
+
+task kernelInstall(dependsOn: 'prepareJson') {
+  doLast {
+    println "Installing 'Scala' to jupyter notebook"
+
+    def hashStdOut = new ByteArrayOutputStream()
+    def jsonFolder = new File('build/libs/json/').getAbsolutePath();
+    exec {
+      commandLine "jupyter",
+              "kernelspec",
+              "install",
+              "--user",
+              "--replace",
+              "--name",
+              kernelIdName,
+              jsonFolder;
+      standardOutput = hashStdOut
+    }
+    println hashStdOut.toString().trim();
+    println "DONE"
+  }
+}
+
+jacoco {
+  toolVersion = "0.7.8"
+}
+
+jacocoTestReport {
+  reports {
+    html.enabled = true
+    xml.enabled = false
+    csv.enabled = false
+  }
+}
+
+task realclean
+realclean.dependsOn(clean)
+// should also remove
+// GroovyLexer.java GroovyLexer.tokens GroovyParser.java GroovyParser.tokens
+// GroovyParserBaseListener.java GroovyParserListener.java
+
+test.finalizedBy jacocoTestReport
+

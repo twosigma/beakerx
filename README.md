@@ -14,82 +14,48 @@
     limitations under the License.
 -->
 
-#Beaker - the data scientist's laboratory
 
-Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.
+# Dependencies
 
-Beaker is both a server that you can run in the cloud, an application that you can download and run, and
-a [Docker container](https://hub.docker.com/r/beakernotebook/beaker/) that you can run anywhere.
+* oracle Java8 JDK
+* gradle
+* npm
+* webpack
+* conda
 
-This page is for developers.  If you want to use or learn more about Beaker, see the [home page](http://beakernotebook.com).
+```
+conda create -n beakerx python=3.5 jupyter
+source activate beakerx
+(cd kernel/groovy; gradle kernelInstall)
+gradle environmentVariables # set PYTHONPATH as directed
+jupyter notebook
+```
 
-#Screenshots
+make sure both Beaker extensions are enabled in the nbextensions tab (Beaker and beaker-nbextension/extension).
 
-![screenshots](https://raw.githubusercontent.com/twosigma/beaker-notebook/master/doc/screenshots.png)
+# Build and install groovy kernel
+This installs the kernel for groovy into the current conda environment.
+* `gradle kernelInstall`
 
-#Publication Server
-Notebooks can published and converted into web pages that anyone can access with an ordinary web browser, even on a mobile device.
-This free service is integrated into the application, and can be applied with just one click to any cell, section, or a whole notebook.
-Plots and tables remain interactive in published version.  Learn more, and explore a variety of notebooks from the user community on the [publication server](http://pub.beakernotebook.com/).
+# Update groovy kernel
+* `gradle build`
 
-#Build, test, and run instructions
 
-See the page for your platform for how to build from source:
-[Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run),
-[Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run),
-[Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run), and
-[Docker](https://github.com/twosigma/beaker-notebook/blob/master/Dockerfile).  We use gradle to compile the project.
+<img width="942" alt="screen shot 2016-12-20 at 11 35 17 am" src="https://cloud.githubusercontent.com/assets/963093/21402566/1680b928-c787-11e6-8acf-dc4fdeba0651.png">
 
-Say `cd test; ./runner` to run the end-to-end tests with Protractor.
+# install notebook extension
 
-Say `cd test; ./perftest` to run performance tests with Protractor. Performance tests are pretty demanding and will lock up the browser performing the tests. Any interaction with the browser while the tests are running will affect the tests and skew the results.
+* `gradle environmentVariables`
+* Then set environment variable PYTHONPATH, see message after `gradle environmentVariables`
 
-[![Build Status](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/buildStatus/icon?job=Beaker master)](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/job/Beaker master)
+# update notebook extension
 
-To enable the debug menu, add the following to your `beaker.pref.json` file:
+* `cd beaker-nbextension/js; webpack`
 
-    "notebook-app-menu-plugins": ["./plugin/menu/debug.js"]
+If webpack gives an error like
 
-##Presentation and Demo on YouTube
+> ERROR in jquery-ui (bower component) Module not found: Error: Cannot resolve 'file' or 'directory' ./ui/jquery-ui.js
 
-[![Greenwood and Draves speak](http://img.youtube.com/vi/wu65cYffMSg/0.jpg)](http://beakernotebook.com/videos)
+Then run `rm -rf bower_components && bower install`.
 
-##Language support
-
-We currently provide support for Python, R, Julia, Groovy, Ruby, Java, Scala, Kdb, Clojure, JavaScript, HTML, Markdown, and LaTeX.
-
-Beaker supports *autotranslation* of variables between languages.  For
-example, you can read and process some data in Python, model it with
-R, and then turn that into an interactive visualization with
-Javascript.
-
-##Architecture
-
-Beaker is primarily composed of a Java server and a Javascript client.
-There are plugins for each language, and interaction plugins as well.
-The architecture and the organization of the source is code is covered
-in the [Architecture
-wiki](https://github.com/twosigma/beaker-notebook/wiki/Architecture).
-
-Plugin specifications: [Evaluator
-plugins](https://github.com/twosigma/beaker-notebook/wiki/Eval-plugin-spec),
-[Menu
-plugins](https://github.com/twosigma/beaker-notebook/wiki/Menu-plugin-spec),
-[Output display
-plugins](https://github.com/twosigma/beaker-notebook/wiki/OutputDisplay-spec)
-
-##Open source
-
-Beaker's full source code and documentation is available under the
-Apache 2.0 license.
-
-##Contributing
-
-We welcome developers to extend and improve Beaker in ways that can
-benefit everyone. In order for us to accept your code or pull request,
-we need for you to fill out and email back to us a scan of a signed copy of the
-[Contributor License Agreement](http://beakernotebook.com/cla.zip).
-
-We're also looking to expand our full-time, NYC-based engineering team
-with a [full-stack web developer](https://careers.twosigma.com/careers/JobDetail/New-York-New-York-United-States-Beaker-Full-Stack-Web-Developer/361).
-
+<img width="631" alt="screen shot 2016-12-10 at 10 43 22 pm" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">

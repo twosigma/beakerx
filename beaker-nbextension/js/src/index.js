@@ -28,7 +28,8 @@ module.exports = {};
 
 var loadedModules = [
   require("./Plot"),
-  require("./TableDisplay")
+  require("./TableDisplay"),
+  require("./EasyForm")
 ];
 
 for (var i in loadedModules) {

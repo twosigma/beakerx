@@ -14,8 +14,9 @@
     limitations under the License.
 -->
 
+# BeakerX: Beaker extensions for Jupyter
 
-# Dependencies
+## Dependencies
 
 * oracle Java8 JDK
 * gradle
@@ -32,23 +33,24 @@ jupyter notebook
 ```
 
 make sure both Beaker extensions are enabled in the nbextensions tab (Beaker and beaker-nbextension/extension).
+if `gradle environmentVariables` fails, then try `(cd beaker-nbextension; pip install -e .)`
 
-# Build and install groovy kernel
+## Build and install groovy kernel
 This installs the kernel for groovy into the current conda environment.
 * `gradle kernelInstall`
 
-# Update groovy kernel
+## Update groovy kernel
 * `gradle build`
 
 
 <img width="942" alt="screen shot 2016-12-20 at 11 35 17 am" src="https://cloud.githubusercontent.com/assets/963093/21402566/1680b928-c787-11e6-8acf-dc4fdeba0651.png">
 
-# install notebook extension
+## install notebook extension
 
 * `gradle environmentVariables`
 * Then set environment variable PYTHONPATH, see message after `gradle environmentVariables`
 
-# update notebook extension
+## update notebook extension
 
 * `cd beaker-nbextension/js; webpack`
 

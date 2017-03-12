@@ -16,6 +16,12 @@
 
 # BeakerX: Beaker extensions for Jupyter
 
+Groovy with Interactive Plotting and Table Saw:
+<img width="942" alt="screen shot 2016-12-20 at 11 35 17 am" src="https://cloud.githubusercontent.com/assets/963093/21402566/1680b928-c787-11e6-8acf-dc4fdeba0651.png">
+
+Autotranslation from Python to JavaScript:
+<img width="631" alt="screen shot 2016-12-10 at 10 43 22 pm" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
+
 ## Dependencies
 
 * oracle Java8 JDK, gradle
@@ -41,7 +47,7 @@ This installs the kernel for groovy into the current conda environment.
 * `gradle build`
 
 
-<img width="942" alt="screen shot 2016-12-20 at 11 35 17 am" src="https://cloud.githubusercontent.com/assets/963093/21402566/1680b928-c787-11e6-8acf-dc4fdeba0651.png">
+
 
 ## install notebook extension
 
@@ -58,4 +64,4 @@ If webpack gives an error like
 
 Then run `rm -rf bower_components && bower install`.
 
-<img width="631" alt="screen shot 2016-12-10 at 10 43 22 pm" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
+

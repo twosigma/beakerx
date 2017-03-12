@@ -18,10 +18,8 @@
 
 ## Dependencies
 
-* oracle Java8 JDK
-* gradle
-* npm
-* webpack
+* oracle Java8 JDK, gradle
+* npm, bower, webpack
 * conda
 
 ```

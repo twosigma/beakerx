@@ -1,5 +1,5 @@
 <!--
-    Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+    Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@
 * conda
 
 ```
-conda create -n beakerx python=3.5 jupyter pandas
+conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx
-(cd kernel/groovy; gradle kernelInstall)
-gradle environmentVariables # set PYTHONPATH as directed
+(cd kernel/groovy; gradle --no-daemon kernelInstall)
+gradle --no-daemon environmentVariables # set PYTHONPATH as directed
 jupyter notebook
 ```
 

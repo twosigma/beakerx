@@ -3,6 +3,8 @@
 .idea/
 .metadata/
 .recommenders/
+.gradle/
+.settings/
 RemoteSystemsTempFiles/
 jupyter_contrib_nbextensions/
 Groovier-1.0.0.jar

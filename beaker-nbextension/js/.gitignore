@@ -94,3 +94,5 @@ bower_components/jquery-ui/component.json
 bower_components/jquery-ui/composer.json
 bower_components/jquery-ui/package.json
 bower_components/jquery-ui/README.md
+/.classpath
+/.project

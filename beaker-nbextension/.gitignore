@@ -10,3 +10,6 @@ beaker-nbextension/static/
 
 # OS X
 .DS_Store
+/.classpath
+/.project
+/.settings/

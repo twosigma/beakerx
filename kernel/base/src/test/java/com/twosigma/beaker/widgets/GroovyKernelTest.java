@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker;
+package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.Comm;
@@ -27,18 +27,18 @@ import java.util.List;
 import java.util.Observer;
 import java.util.Set;
 
-public class KernelTest implements KernelFunctionality {
+public class GroovyKernelTest implements KernelFunctionality {
 
   private List<Message> publishedMessages = new ArrayList<>();
   private List<Message> sentMessages = new ArrayList<>();
   private String id;
   private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
 
-  public KernelTest() {
+  public GroovyKernelTest() {
     this("KernelTestId1");
   }
 
-  public KernelTest(String id) {
+  public GroovyKernelTest(String id) {
     this.id = id;
   }
 

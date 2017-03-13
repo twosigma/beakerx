@@ -18,7 +18,7 @@ package com.twosigma.beaker.evaluator;
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.widgets.GroovyKernelTest;
+import com.twosigma.beaker.KernelTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,11 +36,11 @@ public class GroovyOutputContainerTest {
 
   public static final Message HEADER_MESSAGE = new Message();
   private EvaluatorManager groovyEvaluator;
-  private GroovyKernelTest groovyKernel;
+  private KernelTest groovyKernel;
 
   @Before
   public void setUp() throws Exception {
-    groovyKernel = new GroovyKernelTest();
+    groovyKernel = new KernelTest();
     KernelManager.register(groovyKernel);
     groovyEvaluator = new EvaluatorManager(groovyKernel,new GroovyEvaluator("id", "sid"));
   }

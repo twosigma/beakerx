@@ -17,6 +17,7 @@
 package com.twosigma.beaker.jupyter;
 
 import com.twosigma.beaker.evaluator.Evaluator;
+import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;

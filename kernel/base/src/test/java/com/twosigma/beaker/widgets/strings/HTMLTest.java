@@ -13,27 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy;
 
-import com.twosigma.beaker.evaluator.InternalVariable;
+package com.twosigma.beaker.widgets.strings;
+
 import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.KernelTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.security.NoSuchAlgorithmException;
 
-public class NamespaceClientShowProgressReportingTest {
+import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyMsgForProperty;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
-  private static String SESSION_ID = "sessionId";
-  private NamespaceClient namespaceClient;
+public class HTMLTest {
+
   private KernelTest groovyKernel;
 
   @Before
-  public void setUp() {
-    namespaceClient = NamespaceClient.getBeaker(SESSION_ID);
+  public void setUp() throws Exception {
     groovyKernel = new KernelTest();
     KernelManager.register(groovyKernel);
   }
@@ -44,14 +43,29 @@ public class NamespaceClientShowProgressReportingTest {
   }
 
   @Test
-  public void updateProgressReporting() throws Exception {
+  public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
-    InternalVariable.setValue(new SimpleEvaluationObject("code"));
     //when
-    namespaceClient.showProgressUpdate("msg1", 20);
-    namespaceClient.showProgressUpdate("msg2", 40);
+    new HTML();
     //then
-    assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), HTML.MODEL_NAME_VALUE, HTML.VIEW_NAME_VALUE);
   }
+
+  @Test
+  public void shouldSendCommMsgWhenValueChange() throws Exception {
+    //given
+    HTML widget = html();
+    //when
+    widget.setValue("Hello <b>World</b>");
+    //then
+    verifyMsgForProperty(groovyKernel, HTML.VALUE, "Hello <b>World</b>");
+  }
+
+  private HTML html() throws NoSuchAlgorithmException {
+    HTML widget = new HTML();
+    groovyKernel.clearPublishedMessages();
+    return widget;
+  }
+
 
 }

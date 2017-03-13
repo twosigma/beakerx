@@ -17,7 +17,7 @@ package com.twosigma.beaker.evaluator;
 
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.widgets.GroovyKernelTest;
+import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.widgets.integers.IntProgress;
 import org.junit.After;
 import org.junit.Before;
@@ -39,12 +39,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GroovyEvaluatorProgressReportingTest {
 
   private GroovyEvaluator groovyEvaluator;
-  private GroovyKernelTest groovyKernel;
+  private KernelTest groovyKernel;
 
   @Before
   public void setUp() throws Exception {
     groovyEvaluator = new GroovyEvaluator("shellId1", "sessionId1");
-    groovyKernel = new GroovyKernelTest();
+    groovyKernel = new KernelTest();
     KernelManager.register(groovyKernel);
   }
 

@@ -13,27 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy;
+package com.twosigma.beaker.widgets.floats;
 
-import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.KernelTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.security.NoSuchAlgorithmException;
 
-public class NamespaceClientShowProgressReportingTest {
+import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyMsgForProperty;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
-  private static String SESSION_ID = "sessionId";
-  private NamespaceClient namespaceClient;
+public class FloatProgressTest {
+
   private KernelTest groovyKernel;
 
   @Before
-  public void setUp() {
-    namespaceClient = NamespaceClient.getBeaker(SESSION_ID);
+  public void setUp() throws Exception {
     groovyKernel = new KernelTest();
     KernelManager.register(groovyKernel);
   }
@@ -44,14 +42,28 @@ public class NamespaceClientShowProgressReportingTest {
   }
 
   @Test
-  public void updateProgressReporting() throws Exception {
+  public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
-    InternalVariable.setValue(new SimpleEvaluationObject("code"));
     //when
-    namespaceClient.showProgressUpdate("msg1", 20);
-    namespaceClient.showProgressUpdate("msg2", 40);
+    new FloatProgress();
     //then
-    assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), FloatProgress.MODEL_NAME_VALUE, FloatProgress.VIEW_NAME_VALUE);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenOrientationChange() throws Exception {
+    //given
+    FloatProgress floatProgress = floatProgress();
+    //when
+    floatProgress.setOrientation("vertical");
+    //then
+    verifyMsgForProperty(groovyKernel, FloatProgress.ORIENTATION, "vertical");
+  }
+
+  private FloatProgress floatProgress() throws NoSuchAlgorithmException {
+    FloatProgress progress = new FloatProgress();
+    groovyKernel.clearPublishedMessages();
+    return progress;
   }
 
 }

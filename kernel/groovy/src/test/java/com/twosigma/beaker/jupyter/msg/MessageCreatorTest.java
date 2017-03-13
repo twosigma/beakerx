@@ -17,7 +17,7 @@ package com.twosigma.beaker.jupyter.msg;
 
 import com.twosigma.beaker.jupyter.SocketEnum;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.widgets.GroovyKernelTest;
+import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.widgets.TestWidgetUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class MessageCreatorTest {
 
   @Before
   public void setUp() throws Exception {
-    messageCreator = new MessageCreator(new GroovyKernelTest("id1"));
+    messageCreator = new MessageCreator(new KernelTest("id1"));
     seo = new SimpleEvaluationObject("code");
     seo.setJupyterMessage(new Message());
   }

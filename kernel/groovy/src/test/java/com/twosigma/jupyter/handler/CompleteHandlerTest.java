@@ -15,8 +15,11 @@
  */
 package com.twosigma.jupyter.handler;
 
-import com.twosigma.beaker.KernelTest;
+import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import com.twosigma.jupyter.message.Message;
 
@@ -29,15 +32,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CompleteHandlerTest {
 
   private CompleteHandler completeHandler;
-  private KernelTest kernel;
+  private static GroovyKernelTest groovyKernel;
+
+  @BeforeClass
+  public static void setUpClass(){
+    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("id", "sid"){
+      @Override
+      public void startWorker() {
+      }
+    };
+    groovyKernel = new GroovyKernelTest("sid", groovyEvaluator);
+  }
 
   @Before
   public void setUp() throws Exception {
-    kernel = new KernelTest();
-    completeHandler = new CompleteHandler(kernel);
+    completeHandler = new CompleteHandler(groovyKernel);
   }
 
-  //@Test
+  @After
+  public void tearDown() throws Exception {
+    groovyKernel.clearSentMessages();
+  }
+
+  @Test
   public void shouldSendCompleteReplyMsgForPrintln() throws Exception {
     //given
     Message message = autocompleteMsgFor(
@@ -47,11 +64,11 @@ public class CompleteHandlerTest {
     //when
     completeHandler.handle(message);
     //then
-    assertThat(kernel.getSentMessages().size()).isEqualTo(1);
-    verifyAutocompleteMsg(kernel.getSentMessages().get(0),38,44);
+    assertThat(groovyKernel.getSentMessages().size()).isEqualTo(1);
+    verifyAutocompleteMsg(groovyKernel.getSentMessages().get(0),38,44);
   }
 
-  //@Test
+  @Test
   public void shouldSendCompleteReplyMsgForDef() throws Exception {
     //given
     String comment = "//parentheses are optional\n";
@@ -59,8 +76,8 @@ public class CompleteHandlerTest {
     //when
      completeHandler.handle(message);
     //then
-    assertThat(kernel.getSentMessages().size()).isEqualTo(1);
-    verifyAutocompleteMsg(kernel.getSentMessages().get(0),27,comment.length()+2);
+    assertThat(groovyKernel.getSentMessages().size()).isEqualTo(1);
+    verifyAutocompleteMsg(groovyKernel.getSentMessages().get(0),27,comment.length()+2);
   }
 
   private void verifyAutocompleteMsg(Message reply, int expectedCursorStart, int expectedCursorEnd) {

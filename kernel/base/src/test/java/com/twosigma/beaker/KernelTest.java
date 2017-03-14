@@ -23,7 +23,9 @@ import com.twosigma.jupyter.message.Message;
 import org.zeromq.ZMQ;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observer;
 import java.util.Set;
 
@@ -32,7 +34,9 @@ public class KernelTest implements KernelFunctionality {
   private List<Message> publishedMessages = new ArrayList<>();
   private List<Message> sentMessages = new ArrayList<>();
   private String id;
+  private Map<String, Comm> commMap = new HashMap<>();
   private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
+  private Boolean setShellOptions;
 
   public KernelTest() {
     this("KernelTestId1");
@@ -62,38 +66,46 @@ public class KernelTest implements KernelFunctionality {
 
 
   @Override
-  public void addComm(String commId, Comm comm) {
-
+  public void addComm(String hash, Comm commObject) {
+    if (!isCommPresent(hash)) {
+      commMap.put(hash, commObject);
+    }
   }
 
   @Override
-  public void removeComm(String commId) {
-
+  public void removeComm(String hash) {
+    if (hash != null && isCommPresent(hash)) {
+      commMap.remove(hash);
+    }
   }
 
   @Override
   public void send(ZMQ.Socket socket, Message message) {
-
+    this.sentMessages.add(message);
   }
 
   @Override
-  public Comm getComm(String string) {
-    return null;
+  public Comm getComm(String hash) {
+    return commMap.get(hash != null ? hash : "");
   }
 
   @Override
-  public boolean isCommPresent(String string) {
-    return false;
+  public boolean isCommPresent(String hash) {
+    return commMap.containsKey(hash);
   }
 
   @Override
   public Set<String> getCommHashSet() {
-    return null;
+    return commMap.keySet();
   }
-  
+
   @Override
   public void setShellOptions(String usString, String usString1) {
+    this.setShellOptions = Boolean.TRUE;
+  }
 
+  public Boolean isSetShellOptions() {
+    return setShellOptions;
   }
 
   public List<Message> getPublishedMessages() {

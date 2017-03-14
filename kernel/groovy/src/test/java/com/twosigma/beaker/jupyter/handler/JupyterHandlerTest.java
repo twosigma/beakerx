@@ -16,18 +16,22 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
+import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.jupyter.CommKernelControlGetDefaultShellHandler;
 import com.twosigma.beaker.jupyter.CommKernelControlSetShellHandler;
-import com.twosigma.beaker.jupyter.GroovyKernelJupyterTest;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import com.twosigma.jupyter.message.MessageTest;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -43,12 +47,11 @@ import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
 
 public class JupyterHandlerTest {
 
-  private GroovyKernelJupyterTest groovyKernel;
+  private static GroovyKernelTest groovyKernel;
   private CommOpenHandler commOpenHandler;
   private CommCloseHandler commCloseHandler;
   private CommInfoHandler commInfoHandler;
   private CommMsgHandler commMsgHandler;
-  private ExecuteRequestHandler executeRequestHandler;
 
   public static Message initCloseMessage() {
     Map<String, Serializable> content = new LinkedHashMap<>();
@@ -127,39 +130,50 @@ public class JupyterHandlerTest {
     return header;
   }
 
-  public static String initKernelCommMapWithOneComm(
-      GroovyKernelJupyterTest groovyKernelJupyterTest) {
+  public static String initKernelCommMapWithOneComm(GroovyKernelTest groovyKernelTest) {
     Message openMessage = initOpenMessage();
     String commId = (String) openMessage.getContent().get(COMM_ID);
     String targetName = (String) openMessage.getContent().get(TARGET_NAME);
-    Comm comm =
-        new Comm(commId, targetName) {
+    Comm comm = new Comm(commId, targetName) {
           @Override
           public void handleMsg(Message parentMessage) {
-            groovyKernelJupyterTest.commHandleMessage();
           }
         };
-    groovyKernelJupyterTest.addComm(commId, comm);
+    groovyKernelTest.addComm(commId, comm);
     return commId;
   }
 
+  @BeforeClass
+  public static void setUpClass(){
+    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("id", "sid"){
+      @Override
+      public void startWorker() {
+      }
+    };
+    groovyKernel = new GroovyKernelTest("sid", groovyEvaluator);
+  }
+
+
   @Before
   public void setUp() {
-    groovyKernel = new GroovyKernelJupyterTest();
     commOpenHandler = new CommOpenHandler(groovyKernel) {
       @Override
       public Handler<Message>[] getKernelControlChanelHandlers(String targetName) {
-        return null;
+        return (Handler<Message>[]) new Handler<?>[0];
       }
     };
     commCloseHandler = new CommCloseHandler(groovyKernel);
     commInfoHandler = new CommInfoHandler(groovyKernel);
     commMsgHandler = new CommMsgHandler(groovyKernel, new MessageCreator(groovyKernel));
-    executeRequestHandler =
-        new ExecuteRequestHandler(groovyKernel);
   }
 
-//  @Test
+  @After
+  public void tearDown() throws Exception {
+    groovyKernel.clearPublishedMessages();
+    groovyKernel.clearSentMessages();
+  }
+
+  @Test
   public void handleOpenCommMessage_shouldAddCommMessageToStorageMap() throws Exception {
     //given
     Message message = initCloseMessage();
@@ -170,7 +184,7 @@ public class JupyterHandlerTest {
     Assertions.assertThat(groovyKernel.isCommPresent(commId)).isTrue();
   }
 
-//  @Test
+  @Test
   public void handleCloseCommMessage_shouldRemoveCommMessageFromStorageMap() throws Exception {
     //given
     String commId = initKernelCommMapWithOneComm(groovyKernel);
@@ -180,7 +194,7 @@ public class JupyterHandlerTest {
     Assertions.assertThat(groovyKernel.isCommPresent(commId)).isFalse();
   }
 
-//  @Test
+  @Test
   public void handleOpenThenCloseCommMessages_shouldRemoveCommMessageFromStorageMap()
       throws Exception {
     //given
@@ -193,19 +207,19 @@ public class JupyterHandlerTest {
     Assertions.assertThat(groovyKernel.isCommPresent(commId)).isFalse();
   }
 
-//  @Test
+  @Test
   public void handleInfoCommMessages_replyCommMessageHasCommsInfoContent() throws Exception {
     //given
     initKernelCommMapWithOneComm(groovyKernel);
     //when
     commInfoHandler.handle(initInfoMessage());
     //then
-    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSentMessages().get(0);
     Assertions.assertThat((Map) sendMessage.getContent().get(COMMS)).isNotEmpty();
   }
 
-//  @Test
+  @Test
   public void commInfoHandlerHandleEmptyMessage_dontThrowNullPointerException() throws Exception {
     //given
     Message message = new Message();
@@ -214,7 +228,7 @@ public class JupyterHandlerTest {
     commInfoHandler.handle(message);
   }
 
-//  @Test
+  @Test
   public void commOpenHandlerHandleEmptyMessage_dontThrowNullPointerException() throws Exception {
     //given
     Message message = new Message();
@@ -223,7 +237,7 @@ public class JupyterHandlerTest {
     commOpenHandler.handle(message);
   }
 
-//  @Test
+  @Test
   public void commMsgHandlerHandleEmptyMessage_dontThrowNullPointerException() throws Exception {
     //given
     Message message = new Message();
@@ -232,7 +246,7 @@ public class JupyterHandlerTest {
     commMsgHandler.handle(message);
   }
 
-//  @Test
+  @Test
   public void commCloseHandlerHandleEmptyMessage_dontThrowNullPointerException() throws Exception {
     //given
     Message message = new Message();
@@ -241,17 +255,18 @@ public class JupyterHandlerTest {
     commCloseHandler.handle(message);
   }
 
-//  @Test
+  @Test
   public void executeRequestHandlerHandleEmptyMessage_dontThrowNullPointerException()
       throws Exception {
     //given
+    ExecuteRequestHandler executeRequestHandler = new ExecuteRequestHandler(groovyKernel);
     Message message = new Message();
     MessageTest.initMessage(message);
     //when
     executeRequestHandler.handle(message);
   }
 
-//  @Test
+  @Test
   public void defaultShellHandlerHandleEmptyMessage_dontThrowNullPointerException()
       throws Exception {
     //given
@@ -273,7 +288,7 @@ public class JupyterHandlerTest {
     handler.handle(message);
   }
 
-//  @Test
+  @Test
   public void setShellHandlerHandleEmptyMessage_dontThrowNullPointerException() throws Exception {
     //given
     Message message = new Message();

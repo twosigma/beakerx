@@ -16,78 +16,79 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import com.twosigma.beaker.jupyter.GroovyKernelJupyterTest;
+import com.twosigma.beaker.groovy.GroovyKernelTest;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import com.twosigma.jupyter.message.Message;
+import org.junit.Test;
 
 public class CommCloseHandlerTest {
 
-  private GroovyKernelJupyterTest groovyKernel;
+  private GroovyKernelTest groovyKernel;
   private CommCloseHandler commCloseHandler;
   private Message message;
 
   @Before
   public void setUp() {
-    groovyKernel = new GroovyKernelJupyterTest();
+    groovyKernel = new GroovyKernelTest();
     commCloseHandler = new CommCloseHandler(groovyKernel);
     message = JupyterHandlerTest.initCloseMessage();
     JupyterHandlerTest.initKernelCommMapWithOneComm(groovyKernel);
   }
 
-//  @Test
+  @Test
   public void handleMessage_shouldSendShellSocketMessage() throws Exception {
     //when
     commCloseHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
+    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
   }
 
-//  @Test
+  @Test
   public void handleMessage_sentMessageHasTypeIsCommClose() throws Exception {
     //when
     commCloseHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSentMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getType())
         .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
   }
 
-//  @Test
+  @Test
   public void handleMessage_sentMessageHasSessionId() throws Exception {
     //given
     String expectedSessionId = message.getHeader().getSession();
     //when
     commCloseHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSentMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
-//  @Test
+  @Test
   public void handleMessage_sentMessageHasParentHeader() throws Exception {
     //given
     String expectedHeader = message.getHeader().asJson();
     //when
     commCloseHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSentMessages().get(0);
     Assertions.assertThat(sendMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
-//  @Test
+  @Test
   public void handleMessage_sentMessageHasIdentities() throws Exception {
     //given
     String expectedIdentities = new String(message.getIdentities().get(0));
     //when
     commCloseHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSendMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSendMessages().get(0);
+    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
+    Message sendMessage = groovyKernel.getSentMessages().get(0);
     Assertions.assertThat(new String(sendMessage.getIdentities().get(0)))
         .isEqualTo(expectedIdentities);
   }

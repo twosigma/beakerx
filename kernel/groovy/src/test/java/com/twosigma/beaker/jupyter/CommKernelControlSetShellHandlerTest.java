@@ -16,9 +16,11 @@
 
 package com.twosigma.beaker.jupyter;
 
+import com.twosigma.beaker.groovy.GroovyKernelTest;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import com.twosigma.jupyter.message.Message;
+import org.junit.Test;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,27 +31,27 @@ import java.util.Map;
 public class CommKernelControlSetShellHandlerTest {
 
   private CommKernelControlSetShellHandler commHandler;
-  private GroovyKernelJupyterTest groovyKernel;
+  private GroovyKernelTest groovyKernel;
   private Message message;
 
   @Before
   public void setUp() {
-    groovyKernel = new GroovyKernelJupyterTest();
+    groovyKernel = new GroovyKernelTest();
     commHandler = new CommKernelControlSetShellHandler(groovyKernel);
     message = new Message();
   }
 
-//  @Test
+  @Test
   public void handleMessage_shouldSendShellSocketMessage() throws Exception {
     //given
     initMessageData(message);
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isNotEmpty();
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
   }
 
-//  @Test
+  @Test
   public void handleMessageWithoutData_notSendShellSocketMessage() throws Exception {
     //given
     Map<String, Serializable> content = new HashMap<>();
@@ -58,10 +60,10 @@ public class CommKernelControlSetShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishMessages()).isEmpty();
+    Assertions.assertThat(groovyKernel.getPublishedMessages()).isEmpty();
   }
 
-//  @Test
+  @Test
   public void handleMessage_setShellOptions() throws Exception {
     //given
     initMessageData(message);

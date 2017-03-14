@@ -99,7 +99,7 @@ task kernelInstall(dependsOn: 'prepareJson') {
       commandLine "jupyter",
               "kernelspec",
               "install",
-              "--user",
+              "--sys-prefix",
               "--replace",
               "--name",
               kernelIdName,

@@ -13,17 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.evaluator;
+package com.twosigma.beaker.groovy.evaluator;
 
+import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.junit.Before;
 import org.junit.Test;
-import com.twosigma.jupyter.message.Message;
 
-import static com.twosigma.beaker.evaluator.GroovyEvaluatorResultTestWatcher.waitForResult;
+import java.math.BigDecimal;
+
+import static com.twosigma.beaker.groovy.evaluator.GroovyEvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
+import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GroovyEvaluatorPassingSimpleEvaluationObjectTest {
+public class GroovyEvaluatorArithmeticTest {
 
   private GroovyEvaluator groovyEvaluator;
 
@@ -33,18 +37,28 @@ public class GroovyEvaluatorPassingSimpleEvaluationObjectTest {
   }
 
   @Test
-  public void shouldPassSimpleEvaluationObjectToShell() throws Exception {
+  public void shouldCreateFinishedResult() throws Exception {
     //given
-    String code = "" +
-            "import com.twosigma.beaker.evaluator.InternalVariable\n" +
-            "InternalVariable.getParentHeader()";
+    String code = "16/2";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    Message message = new Message();
-    seo.setJupyterMessage(message);
     //when
     groovyEvaluator.evaluate(seo, code);
     waitForResult(seo);
     //then
-    assertThat(seo.getPayload()).isEqualTo(message);
+    assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(seo.getPayload()).isEqualTo(new BigDecimal(8));
+  }
+  
+  @Test
+  public void shouldCreateErrorResultWithArithmeticExceptionWhenDivisionByZero() throws Exception {
+    //given
+    String code = "1/0";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    //when
+    groovyEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    assertThat(seo.getStatus()).isEqualTo(ERROR);
+    assertThat((String)seo.getPayload()).contains("java.lang.ArithmeticException: Division by zero");
   }
 }

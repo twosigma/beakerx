@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.groovy;
 
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;

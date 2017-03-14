@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.groovy;
 
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.jupyter.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;

@@ -23,6 +23,7 @@ import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 import com.twosigma.jupyter.handler.Handler;
+import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,11 +57,12 @@ public abstract class Kernel implements KernelFunctionality {
     this.commMap = new ConcurrentHashMap<>();
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
-    this.handlers = new KernelHandlers(this, getCommOpenHandler(this));
+    this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     configureSignalHandler();
   }
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
+  public abstract KernelHandler<Message> getKernelInfoHandler(Kernel kernel);
 
   protected static void runKernel(Kernel kernel) throws InterruptedException, IOException {
     KernelManager.register(kernel);
@@ -98,8 +100,8 @@ public abstract class Kernel implements KernelFunctionality {
     return (OS.indexOf("win") >= 0);
   }
 
-  public synchronized void setShellOptions(String cp, String in, String od) {
-    evaluatorManager.setShellOptions(cp, in, od);
+  public synchronized void setShellOptions(String cp, String in) {
+    evaluatorManager.setShellOptions(cp, in);
   }
 
   @Override

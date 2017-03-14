@@ -70,7 +70,7 @@ public class CommKernelControlSetShellHandler extends KernelHandler<Message> {
     if(data.containsKey(IMPORTS) &&data.containsKey(CLASSPATH)){
       List<String> imports = data.get(IMPORTS);
       List<String> classPath = data.get(CLASSPATH);
-      kernel.setShellOptions(getUsString(classPath), getUsString(imports), null);
+      kernel.setShellOptions(getUsString(classPath), getUsString(imports));
      ret = true;
     }
     return ret;

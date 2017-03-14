@@ -20,7 +20,7 @@ import com.twosigma.jupyter.message.Message;
 
 public class InternalVariable {
 
-  private static ThreadLocal<SimpleEvaluationObject> threadLocal = new ThreadLocal();
+  private static ThreadLocal<SimpleEvaluationObject> threadLocal = new ThreadLocal<>();
 
   public static Message getParentHeader() {
     SimpleEvaluationObject simpleEvaluationObject = getSimpleEvaluationObject();

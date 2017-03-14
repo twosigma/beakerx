@@ -44,7 +44,7 @@ public interface KernelFunctionality {
 
   Set<String> getCommHashSet();
 
-  void setShellOptions(String usString, String usString1, String o);
+  void setShellOptions(String usString, String usString1);
 
   void cancelExecution();
 

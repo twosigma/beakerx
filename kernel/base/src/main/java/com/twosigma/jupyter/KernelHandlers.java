@@ -26,7 +26,6 @@ import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.handler.CompleteHandler;
 import com.twosigma.jupyter.handler.HistoryHandler;
 import com.twosigma.jupyter.handler.Handler;
-import com.twosigma.jupyter.handler.KernelInfoHandler;
 import com.twosigma.jupyter.message.Message;
 
 import java.util.HashMap;
@@ -39,15 +38,14 @@ public class KernelHandlers {
   private Map<JupyterMessages, KernelHandler<Message>> handlers;
   private KernelFunctionality kernel;
 
-  public KernelHandlers(KernelFunctionality kernel, final CommOpenHandler commOpenHandler) {
+  public KernelHandlers(KernelFunctionality kernel, final CommOpenHandler commOpenHandler, final KernelHandler<Message> kernelInfoHandler) {
     this.kernel = kernel;
-    this.handlers = createHandlers(commOpenHandler);
+    this.handlers = createHandlers(commOpenHandler, kernelInfoHandler);
   }
 
-  private Map<JupyterMessages, KernelHandler<Message>> createHandlers(final CommOpenHandler commOpenHandler) {
+  private Map<JupyterMessages, KernelHandler<Message>> createHandlers(final CommOpenHandler commOpenHandler, final KernelHandler<Message> kernelInfoHandler) {
     Map<JupyterMessages, KernelHandler<Message>> handlers = new HashMap<>();
     handlers.put(JupyterMessages.EXECUTE_REQUEST, new ExecuteRequestHandler(kernel));
-    handlers.put(JupyterMessages.KERNEL_INFO_REQUEST, new KernelInfoHandler(kernel));
     handlers.put(JupyterMessages.COMPLETE_REQUEST, new CompleteHandler(kernel));
     handlers.put(JupyterMessages.HISTORY_REQUEST, new HistoryHandler(kernel));
     handlers.put(JupyterMessages.COMM_INFO_REQUEST, new CommInfoHandler(kernel));
@@ -55,6 +53,9 @@ public class KernelHandlers {
     handlers.put(JupyterMessages.COMM_MSG, new CommMsgHandler(kernel, new MessageCreator(kernel)));
     if (commOpenHandler != null) {
       handlers.put(JupyterMessages.COMM_OPEN, commOpenHandler);
+    }
+    if(kernelInfoHandler != null){
+      handlers.put(JupyterMessages.KERNEL_INFO_REQUEST, kernelInfoHandler);  
     }
     return handlers;
   }

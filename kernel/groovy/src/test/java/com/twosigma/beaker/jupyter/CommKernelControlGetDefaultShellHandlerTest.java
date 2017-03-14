@@ -16,9 +16,10 @@
 
 package com.twosigma.beaker.jupyter;
 
-import com.twosigma.beaker.evaluator.GroovyEvaluator;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
+
+import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.jupyter.message.Message;
 
 import java.io.Serializable;

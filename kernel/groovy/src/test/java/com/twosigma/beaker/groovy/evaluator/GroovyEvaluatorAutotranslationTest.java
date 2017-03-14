@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.evaluator;
+package com.twosigma.beaker.groovy.evaluator;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;

@@ -13,42 +13,47 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy;
+package com.twosigma.beaker.scala;
+
+import static com.twosigma.beaker.jupyter.Utils.uuid;
+
+import java.io.IOException;
 
 import com.twosigma.beaker.evaluator.Evaluator;
-
-import com.twosigma.beaker.groovy.comm.GroovyCommOpenHandler;
-import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
-import com.twosigma.beaker.groovy.handler.GroovyKernelInfoHandler;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
+import com.twosigma.beaker.scala.comm.ScalaCommOpenHandler;
+import com.twosigma.beaker.scala.evaluator.ScalaEvaluator;
+import com.twosigma.beaker.scala.handler.ScalaKernelInfoHandler;
 import com.twosigma.jupyter.ConfigurationFile;
+import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
-import com.twosigma.jupyter.Kernel;
-import java.io.IOException;
-import static com.twosigma.beaker.jupyter.Utils.uuid;
 
-public class GroovyKernel extends Kernel {
 
-  public GroovyKernel(final String id, final Evaluator evaluator, ConfigurationFile config) {
+public class ScalaKernel extends Kernel {
+
+  public ScalaKernel(final String id, final Evaluator evaluator, ConfigurationFile config) {
     super(id, evaluator, config);
   }
-
+  
   @Override
-  public CommOpenHandler getCommOpenHandler(Kernel kernel) {
-    return new GroovyCommOpenHandler(kernel);
+  public CommOpenHandler getCommOpenHandler(Kernel kernel){
+    return new ScalaCommOpenHandler(kernel);
   }
-
+  
   @Override
   public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
-    return new GroovyKernelInfoHandler(kernel);
+    return new ScalaKernelInfoHandler(kernel);
   }
-  
+
   public static void main(final String[] args) throws InterruptedException, IOException {
     String id = uuid();
-    GroovyKernel kernel = new GroovyKernel(id, new GroovyEvaluator(id, id), new KernelConfigurationFile(args));
+    ScalaEvaluator se = new ScalaEvaluator(null);//TODO check what to put, need for autotranslation
+    se.initialize(id, id);
+    //js.setupAutoTranslation(); -- uncomment
+    ScalaKernel kernel = new ScalaKernel(id, se, new KernelConfigurationFile(args));
     runKernel(kernel);
   }
-  
+
 }

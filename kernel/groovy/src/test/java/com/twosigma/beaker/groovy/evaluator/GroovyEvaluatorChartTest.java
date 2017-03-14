@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.evaluator;
+package com.twosigma.beaker.groovy.evaluator;
 
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;

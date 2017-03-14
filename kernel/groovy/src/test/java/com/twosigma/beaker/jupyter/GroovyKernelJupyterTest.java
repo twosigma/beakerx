@@ -18,11 +18,12 @@ package com.twosigma.beaker.jupyter;
 
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.evaluator.EvaluatorManager;
-import com.twosigma.beaker.evaluator.GroovyEvaluator;
+import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.Config;
 import com.twosigma.jupyter.Kernel;
+import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import org.zeromq.ZMQ;
@@ -70,6 +71,11 @@ public class GroovyKernelJupyterTest extends Kernel {
   public CommOpenHandler getCommOpenHandler(Kernel kernel) {
     return null;
   }
+  
+  @Override
+  public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
+    return null;
+  }
 
   public List<Message> getPublishMessages() {
     return publishMessages;
@@ -80,9 +86,9 @@ public class GroovyKernelJupyterTest extends Kernel {
   }
 
   @Override
-  public synchronized void setShellOptions(String cp, String in, String od) {
+  public synchronized void setShellOptions(String cp, String in) {
     setShellOptions = Boolean.TRUE;
-    super.setShellOptions(cp, in, od);
+    super.setShellOptions(cp, in);
   }
 
   public Boolean isSetShellOptions() {
@@ -131,4 +137,5 @@ public class GroovyKernelJupyterTest extends Kernel {
     copy.setContent(parse(content, LinkedHashMap.class));
     return copy;
   }
+
 }

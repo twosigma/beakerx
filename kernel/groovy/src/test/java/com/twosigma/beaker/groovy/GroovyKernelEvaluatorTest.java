@@ -64,7 +64,7 @@ public class GroovyKernelEvaluatorTest implements KernelFunctionality {
   }
 
   @Override
-  public void setShellOptions(String usString, String usString1, String o) {
+  public void setShellOptions(String usString, String usString1) {
 
   }
 

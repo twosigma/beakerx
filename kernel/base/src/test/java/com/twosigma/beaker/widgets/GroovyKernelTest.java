@@ -90,8 +90,9 @@ public class GroovyKernelTest implements KernelFunctionality {
   public Set<String> getCommHashSet() {
     return null;
   }
-
-  public void setShellOptions(String usString, String usString1, String o) {
+  
+  @Override
+  public void setShellOptions(String usString, String usString1) {
 
   }
 

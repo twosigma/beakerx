@@ -13,12 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.evaluator;
+package com.twosigma.beaker.groovy.evaluator;
 
 //import com.twosigma.beaker.groovy.autocomplete.AutocompleteResult;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 
 public class GroovyEvaluatorAutocompleteTest {
 

@@ -14,10 +14,11 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.evaluator;
+package com.twosigma.beaker.groovy.evaluator;
 
 import com.twosigma.beaker.groovy.GroovyKernelEvaluatorTest;
-import com.twosigma.beaker.groovy.NamespaceClient;
+import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jupyter.Utils;
 import groovy.lang.Binding;
@@ -40,7 +41,7 @@ public class GroovyEvaluatorTest {
   @BeforeClass
   public static void initClassStubData() throws IOException {
     GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345");
-    groovyEvaluator.setShellOptions(Utils.getUsString(CLASS_PATH), Utils.getUsString(IMPORTS), null);
+    groovyEvaluator.setShellOptions(Utils.getUsString(CLASS_PATH), Utils.getUsString(IMPORTS));
     groovyClassLoader = groovyEvaluator.newEvaluator();
     scriptBinding = new Binding();
     scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));

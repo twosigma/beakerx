@@ -15,9 +15,8 @@
  */
 package com.twosigma.beaker.groovy.evaluator;
 
-import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -29,10 +28,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyEvaluatorArithmeticTest {
 
-  private GroovyEvaluator groovyEvaluator;
+  private static GroovyEvaluator groovyEvaluator;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeClass
+  public static void setUpClass() throws Exception {
     groovyEvaluator = new GroovyEvaluator("shellId1", "sessionId1");
   }
 

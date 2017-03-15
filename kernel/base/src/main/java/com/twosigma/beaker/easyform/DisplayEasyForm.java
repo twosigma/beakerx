@@ -20,6 +20,7 @@ import com.twosigma.beaker.widgets.DisplayWidget;
 public class DisplayEasyForm {
 
   public static void display(EasyForm easyForm) {
+    easyForm.setReady();
     EasyFormView easyFormView = new EasyFormView(easyForm.getCommFunctionalities());
     DisplayWidget.display(easyFormView);
   }

@@ -33,6 +33,7 @@ import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyDisplayMsg;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
 import static com.twosigma.beaker.widgets.Widget.DESCRIPTION;
+import static com.twosigma.beaker.widgets.Widget.VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EasyFormTest {
@@ -48,6 +49,27 @@ public class EasyFormTest {
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
+  }
+
+  @Test
+  public void onInitMethod() throws Exception {
+    //given
+    String textField1 = "tf1";
+    String newValueForTf1 = "newValueForTf1";
+
+    EasyForm easyForm = new EasyForm("EasyForm with text field");
+    easyForm.addTextField(textField1);
+    easyForm.addTextField("tf2").onInit(value -> easyForm.put(textField1, newValueForTf1));
+    kernel.clearPublishedMessages();
+    //when
+    DisplayEasyForm.display(easyForm);
+    //then
+    verifyOnInit(kernel.getPublishedMessages().get(0), newValueForTf1);
+  }
+
+  private void verifyOnInit(Message message, String expected) {
+    String label = getValueForProperty(message, VALUE, String.class);
+    assertThat(label).isEqualTo(expected);
   }
 
   @Test

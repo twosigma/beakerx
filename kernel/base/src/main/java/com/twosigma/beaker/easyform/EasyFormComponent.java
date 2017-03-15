@@ -17,12 +17,11 @@
 package com.twosigma.beaker.easyform;
 
 import com.twosigma.beaker.easyform.formitem.EasyFormListener;
-import com.twosigma.beaker.widgets.CommFunctionality;
 import org.apache.commons.lang3.StringUtils;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class EasyFormComponent implements CommFunctionality {
+public class EasyFormComponent {
 
   private String value;
   private boolean enabled = true;

@@ -50,10 +50,4 @@ public class ListComponent extends EasyFormComponent {
   public Collection<String> getValues() {
     return values;
   }
-
-  @Override
-  public Comm getComm() {
-    throw new RuntimeException("Not implemented yet");
-  }
-
 }

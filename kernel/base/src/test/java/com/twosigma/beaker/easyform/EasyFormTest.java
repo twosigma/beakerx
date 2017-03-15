@@ -17,8 +17,8 @@ package com.twosigma.beaker.easyform;
 
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.box.Box;
-import com.twosigma.beaker.widgets.selectioncontainer.Tab;
 import com.twosigma.beaker.widgets.strings.Text;
 import com.twosigma.jupyter.message.Message;
 import org.junit.After;
@@ -29,8 +29,10 @@ import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getData;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyDisplayMsg;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
+import static com.twosigma.beaker.widgets.Widget.DESCRIPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EasyFormTest {
@@ -51,17 +53,24 @@ public class EasyFormTest {
   @Test
   public void shouldCreateEasyFormWithTextField() throws Exception {
     //given
+    String label = "text1";
     //when
     EasyForm easyForm = new EasyForm("EasyForm with text field");
-    easyForm.addTextField("text1", 10);
+    easyForm.addTextField(label, 10);
     DisplayEasyForm.display(easyForm);
     //then
     verifyTextField(kernel.getPublishedMessages().subList(0, 2));
-    verifyEasyForm(kernel.getPublishedMessages().subList(2, 4), easyForm.getComponentList());
-    verifyDisplayMsg(kernel.getPublishedMessages().get(4));
+    verifyTextFieldLabel(kernel.getPublishedMessages().get(2), label);
+    verifyEasyForm(kernel.getPublishedMessages().subList(3, 5), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages().get(5));
   }
 
-  private void verifyEasyForm(List<Message> messages, List<EasyFormComponent> children) {
+  private void verifyTextFieldLabel(Message message, String expectedLabel) {
+    String label = getValueForProperty(message, DESCRIPTION, String.class);
+    assertThat(label).isEqualTo(expectedLabel);
+  }
+
+  private void verifyEasyForm(List<Message> messages, List<CommFunctionality> children) {
     verifyOpenCommMsg(messages, EasyFormView.MODEL_NAME_VALUE, EasyFormView.VIEW_NAME_VALUE);
     verifyChildren(messages.get(1), children);
   }
@@ -70,9 +79,9 @@ public class EasyFormTest {
     verifyOpenCommMsg(messages, Text.MODEL_NAME_VALUE, Text.VIEW_NAME_VALUE);
   }
 
-  private void verifyChildren(Message message, List<EasyFormComponent> children) {
+  private void verifyChildren(Message message, List<CommFunctionality> children) {
     Map data = getData(message);
-    Object[] objects = (Object[]) data.get(Tab.CHILDREN);
+    Object[] objects = (Object[]) data.get(Box.CHILDREN);
     assertThat(objects.length).isEqualTo(children.size());
     for (int i = 0; i < children.size(); i++) {
       assertThat(Box.IPY_MODEL + children.get(i).getComm().getCommId()).isEqualTo(objects[i]);

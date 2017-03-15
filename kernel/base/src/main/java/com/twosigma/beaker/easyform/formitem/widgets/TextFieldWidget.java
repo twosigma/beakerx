@@ -13,15 +13,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.easyform;
+package com.twosigma.beaker.easyform.formitem.widgets;
 
-import com.twosigma.beaker.widgets.DisplayWidget;
+import com.twosigma.beaker.easyform.formitem.TextField;
+import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.strings.Text;
 
-public class DisplayEasyForm {
+public class TextFieldWidget extends TextField implements CommFunctionality {
 
-  public static void display(EasyForm easyForm) {
-    EasyFormView easyFormView = new EasyFormView(easyForm.getCommFunctionalities());
-    DisplayWidget.display(easyFormView);
+  private Text text;
+
+  public TextFieldWidget() {
+    this.text = new Text();
+  }
+
+  @Override
+  public void setLabel(String label) {
+    super.setLabel(label);
+    this.text.setDescription(label);
+  }
+
+  @Override
+  public Comm getComm() {
+    return text.getComm();
   }
 
 }

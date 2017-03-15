@@ -17,7 +17,6 @@
 package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
-import com.twosigma.beaker.jupyter.Comm;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -49,10 +48,5 @@ public class DatePickerComponent extends EasyFormComponent {
     } else {
       return String.class.cast(value);
     }
-  }
-
-  @Override
-  public Comm getComm() {
-    throw new RuntimeException("Not implemented yet");
   }
 }

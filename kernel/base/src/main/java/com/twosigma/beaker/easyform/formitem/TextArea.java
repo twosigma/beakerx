@@ -17,7 +17,6 @@
 package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
-import com.twosigma.beaker.jupyter.Comm;
 
 public class TextArea extends EasyFormComponent {
   public static final Integer AUTO_HEIGHT = -1;
@@ -39,10 +38,5 @@ public class TextArea extends EasyFormComponent {
 
   public Integer getHeight() {
     return height;
-  }
-
-  @Override
-  public Comm getComm() {
-    throw new RuntimeException("Not implemented yet");
   }
 }

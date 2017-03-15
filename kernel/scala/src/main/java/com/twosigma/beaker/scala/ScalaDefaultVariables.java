@@ -15,40 +15,13 @@
  */
 package com.twosigma.beaker.scala;
 
+import com.twosigma.beaker.DefaultJVMVariables;
+
 /**
  * 
  * @author konst
  *
  */
-public class ScalaDefaultVariables {
-  
-  /**
-   * Default imports
-   */
-  //TODO add to kernel this classes, then uncomment
-  public static final String[] IMPORTS ={
-      "com.twosigma.beaker.NamespaceClient",
-      "com.twosigma.beaker.BeakerProgressUpdate",
-      "com.twosigma.beaker.chart.Color",
-      "com.twosigma.beaker.chart.GradientColor",
-      "com.twosigma.beaker.chart.legend.*",
-      "com.twosigma.beaker.chart.Filter",
-      "com.twosigma.beaker.chart.xychart.*",
-      "com.twosigma.beaker.chart.xychart.plotitem.*",
-      "com.twosigma.beaker.chart.categoryplot.*",
-      "com.twosigma.beaker.chart.categoryplot.plotitem.*",
-      //"com.twosigma.beaker.chart.treemap.*",
-      //"com.twosigma.beaker.chart.treemap.util.*",
-      //"net.sf.jtreemap.swing.*",
-      "com.twosigma.beaker.chart.histogram.*",
-      "com.twosigma.beaker.chart.heatmap.HeatMap"
-      //"com.twosigma.beaker.easyform.*",
-      //"com.twosigma.beaker.easyform.formitem.*",
-      };
- 
-  /**
-   * Default class path
-   */
-  public static final String[] CLASS_PATH = {};
+public class ScalaDefaultVariables extends DefaultJVMVariables {
   
 }

@@ -21,18 +21,20 @@ import com.twosigma.jupyter.KernelFunctionality;
 
 public class ScalaCommKernelControlSetShellHandler extends CommKernelControlGetDefaultShellHandler{
 
+  protected ScalaDefaultVariables var = new ScalaDefaultVariables();
+  
   public ScalaCommKernelControlSetShellHandler(KernelFunctionality kernel) {
     super(kernel);
   }
   
   @Override
   public String[] getDefaultImports() {
-    return ScalaDefaultVariables.IMPORTS;
+    return var.getImportsAsArray();
   }
 
   @Override
   public String[] getDefaultClassPath() {
-    return ScalaDefaultVariables.CLASS_PATH;
+    return var.getClassPathAsArray();
   }
 
 }

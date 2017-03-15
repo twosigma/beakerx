@@ -7,18 +7,20 @@ import com.twosigma.beaker.jupyter.CommKernelControlGetDefaultShellHandler;
 
 public class GroovyCommKernelControlSetShellHandler extends CommKernelControlGetDefaultShellHandler{
 
+  protected GroovyDefaultVariables var = new GroovyDefaultVariables();
+  
   public GroovyCommKernelControlSetShellHandler(KernelFunctionality kernel) {
     super(kernel);
   }
   
   @Override
   public String[] getDefaultImports() {
-    return GroovyDefaultVariables.IMPORTS;
+    return var.getImportsAsArray();
   }
 
   @Override
   public String[] getDefaultClassPath() {
-    return GroovyDefaultVariables.CLASS_PATH;
+    return var.getClassPathAsArray();
   }
 
 }

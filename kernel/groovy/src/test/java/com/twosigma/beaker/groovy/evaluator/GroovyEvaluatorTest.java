@@ -16,11 +16,11 @@
 
 package com.twosigma.beaker.groovy.evaluator;
 
+import com.twosigma.beaker.groovy.GroovyDefaultVariables;
 import com.twosigma.beaker.groovy.GroovyKernelEvaluatorTest;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jupyter.Utils;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
@@ -29,8 +29,7 @@ import org.junit.BeforeClass;
 
 import java.io.IOException;
 
-import static com.twosigma.beaker.groovy.GroovyDefaultVariables.CLASS_PATH;
-import static com.twosigma.beaker.groovy.GroovyDefaultVariables.IMPORTS;
+
 
 public class GroovyEvaluatorTest {
 
@@ -41,7 +40,8 @@ public class GroovyEvaluatorTest {
   @BeforeClass
   public static void initClassStubData() throws IOException {
     GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345");
-    groovyEvaluator.setShellOptions(Utils.getUsString(CLASS_PATH), Utils.getUsString(IMPORTS));
+    GroovyDefaultVariables var = new GroovyDefaultVariables();
+    groovyEvaluator.setShellOptions(var.getClassPathAsString(), var.getImportsAsString());
     groovyClassLoader = groovyEvaluator.newEvaluator();
     scriptBinding = new Binding();
     scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));

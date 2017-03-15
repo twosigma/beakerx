@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.Utils.getUsString;
+import static com.twosigma.beaker.jupyter.Utils.getAsString;
 import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
 import static com.twosigma.beaker.jupyter.Comm.DATA;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;
@@ -70,7 +70,7 @@ public class CommKernelControlSetShellHandler extends KernelHandler<Message> {
     if(data.containsKey(IMPORTS) &&data.containsKey(CLASSPATH)){
       List<String> imports = data.get(IMPORTS);
       List<String> classPath = data.get(CLASSPATH);
-      kernel.setShellOptions(getUsString(classPath), getUsString(imports));
+      kernel.setShellOptions(getAsString(classPath), getAsString(imports));
      ret = true;
     }
     return ret;

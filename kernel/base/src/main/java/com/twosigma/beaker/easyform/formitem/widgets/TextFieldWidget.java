@@ -35,6 +35,12 @@ public class TextFieldWidget extends TextField implements CommFunctionality {
   }
 
   @Override
+  public void setValue(String value) {
+    super.setValue(value);
+    this.text.setValue(value);
+  }
+
+  @Override
   public Comm getComm() {
     return text.getComm();
   }

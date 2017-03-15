@@ -31,7 +31,7 @@ public class EasyFormComponent {
   private List<EasyFormListener> onInitListeners = new LinkedList<>();
 
   public EasyFormComponent() {
-    setValue(StringUtils.EMPTY);
+    this.value = StringUtils.EMPTY;
   }
 
   public void fireInit() {

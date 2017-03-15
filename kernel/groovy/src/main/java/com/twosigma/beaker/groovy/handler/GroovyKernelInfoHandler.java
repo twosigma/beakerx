@@ -25,6 +25,9 @@ import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
+
+import groovy.lang.GroovySystem;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +49,7 @@ public class GroovyKernelInfoHandler extends KernelHandler<Message> {
     map.put("implementation_version", "1.0.0");
     HashMap<String, Serializable> map1 = new HashMap<String, Serializable>(7);
     map1.put("name", "Groovy");
-    map1.put("version", "2.4.6");
+    map1.put("version", GroovySystem.getVersion());
     map1.put("mimetype", "");
     map1.put("file_extension", ".groovy");
     map1.put("pygments_lexer", "");
@@ -54,7 +57,7 @@ public class GroovyKernelInfoHandler extends KernelHandler<Message> {
     map1.put("nbconverter_exporter", "");
     map.put("language_info", map1);
     map.put("banner", "BeakerX kernel for Apache Groovy");
-    map.put("help_links", new ArrayList());
+    map.put("help_links", new ArrayList<String>());
     reply.setContent(map);
     reply.setHeader(new Header(KERNEL_INFO_REPLY, message.getHeader().getSession()));
     reply.setParentHeader(message.getHeader());

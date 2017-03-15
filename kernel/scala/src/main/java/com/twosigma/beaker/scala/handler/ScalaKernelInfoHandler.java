@@ -46,7 +46,7 @@ public class ScalaKernelInfoHandler extends KernelHandler<Message> {
     map.put("implementation_version", "1.0.0");
     HashMap<String, Serializable> map1 = new HashMap<String, Serializable>(7);
     map1.put("name", "Scala");
-    map1.put("version", "2.11.8");
+    map1.put("version", scala.util.Properties.scalaPropOrElse("version.number", "(unknown)"));
     map1.put("mimetype", "");
     map1.put("file_extension", ".scala");
     map1.put("pygments_lexer", "");

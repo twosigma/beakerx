@@ -17,6 +17,7 @@
 package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
+import com.twosigma.beaker.jupyter.Comm;
 
 public class LoadValuesButton extends EasyFormComponent {
 
@@ -28,5 +29,10 @@ public class LoadValuesButton extends EasyFormComponent {
 
   public String getPath() {
     return path;
+  }
+
+  @Override
+  public Comm getComm() {
+    throw new RuntimeException("Not implemented yet");
   }
 }

@@ -17,10 +17,17 @@
 package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
+import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.widgets.strings.Text;
 
 public class TextField extends EasyFormComponent {
 
   private Integer width;
+  private Text text;
+
+  public TextField() {
+    this.text = new Text();
+  }
 
   public Integer getWidth() {
     return width;
@@ -34,5 +41,10 @@ public class TextField extends EasyFormComponent {
   @Override
   protected boolean checkValue(final Object value) {
     return value instanceof String;
+  }
+
+  @Override
+  public Comm getComm() {
+    return text.getComm();
   }
 }

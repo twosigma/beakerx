@@ -17,6 +17,7 @@
 package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
+import com.twosigma.beaker.jupyter.Comm;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -57,5 +58,10 @@ public class ButtonComponent extends EasyFormComponent {
 
   public boolean isButton() {
     return true;
+  }
+
+  @Override
+  public Comm getComm() {
+    throw new RuntimeException("Not implemented yet");
   }
 }

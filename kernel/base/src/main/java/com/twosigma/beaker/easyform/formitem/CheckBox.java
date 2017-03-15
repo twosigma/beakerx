@@ -17,6 +17,7 @@
 package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
+import com.twosigma.beaker.jupyter.Comm;
 
 public class CheckBox extends EasyFormComponent {
 
@@ -24,6 +25,11 @@ public class CheckBox extends EasyFormComponent {
   protected boolean checkValue(final Object value) {
     return Boolean.TRUE.toString().equalsIgnoreCase(String.valueOf(value))
         || Boolean.FALSE.toString().equalsIgnoreCase(String.valueOf(value));
+  }
+
+  @Override
+  public Comm getComm() {
+    throw new RuntimeException("Not implemented yet");
   }
 
 }

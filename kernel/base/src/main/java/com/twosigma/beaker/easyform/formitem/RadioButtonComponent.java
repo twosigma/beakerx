@@ -17,6 +17,7 @@
 package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
+import com.twosigma.beaker.jupyter.Comm;
 
 import java.util.Collection;
 
@@ -39,5 +40,10 @@ public class RadioButtonComponent extends EasyFormComponent {
 
   public Collection<String> getValues() {
     return values;
+  }
+
+  @Override
+  public Comm getComm() {
+    throw new RuntimeException("Not implemented yet");
   }
 }

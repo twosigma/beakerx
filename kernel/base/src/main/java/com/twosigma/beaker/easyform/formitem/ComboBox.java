@@ -17,6 +17,7 @@
 package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
+import com.twosigma.beaker.jupyter.Comm;
 
 import java.util.Collection;
 
@@ -53,5 +54,10 @@ public class ComboBox extends EasyFormComponent {
 
   public Integer getWidth() {
     return width;
+  }
+
+  @Override
+  public Comm getComm() {
+    throw new RuntimeException("Not implemented yet");
   }
 }

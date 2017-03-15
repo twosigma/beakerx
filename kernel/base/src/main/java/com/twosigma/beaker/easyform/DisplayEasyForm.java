@@ -1,5 +1,5 @@
 /*
- *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,30 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beaker.easyform;
 
-package com.twosigma.beaker.easyform.formitem;
+import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.DisplayWidget;
 
-import com.twosigma.beaker.easyform.EasyFormComponent;
-import com.twosigma.beaker.jupyter.Comm;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class SaveValuesButton extends EasyFormComponent {
+public class DisplayEasyForm {
 
-  private String path;
-
-  public void setPath(final String path) {
-    this.path = path;
+  public static void display(EasyForm easyForm) {
+    List<CommFunctionality> items = easyForm.getComponentMap().values().stream().collect(Collectors.toList());
+    EasyFormView easyFormView = new EasyFormView(items);
+    DisplayWidget.display(easyFormView);
   }
 
-  public String getPath() {
-    return path;
-  }
-
-  public boolean isButton() {
-    return true;
-  }
-
-  @Override
-  public Comm getComm() {
-    throw new RuntimeException("Not implemented yet");
-  }
 }

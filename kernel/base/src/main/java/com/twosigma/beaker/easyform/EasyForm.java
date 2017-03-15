@@ -27,23 +27,17 @@ import com.twosigma.beaker.easyform.formitem.RadioButtonComponent;
 import com.twosigma.beaker.easyform.formitem.SaveValuesButton;
 import com.twosigma.beaker.easyform.formitem.TextArea;
 import com.twosigma.beaker.easyform.formitem.TextField;
-import com.twosigma.beaker.jupyter.Comm;
-import com.twosigma.beaker.widgets.internal.InternalWidget;
-import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
-import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
-public class EasyForm extends ObservableMap<String, Object>  implements InternalWidget {
-
-  public static final String VIEW_NAME_VALUE = "EasyFormView";
-  public static final String MODEL_NAME_VALUE = "EasyFormModel";
+public class EasyForm extends ObservableMap<String, Object>{
 
   public static final Integer HORIZONTAL = 1;
   public static final Integer VERTICAL = 2;
@@ -56,17 +50,8 @@ public class EasyForm extends ObservableMap<String, Object>  implements Internal
   private SaveValuesButton saveValuesButton;
   private LoadValuesButton loadValuesButton;
 
-  private Comm comm;
-
   public EasyForm(final String caption) {
     this.caption = caption;
-    this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
-      @Override
-      public void addContent(HashMap<String, Serializable> content) {
-        content.put(InternalWidgetUtils.MODEL_NAME, getModelNameValue());
-        content.put(InternalWidgetUtils.VIEW_NAME, getViewNameValue());
-      }
-    });
   }
 
   public void setId(final String id) {
@@ -263,6 +248,10 @@ public class EasyForm extends ObservableMap<String, Object>  implements Internal
     return componentMap;
   }
 
+  public List<EasyFormComponent> getComponentList() {
+    return componentMap.values().stream().collect(Collectors.toList());
+  }
+
   public boolean hasComponents() {
     return getComponentMap().size() > 0;
   }
@@ -354,18 +343,4 @@ public class EasyForm extends ObservableMap<String, Object>  implements Internal
     this.ready = Boolean.FALSE;
   }
 
-  @Override
-  public Comm getComm() {
-    return this.comm;
-  }
-
-  @Override
-  public String getModelNameValue() {
-    return MODEL_NAME_VALUE;
-  }
-
-  @Override
-  public String getViewNameValue() {
-    return VIEW_NAME_VALUE;
-  }
 }

@@ -31,6 +31,7 @@ import java.util.Map;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getData;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyDisplayMsg;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyInternalOpenCommMsg;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
 import static com.twosigma.beaker.widgets.Widget.DESCRIPTION;
 import static com.twosigma.beaker.widgets.Widget.VALUE;
@@ -93,7 +94,7 @@ public class EasyFormTest {
   }
 
   private void verifyEasyForm(List<Message> messages, List<CommFunctionality> children) {
-    verifyOpenCommMsg(messages, EasyFormView.MODEL_NAME_VALUE, EasyFormView.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsg(messages.get(1), EasyFormView.MODEL_NAME_VALUE, EasyFormView.VIEW_NAME_VALUE);
     verifyChildren(messages.get(1), children);
   }
 

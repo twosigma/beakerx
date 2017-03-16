@@ -17,6 +17,7 @@ package com.twosigma.beaker.easyform;
 
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.box.Box;
+import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -35,6 +36,8 @@ public class EasyFormView extends Box {
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
+    content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);
+    content.put(VIEW_MODULE, InternalWidgetUtils.VIEW_MODULE_VALUE);
     content.put(MODEL_NAME, MODEL_NAME_VALUE);
     content.put(VIEW_NAME, VIEW_NAME_VALUE);
     return content;

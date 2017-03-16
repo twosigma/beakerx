@@ -20,11 +20,13 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class AutocompleteCandidateTest {
 
-  private String[] keys = new String[]{ "java", "lang", "String"};
+  private String[] keys = new String[]{ "System", "out", "print"};
   private AutocompleteCandidate autocompleteCandidate;
 
   @Before
@@ -55,7 +57,7 @@ public class AutocompleteCandidateTest {
     AutocompleteCandidate aCandidate = new AutocompleteCandidate(1, keys);
     //then
     Assertions.assertThat(aCandidate.getType()).isEqualTo(1);
-    Assertions.assertThat(aCandidate.getKey()).isEqualTo("java");
+    Assertions.assertThat(aCandidate.getKey()).isEqualTo("System");
     Assertions.assertThat(aCandidate.getChildrens()).isNotEmpty();
   }
 
@@ -92,4 +94,49 @@ public class AutocompleteCandidateTest {
     Assertions.assertThat(autocompleteCandidate.getChildrens().size()).isEqualTo(1);
   }
 
+  @Test
+  public void searchCandidates_shouldFindThreeElements(){
+    List<String> ret = new ArrayList<>();
+    //given
+    AutocompleteCandidate aParent = new AutocompleteCandidate(1, "System");
+    AutocompleteCandidate aChild = new AutocompleteCandidate(1, "out");
+    aChild.addChildrens(
+        Arrays.asList(
+            new AutocompleteCandidate(1, "println(adouble)"),
+            new AutocompleteCandidate(1, "println(afloat)"),
+            new AutocompleteCandidate(1, "println(along)")));
+    aParent.addChildren(aChild);
+    AutocompleteCandidate aSearch = new AutocompleteCandidate(1, keys);
+    //when
+    aParent.searchCandidates(ret, aSearch);
+    //then
+    Assertions.assertThat(ret).isNotEmpty();
+    Assertions.assertThat(ret.size()).isEqualTo(3);
+  }
+
+
+  @Test
+  public void findLeaf_shouldFindOneElement(){
+    //given
+    AutocompleteCandidate aParent = new AutocompleteCandidate(1, keys);
+    //when
+    AutocompleteCandidate leaf = aParent.findLeaf();
+    //then
+    Assertions.assertThat(leaf).isNotNull();
+    Assertions.assertThat(leaf.getKey()).isEqualTo("print");
+  }
+
+  @Test
+  public void clone_shouldCloneAutocompleteCandidate(){
+    //given
+    AutocompleteCandidate aParent = new AutocompleteCandidate(1, keys);
+    //when
+    AutocompleteCandidate clone = aParent.clone();
+    //then
+    Assertions.assertThat(clone).isNotNull();
+    Assertions.assertThat(clone.getKey()).isEqualTo(aParent.getKey());
+    Assertions.assertThat(clone.getType()).isEqualTo(aParent.getType());
+    Assertions.assertThat(clone.getChildrens().size()).isEqualTo(aParent.getChildrens().size());
+    Assertions.assertThat(clone).isNotEqualTo(aParent);
+  }
 }

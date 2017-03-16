@@ -53,6 +53,7 @@ public class AutocompleteCandidate {
 
 	public AutocompleteCandidate clone() {
 		AutocompleteCandidate n = new AutocompleteCandidate(type,key);
+		if(children == null) return n;
 		for ( AutocompleteCandidate c1 : children) {
 			n.addChildren(c1.clone());
 		}

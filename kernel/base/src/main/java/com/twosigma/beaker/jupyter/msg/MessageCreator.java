@@ -68,17 +68,12 @@ public class MessageCreator {
     return reply;
   }
 
-  public Message buildMessage(Message message, String code, int executionCount) {
+  public Message buildMessage(Message message, String mime, String code, int executionCount) {
     Message reply = initMessage(EXECUTE_RESULT, message);
     reply.setContent(new HashMap<String, Serializable>());
     reply.getContent().put("execution_count", executionCount);
     HashMap<String, String> map3 = new HashMap<>();
-    if (code != null) {
-      boolean resultHtml = code.startsWith("<html>") && code.endsWith("</html>");
-      map3.put(resultHtml ? "text/html" : TEXT_PLAIN, code);
-    } else {
-      map3.put(TEXT_PLAIN, NULL_RESULT);
-    }
+    map3.put(mime, code);
     reply.getContent().put("data", map3);
     reply.getContent().put("metadata", new HashMap<>());
     return reply;
@@ -133,8 +128,10 @@ public class MessageCreator {
       switch (seo.getStatus()) {
         case FINISHED: {
           // Publish the result of the execution.
-          String resultString = SerializeToString.doit(seo.getPayload());
-          ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, buildMessage(message, resultString, seo.getExecutionCount())));
+          Map<String, String> resultString = SerializeToString.doit(seo.getPayload());
+          String mime = resultString.entrySet().iterator().next().getKey();
+          String code = resultString.entrySet().iterator().next().getValue();
+          ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, buildMessage(message, mime, code, seo.getExecutionCount())));
         }
         break;
         case ERROR: {

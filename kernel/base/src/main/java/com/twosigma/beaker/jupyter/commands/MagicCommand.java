@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.twosigma.beaker.mimetype.MimeTypeManager.HTML;
+
 /**
  * executes magic commands and sends message
  *
@@ -50,11 +52,11 @@ public class MagicCommand {
   private void buildCommands() {
     commands.put("%%javascript", (code, message, executionCount) -> {
       code = "<html><script>" + code.replace("%%javascript", "") + "</script></html>";
-      messageCreator.createMagicMessage(messageCreator.buildMessage(message, code, executionCount), executionCount, message);
+      publishResults(HTML(code),message, executionCount);
     });
     commands.put("%%html", (code, message, executionCount) -> {
       code = "<html>" + code.replace("%%html", "") + "</html>";
-      messageCreator.createMagicMessage(messageCreator.buildMessage(message, code, executionCount), executionCount, message);
+      publishResults(HTML(code),message, executionCount);
     });
     commands.put("%%bash", (code, message, executionCount) -> {
       String result = executeBashCode(code.replace("%%bash", ""));
@@ -70,6 +72,11 @@ public class MagicCommand {
     });
   }
 
+  private void publishResults(Map<String, String> result, Message message, int executionCount) {
+    String mime = result.entrySet().iterator().next().getKey();
+    String code = result.entrySet().iterator().next().getValue();
+    messageCreator.createMagicMessage(messageCreator.buildMessage(message, mime,code, executionCount), executionCount, message);
+  }
   private String executeBashCode(String code) {
     String[] cmd = {"/bin/bash", "-c", code};
     ProcessBuilder pb = new ProcessBuilder(cmd);

@@ -80,6 +80,9 @@ import com.twosigma.beaker.widgets.DisplayOutputContainer;
 import com.twosigma.beaker.widgets.DisplayWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
 
+import static com.twosigma.beaker.mimetype.MimeTypeManager.HTML;
+import static com.twosigma.beaker.mimetype.MimeTypeManager.Text;
+
 
 public class SerializeToString {
 
@@ -159,18 +162,18 @@ public class SerializeToString {
     return ret;
   }
 
-  public static String doit(Object result) {
+  public static Map<String,String> doit(Object result) {
     if (result instanceof OutputContainer) {
       DisplayOutputContainer.display((OutputContainer)result);
-      return "";
+      return Text("");
     }
     if(result instanceof Table){
       showInternalWidget(new TableDisplay(new CsvPlotReader().convert((Table) result)));
-      return "";
+      return Text("");
     }
     if (isInternalWidget(result)) {
       showInternalWidget(result);
-      return "";
+      return Text("");
     }
     if (mapper != null && isBeakerChart(result)) {
       try {
@@ -180,12 +183,15 @@ public class SerializeToString {
                 "'></div><script>var j = " + s +
                 "; console.log('plot this:'); console.log(j); window.initPlotd(j,'beakerChart" + count +
                 "');</script></html>";
-        return s;
+        return HTML(s);
       } catch (Exception e) {
-        return exceptionToString(e);
+        return Text(exceptionToString(e));
       }
     }
-    return result != null ? result.toString() : null;
+    if(result instanceof Map) {
+      return (Map) result;
+    }
+    return result != null ? Text(result.toString()) : Text("null");
   }
 
   public static void showInternalWidget(Object result) {

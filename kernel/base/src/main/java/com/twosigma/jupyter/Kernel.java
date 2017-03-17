@@ -70,7 +70,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   private void run() throws InterruptedException, IOException {
-    logger.info("Groovy Jupyter kernel starting.");
+    logger.info("Jupyter kernel starting.");
     running = true;
     this.kernelSockets = new KernelSockets(this, configurationFile.getConfig());
     this.kernelSockets.start();

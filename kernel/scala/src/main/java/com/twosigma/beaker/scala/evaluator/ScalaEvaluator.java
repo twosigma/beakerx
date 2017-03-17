@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.evaluator.Evaluator;
+import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -294,6 +295,7 @@ public class ScalaEvaluator implements Evaluator {
       public void run() {
         theOutput.setOutputHandler();
         try {
+          InternalVariable.setValue(theOutput);
           shell.evaluate(theOutput, theCode);
         } catch(Throwable e) {
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {

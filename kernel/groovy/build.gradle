@@ -122,6 +122,14 @@ jacocoTestReport {
     xml.enabled = false
     csv.enabled = false
   }
+  afterEvaluate {
+    classDirectories = files(classDirectories.files.collect {
+      fileTree(dir: it,
+              exclude: ['com/twosigma/beaker/groovy/autocomplete/GroovyParser*',
+                        'com/twosigma/beaker/groovy/autocomplete/GroovyLexer*'
+      ])
+    })
+  }
 }
 
 task realclean

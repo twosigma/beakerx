@@ -15,12 +15,19 @@
  */
 package com.twosigma.beaker.evaluator;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 
-import java.io.IOException;
-
 public interface Evaluator {
+  
+  final static Logger logger = LoggerFactory.getLogger(Evaluator.class.getName());
 
 	void setShellOptions(String cp, String in) throws IOException;
 	AutocompleteResult autocomplete(String code, int caretPosition);
@@ -28,5 +35,15 @@ public interface Evaluator {
 	void evaluate(SimpleEvaluationObject seo, String code);
 	void startWorker();
 	void exit();
+	
+  public static Path createJupyterTempFolder(){
+    Path ret = null;
+    try {
+      ret = Files.createTempDirectory("beaker");
+    } catch (IOException e) {
+      logger.error("No temp folder set for beaker", e);
+    }
+    return ret.toAbsolutePath();
+  }
 	
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,11 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beaker.javash;
 
-include 'beaker-nbextension'
-include 'beaker-nbextension:js'
-include 'kernel'
-include 'kernel:base'
-include 'kernel:groovy'
-include 'kernel:scala'
-include 'kernel:java'
+import com.twosigma.beaker.DefaultJVMVariables;
+
+/**
+ * 
+ * @author konst
+ *
+ */
+public class JavaDefaultVariables extends DefaultJVMVariables {
+  
+}

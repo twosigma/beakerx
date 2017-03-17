@@ -111,7 +111,7 @@ public class GroovyEvaluator implements Evaluator{
     updateLoader = false;
     currentClassPath = "";
     currentImports = "";
-    outDirDefault = createJupyterTempFolder().toString();
+    outDirDefault = Evaluator.createJupyterTempFolder().toString();
     outDir = new String(outDirDefault);
     outDir = envVariablesFilter(outDir, System.getenv());
     outDirInput = outDir;
@@ -163,16 +163,6 @@ public class GroovyEvaluator implements Evaluator{
     exit = true;
     cancelExecution();
     syncObject.release();
-  }
-
-  public static Path createJupyterTempFolder(){
-    Path ret = null;
-    try {
-      ret = Files.createTempDirectory("beaker");
-    } catch (IOException e) {
-      logger.error("No temp folder set for beaker", e);
-    }
-    return ret.toAbsolutePath();
   }
 
   @Override

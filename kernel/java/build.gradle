@@ -1,0 +1,112 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+apply plugin: 'application'
+apply plugin: 'jacoco'
+apply plugin: 'java'
+
+def final kernelIdName = 'scala'
+def final toReplace = '__PATH__'
+
+mainClassName = 'com.twosigma.beaker.javash.JavaKernel'
+
+configurations {
+  antlr
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile project(':kernel:base')
+  antlr group : 'org.antlr', name :'antlr4', version: '4.5'
+  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
+
+  testCompile group: 'junit', name: 'junit', version: '4.11'
+  testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
+  testCompile group: 'org.reflections', name: 'reflections', version: '0.9.10'
+}
+
+jar {
+  manifest {
+    attributes "Main-Class": "$mainClassName"
+  }
+
+  from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  } {
+    exclude "META-INF/*.SF"
+    exclude "META-INF/*.DSA"
+    exclude "META-INF/*.RSA"
+  }
+}
+
+task prepareJson(dependsOn: 'build') {
+  doLast {
+    println "Prepare JSON for Jupyter notebook"
+    println "Copy kernel.json to build/libs/json/ and replasing PATH with java.jar parh"
+
+    def jarLocation = new File('build/libs/java.jar').getAbsolutePath()
+    jarLocation = jarLocation.replace("\\", "/");
+    def text = new File('kernel.json').text.replace(toReplace, jarLocation)
+    def folder = new File('build/libs/json')
+    if (!folder.exists()) {
+      println "Creating folder build/libs/json"
+      folder.mkdirs()
+    }
+
+    new File('build/libs/json/kernel.json').withWriter { w ->
+      w << text
+    }
+  }
+}
+
+task kernelInstall(dependsOn: 'prepareJson') {
+  doLast {
+    println "Installing 'Java' to jupyter notebook"
+
+    def hashStdOut = new ByteArrayOutputStream()
+    def jsonFolder = new File('build/libs/json/').getAbsolutePath();
+    exec {
+      commandLine "jupyter",
+              "kernelspec",
+              "install",
+              "--sys-prefix",
+              "--replace",
+              "--name",
+              kernelIdName,
+              jsonFolder;
+      standardOutput = hashStdOut
+    }
+    println hashStdOut.toString().trim();
+    println "DONE"
+  }
+}
+
+jacoco {
+  toolVersion = "0.7.8"
+}
+
+jacocoTestReport {
+  reports {
+    html.enabled = true
+    xml.enabled = false
+    csv.enabled = false
+  }
+}
+
+test.finalizedBy jacocoTestReport
+

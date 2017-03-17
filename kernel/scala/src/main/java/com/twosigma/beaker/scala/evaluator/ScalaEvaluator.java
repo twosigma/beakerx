@@ -107,18 +107,8 @@ public class ScalaEvaluator implements Evaluator {
     updateLoader = false;
     currentClassPath = "";
     currentImports = "";
-    outDir = createJupyterTempFolder().toString();
+    outDir = Evaluator.createJupyterTempFolder().toString();
     startWorker();
-  }
-
-  public static Path createJupyterTempFolder(){
-    Path ret = null;
-    try {
-      ret = Files.createTempDirectory("beaker");
-    } catch (IOException e) {
-      logger.error("No temp folder set for beaker", e);
-    }
-    return ret.toAbsolutePath();
   }
   
   @Override

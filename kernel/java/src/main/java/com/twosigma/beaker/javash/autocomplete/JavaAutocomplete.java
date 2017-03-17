@@ -14,10 +14,26 @@
  *  limitations under the License.
  */
 
-include 'beaker-nbextension'
-include 'beaker-nbextension:js'
-include 'kernel'
-include 'kernel:base'
-include 'kernel:groovy'
-include 'kernel:scala'
-include 'kernel:java'
+package com.twosigma.beaker.javash.autocomplete;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.twosigma.beaker.autocomplete.ClasspathScanner;
+
+public class JavaAutocomplete {
+
+  public JavaAutocomplete(ClasspathScanner c) {
+    // TODO
+  }
+
+  public void addImport(String st) {
+    // TODO
+  }
+
+  public List<String> doAutocomplete(String code, int caretPosition) {
+    // TODO
+    return new ArrayList<>();
+  }
+
+}

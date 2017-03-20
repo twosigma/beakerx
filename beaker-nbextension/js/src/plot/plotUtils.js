@@ -156,8 +156,6 @@ define([
       return n1 instanceof Big ? n1.div(n2) : n1 / n2;
     },
     getDataRange : function(data) { // data range is in [0,1] x [0,1]
-      console.log('data', data);
-
       var datarange = {
         xl : Infinity,
         xr : -Infinity,

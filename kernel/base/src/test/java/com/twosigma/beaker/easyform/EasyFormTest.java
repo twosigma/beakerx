@@ -20,6 +20,7 @@ import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.bools.Checkbox;
 import com.twosigma.beaker.widgets.box.Box;
+import com.twosigma.beaker.widgets.selections.Dropdown;
 import com.twosigma.beaker.widgets.strings.Text;
 import com.twosigma.jupyter.message.Message;
 import org.junit.After;
@@ -34,8 +35,8 @@ import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyDisplayMsg;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyInternalOpenCommMsg;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
-import static com.twosigma.beaker.widgets.Widget.DESCRIPTION;
 import static com.twosigma.beaker.widgets.Widget.VALUE;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EasyFormTest {
@@ -75,6 +76,24 @@ public class EasyFormTest {
   }
 
   @Test
+  public void shouldCreateEasyFormWithCombobox() throws Exception {
+    //given
+    String label = "ComboboxLabel1";
+    //when
+    EasyForm easyForm = new EasyForm("EasyForm with checkbox");
+    easyForm.addComboBox(label, asList("1", "2"));
+    DisplayEasyForm.display(easyForm);
+    //then
+    verifyCombobox(getWidgetMsgs());
+    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(getDisplayMsg());
+  }
+
+  private void verifyCombobox(List<Message> messages) {
+    verifyOpenCommMsg(messages, Dropdown.MODEL_NAME_VALUE, Dropdown.VIEW_NAME_VALUE);
+  }
+
+  @Test
   public void shouldCreateEasyFormWithCheckbox() throws Exception {
     //given
     String label = "CheckboxLabel1";
@@ -83,16 +102,9 @@ public class EasyFormTest {
     easyForm.addCheckBox(label);
     DisplayEasyForm.display(easyForm);
     //then
-    verifyCheckboxField(kernel.getPublishedMessages().subList(0, 2));
-    verifyLabel(kernel.getPublishedMessages().get(2), label);
-    verifyCheckboxValue(kernel.getPublishedMessages().get(3), Boolean.FALSE);
-    verifyEasyForm(kernel.getPublishedMessages().subList(4, 6), easyForm.getCommFunctionalities());
-    verifyDisplayMsg(kernel.getPublishedMessages().get(6));
-  }
-
-  private void verifyCheckboxValue(Message message, Boolean expectedValue) {
-    Boolean value = getValueForProperty(message, VALUE, Boolean.class);
-    assertThat(value).isEqualTo(expectedValue);
+    verifyCheckboxField(getWidgetMsgs());
+    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(getDisplayMsg());
   }
 
   private void verifyCheckboxField(List<Message> messages) {
@@ -108,15 +120,9 @@ public class EasyFormTest {
     easyForm.addTextField(label, 10);
     DisplayEasyForm.display(easyForm);
     //then
-    verifyTextField(kernel.getPublishedMessages().subList(0, 2));
-    verifyLabel(kernel.getPublishedMessages().get(2), label);
-    verifyEasyForm(kernel.getPublishedMessages().subList(3, 5), easyForm.getCommFunctionalities());
-    verifyDisplayMsg(kernel.getPublishedMessages().get(5));
-  }
-
-  private void verifyLabel(Message message, String expectedLabel) {
-    String label = getValueForProperty(message, DESCRIPTION, String.class);
-    assertThat(label).isEqualTo(expectedLabel);
+    verifyTextField(getWidgetMsgs());
+    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(getDisplayMsg());
   }
 
   private void verifyEasyForm(List<Message> messages, List<CommFunctionality> children) {
@@ -136,5 +142,18 @@ public class EasyFormTest {
       assertThat(Box.IPY_MODEL + children.get(i).getComm().getCommId()).isEqualTo(objects[i]);
     }
   }
+
+  private List<Message> getWidgetMsgs() {
+    return kernel.getPublishedMessages().subList(0, 2);
+  }
+
+  private Message getDisplayMsg() {
+    return kernel.getPublishedMessages().get(kernel.getPublishedMessages().size()-1);
+  }
+
+  private List<Message> getEasyFormMsgs() {
+    return kernel.getPublishedMessages().subList(kernel.getPublishedMessages().size()-3, kernel.getPublishedMessages().size()-1);
+  }
+
 
 }

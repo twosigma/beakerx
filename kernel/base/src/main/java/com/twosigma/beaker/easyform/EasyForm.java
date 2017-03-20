@@ -29,6 +29,7 @@ import com.twosigma.beaker.easyform.formitem.TextArea;
 import com.twosigma.beaker.easyform.formitem.TextField;
 import com.twosigma.beaker.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.ComboBoxWidget;
+import com.twosigma.beaker.easyform.formitem.widgets.ListComponentWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.TextFieldWidget;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import org.apache.commons.lang3.StringUtils;
@@ -168,7 +169,8 @@ public class EasyForm extends ObservableMap<String, Object> {
                                    final Collection<String> values,
                                    final Boolean multipleSelection,
                                    final Integer size) throws Exception {
-    ListComponent list = new ListComponent();
+
+    ListComponent list = new ListComponentWidget();
     list.setLabel(label);
     list.setSize(size);
     list.setMultipleSelection(multipleSelection);

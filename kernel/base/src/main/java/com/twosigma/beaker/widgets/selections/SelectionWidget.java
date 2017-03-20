@@ -24,7 +24,6 @@ public abstract class SelectionWidget extends DOMWidget {
 
   public static final String OPTIONS_LABELS = "_options_labels";
 
-  private String value = "";
   private String[] options = new String[0];
 
   public SelectionWidget() {
@@ -34,22 +33,7 @@ public abstract class SelectionWidget extends DOMWidget {
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(OPTIONS_LABELS, this.options);
-    content.put(VALUE, this.value);
     return content;
-  }
-
-  @Override
-  protected void updateValue(Object value) {
-    this.value = (String) value;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-    sendUpdate(VALUE, value);
   }
 
   public String[] getOptions() {

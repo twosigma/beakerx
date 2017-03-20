@@ -18,12 +18,12 @@ package com.twosigma.beaker.widgets.selections;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class Select extends SingleSelectionWidget {
+public class SelectMultiple extends MultipleSelectionWidget {
 
-  public static String VIEW_NAME_VALUE = "SelectView";
-  public static String MODEL_NAME_VALUE = "SelectModel";
+  public static String VIEW_NAME_VALUE = "SelectMultipleView";
+  public static String MODEL_NAME_VALUE = "SelectMultipleModel";
 
-  public Select() {
+  public SelectMultiple() {
     super();
     init();
   }

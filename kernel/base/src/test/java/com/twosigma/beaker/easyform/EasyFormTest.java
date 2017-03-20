@@ -21,6 +21,7 @@ import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.bools.Checkbox;
 import com.twosigma.beaker.widgets.box.Box;
 import com.twosigma.beaker.widgets.selections.Dropdown;
+import com.twosigma.beaker.widgets.selections.SelectMultiple;
 import com.twosigma.beaker.widgets.strings.Text;
 import com.twosigma.jupyter.message.Message;
 import org.junit.After;
@@ -73,6 +74,24 @@ public class EasyFormTest {
   private void verifyOnInit(Message message, String expected) {
     String label = getValueForProperty(message, VALUE, String.class);
     assertThat(label).isEqualTo(expected);
+  }
+
+  @Test
+  public void shouldCreateEasyFormWithMultipleSelection() throws Exception {
+    //given
+    String label = "MultipleSelectionLabel1";
+    //when
+    EasyForm easyForm = new EasyForm("EasyForm with checkbox");
+    easyForm.addList(label, asList("1", "2","3"));
+    DisplayEasyForm.display(easyForm);
+    //then
+    verifyMultipleSelection(getWidgetMsgs());
+    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(getDisplayMsg());
+  }
+
+  private void verifyMultipleSelection(List<Message> messages) {
+    verifyOpenCommMsg(messages, SelectMultiple.MODEL_NAME_VALUE, SelectMultiple.VIEW_NAME_VALUE);
   }
 
   @Test

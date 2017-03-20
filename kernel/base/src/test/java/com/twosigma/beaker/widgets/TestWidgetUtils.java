@@ -68,15 +68,14 @@ public class TestWidgetUtils {
     return message.getContent();
   }
 
-
-  public static <T> void verifyMsgForProperty(KernelTest groovyKernel, String propertyName, T expected) {
-    Object actual = getValueForProperty(groovyKernel, propertyName, expected.getClass());
+  public static <T> void verifyMsgForProperty(KernelTest kernel, String propertyName, T expected) {
+    Object actual = getValueForProperty(kernel, propertyName, expected.getClass());
     assertThat(actual).isEqualTo(expected);
   }
 
-  public static <T> T getValueForProperty(KernelTest groovyKernel, String propertyName, Class<T> clazz) {
-    assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(1);
-    Message message = groovyKernel.getPublishedMessages().get(0);
+  public static <T> T getValueForProperty(KernelTest kernel, String propertyName, Class<T> clazz) {
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(1);
+    Message message = kernel.getPublishedMessages().get(0);
     return getValueForProperty(message, propertyName, clazz);
   }
 

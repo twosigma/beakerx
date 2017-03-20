@@ -18,22 +18,30 @@ package com.twosigma.beaker.widgets.selections;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class Select extends SingleSelectionWidget {
+public abstract class SingleSelectionWidget extends SelectionWidget {
 
-  public static String VIEW_NAME_VALUE = "SelectView";
-  public static String MODEL_NAME_VALUE = "SelectModel";
-
-  public Select() {
-    super();
-    init();
-  }
+  private String value = "";
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
+    content.put(VALUE, this.value);
     return content;
   }
+
+  @Override
+  protected void updateValue(Object value) {
+    this.value = (String) value;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  public void setValue(String value) {
+    this.value = value;
+    sendUpdate(VALUE, value);
+  }
+
 
 }

@@ -287,8 +287,10 @@ define([
         range.xr = model.xAxis.getPercent(range.xr);
         range.yl = model.yAxis.getPercent(range.yl);
         range.yr = model.yAxis.getPercent(range.yr);
-        rangeR.yl = model.yAxisR.getPercent(rangeR.yl);
-        rangeR.yr = model.yAxisR.getPercent(rangeR.yr);
+        if (model.yAxisR) {
+          rangeR.yl = model.yAxisR.getPercent(rangeR.yl);
+          rangeR.yr = model.yAxisR.getPercent(rangeR.yr);
+        }
       }
       var focus = {
         xl : model.userFocus.xl,

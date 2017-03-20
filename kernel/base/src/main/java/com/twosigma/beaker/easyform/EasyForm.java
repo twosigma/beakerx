@@ -27,6 +27,7 @@ import com.twosigma.beaker.easyform.formitem.RadioButtonComponent;
 import com.twosigma.beaker.easyform.formitem.SaveValuesButton;
 import com.twosigma.beaker.easyform.formitem.TextArea;
 import com.twosigma.beaker.easyform.formitem.TextField;
+import com.twosigma.beaker.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.TextFieldWidget;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import org.apache.commons.lang3.StringUtils;
@@ -113,7 +114,7 @@ public class EasyForm extends ObservableMap<String, Object> {
   }
 
   public EasyFormComponent addCheckBox(final String label, final Boolean value) throws Exception {
-    CheckBox checkBox = new CheckBox();
+    CheckBox checkBox = new CheckBoxWidget();
     checkBox.setLabel(label);
     checkBox.setValue(String.valueOf(value));
     return addComponentOrThrow(label, checkBox);

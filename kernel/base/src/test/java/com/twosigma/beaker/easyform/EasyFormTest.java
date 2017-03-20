@@ -18,6 +18,7 @@ package com.twosigma.beaker.easyform;
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.bools.Checkbox;
 import com.twosigma.beaker.widgets.box.Box;
 import com.twosigma.beaker.widgets.strings.Text;
 import com.twosigma.jupyter.message.Message;
@@ -74,6 +75,31 @@ public class EasyFormTest {
   }
 
   @Test
+  public void shouldCreateEasyFormWithCheckbox() throws Exception {
+    //given
+    String label = "CheckboxLabel1";
+    //when
+    EasyForm easyForm = new EasyForm("EasyForm with checkbox");
+    easyForm.addCheckBox(label);
+    DisplayEasyForm.display(easyForm);
+    //then
+    verifyCheckboxField(kernel.getPublishedMessages().subList(0, 2));
+    verifyLabel(kernel.getPublishedMessages().get(2), label);
+    verifyCheckboxValue(kernel.getPublishedMessages().get(3), Boolean.FALSE);
+    verifyEasyForm(kernel.getPublishedMessages().subList(4, 6), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages().get(6));
+  }
+
+  private void verifyCheckboxValue(Message message, Boolean expectedValue) {
+    Boolean value = getValueForProperty(message, VALUE, Boolean.class);
+    assertThat(value).isEqualTo(expectedValue);
+  }
+
+  private void verifyCheckboxField(List<Message> messages) {
+    verifyOpenCommMsg(messages, Checkbox.MODEL_NAME_VALUE, Checkbox.VIEW_NAME_VALUE);
+  }
+
+  @Test
   public void shouldCreateEasyFormWithTextField() throws Exception {
     //given
     String label = "text1";
@@ -83,12 +109,12 @@ public class EasyFormTest {
     DisplayEasyForm.display(easyForm);
     //then
     verifyTextField(kernel.getPublishedMessages().subList(0, 2));
-    verifyTextFieldLabel(kernel.getPublishedMessages().get(2), label);
+    verifyLabel(kernel.getPublishedMessages().get(2), label);
     verifyEasyForm(kernel.getPublishedMessages().subList(3, 5), easyForm.getCommFunctionalities());
     verifyDisplayMsg(kernel.getPublishedMessages().get(5));
   }
 
-  private void verifyTextFieldLabel(Message message, String expectedLabel) {
+  private void verifyLabel(Message message, String expectedLabel) {
     String label = getValueForProperty(message, DESCRIPTION, String.class);
     assertThat(label).isEqualTo(expectedLabel);
   }

@@ -27,6 +27,7 @@ import com.twosigma.beaker.easyform.formitem.RadioButtonComponent;
 import com.twosigma.beaker.easyform.formitem.SaveValuesButton;
 import com.twosigma.beaker.easyform.formitem.TextArea;
 import com.twosigma.beaker.easyform.formitem.TextField;
+import com.twosigma.beaker.easyform.formitem.widgets.ButtonComponentWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.ComboBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.ListComponentWidget;
@@ -232,7 +233,7 @@ public class EasyForm extends ObservableMap<String, Object> {
   }
 
   public ButtonComponent addButton(final String label, final String actionCellTag) throws Exception {
-    ButtonComponent buttonComponent = new ButtonComponent();
+    ButtonComponent buttonComponent = new ButtonComponentWidget();
     buttonComponent.setLabel(label);
     buttonComponent.setTag(actionCellTag);
     addComponentOrThrow(label, buttonComponent);

@@ -17,6 +17,7 @@ package com.twosigma.beaker.easyform;
 
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.widgets.Button;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.bools.Checkbox;
 import com.twosigma.beaker.widgets.box.Box;
@@ -74,6 +75,24 @@ public class EasyFormTest {
   private void verifyOnInit(Message message, String expected) {
     String label = getValueForProperty(message, VALUE, String.class);
     assertThat(label).isEqualTo(expected);
+  }
+
+  @Test
+  public void shouldCreateEasyFormWithButton() throws Exception {
+    //given
+    String label = "ButtonLabel1";
+    //when
+    EasyForm easyForm = new EasyForm("EasyForm with button");
+    easyForm.addButton(label);
+    DisplayEasyForm.display(easyForm);
+    //then
+    verifyButton(getWidgetMsgs());
+    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(getDisplayMsg());
+  }
+
+  private void verifyButton(List<Message> messages) {
+    verifyOpenCommMsg(messages, Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE);
   }
 
   @Test

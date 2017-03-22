@@ -36,6 +36,7 @@ import static com.twosigma.beaker.widgets.TestWidgetUtils.getData;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyDisplayMsg;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyInternalOpenCommMsg;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
 import static com.twosigma.beaker.widgets.Widget.VALUE;
 import static java.util.Arrays.asList;
@@ -92,7 +93,7 @@ public class EasyFormTest {
   }
 
   private void verifyButton(List<Message> messages) {
-    verifyOpenCommMsg(messages, Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(messages, Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE);
   }
 
   @Test

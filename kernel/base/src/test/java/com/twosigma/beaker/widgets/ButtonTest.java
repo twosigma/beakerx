@@ -25,8 +25,8 @@ import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
 
+import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyMsgForProperty;
-import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
 public class ButtonTest {
 
@@ -49,7 +49,7 @@ public class ButtonTest {
     //when
     new Button();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(groovyKernel.getPublishedMessages(), Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE);
   }
 
   @Test

@@ -54,6 +54,19 @@ public class TestWidgetUtils {
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
 
+  public static void verifyInternalOpenCommMsgWitLayout(List<Message> messages, String modelNameValue, String viewNameValue) {
+    Message layout = messages.get(0);
+    Message widget = messages.get(1);
+
+    verifyTypeMsg(widget,COMM_OPEN);
+    Map data = getData(widget);
+    assertThat(data.get(Layout.LAYOUT)).isEqualTo(Layout.IPY_MODEL + layout.getContent().get(Comm.COMM_ID));
+    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(InternalWidgetUtils.MODEL_MODULE_VALUE);
+    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(InternalWidgetUtils.VIEW_MODULE_VALUE);
+    assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
+    assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
+  }
+
   public static void verifyTypeMsg(Message widget, JupyterMessages jupyterMessages) {
     assertThat(widget.getHeader().getType()).isEqualTo(jupyterMessages.getName());
   }

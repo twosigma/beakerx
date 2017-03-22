@@ -38,4 +38,10 @@ public class ButtonComponentWidget extends ButtonComponent implements CommFuncti
     super.setLabel(label);
     this.widget.setDescription(label);
   }
+
+  @Override
+  public void setTag(String tag) {
+    super.setTag(tag);
+    this.widget.setTag(tag);
+  }
 }

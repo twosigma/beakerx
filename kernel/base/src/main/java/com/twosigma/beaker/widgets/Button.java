@@ -26,7 +26,10 @@ public class Button extends DOMWidget {
   public static final String MODEL_NAME_VALUE = "ButtonModel";
 
   public static final String TOOLTIP = "tooltip";
+  public static final String TAG = "tag";
+
   private String tooltip;
+  private String tag;
 
   public Button() {
     super();
@@ -53,6 +56,12 @@ public class Button extends DOMWidget {
     sendUpdate(TOOLTIP, tooltip);
   }
 
+  public String getTag() {
+    return tag;
+  }
 
-
+  public void setTag(String tag) {
+    this.tag = tag;
+    sendUpdate(TAG, tag);
+  }
 }

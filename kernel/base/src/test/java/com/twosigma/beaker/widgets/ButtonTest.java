@@ -62,6 +62,16 @@ public class ButtonTest {
     verifyMsgForProperty(groovyKernel, Button.TOOLTIP, "Tooltip 2");
   }
 
+  @Test
+  public void shouldSendCommMsgWhenTagChange() throws Exception {
+    //given
+    Button widget = button();
+    //when
+    widget.setTag("Tag2");
+    //then
+    verifyMsgForProperty(groovyKernel, Button.TAG, "Tag2");
+  }
+
   private Button button() throws NoSuchAlgorithmException {
     Button widget = new Button();
     groovyKernel.clearPublishedMessages();

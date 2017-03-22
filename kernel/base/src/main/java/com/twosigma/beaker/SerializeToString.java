@@ -82,6 +82,7 @@ import com.twosigma.beaker.widgets.internal.InternalWidget;
 
 import static com.twosigma.beaker.mimetype.MimeTypeManager.HTML;
 import static com.twosigma.beaker.mimetype.MimeTypeManager.Text;
+import static com.twosigma.beaker.mimetype.MimeTypeManager.isMimetypeSupported;
 
 
 public class SerializeToString {
@@ -189,9 +190,10 @@ public class SerializeToString {
       }
     }
     if(result instanceof Map) {
-      return (Map) result;
+      String mime = ((Map<?,?>) result).entrySet().iterator().next().getKey().toString();
+      return isMimetypeSupported(mime)? (Map) result : Text(result);
     }
-    return result != null ? Text(result.toString()) : Text("null");
+    return result != null ? Text(result) : Text("null");
   }
 
   public static void showInternalWidget(Object result) {

@@ -22,8 +22,8 @@ import java.util.HashMap;
 
 public class Button extends DOMWidget {
 
-  public static final String VIEW_NAME_VALUE = "ButtonView1";
-  public static final String MODEL_NAME_VALUE = "ButtonModel1";
+  public static final String VIEW_NAME_VALUE = "ButtonView";
+  public static final String MODEL_NAME_VALUE = "ButtonModel";
 
   public static final String TOOLTIP = "tooltip";
   private String tooltip;

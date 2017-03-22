@@ -37,4 +37,8 @@ public class ProgressReporting {
       progressBar = null;
     }
   }
+
+  protected IntProgress getIntProgress() {
+    return progressBar;
+  }
 }

@@ -1,9 +1,10 @@
 var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
 
-console.log('widgets', widgets);
+// console.log('widgets', widgets);
 
 var EasyFormScope = require('./easyForm/easyFormScope');
+var buttonWidget = require('./buttonWidget');
 
 require('./easyForm/css/bko-easyform.css');
 
@@ -89,18 +90,15 @@ var EasyFormView = widgets.DOMWidgetView.extend({
 
     tmplElement.appendTo(this.$el);
 
-    console.log(data);
-    // debugger
-
-
     currentScope.setModelData(data);
     currentScope.setElement(tmplElement);
     currentScope.init();
   }
 });
 
-
 module.exports = {
   EasyFormModel: EasyFormModel,
-  EasyFormView: EasyFormView
+  EasyFormView: EasyFormView,
+  ButtonModel: buttonWidget.ButtonModel,
+  ButtonView: buttonWidget.ButtonView
 };

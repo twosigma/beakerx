@@ -24,7 +24,15 @@ module.exports = [
       filename: 'extension.js',
       path: '../beaker-nbextension/static',
       libraryTarget: 'amd'
-    }
+    },
+    externals: [
+      'services/config',
+      'services/kernels/comm',
+      'base/js/utils',
+      'base/js/namespace',
+      'base/js/events',
+      'require'
+    ]
   },
   {// Bundle for the notebook containing the custom widget views and models
     //

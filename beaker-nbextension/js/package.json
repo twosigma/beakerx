@@ -1,12 +1,12 @@
 {
   "name": "beaker-nbextension",
   "version": "0.0.1",
-  "description": "A Custom Jupyter Widget Library",
-  "author": "Beaker",
+  "description": "Beaker Extensions for Jupyter",
+  "author": "Two Sigma Open Source, LLC",
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Beaker/beaker-manager.git"
+    "url": ""
   },
   "keywords": [
     "jupyter",

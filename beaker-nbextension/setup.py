@@ -140,9 +140,9 @@ setup_args = {
         'jsdeps': NPM,
     },
 
-    'author': 'Beaker',
-    'author_email': '',
-    'url': 'http://jupyter.org',
+    'author': 'Two Sigma Open Source, LLC',
+    'author_email': 'beaker-feedback@twosigma.com',
+    'url': 'http://beakernotebook.com',
     'keywords': [
         'ipython',
         'jupyter',

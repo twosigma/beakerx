@@ -22,6 +22,7 @@
 * npm, bower, webpack
 * conda
 
+## Build and run
 ```
 conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx

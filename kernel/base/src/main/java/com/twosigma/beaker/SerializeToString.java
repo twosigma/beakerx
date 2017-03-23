@@ -24,6 +24,7 @@ import java.util.Map;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.twosigma.beaker.fileloader.CsvPlotReader;
 import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
 import com.fasterxml.jackson.core.Version;
@@ -80,9 +81,8 @@ import com.twosigma.beaker.widgets.DisplayOutputContainer;
 import com.twosigma.beaker.widgets.DisplayWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
 
-import static com.twosigma.beaker.mimetype.MimeTypeManager.HTML;
-import static com.twosigma.beaker.mimetype.MimeTypeManager.Text;
-import static com.twosigma.beaker.mimetype.MimeTypeManager.isMimetypeSupported;
+import static com.twosigma.beaker.mimetype.MIMEContainer.HTML;
+import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
 
 
 public class SerializeToString {
@@ -163,7 +163,7 @@ public class SerializeToString {
     return ret;
   }
 
-  public static Map<String,String> doit(Object result) {
+  public static MIMEContainer doit(Object result) {
     if (result instanceof OutputContainer) {
       DisplayOutputContainer.display((OutputContainer)result);
       return Text("");
@@ -189,9 +189,8 @@ public class SerializeToString {
         return Text(exceptionToString(e));
       }
     }
-    if(result instanceof Map) {
-      String mime = ((Map<?,?>) result).entrySet().iterator().next().getKey().toString();
-      return isMimetypeSupported(mime)? (Map) result : Text(result);
+    if(result instanceof MIMEContainer) {
+      return (MIMEContainer) result;
     }
     return result != null ? Text(result) : Text("null");
   }

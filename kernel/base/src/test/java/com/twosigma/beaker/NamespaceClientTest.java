@@ -14,9 +14,8 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.groovy;
+package com.twosigma.beaker;
 
-import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.jupyter.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -29,13 +28,13 @@ public class NamespaceClientTest {
 
   private static String SESSION_ID = "sessionId";
   private NamespaceClient namespaceClient;
-  private GroovyKernelEvaluatorTest groovyKernel;
+  private KernelTest kernel;
 
   @Before
   public void setUp() {
     namespaceClient = NamespaceClient.getBeaker(SESSION_ID);
-    groovyKernel = new GroovyKernelEvaluatorTest();
-    KernelManager.register(groovyKernel);
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
   }
 
   @After
@@ -88,8 +87,8 @@ public class NamespaceClientTest {
     //when
     curNamespaceClient.set("x", new Integer(10));
     //then
-    Assertions.assertThat(groovyKernel.getMessages()).isNotEmpty();
-    Map data = (Map) groovyKernel.getMessages().get(1).getContent().get("data");
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Map data = (Map) kernel.getPublishedMessages().get(1).getContent().get("data");
     Assertions.assertThat(data.get("name")).isEqualTo("x");
     Assertions.assertThat(data.get("value")).isEqualTo("10");
     Assertions.assertThat(data.get("sync")).isEqualTo(Boolean.TRUE);
@@ -102,6 +101,6 @@ public class NamespaceClientTest {
     //when
     curNamespaceClient.set("x", new Integer(10));
     //then
-    Assertions.assertThat(groovyKernel.getMessages()).isNotEmpty();
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
   }
 }

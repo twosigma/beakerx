@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.jupyter;
 
-import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -31,13 +31,13 @@ import java.util.Map;
 
 public class CommTest {
 
-  private GroovyKernelTest groovyKernel;
+  private KernelTest kernel;
   private Comm comm;
 
   @Before
   public void setUp() {
-    groovyKernel = new GroovyKernelTest();
-    KernelManager.register(groovyKernel);
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
     comm = new Comm("targetName");
   }
 
@@ -51,8 +51,8 @@ public class CommTest {
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Assertions.assertThat(groovyKernel.getPublishedMessages().get(0)).isNotNull();
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Assertions.assertThat(kernel.getPublishedMessages().get(0)).isNotNull();
   }
 
   @Test
@@ -60,7 +60,7 @@ public class CommTest {
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.isCommPresent(comm.getCommId())).isTrue();
+    Assertions.assertThat(kernel.isCommPresent(comm.getCommId())).isTrue();
   }
 
   @Test
@@ -68,8 +68,8 @@ public class CommTest {
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getType())
         .isEqualTo(JupyterMessages.COMM_OPEN.getName());
   }
@@ -79,8 +79,8 @@ public class CommTest {
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat((String) sendMessage.getContent().get(Comm.COMM_ID)).isNotEmpty();
   }
 
@@ -89,8 +89,8 @@ public class CommTest {
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat((String) sendMessage.getContent().get(Comm.TARGET_NAME)).isNotEmpty();
   }
 
@@ -100,8 +100,8 @@ public class CommTest {
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat((Map) sendMessage.getContent().get(Comm.DATA)).isNotEmpty();
   }
 
@@ -112,8 +112,8 @@ public class CommTest {
     //when
     comm.open();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat((String) sendMessage.getContent().get(Comm.TARGET_MODULE)).isNotEmpty();
   }
 
@@ -122,8 +122,8 @@ public class CommTest {
     //when
     comm.close();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Assertions.assertThat(groovyKernel.getPublishedMessages().get(0)).isNotNull();
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Assertions.assertThat(kernel.getPublishedMessages().get(0)).isNotNull();
   }
 
   @Test
@@ -131,7 +131,7 @@ public class CommTest {
     //when
     comm.close();
     //then
-    Assertions.assertThat(groovyKernel.isCommPresent(comm.getCommId())).isFalse();
+    Assertions.assertThat(kernel.isCommPresent(comm.getCommId())).isFalse();
   }
 
   @Test
@@ -139,8 +139,8 @@ public class CommTest {
     //when
     comm.close();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getType())
         .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
   }
@@ -151,8 +151,8 @@ public class CommTest {
     //when
     comm.close();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat((Map) sendMessage.getContent().get(Comm.DATA)).isEmpty();
   }
 
@@ -161,8 +161,8 @@ public class CommTest {
     //when
     comm.send();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Assertions.assertThat(groovyKernel.getPublishedMessages().get(0)).isNotNull();
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Assertions.assertThat(kernel.getPublishedMessages().get(0)).isNotNull();
   }
 
   @Test
@@ -170,8 +170,8 @@ public class CommTest {
     //when
     comm.send();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getType())
         .isEqualTo(JupyterMessages.COMM_MSG.getName());
   }
@@ -181,8 +181,8 @@ public class CommTest {
     //when
     comm.send();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat((String) sendMessage.getContent().get(Comm.COMM_ID)).isNotEmpty();
   }
 
@@ -192,8 +192,8 @@ public class CommTest {
     //when
     comm.send();
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message sendMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat((Map) sendMessage.getContent().get(Comm.DATA)).isNotEmpty();
   }
 

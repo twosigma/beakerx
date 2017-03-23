@@ -13,13 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy;
+package com.twosigma.beaker;
 
-import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.KernelTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,13 +28,13 @@ public class NamespaceClientShowProgressReportingTest {
 
   private static String SESSION_ID = "sessionId";
   private NamespaceClient namespaceClient;
-  private KernelTest groovyKernel;
+  private KernelTest kernel;
 
   @Before
   public void setUp() {
     namespaceClient = NamespaceClient.getBeaker(SESSION_ID);
-    groovyKernel = new KernelTest();
-    KernelManager.register(groovyKernel);
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
   }
 
   @After
@@ -52,7 +50,7 @@ public class NamespaceClientShowProgressReportingTest {
     namespaceClient.showProgressUpdate("msg1", 20);
     namespaceClient.showProgressUpdate("msg2", 40);
     //then
-    assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
   }
 
 }

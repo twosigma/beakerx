@@ -18,7 +18,9 @@ package com.twosigma.beaker.groovy;
 
 import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 import org.zeromq.ZMQ;
 
@@ -89,6 +91,11 @@ public class GroovyKernelEvaluatorTest implements KernelFunctionality {
 
   @Override
   public EvaluatorManager getEvaluatorManager() {
+    return null;
+  }
+
+  @Override
+  public Handler<Message> getHandler(JupyterMessages type) {
     return null;
   }
 }

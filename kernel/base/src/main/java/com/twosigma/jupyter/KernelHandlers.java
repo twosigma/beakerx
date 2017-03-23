@@ -45,18 +45,18 @@ public class KernelHandlers {
 
   private Map<JupyterMessages, KernelHandler<Message>> createHandlers(final CommOpenHandler commOpenHandler, final KernelHandler<Message> kernelInfoHandler) {
     Map<JupyterMessages, KernelHandler<Message>> handlers = new HashMap<>();
+    if(kernelInfoHandler != null){
+      handlers.put(JupyterMessages.KERNEL_INFO_REQUEST, kernelInfoHandler);
+    }
+    if (commOpenHandler != null) {
+      handlers.put(JupyterMessages.COMM_OPEN, commOpenHandler);
+    }
     handlers.put(JupyterMessages.EXECUTE_REQUEST, new ExecuteRequestHandler(kernel));
     handlers.put(JupyterMessages.COMPLETE_REQUEST, new CompleteHandler(kernel));
     handlers.put(JupyterMessages.HISTORY_REQUEST, new HistoryHandler(kernel));
     handlers.put(JupyterMessages.COMM_INFO_REQUEST, new CommInfoHandler(kernel));
     handlers.put(JupyterMessages.COMM_CLOSE, new CommCloseHandler(kernel));
     handlers.put(JupyterMessages.COMM_MSG, new CommMsgHandler(kernel, new MessageCreator(kernel)));
-    if (commOpenHandler != null) {
-      handlers.put(JupyterMessages.COMM_OPEN, commOpenHandler);
-    }
-    if(kernelInfoHandler != null){
-      handlers.put(JupyterMessages.KERNEL_INFO_REQUEST, kernelInfoHandler);  
-    }
     return handlers;
   }
 

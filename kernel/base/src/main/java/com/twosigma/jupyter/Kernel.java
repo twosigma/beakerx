@@ -25,6 +25,7 @@ import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
+import com.twosigma.jupyter.socket.KernelSockets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
@@ -42,7 +43,6 @@ public abstract class Kernel implements KernelFunctionality {
 
   public static String OS = System.getProperty("os.name").toLowerCase();
 
-  private volatile boolean running = false;
   private String sessionId;
   private ConfigurationFile configurationFile;
   private KernelHandlers handlers;
@@ -62,6 +62,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
+
   public abstract KernelHandler<Message> getKernelInfoHandler(Kernel kernel);
 
   protected static void runKernel(Kernel kernel) throws InterruptedException, IOException {
@@ -71,29 +72,20 @@ public abstract class Kernel implements KernelFunctionality {
 
   private void run() throws InterruptedException, IOException {
     logger.info("Jupyter kernel starting.");
-    running = true;
-    this.kernelSockets = new KernelSockets(this, configurationFile.getConfig());
+    this.kernelSockets = new KernelSockets(this, configurationFile.getConfig(), this::closeComms);
     this.kernelSockets.start();
-    waitForShutdown();
+    this.kernelSockets.join();
     exit();
-  }
-
-  public void shutdown() {
-    running = false;
-  }
-
-  private void waitForShutdown() throws InterruptedException {
-    while (running) {
-      Thread.sleep(1000);
-    }
+    logger.info("Jupyter kernel shoutdown.");
   }
 
   private void exit() throws InterruptedException {
-    this.commMap.values().forEach(Comm::close);
     this.handlers.exit();
     this.executionResultSender.exit();
-    this.kernelSockets.haltAndJoin();
-    logger.info("Done");
+  }
+
+  private void closeComms() {
+    this.commMap.values().forEach(Comm::close);
   }
 
   public static boolean isWindows() {
@@ -151,10 +143,6 @@ public abstract class Kernel implements KernelFunctionality {
     this.kernelSockets.send(socket, message);
   }
 
-  public Message readMessage(ZMQ.Socket socket) {
-    return this.kernelSockets.readMessage(socket);
-  }
-
   public Handler<Message> getHandler(JupyterMessages type) {
     return handlers.get(type);
   }
@@ -178,5 +166,4 @@ public abstract class Kernel implements KernelFunctionality {
       Signal.handle(new Signal("INT"), handler);
     }
   }
-
 }

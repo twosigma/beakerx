@@ -62,7 +62,7 @@ public class HashedMessageAuthenticationCode {
     }
   }
 
-  private String toHex(byte[] buffer) {
+  public String toHex(byte[] buffer) {
     return Hex.encodeHexString(buffer);
   }
 

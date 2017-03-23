@@ -65,7 +65,6 @@ public class ExecutionResultSender implements Observer {
     public void run() {
       while (getRunning()) {
         MessageHolder job = messageQueue.poll();
-
         if (handler != null && job != null) {
           if (SocketEnum.IOPUB_SOCKET.equals(job.getSocketType())) {
             kernel.publish(job.getMessage());
@@ -74,7 +73,7 @@ public class ExecutionResultSender implements Observer {
           }
         }
       }
-      logger.info("ShellThread shutdown.");
+      logger.info("MessageRunnable shutdown.");
     }
   }
 

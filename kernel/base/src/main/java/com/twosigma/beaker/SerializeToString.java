@@ -16,12 +16,11 @@
 
 package com.twosigma.beaker;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Hashtable;
 import java.util.Map;
 
 import com.github.lwhite1.tablesaw.api.Table;
+import com.twosigma.beaker.easyform.DisplayEasyForm;
 import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.easyform.formitem.*;
 import com.twosigma.beaker.easyform.serializer.*;
@@ -84,7 +83,6 @@ import com.twosigma.beaker.widgets.DisplayOutputContainer;
 import com.twosigma.beaker.widgets.DisplayWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
 
-import static com.twosigma.beaker.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
 
 
@@ -170,20 +168,11 @@ public class SerializeToString {
     return ret;
   }
 
-  protected static boolean isBeakerChart(Object result){
-    boolean ret = false;
-    if(result != null){
-      for (Class<?> clazz : serializerMap.keySet()) {
-        ret = clazz.isAssignableFrom(result.getClass());
-        if(ret){
-          break;
-        }
-      }
-    }
-    return ret;
-  }
-
   public static MIMEContainer doit(Object result) {
+    if (result instanceof EasyForm) {
+      DisplayEasyForm.display((EasyForm)result);
+      return Text("");
+    }
     if (result instanceof OutputContainer) {
       DisplayOutputContainer.display((OutputContainer)result);
       return Text("");
@@ -196,19 +185,6 @@ public class SerializeToString {
       showInternalWidget(result);
       return Text("");
     }
-    if (mapper != null && isBeakerChart(result)) {
-      try {
-        String s = mapper.writeValueAsString(result);
-        count++;
-        s = "<html><div id='beakerChart" + count +
-                "'></div><script>var j = " + s +
-                "; console.log('plot this:'); console.log(j); window.initPlotd(j,'beakerChart" + count +
-                "');</script></html>";
-        return HTML(s);
-      } catch (Exception e) {
-        return Text(exceptionToString(e));
-      }
-    }
     if(result instanceof MIMEContainer) {
       return (MIMEContainer) result;
     }
@@ -219,14 +195,6 @@ public class SerializeToString {
     InternalWidget widget = (InternalWidget) result;
     widget.sendModel();
     DisplayWidget.display(widget);
-  }
-
-  protected static String exceptionToString(Exception e) {
-    StringWriter w = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(w);
-    e.printStackTrace(printWriter);
-    printWriter.flush();
-    return w.toString();
   }
 
   protected static Map<Class<?>, JsonSerializer> getSerializerMap() {

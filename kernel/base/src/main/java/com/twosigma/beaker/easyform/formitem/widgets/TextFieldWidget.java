@@ -29,15 +29,23 @@ public class TextFieldWidget extends TextField implements CommFunctionality {
   }
 
   @Override
+  public String getLabel() {
+    return text.getDescription();
+  }
+
+  @Override
   public void setLabel(String label) {
-    super.setLabel(label);
     this.text.setDescription(label);
   }
 
   @Override
   public void setValue(String value) {
-    super.setValue(value);
     this.text.setValue(value);
+  }
+
+  @Override
+  public String getValue() {
+    return this.text.getValue();
   }
 
   @Override

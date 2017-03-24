@@ -21,9 +21,8 @@ import com.twosigma.beaker.easyform.EasyFormComponent;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ButtonComponent extends EasyFormComponent {
+public abstract class ButtonComponent extends EasyFormComponent {
 
-  private String tag;
   private List<EasyFormListener> actionListeners = new LinkedList<>();
   public EasyFormListener actionPerformed = new EmptyListener();
 
@@ -47,13 +46,9 @@ public class ButtonComponent extends EasyFormComponent {
     }
   }
 
-  public void setTag(final String tag) {
-    this.tag = tag;
-  }
+  public abstract void setTag(final String tag) ;
 
-  public String getTag() {
-    return tag;
-  }
+  public abstract String getTag();
 
   public boolean isButton() {
     return true;

@@ -29,19 +29,27 @@ public class CheckBoxWidget extends CheckBox implements CommFunctionality {
   }
 
   @Override
+  public String getLabel() {
+    return this.widget.getDescription();
+  }
+
+  @Override
   public Comm getComm() {
     return widget.getComm();
   }
 
   @Override
   public void setLabel(String label) {
-    super.setLabel(label);
     this.widget.setDescription(label);
   }
 
   @Override
+  public String getValue() {
+    return this.widget.getValue().toString();
+  }
+
+  @Override
   public void setValue(String value) {
-    super.setValue(value);
     this.widget.setValue(Boolean.valueOf(value));
   }
 

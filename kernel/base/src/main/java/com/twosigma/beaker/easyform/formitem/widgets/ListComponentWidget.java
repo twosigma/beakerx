@@ -31,14 +31,28 @@ public class ListComponentWidget extends ListComponent implements CommFunctional
   }
 
   @Override
+  public String getLabel() {
+    return widget.getDescription();
+  }
+
+  @Override
   public Comm getComm() {
     return widget.getComm();
   }
 
   @Override
   public void setLabel(String label) {
-    super.setLabel(label);
     this.widget.setDescription(label);
+  }
+
+  @Override
+  public String getValue() {
+    return null;
+  }
+
+  @Override
+  public void setValue(String value) {
+
   }
 
   @Override

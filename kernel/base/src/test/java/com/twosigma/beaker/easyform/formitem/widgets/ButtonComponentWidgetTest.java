@@ -17,6 +17,7 @@ package com.twosigma.beaker.easyform.formitem.widgets;
 
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.widgets.Button;
 import com.twosigma.jupyter.message.Message;
 import org.junit.After;
 import org.junit.Before;
@@ -57,4 +58,22 @@ public class ButtonComponentWidgetTest {
     String label = getValueForProperty(message, DESCRIPTION, String.class);
     assertThat(label).isEqualTo(expected);
   }
+
+  @Test
+  public void setTag() throws Exception {
+    //given
+    String tag = "tag1";
+    ButtonComponentWidget widget = new ButtonComponentWidget();
+    kernel.clearPublishedMessages();
+    //when
+    widget.setTag(tag);
+    //then
+    verifyTag(kernel.getPublishedMessages().get(0), tag);
+  }
+
+  private void verifyTag(Message message, String expectedTag) {
+    String tag = getValueForProperty(message, Button.TAG, String.class);
+    assertThat(tag).isEqualTo(expectedTag);
+  }
+
 }

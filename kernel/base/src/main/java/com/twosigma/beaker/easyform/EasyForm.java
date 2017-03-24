@@ -104,12 +104,13 @@ public class EasyForm extends ObservableMap<String, Object> {
                                        final String initialValue,
                                        final Integer width,
                                        final Integer height) throws Exception {
-    TextArea textArea = new TextArea();
-    textArea.setLabel(label);
-    textArea.setWidth(width);
-    textArea.setHeight(height);
-    textArea.setValue(initialValue);
-    return addComponentOrThrow(label, textArea);
+//    TextArea textArea = new TextArea();
+//    textArea.setLabel(label);
+//    textArea.setWidth(width);
+//    textArea.setHeight(height);
+//    textArea.setValue(initialValue);
+//    return addComponentOrThrow(label, textArea);
+    throw new RuntimeException("Not implemented yet.");
   }
 
   public EasyFormComponent addCheckBox(final String label) throws Exception {
@@ -190,12 +191,13 @@ public class EasyForm extends ObservableMap<String, Object> {
   public EasyFormComponent addRadioButtons(final String label,
                                            final Collection<String> values,
                                            final Integer orientation) throws Exception {
-    RadioButtonComponent radioButtonComponent = new RadioButtonComponent();
-    radioButtonComponent.setLabel(label);
-    radioButtonComponent.setHorizontal(
-            orientation != null && EasyForm.HORIZONTAL.equals(orientation));
-    radioButtonComponent.setValues(values);
-    return addComponentOrThrow(label, radioButtonComponent);
+//    RadioButtonComponent radioButtonComponent = new RadioButtonComponent();
+//    radioButtonComponent.setLabel(label);
+//    radioButtonComponent.setHorizontal(
+//            orientation != null && EasyForm.HORIZONTAL.equals(orientation));
+//    radioButtonComponent.setValues(values);
+//    return addComponentOrThrow(label, radioButtonComponent);
+    throw new RuntimeException("Not implemented yet.");
   }
 
   public EasyFormComponent addCheckBoxes(final String label,
@@ -206,11 +208,12 @@ public class EasyForm extends ObservableMap<String, Object> {
   public EasyFormComponent addCheckBoxes(final String label,
                                          final Collection<String> values,
                                          final Integer orientation) throws Exception {
-    CheckBoxGroup checkBoxGroup = new CheckBoxGroup();
-    checkBoxGroup.setLabel(label);
-    checkBoxGroup.setHorizontal(orientation != null && EasyForm.HORIZONTAL.equals(orientation));
-    checkBoxGroup.setValues(values);
-    return addComponentOrThrow(label, checkBoxGroup);
+//    CheckBoxGroup checkBoxGroup = new CheckBoxGroup();
+//    checkBoxGroup.setLabel(label);
+//    checkBoxGroup.setHorizontal(orientation != null && EasyForm.HORIZONTAL.equals(orientation));
+//    checkBoxGroup.setValues(values);
+//    return addComponentOrThrow(label, checkBoxGroup);
+    throw new RuntimeException("Not implemented yet.");
   }
 
   public EasyFormComponent addDatePicker(final String label) throws Exception {
@@ -222,10 +225,11 @@ public class EasyForm extends ObservableMap<String, Object> {
   }
 
   public EasyFormComponent addDatePicker(final String label, final Boolean showTime) throws Exception {
-    DatePickerComponent datePickerComponent = new DatePickerComponent();
-    datePickerComponent.setLabel(label);
-    datePickerComponent.setShowTime(showTime);
-    return addComponentOrThrow(label, datePickerComponent);
+//    DatePickerComponent datePickerComponent = new DatePickerComponent();
+//    datePickerComponent.setLabel(label);
+//    datePickerComponent.setShowTime(showTime);
+//    return addComponentOrThrow(label, datePickerComponent);
+    throw new RuntimeException("Not implemented yet.");
   }
 
   public ButtonComponent addButton(final String label) throws Exception {

@@ -18,7 +18,7 @@ package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
 
-public class CheckBox extends EasyFormComponent {
+public abstract class CheckBox extends EasyFormComponent {
 
   @Override
   protected boolean checkValue(final Object value) {

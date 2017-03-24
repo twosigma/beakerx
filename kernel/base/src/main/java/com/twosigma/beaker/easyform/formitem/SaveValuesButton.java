@@ -33,4 +33,24 @@ public class SaveValuesButton extends EasyFormComponent {
   public boolean isButton() {
     return true;
   }
+
+  @Override
+  public String getLabel() {
+    throw new RuntimeException("Not implemented yet.");
+  }
+
+  @Override
+  public void setLabel(String label) {
+    throw new RuntimeException("Not implemented yet.");
+  }
+
+  @Override
+  public String getValue() {
+    throw new RuntimeException("Not implemented yet.");
+  }
+
+  @Override
+  public void setValue(String value) {
+    throw new RuntimeException("Not implemented yet.");
+  }
 }

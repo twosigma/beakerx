@@ -20,7 +20,7 @@ import com.twosigma.beaker.easyform.EasyFormComponent;
 
 import java.util.Collection;
 
-public class CheckBoxGroup extends EasyFormComponent {
+public abstract class CheckBoxGroup extends EasyFormComponent {
   private Boolean horizontal;
   private Collection<String> values;
 

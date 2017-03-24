@@ -31,6 +31,7 @@ import com.twosigma.beaker.easyform.formitem.widgets.ButtonComponentWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.ComboBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.ListComponentWidget;
+import com.twosigma.beaker.easyform.formitem.widgets.RadioButtonComponentWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.TextAreaWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.TextFieldWidget;
 import com.twosigma.beaker.widgets.CommFunctionality;
@@ -191,13 +192,12 @@ public class EasyForm extends ObservableMap<String, Object> {
   public EasyFormComponent addRadioButtons(final String label,
                                            final Collection<String> values,
                                            final Integer orientation) throws Exception {
-//    RadioButtonComponent radioButtonComponent = new RadioButtonComponent();
-//    radioButtonComponent.setLabel(label);
-//    radioButtonComponent.setHorizontal(
-//            orientation != null && EasyForm.HORIZONTAL.equals(orientation));
-//    radioButtonComponent.setValues(values);
-//    return addComponentOrThrow(label, radioButtonComponent);
-    throw new RuntimeException("Not implemented yet.");
+    RadioButtonComponent radioButtonComponent = new RadioButtonComponentWidget();
+    radioButtonComponent.setLabel(label);
+    radioButtonComponent.setHorizontal(
+            orientation != null && EasyForm.HORIZONTAL.equals(orientation));
+    radioButtonComponent.setValues(values);
+    return addComponentOrThrow(label, radioButtonComponent);
   }
 
   public EasyFormComponent addCheckBoxes(final String label,

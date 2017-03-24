@@ -22,6 +22,7 @@ import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.bools.Checkbox;
 import com.twosigma.beaker.widgets.box.Box;
 import com.twosigma.beaker.widgets.selections.Dropdown;
+import com.twosigma.beaker.widgets.selections.RadioButtons;
 import com.twosigma.beaker.widgets.selections.SelectMultiple;
 import com.twosigma.beaker.widgets.strings.Text;
 import com.twosigma.beaker.widgets.strings.Textarea;
@@ -30,6 +31,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -78,6 +80,25 @@ public class EasyFormTest {
     String label = getValueForProperty(message, VALUE, String.class);
     assertThat(label).isEqualTo(expected);
   }
+
+  @Test
+  public void shouldCreateEasyFormWithRadioButton() throws Exception {
+    //given
+    String label = "RadioButto1";
+    //when
+    EasyForm easyForm = new EasyForm("EasyForm with RadioButto");
+    easyForm.addRadioButtons(label, Arrays.asList("1","2"));
+    DisplayEasyForm.display(easyForm);
+    //then
+    verifyRadioButton(getWidgetMsgs());
+    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(getDisplayMsg());
+  }
+
+  private void verifyRadioButton(List<Message> messages) {
+    verifyOpenCommMsg(messages, RadioButtons.MODEL_NAME_VALUE, RadioButtons.VIEW_NAME_VALUE);
+  }
+
 
   @Test
   public void shouldCreateEasyFormWithTextArea() throws Exception {

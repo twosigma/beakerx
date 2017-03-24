@@ -97,3 +97,9 @@ bower_components/jquery-ui/README.md
 /.classpath
 /.project
 /.settings/
+
+bower_components/jQuery-contextMenu/
+bower_components/jquery/dist/
+bower_components/jquery/external/sizzle/dist/
+dist/
+node_modules/

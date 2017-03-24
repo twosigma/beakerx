@@ -125,7 +125,6 @@ define([
 
     for (var i = this.vindexL; i <= this.vindexR; i++) {
       var ele = eles[i];
-
       var prop = {
         "id" : this.id + "_" + i,
         "lbid" : this.id + "_" + i + "l",
@@ -139,7 +138,6 @@ define([
 
       // does not need range assert, clipped directly
       if (ele.type === "x") {
-
         var x = mapX(ele.x);
         _.extend(prop, {
           "x1" : x,

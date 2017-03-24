@@ -31,9 +31,8 @@ define([
   var createNewModel = function (model) {
 
     var newmodel;
-
     if (model.version === "groovy") {  // model returned from serializer
-
+      
       newmodel = {
         plotId: model.update_id,
         type: "plot",

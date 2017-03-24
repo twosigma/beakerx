@@ -54,6 +54,7 @@ define([
     }
     this.filter(scope);
     this.prepare(scope);
+    this.clear(scope);
     if (this.vlength === 0) {
       this.clear(scope);
     } else {

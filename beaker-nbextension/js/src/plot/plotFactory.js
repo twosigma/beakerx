@@ -21,6 +21,7 @@ define([
   './std/plotconstband',
   './std/plotconstline',
   './std/plottext',
+  './std/plotraster',
   './std/heatmap',
   './std/plotbar',
   './std/plotpoint',
@@ -39,6 +40,7 @@ define([
   PlotConstband,
   PlotConstline,
   PlotText,
+  PlotRaster,
   HeatMap,
   PlotBar,
   PlotPoint,
@@ -105,6 +107,9 @@ define([
         case "heatmap":
           plotitem = new HeatMap(item);
           break;
+        case "raster":
+          plotitem = new PlotRaster(item);
+          break;
         default:
           console.error("no type specified for item creation");
       }
@@ -161,6 +166,9 @@ define([
           break;
         case "treemapnode":
           item.__proto__ = PlotTreeMapNode.prototype;
+          break;
+        case "raster":
+          item.__proto__ = PlotRaster.prototype;
           break;
         default:
           console.error("no type specified for item recreation");

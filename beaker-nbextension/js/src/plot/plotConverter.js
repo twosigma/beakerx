@@ -29,6 +29,7 @@ define([
     "Area" : "area",
     "Text" : "text",
     "Points" : "point",
+    "Raster" : "image",
     "CategoryLine" : "line",
     "CategoryStems" : "stem",
     "CategoryBars" : "bar",
@@ -144,7 +145,7 @@ define([
     if (item.tooltips){
       ele.tooltip = item.tooltips[j];
     }
-
+ 
     // discard NaN entries
     if (ele.x === "NaN" || ele.y === "NaN" ||
         logx && ele.x <= 0 || yAxisSettings.logy && ele.y <= 0 )
@@ -705,6 +706,32 @@ define([
             "x" : mtext.x,
             "y" : mtext.y,
             "text" : mtext.text
+          };
+          item.elements.push(ele);
+          newmodel.data.push(item);
+        }
+      }
+      if (model.rasters != null) {
+        for (var i = 0; i < model.rasters.length; i++) {
+          var mraster = model.rasters[i];
+          var item = {
+            "type" : "raster",
+            "elements" : []
+          };
+          var x = mraster.x;
+          if (model.type === 'NanoPlot') {
+            if (_.isEmpty(x)) { continue; }
+            var bigv = new Big(x);
+            mraster.x = bigv;
+          }
+          var ele = {
+            "x" : mraster.x,
+            "y" : mraster.y,
+            "width": mraster.width != null ? mraster.width : 320,
+            "height": mraster.height != null ? mraster.height : 240,
+            "opacity": mraster.opacity,
+            "position": mraster.position,
+            "value": mraster.value
           };
           item.elements.push(ele);
           newmodel.data.push(item);

@@ -16,8 +16,8 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import com.twosigma.beaker.groovy.GroovyKernelTest;
-import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
+import com.twosigma.beaker.KernelTest;
+import com.twosigma.beaker.evaluator.EvaluatorTest;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.jupyter.message.Header;
 import org.assertj.core.api.Assertions;
@@ -34,18 +34,13 @@ import static com.twosigma.jupyter.message.MessageSerializer.toJson;
 
 public class ExecuteRequestHandlerTest {
 
-  private static GroovyKernelTest groovyKernel;
+  private static KernelTest kernel;
   private ExecuteRequestHandler executeRequestHandler;
   private Message message;
 
   @BeforeClass
   public static void setUpClass(){
-    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("id", "sid"){
-      @Override
-      public void startWorker() {
-      }
-    };
-    groovyKernel = new GroovyKernelTest("sid", groovyEvaluator){
+    kernel = new KernelTest("sid", new EvaluatorTest()){
       @Override
       public void publish(Message message) {
         super.publish(copyMessage(message));
@@ -55,13 +50,13 @@ public class ExecuteRequestHandlerTest {
 
   @Before
   public void setUp() {
-    executeRequestHandler = new ExecuteRequestHandler(groovyKernel);
+    executeRequestHandler = new ExecuteRequestHandler(kernel);
     message = JupyterHandlerTest.initExecuteRequestMessage();
   }
 
   @After
   public void tearDown() throws Exception {
-    groovyKernel.clearPublishedMessages();
+    kernel.clearPublishedMessages();
   }
 
   @Test
@@ -69,8 +64,8 @@ public class ExecuteRequestHandlerTest {
     //when
     executeRequestHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Assertions.assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(2);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Assertions.assertThat(kernel.getPublishedMessages().size()).isEqualTo(2);
   }
 
   @Test
@@ -78,8 +73,8 @@ public class ExecuteRequestHandlerTest {
     //when
     executeRequestHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(publishMessage.getContent().get("execution_state")).isEqualTo("busy");
   }
 
@@ -90,8 +85,8 @@ public class ExecuteRequestHandlerTest {
     //when
     executeRequestHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(publishMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
@@ -100,8 +95,8 @@ public class ExecuteRequestHandlerTest {
     //when
     executeRequestHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(publishMessage.getHeader().getType())
         .isEqualTo(JupyterMessages.STATUS.getName());
   }
@@ -113,8 +108,8 @@ public class ExecuteRequestHandlerTest {
     //when
     executeRequestHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
@@ -125,8 +120,8 @@ public class ExecuteRequestHandlerTest {
     //when
     executeRequestHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(new String(publishMessage.getIdentities().get(0)))
         .isEqualTo(expectedIdentities);
   }
@@ -138,8 +133,8 @@ public class ExecuteRequestHandlerTest {
     //when
     executeRequestHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(1);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(publishMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
@@ -148,8 +143,8 @@ public class ExecuteRequestHandlerTest {
     //when
     executeRequestHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(1);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(publishMessage.getHeader().getType())
         .isEqualTo(JupyterMessages.EXECUTE_INPUT.getName());
   }
@@ -161,8 +156,8 @@ public class ExecuteRequestHandlerTest {
     //when
     executeRequestHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(1);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(publishMessage.getContent().get("code")).isEqualTo(expectedCode);
   }
 
@@ -171,8 +166,8 @@ public class ExecuteRequestHandlerTest {
     //when
     executeRequestHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(1);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(publishMessage.getContent().get("execution_count")).isNotNull();
   }
 
@@ -183,8 +178,8 @@ public class ExecuteRequestHandlerTest {
     //when
     executeRequestHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(1);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
@@ -195,8 +190,8 @@ public class ExecuteRequestHandlerTest {
     //when
     executeRequestHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(1);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(new String(publishMessage.getIdentities().get(0)))
         .isEqualTo(expectedIdentities);
   }

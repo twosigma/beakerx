@@ -16,44 +16,43 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import com.twosigma.jupyter.message.Message;
 import org.junit.Test;
 
-public class CommCloseHandlerTest {
+public class CommInfoHandlerTest {
 
-  private GroovyKernelTest groovyKernel;
-  private CommCloseHandler commCloseHandler;
+  private KernelTest kernel;
+  private CommInfoHandler commInfoHandler;
   private Message message;
 
   @Before
   public void setUp() {
-    groovyKernel = new GroovyKernelTest();
-    commCloseHandler = new CommCloseHandler(groovyKernel);
-    message = JupyterHandlerTest.initCloseMessage();
-    JupyterHandlerTest.initKernelCommMapWithOneComm(groovyKernel);
+    kernel = new KernelTest();
+    commInfoHandler = new CommInfoHandler(kernel);
+    message = JupyterHandlerTest.initInfoMessage();
   }
 
   @Test
   public void handleMessage_shouldSendShellSocketMessage() throws Exception {
     //when
-    commCloseHandler.handle(message);
+    commInfoHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
+    Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
   }
 
   @Test
-  public void handleMessage_sentMessageHasTypeIsCommClose() throws Exception {
+  public void handleMessage_sentMessageHasTypeIsCommInfoReply() throws Exception {
     //when
-    commCloseHandler.handle(message);
+    commInfoHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSentMessages().get(0);
+    Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
+    Message sendMessage = kernel.getSentMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getType())
-        .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
+        .isEqualTo(JupyterMessages.COMM_INFO_REPLY.getName());
   }
 
   @Test
@@ -61,10 +60,10 @@ public class CommCloseHandlerTest {
     //given
     String expectedSessionId = message.getHeader().getSession();
     //when
-    commCloseHandler.handle(message);
+    commInfoHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSentMessages().get(0);
+    Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
+    Message sendMessage = kernel.getSentMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
@@ -73,10 +72,10 @@ public class CommCloseHandlerTest {
     //given
     String expectedHeader = message.getHeader().asJson();
     //when
-    commCloseHandler.handle(message);
+    commInfoHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSentMessages().get(0);
+    Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
+    Message sendMessage = kernel.getSentMessages().get(0);
     Assertions.assertThat(sendMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
@@ -85,10 +84,10 @@ public class CommCloseHandlerTest {
     //given
     String expectedIdentities = new String(message.getIdentities().get(0));
     //when
-    commCloseHandler.handle(message);
+    commInfoHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getSentMessages()).isNotEmpty();
-    Message sendMessage = groovyKernel.getSentMessages().get(0);
+    Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
+    Message sendMessage = kernel.getSentMessages().get(0);
     Assertions.assertThat(new String(sendMessage.getIdentities().get(0)))
         .isEqualTo(expectedIdentities);
   }

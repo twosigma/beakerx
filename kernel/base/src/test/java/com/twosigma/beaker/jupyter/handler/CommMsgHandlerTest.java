@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import org.assertj.core.api.Assertions;
@@ -26,16 +26,16 @@ import org.junit.Test;
 
 public class CommMsgHandlerTest {
 
-  private GroovyKernelTest groovyKernel;
+  private KernelTest kernel;
   private CommMsgHandler commMsgHandler;
   private Message message;
 
   @Before
   public void setUp() {
-    groovyKernel = new GroovyKernelTest();
-    commMsgHandler = new CommMsgHandler(groovyKernel, new MessageCreator(groovyKernel));
+    kernel = new KernelTest();
+    commMsgHandler = new CommMsgHandler(kernel, new MessageCreator(kernel));
     message = JupyterHandlerTest.initCommMessage();
-    JupyterHandlerTest.initKernelCommMapWithOneComm(groovyKernel);
+    JupyterHandlerTest.initKernelCommMapWithOneComm(kernel);
   }
 
   @Test
@@ -43,8 +43,8 @@ public class CommMsgHandlerTest {
     //when
     commMsgHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Assertions.assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(2);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Assertions.assertThat(kernel.getPublishedMessages().size()).isEqualTo(2);
   }
 
   @Test
@@ -52,8 +52,8 @@ public class CommMsgHandlerTest {
     //when
     commMsgHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(publishMessage.getContent().get("execution_state")).isEqualTo("busy");
   }
 
@@ -64,8 +64,8 @@ public class CommMsgHandlerTest {
     //when
     commMsgHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(publishMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
@@ -74,8 +74,8 @@ public class CommMsgHandlerTest {
     //when
     commMsgHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(publishMessage.getHeader().getType())
         .isEqualTo(JupyterMessages.STATUS.getName());
   }
@@ -87,8 +87,8 @@ public class CommMsgHandlerTest {
     //when
     commMsgHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
@@ -99,8 +99,8 @@ public class CommMsgHandlerTest {
     //when
     commMsgHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(0);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(new String(publishMessage.getIdentities().get(0)))
         .isEqualTo(expectedIdentities);
   }
@@ -110,8 +110,8 @@ public class CommMsgHandlerTest {
     //when
     commMsgHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(1);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(publishMessage.getContent().get("execution_state")).isEqualTo("idle");
   }
 
@@ -122,8 +122,8 @@ public class CommMsgHandlerTest {
     //when
     commMsgHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(1);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(publishMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
@@ -132,8 +132,8 @@ public class CommMsgHandlerTest {
     //when
     commMsgHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(1);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(publishMessage.getHeader().getType())
         .isEqualTo(JupyterMessages.STATUS.getName());
   }
@@ -145,8 +145,8 @@ public class CommMsgHandlerTest {
     //when
     commMsgHandler.handle(message);
     //then
-    Assertions.assertThat(groovyKernel.getPublishedMessages()).isNotEmpty();
-    Message publishMessage = groovyKernel.getPublishedMessages().get(1);
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(new String(publishMessage.getIdentities().get(0)))
         .isEqualTo(expectedIdentities);
   }

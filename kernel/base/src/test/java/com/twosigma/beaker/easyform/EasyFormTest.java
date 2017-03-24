@@ -24,6 +24,7 @@ import com.twosigma.beaker.widgets.box.Box;
 import com.twosigma.beaker.widgets.selections.Dropdown;
 import com.twosigma.beaker.widgets.selections.SelectMultiple;
 import com.twosigma.beaker.widgets.strings.Text;
+import com.twosigma.beaker.widgets.strings.Textarea;
 import com.twosigma.jupyter.message.Message;
 import org.junit.After;
 import org.junit.Before;
@@ -76,6 +77,24 @@ public class EasyFormTest {
   private void verifyOnInit(Message message, String expected) {
     String label = getValueForProperty(message, VALUE, String.class);
     assertThat(label).isEqualTo(expected);
+  }
+
+  @Test
+  public void shouldCreateEasyFormWithTextArea() throws Exception {
+    //given
+    String label = "ButtonLabel1";
+    //when
+    EasyForm easyForm = new EasyForm("EasyForm with TextArea");
+    easyForm.addTextArea(label);
+    DisplayEasyForm.display(easyForm);
+    //then
+    verifyTextArea(getWidgetMsgs());
+    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(getDisplayMsg());
+  }
+
+  private void verifyTextArea(List<Message> messages) {
+    verifyOpenCommMsg(messages, Textarea.MODEL_NAME_VALUE, Textarea.VIEW_NAME_VALUE);
   }
 
   @Test

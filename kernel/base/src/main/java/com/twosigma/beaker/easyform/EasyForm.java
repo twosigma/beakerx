@@ -31,6 +31,7 @@ import com.twosigma.beaker.easyform.formitem.widgets.ButtonComponentWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.ComboBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.ListComponentWidget;
+import com.twosigma.beaker.easyform.formitem.widgets.TextAreaWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.TextFieldWidget;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import org.apache.commons.lang3.StringUtils;
@@ -104,13 +105,12 @@ public class EasyForm extends ObservableMap<String, Object> {
                                        final String initialValue,
                                        final Integer width,
                                        final Integer height) throws Exception {
-//    TextArea textArea = new TextArea();
-//    textArea.setLabel(label);
-//    textArea.setWidth(width);
-//    textArea.setHeight(height);
-//    textArea.setValue(initialValue);
-//    return addComponentOrThrow(label, textArea);
-    throw new RuntimeException("Not implemented yet.");
+    TextArea textArea = new TextAreaWidget();
+    textArea.setLabel(label);
+    textArea.setWidth(width);
+    textArea.setHeight(height);
+    textArea.setValue(initialValue);
+    return addComponentOrThrow(label, textArea);
   }
 
   public EasyFormComponent addCheckBox(final String label) throws Exception {

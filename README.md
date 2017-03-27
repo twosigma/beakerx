@@ -39,7 +39,7 @@ Ther kernels are installed to run out of the repo, so just a build should update
 
 ## update after JS change
 
-* `cd beaker-nbextension/js; webpack`
+* `cd beakerx/js; webpack`
 
 If webpack gives an error like
 

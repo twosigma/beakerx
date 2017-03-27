@@ -32,10 +32,10 @@ task install() {
       commandLine(*(winOrUnix('pip', "install", "-e", ".")))
     }
     exec {
-      commandLine(*(winOrUnix("jupyter", "nbextension", "install", "--py", "--symlink", "--sys-prefix", "beaker-nbextension")))
+      commandLine(*(winOrUnix("jupyter", "nbextension", "install", "--py", "--symlink", "--sys-prefix", "beakerx")))
     }
     exec {
-      commandLine(*(winOrUnix("jupyter", "nbextension", "enable", "--py", "--sys-prefix", "beaker-nbextension")))
+      commandLine(*(winOrUnix("jupyter", "nbextension", "enable", "--py", "--sys-prefix", "beakerx")))
     }
     project('js').tasks.install.execute()
   }

@@ -30,8 +30,8 @@ var TableDisplayModel = widgets.DOMWidgetModel.extend({
   defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
     _model_name : 'TableDisplayModel',
     _view_name : 'TableDisplayView',
-    _model_module : 'beaker-nbextension',
-    _view_module : 'beaker-nbextension'
+    _model_module : 'beakerx',
+    _view_module : 'beakerx'
   })
 });
 

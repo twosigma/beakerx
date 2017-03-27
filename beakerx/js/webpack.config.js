@@ -22,7 +22,7 @@ module.exports = [
     entry: './src/extension.js',
     output: {
       filename: 'extension.js',
-      path: '../beaker-nbextension/static',
+      path: '../beakerx/static',
       libraryTarget: 'amd'
     },
     externals: [
@@ -43,7 +43,7 @@ module.exports = [
     entry: './src/index.js',
     output: {
       filename: 'index.js',
-      path: '../beaker-nbextension/static',
+      path: '../beakerx/static',
       libraryTarget: 'amd'
     },
     devtool: 'source-map',
@@ -65,7 +65,7 @@ module.exports = [
     ],
     externals: ['jupyter-js-widgets']
   },
-  {// Embeddable beaker-nbextension bundle
+  {// Embeddable beakerx bundle
     //
     // This bundle is generally almost identical to the notebook bundle
     // containing the custom widget views and models.
@@ -84,7 +84,7 @@ module.exports = [
       filename: 'index.js',
       path: './dist/',
       libraryTarget: 'amd',
-      publicPath: 'https://unpkg.com/beaker-nbextension@' + version + '/dist/'
+      publicPath: 'https://unpkg.com/beakerx@' + version + '/dist/'
     },
     devtool: 'source-map',
     module: {

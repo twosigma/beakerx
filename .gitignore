@@ -15,9 +15,9 @@ jupyter-groovy-kernel.log
 /*.ipynb
 #.gitignore
 
-beaker-nbextension/static/
+beakerx/static/
 beaker_nbextension.egg-info/
-beaker-nbextension/beaker-nbextension/static/
+beakerx/beakerx/static/
 
 kernel/base/build/
 kernel/build/

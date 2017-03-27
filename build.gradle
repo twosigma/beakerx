@@ -19,7 +19,7 @@ def final PYTHONPATH = "beaker"
 
 task linkBeakerNbextension() {
   doLast {
-    project('beaker-nbextension').tasks.install.execute()
+    project('beakerx').tasks.install.execute()
   }
 }
 

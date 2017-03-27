@@ -66,8 +66,8 @@ class NPM(Command):
     node_modules = os.path.join(node_root, 'node_modules')
 
     targets = [
-        os.path.join(here, 'beaker-nbextension', 'static', 'extension.js'),
-        os.path.join(here, 'beaker-nbextension', 'static', 'index.js')
+        os.path.join(here, 'beakerx', 'static', 'extension.js'),
+        os.path.join(here, 'beakerx', 'static', 'index.js')
     ]
 
     def initialize_options(self):
@@ -112,20 +112,20 @@ class NPM(Command):
         update_package_data(self.distribution)
 
 version_ns = {}
-with open(os.path.join(here, 'beaker-nbextension', '_version.py')) as f:
+with open(os.path.join(here, 'beakerx', '_version.py')) as f:
     exec(f.read(), {}, version_ns)
 
 setup_args = {
-    'name': 'beaker-nbextension',
+    'name': 'beakerx',
     'version': version_ns['__version__'],
     'description': 'A Custom Jupyter Widget Library',
     'long_description': LONG_DESCRIPTION,
     'include_package_data': True,
     'data_files': [
-        ('share/jupyter/nbextensions/beaker-nbextension', [
-            'beaker-nbextension/static/extension.js',
-            'beaker-nbextension/static/index.js',
-            'beaker-nbextension/static/index.js.map',
+        ('share/jupyter/nbextensions/beakerx', [
+            'beakerx/static/extension.js',
+            'beakerx/static/index.js',
+            'beakerx/static/index.js.map',
         ]),
     ],
     'install_requires': [

@@ -4,6 +4,6 @@ def _jupyter_nbextension_paths():
     return [{
         'section': 'notebook',
         'src': 'static',
-        'dest': 'beaker-nbextension',
-        'require': 'beaker-nbextension/extension'
+        'dest': 'beakerx',
+        'require': 'beakerx/extension'
     }]

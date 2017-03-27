@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-include 'beaker-nbextension'
-include 'beaker-nbextension:js'
+include 'beakerx'
+include 'beakerx:js'
 include 'kernel'
 include 'kernel:base'
 include 'kernel:groovy'

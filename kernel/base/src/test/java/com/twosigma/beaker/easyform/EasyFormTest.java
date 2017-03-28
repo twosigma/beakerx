@@ -19,6 +19,7 @@ import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.widgets.Button;
 import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.DatePicker;
 import com.twosigma.beaker.widgets.bools.Checkbox;
 import com.twosigma.beaker.widgets.box.Box;
 import com.twosigma.beaker.widgets.selections.Dropdown;
@@ -230,6 +231,24 @@ public class EasyFormTest {
   private void verifyEasyForm(List<Message> messages, List<CommFunctionality> children) {
     verifyInternalOpenCommMsg(messages.get(1), EasyFormView.MODEL_NAME_VALUE, EasyFormView.VIEW_NAME_VALUE);
     verifyChildren(messages.get(1), children);
+  }
+
+  @Test
+  public void shouldCreateEasyFormWithDatePicker() throws Exception {
+    //given
+    String label = "DatePickerLabel1";
+    //when
+    EasyForm easyForm = new EasyForm("EasyForm with DatePicker");
+    easyForm.addDatePicker(label);
+    DisplayEasyForm.display(easyForm);
+    //then
+    verifyDatePicker(getWidgetMsgs());
+    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(getDisplayMsg());
+  }
+
+  private void verifyDatePicker(List<Message> messages) {
+    verifyOpenCommMsg(messages, DatePicker.MODEL_NAME_VALUE, DatePicker.VIEW_NAME_VALUE);
   }
 
   private void verifyTextField(List<Message> messages) {

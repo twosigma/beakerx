@@ -19,6 +19,7 @@ package com.twosigma.beaker.easyform;
 import com.twosigma.beaker.easyform.formitem.ButtonComponent;
 import com.twosigma.beaker.easyform.formitem.CheckBox;
 import com.twosigma.beaker.easyform.formitem.ComboBox;
+import com.twosigma.beaker.easyform.formitem.DatePickerComponent;
 import com.twosigma.beaker.easyform.formitem.ListComponent;
 import com.twosigma.beaker.easyform.formitem.LoadValuesButton;
 import com.twosigma.beaker.easyform.formitem.RadioButtonComponent;
@@ -29,6 +30,7 @@ import com.twosigma.beaker.easyform.formitem.widgets.ButtonComponentWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.CheckBoxGroupWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.ComboBoxWidget;
+import com.twosigma.beaker.easyform.formitem.widgets.DatePickerComponentWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.ListComponentWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.RadioButtonComponentWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.TextAreaWidget;
@@ -224,11 +226,10 @@ public class EasyForm extends ObservableMap<String, Object> {
   }
 
   public EasyFormComponent addDatePicker(final String label, final Boolean showTime) throws Exception {
-//    DatePickerComponent datePickerComponent = new DatePickerComponent();
-//    datePickerComponent.setLabel(label);
-//    datePickerComponent.setShowTime(showTime);
-//    return addComponentOrThrow(label, datePickerComponent);
-    throw new RuntimeException("not implemented yet");
+    DatePickerComponent datePickerComponent = new DatePickerComponentWidget();
+    datePickerComponent.setLabel(label);
+    datePickerComponent.setShowTime(showTime);
+    return addComponentOrThrow(label, datePickerComponent);
   }
 
   public ButtonComponent addButton(final String label) throws Exception {

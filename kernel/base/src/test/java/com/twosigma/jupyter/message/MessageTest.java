@@ -31,6 +31,12 @@ public class MessageTest {
     message.setContent(new LinkedHashMap<>());
   }
 
+  public static Message createMessage(){
+    Message message = new Message();
+    initMessage(message);
+    return message;
+  }
+
   @Test
   public void createMessageWithEmptyConstructor_messageHasHeaderIsNotNull() {
     //when

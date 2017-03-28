@@ -1,0 +1,38 @@
+{
+  "name": "beakerx",
+  "version": "0.0.1",
+  "description": "Beaker Extensions for Jupyter",
+  "author": "Two Sigma Open Source, LLC",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "jupyter",
+    "widgets",
+    "ipython",
+    "ipywidgets"
+  ],
+  "scripts": {
+    "prepublish": "webpack",
+    "postinstall": "bower i && webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "bower": "^1.8.0",
+    "bower-webpack-plugin": "^0.1.9",
+    "css-loader": "^0.26.1",
+    "file-loader": "^0.10.0",
+    "json-loader": "^0.5.4",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "watch-ignore-webpack-plugin": "^1.0.0",
+    "webpack": "^1.14.0"
+  },
+  "dependencies": {
+    "jupyter-js-widgets": "^1.1.1",
+    "moment": "^2.17.1",
+    "underscore": "^1.8.3"
+  }
+}

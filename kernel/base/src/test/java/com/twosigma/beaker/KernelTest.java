@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker;
 
+import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
@@ -39,6 +40,7 @@ public class KernelTest implements KernelFunctionality {
   private Map<String, Comm> commMap = new HashMap<>();
   private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
   private Boolean setShellOptions;
+  private EvaluatorManager evaluatorManager;
 
   public KernelTest() {
     this("KernelTestId1");
@@ -46,6 +48,11 @@ public class KernelTest implements KernelFunctionality {
 
   public KernelTest(String id) {
     this.id = id;
+  }
+
+  public KernelTest(String id, Evaluator evaluator) {
+    this.id = id;
+    this.evaluatorManager = new EvaluatorManager(this, evaluator);
   }
 
   @Override
@@ -129,7 +136,7 @@ public class KernelTest implements KernelFunctionality {
 
   @Override
   public EvaluatorManager getEvaluatorManager() {
-    return null;
+    return evaluatorManager;
   }
 
   @Override

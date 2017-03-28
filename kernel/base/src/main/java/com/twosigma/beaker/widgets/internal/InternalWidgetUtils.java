@@ -30,8 +30,8 @@ public class InternalWidgetUtils {
   public static final String VIEW_MODULE = "_view_module";
   public static final String VIEW_NAME = "_view_name";
 
-  public static final String MODEL_MODULE_VALUE = "beaker-nbextension";
-  public static final String VIEW_MODULE_VALUE = "beaker-nbextension";
+  public static final String MODEL_MODULE_VALUE = "beakerx";
+  public static final String VIEW_MODULE_VALUE = "beakerx";
 
   public static Comm createComm(final InternalWidget widget, final InternalWidgetContent content) {
     Comm comm = new Comm(Utils.uuid(), CommNamesEnum.JUPYTER_WIDGET);

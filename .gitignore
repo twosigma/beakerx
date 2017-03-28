@@ -13,3 +13,13 @@ jupyter-groovy-kernel-1.0.0.jar
 jupyter-groovy-kernel.log
 .ipynb_checkpoints/
 /*.ipynb
+#.gitignore
+
+beakerx/static/
+beaker_nbextension.egg-info/
+beakerx/beakerx/static/
+
+kernel/base/build/
+kernel/build/
+kernel/groovy/build/
+kernel/scala/build/

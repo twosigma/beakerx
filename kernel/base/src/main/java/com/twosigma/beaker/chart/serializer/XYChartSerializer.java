@@ -41,6 +41,7 @@ public class XYChartSerializer extends AbstractChartSerializer<XYChart> {
     jgen.writeObjectField(GRAPHICS_LIST, xychart.getGraphics());
     jgen.writeObjectField("constant_lines", xychart.getConstantLines());
     jgen.writeObjectField("constant_bands", xychart.getConstantBands());
+    jgen.writeObjectField("rasters", xychart.getRasters());
     jgen.writeObjectField("texts", xychart.getTexts());
     jgen.writeObjectField("x_auto_range", xychart.getXAutoRange());
     jgen.writeObjectField("x_lower_bound", xychart.getXLowerBound());

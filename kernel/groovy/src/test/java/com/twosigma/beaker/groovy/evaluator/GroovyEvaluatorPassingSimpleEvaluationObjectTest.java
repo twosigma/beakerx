@@ -15,13 +15,12 @@
  */
 package com.twosigma.beaker.groovy.evaluator;
 
-import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.junit.Before;
 import org.junit.Test;
 import com.twosigma.jupyter.message.Message;
 
-import static com.twosigma.beaker.groovy.evaluator.GroovyEvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyEvaluatorPassingSimpleEvaluationObjectTest {

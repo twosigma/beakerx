@@ -15,7 +15,6 @@
  */
 package com.twosigma.beaker.groovy.evaluator;
 
-import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.KernelTest;
@@ -27,7 +26,7 @@ import com.twosigma.jupyter.message.Message;
 
 import java.util.List;
 
-import static com.twosigma.beaker.groovy.evaluator.GroovyEvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;

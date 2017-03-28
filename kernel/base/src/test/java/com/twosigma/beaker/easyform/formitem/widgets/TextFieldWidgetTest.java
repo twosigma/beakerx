@@ -15,49 +15,15 @@
  */
 package com.twosigma.beaker.easyform.formitem.widgets;
 
-import com.twosigma.beaker.KernelTest;
-import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.easyform.EasyFormComponent;
 import com.twosigma.jupyter.message.Message;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beaker.widgets.Widget.DESCRIPTION;
 import static com.twosigma.beaker.widgets.Widget.VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TextFieldWidgetTest {
-
-  private KernelTest kernel;
-
-  @Before
-  public void setUp() throws Exception {
-    kernel = new KernelTest();
-    KernelManager.register(kernel);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
-  }
-
-  @Test
-  public void setLabel() throws Exception {
-    //given
-    String label = "newLabel";
-    TextFieldWidget widget = new TextFieldWidget();
-    kernel.clearPublishedMessages();
-    //when
-    widget.setLabel(label);
-    //then
-    verifyTextFieldLabel(kernel.getPublishedMessages().get(0), label);
-  }
-
-  private void verifyTextFieldLabel(Message message, String expected) {
-    String label = getValueForProperty(message, DESCRIPTION, String.class);
-    assertThat(label).isEqualTo(expected);
-  }
+public class TextFieldWidgetTest extends EasyFormWidgetTest {
 
   @Test
   public void setValue() throws Exception {
@@ -76,4 +42,9 @@ public class TextFieldWidgetTest {
     assertThat(label).isEqualTo(expected);
   }
 
+
+  @Override
+  protected EasyFormComponent createWidget() {
+    return new TextFieldWidget();
+  }
 }

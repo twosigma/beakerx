@@ -15,13 +15,10 @@
  */
 package com.twosigma.beaker.easyform.formitem.widgets;
 
-import com.twosigma.beaker.KernelTest;
-import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.easyform.EasyFormComponent;
 import com.twosigma.beaker.widgets.strings.Label;
 import com.twosigma.jupyter.message.Message;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -31,38 +28,9 @@ import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class CheckBoxGroupWidgetTest {
+public class CheckBoxGroupWidgetTest extends EasyFormWidgetTest {
 
   public static final List<Object> EMPTY = Arrays.asList();
-  private KernelTest kernel;
-
-  @Before
-  public void setUp() throws Exception {
-    kernel = new KernelTest();
-    KernelManager.register(kernel);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
-  }
-
-  @Test
-  public void setLabel() throws Exception {
-    //given
-    String label = "newLabel";
-    CheckBoxGroupWidget widget = new CheckBoxGroupWidget();
-    kernel.clearPublishedMessages();
-    //when
-    widget.setLabel(label);
-    //then
-    verifyLabel(kernel.getPublishedMessages().get(0), label);
-  }
-
-  private void verifyLabel(Message message, String expected) {
-    String label = getValueForProperty(message, Label.VALUE, String.class);
-    assertThat(label).isEqualTo(expected);
-  }
 
   @Test
   public void setValues() throws Exception {
@@ -76,4 +44,16 @@ public class CheckBoxGroupWidgetTest {
     assertTrue("Comm msgs should be 9", kernel.getPublishedMessages().size() == 9);
     Assertions.assertThat(widget.getValues()).isEqualTo(EMPTY);
   }
+
+  @Override
+  protected EasyFormComponent createWidget() {
+    return new CheckBoxGroupWidget();
+  }
+
+  @Override
+  protected void verifyLabel(Message message, String expected) {
+    String label = getValueForProperty(message, Label.VALUE, String.class);
+    assertThat(label).isEqualTo(expected);
+  }
+
 }

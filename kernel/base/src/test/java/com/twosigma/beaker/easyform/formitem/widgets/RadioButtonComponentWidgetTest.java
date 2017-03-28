@@ -16,51 +16,14 @@
  */
 package com.twosigma.beaker.easyform.formitem.widgets;
 
-import com.twosigma.beaker.KernelTest;
-import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.easyform.EasyFormComponent;
 import com.twosigma.beaker.widgets.selections.SelectMultiple;
-import com.twosigma.jupyter.message.Message;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyMsgForProperty;
-import static com.twosigma.beaker.widgets.Widget.DESCRIPTION;
 import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
 
-public class RadioButtonComponentWidgetTest {
-
-  private KernelTest kernel;
-
-  @Before
-  public void setUp() throws Exception {
-    kernel = new KernelTest();
-    KernelManager.register(kernel);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
-  }
-
-  @Test
-  public void setLabel() throws Exception {
-    //given
-    String label = "newLabel";
-    RadioButtonComponentWidget widget = new RadioButtonComponentWidget();
-    kernel.clearPublishedMessages();
-    //when
-    widget.setLabel(label);
-    //then
-    verifyLabel(kernel.getPublishedMessages().get(0), label);
-  }
-
-  private void verifyLabel(Message message, String expected) {
-    String label = getValueForProperty(message, DESCRIPTION, String.class);
-    assertThat(label).isEqualTo(expected);
-  }
+public class RadioButtonComponentWidgetTest extends EasyFormWidgetTest {
 
   @Test
   public void setValues() throws Exception {
@@ -75,4 +38,9 @@ public class RadioButtonComponentWidgetTest {
     verifyMsgForProperty(kernel, SelectMultiple.VALUE, "2");
   }
 
+
+  @Override
+  protected EasyFormComponent createWidget() {
+    return new RadioButtonComponentWidget();
+  }
 }

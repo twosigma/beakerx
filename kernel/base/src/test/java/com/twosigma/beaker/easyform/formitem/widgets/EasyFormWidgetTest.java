@@ -15,36 +15,50 @@
  */
 package com.twosigma.beaker.easyform.formitem.widgets;
 
+import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.easyform.EasyFormComponent;
+import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.jupyter.message.Message;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beaker.widgets.Widget.VALUE;
+import static com.twosigma.beaker.widgets.Widget.DESCRIPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TextAreaWidgetTest extends EasyFormWidgetTest {
+public abstract class EasyFormWidgetTest {
 
-  @Test
-  public void setValue() throws Exception {
-    //given
-    String newValue = "newValue";
-    TextAreaWidget widget = new TextAreaWidget();
-    kernel.clearPublishedMessages();
-    //when
-    widget.setValue(newValue);
-    //then
-    verifyTextAreaValue(kernel.getPublishedMessages().get(0), newValue);
+  protected KernelTest kernel;
+
+  @Before
+  public void setUp() throws Exception {
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
   }
 
-  private void verifyTextAreaValue(Message message, String expected) {
-    String label = getValueForProperty(message, VALUE, String.class);
+  @After
+  public void tearDown() throws Exception {
+    KernelManager.register(null);
+  }
+
+  @Test
+  public void setLabel() throws Exception {
+    //given
+    String label = "newLabel";
+    EasyFormComponent widget = createWidget();
+    kernel.clearPublishedMessages();
+    //when
+    widget.setLabel(label);
+    //then
+    verifyLabel(kernel.getPublishedMessages().get(0), label);
+  }
+
+  protected void verifyLabel(Message message, String expected) {
+    String label = getValueForProperty(message, DESCRIPTION, String.class);
     assertThat(label).isEqualTo(expected);
   }
 
+  protected abstract EasyFormComponent createWidget();
 
-  @Override
-  protected EasyFormComponent createWidget() {
-    return new TextAreaWidget();
-  }
 }

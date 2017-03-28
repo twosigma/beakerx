@@ -17,7 +17,6 @@ package com.twosigma.beaker.groovy.evaluator;
 
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.evaluator.EvaluatorManager;
-import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.KernelTest;
@@ -28,7 +27,7 @@ import com.twosigma.jupyter.message.Message;
 
 import java.util.List;
 
-import static com.twosigma.beaker.groovy.evaluator.GroovyEvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,5 +1,5 @@
 define([
-  './../easyFormComponent'
+  '../easyFormComponent'
 ], function(
   EasyFormComponent
 ) {

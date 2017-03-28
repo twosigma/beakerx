@@ -45,6 +45,13 @@ public class TestWidgetUtils {
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
 
+  public static void verifyOpenCommMsgWitoutLayout(Message message, String modelNameValue, String viewNameValue) {
+    verifyTypeMsg(message,COMM_OPEN);
+    Map data = getData(message);
+    assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
+    assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
+  }
+
   public static void verifyInternalOpenCommMsg(Message message, String modelNameValue, String viewNameValue) {
     verifyTypeMsg(message,COMM_OPEN);
     Map data = getData(message);

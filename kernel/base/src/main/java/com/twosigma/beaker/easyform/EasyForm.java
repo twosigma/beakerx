@@ -18,9 +18,7 @@ package com.twosigma.beaker.easyform;
 
 import com.twosigma.beaker.easyform.formitem.ButtonComponent;
 import com.twosigma.beaker.easyform.formitem.CheckBox;
-import com.twosigma.beaker.easyform.formitem.CheckBoxGroup;
 import com.twosigma.beaker.easyform.formitem.ComboBox;
-import com.twosigma.beaker.easyform.formitem.DatePickerComponent;
 import com.twosigma.beaker.easyform.formitem.ListComponent;
 import com.twosigma.beaker.easyform.formitem.LoadValuesButton;
 import com.twosigma.beaker.easyform.formitem.RadioButtonComponent;
@@ -28,6 +26,7 @@ import com.twosigma.beaker.easyform.formitem.SaveValuesButton;
 import com.twosigma.beaker.easyform.formitem.TextArea;
 import com.twosigma.beaker.easyform.formitem.TextField;
 import com.twosigma.beaker.easyform.formitem.widgets.ButtonComponentWidget;
+import com.twosigma.beaker.easyform.formitem.widgets.CheckBoxGroupWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.ComboBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.ListComponentWidget;
@@ -208,12 +207,12 @@ public class EasyForm extends ObservableMap<String, Object> {
   public EasyFormComponent addCheckBoxes(final String label,
                                          final Collection<String> values,
                                          final Integer orientation) throws Exception {
-//    CheckBoxGroup checkBoxGroup = new CheckBoxGroup();
-//    checkBoxGroup.setLabel(label);
-//    checkBoxGroup.setHorizontal(orientation != null && EasyForm.HORIZONTAL.equals(orientation));
-//    checkBoxGroup.setValues(values);
-//    return addComponentOrThrow(label, checkBoxGroup);
-    throw new RuntimeException("Not implemented yet.");
+    CheckBoxGroupWidget checkBoxGroup = new CheckBoxGroupWidget();
+    checkBoxGroup.setLabel(label);
+    checkBoxGroup.setHorizontal(orientation != null && EasyForm.HORIZONTAL.equals(orientation));
+    checkBoxGroup.setValues(values);
+    checkBoxGroup.createWidget();
+    return addComponentOrThrow(label, checkBoxGroup);
   }
 
   public EasyFormComponent addDatePicker(final String label) throws Exception {
@@ -229,7 +228,7 @@ public class EasyForm extends ObservableMap<String, Object> {
 //    datePickerComponent.setLabel(label);
 //    datePickerComponent.setShowTime(showTime);
 //    return addComponentOrThrow(label, datePickerComponent);
-    throw new RuntimeException("Not implemented yet.");
+    throw new RuntimeException("not implemented yet");
   }
 
   public ButtonComponent addButton(final String label) throws Exception {

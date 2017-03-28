@@ -31,7 +31,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +40,7 @@ import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyDisplayMsg;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyInternalOpenCommMsg;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
 import static com.twosigma.beaker.widgets.Widget.VALUE;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -87,7 +87,7 @@ public class EasyFormTest {
     String label = "RadioButto1";
     //when
     EasyForm easyForm = new EasyForm("EasyForm with RadioButto");
-    easyForm.addRadioButtons(label, Arrays.asList("1","2"));
+    easyForm.addRadioButtons(label, asList("1", "2"));
     DisplayEasyForm.display(easyForm);
     //then
     verifyRadioButton(getWidgetMsgs());
@@ -141,8 +141,8 @@ public class EasyFormTest {
     //given
     String label = "MultipleSelectionLabel1";
     //when
-    EasyForm easyForm = new EasyForm("EasyForm with checkbox");
-    easyForm.addList(label, asList("1", "2","3"));
+    EasyForm easyForm = new EasyForm("EasyForm with MultipleSelection");
+    easyForm.addList(label, asList("1", "2", "3"));
     DisplayEasyForm.display(easyForm);
     //then
     verifyMultipleSelection(getWidgetMsgs());
@@ -159,7 +159,7 @@ public class EasyFormTest {
     //given
     String label = "ComboboxLabel1";
     //when
-    EasyForm easyForm = new EasyForm("EasyForm with checkbox");
+    EasyForm easyForm = new EasyForm("EasyForm with Combobox");
     easyForm.addComboBox(label, asList("1", "2"));
     DisplayEasyForm.display(easyForm);
     //then
@@ -188,6 +188,29 @@ public class EasyFormTest {
 
   private void verifyCheckboxField(List<Message> messages) {
     verifyOpenCommMsg(messages, Checkbox.MODEL_NAME_VALUE, Checkbox.VIEW_NAME_VALUE);
+  }
+
+  @Test
+  public void shouldCreateEasyFormWithCheckboxGroup() throws Exception {
+    //given
+    String label = "label1";
+    List<String> checkboxesLabels = asList("1", "2", "3");
+    //when
+    EasyForm easyForm = new EasyForm("EasyForm with CheckboxGroup");
+    easyForm.addCheckBoxes(label, checkboxesLabels);
+    DisplayEasyForm.display(easyForm);
+    //then
+    verifyCheckboxGroup(getCheckboxGroupMsgs());
+    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(getDisplayMsg());
+  }
+
+  private void verifyCheckboxGroup(Message msg) {
+    verifyOpenCommMsgWitoutLayout(msg, Box.MODEL_NAME_VALUE, Box.VIEW_NAME_VALUE);
+  }
+
+  private Message getCheckboxGroupMsgs() {
+    return kernel.getPublishedMessages().get(kernel.getPublishedMessages().size() - 4);
   }
 
   @Test
@@ -227,11 +250,11 @@ public class EasyFormTest {
   }
 
   private Message getDisplayMsg() {
-    return kernel.getPublishedMessages().get(kernel.getPublishedMessages().size()-1);
+    return kernel.getPublishedMessages().get(kernel.getPublishedMessages().size() - 1);
   }
 
   private List<Message> getEasyFormMsgs() {
-    return kernel.getPublishedMessages().subList(kernel.getPublishedMessages().size()-3, kernel.getPublishedMessages().size()-1);
+    return kernel.getPublishedMessages().subList(kernel.getPublishedMessages().size() - 3, kernel.getPublishedMessages().size() - 1);
   }
 
 

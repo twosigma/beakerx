@@ -88,7 +88,6 @@ import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
 
 public class SerializeToString {
 
-  private static int count = 0;
   private static ObjectMapper mapper;
   private static Map<Class<?>, JsonSerializer> serializerMap = new Hashtable<>();
   private static Map<Class<?>, Object> internalWidgetMap = new Hashtable<>();

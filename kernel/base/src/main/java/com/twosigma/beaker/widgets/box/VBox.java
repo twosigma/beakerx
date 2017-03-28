@@ -1,5 +1,5 @@
 /*
- *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,26 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beaker.widgets.box;
 
-package com.twosigma.beaker.easyform.formitem;
+import com.twosigma.beaker.widgets.CommFunctionality;
 
-import com.twosigma.beaker.easyform.EasyFormComponent;
+import java.util.List;
 
-import java.util.Collection;
+public class VBox extends Box{
 
-public abstract class CheckBoxGroup extends EasyFormComponent {
-
-  private Boolean horizontal;
-
-  public abstract Collection<String> getValues();
-
-  public abstract void setValues(final Collection<String> values) ;
-
-  public Boolean getHorizontal() {
-    return horizontal;
-  }
-
-  public void setHorizontal(final Boolean horizontal) {
-    this.horizontal = horizontal;
+  public VBox(List<CommFunctionality> children) {
+    super(children);
+    this.getLayout().setDisplay("flex");
+    this.getLayout().setFlex_flow("column");
+    this.getLayout().setAlign_items("stretch");
+    init();
   }
 }

@@ -22,9 +22,16 @@ public class Layout extends Widget {
 
   public static final String IPY_MODEL = "IPY_MODEL_";
   public static final String LAYOUT = "layout";
+  public static final String DISPLAY = "display";
+  public static final String ALIGN_ITEMS = "align_items";
+  public static final String FLEX_FLOW = "flex_flow";
 
   private String _view_name = "LayoutView";
   private String _model_name = "LayoutModel";
+
+  private String display;
+  private String align_items;
+  private String flex_flow;
 
   public Layout() {
     super();
@@ -36,13 +43,13 @@ public class Layout extends Widget {
     content.put("_model_name", _model_name);
     content.put("_view_name", _view_name);
     content.put("align_content", "");
-    content.put("align_items", "");
+    content.put(ALIGN_ITEMS, getAlign_items());
     content.put("align_self", "");
     content.put("border", "");
     content.put("bottom", "");
-    content.put("display", "");
+    content.put(DISPLAY, getDisplay());
     content.put("flex", "");
-    content.put("flex_flow", "");
+    content.put(FLEX_FLOW, getFlex_flow());
     content.put("height", "");
     content.put("justify_content", "");
     content.put("left", "");
@@ -64,4 +71,31 @@ public class Layout extends Widget {
     return content;
   }
 
+
+  public String getDisplay() {
+    return display;
+  }
+
+  public void setDisplay(String display) {
+    this.display = display;
+    sendUpdate(DISPLAY, display);
+  }
+
+  public String getAlign_items() {
+    return align_items;
+  }
+
+  public void setAlign_items(String align_items) {
+    this.align_items = align_items;
+    sendUpdate(ALIGN_ITEMS, align_items);
+  }
+
+  public String getFlex_flow() {
+    return flex_flow;
+  }
+
+  public void setFlex_flow(String flex_flow) {
+    this.flex_flow = flex_flow;
+    sendUpdate(FLEX_FLOW, flex_flow);
+  }
 }

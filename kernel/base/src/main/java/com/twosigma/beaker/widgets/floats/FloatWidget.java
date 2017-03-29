@@ -15,14 +15,13 @@
  */
 package com.twosigma.beaker.widgets.floats;
 
-import com.twosigma.beaker.widgets.DOMWidget;
-
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class FloatWidget extends DOMWidget {
+import com.twosigma.beaker.widgets.ValueWidget;
 
-  private Double value = 0.0;
+public class FloatWidget extends ValueWidget<Double> {
+
 
   public FloatWidget() {
     super();
@@ -36,16 +35,9 @@ public class FloatWidget extends DOMWidget {
   }
 
   @Override
-  protected void updateValue(Object value) {
+  public void updateValue(Object value) {
     this.value = (value instanceof Integer) ? ((Integer) value).doubleValue() : (double) value;
   }
 
-  public Double getValue() {
-    return this.value;
-  }
 
-  public void setValue(Double value) {
-    this.value = value;
-    sendUpdate(VALUE, value);
-  }
 }

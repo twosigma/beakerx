@@ -145,4 +145,9 @@ public class MIMEContainer {
     }
     return bytes;
   }
+
+  @Override
+  public String toString() {
+    return this.getMime() + " CODE = " + this.getCode();
+  }
 }

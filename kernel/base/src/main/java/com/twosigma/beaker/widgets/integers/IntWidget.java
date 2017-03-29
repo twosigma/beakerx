@@ -15,18 +15,12 @@
  */
 package com.twosigma.beaker.widgets.integers;
 
-import com.twosigma.beaker.widgets.DOMWidget;
-
 import java.io.Serializable;
 import java.util.HashMap;
 
-public abstract class IntWidget extends DOMWidget {
+import com.twosigma.beaker.widgets.ValueWidget;
 
-  private Integer value = 0;
-
-  public IntWidget() {
-    super();
-  }
+public abstract class IntWidget extends ValueWidget<Integer> {
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
@@ -36,17 +30,10 @@ public abstract class IntWidget extends DOMWidget {
   }
 
   @Override
-  protected void updateValue(Object value) {
+  public void updateValue(Object value) {
     this.value = (int) value;
   }
 
-  public int getValue() {
-    return this.value;
-  }
 
-  public void setValue(int value) {
-    this.value = value;
-    sendUpdate(VALUE, value);
-  }
 
 }

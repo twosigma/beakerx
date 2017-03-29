@@ -15,17 +15,12 @@
  */
 package com.twosigma.beaker.widgets.bools;
 
-import com.twosigma.beaker.widgets.DOMWidget;
-
 import java.io.Serializable;
 import java.util.HashMap;
 
-public abstract class BoolWidget extends DOMWidget {
+import com.twosigma.beaker.widgets.ValueWidget;
 
-  private Boolean value = false;
-
-  public BoolWidget() {
-  }
+public abstract class BoolWidget extends ValueWidget<Boolean> {
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
@@ -35,16 +30,8 @@ public abstract class BoolWidget extends DOMWidget {
   }
 
   @Override
-  protected void updateValue(Object value) {
+  public void updateValue(Object value) {
     this.value = (Boolean) value;
   }
 
-  public Boolean getValue() {
-    return value;
-  }
-
-  public void setValue(Boolean value) {
-    this.value = value;
-    sendUpdate(VALUE, value);
-  }
 }

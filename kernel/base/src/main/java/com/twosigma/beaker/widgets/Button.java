@@ -27,9 +27,11 @@ public class Button extends DOMWidget {
 
   public static final String TOOLTIP = "tooltip";
   public static final String TAG = "tag";
+  public static final String ICON = "icon";
 
   private String tooltip;
   private String tag;
+  private String icon="";
 
   public Button() {
     super();
@@ -44,6 +46,8 @@ public class Button extends DOMWidget {
     content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);
     content.put(VIEW_MODULE, InternalWidgetUtils.VIEW_MODULE_VALUE);
     content.put(TOOLTIP, tooltip);
+    content.put(ICON, icon);
+
     return content;
   }
 

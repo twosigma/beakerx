@@ -12,8 +12,8 @@ require('./easyForm/css/bko-easyform.css');
 //   defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
 //     _model_name : 'EasyFormModel',
 //     _view_name : 'EasyFormView',
-//     _model_module : 'beaker-nbextension',
-//     _view_module : 'beaker-nbextension'
+//     _model_module : 'beakerx',
+//     _view_module : 'beakerx'
 //   })
 // });
 
@@ -21,8 +21,8 @@ var EasyFormModel = widgets.DOMWidgetModel.extend({
   defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
     _model_name : 'EasyFormModel',
     _view_name : 'EasyFormView',
-    _model_module : 'beaker-nbextension',
-    _view_module : 'beaker-nbextension',
+    _model_module : 'beakerx',
+    _view_module : 'beakerx',
     children: []
   }),
 }, {

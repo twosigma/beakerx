@@ -61,7 +61,7 @@ import com.twosigma.beaker.chart.serializer.HistogramSerializer;
 import com.twosigma.beaker.chart.serializer.LegendPositionSerializer;
 import com.twosigma.beaker.chart.serializer.LineSerializer;
 import com.twosigma.beaker.chart.serializer.PointsSerializer;
-import com.twosigma.beaker.chart.serializer.RasterSerializer;
+import com.twosigma.beaker.chart.serializer.RastersSerializer;
 import com.twosigma.beaker.chart.serializer.StemsSerializer;
 import com.twosigma.beaker.chart.serializer.TextSerializer;
 import com.twosigma.beaker.chart.serializer.XYChartSerializer;
@@ -75,7 +75,7 @@ import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beaker.chart.xychart.plotitem.Crosshair;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Points;
-import com.twosigma.beaker.chart.xychart.plotitem.Raster;
+import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
@@ -129,7 +129,7 @@ public class SerializeToString {
     serializerMap.put(GradientColor.class, new GradientColorSerializer());
     serializerMap.put(Histogram.class, new HistogramSerializer());
     serializerMap.put(HeatMap.class, new HeatMapSerializer());
-    serializerMap.put(Raster.class, new RasterSerializer());
+    serializerMap.put(Rasters.class, new RastersSerializer());
 
     SimpleModule module = new SimpleModule("MySerializer", new Version(1, 0, 0, null));
     serializerMap.forEach((k, v) -> {

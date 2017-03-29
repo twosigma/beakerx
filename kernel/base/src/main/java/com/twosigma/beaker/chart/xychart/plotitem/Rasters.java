@@ -18,15 +18,17 @@ package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Graphics;
+import com.twosigma.beaker.chart.Filter;
 
 import java.util.Date;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
-public class Raster extends Graphics {
-  private Number x = 0;
-  private Number y = 0;
-  private Number width = 30;
-  private Number height = 30;
-  private Number opacity = 1.0;
+public class Rasters extends XYGraphics {
+  private List<Number> width;
+  private List<Number> height;
+  private List<Number> opacity;
   private String filePath = "";
   private String fileUrl = "";
   private byte[] dataString;
@@ -34,7 +36,7 @@ public class Raster extends Graphics {
   private String position = "zoomable";
 
   // getter and setters
-
+  /*
   public Number getX() {
     return x;
   }
@@ -56,29 +58,37 @@ public class Raster extends Graphics {
   public void setY(Number y) {
     this.y = y;
   }
+  */
 
-  public Number getOpacity() {
-    return opacity;
+  public List<Number> getOpacity() {
+    // generate a list of opacity 1, if not given
+    if (this.opacity == null){
+      this.opacity = new ArrayList<>(this.width.size());
+      for (int i = 0; i < this.width.size(); ++i) {
+        this.opacity.add(1);
+      }
+    }
+    return this.opacity;
   }
 
-  public void setOpacity(Number opacity) {
-    this.opacity = opacity;
+  public void setOpacity(List<Number> opacity) {
+    this.opacity = new ArrayList<Number>(opacity);
   }
 
-  public Number getWidth() {
-    return width;
+  public List<Number> getWidth() {
+    return this.width;
   }
 
-  public void setWidth(Number width) {
-    this.width = width;
+  public void setWidth(List<Number> width) {
+    this.width = new ArrayList<Number>(width);
   }
 
-  public Number getHeight() {
-    return height;
+  public List<Number> getHeight() {
+    return this.height;
   }
 
-  public void setHeight(Number height) {
-    this.height = height;
+  public void setHeight(List<Number> height) {
+    this.height = new ArrayList<Number>(height);
   }
 
   public String getFilePath() {
@@ -113,25 +123,8 @@ public class Raster extends Graphics {
     this.dataString = dataString;
   }
 
-  public void setColor(Object color) {
-    if (color instanceof Color) {
-      this.baseColor = (Color) color;
-    } else if (color instanceof java.awt.Color) {
-      this.baseColor = new Color((java.awt.Color) color);
-    } else {
-      throw new IllegalArgumentException(
-        "setColor takes Color or java.awt.Color");
-    }
-  }
-
   @Override
-  public void setColori(Color color) {
-    this.baseColor = color;
+  protected EnumSet<Filter> getPossibleFilters() {
+    return null;
   }
-
-  @Override
-  public Color getColor() {
-    return baseColor;
-  }
-
 }

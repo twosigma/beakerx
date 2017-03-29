@@ -19,7 +19,7 @@ package com.twosigma.beaker.chart.xychart;
 import com.twosigma.beaker.chart.AbstractChart;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantBand;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
-import com.twosigma.beaker.chart.xychart.plotitem.Raster;
+import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ abstract public class XYChart extends AbstractChart{
   private final List<XYGraphics> xyGraphics = new ArrayList<>();
   private final List<ConstantLine> constantLines = new ArrayList<>();
   private final List<ConstantBand> constantBands = new ArrayList<>();
-  private final List<Raster> rasters = new ArrayList<>();
+  private final List<Rasters> rasters = new ArrayList<>();
   private final List<Text> texts = new ArrayList<>();
   private boolean xAutoRange = true;
   private double xLowerBound;
@@ -95,16 +95,16 @@ abstract public class XYChart extends AbstractChart{
     return this.texts;
   }
 
-  public XYChart add(Raster raster) {
+  public XYChart add(Rasters raster) {
     this.rasters.add(raster);
     return this;
   }
 
-  public XYChart leftShift(Raster raster) {
+  public XYChart leftShift(Rasters raster) {
     return add(raster);
   }
 
-  public List<Raster> getRasters() {
+  public List<Rasters> getRasters() {
     return this.rasters;
   }
 
@@ -118,8 +118,8 @@ abstract public class XYChart extends AbstractChart{
         add((ConstantBand) o);
       } else if (o instanceof Text) {
         add((Text) o);
-      } else if (o instanceof Raster) {
-        add((Raster) o);
+      } else if (o instanceof Rasters) {
+        add((Rasters) o);
       } else {
         super.add(items);
       }

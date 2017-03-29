@@ -29,7 +29,7 @@ define([
     "Area" : "area",
     "Text" : "text",
     "Points" : "point",
-    "Raster" : "image",
+    "Rasters" : "image",
     "CategoryLine" : "line",
     "CategoryStems" : "stem",
     "CategoryBars" : "bar",
@@ -727,8 +727,8 @@ define([
           var ele = {
             "x" : mraster.x,
             "y" : mraster.y,
-            "width": mraster.width != null ? mraster.width : 320,
-            "height": mraster.height != null ? mraster.height : 240,
+            "width": mraster.width,
+            "height": mraster.height,
             "opacity": mraster.opacity,
             "position": mraster.position,
             "value": mraster.value
@@ -736,6 +736,7 @@ define([
           item.elements.push(ele);
           newmodel.data.push(item);
         }
+        console.log("new model",model.rasters);
       }
       newmodel.yIncludeZero = yAxisSettings.yIncludeZero;
       newmodel.yRIncludeZero = yAxisRSettings.yIncludeZero;

@@ -16,7 +16,7 @@
 package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.SerializeToString;
-import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
 import org.junit.Assert;
 import org.junit.Test;

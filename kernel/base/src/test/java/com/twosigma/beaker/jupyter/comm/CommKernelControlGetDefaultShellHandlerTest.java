@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.jupyter;
+package com.twosigma.beaker.jupyter.comm;
 
 import com.twosigma.beaker.KernelTest;
 import org.assertj.core.api.Assertions;
@@ -26,7 +26,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.CommKernelControlGetDefaultShellHandler.KERNEL_CONTROL_RESPONSE;
+import static com.twosigma.beaker.jupyter.comm.CommKernelControlGetDefaultShellHandler.KERNEL_CONTROL_RESPONSE;
 
 public class CommKernelControlGetDefaultShellHandlerTest {
 

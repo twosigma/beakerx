@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.jupyter;
+package com.twosigma.beaker.jupyter.comm;
 
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
@@ -26,10 +26,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
-import static com.twosigma.beaker.jupyter.Comm.DATA;
-import static com.twosigma.beaker.jupyter.CommKernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beaker.jupyter.CommKernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
+import static com.twosigma.beaker.jupyter.comm.Comm.DATA;
+import static com.twosigma.beaker.jupyter.comm.CommKernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beaker.jupyter.comm.CommKernelControlSetShellHandler.IMPORTS;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;
 
 /**

@@ -17,7 +17,7 @@
 package com.twosigma.beaker.javash.comm;
 
 import com.twosigma.beaker.javash.JavaKernelTest;
-import com.twosigma.beaker.jupyter.CommNamesEnum;
+import com.twosigma.beaker.jupyter.comm.CommNamesEnum;
 import com.twosigma.beaker.jupyter.handler.JupyterHandlerTest;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;

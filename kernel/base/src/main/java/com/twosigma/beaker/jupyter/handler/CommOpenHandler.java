@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Header;
@@ -28,10 +28,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
-import static com.twosigma.beaker.jupyter.Comm.DATA;
-import static com.twosigma.beaker.jupyter.Comm.TARGET_MODULE;
-import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
+import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
+import static com.twosigma.beaker.jupyter.comm.Comm.DATA;
+import static com.twosigma.beaker.jupyter.comm.Comm.TARGET_MODULE;
+import static com.twosigma.beaker.jupyter.comm.Comm.TARGET_NAME;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
 

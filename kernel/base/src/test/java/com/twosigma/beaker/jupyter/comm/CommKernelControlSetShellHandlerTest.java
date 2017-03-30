@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.jupyter;
+package com.twosigma.beaker.jupyter.comm;
 
 import com.twosigma.beaker.KernelTest;
 import org.assertj.core.api.Assertions;

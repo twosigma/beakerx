@@ -19,9 +19,9 @@ import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
-import com.twosigma.beaker.jupyter.CommKernelControlInterrupt;
-import com.twosigma.beaker.jupyter.CommKernelControlSetShellHandler;
-import com.twosigma.beaker.jupyter.CommNamesEnum;
+import com.twosigma.beaker.jupyter.comm.CommKernelControlInterrupt;
+import com.twosigma.beaker.jupyter.comm.CommKernelControlSetShellHandler;
+import com.twosigma.beaker.jupyter.comm.CommNamesEnum;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 
 public class JavaCommOpenHandler extends CommOpenHandler{

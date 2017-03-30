@@ -15,8 +15,8 @@
  */
 package com.twosigma.beaker.widgets.internal;
 
-import com.twosigma.beaker.jupyter.Comm;
-import com.twosigma.beaker.jupyter.CommNamesEnum;
+import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.beaker.jupyter.comm.CommNamesEnum;
 import com.twosigma.beaker.jupyter.Utils;
 
 import java.io.Serializable;

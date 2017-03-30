@@ -18,7 +18,7 @@ package com.twosigma.beaker.groovy.comm;
 import com.twosigma.jupyter.KernelFunctionality;
 
 import com.twosigma.beaker.groovy.GroovyDefaultVariables;
-import com.twosigma.beaker.jupyter.CommKernelControlGetDefaultShellHandler;
+import com.twosigma.beaker.jupyter.comm.CommKernelControlGetDefaultShellHandler;
 
 public class GroovyCommKernelControlSetShellHandler extends CommKernelControlGetDefaultShellHandler{
 

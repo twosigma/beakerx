@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.scala.comm;
 
-import com.twosigma.beaker.jupyter.CommNamesEnum;
+import com.twosigma.beaker.jupyter.comm.CommNamesEnum;
 import com.twosigma.beaker.jupyter.handler.JupyterHandlerTest;
 import com.twosigma.beaker.scala.ScalaKernelTest;
 import com.twosigma.jupyter.handler.Handler;

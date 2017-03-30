@@ -23,16 +23,18 @@ import argparse
 from nbformat.v4 import new_notebook, new_code_cell, new_markdown_cell
 
 parser = argparse.ArgumentParser()
-parser.add_argument('notebooks', nargs='+', help="beaker notebooks to be converted")
+parser.add_argument('notebooks', nargs='+',
+                    help="beaker notebooks to be converted. Enter *.bkr in case you want to convert all notebooks at once.")
 if len(sys.argv) == 1:
   parser.print_help()
 args = parser.parse_args()
 
-def convertNotebook(data, nb):
-
+def convertNotebook(notebook):
+  nb = new_notebook()
+  with open(notebook) as data_file:
+    data = json.load(data_file)
   evaluators = list((cell['evaluator']) for cell in data['cells'] if 'evaluator' in cell)
   kernel_name = max(evaluators, key=evaluators.count)
-
   if kernel_name == 'IPython':
     kernel_spec = {"kernelspec": {
       "display_name": "Python 2",
@@ -45,9 +47,7 @@ def convertNotebook(data, nb):
       "language": kernel_name.lower(),
       "name": kernel_name.lower()
     }}
-
   nb.metadata = kernel_spec
-
   for cell in data['cells']:
     if cell['type'] == 'code':
       if cell['evaluator'] != kernel_name:
@@ -57,15 +57,7 @@ def convertNotebook(data, nb):
       nb.cells.append(new_markdown_cell("\n".join(map(str, cell['body']))))
     if cell['type'] == 'section':
       nb.cells.append(new_markdown_cell('# ' + cell['title']))
-
-  nbformat.write(nb, sys.argv[1].partition('.')[0] + '.ipynb')
-
+  nbformat.write(nb, notebook.partition('.')[0] + '.ipynb')
 
 for notebook in args.notebooks:
-  nb = new_notebook()
-  if notebook.partition('.')[2] != 'bkr':
-    nbformat.write(nb, notebook + '.ipynb')
-  else:
-    with open(sys.argv[1]) as data_file:
-      data = json.load(data_file)
-    convertNotebook(data, nb)
+  convertNotebook(notebook)

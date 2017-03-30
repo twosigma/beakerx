@@ -34,7 +34,7 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;
 /**
  * @author konst
  */
-public class CommKernelControlInterrupt extends KernelHandler<Message> {
+public class CommKernelControlInterrupt extends CommBaseHandler<Boolean> {
 
   public static final String KERNEL_INTERRUPT = "kernel_interrupt";
   public static final String KERNEL_CONTROL_RESPONSE = "kernel_control_response";
@@ -46,56 +46,30 @@ public class CommKernelControlInterrupt extends KernelHandler<Message> {
   public CommKernelControlInterrupt(KernelFunctionality kernel) {
     super(kernel);
   }
-
+  
   @Override
   public void handle(Message message)  {
-    logger.info("Handing comm message content (Interrupt)");
-    if (message != null) {
-      Map<String, Serializable> commMap = message.getContent();
-      HashMap<String, Boolean> messageData = (HashMap<String, Boolean>) commMap.get(DATA);
-      Object okObject = messageData != null ? messageData.get(KERNEL_INTERRUPT) : null;
-      if (okObject != null && okObject instanceof Boolean && ((Boolean) okObject).booleanValue()) {
-        boolean ok = Kernel.isWindows();
-        if(ok){
-          kernel.cancelExecution();
-        }else{
-          logger.info("Cell execution interrupt not performed, done by SIGINT");
-        }
-        Message replay = createReplyMessage(message, ok);
-        publish(replay);
+    logger.info("Handing comm message content");
+    Boolean value = getValueFromData(message, getHandlerCommand());
+    if(value != null && value.booleanValue()){
+      boolean ok = Kernel.isWindows();
+      if(ok){
+        kernel.cancelExecution();
+      }else{
+        logger.info("Cell execution interrupt not performed, done by SIGINT");
       }
-    } else {
-      logger.info("Comm message contend is null");
-    }
-  }
-
-  private Message createReplyMessage(Message message, boolean ok) {
-    Message ret = null;
-    if (message != null) {
-      ret = new Message();
-      Map<String, Serializable> commMap = message.getContent();
-      ret.setHeader(new Header(COMM_MSG, message.getHeader().getSession()));
-      HashMap<String, Serializable> map = new HashMap<>();
-      map.put(COMM_ID, getString(commMap, COMM_ID));
       HashMap<String, Serializable> data = new HashMap<>();
-      if (ok) {
-        HashMap<String, String> body = new HashMap<>();
-        body.put(KERNEL_INTERRUPT, ok ? TRUE : FALSE);
-        data.put(KERNEL_CONTROL_RESPONSE, body);
-        logger.info("Response OK");
-      }
-      map.put(DATA, data);
-      ret.setContent(map);
+      HashMap<String, String> body = new HashMap<>();
+      body.put(KERNEL_INTERRUPT, ok ? TRUE : FALSE);
+      data.put(KERNEL_CONTROL_RESPONSE, body);
+      logger.info("Response " + ok);
+      publish(createReplyMessage(message, data));
     }
-    return ret;
   }
 
-  public static String getString(Map<String, Serializable> map, String name) {
-    String ret = null;
-    if (map != null && name != null && map.containsKey(name)) {
-      ret = (String) map.get(name);
-    }
-    return ret;
+  @Override
+  public String getHandlerCommand() {
+    return KERNEL_INTERRUPT;
   }
-
+  
 }

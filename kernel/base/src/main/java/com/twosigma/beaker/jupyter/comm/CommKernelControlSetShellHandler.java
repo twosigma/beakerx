@@ -15,27 +15,22 @@
  */
 package com.twosigma.beaker.jupyter.comm;
 
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.twosigma.beaker.jupyter.Utils.getAsString;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.Utils.getAsString;
-import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
-import static com.twosigma.beaker.jupyter.comm.Comm.DATA;
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.message.Message;
 
 /**
  * @author konst
  */
-public class CommKernelControlSetShellHandler extends KernelHandler<Message> {
+public class CommKernelControlSetShellHandler extends CommBaseHandler<List<String>> {
 
   public static final String IMPORTS = "imports";
   public static final String CLASSPATH = "classpath";
@@ -49,25 +44,22 @@ public class CommKernelControlSetShellHandler extends KernelHandler<Message> {
   public CommKernelControlSetShellHandler(KernelFunctionality kernel) {
     super(kernel);
   }
-
+  
   @Override
   public void handle(Message message)  {
     logger.info("Handing comm message content");
-    if(message != null){
-      Map<String, Serializable> commMap = message.getContent();
-      HashMap<?, ?> messageData = (HashMap<?, ?>)commMap.get(DATA);
-      if (messageData != null) {
-        boolean ok = handleData((Map<String, List<String>>)messageData);
-        publish(createReplayMessage(message, ok));
-      }
-    } else {
-      logger.info("Comm message contend is null");
+    Map<String, List<String>> shell = getData(message);
+    if (shell != null) {
+      boolean ok = handleData(shell);
+      HashMap<String, String> data = new HashMap<>();
+      data.put(KERNEL_CONTROL_RESPONSE, ok ? RESPONSE_OK : RESPONSE_ERROR);
+      publish(createReplyMessage(message, data));
     }
   }
 
   public boolean handleData(Map<String, List<String>> data) {
     boolean ret = false;
-    if(data.containsKey(IMPORTS) &&data.containsKey(CLASSPATH)){
+    if(data.containsKey(IMPORTS) && data.containsKey(CLASSPATH)){
       List<String> imports = data.get(IMPORTS);
       List<String> classPath = data.get(CLASSPATH);
       kernel.setShellOptions(getAsString(classPath), getAsString(imports));
@@ -75,30 +67,11 @@ public class CommKernelControlSetShellHandler extends KernelHandler<Message> {
     }
     return ret;
   }
-  ;
-  
-  private Message createReplayMessage(Message message, boolean ok) {
-    Message ret = null;
-    if (message != null) {
-      ret = new Message();
-      Map<String, Serializable> commMap = message.getContent();
-      ret.setHeader(new Header(COMM_MSG, message.getHeader().getSession()));
-      HashMap<String, Serializable> map = new HashMap<>();
-      map.put(COMM_ID, getString(commMap, COMM_ID));
-      HashMap<String, String> data = new HashMap<>();
-      data.put(KERNEL_CONTROL_RESPONSE, ok ? RESPONSE_OK : RESPONSE_ERROR);
-      map.put(DATA, data);
-      ret.setContent(map);
-    }
-    return ret;
-  }
-  
-  public static String getString(Map<String, Serializable> map, String name) {
-    String ret = null;
-    if (map != null && name != null && map.containsKey(name)) {
-      ret = (String) map.get(name);
-    }
-    return ret;
+
+  @Override
+  public String getHandlerCommand() {
+    // in this handler there are 2 commands
+    return null;
   }
 
 }

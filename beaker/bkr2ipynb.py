@@ -19,39 +19,52 @@ Run as:  python bkr2ipynb.py [notebook name].bkr
 import sys
 import json
 import nbformat
+import argparse
 from nbformat.v4 import new_notebook, new_code_cell, new_markdown_cell
 
-nb = new_notebook()
+parser = argparse.ArgumentParser()
+parser.add_argument('notebooks', nargs='+', help="beaker notebooks to be converted")
+if len(sys.argv) == 1:
+  parser.print_help()
+args = parser.parse_args()
 
-with open(sys.argv[1]) as data_file:
-  data = json.load(data_file)
+for notebook in args.notebooks:
+  nb = new_notebook()
+  if notebook.partition('.')[1] != 'bkr':
+    nbformat.write(nb, notebook + '.ipynb')
+  else:
+    with open(sys.argv[1]) as data_file:
+      data = json.load(data_file)
+    convertNotebook(data, nb)
 
-evaluators = list((cell['evaluator']) for cell in data['cells'] if 'evaluator' in cell)
-kernel_name = max(evaluators, key=evaluators.count)
 
-if kernel_name == 'IPython':
-  kernel_spec = {"kernelspec": {
-    "display_name": "Python 3",
-    "language": "python",
-    "name": "python3"
-  }}
-else:
-  kernel_spec = {"kernelspec": {
-    "display_name": kernel_name,
-    "language": kernel_name.lower(),
-    "name": kernel_name.lower()
-  }}
+def convertNotebook(data, nb):
+  evaluators = list((cell['evaluator']) for cell in data['cells'] if 'evaluator' in cell)
+  kernel_name = max(evaluators, key=evaluators.count)
 
-nb.metadata = kernel_spec
+  if kernel_name == 'IPython':
+    kernel_spec = {"kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    }}
+  else:
+    kernel_spec = {"kernelspec": {
+      "display_name": kernel_name,
+      "language": kernel_name.lower(),
+      "name": kernel_name.lower()
+    }}
 
-for cell in data['cells']:
-  if cell['type'] == 'code':
-    if cell['evaluator'] != kernel_name:
-      nb.cells.append(new_code_cell("%%" + cell['evaluator'] + "\n" + "\n".join(map(str, cell['input']['body']))))
-    nb.cells.append(new_code_cell("\n".join(map(str, cell['input']['body']))))
-  if cell['type'] == 'markdown':
-    nb.cells.append(new_markdown_cell("\n".join(map(str, cell['body']))))
-  if cell['type'] == 'section':
-    nb.cells.append(new_markdown_cell('# ' + cell['title']))
+  nb.metadata = kernel_spec
 
-nbformat.write(nb, sys.argv[1].partition('.')[0] + '.ipynb')
+  for cell in data['cells']:
+    if cell['type'] == 'code':
+      if cell['evaluator'] != kernel_name:
+        nb.cells.append(new_code_cell("%%" + cell['evaluator'] + "\n" + "\n".join(map(str, cell['input']['body']))))
+      nb.cells.append(new_code_cell("\n".join(map(str, cell['input']['body']))))
+    if cell['type'] == 'markdown':
+      nb.cells.append(new_markdown_cell("\n".join(map(str, cell['body']))))
+    if cell['type'] == 'section':
+      nb.cells.append(new_markdown_cell('# ' + cell['title']))
+
+  nbformat.write(nb, sys.argv[1].partition('.')[0] + '.ipynb')

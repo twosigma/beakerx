@@ -33,20 +33,18 @@ gradle --no-daemon environmentVariables # set PYTHONPATH as directed
 jupyter notebook
 ```
 
-## Update after java change
+## Update after Java change
 Ther kernels are installed to run out of the repo, so just a build should update the java code.
 * `gradle build`
 
-## update after JS change
+## Update after JS change
 
 * `cd beakerx/js; webpack`
 
-If webpack gives an error like
-
-> ERROR in jquery-ui (bower component) Module not found: Error: Cannot resolve 'file' or 'directory' ./ui/jquery-ui.js
-
-Then run `rm -rf bower_components && bower install`.
-
+## Beaker Notebooks Converter
+```
+python -m bkr2ipynb.py *.bkr
+```
 
 ## Groovy with Interactive Plotting and Table Saw:
 <img width="942" alt="screen shot 2016-12-20 at 11 35 17 am" src="https://cloud.githubusercontent.com/assets/963093/21402566/1680b928-c787-11e6-8acf-dc4fdeba0651.png">

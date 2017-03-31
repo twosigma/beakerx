@@ -56,6 +56,6 @@ Then run `rm -rf bower_components && bower install`.
 
 ## Attribution
 
-The kernel is originally derived from https://github.com/lappsgrid-incubator/jupyter-groovy-kernel, but has been rewritten in Java and refactored.
-The Java support uses Adrian Witas org.abstractmeta.toolbox.
+The kernel is originally derived from https://github.com/lappsgrid-incubator/jupyter-groovy-kernel, but has been rewritten in Java and refactored and expanded.
+The Java support uses Adrian Witas' org.abstractmeta.toolbox.
 

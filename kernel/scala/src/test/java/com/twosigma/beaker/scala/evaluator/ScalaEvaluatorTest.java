@@ -65,6 +65,7 @@ public class ScalaEvaluatorTest {
     Assertions.assertThat(((Plot)seo.getPayload()).getTitle()).isEqualTo("test title");
   }
 
+  @Test
   public void evaluateDivisionByZero_shouldReturnArithmeticException() throws Exception {
     //given
     String code = "16/0";

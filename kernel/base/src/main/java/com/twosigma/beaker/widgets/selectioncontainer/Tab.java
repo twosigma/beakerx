@@ -39,4 +39,9 @@ public class Tab extends SelectionContainer {
     return content;
   }
 
+  @Override
+  public void updateValue(Object value) {
+    //Nothing to do
+  }
+
 }

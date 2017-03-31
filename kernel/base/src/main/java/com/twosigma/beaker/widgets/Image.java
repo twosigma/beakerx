@@ -18,7 +18,7 @@ package com.twosigma.beaker.widgets;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class Image extends DOMWidget {
+public class Image extends ValueWidget<byte[]> {
 
 
   public static final String VIEW_NAME_VALUE = "ImageView";
@@ -29,8 +29,7 @@ public class Image extends DOMWidget {
 
   private String format = "png";
   private String width = "";
-  private String height = "";
-  private byte[] value;
+  private String height = "";;
 
   public Image() {
     super();
@@ -49,10 +48,12 @@ public class Image extends DOMWidget {
     return content;
   }
 
-  public byte[] getValue() {
-    return value;
+  @Override
+  public void updateValue(Object value) {
+    this.value = (byte[]) value;
   }
-
+  
+  @Override
   public void setValue(byte[] value) {
     this.value = value;
     sendUpdate("_b64value", value);

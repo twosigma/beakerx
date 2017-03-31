@@ -1,0 +1,37 @@
+{
+    "name": "datatables.net-fixedcolumns-dt",
+    "description": "FixedColumns for DataTables ",
+    "main": [
+        "css/fixedColumns.dataTables.css"
+    ],
+    "keywords": [
+        "fixed columns",
+        "DataTables",
+        "jQuery",
+        "table",
+        "DataTables"
+    ],
+    "dependencies": {
+        "jquery": ">=1.7",
+        "datatables.net": ">=1.10.9",
+        "datatables.net-fixedcolumns": ">=3.1.0"
+    },
+    "moduleType": [
+        "globals",
+        "amd",
+        "node"
+    ],
+    "ignore": [
+        "composer.json",
+        "datatables.json",
+        "package.json"
+    ],
+    "authors": [
+        {
+            "name": "SpryMedia Ltd",
+            "homepage": "https://datatables.net"
+        }
+    ],
+    "homepage": "https://datatables.net",
+    "license": "MIT"
+}

@@ -8,13 +8,9 @@ bower_components/d3/bower.json
 bower_components/d3/LICENSE
 bower_components/d3/README.md
 
-bower_components/datatables.net/.bower.json
-bower_components/datatables.net/bower.json
 bower_components/datatables.net/License.txt
 bower_components/datatables.net/Readme.md
 
-bower_components/datatables.net-colreorder/.bower.json
-bower_components/datatables.net-colreorder/bower.json
 bower_components/datatables.net-colreorder/License.txt
 bower_components/datatables.net-colreorder/Readme.md
 
@@ -23,23 +19,15 @@ bower_components/datatables.net-colreorder-dt/bower.json
 bower_components/datatables.net-colreorder-dt/License.txt
 bower_components/datatables.net-colreorder-dt/Readme.md
 
-bower_components/datatables.net-fixedcolumns/.bower.json
-bower_components/datatables.net-fixedcolumns/bower.json
 bower_components/datatables.net-fixedcolumns/License.txt
 bower_components/datatables.net-fixedcolumns/Readme.md
 
-bower_components/datatables.net-fixedcolumns-dt/.bower.json
-bower_components/datatables.net-fixedcolumns-dt/bower.json
 bower_components/datatables.net-fixedcolumns-dt/License.txt
 bower_components/datatables.net-fixedcolumns-dt/Readme.md
 
-bower_components/datatables.net-keytable/.bower.json
-bower_components/datatables.net-keytable/bower.json
 bower_components/datatables.net-keytable/License.txt
 bower_components/datatables.net-keytable/Readme.md
 
-bower_components/datatables.net-keytable-dt/.bower.json
-bower_components/datatables.net-keytable-dt/bower.json
 bower_components/datatables.net-keytable-dt/License.txt
 bower_components/datatables.net-keytable-dt/Readme.md
 
@@ -85,10 +73,30 @@ bower_components/moment-timezone/composer.json
 bower_components/moment-timezone/LICENSE
 bower_components/moment-timezone/README.md
 
-bower_components/jquery-ui/themes
+bower_components/jquery-ui/themes/black-tie
+bower_components/jquery-ui/themes/blitzer
+bower_components/jquery-ui/themes/cupertino
+bower_components/jquery-ui/themes/dark-hive
+bower_components/jquery-ui/themes/dot-luv
+bower_components/jquery-ui/themes/eggplant
+bower_components/jquery-ui/themes/excite-bike
+bower_components/jquery-ui/themes/flick
+bower_components/jquery-ui/themes/hot-sneaks
+bower_components/jquery-ui/themes/humanity
+bower_components/jquery-ui/themes/le-frog
+bower_components/jquery-ui/themes/mint-choc
+bower_components/jquery-ui/themes/overcast
+bower_components/jquery-ui/themes/pepper-grinder
+bower_components/jquery-ui/themes/redmond
+bower_components/jquery-ui/themes/south-street
+bower_components/jquery-ui/themes/start
+bower_components/jquery-ui/themes/sunny
+bower_components/jquery-ui/themes/swanky-purse
+bower_components/jquery-ui/themes/trontastic
+bower_components/jquery-ui/themes/ui-darkness
+bower_components/jquery-ui/themes/ui-lightness
+bower_components/jquery-ui/themes/vader
 bower_components/jquery-ui/ui
-bower_components/jquery-ui/.bower.json
-bower_components/jquery-ui/bower.json
 bower_components/jquery-ui/.gitignore
 bower_components/jquery-ui/component.json
 bower_components/jquery-ui/composer.json
@@ -98,8 +106,8 @@ bower_components/jquery-ui/README.md
 /.project
 /.settings/
 
-bower_components/jQuery-contextMenu/
 bower_components/jquery/dist/
 bower_components/jquery/external/sizzle/dist/
-dist/
+/dist
 node_modules/
+/build/

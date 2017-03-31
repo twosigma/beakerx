@@ -17,7 +17,7 @@ apply plugin: 'application'
 apply plugin: 'jacoco'
 apply plugin: 'java'
 
-def final kernelIdName = 'scala'
+def final kernelIdName = 'java'
 def final toReplace = '__PATH__'
 
 mainClassName = 'com.twosigma.beaker.javash.JavaKernel'

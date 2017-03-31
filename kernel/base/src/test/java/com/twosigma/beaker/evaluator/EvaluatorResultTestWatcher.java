@@ -13,16 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy.evaluator;
+
+package com.twosigma.beaker.evaluator;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.QUEUED;
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.RUNNING;
 
-public class GroovyEvaluatorResultTestWatcher {
+public class EvaluatorResultTestWatcher {
   public static final int ATTEMPT = 20;
-  public static final int SLEEP_IN_MILLIS = 100;
+  public static final int SLEEP_IN_MILLIS = 500;
 
   public static void waitForResult(SimpleEvaluationObject seo) throws InterruptedException {
     int count = 0;

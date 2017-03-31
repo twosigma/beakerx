@@ -32,6 +32,7 @@ repositories {
 
 dependencies {
   compile project(':kernel:base')
+  compile group: "org.codehaus.groovy", name: "groovy-all", version : "2.4.3"
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
   antlr group: 'org.antlr', name: 'antlr4', version: '4.5'
 

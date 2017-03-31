@@ -15,13 +15,12 @@
  */
 package com.twosigma.beaker.widgets;
 
-import com.twosigma.beaker.jupyter.Comm;
-import com.twosigma.jupyter.handler.Handler;
-import com.twosigma.jupyter.message.Message;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.twosigma.jupyter.handler.Handler;
+import com.twosigma.jupyter.message.Message;
 
 public abstract class DOMWidget extends Widget {
 
@@ -30,35 +29,56 @@ public abstract class DOMWidget extends Widget {
 
   private Layout layout;
 
+
   public DOMWidget() {
     super();
     layout = new Layout();
   }
 
   @Override
-  protected void addValueChangeMsgCallback(Comm comm) {
-    comm.addMsgCallbackList(new Handler<Message>() {
+  protected void addValueChangeMsgCallback() {
+    getComm().addMsgCallbackList(new ValueChangeMsgCallbackHandler() {
+      
       @Override
-      public void handle(Message msg)  {
-        if (msg != null && msg.getContent() != null && msg.getContent().containsKey(DATA)) {
-          Map data = (Map) msg.getContent().get(DATA);
-          if (data.containsKey(SYNC_DATA)) {
-            Map sync_data = (Map) data.get(SYNC_DATA);
-            if (sync_data.containsKey(VALUE)) {
-              Object value = sync_data.get(VALUE);
-              if (value != null) {
-                updateValue(value);
-              }
-            }
+      public void updateValue(Object value, Message message){
+        DOMWidget.this.updateValue(value);
+      }
+      
+    });
+
+  }
+  
+  public abstract class ValueChangeMsgCallbackHandler implements Handler<Message>{
+    
+    @SuppressWarnings("unchecked")
+    public Object getSyncDataValue(Message msg){
+      Object ret = false;
+      if (msg != null && msg.getContent() != null && msg.getContent().containsKey(DATA)) {
+        Map<String,Serializable> data = (Map<String,Serializable>) msg.getContent().get(DATA);
+        if (data.containsKey(SYNC_DATA)) {
+          Map<String,Serializable> sync_data = (Map<String,Serializable>) data.get(SYNC_DATA);
+          if (sync_data.containsKey(VALUE)) {
+            ret = sync_data.get(VALUE);
           }
         }
       }
-    });
+      return ret;
+    }
+    
+    public void handle(Message message){
+      Object value = getSyncDataValue(message);
+      if(value != null){
+        updateValue(value, message);
+      }
+    }
+    
+    public abstract void updateValue(Object value, Message message);
+    
   }
 
-  protected void updateValue(Object value) {
-  }
+  public abstract void updateValue(Object value);
 
+  
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     content.put(Layout.LAYOUT, Layout.IPY_MODEL + layout.getComm().getCommId());

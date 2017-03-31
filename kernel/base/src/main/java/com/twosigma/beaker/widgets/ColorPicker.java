@@ -18,13 +18,12 @@ package com.twosigma.beaker.widgets;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class ColorPicker extends DOMWidget {
+public class ColorPicker extends ValueWidget<String> {
 
   public static final String VIEW_NAME_VALUE = "ColorPickerView";
   public static final String MODEL_NAME_VALUE = "ColorPickerModel";
   public static final String CONCISE = "concise";
 
-  private String value = "";
   private Boolean concise = false;
 
   public ColorPicker() {
@@ -33,7 +32,7 @@ public class ColorPicker extends DOMWidget {
   }
 
   @Override
-  protected void updateValue(Object value) {
+  public void updateValue(Object value) {
     this.value = (String) value;
   }
 
@@ -45,15 +44,6 @@ public class ColorPicker extends DOMWidget {
     content.put(VALUE, this.value);
     content.put(CONCISE, this.concise);
     return content;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-    sendUpdate(VALUE, value);
   }
 
   public Boolean getConcise() {

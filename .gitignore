@@ -23,3 +23,6 @@ kernel/base/build/
 kernel/build/
 kernel/groovy/build/
 kernel/scala/build/
+/build/
+/.classpath
+/.project

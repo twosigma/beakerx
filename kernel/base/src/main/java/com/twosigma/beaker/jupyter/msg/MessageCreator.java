@@ -20,6 +20,8 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.EXECUTE_REPLY;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.EXECUTE_RESULT;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STATUS;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STREAM;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.CLEAR_OUTPUT;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.DISPLAY_DATA;
 
 import java.io.Serializable;
 import java.util.List;
@@ -39,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus;
+import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jupyter.SocketEnum;
 
 /**
@@ -79,7 +82,25 @@ public class MessageCreator {
     reply.getContent().put("metadata", new HashMap<>());
     return reply;
   }
-
+  
+  public Message buildClearOutput(Message message, boolean wait) {
+    Message reply = initMessage(CLEAR_OUTPUT, message);
+    reply.setContent(new HashMap<String, Serializable>());
+    reply.getContent().put("wait", wait);
+    reply.getContent().put("metadata", new HashMap<>());
+    return reply;
+  }
+  
+  public Message buildDisplayData(Message message, MIMEContainer value) {
+    Message reply = initMessage(DISPLAY_DATA, message);
+    reply.setContent(new HashMap<String, Serializable>());
+    reply.getContent().put("metadata", new HashMap<>());
+    HashMap<String, Serializable> map3 = new HashMap<>();
+    map3.put(value.getMime(), value.getCode());
+    reply.getContent().put("data", map3);
+    return reply;
+  }
+  
   private Message buildReply(Message message, int executionCount, List<MessageHolder> ret) {
     Message reply = createIdleMessage(message);
     ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, reply));

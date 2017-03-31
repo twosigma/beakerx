@@ -15,14 +15,34 @@
  */
 package com.twosigma.beaker.mimetype;
 
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Files;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.IOException;
+import java.net.URL;
+
 public class MIMEContainer {
 
-  private static final String TEXT_PLAIN = "text/plain";
-  private static final String TEXT_HTML = "text/html";
+  protected static final String TEXT_PLAIN = "text/plain";
+  protected static final String TEXT_HTML = "text/html";
   private static final String TEXT_LATEX = "text/latex";
+  private static final String TEXT_MARKDOWN = "text/markdown";
+  private static final String APPLICATION_JAVASCRIPT = "application/javascript";
+  protected static final String IMAGE_PNG = "image/png";
+  protected static final String IMAGE_JPEG = "image/jpeg";
+  protected static final String IMAGE_SVG = "image/svg+xml";
+
 
   private String mime;
   private String code;
+
+  public MIMEContainer() {
+
+  }
 
   public MIMEContainer(String mime, String code) {
     this.mime = mime;
@@ -46,11 +66,88 @@ public class MIMEContainer {
   }
 
   public static MIMEContainer Text(Object code) {
-     return addMimeType(TEXT_PLAIN, code);
+    return addMimeType(TEXT_PLAIN, code);
   }
 
-  private static MIMEContainer addMimeType(String mime, Object code) {
-    return new MIMEContainer(mime,code.toString());
+  public static MIMEContainer Markdown(Object code) {
+    return addMimeType(TEXT_MARKDOWN, code);
   }
 
+  public static MIMEContainer Math(String code) {
+    code = StringUtils.strip(code, "$");
+    return addMimeType(TEXT_LATEX, "$$" + code + "$$");
+  }
+
+  public static MIMEContainer Javascript(Object code) {
+    return addMimeType(APPLICATION_JAVASCRIPT, code);
+  }
+
+  public static MIMEContainer IFrame(String src, Object width, int height) {
+    String code = String.format("<iframe width = '%1$s' height= '%2$d' src = '%3$s' frameborder='0' allowfullscreen> </iframe>",
+        width.toString(), height, src);
+    return addMimeType(TEXT_HTML, code);
+  }
+
+  public static MIMEContainer VimeoVideo(String id, Object width, int height) {
+    String src = String.format("https://player.vimeo.com/video/%1$s", id);
+    return IFrame(src, width, height);
+  }
+
+  public static MIMEContainer ScribdDocument(String id, Object width, int height) {
+    String src = String.format("https://www.scribd.com/embeds/%1$s/content", id);
+    return IFrame(src, width, height);
+  }
+
+  public static MIMEContainer YoutubeVideo(String id) {
+    String src = String.format("https://www.youtube.com/embed/%1$s", id);
+    return IFrame(src, 400, 300);
+  }
+
+  public static MIMEContainer Video(String src) {
+    String output = String.format("<video src='%1$s' controls> Your browser does not support the <code>video</code> element. </video>", src);
+    return addMimeType(TEXT_HTML, output);
+  }
+
+  protected static MIMEContainer addMimeType(String mime, Object code) {
+    return new MIMEContainer(mime, code.toString());
+  }
+
+  protected static String exceptionToString(Exception e) {
+    StringWriter w = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(w);
+    e.printStackTrace(printWriter);
+    printWriter.flush();
+    return w.toString();
+  }
+
+  protected static boolean exists(String data) {
+    File f = new File(data);
+    return (f.exists() && !f.isDirectory());
+  }
+
+  protected static boolean isValidURL(String urlString) {
+    try {
+      URL url = new URL(urlString);
+      url.toURI();
+      return true;
+    } catch (Exception exception) {
+      return false;
+    }
+  }
+
+  protected static byte[] getBytes(Object data) throws IOException {
+    byte[] bytes = new byte[0];
+    if (isValidURL(data.toString())) {
+      bytes = ByteStreams.toByteArray((new URL(data.toString()).openStream()));
+    } else if (exists(data.toString())) {
+      File imgFile = new File(data.toString());
+      bytes = Files.toByteArray(imgFile);
+    }
+    return bytes;
+  }
+
+  @Override
+  public String toString() {
+    return this.getMime() + " CODE = " + this.getCode();
+  }
 }

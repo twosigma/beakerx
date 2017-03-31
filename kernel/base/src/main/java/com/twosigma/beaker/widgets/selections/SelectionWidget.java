@@ -15,33 +15,42 @@
  */
 package com.twosigma.beaker.widgets.selections;
 
-import com.twosigma.beaker.widgets.DOMWidget;
-
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 
-public abstract class SelectionWidget extends DOMWidget {
+import com.twosigma.beaker.widgets.ValueWidget;
+
+public abstract class SelectionWidget extends ValueWidget<String> {
 
   public static final String OPTIONS_LABELS = "_options_labels";
-
-  private String[] options = new String[0];
-
-  public SelectionWidget() {
-  }
+  private Object[] options = new Object[0];
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(OPTIONS_LABELS, this.options);
+    content.put(VALUE, this.value);
     return content;
   }
 
-  public String[] getOptions() {
+  @Override
+  public void updateValue(Object value) {
+    this.value = (String) value;
+  }
+
+
+  public Object[] getOptions() {
     return options;
   }
 
-  public void setOptions(String[] options) {
+  public void setOptions(Object[] options) {
     this.options = options;
+    sendUpdate(OPTIONS_LABELS, options);
+  }
+  
+  public void setOptions(Collection<Object> options) {
+    this.options = options.toArray(new Object[options.size()]);
     sendUpdate(OPTIONS_LABELS, options);
   }
 }

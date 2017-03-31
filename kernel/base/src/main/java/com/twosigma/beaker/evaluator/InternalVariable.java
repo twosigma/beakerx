@@ -25,7 +25,7 @@ public class InternalVariable {
   public static Message getParentHeader() {
     SimpleEvaluationObject simpleEvaluationObject = getSimpleEvaluationObject();
     if (simpleEvaluationObject != null && simpleEvaluationObject.getJupyterMessage() != null) {
-      return (Message)simpleEvaluationObject.getJupyterMessage();
+      return simpleEvaluationObject.getJupyterMessage();
     }
     return null;
   }

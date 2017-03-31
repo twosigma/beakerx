@@ -16,6 +16,7 @@
 package com.twosigma.beaker.jupyter;
 
 import com.twosigma.beaker.evaluator.InternalVariable;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.Handler;
@@ -37,7 +38,7 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
 
 public class Comm {
 
-  private static final Logger logger = LoggerFactory.getLogger(Kernel.class);
+  private static final Logger logger = LoggerFactory.getLogger(Comm.class);
 
   public static final String METHOD = "method";
   public static final String UPDATE = "update";
@@ -54,6 +55,7 @@ public class Comm {
   private HashMap<?, ?> data;
   private String targetModule;
   private KernelFunctionality kernel;
+  private SimpleEvaluationObject seo;
   private List<Handler<Message>> msgCallbackList = new ArrayList<>();
   private List<Handler<Message>> closeCallbackList = new ArrayList<>();
 
@@ -145,8 +147,8 @@ public class Comm {
   public void close() {
     Message parentMessage = getParentMessage();// can be null
 
-    if (this.getCloseCallbackList() != null && !this.getMsgCallbackList().isEmpty()) {
-      for (Handler<Message> handler : getMsgCallbackList()) {
+    if (this.getCloseCallbackList() != null && !this.getCloseCallbackList().isEmpty()) {
+      for (Handler<Message> handler : getCloseCallbackList()) {
         handler.handle(parentMessage);
       }
     }
@@ -191,6 +193,10 @@ public class Comm {
     return InternalVariable.getParentHeader();
   }
 
+  public SimpleEvaluationObject getLastUsedSimpleEvaluationObject() {
+    return seo;
+  }
+  
   public void handleMsg(Message parentMessage) {
     if (this.getMsgCallbackList() != null && !this.getMsgCallbackList().isEmpty()) {
       for (Handler<Message> handler : getMsgCallbackList()) {

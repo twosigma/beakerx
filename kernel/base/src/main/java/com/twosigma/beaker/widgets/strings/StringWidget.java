@@ -15,17 +15,13 @@
  */
 package com.twosigma.beaker.widgets.strings;
 
-import com.twosigma.beaker.widgets.DOMWidget;
-
 import java.io.Serializable;
 import java.util.HashMap;
 
-public abstract class StringWidget extends DOMWidget {
+import com.twosigma.beaker.widgets.ValueWidget;
 
-  private String value = "";
+public abstract class StringWidget extends ValueWidget<String> {
 
-  public StringWidget() {
-  }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
@@ -36,16 +32,8 @@ public abstract class StringWidget extends DOMWidget {
   }
 
   @Override
-  protected void updateValue(Object value) {
+  public void updateValue(Object value) {
     this.value = (String) value;
   }
 
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-    sendUpdate(VALUE, value);
-  }
 }

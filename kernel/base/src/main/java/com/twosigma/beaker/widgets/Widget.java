@@ -49,15 +49,13 @@ public abstract class Widget implements CommFunctionality {
   }
 
   public void init() {
-    if (comm == null) {
-      comm = new Comm(Utils.uuid(), CommNamesEnum.JUPYTER_WIDGET);
-      openComm(comm);
-    }
+    comm = new Comm(Utils.uuid(), CommNamesEnum.JUPYTER_WIDGET);
+    openComm();
   }
 
-  private void openComm(final Comm comm) {
+  private void openComm() {
     comm.setData(createContent());
-    addValueChangeMsgCallback(comm);
+    addValueChangeMsgCallback();
     comm.open();
   }
 
@@ -80,7 +78,7 @@ public abstract class Widget implements CommFunctionality {
     return result;
   }
 
-  protected void addValueChangeMsgCallback(final Comm comm) {
+  protected void addValueChangeMsgCallback() {
   }
 
   protected abstract HashMap<String, Serializable> content(HashMap<String, Serializable> content);
@@ -90,7 +88,7 @@ public abstract class Widget implements CommFunctionality {
     return this.comm;
   }
 
-  protected void sendUpdate(String propertyName, Object value) {
+  public void sendUpdate(String propertyName, Object value) {
     this.comm.sendUpdate(propertyName, value);
   }
 

@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.chart.serializer;
 
-import com.twosigma.beaker.chart.xychart.plotitem.Raster;
+import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -28,10 +28,10 @@ import java.nio.file.Files;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 
-public class RasterSerializer extends JsonSerializer<Raster> {
+public class RastersSerializer extends JsonSerializer<Rasters> {
   
   @Override
-  public void serialize(Raster raster, JsonGenerator jgen, SerializerProvider sp)
+  public void serialize(Rasters raster, JsonGenerator jgen, SerializerProvider sp)
     throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();

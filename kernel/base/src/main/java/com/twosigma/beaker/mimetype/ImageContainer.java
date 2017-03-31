@@ -22,12 +22,13 @@ import java.util.Base64;
 public class ImageContainer extends MIMEContainer {
 
   public static MIMEContainer Image(Object data) {
-    byte[] image = new byte[0];
+    byte[] image;
     if (data instanceof String) {
       try {
         image = getBytes(data);
       } catch (Exception e) {
         e.printStackTrace();
+        return addMimeType(TEXT_PLAIN,"");
       }
     } else {
       image = (byte[]) data;

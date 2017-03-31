@@ -37,7 +37,7 @@ import java.net.URL;
 public class SVGContainer extends MIMEContainer {
 
   public static MIMEContainer SVG(Object data) {
-    String code = "";
+    String code;
     try {
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       DocumentBuilder builder = factory.newDocumentBuilder();
@@ -51,6 +51,7 @@ public class SVGContainer extends MIMEContainer {
 
     } catch (SAXException | IOException | ParserConfigurationException | TransformerException e) {
       e.printStackTrace();
+      return addMimeType(TEXT_PLAIN,"");
     }
     return addMimeType(IMAGE_SVG, code);
   }

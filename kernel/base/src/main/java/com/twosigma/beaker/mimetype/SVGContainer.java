@@ -28,6 +28,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
@@ -35,7 +36,7 @@ import java.net.URL;
 
 public class SVGContainer extends MIMEContainer {
 
-  public static MIMEContainer SVG(String data) {
+  public static MIMEContainer SVG(Object data) {
     String code = "";
     try {
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -49,19 +50,24 @@ public class SVGContainer extends MIMEContainer {
       code = writer.getBuffer().toString().replaceAll("\n|\r", "");
 
     } catch (SAXException | IOException | ParserConfigurationException | TransformerException e) {
-      return addMimeType(TEXT_PLAIN, exceptionToString(e));
+      e.printStackTrace();
     }
     return addMimeType(IMAGE_SVG, code);
   }
 
-  private static Document validateData(String data, DocumentBuilder builder) throws SAXException, IOException {
+  private static Document validateData(Object data, DocumentBuilder builder) throws SAXException, IOException {
     Document doc;
-    if (isValidURL(data)) {
-      doc = builder.parse(new URL(data).openStream());
-    } else if (exists(data)) {
-      doc = builder.parse(data);
+    if(data instanceof String) {
+      String path = data.toString();
+      if (isValidURL(path)) {
+        doc = builder.parse(new URL(path).openStream());
+      } else if (exists(path)) {
+        doc = builder.parse(path);
+      } else {
+        throw new FileNotFoundException(path + " doesn't exist. ");
+      }
     } else {
-      doc = builder.parse(new ByteArrayInputStream(data.getBytes()));
+      doc = builder.parse(new ByteArrayInputStream((byte[])data));
     }
     return doc;
   }

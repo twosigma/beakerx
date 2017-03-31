@@ -61,3 +61,4 @@ python -m bkr2ipynb.py *.bkr
 
 The kernel is originally derived from https://github.com/lappsgrid-incubator/jupyter-groovy-kernel, but has been rewritten in Java and refactored and expanded.
 The Java support uses Adrian Witas' org.abstractmeta.toolbox.
+

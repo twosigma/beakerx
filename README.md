@@ -16,6 +16,8 @@
 
 # BeakerX: Beaker extensions for Jupyter
 
+JVM kernels with widgets, plotting, and tables.
+
 ## Dependencies
 
 * oracle Java8 JDK, gradle
@@ -23,6 +25,7 @@
 * conda
 
 ## Build and run
+[![Build Status](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/buildStatus/icon?job=Beaker master)](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/job/Beaker master)
 ```
 conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx

@@ -16,6 +16,8 @@
 
 # BeakerX: Beaker extensions for Jupyter
 
+JVM kernels with widgets, plotting, and tables.
+
 ## Dependencies
 
 * oracle Java8 JDK, gradle
@@ -23,6 +25,9 @@
 * conda
 
 ## Build and run
+
+[![Build Status](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/buildStatus/icon?job=Beaker%20master)](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/job/Beaker%20master)
+
 ```
 conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx
@@ -33,20 +38,18 @@ gradle --no-daemon environmentVariables # set PYTHONPATH as directed
 jupyter notebook
 ```
 
-## Update after java change
+## Update after Java change
 Ther kernels are installed to run out of the repo, so just a build should update the java code.
 * `gradle build`
 
-## update after JS change
+## Update after JS change
 
 * `cd beakerx/js; webpack`
 
-If webpack gives an error like
-
-> ERROR in jquery-ui (bower component) Module not found: Error: Cannot resolve 'file' or 'directory' ./ui/jquery-ui.js
-
-Then run `rm -rf bower_components && bower install`.
-
+## Beaker Notebooks Converter
+```
+python -m bkr2ipynb.py *.bkr
+```
 
 ## Groovy with Interactive Plotting and Table Saw:
 <img width="942" alt="screen shot 2016-12-20 at 11 35 17 am" src="https://cloud.githubusercontent.com/assets/963093/21402566/1680b928-c787-11e6-8acf-dc4fdeba0651.png">
@@ -56,5 +59,5 @@ Then run `rm -rf bower_components && bower install`.
 
 ## Attribution
 
-The kernel is originally derived from https://github.com/lappsgrid-incubator/jupyter-groovy-kernel, but has been rewritten in Java and refactored.
-The Java support uses Adrian Witas org.abstractmeta.toolbox.
+The kernel is originally derived from https://github.com/lappsgrid-incubator/jupyter-groovy-kernel, but has been rewritten in Java and refactored and expanded.
+The Java support uses Adrian Witas' org.abstractmeta.toolbox.

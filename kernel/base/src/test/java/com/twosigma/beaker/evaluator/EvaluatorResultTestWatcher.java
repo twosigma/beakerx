@@ -22,7 +22,7 @@ import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationSt
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.RUNNING;
 
 public class EvaluatorResultTestWatcher {
-  public static final int ATTEMPT = 20;
+  public static final int ATTEMPT = 40;
   public static final int SLEEP_IN_MILLIS = 500;
 
   public static void waitForResult(SimpleEvaluationObject seo) throws InterruptedException {

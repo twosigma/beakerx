@@ -30,7 +30,7 @@ import com.twosigma.jupyter.message.Message;
 /**
  * @author konst
  */
-public class CommKernelControlSetShellHandler extends CommBaseHandler<List<String>> {
+public class KernelControlSetShellHandler extends BaseHandler<List<String>> {
 
   public static final String IMPORTS = "imports";
   public static final String CLASSPATH = "classpath";
@@ -39,9 +39,9 @@ public class CommKernelControlSetShellHandler extends CommBaseHandler<List<Strin
   public static final String RESPONSE_OK = "OK";
   public static final String RESPONSE_ERROR = "ERROR";
 
-  private static final Logger logger = LoggerFactory.getLogger(CommKernelControlSetShellHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(KernelControlSetShellHandler.class);
 
-  public CommKernelControlSetShellHandler(KernelFunctionality kernel) {
+  public KernelControlSetShellHandler(KernelFunctionality kernel) {
     super(kernel);
   }
   
@@ -51,9 +51,11 @@ public class CommKernelControlSetShellHandler extends CommBaseHandler<List<Strin
     Map<String, List<String>> shell = getData(message);
     if (shell != null) {
       boolean ok = handleData(shell);
-      HashMap<String, String> data = new HashMap<>();
-      data.put(KERNEL_CONTROL_RESPONSE, ok ? RESPONSE_OK : RESPONSE_ERROR);
-      publish(createReplyMessage(message, data));
+      if(ok){
+        HashMap<String, String> data = new HashMap<>();
+        data.put(KERNEL_CONTROL_RESPONSE, ok ? RESPONSE_OK : RESPONSE_ERROR);
+        publish(createReplyMessage(message, data));
+      }
     }
   }
 

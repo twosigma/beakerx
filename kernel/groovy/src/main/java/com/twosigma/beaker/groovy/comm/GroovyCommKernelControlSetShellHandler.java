@@ -18,9 +18,9 @@ package com.twosigma.beaker.groovy.comm;
 import com.twosigma.jupyter.KernelFunctionality;
 
 import com.twosigma.beaker.groovy.GroovyDefaultVariables;
-import com.twosigma.beaker.jupyter.comm.CommKernelControlGetDefaultShellHandler;
+import com.twosigma.beaker.jupyter.comm.KernelControlGetDefaultShellHandler;
 
-public class GroovyCommKernelControlSetShellHandler extends CommKernelControlGetDefaultShellHandler{
+public class GroovyCommKernelControlSetShellHandler extends KernelControlGetDefaultShellHandler{
 
   protected GroovyDefaultVariables var = new GroovyDefaultVariables();
   

@@ -30,14 +30,14 @@ import java.util.Map;
 
 public class CommKernelControlSetShellHandlerTest {
 
-  private CommKernelControlSetShellHandler commHandler;
+  private KernelControlSetShellHandler commHandler;
   private KernelTest kernel;
   private Message message;
 
   @Before
   public void setUp() {
     kernel = new KernelTest();
-    commHandler = new CommKernelControlSetShellHandler(kernel);
+    commHandler = new KernelControlSetShellHandler(kernel);
     message = new Message();
   }
 
@@ -77,8 +77,8 @@ public class CommKernelControlSetShellHandlerTest {
     Map<String, List<String>> data = new HashMap<>();
     List<String> imports = new ArrayList<>();
     imports.add("com.twosigma.beaker.chart.Color");
-    data.put(CommKernelControlSetShellHandler.IMPORTS, imports);
-    data.put(CommKernelControlSetShellHandler.CLASSPATH, new ArrayList<>());
+    data.put(KernelControlSetShellHandler.IMPORTS, imports);
+    data.put(KernelControlSetShellHandler.CLASSPATH, new ArrayList<>());
 
     Map<String, Serializable> content = new HashMap<>();
     content.put("comm_id", "commIdValue");

@@ -15,8 +15,8 @@
  */
 package com.twosigma.beaker.jupyter.comm;
 
-import static com.twosigma.beaker.jupyter.comm.CommKernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beaker.jupyter.comm.CommKernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -30,14 +30,14 @@ import com.twosigma.jupyter.message.Message;
 /**
  * @author konst
  */
-public abstract class CommKernelControlGetDefaultShellHandler extends CommBaseHandler<Boolean>{
+public abstract class KernelControlGetDefaultShellHandler extends BaseHandler<Boolean>{
 
   public static final String GET_DEFAULT_SHELL = "get_default_shell";
   public static final String KERNEL_CONTROL_RESPONSE = "kernel_control_response";
 
-  private static final Logger logger = LoggerFactory.getLogger(CommKernelControlGetDefaultShellHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(KernelControlGetDefaultShellHandler.class);
 
-  public CommKernelControlGetDefaultShellHandler(KernelFunctionality kernel) {
+  public KernelControlGetDefaultShellHandler(KernelFunctionality kernel) {
     super(kernel);
   }
   

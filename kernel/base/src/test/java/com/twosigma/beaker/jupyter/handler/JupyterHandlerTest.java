@@ -18,8 +18,8 @@ package com.twosigma.beaker.jupyter.handler;
 
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.jupyter.comm.CommKernelControlGetDefaultShellHandler;
-import com.twosigma.beaker.jupyter.comm.CommKernelControlSetShellHandler;
+import com.twosigma.beaker.jupyter.comm.KernelControlGetDefaultShellHandler;
+import com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import org.assertj.core.api.Assertions;
@@ -256,8 +256,8 @@ public class JupyterHandlerTest {
     Message message = new Message();
     MessageTest.initMessage(message);
     //when
-    CommKernelControlGetDefaultShellHandler handler =
-        new CommKernelControlGetDefaultShellHandler(kernel) {
+    KernelControlGetDefaultShellHandler handler =
+        new KernelControlGetDefaultShellHandler(kernel) {
           @Override
           public String[] getDefaultImports() {
             return new String[0];
@@ -277,7 +277,7 @@ public class JupyterHandlerTest {
     Message message = new Message();
     MessageTest.initMessage(message);
     //when
-    CommKernelControlSetShellHandler handler = new CommKernelControlSetShellHandler(kernel);
+    KernelControlSetShellHandler handler = new KernelControlSetShellHandler(kernel);
     handler.handle(message);
   }
 }

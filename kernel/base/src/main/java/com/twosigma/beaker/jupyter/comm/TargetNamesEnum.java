@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.jupyter.comm;
 
-public enum CommNamesEnum {
+public enum TargetNamesEnum {
 
   BEAKER_AUTOTRANSLATION("beaker.autotranslation"),
   JUPYTER_WIDGET("jupyter.widget"),
@@ -24,7 +24,7 @@ public enum CommNamesEnum {
 
   private String targetName;
 
-  CommNamesEnum(String targetName){
+  TargetNamesEnum(String targetName){
     this.targetName = targetName;
   }
 
@@ -32,10 +32,10 @@ public enum CommNamesEnum {
     return targetName;
   }
   
-  public static synchronized CommNamesEnum getType(final String input){
-    CommNamesEnum ret = null;
+  public static synchronized TargetNamesEnum getType(final String input){
+    TargetNamesEnum ret = null;
     if(input != null){
-      for (CommNamesEnum item : CommNamesEnum.values()) {
+      for (TargetNamesEnum item : TargetNamesEnum.values()) {
         if(item.getTargetName().equalsIgnoreCase(input.trim().toLowerCase())){
           ret = item;
           break;

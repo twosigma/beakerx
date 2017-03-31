@@ -16,7 +16,7 @@
 package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.jupyter.comm.CommNamesEnum;
+import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
 import com.twosigma.beaker.jupyter.Utils;
 
 import java.io.Serializable;
@@ -49,7 +49,7 @@ public abstract class Widget implements CommFunctionality {
   }
 
   public void init() {
-    comm = new Comm(Utils.uuid(), CommNamesEnum.JUPYTER_WIDGET);
+    comm = new Comm(Utils.uuid(), TargetNamesEnum.JUPYTER_WIDGET);
     openComm();
   }
 

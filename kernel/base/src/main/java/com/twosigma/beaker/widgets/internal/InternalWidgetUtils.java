@@ -16,7 +16,7 @@
 package com.twosigma.beaker.widgets.internal;
 
 import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.jupyter.comm.CommNamesEnum;
+import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
 import com.twosigma.beaker.jupyter.Utils;
 
 import java.io.Serializable;
@@ -34,7 +34,7 @@ public class InternalWidgetUtils {
   public static final String VIEW_MODULE_VALUE = "beakerx";
 
   public static Comm createComm(final InternalWidget widget, final InternalWidgetContent content) {
-    Comm comm = new Comm(Utils.uuid(), CommNamesEnum.JUPYTER_WIDGET);
+    Comm comm = new Comm(Utils.uuid(), TargetNamesEnum.JUPYTER_WIDGET);
     comm.setData(createContent(widget, content));
     comm.open();
     return comm;

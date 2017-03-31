@@ -15,11 +15,11 @@
  */
 package com.twosigma.beaker.scala.comm;
 
-import com.twosigma.beaker.jupyter.comm.CommKernelControlGetDefaultShellHandler;
+import com.twosigma.beaker.jupyter.comm.KernelControlGetDefaultShellHandler;
 import com.twosigma.beaker.scala.ScalaDefaultVariables;
 import com.twosigma.jupyter.KernelFunctionality;
 
-public class ScalaCommKernelControlSetShellHandler extends CommKernelControlGetDefaultShellHandler{
+public class ScalaCommKernelControlSetShellHandler extends KernelControlGetDefaultShellHandler{
 
   protected ScalaDefaultVariables var = new ScalaDefaultVariables();
   

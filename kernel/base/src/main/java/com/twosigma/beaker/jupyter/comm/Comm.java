@@ -68,11 +68,11 @@ public class Comm {
     this.data = new HashMap<>();
   }
 
-  public Comm(String commId, CommNamesEnum targetName) {
+  public Comm(String commId, TargetNamesEnum targetName) {
     this(commId, targetName.getTargetName());
   }
 
-  public Comm(CommNamesEnum targetName) {
+  public Comm(TargetNamesEnum targetName) {
     this(Utils.uuid(), targetName.getTargetName());
   }
 

@@ -15,35 +15,29 @@
  */
 package com.twosigma.beaker.jupyter.comm;
 
-import com.twosigma.jupyter.Kernel;
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
+import java.io.Serializable;
+import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
-import static com.twosigma.beaker.jupyter.comm.Comm.DATA;
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;
+import com.twosigma.jupyter.Kernel;
+import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.message.Message;
 
 /**
  * @author konst
  */
-public class CommKernelControlInterrupt extends CommBaseHandler<Boolean> {
+public class KernelControlInterrupt extends BaseHandler<Boolean> {
 
   public static final String KERNEL_INTERRUPT = "kernel_interrupt";
   public static final String KERNEL_CONTROL_RESPONSE = "kernel_control_response";
   public static final String TRUE = "true";
   public static final String FALSE = "false";
 
-  private static final Logger logger = LoggerFactory.getLogger(CommKernelControlInterrupt.class);
+  private static final Logger logger = LoggerFactory.getLogger(KernelControlInterrupt.class);
 
-  public CommKernelControlInterrupt(KernelFunctionality kernel) {
+  public KernelControlInterrupt(KernelFunctionality kernel) {
     super(kernel);
   }
   

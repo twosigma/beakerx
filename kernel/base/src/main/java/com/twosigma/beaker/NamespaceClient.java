@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.jupyter.comm.CommNamesEnum;
+import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
@@ -120,7 +120,7 @@ public class NamespaceClient {
 
   protected Comm getAutotranslationComm() {
     if(autotranslationComm == null){
-      autotranslationComm = new Comm(CommNamesEnum.BEAKER_AUTOTRANSLATION);
+      autotranslationComm = new Comm(TargetNamesEnum.BEAKER_AUTOTRANSLATION);
       autotranslationComm.open();
     }
     return autotranslationComm;

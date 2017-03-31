@@ -17,7 +17,7 @@ package com.twosigma.jupyter;
 
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.evaluator.EvaluatorManager;
-import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;

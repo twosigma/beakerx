@@ -16,8 +16,8 @@
 
 package com.twosigma.beaker.jupyter.handler;
 
-import static com.twosigma.beaker.jupyter.Comm.COMMS;
-import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
+import static com.twosigma.beaker.jupyter.comm.Comm.COMMS;
+import static com.twosigma.beaker.jupyter.comm.Comm.TARGET_NAME;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_INFO_REPLY;
 
 import java.io.Serializable;
@@ -30,7 +30,7 @@ import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.comm.Comm;
 
 /**
  * @author konst

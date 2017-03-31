@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.jupyter;
+package com.twosigma.beaker.jupyter.comm;
 
 import com.twosigma.beaker.KernelTest;
 import org.assertj.core.api.Assertions;
@@ -26,18 +26,18 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.CommKernelControlGetDefaultShellHandler.KERNEL_CONTROL_RESPONSE;
+import static com.twosigma.beaker.jupyter.comm.KernelControlGetDefaultShellHandler.KERNEL_CONTROL_RESPONSE;
 
 public class CommKernelControlGetDefaultShellHandlerTest {
 
-  private CommKernelControlGetDefaultShellHandler commHandler;
+  private KernelControlGetDefaultShellHandler commHandler;
   private KernelTest kernel;
   private Message message;
 
   @Before
   public void setUp() {
     kernel = new KernelTest();
-    commHandler = new CommKernelControlGetDefaultShellHandler(kernel) {
+    commHandler = new KernelControlGetDefaultShellHandler(kernel) {
       @Override
       public String[] getDefaultImports() {
         return new String[0];
@@ -110,8 +110,8 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     Message sendMessage = kernel.getPublishedMessages().get(0);
     Map<String, Serializable> response =
             (Map)((Map) sendMessage.getContent().get(Comm.DATA)).get(KERNEL_CONTROL_RESPONSE);
-    Assertions.assertThat(response.containsKey(CommKernelControlSetShellHandler.IMPORTS)).isTrue();
-    Assertions.assertThat(response.get(CommKernelControlSetShellHandler.IMPORTS)).isNotNull();
+    Assertions.assertThat(response.containsKey(KernelControlSetShellHandler.IMPORTS)).isTrue();
+    Assertions.assertThat(response.get(KernelControlSetShellHandler.IMPORTS)).isNotNull();
   }
 
   @Test
@@ -125,14 +125,14 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     Message sendMessage = kernel.getPublishedMessages().get(0);
     Map<String, Serializable> response =
             (Map)((Map) sendMessage.getContent().get(Comm.DATA)).get(KERNEL_CONTROL_RESPONSE);
-    Assertions.assertThat(response.containsKey(CommKernelControlSetShellHandler.CLASSPATH))
+    Assertions.assertThat(response.containsKey(KernelControlSetShellHandler.CLASSPATH))
             .isTrue();
   }
 
   public static void initMessageData(Message message) {
     Map<String, Serializable> content = new HashMap<>();
     Map<String, Serializable> data = new HashMap<>();
-    data.put(CommKernelControlGetDefaultShellHandler.GET_DEFAULT_SHELL, Boolean.TRUE);
+    data.put(KernelControlGetDefaultShellHandler.GET_DEFAULT_SHELL, Boolean.TRUE);
     content.put(Comm.DATA, (Serializable) data);
     content.put(Comm.COMM_ID, "commIdValue");
     message.setContent(content);

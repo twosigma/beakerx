@@ -34,6 +34,11 @@ public class EasyFormView extends Box {
   }
 
   @Override
+  public void updateValue(Object value) {
+
+  }
+
+  @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);

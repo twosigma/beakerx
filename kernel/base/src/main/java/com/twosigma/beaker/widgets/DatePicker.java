@@ -19,22 +19,20 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-public class DatePicker extends DOMWidget {
+public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
 
   public static final String VIEW_NAME_VALUE = "DatePickerView";
   public static final String MODEL_NAME_VALUE = "DatePickerModel";
 
-
-  private LinkedHashMap<String, String> value = new LinkedHashMap<>();
-
   public DatePicker() {
     super();
+    this.value = new LinkedHashMap();
     init();
   }
 
   @Override
-  protected void updateValue(Object value) {
-    this.value = (LinkedHashMap) value;
+  public void updateValue(Object value) {
+    this.value = (LinkedHashMap<String, String>) value;
   }
 
   @Override
@@ -46,8 +44,8 @@ public class DatePicker extends DOMWidget {
     return content;
   }
 
-  public String getValue() {
-    return value.toString();
+  public LinkedHashMap<String, String> getValue() {
+    return value;
   }
 
   public void setValue(String value) {

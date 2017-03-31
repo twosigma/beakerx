@@ -28,4 +28,9 @@ public class VBox extends Box{
     this.getLayout().setAlign_items("stretch");
     init();
   }
+
+  @Override
+  public void updateValue(Object value) {
+
+  }
 }

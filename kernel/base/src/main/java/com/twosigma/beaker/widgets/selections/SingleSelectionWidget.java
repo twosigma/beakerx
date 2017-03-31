@@ -20,8 +20,6 @@ import java.util.HashMap;
 
 public abstract class SingleSelectionWidget extends SelectionWidget {
 
-  private String value = "";
-
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
@@ -30,18 +28,8 @@ public abstract class SingleSelectionWidget extends SelectionWidget {
   }
 
   @Override
-  protected void updateValue(Object value) {
+  public void updateValue(Object value) {
     this.value = (String) value;
   }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-    sendUpdate(VALUE, value);
-  }
-
 
 }

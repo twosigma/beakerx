@@ -34,12 +34,6 @@ public abstract class SelectionWidget extends ValueWidget<String> {
     return content;
   }
 
-  @Override
-  public void updateValue(Object value) {
-    this.value = (String) value;
-  }
-
-
   public Object[] getOptions() {
     return options;
   }

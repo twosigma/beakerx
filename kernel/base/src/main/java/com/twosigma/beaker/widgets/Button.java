@@ -39,6 +39,11 @@ public class Button extends DOMWidget {
   }
 
   @Override
+  public void updateValue(Object value) {
+
+  }
+
+  @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(MODEL_NAME, MODEL_NAME_VALUE);

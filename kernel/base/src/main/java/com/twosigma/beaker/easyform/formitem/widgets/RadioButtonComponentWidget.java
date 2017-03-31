@@ -22,6 +22,7 @@ import com.twosigma.beaker.widgets.selections.RadioButtons;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class RadioButtonComponentWidget extends RadioButtonComponent implements CommFunctionality {
 
@@ -63,7 +64,7 @@ public class RadioButtonComponentWidget extends RadioButtonComponent implements 
 
   @Override
   public Collection<String> getValues() {
-    return Arrays.asList(this.widget.getOptions());
+    return Arrays.stream(this.widget.getOptions()).map(x -> (String) x).collect(Collectors.toList());
   }
 
 }

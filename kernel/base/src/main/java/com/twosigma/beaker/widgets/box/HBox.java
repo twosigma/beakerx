@@ -27,4 +27,9 @@ public class HBox extends Box{
     this.getLayout().setAlign_items("stretch");
     init();
   }
+
+  @Override
+  public void updateValue(Object value) {
+
+  }
 }

@@ -31,12 +31,8 @@ public abstract class MultipleSelectionWidget extends SelectionWidget{
   }
 
   @Override
-  protected void updateValue(Object value) {
+  public void updateValue(Object value) {
     this.value = ((ArrayList<String>) value).stream().toArray(String[]::new);
-  }
-
-  public String[] getValue() {
-    return value;
   }
 
   public void setValue(String[] value) {

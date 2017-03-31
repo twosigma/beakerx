@@ -50,7 +50,7 @@ public class SVGContainer extends MIMEContainer {
       code = writer.getBuffer().toString().replaceAll("\n|\r", "");
 
     } catch (SAXException | IOException | ParserConfigurationException | TransformerException e) {
-      return addMimeType(TEXT_PLAIN, exceptionToString(e));
+      e.printStackTrace();
     }
     return addMimeType(IMAGE_SVG, code);
   }

@@ -26,7 +26,7 @@ public class ImageContainer extends MIMEContainer {
     if (data instanceof String) {
       try {
         image = getBytes(data);
-      } catch (IOException e) {
+      } catch (Exception e) {
         return addMimeType(TEXT_PLAIN, exceptionToString(e));
       }
     } else {

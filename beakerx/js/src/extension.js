@@ -87,10 +87,10 @@ define([
   /**
    * In Python there is no any callback, only beakerx kernels response to this message.
    */
-  function getControllCommandList(callBack){
+  function getControllCommandList(callBack) {
     var kernel_control_target_name = "kernel.control.channel";
     var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
-    comm.on_msg(function(resp){
+    comm.on_msg(function(resp) {
       callBack(resp);
     });
     var data = {};
@@ -100,9 +100,9 @@ define([
   }
 
   function interrupt() {
-    getControllCommandList(function(resp){
-      if(undefined != resp.content.data){
-        if(_.contains(resp.content.data.kernel_control_response, "kernel_interrupt")){
+    getControllCommandList(function(resp) {
+      if (undefined != resp.content.data) {
+        if (_.contains(resp.content.data.kernel_control_response, "kernel_interrupt")) {
           console.log("beakerx kernel detected, kernel interrupt");
           interruptToKernel();
         }
@@ -110,6 +110,7 @@ define([
     });
   }
   
+
   function interruptToKernel() {
     var kernel = Jupyter.notebook.kernel;
     var kernel_control_target_name = "kernel.control.channel";
@@ -120,12 +121,13 @@ define([
     comm.close();
   }
   
+
   function setImportsAndClasspath() {
-    getControllCommandList(function(resp){
-      if(undefined != resp.content.data){
-        if(_.contains(resp.content.data.kernel_control_response, "get_default_shell") &&
+    getControllCommandList(function(resp) {
+      if (undefined != resp.content.data) {
+        if (_.contains(resp.content.data.kernel_control_response, "get_default_shell") &&
             _.contains(resp.content.data.kernel_control_response, "classpath") &&
-            _.contains(resp.content.data.kernel_control_response, "imports")){
+            _.contains(resp.content.data.kernel_control_response, "imports")) {
           console.log("beakerx kernel detected, setting imports and classpath");
           setImportsAndClasspathToKernel();
         }
@@ -133,23 +135,23 @@ define([
     });
   }
   
+
   function setImportsAndClasspathToKernel() {
     var kernel_control_target_name = "kernel.control.channel";
     var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
 
     var newNotebook = undefined == Jupyter.notebook.metadata.imports || undefined == Jupyter.notebook.metadata.classpath;
 
-    if(newNotebook){
-      comm.on_msg(function(resp){
-        if(undefined != resp.content.data.kernel_control_response){
-          if("OK" === resp.content.data.kernel_control_response){
-          }else if(undefined != resp.content.data.kernel_control_response.imports &&
-              undefined != resp.content.data.kernel_control_response.classpath){
+    if (newNotebook) {
+      comm.on_msg(function(resp) {
+        if (undefined != resp.content.data.kernel_control_response) {
+          if ("OK" === resp.content.data.kernel_control_response) {
+          } else if (undefined != resp.content.data.kernel_control_response.imports && undefined != resp.content.data.kernel_control_response.classpath) {
             Jupyter.notebook.metadata.imports = resp.content.data.kernel_control_response.imports;
             Jupyter.notebook.metadata.classpath = resp.content.data.kernel_control_response.classpath;
 
             var theData = {};
-            if(Jupyter.notebook && Jupyter.notebook.metadata){
+            if (Jupyter.notebook && Jupyter.notebook.metadata) {
               theData.imports = Jupyter.notebook.metadata.imports;
               theData.classpath = Jupyter.notebook.metadata.classpath;
             }
@@ -162,9 +164,9 @@ define([
       var data = {};
       data.get_default_shell = true;
       comm.send(data);
-    }else{
+    } else {
       var data = {};
-      if(Jupyter.notebook && Jupyter.notebook.metadata){
+      if (Jupyter.notebook && Jupyter.notebook.metadata) {
         data.imports = Jupyter.notebook.metadata.imports;
         data.classpath = Jupyter.notebook.metadata.classpath;
       }

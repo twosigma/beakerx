@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.twosigma.beaker.jvm.object.ConsoleOutput;
+import com.twosigma.beaker.jvm.object.OutputCell;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.jupyter.KernelFunctionality;
@@ -41,7 +42,6 @@ import org.slf4j.LoggerFactory;
 
 import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus;
-import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jupyter.SocketEnum;
 
 /**
@@ -82,7 +82,7 @@ public class MessageCreator {
     reply.getContent().put("metadata", new HashMap<>());
     return reply;
   }
-  
+
   public Message buildClearOutput(Message message, boolean wait) {
     Message reply = initMessage(CLEAR_OUTPUT, message);
     reply.setContent(new HashMap<String, Serializable>());
@@ -90,7 +90,7 @@ public class MessageCreator {
     reply.getContent().put("metadata", new HashMap<>());
     return reply;
   }
-  
+
   public Message buildDisplayData(Message message, MIMEContainer value) {
     Message reply = initMessage(DISPLAY_DATA, message);
     reply.setContent(new HashMap<String, Serializable>());
@@ -100,14 +100,25 @@ public class MessageCreator {
     reply.getContent().put("data", map3);
     return reply;
   }
-  
-  private Message buildReply(Message message, int executionCount, List<MessageHolder> ret) {
-    Message reply = createIdleMessage(message);
-    ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, reply));
+
+  private Message buildReply(Message message, SimpleEvaluationObject seo) {
     // Send the REPLY to the original message. This is NOT the result of
     // executing the cell. This is the equivalent of 'exit 0' or 'exit 1'
     // at the end of a shell script.
-    reply = initMessage(EXECUTE_REPLY, message);
+    Message reply = buildReplyWithoutStatus(message, seo.getExecutionCount());
+    if (EvaluationStatus.FINISHED == seo.getStatus()) {
+      reply.getMetadata().put("status", "ok");
+      reply.getContent().put("status", "ok");
+      reply.getContent().put("user_expressions", new HashMap<>());
+    } else if (EvaluationStatus.ERROR == seo.getStatus()) {
+      reply.getMetadata().put("status", "error");
+      reply.getContent().put("status", "error");
+    }
+    return reply;
+  }
+
+  private Message buildReplyWithoutStatus(Message message, int executionCount) {
+    Message reply = initMessage(EXECUTE_REPLY, message);
     Hashtable<String, Serializable> map6 = new Hashtable<String, Serializable>(3);
     map6.put("dependencies_met", true);
     map6.put("engine", kernel.getSessionId());
@@ -116,7 +127,6 @@ public class MessageCreator {
     Hashtable<String, Serializable> map7 = new Hashtable<String, Serializable>(1);
     map7.put("execution_count", executionCount);
     reply.setContent(map7);
-
     return reply;
   }
 
@@ -130,61 +140,76 @@ public class MessageCreator {
   }
 
   public synchronized void createMagicMessage(Message reply, int executionCount, Message message) {
-    List<MessageHolder> ret = new ArrayList<>();
     kernel.publish(reply);
-    kernel.publish(buildReply(message, executionCount, ret));
+    kernel.publish(buildReplyWithoutStatus(message, executionCount));
   }
 
   public synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo) {
-    logger.info("Creating message responce message from: " + seo);
+    logger.info("Creating message response message from: " + seo);
+    Message message = seo.getJupyterMessage();
     List<MessageHolder> ret = new ArrayList<>();
-    Message message = (Message) seo.getJupyterMessage();
-
-    if (seo.getConsoleOutput() != null && !seo.getConsoleOutput().isEmpty()) {
-      while (!seo.getConsoleOutput().isEmpty()) {
-        ConsoleOutput co = seo.getConsoleOutput().poll(); //FIFO : peek to see, poll -- removes the data
-        ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, buildOutputMessage(message, co.getText(), co.isError())));
-      }
-    } else if (EvaluationStatus.FINISHED == seo.getStatus() || EvaluationStatus.ERROR == seo.getStatus()) {
-
-      switch (seo.getStatus()) {
-        case FINISHED: {
-          // Publish the result of the execution.
-          MIMEContainer resultString = SerializeToString.doit(seo.getPayload());
-          ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, buildMessage(message, resultString.getMime(), resultString.getCode(), seo.getExecutionCount())));
-        }
-        break;
-        case ERROR: {
-          logger.info("Execution result ERROR: " + seo.getPayload().toString().split("\n")[0]);
-          Message reply = initMessage(STREAM, message);
-          Hashtable<String, Serializable> map4 = new Hashtable<String, Serializable>(2);
-          map4.put("name", "stderr");
-          map4.put("text", (String) seo.getPayload());
-          reply.setContent(map4);
-          ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, reply));
-        }
-        break;
-
-        default: {
-          logger.error("Unhandled status of SimpleEvaluationObject : " + seo.getStatus());
-        }
-        break;
-
-      }
-      Message reply = buildReply(message, seo.getExecutionCount(), ret);
-      if (EvaluationStatus.ERROR == seo.getStatus()) {
-        reply.getMetadata().put("status", "error");
-        reply.getContent().put("status", "error");
-        //reply.getContent().put("ename", error.getClass().getName());
-        //reply.getContent().put("evalue", error.text);
-      } else {
-        reply.getMetadata().put("status", "ok");
-        reply.getContent().put("status", "ok");
-        reply.getContent().put("user_expressions", new HashMap<>());
-      }
-      ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, reply));
+    if (isConsoleOutputMessage(seo)) {
+      ret.addAll(createConsoleResult(seo, message));
+    } else if (isSupportedStatus(seo.getStatus())) {
+      ret.addAll(createResultForSupportedStatus(seo, message));
+    } else {
+      logger.error("Unhandled status of SimpleEvaluationObject : " + seo.getStatus());
     }
     return ret;
+  }
+
+  private List<MessageHolder> createResultForSupportedStatus(SimpleEvaluationObject seo, Message message) {
+    List<MessageHolder> ret = new ArrayList<>();
+    if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
+      ret.add(createFinishResult(seo, message));
+    } else if (EvaluationStatus.ERROR == seo.getStatus()) {
+      ret.add(createErrorResult(seo, message));
+    }
+    ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, createIdleMessage(message)));
+    ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
+    return ret;
+  }
+
+  private boolean showResult(SimpleEvaluationObject seo) {
+    return !OutputCell.HIDDEN.equals(seo.getPayload());
+  }
+
+  private boolean isSupportedStatus(EvaluationStatus status) {
+    return EvaluationStatus.FINISHED == status || EvaluationStatus.ERROR == status;
+  }
+
+  private boolean isConsoleOutputMessage(SimpleEvaluationObject seo) {
+    return seo.getConsoleOutput() != null && !seo.getConsoleOutput().isEmpty();
+  }
+
+  private List<MessageHolder> createConsoleResult(SimpleEvaluationObject seo, Message message) {
+    List<MessageHolder> result = new ArrayList<>();
+    while (!seo.getConsoleOutput().isEmpty()) {
+      ConsoleOutput co = seo.getConsoleOutput().poll(); //FIFO : peek to see, poll -- removes the data
+      result.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, buildOutputMessage(message, co.getText(), co.isError())));
+    }
+    return result;
+  }
+
+  private MessageHolder createErrorResult(SimpleEvaluationObject seo, Message message) {
+    logger.info("Execution result ERROR: " + seo.getPayload().toString().split("\n")[0]);
+    Message reply = initMessage(STREAM, message);
+    Hashtable<String, Serializable> map4 = new Hashtable<String, Serializable>(2);
+    map4.put("name", "stderr");
+    map4.put("text", (String) seo.getPayload());
+    reply.setContent(map4);
+    return new MessageHolder(SocketEnum.IOPUB_SOCKET, reply);
+  }
+
+  private MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
+    MIMEContainer resultString = SerializeToString.doit(seo.getPayload());
+    return new MessageHolder(
+            SocketEnum.IOPUB_SOCKET,
+            buildMessage(
+                    message,
+                    resultString.getMime(),
+                    resultString.getCode(),
+                    seo.getExecutionCount()));
   }
 
   public Message createBusyMessage(Message parentMessage) {

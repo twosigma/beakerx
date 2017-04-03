@@ -20,7 +20,7 @@ import com.twosigma.beaker.chart.AbstractChart;
 import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
-import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.chart.InternalPlot;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetContent;

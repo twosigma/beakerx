@@ -27,8 +27,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
-import static com.twosigma.beaker.jupyter.Comm.DATA;
+import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
+import static com.twosigma.beaker.jupyter.comm.Comm.DATA;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 
 /** @author konst */

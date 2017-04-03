@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.widgets;
 
-import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.comm.Comm;
 
 public interface CommFunctionality {
 

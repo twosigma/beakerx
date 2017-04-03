@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import com.twosigma.jupyter.message.Message;
 
-import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
+import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_MSG;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getContent;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyDisplayMsg;

@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.jupyter.handler;
 
-import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
+import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
 
 public class CommMsgHandler extends KernelHandler<Message> {
 

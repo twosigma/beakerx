@@ -19,7 +19,7 @@ package com.twosigma.beaker.chart.categoryplot;
 import com.twosigma.beaker.chart.AbstractChart;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
-import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.chart.InternalPlot;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetContent;

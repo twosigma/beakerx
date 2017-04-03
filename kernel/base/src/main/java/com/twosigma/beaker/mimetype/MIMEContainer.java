@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.net.URL;
 
 public class MIMEContainer {
@@ -136,12 +137,14 @@ public class MIMEContainer {
   }
 
   protected static byte[] getBytes(Object data) throws IOException {
-    byte[] bytes = new byte[0];
+    byte[] bytes;
     if (isValidURL(data.toString())) {
       bytes = ByteStreams.toByteArray((new URL(data.toString()).openStream()));
     } else if (exists(data.toString())) {
       File imgFile = new File(data.toString());
       bytes = Files.toByteArray(imgFile);
+    } else {
+      throw new FileNotFoundException(data.toString() + " doesn't exist. ");
     }
     return bytes;
   }

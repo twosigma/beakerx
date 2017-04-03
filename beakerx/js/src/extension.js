@@ -64,19 +64,11 @@ define([
           window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
-      sendNotebookMetadataToKernel();
+    setImportsAndClasspath();
   });
 
   Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
-    if(!Jupyter.notebook.metadata.kernelspec.language.toUpperCase().includes('PYTHON')){
-      var kernel = Jupyter.notebook.kernel;
-      var kernel_control_target_name = "kernel.control.channel";
-      var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
-      var data = {};
-      data.kernel_interrupt = true;
-      comm.send(data);
-      comm.close();
-    }
+    interrupt();
   });
 
 
@@ -92,47 +84,94 @@ define([
   //   document.getElementsByTagName("head")[0].appendChild(link);
   // }
 
-  function sendNotebookMetadataToKernel() {
+  /**
+   * In Python there is no any callback, only beakerx kernels response to this message.
+   */
+  function getControllCommandList(callBack) {
+    var kernel_control_target_name = "kernel.control.channel";
+    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
+    comm.on_msg(function(resp) {
+      callBack(resp);
+    });
+    var data = {};
+    data.get_kernel_control_command_list = true;
+    comm.send(data);
+    comm.close();
+  }
 
-    if(!Jupyter.notebook.metadata.kernelspec.language.toUpperCase().includes('PYTHON')){
-
-      var kernel_control_target_name = "kernel.control.channel";
-      var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
-
-      var newNotebook = undefined == Jupyter.notebook.metadata.imports || undefined == Jupyter.notebook.metadata.classpath;
-
-      if(newNotebook){
-        comm.on_msg(function(resp){
-          if(undefined != resp.content.data.kernel_control_response){
-            if("OK" === resp.content.data.kernel_control_response){
-            }else if(undefined != resp.content.data.kernel_control_response.imports &&
-                undefined != resp.content.data.kernel_control_response.classpath){
-              Jupyter.notebook.metadata.imports = resp.content.data.kernel_control_response.imports;
-              Jupyter.notebook.metadata.classpath = resp.content.data.kernel_control_response.classpath;
-
-              var theData = {};
-              if(Jupyter.notebook && Jupyter.notebook.metadata){
-                theData.imports = Jupyter.notebook.metadata.imports;
-                theData.classpath = Jupyter.notebook.metadata.classpath;
-              }
-              comm.send(theData);
-              comm.close();
-            }
-          }
-        });
-
-        var data = {};
-        data.get_default_shell = true;
-        comm.send(data);
-      }else{
-        var data = {};
-        if(Jupyter.notebook && Jupyter.notebook.metadata){
-          data.imports = Jupyter.notebook.metadata.imports;
-          data.classpath = Jupyter.notebook.metadata.classpath;
+  function interrupt() {
+    getControllCommandList(function(resp) {
+      if (undefined != resp.content.data) {
+        if (_.contains(resp.content.data.kernel_control_response, "kernel_interrupt")) {
+          console.log("beakerx kernel detected, kernel interrupt");
+          interruptToKernel();
         }
-        comm.send(data);
-        comm.close();
       }
+    });
+  }
+  
+
+  function interruptToKernel() {
+    var kernel = Jupyter.notebook.kernel;
+    var kernel_control_target_name = "kernel.control.channel";
+    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
+    var data = {};
+    data.kernel_interrupt = true;
+    comm.send(data);
+    comm.close();
+  }
+  
+
+  function setImportsAndClasspath() {
+    getControllCommandList(function(resp) {
+      if (undefined != resp.content.data) {
+        if (_.contains(resp.content.data.kernel_control_response, "get_default_shell") &&
+            _.contains(resp.content.data.kernel_control_response, "classpath") &&
+            _.contains(resp.content.data.kernel_control_response, "imports")) {
+          console.log("beakerx kernel detected, setting imports and classpath");
+          setImportsAndClasspathToKernel();
+        }
+      }
+    });
+  }
+  
+
+  function setImportsAndClasspathToKernel() {
+    var kernel_control_target_name = "kernel.control.channel";
+    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
+
+    var newNotebook = undefined == Jupyter.notebook.metadata.imports || undefined == Jupyter.notebook.metadata.classpath;
+
+    if (newNotebook) {
+      comm.on_msg(function(resp) {
+        if (undefined != resp.content.data.kernel_control_response) {
+          if ("OK" === resp.content.data.kernel_control_response) {
+          } else if (undefined != resp.content.data.kernel_control_response.imports && undefined != resp.content.data.kernel_control_response.classpath) {
+            Jupyter.notebook.metadata.imports = resp.content.data.kernel_control_response.imports;
+            Jupyter.notebook.metadata.classpath = resp.content.data.kernel_control_response.classpath;
+
+            var theData = {};
+            if (Jupyter.notebook && Jupyter.notebook.metadata) {
+              theData.imports = Jupyter.notebook.metadata.imports;
+              theData.classpath = Jupyter.notebook.metadata.classpath;
+            }
+            comm.send(theData);
+            comm.close();
+          }
+        }
+      });
+
+      var data = {};
+      data.get_default_shell = true;
+      comm.send(data);
+    } else {
+      var data = {};
+      if (Jupyter.notebook && Jupyter.notebook.metadata) {
+        data.imports = Jupyter.notebook.metadata.imports;
+        data.classpath = Jupyter.notebook.metadata.classpath;
+      }
+      comm.send(data);
+      comm.close();
     }
   }
 

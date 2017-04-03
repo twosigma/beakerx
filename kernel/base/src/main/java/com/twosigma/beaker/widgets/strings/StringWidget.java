@@ -35,5 +35,4 @@ public abstract class StringWidget extends ValueWidget<String> {
   public void updateValue(Object value) {
     this.value = (String) value;
   }
-
 }

@@ -45,9 +45,29 @@ public class TestWidgetUtils {
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
 
+  public static void verifyOpenCommMsgWitoutLayout(Message message, String modelNameValue, String viewNameValue) {
+    verifyTypeMsg(message,COMM_OPEN);
+    Map data = getData(message);
+    assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
+    assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
+  }
+
   public static void verifyInternalOpenCommMsg(Message message, String modelNameValue, String viewNameValue) {
     verifyTypeMsg(message,COMM_OPEN);
     Map data = getData(message);
+    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(InternalWidgetUtils.MODEL_MODULE_VALUE);
+    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(InternalWidgetUtils.VIEW_MODULE_VALUE);
+    assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
+    assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
+  }
+
+  public static void verifyInternalOpenCommMsgWitLayout(List<Message> messages, String modelNameValue, String viewNameValue) {
+    Message layout = messages.get(0);
+    Message widget = messages.get(1);
+
+    verifyTypeMsg(widget,COMM_OPEN);
+    Map data = getData(widget);
+    assertThat(data.get(Layout.LAYOUT)).isEqualTo(Layout.IPY_MODEL + layout.getContent().get(Comm.COMM_ID));
     assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(InternalWidgetUtils.MODEL_MODULE_VALUE);
     assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(InternalWidgetUtils.VIEW_MODULE_VALUE);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
@@ -68,15 +88,14 @@ public class TestWidgetUtils {
     return message.getContent();
   }
 
-
-  public static <T> void verifyMsgForProperty(KernelTest groovyKernel, String propertyName, T expected) {
-    Object actual = getValueForProperty(groovyKernel, propertyName, expected.getClass());
+  public static <T> void verifyMsgForProperty(KernelTest kernel, String propertyName, T expected) {
+    Object actual = getValueForProperty(kernel, propertyName, expected.getClass());
     assertThat(actual).isEqualTo(expected);
   }
 
-  public static <T> T getValueForProperty(KernelTest groovyKernel, String propertyName, Class<T> clazz) {
-    assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(1);
-    Message message = groovyKernel.getPublishedMessages().get(0);
+  public static <T> T getValueForProperty(KernelTest kernel, String propertyName, Class<T> clazz) {
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(1);
+    Message message = kernel.getPublishedMessages().get(0);
     return getValueForProperty(message, propertyName, clazz);
   }
 

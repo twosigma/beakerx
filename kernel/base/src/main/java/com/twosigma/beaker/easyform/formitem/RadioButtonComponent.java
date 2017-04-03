@@ -20,10 +20,9 @@ import com.twosigma.beaker.easyform.EasyFormComponent;
 
 import java.util.Collection;
 
-public class RadioButtonComponent extends EasyFormComponent {
+public abstract class RadioButtonComponent extends EasyFormComponent {
 
   private Boolean horizontal;
-  private Collection<String> values;
 
   public void setHorizontal(final Boolean horizontal) {
     this.horizontal = horizontal;
@@ -33,11 +32,7 @@ public class RadioButtonComponent extends EasyFormComponent {
     return horizontal;
   }
 
-  public void setValues(final Collection<String> values) {
-    this.values = values;
-  }
+  public abstract void setValues(final Collection<String> values);
 
-  public Collection<String> getValues() {
-    return values;
-  }
+  public abstract Collection<String> getValues();
 }

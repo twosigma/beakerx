@@ -18,6 +18,9 @@ package com.twosigma.beaker.widgets.internal;
 
 import com.twosigma.beaker.SerializeToString;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public class SerializeToJson extends SerializeToString {
 
   public static String toJson(Object result) {
@@ -42,6 +45,14 @@ public class SerializeToJson extends SerializeToString {
       }
     }
     return ret;
+  }
+
+  private static String exceptionToString(Exception e) {
+    StringWriter w = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(w);
+    e.printStackTrace(printWriter);
+    printWriter.flush();
+    return w.toString();
   }
 
 

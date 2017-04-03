@@ -18,7 +18,7 @@ package com.twosigma.beaker.widgets.selections;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class RadioButtons extends SelectionWidget {
+public class RadioButtons extends SingleSelectionWidget {
 
   public static String VIEW_NAME_VALUE = "RadioButtonsView";
   public static String MODEL_NAME_VALUE = "RadioButtonsModel";

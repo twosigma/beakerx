@@ -75,7 +75,7 @@ var EasyFormView = widgets.DOMWidgetView.extend({
     /**
      * Called when view is rendered.
      */
-    this.$el.addClass("jupyter-widgets widget-container widget-box");
+    this.$el.addClass("jupyter-widgets widget-container widget-vbox");
     this.$box = this.$el;
     this.children_views.update(this.model.get('children'));
     // this.update_overflow_x();

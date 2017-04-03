@@ -50,6 +50,7 @@ define([
   var base_url = utils.get_body_data('baseUrl');
   var config = new configmod.ConfigSection('notebook', {base_url: base_url});
   var comm;
+  var controlCommandList = undefined;
 
   config.loaded.then(function() {
     console.log('beaker extension loaded');
@@ -83,29 +84,36 @@ define([
   //   link.href = require.toUrl("nbextensions/beaker/"+name);
   //   document.getElementsByTagName("head")[0].appendChild(link);
   // }
-
+  
   /**
    * In Python there is no any callback, only beakerx kernels response to this message.
    */
   function getControlCommandList(callBack) {
-    var kernel_control_target_name = "kernel.control.channel";
-    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
-    comm.on_msg(function(resp) {
-      callBack(resp);
-    });
-    var data = {};
-    data.get_kernel_control_command_list = true;
-    comm.send(data);
-    comm.close();
+    if(controlCommandList == undefined){
+      var kernel_control_target_name = "kernel.control.channel";
+      var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
+      comm.on_msg(function(resp) {
+        if (undefined != resp.content.data && undefined != resp.content.data.kernel_control_response) {
+          controlCommandList = resp.content.data.kernel_control_response;
+          callBack(controlCommandList);
+        }else{
+          controlCommandList = [];
+        }
+      });
+      var data = {};
+      data.get_kernel_control_command_list = true;
+      comm.send(data);
+      comm.close();
+    }else{
+      callBack(controlCommandList);
+    }
   }
 
   function interrupt() {
-    getControlCommandList(function(resp) {
-      if (undefined != resp.content.data) {
-        if (_.contains(resp.content.data.kernel_control_response, "kernel_interrupt")) {
-          console.log("beakerx kernel detected, kernel interrupt");
-          interruptToKernel();
-        }
+    getControlCommandList(function(commandList) {
+      if (_.contains(commandList, "kernel_interrupt")) {
+        console.log("beakerx kernel detected, kernel interrupt");
+        interruptToKernel();
       }
     });
   }
@@ -123,15 +131,13 @@ define([
   
 
   function setImportsAndClasspath() {
-    getControlCommandList(function(resp) {
-      if (undefined != resp.content.data) {
-        if (_.contains(resp.content.data.kernel_control_response, "get_default_shell") &&
-            _.contains(resp.content.data.kernel_control_response, "classpath") &&
-            _.contains(resp.content.data.kernel_control_response, "imports")) {
-          console.log("beakerx kernel detected, setting imports and classpath");
-          setImportsAndClasspathToKernel();
+    getControlCommandList(function(commandList) {
+      if (_.contains(commandList, "get_default_shell") &&
+          _.contains(commandList, "classpath") &&
+          _.contains(commandList, "imports")) {
+        console.log("beakerx kernel detected, setting imports and classpath");
+        setImportsAndClasspathToKernel();
         }
-      }
     });
   }
   

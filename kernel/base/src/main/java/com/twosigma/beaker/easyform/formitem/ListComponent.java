@@ -17,7 +17,7 @@
 package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
-import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.comm.Comm;
 
 import java.util.Collection;
 

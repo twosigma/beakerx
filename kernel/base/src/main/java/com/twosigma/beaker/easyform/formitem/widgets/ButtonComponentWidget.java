@@ -16,7 +16,7 @@
 package com.twosigma.beaker.easyform.formitem.widgets;
 
 import com.twosigma.beaker.easyform.formitem.ButtonComponent;
-import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.Button;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;

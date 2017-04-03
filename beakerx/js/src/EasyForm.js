@@ -1,21 +1,25 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
 
-// console.log('widgets', widgets);
-
-var EasyFormScope = require('./easyForm/easyFormScope');
-var buttonWidget = require('./buttonWidget');
+var buttonWidget = require('./easyForm/buttonWidget');
 
 require('./easyForm/css/jupyter-easyform.css');
-
-// var EasyFormModel = widgets.DOMWidgetModel.extend({
-//   defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
-//     _model_name : 'EasyFormModel',
-//     _view_name : 'EasyFormView',
-//     _model_module : 'beakerx',
-//     _view_module : 'beakerx'
-//   })
-// });
 
 var EasyFormModel = widgets.DOMWidgetModel.extend({
   defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
@@ -78,21 +82,10 @@ var EasyFormView = widgets.DOMWidgetView.extend({
     this.$el.addClass("jupyter-widgets widget-container widget-vbox beaker-easyform-container");
     this.$box = this.$el;
     this.children_views.update(this.model.get('children'));
+    // todo: check overflow and box style
     // this.update_overflow_x();
     // this.update_overflow_y();
     // this.update_box_style();
-  },
-
-  initStandardForm: function (data) {
-    var currentScope = new EasyFormScope('wrap_'+this.id);
-    var tmpl = currentScope.buildTemplate();
-    var tmplElement = $(tmpl);
-
-    tmplElement.appendTo(this.$el);
-
-    currentScope.setModelData(data);
-    currentScope.setElement(tmplElement);
-    currentScope.init();
   }
 });
 

@@ -62,8 +62,9 @@ public class MIMEContainer {
     return addMimeType(TEXT_HTML, code);
   }
 
-  public static MIMEContainer Latex(Object code) {
-    return addMimeType(TEXT_LATEX, code);
+  public static MIMEContainer Latex(String code) {
+    code = StringUtils.strip(code, "$");
+    return addMimeType(TEXT_LATEX, "$" + code + "$");
   }
 
   public static MIMEContainer Text(Object code) {

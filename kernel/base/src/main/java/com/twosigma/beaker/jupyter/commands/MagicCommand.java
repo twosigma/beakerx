@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.twosigma.beaker.mimetype.MIMEContainer.HTML;
+import static com.twosigma.beaker.mimetype.MIMEContainer.Latex;
 
 /**
  * executes magic commands and sends message
@@ -63,6 +64,10 @@ public class MagicCommand {
       String result = executeBashCode(code.replace("%%bash", ""));
       messageCreator.createMagicMessage(messageCreator.buildOutputMessage(message, result, false), executionCount, message);
     });
+    commands.put("%%latex", (code, message, executionCount) -> {
+      code = code.replace("%%latex", "");
+      publishResults(Latex(code), message, executionCount);
+    });
     commands.put("%lsmagic", (code, message, executionCount) -> {
       String result = "Available magic commands:\n";
       result += commands.entrySet().stream()
@@ -76,6 +81,7 @@ public class MagicCommand {
   private void publishResults(MIMEContainer result, Message message, int executionCount) {
     messageCreator.createMagicMessage(messageCreator.buildMessage(message, result.getMime(),result.getCode(), executionCount), executionCount, message);
   }
+
   private String executeBashCode(String code) {
     String[] cmd = {"/bin/bash", "-c", code};
     ProcessBuilder pb = new ProcessBuilder(cmd);

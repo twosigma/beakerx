@@ -54,11 +54,6 @@ define([
     },
     newDeferred: function() {
       return jQuery.Deferred();
-    },
-    getValidNgModelString: function(str) {
-      if (str) {
-        return str.replace(/[\s\d`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
-      }
     }
   };
 

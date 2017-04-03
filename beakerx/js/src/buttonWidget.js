@@ -10,14 +10,14 @@ var ButtonModel = widgets.ButtonModel.extend({
 
 var ButtonView = widgets.ButtonView.extend({
   events: {
-    'click': function() {
+    'click': function(e) {
       var tagName = this.model.get('tag');
 
       if (tagName) {
         this.rerunByTag(tagName);
       }
 
-      this._handle_click();
+      this._handle_click(e);
     }
   },
   rerunByTag: function(tagName) {

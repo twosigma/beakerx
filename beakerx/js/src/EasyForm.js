@@ -6,7 +6,7 @@ var _ = require('underscore');
 var EasyFormScope = require('./easyForm/easyFormScope');
 var buttonWidget = require('./buttonWidget');
 
-require('./easyForm/css/bko-easyform.css');
+require('./easyForm/css/jupyter-easyform.css');
 
 // var EasyFormModel = widgets.DOMWidgetModel.extend({
 //   defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
@@ -75,7 +75,7 @@ var EasyFormView = widgets.DOMWidgetView.extend({
     /**
      * Called when view is rendered.
      */
-    this.$el.addClass("jupyter-widgets widget-container widget-vbox");
+    this.$el.addClass("jupyter-widgets widget-container widget-vbox beaker-easyform-container");
     this.$box = this.$el;
     this.children_views.update(this.model.get('children'));
     // this.update_overflow_x();

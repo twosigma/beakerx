@@ -20,6 +20,9 @@ import com.twosigma.beaker.widgets.Button;
 import com.twosigma.jupyter.message.Message;
 import org.junit.Test;
 
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,6 +43,46 @@ public class ButtonComponentWidgetTest extends EasyFormWidgetTest {
   private void verifyTag(Message message, String expectedTag) {
     String tag = getValueForProperty(message, Button.TAG, String.class);
     assertThat(tag).isEqualTo(expectedTag);
+  }
+
+  @Test
+  public void handleActionPerformed() throws Exception {
+    //given
+    final StringBuilder result = new StringBuilder();
+    ButtonComponentWidget widget = new ButtonComponentWidget();
+    widget.actionPerformed = value -> result.append("action done 1");
+    //when
+    widget.getComm().getMsgCallbackList().forEach(x -> x.handle(messageWithClickEvent()));
+    //then
+    assertThat(result.toString()).isEqualTo("action done 1");
+  }
+
+  private Message messageWithClickEvent() {
+    Message message = new Message();
+    LinkedHashMap<String, Serializable> content = new LinkedHashMap<>();
+    LinkedHashMap<Object, Object> eventContent = new LinkedHashMap<>();
+    LinkedHashMap<Object, Object> eventClick = new LinkedHashMap<>();
+    eventClick.put("event","click");
+    eventContent.put("content", eventClick);
+    content.put("data", eventContent);
+    message.setContent(content);
+    return message;
+  }
+
+  @Test
+  public void noHandleActionPerformed() throws Exception {
+    //given
+    final StringBuilder result = new StringBuilder().append("no action");
+    ButtonComponentWidget widget = new ButtonComponentWidget();
+    widget.actionPerformed = value -> result.append("action done 2");
+    //when
+    widget.getComm().getMsgCallbackList().forEach(x -> x.handle(messageWithoutClickEvent()));
+    //then
+    assertThat(result.toString()).isEqualTo("no action");
+  }
+
+  private Message messageWithoutClickEvent() {
+    return new Message();
   }
 
   @Override

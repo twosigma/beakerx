@@ -27,6 +27,7 @@ public class ButtonComponentWidget extends ButtonComponent implements CommFuncti
 
   public ButtonComponentWidget() {
     this.widget = new Button();
+    this.widget.registerOnClick(this::fireActionPerformed);
   }
 
   @Override

@@ -16,9 +16,12 @@
 package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
+import com.twosigma.jupyter.handler.Handler;
+import com.twosigma.jupyter.message.Message;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Button extends DOMWidget {
 
@@ -31,11 +34,14 @@ public class Button extends DOMWidget {
 
   private String tooltip;
   private String tag;
-  private String icon="";
+  private String icon = "";
+  private ActionPerformed actionPerformed = () -> {
+  };
 
   public Button() {
     super();
     init();
+    getComm().addMsgCallbackList((Handler<Message>) this::handleOnClick);
   }
 
   @Override
@@ -72,5 +78,28 @@ public class Button extends DOMWidget {
   public void setTag(String tag) {
     this.tag = tag;
     sendUpdate(TAG, tag);
+  }
+
+  public void registerOnClick(ActionPerformed actionPerformed) {
+    this.actionPerformed = actionPerformed;
+  }
+
+  public interface ActionPerformed {
+    void execute();
+  }
+
+  private void handleOnClick(Message message) {
+    if (message.getContent() != null) {
+      Serializable data = message.getContent().get("data");
+      if (data != null && data instanceof LinkedHashMap) {
+        Object contentObject = ((LinkedHashMap) data).get("content");
+        if (contentObject instanceof LinkedHashMap) {
+          Object event = ((LinkedHashMap) contentObject).get("event");
+          if (event.equals("click")) {
+            actionPerformed.execute();
+          }
+        }
+      }
+    }
   }
 }

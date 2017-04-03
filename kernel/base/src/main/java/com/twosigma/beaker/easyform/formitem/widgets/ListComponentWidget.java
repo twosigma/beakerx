@@ -18,11 +18,12 @@ package com.twosigma.beaker.easyform.formitem.widgets;
 import com.twosigma.beaker.easyform.formitem.ListComponent;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.DOMWidget;
 import com.twosigma.beaker.widgets.selections.SelectMultiple;
 
 import java.util.Collection;
 
-public class ListComponentWidget extends ListComponent implements CommFunctionality {
+public class ListComponentWidget extends ListComponent implements CommFunctionality, EasyFormWidget {
 
   private SelectMultiple widget;
 
@@ -63,5 +64,10 @@ public class ListComponentWidget extends ListComponent implements CommFunctional
 
   public void setValue(String[] value) {
     this.widget.setValue(value);
+  }
+
+  @Override
+  public DOMWidget getWidget() {
+    return widget;
   }
 }

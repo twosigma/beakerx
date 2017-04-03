@@ -18,9 +18,10 @@ package com.twosigma.beaker.easyform.formitem.widgets;
 import com.twosigma.beaker.easyform.formitem.DatePickerComponent;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.DOMWidget;
 import com.twosigma.beaker.widgets.DatePicker;
 
-public class DatePickerComponentWidget extends DatePickerComponent implements CommFunctionality {
+public class DatePickerComponentWidget extends DatePickerComponent implements CommFunctionality, EasyFormWidget {
 
   private DatePicker widget;
 
@@ -50,5 +51,10 @@ public class DatePickerComponentWidget extends DatePickerComponent implements Co
 
   @Override
   public void setValue(String value) {
+  }
+
+  @Override
+  public DOMWidget getWidget() {
+    return widget;
   }
 }

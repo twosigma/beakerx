@@ -18,14 +18,20 @@ package com.twosigma.beaker.easyform.formitem.widgets;
 import com.twosigma.beaker.easyform.formitem.TextField;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.DOMWidget;
 import com.twosigma.beaker.widgets.strings.Text;
 
-public class TextFieldWidget extends TextField implements CommFunctionality {
+public class TextFieldWidget extends TextField implements CommFunctionality, EasyFormWidget {
 
   private Text text;
 
   public TextFieldWidget() {
     this.text = new Text();
+  }
+
+  @Override
+  public DOMWidget getWidget() {
+    return text;
   }
 
   @Override

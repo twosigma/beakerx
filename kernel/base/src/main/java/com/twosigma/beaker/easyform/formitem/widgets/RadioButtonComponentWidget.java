@@ -18,13 +18,14 @@ package com.twosigma.beaker.easyform.formitem.widgets;
 import com.twosigma.beaker.easyform.formitem.RadioButtonComponent;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.DOMWidget;
 import com.twosigma.beaker.widgets.selections.RadioButtons;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class RadioButtonComponentWidget extends RadioButtonComponent implements CommFunctionality {
+public class RadioButtonComponentWidget extends RadioButtonComponent implements CommFunctionality, EasyFormWidget {
 
   private RadioButtons widget;
 
@@ -67,4 +68,8 @@ public class RadioButtonComponentWidget extends RadioButtonComponent implements 
     return Arrays.stream(this.widget.getOptions()).map(x -> (String) x).collect(Collectors.toList());
   }
 
+  @Override
+  public DOMWidget getWidget() {
+    return widget;
+  }
 }

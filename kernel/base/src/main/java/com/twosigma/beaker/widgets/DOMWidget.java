@@ -23,6 +23,8 @@ import java.util.Optional;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public abstract class DOMWidget extends Widget {
 
   public static final String DATA = "data";
@@ -30,6 +32,8 @@ public abstract class DOMWidget extends Widget {
 
   private Layout layout;
 
+  private UpdateValueCallback updateValueCallback = () -> {
+  };
 
   public DOMWidget() {
     super();
@@ -39,18 +43,18 @@ public abstract class DOMWidget extends Widget {
   @Override
   protected void addValueChangeMsgCallback() {
     getComm().addMsgCallbackList(new ValueChangeMsgCallbackHandler() {
-      
+
       @Override
-      public void updateValue(Object value, Message message){
-        DOMWidget.this.updateValue(value);
+      public void updateValue(Object value, Message message) {
+        DOMWidget.this.doUpdateValueWithCallback(value);
       }
-      
+
     });
 
   }
-  
-  public abstract class ValueChangeMsgCallbackHandler implements Handler<Message>{
-    
+
+  public abstract class ValueChangeMsgCallbackHandler implements Handler<Message> {
+
     @SuppressWarnings("unchecked")
     public Optional<Object> getSyncDataValue(Message msg){
       Optional<Object> ret = Optional.empty();
@@ -72,14 +76,22 @@ public abstract class DOMWidget extends Widget {
         updateValue(value.get(), message);
       }
     }
-    
+
     public abstract void updateValue(Object value, Message message);
-    
+
+  }
+
+  public void register(UpdateValueCallback updateValueCallback) {
+    this.updateValueCallback = checkNotNull(updateValueCallback);
   }
 
   public abstract void updateValue(Object value);
 
-  
+  public void doUpdateValueWithCallback(Object value){
+    updateValue(value);
+    this.updateValueCallback.execute();
+  }
+
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     content.put(Layout.LAYOUT, Layout.IPY_MODEL + layout.getComm().getCommId());

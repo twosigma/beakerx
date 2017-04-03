@@ -18,9 +18,10 @@ package com.twosigma.beaker.easyform.formitem.widgets;
 import com.twosigma.beaker.easyform.formitem.CheckBox;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.DOMWidget;
 import com.twosigma.beaker.widgets.bools.Checkbox;
 
-public class CheckBoxWidget extends CheckBox implements CommFunctionality {
+public class CheckBoxWidget extends CheckBox implements CommFunctionality, EasyFormWidget {
 
   private Checkbox widget;
 
@@ -53,4 +54,8 @@ public class CheckBoxWidget extends CheckBox implements CommFunctionality {
     this.widget.setValue(Boolean.valueOf(value));
   }
 
+  @Override
+  public DOMWidget getWidget() {
+    return widget;
+  }
 }

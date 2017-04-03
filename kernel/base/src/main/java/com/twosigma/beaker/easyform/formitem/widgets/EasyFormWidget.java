@@ -13,26 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.strings;
+package com.twosigma.beaker.easyform.formitem.widgets;
 
-import java.io.Serializable;
-import java.util.HashMap;
+import com.twosigma.beaker.widgets.DOMWidget;
+import com.twosigma.beaker.widgets.UpdateValueCallback;
 
-import com.twosigma.beaker.widgets.ValueWidget;
+public interface EasyFormWidget {
 
-public abstract class StringWidget extends ValueWidget<String> {
+  DOMWidget getWidget();
 
-
-  @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(VALUE, this.value);
-    content.put("placeholder", "");
-    return content;
-  }
-
-  @Override
-  public void updateValue(Object value) {
-    this.value = (String) value;
+  default void registerUpdateValueCallback(final UpdateValueCallback updateValueCallback){
+    getWidget().register(updateValueCallback);
   }
 }

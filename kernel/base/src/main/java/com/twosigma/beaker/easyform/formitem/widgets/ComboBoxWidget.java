@@ -18,11 +18,12 @@ package com.twosigma.beaker.easyform.formitem.widgets;
 import com.twosigma.beaker.easyform.formitem.ComboBox;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.DOMWidget;
 import com.twosigma.beaker.widgets.selections.Dropdown;
 
 import java.util.Collection;
 
-public class ComboBoxWidget extends ComboBox implements CommFunctionality {
+public class ComboBoxWidget extends ComboBox implements CommFunctionality, EasyFormWidget {
 
   private Dropdown widget;
 
@@ -65,5 +66,10 @@ public class ComboBoxWidget extends ComboBox implements CommFunctionality {
   @Override
   public String getValue() {
     return this.widget.getValue();
+  }
+
+  @Override
+  public DOMWidget getWidget() {
+    return widget;
   }
 }

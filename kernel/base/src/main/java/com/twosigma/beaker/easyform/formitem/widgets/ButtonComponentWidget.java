@@ -19,8 +19,9 @@ import com.twosigma.beaker.easyform.formitem.ButtonComponent;
 import com.twosigma.beaker.jupyter.Comm;
 import com.twosigma.beaker.widgets.Button;
 import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.DOMWidget;
 
-public class ButtonComponentWidget extends ButtonComponent implements CommFunctionality {
+public class ButtonComponentWidget extends ButtonComponent implements CommFunctionality, EasyFormWidget {
 
   private Button widget;
 
@@ -60,5 +61,10 @@ public class ButtonComponentWidget extends ButtonComponent implements CommFuncti
   @Override
   public String getTag() {
     return this.widget.getTag();
+  }
+
+  @Override
+  public DOMWidget getWidget() {
+    return widget;
   }
 }

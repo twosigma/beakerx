@@ -29,12 +29,24 @@ if len(sys.argv) == 1:
   parser.print_help()
 args = parser.parse_args()
 
+
+def setheader(level, title):
+  dash = ''
+  while level != 0:
+    dash += '#'
+    level -= 1
+  return '{0} {1}'.format(dash, title)
+
+
 def convertNotebook(notebook):
+  available_kernels = ['IPython', 'Groovy', 'Java', 'Scala']
   nb = new_notebook()
   with open(notebook) as data_file:
     data = json.load(data_file)
   evaluators = list((cell['evaluator']) for cell in data['cells'] if 'evaluator' in cell)
   kernel_name = max(evaluators, key=evaluators.count)
+  if kernel_name not in available_kernels:
+    kernel_name = 'IPython'
   if kernel_name == 'IPython':
     kernel_spec = {"kernelspec": {
       "display_name": "Python 2",
@@ -51,12 +63,18 @@ def convertNotebook(notebook):
   for cell in data['cells']:
     if cell['type'] == 'code':
       if cell['evaluator'] != kernel_name:
-        nb.cells.append(new_code_cell("%%" + cell['evaluator'] + "\n" + "\n".join(map(str, cell['input']['body']))))
-      nb.cells.append(new_code_cell("\n".join(map(str, cell['input']['body']))))
+        if cell['evaluator'] == 'TeX':
+          code = '\n'.join(map(str, cell['input']['body']))
+          nb.cells.append(new_code_cell(('%%latex\n${0}$').format(code.strip('$'))))
+        else:
+          nb.cells.append(
+            new_code_cell(('%%{0}\n{1}').format(cell['evaluator'].lower(), "\n".join(map(str, cell['input']['body'])))))
+      else:
+        nb.cells.append(new_code_cell("\n".join(map(str, cell['input']['body']))))
     if cell['type'] == 'markdown':
       nb.cells.append(new_markdown_cell("\n".join(map(str, cell['body']))))
     if cell['type'] == 'section':
-      nb.cells.append(new_markdown_cell('# ' + cell['title']))
+      nb.cells.append(new_markdown_cell(setheader(cell['level'], cell['title'])))
   nbformat.write(nb, notebook.partition('.')[0] + '.ipynb')
 
 for notebook in args.notebooks:

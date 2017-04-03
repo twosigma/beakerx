@@ -87,7 +87,7 @@ define([
   /**
    * In Python there is no any callback, only beakerx kernels response to this message.
    */
-  function getControllCommandList(callBack) {
+  function getControlCommandList(callBack) {
     var kernel_control_target_name = "kernel.control.channel";
     var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
     comm.on_msg(function(resp) {
@@ -100,7 +100,7 @@ define([
   }
 
   function interrupt() {
-    getControllCommandList(function(resp) {
+    getControlCommandList(function(resp) {
       if (undefined != resp.content.data) {
         if (_.contains(resp.content.data.kernel_control_response, "kernel_interrupt")) {
           console.log("beakerx kernel detected, kernel interrupt");
@@ -123,7 +123,7 @@ define([
   
 
   function setImportsAndClasspath() {
-    getControllCommandList(function(resp) {
+    getControlCommandList(function(resp) {
       if (undefined != resp.content.data) {
         if (_.contains(resp.content.data.kernel_control_response, "get_default_shell") &&
             _.contains(resp.content.data.kernel_control_response, "classpath") &&

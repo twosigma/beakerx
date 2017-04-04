@@ -48,7 +48,7 @@ Ther kernels are installed to run out of the repo, so just a build should update
 
 ## Beaker Notebooks Converter
 ```
-python -m bkr2ipynb.py *.bkr
+python -m bkr2ipynb *.bkr
 ```
 
 ## Groovy with Interactive Plotting and Table Saw:

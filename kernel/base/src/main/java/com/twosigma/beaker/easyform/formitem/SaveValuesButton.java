@@ -17,6 +17,7 @@
 package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
+import com.twosigma.beaker.widgets.DOMWidget;
 
 public class SaveValuesButton extends EasyFormComponent {
 
@@ -32,5 +33,30 @@ public class SaveValuesButton extends EasyFormComponent {
 
   public boolean isButton() {
     return true;
+  }
+
+  @Override
+  public DOMWidget getWidget() {
+    return null;
+  }
+
+  @Override
+  public String getLabel() {
+    throw new RuntimeException("Not implemented yet.");
+  }
+
+  @Override
+  public void setLabel(String label) {
+    throw new RuntimeException("Not implemented yet.");
+  }
+
+  @Override
+  public String getValue() {
+    throw new RuntimeException("Not implemented yet.");
+  }
+
+  @Override
+  public void setValue(String value) {
+    throw new RuntimeException("Not implemented yet.");
   }
 }

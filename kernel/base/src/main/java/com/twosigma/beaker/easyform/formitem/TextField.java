@@ -18,7 +18,7 @@ package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
 
-public class TextField extends EasyFormComponent {
+public abstract class TextField extends EasyFormComponent {
 
   private Integer width;
 

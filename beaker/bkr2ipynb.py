@@ -26,38 +26,62 @@ parser = argparse.ArgumentParser()
 parser.add_argument('notebooks', nargs='+',
                     help="beaker notebooks to be converted. Enter *.bkr in case you want to convert all notebooks at once.")
 if len(sys.argv) == 1:
-  parser.print_help()
+    parser.print_help()
 args = parser.parse_args()
 
+
+def setHeader(level, title):
+    dash = ''
+    while level != 0:
+        dash += '#'
+        level -= 1
+    return '{0} {1}'.format(dash, title)
+
+
 def convertNotebook(notebook):
-  nb = new_notebook()
-  with open(notebook) as data_file:
-    data = json.load(data_file)
-  evaluators = list((cell['evaluator']) for cell in data['cells'] if 'evaluator' in cell)
-  kernel_name = max(evaluators, key=evaluators.count)
-  if kernel_name == 'IPython':
-    kernel_spec = {"kernelspec": {
-      "display_name": "Python 2",
-      "language": "python",
-      "name": "python2"
-    }}
-  else:
-    kernel_spec = {"kernelspec": {
-      "display_name": kernel_name,
-      "language": kernel_name.lower(),
-      "name": kernel_name.lower()
-    }}
-  nb.metadata = kernel_spec
-  for cell in data['cells']:
-    if cell['type'] == 'code':
-      if cell['evaluator'] != kernel_name:
-        nb.cells.append(new_code_cell("%%" + cell['evaluator'] + "\n" + "\n".join(map(str, cell['input']['body']))))
-      nb.cells.append(new_code_cell("\n".join(map(str, cell['input']['body']))))
-    if cell['type'] == 'markdown':
-      nb.cells.append(new_markdown_cell("\n".join(map(str, cell['body']))))
-    if cell['type'] == 'section':
-      nb.cells.append(new_markdown_cell('# ' + cell['title']))
-  nbformat.write(nb, notebook.partition('.')[0] + '.ipynb')
+    nb = new_notebook()
+    with open(notebook) as data_file:
+        data = json.load(data_file)
+    evaluators = list((cell['evaluator']) for cell in data['cells'] if 'evaluator' in cell)
+    kernel_name = max(evaluators, key=evaluators.count)
+    if kernel_name in ['JavaScript', 'HTML', 'TeX']:
+        kernel_name = 'IPython'
+    if kernel_name == 'IPython':
+        kernel_spec = {"kernelspec": {
+            "display_name": "Python 2",
+            "language": "python",
+            "name": "python2"
+        }}
+    else:
+        kernel_spec = {"kernelspec": {
+            "display_name": kernel_name,
+            "language": kernel_name.lower(),
+            "name": kernel_name.lower()
+        }}
+    nb.metadata = kernel_spec
+    for cell in data['cells']:
+        if cell['type'] == 'code':
+            metadata = {}
+            if 'tags' in cell:
+                tags = [cell['tags']]
+                metadata = {"tags": tags}
+            if cell['evaluator'] != kernel_name:
+                if cell['evaluator'] == 'TeX':
+                    nb.cells.append(new_markdown_cell("${0}$".format("\n".join(map(str, cell['input']['body'])))))
+                else:
+                    nb.cells.append(
+                        new_code_cell(source='%%{0}\n{1}'.format(cell['evaluator'].lower(),
+                                                                 "\n".join(map(str, cell['input']['body']))),
+                                      metadata=metadata))
+            else:
+                nb.cells.append(new_code_cell(source="\n".join(map(str, cell['input']['body'])),
+                                              metadata=metadata))
+        if cell['type'] == 'markdown':
+            nb.cells.append(new_markdown_cell("\n".join(map(str, cell['body']))))
+        if cell['type'] == 'section':
+            nb.cells.append(new_markdown_cell(setHeader(cell['level'], cell['title'])))
+    nbformat.write(nb, notebook.partition('.')[0] + '.ipynb')
+
 
 for notebook in args.notebooks:
-  convertNotebook(notebook)
+    convertNotebook(notebook)

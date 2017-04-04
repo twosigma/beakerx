@@ -27,6 +27,10 @@ public abstract class Box extends DOMWidget {
 
   public static final String CHILDREN = "children";
   public static final String IPY_MODEL = "IPY_MODEL_";
+
+  public static final String VIEW_NAME_VALUE = "BoxView";
+  public static final String MODEL_NAME_VALUE = "BoxModel";
+
   List<CommFunctionality> children;
 
   public Box(List<CommFunctionality> children) {
@@ -36,6 +40,8 @@ public abstract class Box extends DOMWidget {
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
+    content.put(MODEL_NAME, MODEL_NAME_VALUE);
+    content.put(VIEW_NAME, VIEW_NAME_VALUE);
     List<String> commIds = children.stream().map(x -> IPY_MODEL +x.getComm().getCommId()).collect(Collectors.toList());
     content.put(CHILDREN, commIds.toArray());
     return content;

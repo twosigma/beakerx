@@ -16,12 +16,15 @@
 
 var version = require('./package.json').version;
 var BowerWebpackPlugin = require("bower-webpack-plugin");
+var WatchIgnorePlugin = require('watch-ignore-webpack-plugin');
+var path = require('path');
 
 // Custom webpack loaders are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
 var loaders = [
   { test: /\.json$/, loader: 'json-loader' },
   { test: /\.css$/, loader: "style-loader!css-loader" },
+  { test: /\.scss$/, loader: "style-loader!css-loader!sass-loader" },
   { test: /\.jpe?g$|\.gif$|\.png$|\.svg$|\.woff(\?.*)$|\.eot(\?.*)$|\.woff2(\?.*)$|\.ttf(\?.*)$|\.wav$|\.mp3$/, loader: "file-loader" }
 ];
 
@@ -77,7 +80,11 @@ module.exports = [
         includes:           /.*/,
         excludes:           [],
         searchResolveModulesDirectories: true
-      })
+      }),
+      new WatchIgnorePlugin([
+        path.resolve(__dirname, './node_modules/'),
+        path.resolve(__dirname, './bower_components/')
+      ])
     ],
     externals: ['jupyter-js-widgets']
   },

@@ -54,6 +54,7 @@ public class ScalaKernelInfoHandler extends KernelHandler<Message> {
     map1.put("nbconverter_exporter", "");
     map.put("language_info", map1);
     map.put("banner", "BeakerX kernel for Scala");
+    map.put("beakerx", true);
     map.put("help_links", new ArrayList<String>());
     reply.setContent(map);
     reply.setHeader(new Header(KERNEL_INFO_REPLY, message.getHeader().getSession()));

@@ -50,7 +50,8 @@ define([
   var base_url = utils.get_body_data('baseUrl');
   var config = new configmod.ConfigSection('notebook', {base_url: base_url});
   var comm;
-
+  var kernel_info = undefined;
+  
   config.loaded.then(function() {
     console.log('beaker extension loaded');
   });
@@ -83,29 +84,24 @@ define([
   //   link.href = require.toUrl("nbextensions/beaker/"+name);
   //   document.getElementsByTagName("head")[0].appendChild(link);
   // }
-
-  /**
-   * In Python there is no any callback, only beakerx kernels response to this message.
-   */
-  function getControllCommandList(callBack) {
-    var kernel_control_target_name = "kernel.control.channel";
-    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
-    comm.on_msg(function(resp) {
-      callBack(resp);
-    });
-    var data = {};
-    data.get_kernel_control_command_list = true;
-    comm.send(data);
-    comm.close();
+  
+  function getKernelInfo(callBack){
+    if (!kernel_info) {
+      Jupyter.notebook.kernel.kernel_info(function(result) {
+        kernel_info = result.content;
+        console.log("kernel_info received:");
+        console.log(kernel_info);
+        callBack(kernel_info);
+       });
+    } else {
+      callBack(kernel_info);
+    }
   }
 
   function interrupt() {
-    getControllCommandList(function(resp) {
-      if (undefined != resp.content.data) {
-        if (_.contains(resp.content.data.kernel_control_response, "kernel_interrupt")) {
-          console.log("beakerx kernel detected, kernel interrupt");
-          interruptToKernel();
-        }
+    getKernelInfo(function(info) {
+      if (info.beakerx) {
+        interruptToKernel();
       }
     });
   }
@@ -114,7 +110,8 @@ define([
   function interruptToKernel() {
     var kernel = Jupyter.notebook.kernel;
     var kernel_control_target_name = "kernel.control.channel";
-    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
+    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, 
+                                                             null, null, null, utils.uuid());
     var data = {};
     data.kernel_interrupt = true;
     comm.send(data);
@@ -123,14 +120,9 @@ define([
   
 
   function setImportsAndClasspath() {
-    getControllCommandList(function(resp) {
-      if (undefined != resp.content.data) {
-        if (_.contains(resp.content.data.kernel_control_response, "get_default_shell") &&
-            _.contains(resp.content.data.kernel_control_response, "classpath") &&
-            _.contains(resp.content.data.kernel_control_response, "imports")) {
-          console.log("beakerx kernel detected, setting imports and classpath");
-          setImportsAndClasspathToKernel();
-        }
+    getKernelInfo(function(info) {
+      if (info.beakerx) {
+        setImportsAndClasspathToKernel();
       }
     });
   }
@@ -138,15 +130,18 @@ define([
 
   function setImportsAndClasspathToKernel() {
     var kernel_control_target_name = "kernel.control.channel";
-    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
+    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, 
+                                                             null, null, null, utils.uuid());
 
-    var newNotebook = undefined == Jupyter.notebook.metadata.imports || undefined == Jupyter.notebook.metadata.classpath;
+    var newNotebook = undefined == Jupyter.notebook.metadata.imports || 
+      undefined == Jupyter.notebook.metadata.classpath;
 
     if (newNotebook) {
       comm.on_msg(function(resp) {
         if (undefined != resp.content.data.kernel_control_response) {
           if ("OK" === resp.content.data.kernel_control_response) {
-          } else if (undefined != resp.content.data.kernel_control_response.imports && undefined != resp.content.data.kernel_control_response.classpath) {
+          } else if (undefined != resp.content.data.kernel_control_response.imports && 
+                     undefined != resp.content.data.kernel_control_response.classpath) {
             Jupyter.notebook.metadata.imports = resp.content.data.kernel_control_response.imports;
             Jupyter.notebook.metadata.classpath = resp.content.data.kernel_control_response.classpath;
 

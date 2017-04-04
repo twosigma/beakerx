@@ -164,7 +164,7 @@ public class MessageCreatorTest {
     //then
     assertThat(messages).isNotEmpty();
     assertThat(messages.get(0).getSocketType()).isEqualTo(SocketEnum.IOPUB_SOCKET);
-    assertThat(messages.get(0).getMessage().type()).isEqualTo(JupyterMessages.STREAM);
+    assertThat(messages.get(0).getMessage().type()).isEqualTo(JupyterMessages.ERROR);
   }
 
   @Test

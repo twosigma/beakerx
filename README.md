@@ -16,7 +16,7 @@
 
 # BeakerX: Beaker extensions for Jupyter
 
-JVM kernels with widgets, plotting, and tables.
+JVM kernels with widgets, plotting, tables, and autotranslation.
 
 ## Dependencies
 

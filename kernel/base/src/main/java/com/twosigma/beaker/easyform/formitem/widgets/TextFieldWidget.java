@@ -59,4 +59,9 @@ public class TextFieldWidget extends TextField implements CommFunctionality, Eas
     return text.getComm();
   }
 
+  @Override
+  public TextField setWidth(Integer width) {
+    text.getLayout().setWidth(width);
+    return super.setWidth(width);
+  }
 }

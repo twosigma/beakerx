@@ -195,12 +195,14 @@ public class MessageCreator {
   private MessageHolder createErrorResult(SimpleEvaluationObject seo, Message message) {
     String[] errorMessage = seo.getPayload().toString().split("\n");
     errorMessage = clearText(errorMessage);
-    logger.info("Execution result ERROR: " + errorMessage[0]);
+    if(errorMessage != null && errorMessage.length > 0){
+      logger.info("Execution result ERROR: " + errorMessage[0]);
+    }
     Message reply = initMessage(ERROR, message);
     Hashtable<String, Serializable> map4 = new Hashtable<String, Serializable>(2);
     String ename = "";
     String evalue = "";
-    if(errorMessage[0] != null && !errorMessage[0].isEmpty()){
+    if(errorMessage != null && errorMessage[0] != null && !errorMessage[0].isEmpty()){
       String[] temp = errorMessage[0].split(":");
       if(temp != null){
         if(temp.length == 1){
@@ -227,6 +229,8 @@ public class MessageCreator {
         if(line != null){
           if(line.endsWith("\r")){
             ret.add( line.substring(0, line.length() - 1));
+          }else{
+            ret.add(line);
           }
         }
       }

@@ -27,12 +27,10 @@ var ButtonModel = widgets.ButtonModel.extend({
 var ButtonView = widgets.ButtonView.extend({
   events: {
     'click': function(e) {
-      var tagList = this.model.get('tags');
+      var tagName = this.model.get('tag');
 
-      if (tagList && tagList.length) {
-        tagList.forEach(function(tagName) {
-          this.runByTag(tagName);
-        });
+      if (tagName) {
+        this.runByTag(tagName);
       }
 
       this._handle_click(e);
@@ -42,7 +40,7 @@ var ButtonView = widgets.ButtonView.extend({
     var notebook = this.options.cell.notebook;
     var cells = notebook.get_cells();
     var indexList = cells.reduce(function(acc, cell, index) {
-      if (cell._metadata.tag === tagName) {
+      if (cell._metadata.tags && cell._metadata.tags.includes(tagName)) {
         acc.push(index);
       }
       return acc;

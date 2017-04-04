@@ -50,8 +50,8 @@ define([
   var base_url = utils.get_body_data('baseUrl');
   var config = new configmod.ConfigSection('notebook', {base_url: base_url});
   var comm;
-  var controlCommandList = undefined;
-
+  var beakerx = undefined;
+  
   config.loaded.then(function() {
     console.log('beaker extension loaded');
   });
@@ -85,33 +85,21 @@ define([
   //   document.getElementsByTagName("head")[0].appendChild(link);
   // }
   
-  /**
-   * In Python there is no any callback, only beakerx kernels response to this message.
-   */
-  function getControlCommandList(callBack) {
-    if(controlCommandList == undefined){
-      var kernel_control_target_name = "kernel.control.channel";
-      var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
-      comm.on_msg(function(resp) {
-        if (undefined != resp.content.data && undefined != resp.content.data.kernel_control_response) {
-          controlCommandList = resp.content.data.kernel_control_response;
-          callBack(controlCommandList);
-        }else{
-          controlCommandList = [];
-        }
-      });
-      var data = {};
-      data.get_kernel_control_command_list = true;
-      comm.send(data);
-      comm.close();
+  function getBeakerXBoolean(callBack){
+    if(beakerx == undefined){
+      Jupyter.notebook.kernel.kernel_info(function(result){
+        beakerx = result.content.beakerx != undefined && result.content.beakerx == true;
+        console.log("kernel_info request, beakerx = " + beakerx);
+        callBack(beakerx);
+       });
     }else{
-      callBack(controlCommandList);
+      callBack(beakerx);
     }
   }
 
   function interrupt() {
-    getControlCommandList(function(commandList) {
-      if (_.contains(commandList, "kernel_interrupt")) {
+    getBeakerXBoolean(function(isBeakerX) {
+      if(isBeakerX == true){
         console.log("beakerx kernel detected, kernel interrupt");
         interruptToKernel();
       }
@@ -131,13 +119,11 @@ define([
   
 
   function setImportsAndClasspath() {
-    getControlCommandList(function(commandList) {
-      if (_.contains(commandList, "get_default_shell") &&
-          _.contains(commandList, "classpath") &&
-          _.contains(commandList, "imports")) {
+    getBeakerXBoolean(function(isBeakerX) {
+      if(isBeakerX == true){
         console.log("beakerx kernel detected, setting imports and classpath");
         setImportsAndClasspathToKernel();
-        }
+      }
     });
   }
   

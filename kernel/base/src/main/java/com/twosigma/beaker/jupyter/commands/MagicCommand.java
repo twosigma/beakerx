@@ -64,10 +64,6 @@ public class MagicCommand {
       String result = executeBashCode(code.replace("%%bash", ""));
       messageCreator.createMagicMessage(messageCreator.buildOutputMessage(message, result, false), executionCount, message);
     });
-    commands.put("%%latex", (code, message, executionCount) -> {
-      code = code.replace("%%latex", "");
-      publishResults(Latex(code), message, executionCount);
-    });
     commands.put("%lsmagic", (code, message, executionCount) -> {
       String result = "Available magic commands:\n";
       result += commands.entrySet().stream()

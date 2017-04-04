@@ -21,7 +21,7 @@ import com.twosigma.beaker.easyform.EasyFormComponent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DatePickerComponent extends EasyFormComponent {
+public abstract class DatePickerComponent extends EasyFormComponent {
 
   private static final String DATE_FORMAT = "yyyyMMdd";
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);

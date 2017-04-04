@@ -20,7 +20,7 @@ import com.twosigma.beaker.easyform.EasyFormComponent;
 
 import java.util.Collection;
 
-public class ComboBox extends EasyFormComponent {
+public abstract class ComboBox extends EasyFormComponent {
 
   private Boolean editable;
   private Collection<String> values;

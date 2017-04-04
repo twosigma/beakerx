@@ -17,27 +17,33 @@
 package com.twosigma.beaker.easyform;
 
 import com.twosigma.beaker.easyform.formitem.EasyFormListener;
-import org.apache.commons.lang3.StringUtils;
+import com.twosigma.beaker.widgets.DOMWidget;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class EasyFormComponent {
+public abstract class EasyFormComponent<T extends DOMWidget> {
 
-  private String value;
   private boolean enabled = true;
-  //Acts like ID
-  private String label;
   private List<EasyFormListener> onChangeListeners = new LinkedList<>();
   private List<EasyFormListener> onInitListeners = new LinkedList<>();
 
   public EasyFormComponent() {
-    setValue(StringUtils.EMPTY);
   }
+
+  public abstract T getWidget();
+  //Acts like ID
+  public abstract String getLabel();
+
+  public abstract void setLabel(final String label);
+
+  public abstract String getValue();
+
+  public abstract void setValue(final String value);
 
   public void fireInit() {
     for (EasyFormListener listener : onInitListeners) {
-      listener.execute(value);
+      listener.execute(getValue());
     }
   }
 
@@ -92,22 +98,6 @@ public class EasyFormComponent {
 
   public void setEnabled(final boolean enabled) {
     this.enabled = enabled;
-  }
-
-  public String getLabel() {
-    return label;
-  }
-
-  public void setLabel(final String label) {
-    this.label = label;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(final String value) {
-    this.value = value;
   }
 
   public String formatValue(final Object value) {

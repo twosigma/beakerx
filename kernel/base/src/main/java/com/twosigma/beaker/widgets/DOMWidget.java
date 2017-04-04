@@ -18,9 +18,12 @@ package com.twosigma.beaker.widgets;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public abstract class DOMWidget extends Widget {
 
@@ -29,6 +32,8 @@ public abstract class DOMWidget extends Widget {
 
   private Layout layout;
 
+  private UpdateValueCallback updateValueCallback = () -> {
+  };
 
   public DOMWidget() {
     super();
@@ -38,27 +43,27 @@ public abstract class DOMWidget extends Widget {
   @Override
   protected void addValueChangeMsgCallback() {
     getComm().addMsgCallbackList(new ValueChangeMsgCallbackHandler() {
-      
+
       @Override
-      public void updateValue(Object value, Message message){
-        DOMWidget.this.updateValue(value);
+      public void updateValue(Object value, Message message) {
+        DOMWidget.this.doUpdateValueWithCallback(value);
       }
-      
+
     });
 
   }
-  
-  public abstract class ValueChangeMsgCallbackHandler implements Handler<Message>{
-    
+
+  public abstract class ValueChangeMsgCallbackHandler implements Handler<Message> {
+
     @SuppressWarnings("unchecked")
-    public Object getSyncDataValue(Message msg){
-      Object ret = false;
+    public Optional<Object> getSyncDataValue(Message msg){
+      Optional<Object> ret = Optional.empty();
       if (msg != null && msg.getContent() != null && msg.getContent().containsKey(DATA)) {
         Map<String,Serializable> data = (Map<String,Serializable>) msg.getContent().get(DATA);
         if (data.containsKey(SYNC_DATA)) {
           Map<String,Serializable> sync_data = (Map<String,Serializable>) data.get(SYNC_DATA);
           if (sync_data.containsKey(VALUE)) {
-            ret = sync_data.get(VALUE);
+            ret = Optional.of(sync_data.get(VALUE));
           }
         }
       }
@@ -66,19 +71,27 @@ public abstract class DOMWidget extends Widget {
     }
     
     public void handle(Message message){
-      Object value = getSyncDataValue(message);
-      if(value != null){
-        updateValue(value, message);
+      Optional<Object> value = getSyncDataValue(message);
+      if(value.isPresent()){
+        updateValue(value.get(), message);
       }
     }
-    
+
     public abstract void updateValue(Object value, Message message);
-    
+
+  }
+
+  public void register(UpdateValueCallback updateValueCallback) {
+    this.updateValueCallback = checkNotNull(updateValueCallback);
   }
 
   public abstract void updateValue(Object value);
 
-  
+  public void doUpdateValueWithCallback(Object value){
+    updateValue(value);
+    this.updateValueCallback.execute();
+  }
+
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     content.put(Layout.LAYOUT, Layout.IPY_MODEL + layout.getComm().getCommId());

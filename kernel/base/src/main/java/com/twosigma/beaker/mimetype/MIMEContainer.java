@@ -62,7 +62,7 @@ public class MIMEContainer {
     return addMimeType(TEXT_HTML, code);
   }
 
-  public static MIMEContainer Latex(String code) {
+  public static MIMEContainer Latex(Object code) {
     return addMimeType(TEXT_LATEX, code);
   }
 

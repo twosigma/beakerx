@@ -44,7 +44,7 @@ def convertNotebook(notebook):
         data = json.load(data_file)
     evaluators = list((cell['evaluator']) for cell in data['cells'] if 'evaluator' in cell)
     kernel_name = max(evaluators, key=evaluators.count)
-    if kernel_name in ['Javascript', 'HTML', 'TeX']:
+    if kernel_name in ['JavaScript', 'HTML', 'TeX']:
         kernel_name = 'IPython'
     if kernel_name == 'IPython':
         kernel_spec = {"kernelspec": {

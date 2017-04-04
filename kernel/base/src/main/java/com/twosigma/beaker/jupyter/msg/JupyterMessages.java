@@ -45,7 +45,8 @@ public enum JupyterMessages {
   COMM_MSG,
   UNDEFINED,
   DISPLAY_DATA,
-  CLEAR_OUTPUT;
+  CLEAR_OUTPUT,
+  ERROR;
   
   public String getName() {
     return this.name().toLowerCase();

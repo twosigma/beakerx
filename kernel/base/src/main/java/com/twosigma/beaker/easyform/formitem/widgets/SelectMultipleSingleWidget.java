@@ -19,16 +19,16 @@ import com.twosigma.beaker.easyform.formitem.ListComponent;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;
-import com.twosigma.beaker.widgets.selections.SelectMultiple;
+import com.twosigma.beaker.widgets.selections.SelectMultipleSingle;
 
 import java.util.Collection;
 
-public class ListComponentWidget extends ListComponent implements CommFunctionality, EasyFormWidget {
+public class SelectMultipleSingleWidget extends ListComponent implements CommFunctionality, EasyFormWidget {
 
-  private SelectMultiple widget;
+  private SelectMultipleSingle widget;
 
-  public ListComponentWidget() {
-    this.widget = new SelectMultiple();
+  public SelectMultipleSingleWidget() {
+    this.widget = new SelectMultipleSingle();
   }
 
   @Override
@@ -53,17 +53,13 @@ public class ListComponentWidget extends ListComponent implements CommFunctional
 
   @Override
   public void setValue(String value) {
-
+    this.widget.setValue(value);
   }
 
   @Override
   public void setValues(Collection<String> values) {
     super.setValues(values);
     this.widget.setOptions(values.stream().toArray(String[]::new));
-  }
-
-  public void setValue(String[] value) {
-    this.widget.setValue(value);
   }
 
   @Override

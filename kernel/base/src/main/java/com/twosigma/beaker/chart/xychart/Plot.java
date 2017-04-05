@@ -52,6 +52,13 @@ public class Plot extends XYChart implements InternalWidget, InternalPlot {
   public Comm getComm() {
     return this.comm;
   }
+  
+  @Override
+  public void close() {
+    if (this.comm != null) {
+      this.comm.close();
+    }
+  }
 
   @Override
   public XYChart setLogX(boolean logX) {

@@ -50,7 +50,8 @@ define([
   var base_url = utils.get_body_data('baseUrl');
   var config = new configmod.ConfigSection('notebook', {base_url: base_url});
   var comm;
-
+  var kernel_info = undefined;
+  
   config.loaded.then(function() {
     console.log('beaker extension loaded');
   });
@@ -64,19 +65,11 @@ define([
           window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
-      sendNotebookMetadataToKernel();
+    setImportsAndClasspath();
   });
 
   Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
-    if(!Jupyter.notebook.metadata.kernelspec.language.toUpperCase().includes('PYTHON')){
-      var kernel = Jupyter.notebook.kernel;
-      var kernel_control_target_name = "kernel.control.channel";
-      var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
-      var data = {};
-      data.kernel_interrupt = true;
-      comm.send(data);
-      comm.close();
-    }
+    interrupt();
   });
 
 
@@ -91,48 +84,89 @@ define([
   //   link.href = require.toUrl("nbextensions/beaker/"+name);
   //   document.getElementsByTagName("head")[0].appendChild(link);
   // }
+  
+  function getKernelInfo(callBack){
+    if (!kernel_info) {
+      Jupyter.notebook.kernel.kernel_info(function(result) {
+        kernel_info = result.content;
+        console.log("kernel_info received:");
+        console.log(kernel_info);
+        callBack(kernel_info);
+       });
+    } else {
+      callBack(kernel_info);
+    }
+  }
 
-  function sendNotebookMetadataToKernel() {
-
-    if(!Jupyter.notebook.metadata.kernelspec.language.toUpperCase().includes('PYTHON')){
-
-      var kernel_control_target_name = "kernel.control.channel";
-      var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
-
-      var newNotebook = undefined == Jupyter.notebook.metadata.imports || undefined == Jupyter.notebook.metadata.classpath;
-
-      if(newNotebook){
-        comm.on_msg(function(resp){
-          if(undefined != resp.content.data.kernel_control_response){
-            if("OK" === resp.content.data.kernel_control_response){
-            }else if(undefined != resp.content.data.kernel_control_response.imports &&
-                undefined != resp.content.data.kernel_control_response.classpath){
-              Jupyter.notebook.metadata.imports = resp.content.data.kernel_control_response.imports;
-              Jupyter.notebook.metadata.classpath = resp.content.data.kernel_control_response.classpath;
-
-              var theData = {};
-              if(Jupyter.notebook && Jupyter.notebook.metadata){
-                theData.imports = Jupyter.notebook.metadata.imports;
-                theData.classpath = Jupyter.notebook.metadata.classpath;
-              }
-              comm.send(theData);
-              comm.close();
-            }
-          }
-        });
-
-        var data = {};
-        data.get_default_shell = true;
-        comm.send(data);
-      }else{
-        var data = {};
-        if(Jupyter.notebook && Jupyter.notebook.metadata){
-          data.imports = Jupyter.notebook.metadata.imports;
-          data.classpath = Jupyter.notebook.metadata.classpath;
-        }
-        comm.send(data);
-        comm.close();
+  function interrupt() {
+    getKernelInfo(function(info) {
+      if (info.beakerx) {
+        interruptToKernel();
       }
+    });
+  }
+  
+
+  function interruptToKernel() {
+    var kernel = Jupyter.notebook.kernel;
+    var kernel_control_target_name = "kernel.control.channel";
+    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, 
+                                                             null, null, null, utils.uuid());
+    var data = {};
+    data.kernel_interrupt = true;
+    comm.send(data);
+    comm.close();
+  }
+  
+
+  function setImportsAndClasspath() {
+    getKernelInfo(function(info) {
+      if (info.beakerx) {
+        setImportsAndClasspathToKernel();
+      }
+    });
+  }
+  
+
+  function setImportsAndClasspathToKernel() {
+    var kernel_control_target_name = "kernel.control.channel";
+    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, 
+                                                             null, null, null, utils.uuid());
+
+    var newNotebook = undefined == Jupyter.notebook.metadata.imports || 
+      undefined == Jupyter.notebook.metadata.classpath;
+
+    if (newNotebook) {
+      comm.on_msg(function(resp) {
+        if (undefined != resp.content.data.kernel_control_response) {
+          if ("OK" === resp.content.data.kernel_control_response) {
+          } else if (undefined != resp.content.data.kernel_control_response.imports && 
+                     undefined != resp.content.data.kernel_control_response.classpath) {
+            Jupyter.notebook.metadata.imports = resp.content.data.kernel_control_response.imports;
+            Jupyter.notebook.metadata.classpath = resp.content.data.kernel_control_response.classpath;
+
+            var theData = {};
+            if (Jupyter.notebook && Jupyter.notebook.metadata) {
+              theData.imports = Jupyter.notebook.metadata.imports;
+              theData.classpath = Jupyter.notebook.metadata.classpath;
+            }
+            comm.send(theData);
+            comm.close();
+          }
+        }
+      });
+
+      var data = {};
+      data.get_default_shell = true;
+      comm.send(data);
+    } else {
+      var data = {};
+      if (Jupyter.notebook && Jupyter.notebook.metadata) {
+        data.imports = Jupyter.notebook.metadata.imports;
+        data.classpath = Jupyter.notebook.metadata.classpath;
+      }
+      comm.send(data);
+      comm.close();
     }
   }
 

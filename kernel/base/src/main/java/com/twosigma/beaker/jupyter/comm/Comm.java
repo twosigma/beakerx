@@ -13,11 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.jupyter;
+package com.twosigma.beaker.jupyter.comm;
 
 import com.twosigma.beaker.evaluator.InternalVariable;
+import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.jupyter.Utils;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Header;
@@ -67,11 +68,11 @@ public class Comm {
     this.data = new HashMap<>();
   }
 
-  public Comm(String commId, CommNamesEnum targetName) {
+  public Comm(String commId, TargetNamesEnum targetName) {
     this(commId, targetName.getTargetName());
   }
 
-  public Comm(CommNamesEnum targetName) {
+  public Comm(TargetNamesEnum targetName) {
     this(Utils.uuid(), targetName.getTargetName());
   }
 

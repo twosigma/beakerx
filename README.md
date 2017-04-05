@@ -16,7 +16,7 @@
 
 # BeakerX: Beaker extensions for Jupyter
 
-JVM kernels with widgets, plotting, and tables.
+JVM kernels with widgets, plotting, tables, and autotranslation.
 
 ## Dependencies
 
@@ -26,7 +26,7 @@ JVM kernels with widgets, plotting, and tables.
 
 ## Build and run
 
-[![Build Status](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/buildStatus/icon?job=Beaker%20master)](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/job/Beaker%20master)
+[![Build Status](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/buildStatus/icon?job=BeakerX%20master)](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/job/BeakerX%20master)
 
 ```
 conda create -y -n beakerx python=3.5 jupyter pandas
@@ -48,7 +48,7 @@ Ther kernels are installed to run out of the repo, so just a build should update
 
 ## Beaker Notebooks Converter
 ```
-python -m bkr2ipynb.py *.bkr
+python -m bkr2ipynb *.bkr
 ```
 
 ## Groovy with Interactive Plotting and Table Saw:

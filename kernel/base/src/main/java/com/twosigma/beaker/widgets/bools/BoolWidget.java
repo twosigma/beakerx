@@ -22,6 +22,10 @@ import com.twosigma.beaker.widgets.ValueWidget;
 
 public abstract class BoolWidget extends ValueWidget<Boolean> {
 
+  public BoolWidget() {
+    this.value = Boolean.FALSE;
+  }
+
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);

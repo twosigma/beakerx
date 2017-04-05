@@ -18,7 +18,7 @@ package com.twosigma.beaker.chart.histogram;
 
 import com.twosigma.beaker.chart.AbstractChart;
 import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.chart.InternalPlot;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetContent;

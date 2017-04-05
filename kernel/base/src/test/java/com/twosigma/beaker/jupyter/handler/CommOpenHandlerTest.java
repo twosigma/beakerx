@@ -26,10 +26,10 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.Comm.COMM_ID;
-import static com.twosigma.beaker.jupyter.Comm.DATA;
-import static com.twosigma.beaker.jupyter.Comm.TARGET_MODULE;
-import static com.twosigma.beaker.jupyter.Comm.TARGET_NAME;
+import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
+import static com.twosigma.beaker.jupyter.comm.Comm.DATA;
+import static com.twosigma.beaker.jupyter.comm.Comm.TARGET_MODULE;
+import static com.twosigma.beaker.jupyter.comm.Comm.TARGET_NAME;
 
 public class CommOpenHandlerTest {
 

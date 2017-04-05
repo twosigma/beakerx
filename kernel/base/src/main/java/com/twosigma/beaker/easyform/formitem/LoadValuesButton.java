@@ -17,6 +17,7 @@
 package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
+import com.twosigma.beaker.widgets.DOMWidget;
 
 public class LoadValuesButton extends EasyFormComponent {
 
@@ -28,5 +29,30 @@ public class LoadValuesButton extends EasyFormComponent {
 
   public String getPath() {
     return path;
+  }
+
+  @Override
+  public DOMWidget getWidget() {
+    return null;
+  }
+
+  @Override
+  public String getLabel() {
+    throw new RuntimeException("Not implemented yet.");
+  }
+
+  @Override
+  public void setLabel(String label) {
+    throw new RuntimeException("Not implemented yet.");
+  }
+
+  @Override
+  public String getValue() {
+    throw new RuntimeException("Not implemented yet.");
+  }
+
+  @Override
+  public void setValue(String value) {
+    throw new RuntimeException("Not implemented yet.");
   }
 }

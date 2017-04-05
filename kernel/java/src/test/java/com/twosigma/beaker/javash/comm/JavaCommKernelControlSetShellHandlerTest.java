@@ -17,7 +17,7 @@
 package com.twosigma.beaker.javash.comm;
 
 import com.twosigma.beaker.javash.JavaKernelTest;
-import com.twosigma.beaker.jupyter.CommKernelControlGetDefaultShellHandlerTest;
+import com.twosigma.beaker.jupyter.comm.CommKernelControlGetDefaultShellHandlerTest;
 import com.twosigma.jupyter.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;

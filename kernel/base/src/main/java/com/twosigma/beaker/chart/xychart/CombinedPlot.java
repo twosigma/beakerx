@@ -17,7 +17,7 @@
 package com.twosigma.beaker.chart.xychart;
 
 import com.twosigma.beaker.chart.ObservableChart;
-import com.twosigma.beaker.jupyter.Comm;
+import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.chart.InternalPlot;
 import com.twosigma.beaker.widgets.internal.InternalWidget;

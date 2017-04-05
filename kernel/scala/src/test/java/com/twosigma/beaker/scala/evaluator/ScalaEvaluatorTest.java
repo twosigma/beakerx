@@ -50,6 +50,7 @@ public class ScalaEvaluatorTest {
     KernelManager.register(null);
   }
 
+  @Test
   public void evaluatePlot_shouldCreatePlotObject() throws Exception {
     //given
     String code = "import com.twosigma.beaker.chart.xychart.Plot;\n" +
@@ -65,6 +66,7 @@ public class ScalaEvaluatorTest {
     Assertions.assertThat(((Plot)seo.getPayload()).getTitle()).isEqualTo("test title");
   }
 
+  @Test
   public void evaluateDivisionByZero_shouldReturnArithmeticException() throws Exception {
     //given
     String code = "16/0";

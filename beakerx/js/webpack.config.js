@@ -24,6 +24,7 @@ var path = require('path');
 var loaders = [
   { test: /\.json$/, loader: 'json-loader' },
   { test: /\.css$/, loader: "style-loader!css-loader" },
+  { test: /\.scss$/, loader: "style-loader!css-loader!sass-loader" },
   { test: /\.jpe?g$|\.gif$|\.png$|\.svg$|\.woff(\?.*)$|\.eot(\?.*)$|\.woff2(\?.*)$|\.ttf(\?.*)$|\.wav$|\.mp3$/, loader: "file-loader" }
 ];
 

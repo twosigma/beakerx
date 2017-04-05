@@ -30,17 +30,17 @@ var ButtonView = widgets.ButtonView.extend({
       var tagName = this.model.get('tag');
 
       if (tagName) {
-        this.rerunByTag(tagName);
+        this.runByTag(tagName);
       }
 
       this._handle_click(e);
     }
   },
-  rerunByTag: function(tagName) {
+  runByTag: function(tagName) {
     var notebook = this.options.cell.notebook;
     var cells = notebook.get_cells();
     var indexList = cells.reduce(function(acc, cell, index) {
-      if (cell._metadata.tag === tagName) {
+      if (cell._metadata.tags && cell._metadata.tags.includes(tagName)) {
         acc.push(index);
       }
       return acc;

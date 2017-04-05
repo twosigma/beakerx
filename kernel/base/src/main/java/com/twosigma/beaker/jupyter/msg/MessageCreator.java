@@ -22,6 +22,7 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STATUS;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STREAM;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.CLEAR_OUTPUT;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.DISPLAY_DATA;
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.ERROR;
 
 import java.io.Serializable;
 import java.util.List;
@@ -192,13 +193,61 @@ public class MessageCreator {
   }
 
   private MessageHolder createErrorResult(SimpleEvaluationObject seo, Message message) {
-    logger.info("Execution result ERROR: " + seo.getPayload().toString().split("\n")[0]);
-    Message reply = initMessage(STREAM, message);
+    String[] errorMessage = seo.getPayload().toString().split("\n");
+    errorMessage = clearText(errorMessage);
+    if(errorMessage != null && errorMessage.length > 0){
+      logger.info("Execution result ERROR: " + errorMessage[0]);
+    }
+    Message reply = initMessage(ERROR, message);
     Hashtable<String, Serializable> map4 = new Hashtable<String, Serializable>(2);
-    map4.put("name", "stderr");
+    String ename = "";
+    String evalue = "";
+    if(errorMessage != null && errorMessage[0] != null && !errorMessage[0].isEmpty()){
+      String[] temp = errorMessage[0].split(":");
+      if(temp != null){
+        if(temp.length == 1){
+          ename = temp[0];
+          evalue = temp[0];
+        }else if(temp.length > 1){
+          ename = temp[0];
+          evalue = temp[1];
+        }
+      }
+    }
+    map4.put("ename", ename); 
+    map4.put("evalue", evalue);
+    map4.put("traceback", markRed(errorMessage));
     map4.put("text", (String) seo.getPayload());
     reply.setContent(map4);
     return new MessageHolder(SocketEnum.IOPUB_SOCKET, reply);
+  }
+  
+  private String[] clearText(String[] input){
+    List<String> ret = new ArrayList<>();
+    if(input != null){
+      for (String line : input) {
+        if(line != null){
+          if(line.endsWith("\r")){
+            ret.add( line.substring(0, line.length() - 1));
+          }else{
+            ret.add(line);
+          }
+        }
+      }
+    }
+    return ret.stream().toArray(String[]::new);
+  }
+  
+  private String[] markRed(String[] input){
+    List<String> ret = new ArrayList<>();
+    if(input != null){
+      for (String line : input) {
+        if(line != null){
+          ret.add("\u001b[0;31m" + line + "");
+        }
+      }
+    }
+    return ret.stream().toArray(String[]::new);
   }
 
   private MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {

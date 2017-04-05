@@ -19,7 +19,7 @@ var _ = require('underscore');
 
 var buttonWidget = require('./easyForm/buttonWidget');
 
-require('./easyForm/css/jupyter-easyform.css');
+require('./easyForm/css/jupyter-easyform.scss');
 
 var EasyFormModel = widgets.DOMWidgetModel.extend({
   defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {

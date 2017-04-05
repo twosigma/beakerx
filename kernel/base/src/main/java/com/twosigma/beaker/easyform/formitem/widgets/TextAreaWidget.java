@@ -21,6 +21,8 @@ import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;
 import com.twosigma.beaker.widgets.strings.Textarea;
 
+import static com.twosigma.beaker.widgets.Layout.PX;
+
 public class TextAreaWidget extends TextArea implements CommFunctionality, EasyFormWidget {
 
   private Textarea widget;
@@ -57,5 +59,17 @@ public class TextAreaWidget extends TextArea implements CommFunctionality, EasyF
   @Override
   public DOMWidget getWidget() {
     return widget;
+  }
+
+  @Override
+  public void setWidth(Integer width) {
+    super.setWidth(width);
+    widget.getLayout().setWidth(width + PX);
+  }
+
+  @Override
+  public void setHeight(Integer height) {
+    super.setHeight(height);
+    widget.getLayout().setHeight(height + PX);
   }
 }

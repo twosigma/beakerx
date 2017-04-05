@@ -50,9 +50,12 @@ public class Interactive extends InteractiveBase{
         public void updateValue(Object value, Message message) {
           SimpleEvaluationObject seo = new SimpleEvaluationObject("");
           seo.setJupyterMessage(message);
+          seo.setOutputHandler();
+          seo.addObserver(KernelManager.get().getExecutionResultSender());
           InternalVariable.setValue(seo);
           KernelManager.get().publish(mc.buildClearOutput(message, true));
           Object result = function.call(getWidgetValues());
+          seo.clrOutputHandler();
           MIMEContainer resultString = SerializeToString.doit(result);
           logger.info("interact result is = " + resultString.getMime());
           KernelManager.get().publish(mc.buildDisplayData(message, resultString));

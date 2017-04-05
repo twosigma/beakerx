@@ -71,6 +71,12 @@ public class CombinedPlot extends ObservableChart implements InternalWidget, Int
     return this.comm;
   }
 
+  @Override
+  public void close() {
+    if (this.comm != null) {
+      this.comm.close();
+    }
+  }
 
   public CombinedPlot setInitWidth(int w) {
     this.initWidth = w;

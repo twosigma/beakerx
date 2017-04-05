@@ -86,6 +86,13 @@ public class TableDisplay extends ObservableTableDisplay implements InternalWidg
   public Comm getComm() {
     return this.comm;
   }
+  
+  @Override
+  public void close() {
+    if (this.comm != null) {
+      this.comm.close();
+    }
+  }
 
   @Override
   public String getModelNameValue() {

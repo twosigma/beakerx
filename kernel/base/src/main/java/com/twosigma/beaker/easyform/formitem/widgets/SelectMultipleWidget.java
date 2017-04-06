@@ -56,6 +56,16 @@ public class SelectMultipleWidget extends ListComponent implements CommFunctiona
   }
 
   @Override
+  public void setSize(Integer size) {
+    this.widget.setSize(size);
+  }
+
+  @Override
+  public Integer getSize() {
+    return this.widget.getSize();
+  }
+
+  @Override
   public void setValues(Collection<String> values) {
     super.setValues(values);
     this.widget.setOptions(values.stream().toArray(String[]::new));

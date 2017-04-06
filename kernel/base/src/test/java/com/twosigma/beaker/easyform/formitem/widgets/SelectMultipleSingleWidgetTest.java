@@ -17,6 +17,7 @@ package com.twosigma.beaker.easyform.formitem.widgets;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
 import com.twosigma.beaker.widgets.selections.SelectMultiple;
+import com.twosigma.beaker.widgets.selections.SelectMultipleSingle;
 import org.junit.Test;
 
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyMsgForProperty;
@@ -35,6 +36,19 @@ public class SelectMultipleSingleWidgetTest extends EasyFormWidgetTest {
     widget.setValue(newValue);
     //then
     verifyMsgForProperty(kernel, SelectMultiple.VALUE, "2");
+  }
+
+  @Test
+  public void setSize() throws Exception {
+    //given
+    Integer newValue = 2;
+    SelectMultipleSingleWidget widget = new SelectMultipleSingleWidget();
+    widget.setValues(asList("1", "2", "3"));
+    kernel.clearPublishedMessages();
+    //when
+    widget.setSize(newValue);
+    //then
+    verifyMsgForProperty(kernel, SelectMultipleSingle.SIZE, 2);
   }
 
   @Override

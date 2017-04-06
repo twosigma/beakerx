@@ -37,6 +37,19 @@ public class SelectMultipleWidgetTest extends EasyFormWidgetTest {
     verifyMsgForProperty(kernel, SelectMultiple.VALUE, new String[]{"1", "2"});
   }
 
+  @Test
+  public void setSize() throws Exception {
+    //given
+    Integer newValue = 3;
+    SelectMultipleWidget widget = new SelectMultipleWidget();
+    widget.setValues(asList("1", "2", "3"));
+    kernel.clearPublishedMessages();
+    //when
+    widget.setSize(newValue);
+    //then
+    verifyMsgForProperty(kernel, SelectMultiple.SIZE, 3);
+  }
+
   @Override
   protected EasyFormComponent createWidget() {
     return new SelectMultipleWidget();

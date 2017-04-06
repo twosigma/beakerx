@@ -19,6 +19,7 @@ package com.twosigma.beaker;
 import java.util.Hashtable;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.twosigma.beaker.easyform.DisplayEasyForm;
 import com.twosigma.beaker.easyform.EasyForm;
@@ -157,12 +158,12 @@ public class SerializeToString {
     mapper.registerModule(module);
   }
 
-  protected static boolean isInternalWidget(Object result){
+  protected static boolean isInternalWidget(Object result) {
     boolean ret = false;
-    if(result != null && result instanceof InternalWidget ){
+    if (result != null && result instanceof InternalWidget) {
       for (Class<?> clazz : internalWidgetMap.keySet()) {
         ret = clazz.isAssignableFrom(result.getClass());
-        if(ret){
+        if (ret) {
           break;
         }
       }
@@ -172,14 +173,14 @@ public class SerializeToString {
 
   public static MIMEContainer doit(Object result) {
     if (result instanceof EasyForm) {
-      DisplayEasyForm.display((EasyForm)result);
+      DisplayEasyForm.display((EasyForm) result);
       return Text("");
     }
     if (result instanceof OutputContainer) {
-      DisplayOutputContainer.display((OutputContainer)result);
+      DisplayOutputContainer.display((OutputContainer) result);
       return Text("");
     }
-    if(result instanceof Table){
+    if (result instanceof Table) {
       showInternalWidget(new TableDisplay(new CsvPlotReader().convert((Table) result)));
       return Text("");
     }
@@ -187,9 +188,10 @@ public class SerializeToString {
       showInternalWidget(result);
       return Text("");
     }
-    if(result instanceof MIMEContainer) {
+    if (result instanceof MIMEContainer) {
       return (MIMEContainer) result;
     }
+
     return result != null ? Text(result) : Text("null");
   }
 

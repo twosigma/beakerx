@@ -152,7 +152,7 @@ public class EasyFormTest {
   }
 
   private void verifyMultipleSelection(List<Message> messages) {
-    verifyOpenCommMsg(messages, SelectMultiple.MODEL_NAME_VALUE, SelectMultiple.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(messages, SelectMultiple.MODEL_NAME_VALUE, SelectMultiple.VIEW_NAME_VALUE);
   }
 
   @Test

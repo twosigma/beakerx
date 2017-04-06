@@ -24,7 +24,10 @@ import com.twosigma.beaker.widgets.ValueWidget;
 public abstract class SelectionWidget extends ValueWidget<String> {
 
   public static final String OPTIONS_LABELS = "_options_labels";
+  public static final String SIZE = "size";
+
   private Object[] options = new Object[0];
+  private Integer size;
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
@@ -46,5 +49,14 @@ public abstract class SelectionWidget extends ValueWidget<String> {
   public void setOptions(Collection<Object> options) {
     this.options = options.toArray(new Object[options.size()]);
     sendUpdate(OPTIONS_LABELS, options);
+  }
+
+  public Integer getSize() {
+    return size;
+  }
+
+  public void setSize(Integer size) {
+    this.size = size;
+    sendUpdate(SIZE, size);
   }
 }

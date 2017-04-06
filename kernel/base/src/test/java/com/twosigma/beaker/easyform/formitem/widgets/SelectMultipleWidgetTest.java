@@ -22,13 +22,13 @@ import org.junit.Test;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyMsgForProperty;
 import static java.util.Arrays.asList;
 
-public class ListComponentWidgetTest extends EasyFormWidgetTest {
+public class SelectMultipleWidgetTest extends EasyFormWidgetTest {
 
   @Test
   public void setValues() throws Exception {
     //given
     String[] newValue = new String[]{"1", "2"};
-    ListComponentWidget widget = new ListComponentWidget();
+    SelectMultipleWidget widget = new SelectMultipleWidget();
     widget.setValues(asList("1", "2", "3"));
     kernel.clearPublishedMessages();
     //when
@@ -37,8 +37,21 @@ public class ListComponentWidgetTest extends EasyFormWidgetTest {
     verifyMsgForProperty(kernel, SelectMultiple.VALUE, new String[]{"1", "2"});
   }
 
+  @Test
+  public void setSize() throws Exception {
+    //given
+    Integer newValue = 3;
+    SelectMultipleWidget widget = new SelectMultipleWidget();
+    widget.setValues(asList("1", "2", "3"));
+    kernel.clearPublishedMessages();
+    //when
+    widget.setSize(newValue);
+    //then
+    verifyMsgForProperty(kernel, SelectMultiple.SIZE, 3);
+  }
+
   @Override
   protected EasyFormComponent createWidget() {
-    return new ListComponentWidget();
+    return new SelectMultipleWidget();
   }
 }

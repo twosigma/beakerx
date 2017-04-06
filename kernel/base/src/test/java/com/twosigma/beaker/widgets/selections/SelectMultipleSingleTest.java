@@ -26,7 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyMsgForProperty;
 
-public class SelectMultipleTest {
+public class SelectMultipleSingleTest {
 
   private KernelTest kernel;
 
@@ -45,37 +45,38 @@ public class SelectMultipleTest {
   public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     //when
-    new SelectMultiple();
+    new SelectMultipleSingle();
     //then
-    verifyInternalOpenCommMsgWitLayout(kernel.getPublishedMessages(), SelectMultiple.MODEL_NAME_VALUE, SelectMultiple.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(kernel.getPublishedMessages(), SelectMultipleSingle.MODEL_NAME_VALUE, SelectMultipleSingle.VIEW_NAME_VALUE);
   }
 
   @Test
   public void shouldSendCommMsgWhenValueChange() throws Exception {
     //given
-    SelectMultiple widget = selectMultiple();
+    SelectMultipleSingle widget = selectMultipleSingle();
     widget.setOptions(new String[]{"1","2", "3"});
     kernel.clearPublishedMessages();
     //when
-    widget.setValue(new String[]{"2", "3"});
+    widget.setValue("2");
     //then
-    verifyMsgForProperty(kernel, SelectMultiple.VALUE, new String[]{"2", "3"});
+    verifyMsgForProperty(kernel, SelectMultiple.VALUE, "2");
   }
 
   @Test
   public void shouldSendCommMsgWhenOptionsChange() throws Exception {
     //given
-    SelectMultiple widget = selectMultiple();
+    SelectMultipleSingle widget = selectMultipleSingle();
     //when
     widget.setOptions(new String[]{"2", "3"});
     //then
     verifyMsgForProperty(kernel, SelectMultiple.OPTIONS_LABELS, new String[]{"2", "3"});
   }
 
-  private SelectMultiple selectMultiple() throws NoSuchAlgorithmException {
-    SelectMultiple widget = new SelectMultiple();
+  private SelectMultipleSingle selectMultipleSingle() throws NoSuchAlgorithmException {
+    SelectMultipleSingle widget = new SelectMultipleSingle();
     kernel.clearPublishedMessages();
     return widget;
   }
+
 
 }

@@ -15,6 +15,8 @@
  */
 package com.twosigma.beaker.widgets.selections;
 
+import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -33,6 +35,8 @@ public class SelectMultiple extends MultipleSelectionWidget {
     super.content(content);
     content.put(MODEL_NAME, MODEL_NAME_VALUE);
     content.put(VIEW_NAME, VIEW_NAME_VALUE);
+    content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);
+    content.put(VIEW_MODULE, InternalWidgetUtils.VIEW_MODULE_VALUE);
     return content;
   }
 

@@ -15,55 +15,68 @@
  */
 package com.twosigma.beaker.easyform.formitem.widgets;
 
-import com.twosigma.beaker.easyform.formitem.TextField;
+import com.twosigma.beaker.easyform.formitem.ListComponent;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;
-import com.twosigma.beaker.widgets.strings.Text;
+import com.twosigma.beaker.widgets.selections.SelectMultiple;
 
-import static com.twosigma.beaker.widgets.Layout.PX;
+import java.util.Collection;
 
-public class TextFieldWidget extends TextField implements CommFunctionality, EasyFormWidget {
+public class SelectMultipleWidget extends ListComponent implements CommFunctionality, EasyFormWidget {
 
-  private Text text;
+  private SelectMultiple widget;
 
-  public TextFieldWidget() {
-    this.text = new Text();
-  }
-
-  @Override
-  public DOMWidget getWidget() {
-    return text;
+  public SelectMultipleWidget() {
+    this.widget = new SelectMultiple();
   }
 
   @Override
   public String getLabel() {
-    return text.getDescription();
-  }
-
-  @Override
-  public void setLabel(String label) {
-    this.text.setDescription(label);
-  }
-
-  @Override
-  public void setValue(String value) {
-    this.text.setValue(value);
-  }
-
-  @Override
-  public String getValue() {
-    return this.text.getValue();
+    return widget.getDescription();
   }
 
   @Override
   public Comm getComm() {
-    return text.getComm();
+    return widget.getComm();
   }
 
   @Override
-  public TextField setWidth(Integer width) {
-    text.getLayout().setWidth(width + PX);
-    return super.setWidth(width);
+  public void setLabel(String label) {
+    this.widget.setDescription(label);
+  }
+
+  @Override
+  public String getValue() {
+    return null;
+  }
+
+  @Override
+  public void setValue(String value) {
+  }
+
+  @Override
+  public void setSize(Integer size) {
+    this.widget.setSize(size);
+  }
+
+  @Override
+  public Integer getSize() {
+    return this.widget.getSize();
+  }
+
+  @Override
+  public void setValues(Collection<String> values) {
+    super.setValues(values);
+    this.widget.setOptions(values.stream().toArray(String[]::new));
+  }
+
+  public void setValue(String[] value) {
+    this.widget.setValue(value);
+  }
+
+  @Override
+  public DOMWidget getWidget() {
+    return widget;
   }
 }

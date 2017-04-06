@@ -15,30 +15,29 @@
  */
 package com.twosigma.beaker.widgets.selections;
 
+import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class MultipleSelectionWidget extends SelectionWidget{
+public class SelectMultipleSingle extends SingleSelectionWidget {
 
-  protected String[] value = new String[0];
+  public static String VIEW_NAME_VALUE = "SelectMultipleSingleView";
+  public static String MODEL_NAME_VALUE = "SelectMultipleSingleModel";
+
+  public SelectMultipleSingle() {
+    super();
+    init();
+  }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(VALUE, this.value);
+    content.put(MODEL_NAME, MODEL_NAME_VALUE);
+    content.put(VIEW_NAME, VIEW_NAME_VALUE);
+    content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);
+    content.put(VIEW_MODULE, InternalWidgetUtils.VIEW_MODULE_VALUE);
     return content;
   }
-
-  @Override
-  public void updateValue(Object value) {
-    this.value = ((ArrayList<String>) value).stream().toArray(String[]::new);
-  }
-
-  public void setValue(String[] value) {
-    this.value = value;
-    sendUpdate(VALUE, value);
-  }
-
 
 }

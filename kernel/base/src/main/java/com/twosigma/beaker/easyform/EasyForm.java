@@ -17,6 +17,7 @@
 package com.twosigma.beaker.easyform;
 
 import com.twosigma.beaker.easyform.formitem.ButtonComponent;
+import com.twosigma.beaker.easyform.formitem.ListComponent;
 import com.twosigma.beaker.easyform.formitem.LoadValuesButton;
 import com.twosigma.beaker.easyform.formitem.SaveValuesButton;
 import com.twosigma.beaker.easyform.formitem.TextArea;
@@ -25,7 +26,8 @@ import com.twosigma.beaker.easyform.formitem.widgets.CheckBoxGroupWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.ComboBoxWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.DatePickerComponentWidget;
-import com.twosigma.beaker.easyform.formitem.widgets.ListComponentWidget;
+import com.twosigma.beaker.easyform.formitem.widgets.SelectMultipleSingleWidget;
+import com.twosigma.beaker.easyform.formitem.widgets.SelectMultipleWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.RadioButtonComponentWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.TextAreaWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.TextFieldWidget;
@@ -173,8 +175,7 @@ public class EasyForm extends ObservableMap<String, Object> {
                                    final Boolean multipleSelection,
                                    final Integer size) throws Exception {
 
-    ListComponentWidget list = new ListComponentWidget();
-    list.registerUpdateValueCallback(list::fireChanged);
+    ListComponent list = (multipleSelection) ? createSelectMultipleWidget() : createSelectMultipleSingleWidget();
     list.setLabel(label);
     list.setSize(size);
     list.setMultipleSelection(multipleSelection);
@@ -183,6 +184,18 @@ public class EasyForm extends ObservableMap<String, Object> {
       list.setValue(values.iterator().next());
     }
     return addComponentOrThrow(label, list);
+  }
+
+  private ListComponent createSelectMultipleSingleWidget() {
+    SelectMultipleSingleWidget list = new SelectMultipleSingleWidget();
+    list.registerUpdateValueCallback(list::fireChanged);
+    return list;
+  }
+
+  private ListComponent createSelectMultipleWidget() {
+    SelectMultipleWidget list = new SelectMultipleWidget();
+    list.registerUpdateValueCallback(list::fireChanged);
+    return list;
   }
 
   public EasyFormComponent addRadioButtons(final String label,
@@ -263,7 +276,7 @@ public class EasyForm extends ObservableMap<String, Object> {
     return componentMap;
   }
 
-  public DOMWidget get(String key){
+  public DOMWidget get(String key) {
     return getComponentMap().get(key).getWidget();
   }
 

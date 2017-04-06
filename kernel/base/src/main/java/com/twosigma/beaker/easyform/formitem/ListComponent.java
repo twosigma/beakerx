@@ -17,23 +17,17 @@
 package com.twosigma.beaker.easyform.formitem;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
-import com.twosigma.beaker.jupyter.comm.Comm;
 
 import java.util.Collection;
 
 public abstract class ListComponent extends EasyFormComponent {
 
-  private Integer size;
   private Boolean multipleSelection;
   private Collection<String> values;
 
-  public void setSize(final Integer size) {
-    this.size = size;
-  }
+  public abstract void setSize(final Integer size);
 
-  public Integer getSize() {
-    return size;
-  }
+  public abstract Integer getSize();
 
   public void setMultipleSelection(final Boolean multipleSelection) {
     this.multipleSelection = multipleSelection;

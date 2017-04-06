@@ -25,6 +25,9 @@ public class Layout extends Widget {
   public static final String DISPLAY = "display";
   public static final String ALIGN_ITEMS = "align_items";
   public static final String FLEX_FLOW = "flex_flow";
+  public static final String WIDTH = "width";
+  public static final String HEIGHT = "height";
+  public static final String PX = "px";
 
   private String _view_name = "LayoutView";
   private String _model_name = "LayoutModel";
@@ -32,6 +35,8 @@ public class Layout extends Widget {
   private String display;
   private String align_items;
   private String flex_flow;
+  private String width;
+  private String height;
 
   public Layout() {
     super();
@@ -50,7 +55,7 @@ public class Layout extends Widget {
     content.put(DISPLAY, getDisplay());
     content.put("flex", "");
     content.put(FLEX_FLOW, getFlex_flow());
-    content.put("height", "");
+    content.put(HEIGHT, "");
     content.put("justify_content", "");
     content.put("left", "");
     content.put("margin", "");
@@ -66,11 +71,10 @@ public class Layout extends Widget {
     content.put("right", "");
     content.put("top", "");
     content.put("visibility", "");
-    content.put("width", "");
+    content.put(WIDTH, getWidth());
 
     return content;
   }
-
 
   public String getDisplay() {
     return display;
@@ -97,5 +101,23 @@ public class Layout extends Widget {
   public void setFlex_flow(String flex_flow) {
     this.flex_flow = flex_flow;
     sendUpdate(FLEX_FLOW, flex_flow);
+  }
+
+  public String getWidth() {
+    return width;
+  }
+
+  public void setWidth(String width) {
+    this.width = width;
+    sendUpdate(WIDTH, width);
+  }
+
+  public String getHeight() {
+    return height;
+  }
+
+  public void setHeight(String height) {
+    this.height = height;
+    sendUpdate(HEIGHT, height);
   }
 }

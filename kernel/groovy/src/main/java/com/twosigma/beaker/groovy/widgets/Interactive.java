@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.twosigma.beaker.SerializeToString;
-import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
@@ -39,6 +38,7 @@ public class Interactive extends InteractiveBase{
 
   private static final Logger logger = LoggerFactory.getLogger(Interactive.class);
   
+  @SuppressWarnings("unchecked")
   public static synchronized void interact(MethodClosure function, Object... parameters) {
     final MessageCreator mc = new MessageCreator(KernelManager.get());
     final List<ValueWidget<?>> witgets = widgetsFromAbbreviations(parameters);
@@ -50,11 +50,14 @@ public class Interactive extends InteractiveBase{
         public void updateValue(Object value, Message message) {
           SimpleEvaluationObject seo = new SimpleEvaluationObject("");
           seo.setJupyterMessage(message);
+          seo.setOutputHandler();
+          seo.addObserver(KernelManager.get().getExecutionResultSender());
           InternalVariable.setValue(seo);
+          KernelManager.get().publish(mc.buildClearOutput(message, true));
           Object result = function.call(getWidgetValues());
+          seo.clrOutputHandler();
           MIMEContainer resultString = SerializeToString.doit(result);
           logger.info("interact result is = " + resultString.getMime());
-          KernelManager.get().publish(mc.buildClearOutput(message, true));
           KernelManager.get().publish(mc.buildDisplayData(message, resultString));
         }
         

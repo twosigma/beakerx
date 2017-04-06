@@ -30,4 +30,7 @@ public interface InternalWidget extends CommFunctionality {
   String getModelNameValue();
 
   String getViewNameValue();
+
+  void close();
+  
 }

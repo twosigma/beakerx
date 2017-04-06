@@ -81,6 +81,13 @@ public class Histogram extends AbstractChart implements InternalWidget, Internal
   public Comm getComm() {
     return this.comm;
   }
+  
+  @Override
+  public void close() {
+    if (this.comm != null) {
+      this.comm.close();
+    }
+  }
 
   public Integer getRangeMin() {
     return rangeMin;

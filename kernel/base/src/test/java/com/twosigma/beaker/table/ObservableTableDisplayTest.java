@@ -85,7 +85,7 @@ public class ObservableTableDisplayTest {
     Assertions.assertThat(tableDisplay.getValues().get(rowId).get(colId)).isEqualTo(result);
   }
 
-  private ClosureTest getClosure(TableAction action){
+  private ClosureTest getClosure(TableActionTest action){
     return new ClosureTest() {
       @Override
       public Object call(Object row, Object col, Object tableDisplay) {
@@ -100,7 +100,7 @@ public class ObservableTableDisplayTest {
     };
   }
 
-  private interface TableAction {
+  private interface TableActionTest {
     int execute(List<Integer> rowValues, int colId);
   }
 
@@ -116,7 +116,7 @@ public class ObservableTableDisplayTest {
     return rowValues.get(colId)*(-1);
   }
 
-  private List<Map<?, ?>> getListOfMapsData() {
+  public static List<Map<?, ?>> getListOfMapsData() {
     List<Map<?, ?>> list = new ArrayList<>();
     list.add(
         new HashMap<String, Object>() {

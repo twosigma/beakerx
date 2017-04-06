@@ -18,6 +18,7 @@ var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
 
 var buttonWidget = require('./easyForm/buttonWidget');
+var selectMultipleSingleWidget = require('./easyForm/selectMultipleSingleWidget');
 
 require('./easyForm/css/jupyter-easyform.scss');
 
@@ -91,7 +92,8 @@ var EasyFormView = widgets.DOMWidgetView.extend({
 
 module.exports = {
   EasyFormModel: EasyFormModel,
-  EasyFormView: EasyFormView,
-  ButtonModel: buttonWidget.ButtonModel,
-  ButtonView: buttonWidget.ButtonView
+  EasyFormView: EasyFormView
 };
+
+_.extend(module.exports, buttonWidget);
+_.extend(module.exports, selectMultipleSingleWidget);

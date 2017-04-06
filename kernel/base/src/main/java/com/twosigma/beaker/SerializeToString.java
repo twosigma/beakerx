@@ -81,8 +81,10 @@ import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
+import com.twosigma.beaker.widgets.DisplayAnyWidget;
 import com.twosigma.beaker.widgets.DisplayOutputContainer;
 import com.twosigma.beaker.widgets.DisplayWidget;
+import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
 
 import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
@@ -156,8 +158,33 @@ public class SerializeToString {
     mapper = new ObjectMapper();
     mapper.registerModule(module);
   }
-
-  protected static boolean isInternalWidget(Object result){
+  
+  public static boolean isWidget(Object input) {
+    return (input instanceof EasyForm)
+        || (input instanceof OutputContainer)
+        || (input instanceof Table)
+        || isInternalWidget(input)
+        || (input instanceof Widget);
+  }
+  
+  public static MIMEContainer doit(Object input) {
+    MIMEContainer ret = null;
+    if(input != null){
+      if (isWidget(input)) {
+        DisplayAnyWidget.display(input);
+        ret = Text("");
+      } else if(input instanceof MIMEContainer) {
+        ret = (MIMEContainer) input;
+      } else{
+        ret = Text(input);
+      }
+    }else{
+      ret = Text("null");
+    }
+    return ret;
+  }
+  
+  public static boolean isInternalWidget(Object result){
     boolean ret = false;
     if(result != null && result instanceof InternalWidget ){
       for (Class<?> clazz : internalWidgetMap.keySet()) {
@@ -168,29 +195,6 @@ public class SerializeToString {
       }
     }
     return ret;
-  }
-
-  public static MIMEContainer doit(Object result) {
-    if (result instanceof EasyForm) {
-      DisplayEasyForm.display((EasyForm)result);
-      return Text("");
-    }
-    if (result instanceof OutputContainer) {
-      DisplayOutputContainer.display((OutputContainer)result);
-      return Text("");
-    }
-    if(result instanceof Table){
-      showInternalWidget(new TableDisplay(new CsvPlotReader().convert((Table) result)));
-      return Text("");
-    }
-    if (isInternalWidget(result)) {
-      showInternalWidget(result);
-      return Text("");
-    }
-    if(result instanceof MIMEContainer) {
-      return (MIMEContainer) result;
-    }
-    return result != null ? Text(result) : Text("null");
   }
 
   public static void showInternalWidget(Object result) {

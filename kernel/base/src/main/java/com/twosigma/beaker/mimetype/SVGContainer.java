@@ -20,11 +20,9 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
@@ -36,23 +34,17 @@ import java.net.URL;
 
 public class SVGContainer extends MIMEContainer {
 
-  public static MIMEContainer SVG(Object data) {
-    String code;
-    try {
-      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder builder = factory.newDocumentBuilder();
-      Document doc = validateData(data, builder);
-      TransformerFactory tf = TransformerFactory.newInstance();
-      Transformer transformer = tf.newTransformer();
-      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-      StringWriter writer = new StringWriter();
-      transformer.transform(new DOMSource(doc), new StreamResult(writer));
-      code = writer.getBuffer().toString().replaceAll("\n|\r", "");
-
-    } catch (SAXException | IOException | ParserConfigurationException | TransformerException e) {
-      e.printStackTrace();
-      return addMimeType(TEXT_PLAIN,"");
-    }
+  public static MIMEContainer SVG(Object data) throws Exception {
+    String code = "";
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder builder = factory.newDocumentBuilder();
+    Document doc = validateData(data, builder);
+    TransformerFactory tf = TransformerFactory.newInstance();
+    Transformer transformer = tf.newTransformer();
+    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+    StringWriter writer = new StringWriter();
+    transformer.transform(new DOMSource(doc), new StreamResult(writer));
+    code = writer.getBuffer().toString().replaceAll("\n|\r", "");
     return addMimeType(IMAGE_SVG, code);
   }
 

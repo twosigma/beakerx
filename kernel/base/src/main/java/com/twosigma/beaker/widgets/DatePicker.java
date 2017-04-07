@@ -15,6 +15,8 @@
  */
 package com.twosigma.beaker.widgets;
 
+import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -40,6 +42,8 @@ public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
     super.content(content);
     content.put(MODEL_NAME, MODEL_NAME_VALUE);
     content.put(VIEW_NAME, VIEW_NAME_VALUE);
+    content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);
+    content.put(VIEW_MODULE, InternalWidgetUtils.VIEW_MODULE_VALUE);
     content.put(VALUE, this.value);
     return content;
   }

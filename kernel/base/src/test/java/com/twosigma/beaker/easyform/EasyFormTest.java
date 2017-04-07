@@ -248,7 +248,7 @@ public class EasyFormTest {
   }
 
   private void verifyDatePicker(List<Message> messages) {
-    verifyOpenCommMsg(messages, DatePicker.MODEL_NAME_VALUE, DatePicker.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(messages, DatePicker.MODEL_NAME_VALUE, DatePicker.VIEW_NAME_VALUE);
   }
 
   private void verifyTextField(List<Message> messages) {

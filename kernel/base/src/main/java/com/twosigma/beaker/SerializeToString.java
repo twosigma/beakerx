@@ -18,6 +18,7 @@ package com.twosigma.beaker;
 
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Optional;
 
 import com.github.lwhite1.tablesaw.api.Table;
 import com.twosigma.beaker.easyform.EasyForm;
@@ -185,30 +186,19 @@ public class SerializeToString {
         || (input instanceof Widget);
   }
 
-  public static MIMEContainer doit(Object input) {
-    MIMEContainer ret;
+  public static Optional<MIMEContainer> doit(Object input) {
+    Optional<MIMEContainer> ret;
     if(input != null){
       if (isWidget(input)) {
         DisplayAnyWidget.display(input);
-        ret = Text("");
+        ret = Optional.empty();
       } else {
-        ret = assignMimeType(input);
+        ret = Optional.of((input instanceof MIMEContainer)? (MIMEContainer) input:Text(input));
       }
     }else{
-      ret = Text("null");
+      ret = Optional.of(Text("null"));
     }
     return ret;
-  }
-
-  public static MIMEContainer getMimeAndResult(Object input) {
-    if(input != null) {
-      return assignMimeType(input);
-    }
-    return Text("null");
-  }
-
-  private static MIMEContainer assignMimeType(Object input) {
-    return (input instanceof MIMEContainer)? (MIMEContainer) input:Text(input);
   }
 
   public static boolean isInternalWidget(Object result){

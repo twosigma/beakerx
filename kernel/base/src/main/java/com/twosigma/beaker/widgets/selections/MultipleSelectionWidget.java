@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 public abstract class MultipleSelectionWidget extends SelectionWidget{
 
-  private String[] value = new String[0];
+  protected String[] value = new String[0];
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {

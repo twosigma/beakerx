@@ -65,6 +65,13 @@ public class CategoryPlot extends AbstractChart implements InternalWidget, Inter
   public Comm getComm() {
     return this.comm;
   }
+  
+  @Override
+  public void close() {
+    if (this.comm != null) {
+      this.comm.close();
+    }
+  }
 
   public CategoryPlot leftShift(CategoryGraphics graphics) {
     return add(graphics);

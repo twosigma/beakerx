@@ -21,6 +21,8 @@ import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;
 import com.twosigma.beaker.widgets.strings.Text;
 
+import static com.twosigma.beaker.widgets.Layout.PX;
+
 public class TextFieldWidget extends TextField implements CommFunctionality, EasyFormWidget {
 
   private Text text;
@@ -59,4 +61,9 @@ public class TextFieldWidget extends TextField implements CommFunctionality, Eas
     return text.getComm();
   }
 
+  @Override
+  public TextField setWidth(Integer width) {
+    text.getLayout().setWidth(width + PX);
+    return super.setWidth(width);
+  }
 }

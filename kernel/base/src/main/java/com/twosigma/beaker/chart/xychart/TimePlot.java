@@ -57,6 +57,13 @@ public class TimePlot extends XYChart implements InternalWidget, InternalPlot {
   public Comm getComm() {
     return this.comm;
   }
+  
+  @Override
+  public void close() {
+    if (this.comm != null) {
+      this.comm.close();
+    }
+  }
 
   public XYChart setXBound(Date lower, Date upper) {
     setXBound((double) lower.getTime(), (double) upper.getTime());

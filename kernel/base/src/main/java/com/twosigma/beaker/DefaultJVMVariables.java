@@ -55,9 +55,10 @@ public class DefaultJVMVariables {
         //"com.twosigma.beaker.chart.treemap.util.*",
         //"net.sf.jtreemap.swing.*",
         "com.twosigma.beaker.chart.histogram.*",
-        "com.twosigma.beaker.chart.heatmap.HeatMap"
+        "com.twosigma.beaker.chart.heatmap.HeatMap",
         //"com.twosigma.beaker.easyform.*",
         //"com.twosigma.beaker.easyform.formitem.*",
+        "static com.twosigma.beaker.widgets.DisplayAnyWidget.display"
     );
   }
 

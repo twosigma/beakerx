@@ -27,7 +27,7 @@ import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 
 public interface Evaluator {
   
-  final static Logger logger = LoggerFactory.getLogger(Evaluator.class.getName());
+  Logger logger = LoggerFactory.getLogger(Evaluator.class.getName());
 
 	void setShellOptions(String cp, String in) throws IOException;
 	AutocompleteResult autocomplete(String code, int caretPosition);
@@ -36,7 +36,7 @@ public interface Evaluator {
 	void startWorker();
 	void exit();
 	
-  public static Path createJupyterTempFolder(){
+  static Path createJupyterTempFolder(){
     Path ret = null;
     try {
       ret = Files.createTempDirectory("beaker");

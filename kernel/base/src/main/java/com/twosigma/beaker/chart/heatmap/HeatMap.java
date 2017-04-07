@@ -40,6 +40,13 @@ public class HeatMap extends AbstractChart implements InternalWidget, InternalPl
   public Comm getComm() {
     return this.comm;
   }
+  
+  @Override
+  public void close() {
+    if (this.comm != null) {
+      this.comm.close();
+    }
+  }
 
   public HeatMap() {
     setXLowerMargin(0);

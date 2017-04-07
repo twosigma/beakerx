@@ -23,8 +23,8 @@ import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
 
+import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyMsgForProperty;
-import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
 public class SelectMultipleTest {
 
@@ -47,7 +47,7 @@ public class SelectMultipleTest {
     //when
     new SelectMultiple();
     //then
-    verifyOpenCommMsg(kernel.getPublishedMessages(), SelectMultiple.MODEL_NAME_VALUE, SelectMultiple.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(kernel.getPublishedMessages(), SelectMultiple.MODEL_NAME_VALUE, SelectMultiple.VIEW_NAME_VALUE);
   }
 
   @Test

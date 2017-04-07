@@ -18,7 +18,9 @@ package com.twosigma.beaker.widgets.integers;
 import java.io.Serializable;
 import java.util.HashMap;
 
-
+/**
+ * Slider widget that represents an integer bounded from above and below.
+ */
 public class IntSlider extends BoundedIntWidget {
 
   public static final String VIEW_NAME_VALUE = "IntSliderView";

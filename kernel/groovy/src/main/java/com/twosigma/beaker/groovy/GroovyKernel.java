@@ -21,6 +21,7 @@ import com.twosigma.beaker.groovy.comm.GroovyCommOpenHandler;
 import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.groovy.handler.GroovyKernelInfoHandler;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
+import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.jupyter.ConfigurationFile;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.handler.KernelHandler;
@@ -46,9 +47,11 @@ public class GroovyKernel extends Kernel {
   }
   
   public static void main(final String[] args) throws InterruptedException, IOException {
+    BeakerStdOutErrHandler.init();
     String id = uuid();
     GroovyKernel kernel = new GroovyKernel(id, new GroovyEvaluator(id, id), new KernelConfigurationFile(args));
     runKernel(kernel);
+    BeakerStdOutErrHandler.fini();
   }
   
 }

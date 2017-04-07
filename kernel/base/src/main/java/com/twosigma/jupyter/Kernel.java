@@ -166,4 +166,5 @@ public abstract class Kernel implements KernelFunctionality {
       Signal.handle(new Signal("INT"), handler);
     }
   }
+
 }

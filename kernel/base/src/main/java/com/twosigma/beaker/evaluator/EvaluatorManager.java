@@ -35,7 +35,6 @@ public class EvaluatorManager {
   public EvaluatorManager(KernelFunctionality kernel, Evaluator evaluator) {
     this.kernel = kernel;
     this.evaluator = evaluator;
-    BeakerStdOutErrHandler.init();
     evaluator.startWorker();
   }
 
@@ -66,7 +65,6 @@ public class EvaluatorManager {
   }
   
   public void exit() {
-    BeakerStdOutErrHandler.fini();
     evaluator.exit();
   }
   

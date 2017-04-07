@@ -24,6 +24,7 @@ import com.twosigma.beaker.javash.comm.JavaCommOpenHandler;
 import com.twosigma.beaker.javash.evaluator.JavaEvaluator;
 import com.twosigma.beaker.javash.handler.JavaKernelInfoHandler;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
+import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.jupyter.ConfigurationFile;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
@@ -48,10 +49,12 @@ public class JavaKernel extends Kernel {
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {
+    BeakerStdOutErrHandler.init();
     String id = uuid();
     JavaEvaluator e = new JavaEvaluator(id,id);
     JavaKernel kernel = new JavaKernel(id, e, new KernelConfigurationFile(args));
     runKernel(kernel);
+    BeakerStdOutErrHandler.fini();
   }
 
 }

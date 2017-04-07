@@ -19,6 +19,7 @@ import com.twosigma.beaker.clojure.handlers.ClojureCommOpenHandler;
 import com.twosigma.beaker.clojure.handlers.ClojureKernelInfoHandler;
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
+import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.jupyter.ConfigurationFile;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
@@ -46,9 +47,11 @@ public class ClojureKernel extends Kernel {
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {
+    BeakerStdOutErrHandler.init();
     String id = uuid();
     ClojureKernel kernel = new ClojureKernel(id, new ClojureEvaluator(id, id), new KernelConfigurationFile(args));
     runKernel(kernel);
+    BeakerStdOutErrHandler.fini();
   }
 
 }

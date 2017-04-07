@@ -256,7 +256,7 @@ public class MessageCreator {
   }
 
   private MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
-    MIMEContainer resultString = SerializeToString.doit(seo.getPayload());
+    MIMEContainer resultString = SerializeToString.getMimeAndResult(seo.getPayload());
     return new MessageHolder(
             SocketEnum.IOPUB_SOCKET,
             buildMessage(

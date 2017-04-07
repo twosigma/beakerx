@@ -20,11 +20,30 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import com.twosigma.beaker.easyform.DisplayEasyForm;
 import com.twosigma.beaker.easyform.EasyForm;
-import com.twosigma.beaker.easyform.formitem.*;
-import com.twosigma.beaker.easyform.serializer.*;
-import com.twosigma.beaker.fileloader.CsvPlotReader;
+import com.twosigma.beaker.easyform.formitem.TextField;
+import com.twosigma.beaker.easyform.formitem.TextArea;
+import com.twosigma.beaker.easyform.formitem.CheckBox;
+import com.twosigma.beaker.easyform.formitem.ComboBox;
+import com.twosigma.beaker.easyform.formitem.ListComponent;
+import com.twosigma.beaker.easyform.formitem.RadioButtonComponent;
+import com.twosigma.beaker.easyform.formitem.CheckBoxGroup;
+import com.twosigma.beaker.easyform.formitem.DatePickerComponent;
+import com.twosigma.beaker.easyform.formitem.ButtonComponent;
+import com.twosigma.beaker.easyform.formitem.LoadValuesButton;
+import com.twosigma.beaker.easyform.formitem.SaveValuesButton;
+import com.twosigma.beaker.easyform.serializer.CheckBoxSerializer;
+import com.twosigma.beaker.easyform.serializer.EasyFormSerializer;
+import com.twosigma.beaker.easyform.serializer.TextAreaSerializer;
+import com.twosigma.beaker.easyform.serializer.TextFieldSerializer;
+import com.twosigma.beaker.easyform.serializer.ComboBoxSerializer;
+import com.twosigma.beaker.easyform.serializer.ListComponentSerializer;
+import com.twosigma.beaker.easyform.serializer.RadioButtonSerializer;
+import com.twosigma.beaker.easyform.serializer.CheckBoxGroupSerializer;
+import com.twosigma.beaker.easyform.serializer.DatePickerComponentSerializer;
+import com.twosigma.beaker.easyform.serializer.ButtonComponentSerializer;
+import com.twosigma.beaker.easyform.serializer.LoadValuesButtonSerializer;
+import com.twosigma.beaker.easyform.serializer.SaveValuesButtonSerializer;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.beaker.table.TableDisplay;
@@ -81,6 +100,7 @@ import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
+import com.twosigma.beaker.widgets.DisplayAnyWidget;
 import com.twosigma.beaker.widgets.DisplayWidget;
 import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
@@ -168,15 +188,27 @@ public class SerializeToString {
   public static MIMEContainer doit(Object input) {
     MIMEContainer ret;
     if(input != null){
-      if(input instanceof MIMEContainer) {
-        ret = (MIMEContainer) input;
-      } else{
-        ret = Text(input);
+      if (isWidget(input)) {
+        DisplayAnyWidget.display(input);
+        ret = Text("");
+      } else {
+        ret = assignMimeType(input);
       }
     }else{
       ret = Text("null");
     }
     return ret;
+  }
+
+  public static MIMEContainer getMimeAndResult(Object input) {
+    if(input != null) {
+      return assignMimeType(input);
+    }
+    return Text("null");
+  }
+
+  private static MIMEContainer assignMimeType(Object input) {
+    return (input instanceof MIMEContainer)? (MIMEContainer) input:Text(input);
   }
 
   public static boolean isInternalWidget(Object result){

@@ -16,8 +16,31 @@
 package com.twosigma.beaker.easyform.formitem.widgets;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
+import com.twosigma.beaker.widgets.DatePicker;
+import com.twosigma.jupyter.message.Message;
+import org.junit.Test;
+
+import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DatePickerComponentWidgetTest extends EasyFormWidgetTest {
+
+  @Test
+  public void setShowTime() throws Exception {
+    //given
+    Boolean newValue = Boolean.TRUE;
+    DatePickerComponentWidget widget = new DatePickerComponentWidget();
+    kernel.clearPublishedMessages();
+    //when
+    widget.setShowTime(newValue);
+    //then
+    verifyShowTime(kernel.getPublishedMessages().get(0), true);
+  }
+
+  private void verifyShowTime(Message message, Boolean expected) {
+    Boolean value = getValueForProperty(message, DatePicker.SHOW_TIME, Boolean.class);
+    assertThat(value).isEqualTo(expected);
+  }
 
   @Override
   protected EasyFormComponent createWidget() {

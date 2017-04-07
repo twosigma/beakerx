@@ -26,15 +26,9 @@ public abstract class DatePickerComponent extends EasyFormComponent {
   private static final String DATE_FORMAT = "yyyyMMdd";
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
-  private Boolean showTime;
+  public abstract void setShowTime(final Boolean showTime);
 
-  public void setShowTime(final Boolean showTime) {
-    this.showTime = showTime;
-  }
-
-  public Boolean getShowTime() {
-    return showTime;
-  }
+  public abstract Boolean getShowTime();
 
   @Override
   protected boolean checkValue(final Object value) {

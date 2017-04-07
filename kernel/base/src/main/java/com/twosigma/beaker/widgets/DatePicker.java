@@ -25,6 +25,9 @@ public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
 
   public static final String VIEW_NAME_VALUE = "DatePickerView";
   public static final String MODEL_NAME_VALUE = "DatePickerModel";
+  public static final String SHOW_TIME = "showTime";
+
+  private Boolean showTime;
 
   public DatePicker() {
     super();
@@ -47,6 +50,16 @@ public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
     content.put(VALUE, this.value);
     return content;
   }
+
+  public void setShowTime(final Boolean showTime) {
+    this.showTime = showTime;
+    sendUpdate(SHOW_TIME, showTime);
+  }
+
+  public Boolean getShowTime() {
+    return showTime;
+  }
+
 
   public LinkedHashMap<String, String> getValue() {
     return value;

@@ -24,10 +24,10 @@ import com.twosigma.beaker.javash.comm.JavaCommOpenHandler;
 import com.twosigma.beaker.javash.evaluator.JavaEvaluator;
 import com.twosigma.beaker.javash.handler.JavaKernelInfoHandler;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
-import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.jupyter.ConfigurationFile;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
+import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
 
@@ -37,24 +37,23 @@ public class JavaKernel extends Kernel {
   public JavaKernel(final String id, final Evaluator evaluator, ConfigurationFile config) {
     super(id, evaluator, config);
   }
-  
+
   @Override
-  public CommOpenHandler getCommOpenHandler(Kernel kernel){
+  public CommOpenHandler getCommOpenHandler(Kernel kernel) {
     return new JavaCommOpenHandler(kernel);
   }
-  
+
   @Override
   public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
     return new JavaKernelInfoHandler(kernel);
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {
-    BeakerStdOutErrHandler.init();
-    String id = uuid();
-    JavaEvaluator e = new JavaEvaluator(id,id);
-    JavaKernel kernel = new JavaKernel(id, e, new KernelConfigurationFile(args));
-    runKernel(kernel);
-    BeakerStdOutErrHandler.fini();
+    KernelRunner.run(() -> {
+      String id = uuid();
+      JavaEvaluator e = new JavaEvaluator(id, id);
+      return new JavaKernel(id, e, new KernelConfigurationFile(args));
+    });
   }
 
 }

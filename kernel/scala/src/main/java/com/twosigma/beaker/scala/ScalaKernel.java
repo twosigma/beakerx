@@ -21,13 +21,13 @@ import java.io.IOException;
 
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
-import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.beaker.scala.comm.ScalaCommOpenHandler;
 import com.twosigma.beaker.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beaker.scala.handler.ScalaKernelInfoHandler;
 import com.twosigma.jupyter.ConfigurationFile;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
+import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
 
@@ -37,26 +37,24 @@ public class ScalaKernel extends Kernel {
   public ScalaKernel(final String id, final Evaluator evaluator, ConfigurationFile config) {
     super(id, evaluator, config);
   }
-  
+
   @Override
-  public CommOpenHandler getCommOpenHandler(Kernel kernel){
+  public CommOpenHandler getCommOpenHandler(Kernel kernel) {
     return new ScalaCommOpenHandler(kernel);
   }
-  
+
   @Override
   public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
     return new ScalaKernelInfoHandler(kernel);
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {
-    BeakerStdOutErrHandler.init();
-    String id = uuid();
-    ScalaEvaluator se = new ScalaEvaluator(null);//TODO check what to put, need for autotranslation
-    se.initialize(id, id);
-    //js.setupAutoTranslation(); -- uncomment
-    ScalaKernel kernel = new ScalaKernel(id, se, new KernelConfigurationFile(args));
-    runKernel(kernel);
-    BeakerStdOutErrHandler.fini();
+    KernelRunner.run(() -> {
+      String id = uuid();
+      ScalaEvaluator se = new ScalaEvaluator(null);//TODO check what to put, need for autotranslation
+      se.initialize(id, id);
+      //js.setupAutoTranslation(); -- uncomment
+      return new ScalaKernel(id, se, new KernelConfigurationFile(args));
+    });
   }
-
 }

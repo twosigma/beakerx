@@ -21,6 +21,8 @@ import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 import org.zeromq.ZMQ;
+
+import java.io.IOException;
 import java.util.Observer;
 import java.util.Set;
 
@@ -53,4 +55,6 @@ public interface KernelFunctionality {
   EvaluatorManager getEvaluatorManager();
 
   Handler<Message> getHandler(JupyterMessages type);
+
+  void run() throws InterruptedException, IOException;
 }

@@ -35,6 +35,7 @@ import com.twosigma.beaker.jvm.object.ConsoleOutput;
 import com.twosigma.beaker.jvm.object.OutputCell;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.mimetype.MIMEContainer;
+import com.twosigma.beaker.widgets.DisplayAnyWidget;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
@@ -162,7 +163,11 @@ public class MessageCreator {
   private List<MessageHolder> createResultForSupportedStatus(SimpleEvaluationObject seo, Message message) {
     List<MessageHolder> ret = new ArrayList<>();
     if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
-      ret.add(createFinishResult(seo, message));
+      if(SerializeToString.isWidget(seo.getPayload())){
+        DisplayAnyWidget.display(seo.getPayload());
+      }else{
+        ret.add(createFinishResult(seo, message));
+      }
     } else if (EvaluationStatus.ERROR == seo.getStatus()) {
       ret.add(createErrorResult(seo, message));
     }

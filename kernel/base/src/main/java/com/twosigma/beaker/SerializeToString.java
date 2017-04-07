@@ -81,8 +81,6 @@ import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
-import com.twosigma.beaker.widgets.DisplayAnyWidget;
-import com.twosigma.beaker.widgets.DisplayOutputContainer;
 import com.twosigma.beaker.widgets.DisplayWidget;
 import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
@@ -158,7 +156,7 @@ public class SerializeToString {
     mapper = new ObjectMapper();
     mapper.registerModule(module);
   }
-  
+
   public static boolean isWidget(Object input) {
     return (input instanceof EasyForm)
         || (input instanceof OutputContainer)
@@ -166,14 +164,11 @@ public class SerializeToString {
         || isInternalWidget(input)
         || (input instanceof Widget);
   }
-  
+
   public static MIMEContainer doit(Object input) {
-    MIMEContainer ret = null;
+    MIMEContainer ret;
     if(input != null){
-      if (isWidget(input)) {
-        DisplayAnyWidget.display(input);
-        ret = Text("");
-      } else if(input instanceof MIMEContainer) {
+      if(input instanceof MIMEContainer) {
         ret = (MIMEContainer) input;
       } else{
         ret = Text(input);
@@ -183,7 +178,7 @@ public class SerializeToString {
     }
     return ret;
   }
-  
+
   public static boolean isInternalWidget(Object result){
     boolean ret = false;
     if(result != null && result instanceof InternalWidget ){

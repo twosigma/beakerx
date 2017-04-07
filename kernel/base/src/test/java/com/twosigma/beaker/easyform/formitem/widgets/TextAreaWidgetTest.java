@@ -16,9 +16,11 @@
 package com.twosigma.beaker.easyform.formitem.widgets;
 
 import com.twosigma.beaker.easyform.EasyFormComponent;
+import com.twosigma.beaker.widgets.Layout;
 import com.twosigma.jupyter.message.Message;
 import org.junit.Test;
 
+import static com.twosigma.beaker.widgets.Layout.PX;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beaker.widgets.Widget.VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,6 +41,41 @@ public class TextAreaWidgetTest extends EasyFormWidgetTest {
 
   private void verifyTextAreaValue(Message message, String expected) {
     String label = getValueForProperty(message, VALUE, String.class);
+    assertThat(label).isEqualTo(expected);
+  }
+
+
+  @Test
+  public void setWidth() throws Exception {
+    //given
+    Integer newValue = 11;
+    TextAreaWidget widget = new TextAreaWidget();
+    kernel.clearPublishedMessages();
+    //when
+    widget.setWidth(newValue);
+    //then
+    verifyWidth(kernel.getPublishedMessages().get(0), "11" + PX);
+  }
+
+  private void verifyWidth(Message message, String expected) {
+    String label = getValueForProperty(message, Layout.WIDTH, String.class);
+    assertThat(label).isEqualTo(expected);
+  }
+
+  @Test
+  public void setHeight() throws Exception {
+    //given
+    Integer newValue = 22;
+    TextAreaWidget widget = new TextAreaWidget();
+    kernel.clearPublishedMessages();
+    //when
+    widget.setHeight(newValue);
+    //then
+    verifyHeight(kernel.getPublishedMessages().get(0), "22" + PX);
+  }
+
+  private void verifyHeight(Message message, String expected) {
+    String label = getValueForProperty(message, Layout.HEIGHT, String.class);
     assertThat(label).isEqualTo(expected);
   }
 

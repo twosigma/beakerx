@@ -13,22 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.javash;
+package com.twosigma.beaker.clojure;
 
 import com.twosigma.beaker.DefaultJVMVariables;
 
-/**
- * 
- * @author konst
- *
- */
-public class JavaDefaultVariables extends DefaultJVMVariables {
-  
-  public JavaDefaultVariables() {
-    //TODO delete when issue #5126 "java crashes on static imports" will be fixed 
-    removeImports(
-      "static com.twosigma.beaker.widgets.DisplayAnyWidget.display"
-      );
+public class ClojureDefaultVariables extends DefaultJVMVariables {
+
+  public ClojureDefaultVariables() {
   }
-  
+
 }

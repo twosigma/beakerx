@@ -21,15 +21,10 @@ import java.util.Base64;
 
 public class ImageContainer extends MIMEContainer {
 
-  public static MIMEContainer Image(Object data) {
+  public static MIMEContainer Image(Object data) throws Exception {
     byte[] image;
     if (data instanceof String) {
-      try {
-        image = getBytes(data);
-      } catch (Exception e) {
-        e.printStackTrace();
-        return addMimeType(TEXT_PLAIN,"");
-      }
+      image = getBytes(data);
     } else {
       image = (byte[]) data;
     }

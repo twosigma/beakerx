@@ -49,7 +49,7 @@ public abstract class Widget implements CommFunctionality {
   }
 
   public void init() {
-    comm = new Comm(Utils.uuid(), TargetNamesEnum.JUPYTER_WIDGET);
+    comm = new Comm(TargetNamesEnum.JUPYTER_WIDGET);
     openComm();
   }
 

@@ -19,39 +19,41 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- * Slider widget that represents an integer bounded from above and below.
+ * Slider/trackbar that represents a pair of ints bounded by minimum and maximum value.
+ * 
+ * @author konst
  */
-public class IntSlider extends BoundedIntWidget {
-
+public class IntRangeSlider extends BoundedIntRangeWidget{
+  
   public static final String VIEW_NAME_VALUE = "IntSliderView";
   public static final String MODEL_NAME_VALUE = "IntSliderModel";
-
+  
   protected static final String ORIENTATION = "orientation";
-  protected static final String SLIDER_COLOR = "slider_color";
-  protected static final String READOUT = "readout";
   protected static final String CONTINUOUS_UPDATE = "continuous_update";
-
+  protected static final String _RANGE = "_range";
+  protected static final String READOUT = "readout";
+  protected static final String SLIDER_COLOR = "slider_color";
+  
   private String orientation = "horizontal";
-  private String slider_color;
-  private Boolean readOut = true;
   private Boolean continuous_update = true;
-
-  public IntSlider() {
+  private Boolean readOut = true;
+  private String slider_color;
+  
+  public IntRangeSlider() {
     super();
     init();
   }
-
+  
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(MODEL_NAME, MODEL_NAME_VALUE);
     content.put(VIEW_NAME, VIEW_NAME_VALUE);
-    content.put(CONTINUOUS_UPDATE, this.continuous_update);
     content.put(ORIENTATION, orientation);
+    content.put(_RANGE, true);
     content.put(READOUT, this.readOut);
     content.put(SLIDER_COLOR, this.slider_color);
-    content.put("_range", false);
-    content.put("readout_format", "d");
+    content.put(CONTINUOUS_UPDATE, this.continuous_update);
     return content;
   }
 
@@ -62,15 +64,6 @@ public class IntSlider extends BoundedIntWidget {
   public void setOrientation(String orientation) {
     this.orientation = orientation;
     sendUpdate(ORIENTATION, orientation);
-  }
-
-  public String getSlider_color() {
-    return slider_color;
-  }
-
-  public void setSlider_color(String slider_color) {
-    this.slider_color = slider_color;
-    sendUpdate(SLIDER_COLOR, slider_color);
   }
 
   public Boolean getReadOut() {
@@ -90,5 +83,5 @@ public class IntSlider extends BoundedIntWidget {
     this.continuous_update = continuous_update;
     sendUpdate(CONTINUOUS_UPDATE, continuous_update);
   }
-
+  
 }

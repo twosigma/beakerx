@@ -19,38 +19,42 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- * Progress bar that represents an integer bounded from above and below.
+ * 
+ * @author konst
+ *
  */
-public class IntProgress extends BoundedIntWidget {
+public class Play extends BoundedIntWidget{
 
-  public static final String VIEW_NAME_VALUE = "ProgressView";
-  public static final String MODEL_NAME_VALUE = "ProgressModel";
-  protected static final String ORIENTATION = "orientation";
-
-  private String orientation = "horizontal";
-
-  public IntProgress() {
+  public static final String VIEW_NAME_VALUE = "PlayView";
+  public static final String MODEL_NAME_VALUE = "PlayModel";
+  
+  protected static final String _PLAYING = "_playing";
+  protected static final String INTERVAL = "interval";
+  
+  private Integer interval;
+  
+  public Play() {
     super();
+    this.interval = 100;
     init();
   }
-
+  
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(MODEL_NAME, MODEL_NAME_VALUE);
     content.put(VIEW_NAME, VIEW_NAME_VALUE);
-    content.put(ORIENTATION, this.orientation);
-    content.put("bar_style", "");
+    content.put(_PLAYING, true);
     return content;
   }
-
-  public String getOrientation() {
-    return this.orientation;
+  
+  public Integer getOrientation() {
+    return interval;
   }
 
-  public void setOrientation(String orientation) {
-    this.orientation = orientation;
-    sendUpdate(ORIENTATION, orientation);
+  public void setOrientation(Integer interval) {
+    this.interval = interval;
+    sendUpdate(INTERVAL, interval);
   }
-
+  
 }

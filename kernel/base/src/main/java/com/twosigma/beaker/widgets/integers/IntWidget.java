@@ -20,8 +20,14 @@ import java.util.HashMap;
 
 import com.twosigma.beaker.widgets.ValueWidget;
 
-public abstract class IntWidget extends ValueWidget<Integer> {
+/**
+ * Base class for widgets that represent an integer.
+ * 
+ * @param <T>
+ */
+public abstract class IntWidget<T extends Serializable> extends ValueWidget<T> {
 
+  
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
@@ -31,9 +37,7 @@ public abstract class IntWidget extends ValueWidget<Integer> {
 
   @Override
   public void updateValue(Object value) {
-    this.value = (int) value;
+    this.value = (T) value;
   }
-
-
 
 }

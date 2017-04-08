@@ -20,7 +20,7 @@ JVM kernels with widgets, plotting, tables, and autotranslation.
 
 ## Dependencies
 
-* oracle Java8 JDK, gradle
+* oracle Java8 JDK, gradle (v3+)
 * npm, bower, webpack
 * conda
 

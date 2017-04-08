@@ -25,6 +25,7 @@ import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 import org.zeromq.ZMQ;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -142,5 +143,10 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public Handler<Message> getHandler(JupyterMessages type) {
     return null;
+  }
+
+  @Override
+  public void run() throws InterruptedException, IOException {
+
   }
 }

@@ -65,12 +65,9 @@ public abstract class Kernel implements KernelFunctionality {
 
   public abstract KernelHandler<Message> getKernelInfoHandler(Kernel kernel);
 
-  protected static void runKernel(Kernel kernel) throws InterruptedException, IOException {
-    KernelManager.register(kernel);
-    kernel.run();
-  }
-
-  private void run() throws InterruptedException, IOException {
+  @Override
+  public void run() throws InterruptedException, IOException {
+    KernelManager.register(this);
     logger.info("Jupyter kernel starting.");
     this.kernelSockets = new KernelSockets(this, configurationFile.getConfig(), this::closeComms);
     this.kernelSockets.start();
@@ -166,4 +163,5 @@ public abstract class Kernel implements KernelFunctionality {
       Signal.handle(new Signal("INT"), handler);
     }
   }
+
 }

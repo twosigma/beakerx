@@ -42,6 +42,7 @@ conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx
 (cd kernel/groovy; gradle --no-daemon kernelInstall)
 (cd kernel/scala; gradle --no-daemon kernelInstall)
+(cd kernel/clojure; gradle --no-daemon kernelInstall)
 (cd kernel/java; gradle --no-daemon kernelInstall)
 gradle --no-daemon environmentVariables # set PYTHONPATH as directed
 jupyter notebook

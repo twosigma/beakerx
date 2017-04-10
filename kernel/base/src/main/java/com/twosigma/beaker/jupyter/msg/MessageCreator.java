@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.twosigma.beaker.jvm.object.ConsoleOutput;
 import com.twosigma.beaker.jvm.object.OutputCell;
@@ -162,7 +163,7 @@ public class MessageCreator {
   private List<MessageHolder> createResultForSupportedStatus(SimpleEvaluationObject seo, Message message) {
     List<MessageHolder> ret = new ArrayList<>();
     if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
-      ret.add(createFinishResult(seo, message));
+      createAndAddFinishResult(seo, message, ret);
     } else if (EvaluationStatus.ERROR == seo.getStatus()) {
       ret.add(createErrorResult(seo, message));
     }
@@ -250,15 +251,15 @@ public class MessageCreator {
     return ret.stream().toArray(String[]::new);
   }
 
-  private MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
-    MIMEContainer resultString = SerializeToString.doit(seo.getPayload());
-    return new MessageHolder(
+  private void createAndAddFinishResult(SimpleEvaluationObject seo, Message message, List<MessageHolder> ret) {
+    Optional<MIMEContainer> resultString = SerializeToString.doit(seo.getPayload());
+    resultString.ifPresent(mimeContainer -> ret.add(new MessageHolder(
             SocketEnum.IOPUB_SOCKET,
             buildMessage(
                     message,
-                    resultString.getMime(),
-                    resultString.getCode(),
-                    seo.getExecutionCount()));
+                    mimeContainer.getMime(),
+                    mimeContainer.getCode(),
+                    seo.getExecutionCount()))));
   }
 
   public Message createBusyMessage(Message parentMessage) {

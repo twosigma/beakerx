@@ -19,6 +19,7 @@ import static com.twosigma.beaker.widgets.DisplayWidget.display;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.slf4j.Logger;
@@ -56,9 +57,11 @@ public class Interactive extends InteractiveBase{
           KernelManager.get().publish(mc.buildClearOutput(message, true));
           Object result = function.call(getWidgetValues());
           seo.clrOutputHandler();
-          MIMEContainer resultString = SerializeToString.doit(result);
-          logger.info("interact result is = " + resultString.getMime());
-          KernelManager.get().publish(mc.buildDisplayData(message, resultString));
+          Optional<MIMEContainer> resultString = SerializeToString.doit(result);
+          if(resultString.isPresent()){
+            logger.info("interact result is = " + resultString.get().getMime());
+            KernelManager.get().publish(mc.buildDisplayData(message, resultString.get()));
+          }
         }
         
         private Object[] getWidgetValues(){

@@ -26,3 +26,4 @@ kernel/scala/build/
 /build/
 /.classpath
 /.project
+/.nb-gradle/

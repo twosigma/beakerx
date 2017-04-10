@@ -18,7 +18,10 @@ package com.twosigma.beaker.widgets.integers;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public abstract class BoundedIntWidget extends IntWidget {
+/**
+ * Base class for widgets that represent an integer bounded from above and below.
+ */
+public abstract class BoundedIntWidget extends IntWidget<Integer> {
 
   public static final String STEP = "step";
   public static final String MAX = "max";
@@ -30,6 +33,7 @@ public abstract class BoundedIntWidget extends IntWidget {
 
   public BoundedIntWidget() {
     super();
+    value = 0;
   }
 
   @Override

@@ -19,38 +19,56 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- * Progress bar that represents an integer bounded from above and below.
+ * @author konst
  */
-public class IntProgress extends BoundedIntWidget {
+public abstract class BoundedIntRangeWidget extends IntRangeWidget{
 
-  public static final String VIEW_NAME_VALUE = "ProgressView";
-  public static final String MODEL_NAME_VALUE = "ProgressModel";
-  protected static final String ORIENTATION = "orientation";
+  public static final String STEP = "step";
+  public static final String MAX = "max";
+  public static final String MIN = "min";
 
-  private String orientation = "horizontal";
+  private Integer step = 1;
+  private Integer max = 100;
+  private Integer min = 0;
 
-  public IntProgress() {
+  public BoundedIntRangeWidget() {
     super();
-    init();
   }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
-    content.put(ORIENTATION, this.orientation);
-    content.put("bar_style", "");
+    content.put(MAX, this.getMax());
+    content.put(MIN, this.getMin());
+    content.put(STEP, this.getStep());
     return content;
   }
 
-  public String getOrientation() {
-    return this.orientation;
+  public Integer getStep() {
+    return step;
   }
 
-  public void setOrientation(String orientation) {
-    this.orientation = orientation;
-    sendUpdate(ORIENTATION, orientation);
+  public void setStep(Integer step) {
+    this.step = step;
+    sendUpdate(STEP, step);
   }
 
+  public Integer getMax() {
+    return max;
+  }
+
+  public void setMax(Integer max) {
+    this.max = max;
+    sendUpdate(MAX, max);
+  }
+
+  public Integer getMin() {
+    return min;
+  }
+
+  public void setMin(Integer min) {
+    this.min = min;
+    sendUpdate(MIN, min);
+  }
+  
 }

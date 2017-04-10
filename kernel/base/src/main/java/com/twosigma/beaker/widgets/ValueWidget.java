@@ -1,6 +1,8 @@
 package com.twosigma.beaker.widgets;
 
-public abstract class ValueWidget<T> extends DOMWidget {
+import java.io.Serializable;
+
+public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
 
   protected T value;
   

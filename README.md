@@ -16,11 +16,20 @@
 
 # BeakerX: Beaker extensions for Jupyter
 
-JVM kernels with widgets, plotting, tables, and autotranslation.
+BeakerX is a collection of JVM kernels with widgets, plotting, tables,
+autotranslation, and other extensions to the Jupyter Notebook and
+Jupyter Lab.  BeakerX is in alpha, with major features still under
+development and refactorings and incompatible changes.  This is true
+despite our previous stable releases up to version 1.7.1 because
+BeakerX has a whole new architecture based on Jupyter, whereas the
+previous releases were an independent application, Beaker Notebook.
+You could think of BeakerX as Beaker Notebook 2.0, and this transition
+is not yet complete.  Feedback and advice on how to best complete this
+process is very welcome.
 
 ## Dependencies
 
-* oracle Java8 JDK, gradle
+* oracle Java8 JDK, gradle (v3+)
 * npm, bower, webpack
 * conda
 
@@ -33,6 +42,7 @@ conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx
 (cd kernel/groovy; gradle --no-daemon kernelInstall)
 (cd kernel/scala; gradle --no-daemon kernelInstall)
+(cd kernel/clojure; gradle --no-daemon kernelInstall)
 (cd kernel/java; gradle --no-daemon kernelInstall)
 gradle --no-daemon environmentVariables # set PYTHONPATH as directed
 jupyter notebook
@@ -56,6 +66,13 @@ python -m bkr2ipynb *.bkr
 
 ## Autotranslation from Python to JavaScript:
 <img width="631" alt="screen shot 2016-12-10 at 10 43 22 pm" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
+
+## Contributing
+
+We welcome developers to extend and improve BeakerX in ways that can
+benefit everyone. In order for us to accept your code or pull request,
+we need for you to fill out and email back to us a scan of a signed copy of the
+[Contributor License Agreement](http://beakernotebook.com/cla.zip).
 
 ## Attribution
 

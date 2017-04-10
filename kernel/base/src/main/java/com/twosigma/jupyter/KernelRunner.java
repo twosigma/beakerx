@@ -13,31 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.integers;
+package com.twosigma.jupyter;
 
-import java.io.Serializable;
-import java.util.HashMap;
+import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 
-import com.twosigma.beaker.widgets.ValueWidget;
+import java.io.IOException;
 
-/**
- * Base class for widgets that represent an integer.
- * 
- * @param <T>
- */
-public abstract class IntWidget<T extends Serializable> extends ValueWidget<T> {
+public class KernelRunner {
 
-  
-  @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(VALUE, this.value);
-    return content;
+  public static void run(KernelFactory kernelFactory) throws IOException, InterruptedException {
+    BeakerStdOutErrHandler.init();
+    KernelFunctionality kernel = kernelFactory.createKernel();
+    kernel.run();
+    BeakerStdOutErrHandler.fini();
   }
 
-  @Override
-  public void updateValue(Object value) {
-    this.value = (T) value;
+  public interface KernelFactory {
+    KernelFunctionality createKernel();
   }
-
 }

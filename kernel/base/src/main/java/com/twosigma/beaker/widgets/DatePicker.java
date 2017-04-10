@@ -19,10 +19,8 @@ import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
-public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
-
+public class DatePicker extends ValueWidget<String> {
   public static final String VIEW_NAME_VALUE = "DatePickerView";
   public static final String MODEL_NAME_VALUE = "DatePickerModel";
   public static final String SHOW_TIME = "showTime";
@@ -31,13 +29,13 @@ public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
 
   public DatePicker() {
     super();
-    this.value = new LinkedHashMap();
+    this.value = "";
     init();
   }
 
   @Override
   public void updateValue(Object value) {
-    this.value = (LinkedHashMap<String, String>) value;
+    this.value = (String) value;
   }
 
   @Override
@@ -61,7 +59,7 @@ public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
   }
 
 
-  public LinkedHashMap<String, String> getValue() {
+  public String getValue() {
     return value;
   }
 

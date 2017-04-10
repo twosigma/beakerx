@@ -34,8 +34,9 @@ public abstract class BoolWidget extends ValueWidget<Boolean> {
   }
 
   @Override
-  public void updateValue(Object value) {
-    this.value = (Boolean) value;
+  public Boolean getValueFromObject(Object input){
+    return getBoolean(input);
   }
+  
 
 }

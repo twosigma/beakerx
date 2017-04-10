@@ -31,7 +31,7 @@ public abstract class BoundedIntRangeWidget extends IntRangeWidget{
   private Integer max = 100;
   private Integer min = 0;
 
-  public BoundedIntRangeWidget() {
+  protected BoundedIntRangeWidget() {
     super();
   }
 

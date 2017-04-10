@@ -18,7 +18,7 @@ package com.twosigma.beaker.widgets.selections;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public abstract class SingleSelectionWidget extends SelectionWidget {
+public abstract class SingleSelectionWidget extends SelectionWidget<String> {
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
@@ -28,8 +28,8 @@ public abstract class SingleSelectionWidget extends SelectionWidget {
   }
 
   @Override
-  public void updateValue(Object value) {
-    this.value = (String) value;
+  public String getValueFromObject(Object input){
+    return getString(input);
   }
-
+  
 }

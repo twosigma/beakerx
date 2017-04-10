@@ -20,10 +20,10 @@ import java.util.HashMap;
 
 import com.twosigma.beaker.widgets.ValueWidget;
 
-public class FloatWidget extends ValueWidget<Double> {
+public abstract class FloatWidget<T extends Serializable> extends ValueWidget<T> {
 
 
-  public FloatWidget() {
+  protected FloatWidget() {
     super();
   }
 
@@ -33,11 +33,10 @@ public class FloatWidget extends ValueWidget<Double> {
     content.put(VALUE, this.value);
     return content;
   }
-
+ 
   @Override
-  public void updateValue(Object value) {
-    this.value = (value instanceof Integer) ? ((Integer) value).doubleValue() : (double) value;
+  public T getValueFromObject(Object input){
+    return (T)getDouble(input);
   }
-
-
+  
 }

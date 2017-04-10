@@ -16,12 +16,9 @@
 package com.twosigma.beaker.widgets.selections;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class MultipleSelectionWidget extends SelectionWidget{
-
-  protected String[] value = new String[0];
+public abstract class MultipleSelectionWidget extends SelectionWidget<String[]>{
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
@@ -31,14 +28,8 @@ public abstract class MultipleSelectionWidget extends SelectionWidget{
   }
 
   @Override
-  public void updateValue(Object value) {
-    this.value = ((ArrayList<String>) value).stream().toArray(String[]::new);
+  public String[] getValueFromObject(Object input){
+    return getStringArray(input);
   }
-
-  public void setValue(String[] value) {
-    this.value = value;
-    sendUpdate(VALUE, value);
-  }
-
 
 }

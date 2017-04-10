@@ -20,7 +20,7 @@ package com.twosigma.beaker.widgets.integers;
  */
 public abstract class IntRangeWidget extends IntWidget<Integer[]>{
 
-  public IntRangeWidget() {
+  protected IntRangeWidget() {
     super();
     value = new Integer[2];
     value[0] = 0;
@@ -55,5 +55,9 @@ public abstract class IntRangeWidget extends IntWidget<Integer[]>{
     }
   }
   
+  @Override
+  public Integer[] getValueFromObject(Object input){
+    return getArrayOfInteger(input, getLower(), getUpper());
+  }
   
 }

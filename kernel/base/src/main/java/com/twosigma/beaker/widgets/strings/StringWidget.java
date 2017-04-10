@@ -31,8 +31,10 @@ public abstract class StringWidget extends ValueWidget<String> {
     return content;
   }
 
+  
   @Override
-  public void updateValue(Object value) {
-    this.value = (String) value;
+  public String getValueFromObject(Object input){
+    return getString(input);
   }
+  
 }

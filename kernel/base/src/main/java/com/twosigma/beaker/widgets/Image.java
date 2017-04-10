@@ -47,16 +47,16 @@ public class Image extends ValueWidget<byte[]> {
     content.put(HEIGHT, this.height);
     return content;
   }
-
+  
   @Override
-  public void updateValue(Object value) {
-    this.value = (byte[]) value;
+  public void setValue(Object value) {
+    this.value = getValueFromObject(value);
+    sendUpdate("_b64value", value);
   }
   
   @Override
-  public void setValue(byte[] value) {
-    this.value = value;
-    sendUpdate("_b64value", value);
+  public byte[] getValueFromObject(Object input){
+    return (byte[]) input;
   }
 
   public String getFormat() {

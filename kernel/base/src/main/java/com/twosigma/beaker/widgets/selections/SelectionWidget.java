@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 import com.twosigma.beaker.widgets.ValueWidget;
 
-public abstract class SelectionWidget extends ValueWidget<String> {
+public abstract class SelectionWidget<T extends Serializable> extends ValueWidget<T> {
 
   public static final String OPTIONS_LABELS = "_options_labels";
   public static final String SIZE = "size";
@@ -59,4 +59,5 @@ public abstract class SelectionWidget extends ValueWidget<String> {
     this.size = size;
     sendUpdate(SIZE, size);
   }
+  
 }

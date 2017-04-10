@@ -57,6 +57,13 @@ python -m bkr2ipynb *.bkr
 ## Autotranslation from Python to JavaScript:
 <img width="631" alt="screen shot 2016-12-10 at 10 43 22 pm" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
 
+## Contributing
+
+We welcome developers to extend and improve BeakerX in ways that can
+benefit everyone. In order for us to accept your code or pull request,
+we need for you to fill out and email back to us a scan of a signed copy of the
+[Contributor License Agreement](http://beakernotebook.com/cla.zip).
+
 ## Attribution
 
 The kernel is originally derived from https://github.com/lappsgrid-incubator/jupyter-groovy-kernel, but has been rewritten in Java and refactored and expanded.

@@ -20,8 +20,10 @@ var _ = require('underscore');
 var buttonWidget = require('./easyForm/buttonWidget');
 var selectMultipleWidget = require('./easyForm/selectMultipleWidget');
 var selectMultipleSingleWidget = require('./easyForm/selectMultipleSingleWidget');
+var datePickerWidget = require('./easyForm/datePickerWidget');
 
 require('./easyForm/css/jupyter-easyform.scss');
+require('./../bower_components/datetimepicker/jquery.datetimepicker.css');
 
 var EasyFormModel = widgets.DOMWidgetModel.extend({
   defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
@@ -99,3 +101,4 @@ module.exports = {
 _.extend(module.exports, buttonWidget);
 _.extend(module.exports, selectMultipleWidget);
 _.extend(module.exports, selectMultipleSingleWidget);
+_.extend(module.exports, datePickerWidget);

@@ -19,12 +19,11 @@ package com.twosigma.beaker;
 import java.util.Hashtable;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.twosigma.beaker.easyform.DisplayEasyForm;
 import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.easyform.formitem.*;
 import com.twosigma.beaker.easyform.serializer.*;
-import com.twosigma.beaker.fileloader.CsvPlotReader;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.beaker.table.TableDisplay;
@@ -82,8 +81,6 @@ import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.widgets.DisplayAnyWidget;
-import com.twosigma.beaker.widgets.DisplayOutputContainer;
-import com.twosigma.beaker.widgets.DisplayWidget;
 import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.internal.InternalWidget;
 
@@ -91,6 +88,8 @@ import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
 
 
 public class SerializeToString {
+
+  private static ObjectMapper objectMapper = new ObjectMapper();
 
   private static ObjectMapper mapper;
   private static Map<Class<?>, JsonSerializer> serializerMap = new Hashtable<>();
@@ -158,49 +157,54 @@ public class SerializeToString {
     mapper = new ObjectMapper();
     mapper.registerModule(module);
   }
-  
-  public static boolean isWidget(Object input) {
-    return (input instanceof EasyForm)
-        || (input instanceof OutputContainer)
-        || (input instanceof Table)
-        || isInternalWidget(input)
-        || (input instanceof Widget);
-  }
-  
+
   public static MIMEContainer doit(Object input) {
     MIMEContainer ret = null;
-    if(input != null){
+    if (input != null) {
       if (isWidget(input)) {
         DisplayAnyWidget.display(input);
         ret = Text("");
-      } else if(input instanceof MIMEContainer) {
+      } else if (input instanceof MIMEContainer) {
         ret = (MIMEContainer) input;
-      } else{
-        ret = Text(input);
+      } else {
+        ret = asString(input);
       }
-    }else{
+    } else {
       ret = Text("null");
     }
     return ret;
   }
-  
-  public static boolean isInternalWidget(Object result){
+
+  private static MIMEContainer asString(Object input) {
+    if (input instanceof String) {
+      return Text(input);
+    }
+    try {
+      return Text(objectMapper.writeValueAsString(input));
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static boolean isWidget(Object input) {
+    return (input instanceof EasyForm)
+            || (input instanceof OutputContainer)
+            || (input instanceof Table)
+            || isInternalWidget(input)
+            || (input instanceof Widget);
+  }
+
+  public static boolean isInternalWidget(Object result) {
     boolean ret = false;
-    if(result != null && result instanceof InternalWidget ){
+    if (result != null && result instanceof InternalWidget) {
       for (Class<?> clazz : internalWidgetMap.keySet()) {
         ret = clazz.isAssignableFrom(result.getClass());
-        if(ret){
+        if (ret) {
           break;
         }
       }
     }
     return ret;
-  }
-
-  public static void showInternalWidget(Object result) {
-    InternalWidget widget = (InternalWidget) result;
-    widget.sendModel();
-    DisplayWidget.display(widget);
   }
 
   protected static Map<Class<?>, JsonSerializer> getSerializerMap() {

@@ -2542,7 +2542,11 @@ var DateFormatter;
 					windowScrollTop;
 
 				$dateInput = datetimepicker.data('input');
-				dateInputOffset = $dateInput.offset();
+
+				dateInputOffset = $dateInput.position();
+				// offset() -> position() - fix picker positioning when parentID is set 
+        // https://github.com/xdan/datetimepicker/issues/352
+
 				dateInputElem = $dateInput[0];
 
 				verticalAnchorEdge = 'top';

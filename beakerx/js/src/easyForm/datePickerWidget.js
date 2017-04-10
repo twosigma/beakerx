@@ -90,7 +90,8 @@ var DatePickerView = widgets.DOMWidgetView.extend({
         allowBlank: true,
         onShow: onShowHandler,
         onClose: onCloseHandler,
-        timepicker: showTime
+        timepicker: showTime,
+        parentID: '#notebook'
       });
     });
   },

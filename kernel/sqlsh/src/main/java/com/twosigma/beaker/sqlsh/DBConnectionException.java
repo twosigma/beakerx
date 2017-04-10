@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,14 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beaker.sqlsh;
 
-include 'beakerx'
-include 'beakerx:js'
-include 'kernel'
-include 'kernel:base'
-include 'kernel:groovy'
-include 'kernel:scala'
-include 'kernel:java'
-include 'kernel:clojure'
-include 'kernel:sqlsh'
+import java.sql.SQLException;
 
+public class DBConnectionException extends SQLException {
+  public DBConnectionException(String uri, SQLException e) {
+    super("Connection URI:" + uri + "; " + e.getMessage(), e.getSQLState(), e.getErrorCode(), e.getCause());
+  }
+}

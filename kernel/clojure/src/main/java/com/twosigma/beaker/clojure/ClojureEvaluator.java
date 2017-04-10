@@ -112,14 +112,12 @@ public class ClojureEvaluator implements Evaluator {
     } catch (IOException e) {
       logger.error(e.getMessage());
     }
-
     exit = false;
     updateLoader = false;
-
     executor = new BeakerCellExecutor("clojure");
-    startWorker();
   }
 
+  @Override
   public void startWorker() {
     myWorker = new workerThread();
     myWorker.start();

@@ -56,7 +56,7 @@ public class GroovyEvaluator implements Evaluator{
 
   private static final String STATIC_WORD_WITH_SPACE = "static ";
   private static final String DOT_STAR_POSTFIX = ".*";
-  
+
   protected final String shellId;
   protected final String sessionId;
   protected List<String> classPath;
@@ -69,7 +69,6 @@ public class GroovyEvaluator implements Evaluator{
   protected boolean exit;
   protected boolean updateLoader;
   protected final BeakerCellExecutor executor;
-  protected workerThread myWorker;
   protected GroovyAutocomplete gac;
   protected String currentClassPath;
   protected String currentImports;
@@ -79,7 +78,7 @@ public class GroovyEvaluator implements Evaluator{
   public static String GROOVY_JAR_PATH = "GROOVY_JAR_PATH";
 
   private Binding scriptBinding = null;
-  
+
   protected class jobDescriptor {
     public String codeToBeExecuted;
     public SimpleEvaluationObject outputObject;
@@ -97,7 +96,7 @@ public class GroovyEvaluator implements Evaluator{
     Pattern.compile("\\$\\{([a-z_][a-z0-9_]*)\\}", Pattern.CASE_INSENSITIVE),
     Pattern.compile("\\$([a-z_][a-z0-9_]*)", Pattern.CASE_INSENSITIVE)
   };
-  
+
   public GroovyEvaluator(String id, String sId) {
     shellId = id;
     sessionId = sId;
@@ -119,7 +118,7 @@ public class GroovyEvaluator implements Evaluator{
   }
 
   public void startWorker() {
-    myWorker = new workerThread();
+    workerThread myWorker = new workerThread();
     myWorker.start();
   }
 
@@ -155,7 +154,7 @@ public class GroovyEvaluator implements Evaluator{
 
     updateLoader=true;
     syncObject.release();
-  } 
+  }
 
   public void exit() {
     exit = true;
@@ -168,11 +167,11 @@ public class GroovyEvaluator implements Evaluator{
     // check if we are not changing anything
     if (StringUtils.equals(currentClassPath, cp) && StringUtils.equals(currentImports, in))
       return;
- 
+
     currentClassPath = cp;
     currentImports = in;
     Map<String, String> env = System.getenv();
-    
+
     if(cp == null || cp.isEmpty())
       classPath = new ArrayList<>();
     else {
@@ -302,7 +301,7 @@ public class GroovyEvaluator implements Evaluator{
       p = r;
 
     }
-    
+
     return p;
   }
 
@@ -320,9 +319,9 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
 
   //an object that matches the shell in non-shell mode
   protected GroovyClassLoader groovyClassLoader;
-  
+
   protected CompilerConfiguration compilerConfiguration;
-  
+
   protected class workerThread extends Thread {
 
     public workerThread() {
@@ -332,16 +331,16 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
     /*
      * This thread performs all the evaluation
      */
-    
+
     public void run() {
       jobDescriptor j = null;
       NamespaceClient nc = null;
-      
+
       while(!exit) {
         try {
           // wait for work
           syncObject.acquire();
-          
+
           // check if we must create or update class loader
           if(updateLoader) {
             if(groovyClassLoader != null) {
@@ -350,7 +349,7 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
             groovyClassLoader = null;
             scriptBinding = null;
           }
-          
+
           // get next job descriptor
           j = jobQueue.poll();
           if(j==null)
@@ -361,7 +360,7 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
             //reload classloader
             groovyClassLoader = newEvaluator();
           }
-        
+
           //if(loader!=null)
           //  loader.resetDynamicLoader();
 
@@ -372,11 +371,11 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
 
           j.outputObject.started();
           String code = j.codeToBeExecuted;
-          
+
           if (!executor.executeTask(new MyRunnable(code, j.outputObject, loader))) {
             j.outputObject.error("... cancelled!");
           }
-          
+
           if(nc!=null) {
             nc.setOutputObj(null);
             nc = null;
@@ -399,7 +398,7 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
       }
       NamespaceClient.delBeaker(sessionId);
     }
-      
+
     protected class MyRunnable implements Runnable {
 
       protected final String theCode;
@@ -411,20 +410,20 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
         theOutput = out;
         _loader = ld;
       }
-      
+
       @Override
       public void run() {
         Object result;
         ClassLoader oldld = Thread.currentThread().getContextClassLoader();
         theOutput.setOutputHandler();
-        
+
         try {
-          
+
           Thread.currentThread().setContextClassLoader(groovyClassLoader);
           Class<?> parsedClass = groovyClassLoader.parseClass(theCode);
-          
+
           Script instance = (Script) parsedClass.newInstance();
-          
+
           if(LOCAL_DEV) {
             scriptBinding.setVariable("beaker", new HashMap<String, Object>());
           } else {

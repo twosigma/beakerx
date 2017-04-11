@@ -40,10 +40,10 @@ def setHeader(level, title):
 
 def convertNotebook(notebook):
     nb = new_notebook()
-    with open(notebook) as data_file:
+    with open(notebook, encoding='utf-8') as data_file:
         data = json.load(data_file)
     evaluators = list((cell['evaluator']) for cell in data['cells'] if 'evaluator' in cell)
-    kernel_name = max(evaluators, key=evaluators.count)
+    kernel_name = max(evaluators, key=evaluators.count) if evaluators else 'IPython'
     if kernel_name in ['JavaScript', 'HTML', 'TeX']:
         kernel_name = 'IPython'
     if kernel_name == 'IPython':

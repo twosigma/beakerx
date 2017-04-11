@@ -1,3 +1,18 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.twosigma.beaker.widgets.floats;
 
 import java.io.Serializable;
@@ -33,27 +48,27 @@ import java.util.HashMap;
  * @author konst
  *
  */
-public class FloatRangeSlider extends BoundedFloatRangeWidget{
+public class FloatRangeSlider extends BoundedFloatRangeWidget {
 
   public static final String VIEW_NAME_VALUE = "FloatSliderView";
   public static final String MODEL_NAME_VALUE = "FloatSliderModel";
-  
+
   protected static final String ORIENTATION = "orientation";
   protected static final String CONTINUOUS_UPDATE = "continuous_update";
   protected static final String _RANGE = "_range";
   protected static final String READOUT = "readout";
   protected static final String SLIDER_COLOR = "slider_color";
-  
+
   private String orientation = "horizontal";
   private Boolean continuous_update = true;
   private Boolean readOut = true;
   private String slider_color;
-  
+
   public FloatRangeSlider() {
     super();
     init();
   }
-  
+
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
@@ -93,5 +108,5 @@ public class FloatRangeSlider extends BoundedFloatRangeWidget{
     this.continuous_update = continuous_update;
     sendUpdate(CONTINUOUS_UPDATE, continuous_update);
   }
-  
+
 }

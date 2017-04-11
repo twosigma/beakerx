@@ -28,8 +28,8 @@ public abstract class SingleSelectionWidget extends SelectionWidget<String> {
   }
 
   @Override
-  public String getValueFromObject(Object input){
+  public String getValueFromObject(Object input) {
     return getString(input);
   }
-  
+
 }

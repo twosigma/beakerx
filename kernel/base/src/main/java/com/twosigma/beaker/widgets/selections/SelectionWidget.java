@@ -45,7 +45,7 @@ public abstract class SelectionWidget<T extends Serializable> extends ValueWidge
     this.options = options;
     sendUpdate(OPTIONS_LABELS, options);
   }
-  
+
   public void setOptions(Collection<Object> options) {
     this.options = options.toArray(new Object[options.size()]);
     sendUpdate(OPTIONS_LABELS, options);
@@ -59,5 +59,5 @@ public abstract class SelectionWidget<T extends Serializable> extends ValueWidge
     this.size = size;
     sendUpdate(SIZE, size);
   }
-  
+
 }

@@ -38,7 +38,7 @@ import java.util.HashMap;
  *       color of the progress bar, default is '' (blue)
  *       colors are: 'success'-green, 'info'-light blue, 'warning'-orange, 'danger'-red
  */
-public class FloatProgress extends BoundedFloatWidget{
+public class FloatProgress extends BoundedFloatWidget {
 
   public static final String VIEW_NAME_VALUE = "ProgressView";
   public static final String MODEL_NAME_VALUE = "ProgressModel";

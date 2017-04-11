@@ -163,8 +163,13 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
   public String[] getStringArray(Object input) {
     List<String> ret = new ArrayList<>();
     if (input != null) {
-      if (input instanceof Object[] || input instanceof Collection<?>) {
+      if (input instanceof Object[]) {
         Object[] array = (Object[]) input;
+        for (Object o : array) {
+          ret.add(getString(o));
+        }
+      }else if(input instanceof Collection<?>){
+        Collection<Object> array = (Collection<Object>) input;
         for (Object o : array) {
           ret.add(getString(o));
         }

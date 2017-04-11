@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.msg.MessageCreator.NULL_RESULT;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MessageCreatorTest {
@@ -55,12 +56,23 @@ public class MessageCreatorTest {
   @Test
   public void createMessageWithNotNullResult_shouldReturnResult() throws Exception {
     //given
-    seo.finished("1");
+    seo.finished("NotNullResult");
     //when
     List<MessageHolder> message = messageCreator.createMessage(seo);
     //then
     Map data = TestWidgetUtils.getData(message.get(0).getMessage());
-    assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo("1");
+    assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo("NotNullResult");
+  }
+
+  @Test
+  public void createMessageForCollection() throws Exception {
+    //given
+    seo.finished(asList("1","2"));
+    //when
+    List<MessageHolder> message = messageCreator.createMessage(seo);
+    //then
+    Map data = TestWidgetUtils.getData(message.get(0).getMessage());
+    assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo("[\"1\",\"2\"]");
   }
 
   @Test

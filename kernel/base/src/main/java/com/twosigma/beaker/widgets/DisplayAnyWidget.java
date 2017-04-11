@@ -21,7 +21,8 @@ import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.fileloader.CsvPlotReader;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.table.TableDisplay;
-import static com.twosigma.beaker.SerializeToString.showInternalWidget;
+import com.twosigma.beaker.widgets.internal.InternalWidget;
+
 import static com.twosigma.beaker.SerializeToString.isInternalWidget;
 
 public class DisplayAnyWidget {
@@ -43,6 +44,12 @@ public class DisplayAnyWidget {
     }else if(input instanceof Widget){
       DisplayWidget.display((Widget)input);
     }
+  }
+
+  private static void showInternalWidget(Object result) {
+    InternalWidget widget = (InternalWidget) result;
+    widget.sendModel();
+    DisplayWidget.display(widget);
   }
 
 }

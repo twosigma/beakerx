@@ -34,7 +34,7 @@ public class SerializeToJson extends SerializeToString {
     return result != null ? result.toString() : null;
   }
 
-  protected static boolean isBeakerChart(Object result){
+  private static boolean isBeakerChart(Object result){
     boolean ret = false;
     if(result != null){
       for (Class<?> clazz : getSerializerMap().keySet()) {

@@ -16,17 +16,16 @@
 package com.twosigma.beaker.widgets.selections;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashMap;
 
 import com.twosigma.beaker.widgets.ValueWidget;
 
-public abstract class SelectionWidget extends ValueWidget<String> {
+public abstract class SelectionWidget<T extends Serializable> extends ValueWidget<T> {
 
   public static final String OPTIONS_LABELS = "_options_labels";
   public static final String SIZE = "size";
 
-  private Object[] options = new Object[0];
+  private String[] options = new String[0];
   private Integer size;
 
   @Override
@@ -37,17 +36,12 @@ public abstract class SelectionWidget extends ValueWidget<String> {
     return content;
   }
 
-  public Object[] getOptions() {
+  public String[] getOptions() {
     return options;
   }
 
-  public void setOptions(Object[] options) {
-    this.options = options;
-    sendUpdate(OPTIONS_LABELS, options);
-  }
-  
-  public void setOptions(Collection<Object> options) {
-    this.options = options.toArray(new Object[options.size()]);
+  public void setOptions(Object options) {
+    this.options = getStringArray(options);
     sendUpdate(OPTIONS_LABELS, options);
   }
 
@@ -56,7 +50,8 @@ public abstract class SelectionWidget extends ValueWidget<String> {
   }
 
   public void setSize(Integer size) {
-    this.size = size;
+    this.size = getInteger(size);
     sendUpdate(SIZE, size);
   }
+
 }

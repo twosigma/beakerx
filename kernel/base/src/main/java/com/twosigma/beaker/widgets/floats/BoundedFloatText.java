@@ -13,17 +13,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.selections;
+package com.twosigma.beaker.widgets.floats;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class Select extends SingleSelectionWidget {
+/**
+ *   Displays a float value within a textbox. Value must be within the range specified.
+ *   For a textbox in which the value doesn't need to be within a specific range, use FloatText.
+ *   Parameters
+ *   ----------
+ *   value : float
+ *       value displayed
+ *   min : float
+ *       minimal value of the range of possible values displayed
+ *   max : float
+ *       maximal value of the range of possible values displayed
+ *   description : str
+ *       description displayed next to the textbox
+ *   color : str Unicode color code (eg. '#C13535')
+ *       color of the value displayed
+ * 
+ * @author konst
+ */
+public class BoundedFloatText extends BoundedFloatWidget {
 
-  public static String VIEW_NAME_VALUE = "SelectView";
-  public static String MODEL_NAME_VALUE = "SelectModel";
+  public static final String VIEW_NAME_VALUE = "FloatTextView";
+  public static final String MODEL_NAME_VALUE = "FloatTextModel";
 
-  public Select() {
+  public BoundedFloatText() {
     super();
     init();
   }

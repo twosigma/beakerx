@@ -13,17 +13,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.selections;
+package com.twosigma.beaker.widgets.bools;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class Select extends SingleSelectionWidget {
+import com.twosigma.beaker.widgets.bools.BoolWidget;
 
-  public static String VIEW_NAME_VALUE = "SelectView";
-  public static String MODEL_NAME_VALUE = "SelectModel";
-
-  public Select() {
+/**
+ * 
+ * Displays a boolean `value` in the form of a green check (True / valid)
+ * or a red cross (False / invalid).
+ * Parameters
+ * ----------
+ * value: {True,False}
+ *      value of the Valid widget
+ *
+ * @author konst
+ *
+ */
+public class Valid extends BoolWidget{
+  
+  public static final String VIEW_NAME_VALUE = "ValidView";
+  public static final String MODEL_NAME_VALUE = "ValidModel";
+  
+  protected static final String READOUT = "readout";
+  
+  private Boolean readOut = true;
+  
+  protected Valid() {
     super();
     init();
   }
@@ -33,7 +51,17 @@ public class Select extends SingleSelectionWidget {
     super.content(content);
     content.put(MODEL_NAME, MODEL_NAME_VALUE);
     content.put(VIEW_NAME, VIEW_NAME_VALUE);
+    content.put(READOUT, this.readOut);
     return content;
+  }
+  
+  public Boolean getReadOut() {
+    return readOut;
+  }
+
+  public void setReadOut(Object readOut) {
+    this.readOut = getBoolean(readOut);
+    sendUpdate(READOUT, readOut);
   }
 
 }

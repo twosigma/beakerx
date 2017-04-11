@@ -44,7 +44,7 @@ public class Play extends BoundedIntWidget{
     super.content(content);
     content.put(MODEL_NAME, MODEL_NAME_VALUE);
     content.put(VIEW_NAME, VIEW_NAME_VALUE);
-    content.put(_PLAYING, true);
+    content.put(_PLAYING, false);
     return content;
   }
   

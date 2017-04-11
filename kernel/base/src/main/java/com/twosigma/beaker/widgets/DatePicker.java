@@ -26,15 +26,15 @@ public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
 
   public DatePicker() {
     super();
-    this.value = new LinkedHashMap();
+    this.value = new LinkedHashMap<>();
     init();
   }
 
   @Override
-  public void updateValue(Object value) {
-    this.value = (LinkedHashMap<String, String>) value;
+  public LinkedHashMap<String, String> getValueFromObject(Object input){
+    return (LinkedHashMap<String, String>) input;
   }
-
+  
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
@@ -44,12 +44,5 @@ public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
     return content;
   }
 
-  public LinkedHashMap<String, String> getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    // not sure what and how to do
-  }
 
 }

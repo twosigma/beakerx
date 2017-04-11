@@ -36,5 +36,4 @@ public class Text extends StringWidget {
     return content;
   }
 
-
 }

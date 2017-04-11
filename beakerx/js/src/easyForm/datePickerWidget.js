@@ -56,8 +56,8 @@ var DatePickerView = widgets.DOMWidgetView.extend({
     this.$datepicker = $('<input type="text" class="date-picker" />')
       .addClass('form-control');
 
-    // this.update();
     this.initDatePicker();
+    this.update();
   },
 
   initDatePicker: function() {
@@ -78,8 +78,10 @@ var DatePickerView = widgets.DOMWidgetView.extend({
       return true;
     };
     var onChange = function(dp, input) {
-      console.log(input.val());
-      
+      var value = input.val();
+      if (value) {
+        that.setValueToModel(value);
+      }
     };
 
     this.$button.on("mousedown", function() {
@@ -137,25 +139,18 @@ var DatePickerView = widgets.DOMWidgetView.extend({
   },
 
   events: {
-    // Dictionary of events and their handlers.
-    // "keyup input"    : "handleChanging",
-    // "paste input"    : "handleChanging",
-    // "cut input"      : "handleChanging",
-    "change input"      : "handleChanging",
-    // "keypress input" : "handleKeypress",
-    // "blur input" : "handleBlur",
-    // "focusout input" : "handleFocusOut"
+    "change input": "handleChanging"
   },
 
   handleChanging: function(e) {
-    /**
-     * Handles user input.
-     *
-     * Calling model.set will trigger all of the other views of the
-     * model to update.
-     */
-    console.log('handleChanging', e);
-    this.model.set('value', e.target.value, {updated_view: this});
+    if (e && e.target && e.target.value) {
+      this.setValueToModel(e.target.value);
+    }
+  },
+
+  setValueToModel: function(value) {
+    console.log('setValueToModel', value);
+    this.model.set('value', value, {updated_view: this});
     this.touch();
   }
 });

@@ -40,6 +40,16 @@ dependencies {
   compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
   compile group: 'com.google.inject', name: 'guice', version: '3.0'
 
+  //jdbc drivers
+  /*
+  *  http://www.mysql.com/about/legal/licensing/foss-exception/
+  */
+  compile group: 'mysql', name: 'mysql-connector-java',  version: '5.1.29'
+  compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1208'
+  compile group: 'com.h2database', name: 'h2', version: '1.4.193'
+  compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.15.1'
+
+
   testCompile group: 'junit', name: 'junit', version: '4.11'
   testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
   testCompile group: 'org.reflections', name: 'reflections', version: '0.9.10'

@@ -23,6 +23,7 @@ import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.sqlsh.autocomplete.SqlAutocomplete;
+import com.twosigma.jupyter.KernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,15 +32,20 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
-public class SQLEvaluator  implements Evaluator {
+import static com.twosigma.beaker.jupyter.Utils.getAsString;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
+
+public class SQLEvaluator implements Evaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(SQLEvaluator.class.getName());
 
@@ -212,22 +218,25 @@ public class SQLEvaluator  implements Evaluator {
   }
 
   @Override
-  public void setShellOptions(String cp, String in) throws IOException {
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    Map<String, Object> params = kernelParameters.getParams();
 
-  }
+    Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
+    String cp = getAsString(listOfClassPath);
+    Optional<String> defaultDatasource = kernelParameters.getParam("defaultDatasource", String.class);
+    Optional<String> datasources = kernelParameters.getParam("datasources", String.class);
 
-  public void setShellOptions(String cp, String defaultDatasource, String datasources) throws IOException {
     currentClassPath = cp;
     if (cp.isEmpty())
-      classPath = new ArrayList<String>();
+      classPath = new ArrayList<>();
     else
       classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
-    
+
     jdbcClient.loadDrivers(classPath);
 
-    this.defaultConnectionString = new ConnectionStringHolder(defaultDatasource, jdbcClient);
+    this.defaultConnectionString = new ConnectionStringHolder(defaultDatasource.orElse(""), jdbcClient);
     this.namedConnectionString = new HashMap<>();
-    Scanner sc = new Scanner(datasources);
+    Scanner sc = new Scanner(datasources.orElse(""));
     while (sc.hasNext()) {
       String line = sc.nextLine();
       int i = line.indexOf('=');

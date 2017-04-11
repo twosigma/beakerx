@@ -89,8 +89,8 @@ public abstract class Kernel implements KernelFunctionality {
     return (OS.indexOf("win") >= 0);
   }
 
-  public synchronized void setShellOptions(String cp, String in) {
-    evaluatorManager.setShellOptions(cp, in);
+  public synchronized void setShellOptions(final KernelParameters kernelParameters) {
+    evaluatorManager.setShellOptions(kernelParameters);
   }
 
   @Override

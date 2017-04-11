@@ -26,6 +26,7 @@ import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import com.twosigma.jupyter.KernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +41,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+
+import static com.twosigma.beaker.jupyter.Utils.getAsString;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 
 public class ClojureEvaluator implements Evaluator {
 
@@ -266,7 +272,15 @@ public class ClojureEvaluator implements Evaluator {
   }
 
   @Override
-  public void setShellOptions(String cp, String in) throws IOException {
+  public void setShellOptions(KernelParameters kernelParameters) throws IOException {
+    Map<String, Object> params = kernelParameters.getParams();
+
+    List<String> listOfimports = (List<String>) params.get(IMPORTS);
+    List<String> listOfclassPath = (List<String>) params.get(CLASSPATH);
+    String cp = getAsString(listOfclassPath);
+    String in = getAsString(listOfimports);
+
+
     if (!currentClassPath.equals(cp)) {
       currentClassPath = cp;
       if (cp.isEmpty())

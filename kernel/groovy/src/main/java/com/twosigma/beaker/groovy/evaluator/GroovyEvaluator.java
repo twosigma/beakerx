@@ -24,6 +24,7 @@ import com.twosigma.beaker.groovy.autocomplete.GroovyClasspathScanner;
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import com.twosigma.jupyter.KernelParameters;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
@@ -42,6 +43,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +52,11 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GroovyEvaluator implements Evaluator{
+import static com.twosigma.beaker.jupyter.Utils.getAsString;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+
+public class GroovyEvaluator implements Evaluator {
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyEvaluator.class.getName());
 
@@ -83,7 +89,7 @@ public class GroovyEvaluator implements Evaluator{
     public String codeToBeExecuted;
     public SimpleEvaluationObject outputObject;
 
-    jobDescriptor(String c , SimpleEvaluationObject o) {
+    jobDescriptor(String c, SimpleEvaluationObject o) {
       codeToBeExecuted = c;
       outputObject = o;
     }
@@ -93,8 +99,8 @@ public class GroovyEvaluator implements Evaluator{
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
   protected static Pattern[] envVariablePatterns = {
-    Pattern.compile("\\$\\{([a-z_][a-z0-9_]*)\\}", Pattern.CASE_INSENSITIVE),
-    Pattern.compile("\\$([a-z_][a-z0-9_]*)", Pattern.CASE_INSENSITIVE)
+          Pattern.compile("\\$\\{([a-z_][a-z0-9_]*)\\}", Pattern.CASE_INSENSITIVE),
+          Pattern.compile("\\$([a-z_][a-z0-9_]*)", Pattern.CASE_INSENSITIVE)
   };
 
   public GroovyEvaluator(String id, String sId) {
@@ -112,7 +118,10 @@ public class GroovyEvaluator implements Evaluator{
     outDir = new String(outDirDefault);
     outDir = envVariablesFilter(outDir, System.getenv());
     outDirInput = outDir;
-    try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
+    try {
+      (new File(outDir)).mkdirs();
+    } catch (Exception e) {
+    }
     executor = new BeakerCellExecutor("groovy");
     startWorker();
   }
@@ -122,11 +131,13 @@ public class GroovyEvaluator implements Evaluator{
     myWorker.start();
   }
 
-  protected GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c){
+  protected GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c) {
     return new GroovyAutocomplete(c);
   }
 
-  public String getShellId() { return shellId; }
+  public String getShellId() {
+    return shellId;
+  }
 
   public void killAllThreads() {
     executor.killAllThreads();
@@ -140,7 +151,7 @@ public class GroovyEvaluator implements Evaluator{
     executor.killAllThreads();
 
     String cpp = "";
-    for(String pt : classPath) {
+    for (String pt : classPath) {
       cpp += pt;
       cpp += File.pathSeparator;
     }
@@ -149,10 +160,10 @@ public class GroovyEvaluator implements Evaluator{
     cps = new GroovyClasspathScanner(cpp);
     gac = createGroovyAutocomplete(cps);
 
-    for(String st : imports)
+    for (String st : imports)
       gac.addImport(st);
 
-    updateLoader=true;
+    updateLoader = true;
     syncObject.release();
   }
 
@@ -163,7 +174,14 @@ public class GroovyEvaluator implements Evaluator{
   }
 
   @Override
-  public void setShellOptions(String cp, String in) throws IOException {
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    Map<String, Object> params = kernelParameters.getParams();
+
+    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
+    Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
+    String cp = getAsString(listOfClassPath);
+    String in = getAsString(listOfImports);
+
     // check if we are not changing anything
     if (StringUtils.equals(currentClassPath, cp) && StringUtils.equals(currentImports, in))
       return;
@@ -172,11 +190,11 @@ public class GroovyEvaluator implements Evaluator{
     currentImports = in;
     Map<String, String> env = System.getenv();
 
-    if(cp == null || cp.isEmpty())
+    if (cp == null || cp.isEmpty())
       classPath = new ArrayList<>();
     else {
       List<String> cpList = new ArrayList<>();
-      for(String p : Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"))) {
+      for (String p : Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"))) {
         p = envVariablesFilter(p, env);
         cpList.add(p);
       }
@@ -192,28 +210,29 @@ public class GroovyEvaluator implements Evaluator{
       }
     }
 
-    try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
+    try {
+      (new File(outDir)).mkdirs();
+    } catch (Exception e) {
+    }
 
     resetEnvironment();
   }
 
-  protected ClassLoader newClassLoader() throws MalformedURLException
-  {
-    loader=new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+  protected ClassLoader newClassLoader() throws MalformedURLException {
+    loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
     loader.addJars(classPath);
     loader.addDynamicDir(outDir);
     return loader;
   }
 
-  protected GroovyClassLoader newEvaluator() throws MalformedURLException
-  {
+  protected GroovyClassLoader newEvaluator() throws MalformedURLException {
 
     try {
       Class.forName("org.codehaus.groovy.control.customizers.ImportCustomizer");
     } catch (ClassNotFoundException e1) {
       String gjp = System.getenv(GROOVY_JAR_PATH);
       String errorMsg = null;
-      if(gjp != null && !gjp.isEmpty()) {
+      if (gjp != null && !gjp.isEmpty()) {
         errorMsg = "Groovy libary not found, GROOVY_JAR_PATH = " + gjp;
       } else {
         errorMsg = "Default groovy libary not found. No GROOVY_JAR_PATH variable set.";
@@ -271,9 +290,9 @@ public class GroovyEvaluator implements Evaluator{
 
   static String envVariablesFilter(String p, Map<String, String> env) {
 
-    if(p == null) return p;
+    if (p == null) return p;
 
-    for(Pattern pattern : envVariablePatterns) {
+    for (Pattern pattern : envVariablePatterns) {
 
       Matcher matcher = pattern.matcher(p);
 
@@ -281,13 +300,13 @@ public class GroovyEvaluator implements Evaluator{
 
       int lastIndex = 0;
 
-      while(matcher.find()) {
+      while (matcher.find()) {
 
         String var = matcher.group(1);
 
         String substitute = env.get(var);
 
-        if(substitute == null) substitute = "";
+        if (substitute == null) substitute = "";
 
         r += p.substring(lastIndex, matcher.start());
 
@@ -305,14 +324,14 @@ public class GroovyEvaluator implements Evaluator{
     return p;
   }
 
-public void evaluate(SimpleEvaluationObject seo, String code) {
+  public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
-    jobQueue.add(new jobDescriptor(code,seo));
+    jobQueue.add(new jobDescriptor(code, seo));
     syncObject.release();
   }
 
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-     return gac.doAutocomplete(code, caretPosition, loader);
+    return gac.doAutocomplete(code, caretPosition, loader);
   }
 
   protected DynamicClassLoaderSimple loader = null;
@@ -336,15 +355,18 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
       jobDescriptor j = null;
       NamespaceClient nc = null;
 
-      while(!exit) {
+      while (!exit) {
         try {
           // wait for work
           syncObject.acquire();
 
           // check if we must create or update class loader
-          if(updateLoader) {
-            if(groovyClassLoader != null) {
-              try { groovyClassLoader.close(); } catch(Exception ex) {}
+          if (updateLoader) {
+            if (groovyClassLoader != null) {
+              try {
+                groovyClassLoader.close();
+              } catch (Exception ex) {
+              }
             }
             groovyClassLoader = null;
             scriptBinding = null;
@@ -352,10 +374,10 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
 
           // get next job descriptor
           j = jobQueue.poll();
-          if(j==null)
+          if (j == null)
             continue;
 
-          if(groovyClassLoader == null) {
+          if (groovyClassLoader == null) {
             updateLoader = false;
             //reload classloader
             groovyClassLoader = newEvaluator();
@@ -364,9 +386,9 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
           //if(loader!=null)
           //  loader.resetDynamicLoader();
 
-          if(!LOCAL_DEV) {
-              nc = NamespaceClient.getBeaker(sessionId);
-              nc.setOutputObj(j.outputObject);
+          if (!LOCAL_DEV) {
+            nc = NamespaceClient.getBeaker(sessionId);
+            nc.setOutputObj(j.outputObject);
           }
 
           j.outputObject.started();
@@ -376,21 +398,21 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
             j.outputObject.error("... cancelled!");
           }
 
-          if(nc!=null) {
+          if (nc != null) {
             nc.setOutputObj(null);
             nc = null;
           }
-        } catch(Throwable e) {
-          if(e instanceof GroovyNotFoundException) {
+        } catch (Throwable e) {
+          if (e instanceof GroovyNotFoundException) {
             logger.warn(e.getLocalizedMessage());
-            if(j != null) {
+            if (j != null) {
               j.outputObject.error(e.getLocalizedMessage());
             }
           } else {
             e.printStackTrace();
           }
         } finally {
-          if(nc!=null) {
+          if (nc != null) {
             nc.setOutputObj(null);
             nc = null;
           }
@@ -424,7 +446,7 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
 
           Script instance = (Script) parsedClass.newInstance();
 
-          if(LOCAL_DEV) {
+          if (LOCAL_DEV) {
             scriptBinding.setVariable("beaker", new HashMap<String, Object>());
           } else {
             scriptBinding.setVariable("beaker", NamespaceClient.getBeaker(sessionId));
@@ -436,23 +458,23 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
 
           result = instance.run();
 
-          if(LOCAL_DEV) {
+          if (LOCAL_DEV) {
             logger.info("Result: {}", result);
             logger.info("Variables: {}", scriptBinding.getVariables());
           }
 
           theOutput.finished(result);
 
-        } catch(Throwable e) {
+        } catch (Throwable e) {
 
-          if(LOCAL_DEV) {
-              logger.warn(e.getMessage());
-              e.printStackTrace();
+          if (LOCAL_DEV) {
+            logger.warn(e.getMessage());
+            e.printStackTrace();
           }
 
           //unwrap ITE
-          if(e instanceof InvocationTargetException) {
-            e = ((InvocationTargetException)e).getTargetException();
+          if (e instanceof InvocationTargetException) {
+            e = ((InvocationTargetException) e).getTargetException();
           }
 
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
@@ -467,7 +489,9 @@ public void evaluate(SimpleEvaluationObject seo, String code) {
         theOutput.clrOutputHandler();
         Thread.currentThread().setContextClassLoader(oldld);
       }
-    };
+    }
+
+    ;
 
   }
 

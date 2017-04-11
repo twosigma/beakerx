@@ -20,6 +20,7 @@ import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
+import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
@@ -110,7 +111,7 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public void setShellOptions(String usString, String usString1) {
+  public void setShellOptions(KernelParameters kernelParameters) {
     this.setShellOptions = Boolean.TRUE;
   }
 

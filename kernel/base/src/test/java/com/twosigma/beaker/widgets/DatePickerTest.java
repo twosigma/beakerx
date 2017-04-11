@@ -51,6 +51,16 @@ public class DatePickerTest {
   }
 
   @Test
+  public void shouldSendCommMsgWhenValueChange() throws Exception {
+    //given
+    DatePicker widget = widget();
+    //when
+    widget.setValue("20120101");
+    //then
+    TestWidgetUtils.verifyMsgForProperty(groovyKernel, DatePicker.VALUE, "20120101");
+  }
+
+  @Test
   public void shouldSendCommMsgWhenShowTimeChange() throws Exception {
     //given
     DatePicker widget = widget();

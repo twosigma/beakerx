@@ -51,6 +51,7 @@ public class DatePickerComponentWidget extends DatePickerComponent implements Co
 
   @Override
   public void setValue(String value) {
+    this.widget.setValue(value);
   }
 
   @Override

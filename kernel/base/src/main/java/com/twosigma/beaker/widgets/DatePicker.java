@@ -58,13 +58,4 @@ public class DatePicker extends ValueWidget<String> {
     return showTime;
   }
 
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    // not sure what and how to do
-  }
-
 }

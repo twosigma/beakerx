@@ -22,7 +22,7 @@ import com.twosigma.beaker.widgets.ValueWidget;
 
 public abstract class BoolWidget extends ValueWidget<Boolean> {
 
-  public BoolWidget() {
+  protected BoolWidget() {
     this.value = Boolean.FALSE;
   }
 

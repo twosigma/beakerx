@@ -95,8 +95,8 @@ public class FloatRangeSlider extends BoundedFloatRangeWidget {
     return readOut;
   }
 
-  public void setReadOut(Boolean readOut) {
-    this.readOut = readOut;
+  public void setReadOut(Object readOut) {
+    this.readOut = getBoolean(readOut);
     sendUpdate(READOUT, readOut);
   }
 

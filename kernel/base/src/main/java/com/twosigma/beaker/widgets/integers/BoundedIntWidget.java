@@ -49,8 +49,8 @@ public abstract class BoundedIntWidget extends IntWidget<Integer> {
     return step;
   }
 
-  public void setStep(Integer step) {
-    this.step = step;
+  public void setStep(Object step) {
+    this.step = getInteger(step);
     sendUpdate(STEP, step);
   }
 
@@ -58,8 +58,8 @@ public abstract class BoundedIntWidget extends IntWidget<Integer> {
     return max;
   }
 
-  public void setMax(Integer max) {
-    this.max = max;
+  public void setMax(Object max) {
+    this.max = getInteger(max);
     sendUpdate(MAX, max);
   }
 
@@ -67,8 +67,8 @@ public abstract class BoundedIntWidget extends IntWidget<Integer> {
     return min;
   }
 
-  public void setMin(Integer min) {
-    this.min = min;
+  public void setMin(Object min) {
+    this.min = getInteger(min);
     sendUpdate(MIN, min);
   }
 

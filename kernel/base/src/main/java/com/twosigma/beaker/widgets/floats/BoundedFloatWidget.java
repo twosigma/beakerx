@@ -46,8 +46,8 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
     return step;
   }
 
-  public void setStep(Double step) {
-    this.step = step;
+  public void setStep(Object step) {
+    this.step = getDouble(step);
     sendUpdate(STEP, step);
   }
 
@@ -55,8 +55,8 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
     return max;
   }
 
-  public void setMax(Double max) {
-    this.max = max;
+  public void setMax(Object max) {
+    this.max = getDouble(max);
     sendUpdate(MAX, max);
   }
 
@@ -64,8 +64,8 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
     return min;
   }
 
-  public void setMin(Double min) {
-    this.min = min;
+  public void setMin(Object min) {
+    this.min = getDouble(min);
     sendUpdate(MIN, min);
   }
 

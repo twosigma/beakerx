@@ -20,6 +20,7 @@ import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.evaluator.Evaluator;
+import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.sqlsh.autocomplete.SqlAutocomplete;
@@ -203,6 +204,7 @@ public class SQLEvaluator implements Evaluator {
     @Override
     public void run() {
       try {
+        InternalVariable.setValue(simpleEvaluationObject);
         simpleEvaluationObject.finished(queryExecutor.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, defaultConnectionString, namedConnectionString));
       } catch (SQLException e) {
         simpleEvaluationObject.error(e.toString());

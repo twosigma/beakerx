@@ -19,10 +19,12 @@ package com.twosigma.beaker.table.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.twosigma.beaker.KernelTest;
+import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.table.renderer.DataBarsRenderer;
+import com.twosigma.beaker.table.highlight.ValueHighlighter;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -31,17 +33,19 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
 
-public class DataBarsRendererSerializerTest {
+public class ValueHighlighterSerializerTest {
   private JsonGenerator jgen;
   private StringWriter sw;
+  private ValueHighlighter valueHighlighter;
   private static ObjectMapper mapper;
-  private static DataBarsRendererSerializer dataBarsRendererSerializer;
+  private static ValueHighlighterSerializer serializer;
 
   @BeforeClass
   public static void setUpClass() {
     mapper = new ObjectMapper();
-    dataBarsRendererSerializer = new DataBarsRendererSerializer();
+    serializer = new ValueHighlighterSerializer();
   }
 
   @Before
@@ -49,6 +53,7 @@ public class DataBarsRendererSerializerTest {
     KernelManager.register(new KernelTest());
     sw = new StringWriter();
     jgen = mapper.getFactory().createGenerator(sw);
+    valueHighlighter = new ValueHighlighter("a", Arrays.asList(Color.BLACK, Color.BLUE));
   }
 
   @After
@@ -57,29 +62,35 @@ public class DataBarsRendererSerializerTest {
   }
 
   @Test
-  public void serializeDataBarsRenderer_resultJsonHasDataBarsType() throws IOException {
-    //given
-    DataBarsRenderer dataBarsRenderer = new DataBarsRenderer();
+  public void serializeValueHighlighter_resultJsonHasType() throws IOException {
     //when
-    JsonNode actualObj = serializeDataBarsRenderer(dataBarsRenderer);
+    JsonNode actualObj = serializeValueHighlighter(valueHighlighter);
     //then
     Assertions.assertThat(actualObj.has("type")).isTrue();
-    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("DataBars");
+    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("ValueHighlighter");
   }
 
   @Test
-  public void serializeIncludeTextValue_resultJsonHasIncludeTextFlag() throws IOException {
-    //given
-    DataBarsRenderer dataBarsRenderer = new DataBarsRenderer(false);
+  public void serializeColumnName_resultJsonHasColumnName() throws IOException {
     //when
-    JsonNode actualObj = serializeDataBarsRenderer(dataBarsRenderer);
+    JsonNode actualObj = serializeValueHighlighter(valueHighlighter);
     //then
-    Assertions.assertThat(actualObj.has("includeText")).isTrue();
-    Assertions.assertThat(actualObj.get("includeText").asBoolean()).isFalse();
+    Assertions.assertThat(actualObj.has("colName")).isTrue();
+    Assertions.assertThat(actualObj.get("colName").asText())
+        .isEqualTo(valueHighlighter.getColName());
   }
 
-  private JsonNode serializeDataBarsRenderer(DataBarsRenderer dataBarsRenderer) throws IOException {
-    dataBarsRendererSerializer.serialize(dataBarsRenderer, jgen, new DefaultSerializerProvider.Impl());
+  @Test
+  public void serializeColors_resultJsonHasColors() throws IOException {
+    //when
+    JsonNode actualObj = serializeValueHighlighter(valueHighlighter);
+    //then
+    Assertions.assertThat(actualObj.has("colors")).isTrue();
+    Assertions.assertThat((ArrayNode)actualObj.get("colors")).isNotEmpty();
+  }
+
+  private JsonNode serializeValueHighlighter(ValueHighlighter highlighter) throws IOException {
+    serializer.serialize(highlighter, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
     return mapper.readTree(sw.toString());
   }

@@ -22,7 +22,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.table.format.DecimalStringFormat;
+import com.twosigma.beaker.table.highlight.HighlightStyle;
+import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
+import com.twosigma.beaker.table.highlight.UniqueEntriesHighlighter;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -32,16 +34,16 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringWriter;
 
-public class DecimalStringFormatSerializerTest {
+public class UniqueEntriesHighlighterSerializerTest {
   private JsonGenerator jgen;
   private StringWriter sw;
   private static ObjectMapper mapper;
-  private static DecimalStringFormatSerializer serializer;
+  private static UniqueEntriesHighlighterSerializer serializer;
 
   @BeforeClass
   public static void setUpClass() {
     mapper = new ObjectMapper();
-    serializer = new DecimalStringFormatSerializer();
+    serializer = new UniqueEntriesHighlighterSerializer();
   }
 
   @Before
@@ -57,45 +59,46 @@ public class DecimalStringFormatSerializerTest {
   }
 
   @Test
-  public void serializeDecimalStringFormat_resultJsonHasDecimalType() throws IOException {
+  public void serializeUniqueEntriesHighlighter_resultJsonHasType() throws IOException {
     //given
-    DecimalStringFormat decimalStringFormat = new DecimalStringFormat();
+    UniqueEntriesHighlighter highlighter =
+        (UniqueEntriesHighlighter) TableDisplayCellHighlighter.getUniqueEntriesHighlighter("a");
     //when
-    JsonNode actualObj = serializeDecimalStringFormat(decimalStringFormat);
+    JsonNode actualObj = serializeHighliter(highlighter);
     //then
     Assertions.assertThat(actualObj.has("type")).isTrue();
-    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("decimal");
+    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("UniqueEntriesHighlighter");
   }
 
   @Test
-  public void serializeDecimalStringFormat_resultJsonHasMinAndMaxDecimalEqualFour() throws IOException {
+  public void serializeColumnName_resultJsonHasColumnName() throws IOException {
     //given
-    DecimalStringFormat decimalStringFormat = new DecimalStringFormat();
+    UniqueEntriesHighlighter highlighter =
+        (UniqueEntriesHighlighter) TableDisplayCellHighlighter.getUniqueEntriesHighlighter("a");
     //when
-    JsonNode actualObj = serializeDecimalStringFormat(decimalStringFormat);
+    JsonNode actualObj = serializeHighliter(highlighter);
     //then
-    Assertions.assertThat(actualObj.has("minDecimals")).isTrue();
-    Assertions.assertThat(actualObj.get("minDecimals").asInt()).isEqualTo(4);
-    Assertions.assertThat(actualObj.has("maxDecimals")).isTrue();
-    Assertions.assertThat(actualObj.get("maxDecimals").asInt()).isEqualTo(4);
+    Assertions.assertThat(actualObj.has("colName")).isTrue();
+    Assertions.assertThat(actualObj.get("colName").asText()).isEqualTo("a");
   }
 
   @Test
-  public void serializeMinAndMaxDecimalsWithZeroValue_resultJsonHasMinAndMaxDecimalEqualZero() throws IOException {
+  public void serializeStyle_resultJsonHasStyle() throws IOException {
     //given
-    DecimalStringFormat decimalStringFormat = new DecimalStringFormat(0, 0);
+    UniqueEntriesHighlighter highlighter =
+        (UniqueEntriesHighlighter) TableDisplayCellHighlighter.getUniqueEntriesHighlighter(
+            "a", HighlightStyle.SINGLE_COLUMN);
     //when
-    JsonNode actualObj = serializeDecimalStringFormat(decimalStringFormat);
+    JsonNode actualObj = serializeHighliter(highlighter);
     //then
-    Assertions.assertThat(actualObj.has("minDecimals")).isTrue();
-    Assertions.assertThat(actualObj.get("minDecimals").asInt()).isEqualTo(0);
-    Assertions.assertThat(actualObj.has("maxDecimals")).isTrue();
-    Assertions.assertThat(actualObj.get("maxDecimals").asInt()).isEqualTo(0);
+    Assertions.assertThat(actualObj.has("style")).isTrue();
+    Assertions.assertThat(actualObj.get("style").asText()).isEqualTo("SINGLE_COLUMN");
   }
 
-  private JsonNode serializeDecimalStringFormat(DecimalStringFormat decimalStringFormat) throws IOException {
-    serializer.serialize(decimalStringFormat, jgen, new DefaultSerializerProvider.Impl());
+  private JsonNode serializeHighliter(UniqueEntriesHighlighter highlighter) throws IOException {
+    serializer.serialize(highlighter, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
     return mapper.readTree(sw.toString());
   }
+
 }

@@ -137,7 +137,6 @@ var DatePickerView = widgets.LabeledDOMWidgetView.extend({
   },
 
   setValueToModel: function(value) {
-    console.log('setValueToModel', value);
     this.model.set('value', value, {updated_view: this});
     this.touch();
   }

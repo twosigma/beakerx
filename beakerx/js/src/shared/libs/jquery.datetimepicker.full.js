@@ -2596,11 +2596,19 @@ var DateFormatter;
 							verticalPosition -= windowScrollTop;
 						}
 					} else {
-						if (verticalPosition + dateInputElem.offsetHeight > windowHeight + windowScrollTop) {
+
+            // Beaker: fix picker positioning when parentID is set
+            var checkHeight = 0;
+            if (options.parentID !== 'body') {
+              checkHeight = windowHeight + $(options.parentID).offset().top;
+            } else {
+              checkHeight = windowHeight + windowScrollTop;
+            }
+
+						if (verticalPosition + dateInputElem.offsetHeight > checkHeight) {
 							verticalPosition = dateInputOffset.top - dateInputElem.offsetHeight + 1;
 						}
 					}
-
 					if (verticalPosition < 0) {
 						verticalPosition = 0;
 					}

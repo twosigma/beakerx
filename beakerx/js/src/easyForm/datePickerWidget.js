@@ -48,17 +48,6 @@ $.datetimepicker.setDateFormatter({
 var DatePickerView = widgets.LabeledDOMWidgetView.extend({
   render: function() {
     DatePickerView.__super__.render.apply(this);
-    // this.el
-    //   .addClass('jupyter-widgets widget-hbox widget-text datepicker-container');
-    // this.label = $('<div />')
-    //   .addClass('widget-label')
-    //   .appendTo(this.$el)
-    //   .hide();
-    // this.datepicker = $('<input type="text" class="date-picker" />')
-    //   .addClass('form-control');
-
-    // this.initDatePicker();
-    // this.update();
 
     this.el.classList.add('jupyter-widgets');
     this.el.classList.add('widget-inline-hbox');
@@ -66,7 +55,7 @@ var DatePickerView = widgets.LabeledDOMWidgetView.extend({
     this.el.classList.add('datepicker-container');
 
     this.initDatePicker();
-
+    this.update();
   },
 
   initDatePicker: function() {
@@ -130,34 +119,21 @@ var DatePickerView = widgets.LabeledDOMWidgetView.extend({
   },
 
   update: function(options) {
-    console.log('up', this.model.get('value'));
     if (options === undefined || options.updated_view != this) {
-      if (this.datepicker.val() != this.model.get('value')) {
-        this.datepicker.val(this.model.get('value'));
+      var newValue = this.model.get('value');
+      if (this.datepicker.value != newValue) {
+        this.datepicker.val(newValue);
       }
 
       var disabled = this.model.get('disabled');
-      this.datepicker.prop('disabled', disabled);
-
-      var description = this.model.get('description');
-      if (description.length === 0) {
-        this.label.hide();
-      } else {
-        this.typeset(this.label, description);
-        this.label.show();
-      }
+      this.datepicker.disabled = disabled;
     }
-    return DatePickerView.__super__.update.apply(this);
+
+    DatePickerView.__super__.update.apply(this);
   },
 
   events: {
     "change input": "handleChanging"
-  },
-
-  handleChanging: function(e) {
-    if (e && e.target && e.target.value) {
-      this.setValueToModel(e.target.value);
-    }
   },
 
   setValueToModel: function(value) {

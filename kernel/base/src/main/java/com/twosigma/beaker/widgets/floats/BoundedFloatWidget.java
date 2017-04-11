@@ -30,6 +30,7 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
 
   protected BoundedFloatWidget() {
     super();
+    value = 0D;
   }
 
   @Override

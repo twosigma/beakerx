@@ -45,19 +45,28 @@ $.datetimepicker.setDateFormatter({
   }
 });
 
-var DatePickerView = widgets.DOMWidgetView.extend({
+var DatePickerView = widgets.LabeledDOMWidgetView.extend({
   render: function() {
-    this.$el
-      .addClass('jupyter-widgets widget-hbox widget-text datepicker-container');
-    this.$label = $('<div />')
-      .addClass('widget-label')
-      .appendTo(this.$el)
-      .hide();
-    this.$datepicker = $('<input type="text" class="date-picker" />')
-      .addClass('form-control');
+    DatePickerView.__super__.render.apply(this);
+    // this.el
+    //   .addClass('jupyter-widgets widget-hbox widget-text datepicker-container');
+    // this.label = $('<div />')
+    //   .addClass('widget-label')
+    //   .appendTo(this.$el)
+    //   .hide();
+    // this.datepicker = $('<input type="text" class="date-picker" />')
+    //   .addClass('form-control');
+
+    // this.initDatePicker();
+    // this.update();
+
+    this.el.classList.add('jupyter-widgets');
+    this.el.classList.add('widget-inline-hbox');
+    this.el.classList.add('widget-text');
+    this.el.classList.add('datepicker-container');
 
     this.initDatePicker();
-    this.update();
+
   },
 
   initDatePicker: function() {
@@ -66,7 +75,10 @@ var DatePickerView = widgets.DOMWidgetView.extend({
     var showTime = this.model.get('showTime');
     var dateFormat = showTime ? datepickerOpts.dateTimeFormat : datepickerOpts.dateFormat;
 
-    this.$button = $("<a tabindex='-1' title='Select date' class='date-picker-button ui-button ui-widget ui-state-default ui-button-icon-only custom-combobox-toggle ui-corner-right' role='button' aria-disabled='false'>" +
+    this.datepicker = $('<input type="text" class="date-picker" />')
+      .addClass('form-control');
+
+    this.button = $("<a tabindex='-1' title='Select date' class='date-picker-button ui-button ui-widget ui-state-default ui-button-icon-only custom-combobox-toggle ui-corner-right' role='button' aria-disabled='false'>" +
                      "<span class='ui-button-icon-primary ui-icon ui-icon-triangle-1-s'></span><span class='ui-button-text'></span>" +
                      "</a>");
 
@@ -84,26 +96,26 @@ var DatePickerView = widgets.DOMWidgetView.extend({
       }
     };
 
-    this.$button.on("mousedown", function() {
+    this.button.on("mousedown", function() {
       event.stopPropagation();
       event.preventDefault();
     });
 
-    this.$button.click(function() {
+    this.button.click(function() {
       if (datePickerOpen === false) {
         datePickerOpen = true;
-        that.$datepicker.datetimepicker('show');
+        that.datepicker.datetimepicker('show');
       } else {
         datePickerOpen = false;
-        that.$datepicker.datetimepicker('hide');
+        that.datepicker.datetimepicker('hide');
       }
     });
 
-    this.$datepicker.appendTo(this.$el);
-    this.$button.appendTo(this.$el);
+    this.datepicker.appendTo(this.$el);
+    this.button.appendTo(this.$el);
 
     this.displayed.then(function() {
-      that.$datepicker.datetimepicker({
+      that.datepicker.datetimepicker({
         format: dateFormat,
         formatTime:'HH:mm',
         formatDate:'YYYYMMDD',
@@ -120,19 +132,19 @@ var DatePickerView = widgets.DOMWidgetView.extend({
   update: function(options) {
     console.log('up', this.model.get('value'));
     if (options === undefined || options.updated_view != this) {
-      if (this.$datepicker.val() != this.model.get('value')) {
-        this.$datepicker.val(this.model.get('value'));
+      if (this.datepicker.val() != this.model.get('value')) {
+        this.datepicker.val(this.model.get('value'));
       }
 
       var disabled = this.model.get('disabled');
-      this.$datepicker.prop('disabled', disabled);
+      this.datepicker.prop('disabled', disabled);
 
       var description = this.model.get('description');
       if (description.length === 0) {
-        this.$label.hide();
+        this.label.hide();
       } else {
-        this.typeset(this.$label, description);
-        this.$label.show();
+        this.typeset(this.label, description);
+        this.label.show();
       }
     }
     return DatePickerView.__super__.update.apply(this);

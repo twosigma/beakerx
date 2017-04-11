@@ -2544,6 +2544,7 @@ var DateFormatter;
 				$dateInput = datetimepicker.data('input');
 
 				dateInputOffset = $dateInput.position();
+				console.log($dateInput, dateInputOffset);
 				// offset() -> position() - fix picker positioning when parentID is set
         // https://github.com/xdan/datetimepicker/issues/352
 

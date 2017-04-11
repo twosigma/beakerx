@@ -19,10 +19,11 @@ package com.twosigma.beaker.table.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.table.renderer.DataBarsRenderer;
+import com.twosigma.beaker.table.format.ValueStringFormat;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -31,17 +32,21 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class DataBarsRendererSerializerTest {
+public class ValueStringFormatSerializerTest {
   private JsonGenerator jgen;
   private StringWriter sw;
   private static ObjectMapper mapper;
-  private static DataBarsRendererSerializer dataBarsRendererSerializer;
+  private static ValueStringFormatSerializer serializer;
 
   @BeforeClass
   public static void setUpClass() {
     mapper = new ObjectMapper();
-    dataBarsRendererSerializer = new DataBarsRendererSerializer();
+    serializer = new ValueStringFormatSerializer();
   }
 
   @Before
@@ -57,31 +62,35 @@ public class DataBarsRendererSerializerTest {
   }
 
   @Test
-  public void serializeDataBarsRenderer_resultJsonHasDataBarsType() throws IOException {
+  public void serializeValueStringFormat_resultJsonHasType() throws IOException {
     //given
-    DataBarsRenderer dataBarsRenderer = new DataBarsRenderer();
+    ValueStringFormat valueStringFormat = new ValueStringFormat("a", Arrays.asList("1", "2"));
     //when
-    JsonNode actualObj = serializeDataBarsRenderer(dataBarsRenderer);
+    JsonNode actualObj = serializeValueStringFormat(valueStringFormat);
     //then
     Assertions.assertThat(actualObj.has("type")).isTrue();
-    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("DataBars");
+    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("value");
   }
 
   @Test
-  public void serializeIncludeTextValue_resultJsonHasIncludeTextFlag() throws IOException {
+  public void serializeValues_resultJsonHasValues() throws IOException {
     //given
-    DataBarsRenderer dataBarsRenderer = new DataBarsRenderer(false);
+    Map<String, List<?>> values = new HashMap<String, List<?>>(){
+      {
+        put("a", Arrays.asList("one", "two"));
+      }
+    };
+    ValueStringFormat valueStringFormat = new ValueStringFormat(values);
     //when
-    JsonNode actualObj = serializeDataBarsRenderer(dataBarsRenderer);
+    JsonNode actualObj = serializeValueStringFormat(valueStringFormat);
     //then
-    Assertions.assertThat(actualObj.has("includeText")).isTrue();
-    Assertions.assertThat(actualObj.get("includeText").asBoolean()).isFalse();
+    Assertions.assertThat(actualObj.has("values")).isTrue();
+    Assertions.assertThat((ArrayNode)actualObj.get("values").get("a")).isNotEmpty();
   }
 
-  private JsonNode serializeDataBarsRenderer(DataBarsRenderer dataBarsRenderer) throws IOException {
-    dataBarsRendererSerializer.serialize(dataBarsRenderer, jgen, new DefaultSerializerProvider.Impl());
+  private JsonNode serializeValueStringFormat(ValueStringFormat valueStringFormat) throws IOException {
+    serializer.serialize(valueStringFormat, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
     return mapper.readTree(sw.toString());
   }
-
 }

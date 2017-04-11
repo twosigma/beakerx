@@ -16,6 +16,7 @@
 
 var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
+var moment = require('moment');
 
 var datetimepicker = require('./../shared/libs/jquery.datetimepicker.full');
 
@@ -29,9 +30,20 @@ var DatePickerModel = widgets.StringModel.extend({
 });
 
 var datepickerOpts = {
-  dateFormat: 'Ymd',
-  dateTimeFormat: 'Ymd H:i'
+  dateFormat: 'YYYYMMDD',
+  dateTimeFormat: 'YYYYMMDD HH:mm'
 };
+
+$.datetimepicker.setDateFormatter({
+  parseDate: function (date, format) {
+    var d = moment(date, format);
+    return d.isValid() ? d.toDate() : false;
+  },
+
+  formatDate: function (date, format) {
+    return moment(date).format(format);
+  }
+});
 
 var DatePickerView = widgets.DOMWidgetView.extend({
   render: function() {
@@ -41,10 +53,10 @@ var DatePickerView = widgets.DOMWidgetView.extend({
       .addClass('widget-label')
       .appendTo(this.$el)
       .hide();
-    this.$datepicker = $('<input type="text" class="date-picker" id="test55" value="" />')
+    this.$datepicker = $('<input type="text" class="date-picker" />')
       .addClass('form-control');
 
-    this.update();
+    // this.update();
     this.initDatePicker();
   },
 
@@ -64,6 +76,10 @@ var DatePickerView = widgets.DOMWidgetView.extend({
     var onCloseHandler = function() {
       datePickerOpen = false;
       return true;
+    };
+    var onChange = function(dp, input) {
+      console.log(input.val());
+      
     };
 
     this.$button.on("mousedown", function() {
@@ -87,16 +103,20 @@ var DatePickerView = widgets.DOMWidgetView.extend({
     this.displayed.then(function() {
       that.$datepicker.datetimepicker({
         format: dateFormat,
+        formatTime:'HH:mm',
+        formatDate:'YYYYMMDD',
         allowBlank: true,
         onShow: onShowHandler,
         onClose: onCloseHandler,
         timepicker: showTime,
-        parentID: '#notebook'
+        parentID: '#notebook',
+        onChangeDateTime: onChange
       });
     });
   },
 
   update: function(options) {
+    console.log('up', this.model.get('value'));
     if (options === undefined || options.updated_view != this) {
       if (this.$datepicker.val() != this.model.get('value')) {
         this.$datepicker.val(this.model.get('value'));
@@ -121,6 +141,7 @@ var DatePickerView = widgets.DOMWidgetView.extend({
     // "keyup input"    : "handleChanging",
     // "paste input"    : "handleChanging",
     // "cut input"      : "handleChanging",
+    "change input"      : "handleChanging",
     // "keypress input" : "handleKeypress",
     // "blur input" : "handleBlur",
     // "focusout input" : "handleFocusOut"
@@ -133,8 +154,9 @@ var DatePickerView = widgets.DOMWidgetView.extend({
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    // this.model.set('value', e.target.value, {updated_view: this});
-    // this.touch();
+    console.log('handleChanging', e);
+    this.model.set('value', e.target.value, {updated_view: this});
+    this.touch();
   }
 });
 

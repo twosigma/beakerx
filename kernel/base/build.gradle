@@ -15,6 +15,7 @@
  */
 apply plugin: 'jacoco'
 apply plugin: 'java'
+apply plugin: 'maven-publish'
 
 repositories {
   mavenCentral()
@@ -58,3 +59,14 @@ jacocoTestReport {
 
 test.finalizedBy jacocoTestReport
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.twosigma'
+            artifactId 'beaker-kernel-base'
+            version '2.0-SNAPSHOT'
+
+            from components.java
+        }
+    }
+}

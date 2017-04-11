@@ -2543,10 +2543,13 @@ var DateFormatter;
 
 				$dateInput = datetimepicker.data('input');
 
-				dateInputOffset = $dateInput.position();
-				console.log($dateInput, dateInputOffset);
-				// offset() -> position() - fix picker positioning when parentID is set
-        // https://github.com/xdan/datetimepicker/issues/352
+				dateInputOffset = $dateInput.offset();
+
+        // Beaker: fix picker positioning when parentID is set
+        if (options.parentID !== 'body') {
+            var parentOffset = $(options.parentID).offset();
+            dateInputOffset.top -= parentOffset.top;
+        }
 
 				dateInputElem = $dateInput[0];
 

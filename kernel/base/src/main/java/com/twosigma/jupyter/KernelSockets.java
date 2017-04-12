@@ -15,10 +15,11 @@
  */
 package com.twosigma.jupyter;
 
-/**
- * Information from the connection file from Jupyter.
- */
-public interface ConfigurationFile {
+import com.twosigma.jupyter.message.Message;
 
-  Config getConfig();
+public abstract class KernelSockets extends Thread {
+
+  public abstract void publish(Message message);
+
+  public abstract void send(Message message);
 }

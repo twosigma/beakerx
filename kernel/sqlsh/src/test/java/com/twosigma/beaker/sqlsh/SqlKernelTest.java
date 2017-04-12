@@ -15,11 +15,12 @@
  */
 package com.twosigma.beaker.sqlsh;
 
-import com.twosigma.beaker.KernelTest;
-import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.KernelSocketsFactoryTest;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.jupyter.KernelRunner;
+import com.twosigma.jupyter.message.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,23 +34,25 @@ import static com.twosigma.beaker.sqlsh.SqlKernelParameters.DATASOURCES;
 import static com.twosigma.beaker.sqlsh.SqlKernelParameters.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SQLEvaluatorTest {
+public class SqlKernelTest {
 
-  private SQLEvaluator sqlEvaluator;
-  private KernelTest kernelTest;
+  private SqlKernel sqlKernel;
+  private KernelSocketsFactoryTest kernelSocketsFactory;
 
   @Before
   public void setUp() throws Exception {
-    kernelTest = new KernelTest();
-    KernelManager.register(kernelTest);
-    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1");
-    sqlEvaluator.startWorker();
+    String sessionId = "sessionId1";
+    SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId);
     sqlEvaluator.setShellOptions(kernelParameters());
+    kernelSocketsFactory = new KernelSocketsFactoryTest();
+    sqlKernel = new SqlKernel(sessionId, sqlEvaluator, kernelSocketsFactory);
+    new Thread(() -> KernelRunner.run(() -> sqlKernel)).start();
+    kernelSocketsFactory.waitForSockets();
   }
 
   @After
   public void tearDown() throws Exception {
-    KernelManager.register(null);
+    kernelSocketsFactory.shutdown();
   }
 
   @Test
@@ -67,9 +70,8 @@ public class SQLEvaluatorTest {
             "INSERT INTO color (id, name, code) VALUES (1002,'AntiqueWhite','#FAEBD7');\n" +
             "INSERT INTO color (id, name, code) VALUES (1003,'Aqua','#00FFFF');\n" +
             "SELECT * FROM color WHERE name LIKE 'A%';";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    sqlEvaluator.evaluate(seo, code);
+    SimpleEvaluationObject seo = sqlKernel.getEvaluatorManager().executeCode(code, new Message(), 1);
     waitForResult(seo);
     //then
     verifyResult(seo);

@@ -15,10 +15,8 @@
  */
 package com.twosigma.jupyter;
 
-/**
- * Information from the connection file from Jupyter.
- */
-public interface ConfigurationFile {
+public interface KernelSocketsFactory {
 
-  Config getConfig();
+  KernelSockets create(final KernelFunctionality kernel, final SocketCloseAction closeAction);
+
 }

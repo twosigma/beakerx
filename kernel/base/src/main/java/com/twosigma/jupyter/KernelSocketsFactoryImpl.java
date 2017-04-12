@@ -15,10 +15,19 @@
  */
 package com.twosigma.jupyter;
 
-/**
- * Information from the connection file from Jupyter.
- */
-public interface ConfigurationFile {
+import com.twosigma.jupyter.socket.KernelSocketsZMQ;
 
-  Config getConfig();
+import static com.google.common.base.Preconditions.checkNotNull;
+
+public class KernelSocketsFactoryImpl implements KernelSocketsFactory {
+
+  private ConfigurationFile configurationFile;
+
+  public KernelSocketsFactoryImpl(ConfigurationFile configurationFile) {
+    this.configurationFile = checkNotNull(configurationFile);
+  }
+
+  public KernelSockets create(final KernelFunctionality kernel, final SocketCloseAction closeAction) {
+    return new KernelSocketsZMQ(kernel, configurationFile.getConfig(), closeAction);
+  }
 }

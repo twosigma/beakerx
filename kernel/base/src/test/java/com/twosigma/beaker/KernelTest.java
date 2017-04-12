@@ -91,11 +91,6 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public void send(ZMQ.Socket socket, Message message) {
-    this.sentMessages.add(message);
-  }
-
-  @Override
   public Comm getComm(String hash) {
     return commMap.get(hash != null ? hash : "");
   }
@@ -127,14 +122,16 @@ public class KernelTest implements KernelFunctionality {
     return sentMessages;
   }
 
-  public void clearPublishedMessages(){
+  public void clearPublishedMessages() {
     this.publishedMessages = new ArrayList<>();
   }
-  public void clearSentMessages(){
+
+  public void clearSentMessages() {
     this.sentMessages = new ArrayList<>();
   }
 
-  public void cancelExecution(){}
+  public void cancelExecution() {
+  }
 
   @Override
   public EvaluatorManager getEvaluatorManager() {
@@ -147,7 +144,7 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public void run() throws InterruptedException, IOException {
+  public void run() {
 
   }
 }

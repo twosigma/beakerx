@@ -36,8 +36,6 @@ public interface KernelFunctionality {
 
   void send(Message message);
 
-  void send(final ZMQ.Socket socket, Message message);
-
   String getSessionId();
 
   Observer getExecutionResultSender();
@@ -56,5 +54,5 @@ public interface KernelFunctionality {
 
   Handler<Message> getHandler(JupyterMessages type);
 
-  void run() throws InterruptedException, IOException;
+  void run();
 }

@@ -25,14 +25,11 @@ import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
-import com.twosigma.jupyter.socket.KernelSockets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zeromq.ZMQ;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,16 +41,16 @@ public abstract class Kernel implements KernelFunctionality {
   public static String OS = System.getProperty("os.name").toLowerCase();
 
   private String sessionId;
-  private ConfigurationFile configurationFile;
+  private KernelSocketsFactory kernelSocketsFactory;
   private KernelHandlers handlers;
   private Map<String, Comm> commMap;
   private ExecutionResultSender executionResultSender;
   private EvaluatorManager evaluatorManager;
   private KernelSockets kernelSockets;
 
-  public Kernel(final String sessionId, final Evaluator evaluator, final ConfigurationFile configurationFile) {
+  public Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory) {
     this.sessionId = sessionId;
-    this.configurationFile = configurationFile;
+    this.kernelSocketsFactory = kernelSocketsFactory;
     this.commMap = new ConcurrentHashMap<>();
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
@@ -66,17 +63,22 @@ public abstract class Kernel implements KernelFunctionality {
   public abstract KernelHandler<Message> getKernelInfoHandler(Kernel kernel);
 
   @Override
-  public void run() throws InterruptedException, IOException {
+  public void run() {
     KernelManager.register(this);
     logger.info("Jupyter kernel starting.");
-    this.kernelSockets = new KernelSockets(this, configurationFile.getConfig(), this::closeComms);
+    this.kernelSockets = kernelSocketsFactory.create(this, this::closeComms);
     this.kernelSockets.start();
-    this.kernelSockets.join();
-    exit();
+    try {
+      this.kernelSockets.join();
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    } finally {
+      exit();
+    }
     logger.info("Jupyter kernel shoutdown.");
   }
 
-  private void exit() throws InterruptedException {
+  private void exit() {
     this.handlers.exit();
     this.executionResultSender.exit();
   }
@@ -133,11 +135,6 @@ public abstract class Kernel implements KernelFunctionality {
 
   public synchronized void send(Message message) {
     this.kernelSockets.send(message);
-  }
-
-  @Override
-  public void send(ZMQ.Socket socket, Message message) {
-    this.kernelSockets.send(socket, message);
   }
 
   public Handler<Message> getHandler(JupyterMessages type) {

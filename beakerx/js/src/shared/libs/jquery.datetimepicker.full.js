@@ -2600,7 +2600,7 @@ var DateFormatter;
             // Beaker: fix picker positioning when parentID is set
             var checkHeight = 0;
             if (options.parentID !== 'body') {
-              checkHeight = windowHeight + $(options.parentID).offset().top;
+              checkHeight = windowHeight - $(options.parentID).offset().top;
             } else {
               checkHeight = windowHeight + windowScrollTop;
             }

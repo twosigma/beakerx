@@ -15,9 +15,10 @@
  */
 package com.twosigma.beaker.sqlsh;
 
-import com.twosigma.beaker.KernelSocketsFactoryTest;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.table.TableDisplay;
+import com.twosigma.beaker.KernelSocketsServiceTest;
+import com.twosigma.beaker.KernelSocketsTest;
+import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
@@ -27,9 +28,11 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
+import static com.twosigma.beaker.sqlsh.SqlForColorTable.CREATE_AND_SELECT_ALL;
 import static com.twosigma.beaker.sqlsh.SqlKernelParameters.DATASOURCES;
 import static com.twosigma.beaker.sqlsh.SqlKernelParameters.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,14 +40,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SqlKernelTest {
 
   private SqlKernel sqlKernel;
-  private KernelSocketsFactoryTest kernelSocketsFactory;
+  private KernelSocketsServiceTest kernelSocketsFactory;
 
   @Before
   public void setUp() throws Exception {
-    String sessionId = "sessionId1";
+    String sessionId = "sessionId2";
     SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId);
     sqlEvaluator.setShellOptions(kernelParameters());
-    kernelSocketsFactory = new KernelSocketsFactoryTest();
+    kernelSocketsFactory = new KernelSocketsServiceTest();
     sqlKernel = new SqlKernel(sessionId, sqlEvaluator, kernelSocketsFactory);
     new Thread(() -> KernelRunner.run(() -> sqlKernel)).start();
     kernelSocketsFactory.waitForSockets();
@@ -56,32 +59,30 @@ public class SqlKernelTest {
   }
 
   @Test
-  public void evaluateSql() throws Exception {
+  public void evaluate() throws Exception {
     //given
-    String code = "" +
-            "CREATE TABLE color (\n" +
-            "  id int(11) NOT NULL,\n" +
-            "  name varchar(45) NOT NULL,\n" +
-            "  code varchar(10),\n" +
-            "  PRIMARY KEY (id)\n" +
-            ");\n" +
-            "\n" +
-            "INSERT INTO color (id, name, code) VALUES (1001,'AliceBlue','#F0F8FF');\n" +
-            "INSERT INTO color (id, name, code) VALUES (1002,'AntiqueWhite','#FAEBD7');\n" +
-            "INSERT INTO color (id, name, code) VALUES (1003,'Aqua','#00FFFF');\n" +
-            "SELECT * FROM color WHERE name LIKE 'A%';";
+    Message message = getExecuteRequestMessage(CREATE_AND_SELECT_ALL);
     //when
-    SimpleEvaluationObject seo = sqlKernel.getEvaluatorManager().executeCode(code, new Message(), 1);
-    waitForResult(seo);
+    kernelSocketsFactory.handleMsg(message);
+    Optional<Message> result = waitForResult(kernelSocketsFactory.getKernelSockets());
     //then
-    verifyResult(seo);
+    verifyResult(result);
   }
 
-  private void verifyResult(SimpleEvaluationObject seo) {
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    assertThat(seo.getPayload() instanceof TableDisplay).isTrue();
-    TableDisplay result = (TableDisplay) seo.getPayload();
-    assertThat(result.getValues().size()).isEqualTo(3);
+  private void verifyResult(Optional<Message> result) {
+    assertThat(result).isPresent();
+    Message message = result.get();
+    Map actual = ((Map) message.getContent().get(Comm.DATA));
+    String value = (String) actual.get("text/plain");
+    assertThat(value).isEmpty();
+    Optional<Message> tableDisplayOpenMsg = getTableDisplayOpenMsg(kernelSocketsFactory.getKernelSockets());
+    assertThat(tableDisplayOpenMsg).isPresent();
+  }
+
+  private Optional<Message> getTableDisplayOpenMsg(KernelSocketsTest kernelSocketsTest) {
+    return kernelSocketsTest.getPublishedMessages().stream().
+            filter(x -> x.type().equals(JupyterMessages.COMM_OPEN)).
+            findFirst();
   }
 
   private KernelParameters kernelParameters() {

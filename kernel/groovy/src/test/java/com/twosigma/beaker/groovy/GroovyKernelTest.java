@@ -18,28 +18,18 @@ package com.twosigma.beaker.groovy;
 
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.evaluator.Evaluator;
-import com.twosigma.beaker.evaluator.EvaluatorManager;
 
 public class GroovyKernelTest extends KernelTest {
-
-  private String id;
-  private EvaluatorManager evaluatorManager;
 
   public GroovyKernelTest() {
     this("GroovyKernelTestId1");
   }
 
   public GroovyKernelTest(String id) {
-    this.id = id;
+    super(id);
   }
 
   public GroovyKernelTest(String id, Evaluator evaluator) {
-    this.id = id;
-    this.evaluatorManager = new EvaluatorManager(this, evaluator);
-  }
-
-  @Override
-  public EvaluatorManager getEvaluatorManager() {
-    return evaluatorManager;
+    super(id,evaluator);
   }
 }

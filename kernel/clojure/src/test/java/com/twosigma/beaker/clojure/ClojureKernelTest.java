@@ -15,8 +15,8 @@
  */
 package com.twosigma.beaker.clojure;
 
-import com.twosigma.beaker.KernelSocketsFactoryTest;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.KernelSocketsServiceTest;
+import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
@@ -25,37 +25,37 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClojureKernelTest {
 
-  private ClojureKernel sqlKernel;
+  private ClojureKernel kernel;
 
-  private KernelSocketsFactoryTest kernelSocketsFactory;
+  private KernelSocketsServiceTest kernelSocketsService;
 
   @Before
   public void setUp() throws Exception {
     String sessionId = "sessionId1";
     ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId);
     evaluator.setShellOptions(kernelParameters());
-    kernelSocketsFactory = new KernelSocketsFactoryTest();
-    sqlKernel = new ClojureKernel(sessionId, evaluator, kernelSocketsFactory);
-    new Thread(() -> KernelRunner.run(() -> sqlKernel)).start();
-    kernelSocketsFactory.waitForSockets();
+    kernelSocketsService = new KernelSocketsServiceTest();
+    kernel = new ClojureKernel(sessionId, evaluator, kernelSocketsService);
+    new Thread(() -> KernelRunner.run(() -> kernel)).start();
+    kernelSocketsService.waitForSockets();
   }
 
   @After
   public void tearDown() throws Exception {
-    kernelSocketsFactory.shutdown();
+    kernelSocketsService.shutdown();
   }
 
   @Test
-  public void evaluateSql() throws Exception {
+  public void evaluate() throws Exception {
     //given
     String code = "" +
             "(def fib-seq-lazy \n" +
@@ -63,17 +63,20 @@ public class ClojureKernelTest {
             "     (lazy-seq (cons a (rfib b (+ a b)))))\n" +
             "   0 1))\n" +
             "(take 20 fib-seq-lazy)";
+    Message message = getExecuteRequestMessage(code);
     //when
-    SimpleEvaluationObject seo = sqlKernel.getEvaluatorManager().executeCode(code, new Message(), 1);
-    waitForResult(seo);
+    kernelSocketsService.handleMsg(message);
+    Optional<Message> result = waitForResult(kernelSocketsService.getKernelSockets());
     //then
-    verifyResult(seo);
+    verifyResult(result);
   }
 
-  private void verifyResult(SimpleEvaluationObject seo) {
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    assertThat(seo.getPayload() instanceof List);
-    assertThat(((List)seo.getPayload()).size()).isEqualTo(20);
+  private void verifyResult(Optional<Message> result) {
+    assertThat(result).isPresent();
+    Message message = result.get();
+    Map actual = ((Map) message.getContent().get(Comm.DATA));
+    String value = (String) actual.get("text/plain");
+    assertThat(value).contains("[0,1,1,2,3,5");
   }
 
   private KernelParameters kernelParameters() {

@@ -15,18 +15,17 @@
  */
 package com.twosigma.beaker;
 
+import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
-import org.zeromq.ZMQ;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -134,11 +133,6 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public EvaluatorManager getEvaluatorManager() {
-    return evaluatorManager;
-  }
-
-  @Override
   public Handler<Message> getHandler(JupyterMessages type) {
     return null;
   }
@@ -146,5 +140,15 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public void run() {
 
+  }
+
+  @Override
+  public SimpleEvaluationObject executeCode(String code, Message message, int executionCount) {
+    return null;
+  }
+
+  @Override
+  public AutocompleteResult autocomplete(String code, int cursorPos) {
+    return this.evaluatorManager.autocomplete(code,cursorPos);
   }
 }

@@ -15,6 +15,7 @@
  */
 package com.twosigma.jupyter;
 
+import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.comm.Comm;
@@ -22,6 +23,7 @@ import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
@@ -79,6 +81,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   private void exit() {
+    this.evaluatorManager.exit();
     this.handlers.exit();
     this.executionResultSender.exit();
   }
@@ -98,11 +101,6 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public synchronized void cancelExecution() {
     evaluatorManager.killAllThreads();
-  }
-
-  @Override
-  public EvaluatorManager getEvaluatorManager() {
-    return this.evaluatorManager;
   }
 
   public synchronized boolean isCommPresent(String hash) {
@@ -161,4 +159,13 @@ public abstract class Kernel implements KernelFunctionality {
     }
   }
 
+  @Override
+  public SimpleEvaluationObject executeCode(String code, Message message, int executionCount) {
+    return this.evaluatorManager.executeCode(code, message, executionCount);
+  }
+
+  @Override
+  public AutocompleteResult autocomplete(String code, int cursorPos) {
+    return this.evaluatorManager.autocomplete(code, cursorPos);
+  }
 }

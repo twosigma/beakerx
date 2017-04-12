@@ -19,12 +19,15 @@ import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.KernelSockets;
 import com.twosigma.jupyter.KernelSocketsFactory;
 import com.twosigma.jupyter.SocketCloseAction;
+import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
-public class KernelSocketsFactoryTest implements KernelSocketsFactory {
+public class KernelSocketsServiceTest implements KernelSocketsFactory {
 
   private volatile boolean shutdown = false;
   private volatile boolean started = false;
+
+  private KernelFunctionality kernel;
 
   public void shutdown() {
     this.shutdown = true;
@@ -34,37 +37,43 @@ public class KernelSocketsFactoryTest implements KernelSocketsFactory {
     return started;
   }
 
-  public void waitForSockets(){
+  private KernelSocketsTest kernelSockets;
+
+  public void waitForSockets() {
     while (!isStarted()) {
       //wait for kernel
     }
   }
 
+  public void handleMsg(final Message message) {
+    Handler<Message> handler = kernel.getHandler(message.type());
+    handler.handle(message);
+  }
+
   @Override
   public KernelSockets create(KernelFunctionality kernel, SocketCloseAction closeAction) {
-    return new KernelSockets() {
-      @Override
-      public void publish(Message message) {
+    this.kernel = kernel;
+    this.kernelSockets = createKernelSockets();
+    return kernelSockets;
+  }
 
-      }
-
-      @Override
-      public void send(Message message) {
-
-      }
-
+  private KernelSocketsTest createKernelSockets() {
+    return new KernelSocketsTest() {
       @Override
       public void run() {
         while (!shutdown) {
           //do nothing
         }
       }
-
       @Override
       public synchronized void start() {
         super.start();
         started = true;
       }
     };
+  }
+
+  public KernelSocketsTest getKernelSockets() {
+    return kernelSockets;
   }
 }

@@ -141,6 +141,42 @@ public class TableDisplayClosureTest {
     Assertions.assertThat(fValues.size()).isEqualTo(1);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void setStringFormatForColumnEmptyColName_throwIllegalArgumentException() throws Exception {
+    //when
+    tableDisplay.setStringFormatForColumn("", new Object());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setStringFormatForColumnWithEmptyObject_throwIllegalArgumentException() throws Exception {
+    //when
+    tableDisplay.setStringFormatForColumn("colName", new Object());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void addCellHighlighterWithEmptyObject_throwIllegalArgumentException() throws Exception {
+    //when
+    tableDisplay.addCellHighlighter(new Object());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setToolTipWithEmptyObject_throwIllegalArgumentException() throws Exception {
+    //when
+    tableDisplay.setToolTip(new Object());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setFontColorProviderWithEmptyObject_throwIllegalArgumentException() throws Exception {
+    //when
+    tableDisplay.setFontColorProvider(new Object());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setRowFilterWithEmptyObject_throwIllegalArgumentException() throws Exception {
+    //when
+    tableDisplay.setRowFilter(new Object());
+  }
+
   private List<Map<?, ?>> getListOfMapsData() {
     List<Map<?, ?>> list = new ArrayList<>();
     list.add(

@@ -18,19 +18,18 @@ package com.twosigma.beaker.widgets.floats;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public abstract class BoundedFloatWidget extends FloatWidget<Double> {
+public class BoundedFloatRangeWidget extends FloatRangeWidget {
 
   public static final String STEP = "step";
   public static final String MAX = "max";
   public static final String MIN = "min";
 
-  private Double step = 0.1;
-  private Double max = 100.0;
-  private Double min = 0.0;
+  private Double step = 1D;
+  private Double max = 100D;
+  private Double min = 0D;
 
-  protected BoundedFloatWidget() {
+  protected BoundedFloatRangeWidget() {
     super();
-    value = 0D;
   }
 
   @Override
@@ -56,7 +55,7 @@ public abstract class BoundedFloatWidget extends FloatWidget<Double> {
   }
 
   public void setMax(Object max) {
-    this.max = getDouble(max);
+    this.max =  getDouble(max);
     sendUpdate(MAX, max);
   }
 

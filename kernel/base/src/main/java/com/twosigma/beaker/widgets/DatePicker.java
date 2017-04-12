@@ -39,6 +39,11 @@ public class DatePicker extends ValueWidget<String> {
   }
 
   @Override
+  public String getValueFromObject(Object input) {
+    return (String) input;
+  }
+
+  @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(MODEL_NAME, MODEL_NAME_VALUE);

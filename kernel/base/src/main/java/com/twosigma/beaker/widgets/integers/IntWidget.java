@@ -27,17 +27,20 @@ import com.twosigma.beaker.widgets.ValueWidget;
  */
 public abstract class IntWidget<T extends Serializable> extends ValueWidget<T> {
 
+  protected IntWidget() {
+    super();
+  }
   
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(VALUE, this.value);
     return content;
-  }
-
+  } 
+  
   @Override
-  public void updateValue(Object value) {
-    this.value = (T) value;
+  public T getValueFromObject(Object input){
+    return (T)getInteger(input);
   }
 
 }

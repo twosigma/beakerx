@@ -22,7 +22,6 @@ import com.twosigma.beaker.widgets.ValueWidget;
 
 public abstract class StringWidget extends ValueWidget<String> {
 
-
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
@@ -32,7 +31,8 @@ public abstract class StringWidget extends ValueWidget<String> {
   }
 
   @Override
-  public void updateValue(Object value) {
-    this.value = (String) value;
+  public String getValueFromObject(Object input) {
+    return getString(input);
   }
+
 }

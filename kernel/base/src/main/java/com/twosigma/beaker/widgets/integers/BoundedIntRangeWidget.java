@@ -31,7 +31,7 @@ public abstract class BoundedIntRangeWidget extends IntRangeWidget{
   private Integer max = 100;
   private Integer min = 0;
 
-  public BoundedIntRangeWidget() {
+  protected BoundedIntRangeWidget() {
     super();
   }
 
@@ -48,8 +48,8 @@ public abstract class BoundedIntRangeWidget extends IntRangeWidget{
     return step;
   }
 
-  public void setStep(Integer step) {
-    this.step = step;
+  public void setStep(Object step) {
+    this.step = getInteger(step);
     sendUpdate(STEP, step);
   }
 
@@ -57,8 +57,8 @@ public abstract class BoundedIntRangeWidget extends IntRangeWidget{
     return max;
   }
 
-  public void setMax(Integer max) {
-    this.max = max;
+  public void setMax(Object max) {
+    this.max = getInteger(max);
     sendUpdate(MAX, max);
   }
 
@@ -66,8 +66,8 @@ public abstract class BoundedIntRangeWidget extends IntRangeWidget{
     return min;
   }
 
-  public void setMin(Integer min) {
-    this.min = min;
+  public void setMin(Object min) {
+    this.min = getInteger(min);
     sendUpdate(MIN, min);
   }
   

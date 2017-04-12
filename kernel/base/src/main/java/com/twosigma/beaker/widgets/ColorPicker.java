@@ -32,8 +32,8 @@ public class ColorPicker extends ValueWidget<String> {
   }
 
   @Override
-  public void updateValue(Object value) {
-    this.value = (String) value;
+  public String getValueFromObject(Object input){
+    return getString(input);
   }
 
   @Override

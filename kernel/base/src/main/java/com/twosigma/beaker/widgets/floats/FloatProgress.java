@@ -18,7 +18,27 @@ package com.twosigma.beaker.widgets.floats;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class FloatProgress extends BoundedFloatWidget{
+/**
+ * Displays a progress bar.
+ *   Parameters
+ *   -----------
+ *   value : float
+ *       position within the range of the progress bar
+ *   min : float
+ *       minimal position of the slider
+ *   max : float
+ *       maximal position of the slider
+ *   step : float
+ *       step of the progress bar
+ *   description : str
+ *       name of the progress bar
+ *   orientation : {'horizontal', 'vertical'}
+ *       default is 'horizontal', orientation of the progress bar
+ *   bar_style: {'success', 'info', 'warning', 'danger', ''}
+ *       color of the progress bar, default is '' (blue)
+ *       colors are: 'success'-green, 'info'-light blue, 'warning'-orange, 'danger'-red
+ */
+public class FloatProgress extends BoundedFloatWidget {
 
   public static final String VIEW_NAME_VALUE = "ProgressView";
   public static final String MODEL_NAME_VALUE = "ProgressModel";

@@ -13,51 +13,48 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.integers;
+package com.twosigma.beaker.widgets.floats;
 
-/**
- * @author konst
- */
-public abstract class IntRangeWidget extends IntWidget<Integer[]>{
+public abstract class FloatRangeWidget extends FloatWidget<Double[]> {
 
-  protected IntRangeWidget() {
+  protected FloatRangeWidget() {
     super();
-    value = new Integer[2];
-    value[0] = 0;
-    value[1] = 1;
+    value = new Double[2];
+    value[0] = 0D;
+    value[1] = 1D;
   }
-  
-  public Integer getLower(){
-    Integer ret = null;
-    if(value != null && value.length > 1){
+
+  public Double getLower() {
+    Double ret = null;
+    if (value != null && value.length > 1) {
       ret = value[0];
     }
     return ret;
   }
 
-  public void setLower(Integer input){
-    if(value != null && value.length > 1){
+  public void setLower(Double input) {
+    if (value != null && value.length > 1) {
       value[0] = input;
     }
   }
-  
-  public Integer getUpper(){
-    Integer ret = null;
-    if(value != null && value.length > 1){
+
+  public Double getUpper() {
+    Double ret = null;
+    if (value != null && value.length > 1) {
       ret = value[1];
     }
     return ret;
   }
 
-  public void setUpper(Integer input){
-    if(value != null && value.length > 1){
+  public void setUpper(Double input) {
+    if (value != null && value.length > 1) {
       value[1] = input;
     }
   }
-  
+
   @Override
-  public Integer[] getValueFromObject(Object input){
-    return getArrayOfInteger(input, getLower(), getUpper());
+  public Double[] getValueFromObject(Object input) {
+    return getArrayOfDouble(input, getLower(), getUpper());
   }
-  
+
 }

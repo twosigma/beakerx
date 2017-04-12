@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.table.renderer.DataBarsRenderer;
+import com.twosigma.beaker.table.format.TimeStringFormat;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -31,17 +31,18 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.concurrent.TimeUnit;
 
-public class DataBarsRendererSerializerTest {
+public class TimeStringFormatSerializerTest {
   private JsonGenerator jgen;
   private StringWriter sw;
   private static ObjectMapper mapper;
-  private static DataBarsRendererSerializer dataBarsRendererSerializer;
+  private static TimeStringFormatSerializer serializer;
 
   @BeforeClass
   public static void setUpClass() {
     mapper = new ObjectMapper();
-    dataBarsRendererSerializer = new DataBarsRendererSerializer();
+    serializer = new TimeStringFormatSerializer();
   }
 
   @Before
@@ -57,29 +58,40 @@ public class DataBarsRendererSerializerTest {
   }
 
   @Test
-  public void serializeDataBarsRenderer_resultJsonHasDataBarsType() throws IOException {
+  public void serializeTimeStringFormat_resultJsonHasType() throws IOException {
     //given
-    DataBarsRenderer dataBarsRenderer = new DataBarsRenderer();
+    TimeStringFormat timeStringFormat = new TimeStringFormat();
     //when
-    JsonNode actualObj = serializeDataBarsRenderer(dataBarsRenderer);
+    JsonNode actualObj = serializeTimeStringFormat(timeStringFormat);
     //then
     Assertions.assertThat(actualObj.has("type")).isTrue();
-    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("DataBars");
+    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("time");
   }
 
   @Test
-  public void serializeIncludeTextValue_resultJsonHasIncludeTextFlag() throws IOException {
+  public void serializeTimeUnit_resultJsonHasTimeUnit() throws IOException {
     //given
-    DataBarsRenderer dataBarsRenderer = new DataBarsRenderer(false);
+    TimeStringFormat timeStringFormat = new TimeStringFormat(TimeUnit.HOURS);
     //when
-    JsonNode actualObj = serializeDataBarsRenderer(dataBarsRenderer);
+    JsonNode actualObj = serializeTimeStringFormat(timeStringFormat);
     //then
-    Assertions.assertThat(actualObj.has("includeText")).isTrue();
-    Assertions.assertThat(actualObj.get("includeText").asBoolean()).isFalse();
+    Assertions.assertThat(actualObj.has("unit")).isTrue();
+    Assertions.assertThat(actualObj.get("unit").asText()).isEqualTo("HOURS");
   }
 
-  private JsonNode serializeDataBarsRenderer(DataBarsRenderer dataBarsRenderer) throws IOException {
-    dataBarsRendererSerializer.serialize(dataBarsRenderer, jgen, new DefaultSerializerProvider.Impl());
+  @Test
+  public void serializeHumanFriendlyFlag_resultJsonHasHumanFriendlyFlag() throws IOException {
+    //given
+    TimeStringFormat timeStringFormat = new TimeStringFormat(true);
+    //when
+    JsonNode actualObj = serializeTimeStringFormat(timeStringFormat);
+    //then
+    Assertions.assertThat(actualObj.has("humanFriendly")).isTrue();
+    Assertions.assertThat(actualObj.get("humanFriendly").asBoolean()).isTrue();
+  }
+
+  private JsonNode serializeTimeStringFormat(TimeStringFormat timeStringFormat) throws IOException {
+    serializer.serialize(timeStringFormat, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
     return mapper.readTree(sw.toString());
   }

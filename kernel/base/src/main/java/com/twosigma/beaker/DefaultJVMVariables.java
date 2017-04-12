@@ -58,7 +58,12 @@ public class DefaultJVMVariables {
         "com.twosigma.beaker.chart.heatmap.HeatMap",
         //"com.twosigma.beaker.easyform.*",
         //"com.twosigma.beaker.easyform.formitem.*",
-        "static com.twosigma.beaker.widgets.DisplayAnyWidget.display"
+        "static com.twosigma.beaker.widgets.DisplayAnyWidget.display",
+        "com.twosigma.beaker.easyform.EasyForm",
+        "com.twosigma.beaker.table.*",
+        "com.twosigma.beaker.fileloader.CsvPlotReader",
+        "com.twosigma.beaker.jvm.object.OutputCell"
+
     );
   }
 

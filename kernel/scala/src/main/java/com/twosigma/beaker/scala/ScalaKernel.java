@@ -28,14 +28,16 @@ import com.twosigma.jupyter.ConfigurationFile;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.KernelRunner;
+import com.twosigma.jupyter.KernelSocketsFactory;
+import com.twosigma.jupyter.KernelSocketsFactoryImpl;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
 
 
 public class ScalaKernel extends Kernel {
 
-  public ScalaKernel(final String id, final Evaluator evaluator, ConfigurationFile config) {
-    super(id, evaluator, config);
+  public ScalaKernel(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+    super(id, evaluator, kernelSocketsFactory);
   }
 
   @Override
@@ -54,7 +56,8 @@ public class ScalaKernel extends Kernel {
       ScalaEvaluator se = new ScalaEvaluator(null);//TODO check what to put, need for autotranslation
       se.initialize(id, id);
       //js.setupAutoTranslation(); -- uncomment
-      return new ScalaKernel(id, se, new KernelConfigurationFile(args));
+      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
+      return new ScalaKernel(id, se, kernelSocketsFactory);
     });
   }
 }

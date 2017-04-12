@@ -18,28 +18,18 @@ package com.twosigma.beaker.javash;
 
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.evaluator.Evaluator;
-import com.twosigma.beaker.evaluator.EvaluatorManager;
 
 public class JavaKernelTest extends KernelTest {
-
-  private String id;
-  private EvaluatorManager evaluatorManager;
 
   public JavaKernelTest() {
     this("JavaKernelTestId1");
   }
 
   public JavaKernelTest(String id) {
-    this.id = id;
+    super(id);
   }
 
   public JavaKernelTest(String id, Evaluator evaluator) {
-    this.id = id;
-    this.evaluatorManager = new EvaluatorManager(this, evaluator);
-  }
-
-  @Override
-  public EvaluatorManager getEvaluatorManager() {
-    return evaluatorManager;
+    super(id, evaluator);
   }
 }

@@ -17,6 +17,7 @@
 package com.twosigma.beaker.jupyter.comm;
 
 import com.twosigma.beaker.KernelTest;
+import com.twosigma.jupyter.KernelParameters;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import com.twosigma.jupyter.message.Message;
@@ -74,12 +75,16 @@ public class CommKernelControlSetShellHandlerTest {
   }
 
   private void initMessageData(Message message) {
-    Map<String, List<String>> data = new HashMap<>();
     List<String> imports = new ArrayList<>();
     imports.add("com.twosigma.beaker.chart.Color");
-    data.put(KernelControlSetShellHandler.IMPORTS, imports);
-    data.put(KernelControlSetShellHandler.CLASSPATH, new ArrayList<>());
 
+
+    Map<String, Object> kernelParams = new HashMap<>();
+    kernelParams.put(KernelControlSetShellHandler.IMPORTS, imports);
+    kernelParams.put(KernelControlSetShellHandler.CLASSPATH, new ArrayList<>());
+
+    Map<String, Object> data = new HashMap<>();
+    data.put(KernelParameters.KERNEL_PARAMETERS, kernelParams);
     Map<String, Serializable> content = new HashMap<>();
     content.put("comm_id", "commIdValue");
     content.put(Comm.DATA, (Serializable) data);

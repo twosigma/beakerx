@@ -17,7 +17,6 @@
 package com.twosigma.beaker.jupyter.comm;
 
 import com.twosigma.beaker.KernelTest;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import com.twosigma.jupyter.message.Message;
 import org.junit.Test;
@@ -27,6 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.comm.KernelControlGetDefaultShellHandler.KERNEL_CONTROL_RESPONSE;
+import static com.twosigma.jupyter.KernelParameters.KERNEL_PARAMETERS;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommKernelControlGetDefaultShellHandlerTest {
 
@@ -58,7 +59,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
   }
 
   @Test
@@ -70,7 +71,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isEmpty();
+    assertThat(kernel.getPublishedMessages()).isEmpty();
   }
 
   @Test
@@ -80,9 +81,9 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message sendMessage = kernel.getPublishedMessages().get(0);
-    Assertions.assertThat((String) sendMessage.getContent().get(Comm.COMM_ID)).isNotEmpty();
+    assertThat((String) sendMessage.getContent().get(Comm.COMM_ID)).isNotEmpty();
   }
 
   @Test
@@ -92,11 +93,11 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message sendMessage = kernel.getPublishedMessages().get(0);
-    Assertions.assertThat((Map) sendMessage.getContent().get(Comm.DATA)).isNotEmpty();
+    assertThat((Map) sendMessage.getContent().get(Comm.DATA)).isNotEmpty();
     Map<String, Serializable> shell = (Map) sendMessage.getContent().get(Comm.DATA);
-    Assertions.assertThat((Map) shell.get(KERNEL_CONTROL_RESPONSE)).isNotEmpty();
+    assertThat((Map) shell.get(KERNEL_CONTROL_RESPONSE)).isNotEmpty();
   }
 
   @Test
@@ -106,12 +107,14 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message sendMessage = kernel.getPublishedMessages().get(0);
     Map<String, Serializable> response =
             (Map)((Map) sendMessage.getContent().get(Comm.DATA)).get(KERNEL_CONTROL_RESPONSE);
-    Assertions.assertThat(response.containsKey(KernelControlSetShellHandler.IMPORTS)).isTrue();
-    Assertions.assertThat(response.get(KernelControlSetShellHandler.IMPORTS)).isNotNull();
+
+    Map<String, Serializable> beakerx_kernel_parameters =(Map) response.get(KERNEL_PARAMETERS);
+    assertThat(beakerx_kernel_parameters.containsKey(KernelControlSetShellHandler.IMPORTS)).isTrue();
+    assertThat(beakerx_kernel_parameters.get(KernelControlSetShellHandler.IMPORTS)).isNotNull();
   }
 
   @Test
@@ -121,11 +124,12 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message sendMessage = kernel.getPublishedMessages().get(0);
     Map<String, Serializable> response =
             (Map)((Map) sendMessage.getContent().get(Comm.DATA)).get(KERNEL_CONTROL_RESPONSE);
-    Assertions.assertThat(response.containsKey(KernelControlSetShellHandler.CLASSPATH))
+    Map<String, Serializable> beakerx_kernel_parameters =(Map) response.get(KERNEL_PARAMETERS);
+    assertThat(beakerx_kernel_parameters.containsKey(KernelControlSetShellHandler.CLASSPATH))
             .isTrue();
   }
 

@@ -56,7 +56,6 @@ public class Comm {
   private HashMap<?, ?> data;
   private String targetModule;
   private KernelFunctionality kernel;
-  private SimpleEvaluationObject seo;
   private List<Handler<Message>> msgCallbackList = new ArrayList<>();
   private List<Handler<Message>> closeCallbackList = new ArrayList<>();
 
@@ -190,12 +189,8 @@ public class Comm {
     this.send();
   }
 
-  protected Message getParentMessage() {
+  private Message getParentMessage() {
     return InternalVariable.getParentHeader();
-  }
-
-  public SimpleEvaluationObject getLastUsedSimpleEvaluationObject() {
-    return seo;
   }
   
   public void handleMsg(Message parentMessage) {

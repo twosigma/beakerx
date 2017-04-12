@@ -65,7 +65,7 @@ define([
           window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
-    setImportsAndClasspath();
+    setBeakerxKernelParameters();
   });
 
   Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
@@ -119,36 +119,32 @@ define([
   }
   
 
-  function setImportsAndClasspath() {
+  function setBeakerxKernelParameters() {
     getKernelInfo(function(info) {
       if (info.beakerx) {
-        setImportsAndClasspathToKernel();
+        setBeakerxKernelParametersToKernel();
       }
     });
   }
   
 
-  function setImportsAndClasspathToKernel() {
+  function setBeakerxKernelParametersToKernel() {
     var kernel_control_target_name = "kernel.control.channel";
     var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, 
                                                              null, null, null, utils.uuid());
 
-    var newNotebook = undefined == Jupyter.notebook.metadata.imports || 
-      undefined == Jupyter.notebook.metadata.classpath;
+    var newNotebook = undefined == Jupyter.notebook.metadata.beakerx_kernel_parameters;
 
     if (newNotebook) {
       comm.on_msg(function(resp) {
         if (undefined != resp.content.data.kernel_control_response) {
           if ("OK" === resp.content.data.kernel_control_response) {
-          } else if (undefined != resp.content.data.kernel_control_response.imports && 
-                     undefined != resp.content.data.kernel_control_response.classpath) {
-            Jupyter.notebook.metadata.imports = resp.content.data.kernel_control_response.imports;
-            Jupyter.notebook.metadata.classpath = resp.content.data.kernel_control_response.classpath;
+          } else if (undefined != resp.content.data.kernel_control_response.beakerx_kernel_parameters) {
+            Jupyter.notebook.metadata.beakerx_kernel_parameters = resp.content.data.kernel_control_response.beakerx_kernel_parameters;
 
             var theData = {};
             if (Jupyter.notebook && Jupyter.notebook.metadata) {
-              theData.imports = Jupyter.notebook.metadata.imports;
-              theData.classpath = Jupyter.notebook.metadata.classpath;
+              theData.beakerx_kernel_parameters = Jupyter.notebook.metadata.beakerx_kernel_parameters;
             }
             comm.send(theData);
             comm.close();
@@ -162,8 +158,7 @@ define([
     } else {
       var data = {};
       if (Jupyter.notebook && Jupyter.notebook.metadata) {
-        data.imports = Jupyter.notebook.metadata.imports;
-        data.classpath = Jupyter.notebook.metadata.classpath;
+        data.beakerx_kernel_parameters = Jupyter.notebook.metadata.beakerx_kernel_parameters;
       }
       comm.send(data);
       comm.close();

@@ -15,46 +15,44 @@
  */
 package com.twosigma.jupyter;
 
-import com.twosigma.beaker.evaluator.EvaluatorManager;
+import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
-import org.zeromq.ZMQ;
-
-import java.io.IOException;
 import java.util.Observer;
 import java.util.Set;
 
 public interface KernelFunctionality {
 
-  void publish(Message message) ;
+  void publish(Message message);
 
   void addComm(String commId, Comm comm);
 
   void removeComm(String commId);
 
-  void send(Message message) ;
-
-  void send(final ZMQ.Socket socket, Message message) ;
+  void send(Message message);
 
   String getSessionId();
 
   Observer getExecutionResultSender();
 
   Comm getComm(String string);
-  
+
   boolean isCommPresent(String string);
 
   Set<String> getCommHashSet();
 
-  void setShellOptions(String usString, String usString1);
+  void setShellOptions(KernelParameters kernelParameters);
 
   void cancelExecution();
 
-  EvaluatorManager getEvaluatorManager();
-
   Handler<Message> getHandler(JupyterMessages type);
 
-  void run() throws InterruptedException, IOException;
+  void run();
+
+  SimpleEvaluationObject executeCode(String code, Message message, int executionCount);
+
+  AutocompleteResult autocomplete(String code, int cursorPos);
 }

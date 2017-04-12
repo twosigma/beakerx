@@ -18,14 +18,14 @@ package com.twosigma.beaker.evaluator;
 
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.jupyter.KernelParameters;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class EvaluatorTest implements Evaluator {
 
-  String currentClassPath;
-  String currentImports;
+  KernelParameters kernelParameters;
   SimpleEvaluationObject seo;
   String code;
   boolean killAllThreads;
@@ -33,9 +33,8 @@ public class EvaluatorTest implements Evaluator {
   boolean exit;
 
   @Override
-  public void setShellOptions(String cp, String in) throws IOException {
-    currentClassPath = cp;
-    currentImports = in;
+  public void setShellOptions(KernelParameters kernelParameters) throws IOException {
+    this.kernelParameters = kernelParameters;
   }
 
   @Override
@@ -64,14 +63,6 @@ public class EvaluatorTest implements Evaluator {
     exit = true;
   }
 
-  public String getCurrentClassPath() {
-    return currentClassPath;
-  }
-
-  public String getCurrentImports() {
-    return currentImports;
-  }
-
   public SimpleEvaluationObject getSeo() {
     return seo;
   }
@@ -88,7 +79,7 @@ public class EvaluatorTest implements Evaluator {
     return startWorker;
   }
 
-  public void clearStartWorkerFlag(){
+  public void clearStartWorkerFlag() {
     startWorker = false;
   }
 

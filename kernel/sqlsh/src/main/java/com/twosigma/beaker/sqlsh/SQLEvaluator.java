@@ -38,37 +38,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-
-import static com.twosigma.beaker.jupyter.Utils.getAsString;
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-
 public class SQLEvaluator implements Evaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(SQLEvaluator.class.getName());
 
-  protected final String shellId;
-  protected final String sessionId;
-  protected final String packageId;
+  private final String shellId;
+  private final String sessionId;
+  private final String packageId;
 
-  protected List<String> classPath = new ArrayList<>();
-  protected String currentClassPath = "";
+  private List<String> classPath = new ArrayList<>();
+  private String currentClassPath = "";
   private Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
   private ConnectionStringHolder defaultConnectionString;
 
-  protected final BeakerCellExecutor executor;
-  volatile protected boolean exit;
+  private final BeakerCellExecutor executor;
+  volatile private boolean exit;
 
-  protected ClasspathScanner cps;
-  protected SqlAutocomplete sac;
+  private ClasspathScanner cps;
+  private SqlAutocomplete sac;
 
-  protected final Semaphore syncObject = new Semaphore(0, true);
-  protected final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<>();
-  protected final QueryExecutor queryExecutor;
-  protected final JDBCClient jdbcClient;
+  private final Semaphore syncObject = new Semaphore(0, true);
+  private final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<>();
+  private final QueryExecutor queryExecutor;
+  private final JDBCClient jdbcClient;
 
   public SQLEvaluator(String id, String sId) {
     shellId = id;
@@ -97,7 +92,7 @@ public class SQLEvaluator implements Evaluator {
     cancelExecution();
   }
 
-  public void cancelExecution() {
+  private void cancelExecution() {
     executor.cancelExecution();
     queryExecutor.cancel();
   }
@@ -107,12 +102,12 @@ public class SQLEvaluator implements Evaluator {
     executor.killAllThreads();
   }
 
-  public void resetEnvironment() {
+  private void resetEnvironment() {
     jdbcClient.loadDrivers(classPath);
     killAllThreads();
   }
 
-  protected SqlAutocomplete createSqlAutocomplete(ClasspathScanner c) {
+  private SqlAutocomplete createSqlAutocomplete(ClasspathScanner c) {
     return new SqlAutocomplete(c, jdbcClient, sessionId, defaultConnectionString, namedConnectionString);
   }
 
@@ -127,8 +122,8 @@ public class SQLEvaluator implements Evaluator {
 
     private SimpleEvaluationObject simpleEvaluationObject;
 
-    public JobDescriptor(String code, SimpleEvaluationObject seo) {
-      code = code;
+    private JobDescriptor(String code, SimpleEvaluationObject seo) {
+      this.code = code;
       simpleEvaluationObject = seo;
     }
 
@@ -140,7 +135,7 @@ public class SQLEvaluator implements Evaluator {
       this.code = code;
     }
 
-    public SimpleEvaluationObject getSimpleEvaluationObject() {
+    private SimpleEvaluationObject getSimpleEvaluationObject() {
       return simpleEvaluationObject;
     }
 
@@ -151,7 +146,7 @@ public class SQLEvaluator implements Evaluator {
 
   private class WorkerThread extends Thread {
 
-    public WorkerThread() {
+    private WorkerThread() {
       super("sqlsh worker");
     }
         /*
@@ -193,10 +188,10 @@ public class SQLEvaluator implements Evaluator {
 
   protected class MyRunnable implements Runnable {
 
-    protected final SimpleEvaluationObject simpleEvaluationObject;
-    protected final NamespaceClient namespaceClient;
+    private final SimpleEvaluationObject simpleEvaluationObject;
+    private final NamespaceClient namespaceClient;
 
-    public MyRunnable(SimpleEvaluationObject seo, NamespaceClient namespaceClient) {
+    private MyRunnable(SimpleEvaluationObject seo, NamespaceClient namespaceClient) {
       this.simpleEvaluationObject = seo;
       this.namespaceClient = namespaceClient;
     }
@@ -221,24 +216,20 @@ public class SQLEvaluator implements Evaluator {
 
   @Override
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-    Map<String, Object> params = kernelParameters.getParams();
 
-    Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
-    String cp = getAsString(listOfClassPath);
-    Optional<String> defaultDatasource = kernelParameters.getParam("defaultDatasource", String.class);
-    Optional<String> datasources = kernelParameters.getParam("datasources", String.class);
+    SqlKernelParameters params = new SqlKernelParameters(kernelParameters);
 
-    currentClassPath = cp;
-    if (cp.isEmpty())
+    currentClassPath = params.getClassPathAsString();
+    if (currentClassPath.isEmpty())
       classPath = new ArrayList<>();
     else
-      classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
+      classPath = Arrays.asList(currentClassPath.split("[\\s" + File.pathSeparatorChar + "]+"));
 
     jdbcClient.loadDrivers(classPath);
 
-    this.defaultConnectionString = new ConnectionStringHolder(defaultDatasource.orElse(""), jdbcClient);
+    this.defaultConnectionString = new ConnectionStringHolder(params.defaultDatasource().orElse(""), jdbcClient);
     this.namedConnectionString = new HashMap<>();
-    Scanner sc = new Scanner(datasources.orElse(""));
+    Scanner sc = new Scanner(params.datasources().orElse(""));
     while (sc.hasNext()) {
       String line = sc.nextLine();
       int i = line.indexOf('=');

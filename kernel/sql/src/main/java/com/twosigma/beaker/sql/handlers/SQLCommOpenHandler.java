@@ -24,14 +24,14 @@ import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
-public class SqlshCommOpenHandler extends CommOpenHandler{
+public class SQLCommOpenHandler extends CommOpenHandler{
 
  private Handler<?>[] KERNEL_CONTROL_CHANNEL_HANDLERS = {
      new KernelControlSetShellHandler(kernel),
      new KernelControlInterrupt(kernel),
      new KernelControlCommandListHandler(kernel)};
 
-  public SqlshCommOpenHandler(KernelFunctionality kernel) {
+  public SQLCommOpenHandler(KernelFunctionality kernel) {
     super(kernel);
   }
 

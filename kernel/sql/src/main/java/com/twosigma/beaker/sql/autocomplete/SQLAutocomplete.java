@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class SqlshAutocomplete {
+public class SQLAutocomplete {
 
   private static final String[] SQL_KEYS = {
     "ABORT", "ACTION", "ADD", "AFTER", "ALL", "ALTER", "ANALYZE", "AND",
@@ -58,7 +58,7 @@ public class SqlshAutocomplete {
 
 
 
-  public SqlshAutocomplete(ClasspathScanner _cps, JDBCClient jdbcClient, String sessionId, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) {
+  public SQLAutocomplete(ClasspathScanner _cps, JDBCClient jdbcClient, String sessionId, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) {
     super();
     this.jdbcClient = jdbcClient;
     this.sessionId = sessionId;

@@ -23,7 +23,7 @@ import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
-import com.twosigma.beaker.sql.autocomplete.SqlshAutocomplete;
+import com.twosigma.beaker.sql.autocomplete.SQLAutocomplete;
 import com.twosigma.jupyter.KernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class SQLEvaluator implements Evaluator {
   volatile private boolean exit;
 
   private ClasspathScanner cps;
-  private SqlshAutocomplete sac;
+  private SQLAutocomplete sac;
 
   private final Semaphore syncObject = new Semaphore(0, true);
   private final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<>();
@@ -106,8 +106,8 @@ public class SQLEvaluator implements Evaluator {
     killAllThreads();
   }
 
-  private SqlshAutocomplete createSqlAutocomplete(ClasspathScanner c) {
-    return new SqlshAutocomplete(c, jdbcClient, sessionId, defaultConnectionString, namedConnectionString);
+  private SQLAutocomplete createSqlAutocomplete(ClasspathScanner c) {
+    return new SQLAutocomplete(c, jdbcClient, sessionId, defaultConnectionString, namedConnectionString);
   }
 
   @Override

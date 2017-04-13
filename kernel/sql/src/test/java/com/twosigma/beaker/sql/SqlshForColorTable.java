@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.sql;
 
-public class SqlForColorTable {
+public class SqlshForColorTable {
 
   public static String CREATE_AND_SELECT_ALL = "" +
           "drop table if exists color;" +

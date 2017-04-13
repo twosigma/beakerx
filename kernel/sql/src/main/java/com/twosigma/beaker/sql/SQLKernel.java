@@ -17,7 +17,7 @@ package com.twosigma.beaker.sql;
 
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
-import com.twosigma.beaker.sql.handlers.SqlCommOpenHandler;
+import com.twosigma.beaker.sql.handlers.SqlshCommOpenHandler;
 import com.twosigma.beaker.sql.handlers.SqlKernelInfoHandler;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
@@ -39,7 +39,7 @@ public class SQLKernel extends Kernel {
 
   @Override
   public CommOpenHandler getCommOpenHandler(Kernel kernel) {
-    return new SqlCommOpenHandler(kernel);
+    return new SqlshCommOpenHandler(kernel);
   }
 
   @Override

@@ -37,9 +37,9 @@ import static com.twosigma.beaker.sql.SqlKernelParameters.DATASOURCES;
 import static com.twosigma.beaker.sql.SqlKernelParameters.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SqlshKernelTest {
+public class SQLKernelTest {
 
-  private SqlshKernel sqlKernel;
+  private SQLKernel sqlKernel;
   private KernelSocketsServiceTest kernelSocketsFactory;
 
   @Before
@@ -48,7 +48,7 @@ public class SqlshKernelTest {
     SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId);
     sqlEvaluator.setShellOptions(kernelParameters());
     kernelSocketsFactory = new KernelSocketsServiceTest();
-    sqlKernel = new SqlshKernel(sessionId, sqlEvaluator, kernelSocketsFactory);
+    sqlKernel = new SQLKernel(sessionId, sqlEvaluator, kernelSocketsFactory);
     new Thread(() -> KernelRunner.run(() -> sqlKernel)).start();
     kernelSocketsFactory.waitForSockets();
   }

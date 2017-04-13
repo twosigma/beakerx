@@ -31,9 +31,9 @@ import java.io.IOException;
 
 import static com.twosigma.beaker.jupyter.Utils.uuid;
 
-public class SqlshKernel extends Kernel {
+public class SQLKernel extends Kernel {
 
-  public SqlshKernel(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+  public SQLKernel(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(sessionId, evaluator, kernelSocketsFactory);
   }
 
@@ -51,7 +51,7 @@ public class SqlshKernel extends Kernel {
     KernelRunner.run(() -> {
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-      return new SqlshKernel(id, new SQLEvaluator(id, id), kernelSocketsFactory);
+      return new SQLKernel(id, new SQLEvaluator(id, id), kernelSocketsFactory);
     });
   }
 }

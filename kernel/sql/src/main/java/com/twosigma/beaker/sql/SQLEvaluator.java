@@ -216,7 +216,7 @@ public class SQLEvaluator implements Evaluator {
   @Override
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
 
-    SqlKernelParameters params = new SqlKernelParameters(kernelParameters);
+    SqlshKernelParameters params = new SqlshKernelParameters(kernelParameters);
 
     currentClassPath = params.getClassPathAsString();
     if (currentClassPath.isEmpty())

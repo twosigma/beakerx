@@ -24,14 +24,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.twosigma.beaker.jupyter.Utils.getAsString;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
 
-public class SqlKernelParameters {
+public class SqlshKernelParameters {
 
   public static final String DEFAULT_DATASOURCE = "defaultDatasource";
   public static final String DATASOURCES = "datasources";
 
   private KernelParameters kernelParameters;
 
-  public SqlKernelParameters(KernelParameters kernelParameters) {
+  public SqlshKernelParameters(KernelParameters kernelParameters) {
     this.kernelParameters = checkNotNull(kernelParameters);
   }
 

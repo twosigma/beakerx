@@ -33,8 +33,8 @@ import java.util.Optional;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beaker.sql.SqlForColorTable.CREATE_AND_SELECT_ALL;
-import static com.twosigma.beaker.sql.SqlKernelParameters.DATASOURCES;
-import static com.twosigma.beaker.sql.SqlKernelParameters.DEFAULT_DATASOURCE;
+import static com.twosigma.beaker.sql.SqlshKernelParameters.DATASOURCES;
+import static com.twosigma.beaker.sql.SqlshKernelParameters.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SQLKernelTest {

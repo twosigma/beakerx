@@ -27,6 +27,9 @@ public class EasyFormView extends Box {
 
   public static final String VIEW_NAME_VALUE = "EasyFormView";
   public static final String MODEL_NAME_VALUE = "EasyFormModel";
+  public static final String EASY_FORM_NAME = "easyFormName";
+
+  private String easyFormName;
 
   public EasyFormView(List<CommFunctionality> children) {
     super(children);
@@ -46,5 +49,14 @@ public class EasyFormView extends Box {
     content.put(MODEL_NAME, MODEL_NAME_VALUE);
     content.put(VIEW_NAME, VIEW_NAME_VALUE);
     return content;
+  }
+
+  public String getEasyFormName() {
+    return easyFormName;
+  }
+
+  public void setEasyFormName(String easyFormName) {
+    this.easyFormName = easyFormName;
+    sendUpdate(EASY_FORM_NAME, easyFormName);
   }
 }

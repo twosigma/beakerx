@@ -22,6 +22,7 @@ public class DisplayEasyForm {
   public static void display(EasyForm easyForm) {
     easyForm.setReady();
     EasyFormView easyFormView = new EasyFormView(easyForm.getCommFunctionalities());
+    easyFormView.setEasyFormName(easyForm.getCaption());
     DisplayWidget.display(easyFormView);
   }
 

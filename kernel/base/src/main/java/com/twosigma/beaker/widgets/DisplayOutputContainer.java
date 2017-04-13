@@ -18,7 +18,8 @@ package com.twosigma.beaker.widgets;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
 import com.twosigma.beaker.table.TableDisplay;
-import com.twosigma.beaker.widgets.internal.InternalWidget;
+import com.twosigma.beaker.widgets.internal.CommWidget;
+import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.selectioncontainer.Tab;
 import com.twosigma.beaker.widgets.strings.Label;
 
@@ -32,23 +33,19 @@ public class DisplayOutputContainer {
     if (container.getLayoutManager() instanceof TabbedOutputContainerLayoutManager) {
       List<CommFunctionality> items = container.getItems().stream().map(x -> toCommFunctionality(x)).collect(Collectors.toList());
       Tab tab = new Tab(items, container.getLabels());
-      DisplayWidget.display(tab);
+      tab.display();
     } else {
-      container.getItems().forEach(item -> DisplayWidget.display(toCommFunctionality(item)));
+      container.getItems().forEach(item -> toCommFunctionality(item).display());
     }
   }
 
-  private static CommFunctionality toCommFunctionality(Object item) {
-    CommFunctionality widget;
-    if (item instanceof InternalWidget) {
-      InternalWidget iw = (InternalWidget) item;
-      iw.sendModel();
-      widget = iw;
-    } else if (item instanceof CommFunctionality) {
-      widget = (CommFunctionality) item;
+
+  private static CommWidget toCommFunctionality(Object item) {
+    CommWidget widget;
+    if (item instanceof InternalCommWidget || item instanceof CommWidget) {
+      widget = (CommWidget) item;
     } else if (item instanceof HashMap) {
       widget = TableDisplay.createTableDisplayForMap((HashMap) item);
-      ((InternalWidget) widget).sendModel();
     } else {
       Label label = new Label();
       label.setValue(item.toString());

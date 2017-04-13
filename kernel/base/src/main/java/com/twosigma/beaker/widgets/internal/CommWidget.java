@@ -13,20 +13,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets;
+package com.twosigma.beaker.widgets.internal;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class DisplayWidget {
+import com.twosigma.beaker.widgets.CommFunctionality;
+
+public interface CommWidget extends CommFunctionality {
 
   public static final String METHOD = "method";
   public static final String DISPLAY = "display";
-
-  public static void display(final CommFunctionality widget) {
+  
+  default void beforeDisplay() {
+    //nothing to do in jupyter widgets.
+    //should be removed in the future.
+  }
+  
+  //TODO move to Widget class. 
+  default void display() {
+    beforeDisplay();
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, DISPLAY);
-    widget.getComm().setData(content);
-    widget.getComm().send();
+    getComm().setData(content);
+    getComm().send();
   }
+
+  String getModelNameValue();
+  String getViewNameValue();
+  
 }

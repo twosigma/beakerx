@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import static com.twosigma.beaker.widgets.InternalWidgetsTestUtils.verifyOpenCommMsgInternalWidgets;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beaker.widgets.internal.InternalWidget.MODEL;
+import static com.twosigma.beaker.widgets.internal.InternalCommWidget.MODEL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class InternalWidgetTest {
@@ -30,7 +30,7 @@ public class InternalWidgetTest {
     new InternalWidgetsTestRunner().test((clazz, groovyKernel) -> {
       //given
       //when
-      InternalWidget widget = clazz.newInstance();
+      CommWidget widget = clazz.newInstance();
       //then
       verifyOpenCommMsgInternalWidgets(groovyKernel.getPublishedMessages(), widget.getModelNameValue(), widget.getViewNameValue());
     });
@@ -39,9 +39,9 @@ public class InternalWidgetTest {
   @Test
   public void shouldSendCommMsgForSendModelForAllClassesWhichImplementInternalWidgetInterface() throws Exception {
     new InternalWidgetsTestRunner().test((clazz, groovyKernel) -> {
-      InternalWidget widget = clazz.newInstance();
+      InternalCommWidget widget = clazz.newInstance();
       //when
-      widget.sendModel();
+      widget.beforeDisplay();
       //then
       String valueForProperty = getValueForProperty(groovyKernel.getPublishedMessages().get(1), MODEL, String.class);
       assertThat(valueForProperty).isNotNull();

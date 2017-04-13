@@ -36,14 +36,12 @@ public class Play extends BoundedIntWidget{
   public Play() {
     super();
     this.interval = 100;
-    init();
+    openComm();
   }
   
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
     content.put(_PLAYING, false);
     return content;
   }
@@ -55,6 +53,16 @@ public class Play extends BoundedIntWidget{
   public void setOrientation(Integer interval) {
     this.interval = interval;
     sendUpdate(INTERVAL, interval);
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
   
 }

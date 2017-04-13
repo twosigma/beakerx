@@ -19,8 +19,10 @@ package com.twosigma.beaker.chart.histogram;
 import com.twosigma.beaker.chart.AbstractChart;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.chart.InternalPlot;
-import com.twosigma.beaker.widgets.internal.InternalWidget;
+import com.twosigma.beaker.widgets.internal.CommWidget;
+import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
@@ -30,7 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Histogram extends AbstractChart implements InternalWidget, InternalPlot {
+public class Histogram extends AbstractChart implements InternalCommWidget, InternalPlot {
 
   public enum DisplayMode {
     OVERLAP,
@@ -60,8 +62,8 @@ public class Histogram extends AbstractChart implements InternalWidget, Internal
     this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
       @Override
       public void addContent(HashMap<String, Serializable> content) {
-        content.put(InternalWidgetUtils.MODEL_NAME, getModelNameValue());
-        content.put(InternalWidgetUtils.VIEW_NAME, getViewNameValue());
+        content.put(Widget.MODEL_NAME, getModelNameValue());
+        content.put(Widget.VIEW_NAME, getViewNameValue());
       }
     });
   }

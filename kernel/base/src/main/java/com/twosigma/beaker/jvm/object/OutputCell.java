@@ -15,20 +15,10 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.twosigma.beaker.mimetype.MIMEContainer;
+
 public class OutputCell {
-  public static final State HIDDEN = State.HIDDEN;
 
-  public enum State {
-    HIDDEN("HiddenOutputCell");
+  public static final MIMEContainer HIDDEN = MIMEContainer.HIDDEN();
 
-    private String type;
-
-    State(String type) {
-      this.type = type;
-    }
-
-    public String getType() {
-      return type;
-    }
-  }
 }

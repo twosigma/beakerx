@@ -19,12 +19,14 @@ package com.twosigma.beaker.jvm.object;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import com.twosigma.beaker.mimetype.MIMEContainer;
+
 public class OutputCellTest {
 
   @Test
   public void outputCellHasHiddenState() throws Exception {
     //then
-    Assertions.assertThat(OutputCell.HIDDEN instanceof OutputCell.State).isEqualTo(true);
+    Assertions.assertThat(OutputCell.HIDDEN instanceof MIMEContainer).isEqualTo(true);
   }
 
 }

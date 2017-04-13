@@ -28,7 +28,7 @@ public class ImageContainer extends MIMEContainer {
     } else {
       image = (byte[]) data;
     }
-    return addMimeType(isJPEG(image) ? IMAGE_JPEG : IMAGE_PNG, Base64.getEncoder().encodeToString(image));
+    return addMimeType(isJPEG(image) ? MIME.IMAGE_JPEG : MIME.IMAGE_PNG, Base64.getEncoder().encodeToString(image));
   }
 
   private static boolean isJPEG(byte[] image) {

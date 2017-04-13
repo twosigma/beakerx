@@ -15,11 +15,9 @@
  */
 package com.twosigma.beaker.widgets.selectioncontainer;
 
-import com.twosigma.beaker.widgets.CommFunctionality;
-
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
+
+import com.twosigma.beaker.widgets.CommFunctionality;
 
 public class Tab extends SelectionContainer {
 
@@ -28,20 +26,22 @@ public class Tab extends SelectionContainer {
 
   public Tab(List<CommFunctionality> children, List<String> labels) {
     super(children, labels);
-    init();
-  }
-
-  @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
-    return content;
+    openComm();
   }
 
   @Override
   public void updateValue(Object value) {
     //Nothing to do
+  }
+  
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 
 }

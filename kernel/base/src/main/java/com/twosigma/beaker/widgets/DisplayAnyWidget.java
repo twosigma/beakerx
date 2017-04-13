@@ -15,15 +15,15 @@
  */
 package com.twosigma.beaker.widgets;
 
+import static com.twosigma.beaker.SerializeToString.isInternalWidget;
+
 import com.github.lwhite1.tablesaw.api.Table;
 import com.twosigma.beaker.easyform.DisplayEasyForm;
 import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.fileloader.CsvPlotReader;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.table.TableDisplay;
-import com.twosigma.beaker.widgets.internal.InternalWidget;
-
-import static com.twosigma.beaker.SerializeToString.isInternalWidget;
+import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 
 public class DisplayAnyWidget {
   
@@ -38,18 +38,13 @@ public class DisplayAnyWidget {
     }else if (input instanceof OutputContainer) {
       DisplayOutputContainer.display((OutputContainer)input);
     }else if(input instanceof Table){
-      showInternalWidget(new TableDisplay(new CsvPlotReader().convert((Table) input)));
+      new TableDisplay(new CsvPlotReader().convert((Table) input)).display();
     }else if (isInternalWidget(input)) {
-      showInternalWidget(input);
+      ((InternalCommWidget)input).display();
     }else if(input instanceof Widget){
-      DisplayWidget.display((Widget)input);
+      ((Widget)input).display();
     }
   }
 
-  private static void showInternalWidget(Object result) {
-    InternalWidget widget = (InternalWidget) result;
-    widget.sendModel();
-    DisplayWidget.display(widget);
-  }
 
 }

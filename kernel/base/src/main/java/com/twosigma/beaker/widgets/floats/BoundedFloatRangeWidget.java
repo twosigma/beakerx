@@ -18,7 +18,7 @@ package com.twosigma.beaker.widgets.floats;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class BoundedFloatRangeWidget extends FloatRangeWidget {
+public abstract class BoundedFloatRangeWidget extends FloatRangeWidget {
 
   public static final String STEP = "step";
   public static final String MAX = "max";

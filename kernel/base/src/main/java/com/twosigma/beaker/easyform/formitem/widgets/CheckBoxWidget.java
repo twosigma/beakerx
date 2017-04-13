@@ -58,4 +58,10 @@ public class CheckBoxWidget extends CheckBox implements CommFunctionality, EasyF
   public DOMWidget getWidget() {
     return widget;
   }
+  
+  @Override
+  public void close() {
+    getComm().close();
+  }
+  
 }

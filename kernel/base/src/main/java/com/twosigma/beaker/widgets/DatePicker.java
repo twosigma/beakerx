@@ -27,7 +27,7 @@ public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
   public DatePicker() {
     super();
     this.value = new LinkedHashMap<>();
-    init();
+    openComm();
   }
 
   @Override
@@ -38,10 +38,18 @@ public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
     content.put(VALUE, this.value);
     return content;
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 
 

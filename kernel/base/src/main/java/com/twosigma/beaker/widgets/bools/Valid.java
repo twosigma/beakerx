@@ -43,14 +43,12 @@ public class Valid extends BoolWidget{
   
   protected Valid() {
     super();
-    init();
+    openComm();
   }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
     content.put(READOUT, this.readOut);
     return content;
   }
@@ -62,6 +60,16 @@ public class Valid extends BoolWidget{
   public void setReadOut(Object readOut) {
     this.readOut = getBoolean(readOut);
     sendUpdate(READOUT, readOut);
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 
 }

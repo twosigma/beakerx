@@ -18,6 +18,7 @@ package com.twosigma.beaker.widgets;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,6 +30,10 @@ import java.util.List;
 public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
 
   protected T value;
+  protected Boolean disabled = false;
+  protected Boolean visible = true;
+  protected String description = "";
+  protected Integer msg_throttle = 3;
 
   public T getValue() {
     return this.value;
@@ -45,6 +50,52 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
   }
 
   public abstract T getValueFromObject(Object input);
+  
+  public Boolean getDisabled() {
+    return disabled;
+  }
+
+  public void setDisabled(Object disabled) {
+    this.disabled = getBoolean(disabled);
+    sendUpdate(DISABLED, disabled);
+  }
+
+  public Boolean getVisible() {
+    return visible;
+  }
+
+  public void setVisible(Object visible) {
+    this.visible = getBoolean(visible);
+    sendUpdate(VISIBLE, visible);
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(Object description) {
+    this.description = getString(description);
+    sendUpdate(DESCRIPTION, description);
+  }
+
+  public Integer getMsg_throttle() {
+    return msg_throttle;
+  }
+
+  public void setMsg_throttle(Object msg_throttle) {
+    this.msg_throttle = getInteger(msg_throttle);
+    sendUpdate(MSG_THROTTLE, msg_throttle);
+  }
+  
+  @Override
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+    super.content(content);
+    content.put(DESCRIPTION, this.description);
+    content.put(DISABLED, this.disabled);
+    content.put(VISIBLE, this.visible);
+    content.put(MSG_THROTTLE, this.msg_throttle);
+    return content;
+  }
 
   public Integer getInteger(Object input) {
     Integer ret = 0;

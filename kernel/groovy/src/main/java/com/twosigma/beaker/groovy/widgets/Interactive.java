@@ -15,8 +15,6 @@
  */
 package com.twosigma.beaker.groovy.widgets;
 
-import static com.twosigma.beaker.widgets.DisplayWidget.display;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +69,7 @@ public class Interactive extends InteractiveBase{
         
       });
       logger.info("interact Widget: " + widget.getClass().getName());
-      display(widget);
+      widget.display();
     }
   }
 

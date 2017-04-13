@@ -82,7 +82,8 @@ import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.widgets.DisplayAnyWidget;
 import com.twosigma.beaker.widgets.Widget;
-import com.twosigma.beaker.widgets.internal.InternalWidget;
+import com.twosigma.beaker.widgets.internal.CommWidget;
+import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 
 import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
 import static com.twosigma.beaker.mimetype.MIMEContainer.HIDDEN;
@@ -197,7 +198,7 @@ public class SerializeToString {
 
   public static boolean isInternalWidget(Object result) {
     boolean ret = false;
-    if (result != null && result instanceof InternalWidget) {
+    if (result != null && result instanceof InternalCommWidget) {
       for (Class<?> clazz : internalWidgetMap.keySet()) {
         ret = clazz.isAssignableFrom(result.getClass());
         if (ret) {

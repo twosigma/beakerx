@@ -72,4 +72,10 @@ public class RadioButtonComponentWidget extends RadioButtonComponent implements 
   public DOMWidget getWidget() {
     return widget;
   }
+  
+  @Override
+  public void close() {
+    getComm().close();
+  }
+  
 }

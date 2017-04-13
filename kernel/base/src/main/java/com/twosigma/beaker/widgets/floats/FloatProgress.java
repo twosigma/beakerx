@@ -48,14 +48,12 @@ public class FloatProgress extends BoundedFloatWidget {
 
   public FloatProgress() {
     super();
-    init();
+    openComm();
   }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
     content.put(ORIENTATION, this.orientation);
     content.put("bar_style", "");
     return content;
@@ -68,6 +66,16 @@ public class FloatProgress extends BoundedFloatWidget {
   public void setOrientation(String orientation) {
     this.orientation = orientation;
     sendUpdate(ORIENTATION, orientation);
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 
 }

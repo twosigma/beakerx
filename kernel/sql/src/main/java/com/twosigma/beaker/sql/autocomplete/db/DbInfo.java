@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
-include 'beakerx'
-include 'beakerx:js'
-include 'kernel'
-include 'kernel:base'
-include 'kernel:groovy'
-include 'kernel:scala'
-include 'kernel:java'
-include 'kernel:clojure'
-include 'kernel:sql'
+package com.twosigma.beaker.sql.autocomplete.db;
 
+import java.util.List;
+
+public interface DbInfo {
+
+  public List<String> getTableNames(DbCache dbCache, final String schemaName, final String key);
+  public List<String> getTableFieldNames(DbCache dbCache, final String schemaName,
+                                         final String tableName, final String key);
+}

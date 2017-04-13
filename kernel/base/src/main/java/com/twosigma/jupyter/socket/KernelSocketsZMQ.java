@@ -18,6 +18,7 @@ package com.twosigma.jupyter.socket;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.jupyter.Config;
 import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.KernelSockets;
 import com.twosigma.jupyter.SocketCloseAction;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.MessageSerializer;
@@ -40,9 +41,9 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.SHUTDOWN_REQUEST;
 import static java.util.Arrays.asList;
 import static com.twosigma.jupyter.message.MessageSerializer.toJson;
 
-public class KernelSockets extends Thread {
+public class KernelSocketsZMQ extends KernelSockets {
 
-  public static final Logger logger = LoggerFactory.getLogger(KernelSockets.class);
+  public static final Logger logger = LoggerFactory.getLogger(KernelSocketsZMQ.class);
 
   public static final String DELIM = "<IDS|MSG>";
 
@@ -59,7 +60,7 @@ public class KernelSockets extends Thread {
 
   private boolean shutdownSystem = false;
 
-  public KernelSockets(KernelFunctionality kernel, Config configuration, SocketCloseAction closeAction) {
+  public KernelSocketsZMQ(KernelFunctionality kernel, Config configuration, SocketCloseAction closeAction) {
     this.closeAction = closeAction;
     this.kernel = kernel;
     this.hmac = new HashedMessageAuthenticationCode(configuration.getKey());
@@ -83,15 +84,19 @@ public class KernelSockets extends Thread {
     sockets.register(stdinSocket, ZMQ.Poller.POLLIN);
   }
 
-  public synchronized void publish(Message message) {
+  public void publish(Message message) {
     send(this.iopubSocket, message);
   }
 
-  public synchronized void send(Message message) {
+  public void send(Message message) {
     send(this.shellSocket, message);
   }
 
-  public void send(final ZMQ.Socket socket, Message message) {
+  private void send(final ZMQ.Socket socket, Message message) {
+    sendMsg(socket, message);
+  }
+
+  private synchronized void sendMsg(ZMQ.Socket socket, Message message) {
     String header = toJson(message.getHeader());
     String parent = toJson(message.getParentHeader());
     String meta = toJson(message.getMetadata());

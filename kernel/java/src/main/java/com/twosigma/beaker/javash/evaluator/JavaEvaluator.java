@@ -24,6 +24,7 @@ import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import com.twosigma.jupyter.KernelParameters;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -34,6 +35,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +43,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.twosigma.beaker.jupyter.Utils.getAsString;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 
 public class JavaEvaluator implements Evaluator{
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
@@ -141,7 +147,14 @@ public class JavaEvaluator implements Evaluator{
   }
 
   @Override
-  public void setShellOptions(String cp, String in) throws IOException {
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    Map<String, Object> params = kernelParameters.getParams();
+
+    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
+    Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
+    String cp = getAsString(listOfClassPath);
+    String in = getAsString(listOfImports);
+
     // check if we are not changing anything
     if (currentClassPath.equals(cp) && currentImports.equals(in) )
       return;
@@ -150,11 +163,11 @@ public class JavaEvaluator implements Evaluator{
     currentImports = in;
 
     if (cp.isEmpty())
-      classPath = new ArrayList<String>();
+      classPath = new ArrayList<>();
     else
       classPath = Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"));
     if (in.isEmpty())
-      imports = new ArrayList<String>();
+      imports = new ArrayList<>();
     else
       imports = Arrays.asList(in.split("\\s+"));
 

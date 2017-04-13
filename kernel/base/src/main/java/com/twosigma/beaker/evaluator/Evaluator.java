@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.twosigma.jupyter.KernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,17 +27,22 @@ import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 
 public interface Evaluator {
-  
+
   Logger logger = LoggerFactory.getLogger(Evaluator.class.getName());
 
-	void setShellOptions(String cp, String in) throws IOException;
-	AutocompleteResult autocomplete(String code, int caretPosition);
-	void killAllThreads();
-	void evaluate(SimpleEvaluationObject seo, String code);
-	void startWorker();
-	void exit();
-	
-  static Path createJupyterTempFolder(){
+  void setShellOptions(final KernelParameters kernelParameters) throws IOException;
+
+  AutocompleteResult autocomplete(String code, int caretPosition);
+
+  void killAllThreads();
+
+  void evaluate(SimpleEvaluationObject seo, String code);
+
+  void startWorker();
+
+  void exit();
+
+  static Path createJupyterTempFolder() {
     Path ret = null;
     try {
       ret = Files.createTempDirectory("beaker");
@@ -45,5 +51,5 @@ public interface Evaluator {
     }
     return ret.toAbsolutePath();
   }
-	
+
 }

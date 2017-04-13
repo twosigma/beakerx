@@ -34,14 +34,24 @@ public class KernelConfigurationFile implements ConfigurationFile {
   }
 
   @Override
-  public Config getConfig() throws IOException {
+  public Config getConfig() {
     if (configuration == null) {
       logger.debug("Parsing the connection file.");
       logger.info("Path to config file : " + config.getAbsolutePath());
-      configuration = MessageSerializer.parse(new String(Files.readAllBytes(config.toPath())), Config.class);
+      configuration = MessageSerializer.parse(new String(readConfig()), Config.class);
       logger.debug("Creating signing hmac with: {}", configuration.getKey());
     }
     return configuration;
+  }
+
+  private byte[] readConfig() {
+    byte[] bytes = new byte[0];
+    try {
+      bytes = Files.readAllBytes(config.toPath());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    return bytes;
   }
 
   private File getConfig(final String[] args) {

@@ -34,6 +34,7 @@ import com.twosigma.beaker.jvm.serialization.ObjectSerializer;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.table.serializer.TableDisplayDeSerializer;
+import com.twosigma.jupyter.KernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Predef;
@@ -47,9 +48,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -61,6 +59,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+
+import static com.twosigma.beaker.jupyter.Utils.getAsString;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 
 public class ScalaEvaluator implements Evaluator {
   private final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());
@@ -162,7 +164,13 @@ public class ScalaEvaluator implements Evaluator {
   }
 
   @Override
-  public void setShellOptions(String cp, String in) throws IOException {
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+
+    Map<String, Object> params = kernelParameters.getParams();
+    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
+    Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
+    String cp = getAsString(listOfClassPath);
+    String in = getAsString(listOfImports);
 
     // check if we are not changing anything
     if (currentClassPath.equals(cp) && currentImports.equals(in))

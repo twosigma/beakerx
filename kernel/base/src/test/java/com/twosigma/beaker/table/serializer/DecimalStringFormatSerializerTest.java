@@ -58,9 +58,9 @@ public class DecimalStringFormatSerializerTest {
 
   @Test
   public void serializeDecimalStringFormat_resultJsonHasDecimalType() throws IOException {
-    //when
+    //given
     DecimalStringFormat decimalStringFormat = new DecimalStringFormat();
-    //then
+    //when
     JsonNode actualObj = serializeDecimalStringFormat(decimalStringFormat);
     //then
     Assertions.assertThat(actualObj.has("type")).isTrue();
@@ -69,9 +69,9 @@ public class DecimalStringFormatSerializerTest {
 
   @Test
   public void serializeDecimalStringFormat_resultJsonHasMinAndMaxDecimalEqualFour() throws IOException {
-    //when
+    //given
     DecimalStringFormat decimalStringFormat = new DecimalStringFormat();
-    //then
+    //when
     JsonNode actualObj = serializeDecimalStringFormat(decimalStringFormat);
     //then
     Assertions.assertThat(actualObj.has("minDecimals")).isTrue();
@@ -82,9 +82,9 @@ public class DecimalStringFormatSerializerTest {
 
   @Test
   public void serializeMinAndMaxDecimalsWithZeroValue_resultJsonHasMinAndMaxDecimalEqualZero() throws IOException {
-    //when
+    //given
     DecimalStringFormat decimalStringFormat = new DecimalStringFormat(0, 0);
-    //then
+    //when
     JsonNode actualObj = serializeDecimalStringFormat(decimalStringFormat);
     //then
     Assertions.assertThat(actualObj.has("minDecimals")).isTrue();

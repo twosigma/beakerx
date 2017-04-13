@@ -18,6 +18,7 @@ group 'clojure'
 
 apply plugin: 'application'
 apply plugin: 'java'
+apply plugin: 'maven-publish'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -36,6 +37,8 @@ dependencies {
   compile group: 'org.clojure', name: 'clojure', version: '1.8.0'
   compile group: 'com.cemerick', name: 'pomegranate', version: '0.3.1'
 
+  testCompile project(':kernel:base').sourceSets.test.output
+  testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
   testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
@@ -95,3 +98,14 @@ task kernelInstall(dependsOn: 'prepareJson') {
   }
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.twosigma'
+            artifactId 'beaker-kernel-clojure'
+            version '2.0-SNAPSHOT'
+
+            from components.java
+        }
+    }
+}

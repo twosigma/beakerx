@@ -25,15 +25,12 @@ var ButtonModel = widgets.ButtonModel.extend({
 });
 
 var ButtonView = widgets.ButtonView.extend({
-  events: {
-    'click': function(e) {
-      var tagName = this.model.get('tag');
+  _handle_click: function() {
+    ButtonView.__super__._handle_click.apply(this, arguments);
 
-      if (tagName) {
-        this.runByTag(tagName);
-      }
-
-      this._handle_click(e);
+    var tagName = this.model.get('tag');
+    if (tagName) {
+      this.runByTag(tagName);
     }
   },
   runByTag: function(tagName) {

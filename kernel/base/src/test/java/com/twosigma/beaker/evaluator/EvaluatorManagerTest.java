@@ -17,7 +17,9 @@
 package com.twosigma.beaker.evaluator;
 
 import com.twosigma.beaker.KernelTest;
+import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.message.Message;
+import org.apache.commons.collections.map.HashedMap;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -51,7 +53,7 @@ public class EvaluatorManagerTest {
   public void setShellOptions_callEvaluatorToStartWorker() throws Exception {
     evaluator.clearStartWorkerFlag();
     //when
-    evaluatorManager.setShellOptions("cp", "in");
+    evaluatorManager.setShellOptions(new KernelParameters(new HashedMap()));
     //then
     Assertions.assertThat(evaluator.isCallStartWorker()).isTrue();
   }

@@ -23,6 +23,8 @@ import com.twosigma.jupyter.ConfigurationFile;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.KernelRunner;
+import com.twosigma.jupyter.KernelSocketsFactory;
+import com.twosigma.jupyter.KernelSocketsFactoryImpl;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
 
@@ -32,8 +34,8 @@ import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 public class ClojureKernel extends Kernel {
 
-  public ClojureKernel(String sessionId, Evaluator evaluator, ConfigurationFile configurationFile) {
-    super(sessionId, evaluator, configurationFile);
+  public ClojureKernel(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+    super(sessionId, evaluator, kernelSocketsFactory);
   }
 
   @Override
@@ -49,7 +51,8 @@ public class ClojureKernel extends Kernel {
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
-      return new ClojureKernel(id, new ClojureEvaluator(id, id), new KernelConfigurationFile(args));
+      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
+      return new ClojureKernel(id, new ClojureEvaluator(id, id), kernelSocketsFactory);
     });
   }
 }

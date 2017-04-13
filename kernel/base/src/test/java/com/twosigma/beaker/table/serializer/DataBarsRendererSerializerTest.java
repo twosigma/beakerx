@@ -58,9 +58,9 @@ public class DataBarsRendererSerializerTest {
 
   @Test
   public void serializeDataBarsRenderer_resultJsonHasDataBarsType() throws IOException {
-    //when
+    //given
     DataBarsRenderer dataBarsRenderer = new DataBarsRenderer();
-    //then
+    //when
     JsonNode actualObj = serializeDataBarsRenderer(dataBarsRenderer);
     //then
     Assertions.assertThat(actualObj.has("type")).isTrue();
@@ -69,9 +69,9 @@ public class DataBarsRendererSerializerTest {
 
   @Test
   public void serializeIncludeTextValue_resultJsonHasIncludeTextFlag() throws IOException {
-    //when
+    //given
     DataBarsRenderer dataBarsRenderer = new DataBarsRenderer(false);
-    //then
+    //when
     JsonNode actualObj = serializeDataBarsRenderer(dataBarsRenderer);
     //then
     Assertions.assertThat(actualObj.has("includeText")).isTrue();

@@ -24,6 +24,8 @@ import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.jupyter.ConfigurationFile;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.KernelRunner;
+import com.twosigma.jupyter.KernelSocketsFactory;
+import com.twosigma.jupyter.KernelSocketsFactoryImpl;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
 import com.twosigma.jupyter.Kernel;
@@ -34,8 +36,8 @@ import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 public class GroovyKernel extends Kernel {
 
-  public GroovyKernel(final String id, final Evaluator evaluator, ConfigurationFile config) {
-    super(id, evaluator, config);
+  public GroovyKernel(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+    super(id, evaluator, kernelSocketsFactory);
   }
 
   @Override
@@ -51,7 +53,8 @@ public class GroovyKernel extends Kernel {
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
-      return new GroovyKernel(id, new GroovyEvaluator(id, id), new KernelConfigurationFile(args));
+      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
+      return new GroovyKernel(id, new GroovyEvaluator(id, id), kernelSocketsFactory);
     });
   }
 

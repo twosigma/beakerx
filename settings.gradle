@@ -22,3 +22,5 @@ include 'kernel:groovy'
 include 'kernel:scala'
 include 'kernel:java'
 include 'kernel:clojure'
+include 'kernel:sqlsh'
+

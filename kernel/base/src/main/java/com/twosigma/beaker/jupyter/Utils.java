@@ -29,6 +29,7 @@ public class Utils {
    */
   public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
   public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mmZ";
+  public static final String EMPTY_STRING = "";
 
   public static String timestamp() {
     // SimpleDateFormat is not thread-safe so we need to create a new one for
@@ -42,18 +43,21 @@ public class Utils {
   public static String uuid() {
     return UUID.randomUUID().toString();
   }
-  
-  public static String getUsString(String[] input){
+
+  public static String getUsString(String[] input) {
     StringBuilder ret = new StringBuilder();
-    if(input != null && input.length > 0){
-      for (String s: input) {
+    if (input != null && input.length > 0) {
+      for (String s : input) {
         ret.append(s + "\n");
       }
     }
     return ret.toString();
   }
 
-  public static String getAsString(Collection<String> input){
+  public static String getAsString(Collection<String> input) {
+    if (input == null || input.isEmpty()) {
+      return EMPTY_STRING;
+    }
     return getUsString(input.toArray(new String[input.size()]));
   }
 

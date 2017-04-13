@@ -21,7 +21,7 @@ import java.io.IOException;
 
 public class KernelRunner {
 
-  public static void run(KernelFactory kernelFactory) throws IOException, InterruptedException {
+  public static void run(KernelFactory kernelFactory) {
     BeakerStdOutErrHandler.init();
     KernelFunctionality kernel = kernelFactory.createKernel();
     kernel.run();

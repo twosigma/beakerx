@@ -28,14 +28,16 @@ import com.twosigma.jupyter.ConfigurationFile;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.KernelRunner;
+import com.twosigma.jupyter.KernelSocketsFactory;
+import com.twosigma.jupyter.KernelSocketsFactoryImpl;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
 
 
 public class JavaKernel extends Kernel {
 
-  public JavaKernel(final String id, final Evaluator evaluator, ConfigurationFile config) {
-    super(id, evaluator, config);
+  public JavaKernel(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+    super(id, evaluator, kernelSocketsFactory);
   }
 
   @Override
@@ -52,7 +54,8 @@ public class JavaKernel extends Kernel {
     KernelRunner.run(() -> {
       String id = uuid();
       JavaEvaluator e = new JavaEvaluator(id, id);
-      return new JavaKernel(id, e, new KernelConfigurationFile(args));
+      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
+      return new JavaKernel(id, e, kernelSocketsFactory);
     });
   }
 

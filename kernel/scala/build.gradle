@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 apply plugin: 'application'
+apply plugin: 'jacoco'
 apply plugin: 'java'
 apply plugin: 'scala'
 apply plugin: 'maven-publish'
@@ -112,11 +113,25 @@ task kernelInstall(dependsOn: 'prepareJson') {
   }
 }
 
+jacoco {
+  toolVersion = "0.7.8"
+}
+
+jacocoTestReport {
+  reports {
+    html.enabled = true
+    xml.enabled = false
+    csv.enabled = false
+  }
+}
+
 task realclean
 realclean.dependsOn(clean)
 // should also remove
 // GroovyLexer.java GroovyLexer.tokens GroovyParser.java GroovyParser.tokens
 // GroovyParserBaseListener.java GroovyParserListener.java
+
+test.finalizedBy jacocoTestReport
 
 publishing {
     publications {

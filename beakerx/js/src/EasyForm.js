@@ -47,12 +47,16 @@ var EasyFormView = widgets.BoxView.extend({
       .addClass('beaker-easyform-container')
       .addClass('widget-vbox');
 
+    var formTitle = this.model.get('easyFormName');
+
     this.$fieldset = $('<fieldset></fieldset>').addClass('beaker-fieldset');
-    this.$legend = $('<legend>Test</legend>');
+    this.$legend = $('<legend>'+formTitle+'</legend>');
 
     this.displayed.then(function() {
       that.$el.wrap(that.$fieldset);
-      that.$el.before(that.$legend);
+      if (formTitle) {
+        that.$el.before(that.$legend);
+      }
     });
   }
 });

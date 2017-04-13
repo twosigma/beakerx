@@ -37,6 +37,7 @@ public abstract class DOMWidget extends Widget {
 
   public DOMWidget() {
     super();
+    layout = new Layout();
   }
 
   @SuppressWarnings("unchecked")

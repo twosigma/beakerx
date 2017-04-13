@@ -29,12 +29,13 @@ public abstract class SelectionContainer extends Box {
 
   public SelectionContainer(List<CommFunctionality> children) {
     super(children);
-    sendUpdate(TITLES, this.titles);
   }
 
   public SelectionContainer(List<CommFunctionality> children, List<String> labels) {
     super(children);
+    openComm();
     labels.forEach(this::setTitle);
+    sendUpdate(TITLES, this.titles);
   }
 
   protected void setTitle(String title) {

@@ -28,6 +28,7 @@ public class HBox extends Box{
     super(children);
     this.getLayout().setDisplay("flex");
     this.getLayout().setAlign_items("stretch");
+    openComm();
   }
 
   @Override

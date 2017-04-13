@@ -211,7 +211,7 @@ public class EasyFormTest {
   }
 
   private Message getCheckboxGroupMsgs() {
-    return kernel.getPublishedMessages().get(kernel.getPublishedMessages().size() - 4);
+    return kernel.getPublishedMessages().get(kernel.getPublishedMessages().size() - 9);
   }
 
   @Test
@@ -273,7 +273,7 @@ public class EasyFormTest {
   }
 
   private List<Message> getEasyFormMsgs() {
-    return kernel.getPublishedMessages().subList(kernel.getPublishedMessages().size() - 3, kernel.getPublishedMessages().size() - 1);
+    return kernel.getPublishedMessages().subList(kernel.getPublishedMessages().size() - 4, kernel.getPublishedMessages().size() - 2);
   }
 
 

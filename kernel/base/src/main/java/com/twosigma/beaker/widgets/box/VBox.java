@@ -29,6 +29,7 @@ public class VBox extends Box{
     this.getLayout().setDisplay("flex");
     this.getLayout().setFlex_flow("column");
     this.getLayout().setAlign_items("stretch");
+    openComm();
   }
 
   @Override

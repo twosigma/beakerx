@@ -38,7 +38,6 @@ public abstract class Box extends DOMWidget {
 
   public Box(List<CommFunctionality> children) {
     this.children = children;
-    openComm();
   }
 
   @Override

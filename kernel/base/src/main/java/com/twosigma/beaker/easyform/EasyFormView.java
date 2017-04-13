@@ -31,6 +31,7 @@ public class EasyFormView extends Box implements InternalCommWidget{
 
   public EasyFormView(List<CommFunctionality> children) {
     super(children);
+    openComm();
   }
 
   @Override

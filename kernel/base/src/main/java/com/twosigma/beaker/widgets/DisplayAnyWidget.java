@@ -38,7 +38,7 @@ public class DisplayAnyWidget {
     }else if (input instanceof OutputContainer) {
       DisplayOutputContainer.display((OutputContainer)input);
     }else if(input instanceof Table){
-      new TableDisplay(new CsvPlotReader().convert((Table) input)).display();;
+      new TableDisplay(new CsvPlotReader().convert((Table) input)).display();
     }else if (isInternalWidget(input)) {
       ((InternalCommWidget)input).display();
     }else if(input instanceof Widget){

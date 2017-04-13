@@ -37,57 +37,23 @@ var EasyFormModel = widgets.DOMWidgetModel.extend({
   }, widgets.DOMWidgetModel.serializers)
 });
 
-
-// Custom View. Renders the widget model.
-var EasyFormView = widgets.DOMWidgetView.extend({
-  initialize: function() {
-    /**
-     * Public constructor
-     */
-    EasyFormView.__super__.initialize.apply(this, arguments);
-    this.children_views = new widgets.ViewList(this.add_child_model, null, this);
-    this.listenTo(this.model, 'change:children', function(model, value) {
-      this.children_views.update(value);
-    }, this);
-  },
-  add_child_model: function(model) {
-    /**
-     * Called when a model is added to the children list.
-     */
-    var that = this;
-    var dummy = $('<div/>');
-    that.$box.append(dummy);
-    return this.create_child_view(model).then(function(view) {
-      dummy.replaceWith(view.el);
-
-      // Trigger the displayed event of the child view.
-      that.displayed.then(function() {
-        view.trigger('displayed', that);
-      });
-      return view;
-    }).catch(widgets.reject("Couldn't add child view to box", true));
-  },
-
-  remove: function() {
-    /**
-     * We remove this widget before removing the children as an optimization
-     * we want to remove the entire container from the DOM first before
-     * removing each individual child separately.
-     */
-    EasyFormView.__super__.remove.apply(this, arguments);
-    this.children_views.remove();
-  },
+var EasyFormView = widgets.BoxView.extend({
   render: function() {
-    /**
-     * Called when view is rendered.
-     */
-    this.$el.addClass("jupyter-widgets widget-container widget-vbox beaker-easyform-container");
-    this.$box = this.$el;
-    this.children_views.update(this.model.get('children'));
-    // todo: check overflow and box style
-    // this.update_overflow_x();
-    // this.update_overflow_y();
-    // this.update_box_style();
+    var that = this;
+
+    EasyFormView.__super__.render.apply(this);
+
+    this.$el
+      .addClass('beaker-easyform-container')
+      .addClass('widget-vbox');
+
+    this.$fieldset = $('<fieldset></fieldset>').addClass('beaker-fieldset');
+    this.$legend = $('<legend>Test</legend>');
+
+    this.displayed.then(function() {
+      that.$el.wrap(that.$fieldset);
+      that.$el.before(that.$legend);
+    });
   }
 });
 

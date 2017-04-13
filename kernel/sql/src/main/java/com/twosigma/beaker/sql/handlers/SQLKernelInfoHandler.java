@@ -28,11 +28,11 @@ import java.util.HashMap;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
 
-public class SqlshKernelInfoHandler extends KernelHandler<Message> {
+public class SQLKernelInfoHandler extends KernelHandler<Message> {
 
-  private final static Logger logger = LoggerFactory.getLogger(SqlshKernelInfoHandler.class);
+  private final static Logger logger = LoggerFactory.getLogger(SQLKernelInfoHandler.class);
 
-  public SqlshKernelInfoHandler(KernelFunctionality kernel) {
+  public SQLKernelInfoHandler(KernelFunctionality kernel) {
     super(kernel);
   }
 

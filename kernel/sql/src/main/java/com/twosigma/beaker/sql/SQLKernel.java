@@ -18,7 +18,7 @@ package com.twosigma.beaker.sql;
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.sql.handlers.SQLCommOpenHandler;
-import com.twosigma.beaker.sql.handlers.SqlshKernelInfoHandler;
+import com.twosigma.beaker.sql.handlers.SQLKernelInfoHandler;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.KernelRunner;
@@ -44,7 +44,7 @@ public class SQLKernel extends Kernel {
 
   @Override
   public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
-    return new SqlshKernelInfoHandler(kernel);
+    return new SQLKernelInfoHandler(kernel);
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {

@@ -19,6 +19,7 @@ import com.twosigma.beaker.easyform.formitem.CheckBoxGroup;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;
+import com.twosigma.beaker.widgets.ValueWidget;
 import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.bools.BoolWidget;
 import com.twosigma.beaker.widgets.bools.Checkbox;
@@ -66,7 +67,7 @@ public class CheckBoxGroupWidget extends CheckBoxGroup implements CommFunctional
 
   @Override
   public Collection<String> getValues() {
-    return this.checkboxes.stream().filter(BoolWidget::getValue).map(Widget::getDescription).collect(Collectors.toList());
+    return this.checkboxes.stream().filter(BoolWidget::getValue).map(ValueWidget::getDescription).collect(Collectors.toList());
   }
 
   @Override
@@ -93,4 +94,10 @@ public class CheckBoxGroupWidget extends CheckBoxGroup implements CommFunctional
   public DOMWidget getWidget() {
     return widget;
   }
+
+  @Override
+  public void close() {
+    getComm().close();
+  }
+  
 }

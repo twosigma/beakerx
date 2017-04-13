@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-public class Button extends DOMWidget {
+public class Button extends ValueWidget<Boolean> {
 
   public static final String VIEW_NAME_VALUE = "ButtonView";
   public static final String MODEL_NAME_VALUE = "ButtonModel";
@@ -40,8 +40,8 @@ public class Button extends DOMWidget {
 
   public Button() {
     super();
-    init();
     getComm().addMsgCallbackList((Handler<Message>) this::handleOnClick);
+    openComm();
   }
 
   @Override
@@ -49,18 +49,16 @@ public class Button extends DOMWidget {
 
   }
 
-  @Override
+  //@Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
     content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);
     content.put(VIEW_MODULE, InternalWidgetUtils.VIEW_MODULE_VALUE);
     content.put(TOOLTIP, tooltip);
     content.put(ICON, icon);
-
     return content;
   }
+  
 
   public String getTooltip() {
     return tooltip;
@@ -102,4 +100,20 @@ public class Button extends DOMWidget {
       }
     }
   }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
+  }
+
+  @Override
+  public Boolean getValueFromObject(Object input) {
+    return getBoolean(input);
+  }
+  
 }

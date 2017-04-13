@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Displays multiple widgets in a group.
+ */
 public abstract class Box extends DOMWidget {
 
   public static final String CHILDREN = "children";
@@ -35,17 +38,25 @@ public abstract class Box extends DOMWidget {
 
   public Box(List<CommFunctionality> children) {
     this.children = children;
+    openComm();
   }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
     List<String> commIds = children.stream().map(x -> IPY_MODEL +x.getComm().getCommId()).collect(Collectors.toList());
     content.put(CHILDREN, commIds.toArray());
+    super.content(content);
     return content;
   }
 
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
 
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
+  }
+  
 }

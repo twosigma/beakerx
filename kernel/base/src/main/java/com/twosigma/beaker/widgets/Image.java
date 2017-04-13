@@ -33,14 +33,12 @@ public class Image extends ValueWidget<byte[]> {
 
   public Image() {
     super();
-    init();
+    openComm();
   }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
     content.put(VALUE, this.value);
     content.put(FORMAT, this.format);
     content.put(WIDTH, this.width);
@@ -85,4 +83,15 @@ public class Image extends ValueWidget<byte[]> {
     this.height = height;
     sendUpdate(HEIGHT, this.height);
   }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
+  }
+  
 }

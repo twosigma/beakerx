@@ -29,8 +29,8 @@ public class Layout extends Widget {
   public static final String HEIGHT = "height";
   public static final String PX = "px";
 
-  private String _view_name = "LayoutView";
-  private String _model_name = "LayoutModel";
+  private String VIEW_NAME_VALUE = "LayoutView";
+  private String MODEL_NAME_VALUE = "LayoutModel";
 
   private String display;
   private String align_items;
@@ -40,13 +40,11 @@ public class Layout extends Widget {
 
   public Layout() {
     super();
-    init();
+    openComm();
   }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    content.put("_model_name", _model_name);
-    content.put("_view_name", _view_name);
     content.put("align_content", "");
     content.put(ALIGN_ITEMS, getAlign_items());
     content.put("align_self", "");
@@ -120,4 +118,19 @@ public class Layout extends Widget {
     this.height = height;
     sendUpdate(HEIGHT, height);
   }
+
+  @Override
+  protected void addValueChangeMsgCallback() {
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
+  }
+  
 }

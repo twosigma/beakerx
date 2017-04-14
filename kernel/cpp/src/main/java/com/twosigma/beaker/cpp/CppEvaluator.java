@@ -19,7 +19,6 @@ import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Lexer;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Parser;
-import com.twosigma.beaker.cpp.utils.Extractor;
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -291,7 +290,7 @@ public class CppEvaluator implements Evaluator {
 
         try {
           // Parse code to find beaker_main and type
-          gradle lexer = new CPP14Lexer(new ANTLRInputStream(theCode));
+          CPP14Lexer lexer = new CPP14Lexer(new ANTLRInputStream(theCode));
           // Get a list of matched tokens
           CommonTokenStream tokens = new CommonTokenStream(lexer);
           // Pass the tokens to the parser
@@ -350,8 +349,8 @@ public class CppEvaluator implements Evaluator {
           pb.redirectOutput(Redirect.PIPE);
           pb.redirectError(Redirect.PIPE);
           Process p = pb.start();
-          CellGobblerManager.getInstance().startCellGobbler(p.getInputStream(), "stderr", theOutput);
-          CellGobblerManager.getInstance().startCellGobbler(p.getErrorStream(), "stderr", theOutput);
+//          CellGobblerManager.getInstance().startCellGobbler(p.getInputStream(), "stderr", theOutput);
+//          CellGobblerManager.getInstance().startCellGobbler(p.getErrorStream(), "stderr", theOutput);
           if ((p.waitFor()) == 0) {
             loadedCells.add(theCellId);
           } else {
@@ -381,8 +380,8 @@ public class CppEvaluator implements Evaluator {
             pb.redirectOutput(Redirect.PIPE);
             pb.redirectError(Redirect.PIPE);
             cellProc = pb.start();
-            CellGobblerManager.getInstance().startCellGobbler(cellProc.getInputStream(), "stdout", theOutput);
-            CellGobblerManager.getInstance().startCellGobbler(cellProc.getErrorStream(), "stderr", theOutput);
+//            CellGobblerManager.getInstance().startCellGobbler(cellProc.getInputStream(), "stdout", theOutput);
+//            CellGobblerManager.getInstance().startCellGobbler(cellProc.getErrorStream(), "stderr", theOutput);
             if ((cellProc.waitFor()) == 0) {
               try {
                 InputStream file = new FileInputStream(tmpDir + "/" + theCellId + ".result");

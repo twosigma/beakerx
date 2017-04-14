@@ -26,9 +26,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 public class SerializationTestHelper<S extends JsonSerializer, V> {
-
-  private JsonGenerator jgen;
-  private StringWriter sw;
   private S serializer;
   private static ObjectMapper mapper = new ObjectMapper();
 
@@ -37,8 +34,8 @@ public class SerializationTestHelper<S extends JsonSerializer, V> {
   }
 
   public JsonNode serializeObject(V value) throws IOException {
-    sw = new StringWriter();
-    jgen = mapper.getFactory().createGenerator(sw);
+    StringWriter sw = new StringWriter();
+    JsonGenerator jgen = mapper.getFactory().createGenerator(sw);
     serializer.serialize(value, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
     return mapper.readTree(sw.toString());

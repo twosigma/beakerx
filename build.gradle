@@ -15,15 +15,13 @@
  */
 import org.apache.tools.ant.taskdefs.condition.Os
 
-def final PYTHONPATH = "beaker"
-
-task linkBeakerNbextension() {
-  doLast {
-    project('beakerx').tasks.install.execute()
-  }
+task wrapper(type: Wrapper) {
+  gradleVersion = '3.5'
 }
 
-task environmentVariables(dependsOn: 'linkBeakerNbextension') {
+def final PYTHONPATH = "beaker"
+
+task environmentVariables(dependsOn: ":beakerx:install") {
   doLast {
     if (!System.getenv("PYTHONPATH")) {
       println "You should define environment variables PYTHONPATH"

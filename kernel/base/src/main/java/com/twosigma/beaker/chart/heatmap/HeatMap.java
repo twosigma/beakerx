@@ -21,8 +21,10 @@ import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.chart.InternalPlot;
-import com.twosigma.beaker.widgets.internal.InternalWidget;
+import com.twosigma.beaker.widgets.internal.CommWidget;
+import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
@@ -30,7 +32,7 @@ import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
-public class HeatMap extends AbstractChart implements InternalWidget, InternalPlot {
+public class HeatMap extends AbstractChart implements InternalCommWidget, InternalPlot {
   private Number[][] data;
   private GradientColor color = GradientColor.BROWN_RED_YELLOW;
 
@@ -58,8 +60,8 @@ public class HeatMap extends AbstractChart implements InternalWidget, InternalPl
     this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
       @Override
       public void addContent(HashMap<String, Serializable> content) {
-        content.put(InternalWidgetUtils.MODEL_NAME, getModelNameValue());
-        content.put(InternalWidgetUtils.VIEW_NAME, getViewNameValue());
+        content.put(Widget.MODEL_NAME, getModelNameValue());
+        content.put(Widget.VIEW_NAME, getViewNameValue());
       }
     });
   }

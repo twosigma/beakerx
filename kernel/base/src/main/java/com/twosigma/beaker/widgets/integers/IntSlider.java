@@ -38,14 +38,12 @@ public class IntSlider extends BoundedIntWidget {
 
   public IntSlider() {
     super();
-    init();
+    openComm();
   }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
     content.put(CONTINUOUS_UPDATE, this.continuous_update);
     content.put(ORIENTATION, orientation);
     content.put(READOUT, this.readOut);
@@ -89,6 +87,16 @@ public class IntSlider extends BoundedIntWidget {
   public void setContinuous_update(Boolean continuous_update) {
     this.continuous_update = continuous_update;
     sendUpdate(CONTINUOUS_UPDATE, continuous_update);
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 
 }

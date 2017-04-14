@@ -17,13 +17,14 @@ package com.twosigma.beaker.easyform;
 
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.box.Box;
+import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
-public class EasyFormView extends Box {
+public class EasyFormView extends Box implements InternalCommWidget{
 
   public static final String VIEW_NAME_VALUE = "EasyFormView";
   public static final String MODEL_NAME_VALUE = "EasyFormModel";
@@ -33,7 +34,7 @@ public class EasyFormView extends Box {
 
   public EasyFormView(List<CommFunctionality> children) {
     super(children);
-    init();
+    openComm();
   }
 
   @Override
@@ -43,11 +44,9 @@ public class EasyFormView extends Box {
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
     content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);
     content.put(VIEW_MODULE, InternalWidgetUtils.VIEW_MODULE_VALUE);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
+    super.content(content);
     return content;
   }
 
@@ -59,4 +58,13 @@ public class EasyFormView extends Box {
     this.easyFormName = easyFormName;
     sendUpdate(EASY_FORM_NAME, easyFormName);
   }
+
+  public String getModelNameValue(){
+    return MODEL_NAME_VALUE;
+  }
+
+  public String getViewNameValue(){
+    return VIEW_NAME_VALUE;
+  }
+
 }

@@ -25,7 +25,7 @@ import java.util.Map;
 public abstract class SelectionContainer extends Box {
 
   public static final String TITLES = "_titles";
-  private Map<Integer, String> titles = new HashMap();
+  private Map<Integer, String> titles = new HashMap<>();
 
   public SelectionContainer(List<CommFunctionality> children) {
     super(children);
@@ -33,16 +33,13 @@ public abstract class SelectionContainer extends Box {
 
   public SelectionContainer(List<CommFunctionality> children, List<String> labels) {
     super(children);
+    openComm();
     labels.forEach(this::setTitle);
+    sendUpdate(TITLES, this.titles);
   }
 
   protected void setTitle(String title) {
     this.titles.put(this.titles.size(), title);
   }
 
-  @Override
-  public void init() {
-    super.init();
-    sendUpdate(TITLES, this.titles);
-  }
 }

@@ -15,14 +15,14 @@
  */
 package com.twosigma.beaker.widgets;
 
-import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
-import com.twosigma.beaker.jupyter.Utils;
-
 import java.io.Serializable;
 import java.util.HashMap;
 
-public abstract class Widget implements CommFunctionality {
+import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
+import com.twosigma.beaker.widgets.internal.CommWidget;
+
+public abstract class Widget implements CommWidget {
 
   public static final String MODEL_MODULE = "_model_module";
   public static final String MODEL_NAME = "_model_name";
@@ -40,20 +40,11 @@ public abstract class Widget implements CommFunctionality {
 
   private Comm comm;
 
-  private Boolean disabled = false;
-  private Boolean visible = true;
-  private String description = "";
-  private Integer msg_throttle = 3;
-
   public Widget() {
-  }
-
-  public void init() {
     comm = new Comm(TargetNamesEnum.JUPYTER_WIDGET);
-    openComm();
   }
 
-  private void openComm() {
+  protected void openComm() {
     comm.setData(createContent());
     addValueChangeMsgCallback();
     comm.open();
@@ -69,17 +60,13 @@ public abstract class Widget implements CommFunctionality {
     HashMap<String, Serializable> result = new HashMap<>();
     result.put(MODEL_MODULE, MODEL_MODULE_VALUE);
     result.put(VIEW_MODULE, VIEW_MODULE_VALUE);
-
-    result.put(DESCRIPTION, this.description);
-    result.put(DISABLED, this.disabled);
-    result.put(VISIBLE, this.visible);
-    result.put(MSG_THROTTLE, this.msg_throttle);
+    result.put(MODEL_NAME, getModelNameValue());
+    result.put(VIEW_NAME, getViewNameValue());
     result = content(result);
     return result;
   }
 
-  protected void addValueChangeMsgCallback() {
-  }
+  protected abstract void addValueChangeMsgCallback();
 
   protected abstract HashMap<String, Serializable> content(HashMap<String, Serializable> content);
 
@@ -90,42 +77,6 @@ public abstract class Widget implements CommFunctionality {
 
   public void sendUpdate(String propertyName, Object value) {
     this.comm.sendUpdate(propertyName, value);
-  }
-
-  public Boolean getDisabled() {
-    return disabled;
-  }
-
-  public void setDisabled(Boolean disabled) {
-    this.disabled = disabled;
-    sendUpdate(DISABLED, disabled);
-  }
-
-  public Boolean getVisible() {
-    return visible;
-  }
-
-  public void setVisible(Boolean visible) {
-    this.visible = visible;
-    sendUpdate(VISIBLE, visible);
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    sendUpdate(DESCRIPTION, description);
-    this.description = description;
-  }
-
-  public Integer getMsg_throttle() {
-    return msg_throttle;
-  }
-
-  public void setMsg_throttle(Integer msg_throttle) {
-    this.msg_throttle = msg_throttle;
-    sendUpdate(MSG_THROTTLE, msg_throttle);
   }
 
 }

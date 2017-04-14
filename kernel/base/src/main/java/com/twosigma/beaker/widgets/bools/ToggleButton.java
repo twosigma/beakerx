@@ -28,14 +28,12 @@ public class ToggleButton extends BoolWidget {
 
   public ToggleButton() {
     super();
-    init();
+    openComm();
   }
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
     content.put(TOOLTIP, this.tooltip);
     content.put("button_style", "");
     content.put("icon", "");
@@ -49,5 +47,15 @@ public class ToggleButton extends BoolWidget {
   public void setTooltip(String tooltip) {
     this.tooltip = tooltip;
     sendUpdate(TOOLTIP, tooltip);
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 }

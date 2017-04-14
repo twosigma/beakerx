@@ -29,7 +29,7 @@ process is very welcome.
 
 ## Dependencies
 
-* oracle Java8 JDK, gradle (v3+)
+* oracle Java8 JDK
 * npm, bower, webpack
 * conda
 
@@ -40,18 +40,15 @@ process is very welcome.
 ```
 conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx
-(cd kernel/groovy; gradle --no-daemon kernelInstall)
-(cd kernel/scala; gradle --no-daemon kernelInstall)
-(cd kernel/clojure; gradle --no-daemon kernelInstall)
-(cd kernel/java; gradle --no-daemon kernelInstall)
-(cd kernel/sql; gradle --no-daemon kernelInstall)
-gradle --no-daemon environmentVariables # set PYTHONPATH as directed
+./gradlew --no-daemon build
+./gradlew --no-daemon kernelInstall
+./gradlew --no-daemon environmentVariables # set PYTHONPATH as directed
 jupyter notebook
 ```
 
 ## Update after Java change
 Ther kernels are installed to run out of the repo, so just a build should update the java code.
-* `gradle build`
+* `./gradlew build`
 
 ## Update after JS change
 

@@ -28,6 +28,9 @@ public class EasyFormView extends Box implements InternalCommWidget{
 
   public static final String VIEW_NAME_VALUE = "EasyFormView";
   public static final String MODEL_NAME_VALUE = "EasyFormModel";
+  public static final String EASY_FORM_NAME = "easyFormName";
+
+  private String easyFormName;
 
   public EasyFormView(List<CommFunctionality> children) {
     super(children);
@@ -46,13 +49,22 @@ public class EasyFormView extends Box implements InternalCommWidget{
     super.content(content);
     return content;
   }
-  
+
+  public String getEasyFormName() {
+    return easyFormName;
+  }
+
+  public void setEasyFormName(String easyFormName) {
+    this.easyFormName = easyFormName;
+    sendUpdate(EASY_FORM_NAME, easyFormName);
+  }
+
   public String getModelNameValue(){
     return MODEL_NAME_VALUE;
   }
-  
+
   public String getViewNameValue(){
     return VIEW_NAME_VALUE;
   }
-  
+
 }

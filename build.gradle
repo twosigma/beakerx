@@ -43,7 +43,7 @@ task environmentVariables(dependsOn: 'linkBeakerNbextension') {
   }
 }
 
-subprojects {
+project("kernel").subprojects {
   apply plugin: 'jacoco'
   apply plugin: 'application'
   jacoco {

@@ -18,25 +18,3 @@ import org.apache.tools.ant.taskdefs.condition.Os
 task wrapper(type: Wrapper) {
   gradleVersion = '3.5'
 }
-
-def final PYTHONPATH = "beaker"
-
-task environmentVariables(dependsOn: ":beakerx:install") {
-  doLast {
-    if (!System.getenv("PYTHONPATH")) {
-      println "You should define environment variables PYTHONPATH"
-      println "please define it like so:"
-      if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-        println "set PYTHONPATH=" + new File(PYTHONPATH).getAbsolutePath()
-      } else if (Os.isFamily(Os.FAMILY_MAC) || Os.isFamily(Os.FAMILY_UNIX)) {
-        println "export PYTHONPATH=" + new File(PYTHONPATH).getAbsolutePath()
-      }
-    } else {
-      println "PYTHONPATH already defined"
-      println "PYTHONPATH now set to:"
-      println "PYTHONPATH=" + System.getenv("PYTHONPATH")
-      println "PYTHONPATH should be:"
-      println "PYTHONPATH=" + new File(PYTHONPATH).getAbsolutePath()
-    }
-  }
-}

@@ -15,6 +15,8 @@
  */
 package com.twosigma.beaker.cpp;
 
+import com.twosigma.beaker.cpp.handlers.CppCommOpenHandler;
+import com.twosigma.beaker.cpp.handlers.CppKernelInfoHandler;
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.jupyter.Kernel;
@@ -37,12 +39,12 @@ public class CppKernelMain extends Kernel {
 
   @Override
   public CommOpenHandler getCommOpenHandler(Kernel kernel) {
-    return null;
+    return new CppCommOpenHandler(kernel);
   }
 
   @Override
   public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
-    return null;
+    return new CppKernelInfoHandler(kernel);
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {

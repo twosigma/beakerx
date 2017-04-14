@@ -77,7 +77,7 @@ public class CppEvaluator implements Evaluator {
   protected final BeakerCellExecutor executor;
   protected String currentClassPath;
   protected String currentImports;
-  protected ArrayList<String> userFlags;
+  protected ArrayList<String> userFlags= new ArrayList<>();
   protected Process cellProc;
 
   protected class jobDescriptor {

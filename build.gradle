@@ -17,13 +17,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 def final PYTHONPATH = "beaker"
 
-task linkBeakerNbextension() {
-  doLast {
-    project('beakerx').tasks.install.execute()
-  }
-}
-
-task environmentVariables(dependsOn: 'linkBeakerNbextension') {
+task environmentVariables(dependsOn: ":beakerx:install") {
   doLast {
     if (!System.getenv("PYTHONPATH")) {
       println "You should define environment variables PYTHONPATH"

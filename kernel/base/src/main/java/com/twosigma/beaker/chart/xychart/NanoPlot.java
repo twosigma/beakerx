@@ -17,8 +17,9 @@
 package com.twosigma.beaker.chart.xychart;
 
 import com.twosigma.beaker.widgets.chart.InternalPlot;
-import com.twosigma.beaker.widgets.internal.InternalWidget;
+import com.twosigma.beaker.widgets.internal.CommWidget;
+import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 
-public class NanoPlot extends TimePlot implements InternalWidget, InternalPlot {
+public class NanoPlot extends TimePlot implements InternalCommWidget, InternalPlot {
 
 }

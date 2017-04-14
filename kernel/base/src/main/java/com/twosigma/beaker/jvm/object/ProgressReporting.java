@@ -15,7 +15,6 @@
  */
 package com.twosigma.beaker.jvm.object;
 
-import com.twosigma.beaker.widgets.DisplayWidget;
 import com.twosigma.beaker.widgets.integers.IntProgress;
 
 public class ProgressReporting {
@@ -25,7 +24,7 @@ public class ProgressReporting {
   public void structuredUpdate(String message, int progress) {
     if (progressBar == null) {
       progressBar = new IntProgress();
-      DisplayWidget.display(progressBar);
+      progressBar.display();
     }
     progressBar.setValue(progress);
     progressBar.setDescription(message);

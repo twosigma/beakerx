@@ -20,8 +20,10 @@ import com.twosigma.beaker.chart.AbstractChart;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
 import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.chart.InternalPlot;
-import com.twosigma.beaker.widgets.internal.InternalWidget;
+import com.twosigma.beaker.widgets.internal.CommWidget;
+import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
@@ -31,7 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CategoryPlot extends AbstractChart implements InternalWidget, InternalPlot {
+public class CategoryPlot extends AbstractChart implements InternalCommWidget, InternalPlot {
   private final List<CategoryGraphics> categoryGraphics        = new ArrayList<>();
   private       List<String>           categoryNames           = new ArrayList<>();
   private       PlotOrientationType    orientation             = PlotOrientationType.VERTICAL;
@@ -45,8 +47,8 @@ public class CategoryPlot extends AbstractChart implements InternalWidget, Inter
     this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
       @Override
       public void addContent(HashMap<String, Serializable> content) {
-        content.put(InternalWidgetUtils.MODEL_NAME, getModelNameValue());
-        content.put(InternalWidgetUtils.VIEW_NAME, getViewNameValue());
+        content.put(Widget.MODEL_NAME, getModelNameValue());
+        content.put(Widget.VIEW_NAME, getViewNameValue());
       }
     });
   }

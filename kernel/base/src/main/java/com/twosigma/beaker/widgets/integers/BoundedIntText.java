@@ -15,9 +15,6 @@
  */
 package com.twosigma.beaker.widgets.integers;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 /**
  * Textbox widget that represents an integer bounded from above and below.
  * 
@@ -31,15 +28,17 @@ public class BoundedIntText extends BoundedIntWidget{
   
   public BoundedIntText() {
     super();
-    init();
+    openComm();
   }
-  
+
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
-    return content;
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
   
 }

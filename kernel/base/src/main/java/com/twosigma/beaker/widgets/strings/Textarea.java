@@ -15,9 +15,6 @@
  */
 package com.twosigma.beaker.widgets.strings;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 public class Textarea extends StringWidget {
 
   public static final String VIEW_NAME_VALUE = "TextareaView";
@@ -25,15 +22,17 @@ public class Textarea extends StringWidget {
 
   public Textarea() {
     super();
-    init();
+    openComm();
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
-    return content;
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 
 }

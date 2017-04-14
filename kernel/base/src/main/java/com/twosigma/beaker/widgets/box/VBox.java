@@ -19,6 +19,9 @@ import com.twosigma.beaker.widgets.CommFunctionality;
 
 import java.util.List;
 
+/**
+ * Displays multiple widgets vertically using the flexible box model.
+ */
 public class VBox extends Box{
 
   public VBox(List<CommFunctionality> children) {
@@ -26,11 +29,12 @@ public class VBox extends Box{
     this.getLayout().setDisplay("flex");
     this.getLayout().setFlex_flow("column");
     this.getLayout().setAlign_items("stretch");
-    init();
+    openComm();
   }
 
   @Override
   public void updateValue(Object value) {
 
   }
+
 }

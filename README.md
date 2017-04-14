@@ -45,6 +45,7 @@ source activate beakerx
 (cd kernel/clojure; gradle --no-daemon kernelInstall)
 (cd kernel/java; gradle --no-daemon kernelInstall)
 (cd kernel/sql; gradle --no-daemon kernelInstall)
+(Install all kernels: root directory; gradle --no-daemon kernelInstall)
 gradle --no-daemon environmentVariables # set PYTHONPATH as directed
 jupyter notebook
 ```

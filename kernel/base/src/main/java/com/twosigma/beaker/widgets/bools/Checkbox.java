@@ -15,9 +15,6 @@
  */
 package com.twosigma.beaker.widgets.bools;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 public class Checkbox extends BoolWidget {
 
   public static String VIEW_NAME_VALUE = "CheckboxView";
@@ -25,14 +22,16 @@ public class Checkbox extends BoolWidget {
 
   public Checkbox() {
     super();
-    init();
+    openComm();
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
-    return content;
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 }

@@ -17,7 +17,7 @@ package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.widgets.internal.InternalWidget;
+import com.twosigma.beaker.widgets.internal.CommWidget;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,9 +26,9 @@ import com.twosigma.jupyter.message.Message;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beaker.widgets.DisplayWidget.DISPLAY;
+import static com.twosigma.beaker.widgets.internal.CommWidget.DISPLAY;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beaker.widgets.internal.InternalWidget.MODEL;
+import static com.twosigma.beaker.widgets.internal.InternalCommWidget.MODEL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -38,7 +38,7 @@ public class SerializeToStringInternalWidgetsTest {
   public void shouldSend3MessagesForAllClassesWhichImplementInternalWidgetInterface() throws Exception {
     new InternalWidgetsTestRunner().test((clazz, groovyKernel) -> {
       //give
-      InternalWidget internalWidget = clazz.newInstance();
+      CommWidget internalWidget = clazz.newInstance();
       //when
       SerializeToString.doit(internalWidget);
       //then

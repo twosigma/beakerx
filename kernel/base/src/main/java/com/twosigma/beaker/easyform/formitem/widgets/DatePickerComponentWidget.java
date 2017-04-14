@@ -57,4 +57,10 @@ public class DatePickerComponentWidget extends DatePickerComponent implements Co
   public DOMWidget getWidget() {
     return widget;
   }
+  
+  @Override
+  public void close() {
+    getComm().close();
+  }
+  
 }

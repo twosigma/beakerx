@@ -28,7 +28,7 @@ public class ColorPicker extends ValueWidget<String> {
 
   public ColorPicker() {
     super();
-    init();
+    openComm();
   }
 
   @Override
@@ -39,8 +39,6 @@ public class ColorPicker extends ValueWidget<String> {
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
     content.put(VALUE, this.value);
     content.put(CONCISE, this.concise);
     return content;
@@ -54,4 +52,15 @@ public class ColorPicker extends ValueWidget<String> {
     this.concise = concise;
     sendUpdate(CONCISE, concise);
   }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
+  }
+  
 }

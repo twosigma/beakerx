@@ -40,6 +40,7 @@ public abstract class DOMWidget extends Widget {
     layout = new Layout();
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   protected void addValueChangeMsgCallback() {
     getComm().addMsgCallbackList(new ValueChangeMsgCallbackHandler() {
@@ -94,7 +95,7 @@ public abstract class DOMWidget extends Widget {
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    content.put(Layout.LAYOUT, Layout.IPY_MODEL + layout.getComm().getCommId());
+    content.put(Layout.LAYOUT, Layout.IPY_MODEL + getLayout().getComm().getCommId());
     content.put("font_family", "");
     content.put("font_size", "");
     content.put("font_style", "");
@@ -105,6 +106,10 @@ public abstract class DOMWidget extends Widget {
   }
 
   public Layout getLayout() {
+    if(layout == null){
+      layout = new Layout();
+    }
     return layout;
   }
+  
 }

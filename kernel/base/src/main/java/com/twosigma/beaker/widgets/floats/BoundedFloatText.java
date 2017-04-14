@@ -15,9 +15,6 @@
  */
 package com.twosigma.beaker.widgets.floats;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 /**
  *   Displays a float value within a textbox. Value must be within the range specified.
  *   For a textbox in which the value doesn't need to be within a specific range, use FloatText.
@@ -43,15 +40,17 @@ public class BoundedFloatText extends BoundedFloatWidget {
 
   public BoundedFloatText() {
     super();
-    init();
+    openComm();
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
-    return content;
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 
 }

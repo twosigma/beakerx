@@ -19,17 +19,20 @@ import com.twosigma.beaker.widgets.CommFunctionality;
 
 import java.util.List;
 
+/**
+ * Displays multiple widgets horizontally using the flexible box model.
+ */
 public class HBox extends Box{
 
   public HBox(List<CommFunctionality> children) {
     super(children);
     this.getLayout().setDisplay("flex");
     this.getLayout().setAlign_items("stretch");
-    init();
+    openComm();
   }
 
   @Override
   public void updateValue(Object value) {
-
   }
+  
 }

@@ -36,7 +36,9 @@ import com.twosigma.beaker.table.format.ValueStringFormat;
 import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beaker.table.highlight.ValueHighlighter;
 import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
-import com.twosigma.beaker.widgets.internal.InternalWidget;
+import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beaker.widgets.internal.CommWidget;
+import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 import org.slf4j.Logger;
@@ -44,7 +46,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
 
-public class TableDisplay extends ObservableTableDisplay implements InternalWidget {
+public class TableDisplay extends ObservableTableDisplay implements InternalCommWidget {
 
 
   public static final String VIEW_NAME_VALUE = "TableDisplayView";
@@ -174,8 +176,8 @@ public class TableDisplay extends ObservableTableDisplay implements InternalWidg
     this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
       @Override
       public void addContent(HashMap<String, Serializable> content) {
-        content.put(InternalWidgetUtils.MODEL_NAME, getModelNameValue());
-        content.put(InternalWidgetUtils.VIEW_NAME, getViewNameValue());
+        content.put(Widget.MODEL_NAME, getModelNameValue());
+        content.put(Widget.VIEW_NAME, getViewNameValue());
       }
     });
   }

@@ -16,20 +16,19 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.widgets.chart.InternalPlot;
-import com.twosigma.beaker.widgets.internal.InternalWidget;
-import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
-import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
-
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
 
-public class TimePlot extends XYChart implements InternalWidget, InternalPlot {
+import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beaker.widgets.chart.InternalPlot;
+import com.twosigma.beaker.widgets.internal.InternalCommWidget;
+import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
+import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
+
+public class TimePlot extends XYChart implements InternalCommWidget, InternalPlot {
 
   private Comm comm;
 
@@ -37,8 +36,8 @@ public class TimePlot extends XYChart implements InternalWidget, InternalPlot {
     this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
       @Override
       public void addContent(HashMap<String, Serializable> content) {
-        content.put(InternalWidgetUtils.MODEL_NAME, getModelNameValue());
-        content.put(InternalWidgetUtils.VIEW_NAME, getViewNameValue());
+        content.put(Widget.MODEL_NAME, getModelNameValue());
+        content.put(Widget.VIEW_NAME, getViewNameValue());
       }
     });
   }

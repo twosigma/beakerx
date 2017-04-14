@@ -79,4 +79,10 @@ public class SelectMultipleWidget extends ListComponent implements CommFunctiona
   public DOMWidget getWidget() {
     return widget;
   }
+  
+  @Override
+  public void close() {
+    getComm().close();
+  }
+  
 }

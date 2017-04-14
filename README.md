@@ -29,7 +29,7 @@ process is very welcome.
 
 ## Dependencies
 
-* oracle Java8 JDK, gradle (v3+)
+* oracle Java8 JDK
 * npm, bower, webpack
 * conda
 
@@ -48,7 +48,7 @@ jupyter notebook
 
 ## Update after Java change
 Ther kernels are installed to run out of the repo, so just a build should update the java code.
-* `gradle build`
+* `./gradlew build`
 
 ## Update after JS change
 

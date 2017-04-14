@@ -19,7 +19,7 @@ if sys.version_info < (3,0):
 
 import os, json, pandas, numpy
 import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, IPython, datetime, calendar, math, traceback, time
-from IPython.utils.traitlets import Unicode
+from traitlets import Unicode
 
 import beaker.plot
 from ipykernel.comm import Comm

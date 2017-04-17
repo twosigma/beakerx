@@ -67,7 +67,7 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public void run() {
     KernelManager.register(this);
-    logger.info("Jupyter kernel starting.");
+    logger.debug("Jupyter kernel starting.");
     this.kernelSockets = kernelSocketsFactory.create(this, this::closeComms);
     this.kernelSockets.start();
     try {
@@ -77,7 +77,7 @@ public abstract class Kernel implements KernelFunctionality {
     } finally {
       exit();
     }
-    logger.info("Jupyter kernel shoutdown.");
+    logger.debug("Jupyter kernel shoutdown.");
   }
 
   private void exit() {

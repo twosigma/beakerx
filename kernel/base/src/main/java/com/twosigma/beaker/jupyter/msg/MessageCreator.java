@@ -136,7 +136,7 @@ public class MessageCreator {
     reply.setContent(new HashMap<String, Serializable>());
     reply.getContent().put("name", hasError ? "stderr" : "stdout");
     reply.getContent().put("text", text);
-    logger.info("Console output:", "Error: " + hasError, text);
+    logger.debug("Console output:", "Error: " + hasError, text);
     return reply;
   }
 
@@ -146,7 +146,7 @@ public class MessageCreator {
   }
 
   public synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo) {
-    logger.info("Creating message response message from: " + seo);
+    logger.debug("Creating message response message from: " + seo);
     Message message = seo.getJupyterMessage();
     List<MessageHolder> ret = new ArrayList<>();
     if (isConsoleOutputMessage(seo)) {
@@ -214,14 +214,14 @@ public class MessageCreator {
         }
       }
     }
-    map4.put("ename", ename); 
+    map4.put("ename", ename);
     map4.put("evalue", evalue);
     map4.put("traceback", markRed(errorMessage));
     map4.put("text", (String) seo.getPayload());
     reply.setContent(map4);
     return new MessageHolder(SocketEnum.IOPUB_SOCKET, reply);
   }
-  
+
   private String[] clearText(String[] input){
     List<String> ret = new ArrayList<>();
     if(input != null){
@@ -237,7 +237,7 @@ public class MessageCreator {
     }
     return ret.stream().toArray(String[]::new);
   }
-  
+
   private String[] markRed(String[] input){
     List<String> ret = new ArrayList<>();
     if(input != null){

@@ -39,7 +39,7 @@ public class HashedMessageAuthenticationCode {
 
   public HashedMessageAuthenticationCode(String key) {
     checkNotNull(key, "No key specified");
-    logger.info("Using signing hmac: {}", key);
+    logger.debug("Using signing hmac: {}", key);
     spec = new SecretKeySpec(key.getBytes(), TYPE);
   }
 

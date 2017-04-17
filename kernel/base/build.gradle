@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-apply plugin: 'jacoco'
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
@@ -47,20 +46,6 @@ dependencies {
   testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
   testCompile group: 'org.reflections', name: 'reflections', version: '0.9.10'
 }
-
-jacoco {
-  toolVersion = "0.7.8"
-}
-
-jacocoTestReport {
-  reports {
-    html.enabled = true
-    xml.enabled = false
-    csv.enabled = false
-  }
-}
-
-test.finalizedBy jacocoTestReport
 
 publishing {
     publications {

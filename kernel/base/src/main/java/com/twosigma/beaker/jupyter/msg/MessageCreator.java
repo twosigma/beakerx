@@ -251,14 +251,11 @@ public class MessageCreator {
   private MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
     MessageHolder ret = null;
     MIMEContainer resultString = SerializeToString.doit(seo.getPayload());
-    if(! MIMEContainer.MIME.HIDDEN.equals(resultString.getMime())){
-      ret = new MessageHolder(
-          SocketEnum.IOPUB_SOCKET,
-          buildMessage(
-                  message,
-                  resultString.getMime().getMime(),
-                  resultString.getCode(),
-                  seo.getExecutionCount()));
+    if (!MIMEContainer.MIME.HIDDEN.equals(resultString.getMime())) {
+      ret = new MessageHolder(SocketEnum.IOPUB_SOCKET, 
+          buildMessage(message, resultString.getMime().getMime(), 
+              resultString.getCode(), 
+              seo.getExecutionCount()));
     }
     return ret;
   }

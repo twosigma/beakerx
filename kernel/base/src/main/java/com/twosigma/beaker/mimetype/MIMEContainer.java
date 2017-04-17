@@ -27,37 +27,36 @@ import java.io.FileNotFoundException;
 import java.net.URL;
 
 public class MIMEContainer {
-  
-  public enum MIME{
-    
-    TEXT_PLAIN("text/plain"),
-    TEXT_HTML("text/html"),
-    TEXT_LATEX("text/latex"),
-    TEXT_MARKDOWN("text/markdown"),
-    APPLICATION_JAVASCRIPT("application/javascript"),
-    IMAGE_PNG("image/png"),
-    IMAGE_JPEG("image/jpeg"),
-    IMAGE_SVG("image/svg+xml"),
+
+  public enum MIME {
+
+    TEXT_PLAIN("text/plain"), 
+    TEXT_HTML("text/html"), 
+    TEXT_LATEX("text/latex"), 
+    TEXT_MARKDOWN("text/markdown"), 
+    APPLICATION_JAVASCRIPT("application/javascript"), 
+    IMAGE_PNG("image/png"), 
+    IMAGE_JPEG("image/jpeg"), 
+    IMAGE_SVG("image/svg+xml"), 
     HIDDEN("x-beakerx/empty");
-    
+
     private String mime;
-    
+
     MIME(String mime) {
       this.mime = mime;
     }
-    
+
     public String getMime() {
       return mime;
     }
-      
+
   }
 
   private MIME mime;
   private String code;
-  
+
   public MIMEContainer() {
   }
-
 
   public MIMEContainer(MIME mime) {
     this.mime = mime;
@@ -79,7 +78,7 @@ public class MIMEContainer {
   public static MIMEContainer HIDDEN() {
     return addMimeType(MIME.HIDDEN);
   }
-  
+
   public static MIMEContainer HTML(Object code) {
     return addMimeType(MIME.TEXT_HTML, code);
   }
@@ -106,8 +105,7 @@ public class MIMEContainer {
   }
 
   public static MIMEContainer IFrame(String src, Object width, int height) {
-    String code = String.format("<iframe width = '%1$s' height= '%2$d' src = '%3$s' frameborder='0' allowfullscreen> </iframe>",
-        width.toString(), height, src);
+    String code = String.format("<iframe width = '%1$s' height= '%2$d' src = '%3$s' frameborder='0' allowfullscreen> </iframe>", width.toString(), height, src);
     return addMimeType(MIME.TEXT_HTML, code);
   }
 
@@ -134,7 +132,7 @@ public class MIMEContainer {
   protected static MIMEContainer addMimeType(MIME mime) {
     return new MIMEContainer(mime);
   }
-  
+
   protected static MIMEContainer addMimeType(MIME mime, Object code) {
     return new MIMEContainer(mime, code.toString());
   }

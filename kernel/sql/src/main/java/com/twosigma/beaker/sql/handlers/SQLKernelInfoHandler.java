@@ -38,14 +38,14 @@ public class SQLKernelInfoHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    logger.info("Processing kernel info request");
+    logger.debug("Processing kernel info request");
     Message reply = new Message();
     HashMap<String, Serializable> map = new HashMap<>(6);
     map.put("protocol_version", "5.0");
     map.put("implementation", "sql");
     map.put("implementation_version", "1.0.0");
     HashMap<String, Serializable> map1 = new HashMap<String, Serializable>(7);
-    map1.put("name", "Sql");
+    map1.put("name", "SQL");
     map1.put("version", "");
     map1.put("mimetype", "");
     map1.put("file_extension", ".sql");
@@ -53,7 +53,7 @@ public class SQLKernelInfoHandler extends KernelHandler<Message> {
     map1.put("codemirror_mode", "sql");
     map1.put("nbconverter_exporter", "");
     map.put("language_info", map1);
-    map.put("banner", "BeakerX kernel for Sql");
+    map.put("banner", "BeakerX kernel for SQL");
     map.put("beakerx", true);
     map.put("help_links", new ArrayList<String>());
     reply.setContent(map);

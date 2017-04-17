@@ -60,8 +60,15 @@ public class AutotranslationGetCodeCellsHandler extends BaseHandler<Object> {
     h.setId(getValueFromData(message,PARENT_MESSAGE_ID).toString());
     realParrent.setHeader(h);
     final MessageCreator mc = new MessageCreator(kernel);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject("");
+    seo.setJupyterMessage(realParrent);
+    seo.setOutputHandler();
+    seo.addObserver(KernelManager.get().getExecutionResultSender());
+    InternalVariable.setValue(seo);
+    KernelManager.get().publish(mc.buildClearOutput(realParrent, true));
+    seo.clrOutputHandler();
     MIMEContainer resultString = SerializeToString.doit(getBeakerCodeCells(getValueFromData(message, getHandlerCommand())));
-    kernel.publish(mc.buildDisplayData(realParrent, resultString));
+    KernelManager.get().publish(mc.buildDisplayData(realParrent, resultString));
   }
 
   private List<BeakerCodeCell> getBeakerCodeCells(Object value) {

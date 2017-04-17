@@ -63,7 +63,7 @@ public class BeakerCodeCell {
     private final Provider<BeakerObjectConverter> objectSerializerProvider;
 
     @Inject
-    private Serializer(Provider<BeakerObjectConverter> osp) {
+    public Serializer(Provider<BeakerObjectConverter> osp) {
       objectSerializerProvider = osp;
     }
 

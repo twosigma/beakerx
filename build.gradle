@@ -15,46 +15,6 @@
  */
 import org.apache.tools.ant.taskdefs.condition.Os
 
-def final PYTHONPATH = "beaker"
-
-task linkBeakerNbextension() {
-  doLast {
-    project('beakerx').tasks.install.execute()
-  }
-}
-
-task environmentVariables(dependsOn: 'linkBeakerNbextension') {
-  doLast {
-    if (!System.getenv("PYTHONPATH")) {
-      println "You should define environment variables PYTHONPATH"
-      println "please define it like so:"
-      if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-        println "set PYTHONPATH=" + new File(PYTHONPATH).getAbsolutePath()
-      } else if (Os.isFamily(Os.FAMILY_MAC) || Os.isFamily(Os.FAMILY_UNIX)) {
-        println "export PYTHONPATH=" + new File(PYTHONPATH).getAbsolutePath()
-      }
-    } else {
-      println "PYTHONPATH already defined"
-      println "PYTHONPATH now set to:"
-      println "PYTHONPATH=" + System.getenv("PYTHONPATH")
-      println "PYTHONPATH should be:"
-      println "PYTHONPATH=" + new File(PYTHONPATH).getAbsolutePath()
-    }
-  }
-}
-
-subprojects {
-  apply plugin: 'jacoco'
-  apply plugin: 'application'
-  jacoco {
-    toolVersion = "0.7.8"
-  }
-  jacocoTestReport {
-    reports {
-      html.enabled = true
-      xml.enabled = false
-      csv.enabled = false
-    }
-  }
-  test.finalizedBy jacocoTestReport
+task wrapper(type: Wrapper) {
+  gradleVersion = '3.5'
 }

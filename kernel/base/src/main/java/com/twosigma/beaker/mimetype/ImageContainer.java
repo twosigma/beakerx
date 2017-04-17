@@ -16,7 +16,6 @@
 package com.twosigma.beaker.mimetype;
 
 
-import java.io.IOException;
 import java.util.Base64;
 
 public class ImageContainer extends MIMEContainer {

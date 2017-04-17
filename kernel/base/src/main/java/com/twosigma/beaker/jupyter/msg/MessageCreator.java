@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.twosigma.beaker.jvm.object.ConsoleOutput;
-import com.twosigma.beaker.jvm.object.OutputCell;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.jupyter.KernelFunctionality;

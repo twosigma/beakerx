@@ -125,7 +125,17 @@ public class NamespaceClient {
     }
     return autotranslationComm;
   }
-  
+
+  public void getCodeCells(String tagFilter) throws IOException {
+    Comm c = getAutotranslationComm();
+    HashMap<String, Serializable> data = new HashMap<>();
+    data.put("name", "CodeCells");
+    data.put("value", getJson(tagFilter));
+    data.put("parentMessageId",InternalVariable.getSimpleEvaluationObject().getJupyterMessage().getParentHeader().getId());
+    c.setData(data);
+    c.send();
+  }
+
   private class ObjectHolder<T>{
     
     private T value;

@@ -163,7 +163,7 @@ public class MessageCreator {
     if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
       MessageHolder mh = createFinishResult(seo, message);
       if(mh != null){
-        ret.add(createFinishResult(seo, message));
+        ret.add(mh);
       }
     } else if (EvaluationStatus.ERROR == seo.getStatus()) {
       ret.add(createErrorResult(seo, message));
@@ -250,12 +250,15 @@ public class MessageCreator {
 
   private MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
     MessageHolder ret = null;
-    MIMEContainer resultString = SerializeToString.doit(seo.getPayload());
-    if (!MIMEContainer.MIME.HIDDEN.equals(resultString.getMime())) {
-      ret = new MessageHolder(SocketEnum.IOPUB_SOCKET, 
-          buildMessage(message, resultString.getMime().getMime(), 
-              resultString.getCode(), 
-              seo.getExecutionCount()));
+    Object returnValue = seo.getPayload();
+    if (returnValue != null) {
+        MIMEContainer resultString = SerializeToString.doit(returnValue);
+        if (!MIMEContainer.MIME.HIDDEN.equals(resultString.getMime())) {
+          ret = new MessageHolder(SocketEnum.IOPUB_SOCKET,
+              buildMessage(message, resultString.getMime().getMime(),
+                  resultString.getCode(),
+                  seo.getExecutionCount()));
+        }
     }
     return ret;
   }
@@ -268,7 +271,7 @@ public class MessageCreator {
     }
     return ret;
   }
-  
+
   public Message createBusyMessage(Message parentMessage) {
     return getExecutionStateMessage(parentMessage, BUSY);
   }

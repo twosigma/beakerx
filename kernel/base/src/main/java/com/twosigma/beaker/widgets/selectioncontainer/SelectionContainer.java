@@ -27,7 +27,7 @@ public abstract class SelectionContainer extends Box {
   public static final String TITLES = "_titles";
   private Map<Integer, String> titles = new HashMap<>();
 
-  public SelectionContainer(List<CommFunctionality> children) {
+  protected SelectionContainer(List<CommFunctionality> children) {
     super(children);
   }
 

@@ -23,6 +23,9 @@ import java.util.List;
  * Displays multiple widgets horizontally using the flexible box model.
  */
 public class HBox extends Box{
+  
+  public static final String VIEW_NAME_VALUE = "HBoxView";
+  public static final String MODEL_NAME_VALUE = "HBoxModel";
 
   public HBox(List<CommFunctionality> children) {
     super(children);
@@ -33,6 +36,16 @@ public class HBox extends Box{
 
   @Override
   public void updateValue(Object value) {
+  }
+  
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
   
 }

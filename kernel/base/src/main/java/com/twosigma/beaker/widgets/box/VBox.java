@@ -23,6 +23,10 @@ import java.util.List;
  * Displays multiple widgets vertically using the flexible box model.
  */
 public class VBox extends Box{
+  
+  public static final String VIEW_NAME_VALUE = "HBoxView";
+  public static final String MODEL_NAME_VALUE = "HBoxModel";
+
 
   public VBox(List<CommFunctionality> children) {
     super(children);
@@ -35,6 +39,16 @@ public class VBox extends Box{
   @Override
   public void updateValue(Object value) {
 
+  }
+  
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 
 }

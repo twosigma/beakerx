@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twosigma.beaker.table.ObservableTableDisplayTest;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -27,6 +28,9 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BasicObjectSerializerTest {
   private BasicObjectSerializer basicObjectSerializer;
@@ -150,6 +154,66 @@ public class BasicObjectSerializerTest {
     basicObjectSerializer.addThreadSpecificTypeDeserializer(new TestObjectDeserializer());
     //then
     boolean result = (boolean) basicObjectSerializer.deserialize(jsonNode, new ObjectMapper());
+    Assertions.assertThat(result).isTrue();
+  }
+
+  @Test
+  public void isPrimitiveTypeMap_returnTrue() throws Exception {
+    //given
+    Map<String, String> map  =  new HashMap<String, String>(){
+      { put("key", "value"); }
+    };
+    //when
+    boolean result = basicObjectSerializer.isPrimitiveTypeMap(map);
+    //then
+    Assertions.assertThat(result).isTrue();
+  }
+
+  @Test
+  public void isListOfPrimitiveTypeMaps_returnTrue() throws Exception {
+    //when
+    boolean result = basicObjectSerializer.isListOfPrimitiveTypeMaps(
+        ObservableTableDisplayTest.getListOfMapsData());
+    //then
+    Assertions.assertThat(result).isTrue();
+  }
+
+  @Test
+  public void isPrimitiveTypeListOfList_returnTrue() throws Exception {
+    //when
+    boolean result = basicObjectSerializer.isPrimitiveTypeListOfList(
+        Arrays.asList(Arrays.asList("k1", 1), Arrays.asList("k2", 2)));
+    //then
+    Assertions.assertThat(result).isTrue();
+  }
+
+  @Test
+  public void serializeMap_returnTrue() throws Exception {
+    //given
+    Map<String, String> map  =  new HashMap<String, String>(){
+      { put("key", "value"); }
+    };
+    //when
+    boolean result = basicObjectSerializer.writeObject(map, jgen, true);
+    //then
+    Assertions.assertThat(result).isTrue();
+  }
+
+  @Test
+  public void serializeArray_returnTrue() throws Exception {
+    //when
+    boolean result = basicObjectSerializer.writeObject(
+        Arrays.asList("v1", "v2"), jgen, true);
+    //then
+    Assertions.assertThat(result).isTrue();
+  }
+
+  @Test
+  public void serializeListOfList_returnTrue() throws Exception {
+    //when
+    boolean result = basicObjectSerializer.writeObject(
+        Arrays.asList(Arrays.asList("k1", 1), Arrays.asList("k2", 2)), jgen, true);
+    //then
     Assertions.assertThat(result).isTrue();
   }
 

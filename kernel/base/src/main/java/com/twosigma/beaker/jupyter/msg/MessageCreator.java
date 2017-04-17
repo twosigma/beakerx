@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.twosigma.beaker.jvm.object.ConsoleOutput;
-import com.twosigma.beaker.jvm.object.OutputCell;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.jupyter.KernelFunctionality;
@@ -97,7 +96,7 @@ public class MessageCreator {
     reply.setContent(new HashMap<String, Serializable>());
     reply.getContent().put("metadata", new HashMap<>());
     HashMap<String, Serializable> map3 = new HashMap<>();
-    map3.put(value.getMime(), value.getCode());
+    map3.put(value.getMime().getMime(), value.getCode());
     reply.getContent().put("data", map3);
     return reply;
   }
@@ -162,17 +161,16 @@ public class MessageCreator {
   private List<MessageHolder> createResultForSupportedStatus(SimpleEvaluationObject seo, Message message) {
     List<MessageHolder> ret = new ArrayList<>();
     if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
-      ret.add(createFinishResult(seo, message));
+      MessageHolder mh = createFinishResult(seo, message);
+      if(mh != null){
+        ret.add(createFinishResult(seo, message));
+      }
     } else if (EvaluationStatus.ERROR == seo.getStatus()) {
       ret.add(createErrorResult(seo, message));
     }
     ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, createIdleMessage(message)));
     ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
     return ret;
-  }
-
-  private boolean showResult(SimpleEvaluationObject seo) {
-    return !OutputCell.HIDDEN.equals(seo.getPayload());
   }
 
   private boolean isSupportedStatus(EvaluationStatus status) {
@@ -251,16 +249,26 @@ public class MessageCreator {
   }
 
   private MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
+    MessageHolder ret = null;
     MIMEContainer resultString = SerializeToString.doit(seo.getPayload());
-    return new MessageHolder(
-            SocketEnum.IOPUB_SOCKET,
-            buildMessage(
-                    message,
-                    resultString.getMime(),
-                    resultString.getCode(),
-                    seo.getExecutionCount()));
+    if (!MIMEContainer.MIME.HIDDEN.equals(resultString.getMime())) {
+      ret = new MessageHolder(SocketEnum.IOPUB_SOCKET, 
+          buildMessage(message, resultString.getMime().getMime(), 
+              resultString.getCode(), 
+              seo.getExecutionCount()));
+    }
+    return ret;
   }
 
+  private boolean showResult(SimpleEvaluationObject seo) {
+    boolean ret = true;
+    if(seo != null && seo.getPayload() != null && seo.getPayload() instanceof MIMEContainer){
+      MIMEContainer input = (MIMEContainer) seo.getPayload();
+      ret = !MIMEContainer.MIME.HIDDEN.equals(input.getMime());
+    }
+    return ret;
+  }
+  
   public Message createBusyMessage(Message parentMessage) {
     return getExecutionStateMessage(parentMessage, BUSY);
   }

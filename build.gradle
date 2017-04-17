@@ -43,7 +43,7 @@ task environmentVariables(dependsOn: ":beakerx:install") {
 
 project("kernel").subprojects {
   apply plugin: 'jacoco'
-  apply plugin: 'application'
+  apply plugin: 'java'
   jacoco {
     toolVersion = "0.7.8"
   }

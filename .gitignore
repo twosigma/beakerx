@@ -15,15 +15,14 @@ jupyter-groovy-kernel.log
 /*.ipynb
 #.gitignore
 
+beaker.egg-info/
+
 beakerx/static/
 beakerx.egg-info/
 beakerx/beakerx/static/
 
-kernel/base/build/
 kernel/build/
-kernel/groovy/build/
-kernel/scala/build/
-kernel/sqlsh/build/
+kernel/*/build/
 /build/
 /.classpath
 /.project

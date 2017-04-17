@@ -63,9 +63,8 @@ define([
       function(comm, msg) {
         comm.on_msg(function(msg) {
           if(msg.content.data.name == "CodeCells"){
-            sendJupyterCodeCells(JSON.parse(msg.content.data.value))
+            sendJupyterCodeCells(JSON.parse(msg.content.data.value), msg.content.data.parentMessageId)
           }
-          debugger;
           window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
@@ -76,9 +75,7 @@ define([
     interrupt();
   });
 
-  function sendJupyterCodeCells(filter) {
-    console.log(filter);
-    console.log('beaker extension loaded');
+  function sendJupyterCodeCells(filter, parentId) {
     var comm = Jupyter.notebook.kernel.comm_manager.new_comm("beaker.autotranslation",
         null, null, null, utils.uuid());
 
@@ -89,6 +86,7 @@ define([
       }
       return false;
     });
+    data.parent_message_id = parentId;
     comm.send(data);
     comm.close();
   }

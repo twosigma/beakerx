@@ -27,6 +27,7 @@ import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ public class AutotranslationGetCodeCellsHandler extends BaseHandler<Object> {
 
   private static final Logger logger = LoggerFactory.getLogger(KernelControlInterrupt.class);
   private static final String AUTOTRANSLATION_CODE_CELLS = "code_cells";
+  private static final String PARENT_MESSAGE_ID = "parent_message_id";
   private ObjectMapper objectMapper;
   private BeakerObjectConverter objectSerializer;
 
@@ -53,16 +55,13 @@ public class AutotranslationGetCodeCellsHandler extends BaseHandler<Object> {
   @Override
   public void handle(Message message) {
     logger.info("Handing comm message content");
+    Message realParrent = new Message();
+    Header h = new Header();
+    h.setId(getValueFromData(message,PARENT_MESSAGE_ID).toString());
+    realParrent.setHeader(h);
     final MessageCreator mc = new MessageCreator(kernel);
-    SimpleEvaluationObject seo = new SimpleEvaluationObject("");
-    seo.setJupyterMessage(message);
-    seo.setOutputHandler();
-    seo.addObserver(KernelManager.get().getExecutionResultSender());
-    InternalVariable.setValue(seo);
-    kernel.publish(mc.buildClearOutput(message, true));
-    seo.clrOutputHandler();
     MIMEContainer resultString = SerializeToString.doit(getBeakerCodeCells(getValueFromData(message, getHandlerCommand())));
-    kernel.publish(mc.buildDisplayData(message, resultString));
+    kernel.publish(mc.buildDisplayData(realParrent, resultString));
   }
 
   private List<BeakerCodeCell> getBeakerCodeCells(Object value) {

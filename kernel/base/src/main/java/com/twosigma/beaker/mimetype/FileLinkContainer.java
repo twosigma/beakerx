@@ -22,26 +22,26 @@ public class FileLinkContainer extends MIMEContainer {
   public static MIMEContainer FileLink(String filePath) {
     File f = new File(filePath);
     if (f.isDirectory()) {
-      return addMimeType(TEXT_PLAIN, "Cannot display a directory using FileLink.");
+      return addMimeType(MIME.TEXT_PLAIN, "Cannot display a directory using FileLink.");
     }
     if (!f.exists()) {
-      return addMimeType(TEXT_HTML, "Path (<tt>" + f.getAbsolutePath() + "</tt>) doesn't exist. " +
+      return addMimeType(MIME.TEXT_HTML, "Path (<tt>" + f.getAbsolutePath() + "</tt>) doesn't exist. " +
           "It may still be in the process of " +
           "being generated, or you may have the " +
           "incorrect path.");
     }
 
     String htmlLink = String.format("<a href='%1$s' target='_blank'>%1$s</a><br/>", filePath);
-    return addMimeType(TEXT_HTML, htmlLink);
+    return addMimeType(MIME.TEXT_HTML, htmlLink);
   }
 
   public static MIMEContainer FileLinks(String dirPath) {
     File f = new File(dirPath);
     String result = "";
     if (!f.isDirectory()) {
-      return addMimeType(TEXT_PLAIN, "Cannot display a file using FileLinks.\nUse FileLink to display " + dirPath);
+      return addMimeType(MIME.TEXT_PLAIN, "Cannot display a file using FileLinks.\nUse FileLink to display " + dirPath);
     }
-    return addMimeType(TEXT_HTML, listFilesForFolder(f, result));
+    return addMimeType(MIME.TEXT_HTML, listFilesForFolder(f, result));
   }
 
   private static String listFilesForFolder(File folder, String result) {

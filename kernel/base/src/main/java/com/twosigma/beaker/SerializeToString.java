@@ -86,6 +86,7 @@ import com.twosigma.beaker.widgets.internal.CommWidget;
 import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 
 import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
+import static com.twosigma.beaker.mimetype.MIMEContainer.HIDDEN;
 
 
 public class SerializeToString {
@@ -164,7 +165,7 @@ public class SerializeToString {
     if (input != null) {
       if (isWidget(input)) {
         DisplayAnyWidget.display(input);
-        ret = Text("");
+        ret = HIDDEN();
       } else if (input instanceof MIMEContainer) {
         ret = (MIMEContainer) input;
       } else {

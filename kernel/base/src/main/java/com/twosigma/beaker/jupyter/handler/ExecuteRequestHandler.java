@@ -54,7 +54,7 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    logger.info("Processing execute request");
+    logger.debug("Processing execute request");
     handleMessage(message);
   }
 

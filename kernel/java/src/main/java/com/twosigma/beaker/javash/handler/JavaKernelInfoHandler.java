@@ -38,7 +38,7 @@ public class JavaKernelInfoHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    logger.info("Processing kernel info request");
+    logger.debug("Processing kernel info request");
     Message reply = new Message();
     HashMap<String, Serializable> map = new HashMap<>(6);
     map.put("protocol_version", "5.0");

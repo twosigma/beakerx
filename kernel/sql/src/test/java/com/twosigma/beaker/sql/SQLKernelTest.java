@@ -70,11 +70,7 @@ public class SQLKernelTest {
   }
 
   private void verifyResult(Optional<Message> result) {
-    assertThat(result).isPresent();
-    Message message = result.get();
-    Map actual = ((Map) message.getContent().get(Comm.DATA));
-    String value = (String) actual.get("text/plain");
-    assertThat(value).isEmpty();
+    //no any other messages if widget
     Optional<Message> tableDisplayOpenMsg = getTableDisplayOpenMsg(kernelSocketsFactory.getKernelSockets());
     assertThat(tableDisplayOpenMsg).isPresent();
   }

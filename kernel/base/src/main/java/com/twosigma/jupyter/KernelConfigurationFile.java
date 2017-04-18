@@ -36,8 +36,7 @@ public class KernelConfigurationFile implements ConfigurationFile {
   @Override
   public Config getConfig() {
     if (configuration == null) {
-      logger.debug("Parsing the connection file.");
-      logger.info("Path to config file : " + config.getAbsolutePath());
+      logger.debug("Path to config file : " + config.getAbsolutePath());
       configuration = MessageSerializer.parse(new String(readConfig()), Config.class);
       logger.debug("Creating signing hmac with: {}", configuration.getKey());
     }

@@ -153,7 +153,7 @@ public class MessageCreator {
     } else if (isSupportedStatus(seo.getStatus())) {
       ret.addAll(createResultForSupportedStatus(seo, message));
     } else {
-      logger.error("Unhandled status of SimpleEvaluationObject : " + seo.getStatus());
+      logger.debug("Unhandled status of SimpleEvaluationObject : " + seo.getStatus());
     }
     return ret;
   }
@@ -163,7 +163,7 @@ public class MessageCreator {
     if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
       MessageHolder mh = createFinishResult(seo, message);
       if(mh != null){
-        ret.add(createFinishResult(seo, message));
+        ret.add(mh);
       }
     } else if (EvaluationStatus.ERROR == seo.getStatus()) {
       ret.add(createErrorResult(seo, message));

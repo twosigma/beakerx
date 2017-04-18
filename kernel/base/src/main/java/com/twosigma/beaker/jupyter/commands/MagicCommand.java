@@ -74,7 +74,7 @@ public class MagicCommand {
   }
 
   private void publishResults(MIMEContainer result, Message message, int executionCount) {
-    messageCreator.createMagicMessage(messageCreator.buildMessage(message, result.getMime(),result.getCode(), executionCount), executionCount, message);
+    messageCreator.createMagicMessage(messageCreator.buildMessage(message, result.getMime().getMime() ,result.getCode(), executionCount), executionCount, message);
   }
   private String executeBashCode(String code) {
     String[] cmd = {"/bin/bash", "-c", code};

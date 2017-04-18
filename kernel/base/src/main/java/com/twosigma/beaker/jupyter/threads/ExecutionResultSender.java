@@ -73,7 +73,7 @@ public class ExecutionResultSender implements Observer {
           }
         }
       }
-      logger.info("MessageRunnable shutdown.");
+      logger.debug("MessageRunnable shutdown.");
     }
   }
 

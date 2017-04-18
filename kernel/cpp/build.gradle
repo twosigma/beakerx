@@ -35,7 +35,7 @@ dependencies {
   compile project(':kernel:base')
   compile group: 'org.abstractmeta', name: 'compilation-toolbox', version: '0.3.2'
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
-  antlr group : 'org.antlr', name :'antlr4', version: '4.5'
+  antlr group: 'org.antlr', name: 'antlr4', version: '4.5'
 
   testCompile project(':kernel:base').sourceSets.test.output
   testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
@@ -45,8 +45,8 @@ dependencies {
 task antlr4_java(type: JavaExec) {
   main = "org.antlr.v4.Tool"
   workingDir = "src/main/antlr4/"
-  args = ["CPP14.g4", "-o", "../java/com/twosigma/beaker/cpp/autocomplete","-listener", "-no-visitor", "-package", "com.twosigma.beaker.cpp.autocomplete", "-encoding", "UTF-8" ]
-  classpath =  configurations.antlr
+  args = ["CPP14.g4", "-o", "../java/com/twosigma/beaker/cpp/autocomplete", "-listener", "-no-visitor", "-package", "com.twosigma.beaker.cpp.autocomplete", "-encoding", "UTF-8"]
+  classpath = configurations.antlr
 }
 
 compileJava.dependsOn antlr4_java
@@ -68,6 +68,7 @@ jar {
     exclude "META-INF/*.DSA"
     exclude "META-INF/*.RSA"
   }
+
 }
 
 task prepareJson(dependsOn: 'build') {
@@ -110,5 +111,54 @@ task kernelInstall(dependsOn: 'prepareJson') {
     println hashStdOut.toString().trim();
     println "DONE"
   }
+
+  //====================================================================================================================
+  def osName = System.properties['os.name']
+  def mac = false
+  def win = false
+  def linux = false
+  def platform = ''
+  if (osName.startsWith('Mac')) {
+    mac = true
+    platform = 'darwin'
+  } else if (osName.startsWith('Windows')) {
+    win = true
+    platform = 'win32'
+  } else if (osName.startsWith('Linux')) {
+    linux = true
+    platform = 'linux'
+  }
+
+  def java_home = System.properties.'java.home'
+
+  task compileCppKernel(type: JavaCompile) {
+    classpath = files(project(':kernel:base').projectDir)
+    source 'com.twosigma.beaker.cpp.utils.CppKernel'
+  }
+
+  task makeCppKernelHeader(type: Exec, dependsOn: compileCppKernel) {
+    workingDir './build/classes/main'
+    def jvmDir = project(':kernel:base').projectDir
+    commandLine 'javah', '-cp', "./:${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/cpp/CppKernel.h', 'com.twosigma.beaker.cpp.utils.CppKernel'
+  }
+
+  task makeCRunLib(type: Exec, dependsOn: ['makeCppKernelHeader']) {
+    inputs.file('./src/main/cpp/CRun.cpp')
+    outputs.file('./src/main/cpp/libCRun.jnilib')
+    workingDir './src/main/cpp'
+    if (mac) {
+      commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/darwin", '-o', 'libCRun.jnilib', 'CRun.cpp'
+    } else if (linux) {
+      commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
+    }
+  }
+
+  task copyCRun(type: Copy, dependsOn: ['makeCRunLib']) {
+    from './src/main/cpp/'
+    into './build/classes/main/com/twosigma/beaker/cpp/cpp'
+  }
+
+  compileJava.finalizedBy copyCRun
+
 }
 

@@ -153,7 +153,7 @@ public class MessageCreator {
     } else if (isSupportedStatus(seo.getStatus())) {
       ret.addAll(createResultForSupportedStatus(seo, message));
     } else {
-      logger.error("Unhandled status of SimpleEvaluationObject : " + seo.getStatus());
+      logger.debug("Unhandled status of SimpleEvaluationObject : " + seo.getStatus());
     }
     return ret;
   }

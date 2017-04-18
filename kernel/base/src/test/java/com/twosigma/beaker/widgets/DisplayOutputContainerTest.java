@@ -87,7 +87,7 @@ public class DisplayOutputContainerTest {
   }
 
   private void verifyTabLayout(List<Message> publishedMessages) {
-    Message tab = publishedMessages.get(4);
+    Message tab = publishedMessages.get(2);
     Map data = getData(tab);
     assertThat(data.get(VIEW_NAME)).isEqualTo(Tab.VIEW_NAME_VALUE);
   }

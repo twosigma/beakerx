@@ -16,7 +16,7 @@
 package com.twosigma.beaker.widgets.box;
 
 import com.twosigma.beaker.widgets.CommFunctionality;
-import com.twosigma.beaker.widgets.DOMWidget;
+import com.twosigma.beaker.widgets.ValueWidget;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 /**
  * Displays multiple widgets in a group.
  */
-public abstract class Box extends DOMWidget {
+public abstract class Box extends ValueWidget<String> {
 
   public static final String CHILDREN = "children";
   public static final String IPY_MODEL = "IPY_MODEL_";
@@ -56,6 +56,11 @@ public abstract class Box extends DOMWidget {
   @Override
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
+  }
+  
+  @Override
+  public String getValueFromObject(Object input) {
+    return getString(input);
   }
   
 }

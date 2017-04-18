@@ -29,8 +29,6 @@ public class HBox extends Box{
 
   public HBox(List<CommFunctionality> children) {
     super(children);
-    this.getLayout().setDisplay("flex");
-    this.getLayout().setAlign_items("stretch");
     openComm();
   }
 

@@ -163,7 +163,7 @@ public class MessageCreator {
     if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
       MessageHolder mh = createFinishResult(seo, message);
       if(mh != null){
-        ret.add(createFinishResult(seo, message));
+        ret.add(mh);
       }
     } else if (EvaluationStatus.ERROR == seo.getStatus()) {
       ret.add(createErrorResult(seo, message));

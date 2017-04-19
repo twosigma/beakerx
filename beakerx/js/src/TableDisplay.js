@@ -43,6 +43,9 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
 
     this.displayed.then(function() {
       var tableModel = JSON.parse(that.model.get('model'));
+      if (tableModel.tooManyRows) {
+        that.showWarning(tableModel);
+      }
       that.initTableDisplay(tableModel);
     });
   },
@@ -57,6 +60,18 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     currentScope.setModelData(data);
     currentScope.setElement(tmplElement.children('.dtcontainer'));
     currentScope.run();
+  },
+
+  showWarning: function(data) {
+    var rowLength = data.rowLength;
+    var columnLength = data.columnNames.length;
+    var rowLimit = data.rowLimit;
+    var tmpl = '<div id="' + this.wrapperId + '">' +
+      '<p class="ansired">Error: table is too big to display. ' +
+      'The limit is ' + rowLimit + ' rows, but this table has ' + rowLength + ' rows. ' +
+      'The first 1000 rows are displayed as a preview.</p></div>';
+    var tmplElement = $(tmpl);
+    tmplElement.appendTo(this.$el);
   }
 });
 

@@ -16,6 +16,7 @@
 package com.twosigma.beaker.cpp.utils;
 
 import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.cpp.CppEvaluator;
 import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class CppKernel {
   }
 
   static {
-    System.load(System.getProperty("user.dir") + "/lib/libCRun.jnilib");
+    System.load(CppEvaluator.CPP_RESOURCES + "/libCRun.jnilib");
   }
 
   public static Object beakerGet(String name) {

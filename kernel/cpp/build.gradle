@@ -160,5 +160,25 @@ task kernelInstall(dependsOn: 'prepareJson') {
 
   compileJava.finalizedBy copyCRun
 
+  startScripts {
+    defaultJvmOpts=['-Djava.awt.headless=' + 'true']
+    doLast {
+      // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
+      windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/libs/*')
+      unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/libs/*')
+    }
+  }
+
+  task copyLibs(type: Copy) {
+    from './build/scripts'
+    into System.getProperty("user.home") + "/.beakerx/v1/cppResources/bin"
+  }
+
+  task copyRunnerScripts(type: Copy, dependsOn: ['copyLibs']) {
+    from './build/libs'
+    into System.getProperty("user.home") + "/.beakerx/v1/cppResources/libs"
+  }
+
+  startScripts.finalizedBy copyRunnerScripts
 }
 

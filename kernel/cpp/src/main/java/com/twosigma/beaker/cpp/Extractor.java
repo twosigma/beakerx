@@ -81,7 +81,6 @@ public class Extractor extends CPP14BaseListener {
         case ',':
           if (bracketDepth == 0){
             String substr = content.substring(comma + 1, i);
-            // System.out.println("Split off and got " + substr);
             contents.add(substr);
             comma = i;
           }

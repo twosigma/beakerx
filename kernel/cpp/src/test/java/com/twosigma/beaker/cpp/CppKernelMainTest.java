@@ -79,7 +79,7 @@ public class CppKernelMainTest {
     Message message = result.get();
     Map actual = ((Map) message.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
-    assertThat(value).isNotEqualTo("null");
+    assertThat(value).isEqualTo("null\nHello world!\n");
   }
 
   private KernelParameters kernelParameters() {

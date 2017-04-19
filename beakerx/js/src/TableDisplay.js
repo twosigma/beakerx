@@ -43,10 +43,12 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
 
     this.displayed.then(function() {
       var tableModel = JSON.parse(that.model.get('model'));
-      if (tableModel.tooManyRows)
+      if (tableModel.tooManyRows) {
         that.showWarning(tableModel);
-      else
+      }
+      else {
         that.initTableDisplay(tableModel);
+      }
     });
   },
 
@@ -69,7 +71,6 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     var tmpl = '<div id="' + this.wrapperId + '"><p class="ansired">' +
                'You are attempting to display a very large table (' + rowLength.toString() +
                ' rows). This may take a long time to load and will freeze your whole session while it loads so we stopped. </p>' +
-               '<p class="ansired"> For dcat users, consider using preview() to see just a portion of the table. </p>' +
                '<p>' + rowLength.toString() + ' rows. Display limit: ' + rowLimit.toString() + '.</p>' +
                '<p>Columns (total ' + columnLength.toString() + ' columns): </p>';
     data.columnNames.forEach(function(colName) {

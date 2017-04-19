@@ -34,8 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TestWidgetUtils {
 
   public static void verifyOpenCommMsg(List<Message> messages, String modelNameValue, String viewNameValue) {
-    Message layout = SearchMessages.getListLayout(messages).get(0);
     Message widget = SearchMessages.getListWidgetsByViewName(messages, viewNameValue).get(0);
+    Message layout = SearchMessages.getLayoutForWidget(messages, widget);
 
     verifyTypeMsg(widget,COMM_OPEN);
     Map data = getData(widget);
@@ -64,8 +64,8 @@ public class TestWidgetUtils {
   }
 
   public static void verifyInternalOpenCommMsgWitLayout(List<Message> messages, String modelNameValue, String viewNameValue) {
-    Message layout = SearchMessages.getListLayout(messages).get(0);
     Message widget = SearchMessages.getListWidgetsByViewName(messages, viewNameValue).get(0);
+    Message layout = SearchMessages.getLayoutForWidget(messages, widget);
 
     verifyTypeMsg(widget,COMM_OPEN);
     Map data = getData(widget);

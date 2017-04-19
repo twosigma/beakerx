@@ -16,6 +16,7 @@
 package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.KernelTest;
+import com.twosigma.beaker.jupyter.SearchMessages;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
@@ -33,8 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TestWidgetUtils {
 
   public static void verifyOpenCommMsg(List<Message> messages, String modelNameValue, String viewNameValue) {
-    Message layout = messages.get(0);
-    Message widget = messages.get(1);
+    Message layout = SearchMessages.getListLayout(messages).get(0);
+    Message widget = SearchMessages.getListWidgetsByViewName(messages, viewNameValue).get(0);
 
     verifyTypeMsg(widget,COMM_OPEN);
     Map data = getData(widget);
@@ -45,7 +46,8 @@ public class TestWidgetUtils {
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
 
-  public static void verifyOpenCommMsgWitoutLayout(Message message, String modelNameValue, String viewNameValue) {
+  public static void verifyOpenCommMsgWitoutLayout(List<Message> messages, String modelNameValue, String viewNameValue) {
+    Message message = SearchMessages.getListWidgetsByViewName(messages, viewNameValue).get(0);
     verifyTypeMsg(message,COMM_OPEN);
     Map data = getData(message);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
@@ -62,8 +64,8 @@ public class TestWidgetUtils {
   }
 
   public static void verifyInternalOpenCommMsgWitLayout(List<Message> messages, String modelNameValue, String viewNameValue) {
-    Message layout = messages.get(0);
-    Message widget = messages.get(1);
+    Message layout = SearchMessages.getListLayout(messages).get(0);
+    Message widget = SearchMessages.getListWidgetsByViewName(messages, viewNameValue).get(0);
 
     verifyTypeMsg(widget,COMM_OPEN);
     Map data = getData(widget);
@@ -109,6 +111,12 @@ public class TestWidgetUtils {
   public static void verifyDisplayMsg(Message message) {
     Map data = getData(message);
     assertThat(data.get(METHOD)).isEqualTo(DISPLAY);
+  }
+
+  public static void verifyDisplayMsg(List<Message> messages) {
+    List<Message> result = SearchMessages.getListByDataAttr(messages, METHOD, DISPLAY);
+    assertThat(result.size()).isGreaterThan(0);
+    assertThat(result.get(0)).isNotNull();
   }
 
 

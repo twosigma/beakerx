@@ -63,6 +63,8 @@ public class CppEvaluator implements Evaluator {
 
   private static final Logger logger = LoggerFactory.getLogger(CppEvaluator.class.getName());
 
+  public static final String CPP_RESOURCES = System.getProperty("user.home") + "/.beakerx/v1/cppResources";
+
   protected final String shellId;
   protected final String sessionId;
   protected final String packageId;
@@ -114,7 +116,7 @@ public class CppEvaluator implements Evaluator {
     compileCommand.add("-m64");
     compileCommand.add("-Wno-return-type-c-linkage");
     compileCommand.add("-I");
-    compileCommand.add("./include");
+    compileCommand.add(CPP_RESOURCES);
     compileCommand.add("-I");
     compileCommand.add(System.getProperty("java.home") + "/../include");
     compileCommand.add("-I");

@@ -155,7 +155,7 @@ task kernelInstall(dependsOn: 'prepareJson') {
 
   task copyCRun(type: Copy, dependsOn: ['makeCRunLib']) {
     from './src/main/cpp/'
-    into './build/classes/main/com/twosigma/beaker/cpp/cpp'
+    into System.getProperty("user.home") + "/.beakerx/v1/cppResources"
   }
 
   compileJava.finalizedBy copyCRun

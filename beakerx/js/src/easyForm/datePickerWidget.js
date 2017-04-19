@@ -18,7 +18,7 @@ var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
 var moment = require('moment');
 
-var datetimepicker = require('./../shared/libs/jquery.datetimepicker.full');
+var Flatpickr = require("flatpickr");
 
 var DatePickerModel = widgets.StringModel.extend({
   defaults: _.extend({}, widgets.StringModel.prototype.defaults, {
@@ -30,20 +30,9 @@ var DatePickerModel = widgets.StringModel.extend({
 });
 
 var datepickerOpts = {
-  dateFormat: 'YYYYMMDD',
-  dateTimeFormat: 'YYYYMMDD HH:mm'
+  dateFormat: 'Ymd',
+  dateTimeFormat: 'Ymd H:i'
 };
-
-$.datetimepicker.setDateFormatter({
-  parseDate: function (date, format) {
-    var d = moment(date, format);
-    return d.isValid() ? d.toDate() : false;
-  },
-
-  formatDate: function (date, format) {
-    return moment(date).format(format);
-  }
-});
 
 var DatePickerView = widgets.LabeledDOMWidgetView.extend({
   render: function() {
@@ -53,6 +42,7 @@ var DatePickerView = widgets.LabeledDOMWidgetView.extend({
     this.el.classList.add('widget-inline-hbox');
     this.el.classList.add('widget-text');
     this.el.classList.add('datepicker-container');
+    this.el.classList.add('flatpickr');
 
     this.initDatePicker();
     this.update();
@@ -60,69 +50,47 @@ var DatePickerView = widgets.LabeledDOMWidgetView.extend({
 
   initDatePicker: function() {
     var that = this;
-    var datePickerOpen = false;
     var showTime = this.model.get('showTime');
     var dateFormat = showTime ? datepickerOpts.dateTimeFormat : datepickerOpts.dateFormat;
 
-    this.datepicker = $('<input type="text" class="date-picker" />')
+    this.flatpickr = null;
+
+    this.datepicker = $('<input type="text" placeholder="Select Date.." data-input />')
       .addClass('form-control');
 
-    this.button = $("<a tabindex='-1' title='Select date' class='date-picker-button ui-button ui-widget ui-state-default ui-button-icon-only custom-combobox-toggle ui-corner-right' role='button' aria-disabled='false'>" +
+    this.button = $("<a tabindex='-1' title='Select date' class='date-picker-button ui-button ui-widget ui-state-default ui-button-icon-only custom-combobox-toggle ui-corner-right' role='button' aria-disabled='false' data-toggle>" +
                      "<span class='ui-button-icon-primary ui-icon ui-icon-triangle-1-s'></span><span class='ui-button-text'></span>" +
                      "</a>");
 
-    var onShowHandler = function() {
-      return datePickerOpen;
-    };
-    var onCloseHandler = function() {
-      datePickerOpen = false;
-      return true;
-    };
-    var onChange = function(dp, input) {
-      var value = input.val();
-      if (value) {
-        that.setValueToModel(value);
+    var onChange = function(selectedDates, dateStr) {
+      if (dateStr) {
+        that.setValueToModel(dateStr);
       }
     };
-
-    this.button.on("mousedown", function() {
-      event.stopPropagation();
-      event.preventDefault();
-    });
-
-    this.button.click(function() {
-      if (datePickerOpen === false) {
-        datePickerOpen = true;
-        that.datepicker.datetimepicker('show');
-      } else {
-        datePickerOpen = false;
-        that.datepicker.datetimepicker('hide');
-      }
-    });
 
     this.datepicker.appendTo(this.$el);
     this.button.appendTo(this.$el);
 
+    that.flatpickr = new Flatpickr(that.el, {
+      enableTime: showTime,
+      dateFormat: dateFormat,
+      onChange: onChange,
+      wrap: true,
+      clickOpens: false,
+      allowInput: true
+    });
+
     this.displayed.then(function() {
-      that.datepicker.datetimepicker({
-        format: dateFormat,
-        formatTime:'HH:mm',
-        formatDate:'YYYYMMDD',
-        allowBlank: true,
-        onShow: onShowHandler,
-        onClose: onCloseHandler,
-        timepicker: showTime,
-        parentID: '#notebook',
-        onChangeDateTime: onChange
-      });
+
     });
   },
 
   update: function(options) {
     if (options === undefined || options.updated_view != this) {
       var newValue = this.model.get('value');
-      if (this.datepicker.value != newValue) {
-        this.datepicker.val(newValue);
+
+      if (this.flatpickr && this.flatpickr.input.value != newValue) {
+        this.flatpickr.setDate(newValue);
       }
 
       var disabled = this.model.get('disabled');

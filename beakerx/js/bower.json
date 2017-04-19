@@ -23,7 +23,7 @@
     "d3": "~4.4.4",
     "jQuery-contextMenu": "~2.4.2",
     "moment-timezone": "~0.5.11",
-    "datatables.net": "~2.1.1",
+    "datatables.net": "~1.10.13",
     "jquery-throttle-debounce": "*",
     "datatables.net-keytable": "~2.2.0",
     "datatables.net-fixedcolumns": "~3.2.2",
@@ -33,6 +33,6 @@
     "datatables.net-fixedcolumns-dt": "~3.2.2",
     "datatables.net-dt": "~3.2.2",
     "jquery-ui": "^1.12.1",
-    "datetimepicker": "^2.5.4"
+    "flatpickr": "^2.5.5"
   }
 }

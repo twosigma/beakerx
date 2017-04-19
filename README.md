@@ -16,6 +16,9 @@
 
 # BeakerX: Beaker extensions for Jupyter
 
+[![Build Status](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/buildStatus/icon?job=BeakerX%20master)](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/job/BeakerX%20master)
+[![Gitter chat](https://badges.gitter.im/twosigma/beakerx.png)](https://gitter.im/twosigma/beakerx)
+
 BeakerX is a collection of JVM kernels with widgets, plotting, tables,
 autotranslation, and other extensions to the Jupyter Notebook and
 Jupyter Lab.  BeakerX is in alpha, with major features still under
@@ -29,28 +32,26 @@ process is very welcome.
 
 ## Dependencies
 
-* oracle Java8 JDK, gradle (v3+)
+* oracle Java8 JDK
 * npm, bower, webpack
 * conda
 
 ## Build and run
 
-[![Build Status](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/buildStatus/icon?job=BeakerX%20master)](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/job/BeakerX%20master)
 
 ```
 conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx
-(cd kernel/groovy; gradle --no-daemon kernelInstall)
-(cd kernel/scala; gradle --no-daemon kernelInstall)
-(cd kernel/clojure; gradle --no-daemon kernelInstall)
-(cd kernel/java; gradle --no-daemon kernelInstall)
-gradle --no-daemon environmentVariables # set PYTHONPATH as directed
+./gradlew --no-daemon build
+./gradlew --no-daemon kernelInstall
+./gradlew --no-daemon :beakerx:install
+pip install -e .
 jupyter notebook
 ```
 
 ## Update after Java change
 Ther kernels are installed to run out of the repo, so just a build should update the java code.
-* `gradle build`
+* `./gradlew build`
 
 ## Update after JS change
 

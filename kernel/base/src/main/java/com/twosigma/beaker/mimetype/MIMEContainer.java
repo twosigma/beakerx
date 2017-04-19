@@ -28,29 +28,46 @@ import java.net.URL;
 
 public class MIMEContainer {
 
-  protected static final String TEXT_PLAIN = "text/plain";
-  protected static final String TEXT_HTML = "text/html";
-  private static final String TEXT_LATEX = "text/latex";
-  private static final String TEXT_MARKDOWN = "text/markdown";
-  private static final String APPLICATION_JAVASCRIPT = "application/javascript";
-  protected static final String IMAGE_PNG = "image/png";
-  protected static final String IMAGE_JPEG = "image/jpeg";
-  protected static final String IMAGE_SVG = "image/svg+xml";
+  public enum MIME {
 
+    TEXT_PLAIN("text/plain"), 
+    TEXT_HTML("text/html"), 
+    TEXT_LATEX("text/latex"), 
+    TEXT_MARKDOWN("text/markdown"), 
+    APPLICATION_JAVASCRIPT("application/javascript"), 
+    IMAGE_PNG("image/png"), 
+    IMAGE_JPEG("image/jpeg"), 
+    IMAGE_SVG("image/svg+xml"), 
+    HIDDEN("x-beakerx/empty");
 
-  private String mime;
-  private String code;
+    private String mime;
 
-  public MIMEContainer() {
+    MIME(String mime) {
+      this.mime = mime;
+    }
+
+    public String getMime() {
+      return mime;
+    }
 
   }
 
-  public MIMEContainer(String mime, String code) {
+  private MIME mime;
+  private String code;
+
+  public MIMEContainer() {
+  }
+
+  public MIMEContainer(MIME mime) {
+    this.mime = mime;
+  }
+
+  public MIMEContainer(MIME mime, String code) {
     this.mime = mime;
     this.code = code;
   }
 
-  public String getMime() {
+  public MIME getMime() {
     return mime;
   }
 
@@ -58,35 +75,38 @@ public class MIMEContainer {
     return code;
   }
 
+  public static MIMEContainer HIDDEN() {
+    return addMimeType(MIME.HIDDEN);
+  }
+
   public static MIMEContainer HTML(Object code) {
-    return addMimeType(TEXT_HTML, code);
+    return addMimeType(MIME.TEXT_HTML, code);
   }
 
   public static MIMEContainer Latex(Object code) {
-    return addMimeType(TEXT_LATEX, code);
+    return addMimeType(MIME.TEXT_LATEX, code);
   }
 
   public static MIMEContainer Text(Object code) {
-    return addMimeType(TEXT_PLAIN, code);
+    return addMimeType(MIME.TEXT_PLAIN, code);
   }
 
   public static MIMEContainer Markdown(Object code) {
-    return addMimeType(TEXT_MARKDOWN, code);
+    return addMimeType(MIME.TEXT_MARKDOWN, code);
   }
 
   public static MIMEContainer Math(String code) {
     code = StringUtils.strip(code, "$");
-    return addMimeType(TEXT_LATEX, "$$" + code + "$$");
+    return addMimeType(MIME.TEXT_LATEX, "$$" + code + "$$");
   }
 
   public static MIMEContainer Javascript(Object code) {
-    return addMimeType(APPLICATION_JAVASCRIPT, code);
+    return addMimeType(MIME.APPLICATION_JAVASCRIPT, code);
   }
 
   public static MIMEContainer IFrame(String src, Object width, int height) {
-    String code = String.format("<iframe width = '%1$s' height= '%2$d' src = '%3$s' frameborder='0' allowfullscreen> </iframe>",
-        width.toString(), height, src);
-    return addMimeType(TEXT_HTML, code);
+    String code = String.format("<iframe width = '%1$s' height= '%2$d' src = '%3$s' frameborder='0' allowfullscreen> </iframe>", width.toString(), height, src);
+    return addMimeType(MIME.TEXT_HTML, code);
   }
 
   public static MIMEContainer VimeoVideo(String id, Object width, int height) {
@@ -106,10 +126,14 @@ public class MIMEContainer {
 
   public static MIMEContainer Video(String src) {
     String output = String.format("<video src='%1$s' controls> Your browser does not support the <code>video</code> element. </video>", src);
-    return addMimeType(TEXT_HTML, output);
+    return addMimeType(MIME.TEXT_HTML, output);
   }
 
-  protected static MIMEContainer addMimeType(String mime, Object code) {
+  protected static MIMEContainer addMimeType(MIME mime) {
+    return new MIMEContainer(mime);
+  }
+
+  protected static MIMEContainer addMimeType(MIME mime, Object code) {
     return new MIMEContainer(mime, code.toString());
   }
 

@@ -15,12 +15,13 @@
  */
 package com.twosigma.beaker.jupyter.comm;
 
-import static com.twosigma.beaker.jupyter.Utils.getAsString;
+import static com.twosigma.jupyter.KernelParameters.KERNEL_PARAMETERS;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.twosigma.jupyter.KernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,14 +45,14 @@ public class KernelControlSetShellHandler extends BaseHandler<List<String>> {
   public KernelControlSetShellHandler(KernelFunctionality kernel) {
     super(kernel);
   }
-  
+
   @Override
-  public void handle(Message message)  {
+  public void handle(Message message) {
     logger.info("Handing comm message content");
     Map<String, List<String>> shell = getData(message);
     if (shell != null) {
       boolean ok = handleData(shell);
-      if(ok){
+      if (ok) {
         HashMap<String, String> data = new HashMap<>();
         data.put(KERNEL_CONTROL_RESPONSE, ok ? RESPONSE_OK : RESPONSE_ERROR);
         publish(createReplyMessage(message, data));
@@ -61,11 +62,10 @@ public class KernelControlSetShellHandler extends BaseHandler<List<String>> {
 
   public boolean handleData(Map<String, List<String>> data) {
     boolean ret = false;
-    if(data.containsKey(IMPORTS) && data.containsKey(CLASSPATH)){
-      List<String> imports = data.get(IMPORTS);
-      List<String> classPath = data.get(CLASSPATH);
-      kernel.setShellOptions(getAsString(classPath), getAsString(imports));
-     ret = true;
+    if (data.containsKey(KERNEL_PARAMETERS)) {
+      Map<String, Object> beakerxKernelParameters = (Map<String, Object>) data.get(KERNEL_PARAMETERS);
+      kernel.setShellOptions(new KernelParameters(beakerxKernelParameters));
+      ret = true;
     }
     return ret;
   }

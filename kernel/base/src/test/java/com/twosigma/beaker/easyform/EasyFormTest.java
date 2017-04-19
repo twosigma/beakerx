@@ -22,6 +22,7 @@ import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DatePicker;
 import com.twosigma.beaker.widgets.bools.Checkbox;
 import com.twosigma.beaker.widgets.box.Box;
+import com.twosigma.beaker.widgets.box.HBox;
 import com.twosigma.beaker.widgets.selections.Dropdown;
 import com.twosigma.beaker.widgets.selections.RadioButtons;
 import com.twosigma.beaker.widgets.selections.SelectMultiple;
@@ -207,11 +208,11 @@ public class EasyFormTest {
   }
 
   private void verifyCheckboxGroup(Message msg) {
-    verifyOpenCommMsgWitoutLayout(msg, Box.MODEL_NAME_VALUE, Box.VIEW_NAME_VALUE);
+    verifyOpenCommMsgWitoutLayout(msg, HBox.MODEL_NAME_VALUE, HBox.VIEW_NAME_VALUE);
   }
 
   private Message getCheckboxGroupMsgs() {
-    return kernel.getPublishedMessages().get(kernel.getPublishedMessages().size() - 4);
+    return kernel.getPublishedMessages().get(kernel.getPublishedMessages().size() - 8);
   }
 
   @Test
@@ -273,7 +274,7 @@ public class EasyFormTest {
   }
 
   private List<Message> getEasyFormMsgs() {
-    return kernel.getPublishedMessages().subList(kernel.getPublishedMessages().size() - 3, kernel.getPublishedMessages().size() - 1);
+    return kernel.getPublishedMessages().subList(kernel.getPublishedMessages().size() - 5, kernel.getPublishedMessages().size() - 3);
   }
 
 

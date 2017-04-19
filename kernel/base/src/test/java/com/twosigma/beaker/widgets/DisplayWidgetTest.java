@@ -50,7 +50,7 @@ public class DisplayWidgetTest {
     IntSlider widget = new IntSlider();
     groovyKernel.clearPublishedMessages();
     //when
-    DisplayWidget.display(widget);
+    widget.display();
     //then
     verifyCommDisplayMsg(widget);
   }

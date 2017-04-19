@@ -16,7 +16,12 @@
 
 package com.twosigma.beaker.evaluator;
 
+import com.twosigma.beaker.KernelSocketsTest;
+import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.jupyter.message.Message;
+
+import java.util.Optional;
 
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.QUEUED;
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.RUNNING;
@@ -34,6 +39,23 @@ public class EvaluatorResultTestWatcher {
     if (count == ATTEMPT) {
       throw new RuntimeException("No result, code evaluation took too long.");
     }
+  }
+
+
+  public static Optional<Message> waitForResult(KernelSocketsTest socketsTest) throws InterruptedException {
+    int count = 0;
+    Optional<Message> result = getResult(socketsTest);
+    while (!result.isPresent() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      result = getResult(socketsTest);
+      count++;
+    }
+    return result;
+  }
+
+  private static Optional<Message> getResult(KernelSocketsTest socketsTest) {
+    return socketsTest.getPublishedMessages().stream().
+            filter(x -> x.type().equals(JupyterMessages.EXECUTE_RESULT)).findFirst();
   }
 
 }

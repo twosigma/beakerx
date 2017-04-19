@@ -38,7 +38,7 @@ public class ClojureKernelInfoHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    logger.info("Processing kernel info request");
+    logger.debug("Processing kernel info request");
     Message reply = new Message();
     HashMap<String, Serializable> map = new HashMap<>(6);
     map.put("protocol_version", "5.0");
@@ -49,7 +49,6 @@ public class ClojureKernelInfoHandler extends KernelHandler<Message> {
     map1.put("version", "1.7");
     map1.put("mimetype", "text/x-clojure");
     map1.put("file_extension", ".clj");
-    map1.put("pygments_lexer", "");
     map1.put("codemirror_mode", "Clojure");
     map1.put("nbconverter_exporter", "");
     map.put("language_info", map1);

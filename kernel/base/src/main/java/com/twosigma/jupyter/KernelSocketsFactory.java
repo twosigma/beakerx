@@ -13,24 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.internal;
+package com.twosigma.jupyter;
 
-import com.twosigma.beaker.widgets.CommFunctionality;
+public interface KernelSocketsFactory {
 
-public interface InternalWidget extends CommFunctionality {
+  KernelSockets create(final KernelFunctionality kernel, final SocketCloseAction closeAction);
 
-  String MODEL = "model";
-
-  default void sendModel() {
-    if (this.getComm() != null) {
-      this.getComm().sendUpdate(MODEL, SerializeToJson.toJson(this));
-    }
-  }
-
-  String getModelNameValue();
-
-  String getViewNameValue();
-
-  void close();
-  
 }

@@ -72,4 +72,10 @@ public class TextAreaWidget extends TextArea implements CommFunctionality, EasyF
     super.setHeight(height);
     widget.getLayout().setHeight(height + PX);
   }
+  
+  @Override
+  public void close() {
+    getComm().close();
+  }
+  
 }

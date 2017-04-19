@@ -183,7 +183,6 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         (obj instanceof EvaluationResult) ||
         (obj instanceof UpdatableEvaluationResult) ||
         (obj instanceof BeakerCodeCell) ||
-        (obj instanceof OutputCell.State) ||
         (obj instanceof ImageIcon) ||
         (obj instanceof Date) ||
         (obj instanceof BeakerDashboard) ||

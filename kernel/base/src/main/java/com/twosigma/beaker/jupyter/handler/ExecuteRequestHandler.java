@@ -16,7 +16,6 @@
 package com.twosigma.beaker.jupyter.handler;
 
 
-import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.commands.MagicCommand;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
@@ -42,20 +41,20 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
 
   private final static Logger logger = LoggerFactory.getLogger(ExecuteRequestHandler.class);
 
-  protected int executionCount;
-  protected EvaluatorManager evaluatorManager;
+  private int executionCount;
+  private KernelFunctionality kernel;
   private MagicCommand magicCommand;
 
   public ExecuteRequestHandler(KernelFunctionality kernel) {
     super(kernel);
-    this.evaluatorManager = kernel.getEvaluatorManager();
+    this.kernel = kernel;
     magicCommand = new MagicCommand(kernel);
     executionCount = 0;
   }
 
   @Override
   public void handle(Message message) {
-    logger.info("Processing execute request");
+    logger.debug("Processing execute request");
     handleMessage(message);
   }
 
@@ -85,7 +84,7 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
 
     ++executionCount;
     if (!code.startsWith("%")) {
-      evaluatorManager.executeCode(code, message, executionCount);
+       kernel.executeCode(code, message, executionCount);
       // execution response in ExecuteResultHandler
     } else {
       String command = new Scanner(code).next();
@@ -99,7 +98,6 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
 
   @Override
   public void exit() {
-    evaluatorManager.exit();
   }
 
 }

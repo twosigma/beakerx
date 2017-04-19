@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 apply plugin: 'application'
-apply plugin: 'jacoco'
 apply plugin: 'java'
 apply plugin: 'scala'
 apply plugin: 'maven-publish'
@@ -76,16 +75,16 @@ task prepareJson(dependsOn: 'build') {
     println "Prepare JSON for Jupyter notebook"
     println "Copy kernel.json to build/libs/json/ and replasing PATH with scala.jar parh"
 
-    def jarLocation = new File('build/libs/scala.jar').getAbsolutePath()
+    def jarLocation = file('build/libs/scala.jar').getAbsolutePath()
     jarLocation = jarLocation.replace("\\", "/");
-    def text = new File('kernel.json').text.replace(toReplace, jarLocation)
-    def folder = new File('build/libs/json')
+    def text = file('kernel.json').text.replace(toReplace, jarLocation)
+    def folder = file('build/libs/json')
     if (!folder.exists()) {
       println "Creating folder build/libs/json"
       folder.mkdirs()
     }
 
-    new File('build/libs/json/kernel.json').withWriter { w ->
+    file('build/libs/json/kernel.json').withWriter { w ->
       w << text
     }
   }
@@ -96,7 +95,7 @@ task kernelInstall(dependsOn: 'prepareJson') {
     println "Installing 'Scala' to jupyter notebook"
 
     def hashStdOut = new ByteArrayOutputStream()
-    def jsonFolder = new File('build/libs/json/').getAbsolutePath();
+    def jsonFolder = file('build/libs/json/').getAbsolutePath();
     exec {
       commandLine "jupyter",
               "kernelspec",
@@ -113,25 +112,11 @@ task kernelInstall(dependsOn: 'prepareJson') {
   }
 }
 
-jacoco {
-  toolVersion = "0.7.8"
-}
-
-jacocoTestReport {
-  reports {
-    html.enabled = true
-    xml.enabled = false
-    csv.enabled = false
-  }
-}
-
 task realclean
 realclean.dependsOn(clean)
 // should also remove
 // GroovyLexer.java GroovyLexer.tokens GroovyParser.java GroovyParser.tokens
 // GroovyParserBaseListener.java GroovyParserListener.java
-
-test.finalizedBy jacocoTestReport
 
 publishing {
     publications {

@@ -15,12 +15,10 @@
  */
 package com.twosigma.jupyter;
 
-import java.io.IOException;
-
 /**
  * Information from the connection file from Jupyter.
  */
 public interface ConfigurationFile {
 
-  Config getConfig() throws IOException;
+  Config getConfig();
 }

@@ -13,20 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets;
+package com.twosigma.jupyter;
 
-import java.io.Serializable;
-import java.util.HashMap;
+import com.twosigma.jupyter.message.Message;
 
-public class DisplayWidget {
+public abstract class KernelSockets extends Thread {
 
-  public static final String METHOD = "method";
-  public static final String DISPLAY = "display";
+  public abstract void publish(Message message);
 
-  public static void display(final CommFunctionality widget) {
-    HashMap<String, Serializable> content = new HashMap<>();
-    content.put(METHOD, DISPLAY);
-    widget.getComm().setData(content);
-    widget.getComm().send();
-  }
+  public abstract void send(Message message);
 }

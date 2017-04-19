@@ -36,18 +36,16 @@ public class CompleteHandler extends KernelHandler<Message> {
   public static final String CODE = "code";
   public static final String CURSOR_POS = "cursor_pos";
 
-  private EvaluatorManager evaluatorManager;
 
   public CompleteHandler(KernelFunctionality kernel) {
     super(kernel);
-    evaluatorManager = kernel.getEvaluatorManager();
   }
 
   @Override
   public void handle(Message message) {
     String code = ((String) message.getContent().get(CODE)).trim();
     int cursorPos = ((int) message.getContent().get(CURSOR_POS));
-    AutocompleteResult autocomplete = evaluatorManager.autocomplete(code, cursorPos);
+    AutocompleteResult autocomplete = kernel.autocomplete(code, cursorPos);
     Message reply = createMsg(message, cursorPos, autocomplete);
     send(reply);
   }

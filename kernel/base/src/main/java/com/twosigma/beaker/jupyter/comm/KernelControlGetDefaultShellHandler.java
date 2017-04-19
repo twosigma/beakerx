@@ -17,6 +17,7 @@ package com.twosigma.beaker.jupyter.comm;
 
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.jupyter.KernelParameters.KERNEL_PARAMETERS;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ import com.twosigma.jupyter.message.Message;
 /**
  * @author konst
  */
-public abstract class KernelControlGetDefaultShellHandler extends BaseHandler<Boolean>{
+public abstract class KernelControlGetDefaultShellHandler extends BaseHandler<Boolean> {
 
   public static final String GET_DEFAULT_SHELL = "get_default_shell";
   public static final String KERNEL_CONTROL_RESPONSE = "kernel_control_response";
@@ -40,28 +41,34 @@ public abstract class KernelControlGetDefaultShellHandler extends BaseHandler<Bo
   public KernelControlGetDefaultShellHandler(KernelFunctionality kernel) {
     super(kernel);
   }
-  
+
   @Override
-  public void handle(Message message)  {
+  public void handle(Message message) {
     logger.info("Handing comm message content");
     Boolean ok = getValueFromData(message, getHandlerCommand());
-    if(ok != null && ok.booleanValue()){
+    if (ok != null && ok.booleanValue()) {
+
+      HashMap<String, Object> kernelParameters = new HashMap<>();
+      kernelParameters.put(IMPORTS, getDefaultImports());
+      kernelParameters.put(CLASSPATH, getDefaultClassPath());
+
+      HashMap<String, Object> shell = new HashMap<>();
+      shell.put(KERNEL_PARAMETERS, kernelParameters);
+
       HashMap<String, Serializable> data = new HashMap<>();
-      HashMap<String, String[]> shell = new HashMap<>();
-      shell.put(IMPORTS, getDefaultImports());
-      shell.put(CLASSPATH, getDefaultClassPath());
       data.put(KERNEL_CONTROL_RESPONSE, shell);
       logger.info("Response OK");
       publish(createReplyMessage(message, data));
     }
   }
-  
+
   @Override
   public String getHandlerCommand() {
     return GET_DEFAULT_SHELL;
   }
-  
+
   public abstract String[] getDefaultImports();
+
   public abstract String[] getDefaultClassPath();
 
 }

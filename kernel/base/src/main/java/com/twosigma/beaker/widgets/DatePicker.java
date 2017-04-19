@@ -30,7 +30,7 @@ public class DatePicker extends ValueWidget<String> {
   public DatePicker() {
     super();
     this.value = "";
-    init();
+    openComm();
   }
 
   @Override
@@ -46,12 +46,20 @@ public class DatePicker extends ValueWidget<String> {
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_NAME, MODEL_NAME_VALUE);
-    content.put(VIEW_NAME, VIEW_NAME_VALUE);
     content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);
     content.put(VIEW_MODULE, InternalWidgetUtils.VIEW_MODULE_VALUE);
     content.put(VALUE, this.value);
     return content;
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 
   public void setShowTime(final Boolean showTime) {

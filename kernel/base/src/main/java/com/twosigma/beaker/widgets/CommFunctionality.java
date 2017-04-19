@@ -20,6 +20,7 @@ import com.twosigma.beaker.jupyter.comm.Comm;
 public interface CommFunctionality {
 
   Comm getComm();
+  
+  void close();
 
 }
-

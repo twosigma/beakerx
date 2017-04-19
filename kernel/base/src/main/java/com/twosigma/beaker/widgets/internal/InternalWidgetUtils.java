@@ -15,32 +15,29 @@
  */
 package com.twosigma.beaker.widgets.internal;
 
-import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
-import com.twosigma.beaker.jupyter.Utils;
-
 import java.io.Serializable;
 import java.util.HashMap;
+
+import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
 
 
 public class InternalWidgetUtils {
 
   public static final String MODEL_MODULE = "_model_module";
-  public static final String MODEL_NAME = "_model_name";
   public static final String VIEW_MODULE = "_view_module";
-  public static final String VIEW_NAME = "_view_name";
 
   public static final String MODEL_MODULE_VALUE = "beakerx";
   public static final String VIEW_MODULE_VALUE = "beakerx";
 
-  public static Comm createComm(final InternalWidget widget, final InternalWidgetContent content) {
-    Comm comm = new Comm(Utils.uuid(), TargetNamesEnum.JUPYTER_WIDGET);
+  public static Comm createComm(final CommWidget widget, final InternalWidgetContent content) {
+    Comm comm = new Comm(TargetNamesEnum.JUPYTER_WIDGET);
     comm.setData(createContent(widget, content));
     comm.open();
     return comm;
   }
 
-  private static HashMap<String, Serializable> createContent(InternalWidget widget, InternalWidgetContent content) {
+  private static HashMap<String, Serializable> createContent(CommWidget widget, InternalWidgetContent content) {
     HashMap<String, Serializable> result = new HashMap<>();
     result.put(MODEL_MODULE, MODEL_MODULE_VALUE);
     result.put(VIEW_MODULE, VIEW_MODULE_VALUE);

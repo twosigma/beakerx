@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.twosigma.beaker.jvm.serialization;
 
-import com.twosigma.beaker.jvm.object.OutputCell;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -23,11 +23,17 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 
-public class OutputCellStateSerializer extends JsonSerializer<OutputCell.State> {
+public class TestSerializer extends JsonSerializer<Object> {
+
   @Override
-  public void serialize(OutputCell.State state, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
-    jsonGenerator.writeStartObject();
-    jsonGenerator.writeStringField("type", state.getType());
-    jsonGenerator.writeEndObject();
+  public void serialize(Object v, JsonGenerator jgen, SerializerProvider provider)
+      throws IOException, JsonProcessingException {
+    synchronized(v) {
+      jgen.writeStartObject();
+      jgen.writeStringField("type",  "test");
+      jgen.writeObjectField("value", v);
+      jgen.writeEndObject();
+    }
   }
+
 }

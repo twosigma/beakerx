@@ -68,4 +68,10 @@ public class ButtonComponentWidget extends ButtonComponent implements CommFuncti
   public DOMWidget getWidget() {
     return widget;
   }
+
+  @Override
+  public void close() {
+    widget.getComm().close();
+  }
+  
 }

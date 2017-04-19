@@ -18,29 +18,19 @@ package com.twosigma.beaker.scala;
 
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.evaluator.Evaluator;
-import com.twosigma.beaker.evaluator.EvaluatorManager;
 
 public class ScalaKernelTest extends KernelTest {
-
-  private String id;
-  private EvaluatorManager evaluatorManager;
 
   public ScalaKernelTest() {
     this("ScalaKernelTestId1");
   }
 
-  public ScalaKernelTest(String id) {
-    this.id = id;
+  public ScalaKernelTest(String id)  {
+    super(id);
   }
 
   public ScalaKernelTest(String id, Evaluator evaluator) {
-    this.id = id;
-    this.evaluatorManager = new EvaluatorManager(this, evaluator);
-  }
-
-  @Override
-  public EvaluatorManager getEvaluatorManager() {
-    return evaluatorManager;
+    super(id,evaluator);
   }
 
 }

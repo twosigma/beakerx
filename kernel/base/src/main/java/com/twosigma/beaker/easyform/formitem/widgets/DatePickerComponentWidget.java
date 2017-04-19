@@ -68,4 +68,10 @@ public class DatePickerComponentWidget extends DatePickerComponent implements Co
   public Boolean getShowTime() {
     return this.widget.getShowTime();
   }
+
+  @Override
+  public void close() {
+    getComm().close();
+  }
+
 }

@@ -24,6 +24,7 @@ import java.io.IOException;
 
 public class TableDisplaySerializer extends ObservableTableDisplaySerializer<TableDisplay> {
 
+  public int ROWS_LIMIT = 10000;
   @Override
   public void serialize(TableDisplay value,
                         JsonGenerator jgen,
@@ -59,7 +60,16 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       jgen.writeBooleanField("headersVertical", value.getHeadersVertical());
       jgen.writeObjectField("hasIndex", value.getHasIndex());
       jgen.writeObjectField("timeZone", value.getTimeZone());
-      jgen.writeObjectField("values", value.getValues());
+      if (value.getValues().size() > ROWS_LIMIT) {
+        String[] empty_array = new String[0];
+        jgen.writeObjectField("values", empty_array);
+        jgen.writeBooleanField("tooManyRows", true);
+        jgen.writeObjectField("rowLength", value.getValues().size());
+        jgen.writeObjectField("rowLimit", ROWS_LIMIT);
+      } else {
+        jgen.writeObjectField("values", value.getValues());
+        jgen.writeBooleanField("tooManyRows", false);
+      }
       jgen.writeEndObject();
     }
   }

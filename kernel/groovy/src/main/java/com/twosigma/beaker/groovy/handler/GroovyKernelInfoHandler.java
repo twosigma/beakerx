@@ -52,7 +52,6 @@ public class GroovyKernelInfoHandler extends KernelHandler<Message> {
     map1.put("version", GroovySystem.getVersion());
     map1.put("mimetype", "");
     map1.put("file_extension", ".groovy");
-    map1.put("pygments_lexer", "");
     map1.put("codemirror_mode", "groovy");
     map1.put("nbconverter_exporter", "");
     map.put("language_info", map1);

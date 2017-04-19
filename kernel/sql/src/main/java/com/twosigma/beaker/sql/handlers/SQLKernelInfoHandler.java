@@ -49,7 +49,6 @@ public class SQLKernelInfoHandler extends KernelHandler<Message> {
     map1.put("version", "");
     map1.put("mimetype", "");
     map1.put("file_extension", ".sql");
-    map1.put("pygments_lexer", "");
     map1.put("codemirror_mode", "sql");
     map1.put("nbconverter_exporter", "");
     map.put("language_info", map1);

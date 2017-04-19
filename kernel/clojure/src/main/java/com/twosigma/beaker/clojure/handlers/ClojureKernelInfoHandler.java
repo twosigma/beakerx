@@ -49,7 +49,6 @@ public class ClojureKernelInfoHandler extends KernelHandler<Message> {
     map1.put("version", "1.7");
     map1.put("mimetype", "text/x-clojure");
     map1.put("file_extension", ".clj");
-    map1.put("pygments_lexer", "");
     map1.put("codemirror_mode", "Clojure");
     map1.put("nbconverter_exporter", "");
     map.put("language_info", map1);

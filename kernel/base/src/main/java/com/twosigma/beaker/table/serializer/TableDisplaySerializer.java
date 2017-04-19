@@ -19,7 +19,7 @@ import com.twosigma.beaker.table.TableDisplay;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
-
+import java.util.List;
 import java.io.IOException;
 
 public class TableDisplaySerializer extends ObservableTableDisplaySerializer<TableDisplay> {
@@ -60,14 +60,14 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       jgen.writeBooleanField("headersVertical", value.getHeadersVertical());
       jgen.writeObjectField("hasIndex", value.getHasIndex());
       jgen.writeObjectField("timeZone", value.getTimeZone());
-      if (value.getValues().size() > ROWS_LIMIT) {
-        String[] empty_array = new String[0];
-        jgen.writeObjectField("values", empty_array);
+      List<List<?>> values = value.getValues();
+      if (values.size() > ROWS_LIMIT) {
+        jgen.writeObjectField("values", values.subList(0, 1000));
         jgen.writeBooleanField("tooManyRows", true);
-        jgen.writeObjectField("rowLength", value.getValues().size());
+        jgen.writeObjectField("rowLength", values.size());
         jgen.writeObjectField("rowLimit", ROWS_LIMIT);
       } else {
-        jgen.writeObjectField("values", value.getValues());
+        jgen.writeObjectField("values", values);
         jgen.writeBooleanField("tooManyRows", false);
       }
       jgen.writeEndObject();

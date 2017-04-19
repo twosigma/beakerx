@@ -27,6 +27,7 @@ public class Tab extends SelectionContainer {
   public Tab(List<CommFunctionality> children, List<String> labels) {
     super(children, labels);
     openComm();
+    sendUpdate(TITLES, this.titles);
   }
 
   @Override

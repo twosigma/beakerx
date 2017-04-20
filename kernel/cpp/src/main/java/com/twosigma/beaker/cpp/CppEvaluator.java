@@ -20,6 +20,7 @@ import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Lexer;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Parser;
 import com.twosigma.beaker.cpp.utils.CellGobblerManager;
+import com.twosigma.beaker.cpp.utils.TempCppFiles;
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -43,14 +44,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.ProcessBuilder.Redirect;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -58,81 +57,34 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.twosigma.beaker.cpp.utils.CLangCommand.compileCommand;
 import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 public class CppEvaluator implements Evaluator {
 
   private static final Logger logger = LoggerFactory.getLogger(CppEvaluator.class.getName());
 
-  public static final String CPP_RESOURCES = System.getProperty("user.home") + "/.beakerx/v1/cppResources";
-
-  protected final String shellId;
-  protected final String sessionId;
-  protected final String packageId;
-  protected List<String> classPath;
-  protected List<String> imports;
-  protected HashSet<String> loadedCells;
-  protected String outDir;
-  protected ArrayList<String> compileCommand;
+  private final String shellId;
+  private final String sessionId;
+  private final String packageId;
+  private List<String> compileCommand;
   // protected JavaAutocomplete jac;
-  protected boolean exit;
-  protected workerThread myWorker;
-  protected final BeakerCellExecutor executor;
-  protected String currentClassPath;
-  protected String currentImports;
-  protected ArrayList<String> userFlags= new ArrayList<>();
-  protected Process cellProc;
-
-  protected class jobDescriptor {
-    SimpleEvaluationObject outputObject;
-    String codeToBeExecuted;
-    String cellId;
-
-    jobDescriptor(SimpleEvaluationObject o, String c, String cid) {
-      outputObject = o;
-      codeToBeExecuted = c;
-      cellId = cid;
-    }
-
-  }
-
+  private boolean exit;
+  private workerThread myWorker;
+  private final BeakerCellExecutor executor;
+  private List<String> userFlags = new ArrayList<>();
+  private Process cellProc;
+  private TempCppFiles tempCppFiles;
   private final Semaphore syncObject = new Semaphore(0, true);
   private final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
   public CppEvaluator(String id, String sId) {
     shellId = id;
     sessionId = sId;
+    tempCppFiles = new TempCppFiles(id);
     packageId = "com.twosigma.beaker.cpp.bkr" + shellId.split("-")[0];
-    classPath = new ArrayList<String>();
-    imports = new ArrayList<String>();
-    loadedCells = new HashSet<String>();
-    compileCommand = new ArrayList<String>();
-    compileCommand.add("clang++");
-    compileCommand.add("-shared");
-    if (System.getProperty("os.name").toLowerCase().startsWith("mac")) {
-      compileCommand.add("-undefined");
-      compileCommand.add("dynamic_lookup");
-    }
-    compileCommand.add("-fPIC");
-    compileCommand.add("-m64");
-    compileCommand.add("-Wno-return-type-c-linkage");
-    compileCommand.add("-I");
-    compileCommand.add(CPP_RESOURCES);
-    compileCommand.add("-I");
-    compileCommand.add(System.getProperty("java.home") + "/../include");
-    compileCommand.add("-I");
-    compileCommand.add(System.getProperty("java.home") + "/../include/linux");
-    compileCommand.add("-I");
-    compileCommand.add(System.getProperty("java.home") + "/../include/darwin");
-
+    compileCommand = compileCommand(tempCppFiles);
     exit = false;
-    currentClassPath = "";
-    currentImports = "";
-    outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"), "dynclasses", sessionId).toString();
-    try {
-      (new File(outDir)).mkdirs();
-    } catch (Exception e) {
-    }
     executor = new BeakerCellExecutor("cpp");
   }
 
@@ -140,10 +92,6 @@ public class CppEvaluator implements Evaluator {
   public void startWorker() {
     myWorker = new workerThread();
     myWorker.start();
-  }
-
-  public String getShellId() {
-    return shellId;
   }
 
   @Override
@@ -155,7 +103,6 @@ public class CppEvaluator implements Evaluator {
     // executor.killAllThreads();
   }
 
-
   public void cancelExecution() {
     if (cellProc != null) {
       cellProc.destroy();
@@ -163,12 +110,12 @@ public class CppEvaluator implements Evaluator {
   }
 
   public void resetEnvironment() {
-    loadedCells.clear();
     executor.killAllThreads();
     syncObject.release();
   }
 
   public void exit() {
+    tempCppFiles.close();
     exit = true;
     cancelExecution();
     syncObject.release();
@@ -326,7 +273,7 @@ public class CppEvaluator implements Evaluator {
           // Prepare to compile
           String inputFile = tmpDir + "/" + theCellId + ".cpp";
           String outputFile = tmpDir + "/lib" + theCellId + ".so";
-          ArrayList<String> clangCommand = new ArrayList<String>(compileCommand);
+          ArrayList<String> clangCommand = new ArrayList<>(compileCommand);
           clangCommand.add("-o");
           clangCommand.add(outputFile);
           clangCommand.add(inputFile);
@@ -352,28 +299,22 @@ public class CppEvaluator implements Evaluator {
           Process p = pb.start();
           CellGobblerManager.getInstance().startCellGobbler(p.getInputStream(), "stderr", theOutput);
           CellGobblerManager.getInstance().startCellGobbler(p.getErrorStream(), "stderr", theOutput);
-          if ((p.waitFor()) == 0) {
-            loadedCells.add(theCellId);
-          } else {
+          if ((p.waitFor()) != 0) {
             theOutput.error("Compilation failed");
             theOutput.finished(null);
           }
 
-          Object ret = null;
+          Object ret;
 
           // Execute if type is recognized
           if (!cellType.equals("none")) {
             ArrayList<String> runCommand = new ArrayList<String>();
-            runCommand.add(CPP_RESOURCES+"/bin/cpp");
+            runCommand.add(tempCppFiles.getPath() + "/cpp");
             runCommand.add("execute");
             runCommand.add(sessionId);
             runCommand.add(theCellId);
             runCommand.add(cellType);
-            for (String cell : loadedCells) {
-              if (!cell.equals(theCellId)) {
-                runCommand.add(cell);
-              }
-            }
+            runCommand.add(tempCppFiles.getPath());
 
             pb = new ProcessBuilder(runCommand);
             pb.directory(new File(System.getProperty("user.dir")));
@@ -419,8 +360,6 @@ public class CppEvaluator implements Evaluator {
       }
     }
 
-    ;
-    
     /*
      * This function does:
      * 1) remove comments
@@ -454,6 +393,18 @@ public class CppEvaluator implements Evaluator {
         c2.append(c);
       }
       return c2.toString().replaceAll("\n\n+", "\n").trim();
+    }
+  }
+
+  protected class jobDescriptor {
+    SimpleEvaluationObject outputObject;
+    String codeToBeExecuted;
+    String cellId;
+
+    jobDescriptor(SimpleEvaluationObject o, String c, String cid) {
+      outputObject = o;
+      codeToBeExecuted = c;
+      cellId = cid;
     }
   }
 }

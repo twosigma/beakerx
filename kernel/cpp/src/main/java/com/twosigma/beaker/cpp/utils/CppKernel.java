@@ -16,7 +16,6 @@
 package com.twosigma.beaker.cpp.utils;
 
 import com.twosigma.beaker.NamespaceClient;
-import com.twosigma.beaker.cpp.CppEvaluator;
 import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,6 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 
 public class CppKernel {
 
@@ -39,12 +37,9 @@ public class CppKernel {
 
   public static NamespaceClient nc;
 
-  public CppKernel(String sessionId) {
+  public CppKernel(final String sessionId, final String tempDirectory) {
     nc = NamespaceClient.getBeaker(sessionId);
-  }
-
-  static {
-    System.load(CppEvaluator.CPP_RESOURCES + "/libCRun.jnilib");
+    System.load(tempDirectory + "/libCRun.jnilib");
   }
 
   public static Object beakerGet(String name) {
@@ -65,12 +60,8 @@ public class CppKernel {
     return 1;
   }
 
-  public int execute(String mainCell, String type, ArrayList<String> otherCells) {
+  public int execute(String mainCell, String type) {
     String tmpDir = System.getenv("beaker_tmp_dir");
-
-    for (String cell : otherCells) {
-      cLoad(tmpDir + "/lib" + cell + ".so");
-    }
 
     Object ret = cLoadAndRun(tmpDir + "/lib" + mainCell + ".so", type);
 

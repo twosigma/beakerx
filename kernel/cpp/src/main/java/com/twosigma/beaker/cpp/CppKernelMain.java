@@ -29,8 +29,6 @@ import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import static com.twosigma.beaker.jupyter.Utils.uuid;
 
@@ -51,18 +49,8 @@ public class CppKernelMain extends Kernel {
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {
-    if ((args.length > 3) && (args[0].equals("execute"))) {
-      String sessionId = args[1];
-      String mainCell = args[2];
-      String type = args[3];
-
-      ArrayList<String> otherCells = new ArrayList<String>(Arrays.asList(args));
-      // Remove first four arguments
-      otherCells.subList(0, 4).clear();
-
-      CppKernel kern = new CppKernel(sessionId);
-      kern.execute(mainCell, type, otherCells);
-
+    if ((args.length > 4) && (args[0].equals("execute"))) {
+      executeCppCode(args);
     } else {
       KernelRunner.run(() -> {
         String id = uuid();
@@ -70,6 +58,15 @@ public class CppKernelMain extends Kernel {
         return new CppKernelMain(id, new CppEvaluator(id, id), kernelSocketsFactory);
       });
     }
+  }
+
+  private static void executeCppCode(String[] args) {
+    String sessionId = args[1];
+    String mainCell = args[2];
+    String type = args[3];
+    String tempDirectory = args[4];
+    CppKernel kern = new CppKernel(sessionId, tempDirectory);
+    kern.execute(mainCell, type);
   }
 
 }

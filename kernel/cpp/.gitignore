@@ -1,4 +1,6 @@
 /build/
 /src/main/java/com/twosigma/beaker/cpp/autocomplete
-/src/main/cpp/libCRun.jnilib
-/src/main/cpp/CppKernel.h
+/src/main/resources/libCRun.jnilib
+/src/main/resources/CppKernel.h
+/src/main/resources/cpp
+/src/main/resources/cpp.bat

@@ -36,6 +36,7 @@ dependencies {
   compile group: 'org.abstractmeta', name: 'compilation-toolbox', version: '0.3.2'
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
   antlr group: 'org.antlr', name: 'antlr4', version: '4.5'
+  compile 'commons-io:commons-io:2.5'
 
   testCompile project(':kernel:base').sourceSets.test.output
   testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
@@ -139,13 +140,13 @@ task kernelInstall(dependsOn: 'prepareJson') {
   task makeCppKernelHeader(type: Exec, dependsOn: compileCppKernel) {
     workingDir './build/classes/main'
     def jvmDir = project(':kernel:base').projectDir
-    commandLine 'javah', '-cp', "./:${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/cpp/CppKernel.h', 'com.twosigma.beaker.cpp.utils.CppKernel'
+    commandLine 'javah', '-cp', "./:${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/resources/CppKernel.h', 'com.twosigma.beaker.cpp.utils.CppKernel'
   }
 
   task makeCRunLib(type: Exec, dependsOn: ['makeCppKernelHeader']) {
-    inputs.file('./src/main/cpp/CRun.cpp')
-    outputs.file('./src/main/cpp/libCRun.jnilib')
-    workingDir './src/main/cpp'
+    inputs.file('./src/main/resources/CRun.cpp')
+    outputs.file('./src/main/resources/libCRun.jnilib')
+    workingDir './src/main/resources'
     if (mac) {
       commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/darwin", '-o', 'libCRun.jnilib', 'CRun.cpp'
     } else if (linux) {
@@ -153,30 +154,20 @@ task kernelInstall(dependsOn: 'prepareJson') {
     }
   }
 
-  task copyCRun(type: Copy, dependsOn: ['makeCRunLib']) {
-    from './src/main/cpp/'
-    into System.getProperty("user.home") + "/.beakerx/v1/cppResources"
-  }
-
-  compileJava.finalizedBy copyCRun
+  compileJava.finalizedBy makeCRunLib
 
   startScripts {
     defaultJvmOpts=['-Djava.awt.headless=' + 'true']
     doLast {
       // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
-      windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/libs/*')
-      unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/libs/*')
+      windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', "set CLASSPATH=.;%APP_HOME%/libs/*;${libsDir.absolutePath}/*")
+      unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/libs/*:'+"${libsDir.absolutePath}/*")
     }
   }
 
-  task copyLibs(type: Copy) {
+  task copyRunnerScripts(type: Copy) {
     from './build/scripts'
-    into System.getProperty("user.home") + "/.beakerx/v1/cppResources/bin"
-  }
-
-  task copyRunnerScripts(type: Copy, dependsOn: ['copyLibs']) {
-    from './build/libs'
-    into System.getProperty("user.home") + "/.beakerx/v1/cppResources/libs"
+    into './src/main/resources/'
   }
 
   startScripts.finalizedBy copyRunnerScripts

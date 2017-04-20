@@ -60,13 +60,12 @@ public class CppKernel {
     return 1;
   }
 
-  public int execute(String mainCell, String type) {
-    String tmpDir = System.getenv("beaker_tmp_dir");
+  public int execute(final String mainCell, final String type, final String tempDirectory) {
 
-    Object ret = cLoadAndRun(tmpDir + "/lib" + mainCell + ".so", type);
+    Object ret = cLoadAndRun(tempDirectory + "/lib" + mainCell + ".so", type);
 
     try {
-      FileOutputStream file = new FileOutputStream(tmpDir + "/" + mainCell + ".result");
+      FileOutputStream file = new FileOutputStream(tempDirectory + "/" + mainCell + ".result");
       BufferedOutputStream buffer = new BufferedOutputStream(file);
       ObjectOutputStream output = new ObjectOutputStream(buffer);
       output.writeObject(ret);

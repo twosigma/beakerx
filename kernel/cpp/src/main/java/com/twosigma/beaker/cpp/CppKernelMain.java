@@ -30,6 +30,7 @@ import com.twosigma.jupyter.message.Message;
 
 import java.io.IOException;
 
+import static com.twosigma.beaker.cpp.CppEvaluator.EXECUTE;
 import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 public class CppKernelMain extends Kernel {
@@ -49,7 +50,7 @@ public class CppKernelMain extends Kernel {
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {
-    if ((args.length > 4) && (args[0].equals("execute"))) {
+    if ((args.length > 4) && (args[0].equals(EXECUTE))) {
       executeCppCode(args);
     } else {
       KernelRunner.run(() -> {
@@ -66,7 +67,7 @@ public class CppKernelMain extends Kernel {
     String type = args[3];
     String tempDirectory = args[4];
     CppKernel kern = new CppKernel(sessionId, tempDirectory);
-    kern.execute(mainCell, type);
+    kern.execute(mainCell, type, tempDirectory);
   }
 
 }

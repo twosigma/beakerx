@@ -54,21 +54,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static com.twosigma.beaker.cpp.utils.CLangCommand.compileCommand;
 import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 public class CppEvaluator implements Evaluator {
 
   private static final Logger logger = LoggerFactory.getLogger(CppEvaluator.class.getName());
+  public static final String EXECUTE = "execute";
 
   private final String shellId;
   private final String sessionId;
   private final String packageId;
   private List<String> compileCommand;
-  // protected JavaAutocomplete jac;
   private boolean exit;
   private workerThread myWorker;
   private final BeakerCellExecutor executor;
@@ -167,10 +164,6 @@ public class CppEvaluator implements Evaluator {
           nc = NamespaceClient.getBeaker(sessionId);
           nc.setOutputObj(j.outputObject);
 
-          Pattern p;
-          Matcher m;
-          String pname = packageId;
-
           // normalize and analyze code
           String code = normalizeCode(j.codeToBeExecuted);
 
@@ -267,7 +260,7 @@ public class CppEvaluator implements Evaluator {
           }
 
           // Create .cpp file
-          String tmpDir = System.getenv("beaker_tmp_dir");
+          String tmpDir = tempCppFiles.getPath();
           Path filePath = Paths.get(tmpDir + "/" + theCellId + ".cpp");
           Files.write(filePath, processedCode.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
           // Prepare to compile
@@ -310,7 +303,7 @@ public class CppEvaluator implements Evaluator {
           if (!cellType.equals("none")) {
             ArrayList<String> runCommand = new ArrayList<String>();
             runCommand.add(tempCppFiles.getPath() + "/cpp");
-            runCommand.add("execute");
+            runCommand.add(EXECUTE);
             runCommand.add(sessionId);
             runCommand.add(theCellId);
             runCommand.add(cellType);

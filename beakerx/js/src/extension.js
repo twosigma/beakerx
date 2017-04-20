@@ -63,7 +63,6 @@ define([
       function(comm, msg) {
         comm.on_msg(function(msg) {
           if(msg.content.data.name == "CodeCells"){
-            console.log("TZ msg", msg.content.data);
             sendJupyterCodeCells(JSON.parse(msg.content.data.value));
           }
           window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
@@ -80,14 +79,12 @@ define([
     var comm = Jupyter.notebook.kernel.comm_manager.new_comm("beaker.getcodecells",
         null, null, null, utils.uuid());
     var data = {};
-    console.log("TZ filter", filter);
     data.code_cells = Jupyter.notebook.get_cells().filter(function (cell) {
       if (cell._metadata.tags) {
         return cell.cell_type == 'code' && cell._metadata.tags.includes(filter);
       }
       return false;
     });
-    console.log("filtered data", data);
     comm.send(data);
     comm.close();
   }

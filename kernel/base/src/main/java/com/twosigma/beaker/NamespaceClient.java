@@ -25,9 +25,6 @@ import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 
-//import org.slf4j.Logger;-
-//import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -36,11 +33,8 @@ import java.util.Map;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SynchronousQueue;
-import java.util.logging.Logger;
-public class NamespaceClient {
 
-  //private static final Logger logger = LoggerFactory.getLogger(NamespaceClient.class.getName());
-  private static final Logger logger = Logger.getLogger(NamespaceClient.class.getName());
+public class NamespaceClient {
   
   private static Map<String,NamespaceClient> nsClients = new ConcurrentHashMap<>();
   private static String currentSession;
@@ -150,23 +144,17 @@ public class NamespaceClient {
   }
 
   public List<BeakerCodeCell> getCodeCells(String tagFilter) throws IOException, InterruptedException {
+    // first send message to get cells
     Comm c = getCodeCellsComm();
-    // first send 
     HashMap<String, Serializable> data = new HashMap<>();
     data.put("name", "CodeCells");
     data.put("value", getJson(tagFilter));
-    //data.put("parentMessageId",InternalVariable.getSimpleEvaluationObject().getJupyterMessage().getHeader().getId());
     c.setData(data);
     c.send();
-    // the real data should be .take() from a sync queue
-    // then do another send, should be in different comms
-    Object cells = getMessageQueue("CodeCells").take(); // block
-    //logger.info(data.toString());
+    // block
+    Object cells = getMessageQueue("CodeCells").take();
     return (List<BeakerCodeCell>)cells;
   }
-
-  
-
 
   private class ObjectHolder<T>{
     

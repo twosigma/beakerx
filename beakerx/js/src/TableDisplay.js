@@ -41,6 +41,8 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   render: function() {
     var that = this;
 
+    this.$el.addClass('beaker-table-display');
+
     this.displayed.then(function() {
       var tableModel = JSON.parse(that.model.get('model'));
       if (tableModel.tooManyRows) {

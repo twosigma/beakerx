@@ -31,6 +31,13 @@ public class SearchMessages {
     return getListByDataAttr(messages, Widget.VIEW_NAME, new Layout().getViewNameValue());
   }
 
+  public static Message getLayoutForWidget(List<Message> messages, Message widget){
+    Map map = ((Map)widget.getContent().get(Comm.DATA));
+    if(map == null || map.get(Layout.LAYOUT) == null) return null;
+    String id = ((String) map.get(Layout.LAYOUT)).replace(Layout.IPY_MODEL, "");
+    return getMessageByCommId(messages, id);
+  }
+
   public static List<Message> getListWidgetsByViewName(List<Message> messages, String viewNameValue){
     return getListByDataAttr(messages, Widget.VIEW_NAME, viewNameValue);
   }

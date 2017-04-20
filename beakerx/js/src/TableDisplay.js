@@ -24,7 +24,7 @@ require('./../bower_components/datatables.net-colreorder-dt/css/colReorder.dataT
 require('./../bower_components/datatables.net-fixedcolumns-dt/css/fixedColumns.dataTables.min.css');
 require('./../bower_components/datatables.net-keytable-dt/css/keyTable.dataTables.min.css');
 require('./../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.css');
-require('./tableDisplay/css/datatables.css');
+require('./tableDisplay/css/datatables.scss');
 
 var TableDisplayModel = widgets.DOMWidgetModel.extend({
   defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {

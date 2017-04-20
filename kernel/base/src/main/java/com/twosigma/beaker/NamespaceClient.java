@@ -17,33 +17,39 @@ package com.twosigma.beaker;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+//import org.slf4j.Logger;-
+//import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.concurrent.SynchronousQueue;
+import java.util.logging.Logger;
 public class NamespaceClient {
 
-  private static final Logger logger = LoggerFactory.getLogger(NamespaceClient.class.getName());
+  //private static final Logger logger = LoggerFactory.getLogger(NamespaceClient.class.getName());
+  private static final Logger logger = Logger.getLogger(NamespaceClient.class.getName());
   
   private static Map<String,NamespaceClient> nsClients = new ConcurrentHashMap<>();
   private static String currentSession;
-  
+  private static Map<String, SynchronousQueue<Object>> messagePool = new HashMap<>();
   private ObjectMapper objectMapper;
   private BeakerObjectConverter objectSerializer;
   private SimpleEvaluationObject currentCeo = null;
   private Comm autotranslationComm = null;
+  private Comm codeCellsComm = null;
 
   public NamespaceClient() {
     objectMapper = new ObjectMapper();
@@ -118,6 +124,15 @@ public class NamespaceClient {
     throw new RuntimeException("This option is not implemented now") ;
   }
 
+  public static SynchronousQueue<Object> getMessageQueue(String channel) {
+    SynchronousQueue<Object> result = messagePool.get(channel);
+    if (result == null) {
+      result = new SynchronousQueue<Object>();
+      messagePool.put(channel, result);
+    }
+    return result;
+  }
+
   protected Comm getAutotranslationComm() {
     if(autotranslationComm == null){
       autotranslationComm = new Comm(TargetNamesEnum.BEAKER_AUTOTRANSLATION);
@@ -126,15 +141,32 @@ public class NamespaceClient {
     return autotranslationComm;
   }
 
-  public void getCodeCells(String tagFilter) throws IOException {
-    Comm c = getAutotranslationComm();
+  protected Comm getCodeCellsComm() {
+    if(codeCellsComm == null){
+      codeCellsComm = new Comm(TargetNamesEnum.BEAKER_GETCODECELLS);
+      codeCellsComm.open();
+    }
+    return codeCellsComm;
+  }
+
+  public List<BeakerCodeCell> getCodeCells(String tagFilter) throws IOException, InterruptedException {
+    Comm c = getCodeCellsComm();
+    // first send 
     HashMap<String, Serializable> data = new HashMap<>();
     data.put("name", "CodeCells");
     data.put("value", getJson(tagFilter));
-    data.put("parentMessageId",InternalVariable.getSimpleEvaluationObject().getJupyterMessage().getHeader().getId());
+    //data.put("parentMessageId",InternalVariable.getSimpleEvaluationObject().getJupyterMessage().getHeader().getId());
     c.setData(data);
     c.send();
+    // the real data should be .take() from a sync queue
+    // then do another send, should be in different comms
+    Object cells = getMessageQueue("CodeCells").take(); // block
+    //logger.info(data.toString());
+    return (List<BeakerCodeCell>)cells;
   }
+
+  
+
 
   private class ObjectHolder<T>{
     

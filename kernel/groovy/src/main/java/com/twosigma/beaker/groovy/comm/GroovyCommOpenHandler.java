@@ -29,8 +29,8 @@ public class GroovyCommOpenHandler extends CommOpenHandler{
      new KernelControlInterrupt(kernel),
      new KernelControlCommandListHandler(kernel)};
 
- private Handler<?>[] KERNEL_AUTOTRANSLATION_CHANNEL_HANDLER = {
-     new AutotranslationGetCodeCellsHandler(kernel)};
+ private Handler<?>[] KERNEL_GET_CODECELLS_CHANNEL_HANDLER = {
+     new GetCodeCellsHandler(kernel)};
 
   public GroovyCommOpenHandler(KernelFunctionality kernel) {
     super(kernel);
@@ -39,8 +39,8 @@ public class GroovyCommOpenHandler extends CommOpenHandler{
   public Handler<Message>[] getKernelControlChanelHandlers(String targetName){
     if(TargetNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName().equalsIgnoreCase(targetName)){
       return (Handler<Message>[]) KERNEL_CONTROL_CHANNEL_HANDLERS;
-    }else if(TargetNamesEnum.BEAKER_AUTOTRANSLATION.getTargetName().equalsIgnoreCase(targetName)){
-      return (Handler<Message>[]) KERNEL_AUTOTRANSLATION_CHANNEL_HANDLER;
+    }else if(TargetNamesEnum.BEAKER_GETCODECELLS.getTargetName().equalsIgnoreCase(targetName)){
+      return (Handler<Message>[]) KERNEL_GET_CODECELLS_CHANNEL_HANDLER;
     }
     else{
       return (Handler<Message>[]) new Handler<?>[0];

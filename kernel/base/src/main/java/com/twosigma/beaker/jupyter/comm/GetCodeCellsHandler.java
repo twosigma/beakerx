@@ -18,6 +18,7 @@ package com.twosigma.beaker.jupyter.comm;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beaker.BeakerCodeCell;
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jupyter.KernelManager;
@@ -29,24 +30,22 @@ import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.util.logging.Logger;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 
 
-public class AutotranslationGetCodeCellsHandler extends BaseHandler<Object> {
+public class GetCodeCellsHandler extends BaseHandler<Object> {
 
-  private static final Logger logger = LoggerFactory.getLogger(KernelControlInterrupt.class);
-  private static final String AUTOTRANSLATION_CODE_CELLS = "code_cells";
-  private static final String PARENT_MESSAGE_ID = "parent_message_id";
+  //private static final Logger logger = LoggerFactory.getLogger(KernelControlInterrupt.class);
+  private static final Logger logger = Logger.getLogger(GetCodeCellsHandler.class.getName());
+  private static final String GET_CODE_CELLS = "code_cells";
   private ObjectMapper objectMapper;
   private BeakerObjectConverter objectSerializer;
 
-  public AutotranslationGetCodeCellsHandler(KernelFunctionality kernel) {
+  public GetCodeCellsHandler(KernelFunctionality kernel) {
     super(kernel);
     objectMapper = new ObjectMapper();
     objectSerializer = new BasicObjectSerializer();
@@ -55,7 +54,14 @@ public class AutotranslationGetCodeCellsHandler extends BaseHandler<Object> {
   @Override
   public void handle(Message message) {
     logger.info("Handing comm message content");
-    Message realParrent = new Message();
+    try{
+      List<BeakerCodeCell> cells = getBeakerCodeCells(getValueFromData(message, getHandlerCommand()));
+      NamespaceClient.getMessageQueue("CodeCells").put(cells);
+    } catch (InterruptedException e){
+      e.printStackTrace();
+    }
+    
+/*    Message realParrent = new Message();
     Header h = new Header();
     h.setId(getValueFromData(message,PARENT_MESSAGE_ID).toString());
     realParrent.setHeader(h);
@@ -68,10 +74,12 @@ public class AutotranslationGetCodeCellsHandler extends BaseHandler<Object> {
     KernelManager.get().publish(mc.buildClearOutput(realParrent, true));
     seo.clrOutputHandler();
     MIMEContainer resultString = SerializeToString.doit(getBeakerCodeCells(getValueFromData(message, getHandlerCommand())));
-    KernelManager.get().publish(mc.buildDisplayData(realParrent, resultString));
+    KernelManager.get().publish(mc.buildDisplayData(realParrent, resultString));*/
   }
 
   private List<BeakerCodeCell> getBeakerCodeCells(Object value) {
+    logger.info("Beaker code cells");
+    logger.info(value.toString());
     List<BeakerCodeCell> beakerCodeCellList = null;
     StringWriter sw = new StringWriter();
     JsonGenerator jgen = null;
@@ -88,8 +96,10 @@ public class AutotranslationGetCodeCellsHandler extends BaseHandler<Object> {
     return beakerCodeCellList;
   }
 
+  
+
   @Override
   public String getHandlerCommand() {
-    return AUTOTRANSLATION_CODE_CELLS;
+    return GET_CODE_CELLS;
   }
 }

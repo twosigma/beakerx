@@ -59,11 +59,12 @@ define([
   Jupyter.notebook.events.on('kernel_ready.Kernel', function() {
     var kernel = Jupyter.notebook.kernel;
     window.beaker = {};
-    kernel.comm_manager.register_target('beaker.autotranslation',
+    kernel.comm_manager.register_target('beaker.getcodecells',
       function(comm, msg) {
         comm.on_msg(function(msg) {
           if(msg.content.data.name == "CodeCells"){
-            sendJupyterCodeCells(JSON.parse(msg.content.data.value), msg.content.data.parentMessageId)
+            console.log("TZ msg", msg.content.data);
+            sendJupyterCodeCells(JSON.parse(msg.content.data.value));
           }
           window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
@@ -75,18 +76,18 @@ define([
     interrupt();
   });
 
-  function sendJupyterCodeCells(filter, parentId) {
-    var comm = Jupyter.notebook.kernel.comm_manager.new_comm("beaker.autotranslation",
+  function sendJupyterCodeCells(filter) {
+    var comm = Jupyter.notebook.kernel.comm_manager.new_comm("beaker.getcodecells",
         null, null, null, utils.uuid());
-
     var data = {};
+    console.log("TZ filter", filter);
     data.code_cells = Jupyter.notebook.get_cells().filter(function (cell) {
       if (cell._metadata.tags) {
-        return cell.cell_type == 'code' || cell._metadata.tags.includes(filter);
+        return cell.cell_type == 'code' && cell._metadata.tags.includes(filter);
       }
       return false;
     });
-    data.parent_message_id = parentId;
+    console.log("filtered data", data);
     comm.send(data);
     comm.close();
   }

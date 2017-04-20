@@ -1745,6 +1745,16 @@ define([
       });
       self.fixFocus(self.focus);
       self.update();
+    } else if (self.interactMode === "locate") {
+      var svgNode = self.svg.node();
+      // right click zoom
+      self.mousep2 = {
+        "x" : d3.mouse(svgNode)[0],
+        "y" : d3.mouse(svgNode)[1]
+      };
+      self.calcLocateBox();
+      self.rpipeRects = [];
+      self.renderLocateBox();
     }
   };
 

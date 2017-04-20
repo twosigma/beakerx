@@ -49,8 +49,7 @@ public class MessageCreatorTest {
     //when
     List<MessageHolder> message = messageCreator.createMessage(seo);
     //then
-    Map data = TestWidgetUtils.getData(message.get(0).getMessage());
-    assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo(NULL_RESULT);
+    assertThat(message.size()).isEqualTo(2);
   }
 
   @Test

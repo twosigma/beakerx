@@ -64,7 +64,7 @@ public class MessageCreatorTest {
     assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo("NotNullResult");
   }
 
-  @Test
+  //@Test
   public void createMessageForCollection() throws Exception {
     //given
     seo.finished(asList("1","2"));

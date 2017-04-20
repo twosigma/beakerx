@@ -161,4 +161,158 @@ public class ValueWidgetTest {
     Assertions.assertThat(value[1]).isEqualTo(6);
   }
 
+  @Test
+  public void getArrayOfDoubleWithNullArrayParam_returnArray() throws Exception {
+    //when
+    Double[] value = valueWidget.getArrayOfDouble(null, 5d, 6d);
+    //then
+    Assertions.assertThat(value[0]).isEqualTo(5d);
+    Assertions.assertThat(value[1]).isEqualTo(6d);
+  }
+
+  @Test
+  public void getArrayOfDoubleWithOneValueArrayParam_returnArray() throws Exception {
+    //when
+    Double[] value = valueWidget.getArrayOfDouble(new String[]{"1"}, 5d, 6d);
+    //then
+    Assertions.assertThat(value[0]).isEqualTo(1d);
+    Assertions.assertThat(value[1]).isEqualTo(6d);
+  }
+
+  @Test
+  public void getArrayOfDoubleWithTwoValueArrayParam_returnArray() throws Exception {
+    //when
+    Double[] value = valueWidget.getArrayOfDouble(new String[]{"1", "2"}, 5d, 6d);
+    //then
+    Assertions.assertThat(value[0]).isEqualTo(1d);
+    Assertions.assertThat(value[1]).isEqualTo(2d);
+  }
+
+  @Test
+  public void getArrayOfDoubleWithOneValueListParam_returnArray() throws Exception {
+    //when
+    Double[] value = valueWidget.getArrayOfDouble(Arrays.asList("1"), 5d, 6d);
+    //then
+    Assertions.assertThat(value[0]).isEqualTo(1d);
+    Assertions.assertThat(value[1]).isEqualTo(6d);
+  }
+
+  @Test
+  public void getArrayOfDoubleWithTwoValueListParam_returnArray() throws Exception {
+    //when
+    Double[] value = valueWidget.getArrayOfDouble(Arrays.asList("1", "2"), 5d, 6d);
+    //then
+    Assertions.assertThat(value[0]).isEqualTo(1d);
+    Assertions.assertThat(value[1]).isEqualTo(2d);
+  }
+
+  @Test
+  public void getArrayOfDoubleWithStringParam_returnArray() throws Exception {
+    //when
+    Double[] value = valueWidget.getArrayOfDouble("1", 5d, 6d);
+    //then
+    Assertions.assertThat(value[0]).isEqualTo(1d);
+    Assertions.assertThat(value[1]).isEqualTo(6d);
+  }
+
+  @Test
+  public void getStringWithStringParam_returnString() throws Exception {
+    //when
+    String value = valueWidget.getString("abc");
+    //then
+    Assertions.assertThat(value).isEqualTo("abc");
+  }
+
+  @Test
+  public void getStringWithByteArrayParam_returnString() throws Exception {
+    //when
+    String value = valueWidget.getString("abc".getBytes());
+    //then
+    Assertions.assertThat(value).isEqualTo("abc");
+  }
+
+  @Test
+  public void getStringWithDoubleParam_returnString() throws Exception {
+    //when
+    String value = valueWidget.getString(new Integer(123));
+    //then
+    Assertions.assertThat(value).isEqualTo("123");
+  }
+
+  @Test
+  public void getStringWithNullParam_returnEmptyString() throws Exception {
+    //when
+    String value = valueWidget.getString(null);
+    //then
+    Assertions.assertThat(value).isEmpty();
+  }
+
+  @Test
+  public void getStringArrayWithNullArrayParam_returnEmptyArray() throws Exception {
+    //when
+    String[] value = valueWidget.getStringArray(null);
+    //then
+    Assertions.assertThat(value).isEmpty();
+  }
+
+  @Test
+  public void getStringArrayWithArrayParam_returnArray() throws Exception {
+    //when
+    String[] value = valueWidget.getStringArray(new String[]{"ab", "cd"});
+    //then
+    Assertions.assertThat(value[0]).isEqualTo("ab");
+    Assertions.assertThat(value[1]).isEqualTo("cd");
+  }
+
+  @Test
+  public void getStringArrayWithListParam_returnArray() throws Exception {
+    //when
+    String[] value = valueWidget.getStringArray(Arrays.asList("ab", "cd"));
+    //then
+    Assertions.assertThat(value[0]).isEqualTo("ab");
+    Assertions.assertThat(value[1]).isEqualTo("cd");
+  }
+
+  @Test
+  public void getStringArrayWithIntegerParam_returnArray() throws Exception {
+    //when
+    String[] value = valueWidget.getStringArray(new Integer(123));
+    //then
+    Assertions.assertThat(value[0]).isEqualTo("123");
+  }
+
+  @Test
+  public void getBooleanWithNullParam_returnFalse() throws Exception {
+    //when
+    Boolean value = valueWidget.getBoolean(null);
+    //then
+    Assertions.assertThat(value).isFalse();
+  }
+
+  @Test
+  public void getBooleanWithBooleanParam_returnBoolean() throws Exception {
+    //when
+    Boolean value = valueWidget.getBoolean(Boolean.TRUE);
+    //then
+    Assertions.assertThat(value).isTrue();
+  }
+
+  @Test
+  public void getBooleanWithStringParam_returnBoolean() throws Exception {
+    //when
+    Boolean value = valueWidget.getBoolean("true");
+    //then
+    Assertions.assertThat(value).isTrue();
+  }
+
+  @Test
+  public void createValueWidget_hasDefaultValues() throws Exception {
+    //when
+    //then
+    Assertions.assertThat(valueWidget.getDisabled()).isFalse();
+    Assertions.assertThat(valueWidget.getVisible()).isTrue();
+    Assertions.assertThat(valueWidget.getDescription()).isEmpty();
+    Assertions.assertThat(valueWidget.getMsg_throttle()).isEqualTo(3);
+  }
+
 }

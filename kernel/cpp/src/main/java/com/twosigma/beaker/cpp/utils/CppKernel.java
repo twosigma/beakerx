@@ -15,8 +15,6 @@
  */
 package com.twosigma.beaker.cpp.utils;
 
-import com.twosigma.beaker.NamespaceClient;
-import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,43 +22,26 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.List;
+
+import static com.twosigma.beaker.cpp.utils.TempCppFiles.LIB_CRUN_JNILIB;
 
 public class CppKernel {
 
   private static final Logger logger = LoggerFactory.getLogger(CppKernel.class.getName());
 
-  public native void cInit(NamespaceClient nc);
-
   public native boolean cLoad(String fileName);
 
   public native Object cLoadAndRun(String fileName, String type);
 
-  public static NamespaceClient nc;
-
-  public CppKernel(final String sessionId, final String tempDirectory) {
-    nc = NamespaceClient.getBeaker(sessionId);
-    System.load(tempDirectory + "/libCRun.jnilib");
+  public CppKernel(final String tempDirectory) {
+    System.load(tempDirectory + "/" + LIB_CRUN_JNILIB);
   }
 
-  public static Object beakerGet(String name) {
-    Object ret = nc.get(name);
-    return ret;
-  }
+  public int execute(final String mainCell, final String type, final String tempDirectory, List<String> otherCells) {
 
-  public static int beakerSet(String name, Object value) {
-    try {
-      nc.set(name, value);
-    } catch (ClientProtocolException ex) {
-      logger.warn("Client Protocol Exception");
-      return 0;
-    } catch (IOException ex) {
-      logger.warn("IOException!");
-      return 0;
-    }
-    return 1;
-  }
-
-  public int execute(final String mainCell, final String type, final String tempDirectory) {
+    // look at an issue https://github.com/twosigma/beakerx/issues/5228
+    //loadSharedObjects(tempDirectory, otherCells);
 
     Object ret = cLoadAndRun(tempDirectory + "/lib" + mainCell + ".so", type);
 
@@ -74,7 +55,12 @@ public class CppKernel {
       logger.warn("Could not load file");
       return 1;
     }
-
     return 0;
+  }
+
+  private void loadSharedObjects(String tempDirectory, List<String> otherCells) {
+    for (String cell : otherCells) {
+      cLoad(tempDirectory + "/lib" + cell + ".so");
+    }
   }
 }

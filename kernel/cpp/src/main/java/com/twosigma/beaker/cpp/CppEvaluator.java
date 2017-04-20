@@ -50,21 +50,23 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+
 import static com.twosigma.beaker.cpp.utils.CLangCommand.compileCommand;
 import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 public class CppEvaluator implements Evaluator {
 
   private static final Logger logger = LoggerFactory.getLogger(CppEvaluator.class.getName());
+
   public static final String EXECUTE = "execute";
 
   private final String shellId;
   private final String sessionId;
-  private final String packageId;
   private List<String> compileCommand;
   private boolean exit;
   private workerThread myWorker;
@@ -75,14 +77,16 @@ public class CppEvaluator implements Evaluator {
   private final Semaphore syncObject = new Semaphore(0, true);
   private final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
+  private HashSet<String> loadedCells;
+
   public CppEvaluator(String id, String sId) {
     shellId = id;
     sessionId = sId;
     tempCppFiles = new TempCppFiles(id);
-    packageId = "com.twosigma.beaker.cpp.bkr" + shellId.split("-")[0];
     compileCommand = compileCommand(tempCppFiles);
     exit = false;
     executor = new BeakerCellExecutor("cpp");
+    loadedCells = new HashSet<>();
   }
 
   @Override
@@ -107,6 +111,7 @@ public class CppEvaluator implements Evaluator {
   }
 
   public void resetEnvironment() {
+    loadedCells.clear();
     executor.killAllThreads();
     syncObject.release();
   }
@@ -167,7 +172,7 @@ public class CppEvaluator implements Evaluator {
           // normalize and analyze code
           String code = normalizeCode(j.codeToBeExecuted);
 
-          if (!executor.executeTask(new MyRunnable(j.outputObject, code, j.cellId, true))) {
+          if (!executor.executeTask(new MyRunnable(j.outputObject, code, j.cellId))) {
             j.outputObject.error("... cancelled!");
           }
           if (nc != null) {
@@ -192,13 +197,11 @@ public class CppEvaluator implements Evaluator {
       private final SimpleEvaluationObject theOutput;
       private final String theCode;
       private final String theCellId;
-      private final boolean retObject;
 
-      private MyRunnable(SimpleEvaluationObject out, String code, String cid, boolean ro) {
-        theOutput = out;
-        theCode = code;
-        theCellId = cid;
-        retObject = ro;
+      private MyRunnable(SimpleEvaluationObject out, String code, String theCellId) {
+        this.theOutput = out;
+        this.theCode = code;
+        this.theCellId = theCellId;
       }
 
       private String createMainCaller(String type) {
@@ -292,7 +295,9 @@ public class CppEvaluator implements Evaluator {
           Process p = pb.start();
           CellGobblerManager.getInstance().startCellGobbler(p.getInputStream(), "stderr", theOutput);
           CellGobblerManager.getInstance().startCellGobbler(p.getErrorStream(), "stderr", theOutput);
-          if ((p.waitFor()) != 0) {
+          if ((p.waitFor()) == 0) {
+            loadedCells.add(theCellId);
+          } else {
             theOutput.error("Compilation failed");
             theOutput.finished(null);
           }
@@ -301,13 +306,19 @@ public class CppEvaluator implements Evaluator {
 
           // Execute if type is recognized
           if (!cellType.equals("none")) {
-            ArrayList<String> runCommand = new ArrayList<String>();
+            List<String> runCommand = new ArrayList<>();
             runCommand.add(tempCppFiles.getPath() + "/cpp");
             runCommand.add(EXECUTE);
             runCommand.add(sessionId);
             runCommand.add(theCellId);
             runCommand.add(cellType);
             runCommand.add(tempCppFiles.getPath());
+
+            for (String cell : loadedCells) {
+              if (!cell.equals(theCellId)) {
+                runCommand.add(cell);
+              }
+            }
 
             pb = new ProcessBuilder(runCommand);
             pb.directory(new File(System.getProperty("user.dir")));
@@ -390,9 +401,9 @@ public class CppEvaluator implements Evaluator {
   }
 
   protected class jobDescriptor {
-    SimpleEvaluationObject outputObject;
-    String codeToBeExecuted;
-    String cellId;
+    private SimpleEvaluationObject outputObject;
+    private String codeToBeExecuted;
+    private String cellId;
 
     jobDescriptor(SimpleEvaluationObject o, String c, String cid) {
       outputObject = o;

@@ -29,6 +29,9 @@ import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.twosigma.beaker.cpp.CppEvaluator.EXECUTE;
 import static com.twosigma.beaker.jupyter.Utils.uuid;
@@ -62,12 +65,16 @@ public class CppKernelMain extends Kernel {
   }
 
   private static void executeCppCode(String[] args) {
-    String sessionId = args[1];
+    //String sessionId = args[1];
     String mainCell = args[2];
     String type = args[3];
     String tempDirectory = args[4];
-    CppKernel kern = new CppKernel(sessionId, tempDirectory);
-    kern.execute(mainCell, type, tempDirectory);
+    CppKernel kern = new CppKernel(tempDirectory);
+
+    List<String> otherCells = new ArrayList<>(Arrays.asList(args));
+    // Remove first four arguments
+    otherCells.subList(0, 5).clear();
+    kern.execute(mainCell, type, tempDirectory, otherCells);
   }
 
 }

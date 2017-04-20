@@ -38,7 +38,7 @@ public class CppKernelInfoHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    logger.info("Processing Cpp kernel info request");
+    logger.debug("Processing Cpp kernel info request");
     Message reply = new Message();
     HashMap<String, Serializable> map = new HashMap<>(6);
     map.put("protocol_version", "5.0");
@@ -49,7 +49,6 @@ public class CppKernelInfoHandler extends KernelHandler<Message> {
     map1.put("version", "");
     map1.put("mimetype", "");
     map1.put("file_extension", ".cpp");
-    map1.put("pygments_lexer", "");
     map1.put("codemirror_mode", "C++");
     map1.put("nbconverter_exporter", "");
     map.put("language_info", map1);

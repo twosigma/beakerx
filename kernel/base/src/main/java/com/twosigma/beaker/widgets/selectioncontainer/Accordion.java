@@ -13,28 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.box;
-
-import com.twosigma.beaker.widgets.CommFunctionality;
+package com.twosigma.beaker.widgets.selectioncontainer;
 
 import java.util.List;
 
-/**
- * Displays multiple widgets horizontally using the flexible box model.
- */
-public class HBox extends Box{
-  
-  public static final String VIEW_NAME_VALUE = "HBoxView";
-  public static final String MODEL_NAME_VALUE = "HBoxModel";
+import com.twosigma.beaker.widgets.CommFunctionality;
 
-  public HBox(List<CommFunctionality> children) {
+public class Accordion extends SelectionContainer {
+  
+  public static final String VIEW_NAME_VALUE = "AccordionView";
+  public static final String MODEL_NAME_VALUE = "AccordionModel";
+
+
+  public Accordion(List<CommFunctionality> children) {
     super(children);
     openComm();
   }
-
-  @Override
-  public void updateValue(Object value) {
+  
+  public Accordion(List<CommFunctionality> children, List<String> labels) {
+    super(children, labels);
+    openComm();
+    sendUpdate(TITLES, this.titles);
   }
+
   
   @Override
   public String getModelNameValue() {
@@ -45,5 +46,11 @@ public class HBox extends Box{
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
-  
+
+  @Override
+  public void updateValue(Object value) {
+    // TODO Auto-generated method stub
+
+  }
+
 }

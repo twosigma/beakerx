@@ -14,19 +14,27 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.jvm.object;
+package com.twosigma.beaker.jvm.serialization;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twosigma.beaker.chart.Color;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import com.twosigma.beaker.mimetype.MIMEContainer;
-
-public class OutputCellTest {
+public class ColorDeserializerTest {
 
   @Test
-  public void outputCellHasHiddenState() throws Exception {
+  public void deserialize_resultObjectHasColor() throws Exception {
+    //given
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode actualObj = mapper.readTree("\"#FF00FF00\"");
+    ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
+    //when
+    Color color = (Color) deserializer.deserialize(actualObj, mapper);
     //then
-    Assertions.assertThat(OutputCell.HIDDEN instanceof MIMEContainer).isEqualTo(true);
+    Assertions.assertThat(color).isNotNull();
+    Assertions.assertThat(color.getRGB()).isEqualTo(Color.GREEN.getRGB());
   }
 
 }

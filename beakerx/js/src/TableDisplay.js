@@ -24,7 +24,7 @@ require('./../bower_components/datatables.net-colreorder-dt/css/colReorder.dataT
 require('./../bower_components/datatables.net-fixedcolumns-dt/css/fixedColumns.dataTables.min.css');
 require('./../bower_components/datatables.net-keytable-dt/css/keyTable.dataTables.min.css');
 require('./../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.css');
-require('./tableDisplay/css/datatables.css');
+require('./tableDisplay/css/datatables.scss');
 
 var TableDisplayModel = widgets.DOMWidgetModel.extend({
   defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
@@ -41,8 +41,13 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   render: function() {
     var that = this;
 
+    this.$el.addClass('beaker-table-display');
+
     this.displayed.then(function() {
       var tableModel = JSON.parse(that.model.get('model'));
+      if (tableModel.tooManyRows) {
+        that.showWarning(tableModel);
+      }
       that.initTableDisplay(tableModel);
     });
   },
@@ -57,6 +62,18 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     currentScope.setModelData(data);
     currentScope.setElement(tmplElement.children('.dtcontainer'));
     currentScope.run();
+  },
+
+  showWarning: function(data) {
+    var rowLength = data.rowLength;
+    var columnLength = data.columnNames.length;
+    var rowLimit = data.rowLimit;
+    var tmpl = '<div id="' + this.wrapperId + '">' +
+      '<p class="ansired">Error: table is too big to display. ' +
+      'The limit is ' + rowLimit + ' rows, but this table has ' + rowLength + ' rows. ' +
+      'The first 1000 rows are displayed as a preview.</p></div>';
+    var tmplElement = $(tmpl);
+    tmplElement.appendTo(this.$el);
   }
 });
 

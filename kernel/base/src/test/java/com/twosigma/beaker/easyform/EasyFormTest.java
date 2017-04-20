@@ -17,11 +17,13 @@ package com.twosigma.beaker.easyform;
 
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.jupyter.SearchMessages;
 import com.twosigma.beaker.widgets.Button;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DatePicker;
 import com.twosigma.beaker.widgets.bools.Checkbox;
 import com.twosigma.beaker.widgets.box.Box;
+import com.twosigma.beaker.widgets.box.HBox;
 import com.twosigma.beaker.widgets.selections.Dropdown;
 import com.twosigma.beaker.widgets.selections.RadioButtons;
 import com.twosigma.beaker.widgets.selections.SelectMultiple;
@@ -91,9 +93,9 @@ public class EasyFormTest {
     easyForm.addRadioButtons(label, asList("1", "2"));
     DisplayEasyForm.display(easyForm);
     //then
-    verifyRadioButton(getWidgetMsgs());
-    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
-    verifyDisplayMsg(getDisplayMsg());
+    verifyRadioButton(kernel.getPublishedMessages());
+    verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
   private void verifyRadioButton(List<Message> messages) {
@@ -110,9 +112,9 @@ public class EasyFormTest {
     easyForm.addTextArea(label);
     DisplayEasyForm.display(easyForm);
     //then
-    verifyTextArea(getWidgetMsgs());
-    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
-    verifyDisplayMsg(getDisplayMsg());
+    verifyTextArea(kernel.getPublishedMessages());
+    verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
   private void verifyTextArea(List<Message> messages) {
@@ -128,9 +130,9 @@ public class EasyFormTest {
     easyForm.addButton(label);
     DisplayEasyForm.display(easyForm);
     //then
-    verifyButton(getWidgetMsgs());
-    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
-    verifyDisplayMsg(getDisplayMsg());
+    verifyButton(kernel.getPublishedMessages());
+    verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
   private void verifyButton(List<Message> messages) {
@@ -146,9 +148,9 @@ public class EasyFormTest {
     easyForm.addList(label, asList("1", "2", "3"));
     DisplayEasyForm.display(easyForm);
     //then
-    verifyMultipleSelection(getWidgetMsgs());
-    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
-    verifyDisplayMsg(getDisplayMsg());
+    verifyMultipleSelection(kernel.getPublishedMessages());
+    verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
   private void verifyMultipleSelection(List<Message> messages) {
@@ -164,9 +166,9 @@ public class EasyFormTest {
     easyForm.addComboBox(label, asList("1", "2"));
     DisplayEasyForm.display(easyForm);
     //then
-    verifyCombobox(getWidgetMsgs());
-    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
-    verifyDisplayMsg(getDisplayMsg());
+    verifyCombobox(kernel.getPublishedMessages());
+    verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
   private void verifyCombobox(List<Message> messages) {
@@ -182,9 +184,9 @@ public class EasyFormTest {
     easyForm.addCheckBox(label);
     DisplayEasyForm.display(easyForm);
     //then
-    verifyCheckboxField(getWidgetMsgs());
-    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
-    verifyDisplayMsg(getDisplayMsg());
+    verifyCheckboxField(kernel.getPublishedMessages());
+    verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
   private void verifyCheckboxField(List<Message> messages) {
@@ -201,17 +203,13 @@ public class EasyFormTest {
     easyForm.addCheckBoxes(label, checkboxesLabels);
     DisplayEasyForm.display(easyForm);
     //then
-    verifyCheckboxGroup(getCheckboxGroupMsgs());
-    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
-    verifyDisplayMsg(getDisplayMsg());
+    verifyCheckboxGroup(kernel.getPublishedMessages());
+    verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
-  private void verifyCheckboxGroup(Message msg) {
-    verifyOpenCommMsgWitoutLayout(msg, Box.MODEL_NAME_VALUE, Box.VIEW_NAME_VALUE);
-  }
-
-  private Message getCheckboxGroupMsgs() {
-    return kernel.getPublishedMessages().get(kernel.getPublishedMessages().size() - 10);
+  private void verifyCheckboxGroup(List<Message> messages) {
+    verifyOpenCommMsgWitoutLayout(messages, HBox.MODEL_NAME_VALUE, HBox.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -223,14 +221,15 @@ public class EasyFormTest {
     easyForm.addTextField(label, 10);
     DisplayEasyForm.display(easyForm);
     //then
-    verifyTextField(getWidgetMsgs());
-    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
-    verifyDisplayMsg(getDisplayMsg());
+    verifyTextField(kernel.getPublishedMessages());
+    verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
   private void verifyEasyForm(List<Message> messages, List<CommFunctionality> children) {
-    verifyInternalOpenCommMsg(messages.get(1), EasyFormView.MODEL_NAME_VALUE, EasyFormView.VIEW_NAME_VALUE);
-    verifyChildren(messages.get(1), children);
+    Message msg = SearchMessages.getListWidgetsByViewName(messages, EasyFormView.VIEW_NAME_VALUE).get(0);
+    verifyInternalOpenCommMsg(msg, EasyFormView.MODEL_NAME_VALUE, EasyFormView.VIEW_NAME_VALUE);
+    verifyChildren(msg, children);
   }
 
   @Test
@@ -242,13 +241,13 @@ public class EasyFormTest {
     easyForm.addDatePicker(label);
     DisplayEasyForm.display(easyForm);
     //then
-    verifyDatePicker(getWidgetMsgs());
-    verifyEasyForm(getEasyFormMsgs(), easyForm.getCommFunctionalities());
-    verifyDisplayMsg(getDisplayMsg());
+    verifyDatePicker(kernel.getPublishedMessages());
+    verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
   private void verifyDatePicker(List<Message> messages) {
-    verifyOpenCommMsg(messages, DatePicker.MODEL_NAME_VALUE, DatePicker.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(messages, DatePicker.MODEL_NAME_VALUE, DatePicker.VIEW_NAME_VALUE);
   }
 
   private void verifyTextField(List<Message> messages) {
@@ -263,18 +262,5 @@ public class EasyFormTest {
       assertThat(Box.IPY_MODEL + children.get(i).getComm().getCommId()).isEqualTo(objects[i]);
     }
   }
-
-  private List<Message> getWidgetMsgs() {
-    return kernel.getPublishedMessages().subList(0, 2);
-  }
-
-  private Message getDisplayMsg() {
-    return kernel.getPublishedMessages().get(kernel.getPublishedMessages().size() - 1);
-  }
-
-  private List<Message> getEasyFormMsgs() {
-    return kernel.getPublishedMessages().subList(kernel.getPublishedMessages().size() - 5, kernel.getPublishedMessages().size() - 3);
-  }
-
 
 }

@@ -14,19 +14,27 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.jvm.object;
+package com.twosigma.beaker.jvm.serialization;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import com.twosigma.beaker.mimetype.MIMEContainer;
-
-public class OutputCellTest {
+public class ResultsDeserializerTest {
 
   @Test
-  public void outputCellHasHiddenState() throws Exception {
+  public void deserialize_resultObjectHasPayload() throws Exception {
+    //given
+    boolean payload = true;
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode actualObj = mapper.readTree(
+        "{\"type\":\"Results\",\"payload\":\"" + payload + "\"}");
+    ResultsDeserializer deserializer = new ResultsDeserializer(new BasicObjectSerializer());
+    //when
+    Boolean result = (Boolean) deserializer.deserialize(actualObj, mapper);
     //then
-    Assertions.assertThat(OutputCell.HIDDEN instanceof MIMEContainer).isEqualTo(true);
+    Assertions.assertThat(result).isEqualTo(payload);
   }
 
 }

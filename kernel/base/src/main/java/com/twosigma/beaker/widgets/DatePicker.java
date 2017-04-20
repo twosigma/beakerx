@@ -15,29 +15,39 @@
  */
 package com.twosigma.beaker.widgets;
 
+import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
+
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
-public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
-
+public class DatePicker extends ValueWidget<String> {
   public static final String VIEW_NAME_VALUE = "DatePickerView";
   public static final String MODEL_NAME_VALUE = "DatePickerModel";
+  public static final String SHOW_TIME = "showTime";
+
+  private Boolean showTime;
 
   public DatePicker() {
     super();
-    this.value = new LinkedHashMap<>();
+    this.value = "";
     openComm();
   }
 
   @Override
-  public LinkedHashMap<String, String> getValueFromObject(Object input){
-    return (LinkedHashMap<String, String>) input;
+  public void updateValue(Object value) {
+    this.value = (String) value;
   }
-  
+
+  @Override
+  public String getValueFromObject(Object input) {
+    return (String) input;
+  }
+
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
+    content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);
+    content.put(VIEW_MODULE, InternalWidgetUtils.VIEW_MODULE_VALUE);
     content.put(VALUE, this.value);
     return content;
   }
@@ -52,5 +62,13 @@ public class DatePicker extends ValueWidget<LinkedHashMap<String,String>> {
     return VIEW_NAME_VALUE;
   }
 
+  public void setShowTime(final Boolean showTime) {
+    this.showTime = showTime;
+    sendUpdate(SHOW_TIME, showTime);
+  }
+
+  public Boolean getShowTime() {
+    return showTime;
+  }
 
 }

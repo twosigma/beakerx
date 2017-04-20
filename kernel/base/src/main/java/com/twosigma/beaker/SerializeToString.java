@@ -86,6 +86,7 @@ import com.twosigma.beaker.widgets.internal.CommWidget;
 import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 
 import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
+import static com.twosigma.beaker.mimetype.MIMEContainer.HIDDEN;
 
 
 public class SerializeToString {
@@ -164,11 +165,11 @@ public class SerializeToString {
     if (input != null) {
       if (isWidget(input)) {
         DisplayAnyWidget.display(input);
-        ret = Text("");
+        ret = HIDDEN();
       } else if (input instanceof MIMEContainer) {
         ret = (MIMEContainer) input;
       } else {
-        ret = asString(input);
+        ret = Text(input.toString());
       }
     } else {
       ret = Text("null");
@@ -176,16 +177,7 @@ public class SerializeToString {
     return ret;
   }
 
-  private static MIMEContainer asString(Object input) {
-    if (input instanceof String) {
-      return Text(input);
-    }
-    try {
-      return Text(objectMapper.writeValueAsString(input));
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
-    }
-  }
+
 
   private static boolean isWidget(Object input) {
     return (input instanceof EasyForm)

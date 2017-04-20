@@ -69,7 +69,7 @@ public class DisplayOutputContainerTest {
     verifyInternalOpenCommMsg(tableDisplay, TableDisplay.MODEL_NAME_VALUE, TableDisplay.VIEW_NAME_VALUE);
     Message model = messages.get(1);
     assertThat(getValueForProperty(model, "model", String.class)).isNotEmpty();
-    verifyDisplayMsg(messages.get(2));
+    verifyDisplayMsg(messages);
   }
 
   @Test
@@ -87,7 +87,7 @@ public class DisplayOutputContainerTest {
   }
 
   private void verifyTabLayout(List<Message> publishedMessages) {
-    Message tab = publishedMessages.get(4);
+    Message tab = publishedMessages.get(2);
     Map data = getData(tab);
     assertThat(data.get(VIEW_NAME)).isEqualTo(Tab.VIEW_NAME_VALUE);
   }

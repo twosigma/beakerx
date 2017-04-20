@@ -45,7 +45,7 @@ public class SVGContainer extends MIMEContainer {
     StringWriter writer = new StringWriter();
     transformer.transform(new DOMSource(doc), new StreamResult(writer));
     code = writer.getBuffer().toString().replaceAll("\n|\r", "");
-    return addMimeType(IMAGE_SVG, code);
+    return addMimeType(MIME.IMAGE_SVG, code);
   }
 
   private static Document validateData(Object data, DocumentBuilder builder) throws SAXException, IOException {
@@ -64,4 +64,5 @@ public class SVGContainer extends MIMEContainer {
     }
     return doc;
   }
+  
 }

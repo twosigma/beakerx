@@ -15,13 +15,10 @@
  */
 package com.twosigma.beaker.groovy.comm;
 
+import com.twosigma.beaker.jupyter.comm.*;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
-import com.twosigma.beaker.jupyter.comm.KernelControlCommandListHandler;
-import com.twosigma.beaker.jupyter.comm.KernelControlInterrupt;
-import com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler;
-import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 
 public class GroovyCommOpenHandler extends CommOpenHandler{
@@ -31,7 +28,10 @@ public class GroovyCommOpenHandler extends CommOpenHandler{
      new GroovyCommKernelControlSetShellHandler(kernel),
      new KernelControlInterrupt(kernel),
      new KernelControlCommandListHandler(kernel)};
-  
+
+ private Handler<?>[] KERNEL_AUTOTRANSLATION_CHANNEL_HANDLER = {
+     new AutotranslationGetCodeCellsHandler(kernel)};
+
   public GroovyCommOpenHandler(KernelFunctionality kernel) {
     super(kernel);
   }
@@ -39,7 +39,10 @@ public class GroovyCommOpenHandler extends CommOpenHandler{
   public Handler<Message>[] getKernelControlChanelHandlers(String targetName){
     if(TargetNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName().equalsIgnoreCase(targetName)){
       return (Handler<Message>[]) KERNEL_CONTROL_CHANNEL_HANDLERS;
-    }else{
+    }else if(TargetNamesEnum.BEAKER_AUTOTRANSLATION.getTargetName().equalsIgnoreCase(targetName)){
+      return (Handler<Message>[]) KERNEL_AUTOTRANSLATION_CHANNEL_HANDLER;
+    }
+    else{
       return (Handler<Message>[]) new Handler<?>[0];
     }
   }

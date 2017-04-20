@@ -62,6 +62,9 @@ define([
     kernel.comm_manager.register_target('beaker.autotranslation',
       function(comm, msg) {
         comm.on_msg(function(msg) {
+          if(msg.content.data.name == "CodeCells"){
+            sendJupyterCodeCells(JSON.parse(msg.content.data.value), msg.content.data.parentMessageId)
+          }
           window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
@@ -71,6 +74,22 @@ define([
   Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
     interrupt();
   });
+
+  function sendJupyterCodeCells(filter, parentId) {
+    var comm = Jupyter.notebook.kernel.comm_manager.new_comm("beaker.autotranslation",
+        null, null, null, utils.uuid());
+
+    var data = {};
+    data.code_cells = Jupyter.notebook.get_cells().filter(function (cell) {
+      if (cell._metadata.tags) {
+        return cell.cell_type == 'code' || cell._metadata.tags.includes(filter);
+      }
+      return false;
+    });
+    data.parent_message_id = parentId;
+    comm.send(data);
+    comm.close();
+  }
 
 
 

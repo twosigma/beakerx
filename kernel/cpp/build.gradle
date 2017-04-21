@@ -97,97 +97,94 @@ task kernelInstall(dependsOn: 'prepareJson') {
     println hashStdOut.toString().trim();
     println "DONE"
   }
-
-  //====================================================================================================================
-  def osName = System.properties['os.name']
-  def mac = false
-  def win = false
-  def linux = false
-  def platform = ''
-  if (osName.startsWith('Mac')) {
-    mac = true
-    platform = 'darwin'
-  } else if (osName.startsWith('Windows')) {
-    win = true
-    platform = 'win32'
-  } else if (osName.startsWith('Linux')) {
-    linux = true
-    platform = 'linux'
-  }
-
-  def java_home = System.properties.'java.home'
-
-  task compileCppKernel(type: JavaCompile) {
-    classpath = files(project(':kernel:base').projectDir)
-    source 'com.twosigma.beaker.cpp.utils.CppKernel'
-  }
-
-  task makeCppKernelHeader(type: Exec, dependsOn: compileCppKernel) {
-    workingDir './build/classes/main'
-    def jvmDir = project(':kernel:base').projectDir
-    commandLine 'javah', '-cp', "./:${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/resources/CppKernel.h', 'com.twosigma.beaker.cpp.utils.CppKernel'
-  }
-
-  task makeCRunLib(type: Exec, dependsOn: ['makeCppKernelHeader']) {
-    inputs.file('./src/main/resources/CRun.cpp')
-    outputs.file('./src/main/resources/libCRun.jnilib')
-    workingDir './src/main/resources'
-    if (mac) {
-      commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/darwin", '-o', 'libCRun.jnilib', 'CRun.cpp'
-    } else if (linux) {
-      commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
-    }
-  }
-
-  compileJava.finalizedBy makeCRunLib
-
-  startScripts {
-    defaultJvmOpts = ['-Djava.awt.headless=' + 'true']
-    doLast {
-      // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
-      windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', "set CLASSPATH=.;%APP_HOME%/libs/*;${libsDir.absolutePath}/*")
-      unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/libs/*:' + "${libsDir.absolutePath}/*")
-    }
-  }
-
-  task copyRunnerScripts {
-    doLast {
-      copy {
-        from './build/scripts'
-        into './src/main/resources/'
-      }
-      copy {
-        from './build/scripts'
-        into './build/resources/main/'
-      }
-    }
-  }
-
-  startScripts.finalizedBy copyRunnerScripts
-
-  jar {
-    manifest {
-      attributes "Main-Class": "$mainClassName"
-    }
-
-    from {
-      configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    } {
-      exclude "META-INF/*.SF"
-      exclude "META-INF/*.DSA"
-      exclude "META-INF/*.RSA"
-    }
-  }
-
-  task jarWithScripts(type: Jar) {
-    manifest {
-      attributes "Main-Class": "$mainClassName"
-    }
-    baseName = project.name
-    with jar
-  }
-
-  copyRunnerScripts.finalizedBy jarWithScripts
-
 }
 
+def osName = System.properties['os.name']
+def mac = false
+def win = false
+def linux = false
+def platform = ''
+if (osName.startsWith('Mac')) {
+  mac = true
+  platform = 'darwin'
+} else if (osName.startsWith('Windows')) {
+  win = true
+  platform = 'win32'
+} else if (osName.startsWith('Linux')) {
+  linux = true
+  platform = 'linux'
+}
+
+def java_home = System.properties.'java.home'
+
+task compileCppKernel(type: JavaCompile) {
+  classpath = files(project(':kernel:base').projectDir)
+  source 'com.twosigma.beaker.cpp.utils.CppKernel'
+}
+
+task makeCppKernelHeader(type: Exec, dependsOn: compileCppKernel) {
+  workingDir './build/classes/main'
+  def jvmDir = project(':kernel:base').projectDir
+  commandLine 'javah', '-cp', "./:${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/resources/CppKernel.h', 'com.twosigma.beaker.cpp.utils.CppKernel'
+}
+
+task makeCRunLib(type: Exec, dependsOn: ['makeCppKernelHeader']) {
+  inputs.file('./src/main/resources/CRun.cpp')
+  outputs.file('./src/main/resources/libCRun.jnilib')
+  workingDir './src/main/resources'
+  if (mac) {
+    commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/darwin", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  } else if (linux) {
+    commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  }
+}
+
+compileJava.finalizedBy makeCRunLib
+
+startScripts {
+  defaultJvmOpts = ['-Djava.awt.headless=' + 'true']
+  doLast {
+    // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
+    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', "set CLASSPATH=.;%APP_HOME%/libs/*;${libsDir.absolutePath}/*")
+    unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/libs/*:' + "${libsDir.absolutePath}/*")
+  }
+}
+
+task copyRunnerScripts {
+  doLast {
+    copy {
+      from './build/scripts'
+      into './src/main/resources/'
+    }
+    copy {
+      from './build/scripts'
+      into './build/resources/main/'
+    }
+  }
+}
+
+startScripts.finalizedBy copyRunnerScripts
+
+jar {
+  manifest {
+    attributes "Main-Class": "$mainClassName"
+  }
+
+  from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  } {
+    exclude "META-INF/*.SF"
+    exclude "META-INF/*.DSA"
+    exclude "META-INF/*.RSA"
+  }
+}
+
+task jarWithScripts(type: Jar) {
+  manifest {
+    attributes "Main-Class": "$mainClassName"
+  }
+  baseName = project.name
+  with jar
+}
+
+copyRunnerScripts.finalizedBy jarWithScripts

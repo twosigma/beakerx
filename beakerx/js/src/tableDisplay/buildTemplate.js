@@ -17,7 +17,7 @@
 define(function() {
   
   return function(scopeId) {
-    var tmpl = '<div class="dtcontainer">'+
+    var tmpl = '<div class="dtcontainer" tabindex="-1">'+
                '    <div class="dropdown dtmenu clearfix" style="float: left; z-index: 10" id="' + scopeId + '_tabel_menu">'+
                '        <a class="dropdown-toggle" data-toggle="dropdown" id="' + scopeId + '_dropdown_menu">'+
                '            <span class="bko-menu" aria-hidden="true"></span>'+

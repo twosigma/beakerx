@@ -17,9 +17,9 @@
 define([
   'jquery',
   'datatables.net',
-  './../../bower_components/datatables.net-colreorder/js/dataTables.colReorder.min',
-  './../../bower_components/datatables.net-fixedcolumns/js/dataTables.fixedColumns.min',
-  './../../bower_components/datatables.net-keytable/js/dataTables.keyTable.min',
+  'datatables.net-colreorder',
+  'datatables.net-fixedcolumns',
+  'datatables.net-keytable',
   './../shared/libs/datatables-colresize/dataTables.colResize',
   './../../bower_components/moment-timezone/builds/moment-timezone-with-data.min',
   './../../bower_components/jquery-throttle-debounce/jquery.ba-throttle-debounce.min',
@@ -49,7 +49,6 @@ define([
 ) {
 
   var jQuery = $;
-  $.fn.dataTable = dataTables;
   $.debounce = throttleDebounce.Cowboy.debounce;
 
   function TableScope(wrapperId) {
@@ -1761,8 +1760,8 @@ define([
     }
 
     var beakerObj = bkHelper.getBeakerObject().beakerObj;
-    self.outputColumnLimit = beakerObj.prefs && beakerObj.prefs.outputColumnLimit
-      ? beakerObj.prefs.outputColumnLimit : self.columnNames.length;
+    self.outputColumnLimit = beakerObj.prefs && beakerObj.prefs.outputColumnLimit ?
+      beakerObj.prefs.outputColumnLimit : self.columnNames.length;
 
     for (i = 0; i < self.columnNames.length; i++) {
       var type = self.actualtype[i];
@@ -1947,7 +1946,6 @@ define([
           self.refreshCells();
           self.applyFilters();
           self.updateBackground();
-          self.$digest();
         },
         'iFixedColumns': self.pagination.fixLeft + 1,
         'iFixedColumnsRight': self.pagination.fixRight
@@ -2175,6 +2173,28 @@ define([
       }, 0);
 
     }, 0);
+  };
+
+  TableScope.prototype.enableJupyterKeyHandler = function() {
+    this.element
+      .on('focusin', this.elementFocusIn.bind(this))
+      .on('focusout', this.elementFocusOut.bind(this));
+  };
+
+  TableScope.prototype.elementFocusIn = function(e) {
+    this.setJupyterEditMode();
+  };
+
+  TableScope.prototype.elementFocusOut = function(e) {
+    this.setJupyterCommandMode();
+  };
+
+  TableScope.prototype.setJupyterEditMode = function() {
+    Jupyter.keyboard_manager.edit_mode();
+  };
+
+  TableScope.prototype.setJupyterCommandMode = function() {
+    Jupyter.keyboard_manager.command_mode();
   };
 
   TableScope.prototype.menuToggle = function() {

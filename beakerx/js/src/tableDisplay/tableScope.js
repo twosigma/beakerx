@@ -1175,8 +1175,14 @@ define([
 
     var filterInputSelector = '.filterRow .filter-input';
     jqContainer.off('keyup.column-filter change.column-filter');
-    jqContainer.on('keyup.column-filter change.column-filter', filterInputSelector,
-      self.columnSearchActive ? self.columnFilterFn : $.debounce(500, self.columnFilterFn));
+    jqContainer.on('keyup.column-filter change.column-filter', filterInputSelector, function(e) {
+      var element = this;
+      self.columnSearchActive ?
+        self.columnFilterFn(e, element) :
+        $.debounce(500, function() {
+          self.columnFilterFn(e, element);
+        });
+    });
 
     // if (!(self.$$phase || $rootScope.$$phase)) {
     //   self.$apply();
@@ -2542,8 +2548,14 @@ define([
     var filterInputSelector = '.filterRow .filter-input';
     var clearFilterSelector = '.filterRow .clear-filter';
     $(self.table.table().container())
-      .on('keyup.column-filter change.column-filter', filterInputSelector,
-        self.columnSearchActive ? self.columnFilterFn : $.debounce(500, self.columnFilterFn))
+      .on('keyup.column-filter change.column-filter', filterInputSelector, function(e) {
+        var element = this;
+        self.columnSearchActive ?
+          self.columnFilterFn(e, element) :
+          $.debounce(500, function() {
+            self.columnFilterFn(e, element);
+          });
+      })
       .on('focus.column-filter', filterInputSelector, function(event) {
         if(self.keyTable){
           self.keyTable.blur();
@@ -2593,25 +2605,25 @@ define([
     return self.table.column(self.getColumnIndexByCellNode(filterNode) + ':visible');
   };
 
-  TableScope.prototype.columnFilterFn = function(e) {
+  TableScope.prototype.columnFilterFn = function(e, element) {
     var self = this;
     if (e.keyCode === 27 || e.keyCode === 13) { return; }
-    if ($(this).hasClass('table-filter')) {
-      self.tableFilter = this.value;
+    if ($(element).hasClass('table-filter')) {
+      self.tableFilter = element.value;
       if (self.columnSearchActive) {
         self.table.search(self.tableFilter).draw();
       } else {
         self.table.draw();
       }
     } else {
-      var column = self.getColumn(this);
-      var colIdx = $(this).parents('th').index();
+      var column = self.getColumn(element);
+      var colIdx = $(element).parents('th').index();
       if (self.columnSearchActive) {
-        column.search(this.value);
+        column.search(element.value);
       }
       self.columnFilter[self.colorder[colIdx] - 1] = this.value;
       column.draw();
-      self.updateFilterWidth($(this), column);
+      self.updateFilterWidth($(element), column);
     }
   };
 

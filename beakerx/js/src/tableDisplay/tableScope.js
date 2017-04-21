@@ -3015,7 +3015,7 @@ define([
     var self = this;
     var elem = $('<li>' +
                  '<a tabindex="-1">'+self.rowsToDisplayMenu[1][index]+'</a>' +
-                 '<i class="glyphicon glyphicon-ok"></i>' +
+                 '<i class="fa fa-check" aria-hidden="true"></i>' +
                  '</li>');
 
     elem.on('click', 'a', function() {

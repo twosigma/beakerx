@@ -213,7 +213,7 @@ define(['jquery', 'datatables.net'], function(jQuery, dataTables) {
             }
 
             if (typeof oItem.isChecked == 'function' && oItem.isChecked(that.dom.container)) {
-              var $glyph = $('<i/>', {'class': 'glyphicon glyphicon-ok'});
+              var $glyph = $('<i/>', {'class': 'fa fa-check'});
               $li.append($glyph);
             }
 

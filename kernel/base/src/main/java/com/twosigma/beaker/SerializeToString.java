@@ -164,20 +164,20 @@ public class SerializeToString {
     mapper = new ObjectMapper();
     mapper.registerModule(module);
   }
- 
+  
   public static MIMEContainer doit(Object input) {
     MIMEContainer ret = null;
     if (input != null) {
-      if (isWidget(input)) {
-        DisplayAnyWidget.display(input);
-        ret = HIDDEN();
-      } else if (input instanceof MIMEContainer) {
-        ret = (MIMEContainer) input;
-      } else {
-        List<MIMEContainer> mimeList = getMIMEResult(input);
-        if(mimeList != null){
-          ret = mimeList.get(0);
-        }else{
+      List<MIMEContainer> mimeList = getMIMEResult(input);
+      if(mimeList != null && !mimeList.isEmpty()){
+        ret = mimeList.get(0);
+      }else{
+        if (isWidget(input)) {
+          DisplayAnyWidget.display(input);
+          ret = HIDDEN();
+        } else if (input instanceof MIMEContainer) {
+          ret = (MIMEContainer) input;
+        } else {
           ret = Text(input.toString());
         }
       }
@@ -198,8 +198,6 @@ public class SerializeToString {
           ret.add(new MIMEContainer(mime, resultByMIME.get(displayerMime)));
         }
       }
-    }else{
-      ret.add(Text(input.toString()));
     }
     return ret;
   }

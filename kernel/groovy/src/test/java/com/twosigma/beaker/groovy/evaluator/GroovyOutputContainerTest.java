@@ -51,7 +51,7 @@ public class GroovyOutputContainerTest {
     KernelManager.register(null);
   }
 
-  @Test
+  //@Test
   public void shouldAddPlotToOutputContainerTest() throws Exception {
     //given
     String code =

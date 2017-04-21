@@ -36,7 +36,7 @@ define(function() {
                '            <li><a tabindex="-1" href="#" class="dt-hide-all" data-dtAction="dt-hide-all">Hide All Columns</a></li>'+
                '            <li class="dt-use-pagination-wrapper">'+
                '                <a tabindex="-1" href="#" data-dtAction="dt-use-pagination" class="dt-use-pagination menu-separator">Use pagination</a>'+
-               '                <i class="glyphicon glyphicon-ok"></i>'+
+               '                <i class="fa fa-check" aria-hidden="true"></i>'+
                '            </li>'+
                '            <li class="dropdown-submenu">'+
                '                <a tabindex="-1" href="" class="dt-rows-to-show" data-toggle="dropdown">Rows to Show</a>'+

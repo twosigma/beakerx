@@ -117,12 +117,7 @@ if (osName.startsWith('Mac')) {
 
 def java_home = System.properties.'java.home'
 
-task compileCppKernel(type: JavaCompile) {
-  classpath = files(project(':kernel:base').projectDir)
-  source 'com.twosigma.beaker.cpp.utils.CppKernel'
-}
-
-task makeCppKernelHeader(type: Exec, dependsOn: compileCppKernel) {
+task makeCppKernelHeader(type: Exec) {
   workingDir './build/classes/main'
   def jvmDir = project(':kernel:base').projectDir
   commandLine 'javah', '-cp', "./:${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/resources/CppKernel.h', 'com.twosigma.beaker.cpp.utils.CppKernel'

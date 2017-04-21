@@ -26,7 +26,7 @@ setup_args = dict(
     platforms               = "Linux, Mac OS X, Windows",
     keywords                = ['ipython', 'jupyter', 'extension', 'widgets', 'beaker'],
     include_package_data    = True,
-    packages                = ['beaker'],
+    packages                = ['beaker', 'beaker.plot'],
     classifiers             = [
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',

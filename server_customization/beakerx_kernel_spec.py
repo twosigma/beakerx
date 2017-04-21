@@ -13,13 +13,21 @@
 # limitations under the License.
 
 from jupyter_client.kernelspec import KernelSpec
-from traitlets import Unicode
+from os import environ
 
 class BeakerXKernelSpec(KernelSpec):
-    extra_arg = Unicode("", config=True, help="add this param to jvm kernels")
     def __init__(self, **kw):
         super(BeakerXKernelSpec, self).__init__(**kw)
-        print("XXX hacking kernel spec, extra_arg=" + self.extra_arg)
-        if self.argv[0] == 'java' and len(self.extra_arg) > 0:
-            self.argv[1:1] = [self.extra_arg]
-            print(self.to_dict())
+        
+        base_var_name = 'beakerx_' + self.language + '_java_arg'
+        if base_var_name in environ:
+            args = [environ[base_var_name]]
+            n = 2
+            while True:
+                var_name = base_var_name + str(n)
+                if var_name in environ:
+                    args.append(environ[var_name])
+                else:
+                    break
+                n += 1
+            self.argv[1:1] = args

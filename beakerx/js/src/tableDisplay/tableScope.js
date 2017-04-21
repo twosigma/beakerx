@@ -2175,6 +2175,28 @@ define([
     }, 0);
   };
 
+  TableScope.prototype.enableJupyterKeyHandler = function() {
+    this.element
+      .on('focusin', this.elementFocusIn.bind(this))
+      .on('focusout', this.elementFocusOut.bind(this));
+  };
+
+  TableScope.prototype.elementFocusIn = function(e) {
+    this.setJupyterEditMode();
+  };
+
+  TableScope.prototype.elementFocusOut = function(e) {
+    this.setJupyterCommandMode();
+  };
+
+  TableScope.prototype.setJupyterEditMode = function() {
+    Jupyter.keyboard_manager.edit_mode();
+  };
+
+  TableScope.prototype.setJupyterCommandMode = function() {
+    Jupyter.keyboard_manager.command_mode();
+  };
+
   TableScope.prototype.menuToggle = function() {
     var self = this;
     var getTableData = function() {

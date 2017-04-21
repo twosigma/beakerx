@@ -418,7 +418,6 @@ class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
 
 class Beaker:
     """Runtime support for Python code in Beaker."""
-    print("instantiating runtime")
     _comm = Comm(target_name='beaker.autotranslation')
 
     def set4(self, var, val, unset, sync):

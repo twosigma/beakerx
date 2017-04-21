@@ -13,15 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beaker.cpp;
 
-include 'beakerx'
-include 'beakerx:js'
-include 'kernel'
-include 'kernel:base'
-include 'kernel:groovy'
-include 'kernel:scala'
-include 'kernel:java'
-include 'kernel:clojure'
-include 'kernel:sql'
-include 'kernel:cpp'
+import com.twosigma.beaker.DefaultJVMVariables;
 
+public class CppDefaultVariables extends DefaultJVMVariables {
+
+  public CppDefaultVariables() {
+  }
+
+}

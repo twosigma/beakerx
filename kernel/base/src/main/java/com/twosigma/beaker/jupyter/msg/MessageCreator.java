@@ -252,12 +252,24 @@ public class MessageCreator {
     MessageHolder ret = null;
     MIMEContainer resultString = SerializeToString.doit(seo.getPayload());
     if (!MIMEContainer.MIME.HIDDEN.equals(resultString.getMime())) {
-      ret = new MessageHolder(SocketEnum.IOPUB_SOCKET, 
-          buildMessage(message, resultString.getMime().getMime(), 
-              resultString.getCode(), 
+      ret = new MessageHolder(SocketEnum.IOPUB_SOCKET,
+          buildMessage(message, resultString.getMime().getMime(),
+              resultString.getCode()+outputdataResult(seo.getOutputdata()),
               seo.getExecutionCount()));
     }
     return ret;
+  }
+
+  private String outputdataResult(List<Object> outputdata) {
+    String result = "";
+    for (Object o : outputdata) {
+      if (o instanceof SimpleEvaluationObject.EvaluationStdOutput) {
+        result += "\n" + (((SimpleEvaluationObject.EvaluationStdOutput) o).payload);
+      } else if (o instanceof SimpleEvaluationObject.EvaluationStdError) {
+        result += "\n" + (((SimpleEvaluationObject.EvaluationStdError) o).payload);
+      }
+    }
+    return result;
   }
 
   private boolean showResult(SimpleEvaluationObject seo) {
@@ -265,10 +277,12 @@ public class MessageCreator {
     if(seo != null && seo.getPayload() != null && seo.getPayload() instanceof MIMEContainer){
       MIMEContainer input = (MIMEContainer) seo.getPayload();
       ret = !MIMEContainer.MIME.HIDDEN.equals(input.getMime());
+    } else if((seo!=null && !seo.getOutputdata().isEmpty())){
+      ret = true;
     }
     return ret;
   }
-  
+
   public Message createBusyMessage(Message parentMessage) {
     return getExecutionStateMessage(parentMessage, BUSY);
   }

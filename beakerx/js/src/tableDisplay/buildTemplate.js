@@ -17,7 +17,7 @@
 define(function() {
   
   return function(scopeId) {
-    var tmpl = '<div class="dtcontainer">'+
+    var tmpl = '<div class="dtcontainer" tabindex="-1">'+
                '    <div class="dropdown dtmenu clearfix" style="float: left; z-index: 10" id="' + scopeId + '_tabel_menu">'+
                '        <a class="dropdown-toggle" data-toggle="dropdown" id="' + scopeId + '_dropdown_menu">'+
                '            <span class="bko-menu" aria-hidden="true"></span>'+
@@ -36,7 +36,7 @@ define(function() {
                '            <li><a tabindex="-1" href="#" class="dt-hide-all" data-dtAction="dt-hide-all">Hide All Columns</a></li>'+
                '            <li class="dt-use-pagination-wrapper">'+
                '                <a tabindex="-1" href="#" data-dtAction="dt-use-pagination" class="dt-use-pagination menu-separator">Use pagination</a>'+
-               '                <i class="glyphicon glyphicon-ok"></i>'+
+               '                <i class="fa fa-check" aria-hidden="true"></i>'+
                '            </li>'+
                '            <li class="dropdown-submenu">'+
                '                <a tabindex="-1" href="" class="dt-rows-to-show" data-toggle="dropdown">Rows to Show</a>'+

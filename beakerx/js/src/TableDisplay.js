@@ -61,6 +61,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
 
     currentScope.setModelData(data);
     currentScope.setElement(tmplElement.children('.dtcontainer'));
+    currentScope.enableJupyterKeyHandler();
     currentScope.run();
   },
 

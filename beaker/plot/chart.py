@@ -16,8 +16,8 @@ import json
 
 from datetime import datetime
 
-from beaker.plot.legend import *
-from beaker.plot.utils import *
+from beaker.plot.legend import LegendPosition, LegendLayout
+from beaker.plot.utils import BaseObject, getValue
 from beaker.plot.plotitem import *
 
 

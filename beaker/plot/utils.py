@@ -132,6 +132,3 @@ class ObjectEncoder(json.JSONEncoder):
       )
       return self.default(d)
     return obj
-
-
-

@@ -21,7 +21,7 @@ import os, json, pandas, numpy
 import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, IPython, datetime, calendar, math, traceback, time
 from traitlets import Unicode
 
-import beaker.plot
+from beaker.plot import BaseObject, chart
 from ipykernel.comm import Comm
 
 
@@ -209,7 +209,7 @@ def transform(obj):
         out['output'] = transformNR(obj.getOutput())
         out['tags'] = obj.getTags()
         return out
-    if isinstance(obj, beaker.plot.BaseObject):
+    if isinstance(obj, BaseObject):
         return obj.transform()
     return transformNaN(obj)
 
@@ -244,7 +244,7 @@ def transformNR(obj):
         out['output'] = transformNR(obj.getOutput())
         out['tags'] = obj.getTags()
         return out
-    if isinstance(obj, beaker.plot.BaseObject):
+    if isinstance(obj, BaseObject):
         return obj.transform()
     return transformNaN(obj)
 
@@ -259,7 +259,7 @@ def transformBack(obj):
               or out['type'] == "NanoPlot" \
               or out['type'] == "SimpleTimePlot" \
               or out['type'] == "CombinedPlot":
-                return beaker.plot.chart.transformBack(out)
+                return chart.transformBack(out)
             if out['type'] == "BeakerCodeCell":
                 c = BeakerCodeCell(out['cellId'], out['evaluatorId'])
                 if 'code' in out:

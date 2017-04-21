@@ -145,7 +145,7 @@ startScripts {
   defaultJvmOpts = ['-Djava.awt.headless=' + 'true']
   doLast {
     // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
-    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', "set CLASSPATH=.;%APP_HOME%/libs/*;${libsDir.absolutePath}/*")
+    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/libs/*;' + "${libsDir.absolutePath}/*")
     unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/libs/*:' + "${libsDir.absolutePath}/*")
   }
 }

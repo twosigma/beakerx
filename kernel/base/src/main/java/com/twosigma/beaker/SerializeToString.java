@@ -16,7 +16,9 @@
 
 package com.twosigma.beaker;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,6 +28,7 @@ import com.twosigma.beaker.easyform.formitem.*;
 import com.twosigma.beaker.easyform.serializer.*;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.mimetype.MIMEContainer;
+import com.twosigma.beaker.mimetype.MIMEContainer.MIME;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
 import com.fasterxml.jackson.core.Version;
@@ -84,6 +87,8 @@ import com.twosigma.beaker.widgets.DisplayAnyWidget;
 import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.internal.CommWidget;
 import com.twosigma.beaker.widgets.internal.InternalCommWidget;
+
+import jupyter.Displayers;
 
 import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
 import static com.twosigma.beaker.mimetype.MIMEContainer.HIDDEN;
@@ -159,7 +164,7 @@ public class SerializeToString {
     mapper = new ObjectMapper();
     mapper.registerModule(module);
   }
-
+ 
   public static MIMEContainer doit(Object input) {
     MIMEContainer ret = null;
     if (input != null) {
@@ -169,15 +174,36 @@ public class SerializeToString {
       } else if (input instanceof MIMEContainer) {
         ret = (MIMEContainer) input;
       } else {
-        ret = Text(input.toString());
+        List<MIMEContainer> mimeList = getMIMEResult(input);
+        if(mimeList != null){
+          ret = mimeList.get(0);
+        }else{
+          ret = Text(input.toString());
+        }
       }
     } else {
       ret = Text("null");
     }
     return ret;
   }
-
-
+  
+  
+  private static List<MIMEContainer> getMIMEResult(Object input){
+    List<MIMEContainer> ret = new ArrayList<>();
+    Map<String, String> resultByMIME = Displayers.display(input);
+    if(resultByMIME != null && !resultByMIME.isEmpty()){
+      for (String displayerMime : resultByMIME.keySet()) {
+        MIME mime = MIMEContainer.MIME.findByName(displayerMime);
+        if(mime != null){
+          ret.add(new MIMEContainer(mime, resultByMIME.get(displayerMime)));
+        }
+      }
+    }else{
+      ret.add(Text(input.toString()));
+    }
+    return ret;
+  }
+  
 
   private static boolean isWidget(Object input) {
     return (input instanceof EasyForm)

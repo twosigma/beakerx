@@ -49,6 +49,17 @@ public class MIMEContainer {
     public String getMime() {
       return mime;
     }
+    
+    public static MIME findByName(String name){
+      MIME ret = null;
+      for (MIME mime : MIME.values()) {
+        if(mime.getMime().equalsIgnoreCase(name)){
+          ret = mime;
+          break;
+        }
+      }
+      return ret;
+    }
 
   }
 

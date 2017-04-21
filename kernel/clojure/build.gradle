@@ -30,6 +30,7 @@ mainClassName = 'com.twosigma.beaker.clojure.ClojureKernel'
 
 repositories {
   mavenCentral()
+  maven { url 'https://jitpack.io' }
 }
 
 dependencies {

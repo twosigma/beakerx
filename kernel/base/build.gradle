@@ -18,6 +18,7 @@ apply plugin: 'maven-publish'
 
 repositories {
   mavenCentral()
+  maven { url 'https://jitpack.io' }
 }
 
 
@@ -38,6 +39,7 @@ dependencies {
   compile group: 'com.google.guava', name: 'guava', version: '18.0'
   compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
   compile group: 'com.google.inject', name: 'guice', version: '3.0'
+  compile group: 'com.github.jupyter', name: 'jvm-repr', version: '0.1.0'
 
   //jdbc drivers
   compile group: 'com.h2database', name: 'h2', version: '1.4.193'

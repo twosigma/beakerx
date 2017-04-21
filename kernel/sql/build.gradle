@@ -28,6 +28,7 @@ mainClassName = 'com.twosigma.beaker.sql.SQLKernel'
 
 repositories {
   mavenCentral()
+  maven { url 'https://jitpack.io' }
 }
 
 dependencies {

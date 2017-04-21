@@ -119,8 +119,8 @@ def java_home = System.properties.'java.home'
 
 task makeCppKernelHeader(type: Exec) {
   workingDir './build/classes/main'
-  def jvmDir = project(':kernel:base').projectDir
-  commandLine 'javah', '-cp', "./:${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/resources/CppKernel.h', 'com.twosigma.beaker.cpp.utils.CppKernel'
+  def jvmDir = project(':kernel:cpp').projectDir
+  commandLine 'javah', '-cp', "${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/resources/CppKernel.h', 'com.twosigma.beaker.cpp.utils.CppKernel'
 }
 
 task makeCRunLib(type: Exec, dependsOn: ['makeCppKernelHeader']) {
@@ -131,6 +131,8 @@ task makeCRunLib(type: Exec, dependsOn: ['makeCppKernelHeader']) {
     commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/darwin", '-o', 'libCRun.jnilib', 'CRun.cpp'
   } else if (linux) {
     commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  } else {
+    commandLine 'echo', 'C++ on windows is not supported.'
   }
 }
 

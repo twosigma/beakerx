@@ -57,21 +57,6 @@ compileJava {
   options.compilerArgs << '-Xlint:unchecked'
 }
 
-jar {
-  manifest {
-    attributes "Main-Class": "$mainClassName"
-  }
-
-  from {
-    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-  } {
-    exclude "META-INF/*.SF"
-    exclude "META-INF/*.DSA"
-    exclude "META-INF/*.RSA"
-  }
-
-}
-
 task prepareJson(dependsOn: 'build') {
   doLast {
     println "Prepare JSON for Jupyter notebook"
@@ -157,19 +142,52 @@ task kernelInstall(dependsOn: 'prepareJson') {
   compileJava.finalizedBy makeCRunLib
 
   startScripts {
-    defaultJvmOpts=['-Djava.awt.headless=' + 'true']
+    defaultJvmOpts = ['-Djava.awt.headless=' + 'true']
     doLast {
       // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
       windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', "set CLASSPATH=.;%APP_HOME%/libs/*;${libsDir.absolutePath}/*")
-      unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/libs/*:'+"${libsDir.absolutePath}/*")
+      unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/libs/*:' + "${libsDir.absolutePath}/*")
     }
   }
 
-  task copyRunnerScripts(type: Copy) {
-    from './build/scripts'
-    into './src/main/resources/'
+  task copyRunnerScripts {
+    doLast {
+      copy {
+        from './build/scripts'
+        into './src/main/resources/'
+      }
+      copy {
+        from './build/scripts'
+        into './build/resources/main/'
+      }
+    }
   }
 
   startScripts.finalizedBy copyRunnerScripts
+
+  jar {
+    manifest {
+      attributes "Main-Class": "$mainClassName"
+    }
+
+    from {
+      configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+      exclude "META-INF/*.SF"
+      exclude "META-INF/*.DSA"
+      exclude "META-INF/*.RSA"
+    }
+  }
+
+  task jarWithScripts(type: Jar) {
+    manifest {
+      attributes "Main-Class": "$mainClassName"
+    }
+    baseName = project.name
+    with jar
+  }
+
+  copyRunnerScripts.finalizedBy jarWithScripts
+
 }
 

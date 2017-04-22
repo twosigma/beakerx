@@ -15,6 +15,7 @@
  */
 import org.apache.tools.ant.taskdefs.condition.Os
 
+
 task wrapper(type: Wrapper) {
   gradleVersion = '3.5'
 }
@@ -22,6 +23,8 @@ task wrapper(type: Wrapper) {
 project("kernel").subprojects {
   apply plugin: 'jacoco'
   apply plugin: 'java'
+  apply plugin: 'maven'
+
   jacoco {
     toolVersion = "0.7.8"
   }

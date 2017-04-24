@@ -22,7 +22,6 @@ define([
   'datatables.net-keytable',
   './../shared/libs/datatables-colresize/dataTables.colResize',
   './../../bower_components/moment-timezone/builds/moment-timezone-with-data.min',
-  './../../bower_components/jquery-throttle-debounce/jquery.ba-throttle-debounce.min',
   './../shared/bkUtils',
   './cellHighlighters',
   './../shared/bkHelper',
@@ -38,7 +37,6 @@ define([
   dataTablesKeyTable,
   dataTablesColResize,
   moment,
-  throttleDebounce,
   bkUtils,
   cellHighlighters,
   bkHelper,
@@ -49,7 +47,6 @@ define([
 ) {
 
   var jQuery = $;
-  $.debounce = throttleDebounce.Cowboy.debounce;
 
   function TableScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -1173,20 +1170,21 @@ define([
     }
     self.columnSearchActive = isSearch;
 
+
+    var filterDebounced = _.debounce(function(e, element) {
+      self.columnFilterFn(e, element);
+    }, 500);
+
     var filterInputSelector = '.filterRow .filter-input';
     jqContainer.off('keyup.column-filter change.column-filter');
     jqContainer.on('keyup.column-filter change.column-filter', filterInputSelector, function(e) {
       var element = this;
-      self.columnSearchActive ?
-        self.columnFilterFn(e, element) :
-        $.debounce(500, function() {
-          self.columnFilterFn(e, element);
-        });
+      if (self.columnSearchActive) {
+        self.columnFilterFn(e, element);
+      } else {
+        filterDebounced(e, element);
+      }
     });
-
-    // if (!(self.$$phase || $rootScope.$$phase)) {
-    //   self.$apply();
-    // }
 
     setTimeout(function() {
       self.table.draw(false);
@@ -2547,14 +2545,20 @@ define([
     self.removeFilterListeners();
     var filterInputSelector = '.filterRow .filter-input';
     var clearFilterSelector = '.filterRow .clear-filter';
+
+
+    var debouncedFilter = _.debounce(function(e, element) {
+      self.columnFilterFn(e, element);
+    }, 500);
+
     $(self.table.table().container())
       .on('keyup.column-filter change.column-filter', filterInputSelector, function(e) {
         var element = this;
-        self.columnSearchActive ?
-          self.columnFilterFn(e, element) :
-          $.debounce(500, function() {
-            self.columnFilterFn(e, element);
-          });
+        if (self.columnSearchActive) {
+          self.columnFilterFn(e, element);
+        } else {
+          debouncedFilter(e, element);
+        }
       })
       .on('focus.column-filter', filterInputSelector, function(event) {
         if(self.keyTable){

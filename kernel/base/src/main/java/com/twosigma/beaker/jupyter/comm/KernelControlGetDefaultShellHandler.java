@@ -44,7 +44,7 @@ public abstract class KernelControlGetDefaultShellHandler extends BaseHandler<Bo
 
   @Override
   public void handle(Message message) {
-    logger.info("Handing comm message content");
+    logger.debug("Handing comm message content");
     Boolean ok = getValueFromData(message, getHandlerCommand());
     if (ok != null && ok.booleanValue()) {
 
@@ -57,7 +57,7 @@ public abstract class KernelControlGetDefaultShellHandler extends BaseHandler<Bo
 
       HashMap<String, Serializable> data = new HashMap<>();
       data.put(KERNEL_CONTROL_RESPONSE, shell);
-      logger.info("Response OK");
+      logger.debug("Response OK");
       publish(createReplyMessage(message, data));
     }
   }

@@ -22,7 +22,6 @@ define([
   'datatables.net-keytable',
   './../shared/libs/datatables-colresize/dataTables.colResize',
   './../../bower_components/moment-timezone/builds/moment-timezone-with-data.min',
-  './../../bower_components/jquery-throttle-debounce/jquery.ba-throttle-debounce.min',
   './../shared/bkUtils',
   './cellHighlighters',
   './../shared/bkHelper',
@@ -38,7 +37,6 @@ define([
   dataTablesKeyTable,
   dataTablesColResize,
   moment,
-  throttleDebounce,
   bkUtils,
   cellHighlighters,
   bkHelper,
@@ -49,7 +47,6 @@ define([
 ) {
 
   var jQuery = $;
-  $.debounce = throttleDebounce.Cowboy.debounce;
 
   function TableScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -79,6 +76,8 @@ define([
 
     // attach additional data from consts
     _.extend(this, tableConsts.scopeData);
+
+    this.debouncedColumnFilterFn = this.getDebouncedColumnFilterFn();
 
     this.bindAllConverters();
     this.prepareDoubleWithPrecisionConverters();
@@ -1177,16 +1176,12 @@ define([
     jqContainer.off('keyup.column-filter change.column-filter');
     jqContainer.on('keyup.column-filter change.column-filter', filterInputSelector, function(e) {
       var element = this;
-      self.columnSearchActive ?
-        self.columnFilterFn(e, element) :
-        $.debounce(500, function() {
-          self.columnFilterFn(e, element);
-        });
+      if (self.columnSearchActive) {
+        self.columnFilterFn(e, element);
+      } else {
+        self.debouncedColumnFilterFn(e, element);
+      }
     });
-
-    // if (!(self.$$phase || $rootScope.$$phase)) {
-    //   self.$apply();
-    // }
 
     setTimeout(function() {
       self.table.draw(false);
@@ -2123,6 +2118,15 @@ define([
         updateSize();
       });
 
+      self.element.find(id + '_dropdown_menu')
+        .on('click.bko-dropdown', function() {
+          var isOpen = $(this).parents('.dropdown').hasClass('open');
+
+          if (!isOpen) {
+            self.setCodeMirrorListener($(this));
+          }
+        });
+
       // self.$on(GLOBALS.EVENTS.ADVANCED_MODE_TOGGLED, function() {
       //   updateSize();
       // });
@@ -2179,6 +2183,21 @@ define([
       }, 0);
 
     }, 0);
+  };
+
+  // little hack: hide dropdown menu when click on CodeMirror instance
+  // CodeMirror stops propagation of 'click' event on first click
+  TableScope.prototype.setCodeMirrorListener = function(el) {
+    var CodeMirrorInstance = el.parents('.cell').find('.CodeMirror');
+    var dropdown = el.parent('.dropdown');
+
+    if (CodeMirrorInstance) {
+      CodeMirrorInstance.off('mousedown.beakerDropdown');
+      CodeMirrorInstance.on('mousedown.beakerDropdown', function() {
+        dropdown.removeClass('open');
+        CodeMirrorInstance.off('mousedown.beakerDropdown');
+      });
+    }
   };
 
   TableScope.prototype.enableJupyterKeyHandler = function() {
@@ -2547,14 +2566,15 @@ define([
     self.removeFilterListeners();
     var filterInputSelector = '.filterRow .filter-input';
     var clearFilterSelector = '.filterRow .clear-filter';
+
     $(self.table.table().container())
       .on('keyup.column-filter change.column-filter', filterInputSelector, function(e) {
         var element = this;
-        self.columnSearchActive ?
-          self.columnFilterFn(e, element) :
-          $.debounce(500, function() {
-            self.columnFilterFn(e, element);
-          });
+        if (self.columnSearchActive) {
+          self.columnFilterFn(e, element);
+        } else {
+          self.debouncedColumnFilterFn(e, element);
+        }
       })
       .on('focus.column-filter', filterInputSelector, function(event) {
         if(self.keyTable){
@@ -2625,6 +2645,13 @@ define([
       column.draw();
       self.updateFilterWidth($(element), column);
     }
+  };
+
+  TableScope.prototype.getDebouncedColumnFilterFn = function() {
+    var self = this;
+    return _.debounce(function(e, element) {
+      self.columnFilterFn(e, element);
+    }, 500);
   };
 
   TableScope.prototype.tableHasFocus = function(){

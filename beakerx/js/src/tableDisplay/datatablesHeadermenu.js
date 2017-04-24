@@ -144,6 +144,8 @@ define(['jquery', 'datatables.net'], function(jQuery, dataTables) {
 
         _show: function(el)
         {
+          this.setCodeMirrorListener(el);
+
           var that = this;
           var menuItems = el.data('menu');
           var colIdx = that.s.dt.column(el.parent().index() + ':visible').index();
@@ -160,6 +162,21 @@ define(['jquery', 'datatables.net'], function(jQuery, dataTables) {
               .css('display', 'block')
               .appendTo(node);
             that.dom.menu = $menu;
+          }
+        },
+
+        // little hack: hide dropdown menu when click on CodeMirror instance
+        // CodeMirror stops propagation of 'click' event on first click
+        setCodeMirrorListener: function(el) {
+          var that = this;
+          var CodeMirrorInstance = el.parents('.cell').find('.CodeMirror');
+
+          if (CodeMirrorInstance) {
+            CodeMirrorInstance.off('mousedown.beakerDropdown');
+            CodeMirrorInstance.on('mousedown.beakerDropdown', function() {
+              that._hide();
+              CodeMirrorInstance.off('mousedown.beakerDropdown');
+            });
           }
         },
 

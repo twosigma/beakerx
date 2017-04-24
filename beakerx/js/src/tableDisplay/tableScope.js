@@ -2123,6 +2123,15 @@ define([
         updateSize();
       });
 
+      self.element.find(id + '_dropdown_menu')
+        .on('click.bko-dropdown', function() {
+          var isOpen = $(this).parents('.dropdown').hasClass('open');
+
+          if (!isOpen) {
+            self.setCodeMirrorListener($(this));
+          }
+        });
+
       // self.$on(GLOBALS.EVENTS.ADVANCED_MODE_TOGGLED, function() {
       //   updateSize();
       // });
@@ -2179,6 +2188,21 @@ define([
       }, 0);
 
     }, 0);
+  };
+
+  // little hack: hide dropdown menu when click on CodeMirror instance
+  // CodeMirror stops propagation of 'click' event on first click
+  TableScope.prototype.setCodeMirrorListener = function(el) {
+    var CodeMirrorInstance = el.parents('.cell').find('.CodeMirror');
+    var dropdown = el.parent('.dropdown');
+
+    if (CodeMirrorInstance) {
+      CodeMirrorInstance.off('mousedown.beakerDropdown');
+      CodeMirrorInstance.on('mousedown.beakerDropdown', function() {
+        dropdown.removeClass('open');
+        CodeMirrorInstance.off('mousedown.beakerDropdown');
+      });
+    }
   };
 
   TableScope.prototype.enableJupyterKeyHandler = function() {

@@ -77,6 +77,8 @@ define([
     // attach additional data from consts
     _.extend(this, tableConsts.scopeData);
 
+    this.debouncedColumnFilterFn = this.getDebouncedColumnFilterFn();
+
     this.bindAllConverters();
     this.prepareDoubleWithPrecisionConverters();
     this.setJqExtensions();
@@ -1170,11 +1172,6 @@ define([
     }
     self.columnSearchActive = isSearch;
 
-
-    var filterDebounced = _.debounce(function(e, element) {
-      self.columnFilterFn(e, element);
-    }, 500);
-
     var filterInputSelector = '.filterRow .filter-input';
     jqContainer.off('keyup.column-filter change.column-filter');
     jqContainer.on('keyup.column-filter change.column-filter', filterInputSelector, function(e) {
@@ -1182,7 +1179,7 @@ define([
       if (self.columnSearchActive) {
         self.columnFilterFn(e, element);
       } else {
-        filterDebounced(e, element);
+        self.debouncedColumnFilterFn(e, element);
       }
     });
 
@@ -2546,18 +2543,13 @@ define([
     var filterInputSelector = '.filterRow .filter-input';
     var clearFilterSelector = '.filterRow .clear-filter';
 
-
-    var debouncedFilter = _.debounce(function(e, element) {
-      self.columnFilterFn(e, element);
-    }, 500);
-
     $(self.table.table().container())
       .on('keyup.column-filter change.column-filter', filterInputSelector, function(e) {
         var element = this;
         if (self.columnSearchActive) {
           self.columnFilterFn(e, element);
         } else {
-          debouncedFilter(e, element);
+          self.debouncedColumnFilterFn(e, element);
         }
       })
       .on('focus.column-filter', filterInputSelector, function(event) {
@@ -2629,6 +2621,13 @@ define([
       column.draw();
       self.updateFilterWidth($(element), column);
     }
+  };
+
+  TableScope.prototype.getDebouncedColumnFilterFn = function() {
+    var self = this;
+    return _.debounce(function(e, element) {
+      self.columnFilterFn(e, element);
+    }, 500);
   };
 
   TableScope.prototype.tableHasFocus = function(){

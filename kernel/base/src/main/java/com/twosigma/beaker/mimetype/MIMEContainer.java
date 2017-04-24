@@ -38,7 +38,8 @@ public class MIMEContainer {
     IMAGE_PNG("image/png"), 
     IMAGE_JPEG("image/jpeg"), 
     IMAGE_SVG("image/svg+xml"), 
-    HIDDEN("x-beakerx/empty");
+    HIDDEN("x-beakerx/empty"),
+    WIDGET("application/vnd.jupyter.widget-view+json");
 
     private String mime;
 

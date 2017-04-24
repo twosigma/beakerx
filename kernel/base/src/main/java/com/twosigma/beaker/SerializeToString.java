@@ -17,6 +17,7 @@
 package com.twosigma.beaker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +86,7 @@ import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.widgets.DisplayAnyWidget;
 import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beaker.widgets.floats.FloatSlider;
 import com.twosigma.beaker.widgets.internal.CommWidget;
 import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 
@@ -171,6 +173,10 @@ public class SerializeToString {
       List<MIMEContainer> mimeList = getMIMEResult(input);
       if(mimeList != null && !mimeList.isEmpty()){
         ret = mimeList.get(0);
+        if(MIMEContainer.MIME.WIDGET.equals(ret.getMime())){
+          DisplayAnyWidget.display(input);
+          ret = HIDDEN();
+        }
       }else{
         if (isWidget(input)) {
           DisplayAnyWidget.display(input);

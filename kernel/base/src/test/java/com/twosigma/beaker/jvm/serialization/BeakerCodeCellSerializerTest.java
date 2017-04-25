@@ -60,58 +60,58 @@ public class BeakerCodeCellSerializerTest {
   }
 
   @Test
-  public void serializeCellId_resultJsonHasCellId() throws IOException {
+  public void serializeCellTyped_resultJsonHasCellType() throws IOException {
     //given
-    beakerCodeCell.setcellId("testId");
+    beakerCodeCell.setCellType("code");
     //when
     JsonNode actualObj = helper.serializeObject(beakerCodeCell);
     //then
-    Assertions.assertThat(actualObj.has("cellId")).isTrue();
-    Assertions.assertThat(actualObj.get("cellId").asText()).isEqualTo("testId");
+    Assertions.assertThat(actualObj.has("cell_type")).isTrue();
+    Assertions.assertThat(actualObj.get("cell_type").asText()).isEqualTo("code");
   }
 
   @Test
-  public void serializeCode_resultJsonHasCode() throws IOException {
+  public void serializeExecutionCount_resultJsonHasExecutionCount() throws IOException {
     //given
-    beakerCodeCell.setcode("code test");
+    beakerCodeCell.setExecutionCount("1");
     //when
     JsonNode actualObj = helper.serializeObject(beakerCodeCell);
     //then
-    Assertions.assertThat(actualObj.has("code")).isTrue();
-    Assertions.assertThat(actualObj.get("code").asText()).isEqualTo("code test");
+    Assertions.assertThat(actualObj.has("execution_count")).isTrue();
+    Assertions.assertThat(actualObj.get("execution_count").asText()).isEqualTo("1");
   }
 
   @Test
-  public void serializeOutputType_resultJsonHasOutputType() throws IOException {
+  public void serializeSource_resultJsonHasSource() throws IOException {
     //given
-    beakerCodeCell.setoutputtype("output type");
+    beakerCodeCell.setSource("test source");
     //when
     JsonNode actualObj = helper.serializeObject(beakerCodeCell);
     //then
-    Assertions.assertThat(actualObj.has("outputtype")).isTrue();
-    Assertions.assertThat(actualObj.get("outputtype").asText()).isEqualTo("output type");
+    Assertions.assertThat(actualObj.has("source")).isTrue();
+    Assertions.assertThat(actualObj.get("source").asText()).isEqualTo("test source");
   }
 
   @Test
-  public void serializeOutput_resultJsonHasOutput() throws IOException {
+  public void serializeMetadata_resultJsonHasMetadatas() throws IOException {
     //given
-    beakerCodeCell.setoutput("test output");
+    beakerCodeCell.setMetadata("test metadata");
     //when
     JsonNode actualObj = helper.serializeObject(beakerCodeCell);
     //then
-    Assertions.assertThat(actualObj.has("output")).isTrue();
-    Assertions.assertThat(actualObj.get("output").asText()).isEqualTo("test output");
+    Assertions.assertThat(actualObj.has("metadata")).isTrue();
+    Assertions.assertThat(actualObj.get("metadata").asText()).isEqualTo("test metadata");
   }
 
   @Test
   public void serializeTags_resultJsonHasTags() throws IOException {
     //given
-    beakerCodeCell.settags("test tags");
+    beakerCodeCell.setOutputs("test output");
     //when
     JsonNode actualObj = helper.serializeObject(beakerCodeCell);
     //then
-    Assertions.assertThat(actualObj.has("tags")).isTrue();
-    Assertions.assertThat(actualObj.get("tags").asText()).isEqualTo("test tags");
+    Assertions.assertThat(actualObj.has("outputs")).isTrue();
+    Assertions.assertThat(actualObj.get("outputs").asText()).isEqualTo("test output");
   }
 
 }

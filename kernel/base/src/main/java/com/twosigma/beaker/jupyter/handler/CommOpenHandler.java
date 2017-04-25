@@ -51,7 +51,7 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message)  {
-    logger.info("Processing CommOpenHandler");
+    logger.debug("Processing CommOpenHandler");
     Message reply = new Message();
     HashMap<String, Serializable> map = new HashMap<>(6);
     
@@ -70,7 +70,7 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
     }
 
     if(newComm != null){
-      logger.info("Comm opened, target name = " + newComm.getTargetName());
+      logger.debug("Comm opened, target name = " + newComm.getTargetName());
       for (Handler<Message> handler : getKernelControlChanelHandlers(newComm.getTargetName())) {
         newComm.addMsgCallbackList(handler);
       }

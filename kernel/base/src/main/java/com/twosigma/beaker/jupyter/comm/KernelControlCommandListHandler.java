@@ -39,7 +39,7 @@ public class KernelControlCommandListHandler extends BaseHandler<Boolean> {
 
   @Override
   public void handle(Message message) {
-    logger.info("Handing comm message content");
+    logger.debug("Handing comm message content");
     Boolean value = getValueFromData(message, getHandlerCommand());
     if (value != null && value.booleanValue()) {
       HashMap<String, Serializable> data = new HashMap<>();

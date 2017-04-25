@@ -43,14 +43,14 @@ public class KernelControlInterrupt extends BaseHandler<Boolean> {
   
   @Override
   public void handle(Message message)  {
-    logger.info("Handing comm message content");
+    logger.debug("Handing comm message content");
     Boolean value = getValueFromData(message, getHandlerCommand());
     if(value != null && value.booleanValue()){
       boolean ok = Kernel.isWindows();
       if(ok){
         kernel.cancelExecution();
       }else{
-        logger.info("Cell execution interrupt not performed, done by SIGINT");
+        logger.debug("Cell execution interrupt not performed, done by SIGINT");
       }
       HashMap<String, Serializable> data = new HashMap<>();
       HashMap<String, String> body = new HashMap<>();

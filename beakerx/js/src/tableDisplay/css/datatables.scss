@@ -1,6 +1,10 @@
 $border-color: #D4D0D0;
 $highlight-blue: #39a9ed;
 
+.beaker-table-display {
+  overflow: visible;
+}
+
 .dtcontainer {
   position: relative;
   width: 100%;
@@ -344,7 +348,7 @@ $fix-col-separator-width: 3px;
 }
 
 .bko-table {
-  left: -1px;
+  left: 0;
   position: relative;
 }
 

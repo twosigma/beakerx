@@ -2122,7 +2122,6 @@ define([
         return self.mouseDown();
       })
        .on("mousemove", function(d) {
-      	 console.log("mousemove event");
          return self.zooming();
       })
        .on("mouseup", function() {

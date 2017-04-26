@@ -833,12 +833,18 @@ define([
         .attr("x2", W - rMargin)
         .attr("y2", y);
 
-      this.renderCursorLabel(model.yAxis, "cursor_ylabel", false);
-      this.renderCursorLabel(model.yAxisR, "cursor_yrlabel", true);
+      this.renderCursorLabel(model.yAxis, "cursor_ylabel", y, false);
+      this.renderCursorLabel(model.yAxisR, "cursor_yrlabel", y, true);
     }
   };
 
-  PlotScope.prototype.renderCursorLabel = function(axis, id, alignRight){
+  PlotScope.prototype.renderCursorLabel = function(axis, id, y, alignRight){
+    var model = this.stdmodel;
+    var opt = model.yCursor;
+    var lMargin = this.layout.leftLayoutMargin;
+    var rMargin = this.layout.rightLayoutMargin;
+    var mapY = this.data2scrY;
+
     if(axis == null) { return };
     this.jqcontainer.find("#" + id).remove();
     var label = $("<div id='" + id + "' class='plot-cursorlabel'></div>")

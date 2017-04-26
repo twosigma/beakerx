@@ -495,7 +495,9 @@
    //add prototype methods here
 
    Plot.prototype.display = function(output_area) {
-     var currentScope = new PlotScope('wrap_'+'test6'); //TODO SET ID <-----
+     var cell = getCellFromOutputArea(output_area);
+
+     var currentScope = new PlotScope('wrap_'+cell.cell_id);
      var tmpl = currentScope.buildTemplate();
      var tmplElement = $(tmpl);
 
@@ -677,7 +679,9 @@
    };
 
    CombinedPlot.prototype.display = function(output_area) {
-     var currentScope = new CombinedPlotScope('wrap_'+'test7');//TODO SET ID <-----
+     var cell = getCellFromOutputArea(output_area);
+
+     var currentScope = new CombinedPlotScope('wrap_'+cell.cell_id);
      var tmpl = currentScope.buildTemplate();
      var tmplElement = $(tmpl);
 
@@ -729,6 +733,17 @@
      });
      return res;
    };
+
+   // -------------------
+
+   function getCellFromOutputArea(output_area) {
+     var cell_element = output_area.element.parents('.cell');
+     var cell_idx = Jupyter.notebook.get_cell_elements().index(cell_element);
+     var cell = Jupyter.notebook.get_cell(cell_idx);
+     return cell;
+   }
+
+   // -------------------
 
    return {
      list: list,

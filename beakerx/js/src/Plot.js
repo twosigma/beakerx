@@ -20,12 +20,9 @@ var d3 = require('./../bower_components/d3/d3.min');
 
 var PlotScope = require('./plot/plotScope');
 var CombinedPlotScope = require('./plot/combinedPlotScope');
+var plotApi = require('./plot/plotApi');
 
 window.d3 = d3;
-
-require('./plot/bko-combinedplot.css');
-require('./plot/bko-plot.css');
-require('./../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.css');
 
 var PlotModel = widgets.DOMWidgetModel.extend({
   defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
@@ -35,7 +32,6 @@ var PlotModel = widgets.DOMWidgetModel.extend({
     _view_module : 'beakerx'
   })
 });
-
 
 // Custom View. Renders the widget model.
 var PlotView = widgets.DOMWidgetView.extend({
@@ -82,7 +78,6 @@ var PlotView = widgets.DOMWidgetView.extend({
     currentScope.init();
   }
 });
-
 
 module.exports = {
   PlotModel: PlotModel,

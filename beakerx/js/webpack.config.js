@@ -44,6 +44,9 @@ module.exports = [
       path: '../beakerx/static',
       libraryTarget: 'amd'
     },
+    module: {
+      loaders: loaders
+    },
     externals: [
       'services/config',
       'services/kernels/comm',

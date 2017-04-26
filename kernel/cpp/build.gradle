@@ -185,3 +185,16 @@ task jarWithScripts(type: Jar) {
 }
 
 copyRunnerScripts.finalizedBy jarWithScripts
+
+jacocoTestReport {
+  reports {
+    html.enabled = true
+    xml.enabled = false
+    csv.enabled = false
+  }
+  afterEvaluate {
+    classDirectories = files(classDirectories.files.collect {
+      fileTree(dir: it, exclude: 'com/twosigma/beaker/cpp/autocomplete/CPP14*')
+    })
+  }
+}

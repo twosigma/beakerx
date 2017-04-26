@@ -30,22 +30,36 @@ if (window.require) {
     });
 }
 
+require('./../src/plot/bko-combinedplot.css');
+require('./../src/plot/bko-plot.css');
+require('./../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.css');
+
 define([
   'services/config',
   'services/kernels/comm',
   'base/js/utils',
   'base/js/namespace',
   'base/js/events',
-  'require'
+  'require',
+
+  // Plot JS API
+  './plot/plotApi',
+  './shared/bkCoreManager',
+  'big.js'
 ], function(
   configmod,
   comm,
   utils,
   Jupyter,
   events,
-  require
+  require,
+  plotApi,
+  bkCoreManager,
+  big
 ) {
   "use strict";
+
+  window.Big = big;
 
   var base_url = utils.get_body_data('baseUrl');
   var config = new configmod.ConfigSection('notebook', {base_url: base_url});
@@ -180,6 +194,18 @@ define([
       comm.send(data);
       comm.close();
     }
+  }
+
+  // assign Beaker methods to window
+  if (window && !window.beaker) {
+    window.beaker = {};
+
+    var plotApiList = plotApi.list();
+    var bkApp = bkCoreManager.getBkApp();
+    var bkObject = bkApp.getBeakerObject();
+
+    _.extend(window.beaker, plotApiList);
+    window.beaker.prefs = bkObject.beakerObj.prefs;
   }
 
   return {

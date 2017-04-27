@@ -82,6 +82,12 @@ define([
           window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
+    kernel.comm_manager.register_target('beaker.autotranslation',
+      function(comm, msg) {
+        comm.on_msg(function(msg) {
+          window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
+        });
+      });
     setBeakerxKernelParameters();
   });
 

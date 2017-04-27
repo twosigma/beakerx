@@ -28,11 +28,10 @@ import com.twosigma.jupyter.KernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,6 @@ public class SQLEvaluator implements Evaluator {
   private final String packageId;
 
   private List<String> classPath = new ArrayList<>();
-  private String currentClassPath = "";
   private Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
   private ConnectionStringHolder defaultConnectionString;
 
@@ -217,13 +215,18 @@ public class SQLEvaluator implements Evaluator {
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
 
     SQLKernelParameters params = new SQLKernelParameters(kernelParameters);
+    Collection<String> cp = params.getClassPath();
 
-    currentClassPath = params.getClassPathAsString();
-    if (currentClassPath.isEmpty())
+    if (cp == null || cp.isEmpty()){
       classPath = new ArrayList<>();
-    else
-      classPath = Arrays.asList(currentClassPath.split("[\\s" + File.pathSeparatorChar + "]+"));
-
+    } else {
+      for (String line : cp) {
+        if (!line.trim().isEmpty()) {
+          classPath.add(line);
+        }
+      }
+    }
+    
     jdbcClient.loadDrivers(classPath);
 
     this.defaultConnectionString = new ConnectionStringHolder(params.defaultDatasource().orElse(""), jdbcClient);

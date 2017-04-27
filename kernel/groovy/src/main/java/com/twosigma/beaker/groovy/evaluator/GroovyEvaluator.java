@@ -42,7 +42,6 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +51,6 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.twosigma.beaker.jupyter.Utils.getAsString;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 
@@ -68,16 +66,12 @@ public class GroovyEvaluator implements Evaluator {
   protected List<String> classPath;
   protected List<String> imports;
   //user entered source value
-  protected String outDirDefault;
-  protected String outDirInput;
   protected String outDir;
   protected GroovyClasspathScanner cps;
   protected boolean exit;
   protected boolean updateLoader;
   protected final BeakerCellExecutor executor;
   protected GroovyAutocomplete gac;
-  protected String currentClassPath;
-  protected String currentImports;
 
   public static boolean LOCAL_DEV = false;
 
@@ -112,16 +106,8 @@ public class GroovyEvaluator implements Evaluator {
     gac = createGroovyAutocomplete(cps);
     exit = false;
     updateLoader = false;
-    currentClassPath = "";
-    currentImports = "";
-    outDirDefault = Evaluator.createJupyterTempFolder().toString();
-    outDir = new String(outDirDefault);
+    outDir = Evaluator.createJupyterTempFolder().toString();
     outDir = envVariablesFilter(outDir, System.getenv());
-    outDirInput = outDir;
-    try {
-      (new File(outDir)).mkdirs();
-    } catch (Exception e) {
-    }
     executor = new BeakerCellExecutor("groovy");
     startWorker();
   }
@@ -175,44 +161,31 @@ public class GroovyEvaluator implements Evaluator {
 
   @Override
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    
     Map<String, Object> params = kernelParameters.getParams();
-
-    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
     Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
-    String cp = getAsString(listOfClassPath);
-    String in = getAsString(listOfImports);
+    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
 
-    // check if we are not changing anything
-    if (StringUtils.equals(currentClassPath, cp) && StringUtils.equals(currentImports, in))
-      return;
-
-    currentClassPath = cp;
-    currentImports = in;
     Map<String, String> env = System.getenv();
 
-    if (cp == null || cp.isEmpty())
+    if (listOfClassPath == null || listOfClassPath.isEmpty()){
       classPath = new ArrayList<>();
-    else {
-      List<String> cpList = new ArrayList<>();
-      for (String p : Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"))) {
-        p = envVariablesFilter(p, env);
-        cpList.add(p);
+    } else {
+      for (String line : listOfClassPath) {
+        if (!line.trim().isEmpty()) {
+          classPath.add(envVariablesFilter(line, env));
+        }
       }
-      classPath = cpList;
     }
-
-    if (in != null && !in.isEmpty()) {
-      String[] importLines = in.split("\\n+");
-      for (String line : importLines) {
+    
+    if (listOfImports == null || listOfImports.isEmpty()){
+      imports = new ArrayList<>();
+    } else {
+      for (String line : listOfImports) {
         if (!line.trim().isEmpty()) {
           imports.add(line);
         }
       }
-    }
-
-    try {
-      (new File(outDir)).mkdirs();
-    } catch (Exception e) {
     }
 
     resetEnvironment();

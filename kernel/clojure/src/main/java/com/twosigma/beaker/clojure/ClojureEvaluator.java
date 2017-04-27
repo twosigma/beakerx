@@ -30,7 +30,6 @@ import com.twosigma.jupyter.KernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -38,14 +37,12 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
-import static com.twosigma.beaker.jupyter.Utils.getAsString;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 
@@ -59,14 +56,10 @@ public class ClojureEvaluator implements Evaluator {
   private List<String> imports;
   private List<String> requirements;
   private boolean exit;
-  private boolean updateLoader;
   private BeakerCellExecutor executor;
   private workerThread myWorker;
-  private String currentClassPath = "";
-  private String currentImports = "";
   private String outDir;
   private String currenClojureNS;
-  private String currentRequirements = "";
   private DynamicClassLoaderSimple loader;
 
   private class jobDescriptor {
@@ -119,7 +112,6 @@ public class ClojureEvaluator implements Evaluator {
       logger.error(e.getMessage());
     }
     exit = false;
-    updateLoader = false;
     executor = new BeakerCellExecutor("clojure");
   }
 
@@ -271,31 +263,36 @@ public class ClojureEvaluator implements Evaluator {
     }
   }
 
+
   @Override
-  public void setShellOptions(KernelParameters kernelParameters) throws IOException {
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    
     Map<String, Object> params = kernelParameters.getParams();
+    Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
+    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
 
-    List<String> listOfimports = (List<String>) params.get(IMPORTS);
-    List<String> listOfclassPath = (List<String>) params.get(CLASSPATH);
-    String cp = getAsString(listOfclassPath);
-    String in = getAsString(listOfimports);
+    Map<String, String> env = System.getenv();
 
-
-    if (!currentClassPath.equals(cp)) {
-      currentClassPath = cp;
-      if (cp.isEmpty())
-        classPath = new ArrayList<>();
-      else
-        classPath = Arrays.asList(cp.split("[\\s" + File.pathSeparatorChar + "]+"));
+    if (listOfClassPath == null || listOfClassPath.isEmpty()){
+      classPath = new ArrayList<>();
+    } else {
+      for (String line : listOfClassPath) {
+        if (!line.trim().isEmpty()) {
+          classPath.add(line);
+        }
+      }
+    }
+    
+    if (listOfImports == null || listOfImports.isEmpty()){
+      imports = new ArrayList<>();
+    } else {
+      for (String line : listOfImports) {
+        if (!line.trim().isEmpty()) {
+          imports.add(line);
+        }
+      }
     }
 
-    if (!currentImports.equals(in)) {
-      currentImports = in;
-      if (in.isEmpty())
-        imports = new ArrayList<>();
-      else
-        imports = Arrays.asList(in.split("\\s+"));
-    }
     resetEnvironment();
   }
 

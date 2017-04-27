@@ -44,7 +44,6 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.twosigma.beaker.jupyter.Utils.getAsString;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 
@@ -62,8 +61,6 @@ public class JavaEvaluator implements Evaluator{
   protected boolean updateLoader;
   protected workerThread myWorker;
   protected final BeakerCellExecutor executor;
-  protected String currentClassPath;
-  protected String currentImports;
   
   protected class jobDescriptor {
     String codeToBeExecuted;
@@ -88,8 +85,6 @@ public class JavaEvaluator implements Evaluator{
     imports = new ArrayList<String>();
     exit = false;
     updateLoader = false;
-    currentClassPath = "";
-    currentImports = "";
     outDir = Evaluator.createJupyterTempFolder().toString();
     executor = new BeakerCellExecutor("javash");
     startWorker();
@@ -146,33 +141,39 @@ public class JavaEvaluator implements Evaluator{
     syncObject.release();
   }
 
+  
   @Override
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    
     Map<String, Object> params = kernelParameters.getParams();
-
-    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
     Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
-    String cp = getAsString(listOfClassPath);
-    String in = getAsString(listOfImports);
+    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
 
-    // check if we are not changing anything
-    if (currentClassPath.equals(cp) && currentImports.equals(in) )
-      return;
+    Map<String, String> env = System.getenv();
 
-    currentClassPath = cp;
-    currentImports = in;
-
-    if (cp.isEmpty())
+    if (listOfClassPath == null || listOfClassPath.isEmpty()){
       classPath = new ArrayList<>();
-    else
-      classPath = Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"));
-    if (in.isEmpty())
+    } else {
+      for (String line : listOfClassPath) {
+        if (!line.trim().isEmpty()) {
+          classPath.add(line);
+        }
+      }
+    }
+    
+    if (listOfImports == null || listOfImports.isEmpty()){
       imports = new ArrayList<>();
-    else
-      imports = Arrays.asList(in.split("\\n+"));
+    } else {
+      for (String line : listOfImports) {
+        if (!line.trim().isEmpty()) {
+          imports.add(line);
+        }
+      }
+    }
 
     resetEnvironment();
   }
+
 
   @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {

@@ -165,29 +165,33 @@ public class ScalaEvaluator implements Evaluator {
 
   @Override
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-
-    Map<String, Object> params = kernelParameters.getParams();
-    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
-    Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
-    String cp = getAsString(listOfClassPath);
-    String in = getAsString(listOfImports);
-
-    // check if we are not changing anything
-    if (currentClassPath.equals(cp) && currentImports.equals(in))
-      return;
-
-    currentClassPath = cp;
-    currentImports = in;
-
-    if(cp==null || cp.isEmpty())
-      classPath = new ArrayList<String>();
-    else
-      classPath = Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"));
-    if (imports==null || in.isEmpty())
-      imports = new ArrayList<String>();
-    else
-      imports = Arrays.asList(in.split("\\s+"));
     
+    Map<String, Object> params = kernelParameters.getParams();
+    Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
+    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
+
+    Map<String, String> env = System.getenv();
+
+    if (listOfClassPath == null || listOfClassPath.isEmpty()){
+      classPath = new ArrayList<>();
+    } else {
+      for (String line : listOfClassPath) {
+        if (!line.trim().isEmpty()) {
+          classPath.add(line);
+        }
+      }
+    }
+    
+    if (listOfImports == null || listOfImports.isEmpty()){
+      imports = new ArrayList<>();
+    } else {
+      for (String line : listOfImports) {
+        if (!line.trim().isEmpty()) {
+          imports.add(line);
+        }
+      }
+    }
+
     resetEnvironment();
   }
 

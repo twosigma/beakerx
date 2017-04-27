@@ -169,7 +169,7 @@ public class JavaEvaluator implements Evaluator{
     if (in.isEmpty())
       imports = new ArrayList<>();
     else
-      imports = Arrays.asList(in.split("\\s+"));
+      imports = Arrays.asList(in.split("\\n+"));
 
     resetEnvironment();
   }

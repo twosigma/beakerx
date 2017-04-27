@@ -47,7 +47,7 @@ public class CommInfoHandler extends KernelHandler<Message> {
   @Override
   public void handle(Message message) {
     KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
-      logger.info("Processing CommInfoHandler");
+      logger.debug("Processing CommInfoHandler");
       Message reply = new Message();
       reply.setHeader(new Header(COMM_INFO_REPLY, message.getHeader().getSession()));
       HashMap<String, Serializable> content = new HashMap<>();

@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.jvm.object;
 
+import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.jvm.ObserverObjectTest;
 import com.twosigma.beaker.jvm.threads.BeakerOutputHandler;
 import org.assertj.core.api.Assertions;
@@ -31,7 +32,7 @@ public class SimpleEvaluationObjectTest {
 
   @Before
   public void setUp() throws Exception {
-    seo = new SimpleEvaluationObject("code");
+    seo = new SimpleEvaluationObject("code", new ExecuteCodeCallbackTest());
     observer = new ObserverObjectTest();
     seo.addObserver(observer);
   }
@@ -39,7 +40,7 @@ public class SimpleEvaluationObjectTest {
   @Test
   public void createWithParam_hasExpressionIsParamAndStatusIsQueued() throws Exception {
     //when
-    SimpleEvaluationObject object = new SimpleEvaluationObject("code");
+    SimpleEvaluationObject object = new SimpleEvaluationObject("code", new ExecuteCodeCallbackTest());
     //then
     Assertions.assertThat(object.getExpression()).isEqualTo("code");
     Assertions.assertThat(object.getStatus()).isEqualTo(QUEUED);

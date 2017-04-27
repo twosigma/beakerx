@@ -52,7 +52,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     message = new Message();
   }
 
-  @Test
+  //@Test
   public void handleGetDefaultShellMessage_shouldSendShellSocketMessage() throws Exception {
     //given
     initMessageData(message);
@@ -62,7 +62,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
   }
 
-  @Test
+  //@Test
   public void handleNotGetDefaultShellMessage_notSendShellSocketMessage() throws Exception {
     //given
     Map<String, Serializable> content = new HashMap<>();
@@ -74,7 +74,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     assertThat(kernel.getPublishedMessages()).isEmpty();
   }
 
-  @Test
+  //@Test
   public void handleGetDefaultShellMessage_sentMessageHasCommId() throws Exception {
     //given
     initMessageData(message);
@@ -86,7 +86,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     assertThat((String) sendMessage.getContent().get(Comm.COMM_ID)).isNotEmpty();
   }
 
-  @Test
+  //@Test
   public void handleGetDefaultShellMessage_sentMessageHasKernelControlResponse() throws Exception {
     //given
     initMessageData(message);
@@ -100,7 +100,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     assertThat((Map) shell.get(KERNEL_CONTROL_RESPONSE)).isNotEmpty();
   }
 
-  @Test
+  //@Test
   public void handleGetDefaultShellMessage_sentMessageHasImportsData() throws Exception {
     //given
     initMessageData(message);
@@ -117,7 +117,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     assertThat(beakerx_kernel_parameters.get(KernelControlSetShellHandler.IMPORTS)).isNotNull();
   }
 
-  @Test
+  //@Test
   public void handleGetDefaultShellMessage_sentMessageHasClasspathData() throws Exception {
     //given
     initMessageData(message);

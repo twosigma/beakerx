@@ -46,7 +46,9 @@ public class Interactive extends InteractiveBase{
         
         @Override
         public void updateValue(Object value, Message message) {
-          SimpleEvaluationObject seo = new SimpleEvaluationObject("");
+          SimpleEvaluationObject seo = new SimpleEvaluationObject("",(seoResult) -> {
+            //nothing to do
+          });
           seo.setJupyterMessage(message);
           seo.setOutputHandler();
           seo.addObserver(KernelManager.get().getExecutionResultSender());

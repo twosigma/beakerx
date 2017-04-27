@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.jupyter.msg;
 
+import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.jupyter.SocketEnum;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.KernelTest;
@@ -38,7 +39,7 @@ public class MessageCreatorTest {
   @Before
   public void setUp() throws Exception {
     messageCreator = new MessageCreator(new KernelTest("id1"));
-    seo = new SimpleEvaluationObject("code");
+    seo = new SimpleEvaluationObject("code", new ExecuteCodeCallbackTest());
     seo.setJupyterMessage(new Message());
   }
 
@@ -67,7 +68,7 @@ public class MessageCreatorTest {
   //@Test
   public void createMessageForCollection() throws Exception {
     //given
-    seo.finished(asList("1","2"));
+    seo.finished(asList("1", "2"));
     //when
     List<MessageHolder> message = messageCreator.createMessage(seo);
     //then
@@ -123,7 +124,7 @@ public class MessageCreatorTest {
   }
 
   @Test
-  public void createIdleMessage_messageHasTypeIsStatus(){
+  public void createIdleMessage_messageHasTypeIsStatus() {
     //when
     Message message = messageCreator.createIdleMessage(new Message());
     //then
@@ -131,7 +132,7 @@ public class MessageCreatorTest {
   }
 
   @Test
-  public void createIdleMessage_messageHasExecutionStateIsIdle(){
+  public void createIdleMessage_messageHasExecutionStateIsIdle() {
     //when
     Message message = messageCreator.createIdleMessage(new Message());
     //then
@@ -140,7 +141,7 @@ public class MessageCreatorTest {
   }
 
   @Test
-  public void createBusyMessage_messageHasTypeIsStatus(){
+  public void createBusyMessage_messageHasTypeIsStatus() {
     //when
     Message message = messageCreator.createBusyMessage(new Message());
     //then
@@ -148,7 +149,7 @@ public class MessageCreatorTest {
   }
 
   @Test
-  public void createBusyMessage_messageHasExecutionStateIsBusy(){
+  public void createBusyMessage_messageHasExecutionStateIsBusy() {
     //when
     Message message = messageCreator.createBusyMessage(new Message());
     //then

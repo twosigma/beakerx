@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.scala.evaluator;
 
+import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -56,7 +57,7 @@ public class ScalaEvaluatorTest {
     String code = "import com.twosigma.beaker.chart.xychart.Plot;\n" +
         "val plot = new Plot();\n" +
         "plot.setTitle(\"test title\");";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     scalaEvaluator.evaluate(seo, code);
     waitForResult(seo);
@@ -70,7 +71,7 @@ public class ScalaEvaluatorTest {
   public void evaluateDivisionByZero_shouldReturnArithmeticException() throws Exception {
     //given
     String code = "16/0";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     scalaEvaluator.evaluate(seo, code);
     waitForResult(seo);

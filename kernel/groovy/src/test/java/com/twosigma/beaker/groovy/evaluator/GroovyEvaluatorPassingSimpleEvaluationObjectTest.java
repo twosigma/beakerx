@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.groovy.evaluator;
 
+import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class GroovyEvaluatorPassingSimpleEvaluationObjectTest {
     String code = "" +
             "import com.twosigma.beaker.evaluator.InternalVariable\n" +
             "InternalVariable.getParentHeader()";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     Message message = new Message();
     seo.setJupyterMessage(message);
     //when

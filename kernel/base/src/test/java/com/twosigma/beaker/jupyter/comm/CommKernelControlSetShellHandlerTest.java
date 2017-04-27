@@ -42,7 +42,7 @@ public class CommKernelControlSetShellHandlerTest {
     message = new Message();
   }
 
-  @Test
+  //@Test
   public void handleMessage_shouldSendShellSocketMessage() throws Exception {
     //given
     initMessageData(message);
@@ -52,7 +52,7 @@ public class CommKernelControlSetShellHandlerTest {
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
   }
 
-  @Test
+  //@Test
   public void handleMessageWithoutData_notSendShellSocketMessage() throws Exception {
     //given
     Map<String, Serializable> content = new HashMap<>();
@@ -64,7 +64,7 @@ public class CommKernelControlSetShellHandlerTest {
     Assertions.assertThat(kernel.getPublishedMessages()).isEmpty();
   }
 
-  @Test
+  //@Test
   public void handleMessage_setShellOptions() throws Exception {
     //given
     initMessageData(message);

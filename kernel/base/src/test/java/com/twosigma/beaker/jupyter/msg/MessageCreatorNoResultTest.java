@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.jupyter.msg;
 
+import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jvm.object.OutputCell;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -38,12 +39,12 @@ public class MessageCreatorNoResultTest {
   @Test
   public void noResult() throws Exception {
     //given
-    SimpleEvaluationObject seo = new SimpleEvaluationObject("code");
+    SimpleEvaluationObject seo = new SimpleEvaluationObject("code", new ExecuteCodeCallbackTest());
     seo.setJupyterMessage(new Message());
     seo.finished(OutputCell.HIDDEN);
     //when
     List<MessageHolder> messages = messageCreator.createMessage(seo);
     //then
-    messages.forEach( m -> assertThat(JupyterMessages.EXECUTE_RESULT).isNotEqualTo(m.getMessage().type()));
+    messages.forEach(m -> assertThat(JupyterMessages.EXECUTE_RESULT).isNotEqualTo(m.getMessage().type()));
   }
 }

@@ -40,67 +40,25 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.STATUS;
  */
 public class ExecuteRequestHandler extends KernelHandler<Message> {
 
-  private final static Logger logger = LoggerFactory.getLogger(ExecuteRequestHandler.class);
-
-  private int executionCount;
-  private KernelFunctionality kernel;
-  private MagicCommand magicCommand;
+  private ExecuteRequestRunner executeRequestRunner;
 
   public ExecuteRequestHandler(KernelFunctionality kernel) {
     super(kernel);
     this.kernel = kernel;
-    magicCommand = new MagicCommand(kernel);
-    executionCount = 0;
+    executeRequestRunner = new ExecuteRequestRunner(kernel);
+    executeRequestRunner.start();
   }
 
   @Override
   public void handle(Message message) {
-    logger.debug("Processing execute request");
-    handleMessage(message);
-  }
-
-  private synchronized void handleMessage(Message message) {
-    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
-      Message reply = new Message();
-      Map<String, Serializable> map = new HashMap<>(1);
-      map.put("execution_state", "busy");
-      reply.setContent(map);
-      reply.setHeader(new Header(STATUS, message.getHeader().getSession()));
-      reply.setParentHeader(message.getHeader());
-      reply.setIdentities(message.getIdentities());
-      publish(reply);
-
-      // Get the code to be executed from the message.
-      String code = "";
-      if (message.getContent() != null && message.getContent().containsKey("code")) {
-        code = ((String) message.getContent().get("code")).trim();
-      }
-
-      // Announce that we have the code.
-      reply.setHeader(new Header(EXECUTE_INPUT, message.getHeader().getSession()));
-      Map<String, Serializable> map1 = new HashMap<String, Serializable>(2);
-      map1.put("execution_count", executionCount);
-      map1.put("code", code);
-      reply.setContent(map1);
-      publish(reply);
-
-      ++executionCount;
-      if (!code.startsWith("%")) {
-        kernel.executeCode(code, message, executionCount);
-        // execution response in ExecuteResultHandler
-      } else {
-        String command = new Scanner(code).next();
-        if (magicCommand.commands.containsKey(command)) {
-          magicCommand.commands.get(command).process(code, message, executionCount);
-        } else {
-          magicCommand.processUnknownCommand(command, message, executionCount);
-        }
-      }
-    });
+    executeRequestRunner.add(message);
   }
 
   @Override
   public void exit() {
+    if (executeRequestRunner != null) {
+      executeRequestRunner.halt();
+    }
   }
 
 }

@@ -53,11 +53,15 @@ public interface KernelFunctionality {
 
   void run();
 
-  SimpleEvaluationObject executeCode(String code, Message message, int executionCount);
+  SimpleEvaluationObject executeCode(String code, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback);
 
   AutocompleteResult autocomplete(String code, int cursorPos);
 
   void sendBusyMessage(Message message);
 
   void sendIdleMessage(Message message);
+
+  interface ExecuteCodeCallback{
+    void execute(SimpleEvaluationObject seo);
+  }
 }

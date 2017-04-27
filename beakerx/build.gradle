@@ -28,6 +28,7 @@ def winOrUnix(Object... args) {
 
 task install() {
   doLast {
+    project('js').tasks.install.execute()
     exec {
       commandLine(*(winOrUnix('pip', "install", "-e", ".")))
     }
@@ -37,6 +38,5 @@ task install() {
     exec {
       commandLine(*(winOrUnix("jupyter", "nbextension", "enable", "--py", "--sys-prefix", "beakerx")))
     }
-    project('js').tasks.install.execute()
   }
 }

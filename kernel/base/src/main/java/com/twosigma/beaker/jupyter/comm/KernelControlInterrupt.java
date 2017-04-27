@@ -18,6 +18,7 @@ package com.twosigma.beaker.jupyter.comm;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,30 +41,32 @@ public class KernelControlInterrupt extends BaseHandler<Boolean> {
   public KernelControlInterrupt(KernelFunctionality kernel) {
     super(kernel);
   }
-  
+
   @Override
-  public void handle(Message message)  {
-    logger.debug("Handing comm message content");
-    Boolean value = getValueFromData(message, getHandlerCommand());
-    if(value != null && value.booleanValue()){
-      boolean ok = Kernel.isWindows();
-      if(ok){
-        kernel.cancelExecution();
-      }else{
-        logger.debug("Cell execution interrupt not performed, done by SIGINT");
+  public void handle(Message message) {
+    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
+      logger.debug("Handing comm message content");
+      Boolean value = getValueFromData(message, getHandlerCommand());
+      if (value != null && value.booleanValue()) {
+        boolean ok = Kernel.isWindows();
+        if (ok) {
+          kernel.cancelExecution();
+        } else {
+          logger.debug("Cell execution interrupt not performed, done by SIGINT");
+        }
+        HashMap<String, Serializable> data = new HashMap<>();
+        HashMap<String, String> body = new HashMap<>();
+        body.put(KERNEL_INTERRUPT, ok ? TRUE : FALSE);
+        data.put(KERNEL_CONTROL_RESPONSE, body);
+        logger.info("Response " + ok);
+        publish(createReplyMessage(message, data));
       }
-      HashMap<String, Serializable> data = new HashMap<>();
-      HashMap<String, String> body = new HashMap<>();
-      body.put(KERNEL_INTERRUPT, ok ? TRUE : FALSE);
-      data.put(KERNEL_CONTROL_RESPONSE, body);
-      logger.info("Response " + ok);
-      publish(createReplyMessage(message, data));
-    }
+    });
   }
 
   @Override
   public String getHandlerCommand() {
     return KERNEL_INTERRUPT;
   }
-  
+
 }

@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
+import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 
@@ -41,28 +42,30 @@ public class GroovyKernelInfoHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    logger.debug("Processing kernel info request");
-    Message reply = new Message();
-    HashMap<String, Serializable> map = new HashMap<>(6);
-    map.put("protocol_version", "5.0");
-    map.put("implementation", "groovy");
-    map.put("implementation_version", "1.0.0");
-    HashMap<String, Serializable> map1 = new HashMap<String, Serializable>(7);
-    map1.put("name", "Groovy");
-    map1.put("version", GroovySystem.getVersion());
-    map1.put("mimetype", "");
-    map1.put("file_extension", ".groovy");
-    map1.put("codemirror_mode", "groovy");
-    map1.put("nbconverter_exporter", "");
-    map.put("language_info", map1);
-    map.put("banner", "BeakerX kernel for Apache Groovy");
-    map.put("beakerx", true);
-    map.put("help_links", new ArrayList<String>());
-    reply.setContent(map);
-    reply.setHeader(new Header(KERNEL_INFO_REPLY, message.getHeader().getSession()));
-    reply.setParentHeader(message.getHeader());
-    reply.setIdentities(message.getIdentities());
-    send(reply);
+    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
+      logger.debug("Processing kernel info request");
+      Message reply = new Message();
+      HashMap<String, Serializable> map = new HashMap<>(6);
+      map.put("protocol_version", "5.0");
+      map.put("implementation", "groovy");
+      map.put("implementation_version", "1.0.0");
+      HashMap<String, Serializable> map1 = new HashMap<String, Serializable>(7);
+      map1.put("name", "Groovy");
+      map1.put("version", GroovySystem.getVersion());
+      map1.put("mimetype", "");
+      map1.put("file_extension", ".groovy");
+      map1.put("codemirror_mode", "groovy");
+      map1.put("nbconverter_exporter", "");
+      map.put("language_info", map1);
+      map.put("banner", "BeakerX kernel for Apache Groovy");
+      map.put("beakerx", true);
+      map.put("help_links", new ArrayList<String>());
+      reply.setContent(map);
+      reply.setHeader(new Header(KERNEL_INFO_REPLY, message.getHeader().getSession()));
+      reply.setParentHeader(message.getHeader());
+      reply.setIdentities(message.getIdentities());
+      send(reply);
+    });
   }
 
 }

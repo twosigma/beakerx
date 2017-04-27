@@ -19,6 +19,7 @@ package com.twosigma.beaker.jupyter.handler;
 import com.twosigma.beaker.jupyter.commands.MagicCommand;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
+import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
@@ -59,41 +60,43 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
   }
 
   private synchronized void handleMessage(Message message) {
-    Message reply = new Message();
-    Map<String, Serializable> map = new HashMap<>(1);
-    map.put("execution_state", "busy");
-    reply.setContent(map);
-    reply.setHeader(new Header(STATUS, message.getHeader().getSession()));
-    reply.setParentHeader(message.getHeader());
-    reply.setIdentities(message.getIdentities());
-    publish(reply);
+    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
+      Message reply = new Message();
+      Map<String, Serializable> map = new HashMap<>(1);
+      map.put("execution_state", "busy");
+      reply.setContent(map);
+      reply.setHeader(new Header(STATUS, message.getHeader().getSession()));
+      reply.setParentHeader(message.getHeader());
+      reply.setIdentities(message.getIdentities());
+      publish(reply);
 
-    // Get the code to be executed from the message.
-    String code = "";
-    if (message.getContent() != null && message.getContent().containsKey("code")) {
-      code = ((String) message.getContent().get("code")).trim();
-    }
-
-    // Announce that we have the code.
-    reply.setHeader(new Header(EXECUTE_INPUT, message.getHeader().getSession()));
-    Map<String, Serializable> map1 = new HashMap<String, Serializable>(2);
-    map1.put("execution_count", executionCount);
-    map1.put("code", code);
-    reply.setContent(map1);
-    publish(reply);
-
-    ++executionCount;
-    if (!code.startsWith("%")) {
-       kernel.executeCode(code, message, executionCount);
-      // execution response in ExecuteResultHandler
-    } else {
-      String command = new Scanner(code).next();
-      if (magicCommand.commands.containsKey(command)) {
-        magicCommand.commands.get(command).process(code, message, executionCount);
-      } else {
-        magicCommand.processUnknownCommand(command, message, executionCount);
+      // Get the code to be executed from the message.
+      String code = "";
+      if (message.getContent() != null && message.getContent().containsKey("code")) {
+        code = ((String) message.getContent().get("code")).trim();
       }
-    }
+
+      // Announce that we have the code.
+      reply.setHeader(new Header(EXECUTE_INPUT, message.getHeader().getSession()));
+      Map<String, Serializable> map1 = new HashMap<String, Serializable>(2);
+      map1.put("execution_count", executionCount);
+      map1.put("code", code);
+      reply.setContent(map1);
+      publish(reply);
+
+      ++executionCount;
+      if (!code.startsWith("%")) {
+        kernel.executeCode(code, message, executionCount);
+        // execution response in ExecuteResultHandler
+      } else {
+        String command = new Scanner(code).next();
+        if (magicCommand.commands.containsKey(command)) {
+          magicCommand.commands.get(command).process(code, message, executionCount);
+        } else {
+          magicCommand.processUnknownCommand(command, message, executionCount);
+        }
+      }
+    });
   }
 
   @Override

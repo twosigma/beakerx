@@ -25,6 +25,7 @@ import java.util.HashMap;
 
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
+import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
@@ -45,23 +46,25 @@ public class CommInfoHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    logger.info("Processing CommInfoHandler");
-    Message reply = new Message();
-    reply.setHeader(new Header(COMM_INFO_REPLY, message.getHeader().getSession()));
-    HashMap<String, Serializable> content = new HashMap<>();
-    content.put(COMMS, new HashMap<String, Serializable>());
+    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
+      logger.info("Processing CommInfoHandler");
+      Message reply = new Message();
+      reply.setHeader(new Header(COMM_INFO_REPLY, message.getHeader().getSession()));
+      HashMap<String, Serializable> content = new HashMap<>();
+      content.put(COMMS, new HashMap<String, Serializable>());
 
-    for (String commHash : kernel.getCommHashSet()) {
-      HashMap<String, Serializable> commRepDetails = new HashMap<>();
-      Comm comm = kernel.getComm(commHash);
-      commRepDetails.put(TARGET_NAME, comm.getTargetName());
-      ((HashMap<String, Serializable>) content.get(COMMS)).put(comm.getCommId(), commRepDetails);
-    }
+      for (String commHash : kernel.getCommHashSet()) {
+        HashMap<String, Serializable> commRepDetails = new HashMap<>();
+        Comm comm = kernel.getComm(commHash);
+        commRepDetails.put(TARGET_NAME, comm.getTargetName());
+        ((HashMap<String, Serializable>) content.get(COMMS)).put(comm.getCommId(), commRepDetails);
+      }
 
-    reply.setContent(content);
-    reply.setParentHeader(message.getHeader());
-    reply.setIdentities(message.getIdentities());
-    send(reply);
+      reply.setContent(content);
+      reply.setParentHeader(message.getHeader());
+      reply.setIdentities(message.getIdentities());
+      send(reply);
+    });
   }
 
 }

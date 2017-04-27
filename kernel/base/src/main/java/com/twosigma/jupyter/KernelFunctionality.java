@@ -21,6 +21,7 @@ import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
+
 import java.util.Observer;
 import java.util.Set;
 
@@ -55,4 +56,8 @@ public interface KernelFunctionality {
   SimpleEvaluationObject executeCode(String code, Message message, int executionCount);
 
   AutocompleteResult autocomplete(String code, int cursorPos);
+
+  void sendBusyMessage(Message message);
+
+  void sendIdleMessage(Message message);
 }

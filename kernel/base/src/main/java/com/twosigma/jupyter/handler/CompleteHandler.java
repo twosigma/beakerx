@@ -43,11 +43,13 @@ public class CompleteHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    String code = ((String) message.getContent().get(CODE)).trim();
-    int cursorPos = ((int) message.getContent().get(CURSOR_POS));
-    AutocompleteResult autocomplete = kernel.autocomplete(code, cursorPos);
-    Message reply = createMsg(message, cursorPos, autocomplete);
-    send(reply);
+    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
+      String code = ((String) message.getContent().get(CODE)).trim();
+      int cursorPos = ((int) message.getContent().get(CURSOR_POS));
+      AutocompleteResult autocomplete = kernel.autocomplete(code, cursorPos);
+      Message reply = createMsg(message, cursorPos, autocomplete);
+      send(reply);
+    });
   }
 
   private Message createMsg(Message message, int cursorPos, AutocompleteResult autocomplete) {

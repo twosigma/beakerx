@@ -18,6 +18,7 @@ package com.twosigma.beaker.jupyter.handler;
 
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
+import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
@@ -31,10 +32,13 @@ import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
 import static com.twosigma.beaker.jupyter.comm.Comm.DATA;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 
-/** @author konst */
+/**
+ * @author konst
+ */
 public class CommCloseHandler extends KernelHandler<Message> {
 
-  private final static Logger logger = LoggerFactory.getLogger(CommCloseHandler.class);;
+  private final static Logger logger = LoggerFactory.getLogger(CommCloseHandler.class);
+  ;
 
   public CommCloseHandler(KernelFunctionality kernel) {
     super(kernel);
@@ -49,25 +53,27 @@ public class CommCloseHandler extends KernelHandler<Message> {
   }
 
   @Override
-  public void handle(Message message)  {
+  public void handle(Message message) {
+    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
+      logger.debug("Processing CommCloseHandler");
+      Map<String, Serializable> commMap = message.getContent();
 
-    logger.debug("Processing CommCloseHandler");
-    Map<String, Serializable> commMap = message.getContent();
+      String targetName =
+              (kernel.getComm(getString(commMap, COMM_ID)) != null)
+                      ? kernel.getComm(getString(commMap, COMM_ID)).getTargetName()
+                      : "";
+      kernel.removeComm(getString(commMap, COMM_ID));
 
-    String targetName =
-        (kernel.getComm(getString(commMap, COMM_ID)) != null)
-            ? kernel.getComm(getString(commMap, COMM_ID)).getTargetName()
-            : "";
-    kernel.removeComm(getString(commMap, COMM_ID));
+      Message reply = new Message();
+      reply.setHeader(new Header(COMM_CLOSE, message.getHeader().getSession()));
+      HashMap<String, Serializable> map = new HashMap<>();
+      map.put(DATA, new HashMap<>());
+      reply.setContent(map);
+      reply.setParentHeader(message.getHeader());
+      reply.setIdentities(message.getIdentities());
+      send(reply);
+      logger.debug("Comm closed, target name = " + targetName);
+    });
 
-    Message reply = new Message();
-    reply.setHeader(new Header(COMM_CLOSE, message.getHeader().getSession()));
-    HashMap<String, Serializable> map = new HashMap<>();
-    map.put(DATA, new HashMap<>());
-    reply.setContent(map);
-    reply.setParentHeader(message.getHeader());
-    reply.setIdentities(message.getIdentities());
-    send(reply);
-    logger.debug("Comm closed, target name = " + targetName);
   }
 }

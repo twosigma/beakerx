@@ -23,6 +23,7 @@ import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 
@@ -46,12 +47,14 @@ public class GetCodeCellsHandler extends BaseHandler<Object> {
 
   @Override
   public void handle(Message message) {
-    try{
-      List<BeakerCodeCell> cells = getBeakerCodeCells(getValueFromData(message, getHandlerCommand()));
-      NamespaceClient.getMessageQueue("CodeCells").put(cells);
-    } catch (InterruptedException e){
-      e.printStackTrace();
-    }
+    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
+      try {
+        List<BeakerCodeCell> cells = getBeakerCodeCells(getValueFromData(message, getHandlerCommand()));
+        NamespaceClient.getMessageQueue("CodeCells").put(cells);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    });
   }
 
   private List<BeakerCodeCell> getBeakerCodeCells(Object value) {

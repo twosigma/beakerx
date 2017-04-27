@@ -18,16 +18,15 @@ package com.twosigma.jupyter.handler;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.message.Message;
 
-public class HistoryHandler extends KernelHandler<Message> {
-  public HistoryHandler(KernelFunctionality kernel) {
-    super(kernel);
+public class KernelHandlerWrapper {
+
+  public static void wrapBusyIdle(KernelFunctionality kernel, Message message, HandlerAction handlerAction) {
+    kernel.sendIdleMessage(message);
+    handlerAction.execute();
+    kernel.sendBusyMessage(message);
   }
 
-  @Override
-  public void handle(Message message) {
-    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
-
-    });
+  public interface HandlerAction {
+    void execute();
   }
-
 }

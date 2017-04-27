@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,16 +49,18 @@ public class KernelControlSetShellHandler extends BaseHandler<List<String>> {
 
   @Override
   public void handle(Message message) {
-    logger.debug("Handing comm message content");
-    Map<String, List<String>> shell = getData(message);
-    if (shell != null) {
-      boolean ok = handleData(shell);
-      if (ok) {
-        HashMap<String, String> data = new HashMap<>();
-        data.put(KERNEL_CONTROL_RESPONSE, ok ? RESPONSE_OK : RESPONSE_ERROR);
-        publish(createReplyMessage(message, data));
+    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
+      logger.debug("Handing comm message content");
+      Map<String, List<String>> shell = getData(message);
+      if (shell != null) {
+        boolean ok = handleData(shell);
+        if (ok) {
+          HashMap<String, String> data = new HashMap<>();
+          data.put(KERNEL_CONTROL_RESPONSE, ok ? RESPONSE_OK : RESPONSE_ERROR);
+          publish(createReplyMessage(message, data));
+        }
       }
-    }
+    });
   }
 
   public boolean handleData(Map<String, List<String>> data) {

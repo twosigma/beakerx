@@ -22,6 +22,7 @@ import static com.twosigma.jupyter.KernelParameters.KERNEL_PARAMETERS;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,22 +45,24 @@ public abstract class KernelControlGetDefaultShellHandler extends BaseHandler<Bo
 
   @Override
   public void handle(Message message) {
-    logger.debug("Handing comm message content");
-    Boolean ok = getValueFromData(message, getHandlerCommand());
-    if (ok != null && ok.booleanValue()) {
+    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
+      logger.debug("Handing comm message content");
+      Boolean ok = getValueFromData(message, getHandlerCommand());
+      if (ok != null && ok.booleanValue()) {
 
-      HashMap<String, Object> kernelParameters = new HashMap<>();
-      kernelParameters.put(IMPORTS, getDefaultImports());
-      kernelParameters.put(CLASSPATH, getDefaultClassPath());
+        HashMap<String, Object> kernelParameters = new HashMap<>();
+        kernelParameters.put(IMPORTS, getDefaultImports());
+        kernelParameters.put(CLASSPATH, getDefaultClassPath());
 
-      HashMap<String, Object> shell = new HashMap<>();
-      shell.put(KERNEL_PARAMETERS, kernelParameters);
+        HashMap<String, Object> shell = new HashMap<>();
+        shell.put(KERNEL_PARAMETERS, kernelParameters);
 
-      HashMap<String, Serializable> data = new HashMap<>();
-      data.put(KERNEL_CONTROL_RESPONSE, shell);
-      logger.debug("Response OK");
-      publish(createReplyMessage(message, data));
-    }
+        HashMap<String, Serializable> data = new HashMap<>();
+        data.put(KERNEL_CONTROL_RESPONSE, shell);
+        logger.debug("Response OK");
+        publish(createReplyMessage(message, data));
+      }
+    });
   }
 
   @Override

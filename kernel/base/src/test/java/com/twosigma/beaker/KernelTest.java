@@ -151,4 +151,14 @@ public class KernelTest implements KernelFunctionality {
   public AutocompleteResult autocomplete(String code, int cursorPos) {
     return this.evaluatorManager.autocomplete(code,cursorPos);
   }
+
+  @Override
+  public void sendBusyMessage(Message message) {
+
+  }
+
+  @Override
+  public void sendIdleMessage(Message message) {
+
+  }
 }

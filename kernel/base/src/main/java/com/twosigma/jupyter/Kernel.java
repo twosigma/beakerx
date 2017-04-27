@@ -22,6 +22,7 @@ import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
+import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.handler.Handler;
@@ -49,8 +50,10 @@ public abstract class Kernel implements KernelFunctionality {
   private ExecutionResultSender executionResultSender;
   private EvaluatorManager evaluatorManager;
   private KernelSockets kernelSockets;
+  private MessageCreator messageCreator;
 
   public Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory) {
+    this.messageCreator = new MessageCreator(this);
     this.sessionId = sessionId;
     this.kernelSocketsFactory = kernelSocketsFactory;
     this.commMap = new ConcurrentHashMap<>();
@@ -167,5 +170,15 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public AutocompleteResult autocomplete(String code, int cursorPos) {
     return this.evaluatorManager.autocomplete(code, cursorPos);
+  }
+
+  @Override
+  public void sendBusyMessage(Message message) {
+    publish(this.messageCreator.createBusyMessage(message));
+  }
+
+  @Override
+  public void sendIdleMessage(Message message) {
+    publish(this.messageCreator.createIdleMessage(message));
   }
 }

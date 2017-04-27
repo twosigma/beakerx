@@ -16,9 +16,13 @@ import json
 
 from datetime import datetime
 
-from beaker.plot.legend import *
-from beaker.plot.utils import *
+from beaker.plot.legend import LegendPosition, LegendLayout
+from beaker.plot.utils import BaseObject, getValue
 from beaker.plot.plotitem import *
+
+from IPython.display import display
+from ipywidgets import DOMWidget, register
+from traitlets import Unicode, Int, Dict, default 
 
 
 class Chart(BaseObject):
@@ -85,11 +89,6 @@ class XYChart(AbstractChart):
     elif isinstance(item, YAxis):
       self.rangeAxes.append(item)
     return self
-
-
-class Plot(XYChart):
-  def __init__(self, **kwargs):
-    XYChart.__init__(self, **kwargs)
 
 
 class TimePlot(XYChart):
@@ -231,6 +230,22 @@ class SimpleTimePlot(TimePlot):
         raise Exception("Color list too short")
     else:
       return color
+
+
+@register('beakerx.Plot')
+class Plot(DOMWidget):
+  def __init__(self, **kwargs):
+    super(Plot, self).__init__()
+    self.chart = XYChart(**kwargs)
+    self.model = self.chart.transform()
+    
+  _view_name = Unicode('PlotView').tag(sync=True)
+  _model_name = Unicode('PlotModel').tag(sync=True)
+  _view_module = Unicode('beakerx').tag(sync=True)
+  _model_module = Unicode('beakerx').tag(sync=True)
+  _view_module_version = Unicode('^0.0.1').tag(sync=True)
+  _model_module_version = Unicode('^0.0.1').tag(sync=True)
+  model = Unicode().tag(sync=True)
 
 
 def parseJSON(out):

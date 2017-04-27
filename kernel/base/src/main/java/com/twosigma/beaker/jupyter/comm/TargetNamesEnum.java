@@ -17,6 +17,7 @@ package com.twosigma.beaker.jupyter.comm;
 
 public enum TargetNamesEnum {
 
+  BEAKER_GETCODECELLS("beaker.getcodecells"),
   BEAKER_AUTOTRANSLATION("beaker.autotranslation"),
   JUPYTER_WIDGET("jupyter.widget"),
   JUPYTER_WIDGET_VERSION("jupyter.widget.version"),

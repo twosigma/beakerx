@@ -54,7 +54,7 @@ public class ClojureKernelTest {
     kernelSocketsService.shutdown();
   }
 
-  @Test
+  //@Test
   public void evaluate() throws Exception {
     //given
     String code = "" +

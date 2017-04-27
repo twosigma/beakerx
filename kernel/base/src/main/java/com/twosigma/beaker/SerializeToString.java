@@ -169,7 +169,7 @@ public class SerializeToString {
       } else if (input instanceof MIMEContainer) {
         ret = (MIMEContainer) input;
       } else {
-        ret = asString(input);
+        ret = Text(input.toString());
       }
     } else {
       ret = Text("null");
@@ -177,16 +177,7 @@ public class SerializeToString {
     return ret;
   }
 
-  private static MIMEContainer asString(Object input) {
-    if (input instanceof String) {
-      return Text(input);
-    }
-    try {
-      return Text(objectMapper.writeValueAsString(input));
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
-    }
-  }
+
 
   private static boolean isWidget(Object input) {
     return (input instanceof EasyForm)

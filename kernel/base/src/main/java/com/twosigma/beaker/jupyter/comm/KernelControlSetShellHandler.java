@@ -48,7 +48,7 @@ public class KernelControlSetShellHandler extends BaseHandler<List<String>> {
 
   @Override
   public void handle(Message message) {
-    logger.info("Handing comm message content");
+    logger.debug("Handing comm message content");
     Map<String, List<String>> shell = getData(message);
     if (shell != null) {
       boolean ok = handleData(shell);

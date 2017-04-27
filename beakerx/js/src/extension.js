@@ -30,22 +30,36 @@ if (window.require) {
     });
 }
 
+require('./../src/plot/bko-combinedplot.css');
+require('./../src/plot/bko-plot.css');
+require('./../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.css');
+
 define([
   'services/config',
   'services/kernels/comm',
   'base/js/utils',
   'base/js/namespace',
   'base/js/events',
-  'require'
+  'require',
+
+  // Plot JS API
+  './plot/plotApi',
+  './shared/bkCoreManager',
+  'big.js'
 ], function(
   configmod,
   comm,
   utils,
   Jupyter,
   events,
-  require
+  require,
+  plotApi,
+  bkCoreManager,
+  big
 ) {
   "use strict";
+
+  window.Big = big;
 
   var base_url = utils.get_body_data('baseUrl');
   var config = new configmod.ConfigSection('notebook', {base_url: base_url});
@@ -59,9 +73,12 @@ define([
   Jupyter.notebook.events.on('kernel_ready.Kernel', function() {
     var kernel = Jupyter.notebook.kernel;
     window.beaker = {};
-    kernel.comm_manager.register_target('beaker.autotranslation',
+    kernel.comm_manager.register_target('beaker.getcodecells',
       function(comm, msg) {
         comm.on_msg(function(msg) {
+          if(msg.content.data.name == "CodeCells"){
+            sendJupyterCodeCells(JSON.parse(msg.content.data.value));
+          }
           window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
@@ -71,6 +88,20 @@ define([
   Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
     interrupt();
   });
+
+  function sendJupyterCodeCells(filter) {
+    var comm = Jupyter.notebook.kernel.comm_manager.new_comm("beaker.getcodecells",
+        null, null, null, utils.uuid());
+    var data = {};
+    data.code_cells = Jupyter.notebook.get_cells().filter(function (cell) {
+      if (cell._metadata.tags) {
+        return cell.cell_type == 'code' && cell._metadata.tags.includes(filter);
+      }
+      return false;
+    });
+    comm.send(data);
+    comm.close();
+  }
 
 
 
@@ -163,6 +194,18 @@ define([
       comm.send(data);
       comm.close();
     }
+  }
+
+  // assign Beaker methods to window
+  if (window && !window.beaker) {
+    window.beaker = {};
+
+    var plotApiList = plotApi.list();
+    var bkApp = bkCoreManager.getBkApp();
+    var bkObject = bkApp.getBeakerObject();
+
+    _.extend(window.beaker, plotApiList);
+    window.beaker.prefs = bkObject.beakerObj.prefs;
   }
 
   return {

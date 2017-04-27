@@ -51,7 +51,7 @@ public class CommCloseHandler extends KernelHandler<Message> {
   @Override
   public void handle(Message message)  {
 
-    logger.info("Processing CommCloseHandler");
+    logger.debug("Processing CommCloseHandler");
     Map<String, Serializable> commMap = message.getContent();
 
     String targetName =
@@ -68,6 +68,6 @@ public class CommCloseHandler extends KernelHandler<Message> {
     reply.setParentHeader(message.getHeader());
     reply.setIdentities(message.getIdentities());
     send(reply);
-    logger.info("Comm closed, target name = " + targetName);
+    logger.debug("Comm closed, target name = " + targetName);
   }
 }

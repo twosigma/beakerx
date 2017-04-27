@@ -1,0 +1,200 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+apply plugin: 'application'
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+def final kernelIdName = 'cpp'
+def final toReplace = '__PATH__'
+
+mainClassName = 'com.twosigma.beaker.cpp.CppKernelMain'
+
+configurations {
+  antlr
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile project(':kernel:base')
+  compile group: 'org.abstractmeta', name: 'compilation-toolbox', version: '0.3.2'
+  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
+  antlr group: 'org.antlr', name: 'antlr4', version: '4.5'
+  compile 'commons-io:commons-io:2.5'
+
+  testCompile project(':kernel:base').sourceSets.test.output
+  testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
+  testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+task antlr4_java(type: JavaExec) {
+  main = "org.antlr.v4.Tool"
+  workingDir = "src/main/antlr4/"
+  args = ["CPP14.g4", "-o", "../java/com/twosigma/beaker/cpp/autocomplete", "-listener", "-no-visitor", "-package", "com.twosigma.beaker.cpp.autocomplete", "-encoding", "UTF-8"]
+  classpath = configurations.antlr
+}
+
+compileJava.dependsOn antlr4_java
+
+compileJava {
+  options.compilerArgs << '-Xlint:deprecation'
+  options.compilerArgs << '-Xlint:unchecked'
+}
+
+task prepareJson(dependsOn: 'build') {
+  doLast {
+    println "Prepare JSON for Jupyter notebook"
+    println "Copy kernel.json to build/libs/json/ and replacing PATH with cpp.jar path"
+
+    def jarLocation = file('build/libs/cpp.jar').getAbsolutePath()
+    jarLocation = jarLocation.replace("\\", "/");
+    def text = file('kernel.json').text.replace(toReplace, jarLocation)
+    def folder = file('build/libs/json')
+    if (!folder.exists()) {
+      println "Creating folder build/libs/json"
+      folder.mkdirs()
+    }
+
+    file('build/libs/json/kernel.json').withWriter { w ->
+      w << text
+    }
+  }
+}
+
+task kernelInstall(dependsOn: 'prepareJson') {
+  doLast {
+    println "Installing 'cpp' to jupyter notebook"
+
+    def hashStdOut = new ByteArrayOutputStream()
+    def jsonFolder = file('build/libs/json/').getAbsolutePath();
+    exec {
+      commandLine "jupyter",
+              "kernelspec",
+              "install",
+              "--sys-prefix",
+              "--replace",
+              "--name",
+              kernelIdName,
+              jsonFolder;
+      standardOutput = hashStdOut
+    }
+    println hashStdOut.toString().trim();
+    println "DONE"
+  }
+}
+
+def osName = System.properties['os.name']
+def mac = false
+def win = false
+def linux = false
+def platform = ''
+if (osName.startsWith('Mac')) {
+  mac = true
+  platform = 'darwin'
+} else if (osName.startsWith('Windows')) {
+  win = true
+  platform = 'win32'
+} else if (osName.startsWith('Linux')) {
+  linux = true
+  platform = 'linux'
+}
+
+def java_home = System.properties.'java.home'
+
+task makeCppKernelHeader(type: Exec) {
+  workingDir './build/classes/main'
+  def jvmDir = project(':kernel:cpp').projectDir
+  commandLine 'javah', '-cp', "${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/resources/CppKernel.h', 'com.twosigma.beaker.cpp.utils.CppKernel'
+}
+
+task makeCRunLib(type: Exec, dependsOn: ['makeCppKernelHeader']) {
+  inputs.file('./src/main/resources/CRun.cpp')
+  outputs.file('./src/main/resources/libCRun.jnilib')
+  workingDir './src/main/resources'
+  if (mac) {
+    commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/darwin", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  } else if (linux) {
+    commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', "${java_home}/../include", '-I', "${java_home}/../include/linux", '-o', 'libCRun.jnilib', 'CRun.cpp'
+  } else {
+    commandLine 'cmd', '/c', 'echo C++ on windows is not supported'
+  }
+}
+
+compileJava.finalizedBy makeCRunLib
+
+startScripts {
+  defaultJvmOpts = ['-Djava.awt.headless=' + 'true']
+  doLast {
+    // Remove too-long-classpath and use wildcard ( works for java 6 and above only)
+    windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/libs/*;' + "${libsDir.absolutePath}/*")
+    unixScript.text = unixScript.text.replaceAll('CLASSPATH=\\$APP_HOME.*', 'CLASSPATH=\\$APP_HOME/libs/*:' + "${libsDir.absolutePath}/*")
+  }
+}
+
+task copyRunnerScripts {
+  doLast {
+    copy {
+      from './build/scripts'
+      into './src/main/resources/'
+    }
+    copy {
+      from './build/scripts'
+      into './build/resources/main/'
+    }
+  }
+}
+
+startScripts.finalizedBy copyRunnerScripts
+
+jar {
+  manifest {
+    attributes "Main-Class": "$mainClassName"
+  }
+
+  from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  } {
+    exclude "META-INF/*.SF"
+    exclude "META-INF/*.DSA"
+    exclude "META-INF/*.RSA"
+  }
+}
+
+task jarWithScripts(type: Jar) {
+  manifest {
+    attributes "Main-Class": "$mainClassName"
+  }
+  baseName = project.name
+  with jar
+}
+
+copyRunnerScripts.finalizedBy jarWithScripts
+
+jacocoTestReport {
+  reports {
+    html.enabled = true
+    xml.enabled = false
+    csv.enabled = false
+  }
+  afterEvaluate {
+    classDirectories = files(classDirectories.files.collect {
+      fileTree(dir: it, exclude: 'com/twosigma/beaker/cpp/autocomplete/CPP14*')
+    })
+  }
+}

@@ -44,7 +44,7 @@ public class CommMsgHandler extends KernelHandler<Message> {
 
     Map<String, Serializable> commMap = message.getContent();
     Comm comm = kernel.getComm(getString(commMap, COMM_ID));
-    logger.info("Comm message handling, target name: " + (comm != null ? comm.getTargetName() : "undefined"));
+    logger.debug("Comm message handling, target name: " + (comm != null ? comm.getTargetName() : "undefined"));
     if (comm != null) {
       comm.handleMsg(message);
     }

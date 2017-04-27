@@ -17,12 +17,11 @@
 define([
   'jquery',
   'datatables.net',
-  './../../bower_components/datatables.net-colreorder/js/dataTables.colReorder.min',
-  './../../bower_components/datatables.net-fixedcolumns/js/dataTables.fixedColumns.min',
-  './../../bower_components/datatables.net-keytable/js/dataTables.keyTable.min',
+  'datatables.net-colreorder',
+  'datatables.net-fixedcolumns',
+  'datatables.net-keytable',
   './../shared/libs/datatables-colresize/dataTables.colResize',
   './../../bower_components/moment-timezone/builds/moment-timezone-with-data.min',
-  './../../bower_components/jquery-throttle-debounce/jquery.ba-throttle-debounce.min',
   './../shared/bkUtils',
   './cellHighlighters',
   './../shared/bkHelper',
@@ -38,7 +37,6 @@ define([
   dataTablesKeyTable,
   dataTablesColResize,
   moment,
-  throttleDebounce,
   bkUtils,
   cellHighlighters,
   bkHelper,
@@ -49,8 +47,6 @@ define([
 ) {
 
   var jQuery = $;
-  $.fn.dataTable = dataTables;
-  $.debounce = throttleDebounce.Cowboy.debounce;
 
   function TableScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -80,6 +76,8 @@ define([
 
     // attach additional data from consts
     _.extend(this, tableConsts.scopeData);
+
+    this.debouncedColumnFilterFn = this.getDebouncedColumnFilterFn();
 
     this.bindAllConverters();
     this.prepareDoubleWithPrecisionConverters();
@@ -1176,12 +1174,14 @@ define([
 
     var filterInputSelector = '.filterRow .filter-input';
     jqContainer.off('keyup.column-filter change.column-filter');
-    jqContainer.on('keyup.column-filter change.column-filter', filterInputSelector,
-      self.columnSearchActive ? self.columnFilterFn : $.debounce(500, self.columnFilterFn));
-
-    // if (!(self.$$phase || $rootScope.$$phase)) {
-    //   self.$apply();
-    // }
+    jqContainer.on('keyup.column-filter change.column-filter', filterInputSelector, function(e) {
+      var element = this;
+      if (self.columnSearchActive) {
+        self.columnFilterFn(e, element);
+      } else {
+        self.debouncedColumnFilterFn(e, element);
+      }
+    });
 
     setTimeout(function() {
       self.table.draw(false);
@@ -1761,8 +1761,8 @@ define([
     }
 
     var beakerObj = bkHelper.getBeakerObject().beakerObj;
-    self.outputColumnLimit = beakerObj.prefs && beakerObj.prefs.outputColumnLimit
-      ? beakerObj.prefs.outputColumnLimit : self.columnNames.length;
+    self.outputColumnLimit = beakerObj.prefs && beakerObj.prefs.outputColumnLimit ?
+      beakerObj.prefs.outputColumnLimit : self.columnNames.length;
 
     for (i = 0; i < self.columnNames.length; i++) {
       var type = self.actualtype[i];
@@ -1947,7 +1947,6 @@ define([
           self.refreshCells();
           self.applyFilters();
           self.updateBackground();
-          self.$digest();
         },
         'iFixedColumns': self.pagination.fixLeft + 1,
         'iFixedColumnsRight': self.pagination.fixRight
@@ -2119,6 +2118,15 @@ define([
         updateSize();
       });
 
+      self.element.find(id + '_dropdown_menu')
+        .on('click.bko-dropdown', function() {
+          var isOpen = $(this).parents('.dropdown').hasClass('open');
+
+          if (!isOpen) {
+            self.setCodeMirrorListener($(this));
+          }
+        });
+
       // self.$on(GLOBALS.EVENTS.ADVANCED_MODE_TOGGLED, function() {
       //   updateSize();
       // });
@@ -2175,6 +2183,43 @@ define([
       }, 0);
 
     }, 0);
+  };
+
+  // little hack: hide dropdown menu when click on CodeMirror instance
+  // CodeMirror stops propagation of 'click' event on first click
+  TableScope.prototype.setCodeMirrorListener = function(el) {
+    var CodeMirrorInstance = el.parents('.cell').find('.CodeMirror');
+    var dropdown = el.parent('.dropdown');
+
+    if (CodeMirrorInstance) {
+      CodeMirrorInstance.off('mousedown.beakerDropdown');
+      CodeMirrorInstance.on('mousedown.beakerDropdown', function() {
+        dropdown.removeClass('open');
+        CodeMirrorInstance.off('mousedown.beakerDropdown');
+      });
+    }
+  };
+
+  TableScope.prototype.enableJupyterKeyHandler = function() {
+    this.element
+      .on('focusin', this.elementFocusIn.bind(this))
+      .on('focusout', this.elementFocusOut.bind(this));
+  };
+
+  TableScope.prototype.elementFocusIn = function(e) {
+    this.setJupyterEditMode();
+  };
+
+  TableScope.prototype.elementFocusOut = function(e) {
+    this.setJupyterCommandMode();
+  };
+
+  TableScope.prototype.setJupyterEditMode = function() {
+    Jupyter.keyboard_manager.edit_mode();
+  };
+
+  TableScope.prototype.setJupyterCommandMode = function() {
+    Jupyter.keyboard_manager.command_mode();
   };
 
   TableScope.prototype.menuToggle = function() {
@@ -2521,9 +2566,16 @@ define([
     self.removeFilterListeners();
     var filterInputSelector = '.filterRow .filter-input';
     var clearFilterSelector = '.filterRow .clear-filter';
+
     $(self.table.table().container())
-      .on('keyup.column-filter change.column-filter', filterInputSelector,
-        self.columnSearchActive ? self.columnFilterFn : $.debounce(500, self.columnFilterFn))
+      .on('keyup.column-filter change.column-filter', filterInputSelector, function(e) {
+        var element = this;
+        if (self.columnSearchActive) {
+          self.columnFilterFn(e, element);
+        } else {
+          self.debouncedColumnFilterFn(e, element);
+        }
+      })
       .on('focus.column-filter', filterInputSelector, function(event) {
         if(self.keyTable){
           self.keyTable.blur();
@@ -2573,26 +2625,33 @@ define([
     return self.table.column(self.getColumnIndexByCellNode(filterNode) + ':visible');
   };
 
-  TableScope.prototype.columnFilterFn = function(e) {
+  TableScope.prototype.columnFilterFn = function(e, element) {
     var self = this;
     if (e.keyCode === 27 || e.keyCode === 13) { return; }
-    if ($(this).hasClass('table-filter')) {
-      self.tableFilter = this.value;
+    if ($(element).hasClass('table-filter')) {
+      self.tableFilter = element.value;
       if (self.columnSearchActive) {
         self.table.search(self.tableFilter).draw();
       } else {
         self.table.draw();
       }
     } else {
-      var column = self.getColumn(this);
-      var colIdx = $(this).parents('th').index();
+      var column = self.getColumn(element);
+      var colIdx = $(element).parents('th').index();
       if (self.columnSearchActive) {
-        column.search(this.value);
+        column.search(element.value);
       }
       self.columnFilter[self.colorder[colIdx] - 1] = this.value;
       column.draw();
-      self.updateFilterWidth($(this), column);
+      self.updateFilterWidth($(element), column);
     }
+  };
+
+  TableScope.prototype.getDebouncedColumnFilterFn = function() {
+    var self = this;
+    return _.debounce(function(e, element) {
+      self.columnFilterFn(e, element);
+    }, 500);
   };
 
   TableScope.prototype.tableHasFocus = function(){
@@ -3015,7 +3074,7 @@ define([
     var self = this;
     var elem = $('<li>' +
                  '<a tabindex="-1">'+self.rowsToDisplayMenu[1][index]+'</a>' +
-                 '<i class="glyphicon glyphicon-ok"></i>' +
+                 '<i class="fa fa-check" aria-hidden="true"></i>' +
                  '</li>');
 
     elem.on('click', 'a', function() {

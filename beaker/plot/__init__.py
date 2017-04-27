@@ -12,11 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .legend import *
-from .plotitem import *
-from .utils import *
-
 from .chart import *
-
-
-
+from .legend import *

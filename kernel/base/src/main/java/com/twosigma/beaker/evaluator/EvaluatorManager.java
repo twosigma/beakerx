@@ -56,7 +56,7 @@ public class EvaluatorManager {
   }
 
   public synchronized SimpleEvaluationObject executeCode(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code,executeCodeCallback);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
     seo.setJupyterMessage(message);
     seo.setExecutionCount(executionCount);
     seo.addObserver(kernel.getExecutionResultSender());

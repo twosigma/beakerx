@@ -16,7 +16,6 @@
 package com.twosigma.jupyter.handler;
 
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
-import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
@@ -26,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMPLETE_REPLY;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 public class CompleteHandler extends KernelHandler<Message> {
 
@@ -43,13 +43,17 @@ public class CompleteHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
-      String code = ((String) message.getContent().get(CODE)).trim();
-      int cursorPos = ((int) message.getContent().get(CURSOR_POS));
-      AutocompleteResult autocomplete = kernel.autocomplete(code, cursorPos);
-      Message reply = createMsg(message, cursorPos, autocomplete);
-      send(reply);
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
     });
+  }
+
+  private void handleMsg(Message message) {
+    String code = ((String) message.getContent().get(CODE)).trim();
+    int cursorPos = ((int) message.getContent().get(CURSOR_POS));
+    AutocompleteResult autocomplete = kernel.autocomplete(code, cursorPos);
+    Message reply = createMsg(message, cursorPos, autocomplete);
+    send(reply);
   }
 
   private Message createMsg(Message message, int cursorPos, AutocompleteResult autocomplete) {

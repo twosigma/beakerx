@@ -19,7 +19,6 @@ import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +27,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 public class CommMsgHandler extends KernelHandler<Message> {
 
@@ -41,14 +41,18 @@ public class CommMsgHandler extends KernelHandler<Message> {
   }
 
   public void handle(Message message) {
-    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
-      Map<String, Serializable> commMap = message.getContent();
-      Comm comm = kernel.getComm(getString(commMap, COMM_ID));
-      logger.debug("Comm message handling, target name: " + (comm != null ? comm.getTargetName() : "undefined"));
-      if (comm != null) {
-        comm.handleMsg(message);
-      }
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
     });
+  }
+
+  private void handleMsg(Message message) {
+    Map<String, Serializable> commMap = message.getContent();
+    Comm comm = kernel.getComm(getString(commMap, COMM_ID));
+    logger.debug("Comm message handling, target name: " + (comm != null ? comm.getTargetName() : "undefined"));
+    if (comm != null) {
+      comm.handleMsg(message);
+    }
   }
 
   public static String getString(Map<String, Serializable> map, String name) {

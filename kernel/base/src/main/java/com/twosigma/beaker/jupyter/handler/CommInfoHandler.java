@@ -19,13 +19,13 @@ package com.twosigma.beaker.jupyter.handler;
 import static com.twosigma.beaker.jupyter.comm.Comm.COMMS;
 import static com.twosigma.beaker.jupyter.comm.Comm.TARGET_NAME;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_INFO_REPLY;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
@@ -46,25 +46,29 @@ public class CommInfoHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
-      logger.debug("Processing CommInfoHandler");
-      Message reply = new Message();
-      reply.setHeader(new Header(COMM_INFO_REPLY, message.getHeader().getSession()));
-      HashMap<String, Serializable> content = new HashMap<>();
-      content.put(COMMS, new HashMap<String, Serializable>());
-
-      for (String commHash : kernel.getCommHashSet()) {
-        HashMap<String, Serializable> commRepDetails = new HashMap<>();
-        Comm comm = kernel.getComm(commHash);
-        commRepDetails.put(TARGET_NAME, comm.getTargetName());
-        ((HashMap<String, Serializable>) content.get(COMMS)).put(comm.getCommId(), commRepDetails);
-      }
-
-      reply.setContent(content);
-      reply.setParentHeader(message.getHeader());
-      reply.setIdentities(message.getIdentities());
-      send(reply);
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
     });
+  }
+
+  private void handleMsg(Message message) {
+    logger.debug("Processing CommInfoHandler");
+    Message reply = new Message();
+    reply.setHeader(new Header(COMM_INFO_REPLY, message.getHeader().getSession()));
+    HashMap<String, Serializable> content = new HashMap<>();
+    content.put(COMMS, new HashMap<String, Serializable>());
+
+    for (String commHash : kernel.getCommHashSet()) {
+      HashMap<String, Serializable> commRepDetails = new HashMap<>();
+      Comm comm = kernel.getComm(commHash);
+      commRepDetails.put(TARGET_NAME, comm.getTargetName());
+      ((HashMap<String, Serializable>) content.get(COMMS)).put(comm.getCommId(), commRepDetails);
+    }
+
+    reply.setContent(content);
+    reply.setParentHeader(message.getHeader());
+    reply.setIdentities(message.getIdentities());
+    send(reply);
   }
 
 }

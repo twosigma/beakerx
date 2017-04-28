@@ -19,7 +19,6 @@ package com.twosigma.beaker.jupyter.handler;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.handler.Handler;
-import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
@@ -35,6 +34,7 @@ import static com.twosigma.beaker.jupyter.comm.Comm.TARGET_MODULE;
 import static com.twosigma.beaker.jupyter.comm.Comm.TARGET_NAME;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import com.twosigma.jupyter.KernelFunctionality;
 
@@ -51,38 +51,42 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
-      logger.debug("Processing CommOpenHandler");
-      Message reply = new Message();
-      HashMap<String, Serializable> map = new HashMap<>(6);
-
-      Map<String, Serializable> commMap = message.getContent();
-      Comm newComm = null;
-      if (isValidMessage(commMap)) {
-        newComm = readComm(commMap);
-        reply.setHeader(new Header(COMM_OPEN, message.getHeader().getSession()));
-        map.put(COMM_ID, newComm.getCommId());
-        map.put(TARGET_NAME, newComm.getTargetName());
-        map.put(DATA, new HashMap<>());
-        map.put(TARGET_MODULE, newComm.getTargetModule());
-      } else {
-        reply.setHeader(new Header(COMM_CLOSE, message.getHeader().getSession()));
-        map.put(DATA, new HashMap<>());
-      }
-
-      if (newComm != null) {
-        logger.debug("Comm opened, target name = " + newComm.getTargetName());
-        for (Handler<Message> handler : getKernelControlChanelHandlers(newComm.getTargetName())) {
-          newComm.addMsgCallbackList(handler);
-        }
-        kernel.addComm(newComm.getCommId(), newComm);
-      }
-
-      reply.setContent(map);
-      reply.setParentHeader(message.getHeader());
-      reply.setIdentities(message.getIdentities());
-      send(reply);
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
     });
+  }
+
+  private void handleMsg(Message message) {
+    logger.debug("Processing CommOpenHandler");
+    Message reply = new Message();
+    HashMap<String, Serializable> map = new HashMap<>(6);
+
+    Map<String, Serializable> commMap = message.getContent();
+    Comm newComm = null;
+    if (isValidMessage(commMap)) {
+      newComm = readComm(commMap);
+      reply.setHeader(new Header(COMM_OPEN, message.getHeader().getSession()));
+      map.put(COMM_ID, newComm.getCommId());
+      map.put(TARGET_NAME, newComm.getTargetName());
+      map.put(DATA, new HashMap<>());
+      map.put(TARGET_MODULE, newComm.getTargetModule());
+    } else {
+      reply.setHeader(new Header(COMM_CLOSE, message.getHeader().getSession()));
+      map.put(DATA, new HashMap<>());
+    }
+
+    if (newComm != null) {
+      logger.debug("Comm opened, target name = " + newComm.getTargetName());
+      for (Handler<Message> handler : getKernelControlChanelHandlers(newComm.getTargetName())) {
+        newComm.addMsgCallbackList(handler);
+      }
+      kernel.addComm(newComm.getCommId(), newComm);
+    }
+
+    reply.setContent(map);
+    reply.setParentHeader(message.getHeader());
+    reply.setIdentities(message.getIdentities());
+    send(reply);
   }
 
   public abstract Handler<Message>[] getKernelControlChanelHandlers(String targetName);

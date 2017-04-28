@@ -20,12 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.message.Message;
+
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 public class KernelControlCommandListHandler extends BaseHandler<Boolean> {
 
@@ -40,15 +41,19 @@ public class KernelControlCommandListHandler extends BaseHandler<Boolean> {
 
   @Override
   public void handle(Message message) {
-    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
-      logger.debug("Handing comm message content");
-      Boolean value = getValueFromData(message, getHandlerCommand());
-      if (value != null && value.booleanValue()) {
-        HashMap<String, Serializable> data = new HashMap<>();
-        data.put(KERNEL_CONTROL_RESPONSE, getCommKernelControlCommandList());
-        publish(createReplyMessage(message, data));
-      }
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
     });
+  }
+
+  private void handleMsg(Message message) {
+    logger.debug("Handing comm message content");
+    Boolean value = getValueFromData(message, getHandlerCommand());
+    if (value != null && value.booleanValue()) {
+      HashMap<String, Serializable> data = new HashMap<>();
+      data.put(KERNEL_CONTROL_RESPONSE, getCommKernelControlCommandList());
+      publish(createReplyMessage(message, data));
+    }
   }
 
   protected String[] getCommKernelControlCommandList() {

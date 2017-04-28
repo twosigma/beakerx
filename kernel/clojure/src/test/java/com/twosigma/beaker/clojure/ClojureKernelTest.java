@@ -35,7 +35,7 @@ import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.MessageAssertions.verifyExecuteResultMessage;
 import static com.twosigma.MessageAssertions.verifyIdleMessage;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClojureKernelTest {
@@ -72,9 +72,10 @@ public class ClojureKernelTest {
     Message message = getExecuteRequestMessage(code);
     //when
     kernelSocketsService.handleMsg(message);
-    Optional<Message> result = waitForResult(kernelSocketsService.getKernelSockets());
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     //then
-    verifyResult(result);
+    assertThat(idleMessage).isPresent();
+    verifyResult(kernelSocketsService.getPublishedMessages().get(2));
     verifyPublishedMsgs(kernelSocketsService.getPublishedMessages());
     verifySentMsgs(kernelSocketsService.getSentMessages());
   }
@@ -90,10 +91,8 @@ public class ClojureKernelTest {
     verifyExecuteReplyMessage(messages.get(0));
   }
 
-  private void verifyResult(Optional<Message> result) {
-    assertThat(result).isPresent();
-    Message message = result.get();
-    Map actual = ((Map) message.getContent().get(Comm.DATA));
+  private void verifyResult(Message result) {
+    Map actual = ((Map) result.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
     assertThat(value).isNotEmpty();
     //assertThat(value).contains("[0,1,1,2,3,5"); ->  https://github.com/twosigma/beakerx/issues/5147

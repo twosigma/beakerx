@@ -19,18 +19,17 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.NamespaceClient;
-import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.KernelHandlerWrapper;
-import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 
 public class GetCodeCellsHandler extends BaseHandler<Object> {
@@ -47,14 +46,18 @@ public class GetCodeCellsHandler extends BaseHandler<Object> {
 
   @Override
   public void handle(Message message) {
-    KernelHandlerWrapper.wrapBusyIdle(kernel, message, () -> {
-      try {
-        List<BeakerCodeCell> cells = getBeakerCodeCells(getValueFromData(message, getHandlerCommand()));
-        NamespaceClient.getMessageQueue("CodeCells").put(cells);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
     });
+  }
+
+  private void handleMsg(Message message) {
+    try {
+      List<BeakerCodeCell> cells = getBeakerCodeCells(getValueFromData(message, getHandlerCommand()));
+      NamespaceClient.getMessageQueue("CodeCells").put(cells);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
   private List<BeakerCodeCell> getBeakerCodeCells(Object value) {

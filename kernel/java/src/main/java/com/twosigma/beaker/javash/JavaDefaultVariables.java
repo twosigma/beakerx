@@ -24,11 +24,4 @@ import com.twosigma.beaker.DefaultJVMVariables;
  */
 public class JavaDefaultVariables extends DefaultJVMVariables {
   
-  public JavaDefaultVariables() {
-    //TODO delete when issue #5126 "java crashes on static imports" will be fixed 
-    removeImports(
-      "static com.twosigma.beaker.widgets.DisplayAnyWidget.display"
-      );
-  }
-  
 }

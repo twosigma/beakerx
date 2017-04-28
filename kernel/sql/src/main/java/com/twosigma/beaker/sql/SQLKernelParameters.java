@@ -39,6 +39,11 @@ public class SQLKernelParameters {
     Collection<String> listOfClassPath = (Collection<String>) kernelParameters.getParams().get(CLASSPATH);
     return getAsString(listOfClassPath);
   }
+  
+  public Collection<String> getClassPath() {
+    return (Collection<String>) kernelParameters.getParams().get(CLASSPATH);
+  }
+
 
   public Optional<String> defaultDatasource() {
     return kernelParameters.getParam(DEFAULT_DATASOURCE, String.class);

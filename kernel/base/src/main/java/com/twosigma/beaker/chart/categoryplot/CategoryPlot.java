@@ -23,7 +23,6 @@ import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.chart.InternalPlot;
 import com.twosigma.beaker.widgets.internal.CommWidget;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
@@ -33,7 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CategoryPlot extends AbstractChart implements InternalCommWidget, InternalPlot {
+public class CategoryPlot extends AbstractChart implements CommWidget, InternalPlot {
   private final List<CategoryGraphics> categoryGraphics        = new ArrayList<>();
   private       List<String>           categoryNames           = new ArrayList<>();
   private       PlotOrientationType    orientation             = PlotOrientationType.VERTICAL;

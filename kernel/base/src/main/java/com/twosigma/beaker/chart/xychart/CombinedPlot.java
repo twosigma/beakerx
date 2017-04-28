@@ -18,16 +18,13 @@ package com.twosigma.beaker.chart.xychart;
 
 import com.twosigma.beaker.chart.ObservableChart;
 import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.chart.InternalPlot;
 import com.twosigma.beaker.widgets.internal.CommWidget;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +33,7 @@ import java.util.List;
  * CombinedPlot
  *
  */
-public class CombinedPlot extends ObservableChart implements InternalCommWidget, InternalPlot {
+public class CombinedPlot extends ObservableChart implements CommWidget, InternalPlot {
   private int initWidth = 640;
   private int initHeight = 480;
   private String title;

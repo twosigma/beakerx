@@ -16,17 +16,17 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.chart.InternalPlot;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
+import com.twosigma.beaker.widgets.internal.CommWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
-public class Plot extends XYChart implements InternalCommWidget, InternalPlot {
+import java.io.Serializable;
+import java.util.HashMap;
+
+public class Plot extends XYChart implements CommWidget, InternalPlot {
 
   private Comm comm;
 

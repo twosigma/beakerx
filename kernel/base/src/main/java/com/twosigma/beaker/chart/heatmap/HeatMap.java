@@ -24,7 +24,6 @@ import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.chart.InternalPlot;
 import com.twosigma.beaker.widgets.internal.CommWidget;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
@@ -32,7 +31,7 @@ import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
-public class HeatMap extends AbstractChart implements InternalCommWidget, InternalPlot {
+public class HeatMap extends AbstractChart implements CommWidget, InternalPlot {
   private Number[][] data;
   private GradientColor color = GradientColor.BROWN_RED_YELLOW;
 

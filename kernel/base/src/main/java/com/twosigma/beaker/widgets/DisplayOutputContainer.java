@@ -19,7 +19,6 @@ import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.widgets.internal.CommWidget;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.selectioncontainer.Tab;
 import com.twosigma.beaker.widgets.strings.Label;
 
@@ -42,7 +41,7 @@ public class DisplayOutputContainer {
 
   private static CommWidget toCommFunctionality(Object item) {
     CommWidget widget;
-    if (item instanceof InternalCommWidget || item instanceof CommWidget) {
+    if (item instanceof CommWidget) {
       widget = (CommWidget) item;
     } else if (item instanceof HashMap) {
       widget = TableDisplay.createTableDisplayForMap((HashMap) item);

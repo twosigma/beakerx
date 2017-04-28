@@ -22,17 +22,15 @@ import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.chart.InternalPlot;
 import com.twosigma.beaker.widgets.internal.CommWidget;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Histogram extends AbstractChart implements InternalCommWidget, InternalPlot {
+public class Histogram extends AbstractChart implements CommWidget, InternalPlot {
 
   public enum DisplayMode {
     OVERLAP,

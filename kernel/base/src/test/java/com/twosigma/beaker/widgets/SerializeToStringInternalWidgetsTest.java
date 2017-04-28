@@ -28,7 +28,7 @@ import java.util.Map;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
 import static com.twosigma.beaker.widgets.internal.CommWidget.DISPLAY;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beaker.widgets.internal.InternalCommWidget.MODEL;
+import static com.twosigma.beaker.widgets.internal.InternalWidgetUtils.MODEL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 

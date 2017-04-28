@@ -17,14 +17,14 @@ package com.twosigma.beaker.easyform;
 
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.box.Box;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
+import com.twosigma.beaker.widgets.internal.CommWidget;
 import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
-public class EasyFormView extends Box implements InternalCommWidget{
+public class EasyFormView extends Box implements CommWidget{
 
   public static final String VIEW_NAME_VALUE = "EasyFormView";
   public static final String MODEL_NAME_VALUE = "EasyFormModel";

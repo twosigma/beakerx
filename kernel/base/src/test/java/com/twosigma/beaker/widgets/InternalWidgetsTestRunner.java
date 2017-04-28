@@ -15,12 +15,12 @@
  */
 package com.twosigma.beaker.widgets;
 
+import org.reflections.Reflections;
+
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.widgets.internal.CommWidget;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 
-import org.reflections.Reflections;
 
 import java.util.Set;
 
@@ -40,20 +40,20 @@ public class InternalWidgetsTestRunner {
   }
 
   public void test(TestAction action) throws Exception {
-    for (Class<? extends InternalCommWidget> clazz : getAllInternalWidget()) {
+    for (Class<? extends CommWidget> clazz : getAllInternalWidget()) {
       setUp();
       action.run(clazz, groovyKernel);
       tearDown();
     }
   }
 
-  private Set<Class<? extends InternalCommWidget>> getAllInternalWidget() {
+  private Set<Class<? extends CommWidget>> getAllInternalWidget() {
     Reflections reflections = new Reflections(PATH_TO_SCAN);
-    return reflections.getSubTypesOf(InternalCommWidget.class);
+    return reflections.getSubTypesOf(CommWidget.class);
   }
 
   public interface TestAction {
-    void run(Class<? extends InternalCommWidget> clazz, KernelTest groovyKernel) throws Exception;
+    void run(Class<? extends CommWidget> clazz, KernelTest groovyKernel) throws Exception;
   }
 
 }

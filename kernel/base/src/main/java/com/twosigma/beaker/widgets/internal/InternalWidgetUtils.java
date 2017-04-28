@@ -29,6 +29,7 @@ public class InternalWidgetUtils {
 
   public static final String MODEL_MODULE_VALUE = "beakerx";
   public static final String VIEW_MODULE_VALUE = "beakerx";
+  public static final String MODEL = "model";
 
   public static Comm createComm(final CommWidget widget, final InternalWidgetContent content) {
     Comm comm = new Comm(TargetNamesEnum.JUPYTER_WIDGET);
@@ -36,12 +37,13 @@ public class InternalWidgetUtils {
     comm.open();
     return comm;
   }
+  
 
   private static HashMap<String, Serializable> createContent(CommWidget widget, InternalWidgetContent content) {
     HashMap<String, Serializable> result = new HashMap<>();
     result.put(MODEL_MODULE, MODEL_MODULE_VALUE);
     result.put(VIEW_MODULE, VIEW_MODULE_VALUE);
-    result.put("json", SerializeToJson.toJson(widget));
+    result.put(MODEL, SerializeToJson.toJson(widget));
     content.addContent(result);
     return result;
   }

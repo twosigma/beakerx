@@ -457,6 +457,10 @@ public class JavaEvaluator implements Evaluator{
             e.printStackTrace(pw);
             theOutput.error(sw.toString());
           }
+        } finally {
+          if (theOutput != null) {
+            theOutput.executeCodeCallback();
+          }
         }
         theOutput.clrOutputHandler();
         Thread.currentThread().setContextClassLoader(oldld);

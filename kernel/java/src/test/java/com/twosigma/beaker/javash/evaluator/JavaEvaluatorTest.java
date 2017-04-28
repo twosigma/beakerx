@@ -18,7 +18,7 @@ package com.twosigma.beaker.javash.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.chart.xychart.Plot;
-import com.twosigma.beaker.javash.JavaKernelTest;
+import com.twosigma.beaker.javash.JavaKernelMock;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.assertj.core.api.Assertions;
@@ -42,7 +42,7 @@ public class JavaEvaluatorTest {
 
   @Before
   public void setUp() throws Exception {
-    JavaKernelTest kernel = new JavaKernelTest("id", javaEvaluator);
+    JavaKernelMock kernel = new JavaKernelMock("id", javaEvaluator);
     KernelManager.register(kernel);
   }
 

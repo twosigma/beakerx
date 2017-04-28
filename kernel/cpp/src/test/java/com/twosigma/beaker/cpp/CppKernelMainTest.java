@@ -22,17 +22,12 @@ import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.twosigma.MessageAssertions.verifyBusyMessage;
-import static com.twosigma.MessageAssertions.verifyExecuteInputMessage;
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
-import static com.twosigma.MessageAssertions.verifyExecuteResultMessage;
-import static com.twosigma.MessageAssertions.verifyIdleMessage;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,20 +72,20 @@ public class CppKernelMainTest {
     Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     //then
     assertThat(idleMessage).isPresent();
-    verifyPublishedMsgs(kernelSocketsService.getPublishedMessages());
-    verifySentMsgs(kernelSocketsService.getSentMessages());
-    verifyResult(kernelSocketsService.getPublishedMessages().get(2));
+    verifyPublishedMsgs(kernelSocketsService);
+    verifySentMsgs(kernelSocketsService);
+    verifyResult(kernelSocketsService.getExecuteResultMessage().get());
   }
 
-  private void verifyPublishedMsgs(List<Message> messages) {
-    verifyBusyMessage(messages.get(0));
-    verifyExecuteInputMessage(messages.get(1));
-    verifyExecuteResultMessage(messages.get(2));
-    verifyIdleMessage(messages.get(3));
+  private void verifyPublishedMsgs(KernelSocketsServiceTest service) {
+    assertThat(service.getBusyMessage()).isPresent();
+    assertThat(service.getExecuteInputMessage()).isPresent();
+    assertThat(service.getExecuteResultMessage()).isPresent();
+    assertThat(service.getIdleMessage()).isPresent();
   }
 
-  private void verifySentMsgs(List<Message> messages) {
-    verifyExecuteReplyMessage(messages.get(0));
+  private void verifySentMsgs(KernelSocketsServiceTest service) {
+    verifyExecuteReplyMessage(service.getReplyMessage());
   }
 
   private void verifyResult(Message result) {

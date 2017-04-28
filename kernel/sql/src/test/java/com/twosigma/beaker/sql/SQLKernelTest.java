@@ -26,14 +26,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.twosigma.MessageAssertions.verifyBusyMessage;
-import static com.twosigma.MessageAssertions.verifyExecuteInputMessage;
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
-import static com.twosigma.MessageAssertions.verifyIdleMessage;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beaker.sql.SQLForColorTable.CREATE_AND_SELECT_ALL;
@@ -71,18 +67,18 @@ public class SQLKernelTest {
     Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     //then
     verifyResult(idleMessage);
-    verifyPublishedMsgs(kernelSocketsService.getPublishedMessages());
-    verifySentMsgs(kernelSocketsService.getSentMessages());
+    verifyPublishedMsgs(kernelSocketsService);
+    verifySentMsgs(kernelSocketsService);
   }
 
-  private void verifyPublishedMsgs(List<Message> messages) {
-    verifyBusyMessage(messages.get(0));
-    verifyExecuteInputMessage(messages.get(1));
-    verifyIdleMessage(messages.get(messages.size()-1));
+  private void verifyPublishedMsgs(KernelSocketsServiceTest service) {
+    assertThat(service.getBusyMessage()).isPresent();
+    assertThat(service.getExecuteInputMessage()).isPresent();
+    assertThat(service.getIdleMessage()).isPresent();
   }
 
-  private void verifySentMsgs(List<Message> messages) {
-    verifyExecuteReplyMessage(messages.get(0));
+  private void verifySentMsgs(KernelSocketsServiceTest service) {
+    verifyExecuteReplyMessage(service.getReplyMessage());
   }
 
   private void verifyResult(Optional<Message> idleMessage) {

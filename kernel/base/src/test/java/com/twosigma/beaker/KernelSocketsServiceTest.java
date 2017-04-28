@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker;
 
+import com.twosigma.MessageAssertions;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.KernelSockets;
 import com.twosigma.jupyter.KernelSocketsFactory;
@@ -23,6 +24,9 @@ import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
 import java.util.List;
+import java.util.Optional;
+
+import static com.twosigma.MessageAssertions.isBusyMessage;
 
 public class KernelSocketsServiceTest implements KernelSocketsFactory {
 
@@ -86,5 +90,28 @@ public class KernelSocketsServiceTest implements KernelSocketsFactory {
 
   public List<Message> getSentMessages() {
     return getKernelSockets().getSentMessages();
+  }
+
+  public Optional<Message> getBusyMessage() {
+    if (isBusyMessage(getPublishedMessages().get(0))) {
+      return Optional.of(getPublishedMessages().get(0));
+    }
+    return Optional.empty();
+  }
+
+  public Optional<Message> getExecuteInputMessage() {
+    return getPublishedMessages().stream().filter(MessageAssertions::isExecuteInputMessage).findFirst();
+  }
+
+  public Optional<Message> getExecuteResultMessage() {
+    return getPublishedMessages().stream().filter(MessageAssertions::isExecuteResultMessage).findFirst();
+  }
+
+  public Optional<Message> getIdleMessage() {
+    return getPublishedMessages().stream().filter(MessageAssertions::isIdleMessage).findFirst();
+  }
+
+  public Message getReplyMessage() {
+    return getSentMessages().get(0);
   }
 }

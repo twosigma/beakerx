@@ -26,19 +26,25 @@ public class MessageAssertions {
     assertThat(executeReply.type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
   }
 
-  public static void verifyIdleMessage(Message idle) {
-    assertThat(idle.getContent().get("execution_state")).isEqualTo("idle");
+  public static boolean isIdleMessage(Message message) {
+    return message.getContent() != null &&
+            message.getContent().get("execution_state") != null &&
+            message.getContent().get("execution_state").equals("idle");
   }
 
-  public static void verifyExecuteInputMessage(Message executeInput) {
-    assertThat(executeInput.type()).isEqualTo(JupyterMessages.EXECUTE_INPUT);
+  public static boolean isBusyMessage(Message message) {
+    return  message.getContent() != null &&
+            message.getContent().get("execution_state") != null &&
+            message.getContent().get("execution_state").equals("busy");
   }
 
-  public static void verifyBusyMessage(Message busy) {
-    assertThat(busy.getContent().get("execution_state")).isEqualTo("busy");
+  public static boolean isExecuteResultMessage(Message message) {
+    return message.type().equals(JupyterMessages.EXECUTE_RESULT);
   }
 
-  public static void verifyExecuteResultMessage(Message executeResult) {
-    assertThat(executeResult.type()).isEqualTo(JupyterMessages.EXECUTE_RESULT);
+  public static boolean isExecuteInputMessage(Message message) {
+    return message.type().equals(JupyterMessages.EXECUTE_INPUT);
   }
+
+
 }

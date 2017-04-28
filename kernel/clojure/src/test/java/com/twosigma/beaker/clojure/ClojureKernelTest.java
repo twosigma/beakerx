@@ -75,9 +75,9 @@ public class ClojureKernelTest {
     Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     //then
     assertThat(idleMessage).isPresent();
-    verifyResult(kernelSocketsService.getPublishedMessages().get(2));
     verifyPublishedMsgs(kernelSocketsService.getPublishedMessages());
     verifySentMsgs(kernelSocketsService.getSentMessages());
+    verifyResult(kernelSocketsService.getPublishedMessages().get(2));
   }
 
   private void verifyPublishedMsgs(List<Message> messages) {

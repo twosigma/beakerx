@@ -68,9 +68,9 @@ public class SQLKernelTest {
     Message message = getExecuteRequestMessage(CREATE_AND_SELECT_ALL);
     //when
     kernelSocketsService.handleMsg(message);
-    Optional<Message> result = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     //then
-    verifyResult(result);
+    verifyResult(idleMessage);
     verifyPublishedMsgs(kernelSocketsService.getPublishedMessages());
     verifySentMsgs(kernelSocketsService.getSentMessages());
   }

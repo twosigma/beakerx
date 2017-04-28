@@ -27,6 +27,11 @@ public interface CommWidget extends CommFunctionality {
   
   //TODO move to Widget class. 
   default void display() {
+    //Should be moved to updateble fields to all internal widgets.
+    //and should be removed from here !!! 
+    if (SerializeToJson.isBeakerChart(this)){
+      this.getComm().sendUpdate(InternalWidgetUtils.MODEL, SerializeToJson.toJson(this));
+    }
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, DISPLAY);
     getComm().setData(content);

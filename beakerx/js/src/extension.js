@@ -42,6 +42,8 @@ define([
   'base/js/events',
   'require',
 
+  './htmlOutput/htmlOutput',
+
   // Plot JS API
   './plot/plotApi',
   './shared/bkCoreManager',
@@ -53,6 +55,7 @@ define([
   Jupyter,
   events,
   require,
+  htmlOutput,
   plotApi,
   bkCoreManager,
   big
@@ -203,14 +206,17 @@ define([
   }
 
   // assign Beaker methods to window
-  if (window && !window.beaker) {
-    window.beaker = {};
+  if (window) {
+    if (!window.beaker) {
+      window.beaker = {};
+    }
 
     var plotApiList = plotApi.list();
     var bkApp = bkCoreManager.getBkApp();
     var bkObject = bkApp.getBeakerObject();
 
     _.extend(window.beaker, plotApiList);
+    _.extend(window.beaker, htmlOutput);
     window.beaker.prefs = bkObject.beakerObj.prefs;
   }
 

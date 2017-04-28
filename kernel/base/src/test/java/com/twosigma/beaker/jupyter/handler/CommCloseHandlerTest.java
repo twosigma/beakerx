@@ -37,7 +37,7 @@ public class CommCloseHandlerTest {
     JupyterHandlerTest.initKernelCommMapWithOneComm(kernel);
   }
 
-  //@Test
+  @Test
   public void handleMessage_shouldSendShellSocketMessage() throws Exception {
     //when
     commCloseHandler.handle(message);
@@ -45,7 +45,7 @@ public class CommCloseHandlerTest {
     Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasTypeIsCommClose() throws Exception {
     //when
     commCloseHandler.handle(message);
@@ -56,7 +56,7 @@ public class CommCloseHandlerTest {
         .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasSessionId() throws Exception {
     //given
     String expectedSessionId = message.getHeader().getSession();
@@ -68,7 +68,7 @@ public class CommCloseHandlerTest {
     Assertions.assertThat(sendMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasParentHeader() throws Exception {
     //given
     String expectedHeader = message.getHeader().asJson();
@@ -80,7 +80,7 @@ public class CommCloseHandlerTest {
     Assertions.assertThat(sendMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasIdentities() throws Exception {
     //given
     String expectedIdentities = new String(message.getIdentities().get(0));

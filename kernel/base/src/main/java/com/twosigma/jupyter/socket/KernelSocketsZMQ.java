@@ -85,15 +85,11 @@ public class KernelSocketsZMQ extends KernelSockets {
   }
 
   public void publish(Message message) {
-    send(this.iopubSocket, message);
+    sendMsg(this.iopubSocket, message);
   }
 
   public void send(Message message) {
-    send(this.shellSocket, message);
-  }
-
-  private void send(final ZMQ.Socket socket, Message message) {
-    sendMsg(socket, message);
+    sendMsg(this.shellSocket, message);
   }
 
   private synchronized void sendMsg(ZMQ.Socket socket, Message message) {
@@ -200,7 +196,7 @@ public class KernelSocketsZMQ extends KernelSockets {
       reply.setHeader(new Header(SHUTDOWN_REPLY, message.getHeader().getSession()));
       reply.setParentHeader(message.getHeader());
       reply.setContent(message.getContent());
-      send(controlSocket, reply);
+      sendMsg(controlSocket, reply);
       shutdown();
     }
   }

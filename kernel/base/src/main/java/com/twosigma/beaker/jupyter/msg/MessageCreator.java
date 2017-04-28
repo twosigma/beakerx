@@ -168,7 +168,6 @@ public class MessageCreator {
     } else if (EvaluationStatus.ERROR == seo.getStatus()) {
       ret.add(createErrorResult(seo, message));
     }
-    ret.add(new MessageHolder(SocketEnum.IOPUB_SOCKET, createIdleMessage(message)));
     ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
     return ret;
   }

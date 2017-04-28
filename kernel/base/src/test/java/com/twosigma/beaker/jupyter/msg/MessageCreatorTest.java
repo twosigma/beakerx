@@ -77,14 +77,14 @@ public class MessageCreatorTest {
   }
 
   @Test
-  public void createMessageWithNotNullResult_createThreeMessages() throws Exception {
+  public void createMessageWithNotNullResult_createTwoMessages() throws Exception {
     //given
     seo.finished("result");
     //when
     List<MessageHolder> messages = messageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
-    assertThat(messages.size()).isEqualTo(3);
+    assertThat(messages.size()).isEqualTo(2);
   }
 
   @Test
@@ -100,27 +100,15 @@ public class MessageCreatorTest {
   }
 
   @Test
-  public void createMessageWithNotNullResult_secondIOPubMessageHasTypeIsStatus() throws Exception {
+  public void createMessageWithNotNullResult_secondShellMessageHasTypeIsExecuteReply() throws Exception {
     //given
     seo.finished("result");
     //when
     List<MessageHolder> messages = messageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
-    assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.IOPUB_SOCKET);
-    assertThat(messages.get(1).getMessage().type()).isEqualTo(JupyterMessages.STATUS);
-  }
-
-  @Test
-  public void createMessageWithNotNullResult_thirdShellMessageHasTypeIsExecuteReply() throws Exception {
-    //given
-    seo.finished("result");
-    //when
-    List<MessageHolder> messages = messageCreator.createMessage(seo);
-    //then
-    assertThat(messages).isNotEmpty();
-    assertThat(messages.get(2).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
-    assertThat(messages.get(2).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
+    assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
+    assertThat(messages.get(1).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
   }
 
   @Test
@@ -158,14 +146,14 @@ public class MessageCreatorTest {
   }
 
   @Test
-  public void createMessageWithError_createThreeMessages() throws Exception {
+  public void createMessageWithError_createTwoMessages() throws Exception {
     //given
     seo.error("some error");
     //when
     List<MessageHolder> messages = messageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
-    assertThat(messages.size()).isEqualTo(3);
+    assertThat(messages.size()).isEqualTo(2);
   }
 
   @Test
@@ -181,26 +169,14 @@ public class MessageCreatorTest {
   }
 
   @Test
-  public void createMessageWithError_secondIOPubMessageHasTypeIsStatus() throws Exception {
+  public void createMessageWithError_secondShellMessageHasTypeIsExecuteReply() throws Exception {
     //given
     seo.error("some error");
     //when
     List<MessageHolder> messages = messageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
-    assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.IOPUB_SOCKET);
-    assertThat(messages.get(1).getMessage().type()).isEqualTo(JupyterMessages.STATUS);
-  }
-
-  @Test
-  public void createMessageWithError_thirdShellMessageHasTypeIsExecuteReply() throws Exception {
-    //given
-    seo.error("some error");
-    //when
-    List<MessageHolder> messages = messageCreator.createMessage(seo);
-    //then
-    assertThat(messages).isNotEmpty();
-    assertThat(messages.get(2).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
-    assertThat(messages.get(2).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
+    assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
+    assertThat(messages.get(1).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
   }
 }

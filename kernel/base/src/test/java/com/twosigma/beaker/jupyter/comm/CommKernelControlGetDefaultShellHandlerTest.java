@@ -52,7 +52,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     message = new Message();
   }
 
-  //@Test
+  @Test
   public void handleGetDefaultShellMessage_shouldSendShellSocketMessage() throws Exception {
     //given
     initMessageData(message);
@@ -62,7 +62,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
   }
 
-  //@Test
+  @Test
   public void handleNotGetDefaultShellMessage_notSendShellSocketMessage() throws Exception {
     //given
     Map<String, Serializable> content = new HashMap<>();
@@ -71,10 +71,10 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    assertThat(kernel.getPublishedMessages()).isEmpty();
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(2);
   }
 
-  //@Test
+  @Test
   public void handleGetDefaultShellMessage_sentMessageHasCommId() throws Exception {
     //given
     initMessageData(message);
@@ -82,11 +82,11 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     commHandler.handle(message);
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = kernel.getPublishedMessages().get(0);
+    Message sendMessage = kernel.getPublishedMessages().get(1);
     assertThat((String) sendMessage.getContent().get(Comm.COMM_ID)).isNotEmpty();
   }
 
-  //@Test
+  @Test
   public void handleGetDefaultShellMessage_sentMessageHasKernelControlResponse() throws Exception {
     //given
     initMessageData(message);
@@ -94,13 +94,13 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     commHandler.handle(message);
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = kernel.getPublishedMessages().get(0);
+    Message sendMessage = kernel.getPublishedMessages().get(1);
     assertThat((Map) sendMessage.getContent().get(Comm.DATA)).isNotEmpty();
     Map<String, Serializable> shell = (Map) sendMessage.getContent().get(Comm.DATA);
     assertThat((Map) shell.get(KERNEL_CONTROL_RESPONSE)).isNotEmpty();
   }
 
-  //@Test
+  @Test
   public void handleGetDefaultShellMessage_sentMessageHasImportsData() throws Exception {
     //given
     initMessageData(message);
@@ -108,7 +108,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     commHandler.handle(message);
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = kernel.getPublishedMessages().get(0);
+    Message sendMessage = kernel.getPublishedMessages().get(1);
     Map<String, Serializable> response =
             (Map)((Map) sendMessage.getContent().get(Comm.DATA)).get(KERNEL_CONTROL_RESPONSE);
 
@@ -117,7 +117,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     assertThat(beakerx_kernel_parameters.get(KernelControlSetShellHandler.IMPORTS)).isNotNull();
   }
 
-  //@Test
+  @Test
   public void handleGetDefaultShellMessage_sentMessageHasClasspathData() throws Exception {
     //given
     initMessageData(message);
@@ -125,7 +125,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     commHandler.handle(message);
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = kernel.getPublishedMessages().get(0);
+    Message sendMessage = kernel.getPublishedMessages().get(1);
     Map<String, Serializable> response =
             (Map)((Map) sendMessage.getContent().get(Comm.DATA)).get(KERNEL_CONTROL_RESPONSE);
     Map<String, Serializable> beakerx_kernel_parameters =(Map) response.get(KERNEL_PARAMETERS);

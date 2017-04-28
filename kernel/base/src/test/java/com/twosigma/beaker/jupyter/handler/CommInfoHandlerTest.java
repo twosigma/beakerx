@@ -36,7 +36,7 @@ public class CommInfoHandlerTest {
     message = JupyterHandlerTest.initInfoMessage();
   }
 
-  //@Test
+  @Test
   public void handleMessage_shouldSendShellSocketMessage() throws Exception {
     //when
     commInfoHandler.handle(message);
@@ -44,7 +44,7 @@ public class CommInfoHandlerTest {
     Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasTypeIsCommInfoReply() throws Exception {
     //when
     commInfoHandler.handle(message);
@@ -55,7 +55,7 @@ public class CommInfoHandlerTest {
         .isEqualTo(JupyterMessages.COMM_INFO_REPLY.getName());
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasSessionId() throws Exception {
     //given
     String expectedSessionId = message.getHeader().getSession();
@@ -67,7 +67,7 @@ public class CommInfoHandlerTest {
     Assertions.assertThat(sendMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasParentHeader() throws Exception {
     //given
     String expectedHeader = message.getHeader().asJson();
@@ -79,7 +79,7 @@ public class CommInfoHandlerTest {
     Assertions.assertThat(sendMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasIdentities() throws Exception {
     //given
     String expectedIdentities = new String(message.getIdentities().get(0));

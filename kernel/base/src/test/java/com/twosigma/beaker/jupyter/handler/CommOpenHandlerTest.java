@@ -49,7 +49,7 @@ public class CommOpenHandlerTest {
     message = JupyterHandlerTest.initOpenMessage();
   }
 
-  //@Test
+  @Test
   public void handleMessage_shouldSendShellSocketMessage() throws Exception {
     //when
     commOpenHandler.handle(message);
@@ -57,7 +57,7 @@ public class CommOpenHandlerTest {
     Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
   }
 
-  //@Test
+  @Test
   public void handleMessageWithoutCommId_shouldSendCloseCommMessage() throws Exception {
     //given
     message.getContent().remove(COMM_ID);
@@ -70,7 +70,7 @@ public class CommOpenHandlerTest {
         .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
   }
 
-  //@Test
+  @Test
   public void handleMessageWithoutTargetName_shouldSendCloseCommMessage() throws Exception {
     //given
     message.getContent().remove(TARGET_NAME);
@@ -83,7 +83,7 @@ public class CommOpenHandlerTest {
         .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasCommId() throws Exception {
     //given
     String expectedCommId = (String) message.getContent().get(COMM_ID);
@@ -95,7 +95,7 @@ public class CommOpenHandlerTest {
     Assertions.assertThat(sendMessage.getContent().get(COMM_ID)).isEqualTo(expectedCommId);
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasTargetName() throws Exception {
     //given
     String expectedTargetName = (String) message.getContent().get(TARGET_NAME);
@@ -107,7 +107,7 @@ public class CommOpenHandlerTest {
     Assertions.assertThat(sendMessage.getContent().get(TARGET_NAME)).isEqualTo(expectedTargetName);
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasEmptyData() throws Exception {
     //when
     commOpenHandler.handle(message);
@@ -117,7 +117,7 @@ public class CommOpenHandlerTest {
     Assertions.assertThat((Map) sendMessage.getContent().get(DATA)).isEmpty();
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasTargetModule() throws Exception {
     //given
     String expectedTargetModule = (String) message.getContent().get(TARGET_MODULE);
@@ -130,7 +130,7 @@ public class CommOpenHandlerTest {
         .isEqualTo(expectedTargetModule);
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasParentHeader() throws Exception {
     //given
     String expectedHeader = message.getHeader().asJson();
@@ -142,7 +142,7 @@ public class CommOpenHandlerTest {
     Assertions.assertThat(sendMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
-  //@Test
+  @Test
   public void handleMessage_sentMessageHasIdentities() throws Exception {
     //given
     String expectedIdentities = new String(message.getIdentities().get(0));

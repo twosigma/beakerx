@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.groovy.autocomplete;
 
-import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.groovy.GroovyKernelMock;
 import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.jupyter.handler.CompleteHandler;
 import com.twosigma.jupyter.message.Message;
@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GroovyCompleteHandlerTest {
 
   private CompleteHandler completeHandler;
-  private static GroovyKernelTest groovyKernel;
+  private static GroovyKernelMock groovyKernel;
 
   @BeforeClass
   public static void setUpClass(){
@@ -43,7 +43,7 @@ public class GroovyCompleteHandlerTest {
       public void startWorker() {
       }
     };
-    groovyKernel = new GroovyKernelTest("sid", groovyEvaluator);
+    groovyKernel = new GroovyKernelMock("sid", groovyEvaluator);
   }
 
   @Before

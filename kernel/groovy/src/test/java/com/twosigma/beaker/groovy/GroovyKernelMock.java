@@ -13,20 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.jupyter.handler;
 
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.message.Message;
+package com.twosigma.beaker.groovy;
 
-public class KernelHandlerWrapper {
+import com.twosigma.beaker.KernelTest;
+import com.twosigma.beaker.evaluator.Evaluator;
 
-  public static void wrapBusyIdle(KernelFunctionality kernel, Message message, HandlerAction handlerAction) {
-    kernel.sendBusyMessage(message);
-    handlerAction.execute();
-    kernel.sendIdleMessage(message);
+public class GroovyKernelMock extends KernelTest {
+
+  public GroovyKernelMock() {
+    this("GroovyKernelTestId1");
   }
 
-  public interface HandlerAction {
-    void execute();
+  public GroovyKernelMock(String id) {
+    super(id);
+  }
+
+  public GroovyKernelMock(String id, Evaluator evaluator) {
+    super(id,evaluator);
   }
 }

@@ -22,6 +22,8 @@ import com.twosigma.jupyter.SocketCloseAction;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
+import java.util.List;
+
 public class KernelSocketsServiceTest implements KernelSocketsFactory {
 
   private volatile boolean shutdown = false;
@@ -65,6 +67,7 @@ public class KernelSocketsServiceTest implements KernelSocketsFactory {
           //do nothing
         }
       }
+
       @Override
       public synchronized void start() {
         super.start();
@@ -75,5 +78,13 @@ public class KernelSocketsServiceTest implements KernelSocketsFactory {
 
   public KernelSocketsTest getKernelSockets() {
     return kernelSockets;
+  }
+
+  public List<Message> getPublishedMessages() {
+    return getKernelSockets().getPublishedMessages();
+  }
+
+  public List<Message> getSentMessages() {
+    return getKernelSockets().getSentMessages();
   }
 }

@@ -63,12 +63,8 @@ public class InteractiveTest {
 
   @Test
   public void interactWithStringParam_shouldCreateTextWidget() throws Exception {
-    //given
-    String code = getInteractiveCode("\"A\"");
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    groovyEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    callInteractWithStringParam("\"A\"");
     //then
     verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Text.MODEL_NAME_VALUE, Text.VIEW_NAME_VALUE);
   }
@@ -76,22 +72,31 @@ public class InteractiveTest {
   @Test
   public void valueChangeMsgCallback_createDisplayDataMessage() throws Exception {
     //given
-    String code = getInteractiveCode("\"A\"");
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
-    groovyEvaluator.evaluate(seo, code);
-    waitForResult(seo);
-    Message widget = SearchMessages.getListWidgetsByViewName(
-        groovyKernel.getPublishedMessages(), Text.VIEW_NAME_VALUE).get(0);
-    String id = (String) widget.getContent().get(Comm.COMM_ID);
-    Comm comm = groovyKernel.getComm(id);
+    callInteractWithStringParam("\"A\"");
+    Comm comm = getCommWidgetByViewName(Text.VIEW_NAME_VALUE);
     //when
-    comm.handleMsg(initSyncDataMessage(id, "TEST"));
+    comm.handleMsg(initSyncDataMessage(comm.getCommId(), "TEST"));
     //then
     Message display = SearchMessages.getListMessagesByType(
         groovyKernel.getPublishedMessages(), JupyterMessages.DISPLAY_DATA).get(0);
     Map data = (Map) display.getContent().get(Comm.DATA);
     Assertions.assertThat(data).isNotEmpty();
     Assertions.assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo("TEST");
+  }
+
+  private void callInteractWithStringParam(String param) throws Exception {
+    String code = getInteractiveCode(param);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    //when
+    groovyEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+  }
+
+  private Comm getCommWidgetByViewName(String viewName){
+    Message widget = SearchMessages.getListWidgetsByViewName(
+        groovyKernel.getPublishedMessages(), viewName).get(0);
+    String id = (String) widget.getContent().get(Comm.COMM_ID);
+    return groovyKernel.getComm(id);
   }
 
   private Message initSyncDataMessage(String id, String value){

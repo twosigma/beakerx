@@ -17,7 +17,6 @@ package com.twosigma.beaker.sql;
 
 import com.twosigma.beaker.KernelSocketsServiceTest;
 import com.twosigma.beaker.KernelSocketsTest;
-import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelRunner;
@@ -27,11 +26,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.twosigma.MessageAssertions.verifyBusyMessage;
+import static com.twosigma.MessageAssertions.verifyExecuteInputMessage;
+import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
+import static com.twosigma.MessageAssertions.verifyIdleMessage;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beaker.sql.SQLForColorTable.CREATE_AND_SELECT_ALL;
 import static com.twosigma.beaker.sql.SQLKernelParameters.DATASOURCES;
 import static com.twosigma.beaker.sql.SQLKernelParameters.DEFAULT_DATASOURCE;
@@ -40,22 +44,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SQLKernelTest {
 
   private SQLKernel sqlKernel;
-  private KernelSocketsServiceTest kernelSocketsFactory;
+  private KernelSocketsServiceTest kernelSocketsService;
 
   @Before
   public void setUp() throws Exception {
     String sessionId = "sessionId2";
     SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId);
     sqlEvaluator.setShellOptions(kernelParameters());
-    kernelSocketsFactory = new KernelSocketsServiceTest();
-    sqlKernel = new SQLKernel(sessionId, sqlEvaluator, kernelSocketsFactory);
+    kernelSocketsService = new KernelSocketsServiceTest();
+    sqlKernel = new SQLKernel(sessionId, sqlEvaluator, kernelSocketsService);
     new Thread(() -> KernelRunner.run(() -> sqlKernel)).start();
-    kernelSocketsFactory.waitForSockets();
+    kernelSocketsService.waitForSockets();
   }
 
   @After
   public void tearDown() throws Exception {
-    kernelSocketsFactory.shutdown();
+    kernelSocketsService.shutdown();
   }
 
   @Test
@@ -63,15 +67,28 @@ public class SQLKernelTest {
     //given
     Message message = getExecuteRequestMessage(CREATE_AND_SELECT_ALL);
     //when
-    kernelSocketsFactory.handleMsg(message);
-    Optional<Message> result = waitForResult(kernelSocketsFactory.getKernelSockets());
+    kernelSocketsService.handleMsg(message);
+    Optional<Message> result = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     //then
     verifyResult(result);
+    verifyPublishedMsgs(kernelSocketsService.getPublishedMessages());
+    verifySentMsgs(kernelSocketsService.getSentMessages());
   }
 
-  private void verifyResult(Optional<Message> result) {
+  private void verifyPublishedMsgs(List<Message> messages) {
+    verifyBusyMessage(messages.get(0));
+    verifyExecuteInputMessage(messages.get(1));
+    verifyIdleMessage(messages.get(messages.size()-1));
+  }
+
+  private void verifySentMsgs(List<Message> messages) {
+    verifyExecuteReplyMessage(messages.get(0));
+  }
+
+  private void verifyResult(Optional<Message> idleMessage) {
+    assertThat(idleMessage).isPresent();
     //no any other messages if widget
-    Optional<Message> tableDisplayOpenMsg = getTableDisplayOpenMsg(kernelSocketsFactory.getKernelSockets());
+    Optional<Message> tableDisplayOpenMsg = getTableDisplayOpenMsg(kernelSocketsService.getKernelSockets());
     assertThat(tableDisplayOpenMsg).isPresent();
   }
 

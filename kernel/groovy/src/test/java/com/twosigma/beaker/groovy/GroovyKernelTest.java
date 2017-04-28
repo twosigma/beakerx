@@ -32,6 +32,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.twosigma.MessageAssertions.verifyBusyMessage;
+import static com.twosigma.MessageAssertions.verifyExecuteInputMessage;
+import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
+import static com.twosigma.MessageAssertions.verifyExecuteResultMessage;
+import static com.twosigma.MessageAssertions.verifyIdleMessage;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
@@ -81,24 +86,7 @@ public class GroovyKernelTest {
   }
 
   private void verifySentMsgs(List<Message> messages) {
-    Message executeReply = messages.get(0);
-    assertThat(executeReply.type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
-  }
-
-  private void verifyIdleMessage(Message idle) {
-    assertThat(idle.getContent().get("execution_state")).isEqualTo("idle");
-  }
-
-  private void verifyExecuteResultMessage(Message executeResult) {
-    assertThat(executeResult.type()).isEqualTo(JupyterMessages.EXECUTE_RESULT);
-  }
-
-  private void verifyExecuteInputMessage(Message executeInput) {
-    assertThat(executeInput.type()).isEqualTo(JupyterMessages.EXECUTE_INPUT);
-  }
-
-  private void verifyBusyMessage(Message busy) {
-    assertThat(busy.getContent().get("execution_state")).isEqualTo("busy");
+    verifyExecuteReplyMessage(messages.get(0));
   }
 
   private void verifyResult(Optional<Message> result) {

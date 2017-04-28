@@ -62,7 +62,7 @@ public class SQLEvaluator implements Evaluator {
   private final QueryExecutor queryExecutor;
   private final JDBCClient jdbcClient;
 
-  public SQLEvaluator(String id, String sId) {
+  public  SQLEvaluator(String id, String sId) {
     shellId = id;
     sessionId = sId;
     packageId = "com.twosigma.beaker.sql.bkr" + shellId.split("-")[0];
@@ -178,7 +178,9 @@ public class SQLEvaluator implements Evaluator {
 
         namespaceClient.setOutputObj(null);
         namespaceClient = null;
-
+        if(job!=null && job.getSimpleEvaluationObject() !=null){
+          job.getSimpleEvaluationObject().executeCodeCallback();
+        }
       }
     }
   }

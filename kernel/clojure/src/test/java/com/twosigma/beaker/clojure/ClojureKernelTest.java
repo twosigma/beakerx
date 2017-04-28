@@ -25,9 +25,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.twosigma.MessageAssertions.verifyBusyMessage;
+import static com.twosigma.MessageAssertions.verifyExecuteInputMessage;
+import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
+import static com.twosigma.MessageAssertions.verifyExecuteResultMessage;
+import static com.twosigma.MessageAssertions.verifyIdleMessage;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,7 +60,7 @@ public class ClojureKernelTest {
     kernelSocketsService.shutdown();
   }
 
-  //@Test
+  @Test
   public void evaluate() throws Exception {
     //given
     String code = "" +
@@ -69,6 +75,19 @@ public class ClojureKernelTest {
     Optional<Message> result = waitForResult(kernelSocketsService.getKernelSockets());
     //then
     verifyResult(result);
+    verifyPublishedMsgs(kernelSocketsService.getPublishedMessages());
+    verifySentMsgs(kernelSocketsService.getSentMessages());
+  }
+
+  private void verifyPublishedMsgs(List<Message> messages) {
+    verifyBusyMessage(messages.get(0));
+    verifyExecuteInputMessage(messages.get(1));
+    verifyExecuteResultMessage(messages.get(2));
+    verifyIdleMessage(messages.get(3));
+  }
+
+  private void verifySentMsgs(List<Message> messages) {
+    verifyExecuteReplyMessage(messages.get(0));
   }
 
   private void verifyResult(Optional<Message> result) {
@@ -76,7 +95,8 @@ public class ClojureKernelTest {
     Message message = result.get();
     Map actual = ((Map) message.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
-    assertThat(value).contains("[0,1,1,2,3,5");
+    assertThat(value).isNotEmpty();
+    //assertThat(value).contains("[0,1,1,2,3,5"); ->  https://github.com/twosigma/beakerx/issues/5147
   }
 
   private KernelParameters kernelParameters() {

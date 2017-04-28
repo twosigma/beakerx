@@ -209,6 +209,10 @@ public class ClojureEvaluator implements Evaluator {
           }
         } catch (Throwable e) {
           logger.error(e.getMessage());
+        } finally {
+          if (j != null && j.outputObject != null) {
+            j.outputObject.executeCodeCallback();
+          }
         }
       }
     }

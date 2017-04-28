@@ -99,7 +99,7 @@ import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
 import com.twosigma.beaker.widgets.DisplayAnyWidget;
-import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beaker.widgets.internal.CommWidget;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -184,7 +184,7 @@ public class SerializeToString {
     return (input instanceof EasyForm)
             || (input instanceof OutputContainer)
             || (input instanceof Table)
-            || (input instanceof Widget);
+            || (input instanceof CommWidget);
   }
 
 

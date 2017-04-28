@@ -21,6 +21,7 @@ import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.fileloader.CsvPlotReader;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.table.TableDisplay;
+import com.twosigma.beaker.widgets.internal.CommWidget;
 
 public class DisplayAnyWidget {
   
@@ -36,8 +37,8 @@ public class DisplayAnyWidget {
       DisplayOutputContainer.display((OutputContainer)input);
     }else if(input instanceof Table){
       new TableDisplay(new CsvPlotReader().convert((Table) input)).display();
-    }else if(input instanceof Widget){
-      ((Widget)input).display();
+    }else if(input instanceof CommWidget){
+      ((CommWidget)input).display();
     }
   }
 

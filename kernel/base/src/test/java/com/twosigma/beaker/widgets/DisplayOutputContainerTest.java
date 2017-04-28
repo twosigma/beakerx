@@ -67,8 +67,7 @@ public class DisplayOutputContainerTest {
   private void verifyMap(List<Message> messages) {
     Message tableDisplay = messages.get(0);
     verifyInternalOpenCommMsg(tableDisplay, TableDisplay.MODEL_NAME_VALUE, TableDisplay.VIEW_NAME_VALUE);
-    Message model = messages.get(1);
-    assertThat(getValueForProperty(model, "model", String.class)).isNotEmpty();
+    assertThat(verifyInternalOpenCommMsgHasProperty(tableDisplay, "model", String.class)).isNotEmpty();
     verifyDisplayMsg(messages);
   }
 

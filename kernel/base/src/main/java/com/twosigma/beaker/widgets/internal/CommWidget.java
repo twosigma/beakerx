@@ -25,14 +25,8 @@ public interface CommWidget extends CommFunctionality {
   public static final String METHOD = "method";
   public static final String DISPLAY = "display";
   
-  default void beforeDisplay() {
-    //nothing to do in jupyter widgets.
-    //should be removed in the future.
-  }
-  
   //TODO move to Widget class. 
   default void display() {
-    beforeDisplay();
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, DISPLAY);
     getComm().setData(content);

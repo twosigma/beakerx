@@ -73,8 +73,7 @@ public class GroovyOutputContainerTest {
   private void verifyPlot(List<Message> messages) {
     Message tableDisplay = messages.get(0);
     verifyInternalOpenCommMsg(tableDisplay, Plot.MODEL_NAME_VALUE, Plot.VIEW_NAME_VALUE);
-    Message model = messages.get(1);
-    assertThat(getValueForProperty(model, "model", String.class)).isNotEmpty();
+    assertThat(verifyInternalOpenCommMsgHasProperty(tableDisplay, "model", String.class)).isNotEmpty();
     verifyDisplayMsg(messages);
   }
 

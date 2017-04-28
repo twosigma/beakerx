@@ -75,6 +75,13 @@ public class TestWidgetUtils {
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
+  
+  public static <T> T verifyInternalOpenCommMsgHasProperty(Message message, String propertyname, Class<T> clazz) {
+    verifyTypeMsg(message,COMM_OPEN);
+    Map data = TestWidgetUtils.getData(message);
+    Object o = data.get(propertyname);
+    return clazz.cast(o);
+  }
 
   public static void verifyTypeMsg(Message widget, JupyterMessages jupyterMessages) {
     assertThat(widget.getHeader().getType()).isEqualTo(jupyterMessages.getName());

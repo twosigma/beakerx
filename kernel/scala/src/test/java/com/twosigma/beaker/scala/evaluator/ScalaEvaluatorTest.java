@@ -20,7 +20,7 @@ import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.scala.ScalaKernelTest;
+import com.twosigma.beaker.scala.ScalaKernelMock;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class ScalaEvaluatorTest {
 
   @Before
   public void setUp() throws Exception {
-    ScalaKernelTest kernel = new ScalaKernelTest("id", scalaEvaluator);
+    ScalaKernelMock kernel = new ScalaKernelMock("id", scalaEvaluator);
     KernelManager.register(kernel);
   }
 

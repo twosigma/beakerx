@@ -13,24 +13,95 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.scala;
 
-import com.twosigma.beaker.KernelTest;
-import com.twosigma.beaker.evaluator.Evaluator;
+import com.twosigma.beaker.KernelSocketsServiceTest;
+import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.beaker.scala.evaluator.ScalaEvaluator;
+import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.jupyter.KernelRunner;
+import com.twosigma.jupyter.message.Message;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class ScalaKernelTest extends KernelTest {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-  public ScalaKernelTest() {
-    this("ScalaKernelTestId1");
+import static com.twosigma.MessageAssertions.verifyBusyMessage;
+import static com.twosigma.MessageAssertions.verifyExecuteInputMessage;
+import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
+import static com.twosigma.MessageAssertions.verifyExecuteResultMessage;
+import static com.twosigma.MessageAssertions.verifyIdleMessage;
+import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class ScalaKernelTest {
+
+  private ScalaKernel kernel;
+  private KernelSocketsServiceTest kernelSocketsService;
+
+  @Before
+  public void setUp() throws Exception {
+    String sessionId = "sessionId2";
+    ScalaEvaluator evaluator = new ScalaEvaluator(null);
+    evaluator.initialize(sessionId, sessionId);
+    evaluator.setShellOptions(kernelParameters());
+    kernelSocketsService = new KernelSocketsServiceTest();
+    kernel = new ScalaKernel(sessionId, evaluator, kernelSocketsService);
+    new Thread(() -> KernelRunner.run(() -> kernel)).start();
+    kernelSocketsService.waitForSockets();
   }
 
-  public ScalaKernelTest(String id)  {
-    super(id);
+  @After
+  public void tearDown() throws Exception {
+    kernelSocketsService.shutdown();
   }
 
-  public ScalaKernelTest(String id, Evaluator evaluator) {
-    super(id,evaluator);
+  @Test
+  public void evaluate() throws Exception {
+    //given
+    String code = "1+1";
+    Message message = getExecuteRequestMessage(code);
+    //when
+    kernelSocketsService.handleMsg(message);
+    Optional<Message> result = waitForResult(kernelSocketsService.getKernelSockets());
+    //then
+    verifyResult(result);
+    verifyPublishedMsgs(kernelSocketsService.getPublishedMessages());
+    verifySentMsgs(kernelSocketsService.getSentMessages());
+  }
+
+  private void verifyPublishedMsgs(List<Message> messages) {
+    verifyBusyMessage(messages.get(0));
+    verifyExecuteInputMessage(messages.get(1));
+    verifyExecuteResultMessage(messages.get(2));
+    verifyIdleMessage(messages.get(3));
+  }
+
+  private void verifySentMsgs(List<Message> messages) {
+    verifyExecuteReplyMessage(messages.get(0));
+  }
+
+  private void verifyResult(Optional<Message> result) {
+    assertThat(result).isPresent();
+    Message message = result.get();
+    Map actual = ((Map) message.getContent().get(Comm.DATA));
+    String value = (String) actual.get("text/plain");
+    assertThat(value).isEqualTo("2");
+  }
+
+  private KernelParameters kernelParameters() {
+    Map<String, Object> params = new HashMap<>();
+    params.put(IMPORTS, new ArrayList<>());
+    params.put(CLASSPATH, new ArrayList<>());
+    return new KernelParameters(params);
   }
 
 }

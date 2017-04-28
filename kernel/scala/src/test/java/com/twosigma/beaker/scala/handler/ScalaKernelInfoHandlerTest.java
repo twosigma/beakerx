@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.scala.handler;
 
-import com.twosigma.beaker.scala.ScalaKernelTest;
+import com.twosigma.beaker.scala.ScalaKernelMock;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import com.twosigma.jupyter.message.MessageTest;
@@ -34,12 +34,12 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
 public class ScalaKernelInfoHandlerTest {
 
   private Message message;
-  private static ScalaKernelTest kernel;
+  private static ScalaKernelMock kernel;
   private static ScalaKernelInfoHandler handler;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    kernel = new ScalaKernelTest();
+    kernel = new ScalaKernelMock();
     handler =  new ScalaKernelInfoHandler(kernel);
   }
 

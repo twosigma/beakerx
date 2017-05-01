@@ -28,8 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClojureKernelTest {
@@ -54,7 +55,7 @@ public class ClojureKernelTest {
     kernelSocketsService.shutdown();
   }
 
-  //@Test
+  @Test
   public void evaluate() throws Exception {
     //given
     String code = "" +
@@ -66,17 +67,30 @@ public class ClojureKernelTest {
     Message message = getExecuteRequestMessage(code);
     //when
     kernelSocketsService.handleMsg(message);
-    Optional<Message> result = waitForResult(kernelSocketsService.getKernelSockets());
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     //then
-    verifyResult(result);
+    assertThat(idleMessage).isPresent();
+    verifyPublishedMsgs(kernelSocketsService);
+    verifySentMsgs(kernelSocketsService);
+    verifyResult(kernelSocketsService.getExecuteResultMessage().get());
   }
 
-  private void verifyResult(Optional<Message> result) {
-    assertThat(result).isPresent();
-    Message message = result.get();
-    Map actual = ((Map) message.getContent().get(Comm.DATA));
+  private void verifyPublishedMsgs(KernelSocketsServiceTest service) {
+    assertThat(service.getBusyMessage()).isPresent();
+    assertThat(service.getExecuteInputMessage()).isPresent();
+    assertThat(service.getExecuteResultMessage()).isPresent();
+    assertThat(service.getIdleMessage()).isPresent();
+  }
+
+  private void verifySentMsgs(KernelSocketsServiceTest service) {
+    verifyExecuteReplyMessage(service.getReplyMessage());
+  }
+
+  private void verifyResult(Message result) {
+    Map actual = ((Map) result.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
-    assertThat(value).contains("[0,1,1,2,3,5");
+    assertThat(value).isNotEmpty();
+    //assertThat(value).contains("[0,1,1,2,3,5"); ->  https://github.com/twosigma/beakerx/issues/5147
   }
 
   private KernelParameters kernelParameters() {

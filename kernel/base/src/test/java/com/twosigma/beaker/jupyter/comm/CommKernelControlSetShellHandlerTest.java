@@ -61,7 +61,7 @@ public class CommKernelControlSetShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isEmpty();
+    Assertions.assertThat(kernel.getPublishedMessages().size()).isEqualTo(2);
   }
 
   @Test

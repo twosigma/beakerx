@@ -17,7 +17,7 @@
 package com.twosigma.beaker.scala.comm;
 
 import com.twosigma.beaker.jupyter.comm.CommKernelControlGetDefaultShellHandlerTest;
-import com.twosigma.beaker.scala.ScalaKernelTest;
+import com.twosigma.beaker.scala.ScalaKernelMock;
 import com.twosigma.jupyter.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -25,13 +25,13 @@ import org.junit.Test;
 
 public class ScalaCommKernelControlSetShellHandlerTest {
 
-  private ScalaKernelTest kernelTest;
+  private ScalaKernelMock kernelTest;
   private ScalaCommKernelControlSetShellHandler commHandler;
   private Message message;
 
   @Before
   public void setUp() throws Exception {
-    kernelTest = new ScalaKernelTest();
+    kernelTest = new ScalaKernelMock();
     commHandler = new ScalaCommKernelControlSetShellHandler(kernelTest);
     message = new Message();
   }

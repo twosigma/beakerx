@@ -389,6 +389,9 @@ public class GroovyEvaluator implements Evaluator {
             nc.setOutputObj(null);
             nc = null;
           }
+          if(j!=null && j.outputObject !=null){
+            j.outputObject.executeCodeCallback();
+          }
         }
       }
       NamespaceClient.delBeaker(sessionId);

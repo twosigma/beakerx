@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.groovy.evaluator;
 
+import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.KernelTest;
@@ -61,7 +62,7 @@ public class GroovyEvaluatorProgressReportingTest {
             "  beaker.showProgressUpdate(\"msg\"+i, i)\n" +
             "}\n" +
             "\"finished\"";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     groovyEvaluator.evaluate(seo, code);
     waitForResult(seo);

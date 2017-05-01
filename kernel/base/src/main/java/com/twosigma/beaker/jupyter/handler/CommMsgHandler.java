@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 public class CommMsgHandler extends KernelHandler<Message> {
 
@@ -40,15 +41,18 @@ public class CommMsgHandler extends KernelHandler<Message> {
   }
 
   public void handle(Message message) {
-    publish(this.messageCreator.createBusyMessage(message));
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
+    });
+  }
 
+  private void handleMsg(Message message) {
     Map<String, Serializable> commMap = message.getContent();
     Comm comm = kernel.getComm(getString(commMap, COMM_ID));
     logger.debug("Comm message handling, target name: " + (comm != null ? comm.getTargetName() : "undefined"));
     if (comm != null) {
       comm.handleMsg(message);
     }
-    publish(this.messageCreator.createIdleMessage(message));
   }
 
   public static String getString(Map<String, Serializable> map, String name) {

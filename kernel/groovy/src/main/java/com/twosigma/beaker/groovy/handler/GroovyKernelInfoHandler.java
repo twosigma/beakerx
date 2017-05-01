@@ -16,6 +16,7 @@
 package com.twosigma.beaker.groovy.handler;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,6 +42,12 @@ public class GroovyKernelInfoHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
+    });
+  }
+
+  private void handleMsg(Message message) {
     logger.debug("Processing kernel info request");
     Message reply = new Message();
     HashMap<String, Serializable> map = new HashMap<>(6);

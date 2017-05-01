@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.sql;
 
+import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -57,7 +58,7 @@ public class SQLEvaluatorTest {
   @Test
   public void evaluateSql() throws Exception {
     //given
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(CREATE_AND_SELECT_ALL);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(CREATE_AND_SELECT_ALL, new ExecuteCodeCallbackTest());
     //when
     sqlEvaluator.evaluate(seo, CREATE_AND_SELECT_ALL);
     waitForResult(seo);

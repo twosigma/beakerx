@@ -19,6 +19,7 @@ package com.twosigma.beaker.jupyter.handler;
 import static com.twosigma.beaker.jupyter.comm.Comm.COMMS;
 import static com.twosigma.beaker.jupyter.comm.Comm.TARGET_NAME;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_INFO_REPLY;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -45,7 +46,13 @@ public class CommInfoHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    logger.info("Processing CommInfoHandler");
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
+    });
+  }
+
+  private void handleMsg(Message message) {
+    logger.debug("Processing CommInfoHandler");
     Message reply = new Message();
     reply.setHeader(new Header(COMM_INFO_REPLY, message.getHeader().getSession()));
     HashMap<String, Serializable> content = new HashMap<>();

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.groovy.evaluator;
 
+import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class GroovyEvaluatorArithmeticTest {
   public void shouldCreateFinishedResult() throws Exception {
     //given
     String code = "16/2";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     groovyEvaluator.evaluate(seo, code);
     waitForResult(seo);
@@ -52,7 +53,7 @@ public class GroovyEvaluatorArithmeticTest {
   public void shouldCreateErrorResultWithArithmeticExceptionWhenDivisionByZero() throws Exception {
     //given
     String code = "1/0";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     groovyEvaluator.evaluate(seo, code);
     waitForResult(seo);

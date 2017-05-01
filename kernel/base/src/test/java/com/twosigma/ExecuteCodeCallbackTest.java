@@ -13,23 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.jupyter.handler;
+package com.twosigma;
 
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.message.Message;
 
-import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
-
-public class HistoryHandler extends KernelHandler<Message> {
-  public HistoryHandler(KernelFunctionality kernel) {
-    super(kernel);
-  }
+public class ExecuteCodeCallbackTest implements KernelFunctionality.ExecuteCodeCallback {
 
   @Override
-  public void handle(Message message) {
-    wrapBusyIdle(kernel, message, () -> {
-
-    });
+  public void execute(SimpleEvaluationObject message) {
+    //nothing to do
   }
-
 }
+

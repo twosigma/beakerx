@@ -16,8 +16,9 @@
 
 package com.twosigma.beaker.javash.evaluator;
 
+import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.chart.xychart.Plot;
-import com.twosigma.beaker.javash.JavaKernelTest;
+import com.twosigma.beaker.javash.JavaKernelMock;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import org.assertj.core.api.Assertions;
@@ -41,7 +42,7 @@ public class JavaEvaluatorTest {
 
   @Before
   public void setUp() throws Exception {
-    JavaKernelTest kernel = new JavaKernelTest("id", javaEvaluator);
+    JavaKernelMock kernel = new JavaKernelMock("id", javaEvaluator);
     KernelManager.register(kernel);
   }
 
@@ -56,7 +57,7 @@ public class JavaEvaluatorTest {
     String code = "import com.twosigma.beaker.chart.xychart.*;\n" +
         "Plot plot = new Plot(); plot.setTitle(\"test title\");\n" +
         "return plot;";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     javaEvaluator.evaluate(seo, code);
     waitForResult(seo);
@@ -70,7 +71,7 @@ public class JavaEvaluatorTest {
   public void evaluateDivisionByZero_shouldReturnArithmeticException() throws Exception {
     //given
     String code = "return 16/0;";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     javaEvaluator.evaluate(seo, code);
     waitForResult(seo);

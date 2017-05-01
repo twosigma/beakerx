@@ -34,12 +34,12 @@ import static com.twosigma.beaker.jupyter.comm.Comm.TARGET_MODULE;
 import static com.twosigma.beaker.jupyter.comm.Comm.TARGET_NAME;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import com.twosigma.jupyter.KernelFunctionality;
+
 /**
- * 
  * @author konst
- *
  */
 public abstract class CommOpenHandler extends KernelHandler<Message> {
 
@@ -50,11 +50,17 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
   }
 
   @Override
-  public void handle(Message message)  {
+  public void handle(Message message) {
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
+    });
+  }
+
+  private void handleMsg(Message message) {
     logger.debug("Processing CommOpenHandler");
     Message reply = new Message();
     HashMap<String, Serializable> map = new HashMap<>(6);
-    
+
     Map<String, Serializable> commMap = message.getContent();
     Comm newComm = null;
     if (isValidMessage(commMap)) {
@@ -64,12 +70,12 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
       map.put(TARGET_NAME, newComm.getTargetName());
       map.put(DATA, new HashMap<>());
       map.put(TARGET_MODULE, newComm.getTargetModule());
-    }else{
+    } else {
       reply.setHeader(new Header(COMM_CLOSE, message.getHeader().getSession()));
       map.put(DATA, new HashMap<>());
     }
 
-    if(newComm != null){
+    if (newComm != null) {
       logger.debug("Comm opened, target name = " + newComm.getTargetName());
       for (Handler<Message> handler : getKernelControlChanelHandlers(newComm.getTargetName())) {
         newComm.addMsgCallbackList(handler);
@@ -82,16 +88,16 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
     reply.setIdentities(message.getIdentities());
     send(reply);
   }
-  
+
   public abstract Handler<Message>[] getKernelControlChanelHandlers(String targetName);
-  
+
   public static String getString(Map<String, Serializable> map, String name) {
     return (String) map.get(name);
   }
 
   protected Comm readComm(Map<String, Serializable> map) {
     Comm ret = new Comm(getString(map, COMM_ID), getString(map, TARGET_NAME));
-    ret.setData((HashMap<?,?> )map.get(DATA));
+    ret.setData((HashMap<?, ?>) map.get(DATA));
     ret.setTargetModule(getString(map, TARGET_MODULE));
     return ret;
   }

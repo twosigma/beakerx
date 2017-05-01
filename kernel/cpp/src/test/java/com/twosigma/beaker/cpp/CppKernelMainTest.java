@@ -22,13 +22,14 @@ import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CppKernelMainTest {
@@ -53,7 +54,7 @@ public class CppKernelMainTest {
     kernelSocketsService.shutdown();
   }
 
-  //@Test disabled because of problem on jenkins
+  //@Test //disabled because of problem on jenkins
   public void evaluate() throws Exception {
     //given
     String code = "" +
@@ -68,15 +69,27 @@ public class CppKernelMainTest {
     Message message = getExecuteRequestMessage(code);
     //when
     kernelSocketsService.handleMsg(message);
-    Optional<Message> result = waitForResult(kernelSocketsService.getKernelSockets());
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     //then
-    verifyResult(result);
+    assertThat(idleMessage).isPresent();
+    verifyPublishedMsgs(kernelSocketsService);
+    verifySentMsgs(kernelSocketsService);
+    verifyResult(kernelSocketsService.getExecuteResultMessage().get());
   }
 
-  private void verifyResult(Optional<Message> result) {
-    assertThat(result).isPresent();
-    Message message = result.get();
-    Map actual = ((Map) message.getContent().get(Comm.DATA));
+  private void verifyPublishedMsgs(KernelSocketsServiceTest service) {
+    assertThat(service.getBusyMessage()).isPresent();
+    assertThat(service.getExecuteInputMessage()).isPresent();
+    assertThat(service.getExecuteResultMessage()).isPresent();
+    assertThat(service.getIdleMessage()).isPresent();
+  }
+
+  private void verifySentMsgs(KernelSocketsServiceTest service) {
+    verifyExecuteReplyMessage(service.getReplyMessage());
+  }
+
+  private void verifyResult(Message result) {
+    Map actual = ((Map) result.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
     assertThat(value).isEqualTo("null\nHello world!\n");
   }

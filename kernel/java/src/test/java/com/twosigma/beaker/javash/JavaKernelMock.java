@@ -13,23 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.jupyter.handler;
 
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.message.Message;
+package com.twosigma.beaker.javash;
 
-import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
+import com.twosigma.beaker.KernelTest;
+import com.twosigma.beaker.evaluator.Evaluator;
 
-public class HistoryHandler extends KernelHandler<Message> {
-  public HistoryHandler(KernelFunctionality kernel) {
-    super(kernel);
+public class JavaKernelMock extends KernelTest {
+
+  public JavaKernelMock() {
+    this("JavaKernelTestId1");
   }
 
-  @Override
-  public void handle(Message message) {
-    wrapBusyIdle(kernel, message, () -> {
-
-    });
+  public JavaKernelMock(String id) {
+    super(id);
   }
 
+  public JavaKernelMock(String id, Evaluator evaluator) {
+    super(id, evaluator);
+  }
 }

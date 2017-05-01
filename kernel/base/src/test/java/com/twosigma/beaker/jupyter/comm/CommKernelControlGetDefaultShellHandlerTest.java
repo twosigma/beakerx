@@ -71,7 +71,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     //when
     commHandler.handle(message);
     //then
-    assertThat(kernel.getPublishedMessages()).isEmpty();
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(2);
   }
 
   @Test
@@ -82,7 +82,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     commHandler.handle(message);
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = kernel.getPublishedMessages().get(0);
+    Message sendMessage = kernel.getPublishedMessages().get(1);
     assertThat((String) sendMessage.getContent().get(Comm.COMM_ID)).isNotEmpty();
   }
 
@@ -94,7 +94,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     commHandler.handle(message);
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = kernel.getPublishedMessages().get(0);
+    Message sendMessage = kernel.getPublishedMessages().get(1);
     assertThat((Map) sendMessage.getContent().get(Comm.DATA)).isNotEmpty();
     Map<String, Serializable> shell = (Map) sendMessage.getContent().get(Comm.DATA);
     assertThat((Map) shell.get(KERNEL_CONTROL_RESPONSE)).isNotEmpty();
@@ -108,7 +108,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     commHandler.handle(message);
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = kernel.getPublishedMessages().get(0);
+    Message sendMessage = kernel.getPublishedMessages().get(1);
     Map<String, Serializable> response =
             (Map)((Map) sendMessage.getContent().get(Comm.DATA)).get(KERNEL_CONTROL_RESPONSE);
 
@@ -125,7 +125,7 @@ public class CommKernelControlGetDefaultShellHandlerTest {
     commHandler.handle(message);
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Message sendMessage = kernel.getPublishedMessages().get(0);
+    Message sendMessage = kernel.getPublishedMessages().get(1);
     Map<String, Serializable> response =
             (Map)((Map) sendMessage.getContent().get(Comm.DATA)).get(KERNEL_CONTROL_RESPONSE);
     Map<String, Serializable> beakerx_kernel_parameters =(Map) response.get(KERNEL_PARAMETERS);

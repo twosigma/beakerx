@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.groovy.comm;
 
-import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.groovy.GroovyKernelMock;
 import com.twosigma.beaker.jupyter.comm.CommKernelControlGetDefaultShellHandlerTest;
 import com.twosigma.jupyter.message.Message;
 import org.assertj.core.api.Assertions;
@@ -25,13 +25,13 @@ import org.junit.Test;
 
 public class GroovyCommKernelControlSetShellHandlerTest {
 
-  private GroovyKernelTest kernelTest;
+  private GroovyKernelMock kernelTest;
   private GroovyCommKernelControlSetShellHandler commHandler;
   private Message message;
 
   @Before
   public void setUp() throws Exception {
-    kernelTest = new GroovyKernelTest();
+    kernelTest = new GroovyKernelMock();
     commHandler = new GroovyCommKernelControlSetShellHandler(kernelTest);
     message = new Message();
   }

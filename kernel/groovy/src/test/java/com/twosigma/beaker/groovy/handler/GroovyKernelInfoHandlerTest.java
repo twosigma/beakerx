@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.groovy.handler;
 
-import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.groovy.GroovyKernelMock;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import com.twosigma.jupyter.message.MessageTest;
@@ -34,12 +34,12 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
 public class GroovyKernelInfoHandlerTest {
 
   private Message message;
-  private static GroovyKernelTest kernel;
+  private static GroovyKernelMock kernel;
   private static GroovyKernelInfoHandler handler;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    kernel = new GroovyKernelTest();
+    kernel = new GroovyKernelMock();
     handler =  new GroovyKernelInfoHandler(kernel);
   }
 

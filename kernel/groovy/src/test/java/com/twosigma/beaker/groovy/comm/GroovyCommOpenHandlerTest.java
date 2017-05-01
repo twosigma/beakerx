@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.groovy.comm;
 
-import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.groovy.GroovyKernelMock;
 import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
 import com.twosigma.beaker.jupyter.handler.JupyterHandlerTest;
 import com.twosigma.jupyter.handler.Handler;
@@ -27,13 +27,13 @@ import org.junit.Test;
 
 public class GroovyCommOpenHandlerTest {
 
-  private GroovyKernelTest kernel;
+  private GroovyKernelMock kernel;
   private GroovyCommOpenHandler commOpenHandler;
   private String targetName = TargetNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName();
 
   @Before
   public void setUp() {
-    kernel = new GroovyKernelTest();
+    kernel = new GroovyKernelMock();
     commOpenHandler = new GroovyCommOpenHandler(kernel);
   }
 

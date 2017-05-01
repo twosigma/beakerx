@@ -13,23 +13,89 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.javash;
 
-import com.twosigma.beaker.KernelTest;
-import com.twosigma.beaker.evaluator.Evaluator;
+import com.twosigma.beaker.KernelSocketsServiceTest;
+import com.twosigma.beaker.javash.evaluator.JavaEvaluator;
+import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.jupyter.KernelRunner;
+import com.twosigma.jupyter.message.Message;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class JavaKernelTest extends KernelTest {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-  public JavaKernelTest() {
-    this("JavaKernelTestId1");
+import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
+import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class JavaKernelTest {
+
+  private JavaKernel kernel;
+  private KernelSocketsServiceTest kernelSocketsService;
+
+  @Before
+  public void setUp() throws Exception {
+    String sessionId = "sessionId2";
+    JavaEvaluator evaluator = new JavaEvaluator(sessionId, sessionId);
+    evaluator.setShellOptions(kernelParameters());
+    kernelSocketsService = new KernelSocketsServiceTest();
+    kernel = new JavaKernel(sessionId, evaluator, kernelSocketsService);
+    new Thread(() -> KernelRunner.run(() -> kernel)).start();
+    kernelSocketsService.waitForSockets();
   }
 
-  public JavaKernelTest(String id) {
-    super(id);
+  @After
+  public void tearDown() throws Exception {
+    kernelSocketsService.shutdown();
   }
 
-  public JavaKernelTest(String id, Evaluator evaluator) {
-    super(id, evaluator);
+  @Test
+  public void evaluate() throws Exception {
+    //given
+    String code = "return 1;";
+    Message message = getExecuteRequestMessage(code);
+    //when
+    kernelSocketsService.handleMsg(message);
+    kernelSocketsService.handleMsg(message);
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    //then
+    assertThat(idleMessage).isPresent();
+    verifyPublishedMsgs(kernelSocketsService);
+    verifySentMsgs(kernelSocketsService);
+    verifyResult(kernelSocketsService.getExecuteResultMessage().get());
   }
+
+  private void verifyPublishedMsgs(KernelSocketsServiceTest service) {
+    assertThat(service.getBusyMessage()).isPresent();
+    assertThat(service.getExecuteInputMessage()).isPresent();
+    assertThat(service.getExecuteResultMessage()).isPresent();
+    assertThat(service.getIdleMessage()).isPresent();
+  }
+
+  private void verifySentMsgs(KernelSocketsServiceTest service) {
+    verifyExecuteReplyMessage(service.getReplyMessage());
+  }
+
+  private void verifyResult(Message result) {
+    Map actual = ((Map) result.getContent().get(Comm.DATA));
+    String value = (String) actual.get("text/plain");
+    assertThat(value).isEqualTo("1");
+  }
+
+  private KernelParameters kernelParameters() {
+    Map<String, Object> params = new HashMap<>();
+    params.put(IMPORTS, new ArrayList<>());
+    params.put(CLASSPATH, new ArrayList<>());
+    return new KernelParameters(params);
+  }
+
 }

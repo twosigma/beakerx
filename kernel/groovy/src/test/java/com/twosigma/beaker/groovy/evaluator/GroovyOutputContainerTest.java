@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.groovy.evaluator;
 
+import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.KernelManager;
@@ -63,7 +64,7 @@ public class GroovyOutputContainerTest {
             "new OutputContainer() << plot2";
 
     //when
-    SimpleEvaluationObject seo = groovyEvaluator.executeCode(code, HEADER_MESSAGE, 1);
+    SimpleEvaluationObject seo = groovyEvaluator.executeCode(code, HEADER_MESSAGE, 1, new ExecuteCodeCallbackTest());
     waitForResult(seo);
     //then
     assertTrue(seo.getPayload().toString(),seo.getStatus().equals(FINISHED));

@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.javash.comm;
 
-import com.twosigma.beaker.javash.JavaKernelTest;
+import com.twosigma.beaker.javash.JavaKernelMock;
 import com.twosigma.beaker.jupyter.comm.CommKernelControlGetDefaultShellHandlerTest;
 import com.twosigma.jupyter.message.Message;
 import org.assertj.core.api.Assertions;
@@ -25,13 +25,13 @@ import org.junit.Test;
 
 public class JavaCommKernelControlSetShellHandlerTest {
 
-  private JavaKernelTest kernelTest;
+  private JavaKernelMock kernelTest;
   private JavaCommKernelControlSetShellHandler commHandler;
   private Message message;
 
   @Before
   public void setUp() throws Exception {
-    kernelTest = new JavaKernelTest();
+    kernelTest = new JavaKernelMock();
     commHandler = new JavaCommKernelControlSetShellHandler(kernelTest);
     message = new Message();
   }

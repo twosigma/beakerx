@@ -18,7 +18,7 @@ package com.twosigma.beaker.scala.comm;
 
 import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
 import com.twosigma.beaker.jupyter.handler.JupyterHandlerTest;
-import com.twosigma.beaker.scala.ScalaKernelTest;
+import com.twosigma.beaker.scala.ScalaKernelMock;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 import org.assertj.core.api.Assertions;
@@ -27,13 +27,13 @@ import org.junit.Test;
 
 public class ScalaCommOpenHandlerTest {
 
-  private ScalaKernelTest kernel;
+  private ScalaKernelMock kernel;
   private ScalaCommOpenHandler commOpenHandler;
   private String targetName = TargetNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName();
 
   @Before
   public void setUp() {
-    kernel = new ScalaKernelTest();
+    kernel = new ScalaKernelMock();
     commOpenHandler = new ScalaCommOpenHandler(kernel);
   }
 

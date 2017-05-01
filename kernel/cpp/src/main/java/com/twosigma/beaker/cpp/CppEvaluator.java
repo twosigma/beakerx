@@ -359,6 +359,10 @@ public class CppEvaluator implements Evaluator {
             e.printStackTrace(pw);
             theOutput.error(sw.toString());
           }
+        } finally {
+          if (theOutput != null) {
+            theOutput.executeCodeCallback();
+          }
         }
         theOutput.clrOutputHandler();
       }

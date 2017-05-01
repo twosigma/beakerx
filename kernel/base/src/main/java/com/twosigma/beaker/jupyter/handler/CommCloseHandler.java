@@ -30,11 +30,14 @@ import java.util.Map;
 import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
 import static com.twosigma.beaker.jupyter.comm.Comm.DATA;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
-/** @author konst */
+/**
+ * @author konst
+ */
 public class CommCloseHandler extends KernelHandler<Message> {
 
-  private final static Logger logger = LoggerFactory.getLogger(CommCloseHandler.class);;
+  private final static Logger logger = LoggerFactory.getLogger(CommCloseHandler.class);
 
   public CommCloseHandler(KernelFunctionality kernel) {
     super(kernel);
@@ -49,15 +52,20 @@ public class CommCloseHandler extends KernelHandler<Message> {
   }
 
   @Override
-  public void handle(Message message)  {
+  public void handle(Message message) {
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
+    });
+  }
 
+  private void handleMsg(Message message) {
     logger.debug("Processing CommCloseHandler");
     Map<String, Serializable> commMap = message.getContent();
 
     String targetName =
-        (kernel.getComm(getString(commMap, COMM_ID)) != null)
-            ? kernel.getComm(getString(commMap, COMM_ID)).getTargetName()
-            : "";
+            (kernel.getComm(getString(commMap, COMM_ID)) != null)
+                    ? kernel.getComm(getString(commMap, COMM_ID)).getTargetName()
+                    : "";
     kernel.removeComm(getString(commMap, COMM_ID));
 
     Message reply = new Message();

@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.message.Message;
 
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
+
 public class KernelControlCommandListHandler extends BaseHandler<Boolean> {
 
   private static final Logger logger = LoggerFactory.getLogger(KernelControlCommandListHandler.class);
@@ -39,6 +41,12 @@ public class KernelControlCommandListHandler extends BaseHandler<Boolean> {
 
   @Override
   public void handle(Message message) {
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
+    });
+  }
+
+  private void handleMsg(Message message) {
     logger.debug("Handing comm message content");
     Boolean value = getValueFromData(message, getHandlerCommand());
     if (value != null && value.booleanValue()) {

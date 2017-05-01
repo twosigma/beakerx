@@ -18,7 +18,7 @@ package com.twosigma.beaker.groovy.evaluator;
 
 import com.twosigma.beaker.groovy.GroovyDefaultVariables;
 import com.twosigma.beaker.NamespaceClient;
-import com.twosigma.beaker.groovy.GroovyKernelTest;
+import com.twosigma.beaker.groovy.GroovyKernelMock;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler;
 import com.twosigma.jupyter.KernelParameters;
@@ -34,7 +34,7 @@ import java.util.HashMap;
 public class GroovyEvaluatorTest {
 
   static GroovyClassLoader groovyClassLoader;
-  static GroovyKernelTest groovyKernel;
+  static GroovyKernelMock groovyKernel;
   static Binding scriptBinding;
 
   @BeforeClass
@@ -51,7 +51,7 @@ public class GroovyEvaluatorTest {
     groovyClassLoader = groovyEvaluator.newEvaluator();
     scriptBinding = new Binding();
     scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));
-    groovyKernel = new GroovyKernelTest();
+    groovyKernel = new GroovyKernelMock();
     KernelManager.register(groovyKernel);
   }
 

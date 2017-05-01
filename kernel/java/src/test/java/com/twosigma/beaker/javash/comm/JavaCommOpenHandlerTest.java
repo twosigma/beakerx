@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.javash.comm;
 
-import com.twosigma.beaker.javash.JavaKernelTest;
+import com.twosigma.beaker.javash.JavaKernelMock;
 import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
 import com.twosigma.beaker.jupyter.handler.JupyterHandlerTest;
 import com.twosigma.jupyter.handler.Handler;
@@ -27,13 +27,13 @@ import org.junit.Test;
 
 public class JavaCommOpenHandlerTest {
 
-  private JavaKernelTest kernel;
+  private JavaKernelMock kernel;
   private JavaCommOpenHandler commOpenHandler;
   private String targetName = TargetNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName();
 
   @Before
   public void setUp() {
-    kernel = new JavaKernelTest();
+    kernel = new JavaKernelMock();
     commOpenHandler = new JavaCommOpenHandler(kernel);
   }
 

@@ -18,6 +18,7 @@ package com.twosigma.beaker.jupyter.comm;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 import static com.twosigma.jupyter.KernelParameters.KERNEL_PARAMETERS;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -44,6 +45,12 @@ public abstract class KernelControlGetDefaultShellHandler extends BaseHandler<Bo
 
   @Override
   public void handle(Message message) {
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
+    });
+  }
+
+  private void handleMsg(Message message) {
     logger.debug("Handing comm message content");
     Boolean ok = getValueFromData(message, getHandlerCommand());
     if (ok != null && ok.booleanValue()) {

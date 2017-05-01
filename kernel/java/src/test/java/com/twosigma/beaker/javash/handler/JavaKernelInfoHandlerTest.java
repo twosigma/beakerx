@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.javash.handler;
 
-import com.twosigma.beaker.javash.JavaKernelTest;
+import com.twosigma.beaker.javash.JavaKernelMock;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import com.twosigma.jupyter.message.MessageTest;
@@ -34,12 +34,12 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
 public class JavaKernelInfoHandlerTest {
 
   private Message message;
-  private static JavaKernelTest kernel;
+  private static JavaKernelMock kernel;
   private static JavaKernelInfoHandler handler;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    kernel = new JavaKernelTest();
+    kernel = new JavaKernelMock();
     handler =  new JavaKernelInfoHandler(kernel);
   }
 

@@ -26,12 +26,12 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 public class EvaluatorManager {
-  
+
   public static Logger logger = LoggerFactory.getLogger(EvaluatorManager.class);
-  
+
   protected Evaluator evaluator = null;
   protected KernelFunctionality kernel;
-  
+
   public EvaluatorManager(KernelFunctionality kernel, Evaluator evaluator) {
     this.kernel = kernel;
     this.evaluator = evaluator;
@@ -48,24 +48,24 @@ public class EvaluatorManager {
   }
 
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    return evaluator.autocomplete(code,caretPosition);
+    return evaluator.autocomplete(code, caretPosition);
   }
 
   public synchronized void killAllThreads() {
     evaluator.killAllThreads();
   }
 
-  public synchronized SimpleEvaluationObject executeCode(String code, Message message, int executionCount) {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
+  public synchronized SimpleEvaluationObject executeCode(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
     seo.setJupyterMessage(message);
     seo.setExecutionCount(executionCount);
     seo.addObserver(kernel.getExecutionResultSender());
     evaluator.evaluate(seo, code);
     return seo;
   }
-  
+
   public void exit() {
     evaluator.exit();
   }
-  
+
 }

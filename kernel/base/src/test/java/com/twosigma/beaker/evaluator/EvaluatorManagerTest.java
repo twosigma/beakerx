@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.evaluator;
 
+import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.message.Message;
@@ -78,7 +79,7 @@ public class EvaluatorManagerTest {
   public void executeCode_callEvaluatorToEvaluate(){
     String code = "test code";
     //when
-    evaluatorManager.executeCode(code, new Message(), 5);
+    evaluatorManager.executeCode(code, new Message(), 5, new ExecuteCodeCallbackTest());
     //then
     Assertions.assertThat(evaluator.getCode()).isEqualTo(code);
   }

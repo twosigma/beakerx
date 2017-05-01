@@ -16,6 +16,7 @@
 package com.twosigma.beaker.jupyter.comm;
 
 import static com.twosigma.jupyter.KernelParameters.KERNEL_PARAMETERS;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +49,12 @@ public class KernelControlSetShellHandler extends BaseHandler<List<String>> {
 
   @Override
   public void handle(Message message) {
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
+    });
+  }
+
+  private void handleMsg(Message message) {
     logger.debug("Handing comm message content");
     Map<String, List<String>> shell = getData(message);
     if (shell != null) {

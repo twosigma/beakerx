@@ -20,6 +20,7 @@ import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
+import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.KernelParameters;
@@ -42,6 +43,7 @@ public class KernelTest implements KernelFunctionality {
   private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
   private Boolean setShellOptions;
   private EvaluatorManager evaluatorManager;
+  private MessageCreator messageCreator;
 
   public KernelTest() {
     this("KernelTestId1");
@@ -49,11 +51,13 @@ public class KernelTest implements KernelFunctionality {
 
   public KernelTest(String id) {
     this.id = id;
+    this.messageCreator = new MessageCreator(this);
   }
 
   public KernelTest(String id, Evaluator evaluator) {
     this.id = id;
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
+    this.messageCreator = new MessageCreator(this);
   }
 
   @Override
@@ -143,12 +147,24 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public SimpleEvaluationObject executeCode(String code, Message message, int executionCount) {
+  public SimpleEvaluationObject executeCode(String code, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback) {
     return null;
   }
 
   @Override
   public AutocompleteResult autocomplete(String code, int cursorPos) {
     return this.evaluatorManager.autocomplete(code,cursorPos);
+  }
+
+  @Override
+  public void sendBusyMessage(Message message) {
+    Message busyMessage = this.messageCreator.createBusyMessage(message);
+    publish(busyMessage);
+  }
+
+  @Override
+  public void sendIdleMessage(Message message) {
+    Message idleMessage = this.messageCreator.createIdleMessage(message);
+    publish(idleMessage);
   }
 }

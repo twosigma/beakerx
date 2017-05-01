@@ -25,6 +25,8 @@ import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.message.Message;
 
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
+
 /**
  * @author konst
  */
@@ -40,16 +42,22 @@ public class KernelControlInterrupt extends BaseHandler<Boolean> {
   public KernelControlInterrupt(KernelFunctionality kernel) {
     super(kernel);
   }
-  
+
   @Override
-  public void handle(Message message)  {
+  public void handle(Message message) {
+    wrapBusyIdle(kernel, message, () -> {
+      handleMsg(message);
+    });
+  }
+
+  private void handleMsg(Message message) {
     logger.debug("Handing comm message content");
     Boolean value = getValueFromData(message, getHandlerCommand());
-    if(value != null && value.booleanValue()){
+    if (value != null && value.booleanValue()) {
       boolean ok = Kernel.isWindows();
-      if(ok){
+      if (ok) {
         kernel.cancelExecution();
-      }else{
+      } else {
         logger.debug("Cell execution interrupt not performed, done by SIGINT");
       }
       HashMap<String, Serializable> data = new HashMap<>();
@@ -65,5 +73,5 @@ public class KernelControlInterrupt extends BaseHandler<Boolean> {
   public String getHandlerCommand() {
     return KERNEL_INTERRUPT;
   }
-  
+
 }

@@ -1751,6 +1751,16 @@ define([
       });
       self.fixFocus(self.focus);
       self.update();
+    } else if (self.interactMode === "locate") {
+      var svgNode = self.svg.node();
+      // right click zoom
+      self.mousep2 = {
+        "x" : d3.mouse(svgNode)[0],
+        "y" : d3.mouse(svgNode)[1]
+      };
+      self.calcLocateBox();
+      self.rpipeRects = [];
+      self.renderLocateBox();
     }
   };
 
@@ -2111,13 +2121,18 @@ define([
     self.lastk = 1;
 
     // set zoom object
+    //duplicate zoom call: need for mouse right button
     self.svg
       .on("mousedown", function() {
+         self.zoomStart();
         return self.mouseDown();
       })
-      //   .on("mouseup", function() {
-      //   return self.mouseUp();
-      // })
+       .on("mousemove", function(d) {
+         return self.zooming();
+      })
+       .on("mouseup", function() {
+         return self.zoomEnd();
+       })
       .on("mouseleave", function() {
         return self.disableZoomWheel();
       });

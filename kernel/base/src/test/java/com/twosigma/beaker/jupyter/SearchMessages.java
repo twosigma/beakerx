@@ -17,7 +17,6 @@
 package com.twosigma.beaker.jupyter;
 
 import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.widgets.Layout;
 import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.jupyter.message.Message;
@@ -61,17 +60,6 @@ public class SearchMessages {
         .filter(m -> id.equals((String) m.getContent().get(Comm.COMM_ID)))
         .findFirst()
         .get();
-  }
-
-  public static List<Message> getListMessagesByType(List<Message> messages, JupyterMessages type){
-    return messages.stream()
-        .filter(m -> {
-          m.getHeader().getType();
-          return m.getHeader() != null
-              && m.getHeader().getType() != null
-              && m.getHeader().getType().equalsIgnoreCase(type.toString());
-        })
-        .collect(Collectors.toList());
   }
 
 }

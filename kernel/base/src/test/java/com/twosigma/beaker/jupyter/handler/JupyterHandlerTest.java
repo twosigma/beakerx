@@ -86,7 +86,10 @@ public class JupyterHandlerTest {
     content.put(COMM_ID, "commId");
     content.put(TARGET_NAME, "targetName");
     content.put(TARGET_MODULE, "targetModule");
+    return initCommMessage(content);
+  }
 
+  public static Message initCommMessage(Map<String, Serializable> content) {
     Message message = new Message();
     message.setIdentities(Arrays.asList("identities".getBytes()));
     message.setHeader(initHeader(JupyterMessages.COMM_MSG));

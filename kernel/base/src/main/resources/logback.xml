@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="false">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!--
+			encoders are assigned the type
+			ch.qos.logback.classic.encoder.PatternLayoutEncoder by default
+		-->
+		<encoder>
+			<pattern>%date %-5level [%class{0}.%M:%line] %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<encoder>
+			<pattern>%date %-5level [%class{0}.%M:%line] %msg%n</pattern>
+		</encoder>
+		<append>true</append>
+		<file>jupyter-groovy-kernel.log</file>
+	</appender>
+
+	<logger name="com.twosigma.beaker.groovy.GroovyKernel" level="debug"/>
+	<root level="info">
+		<appender-ref ref="FILE" />
+		<!-- <appender-ref ref="FILE"/>  -->
+	</root>
+</configuration>

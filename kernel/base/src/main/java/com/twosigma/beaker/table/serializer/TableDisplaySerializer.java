@@ -1,0 +1,76 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package com.twosigma.beaker.table.serializer;
+
+import com.twosigma.beaker.table.TableDisplay;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import java.util.List;
+import java.io.IOException;
+
+public class TableDisplaySerializer extends ObservableTableDisplaySerializer<TableDisplay> {
+
+  public int ROWS_LIMIT = 10000;
+  @Override
+  public void serialize(TableDisplay value,
+                        JsonGenerator jgen,
+                        SerializerProvider provider)
+    throws IOException, JsonProcessingException {
+
+    synchronized (value) {
+      jgen.writeStartObject();
+      super.serialize(value, jgen);
+      jgen.writeObjectField("type", "TableDisplay");
+      jgen.writeObjectField("columnNames", value.getColumnNames());
+      jgen.writeObjectField("types", value.getTypes());
+      jgen.writeObjectField("subtype", value.getSubtype());
+      jgen.writeObjectField("stringFormatForTimes", value.getStringFormatForTimes());
+      jgen.writeObjectField("stringFormatForType", value.getStringFormatForType());
+      jgen.writeObjectField("stringFormatForColumn", value.getStringFormatForColumn());
+      jgen.writeObjectField("rendererForType", value.getRendererForType());
+      jgen.writeObjectField("rendererForColumn", value.getRendererForColumn());
+      jgen.writeObjectField("alignmentForType", value.getAlignmentForType());
+      jgen.writeObjectField("alignmentForColumn", value.getAlignmentForColumn());
+      jgen.writeObjectField("columnsFrozen", value.getColumnsFrozen());
+      jgen.writeObjectField("columnsFrozenRight", value.getColumnsFrozenRight());
+      jgen.writeObjectField("columnsVisible", value.getColumnsVisible());
+      jgen.writeObjectField("columnOrder", value.getColumnOrder());
+      jgen.writeObjectField("cellHighlighters", value.getCellHighlighters());
+      jgen.writeObjectField("tooltips", value.getTooltips());
+      jgen.writeObjectField("dataFontSize", value.getDataFontSize());
+      jgen.writeObjectField("headerFontSize", value.getHeaderFontSize());
+      jgen.writeObjectField("fontColor", value.getFontColor());
+      if (value.getFilteredValues() != null) {
+        jgen.writeObjectField("filteredValues", value.getFilteredValues());
+      }
+      jgen.writeBooleanField("headersVertical", value.getHeadersVertical());
+      jgen.writeObjectField("hasIndex", value.getHasIndex());
+      jgen.writeObjectField("timeZone", value.getTimeZone());
+      List<List<?>> values = value.getValues();
+      if (values.size() > ROWS_LIMIT) {
+        jgen.writeObjectField("values", values.subList(0, 1000));
+        jgen.writeBooleanField("tooManyRows", true);
+        jgen.writeObjectField("rowLength", values.size());
+        jgen.writeObjectField("rowLimit", ROWS_LIMIT);
+      } else {
+        jgen.writeObjectField("values", values);
+        jgen.writeBooleanField("tooManyRows", false);
+      }
+      jgen.writeEndObject();
+    }
+  }
+}

@@ -1,0 +1,39 @@
+.beaker-easyform-container {
+
+  .widget-inline-hbox .widget-label {
+    min-width: 120px;
+    max-width: 200px;
+    margin-right: 15px;
+  }
+
+  .widget-textarea,
+  .widget-text,
+  .widget-select,
+  .widget-select-multiple {
+    width: 380px;
+    min-width: 380px;
+  }
+
+  .widget-radio-box input {
+    margin-right: 10px;
+  }
+
+  .datepicker-container {
+    align-items: stretch;
+  }
+
+}
+
+.beaker-fieldset {
+  border: 1px solid #cfcfcf;
+  padding: 10px;
+
+  legend {
+    border-bottom: none;
+    width: auto;
+    display: inline;
+    padding: 0 5px;
+    font-size: 17px;
+    margin-bottom: 0;
+  }
+}

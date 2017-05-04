@@ -51,7 +51,7 @@ jupyter notebook
 ```
 
 ## Update after Java change
-Ther kernels are installed to run out of the repo, so just a build should update the java code.
+The kernels are installed to run out of the repo, so just a build should update the java code.
 * `./gradlew build`
 
 ## Update after JS change

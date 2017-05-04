@@ -55,7 +55,7 @@ public class ScalaAutocompleteTest {
   }
 
   @Test
-  public void shouldReturnAutocompleteForPrintlnWithComment() throws Exception {
+  public void autocomplete_autocompleteResultNotEmpty() throws Exception {
     //when
     AutocompleteResult autocomplete = scalaEvaluator.autocomplete("val numbers = Li", 16);
     //then

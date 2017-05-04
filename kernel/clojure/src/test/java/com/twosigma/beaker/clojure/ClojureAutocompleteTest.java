@@ -13,38 +13,42 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy.evaluator;
+
+package com.twosigma.beaker.clojure;
 
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
+import com.twosigma.beaker.jupyter.KernelManager;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class GroovyEvaluatorAutocompleteTest {
-
-  private static GroovyEvaluator groovyEvaluator;
+public class ClojureAutocompleteTest {
+  private static ClojureEvaluator clojureEvaluator;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    groovyEvaluator = new GroovyEvaluator("shellId1", "sessionId1");
+    clojureEvaluator = new ClojureEvaluator("id", "sid");
   }
 
-  //@Test https://github.com/twosigma/beaker-notebook-private/issues/115
-  public void shouldReturnAutocompleteForPrintln() throws Exception {
-    //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(
-                    "System.out.printl",17);
-    //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+  @Before
+  public void setUp() throws Exception {
+    ClojureKernelMock kernel = new ClojureKernelMock("id", clojureEvaluator);
+    KernelManager.register(kernel);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    KernelManager.register(null);
   }
 
   @Test
-  public void shouldReturnAutocompleteForPrintlnWithComment() throws Exception {
+  public void autocomplete_autocompleteResultNotEmpty() throws Exception {
     //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(
-            "//comment\n" +
-            "System.out.printl",27);
+    AutocompleteResult autocomplete = clojureEvaluator.autocomplete("def", 3);
     //then
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
   }
+
 }

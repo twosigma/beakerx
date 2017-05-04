@@ -93,7 +93,7 @@ public class ClojureKernelInfoHandlerTest {
   }
 
   @Test
-  public void handle_messageContentHasScalaLabel() throws Exception {
+  public void handle_messageContentHasClojureLabel() throws Exception {
     //when
     handler.handle(message);
     //then

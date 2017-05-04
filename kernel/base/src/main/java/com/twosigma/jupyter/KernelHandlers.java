@@ -22,6 +22,7 @@ import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.handler.ExecuteRequestHandler;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
+import com.twosigma.jupyter.handler.IsCompleteRequestHandler;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.handler.CompleteHandler;
 import com.twosigma.jupyter.handler.HistoryHandler;
@@ -57,6 +58,7 @@ public class KernelHandlers {
     handlers.put(JupyterMessages.COMM_INFO_REQUEST, new CommInfoHandler(kernel));
     handlers.put(JupyterMessages.COMM_CLOSE, new CommCloseHandler(kernel));
     handlers.put(JupyterMessages.COMM_MSG, new CommMsgHandler(kernel, new MessageCreator(kernel)));
+    handlers.put(JupyterMessages.IS_COMPLETE_REQUEST, new IsCompleteRequestHandler(kernel));
     return handlers;
   }
 

@@ -151,17 +151,13 @@ public class KernelSocketsZMQ extends KernelSockets {
         sockets.poll();
         if (isControlMsg()) {
           handleControlMsg();
-        }
-        if (isHeartbeatMsg()) {
+        } else if (isHeartbeatMsg()) {
           handleHeartbeat();
-        }
-        if (isShellMsg()) {
+        } else if (isShellMsg()) {
           handleShell();
-        }
-        if (isStdinMsg()) {
+        } else if (isStdinMsg()) {
           handleStdIn();
-        }
-        if (this.isShutdown()) {
+        } else if (this.isShutdown()) {
           break;
         }
       }

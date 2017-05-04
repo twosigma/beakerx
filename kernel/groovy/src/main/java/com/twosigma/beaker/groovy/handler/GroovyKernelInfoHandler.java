@@ -54,7 +54,7 @@ public class GroovyKernelInfoHandler extends KernelHandler<Message> {
     map.put("protocol_version", "5.0");
     map.put("implementation", "groovy");
     map.put("implementation_version", "1.0.0");
-    HashMap<String, Serializable> map1 = new HashMap<String, Serializable>(7);
+    HashMap<String, Serializable> map1 = new HashMap<>(7);
     map1.put("name", "Groovy");
     map1.put("version", GroovySystem.getVersion());
     map1.put("mimetype", "");
@@ -65,6 +65,7 @@ public class GroovyKernelInfoHandler extends KernelHandler<Message> {
     map.put("banner", "BeakerX kernel for Apache Groovy");
     map.put("beakerx", true);
     map.put("help_links", new ArrayList<String>());
+    map.put("status", "ok");
     reply.setContent(map);
     reply.setHeader(new Header(KERNEL_INFO_REPLY, message.getHeader().getSession()));
     reply.setParentHeader(message.getHeader());

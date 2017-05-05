@@ -19,12 +19,11 @@ package com.twosigma.beaker;
 import java.util.Hashtable;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.easyform.formitem.*;
 import com.twosigma.beaker.easyform.serializer.*;
-import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.fileloader.CsvPlotReader;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
@@ -81,9 +80,7 @@ import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.widgets.DisplayAnyWidget;
-import com.twosigma.beaker.widgets.Widget;
-import com.twosigma.beaker.widgets.internal.CommWidget;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
+import com.twosigma.beaker.widgets.internal.DisplayableWidget;
 
 import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
 import static com.twosigma.beaker.mimetype.MIMEContainer.HIDDEN;
@@ -161,41 +158,24 @@ public class SerializeToString {
   }
 
   public static MIMEContainer doit(Object input) {
-    MIMEContainer ret = null;
-    if (input != null) {
-      if (isWidget(input)) {
-        DisplayAnyWidget.display(input);
-        ret = HIDDEN();
-      } else if (input instanceof MIMEContainer) {
-        ret = (MIMEContainer) input;
-      } else {
-        ret = Text(input.toString());
-      }
-    } else {
-      ret = Text("null");
+    if (input == null) {
+      return Text("null");
     }
-    return ret;
+    return getMimeContainer(input);
   }
 
-
-
-  private static boolean isWidget(Object input) {
-    return (input instanceof EasyForm)
-            || (input instanceof OutputContainer)
-            || (input instanceof Table)
-            || isInternalWidget(input)
-            || (input instanceof Widget);
-  }
-
-  public static boolean isInternalWidget(Object result) {
-    boolean ret = false;
-    if (result != null && result instanceof InternalCommWidget) {
-      for (Class<?> clazz : internalWidgetMap.keySet()) {
-        ret = clazz.isAssignableFrom(result.getClass());
-        if (ret) {
-          break;
-        }
-      }
+  private static MIMEContainer getMimeContainer(Object input) {
+    MIMEContainer ret;
+    if (input instanceof DisplayableWidget) {
+      DisplayAnyWidget.display(input);
+      ret = HIDDEN();
+    } else if (input instanceof Table) {
+      new TableDisplay(new CsvPlotReader().convert((Table) input)).display();
+      ret = HIDDEN();
+    } else if (input instanceof MIMEContainer) {
+      ret = (MIMEContainer) input;
+    } else {
+      ret = Text(input.toString());
     }
     return ret;
   }

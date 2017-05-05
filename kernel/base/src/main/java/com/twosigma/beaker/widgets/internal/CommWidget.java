@@ -20,17 +20,18 @@ import java.util.HashMap;
 
 import com.twosigma.beaker.widgets.CommFunctionality;
 
-public interface CommWidget extends CommFunctionality {
+public interface CommWidget extends CommFunctionality, DisplayableWidget {
 
-  public static final String METHOD = "method";
-  public static final String DISPLAY = "display";
-  
+  String METHOD = "method";
+  String DISPLAY = "display";
+
   default void beforeDisplay() {
     //nothing to do in jupyter widgets.
     //should be removed in the future.
   }
-  
-  //TODO move to Widget class. 
+
+  //TODO move to Widget class.
+  @Override
   default void display() {
     beforeDisplay();
     HashMap<String, Serializable> content = new HashMap<>();
@@ -40,6 +41,6 @@ public interface CommWidget extends CommFunctionality {
   }
 
   String getModelNameValue();
+
   String getViewNameValue();
-  
 }

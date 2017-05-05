@@ -13,14 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets;
+package com.twosigma.beaker.jvm.object;
 
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.ResourceLoaderTest;
 import com.twosigma.beaker.chart.xychart.SimpleTimePlot;
 import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jvm.object.OutputContainer;
-import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.widgets.selectioncontainer.Tab;
 import org.junit.After;

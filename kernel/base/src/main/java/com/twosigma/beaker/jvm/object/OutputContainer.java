@@ -15,18 +15,19 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.twosigma.beaker.widgets.internal.DisplayableWidget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OutputContainer {
+public class OutputContainer implements DisplayableWidget {
   public final static Logger LOGGER = LoggerFactory.getLogger(OutputContainer.class.getName());
 
   private final List<Object> items;
-  private final List<String>                 labels        = new ArrayList<>();
-  private       OutputContainerLayoutManager layoutManager = new SimpleLayoutManager();
+  private final List<String> labels = new ArrayList<>();
+  private OutputContainerLayoutManager layoutManager = new SimpleLayoutManager();
 
   public OutputContainer() {
     this(new ArrayList<>());
@@ -109,4 +110,10 @@ public class OutputContainer {
   public static interface CellVisitor {
     void visit(Object item);
   }
+
+  @Override
+  public void display() {
+    DisplayOutputContainer.display(this);
+  }
+
 }

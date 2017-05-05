@@ -13,11 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets;
+package com.twosigma.beaker.jvm.object;
 
-import com.twosigma.beaker.jvm.object.OutputContainer;
-import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
 import com.twosigma.beaker.table.TableDisplay;
+import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.internal.CommWidget;
 import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.selectioncontainer.Tab;

@@ -15,36 +15,20 @@
  */
 package com.twosigma.beaker.widgets;
 
-import static com.twosigma.beaker.SerializeToString.isInternalWidget;
-
-import com.github.lwhite1.tablesaw.api.Table;
-import com.twosigma.beaker.easyform.DisplayEasyForm;
-import com.twosigma.beaker.easyform.EasyForm;
-import com.twosigma.beaker.fileloader.CsvPlotReader;
-import com.twosigma.beaker.jvm.object.OutputContainer;
-import com.twosigma.beaker.table.TableDisplay;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
+import com.twosigma.beaker.widgets.internal.DisplayableWidget;
 
 public class DisplayAnyWidget {
-  
+
   /**
    * Displays all kinds of widgets.
-   * 
+   *
    * @param input
    */
   public static void display(Object input) {
-    if (input instanceof EasyForm) {
-      DisplayEasyForm.display((EasyForm)input);
-    }else if (input instanceof OutputContainer) {
-      DisplayOutputContainer.display((OutputContainer)input);
-    }else if(input instanceof Table){
-      new TableDisplay(new CsvPlotReader().convert((Table) input)).display();
-    }else if (isInternalWidget(input)) {
-      ((InternalCommWidget)input).display();
-    }else if(input instanceof Widget){
-      ((Widget)input).display();
+    if (input instanceof DisplayableWidget) {
+      ((DisplayableWidget) input).display();
+    } else {
+      throw new RuntimeException("Widget should implement " + DisplayableWidget.class);
     }
   }
-
-
 }

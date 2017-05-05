@@ -41,7 +41,6 @@ public class InternalWidgetUtils {
     HashMap<String, Serializable> result = new HashMap<>();
     result.put(MODEL_MODULE, MODEL_MODULE_VALUE);
     result.put(VIEW_MODULE, VIEW_MODULE_VALUE);
-    result.put("json", SerializeToJson.toJson(widget));
     content.addContent(result);
     return result;
   }

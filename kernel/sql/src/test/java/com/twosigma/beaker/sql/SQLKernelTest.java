@@ -66,7 +66,7 @@ public class SQLKernelTest {
     kernelSocketsService.handleMsg(message);
     Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     //then
-    verifyResult(idleMessage);
+    verifyIdleMessage(idleMessage);
     verifyPublishedMsgs(kernelSocketsService);
     verifySentMsgs(kernelSocketsService);
   }
@@ -81,7 +81,7 @@ public class SQLKernelTest {
     verifyExecuteReplyMessage(service.getReplyMessage());
   }
 
-  private void verifyResult(Optional<Message> idleMessage) {
+  private void verifyIdleMessage(Optional<Message> idleMessage) {
     assertThat(idleMessage).isPresent();
     //no any other messages if widget
     Optional<Message> tableDisplayOpenMsg = getTableDisplayOpenMsg(kernelSocketsService.getKernelSockets());

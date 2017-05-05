@@ -29,7 +29,7 @@ import java.util.Optional;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CppKernelMainTest {
@@ -69,7 +69,7 @@ public class CppKernelMainTest {
     Message message = getExecuteRequestMessage(code);
     //when
     kernelSocketsService.handleMsg(message);
-    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    Optional<Message> idleMessage = waitForResultAndReturnIdleMessage(kernelSocketsService.getKernelSockets());
     //then
     assertThat(idleMessage).isPresent();
     verifyPublishedMsgs(kernelSocketsService);

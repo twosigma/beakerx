@@ -55,6 +55,17 @@ public class EvaluatorResultTestWatcher {
   public static Optional<Message> waitForIdleMessage(KernelSocketsTest socketsTest) throws InterruptedException {
     int count = 0;
     Optional<Message> idleMessage = getIdleMessage(socketsTest);
+    while (!idleMessage.isPresent() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      idleMessage = getIdleMessage(socketsTest);
+      count++;
+    }
+    return idleMessage;
+  }
+
+  public static Optional<Message> waitForResultAndReturnIdleMessage(KernelSocketsTest socketsTest) throws InterruptedException {
+    int count = 0;
+    Optional<Message> idleMessage = getIdleMessage(socketsTest);
     boolean idleAndResultPresent = idleMessage.isPresent() && getResult(socketsTest).isPresent();
     while (!idleAndResultPresent && count < ATTEMPT) {
       Thread.sleep(SLEEP_IN_MILLIS);

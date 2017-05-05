@@ -21,7 +21,7 @@ import com.twosigma.beaker.fileloader.CsvPlotReader;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.widgets.DisplayAnyWidget;
-import com.twosigma.beaker.widgets.internal.DisplayableWidget;
+import com.twosigma.beaker.widgets.DisplayableWidget;
 
 import static com.twosigma.beaker.mimetype.MIMEContainer.HIDDEN;
 import static com.twosigma.beaker.mimetype.MIMEContainer.Text;

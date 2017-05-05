@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.jvm.object;
 
-import com.twosigma.beaker.widgets.internal.DisplayableWidget;
+import com.twosigma.beaker.widgets.DisplayableWidget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

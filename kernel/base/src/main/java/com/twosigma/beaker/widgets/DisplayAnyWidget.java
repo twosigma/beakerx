@@ -15,8 +15,6 @@
  */
 package com.twosigma.beaker.widgets;
 
-import com.twosigma.beaker.widgets.internal.DisplayableWidget;
-
 public class DisplayAnyWidget {
 
   /**

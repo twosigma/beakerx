@@ -33,7 +33,7 @@ import com.twosigma.beaker.easyform.formitem.widgets.TextAreaWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.TextFieldWidget;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;
-import com.twosigma.beaker.widgets.internal.DisplayableWidget;
+import com.twosigma.beaker.widgets.DisplayableWidget;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;

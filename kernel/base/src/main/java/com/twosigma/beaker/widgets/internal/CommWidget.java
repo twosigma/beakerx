@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.DisplayableWidget;
 
 public interface CommWidget extends CommFunctionality, DisplayableWidget {
 

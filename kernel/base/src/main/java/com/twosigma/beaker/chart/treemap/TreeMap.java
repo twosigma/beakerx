@@ -20,9 +20,18 @@ import com.twosigma.beaker.chart.Chart;
 import com.twosigma.beaker.chart.treemap.util.ColorProvider;
 import com.twosigma.beaker.chart.treemap.util.IToolTipBuilder;
 import com.twosigma.beaker.chart.treemap.util.RandomColorProvider;
+import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beaker.widgets.chart.InternalPlot;
+import com.twosigma.beaker.widgets.internal.InternalCommWidget;
+import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
+import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 import net.sf.jtreemap.swing.TreeMapNode;
 
-public class TreeMap extends Chart {
+import java.io.Serializable;
+import java.util.HashMap;
+
+public class TreeMap extends Chart implements InternalCommWidget, InternalPlot {
 
   // root of the tree
   private TreeMapNode root = null;
@@ -76,6 +85,8 @@ public class TreeMap extends Chart {
 
   //determine value accessor for chart
   private ValueAccessor valueAccessor = ValueAccessor.VALUE;
+  private Comm comm;
+
 
   public TreeMap(final TreeMapNode root) {
     this();
@@ -85,6 +96,13 @@ public class TreeMap extends Chart {
   public TreeMap() {
     setColorProvider(new RandomColorProvider());
     setShowLegend(false);
+    this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
+      @Override
+      public void addContent(HashMap<String, Serializable> content) {
+        content.put(Widget.MODEL_NAME, getModelNameValue());
+        content.put(Widget.VIEW_NAME, getViewNameValue());
+      }
+    });
   }
 
   /**
@@ -160,5 +178,27 @@ public class TreeMap extends Chart {
 
   public void setToolTipBuilder(IToolTipBuilder toolTipBuilder) {
     this.toolTipBuilder = toolTipBuilder;
+  }
+
+  @Override
+  public Comm getComm() {
+    return this.comm;
+  }
+
+  @Override
+  public void close() {
+    if (this.comm != null) {
+      this.comm.close();
+    }
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 }

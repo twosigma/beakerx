@@ -42,6 +42,8 @@ define([
   'base/js/events',
   'require',
 
+  './htmlOutput/htmlOutput',
+
   // Plot JS API
   './plot/plotApi',
   './shared/bkCoreManager',
@@ -53,6 +55,7 @@ define([
   Jupyter,
   events,
   require,
+  htmlOutput,
   plotApi,
   bkCoreManager,
   big
@@ -72,7 +75,9 @@ define([
 
   Jupyter.notebook.events.on('kernel_ready.Kernel', function() {
     var kernel = Jupyter.notebook.kernel;
-    window.beaker = {};
+    if (!window.beaker) {
+      window.beaker = {};
+    }
     kernel.comm_manager.register_target('beaker.getcodecells',
       function(comm, msg) {
         comm.on_msg(function(msg) {
@@ -112,6 +117,22 @@ define([
 
 
   var load_ipython_extension = function() {
+
+    // assign Beaker methods to window
+    if (window) {
+      if (!window.beaker) {
+        window.beaker = {};
+      }
+
+      var plotApiList = plotApi.list();
+      var bkApp = bkCoreManager.getBkApp();
+      var bkObject = bkApp.getBeakerObject();
+
+      _.extend(window.beaker, plotApiList);
+      _.extend(window.beaker, htmlOutput);
+      window.beaker.prefs = bkObject.beakerObj.prefs;
+    }
+
   };
 
   // function load_css(name) {
@@ -200,18 +221,6 @@ define([
       comm.send(data);
       comm.close();
     }
-  }
-
-  // assign Beaker methods to window
-  if (window && !window.beaker) {
-    window.beaker = {};
-
-    var plotApiList = plotApi.list();
-    var bkApp = bkCoreManager.getBkApp();
-    var bkObject = bkApp.getBeakerObject();
-
-    _.extend(window.beaker, plotApiList);
-    window.beaker.prefs = bkObject.beakerObj.prefs;
   }
 
   return {

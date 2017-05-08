@@ -16,24 +16,14 @@
 
 package com.twosigma.beaker;
 
-import java.util.Hashtable;
-import java.util.Map;
+import static com.twosigma.beaker.mimetype.MIMEContainer.HIDDEN;
+import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.lwhite1.tablesaw.api.Table;
-import com.twosigma.beaker.easyform.EasyForm;
-import com.twosigma.beaker.easyform.formitem.*;
-import com.twosigma.beaker.easyform.serializer.*;
-import com.twosigma.beaker.jvm.object.OutputContainer;
-import com.twosigma.beaker.mimetype.MIMEContainer;
-import com.twosigma.beaker.table.TableDisplay;
-import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.JsonSerializer;
-
-
+import com.github.lwhite1.tablesaw.api.Table;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
@@ -80,13 +70,43 @@ import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
+import com.twosigma.beaker.easyform.EasyForm;
+import com.twosigma.beaker.easyform.formitem.ButtonComponent;
+import com.twosigma.beaker.easyform.formitem.CheckBox;
+import com.twosigma.beaker.easyform.formitem.CheckBoxGroup;
+import com.twosigma.beaker.easyform.formitem.ComboBox;
+import com.twosigma.beaker.easyform.formitem.DatePickerComponent;
+import com.twosigma.beaker.easyform.formitem.ListComponent;
+import com.twosigma.beaker.easyform.formitem.LoadValuesButton;
+import com.twosigma.beaker.easyform.formitem.RadioButtonComponent;
+import com.twosigma.beaker.easyform.formitem.SaveValuesButton;
+import com.twosigma.beaker.easyform.formitem.TextArea;
+import com.twosigma.beaker.easyform.formitem.TextField;
+import com.twosigma.beaker.easyform.serializer.ButtonComponentSerializer;
+import com.twosigma.beaker.easyform.serializer.CheckBoxGroupSerializer;
+import com.twosigma.beaker.easyform.serializer.CheckBoxSerializer;
+import com.twosigma.beaker.easyform.serializer.ComboBoxSerializer;
+import com.twosigma.beaker.easyform.serializer.DatePickerComponentSerializer;
+import com.twosigma.beaker.easyform.serializer.EasyFormSerializer;
+import com.twosigma.beaker.easyform.serializer.ListComponentSerializer;
+import com.twosigma.beaker.easyform.serializer.LoadValuesButtonSerializer;
+import com.twosigma.beaker.easyform.serializer.RadioButtonSerializer;
+import com.twosigma.beaker.easyform.serializer.SaveValuesButtonSerializer;
+import com.twosigma.beaker.easyform.serializer.TextAreaSerializer;
+import com.twosigma.beaker.easyform.serializer.TextFieldSerializer;
+import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.mimetype.MIMEContainer;
+import com.twosigma.beaker.table.TableDisplay;
+import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
 import com.twosigma.beaker.widgets.DisplayAnyWidget;
 import com.twosigma.beaker.widgets.Widget;
-import com.twosigma.beaker.widgets.internal.CommWidget;
 import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 
-import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
-import static com.twosigma.beaker.mimetype.MIMEContainer.HIDDEN;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 
 
 public class SerializeToString {
@@ -95,20 +115,20 @@ public class SerializeToString {
 
   private static ObjectMapper mapper;
   private static Map<Class<?>, JsonSerializer> serializerMap = new Hashtable<>();
-  private static Map<Class<?>, Object> internalWidgetMap = new Hashtable<>();
+  private static Set<Class<?>> internalWidgetMap = new HashSet<>();
 
   static {
 
-    internalWidgetMap.put(com.twosigma.beaker.table.TableDisplay.class, new Object());
-    internalWidgetMap.put(com.twosigma.beaker.chart.categoryplot.CategoryPlot.class, new Object());
-    internalWidgetMap.put(com.twosigma.beaker.chart.heatmap.HeatMap.class, new Object());
-    internalWidgetMap.put(com.twosigma.beaker.chart.histogram.Histogram.class, new Object());
-    internalWidgetMap.put(com.twosigma.beaker.chart.xychart.TimePlot.class, new Object());
-    internalWidgetMap.put(com.twosigma.beaker.chart.xychart.Plot.class, new Object());
-    internalWidgetMap.put(com.twosigma.beaker.chart.xychart.SimpleTimePlot.class, new Object());
-    internalWidgetMap.put(com.twosigma.beaker.chart.xychart.CombinedPlot.class, new Object());
-    internalWidgetMap.put(com.twosigma.beaker.chart.xychart.NanoPlot.class, new Object());
-    internalWidgetMap.put(com.twosigma.beaker.easyform.EasyForm.class, new Object());
+    internalWidgetMap.add(com.twosigma.beaker.table.TableDisplay.class);
+    internalWidgetMap.add(com.twosigma.beaker.chart.categoryplot.CategoryPlot.class);
+    internalWidgetMap.add(com.twosigma.beaker.chart.heatmap.HeatMap.class);
+    internalWidgetMap.add(com.twosigma.beaker.chart.histogram.Histogram.class);
+    internalWidgetMap.add(com.twosigma.beaker.chart.xychart.TimePlot.class);
+    internalWidgetMap.add(com.twosigma.beaker.chart.xychart.Plot.class);
+    internalWidgetMap.add(com.twosigma.beaker.chart.xychart.SimpleTimePlot.class);
+    internalWidgetMap.add(com.twosigma.beaker.chart.xychart.CombinedPlot.class);
+    internalWidgetMap.add(com.twosigma.beaker.chart.xychart.NanoPlot.class);
+    internalWidgetMap.add(com.twosigma.beaker.easyform.EasyForm.class);
 
     serializerMap.put(TableDisplay.class, new TableDisplaySerializer());
     serializerMap.put(Color.class, new ColorSerializer());
@@ -163,7 +183,11 @@ public class SerializeToString {
   public static MIMEContainer doit(Object input) {
     MIMEContainer ret = null;
     if (input != null) {
-      if (isWidget(input)) {
+      TableDisplay table = getTableDisplay(input);
+      if(table != null){
+        table.display();
+        ret = HIDDEN();
+      }else if (isWidget(input)) {
         DisplayAnyWidget.display(input);
         ret = HIDDEN();
       } else if (input instanceof MIMEContainer) {
@@ -173,6 +197,31 @@ public class SerializeToString {
       }
     } else {
       ret = Text("null");
+    }
+    return ret;
+  }
+  
+  
+  public static TableDisplay getTableDisplay(Object input) {
+    TableDisplay ret = null;
+    if(input != null){
+      if(input instanceof Map){
+        Map map = (Map) input;
+        ret = new TableDisplay(map);
+      }else if(input instanceof Collection){
+        Collection items = (Collection) input;
+        if(!items.isEmpty()){
+          Object item = items.iterator().next();
+          if(item instanceof Map){
+            ret = new TableDisplay(items);
+          }
+        }
+      }else if(input instanceof Map[]){
+        Map[] items = (Map[]) input;
+        if(items.length > 0){
+          ret = new TableDisplay(items);
+        }
+      }
     }
     return ret;
   }
@@ -190,7 +239,7 @@ public class SerializeToString {
   public static boolean isInternalWidget(Object result) {
     boolean ret = false;
     if (result != null && result instanceof InternalCommWidget) {
-      for (Class<?> clazz : internalWidgetMap.keySet()) {
+      for (Class<?> clazz : internalWidgetMap) {
         ret = clazz.isAssignableFrom(result.getClass());
         if (ret) {
           break;

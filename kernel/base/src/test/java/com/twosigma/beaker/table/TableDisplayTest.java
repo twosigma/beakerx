@@ -67,7 +67,7 @@ public class TableDisplayTest {
   @Test
   public void createTableDisplayForMap_hasDictionarySubtype() throws Exception {
     //when
-    TableDisplay tableDisplay = TableDisplay.createTableDisplayForMap(getMapData());
+    TableDisplay tableDisplay = new TableDisplay(getMapData());
     //then
     Assertions.assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.DICTIONARY_SUBTYPE);
     Assertions.assertThat(tableDisplay.getValues().size()).isEqualTo(3);
@@ -126,7 +126,7 @@ public class TableDisplayTest {
   @Test
   public void getValuesAsDictionaryWithoutParam_returnedMapIsNotEmpty() throws Exception {
     //given
-    TableDisplay tableDisplay = TableDisplay.createTableDisplayForMap(getMapData());
+    TableDisplay tableDisplay = new TableDisplay(getMapData());
     //when
     Map<String, Object> dictionary = tableDisplay.getValuesAsDictionary();
     //then

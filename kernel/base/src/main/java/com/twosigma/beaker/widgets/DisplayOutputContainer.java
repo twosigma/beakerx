@@ -15,15 +15,13 @@
  */
 package com.twosigma.beaker.widgets;
 
+import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
-import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.widgets.internal.CommWidget;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
 import com.twosigma.beaker.widgets.selectioncontainer.Tab;
 import com.twosigma.beaker.widgets.strings.Label;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,11 +40,10 @@ public class DisplayOutputContainer {
 
   private static CommWidget toCommFunctionality(Object item) {
     CommWidget widget;
-    if (item instanceof InternalCommWidget || item instanceof CommWidget) {
+    widget = SerializeToString.getTableDisplay(item);
+    if(widget == null && item instanceof CommWidget){
       widget = (CommWidget) item;
-    } else if (item instanceof HashMap) {
-      widget = TableDisplay.createTableDisplayForMap((HashMap) item);
-    } else {
+    } else if(widget == null){
       Label label = new Label();
       label.setValue(item.toString());
       widget = label;

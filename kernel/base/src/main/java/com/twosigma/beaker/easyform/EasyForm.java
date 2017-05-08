@@ -33,6 +33,7 @@ import com.twosigma.beaker.easyform.formitem.widgets.TextAreaWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.TextFieldWidget;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;
+import com.twosigma.beaker.widgets.DisplayableWidget;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
@@ -43,7 +44,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
-public class EasyForm extends ObservableMap<String, Object> {
+public class EasyForm extends ObservableMap<String, Object> implements DisplayableWidget {
 
   public static final Integer HORIZONTAL = 1;
   public static final Integer VERTICAL = 2;
@@ -376,6 +377,11 @@ public class EasyForm extends ObservableMap<String, Object> {
 
   public void setNotReady() {
     this.ready = Boolean.FALSE;
+  }
+
+  @Override
+  public void display() {
+    DisplayEasyForm.display(this);
   }
 
 }

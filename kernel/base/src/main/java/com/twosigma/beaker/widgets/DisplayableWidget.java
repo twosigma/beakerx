@@ -13,16 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.internal;
+package com.twosigma.beaker.widgets;
 
-public interface InternalCommWidget extends CommWidget{
+public interface DisplayableWidget {
 
-  String MODEL = "model";
+  void display();
 
-  default void beforeDisplay() {
-    if (this.getComm() != null) {
-      this.getComm().sendUpdate(MODEL, SerializeToJson.toJson(this));
-    }
-  }
-  
 }

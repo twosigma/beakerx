@@ -20,7 +20,6 @@ import com.github.lwhite1.tablesaw.api.Table;
 import com.twosigma.beaker.fileloader.CsvPlotReader;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.beaker.table.TableDisplay;
-import com.twosigma.beaker.widgets.DisplayAnyWidget;
 import com.twosigma.beaker.widgets.DisplayableWidget;
 
 import static com.twosigma.beaker.mimetype.MIMEContainer.HIDDEN;
@@ -39,7 +38,7 @@ public class SerializeToString {
   private static MIMEContainer getMimeContainer(Object input) {
     MIMEContainer ret;
     if (input instanceof DisplayableWidget) {
-      DisplayAnyWidget.display(input);
+      ((DisplayableWidget) input).display();
       ret = HIDDEN();
     } else if (input instanceof Table) {
       new TableDisplay(new CsvPlotReader().convert((Table) input)).display();

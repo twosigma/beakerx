@@ -120,6 +120,11 @@ public class TableDisplay extends ObservableTableDisplay implements InternalComm
     this(v, new BasicObjectSerializer());
     open();
   }
+  
+  public TableDisplay(Map<?,?>[] v) {
+    this(new ArrayList<Map<?,?>>(Arrays.asList(v)), new BasicObjectSerializer());
+    open();
+  }
 
   public TableDisplay(Collection<Map<?,?>> v, BeakerObjectConverter serializer) {
     values = new ArrayList<List<?>>();
@@ -155,7 +160,7 @@ public class TableDisplay extends ObservableTableDisplay implements InternalComm
     }
   }
 
-  private TableDisplay(Map<?, ?> v) {
+  public TableDisplay(Map<?, ?> v) {
     this.values = new ArrayList<List<?>>();
     this.columns = Arrays.asList("Key", "Value");
     this.classes = new ArrayList<String>();
@@ -166,10 +171,6 @@ public class TableDisplay extends ObservableTableDisplay implements InternalComm
       values.add(asList(e.getKey().toString(), e.getValue()));
     }
     open();
-  }
-
-  public static TableDisplay createTableDisplayForMap(Map<?,?> v){
-    return new TableDisplay(v);
   }
 
   private void open() {

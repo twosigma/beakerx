@@ -58,12 +58,20 @@ public abstract class Widget implements CommWidget {
 
   private HashMap<String, Serializable> createContent() {
     HashMap<String, Serializable> result = new HashMap<>();
-    result.put(MODEL_MODULE, MODEL_MODULE_VALUE);
-    result.put(VIEW_MODULE, VIEW_MODULE_VALUE);
+    result.put(MODEL_MODULE, getModelModuleValue());
+    result.put(VIEW_MODULE, getViewModuleValue());
     result.put(MODEL_NAME, getModelNameValue());
     result.put(VIEW_NAME, getViewNameValue());
     result = content(result);
     return result;
+  }
+
+  public String getModelModuleValue(){
+    return MODEL_MODULE_VALUE;
+  }
+
+  public String getViewModuleValue(){
+    return VIEW_MODULE_VALUE;
   }
 
   protected abstract void addValueChangeMsgCallback();

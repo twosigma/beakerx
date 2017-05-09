@@ -15,18 +15,13 @@
  */
 package com.twosigma.beaker.table.serializer;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.twosigma.beaker.table.ObservableTableDisplay;
-import com.twosigma.beaker.table.action.TableDisplayObjectManager;
+import com.twosigma.beaker.table.TableDisplay;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 
 import java.io.IOException;
 
-public abstract class ObservableTableDisplaySerializer<T extends ObservableTableDisplay> extends JsonSerializer<T> {
-  @Inject
-  private Provider<TableDisplayObjectManager> tableObjectManagerProvider;
+public abstract class ObservableTableDisplaySerializer<T extends TableDisplay> extends JsonSerializer<T> {
 
   protected void serialize(T tableDisplay, JsonGenerator jgen) throws IOException {
 //    String id = updateManagerProvider.get().register(tableDisplay);

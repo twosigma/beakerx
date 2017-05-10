@@ -94,6 +94,8 @@ import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
 import com.twosigma.beaker.chart.treemap.TreeMap;
 import com.twosigma.beaker.chart.serializer.TreeMapSerializer;
+import com.twosigma.beaker.chart.serializer.TreeMapNodeSerializer;
+import net.sf.jtreemap.swing.TreeMapNode;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -145,6 +147,7 @@ public class SerializeToJson {
     serializerMap.put(HeatMap.class, new HeatMapSerializer());
     serializerMap.put(Rasters.class, new RastersSerializer());
     serializerMap.put(TreeMap.class, new TreeMapSerializer());
+    serializerMap.put(TreeMapNode.class, new TreeMapNodeSerializer());
 
 
     //easy forms

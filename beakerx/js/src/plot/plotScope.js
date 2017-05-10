@@ -2405,7 +2405,7 @@ define([
       .append("xhtml:body")
       .attr("xmlns", "http://www.w3.org/1999/xhtml")
       .html(legendCopy[0].outerHTML);
-  }
+  };
 
   PlotScope.prototype.setModelData = function(data) {
     var self = this;
@@ -2417,7 +2417,7 @@ define([
       self.model.model = data;
     }
 
-    // self.element = $('div#'+self.wrapperId+' .dtcontainer');
+    self.element = $('div#'+self.wrapperId+' .dtcontainer');
 
     if (self.model.getCellModel().type === "TreeMap"){
       bkoChartExtender.extend(self, self.element);

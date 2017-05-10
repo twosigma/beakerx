@@ -19,10 +19,7 @@ package com.twosigma.beaker.chart;
 import com.twosigma.beaker.chart.actions.GraphicsActionObject;
 import com.twosigma.beaker.widgets.BeakerxWidget;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
-public abstract class ObservableChart extends BeakerxWidget {
+public abstract class ChartDetails extends BeakerxWidget {
 
   protected GraphicsActionObject details;
 
@@ -32,14 +29,5 @@ public abstract class ObservableChart extends BeakerxWidget {
 
   public void setDetails(GraphicsActionObject details) {
     this.details = details;
-  }
-
-  @Override
-  protected void addValueChangeMsgCallback() {
-  }
-
-  @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    return content;
   }
 }

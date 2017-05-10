@@ -45,6 +45,16 @@ public class EasyFormView extends Box {
   }
 
   @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
+  }
+
+  @Override
   public void updateValue(Object value) {
 
   }
@@ -55,14 +65,6 @@ public class EasyFormView extends Box {
   public void setEasyFormName(String easyFormName) {
     this.easyFormName = easyFormName;
     sendUpdate(EASY_FORM_NAME, easyFormName);
-  }
-
-  public String getModelNameValue() {
-    return MODEL_NAME_VALUE;
-  }
-
-  public String getViewNameValue() {
-    return VIEW_NAME_VALUE;
   }
 
 }

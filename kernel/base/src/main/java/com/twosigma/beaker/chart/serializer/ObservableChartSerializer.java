@@ -15,18 +15,13 @@
  */
 package com.twosigma.beaker.chart.serializer;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.twosigma.beaker.chart.ObservableChart;
-import com.twosigma.beaker.chart.actions.ChartObjectManager;
+import com.twosigma.beaker.chart.ChartDetails;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 import java.io.IOException;
 
-public abstract class ObservableChartSerializer<T extends ObservableChart> extends JsonSerializer<T> {
-  @Inject
-  private Provider<ChartObjectManager> chartObjectManagerProvider;
+public abstract class ObservableChartSerializer<T extends ChartDetails> extends JsonSerializer<T> {
 
   protected void serialize(T chart, JsonGenerator jgen) throws IOException {
 //    String id = updateManagerProvider.get().register(chart);

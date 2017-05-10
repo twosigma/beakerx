@@ -17,41 +17,42 @@
 package com.twosigma.beaker.chart.treemap;
 
 import net.sf.jtreemap.swing.TreeMapNode;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TreeMapTest {
 
   @Test
   public void
   createTreeMapByDefaultConstructor_hasColorProviderNotNullShowLegendIsFalseRootIsNull() {
-//    //when
-//    TreeMap treeMap = new TreeMap();
-//    //then
-//    Assertions.assertThat(treeMap.getColorProvider()).isNotNull();
-//    Assertions.assertThat(treeMap.getShowLegend()).isFalse();
-//    Assertions.assertThat(treeMap.getRoot()).isNull();
+    //when
+    TreeMap treeMap = new TreeMap();
+    //then
+    assertThat(treeMap.getColorProvider()).isNotNull();
+    assertThat(treeMap.getShowLegend()).isFalse();
+    assertThat(treeMap.getRoot()).isNull();
   }
 
   @Test
   public void
   createTreeMapWithTreeMapNodeParam_hasColorProviderNotNullShowLegendIsFalseRootInNotNull() {
     //when
-//    TreeMap treeMap = new TreeMap(new TreeMapNode("label"));
+    TreeMap treeMap = new TreeMap(new TreeMapNode("label"));
     //then
-//    Assertions.assertThat(treeMap.getColorProvider()).isNotNull();
-//    Assertions.assertThat(treeMap.getShowLegend()).isFalse();
-//    Assertions.assertThat(treeMap.getRoot()).isNotNull();
+    assertThat(treeMap.getColorProvider()).isNotNull();
+    assertThat(treeMap.getShowLegend()).isFalse();
+    assertThat(treeMap.getRoot()).isNotNull();
   }
 
   @Test
   public void createTreeMapByDefaultConstructor_hasModeAndStickyAndRoundAndRatioAreNulls() {
     //when
-//    TreeMap treeMap = new TreeMap();
+    TreeMap treeMap = new TreeMap();
     //then
-//    Assertions.assertThat(treeMap.getMode()).isNull();
-//    Assertions.assertThat(treeMap.getRatio()).isNull();
-//    Assertions.assertThat(treeMap.getSticky()).isNull();
-//    Assertions.assertThat(treeMap.getRound()).isNull();
+    assertThat(treeMap.getMode()).isNull();
+    assertThat(treeMap.getRatio()).isNull();
+    assertThat(treeMap.getSticky()).isNull();
+    assertThat(treeMap.getRound()).isNull();
   }
 }

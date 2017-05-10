@@ -23,18 +23,21 @@ import java.util.Map;
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 
-public abstract class Chart extends ObservableChart{
+import static com.twosigma.beaker.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
+import static com.twosigma.beaker.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
 
-  protected int initWidth  = 640;
+public class Chart extends ChartDetails {
+
+  protected int initWidth = 640;
   protected int initHeight = 480;
   protected List<String> customStyles = new ArrayList();
-  protected Map<String,String> elementStyles = new HashMap<>();
+  protected Map<String, String> elementStyles = new HashMap<>();
 
-  protected String  title;
+  protected String title;
   protected Boolean showLegend;
-  protected boolean        useToolTip     = true;
+  protected boolean useToolTip = true;
   protected LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.TOP_RIGHT);
-  protected LegendLayout   legendLayout   = LegendLayout.VERTICAL;
+  protected LegendLayout legendLayout = LegendLayout.VERTICAL;
 
   public Chart setInitWidth(int w) {
     this.initWidth = w;
@@ -98,7 +101,7 @@ public abstract class Chart extends ObservableChart{
     this.legendLayout = legendLayout;
     return this;
   }
-  
+
   public List<String> getCustomStyles() {
     return customStyles;
   }
@@ -108,46 +111,56 @@ public abstract class Chart extends ObservableChart{
   }
 
   public String getLabelStyle() {
-      return this.elementStyles.get(".plot-label");
+    return this.elementStyles.get(".plot-label");
   }
-  
+
   public void setLabelStyle(String style) {
-      this.elementStyles.put(".plot-label", style);
+    this.elementStyles.put(".plot-label", style);
   }
-  
+
   public String getLabelXStyle() {
-      return this.elementStyles.get(".plot-label-x");
+    return this.elementStyles.get(".plot-label-x");
   }
-  
+
   public void setLabelXStyle(String style) {
-      this.elementStyles.put(".plot-label-x", style);
+    this.elementStyles.put(".plot-label-x", style);
   }
-  
+
   public String getLabelYStyle() {
-      return this.elementStyles.get(".plot-label-y");
+    return this.elementStyles.get(".plot-label-y");
   }
-  
+
   public void setLabelYStyle(String style) {
-      this.elementStyles.put(".plot-label-y", style);
+    this.elementStyles.put(".plot-label-y", style);
   }
 
   public String getGridLineStyle() {
-      return this.elementStyles.get(".plot-gridline");
+    return this.elementStyles.get(".plot-gridline");
   }
 
   public void setGridLineStyle(String style) {
-      this.elementStyles.put(".plot-gridline", style);
+    this.elementStyles.put(".plot-gridline", style);
   }
-  
+
   public String getTitleStyle() {
-      return this.elementStyles.get(".plot-title");
+    return this.elementStyles.get(".plot-title");
   }
 
   public void setTitleStyle(String style) {
-      this.elementStyles.put(".plot-title", style);
+    this.elementStyles.put(".plot-title", style);
   }
-  
-  public Map<String,String> getElementStyles() {
-      return this.elementStyles;
+
+  public Map<String, String> getElementStyles() {
+    return this.elementStyles;
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 }

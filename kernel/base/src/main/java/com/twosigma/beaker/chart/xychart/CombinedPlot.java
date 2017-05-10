@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import com.twosigma.beaker.chart.ObservableChart;
+import com.twosigma.beaker.chart.ChartDetails;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +27,7 @@ import static com.twosigma.beaker.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
  * CombinedPlot
  *
  */
-public class CombinedPlot extends ObservableChart {
+public class CombinedPlot extends ChartDetails {
   private int initWidth = 640;
   private int initHeight = 480;
   private String title;

@@ -21,13 +21,20 @@ import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.scala.ScalaKernelMock;
+import com.twosigma.jupyter.KernelParameters;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 
@@ -78,5 +85,26 @@ public class ScalaEvaluatorTest {
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
     Assertions.assertThat((String)seo.getPayload()).contains("java.lang.ArithmeticException");
+  }
+
+  ;
+
+  @Test
+  public void javaImports_shouldBeAdjustedForScala() throws Exception {
+    //given
+    Map<String, Object> paramMap = new HashMap<>();
+    // This import tests both "static" removal and "object" escaping.
+    List<String> imports = Arrays.asList(
+            "import static com.twosigma.beaker.scala.evaluator.object.ImportTestHelper.staticMethod");
+    paramMap.put(IMPORTS, imports);
+    KernelParameters kernelParameters = new KernelParameters(paramMap);
+    //when
+    scalaEvaluator.setShellOptions(kernelParameters);
+    String code = "val x = staticMethod()";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    scalaEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
   }
 }

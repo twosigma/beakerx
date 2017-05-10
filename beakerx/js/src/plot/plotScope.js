@@ -1562,8 +1562,13 @@ define([
       self.disableZoomWheel();
       return;
     }
-    self.interactMode = d3.event.button == 0 ? "zoom" : "locate";
-    self.enableZoomWheel();
+
+    if (d3.event.button === 0) {
+      self.interactMode = 'zoom';
+      self.enableZoomWheel();
+    } else {
+      self.interactMode = 'locate';
+    }
   };
 
   // PlotScope.prototype.mouseUp = function() {
@@ -1576,6 +1581,20 @@ define([
   //   }
   //   self.enableZoomWheel();
   // };
+
+  PlotScope.prototype.zoomBoxZooming = function() {
+    var self = this;
+
+    var svgNode = self.svg.node();
+    // right click zoom
+    self.mousep2 = {
+      "x" : d3.mouse(svgNode)[0],
+      "y" : d3.mouse(svgNode)[1]
+    };
+    self.calcLocateBox();
+    self.rpipeRects = [];
+    self.renderLocateBox();
+  };
 
   PlotScope.prototype.zoomStart = function() {
     var self = this;
@@ -1598,6 +1617,7 @@ define([
     };
     self.mousep2 = {};
     _.extend(self.mousep2, self.mousep1);
+
     self.jqsvg.css("cursor", "auto");
   };
 
@@ -1751,6 +1771,8 @@ define([
       });
       self.fixFocus(self.focus);
       self.update();
+    } else if (self.interactMode === 'locate') {
+      self.zoomBoxZooming();
     }
   };
 
@@ -1789,6 +1811,11 @@ define([
     var svgNode = self.svg.node(),
       mx = d3.mouse(svgNode)[0],
       my = d3.mouse(svgNode)[1];
+
+    var t = d3.zoomIdentity.translate(0, 0).scale(1);
+    self.svg.call(self.zoomObj.transform, t);
+    self.lastk = 1;
+
     var lMargin = self.layout.leftLayoutMargin,
       bMargin = self.layout.bottomLayoutMargin;
     var W = plotUtils.safeWidth(self.jqsvg),
@@ -1800,6 +1827,7 @@ define([
     } else {
       _.extend(self.focus, self.defaultFocus);
     }
+
     self.fixFocus(self.focus);
     self.calcMapping(true);
     self.emitZoomLevelChange();
@@ -1861,11 +1889,21 @@ define([
       .on("end", function(d) {
         return self.zoomEnd(d);
       });
+
     self.svg.on("dblclick", function() {
       return self.resetFocus();
     });
 
+    // enable zoom events for mouse right click
+    var filterFn = function() {
+      return true;
+    };
+    self.zoomObj.filter(filterFn);
+
     self.svg.call(self.zoomObj);
+
+    // disbale zoom events on double click
+    self.svg.on("dblclick.zoom", null);
   };
 
   PlotScope.prototype.enableZoomWheel = function() {
@@ -2060,11 +2098,11 @@ define([
     self.initLayout();
 
     if (!self.model.disableContextMenu) {
-      $.contextMenu({
-        selector: 'div#'+self.wrapperId+' #' + self.id,
-        zIndex: 3,
-        items: plotUtils.getSavePlotAsContextMenuItems(self)
-      });
+      // $.contextMenu({
+      //   selector: 'div#'+self.wrapperId+' #' + self.id,
+      //   zIndex: 3,
+      //   items: plotUtils.getSavePlotAsContextMenuItems(self)
+      // });
     }
 
     var plotContainer = self.element.find('.plot-plotcontainer');
@@ -2129,6 +2167,7 @@ define([
     self.initZoom();
     self._defaultZoomWheelFn = self.svg.on('wheel.zoom');
     self.disableZoomWheel();
+
     self.calcRange();
 
 

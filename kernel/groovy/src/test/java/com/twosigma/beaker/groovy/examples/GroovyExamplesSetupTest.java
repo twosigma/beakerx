@@ -13,36 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy.widgets;
+package com.twosigma.beaker.groovy.examples;
 
 import com.twosigma.beaker.KernelSocketsServiceTest;
-import com.twosigma.beaker.easyform.EasyFormView;
 import com.twosigma.beaker.groovy.GroovyDefaultVariables;
 import com.twosigma.beaker.groovy.GroovyKernel;
 import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
+import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class GroovyWidgetsTest {
+public abstract class GroovyExamplesSetupTest {
 
-  private static GroovyKernel kernel;
-  private static KernelSocketsServiceTest kernelSocketsService;
+  protected static GroovyKernel kernel;
+  protected static KernelSocketsServiceTest kernelSocketsService;
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -56,49 +52,13 @@ public class GroovyWidgetsTest {
   }
 
   @AfterClass
-  public static void tearDown() throws Exception {
+  public static void tearDownClass() throws Exception {
     kernelSocketsService.shutdown();
   }
 
-  @Test
-  public void evaluateEasyForm() throws Exception {
-    //given
-    String code = "" +
-            "f = new EasyForm(\"Form and Run\")\n" +
-            "f.addTextField(\"first\", 250)\n" +
-            "f['first'] = \"First\"\n" +
-            "f.addTextField(\"last\", 250)\n" +
-            "f['last'] = \"Last\"\n" +
-            "f.addButton(\"Go!\", \"run\")\n" +
-            "f";
-    Message message = getExecuteRequestMessage(code);
-    //when
-    kernelSocketsService.handleMsg(message);
-    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
-    //then
-    assertThat(idleMessage).isPresent();
-    verifyEasyFormView(kernelSocketsService);
-  }
-
-  private void verifyEasyFormView(KernelSocketsServiceTest kernelSocketsService) {
-    assertTrue("Easy form widget was not found.",
-            kernelSocketsService.getPublishedMessages().stream()
-                    .filter(this::isEasyForm)
-                    .findFirst()
-                    .isPresent());
-  }
-
-  private boolean isEasyForm(Message message) {
-    if (message.getContent() != null) {
-      Map<String, Serializable> data = (Map<String, Serializable>) message.getContent().get("data");
-      if (data != null) {
-        Serializable easyForm = data.get(EasyFormView.VIEW_NAME);
-        if (easyForm != null) {
-          return easyForm.equals(EasyFormView.VIEW_NAME_VALUE);
-        }
-      }
-    }
-    return false;
+  @After
+  public void tearDown() throws Exception {
+    kernelSocketsService.clear();
   }
 
   private static KernelParameters kernelParameters() {
@@ -108,4 +68,26 @@ public class GroovyWidgetsTest {
     params.put(CLASSPATH, groovyDefaultVariables.getClassPath());
     return new KernelParameters(params);
   }
+
+  public void assertMessageExists(final String errorMessage, final String viewNameValue) {
+    assertTrue(errorMessage,
+            kernelSocketsService.getPublishedMessages().stream()
+                    .filter(x -> isWidget(x, viewNameValue))
+                    .findFirst()
+                    .isPresent());
+  }
+
+  private boolean isWidget(Message message, String viewNameValue) {
+    if (message.getContent() != null) {
+      Map<String, Serializable> data = (Map<String, Serializable>) message.getContent().get("data");
+      if (data != null) {
+        Serializable easyForm = data.get(Widget.VIEW_NAME);
+        if (easyForm != null) {
+          return easyForm.equals(viewNameValue);
+        }
+      }
+    }
+    return false;
+  }
+
 }

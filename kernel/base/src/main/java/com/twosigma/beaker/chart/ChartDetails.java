@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,11 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.chart;
 
-public interface InternalPlot {
+package com.twosigma.beaker.chart;
 
-  String VIEW_NAME_VALUE = "PlotView";
-  String MODEL_NAME_VALUE = "PlotModel";
+import com.twosigma.beaker.chart.actions.GraphicsActionObject;
+import com.twosigma.beaker.widgets.BeakerxWidget;
 
+public abstract class ChartDetails extends BeakerxWidget {
+
+  protected GraphicsActionObject details;
+
+  public GraphicsActionObject getDetails() {
+    return details;
+  }
+
+  public void setDetails(GraphicsActionObject details) {
+    this.details = details;
+  }
 }

@@ -13,16 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.internal;
+package com.twosigma.beaker.widgets.chart;
 
-public interface InternalCommWidget extends CommWidget{
+public interface BeakerxPlot {
 
-  String MODEL = "model";
+  String VIEW_NAME_VALUE = "PlotView";
+  String MODEL_NAME_VALUE = "PlotModel";
 
-  default void beforeDisplay() {
-    if (this.getComm() != null) {
-      this.getComm().sendUpdate(MODEL, SerializeToJson.toJson(this));
-    }
-  }
-  
 }

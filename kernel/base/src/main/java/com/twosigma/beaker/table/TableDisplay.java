@@ -15,7 +15,6 @@
  */
 package com.twosigma.beaker.table;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,27 +26,21 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beaker.table.action.TableActionDetails;
 import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 import com.twosigma.beaker.table.format.ValueStringFormat;
 import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beaker.table.highlight.ValueHighlighter;
 import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
-import com.twosigma.beaker.widgets.Widget;
-import com.twosigma.beaker.widgets.internal.CommWidget;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
-import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
-import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.twosigma.beaker.widgets.BeakerxWidget;
+import com.twosigma.beaker.widgets.RunWidgetClosure;
 
 import static java.util.Arrays.asList;
 
-public class TableDisplay extends ObservableTableDisplay implements InternalCommWidget {
-
+public class TableDisplay extends BeakerxWidget {
 
   public static final String VIEW_NAME_VALUE = "TableDisplayView";
   public static final String MODEL_NAME_VALUE = "TableDisplayModel";
@@ -56,7 +49,7 @@ public class TableDisplay extends ObservableTableDisplay implements InternalComm
   public static final String LIST_OF_MAPS_SUBTYPE = "ListOfMaps";
   public static final String MATRIX_SUBTYPE = "Matrix";
   public static final String DICTIONARY_SUBTYPE = "Dictionary";
-  private final static Logger logger = LoggerFactory.getLogger(TableDisplay.class.getName());
+
   private final List<List<?>> values;
   private List<String> columns;
   private final List<String> classes;
@@ -82,20 +75,6 @@ public class TableDisplay extends ObservableTableDisplay implements InternalComm
   private boolean headersVertical;
   private String hasIndex;
   private String timeZone;
-  private Comm comm;
-
-
-  @Override
-  public Comm getComm() {
-    return this.comm;
-  }
-  
-  @Override
-  public void close() {
-    if (this.comm != null) {
-      this.comm.close();
-    }
-  }
 
   @Override
   public String getModelNameValue() {
@@ -107,26 +86,25 @@ public class TableDisplay extends ObservableTableDisplay implements InternalComm
     return VIEW_NAME_VALUE;
   }
 
-
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
+    super();
     values = v;
     columns = co;
     classes = cl;
     subtype = TABLE_DISPLAY_SUBTYPE;
-    open();
+    openComm();
   }
 
-  public TableDisplay(Collection<Map<?,?>> v) {
+  public TableDisplay(Collection<Map<?, ?>> v) {
     this(v, new BasicObjectSerializer());
-    open();
   }
-  
+
   public TableDisplay(Map<?,?>[] v) {
     this(new ArrayList<Map<?,?>>(Arrays.asList(v)), new BasicObjectSerializer());
-    open();
   }
 
-  public TableDisplay(Collection<Map<?,?>> v, BeakerObjectConverter serializer) {
+  public TableDisplay(Collection<Map<?, ?>> v, BeakerObjectConverter serializer) {
+    super();
     values = new ArrayList<List<?>>();
     columns = new ArrayList<String>();
     classes = new ArrayList<String>();
@@ -158,9 +136,11 @@ public class TableDisplay extends ObservableTableDisplay implements InternalComm
       }
       values.add(vals);
     }
+    openComm();
   }
 
   public TableDisplay(Map<?, ?> v) {
+    super();
     this.values = new ArrayList<List<?>>();
     this.columns = Arrays.asList("Key", "Value");
     this.classes = new ArrayList<String>();
@@ -170,19 +150,12 @@ public class TableDisplay extends ObservableTableDisplay implements InternalComm
       Entry<?, ?> e = (Entry<?, ?>) s;
       values.add(asList(e.getKey().toString(), e.getValue()));
     }
-    open();
+    openComm();
   }
 
-  private void open() {
-    this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
-      @Override
-      public void addContent(HashMap<String, Serializable> content) {
-        content.put(Widget.MODEL_NAME, getModelNameValue());
-        content.put(Widget.VIEW_NAME, getViewNameValue());
-      }
-    });
+  public static TableDisplay createTableDisplayForMap(Map<?, ?> v) {
+    return new TableDisplay(v);
   }
-
 
   public TimeUnit getStringFormatForTimes() {
     return stringFormatForTimes;
@@ -488,6 +461,82 @@ public class TableDisplay extends ObservableTableDisplay implements InternalComm
   public List<String> getTypes() { return classes; }
   public String getSubtype() {
     return subtype;
+  }
+
+
+  private Object doubleClickListener;
+  private String doubleClickTag;
+  private Map<String, Object> contextMenuListeners = new HashMap<>();
+  private Map<String, String> contextMenuTags = new HashMap<>();
+  private TableActionDetails details;
+
+  public void setDoubleClickAction(Object listener) {
+    this.doubleClickTag = null;
+    this.doubleClickListener = listener;
+  }
+
+  public void setDoubleClickAction(String tagName) {
+    this.doubleClickListener = null;
+    this.doubleClickTag = tagName;
+  }
+
+  public String getDoubleClickTag() {
+    return doubleClickTag;
+  }
+
+  public void fireDoubleClick(List<Object> params) {
+    if (this.doubleClickListener != null) {
+      try {
+        params.add(this);
+        runClosure(this.doubleClickListener, params.toArray());
+      } catch (Exception e) {
+        throw new RuntimeException("Unable execute closure", e);
+      }
+    }
+  }
+
+  public boolean hasDoubleClickAction() {
+    return this.doubleClickListener != null;
+  }
+
+  public void addContextMenuItem(String name, Object closure) {
+    this.contextMenuListeners.put(name, closure);
+  }
+
+  public void addContextMenuItem(String name, String tagName) {
+    this.contextMenuTags.put(name, tagName);
+  }
+
+  public Set<String> getContextMenuItems() {
+    return this.contextMenuListeners.keySet();
+  }
+
+  public Map<String, String> getContextMenuTags() {
+    return contextMenuTags;
+  }
+
+  public void setDetails(TableActionDetails details) {
+    this.details = details;
+  }
+
+  public TableActionDetails getDetails() {
+    return this.details;
+  }
+
+  public void fireContextMenuClick(String name, List<Object> params) {
+    Object contextMenuListener = this.contextMenuListeners.get(name);
+    if (contextMenuListener != null) {
+      try {
+        params.add(this);
+        runClosure(contextMenuListener, params.toArray());
+      } catch (Exception e) {
+        throw new RuntimeException("Unable execute closure", e);
+      }
+    }
+  }
+
+  protected Object runClosure(Object closure, Object... params) throws Exception {
+    return RunWidgetClosure.runClosure(closure, params);
   }
 
 }

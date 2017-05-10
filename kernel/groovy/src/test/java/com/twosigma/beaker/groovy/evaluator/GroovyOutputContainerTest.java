@@ -16,11 +16,11 @@
 package com.twosigma.beaker.groovy.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.KernelTest;
+import com.twosigma.beaker.widgets.chart.BeakerxPlot;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,7 +73,7 @@ public class GroovyOutputContainerTest {
 
   private void verifyPlot(List<Message> messages) {
     Message tableDisplay = messages.get(0);
-    verifyInternalOpenCommMsg(tableDisplay, Plot.MODEL_NAME_VALUE, Plot.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsg(tableDisplay, BeakerxPlot.MODEL_NAME_VALUE, BeakerxPlot.VIEW_NAME_VALUE);
     Message model = messages.get(1);
     assertThat(getValueForProperty(model, "model", String.class)).isNotEmpty();
     verifyDisplayMsg(messages);

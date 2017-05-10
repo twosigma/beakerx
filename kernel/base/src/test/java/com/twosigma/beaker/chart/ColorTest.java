@@ -42,6 +42,67 @@ public class ColorTest {
   }
 
   @Test
+  public void createColorWithFourFloatParams_ColorHasRGBValues() throws IllegalArgumentException {
+    //when
+    Color color = new Color(0.1f, 0.2f, 0.3f, 0.4f);
+    //then
+    Assertions.assertThat(color.getRed()).isEqualTo(26);
+    Assertions.assertThat(color.getGreen()).isEqualTo(51);
+    Assertions.assertThat(color.getBlue()).isEqualTo(77);
+  }
+
+  @Test
+  public void createColorWithIndAndFalseParams_ColorHasRGBValues() throws IllegalArgumentException {
+    //when
+    Color color = new Color(200, false);
+    //then
+    Assertions.assertThat(color.getRed()).isEqualTo(0);
+    Assertions.assertThat(color.getGreen()).isEqualTo(0);
+    Assertions.assertThat(color.getBlue()).isEqualTo(200);
+  }
+
+  @Test
+  public void createColorWithIntAndTrueParams_ColorHasRGBValues() throws IllegalArgumentException {
+    //when
+    Color color = new Color(200, true);
+    //then
+    Assertions.assertThat(color.getRed()).isEqualTo(0);
+    Assertions.assertThat(color.getGreen()).isEqualTo(0);
+    Assertions.assertThat(color.getBlue()).isEqualTo(200);
+  }
+
+
+  @Test
+  public void createColorByDecodeString_ColorHasRGBValues() throws IllegalArgumentException {
+    //when
+    Color color = Color.decode("200");
+    //then
+    Assertions.assertThat(color.getRed()).isEqualTo(0);
+    Assertions.assertThat(color.getGreen()).isEqualTo(0);
+    Assertions.assertThat(color.getBlue()).isEqualTo(200);
+  }
+
+  @Test
+  public void hashCode_returnRGBValue() throws IllegalArgumentException {
+    //given
+    Color color = new Color(100, 150, 200);
+    //when
+    //then
+    Assertions.assertThat(color.hashCode()).isEqualTo(color.getRGB());
+  }
+
+  @Test
+  public void toString_returnStringRGBValues() throws IllegalArgumentException {
+    //given
+    Color color = new Color(100, 150, 200);
+    //when
+    //then
+    Assertions.assertThat(color.toString()).contains(Integer.toString(color.getBlue()));
+    Assertions.assertThat(color.toString()).contains(Integer.toString(color.getGreen()));
+    Assertions.assertThat(color.toString()).contains(Integer.toString(color.getRed()));
+  }
+
+  @Test
   public void createColorWithAwtColorParam_ColorHasRGBValues() {
     //when
     Color color = new Color(new java.awt.Color(100, 150, 200));

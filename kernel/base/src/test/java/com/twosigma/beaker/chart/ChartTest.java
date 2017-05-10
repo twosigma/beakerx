@@ -17,9 +17,19 @@
 package com.twosigma.beaker.chart;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public class ChartTest {
+
+  private Chart chart;
+
+  @Before
+  public void setUp() throws Exception {
+    chart = new Chart();
+  }
 
   @Test
   public void createChartByEmptyConstructor_ChartHasInitHeightWidth() {
@@ -29,4 +39,69 @@ public class ChartTest {
     Assertions.assertThat(chart.getInitHeight()).isGreaterThan(0);
     Assertions.assertThat(chart.getInitWidth()).isGreaterThan(0);
   }
+
+  @Test
+  public void setCustomStyles_hasCustomStyles() {
+    //when
+    chart.setCustomStyles(Arrays.asList("style1", "style2"));
+    //then
+    Assertions.assertThat(chart.getCustomStyles()).isNotEmpty();
+  }
+
+  @Test
+  public void setGridLineStyle_hasGridLineStyle() {
+    //when
+    chart.setGridLineStyle("grid_style");
+    //then
+    Assertions.assertThat(chart.getGridLineStyle()).isEqualTo("grid_style");
+  }
+
+  @Test
+  public void setInitHeight_hasInitHeight() {
+    //when
+    chart.setInitHeight(5);
+    //then
+    Assertions.assertThat(chart.getInitHeight()).isEqualTo(5);
+  }
+
+  @Test
+  public void setInitWidth_hasInitWidth() {
+    //when
+    chart.setInitWidth(10);
+    //then
+    Assertions.assertThat(chart.getInitWidth()).isEqualTo(10);
+  }
+
+  @Test
+  public void setLabelYStyle_hasLabelYStyle() {
+    //when
+    chart.setLabelYStyle("labely_style");
+    //then
+    Assertions.assertThat(chart.getLabelYStyle()).isEqualTo("labely_style");
+  }
+
+  @Test
+  public void setLabelXStyle_hasLabelXStyle() {
+    //when
+    chart.setLabelXStyle("labelx_style");
+    //then
+    Assertions.assertThat(chart.getLabelXStyle()).isEqualTo("labelx_style");
+  }
+
+  @Test
+  public void setLabelStyle_hasLabelStyle() {
+    //when
+    chart.setLabelStyle("label_style");
+    //then
+    Assertions.assertThat(chart.getLabelStyle()).isEqualTo("label_style");
+  }
+
+  @Test
+  public void setTitleStyle_hasTitleStyle() {
+    //when
+    chart.setTitleStyle("style");
+    //then
+    Assertions.assertThat(chart.getTitleStyle()).isEqualTo("style");
+  }
+
 }

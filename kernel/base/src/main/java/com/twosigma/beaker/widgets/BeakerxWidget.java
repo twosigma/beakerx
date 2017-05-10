@@ -15,34 +15,40 @@
  */
 package com.twosigma.beaker.widgets;
 
-import com.twosigma.beaker.widgets.internal.SerializeToJson;
+import java.io.Serializable;
+import java.util.HashMap;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
-public class BeakerxWidget {
+public abstract class BeakerxWidget extends Widget{
 
   public static final String MODEL_MODULE_VALUE = "beakerx";
   public static final String VIEW_MODULE_VALUE = "beakerx";
-  private static final String MODEL = "model";
+  public static final String MODEL = "model";
 
-  public static void beforeDisplay(Widget widget) {
-    if (widget.getComm() != null) {
-      widget.getComm().sendUpdate(MODEL, SerializeToJson.toJson(widget));
+  @Override
+  public void beforeDisplay() {
+    if (getComm() != null) {
+      getComm().sendUpdate(MODEL, SerializeToJson.toJson(this));
     }
   }
 
-  public static Object runClosure(Object closure, Object... params) throws Exception {
-    Class<?> clazz = closure.getClass();
-    Method getMaximumNumberOfParameters = clazz.getMethod("getMaximumNumberOfParameters");
-    getMaximumNumberOfParameters.setAccessible(true);
-    int numberOfParameters = (int) getMaximumNumberOfParameters.invoke(closure);
-    Method call;
-    Class<Object>[] paramTypes = new Class[numberOfParameters];
-    Arrays.fill(paramTypes, Object.class);
-    call = clazz.getMethod("call", paramTypes);
-    call.setAccessible(true);
-    return call.invoke(closure, Arrays.copyOfRange(params, 0, numberOfParameters));
+  @Override
+  protected void addValueChangeMsgCallback() {
   }
+
+  @Override
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+    return content;
+  }
+
+  @Override
+  public String getModelModuleValue() {
+    return BeakerxWidget.MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  public String getViewModuleValue() {
+    return BeakerxWidget.VIEW_MODULE_VALUE;
+  }
+
 
 }

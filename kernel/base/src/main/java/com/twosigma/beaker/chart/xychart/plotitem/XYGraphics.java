@@ -19,7 +19,7 @@ package com.twosigma.beaker.chart.xychart.plotitem;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
 import com.twosigma.beaker.chart.Graphics;
-import com.twosigma.beaker.widgets.BeakerxWidget;
+import com.twosigma.beaker.widgets.RunWidgetClosure;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -219,6 +219,6 @@ abstract public class XYGraphics extends Graphics {
   }
 
   private Object runClosure(Object closure, Object... params) throws Exception {
-    return BeakerxWidget.runClosure(closure, params);
+    return RunWidgetClosure.runClosure(closure, params);
   }
 }

@@ -22,7 +22,7 @@ import com.twosigma.beaker.chart.treemap.util.IToolTipBuilder;
 import com.twosigma.beaker.chart.treemap.util.RandomColorProvider;
 import net.sf.jtreemap.swing.TreeMapNode;
 
-public class TreeMap extends Chart {
+public abstract class TreeMap extends Chart {
 
   // root of the tree
   private TreeMapNode root = null;

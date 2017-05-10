@@ -18,21 +18,14 @@ package com.twosigma.beaker.chart.histogram;
 
 import com.twosigma.beaker.chart.AbstractChart;
 import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.widgets.Widget;
-import com.twosigma.beaker.widgets.chart.InternalPlot;
-import com.twosigma.beaker.widgets.internal.CommWidget;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
-import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
-import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 
-import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class Histogram extends AbstractChart implements InternalCommWidget, InternalPlot {
+import static com.twosigma.beaker.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
+import static com.twosigma.beaker.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
+
+public class Histogram extends AbstractChart {
 
   public enum DisplayMode {
     OVERLAP,
@@ -40,32 +33,23 @@ public class Histogram extends AbstractChart implements InternalCommWidget, Inte
     SIDE_BY_SIDE
   }
 
-  private   Integer            rangeMin;
-  private   Integer            rangeMax;
-  private   int                binCount;
-  private   boolean            rightClose;
-  private   boolean            cumulative;
-  private   boolean            normed;
-  protected Color              baseColor;
-  private   List<Color>        colors;
-  protected List<Number>       data;
-  private   List<List<Number>> listData;
+  private Integer rangeMin;
+  private Integer rangeMax;
+  private int binCount;
+  private boolean rightClose;
+  private boolean cumulative;
+  private boolean normed;
+  protected Color baseColor;
+  private List<Color> colors;
+  protected List<Number> data;
+  private List<List<Number>> listData;
   private List<String> names;
-
 
   private DisplayMode displayMode = DisplayMode.OVERLAP;
 
-
-  private Comm comm;
-
   public Histogram() {
-    this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
-      @Override
-      public void addContent(HashMap<String, Serializable> content) {
-        content.put(Widget.MODEL_NAME, getModelNameValue());
-        content.put(Widget.VIEW_NAME, getViewNameValue());
-      }
-    });
+    super();
+    openComm();
   }
 
   @Override
@@ -76,19 +60,6 @@ public class Histogram extends AbstractChart implements InternalCommWidget, Inte
   @Override
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
-  }
-
-
-  @Override
-  public Comm getComm() {
-    return this.comm;
-  }
-  
-  @Override
-  public void close() {
-    if (this.comm != null) {
-      this.comm.close();
-    }
   }
 
   public Integer getRangeMin() {
@@ -167,7 +138,7 @@ public class Histogram extends AbstractChart implements InternalCommWidget, Inte
         this.colors = new ArrayList<>(cs.size());
         for (Object c : cs) {
           if (c instanceof Color) {
-            this.colors.add((Color)c);
+            this.colors.add((Color) c);
           } else if (c instanceof java.awt.Color) {
             this.colors.add(new Color((java.awt.Color) c));
           } else {
@@ -179,7 +150,7 @@ public class Histogram extends AbstractChart implements InternalCommWidget, Inte
       }
     } else {
       throw new IllegalArgumentException(
-        "setColor takes Color or List of Color");
+              "setColor takes Color or List of Color");
     }
   }
 
@@ -203,7 +174,7 @@ public class Histogram extends AbstractChart implements InternalCommWidget, Inte
         }
       } catch (Throwable x) {
         throw new IllegalArgumentException(
-          "setData takes List of Number or List of List of Number");
+                "setData takes List of Number or List of List of Number");
       }
     }
   }
@@ -217,10 +188,10 @@ public class Histogram extends AbstractChart implements InternalCommWidget, Inte
   }
 
   public List<String> getNames() {
-        return names;
+    return names;
   }
 
   public void setNames(List<String> names) {
-        this.names = names;
+    this.names = names;
   }
 }

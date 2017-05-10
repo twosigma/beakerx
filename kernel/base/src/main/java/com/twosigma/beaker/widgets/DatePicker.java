@@ -15,8 +15,6 @@
  */
 package com.twosigma.beaker.widgets;
 
-import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
-
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -34,6 +32,16 @@ public class DatePicker extends ValueWidget<String> {
   }
 
   @Override
+  public String getModelModuleValue() {
+    return BeakerxWidget.MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  public String getViewModuleValue() {
+    return BeakerxWidget.VIEW_MODULE_VALUE;
+  }
+
+  @Override
   public void updateValue(Object value) {
     this.value = (String) value;
   }
@@ -46,8 +54,6 @@ public class DatePicker extends ValueWidget<String> {
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);
-    content.put(VIEW_MODULE, InternalWidgetUtils.VIEW_MODULE_VALUE);
     content.put(VALUE, this.value);
     return content;
   }

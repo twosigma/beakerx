@@ -16,30 +16,17 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
-import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.widgets.Widget;
-import com.twosigma.beaker.widgets.chart.InternalPlot;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
-import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
-import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
+import static com.twosigma.beaker.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
+import static com.twosigma.beaker.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
 
-public class TimePlot extends XYChart implements InternalCommWidget, InternalPlot {
-
-  private Comm comm;
+public class TimePlot extends XYChart {
 
   public TimePlot(){
-    this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
-      @Override
-      public void addContent(HashMap<String, Serializable> content) {
-        content.put(Widget.MODEL_NAME, getModelNameValue());
-        content.put(Widget.VIEW_NAME, getViewNameValue());
-      }
-    });
+    super();
+    openComm();
   }
 
   @Override
@@ -50,18 +37,6 @@ public class TimePlot extends XYChart implements InternalCommWidget, InternalPlo
   @Override
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
-  }
-
-  @Override
-  public Comm getComm() {
-    return this.comm;
-  }
-  
-  @Override
-  public void close() {
-    if (this.comm != null) {
-      this.comm.close();
-    }
   }
 
   public XYChart setXBound(Date lower, Date upper) {
@@ -81,5 +56,4 @@ public class TimePlot extends XYChart implements InternalCommWidget, InternalPlo
     }
     return this;
   }
-
 }

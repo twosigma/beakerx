@@ -20,7 +20,6 @@ import java.util.HashMap;
 
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
-import com.twosigma.beaker.widgets.internal.CommWidget;
 
 public abstract class Widget implements CommWidget {
 

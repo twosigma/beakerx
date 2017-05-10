@@ -19,38 +19,22 @@ package com.twosigma.beaker.chart.categoryplot;
 import com.twosigma.beaker.chart.AbstractChart;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
-import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.widgets.Widget;
-import com.twosigma.beaker.widgets.chart.InternalPlot;
-import com.twosigma.beaker.widgets.internal.CommWidget;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
-import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
-import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
-
-import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class CategoryPlot extends AbstractChart implements InternalCommWidget, InternalPlot {
+import static com.twosigma.beaker.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
+import static com.twosigma.beaker.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
+
+public class CategoryPlot extends AbstractChart {
   private final List<CategoryGraphics> categoryGraphics        = new ArrayList<>();
   private       List<String>           categoryNames           = new ArrayList<>();
   private       PlotOrientationType    orientation             = PlotOrientationType.VERTICAL;
   private       double                 categoryMargin          = 0.2;
   private       double                 categoryNamesLabelAngle = 0;
 
-
-  private Comm comm;
-
   public CategoryPlot() {
-    this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
-      @Override
-      public void addContent(HashMap<String, Serializable> content) {
-        content.put(Widget.MODEL_NAME, getModelNameValue());
-        content.put(Widget.VIEW_NAME, getViewNameValue());
-      }
-    });
+    super();
+    openComm();
   }
 
   @Override
@@ -61,18 +45,6 @@ public class CategoryPlot extends AbstractChart implements InternalCommWidget, I
   @Override
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
-  }
-
-  @Override
-  public Comm getComm() {
-    return this.comm;
-  }
-  
-  @Override
-  public void close() {
-    if (this.comm != null) {
-      this.comm.close();
-    }
   }
 
   public CategoryPlot leftShift(CategoryGraphics graphics) {

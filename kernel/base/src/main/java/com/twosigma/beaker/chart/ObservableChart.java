@@ -17,23 +17,14 @@
 package com.twosigma.beaker.chart;
 
 import com.twosigma.beaker.chart.actions.GraphicsActionObject;
-import org.apache.commons.lang3.SerializationUtils;
+import com.twosigma.beaker.widgets.BeakerxWidget;
 
 import java.io.Serializable;
-import java.util.Observable;
+import java.util.HashMap;
 
-public class ObservableChart extends Observable implements Cloneable, Serializable{
+public abstract class ObservableChart extends BeakerxWidget {
 
   protected GraphicsActionObject details;
-
-  @Override
-  public synchronized void setChanged() {
-    super.setChanged();
-  }
-  @Override
-  public Object clone() throws CloneNotSupportedException {
-    return SerializationUtils.clone(this);
-  }
 
   public GraphicsActionObject getDetails() {
     return details;
@@ -41,5 +32,14 @@ public class ObservableChart extends Observable implements Cloneable, Serializab
 
   public void setDetails(GraphicsActionObject details) {
     this.details = details;
+  }
+
+  @Override
+  protected void addValueChangeMsgCallback() {
+  }
+
+  @Override
+  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
+    return content;
   }
 }

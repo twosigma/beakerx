@@ -23,7 +23,8 @@ import java.util.Map;
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 
-public class Chart extends ObservableChart{
+public abstract class Chart extends ObservableChart{
+
   protected int initWidth  = 640;
   protected int initHeight = 480;
   protected List<String> customStyles = new ArrayList();

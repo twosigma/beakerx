@@ -17,7 +17,6 @@ package com.twosigma.beaker.widgets;
 
 import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.widgets.internal.CommWidget;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,17 +25,16 @@ import com.twosigma.jupyter.message.Message;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beaker.widgets.internal.CommWidget.DISPLAY;
+import static com.twosigma.beaker.widgets.CommWidget.DISPLAY;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beaker.widgets.internal.InternalCommWidget.MODEL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
-public class SerializeToStringInternalWidgetsTest {
+public class SerializeToStringBeakerxWidgetsTest {
 
   @Test
   public void shouldSend3MessagesForAllClassesWhichImplementInternalWidgetInterface() throws Exception {
-    new InternalWidgetsTestRunner().test((clazz, groovyKernel) -> {
+    new BeakerxWidgetTestRunner().test((clazz, groovyKernel) -> {
       //give
       CommWidget internalWidget = clazz.newInstance();
       //when
@@ -60,7 +58,7 @@ public class SerializeToStringInternalWidgetsTest {
   }
 
   private void verifyModelMsg(Message message, Class clazz) {
-    String model = getValueForProperty(message, MODEL, String.class);
+    String model = getValueForProperty(message, BeakerxWidget.MODEL, String.class);
     Assert.assertNotNull("Model should not be null for  " + clazz, model);
   }
 

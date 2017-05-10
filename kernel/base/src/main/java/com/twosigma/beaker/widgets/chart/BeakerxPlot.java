@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.widgets.chart;
 
-public interface InternalPlot {
+public interface BeakerxPlot {
 
   String VIEW_NAME_VALUE = "PlotView";
   String MODEL_NAME_VALUE = "PlotModel";

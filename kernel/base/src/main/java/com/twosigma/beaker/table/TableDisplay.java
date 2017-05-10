@@ -15,7 +15,6 @@
  */
 package com.twosigma.beaker.table;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
@@ -38,11 +36,11 @@ import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beaker.table.highlight.ValueHighlighter;
 import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
 import com.twosigma.beaker.widgets.BeakerxWidget;
-import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beaker.widgets.RunWidgetClosure;
 
 import static java.util.Arrays.asList;
 
-public class TableDisplay extends Widget {
+public class TableDisplay extends BeakerxWidget {
 
   public static final String VIEW_NAME_VALUE = "TableDisplayView";
   public static final String MODEL_NAME_VALUE = "TableDisplayModel";
@@ -79,25 +77,6 @@ public class TableDisplay extends Widget {
   private String timeZone;
 
   @Override
-  protected void addValueChangeMsgCallback() {
-  }
-
-  @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    return content;
-  }
-
-  @Override
-  public String getModelModuleValue() {
-    return BeakerxWidget.MODEL_MODULE_VALUE;
-  }
-
-  @Override
-  public String getViewModuleValue() {
-    return BeakerxWidget.VIEW_MODULE_VALUE;
-  }
-
-  @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;
   }
@@ -106,7 +85,6 @@ public class TableDisplay extends Widget {
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
-
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     super();
@@ -558,11 +536,7 @@ public class TableDisplay extends Widget {
   }
 
   protected Object runClosure(Object closure, Object... params) throws Exception {
-    return BeakerxWidget.runClosure(closure, params);
+    return RunWidgetClosure.runClosure(closure, params);
   }
 
-  @Override
-  public void beforeDisplay() {
-    BeakerxWidget.beforeDisplay(this);
-  }
 }

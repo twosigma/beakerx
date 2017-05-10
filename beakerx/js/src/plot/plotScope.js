@@ -91,6 +91,7 @@ define([
     this.legendDone = false;
     this.legendResetPosition = false;
     this.doNotLoadState = false;
+    self.saveAsMenuContainer = null;
 
     this.data2scrX = null;
     this.data2scrY = null;
@@ -1778,11 +1779,25 @@ define([
 
   PlotScope.prototype.zoomEnd = function() {
     var self = this;
+
     if (self.interactMode === "locate") {
-      self.locateFocus();
-      self.locateBox = null;
-      self.update();
-      self.interactMode = "zoom";
+
+      // trigger 'show' for save-as context menu
+      if (_.isMatch(self.mousep1, self.mousep2)
+          && self.saveAsMenuContainer
+          && self.saveAsMenuContainer.contextMenu) {
+
+        var mousePosition = d3.mouse(document.body);
+        self.saveAsMenuContainer.contextMenu({x: mousePosition[0], y: mousePosition[1]});
+
+      // draw rectangle for zoom-area and update chart
+      } else {
+        self.locateFocus();
+        self.locateBox = null;
+        self.update();
+        self.interactMode = "zoom";
+      }
+
     }
 
     self.jqsvg.css("cursor", "auto");
@@ -2098,11 +2113,14 @@ define([
     self.initLayout();
 
     if (!self.model.disableContextMenu) {
-      // $.contextMenu({
-      //   selector: 'div#'+self.wrapperId+' #' + self.id,
-      //   zIndex: 3,
-      //   items: plotUtils.getSavePlotAsContextMenuItems(self)
-      // });
+      self.saveAsMenuContainer = $('div#'+self.wrapperId+' #' + self.id);
+      // init context menu for 'save as...'
+      $.contextMenu({
+        selector: 'div#'+self.wrapperId+' #' + self.id,
+        zIndex: 3,
+        items: plotUtils.getSavePlotAsContextMenuItems(self),
+        trigger: 'none'
+      });
     }
 
     var plotContainer = self.element.find('.plot-plotcontainer');

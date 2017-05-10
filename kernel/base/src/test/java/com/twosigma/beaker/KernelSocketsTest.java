@@ -23,7 +23,6 @@ import java.util.List;
 
 public class KernelSocketsTest extends KernelSockets {
 
-
   private List<Message> publishedMessages = new ArrayList<>();
   private List<Message> sentMessages = new ArrayList<>();
 
@@ -43,5 +42,10 @@ public class KernelSocketsTest extends KernelSockets {
 
   public List<Message> getSentMessages() {
     return sentMessages;
+  }
+
+  public void clear() {
+    publishedMessages = new ArrayList<>();
+    sentMessages = new ArrayList<>();
   }
 }

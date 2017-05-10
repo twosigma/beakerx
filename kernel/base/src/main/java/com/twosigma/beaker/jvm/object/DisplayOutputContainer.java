@@ -17,7 +17,7 @@ package com.twosigma.beaker.jvm.object;
 
 import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.widgets.CommFunctionality;
-import com.twosigma.beaker.widgets.CommWidget;
+import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.selectioncontainer.Tab;
 import com.twosigma.beaker.widgets.strings.Label;
 
@@ -37,12 +37,11 @@ public class DisplayOutputContainer {
   }
 
 
-  private static CommWidget toCommFunctionality(Object item) {
-    CommWidget widget;
-    widget = SerializeToString.getTableDisplay(item);
-    if(widget == null && item instanceof CommWidget){
-      widget = (CommWidget) item;
-    } else if(widget == null){
+  private static Widget toCommFunctionality(Object item) {
+    Widget widget = SerializeToString.getTableDisplay(item);
+    if (widget == null && item instanceof Widget) {
+      widget = (Widget) item;
+    } else if (widget == null) {
       Label label = new Label();
       label.setValue(item.toString());
       widget = label;

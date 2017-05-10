@@ -25,8 +25,8 @@ import com.twosigma.jupyter.message.Message;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beaker.widgets.CommWidget.DISPLAY;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beaker.widgets.Widget.DISPLAY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -36,7 +36,7 @@ public class SerializeToStringBeakerxWidgetsTest {
   public void shouldSend3MessagesForAllClassesWhichImplementInternalWidgetInterface() throws Exception {
     new BeakerxWidgetTestRunner().test((clazz, groovyKernel) -> {
       //give
-      CommWidget internalWidget = clazz.newInstance();
+      Widget internalWidget = clazz.newInstance();
       //when
       SerializeToString.doit(internalWidget);
       //then

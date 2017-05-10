@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beaker.widgets.CommWidget.DISPLAY;
-import static com.twosigma.beaker.widgets.CommWidget.METHOD;
+import static com.twosigma.beaker.widgets.Widget.DISPLAY;
+import static com.twosigma.beaker.widgets.Widget.METHOD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestWidgetUtils {

@@ -104,4 +104,12 @@ public class ChartTest {
     Assertions.assertThat(chart.getTitleStyle()).isEqualTo("style");
   }
 
+  @Test
+  public void setTitle_hasTitle() {
+    //when
+    chart.setTitle("test");
+    //then
+    Assertions.assertThat(chart.getTitle()).isEqualTo("test");
+  }
+
 }

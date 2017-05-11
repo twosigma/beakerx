@@ -52,4 +52,13 @@ public class BarsTest {
     //then
     Assertions.assertThat(bars.getOutlineColors()).isNotNull();
   }
+
+  @Test
+  public void setYAxis_hasYAxis() {
+    //when
+    Bars bars = new Bars();
+    bars.setYAxis("yAxis name");
+    //then
+    Assertions.assertThat(bars.getYAxis()).isEqualTo("yAxis name");
+  }
 }

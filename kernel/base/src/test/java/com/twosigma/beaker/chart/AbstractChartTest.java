@@ -18,6 +18,7 @@ package com.twosigma.beaker.chart;
 
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.chart.xychart.Plot;
+import com.twosigma.beaker.chart.xychart.plotitem.Crosshair;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.jupyter.KernelManager;
 import org.assertj.core.api.Assertions;
@@ -109,6 +110,30 @@ public class AbstractChartTest {
   }
 
   @Test
+  public void setxLabel_hasXLabel() {
+    //when
+    chart.setxLabel("test_x");
+    //then
+    Assertions.assertThat(chart.getXLabel()).isEqualTo("test_x");
+  }
+
+  @Test
+  public void setyLabel_hasYLabel() {
+    //when
+    chart.setyLabel("test_y");
+    //then
+    Assertions.assertThat(chart.getYLabel()).isEqualTo("test_y");
+  }
+
+  @Test
+  public void setYLabel_hasYLabel() {
+    //when
+    chart.setYLabel("testY");
+    //then
+    Assertions.assertThat(chart.getYLabel()).isEqualTo("testY");
+  }
+
+  @Test
   public void setXLowerMarginWithDoubleParam_hasXLowerMargin() {
     //when
     chart.setXLowerMargin(3.0d);
@@ -117,11 +142,27 @@ public class AbstractChartTest {
   }
 
   @Test
+  public void setxLowerMarginWithDoubleParam_hasXLowerMargin() {
+    //when
+    chart.setxLowerMargin(3.5d);
+    //then
+    Assertions.assertThat(chart.getXLowerMargin()).isEqualTo(3.5d);
+  }
+
+  @Test
   public void setXUpperMarginWithDoubleParam_hasXUpperMargin() {
     //when
     chart.setXUpperMargin(7.0d);
     //then
     Assertions.assertThat(chart.getXUpperMargin()).isEqualTo(7.0d);
+  }
+
+  @Test
+  public void setxUpperMarginWithDoubleParam_hasXUpperMargin() {
+    //when
+    chart.setxUpperMargin(7.5d);
+    //then
+    Assertions.assertThat(chart.getXUpperMargin()).isEqualTo(7.5d);
   }
 
   @Test
@@ -150,14 +191,6 @@ public class AbstractChartTest {
   }
 
   @Test
-  public void setyLabel_hasYLabel() {
-    //when
-    chart.setyLabel("test_y");
-    //then
-    Assertions.assertThat(chart.getYLabel()).isEqualTo("test_y");
-  }
-
-  @Test
   public void setyLogBaseWithDoubleParam_hasYLogBase() {
     //when
     chart.setyLogBase(5.0d);
@@ -179,6 +212,30 @@ public class AbstractChartTest {
     chart.setyUpperMargin(0.7d);
     //then
     Assertions.assertThat(chart.getYUpperMargin()).isEqualTo(0.7d);
+  }
+
+  @Test
+  public void leftShiftWithYAxisParam_shouldAddYAxis() {
+    //when
+    chart.leftShift(new YAxis("test yAxis"));
+    //then
+    Assertions.assertThat(chart.getYAxes().get(1).getLabel()).isEqualTo("test yAxis");
+  }
+
+  @Test
+  public void leftShiftWithListParam_shouldAddYAxes() {
+    //when
+    chart.leftShift(Arrays.asList(new YAxis("axis1"), new YAxis("axis2")));
+    //then
+    Assertions.assertThat(chart.getYAxes().get(1).getLabel()).isEqualTo("axis1");
+  }
+
+  @Test
+  public void setCrosshair_hasCrosshair() {
+    //when
+    chart.setCrosshair(new Crosshair());
+    //then
+    Assertions.assertThat(chart.getCrosshair()).isNotNull();
   }
 
 }

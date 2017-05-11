@@ -346,10 +346,7 @@ public class ScalaEvaluator implements Evaluator {
       if (!imports.isEmpty()) {
         for (int i = 0; i < imports.size(); i++) {
           String imp = imports.get(i).trim();
-          if (imp.startsWith("import"))
-            imp = imp.substring(6).trim();
-          if (imp.endsWith(".*"))
-            imp = imp.substring(0,imp.length()-1) + "_";
+          imp = adjustImport(imp);
           if(!imp.isEmpty()) {
             logger.debug("importing : {}", imp);
             if(!shell.addImport(imp))
@@ -386,7 +383,22 @@ public class ScalaEvaluator implements Evaluator {
     }
   }
 
-  
+  private String adjustImport(String imp) {
+    if (imp.startsWith("import"))
+      imp = imp.substring(6).trim();
+    // Scala doesn't need "static"
+    if (imp.startsWith("static"))
+      imp = imp.substring(6).trim();
+    // May need more of these, but all Scala keywords that aren't Java keywords is probably overkill
+    if (imp.contains(".object.")) {
+      imp = imp.replace(".object.", ".`object`.");
+    }
+    if (imp.endsWith(".*"))
+      imp = imp.substring(0,imp.length()-1) + "_";
+    return imp;
+  }
+
+
   protected ClassLoader newAutoCompleteClassLoader() throws MalformedURLException
   {
     logger.debug("creating new autocomplete loader");
@@ -412,10 +424,7 @@ public class ScalaEvaluator implements Evaluator {
     if (!imports.isEmpty()) {
       for (int i = 0; i < imports.size(); i++) {
         String imp = imports.get(i).trim();
-        if (imp.startsWith("import"))
-          imp = imp.substring(6).trim();
-        if (imp.endsWith(".*"))
-          imp = imp.substring(0,imp.length()-1) + "_";
+        imp = adjustImport(imp);
         if(!imp.isEmpty()) {
           if(!acshell.addImport(imp))
             logger.warn("ERROR: cannot add import '{}'", imp);

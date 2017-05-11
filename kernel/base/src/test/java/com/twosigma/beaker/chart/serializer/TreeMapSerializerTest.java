@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,12 +22,15 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.chart.treemap.Mode;
 import com.twosigma.beaker.chart.treemap.TreeMap;
 import com.twosigma.beaker.chart.treemap.ValueAccessor;
+import com.twosigma.beaker.jupyter.KernelManager;
 import net.sf.jtreemap.swing.DefaultValue;
 import net.sf.jtreemap.swing.TreeMapNode;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,13 +53,20 @@ public class TreeMapSerializerTest {
     mapper.disable(MapperFeature.AUTO_DETECT_FIELDS);
     mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     treeMapSerializer = new TreeMapSerializer();
+
   }
 
   @Before
   public void initTestStubData() throws IOException {
+    KernelManager.register(new KernelTest());
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
     treeMap = new TreeMap(new TreeMapNode("label", 1, new DefaultValue(1.5)));
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    KernelManager.register(null);
   }
 
   @Test

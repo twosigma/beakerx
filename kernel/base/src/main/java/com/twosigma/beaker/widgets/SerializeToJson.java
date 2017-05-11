@@ -92,6 +92,10 @@ import com.twosigma.beaker.easyform.serializer.TextAreaSerializer;
 import com.twosigma.beaker.easyform.serializer.TextFieldSerializer;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
+import com.twosigma.beaker.chart.treemap.TreeMap;
+import com.twosigma.beaker.chart.serializer.TreeMapSerializer;
+import com.twosigma.beaker.chart.serializer.TreeMapNodeSerializer;
+import net.sf.jtreemap.swing.TreeMapNode;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -116,6 +120,7 @@ public class SerializeToJson {
     internalWidgetMap.put(com.twosigma.beaker.chart.xychart.CombinedPlot.class, new Object());
     internalWidgetMap.put(com.twosigma.beaker.chart.xychart.NanoPlot.class, new Object());
     internalWidgetMap.put(com.twosigma.beaker.easyform.EasyForm.class, new Object());
+    internalWidgetMap.put(com.twosigma.beaker.chart.treemap.TreeMap.class, new Object());
 
     serializerMap.put(TableDisplay.class, new TableDisplaySerializer());
     serializerMap.put(Color.class, new ColorSerializer());
@@ -141,6 +146,8 @@ public class SerializeToJson {
     serializerMap.put(Histogram.class, new HistogramSerializer());
     serializerMap.put(HeatMap.class, new HeatMapSerializer());
     serializerMap.put(Rasters.class, new RastersSerializer());
+    serializerMap.put(TreeMap.class, new TreeMapSerializer());
+    serializerMap.put(TreeMapNode.class, new TreeMapNodeSerializer());
 
 
     //easy forms

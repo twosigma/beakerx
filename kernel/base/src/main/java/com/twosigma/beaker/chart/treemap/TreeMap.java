@@ -22,6 +22,9 @@ import com.twosigma.beaker.chart.treemap.util.IToolTipBuilder;
 import com.twosigma.beaker.chart.treemap.util.RandomColorProvider;
 import net.sf.jtreemap.swing.TreeMapNode;
 
+import static com.twosigma.beaker.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
+import static com.twosigma.beaker.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
+
 public class TreeMap extends Chart {
 
   // root of the tree
@@ -77,12 +80,15 @@ public class TreeMap extends Chart {
   //determine value accessor for chart
   private ValueAccessor valueAccessor = ValueAccessor.VALUE;
 
+
   public TreeMap(final TreeMapNode root) {
     this();
     setRoot(root);
   }
 
   public TreeMap() {
+    super();
+    openComm();
     setColorProvider(new RandomColorProvider());
     setShowLegend(false);
   }
@@ -160,5 +166,15 @@ public class TreeMap extends Chart {
 
   public void setToolTipBuilder(IToolTipBuilder toolTipBuilder) {
     this.toolTipBuilder = toolTipBuilder;
+  }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 }

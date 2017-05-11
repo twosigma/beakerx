@@ -70,7 +70,7 @@ table.dataTable {
     height: 27px;
   }
   tbody tr {
-    height: 27px;
+    height: 22px; // standard: 27px
     .advanced-mode & {
       height: 22px;
     }

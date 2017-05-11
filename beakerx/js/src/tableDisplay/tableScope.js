@@ -307,7 +307,9 @@ define([
           value = moment(value.timestamp).format('YYYYMMDD HH:mm:ss.SSS ZZ');
         }
         if (type === 'display' && value !== null && value !== undefined) {
-          return self.escapeHTML(value);
+          var escapedText = self.escapeHTML(value);
+          var limitedText = self.truncateString(escapedText);
+          value = limitedText;
         }
         return value;
       },
@@ -2663,6 +2665,15 @@ define([
   TableScope.prototype.escapeHTML = function(text) {
     if ($.type(text) === 'string') {
       return text.replace(/[\'&'\/<>]/g, function(a) { return chr[a]; });
+    }
+    return text;
+  };
+
+  TableScope.prototype.truncateString = function(text, limit) {
+    limit = limit !== undefined ? limit : 1000;
+    if (text && text.length > limit) {
+      text = text.substring(0, limit);
+      text += '...';
     }
     return text;
   };

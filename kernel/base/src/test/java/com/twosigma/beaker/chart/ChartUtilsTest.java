@@ -36,6 +36,21 @@ public class ChartUtilsTest {
     Assertions.assertThat(outlineColors.get(1) instanceof Color).isTrue();
   }
 
+  @Test
+  public void callConvertColorsWithListOfListParam_shouldReturnBeakerChartColorListOfList() {
+    //given
+    ChartUtils chartUtils = new ChartUtils();
+    //when
+    List<Object> outlineColors =
+        chartUtils.convertColors(Arrays.asList(
+            Arrays.asList(java.awt.Color.BLACK, java.awt.Color.GREEN),
+            Arrays.asList(java.awt.Color.BLACK, java.awt.Color.GREEN)),
+            "takes Color or List of Color");
+    //then
+    Assertions.assertThat(((List)outlineColors.get(0)).get(0) instanceof Color).isTrue();
+    Assertions.assertThat(((List)outlineColors.get(1)).get(0) instanceof Color).isTrue();
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void callConvertColorsWithNumberListParam_throwIllegalArgumentException() {
     //when

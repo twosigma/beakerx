@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.chart.xychart;
 
+import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.KernelTest;
 import org.assertj.core.api.Assertions;
@@ -61,6 +62,20 @@ public class SimpleTimePlotTest {
         new SimpleTimePlot(parameters, rates, Arrays.asList("m3", "time", "num"));
     //then
     Assertions.assertThat(simpleTimePlot).isNotNull();
+  }
+
+  @Test
+  public void setTwoColorsForThreeColumns_twoOfThreeGraphicsHasBaseColor() {
+    //given
+    SimpleTimePlot simpleTimePlot = new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
+    //when
+    simpleTimePlot.setColors(Arrays.asList(Color.BLUE, Color.GREEN));
+    //to call reinitialize()
+    simpleTimePlot.setColumns(Arrays.asList("m3", "time", "num"));
+    //then
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(0).getColor()).isEqualTo(Color.BLUE);
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(1).getColor()).isEqualTo(Color.GREEN);
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(2).getColor()).isNull();
   }
 
   @Test(expected = IllegalArgumentException.class)

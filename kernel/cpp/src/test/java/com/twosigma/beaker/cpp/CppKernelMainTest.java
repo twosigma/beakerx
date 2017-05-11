@@ -17,6 +17,8 @@ package com.twosigma.beaker.cpp;
 
 import com.twosigma.beaker.KernelSocketsServiceTest;
 import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.jupyter.Configuration;
+import com.twosigma.jupyter.HandlersBuilder;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
@@ -44,7 +46,8 @@ public class CppKernelMainTest {
     CppEvaluator evaluator = new CppEvaluator(sessionId, sessionId);
     evaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new CppKernelMain(sessionId, evaluator, kernelSocketsService);
+    Configuration configuration = new Configuration(evaluator, kernelSocketsService, new HandlersBuilder());
+    kernel = new CppKernelMain(sessionId, configuration);
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }

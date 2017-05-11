@@ -28,7 +28,7 @@ import java.util.HashMap;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
 
-public class SQLKernelInfoHandler extends KernelHandler<Message> {
+public class SQLKernelInfoHandler extends KernelHandler {
 
   private final static Logger logger = LoggerFactory.getLogger(SQLKernelInfoHandler.class);
 

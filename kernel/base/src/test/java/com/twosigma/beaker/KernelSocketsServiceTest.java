@@ -52,7 +52,7 @@ public class KernelSocketsServiceTest implements KernelSocketsFactory {
   }
 
   public void handleMsg(final Message message) {
-    Handler<Message> handler = kernel.getHandler(message.type());
+    Handler handler = kernel.getHandler(message.type());
     handler.handle(message);
   }
 

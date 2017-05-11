@@ -42,8 +42,8 @@ public class CommOpenHandlerTest {
     kernel = new KernelTest();
     commOpenHandler = new CommOpenHandler(kernel) {
       @Override
-      public Handler<Message>[] getKernelControlChanelHandlers(String targetName) {
-        return (Handler<Message>[]) new Handler<?>[0];
+      public Handler[] getKernelControlChanelHandlers(String targetName) {
+        return new Handler[0];
       }
     };
     message = JupyterHandlerTest.initOpenMessage();
@@ -67,7 +67,7 @@ public class CommOpenHandlerTest {
     Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
     Message sendMessage = kernel.getSentMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getType())
-        .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
+            .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
   }
 
   @Test
@@ -80,7 +80,7 @@ public class CommOpenHandlerTest {
     Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
     Message sendMessage = kernel.getSentMessages().get(0);
     Assertions.assertThat(sendMessage.getHeader().getType())
-        .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
+            .isEqualTo(JupyterMessages.COMM_CLOSE.getName());
   }
 
   @Test
@@ -127,7 +127,7 @@ public class CommOpenHandlerTest {
     Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
     Message sendMessage = kernel.getSentMessages().get(0);
     Assertions.assertThat(sendMessage.getContent().get(TARGET_MODULE))
-        .isEqualTo(expectedTargetModule);
+            .isEqualTo(expectedTargetModule);
   }
 
   @Test
@@ -152,6 +152,6 @@ public class CommOpenHandlerTest {
     Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
     Message sendMessage = kernel.getSentMessages().get(0);
     Assertions.assertThat(new String(sendMessage.getIdentities().get(0)))
-        .isEqualTo(expectedIdentities);
+            .isEqualTo(expectedIdentities);
   }
 }

@@ -18,6 +18,8 @@ package com.twosigma.beaker.groovy;
 import com.twosigma.beaker.KernelSocketsServiceTest;
 import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.jupyter.Configuration;
+import com.twosigma.jupyter.HandlersBuilder;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
@@ -48,7 +50,8 @@ public class GroovyKernelTest {
     GroovyEvaluator evaluator = new GroovyEvaluator(sessionId, sessionId);
     evaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new GroovyKernel(sessionId, evaluator, kernelSocketsService);
+    Configuration configuration = new Configuration(evaluator, kernelSocketsService, new HandlersBuilder());
+    kernel = new GroovyKernel(sessionId, configuration);
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }
@@ -83,6 +86,7 @@ public class GroovyKernelTest {
   private void verifySentMsgs(KernelSocketsServiceTest service) {
     verifyExecuteReplyMessage(service.getReplyMessage());
   }
+
   private void verifyResult(Message result) {
     Map actual = ((Map) result.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");

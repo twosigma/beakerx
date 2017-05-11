@@ -22,31 +22,31 @@ import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.handler.ExecuteRequestHandler;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
+import com.twosigma.jupyter.handler.CompleteHandler;
+import com.twosigma.jupyter.handler.Handler;
+import com.twosigma.jupyter.handler.HistoryHandler;
 import com.twosigma.jupyter.handler.IsCompleteRequestHandler;
 import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.handler.CompleteHandler;
-import com.twosigma.jupyter.handler.HistoryHandler;
-import com.twosigma.jupyter.handler.Handler;
-import com.twosigma.jupyter.message.Message;
 
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * Message handlers. All sockets listeners will dispatch to these handlers.
  */
-public class KernelHandlers {
+public class KernelHandlers implements Handlers {
 
-  private Map<JupyterMessages, KernelHandler<Message>> handlers;
+  private Map<JupyterMessages, KernelHandler> handlers;
   private KernelFunctionality kernel;
 
-  public KernelHandlers(KernelFunctionality kernel, final CommOpenHandler commOpenHandler, final KernelHandler<Message> kernelInfoHandler) {
+  public KernelHandlers(KernelFunctionality kernel, final CommOpenHandler commOpenHandler, final KernelHandler kernelInfoHandler) {
     this.kernel = kernel;
     this.handlers = createHandlers(commOpenHandler, kernelInfoHandler);
   }
 
-  private Map<JupyterMessages, KernelHandler<Message>> createHandlers(final CommOpenHandler commOpenHandler, final KernelHandler<Message> kernelInfoHandler) {
-    Map<JupyterMessages, KernelHandler<Message>> handlers = new HashMap<>();
-    if(kernelInfoHandler != null){
+  private Map<JupyterMessages, KernelHandler> createHandlers(final CommOpenHandler commOpenHandler, final KernelHandler kernelInfoHandler) {
+    Map<JupyterMessages, KernelHandler> handlers = new HashMap<>();
+    if (kernelInfoHandler != null) {
       handlers.put(JupyterMessages.KERNEL_INFO_REQUEST, kernelInfoHandler);
     }
     if (commOpenHandler != null) {
@@ -62,12 +62,14 @@ public class KernelHandlers {
     return handlers;
   }
 
-  public Handler<Message> get(JupyterMessages type) {
+  @Override
+  public Handler get(JupyterMessages type) {
     return handlers.get(type);
   }
 
+  @Override
   public void exit() {
-    for (KernelHandler<Message> handler : this.handlers.values()) {
+    for (KernelHandler handler : this.handlers.values()) {
       handler.exit();
     }
   }

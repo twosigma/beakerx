@@ -15,47 +15,35 @@
  */
 package com.twosigma.beaker.javash;
 
-import static com.twosigma.beaker.jupyter.Utils.uuid;
-
-import java.io.IOException;
-
-import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.javash.comm.JavaCommOpenHandler;
 import com.twosigma.beaker.javash.evaluator.JavaEvaluator;
 import com.twosigma.beaker.javash.handler.JavaKernelInfoHandler;
-import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
-import com.twosigma.jupyter.ConfigurationFile;
+import com.twosigma.jupyter.Configuration;
+import com.twosigma.jupyter.HandlersBuilder;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.KernelRunner;
-import com.twosigma.jupyter.KernelSocketsFactory;
 import com.twosigma.jupyter.KernelSocketsFactoryImpl;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Message;
 
+import java.io.IOException;
+
+import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 public class JavaKernel extends Kernel {
 
-  public JavaKernel(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
-    super(id, evaluator, kernelSocketsFactory);
-  }
-
-  @Override
-  public CommOpenHandler getCommOpenHandler(Kernel kernel) {
-    return new JavaCommOpenHandler(kernel);
-  }
-
-  @Override
-  public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
-    return new JavaKernelInfoHandler(kernel);
+  public JavaKernel(final String id, final Configuration configuration) {
+    super(id, configuration);
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
-      JavaEvaluator e = new JavaEvaluator(id, id);
-      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-      return new JavaKernel(id, e, kernelSocketsFactory);
+      return new JavaKernel(id, new Configuration(
+              new JavaEvaluator(id, id),
+              new KernelSocketsFactoryImpl(new KernelConfigurationFile(args)),
+              new HandlersBuilder()
+                      .withCommOpenHandler(JavaCommOpenHandler::new)
+                      .withKernelInfoHandler(JavaKernelInfoHandler::new)));
     });
   }
 

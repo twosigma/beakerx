@@ -137,16 +137,16 @@ public class JupyterHandlerTest {
     String commId = (String) openMessage.getContent().get(COMM_ID);
     String targetName = (String) openMessage.getContent().get(TARGET_NAME);
     Comm comm = new Comm(commId, targetName) {
-          @Override
-          public void handleMsg(Message parentMessage) {
-          }
-        };
+      @Override
+      public void handleMsg(Message parentMessage) {
+      }
+    };
     kernelTest.addComm(commId, comm);
     return commId;
   }
 
   @BeforeClass
-  public static void setUpClass(){
+  public static void setUpClass() {
     kernel = new KernelTest();
   }
 
@@ -155,8 +155,8 @@ public class JupyterHandlerTest {
   public void setUp() {
     commOpenHandler = new CommOpenHandler(kernel) {
       @Override
-      public Handler<Message>[] getKernelControlChanelHandlers(String targetName) {
-        return (Handler<Message>[]) new Handler<?>[0];
+      public Handler[] getKernelControlChanelHandlers(String targetName) {
+        return new Handler[0];
       }
     };
     commCloseHandler = new CommCloseHandler(kernel);
@@ -193,7 +193,7 @@ public class JupyterHandlerTest {
 
   @Test
   public void handleOpenThenCloseCommMessages_shouldRemoveCommMessageFromStorageMap()
-      throws Exception {
+          throws Exception {
     //given
     Message openMessage = initOpenMessage();
     String commId = (String) openMessage.getContent().get(COMM_ID);
@@ -254,23 +254,23 @@ public class JupyterHandlerTest {
 
   @Test
   public void defaultShellHandlerHandleEmptyMessage_dontThrowNullPointerException()
-      throws Exception {
+          throws Exception {
     //given
     Message message = new Message();
     MessageTest.initMessage(message);
     //when
     KernelControlGetDefaultShellHandler handler =
-        new KernelControlGetDefaultShellHandler(kernel) {
-          @Override
-          public String[] getDefaultImports() {
-            return new String[0];
-          }
+            new KernelControlGetDefaultShellHandler(kernel) {
+              @Override
+              public String[] getDefaultImports() {
+                return new String[0];
+              }
 
-          @Override
-          public String[] getDefaultClassPath() {
-            return new String[0];
-          }
-        };
+              @Override
+              public String[] getDefaultClassPath() {
+                return new String[0];
+              }
+            };
     handler.handle(message);
   }
 

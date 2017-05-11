@@ -137,7 +137,7 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public Handler<Message> getHandler(JupyterMessages type) {
+  public Handler getHandler(JupyterMessages type) {
     return null;
   }
 

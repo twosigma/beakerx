@@ -18,6 +18,8 @@ package com.twosigma.beaker.javash;
 import com.twosigma.beaker.KernelSocketsServiceTest;
 import com.twosigma.beaker.javash.evaluator.JavaEvaluator;
 import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.jupyter.Configuration;
+import com.twosigma.jupyter.HandlersBuilder;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
@@ -48,7 +50,8 @@ public class JavaKernelTest {
     JavaEvaluator evaluator = new JavaEvaluator(sessionId, sessionId);
     evaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new JavaKernel(sessionId, evaluator, kernelSocketsService);
+    Configuration configuration = new Configuration(evaluator, kernelSocketsService, new HandlersBuilder());
+    kernel = new JavaKernel(sessionId, configuration);
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }

@@ -20,7 +20,7 @@ import com.twosigma.jupyter.message.Message;
 
 import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
-public class HistoryHandler extends KernelHandler<Message> {
+public class HistoryHandler extends KernelHandler {
   public HistoryHandler(KernelFunctionality kernel) {
     super(kernel);
   }

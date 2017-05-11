@@ -51,7 +51,7 @@ public class CppCommOpenHandlerTest {
   @Test
   public void getControlHandlersWithEmptyString_returnEmptyHandlersArray() throws Exception {
     //when
-    Handler<Message>[] handlers = commOpenHandler.getKernelControlChanelHandlers("");
+    Handler[] handlers = commOpenHandler.getKernelControlChanelHandlers("");
     //then
     Assertions.assertThat(handlers).isEmpty();
   }
@@ -59,7 +59,7 @@ public class CppCommOpenHandlerTest {
   @Test
   public void getControlHandlersWithTargetName_returnNotEmptyHandlersArray() throws Exception {
     //when
-    Handler<Message>[] handlers = commOpenHandler.getKernelControlChanelHandlers(targetName);
+    Handler[] handlers = commOpenHandler.getKernelControlChanelHandlers(targetName);
     //then
     Assertions.assertThat(handlers).isNotEmpty();
   }

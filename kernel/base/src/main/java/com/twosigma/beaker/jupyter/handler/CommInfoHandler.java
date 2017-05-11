@@ -36,7 +36,7 @@ import com.twosigma.beaker.jupyter.comm.Comm;
 /**
  * @author konst
  */
-public class CommInfoHandler extends KernelHandler<Message> {
+public class CommInfoHandler extends KernelHandler {
 
   private final static Logger logger = LoggerFactory.getLogger(CommInfoHandler.class);
 

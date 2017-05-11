@@ -13,30 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.jupyter.handler;
+package com.twosigma.jupyter;
 
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beaker.jupyter.msg.JupyterMessages;
+import com.twosigma.jupyter.handler.Handler;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+public interface Handlers {
 
-public abstract class KernelHandler implements Handler {
+  Handler get(JupyterMessages type);
 
-  protected KernelFunctionality kernel;
-
-  public KernelHandler(KernelFunctionality kernel) {
-    this.kernel = checkNotNull(kernel);
-  }
-
-  public void send(Message message) {
-    kernel.send(message);
-  }
-
-  public void publish(Message message) {
-    kernel.publish(message);
-  }
-
-  public void exit() {
-  }
-
+  void exit();
 }

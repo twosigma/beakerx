@@ -18,6 +18,8 @@ package com.twosigma.beaker.scala;
 import com.twosigma.beaker.KernelSocketsServiceTest;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.scala.evaluator.ScalaEvaluator;
+import com.twosigma.jupyter.Configuration;
+import com.twosigma.jupyter.HandlersBuilder;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
@@ -48,7 +51,8 @@ public class ScalaKernelTest {
     evaluator.initialize(sessionId, sessionId);
     evaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new ScalaKernel(sessionId, evaluator, kernelSocketsService);
+    Configuration configuration = new Configuration(evaluator, kernelSocketsService, new HandlersBuilder());
+    kernel = new ScalaKernel(sessionId, configuration);
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }

@@ -15,19 +15,14 @@
  */
 package com.twosigma.beaker.groovy;
 
-import com.twosigma.beaker.evaluator.Evaluator;
-
 import com.twosigma.beaker.groovy.comm.GroovyCommOpenHandler;
 import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.groovy.handler.GroovyKernelInfoHandler;
-import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
-import com.twosigma.jupyter.ConfigurationFile;
+import com.twosigma.jupyter.Configuration;
+import com.twosigma.jupyter.HandlersBuilder;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.KernelRunner;
-import com.twosigma.jupyter.KernelSocketsFactory;
 import com.twosigma.jupyter.KernelSocketsFactoryImpl;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Message;
 import com.twosigma.jupyter.Kernel;
 
 import java.io.IOException;
@@ -36,25 +31,20 @@ import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 public class GroovyKernel extends Kernel {
 
-  public GroovyKernel(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
-    super(id, evaluator, kernelSocketsFactory);
-  }
-
-  @Override
-  public CommOpenHandler getCommOpenHandler(Kernel kernel) {
-    return new GroovyCommOpenHandler(kernel);
-  }
-
-  @Override
-  public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
-    return new GroovyKernelInfoHandler(kernel);
+  public GroovyKernel(final String id, final Configuration configuration) {
+    super(id, configuration);
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
-      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-      return new GroovyKernel(id, new GroovyEvaluator(id, id), kernelSocketsFactory);
+      return new GroovyKernel(id,
+              new Configuration(
+                      new GroovyEvaluator(id, id),
+                      new KernelSocketsFactoryImpl(new KernelConfigurationFile(args)),
+                      new HandlersBuilder()
+                              .withCommOpenHandler(GroovyCommOpenHandler::new)
+                              .withKernelInfoHandler(GroovyKernelInfoHandler::new)));
     });
   }
 

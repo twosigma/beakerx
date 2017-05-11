@@ -54,7 +54,7 @@ public abstract class DOMWidget extends Widget {
 
   }
 
-  public abstract class ValueChangeMsgCallbackHandler implements Handler<Message> {
+  public abstract class ValueChangeMsgCallbackHandler implements Handler {
 
     @SuppressWarnings("unchecked")
     public Optional<Object> getSyncDataValue(Message msg){

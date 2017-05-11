@@ -2417,8 +2417,6 @@ define([
       self.model.model = data;
     }
 
-    self.element = $('div#'+self.wrapperId+' .dtcontainer');
-
     if (self.model.getCellModel().type === "TreeMap"){
       bkoChartExtender.extend(self, self.element);
     }

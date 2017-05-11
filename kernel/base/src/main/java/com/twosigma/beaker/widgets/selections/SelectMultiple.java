@@ -15,10 +15,8 @@
  */
 package com.twosigma.beaker.widgets.selections;
 
-import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
+import com.twosigma.beaker.widgets.BeakerxWidget;
 
-import java.io.Serializable;
-import java.util.HashMap;
 
 public class SelectMultiple extends MultipleSelectionWidget {
 
@@ -31,11 +29,13 @@ public class SelectMultiple extends MultipleSelectionWidget {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);
-    content.put(VIEW_MODULE, InternalWidgetUtils.VIEW_MODULE_VALUE);
-    return content;
+  public String getModelModuleValue() {
+    return BeakerxWidget.MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  public String getViewModuleValue() {
+    return BeakerxWidget.VIEW_MODULE_VALUE;
   }
 
   @Override

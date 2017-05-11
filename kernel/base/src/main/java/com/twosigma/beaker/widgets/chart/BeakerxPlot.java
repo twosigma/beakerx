@@ -13,13 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.internal;
+package com.twosigma.beaker.widgets.chart;
 
-import java.io.Serializable;
-import java.util.HashMap;
+public interface BeakerxPlot {
 
-public interface InternalWidgetContent {
-
-  void addContent(HashMap<String, Serializable> content);
+  String VIEW_NAME_VALUE = "PlotView";
+  String MODEL_NAME_VALUE = "PlotModel";
 
 }

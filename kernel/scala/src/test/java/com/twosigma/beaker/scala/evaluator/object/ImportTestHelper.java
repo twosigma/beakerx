@@ -13,11 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.chart;
 
-public interface InternalPlot {
+package com.twosigma.beaker.scala.evaluator.object;
 
-  String VIEW_NAME_VALUE = "PlotView";
-  String MODEL_NAME_VALUE = "PlotModel";
+/**
+ * This class exists solely for testing the Scala import functionality.
+ * The package name (containing "object") is significant.
+ *
+ * @see com.twosigma.beaker.scala.evaluator.ScalaEvaluatorTest
+ */
 
+public class ImportTestHelper {
+  public static void staticMethod() {
+  }
 }

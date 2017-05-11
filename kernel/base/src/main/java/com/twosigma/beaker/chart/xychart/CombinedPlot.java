@@ -16,27 +16,18 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import com.twosigma.beaker.chart.ObservableChart;
-import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.widgets.CommFunctionality;
-import com.twosigma.beaker.widgets.Widget;
-import com.twosigma.beaker.widgets.chart.InternalPlot;
-import com.twosigma.beaker.widgets.internal.CommWidget;
-import com.twosigma.beaker.widgets.internal.InternalCommWidget;
-import com.twosigma.beaker.widgets.internal.InternalWidgetContent;
-import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
-
-import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
+import com.twosigma.beaker.chart.ChartDetails;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import static com.twosigma.beaker.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
+import static com.twosigma.beaker.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
 
 /**
  * CombinedPlot
  *
  */
-public class CombinedPlot extends ObservableChart implements InternalCommWidget, InternalPlot {
+public class CombinedPlot extends ChartDetails {
   private int initWidth = 640;
   private int initHeight = 480;
   private String title;
@@ -46,16 +37,9 @@ public class CombinedPlot extends ObservableChart implements InternalCommWidget,
   private boolean xTickLabelsVisible = true;
   private boolean yTickLabelsVisible = true;
 
-  private Comm comm;
-
   public CombinedPlot(){
-    this.comm = InternalWidgetUtils.createComm(this, new InternalWidgetContent() {
-      @Override
-      public void addContent(HashMap<String, Serializable> content) {
-        content.put(Widget.MODEL_NAME, getModelNameValue());
-        content.put(Widget.VIEW_NAME, getViewNameValue());
-      }
-    });
+    super();
+    openComm();
   }
 
   @Override
@@ -66,18 +50,6 @@ public class CombinedPlot extends ObservableChart implements InternalCommWidget,
   @Override
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
-  }
-
-  @Override
-  public Comm getComm() {
-    return this.comm;
-  }
-
-  @Override
-  public void close() {
-    if (this.comm != null) {
-      this.comm.close();
-    }
   }
 
   public CombinedPlot setInitWidth(int w) {

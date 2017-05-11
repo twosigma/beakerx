@@ -32,48 +32,49 @@ import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
 public class SerializeToString {
 
   public static MIMEContainer doit(Object input) {
-    MIMEContainer ret = null;
-    if (input != null) {
-      TableDisplay table = getTableDisplay(input);
-      if (table != null) {
-        table.display();
-        ret = HIDDEN();
-      } else if (input instanceof DisplayableWidget) {
-        ((DisplayableWidget) input).display();
-        ret = HIDDEN();
-      } else if (input instanceof Table) {
-        new TableDisplay(new CsvPlotReader().convert((Table) input)).display();
-        ret = HIDDEN();
-      } else if (input instanceof MIMEContainer) {
-        ret = (MIMEContainer) input;
-      } else {
-        ret = Text(input.toString());
-      }
-    } else {
-      ret = Text("null");
+    if (input == null) {
+      return Text("null");
     }
-    return ret;
+    return getMimeContainer(input);
+  }
+
+  private static MIMEContainer getMimeContainer(Object input) {
+    if (input instanceof DisplayableWidget) {
+      ((DisplayableWidget) input).display();
+      return HIDDEN();
+    }
+    TableDisplay table = getTableDisplay(input);
+    if (table != null) {
+      table.display();
+      return HIDDEN();
+    }
+    if (input instanceof Table) {
+      new TableDisplay(new CsvPlotReader().convert((Table) input)).display();
+      return HIDDEN();
+    }
+    if (input instanceof MIMEContainer) {
+      return (MIMEContainer) input;
+    }
+    return Text(input.toString());
   }
 
   public static TableDisplay getTableDisplay(Object input) {
     TableDisplay ret = null;
-    if (input != null) {
-      if (input instanceof Map) {
-        Map map = (Map) input;
-        ret = new TableDisplay(map);
-      } else if (input instanceof Collection) {
-        Collection items = (Collection) input;
-        if (!items.isEmpty()) {
-          Object item = items.iterator().next();
-          if (item instanceof Map) {
-            ret = new TableDisplay(items);
-          }
-        }
-      } else if (input instanceof Map[]) {
-        Map[] items = (Map[]) input;
-        if (items.length > 0) {
+    if (input instanceof Map) {
+      Map map = (Map) input;
+      ret = new TableDisplay(map);
+    } else if (input instanceof Collection) {
+      Collection items = (Collection) input;
+      if (!items.isEmpty()) {
+        Object item = items.iterator().next();
+        if (item instanceof Map) {
           ret = new TableDisplay(items);
         }
+      }
+    } else if (input instanceof Map[]) {
+      Map[] items = (Map[]) input;
+      if (items.length > 0) {
+        ret = new TableDisplay(items);
       }
     }
     return ret;

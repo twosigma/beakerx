@@ -114,4 +114,8 @@ public class KernelSocketsServiceTest implements KernelSocketsFactory {
   public Message getReplyMessage() {
     return getSentMessages().get(0);
   }
+
+  public void clear() {
+    getKernelSockets().clear();
+  }
 }

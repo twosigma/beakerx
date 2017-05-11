@@ -15,7 +15,6 @@
  */
 package com.twosigma.beaker.widgets;
 
-import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
@@ -49,11 +48,19 @@ public class Button extends ValueWidget<Boolean> {
 
   }
 
-  //@Override
+  @Override
+  public String getModelModuleValue() {
+    return BeakerxWidget.MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  public String getViewModuleValue() {
+    return BeakerxWidget.VIEW_MODULE_VALUE;
+  }
+
+  @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(MODEL_MODULE, InternalWidgetUtils.MODEL_MODULE_VALUE);
-    content.put(VIEW_MODULE, InternalWidgetUtils.VIEW_MODULE_VALUE);
     content.put(TOOLTIP, tooltip);
     content.put(ICON, icon);
     return content;

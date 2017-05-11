@@ -19,7 +19,6 @@ import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.SearchMessages;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
-import com.twosigma.beaker.widgets.internal.InternalWidgetUtils;
 import com.twosigma.jupyter.message.Message;
 
 import java.io.Serializable;
@@ -27,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beaker.widgets.internal.CommWidget.DISPLAY;
-import static com.twosigma.beaker.widgets.internal.CommWidget.METHOD;
+import static com.twosigma.beaker.widgets.Widget.DISPLAY;
+import static com.twosigma.beaker.widgets.Widget.METHOD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestWidgetUtils {
@@ -57,8 +56,8 @@ public class TestWidgetUtils {
   public static void verifyInternalOpenCommMsg(Message message, String modelNameValue, String viewNameValue) {
     verifyTypeMsg(message,COMM_OPEN);
     Map data = getData(message);
-    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(InternalWidgetUtils.MODEL_MODULE_VALUE);
-    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(InternalWidgetUtils.VIEW_MODULE_VALUE);
+    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(BeakerxWidget.MODEL_MODULE_VALUE);
+    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(BeakerxWidget.VIEW_MODULE_VALUE);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
@@ -70,8 +69,8 @@ public class TestWidgetUtils {
     verifyTypeMsg(widget,COMM_OPEN);
     Map data = getData(widget);
     assertThat(data.get(Layout.LAYOUT)).isEqualTo(Layout.IPY_MODEL + layout.getContent().get(Comm.COMM_ID));
-    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(InternalWidgetUtils.MODEL_MODULE_VALUE);
-    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(InternalWidgetUtils.VIEW_MODULE_VALUE);
+    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(BeakerxWidget.MODEL_MODULE_VALUE);
+    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(BeakerxWidget.VIEW_MODULE_VALUE);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }

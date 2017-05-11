@@ -20,7 +20,6 @@ import com.twosigma.beaker.ResourceLoaderTest;
 import com.twosigma.beaker.chart.xychart.SimpleTimePlot;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.table.TableDisplay;
-import com.twosigma.beaker.widgets.DisplayOutputContainer;
 import com.twosigma.beaker.widgets.selectioncontainer.Tab;
 import org.junit.After;
 import org.junit.Before;

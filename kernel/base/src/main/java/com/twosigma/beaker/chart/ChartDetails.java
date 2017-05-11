@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,16 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.internal;
 
-public interface InternalCommWidget extends CommWidget{
+package com.twosigma.beaker.chart;
 
-  String MODEL = "model";
+import com.twosigma.beaker.chart.actions.GraphicsActionObject;
+import com.twosigma.beaker.widgets.BeakerxWidget;
 
-  default void beforeDisplay() {
-    if (this.getComm() != null) {
-      this.getComm().sendUpdate(MODEL, SerializeToJson.toJson(this));
-    }
+public abstract class ChartDetails extends BeakerxWidget {
+
+  protected GraphicsActionObject details;
+
+  public GraphicsActionObject getDetails() {
+    return details;
   }
-  
+
+  public void setDetails(GraphicsActionObject details) {
+    this.details = details;
+  }
 }

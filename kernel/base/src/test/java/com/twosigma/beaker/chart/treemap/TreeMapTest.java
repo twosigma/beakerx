@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,12 +16,26 @@
 
 package com.twosigma.beaker.chart.treemap;
 
+import com.twosigma.beaker.KernelTest;
+import com.twosigma.beaker.jupyter.KernelManager;
 import net.sf.jtreemap.swing.TreeMapNode;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TreeMapTest {
+
+  @Before
+  public void setUp() throws Exception {
+    KernelManager.register(new KernelTest());
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    KernelManager.register(null);
+  }
 
   @Test
   public void

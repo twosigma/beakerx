@@ -307,12 +307,14 @@ define([
           value = moment(value.timestamp).format('YYYYMMDD HH:mm:ss.SSS ZZ');
         }
         if (type === 'display' && value !== null && value !== undefined) {
-          return self.escapeHTML(value);
+          var escapedText = self.escapeHTML(value);
+          var limitedText = self.truncateString(escapedText);
+          value = limitedText;
         }
         return value;
       },
-        // integer
-        1: function(value, type, full, meta) {
+      // integer
+      1: function(value, type, full, meta) {
         if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
           return parseInt(value);
         }
@@ -321,8 +323,8 @@ define([
         }
         return value;
       },
-        // formatted integer
-        2: function(value, type, full, meta) {
+      // formatted integer
+      2: function(value, type, full, meta) {
         if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
           var x = parseInt(value);
           if (!isNaN(x)) {
@@ -335,8 +337,8 @@ define([
         }
         return value;
       },
-        // double
-        3: function(value, type, full, meta) {
+      // double
+      3: function(value, type, full, meta) {
         if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
           var doubleValue = parseFloat(value);
           var colFormat = self.stringFormatForColumn[$(meta.settings.aoColumns[meta.col].sTitle).text()];
@@ -358,8 +360,8 @@ define([
         }
         return value;
       },
-        // exponential 5
-        6: function(value, type, full, meta) {
+      // exponential 5
+      6: function(value, type, full, meta) {
         if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
           return parseFloat(value).toExponential(5);
         }
@@ -368,8 +370,8 @@ define([
         }
         return value;
       },
-        // exponential 15
-        7: function(value, type, full, meta) {
+      // exponential 15
+      7: function(value, type, full, meta) {
         if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
           return parseFloat(value).toExponential(15);
         }
@@ -378,8 +380,8 @@ define([
         }
         return value;
       },
-        // datetime
-        8: function(value, type, full, meta) {
+      // datetime
+      8: function(value, type, full, meta) {
         var time;
         var tz;
         if (self.timeStrings) {
@@ -396,15 +398,15 @@ define([
         }
         return value;
       },
-        // boolean
-        9: function(value, type, full, meta) {
+      // boolean
+      9: function(value, type, full, meta) {
         if (value !== undefined && value !== null && (value.toLowerCase() === 'true' || value === 1)) {
           return 'true';
         }
         return 'false';
       },
-        // html
-        10: function(value, type, full, meta) {
+      // html
+      10: function(value, type, full, meta) {
         return value;
       }
     };
@@ -738,7 +740,7 @@ define([
             if (self.stringFormatForType.double || stringFormatForColumn) {
               self.actualtype.push(3);
             } else {
-              self.actualtype.push('4.4');
+              self.actualtype.push('4.3');
             }
             self.actualalign.push('R');
           } else {
@@ -2663,6 +2665,15 @@ define([
   TableScope.prototype.escapeHTML = function(text) {
     if ($.type(text) === 'string') {
       return text.replace(/[\'&'\/<>]/g, function(a) { return chr[a]; });
+    }
+    return text;
+  };
+
+  TableScope.prototype.truncateString = function(text, limit) {
+    limit = limit !== undefined ? limit : 1000;
+    if (text && text.length > limit) {
+      text = text.substring(0, limit);
+      text += '...';
     }
     return text;
   };

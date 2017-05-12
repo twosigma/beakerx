@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,11 +16,14 @@
 
 package com.twosigma.beaker.chart.treemap.util;
 
+import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.treemap.TreeMap;
+import com.twosigma.beaker.jupyter.KernelManager;
 import net.sf.jtreemap.swing.DefaultValue;
 import net.sf.jtreemap.swing.TreeMapNode;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,9 +34,15 @@ public class GradientColorProviderTest {
 
   @Before
   public void initStubData() {
+    KernelManager.register(new KernelTest());
     treeMap = new TreeMap();
     treeMap.setRoot(new TreeMapNode("020", 2, new DefaultValue(2)));
     node01 = new TreeMapNode("010", 1, new DefaultValue(1));
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    KernelManager.register(null);
   }
 
   @Test

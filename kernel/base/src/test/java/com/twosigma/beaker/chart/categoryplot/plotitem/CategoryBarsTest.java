@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.chart.categoryplot.plotitem;
 
+import com.twosigma.beaker.chart.Color;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,17 +27,17 @@ import java.util.List;
 public class CategoryBarsTest {
 
   Integer[] array1, array2;
+  CategoryBars categoryBars;
 
   @Before
   public void initStubData() {
+    categoryBars = new CategoryBars();
     array1 = new Integer[] {new Integer(1), new Integer(2)};
     array2 = new Integer[] {new Integer(3), new Integer(4)};
   }
 
   @Test
   public void createCategoryBarsByEmptyConstructor_hasBaseBaseEqualsZero() {
-    //when
-    CategoryBars categoryBars = new CategoryBars();
     //then
     Assertions.assertThat(categoryBars.getBase()).isEqualTo(0.0);
   }
@@ -44,7 +45,6 @@ public class CategoryBarsTest {
   @Test
   public void setValueWithIntegerArrayParam_hasValueIsNotEmpty() {
     //when
-    CategoryBars categoryBars = new CategoryBars();
     categoryBars.setValue(array1);
     //then
     Assertions.assertThat(categoryBars.getValue()).isNotEmpty();
@@ -53,7 +53,6 @@ public class CategoryBarsTest {
   @Test
   public void setValueWithIntegerArrayOfListsParam_hasValueIsNotEmpty() {
     //when
-    CategoryBars categoryBars = new CategoryBars();
     categoryBars.setValue(new List[] {Arrays.asList(array1), Arrays.asList(array2)});
     //then
     Assertions.assertThat(categoryBars.getValue()).isNotEmpty();
@@ -62,7 +61,6 @@ public class CategoryBarsTest {
   @Test
   public void setBaseWithIntegerListParam_hasBasesIsNotEmpty() {
     //when
-    CategoryBars categoryBars = new CategoryBars();
     categoryBars.setBase(Arrays.asList(array1));
     //then
     Assertions.assertThat(categoryBars.getBases()).isNotEmpty();
@@ -71,9 +69,57 @@ public class CategoryBarsTest {
   @Test
   public void setWidthIntegerListParam_hasWidthsIsNotEmpty() {
     //when
-    CategoryBars categoryBars = new CategoryBars();
     categoryBars.setWidth(Arrays.asList(array2));
     //then
     Assertions.assertThat(categoryBars.getWidths()).isNotEmpty();
   }
+
+  @Test
+  public void setOutlineColorByAwtColor_hasOutlineColorIsBeakerColor() {
+    //when
+    categoryBars.setOutlineColor(java.awt.Color.BLUE);
+    //then
+    Assertions.assertThat(categoryBars.getOutlineColor()).isEqualTo(Color.BLUE);
+  }
+
+  @Test
+  public void setCenterSeriesByTrue_centerSeriesIsTrue() {
+    //when
+    categoryBars.setCenterSeries(true);
+    //then
+    Assertions.assertThat(categoryBars.getCenterSeries()).isTrue();
+  }
+
+  @Test
+  public void setUseToolTip_useToolTipIsTrue() {
+    //when
+    categoryBars.setUseToolTip(true);
+    //then
+    Assertions.assertThat(categoryBars.getUseToolTip()).isTrue();
+  }
+
+  @Test
+  public void setColori_hasColor() {
+    //when
+    categoryBars.setColori(Color.BLUE);
+    //then
+    Assertions.assertThat(categoryBars.getColor()).isEqualTo(Color.BLUE);
+  }
+
+  @Test
+  public void setColorWithAwtColor_hasBeakerColor() {
+    //when
+    categoryBars.setColor(java.awt.Color.BLUE);
+    //then
+    Assertions.assertThat(categoryBars.getColor()).isEqualTo(Color.BLUE);
+  }
+
+  @Test
+  public void setColorWithColorList_hasBeakerColors() {
+    //when
+    categoryBars.setColor(Arrays.asList(Color.BLACK, Color.BLUE));
+    //then
+    Assertions.assertThat(categoryBars.getColors()).isNotEmpty();
+  }
+
 }

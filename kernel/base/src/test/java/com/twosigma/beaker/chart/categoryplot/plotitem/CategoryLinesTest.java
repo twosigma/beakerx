@@ -18,16 +18,22 @@ package com.twosigma.beaker.chart.categoryplot.plotitem;
 
 import com.twosigma.beaker.chart.xychart.plotitem.StrokeType;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
 
 public class CategoryLinesTest {
 
+  CategoryLines categoryLines;
+
+  @Before
+  public void setUp() throws Exception {
+    categoryLines = new CategoryLines();
+  }
+
   @Test
   public void createCategoryLinesByEmptyConstructor_hasWidthIsNotNull() {
-    //when
-    CategoryLines categoryLines = new CategoryLines();
     //then
     Assertions.assertThat(categoryLines.getWidth()).isNotNull();
   }
@@ -35,7 +41,6 @@ public class CategoryLinesTest {
   @Test
   public void setStyleWithStrokeTypeList_hasStylesListIsNotEmpty() {
     //when
-    CategoryLines categoryLines = new CategoryLines();
     categoryLines.setStyle(Arrays.asList(StrokeType.values()));
     //then
     Assertions.assertThat(categoryLines.getStyles()).isNotEmpty();
@@ -44,7 +49,6 @@ public class CategoryLinesTest {
   @Test
   public void setValueWithIntegerArrayParam_hasValueIsNotEmpty() {
     //when
-    CategoryLines categoryLines = new CategoryLines();
     categoryLines.setValue(new Integer[] {new Integer(1), new Integer(2)});
     //then
     Assertions.assertThat(categoryLines.getValue()).isNotEmpty();

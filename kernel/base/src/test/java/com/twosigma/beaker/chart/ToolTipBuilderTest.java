@@ -142,4 +142,21 @@ public class ToolTipBuilderTest {
     Assertions.assertThat(xyGraphics.getToolTips().get(0)).isEqualTo(xyGraphics.getDisplayName());
   }
 
+  @Test
+  public void callDefaultMethods_returnNull() {
+    //when
+    ToolTipBuilder toolTipBuilder = new ToolTipBuilder() {
+      @Override
+      public int getMaximumNumberOfParameters() {
+        return 0;
+      }
+    };
+    //then
+    Assertions.assertThat(toolTipBuilder.call("x")).isNull();
+    Assertions.assertThat(toolTipBuilder.call("x", "y")).isNull();
+    Assertions.assertThat(toolTipBuilder.call("x", "y", "b")).isNull();
+    Assertions.assertThat(toolTipBuilder.call("x", "y", "b", "i")).isNull();
+    Assertions.assertThat(toolTipBuilder.call("x", "y", "b", "i", "n")).isNull();
+  }
+
 }

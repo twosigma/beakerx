@@ -17,31 +17,32 @@
 package com.twosigma.beaker.chart.treemap;
 
 import com.twosigma.beaker.KernelTest;
+import com.twosigma.beaker.chart.treemap.util.IToolTipBuilder;
 import com.twosigma.beaker.jupyter.KernelManager;
 import net.sf.jtreemap.swing.TreeMapNode;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TreeMapTest {
 
-  @Before
-  public void setUp() throws Exception {
+  TreeMap treeMap;
+
+  @BeforeClass
+  public static void setUpClass() throws Exception {
     KernelManager.register(new KernelTest());
   }
 
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
+  @Before
+  public void setUp() throws Exception {
+    treeMap = new TreeMap();
   }
 
   @Test
   public void
   createTreeMapByDefaultConstructor_hasColorProviderNotNullShowLegendIsFalseRootIsNull() {
-    //when
-    TreeMap treeMap = new TreeMap();
     //then
     assertThat(treeMap.getColorProvider()).isNotNull();
     assertThat(treeMap.getShowLegend()).isFalse();
@@ -61,12 +62,24 @@ public class TreeMapTest {
 
   @Test
   public void createTreeMapByDefaultConstructor_hasModeAndStickyAndRoundAndRatioAreNulls() {
-    //when
-    TreeMap treeMap = new TreeMap();
     //then
     assertThat(treeMap.getMode()).isNull();
     assertThat(treeMap.getRatio()).isNull();
     assertThat(treeMap.getSticky()).isNull();
     assertThat(treeMap.getRound()).isNull();
   }
+
+  @Test
+  public void setToolTipBuilder_hasToolTipBuilder() {
+    //when
+    treeMap.setToolTipBuilder(new IToolTipBuilder() {
+      @Override
+      public String getToolTip(TreeMapNode node) {
+        return "tooltip";
+      }
+    });
+    //then
+    assertThat(treeMap.getToolTipBuilder()).isNotNull();
+  }
+
 }

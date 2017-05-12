@@ -19,6 +19,7 @@ package com.twosigma.beaker.chart;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GradientColorTest {
@@ -41,4 +42,14 @@ public class GradientColorTest {
     Assertions.assertThat(gradientColor.getColors()[0] instanceof Color).isTrue();
     Assertions.assertThat(gradientColor.getColors()[1] instanceof Color).isTrue();
   }
+
+  @Test
+  public void createGradientColorWithEmptyList_hasArrayBeakerColorsIsNotEmpty() {
+    //when
+    GradientColor gradientColor = new GradientColor(new ArrayList());
+    //then
+    Assertions.assertThat(gradientColor.getColors()[0] instanceof Color).isTrue();
+    Assertions.assertThat(gradientColor.getColors()[1] instanceof Color).isTrue();
+  }
+
 }

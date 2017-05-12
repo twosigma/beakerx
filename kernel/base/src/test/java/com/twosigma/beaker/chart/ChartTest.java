@@ -16,6 +16,8 @@
 
 package com.twosigma.beaker.chart;
 
+import com.twosigma.beaker.chart.actions.CategoryGraphicsActionObject;
+import com.twosigma.beaker.widgets.chart.BeakerxPlot;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,6 +112,23 @@ public class ChartTest {
     chart.setTitle("test");
     //then
     Assertions.assertThat(chart.getTitle()).isEqualTo("test");
+  }
+
+  @Test
+  public void setDetails_hasDetails() {
+    CategoryGraphicsActionObject aObject = new CategoryGraphicsActionObject();
+    //when
+    chart.setDetails(aObject);
+    //then
+    Assertions.assertThat(chart.getDetails()).isEqualTo(aObject);
+  }
+
+  @Test
+  public void defaultChart_hasModelAndViewNameValues() {
+    //when
+    //then
+    Assertions.assertThat(chart.getModelNameValue()).isEqualTo(BeakerxPlot.MODEL_NAME_VALUE);
+    Assertions.assertThat(chart.getViewNameValue()).isEqualTo(BeakerxPlot.VIEW_NAME_VALUE);
   }
 
 }

@@ -16,18 +16,25 @@
 
 package com.twosigma.beaker.chart.categoryplot.plotitem;
 
+import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.plotitem.ShapeType;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
 
 public class CategoryPointsTest {
 
+  CategoryPoints categoryPoints;
+
+  @Before
+  public void setUp() throws Exception {
+    categoryPoints = new CategoryPoints();
+  }
+
   @Test
   public void createCategoryPointsByEmptyConstructor_hasSizeGreaterThanZero() {
-    //when
-    CategoryPoints categoryPoints = new CategoryPoints();
     //then
     Assertions.assertThat(categoryPoints.getSize()).isGreaterThan(0);
   }
@@ -35,7 +42,6 @@ public class CategoryPointsTest {
   @Test
   public void setSizeWithIntegerList_hasSizesLstIsNotEmpty() {
     //when
-    CategoryPoints categoryPoints = new CategoryPoints();
     categoryPoints.setSize(Arrays.asList(new Integer(1), new Integer(2)));
     //then
     Assertions.assertThat(categoryPoints.getSizes()).isNotEmpty();
@@ -44,7 +50,6 @@ public class CategoryPointsTest {
   @Test
   public void setShapeWithShapeTypeList_hasShapesListIsNotEmpty() {
     //when
-    CategoryPoints categoryPoints = new CategoryPoints();
     categoryPoints.setShape(Arrays.asList(ShapeType.values()));
     //then
     Assertions.assertThat(categoryPoints.getShapes()).isNotEmpty();
@@ -53,9 +58,17 @@ public class CategoryPointsTest {
   @Test
   public void setValueWithIntegerArrayParam_hasValueIsNotEmpty() {
     //when
-    CategoryPoints categoryPoints = new CategoryPoints();
     categoryPoints.setValue(new Integer[] {new Integer(1), new Integer(2)});
     //then
     Assertions.assertThat(categoryPoints.getValue()).isNotEmpty();
   }
+
+  @Test
+  public void setOutlineColorByAwtColor_hasOutlineColorIsBeakerColor() {
+    //when
+    categoryPoints.setOutlineColor(java.awt.Color.BLUE);
+    //then
+    Assertions.assertThat(categoryPoints.getOutlineColor()).isEqualTo(Color.BLUE);
+  }
+
 }

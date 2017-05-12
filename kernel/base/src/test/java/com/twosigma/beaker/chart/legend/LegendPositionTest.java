@@ -17,14 +17,20 @@
 package com.twosigma.beaker.chart.legend;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 public class LegendPositionTest {
 
+  LegendPosition legendPosition;
+
+  @Before
+  public void setUp() throws Exception {
+    legendPosition = new LegendPosition();
+  }
+
   @Test
   public void createLegendPositionByEmptyConstructor_hasPositionIsNotNull() {
-    //when
-    LegendPosition legendPosition = new LegendPosition();
     //then
     Assertions.assertThat(legendPosition.getPosition()).isNotNull();
   }
@@ -32,26 +38,43 @@ public class LegendPositionTest {
   @Test
   public void createLegendPositionWithLeftPositionParam_hasLeftPosition() {
     //when
-    LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.LEFT);
+    LegendPosition legendPos = new LegendPosition(LegendPosition.Position.LEFT);
     //then
-    Assertions.assertThat(legendPosition.getPosition()).isEqualTo(LegendPosition.Position.LEFT);
+    Assertions.assertThat(legendPos.getPosition()).isEqualTo(LegendPosition.Position.LEFT);
   }
 
   @Test
   public void createLegendPositionWithOneLengthIntArrayParam_hasXNotZeroYIsZero() {
     //when
-    LegendPosition legendPosition = new LegendPosition(new int[] {1});
+    LegendPosition legendPos = new LegendPosition(new int[] {1});
     //then
-    Assertions.assertThat(legendPosition.getX()).isNotZero();
-    Assertions.assertThat(legendPosition.getY()).isZero();
+    Assertions.assertThat(legendPos.getX()).isNotZero();
+    Assertions.assertThat(legendPos.getY()).isZero();
   }
 
   @Test
   public void createLegendPositionWithTwoLengthIntArrayParam_hasXAndYNotEqualZero() {
     //when
-    LegendPosition legendPosition = new LegendPosition(new int[] {1, 2});
+    LegendPosition legendPos = new LegendPosition(new int[] {1, 2});
     //then
-    Assertions.assertThat(legendPosition.getX()).isNotZero();
-    Assertions.assertThat(legendPosition.getY()).isNotZero();
+    Assertions.assertThat(legendPos.getX()).isNotZero();
+    Assertions.assertThat(legendPos.getY()).isNotZero();
   }
+
+  @Test
+  public void setX_hasX() {
+    //when
+    legendPosition.setX(1);
+    //then
+    Assertions.assertThat(legendPosition.getX()).isEqualTo(1);
+  }
+
+  @Test
+  public void setY_hasY() {
+    //when
+    legendPosition.setY(2);
+    //then
+    Assertions.assertThat(legendPosition.getY()).isEqualTo(2);
+  }
+
 }

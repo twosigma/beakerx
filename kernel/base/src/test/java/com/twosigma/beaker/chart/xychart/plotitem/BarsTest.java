@@ -18,16 +18,22 @@ package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
 
 public class BarsTest {
 
+  private Bars bars;
+
+  @Before
+  public void setUp() throws Exception {
+    bars = new Bars();
+  }
+
   @Test
   public void createBarsByEmptyConstructor_hasWidthAndColorValuesAreNulls() {
-    //when
-    Bars bars = new Bars();
     //then
     Assertions.assertThat(bars.getWidth()).isNull();
     Assertions.assertThat(bars.getWidths()).isNull();
@@ -38,7 +44,6 @@ public class BarsTest {
   @Test
   public void setWidthWithIntegerList_hasWidthListIsNotNull() {
     //when
-    Bars bars = new Bars();
     bars.setWidth(Arrays.asList(new Integer(486), new Integer(528)));
     //then
     Assertions.assertThat(bars.getWidths()).isNotNull();
@@ -47,7 +52,6 @@ public class BarsTest {
   @Test
   public void setOutlineColorWithList_hasOutlineColorListIsNotNull() {
     //when
-    Bars bars = new Bars();
     bars.setOutlineColor(Arrays.asList(Color.BLUE, Color.GREEN));
     //then
     Assertions.assertThat(bars.getOutlineColors()).isNotNull();
@@ -56,9 +60,20 @@ public class BarsTest {
   @Test
   public void setYAxis_hasYAxis() {
     //when
-    Bars bars = new Bars();
     bars.setYAxis("yAxis name");
     //then
     Assertions.assertThat(bars.getYAxis()).isEqualTo("yAxis name");
   }
+
+  @Test
+  public void clone_shouldCloneGraphics() throws CloneNotSupportedException {
+    //when
+    bars.setDisplayName("before");
+    Bars cloneBars = (Bars) bars.clone();
+    bars.setYAxis("after");
+    //then
+    Assertions.assertThat(cloneBars.getDisplayName()).isEqualTo("before");
+    Assertions.assertThat(cloneBars.getYAxis()).isNotEqualTo("after");
+  }
+
 }

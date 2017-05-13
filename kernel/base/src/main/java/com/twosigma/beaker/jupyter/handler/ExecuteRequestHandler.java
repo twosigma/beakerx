@@ -65,6 +65,8 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     announceThatWeHaveTheCode(message, code);
     if (isaMagicCommand(code)) {
       executeMagicCommand(message, code);
+      kernel.sendIdleMessage(message);
+      syncObject.release();
     } else {
       kernel.executeCode(code, message, executionCount, (seo) -> {
         kernel.sendIdleMessage(seo.getJupyterMessage());

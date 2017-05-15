@@ -28,7 +28,6 @@ import com.google.inject.AbstractModule;
 //import com.google.inject.Provides;
 //import com.google.inject.Singleton;
 //import com.twosigma.beaker.BeakerCodeCell;
-//import com.twosigma.beaker.BeakerProgressUpdate;
 //import com.twosigma.beaker.chart.Color;
 //import com.twosigma.beaker.chart.GradientColor;
 //import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
@@ -83,7 +82,6 @@ public class SerializerModule extends AbstractModule {
 //    bind(EvaluationResult.Serializer.class);
 //    bind(UpdatableEvaluationResult.Serializer.class);
 //    bind(OutputContainerSerializer.class);
-//    bind(BeakerProgressUpdate.Serializer.class);
 //    bind(EasyFormObjectManager.class);
 //    bind(EasyFormSerializer.class);
   }
@@ -95,7 +93,6 @@ public class SerializerModule extends AbstractModule {
 //    try {
 //      serializer.addTypeDeserializer(new TableDisplayDeSerializer(serializer));
 //      serializer.addTypeDeserializer(new BeakerCodeCell.DeSerializer(serializer));
-//      serializer.addTypeDeserializer(new BeakerProgressUpdate.DeSerializer(serializer));
 //      //serializer.addTypeDeserializer(new SimpleEvaluationObject.DeSerializer(serializer));
 //      serializer.addTypeDeserializer(new UpdatableEvaluationResult.DeSerializer(serializer));
 //      serializer.addTypeDeserializer(new BufferedImageDeserializer(serializer));
@@ -135,7 +132,6 @@ public class SerializerModule extends AbstractModule {
 //     // module.addSerializer(SimpleEvaluationObject.class, injector.getInstance(SimpleEvaluationObject.Serializer.class));
 //      module.addSerializer(EvaluationResult.class, injector.getInstance(EvaluationResult.Serializer.class));
 //      module.addSerializer(UpdatableEvaluationResult.class, injector.getInstance(UpdatableEvaluationResult.Serializer.class));
-//      module.addSerializer(BeakerProgressUpdate.class, injector.getInstance(BeakerProgressUpdate.Serializer.class));
 //      module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
 //
 //      module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplaySerializer.class));

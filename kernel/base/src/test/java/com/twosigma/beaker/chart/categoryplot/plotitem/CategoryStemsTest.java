@@ -18,16 +18,22 @@ package com.twosigma.beaker.chart.categoryplot.plotitem;
 
 import com.twosigma.beaker.chart.xychart.plotitem.StrokeType;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
 
 public class CategoryStemsTest {
 
+  CategoryStems categoryStems;
+
+  @Before
+  public void setUp() throws Exception {
+    categoryStems = new CategoryStems();
+  }
+
   @Test
   public void createCategoryStemsByEmptyConstructor_hasWidthGreaterThanZero() {
-    //when
-    CategoryStems categoryStems = new CategoryStems();
     //then
     Assertions.assertThat(categoryStems.getWidth()).isGreaterThan(0);
   }
@@ -35,7 +41,6 @@ public class CategoryStemsTest {
   @Test
   public void setBaseIntegerListParam_hasBasesListIsNotEmpty() {
     //when
-    CategoryStems categoryStems = new CategoryStems();
     categoryStems.setBase(Arrays.asList(new Integer(1), new Integer(2)));
     //then
     Assertions.assertThat(categoryStems.getBases()).isNotEmpty();
@@ -44,7 +49,6 @@ public class CategoryStemsTest {
   @Test
   public void setStyleWithStrokeTypeListParam_hasStylesListIsNotEmpty() {
     //when
-    CategoryStems categoryStems = new CategoryStems();
     categoryStems.setStyle(Arrays.asList(StrokeType.values()));
     //then
     Assertions.assertThat(categoryStems.getStyles()).isNotEmpty();
@@ -53,9 +57,21 @@ public class CategoryStemsTest {
   @Test
   public void setValueWithIntegerArrayParam_hasValueIsNotEmpty() {
     //when
-    CategoryStems categoryStems = new CategoryStems();
     categoryStems.setValue(new Integer[] {new Integer(1), new Integer(2)});
     //then
     Assertions.assertThat(categoryStems.getValue()).isNotEmpty();
   }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setBaseWithStringParam_throwIllegalArgumentException() {
+    //when
+    categoryStems.setBase("123");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setStyleWithStringParam_throwIllegalArgumentException() {
+    //when
+    categoryStems.setStyle("DOT");
+  }
+
 }

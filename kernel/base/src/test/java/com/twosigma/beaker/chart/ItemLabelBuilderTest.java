@@ -173,4 +173,22 @@ public class ItemLabelBuilderTest {
     Assertions.assertThat(categoryGraphics.getItemLabels()[0][0]).isEqualTo("column=0");
   }
 
+  @Test
+  public void callDefaultMethods_returnNull() {
+    //when
+    ItemLabelBuilder itemLabelBuilder = new ItemLabelBuilder() {
+      @Override
+      public int getMaximumNumberOfParameters() {
+        return 0;
+      }
+    };
+    //then
+    Assertions.assertThat(itemLabelBuilder.call("v")).isNull();
+    Assertions.assertThat(itemLabelBuilder.call("v", "b")).isNull();
+    Assertions.assertThat(itemLabelBuilder.call("v", "b", "s")).isNull();
+    Assertions.assertThat(itemLabelBuilder.call("v", "b", "s", "c")).isNull();
+    Assertions.assertThat(itemLabelBuilder.call("v", "b", "s", "c", "r")).isNull();
+    Assertions.assertThat(itemLabelBuilder.call("v", "b", "s", "c", "r", "l")).isNull();
+  }
+
 }

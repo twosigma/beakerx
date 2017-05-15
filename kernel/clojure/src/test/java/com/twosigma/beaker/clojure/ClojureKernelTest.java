@@ -17,6 +17,8 @@ package com.twosigma.beaker.clojure;
 
 import com.twosigma.beaker.KernelSocketsServiceTest;
 import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.jupyter.Configuration;
+import com.twosigma.jupyter.HandlersBuilder;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
@@ -45,7 +47,8 @@ public class ClojureKernelTest {
     ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId);
     evaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new ClojureKernel(sessionId, evaluator, kernelSocketsService);
+    Configuration configuration = new Configuration(evaluator, kernelSocketsService, new HandlersBuilder());
+    kernel = new ClojureKernel(sessionId, configuration);
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }

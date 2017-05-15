@@ -31,7 +31,7 @@ import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 
-public abstract class BaseHandler<T> extends KernelHandler<Message> {
+public abstract class BaseHandler<T> extends KernelHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(BaseHandler.class);
 

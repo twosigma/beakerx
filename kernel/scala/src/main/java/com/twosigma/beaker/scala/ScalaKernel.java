@@ -15,49 +15,39 @@
  */
 package com.twosigma.beaker.scala;
 
-import static com.twosigma.beaker.jupyter.Utils.uuid;
-
-import java.io.IOException;
-
-import com.twosigma.beaker.evaluator.Evaluator;
-import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.scala.comm.ScalaCommOpenHandler;
 import com.twosigma.beaker.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beaker.scala.handler.ScalaKernelInfoHandler;
-import com.twosigma.jupyter.ConfigurationFile;
+import com.twosigma.jupyter.Configuration;
+import com.twosigma.jupyter.HandlersBuilder;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.KernelRunner;
-import com.twosigma.jupyter.KernelSocketsFactory;
 import com.twosigma.jupyter.KernelSocketsFactoryImpl;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Message;
 
+import java.io.IOException;
+
+import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 public class ScalaKernel extends Kernel {
 
-  public ScalaKernel(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
-    super(id, evaluator, kernelSocketsFactory);
-  }
-
-  @Override
-  public CommOpenHandler getCommOpenHandler(Kernel kernel) {
-    return new ScalaCommOpenHandler(kernel);
-  }
-
-  @Override
-  public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
-    return new ScalaKernelInfoHandler(kernel);
+  public ScalaKernel(final String id, final Configuration configuration) {
+    super(id, configuration);
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
-      ScalaEvaluator se = new ScalaEvaluator(null);//TODO check what to put, need for autotranslation
-      se.initialize(id, id);
+      ScalaEvaluator scalaEvaluator = new ScalaEvaluator(null);//TODO check what to put, need for autotranslation
+      scalaEvaluator.initialize(id, id);
       //js.setupAutoTranslation(); -- uncomment
-      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-      return new ScalaKernel(id, se, kernelSocketsFactory);
+      return new ScalaKernel(id, new Configuration(
+              scalaEvaluator,
+              new KernelSocketsFactoryImpl(new KernelConfigurationFile(args)),
+              new HandlersBuilder()
+                      .withCommOpenHandler(ScalaCommOpenHandler::new)
+                      .withKernelInfoHandler(ScalaKernelInfoHandler::new)));
     });
   }
+
 }

@@ -49,7 +49,7 @@ public interface KernelFunctionality {
 
   void cancelExecution();
 
-  Handler<Message> getHandler(JupyterMessages type);
+  Handler getHandler(JupyterMessages type);
 
   void run();
 

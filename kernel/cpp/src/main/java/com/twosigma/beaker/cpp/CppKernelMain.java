@@ -18,15 +18,12 @@ package com.twosigma.beaker.cpp;
 import com.twosigma.beaker.cpp.handlers.CppCommOpenHandler;
 import com.twosigma.beaker.cpp.handlers.CppKernelInfoHandler;
 import com.twosigma.beaker.cpp.utils.CppKernel;
-import com.twosigma.beaker.evaluator.Evaluator;
-import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
+import com.twosigma.jupyter.Configuration;
+import com.twosigma.jupyter.HandlersBuilder;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.KernelRunner;
-import com.twosigma.jupyter.KernelSocketsFactory;
 import com.twosigma.jupyter.KernelSocketsFactoryImpl;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Message;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,18 +35,8 @@ import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 public class CppKernelMain extends Kernel {
 
-  public CppKernelMain(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
-    super(id, evaluator, kernelSocketsFactory);
-  }
-
-  @Override
-  public CommOpenHandler getCommOpenHandler(Kernel kernel) {
-    return new CppCommOpenHandler(kernel);
-  }
-
-  @Override
-  public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
-    return new CppKernelInfoHandler(kernel);
+  public CppKernelMain(final String id, final Configuration configuration) {
+    super(id, configuration);
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {
@@ -58,8 +45,12 @@ public class CppKernelMain extends Kernel {
     } else {
       KernelRunner.run(() -> {
         String id = uuid();
-        KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-        return new CppKernelMain(id, new CppEvaluator(id, id), kernelSocketsFactory);
+        return new CppKernelMain(id, new Configuration(
+                new CppEvaluator(id, id),
+                new KernelSocketsFactoryImpl(new KernelConfigurationFile(args)),
+                new HandlersBuilder()
+                        .withCommOpenHandler(CppCommOpenHandler::new)
+                        .withKernelInfoHandler(CppKernelInfoHandler::new)));
       });
     }
   }

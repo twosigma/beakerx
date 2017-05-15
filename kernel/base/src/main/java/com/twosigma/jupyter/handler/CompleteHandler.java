@@ -27,7 +27,7 @@ import java.util.Map;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMPLETE_REPLY;
 import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
-public class CompleteHandler extends KernelHandler<Message> {
+public class CompleteHandler extends KernelHandler {
 
   public static final String STATUS = "status";
   public static final String MATCHES = "matches";

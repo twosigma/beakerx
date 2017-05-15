@@ -19,7 +19,6 @@ package com.twosigma.beaker.jupyter.handler;
 import com.twosigma.beaker.jupyter.commands.MagicCommand;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 
@@ -36,7 +35,7 @@ import static com.twosigma.beaker.jupyter.msg.JupyterMessages.EXECUTE_INPUT;
  *
  * @author konst
  */
-public class ExecuteRequestHandler extends KernelHandler<Message> {
+public class ExecuteRequestHandler extends KernelHandler {
 
   private MagicCommand magicCommand;
   private int executionCount;

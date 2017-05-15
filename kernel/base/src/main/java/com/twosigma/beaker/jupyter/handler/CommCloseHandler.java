@@ -35,7 +35,7 @@ import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 /**
  * @author konst
  */
-public class CommCloseHandler extends KernelHandler<Message> {
+public class CommCloseHandler extends KernelHandler {
 
   private final static Logger logger = LoggerFactory.getLogger(CommCloseHandler.class);
 

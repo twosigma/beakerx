@@ -27,8 +27,7 @@ import java.util.HashMap;
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.IS_COMPLETE_REPLY;
 import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
-public class IsCompleteRequestHandler extends KernelHandler<Message> {
-
+public class IsCompleteRequestHandler extends KernelHandler {
 
   private final static Logger logger = LoggerFactory.getLogger(IsCompleteRequestHandler.class);
 

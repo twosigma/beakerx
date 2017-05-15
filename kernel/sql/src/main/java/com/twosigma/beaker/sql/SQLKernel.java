@@ -15,17 +15,14 @@
  */
 package com.twosigma.beaker.sql;
 
-import com.twosigma.beaker.evaluator.Evaluator;
-import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.sql.handlers.SQLCommOpenHandler;
 import com.twosigma.beaker.sql.handlers.SQLKernelInfoHandler;
+import com.twosigma.jupyter.Configuration;
+import com.twosigma.jupyter.HandlersBuilder;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.KernelRunner;
-import com.twosigma.jupyter.KernelSocketsFactory;
 import com.twosigma.jupyter.KernelSocketsFactoryImpl;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Message;
 
 import java.io.IOException;
 
@@ -33,25 +30,20 @@ import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 public class SQLKernel extends Kernel {
 
-  public SQLKernel(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
-    super(sessionId, evaluator, kernelSocketsFactory);
-  }
-
-  @Override
-  public CommOpenHandler getCommOpenHandler(Kernel kernel) {
-    return new SQLCommOpenHandler(kernel);
-  }
-
-  @Override
-  public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
-    return new SQLKernelInfoHandler(kernel);
+  public SQLKernel(String sessionId, final Configuration configuration) {
+    super(sessionId, configuration);
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
-      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-      return new SQLKernel(id, new SQLEvaluator(id, id), kernelSocketsFactory);
+      return new SQLKernel(id, new Configuration(
+              new SQLEvaluator(id, id),
+              new KernelSocketsFactoryImpl(new KernelConfigurationFile(args)),
+              new HandlersBuilder()
+                      .withCommOpenHandler(SQLCommOpenHandler::new)
+                      .withKernelInfoHandler(SQLKernelInfoHandler::new)));
     });
   }
+
 }

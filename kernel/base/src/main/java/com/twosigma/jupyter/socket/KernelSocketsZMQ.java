@@ -173,7 +173,7 @@ public class KernelSocketsZMQ extends KernelSockets {
 
   private void handleShell() {
     Message message = readMessage(shellSocket);
-    Handler<Message> handler = kernel.getHandler(message.type());
+    Handler handler = kernel.getHandler(message.type());
     if (handler != null) {
       handler.handle(message);
     }

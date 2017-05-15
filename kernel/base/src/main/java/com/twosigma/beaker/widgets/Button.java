@@ -39,7 +39,7 @@ public class Button extends ValueWidget<Boolean> {
 
   public Button() {
     super();
-    getComm().addMsgCallbackList((Handler<Message>) this::handleOnClick);
+    getComm().addMsgCallbackList((Handler) this::handleOnClick);
     openComm();
   }
 

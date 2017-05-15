@@ -41,7 +41,7 @@ import com.twosigma.jupyter.KernelFunctionality;
 /**
  * @author konst
  */
-public abstract class CommOpenHandler extends KernelHandler<Message> {
+public abstract class CommOpenHandler extends KernelHandler {
 
   private final static Logger logger = LoggerFactory.getLogger(CommOpenHandler.class);
 
@@ -77,7 +77,7 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
 
     if (newComm != null) {
       logger.debug("Comm opened, target name = " + newComm.getTargetName());
-      for (Handler<Message> handler : getKernelControlChanelHandlers(newComm.getTargetName())) {
+      for (Handler handler : getKernelControlChanelHandlers(newComm.getTargetName())) {
         newComm.addMsgCallbackList(handler);
       }
       kernel.addComm(newComm.getCommId(), newComm);
@@ -89,7 +89,7 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
     send(reply);
   }
 
-  public abstract Handler<Message>[] getKernelControlChanelHandlers(String targetName);
+  public abstract Handler[] getKernelControlChanelHandlers(String targetName);
 
   public static String getString(Map<String, Serializable> map, String name) {
     return (String) map.get(name);

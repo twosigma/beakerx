@@ -28,7 +28,7 @@ import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ScalaKernelInfoHandler extends KernelHandler<Message> {
+public class ScalaKernelInfoHandler extends KernelHandler {
 
   private final static Logger logger = LoggerFactory.getLogger(ScalaKernelInfoHandler.class);
 

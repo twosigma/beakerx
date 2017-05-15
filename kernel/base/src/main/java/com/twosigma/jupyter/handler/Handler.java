@@ -15,8 +15,10 @@
  */
 package com.twosigma.jupyter.handler;
 
-public interface Handler<T>{
-  
-   void handle(T message) ;
-   
+import com.twosigma.jupyter.message.Message;
+
+public interface Handler {
+
+  void handle(Message message);
+
 }

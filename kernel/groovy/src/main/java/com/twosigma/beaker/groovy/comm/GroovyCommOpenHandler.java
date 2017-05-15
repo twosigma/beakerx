@@ -21,29 +21,28 @@ import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 
-public class GroovyCommOpenHandler extends CommOpenHandler{
+public class GroovyCommOpenHandler extends CommOpenHandler {
 
- private Handler<?>[] KERNEL_CONTROL_CHANNEL_HANDLERS = {
-     new KernelControlSetShellHandler(kernel),
-     new GroovyCommKernelControlSetShellHandler(kernel),
-     new KernelControlInterrupt(kernel),
-     new KernelControlCommandListHandler(kernel)};
+  private Handler[] KERNEL_CONTROL_CHANNEL_HANDLERS = {
+          new KernelControlSetShellHandler(kernel),
+          new GroovyCommKernelControlSetShellHandler(kernel),
+          new KernelControlInterrupt(kernel),
+          new KernelControlCommandListHandler(kernel)};
 
- private Handler<?>[] KERNEL_GET_CODECELLS_CHANNEL_HANDLER = {
-     new GetCodeCellsHandler(kernel)};
+  private Handler[] KERNEL_GET_CODECELLS_CHANNEL_HANDLER = {
+          new GetCodeCellsHandler(kernel)};
 
   public GroovyCommOpenHandler(KernelFunctionality kernel) {
     super(kernel);
   }
 
-  public Handler<Message>[] getKernelControlChanelHandlers(String targetName){
-    if(TargetNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName().equalsIgnoreCase(targetName)){
-      return (Handler<Message>[]) KERNEL_CONTROL_CHANNEL_HANDLERS;
-    }else if(TargetNamesEnum.BEAKER_GETCODECELLS.getTargetName().equalsIgnoreCase(targetName)){
-      return (Handler<Message>[]) KERNEL_GET_CODECELLS_CHANNEL_HANDLER;
-    }
-    else{
-      return (Handler<Message>[]) new Handler<?>[0];
+  public Handler[] getKernelControlChanelHandlers(String targetName) {
+    if (TargetNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName().equalsIgnoreCase(targetName)) {
+      return KERNEL_CONTROL_CHANNEL_HANDLERS;
+    } else if (TargetNamesEnum.BEAKER_GETCODECELLS.getTargetName().equalsIgnoreCase(targetName)) {
+      return KERNEL_GET_CODECELLS_CHANNEL_HANDLER;
+    } else {
+      return new Handler[0];
     }
   }
 

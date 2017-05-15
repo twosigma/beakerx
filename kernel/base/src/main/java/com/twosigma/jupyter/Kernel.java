@@ -16,17 +16,14 @@
 package com.twosigma.jupyter;
 
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
-import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.evaluator.EvaluatorManager;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.handler.Handler;
-import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,27 +42,23 @@ public abstract class Kernel implements KernelFunctionality {
 
   private String sessionId;
   private KernelSocketsFactory kernelSocketsFactory;
-  private KernelHandlers handlers;
+  private Handlers handlers;
   private Map<String, Comm> commMap;
   private ExecutionResultSender executionResultSender;
   private EvaluatorManager evaluatorManager;
   private KernelSockets kernelSockets;
   private MessageCreator messageCreator;
 
-  public Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory) {
+  public Kernel(final String sessionId, final Configuration configuration) {
     this.messageCreator = new MessageCreator(this);
     this.sessionId = sessionId;
-    this.kernelSocketsFactory = kernelSocketsFactory;
+    this.kernelSocketsFactory = configuration.getKernelSocketsFactory();
     this.commMap = new ConcurrentHashMap<>();
     this.executionResultSender = new ExecutionResultSender(this);
-    this.evaluatorManager = new EvaluatorManager(this, evaluator);
-    this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
+    this.evaluatorManager = new EvaluatorManager(this, configuration.getEvaluator());
+    this.handlers = configuration.getKernelHandlersBuilder().build(this);
     configureSignalHandler();
   }
-
-  public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
-
-  public abstract KernelHandler<Message> getKernelInfoHandler(Kernel kernel);
 
   @Override
   public void run() {
@@ -138,7 +131,7 @@ public abstract class Kernel implements KernelFunctionality {
     this.kernelSockets.send(message);
   }
 
-  public Handler<Message> getHandler(JupyterMessages type) {
+  public Handler getHandler(JupyterMessages type) {
     return handlers.get(type);
   }
 

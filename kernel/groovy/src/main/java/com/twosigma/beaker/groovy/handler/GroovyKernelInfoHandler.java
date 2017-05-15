@@ -32,7 +32,7 @@ import groovy.lang.GroovySystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GroovyKernelInfoHandler extends KernelHandler<Message> {
+public class GroovyKernelInfoHandler extends KernelHandler {
 
   private final static Logger logger = LoggerFactory.getLogger(GroovyKernelInfoHandler.class);
 

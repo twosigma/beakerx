@@ -29,7 +29,7 @@ import java.util.Map;
 import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
 import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
-public class CommMsgHandler extends KernelHandler<Message> {
+public class CommMsgHandler extends KernelHandler {
 
   private final static Logger logger = LoggerFactory.getLogger(CommMsgHandler.class);
 

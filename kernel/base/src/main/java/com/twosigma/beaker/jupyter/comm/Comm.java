@@ -56,8 +56,8 @@ public class Comm {
   private HashMap<?, ?> data;
   private String targetModule;
   private KernelFunctionality kernel;
-  private List<Handler<Message>> msgCallbackList = new ArrayList<>();
-  private List<Handler<Message>> closeCallbackList = new ArrayList<>();
+  private List<Handler> msgCallbackList = new ArrayList<>();
+  private List<Handler> closeCallbackList = new ArrayList<>();
 
   public Comm(String commId, String targetName) {
     super();
@@ -103,11 +103,11 @@ public class Comm {
     this.targetModule = targetModule;
   }
 
-  public List<Handler<Message>> getMsgCallbackList() {
+  public List<Handler> getMsgCallbackList() {
     return msgCallbackList;
   }
 
-  public void addMsgCallbackList(Handler<Message>... handlers) {
+  public void addMsgCallbackList(Handler... handlers) {
     this.msgCallbackList.addAll(Arrays.asList(handlers));
   }
 
@@ -115,11 +115,11 @@ public class Comm {
     this.msgCallbackList = new ArrayList<>();
   }
 
-  public List<Handler<Message>> getCloseCallbackList() {
+  public List<Handler> getCloseCallbackList() {
     return closeCallbackList;
   }
 
-  public void addCloseCallbackList(Handler<Message>... handlers) {
+  public void addCloseCallbackList(Handler... handlers) {
     this.closeCallbackList.addAll(Arrays.asList(handlers));
   }
 
@@ -148,7 +148,7 @@ public class Comm {
     Message parentMessage = getParentMessage();// can be null
 
     if (this.getCloseCallbackList() != null && !this.getCloseCallbackList().isEmpty()) {
-      for (Handler<Message> handler : getCloseCallbackList()) {
+      for (Handler handler : getCloseCallbackList()) {
         handler.handle(parentMessage);
       }
     }
@@ -195,7 +195,7 @@ public class Comm {
   
   public void handleMsg(Message parentMessage) {
     if (this.getMsgCallbackList() != null && !this.getMsgCallbackList().isEmpty()) {
-      for (Handler<Message> handler : getMsgCallbackList()) {
+      for (Handler handler : getMsgCallbackList()) {
         handler.handle(parentMessage);
       }
     }

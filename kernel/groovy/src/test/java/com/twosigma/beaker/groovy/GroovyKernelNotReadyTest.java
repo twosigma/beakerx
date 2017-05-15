@@ -17,27 +17,23 @@ package com.twosigma.beaker.groovy;
 
 import com.twosigma.beaker.KernelSocketsServiceTest;
 import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
-import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beaker.evaluator.EvaluatorManager.THE_KERNEL_IS_NOT_READY;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForErrorAndReturnIdleMessage;
+import static com.twosigma.beaker.jupyter.msg.MessageCreator.ERROR_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GroovyKernelTest {
+public class GroovyKernelNotReadyTest {
 
   private GroovyKernel kernel;
   private KernelSocketsServiceTest kernelSocketsService;
@@ -48,7 +44,7 @@ public class GroovyKernelTest {
     GroovyEvaluator evaluator = new GroovyEvaluator(sessionId, sessionId);
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new GroovyKernel(sessionId, evaluator, kernelSocketsService);
-    kernel.setShellOptions(kernelParameters());
+    // here we don't set up shell options 'kernel.setShellOptions(kernelParameters);'
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }
@@ -59,40 +55,34 @@ public class GroovyKernelTest {
   }
 
   @Test
-  public void evaluate() throws Exception {
+  public void evaluateWhenKernelNotReady() throws Exception {
     //given
     String code = "16/2";
     Message message = getExecuteRequestMessage(code);
     //when
     kernelSocketsService.handleMsg(message);
-    Optional<Message> idleMessage = waitForResultAndReturnIdleMessage(kernelSocketsService.getKernelSockets());
+    Optional<Message> idleMessage = waitForErrorAndReturnIdleMessage(kernelSocketsService.getKernelSockets());
     //then
     assertThat(idleMessage).isPresent();
     verifyPublishedMsgs(kernelSocketsService);
     verifySentMsgs(kernelSocketsService);
-    verifyResult(kernelSocketsService.getExecuteResultMessage().get());
+    verifyResult(kernelSocketsService.getErrorMessage().get());
   }
 
   private void verifyPublishedMsgs(KernelSocketsServiceTest service) {
     assertThat(service.getBusyMessage()).isPresent();
     assertThat(service.getExecuteInputMessage()).isPresent();
-    assertThat(service.getExecuteResultMessage()).isPresent();
+    assertThat(service.getErrorMessage()).isPresent();
     assertThat(service.getIdleMessage()).isPresent();
   }
 
   private void verifySentMsgs(KernelSocketsServiceTest service) {
     verifyExecuteReplyMessage(service.getReplyMessage());
   }
-  private void verifyResult(Message result) {
-    Map actual = ((Map) result.getContent().get(Comm.DATA));
-    String value = (String) actual.get("text/plain");
-    assertThat(value).isEqualTo("8");
-  }
 
-  private KernelParameters kernelParameters() {
-    Map<String, Object> params = new HashMap<>();
-    params.put(IMPORTS, new ArrayList<>());
-    params.put(CLASSPATH, new ArrayList<>());
-    return new KernelParameters(params);
+  private void verifyResult(Message result) {
+    Map content = result.getContent();
+    String value = (String) content.get(ERROR_MESSAGE);
+    assertThat(value).isEqualTo(THE_KERNEL_IS_NOT_READY);
   }
 }

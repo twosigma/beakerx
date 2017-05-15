@@ -43,9 +43,9 @@ public class ClojureKernelTest {
   public void setUp() throws Exception {
     String sessionId = "sessionId1";
     ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId);
-    evaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new ClojureKernel(sessionId, evaluator, kernelSocketsService);
+    kernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }

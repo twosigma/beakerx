@@ -56,6 +56,7 @@ public class MessageCreator {
   public static final String IDLE = "idle";
   public static final String TEXT_PLAIN = "text/plain";
   public static final String NULL_RESULT = "null";
+  public static final String ERROR_MESSAGE = "text";
 
   public static Logger logger = LoggerFactory.getLogger(MessageCreator.class);
   protected KernelFunctionality kernel;
@@ -214,7 +215,7 @@ public class MessageCreator {
     map4.put("ename", ename);
     map4.put("evalue", evalue);
     map4.put("traceback", markRed(errorMessage));
-    map4.put("text", (String) seo.getPayload());
+    map4.put(ERROR_MESSAGE, (String) seo.getPayload());
     reply.setContent(map4);
     return new MessageHolder(SocketEnum.IOPUB_SOCKET, reply);
   }

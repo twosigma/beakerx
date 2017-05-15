@@ -27,15 +27,18 @@ import java.io.IOException;
 
 public class EvaluatorManager {
 
+  public static final String THE_KERNEL_IS_NOT_READY = "The kernel is not ready";
   public static Logger logger = LoggerFactory.getLogger(EvaluatorManager.class);
 
   protected Evaluator evaluator = null;
   protected KernelFunctionality kernel;
+  private CodeExecutor codeExecutor;
 
   public EvaluatorManager(KernelFunctionality kernel, Evaluator evaluator) {
     this.kernel = kernel;
     this.evaluator = evaluator;
     evaluator.startWorker();
+    this.codeExecutor = this::kernelNotReady;
   }
 
   public synchronized void setShellOptions(final KernelParameters kernelParameters) {
@@ -45,6 +48,7 @@ public class EvaluatorManager {
       logger.error("Error while setting Shell Options", e);
     }
     evaluator.startWorker();
+    readyToExecuteCode();
   }
 
   public AutocompleteResult autocomplete(String code, int caretPosition) {
@@ -56,16 +60,40 @@ public class EvaluatorManager {
   }
 
   public synchronized SimpleEvaluationObject executeCode(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
-    seo.setJupyterMessage(message);
-    seo.setExecutionCount(executionCount);
-    seo.addObserver(kernel.getExecutionResultSender());
-    evaluator.evaluate(seo, code);
-    return seo;
+    return codeExecutor.executeCode(code, message, executionCount, executeCodeCallback);
   }
 
   public void exit() {
     evaluator.exit();
+  }
+
+  private SimpleEvaluationObject execute(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(code, message, executionCount, executeCodeCallback);
+    evaluator.evaluate(seo, code);
+    return seo;
+  }
+
+  private SimpleEvaluationObject kernelNotReady(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(code, message, executionCount, executeCodeCallback);
+    seo.error(THE_KERNEL_IS_NOT_READY);
+    seo.executeCodeCallback();
+    return seo;
+  }
+
+  private SimpleEvaluationObject createSimpleEvaluationObject(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
+    seo.setJupyterMessage(message);
+    seo.setExecutionCount(executionCount);
+    seo.addObserver(kernel.getExecutionResultSender());
+    return seo;
+  }
+
+  private void readyToExecuteCode() {
+    codeExecutor = this::execute;
+  }
+
+  interface CodeExecutor {
+    SimpleEvaluationObject executeCode(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback);
   }
 
 }

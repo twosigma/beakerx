@@ -28,7 +28,9 @@ import org.junit.Test;
 import com.twosigma.jupyter.message.Message;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.EXECUTE_REPLY;
 import static com.twosigma.jupyter.message.MessageSerializer.parse;
 import static com.twosigma.jupyter.message.MessageSerializer.toJson;
 
@@ -37,6 +39,7 @@ public class ExecuteRequestHandlerTest {
   private static KernelTest kernel;
   private ExecuteRequestHandler executeRequestHandler;
   private Message message;
+  private Message magicMessage;
 
   @BeforeClass
   public static void setUpClass(){
@@ -52,6 +55,8 @@ public class ExecuteRequestHandlerTest {
   public void setUp() {
     executeRequestHandler = new ExecuteRequestHandler(kernel);
     message = JupyterHandlerTest.initExecuteRequestMessage();
+    magicMessage = JupyterHandlerTest.initExecuteRequestMessage();
+    magicMessage.getContent().put("code", "%lsmagic");
   }
 
   @After
@@ -194,6 +199,30 @@ public class ExecuteRequestHandlerTest {
     Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(new String(publishMessage.getIdentities().get(0)))
         .isEqualTo(expectedIdentities);
+  }
+
+  @Test
+  public void handleMagicMessage_executionStateStartsBusyEndsIdle() throws Exception {
+    //when
+    executeRequestHandler.handle(magicMessage);
+    //then
+    final List<Message> publishedMessages = kernel.getPublishedMessages();
+    Assertions.assertThat(publishedMessages).isNotEmpty();
+    Message firstPublishedMessage = publishedMessages.get(0);
+    Assertions.assertThat(firstPublishedMessage.getContent().get("execution_state")).isEqualTo("busy");
+    Message lastPublishedMessage = publishedMessages.get(publishedMessages.size() - 1);
+    Assertions.assertThat(lastPublishedMessage.getContent().get("execution_state")).isEqualTo("idle");
+  }
+
+  @Test
+  public void handleMagicMessage_replyIsSent() throws Exception {
+    //when
+    executeRequestHandler.handle(magicMessage);
+    //then
+    final List<Message> sentMessages = kernel.getSentMessages();
+    Assertions.assertThat(sentMessages).isNotEmpty();
+    Message firstSentMessage = sentMessages.get(0);
+    Assertions.assertThat(firstSentMessage.getHeader().getTypeEnum()).isEqualTo(EXECUTE_REPLY);
   }
 
   private static Message copyMessage(Message origin) {

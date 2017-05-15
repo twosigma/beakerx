@@ -141,7 +141,7 @@ public class MessageCreator {
 
   public synchronized void createMagicMessage(Message reply, int executionCount, Message message) {
     kernel.publish(reply);
-    kernel.publish(buildReplyWithoutStatus(message, executionCount));
+    kernel.send(buildReplyWithoutStatus(message, executionCount));
   }
 
   public synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo) {

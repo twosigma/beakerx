@@ -76,6 +76,21 @@ public class EvaluatorResultTestWatcher {
     return idleMessage;
   }
 
+  public static Optional<Message> waitForErrorAndReturnIdleMessage(KernelSocketsTest socketsTest) throws InterruptedException {
+    int count = 0;
+    Optional<Message> idleMessage = getIdleMessage(socketsTest);
+    boolean idleAndResultPresent = idleMessage.isPresent() && getError(socketsTest).isPresent();
+    while (!idleAndResultPresent && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      idleMessage = getIdleMessage(socketsTest);
+      idleAndResultPresent = idleMessage.isPresent() && getError(socketsTest).isPresent();
+      count++;
+    }
+    return idleMessage;
+  }
+
+
+
   private static Optional<Message> getIdleMessage(KernelSocketsTest socketsTest) {
     return socketsTest.getPublishedMessages().stream().
             filter(x -> (x.type().equals(JupyterMessages.STATUS)) && (x.getContent().get("execution_state").equals("idle"))).findFirst();
@@ -84,6 +99,11 @@ public class EvaluatorResultTestWatcher {
   private static Optional<Message> getResult(KernelSocketsTest socketsTest) {
     return socketsTest.getPublishedMessages().stream().
             filter(x -> x.type().equals(JupyterMessages.EXECUTE_RESULT)).findFirst();
+  }
+
+  private static Optional<Message> getError(KernelSocketsTest socketsTest) {
+    return socketsTest.getPublishedMessages().stream().
+            filter(x -> x.type().equals(JupyterMessages.ERROR)).findFirst();
   }
 
 }

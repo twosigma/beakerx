@@ -111,6 +111,10 @@ public class KernelSocketsServiceTest implements KernelSocketsFactory {
     return getPublishedMessages().stream().filter(MessageAssertions::isIdleMessage).findFirst();
   }
 
+  public  Optional<Message> getErrorMessage() {
+    return  getPublishedMessages().stream().filter(MessageAssertions::isErrorMessage).findFirst();
+  }
+
   public Message getReplyMessage() {
     return getSentMessages().get(0);
   }

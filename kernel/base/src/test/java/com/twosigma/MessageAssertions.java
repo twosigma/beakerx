@@ -47,4 +47,7 @@ public class MessageAssertions {
   }
 
 
+  public static boolean isErrorMessage(Message message) {
+    return message.type().equals(JupyterMessages.ERROR);
+  }
 }

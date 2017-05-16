@@ -44,9 +44,9 @@ public abstract class GroovyExamplesSetupTest {
   public static void setUp() throws Exception {
     String sessionId = "sessionIdWidget";
     GroovyEvaluator evaluator = new GroovyEvaluator(sessionId, sessionId);
-    evaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new GroovyKernel(sessionId, evaluator, kernelSocketsService);
+    kernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }

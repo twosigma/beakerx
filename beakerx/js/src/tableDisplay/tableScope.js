@@ -2936,10 +2936,14 @@ define([
       };
       var executeCopy = function(text) {
         var input = document.createElement('textarea');
+        var currentNotebookMode = Jupyter.notebook.mode;
+
         document.body.appendChild(input);
         input.value = text;
         input.select();
-        document.execCommand('Copy');
+        Jupyter.notebook.mode = 'edit';
+        document.execCommand('Copy', false, null);
+        Jupyter.notebook.mode = currentNotebookMode;
         input.remove();
       };
       var data = getTableData();

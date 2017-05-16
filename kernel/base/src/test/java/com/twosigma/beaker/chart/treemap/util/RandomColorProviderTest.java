@@ -23,6 +23,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public class RandomColorProviderTest {
 
   TreeMapNode node01, node02;
@@ -62,4 +64,26 @@ public class RandomColorProviderTest {
     Assertions.assertThat(randomColorProvider.getColor(node01).getRGB()).isNotZero();
     Assertions.assertThat(randomColorProvider.getColor(node02).getRGB()).isNotZero();
   }
+
+  @Test
+  public void createProviderWithListParams_getColorWithNodeReturnBeakerColorWithRGB() {
+    //when
+    RandomColorProvider randomColorProvider = new RandomColorProvider(Arrays.asList(
+        Arrays.asList(100, 150, 200), "#AABBCC", "RED"
+    ));
+    //then
+    Assertions.assertThat(randomColorProvider.getColor(node01).getRGB()).isNotZero();
+    Assertions.assertThat(randomColorProvider.getColor(node02).getRGB()).isNotZero();
+  }
+
+  @Test
+  public void setGroupByParent_hasGroupByParentIsTrue() {
+    //given
+    RandomColorProvider randomColorProvider = new RandomColorProvider();
+    //when
+    randomColorProvider.setGroupByParent(true);
+    //then
+    Assertions.assertThat(randomColorProvider.isGroupByParent()).isTrue();
+  }
+
 }

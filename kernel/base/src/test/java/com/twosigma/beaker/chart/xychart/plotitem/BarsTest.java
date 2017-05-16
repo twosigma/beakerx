@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class BarsTest {
 
@@ -74,6 +75,30 @@ public class BarsTest {
     //then
     Assertions.assertThat(cloneBars.getDisplayName()).isEqualTo("before");
     Assertions.assertThat(cloneBars.getYAxis()).isNotEqualTo("after");
+  }
+
+  @Test
+  public void setOutlineColorWithAwtColor_hasOutlineColor() {
+    //when
+    bars.setOutlineColor(java.awt.Color.BLUE);
+    //then
+    Assertions.assertThat(bars.getOutlineColor()).isEqualTo(Color.BLUE);
+  }
+
+  @Test
+  public void setOutlineColorWithListOfAwtColors_hasOutlineColorListIsNotEmpty() {
+    //when
+    bars.setOutlineColor(Arrays.asList(java.awt.Color.BLUE, java.awt.Color.GREEN));
+    //then
+    Assertions.assertThat(bars.getOutlineColors()).isNotEmpty();
+  }
+
+  @Test
+  public void createBarsByEmptyConstructor_hasPossibleFiltersIsNotEmpty(){
+    //when
+    Bars bars = new Bars();
+    //when
+    Assertions.assertThat(bars.getPossibleFilters()).isNotEmpty();
   }
 
 }

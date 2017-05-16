@@ -17,7 +17,11 @@
 package com.twosigma.beaker.chart.xychart;
 
 import com.twosigma.beaker.chart.xychart.plotitem.Area;
+import com.twosigma.beaker.chart.xychart.plotitem.ConstantBand;
+import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
+import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
+import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.KernelTest;
 import org.assertj.core.api.Assertions;
@@ -28,13 +32,14 @@ import org.junit.Test;
 import java.util.Arrays;
 
 public class PlotTest {
-
+  Plot plot;
   Line line;
   Area area;
 
   @Before
   public void initStubData() {
     KernelManager.register(new KernelTest());
+    plot = new Plot();
     line = new Line();
     line.setX(Arrays.asList(1, 2, 3));
     line.setY(Arrays.asList(2, 3, 4));
@@ -58,7 +63,6 @@ public class PlotTest {
 
   @Test
   public void addLineToPlot_plotHasGraphicsListSizeIsOne() {
-    Plot plot = new Plot();
     //when
     plot.add(line);
     //then
@@ -67,7 +71,6 @@ public class PlotTest {
 
   @Test
   public void addAreaToPlot_plotHasGraphicsListSizeIsOne() {
-    Plot plot = new Plot();
     //when
     plot.add(area);
     //then
@@ -76,11 +79,53 @@ public class PlotTest {
 
   @Test
   public void addLineAndAreaToPlot_plotHasGraphicsListSizeIsTwo() {
-    Plot plot = new Plot();
     //when
     plot.add(line);
     plot.add(area);
     //then
     Assertions.assertThat(plot.getGraphics().size()).isEqualTo(2);
+  }
+
+  @Test
+  public void leftShiftForRasters_plotHasRastersListSizeIsOne() {
+    //when
+    plot.add(new Rasters());
+    //then
+    Assertions.assertThat(plot.getRasters().size()).isEqualTo(1);
+  }
+
+  @Test
+  public void addListOfPlotObjects_hasAllPlotObjects() {
+    //when
+    plot.add(Arrays.asList(
+        line,
+        new ConstantLine(),
+        new ConstantBand(),
+        new Rasters(),
+        new Text()
+    ));
+    //then
+    Assertions.assertThat(plot.getGraphics().size()).isEqualTo(1);
+    Assertions.assertThat(plot.getConstantLines().size()).isEqualTo(1);
+    Assertions.assertThat(plot.getConstantBands().size()).isEqualTo(1);
+    Assertions.assertThat(plot.getRasters().size()).isEqualTo(1);
+    Assertions.assertThat(plot.getTexts().size()).isEqualTo(1);
+  }
+
+  @Test
+  public void setxAutoRangeByTrue_XAutoRangeIsTrue(){
+    //when
+    plot.setxAutoRange(true);
+    //then
+    Assertions.assertThat(plot.getXAutoRange()).isTrue();
+  }
+
+  @Test
+  public void setxBoundByList_hasXLowerAndUpperBounds() throws Exception {
+    //when
+    plot.setxBound(Arrays.asList(1d, 10d));
+    //then
+    Assertions.assertThat(plot.getXLowerBound()).isEqualTo(1d);
+    Assertions.assertThat(plot.getXUpperBound()).isEqualTo(10d);
   }
 }

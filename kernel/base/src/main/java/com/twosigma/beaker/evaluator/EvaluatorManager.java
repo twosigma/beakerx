@@ -27,7 +27,7 @@ import java.io.IOException;
 
 public class EvaluatorManager {
 
-  public static final String THE_KERNEL_IS_NOT_READY = "The kernel is not ready";
+  public static final String THE_KERNEL_IS_NOT_READY = "The kernel was not ready, run the cell again.";
   public static Logger logger = LoggerFactory.getLogger(EvaluatorManager.class);
 
   protected Evaluator evaluator = null;

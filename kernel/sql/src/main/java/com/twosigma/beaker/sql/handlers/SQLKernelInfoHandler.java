@@ -15,51 +15,34 @@
  */
 package com.twosigma.beaker.sql.handlers;
 
+import com.twosigma.beaker.KernelInfoHandler;
 import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
-
-public class SQLKernelInfoHandler extends KernelHandler<Message> {
-
-  private final static Logger logger = LoggerFactory.getLogger(SQLKernelInfoHandler.class);
+public class SQLKernelInfoHandler extends KernelInfoHandler {
 
   public SQLKernelInfoHandler(KernelFunctionality kernel) {
     super(kernel);
   }
 
   @Override
-  public void handle(Message message) {
-    logger.debug("Processing kernel info request");
-    Message reply = new Message();
-    HashMap<String, Serializable> map = new HashMap<>(6);
-    map.put("protocol_version", "5.0");
-    map.put("implementation", "sql");
-    map.put("implementation_version", "1.0.0");
-    HashMap<String, Serializable> map1 = new HashMap<String, Serializable>(7);
-    map1.put("name", "SQL");
-    map1.put("version", "");
-    map1.put("mimetype", "");
-    map1.put("file_extension", ".sql");
-    map1.put("codemirror_mode", "sql");
-    map1.put("nbconverter_exporter", "");
-    map.put("language_info", map1);
-    map.put("banner", "BeakerX kernel for SQL");
-    map.put("beakerx", true);
-    map.put("help_links", new ArrayList<String>());
-    reply.setContent(map);
-    reply.setHeader(new Header(KERNEL_INFO_REPLY, message.getHeader().getSession()));
-    reply.setParentHeader(message.getHeader());
-    reply.setIdentities(message.getIdentities());
-    send(reply);
+  protected HashMap<String, Serializable> doLanguageInfo(HashMap<String, Serializable> languageInfo) {
+    languageInfo.put("name", "SQL");
+    languageInfo.put("version", "");
+    languageInfo.put("mimetype", "");
+    languageInfo.put("file_extension", ".sql");
+    languageInfo.put("codemirror_mode", "sql");
+    languageInfo.put("nbconverter_exporter", "");
+    return languageInfo;
+  }
+
+  @Override
+  protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
+    content.put("implementation", "sql");
+    content.put("banner", "BeakerX kernel for SQL");
+    return content;
   }
 
 }

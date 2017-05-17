@@ -423,9 +423,6 @@ public class TableDisplay extends BeakerxWidget {
   public static Map<String, Object> getValuesAsDictionary(List<List<?>> values) {
     Map<String, Object> m = new HashMap<String, Object>();
     for (List<?> l : values) {
-      if (l.size() != 2)
-        throw new IllegalArgumentException("Method 'getValuesAsDictionary' doesn't supported for this table");
-      ;
       m.put(l.get(0).toString(), l.get(1));
     }
     return m;

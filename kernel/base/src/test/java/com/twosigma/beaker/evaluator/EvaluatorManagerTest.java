@@ -26,6 +26,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.HashMap;
+
 public class EvaluatorManagerTest {
 
   private EvaluatorTest evaluator;
@@ -41,6 +43,7 @@ public class EvaluatorManagerTest {
   public void setUp() throws Exception {
     evaluator = new EvaluatorTest();
     evaluatorManager = new EvaluatorManager(kernel, evaluator);
+    evaluatorManager.setShellOptions(new KernelParameters(new HashMap()));
   }
 
   @Test
@@ -76,7 +79,7 @@ public class EvaluatorManagerTest {
   }
 
   @Test
-  public void executeCode_callEvaluatorToEvaluate(){
+  public void executeCode_callEvaluatorToEvaluate() {
     String code = "test code";
     //when
     evaluatorManager.executeCode(code, new Message(), 5, new ExecuteCodeCallbackTest());

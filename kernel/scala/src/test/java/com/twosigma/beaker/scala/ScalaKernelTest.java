@@ -46,9 +46,9 @@ public class ScalaKernelTest {
     String sessionId = "sessionId2";
     ScalaEvaluator evaluator = new ScalaEvaluator(null);
     evaluator.initialize(sessionId, sessionId);
-    evaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new ScalaKernel(sessionId, evaluator, kernelSocketsService);
+    kernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }

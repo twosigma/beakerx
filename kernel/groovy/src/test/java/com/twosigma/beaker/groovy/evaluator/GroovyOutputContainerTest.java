@@ -21,11 +21,13 @@ import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.widgets.chart.BeakerxPlot;
+import com.twosigma.jupyter.KernelParameters;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import com.twosigma.jupyter.message.Message;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
@@ -44,7 +46,8 @@ public class GroovyOutputContainerTest {
   public void setUp() throws Exception {
     groovyKernel = new KernelTest();
     KernelManager.register(groovyKernel);
-    groovyEvaluator = new EvaluatorManager(groovyKernel,new GroovyEvaluator("id", "sid"));
+    groovyEvaluator = new EvaluatorManager(groovyKernel, new GroovyEvaluator("id", "sid"));
+    groovyEvaluator.setShellOptions(new KernelParameters(new HashMap()));
   }
 
   @After
@@ -67,7 +70,7 @@ public class GroovyOutputContainerTest {
     SimpleEvaluationObject seo = groovyEvaluator.executeCode(code, HEADER_MESSAGE, 1, new ExecuteCodeCallbackTest());
     waitForResult(seo);
     //then
-    assertTrue(seo.getPayload().toString(),seo.getStatus().equals(FINISHED));
+    assertTrue(seo.getPayload().toString(), seo.getStatus().equals(FINISHED));
     verifyPlot(groovyKernel.getPublishedMessages());
   }
 

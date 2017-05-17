@@ -46,9 +46,9 @@ public class JavaKernelTest {
   public void setUp() throws Exception {
     String sessionId = "sessionId2";
     JavaEvaluator evaluator = new JavaEvaluator(sessionId, sessionId);
-    evaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new JavaKernel(sessionId, evaluator, kernelSocketsService);
+    kernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }

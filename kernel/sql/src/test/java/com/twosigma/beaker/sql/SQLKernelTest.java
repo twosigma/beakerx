@@ -46,9 +46,9 @@ public class SQLKernelTest {
   public void setUp() throws Exception {
     String sessionId = "sessionId2";
     SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId);
-    sqlEvaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
     sqlKernel = new SQLKernel(sessionId, sqlEvaluator, kernelSocketsService);
+    sqlKernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> sqlKernel)).start();
     kernelSocketsService.waitForSockets();
   }

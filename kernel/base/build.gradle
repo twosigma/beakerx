@@ -52,3 +52,28 @@ publishing {
         }
     }
 }
+
+def gitDescribe() {
+  def name = "git describe --all".execute().text.trim()
+  if (name.startsWith('heads/')) {
+    name = name.substring(6)
+  }
+  return name
+}
+
+def gitGetHash() {
+  def name = "git log --pretty=format:%h -n 1".execute().text.trim()
+  return name
+}
+
+def resourceDir = file("./src/main/resources")
+
+task prepareBuildVerion() {
+  doLast {
+    new File(resourceDir, 'version').write(gitDescribe())
+    new File(resourceDir, 'hash').write(gitGetHash())
+    new File(resourceDir, 'build_time').write(new Date().format("yyyy-MM-dd HH:mm z"))
+  }
+}
+
+compileJava.dependsOn prepareBuildVerion

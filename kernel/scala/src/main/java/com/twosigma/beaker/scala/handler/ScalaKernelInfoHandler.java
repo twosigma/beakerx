@@ -15,51 +15,34 @@
  */
 package com.twosigma.beaker.scala.handler;
 
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
+import com.twosigma.beaker.KernelInfoHandler;
+import com.twosigma.jupyter.KernelFunctionality;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class ScalaKernelInfoHandler extends KernelHandler<Message> {
-
-  private final static Logger logger = LoggerFactory.getLogger(ScalaKernelInfoHandler.class);
+public class ScalaKernelInfoHandler  extends KernelInfoHandler {
 
   public ScalaKernelInfoHandler(KernelFunctionality kernel) {
     super(kernel);
   }
 
   @Override
-  public void handle(Message message) {
-    logger.debug("Processing kernel info request");
-    Message reply = new Message();
-    HashMap<String, Serializable> map = new HashMap<>(6);
-    map.put("protocol_version", "5.0");
-    map.put("implementation", "scala");
-    map.put("implementation_version", "1.0.0");
-    HashMap<String, Serializable> map1 = new HashMap<String, Serializable>(7);
-    map1.put("name", "Scala");
-    map1.put("version", scala.util.Properties.scalaPropOrElse("version.number", "(unknown)"));
-    map1.put("mimetype", "");
-    map1.put("file_extension", ".scala");
-    map1.put("codemirror_mode", "text/x-scala");
-    map1.put("nbconverter_exporter", "");
-    map.put("language_info", map1);
-    map.put("banner", "BeakerX kernel for Scala");
-    map.put("beakerx", true);
-    map.put("help_links", new ArrayList<String>());
-    reply.setContent(map);
-    reply.setHeader(new Header(KERNEL_INFO_REPLY, message.getHeader().getSession()));
-    reply.setParentHeader(message.getHeader());
-    reply.setIdentities(message.getIdentities());
-    send(reply);
+  protected HashMap<String, Serializable> doLanguageInfo(HashMap<String, Serializable> languageInfo) {
+    languageInfo.put("name", "Scala");
+    languageInfo.put("version", scala.util.Properties.scalaPropOrElse("version.number", "(unknown)"));
+    languageInfo.put("mimetype", "");
+    languageInfo.put("file_extension", ".scala");
+    languageInfo.put("codemirror_mode", "text/x-scala");
+    languageInfo.put("nbconverter_exporter", "");
+    return languageInfo;
+  }
+
+  @Override
+  protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
+    content.put("implementation", "scala");
+    content.put("banner", "BeakerX kernel for Scala");
+    return content;
   }
 
 }

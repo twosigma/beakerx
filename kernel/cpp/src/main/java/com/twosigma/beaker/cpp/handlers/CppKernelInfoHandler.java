@@ -15,51 +15,34 @@
  */
 package com.twosigma.beaker.cpp.handlers;
 
+import com.twosigma.beaker.KernelInfoHandler;
 import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
-
-public class CppKernelInfoHandler extends KernelHandler<Message> {
-
-  private final static Logger logger = LoggerFactory.getLogger(CppKernelInfoHandler.class);
+public class CppKernelInfoHandler extends KernelInfoHandler {
 
   public CppKernelInfoHandler(KernelFunctionality kernel) {
     super(kernel);
   }
 
   @Override
-  public void handle(Message message) {
-    logger.debug("Processing Cpp kernel info request");
-    Message reply = new Message();
-    HashMap<String, Serializable> map = new HashMap<>(6);
-    map.put("protocol_version", "5.0");
-    map.put("implementation", "cpp");
-    map.put("implementation_version", "1.0.0");
-    HashMap<String, Serializable> map1 = new HashMap<String, Serializable>(7);
-    map1.put("name", "cpp");
-    map1.put("version", "");
-    map1.put("mimetype", "");
-    map1.put("file_extension", ".cpp");
-    map1.put("codemirror_mode", "C++");
-    map1.put("nbconverter_exporter", "");
-    map.put("language_info", map1);
-    map.put("banner", "BeakerX kernel for C++");
-    map.put("beakerx", true);
-    map.put("help_links", new ArrayList<String>());
-    reply.setContent(map);
-    reply.setHeader(new Header(KERNEL_INFO_REPLY, message.getHeader().getSession()));
-    reply.setParentHeader(message.getHeader());
-    reply.setIdentities(message.getIdentities());
-    send(reply);
+  protected HashMap<String, Serializable> doLanguageInfo(HashMap<String, Serializable> languageInfo) {
+    languageInfo.put("name", "cpp");
+    languageInfo.put("version", "");
+    languageInfo.put("mimetype", "");
+    languageInfo.put("file_extension", ".cpp");
+    languageInfo.put("codemirror_mode", "C++");
+    languageInfo.put("nbconverter_exporter", "");
+    return languageInfo;
+  }
+
+  @Override
+  protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
+    content.put("implementation", "cpp");
+    content.put("banner", "BeakerX kernel for C++");
+    return content;
   }
 
 }

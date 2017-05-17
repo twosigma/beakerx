@@ -110,7 +110,9 @@ abstract public class XYChart extends AbstractChart{
 
   public XYChart add(List items) {
     for (Object o : items) {
-      if (o instanceof XYGraphics) {
+      if (o instanceof Rasters) {
+        add((Rasters) o);
+      } else if (o instanceof XYGraphics) {
         add((XYGraphics) o);
       } else if (o instanceof ConstantLine) {
         add((ConstantLine) o);
@@ -118,8 +120,6 @@ abstract public class XYChart extends AbstractChart{
         add((ConstantBand) o);
       } else if (o instanceof Text) {
         add((Text) o);
-      } else if (o instanceof Rasters) {
-        add((Rasters) o);
       } else {
         super.add(items);
       }

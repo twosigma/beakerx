@@ -18,9 +18,17 @@ package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 public class CrosshairTest {
+
+  Crosshair crosshair;
+
+  @Before
+  public void setUp() throws Exception {
+    crosshair = new Crosshair();
+  }
 
   @Test
   public void createCrosshairByEmptyConstructor_hasStrokeTypeIsNull() {
@@ -33,9 +41,20 @@ public class CrosshairTest {
   @Test
   public void setColorWithAwtColor_crosshairHasBeakerColor() {
     //when
-    Crosshair crosshair = new Crosshair();
     crosshair.setColor(java.awt.Color.GREEN);
     //then
     Assertions.assertThat(crosshair.getColor() instanceof Color).isTrue();
   }
+
+  @Test
+  public void clone_shouldCloneCrosshair() throws CloneNotSupportedException {
+    //when
+    crosshair.setColor(Color.GREEN);
+    Crosshair cloneCrosshair = (Crosshair) crosshair.clone();
+    crosshair.setColor(Color.BLUE);
+    //then
+    Assertions.assertThat(cloneCrosshair.getColor()).isEqualTo(Color.GREEN);
+    Assertions.assertThat(crosshair.getColor()).isEqualTo(Color.BLUE);
+  }
+
 }

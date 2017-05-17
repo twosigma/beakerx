@@ -22,6 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 public class BarsTest {
 
@@ -74,6 +76,70 @@ public class BarsTest {
     //then
     Assertions.assertThat(cloneBars.getDisplayName()).isEqualTo("before");
     Assertions.assertThat(cloneBars.getYAxis()).isNotEqualTo("after");
+  }
+
+  @Test
+  public void setOutlineColorWithAwtColor_hasOutlineColor() {
+    //when
+    bars.setOutlineColor(java.awt.Color.BLUE);
+    //then
+    Assertions.assertThat(bars.getOutlineColor()).isEqualTo(Color.BLUE);
+  }
+
+  @Test
+  public void setOutlineColorWithListOfAwtColors_hasOutlineColorListNotEmpty() {
+    //when
+    bars.setOutlineColor(Arrays.asList(java.awt.Color.BLUE, java.awt.Color.GREEN));
+    //then
+    Assertions.assertThat(bars.getOutlineColors()).isNotEmpty();
+  }
+
+  @Test
+  public void createBarsByEmptyConstructor_hasPossibleFiltersNotEmpty(){
+    //when
+    Bars bars = new Bars();
+    //when
+    Assertions.assertThat(bars.getPossibleFilters()).isNotEmpty();
+  }
+
+  @Test
+  public void setColori_hasColor() {
+    //when
+    bars.setColori(Color.GREEN);
+    //then
+    Assertions.assertThat(bars.getColor()).isEqualTo(Color.GREEN);
+  }
+
+  @Test
+  public void setColorWithListOfAwtColors_hasColorListNotEmpty() {
+    //when
+    bars.setColor(Arrays.asList(java.awt.Color.BLUE, java.awt.Color.GREEN));
+    //then
+    Assertions.assertThat(bars.getColors()).isNotEmpty();
+  }
+
+  @Test
+  public void setBaseWithListOfIntegers_hasBasesListNotEmpty() {
+    //when
+    bars.setBase(Arrays.asList(0, 1));
+    //then
+    Assertions.assertThat(bars.getBases()).isNotEmpty();
+  }
+
+  @Test
+  public void setBaseWithInteger_hasBaseNotEmpty() {
+    //when
+    bars.setBase(5f);
+    //then
+    Assertions.assertThat(bars.getBase()).isEqualTo(5f);
+  }
+
+  @Test
+  public void setXWithDate_hasXListNotEmpty() {
+    //when
+    bars.setX(Arrays.asList(new Date()));
+    //then
+    Assertions.assertThat(bars.getX()).isNotEmpty();
   }
 
 }

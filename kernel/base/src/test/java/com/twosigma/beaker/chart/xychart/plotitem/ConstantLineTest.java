@@ -18,11 +18,19 @@ package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
 
 public class ConstantLineTest {
+
+  ConstantLine constantLine;
+
+  @Before
+  public void setUp() throws Exception {
+    constantLine = new ConstantLine();
+  }
 
   @Test
   public void createConstantLineByEmptyConstructor_hasXandYisNull() {
@@ -36,7 +44,6 @@ public class ConstantLineTest {
   @Test
   public void setXWithDateParam_constantLineHasNumberX() {
     //when
-    ConstantLine constantLine = new ConstantLine();
     constantLine.setX(new Date());
     //then
     Assertions.assertThat(constantLine.getX() instanceof Number).isTrue();
@@ -45,9 +52,17 @@ public class ConstantLineTest {
   @Test
   public void setColorWithAwtColor_constantLineHasBeakerColor() {
     //when
-    ConstantLine constantLine = new ConstantLine();
     constantLine.setColor(java.awt.Color.GREEN);
     //then
     Assertions.assertThat(constantLine.getColor() instanceof Color).isTrue();
   }
+
+  @Test
+  public void setColori_hasColor() {
+    //when
+    constantLine.setColori(Color.GREEN);
+    //then
+    Assertions.assertThat(constantLine.getColor()).isEqualTo(Color.GREEN);
+  }
+
 }

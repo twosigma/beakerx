@@ -17,6 +17,8 @@
 package com.twosigma.beaker.chart.xychart;
 
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.xychart.plotitem.Line;
+import com.twosigma.beaker.chart.xychart.plotitem.Points;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.KernelTest;
 import org.assertj.core.api.Assertions;
@@ -26,6 +28,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +38,13 @@ public class SimpleTimePlotTest {
   Map<String, Object> parameters;
   List<Map<String, Object>> rates;
   List<String> columns;
+  SimpleTimePlot simpleTimePlot;
 
   @Before
   public void initStubData() {
     KernelManager.register(new KernelTest());
     createDataForSimpleTimePlot();
+    simpleTimePlot = new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
   }
 
   @After
@@ -49,8 +54,8 @@ public class SimpleTimePlotTest {
 
   @Test
   public void callConstructorWithDataAndColumns_shouldCreateSimpleTimePlot() {
-    //when
-    SimpleTimePlot simpleTimePlot = new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
+    SimpleTimePlot simpleTimePlot =
+        new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
     //then
     Assertions.assertThat(simpleTimePlot).isNotNull();
   }
@@ -66,8 +71,6 @@ public class SimpleTimePlotTest {
 
   @Test
   public void setTwoColorsForThreeColumns_twoOfThreeGraphicsHasBaseColor() {
-    //given
-    SimpleTimePlot simpleTimePlot = new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
     //when
     simpleTimePlot.setColors(Arrays.asList(Color.BLUE, Color.GREEN));
     //to call reinitialize()
@@ -76,6 +79,87 @@ public class SimpleTimePlotTest {
     Assertions.assertThat(simpleTimePlot.getGraphics().get(0).getColor()).isEqualTo(Color.BLUE);
     Assertions.assertThat(simpleTimePlot.getGraphics().get(1).getColor()).isEqualTo(Color.GREEN);
     Assertions.assertThat(simpleTimePlot.getGraphics().get(2).getColor()).isNull();
+  }
+
+  @Test
+  public void setTwoColorsByArrayAndAwtColor_twoGraphicsHasBaseColor() {
+    //when
+    simpleTimePlot.setColors(Arrays.asList(Arrays.asList(0, 0, 255), java.awt.Color.BLACK));
+    //to call reinitialize()
+    simpleTimePlot.setColumns(Arrays.asList("m3", "num"));
+    //then
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(0).getColor()).isEqualTo(Color.BLUE);
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(1).getColor()).isEqualTo(Color.BLACK);
+  }
+
+  @Test
+  public void setTwoColorsByStrings_twoGraphicsHasBaseColor() {
+    //when
+    simpleTimePlot.setColors(Arrays.asList("#00FF00", "RED"));
+    //to call reinitialize()
+    simpleTimePlot.setData(rates);
+    //then
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(0).getColor()).isEqualTo(Color.GREEN);
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(1).getColor()).isEqualTo(Color.RED);
+  }
+
+  @Test
+  public void setDataWithDate_simpleTimePlotIsNotNull() {
+    List<Map<String, Object>> data = new ArrayList<>();
+    data.add(
+        new HashMap<String, Object>() {
+          {
+            put(columns.get(0), new Float(8.25));
+            put(columns.get(2), new Date());
+            put(columns.get(3), 123);
+          }
+        });
+    //when
+    simpleTimePlot.setData(data);
+    //then
+    Assertions.assertThat(simpleTimePlot).isNotNull();
+  }
+
+  @Test
+  public void setDisplayPointsByTrueAndLinesByFalse_hasOnlyPointsGraphics() {
+    //when
+    simpleTimePlot.setDisplayLines(false);
+    simpleTimePlot.setDisplayPoints(true);
+    //then
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(0)).isInstanceOf(Points.class);
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(1)).isInstanceOf(Points.class);
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(2)).isInstanceOf(Points.class);
+  }
+
+  @Test
+  public void setTimeColumn_hasTimeColumn() {
+    //when
+    simpleTimePlot.setTimeColumn(columns.get(0));
+    //then
+    Assertions.assertThat(simpleTimePlot.getTimeColumn()).isEqualTo(columns.get(0));
+  }
+
+  @Test
+  public void setDisplayNames_hasDisplayNames() {
+    //when
+    simpleTimePlot.setDisplayNames(Arrays.asList("name1", "name2", "name3", "name4"));
+    //then
+    Assertions.assertThat(simpleTimePlot.getDisplayNames().get(0)).isEqualTo("name1");
+  }
+
+  @Test
+  public void setDisplayNameForLines_linesHasDisplayName() {
+    //when
+    simpleTimePlot.setDisplayNames(Arrays.asList("name1", "name2", "name3", "name4"));
+    //to call reinitialize()
+    simpleTimePlot.setDisplayLines(true);
+    simpleTimePlot.setDisplayPoints(false);
+    //then
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(0)).isInstanceOf(Line.class);
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(0).getDisplayName())
+        .isEqualTo("name1");
+    Assertions.assertThat(simpleTimePlot.getGraphics().get(1).getDisplayName())
+        .isEqualTo("name2");
   }
 
   @Test(expected = IllegalArgumentException.class)

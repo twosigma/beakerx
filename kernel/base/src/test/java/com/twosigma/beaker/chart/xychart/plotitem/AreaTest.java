@@ -17,9 +17,17 @@
 package com.twosigma.beaker.chart.xychart.plotitem;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 public class AreaTest {
+
+  private Area area;
+
+  @Before
+  public void setUp() throws Exception {
+    area = new Area();
+  }
 
   @Test
   public void createAreaByEmptyConstructor_hasInterpolationIsNull() {
@@ -32,23 +40,29 @@ public class AreaTest {
   @Test(expected = IllegalArgumentException.class)
   public void setInterpolationWithPositive2_throwIllegalArgumentException() {
     //when
-    Area area = new Area();
     area.setInterpolation(new Integer(-2));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setInterpolationWithNegative2_throwIllegalArgumentException() {
     //when
-    Area area = new Area();
     area.setInterpolation(new Integer(2));
   }
 
   @Test
   public void setInterpolationWithZeroOrOne_getInterpolationWithZeroOrOne() {
-    Area area = new Area();
     area.setInterpolation(new Integer(0));
     Assertions.assertThat(area.getInterpolation()).isEqualTo(0);
     area.setInterpolation(new Integer(1));
     Assertions.assertThat(area.getInterpolation()).isEqualTo(1);
   }
+
+  @Test
+  public void createAreaByEmptyConstructor_hasPossibleFiltersIsNotEmpty(){
+    //when
+    Area area = new Area();
+    //when
+    Assertions.assertThat(area.getPossibleFilters()).isNotEmpty();
+  }
+
 }

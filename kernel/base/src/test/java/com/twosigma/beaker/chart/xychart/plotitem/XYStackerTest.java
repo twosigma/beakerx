@@ -74,4 +74,15 @@ public class XYStackerTest {
     Assertions.assertThat(firstAreaYs.get(1)).isEqualTo(secondAreaBases.get(1));
     Assertions.assertThat(firstAreaYs.get(2)).isEqualTo(secondAreaBases.get(2));
   }
+
+  @Test
+  public void callStackWithOneArea_returnThatArea() {
+    //when
+    List<BasedXYGraphics> list = XYStacker.stack(Arrays.asList(area1));
+    //then
+    Assertions.assertThat(list.get(0)).isEqualTo(area1);
+  }
+
+
+
 }

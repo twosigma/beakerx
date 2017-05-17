@@ -18,12 +18,20 @@ package com.twosigma.beaker.chart.xychart.plotitem;
 
 import com.twosigma.beaker.chart.Color;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Date;
 
 public class ConstantBandTest {
+
+  ConstantBand constantBand;
+
+  @Before
+  public void setUp() throws Exception {
+    constantBand = new ConstantBand();
+  }
 
   @Test
   public void createConstantBandByEmptyConstructor_hasXsAndYsListsAreNulls() {
@@ -37,7 +45,6 @@ public class ConstantBandTest {
   @Test
   public void setXWithIntegerFloatDateListParam_hasXsListAreNotNulls() {
     //when
-    ConstantBand constantBand = new ConstantBand();
     constantBand.setX(Arrays.asList(new Integer(123), new Float(123.0), new Date()));
     //then
     Assertions.assertThat(constantBand.getX()).isNotNull();
@@ -46,9 +53,17 @@ public class ConstantBandTest {
   @Test
   public void setColorWithAwtColor_constantBandHasBeakerColor() {
     //when
-    ConstantBand constantBand = new ConstantBand();
     constantBand.setColor(java.awt.Color.GREEN);
     //then
     Assertions.assertThat(constantBand.getColor() instanceof Color).isTrue();
   }
+
+  @Test
+  public void setColori_hasColor() {
+    //when
+    constantBand.setColori(Color.GREEN);
+    //then
+    Assertions.assertThat(constantBand.getColor()).isEqualTo(Color.GREEN);
+  }
+
 }

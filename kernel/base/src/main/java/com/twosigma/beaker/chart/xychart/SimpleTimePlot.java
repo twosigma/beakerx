@@ -128,15 +128,7 @@ public class SimpleTimePlot extends TimePlot{
       for (Map<String, Object> row : data) {
         dataColumnsNames.addAll(row.keySet());
 
-        Object x = row.get(timeColumn);
-        if(x instanceof Number){
-          xs.add(x);
-        } else if (x instanceof Date) {
-          Date date = (Date)x;
-          xs.add(date.getTime());
-        } else {
-          throw new IllegalArgumentException("time column accepts numbers or java.util.Date objects");
-        }
+        xs.add(getNumberforTimeColumn(row.get(timeColumn)));
 
         for (int i = 0; i < columns.size(); i++) {
           String column = columns.get(i);
@@ -144,7 +136,7 @@ public class SimpleTimePlot extends TimePlot{
           if (i >= yss.size()) {
             yss.add(new ArrayList<Number>());
           }
-          yss.get(i).add((Number) row.get(column));
+          yss.get(i).add(getNumberforTimeColumn(row.get(column)));
         }
       }
 
@@ -195,6 +187,16 @@ public class SimpleTimePlot extends TimePlot{
     }
   }
 
+  private Number getNumberforTimeColumn(Object o){
+    if(o instanceof Number){
+      return (Number) o;
+    } else if (o instanceof Date) {
+      Date date = (Date)o;
+      return date.getTime();
+    } else {
+      throw new IllegalArgumentException("time column accepts numbers or java.util.Date objects");
+    }
+  }
 
   public List<Map<String, Object>> getData() {
     return data;

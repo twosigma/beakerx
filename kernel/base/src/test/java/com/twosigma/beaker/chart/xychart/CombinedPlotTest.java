@@ -23,11 +23,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public class CombinedPlotTest {
+
+  CombinedPlot combinedPlot;
 
   @Before
   public void setUp() throws Exception {
     KernelManager.register(new KernelTest());
+    combinedPlot = new CombinedPlot();
   }
 
   @After
@@ -38,7 +43,6 @@ public class CombinedPlotTest {
   @Test
   public void addTwoPlotsToCombinedPlot_hasSubplotsSizeIsTwoAndWeightListSizeIsTwo() {
     //when
-    CombinedPlot combinedPlot = new CombinedPlot();
     combinedPlot.add(new Plot());
     combinedPlot.add(new Plot());
     //then
@@ -49,11 +53,31 @@ public class CombinedPlotTest {
   @Test
   public void addTwoPlotsAndWeightsToCombinedPlot_hasSubplotsSizeIsTwoAndWeightListSizeIsTwo() {
     //when
-    CombinedPlot combinedPlot = new CombinedPlot();
     combinedPlot.add(new Plot(), 3);
     combinedPlot.add(new Plot(), 3);
     //then
     Assertions.assertThat(combinedPlot.getSubplots().size()).isEqualTo(2);
     Assertions.assertThat(combinedPlot.getWeights().size()).isEqualTo(2);
   }
+
+  @Test
+  public void leftShiftWithPlot_shouldAddPlotToFirstPosition() {
+    Plot plot = new Plot();
+    //when
+    combinedPlot.add(new Plot(), 1);
+    combinedPlot.leftShift(plot);
+    //then
+    Assertions.assertThat(combinedPlot.getSubplots().get(1)).isEqualTo(plot);
+  }
+
+  @Test
+  public void leftShiftWithListParam_shouldAddPlotToFirstPosition() {
+    Plot plot = new Plot();
+    //when
+    combinedPlot.add(new Plot(), 1);
+    combinedPlot.leftShift(Arrays.asList(plot, 3));
+    //then
+    Assertions.assertThat(combinedPlot.getSubplots().get(1)).isEqualTo(plot);
+  }
+
 }

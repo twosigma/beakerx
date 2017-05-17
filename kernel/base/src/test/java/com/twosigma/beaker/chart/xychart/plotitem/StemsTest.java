@@ -17,11 +17,19 @@
 package com.twosigma.beaker.chart.xychart.plotitem;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
 
 public class StemsTest {
+
+  Stems stems;
+
+  @Before
+  public void setUp() throws Exception {
+    stems = new Stems();
+  }
 
   @Test
   public void createStemsByEmptyConstructor_hasWidthAndStyleAreNotNulls() {
@@ -35,17 +43,23 @@ public class StemsTest {
   @Test(expected = IllegalArgumentException.class)
   public void setStyleWithShapeTypeParam_throwIllegalArgumentException() {
     //when
-    Stems stems = new Stems();
-    //then
     stems.setStyle(ShapeType.DEFAULT);
   }
 
   @Test
   public void setStyleWithStrokeTypeListParam_hasStyleListIsNotNull() {
     //when
-    Stems stems = new Stems();
     stems.setStyle(Arrays.asList(StrokeType.values()));
     //then
     Assertions.assertThat(stems.getStyles()).isNotNull();
   }
+
+  @Test
+  public void createStemsByEmptyConstructor_hasPossibleFiltersIsNotEmpty(){
+    //when
+    Stems stems = new Stems();
+    //when
+    Assertions.assertThat(stems.getPossibleFilters()).isNotEmpty();
+  }
+
 }

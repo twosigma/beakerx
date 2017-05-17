@@ -16,12 +16,21 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
+import com.twosigma.beaker.chart.Color;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
 
 public class TextTest {
+
+  Text text;
+
+  @Before
+  public void setUp() throws Exception {
+    text = new Text();
+  }
 
   @Test
   public void createTextByEmptyConstructor_hasXYValuesEqualsZero() {
@@ -43,7 +52,6 @@ public class TextTest {
   @Test
   public void setXWithDateParam_hasXWithNumberValue() {
     //when
-    Text text = new Text();
     text.setX(new Date());
     //then
     Assertions.assertThat(text.getX() instanceof Number).isTrue();
@@ -52,9 +60,20 @@ public class TextTest {
   @Test
   public void setXWithIntegerParam_hasXWithNumberValue() {
     //when
-    Text text = new Text();
     text.setX(new Integer(10));
     //then
     Assertions.assertThat(text.getX() instanceof Number).isTrue();
   }
+
+  @Test
+  public void clone_shouldCloneText() throws CloneNotSupportedException {
+    //when
+    text.setColor(Color.GREEN);
+    Text cloneText = (Text) text.clone();
+    text.setColor(Color.BLUE);
+    //then
+    Assertions.assertThat(cloneText.getColor()).isEqualTo(Color.GREEN);
+    Assertions.assertThat(text.getColor()).isEqualTo(Color.BLUE);
+  }
+
 }

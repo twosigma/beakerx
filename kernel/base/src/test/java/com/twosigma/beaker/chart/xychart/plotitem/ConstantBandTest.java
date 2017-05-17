@@ -63,7 +63,7 @@ public class ConstantBandTest {
     //when
     constantBand.setColori(Color.GREEN);
     //then
-    Assertions.assertThat(constantBand.getColor() instanceof Color).isTrue();
+    Assertions.assertThat(constantBand.getColor()).isEqualTo(Color.GREEN);
   }
 
 }

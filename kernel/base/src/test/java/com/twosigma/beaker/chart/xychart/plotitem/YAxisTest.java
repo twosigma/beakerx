@@ -63,12 +63,27 @@ public class YAxisTest {
 
   @Test
   public void setBoundsWithTwoDoubleParams_hasBoundsValuesAndHasAutoRangeIsFalse() {
-    //when
+    //given
     YAxis yAxis = new YAxis();
+    //when
     yAxis.setBound(1, 2);
     //then
     Assertions.assertThat(yAxis.getAutoRange()).isEqualTo(false);
     Assertions.assertThat(yAxis.getLowerBound()).isEqualTo(1);
     Assertions.assertThat(yAxis.getUpperBound()).isEqualTo(2);
   }
+
+  @Test
+  public void clone_shouldCloneYAxis() throws CloneNotSupportedException {
+    //given
+    YAxis yAxis = new YAxis();
+    //when
+    yAxis.setLabel("clone");
+    YAxis cloneYaxis = (YAxis) yAxis.clone();
+    yAxis.setLabel("original");
+    //then
+    Assertions.assertThat(cloneYaxis.getLabel()).isEqualTo("clone");
+    Assertions.assertThat(yAxis.getLabel()).isEqualTo("original");
+  }
+
 }

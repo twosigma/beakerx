@@ -79,6 +79,10 @@ public class MIMEContainer {
     return addMimeType(MIME.HIDDEN);
   }
 
+  public static MIMEContainer JavaScript(Object code) {
+    return addMimeType(MIME.APPLICATION_JAVASCRIPT, code);
+  }
+
   public static MIMEContainer HTML(Object code) {
     return addMimeType(MIME.TEXT_HTML, code);
   }

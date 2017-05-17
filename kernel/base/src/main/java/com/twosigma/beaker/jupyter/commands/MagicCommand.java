@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.twosigma.beaker.mimetype.MIMEContainer.HTML;
+import static com.twosigma.beaker.mimetype.MIMEContainer.JavaScript;
 
 /**
  * executes magic commands and sends message
@@ -52,8 +53,8 @@ public class MagicCommand {
 
   private void buildCommands() {
     commands.put("%%javascript", (code, message, executionCount) -> {
-      code = "<html><script>" + code.replace("%%javascript", "") + "</script></html>";
-      publishResults(HTML(code),message, executionCount);
+      code = code.replace("%%javascript", "");
+      publishResults(JavaScript(code), message, executionCount);
     });
     commands.put("%%html", (code, message, executionCount) -> {
       code = "<html>" + code.replace("%%html", "") + "</html>";

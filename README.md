@@ -30,7 +30,7 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 ## Dependencies
 
 * oracle Java8 JDK
-* npm, bower, webpack
+* yarn, bower, webpack
 * conda
 
 ## Build and run

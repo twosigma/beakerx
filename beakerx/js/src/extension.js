@@ -41,6 +41,7 @@ define([
   'base/js/namespace',
   'base/js/events',
   'require',
+  'underscore',
 
   './htmlOutput/htmlOutput',
 
@@ -55,6 +56,7 @@ define([
   Jupyter,
   events,
   require,
+  _,
   htmlOutput,
   plotApi,
   bkCoreManager,

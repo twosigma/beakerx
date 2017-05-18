@@ -14,7 +14,12 @@
  *  limitations under the License.
  */
 
-define(function() {
+define([
+    'underscore'
+  ],
+  function(
+    _
+  ) {
   return {
     extend: function (scope, element, attrs) {
 

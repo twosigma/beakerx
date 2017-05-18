@@ -15,6 +15,7 @@
  */
 
 define([
+  'underscore',
   'jquery',
   'jquery-ui',
   './../../bower_components/d3/d3.min',
@@ -25,6 +26,7 @@ define([
   './../../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min',
   './plotScope'
 ], function(
+  _,
   $,
   jqui,
   d3,

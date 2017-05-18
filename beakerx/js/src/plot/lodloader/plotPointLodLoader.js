@@ -15,12 +15,14 @@
  */
 
 define([
+  'underscore',
   './../plotUtils',
   './../std/plotpoint',
   './../plotSampler',
   './../lod/plotLodPoint',
   './../lod/plotLodBox'
 ], function(
+  _,
   plotUtils,
   PlotPoint,
   PlotSampler,

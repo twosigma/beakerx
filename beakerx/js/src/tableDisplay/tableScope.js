@@ -21,14 +21,14 @@ define([
   'datatables.net-fixedcolumns',
   'datatables.net-keytable',
   './../shared/libs/datatables-colresize/dataTables.colResize',
-  './../../bower_components/moment-timezone/builds/moment-timezone-with-data.min',
+  'moment-timezone/builds/moment-timezone-with-data',
   './../shared/bkUtils',
   './cellHighlighters',
   './../shared/bkHelper',
   './buildTemplate',
   './datatablesHeadermenu',
   './consts',
-  './../../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min'
+  'jquery-contextmenu'
 ], function(
   $,
   dataTables,

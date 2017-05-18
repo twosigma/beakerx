@@ -17,12 +17,12 @@
 define([
   'jquery',
   'jquery-ui',
-  './../../bower_components/d3/d3.min',
+  'd3',
   './plotUtils',
   './combinedPlotFormatter',
   './../shared/bkUtils',
   './chartExtender',
-  './../../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min',
+  'jquery-contextmenu',
   './plotScope'
 ], function(
   $,

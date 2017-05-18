@@ -30,7 +30,7 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 ## Dependencies
 
 * oracle Java8 JDK
-* yarn, bower, webpack
+* yarn
 * conda
 
 ## Build and run
@@ -53,7 +53,7 @@ The kernels are installed to run out of the repo, so just a build should update 
 
 ## Update after JS change
 
-* `cd beakerx/js; webpack`
+* `cd beakerx/js; yarn webpack`
 
 ## Beaker Notebooks Converter
 ```

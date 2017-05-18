@@ -19,11 +19,11 @@ var _ = require('underscore');
 
 var TableScope = require('./tableDisplay/tableScope');
 
-require('./../bower_components/datatables.net-dt/css/jquery.dataTables.min.css');
-require('./../bower_components/datatables.net-colreorder-dt/css/colReorder.dataTables.min.css');
-require('./../bower_components/datatables.net-fixedcolumns-dt/css/fixedColumns.dataTables.min.css');
-require('./../bower_components/datatables.net-keytable-dt/css/keyTable.dataTables.min.css');
-require('./../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.css');
+require('datatables.net-dt/css/jquery.dataTables.css');
+require('datatables.net-colreorder-dt/css/colReorder.dataTables.css');
+require('datatables.net-fixedcolumns-dt/css/fixedColumns.dataTables.css');
+require('datatables.net-keytable-dt/css/keyTable.dataTables.css');
+require('jquery-contextmenu/dist/jquery.contextMenu.css');
 require('./tableDisplay/css/datatables.scss');
 
 var TableDisplayModel = widgets.DOMWidgetModel.extend({

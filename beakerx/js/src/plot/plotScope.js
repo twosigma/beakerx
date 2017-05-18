@@ -17,7 +17,7 @@
 define([
   'jquery',
   'jquery-ui',
-  './../../bower_components/d3/d3.min',
+  'd3',
   './plotUtils',
   './plotTip',
   './plotConverter',
@@ -27,7 +27,7 @@ define([
   './../shared/bkHelper',
   './gradientlegend',
   './chartExtender',
-  './../../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min'
+  'jquery-contextmenu'
 ], function(
   $,
   jqui,

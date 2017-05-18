@@ -15,7 +15,7 @@
  */
 
 define([
-  './../../bower_components/big.js/big.min',
+  'big.js',
   './plotUtils'
 ], function(
   Big,

@@ -17,8 +17,9 @@ package com.twosigma.beaker.widgets;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
-public abstract class BeakerxWidget extends Widget{
+public abstract class BeakerxWidget extends Widget {
 
   public static final String MODEL_MODULE_VALUE = "beakerx";
   public static final String VIEW_MODULE_VALUE = "beakerx";
@@ -27,9 +28,11 @@ public abstract class BeakerxWidget extends Widget{
   @Override
   public void beforeDisplay() {
     if (getComm() != null) {
-      getComm().sendUpdate(MODEL, SerializeToJson.toJson(this));
+      getComm().sendUpdate(MODEL, serializeToJsonObject());
     }
   }
+
+  protected abstract Map serializeToJsonObject();
 
   @Override
   protected void addValueChangeMsgCallback() {

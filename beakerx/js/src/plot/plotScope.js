@@ -318,7 +318,7 @@ define([
   };
 
   PlotScope.prototype.watchModelGetWidth = function(newWidth) {
-    if (this.width == newWidth) { return; }
+    if (this.width === newWidth) { return; }
     this.width = newWidth;
     this.jqcontainer.css("width", newWidth );
     this.jqsvg.css("width", newWidth );
@@ -338,7 +338,7 @@ define([
   };
 
   PlotScope.prototype.emitSizeChange = function() {
-    if (this.model.updateWidth != null) {
+    if (this.model.updateWidth !== null) {
       this.model.updateWidth(this.width);
     } // not stdmodel here
 

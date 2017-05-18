@@ -122,12 +122,13 @@ define([
           // self.$apply();
           this.setDumpState(self.dumpState());
 
-          self.updateModels();
+          self.updateModels('focus');
         },
         updateWidth : function(width) {
           self.width = width;
           self.element.find("#combplotTitle").css("width", width);
-          // self.$apply();
+
+          self.updateModels('width');
         },
         updateMargin : function() {
           // if any of plots has left-positioned legend we should update left margin (with max value)
@@ -333,11 +334,15 @@ define([
     plotUtils.drawPng(self.canvas, imgsrc, fileName + '.png');
   };
 
-  CombinedPlotScope.prototype.updateModels = function() {
+  CombinedPlotScope.prototype.updateModels = function(updateType) {
     var self = this;
 
     this.scopes.forEach(function(scope) {
-      scope.onModelFucusUpdate(self.focus);
+      if (updateType === 'focus') {
+        scope.onModelFucusUpdate(self.focus);
+      } else if (updateType === 'width') {
+        scope.watchModelGetWidth(self.width);
+      }
     });
   };
 

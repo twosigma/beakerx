@@ -15,10 +15,10 @@
  */
 package com.twosigma.beaker.groovy.evaluator;
 
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.evaluator.InternalVariable;
-import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beaker.groovy.autocomplete.GroovyClasspathScanner;
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
@@ -365,7 +365,8 @@ public class GroovyEvaluator implements Evaluator {
           }
 
           j.outputObject.started();
-          String code = j.codeToBeExecuted;
+
+          String code = codeToBeExecuted(j);
 
           if (!executor.executeTask(new MyRunnable(code, j.outputObject, loader))) {
             j.outputObject.error("... cancelled!");
@@ -397,6 +398,14 @@ public class GroovyEvaluator implements Evaluator {
       NamespaceClient.delBeaker(sessionId);
     }
 
+    private String codeToBeExecuted(jobDescriptor j) {
+      String code = j.codeToBeExecuted;
+      if (code.startsWith("new Line" ) || code.startsWith("new Points" )){
+        code = "new Plot() << " + code;
+      }
+      return code;
+    }
+
     protected class MyRunnable implements Runnable {
 
       protected final String theCode;
@@ -418,6 +427,7 @@ public class GroovyEvaluator implements Evaluator {
         try {
 
           Thread.currentThread().setContextClassLoader(groovyClassLoader);
+
           Class<?> parsedClass = groovyClassLoader.parseClass(theCode);
 
           Script instance = (Script) parsedClass.newInstance();

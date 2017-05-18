@@ -17,6 +17,7 @@
 define([
   'jquery',
   'jquery-ui',
+  'jquery-ui/ui/widgets/draggable',
   'd3',
   './plotUtils',
   './plotTip',
@@ -31,6 +32,7 @@ define([
 ], function(
   $,
   jqui,
+  jquiDraggable,
   d3,
   plotUtils,
   plotTip,

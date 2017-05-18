@@ -14,14 +14,12 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.widgets;
+package com.twosigma.beaker.chart;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryLines;
@@ -66,8 +64,6 @@ import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
-import com.twosigma.beaker.table.TableDisplay;
-import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
 import com.twosigma.beaker.chart.treemap.TreeMap;
 import com.twosigma.beaker.chart.serializer.TreeMapSerializer;
 import com.twosigma.beaker.chart.serializer.TreeMapNodeSerializer;
@@ -75,14 +71,13 @@ import net.sf.jtreemap.swing.TreeMapNode;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class SerializeToJson {
+public class ChartToJson {
 
   private static ObjectMapper mapper;
   private static Map<Class<?>, JsonSerializer> serializerMap = new Hashtable<>();
 
   static {
 
-    serializerMap.put(TableDisplay.class, new TableDisplaySerializer());
     serializerMap.put(Color.class, new ColorSerializer());
     serializerMap.put(XYChart.class, new XYChartSerializer());
     serializerMap.put(CombinedPlot.class, new CombinedPlotSerializer());
@@ -109,7 +104,7 @@ public class SerializeToJson {
     serializerMap.put(TreeMap.class, new TreeMapSerializer());
     serializerMap.put(TreeMapNode.class, new TreeMapNodeSerializer());
 
-    SimpleModule module = new SimpleModule("MySerializer", new Version(1, 0, 0, null));
+    SimpleModule module = new SimpleModule("ChartSerializer", new Version(1, 0, 0, null));
     serializerMap.forEach((k, v) -> {
       module.addSerializer(k, v);
     });

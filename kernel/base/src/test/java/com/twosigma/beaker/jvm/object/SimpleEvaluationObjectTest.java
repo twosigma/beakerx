@@ -17,9 +17,12 @@
 package com.twosigma.beaker.jvm.object;
 
 import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beaker.KernelTest;
+import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.ObserverObjectTest;
 import com.twosigma.beaker.jvm.threads.BeakerOutputHandler;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,12 +32,20 @@ public class SimpleEvaluationObjectTest {
 
   private SimpleEvaluationObject seo;
   private ObserverObjectTest observer;
+  private KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
     seo = new SimpleEvaluationObject("code", new ExecuteCodeCallbackTest());
     observer = new ObserverObjectTest();
     seo.addObserver(observer);
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
+}
+
+  @After
+  public void tearDown() throws Exception {
+    KernelManager.register(null);
   }
 
   @Test
@@ -188,6 +199,86 @@ public class SimpleEvaluationObjectTest {
     handler.write("test".getBytes());
     //then
     Assertions.assertThat(seo.getConsoleOutput()).isNotEmpty();
+  }
+
+  @Test
+  public void appendOutput_shouldNotifyObserver() throws Exception {
+    //when
+    seo.appendOutput("test\n");
+    //then
+    Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
+  }
+
+  @Test
+  public void appendOutputWithDoubleMaxSizeString_outputDataHasTwoLines() throws Exception {
+    //when
+    seo.appendOutput(generateDoubleMaxSizeString() + "\n");
+    //then
+    Assertions.assertThat(seo.getOutputdata().get(0))
+        .isInstanceOf(SimpleEvaluationObject.EvaluationStdOutput.class);
+    SimpleEvaluationObject.EvaluationStdOutput stdOut =
+        (SimpleEvaluationObject.EvaluationStdOutput) seo.getOutputdata().get(0);
+    Assertions.assertThat(stdOut.payload.split("\n").length).isEqualTo(2);
+  }
+
+  @Test
+  public void appendError_shouldNotifyObserver() throws Exception {
+    //when
+    seo.appendError("test\n");
+    //then
+    Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(seo);
+  }
+
+  @Test
+  public void appendErrorWithDoubleMaxSizeString_outputDataHasTwoLines() throws Exception {
+    //when
+    seo.appendError(generateDoubleMaxSizeString() + "\n");
+    //then
+    Assertions.assertThat(seo.getOutputdata().get(0))
+        .isInstanceOf(SimpleEvaluationObject.EvaluationStdError.class);
+    SimpleEvaluationObject.EvaluationStdError stdErr =
+        (SimpleEvaluationObject.EvaluationStdError) seo.getOutputdata().get(0);
+    Assertions.assertThat(stdErr.payload.split("\n").length).isEqualTo(2);
+  }
+
+  @Test
+  public void appendErrorWithNotDesirableMessage_outputDataDoesNotContainThatMessage() throws Exception {
+    String notDesirableMessage = "JavaSourceCompilerImpl compile";
+    //when
+    seo.appendError("test\n" + notDesirableMessage + "\n");
+    //then
+    SimpleEvaluationObject.EvaluationStdError stdErr =
+        (SimpleEvaluationObject.EvaluationStdError) seo.getOutputdata().get(0);
+    Assertions.assertThat(stdErr.payload).doesNotContain(notDesirableMessage);
+    Assertions.assertThat(stdErr.payload).contains("test");
+  }
+
+  @Test
+  public void structuredUpdate_shouldPublishMessages() throws Exception {
+    //when
+    seo.structuredUpdate("create progressReporting", 10);
+    //then
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+  }
+
+  @Test
+  public void clrOutputHandler_shouldPublishMessages() throws Exception {
+    //given
+    seo.structuredUpdate("create progressReporting", 10);
+    kernel.clearPublishedMessages();
+    //when
+    seo.clrOutputHandler();
+    //then
+    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+  }
+
+  private String generateDoubleMaxSizeString(){
+    int MAX_LINE_LENGTH = 240;
+    StringBuffer sb = new StringBuffer();
+    for (int i = 0; i < MAX_LINE_LENGTH * 2; i++) {
+      sb.append('s');
+    }
+    return sb.toString();
   }
 
 }

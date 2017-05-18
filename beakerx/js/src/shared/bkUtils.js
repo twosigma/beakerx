@@ -15,8 +15,12 @@
  */
 
 define([
-  './../plot/commonUtils'
-], function(commonUtils) {
+  './../plot/commonUtils',
+  'underscore'
+], function(
+  commonUtils,
+  _
+) {
   var bkUtils = {
     generateId: function(length) {
       var text = "";

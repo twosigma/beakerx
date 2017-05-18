@@ -32,6 +32,7 @@
     "datatables.net-fixedcolumns-dt": "~3.2.2",
     "datatables.net-dt": "~3.2.2",
     "jquery-ui": "^1.12.1",
-    "flatpickr": "^2.5.5"
+    "flatpickr": "^2.5.5",
+    "underscore": "^1.8.3"
   }
 }

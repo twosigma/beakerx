@@ -15,6 +15,7 @@
  */
 
 define([
+  'underscore',
   'jquery',
   'jquery-ui',
   './../../bower_components/d3/d3.min',
@@ -29,6 +30,7 @@ define([
   './chartExtender',
   './../../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min'
 ], function(
+  _,
   $,
   jqui,
   d3,

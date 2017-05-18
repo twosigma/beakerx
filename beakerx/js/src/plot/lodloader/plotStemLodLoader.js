@@ -15,6 +15,7 @@
  */
 
 define([
+  'underscore',
   './../plotUtils',
   './../std/plotstem',
   './../plotSampler',
@@ -23,6 +24,7 @@ define([
   './../auxes/plotAuxBox',
   './../auxes/plotAuxStem'
 ], function(
+  _,
   plotUtils,
   PlotStem,
   PlotSampler,

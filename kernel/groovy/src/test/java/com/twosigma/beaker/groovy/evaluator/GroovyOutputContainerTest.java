@@ -29,6 +29,7 @@ import com.twosigma.jupyter.message.Message;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
@@ -78,7 +79,7 @@ public class GroovyOutputContainerTest {
     Message tableDisplay = messages.get(0);
     verifyInternalOpenCommMsg(tableDisplay, BeakerxPlot.MODEL_NAME_VALUE, BeakerxPlot.VIEW_NAME_VALUE);
     Message model = messages.get(1);
-    assertThat(getValueForProperty(model, "model", String.class)).isNotEmpty();
+    assertThat(getValueForProperty(model, "model", Map.class)).isNotEmpty();
     verifyDisplayMsg(messages);
   }
 

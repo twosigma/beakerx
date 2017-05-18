@@ -174,41 +174,8 @@ public class SerializeToJson {
     mapper.registerModule(module);
   }
 
-  public static String toJson(Object result) {
-    if (getMapper() != null && isBeakerChart(result)) {
-      try {
-        return getMapper().writeValueAsString(result);
-      } catch (Exception e) {
-        return exceptionToString(e);
-      }
-    }
-    return result != null ? result.toString() : null;
-  }
-
-  private static boolean isBeakerChart(Object result){
-    boolean ret = false;
-    if(result != null){
-      for (Class<?> clazz : getSerializerMap().keySet()) {
-        ret = clazz.isAssignableFrom(result.getClass());
-        if(ret){
-          break;
-        }
-      }
-    }
-    return ret;
-  }
-
-  private static String exceptionToString(Exception e) {
-    StringWriter w = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(w);
-    e.printStackTrace(printWriter);
-    printWriter.flush();
-    return w.toString();
-  }
-
-
-  private static Map<Class<?>, JsonSerializer> getSerializerMap() {
-    return serializerMap;
+  public static Map toJson(Object result) {
+      return getMapper().convertValue(result, Map.class);
   }
 
   private static ObjectMapper getMapper() {

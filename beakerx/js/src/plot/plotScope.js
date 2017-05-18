@@ -291,14 +291,6 @@ define([
       self.watchModelGetWidth();
     });
 
-    // self.$watch("model.getFocus()", function(newFocus) {
-    //   if (newFocus == null) { return; }
-    //   self.focus.xl = newFocus.xl;
-    //   self.focus.xr = newFocus.xr;
-    //   self.focus.xspan = newFocus.xr - newFocus.xl;
-    //   self.calcMapping(false);
-    //   self.update();
-    // });
     // self.$watch("model.getWidth()", function(newWidth) {
     //   if (self.width == newWidth) { return; }
     //   self.width = newWidth;
@@ -314,6 +306,15 @@ define([
     //     self.update();
     //   }
     // });
+  };
+
+  PlotScope.prototype.onModelFucusUpdate = function(newFocus) {
+    if (newFocus === null) { return; }
+    this.focus.xl = newFocus.xl;
+    this.focus.xr = newFocus.xr;
+    this.focus.xspan = newFocus.xr - newFocus.xl;
+    this.calcMapping(false);
+    this.update();
   };
 
   PlotScope.prototype.watchModelGetWidth = function(newWidth) {

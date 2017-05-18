@@ -40,6 +40,7 @@ define([
     this.wrapperId = wrapperId;
     this.id = null;
     this.childScopeNo = 1;
+    this.scopes = [];
 
     this.model = {
       model: {},
@@ -120,6 +121,8 @@ define([
           _.extend(self.focus, focus);
           // self.$apply();
           this.setDumpState(self.dumpState());
+
+          self.updateModels();
         },
         updateWidth : function(width) {
           self.width = width;
@@ -330,6 +333,14 @@ define([
     plotUtils.drawPng(self.canvas, imgsrc, fileName + '.png');
   };
 
+  CombinedPlotScope.prototype.updateModels = function() {
+    var self = this;
+
+    this.scopes.forEach(function(scope) {
+      scope.onModelFucusUpdate(self.focus);
+    });
+  };
+
   CombinedPlotScope.prototype.setModelData = function(data) {
     var self = this;
 
@@ -369,6 +380,9 @@ define([
 
     var childId = self.wrapperId + '_child' + self.childScopeNo;
     var currentScope = new PlotScope(childId);
+
+    this.scopes.push(currentScope);
+
     var tmpl = currentScope.buildTemplate();
     var tmplElement = $(tmpl);
     var container = self.element.children('.combplot-plotcontainer');

@@ -40,6 +40,7 @@ define([
     this.wrapperId = wrapperId;
     this.id = null;
     this.childScopeNo = 1;
+    this.scopes = [];
 
     this.model = {
       model: {},
@@ -120,11 +121,14 @@ define([
           _.extend(self.focus, focus);
           // self.$apply();
           this.setDumpState(self.dumpState());
+
+          self.updateModels('focus');
         },
         updateWidth : function(width) {
           self.width = width;
           self.element.find("#combplotTitle").css("width", width);
-          // self.$apply();
+
+          self.updateModels('width');
         },
         updateMargin : function() {
           // if any of plots has left-positioned legend we should update left margin (with max value)
@@ -330,6 +334,18 @@ define([
     plotUtils.drawPng(self.canvas, imgsrc, fileName + '.png');
   };
 
+  CombinedPlotScope.prototype.updateModels = function(updateType) {
+    var self = this;
+
+    this.scopes.forEach(function(scope) {
+      if (updateType === 'focus') {
+        scope.onModelFucusUpdate(self.focus);
+      } else if (updateType === 'width') {
+        scope.watchModelGetWidth(self.width);
+      }
+    });
+  };
+
   CombinedPlotScope.prototype.setModelData = function(data) {
     var self = this;
 
@@ -369,6 +385,9 @@ define([
 
     var childId = self.wrapperId + '_child' + self.childScopeNo;
     var currentScope = new PlotScope(childId);
+
+    this.scopes.push(currentScope);
+
     var tmpl = currentScope.buildTemplate();
     var tmplElement = $(tmpl);
     var container = self.element.children('.combplot-plotcontainer');

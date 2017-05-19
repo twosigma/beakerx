@@ -14,7 +14,15 @@
  *  limitations under the License.
  */
 
-define(['jquery', 'datatables.net'], function(jQuery, dataTables) {
+define([
+  'underscore',
+  'jquery',
+  'datatables.net'
+], function(
+  _,
+  jQuery,
+  dataTables
+) {
 
   jQuery.fn.dataTable = dataTables;
 

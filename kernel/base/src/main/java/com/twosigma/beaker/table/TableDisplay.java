@@ -536,4 +536,8 @@ public class TableDisplay extends BeakerxWidget {
     return RunWidgetClosure.runClosure(closure, params);
   }
 
+  @Override
+  protected Map serializeToJsonObject() {
+    return TableDisplayToJson.toJson(this);
+  }
 }

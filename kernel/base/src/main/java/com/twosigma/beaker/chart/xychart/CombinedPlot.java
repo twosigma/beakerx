@@ -17,8 +17,11 @@
 package com.twosigma.beaker.chart.xychart;
 
 import com.twosigma.beaker.chart.ChartDetails;
+import com.twosigma.beaker.chart.ChartToJson;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.twosigma.beaker.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
 import static com.twosigma.beaker.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
@@ -144,4 +147,8 @@ public class CombinedPlot extends ChartDetails {
     this.xTickLabelsVisible = xTickLabelsVisible;
   }
 
+  @Override
+  protected Map serializeToJsonObject() {
+    return ChartToJson.toJson(this);
+  }
 }

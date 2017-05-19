@@ -15,10 +15,12 @@
  */
 
 define([
+  'underscore',
   './../shared/bkUtils',
   './../shared/bkGlobals',
   './../shared/bkHelper'
 ], function(
+  _,
   bkUtils,
   GLOBALS,
   bkHelper

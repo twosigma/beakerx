@@ -28,6 +28,20 @@ var loaders = [
   { test: /\.jpe?g$|\.gif$|\.png$|\.svg$|\.woff(\?.*)$|\.eot(\?.*)$|\.woff2(\?.*)$|\.ttf(\?.*)$|\.wav$|\.mp3$/, loader: "file-loader" }
 ];
 
+var plugins = [
+  new BowerWebpackPlugin({
+    modulesDirectories: ["bower_components"],
+    manifestFiles:      "bower.json",
+    includes:           /.*/,
+    excludes:           [],
+    searchResolveModulesDirectories: true
+  }),
+  new WatchIgnorePlugin([
+    path.resolve(__dirname, './node_modules/'),
+    path.resolve(__dirname, './bower_components/')
+  ])
+];
+
 
 module.exports = [
   {// Notebook extension
@@ -54,7 +68,8 @@ module.exports = [
       'base/js/namespace',
       'base/js/events',
       'require'
-    ]
+    ],
+    plugins: plugins
   },
   {// Bundle for the notebook containing the custom widget views and models
     //
@@ -76,19 +91,7 @@ module.exports = [
       modulesDirectories: ['web_modules', 'node_modules', 'bower_components'],
       extensions: ['.jsx','.js','.less','.css','']
     },
-    plugins: [
-      new BowerWebpackPlugin({
-        modulesDirectories: ["bower_components"],
-        manifestFiles:      "bower.json",
-        includes:           /.*/,
-        excludes:           [],
-        searchResolveModulesDirectories: true
-      }),
-      new WatchIgnorePlugin([
-        path.resolve(__dirname, './node_modules/'),
-        path.resolve(__dirname, './bower_components/')
-      ])
-    ],
+    plugins: plugins,
     externals: ['jupyter-js-widgets']
   },
   {// Embeddable beakerx bundle
@@ -120,15 +123,7 @@ module.exports = [
       modulesDirectories: ['web_modules', 'node_modules', 'bower_components'],
       extensions: ['.jsx','.js','.less','.css','']
     },
-    plugins: [
-      new BowerWebpackPlugin({
-        modulesDirectories: ["bower_components"],
-        manifestFiles:      "bower.json",
-        includes:           /.*/,
-        excludes:           [],
-        searchResolveModulesDirectories: true
-      })
-    ],
+    plugins: plugins,
     externals: ['jupyter-js-widgets']
   }
 ];

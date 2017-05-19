@@ -15,10 +15,12 @@
  */
 
 define([
+  'underscore',
   './../../../bower_components/big.js/big.min',
   './../plotUtils',
   './../../shared/bkUtils'
 ], function(
+  _,
   Big,
   plotUtils,
   bkUtils

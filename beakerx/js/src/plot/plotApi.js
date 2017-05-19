@@ -15,10 +15,12 @@
  */
 
  define([
+   'underscore',
    './../shared/bkUtils',
    './plotScope',
    './combinedPlotScope'
  ], function(
+   _,
    bkUtils,
    PlotScope,
    CombinedPlotScope

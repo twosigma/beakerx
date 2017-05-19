@@ -15,9 +15,11 @@
  */
 
 define([
+  'underscore',
   './../../bower_components/big.js/big.min',
   './plotUtils'
 ], function(
+  _,
   Big,
   plotUtils
 ) {

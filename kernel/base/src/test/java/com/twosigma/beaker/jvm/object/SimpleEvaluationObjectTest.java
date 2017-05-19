@@ -212,7 +212,7 @@ public class SimpleEvaluationObjectTest {
   @Test
   public void appendOutputWithDoubleMaxSizeString_outputDataHasTwoLines() throws Exception {
     //when
-    seo.appendOutput(generateDoubleMaxSizeString() + "\n");
+    seo.appendOutput("test\n" + generateDoubleMaxSizeString());
     //then
     Assertions.assertThat(seo.getOutputdata().get(0))
         .isInstanceOf(SimpleEvaluationObject.EvaluationStdOutput.class);
@@ -232,7 +232,7 @@ public class SimpleEvaluationObjectTest {
   @Test
   public void appendErrorWithDoubleMaxSizeString_outputDataHasTwoLines() throws Exception {
     //when
-    seo.appendError(generateDoubleMaxSizeString() + "\n");
+    seo.appendError("test\n" + generateDoubleMaxSizeString());
     //then
     Assertions.assertThat(seo.getOutputdata().get(0))
         .isInstanceOf(SimpleEvaluationObject.EvaluationStdError.class);

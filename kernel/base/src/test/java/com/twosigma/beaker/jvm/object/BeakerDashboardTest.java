@@ -19,6 +19,7 @@ package com.twosigma.beaker.jvm.object;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.twosigma.beaker.jvm.ObserverObjectTest;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.SerializationTestHelper;
@@ -202,11 +203,88 @@ public class BeakerDashboardTest {
     Assertions.assertThat(actualObj.get("thestyle").asText()).isEqualTo("test");
   }
 
+  @Test
+  public void dashRowSerializeColumn_resultJsonHasColumnListNotEmpty() throws Exception {
+    row.addColumn(column);
+    //when
+    JsonNode actualObj = serialiseDashRow(row);
+    //then
+    Assertions.assertThat((ArrayNode) actualObj.get("cols")).isNotEmpty();
+  }
+
+  @Test
+  public void dashColumnSerializeTheClass_resultJsonHasTheClass() throws Exception {
+    column.setTheClass("test");
+    //when
+    JsonNode actualObj = serialiseDashColumn(column);
+    //then
+    Assertions.assertThat(actualObj.get("theclass").asText()).isEqualTo("test");
+  }
+
+  @Test
+  public void dashColumnSerializeTheStyle_resultJsonHasTheStyle() throws Exception {
+    column.setTheStyle("test");
+    //when
+    JsonNode actualObj = serialiseDashColumn(column);
+    //then
+    Assertions.assertThat(actualObj.get("thestyle").asText()).isEqualTo("test");
+  }
+
+  @Test
+  public void dashColumnSerializeItem_resultJsonHasPayloadListNotEmpty() throws Exception {
+    column.addItem("test");
+    //when
+    JsonNode actualObj = serialiseDashColumn(column);
+    //then
+    Assertions.assertThat((ArrayNode) actualObj.get("payload")).isNotEmpty();
+  }
+
+  @Test
+  public void dashColumnSetTheClass_dashColumnHasTheClass() throws Exception {
+    //when
+    column.setTheClass("theClass");
+    //then
+    Assertions.assertThat(column.getTheClass()).isEqualTo("theClass");
+  }
+
+  @Test
+  public void dashColumnSetTheStyle_dashColumnHasTheStyle() throws Exception {
+    //when
+    column.setTheStyle("theStyle");
+    //then
+    Assertions.assertThat(column.getTheStyle()).isEqualTo("theStyle");
+  }
+
+  @Test
+  public void dashColumnAddItem_dashColumnHasPayload() throws Exception {
+    //when
+    column.addItem("test");
+    //then
+    Assertions.assertThat(column.getPayload().get(0)).isEqualTo("test");
+  }
+
+  @Test
+  public void dashColumnSetWidth_dashColumnHasWidth() throws Exception {
+    //when
+    column.setWidth(100);
+    //then
+    Assertions.assertThat(column.getWidth()).isEqualTo(100);
+  }
+
   private JsonNode serialiseDashRow(BeakerDashboard.dashRow row) throws Exception{
     ObjectMapper mapper = new ObjectMapper();
     StringWriter sw = new StringWriter();
     JsonGenerator jgen = mapper.getFactory().createGenerator(sw);
     row.serialize(jgen, new BasicObjectSerializer());
+    jgen.flush();
+    return mapper.readTree(sw.toString());
+  }
+
+  private JsonNode serialiseDashColumn(BeakerDashboard.dashColumn column) throws Exception{
+    ObjectMapper mapper = new ObjectMapper();
+    StringWriter sw = new StringWriter();
+    JsonGenerator jgen = mapper.getFactory().createGenerator(sw);
+    column.serialize(jgen, new BasicObjectSerializer());
     jgen.flush();
     return mapper.readTree(sw.toString());
   }

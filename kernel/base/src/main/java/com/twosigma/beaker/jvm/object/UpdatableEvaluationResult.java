@@ -60,6 +60,7 @@ public class UpdatableEvaluationResult extends Observable {
         jgen.writeStringField("type", "UpdatableEvaluationResult");
         jgen.writeFieldName("payload");
         Object obj = v.getValue();
+        jgen.writeObject(obj!=null ? obj : "null");
         jgen.writeEndObject();
       }
     }

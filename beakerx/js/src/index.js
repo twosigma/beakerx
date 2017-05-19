@@ -29,7 +29,8 @@ module.exports = {};
 var loadedModules = [
   require("./Plot"),
   require("./TableDisplay"),
-  require("./EasyForm")
+  require("./EasyForm"),
+  require("./GridView")
 ];
 
 for (var i in loadedModules) {

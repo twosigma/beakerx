@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+var _ = require('underscore');
+
 function MenuHelper (tableScope) {
   return {
     doAlignment: function(el, key) {

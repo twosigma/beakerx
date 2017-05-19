@@ -15,10 +15,12 @@
  */
 
 define([
+  'underscore',
   'big.js',
   './../plotUtils',
   './../../shared/bkUtils'
 ], function(
+  _,
   Big,
   plotUtils,
   bkUtils

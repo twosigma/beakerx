@@ -15,12 +15,14 @@
  */
 
 define([
+  'underscore',
   './plotConverter',
   './plotUtils',
   './plotFactory',
   './std/plotaxis',
   './heatmapconverter'
 ],function(
+  _,
   plotConverter,
   plotUtils,
   plotFactory,

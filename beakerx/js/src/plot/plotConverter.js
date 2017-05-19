@@ -15,9 +15,11 @@
  */
 
 define([
+  'underscore',
   'big.js',
   './plotUtils'
 ], function(
+  _,
   Big,
   plotUtils
 ) {

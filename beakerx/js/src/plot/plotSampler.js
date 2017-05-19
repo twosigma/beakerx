@@ -14,7 +14,11 @@
  *  limitations under the License.
  */
 
-define(function() {
+define([
+  'underscore'
+], function(
+  _
+) {
 
   var PlotSampler = function(xs, ys, _ys){
     this.xs = xs;

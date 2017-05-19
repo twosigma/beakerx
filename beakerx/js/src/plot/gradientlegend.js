@@ -15,8 +15,10 @@
  */
 
 define([
+  'underscore',
   'd3'
 ], function(
+  _,
   d3
 ) {
   var count = 0;

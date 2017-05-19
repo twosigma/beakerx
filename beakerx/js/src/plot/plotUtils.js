@@ -15,11 +15,13 @@
  */
 
 define([
+  'underscore',
   'big.js',
   './../shared/bkHelper',
   './../shared/bkUtils',
   'd3'
 ], function(
+  _,
   Big,
   bkHelper,
   bkUtils,

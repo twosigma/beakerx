@@ -163,4 +163,9 @@ public class Chart extends ChartDetails {
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
+
+  @Override
+  protected Map serializeToJsonObject() {
+    return ChartToJson.toJson(this);
+  }
 }

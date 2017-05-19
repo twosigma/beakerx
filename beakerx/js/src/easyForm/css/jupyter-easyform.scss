@@ -22,6 +22,13 @@
     align-items: stretch;
   }
 
+  .widget-box > .widget-label {
+    min-width: 120px;
+    max-width: 200px;
+    margin-right: 15px;
+    text-align: right;
+  }
+
 }
 
 .beaker-fieldset {

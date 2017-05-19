@@ -27,6 +27,11 @@ var loaders = [
   { test: /\.jpe?g$|\.gif$|\.png$|\.svg$|\.woff(\?.*)$|\.eot(\?.*)$|\.woff2(\?.*)$|\.ttf(\?.*)$|\.wav$|\.mp3$/, loader: "file-loader" }
 ];
 
+var plugins = [
+  new WatchIgnorePlugin([
+    path.resolve(__dirname, './node_modules/')
+  ])
+];
 
 module.exports = [
   {// Notebook extension
@@ -75,11 +80,7 @@ module.exports = [
       modulesDirectories: ['web_modules', 'node_modules'],
       extensions: ['.jsx','.js','.less','.css','']
     },
-    plugins: [
-      new WatchIgnorePlugin([
-        path.resolve(__dirname, './node_modules/')
-      ])
-    ],
+    plugins: plugins,
     externals: ['jupyter-js-widgets']
   },
   {// Embeddable beakerx bundle
@@ -111,6 +112,7 @@ module.exports = [
       modulesDirectories: ['web_modules', 'node_modules'],
       extensions: ['.jsx','.js','.less','.css','']
     },
+    plugins: plugins,
     externals: ['jupyter-js-widgets']
   }
 ];

@@ -18,9 +18,12 @@ package com.twosigma.beaker.jvm.object;
 import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beaker.widgets.box.HBox;
+import com.twosigma.beaker.widgets.box.VBox;
 import com.twosigma.beaker.widgets.selectioncontainer.Tab;
 import com.twosigma.beaker.widgets.strings.Label;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,12 +31,37 @@ public class DisplayOutputContainer {
 
   public static void display(OutputContainer container) {
     if (container.getLayoutManager() instanceof TabbedOutputContainerLayoutManager) {
-      List<CommFunctionality> items = container.getItems().stream().map(x -> toCommFunctionality(x)).collect(Collectors.toList());
+      List<Widget> items = getCommFunctionalities(container);
       Tab tab = new Tab(items, container.getLabels());
       tab.display();
+    } else if (container.getLayoutManager() instanceof GridOutputContainerLayoutManager) {
+
+      GridOutputContainerLayoutManager layout = (GridOutputContainerLayoutManager) container.getLayoutManager();
+      int columns = layout.getColumns();
+
+      List<Widget> items = getCommFunctionalities(container);
+      List<Widget> rows = new ArrayList<>();
+
+      for (int i = 0; i < items.size(); i = i + columns) {
+        List<Widget> rowItems = new ArrayList<>();
+        for (int c = i; c < i + columns; c++) {
+          if (c < items.size()) {
+            rowItems.add(items.get(c));
+          } else {
+            rowItems.add(new Label());
+          }
+        }
+        rows.add(new HBox(rowItems));
+      }
+      VBox vBox = new VBox(rows);
+      vBox.display();
     } else {
       container.getItems().forEach(item -> toCommFunctionality(item).display());
     }
+  }
+
+  private static List<Widget> getCommFunctionalities(OutputContainer container) {
+    return container.getItems().stream().map(x -> toCommFunctionality(x)).collect(Collectors.toList());
   }
 
 

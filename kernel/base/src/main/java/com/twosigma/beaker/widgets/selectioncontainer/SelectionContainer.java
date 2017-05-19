@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.widgets.selectioncontainer;
 
-import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.box.Box;
 
 import java.util.HashMap;
@@ -27,11 +27,11 @@ public abstract class SelectionContainer extends Box {
   public static final String TITLES = "_titles";
   protected Map<Integer, String> titles = new HashMap<>();
 
-  protected SelectionContainer(List<CommFunctionality> children) {
+  protected SelectionContainer(List<Widget> children) {
     super(children);
   }
 
-  public SelectionContainer(List<CommFunctionality> children, List<String> labels) {
+  public SelectionContainer(List<Widget> children, List<String> labels) {
     super(children);
     labels.forEach( (l) -> setTitle(this.titles.size(), l));
   }

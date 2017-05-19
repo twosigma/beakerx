@@ -16,7 +16,7 @@
 package com.twosigma.beaker.easyform;
 
 import com.twosigma.beaker.widgets.BeakerxWidget;
-import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.box.Box;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class EasyFormView extends Box {
 
   private String easyFormName;
 
-  public EasyFormView(List<CommFunctionality> children) {
+  public EasyFormView(List<Widget> children) {
     super(children);
     openComm();
   }

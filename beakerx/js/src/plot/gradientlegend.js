@@ -15,8 +15,10 @@
  */
 
 define([
+  'underscore',
   './../../bower_components/d3/d3.min'
 ], function(
+  _,
   d3
 ) {
   var count = 0;

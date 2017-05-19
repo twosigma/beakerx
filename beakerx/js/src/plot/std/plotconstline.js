@@ -15,8 +15,10 @@
  */
 
 define([
+  'underscore',
   './../plotUtils'
 ], function(
+  _,
   plotUtils
 ) {
 

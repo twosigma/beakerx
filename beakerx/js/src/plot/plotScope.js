@@ -15,6 +15,7 @@
  */
 
 define([
+  'underscore',
   'jquery',
   'jquery-ui',
   './../../bower_components/d3/d3.min',
@@ -29,6 +30,7 @@ define([
   './chartExtender',
   './../../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min'
 ], function(
+  _,
   $,
   jqui,
   d3,
@@ -291,14 +293,6 @@ define([
       self.watchModelGetWidth();
     });
 
-    // self.$watch("model.getFocus()", function(newFocus) {
-    //   if (newFocus == null) { return; }
-    //   self.focus.xl = newFocus.xl;
-    //   self.focus.xr = newFocus.xr;
-    //   self.focus.xspan = newFocus.xr - newFocus.xl;
-    //   self.calcMapping(false);
-    //   self.update();
-    // });
     // self.$watch("model.getWidth()", function(newWidth) {
     //   if (self.width == newWidth) { return; }
     //   self.width = newWidth;
@@ -316,8 +310,17 @@ define([
     // });
   };
 
+  PlotScope.prototype.onModelFucusUpdate = function(newFocus) {
+    if (newFocus === null) { return; }
+    this.focus.xl = newFocus.xl;
+    this.focus.xr = newFocus.xr;
+    this.focus.xspan = newFocus.xr - newFocus.xl;
+    this.calcMapping(false);
+    this.update();
+  };
+
   PlotScope.prototype.watchModelGetWidth = function(newWidth) {
-    if (this.width == newWidth) { return; }
+    if (this.width === newWidth) { return; }
     this.width = newWidth;
     this.jqcontainer.css("width", newWidth );
     this.jqsvg.css("width", newWidth );
@@ -337,7 +340,7 @@ define([
   };
 
   PlotScope.prototype.emitSizeChange = function() {
-    if (this.model.updateWidth != null) {
+    if (this.model.updateWidth !== null) {
       this.model.updateWidth(this.width);
     } // not stdmodel here
 

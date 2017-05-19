@@ -30,26 +30,26 @@ import org.apache.commons.codec.binary.StringUtils;
 public class RastersSerializer extends JsonSerializer<Rasters> {
 
   @Override
-  public void serialize(Rasters raster, JsonGenerator jgen, SerializerProvider sp) throws IOException {
-    validate(raster);
+  public void serialize(Rasters rasters, JsonGenerator jgen, SerializerProvider sp) throws IOException {
+    validate(rasters);
 
     jgen.writeStartObject();
 
-    jgen.writeObjectField("type", raster.getClass().getSimpleName());
-    jgen.writeObjectField("x", raster.getX());
-    jgen.writeObjectField("y", raster.getY());
-    jgen.writeObjectField("opacity", raster.getOpacity());
-    jgen.writeObjectField("visible", raster.getVisible());
-    jgen.writeObjectField("yAxis", raster.getYAxis());
-    jgen.writeObjectField("position", raster.getPosition());
-    jgen.writeObjectField("width", raster.getWidth());
-    jgen.writeObjectField("height", raster.getHeight());
+    jgen.writeObjectField("type", rasters.getClass().getSimpleName());
+    jgen.writeObjectField("x", rasters.getX());
+    jgen.writeObjectField("y", rasters.getY());
+    jgen.writeObjectField("opacity", rasters.getOpacity());
+    jgen.writeObjectField("visible", rasters.getVisible());
+    jgen.writeObjectField("yAxis", rasters.getYAxis());
+    jgen.writeObjectField("position", rasters.getPosition());
+    jgen.writeObjectField("width", rasters.getWidth());
+    jgen.writeObjectField("height", rasters.getHeight());
 
     // datastring will override file path/url
-    if (raster.getDataString() != null) {
-      jgen.writeObjectField("value", Bytes2Base64(raster.getDataString(), null));
-    } else if (!raster.getFilePath().isEmpty()) {
-      String path = raster.getFilePath();
+    if (rasters.getDataString() != null) {
+      jgen.writeObjectField("value", Bytes2Base64(rasters.getDataString(), null));
+    } else if (!rasters.getFilePath().isEmpty()) {
+      String path = rasters.getFilePath();
       File file = new File(path);
 
       if (!file.exists()) {
@@ -64,8 +64,8 @@ public class RastersSerializer extends JsonSerializer<Rasters> {
       }
 
       jgen.writeObjectField("value", Bytes2Base64(picture, extension));
-    } else if (!raster.getFileUrl().isEmpty()) {
-      jgen.writeObjectField("value", raster.getFileUrl());
+    } else if (!rasters.getFileUrl().isEmpty()) {
+      jgen.writeObjectField("value", rasters.getFileUrl());
     }
 
     jgen.writeEndObject();
@@ -83,10 +83,6 @@ public class RastersSerializer extends JsonSerializer<Rasters> {
     if (raster.getWidth() == null || raster.getWidth().isEmpty()) {
       throw new IllegalStateException("Please provide width size.");
     }
-  }
-
-  private String processLargeNumber(Number largeNumber){
-    return largeNumber != null ? largeNumber.toString() : "";
   }
 
   private String Bytes2Base64(byte[] bytes, String format) {

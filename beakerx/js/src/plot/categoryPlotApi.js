@@ -15,9 +15,11 @@
  */
 
  define([
+   'underscore',
    './../shared/bkUtils',
    './plotApi'
  ], function(
+   _,
    bkUtils,
    bkPlotApi
  ) {

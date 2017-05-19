@@ -15,6 +15,7 @@
  */
 
 define([
+  'underscore',
   'jquery',
   'datatables.net',
   'datatables.net-colreorder',
@@ -30,6 +31,7 @@ define([
   './consts',
   './../../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min'
 ], function(
+  _,
   $,
   dataTables,
   dataTablesColReorder,

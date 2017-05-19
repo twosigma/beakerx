@@ -15,9 +15,11 @@
  */
 
 define([
+  'underscore',
   './../plotUtils',
   './../plotTip'
 ], function(
+  _,
   plotUtils,
   plotTip
 ) {

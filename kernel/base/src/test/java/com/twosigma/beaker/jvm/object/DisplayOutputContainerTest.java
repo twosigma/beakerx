@@ -57,7 +57,7 @@ public class DisplayOutputContainerTest {
     OutputContainer oc = new OutputContainer();
     oc.leftShift(values.get(0));
     //when
-    DisplayOutputContainer.display(oc);
+    oc.display();
     //then
     verifyMap(groovyKernel.getPublishedMessages());
   }
@@ -79,7 +79,7 @@ public class DisplayOutputContainerTest {
     oc.setLayoutManager(new TabbedOutputContainerLayoutManager());
     oc.addItem(simpleTimePlot, "Scatter with History");
     //when
-    DisplayOutputContainer.display(oc);
+    oc.display();
     //then
     verifyTabLayout(groovyKernel.getPublishedMessages());
   }

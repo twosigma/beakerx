@@ -15,11 +15,45 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beaker.widgets.box.HBox;
+import com.twosigma.beaker.widgets.box.VBox;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class GridOutputContainerLayoutManager extends AbstractGridLayoutManager {
+
   public GridOutputContainerLayoutManager() {
     this(2);
   }
+
   public GridOutputContainerLayoutManager(int columns) {
     super(columns);
+  }
+
+  @Override
+  public void display(OutputContainer container) {
+    GridOutputContainerLayoutManager layout = (GridOutputContainerLayoutManager) container.getLayoutManager();
+    int columns = layout.getColumns();
+
+    List<Widget> items = getWidgets(container);
+    List<Widget> rows = new ArrayList<>();
+    for (int i = 0; i < items.size(); i = i + columns) {
+      rows.add(new HBox(createRow(columns, items, i)));
+    }
+
+    VBox vBox = new VBox(rows);
+    vBox.display();
+  }
+
+  private List<Widget> createRow(int columns, List<Widget> items, int i) {
+    List<Widget> rowItems = new ArrayList<>();
+    for (int c = i; c < i + columns; c++) {
+      if (c < items.size()) {
+        rowItems.add(items.get(c));
+      }
+    }
+    return rowItems;
   }
 }

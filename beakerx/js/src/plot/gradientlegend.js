@@ -16,7 +16,7 @@
 
 define([
   'underscore',
-  './../../bower_components/d3/d3.min'
+  'd3'
 ], function(
   _,
   d3

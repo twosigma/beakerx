@@ -15,7 +15,6 @@
  */
 
 var version = require('./package.json').version;
-var BowerWebpackPlugin = require("bower-webpack-plugin");
 var WatchIgnorePlugin = require('watch-ignore-webpack-plugin');
 var path = require('path');
 
@@ -29,19 +28,10 @@ var loaders = [
 ];
 
 var plugins = [
-  new BowerWebpackPlugin({
-    modulesDirectories: ["bower_components"],
-    manifestFiles:      "bower.json",
-    includes:           /.*/,
-    excludes:           [],
-    searchResolveModulesDirectories: true
-  }),
   new WatchIgnorePlugin([
-    path.resolve(__dirname, './node_modules/'),
-    path.resolve(__dirname, './bower_components/')
+    path.resolve(__dirname, './node_modules/')
   ])
 ];
-
 
 module.exports = [
   {// Notebook extension
@@ -68,8 +58,7 @@ module.exports = [
       'base/js/namespace',
       'base/js/events',
       'require'
-    ],
-    plugins: plugins
+    ]
   },
   {// Bundle for the notebook containing the custom widget views and models
     //
@@ -88,7 +77,7 @@ module.exports = [
       loaders: loaders
     },
     resolve: {
-      modulesDirectories: ['web_modules', 'node_modules', 'bower_components'],
+      modulesDirectories: ['web_modules', 'node_modules'],
       extensions: ['.jsx','.js','.less','.css','']
     },
     plugins: plugins,
@@ -120,7 +109,7 @@ module.exports = [
       loaders: loaders
     },
     resolve: {
-      modulesDirectories: ['web_modules', 'node_modules', 'bower_components'],
+      modulesDirectories: ['web_modules', 'node_modules'],
       extensions: ['.jsx','.js','.less','.css','']
     },
     plugins: plugins,

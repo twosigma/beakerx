@@ -15,7 +15,7 @@
  */
 
 define([
-  './../../bower_components/moment-timezone/builds/moment-timezone-with-data.min'
+  'moment-timezone/builds/moment-timezone-with-data.min'
 ], function(moment) {
   return {
     applyTimezone: function(timestamp, tz) {

@@ -18,7 +18,8 @@ define([
   'underscore',
   'jquery',
   'jquery-ui',
-  './../../bower_components/d3/d3.min',
+  'jquery-ui/ui/widgets/draggable',
+  'd3',
   './plotUtils',
   './plotTip',
   './plotConverter',
@@ -28,11 +29,12 @@ define([
   './../shared/bkHelper',
   './gradientlegend',
   './chartExtender',
-  './../../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min'
+  'jquery-contextmenu'
 ], function(
   _,
   $,
   jqui,
+  jquiDraggable,
   d3,
   plotUtils,
   plotTip,

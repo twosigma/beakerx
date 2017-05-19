@@ -484,3 +484,8 @@ $fix-col-separator-width: 3px;
     opacity: 1;
   }
 }
+
+.ui-tooltip.ui-widget-shadow {
+  opacity: 1;
+  z-index: 900;
+}

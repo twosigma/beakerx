@@ -1624,6 +1624,21 @@ define([
           });
         }
       },
+      'headerCallback': function(thead) {
+        if (!self.table) {
+          return;
+        }
+
+        var cells = $(thead).find('th');
+        _.forEach(cells, function(cell) {
+          var columnIndex = self.getColumnIndexByCellNode(cell);
+
+          $(cell).tooltip({
+            items: 'th',
+            content: self.types[columnIndex - 1]
+          });
+        });
+      },
       'drawCallback': function(settings) {
         //jscs:disable
         self.update_size();

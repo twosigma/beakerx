@@ -55,16 +55,16 @@ public class KernelConfigurationFile implements ConfigurationFile {
 
   private File getConfig(final String[] args) {
     if (args.length != 1) {
-      logger.info("Invalid parameters passed to the Kernel. Expected one parameter, found " + args.length);
+      logger.error("Invalid parameters passed to the Kernel. Expected one parameter, found " + args.length);
       for (String string : args) {
-        logger.info(string);
+        logger.error(string);
       }
       System.exit(1);
     }
 
     File config = new File(args[0]);
     if (!config.exists()) {
-      logger.info("Kernel configuration not found.");
+      logger.error("Kernel configuration not found.");
       System.exit(1);
     }
     return config;

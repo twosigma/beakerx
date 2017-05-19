@@ -16,8 +16,8 @@
 package com.twosigma.beaker.jvm.object;
 
 import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beaker.widgets.box.GridView;
 import com.twosigma.beaker.widgets.box.HBox;
-import com.twosigma.beaker.widgets.box.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +43,8 @@ public class GridOutputContainerLayoutManager extends AbstractGridLayoutManager 
       rows.add(new HBox(createRow(columns, items, i)));
     }
 
-    VBox vBox = new VBox(rows);
-    vBox.display();
+    GridView gridView = new GridView(rows);
+    gridView.display();
   }
 
   private List<Widget> createRow(int columns, List<Widget> items, int i) {

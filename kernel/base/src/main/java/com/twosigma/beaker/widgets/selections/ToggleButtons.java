@@ -13,45 +13,42 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.bools;
+package com.twosigma.beaker.widgets.selections;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class ToggleButton extends BoolWidget {
-
-  public static String VIEW_NAME_VALUE = "ToggleButtonView";
-  public static String MODEL_NAME_VALUE = "ToggleButtonModel";
-  public static final String TOOLTIP = "tooltip";
+/**
+ * Group of toggle buttons that represent an enumeration. 
+ * Only one toggle button can be toggled at any point in time.
+ *   
+ * @author konst
+ *
+ */
+public class ToggleButtons  extends SingleSelectionWidget{
+  
+  public static final String VIEW_NAME_VALUE = "ToggleButtonsView";
+  public static final String MODEL_NAME_VALUE = "ToggleButtonsModel";
   
   public static final String BUTTON_STYLE = "button_style";
-  public static final String ICON = "icon";
+  public static final String TOOLTIPS = "tooltips";
+  public static final String ICONS = "icons";
 
-  private String tooltip = "";
   private String button_style = ""; 
-  private String icon = "";
-
-  public ToggleButton() {
+  private String[] tooltips = new String[0];
+  private String[] icons = new String[0];
+  
+  public ToggleButtons() {
     super();
     openComm();
   }
+  
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(TOOLTIP, this.tooltip);
     content.put("button_style", button_style);
-    content.put("icon", icon);
     return content;
-  }
-
-  public String getTooltip() {
-    return tooltip;
-  }
-
-  public void setTooltip(String tooltip) {
-    this.tooltip = tooltip;
-    sendUpdate(TOOLTIP, tooltip);
   }
 
   @Override
@@ -68,19 +65,31 @@ public class ToggleButton extends BoolWidget {
     return button_style;
   }
 
-  public void setButton_style(Object button_style) {
-    this.button_style = getString(button_style);
+  public void setButton_style(String button_style) {
+    this.button_style = button_style;
     sendUpdate(BUTTON_STYLE, button_style);
   }
-  
-  public String getIcon() {
-    return icon;
+
+
+  public String[] getTooltips() {
+    return tooltips;
   }
 
 
-  public void setIcon(Object icon) {
-    this.icon = getString(icon);
-    sendUpdate(ICON, icon);
+  public void setTooltips(String[] tooltips) {
+    this.tooltips = tooltips;
+    sendUpdate(TOOLTIPS, tooltips);
   }
-  
+
+
+  public String[] getIcons() {
+    return icons;
+  }
+
+
+  public void setIcons(String[] icons) {
+    this.icons = icons;
+    sendUpdate(ICONS, icons);
+  }
+
 }

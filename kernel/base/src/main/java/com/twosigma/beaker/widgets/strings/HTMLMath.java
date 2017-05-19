@@ -13,14 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.selections;
+package com.twosigma.beaker.widgets.strings;
 
-public class Dropdown extends SingleSelectionWidget {
+/**
+ * Renders the string `value` as HTML, and render mathematics.
+ * 
+ * @author konst
+ *
+ */
+public class HTMLMath extends StringWidget {
 
-  public static final String VIEW_NAME_VALUE = "DropdownView";
-  public static final String MODEL_NAME_VALUE = "DropdownModel";
+  public static final String VIEW_NAME_VALUE = "HTMLMathView";
+  public static final String MODEL_NAME_VALUE = "HTMLMathModel";
 
-  public Dropdown() {
+  public HTMLMath() {
     super();
     openComm();
   }
@@ -34,5 +40,4 @@ public class Dropdown extends SingleSelectionWidget {
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
-  
 }

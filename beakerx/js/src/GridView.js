@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,19 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.jvm.object;
 
-import com.twosigma.beaker.widgets.Widget;
-import com.twosigma.beaker.widgets.selectioncontainer.Tab;
+var widgets = require('jupyter-js-widgets');
+var _ = require('underscore');
 
-import java.util.List;
+require('./gridView/grid-view.scss');
 
-public class TabbedOutputContainerLayoutManager extends OutputContainerLayoutManager {
+var GridViewModel = widgets.VBoxModel.extend({
+  _model_name : 'GridViewModel',
+  _view_name : 'GridView',
+  _model_module : 'beakerx',
+  _view_module : 'beakerx'
+});
 
-  @Override
-  public void display(OutputContainer container) {
-    List<Widget> items = getWidgets(container);
-    Tab tab = new Tab(items, container.getLabels());
-    tab.display();
+var GridView = widgets.VBoxView.extend({
+  render: function() {
+    GridView.__super__.render.apply(this);
+    this.$el.addClass('beaker-grid-view');
   }
-}
+});
+
+module.exports = {
+  GridViewModel: GridViewModel,
+  GridView: GridView
+};

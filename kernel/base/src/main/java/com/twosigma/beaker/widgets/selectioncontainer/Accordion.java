@@ -17,7 +17,7 @@ package com.twosigma.beaker.widgets.selectioncontainer;
 
 import java.util.List;
 
-import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.Widget;
 
 public class Accordion extends SelectionContainer {
   
@@ -25,12 +25,12 @@ public class Accordion extends SelectionContainer {
   public static final String MODEL_NAME_VALUE = "AccordionModel";
 
 
-  public Accordion(List<CommFunctionality> children) {
+  public Accordion(List<Widget> children) {
     super(children);
     openComm();
   }
   
-  public Accordion(List<CommFunctionality> children, List<String> labels) {
+  public Accordion(List<Widget> children, List<String> labels) {
     super(children, labels);
     openComm();
     sendUpdate(TITLES, this.titles);

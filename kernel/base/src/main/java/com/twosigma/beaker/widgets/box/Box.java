@@ -15,8 +15,8 @@
  */
 package com.twosigma.beaker.widgets.box;
 
-import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.ValueWidget;
+import com.twosigma.beaker.widgets.Widget;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -34,9 +34,9 @@ public abstract class Box extends ValueWidget<String> {
   public static final String VIEW_NAME_VALUE = "BoxView";
   public static final String MODEL_NAME_VALUE = "BoxModel";
 
-  List<CommFunctionality> children;
+  List<Widget> children;
 
-  public Box(List<CommFunctionality> children) {
+  public Box(List<Widget> children) {
     this.children = children;
   }
 
@@ -62,5 +62,11 @@ public abstract class Box extends ValueWidget<String> {
   public String getValueFromObject(Object input) {
     return getString(input);
   }
-  
+
+
+  @Override
+  public void beforeDisplay() {
+    children.stream().forEach( x -> x.beforeDisplay());
+    super.beforeDisplay();
+  }
 }

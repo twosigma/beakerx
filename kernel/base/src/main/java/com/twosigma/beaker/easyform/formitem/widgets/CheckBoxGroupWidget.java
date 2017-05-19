@@ -80,7 +80,7 @@ public class CheckBoxGroupWidget extends CheckBoxGroup implements CommFunctional
   }
 
   public void createWidget() {
-    List<CommFunctionality> comms = checkboxes.stream().map(x -> (CommFunctionality) x).collect(Collectors.toList());
+    List<Widget> comms = checkboxes.stream().map(x -> (Widget) x).collect(Collectors.toList());
     Box rightSide = (getHorizontal()) ? new HBox(comms) : new VBox(comms);
     this.widget = new HBox(asList(label, rightSide));
   }

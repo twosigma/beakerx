@@ -52,8 +52,14 @@ public class GridOutputContainerLayoutManager extends AbstractGridLayoutManager 
     for (int c = i; c < i + columns; c++) {
       if (c < items.size()) {
         rowItems.add(items.get(c));
+      }else {
+        rowItems.add(emptyItem());
       }
     }
     return rowItems;
+  }
+
+  private HBox emptyItem() {
+    return new HBox(new ArrayList<>());
   }
 }

@@ -39,17 +39,17 @@ public class GridOutputContainerLayoutManager extends AbstractGridLayoutManager 
 
     List<Widget> items = getWidgets(container);
     List<Widget> rows = new ArrayList<>();
-    for (int i = 0; i < items.size(); i = i + columns) {
-      rows.add(new HBox(createRow(columns, items, i)));
+    for (int itemIndex = 0; itemIndex < items.size(); itemIndex = itemIndex + columns) {
+      rows.add(new HBox(createRow(columns, items, itemIndex)));
     }
 
     GridView gridView = new GridView(rows);
     gridView.display();
   }
 
-  private List<Widget> createRow(int columns, List<Widget> items, int i) {
+  private List<Widget> createRow(int columns, List<Widget> items, int itemIndex) {
     List<Widget> rowItems = new ArrayList<>();
-    for (int c = i; c < i + columns; c++) {
+    for (int c = itemIndex; c < itemIndex + columns; c++) {
       if (c < items.size()) {
         rowItems.add(items.get(c));
       }else {

@@ -236,7 +236,8 @@ public class SimpleEvaluationObject extends Observable {
         add = buildingout.substring(0, buildingout.lastIndexOf('\n')+1);
         buildingout = buildingout.substring(buildingout.lastIndexOf('\n')+1);
       }
-    } if ( buildingout.length() > MAX_LINE_LENGTH) {
+    }
+    if ( buildingout.length() > MAX_LINE_LENGTH) {
       add = buildingout;
       buildingout = "";
     }
@@ -288,7 +289,8 @@ public class SimpleEvaluationObject extends Observable {
         add = buildingerr.substring(0, buildingerr.lastIndexOf('\n')+1);
         buildingerr = buildingerr.substring(buildingerr.lastIndexOf('\n')+1);
       }
-    } else if ( buildingerr.length() > MAX_LINE_LENGTH) {
+    }
+    if ( buildingerr.length() > MAX_LINE_LENGTH) {
       add = buildingerr;
       buildingerr = "";
     }

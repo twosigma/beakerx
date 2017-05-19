@@ -99,11 +99,15 @@ abstract public class XYGraphics extends Graphics {
   }
 
   public void setY(List<Number> ys) {
-    this.ys = new ArrayList<Number>(ys);//to make it serializable
+    this.ys = new ArrayList<>(ys);//to make it serializable
     reinit();
   }
 
   public List<Number> getY() {
+    if (ys == null || ys.isEmpty()) {
+      throw new IllegalStateException("Please provide Y coordinate.");
+    }
+
     return this.ys;
   }
 

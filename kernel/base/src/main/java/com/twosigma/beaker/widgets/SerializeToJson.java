@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.google.gson.Gson;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
@@ -95,6 +96,7 @@ import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
 import com.twosigma.beaker.chart.treemap.TreeMap;
 import com.twosigma.beaker.chart.serializer.TreeMapSerializer;
 import com.twosigma.beaker.chart.serializer.TreeMapNodeSerializer;
+import java.util.HashMap;
 import net.sf.jtreemap.swing.TreeMapNode;
 
 import java.io.PrintWriter;
@@ -179,7 +181,7 @@ public class SerializeToJson {
       try {
         return getMapper().writeValueAsString(result);
       } catch (Exception e) {
-        return exceptionToString(e);
+        throw new IllegalStateException(e.getMessage());
       }
     }
     return result != null ? result.toString() : null;
@@ -197,15 +199,6 @@ public class SerializeToJson {
     }
     return ret;
   }
-
-  private static String exceptionToString(Exception e) {
-    StringWriter w = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(w);
-    e.printStackTrace(printWriter);
-    printWriter.flush();
-    return w.toString();
-  }
-
 
   private static Map<Class<?>, JsonSerializer> getSerializerMap() {
     return serializerMap;

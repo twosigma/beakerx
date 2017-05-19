@@ -20,6 +20,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.twosigma.beaker.ResourceLoaderTest;
 import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.jvm.serialization.SerializationTestHelper;
+import java.util.Collections;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,6 +45,10 @@ public class RastersSerializerTest {
   @Before
   public void setUp() throws Exception {
     rasters = new Rasters();
+    List<Number> value = Collections.singletonList(1);
+    rasters.setY(value);
+    rasters.setWidth(value);
+    rasters.setHeight(value);
     rasters.setOpacity(Arrays.asList(1, 1));
   }
 

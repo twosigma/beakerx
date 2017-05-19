@@ -366,7 +366,7 @@ public class GroovyEvaluator implements Evaluator {
 
           j.outputObject.started();
 
-          String code = codeToBeExecuted(j);
+          String code = j.codeToBeExecuted;
 
           if (!executor.executeTask(new MyRunnable(code, j.outputObject, loader))) {
             j.outputObject.error("... cancelled!");
@@ -396,14 +396,6 @@ public class GroovyEvaluator implements Evaluator {
         }
       }
       NamespaceClient.delBeaker(sessionId);
-    }
-
-    private String codeToBeExecuted(jobDescriptor j) {
-      String code = j.codeToBeExecuted;
-      if (code.startsWith("new Line" ) || code.startsWith("new Points" )){
-        code = "new Plot() << " + code;
-      }
-      return code;
     }
 
     protected class MyRunnable implements Runnable {

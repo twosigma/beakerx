@@ -17,6 +17,10 @@
 package com.twosigma.beaker;
 
 import com.github.lwhite1.tablesaw.api.Table;
+import com.twosigma.beaker.chart.xychart.Plot;
+import com.twosigma.beaker.chart.xychart.plotitem.Line;
+import com.twosigma.beaker.chart.xychart.plotitem.Points;
+import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 import com.twosigma.beaker.fileloader.CsvPlotReader;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.beaker.table.TableDisplay;
@@ -50,6 +54,12 @@ public class SerializeToString {
     }
     if (input instanceof Table) {
       new TableDisplay(new CsvPlotReader().convert((Table) input)).display();
+      return HIDDEN();
+    }
+
+    if (input instanceof Line || input instanceof Points) {
+      input = new Plot().add((XYGraphics) input);
+      ((DisplayableWidget) input).display();
       return HIDDEN();
     }
     if (input instanceof MIMEContainer) {

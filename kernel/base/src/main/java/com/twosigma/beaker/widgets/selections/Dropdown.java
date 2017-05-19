@@ -15,9 +15,6 @@
  */
 package com.twosigma.beaker.widgets.selections;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 public class Dropdown extends SingleSelectionWidget {
 
   public static final String VIEW_NAME_VALUE = "DropdownView";
@@ -29,13 +26,6 @@ public class Dropdown extends SingleSelectionWidget {
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put("button_style", "");
-    return content;
-  }
-
-  @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;
   }
@@ -44,4 +34,5 @@ public class Dropdown extends SingleSelectionWidget {
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
+  
 }

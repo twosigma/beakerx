@@ -18,8 +18,6 @@ package com.twosigma.beaker;
 
 import com.github.lwhite1.tablesaw.api.Table;
 import com.twosigma.beaker.chart.xychart.Plot;
-import com.twosigma.beaker.chart.xychart.plotitem.Line;
-import com.twosigma.beaker.chart.xychart.plotitem.Points;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 import com.twosigma.beaker.fileloader.CsvPlotReader;
 import com.twosigma.beaker.mimetype.MIMEContainer;
@@ -57,7 +55,7 @@ public class SerializeToString {
       return HIDDEN();
     }
 
-    if (input instanceof Line || input instanceof Points) {
+    if (input instanceof XYGraphics) {
       input = new Plot().add((XYGraphics) input);
       ((DisplayableWidget) input).display();
       return HIDDEN();

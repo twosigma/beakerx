@@ -16,11 +16,27 @@
 
 package com.twosigma.beaker.jvm.object;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beaker.jvm.ObserverObjectTest;
+import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
+import com.twosigma.beaker.jvm.serialization.SerializationTestHelper;
 import org.assertj.core.api.Assertions;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
+
 public class UpdatableEvaluationResultTest {
+
+  private static UpdatableEvaluationResult.Serializer serializer;
+  private static SerializationTestHelper<UpdatableEvaluationResult.Serializer, UpdatableEvaluationResult> helper;
+
+  @BeforeClass
+  public static void setUpClass() throws IOException {
+    serializer = new UpdatableEvaluationResult.Serializer();
+    helper = new SerializationTestHelper<>(serializer);
+  }
 
   @Test
   public void setValue_shouldNotifyObserver() throws Exception {
@@ -32,6 +48,32 @@ public class UpdatableEvaluationResultTest {
     result.setValue("test");
     //then
     Assertions.assertThat(observer.getObjectList().get(0)).isEqualTo(result);
+  }
+
+  @Test
+  public void serializeUpdatableEvaluationResult_resultJsonHasType() throws IOException {
+    //given
+    UpdatableEvaluationResult result = new UpdatableEvaluationResult("test");
+    //when
+    JsonNode actualObj = helper.serializeObject(result);
+    //then
+    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("UpdatableEvaluationResult");
+  }
+
+  @Test
+  public void deserialize_resultObjectHasPayload() throws Exception {
+    //given
+    boolean payload = true;
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode actualObj = mapper.readTree(
+        "{\"type\":\"UpdatableEvaluationResult\",\"payload\":\"" + payload + "\"}");
+    UpdatableEvaluationResult.DeSerializer deserializer =
+        new UpdatableEvaluationResult.DeSerializer(new BasicObjectSerializer());
+    //when
+    UpdatableEvaluationResult result =
+        (UpdatableEvaluationResult) deserializer.deserialize(actualObj, mapper);
+    //then
+    Assertions.assertThat(result.getValue()).isEqualTo(payload);
   }
 
 }

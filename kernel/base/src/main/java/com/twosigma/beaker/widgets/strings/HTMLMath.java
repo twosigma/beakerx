@@ -13,31 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.box;
-
-import com.twosigma.beaker.widgets.Widget;
-
-import java.util.List;
+package com.twosigma.beaker.widgets.strings;
 
 /**
- * Displays multiple widgets vertically using the flexible box model.
+ * Renders the string `value` as HTML, and render mathematics.
+ * 
+ * @author konst
+ *
  */
-public class VBox extends Box{
-  
-  public static final String VIEW_NAME_VALUE = "VBoxView";
-  public static final String MODEL_NAME_VALUE = "VBoxModel";
+public class HTMLMath extends StringWidget {
 
+  public static final String VIEW_NAME_VALUE = "HTMLMathView";
+  public static final String MODEL_NAME_VALUE = "HTMLMathModel";
 
-  public VBox(List<Widget> children) {
-    super(children);
+  public HTMLMath() {
+    super();
     openComm();
   }
 
-  @Override
-  public void updateValue(Object value) {
-
-  }
-  
   @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;
@@ -47,5 +40,4 @@ public class VBox extends Box{
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
-
 }

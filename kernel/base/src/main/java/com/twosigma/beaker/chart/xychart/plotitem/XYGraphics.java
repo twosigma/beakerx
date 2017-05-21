@@ -104,10 +104,6 @@ abstract public class XYGraphics extends Graphics {
   }
 
   public List<Number> getY() {
-    if (ys == null || ys.isEmpty()) {
-      throw new IllegalStateException("Please provide Y coordinate.");
-    }
-
     return this.ys;
   }
 

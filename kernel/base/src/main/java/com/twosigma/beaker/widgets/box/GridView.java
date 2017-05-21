@@ -15,29 +15,30 @@
  */
 package com.twosigma.beaker.widgets.box;
 
+import com.twosigma.beaker.widgets.BeakerxWidget;
 import com.twosigma.beaker.widgets.Widget;
 
 import java.util.List;
 
-/**
- * Displays multiple widgets vertically using the flexible box model.
- */
-public class VBox extends Box{
-  
-  public static final String VIEW_NAME_VALUE = "VBoxView";
-  public static final String MODEL_NAME_VALUE = "VBoxModel";
+public class GridView extends VBox {
 
+  public static final String VIEW_NAME_VALUE = "GridView";
+  public static final String MODEL_NAME_VALUE = "GridViewModel";
 
-  public VBox(List<Widget> children) {
+  public GridView(List<Widget> children) {
     super(children);
-    openComm();
   }
 
   @Override
-  public void updateValue(Object value) {
-
+  public String getModelModuleValue() {
+    return BeakerxWidget.MODEL_MODULE_VALUE;
   }
-  
+
+  @Override
+  public String getViewModuleValue() {
+    return BeakerxWidget.VIEW_MODULE_VALUE;
+  }
+
   @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;
@@ -47,5 +48,4 @@ public class VBox extends Box{
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
-
 }

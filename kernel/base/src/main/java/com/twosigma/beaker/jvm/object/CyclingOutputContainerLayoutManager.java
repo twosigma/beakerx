@@ -25,4 +25,9 @@ public class CyclingOutputContainerLayoutManager extends OutputContainerLayoutMa
   public void setPeriod(long period) {
     this.period = period;
   }
+
+  @Override
+  public void display(OutputContainer container) {
+    throw new RuntimeException("Not implemented yet.");
+  }
 }

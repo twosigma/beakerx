@@ -25,7 +25,7 @@ public class AbstractGridLayoutManagerTest {
   public void createManagerWithParam_columnsEqualsParam() throws Exception {
     int columns = 5;
     //when
-    AbstractGridLayoutManager manager = new AbstractGridLayoutManager(columns);
+    AbstractGridLayoutManager manager = new GridOutputContainerLayoutManager(columns);
     //then
     Assertions.assertThat(manager.getColumns()).isEqualTo(columns);
   }
@@ -33,7 +33,7 @@ public class AbstractGridLayoutManagerTest {
   @Test
   public void createManagerWithParam_hasPropertiesNotNull() throws Exception {
     //when
-    AbstractGridLayoutManager manager = new AbstractGridLayoutManager(0);
+    AbstractGridLayoutManager manager = new GridOutputContainerLayoutManager(0);
     //then
     Assertions.assertThat(manager.getPaddingBottom()).isEqualTo(0);
     Assertions.assertThat(manager.getPaddingTop()).isEqualTo(0);

@@ -31,9 +31,9 @@ import com.twosigma.beaker.easyform.formitem.widgets.SelectMultipleWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.RadioButtonComponentWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.TextAreaWidget;
 import com.twosigma.beaker.easyform.formitem.widgets.TextFieldWidget;
-import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;
 import com.twosigma.beaker.widgets.DisplayableWidget;
+import com.twosigma.beaker.widgets.Widget;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
@@ -281,11 +281,8 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     return getComponentMap().get(key).getWidget();
   }
 
-  public List<CommFunctionality> getCommFunctionalities() {
-    return componentMap.values().stream().
-            filter(x -> x instanceof CommFunctionality).
-            map(x -> (CommFunctionality) x).
-            collect(Collectors.toList());
+  public List<Widget> getCommFunctionalities() {
+    return componentMap.values().stream().map(EasyFormComponent::getWidget).collect(Collectors.toList());
   }
 
   public boolean hasComponents() {

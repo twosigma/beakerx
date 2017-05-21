@@ -30,10 +30,13 @@ public class Button extends ValueWidget<Boolean> {
   public static final String TOOLTIP = "tooltip";
   public static final String TAG = "tag";
   public static final String ICON = "icon";
+  public static final String BUTTON_STYLE = "button_style";
 
   private String tooltip;
   private String tag;
   private String icon = "";
+  private String button_style = ""; 
+  
   private ActionPerformed actionPerformed = () -> {
   };
 
@@ -63,6 +66,7 @@ public class Button extends ValueWidget<Boolean> {
     super.content(content);
     content.put(TOOLTIP, tooltip);
     content.put(ICON, icon);
+    content.put(BUTTON_STYLE, "");
     return content;
   }
   
@@ -121,6 +125,15 @@ public class Button extends ValueWidget<Boolean> {
   @Override
   public Boolean getValueFromObject(Object input) {
     return getBoolean(input);
+  }
+
+  public String getButton_style() {
+    return button_style;
+  }
+
+  public void setButton_style(String button_style) {
+    this.button_style = button_style;
+    sendUpdate(BUTTON_STYLE, button_style);
   }
   
 }

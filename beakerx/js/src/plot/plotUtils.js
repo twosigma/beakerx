@@ -16,10 +16,10 @@
 
 define([
   'underscore',
-  './../../bower_components/big.js/big.min',
+  'big.js',
   './../shared/bkHelper',
   './../shared/bkUtils',
-  './../../bower_components/d3/d3.min'
+  'd3'
 ], function(
   _,
   Big,

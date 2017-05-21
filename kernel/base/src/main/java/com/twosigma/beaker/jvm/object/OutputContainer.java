@@ -113,7 +113,7 @@ public class OutputContainer implements DisplayableWidget {
 
   @Override
   public void display() {
-    DisplayOutputContainer.display(this);
+    getLayoutManager().display(this);
   }
 
 }

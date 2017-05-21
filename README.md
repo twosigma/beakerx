@@ -29,9 +29,9 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ## Dependencies
 
-* oracle Java8 JDK
-* yarn, bower, webpack
-* conda
+* [Oracle Java8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [yarn](https://yarnpkg.com/lang/en/docs/install/)
+* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
 ## Build and run
 
@@ -53,7 +53,7 @@ The kernels are installed to run out of the repo, so just a build should update 
 
 ## Update after JS change
 
-* `cd beakerx/js; webpack`
+* `cd beakerx/js; yarn webpack`
 
 ## Beaker Notebooks Converter
 ```

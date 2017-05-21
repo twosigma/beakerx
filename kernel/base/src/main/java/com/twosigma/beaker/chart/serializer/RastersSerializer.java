@@ -30,7 +30,8 @@ import org.apache.commons.codec.binary.StringUtils;
 public class RastersSerializer extends JsonSerializer<Rasters> {
 
   @Override
-  public void serialize(Rasters rasters, JsonGenerator jgen, SerializerProvider sp) throws IOException {
+  public void serialize(Rasters rasters, JsonGenerator jgen, SerializerProvider sp)
+      throws IOException {
     validate(rasters);
 
     jgen.writeStartObject();
@@ -60,7 +61,7 @@ public class RastersSerializer extends JsonSerializer<Rasters> {
       String extension = "";
       int i = path.lastIndexOf('.');
       if (i > 0) {
-        extension = path.substring(i+1);
+        extension = path.substring(i + 1);
       }
 
       jgen.writeObjectField("value", Bytes2Base64(picture, extension));
@@ -87,10 +88,11 @@ public class RastersSerializer extends JsonSerializer<Rasters> {
 
   private String Bytes2Base64(byte[] bytes, String format) {
     StringBuilder sb = new StringBuilder();
-    if (format != null)
+    if (format != null) {
       sb.append("data:image/").append(format).append(";base64,");
-    else
+    } else {
       sb.append("data:image/png;base64,");
+    }
     sb.append(StringUtils.newStringUtf8(Base64.encodeBase64(bytes, false)));
     return sb.toString();
   }

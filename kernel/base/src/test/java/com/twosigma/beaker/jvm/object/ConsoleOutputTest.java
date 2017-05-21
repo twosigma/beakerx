@@ -40,4 +40,15 @@ public class ConsoleOutputTest {
     Assertions.assertThat(consoleOutput.isPrinted()).isTrue();
   }
 
+  @Test
+  public void toString_returnStringWithErrorAndText(){
+    //given
+    ConsoleOutput consoleOutput = new ConsoleOutput(true, "text_message");
+    //when
+    String output = consoleOutput.toString();
+    //then
+    Assertions.assertThat(output.contains("true")).isTrue();
+    Assertions.assertThat(output.contains("text_message")).isTrue();
+  }
+
 }

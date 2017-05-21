@@ -45,7 +45,7 @@ public class OutputContainerCellTest {
     //given
     List<Object> items = Arrays.asList(Boolean.FALSE, Integer.MAX_VALUE);
     //when
-    OutputContainer container = new OutputContainer(items);
+    OutputContainerCell container = new OutputContainerCell(items);
     //then
     Assertions.assertThat(container.getItems()).isEqualTo(items);
   }
@@ -56,7 +56,7 @@ public class OutputContainerCellTest {
     List<Object> items = Arrays.asList(Boolean.TRUE, Long.MIN_VALUE);
     List<String> labels = Arrays.asList("lbl1", "lbl2");
     //when
-    OutputContainer container = new OutputContainer(items, labels);
+    OutputContainerCell container = new OutputContainerCell(items, labels);
     //then
     Assertions.assertThat(container.getItems()).isEqualTo(items);
     Assertions.assertThat(container.getLabels()).isEqualTo(labels);

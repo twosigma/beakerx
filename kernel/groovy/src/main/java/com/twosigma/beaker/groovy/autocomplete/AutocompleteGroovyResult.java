@@ -13,27 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.autocomplete;
 
+package com.twosigma.beaker.groovy.autocomplete;
+
+import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 
-public class AutocompleteResult {
+public class AutocompleteGroovyResult extends AutocompleteResult {
 
-  private List<String> matches;
-  private int startIndex;
-
-  public AutocompleteResult(List<String> matches, int startIndex) {
-    this.matches = matches;
-    this.startIndex = startIndex;
+  public AutocompleteGroovyResult(List<String> matches, int startIndex) {
+    super(matches, startIndex);
   }
 
-  public List<String> getMatches() {
-    return matches;
+  public static int getStartIndex(ParserRuleContext ctx) {
+    return ctx.getStop().getStartIndex();
   }
-
-  public int getStartIndex() {
-    return startIndex;
-  }
-
-
 }

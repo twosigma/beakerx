@@ -73,6 +73,12 @@ benefit everyone. In order for us to accept your code or pull request,
 we need for you to fill out and email back to us a scan of a signed copy of the
 [Contributor License Agreement](http://beakernotebook.com/cla.zip).
 
+BeakerX uses [Google Java
+style](https://google.github.io/styleguide/javaguide.html), and all
+Java code needs unit tests.  For JavaScript we use [Google JS
+style](https://google.github.io/styleguide/jsguide.html) with
+[require](http://requirejs.org/) instead of goog.
+
 ## Attribution
 
 The kernel is originally derived from https://github.com/lappsgrid-incubator/jupyter-groovy-kernel, but has been rewritten in Java and refactored and expanded.

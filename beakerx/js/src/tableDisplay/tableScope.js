@@ -29,7 +29,8 @@ define([
   './buildTemplate',
   './datatablesHeadermenu',
   './consts',
-  'jquery-contextmenu'
+  'jquery-contextmenu',
+  'jquery-ui/ui/widgets/tooltip'
 ], function(
   _,
   $,
@@ -45,7 +46,8 @@ define([
   buildTemplate,
   datatablesHeadermenu,
   tableConsts,
-  contextMenu
+  contextMenu,
+  tooltip
 ) {
 
   var jQuery = $;
@@ -1635,7 +1637,9 @@ define([
 
           $(cell).tooltip({
             items: 'th',
-            content: self.types[columnIndex - 1]
+            content: self.types[columnIndex - 1],
+            show: { delay: 300, duration: 300 },
+            position: { my: 'left bottom', at: 'center top' }
           });
         });
       },

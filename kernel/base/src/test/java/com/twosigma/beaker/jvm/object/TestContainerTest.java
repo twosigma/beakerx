@@ -17,7 +17,6 @@
 package com.twosigma.beaker.jvm.object;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.SerializationTestHelper;
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
@@ -25,33 +24,25 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class EvaluationResultTest {
+public class TestContainerTest {
 
-  private static EvaluationResult.Serializer serializer;
-  private static SerializationTestHelper<EvaluationResult.Serializer, EvaluationResult> helper;
+  private static TestContainer.Serializer serializer;
+  private static SerializationTestHelper<TestContainer.Serializer, TestContainer> helper;
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-    serializer = new EvaluationResult.Serializer(() -> { return new BasicObjectSerializer(); } );
+    serializer = new TestContainer.Serializer();
     helper = new SerializationTestHelper<>(serializer);
   }
 
   @Test
-  public void createEvaluationResultWithParam_valueEqualsThatParam() throws Exception {
-    //when
-    EvaluationResult result = new EvaluationResult(new Integer(123));
-    //then
-    Assertions.assertThat(result.getValue()).isEqualTo(123);
-  }
-
-  @Test
-  public void serializeEvaluationResult_resultJsonHasValue() throws IOException {
+  public void serializeTestContainer_resultJsonHasType() throws IOException {
     //given
-    EvaluationResult result = new EvaluationResult(Boolean.TRUE);
+    TestContainer container = new TestContainer();
     //when
-    JsonNode actualObj = helper.serializeObject(result);
+    JsonNode actualObj = helper.serializeObject(container);
     //then
-    Assertions.assertThat(actualObj.asBoolean()).isEqualTo(true);
+    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("TestContainer");
   }
 
 }

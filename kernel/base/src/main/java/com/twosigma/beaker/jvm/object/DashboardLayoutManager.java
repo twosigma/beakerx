@@ -21,4 +21,8 @@ public class DashboardLayoutManager extends AbstractGridLayoutManager {
     super(columns);
   }
 
+  @Override
+  public void display(OutputContainer container) {
+    throw new RuntimeException("Not implemented yet.");
+  }
 }

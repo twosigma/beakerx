@@ -16,7 +16,7 @@
 
 var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
-var d3 = require('./../bower_components/d3/d3.min');
+var d3 = require('d3');
 
 var PlotScope = require('./plot/plotScope');
 var CombinedPlotScope = require('./plot/combinedPlotScope');

@@ -36,7 +36,9 @@ public class XYGraphicsSerializer<T extends XYGraphics> extends GraphicsSerializ
 
   @Override
   public void serialize(T xyGraphics, JsonGenerator jgen, SerializerProvider sp)
-    throws IOException, JsonProcessingException {
+    throws IOException {
+
+    validate(xyGraphics);
 
     super.serialize(xyGraphics, jgen, sp);
 
@@ -53,12 +55,21 @@ public class XYGraphicsSerializer<T extends XYGraphics> extends GraphicsSerializ
     }
   }
 
-  private List<String> processLargeNumbers(List<Number> list){
+  private void validate(T xyGraphics) {
+    if (xyGraphics.getX() == null || xyGraphics.getX().isEmpty()) {
+      throw new IllegalStateException(Messages.PROVIDE_X_COORDINATE);
+    }
+      if (xyGraphics.getY() == null || xyGraphics.getY().isEmpty()) {
+      throw new IllegalStateException(Messages.PROVIDE_Y_COORDINATE);
+    }
+  }
+
+  private List<String> processLargeNumbers(List<Number> list) {
     List<String> stringList = new ArrayList<>(list.size());
-    for(Number n : list){
-      if(n != null){
+    for(Number n : list) {
+      if (n != null){
         stringList.add(n.toString());
-      }else{
+      } else {
         stringList.add("");
       }
     }

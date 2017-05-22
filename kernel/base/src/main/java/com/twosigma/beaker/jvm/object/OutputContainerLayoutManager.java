@@ -15,6 +15,13 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.twosigma.beaker.SerializeToString;
+import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beaker.widgets.strings.Label;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 public abstract class OutputContainerLayoutManager {
 
   private boolean borderDisplayed;
@@ -25,5 +32,23 @@ public abstract class OutputContainerLayoutManager {
 
   public void setBorderDisplayed(boolean borderDisplayed) {
     this.borderDisplayed = borderDisplayed;
+  }
+
+  public abstract void display(OutputContainer container);
+
+  protected static List<Widget> getWidgets(OutputContainer container) {
+    return container.getItems().stream().map(x -> toWidget(x)).collect(Collectors.toList());
+  }
+
+  protected static Widget toWidget(Object item) {
+    Widget widget = SerializeToString.getTableDisplay(item);
+    if (widget == null && item instanceof Widget) {
+      widget = (Widget) item;
+    } else if (widget == null) {
+      Label label = new Label();
+      label.setValue(item.toString());
+      widget = label;
+    }
+    return widget;
   }
 }

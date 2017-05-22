@@ -29,9 +29,9 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ## Dependencies
 
-* oracle Java8 JDK
-* yarn, bower, webpack
-* conda
+* [Oracle Java8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [yarn](https://yarnpkg.com/lang/en/docs/install/)
+* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
 ## Build and run
 
@@ -53,7 +53,7 @@ The kernels are installed to run out of the repo, so just a build should update 
 
 ## Update after JS change
 
-* `cd beakerx/js; webpack`
+* `cd beakerx/js; yarn webpack`
 
 ## Beaker Notebooks Converter
 ```
@@ -72,6 +72,12 @@ We welcome developers to extend and improve BeakerX in ways that can
 benefit everyone. In order for us to accept your code or pull request,
 we need for you to fill out and email back to us a scan of a signed copy of the
 [Contributor License Agreement](http://beakernotebook.com/cla.zip).
+
+BeakerX uses [Google Java
+style](https://google.github.io/styleguide/javaguide.html), and all
+Java code needs unit tests.  For JavaScript we use [Google JS
+style](https://google.github.io/styleguide/jsguide.html) with
+[require](http://requirejs.org/) instead of goog.
 
 ## Attribution
 

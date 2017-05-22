@@ -1,8 +1,10 @@
 /bin/
 /.classpath
 /.project
+
 GroovyLexer.java
 GroovyLexer.tokens
 GroovyParser.java
 GroovyParser.tokens
 GroovyParserBaseListener.java
+GroovyParserListener.java

@@ -30,7 +30,7 @@ public class BarsSerializer extends BasedXYGraphicsSerializer<Bars> {
 
   @Override
   public void serialize(Bars bars, JsonGenerator jgen, SerializerProvider sp)
-      throws IOException, JsonProcessingException {
+      throws IOException {
 
     jgen.writeStartObject();
 

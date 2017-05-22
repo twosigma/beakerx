@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.twosigma.beaker.chart.actions.GraphicsActionListener;
 import com.twosigma.beaker.chart.actions.GraphicsActionObject;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
+import java.util.Arrays;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,6 +38,7 @@ public class GraphicsSerializerTest {
   static GraphicsSerializer graphicsSerializer;
   JsonGenerator jgen;
   StringWriter sw;
+  Line line;
 
   @BeforeClass
   public static void initClassStubData() {
@@ -48,12 +50,14 @@ public class GraphicsSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+    line = new Line();
+    line.setX(Arrays.asList(1, 2, 3));
+    line.setY(Arrays.asList(1, 2, 3));
   }
 
   @Test
   public void serializeLineGraphics_resultJsonHasType() throws IOException {
     //when
-    Line line = new Line();
     graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
     //then
@@ -65,7 +69,6 @@ public class GraphicsSerializerTest {
   @Test
   public void serializeLineGraphics_resultJsonHasUid() throws IOException {
     //when
-    Line line = new Line();
     graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
     //then
@@ -77,7 +80,6 @@ public class GraphicsSerializerTest {
   @Test
   public void serializeVisibleLineGraphics_resultJsonHasVisible() throws IOException {
     //when
-    Line line = new Line();
     line.setVisible(true);
     graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -90,7 +92,6 @@ public class GraphicsSerializerTest {
   @Test
   public void serializeYAxisLineGraphics_resultJsonHasYAxis() throws IOException {
     //when
-    Line line = new Line();
     line.setyAxis("Y Axis name");
     graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -103,12 +104,7 @@ public class GraphicsSerializerTest {
   @Test
   public void serializeClickActionLineGraphics_resultJsonHasClickAction() throws IOException {
     //when
-    Line line = new Line();
-    line.onClick(
-        new GraphicsActionListener() {
-          @Override
-          public void execute(GraphicsActionObject actionObject) {}
-        });
+    line.onClick(actionObject -> {});
     graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
     //then
@@ -120,7 +116,6 @@ public class GraphicsSerializerTest {
   @Test
   public void serializeClickTagLineGraphics_resultJsonHasClickTag() throws IOException {
     //when
-    Line line = new Line();
     line.onClick("some click tag");
     graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -133,7 +128,6 @@ public class GraphicsSerializerTest {
   @Test
   public void serializeKeyTagsLineGraphics_resultJsonHasKeyTags() throws IOException {
     //when
-    Line line = new Line();
     line.onKey("key01", "tag01");
     graphicsSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -146,7 +140,6 @@ public class GraphicsSerializerTest {
   @Test
   public void serializeKeysLineGraphics_resultJsonHasKeys() throws IOException {
     //when
-    Line line = new Line();
     line.onKey(
         "key01",
         new GraphicsActionListener() {

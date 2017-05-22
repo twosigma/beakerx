@@ -13,39 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.widgets.box;
 
-import com.twosigma.beaker.widgets.Widget;
+package com.twosigma.beaker.groovy.autocomplete;
 
+import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 
-/**
- * Displays multiple widgets vertically using the flexible box model.
- */
-public class VBox extends Box{
-  
-  public static final String VIEW_NAME_VALUE = "VBoxView";
-  public static final String MODEL_NAME_VALUE = "VBoxModel";
+public class AutocompleteGroovyResult extends AutocompleteResult {
 
-
-  public VBox(List<Widget> children) {
-    super(children);
-    openComm();
+  public AutocompleteGroovyResult(List<String> matches, int startIndex) {
+    super(matches, startIndex);
   }
 
-  @Override
-  public void updateValue(Object value) {
-
+  public static int getStartIndex(ParserRuleContext ctx) {
+    return ctx.getStop().getStartIndex();
   }
-  
-  @Override
-  public String getModelNameValue() {
-    return MODEL_NAME_VALUE;
-  }
-
-  @Override
-  public String getViewNameValue() {
-    return VIEW_NAME_VALUE;
-  }
-
 }

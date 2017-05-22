@@ -32,7 +32,7 @@ if (window.require) {
 
 require('./../src/plot/bko-combinedplot.css');
 require('./../src/plot/bko-plot.css');
-require('./../bower_components/jQuery-contextMenu/dist/jquery.contextMenu.min.css');
+require('jquery-contextmenu/dist/jquery.contextMenu.min.css');
 
 define([
   'services/config',

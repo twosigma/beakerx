@@ -17,14 +17,14 @@ package com.twosigma.beaker.widgets.selectioncontainer;
 
 import java.util.List;
 
-import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.Widget;
 
 public class Tab extends SelectionContainer {
 
   public static final String VIEW_NAME_VALUE = "TabView";
   public static final String MODEL_NAME_VALUE = "TabModel";
 
-  public Tab(List<CommFunctionality> children, List<String> labels) {
+  public Tab(List<Widget> children, List<String> labels) {
     super(children, labels);
     openComm();
     sendUpdate(TITLES, this.titles);

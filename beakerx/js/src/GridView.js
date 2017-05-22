@@ -13,27 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.autocomplete;
 
-import java.util.List;
+var widgets = require('jupyter-js-widgets');
+var _ = require('underscore');
 
-public class AutocompleteResult {
+require('./gridView/grid-view.scss');
 
-  private List<String> matches;
-  private int startIndex;
+var GridViewModel = widgets.VBoxModel.extend({
+  _model_name : 'GridViewModel',
+  _view_name : 'GridView',
+  _model_module : 'beakerx',
+  _view_module : 'beakerx'
+});
 
-  public AutocompleteResult(List<String> matches, int startIndex) {
-    this.matches = matches;
-    this.startIndex = startIndex;
+var GridView = widgets.VBoxView.extend({
+  render: function() {
+    GridView.__super__.render.apply(this);
+    this.$el.addClass('beaker-grid-view');
   }
+});
 
-  public List<String> getMatches() {
-    return matches;
-  }
-
-  public int getStartIndex() {
-    return startIndex;
-  }
-
-
-}
+module.exports = {
+  GridViewModel: GridViewModel,
+  GridView: GridView
+};

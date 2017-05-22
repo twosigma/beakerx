@@ -19,8 +19,8 @@ import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jupyter.SearchMessages;
 import com.twosigma.beaker.widgets.Button;
-import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DatePicker;
+import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.beaker.widgets.bools.Checkbox;
 import com.twosigma.beaker.widgets.box.Box;
 import com.twosigma.beaker.widgets.box.HBox;
@@ -226,7 +226,7 @@ public class EasyFormTest {
     verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
-  private void verifyEasyForm(List<Message> messages, List<CommFunctionality> children) {
+  private void verifyEasyForm(List<Message> messages, List<Widget> children) {
     Message msg = SearchMessages.getListWidgetsByViewName(messages, EasyFormView.VIEW_NAME_VALUE).get(0);
     verifyInternalOpenCommMsg(msg, EasyFormView.MODEL_NAME_VALUE, EasyFormView.VIEW_NAME_VALUE);
     verifyChildren(msg, children);
@@ -254,7 +254,7 @@ public class EasyFormTest {
     verifyOpenCommMsg(messages, Text.MODEL_NAME_VALUE, Text.VIEW_NAME_VALUE);
   }
 
-  private void verifyChildren(Message message, List<CommFunctionality> children) {
+  private void verifyChildren(Message message, List<Widget> children) {
     Map data = getData(message);
     Object[] objects = (Object[]) data.get(Box.CHILDREN);
     assertThat(objects.length).isEqualTo(children.size());

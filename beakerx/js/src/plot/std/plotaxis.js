@@ -16,7 +16,7 @@
 
 define([
   'underscore',
-  './../../../bower_components/big.js/big.min',
+  'big.js',
   './../plotUtils',
   './../../shared/bkUtils'
 ], function(

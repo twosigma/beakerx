@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.widgets.box;
 
-import com.twosigma.beaker.widgets.CommFunctionality;
+import com.twosigma.beaker.widgets.Widget;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class HBox extends Box{
   public static final String VIEW_NAME_VALUE = "HBoxView";
   public static final String MODEL_NAME_VALUE = "HBoxModel";
 
-  public HBox(List<CommFunctionality> children) {
+  public HBox(List<Widget> children) {
     super(children);
     openComm();
   }

@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.jvm.object;
 
-public class AbstractGridLayoutManager extends OutputContainerLayoutManager {
+public abstract class AbstractGridLayoutManager extends OutputContainerLayoutManager {
   protected final int columns;
   protected int paddingTop    = 0;
   protected int paddingBottom = 0;

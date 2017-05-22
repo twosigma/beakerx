@@ -52,6 +52,8 @@ public class PointsSerializerTest {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
     points = new Points();
+    points.setX(Arrays.asList(1, 2, 3));
+    points.setY(Arrays.asList(1, 2, 3));
   }
 
   @Test

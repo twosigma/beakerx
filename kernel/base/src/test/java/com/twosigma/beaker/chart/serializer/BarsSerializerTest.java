@@ -38,6 +38,7 @@ public class BarsSerializerTest {
   static BarsSerializer barsSerializer;
   JsonGenerator jgen;
   StringWriter sw;
+  Bars bars;
 
   @BeforeClass
   public static void initClassStubData() {
@@ -49,12 +50,14 @@ public class BarsSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+    bars = new Bars();
+    bars.setX(Arrays.asList(1, 2));
+    bars.setY(Arrays.asList(1, 2));
   }
 
   @Test
   public void serializeWidthBars_resultJsonHasWidth() throws IOException {
     //when
-    Bars bars = new Bars();
     bars.setWidth(11);
     barsSerializer.serialize(bars, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -67,7 +70,6 @@ public class BarsSerializerTest {
   @Test
   public void serializeWidthsBars_resultJsonHasWidths() throws IOException {
     //when
-    Bars bars = new Bars();
     bars.setWidth(Arrays.asList(11, 22, 33));
     barsSerializer.serialize(bars, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -81,7 +83,6 @@ public class BarsSerializerTest {
   @Test
   public void serializeColorBars_resultJsonHasColor() throws IOException {
     //when
-    Bars bars = new Bars();
     bars.setColor(Color.GREEN);
     barsSerializer.serialize(bars, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -95,7 +96,6 @@ public class BarsSerializerTest {
   @Test
   public void serializeColorsBars_resultJsonHasColors() throws IOException {
     //when
-    Bars bars = new Bars();
     bars.setColor(Arrays.asList(Color.BLUE, Color.GREEN, Color.BLACK));
     barsSerializer.serialize(bars, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -109,7 +109,6 @@ public class BarsSerializerTest {
   @Test
   public void serializeOutlineColorBars_resultJsonHasOutlineColor() throws IOException {
     //when
-    Bars bars = new Bars();
     bars.setOutlineColor(Color.GREEN);
     barsSerializer.serialize(bars, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -123,7 +122,6 @@ public class BarsSerializerTest {
   @Test
   public void serializeOutlineColorsBars_resultJsonHasOutlineColors() throws IOException {
     //when
-    Bars bars = new Bars();
     bars.setOutlineColor(Arrays.asList(Color.BLUE, Color.GREEN, Color.BLACK));
     barsSerializer.serialize(bars, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();

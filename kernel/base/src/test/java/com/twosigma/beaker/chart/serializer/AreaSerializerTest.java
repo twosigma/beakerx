@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.plotitem.Area;
+import java.util.Arrays;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -36,6 +37,7 @@ public class AreaSerializerTest {
   static AreaSerializer areaSerializer;
   JsonGenerator jgen;
   StringWriter sw;
+  Area area;
 
   @BeforeClass
   public static void initClassStubData() {
@@ -47,12 +49,14 @@ public class AreaSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+    area = new Area();
+    area.setX(Arrays.asList(1, 2, 3));
+    area.setY(Arrays.asList(1, 2, 3));
   }
 
   @Test
   public void serializeInterpolationArea_resultJsonHasInterpolation() throws IOException {
     //when
-    Area area = new Area();
     area.setInterpolation(1);
     areaSerializer.serialize(area, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -65,7 +69,6 @@ public class AreaSerializerTest {
   @Test
   public void serializeColorArea_resultJsonHasColor() throws IOException {
     //when
-    Area area = new Area();
     area.setColor(Color.GREEN);
     areaSerializer.serialize(area, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();

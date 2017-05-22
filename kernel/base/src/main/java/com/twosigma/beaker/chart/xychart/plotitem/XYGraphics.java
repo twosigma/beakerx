@@ -99,7 +99,7 @@ abstract public class XYGraphics extends Graphics {
   }
 
   public void setY(List<Number> ys) {
-    this.ys = new ArrayList<Number>(ys);//to make it serializable
+    this.ys = new ArrayList<>(ys);//to make it serializable
     reinit();
   }
 

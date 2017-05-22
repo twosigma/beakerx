@@ -15,6 +15,17 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beaker.widgets.selectioncontainer.Tab;
+
+import java.util.List;
+
 public class TabbedOutputContainerLayoutManager extends OutputContainerLayoutManager {
 
+  @Override
+  public void display(OutputContainer container) {
+    List<Widget> items = getWidgets(container);
+    Tab tab = new Tab(items, container.getLabels());
+    tab.display();
+  }
 }

@@ -14,23 +14,26 @@
  *  limitations under the License.
  */
 
-define([
-  'moment-timezone/builds/moment-timezone-with-data.min'
-], function(moment) {
-  return {
-    applyTimezone: function(timestamp, tz) {
-      var time = moment(timestamp);
-      if (tz) {
-        if (tz.startsWith("GMT")) {
-          time.utcOffset(tz);
-        } else {
-          time.tz(tz);
-        }
-      }
-      return time;
-    },
-    formatTimestamp: function(timestamp, tz, format) {
-      return this.applyTimezone(timestamp, tz).format(format);
-    }
-  };
+var widgets = require('jupyter-js-widgets');
+var _ = require('underscore');
+
+require('./gridView/grid-view.scss');
+
+var GridViewModel = widgets.VBoxModel.extend({
+  _model_name : 'GridViewModel',
+  _view_name : 'GridView',
+  _model_module : 'beakerx',
+  _view_module : 'beakerx'
 });
+
+var GridView = widgets.VBoxView.extend({
+  render: function() {
+    GridView.__super__.render.apply(this);
+    this.$el.addClass('beaker-grid-view');
+  }
+});
+
+module.exports = {
+  GridViewModel: GridViewModel,
+  GridView: GridView
+};

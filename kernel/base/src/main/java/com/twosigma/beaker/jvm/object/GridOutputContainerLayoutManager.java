@@ -15,11 +15,51 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beaker.widgets.box.GridView;
+import com.twosigma.beaker.widgets.box.HBox;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class GridOutputContainerLayoutManager extends AbstractGridLayoutManager {
+
   public GridOutputContainerLayoutManager() {
     this(2);
   }
+
   public GridOutputContainerLayoutManager(int columns) {
     super(columns);
+  }
+
+  @Override
+  public void display(OutputContainer container) {
+    GridOutputContainerLayoutManager layout = (GridOutputContainerLayoutManager) container.getLayoutManager();
+    int columns = layout.getColumns();
+
+    List<Widget> items = getWidgets(container);
+    List<Widget> rows = new ArrayList<>();
+    for (int itemIndex = 0; itemIndex < items.size(); itemIndex = itemIndex + columns) {
+      rows.add(new HBox(createRow(columns, items, itemIndex)));
+    }
+
+    GridView gridView = new GridView(rows);
+    gridView.display();
+  }
+
+  private List<Widget> createRow(int columns, List<Widget> items, int itemIndex) {
+    List<Widget> rowItems = new ArrayList<>();
+    for (int c = itemIndex; c < itemIndex + columns; c++) {
+      if (c < items.size()) {
+        rowItems.add(items.get(c));
+      }else {
+        rowItems.add(emptyItem());
+      }
+    }
+    return rowItems;
+  }
+
+  private HBox emptyItem() {
+    return new HBox(new ArrayList<>());
   }
 }

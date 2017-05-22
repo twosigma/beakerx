@@ -157,7 +157,7 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         shortcut: 'B',
         isChecked: function (container) {
           var colIdx = container.data('columnIndex');
-          return self.barsOnColumn[self.colorder[colIdx]] === true;
+          return typeof(self.barsOnColumn[self.colorder[colIdx]]) !== 'undefined';
         },
         action: function (el) {
           var container = el.closest('.bko-header-menu');

@@ -24,6 +24,7 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.StrokeType;
+import java.util.Arrays;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -38,6 +39,7 @@ public class LineSerializerTest {
   static LineSerializer lineSerializer;
   JsonGenerator jgen;
   StringWriter sw;
+  Line line;
 
   @BeforeClass
   public static void initClassStubData() {
@@ -49,12 +51,14 @@ public class LineSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+    line = new Line();
+    line.setX(Arrays.asList(1, 2 ,3));
+    line.setY(Arrays.asList(1, 2 ,3));
   }
 
   @Test
   public void serializeWidthLine_resultJsonHasWidth() throws IOException {
     //when
-    Line line = new Line();
     line.setWidth(1f);
     lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -67,7 +71,6 @@ public class LineSerializerTest {
   @Test
   public void serializeColorLine_resultJsonHasColor() throws IOException {
     //when
-    Line line = new Line();
     line.setColor(Color.GREEN);
     lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -81,7 +84,6 @@ public class LineSerializerTest {
   @Test
   public void serializeStrokeTypeLine_resultJsonHasStyle() throws IOException {
     //when
-    Line line = new Line();
     line.setStyle(StrokeType.SOLID);
     lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -94,7 +96,6 @@ public class LineSerializerTest {
   @Test
   public void serializeInterpolationLine_resultJsonHasInterpolation() throws IOException {
     //when
-    Line line = new Line();
     line.setInterpolation(1);
     lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -106,7 +107,6 @@ public class LineSerializerTest {
 
   @Test
   public void serializeLodFilterLine_resultJsonHasLodFilter() throws IOException {
-    Line line = new Line();
     line.setLodFilter(Filter.LINE);
     lineSerializer.serialize(line, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();

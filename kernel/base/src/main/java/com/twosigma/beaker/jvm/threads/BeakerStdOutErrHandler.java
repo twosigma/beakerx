@@ -23,21 +23,21 @@ import java.util.Map;
 
 public class BeakerStdOutErrHandler {
   private static BeakerStdOutErrHandler instance;
-  
+
   static synchronized public void init() {
     if (instance == null) {
       instance = new BeakerStdOutErrHandler();
       instance.theinit();
-    }    
+    }
   }
-  
+
   static synchronized public void fini() {
     if (instance != null) {
       instance.thefini();
       instance = null;
-    }    
+    }
   }
-  
+
   static synchronized public void setOutputHandler(BeakerOutputHandler out, BeakerOutputHandler err) {
     if (instance != null)
       instance.theSetOutputHandler(out, err);
@@ -52,7 +52,7 @@ public class BeakerStdOutErrHandler {
     if (instance != null)
       instance.theClrOutputHandler();
   }
-  
+
   static synchronized public PrintStream out() {
     if (instance != null && instance.orig_out!=null)
       return instance.orig_out;
@@ -67,10 +67,10 @@ public class BeakerStdOutErrHandler {
 
   private PrintStream orig_out;
   private PrintStream orig_err;
-  
+
   private class MyOutputStream extends OutputStream {
     private boolean is_out;
-    
+
     public MyOutputStream(boolean isout) {
       is_out = isout;
     }
@@ -78,7 +78,7 @@ public class BeakerStdOutErrHandler {
     public void write(int b) throws IOException {
       instance.write(is_out, b);
     }
-    @Override    
+    @Override
     public void write(byte[] b) throws IOException {
       instance.write(is_out, b);
     }
@@ -87,14 +87,14 @@ public class BeakerStdOutErrHandler {
       instance.write(is_out, b, off, len);
    }
   }
-  
+
   private void theinit() {
     orig_out = System.out;
     orig_err = System.err;
     System.setOut(new PrintStream(new MyOutputStream(true)));
     System.setErr(new PrintStream(new MyOutputStream(false)));
   }
-  
+
   private void thefini() {
     System.setOut(orig_out);
     System.setErr(orig_err);
@@ -104,11 +104,11 @@ public class BeakerStdOutErrHandler {
     public BeakerOutputHandler out_handler;
     public BeakerOutputHandler err_handler;
   }
-  
+
   private Map<Long,threadOutputHandler> thrHandlers = new HashMap<Long,threadOutputHandler>();
   private BeakerOutputHandler def_out;
   private BeakerOutputHandler def_err;
-    
+
   private synchronized void theSetOutputHandler(BeakerOutputHandler out, BeakerOutputHandler err) {
     long id = Thread.currentThread().getId();
     threadOutputHandler t;
@@ -121,7 +121,7 @@ public class BeakerStdOutErrHandler {
     t.out_handler = out;
     t.err_handler = err;
   }
-  
+
   private synchronized void theSetDefaultOutputHandler(BeakerOutputHandler out, BeakerOutputHandler err) {
     def_out = out;
     def_err = err;
@@ -150,7 +150,7 @@ public class BeakerStdOutErrHandler {
       return def_out;
     return def_err;
   }
-  
+
   private synchronized void write(boolean isout, int b) throws IOException {
     BeakerOutputHandler hdl = getHandler(isout);
     if (hdl!=null) hdl.write(b);
@@ -169,11 +169,11 @@ public class BeakerStdOutErrHandler {
   }
   private synchronized void write(boolean isout, byte[] b, int off, int len) throws IOException {
     BeakerOutputHandler hdl = getHandler(isout);
-    if (hdl!=null) hdl.write(b, off, len);
-    else if(isout)
-      orig_out.write(b);
+    if (hdl != null) hdl.write(b, off, len);
+    else if (isout)
+      orig_out.write(b, off, len);
     else
-      orig_err.write(b);
+      orig_err.write(b, off, len);
   }
 
 }

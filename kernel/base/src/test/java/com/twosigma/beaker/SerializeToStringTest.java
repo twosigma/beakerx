@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,12 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.jvm.object;
+package com.twosigma.beaker;
 
 import com.twosigma.beaker.mimetype.MIMEContainer;
+import org.assertj.core.api.Assertions;
+import org.junit.Test;
 
-public class OutputCell {
+import static com.twosigma.beaker.mimetype.MIMEContainer.HIDDEN;
 
-  public static final MIMEContainer HIDDEN = MIMEContainer.HIDDEN;
+public class SerializeToStringTest {
 
+  @Test
+  public void NoResultShouldReturnHidden() throws Exception {
+    //give
+    //when
+    MIMEContainer result = SerializeToString.doit(NoResult.INSTANCE);
+    //then
+    Assertions.assertThat(result).isEqualTo(HIDDEN);
+  }
 }

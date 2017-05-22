@@ -16,6 +16,7 @@
 package com.twosigma.beaker.sql;
 
 import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.NoResult;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.table.TableDisplay;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -136,7 +137,7 @@ public class QueryExecutor {
       } else if (!resultsForOutputCell.isEmpty()) {
         return resultsForOutputCell.get(0);
       } else {
-        return null;
+        return NoResult.INSTANCE;
       }
 
     } catch (Exception e) {

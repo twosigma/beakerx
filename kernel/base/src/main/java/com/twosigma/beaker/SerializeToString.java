@@ -41,24 +41,25 @@ public class SerializeToString {
   }
 
   private static MIMEContainer getMimeContainer(Object input) {
+    if(input instanceof NoResult){
+      return HIDDEN;
+    }
     if (input instanceof DisplayableWidget) {
       ((DisplayableWidget) input).display();
-      return HIDDEN();
+      return HIDDEN;
     }
     TableDisplay table = getTableDisplay(input);
     if (table != null) {
       table.display();
-      return HIDDEN();
+      return HIDDEN;
     }
     if (input instanceof Table) {
       new TableDisplay(new CsvPlotReader().convert((Table) input)).display();
-      return HIDDEN();
+      return HIDDEN;
     }
-
     if (input instanceof XYGraphics) {
-      input = new Plot().add((XYGraphics) input);
-      ((DisplayableWidget) input).display();
-      return HIDDEN();
+      new Plot().add((XYGraphics) input).display();
+      return HIDDEN;
     }
     if (input instanceof MIMEContainer) {
       return (MIMEContainer) input;

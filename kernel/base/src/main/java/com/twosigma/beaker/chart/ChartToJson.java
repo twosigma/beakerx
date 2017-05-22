@@ -20,6 +20,9 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.google.gson.Gson;
+import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryLines;
@@ -67,6 +70,7 @@ import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.chart.treemap.TreeMap;
 import com.twosigma.beaker.chart.serializer.TreeMapSerializer;
 import com.twosigma.beaker.chart.serializer.TreeMapNodeSerializer;
+import java.util.HashMap;
 import net.sf.jtreemap.swing.TreeMapNode;
 import java.util.Hashtable;
 import java.util.Map;
@@ -105,16 +109,18 @@ public class ChartToJson {
     serializerMap.put(TreeMapNode.class, new TreeMapNodeSerializer());
 
     SimpleModule module = new SimpleModule("ChartSerializer", new Version(1, 0, 0, null));
-    serializerMap.forEach((k, v) -> {
-      module.addSerializer(k, v);
-    });
+    serializerMap.forEach(module::addSerializer);
 
     mapper = new ObjectMapper();
     mapper.registerModule(module);
   }
 
   public static Map toJson(Object result) {
-      return getMapper().convertValue(result, Map.class);
+      try {
+        return getMapper().convertValue(result, Map.class);
+      } catch (Exception e) {
+        throw new IllegalStateException(e.getMessage());
+      }
   }
 
   private static ObjectMapper getMapper() {

@@ -1635,7 +1635,7 @@ define([
         _.forEach(cells, function(cell) {
           var columnIndex = self.getColumnIndexByCellNode(cell);
 
-          $(cell).tooltip({
+          !!cell && $(cell).tooltip({
             items: 'th',
             content: self.types[columnIndex - 1],
             show: { delay: 300, duration: 300 },

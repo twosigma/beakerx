@@ -143,18 +143,18 @@ define([
 
     $.fn.dataTable.Api.register( 'column().data().max()', function () {
       return this.length ? this.reduce( function (a, b) {
-          var x = parseFloat( a ) || 0;
-          var y = parseFloat( b ) || 0;
-          return Math.max(x, y);
-        } ) : 0;
+        var x = parseFloat( a ) || 0;
+        var y = parseFloat( b ) || 0;
+        return Math.max(x, y);
+      } ) : 0;
     } );
 
     $.fn.dataTable.Api.register( 'column().data().min()', function () {
       return this.length ? this.reduce( function (a, b) {
-          var x = parseFloat( a ) || 0;
-          var y = parseFloat( b ) || 0;
-          return Math.min(x, y);
-        } ) : 0;
+        var x = parseFloat( a ) || 0;
+        var y = parseFloat( b ) || 0;
+        return Math.min(x, y);
+      } ) : 0;
     } );
 
     // detect and sort by file size
@@ -685,8 +685,8 @@ define([
       });
 
       self.cellHighlightersData = model.cellHighlighters ? _.map(model.cellHighlighters, function(highlighter){
-          return _.extend({colInd: self.getColumnIndexByColName(highlighter.colName)}, highlighter);
-        }) : {};
+        return _.extend({colInd: self.getColumnIndexByColName(highlighter.colName)}, highlighter);
+      }) : {};
       self.tableFilter       = '';
       self.columnFilter      = [];
       self.showFilter        = false;
@@ -1695,265 +1695,262 @@ define([
       $(this).blur();
     });
 
-    bkHelper.timeout(function() {
-      // we must wait for the DOM elements to appear
-      $(id).parents('.dataTables_scroll').find('th, td')
-        .removeClass(tableConsts.FC_LEFT_SEPARATOR_CLASS + ' ' + tableConsts.FC_RIGHT_SEPARATOR_CLASS);
-      self.table = $(id).DataTable(init);
+    $(id).parents('.dataTables_scroll').find('th, td')
+      .removeClass(tableConsts.FC_LEFT_SEPARATOR_CLASS + ' ' + tableConsts.FC_RIGHT_SEPARATOR_CLASS);
+    self.table = $(id).DataTable(init);
 
-      self.updateHeaderLayout();
+    self.updateHeaderLayout();
 
-      self.table.settings()[0].oScroll.iBarWidth = self.scrollbarWidth;
-      self.renderMenu = true;
-      if (!self.colorder) {
-        self.colorder = _.range(self.columnNames.length + 1);
-      }
-      self.colreorg = new $.fn.dataTable.ColReorder($(id), {
-        'order': self.colorder,
-        'fnReorderCallback': function() {
-          if (self.colreorg === undefined || self.colreorg.s == null) {
-            return;
-          }
-          self.colorder = self.colreorg.fnOrder().slice(0);
-          self.refreshCells();
-          self.applyFilters();
-          self.updateBackground();
-        },
-        'iFixedColumns': self.pagination.fixLeft + 1,
-        'iFixedColumnsRight': self.pagination.fixRight
-      });
-      self.keyTable = new $.fn.dataTable.KeyTable($(id));
-      self.refreshCells();
-
-      if(init.paging !== false){
-        var pagination = $(self.element).find(".bko-table-use-pagination");
-        $('<input type="checkbox" checked="true" id=' + self.id +'usePagination class="beforeCheckbox">')
-          .bind('click', function(e) {
-            self.doUsePagination();
-          })
-          .appendTo(pagination);
-        $('<label for=' + self.id +'usePagination> use pagination</label>')
-          .appendTo(pagination);
-      }
-
-      /*
-       $(id + ' tbody').off('click');
-       */
-      $(id + ' tbody').on('dblclick', 'td', function(e) {
-        if (!self.table) { return; }
-        var rowIdx;
-        var colIdx;
-        var iPos = self.table.cell(this).index();
-        if (iPos) { //selected regular cell
-          rowIdx = iPos.row;
-          colIdx = iPos.column;
-        } else { //selected fixed column or index cell
-          var position = self.fixcols.fnGetPosition(this);
-          rowIdx = position[0];
-          if ($(this).parents().hasClass('DTFC_RightWrapper')) {
-            var order = self.colorder;
-            var fixRight = self.pagination.fixRight;
-            var colIdxInRight = position[1];
-            colIdx = order[order.length - fixRight + colIdxInRight];
-          } else {
-            colIdx = position[1];
-          }
+    self.table.settings()[0].oScroll.iBarWidth = self.scrollbarWidth;
+    self.renderMenu = true;
+    if (!self.colorder) {
+      self.colorder = _.range(self.columnNames.length + 1);
+    }
+    self.colreorg = new $.fn.dataTable.ColReorder($(id), {
+      'order': self.colorder,
+      'fnReorderCallback': function() {
+        if (self.colreorg === undefined || self.colreorg.s == null) {
+          return;
         }
+        self.colorder = self.colreorg.fnOrder().slice(0);
+        self.refreshCells();
+        self.applyFilters();
+        self.updateBackground();
+      },
+      'iFixedColumns': self.pagination.fixLeft + 1,
+      'iFixedColumnsRight': self.pagination.fixRight
+    });
+    self.keyTable = new $.fn.dataTable.KeyTable($(id));
+    self.refreshCells();
 
-        var currentCell = self.table.cells(function(idx, data, node) {
-          return idx.column === colIdx && idx.row ===  rowIdx;
+    if(init.paging !== false){
+      var pagination = $(self.element).find(".bko-table-use-pagination");
+      $('<input type="checkbox" checked="true" id=' + self.id +'usePagination class="beforeCheckbox">')
+        .bind('click', function(e) {
+          self.doUsePagination();
+        })
+        .appendTo(pagination);
+      $('<label for=' + self.id +'usePagination> use pagination</label>')
+        .appendTo(pagination);
+    }
+
+    /*
+     $(id + ' tbody').off('click');
+     */
+    $(id + ' tbody').on('dblclick', 'td', function(e) {
+      if (!self.table) { return; }
+      var rowIdx;
+      var colIdx;
+      var iPos = self.table.cell(this).index();
+      if (iPos) { //selected regular cell
+        rowIdx = iPos.row;
+        colIdx = iPos.column;
+      } else { //selected fixed column or index cell
+        var position = self.fixcols.fnGetPosition(this);
+        rowIdx = position[0];
+        if ($(this).parents().hasClass('DTFC_RightWrapper')) {
+          var order = self.colorder;
+          var fixRight = self.pagination.fixRight;
+          var colIdxInRight = position[1];
+          colIdx = order[order.length - fixRight + colIdxInRight];
+        } else {
+          colIdx = position[1];
+        }
+      }
+
+      var currentCell = self.table.cells(function(idx, data, node) {
+        return idx.column === colIdx && idx.row ===  rowIdx;
+      });
+      var currentCellNodes = $(currentCell.nodes());
+
+      var isCurrentCellSelected = currentCellNodes.hasClass('selected');
+
+      if (self.selected[rowIdx]) {
+        self.selected[rowIdx] = false;
+        $(self.table.row(rowIdx).node()).removeClass('selected');
+        self.selectFixedColumnRow(rowIdx, false);
+      }
+
+      $(self.table.cells().nodes()).removeClass('selected');
+      if (self.fixcols) {
+        _.each(self.selected, function(selected, index){
+          if(!selected){
+            self.selectFixedColumnRow(index, false);
+          }
         });
-        var currentCellNodes = $(currentCell.nodes());
-
-        var isCurrentCellSelected = currentCellNodes.hasClass('selected');
-
-        if (self.selected[rowIdx]) {
-          self.selected[rowIdx] = false;
-          $(self.table.row(rowIdx).node()).removeClass('selected');
-          self.selectFixedColumnRow(rowIdx, false);
+      }
+      if (!isCurrentCellSelected) {
+        currentCellNodes.addClass('selected');
+        if(iPos === undefined) {
+          self.selectFixedColumnCell($(this), true);
         }
+      }
 
-        $(self.table.cells().nodes()).removeClass('selected');
-        if (self.fixcols) {
-          _.each(self.selected, function(selected, index){
-            if(!selected){
-              self.selectFixedColumnRow(index, false);
-            }
-          });
-        }
-        if (!isCurrentCellSelected) {
-          currentCellNodes.addClass('selected');
-          if(iPos === undefined) {
-            self.selectFixedColumnCell($(this), true);
-          }
-        }
+      var index = currentCell.indexes()[0];
+      if (model.hasDoubleClickAction) {
+        tableService.onDoubleClick(model['update_id'],
+          index.row,
+          index.column - 1,
+          self.model.getEvaluatorId()).then(function() {
+          self.update = true;
+        });
+      }
 
-        var index = currentCell.indexes()[0];
-        if (model.hasDoubleClickAction) {
-          tableService.onDoubleClick(model['update_id'],
-            index.row,
-            index.column - 1,
-            self.model.getEvaluatorId()).then(function() {
-            self.update = true;
-          });
-        }
+      if (!_.isEmpty(model.doubleClickTag)) {
+        var params = {
+          actionType: 'DOUBLE_CLICK',
+          row: index.row,
+          col: index.column - 1
+        };
+        tableService.setActionDetails(model['update_id'],
+          self.model.getEvaluatorId(),
+          params).then(function() {
+          self.evaluateTagCell(model.doubleClickTag);
+        });
+      }
 
-        if (!_.isEmpty(model.doubleClickTag)) {
-          var params = {
-            actionType: 'DOUBLE_CLICK',
-            row: index.row,
-            col: index.column - 1
-          };
-          tableService.setActionDetails(model['update_id'],
-            self.model.getEvaluatorId(),
-            params).then(function() {
-            self.evaluateTagCell(model.doubleClickTag);
-          });
-        }
+      e.stopPropagation();
+    });
 
-        e.stopPropagation();
-      });
+    $(id + ' tbody').on('click', 'tr', function(event) {
+      if (!self.table) { return; }
+      var dtTR = self.getDtRow(this);
+      var iPos = self.table.row(dtTR).index();
+      if (self.selected[iPos]) {
+        self.selected[iPos] = false;
+        $(dtTR).removeClass('selected');
+        self.selectFixedColumnRow(iPos, false);
+      } else {
+        self.selected[iPos] = true;
+        $(dtTR).addClass('selected');
+        self.selectFixedColumnRow(iPos, true);
+      }
+    });
 
-      $(id + ' tbody').on('click', 'tr', function(event) {
+    $(id + ' tbody')
+      .on('mouseenter.bko-dt-highlight', 'tr', function() {
         if (!self.table) { return; }
         var dtTR = self.getDtRow(this);
-        var iPos = self.table.row(dtTR).index();
-        if (self.selected[iPos]) {
-          self.selected[iPos] = false;
-          $(dtTR).removeClass('selected');
-          self.selectFixedColumnRow(iPos, false);
-        } else {
-          self.selected[iPos] = true;
-          $(dtTR).addClass('selected');
-          self.selectFixedColumnRow(iPos, true);
+        var rowIndex = self.table.row(dtTR).index();
+        $(dtTR).addClass('hover');
+        self.highlightFixedColumnRow (rowIndex, true);
+      })
+      .on('mouseleave.bko-dt-highlight', 'tr', function() {
+        if (!self.table) { return; }
+        var dtTR = self.getDtRow(this);
+        var rowIndex = self.table.row(dtTR).index();
+        $(dtTR).removeClass('hover');
+        self.highlightFixedColumnRow (rowIndex, false);
+      });
+
+    $(self.table.table().container()).find('.dataTables_scrollHead').on('scroll', function() {
+      var filtersInFocus = $(self.table.table().container()).find('.filter-input:focus');
+      if (filtersInFocus.length) {
+        self.stopFilterEditing(filtersInFocus);
+      }
+    });
+
+    self.removeOnKeyListeners();
+
+    if (self.update) {
+      self.addInteractionListeners();
+    }
+
+    self.table
+      .on('key', function(e, datatable, key, cell, originalEvent) {
+        originalEvent.preventDefault();
+        self.onKeyAction(cell.index().column, originalEvent);
+      })
+      .on('column-visibility.dt', function(e, settings, column, state) {
+        self.getCellSho[self.colorder[column] - 1] = state;
+        setTimeout(function(){
+          self.updateHeaderLayout();
+          self.table.draw(false);
+        }, 0);
+      })
+      .on( 'column-sizing.dt', function( e, settings ) {
+        self.updateTableWidth();
+      })
+      .on('draw.dt', function() {
+        self.updateRowDisplayBtts();
+        self.updateToggleColumnBtts();
+      });
+
+    function updateSize() {
+      clearTimeout(self.refresh_size);
+      self.refresh_size = setTimeout(function() {
+        self.update_size();
+      }, 250);
+    }
+
+    $(window).bind('resize.' + self.id, function() {
+      updateSize();
+    });
+
+    self.element.find(id + '_dropdown_menu')
+      .on('click.bko-dropdown', function() {
+        var isOpen = $(this).parents('.dropdown').hasClass('open');
+
+        if (!isOpen) {
+          self.setCodeMirrorListener($(this));
         }
       });
 
-      $(id + ' tbody')
-        .on('mouseenter.bko-dt-highlight', 'tr', function() {
-          if (!self.table) { return; }
-          var dtTR = self.getDtRow(this);
-          var rowIndex = self.table.row(dtTR).index();
-          $(dtTR).addClass('hover');
-          self.highlightFixedColumnRow (rowIndex, true);
-        })
-        .on('mouseleave.bko-dt-highlight', 'tr', function() {
-          if (!self.table) { return; }
-          var dtTR = self.getDtRow(this);
-          var rowIndex = self.table.row(dtTR).index();
-          $(dtTR).removeClass('hover');
-          self.highlightFixedColumnRow (rowIndex, false);
-        });
+    // self.$on(GLOBALS.EVENTS.ADVANCED_MODE_TOGGLED, function() {
+    //   updateSize();
+    // });
 
-      $(self.table.table().container()).find('.dataTables_scrollHead').on('scroll', function() {
-        var filtersInFocus = $(self.table.table().container()).find('.filter-input:focus');
-        if (filtersInFocus.length) {
-          self.stopFilterEditing(filtersInFocus);
-        }
-      });
+    var inits = {'heightMatch': 'none'};
+    if ((self.pagination.fixLeft + self.pagination.fixRight) > (self.columns.length - 1)) {
+      self.pagination.fixLeft = 0;
+      self.pagination.fixRight = 0;
+    }
+    if (self.pagination.fixLeft) {
+      inits.leftColumns = 1 + self.pagination.fixLeft;
+    } else {
+      inits.leftColumns = 1;
+    }
+    if (self.pagination.fixRight) {
+      inits.rightColumns = self.pagination.fixRight;
+    } else {
+      inits.rightColumns = 0;
+    }
 
-      self.removeOnKeyListeners();
+    self.updateFixedColumnsSeparator();
 
-      if (self.update) {
-        self.addInteractionListeners();
-      }
+    self.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
+    self.fixcols.fnRedrawLayout();
+    // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
 
-      self.table
-        .on('key', function(e, datatable, key, cell, originalEvent) {
-          originalEvent.preventDefault();
-          self.onKeyAction(cell.index().column, originalEvent);
-        })
-        .on('column-visibility.dt', function(e, settings, column, state) {
-          self.getCellSho[self.colorder[column] - 1] = state;
-          setTimeout(function(){
-            self.updateHeaderLayout();
-            self.table.draw(false);
-          }, 0);
-        })
-        .on( 'column-sizing.dt', function( e, settings ) {
-          self.updateTableWidth();
-        })
-        .on('draw.dt', function() {
-          self.updateRowDisplayBtts();
-          self.updateToggleColumnBtts();
-        });
-
-      function updateSize() {
-        clearTimeout(self.refresh_size);
-        self.refresh_size = setTimeout(function() {
-          self.update_size();
-        }, 250);
-      }
-
-      $(window).bind('resize.' + self.id, function() {
-        updateSize();
-      });
-
-      self.element.find(id + '_dropdown_menu')
-        .on('click.bko-dropdown', function() {
-          var isOpen = $(this).parents('.dropdown').hasClass('open');
-
-          if (!isOpen) {
-            self.setCodeMirrorListener($(this));
+    setTimeout(function(){
+      if (!self.table) { return; }
+      self.applyFilters();
+      if (self.columnFilter) {
+        self.table.columns().every(function(i) {
+          var column = this;
+          var jqInput = self.getColumnFilter(column);
+          if (i === 0) {
+            var filterValue = self.tableFilter;
+            jqInput.val(filterValue);
+            if (self.columnSearchActive && !_.isEmpty(filterValue)) {
+              self.table.search(filterValue);
+            }
+          } else {
+            var filterValue = self.columnFilter[self.colorder[i] - 1];
+            jqInput.val(filterValue);
+            if (self.columnSearchActive && !_.isEmpty(filterValue)) {
+              column.search(filterValue);
+            }
           }
         });
-
-      // self.$on(GLOBALS.EVENTS.ADVANCED_MODE_TOGGLED, function() {
-      //   updateSize();
-      // });
-
-      var inits = {'heightMatch': 'none'};
-      if ((self.pagination.fixLeft + self.pagination.fixRight) > (self.columns.length - 1)) {
-        self.pagination.fixLeft = 0;
-        self.pagination.fixRight = 0;
       }
-      if (self.pagination.fixLeft) {
-        inits.leftColumns = 1 + self.pagination.fixLeft;
-      } else {
-        inits.leftColumns = 1;
+      if (self.showFilter) {
+        self.doShowFilter(null, self.columnSearchActive);
       }
-      if (self.pagination.fixRight) {
-        inits.rightColumns = self.pagination.fixRight;
-      } else {
-        inits.rightColumns = 0;
-      }
-
-      self.updateFixedColumnsSeparator();
-
-      self.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
-      self.fixcols.fnRedrawLayout();
       // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
 
-      setTimeout(function(){
-        if (!self.table) { return; }
-        self.applyFilters();
-        if (self.columnFilter) {
-          self.table.columns().every(function(i) {
-            var column = this;
-            var jqInput = self.getColumnFilter(column);
-            if (i === 0) {
-              var filterValue = self.tableFilter;
-              jqInput.val(filterValue);
-              if (self.columnSearchActive && !_.isEmpty(filterValue)) {
-                self.table.search(filterValue);
-              }
-            } else {
-              var filterValue = self.columnFilter[self.colorder[i] - 1];
-              jqInput.val(filterValue);
-              if (self.columnSearchActive && !_.isEmpty(filterValue)) {
-                column.search(filterValue);
-              }
-            }
-          });
-        }
-        if (self.showFilter) {
-          self.doShowFilter(null, self.columnSearchActive);
-        }
-        // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
-
-      }, 0);
-
     }, 0);
+
   };
 
   // little hack: hide dropdown menu when click on CodeMirror instance
@@ -2387,7 +2384,7 @@ define([
     var filterInputSelector = '.filterRow .filter-input';
     var clearFilterSelector = '.filterRow .clear-filter';
     $(self.table.table().container()).off('keyup.column-filter change.column-filter keydown.column-filter ' +
-                                           'blur.column-filter focus.column-filter', filterInputSelector);
+                                          'blur.column-filter focus.column-filter', filterInputSelector);
     $(self.table.table().container()).off('mousedown.column-filter', clearFilterSelector);
   };
 

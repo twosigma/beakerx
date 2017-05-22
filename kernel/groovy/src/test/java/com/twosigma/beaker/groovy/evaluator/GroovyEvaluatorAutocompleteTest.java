@@ -36,6 +36,7 @@ public class GroovyEvaluatorAutocompleteTest {
                     "System.out.printl",17);
     //then
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(11);
   }
 
   @Test
@@ -46,5 +47,6 @@ public class GroovyEvaluatorAutocompleteTest {
             "System.out.printl",27);
     //then
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(21);
   }
 }

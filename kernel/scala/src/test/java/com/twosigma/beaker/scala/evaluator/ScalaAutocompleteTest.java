@@ -60,6 +60,16 @@ public class ScalaAutocompleteTest {
     AutocompleteResult autocomplete = scalaEvaluator.autocomplete("val numbers = Li", 16);
     //then
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(14);
+  }
+
+  @Test
+  public void autocomplete_multiLineOffsetCorrect() throws Exception {
+    //when
+    AutocompleteResult autocomplete = scalaEvaluator.autocomplete("val x = 3\nval numbers = Li", 26);
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(24);
   }
 
   private static KernelParameters kernelParameters() {

@@ -353,7 +353,7 @@ define([
       }
 
       if (model.crosshair != null) {
-        var color = model.crosshair.color || '#000000';
+        var color = model.crosshair.color || '#FF000000';
         newmodel.xCursor = {};
         var cursor = newmodel.xCursor;
 

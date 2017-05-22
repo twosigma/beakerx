@@ -336,6 +336,6 @@ public class ClojureEvaluator implements Evaluator {
 
     }
 
-    return new AutocompleteResult(result, caretPosition);
+    return new AutocompleteResult(result, i);
   }
 }

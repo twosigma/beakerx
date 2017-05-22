@@ -21,7 +21,7 @@ function MenuHelper (tableScope) {
       var colIdx = container.data('columnIndex');
 
       //table variables
-      var table = $('#' + tableScope.id).DataTable();
+      var table = tableScope.table;
       var bodyColumn = table.column(colIdx).nodes().to$();
       var headerColumn = $(table.column(colIdx).header());
       //remove align class

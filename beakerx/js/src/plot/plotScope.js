@@ -796,7 +796,7 @@ define([
       this.jqcontainer.find(".plot-cursorlabel").remove();
       return;
     }
-    var mapX = this.scr2dataX, mapY = this.scr2dataY;
+    var mapX = this.scr2dataX;
     if (model.xCursor != null) {
       var opt = model.xCursor;
       this.svg.selectAll("#cursor_x").data([{}]).enter().append("line")
@@ -840,7 +840,10 @@ define([
         .attr("y2", y);
 
       this.renderCursorLabel(model.yAxis, "cursor_ylabel", y, false);
-      this.renderCursorLabel(model.yAxisR, "cursor_yrlabel", y, true);
+
+      if (model.yAxisR) {
+        this.renderCursorLabel(model.yAxisR, "cursor_yrlabel", y, true);
+      }
     }
   };
 
@@ -849,7 +852,7 @@ define([
     var opt = model.yCursor;
     var lMargin = this.layout.leftLayoutMargin;
     var rMargin = this.layout.rightLayoutMargin;
-    var mapY = this.data2scrY;
+    var mapY = this.scr2dataY;
 
     if(axis == null) { return };
     this.jqcontainer.find("#" + id).remove();

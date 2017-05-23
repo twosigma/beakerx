@@ -28,16 +28,18 @@ import java.net.URL;
 
 public class MIMEContainer {
 
+  public static final MIMEContainer HIDDEN = addMimeType(MIME.HIDDEN);
+
   public enum MIME {
 
-    TEXT_PLAIN("text/plain"), 
-    TEXT_HTML("text/html"), 
-    TEXT_LATEX("text/latex"), 
-    TEXT_MARKDOWN("text/markdown"), 
-    APPLICATION_JAVASCRIPT("application/javascript"), 
-    IMAGE_PNG("image/png"), 
-    IMAGE_JPEG("image/jpeg"), 
-    IMAGE_SVG("image/svg+xml"), 
+    TEXT_PLAIN("text/plain"),
+    TEXT_HTML("text/html"),
+    TEXT_LATEX("text/latex"),
+    TEXT_MARKDOWN("text/markdown"),
+    APPLICATION_JAVASCRIPT("application/javascript"),
+    IMAGE_PNG("image/png"),
+    IMAGE_JPEG("image/jpeg"),
+    IMAGE_SVG("image/svg+xml"),
     HIDDEN("x-beakerx/empty");
 
     private String mime;
@@ -73,10 +75,6 @@ public class MIMEContainer {
 
   public String getCode() {
     return code;
-  }
-
-  public static MIMEContainer HIDDEN() {
-    return addMimeType(MIME.HIDDEN);
   }
 
   public static MIMEContainer JavaScript(Object code) {

@@ -17,7 +17,7 @@ package com.twosigma.beaker.sql;
 
 public class SQLForColorTable {
 
-  public static String CREATE_AND_SELECT_ALL = "" +
+  public static final String CREATE = "" +
           "drop table if exists color;" +
           "CREATE TABLE color (\n" +
           "  id int(11) NOT NULL,\n" +
@@ -28,6 +28,9 @@ public class SQLForColorTable {
           "\n" +
           "INSERT INTO color (id, name, code) VALUES (1001,'AliceBlue','#F0F8FF');\n" +
           "INSERT INTO color (id, name, code) VALUES (1002,'AntiqueWhite','#FAEBD7');\n" +
-          "INSERT INTO color (id, name, code) VALUES (1003,'Aqua','#00FFFF');\n" +
+          "INSERT INTO color (id, name, code) VALUES (1003,'Aqua','#00FFFF');";
+
+  public static final String CREATE_AND_SELECT_ALL = "" +
+          CREATE +
           "SELECT * FROM color WHERE name LIKE 'A%';";
 }

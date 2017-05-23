@@ -18,6 +18,7 @@ package com.twosigma.beaker.sql;
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.jvm.object.OutputCell;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.jupyter.KernelParameters;
@@ -30,6 +31,7 @@ import java.util.Map;
 
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
+import static com.twosigma.beaker.sql.SQLForColorTable.CREATE;
 import static com.twosigma.beaker.sql.SQLForColorTable.CREATE_AND_SELECT_ALL;
 import static com.twosigma.beaker.sql.SQLKernelParameters.DATASOURCES;
 import static com.twosigma.beaker.sql.SQLKernelParameters.DEFAULT_DATASOURCE;
@@ -60,7 +62,7 @@ public class SQLEvaluatorTest {
     //given
     SimpleEvaluationObject seo = new SimpleEvaluationObject(CREATE_AND_SELECT_ALL, new ExecuteCodeCallbackTest());
     //when
-    sqlEvaluator.evaluate(seo, CREATE_AND_SELECT_ALL);
+    sqlEvaluator.evaluate(seo, seo.getExpression());
     waitForResult(seo);
     //then
     verifyResult(seo);
@@ -71,6 +73,22 @@ public class SQLEvaluatorTest {
     assertThat(seo.getPayload() instanceof TableDisplay).isTrue();
     TableDisplay result = (TableDisplay) seo.getPayload();
     assertThat(result.getValues().size()).isEqualTo(3);
+  }
+
+  @Test
+  public void insertsShouldReturnOutputCellHIDDEN() throws Exception {
+    //given
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(CREATE, new ExecuteCodeCallbackTest());
+    //when
+    sqlEvaluator.evaluate(seo, seo.getExpression());
+    waitForResult(seo);
+    //then
+    verifyInsertResult(seo);
+  }
+
+  private void verifyInsertResult(SimpleEvaluationObject seo) {
+    assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(seo.getPayload()).isEqualTo(OutputCell.HIDDEN);
   }
 
   private KernelParameters kernelParameters() {

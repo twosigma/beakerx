@@ -16,8 +16,10 @@
  
 package com.twosigma.beaker.scala.evaluator;
 
-import java.util.ArrayList
+import java.util
+import java.util.{ArrayList, function}
 
+import com.twosigma.beaker.autocomplete.AutocompleteResult
 import com.twosigma.beaker.jvm.`object`.SimpleEvaluationObject
 
 import scala.tools.jline_embedded.console.completer.Completer
@@ -112,10 +114,12 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     }
     out.clrOutputHandler();
   }
-  
-  def autocomplete(buf: String, len : Integer): ArrayList[CharSequence] = {
+
+  def autocomplete(buf: String, len : Integer): AutocompleteResult = {
     val maybes = new java.util.ArrayList[CharSequence];
-    completer.complete(buf,  len, maybes);
-    maybes;
+    val offset = completer.complete(buf,  len, maybes);
+    // There must be a better way to do this
+    import scala.collection.JavaConverters._
+    new AutocompleteResult(maybes.asScala.map(_.toString).asJava, offset)
   }
 }

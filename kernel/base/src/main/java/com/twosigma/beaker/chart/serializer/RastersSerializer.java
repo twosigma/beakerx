@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
+import com.twosigma.jupyter.message.Message;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -74,15 +75,15 @@ public class RastersSerializer extends JsonSerializer<Rasters> {
 
   private void validate(Rasters raster) {
     if (raster.getY() == null || raster.getY().isEmpty()) {
-      throw new IllegalStateException("Please provide Y coordinate.");
+      throw new IllegalStateException(Messages.PROVIDE_Y_COORDINATE);
     }
 
     if (raster.getHeight() == null || raster.getHeight().isEmpty()) {
-      throw new IllegalStateException("Please provide height size.");
+      throw new IllegalStateException(Messages.PROVIDE_HEIGHT);
     }
 
     if (raster.getWidth() == null || raster.getWidth().isEmpty()) {
-      throw new IllegalStateException("Please provide width size.");
+      throw new IllegalStateException(Messages.PROVIDE_WIDTH);
     }
   }
 

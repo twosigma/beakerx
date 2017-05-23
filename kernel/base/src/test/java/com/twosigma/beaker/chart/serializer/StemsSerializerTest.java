@@ -39,6 +39,7 @@ public class StemsSerializerTest {
   static StemsSerializer stemsSerializer;
   JsonGenerator jgen;
   StringWriter sw;
+  Stems stems;
 
   @BeforeClass
   public static void initClassStubData() {
@@ -50,12 +51,14 @@ public class StemsSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+    stems = new Stems();
+    stems.setX(Arrays.asList(1, 2));
+    stems.setY(Arrays.asList(1, 2));
   }
 
   @Test
   public void serializeColorsStems_resultJsonHasColors() throws IOException {
     //when
-    Stems stems = new Stems();
     stems.setColor(Arrays.asList(Color.BLUE, Color.GREEN, Color.BLACK));
     stemsSerializer.serialize(stems, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -69,7 +72,6 @@ public class StemsSerializerTest {
   @Test
   public void serializeColorStems_resultJsonHasColor() throws IOException {
     //when
-    Stems stems = new Stems();
     stems.setColor(Color.GREEN);
     stemsSerializer.serialize(stems, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -83,7 +85,6 @@ public class StemsSerializerTest {
   @Test
   public void serializeWidthStems_resultJsonHasWidth() throws IOException {
     //when
-    Stems stems = new Stems();
     stems.setWidth(11f);
     stemsSerializer.serialize(stems, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -96,7 +97,6 @@ public class StemsSerializerTest {
   @Test
   public void serializeStrokeTypeStems_resultJsonHasStyle() throws IOException {
     //when
-    Stems stems = new Stems();
     stems.setStyle(StrokeType.SOLID);
     stemsSerializer.serialize(stems, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -109,7 +109,6 @@ public class StemsSerializerTest {
   @Test
   public void serializeStrokeTypeListStems_resultJsonHasStyles() throws IOException {
     //when
-    Stems stems = new Stems();
     stems.setStyle(Arrays.asList(StrokeType.SOLID, StrokeType.DASHDOT));
     stemsSerializer.serialize(stems, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();

@@ -49,6 +49,7 @@ public class ClojureAutocompleteTest {
     AutocompleteResult autocomplete = clojureEvaluator.autocomplete("def", 3);
     //then
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
 }

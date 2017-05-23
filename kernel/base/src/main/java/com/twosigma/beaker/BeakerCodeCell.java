@@ -137,7 +137,6 @@ public class BeakerCodeCell {
         String executionCount=null, cellType=null, source=null;
         Object outputs=null;
         Object metadata=null;
-        System.out.println(n);
         if (n.has("execution_count"))
           executionCount = n.get("execution_count").asText();
         if (n.has("cell_type"))

@@ -16,9 +16,12 @@
 
 package com.twosigma.beaker.chart;
 
+import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.chart.actions.CategoryGraphicsActionObject;
+import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.widgets.chart.BeakerxPlot;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,11 +29,19 @@ import java.util.Arrays;
 
 public class ChartTest {
 
+  private KernelTest groovyKernel;
   private Chart chart;
 
   @Before
   public void setUp() throws Exception {
+    groovyKernel = new KernelTest();
+    KernelManager.register(groovyKernel);
     chart = new Chart();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    KernelManager.register(null);
   }
 
   @Test

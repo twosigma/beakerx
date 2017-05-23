@@ -13,27 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.autocomplete;
+package com.twosigma.beaker.chart.serializer;
 
-import java.util.List;
+public interface Messages {
 
-public class AutocompleteResult {
-
-  private List<String> matches;
-  private int startIndex;
-
-  public AutocompleteResult(List<String> matches, int startIndex) {
-    this.matches = matches;
-    this.startIndex = startIndex;
-  }
-
-  public List<String> getMatches() {
-    return matches;
-  }
-
-  public int getStartIndex() {
-    return startIndex;
-  }
-
+  String PROVIDE_X_COORDINATE = "Please provide X coordinate";
+  String PROVIDE_Y_COORDINATE = "Please provide Y coordinate";
+  String PROVIDE_HEIGHT = "Please provide height size.";
+  String PROVIDE_WIDTH = "Please provide width size.";
 
 }

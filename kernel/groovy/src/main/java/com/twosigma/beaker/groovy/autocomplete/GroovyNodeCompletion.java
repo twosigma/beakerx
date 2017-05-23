@@ -47,15 +47,15 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
   public void exitClassNameExpression(ClassNameExpressionContext ctx) {
     if(ctx.getStart().getStartIndex() < cursor && ctx.getStop().getStopIndex()+1 >= cursor) {
       if(ctx.getText().contains(".")) {
-        addQuery(classUtils.expandExpression(ctx.getText(), registry, classUtils.DO_STATIC), AutocompleteResult.getStartIndex(ctx));
+        addQuery(classUtils.expandExpression(ctx.getText(), registry, classUtils.DO_STATIC), AutocompleteGroovyResult.getStartIndex(ctx));
         // complete with standard groovy extension functions
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, ctx.getText().substring(ctx.getText().lastIndexOf(".")+1));
-        addQuery(c, AutocompleteResult.getStartIndex(ctx));
+        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
       } else {
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getText());
-        addQuery(c, AutocompleteResult.getStartIndex(ctx));
+        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
         c = new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, ctx.getText());
-        addQuery(c, AutocompleteResult.getStartIndex(ctx));
+        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
       }
     }
   }
@@ -69,7 +69,7 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
             ctx.getParent().getParent().getParent()!=null &&  ctx.getParent().getParent().getParent() instanceof CompilationUnitContext &&
             ctx.getParent().getParent().getParent().getChild(0).equals(ctx.getParent().getParent())) {
           AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.INITIAL, ctx.getText());
-          addQuery(c, AutocompleteResult.getStartIndex(ctx));
+          addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
         }
         
         // is this leftmost part of an statement?
@@ -78,7 +78,7 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
             ctx.getParent().getParent()!=null &&  ctx.getParent().getParent() instanceof StatementContext &&
             ctx.getParent().getParent().getChild(0).equals(ctx.getParent())) {
           AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, ctx.getText());
-          addQuery(c, AutocompleteResult.getStartIndex(ctx));
+          addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
         }
         
         // check out for implements and/or extends
@@ -87,21 +87,21 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
           ParseTree left = findLeftSibling(st);
           if(left!=null && left.getText().trim().equals("class")) {
             AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.CLASSLEVEL, ctx.getText());
-            addQuery(c, AutocompleteResult.getStartIndex(ctx));
+            addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
           }
         }
         
         // try to expand this as a path expression
         if(ctx.getText().contains(".")) {
-          addQuery(classUtils.expandExpression(ctx.getText(), registry, classUtils.DO_NON_STATIC), AutocompleteResult.getStartIndex(ctx));
+          addQuery(classUtils.expandExpression(ctx.getText(), registry, classUtils.DO_NON_STATIC), AutocompleteGroovyResult.getStartIndex(ctx));
           // complete with standard groovy extension functions
           AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, ctx.getText().substring(ctx.getText().lastIndexOf(".")+1));
-          addQuery(c, AutocompleteResult.getStartIndex(ctx));
+          addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
         } else {
           AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getText());
-          addQuery(c, AutocompleteResult.getStartIndex(ctx));
+          addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
           c = new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, ctx.getText());
-          addQuery(c, AutocompleteResult.getStartIndex(ctx));
+          addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
         }
       }
   }
@@ -172,22 +172,22 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
         if(t.endsWith("\n")) {
           String txt = ctx.getChild(ctx.getChildCount()-1).getText();
           if(txt.contains(".")) {
-            addQuery(classUtils.expandExpression(txt, registry, classUtils.DO_ALL), AutocompleteResult.getStartIndex(ctx));
+            addQuery(classUtils.expandExpression(txt, registry, classUtils.DO_ALL), AutocompleteGroovyResult.getStartIndex(ctx));
           } else {
             AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, txt);
-            addQuery(c, AutocompleteResult.getStartIndex(ctx));
+            addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
             c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, txt);
-            addQuery(c, AutocompleteResult.getStartIndex(ctx));
+            addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
           }
         } else {
           for (int i=ctx.getChildCount()-1; i>0; i--) {
             if(!ctx.getChild(i).getText().isEmpty() && !ctx.getChild(i).getText().equals("<EOF>")) {
               String txt = ctx.getChild(i).getText();
               if(txt.contains(".")) {
-                addQuery(classUtils.expandExpression(txt, registry, classUtils.DO_ALL), AutocompleteResult.getStartIndex(ctx));
+                addQuery(classUtils.expandExpression(txt, registry, classUtils.DO_ALL), AutocompleteGroovyResult.getStartIndex(ctx));
               } else {
                 AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, txt);
-                addQuery(c, AutocompleteResult.getStartIndex(ctx));
+                addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
               }
               break;
             }

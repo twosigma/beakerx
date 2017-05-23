@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.google.common.collect.Lists;
 import com.twosigma.beaker.chart.xychart.plotitem.Area;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -36,6 +37,7 @@ public class BasedXYGraphicsSerializerTest {
   static AreaSerializer basedXYGraphicsSerializer;
   JsonGenerator jgen;
   StringWriter sw;
+  Area area;
 
   @BeforeClass
   public static void initClassStubData() {
@@ -47,12 +49,14 @@ public class BasedXYGraphicsSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
+    area = new Area();
+    area.setX(Arrays.asList(1, 2, 3));
+    area.setY(Arrays.asList(1, 2, 3));
   }
 
   @Test
   public void serializeBasesOfBasedXYGraphics_resultJsonHasBases() throws IOException {
     //when
-    Area area = new Area();
     area.setBase(Arrays.asList(11, 22, 33));
     basedXYGraphicsSerializer.serialize(area, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
@@ -66,7 +70,6 @@ public class BasedXYGraphicsSerializerTest {
   @Test
   public void serializeBaseOfBasedXYGraphics_resultJsonHasBase() throws IOException {
     //when
-    Area area = new Area();
     area.setBase(11);
     basedXYGraphicsSerializer.serialize(area, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();

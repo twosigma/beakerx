@@ -25,12 +25,14 @@ var plotApi = require('./plot/plotApi');
 window.d3 = d3;
 
 var PlotModel = widgets.DOMWidgetModel.extend({
-  defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
-    _model_name : 'PlotModel',
-    _view_name : 'PlotView',
-    _model_module : 'beakerx',
-    _view_module : 'beakerx'
-  })
+  defaults: function() {
+    return _.extend({}, widgets.DOMWidgetModel.prototype.defaults.apply(this), {
+      _model_name : 'PlotModel',
+      _view_name : 'PlotView',
+      _model_module : 'beakerx',
+      _view_module : 'beakerx'
+    });
+  }
 });
 
 // Custom View. Renders the widget model.

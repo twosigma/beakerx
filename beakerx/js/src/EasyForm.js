@@ -26,13 +26,15 @@ require('./easyForm/css/jupyter-easyform.scss');
 require('flatpickr/dist/flatpickr.css');
 
 var EasyFormModel = widgets.DOMWidgetModel.extend({
-  defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
-    _model_name : 'EasyFormModel',
-    _view_name : 'EasyFormView',
-    _model_module : 'beakerx',
-    _view_module : 'beakerx',
-    children: []
-  }),
+  defaults: function() {
+    return _.extend({}, widgets.DOMWidgetModel.prototype.defaults.apply(this), {
+      _model_name: 'EasyFormModel',
+      _view_name: 'EasyFormView',
+      _model_module: 'beakerx',
+      _view_module: 'beakerx',
+      children: []
+    });
+  }
 }, {
   serializers: _.extend({
     children: {deserialize: widgets.unpack_models},

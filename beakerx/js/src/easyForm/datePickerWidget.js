@@ -21,12 +21,14 @@ var moment = require('moment');
 var Flatpickr = require("flatpickr");
 
 var DatePickerModel = widgets.StringModel.extend({
-  defaults: _.extend({}, widgets.StringModel.prototype.defaults, {
-    _view_name: "DatePickerView",
-    _model_name: "DatePickerModel",
-    _model_module : 'beakerx',
-    _view_module : 'beakerx'
-  })
+  defaults: function() {
+    return _.extend({}, widgets.StringModel.prototype.defaults.apply(this), {
+      _view_name: "DatePickerView",
+      _model_name: "DatePickerModel",
+      _model_module: 'beakerx',
+      _view_module: 'beakerx'
+    });
+  }
 });
 
 var datepickerOpts = {

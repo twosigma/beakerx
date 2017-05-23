@@ -29,7 +29,8 @@ define([
   './buildTemplate',
   './datatablesHeadermenu',
   './consts',
-  'jquery-contextmenu'
+  'jquery-contextmenu',
+  'jquery-ui/ui/widgets/tooltip'
 ], function(
   _,
   $,
@@ -45,7 +46,8 @@ define([
   buildTemplate,
   datatablesHeadermenu,
   tableConsts,
-  contextMenu
+  contextMenu,
+  tooltip
 ) {
 
   var jQuery = $;
@@ -829,8 +831,15 @@ define([
 
     self.doCreateData(model);
     self.doCreateTable(model);
-    $(document.body).off('click.bko-dt-container', self.containerClickFunction);
-    $(document.body).on('click.bko-dt-container', self.containerClickFunction);
+    var $body = $(document.body);
+
+    $body.off('click.bko-dt-container', self.containerClickFunction);
+    $body.on('click.bko-dt-container', self.containerClickFunction);
+    $body.tooltip({
+      items: '.bko-tooltip',
+      show: { delay: 300, duration: 300 },
+      position: { my: 'left bottom', at: 'center top' }
+    });
   };
 
   TableScope.prototype.doCreateData = function(model) {
@@ -1623,6 +1632,21 @@ define([
             }
           });
         }
+      },
+      'headerCallback': function(thead) {
+        if (!self.table) {
+          return;
+        }
+
+        var cells = $(thead).find('th');
+        _.forEach(cells, function(cell) {
+          var $cell = $(cell);
+          var columnIndex = $cell.data('columnIndex');
+
+          $cell
+            .attr('title', self.types[columnIndex - 1])
+            .addClass('bko-tooltip');
+        });
       },
       'drawCallback': function(settings) {
         //jscs:disable

@@ -49,7 +49,7 @@ public class CompleteHandler extends KernelHandler<Message> {
   }
 
   private void handleMsg(Message message) {
-    String code = ((String) message.getContent().get(CODE)).trim();
+    String code = ((String) message.getContent().get(CODE));
     int cursorPos = ((int) message.getContent().get(CURSOR_POS));
     AutocompleteResult autocomplete = kernel.autocomplete(code, cursorPos);
     Message reply = createMsg(message, cursorPos, autocomplete);

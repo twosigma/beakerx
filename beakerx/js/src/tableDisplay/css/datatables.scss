@@ -474,6 +474,11 @@ $fix-col-separator-width: 3px;
   }
 }
 
+.dataTables_scrollHead {
+  table.dataTable.no-footer {
+    border: none;
+  }
+}
 
 @keyframes fadeIn {
   0% {

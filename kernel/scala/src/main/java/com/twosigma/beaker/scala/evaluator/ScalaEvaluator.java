@@ -205,17 +205,15 @@ public class ScalaEvaluator implements Evaluator {
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     if(acshell != null) {
+      int lineStart = 0;
       String [] sv = code.substring(0, caretPosition).split("\n");
       for ( int i=0; i<sv.length-1; i++) {
         acshell.evaluate2(sv[i]);
         caretPosition -= sv[i].length()+1;
+        lineStart += sv[i].length()+1;
       }
-      ArrayList<CharSequence> ret = acshell.autocomplete(sv[sv.length-1], caretPosition);
-      ArrayList<String> r2 = new ArrayList<String>();
-      for(CharSequence c : ret)
-        r2.add(c.toString());
-        logger.debug("return: {}", r2);
-      return new AutocompleteResult(r2, caretPosition);
+      AutocompleteResult lineCompletion = acshell.autocomplete(sv[sv.length-1], caretPosition);
+      return new AutocompleteResult(lineCompletion.getMatches(), lineCompletion.getStartIndex() + lineStart);
     }
     return null;
   }

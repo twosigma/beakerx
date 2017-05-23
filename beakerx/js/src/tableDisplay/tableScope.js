@@ -1640,9 +1640,10 @@ define([
 
         var cells = $(thead).find('th');
         _.forEach(cells, function(cell) {
-          var columnIndex = self.getColumnIndexByCellNode(cell);
+          var $cell = $(cell);
+          var columnIndex = $cell.data('columnIndex');
 
-          $(cell)
+          $cell
             .attr('title', self.types[columnIndex - 1])
             .addClass('bko-tooltip');
         });

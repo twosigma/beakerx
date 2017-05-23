@@ -2,6 +2,40 @@
 # yarn lockfile v1
 
 
+"@jupyterlab/services@^0.35.0":
+  version "0.35.1"
+  resolved "https://registry.yarnpkg.com/@jupyterlab/services/-/services-0.35.1.tgz#9bc0e940b381231cfd3033d8adbe90ca7cafdbf1"
+  dependencies:
+    "@types/minimist" "^1.1.29"
+    minimist "^1.2.0"
+    path-posix "^1.0.0"
+    phosphor "^0.7.0"
+    url "^0.11.0"
+    url-join "^1.1.0"
+
+"@types/backbone@^1.3.33":
+  version "1.3.33"
+  resolved "https://registry.yarnpkg.com/@types/backbone/-/backbone-1.3.33.tgz#33ab2e71619dd1d5adc477b689292fee7a34d4a3"
+  dependencies:
+    "@types/jquery" "*"
+    "@types/underscore" "*"
+
+"@types/jquery@*":
+  version "2.0.45"
+  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-2.0.45.tgz#cb99133aac1d997a820d6cf7258c91291c0a2adf"
+
+"@types/minimist@^1.1.29":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
+
+"@types/semver@^5.3.30":
+  version "5.3.31"
+  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-5.3.31.tgz#b999d7d935f43f5207b01b00d3de20852f4ca75f"
+
+"@types/underscore@*":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.8.0.tgz#7a22ef584d6fe59af2e407bae079e2b7f8a5102f"
+
 abbrev@1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.0.tgz#d0554c2256636e2f56e7c2e5ad183f859428d81f"
@@ -10,7 +44,7 @@ acorn@^3.0.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-3.3.0.tgz#45e37fb39e8da3f25baee3ff5369e2bb5f22017a"
 
-ajv@^4.9.1:
+ajv@^4.9.0, ajv@^4.9.1:
   version "4.11.8"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.11.8.tgz#82ffb02b29e662ae53bdc20af15947706739c536"
   dependencies:
@@ -201,10 +235,6 @@ boom@2.x.x:
   resolved "https://registry.yarnpkg.com/boom/-/boom-2.10.1.tgz#39c8918ceff5799f83f9492a848f625add0c766f"
   dependencies:
     hoek "2.x.x"
-
-bootstrap@^3.3.5:
-  version "3.3.7"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-3.3.7.tgz#5a389394549f23330875a3b150656574f8a9eb71"
 
 brace-expansion@^1.1.7:
   version "1.1.7"
@@ -988,6 +1018,10 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
+font-awesome@^4.5.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
+
 for-in@^0.1.3:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-0.1.8.tgz#d8773908e31256109952b1fdb9b3fa867d2775e1"
@@ -1374,13 +1408,13 @@ jquery-ui@^1.12.1:
   version "1.12.1"
   resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.12.1.tgz#bcb4045c8dd0539c134bc1488cdd3e768a7a9e51"
 
-jquery-ui@~1.10.5:
-  version "1.10.5"
-  resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.10.5.tgz#826aed3dd1f88d32ae75d74df48643dc431a5815"
-
-jquery@>=1.7, jquery@^2.1.4:
+jquery@>=1.7:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.4.tgz#2c89d6889b5eac522a7eea32c14521559c6cbf02"
+
+jquery@^3.1.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
 
 js-base64@^2.1.8, js-base64@^2.1.9:
   version "2.1.9"
@@ -1440,19 +1474,29 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.3.6"
 
-jupyter-js-widgets@^1.1.1:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/jupyter-js-widgets/-/jupyter-js-widgets-1.2.0.tgz#5bbc2c877962f3bd4b213ff70aee14859cd21776"
+jupyter-js-widgets@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/jupyter-js-widgets/-/jupyter-js-widgets-2.1.4.tgz#a2c8c19d706d79feb202e6dc3221bffc9d1d8edf"
   dependencies:
+    "@jupyterlab/services" "^0.35.0"
+    "@types/backbone" "^1.3.33"
+    "@types/semver" "^5.3.30"
+    ajv "^4.9.0"
     backbone "1.2.0"
-    bootstrap "^3.3.5"
     d3-format "^0.5.1"
-    jquery "^2.1.4"
-    jquery-ui "~1.10.5"
+    font-awesome "^4.5.0"
+    jquery "^3.1.1"
+    jquery-ui "^1.12.1"
+    jupyter-widgets-schema "^0.1.1"
     lolex "^1.4.0"
+    phosphor "^0.7.0"
     scriptjs "^2.5.8"
     semver "^5.1.0"
     underscore "^1.8.3"
+
+jupyter-widgets-schema@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/jupyter-widgets-schema/-/jupyter-widgets-schema-0.1.1.tgz#72a81328191439383ec45496a4f8184d98c81b48"
 
 kind-of@^2.0.1:
   version "2.0.1"
@@ -1907,6 +1951,10 @@ path-is-absolute@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
 
+path-posix@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/path-posix/-/path-posix-1.0.0.tgz#06b26113f56beab042545a23bfa88003ccac260f"
+
 path-type@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-1.1.0.tgz#59c44f7ee491da704da415da5a4070ba4f8fe441"
@@ -1922,6 +1970,10 @@ pbkdf2-compat@2.0.1:
 performance-now@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-0.2.0.tgz#33ef30c5c77d4ea21c5a53869d91b56d8f2555e5"
+
+phosphor@^0.7.0:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/phosphor/-/phosphor-0.7.1.tgz#fad12fe9568bc85e89c6d57326ba58d27a1d2b21"
 
 pify@^2.0.0, pify@^2.3.0:
   version "2.3.0"
@@ -2727,6 +2779,10 @@ uniqid@^4.0.0:
 uniqs@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/uniqs/-/uniqs-2.0.0.tgz#ffede4b36b25290696e6e165d4a59edb998e6b02"
+
+url-join@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/url-join/-/url-join-1.1.0.tgz#741c6c2f4596c4830d6718460920d0c92202dc78"
 
 url-loader@^0.5.7:
   version "0.5.8"

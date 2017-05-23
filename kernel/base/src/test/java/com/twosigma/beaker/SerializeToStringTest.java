@@ -15,20 +15,19 @@
  */
 package com.twosigma.beaker;
 
+import com.twosigma.beaker.jvm.object.OutputCell;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import static com.twosigma.beaker.mimetype.MIMEContainer.HIDDEN;
-
 public class SerializeToStringTest {
 
   @Test
-  public void NoResultShouldReturnHidden() throws Exception {
+  public void OutputCellHIDDENShouldReturnMIMEContainerHidden() throws Exception {
     //give
     //when
-    MIMEContainer result = SerializeToString.doit(NoResult.INSTANCE);
+    MIMEContainer result = SerializeToString.doit(OutputCell.HIDDEN);
     //then
-    Assertions.assertThat(result).isEqualTo(HIDDEN);
+    Assertions.assertThat(result).isEqualTo(MIMEContainer.HIDDEN);
   }
 }

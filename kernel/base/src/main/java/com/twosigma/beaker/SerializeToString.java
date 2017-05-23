@@ -41,9 +41,6 @@ public class SerializeToString {
   }
 
   private static MIMEContainer getMimeContainer(final Object input) {
-    if(input instanceof NoResult){
-      return HIDDEN;
-    }
     if (input instanceof DisplayableWidget) {
       ((DisplayableWidget) input).display();
       return HIDDEN;

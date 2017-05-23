@@ -16,9 +16,9 @@
 package com.twosigma.beaker.sql;
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beaker.NoResult;
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.jvm.object.OutputCell;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.jupyter.KernelParameters;
@@ -76,7 +76,7 @@ public class SQLEvaluatorTest {
   }
 
   @Test
-  public void insertsShouldReturnResult() throws Exception {
+  public void insertsShouldReturnOutputCellHIDDEN() throws Exception {
     //given
     SimpleEvaluationObject seo = new SimpleEvaluationObject(CREATE, new ExecuteCodeCallbackTest());
     //when
@@ -88,7 +88,7 @@ public class SQLEvaluatorTest {
 
   private void verifyInsertResult(SimpleEvaluationObject seo) {
     assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    assertThat(seo.getPayload() instanceof NoResult).isTrue();
+    assertThat(seo.getPayload()).isEqualTo(OutputCell.HIDDEN);
   }
 
   private KernelParameters kernelParameters() {

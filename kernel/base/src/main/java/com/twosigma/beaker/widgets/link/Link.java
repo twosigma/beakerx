@@ -1,3 +1,18 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.twosigma.beaker.widgets.link;
 
 import com.twosigma.beaker.widgets.Widget;
@@ -65,6 +80,17 @@ public class Link extends Widget{
     this.getComm().close();
   }
   
+  /**
+   * Link two widget attributes on the frontend so they remain in sync.
+   * The link is created in the front-end and does not rely on a roundtrip
+   * to the backend.
+   *
+   * @param source Widget
+   * @param source_key trait_name
+   * @param target Widget
+   * @param target_key trait_name
+   * @return new Link(source, source_key, target, target_key)
+   */
   public static Link jslink(Widget source, String source_key, Widget target, String target_key){
     return new Link(source, source_key, target, target_key);
   }

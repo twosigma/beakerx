@@ -59,6 +59,7 @@ public class Chart extends ChartDetails {
 
   public Chart setTitle(String title) {
     this.title = title;
+    sendUpdate(MODEL, serializeToJsonObject());
     return this;
   }
 

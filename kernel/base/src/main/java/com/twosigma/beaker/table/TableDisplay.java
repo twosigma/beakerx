@@ -540,4 +540,10 @@ public class TableDisplay extends BeakerxWidget {
   protected Map serializeToJsonObject() {
     return TableDisplayToJson.toJson(this);
   }
+
+  @Override
+  public void display() {
+    sendModel();
+    super.display();
+  }
 }

@@ -21,12 +21,16 @@ import com.twosigma.beaker.sql.BeakerParser;
 import com.twosigma.beaker.sql.ConnectionStringHolder;
 import com.twosigma.beaker.sql.DBConnectionException;
 import com.twosigma.beaker.sql.JDBCClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Map;
 
 public class DbExplorerFactory {
+
+  private final static Logger logger = LoggerFactory.getLogger(DbExplorerFactory.class);
 
   private static final String VENDOR_JDBC_MYSQL = "jdbc:mysql:";
   // private static final String VENDOR_JDBC_ORACLE = "jdbc:oracle:";
@@ -51,10 +55,8 @@ public class DbExplorerFactory {
         }
       }
 
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (DBConnectionException e) {
-      e.printStackTrace();
+    } catch (IOException | DBConnectionException e) {
+      logger.error(e.getMessage());
     }
 
     return null;

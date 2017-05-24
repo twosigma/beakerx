@@ -28,6 +28,7 @@ public class SQLCommOpenHandler extends CommOpenHandler{
 
  private Handler<?>[] KERNEL_CONTROL_CHANNEL_HANDLERS = {
      new KernelControlSetShellHandler(kernel),
+     new SQLCommKernelControlSetShellHandler(kernel),
      new KernelControlInterrupt(kernel),
      new KernelControlCommandListHandler(kernel)};
 

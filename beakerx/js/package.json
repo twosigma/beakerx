@@ -45,7 +45,7 @@
     "flatpickr": "^2.6.1",
     "jquery-contextmenu": "^2.4.5",
     "jquery-ui": "^1.12.1",
-    "jupyter-js-widgets": "^1.1.1",
+    "jupyter-js-widgets": "^2.1.4",
     "moment": "^2.17.1",
     "moment-timezone": "^0.5.13",
     "underscore": "^1.8.3"

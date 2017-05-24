@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.sql.autocomplete;
 
+import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.sql.autocomplete.db.DbCache;
 import com.twosigma.beaker.sql.autocomplete.db.DbExplorerFactory;
@@ -33,29 +34,28 @@ import java.util.Map;
 public class SQLAutocomplete {
 
   private static final String[] SQL_KEYS = {
-    "ABORT", "ACTION", "ADD", "AFTER", "ALL", "ALTER", "ANALYZE", "AND",
-    "AS", "ASC", "ATTACH", "AUTOINCREMENT", "BEFORE", "BEGIN", "BETWEEN", "BY", "CASCADE", "CASE", "CAST",
-    "CHECK", "COLLATE", "COLUMN", "COMMIT", "CONFLICT", "CONSTRAINT", "CREATE", "CROSS", "CURRENT_DATE",
-    "CURRENT_TIME", "CURRENT_TIMESTAMP", "DATABASE", "DEFAULT", "DEFERRABLE", "DEFERRED", "DELETE", "DESC",
-    "DETACH", "DISTINCT", "DROP", "EACH", "ELSE", "END", "ESCAPE", "EXCEPT", "EXCLUSIVE", "EXISTS", "EXPLAIN",
-    "FAIL", "FOR", "FOREIGN", "FROM", "FULL", "GLOB", "GROUP", "HAVING", "IF", "IGNORE", "IMMEDIATE", "IN",
-    "INDEX", "INDEXED", "INITIALLY", "INNER", "INSERT", "INSTEAD", "INTERSECT", "INTO", "IS", "ISNULL", "JOIN",
-    "KEY", "LEFT", "LIKE", "LIMIT", "MATCH", "NATURAL", "NO", "NOT", "NOTNULL", "NULL", "OF", "OFFSET", "ON",
-    "OR", "ORDER", "OUTER", "PLAN", "PRAGMA", "PRIMARY", "QUERY", "RAISE", "RECURSIVE", "REFERENCES", "REGEXP",
-    "REINDEX", "RELEASE", "RENAME", "REPLACE", "RESTRICT", "RIGHT", "ROLLBACK", "ROW", "SAVEPOINT", "SELECT",
-    "SET", "TABLE", "TEMP", "TEMPORARY", "THEN", "TO", "TRANSACTION", "TRIGGER", "UNION", "UNIQUE", "UPDATE",
-    "USING", "VACUUM", "VALUES", "VIEW", "VIRTUAL", "WHEN", "WHERE", "WITH", "WITHOUT" };
+          "ABORT", "ACTION", "ADD", "AFTER", "ALL", "ALTER", "ANALYZE", "AND",
+          "AS", "ASC", "ATTACH", "AUTOINCREMENT", "BEFORE", "BEGIN", "BETWEEN", "BY", "CASCADE", "CASE", "CAST",
+          "CHECK", "COLLATE", "COLUMN", "COMMIT", "CONFLICT", "CONSTRAINT", "CREATE", "CROSS", "CURRENT_DATE",
+          "CURRENT_TIME", "CURRENT_TIMESTAMP", "DATABASE", "DEFAULT", "DEFERRABLE", "DEFERRED", "DELETE", "DESC",
+          "DETACH", "DISTINCT", "DROP", "EACH", "ELSE", "END", "ESCAPE", "EXCEPT", "EXCLUSIVE", "EXISTS", "EXPLAIN",
+          "FAIL", "FOR", "FOREIGN", "FROM", "FULL", "GLOB", "GROUP", "HAVING", "IF", "IGNORE", "IMMEDIATE", "IN",
+          "INDEX", "INDEXED", "INITIALLY", "INNER", "INSERT", "INSTEAD", "INTERSECT", "INTO", "IS", "ISNULL", "JOIN",
+          "KEY", "LEFT", "LIKE", "LIMIT", "MATCH", "NATURAL", "NO", "NOT", "NOTNULL", "NULL", "OF", "OFFSET", "ON",
+          "OR", "ORDER", "OUTER", "PLAN", "PRAGMA", "PRIMARY", "QUERY", "RAISE", "RECURSIVE", "REFERENCES", "REGEXP",
+          "REINDEX", "RELEASE", "RENAME", "REPLACE", "RESTRICT", "RIGHT", "ROLLBACK", "ROW", "SAVEPOINT", "SELECT",
+          "SET", "TABLE", "TEMP", "TEMPORARY", "THEN", "TO", "TRANSACTION", "TRIGGER", "UNION", "UNIQUE", "UPDATE",
+          "USING", "VACUUM", "VALUES", "VIEW", "VIRTUAL", "WHEN", "WHERE", "WITH", "WITHOUT"};
 
   private static final String PARAM_CHAR = "%";
 
-  private static final String[] PARAM_KEYS = { PARAM_CHAR + PARAM_CHAR +"beakerDB", PARAM_CHAR + PARAM_CHAR + "inputs"};
+  private static final String[] PARAM_KEYS = {PARAM_CHAR + PARAM_CHAR + "beakerDB", PARAM_CHAR + PARAM_CHAR + "inputs"};
 
   private final JDBCClient jdbcClient;
   private final String sessionId;
   private ConnectionStringHolder defaultConnectionString;
   private final Map<String, ConnectionStringHolder> namedConnectionString;
-  private final DbCache cache; 
-
+  private final DbCache cache;
 
 
   public SQLAutocomplete(ClasspathScanner _cps, JDBCClient jdbcClient, String sessionId, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) {
@@ -65,11 +65,11 @@ public class SQLAutocomplete {
     this.defaultConnectionString = defaultConnectionString;
     this.namedConnectionString = namedConnectionString;
 
-    this.cache = DbExplorerFactory.getDbCache(); 
+    this.cache = DbExplorerFactory.getDbCache();
   }
 
-  private List<String> findKeys(final String key, final String[] keys){
-    final List<String> ret = new ArrayList<String>();
+  private List<String> findKeys(final String key, final String[] keys) {
+    final List<String> ret = new ArrayList<>();
 
     if (key == null || key.trim().length() == 0) {
       ret.addAll(Arrays.asList(keys));
@@ -86,19 +86,17 @@ public class SQLAutocomplete {
     return ret;
   }
 
-  private List<String> findSqlKeys(final String key){
+  private List<String> findSqlKeys(final String key) {
     return findKeys(key, SQL_KEYS);
   }
 
-  private List<String> findParamKeys(final String key){
+  private List<String> findParamKeys(final String key) {
     return findKeys(key, PARAM_KEYS);
   }
 
-
-
-  private String findKey(final String txt, final int cur){
+  private KeyWithIndex findKey(final String txt, final int cur) {
     if (cur <= 0 || Character.isWhitespace(txt.charAt(cur - 1))) {
-      return "";
+      return new KeyWithIndex("",txt.length());
     } else {
       String res = "";
 
@@ -120,19 +118,24 @@ public class SQLAutocomplete {
         }
       }
 
-      return res;
+      return new KeyWithIndex(res,eos);
     }
   }
 
+  public AutocompleteResult doAutocomplete(final String txt, final int cur) {
+    List<String> matches = find(txt, cur);
+    KeyWithIndex key = findKey(txt, cur);
+    return new AutocompleteResult(matches, key.getIndex());
+  }
 
-  public List<String> doAutocomplete(final String txt, final int cur) {
-    List<String> ret = new LinkedList<String>();
+  private List<String> find(String txt, int cur) {
+    List<String> ret = new LinkedList<>();
 
     if (cur == 0) {
       return findParamKeys(null);
     }
 
-    final String key = findKey(txt, cur);
+    final String key = findKey(txt, cur).getKey();
 
     if (key != null && key.length() > 0 && key.startsWith(PARAM_CHAR)) {
       return findParamKeys(key);
@@ -155,7 +158,7 @@ public class SQLAutocomplete {
           searchTableIndex = cur - 1;
         }
 
-        final String tableName = findKey(txt, searchTableIndex);
+        final String tableName = findKey(txt, searchTableIndex).getKey();
 
         if (tableName != null) {
           return dbInfo.getTableFieldNames(cache, null, tableName, fieldKey);

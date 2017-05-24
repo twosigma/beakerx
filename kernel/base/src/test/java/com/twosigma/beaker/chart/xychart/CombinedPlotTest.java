@@ -24,20 +24,41 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+
+import static com.twosigma.beaker.widgets.TestWidgetUtils.findValueForProperty;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CombinedPlotTest {
 
-  CombinedPlot combinedPlot;
+  private CombinedPlot combinedPlot;
+  private KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
-    KernelManager.register(new KernelTest());
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
     combinedPlot = new CombinedPlot();
   }
 
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenAddPlotByLeftShift() throws Exception {
+    //given
+    Plot plot = new Plot();
+    //when
+    combinedPlot.leftShift(plot);
+    //then
+    verifyModel();
+  }
+
+  private void verifyModel() {
+    LinkedHashMap model = findValueForProperty(kernel, XYChart.MODEL, LinkedHashMap.class);
+    assertThat(model).isNotNull();
   }
 
   @Test

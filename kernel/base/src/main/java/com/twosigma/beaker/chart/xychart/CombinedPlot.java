@@ -99,6 +99,7 @@ public class CombinedPlot extends ChartDetails {
   public CombinedPlot add(XYChart plot, int weight) {
     this.subplots.add(plot);
     this.weights.add(weight);
+    sendModel();
     return this;
   }
 

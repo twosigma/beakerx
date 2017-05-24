@@ -58,6 +58,7 @@ abstract public class XYChart extends AbstractChart{
   public XYChart add(ConstantLine constantLine) {
     constantLine.setPlotType(this.getClass());
     this.constantLines.add(constantLine);
+    sendModel();
     return this;
   }
 
@@ -71,6 +72,7 @@ abstract public class XYChart extends AbstractChart{
 
   public XYChart add(ConstantBand constantBand) {
     this.constantBands.add(constantBand);
+    sendModel();
     return this;
   }
 
@@ -85,6 +87,7 @@ abstract public class XYChart extends AbstractChart{
   public XYChart add(Text text) {
     text.setPlotType(this.getClass());
     this.texts.add(text);
+    sendModel();
     return this;
   }
 
@@ -98,6 +101,7 @@ abstract public class XYChart extends AbstractChart{
 
   public XYChart add(Rasters raster) {
     this.rasters.add(raster);
+    sendModel();
     return this;
   }
 

@@ -22,23 +22,21 @@ import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.KernelTest;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-public class PlotTest {
+public class PlotTest extends XYChartTest{
   Plot plot;
   Line line;
   Area area;
 
   @Before
   public void initStubData() {
-    KernelManager.register(new KernelTest());
     plot = new Plot();
     line = new Line();
     line.setX(Arrays.asList(1, 2, 3));
@@ -46,11 +44,6 @@ public class PlotTest {
     area = new Area();
     area.setX(Arrays.asList(1, 2, 3));
     area.setY(Arrays.asList(2, 3, 4));
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
   }
 
   @Test
@@ -88,20 +81,32 @@ public class PlotTest {
 
   @Test
   public void leftShiftForRasters_plotHasRastersListSizeIsOne() {
+    //given
+    Rasters raster = new Rasters();
+    List<Number> value = Collections.singletonList(1);
+    raster.setY(value);
+    raster.setWidth(value);
+    raster.setHeight(value);
     //when
-    plot.add(new Rasters());
+    plot.add(raster);
     //then
     Assertions.assertThat(plot.getRasters().size()).isEqualTo(1);
   }
 
   @Test
   public void addListOfPlotObjects_hasAllPlotObjects() {
+    //given
+    Rasters rasters = new Rasters();
+    List<Number> value = Collections.singletonList(1);
+    rasters.setY(value);
+    rasters.setWidth(value);
+    rasters.setHeight(value);
     //when
     plot.add(Arrays.asList(
         line,
         new ConstantLine(),
         new ConstantBand(),
-        new Rasters(),
+            rasters,
         new Text()
     ));
     //then
@@ -127,5 +132,10 @@ public class PlotTest {
     //then
     Assertions.assertThat(plot.getXLowerBound()).isEqualTo(1d);
     Assertions.assertThat(plot.getXUpperBound()).isEqualTo(10d);
+  }
+
+  @Override
+  public XYChart createWidget() {
+    return new Plot();
   }
 }

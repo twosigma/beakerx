@@ -18,6 +18,7 @@ package com.twosigma.beaker.chart;
 
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.chart.actions.CategoryGraphicsActionObject;
+import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.widgets.chart.BeakerxPlot;
 import org.assertj.core.api.Assertions;
@@ -26,22 +27,36 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+
+import static com.twosigma.beaker.widgets.TestWidgetUtils.findValueForProperty;
 
 public class ChartTest {
 
-  private KernelTest groovyKernel;
+  protected KernelTest kernel;
   private Chart chart;
 
   @Before
   public void setUp() throws Exception {
-    groovyKernel = new KernelTest();
-    KernelManager.register(groovyKernel);
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
     chart = new Chart();
   }
 
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenTitleChange() throws Exception {
+    //given
+    String title = "title1";
+    //when
+    chart.setTitle(title);
+    //then
+    LinkedHashMap model = findValueForProperty(kernel, XYChart.MODEL, LinkedHashMap.class);
+    Assertions.assertThat(model.get("title")).isEqualTo(title);
   }
 
   @Test

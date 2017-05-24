@@ -118,5 +118,9 @@ public class TestWidgetUtils {
     assertThat(result.get(0)).isNotNull();
   }
 
+  public static <T> T findValueForProperty(KernelTest kernel, String propertyName, Class<T> clazz) {
+    Message model = SearchMessages.getListByDataAttr(kernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE).get(0);
+    return getValueForProperty(model, propertyName, clazz);
+  }
 
 }

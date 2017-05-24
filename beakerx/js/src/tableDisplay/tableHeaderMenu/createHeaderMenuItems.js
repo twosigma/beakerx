@@ -51,7 +51,7 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         }
       },
       {
-        title: 'Filter...',
+        title: 'Filter by Expression',
         icon: 'fa fa-filter',
         tooltip: 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"',
         action: function (el) {
@@ -64,7 +64,7 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         }
       },
       {
-        title: 'Search...',
+        title: 'Search for Substring',
         icon: 'fa fa-search',
         tooltip: 'search this column for a substring',
         action: function (el) {

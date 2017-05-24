@@ -181,7 +181,7 @@ abstract public class XYChart extends AbstractChart{
     return this.setYAutoRange(yAutoRange);
   }
 
-  protected XYChart setLogX(boolean logX) {
+  public XYChart setLogX(boolean logX) {
     this.logX = logX;
     return this;
   }

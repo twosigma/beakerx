@@ -25,13 +25,6 @@ public abstract class BeakerxWidget extends Widget {
   public static final String VIEW_MODULE_VALUE = "beakerx";
   public static final String MODEL = "model";
 
-  @Override
-  public void beforeDisplay() {
-    if (getComm() != null) {
-      getComm().sendUpdate(MODEL, serializeToJsonObject());
-    }
-  }
-
   protected abstract Map serializeToJsonObject();
 
   @Override
@@ -53,5 +46,8 @@ public abstract class BeakerxWidget extends Widget {
     return BeakerxWidget.VIEW_MODULE_VALUE;
   }
 
+  public void sendModel(){
+    sendUpdate(MODEL, serializeToJsonObject());
+  }
 
 }

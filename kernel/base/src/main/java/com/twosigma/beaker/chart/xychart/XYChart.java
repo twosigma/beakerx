@@ -43,6 +43,7 @@ abstract public class XYChart extends AbstractChart{
   public XYChart add(XYGraphics graphics) {
     graphics.setPlotType(this.getClass());
     this.xyGraphics.add(graphics);
+    sendModel();
     return this;
   }
 

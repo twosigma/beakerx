@@ -41,6 +41,7 @@ public class Chart extends ChartDetails {
 
   public Chart setInitWidth(int w) {
     this.initWidth = w;
+    sendModel();
     return this;
   }
 
@@ -50,6 +51,7 @@ public class Chart extends ChartDetails {
 
   public Chart setInitHeight(int h) {
     this.initHeight = h;
+    sendModel();
     return this;
   }
 
@@ -59,7 +61,7 @@ public class Chart extends ChartDetails {
 
   public Chart setTitle(String title) {
     this.title = title;
-    sendUpdate(MODEL, serializeToJsonObject());
+    sendModel();
     return this;
   }
 

@@ -233,6 +233,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setCrosshair(Crosshair crosshair) {
     this.crosshair = crosshair;
+    sendModel();
     return this;
   }
 

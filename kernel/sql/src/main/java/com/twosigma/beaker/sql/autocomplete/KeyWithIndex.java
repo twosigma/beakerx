@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,12 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.jvm.object;
+package com.twosigma.beaker.sql.autocomplete;
 
-import com.twosigma.beaker.mimetype.MIMEContainer;
+public class KeyWithIndex {
+  private String key;
+  private int index;
 
-public class OutputCell {
+  public KeyWithIndex(String key, int index) {
+    this.key = key;
+    this.index = index;
+  }
 
-  public static final MIMEContainer HIDDEN = MIMEContainer.HIDDEN;
+  public String getKey() {
+    return key;
+  }
 
+  public int getIndex() {
+    return index;
+  }
 }

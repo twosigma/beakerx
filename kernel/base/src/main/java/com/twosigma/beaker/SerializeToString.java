@@ -33,32 +33,30 @@ import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
 
 public class SerializeToString {
 
-  public static MIMEContainer doit(Object input) {
+  public static MIMEContainer doit(final Object input) {
     if (input == null) {
       return Text("null");
     }
     return getMimeContainer(input);
   }
 
-  private static MIMEContainer getMimeContainer(Object input) {
+  private static MIMEContainer getMimeContainer(final Object input) {
     if (input instanceof DisplayableWidget) {
       ((DisplayableWidget) input).display();
-      return HIDDEN();
+      return HIDDEN;
     }
     TableDisplay table = getTableDisplay(input);
     if (table != null) {
       table.display();
-      return HIDDEN();
+      return HIDDEN;
     }
     if (input instanceof Table) {
       new TableDisplay(new CsvPlotReader().convert((Table) input)).display();
-      return HIDDEN();
+      return HIDDEN;
     }
-
     if (input instanceof XYGraphics) {
-      input = new Plot().add((XYGraphics) input);
-      ((DisplayableWidget) input).display();
-      return HIDDEN();
+      new Plot().add((XYGraphics) input).display();
+      return HIDDEN;
     }
     if (input instanceof MIMEContainer) {
       return (MIMEContainer) input;
@@ -66,7 +64,7 @@ public class SerializeToString {
     return Text(input.toString());
   }
 
-  public static TableDisplay getTableDisplay(Object input) {
+  public static TableDisplay getTableDisplay(final Object input) {
     TableDisplay ret = null;
     if (input instanceof Map) {
       Map map = (Map) input;

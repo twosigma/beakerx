@@ -27,12 +27,14 @@ require('jquery-contextmenu/dist/jquery.contextMenu.css');
 require('./tableDisplay/css/datatables.scss');
 
 var TableDisplayModel = widgets.DOMWidgetModel.extend({
-  defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
-    _model_name : 'TableDisplayModel',
-    _view_name : 'TableDisplayView',
-    _model_module : 'beakerx',
-    _view_module : 'beakerx'
-  })
+  defaults: function() {
+    return _.extend({}, widgets.DOMWidgetModel.prototype.defaults.apply(this), {
+      _model_name: 'TableDisplayModel',
+      _view_name: 'TableDisplayView',
+      _model_module: 'beakerx',
+      _view_module: 'beakerx'
+    });
+  }
 });
 
 

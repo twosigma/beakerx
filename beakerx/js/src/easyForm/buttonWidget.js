@@ -18,10 +18,12 @@ var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
 
 var ButtonModel = widgets.ButtonModel.extend({
-  defaults: _.extend({}, widgets.ButtonModel.prototype.defaults, {
-    _view_name: "ButtonView1",
-    _model_name: "ButtonModel1"
-  })
+  defaults: function() {
+    return _.extend({}, widgets.ButtonModel.prototype.defaults.apply(this), {
+      _view_name: "ButtonView1",
+      _model_name: "ButtonModel1"
+    });
+  }
 });
 
 var ButtonView = widgets.ButtonView.extend({

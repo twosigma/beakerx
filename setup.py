@@ -40,8 +40,8 @@ setup_args = dict(
         'Programming Language :: Python :: 3.5',
     ],
     install_requires        = [
-        'notebook>=4.3.0',
-        'ipython>=1.0.0'
+        'notebook>=5.0.0',
+        'ipython>=6.0.0'
     ]
 )
 

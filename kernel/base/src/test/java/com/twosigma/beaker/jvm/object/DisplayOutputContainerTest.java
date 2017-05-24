@@ -19,6 +19,8 @@ import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.ResourceLoaderTest;
 import com.twosigma.beaker.chart.xychart.SimpleTimePlot;
 import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.jupyter.SearchMessages;
+import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.widgets.selectioncontainer.Tab;
 import org.junit.After;
@@ -36,12 +38,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DisplayOutputContainerTest {
 
-  private KernelTest groovyKernel;
+  private KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
-    groovyKernel = new KernelTest();
-    KernelManager.register(groovyKernel);
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
   }
 
   @After
@@ -51,7 +53,7 @@ public class DisplayOutputContainerTest {
 
 
   @Test
-  public void shouldAddMapToOutputContainerTest() throws Exception {
+  public void display_shouldAddMapToOutputContainer() throws Exception {
     //given
     List<Map<String, Object>> values = ResourceLoaderTest.readAsList("tableRowsTest.csv");
     OutputContainer oc = new OutputContainer();
@@ -59,19 +61,19 @@ public class DisplayOutputContainerTest {
     //when
     oc.display();
     //then
-    verifyMap(groovyKernel.getPublishedMessages());
+    verifyMap(kernel.getPublishedMessages());
   }
 
   private void verifyMap(List<Message> messages) {
-    Message tableDisplay = messages.get(0);
+    Message tableDisplay = SearchMessages.getListWidgetsByViewName(messages, TableDisplay.VIEW_NAME_VALUE).get(0);
     verifyInternalOpenCommMsg(tableDisplay, TableDisplay.MODEL_NAME_VALUE, TableDisplay.VIEW_NAME_VALUE);
-    Message model = messages.get(1);
+    Message model = SearchMessages.getListByDataAttr(messages, Comm.METHOD, Comm.UPDATE).get(0);
     assertThat(getValueForProperty(model, "model", Map.class)).isNotEmpty();
     verifyDisplayMsg(messages);
   }
 
   @Test
-  public void shouldDisplayOutputContainerWithTabLayoutTest() throws Exception {
+  public void display_shouldDisplayOutputContainerWithTabLayout() throws Exception {
     //given
     List<Map<String, Object>> values = ResourceLoaderTest.readAsList("tableRowsTest.csv");
     OutputContainer oc = new OutputContainer();
@@ -81,11 +83,11 @@ public class DisplayOutputContainerTest {
     //when
     oc.display();
     //then
-    verifyTabLayout(groovyKernel.getPublishedMessages());
+    verifyTabLayout(kernel.getPublishedMessages());
   }
 
   private void verifyTabLayout(List<Message> publishedMessages) {
-    Message tab = publishedMessages.get(2);
+    Message tab = SearchMessages.getListWidgetsByViewName(publishedMessages, Tab.VIEW_NAME_VALUE).get(0);
     Map data = getData(tab);
     assertThat(data.get(VIEW_NAME)).isEqualTo(Tab.VIEW_NAME_VALUE);
   }

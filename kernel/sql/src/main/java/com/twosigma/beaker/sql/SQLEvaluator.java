@@ -39,6 +39,7 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+
 public class SQLEvaluator implements Evaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(SQLEvaluator.class.getName());
@@ -62,7 +63,7 @@ public class SQLEvaluator implements Evaluator {
   private final QueryExecutor queryExecutor;
   private final JDBCClient jdbcClient;
 
-  public  SQLEvaluator(String id, String sId) {
+  public SQLEvaluator(String id, String sId) {
     shellId = id;
     sessionId = sId;
     packageId = "com.twosigma.beaker.sql.bkr" + shellId.split("-")[0];
@@ -101,6 +102,7 @@ public class SQLEvaluator implements Evaluator {
 
   private void resetEnvironment() {
     jdbcClient.loadDrivers(classPath);
+    sac = createSqlAutocomplete(cps);
     killAllThreads();
   }
 
@@ -110,8 +112,7 @@ public class SQLEvaluator implements Evaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    List<String> result = sac.doAutocomplete(code, caretPosition);
-    return new AutocompleteResult(result, caretPosition);
+    return sac.doAutocomplete(code, caretPosition);
   }
 
   private class JobDescriptor {
@@ -178,7 +179,7 @@ public class SQLEvaluator implements Evaluator {
 
         namespaceClient.setOutputObj(null);
         namespaceClient = null;
-        if(job!=null && job.getSimpleEvaluationObject() !=null){
+        if (job != null && job.getSimpleEvaluationObject() != null) {
           job.getSimpleEvaluationObject().executeCodeCallback();
         }
       }
@@ -219,7 +220,7 @@ public class SQLEvaluator implements Evaluator {
     SQLKernelParameters params = new SQLKernelParameters(kernelParameters);
     Collection<String> cp = params.getClassPath();
 
-    if (cp == null || cp.isEmpty()){
+    if (cp == null || cp.isEmpty()) {
       classPath = new ArrayList<>();
     } else {
       for (String line : cp) {
@@ -228,7 +229,7 @@ public class SQLEvaluator implements Evaluator {
         }
       }
     }
-    
+
     jdbcClient.loadDrivers(classPath);
 
     this.defaultConnectionString = new ConnectionStringHolder(params.defaultDatasource().orElse(""), jdbcClient);

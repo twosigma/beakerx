@@ -18,12 +18,14 @@ var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
 
 var SelectMultipleSingleModel = widgets.SelectModel.extend({
-  defaults: _.extend({}, widgets.SelectModel.prototype.defaults, {
-    _view_name: "SelectMultipleSingleView",
-    _model_name: "SelectMultipleSingleModel",
-    _model_module : 'beakerx',
-    _view_module : 'beakerx'
-  })
+  defaults: function() {
+    return _.extend({}, widgets.SelectModel.prototype.defaults.apply(this), {
+      _view_name: "SelectMultipleSingleView",
+      _model_name: "SelectMultipleSingleModel",
+      _model_module: 'beakerx',
+      _view_module: 'beakerx'
+    });
+  }
 });
 
 var SelectMultipleSingleView = widgets.SelectView.extend({

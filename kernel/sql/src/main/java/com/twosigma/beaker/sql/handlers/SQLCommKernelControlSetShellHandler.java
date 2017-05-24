@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,12 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.jvm.object;
+package com.twosigma.beaker.sql.handlers;
 
-import com.twosigma.beaker.mimetype.MIMEContainer;
+import com.twosigma.beaker.jupyter.comm.KernelControlGetDefaultShellHandler;
+import com.twosigma.jupyter.KernelFunctionality;
 
-public class OutputCell {
+public class SQLCommKernelControlSetShellHandler extends KernelControlGetDefaultShellHandler {
 
-  public static final MIMEContainer HIDDEN = MIMEContainer.HIDDEN;
+  public SQLCommKernelControlSetShellHandler(KernelFunctionality kernel) {
+    super(kernel);
+  }
 
+  @Override
+  public String[] getDefaultImports() {
+    return new String[0];
+  }
+
+  @Override
+  public String[] getDefaultClassPath() {
+    return new String[0];
+  }
 }

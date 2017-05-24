@@ -76,11 +76,18 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     HashMap<String, Serializable> result = new HashMap<>();
     result.put(MODEL_MODULE, getModelModuleValue());
     result.put(VIEW_MODULE, getViewModuleValue());
-    result.put(MODEL_NAME, getModelNameValue());
-    result.put(VIEW_NAME, getViewNameValue());
+    String mn = getModelNameValue();
+    if(mn != null && !mn.isEmpty()){
+      result.put(MODEL_NAME, mn);
+    }
+    String vnv = getViewNameValue();
+    if(vnv != null && !vnv.isEmpty()){
+      result.put(VIEW_NAME, vnv);
+    }
     result = content(result);
     return result;
   }
+  
   public abstract String getModelNameValue();
 
   public abstract String getViewNameValue();

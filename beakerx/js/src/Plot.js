@@ -40,8 +40,12 @@ var PlotView = widgets.DOMWidgetView.extend({
   render: function() {
     var that = this;
 
+    this._currentScope = null;
+
     this.displayed.then(function() {
       var plotModel = that.model.get('model');
+
+      console.log('check2', that, plotModel);
 
       var type = plotModel.type || 'Text';
 
@@ -56,28 +60,37 @@ var PlotView = widgets.DOMWidgetView.extend({
     });
   },
 
-  initStandardPlot: function (data) {
-    var currentScope = new PlotScope('wrap_'+this.id);
-    var tmpl = currentScope.buildTemplate();
-    var tmplElement = $(tmpl);
+  update: function() {
+    PlotView.__super__.update.apply(this);
 
-    tmplElement.appendTo(this.$el);
+    var plotModel = this.model.get('model');
 
-    currentScope.setElement(tmplElement.children('.dtcontainer'));
-    currentScope.setModelData(data);
-    currentScope.init();
+    this._currentScope.setModelData(plotModel);
+    this._currentScope.updateModel();
   },
 
-  initCombinedPlot: function(data) {
-    var currentScope = new CombinedPlotScope('wrap_'+this.id);
-    var tmpl = currentScope.buildTemplate();
+  initStandardPlot: function (model) {
+    this._currentScope = new PlotScope('wrap_'+this.id);
+    var tmpl = this._currentScope.buildTemplate();
     var tmplElement = $(tmpl);
 
     tmplElement.appendTo(this.$el);
 
-    currentScope.setModelData(data);
-    currentScope.setElement(tmplElement);
-    currentScope.init();
+    this._currentScope.setElement(tmplElement.children('.dtcontainer'));
+    this._currentScope.setModelData(model);
+    this._currentScope.init();
+  },
+
+  initCombinedPlot: function(model) {
+    this._currentScope = new CombinedPlotScope('wrap_'+this.id);
+    var tmpl = this._currentScope.buildTemplate();
+    var tmplElement = $(tmpl);
+
+    tmplElement.appendTo(this.$el);
+
+    this._currentScope.setModelData(model);
+    this._currentScope.setElement(tmplElement);
+    this._currentScope.init();
   }
 });
 

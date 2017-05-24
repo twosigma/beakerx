@@ -342,7 +342,7 @@ define([
   };
 
   PlotScope.prototype.emitSizeChange = function() {
-    if (this.model.updateWidth !== null) {
+    if (this.model.updateWidth !== null && this.model.updateWidth !== undefined) {
       this.model.updateWidth(this.width);
     } // not stdmodel here
 
@@ -2193,6 +2193,50 @@ define([
     self.initZoom();
     self._defaultZoomWheelFn = self.svg.on('wheel.zoom');
     self.disableZoomWheel();
+
+    self.calcRange();
+
+
+    // init copies focus to defaultFocus, called only once
+    if(_.isEmpty(self.focus)){
+      _.extend(self.focus, self.defaultFocus);
+    }
+
+    // init remove pipe
+    self.removePipe = [];
+
+    self.calcMapping();
+
+    self.legendDone = false;
+    self.update();
+
+    self.fillCellModelWithPlotMethods();
+  };
+
+  PlotScope.prototype.updateModel = function() {
+    var self = this;
+
+    // first standardize data
+    self.standardizeData();
+    // init flags
+    self.initFlags();
+
+    // see if previous state can be applied
+    self.focus = {};
+
+    if (!self.model.getCellModel().tips) {
+      self.model.getCellModel().tips = {};
+    }
+
+    self.tips = self.model.getCellModel().tips;
+    self.plotSize = {};
+
+    _.extend(self.plotSize, self.stdmodel.plotSize);
+
+    // create layout elements
+    self.initLayout();
+
+    self.resetSvg();
 
     self.calcRange();
 

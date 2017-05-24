@@ -25,6 +25,7 @@ define([
   'moment-timezone/builds/moment-timezone-with-data',
   './../shared/bkUtils',
   './cellHighlighters',
+  './tableService',
   './../shared/bkHelper',
   './buildTemplate',
   './datatablesHeadermenu',
@@ -41,6 +42,7 @@ define([
   moment,
   bkUtils,
   cellHighlighters,
+  tableService,
   bkHelper,
   buildTemplate,
   datatablesHeadermenu,
@@ -53,14 +55,6 @@ define([
   function TableScope(wrapperId) {
     this.wrapperId = wrapperId;
     this.id = null;
-
-    this.model = {
-      model: {},
-      getCellModel: function() {
-        return this.model;
-      }
-    };
-
     this.element = null;
     this.renderMenu = false;
     this.tableElementsCreated = false;
@@ -75,6 +69,19 @@ define([
     this.getCellDisp     =  [];
     this.getCellDispOpts =  [];
     this.allConverters = {};
+    
+    this.model = {
+        model: {},
+        getCellModel: function() {
+          return this.model;
+        },
+        getEvaluatorId: function() {
+          while (this.id !== undefined) {
+            return this.id;
+          }
+          return undefined;
+        }
+      };
 
     // attach additional data from consts
     _.extend(this, tableConsts.scopeData);

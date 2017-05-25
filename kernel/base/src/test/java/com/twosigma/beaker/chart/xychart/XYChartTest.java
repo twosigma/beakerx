@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.chart.xychart;
 
-import com.twosigma.beaker.chart.ChartTest;
+import com.twosigma.beaker.chart.AbstractChartTest;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantBand;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
@@ -23,7 +23,6 @@ import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -43,7 +42,7 @@ import static com.twosigma.beaker.chart.serializer.XYChartSerializer.X_UPPER_BOU
 import static com.twosigma.beaker.chart.serializer.XYChartSerializer.Y_TICK_LABELS_VISIBLE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class XYChartTest<T extends XYChart> extends ChartTest<XYChart> {
+public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<XYChart> {
 
 
   @Test
@@ -146,11 +145,6 @@ public abstract class XYChartTest<T extends XYChart> extends ChartTest<XYChart> 
     xyChart.leftShift(raster);
     //then
     assertThat(getValueAsArray(RASTERS)).isNotEmpty();
-  }
-
-  private ArrayList getValueAsArray(final String field) {
-    LinkedHashMap model = getModel();
-    return (ArrayList)model.get(field);
   }
 
   @Test

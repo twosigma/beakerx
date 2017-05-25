@@ -67,6 +67,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart add(YAxis yAxis) {
     this.yAxes.add(yAxis);
+    sendModel();
     return this;
   }
 

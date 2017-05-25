@@ -26,6 +26,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -227,6 +228,11 @@ public abstract class ChartTest<T extends Chart> {
     //then
     assertThat(chart.getModelNameValue()).isEqualTo(BeakerxPlot.MODEL_NAME_VALUE);
     assertThat(chart.getViewNameValue()).isEqualTo(BeakerxPlot.VIEW_NAME_VALUE);
+  }
+
+  protected ArrayList getValueAsArray(final String field) {
+    LinkedHashMap model = getModel();
+    return (ArrayList) model.get(field);
   }
 
   protected LinkedHashMap getModel() {

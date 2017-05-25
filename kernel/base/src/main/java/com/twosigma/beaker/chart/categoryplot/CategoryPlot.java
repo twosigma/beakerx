@@ -57,9 +57,11 @@ public class CategoryPlot extends AbstractChart {
 
   public CategoryPlot add(CategoryGraphics graphics) {
     this.categoryGraphics.add(graphics);
+    sendModel();
     return this;
   }
 
+  @Override
   public CategoryPlot add(List items) {
     for (Object o : items) {
       if (o instanceof CategoryGraphics) {
@@ -77,6 +79,7 @@ public class CategoryPlot extends AbstractChart {
 
   public CategoryPlot setCategoryNames(List<String> categoryNames) {
     this.categoryNames = categoryNames;
+    sendModel();
     return this;
   }
 
@@ -90,6 +93,7 @@ public class CategoryPlot extends AbstractChart {
 
   public void setOrientation(PlotOrientationType orientation) {
     this.orientation = orientation;
+    sendModel();
   }
 
   public double getCategoryMargin() {
@@ -98,6 +102,7 @@ public class CategoryPlot extends AbstractChart {
 
   public void setCategoryMargin(double categoryMargin) {
     this.categoryMargin = categoryMargin;
+    sendModel();
   }
 
   public double getCategoryNamesLabelAngle() {
@@ -106,5 +111,6 @@ public class CategoryPlot extends AbstractChart {
 
   public void setCategoryNamesLabelAngle(double categoryNamesLabelAngle) {
     this.categoryNamesLabelAngle = categoryNamesLabelAngle;
+    sendModel();
   }
 }

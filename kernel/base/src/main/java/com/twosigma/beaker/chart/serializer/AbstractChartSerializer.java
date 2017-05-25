@@ -26,6 +26,7 @@ public abstract class AbstractChartSerializer<T extends AbstractChart> extends C
 
   public static final String DOMAIN_AXIS_LABEL = "domain_axis_label";
   public static final String Y_LABEL = "y_label";
+  public static final String RANGE_AXES = "rangeAxes";
 
   protected void serialize(T chart, JsonGenerator jgen) throws IOException {
 
@@ -33,7 +34,7 @@ public abstract class AbstractChartSerializer<T extends AbstractChart> extends C
 
     jgen.writeObjectField(DOMAIN_AXIS_LABEL, chart.getXLabel());
     jgen.writeObjectField(Y_LABEL, chart.getYLabel());
-    jgen.writeObjectField("rangeAxes", chart.getYAxes());
+    jgen.writeObjectField(RANGE_AXES, chart.getYAxes());
     jgen.writeObjectField("x_lower_margin", chart.getXLowerMargin());
     jgen.writeObjectField("x_upper_margin", chart.getXUpperMargin());
     jgen.writeObjectField("y_auto_range", chart.getYAutoRange());

@@ -21,8 +21,24 @@ import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.TimeZone;
 
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.CROSSHAIR;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.DOMAIN_AXIS_LABEL;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.LOG_Y;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.OMIT_CHECKBOXES;
 import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.RANGE_AXES;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.TIMEZONE;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.X_LOWER_MARGIN;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.X_UPPER_MARGIN;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.Y_AUTO_RANGE;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.Y_AUTO_RANGE_INCLUDES_ZERO;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.Y_LABEL;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.Y_LOWER_BOUND;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.Y_LOWER_MARGIN;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.Y_UPPER_BOUND;
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.Y_UPPER_MARGIN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractChartTest <T extends AbstractChart> extends ChartTest<AbstractChart>{
@@ -49,6 +65,7 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     //then
     assertThat(chart.getYAxes()).isNotEmpty();
     assertThat(chart.getYAxes().get(1).getLabel()).isEqualTo("test");
+    assertThat(getValueAsArray(RANGE_AXES).size()).isGreaterThan(1);
   }
 
   @Test
@@ -59,6 +76,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setOmitCheckboxes(true);
     //then
     assertThat(chart.getOmitCheckboxes()).isTrue();
+    LinkedHashMap model = getModel();
+    assertThat(model.get(OMIT_CHECKBOXES)).isEqualTo(true);
   }
 
   @Test
@@ -69,6 +88,20 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setYAutoRangeIncludesZero(true);
     //then
     assertThat(chart.getYAutoRangeIncludesZero()).isTrue();
+    LinkedHashMap model = getModel();
+    assertThat(model.get(Y_AUTO_RANGE_INCLUDES_ZERO)).isEqualTo(true);
+  }
+
+  @Test
+  public void setyAutoRangeIncludesZeroByTrue_YAutoRangeIncludesZeroIsTrue() {
+    //given
+    AbstractChart chart =createWidget();
+    //when
+    chart.setyAutoRangeIncludesZero(true);
+    //then
+    assertThat(chart.getYAutoRangeIncludesZero()).isTrue();
+    LinkedHashMap model = getModel();
+    assertThat(model.get(Y_AUTO_RANGE_INCLUDES_ZERO)).isEqualTo(true);
   }
 
   @Test
@@ -80,6 +113,9 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     //then
     assertThat(chart.getYLowerBound()).isEqualTo(1.0d);
     assertThat(chart.getYUpperBound()).isEqualTo(10.0d);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(Y_LOWER_BOUND)).isEqualTo(1.0d);
+    assertThat(model.get(Y_UPPER_BOUND)).isEqualTo(10.0d);
   }
 
   @Test
@@ -91,6 +127,23 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     //then
     assertThat(chart.getYLowerBound()).isEqualTo(1.0d);
     assertThat(chart.getYUpperBound()).isEqualTo(10.0d);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(Y_LOWER_BOUND)).isEqualTo(1.0d);
+    assertThat(model.get(Y_UPPER_BOUND)).isEqualTo(10.0d);
+  }
+
+  @Test
+  public void setyBoundWithList_hasYLoweAndUpperBounds() {
+    //given
+    AbstractChart chart =createWidget();
+    //when
+    chart.setyBound(Arrays.asList(1.0d, 10.0d));
+    //then
+    assertThat(chart.getYLowerBound()).isEqualTo(1.0d);
+    assertThat(chart.getYUpperBound()).isEqualTo(10.0d);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(Y_LOWER_BOUND)).isEqualTo(1.0d);
+    assertThat(model.get(Y_UPPER_BOUND)).isEqualTo(10.0d);
   }
 
   @Test
@@ -111,6 +164,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setXLabel("testX");
     //then
     assertThat(chart.getXLabel()).isEqualTo("testX");
+    LinkedHashMap model = getModel();
+    assertThat(model.get(DOMAIN_AXIS_LABEL)).isEqualTo("testX");
   }
 
   @Test
@@ -121,6 +176,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setxLabel("test_x");
     //then
     assertThat(chart.getXLabel()).isEqualTo("test_x");
+    LinkedHashMap model = getModel();
+    assertThat(model.get(DOMAIN_AXIS_LABEL)).isEqualTo("test_x");
   }
 
   @Test
@@ -131,6 +188,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setyLabel("test_y");
     //then
     assertThat(chart.getYLabel()).isEqualTo("test_y");
+    LinkedHashMap model = getModel();
+    assertThat(model.get(Y_LABEL)).isEqualTo("test_y");
   }
 
   @Test
@@ -141,6 +200,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setYLabel("testY");
     //then
     assertThat(chart.getYLabel()).isEqualTo("testY");
+    LinkedHashMap model = getModel();
+    assertThat(model.get(Y_LABEL)).isEqualTo("testY");
   }
 
   @Test
@@ -151,6 +212,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setXLowerMargin(3.0d);
     //then
     assertThat(chart.getXLowerMargin()).isEqualTo(3.0d);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(X_LOWER_MARGIN)).isEqualTo(3.0);
   }
 
   @Test
@@ -161,6 +224,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setxLowerMargin(3.5d);
     //then
     assertThat(chart.getXLowerMargin()).isEqualTo(3.5d);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(X_LOWER_MARGIN)).isEqualTo(3.5);
   }
 
   @Test
@@ -171,6 +236,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setXUpperMargin(7.0d);
     //then
     assertThat(chart.getXUpperMargin()).isEqualTo(7.0d);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(X_UPPER_MARGIN)).isEqualTo(7.0);
   }
 
   @Test
@@ -181,6 +248,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setxUpperMargin(7.5d);
     //then
     assertThat(chart.getXUpperMargin()).isEqualTo(7.5d);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(X_UPPER_MARGIN)).isEqualTo(7.5);
   }
 
   @Test
@@ -191,27 +260,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setyAutoRange(true);
     //then
     assertThat(chart.getYAutoRange()).isTrue();
-  }
-
-  @Test
-  public void setyAutoRangeIncludesZeroByTrue_YAutoRangeIncludesZeroIsTrue() {
-    //given
-    AbstractChart chart =createWidget();
-    //when
-    chart.setyAutoRangeIncludesZero(true);
-    //then
-    assertThat(chart.getYAutoRangeIncludesZero()).isTrue();
-  }
-
-  @Test
-  public void setyBoundWithList_hasYLoweAndUpperBounds() {
-    //given
-    AbstractChart chart =createWidget();
-    //when
-    chart.setyBound(Arrays.asList(1.0d, 10.0d));
-    //then
-    assertThat(chart.getYLowerBound()).isEqualTo(1.0d);
-    assertThat(chart.getYUpperBound()).isEqualTo(10.0d);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(Y_AUTO_RANGE)).isEqualTo(true);
   }
 
   @Test
@@ -232,6 +282,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setyLowerMargin(0.3d);
     //then
     assertThat(chart.getYLowerMargin()).isEqualTo(0.3d);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(Y_LOWER_MARGIN)).isEqualTo(0.3);
   }
 
   @Test
@@ -242,6 +294,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setyUpperMargin(0.7d);
     //then
     assertThat(chart.getYUpperMargin()).isEqualTo(0.7d);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(Y_UPPER_MARGIN)).isEqualTo(0.7);
   }
 
   @Test
@@ -268,10 +322,37 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
   public void setCrosshair_hasCrosshair() {
     //given
     AbstractChart chart =createWidget();
+    Crosshair crosshair = new Crosshair();
     //when
-    chart.setCrosshair(new Crosshair());
+    chart.setCrosshair(crosshair);
     //then
     assertThat(chart.getCrosshair()).isNotNull();
+    LinkedHashMap model = getModel();
+    assertThat(model.get(CROSSHAIR)).isNotNull();
   }
 
+  @Test
+  public void shouldSendCommMsgWhenTimezoneChange() {
+    //given
+    AbstractChart chart =createWidget();
+    TimeZone aDefault = TimeZone.getDefault();
+    //when
+    chart.setTimeZone(aDefault);
+    //then
+    assertThat(chart.getTimeZone()).isEqualTo(aDefault);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(TIMEZONE)).isNotNull();
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenLogYChange() {
+    //given
+    AbstractChart chart =createWidget();
+    //when
+    chart.setLogY(true);
+    //then
+    assertThat(chart.getLogY()).isEqualTo(true);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(LOG_Y)).isEqualTo(true);
+  }
 }

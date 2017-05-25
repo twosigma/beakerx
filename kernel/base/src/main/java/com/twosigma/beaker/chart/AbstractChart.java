@@ -39,12 +39,12 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setXLabel(String xLabel) {
     this.xLabel = xLabel;
+    sendModel();
     return this;
   }
 
   public AbstractChart setxLabel(String xLabel) {
-    this.xLabel = xLabel;
-    return this;
+    return setXLabel(xLabel);
   }
 
   public String getXLabel() {
@@ -53,11 +53,12 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setYLabel(String yLabel) {
     yAxis.setLabel(yLabel);
+    sendModel();
     return this;
   }
 
   public AbstractChart setyLabel(String yLabel) {
-    yAxis.setLabel(yLabel);
+    setYLabel(yLabel);
     return this;
   }
 
@@ -94,12 +95,12 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setXLowerMargin(double margin) {
     this.xLowerMargin = margin;
+    sendModel();
     return this;
   }
 
   public AbstractChart setxLowerMargin(double margin) {
-    this.xLowerMargin = margin;
-    return this;
+    return setXLowerMargin(margin);
   }
 
   public double getXLowerMargin() {
@@ -108,12 +109,12 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setXUpperMargin(double margin) {
     this.xUpperMargin = margin;
+    sendModel();
     return this;
   }
 
   public AbstractChart setxUpperMargin(double margin) {
-    this.xUpperMargin = margin;
-    return this;
+    return setXUpperMargin(margin);
   }
 
   public double getXUpperMargin() {
@@ -122,6 +123,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setyAutoRange(boolean yAutoRange) {
     this.yAxis.setAutoRange(yAutoRange);
+    sendModel();
     return this;
   }
 
@@ -131,6 +133,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setYAutoRangeIncludesZero(boolean yAutoRangeIncludesZero) {
     this.yAxis.setAutoRangeIncludesZero(yAutoRangeIncludesZero);
+    sendModel();
     return this;
   }
 
@@ -149,6 +152,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setyLowerMargin(double margin) {
     this.yAxis.setLowerMargin(margin);
+    sendModel();
     return this;
   }
 
@@ -163,6 +167,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setyUpperMargin(double margin) {
     this.yAxis.setUpperMargin(margin);
+    sendModel();
     return this;
   }
 
@@ -173,6 +178,7 @@ public abstract class AbstractChart extends Chart {
   public AbstractChart setYBound(double lower, double upper) {
     this.yAxis.setAutoRange(false);
     this.yAxis.setBound(lower, upper);
+    sendModel();
     return this;
   }
 
@@ -203,6 +209,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setLogY(boolean logY) {
     this.yAxis.setLog(logY);
+    sendModel();
     return this;
   }
 
@@ -212,6 +219,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setYLogBase(double yLogBase) {
     this.yAxis.setLogBase(yLogBase);
+    sendModel();
     return this;
   }
 
@@ -225,6 +233,7 @@ public abstract class AbstractChart extends Chart {
 
   protected AbstractChart setTimeZone(TimeZone timeZone) {
     this.timeZone = timeZone;
+    sendModel();
     return this;
   }
 
@@ -248,6 +257,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setOmitCheckboxes(boolean omitCheckboxes) {
     this.omitCheckboxes = omitCheckboxes;
+    sendModel();
     return this;
   }
 

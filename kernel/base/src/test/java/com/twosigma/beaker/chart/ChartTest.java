@@ -29,9 +29,10 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
+import static com.twosigma.beaker.chart.serializer.ChartSerializer.CHART_TITLE;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.findValueForProperty;
 
-public class ChartTest {
+public abstract class ChartTest<T extends Chart> {
 
   protected KernelTest kernel;
   private Chart chart;
@@ -40,13 +41,15 @@ public class ChartTest {
   public void setUp() throws Exception {
     kernel = new KernelTest();
     KernelManager.register(kernel);
-    chart = new Chart();
+    chart = createWidget();
   }
 
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
   }
+
+  public abstract T createWidget();
 
   @Test
   public void shouldSendCommMsgWhenTitleChange() throws Exception {
@@ -56,13 +59,12 @@ public class ChartTest {
     chart.setTitle(title);
     //then
     LinkedHashMap model = findValueForProperty(kernel, XYChart.MODEL, LinkedHashMap.class);
-    Assertions.assertThat(model.get("title")).isEqualTo(title);
+    Assertions.assertThat(model.get(CHART_TITLE)).isEqualTo(title);
   }
 
   @Test
   public void createChartByEmptyConstructor_ChartHasInitHeightWidth() {
     //when
-    Chart chart = new Chart();
     //then
     Assertions.assertThat(chart.getInitHeight()).isGreaterThan(0);
     Assertions.assertThat(chart.getInitWidth()).isGreaterThan(0);

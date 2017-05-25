@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class PlotTest extends XYChartTest{
+public class PlotTest extends XYChartTest<Plot> {
   Plot plot;
   Line line;
   Area area;
@@ -103,11 +103,11 @@ public class PlotTest extends XYChartTest{
     rasters.setHeight(value);
     //when
     plot.add(Arrays.asList(
-        line,
-        new ConstantLine(),
-        new ConstantBand(),
+            line,
+            new ConstantLine(),
+            new ConstantBand(),
             rasters,
-        new Text()
+            new Text()
     ));
     //then
     Assertions.assertThat(plot.getGraphics().size()).isEqualTo(1);
@@ -118,7 +118,7 @@ public class PlotTest extends XYChartTest{
   }
 
   @Test
-  public void setxAutoRangeByTrue_XAutoRangeIsTrue(){
+  public void setxAutoRangeByTrue_XAutoRangeIsTrue() {
     //when
     plot.setxAutoRange(true);
     //then
@@ -135,7 +135,7 @@ public class PlotTest extends XYChartTest{
   }
 
   @Override
-  public XYChart createWidget() {
+  public Plot createWidget() {
     return new Plot();
   }
 }

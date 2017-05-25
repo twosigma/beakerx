@@ -30,12 +30,12 @@ import java.util.List;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.findValueForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class XYChartTest extends ChartTest {
+public abstract class XYChartTest <T extends XYChart> extends ChartTest<XYChart> {
 
   @Test
   public void shouldSendCommMsgWhenAddRastersByLeftShift() throws Exception {
     //given
-    XYChart xyChart = widget();
+    XYChart xyChart = createWidget();
     Rasters raster = new Rasters();
     List<Number> value = Collections.singletonList(1);
     raster.setY(value);
@@ -50,7 +50,7 @@ public abstract class XYChartTest extends ChartTest {
   @Test
   public void shouldSendCommMsgWhenAddXYGraphicsByLeftShift() throws Exception {
     //given
-    XYChart xyChart = widget();
+    XYChart xyChart = createWidget();
     Line graphics = new Line();
     graphics.setX(Collections.singletonList(1));
     graphics.setY(Collections.singletonList(1));
@@ -63,7 +63,7 @@ public abstract class XYChartTest extends ChartTest {
   @Test
   public void shouldSendCommMsgWhenAddConstantLineByLeftShift() throws Exception {
     //given
-    XYChart xyChart = widget();
+    XYChart xyChart = createWidget();
     //when
     xyChart.leftShift(new ConstantLine());
     //then
@@ -73,7 +73,7 @@ public abstract class XYChartTest extends ChartTest {
   @Test
   public void shouldSendCommMsgWhenAddConstantBandByLeftShift() throws Exception {
     //given
-    XYChart xyChart = widget();
+    XYChart xyChart = createWidget();
     //when
     xyChart.leftShift(new ConstantBand());
     //then
@@ -83,7 +83,7 @@ public abstract class XYChartTest extends ChartTest {
   @Test
   public void shouldSendCommMsgWhenAddTextByLeftShift() throws Exception {
     //given
-    XYChart xyChart = widget();
+    XYChart xyChart = createWidget();
     //when
     xyChart.leftShift(new Text());
     //then
@@ -95,11 +95,6 @@ public abstract class XYChartTest extends ChartTest {
     assertThat(model).isNotNull();
   }
 
-  private XYChart widget() {
-    XYChart widget = createWidget();
-    return widget;
-  }
-
-  public abstract XYChart createWidget();
-
+  @Override
+  public abstract T createWidget();
 }

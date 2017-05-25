@@ -26,18 +26,18 @@ import com.twosigma.beaker.chart.legend.LegendPosition;
 import static com.twosigma.beaker.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
 import static com.twosigma.beaker.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
 
-public class Chart extends ChartDetails {
+public abstract class Chart extends ChartDetails {
 
-  protected int initWidth = 640;
-  protected int initHeight = 480;
-  protected List<String> customStyles = new ArrayList();
-  protected Map<String, String> elementStyles = new HashMap<>();
+  private int initWidth = 640;
+  private int initHeight = 480;
+  private List<String> customStyles = new ArrayList();
+  private Map<String, String> elementStyles = new HashMap<>();
 
-  protected String title;
-  protected Boolean showLegend;
-  protected boolean useToolTip = true;
-  protected LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.TOP_RIGHT);
-  protected LegendLayout legendLayout = LegendLayout.VERTICAL;
+  private String title;
+  private Boolean showLegend;
+  private boolean useToolTip = true;
+  private LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.TOP_RIGHT);
+  private LegendLayout legendLayout = LegendLayout.VERTICAL;
 
   public Chart setInitWidth(int w) {
     this.initWidth = w;

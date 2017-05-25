@@ -22,13 +22,14 @@ import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PlotTest extends XYChartTest<Plot> {
   Plot plot;
@@ -51,7 +52,7 @@ public class PlotTest extends XYChartTest<Plot> {
     //when
     Plot plot = new Plot();
     //then
-    Assertions.assertThat(plot.getGraphics().size()).isEqualTo(0);
+    assertThat(plot.getGraphics().size()).isEqualTo(0);
   }
 
   @Test
@@ -59,7 +60,7 @@ public class PlotTest extends XYChartTest<Plot> {
     //when
     plot.add(line);
     //then
-    Assertions.assertThat(plot.getGraphics().size()).isEqualTo(1);
+    assertThat(plot.getGraphics().size()).isEqualTo(1);
   }
 
   @Test
@@ -67,7 +68,7 @@ public class PlotTest extends XYChartTest<Plot> {
     //when
     plot.add(area);
     //then
-    Assertions.assertThat(plot.getGraphics().size()).isEqualTo(1);
+    assertThat(plot.getGraphics().size()).isEqualTo(1);
   }
 
   @Test
@@ -76,7 +77,7 @@ public class PlotTest extends XYChartTest<Plot> {
     plot.add(line);
     plot.add(area);
     //then
-    Assertions.assertThat(plot.getGraphics().size()).isEqualTo(2);
+    assertThat(plot.getGraphics().size()).isEqualTo(2);
   }
 
   @Test
@@ -90,7 +91,7 @@ public class PlotTest extends XYChartTest<Plot> {
     //when
     plot.add(raster);
     //then
-    Assertions.assertThat(plot.getRasters().size()).isEqualTo(1);
+    assertThat(plot.getRasters().size()).isEqualTo(1);
   }
 
   @Test
@@ -110,11 +111,11 @@ public class PlotTest extends XYChartTest<Plot> {
             new Text()
     ));
     //then
-    Assertions.assertThat(plot.getGraphics().size()).isEqualTo(1);
-    Assertions.assertThat(plot.getConstantLines().size()).isEqualTo(1);
-    Assertions.assertThat(plot.getConstantBands().size()).isEqualTo(1);
-    Assertions.assertThat(plot.getRasters().size()).isEqualTo(1);
-    Assertions.assertThat(plot.getTexts().size()).isEqualTo(1);
+    assertThat(plot.getGraphics().size()).isEqualTo(1);
+    assertThat(plot.getConstantLines().size()).isEqualTo(1);
+    assertThat(plot.getConstantBands().size()).isEqualTo(1);
+    assertThat(plot.getRasters().size()).isEqualTo(1);
+    assertThat(plot.getTexts().size()).isEqualTo(1);
   }
 
   @Test
@@ -122,7 +123,7 @@ public class PlotTest extends XYChartTest<Plot> {
     //when
     plot.setxAutoRange(true);
     //then
-    Assertions.assertThat(plot.getXAutoRange()).isTrue();
+    assertThat(plot.getXAutoRange()).isTrue();
   }
 
   @Test
@@ -130,8 +131,8 @@ public class PlotTest extends XYChartTest<Plot> {
     //when
     plot.setxBound(Arrays.asList(1d, 10d));
     //then
-    Assertions.assertThat(plot.getXLowerBound()).isEqualTo(1d);
-    Assertions.assertThat(plot.getXUpperBound()).isEqualTo(10d);
+    assertThat(plot.getXLowerBound()).isEqualTo(1d);
+    assertThat(plot.getXUpperBound()).isEqualTo(10d);
   }
 
   @Override

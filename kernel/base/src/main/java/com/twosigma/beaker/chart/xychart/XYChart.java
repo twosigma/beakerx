@@ -22,10 +22,12 @@ import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
+
 import java.util.ArrayList;
 import java.util.List;
 
-abstract public class XYChart extends AbstractChart{
+abstract public class XYChart extends AbstractChart {
+
   private final List<XYGraphics> xyGraphics = new ArrayList<>();
   private final List<ConstantLine> constantLines = new ArrayList<>();
   private final List<ConstantBand> constantBands = new ArrayList<>();
@@ -134,6 +136,7 @@ abstract public class XYChart extends AbstractChart{
 
   public XYChart setXAutoRange(boolean xAutoRange) {
     this.xAutoRange = xAutoRange;
+    sendModel();
     return this;
   }
 
@@ -149,6 +152,7 @@ abstract public class XYChart extends AbstractChart{
     this.xAutoRange = false;
     this.xLowerBound = lower;
     this.xUpperBound = upper;
+    sendModel();
     return this;
   }
 
@@ -178,7 +182,7 @@ abstract public class XYChart extends AbstractChart{
   }
 
   public XYChart setYAutoRange(boolean yAutoRange) {
-    this.xAutoRange = yAutoRange;
+    setXAutoRange(yAutoRange);
     return this;
   }
 
@@ -188,6 +192,7 @@ abstract public class XYChart extends AbstractChart{
 
   public XYChart setLogX(boolean logX) {
     this.logX = logX;
+    sendModel();
     return this;
   }
 
@@ -201,6 +206,7 @@ abstract public class XYChart extends AbstractChart{
 
   public XYChart setXLogBase(double xLogBase) {
     this.xLogBase = xLogBase;
+    sendModel();
     return this;
   }
 
@@ -214,6 +220,7 @@ abstract public class XYChart extends AbstractChart{
 
   public void setLodThreshold(Integer lodThreshold) {
     this.lodThreshold = lodThreshold;
+    sendModel();
   }
 
   public boolean isxTickLabelsVisible() {
@@ -222,6 +229,7 @@ abstract public class XYChart extends AbstractChart{
 
   public void setxTickLabelsVisible(boolean xTickLabelsVisible) {
     this.xTickLabelsVisible = xTickLabelsVisible;
+    sendModel();
   }
 
   public boolean isyTickLabelsVisible() {
@@ -230,5 +238,6 @@ abstract public class XYChart extends AbstractChart{
 
   public void setyTickLabelsVisible(boolean yTickLabelsVisible) {
     this.yTickLabelsVisible = yTickLabelsVisible;
+    sendModel();
   }
 }

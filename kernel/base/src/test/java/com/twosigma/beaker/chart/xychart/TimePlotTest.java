@@ -16,10 +16,6 @@
 
 package com.twosigma.beaker.chart.xychart;
 
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.KernelTest;
-import org.assertj.core.api.Assertions;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,42 +24,43 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-public class TimePlotTest {
+import static org.assertj.core.api.Assertions.assertThat;
 
-  Date lowerBound, upperBound;
+public class TimePlotTest extends XYChartTest<TimePlot> {
+
+  private Date lowerBound, upperBound;
 
   @Before
   public void initStubData() throws ParseException {
-    KernelManager.register(new KernelTest());
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     lowerBound = sdf.parse("01-01-2000");
     upperBound = sdf.parse("05-05-2005");
   }
 
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
-  }
-
   @Test
   public void setXBoundWithTwoDatesParams_shouldSetXBoundParams() {
     //when
-    TimePlot timePlot = new TimePlot();
+    TimePlot timePlot = createWidget();
     timePlot.setXBound(lowerBound, upperBound);
     //then
-    Assertions.assertThat(timePlot.getXLowerBound()).isGreaterThan(0);
-    Assertions.assertThat(timePlot.getXUpperBound()).isGreaterThan(0);
-    Assertions.assertThat(timePlot.getXAutoRange()).isFalse();
+    assertThat(timePlot.getXLowerBound()).isGreaterThan(0);
+    assertThat(timePlot.getXUpperBound()).isGreaterThan(0);
+    assertThat(timePlot.getXAutoRange()).isFalse();
   }
 
   @Test
   public void setXBoundWithListParam_shouldSetXBoundParams() {
     //when
-    TimePlot timePlot = new TimePlot();
+    TimePlot timePlot = createWidget();
     timePlot.setXBound(Arrays.asList(lowerBound, upperBound));
     //then
-    Assertions.assertThat(timePlot.getXLowerBound()).isGreaterThan(0);
-    Assertions.assertThat(timePlot.getXUpperBound()).isGreaterThan(0);
-    Assertions.assertThat(timePlot.getXAutoRange()).isFalse();
+    assertThat(timePlot.getXLowerBound()).isGreaterThan(0);
+    assertThat(timePlot.getXUpperBound()).isGreaterThan(0);
+    assertThat(timePlot.getXAutoRange()).isFalse();
+  }
+
+  @Override
+  public TimePlot createWidget() {
+    return new TimePlot();
   }
 }

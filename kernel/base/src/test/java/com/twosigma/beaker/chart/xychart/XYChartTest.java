@@ -23,14 +23,115 @@ import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static com.twosigma.beaker.widgets.TestWidgetUtils.findValueForProperty;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.CONSTANT_BANDS;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.CONSTANT_LINES;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.GRAPHICS_LIST;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.LOD_THRESHOLD;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.LOG_X;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.RASTERS;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.TEXTS;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.X_AUTO_RANGE;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.X_LOG_BASE;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.X_LOWER_BOUND;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.X_TICK_LABELS_VISIBLE;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.X_UPPER_BOUND;
+import static com.twosigma.beaker.chart.serializer.XYChartSerializer.Y_TICK_LABELS_VISIBLE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class XYChartTest <T extends XYChart> extends ChartTest<XYChart> {
+public abstract class XYChartTest<T extends XYChart> extends ChartTest<XYChart> {
+
+
+  @Test
+  public void shouldSendCommMsgWhenYTickLabelsVisibleChange() throws Exception {
+    //given
+    XYChart xyChart = createWidget();
+    //when
+    xyChart.setyTickLabelsVisible(true);
+    //then
+    assertThat(xyChart.isyTickLabelsVisible()).isEqualTo(true);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(Y_TICK_LABELS_VISIBLE)).isEqualTo(true);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenXTickLabelsVisibleChange() throws Exception {
+    //given
+    XYChart xyChart = createWidget();
+    //when
+    xyChart.setxTickLabelsVisible(true);
+    //then
+    assertThat(xyChart.isxTickLabelsVisible()).isEqualTo(true);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(X_TICK_LABELS_VISIBLE)).isEqualTo(true);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenLodThresholdChange() throws Exception {
+    //given
+    XYChart xyChart = createWidget();
+    //when
+    xyChart.setLodThreshold(3);
+    //then
+    assertThat(xyChart.getLodThreshold()).isEqualTo(3);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(LOD_THRESHOLD)).isEqualTo(3);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenXLogBaseChange() throws Exception {
+    //given
+    XYChart xyChart = createWidget();
+    //when
+    xyChart.setXLogBase(11.1);
+    //then
+    assertThat(xyChart.getXLogBase()).isEqualTo(11.1);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(X_LOG_BASE)).isEqualTo(11.1);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenLogXChange() throws Exception {
+    //given
+    XYChart xyChart = createWidget();
+    //when
+    xyChart.setLogX(true);
+    //then
+    assertThat(xyChart.getLogX()).isTrue();
+    LinkedHashMap model = getModel();
+    assertThat(model.get(LOG_X)).isEqualTo(true);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenXAutoRangeChange() throws Exception {
+    //given
+    XYChart xyChart = createWidget();
+    //when
+    xyChart.setXAutoRange(true);
+    //then
+    assertThat(xyChart.getXAutoRange()).isTrue();
+    LinkedHashMap model = getModel();
+    assertThat(model.get(X_AUTO_RANGE)).isEqualTo(true);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenXBoundChange() throws Exception {
+    //given
+    XYChart xyChart = createWidget();
+    //when
+    xyChart.setXBound(11.0, 20.0);
+    //then
+    assertThat(xyChart.getXUpperBound()).isEqualTo(20.0);
+    assertThat(xyChart.getXLowerBound()).isEqualTo(11.0);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(X_UPPER_BOUND)).isEqualTo(20.0);
+    assertThat(model.get(X_LOWER_BOUND)).isEqualTo(11.0);
+  }
+
 
   @Test
   public void shouldSendCommMsgWhenAddRastersByLeftShift() throws Exception {
@@ -44,7 +145,12 @@ public abstract class XYChartTest <T extends XYChart> extends ChartTest<XYChart>
     //when
     xyChart.leftShift(raster);
     //then
-    verifyModel();
+    assertThat(getValueAsArray(RASTERS)).isNotEmpty();
+  }
+
+  private ArrayList getValueAsArray(final String field) {
+    LinkedHashMap model = getModel();
+    return (ArrayList)model.get(field);
   }
 
   @Test
@@ -57,7 +163,7 @@ public abstract class XYChartTest <T extends XYChart> extends ChartTest<XYChart>
     //when
     xyChart.leftShift(graphics);
     //then
-    verifyModel();
+    assertThat(getValueAsArray(GRAPHICS_LIST)).isNotEmpty();
   }
 
   @Test
@@ -67,7 +173,7 @@ public abstract class XYChartTest <T extends XYChart> extends ChartTest<XYChart>
     //when
     xyChart.leftShift(new ConstantLine());
     //then
-    verifyModel();
+    assertThat(getValueAsArray(CONSTANT_LINES)).isNotEmpty();
   }
 
   @Test
@@ -77,23 +183,21 @@ public abstract class XYChartTest <T extends XYChart> extends ChartTest<XYChart>
     //when
     xyChart.leftShift(new ConstantBand());
     //then
-    verifyModel();
+    assertThat(getValueAsArray(CONSTANT_BANDS)).isNotEmpty();
   }
 
   @Test
   public void shouldSendCommMsgWhenAddTextByLeftShift() throws Exception {
     //given
     XYChart xyChart = createWidget();
+    Text text = new Text();
     //when
-    xyChart.leftShift(new Text());
+    xyChart.leftShift(text);
     //then
-    verifyModel();
+    assertThat(xyChart.getTexts().get(0)).isEqualTo(text);
+    assertThat(getValueAsArray(TEXTS)).isNotEmpty();
   }
 
-  private void verifyModel() {
-    LinkedHashMap model = findValueForProperty(kernel, XYChart.MODEL, LinkedHashMap.class);
-    assertThat(model).isNotNull();
-  }
 
   @Override
   public abstract T createWidget();

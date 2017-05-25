@@ -20,6 +20,7 @@ import com.twosigma.beaker.jupyter.SearchMessages;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.jupyter.message.Message;
+import org.junit.Assert;
 
 import java.io.Serializable;
 import java.util.List;
@@ -119,8 +120,9 @@ public class TestWidgetUtils {
   }
 
   public static <T> T findValueForProperty(KernelTest kernel, String propertyName, Class<T> clazz) {
-    Message model = SearchMessages.getListByDataAttr(kernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE).get(0);
-    return getValueForProperty(model, propertyName, clazz);
+    List<Message> messages = SearchMessages.getListByDataAttr(kernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
+    Assert.assertTrue("No update comm message.",messages.size()>0);
+    return getValueForProperty(messages.get(0), propertyName, clazz);
   }
 
 }

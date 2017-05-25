@@ -28,6 +28,12 @@ import static com.twosigma.beaker.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
 
 public abstract class Chart extends ChartDetails {
 
+  public static final String PLOT_GRIDLINE = ".plot-gridline";
+  public static final String PLOT_LABEL_Y = ".plot-label-y";
+  public static final String PLOT_LABEL_X = ".plot-label-x";
+  public static final String PLOT_LABEL = ".plot-label";
+  public static final String PLOT_TITLE = ".plot-title";
+
   private int initWidth = 640;
   private int initHeight = 480;
   private List<String> customStyles = new ArrayList();
@@ -102,6 +108,7 @@ public abstract class Chart extends ChartDetails {
 
   public Chart setLegendLayout(LegendLayout legendLayout) {
     this.legendLayout = legendLayout;
+    sendModel();
     return this;
   }
 
@@ -111,46 +118,52 @@ public abstract class Chart extends ChartDetails {
 
   public void setCustomStyles(List<String> customStyle) {
     this.customStyles = customStyle;
+    sendModel();
   }
 
   public String getLabelStyle() {
-    return this.elementStyles.get(".plot-label");
+    return this.elementStyles.get(PLOT_LABEL);
   }
 
   public void setLabelStyle(String style) {
-    this.elementStyles.put(".plot-label", style);
+    this.elementStyles.put(PLOT_LABEL, style);
+    sendModel();
   }
 
   public String getLabelXStyle() {
-    return this.elementStyles.get(".plot-label-x");
+    return this.elementStyles.get(PLOT_LABEL_X);
   }
 
   public void setLabelXStyle(String style) {
-    this.elementStyles.put(".plot-label-x", style);
+    this.elementStyles.put(PLOT_LABEL_X, style);
+    sendModel();
   }
 
   public String getLabelYStyle() {
-    return this.elementStyles.get(".plot-label-y");
+    return this.elementStyles.get(PLOT_LABEL_Y);
   }
 
   public void setLabelYStyle(String style) {
-    this.elementStyles.put(".plot-label-y", style);
+    this.elementStyles.put(PLOT_LABEL_Y, style);
+    sendModel();
   }
 
   public String getGridLineStyle() {
-    return this.elementStyles.get(".plot-gridline");
+    return this.elementStyles.get(PLOT_GRIDLINE);
   }
 
   public void setGridLineStyle(String style) {
-    this.elementStyles.put(".plot-gridline", style);
+    this.elementStyles.put(PLOT_GRIDLINE, style);
+    sendModel();
   }
 
   public String getTitleStyle() {
-    return this.elementStyles.get(".plot-title");
+    return this.elementStyles.get(PLOT_TITLE);
   }
 
   public void setTitleStyle(String style) {
-    this.elementStyles.put(".plot-title", style);
+    this.elementStyles.put(PLOT_TITLE, style);
+    sendModel();
   }
 
   public Map<String, String> getElementStyles() {

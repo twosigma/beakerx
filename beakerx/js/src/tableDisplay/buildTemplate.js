@@ -51,12 +51,12 @@ define(function() {
                '            <li><a tabindex="-1" href="#" data-dtAction="dt-download-all" class="dt-download-all">Download All as CSV</a></li>'+
                '            <li><a tabindex="-1" href="#" data-dtAction="dt-download-selected" class="dt-download-selected">Download Selected as CSV</a></li>'+
                '            <li>'+
-               '                <a tabindex="-1" href="#" data-dtAction="dt-search" class="dt-search menu-separator" title="search the whole table for a substring">Search...</a>'+
+               '                <a tabindex="-1" href="#" data-dtAction="dt-search" class="dt-search menu-separator" title="search the whole table for a substring">Search for Substring</a>'+
                '                <i class="fa fa-search"></i>'+
                '            </li>'+
                '            <li>'+
                '                <a tabindex="-1" href="#" data-dtAction="dt-filter" class="dt-filter"'+
-               '                   title="filter with an expression with a variable defined for each column">Filter...</a>'+
+               '                   title="filter with an expression with a variable defined for each column">Filter by Expression</a>'+
                '                <i class="fa fa-filter"></i>'+
                '            </li>'+
                '            <li><a tabindex="-1" href="#" data-dtAction="dt-hide-filter" class="dt-hide-filter">Hide Filter</a></li>'+

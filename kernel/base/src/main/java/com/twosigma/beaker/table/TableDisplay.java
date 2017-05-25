@@ -15,21 +15,13 @@
  */
 package com.twosigma.beaker.table;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
+import static java.util.Arrays.asList;
 
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
-
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.table.action.TableActionDetails;
+import com.twosigma.beaker.table.action.TableActionType;
 import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 import com.twosigma.beaker.table.format.ValueStringFormat;
 import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
@@ -37,8 +29,18 @@ import com.twosigma.beaker.table.highlight.ValueHighlighter;
 import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
 import com.twosigma.beaker.widgets.BeakerxWidget;
 import com.twosigma.beaker.widgets.RunWidgetClosure;
+import com.twosigma.jupyter.handler.Handler;
+import com.twosigma.jupyter.message.Message;
 
-import static java.util.Arrays.asList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class TableDisplay extends BeakerxWidget {
 
@@ -75,6 +77,12 @@ public class TableDisplay extends BeakerxWidget {
   private boolean headersVertical;
   private String hasIndex;
   private String timeZone;
+  
+  private Object doubleClickListener;
+  private String doubleClickTag;
+  private Map<String, Object> contextMenuListeners = new HashMap<>();
+  private Map<String, String> contextMenuTags = new HashMap<>();
+  private TableActionDetails details;
 
   @Override
   public String getModelNameValue() {
@@ -95,6 +103,7 @@ public class TableDisplay extends BeakerxWidget {
     openComm();
   }
 
+  
   public TableDisplay(Collection<Map<?, ?>> v) {
     this(v, new BasicObjectSerializer());
   }
@@ -151,6 +160,11 @@ public class TableDisplay extends BeakerxWidget {
       values.add(asList(e.getKey().toString(), e.getValue()));
     }
     openComm();
+  }
+  
+  public void openComm(){
+    super.openComm();
+    getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails);
   }
 
   public static TableDisplay createTableDisplayForMap(Map<?, ?> v) {
@@ -460,21 +474,61 @@ public class TableDisplay extends BeakerxWidget {
     return subtype;
   }
 
-
-  private Object doubleClickListener;
-  private String doubleClickTag;
-  private Map<String, Object> contextMenuListeners = new HashMap<>();
-  private Map<String, String> contextMenuTags = new HashMap<>();
-  private TableActionDetails details;
-
-  public void setDoubleClickAction(Object listener) {
-    this.doubleClickTag = null;
-    this.doubleClickListener = listener;
-  }
-
   public void setDoubleClickAction(String tagName) {
     this.doubleClickListener = null;
     this.doubleClickTag = tagName;
+  }
+  
+  public void setDoubleClickAction(Object listener) {
+    this.doubleClickTag = null;
+    this.doubleClickListener = listener;
+    getComm().addMsgCallbackList((Handler<Message>)this::handleDoubleClick);
+  }
+  
+  private void handleDoubleClick(Message message) {
+    handleCommEventSync(message, CommActions.ONDOUBLECLICK, (ActionPerformed)this::onDoubleClickAction);
+  }
+
+  private void handleSetDetails(Message message) {
+    handleCommEventSync(message, CommActions.ACTIONDETAILS, (ActionPerformed)this::onActionDetails);
+  }
+  
+  private void handleOnContextMenu(Message message) {
+    handleCommEventSync(message, CommActions.ONCONTEXTMENU, (ActionPerformed)this::onContextMenu);
+  }
+  
+  private void onDoubleClickAction(HashMap content){
+    Object row = content.get("row");
+    Object column = content.get("column");
+    List<Object> params = new ArrayList<>();
+    params.add(row);
+    params.add(column);
+    fireDoubleClick(params);
+  }
+
+  private void onActionDetails(HashMap content){
+    
+    Integer row = (Integer)content.get("row");
+    Integer column = (Integer)content.get("column");
+    String contextMenuItem = (String)content.get("contextMenuItem");
+    TableActionType tableActionType = TableActionType.getByName((String)content.get("actionType"));
+    
+    TableActionDetails details = new TableActionDetails();
+    details.setActionType(tableActionType);
+    details.setCol(column);
+    details.setRow(row);
+    details.setContextMenuItem(contextMenuItem);
+    setDetails(details);
+  }
+  
+  private void onContextMenu(HashMap content){
+    String menuKey = (String)content.get("menuKey");
+    Object row = content.get("row");
+    Object column = content.get("column");
+    List<Object> params = new ArrayList<>();
+    params.add(row);
+    params.add(column);
+    fireContextMenuClick(menuKey, params);
   }
 
   public String getDoubleClickTag() {
@@ -498,6 +552,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void addContextMenuItem(String name, Object closure) {
     this.contextMenuListeners.put(name, closure);
+    getComm().addMsgCallbackList((Handler<Message>)this::handleOnContextMenu);
   }
 
   public void addContextMenuItem(String name, String tagName) {

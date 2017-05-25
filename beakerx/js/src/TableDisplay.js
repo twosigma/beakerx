@@ -16,6 +16,7 @@
 
 var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
+var $ = require('jquery');
 
 var TableScope = require('./tableDisplay/tableScope');
 
@@ -26,7 +27,10 @@ require('datatables.net-keytable-dt/css/keyTable.dataTables.css');
 require('jquery-contextmenu/dist/jquery.contextMenu.css');
 require('./tableDisplay/css/datatables.scss');
 
+var currentScope = undefined;
+
 var TableDisplayModel = widgets.DOMWidgetModel.extend({
+
   defaults: function() {
     return _.extend({}, widgets.DOMWidgetModel.prototype.defaults.apply(this), {
       _model_name: 'TableDisplayModel',
@@ -35,6 +39,7 @@ var TableDisplayModel = widgets.DOMWidgetModel.extend({
       _view_module: 'beakerx'
     });
   }
+  
 });
 
 
@@ -58,6 +63,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     var currentScope = new TableScope('wrap_'+this.id);
     var tmpl = currentScope.buildTemplate();
     var tmplElement = $(tmpl);
+    var that = this;
 
     tmplElement.appendTo(this.$el);
 
@@ -65,6 +71,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     currentScope.setElement(tmplElement.children('.dtcontainer'));
     currentScope.enableJupyterKeyHandler();
     currentScope.run();
+    that.dblclick(tmplElement, currentScope, this.model);
   },
 
   showWarning: function(data) {
@@ -77,7 +84,80 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
       'The first 1000 rows are displayed as a preview.</p></div>';
     var tmplElement = $(tmpl);
     tmplElement.appendTo(this.$el);
+  },
+  
+  /**
+   * Moved from tableScope.js to access Comm messaging.
+   */
+  dblclick: function(tmplElement, currentScope, tableDisplayModel){
+    tmplElement.on('dblclick', 'td', function(e) {
+      var rowIdx;
+      var colIdx;
+      var iPos = currentScope.table.cell(this).index();
+      if (iPos) { //selected regular cell
+        rowIdx = iPos.row;
+        colIdx = iPos.column;
+      } else { //selected fixed column or index cell
+        var position = currentScope.fixcols.fnGetPosition(this);
+        rowIdx = position[0];
+        if ($(this).parents().hasClass('DTFC_RightWrapper')) {
+          var order = currentScope.colorder;
+          var fixRight = currentScope.pagination.fixRight;
+          var colIdxInRight = position[1];
+          colIdx = order[order.length - fixRight + colIdxInRight];
+        } else {
+          colIdx = position[1];
+        }
+      }
+    	
+      var currentCell = currentScope.table.cells(function(idx, data, node) {
+        return idx.column === colIdx && idx.row ===  rowIdx;
+      });
+      
+      var currentCellNodes = $(currentCell.nodes());
+
+      var isCurrentCellSelected = currentCellNodes.hasClass('selected');
+
+      if (currentScope.selected[rowIdx]) {
+      	currentScope.selected[rowIdx] = false;
+        $(currentScope.table.row(rowIdx).node()).removeClass('selected');
+        currentScope.selectFixedColumnRow(rowIdx, false);
+      }
+
+      $(currentScope.table.cells().nodes()).removeClass('selected');
+      if (currentScope.fixcols) {
+        _.each(currentScope.selected, function(selected, index){
+          if(!selected){
+          	currentScope.selectFixedColumnRow(index, false);
+          }
+        });
+      }
+      if (!isCurrentCellSelected) {
+        currentCellNodes.addClass('selected');
+        if(iPos === undefined) {
+        	currentScope.selectFixedColumnCell($(this), true);
+        }
+      }
+
+      var index = currentCell.indexes()[0];
+      if (currentScope.model.model.hasDoubleClickAction) {
+      	tableDisplayModel.send({event: 'ondoubleclick', row : index.row, column : index.column - 1});
+      }
+
+      if (!_.isEmpty(currentScope.model.model.doubleClickTag)) {
+        var params = {
+          actionType: 'DOUBLE_CLICK',
+          row: index.row,
+          col: index.column - 1
+        };
+      	tableDisplayModel.send({event: 'actiondetails', params});
+      }
+
+      e.stopPropagation();
+    })
   }
+  
+  
 });
 
 

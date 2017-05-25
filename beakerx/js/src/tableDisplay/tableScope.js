@@ -25,7 +25,6 @@ define([
   'moment-timezone/builds/moment-timezone-with-data',
   './../shared/bkUtils',
   './cellHighlighters',
-  './tableService',
   './../shared/bkHelper',
   './buildTemplate',
   './datatablesHeadermenu',
@@ -43,7 +42,6 @@ define([
   moment,
   bkUtils,
   cellHighlighters,
-  tableService,
   bkHelper,
   buildTemplate,
   datatablesHeadermenu,
@@ -76,12 +74,6 @@ define([
         model: {},
         getCellModel: function() {
           return this.model;
-        },
-        getEvaluatorId: function() {
-          while (this.id !== undefined) {
-            return this.id;
-          }
-          return undefined;
         }
       };
 
@@ -800,6 +792,8 @@ define([
           name: item,
           callback: function(itemKey, options) {
             var index = self.table.cell(options.$trigger.get(0)).index();
+            //tableService functionality moved to Comm
+            //see TableDisplay.js "TableDisplayModel.__super__.send"
             tableService.onContextMenu(model['update_id'],
               itemKey,
               index.row,
@@ -825,6 +819,8 @@ define([
                 row: index.row,
                 col: index.column - 1
               };
+              //tableService functionality moved to Comm
+              //see TableDisplay.js "TableDisplayModel.__super__.send"
               tableService.setActionDetails(model['update_id'],
                 self.model.getEvaluatorId(),
                 params).then(function() {
@@ -1767,83 +1763,6 @@ define([
         .appendTo(pagination);
     }
 
-    /*
-     $(id + ' tbody').off('click');
-     */
-    $(id + ' tbody').on('dblclick', 'td', function(e) {
-      if (!self.table) { return; }
-      var rowIdx;
-      var colIdx;
-      var iPos = self.table.cell(this).index();
-      if (iPos) { //selected regular cell
-        rowIdx = iPos.row;
-        colIdx = iPos.column;
-      } else { //selected fixed column or index cell
-        var position = self.fixcols.fnGetPosition(this);
-        rowIdx = position[0];
-        if ($(this).parents().hasClass('DTFC_RightWrapper')) {
-          var order = self.colorder;
-          var fixRight = self.pagination.fixRight;
-          var colIdxInRight = position[1];
-          colIdx = order[order.length - fixRight + colIdxInRight];
-        } else {
-          colIdx = position[1];
-        }
-      }
-
-      var currentCell = self.table.cells(function(idx, data, node) {
-        return idx.column === colIdx && idx.row ===  rowIdx;
-      });
-      var currentCellNodes = $(currentCell.nodes());
-
-      var isCurrentCellSelected = currentCellNodes.hasClass('selected');
-
-      if (self.selected[rowIdx]) {
-        self.selected[rowIdx] = false;
-        $(self.table.row(rowIdx).node()).removeClass('selected');
-        self.selectFixedColumnRow(rowIdx, false);
-      }
-
-      $(self.table.cells().nodes()).removeClass('selected');
-      if (self.fixcols) {
-        _.each(self.selected, function(selected, index){
-          if(!selected){
-            self.selectFixedColumnRow(index, false);
-          }
-        });
-      }
-      if (!isCurrentCellSelected) {
-        currentCellNodes.addClass('selected');
-        if(iPos === undefined) {
-          self.selectFixedColumnCell($(this), true);
-        }
-      }
-
-      var index = currentCell.indexes()[0];
-      if (model.hasDoubleClickAction) {
-        tableService.onDoubleClick(model['update_id'],
-          index.row,
-          index.column - 1,
-          self.model.getEvaluatorId()).then(function() {
-          self.update = true;
-        });
-      }
-
-      if (!_.isEmpty(model.doubleClickTag)) {
-        var params = {
-          actionType: 'DOUBLE_CLICK',
-          row: index.row,
-          col: index.column - 1
-        };
-        tableService.setActionDetails(model['update_id'],
-          self.model.getEvaluatorId(),
-          params).then(function() {
-          self.evaluateTagCell(model.doubleClickTag);
-        });
-      }
-
-      e.stopPropagation();
-    });
 
     $(id + ' tbody').on('click', 'tr', function(event) {
       if (!self.table) { return; }

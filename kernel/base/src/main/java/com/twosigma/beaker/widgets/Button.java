@@ -15,12 +15,16 @@
  */
 package com.twosigma.beaker.widgets;
 
+import com.twosigma.beaker.widgets.Widget.ActionPerformed;
+import com.twosigma.beaker.widgets.Widget.CommActions;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class Button extends ValueWidget<Boolean> {
 
@@ -36,9 +40,7 @@ public class Button extends ValueWidget<Boolean> {
   private String tag;
   private String icon = "";
   private String button_style = ""; 
-  
-  private ActionPerformed actionPerformed = () -> {
-  };
+  private ActionPerformed actionPerformed = null;
 
   public Button() {
     super();
@@ -93,24 +95,18 @@ public class Button extends ValueWidget<Boolean> {
     this.actionPerformed = actionPerformed;
   }
 
-  public interface ActionPerformed {
-    void execute();
-  }
 
   private void handleOnClick(Message message) {
-    if (message.getContent() != null) {
-      Serializable data = message.getContent().get("data");
-      if (data != null && data instanceof LinkedHashMap) {
-        Object contentObject = ((LinkedHashMap) data).get("content");
-        if (contentObject instanceof LinkedHashMap) {
-          Object event = ((LinkedHashMap) contentObject).get("event");
-          if (event.equals("click")) {
-            actionPerformed.execute();
-          }
-        }
-      }
+    handleCommEventSync(message, CommActions.CLICK, (ActionPerformed)this::executeAction);
+  }
+  
+  
+  private void executeAction(HashMap content){
+    if(actionPerformed != null){
+      actionPerformed.executeAction(content);
     }
   }
+
 
   @Override
   public String getModelNameValue() {

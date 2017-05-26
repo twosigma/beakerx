@@ -15,16 +15,33 @@
  */
 package com.twosigma.beaker.widgets.strings;
 
+import com.twosigma.beaker.jupyter.SearchMessages;
+import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.beaker.jupyter.msg.JupyterMessages;
+import com.twosigma.jupyter.message.Message;
+
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.KernelTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+import java.util.Map;
+
 import java.security.NoSuchAlgorithmException;
 
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.beaker.widgets.Widget.MODEL_NAME;
+import static com.twosigma.beaker.widgets.Widget.MODEL_MODULE;
+import static com.twosigma.beaker.widgets.Widget.VIEW_NAME;
+import static com.twosigma.beaker.widgets.Widget.VIEW_MODULE;
+import static com.twosigma.beaker.widgets.Layout.LAYOUT;
+import static com.twosigma.beaker.widgets.Layout.IPY_MODEL;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyMsgForProperty;
-import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyTypeMsg;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.getData;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TextTest {
 
@@ -47,7 +64,13 @@ public class TextTest {
     //when
     new Text();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Text.MODEL_NAME_VALUE, Text.VIEW_NAME_VALUE);
+    verifyTextField(
+      groovyKernel.getPublishedMessages(),
+      Text.MODEL_NAME_VALUE,
+      Text.MODEL_MODULE_VALUE,
+      Text.VIEW_NAME_VALUE,
+      Text.VIEW_MODULE_VALUE
+    );
   }
 
   @Test
@@ -64,5 +87,24 @@ public class TextTest {
     Text widget = new Text();
     groovyKernel.clearPublishedMessages();
     return widget;
+  }
+
+  public static void verifyTextField(
+    List<Message> messages,
+    String modelNameValue,
+    String modelModuleValue,
+    String viewNameValue,
+    String viewModuleValue
+  ) {
+    Message widget = SearchMessages.getListWidgetsByViewName(messages, viewNameValue).get(0);
+    Message layout = SearchMessages.getLayoutForWidget(messages, widget);
+
+    verifyTypeMsg(widget,COMM_OPEN);
+    Map data = getData(widget);
+    assertThat(data.get(LAYOUT)).isEqualTo(IPY_MODEL + layout.getContent().get(Comm.COMM_ID));
+    assertThat(data.get(MODEL_NAME)).isEqualTo(modelNameValue);
+    assertThat(data.get(MODEL_MODULE)).isEqualTo(modelModuleValue);
+    assertThat(data.get(VIEW_NAME)).isEqualTo(viewNameValue);
+    assertThat(data.get(VIEW_MODULE)).isEqualTo(viewModuleValue);
   }
 }

@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.easyform.formitem;
 
+@FunctionalInterface
 public interface EasyFormListener {
   void execute(String value);
 }

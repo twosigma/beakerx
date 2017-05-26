@@ -53,6 +53,7 @@ public class HeatMap extends AbstractChart {
 
   public void setColor(GradientColor color) {
     this.color = color;
+    sendModel();
   }
 
   public GradientColor getColor() {
@@ -65,5 +66,6 @@ public class HeatMap extends AbstractChart {
 
   public void setData(Number[][] data) {
     this.data = data;
+    sendModel();
   }
 }

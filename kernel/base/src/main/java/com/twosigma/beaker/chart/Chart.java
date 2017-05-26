@@ -99,6 +99,7 @@ public abstract class Chart extends ChartDetails {
 
   public Chart setLegendPosition(LegendPosition legendPosition) {
     this.legendPosition = legendPosition;
+    sendModel();
     return this;
   }
 

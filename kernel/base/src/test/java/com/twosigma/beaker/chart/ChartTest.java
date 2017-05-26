@@ -19,6 +19,7 @@ package com.twosigma.beaker.chart;
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.chart.actions.CategoryGraphicsActionObject;
 import com.twosigma.beaker.chart.legend.LegendLayout;
+import com.twosigma.beaker.chart.legend.LegendPosition;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.widgets.chart.BeakerxPlot;
@@ -42,6 +43,7 @@ import static com.twosigma.beaker.chart.serializer.ChartSerializer.ELEMENT_STYLE
 import static com.twosigma.beaker.chart.serializer.ChartSerializer.INIT_HEIGHT;
 import static com.twosigma.beaker.chart.serializer.ChartSerializer.INIT_WIDTH;
 import static com.twosigma.beaker.chart.serializer.ChartSerializer.LEGEND_LAYOUT;
+import static com.twosigma.beaker.chart.serializer.ChartSerializer.LEGEND_POSITION;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.findValueForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,6 +63,19 @@ public abstract class ChartTest<T extends Chart> {
   }
 
   public abstract T createWidget();
+
+  @Test
+  public void shouldSendCommMsgWhenLegendPositionChange() throws Exception {
+    //given
+    Chart chart = createWidget();
+    LegendPosition bottom = LegendPosition.BOTTOM;
+    //when
+    chart.setLegendPosition(bottom);
+    //then
+    assertThat(chart.getLegendPosition()).isEqualTo(bottom);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(LEGEND_POSITION)).isNotNull();
+  }
 
   @Test
   public void shouldSendCommMsgWhenLegendLayoutChange() throws Exception {

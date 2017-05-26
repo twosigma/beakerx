@@ -146,8 +146,7 @@ public abstract class AbstractChart extends Chart {
   }
 
   public AbstractChart setYLowerMargin(double margin) {
-    this.yAxis.setLowerMargin(margin);
-    return this;
+    return setyLowerMargin(margin);
   }
 
   public AbstractChart setyLowerMargin(double margin) {
@@ -161,8 +160,7 @@ public abstract class AbstractChart extends Chart {
   }
 
   public AbstractChart setYUpperMargin(double margin) {
-    this.yAxis.setUpperMargin(margin);
-    return this;
+    return setyUpperMargin(margin);
   }
 
   public AbstractChart setyUpperMargin(double margin) {

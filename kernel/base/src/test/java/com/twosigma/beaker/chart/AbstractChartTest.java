@@ -355,4 +355,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     LinkedHashMap model = getModel();
     assertThat(model.get(LOG_Y)).isEqualTo(true);
   }
+
+  @Override
+  public abstract T createWidget();
+
 }

@@ -16,44 +16,60 @@
 
 package com.twosigma.beaker.chart.heatmap;
 
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.KernelTest;
-import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
+import com.twosigma.beaker.chart.AbstractChartTest;
+import com.twosigma.beaker.chart.GradientColor;
 import org.junit.Test;
 
-public class HeatMapTest {
+import java.util.LinkedHashMap;
 
-  @Before
-  public void setUp() throws Exception {
-    KernelManager.register(new KernelTest());
-  }
+import static com.twosigma.beaker.chart.serializer.HeatMapSerializer.COLOR;
+import static com.twosigma.beaker.chart.serializer.HeatMapSerializer.GRAPHICS_LIST;
+import static org.assertj.core.api.Assertions.assertThat;
 
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
-  }
+public class HeatMapTest extends AbstractChartTest<HeatMap> {
 
   @Test
   public void createHeatMapByEmptyConstructor_hasLegendPositionAndLayoutAreNotNulls() {
     //when
-    HeatMap heatMap = new HeatMap();
+    HeatMap heatMap = createWidget();
     //then
-    Assertions.assertThat(heatMap.getLegendPosition()).isNotNull();
-    Assertions.assertThat(heatMap.getLegendLayout()).isNotNull();
+    assertThat(heatMap.getLegendPosition()).isNotNull();
+    assertThat(heatMap.getLegendLayout()).isNotNull();
   }
 
   @Test
-  public void setDataWith2DIntegerArrayParam_hasDataIsNotEmpty() {
+  public void shouldSendCommMsgWhenColorChange() {
+    //given
+    HeatMap heatMap = createWidget();
+    GradientColor brownRedYellow = GradientColor.BROWN_RED_YELLOW;
     //when
-    HeatMap heatMap = new HeatMap();
-    heatMap.setData(
-        new Integer[][] {
-          new Integer[] {new Integer(1), new Integer(2)},
-          new Integer[] {new Integer(3), new Integer(4)}
-        });
+    heatMap.setColor(brownRedYellow);
     //then
-    Assertions.assertThat(heatMap.getData()).isNotEmpty();
+    assertThat(heatMap.getColor()).isEqualTo(brownRedYellow);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(COLOR)).isNotNull();
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenDataChange() {
+    //given
+    Integer[][] data = {
+            new Integer[]{1, 2},
+            new Integer[]{3, 4}
+    };
+    HeatMap heatMap = createWidget();
+    //when
+    heatMap.setData(data);
+    //then
+    assertThat(heatMap.getData()).isNotEmpty();
+    assertThat(getValueAsArray(GRAPHICS_LIST)).isNotEmpty();
+  }
+
+  @Override
+  public HeatMap createWidget() {
+    HeatMap heatMap = new HeatMap();
+    kernel.clearSentMessages();
+    kernel.clearPublishedMessages();
+    return heatMap;
   }
 }

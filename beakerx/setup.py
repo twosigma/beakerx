@@ -63,7 +63,7 @@ class InstallMagic(Command):
     def run(self):
         c = get_configsssss()
         c.InteractiveShellApp.extensions = [
-            'groovy_magic2222'
+            'groovy_magic'
         ]
 
 class NPM(Command):

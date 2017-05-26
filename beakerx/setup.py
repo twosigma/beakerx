@@ -61,7 +61,7 @@ def update_package_data(distribution):
 
 class InstallMagic(Command):
     def run(self):
-        c = get_configsssss()
+        c = get_config()
         c.InteractiveShellApp.extensions = [
             'groovy_magic'
         ]

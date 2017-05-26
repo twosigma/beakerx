@@ -74,4 +74,8 @@ task prepareBuildVerion() {
   }
 }
 
+test {
+    systemProperties 'java.awt.headless': "true"
+}
+
 compileJava.dependsOn prepareBuildVerion

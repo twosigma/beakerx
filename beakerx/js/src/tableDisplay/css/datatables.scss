@@ -3,6 +3,10 @@ $highlight-blue: #39a9ed;
 
 .beaker-table-display {
   overflow: visible;
+
+  :focus {
+    outline: none;
+  }
 }
 
 .dtcontainer {

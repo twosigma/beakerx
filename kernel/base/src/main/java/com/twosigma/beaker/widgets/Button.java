@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.widgets;
 
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.widgets.Widget.ActionPerformed;
 import com.twosigma.beaker.widgets.Widget.CommActions;
 import com.twosigma.jupyter.handler.Handler;
@@ -104,6 +105,9 @@ public class Button extends ValueWidget<Boolean> {
   private void executeAction(HashMap content){
     if(actionPerformed != null){
       actionPerformed.executeAction(content);
+    }
+    if(getTag() != null && !getTag().isEmpty()){
+      NamespaceClient.getBeaker().runByTag(getTag());
     }
   }
 

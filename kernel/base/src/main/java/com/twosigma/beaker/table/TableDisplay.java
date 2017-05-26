@@ -17,6 +17,7 @@ package com.twosigma.beaker.table;
 
 import static java.util.Arrays.asList;
 
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
@@ -32,6 +33,7 @@ import com.twosigma.beaker.widgets.RunWidgetClosure;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,6 +45,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class TableDisplay extends BeakerxWidget {
+  
+  public static final String TAG = "tag";
 
   public static final String VIEW_NAME_VALUE = "TableDisplayView";
   public static final String MODEL_NAME_VALUE = "TableDisplayModel";
@@ -160,11 +164,6 @@ public class TableDisplay extends BeakerxWidget {
       values.add(asList(e.getKey().toString(), e.getValue()));
     }
     openComm();
-  }
-  
-  public void openComm(){
-    super.openComm();
-    getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails);
   }
 
   public static TableDisplay createTableDisplayForMap(Map<?, ?> v) {
@@ -477,6 +476,7 @@ public class TableDisplay extends BeakerxWidget {
   public void setDoubleClickAction(String tagName) {
     this.doubleClickListener = null;
     this.doubleClickTag = tagName;
+    getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails);
   }
   
   public void setDoubleClickAction(Object listener) {
@@ -507,18 +507,34 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   private void onActionDetails(HashMap content){
-    
-    Integer row = (Integer)content.get("row");
-    Integer column = (Integer)content.get("column");
-    String contextMenuItem = (String)content.get("contextMenuItem");
-    TableActionType tableActionType = TableActionType.getByName((String)content.get("actionType"));
-    
     TableActionDetails details = new TableActionDetails();
-    details.setActionType(tableActionType);
-    details.setCol(column);
-    details.setRow(row);
-    details.setContextMenuItem(contextMenuItem);
+    
+    if(content.containsKey("params")){
+      
+      HashMap params = (HashMap) content.get("params");
+      
+      if(params.containsKey("actionType")){
+        TableActionType value = TableActionType.getByName((String)params.get("actionType"));
+        details.setActionType(value);
+      }
+      if(params.containsKey("contextMenuItem")){
+        String value = (String)params.get("contextMenuItem");
+        details.setContextMenuItem(value);
+      }
+      if(params.containsKey("row")){
+        Integer value = (Integer)params.get("row");
+        details.setRow(value);
+      }
+      if(params.containsKey("column")){
+        Integer value = (Integer)params.get("column");
+        details.setCol(value);
+      }
+      
+    }
     setDetails(details);
+    if(getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()){
+      NamespaceClient.getBeaker().runByTag(getDoubleClickTag());
+    }
   }
   
   private void onContextMenu(HashMap content){

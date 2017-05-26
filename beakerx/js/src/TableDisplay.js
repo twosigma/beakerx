@@ -157,7 +157,6 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     })
   }
   
-  
 });
 
 

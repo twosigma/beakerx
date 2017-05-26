@@ -84,6 +84,7 @@ public class Histogram extends AbstractChart {
 
   public void setBinCount(int binCount) {
     this.binCount = binCount;
+    sendModel();
   }
 
   public boolean getRightClose() {
@@ -100,6 +101,7 @@ public class Histogram extends AbstractChart {
 
   public void setCumulative(boolean cumulative) {
     this.cumulative = cumulative;
+    sendModel();
   }
 
   public boolean getNormed() {
@@ -108,6 +110,7 @@ public class Histogram extends AbstractChart {
 
   public void setNormed(boolean normed) {
     this.normed = normed;
+    sendModel();
   }
 
   public DisplayMode getDisplayMode() {
@@ -116,6 +119,7 @@ public class Histogram extends AbstractChart {
 
   public void setDisplayMode(DisplayMode displayMode) {
     this.displayMode = displayMode;
+    sendModel();
   }
 
   public boolean getLog() {
@@ -195,5 +199,6 @@ public class Histogram extends AbstractChart {
 
   public void setNames(List<String> names) {
     this.names = names;
+    sendModel();
   }
 }

@@ -24,9 +24,15 @@ import org.junit.Test;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static com.twosigma.beaker.chart.serializer.HistogramSerializer.BIN_COUNT;
 import static com.twosigma.beaker.chart.serializer.HistogramSerializer.COLOR;
 import static com.twosigma.beaker.chart.serializer.HistogramSerializer.COLORS;
+import static com.twosigma.beaker.chart.serializer.HistogramSerializer.CUMULATIVE;
+import static com.twosigma.beaker.chart.serializer.HistogramSerializer.DISPLAY_MODE;
 import static com.twosigma.beaker.chart.serializer.HistogramSerializer.GRAPHICS_LIST;
+import static com.twosigma.beaker.chart.serializer.HistogramSerializer.LOG;
+import static com.twosigma.beaker.chart.serializer.HistogramSerializer.NAMES;
+import static com.twosigma.beaker.chart.serializer.HistogramSerializer.NORMED;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,6 +53,79 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
     histogram = createWidget();
     //then
     assertThat(histogram.getDisplayMode()).isNotNull();
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenBinCountChange() {
+    //given
+    histogram = createWidget();
+    //when
+    histogram.setBinCount(11);
+    //then
+    assertThat(histogram.getBinCount()).isEqualTo(11);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(BIN_COUNT)).isEqualTo(11);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenNamesChange() {
+    //given
+    histogram = createWidget();
+    //when
+    histogram.setNames(asList("name123"));
+    //then
+    assertThat(histogram.getNames()).isEqualTo(asList("name123"));
+    LinkedHashMap model = getModel();
+    assertThat(model.get(NAMES)).isNotNull();
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenDisplayModeChange() {
+    //given
+    histogram = createWidget();
+    Histogram.DisplayMode overlap = Histogram.DisplayMode.OVERLAP;
+    //when
+    histogram.setDisplayMode(overlap);
+    //then
+    assertThat(histogram.getDisplayMode()).isEqualTo(overlap);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(DISPLAY_MODE)).isNotNull();
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenCumulativeChange() {
+    //given
+    histogram = createWidget();
+    //when
+    histogram.setCumulative(true);
+    //then
+    assertThat(histogram.getCumulative()).isEqualTo(true);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(CUMULATIVE)).isEqualTo(true);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenNormedChange() {
+    //given
+    histogram = createWidget();
+    //when
+    histogram.setNormed(true);
+    //then
+    assertThat(histogram.getNormed()).isEqualTo(true);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(NORMED)).isEqualTo(true);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenLogChange() {
+    //given
+    histogram = createWidget();
+    //when
+    histogram.setLog(true);
+    //then
+    assertThat(histogram.getLog()).isEqualTo(true);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(LOG)).isEqualTo(true);
   }
 
   @Test

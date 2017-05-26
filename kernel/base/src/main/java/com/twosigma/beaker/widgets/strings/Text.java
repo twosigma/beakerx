@@ -19,6 +19,8 @@ public class Text extends StringWidget {
 
   public static final String VIEW_NAME_VALUE = "TextView";
   public static final String MODEL_NAME_VALUE = "TextModel";
+  public static final String MODEL_MODULE_VALUE = "beakerx";
+  public static final String VIEW_MODULE_VALUE = "beakerx";
 
   public Text() {
     super();
@@ -35,4 +37,13 @@ public class Text extends StringWidget {
     return VIEW_NAME_VALUE;
   }
 
+  @Override
+  public String getModelModuleValue(){
+    return MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  public String getViewModuleValue(){
+    return VIEW_MODULE_VALUE;
+  }
 }

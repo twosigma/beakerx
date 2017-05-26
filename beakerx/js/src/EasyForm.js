@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+var ENTER_KEY_CODE = 13;
 var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
 
@@ -21,6 +22,14 @@ var buttonWidget = require('./easyForm/buttonWidget');
 var selectMultipleWidget = require('./easyForm/selectMultipleWidget');
 var selectMultipleSingleWidget = require('./easyForm/selectMultipleSingleWidget');
 var datePickerWidget = require('./easyForm/datePickerWidget');
+var textWidget = require('./easyForm/textWidget');
+
+widgets.TextView.prototype.handleEnterKeyPress = function() {
+  if (e.keyCode == 13) {
+    this.send({ event: 'submit' });
+    e.preventDefault();
+  }
+};
 
 require('./easyForm/css/jupyter-easyform.scss');
 require('flatpickr/dist/flatpickr.css');
@@ -65,6 +74,22 @@ var EasyFormView = widgets.BoxView.extend({
   }
 });
 
+EasyFormView.prototype.events = function () {
+  return {
+    'keypress': 'handleEnterKeyPress'
+  };
+};
+
+EasyFormView.prototype.handleEnterKeyPress = function(event) {
+  if (event.which !== ENTER_KEY_CODE) {
+    return event;
+  }
+
+  var $button = this.$el.find('> .widget-button');
+
+  $(event.target).is('[type="text"]') && $button.first().trigger('click');
+};
+
 module.exports = {
   EasyFormModel: EasyFormModel,
   EasyFormView: EasyFormView
@@ -74,3 +99,4 @@ _.extend(module.exports, buttonWidget);
 _.extend(module.exports, selectMultipleWidget);
 _.extend(module.exports, selectMultipleSingleWidget);
 _.extend(module.exports, datePickerWidget);
+_.extend(module.exports, textWidget);

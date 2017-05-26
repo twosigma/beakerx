@@ -1010,9 +1010,9 @@ find-up@^1.0.0:
     path-exists "^2.0.0"
     pinkie-promise "^2.0.0"
 
-flatpickr@^2.6.1:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/flatpickr/-/flatpickr-2.6.1.tgz#7272979b4b791cdb7b359076831704feb0927a41"
+flatpickr@^2.6.3:
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/flatpickr/-/flatpickr-2.6.3.tgz#457357532deb135f3da64b425bf4435737961564"
 
 flatten@^1.0.2:
   version "1.0.2"

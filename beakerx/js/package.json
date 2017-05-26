@@ -42,7 +42,7 @@
     "datatables.net-fixedcolumns-dt": "^3.2.2",
     "datatables.net-keytable": "^2.2.1",
     "datatables.net-keytable-dt": "^2.2.1",
-    "flatpickr": "^2.6.1",
+    "flatpickr": "^2.6.3",
     "jquery-contextmenu": "^2.4.5",
     "jquery-ui": "^1.12.1",
     "jupyter-js-widgets": "^2.1.4",

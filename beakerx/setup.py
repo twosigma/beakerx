@@ -56,7 +56,15 @@ def update_package_data(distribution):
     # distribution.package_data = find_package_data()
     # re-init build_py options which load package_data
     build_py.finalize_options()
+    magic = distribution.get_command_obj('install_magic')
+    magic.run()
 
+class InstallMagic(Command):
+    def run(self):
+        c = get_configsssss()
+        c.InteractiveShellApp.extensions = [
+            'groovy_magic2222'
+        ]
 
 class NPM(Command):
     description = 'install package.json dependencies using npm'
@@ -138,6 +146,7 @@ setup_args = {
         'egg_info': js_prerelease(egg_info),
         'sdist': js_prerelease(sdist, strict=True),
         'jsdeps': NPM,
+        'install_magic': InstallMagic,
     },
 
     'author': 'Two Sigma Open Source, LLC',

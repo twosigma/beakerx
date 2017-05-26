@@ -16,38 +16,26 @@
 
 package com.twosigma.beaker.chart.treemap;
 
-import com.twosigma.beaker.KernelTest;
+import com.twosigma.beaker.chart.ChartTest;
+import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.treemap.util.IToolTipBuilder;
-import com.twosigma.beaker.jupyter.KernelManager;
+import net.sf.jtreemap.swing.DefaultValue;
 import net.sf.jtreemap.swing.TreeMapNode;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.LinkedHashMap;
+
+import static com.twosigma.beaker.chart.serializer.CategoryPlotSerializer.CATEGORY_NAMES_LABEL_ANGLE;
+import static com.twosigma.beaker.chart.serializer.TreeMapSerializer.MODE;
+import static com.twosigma.beaker.chart.serializer.TreeMapSerializer.RATIO;
+import static com.twosigma.beaker.chart.serializer.TreeMapSerializer.ROUND;
+import static com.twosigma.beaker.chart.serializer.TreeMapSerializer.STICKY;
+import static com.twosigma.beaker.chart.serializer.TreeMapSerializer.VALUE_ACCESSOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TreeMapTest {
+public class TreeMapTest extends ChartTest<TreeMap> {
 
-  TreeMap treeMap;
-
-  @BeforeClass
-  public static void setUpClass() throws Exception {
-    KernelManager.register(new KernelTest());
-  }
-
-  @Before
-  public void setUp() throws Exception {
-    treeMap = new TreeMap();
-  }
-
-  @Test
-  public void
-  createTreeMapByDefaultConstructor_hasColorProviderNotNullShowLegendIsFalseRootIsNull() {
-    //then
-    assertThat(treeMap.getColorProvider()).isNotNull();
-    assertThat(treeMap.getShowLegend()).isFalse();
-    assertThat(treeMap.getRoot()).isNull();
-  }
+  private TreeMap treeMap;
 
   @Test
   public void
@@ -62,6 +50,8 @@ public class TreeMapTest {
 
   @Test
   public void createTreeMapByDefaultConstructor_hasModeAndStickyAndRoundAndRatioAreNulls() {
+    //given
+    treeMap = createWidget();
     //then
     assertThat(treeMap.getMode()).isNull();
     assertThat(treeMap.getRatio()).isNull();
@@ -70,7 +60,69 @@ public class TreeMapTest {
   }
 
   @Test
+  public void shouldSendCommMsgWhenModeChange() throws Exception {
+    //given
+    treeMap = createWidget();
+    //when
+    treeMap.setMode(Mode.DICE);
+    //then
+    assertThat(treeMap.getMode()).isEqualTo(Mode.DICE);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(MODE)).isEqualTo(Mode.DICE.toString().toLowerCase());
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenStickyChange() throws Exception {
+    //given
+    treeMap = createWidget();
+    //when
+    treeMap.setSticky(true);
+    //then
+    assertThat(treeMap.getSticky()).isEqualTo(true);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(STICKY)).isEqualTo(true);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenRatioChange() throws Exception {
+    //given
+    treeMap = createWidget();
+    //when
+    treeMap.setRatio(1.1);
+    //then
+    assertThat(treeMap.getRatio()).isEqualTo(1.1);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(RATIO)).isEqualTo(1.1);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenRoundChange() throws Exception {
+    //given
+    treeMap = createWidget();
+    //when
+    treeMap.setRound(true);
+    //then
+    assertThat(treeMap.getRound()).isEqualTo(true);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(ROUND)).isEqualTo(true);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenValueAccessorChange() throws Exception {
+    //given
+    treeMap = createWidget();
+    //when
+    treeMap.setValueAccessor(ValueAccessor.VALUE);
+    //then
+    assertThat(treeMap.getValueAccessor()).isEqualTo(ValueAccessor.VALUE);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(VALUE_ACCESSOR)).isEqualTo(ValueAccessor.VALUE.toString());
+  }
+
+  @Test
   public void setToolTipBuilder_hasToolTipBuilder() {
+    //given
+    treeMap = createWidget();
     //when
     treeMap.setToolTipBuilder(new IToolTipBuilder() {
       @Override
@@ -80,6 +132,18 @@ public class TreeMapTest {
     });
     //then
     assertThat(treeMap.getToolTipBuilder()).isNotNull();
+    LinkedHashMap model = getModel();
+    assertThat(model).isNotNull();
   }
+
+  @Override
+  public TreeMap createWidget() {
+    TreeMapNode node = new TreeMapNode("0");
+    TreeMapNode node01 = new TreeMapNode("01");
+    node01.add(new TreeMapNode("011", 1, new DefaultValue(1)));
+    node.add(node01);
+    return new TreeMap(node);
+  }
+
 
 }

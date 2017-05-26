@@ -118,6 +118,7 @@ public class TreeMap extends Chart {
 
   public void setMode(Mode mode) {
     this.mode = mode;
+    sendModel();
   }
 
   public Double getRatio() {
@@ -126,6 +127,7 @@ public class TreeMap extends Chart {
 
   public void setRatio(Double ratio) {
     this.ratio = ratio;
+    sendModel();
   }
 
   public Boolean getSticky() {
@@ -134,6 +136,7 @@ public class TreeMap extends Chart {
 
   public void setSticky(Boolean sticky) {
     this.sticky = sticky;
+    sendModel();
   }
 
   public Boolean getRound() {
@@ -142,6 +145,7 @@ public class TreeMap extends Chart {
 
   public void setRound(Boolean round) {
     this.round = round;
+    sendModel();
   }
 
   public ValueAccessor getValueAccessor() {
@@ -150,6 +154,7 @@ public class TreeMap extends Chart {
 
   public void setValueAccessor(ValueAccessor valueAccessor) {
     this.valueAccessor = valueAccessor;
+    sendModel();
   }
 
   public void setColorProvider(final ColorProvider newColorProvider) {
@@ -166,6 +171,7 @@ public class TreeMap extends Chart {
 
   public void setToolTipBuilder(IToolTipBuilder toolTipBuilder) {
     this.toolTipBuilder = toolTipBuilder;
+    sendModel();
   }
 
   @Override

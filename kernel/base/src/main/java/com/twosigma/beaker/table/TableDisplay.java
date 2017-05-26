@@ -163,6 +163,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setStringFormatForTimes(TimeUnit stringFormatForTimes) {
     this.stringFormatForTimes = stringFormatForTimes;
+    sendModel();
   }
 
   public Map<ColumnType, TableDisplayStringFormat> getStringFormatForType() {
@@ -171,6 +172,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setStringFormatForType(ColumnType type, TableDisplayStringFormat format) {
     this.stringFormatForType.put(type, format);
+    sendModel();
   }
 
   public Map<String, TableDisplayStringFormat> getStringFormatForColumn() {
@@ -179,6 +181,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setStringFormatForColumn(String column, TableDisplayStringFormat format) {
     this.stringFormatForColumn.put(column, format);
+    sendModel();
   }
 
   public void setStringFormatForColumn(String column, Object closure) {
@@ -197,6 +200,7 @@ public class TableDisplay extends BeakerxWidget {
       throw new IllegalArgumentException("Can not create format using closure.", e);
     }
     this.stringFormatForColumn.put(column, new ValueStringFormat(column, formattedValues));
+    sendModel();
   }
 
   public Map<ColumnType, TableDisplayCellRenderer> getRendererForType() {
@@ -205,6 +209,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setRendererForType(ColumnType type, TableDisplayCellRenderer renderer) {
     this.rendererForType.put(type, renderer);
+    sendModel();
   }
 
   public Map<String, TableDisplayCellRenderer> getRendererForColumn() {
@@ -213,6 +218,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setRendererForColumn(String column, TableDisplayCellRenderer renderer) {
     this.rendererForColumn.put(column, renderer);
+    sendModel();
   }
 
   public Map<ColumnType, TableDisplayAlignmentProvider> getAlignmentForType() {
@@ -221,6 +227,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setAlignmentProviderForType(ColumnType type, TableDisplayAlignmentProvider alignmentProvider) {
     this.alignmentForType.put(type, alignmentProvider);
+    sendModel();
   }
 
   public Map<String, TableDisplayAlignmentProvider> getAlignmentForColumn() {
@@ -229,6 +236,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setAlignmentProviderForColumn(String column, TableDisplayAlignmentProvider alignmentProvider) {
     this.alignmentForColumn.put(column, alignmentProvider);
+    sendModel();
   }
 
   public Map<String, Boolean> getColumnsFrozen() {
@@ -237,6 +245,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setColumnFrozen(String column, boolean frozen) {
     this.columnsFrozen.put(column, frozen);
+    sendModel();
   }
 
   public Map<String, Boolean> getColumnsFrozenRight() {
@@ -245,6 +254,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setColumnFrozenRight(String column, boolean frozen) {
     this.columnsFrozenRight.put(column, frozen);
+    sendModel();
   }
 
   public Map<String, Boolean> getColumnsVisible() {
@@ -253,6 +263,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setColumnVisible(String column, boolean visible) {
     this.columnsVisible.put(column, visible);
+    sendModel();
   }
 
   public List<String> getColumnOrder() {
@@ -297,6 +308,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setColumnOrder(List<String> columnOrder) {
     this.columnOrder = columnOrder;
+    sendModel();
   }
 
   public void setToolTip(Object closure) {
@@ -313,6 +325,7 @@ public class TableDisplay extends BeakerxWidget {
     } catch (Throwable e) {
       throw new IllegalArgumentException("Can not set tooltip using closure.", e);
     }
+    sendModel();
   }
 
   public List<List<String>> getTooltips() {
@@ -325,6 +338,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setDataFontSize(Integer dataFontSize) {
     this.dataFontSize = dataFontSize;
+    sendModel();
   }
 
   public Integer getHeaderFontSize() {
@@ -333,6 +347,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setHeaderFontSize(Integer headerFontSize) {
     this.headerFontSize = headerFontSize;
+    sendModel();
   }
 
   public List<List<Color>> getFontColor() {
@@ -353,6 +368,7 @@ public class TableDisplay extends BeakerxWidget {
     } catch (Throwable e) {
       throw new IllegalArgumentException("Can not set font color using closure.", e);
     }
+    sendModel();
   }
 
   public void setRowFilter(Object closure) {
@@ -368,10 +384,12 @@ public class TableDisplay extends BeakerxWidget {
       throw new IllegalArgumentException("Can not set row filter using closure.", e);
     }
     this.filteredValues = filteredValues;
+    sendModel();
   }
 
   public void setHeadersVertical(boolean headersVertical){
     this.headersVertical = headersVertical;
+    sendModel();
   }
 
   public Boolean getHeadersVertical() {
@@ -380,6 +398,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setHasIndex(String hasIndex) {
     this.hasIndex = hasIndex;
+    sendModel();
   }
 
   public String getHasIndex() {
@@ -388,6 +407,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setTimeZone(String timeZone) {
     this.timeZone = timeZone;
+    sendModel();
   }
 
   public String getTimeZone() {
@@ -470,11 +490,13 @@ public class TableDisplay extends BeakerxWidget {
   public void setDoubleClickAction(Object listener) {
     this.doubleClickTag = null;
     this.doubleClickListener = listener;
+    sendModel();
   }
 
   public void setDoubleClickAction(String tagName) {
     this.doubleClickListener = null;
     this.doubleClickTag = tagName;
+    sendModel();
   }
 
   public String getDoubleClickTag() {

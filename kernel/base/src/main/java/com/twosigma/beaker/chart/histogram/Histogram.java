@@ -152,6 +152,7 @@ public class Histogram extends AbstractChart {
       throw new IllegalArgumentException(
               "setColor takes Color or List of Color");
     }
+    sendModel();
   }
 
   public List<Color> getColors() {
@@ -177,6 +178,7 @@ public class Histogram extends AbstractChart {
                 "setData takes List of Number or List of List of Number");
       }
     }
+    sendModel();
   }
 
   public List<Number> getData() {

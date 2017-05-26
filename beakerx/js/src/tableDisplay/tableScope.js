@@ -785,52 +785,6 @@ define([
       }
     });
 
-    self.contextMenuItems = {};
-    if (!_.isEmpty(model.contextMenuItems)) {
-      _.forEach(model.contextMenuItems, function(item) {
-        self.contextMenuItems[item] = {
-          name: item,
-          callback: function(itemKey, options) {
-            var index = self.table.cell(options.$trigger.get(0)).index();
-            //tableService functionality moved to Comm
-            //see TableDisplay.js "TableDisplayModel.__super__.send"
-            tableService.onContextMenu(model['update_id'],
-              itemKey,
-              index.row,
-              index.column - 1,
-              self.model.getEvaluatorId()).then(function() {
-              self.update = true;
-            });
-          }
-        }
-      });
-    }
-
-    if (!_.isEmpty(model.contextMenuTags)) {
-      _.forEach(model.contextMenuTags, function(tag, name) {
-        if (model.contextMenuTags.hasOwnProperty(name)) {
-          self.contextMenuItems[name] = {
-            name: name,
-            callback: function(itemKey, options) {
-              var index = self.table.cell(options.$trigger.get(0)).index();
-              var params = {
-                actionType: 'CONTEXT_MENU_CLICK',
-                contextMenuItem: itemKey,
-                row: index.row,
-                col: index.column - 1
-              };
-              //tableService functionality moved to Comm
-              //see TableDisplay.js "TableDisplayModel.__super__.send"
-              tableService.setActionDetails(model['update_id'],
-                self.model.getEvaluatorId(),
-                params).then(function() {
-                self.evaluateTagCell(tag);
-              });
-            }
-          }
-        }
-      });
-    }
 
     self.doCreateData(model);
     self.doCreateTable(model);
@@ -1421,18 +1375,6 @@ define([
         'vertical-align': ''
       });
       headerRows.css({'height': ''});
-    }
-  };
-
-  TableScope.prototype.evaluateTagCell = function(tag) {
-    var cellOp = bkSessionManager.getNotebookCellOp();
-    var result;
-    if (cellOp.hasUserTag(tag)) {
-      result = cellOp.getCellsWithUserTag(tag);
-      bkCoreManager.getBkApp().evaluateRoot(result)
-        .catch(function() {
-          console.log('Evaluation failed: ' + tag);
-        });
     }
   };
 

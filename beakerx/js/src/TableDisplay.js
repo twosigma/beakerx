@@ -27,8 +27,6 @@ require('datatables.net-keytable-dt/css/keyTable.dataTables.css');
 require('jquery-contextmenu/dist/jquery.contextMenu.css');
 require('./tableDisplay/css/datatables.scss');
 
-var currentScope = undefined;
-
 var TableDisplayModel = widgets.DOMWidgetModel.extend({
 
   defaults: function() {
@@ -70,6 +68,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     currentScope.setModelData(data);
     currentScope.setElement(tmplElement.children('.dtcontainer'));
     currentScope.enableJupyterKeyHandler();
+    that.contextMenu(tmplElement, currentScope, this.model);
     currentScope.run();
     that.dblclick(tmplElement, currentScope, this.model);
   },
@@ -84,6 +83,47 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
       'The first 1000 rows are displayed as a preview.</p></div>';
     var tmplElement = $(tmpl);
     tmplElement.appendTo(this.$el);
+  },
+  
+  /**
+   * Moved from tableScope.js to access Comm messaging.
+   */
+  contextMenu: function(tmplElement, currentScope, tableDisplayModel){
+  	
+  	currentScope.contextMenuItems = {};
+    if (!_.isEmpty(currentScope.model.model.contextMenuItems)) {
+      _.forEach(currentScope.model.model.contextMenuItems, function(item) {
+      	currentScope.contextMenuItems[item] = {
+          name: item,
+          callback: function(itemKey, options) {
+            var index = currentScope.table.cell(options.$trigger.get(0)).index();
+          	tableDisplayModel.send({event: 'oncontextmenu', itemKey : itemKey, row : index.row, column : index.column - 1});
+          }
+        }
+      });
+    }
+
+    if (!_.isEmpty(currentScope.model.model.contextMenuTags)) {
+      _.forEach(currentScope.model.model.contextMenuTags, function(tag, name) {
+        if (currentScope.model.model.contextMenuTags.hasOwnProperty(name)) {
+        	currentScope.contextMenuItems[name] = {
+            name: name,
+            callback: function(itemKey, options) {
+              var index = currentScope.table.cell(options.$trigger.get(0)).index();
+              var params = {
+                actionType: 'CONTEXT_MENU_CLICK',
+                contextMenuItem: itemKey,
+                row: index.row,
+                col: index.column - 1,
+                tag: tag
+              };
+            	tableDisplayModel.send({event: 'actiondetails', params});
+            }
+          }
+        }
+      });
+    }
+  	
   },
   
   /**
@@ -148,7 +188,8 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
         var params = {
           actionType: 'DOUBLE_CLICK',
           row: index.row,
-          col: index.column - 1
+          col: index.column - 1,
+          tag: currentScope.model.model.doubleClickTag
         };
       	tableDisplayModel.send({event: 'actiondetails', params});
       }

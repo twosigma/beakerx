@@ -529,16 +529,25 @@ public class TableDisplay extends BeakerxWidget {
         Integer value = (Integer)params.get("column");
         details.setCol(value);
       }
-      
+      if(params.containsKey("tag")){
+        String value = (String)params.get("tag");
+        details.setTag(value);
+      }
     }
     setDetails(details);
-    if(getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()){
-      NamespaceClient.getBeaker().runByTag(getDoubleClickTag());
+    if(TableActionType.CONTEXT_MENU_CLICK.equals(details.getActionType())){
+      if(getContextMenuTags() != null && !getContextMenuTags().isEmpty() && details.getContextMenuItem() != null && !details.getContextMenuItem().isEmpty()){
+        NamespaceClient.getBeaker().runByTag(getContextMenuTags().get(details.getContextMenuItem()));
+      }
+    }else if(TableActionType.DOUBLE_CLICK.equals(details.getActionType())){
+      if(getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()){
+        NamespaceClient.getBeaker().runByTag(getDoubleClickTag());
+      }
     }
   }
   
   private void onContextMenu(HashMap content){
-    String menuKey = (String)content.get("menuKey");
+    String menuKey = (String)content.get("itemKey");
     Object row = content.get("row");
     Object column = content.get("column");
     List<Object> params = new ArrayList<>();

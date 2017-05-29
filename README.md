@@ -30,7 +30,7 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 ## Dependencies
 
 * [Oracle Java8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-* [yarn](https://yarnpkg.com/lang/en/docs/install/)
+* [yarn](https://yarnpkg.com/lang/en/docs/install/), [npm](https://docs.npmjs.com/getting-started/installing-node)
 * [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
 ## Build and run

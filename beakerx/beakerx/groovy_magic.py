@@ -22,6 +22,7 @@ class GroovyMagics(Magics,Kernel):
     _execution_count = 1
 
     def run_cell(self, code):
+
         if not self.KernelManager.is_alive():
             Kernel.send_response(Kernel.iopub_socket, 'stream',
                                  {'name': 'stdout', 'text': 'Restarting kernel "{}"\n'.format(self.KernelManager)})
@@ -31,6 +32,7 @@ class GroovyMagics(Magics,Kernel):
             self.KernelClient.shell_channel.get_msg()
         self.KernelClient.execute(code, silent=False)
 
+
         _execution_state = "busy"
         while _execution_state != 'idle':
             while self.KernelClient.iopub_channel.msg_ready():
@@ -39,12 +41,10 @@ class GroovyMagics(Magics,Kernel):
                 if msg_type == 'status':
                     _execution_state = sub_msg["content"]["execution_state"]
                 else:
-                    if msg_type in ('execute_input', 'execute_result'):
-                        sub_msg['content']['execution_count'] = self._execution_count
-                        reply = self.KernelClient.get_shell_msg(timeout=10)
-        #reply = self.KernelClient.get_shell_msg(timeout=10)
-        reply['content']['execution_count'] = self._execution_count
-        return reply['content']
+                    if msg_type in ('execute_result'):
+                        self.output_bytes = sub_msg['content']['data']['text/plain']
+
+        return self.output_bytes
 
     @cell_magic
     def groovy(self, line, cell):

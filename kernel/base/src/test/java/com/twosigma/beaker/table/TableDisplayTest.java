@@ -51,8 +51,13 @@ import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.RENDER
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_COLUMN;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TIMES;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TYPE;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.TABLE_DISPLAY;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.TIME_ZONE;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.TYPE;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.VALUES;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.findValueForProperty;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableDisplayTest {
@@ -67,6 +72,8 @@ public class TableDisplayTest {
     kernel = new KernelTest();
     KernelManager.register(kernel);
     tableDisplay = new TableDisplay(getListOfMapsData());
+    kernel.clearSentMessages();
+    kernel.clearPublishedMessages();
   }
 
   @After
@@ -282,6 +289,22 @@ public class TableDisplayTest {
     assertThat(model.get(TIME_ZONE)).isEqualTo(timezone);
   }
 
+  @Test
+  public void shouldSendCommMsgWhenValuesChange() throws Exception {
+    //given
+    kernel.clearPublishedMessages();
+    kernel.clearSentMessages();
+    ArrayList<Map<?, ?>> v = new ArrayList<>();
+    //when
+    TableDisplay tableDisplay =  new TableDisplay(v);
+    //then
+    verifyOpenCommMsgWitoutLayout(kernel.getPublishedMessages(),TableDisplay.MODEL_NAME_VALUE,TableDisplay.VIEW_NAME_VALUE);
+    Map valueForProperty = getValueForProperty(kernel.getPublishedMessages().get(1), TableDisplay.MODEL, Map.class);
+    assertThat(valueForProperty.get(TYPE)).isEqualTo(TABLE_DISPLAY);
+    assertThat(tableDisplay.getValues()).isEqualTo(v);
+    LinkedHashMap model = getModel();
+    assertThat(model.get(VALUES)).isNotNull();
+  }
 
   @Test
   public void createWithListOfMapsParam_hasListOfMapsSubtype() throws Exception {

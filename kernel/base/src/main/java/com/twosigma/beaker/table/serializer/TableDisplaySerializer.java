@@ -42,6 +42,9 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
   public static final String STRING_FORMAT_FOR_TIMES = "stringFormatForTimes";
   public static final String STRING_FORMAT_FOR_TYPE = "stringFormatForType";
   public static final String TIME_ZONE = "timeZone";
+  public static final String VALUES = "values";
+  public static final String TYPE = "type";
+  public static final String TABLE_DISPLAY = "TableDisplay";
 
   public int ROWS_LIMIT = 10000;
   @Override
@@ -53,7 +56,7 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
     synchronized (value) {
       jgen.writeStartObject();
       super.serialize(value, jgen);
-      jgen.writeObjectField("type", "TableDisplay");
+      jgen.writeObjectField(TYPE, TABLE_DISPLAY);
       jgen.writeObjectField("columnNames", value.getColumnNames());
       jgen.writeObjectField("types", value.getTypes());
       jgen.writeObjectField("subtype", value.getSubtype());
@@ -81,7 +84,7 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       jgen.writeObjectField(TIME_ZONE, value.getTimeZone());
       List<List<?>> values = value.getValues();
       if (values.size() > ROWS_LIMIT) {
-        jgen.writeObjectField("values", values.subList(0, 1000));
+        jgen.writeObjectField(VALUES, values.subList(0, 1000));
         jgen.writeBooleanField("tooManyRows", true);
         jgen.writeObjectField("rowLength", values.size());
         jgen.writeObjectField("rowLimit", ROWS_LIMIT);

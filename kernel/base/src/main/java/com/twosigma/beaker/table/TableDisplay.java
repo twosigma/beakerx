@@ -88,69 +88,84 @@ public class TableDisplay extends BeakerxWidget {
 
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     super();
-    values = v;
+    values = new ArrayList<>();
     columns = co;
     classes = cl;
     subtype = TABLE_DISPLAY_SUBTYPE;
     openComm();
+    addToValues(v);
   }
 
   public TableDisplay(Collection<Map<?, ?>> v) {
     this(v, new BasicObjectSerializer());
   }
 
-  public TableDisplay(Map<?,?>[] v) {
-    this(new ArrayList<Map<?,?>>(Arrays.asList(v)), new BasicObjectSerializer());
+  public TableDisplay(Map<?, ?>[] v) {
+    this(new ArrayList<Map<?, ?>>(Arrays.asList(v)), new BasicObjectSerializer());
   }
 
   public TableDisplay(Collection<Map<?, ?>> v, BeakerObjectConverter serializer) {
     super();
-    values = new ArrayList<List<?>>();
-    columns = new ArrayList<String>();
-    classes = new ArrayList<String>();
+    values = new ArrayList<>();
+    columns = new ArrayList<>();
+    classes = new ArrayList<>();
     subtype = LIST_OF_MAPS_SUBTYPE;
 
     // create columns
-    for(Map<?,?> m : v) {
+    for (Map<?, ?> m : v) {
       Set<?> w = m.entrySet();
       for (Object s : w) {
-        Entry<?,?> e = (Entry<?, ?>) s;
+        Entry<?, ?> e = (Entry<?, ?>) s;
         String c = e.getKey().toString();
         if (!columns.contains(c)) {
           columns.add(c);
-          String n = e.getValue()!=null ? e.getValue().getClass().getName() : "string";
+          String n = e.getValue() != null ? e.getValue().getClass().getName() : "string";
           classes.add(serializer.convertType(n));
         }
       }
     }
-
-    // now build values
-    for(Map<?,?> m : v) {
-      List<Object> vals = new ArrayList<Object>();
-      for (String cn : columns) {
-        if (m.containsKey(cn)){
-          vals.add(getValueForSerializer( m.get(cn), serializer));
-        }
-        else
-          vals.add(null);
-      }
-      values.add(vals);
-    }
     openComm();
+    addToValues(buildValues(v, serializer));
   }
 
   public TableDisplay(Map<?, ?> v) {
     super();
-    this.values = new ArrayList<List<?>>();
+    this.values = new ArrayList<>();
     this.columns = Arrays.asList("Key", "Value");
-    this.classes = new ArrayList<String>();
+    this.classes = new ArrayList<>();
     this.subtype = DICTIONARY_SUBTYPE;
+    openComm();
+    addToValues(buildValuesFromMap(v));
+  }
+
+  private void addToValues(List<List<?>> items) {
+    values.addAll(items);
+    sendModel();
+  }
+
+  private List<List<?>> buildValues(Collection<Map<?, ?>> v, BeakerObjectConverter serializer) {
+    List<List<?>> values = new ArrayList<>();
+    for (Map<?, ?> m : v) {
+      List<Object> vals = new ArrayList<>();
+      for (String cn : columns) {
+        if (m.containsKey(cn)) {
+          vals.add(getValueForSerializer(m.get(cn), serializer));
+        } else
+          vals.add(null);
+      }
+      values.add(vals);
+    }
+    return values;
+  }
+
+  private List<List<?>> buildValuesFromMap(Map<?, ?> v) {
     Set<?> w = v.entrySet();
+    List<List<?>> values = new ArrayList<>();
     for (Object s : w) {
       Entry<?, ?> e = (Entry<?, ?>) s;
       values.add(asList(e.getKey().toString(), e.getValue()));
     }
-    openComm();
+    return values;
   }
 
   public static TableDisplay createTableDisplayForMap(Map<?, ?> v) {
@@ -193,7 +208,7 @@ public class TableDisplay extends BeakerxWidget {
     try {
       for (int row = 0; row < this.values.size(); row++) {
         Object value = this.values.get(row).get(colIndex);
-        Object[] params = new Object[]{ value, row, colIndex, this };
+        Object[] params = new Object[]{value, row, colIndex, this};
         formattedValues.add((String) runClosure(closure, params));
       }
     } catch (Throwable e) {
@@ -376,7 +391,7 @@ public class TableDisplay extends BeakerxWidget {
     try {
       for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
         Object[] params = new Object[]{rowInd, this.values};
-        if((boolean)runClosure(closure, params)){
+        if ((boolean) runClosure(closure, params)) {
           filteredValues.add(values.get(rowInd));
         }
       }
@@ -387,7 +402,7 @@ public class TableDisplay extends BeakerxWidget {
     sendModel();
   }
 
-  public void setHeadersVertical(boolean headersVertical){
+  public void setHeadersVertical(boolean headersVertical) {
     this.headersVertical = headersVertical;
     sendModel();
   }
@@ -448,23 +463,23 @@ public class TableDisplay extends BeakerxWidget {
     return m;
   }
 
-  public  List<Map<String, Object>> getValuesAsRows(){
+  public List<Map<String, Object>> getValuesAsRows() {
     return getValuesAsRows(values, columns);
   }
 
-  public  List<List<?>> getValuesAsMatrix(){
-    return getValuesAsMatrix( values);
+  public List<List<?>> getValuesAsMatrix() {
+    return getValuesAsMatrix(values);
   }
 
-  public  Map<String, Object> getValuesAsDictionary(){
+  public Map<String, Object> getValuesAsDictionary() {
     return getValuesAsDictionary(values);
   }
 
-  private Object getValueForSerializer(Object value, BeakerObjectConverter serializer){
+  private Object getValueForSerializer(Object value, BeakerObjectConverter serializer) {
     if (value != null) {
       String clazz = serializer.convertType(value.getClass().getName());
       if (BasicObjectSerializer.TYPE_LONG.equals(clazz) ||
-          BasicObjectSerializer.TYPE_BIGINT.equals(clazz)){
+              BasicObjectSerializer.TYPE_BIGINT.equals(clazz)) {
         return value.toString();
       }
       return value;
@@ -473,9 +488,18 @@ public class TableDisplay extends BeakerxWidget {
   }
 
 
-  public List<List<?>> getValues() { return values; }
-  public List<String> getColumnNames() { return columns; }
-  public List<String> getTypes() { return classes; }
+  public List<List<?>> getValues() {
+    return values;
+  }
+
+  public List<String> getColumnNames() {
+    return columns;
+  }
+
+  public List<String> getTypes() {
+    return classes;
+  }
+
   public String getSubtype() {
     return subtype;
   }
@@ -561,11 +585,5 @@ public class TableDisplay extends BeakerxWidget {
   @Override
   protected Map serializeToJsonObject() {
     return TableDisplayToJson.toJson(this);
-  }
-
-  @Override
-  public void display() {
-    sendModel();
-    super.display();
   }
 }

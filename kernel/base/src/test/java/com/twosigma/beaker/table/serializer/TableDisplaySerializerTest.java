@@ -160,7 +160,7 @@ public class TableDisplaySerializerTest {
   @Test
   public void serializeStringFormatForType_resultJsonHasStringFormatForType() throws IOException{
     //given
-    tableDisplay.setStringFormatForType(ColumnType.DOUBLE, TableDisplayStringFormat.getDecimalFormat(1, 1));
+    tableDisplay.setStringFormatForType(ColumnType.Double, TableDisplayStringFormat.getDecimalFormat(1, 1));
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
@@ -200,7 +200,7 @@ public class TableDisplaySerializerTest {
   @Test
   public void serializeRendererForType_resultJsonHasRendererForType() throws IOException{
     //given
-    tableDisplay.setRendererForType(ColumnType.BOOLEAN, TableDisplayCellRenderer.getDataBarsRenderer());
+    tableDisplay.setRendererForType(ColumnType.Boolean, TableDisplayCellRenderer.getDataBarsRenderer());
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
@@ -222,7 +222,7 @@ public class TableDisplaySerializerTest {
   @Test
   public void serializeAlignmentForType_resultJsonHasAlignmentForType() throws IOException{
     //given
-    tableDisplay.setAlignmentProviderForType(ColumnType.DOUBLE, TableDisplayAlignmentProvider.LEFT_ALIGNMENT);
+    tableDisplay.setAlignmentProviderForType(ColumnType.Double, TableDisplayAlignmentProvider.LEFT_ALIGNMENT);
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then

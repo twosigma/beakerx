@@ -18,11 +18,11 @@ package com.twosigma.beaker.table;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ColumnType {
-  STRING("string"),
-  DOUBLE("double"),
-  TIME("time"),
-  INTEGER("integer"),
-  BOOLEAN("boolean");
+  String("string"),
+  Double("double"),
+  Time("time"),
+  Integer("integer"),
+  Boolean("boolean");
 
   private String type;
 

@@ -98,9 +98,9 @@ public class TableDisplayTest {
     //given
     TableDisplayAlignmentProvider centerAlignment = TableDisplayAlignmentProvider.CENTER_ALIGNMENT;
     //when
-    tableDisplay.setAlignmentProviderForType(ColumnType.String, centerAlignment);
+    tableDisplay.setAlignmentProviderForType(ColumnType.STRING, centerAlignment);
     //then
-    assertThat(tableDisplay.getAlignmentForType().get(ColumnType.String)).isEqualTo(centerAlignment);
+    assertThat(tableDisplay.getAlignmentForType().get(ColumnType.STRING)).isEqualTo(centerAlignment);
     LinkedHashMap model = getModel();
     assertThat(model.get(ALIGNMENT_FOR_TYPE)).isNotNull();
   }
@@ -234,9 +234,9 @@ public class TableDisplayTest {
     //given
     TableDisplayCellRenderer dataBarsRenderer = TableDisplayCellRenderer.getDataBarsRenderer();
     //when
-    tableDisplay.setRendererForType(ColumnType.String, dataBarsRenderer);
+    tableDisplay.setRendererForType(ColumnType.STRING, dataBarsRenderer);
     //then
-    assertThat(tableDisplay.getRendererForType().get(ColumnType.String)).isEqualTo(dataBarsRenderer);
+    assertThat(tableDisplay.getRendererForType().get(ColumnType.STRING)).isEqualTo(dataBarsRenderer);
     LinkedHashMap model = getModel();
     assertThat(model.get(RENDERER_FOR_TYPE)).isNotNull();
   }
@@ -270,7 +270,7 @@ public class TableDisplayTest {
     //given
     TableDisplayStringFormat timeFormat = TableDisplayStringFormat.getTimeFormat();
     //when
-    tableDisplay.setStringFormatForType(ColumnType.String, timeFormat);
+    tableDisplay.setStringFormatForType(ColumnType.STRING, timeFormat);
     //then
     assertThat(tableDisplay.getStringFormatForType()).isNotNull();
     LinkedHashMap model = getModel();

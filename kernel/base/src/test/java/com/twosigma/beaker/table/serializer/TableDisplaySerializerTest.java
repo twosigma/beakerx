@@ -33,7 +33,6 @@ import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 import com.twosigma.beaker.table.highlight.HighlightStyle;
 import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,6 +42,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableDisplaySerializerTest {
 
@@ -76,7 +77,7 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("TableDisplay");
+    assertThat(actualObj.get("type").asText()).isEqualTo("TableDisplay");
   }
 
   @Test
@@ -86,7 +87,7 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.get("subtype").asText()).isEqualTo(result);
+    assertThat(actualObj.get("subtype").asText()).isEqualTo(result);
   }
 
   @Test
@@ -96,7 +97,7 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.get("hasDoubleClickAction").asBoolean()).isTrue();
+    assertThat(actualObj.get("hasDoubleClickAction").asBoolean()).isTrue();
   }
 
   @Test
@@ -106,7 +107,7 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.get("doubleClickTag").asText()).isEqualTo("tag_name");
+    assertThat(actualObj.get("doubleClickTag").asText()).isEqualTo("tag_name");
   }
 
   @Test
@@ -116,7 +117,7 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat((ArrayNode) actualObj.get("contextMenuItems")).isNotEmpty();
+    assertThat((ArrayNode) actualObj.get("contextMenuItems")).isNotEmpty();
   }
 
   @Test
@@ -126,7 +127,7 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.get("contextMenuTags")).isNotEmpty();
+    assertThat(actualObj.get("contextMenuTags")).isNotEmpty();
   }
 
   @Test
@@ -134,7 +135,7 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat((ArrayNode) actualObj.get("columnNames")).isNotEmpty();
+    assertThat((ArrayNode) actualObj.get("columnNames")).isNotEmpty();
   }
 
   @Test
@@ -142,7 +143,7 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat((ArrayNode) actualObj.get("types")).isNotEmpty();
+    assertThat((ArrayNode) actualObj.get("types")).isNotEmpty();
   }
 
   @Test
@@ -152,19 +153,19 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("stringFormatForTimes")).isTrue();
-    Assertions.assertThat(actualObj.get("stringFormatForTimes").asText()).isEqualTo(TimeUnit.DAYS.toString());
+    assertThat(actualObj.has("stringFormatForTimes")).isTrue();
+    assertThat(actualObj.get("stringFormatForTimes").asText()).isEqualTo(TimeUnit.DAYS.toString());
   }
 
   @Test
   public void serializeStringFormatForType_resultJsonHasStringFormatForType() throws IOException{
     //given
-    tableDisplay.setStringFormatForType(ColumnType.Double, TableDisplayStringFormat.getDecimalFormat(1, 1));
+    tableDisplay.setStringFormatForType(ColumnType.DOUBLE, TableDisplayStringFormat.getDecimalFormat(1, 1));
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("stringFormatForType")).isTrue();
-    Assertions.assertThat(actualObj.get("stringFormatForType").has("Double")).isTrue();
+    assertThat(actualObj.has("stringFormatForType")).isTrue();
+    assertThat(actualObj.get("stringFormatForType").has("double")).isTrue();
   }
 
   @Test
@@ -174,8 +175,8 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("stringFormatForColumn")).isTrue();
-    Assertions.assertThat(actualObj.get("stringFormatForColumn").has("a")).isTrue();
+    assertThat(actualObj.has("stringFormatForColumn")).isTrue();
+    assertThat(actualObj.get("stringFormatForColumn").has("a")).isTrue();
   }
 
   @Test
@@ -188,23 +189,23 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("stringFormatForColumn")).isTrue();
+    assertThat(actualObj.has("stringFormatForColumn")).isTrue();
     JsonNode formatNode = actualObj.get("stringFormatForColumn");
-    Assertions.assertThat(formatNode.get("a").get("minDecimals").asInt()).isEqualTo(1);
-    Assertions.assertThat(formatNode.get("b").get("humanFriendly").asBoolean()).isTrue();
-    Assertions.assertThat(formatNode.get("c").get("unit").asText()).isEqualTo("DAYS");
-    Assertions.assertThat(formatNode.get("d").get("humanFriendly").asBoolean()).isTrue();
+    assertThat(formatNode.get("a").get("minDecimals").asInt()).isEqualTo(1);
+    assertThat(formatNode.get("b").get("humanFriendly").asBoolean()).isTrue();
+    assertThat(formatNode.get("c").get("unit").asText()).isEqualTo("DAYS");
+    assertThat(formatNode.get("d").get("humanFriendly").asBoolean()).isTrue();
   }
 
   @Test
   public void serializeRendererForType_resultJsonHasRendererForType() throws IOException{
     //given
-    tableDisplay.setRendererForType(ColumnType.Boolean, TableDisplayCellRenderer.getDataBarsRenderer());
+    tableDisplay.setRendererForType(ColumnType.BOOLEAN, TableDisplayCellRenderer.getDataBarsRenderer());
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("rendererForType")).isTrue();
-    Assertions.assertThat(actualObj.get("rendererForType").has("Boolean")).isTrue();
+    assertThat(actualObj.has("rendererForType")).isTrue();
+    assertThat(actualObj.get("rendererForType").has("boolean")).isTrue();
   }
 
   @Test
@@ -214,19 +215,19 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("rendererForColumn")).isTrue();
-    Assertions.assertThat(actualObj.get("rendererForColumn").has("a")).isTrue();
+    assertThat(actualObj.has("rendererForColumn")).isTrue();
+    assertThat(actualObj.get("rendererForColumn").has("a")).isTrue();
   }
 
   @Test
   public void serializeAlignmentForType_resultJsonHasAlignmentForType() throws IOException{
     //given
-    tableDisplay.setAlignmentProviderForType(ColumnType.Double, TableDisplayAlignmentProvider.LEFT_ALIGNMENT);
+    tableDisplay.setAlignmentProviderForType(ColumnType.DOUBLE, TableDisplayAlignmentProvider.LEFT_ALIGNMENT);
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("alignmentForType")).isTrue();
-    Assertions.assertThat(actualObj.get("alignmentForType").has("Double")).isTrue();
+    assertThat(actualObj.has("alignmentForType")).isTrue();
+    assertThat(actualObj.get("alignmentForType").has("double")).isTrue();
   }
 
   @Test
@@ -236,8 +237,8 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("alignmentForColumn")).isTrue();
-    Assertions.assertThat(actualObj.get("alignmentForColumn").has("a")).isTrue();
+    assertThat(actualObj.has("alignmentForColumn")).isTrue();
+    assertThat(actualObj.get("alignmentForColumn").has("a")).isTrue();
   }
 
   @Test
@@ -247,8 +248,8 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("columnsFrozen")).isTrue();
-    Assertions.assertThat(actualObj.get("columnsFrozen").has("a")).isTrue();
+    assertThat(actualObj.has("columnsFrozen")).isTrue();
+    assertThat(actualObj.get("columnsFrozen").has("a")).isTrue();
   }
 
   @Test
@@ -258,8 +259,8 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("columnsFrozenRight")).isTrue();
-    Assertions.assertThat(actualObj.get("columnsFrozenRight").has("a")).isTrue();
+    assertThat(actualObj.has("columnsFrozenRight")).isTrue();
+    assertThat(actualObj.get("columnsFrozenRight").has("a")).isTrue();
   }
 
   @Test
@@ -269,8 +270,8 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("columnsVisible")).isTrue();
-    Assertions.assertThat(actualObj.get("columnsVisible").has("a")).isTrue();
+    assertThat(actualObj.has("columnsVisible")).isTrue();
+    assertThat(actualObj.get("columnsVisible").has("a")).isTrue();
   }
 
   @Test
@@ -280,7 +281,7 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat((ArrayNode) actualObj.get("columnOrder")).isNotEmpty();
+    assertThat((ArrayNode) actualObj.get("columnOrder")).isNotEmpty();
   }
 
   @Test
@@ -290,7 +291,7 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat((ArrayNode) actualObj.get("cellHighlighters")).isNotEmpty();
+    assertThat((ArrayNode) actualObj.get("cellHighlighters")).isNotEmpty();
   }
 
   @Test
@@ -313,16 +314,16 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("cellHighlighters")).isTrue();
+    assertThat(actualObj.has("cellHighlighters")).isTrue();
     ArrayNode node = (ArrayNode)actualObj.get("cellHighlighters");
-    Assertions.assertThat(node.get(0).get("colName").asText()).isEqualTo("a");
-    Assertions.assertThat(node.get(1).get("style").asText()).isEqualTo("FULL_ROW");
-    Assertions.assertThat(node.get(2).get("minVal").asInt()).isEqualTo(1);
-    Assertions.assertThat(node.get(3).get("minColor").get("rgb").asInt()).isEqualTo(Color.BLACK.getRGB());
-    Assertions.assertThat(node.get(4).get("maxVal").asInt()).isEqualTo(10);
-    Assertions.assertThat(node.get(5).get("maxColor").get("rgb").asInt()).isEqualTo(Color.BLUE.getRGB());
-    Assertions.assertThat(node.get(6).get("colName").asText()).isEqualTo("g");
-    Assertions.assertThat(node.get(7).get("style").asText()).isEqualTo("FULL_ROW");
+    assertThat(node.get(0).get("colName").asText()).isEqualTo("a");
+    assertThat(node.get(1).get("style").asText()).isEqualTo("FULL_ROW");
+    assertThat(node.get(2).get("minVal").asInt()).isEqualTo(1);
+    assertThat(node.get(3).get("minColor").get("rgb").asInt()).isEqualTo(Color.BLACK.getRGB());
+    assertThat(node.get(4).get("maxVal").asInt()).isEqualTo(10);
+    assertThat(node.get(5).get("maxColor").get("rgb").asInt()).isEqualTo(Color.BLUE.getRGB());
+    assertThat(node.get(6).get("colName").asText()).isEqualTo("g");
+    assertThat(node.get(7).get("style").asText()).isEqualTo("FULL_ROW");
   }
 
   @Test
@@ -332,8 +333,8 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("tooltips")).isTrue();
-    Assertions.assertThat((ArrayNode) actualObj.get("tooltips")).isNotEmpty();
+    assertThat(actualObj.has("tooltips")).isTrue();
+    assertThat((ArrayNode) actualObj.get("tooltips")).isNotEmpty();
   }
 
   @Test
@@ -343,8 +344,8 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("dataFontSize")).isTrue();
-    Assertions.assertThat(actualObj.get("dataFontSize").asInt()).isEqualTo(10);
+    assertThat(actualObj.has("dataFontSize")).isTrue();
+    assertThat(actualObj.get("dataFontSize").asInt()).isEqualTo(10);
   }
 
   @Test
@@ -354,8 +355,8 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("headerFontSize")).isTrue();
-    Assertions.assertThat(actualObj.get("headerFontSize").asInt()).isEqualTo(10);
+    assertThat(actualObj.has("headerFontSize")).isTrue();
+    assertThat(actualObj.get("headerFontSize").asInt()).isEqualTo(10);
   }
 
   @Test
@@ -365,8 +366,8 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("fontColor")).isTrue();
-    Assertions.assertThat((ArrayNode)actualObj.get("fontColor")).isNotEmpty();
+    assertThat(actualObj.has("fontColor")).isTrue();
+    assertThat((ArrayNode)actualObj.get("fontColor")).isNotEmpty();
   }
 
   @Test
@@ -376,8 +377,8 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("filteredValues")).isTrue();
-    Assertions.assertThat((ArrayNode)actualObj.get("filteredValues")).isNotEmpty();
+    assertThat(actualObj.has("filteredValues")).isTrue();
+    assertThat((ArrayNode)actualObj.get("filteredValues")).isNotEmpty();
   }
 
   @Test
@@ -387,7 +388,7 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("headersVertical")).isTrue();
+    assertThat(actualObj.has("headersVertical")).isTrue();
   }
 
   @Test
@@ -395,8 +396,8 @@ public class TableDisplaySerializerTest {
     //when
     JsonNode actualObj = serializeTableDisplay();
     //then
-    Assertions.assertThat(actualObj.has("values")).isTrue();
-    Assertions.assertThat((ArrayNode)actualObj.get("values")).isNotEmpty();
+    assertThat(actualObj.has("values")).isTrue();
+    assertThat((ArrayNode)actualObj.get("values")).isNotEmpty();
   }
 
   private JsonNode serializeTableDisplay() throws IOException{

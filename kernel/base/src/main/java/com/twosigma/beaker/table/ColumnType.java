@@ -15,12 +15,14 @@
  */
 package com.twosigma.beaker.table;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum ColumnType {
-  String("string"),
-  Double("double"),
-  Time("time"),
-  Integer("integer"),
-  Boolean("boolean");
+  STRING("string"),
+  DOUBLE("double"),
+  TIME("time"),
+  INTEGER("integer"),
+  BOOLEAN("boolean");
 
   private String type;
 
@@ -34,6 +36,11 @@ public enum ColumnType {
 
   @Override
   public String toString() {
+    return getType();
+  }
+
+  @JsonValue
+  public String toValue() {
     return getType();
   }
 }

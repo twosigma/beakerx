@@ -19,9 +19,13 @@ package com.twosigma.beaker.table;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.twosigma.beaker.table.format.DecimalStringFormat;
+import com.twosigma.beaker.table.serializer.DecimalStringFormatSerializer;
 import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
 
 import java.util.Map;
+
+import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 
 public class TableDisplayToJson {
 
@@ -30,7 +34,10 @@ public class TableDisplayToJson {
   static {
     SimpleModule module = new SimpleModule("TableDisplaySerializer", new Version(1, 0, 0, null));
     module.addSerializer(TableDisplay.class, new TableDisplaySerializer());
+    module.addSerializer(DecimalStringFormat.class, new DecimalStringFormatSerializer());
+
     mapper = new ObjectMapper();
+    mapper.enable(WRITE_ENUMS_USING_TO_STRING);
     mapper.registerModule(module);
   }
 

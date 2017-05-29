@@ -70,7 +70,6 @@ import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.chart.treemap.TreeMap;
 import com.twosigma.beaker.chart.serializer.TreeMapSerializer;
 import com.twosigma.beaker.chart.serializer.TreeMapNodeSerializer;
-import java.util.HashMap;
 import net.sf.jtreemap.swing.TreeMapNode;
 import java.util.Hashtable;
 import java.util.Map;

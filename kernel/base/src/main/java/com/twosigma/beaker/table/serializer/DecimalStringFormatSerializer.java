@@ -25,6 +25,10 @@ import java.io.IOException;
 
 public class DecimalStringFormatSerializer extends JsonSerializer<DecimalStringFormat> {
 
+  public static final String TYPE = "type";
+  public static final String MIN_DECIMALS = "minDecimals";
+  public static final String MAX_DECIMALS = "maxDecimals";
+
   @Override
   public void serialize(DecimalStringFormat value,
                         JsonGenerator jgen,
@@ -33,9 +37,9 @@ public class DecimalStringFormatSerializer extends JsonSerializer<DecimalStringF
 
     synchronized (value) {
       jgen.writeStartObject();
-      jgen.writeObjectField("type", "decimal");
-      jgen.writeObjectField("minDecimals", value.getMinDecimals());
-      jgen.writeObjectField("maxDecimals", value.getMaxDecimals());
+      jgen.writeObjectField(TYPE, "decimal");
+      jgen.writeObjectField(MIN_DECIMALS, value.getMinDecimals());
+      jgen.writeObjectField(MAX_DECIMALS, value.getMaxDecimals());
       jgen.writeEndObject();
     }
   }

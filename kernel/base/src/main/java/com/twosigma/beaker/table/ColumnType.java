@@ -15,8 +15,6 @@
  */
 package com.twosigma.beaker.table;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum ColumnType {
   String("string"),
   Double("double"),
@@ -39,8 +37,4 @@ public enum ColumnType {
     return getType();
   }
 
-  @JsonValue
-  public String toValue() {
-    return getType();
-  }
 }

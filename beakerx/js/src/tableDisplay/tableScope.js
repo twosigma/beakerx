@@ -26,7 +26,6 @@ define([
   './../shared/bkUtils',
   './cellHighlighters',
   './../shared/bkHelper',
-  './buildTemplate',
   './datatablesHeadermenu',
   './consts',
   'jquery-contextmenu',
@@ -43,7 +42,6 @@ define([
   bkUtils,
   cellHighlighters,
   bkHelper,
-  buildTemplate,
   datatablesHeadermenu,
   tableConsts,
   contextMenu,
@@ -2798,11 +2796,10 @@ define([
   };
 
   TableScope.prototype.buildTemplate = function() {
-    var tmpl = '<div id="'+this.wrapperId+'">' +
-               buildTemplate(this.id) +
-               '</div>';
+    var templateString = require('./table.html');
+    var compiled = _.template(templateString);
 
-    return tmpl;
+    return compiled({ scopeId: this.id, wrapperId: this.wrapperId });
   };
 
   TableScope.prototype.setElement = function(el) {

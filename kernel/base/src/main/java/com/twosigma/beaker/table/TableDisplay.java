@@ -165,6 +165,11 @@ public class TableDisplay extends BeakerxWidget {
     }
     openComm();
   }
+  
+  protected void openComm() {
+    super.openComm();
+    getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails);
+  }
 
   public static TableDisplay createTableDisplayForMap(Map<?, ?> v) {
     return new TableDisplay(v);
@@ -476,7 +481,6 @@ public class TableDisplay extends BeakerxWidget {
   public void setDoubleClickAction(String tagName) {
     this.doubleClickListener = null;
     this.doubleClickTag = tagName;
-    getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails);
   }
   
   public void setDoubleClickAction(Object listener) {
@@ -506,6 +510,11 @@ public class TableDisplay extends BeakerxWidget {
     fireDoubleClick(params);
   }
 
+  /**
+   * Also sends "runByTag" event.
+   * 
+   * @param content
+   */
   private void onActionDetails(HashMap content){
     TableActionDetails details = new TableActionDetails();
     
@@ -525,8 +534,8 @@ public class TableDisplay extends BeakerxWidget {
         Integer value = (Integer)params.get("row");
         details.setRow(value);
       }
-      if(params.containsKey("column")){
-        Integer value = (Integer)params.get("column");
+      if(params.containsKey("col")){
+        Integer value = (Integer)params.get("col");
         details.setCol(value);
       }
       if(params.containsKey("tag")){

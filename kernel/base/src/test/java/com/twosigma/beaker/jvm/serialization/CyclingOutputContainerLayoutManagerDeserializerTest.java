@@ -18,25 +18,36 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.jvm.object.CyclingOutputContainerLayoutManager;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
-public class ColorDeserializerTest {
+public class CyclingOutputContainerLayoutManagerDeserializerTest {
 
-  private String json = "\"#FF00FF00\"";
+  private String json;
+  private long period;
+
+  @Before
+  public void setUp() throws Exception {
+    period = 5000L;
+    json = "{\"type\":\"CyclingOutputContainerLayoutManager\"," +
+        "\"borderDisplayed\":true,\"period\":"+ period +"}";
+  }
 
   @Test
-  public void deserialize_resultObjectHasColor() throws Exception {
+  public void deserialize_resultObjectHasPeriod() throws Exception {
     //given
     ObjectMapper mapper = new ObjectMapper();
     JsonNode actualObj = mapper.readTree(json);
-    ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
+    CyclingOutputContainerLayoutManagerDeserializer deserializer =
+        new  CyclingOutputContainerLayoutManagerDeserializer(new BasicObjectSerializer());
     //when
-    Color color = (Color) deserializer.deserialize(actualObj, mapper);
+    CyclingOutputContainerLayoutManager layoutManager =
+        (CyclingOutputContainerLayoutManager) deserializer.deserialize(actualObj, mapper);
     //then
-    Assertions.assertThat(color).isNotNull();
-    Assertions.assertThat(color.getRGB()).isEqualTo(Color.GREEN.getRGB());
+    Assertions.assertThat(layoutManager).isNotNull();
+    Assertions.assertThat(layoutManager.getPeriod()).isEqualTo(period);
   }
 
   @Test
@@ -44,7 +55,8 @@ public class ColorDeserializerTest {
     //given
     ObjectMapper mapper = new ObjectMapper();
     JsonNode actualObj = mapper.readTree(json);
-    ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
+    CyclingOutputContainerLayoutManagerDeserializer deserializer =
+        new  CyclingOutputContainerLayoutManagerDeserializer(new BasicObjectSerializer());
     //when
     boolean result = deserializer.canBeUsed(actualObj);
     //then

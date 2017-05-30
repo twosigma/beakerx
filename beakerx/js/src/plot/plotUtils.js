@@ -777,6 +777,27 @@ define([
 
       return [r * 255, g * 255, b * 255];
     },
+    getActionObject: function (plotType, e, subplotIndex) {
+      var actionObject = {};
+      if (plotType === "CategoryPlot") {
+        if(e.ele != null){
+          actionObject.category = e.ele.category;
+          actionObject.series = e.ele.series;
+          actionObject["@type"] = "categoryActionObject";
+        }
+      } else {
+        if(plotType === "CombinedPlot") {
+          actionObject.subplotIndex = subplotIndex;
+          actionObject["@type"] =  "combinedActionObject";
+        } else {
+          actionObject["@type"] = "xyActionObject";
+        }
+        if(e.ele != null){
+          actionObject.index = e.ele.index;
+        }
+      }
+      return actionObject;
+    },
     getActualCss: function(jqelement, jqFunction, jqFunctionParams) {
       //to get actual size/position/etc values of hidden elements
       var value;

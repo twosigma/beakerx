@@ -65,7 +65,7 @@ var PlotView = widgets.DOMWidgetView.extend({
 
     currentScope.setElement(tmplElement.children('.dtcontainer'));
     currentScope.setModelData(data);
-    currentScope.init();
+    currentScope.init(this.model);
   },
 
   initCombinedPlot: function(data) {
@@ -77,8 +77,9 @@ var PlotView = widgets.DOMWidgetView.extend({
 
     currentScope.setModelData(data);
     currentScope.setElement(tmplElement);
-    currentScope.init();
+    currentScope.init(this.model);
   }
+  
 });
 
 module.exports = {

@@ -166,8 +166,7 @@ public class JupyterHandlerTest {
 
   @After
   public void tearDown() throws Exception {
-    kernel.clearPublishedMessages();
-    kernel.clearSentMessages();
+    kernel.clearMessages();
   }
 
   @Test

@@ -133,6 +133,11 @@ public class KernelTest implements KernelFunctionality {
     this.sentMessages = new ArrayList<>();
   }
 
+  public void clearMessages() {
+    clearSentMessages();
+    clearPublishedMessages();
+  }
+
   public void cancelExecution() {
   }
 

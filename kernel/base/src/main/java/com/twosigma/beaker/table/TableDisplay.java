@@ -320,6 +320,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void removeAllCellHighlighters() {
     this.cellHighlighters.clear();
+    sendModel();
   }
 
   public void setColumnOrder(List<String> columnOrder) {

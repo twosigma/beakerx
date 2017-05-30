@@ -68,8 +68,7 @@ public class HeatMapTest extends AbstractChartTest<HeatMap> {
   @Override
   public HeatMap createWidget() {
     HeatMap heatMap = new HeatMap();
-    kernel.clearSentMessages();
-    kernel.clearPublishedMessages();
+    kernel.clearMessages();
     return heatMap;
   }
 }

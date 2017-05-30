@@ -95,8 +95,7 @@ public class TableDisplayTest {
     kernel = new KernelTest();
     KernelManager.register(kernel);
     tableDisplay = new TableDisplay(getListOfMapsData());
-    kernel.clearSentMessages();
-    kernel.clearPublishedMessages();
+    kernel.clearMessages();
   }
 
   @After
@@ -498,8 +497,7 @@ public class TableDisplayTest {
   @Test
   public void shouldSendCommMsgWhenValuesChange() throws Exception {
     //given
-    kernel.clearPublishedMessages();
-    kernel.clearSentMessages();
+    kernel.clearMessages();
     ArrayList<Map<?, ?>> v = new ArrayList<>();
     //when
     TableDisplay tableDisplay = new TableDisplay(v);
@@ -626,6 +624,24 @@ public class TableDisplayTest {
     Map date = (Map)row0.get(7);
     assertThat(date.get(DateSerializer.TYPE)).isEqualTo(DateSerializer.VALUE_DATE);
     assertThat(date.get(DateSerializer.TIMESTAMP)).isNotNull();
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenRemoveAllCellHighlighters() throws Exception {
+    //given;
+    TableDisplayCellHighlighter uniqueEntriesHighlighter = TableDisplayCellHighlighter.getUniqueEntriesHighlighter(COL_1, TableDisplayCellHighlighter.FULL_ROW);
+    TableDisplayCellHighlighter heatmapHighlighter = TableDisplayCellHighlighter.getHeatmapHighlighter(COL_1, 0, 8, Color.ORANGE, Color.PINK);
+    ThreeColorHeatmapHighlighter colorHeatmapHighlighter = new ThreeColorHeatmapHighlighter(COL_1, TableDisplayCellHighlighter.SINGLE_COLUMN, 4, 6, 8, new Color(247, 106, 106), new Color(239, 218, 82), new Color(100, 189, 122));
+    tableDisplay.addCellHighlighter(uniqueEntriesHighlighter);
+    tableDisplay.addCellHighlighter(heatmapHighlighter);
+    tableDisplay.addCellHighlighter(colorHeatmapHighlighter);
+    kernel.clearMessages();
+    //when
+    tableDisplay.removeAllCellHighlighters();
+    //then
+    assertThat(tableDisplay.getCellHighlighters()).isEmpty();
+    List actual = getValueAsList(getModel(), CELL_HIGHLIGHTERS);
+    assertThat(actual).isEmpty();
   }
 
   private List<Map<?, ?>> getListOfMapsData() {

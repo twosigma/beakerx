@@ -202,8 +202,7 @@ public class SimpleTimePlotTest extends XYChartTest<SimpleTimePlot>{
   public SimpleTimePlot createWidget() {
     createDataForSimpleTimePlot();
     SimpleTimePlot simpleTimePlot = new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
-    kernel.clearPublishedMessages();
-    kernel.clearSentMessages();
+    kernel.clearMessages();
     return simpleTimePlot;
   }
 }

@@ -85,6 +85,7 @@ define([
 
     this.bindAllConverters();
     this.prepareDoubleWithPrecisionConverters();
+    this.prepareValueFormatter();
     this.setJqExtensions();
     this.linkMoment();
   }
@@ -2777,6 +2778,15 @@ define([
     var self = this;
     self.table.state.clear();
     self.init(self.getCellModel(), false);
+  };
+
+  TableScope.prototype.prepareValueFormatter = function() {
+    var self = this;
+
+    self.valueFormatter = function(value, type, full, meta) {
+      var columnName = self.columnNames[meta.col - 1];
+      return self.stringFormatForColumn[columnName].values[columnName][meta.row];
+    };
   };
 
   TableScope.prototype.run = function() {

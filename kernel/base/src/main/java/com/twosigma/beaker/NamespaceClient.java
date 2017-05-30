@@ -142,6 +142,15 @@ public class NamespaceClient {
     }
     return codeCellsComm;
   }
+  
+  protected Comm getTagRunComm() {
+    if(codeCellsComm == null){
+      codeCellsComm = new Comm(TargetNamesEnum.BEAKER_TAG_RUN);
+      codeCellsComm.open();
+    }
+    return codeCellsComm;
+  }
+  
 
   public List<BeakerCodeCell> getCodeCells(String tagFilter) throws IOException, InterruptedException {
     // first send message to get cells
@@ -156,6 +165,14 @@ public class NamespaceClient {
     return (List<BeakerCodeCell>)cells;
   }
 
+  public synchronized void runByTag(String tag) {
+    Comm c = getTagRunComm();
+    HashMap<String, Serializable> data = new HashMap<>();
+    data.put("runByTag", tag);
+    c.setData(data);
+    c.send();
+  }
+  
   private class ObjectHolder<T>{
     
     private T value;

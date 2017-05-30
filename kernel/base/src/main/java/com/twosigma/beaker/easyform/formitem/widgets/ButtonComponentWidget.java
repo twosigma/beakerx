@@ -21,6 +21,8 @@ import com.twosigma.beaker.widgets.Button;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;
 
+import java.util.HashMap;
+
 public class ButtonComponentWidget extends ButtonComponent implements CommFunctionality, EasyFormWidget {
 
   private Button widget;
@@ -28,6 +30,10 @@ public class ButtonComponentWidget extends ButtonComponent implements CommFuncti
   public ButtonComponentWidget() {
     this.widget = new Button();
     this.widget.registerOnClick(this::fireActionPerformed);
+  }
+  
+  private void fireActionPerformed(HashMap content){
+    this.fireActionPerformed();
   }
 
   @Override

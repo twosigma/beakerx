@@ -69,9 +69,11 @@ define([
       colInd: data.colInd,
       type: data.type,
     });
-    this.removeHighlight = function (table) {
+    this.removeHighlight = function (tableScope) {
       var self = this;
-      table.column(this.colInd).nodes().each(function (td) {
+      var table = tableScope.table;
+      var columnIndex = tableScope.colorder.indexOf(this.colInd);
+      table.column(columnIndex).nodes().each(function (td) {
         var nodeToHighlight = self.style === HIGHLIGHT_STYLE.SINGLE_COLUMN ?
           $(td) : $(table.row(table.cell(td).index().row).node()).find('td');
         nodeToHighlight.css({'background-color': ''});
@@ -96,8 +98,10 @@ define([
       return d3.scaleLinear().domain([min, max]).range([this.minColor, this.maxColor]);
     };
 
-    this.doHighlight = function (table) {
-      var data = table.column(this.colInd).data();
+    this.doHighlight = function (tableScope) {
+      var table = tableScope.table;
+      var columnIndex = tableScope.colorder.indexOf(this.colInd);
+      var data = table.column(columnIndex).data();
       if (this.minVal == null) {
         this.minVal = getValue(data, 'minVal', data.min());
       }
@@ -107,7 +111,7 @@ define([
       var colorScaleFunction = this.colorScale(this.minVal, this.maxVal);
 
       var self = this;
-      table.column(self.colInd).nodes().each(function (td) {
+      table.column(columnIndex).nodes().each(function (td) {
         var value = $(td).text();
         if ($.isNumeric(value)) {
           var color = colorScaleFunction(value);
@@ -156,14 +160,16 @@ define([
       return colData.unique().toArray();
     };
 
-    this.doHighlight = function (table) {
-      var uniqueValues = findUniqueValues(table.column(this.colInd).data());
+    this.doHighlight = function (tableScope) {
+      var table = tableScope.table;
+      var columnIndex = tableScope.colorder.indexOf(this.colInd);
+      var uniqueValues = findUniqueValues(table.column(columnIndex).data());
       var uniqueColors = {};
       _.forEach(uniqueValues, function(value, index){
         uniqueColors[value] = generateColor(index, uniqueValues.length);
       });
       var self = this;
-      table.column(self.colInd).nodes().each(function (td) {
+      table.column(columnIndex).nodes().each(function (td) {
         var value = table.cell(td).data();
         if ($.isNumeric(value)) {
           var color = uniqueColors[value];
@@ -187,9 +193,11 @@ define([
       type: 'ValueHighlighter',
       style: HIGHLIGHT_STYLE.SINGLE_COLUMN
     });
-    this.doHighlight = function (table) {
+    this.doHighlight = function (tableScope) {
       var self = this;
-      table.column(self.colInd).nodes().each(function (td) {
+      var table = tableScope.table;
+      var columnIndex = tableScope.colorder.indexOf(this.colInd);
+      table.column(columnIndex).nodes().each(function (td) {
         var index = table.cell(td).index();
         var color = self.colors[index.row];
         if(color){

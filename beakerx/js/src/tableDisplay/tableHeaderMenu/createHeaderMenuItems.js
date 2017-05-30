@@ -143,13 +143,13 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         separator: true,
         isChecked: function (container) {
           var colIdx = container.data('columnIndex');
-          var highlighter = self.cellHighlighters[self.colorder[colIdx]];
+          var highlighter = self.cellHighlighters[colIdx];
           return highlighter && highlighter instanceof cellHighlighters.HeatmapHighlighter;
         },
         action: function (el) {
           var container = el.closest('.bko-header-menu');
           var colIdx = container.data('columnIndex');
-          self.showHideHeatmap(self.colorder[colIdx]);
+          self.showHideHeatmap(colIdx);
         }
       },
       {
@@ -196,6 +196,27 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
           var columnIndexes = self.table.columns().indexes();
 
           setColumnsOrder(el, columnIndexes.length);
+        }
+      },
+      {
+        title: 'Reset formatting',
+        separator: true,
+        action: function (el) {
+          var container = el.closest('.bko-header-menu');
+          var colIdx = container.data('columnIndex');
+          var column = self.table.column(colIdx);
+
+          column.state.clear();
+
+          self.resetColumnContainerFixed(container);
+          self.resetColumnTypesAndAlignments(el, colIdx);
+          self.resetColumnHeatmap(colIdx, cellHighlighters);
+          self.resetColumnDataBars(colIdx);
+          self.resetColumnFilters(colIdx);
+          self.resetColumnSort(colIdx);
+          self.resetColumnSearch(colIdx);
+          self.resetColumnWidth(colIdx);
+          self.applyChanges();
         }
       }
     ]

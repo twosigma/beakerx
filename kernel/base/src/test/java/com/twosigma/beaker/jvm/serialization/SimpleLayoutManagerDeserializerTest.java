@@ -20,23 +20,46 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beaker.jvm.object.SimpleLayoutManager;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 public class SimpleLayoutManagerDeserializerTest {
 
+  private String json;
+  private boolean  borderDisplayed;
+
+  @Before
+  public void setUp() throws Exception {
+    borderDisplayed = true;
+    json = "{\"type\":\"SimpleLayoutManager\",\"borderDisplayed\":\"" + borderDisplayed + "\"}";
+  }
+
   @Test
   public void deserialize_resultObjectHasBorderDisplayed() throws Exception {
     //given
-    boolean borderDisplayed = true;
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode actualObj = mapper.readTree(
-        "{\"type\":\"SimpleLayoutManager\",\"borderDisplayed\":\"" + borderDisplayed + "\"}");
-    SimpleLayoutManagerDeserializer deserializer = new SimpleLayoutManagerDeserializer(new BasicObjectSerializer());
+    JsonNode actualObj = mapper.readTree(json);
+    SimpleLayoutManagerDeserializer deserializer =
+        new SimpleLayoutManagerDeserializer(new BasicObjectSerializer());
     //when
-    SimpleLayoutManager layoutManager = (SimpleLayoutManager) deserializer.deserialize(actualObj, mapper);
+    SimpleLayoutManager layoutManager =
+        (SimpleLayoutManager) deserializer.deserialize(actualObj, mapper);
     //then
     Assertions.assertThat(layoutManager).isNotNull();
     Assertions.assertThat(layoutManager.isBorderDisplayed()).isEqualTo(borderDisplayed);
+  }
+
+  @Test
+  public void canBeUsed_returnTrue() throws Exception {
+    //given
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode actualObj = mapper.readTree(json);
+    SimpleLayoutManagerDeserializer deserializer =
+        new SimpleLayoutManagerDeserializer(new BasicObjectSerializer());
+    //when
+    boolean result = deserializer.canBeUsed(actualObj);
+    //then
+    Assertions.assertThat(result).isTrue();
   }
 
 }

@@ -18,25 +18,37 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.jvm.object.DashboardLayoutManager;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
-public class ColorDeserializerTest {
+public class DashboardLayoutManagerDeserializerTest {
 
-  private String json = "\"#FF00FF00\"";
+  private String json;
+  private int columns;
+
+  @Before
+  public void setUp() throws Exception {
+    columns = 10;
+    json = "{\"type\":\"DashboardLayoutManager\"," +
+        "\"borderDisplayed\":false,\"columns\":" + columns + ",\"paddingBottom\":0," +
+        "\"paddingTop\":0,\"paddingRight\":15,\"paddingLeft\":15}";
+  }
 
   @Test
-  public void deserialize_resultObjectHasColor() throws Exception {
+  public void deserialize_resultObjectHasColumns() throws Exception {
     //given
     ObjectMapper mapper = new ObjectMapper();
     JsonNode actualObj = mapper.readTree(json);
-    ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
+    DashboardLayoutManagerDeserializer deserializer =
+        new DashboardLayoutManagerDeserializer(new BasicObjectSerializer());
     //when
-    Color color = (Color) deserializer.deserialize(actualObj, mapper);
+    DashboardLayoutManager layoutManager =
+        (DashboardLayoutManager) deserializer.deserialize(actualObj, mapper);
     //then
-    Assertions.assertThat(color).isNotNull();
-    Assertions.assertThat(color.getRGB()).isEqualTo(Color.GREEN.getRGB());
+    Assertions.assertThat(layoutManager).isNotNull();
+    Assertions.assertThat(layoutManager.getColumns()).isEqualTo(columns);
   }
 
   @Test
@@ -44,7 +56,8 @@ public class ColorDeserializerTest {
     //given
     ObjectMapper mapper = new ObjectMapper();
     JsonNode actualObj = mapper.readTree(json);
-    ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
+    DashboardLayoutManagerDeserializer deserializer =
+        new DashboardLayoutManagerDeserializer(new BasicObjectSerializer());
     //when
     boolean result = deserializer.canBeUsed(actualObj);
     //then

@@ -29,7 +29,9 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BasicObjectSerializerTest {
@@ -200,6 +202,18 @@ public class BasicObjectSerializerTest {
   }
 
   @Test
+  public void serializeMapOfObject_returnTrue() throws Exception {
+    //given
+    Map<String, List> map  =  new HashMap<String, List>(){
+      { put("key", Arrays.asList("1", "2")); }
+    };
+    //when
+    boolean result = basicObjectSerializer.writeObject(map, jgen, true);
+    //then
+    Assertions.assertThat(result).isTrue();
+  }
+
+  @Test
   public void serializeArray_returnTrue() throws Exception {
     //when
     boolean result = basicObjectSerializer.writeObject(
@@ -209,10 +223,37 @@ public class BasicObjectSerializerTest {
   }
 
   @Test
+  public void serializeArrayOfObject_returnTrue() throws Exception {
+    Map<String, String> map  =  new HashMap<String, String>(){
+      { put("key", "value"); }
+    };
+    //when
+    boolean result = basicObjectSerializer.writeObject(
+        Arrays.asList(map, new Date()), jgen, true);
+    //then
+    Assertions.assertThat(result).isTrue();
+  }
+
+  @Test
   public void serializeListOfList_returnTrue() throws Exception {
     //when
     boolean result = basicObjectSerializer.writeObject(
         Arrays.asList(Arrays.asList("k1", 1), Arrays.asList("k2", 2)), jgen, true);
+    //then
+    Assertions.assertThat(result).isTrue();
+  }
+
+  @Test
+  public void serializeListOfMap_returnTrue() throws Exception {
+    Map<String, String> map1  =  new HashMap<String, String>(){
+      { put("key1", "value1"); }
+    };
+    Map<String, String> map2  =  new HashMap<String, String>(){
+      { put("key2", "value2"); }
+    };
+    //when
+    boolean result = basicObjectSerializer.writeObject(
+        Arrays.asList(map1, map2), jgen, true);
     //then
     Assertions.assertThat(result).isTrue();
   }

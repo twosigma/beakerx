@@ -18,25 +18,29 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beaker.chart.Color;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-public class ColorDeserializerTest {
+import java.awt.image.BufferedImage;
 
-  private String json = "\"#FF00FF00\"";
+public class BufferedImageDeserializerTest {
+
+  private String json = "{\"type\":\"ImageIcon\",\"imageData\"" +
+      ":\"iVBORw0KGgoAAAANSUhEUgAAAGQAAADICAIAAACRXtOWAAAAUUlEQVR42u3BMQEAAADCoPVPbQo/o" +
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB" +
+      "4GOsoAAHf1Nx9AAAAAElFTkSuQmCC\",\"width\":100,\"height\":200}";
 
   @Test
-  public void deserialize_resultObjectHasColor() throws Exception {
+  public void deserialize_resultObjectHasData() throws Exception {
     //given
     ObjectMapper mapper = new ObjectMapper();
     JsonNode actualObj = mapper.readTree(json);
-    ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
+    BufferedImageDeserializer deserializer = new BufferedImageDeserializer(new BasicObjectSerializer());
     //when
-    Color color = (Color) deserializer.deserialize(actualObj, mapper);
+    BufferedImage bufferedImage = (BufferedImage) deserializer.deserialize(actualObj, mapper);
     //then
-    Assertions.assertThat(color).isNotNull();
-    Assertions.assertThat(color.getRGB()).isEqualTo(Color.GREEN.getRGB());
+    Assertions.assertThat(bufferedImage).isNotNull();
+    Assertions.assertThat(bufferedImage.getData()).isNotNull();
   }
 
   @Test
@@ -44,7 +48,7 @@ public class ColorDeserializerTest {
     //given
     ObjectMapper mapper = new ObjectMapper();
     JsonNode actualObj = mapper.readTree(json);
-    ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
+    BufferedImageDeserializer deserializer = new BufferedImageDeserializer(new BasicObjectSerializer());
     //when
     boolean result = deserializer.canBeUsed(actualObj);
     //then

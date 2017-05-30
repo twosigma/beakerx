@@ -20,17 +20,26 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beaker.jvm.object.TabbedOutputContainerLayoutManager;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TabbedOutputContainerLayoutManagerDeserializerTest {
 
+  private String json;
+  private boolean borderDisplayed;
+
+  @Before
+  public void setUp() throws Exception {
+    borderDisplayed = true;
+    json = "{\"type\":\"TabbedOutputContainerLayoutManager\"," +
+        "\"borderDisplayed\":\"" + borderDisplayed + "\"}";
+  }
+
   @Test
   public void deserialize_resultObjectHasBorderDisplayed() throws Exception {
     //given
-    boolean borderDisplayed = true;
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode actualObj = mapper.readTree(
-        "{\"type\":\"TabbedOutputContainerLayoutManager\",\"borderDisplayed\":\"" + borderDisplayed + "\"}");
+    JsonNode actualObj = mapper.readTree(json);
     TabbedOutputContainerLayoutManagerDeserializer deserializer =
         new TabbedOutputContainerLayoutManagerDeserializer(new BasicObjectSerializer());
     //when
@@ -39,6 +48,19 @@ public class TabbedOutputContainerLayoutManagerDeserializerTest {
     //then
     Assertions.assertThat(layoutManager).isNotNull();
     Assertions.assertThat(layoutManager.isBorderDisplayed()).isEqualTo(borderDisplayed);
+  }
+
+  @Test
+  public void canBeUsed_returnTrue() throws Exception {
+    //given
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode actualObj = mapper.readTree(json);
+    TabbedOutputContainerLayoutManagerDeserializer deserializer =
+        new TabbedOutputContainerLayoutManagerDeserializer(new BasicObjectSerializer());
+    //when
+    boolean result = deserializer.canBeUsed(actualObj);
+    //then
+    Assertions.assertThat(result).isTrue();
   }
 
 }

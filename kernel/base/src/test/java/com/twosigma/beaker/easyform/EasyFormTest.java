@@ -124,7 +124,7 @@ public class EasyFormTest {
   @Test
   public void shouldCreateEasyFormWithButton() throws Exception {
     //given
-    String label = "ButtonLabel1";
+    String label = "ButtonLabel";
     //when
     EasyForm easyForm = new EasyForm("EasyForm with button");
     easyForm.addButton(label);
@@ -136,7 +136,7 @@ public class EasyFormTest {
   }
 
   private void verifyButton(List<Message> messages) {
-    verifyInternalOpenCommMsgWitLayout(messages, Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(messages, Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE, Widget.MODEL_MODULE_VALUE, Widget.VIEW_MODULE_VALUE);
   }
 
   @Test

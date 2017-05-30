@@ -55,14 +55,6 @@ define([
   function TableScope(wrapperId) {
     this.wrapperId = wrapperId;
     this.id = null;
-
-    this.model = {
-      model: {},
-      getCellModel: function() {
-        return this.model;
-      }
-    };
-
     this.element = null;
     this.renderMenu = false;
     this.tableElementsCreated = false;
@@ -77,6 +69,13 @@ define([
     this.getCellDisp     =  [];
     this.getCellDispOpts =  [];
     this.allConverters = {};
+    
+    this.model = {
+        model: {},
+        getCellModel: function() {
+          return this.model;
+        }
+      };
 
     // attach additional data from consts
     _.extend(this, tableConsts.scopeData);
@@ -786,48 +785,6 @@ define([
       }
     });
 
-    self.contextMenuItems = {};
-    if (!_.isEmpty(model.contextMenuItems)) {
-      _.forEach(model.contextMenuItems, function(item) {
-        self.contextMenuItems[item] = {
-          name: item,
-          callback: function(itemKey, options) {
-            var index = self.table.cell(options.$trigger.get(0)).index();
-            tableService.onContextMenu(model['update_id'],
-              itemKey,
-              index.row,
-              index.column - 1,
-              self.model.getEvaluatorId()).then(function() {
-              self.update = true;
-            });
-          }
-        }
-      });
-    }
-
-    if (!_.isEmpty(model.contextMenuTags)) {
-      _.forEach(model.contextMenuTags, function(tag, name) {
-        if (model.contextMenuTags.hasOwnProperty(name)) {
-          self.contextMenuItems[name] = {
-            name: name,
-            callback: function(itemKey, options) {
-              var index = self.table.cell(options.$trigger.get(0)).index();
-              var params = {
-                actionType: 'CONTEXT_MENU_CLICK',
-                contextMenuItem: itemKey,
-                row: index.row,
-                col: index.column - 1
-              };
-              tableService.setActionDetails(model['update_id'],
-                self.model.getEvaluatorId(),
-                params).then(function() {
-                self.evaluateTagCell(tag);
-              });
-            }
-          }
-        }
-      });
-    }
 
     self.doCreateData(model);
     self.doCreateTable(model);
@@ -1421,18 +1378,6 @@ define([
     }
   };
 
-  TableScope.prototype.evaluateTagCell = function(tag) {
-    var cellOp = bkSessionManager.getNotebookCellOp();
-    var result;
-    if (cellOp.hasUserTag(tag)) {
-      result = cellOp.getCellsWithUserTag(tag);
-      bkCoreManager.getBkApp().evaluateRoot(result)
-        .catch(function() {
-          console.log('Evaluation failed: ' + tag);
-        });
-    }
-  };
-
   TableScope.prototype.doCreateTable = function(model) {
     var self = this;
     var cols = [];
@@ -1760,83 +1705,6 @@ define([
         .appendTo(pagination);
     }
 
-    /*
-     $(id + ' tbody').off('click');
-     */
-    $(id + ' tbody').on('dblclick', 'td', function(e) {
-      if (!self.table) { return; }
-      var rowIdx;
-      var colIdx;
-      var iPos = self.table.cell(this).index();
-      if (iPos) { //selected regular cell
-        rowIdx = iPos.row;
-        colIdx = iPos.column;
-      } else { //selected fixed column or index cell
-        var position = self.fixcols.fnGetPosition(this);
-        rowIdx = position[0];
-        if ($(this).parents().hasClass('DTFC_RightWrapper')) {
-          var order = self.colorder;
-          var fixRight = self.pagination.fixRight;
-          var colIdxInRight = position[1];
-          colIdx = order[order.length - fixRight + colIdxInRight];
-        } else {
-          colIdx = position[1];
-        }
-      }
-
-      var currentCell = self.table.cells(function(idx, data, node) {
-        return idx.column === colIdx && idx.row ===  rowIdx;
-      });
-      var currentCellNodes = $(currentCell.nodes());
-
-      var isCurrentCellSelected = currentCellNodes.hasClass('selected');
-
-      if (self.selected[rowIdx]) {
-        self.selected[rowIdx] = false;
-        $(self.table.row(rowIdx).node()).removeClass('selected');
-        self.selectFixedColumnRow(rowIdx, false);
-      }
-
-      $(self.table.cells().nodes()).removeClass('selected');
-      if (self.fixcols) {
-        _.each(self.selected, function(selected, index){
-          if(!selected){
-            self.selectFixedColumnRow(index, false);
-          }
-        });
-      }
-      if (!isCurrentCellSelected) {
-        currentCellNodes.addClass('selected');
-        if(iPos === undefined) {
-          self.selectFixedColumnCell($(this), true);
-        }
-      }
-
-      var index = currentCell.indexes()[0];
-      if (model.hasDoubleClickAction) {
-        tableService.onDoubleClick(model['update_id'],
-          index.row,
-          index.column - 1,
-          self.model.getEvaluatorId()).then(function() {
-          self.update = true;
-        });
-      }
-
-      if (!_.isEmpty(model.doubleClickTag)) {
-        var params = {
-          actionType: 'DOUBLE_CLICK',
-          row: index.row,
-          col: index.column - 1
-        };
-        tableService.setActionDetails(model['update_id'],
-          self.model.getEvaluatorId(),
-          params).then(function() {
-          self.evaluateTagCell(model.doubleClickTag);
-        });
-      }
-
-      e.stopPropagation();
-    });
 
     $(id + ' tbody').on('click', 'tr', function(event) {
       if (!self.table) { return; }

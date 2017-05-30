@@ -17,5 +17,19 @@ package com.twosigma.beaker.table.action;
 
 public enum TableActionType {
   DOUBLE_CLICK,
-  CONTEXT_MENU_CLICK
+  CONTEXT_MENU_CLICK;
+
+  public static TableActionType getByName(final String input){
+    TableActionType ret = null;
+    if(input != null){
+      for (TableActionType item : TableActionType.values()) {
+        if(item.name().equalsIgnoreCase(input.trim())){
+          ret = item;
+          break;
+        }
+      }
+    }
+    return ret;
+  }
+
 }

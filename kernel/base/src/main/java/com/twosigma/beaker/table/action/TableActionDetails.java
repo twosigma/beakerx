@@ -22,6 +22,7 @@ public class TableActionDetails implements Serializable {
   private int col;
   private String contextMenuItem;
   private TableActionType actionType;
+  private String tag;
 
   public int getRow() {
     return row;
@@ -54,4 +55,17 @@ public class TableActionDetails implements Serializable {
   public void setActionType(TableActionType actionType) {
     this.actionType = actionType;
   }
+
+  public String getTag() {
+    return tag;
+  }
+
+  public void setTag(String tag) {
+    this.tag = tag;
+  }
+  
+  public String toString() {
+    return actionType + " " + " " + row + " " + col + " " + tag;
+  }
+  
 }

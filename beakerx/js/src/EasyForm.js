@@ -18,7 +18,6 @@ var ENTER_KEY_CODE = 13;
 var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
 
-var buttonWidget = require('./easyForm/buttonWidget');
 var selectMultipleWidget = require('./easyForm/selectMultipleWidget');
 var selectMultipleSingleWidget = require('./easyForm/selectMultipleSingleWidget');
 var datePickerWidget = require('./easyForm/datePickerWidget');
@@ -95,7 +94,6 @@ module.exports = {
   EasyFormView: EasyFormView
 };
 
-_.extend(module.exports, buttonWidget);
 _.extend(module.exports, selectMultipleWidget);
 _.extend(module.exports, selectMultipleSingleWidget);
 _.extend(module.exports, datePickerWidget);

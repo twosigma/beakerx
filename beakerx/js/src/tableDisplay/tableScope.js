@@ -26,7 +26,6 @@ define([
   './../shared/bkUtils',
   './cellHighlighters',
   './../shared/bkHelper',
-  './buildTemplate',
   './datatablesHeadermenu',
   './consts',
   'jquery-contextmenu',
@@ -43,7 +42,6 @@ define([
   bkUtils,
   cellHighlighters,
   bkHelper,
-  buildTemplate,
   datatablesHeadermenu,
   tableConsts,
   contextMenu,
@@ -55,14 +53,6 @@ define([
   function TableScope(wrapperId) {
     this.wrapperId = wrapperId;
     this.id = null;
-
-    this.model = {
-      model: {},
-      getCellModel: function() {
-        return this.model;
-      }
-    };
-
     this.element = null;
     this.renderMenu = false;
     this.tableElementsCreated = false;
@@ -77,6 +67,13 @@ define([
     this.getCellDisp     =  [];
     this.getCellDispOpts =  [];
     this.allConverters = {};
+    
+    this.model = {
+        model: {},
+        getCellModel: function() {
+          return this.model;
+        }
+      };
 
     // attach additional data from consts
     _.extend(this, tableConsts.scopeData);
@@ -689,7 +686,7 @@ define([
       });
 
       self.cellHighlightersData = model.cellHighlighters ? _.map(model.cellHighlighters, function(highlighter){
-        return _.extend({colInd: self.getColumnIndexByColName(highlighter.colName)}, highlighter);
+        return _.extend({ colInd: self.getColumnIndexByColName(highlighter.colName) }, highlighter);
       }) : {};
       self.tableFilter       = '';
       self.columnFilter      = [];
@@ -726,35 +723,16 @@ define([
     }
     // auto compute types
     if (self.actualtype === undefined || self.actualtype.length === 0) {
+      var typesAndAlignments;
+
       self.actualtype = [];
       self.actualalign = [];
+
       for (i = 0; i < self.columnNames.length; i++) {
-        if (self.types !== undefined) {
-          var stringFormatForColumn =  self.stringFormatForColumn[self.columnNames[i]];
-          if (stringFormatForColumn && stringFormatForColumn.type === 'value'){
-            self.actualtype.push(0);
-            self.actualalign.push('L');
-          } else if (self.types[i] === 'time' || self.types[i] === 'datetime') {
-            self.actualtype.push(8);
-            self.actualalign.push('C');
-          } else if (self.types[i] === 'integer') {
-            self.actualtype.push(2);
-            self.actualalign.push('R');
-          } else if (self.types[i] === 'double') {
-            if (self.stringFormatForType.double || stringFormatForColumn) {
-              self.actualtype.push(3);
-            } else {
-              self.actualtype.push('4.3');
-            }
-            self.actualalign.push('R');
-          } else {
-            self.actualtype.push(0);
-            self.actualalign.push('L');
-          }
-        } else {
-          self.actualtype.push(0);
-          self.actualalign.push('L');
-        }
+        typesAndAlignments = self.getColumnTypeAndAlignment(i + 1);
+
+        self.actualtype.push(typesAndAlignments.actualtype);
+        self.actualalign.push(typesAndAlignments.actualalign);
       }
 
       if (!_.isEmpty(model.alignmentForType)) {
@@ -786,48 +764,6 @@ define([
       }
     });
 
-    self.contextMenuItems = {};
-    if (!_.isEmpty(model.contextMenuItems)) {
-      _.forEach(model.contextMenuItems, function(item) {
-        self.contextMenuItems[item] = {
-          name: item,
-          callback: function(itemKey, options) {
-            var index = self.table.cell(options.$trigger.get(0)).index();
-            tableService.onContextMenu(model['update_id'],
-              itemKey,
-              index.row,
-              index.column - 1,
-              self.model.getEvaluatorId()).then(function() {
-              self.update = true;
-            });
-          }
-        }
-      });
-    }
-
-    if (!_.isEmpty(model.contextMenuTags)) {
-      _.forEach(model.contextMenuTags, function(tag, name) {
-        if (model.contextMenuTags.hasOwnProperty(name)) {
-          self.contextMenuItems[name] = {
-            name: name,
-            callback: function(itemKey, options) {
-              var index = self.table.cell(options.$trigger.get(0)).index();
-              var params = {
-                actionType: 'CONTEXT_MENU_CLICK',
-                contextMenuItem: itemKey,
-                row: index.row,
-                col: index.column - 1
-              };
-              tableService.setActionDetails(model['update_id'],
-                self.model.getEvaluatorId(),
-                params).then(function() {
-                self.evaluateTagCell(tag);
-              });
-            }
-          }
-        }
-      });
-    }
 
     self.doCreateData(model);
     self.doCreateTable(model);
@@ -840,6 +776,54 @@ define([
       show: { delay: 300, duration: 300 },
       position: { my: 'left bottom', at: 'center top' }
     });
+  };
+
+  TableScope.prototype.getColumnTypeAndAlignment = function(colIdx) {
+    var self = this;
+    var index = colIdx - 1;
+    var defaultResult = {
+      actualtype: 0,
+      actualalign: 'L'
+    };
+
+    if (!self.types) {
+      return defaultResult;
+    }
+
+    var stringFormatForColumn =  self.stringFormatForColumn[self.columnNames[index]];
+    if (stringFormatForColumn && stringFormatForColumn.type === 'value'){
+      return defaultResult;
+    }
+
+    if (self.types[index] === 'time' || self.types[index] === 'datetime') {
+      return {
+        actualtype: 8,
+        actualalign: 'C'
+      };
+    }
+
+    if (self.types[index] === 'integer') {
+      return {
+        actualtype: 2,
+        actualalign: 'R'
+      };
+    }
+
+    if (self.types[index] === 'double') {
+      if (self.stringFormatForType.double || stringFormatForColumn) {
+        return {
+          actualtype: 3,
+          actualalign: 'R'
+        };
+      }
+
+      return {
+        actualtype: '4.3',
+        actualalign: 'R'
+      };
+    }
+
+    return defaultResult;
   };
 
   TableScope.prototype.doCreateData = function(model) {
@@ -1045,7 +1029,7 @@ define([
       });
       var cellHighlighter = self.cellHighlighters[colInd];
       if (cellHighlighter) {
-        cellHighlighter.doHighlight(self.table);
+        cellHighlighter.doHighlight(self);
       }
     }
   };
@@ -1102,23 +1086,23 @@ define([
     _.defer(function() { self.table.draw(false);  });
   };
 
-  TableScope.prototype.showHideHighlighter = function(column, highlighterType){
+  TableScope.prototype.showHideHighlighter = function(columnIndex, highlighterType){
     var self = this;
-    var highlighter = self.cellHighlighters[column];
+    var highlighter = self.cellHighlighters[columnIndex];
     if (!highlighter || !(highlighter instanceof highlighterType)) {
       if (highlighter) {
-        highlighter.removeHighlight(self.table);
+        highlighter.removeHighlight(self);
       }
-      self.cellHighlighters[column] = new highlighterType({colInd: column});
+      self.cellHighlighters[columnIndex] = new highlighterType({ colInd: columnIndex });
     } else {
-      highlighter.removeHighlight(self.table);
-      delete self.cellHighlighters[column];
+      highlighter.removeHighlight(self);
+      delete self.cellHighlighters[columnIndex];
     }
     _.defer(function() { self.table.draw(false);  });
   };
 
-  TableScope.prototype.showHideHeatmap = function(column) {
-    this.showHideHighlighter(column, cellHighlighters.HeatmapHighlighter);
+  TableScope.prototype.showHideHeatmap = function(columnIndex) {
+    this.showHideHighlighter(columnIndex, cellHighlighters.HeatmapHighlighter);
   };
 
   TableScope.prototype.columnHasFormat = function(column, format) {
@@ -1336,7 +1320,7 @@ define([
           self.showHideBars(self.colorder[column]);
           break;
         case 'H':
-          self.showHideHeatmap(self.colorder[column]);
+          self.showHideHeatmap(column);
           break;
       }
       if (key >= 48 && key <= 57){ //numbers 1..9
@@ -1418,18 +1402,6 @@ define([
         'vertical-align': ''
       });
       headerRows.css({'height': ''});
-    }
-  };
-
-  TableScope.prototype.evaluateTagCell = function(tag) {
-    var cellOp = bkSessionManager.getNotebookCellOp();
-    var result;
-    if (cellOp.hasUserTag(tag)) {
-      result = cellOp.getCellsWithUserTag(tag);
-      bkCoreManager.getBkApp().evaluateRoot(result)
-        .catch(function() {
-          console.log('Evaluation failed: ' + tag);
-        });
     }
   };
 
@@ -1611,7 +1583,7 @@ define([
       'processing': true,
       'autoWidth': true,
       'ordering': true,
-      'order': self.tableOrder ? _.cloneDeep(self.tableOrder) : [],
+      'order': self.tableOrder ? _.clone(self.tableOrder) : [],
       'scrollX': '10%',
       'searching': true,
       'deferRender': true,
@@ -1760,83 +1732,6 @@ define([
         .appendTo(pagination);
     }
 
-    /*
-     $(id + ' tbody').off('click');
-     */
-    $(id + ' tbody').on('dblclick', 'td', function(e) {
-      if (!self.table) { return; }
-      var rowIdx;
-      var colIdx;
-      var iPos = self.table.cell(this).index();
-      if (iPos) { //selected regular cell
-        rowIdx = iPos.row;
-        colIdx = iPos.column;
-      } else { //selected fixed column or index cell
-        var position = self.fixcols.fnGetPosition(this);
-        rowIdx = position[0];
-        if ($(this).parents().hasClass('DTFC_RightWrapper')) {
-          var order = self.colorder;
-          var fixRight = self.pagination.fixRight;
-          var colIdxInRight = position[1];
-          colIdx = order[order.length - fixRight + colIdxInRight];
-        } else {
-          colIdx = position[1];
-        }
-      }
-
-      var currentCell = self.table.cells(function(idx, data, node) {
-        return idx.column === colIdx && idx.row ===  rowIdx;
-      });
-      var currentCellNodes = $(currentCell.nodes());
-
-      var isCurrentCellSelected = currentCellNodes.hasClass('selected');
-
-      if (self.selected[rowIdx]) {
-        self.selected[rowIdx] = false;
-        $(self.table.row(rowIdx).node()).removeClass('selected');
-        self.selectFixedColumnRow(rowIdx, false);
-      }
-
-      $(self.table.cells().nodes()).removeClass('selected');
-      if (self.fixcols) {
-        _.each(self.selected, function(selected, index){
-          if(!selected){
-            self.selectFixedColumnRow(index, false);
-          }
-        });
-      }
-      if (!isCurrentCellSelected) {
-        currentCellNodes.addClass('selected');
-        if(iPos === undefined) {
-          self.selectFixedColumnCell($(this), true);
-        }
-      }
-
-      var index = currentCell.indexes()[0];
-      if (model.hasDoubleClickAction) {
-        tableService.onDoubleClick(model['update_id'],
-          index.row,
-          index.column - 1,
-          self.model.getEvaluatorId()).then(function() {
-          self.update = true;
-        });
-      }
-
-      if (!_.isEmpty(model.doubleClickTag)) {
-        var params = {
-          actionType: 'DOUBLE_CLICK',
-          row: index.row,
-          col: index.column - 1
-        };
-        tableService.setActionDetails(model['update_id'],
-          self.model.getEvaluatorId(),
-          params).then(function() {
-          self.evaluateTagCell(model.doubleClickTag);
-        });
-      }
-
-      e.stopPropagation();
-    });
 
     $(id + ' tbody').on('click', 'tr', function(event) {
       if (!self.table) { return; }
@@ -2798,11 +2693,10 @@ define([
   };
 
   TableScope.prototype.buildTemplate = function() {
-    var tmpl = '<div id="'+this.wrapperId+'">' +
-               buildTemplate(this.id) +
-               '</div>';
+    var templateString = require('./table.html');
+    var compiled = _.template(templateString);
 
-    return tmpl;
+    return compiled({ scopeId: this.id, wrapperId: this.wrapperId });
   };
 
   TableScope.prototype.setElement = function(el) {
@@ -3056,6 +2950,8 @@ define([
   };
 
   // ---------
+  // Add column reset methods
+  require('./columnReset')(TableScope);
 
   return TableScope;
 

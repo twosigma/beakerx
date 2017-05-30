@@ -47,7 +47,7 @@ public abstract class ChartDetails extends BeakerxWidget {
   
   protected void openComm() {
     super.openComm();
-    getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails);
+    //getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails);
   }
   
   private void handleSetDetails(Message message) {

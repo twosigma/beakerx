@@ -25,6 +25,10 @@ import java.io.IOException;
 
 public class ValueStringFormatSerializer extends JsonSerializer<ValueStringFormat> {
 
+  public static final String VALUES = "values";
+  public static final String TYPE = "type";
+  public static final String VALUE_STRING = "value";
+
   @Override
   public void serialize(ValueStringFormat value,
                         JsonGenerator jgen,
@@ -33,8 +37,8 @@ public class ValueStringFormatSerializer extends JsonSerializer<ValueStringForma
 
     synchronized (value) {
       jgen.writeStartObject();
-      jgen.writeObjectField("type", "value");
-      jgen.writeObjectField("values", value.getValues());
+      jgen.writeObjectField(TYPE, VALUE_STRING);
+      jgen.writeObjectField(VALUES, value.getValues());
       jgen.writeEndObject();
     }
   }

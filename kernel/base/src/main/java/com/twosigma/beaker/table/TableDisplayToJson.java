@@ -20,9 +20,21 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.twosigma.beaker.table.format.DecimalStringFormat;
+import com.twosigma.beaker.table.format.TimeStringFormat;
 import com.twosigma.beaker.table.format.ValueStringFormat;
+import com.twosigma.beaker.table.highlight.HeatmapHighlighter;
+import com.twosigma.beaker.table.highlight.ThreeColorHeatmapHighlighter;
+import com.twosigma.beaker.table.highlight.UniqueEntriesHighlighter;
+import com.twosigma.beaker.table.highlight.ValueHighlighter;
+import com.twosigma.beaker.table.renderer.DataBarsRenderer;
+import com.twosigma.beaker.table.serializer.DataBarsRendererSerializer;
 import com.twosigma.beaker.table.serializer.DecimalStringFormatSerializer;
+import com.twosigma.beaker.table.serializer.HeatmapHighlighterSerializer;
 import com.twosigma.beaker.table.serializer.TableDisplaySerializer;
+import com.twosigma.beaker.table.serializer.ThreeColorHeatmapHighlighterSerializer;
+import com.twosigma.beaker.table.serializer.TimeStringFormatSerializer;
+import com.twosigma.beaker.table.serializer.UniqueEntriesHighlighterSerializer;
+import com.twosigma.beaker.table.serializer.ValueHighlighterSerializer;
 import com.twosigma.beaker.table.serializer.ValueStringFormatSerializer;
 
 import java.util.Map;
@@ -36,8 +48,14 @@ public class TableDisplayToJson {
   static {
     SimpleModule module = new SimpleModule("TableDisplaySerializer", new Version(1, 0, 0, null));
     module.addSerializer(TableDisplay.class, new TableDisplaySerializer());
-    module.addSerializer(DecimalStringFormat.class, new DecimalStringFormatSerializer());
     module.addSerializer(ValueStringFormat.class, new ValueStringFormatSerializer());
+    module.addSerializer(DecimalStringFormat.class, new DecimalStringFormatSerializer());
+    module.addSerializer(TimeStringFormat.class, new TimeStringFormatSerializer());
+    module.addSerializer(DataBarsRenderer.class, new DataBarsRendererSerializer());
+    module.addSerializer(HeatmapHighlighter.class, new HeatmapHighlighterSerializer());
+    module.addSerializer(ThreeColorHeatmapHighlighter.class, new ThreeColorHeatmapHighlighterSerializer());
+    module.addSerializer(UniqueEntriesHighlighter.class, new UniqueEntriesHighlighterSerializer());
+    module.addSerializer(ValueHighlighter.class, new ValueHighlighterSerializer());
 
     mapper = new ObjectMapper();
     mapper.enable(WRITE_ENUMS_USING_TO_STRING);

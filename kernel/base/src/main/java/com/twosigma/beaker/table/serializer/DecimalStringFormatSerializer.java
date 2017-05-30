@@ -28,6 +28,7 @@ public class DecimalStringFormatSerializer extends JsonSerializer<DecimalStringF
   public static final String TYPE = "type";
   public static final String MIN_DECIMALS = "minDecimals";
   public static final String MAX_DECIMALS = "maxDecimals";
+  public static final String VALUE_DECIMAL = "decimal";
 
   @Override
   public void serialize(DecimalStringFormat value,
@@ -37,7 +38,7 @@ public class DecimalStringFormatSerializer extends JsonSerializer<DecimalStringF
 
     synchronized (value) {
       jgen.writeStartObject();
-      jgen.writeObjectField(TYPE, "decimal");
+      jgen.writeObjectField(TYPE, VALUE_DECIMAL);
       jgen.writeObjectField(MIN_DECIMALS, value.getMinDecimals());
       jgen.writeObjectField(MAX_DECIMALS, value.getMaxDecimals());
       jgen.writeEndObject();

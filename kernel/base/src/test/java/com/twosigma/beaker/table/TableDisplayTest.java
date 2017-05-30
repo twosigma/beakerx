@@ -19,7 +19,9 @@ package com.twosigma.beaker.table;
 import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.XYChart;
+import com.twosigma.beaker.fileloader.CsvPlotReader;
 import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.jvm.serialization.DateSerializer;
 import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 import com.twosigma.beaker.table.highlight.HeatmapHighlighter;
 import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
@@ -46,6 +48,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.twosigma.beaker.fileloader.CsvPlotReaderTest.TABLE_ROWS_TEST_CSV;
+import static com.twosigma.beaker.fileloader.CsvPlotReaderTest.getOsAppropriatePath;
 import static com.twosigma.beaker.table.serializer.DecimalStringFormatSerializer.MAX_DECIMALS;
 import static com.twosigma.beaker.table.serializer.DecimalStringFormatSerializer.MIN_DECIMALS;
 import static com.twosigma.beaker.table.serializer.ObservableTableDisplaySerializer.DOUBLE_CLICK_TAG;
@@ -109,7 +113,7 @@ public class TableDisplayTest {
     //then
     assertThat(tableDisplay.getAlignmentForColumn().get(COL_1)).isEqualTo(centerAlignment);
     Map actual = getValueAsMap(getModel(), ALIGNMENT_FOR_COLUMN);
-    String value = (String)actual.get(COL_1) ;
+    String value = (String) actual.get(COL_1);
     assertThat(value).isEqualTo(TableDisplayAlignmentProvider.CENTER_ALIGNMENT.toString());
   }
 
@@ -246,7 +250,7 @@ public class TableDisplayTest {
     //then
     assertThat(tableDisplay.getCellHighlighters().get(0)).isEqualTo(heatmapHighlighter);
     List actual = getValueAsList(getModel(), CELL_HIGHLIGHTERS);
-    Map column = (Map)actual.get(0);
+    Map column = (Map) actual.get(0);
     assertThat(column.get(HeatmapHighlighterSerializer.TYPE)).isEqualTo(HeatmapHighlighter.class.getSimpleName());
     assertThat(column.get(HeatmapHighlighterSerializer.STYLE)).isEqualTo(TableDisplayCellHighlighter.FULL_ROW.toString());
   }
@@ -260,7 +264,7 @@ public class TableDisplayTest {
     //then
     assertThat(tableDisplay.getCellHighlighters().get(0)).isEqualTo(highlighter);
     List actual = getValueAsList(getModel(), CELL_HIGHLIGHTERS);
-    Map column = (Map)actual.get(0);
+    Map column = (Map) actual.get(0);
     assertThat(column.get(ThreeColorHeatmapHighlighterSerializer.TYPE)).isEqualTo(ThreeColorHeatmapHighlighter.class.getSimpleName());
     assertThat(column.get(ThreeColorHeatmapHighlighterSerializer.STYLE)).isEqualTo(TableDisplayCellHighlighter.SINGLE_COLUMN.toString());
     assertThat(column.get(ThreeColorHeatmapHighlighterSerializer.MID_VAL)).isEqualTo(6);
@@ -276,7 +280,7 @@ public class TableDisplayTest {
     //then
     assertThat(tableDisplay.getCellHighlighters().get(0)).isEqualTo(highlighter);
     List actual = getValueAsList(getModel(), CELL_HIGHLIGHTERS);
-    Map column = (Map)actual.get(0);
+    Map column = (Map) actual.get(0);
     assertThat(column.get(UniqueEntriesHighlighterSerializer.TYPE)).isEqualTo(UniqueEntriesHighlighter.class.getSimpleName());
     assertThat(column.get(UniqueEntriesHighlighterSerializer.STYLE)).isEqualTo(TableDisplayCellHighlighter.FULL_ROW.toString());
     assertThat(column.get(UniqueEntriesHighlighterSerializer.COL_NAME)).isEqualTo(COL_1);
@@ -292,7 +296,7 @@ public class TableDisplayTest {
     //then
     assertThat(tableDisplay.getCellHighlighters().get(0)).isEqualTo(highlighter);
     List actual = getValueAsList(getModel(), CELL_HIGHLIGHTERS);
-    Map column = (Map)actual.get(0);
+    Map column = (Map) actual.get(0);
     assertThat(column.get(ValueHighlighterSerializer.TYPE)).isEqualTo(ValueHighlighter.class.getSimpleName());
     assertThat(column.get(ValueHighlighterSerializer.COL_NAME)).isEqualTo(COL_1);
     assertThat(column.get(ValueHighlighterSerializer.COLORS)).isNotNull();
@@ -304,8 +308,9 @@ public class TableDisplayTest {
     tableDisplay.addCellHighlighter(new ClosureTest() {
       @Override
       public Color call(Object row, Object col, Object tbl) {
-        return ((int)row%2 == 0) ? Color.GREEN : Color.BLUE;
+        return ((int) row % 2 == 0) ? Color.GREEN : Color.BLUE;
       }
+
       @Override
       public int getMaximumNumberOfParameters() {
         return 3;
@@ -313,7 +318,7 @@ public class TableDisplayTest {
     });
     //then
     List actual = getValueAsList(getModel(), CELL_HIGHLIGHTERS);
-    Map column = (Map)actual.get(0);
+    Map column = (Map) actual.get(0);
     assertThat(column.get(ValueHighlighterSerializer.TYPE)).isEqualTo(ValueHighlighter.class.getSimpleName());
   }
 
@@ -324,8 +329,9 @@ public class TableDisplayTest {
     tableDisplay.setToolTip(new ClosureTest() {
       @Override
       public String call(Object row, Object col, Object tbl) {
-        return ((int)row%2 == 0) ? "even row" : "odd row";
+        return ((int) row % 2 == 0) ? "even row" : "odd row";
       }
+
       @Override
       public int getMaximumNumberOfParameters() {
         return 3;
@@ -341,8 +347,9 @@ public class TableDisplayTest {
     tableDisplay.setFontColorProvider(new ClosureTest() {
       @Override
       public Color call(Object row, Object col, Object tbl) {
-        return ((int)row%2 == 0) ? Color.GREEN : Color.BLUE;
+        return ((int) row % 2 == 0) ? Color.GREEN : Color.BLUE;
       }
+
       @Override
       public int getMaximumNumberOfParameters() {
         return 3;
@@ -358,8 +365,9 @@ public class TableDisplayTest {
     tableDisplay.setRowFilter(new ClosureTest() {
       @Override
       public Boolean call(Object row, Object tbl) {
-        return ((int)row == 1);
+        return ((int) row == 1);
       }
+
       @Override
       public int getMaximumNumberOfParameters() {
         return 2;
@@ -426,10 +434,10 @@ public class TableDisplayTest {
     //then
     Map actual = getValueAsMap(getModel(), STRING_FORMAT_FOR_COLUMN);
     Map column = getValueAsMap(actual, COL_1);
-    Map values = getValueAsMap( column, VALUES);
-    String type = (String)column.get(TYPE);
+    Map values = getValueAsMap(column, VALUES);
+    String type = (String) column.get(TYPE);
     assertThat(type).isEqualTo(VALUE_STRING);
-    ArrayList valuesForColumn = (ArrayList)values.get(COL_1);
+    ArrayList valuesForColumn = (ArrayList) values.get(COL_1);
     assertThat(valuesForColumn.get(0)).isEqualTo(":(");
     assertThat(valuesForColumn.get(1)).isEqualTo(":(");
   }
@@ -464,7 +472,7 @@ public class TableDisplayTest {
   @Test
   public void shouldSendCommMsgWhenDecimalFormatForTypeChange() throws Exception {
     //given
-    TableDisplayStringFormat decimalFormat = TableDisplayStringFormat.getDecimalFormat(9,9);
+    TableDisplayStringFormat decimalFormat = TableDisplayStringFormat.getDecimalFormat(9, 9);
     //when
     tableDisplay.setStringFormatForType(ColumnType.Double, decimalFormat);
     //then
@@ -603,6 +611,21 @@ public class TableDisplayTest {
             TableDisplay.getValuesAsDictionary(Arrays.asList(Arrays.asList("k1", 1), Arrays.asList("k2", 2)));
     //then
     assertThat(dictionary).isNotEmpty();
+  }
+
+  @Test
+  public void shouldContainTime() throws Exception {
+    //given
+    //when
+    TableDisplay tableDisplay = new TableDisplay(new CsvPlotReader().readAsList(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV)));
+    //then
+    assertThat(tableDisplay.getTypes()).contains(CsvPlotReader.TIME_COLUMN);
+    LinkedHashMap model = getModel();
+    List values = (List)model.get(VALUES);
+    List row0 = (List)values.get(0);
+    Map date = (Map)row0.get(7);
+    assertThat(date.get(DateSerializer.TYPE)).isEqualTo(DateSerializer.VALUE_DATE);
+    assertThat(date.get(DateSerializer.TIMESTAMP)).isNotNull();
   }
 
   private List<Map<?, ?>> getListOfMapsData() {

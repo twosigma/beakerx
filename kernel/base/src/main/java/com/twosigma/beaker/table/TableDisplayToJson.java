@@ -19,6 +19,7 @@ package com.twosigma.beaker.table;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.twosigma.beaker.jvm.serialization.DateSerializer;
 import com.twosigma.beaker.table.format.DecimalStringFormat;
 import com.twosigma.beaker.table.format.TimeStringFormat;
 import com.twosigma.beaker.table.format.ValueStringFormat;
@@ -37,6 +38,7 @@ import com.twosigma.beaker.table.serializer.UniqueEntriesHighlighterSerializer;
 import com.twosigma.beaker.table.serializer.ValueHighlighterSerializer;
 import com.twosigma.beaker.table.serializer.ValueStringFormatSerializer;
 
+import java.util.Date;
 import java.util.Map;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
@@ -56,6 +58,8 @@ public class TableDisplayToJson {
     module.addSerializer(ThreeColorHeatmapHighlighter.class, new ThreeColorHeatmapHighlighterSerializer());
     module.addSerializer(UniqueEntriesHighlighter.class, new UniqueEntriesHighlighterSerializer());
     module.addSerializer(ValueHighlighter.class, new ValueHighlighterSerializer());
+    module.addSerializer(Date.class, new DateSerializer());
+
 
     mapper = new ObjectMapper();
     mapper.enable(WRITE_ENUMS_USING_TO_STRING);

@@ -25,6 +25,8 @@ import java.io.IOException;
 public class DataBarsRendererSerializer extends JsonSerializer<DataBarsRenderer> {
 
   public static final String INCLUDE_TEXT = "includeText";
+  public static final String TYPE = "type";
+  public static final String VALUE_DATA_BARS = "DataBars";
 
   @Override
   public void serialize(DataBarsRenderer value,
@@ -34,7 +36,7 @@ public class DataBarsRendererSerializer extends JsonSerializer<DataBarsRenderer>
 
     synchronized (value) {
       jgen.writeStartObject();
-      jgen.writeObjectField("type", "DataBars");
+      jgen.writeObjectField(TYPE, VALUE_DATA_BARS);
       jgen.writeObjectField(INCLUDE_TEXT, value.getIncludeText());
       jgen.writeEndObject();
     }

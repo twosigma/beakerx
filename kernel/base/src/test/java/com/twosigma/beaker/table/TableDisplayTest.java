@@ -21,7 +21,9 @@ import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
-import org.assertj.core.api.Assertions;
+import com.twosigma.beaker.table.serializer.DataBarsRendererSerializer;
+import com.twosigma.beaker.table.serializer.DecimalStringFormatSerializer;
+import com.twosigma.beaker.table.serializer.TimeStringFormatSerializer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.twosigma.beaker.table.serializer.DecimalStringFormatSerializer.MAX_DECIMALS;
+import static com.twosigma.beaker.table.serializer.DecimalStringFormatSerializer.MIN_DECIMALS;
 import static com.twosigma.beaker.table.serializer.ObservableTableDisplaySerializer.DOUBLE_CLICK_TAG;
 import static com.twosigma.beaker.table.serializer.ObservableTableDisplaySerializer.HAS_DOUBLE_CLICK_ACTION;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.ALIGNMENT_FOR_COLUMN;
@@ -55,6 +59,7 @@ import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.TABLE_
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.TIME_ZONE;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.TYPE;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.VALUES;
+import static com.twosigma.beaker.table.serializer.ValueStringFormatSerializer.VALUE_STRING;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.findValueForProperty;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
@@ -89,8 +94,9 @@ public class TableDisplayTest {
     tableDisplay.setAlignmentProviderForColumn(COL_1, centerAlignment);
     //then
     assertThat(tableDisplay.getAlignmentForColumn().get(COL_1)).isEqualTo(centerAlignment);
-    LinkedHashMap model = getModel();
-    assertThat(model.get(ALIGNMENT_FOR_COLUMN)).isNotNull();
+    Map actual = getValueAsMap(getModel(), ALIGNMENT_FOR_COLUMN);
+    String value = (String)actual.get(COL_1) ;
+    assertThat(value).isEqualTo(TableDisplayAlignmentProvider.CENTER_ALIGNMENT.toString());
   }
 
   @Test
@@ -145,7 +151,7 @@ public class TableDisplayTest {
     tableDisplay.setColumnVisible(COL_1, true);
     //then
     assertThat(tableDisplay.getColumnsVisible().get(COL_1)).isEqualTo(true);
-    assertThat(getValueAsMap(COLUMNS_VISIBLE).get(COL_1)).isEqualTo(true);
+    assertThat(getValueAsMap(getModel(), COLUMNS_VISIBLE).get(COL_1)).isEqualTo(true);
   }
 
   @Test
@@ -225,8 +231,10 @@ public class TableDisplayTest {
     tableDisplay.setRendererForColumn(COL_1, dataBarsRenderer);
     //then
     assertThat(tableDisplay.getRendererForColumn().get(COL_1)).isEqualTo(dataBarsRenderer);
-    LinkedHashMap model = getModel();
-    assertThat(model.get(RENDERER_FOR_COLUMN)).isNotNull();
+    Map actual = getValueAsMap(getModel(), RENDERER_FOR_COLUMN);
+    Map column = getValueAsMap(actual, COL_1);
+    assertThat(column.get(DataBarsRendererSerializer.TYPE)).isEqualTo(DataBarsRendererSerializer.VALUE_DATA_BARS);
+    assertThat(column.get(DataBarsRendererSerializer.INCLUDE_TEXT)).isEqualTo(true);
   }
 
   @Test
@@ -254,6 +262,32 @@ public class TableDisplayTest {
   }
 
   @Test
+  public void shouldSendCommMsgWhenClojureFormatForColumnChange() throws Exception {
+    //given
+    //when
+    tableDisplay.setStringFormatForColumn(COL_1, new ClosureTest() {
+      @Override
+      public String call(Object value, Object row, Object col, Object tableDisplay) {
+        return ((float) value < 8) ? ":(" : ":)";
+      }
+
+      @Override
+      public int getMaximumNumberOfParameters() {
+        return 4;
+      }
+    });
+    //then
+    Map actual = getValueAsMap(getModel(), STRING_FORMAT_FOR_COLUMN);
+    Map column = getValueAsMap(actual, COL_1);
+    Map values = getValueAsMap( column, VALUES);
+    String type = (String)column.get(TYPE);
+    assertThat(type).isEqualTo(VALUE_STRING);
+    ArrayList valuesForColumn = (ArrayList)values.get(COL_1);
+    assertThat(valuesForColumn.get(0)).isEqualTo(":(");
+    assertThat(valuesForColumn.get(1)).isEqualTo(":(");
+  }
+
+  @Test
   public void shouldSendCommMsgWhenStringFormatForTimesChange() throws Exception {
     //given
     TimeUnit days = TimeUnit.DAYS;
@@ -273,8 +307,25 @@ public class TableDisplayTest {
     tableDisplay.setStringFormatForType(ColumnType.String, timeFormat);
     //then
     assertThat(tableDisplay.getStringFormatForType()).isNotNull();
-    LinkedHashMap model = getModel();
-    assertThat(model.get(STRING_FORMAT_FOR_TYPE)).isNotNull();
+    Map actual = getValueAsMap(getModel(), STRING_FORMAT_FOR_TYPE);
+    Map column = getValueAsMap(actual, ColumnType.String.toString());
+    assertThat(column.get(TimeStringFormatSerializer.TYPE)).isEqualTo(TimeStringFormatSerializer.VALUE_TIME);
+    assertThat(column.get(TimeStringFormatSerializer.UNIT)).isNotNull();
+    assertThat(column.get(TimeStringFormatSerializer.HUMAN_FRIENDLY)).isNotNull();
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenDecimalFormatForTypeChange() throws Exception {
+    //given
+    TableDisplayStringFormat decimalFormat = TableDisplayStringFormat.getDecimalFormat(9,9);
+    //when
+    tableDisplay.setStringFormatForType(ColumnType.Double, decimalFormat);
+    //then
+    Map actual = getValueAsMap(getModel(), STRING_FORMAT_FOR_TYPE);
+    Map column = getValueAsMap(actual, ColumnType.Double.toString());
+    assertThat(column.get(DecimalStringFormatSerializer.TYPE)).isEqualTo(DecimalStringFormatSerializer.VALUE_DECIMAL);
+    assertThat(column.get(MIN_DECIMALS)).isEqualTo(9);
+    assertThat(column.get(MAX_DECIMALS)).isEqualTo(9);
   }
 
   @Test
@@ -296,9 +347,9 @@ public class TableDisplayTest {
     kernel.clearSentMessages();
     ArrayList<Map<?, ?>> v = new ArrayList<>();
     //when
-    TableDisplay tableDisplay =  new TableDisplay(v);
+    TableDisplay tableDisplay = new TableDisplay(v);
     //then
-    verifyOpenCommMsgWitoutLayout(kernel.getPublishedMessages(),TableDisplay.MODEL_NAME_VALUE,TableDisplay.VIEW_NAME_VALUE);
+    verifyOpenCommMsgWitoutLayout(kernel.getPublishedMessages(), TableDisplay.MODEL_NAME_VALUE, TableDisplay.VIEW_NAME_VALUE);
     Map valueForProperty = getValueForProperty(kernel.getPublishedMessages().get(1), TableDisplay.MODEL, Map.class);
     assertThat(valueForProperty.get(TYPE)).isEqualTo(TABLE_DISPLAY);
     assertThat(tableDisplay.getValues()).isEqualTo(v);
@@ -311,10 +362,10 @@ public class TableDisplayTest {
     //when
     TableDisplay tableDisplay = new TableDisplay(getListOfMapsData());
     //then
-    Assertions.assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.LIST_OF_MAPS_SUBTYPE);
-    Assertions.assertThat(tableDisplay.getValues().size()).isEqualTo(2);
-    Assertions.assertThat(tableDisplay.getColumnNames().size()).isEqualTo(3);
-    Assertions.assertThat(tableDisplay.getTypes().size()).isEqualTo(3);
+    assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.LIST_OF_MAPS_SUBTYPE);
+    assertThat(tableDisplay.getValues().size()).isEqualTo(2);
+    assertThat(tableDisplay.getColumnNames().size()).isEqualTo(3);
+    assertThat(tableDisplay.getTypes().size()).isEqualTo(3);
   }
 
   @Test
@@ -323,10 +374,10 @@ public class TableDisplayTest {
     TableDisplay tableDisplay =
             new TableDisplay(Arrays.asList(getRowData(), getRowData()), getStringList(), getStringList());
     //then
-    Assertions.assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.TABLE_DISPLAY_SUBTYPE);
-    Assertions.assertThat(tableDisplay.getValues().size()).isEqualTo(2);
-    Assertions.assertThat(tableDisplay.getColumnNames().size()).isEqualTo(3);
-    Assertions.assertThat(tableDisplay.getTypes().size()).isEqualTo(3);
+    assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.TABLE_DISPLAY_SUBTYPE);
+    assertThat(tableDisplay.getValues().size()).isEqualTo(2);
+    assertThat(tableDisplay.getColumnNames().size()).isEqualTo(3);
+    assertThat(tableDisplay.getTypes().size()).isEqualTo(3);
   }
 
   @Test
@@ -334,10 +385,10 @@ public class TableDisplayTest {
     //when
     TableDisplay tableDisplay = new TableDisplay(getMapData());
     //then
-    Assertions.assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.DICTIONARY_SUBTYPE);
-    Assertions.assertThat(tableDisplay.getValues().size()).isEqualTo(3);
-    Assertions.assertThat(tableDisplay.getColumnNames().size()).isEqualTo(2);
-    Assertions.assertThat(tableDisplay.getTypes().size()).isEqualTo(0);
+    assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.DICTIONARY_SUBTYPE);
+    assertThat(tableDisplay.getValues().size()).isEqualTo(3);
+    assertThat(tableDisplay.getColumnNames().size()).isEqualTo(2);
+    assertThat(tableDisplay.getTypes().size()).isEqualTo(0);
   }
 
   @Test
@@ -345,7 +396,7 @@ public class TableDisplayTest {
     //when
     TableDisplay tableDisplay = new TableDisplay(getListOfMapsData());
     //then
-    Assertions.assertThat(tableDisplay.getComm()).isNotNull();
+    assertThat(tableDisplay.getComm()).isNotNull();
   }
 
   @Test
@@ -355,8 +406,8 @@ public class TableDisplayTest {
     //when
     List<Map<String, Object>> rows = tableDisplay.getValuesAsRows();
     //then
-    Assertions.assertThat(rows.size()).isEqualTo(2);
-    Assertions.assertThat(rows.get(0).size()).isEqualTo(3);
+    assertThat(rows.size()).isEqualTo(2);
+    assertThat(rows.get(0).size()).isEqualTo(3);
   }
 
   @Test
@@ -365,8 +416,8 @@ public class TableDisplayTest {
     List<Map<String, Object>> rows =
             TableDisplay.getValuesAsRows(Arrays.asList(getRowData(), getRowData()), getStringList());
     //then
-    Assertions.assertThat(rows.size()).isEqualTo(2);
-    Assertions.assertThat(rows.get(0).size()).isEqualTo(3);
+    assertThat(rows.size()).isEqualTo(2);
+    assertThat(rows.get(0).size()).isEqualTo(3);
   }
 
   @Test
@@ -376,7 +427,7 @@ public class TableDisplayTest {
     //when
     List<List<?>> values = tableDisplay.getValuesAsMatrix();
     //then
-    Assertions.assertThat(values).isNotEmpty();
+    assertThat(values).isNotEmpty();
   }
 
   @Test
@@ -385,7 +436,7 @@ public class TableDisplayTest {
     List<List<?>> values =
             TableDisplay.getValuesAsMatrix(Arrays.asList(getStringList(), getRowData()));
     //then
-    Assertions.assertThat(values).isNotEmpty();
+    assertThat(values).isNotEmpty();
   }
 
   @Test
@@ -395,7 +446,7 @@ public class TableDisplayTest {
     //when
     Map<String, Object> dictionary = tableDisplay.getValuesAsDictionary();
     //then
-    Assertions.assertThat(dictionary).isNotEmpty();
+    assertThat(dictionary).isNotEmpty();
   }
 
   @Test
@@ -404,7 +455,7 @@ public class TableDisplayTest {
     Map<String, Object> dictionary =
             TableDisplay.getValuesAsDictionary(Arrays.asList(Arrays.asList("k1", 1), Arrays.asList("k2", 2)));
     //then
-    Assertions.assertThat(dictionary).isNotEmpty();
+    assertThat(dictionary).isNotEmpty();
   }
 
   private List<Map<?, ?>> getListOfMapsData() {
@@ -454,8 +505,7 @@ public class TableDisplayTest {
     return findValueForProperty(kernel, XYChart.MODEL, LinkedHashMap.class);
   }
 
-  protected Map getValueAsMap(final String field) {
-    LinkedHashMap model = getModel();
+  protected Map getValueAsMap(final Map model, final String field) {
     return (Map) model.get(field);
   }
 

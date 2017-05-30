@@ -688,7 +688,7 @@ define([
       });
 
       self.cellHighlightersData = model.cellHighlighters ? _.map(model.cellHighlighters, function(highlighter){
-        return _.extend({colInd: self.getColumnIndexByColName(highlighter.colName)}, highlighter);
+        return _.extend({ colInd: self.getColumnIndexByColName(highlighter.colName) }, highlighter);
       }) : {};
       self.tableFilter       = '';
       self.columnFilter      = [];
@@ -725,35 +725,16 @@ define([
     }
     // auto compute types
     if (self.actualtype === undefined || self.actualtype.length === 0) {
+      var typesAndAlignments;
+
       self.actualtype = [];
       self.actualalign = [];
+
       for (i = 0; i < self.columnNames.length; i++) {
-        if (self.types !== undefined) {
-          var stringFormatForColumn =  self.stringFormatForColumn[self.columnNames[i]];
-          if (stringFormatForColumn && stringFormatForColumn.type === 'value'){
-            self.actualtype.push(0);
-            self.actualalign.push('L');
-          } else if (self.types[i] === 'time' || self.types[i] === 'datetime') {
-            self.actualtype.push(8);
-            self.actualalign.push('C');
-          } else if (self.types[i] === 'integer') {
-            self.actualtype.push(2);
-            self.actualalign.push('R');
-          } else if (self.types[i] === 'double') {
-            if (self.stringFormatForType.double || stringFormatForColumn) {
-              self.actualtype.push(3);
-            } else {
-              self.actualtype.push('4.3');
-            }
-            self.actualalign.push('R');
-          } else {
-            self.actualtype.push(0);
-            self.actualalign.push('L');
-          }
-        } else {
-          self.actualtype.push(0);
-          self.actualalign.push('L');
-        }
+        typesAndAlignments = self.getColumnTypeAndAlignment(i + 1);
+
+        self.actualtype.push(typesAndAlignments.actualtype);
+        self.actualalign.push(typesAndAlignments.actualalign);
       }
 
       if (!_.isEmpty(model.alignmentForType)) {
@@ -797,6 +778,54 @@ define([
       show: { delay: 300, duration: 300 },
       position: { my: 'left bottom', at: 'center top' }
     });
+  };
+
+  TableScope.prototype.getColumnTypeAndAlignment = function(colIdx) {
+    var self = this;
+    var index = colIdx - 1;
+    var defaultResult = {
+      actualtype: 0,
+      actualalign: 'L'
+    };
+
+    if (!self.types) {
+      return defaultResult;
+    }
+
+    var stringFormatForColumn =  self.stringFormatForColumn[self.columnNames[index]];
+    if (stringFormatForColumn && stringFormatForColumn.type === 'value'){
+      return defaultResult;
+    }
+
+    if (self.types[index] === 'time' || self.types[index] === 'datetime') {
+      return {
+        actualtype: 8,
+        actualalign: 'C'
+      };
+    }
+
+    if (self.types[index] === 'integer') {
+      return {
+        actualtype: 2,
+        actualalign: 'R'
+      };
+    }
+
+    if (self.types[index] === 'double') {
+      if (self.stringFormatForType.double || stringFormatForColumn) {
+        return {
+          actualtype: 3,
+          actualalign: 'R'
+        };
+      }
+
+      return {
+        actualtype: '4.3',
+        actualalign: 'R'
+      };
+    }
+
+    return defaultResult;
   };
 
   TableScope.prototype.doCreateData = function(model) {
@@ -1002,7 +1031,7 @@ define([
       });
       var cellHighlighter = self.cellHighlighters[colInd];
       if (cellHighlighter) {
-        cellHighlighter.doHighlight(self.table);
+        cellHighlighter.doHighlight(self);
       }
     }
   };
@@ -1059,23 +1088,23 @@ define([
     _.defer(function() { self.table.draw(false);  });
   };
 
-  TableScope.prototype.showHideHighlighter = function(column, highlighterType){
+  TableScope.prototype.showHideHighlighter = function(columnIndex, highlighterType){
     var self = this;
-    var highlighter = self.cellHighlighters[column];
+    var highlighter = self.cellHighlighters[columnIndex];
     if (!highlighter || !(highlighter instanceof highlighterType)) {
       if (highlighter) {
-        highlighter.removeHighlight(self.table);
+        highlighter.removeHighlight(self);
       }
-      self.cellHighlighters[column] = new highlighterType({colInd: column});
+      self.cellHighlighters[columnIndex] = new highlighterType({ colInd: columnIndex });
     } else {
-      highlighter.removeHighlight(self.table);
-      delete self.cellHighlighters[column];
+      highlighter.removeHighlight(self);
+      delete self.cellHighlighters[columnIndex];
     }
     _.defer(function() { self.table.draw(false);  });
   };
 
-  TableScope.prototype.showHideHeatmap = function(column) {
-    this.showHideHighlighter(column, cellHighlighters.HeatmapHighlighter);
+  TableScope.prototype.showHideHeatmap = function(columnIndex) {
+    this.showHideHighlighter(columnIndex, cellHighlighters.HeatmapHighlighter);
   };
 
   TableScope.prototype.columnHasFormat = function(column, format) {
@@ -1293,7 +1322,7 @@ define([
           self.showHideBars(self.colorder[column]);
           break;
         case 'H':
-          self.showHideHeatmap(self.colorder[column]);
+          self.showHideHeatmap(column);
           break;
       }
       if (key >= 48 && key <= 57){ //numbers 1..9
@@ -1556,7 +1585,7 @@ define([
       'processing': true,
       'autoWidth': true,
       'ordering': true,
-      'order': self.tableOrder ? _.cloneDeep(self.tableOrder) : [],
+      'order': self.tableOrder ? _.clone(self.tableOrder) : [],
       'scrollX': '10%',
       'searching': true,
       'deferRender': true,
@@ -2924,6 +2953,8 @@ define([
   };
 
   // ---------
+  // Add column reset methods
+  require('./columnReset')(TableScope);
 
   return TableScope;
 

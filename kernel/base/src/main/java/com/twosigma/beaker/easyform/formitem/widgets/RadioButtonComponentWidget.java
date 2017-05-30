@@ -20,52 +20,59 @@ import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;
 import com.twosigma.beaker.widgets.selections.RadioButtons;
+import com.twosigma.beaker.widgets.box.Box;
+import com.twosigma.beaker.widgets.box.HBox;
+import com.twosigma.beaker.widgets.box.VBox;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
+import java.util.List;
+
+import static java.util.Arrays.asList;
 
 public class RadioButtonComponentWidget extends RadioButtonComponent implements CommFunctionality, EasyFormWidget {
 
-  private RadioButtons widget;
+  private Box widget;
+  private RadioButtons radioButtons;
 
   public RadioButtonComponentWidget() {
-    this.widget = new RadioButtons();
+    this.radioButtons = new RadioButtons();
   }
 
   @Override
   public String getLabel() {
-    return widget.getDescription();
+    return radioButtons.getDescription();
   }
 
   @Override
   public Comm getComm() {
-    return widget.getComm();
+    return this.widget.getComm();
   }
 
   @Override
   public void setLabel(String label) {
-    this.widget.setDescription(label);
+    this.radioButtons.setDescription(label);
   }
 
   @Override
   public String getValue() {
-    return this.widget.getValue();
+    return this.radioButtons.getValue();
   }
 
   @Override
   public void setValue(String value) {
-    this.widget.setValue(value);
+    this.radioButtons.setValue(value);
   }
 
   @Override
   public void setValues(Collection<String> values) {
-    this.widget.setOptions(values.stream().toArray(String[]::new));
+    this.radioButtons.setOptions(values.stream().toArray(String[]::new));
   }
 
   @Override
   public Collection<String> getValues() {
-    return Arrays.stream(this.widget.getOptions()).map(x -> (String) x).collect(Collectors.toList());
+    return Arrays.stream(this.radioButtons.getOptions()).map(x -> (String) x).collect(Collectors.toList());
   }
 
   @Override
@@ -77,5 +84,9 @@ public class RadioButtonComponentWidget extends RadioButtonComponent implements 
   public void close() {
     getComm().close();
   }
-  
+
+  public void createWidget() {
+    List widgetList = asList(this.radioButtons);
+    this.widget = (getHorizontal()) ? new HBox(widgetList) : new VBox(widgetList);
+  }
 }

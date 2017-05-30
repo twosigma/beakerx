@@ -208,11 +208,12 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
                                            final Collection<String> values,
                                            final Integer orientation) throws Exception {
     RadioButtonComponentWidget radioButtonComponent = new RadioButtonComponentWidget();
-    radioButtonComponent.registerUpdateValueCallback(radioButtonComponent::fireChanged);
     radioButtonComponent.setLabel(label);
     radioButtonComponent.setHorizontal(
             orientation != null && EasyForm.HORIZONTAL.equals(orientation));
     radioButtonComponent.setValues(values);
+    radioButtonComponent.createWidget();
+    radioButtonComponent.registerUpdateValueCallback(radioButtonComponent::fireChanged);
     return addComponentOrThrow(label, radioButtonComponent);
   }
 

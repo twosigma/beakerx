@@ -77,8 +77,12 @@ public class PlotObjectSerializerTest {
 
   @Test
   public void serializeXYGraphics_returnTrue() throws Exception {
+    Bars obj = new Bars();
+    obj.setX(Arrays.asList(10, 20));
+    obj.setY(Arrays.asList(10, 20));
+    obj.setDisplayName("test display name");
     //when
-    boolean result = plotObjectSerializer.writeObject(new Bars(), jgen, true);
+    boolean result = plotObjectSerializer.writeObject(obj, jgen, true);
     //then
     Assertions.assertThat(result).isTrue();
   }

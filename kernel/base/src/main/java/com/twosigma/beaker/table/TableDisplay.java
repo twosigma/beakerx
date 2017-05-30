@@ -534,7 +534,7 @@ public class TableDisplay extends BeakerxWidget {
     this.doubleClickTag = null;
     this.doubleClickListener = listener;
     getComm().addMsgCallbackList((Handler<Message>)this::handleDoubleClick);
-    sendModel()
+    sendModel();
   }
 
   private void handleDoubleClick(Message message) {

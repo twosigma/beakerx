@@ -44,6 +44,7 @@ import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyInternalOpenComm
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
+import static com.twosigma.beaker.widgets.strings.TextTest.verifyTextField;
 import static com.twosigma.beaker.widgets.Widget.VALUE;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -221,7 +222,13 @@ public class EasyFormTest {
     easyForm.addTextField(label, 10);
     DisplayEasyForm.display(easyForm);
     //then
-    verifyTextField(kernel.getPublishedMessages());
+    verifyTextField(
+      kernel.getPublishedMessages(),
+      Text.MODEL_NAME_VALUE,
+      Text.MODEL_MODULE_VALUE,
+      Text.VIEW_NAME_VALUE,
+      Text.VIEW_MODULE_VALUE
+    );
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
     verifyDisplayMsg(kernel.getPublishedMessages());
   }
@@ -248,10 +255,6 @@ public class EasyFormTest {
 
   private void verifyDatePicker(List<Message> messages) {
     verifyInternalOpenCommMsgWitLayout(messages, DatePicker.MODEL_NAME_VALUE, DatePicker.VIEW_NAME_VALUE);
-  }
-
-  private void verifyTextField(List<Message> messages) {
-    verifyOpenCommMsg(messages, Text.MODEL_NAME_VALUE, Text.VIEW_NAME_VALUE);
   }
 
   private void verifyChildren(Message message, List<Widget> children) {

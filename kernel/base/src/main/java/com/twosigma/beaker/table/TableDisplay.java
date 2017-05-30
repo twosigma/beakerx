@@ -291,6 +291,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void addCellHighlighter(TableDisplayCellHighlighter cellHighlighter) {
     this.cellHighlighters.add(cellHighlighter);
+    sendModel();
   }
 
   public void addCellHighlighter(Object closure) {
@@ -309,7 +310,7 @@ public class TableDisplay extends BeakerxWidget {
           columnColors.add(color);
         }
         if (hasHighlightedValues) {
-          this.cellHighlighters.add(new ValueHighlighter(this.columns.get(colInd), columnColors));
+          addCellHighlighter(new ValueHighlighter(this.columns.get(colInd), columnColors));
         }
       }
     } catch (Throwable e) {

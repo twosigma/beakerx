@@ -45,6 +45,8 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
   public static final String VALUES = "values";
   public static final String TYPE = "type";
   public static final String TABLE_DISPLAY = "TableDisplay";
+  public static final String CELL_HIGHLIGHTERS = "cellHighlighters";
+  public static final String TOOLTIPS = "tooltips";
 
   public int ROWS_LIMIT = 10000;
   @Override
@@ -71,8 +73,8 @@ public class TableDisplaySerializer extends ObservableTableDisplaySerializer<Tab
       jgen.writeObjectField(COLUMNS_FROZEN_RIGHT, value.getColumnsFrozenRight());
       jgen.writeObjectField(COLUMNS_VISIBLE, value.getColumnsVisible());
       jgen.writeObjectField(COLUMN_ORDER, value.getColumnOrder());
-      jgen.writeObjectField("cellHighlighters", value.getCellHighlighters());
-      jgen.writeObjectField("tooltips", value.getTooltips());
+      jgen.writeObjectField(CELL_HIGHLIGHTERS, value.getCellHighlighters());
+      jgen.writeObjectField(TOOLTIPS, value.getTooltips());
       jgen.writeObjectField(DATA_FONT_SIZE, value.getDataFontSize());
       jgen.writeObjectField(HEADER_FONT_SIZE, value.getHeaderFontSize());
       jgen.writeObjectField(FONT_COLOR, value.getFontColor());

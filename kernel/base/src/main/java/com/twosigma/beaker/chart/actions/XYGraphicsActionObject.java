@@ -17,6 +17,8 @@
 package com.twosigma.beaker.chart.actions;
 
 public class XYGraphicsActionObject extends GraphicsActionObject {
+  
+  private static final long serialVersionUID = -1993185683556266629L;
   private int index;
 
   public int getIndex() {
@@ -26,4 +28,5 @@ public class XYGraphicsActionObject extends GraphicsActionObject {
   public void setIndex(int index) {
     this.index = index;
   }
+  
 }

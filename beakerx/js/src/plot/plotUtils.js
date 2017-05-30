@@ -783,14 +783,14 @@ define([
         if(e.ele != null){
           actionObject.category = e.ele.category;
           actionObject.series = e.ele.series;
-          actionObject["@type"] = "categoryActionObject";
+          actionObject.type = "CategoryGraphicsActionObject";
         }
       } else {
         if(plotType === "CombinedPlot") {
           actionObject.subplotIndex = subplotIndex;
-          actionObject["@type"] =  "combinedActionObject";
+          actionObject.type =  "CombinedPlotActionObject";
         } else {
-          actionObject["@type"] = "xyActionObject";
+          actionObject.type = "XYGraphicsActionObject";
         }
         if(e.ele != null){
           actionObject.index = e.ele.index;

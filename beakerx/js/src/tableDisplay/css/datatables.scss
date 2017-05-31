@@ -56,6 +56,9 @@ table.dataTable {
     &:first-child {
       border-left-width: 1px;
     }
+    &.focus {
+      z-index: 99;
+    }
   }
   thead {
     background-color: #E6E6E6;

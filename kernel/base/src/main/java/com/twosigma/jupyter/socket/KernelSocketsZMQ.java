@@ -263,7 +263,9 @@ public class KernelSocketsZMQ extends KernelSockets {
   }
 
   private void shutdown() {
+    logger.debug("kernel shutdown");
     this.shutdownSystem = true;
+    System.exit(0);
   }
 
   private boolean isShutdown() {

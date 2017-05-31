@@ -95,6 +95,25 @@ define([
           window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
+    kernel.comm_manager.register_target('beaker.tag.run',
+        function(comm, msg) {
+          comm.on_msg(function(msg) {
+            if(msg.content.data.runByTag != undefined){
+              var notebook = Jupyter.notebook;
+            	var cells = Jupyter.notebook.get_cells();
+              var indexList = cells.reduce(function(acc, cell, index) {
+                if (cell._metadata.tags && cell._metadata.tags.includes(msg.content.data.runByTag)) {
+                  acc.push(index);
+                }
+                return acc;
+              }, []);
+
+              notebook.execute_cells(indexList);
+            }
+          	
+          });
+        });
+    
     setBeakerxKernelParameters();
   });
 

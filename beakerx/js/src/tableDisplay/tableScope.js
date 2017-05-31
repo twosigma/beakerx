@@ -68,6 +68,7 @@ define([
     this.getCellDispOpts =  [];
     this.allConverters = {};
     this.tableDisplayModel = tableDisplayModel;
+    this.cellHighlighters = {};
 
     this.model = {
         model: {},

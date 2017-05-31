@@ -311,11 +311,13 @@ $fix-col-separator-width: 3px;
 
 .table_modal {
   position: absolute;
-  right: 0;
-  left: 0;
-  z-index: 1;
+  left: 50%;
+  margin-left: -150px;
+  z-index: 9999;
+  width: auto;
   -webkit-overflow-scrolling: touch;
   outline: 0;
+  overflow: visible;
   animation: 1s fadeIn;
   animation-fill-mode: forwards;
   .modal-dialog{

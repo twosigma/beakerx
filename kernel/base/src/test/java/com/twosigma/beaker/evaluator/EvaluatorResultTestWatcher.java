@@ -23,6 +23,7 @@ import com.twosigma.jupyter.message.Message;
 
 import java.util.Optional;
 
+import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.QUEUED;
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.RUNNING;
 
@@ -32,12 +33,15 @@ public class EvaluatorResultTestWatcher {
 
   public static void waitForResult(SimpleEvaluationObject seo) throws InterruptedException {
     int count = 0;
-    while ((seo.getStatus().equals(QUEUED) || seo.getStatus().equals(RUNNING)) && count < ATTEMPT) {
+    while ((seo.getStatus().equals(QUEUED) || seo.getStatus().equals(RUNNING) || seo.getStatus().equals(ERROR)) && count < ATTEMPT) {
+      if (seo.getStatus().equals(ERROR)) {
+        break;
+      }
       Thread.sleep(SLEEP_IN_MILLIS);
       count++;
     }
     if (count == ATTEMPT) {
-      throw new RuntimeException("No result, code evaluation took too long.");
+      throw new RuntimeException("No result, code evaluation took too long. ");
     }
   }
 
@@ -88,7 +92,6 @@ public class EvaluatorResultTestWatcher {
     }
     return idleMessage;
   }
-
 
 
   private static Optional<Message> getIdleMessage(KernelSocketsTest socketsTest) {

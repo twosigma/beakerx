@@ -19,6 +19,7 @@ import static com.twosigma.beaker.jupyter.Utils.uuid;
 
 import java.io.IOException;
 
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
 import com.twosigma.beaker.scala.comm.ScalaCommOpenHandler;
@@ -53,7 +54,7 @@ public class ScalaKernel extends Kernel {
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
-      ScalaEvaluator se = new ScalaEvaluator(null);//TODO check what to put, need for autotranslation
+      ScalaEvaluator se = new ScalaEvaluator(NamespaceClient.getBeaker(id).getObjectSerializer());//TODO check what to put, need for autotranslation
       se.initialize(id, id);
       //js.setupAutoTranslation(); -- uncomment
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));

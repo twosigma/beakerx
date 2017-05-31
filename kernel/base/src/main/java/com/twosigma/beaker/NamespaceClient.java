@@ -39,15 +39,22 @@ public class NamespaceClient {
   private static Map<String,NamespaceClient> nsClients = new ConcurrentHashMap<>();
   private static String currentSession;
   private static Map<String, SynchronousQueue<Object>> messagePool = new HashMap<>();
+
   private ObjectMapper objectMapper;
   private BeakerObjectConverter objectSerializer;
   private SimpleEvaluationObject currentCeo = null;
   private Comm autotranslationComm = null;
   private Comm codeCellsComm = null;
 
+  Map<String, Object> beakerData = new HashMap<>();
+
   public NamespaceClient() {
     objectMapper = new ObjectMapper();
     objectSerializer = new BasicObjectSerializer();
+  }
+
+  public BeakerObjectConverter getObjectSerializer() {
+    return objectSerializer;
   }
 
   public synchronized void showProgressUpdate(String message, int progress) {
@@ -83,7 +90,13 @@ public class NamespaceClient {
     currentSession = null;
   }
 
+  public synchronized Object get(final String name) {
+    return beakerData.get(name);
+  }
+
   public synchronized Object set(String name, Object value) throws IOException {
+    beakerData.put(name,value);
+
     Comm c = getAutotranslationComm();
     HashMap<String, Serializable> data = new HashMap<>();
     data.put("name", name);
@@ -110,11 +123,6 @@ public class NamespaceClient {
 
   //TODO : Not Implemented
   public Object unset(String name) {
-    throw new RuntimeException("This option is not implemented now") ;
-  }
-
-  //TODO : Not Implemented
-  public synchronized Object get(final String name) {
     throw new RuntimeException("This option is not implemented now") ;
   }
 

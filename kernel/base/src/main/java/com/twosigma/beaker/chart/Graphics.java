@@ -83,13 +83,11 @@ public abstract class Graphics implements Serializable, Cloneable{
 
   public Graphics onClick(GraphicsActionListener onClickListener) {
     this.onClickListener = onClickListener;
-    this.clickTag = null;
     return this;
   }
 
   public Graphics onClick(String tag) {
     this.clickTag = tag;
-    this.onClickListener = null;
     return this;
   }
 

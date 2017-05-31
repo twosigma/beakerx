@@ -15,13 +15,18 @@
  */
 package com.twosigma.beaker.table.action;
 
+import com.twosigma.beaker.widgets.Widget.CommActions;
+
 import java.io.Serializable;
 
 public class TableActionDetails implements Serializable {
+
+  private static final long serialVersionUID = 8873196253824638288L;
+  
   private int row;
   private int col;
   private String contextMenuItem;
-  private TableActionType actionType;
+  private CommActions actionType;
   private String tag;
 
   public int getRow() {
@@ -48,11 +53,11 @@ public class TableActionDetails implements Serializable {
     this.contextMenuItem = contextMenuItem;
   }
 
-  public TableActionType getActionType() {
+  public CommActions getActionType() {
     return actionType;
   }
 
-  public void setActionType(TableActionType actionType) {
+  public void setActionType(CommActions actionType) {
     this.actionType = actionType;
   }
 

@@ -99,7 +99,12 @@ define([
 
     this.data2scrX = null;
     this.data2scrY = null;
+    this.plotDisplayModel = null;
   }
+  
+  PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
+    this.plotDisplayModel = plotDisplayModel;
+  };
 
   PlotScope.prototype.initLayout = function() {
     var self = this;
@@ -472,10 +477,16 @@ define([
               function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
               function () { console.error('set action details error'); } );
           } else {
-            plotService.setActionDetails(plotId, data.uid, this.model.getEvaluatorId(),
-              plotUtils.getActionObject(this.model.getCellModel().type, item)).then(
-              function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
-              function () { console.error('set action details error'); });
+            var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
+          	params.actionType = 'onkey';
+          	params.key = key;
+          	params.tag = data.keyTags[key];
+          	this.plotDisplayModel.send({
+            	event: 'actiondetails', 
+            	plotId: plotId,
+            	itemId: data.uid, 
+            	params: params
+            	});
           }
         } else if (data.keys != null && data.keys.indexOf(key) > -1) {
           this.legendDone = false;
@@ -484,10 +495,9 @@ define([
           if (this.model.onKey) {
             this.model.onKey(key, plotId, data, item);
           } else {
-            plotService.onKey(plotId, data.uid, this.model.getEvaluatorId(), {
-              key: key,
-              actionObject: plotUtils.getActionObject(this.model.getCellModel().type, item)
-            });
+          	var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
+          	params.key = key;
+          	this.plotDisplayModel.send({event: 'onkey', plotId: plotId, itemId: data.uid, params: params});
           }
         }
       }
@@ -520,15 +530,15 @@ define([
                   function () { console.error('set action details error'); }
                 );
               } else {
-                self.plotDisplayModel.send({event: 'actiondetails', plotId: plotId, itemId: item.uid, params: plotUtils.getActionObject(self.model.getCellModel().type, e)});
-
-/*                plotService.setActionDetails( plotId,
-                  item.uid,
-                  self.model.getEvaluatorId(),
-                  plotUtils.getActionObject(self.model.getCellModel().type, e)).then(
-                  function () { plotUtils.evaluateTagCell(item.clickTag); },
-                  function () { console.error('set action details error'); }
-                );*/
+              	var params = plotUtils.getActionObject(self.model.getCellModel().type, e);
+              	params.actionType = 'onclick';
+              	params.tag = item.clickTag;
+                self.plotDisplayModel.send({
+                	event: 'actiondetails', 
+                	plotId: plotId,
+                	itemId: item.uid, 
+                	params: params
+                	});
               }
             }else{
               self.legendDone = false;
@@ -539,8 +549,6 @@ define([
                 return;
               } else {
                	self.plotDisplayModel.send({event: 'onclick', plotId: plotId, itemId: item.uid, params: plotUtils.getActionObject(self.model.getCellModel().type, e)});
-/*                plotService.onClick(plotId, item.uid, self.model.getEvaluatorId(),
-                  plotUtils.getActionObject(self.model.getCellModel().type, e));*/
               }
             }
           }
@@ -2088,9 +2096,8 @@ define([
     this.removePipe.length = 0;
   };
 
-  PlotScope.prototype.init = function(plotDisplayModel) {
+  PlotScope.prototype.init = function() {
     var self = this;
-    self.plotDisplayModel = plotDisplayModel;
     self.id = 'bko-plot-' + bkUtils.generateId(6);
     self.element.find('.plot-plotcontainer').attr('id', self.id);
     self.element.find('.plot-title').attr('class', 'plot-title ' + 'plot-title-' + self.id);

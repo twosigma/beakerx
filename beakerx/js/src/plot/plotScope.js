@@ -99,7 +99,12 @@ define([
 
     this.data2scrX = null;
     this.data2scrY = null;
+    this.plotDisplayModel = null;
   }
+  
+  PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
+  	this.plotDisplayModel = plotDisplayModel;
+  };
 
   PlotScope.prototype.initLayout = function() {
     var self = this;
@@ -2091,9 +2096,8 @@ define([
     this.removePipe.length = 0;
   };
 
-  PlotScope.prototype.init = function(plotDisplayModel) {
+  PlotScope.prototype.init = function() {
     var self = this;
-    self.plotDisplayModel = plotDisplayModel;
     self.id = 'bko-plot-' + bkUtils.generateId(6);
     self.element.find('.plot-plotcontainer').attr('id', self.id);
     self.element.find('.plot-title').attr('class', 'plot-title ' + 'plot-title-' + self.id);

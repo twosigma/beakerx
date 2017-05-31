@@ -58,13 +58,14 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   },
 
   initTableDisplay: function(data) {
-    var currentScope = new TableScope('wrap_'+this.id, this.model);
+    var currentScope = new TableScope('wrap_'+this.id);
     var tmpl = currentScope.buildTemplate();
     var tmplElement = $(tmpl);
     var that = this;
 
     tmplElement.appendTo(this.$el);
 
+    currentScope.setWidgetModel(this.model);
     currentScope.setModelData(data);
     currentScope.setElement(tmplElement.children('.dtcontainer'));
     currentScope.enableJupyterKeyHandler();

@@ -482,11 +482,6 @@ define([
             	itemId: data.uid, 
             	params: params
             	});
-            
-/*            plotService.setActionDetails(plotId, data.uid, this.model.getEvaluatorId(),
-              plotUtils.getActionObject(this.model.getCellModel().type, item)).then(
-              function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
-              function () { console.error('set action details error'); });*/
           }
         } else if (data.keys != null && data.keys.indexOf(key) > -1) {
           this.legendDone = false;
@@ -495,11 +490,9 @@ define([
           if (this.model.onKey) {
             this.model.onKey(key, plotId, data, item);
           } else {
-          	console.log("onKey");
-/*            plotService.onKey(plotId, data.uid, this.model.getEvaluatorId(), {
-              key: key,
-              actionObject: plotUtils.getActionObject(this.model.getCellModel().type, item)
-            });*/
+          	var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
+          	params.key = key;
+          	this.plotDisplayModel.send({event: 'onkey', plotId: plotId, itemId: data.uid, params: params});
           }
         }
       }

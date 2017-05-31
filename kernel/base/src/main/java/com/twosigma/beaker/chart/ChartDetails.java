@@ -50,7 +50,7 @@ public abstract class ChartDetails extends BeakerxWidget {
   
   protected void openComm() {
     super.openComm();
-    getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails, (Handler<Message>)this::handleClick);
+    getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails, (Handler<Message>)this::handleClick, (Handler<Message>)this::handleKey);
   }
   
   private void handleSetDetails(Message message) {
@@ -59,6 +59,20 @@ public abstract class ChartDetails extends BeakerxWidget {
   
   private void handleClick(Message message) {
     handleCommEventSync(message, CommActions.ONCLICK, (ActionPerformed)this::onClickAction);
+  }
+  
+  private void handleKey(Message message) {
+    handleCommEventSync(message, CommActions.ONKEY, (ActionPerformed)this::onKeyAction);
+  }
+  
+  
+  private void onKeyAction(HashMap content){
+    GraphicsActionObject info = getDetailsFromMessage(content);
+    String graphicsId = getGraphicsUid(content);
+    Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
+    if(g != null){
+      g.fireOnKey(info.getKey(), info);
+    }
   }
   
   private void onClickAction(HashMap content){

@@ -25,17 +25,31 @@ import java.util.List;
 
 public class CollectionDeserializerTest {
 
+  private String json = "[\"1\",\"2\",\"3\"]";
+
   @Test
   public void deserialize_resultObjectHasValues() throws Exception {
     //given
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode actualObj = mapper.readTree("[\"1\",\"2\",\"3\"]");
+    JsonNode actualObj = mapper.readTree(json);
     CollectionDeserializer deserializer = new CollectionDeserializer(new BasicObjectSerializer());
     //when
     List list = (List) deserializer.deserialize(actualObj, mapper);
     //then
     Assertions.assertThat(list).isNotNull();
     Assertions.assertThat(list.size()).isEqualTo(3);
+  }
+
+  @Test
+  public void canBeUsed_returnTrue() throws Exception {
+    //given
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode actualObj = mapper.readTree(json);
+    CollectionDeserializer deserializer = new CollectionDeserializer(new BasicObjectSerializer());
+    //when
+    boolean result = deserializer.canBeUsed(actualObj);
+    //then
+    Assertions.assertThat(result).isTrue();
   }
 
 }

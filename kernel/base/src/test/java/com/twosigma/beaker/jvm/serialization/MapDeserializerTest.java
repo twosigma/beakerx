@@ -25,17 +25,31 @@ import java.util.Map;
 
 public class MapDeserializerTest {
 
+  private String json = "{\"k1\":\"1\",\"k2\":\"true\"}";
+
   @Test
   public void deserialize_resultObjectHasValues() throws Exception {
     //given
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode actualObj = mapper.readTree("{\"k1\":\"1\",\"k2\":\"true\"}");
+    JsonNode actualObj = mapper.readTree(json);
     MapDeserializer deserializer = new MapDeserializer(new BasicObjectSerializer());
     //when
     Map map = (Map) deserializer.deserialize(actualObj, mapper);
     //then
     Assertions.assertThat(map).isNotNull();
     Assertions.assertThat(map.get("k2")).isEqualTo(true);
+  }
+
+  @Test
+  public void canBeUsed_returnTrue() throws Exception {
+    //given
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode actualObj = mapper.readTree(json);
+    MapDeserializer deserializer = new MapDeserializer(new BasicObjectSerializer());
+    //when
+    boolean result = deserializer.canBeUsed(actualObj);
+    //then
+    Assertions.assertThat(result).isTrue();
   }
 
 }

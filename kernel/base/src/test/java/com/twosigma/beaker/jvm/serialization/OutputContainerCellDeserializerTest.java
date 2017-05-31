@@ -18,25 +18,28 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.jvm.object.OutputContainerCell;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-public class ColorDeserializerTest {
+public class OutputContainerCellDeserializerTest {
 
-  private String json = "\"#FF00FF00\"";
+  private String json = "{\"type\":\"OutputContainerCell\"," +
+      "\"labels\":[\"label\"],\"items\":[1],\"layout\":{\"borderDisplayed\":false}}";
 
   @Test
-  public void deserialize_resultObjectHasColor() throws Exception {
+  public void deserialize_resultObjectHasLabels() throws Exception {
     //given
     ObjectMapper mapper = new ObjectMapper();
     JsonNode actualObj = mapper.readTree(json);
-    ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
+    OutputContainerCellDeserializer deserializer =
+        new OutputContainerCellDeserializer(new BasicObjectSerializer());
     //when
-    Color color = (Color) deserializer.deserialize(actualObj, mapper);
+    OutputContainerCell outputContainerCell =
+        (OutputContainerCell) deserializer.deserialize(actualObj, mapper);
     //then
-    Assertions.assertThat(color).isNotNull();
-    Assertions.assertThat(color.getRGB()).isEqualTo(Color.GREEN.getRGB());
+    Assertions.assertThat(outputContainerCell).isNotNull();
+    Assertions.assertThat(outputContainerCell.getLabels()).isNotEmpty();
   }
 
   @Test
@@ -44,7 +47,8 @@ public class ColorDeserializerTest {
     //given
     ObjectMapper mapper = new ObjectMapper();
     JsonNode actualObj = mapper.readTree(json);
-    ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
+    OutputContainerCellDeserializer deserializer =
+        new OutputContainerCellDeserializer(new BasicObjectSerializer());
     //when
     boolean result = deserializer.canBeUsed(actualObj);
     //then

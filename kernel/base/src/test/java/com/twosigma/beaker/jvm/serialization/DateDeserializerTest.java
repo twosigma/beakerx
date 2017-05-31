@@ -19,18 +19,27 @@ package com.twosigma.beaker.jvm.serialization;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
 
 public class DateDeserializerTest {
 
+  private String json;
+  private long timestamp;
+
+  @Before
+  public void setUp() throws Exception {
+    timestamp = 1492423972082L;
+    json = "{\"type\":\"Date\",\"timestamp\":"+ timestamp +"}";
+  }
+
   @Test
   public void deserialize_resultObjectHasTimestamp() throws Exception {
     //given
-    long timestamp = 1492423972082L;
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode actualObj = mapper.readTree("{\"type\":\"Date\",\"timestamp\":"+ timestamp +"}");
+    JsonNode actualObj = mapper.readTree(json);
     DateDeserializer deserializer = new DateDeserializer(new BasicObjectSerializer());
     //when
     Date date = (Date) deserializer.deserialize(actualObj, mapper);

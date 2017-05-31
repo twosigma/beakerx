@@ -22,8 +22,8 @@ public class ToggleButton extends BoolWidget {
 
   public static String VIEW_NAME_VALUE = "ToggleButtonView";
   public static String MODEL_NAME_VALUE = "ToggleButtonModel";
-  public static final String TOOLTIP = "tooltip";
   
+  public static final String TOOLTIP = "tooltip";
   public static final String BUTTON_STYLE = "button_style";
   public static final String ICON = "icon";
 
@@ -40,8 +40,8 @@ public class ToggleButton extends BoolWidget {
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(TOOLTIP, this.tooltip);
-    content.put("button_style", button_style);
-    content.put("icon", icon);
+    content.put(BUTTON_STYLE, button_style);
+    content.put(ICON, icon);
     return content;
   }
 

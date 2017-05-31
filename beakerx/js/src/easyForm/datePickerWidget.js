@@ -102,8 +102,10 @@ var DatePickerView = widgets.LabeledDOMWidgetView.extend({
     DatePickerView.__super__.update.apply(this);
   },
 
-  events: {
-    "change input": "handleChanging"
+  events: function () {
+    return {
+      "change input": "handleChanging"
+    };
   },
 
   setValueToModel: function(value) {

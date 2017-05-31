@@ -63,14 +63,18 @@ public class TestWidgetUtils {
   }
 
   public static void verifyInternalOpenCommMsgWitLayout(List<Message> messages, String modelNameValue, String viewNameValue) {
+    verifyInternalOpenCommMsgWitLayout(messages, modelNameValue, viewNameValue, BeakerxWidget.MODEL_MODULE_VALUE, BeakerxWidget.VIEW_MODULE_VALUE);
+  }
+  
+  public static void verifyInternalOpenCommMsgWitLayout(List<Message> messages, String modelNameValue, String viewNameValue, String modelModule, String viewModule) {
     Message widget = SearchMessages.getListWidgetsByViewName(messages, viewNameValue).get(0);
     Message layout = SearchMessages.getLayoutForWidget(messages, widget);
 
     verifyTypeMsg(widget,COMM_OPEN);
     Map data = getData(widget);
     assertThat(data.get(Layout.LAYOUT)).isEqualTo(Layout.IPY_MODEL + layout.getContent().get(Comm.COMM_ID));
-    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(BeakerxWidget.MODEL_MODULE_VALUE);
-    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(BeakerxWidget.VIEW_MODULE_VALUE);
+    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(modelModule);
+    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(viewModule);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }

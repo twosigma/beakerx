@@ -17,19 +17,13 @@
 package com.twosigma.beaker.chart.actions;
 
 import com.twosigma.beaker.chart.Graphics;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.io.Serializable;
 
-@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="@type")
-@JsonSubTypes({
-  @JsonSubTypes.Type(value = CategoryGraphicsActionObject.class, name = "categoryActionObject"),
-  @JsonSubTypes.Type(value = XYGraphicsActionObject.class, name = "xyActionObject"),
-  @JsonSubTypes.Type(value = CombinedPlotActionObject.class, name = "combinedActionObject")
-})
 public abstract class GraphicsActionObject implements Serializable{
 
+  private static final long serialVersionUID = -1010209669334228815L;
+  
   private Graphics graphics;
 
   public Graphics getGraphics() {

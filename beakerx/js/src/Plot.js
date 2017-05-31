@@ -45,8 +45,6 @@ var PlotView = widgets.DOMWidgetView.extend({
     this.displayed.then(function() {
       var plotModel = that.model.get('model');
 
-      console.log('check2', that, plotModel);
-
       var type = plotModel.type || 'Text';
 
       switch (type) {
@@ -78,7 +76,7 @@ var PlotView = widgets.DOMWidgetView.extend({
 
     this._currentScope.setElement(tmplElement.children('.dtcontainer'));
     this._currentScope.setModelData(model);
-    this._currentScope.init();
+    this._currentScope.init(this.model);
   },
 
   initCombinedPlot: function(model) {
@@ -90,8 +88,9 @@ var PlotView = widgets.DOMWidgetView.extend({
 
     this._currentScope.setModelData(model);
     this._currentScope.setElement(tmplElement);
-    this._currentScope.init();
+    this._currentScope.init(this.model);
   }
+
 });
 
 module.exports = {

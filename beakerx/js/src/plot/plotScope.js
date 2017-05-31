@@ -520,13 +520,15 @@ define([
                   function () { console.error('set action details error'); }
                 );
               } else {
-                plotService.setActionDetails( plotId,
+                self.plotDisplayModel.send({event: 'actiondetails', plotId: plotId, itemId: item.uid, params: plotUtils.getActionObject(self.model.getCellModel().type, e)});
+
+/*                plotService.setActionDetails( plotId,
                   item.uid,
                   self.model.getEvaluatorId(),
                   plotUtils.getActionObject(self.model.getCellModel().type, e)).then(
                   function () { plotUtils.evaluateTagCell(item.clickTag); },
                   function () { console.error('set action details error'); }
-                );
+                );*/
               }
             }else{
               self.legendDone = false;
@@ -536,8 +538,9 @@ define([
                 self.model.onClick(plotId, item, e);
                 return;
               } else {
-                plotService.onClick(plotId, item.uid, self.model.getEvaluatorId(),
-                  plotUtils.getActionObject(self.model.getCellModel().type, e));
+               	self.plotDisplayModel.send({event: 'onclick', plotId: plotId, itemId: item.uid, params: plotUtils.getActionObject(self.model.getCellModel().type, e)});
+/*                plotService.onClick(plotId, item.uid, self.model.getEvaluatorId(),
+                  plotUtils.getActionObject(self.model.getCellModel().type, e));*/
               }
             }
           }
@@ -2085,8 +2088,9 @@ define([
     this.removePipe.length = 0;
   };
 
-  PlotScope.prototype.init = function() {
+  PlotScope.prototype.init = function(plotDisplayModel) {
     var self = this;
+    self.plotDisplayModel = plotDisplayModel;
     self.id = 'bko-plot-' + bkUtils.generateId(6);
     self.element.find('.plot-plotcontainer').attr('id', self.id);
     self.element.find('.plot-title').attr('class', 'plot-title ' + 'plot-title-' + self.id);

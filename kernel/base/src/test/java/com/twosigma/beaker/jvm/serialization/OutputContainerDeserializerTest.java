@@ -18,25 +18,28 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.jvm.object.OutputContainer;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-public class ColorDeserializerTest {
+public class OutputContainerDeserializerTest {
 
-  private String json = "\"#FF00FF00\"";
+  private String json = "{\"type\":\"OutputContainer\"," +
+      "\"labels\":[\"label\"],\"items\":[1],\"layout\":{\"borderDisplayed\":false}}";
 
   @Test
-  public void deserialize_resultObjectHasColor() throws Exception {
+  public void deserialize_resultObjectHasItems() throws Exception {
     //given
     ObjectMapper mapper = new ObjectMapper();
     JsonNode actualObj = mapper.readTree(json);
-    ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
+    OutputContainerDeserializer deserializer =
+        new OutputContainerDeserializer(new BasicObjectSerializer());
     //when
-    Color color = (Color) deserializer.deserialize(actualObj, mapper);
+    OutputContainer outputContainer =
+        (OutputContainer) deserializer.deserialize(actualObj, mapper);
     //then
-    Assertions.assertThat(color).isNotNull();
-    Assertions.assertThat(color.getRGB()).isEqualTo(Color.GREEN.getRGB());
+    Assertions.assertThat(outputContainer).isNotNull();
+    Assertions.assertThat(outputContainer.getItems()).isNotEmpty();
   }
 
   @Test
@@ -44,7 +47,8 @@ public class ColorDeserializerTest {
     //given
     ObjectMapper mapper = new ObjectMapper();
     JsonNode actualObj = mapper.readTree(json);
-    ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
+    OutputContainerDeserializer deserializer =
+        new OutputContainerDeserializer(new BasicObjectSerializer());
     //when
     boolean result = deserializer.canBeUsed(actualObj);
     //then

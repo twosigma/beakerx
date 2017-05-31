@@ -27,12 +27,9 @@ import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.widgets.BeakerxWidget;
-import com.twosigma.beaker.widgets.Widget.ActionPerformed;
-import com.twosigma.beaker.widgets.Widget.CommActions;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -66,102 +63,104 @@ public abstract class ChartDetails extends BeakerxWidget {
   }
   
   
-  private void onKeyAction(HashMap content){
+  private void onKeyAction(HashMap content) {
     GraphicsActionObject info = getDetailsFromMessage(content);
     String graphicsId = getGraphicsUid(content);
     Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
-    if(g != null){
+    if (g != null) {
       g.fireOnKey(info.getKey(), info);
     }
   }
-  
-  private void onClickAction(HashMap content){
+
+  private void onClickAction(HashMap content) {
     GraphicsActionObject info = getDetailsFromMessage(content);
     String graphicsId = getGraphicsUid(content);
     Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
-    if(g != null){
+    if (g != null) {
       g.fireClick(info);
     }
   }
-  
 
-  protected void onActionDetails(HashMap content){
+  protected void onActionDetails(HashMap content) {
     GraphicsActionObject info = getDetailsFromMessage(content);
     String graphicsId = getGraphicsUid(content);
     Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
     info.setGraphics(g);
     setDetails(info);
-    if(CommActions.ONCLICK.equals(info.getActionType())){
+    if (CommActions.ONCLICK.equals(info.getActionType())) {
       NamespaceClient.getBeaker().runByTag(info.getTag());
-    }else if(CommActions.ONKEY.equals(info.getActionType())){
+    } else if (CommActions.ONKEY.equals(info.getActionType())) {
       NamespaceClient.getBeaker().runByTag(info.getTag());
     }
   }
-  
-  protected String getGraphicsUid(HashMap content){
+
+  protected String getGraphicsUid(HashMap content) {
     String ret = null;
-    if(content.containsKey("itemId")){
-      ret = (String)content.get("itemId");
+    if (content.containsKey("itemId")) {
+      ret = (String) content.get("itemId");
     }
     return ret;
   }
-  
-  protected GraphicsActionObject getDetailsFromMessage(HashMap content){
+
+  protected GraphicsActionObject getDetailsFromMessage(HashMap content) {
     GraphicsActionObject ret = null;
-    
-    if(content.containsKey("params")){
-   
+
+    if (content.containsKey("params")) {
+
       HashMap params = (HashMap) content.get("params");
-      
-      if(params.containsKey("type")){
-        
-        String type = (String)params.get("type");
+
+      if (params.containsKey("type")) {
+
+        String type = (String) params.get("type");
         switch (type) {
-        
-          case "CategoryGraphicsActionObject":{
-            ret = new CategoryGraphicsActionObject();
-            CategoryGraphicsActionObject retObject = (CategoryGraphicsActionObject) ret;
-            if(params.containsKey("category")){
-              retObject.setCategory((int)params.get("category"));
-            }
-            if(params.containsKey("series")){
-              retObject.setSeries((int)params.get("series"));
-            }
-          }break;
-          
-          case "CombinedPlotActionObject":{
-            ret = new CombinedPlotActionObject();
-            CombinedPlotActionObject retObject = (CombinedPlotActionObject) ret;
-            if(params.containsKey("subplotIndex")){
-              retObject.setSubplotIndex((int)params.get("subplotIndex"));
-            }
-            if(params.containsKey("index")){
-              retObject.setIndex((int)params.get("index"));
-            }
-          }break;
-          
-          case "XYGraphicsActionObject":{
-            ret = new XYGraphicsActionObject();
-            XYGraphicsActionObject retObject = (XYGraphicsActionObject) ret;
-            if(params.containsKey("index")){
-              retObject.setIndex((int)params.get("index"));
-            }
-          }break;
+
+        case "CategoryGraphicsActionObject": {
+          ret = new CategoryGraphicsActionObject();
+          CategoryGraphicsActionObject retObject = (CategoryGraphicsActionObject) ret;
+          if (params.containsKey("category")) {
+            retObject.setCategory((int) params.get("category"));
+          }
+          if (params.containsKey("series")) {
+            retObject.setSeries((int) params.get("series"));
+          }
         }
-        
-        if(params.containsKey("actionType")){
-          CommActions value = CommActions.getByAction((String)params.get("actionType"));
+          break;
+
+        case "CombinedPlotActionObject": {
+          ret = new CombinedPlotActionObject();
+          CombinedPlotActionObject retObject = (CombinedPlotActionObject) ret;
+          if (params.containsKey("subplotIndex")) {
+            retObject.setSubplotIndex((int) params.get("subplotIndex"));
+          }
+          if (params.containsKey("index")) {
+            retObject.setIndex((int) params.get("index"));
+          }
+        }
+          break;
+
+        case "XYGraphicsActionObject": {
+          ret = new XYGraphicsActionObject();
+          XYGraphicsActionObject retObject = (XYGraphicsActionObject) ret;
+          if (params.containsKey("index")) {
+            retObject.setIndex((int) params.get("index"));
+          }
+        }
+          break;
+        }
+
+        if (params.containsKey("actionType")) {
+          CommActions value = CommActions.getByAction((String) params.get("actionType"));
           ret.setActionType(value);
         }
-        
-        if(params.containsKey("tag")){
-          ret.setTag((String)params.get("tag"));
+
+        if (params.containsKey("tag")) {
+          ret.setTag((String) params.get("tag"));
         }
-        
-        if(params.containsKey("key")){
-          ret.setKey((String)params.get("key"));
+
+        if (params.containsKey("key")) {
+          ret.setKey((String) params.get("key"));
         }
-        
+
       }
     }
     return ret;
@@ -177,12 +176,12 @@ public abstract class ChartDetails extends BeakerxWidget {
    */
   protected List<? extends Graphics> getGraphics(GraphicsActionObject info, ChartDetails chart) {
     List<? extends Graphics> graphics = null;
-    if(chart instanceof XYChart) {
-      graphics = ((XYChart)chart).getGraphics();
+    if (chart instanceof XYChart) {
+      graphics = ((XYChart) chart).getGraphics();
     } else if (chart instanceof CategoryPlot) {
-      graphics = ((CategoryPlot)chart).getGraphics();
-    } else if (chart instanceof CombinedPlot){
-      XYChart subplot = ((CombinedPlot) chart).getSubplots().get(((CombinedPlotActionObject)info).getSubplotIndex());
+      graphics = ((CategoryPlot) chart).getGraphics();
+    } else if (chart instanceof CombinedPlot) {
+      XYChart subplot = ((CombinedPlot) chart).getSubplots().get(((CombinedPlotActionObject) info).getSubplotIndex());
       graphics = subplot.getGraphics();
     }
     return graphics;
@@ -196,9 +195,9 @@ public abstract class ChartDetails extends BeakerxWidget {
    * @return
    */
   protected Graphics getGraphicsById(List<? extends Graphics> graphicsList, String graphicsId) {
-    if(graphicsList != null){
-      for(Graphics g: graphicsList){
-        if(StringUtils.equals(g.getUid(), graphicsId)){
+    if (graphicsList != null) {
+      for (Graphics g : graphicsList) {
+        if (StringUtils.equals(g.getUid(), graphicsId)) {
           return g;
         }
       }

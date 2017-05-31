@@ -103,7 +103,7 @@ define([
   }
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
-  	this.plotDisplayModel = plotDisplayModel;
+    this.plotDisplayModel = plotDisplayModel;
   };
 
   PlotScope.prototype.initLayout = function() {
@@ -477,7 +477,7 @@ define([
               function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
               function () { console.error('set action details error'); } );
           } else {
-          	var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
+            var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
           	params.actionType = 'onkey';
           	params.key = key;
           	params.tag = data.keyTags[key];

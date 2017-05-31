@@ -521,14 +521,6 @@ define([
                 );
               } else {
                 self.plotDisplayModel.send({event: 'actiondetails', plotId: plotId, itemId: item.uid, params: plotUtils.getActionObject(self.model.getCellModel().type, e)});
-
-/*                plotService.setActionDetails( plotId,
-                  item.uid,
-                  self.model.getEvaluatorId(),
-                  plotUtils.getActionObject(self.model.getCellModel().type, e)).then(
-                  function () { plotUtils.evaluateTagCell(item.clickTag); },
-                  function () { console.error('set action details error'); }
-                );*/
               }
             }else{
               self.legendDone = false;
@@ -539,8 +531,6 @@ define([
                 return;
               } else {
                	self.plotDisplayModel.send({event: 'onclick', plotId: plotId, itemId: item.uid, params: plotUtils.getActionObject(self.model.getCellModel().type, e)});
-/*                plotService.onClick(plotId, item.uid, self.model.getEvaluatorId(),
-                  plotUtils.getActionObject(self.model.getCellModel().type, e));*/
               }
             }
           }

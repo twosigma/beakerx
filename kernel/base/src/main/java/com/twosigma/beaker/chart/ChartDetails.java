@@ -27,9 +27,12 @@ import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.widgets.BeakerxWidget;
+import com.twosigma.beaker.widgets.Widget.ActionPerformed;
+import com.twosigma.beaker.widgets.Widget.CommActions;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,11 +50,24 @@ public abstract class ChartDetails extends BeakerxWidget {
   
   protected void openComm() {
     super.openComm();
-    getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails);
+    getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails, (Handler<Message>)this::handleClick);
   }
   
   private void handleSetDetails(Message message) {
     handleCommEventSync(message, CommActions.ACTIONDETAILS, (ActionPerformed)this::onActionDetails);
+  }
+  
+  private void handleClick(Message message) {
+    handleCommEventSync(message, CommActions.ONCLICK, (ActionPerformed)this::onClickAction);
+  }
+  
+  private void onClickAction(HashMap content){
+    GraphicsActionObject info = getDetailsFromMessage(content);
+    String graphicsId = getGraphicsUid(content);
+    Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
+    if(g != null){
+      g.fireClick(info);
+    }
   }
   
 

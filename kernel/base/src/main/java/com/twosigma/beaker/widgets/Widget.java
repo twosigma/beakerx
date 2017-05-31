@@ -31,6 +31,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   public enum CommActions {
 
     ONDOUBLECLICK("ondoubleclick"),
+    ONCLICK("onclick"),
+    ONKEY("onkey"),
     ACTIONDETAILS("actiondetails"),
     ONCONTEXTMENU("oncontextmenu"),
     CLICK("click");

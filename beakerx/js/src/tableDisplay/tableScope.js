@@ -786,7 +786,7 @@ define([
             callback: function(itemKey, options) {
               var index = self.table.cell(options.$trigger.get(0)).index();
               var params = {
-                actionType: 'CONTEXT_MENU_CLICK',
+                actionType: 'oncontextmenu',
                 contextMenuItem: itemKey,
                 row: index.row,
                 col: index.column - 1
@@ -1822,7 +1822,7 @@ define([
 
       if (!_.isEmpty(model.doubleClickTag)) {
         var params = {
-          actionType: 'DOUBLE_CLICK',
+          actionType: 'ondoubleclick',
           row: index.row,
           col: index.column - 1
         };

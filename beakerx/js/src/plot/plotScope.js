@@ -472,10 +472,21 @@ define([
               function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
               function () { console.error('set action details error'); } );
           } else {
-            plotService.setActionDetails(plotId, data.uid, this.model.getEvaluatorId(),
+          	var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
+          	params.actionType = 'onkey';
+          	params.key = key;
+          	params.tag = data.keyTags[key];
+          	this.plotDisplayModel.send({
+            	event: 'actiondetails', 
+            	plotId: plotId,
+            	itemId: data.uid, 
+            	params: params
+            	});
+            
+/*            plotService.setActionDetails(plotId, data.uid, this.model.getEvaluatorId(),
               plotUtils.getActionObject(this.model.getCellModel().type, item)).then(
               function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
-              function () { console.error('set action details error'); });
+              function () { console.error('set action details error'); });*/
           }
         } else if (data.keys != null && data.keys.indexOf(key) > -1) {
           this.legendDone = false;
@@ -484,10 +495,11 @@ define([
           if (this.model.onKey) {
             this.model.onKey(key, plotId, data, item);
           } else {
-            plotService.onKey(plotId, data.uid, this.model.getEvaluatorId(), {
+          	console.log("onKey");
+/*            plotService.onKey(plotId, data.uid, this.model.getEvaluatorId(), {
               key: key,
               actionObject: plotUtils.getActionObject(this.model.getCellModel().type, item)
-            });
+            });*/
           }
         }
       }
@@ -520,7 +532,15 @@ define([
                   function () { console.error('set action details error'); }
                 );
               } else {
-                self.plotDisplayModel.send({event: 'actiondetails', plotId: plotId, itemId: item.uid, params: plotUtils.getActionObject(self.model.getCellModel().type, e)});
+              	var params = plotUtils.getActionObject(self.model.getCellModel().type, e);
+              	params.actionType = 'onclick';
+              	params.tag = item.clickTag;
+                self.plotDisplayModel.send({
+                	event: 'actiondetails', 
+                	plotId: plotId,
+                	itemId: item.uid, 
+                	params: params
+                	});
               }
             }else{
               self.legendDone = false;

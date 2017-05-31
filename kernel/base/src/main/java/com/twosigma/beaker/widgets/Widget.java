@@ -46,6 +46,19 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     public String getAction() {
       return action;
     }
+    
+    public static CommActions getByAction(final String input){
+      CommActions ret = null;
+      if(input != null){
+        for (CommActions item : CommActions.values()) {
+          if(item.name().equalsIgnoreCase(input.trim())){
+            ret = item;
+            break;
+          }
+        }
+      }
+      return ret;
+    }
 
   }
 

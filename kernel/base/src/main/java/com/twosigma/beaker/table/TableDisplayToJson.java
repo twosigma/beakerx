@@ -19,6 +19,8 @@ package com.twosigma.beaker.table;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.serializer.ColorSerializer;
 import com.twosigma.beaker.jvm.serialization.DateSerializer;
 import com.twosigma.beaker.table.format.DecimalStringFormat;
 import com.twosigma.beaker.table.format.TimeStringFormat;
@@ -59,6 +61,7 @@ public class TableDisplayToJson {
     module.addSerializer(UniqueEntriesHighlighter.class, new UniqueEntriesHighlighterSerializer());
     module.addSerializer(ValueHighlighter.class, new ValueHighlighterSerializer());
     module.addSerializer(Date.class, new DateSerializer());
+    module.addSerializer(Color.class, new ColorSerializer());
 
 
     mapper = new ObjectMapper();

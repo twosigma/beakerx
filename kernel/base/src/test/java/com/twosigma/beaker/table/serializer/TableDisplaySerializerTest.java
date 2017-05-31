@@ -317,10 +317,10 @@ public class TableDisplaySerializerTest {
     assertThat(((Map)node.get(1)).get("style")).isEqualTo("FULL_ROW");
     assertThat(((Map)node.get(2)).get("minVal")).isEqualTo(1);
     Map node3 = (Map)node.get(3);
-    assertThat(getValueAsMap(node3,"minColor").get("rgb")).isEqualTo(Color.BLACK.getRGB());
+    assertThat(node3.get("minColor")).isEqualTo("#FF000000");
     assertThat(((Map)node.get(4)).get("maxVal")).isEqualTo(10);
     Map node5 = (Map)node.get(5);
-    assertThat(getValueAsMap(node5,"maxColor").get("rgb")).isEqualTo(Color.BLUE.getRGB());
+    assertThat(node5.get("maxColor")).isEqualTo("#FF0000FF");
     assertThat(((Map)node.get(6)).get("colName")).isEqualTo("g");
     assertThat(((Map)node.get(7)).get("style")).isEqualTo("FULL_ROW");
   }

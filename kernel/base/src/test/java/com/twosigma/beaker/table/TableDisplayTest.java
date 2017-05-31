@@ -355,7 +355,9 @@ public class TableDisplayTest {
       }
     });
     //then
-    assertThat(getValueAsList(getModel(), FONT_COLOR)).isNotEmpty();
+    List colors = getValueAsList(getModel(), FONT_COLOR);
+    List actual = (List)colors.get(0);
+    assertThat(actual.get(0).toString()).startsWith("#");
   }
 
   @Test

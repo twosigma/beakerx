@@ -28,7 +28,7 @@ public class Area extends BasedXYGraphics {
   private Integer interpolation;
 
   public void setInterpolation(Integer interpolation) {
-    if (interpolation.intValue() < 0 || interpolation.intValue() > 1) {
+    if (interpolation < 0 || interpolation > 1) {
       throw new IllegalArgumentException(
           "Area interpolation is limited to 0, 1");
     }

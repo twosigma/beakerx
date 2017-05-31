@@ -13,20 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.scala;
 
-import com.twosigma.beaker.DefaultJVMVariables;
+package com.twosigma.beaker.scala.chart.xychart
 
-/**
- * 
- * @author konst
- *
- */
-public class ScalaDefaultVariables extends DefaultJVMVariables {
+import java.util
 
-    public ScalaDefaultVariables() {
-      addImports("com.twosigma.beaker.scala.chart.xychart._",
-          "com.twosigma.beaker.scala.chart.xychart.plotitem._",
-          "com.twosigma.beaker.scala.easyform.EasyForm");
-    }
+import scala.collection.JavaConverters._
+
+class SimpleTimePlot(data: util.List[util.Map[String, AnyRef]], columns: util.List[String]) extends com.twosigma.beaker.chart.xychart.SimpleTimePlot(data, columns) {
+
+  def this(data: util.List[util.Map[String, AnyRef]], columns: List[String], yLabel: String, displayNames: List[String]) {
+    this(data, columns.asJava)
+    super.setYLabel(yLabel)
+    super.setDisplayNames(displayNames.asJava)
+  }
+
 }

@@ -13,20 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.scala;
 
-import com.twosigma.beaker.DefaultJVMVariables;
+package com.twosigma.beaker.scala.chart.xychart.plotitem
 
-/**
- * 
- * @author konst
- *
- */
-public class ScalaDefaultVariables extends DefaultJVMVariables {
+class Text extends com.twosigma.beaker.chart.xychart.plotitem.Text {
 
-    public ScalaDefaultVariables() {
-      addImports("com.twosigma.beaker.scala.chart.xychart._",
-          "com.twosigma.beaker.scala.chart.xychart.plotitem._",
-          "com.twosigma.beaker.scala.easyform.EasyForm");
-    }
+  def this(x: AnyVal, y: AnyVal, text: String, pointerAngle: Double) {
+    this()
+    super.setX(x.asInstanceOf[Number])
+    super.setY(y.asInstanceOf[Number])
+    super.setText(text)
+    super.setPointerAngle(pointerAngle)
+  }
 }

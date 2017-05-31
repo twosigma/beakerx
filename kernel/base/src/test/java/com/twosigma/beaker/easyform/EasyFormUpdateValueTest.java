@@ -46,7 +46,7 @@ public class EasyFormUpdateValueTest {
     EasyForm easyForm = new EasyForm("EasyForm with text field");
     easyForm.addTextField(label).onChange(value -> result.append(value));
     //when
-    easyForm.get(label).doUpdateValueWithCallback("new Value");
+    easyForm.getWidget(label).doUpdateValueWithCallback("new Value");
     //then
     assertThat(result.toString()).isEqualTo("new Value");
   }
@@ -60,7 +60,7 @@ public class EasyFormUpdateValueTest {
     EasyForm easyForm = new EasyForm("EasyForm with RadioButto");
     easyForm.addRadioButtons(label, asList("1", "2")).onChange(value -> result.append(value));
     //when
-    easyForm.get(label).doUpdateValueWithCallback("new Value");
+    easyForm.getWidget(label).doUpdateValueWithCallback("new Value");
     //then
     assertThat(result.toString()).isEqualTo("new Value");
   }
@@ -73,7 +73,7 @@ public class EasyFormUpdateValueTest {
     EasyForm easyForm = new EasyForm("EasyForm with TextArea");
     easyForm.addTextArea(label).onChange(value -> result.append(value));
     //when
-    easyForm.get(label).doUpdateValueWithCallback("new TextArea");
+    easyForm.getWidget(label).doUpdateValueWithCallback("new TextArea");
     //then
     assertThat(result.toString()).isEqualTo("new TextArea");
   }
@@ -86,7 +86,7 @@ public class EasyFormUpdateValueTest {
     EasyForm easyForm = new EasyForm("EasyForm with button");
     easyForm.addButton(label).onChange(value -> result.append("new Button"));
     //when
-    easyForm.get(label).doUpdateValueWithCallback("new Button");
+    easyForm.getWidget(label).doUpdateValueWithCallback("new Button");
     //then
     assertThat(result.toString()).isEqualTo("new Button");
   }

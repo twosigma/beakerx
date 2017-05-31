@@ -277,7 +277,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     return componentMap;
   }
 
-  public DOMWidget get(String key) {
+  public DOMWidget getWidget(String key) {
     return getComponentMap().get(key).getWidget();
   }
 

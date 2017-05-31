@@ -13,20 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.scala;
 
-import com.twosigma.beaker.DefaultJVMVariables;
+package com.twosigma.beaker.scala.chart.xychart.plotitem
 
-/**
- * 
- * @author konst
- *
- */
-public class ScalaDefaultVariables extends DefaultJVMVariables {
+import com.twosigma.beaker.chart.Color
+import com.twosigma.beaker.chart.xychart.plotitem.StrokeType
 
-    public ScalaDefaultVariables() {
-      addImports("com.twosigma.beaker.scala.chart.xychart._",
-          "com.twosigma.beaker.scala.chart.xychart.plotitem._",
-          "com.twosigma.beaker.scala.easyform.EasyForm");
-    }
+class Crosshair extends com.twosigma.beaker.chart.xychart.plotitem.Crosshair {
+
+  def this(color: Color, width: Float, style: StrokeType) {
+    this()
+    this.setColor(color)
+    this.setWidth(width)
+    this.setStyle(style)
+  }
+
 }

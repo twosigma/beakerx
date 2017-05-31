@@ -16,9 +16,7 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
-import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.Filter;
-
 import java.util.EnumSet;
 import java.util.List;
 
@@ -32,7 +30,7 @@ public class Line extends XYGraphics {
 
   private Float width = 1.5f;
   private StrokeType style;
-  private Integer    interpolation;
+  private Integer interpolation;
 
   public Line() {
 

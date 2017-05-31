@@ -13,20 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.scala;
 
-import com.twosigma.beaker.DefaultJVMVariables;
+package com.twosigma.beaker.scala.chart.xychart.plotitem
 
-/**
- * 
- * @author konst
- *
- */
-public class ScalaDefaultVariables extends DefaultJVMVariables {
+import com.twosigma.beaker.chart.Color
+import scala.collection.JavaConverters._
 
-    public ScalaDefaultVariables() {
-      addImports("com.twosigma.beaker.scala.chart.xychart._",
-          "com.twosigma.beaker.scala.chart.xychart.plotitem._",
-          "com.twosigma.beaker.scala.easyform.EasyForm");
-    }
+class ConstantBand extends com.twosigma.beaker.chart.xychart.plotitem.ConstantBand {
+
+  def this(x: List[_]) {
+    this()
+    super.setX(x.map(x => x.asInstanceOf[AnyRef]).asJava)
+  }
+
+  def this(x: List[_], y: List[_]) {
+    this(x)
+    super.setY(x.map(x => x.asInstanceOf[Number]).asJava)
+  }
+
+  def this(x: List[_], color: Color) {
+    this(x)
+    super.setColor(color)
+  }
+
 }

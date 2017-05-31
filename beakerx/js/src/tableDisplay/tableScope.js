@@ -774,18 +774,7 @@ define([
       });
     }
 
-    // cell highlighters
-    self.cellHighlighters = {}; //map: col index -> highlighter
-    var cellHighlightersDataRev = self.cellHighlightersData.slice().reverse();
-    _.forEach(cellHighlightersDataRev, function(highlighter) {
-      if (!highlighter) { return; }
-      if(_.isEmpty(self.cellHighlighters[highlighter.colInd])){
-        var jsHighlighter = cellHighlighters.createHighlighter(highlighter.type, highlighter);
-        if (jsHighlighter) {
-          self.cellHighlighters[highlighter.colInd] = jsHighlighter;
-        }
-      }
-    });
+    self.setCellHighlighters();
 
     self.contextMenuItems = {};
     if (!_.isEmpty(model.contextMenuItems)) {
@@ -840,6 +829,22 @@ define([
       items: '.bko-tooltip',
       show: { delay: 300, duration: 300 },
       position: { my: 'left bottom', at: 'center top' }
+    });
+  };
+
+  TableScope.prototype.setCellHighlighters = function() {
+    var self = this;
+    // cell highlighters
+    self.cellHighlighters = {}; //map: col index -> highlighter
+    var cellHighlightersDataRev = self.cellHighlightersData.slice().reverse();
+    _.forEach(cellHighlightersDataRev, function(highlighter) {
+      if (!highlighter) { return; }
+      if(_.isEmpty(self.cellHighlighters[highlighter.colInd])){
+        var jsHighlighter = cellHighlighters.createHighlighter(highlighter.type, highlighter);
+        if (jsHighlighter) {
+          self.cellHighlighters[highlighter.colInd] = jsHighlighter;
+        }
+      }
     });
   };
 

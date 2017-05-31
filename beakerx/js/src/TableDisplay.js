@@ -43,6 +43,8 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   render: function() {
     var that = this;
 
+    this._currentScope = null;
+
     this.$el.addClass('beaker-table-display');
 
     this.displayed.then(function() {
@@ -54,17 +56,26 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     });
   },
 
+  update: function() {
+    TableDisplayView.__super__.update.apply(this);
+
+    var tableModel = this.model.get('model');
+
+    this._currentScope.setModelData(tableModel);
+    this._currentScope.doResetAll();
+  },
+
   initTableDisplay: function(data) {
-    var currentScope = new TableScope('wrap_'+this.id);
-    var tmpl = currentScope.buildTemplate();
+    this._currentScope = new TableScope('wrap_'+this.id);
+    var tmpl = this._currentScope.buildTemplate();
     var tmplElement = $(tmpl);
 
     tmplElement.appendTo(this.$el);
 
-    currentScope.setModelData(data);
-    currentScope.setElement(tmplElement.children('.dtcontainer'));
-    currentScope.enableJupyterKeyHandler();
-    currentScope.run();
+    this._currentScope.setModelData(data);
+    this._currentScope.setElement(tmplElement.children('.dtcontainer'));
+    this._currentScope.enableJupyterKeyHandler();
+    this._currentScope.run();
   },
 
   showWarning: function(data) {

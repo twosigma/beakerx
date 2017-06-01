@@ -795,7 +795,7 @@ define([
                 row: index.row,
                 col: index.column - 1
               };
-              self.tableDisplayModel.send({event: 'actiondetails', params});
+              self.tableDisplayModel.send({event: 'actiondetails', params: params});
             }
           }
         }
@@ -1830,7 +1830,7 @@ define([
           row: index.row,
           col: index.column - 1
         };
-        self.tableDisplayModel.send({event: 'actiondetails', params});
+        self.tableDisplayModel.send({event: 'actiondetails', params: params});
       }
 
       e.stopPropagation();

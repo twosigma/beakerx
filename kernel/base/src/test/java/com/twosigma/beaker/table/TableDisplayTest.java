@@ -373,7 +373,9 @@ public class TableDisplayTest {
       }
     });
     //then
-    List colors = getValueAsList(getModel(), FONT_COLOR);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    List colors = getValueAsList(model, FONT_COLOR);
     List actual = (List) colors.get(0);
     assertThat(actual.get(0).toString()).startsWith("#");
   }

@@ -49,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.ALIGNMENT_FOR_COLUMN;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.RENDERER_FOR_COLUMN;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.RENDERER_FOR_TYPE;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_COLUMN;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TIMES;
@@ -127,6 +128,18 @@ public class TableDisplayToJson {
     value.put(RENDERER_FOR_TYPE, result);
     return value;
   }
+
+  static Map<Object, Object> serializeRendererForColumn(Map<String, TableDisplayCellRenderer> rendererMap) {
+    Map<String, Object> result = new LinkedHashMap<>();
+    for (Map.Entry<String, TableDisplayCellRenderer> pair : rendererMap.entrySet()) {
+      result.put(pair.getKey(), toJson(pair.getValue()));
+    }
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(RENDERER_FOR_COLUMN, result);
+    return value;
+  }
+
+
 
 
 

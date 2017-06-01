@@ -389,7 +389,9 @@ public class TableDisplayTest {
     tableDisplay.setRendererForColumn(COL_1, dataBarsRenderer);
     //then
     assertThat(tableDisplay.getRendererForColumn().get(COL_1)).isEqualTo(dataBarsRenderer);
-    Map actual = getValueAsMap(getModel(), RENDERER_FOR_COLUMN);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    Map actual = getValueAsMap(model, RENDERER_FOR_COLUMN);
     Map column = getValueAsMap(actual, COL_1);
     assertThat(column.get(DataBarsRendererSerializer.TYPE)).isEqualTo(DataBarsRendererSerializer.VALUE_DATA_BARS);
     assertThat(column.get(DataBarsRendererSerializer.INCLUDE_TEXT)).isEqualTo(true);

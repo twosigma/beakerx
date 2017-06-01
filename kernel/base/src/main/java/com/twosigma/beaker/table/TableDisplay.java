@@ -196,9 +196,13 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setStringFormatForTimes(TimeUnit stringFormatForTimes) {
     this.stringFormatForTimes = stringFormatForTimes;
+    sendModel(serializeStringFormatForTimes());
+  }
+
+  private Map<Object, Object> serializeStringFormatForTimes() {
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put("stringFormatForTimes", this.stringFormatForTimes);
-    sendModel(value);
+    return value;
   }
 
   public Map<ColumnType, TableDisplayStringFormat> getStringFormatForType() {
@@ -207,7 +211,17 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setStringFormatForType(ColumnType type, TableDisplayStringFormat format) {
     this.stringFormatForType.put(type, format);
-    sendModel();
+    sendModel(serializeStringFormatForType());
+  }
+
+  private Map<Object, Object> serializeStringFormatForType() {
+    Map<String, Map> result = new LinkedHashMap<>();
+    for (Entry<ColumnType, TableDisplayStringFormat> pair : this.stringFormatForType.entrySet()) {
+      result.put(pair.getKey().getType(), serializeToJsonObject(pair.getValue()));
+    }
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put("stringFormatForType", result);
+    return value;
   }
 
   public Map<String, TableDisplayStringFormat> getStringFormatForColumn() {

@@ -384,6 +384,11 @@ $fix-col-separator-width: 3px;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.dropdown-submenu > .dropdown-menu {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
 .dropdown-menu {
   & > li {
     list-style: none;

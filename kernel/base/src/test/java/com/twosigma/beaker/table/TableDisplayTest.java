@@ -201,7 +201,8 @@ public class TableDisplayTest {
     tableDisplay.setDoubleClickAction(new Object());
     //then
     assertThat(tableDisplay.hasDoubleClickAction()).isEqualTo(true);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(2);
     assertThat(model.get(HAS_DOUBLE_CLICK_ACTION)).isEqualTo(true);
   }
 

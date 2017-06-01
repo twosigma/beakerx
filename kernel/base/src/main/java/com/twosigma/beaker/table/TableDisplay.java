@@ -23,6 +23,7 @@ import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFroze
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozenRight;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsVisible;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeDataFontSize;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeDoubleClickAction;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeFilteredValues;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeFontColor;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeHasIndex;
@@ -546,14 +547,14 @@ public class TableDisplay extends BeakerxWidget {
   public void setDoubleClickAction(String tagName) {
     this.doubleClickListener = null;
     this.doubleClickTag = tagName;
-    sendModel();
+    sendModelUpdate(serializeDoubleClickAction(this.doubleClickTag,hasDoubleClickAction()));
   }
 
   public void setDoubleClickAction(Object listener) {
     this.doubleClickTag = null;
     this.doubleClickListener = listener;
     getComm().addMsgCallbackList((Handler<Message>) this::handleDoubleClick);
-    sendModel();
+    sendModelUpdate(serializeDoubleClickAction(this.doubleClickTag,hasDoubleClickAction()));
   }
 
   private void handleDoubleClick(Message message) {

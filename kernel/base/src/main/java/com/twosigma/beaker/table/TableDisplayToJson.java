@@ -51,6 +51,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
+import static com.twosigma.beaker.table.serializer.ObservableTableDisplaySerializer.DOUBLE_CLICK_TAG;
+import static com.twosigma.beaker.table.serializer.ObservableTableDisplaySerializer.HAS_DOUBLE_CLICK_ACTION;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.ALIGNMENT_FOR_COLUMN;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.ALIGNMENT_FOR_TYPE;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.CELL_HIGHLIGHTERS;
@@ -277,6 +279,13 @@ public class TableDisplayToJson {
   static Map<Object, Object> serializeTimeZone(String timeZone) {
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put(TIME_ZONE, timeZone);
+    return value;
+  }
+
+  static Map<Object, Object> serializeDoubleClickAction(String doubleClickTag, boolean hasDoubleClickAction) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(HAS_DOUBLE_CLICK_ACTION, hasDoubleClickAction);
+    value.put(DOUBLE_CLICK_TAG, doubleClickTag);
     return value;
   }
 

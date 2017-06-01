@@ -358,7 +358,7 @@ public class TableDisplayTest {
     });
     //then
     List colors = getValueAsList(getModel(), FONT_COLOR);
-    List actual = (List)colors.get(0);
+    List actual = (List) colors.get(0);
     assertThat(actual.get(0).toString()).startsWith("#");
   }
 
@@ -403,8 +403,11 @@ public class TableDisplayTest {
     tableDisplay.setRendererForType(ColumnType.String, dataBarsRenderer);
     //then
     assertThat(tableDisplay.getRendererForType().get(ColumnType.String)).isEqualTo(dataBarsRenderer);
-    LinkedHashMap model = getModel();
-    assertThat(model.get(RENDERER_FOR_TYPE)).isNotNull();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    Map actual = (Map) ((Map) model.get(RENDERER_FOR_TYPE)).get(ColumnType.String.toString());
+    assertThat(actual.get(DataBarsRendererSerializer.TYPE)).isEqualTo(DataBarsRendererSerializer.VALUE_DATA_BARS);
+    assertThat(actual.get(DataBarsRendererSerializer.INCLUDE_TEXT)).isEqualTo(true);
   }
 
   @Test
@@ -639,9 +642,9 @@ public class TableDisplayTest {
     //then
     assertThat(tableDisplay.getTypes()).contains(CsvPlotReader.TIME_COLUMN);
     LinkedHashMap model = getModel();
-    List values = (List)model.get(VALUES);
-    List row0 = (List)values.get(0);
-    Map date = (Map)row0.get(7);
+    List values = (List) model.get(VALUES);
+    List row0 = (List) values.get(0);
+    Map date = (Map) row0.get(7);
     assertThat(date.get(DateSerializer.TYPE)).isEqualTo(DateSerializer.VALUE_DATE);
     assertThat(date.get(DateSerializer.TIMESTAMP)).isNotNull();
   }
@@ -710,6 +713,7 @@ public class TableDisplayTest {
   protected LinkedHashMap getModel() {
     return findValueForProperty(kernel, XYChart.MODEL, LinkedHashMap.class);
   }
+
   protected LinkedHashMap getModelUpdate() {
     return findValueForProperty(kernel, XYChart.MODEL_UPDATE, LinkedHashMap.class);
   }

@@ -31,6 +31,7 @@ import com.twosigma.beaker.table.highlight.ThreeColorHeatmapHighlighter;
 import com.twosigma.beaker.table.highlight.UniqueEntriesHighlighter;
 import com.twosigma.beaker.table.highlight.ValueHighlighter;
 import com.twosigma.beaker.table.renderer.DataBarsRenderer;
+import com.twosigma.beaker.table.renderer.TableDisplayCellRenderer;
 import com.twosigma.beaker.table.serializer.DataBarsRendererSerializer;
 import com.twosigma.beaker.table.serializer.DecimalStringFormatSerializer;
 import com.twosigma.beaker.table.serializer.HeatmapHighlighterSerializer;
@@ -48,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.ALIGNMENT_FOR_COLUMN;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.RENDERER_FOR_TYPE;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_COLUMN;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TIMES;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TYPE;
@@ -115,5 +117,17 @@ public class TableDisplayToJson {
     value.put(STRING_FORMAT_FOR_COLUMN, result);
     return value;
   }
+
+  static Map<Object, Object> serializeRendererForType(Map<ColumnType, TableDisplayCellRenderer> rendererForType) {
+    Map<String, Object> result = new LinkedHashMap<>();
+    for (Map.Entry<ColumnType, TableDisplayCellRenderer> pair : rendererForType.entrySet()) {
+      result.put(pair.getKey().getType(), toJson(pair.getValue()));
+    }
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(RENDERER_FOR_TYPE, result);
+    return value;
+  }
+
+
 
 }

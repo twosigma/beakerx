@@ -212,7 +212,6 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     radioButtonComponent.setHorizontal(
             orientation != null && EasyForm.HORIZONTAL.equals(orientation));
     radioButtonComponent.setValues(values);
-    radioButtonComponent.createWidget();
     radioButtonComponent.registerUpdateValueCallback(radioButtonComponent::fireChanged);
     return addComponentOrThrow(label, radioButtonComponent);
   }

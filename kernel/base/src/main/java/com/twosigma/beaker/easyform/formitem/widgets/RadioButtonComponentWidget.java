@@ -26,6 +26,7 @@ import com.twosigma.beaker.widgets.box.VBox;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.List;
 
@@ -33,7 +34,6 @@ import static java.util.Arrays.asList;
 
 public class RadioButtonComponentWidget extends RadioButtonComponent implements CommFunctionality, EasyFormWidget {
 
-  private Box widget;
   private RadioButtons radioButtons;
 
   public RadioButtonComponentWidget() {
@@ -47,37 +47,41 @@ public class RadioButtonComponentWidget extends RadioButtonComponent implements 
 
   @Override
   public Comm getComm() {
-    return this.widget.getComm();
+    return radioButtons.getComm();
   }
 
   @Override
   public void setLabel(String label) {
-    this.radioButtons.setDescription(label);
+    radioButtons.setDescription(label);
   }
 
   @Override
   public String getValue() {
-    return this.radioButtons.getValue();
+    return radioButtons.getValue();
   }
 
   @Override
   public void setValue(String value) {
-    this.radioButtons.setValue(value);
+    radioButtons.setValue(value);
   }
 
   @Override
   public void setValues(Collection<String> values) {
-    this.radioButtons.setOptions(values.stream().toArray(String[]::new));
+    this.radioButtons.setOptions(values.toArray(new String[0]));
   }
 
   @Override
   public Collection<String> getValues() {
-    return Arrays.stream(this.radioButtons.getOptions()).map(x -> (String) x).collect(Collectors.toList());
+    return Arrays.stream(radioButtons.getOptions()).collect(Collectors.toList());
   }
 
   @Override
   public DOMWidget getWidget() {
-    return widget;
+    if (getHorizontal()) {
+      return new HBox(Collections.singletonList(this.radioButtons));
+    } else {
+      return this.radioButtons;
+    }
   }
   
   @Override
@@ -85,8 +89,4 @@ public class RadioButtonComponentWidget extends RadioButtonComponent implements 
     getComm().close();
   }
 
-  public void createWidget() {
-    List widgetList = asList(this.radioButtons);
-    this.widget = (getHorizontal()) ? new HBox(widgetList) : new VBox(widgetList);
-  }
 }

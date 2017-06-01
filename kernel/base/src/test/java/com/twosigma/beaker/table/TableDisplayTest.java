@@ -214,7 +214,8 @@ public class TableDisplayTest {
     tableDisplay.setDoubleClickAction(clickTag);
     //then
     assertThat(tableDisplay.getDoubleClickTag()).isEqualTo(clickTag);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(2);
     assertThat(model.get(DOUBLE_CLICK_TAG)).isEqualTo(clickTag);
   }
 
@@ -279,7 +280,9 @@ public class TableDisplayTest {
     tableDisplay.addCellHighlighter(highlighter);
     //then
     assertThat(tableDisplay.getCellHighlighters().get(0)).isEqualTo(highlighter);
-    List actual = getValueAsList(getModel(), CELL_HIGHLIGHTERS);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    List actual = getValueAsList(model, CELL_HIGHLIGHTERS);
     Map column = (Map) actual.get(0);
     assertThat(column.get(ThreeColorHeatmapHighlighterSerializer.TYPE)).isEqualTo(ThreeColorHeatmapHighlighter.class.getSimpleName());
     assertThat(column.get(ThreeColorHeatmapHighlighterSerializer.STYLE)).isEqualTo(TableDisplayCellHighlighter.SINGLE_COLUMN.toString());
@@ -295,13 +298,14 @@ public class TableDisplayTest {
     tableDisplay.addCellHighlighter(highlighter);
     //then
     assertThat(tableDisplay.getCellHighlighters().get(0)).isEqualTo(highlighter);
-    List actual = getValueAsList(getModel(), CELL_HIGHLIGHTERS);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    List actual = getValueAsList(model, CELL_HIGHLIGHTERS);
     Map column = (Map) actual.get(0);
     assertThat(column.get(UniqueEntriesHighlighterSerializer.TYPE)).isEqualTo(UniqueEntriesHighlighter.class.getSimpleName());
     assertThat(column.get(UniqueEntriesHighlighterSerializer.STYLE)).isEqualTo(TableDisplayCellHighlighter.FULL_ROW.toString());
     assertThat(column.get(UniqueEntriesHighlighterSerializer.COL_NAME)).isEqualTo(COL_1);
   }
-
 
   @Test
   public void shouldSendCommMsgWhenAddValueHighlighterForColumnChange() throws Exception {
@@ -311,7 +315,9 @@ public class TableDisplayTest {
     tableDisplay.addCellHighlighter(highlighter);
     //then
     assertThat(tableDisplay.getCellHighlighters().get(0)).isEqualTo(highlighter);
-    List actual = getValueAsList(getModel(), CELL_HIGHLIGHTERS);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    List actual = getValueAsList(model, CELL_HIGHLIGHTERS);
     Map column = (Map) actual.get(0);
     assertThat(column.get(ValueHighlighterSerializer.TYPE)).isEqualTo(ValueHighlighter.class.getSimpleName());
     assertThat(column.get(ValueHighlighterSerializer.COL_NAME)).isEqualTo(COL_1);
@@ -333,7 +339,7 @@ public class TableDisplayTest {
       }
     });
     //then
-    List actual = getValueAsList(getModel(), CELL_HIGHLIGHTERS);
+    List actual = getValueAsList(getModelUpdate(), CELL_HIGHLIGHTERS);
     Map column = (Map) actual.get(0);
     assertThat(column.get(ValueHighlighterSerializer.TYPE)).isEqualTo(ValueHighlighter.class.getSimpleName());
   }

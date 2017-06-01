@@ -139,8 +139,10 @@ public class TableDisplayTest {
     tableDisplay.setColumnFrozen(COL_1, true);
     //then
     assertThat(tableDisplay.getColumnsFrozen().get(COL_1)).isEqualTo(true);
-    LinkedHashMap model = getModel();
-    assertThat(model.get(COLUMNS_FROZEN)).isNotNull();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    Map actual = (Map) model.get(COLUMNS_FROZEN);
+    assertThat(actual.get(COL_1)).isEqualTo(true);
   }
 
   @Test

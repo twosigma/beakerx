@@ -17,6 +17,7 @@ package com.twosigma.beaker.table;
 
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeAlignmentForColumn;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeAlignmentForType;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozen;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeRendererForColumn;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeRendererForType;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForColumn;
@@ -284,7 +285,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setColumnFrozen(String column, boolean frozen) {
     this.columnsFrozen.put(column, frozen);
-    sendModel();
+    sendModelUpdate(serializeColumnsFrozen(this.columnsFrozen));
   }
 
   public Map<String, Boolean> getColumnsFrozenRight() {

@@ -69,7 +69,7 @@ public class TableDisplayToJson {
     mapper.registerModule(module);
   }
 
-  public static Map toJson(TableDisplay tableDisplay) {
-    return mapper.convertValue(tableDisplay, Map.class);
+  public static Map toJson(Object item) {
+    return mapper.convertValue(item, Map.class);
   }
 }

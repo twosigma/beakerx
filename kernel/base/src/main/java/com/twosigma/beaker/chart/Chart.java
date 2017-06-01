@@ -185,4 +185,9 @@ public abstract class Chart extends ChartDetails {
   protected Map serializeToJsonObject() {
     return ChartToJson.toJson(this);
   }
+
+  @Override
+  protected Map serializeToJsonObject(Object item) {
+    return ChartToJson.toJson(item);
+  }
 }

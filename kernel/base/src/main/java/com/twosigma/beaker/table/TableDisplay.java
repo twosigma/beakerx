@@ -33,11 +33,11 @@ import com.twosigma.beaker.widgets.RunWidgetClosure;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -183,7 +183,7 @@ public class TableDisplay extends BeakerxWidget {
 
   protected void openComm() {
     super.openComm();
-    getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails);
+    getComm().addMsgCallbackList((Handler<Message>) this::handleSetDetails);
   }
 
   public static TableDisplay createTableDisplayForMap(Map<?, ?> v) {
@@ -196,7 +196,9 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setStringFormatForTimes(TimeUnit stringFormatForTimes) {
     this.stringFormatForTimes = stringFormatForTimes;
-    sendModel();
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put("stringFormatForTimes", this.stringFormatForTimes);
+    sendModel(value);
   }
 
   public Map<ColumnType, TableDisplayStringFormat> getStringFormatForType() {
@@ -533,23 +535,23 @@ public class TableDisplay extends BeakerxWidget {
   public void setDoubleClickAction(Object listener) {
     this.doubleClickTag = null;
     this.doubleClickListener = listener;
-    getComm().addMsgCallbackList((Handler<Message>)this::handleDoubleClick);
+    getComm().addMsgCallbackList((Handler<Message>) this::handleDoubleClick);
     sendModel();
   }
 
   private void handleDoubleClick(Message message) {
-    handleCommEventSync(message, CommActions.ONDOUBLECLICK, (ActionPerformed)this::onDoubleClickAction);
+    handleCommEventSync(message, CommActions.ONDOUBLECLICK, (ActionPerformed) this::onDoubleClickAction);
   }
 
   private void handleSetDetails(Message message) {
-    handleCommEventSync(message, CommActions.ACTIONDETAILS, (ActionPerformed)this::onActionDetails);
+    handleCommEventSync(message, CommActions.ACTIONDETAILS, (ActionPerformed) this::onActionDetails);
   }
 
   private void handleOnContextMenu(Message message) {
-    handleCommEventSync(message, CommActions.ONCONTEXTMENU, (ActionPerformed)this::onContextMenu);
+    handleCommEventSync(message, CommActions.ONCONTEXTMENU, (ActionPerformed) this::onContextMenu);
   }
 
-  private void onDoubleClickAction(HashMap content){
+  private void onDoubleClickAction(HashMap content) {
     Object row = content.get("row");
     Object column = content.get("column");
     List<Object> params = new ArrayList<>();
@@ -563,48 +565,48 @@ public class TableDisplay extends BeakerxWidget {
    *
    * @param content
    */
-  private void onActionDetails(HashMap content){
+  private void onActionDetails(HashMap content) {
     TableActionDetails details = new TableActionDetails();
 
-    if(content.containsKey("params")){
+    if (content.containsKey("params")) {
 
       HashMap params = (HashMap) content.get("params");
 
-      if(params.containsKey("actionType")){
-        TableActionType value = TableActionType.getByName((String)params.get("actionType"));
+      if (params.containsKey("actionType")) {
+        TableActionType value = TableActionType.getByName((String) params.get("actionType"));
         details.setActionType(value);
       }
-      if(params.containsKey("contextMenuItem")){
-        String value = (String)params.get("contextMenuItem");
+      if (params.containsKey("contextMenuItem")) {
+        String value = (String) params.get("contextMenuItem");
         details.setContextMenuItem(value);
       }
-      if(params.containsKey("row")){
-        Integer value = (Integer)params.get("row");
+      if (params.containsKey("row")) {
+        Integer value = (Integer) params.get("row");
         details.setRow(value);
       }
-      if(params.containsKey("col")){
-        Integer value = (Integer)params.get("col");
+      if (params.containsKey("col")) {
+        Integer value = (Integer) params.get("col");
         details.setCol(value);
       }
-      if(params.containsKey("tag")){
-        String value = (String)params.get("tag");
+      if (params.containsKey("tag")) {
+        String value = (String) params.get("tag");
         details.setTag(value);
       }
     }
     setDetails(details);
-    if(TableActionType.CONTEXT_MENU_CLICK.equals(details.getActionType())){
-      if(getContextMenuTags() != null && !getContextMenuTags().isEmpty() && details.getContextMenuItem() != null && !details.getContextMenuItem().isEmpty()){
+    if (TableActionType.CONTEXT_MENU_CLICK.equals(details.getActionType())) {
+      if (getContextMenuTags() != null && !getContextMenuTags().isEmpty() && details.getContextMenuItem() != null && !details.getContextMenuItem().isEmpty()) {
         NamespaceClient.getBeaker().runByTag(getContextMenuTags().get(details.getContextMenuItem()));
       }
-    }else if(TableActionType.DOUBLE_CLICK.equals(details.getActionType())){
-      if(getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()){
+    } else if (TableActionType.DOUBLE_CLICK.equals(details.getActionType())) {
+      if (getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()) {
         NamespaceClient.getBeaker().runByTag(getDoubleClickTag());
       }
     }
   }
 
-  private void onContextMenu(HashMap content){
-    String menuKey = (String)content.get("itemKey");
+  private void onContextMenu(HashMap content) {
+    String menuKey = (String) content.get("itemKey");
     Object row = content.get("row");
     Object column = content.get("column");
     List<Object> params = new ArrayList<>();
@@ -634,7 +636,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void addContextMenuItem(String name, Object closure) {
     this.contextMenuListeners.put(name, closure);
-    getComm().addMsgCallbackList((Handler<Message>)this::handleOnContextMenu);
+    getComm().addMsgCallbackList((Handler<Message>) this::handleOnContextMenu);
   }
 
   public void addContextMenuItem(String name, String tagName) {
@@ -676,5 +678,10 @@ public class TableDisplay extends BeakerxWidget {
   @Override
   protected Map serializeToJsonObject() {
     return TableDisplayToJson.toJson(this);
+  }
+
+  @Override
+  protected Map serializeToJsonObject(Object item) {
+    return TableDisplayToJson.toJson(item);
   }
 }

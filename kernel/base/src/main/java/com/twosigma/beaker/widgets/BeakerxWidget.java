@@ -27,6 +27,8 @@ public abstract class BeakerxWidget extends Widget {
 
   protected abstract Map serializeToJsonObject();
 
+  protected abstract Map serializeToJsonObject(Object item);
+
   @Override
   protected void addValueChangeMsgCallback() {
   }
@@ -50,4 +52,7 @@ public abstract class BeakerxWidget extends Widget {
     sendUpdate(MODEL, serializeToJsonObject());
   }
 
+  public void sendModel(Object item){
+    sendUpdate(MODEL, serializeToJsonObject(item));
+  }
 }

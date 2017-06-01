@@ -91,27 +91,13 @@ public class InteractiveBaseTest {
     Assertions.assertThat(witgets).isEmpty();
     }
 
-  //@Test //enable after fix
-  public void widgetsFromAbbreviationsWithTwoIntParam_returnedIntSliderHasMinMaxFromParams() throws Exception {
-    int min = 10, max = 100;
+  @Test
+  public void widgetsFromAbbreviationsWithTwoIntParam_returnedTwoIntSliders() throws Exception {
+    int one = 10, two = 100;
     //when
-    List<ValueWidget<?>> witgets = InteractiveBase.widgetsFromAbbreviations(min, max);
+    List<ValueWidget<?>> witgets = InteractiveBase.widgetsFromAbbreviations(one, two);
     //then
-    IntSlider intSlider = (IntSlider) witgets.get(0);
-    Assertions.assertThat(intSlider.getMin()).isEqualTo(min);
-    Assertions.assertThat(intSlider.getMax()).isEqualTo(max);
-  }
-
-  //@Test //enable after fix
-  public void widgetsFromAbbreviationsWithThreeIntParam_returnedIntSliderHasMinMaxStepFromParams() throws Exception {
-    int min = 10, max = 100, step = 5;
-    //when
-    List<ValueWidget<?>> witgets = InteractiveBase.widgetsFromAbbreviations(min, max, step);
-    //then
-    IntSlider intSlider = (IntSlider) witgets.get(0);
-    Assertions.assertThat(intSlider.getMin()).isEqualTo(min);
-    Assertions.assertThat(intSlider.getMax()).isEqualTo(max);
-    Assertions.assertThat(intSlider.getStep()).isEqualTo(step);
+    Assertions.assertThat(witgets.size()).isEqualTo(2);
   }
 
   @Test

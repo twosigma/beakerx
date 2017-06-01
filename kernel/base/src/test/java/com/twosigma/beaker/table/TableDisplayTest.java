@@ -675,7 +675,9 @@ public class TableDisplayTest {
     tableDisplay.removeAllCellHighlighters();
     //then
     assertThat(tableDisplay.getCellHighlighters()).isEmpty();
-    List actual = getValueAsList(getModel(), CELL_HIGHLIGHTERS);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    List actual = getValueAsList(model, CELL_HIGHLIGHTERS);
     assertThat(actual).isEmpty();
   }
 

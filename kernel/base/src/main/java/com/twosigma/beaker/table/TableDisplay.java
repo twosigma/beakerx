@@ -348,7 +348,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void removeAllCellHighlighters() {
     this.cellHighlighters.clear();
-    sendModel();
+    sendModelUpdate(serializeCellHighlighters(this.cellHighlighters));
   }
 
   public void setColumnOrder(List<String> columnOrder) {

@@ -50,7 +50,7 @@ define([
 
   var jQuery = $;
 
-  function TableScope(wrapperId, tableDisplayModel) {
+  function TableScope(wrapperId) {
     this.wrapperId = wrapperId;
     this.id = null;
     this.element = null;
@@ -67,7 +67,7 @@ define([
     this.getCellDisp     =  [];
     this.getCellDispOpts =  [];
     this.allConverters = {};
-    this.tableDisplayModel = tableDisplayModel;
+    this.tableDisplayModel = null;
     
     this.model = {
         model: {},
@@ -89,6 +89,10 @@ define([
 
   // ---------
 
+  TableScope.prototype.setWidgetModel = function(tableDisplayModel) {
+  	this.tableDisplayModel = tableDisplayModel;
+  };
+  
   TableScope.prototype.linkMoment = function() {
     moment.tz.link(['Etc/GMT+1|GMT+01:00',
       'Etc/GMT+2|GMT+02:00',
@@ -786,7 +790,7 @@ define([
             callback: function(itemKey, options) {
               var index = self.table.cell(options.$trigger.get(0)).index();
               var params = {
-                actionType: 'CONTEXT_MENU_CLICK',
+                actionType: 'oncontextmenu',
                 contextMenuItem: itemKey,
                 row: index.row,
                 col: index.column - 1
@@ -1822,7 +1826,7 @@ define([
 
       if (!_.isEmpty(model.doubleClickTag)) {
         var params = {
-          actionType: 'DOUBLE_CLICK',
+          actionType: 'ondoubleclick',
           row: index.row,
           col: index.column - 1
         };

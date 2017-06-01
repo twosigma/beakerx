@@ -33,6 +33,7 @@ import static com.twosigma.beaker.table.TableDisplayToJson.serializeRendererForT
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForColumn;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForTimes;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForType;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeTooltips;
 import static java.util.Arrays.asList;
 
@@ -460,7 +461,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setTimeZone(String timeZone) {
     this.timeZone = timeZone;
-    sendModel();
+    sendModelUpdate(serializeTimeZone(this.timeZone));
   }
 
   public String getTimeZone() {

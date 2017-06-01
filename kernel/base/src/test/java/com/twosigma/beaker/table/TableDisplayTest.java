@@ -537,7 +537,8 @@ public class TableDisplayTest {
     tableDisplay.setTimeZone(timezone);
     //then
     assertThat(tableDisplay.getTimeZone()).isEqualTo(timezone);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(TIME_ZONE)).isEqualTo(timezone);
   }
 

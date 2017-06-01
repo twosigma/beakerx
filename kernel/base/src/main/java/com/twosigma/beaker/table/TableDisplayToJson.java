@@ -69,6 +69,7 @@ import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.RENDER
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_COLUMN;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TIMES;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TYPE;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.TIME_ZONE;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.TOOLTIPS;
 
 public class TableDisplayToJson {
@@ -270,6 +271,12 @@ public class TableDisplayToJson {
   static Map<Object, Object> serializeHasIndex(String hasIndex) {
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put(HAS_INDEX, hasIndex);
+    return value;
+  }
+
+  static Map<Object, Object> serializeTimeZone(String timeZone) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(TIME_ZONE, timeZone);
     return value;
   }
 

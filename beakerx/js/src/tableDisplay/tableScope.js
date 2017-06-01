@@ -600,8 +600,7 @@ define([
 
     if (self.hasIndex) {
       if (self.columnNames !== undefined) {
-        self.indexName = self.columnNames[0];
-        self.columnNames.shift();
+        self.indexName = self.columnNames.shift();
       } else {
         self.indexName = '     ';
       }
@@ -2050,21 +2049,6 @@ define([
     }
   };
 
-  TableScope.prototype.showHeaderMenu = function() {
-    var self = this;
-    $('#' + self.id + '_modal_dialog').hide();
-    bkHelper.timeout(function() {
-      $('#' + self.id + '_dropdown_menu').click();
-      $('#' + self.id + '_show_column > .dropdown-menu').css('display', 'block');
-    }, 0);
-  };
-
-  TableScope.prototype.hideModal = function(){
-    var self = this;
-    var id = self.id + '_modal_dialog';
-    $('#'+id).hide()
-  };
-
   TableScope.prototype.getDumpState = function() {
     return this.model.getDumpState();
   };
@@ -2799,7 +2783,10 @@ define([
     var templateString = require('./table.html');
     var compiled = _.template(templateString);
 
-    return compiled({ scopeId: this.id, wrapperId: this.wrapperId });
+    return compiled({
+      scopeId: this.id,
+      wrapperId: this.wrapperId
+    });
   };
 
   TableScope.prototype.setElement = function(el) {
@@ -3055,6 +3042,7 @@ define([
   // ---------
   // Add column reset methods
   require('./columnReset')(TableScope);
+  require('./tableModal')(TableScope);
 
   return TableScope;
 

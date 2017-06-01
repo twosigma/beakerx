@@ -810,6 +810,7 @@ define([
       show: { delay: 300, duration: 300 },
       position: { my: 'left bottom', at: 'center top' }
     });
+    self.initRowSelectable();
   };
 
   TableScope.prototype.getColumnTypeAndAlignment = function(colIdx) {
@@ -2659,19 +2660,6 @@ define([
     self.updateUsePaginationBtt();
   };
 
-  TableScope.prototype.doSelectAll = function() {
-    var self = this;
-    if (self.table === undefined) {
-      return;
-    }
-    for (var i in self.selected) {
-      self.selected[i] = true;
-    }
-    //jscs:disable
-    self.update_selected();
-    //jscs:enable
-  };
-
   TableScope.prototype.doDeselectAll = function() {
     var self = this;
     if (self.table === undefined) {
@@ -2679,19 +2667,6 @@ define([
     }
     for (var i in self.selected) {
       self.selected[i] = false;
-    }
-    //jscs:disable
-    self.update_selected();
-    //jscs:enable
-  };
-
-  TableScope.prototype.doReverseSelection = function() {
-    var self = this;
-    if (self.table === undefined) {
-      return;
-    }
-    for (var i in self.selected) {
-      self.selected[i] = !self.selected[i];
     }
     //jscs:disable
     self.update_selected();
@@ -3051,6 +3026,7 @@ define([
   // ---------
   // Add column reset methods
   require('./columnReset')(TableScope);
+  require('./rowSelectable')(TableScope);
 
   return TableScope;
 

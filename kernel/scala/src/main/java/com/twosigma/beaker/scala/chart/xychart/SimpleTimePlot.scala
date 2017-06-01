@@ -1,5 +1,5 @@
 /*
- *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,9 +14,18 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.easyform.formitem;
+package com.twosigma.beaker.scala.chart.xychart
 
-@FunctionalInterface
-public interface EasyFormListener {
-  void execute(String value);
+import java.util
+
+import scala.collection.JavaConverters._
+
+class SimpleTimePlot(data: util.List[util.Map[String, AnyRef]], columns: util.List[String]) extends com.twosigma.beaker.chart.xychart.SimpleTimePlot(data, columns) {
+
+  def this(data: util.List[util.Map[String, AnyRef]], columns: List[String], yLabel: String, displayNames: List[String]) {
+    this(data, columns.asJava)
+    super.setYLabel(yLabel)
+    super.setDisplayNames(displayNames.asJava)
+  }
+
 }

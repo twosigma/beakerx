@@ -1,5 +1,5 @@
 /*
- *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,9 +14,18 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.easyform.formitem;
+package com.twosigma.beaker.scala.chart.xychart.plotitem
 
-@FunctionalInterface
-public interface EasyFormListener {
-  void execute(String value);
+import com.twosigma.beaker.chart.Color
+import com.twosigma.beaker.chart.xychart.plotitem.StrokeType
+
+class Crosshair extends com.twosigma.beaker.chart.xychart.plotitem.Crosshair {
+
+  def this(color: Color, width: Float, style: StrokeType) {
+    this()
+    this.setColor(color)
+    this.setWidth(width)
+    this.setStyle(style)
+  }
+
 }

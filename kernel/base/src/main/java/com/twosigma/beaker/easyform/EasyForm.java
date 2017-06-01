@@ -208,11 +208,11 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
                                            final Collection<String> values,
                                            final Integer orientation) throws Exception {
     RadioButtonComponentWidget radioButtonComponent = new RadioButtonComponentWidget();
-    radioButtonComponent.registerUpdateValueCallback(radioButtonComponent::fireChanged);
     radioButtonComponent.setLabel(label);
     radioButtonComponent.setHorizontal(
             orientation != null && EasyForm.HORIZONTAL.equals(orientation));
     radioButtonComponent.setValues(values);
+    radioButtonComponent.registerUpdateValueCallback(radioButtonComponent::fireChanged);
     return addComponentOrThrow(label, radioButtonComponent);
   }
 
@@ -277,7 +277,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     return componentMap;
   }
 
-  public DOMWidget get(String key) {
+  public DOMWidget getWidget(String key) {
     return getComponentMap().get(key).getWidget();
   }
 

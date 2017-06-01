@@ -395,7 +395,9 @@ public class TableDisplayTest {
       }
     });
     //then
-    List filteredValues = getValueAsList(getModel(), FILTERED_VALUES);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    List filteredValues = getValueAsList(model, FILTERED_VALUES);
     assertThat(filteredValues).isNotEmpty();
   }
 

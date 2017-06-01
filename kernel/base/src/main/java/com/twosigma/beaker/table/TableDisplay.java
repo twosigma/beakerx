@@ -23,6 +23,7 @@ import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFroze
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozenRight;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsVisible;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeDataFontSize;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeFilteredValues;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeFontColor;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeHeaderFontSize;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeRendererForColumn;
@@ -434,7 +435,7 @@ public class TableDisplay extends BeakerxWidget {
       throw new IllegalArgumentException("Can not set row filter using closure.", e);
     }
     this.filteredValues = filteredValues;
-    sendModel();
+    sendModelUpdate(serializeFilteredValues(this.filteredValues));
   }
 
   public void setHeadersVertical(boolean headersVertical) {

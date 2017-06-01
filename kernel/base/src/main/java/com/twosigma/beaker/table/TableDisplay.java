@@ -17,6 +17,7 @@ package com.twosigma.beaker.table;
 
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeAlignmentForColumn;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeAlignmentForType;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeCellHighlighters;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozen;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozenRight;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsVisible;
@@ -318,7 +319,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void addCellHighlighter(TableDisplayCellHighlighter cellHighlighter) {
     this.cellHighlighters.add(cellHighlighter);
-    sendModel();
+    sendModelUpdate(serializeCellHighlighters(this.cellHighlighters));
   }
 
   public void addCellHighlighter(Object closure) {

@@ -258,7 +258,9 @@ public class TableDisplayTest {
     tableDisplay.addCellHighlighter(heatmapHighlighter);
     //then
     assertThat(tableDisplay.getCellHighlighters().get(0)).isEqualTo(heatmapHighlighter);
-    List actual = getValueAsList(getModel(), CELL_HIGHLIGHTERS);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    List actual = getValueAsList(model, CELL_HIGHLIGHTERS);
     Map column = (Map) actual.get(0);
     assertThat(column.get(HeatmapHighlighterSerializer.TYPE)).isEqualTo(HeatmapHighlighter.class.getSimpleName());
     assertThat(column.get(HeatmapHighlighterSerializer.STYLE)).isEqualTo(TableDisplayCellHighlighter.FULL_ROW.toString());

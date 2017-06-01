@@ -27,6 +27,7 @@ import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 import com.twosigma.beaker.table.format.TimeStringFormat;
 import com.twosigma.beaker.table.format.ValueStringFormat;
 import com.twosigma.beaker.table.highlight.HeatmapHighlighter;
+import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beaker.table.highlight.ThreeColorHeatmapHighlighter;
 import com.twosigma.beaker.table.highlight.UniqueEntriesHighlighter;
 import com.twosigma.beaker.table.highlight.ValueHighlighter;
@@ -42,14 +43,17 @@ import com.twosigma.beaker.table.serializer.UniqueEntriesHighlighterSerializer;
 import com.twosigma.beaker.table.serializer.ValueHighlighterSerializer;
 import com.twosigma.beaker.table.serializer.ValueStringFormatSerializer;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.ALIGNMENT_FOR_COLUMN;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.ALIGNMENT_FOR_TYPE;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.CELL_HIGHLIGHTERS;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.COLUMNS_FROZEN;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.COLUMNS_FROZEN_RIGHT;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.COLUMNS_VISIBLE;
@@ -173,7 +177,6 @@ public class TableDisplayToJson {
     return value;
   }
 
-
   static Map<Object, Object> serializeColumnsVisible(Map<String, Boolean> map) {
     Map<String, Object> result = new LinkedHashMap<>();
     for (Map.Entry<String, Boolean> pair : map.entrySet()) {
@@ -183,6 +186,17 @@ public class TableDisplayToJson {
     value.put(COLUMNS_VISIBLE, result);
     return value;
   }
+
+  static Map<Object, Object> serializeCellHighlighters(List<TableDisplayCellHighlighter> map) {
+    List result = new ArrayList();
+    for (TableDisplayCellHighlighter item : map) {
+      result.add(toJson(item));
+    }
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(CELL_HIGHLIGHTERS, result);
+    return value;
+  }
+
 
 
 

@@ -236,7 +236,7 @@ public class TableDisplay extends BeakerxWidget {
       throw new IllegalArgumentException("Can not create format using closure.", e);
     }
     this.stringFormatForColumn.put(column, new ValueStringFormat(column, formattedValues));
-    sendModel();
+    sendModelUpdate(serializeStringFormatForColumn(this.stringFormatForColumn));
   }
 
   public Map<ColumnType, TableDisplayCellRenderer> getRendererForType() {

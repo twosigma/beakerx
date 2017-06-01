@@ -439,7 +439,9 @@ public class TableDisplayTest {
       }
     });
     //then
-    Map actual = getValueAsMap(getModel(), STRING_FORMAT_FOR_COLUMN);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    Map actual = getValueAsMap(model, STRING_FORMAT_FOR_COLUMN);
     Map column = getValueAsMap(actual, COL_1);
     Map values = getValueAsMap(column, VALUES);
     String type = (String) column.get(TYPE);

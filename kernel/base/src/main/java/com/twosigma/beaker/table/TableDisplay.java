@@ -19,6 +19,7 @@ import static com.twosigma.beaker.table.TableDisplayToJson.serializeAlignmentFor
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeAlignmentForType;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozen;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozenRight;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsVisible;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeRendererForColumn;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeRendererForType;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForColumn;
@@ -304,7 +305,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setColumnVisible(String column, boolean visible) {
     this.columnsVisible.put(column, visible);
-    sendModel();
+    sendModelUpdate(serializeColumnsVisible(this.columnsVisible));
   }
 
   public List<String> getColumnOrder() {

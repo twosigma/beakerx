@@ -176,7 +176,9 @@ public class TableDisplayTest {
     tableDisplay.setColumnVisible(COL_1, true);
     //then
     assertThat(tableDisplay.getColumnsVisible().get(COL_1)).isEqualTo(true);
-    assertThat(getValueAsMap(getModel(), COLUMNS_VISIBLE).get(COL_1)).isEqualTo(true);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    assertThat(getValueAsMap(model, COLUMNS_VISIBLE).get(COL_1)).isEqualTo(true);
   }
 
   @Test

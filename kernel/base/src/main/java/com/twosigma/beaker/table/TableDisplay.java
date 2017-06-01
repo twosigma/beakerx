@@ -27,6 +27,7 @@ import static com.twosigma.beaker.table.TableDisplayToJson.serializeRendererForT
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForColumn;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForTimes;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForType;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeTooltips;
 import static java.util.Arrays.asList;
 
 import com.twosigma.beaker.NamespaceClient;
@@ -371,7 +372,7 @@ public class TableDisplay extends BeakerxWidget {
     } catch (Throwable e) {
       throw new IllegalArgumentException("Can not set tooltip using closure.", e);
     }
-    sendModel();
+    sendModelUpdate(serializeTooltips(this.tooltips));
   }
 
   public List<List<String>> getTooltips() {

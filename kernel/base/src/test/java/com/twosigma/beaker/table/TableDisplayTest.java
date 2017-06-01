@@ -350,7 +350,11 @@ public class TableDisplayTest {
       }
     });
     //then
-    assertThat(getValueAsList(getModel(), TOOLTIPS)).isNotEmpty();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    List valueAsList = getValueAsList(model, TOOLTIPS);
+    assertThat(valueAsList.get(0)).isNotNull();
+    assertThat(valueAsList.get(1)).isNotNull();
   }
 
   @Test

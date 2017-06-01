@@ -63,6 +63,7 @@ import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.RENDER
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_COLUMN;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TIMES;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TYPE;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.TOOLTIPS;
 
 public class TableDisplayToJson {
 
@@ -90,6 +91,10 @@ public class TableDisplayToJson {
 
   public static Map toJson(Object item) {
     return mapper.convertValue(item, Map.class);
+  }
+
+  public static List toJsonList(Object item) {
+    return mapper.convertValue(item, List.class);
   }
 
   static Map<Object, Object> serializeStringFormatForTimes(TimeUnit stringFormatForTimes) {
@@ -207,6 +212,13 @@ public class TableDisplayToJson {
     value.put(COLUMN_ORDER, result);
     return value;
   }
+
+  static Map<Object, Object> serializeTooltips(List<List<String>> list) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(TOOLTIPS, toJsonList(list));
+    return value;
+  }
+
 
 
 

@@ -59,6 +59,7 @@ import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.COLUMN
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.COLUMNS_VISIBLE;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.COLUMN_ORDER;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.DATA_FONT_SIZE;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.HEADER_FONT_SIZE;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.RENDERER_FOR_COLUMN;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.RENDERER_FOR_TYPE;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_COLUMN;
@@ -223,6 +224,12 @@ public class TableDisplayToJson {
   static Map<Object, Object> serializeDataFontSize(Integer dataFontSize) {
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put(DATA_FONT_SIZE, dataFontSize);
+    return value;
+  }
+
+  static Map<Object, Object> serializeHeaderFontSize(Integer headerFontSize) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(HEADER_FONT_SIZE, headerFontSize);
     return value;
   }
 

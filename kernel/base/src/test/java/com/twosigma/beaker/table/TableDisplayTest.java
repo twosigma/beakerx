@@ -236,7 +236,8 @@ public class TableDisplayTest {
     tableDisplay.setHeaderFontSize(12);
     //then
     assertThat(tableDisplay.getHeaderFontSize()).isEqualTo(12);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(HEADER_FONT_SIZE)).isEqualTo(12);
   }
 

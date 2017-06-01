@@ -22,6 +22,7 @@ import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnOrder;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozen;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozenRight;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsVisible;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeDataFontSize;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeRendererForColumn;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeRendererForType;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForColumn;
@@ -385,7 +386,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setDataFontSize(Integer dataFontSize) {
     this.dataFontSize = dataFontSize;
-    sendModel();
+    sendModelUpdate(serializeDataFontSize(this.dataFontSize));
   }
 
   public Integer getHeaderFontSize() {

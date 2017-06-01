@@ -189,10 +189,10 @@ public class TableDisplayTest {
     tableDisplay.setDataFontSize(12);
     //then
     assertThat(tableDisplay.getDataFontSize()).isEqualTo(12);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(DATA_FONT_SIZE)).isEqualTo(12);
   }
-
 
   @Test
   public void shouldSendCommMsgWhenDoubleClickActionChange() throws Exception {

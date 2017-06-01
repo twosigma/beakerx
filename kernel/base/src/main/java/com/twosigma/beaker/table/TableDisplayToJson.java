@@ -23,6 +23,7 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
 import com.twosigma.beaker.jvm.serialization.DateSerializer;
 import com.twosigma.beaker.table.format.DecimalStringFormat;
+import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 import com.twosigma.beaker.table.format.TimeStringFormat;
 import com.twosigma.beaker.table.format.ValueStringFormat;
 import com.twosigma.beaker.table.highlight.HeatmapHighlighter;
@@ -41,9 +42,14 @@ import com.twosigma.beaker.table.serializer.ValueHighlighterSerializer;
 import com.twosigma.beaker.table.serializer.ValueStringFormatSerializer;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.ALIGNMENT_FOR_COLUMN;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TIMES;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_TYPE;
 
 public class TableDisplayToJson {
 
@@ -72,4 +78,31 @@ public class TableDisplayToJson {
   public static Map toJson(Object item) {
     return mapper.convertValue(item, Map.class);
   }
+
+  static Map<Object, Object> serializeStringFormatForTimes(TimeUnit stringFormatForTimes) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(STRING_FORMAT_FOR_TIMES, stringFormatForTimes);
+    return value;
+  }
+
+  static Map<Object, Object> serializeStringFormatForType(Map<ColumnType, TableDisplayStringFormat> stringFormatForType) {
+    Map<String, Map> result = new LinkedHashMap<>();
+    for (Map.Entry<ColumnType, TableDisplayStringFormat> pair : stringFormatForType.entrySet()) {
+      result.put(pair.getKey().getType(), toJson(pair.getValue()));
+    }
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(STRING_FORMAT_FOR_TYPE, result);
+    return value;
+  }
+
+  static Map<Object, Object> serializeAlignmentForColumn(Map<String, TableDisplayAlignmentProvider> alignmentForColumn) {
+    Map<String, Object> result = new LinkedHashMap<>();
+    for (Map.Entry<String, TableDisplayAlignmentProvider> pair : alignmentForColumn.entrySet()) {
+      result.put(pair.getKey(), pair.getValue().toString());
+    }
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(ALIGNMENT_FOR_COLUMN, result);
+    return value;
+  }
+
 }

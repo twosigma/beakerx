@@ -111,7 +111,9 @@ public class TableDisplayTest {
     tableDisplay.setAlignmentProviderForColumn(COL_1, centerAlignment);
     //then
     assertThat(tableDisplay.getAlignmentForColumn().get(COL_1)).isEqualTo(centerAlignment);
-    Map actual = getValueAsMap(getModel(), ALIGNMENT_FOR_COLUMN);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    Map actual = getValueAsMap(model, ALIGNMENT_FOR_COLUMN);
     String value = (String) actual.get(COL_1);
     assertThat(value).isEqualTo(TableDisplayAlignmentProvider.CENTER_ALIGNMENT.toString());
   }
@@ -451,7 +453,7 @@ public class TableDisplayTest {
     tableDisplay.setStringFormatForTimes(days);
     //then
     assertThat(tableDisplay.getStringFormatForTimes()).isEqualTo(days);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
     assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(STRING_FORMAT_FOR_TIMES)).isEqualTo(days);
   }
@@ -464,7 +466,7 @@ public class TableDisplayTest {
     tableDisplay.setStringFormatForType(ColumnType.String, timeFormat);
     //then
     assertThat(tableDisplay.getStringFormatForType()).isNotNull();
-    Map actual = getValueAsMap(getModel(), STRING_FORMAT_FOR_TYPE);
+    Map actual = getValueAsMap(getModelUpdate(), STRING_FORMAT_FOR_TYPE);
     Map column = getValueAsMap(actual, ColumnType.String.toString());
     assertThat(column.get(TimeStringFormatSerializer.TYPE)).isEqualTo(TimeStringFormatSerializer.VALUE_TIME);
     assertThat(column.get(TimeStringFormatSerializer.UNIT)).isNotNull();
@@ -480,7 +482,7 @@ public class TableDisplayTest {
     kernel.clearMessages();
     tableDisplay.setStringFormatForType(ColumnType.String, decimalFormat);
     //then
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
     assertThat(model.size()).isEqualTo(1);
     Map actual = getValueAsMap(model, STRING_FORMAT_FOR_TYPE);
     verifyDecimalFormat(actual, ColumnType.Double.toString());
@@ -701,6 +703,9 @@ public class TableDisplayTest {
 
   protected LinkedHashMap getModel() {
     return findValueForProperty(kernel, XYChart.MODEL, LinkedHashMap.class);
+  }
+  protected LinkedHashMap getModelUpdate() {
+    return findValueForProperty(kernel, XYChart.MODEL_UPDATE, LinkedHashMap.class);
   }
 
   protected Map getValueAsMap(final Map model, final String field) {

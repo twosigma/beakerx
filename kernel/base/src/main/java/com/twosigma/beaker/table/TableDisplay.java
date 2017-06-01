@@ -15,6 +15,9 @@
  */
 package com.twosigma.beaker.table;
 
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeAlignmentForColumn;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForTimes;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForType;
 import static java.util.Arrays.asList;
 
 import com.twosigma.beaker.NamespaceClient;
@@ -37,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -196,13 +198,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setStringFormatForTimes(TimeUnit stringFormatForTimes) {
     this.stringFormatForTimes = stringFormatForTimes;
-    sendModel(serializeStringFormatForTimes());
-  }
-
-  private Map<Object, Object> serializeStringFormatForTimes() {
-    Map<Object, Object> value = new LinkedHashMap<>();
-    value.put("stringFormatForTimes", this.stringFormatForTimes);
-    return value;
+    sendModelUpdate(serializeStringFormatForTimes(this.stringFormatForTimes));
   }
 
   public Map<ColumnType, TableDisplayStringFormat> getStringFormatForType() {
@@ -211,17 +207,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setStringFormatForType(ColumnType type, TableDisplayStringFormat format) {
     this.stringFormatForType.put(type, format);
-    sendModel(serializeStringFormatForType());
-  }
-
-  private Map<Object, Object> serializeStringFormatForType() {
-    Map<String, Map> result = new LinkedHashMap<>();
-    for (Entry<ColumnType, TableDisplayStringFormat> pair : this.stringFormatForType.entrySet()) {
-      result.put(pair.getKey().getType(), serializeToJsonObject(pair.getValue()));
-    }
-    Map<Object, Object> value = new LinkedHashMap<>();
-    value.put("stringFormatForType", result);
-    return value;
+    sendModelUpdate(serializeStringFormatForType(this.stringFormatForType));
   }
 
   public Map<String, TableDisplayStringFormat> getStringFormatForColumn() {
@@ -285,7 +271,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setAlignmentProviderForColumn(String column, TableDisplayAlignmentProvider alignmentProvider) {
     this.alignmentForColumn.put(column, alignmentProvider);
-    sendModel();
+    sendModelUpdate(serializeAlignmentForColumn(this.alignmentForColumn));
   }
 
   public Map<String, Boolean> getColumnsFrozen() {

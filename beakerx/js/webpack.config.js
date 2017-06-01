@@ -14,24 +14,40 @@
  *  limitations under the License.
  */
 
+var webpack = require('webpack');
 var version = require('./package.json').version;
-var WatchIgnorePlugin = require('watch-ignore-webpack-plugin');
 var path = require('path');
 
 // Custom webpack loaders are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
-var loaders = [
-  { test: /\.json$/, loader: 'json-loader' },
-  { test: /\.css$/, loader: "style-loader!css-loader" },
-  { test: /\.scss$/, loader: "style-loader!css-loader!sass-loader" },
-  { test: /\.jpe?g$|\.gif$|\.png$|\.svg$|\.woff(\?.*)$|\.eot(\?.*)$|\.woff2(\?.*)$|\.ttf(\?.*)$|\.wav$|\.mp3$/, loader: "file-loader" },
-  { test: /\.html$/, loader: 'html-loader', options: { minimize: true } }
+var rules = [
+  { test: /\.json$/, use: 'json-loader' },
+  { test: /\.css$/, use: [
+    "style-loader",
+    "css-loader"
+  ] },
+  { test: /\.scss$/, use: [
+    "style-loader",
+    "css-loader",
+    "sass-loader"
+  ] },
+  {
+    test: /\.(gif|png|jpg|svg)(\?|$)/,
+    use: 'url-loader?limit=8192'
+  },
+  {
+    test: /\.(eot|ttf|woff|woff2|mp4|wav|mp3)(\?[\w-]+(#[\w-]+)?)?$/,
+    use: 'file-loader'
+  },
+  { test: /\.html$/, use: 'html-loader' }
 ];
 
 var plugins = [
-  new WatchIgnorePlugin([
-    path.resolve(__dirname, './node_modules/')
-  ])
+  new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+  new webpack.LoaderOptionsPlugin({
+    minimize: true,
+    debug: false
+  })
 ];
 
 module.exports = [
@@ -46,11 +62,11 @@ module.exports = [
     entry: './src/extension.js',
     output: {
       filename: 'extension.js',
-      path: '../beakerx/static',
+      path: path.resolve(__dirname, '../beakerx/static'),
       libraryTarget: 'amd'
     },
     module: {
-      loaders: loaders
+      rules: rules
     },
     externals: [
       'services/config',
@@ -59,7 +75,11 @@ module.exports = [
       'base/js/namespace',
       'base/js/events',
       'require'
-    ]
+    ],
+    watchOptions: {
+      ignored: /node_modules/
+    },
+    plugins: plugins
   },
   {// Bundle for the notebook containing the custom widget views and models
     //
@@ -70,19 +90,22 @@ module.exports = [
     entry: './src/index.js',
     output: {
       filename: 'index.js',
-      path: '../beakerx/static',
+      path: path.resolve(__dirname, '../beakerx/static'),
       libraryTarget: 'amd'
     },
     devtool: 'source-map',
     module: {
-      loaders: loaders
+      rules: rules
     },
     resolve: {
-      modulesDirectories: ['web_modules', 'node_modules'],
-      extensions: ['.jsx','.js','.less','.css','']
+      modules: ['web_modules', 'node_modules'],
+      extensions: ['.jsx','.js','.less','.css']
     },
-    plugins: plugins,
-    externals: ['jupyter-js-widgets']
+    externals: ['jupyter-js-widgets'],
+    watchOptions: {
+      ignored: /node_modules/
+    },
+    plugins: plugins
   },
   {// Embeddable beakerx bundle
     //
@@ -101,19 +124,22 @@ module.exports = [
     entry: './src/embed.js',
     output: {
       filename: 'index.js',
-      path: './dist/',
+      path: path.resolve(__dirname, './dist/'),
       libraryTarget: 'amd',
       publicPath: 'https://unpkg.com/beakerx@' + version + '/dist/'
     },
     devtool: 'source-map',
     module: {
-      loaders: loaders
+      rules: rules
     },
     resolve: {
-      modulesDirectories: ['web_modules', 'node_modules'],
-      extensions: ['.jsx','.js','.less','.css','']
+      modules: ['web_modules', 'node_modules'],
+      extensions: ['.jsx','.js','.less','.css']
     },
-    plugins: plugins,
-    externals: ['jupyter-js-widgets']
+    externals: ['jupyter-js-widgets'],
+    watchOptions: {
+      ignored: /node_modules/
+    },
+    plugins: plugins
   }
 ];

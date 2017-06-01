@@ -225,7 +225,8 @@ public class TableDisplayTest {
     tableDisplay.setHasIndex(index1);
     //then
     assertThat(tableDisplay.getHasIndex()).isEqualTo(index1);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(HAS_INDEX)).isEqualTo(index1);
   }
 

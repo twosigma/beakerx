@@ -25,6 +25,7 @@ import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsVisib
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeDataFontSize;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeFilteredValues;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeFontColor;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeHasIndex;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeHeaderFontSize;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeHeadersVertical;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeRendererForColumn;
@@ -450,7 +451,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setHasIndex(String hasIndex) {
     this.hasIndex = hasIndex;
-    sendModel();
+    sendModelUpdate(serializeHasIndex(this.hasIndex));
   }
 
   public String getHasIndex() {

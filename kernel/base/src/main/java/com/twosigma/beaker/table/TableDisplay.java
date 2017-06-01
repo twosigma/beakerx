@@ -18,6 +18,7 @@ package com.twosigma.beaker.table;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeAlignmentForColumn;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeAlignmentForType;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeCellHighlighters;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnOrder;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozen;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozenRight;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsVisible;
@@ -353,7 +354,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setColumnOrder(List<String> columnOrder) {
     this.columnOrder = columnOrder;
-    sendModel();
+    sendModelUpdate(serializeColumnOrder(this.columnOrder));
   }
 
   public void setToolTip(Object closure) {

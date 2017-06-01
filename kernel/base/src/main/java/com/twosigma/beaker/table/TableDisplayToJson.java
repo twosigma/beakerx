@@ -57,6 +57,7 @@ import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.CELL_H
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.COLUMNS_FROZEN;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.COLUMNS_FROZEN_RIGHT;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.COLUMNS_VISIBLE;
+import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.COLUMN_ORDER;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.RENDERER_FOR_COLUMN;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.RENDERER_FOR_TYPE;
 import static com.twosigma.beaker.table.serializer.TableDisplaySerializer.STRING_FORMAT_FOR_COLUMN;
@@ -187,15 +188,26 @@ public class TableDisplayToJson {
     return value;
   }
 
-  static Map<Object, Object> serializeCellHighlighters(List<TableDisplayCellHighlighter> map) {
+  static Map<Object, Object> serializeCellHighlighters(List<TableDisplayCellHighlighter> list) {
     List result = new ArrayList();
-    for (TableDisplayCellHighlighter item : map) {
+    for (TableDisplayCellHighlighter item : list) {
       result.add(toJson(item));
     }
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put(CELL_HIGHLIGHTERS, result);
     return value;
   }
+
+  static Map<Object, Object> serializeColumnOrder(List<String> list) {
+    List result = new ArrayList();
+    for (String item : list) {
+      result.add(item);
+    }
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(COLUMN_ORDER, result);
+    return value;
+  }
+
 
 
 

@@ -165,7 +165,8 @@ public class TableDisplayTest {
     tableDisplay.setColumnOrder(getStringList());
     //then
     assertThat(tableDisplay.getColumnOrder()).isEqualTo(getStringList());
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(COLUMN_ORDER)).isEqualTo(getStringList());
   }
 

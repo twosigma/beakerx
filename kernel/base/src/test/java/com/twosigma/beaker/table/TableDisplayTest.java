@@ -415,8 +415,12 @@ public class TableDisplayTest {
     tableDisplay.setStringFormatForColumn(COL_1, timeFormat);
     //then
     assertThat(tableDisplay.getStringFormatForColumn().get(COL_1)).isEqualTo(timeFormat);
-    LinkedHashMap model = getModel();
-    assertThat(model.get(STRING_FORMAT_FOR_COLUMN)).isNotNull();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    Map column = (Map) ((Map) model.get(STRING_FORMAT_FOR_COLUMN)).get(COL_1);
+    assertThat(column.get(TimeStringFormatSerializer.TYPE)).isEqualTo(TimeStringFormatSerializer.VALUE_TIME);
+    assertThat(column.get(TimeStringFormatSerializer.UNIT)).isEqualTo(TimeUnit.MILLISECONDS.toString());
+    assertThat(column.get(TimeStringFormatSerializer.HUMAN_FRIENDLY)).isEqualTo(false);
   }
 
   @Test

@@ -16,6 +16,7 @@
 package com.twosigma.beaker.table;
 
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeAlignmentForColumn;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForColumn;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForTimes;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForType;
 import static java.util.Arrays.asList;
@@ -216,7 +217,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setStringFormatForColumn(String column, TableDisplayStringFormat format) {
     this.stringFormatForColumn.put(column, format);
-    sendModel();
+    sendModelUpdate(serializeStringFormatForColumn(this.stringFormatForColumn));
   }
 
   public void setStringFormatForColumn(String column, Object closure) {

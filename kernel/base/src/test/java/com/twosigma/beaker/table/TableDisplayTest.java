@@ -248,7 +248,8 @@ public class TableDisplayTest {
     tableDisplay.setHeadersVertical(true);
     //then
     assertThat(tableDisplay.getHeadersVertical()).isEqualTo(true);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(HEADERS_VERTICAL)).isEqualTo(true);
   }
 

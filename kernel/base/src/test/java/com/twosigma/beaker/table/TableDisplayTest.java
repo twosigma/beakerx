@@ -477,9 +477,18 @@ public class TableDisplayTest {
     TableDisplayStringFormat decimalFormat = TableDisplayStringFormat.getDecimalFormat(9, 9);
     //when
     tableDisplay.setStringFormatForType(ColumnType.Double, decimalFormat);
+    kernel.clearMessages();
+    tableDisplay.setStringFormatForType(ColumnType.String, decimalFormat);
     //then
-    Map actual = getValueAsMap(getModel(), STRING_FORMAT_FOR_TYPE);
-    Map column = getValueAsMap(actual, ColumnType.Double.toString());
+    LinkedHashMap model = getModel();
+    assertThat(model.size()).isEqualTo(1);
+    Map actual = getValueAsMap(model, STRING_FORMAT_FOR_TYPE);
+    verifyDecimalFormat(actual, ColumnType.Double.toString());
+    verifyDecimalFormat(actual, ColumnType.String.toString());
+  }
+
+  private void verifyDecimalFormat(Map actual, String field) {
+    Map column = getValueAsMap(actual, field);
     assertThat(column.get(DecimalStringFormatSerializer.TYPE)).isEqualTo(DecimalStringFormatSerializer.VALUE_DECIMAL);
     assertThat(column.get(MIN_DECIMALS)).isEqualTo(9);
     assertThat(column.get(MAX_DECIMALS)).isEqualTo(9);

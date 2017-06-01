@@ -29,6 +29,17 @@
     text-align: right;
   }
 
+  .widget-hbox {
+    .widget-radio-box {
+      flex-direction: row;
+
+      label {
+        min-width: 120px;
+        max-width: 200px;
+      }
+    }
+  }
+
 }
 
 .beaker-fieldset {

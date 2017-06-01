@@ -21,13 +21,17 @@ import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.widgets.bools.Checkbox;
 import com.twosigma.beaker.widgets.floats.FloatSlider;
 import com.twosigma.beaker.widgets.integers.IntSlider;
+import com.twosigma.beaker.widgets.selections.Dropdown;
 import com.twosigma.beaker.widgets.strings.Text;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InteractiveBaseTest {
   private KernelTest kernel;
@@ -87,7 +91,7 @@ public class InteractiveBaseTest {
     Assertions.assertThat(witgets).isEmpty();
     }
 
-  //@Test enable after fix
+  //@Test //enable after fix
   public void widgetsFromAbbreviationsWithTwoIntParam_returnedIntSliderHasMinMaxFromParams() throws Exception {
     int min = 10, max = 100;
     //when
@@ -98,7 +102,7 @@ public class InteractiveBaseTest {
     Assertions.assertThat(intSlider.getMax()).isEqualTo(max);
   }
 
-  //@Test enable after fix
+  //@Test //enable after fix
   public void widgetsFromAbbreviationsWithThreeIntParam_returnedIntSliderHasMinMaxStepFromParams() throws Exception {
     int min = 10, max = 100, step = 5;
     //when
@@ -108,6 +112,94 @@ public class InteractiveBaseTest {
     Assertions.assertThat(intSlider.getMin()).isEqualTo(min);
     Assertions.assertThat(intSlider.getMax()).isEqualTo(max);
     Assertions.assertThat(intSlider.getStep()).isEqualTo(step);
+  }
+
+  @Test
+  public void widgetFromTupleWithThreeIntParam_returnedIntSliderHasMinMaxValueFromParams() throws Exception {
+    int min = 10, max = 100, value = (min + max)/2;
+    //when
+    IntSlider intSlider = (IntSlider)InteractiveBase.widgetFromTuple(min, max, null);
+    //then
+    Assertions.assertThat(intSlider.getMin()).isEqualTo(min);
+    Assertions.assertThat(intSlider.getMax()).isEqualTo(max);
+    Assertions.assertThat(intSlider.getValue()).isEqualTo(value);
+  }
+
+  @Test
+  public void widgetFromTupleWithThreeDoubleParam_returnedFloatSliderHasMinMaxValueFromParams() throws Exception {
+    double min = 10d, max = 100d, value = (min + max)/2d;
+    //when
+    FloatSlider floatSlider = (FloatSlider)InteractiveBase.widgetFromTuple(min, max, null);
+    //then
+    Assertions.assertThat(floatSlider.getMin()).isEqualTo(min);
+    Assertions.assertThat(floatSlider.getMax()).isEqualTo(max);
+    Assertions.assertThat(floatSlider.getValue()).isEqualTo(value);
+  }
+
+  //@Test //enable after fix
+  public void widgetFromTupleWithFourIntParam_returnedIntSliderHasMinMaxValueStepFromParams() throws Exception {
+    int min = 10, max = 100, value = 20, step =5;
+    //when
+    IntSlider intSlider = (IntSlider)InteractiveBase.widgetFromTuple(min, max, step, value);
+    //then
+    Assertions.assertThat(intSlider.getMin()).isEqualTo(min);
+    Assertions.assertThat(intSlider.getMax()).isEqualTo(max);
+    Assertions.assertThat(intSlider.getValue()).isEqualTo(value);
+    Assertions.assertThat(intSlider.getStep()).isEqualTo(step);
+  }
+
+  //@Test //enable after fix
+  public void widgetFromTupleWithFourDoubleParam_returnedFloatSliderHasMinMaxValueStepFromParams() throws Exception {
+    double min = 10d, max = 100d, value = 20d, step = 5d;
+    //when
+    FloatSlider floatSlider = (FloatSlider)InteractiveBase.widgetFromTuple(min, max, step, value);
+    //then
+    Assertions.assertThat(floatSlider.getMin()).isEqualTo(min);
+    Assertions.assertThat(floatSlider.getMax()).isEqualTo(max);
+    Assertions.assertThat(floatSlider.getValue()).isEqualTo(value);
+    Assertions.assertThat(floatSlider.getStep()).isEqualTo(step);
+  }
+
+  //@Test //enable after fix
+  public void widgetFromIterableWithListOfIntParam_returnedDropdownHasOptions() throws Exception {
+    String[] resultOptions = new String[]{"1", "2", "3", "4"};
+    //when
+    Dropdown dropdown = InteractiveBase.widgetFromIterable(Arrays.asList(1, 2, 3, 4));
+    //then
+    Assertions.assertThat(dropdown.getOptions()).isEqualTo(resultOptions);
+  }
+
+  @Test
+  public void widgetFromIterableWithArrayOfIntParam_returnedDropdownHasOptions() throws Exception {
+    String[] resultOptions = new String[]{"1", "2", "3", "4"};
+    //when
+    Dropdown dropdown = InteractiveBase.widgetFromIterable(new Integer[]{1, 2, 3, 4});
+    //then
+    Assertions.assertThat(dropdown.getOptions()).isEqualTo(resultOptions);
+  }
+
+  @Test
+  public void widgetFromIterableWithMapOfIntParam_returnedDropdownHasOptions() throws Exception {
+    String[] resultOptions = new String[]{"1", "2", "3", "4"};
+    Map map = new HashMap<Integer, Integer>(){
+      { put(1, 1);
+        put(2, 2);
+        put(3, 3);
+        put(4, 4);}
+    };
+    //when
+    Dropdown dropdown = InteractiveBase.widgetFromIterable(map);
+    //then
+    Assertions.assertThat(dropdown.getOptions()).isEqualTo(resultOptions);
+  }
+
+  @Test
+  public void widgetFromIterableWithIntParam_returnedDropdownHasOptions() throws Exception {
+    String[] resultOptions = new String[]{"123"};
+    //when
+    Dropdown dropdown = InteractiveBase.widgetFromIterable(123);
+    //then
+    Assertions.assertThat(dropdown.getOptions()).isEqualTo(resultOptions);
   }
 
 }

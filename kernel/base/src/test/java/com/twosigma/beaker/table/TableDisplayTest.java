@@ -126,8 +126,10 @@ public class TableDisplayTest {
     tableDisplay.setAlignmentProviderForType(ColumnType.String, centerAlignment);
     //then
     assertThat(tableDisplay.getAlignmentForType().get(ColumnType.String)).isEqualTo(centerAlignment);
-    LinkedHashMap model = getModel();
-    assertThat(model.get(ALIGNMENT_FOR_TYPE)).isNotNull();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    Map actual = (Map) model.get(ALIGNMENT_FOR_TYPE);
+    assertThat(actual.get(ColumnType.String.toString())).isEqualTo(centerAlignment.toString());
   }
 
   @Test

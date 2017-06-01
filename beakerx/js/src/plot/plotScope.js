@@ -2217,7 +2217,7 @@ define([
     self.fillCellModelWithPlotMethods();
   };
 
-  PlotScope.prototype.updateModel = function() {
+  PlotScope.prototype.updatePlot = function() {
     var self = this;
 
     // first standardize data
@@ -2532,6 +2532,13 @@ define([
 
     if (self.model.getCellModel().type === "TreeMap"){
       bkoChartExtender.extend(self, self.element);
+    }
+  };
+
+  // update model with partial model data
+  PlotScope.prototype.updateModelData = function(data) {
+    if (this.model && this.model.model && data) {
+      this.model.model = _.extend(this.model.model, data);
     }
   };
 

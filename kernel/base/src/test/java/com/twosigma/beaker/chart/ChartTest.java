@@ -20,6 +20,7 @@ import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.chart.actions.CategoryGraphicsActionObject;
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
+import com.twosigma.beaker.chart.serializer.LegendPositionSerializer;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.widgets.chart.BeakerxPlot;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.twosigma.beaker.chart.Chart.PLOT_GRIDLINE;
 import static com.twosigma.beaker.chart.Chart.PLOT_LABEL;
@@ -73,8 +75,11 @@ public abstract class ChartTest<T extends Chart> {
     chart.setLegendPosition(bottom);
     //then
     assertThat(chart.getLegendPosition()).isEqualTo(bottom);
-    LinkedHashMap model = getModel();
-    assertThat(model.get(LEGEND_POSITION)).isNotNull();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    Map actual = (Map)model.get(LEGEND_POSITION);
+    assertThat(actual.get(LegendPositionSerializer.TYPE)).isEqualTo(LegendPosition.class.getSimpleName());
+    assertThat(actual.get(LegendPositionSerializer.POSITION)).isEqualTo(bottom.getPosition().toString());
   }
 
   @Test
@@ -86,8 +91,10 @@ public abstract class ChartTest<T extends Chart> {
     chart.setLegendLayout(horizontal);
     //then
     assertThat(chart.getLegendLayout()).isEqualTo(horizontal);
-    LinkedHashMap model = getModel();
-    assertThat(model.get(LEGEND_LAYOUT)).isEqualTo(horizontal.toString());
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    String actual = (String)model.get(LEGEND_LAYOUT);
+    assertThat(actual).isEqualTo(LegendLayout.HORIZONTAL.toString());
   }
 
   @Test
@@ -98,7 +105,8 @@ public abstract class ChartTest<T extends Chart> {
     //when
     chart.setTitle(title);
     //then
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(CHART_TITLE)).isEqualTo(title);
   }
 
@@ -121,8 +129,10 @@ public abstract class ChartTest<T extends Chart> {
     chart.setCustomStyles(customStyle);
     //then
     assertThat(chart.getCustomStyles()).isNotEmpty();
-    LinkedHashMap model = getModel();
-    assertThat(model.get(CUSTOM_STYLES)).isEqualTo(customStyle);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    List actual = (List)model.get(CUSTOM_STYLES);
+    assertThat(actual).isEqualTo(customStyle);
   }
 
   @Test
@@ -135,13 +145,14 @@ public abstract class ChartTest<T extends Chart> {
     //then
     assertThat(chart.getGridLineStyle()).isEqualTo(grid_style);
     assertThat(chart.getElementStyles().get(PLOT_GRIDLINE)).isEqualTo(grid_style);
-    LinkedHashMap actual = getElementStyles();
+    Map actual = getElementStyles();
     assertThat(actual.get(PLOT_GRIDLINE)).isEqualTo(grid_style);
   }
 
-  private LinkedHashMap getElementStyles() {
-    LinkedHashMap model = getModel();
-    return (LinkedHashMap)model.get(ELEMENT_STYLES);
+  private Map getElementStyles() {
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    return (Map)model.get(ELEMENT_STYLES);
   }
 
   @Test
@@ -152,7 +163,8 @@ public abstract class ChartTest<T extends Chart> {
     chart.setInitHeight(5);
     //then
     assertThat(chart.getInitHeight()).isEqualTo(5);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(INIT_HEIGHT)).isEqualTo(5);
   }
 
@@ -164,7 +176,8 @@ public abstract class ChartTest<T extends Chart> {
     chart.setInitWidth(10);
     //then
     assertThat(chart.getInitWidth()).isEqualTo(10);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(INIT_WIDTH)).isEqualTo(10);
   }
 
@@ -178,7 +191,7 @@ public abstract class ChartTest<T extends Chart> {
     //then
     assertThat(chart.getLabelYStyle()).isEqualTo(labely_style);
     assertThat(chart.getElementStyles().get(PLOT_LABEL_Y)).isEqualTo(labely_style);
-    LinkedHashMap actual = getElementStyles();
+    Map actual = getElementStyles();
     assertThat(actual.get(PLOT_LABEL_Y)).isEqualTo(labely_style);
   }
 
@@ -192,7 +205,7 @@ public abstract class ChartTest<T extends Chart> {
     //then
     assertThat(chart.getLabelXStyle()).isEqualTo(labelx_style);
     assertThat(chart.getElementStyles().get(PLOT_LABEL_X)).isEqualTo(labelx_style);
-    LinkedHashMap actual = getElementStyles();
+    Map actual = getElementStyles();
     assertThat(actual.get(PLOT_LABEL_X)).isEqualTo(labelx_style);
   }
 
@@ -206,7 +219,7 @@ public abstract class ChartTest<T extends Chart> {
     //then
     assertThat(chart.getLabelStyle()).isEqualTo(label_style);
     assertThat(chart.getElementStyles().get(PLOT_LABEL)).isEqualTo(label_style);
-    LinkedHashMap actual = getElementStyles();
+    Map actual = getElementStyles();
     assertThat(actual.get(PLOT_LABEL)).isEqualTo(label_style);
   }
 
@@ -220,7 +233,7 @@ public abstract class ChartTest<T extends Chart> {
     //then
     assertThat(chart.getTitleStyle()).isEqualTo(style);
     assertThat(chart.getElementStyles().get(PLOT_TITLE)).isEqualTo(style);
-    LinkedHashMap actual = getElementStyles();
+    Map actual = getElementStyles();
     assertThat(actual.get(PLOT_TITLE)).isEqualTo(style);
   }
 
@@ -252,6 +265,9 @@ public abstract class ChartTest<T extends Chart> {
 
   protected LinkedHashMap getModel() {
     return findValueForProperty(kernel, XYChart.MODEL, LinkedHashMap.class);
+  }
+  protected LinkedHashMap getModelUpdate() {
+    return findValueForProperty(kernel, XYChart.MODEL_UPDATE, LinkedHashMap.class);
   }
 
 }

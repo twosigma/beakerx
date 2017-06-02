@@ -54,6 +54,6 @@ public abstract class BeakerxWidget extends Widget {
   }
 
   public void sendModelUpdate(Object item){
-    sendUpdate(MODEL_UPDATE, item);
+    sendUpdate(MODEL_UPDATE, serializeToJsonObject(item));
   }
 }

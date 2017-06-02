@@ -20,9 +20,6 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.google.gson.Gson;
-import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryLines;
@@ -30,6 +27,7 @@ import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryPoints;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryStems;
 import com.twosigma.beaker.chart.heatmap.HeatMap;
 import com.twosigma.beaker.chart.histogram.Histogram;
+import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
@@ -72,7 +70,17 @@ import com.twosigma.beaker.chart.serializer.TreeMapSerializer;
 import com.twosigma.beaker.chart.serializer.TreeMapNodeSerializer;
 import net.sf.jtreemap.swing.TreeMapNode;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
+import static com.twosigma.beaker.chart.serializer.ChartSerializer.CHART_TITLE;
+import static com.twosigma.beaker.chart.serializer.ChartSerializer.CUSTOM_STYLES;
+import static com.twosigma.beaker.chart.serializer.ChartSerializer.ELEMENT_STYLES;
+import static com.twosigma.beaker.chart.serializer.ChartSerializer.INIT_HEIGHT;
+import static com.twosigma.beaker.chart.serializer.ChartSerializer.INIT_WIDTH;
+import static com.twosigma.beaker.chart.serializer.ChartSerializer.LEGEND_LAYOUT;
+import static com.twosigma.beaker.chart.serializer.ChartSerializer.LEGEND_POSITION;
 
 public class ChartToJson {
 
@@ -124,6 +132,53 @@ public class ChartToJson {
 
   private static ObjectMapper getMapper() {
     return mapper;
+  }
+
+  static Map<Object, Object> serializeLegendPosition(LegendPosition legendPosition) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(LEGEND_POSITION, toJson(legendPosition));
+    return value;
+  }
+
+  static Map<Object, Object> serializeLegendLayout(LegendLayout legendLayout) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(LEGEND_LAYOUT, legendLayout.toString());
+    return value;
+  }
+
+  static Map<Object, Object> serializeCustomStyles(List<String> customStyles) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(CUSTOM_STYLES, toJsonList(customStyles));
+    return value;
+  }
+
+  static Map<Object, Object> serializeElementStyles(Map<String, String> elementStyles) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(ELEMENT_STYLES, toJson(elementStyles));
+    return value;
+  }
+
+  static Map<Object, Object> serializeInitHeight(int initHeight) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(INIT_HEIGHT, initHeight);
+    return value;
+  }
+
+  static Map<Object, Object> serializeInitWidth(int initWidth) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(INIT_WIDTH, initWidth);
+    return value;
+  }
+
+  static Map<Object, Object> serializeTitle(String title) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(CHART_TITLE, title);
+    return value;
+  }
+
+
+  public static List toJsonList(Object item) {
+    return mapper.convertValue(item, List.class);
   }
 
 }

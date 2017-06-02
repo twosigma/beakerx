@@ -334,7 +334,11 @@ public class JavaEvaluator implements Evaluator{
               j.outputObject.finished(pname+"."+cname);
             } catch (CompilationException e) {
               j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
-            } catch(Exception e) { j.outputObject.error("ERROR: "+e.toString()); }
+            } catch(Exception e) { j.outputObject.error("ERROR: "+e.toString()); } finally {
+              if (j.outputObject != null) {
+                j.outputObject.executeCodeCallback();
+              }
+            }
           } else {
             String ret = "void";
             if (codev[codev.length-1].matches("(^|.*\\s+)return\\s+.*"))

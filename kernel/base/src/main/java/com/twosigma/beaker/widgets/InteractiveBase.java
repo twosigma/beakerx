@@ -96,7 +96,7 @@ public class InteractiveBase {
     if(input != null && input.length > 0){
       boolean isFloat = isFloat(input[0]);
       boolean isInt = isInt(input[0]);
-      if(input.length > 2){
+      if(input.length == 2){
         if(isFloat){
           Double[] minMaxValue = getDoubleArray(getMinMaxValue((Double)input[0], (Double)input[1], null));
           FloatSlider witget = new FloatSlider();
@@ -112,7 +112,7 @@ public class InteractiveBase {
           witget.setValue(minMaxValue[2]);
           ret = witget;
         }
-      }else if(input.length > 3){
+      }else if(input.length > 2){
         if(isFloat){
           Double step = (Double)input[2];
           if((Double)input[2] <= 0){
@@ -187,14 +187,13 @@ public class InteractiveBase {
    * @param o
    * @return
    */
-  @SuppressWarnings("unchecked")
   protected static Dropdown widgetFromIterable(Object o){
     Dropdown ret = null;
     if (o instanceof Collection<?>){
       Collection<Object> value = (Collection<Object>)o;
       ret = new Dropdown();
       ret.setOptions(value);
-    }if (o instanceof Object[]){
+    }else if (o instanceof Object[]){
       Object[] value = (Object[])o;
       ret = new Dropdown();
       ret.setOptions(value);

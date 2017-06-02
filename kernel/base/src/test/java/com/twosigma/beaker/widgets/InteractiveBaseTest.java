@@ -101,10 +101,10 @@ public class InteractiveBaseTest {
   }
 
   @Test
-  public void widgetFromTupleWithThreeIntParam_returnedIntSliderHasMinMaxValueFromParams() throws Exception {
+  public void widgetFromTupleWithTwoIntParam_returnedIntSliderHasMinMaxValueFromParams() throws Exception {
     int min = 10, max = 100, value = (min + max)/2;
     //when
-    IntSlider intSlider = (IntSlider)InteractiveBase.widgetFromTuple(min, max, null);
+    IntSlider intSlider = (IntSlider)InteractiveBase.widgetFromTuple(min, max);
     //then
     Assertions.assertThat(intSlider.getMin()).isEqualTo(min);
     Assertions.assertThat(intSlider.getMax()).isEqualTo(max);
@@ -112,21 +112,21 @@ public class InteractiveBaseTest {
   }
 
   @Test
-  public void widgetFromTupleWithThreeDoubleParam_returnedFloatSliderHasMinMaxValueFromParams() throws Exception {
+  public void widgetFromTupleWithTwoDoubleParam_returnedFloatSliderHasMinMaxValueFromParams() throws Exception {
     double min = 10d, max = 100d, value = (min + max)/2d;
     //when
-    FloatSlider floatSlider = (FloatSlider)InteractiveBase.widgetFromTuple(min, max, null);
+    FloatSlider floatSlider = (FloatSlider)InteractiveBase.widgetFromTuple(min, max);
     //then
     Assertions.assertThat(floatSlider.getMin()).isEqualTo(min);
     Assertions.assertThat(floatSlider.getMax()).isEqualTo(max);
     Assertions.assertThat(floatSlider.getValue()).isEqualTo(value);
   }
 
-  //@Test //enable after fix
-  public void widgetFromTupleWithFourIntParam_returnedIntSliderHasMinMaxValueStepFromParams() throws Exception {
-    int min = 10, max = 100, value = 20, step =5;
+  @Test
+  public void widgetFromTupleWithThreeIntParam_returnedIntSliderHasMinMaxValueStepFromParams() throws Exception {
+    int min = 10, max = 100, value  = (min + max)/2, step =5;
     //when
-    IntSlider intSlider = (IntSlider)InteractiveBase.widgetFromTuple(min, max, step, value);
+    IntSlider intSlider = (IntSlider)InteractiveBase.widgetFromTuple(min, max, step);
     //then
     Assertions.assertThat(intSlider.getMin()).isEqualTo(min);
     Assertions.assertThat(intSlider.getMax()).isEqualTo(max);
@@ -134,11 +134,11 @@ public class InteractiveBaseTest {
     Assertions.assertThat(intSlider.getStep()).isEqualTo(step);
   }
 
-  //@Test //enable after fix
-  public void widgetFromTupleWithFourDoubleParam_returnedFloatSliderHasMinMaxValueStepFromParams() throws Exception {
-    double min = 10d, max = 100d, value = 20d, step = 5d;
+  @Test
+  public void widgetFromTupleWithThreeDoubleParam_returnedFloatSliderHasMinMaxValueStepFromParams() throws Exception {
+    double min = 10d, max = 100d, value  = (min + max)/2d, step = 5d;
     //when
-    FloatSlider floatSlider = (FloatSlider)InteractiveBase.widgetFromTuple(min, max, step, value);
+    FloatSlider floatSlider = (FloatSlider)InteractiveBase.widgetFromTuple(min, max, step);
     //then
     Assertions.assertThat(floatSlider.getMin()).isEqualTo(min);
     Assertions.assertThat(floatSlider.getMax()).isEqualTo(max);
@@ -146,7 +146,7 @@ public class InteractiveBaseTest {
     Assertions.assertThat(floatSlider.getStep()).isEqualTo(step);
   }
 
-  //@Test //enable after fix
+  @Test
   public void widgetFromIterableWithListOfIntParam_returnedDropdownHasOptions() throws Exception {
     String[] resultOptions = new String[]{"1", "2", "3", "4"};
     //when

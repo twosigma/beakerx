@@ -1554,8 +1554,16 @@ define([
   };
 
   PlotScope.prototype.calcLocateBox = function() {
+
     var self = this;
     var p1 = self.mousep1, p2 = self.mousep2;
+
+    // console.log('p1.x', p1.x);
+    // console.log('p2.x', p2.x);
+    // console.log('p1.y', p1.y);
+    // console.log('p2.y', p2.y);
+
+
     var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x),
       yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
     if (xr === xl) { xr = xl + 1; }
@@ -1566,6 +1574,26 @@ define([
       "w" : xr - xl,
       "h" : yr - yl
     };
+
+
+    var lMargin = self.layout.leftLayoutMargin,
+      bMargin = self.layout.bottomLayoutMargin,
+      W = plotUtils.safeWidth(self.jqsvg) - lMargin,
+      H = plotUtils.safeHeight(self.jqsvg) - bMargin;
+
+    console.log('xr - xl', xr - xl);
+    console.log('yr - yl', yr - yl);
+    console.log('width', W);
+    console.log('height', H);
+
+    var scaleFactor = Math.max((xr - xl) / W, (yr - yl) / H);
+
+    var scale = 1 / scaleFactor,
+      translate = [W / 2 - scale * xl, H / 2 - scale * yl];
+
+    console.log('scale', scale);
+    console.log('translate', translate);
+
   };
 
   PlotScope.prototype.mouseDown = function() {
@@ -1626,7 +1654,8 @@ define([
     var d3trans = d3.event.transform || d3.event;
     self.lastx = d3trans.x;
     self.lasty = d3trans.y;
-    var newK = ((d3trans.k-1)*0.5)+1;
+    // var newK = ((d3trans.k-1)*0.5)+1;
+    var newK = d3trans.k;
     self.lastk = 1/newK;
 
     var svgNode = self.svg.node();
@@ -1642,6 +1671,7 @@ define([
   };
 
   PlotScope.prototype.zooming = function() {
+    console.log('zooming', this.interactMode);
     var self = this;
     if (self.interactMode === "other" || !self.zoom){
       return;
@@ -1664,7 +1694,10 @@ define([
         self.zoomed = true;
       }
 
-      var newK = ((d3trans.k-1)/2)+1;
+      console.log('d3trans.k', d3trans.k);
+
+      // var newK = ((d3trans.k-1)/2)+1;
+      var newK = d3trans.k;
       var dx = d3trans.x - self.lastx,
         dy = d3trans.y - self.lasty,
         k = 1 / newK,
@@ -1792,6 +1825,8 @@ define([
       self.fixFocus(self.focus);
       self.update();
     } else if (self.interactMode === 'locate') {
+      var d3trans = d3.event.transform || d3.event
+      console.log('d3trans', d3trans);
       self.zoomBoxZooming();
     }
   };
@@ -2181,7 +2216,8 @@ define([
     };
 
     self.resetSvg();
-    self.zoomObj = d3.zoom();
+    self.zoomObj = d3.zoom().scaleExtent([0.7, 30]);
+    // self.zoomObj = d3.zoom();
 
     self.lastk = 1;
 

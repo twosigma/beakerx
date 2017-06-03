@@ -334,7 +334,8 @@ public class JavaEvaluator implements Evaluator{
               j.outputObject.finished(pname+"."+cname);
             } catch (CompilationException e) {
               j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
-            } catch(Exception e) { j.outputObject.error("ERROR: "+e.toString()); } finally {
+            } catch (Exception e) { j.outputObject.error("ERROR: "+e.toString()); 
+            } finally {
               if (j.outputObject != null) {
                 j.outputObject.executeCodeCallback();
               }
@@ -370,7 +371,13 @@ public class JavaEvaluator implements Evaluator{
               }
             } catch (CompilationException e) {
               j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
-            } catch(Exception e) { j.outputObject.error("ERROR: "+e.toString()); }
+            } catch (Exception e) {
+              j.outputObject.error("ERROR: "+e.toString()); 
+            } finally {
+              if (j.outputObject != null) {
+                j.outputObject.executeCodeCallback();
+              }
+            }
           }
           j = null;
         } catch(Throwable e) {

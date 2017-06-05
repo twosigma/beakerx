@@ -17,12 +17,15 @@
 package com.twosigma.beaker.chart.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.chart.xychart.SimpleTimePlot;
+import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.KernelTest;
 import org.assertj.core.api.Assertions;
@@ -45,11 +48,16 @@ public class CombinedPlotSerializerTest {
   static CombinedPlotSerializer combinedPlotSerializer;
   JsonGenerator jgen;
   StringWriter sw;
+  
 
   @BeforeClass
   public static void initClassStubData() {
     mapper = new ObjectMapper();
     combinedPlotSerializer = new CombinedPlotSerializer();
+    SimpleModule module = new SimpleModule("ChartSerializer", new Version(1, 0, 0, null));
+    module.addSerializer(XYChart.class, new XYChartSerializer());
+    module.addSerializer(CombinedPlot.class, new CombinedPlotSerializer());
+    mapper.registerModule(module);
   }
 
   @Before

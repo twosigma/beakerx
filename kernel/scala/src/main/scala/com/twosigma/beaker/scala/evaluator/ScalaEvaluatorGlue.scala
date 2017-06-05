@@ -16,17 +16,14 @@
  
 package com.twosigma.beaker.scala.evaluator;
 
-import java.util
-import java.util.{ArrayList, function}
-
 import com.twosigma.beaker.autocomplete.AutocompleteResult
 import com.twosigma.beaker.jvm.`object`.SimpleEvaluationObject
 
 import scala.tools.jline_embedded.console.completer.Completer
 import scala.tools.nsc.Settings
-import scala.tools.nsc.interpreter.Completion.{Candidates, ScalaCompleter}
+import scala.tools.nsc.interpreter.Completion.Candidates
 import scala.tools.nsc.interpreter.Results.Success
-import scala.tools.nsc.interpreter.{IMain, JList, PresentationCompilerCompleter}
+import scala.tools.nsc.interpreter.{Completion, IMain, JList, PresentationCompilerCompleter}
 
 case class ResetState(val state: String);
 
@@ -44,14 +41,12 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
   }
   private val baos = new java.io.ByteArrayOutputStream();
 
-  private def scalaToJline(completion: ScalaCompleter): Completer =
-    new Completer {
-      def complete(_buf: String, cursor: Int, candidates: JList[CharSequence]): Int = {
-        val buf = if (_buf == null) "" else _buf
-        val Candidates(newCursor, newCandidates) = completion.complete(buf, cursor)
-        newCandidates foreach (candidates add _)
-        newCursor
-      }
+  private def scalaToJline(completion: Completion): Completer =
+    (_buf: String, cursor: Int, candidates: JList[CharSequence]) => {
+      val buf = if (_buf == null) "" else _buf
+      val Candidates(newCursor, newCandidates) = completion.complete(buf, cursor)
+      newCandidates foreach (candidates add _)
+      newCursor
     }
   
   var interpreter = {

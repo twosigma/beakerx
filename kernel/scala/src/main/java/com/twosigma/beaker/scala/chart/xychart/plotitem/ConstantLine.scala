@@ -1,0 +1,45 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF AnyVal KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package com.twosigma.beaker.scala.chart.xychart.plotitem
+
+import com.twosigma.beaker.chart.Color
+import com.twosigma.beaker.chart.xychart.plotitem.StrokeType
+
+class ConstantLine extends com.twosigma.beaker.chart.xychart.plotitem.ConstantLine {
+
+  def this(x: AnyVal) {
+    this()
+    super.setX(x.asInstanceOf[Number])
+  }
+
+  def this(x: AnyVal, y: AnyVal) {
+    this(x)
+    super.setY(y.asInstanceOf[Number])
+  }
+
+  def this(x: AnyVal, y: AnyVal, style: StrokeType, color: Color) {
+    this(x, y)
+    super.setStyle(style)
+    super.setColor(color)
+  }
+
+  def this(x: AnyVal, y: AnyVal, color: Color, width: Float, showLabel: Boolean) {
+    this(x, y)
+    super.setColor(color)
+    super.setWidth(width)
+    super.setShowLabel(showLabel)
+  }
+}

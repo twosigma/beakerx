@@ -43,7 +43,6 @@ import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.table.action.TableActionDetails;
-import com.twosigma.beaker.table.action.TableActionType;
 import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 import com.twosigma.beaker.table.format.ValueStringFormat;
 import com.twosigma.beaker.table.highlight.TableDisplayCellHighlighter;
@@ -550,9 +549,9 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public void setDoubleClickAction(Object listener) {
-    this.doubleClickTag = null;
     this.doubleClickListener = listener;
-    getComm().addMsgCallbackList((Handler<Message>) this::handleDoubleClick);
+    this.doubleClickTag = null;
+    getComm().addMsgCallbackList((Handler<Message>)this::handleDoubleClick);
     sendModelUpdate(serializeDoubleClickAction(this.doubleClickTag,hasDoubleClickAction()));
   }
 
@@ -588,9 +587,9 @@ public class TableDisplay extends BeakerxWidget {
     if (content.containsKey("params")) {
 
       HashMap params = (HashMap) content.get("params");
-
-      if (params.containsKey("actionType")) {
-        TableActionType value = TableActionType.getByName((String) params.get("actionType"));
+      
+      if(params.containsKey("actionType")){
+        CommActions value = CommActions.getByAction((String)params.get("actionType"));
         details.setActionType(value);
       }
       if (params.containsKey("contextMenuItem")) {
@@ -611,12 +610,12 @@ public class TableDisplay extends BeakerxWidget {
       }
     }
     setDetails(details);
-    if (TableActionType.CONTEXT_MENU_CLICK.equals(details.getActionType())) {
-      if (getContextMenuTags() != null && !getContextMenuTags().isEmpty() && details.getContextMenuItem() != null && !details.getContextMenuItem().isEmpty()) {
+    if(CommActions.ONCONTEXTMENU.equals(details.getActionType())){
+      if(getContextMenuTags() != null && !getContextMenuTags().isEmpty() && details.getContextMenuItem() != null && !details.getContextMenuItem().isEmpty()){
         NamespaceClient.getBeaker().runByTag(getContextMenuTags().get(details.getContextMenuItem()));
       }
-    } else if (TableActionType.DOUBLE_CLICK.equals(details.getActionType())) {
-      if (getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()) {
+    }else if(CommActions.ONDOUBLECLICK.equals(details.getActionType())){
+      if(getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()){
         NamespaceClient.getBeaker().runByTag(getDoubleClickTag());
       }
     }

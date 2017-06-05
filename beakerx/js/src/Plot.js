@@ -74,6 +74,7 @@ var PlotView = widgets.DOMWidgetView.extend({
 
     tmplElement.appendTo(this.$el);
 
+    this._currentScope.setWidgetModel(this.model);
     this._currentScope.setElement(tmplElement.children('.dtcontainer'));
     this._currentScope.setModelData(model);
     this._currentScope.init(this.model);

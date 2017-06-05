@@ -92,7 +92,7 @@ abstract public class XYGraphics extends Graphics {
   }
 
   public List<Number> getX() {
-    if (xs == null) {
+    if (xs == null || xs.isEmpty()) {
       generateXs();
     }
     return this.xs;

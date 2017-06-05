@@ -37,6 +37,11 @@ def setHeader(level, title):
         level -= 1
     return '{0} {1}'.format(dash, title)
 
+def getCode(cell):
+    body = cell['body']
+    if isinstance(body, list):
+        return "\n".join(body)
+    return body
 
 def convertNotebook(notebook):
     nb = new_notebook()
@@ -67,17 +72,15 @@ def convertNotebook(notebook):
                 metadata = {"tags": tags}
             if cell['evaluator'] != kernel_name:
                 if cell['evaluator'] == 'TeX':
-                    nb.cells.append(new_markdown_cell("${0}$".format("\n".join(map(str, cell['input']['body'])))))
+                    nb.cells.append(new_markdown_cell("${0}$".format(getCode(cell['input']))))
                 else:
                     nb.cells.append(
-                        new_code_cell(source='%%{0}\n{1}'.format(cell['evaluator'].lower(),
-                                                                 "\n".join(map(str, cell['input']['body']))),
+                        new_code_cell(source='%%{0}\n{1}'.format(cell['evaluator'].lower(), getCode(cell['input'])),
                                       metadata=metadata))
             else:
-                nb.cells.append(new_code_cell(source="\n".join(map(str, cell['input']['body'])),
-                                              metadata=metadata))
+                nb.cells.append(new_code_cell(source=getCode(cell['input']), metadata=metadata))
         if cell['type'] == 'markdown':
-            nb.cells.append(new_markdown_cell("\n".join(map(str, cell['body']))))
+            nb.cells.append(new_markdown_cell(getCode(cell)))
         if cell['type'] == 'section':
             nb.cells.append(new_markdown_cell(setHeader(cell['level'], cell['title'])))
     nbformat.write(nb, notebook.partition('.')[0] + '.ipynb')

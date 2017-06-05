@@ -15,7 +15,13 @@
  */
 package com.twosigma.beaker.chart.xychart;
 
+import com.twosigma.beaker.chart.AbstractChart;
 import com.twosigma.beaker.chart.AbstractChartTest;
+import com.twosigma.beaker.chart.serializer.ConstantBandSerializer;
+import com.twosigma.beaker.chart.serializer.ConstantLineSerializer;
+import com.twosigma.beaker.chart.serializer.GraphicsSerializer;
+import com.twosigma.beaker.chart.serializer.RastersSerializer;
+import com.twosigma.beaker.chart.serializer.TextSerializer;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantBand;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
@@ -23,10 +29,13 @@ import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.Y_AUTO_RANGE;
 import static com.twosigma.beaker.chart.serializer.XYChartSerializer.CONSTANT_BANDS;
 import static com.twosigma.beaker.chart.serializer.XYChartSerializer.CONSTANT_LINES;
 import static com.twosigma.beaker.chart.serializer.XYChartSerializer.GRAPHICS_LIST;
@@ -53,7 +62,8 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
     xyChart.setyTickLabelsVisible(true);
     //then
     assertThat(xyChart.isyTickLabelsVisible()).isEqualTo(true);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(Y_TICK_LABELS_VISIBLE)).isEqualTo(true);
   }
 
@@ -65,7 +75,8 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
     xyChart.setxTickLabelsVisible(true);
     //then
     assertThat(xyChart.isxTickLabelsVisible()).isEqualTo(true);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(X_TICK_LABELS_VISIBLE)).isEqualTo(true);
   }
 
@@ -77,7 +88,8 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
     xyChart.setLodThreshold(3);
     //then
     assertThat(xyChart.getLodThreshold()).isEqualTo(3);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(LOD_THRESHOLD)).isEqualTo(3);
   }
 
@@ -89,7 +101,8 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
     xyChart.setXLogBase(11.1);
     //then
     assertThat(xyChart.getXLogBase()).isEqualTo(11.1);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(X_LOG_BASE)).isEqualTo(11.1);
   }
 
@@ -101,7 +114,8 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
     xyChart.setLogX(true);
     //then
     assertThat(xyChart.getLogX()).isTrue();
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(LOG_X)).isEqualTo(true);
   }
 
@@ -113,7 +127,8 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
     xyChart.setXAutoRange(true);
     //then
     assertThat(xyChart.getXAutoRange()).isTrue();
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(X_AUTO_RANGE)).isEqualTo(true);
   }
 
@@ -126,11 +141,11 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
     //then
     assertThat(xyChart.getXUpperBound()).isEqualTo(20.0);
     assertThat(xyChart.getXLowerBound()).isEqualTo(11.0);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(3);
     assertThat(model.get(X_UPPER_BOUND)).isEqualTo(20.0);
     assertThat(model.get(X_LOWER_BOUND)).isEqualTo(11.0);
   }
-
 
   @Test
   public void shouldSendCommMsgWhenAddRastersByLeftShift() throws Exception {
@@ -144,7 +159,9 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
     //when
     xyChart.leftShift(raster);
     //then
-    assertThat(getValueAsArray(RASTERS)).isNotEmpty();
+    List valueAsArray = getValueAsArray(RASTERS);
+    Map actual = (Map) valueAsArray.get(0);
+    assertThat(actual.get(RastersSerializer.TYPE)).isEqualTo(Rasters.class.getSimpleName());
   }
 
   @Test
@@ -157,7 +174,9 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
     //when
     xyChart.leftShift(graphics);
     //then
-    assertThat(getValueAsArray(GRAPHICS_LIST)).isNotEmpty();
+    List valueAsArray = getValueAsArray(GRAPHICS_LIST);
+    Map actual = (Map) valueAsArray.get(0);
+    assertThat(actual.get(GraphicsSerializer.TYPE)).isEqualTo(Line.class.getSimpleName());
   }
 
   @Test
@@ -167,7 +186,9 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
     //when
     xyChart.leftShift(new ConstantLine());
     //then
-    assertThat(getValueAsArray(CONSTANT_LINES)).isNotEmpty();
+    List valueAsArray = getValueAsArray(CONSTANT_LINES);
+    Map actual = (Map) valueAsArray.get(0);
+    assertThat(actual.get(ConstantLineSerializer.TYPE)).isEqualTo(ConstantLine.class.getSimpleName());
   }
 
   @Test
@@ -177,7 +198,9 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
     //when
     xyChart.leftShift(new ConstantBand());
     //then
-    assertThat(getValueAsArray(CONSTANT_BANDS)).isNotEmpty();
+    List valueAsArray = getValueAsArray(CONSTANT_BANDS);
+    Map actual = (Map) valueAsArray.get(0);
+    assertThat(actual.get(ConstantBandSerializer.TYPE)).isEqualTo(ConstantBand.class.getSimpleName());
   }
 
   @Test
@@ -189,10 +212,24 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
     xyChart.leftShift(text);
     //then
     assertThat(xyChart.getTexts().get(0)).isEqualTo(text);
-    assertThat(getValueAsArray(TEXTS)).isNotEmpty();
+    List valueAsArray = getValueAsArray(TEXTS);
+    Map actual = (Map) valueAsArray.get(0);
+    assertThat(actual.get(TextSerializer.TYPE)).isEqualTo(Text.class.getSimpleName());
   }
-
 
   @Override
   public abstract T createWidget();
+
+  @Test
+  public void setyAutoRangeByTrue_YAutoRangeIsTrue() {
+    //given
+    AbstractChart chart =createWidget();
+    //when
+    chart.setyAutoRange(true);
+    //then
+    assertThat(chart.getYAutoRange()).isTrue();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    assertThat(model.get(X_AUTO_RANGE)).isEqualTo(true);
+  }
 }

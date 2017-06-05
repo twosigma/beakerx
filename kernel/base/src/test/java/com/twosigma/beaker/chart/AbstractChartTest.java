@@ -16,12 +16,17 @@
 
 package com.twosigma.beaker.chart;
 
+import com.twosigma.beaker.chart.serializer.CrosshairSerializer;
+import com.twosigma.beaker.chart.serializer.YAxisSerializer;
 import com.twosigma.beaker.chart.xychart.plotitem.Crosshair;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.CROSSHAIR;
@@ -39,6 +44,7 @@ import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.Y_LOW
 import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.Y_LOWER_MARGIN;
 import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.Y_UPPER_BOUND;
 import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.Y_UPPER_MARGIN;
+import static com.twosigma.beaker.chart.serializer.CrosshairSerializer.TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractChartTest <T extends AbstractChart> extends ChartTest<AbstractChart>{
@@ -52,7 +58,11 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     abstractChart.leftShift(yAxis);
     //then
     assertThat(abstractChart.getYAxes()).contains(yAxis);
-    assertThat(getValueAsArray(RANGE_AXES)).isNotEmpty();
+    List valueAsArray = getValueAsArray(RANGE_AXES);
+    Map actual =(Map)valueAsArray.get(0);
+    assertThat(actual.get(YAxisSerializer.TYPE)).isEqualTo(YAxis.class.getSimpleName());
+    Map actual1 =(Map)valueAsArray.get(1);
+    assertThat(actual1.get(YAxisSerializer.TYPE)).isEqualTo(YAxis.class.getSimpleName());
   }
 
   @Test
@@ -76,7 +86,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setOmitCheckboxes(true);
     //then
     assertThat(chart.getOmitCheckboxes()).isTrue();
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(OMIT_CHECKBOXES)).isEqualTo(true);
   }
 
@@ -87,9 +98,7 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     //when
     chart.setYAutoRangeIncludesZero(true);
     //then
-    assertThat(chart.getYAutoRangeIncludesZero()).isTrue();
-    LinkedHashMap model = getModel();
-    assertThat(model.get(Y_AUTO_RANGE_INCLUDES_ZERO)).isEqualTo(true);
+    verifyYAutoRangeIncludesZero(chart);
   }
 
   @Test
@@ -99,9 +108,14 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     //when
     chart.setyAutoRangeIncludesZero(true);
     //then
+    verifyYAutoRangeIncludesZero(chart);
+  }
+
+  private void verifyYAutoRangeIncludesZero(AbstractChart chart) {
     assertThat(chart.getYAutoRangeIncludesZero()).isTrue();
-    LinkedHashMap model = getModel();
-    assertThat(model.get(Y_AUTO_RANGE_INCLUDES_ZERO)).isEqualTo(true);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    assertThat( model.get(Y_AUTO_RANGE_INCLUDES_ZERO)).isEqualTo(true);
   }
 
   @Test
@@ -113,7 +127,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     //then
     assertThat(chart.getYLowerBound()).isEqualTo(1.0d);
     assertThat(chart.getYUpperBound()).isEqualTo(10.0d);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(2);
     assertThat(model.get(Y_LOWER_BOUND)).isEqualTo(1.0d);
     assertThat(model.get(Y_UPPER_BOUND)).isEqualTo(10.0d);
   }
@@ -127,7 +142,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     //then
     assertThat(chart.getYLowerBound()).isEqualTo(1.0d);
     assertThat(chart.getYUpperBound()).isEqualTo(10.0d);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(2);
     assertThat(model.get(Y_LOWER_BOUND)).isEqualTo(1.0d);
     assertThat(model.get(Y_UPPER_BOUND)).isEqualTo(10.0d);
   }
@@ -141,7 +157,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     //then
     assertThat(chart.getYLowerBound()).isEqualTo(1.0d);
     assertThat(chart.getYUpperBound()).isEqualTo(10.0d);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(2);
     assertThat(model.get(Y_LOWER_BOUND)).isEqualTo(1.0d);
     assertThat(model.get(Y_UPPER_BOUND)).isEqualTo(10.0d);
   }
@@ -164,7 +181,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setXLabel("testX");
     //then
     assertThat(chart.getXLabel()).isEqualTo("testX");
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(DOMAIN_AXIS_LABEL)).isEqualTo("testX");
   }
 
@@ -176,7 +194,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setxLabel("test_x");
     //then
     assertThat(chart.getXLabel()).isEqualTo("test_x");
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(DOMAIN_AXIS_LABEL)).isEqualTo("test_x");
   }
 
@@ -188,7 +207,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setyLabel("test_y");
     //then
     assertThat(chart.getYLabel()).isEqualTo("test_y");
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(Y_LABEL)).isEqualTo("test_y");
   }
 
@@ -200,7 +220,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setYLabel("testY");
     //then
     assertThat(chart.getYLabel()).isEqualTo("testY");
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(Y_LABEL)).isEqualTo("testY");
   }
 
@@ -212,7 +233,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setXLowerMargin(3.0d);
     //then
     assertThat(chart.getXLowerMargin()).isEqualTo(3.0d);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(X_LOWER_MARGIN)).isEqualTo(3.0);
   }
 
@@ -224,7 +246,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setxLowerMargin(3.5d);
     //then
     assertThat(chart.getXLowerMargin()).isEqualTo(3.5d);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(X_LOWER_MARGIN)).isEqualTo(3.5);
   }
 
@@ -236,7 +259,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setXUpperMargin(7.0d);
     //then
     assertThat(chart.getXUpperMargin()).isEqualTo(7.0d);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(X_UPPER_MARGIN)).isEqualTo(7.0);
   }
 
@@ -248,7 +272,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setxUpperMargin(7.5d);
     //then
     assertThat(chart.getXUpperMargin()).isEqualTo(7.5d);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(X_UPPER_MARGIN)).isEqualTo(7.5);
   }
 
@@ -260,7 +285,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setyAutoRange(true);
     //then
     assertThat(chart.getYAutoRange()).isTrue();
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(Y_AUTO_RANGE)).isEqualTo(true);
   }
 
@@ -282,7 +308,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setyLowerMargin(0.3d);
     //then
     assertThat(chart.getYLowerMargin()).isEqualTo(0.3d);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(Y_LOWER_MARGIN)).isEqualTo(0.3);
   }
 
@@ -294,7 +321,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setyUpperMargin(0.7d);
     //then
     assertThat(chart.getYUpperMargin()).isEqualTo(0.7d);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(Y_UPPER_MARGIN)).isEqualTo(0.7);
   }
 
@@ -327,8 +355,10 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setCrosshair(crosshair);
     //then
     assertThat(chart.getCrosshair()).isNotNull();
-    LinkedHashMap model = getModel();
-    assertThat(model.get(CROSSHAIR)).isNotNull();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    Map actual = (Map)model.get(CROSSHAIR);
+    assertThat(actual.get(CrosshairSerializer.TYPE)).isEqualTo(Crosshair.class.getSimpleName());
   }
 
   @Test
@@ -340,8 +370,9 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setTimeZone(aDefault);
     //then
     assertThat(chart.getTimeZone()).isEqualTo(aDefault);
-    LinkedHashMap model = getModel();
-    assertThat(model.get(TIMEZONE)).isNotNull();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    assertThat(model.get(TIMEZONE)).isEqualTo(aDefault.getID());
   }
 
   @Test
@@ -352,7 +383,8 @@ public abstract class AbstractChartTest <T extends AbstractChart> extends ChartT
     chart.setLogY(true);
     //then
     assertThat(chart.getLogY()).isEqualTo(true);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(LOG_Y)).isEqualTo(true);
   }
 

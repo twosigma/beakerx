@@ -28,6 +28,8 @@ import java.io.IOException;
 
 public class ConstantLineSerializer extends JsonSerializer<ConstantLine> {
 
+  public static final String TYPE = "type";
+
   @Override
   public void serialize(ConstantLine constantLine, JsonGenerator jgen, SerializerProvider sp)
     throws IOException, JsonProcessingException {
@@ -35,7 +37,7 @@ public class ConstantLineSerializer extends JsonSerializer<ConstantLine> {
     jgen.writeStartObject();
 
     boolean isNanoPlot = NanoPlot.class.equals(constantLine.getPlotType());
-    jgen.writeObjectField("type", constantLine.getClass().getSimpleName());
+    jgen.writeObjectField(TYPE, constantLine.getClass().getSimpleName());
     jgen.writeObjectField("x", isNanoPlot ? processLargeNumber(constantLine.getX()) : constantLine.getX());
     jgen.writeObjectField("y", constantLine.getY());
     jgen.writeObjectField("visible", constantLine.getVisible());

@@ -67,8 +67,9 @@ public class TreeMapTest extends ChartTest<TreeMap> {
     treeMap.setMode(Mode.DICE);
     //then
     assertThat(treeMap.getMode()).isEqualTo(Mode.DICE);
-    LinkedHashMap model = getModel();
-    assertThat(model.get(MODE)).isEqualTo(Mode.DICE.toString().toLowerCase());
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    assertThat(model.get(MODE)).isEqualTo(Mode.DICE.getJsName());
   }
 
   @Test
@@ -79,7 +80,8 @@ public class TreeMapTest extends ChartTest<TreeMap> {
     treeMap.setSticky(true);
     //then
     assertThat(treeMap.getSticky()).isEqualTo(true);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(STICKY)).isEqualTo(true);
   }
 
@@ -91,7 +93,8 @@ public class TreeMapTest extends ChartTest<TreeMap> {
     treeMap.setRatio(1.1);
     //then
     assertThat(treeMap.getRatio()).isEqualTo(1.1);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(RATIO)).isEqualTo(1.1);
   }
 
@@ -103,7 +106,8 @@ public class TreeMapTest extends ChartTest<TreeMap> {
     treeMap.setRound(true);
     //then
     assertThat(treeMap.getRound()).isEqualTo(true);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(ROUND)).isEqualTo(true);
   }
 
@@ -115,7 +119,8 @@ public class TreeMapTest extends ChartTest<TreeMap> {
     treeMap.setValueAccessor(ValueAccessor.VALUE);
     //then
     assertThat(treeMap.getValueAccessor()).isEqualTo(ValueAccessor.VALUE);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(VALUE_ACCESSOR)).isEqualTo(ValueAccessor.VALUE.toString());
   }
 
@@ -132,7 +137,7 @@ public class TreeMapTest extends ChartTest<TreeMap> {
     });
     //then
     assertThat(treeMap.getToolTipBuilder()).isNotNull();
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
     assertThat(model).isNotNull();
   }
 

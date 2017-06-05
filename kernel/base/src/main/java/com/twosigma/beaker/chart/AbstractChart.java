@@ -25,7 +25,7 @@ import java.util.TimeZone;
 
 public abstract class AbstractChart extends Chart {
   private String xLabel;
-  private final YAxis yAxis = new YAxis();
+  protected final YAxis yAxis = new YAxis();
   private final List<YAxis> yAxes = new ArrayList<>();
   private double xLowerMargin = 0.05;
   private double xUpperMargin = 0.05;
@@ -39,7 +39,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setXLabel(String xLabel) {
     this.xLabel = xLabel;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeXLabel(this.xLabel));
     return this;
   }
 
@@ -53,7 +53,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setYLabel(String yLabel) {
     yAxis.setLabel(yLabel);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeYLabel(this.yAxis.getLabel()));
     return this;
   }
 
@@ -68,7 +68,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart add(YAxis yAxis) {
     this.yAxes.add(yAxis);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeYAxes(this.yAxes));
     return this;
   }
 
@@ -95,7 +95,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setXLowerMargin(double margin) {
     this.xLowerMargin = margin;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeXLowerMargin(this.xLowerMargin));
     return this;
   }
 
@@ -109,7 +109,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setXUpperMargin(double margin) {
     this.xUpperMargin = margin;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeXUpperMargin(this.xUpperMargin));
     return this;
   }
 
@@ -123,7 +123,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setyAutoRange(boolean yAutoRange) {
     this.yAxis.setAutoRange(yAutoRange);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeAutoRange(this.yAxis.getAutoRange()));
     return this;
   }
 
@@ -133,7 +133,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setYAutoRangeIncludesZero(boolean yAutoRangeIncludesZero) {
     this.yAxis.setAutoRangeIncludesZero(yAutoRangeIncludesZero);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeAutoRangeIncludesZero(this.yAxis.getAutoRangeIncludesZero()));
     return this;
   }
 
@@ -151,7 +151,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setyLowerMargin(double margin) {
     this.yAxis.setLowerMargin(margin);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeYLowerMargin(this.yAxis.getLowerMargin()));
     return this;
   }
 
@@ -165,7 +165,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setyUpperMargin(double margin) {
     this.yAxis.setUpperMargin(margin);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeUpperMargin(this.yAxis.getUpperMargin()));
     return this;
   }
 
@@ -176,7 +176,7 @@ public abstract class AbstractChart extends Chart {
   public AbstractChart setYBound(double lower, double upper) {
     this.yAxis.setAutoRange(false);
     this.yAxis.setBound(lower, upper);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeYBound(this.yAxis));
     return this;
   }
 
@@ -207,7 +207,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setLogY(boolean logY) {
     this.yAxis.setLog(logY);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeLogY(this.yAxis.getLog()));
     return this;
   }
 
@@ -231,7 +231,7 @@ public abstract class AbstractChart extends Chart {
 
   protected AbstractChart setTimeZone(TimeZone timeZone) {
     this.timeZone = timeZone;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeTimeZone(this.timeZone));
     return this;
   }
 
@@ -241,7 +241,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setCrosshair(Crosshair crosshair) {
     this.crosshair = crosshair;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeCrosshair(this.crosshair));
     return this;
   }
 
@@ -255,7 +255,7 @@ public abstract class AbstractChart extends Chart {
 
   public AbstractChart setOmitCheckboxes(boolean omitCheckboxes) {
     this.omitCheckboxes = omitCheckboxes;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeOmitCheckboxes(this.omitCheckboxes));
     return this;
   }
 

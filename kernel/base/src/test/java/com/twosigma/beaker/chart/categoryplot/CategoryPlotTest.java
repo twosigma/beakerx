@@ -22,11 +22,13 @@ import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryLines;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryPoints;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryStems;
+import com.twosigma.beaker.chart.serializer.CategoryPlotSerializer;
 import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -65,7 +67,8 @@ public class CategoryPlotTest extends AbstractChartTest<CategoryPlot> {
     plot.setCategoryNamesLabelAngle(22.2);
     //then
     assertThat(plot.getCategoryNamesLabelAngle()).isEqualTo(22.2);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(CATEGORY_NAMES_LABEL_ANGLE)).isEqualTo(22.2);
   }
 
@@ -77,7 +80,8 @@ public class CategoryPlotTest extends AbstractChartTest<CategoryPlot> {
     plot.setCategoryMargin(11.1);
     //then
     assertThat(plot.getCategoryMargin()).isEqualTo(11.1);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(CATEGORY_MARGIN)).isEqualTo(11.1);
   }
 
@@ -89,7 +93,8 @@ public class CategoryPlotTest extends AbstractChartTest<CategoryPlot> {
     plot.setOrientation(PlotOrientationType.HORIZONTAL);
     //then
     assertThat(plot.getOrientation()).isEqualTo(PlotOrientationType.HORIZONTAL);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(ORIENTATION)).isEqualTo(PlotOrientationType.HORIZONTAL.toString());
   }
 
@@ -102,7 +107,8 @@ public class CategoryPlotTest extends AbstractChartTest<CategoryPlot> {
     plot.setCategoryNames(names);
     //then
     assertThat(plot.getCategoryNames()).isEqualTo(names);
-    assertThat(getValueAsArray(CATEGORY_NAMES)).isNotEmpty();
+    List valueAsArray = getValueAsArray(CATEGORY_NAMES);
+    assertThat(valueAsArray).isNotEmpty();
   }
 
   @Test
@@ -114,7 +120,8 @@ public class CategoryPlotTest extends AbstractChartTest<CategoryPlot> {
     plot.leftShift(graphics);
     //then
     assertThat(plot.getGraphics().get(0)).isEqualTo(graphics);
-    assertThat(getValueAsArray(GRAPHICS_LIST)).isNotEmpty();
+    List valueAsArray = getValueAsArray(CategoryPlotSerializer.GRAPHICS_LIST);
+    assertThat(valueAsArray).isNotEmpty();
   }
 
   @Test

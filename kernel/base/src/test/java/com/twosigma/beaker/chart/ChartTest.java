@@ -258,9 +258,10 @@ public abstract class ChartTest<T extends Chart> {
     assertThat(chart.getViewNameValue()).isEqualTo(BeakerxPlot.VIEW_NAME_VALUE);
   }
 
-  protected ArrayList getValueAsArray(final String field) {
-    LinkedHashMap model = getModel();
-    return (ArrayList) model.get(field);
+  protected List getValueAsArray(final String field) {
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    return (List) model.get(field);
   }
 
   protected LinkedHashMap getModel() {

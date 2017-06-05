@@ -16,14 +16,17 @@
 
 package com.twosigma.beaker.chart.histogram;
 
+import com.twosigma.beaker.chart.AbstractChart;
 import com.twosigma.beaker.chart.AbstractChartTest;
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.chart.serializer.HistogramSerializer;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static com.twosigma.beaker.chart.serializer.AbstractChartSerializer.LOG_Y;
 import static com.twosigma.beaker.chart.serializer.HistogramSerializer.BIN_COUNT;
 import static com.twosigma.beaker.chart.serializer.HistogramSerializer.COLOR;
 import static com.twosigma.beaker.chart.serializer.HistogramSerializer.COLORS;
@@ -63,7 +66,8 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
     histogram.setBinCount(11);
     //then
     assertThat(histogram.getBinCount()).isEqualTo(11);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(BIN_COUNT)).isEqualTo(11);
   }
 
@@ -75,8 +79,9 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
     histogram.setNames(asList("name123"));
     //then
     assertThat(histogram.getNames()).isEqualTo(asList("name123"));
-    LinkedHashMap model = getModel();
-    assertThat(model.get(NAMES)).isNotNull();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    assertThat(model.get(HistogramSerializer.NAMES)).isNotNull();
   }
 
   @Test
@@ -88,7 +93,8 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
     histogram.setDisplayMode(overlap);
     //then
     assertThat(histogram.getDisplayMode()).isEqualTo(overlap);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(DISPLAY_MODE)).isNotNull();
   }
 
@@ -100,7 +106,8 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
     histogram.setCumulative(true);
     //then
     assertThat(histogram.getCumulative()).isEqualTo(true);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(CUMULATIVE)).isEqualTo(true);
   }
 
@@ -112,7 +119,8 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
     histogram.setNormed(true);
     //then
     assertThat(histogram.getNormed()).isEqualTo(true);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(NORMED)).isEqualTo(true);
   }
 
@@ -124,7 +132,8 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
     histogram.setLog(true);
     //then
     assertThat(histogram.getLog()).isEqualTo(true);
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(LOG)).isEqualTo(true);
   }
 
@@ -136,7 +145,8 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
     histogram.setData(asList(list1, list2));
     //then
     assertThat(histogram.getListData()).isNotEmpty();
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(GRAPHICS_LIST)).isNotNull();
   }
 
@@ -148,7 +158,8 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
     histogram.setData(list1);
     //then
     assertThat(histogram.getData()).isNotEmpty();
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(GRAPHICS_LIST)).isNotNull();
   }
 
@@ -160,7 +171,8 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
     histogram.setColor(java.awt.Color.GREEN);
     //then
     assertThat(histogram.getColor() instanceof Color).isTrue();
-    LinkedHashMap model = getModel();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
     assertThat(model.get(COLOR)).isNotNull();
   }
 
@@ -172,8 +184,10 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
     histogram.setColor(asList(java.awt.Color.GREEN, java.awt.Color.BLUE));
     //then
     assertThat(histogram.getColors()).isNotEmpty();
-    LinkedHashMap model = getModel();
-    assertThat(model.get(COLORS)).isNotNull();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    List<String> actual = (List<String>)model.get(COLORS);
+    assertThat(actual.get(0)).startsWith("#");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -187,5 +201,18 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
   @Override
   public Histogram createWidget() {
     return new Histogram();
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenLogYChange() {
+    //given
+    AbstractChart chart =createWidget();
+    //when
+    chart.setLogY(true);
+    //then
+    assertThat(chart.getLogY()).isEqualTo(true);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    assertThat(model.get(HistogramSerializer.LOG)).isEqualTo(true);
   }
 }

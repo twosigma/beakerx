@@ -283,7 +283,7 @@ public class GroovyEvaluatorChartTest extends GroovyEvaluatorTest {
     //then
     Assertions.assertThat(result instanceof CategoryPlot).isTrue();
     CategoryPlot categoryPlot = (CategoryPlot) result;
-    Assertions.assertThat(categoryPlot.getCategoryGraphics()).isNotEmpty();
+    Assertions.assertThat(categoryPlot.getGraphics()).isNotEmpty();
   }
 
   @Test
@@ -309,7 +309,7 @@ public class GroovyEvaluatorChartTest extends GroovyEvaluatorTest {
     //then
     Assertions.assertThat(result instanceof CategoryPlot).isTrue();
     CategoryPlot categoryPlot = (CategoryPlot) result;
-    Assertions.assertThat(categoryPlot.getCategoryGraphics()).isNotEmpty();
+    Assertions.assertThat(categoryPlot.getGraphics()).isNotEmpty();
   }
 
   @Test
@@ -322,7 +322,7 @@ public class GroovyEvaluatorChartTest extends GroovyEvaluatorTest {
     //then
     Assertions.assertThat(result instanceof CategoryPlot).isTrue();
     CategoryPlot categoryPlot = (CategoryPlot) result;
-    Assertions.assertThat(categoryPlot.getCategoryGraphics()).isNotEmpty();
+    Assertions.assertThat(categoryPlot.getGraphics()).isNotEmpty();
   }
 
   @Test
@@ -334,7 +334,7 @@ public class GroovyEvaluatorChartTest extends GroovyEvaluatorTest {
     //then
     Assertions.assertThat(result instanceof CategoryPlot).isTrue();
     CategoryPlot categoryPlot = (CategoryPlot) result;
-    Assertions.assertThat(categoryPlot.getCategoryGraphics()).isNotEmpty();
+    Assertions.assertThat(categoryPlot.getGraphics()).isNotEmpty();
   }
 
   @Test
@@ -361,8 +361,8 @@ public class GroovyEvaluatorChartTest extends GroovyEvaluatorTest {
     //then
     Assertions.assertThat(result instanceof CategoryPlot).isTrue();
     CategoryPlot categoryPlot = (CategoryPlot) result;
-    Assertions.assertThat(categoryPlot.getCategoryGraphics()).isNotEmpty();
-    CategoryBars categoryBars = (CategoryBars) categoryPlot.getCategoryGraphics().get(0);
+    Assertions.assertThat(categoryPlot.getGraphics()).isNotEmpty();
+    CategoryBars categoryBars = (CategoryBars) categoryPlot.getGraphics().get(0);
     Assertions.assertThat(categoryBars.getLabelPosition())
         .isEqualTo(LabelPositionType.VALUE_INSIDE);
   }

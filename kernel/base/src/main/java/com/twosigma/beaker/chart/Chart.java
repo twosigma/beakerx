@@ -26,21 +26,28 @@ import com.twosigma.beaker.chart.legend.LegendPosition;
 import static com.twosigma.beaker.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
 import static com.twosigma.beaker.widgets.chart.BeakerxPlot.VIEW_NAME_VALUE;
 
-public class Chart extends ChartDetails {
+public abstract class Chart extends ChartDetails {
 
-  protected int initWidth = 640;
-  protected int initHeight = 480;
-  protected List<String> customStyles = new ArrayList();
-  protected Map<String, String> elementStyles = new HashMap<>();
+  public static final String PLOT_GRIDLINE = ".plot-gridline";
+  public static final String PLOT_LABEL_Y = ".plot-label-y";
+  public static final String PLOT_LABEL_X = ".plot-label-x";
+  public static final String PLOT_LABEL = ".plot-label";
+  public static final String PLOT_TITLE = ".plot-title";
 
-  protected String title;
-  protected Boolean showLegend;
-  protected boolean useToolTip = true;
-  protected LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.TOP_RIGHT);
-  protected LegendLayout legendLayout = LegendLayout.VERTICAL;
+  private int initWidth = 640;
+  private int initHeight = 480;
+  private List<String> customStyles = new ArrayList();
+  private Map<String, String> elementStyles = new HashMap<>();
+
+  private String title;
+  private Boolean showLegend;
+  private boolean useToolTip = true;
+  private LegendPosition legendPosition = new LegendPosition(LegendPosition.Position.TOP_RIGHT);
+  private LegendLayout legendLayout = LegendLayout.VERTICAL;
 
   public Chart setInitWidth(int w) {
     this.initWidth = w;
+    sendModelUpdate(ChartToJson.serializeInitWidth(this.initWidth));
     return this;
   }
 
@@ -50,6 +57,7 @@ public class Chart extends ChartDetails {
 
   public Chart setInitHeight(int h) {
     this.initHeight = h;
+    sendModelUpdate(ChartToJson.serializeInitHeight(this.initHeight));
     return this;
   }
 
@@ -59,6 +67,7 @@ public class Chart extends ChartDetails {
 
   public Chart setTitle(String title) {
     this.title = title;
+    sendModelUpdate(ChartToJson.serializeTitle(this.title));
     return this;
   }
 
@@ -90,6 +99,7 @@ public class Chart extends ChartDetails {
 
   public Chart setLegendPosition(LegendPosition legendPosition) {
     this.legendPosition = legendPosition;
+    sendModelUpdate(ChartToJson.serializeLegendPosition(this.legendPosition));
     return this;
   }
 
@@ -99,6 +109,7 @@ public class Chart extends ChartDetails {
 
   public Chart setLegendLayout(LegendLayout legendLayout) {
     this.legendLayout = legendLayout;
+    sendModelUpdate(ChartToJson.serializeLegendLayout(this.legendLayout));
     return this;
   }
 
@@ -108,46 +119,52 @@ public class Chart extends ChartDetails {
 
   public void setCustomStyles(List<String> customStyle) {
     this.customStyles = customStyle;
+    sendModelUpdate(ChartToJson.serializeCustomStyles(this.customStyles));
   }
 
   public String getLabelStyle() {
-    return this.elementStyles.get(".plot-label");
+    return this.elementStyles.get(PLOT_LABEL);
   }
 
   public void setLabelStyle(String style) {
-    this.elementStyles.put(".plot-label", style);
+    this.elementStyles.put(PLOT_LABEL, style);
+    sendModelUpdate(ChartToJson.serializeElementStyles(this.elementStyles));
   }
 
   public String getLabelXStyle() {
-    return this.elementStyles.get(".plot-label-x");
+    return this.elementStyles.get(PLOT_LABEL_X);
   }
 
   public void setLabelXStyle(String style) {
-    this.elementStyles.put(".plot-label-x", style);
+    this.elementStyles.put(PLOT_LABEL_X, style);
+    sendModelUpdate(ChartToJson.serializeElementStyles(this.elementStyles));
   }
 
   public String getLabelYStyle() {
-    return this.elementStyles.get(".plot-label-y");
+    return this.elementStyles.get(PLOT_LABEL_Y);
   }
 
   public void setLabelYStyle(String style) {
-    this.elementStyles.put(".plot-label-y", style);
+    this.elementStyles.put(PLOT_LABEL_Y, style);
+    sendModelUpdate(ChartToJson.serializeElementStyles(this.elementStyles));
   }
 
   public String getGridLineStyle() {
-    return this.elementStyles.get(".plot-gridline");
+    return this.elementStyles.get(PLOT_GRIDLINE);
   }
 
   public void setGridLineStyle(String style) {
-    this.elementStyles.put(".plot-gridline", style);
+    this.elementStyles.put(PLOT_GRIDLINE, style);
+    sendModelUpdate(ChartToJson.serializeElementStyles(this.elementStyles));
   }
 
   public String getTitleStyle() {
-    return this.elementStyles.get(".plot-title");
+    return this.elementStyles.get(PLOT_TITLE);
   }
 
   public void setTitleStyle(String style) {
-    this.elementStyles.put(".plot-title", style);
+    this.elementStyles.put(PLOT_TITLE, style);
+    sendModelUpdate(ChartToJson.serializeElementStyles(this.elementStyles));
   }
 
   public Map<String, String> getElementStyles() {
@@ -167,5 +184,10 @@ public class Chart extends ChartDetails {
   @Override
   protected Map serializeToJsonObject() {
     return ChartToJson.toJson(this);
+  }
+
+  @Override
+  protected Map serializeToJsonObject(Object item) {
+    return ChartToJson.toJson(item);
   }
 }

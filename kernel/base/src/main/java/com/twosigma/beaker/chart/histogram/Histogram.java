@@ -17,9 +17,11 @@
 package com.twosigma.beaker.chart.histogram;
 
 import com.twosigma.beaker.chart.AbstractChart;
+import com.twosigma.beaker.chart.ChartToJson;
 import com.twosigma.beaker.chart.Color;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.twosigma.beaker.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
@@ -84,6 +86,7 @@ public class Histogram extends AbstractChart {
 
   public void setBinCount(int binCount) {
     this.binCount = binCount;
+    sendModelUpdate(ChartToJson.serializeBinCount(this.binCount));
   }
 
   public boolean getRightClose() {
@@ -100,6 +103,7 @@ public class Histogram extends AbstractChart {
 
   public void setCumulative(boolean cumulative) {
     this.cumulative = cumulative;
+    sendModelUpdate(ChartToJson.serializeCumulative(this.cumulative));
   }
 
   public boolean getNormed() {
@@ -108,6 +112,7 @@ public class Histogram extends AbstractChart {
 
   public void setNormed(boolean normed) {
     this.normed = normed;
+    sendModelUpdate(ChartToJson.serializeNormed(this.normed));
   }
 
   public DisplayMode getDisplayMode() {
@@ -116,6 +121,7 @@ public class Histogram extends AbstractChart {
 
   public void setDisplayMode(DisplayMode displayMode) {
     this.displayMode = displayMode;
+    sendModelUpdate(ChartToJson.serializeDisplayMode(this.displayMode));
   }
 
   public boolean getLog() {
@@ -126,12 +132,21 @@ public class Histogram extends AbstractChart {
     setLogY(log);
   }
 
+  @Override
+  public AbstractChart setLogY(boolean logY) {
+    this.yAxis.setLog(logY);
+    sendModelUpdate(ChartToJson.serializeHistogramLog(this.yAxis.getLog()));
+    return this;
+  }
+
   @SuppressWarnings("unchecked")
   public void setColor(Object color) {
     if (color instanceof Color) {
       this.baseColor = (Color) color;
+      sendModelUpdate(ChartToJson.serializeColor(this.baseColor));
     } else if (color instanceof java.awt.Color) {
       this.baseColor = new Color((java.awt.Color) color);
+      sendModelUpdate(ChartToJson.serializeColor(this.baseColor));
     } else if (color instanceof List) {
       if (color != null) {
         List cs = (List) color;
@@ -145,6 +160,7 @@ public class Histogram extends AbstractChart {
             throw new IllegalArgumentException("setColor takes Color or List of Color");
           }
         }
+        sendModelUpdate(ChartToJson.serializeColors(this.colors));
       } else {
         this.colors = null;
       }
@@ -169,14 +185,17 @@ public class Histogram extends AbstractChart {
       try {
         if (list.get(0) instanceof List) {
           this.listData = (List<List<Number>>) data;
+          sendModelUpdate(ChartToJson.serializeHistogramListData(this.listData));
         } else {
           this.data = (List<Number>) data;
+          sendModelUpdate(ChartToJson.serializeHistogramData(this.data));
         }
       } catch (Throwable x) {
         throw new IllegalArgumentException(
                 "setData takes List of Number or List of List of Number");
       }
     }
+
   }
 
   public List<Number> getData() {
@@ -193,5 +212,6 @@ public class Histogram extends AbstractChart {
 
   public void setNames(List<String> names) {
     this.names = names;
+    sendModelUpdate(ChartToJson.serializeHistogramNames(this.names));
   }
 }

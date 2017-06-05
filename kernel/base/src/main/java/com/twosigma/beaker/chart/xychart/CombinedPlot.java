@@ -99,6 +99,7 @@ public class CombinedPlot extends ChartDetails {
   public CombinedPlot add(XYChart plot, int weight) {
     this.subplots.add(plot);
     this.weights.add(weight);
+    sendModel();
     return this;
   }
 
@@ -150,5 +151,9 @@ public class CombinedPlot extends ChartDetails {
   @Override
   protected Map serializeToJsonObject() {
     return ChartToJson.toJson(this);
+  }
+  @Override
+  protected Map serializeToJsonObject(Object item) {
+    return ChartToJson.toJson(item);
   }
 }

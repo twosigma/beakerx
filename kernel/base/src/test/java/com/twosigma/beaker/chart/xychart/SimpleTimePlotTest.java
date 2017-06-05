@@ -19,11 +19,7 @@ package com.twosigma.beaker.chart.xychart;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Points;
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.KernelTest;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -33,29 +29,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SimpleTimePlotTest {
+public class SimpleTimePlotTest extends XYChartTest<SimpleTimePlot> {
 
   Map<String, Object> parameters;
   List<Map<String, Object>> rates;
   List<String> columns;
-  SimpleTimePlot simpleTimePlot;
 
-  @Before
-  public void initStubData() {
-    KernelManager.register(new KernelTest());
-    createDataForSimpleTimePlot();
-    simpleTimePlot = new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
-  }
 
   @Test
   public void callConstructorWithDataAndColumns_shouldCreateSimpleTimePlot() {
     SimpleTimePlot simpleTimePlot =
-        new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
+            new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
     //then
     Assertions.assertThat(simpleTimePlot).isNotNull();
   }
@@ -64,13 +48,15 @@ public class SimpleTimePlotTest {
   public void callConstructorWithParamsAndDataAndColumns_shouldCreateSimpleTimePlot() {
     //when
     SimpleTimePlot simpleTimePlot =
-        new SimpleTimePlot(parameters, rates, Arrays.asList("m3", "time", "num"));
+            new SimpleTimePlot(parameters, rates, Arrays.asList("m3", "time", "num"));
     //then
     Assertions.assertThat(simpleTimePlot).isNotNull();
   }
 
   @Test
   public void setTwoColorsForThreeColumns_twoOfThreeGraphicsHasBaseColor() {
+    //given
+    SimpleTimePlot simpleTimePlot = createWidget();
     //when
     simpleTimePlot.setColors(Arrays.asList(Color.BLUE, Color.GREEN));
     //to call reinitialize()
@@ -83,6 +69,8 @@ public class SimpleTimePlotTest {
 
   @Test
   public void setTwoColorsByArrayAndAwtColor_twoGraphicsHasBaseColor() {
+    //given
+    SimpleTimePlot simpleTimePlot = createWidget();
     //when
     simpleTimePlot.setColors(Arrays.asList(Arrays.asList(0, 0, 255), java.awt.Color.BLACK));
     //to call reinitialize()
@@ -94,6 +82,8 @@ public class SimpleTimePlotTest {
 
   @Test
   public void setTwoColorsByStrings_twoGraphicsHasBaseColor() {
+    //given
+    SimpleTimePlot simpleTimePlot = createWidget();
     //when
     simpleTimePlot.setColors(Arrays.asList("#00FF00", "RED"));
     //to call reinitialize()
@@ -105,15 +95,17 @@ public class SimpleTimePlotTest {
 
   @Test
   public void setDataWithDate_simpleTimePlotIsNotNull() {
+    //given
+    SimpleTimePlot simpleTimePlot = createWidget();
     List<Map<String, Object>> data = new ArrayList<>();
     data.add(
-        new HashMap<String, Object>() {
-          {
-            put(columns.get(0), new Float(8.25));
-            put(columns.get(2), new Date());
-            put(columns.get(3), 123);
-          }
-        });
+            new HashMap<String, Object>() {
+              {
+                put(columns.get(0), new Float(8.25));
+                put(columns.get(2), new Date());
+                put(columns.get(3), 123);
+              }
+            });
     //when
     simpleTimePlot.setData(data);
     //then
@@ -122,6 +114,8 @@ public class SimpleTimePlotTest {
 
   @Test
   public void setDisplayPointsByTrueAndLinesByFalse_hasOnlyPointsGraphics() {
+    //given
+    SimpleTimePlot simpleTimePlot = createWidget();
     //when
     simpleTimePlot.setDisplayLines(false);
     simpleTimePlot.setDisplayPoints(true);
@@ -133,6 +127,8 @@ public class SimpleTimePlotTest {
 
   @Test
   public void setTimeColumn_hasTimeColumn() {
+    //given
+    SimpleTimePlot simpleTimePlot = createWidget();
     //when
     simpleTimePlot.setTimeColumn(columns.get(0));
     //then
@@ -141,6 +137,8 @@ public class SimpleTimePlotTest {
 
   @Test
   public void setDisplayNames_hasDisplayNames() {
+    //given
+    SimpleTimePlot simpleTimePlot = createWidget();
     //when
     simpleTimePlot.setDisplayNames(Arrays.asList("name1", "name2", "name3", "name4"));
     //then
@@ -149,6 +147,8 @@ public class SimpleTimePlotTest {
 
   @Test
   public void setDisplayNameForLines_linesHasDisplayName() {
+    //given
+    SimpleTimePlot simpleTimePlot = createWidget();
     //when
     simpleTimePlot.setDisplayNames(Arrays.asList("name1", "name2", "name3", "name4"));
     //to call reinitialize()
@@ -157,13 +157,14 @@ public class SimpleTimePlotTest {
     //then
     Assertions.assertThat(simpleTimePlot.getGraphics().get(0)).isInstanceOf(Line.class);
     Assertions.assertThat(simpleTimePlot.getGraphics().get(0).getDisplayName())
-        .isEqualTo("name1");
+            .isEqualTo("name1");
     Assertions.assertThat(simpleTimePlot.getGraphics().get(1).getDisplayName())
-        .isEqualTo("name2");
+            .isEqualTo("name2");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void createInstanceWithStringValues_throwIllegalArgumentException() {
+    createDataForSimpleTimePlot();
     new SimpleTimePlot(rates, Arrays.asList("m3", "str", "time", "num"));
   }
 
@@ -171,29 +172,38 @@ public class SimpleTimePlotTest {
     columns = Arrays.asList("m3", "name", "time", "num");
     rates = new ArrayList<>();
     rates.add(
-        new HashMap<String, Object>() {
-          {
-            put(columns.get(0), new Float(8.25));
-            put(columns.get(1), "one");
-            put(columns.get(2), new Long(633733200000L));
-            put(columns.get(3), 123);
-          }
-        });
+            new HashMap<String, Object>() {
+              {
+                put(columns.get(0), new Float(8.25));
+                put(columns.get(1), "one");
+                put(columns.get(2), new Long(633733200000L));
+                put(columns.get(3), 123);
+              }
+            });
     rates.add(
-        new HashMap<String, Object>() {
-          {
-            put(columns.get(0), new Float(9.0));
-            put(columns.get(1), "two");
-            put(columns.get(2), new Long(605733200000L));
-            put(columns.get(3), 345);
-          }
-        });
+            new HashMap<String, Object>() {
+              {
+                put(columns.get(0), new Float(9.0));
+                put(columns.get(1), "two");
+                put(columns.get(2), new Long(605733200000L));
+                put(columns.get(3), 345);
+              }
+            });
     parameters =
-        new HashMap<String, Object>() {
-          {
-            put("displayPoints", Boolean.TRUE);
-            put("anyParam", Boolean.TRUE);
-          }
-        };
+            new HashMap<String, Object>() {
+              {
+                put("displayPoints", Boolean.TRUE);
+                put("anyParam", Boolean.TRUE);
+              }
+            };
+  }
+
+  @Override
+  public SimpleTimePlot createWidget() {
+    createDataForSimpleTimePlot();
+    SimpleTimePlot simpleTimePlot = new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
+    simpleTimePlot.display();
+    kernel.clearMessages();
+    return simpleTimePlot;
   }
 }

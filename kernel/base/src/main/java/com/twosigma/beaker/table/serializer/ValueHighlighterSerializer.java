@@ -25,6 +25,10 @@ import java.io.IOException;
 
 public class ValueHighlighterSerializer extends JsonSerializer<ValueHighlighter> {
 
+  public static final String TYPE = "type";
+  public static final String COL_NAME = "colName";
+  public static final String COLORS = "colors";
+
   @Override
   public void serialize(ValueHighlighter value,
                         JsonGenerator jgen,
@@ -33,9 +37,9 @@ public class ValueHighlighterSerializer extends JsonSerializer<ValueHighlighter>
 
     synchronized (value) {
       jgen.writeStartObject();
-      jgen.writeObjectField("type", value.getClass().getSimpleName());
-      jgen.writeObjectField("colName", value.getColName());
-      jgen.writeObjectField("colors", value.getColors());
+      jgen.writeObjectField(TYPE, value.getClass().getSimpleName());
+      jgen.writeObjectField(COL_NAME, value.getColName());
+      jgen.writeObjectField(COLORS, value.getColors());
       jgen.writeEndObject();
     }
   }

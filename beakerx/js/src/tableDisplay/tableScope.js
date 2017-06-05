@@ -68,6 +68,7 @@ define([
     this.getCellDispOpts =  [];
     this.allConverters = {};
     this.tableDisplayModel = null;
+    this.cellHighlighters = {};
     
     this.model = {
         model: {},
@@ -83,6 +84,7 @@ define([
 
     this.bindAllConverters();
     this.prepareDoubleWithPrecisionConverters();
+    this.prepareValueFormatter();
     this.setJqExtensions();
     this.linkMoment();
   }
@@ -92,7 +94,7 @@ define([
   TableScope.prototype.setWidgetModel = function(tableDisplayModel) {
   	this.tableDisplayModel = tableDisplayModel;
   };
-  
+
   TableScope.prototype.linkMoment = function() {
     moment.tz.link(['Etc/GMT+1|GMT+01:00',
       'Etc/GMT+2|GMT+02:00',
@@ -755,19 +757,8 @@ define([
       });
     }
 
-    // cell highlighters
-    self.cellHighlighters = {}; //map: col index -> highlighter
-    var cellHighlightersDataRev = self.cellHighlightersData.slice().reverse();
-    _.forEach(cellHighlightersDataRev, function(highlighter) {
-      if (!highlighter) { return; }
-      if(_.isEmpty(self.cellHighlighters[highlighter.colInd])){
-        var jsHighlighter = cellHighlighters.createHighlighter(highlighter.type, highlighter);
-        if (jsHighlighter) {
-          self.cellHighlighters[highlighter.colInd] = jsHighlighter;
-        }
-      }
-    });
-    
+    self.setCellHighlighters();
+
     self.contextMenuItems = {};
     if (!_.isEmpty(model.contextMenuItems)) {
       _.forEach(model.contextMenuItems, function(item) {
@@ -780,7 +771,6 @@ define([
         }
       });
     }
-
     if (!_.isEmpty(model.contextMenuTags)) {
       _.forEach(model.contextMenuTags, function(tag, name) {
         if (model.contextMenuTags.hasOwnProperty(name)) {
@@ -800,7 +790,6 @@ define([
         }
       });
     }
-
 
     self.doCreateData(model);
     self.doCreateTable(model);
@@ -861,6 +850,22 @@ define([
     }
 
     return defaultResult;
+  };
+
+  TableScope.prototype.setCellHighlighters = function() {
+    var self = this;
+    // cell highlighters
+    self.cellHighlighters = {}; //map: col index -> highlighter
+    var cellHighlightersDataRev = self.cellHighlightersData.slice().reverse();
+    _.forEach(cellHighlightersDataRev, function(highlighter) {
+      if (!highlighter) { return; }
+      if(_.isEmpty(self.cellHighlighters[highlighter.colInd])){
+        var jsHighlighter = cellHighlighters.createHighlighter(highlighter.type, highlighter);
+        if (jsHighlighter) {
+          self.cellHighlighters[highlighter.colInd] = jsHighlighter;
+        }
+      }
+    });
   };
 
   TableScope.prototype.doCreateData = function(model) {
@@ -2761,6 +2766,15 @@ define([
     self.init(self.getCellModel(), false);
   };
 
+  TableScope.prototype.prepareValueFormatter = function() {
+    var self = this;
+
+    self.valueFormatter = function(value, type, full, meta) {
+      var columnName = self.columnNames[meta.col - 1];
+      return self.stringFormatForColumn[columnName].values[columnName][meta.row];
+    };
+  };
+
   TableScope.prototype.run = function() {
     var self = this;
     self.init(this.model.getCellModel(), true);
@@ -2776,6 +2790,13 @@ define([
       self.model = data;
     } else {
       self.model.model = data;
+    }
+  };
+
+  // update model with partial model data
+  TableScope.prototype.updateModelData = function(data) {
+    if (this.model && this.model.model && data) {
+      this.model.model = _.extend(this.model.model, data);
     }
   };
 

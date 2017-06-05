@@ -31,6 +31,14 @@ import java.util.Vector;
 
 public class TreeMapSerializer extends ChartSerializer<TreeMap> {
 
+  public static final String TOOLTIP = "tooltip";
+  public static final String GRAPHICS_LIST = "graphics_list";
+  public static final String MODE = "mode";
+  public static final String STICKY = "sticky";
+  public static final String RATIO = "ratio";
+  public static final String ROUND = "round";
+  public static final String VALUE_ACCESSOR = "valueAccessor";
+
   protected String toHex(Color col) {
     return "#" + Integer.toHexString(col.getRGB()).substring(2);
 //    return  "RGB(" + col.getRed() + "," + col.getGreen() + "," + col.getBlue() + ")";
@@ -57,9 +65,9 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
             values.put("color", toHex(color));
             IToolTipBuilder toolTipBuilder = treeMap.getToolTipBuilder();
             if (toolTipBuilder != null) {
-              values.put("tooltip", toolTipBuilder.getToolTip(node));
+              values.put(TOOLTIP, toolTipBuilder.getToolTip(node));
             } else {
-              values.put("tooltip", values.get("label"));
+              values.put(TOOLTIP, values.get("label"));
             }
           }
           node.setUserObject(values);
@@ -68,9 +76,9 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
           values.put("label", userObject);
           IToolTipBuilder toolTipBuilder = treeMap.getToolTipBuilder();
           if (toolTipBuilder != null) {
-            values.put("tooltip", toolTipBuilder.getToolTip(node));
+            values.put(TOOLTIP, toolTipBuilder.getToolTip(node));
           } else {
-            values.put("tooltip", userObject);
+            values.put(TOOLTIP, userObject);
           }
         }
         if (node.isLeaf()) {
@@ -88,18 +96,18 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
     serialize(treeMap, jgen);
 
     if (root != null)
-      jgen.writeObjectField("graphics_list", root);
+      jgen.writeObjectField(GRAPHICS_LIST, root);
 
     if (treeMap.getMode() != null)
-      jgen.writeObjectField("mode", treeMap.getMode().getJsName());
+      jgen.writeObjectField(MODE, treeMap.getMode().getJsName());
     if (treeMap.getSticky() != null)
-      jgen.writeObjectField("sticky", treeMap.getSticky());
+      jgen.writeObjectField(STICKY, treeMap.getSticky());
     if (treeMap.getRatio() != null)
-      jgen.writeObjectField("ratio", treeMap.getRatio());
+      jgen.writeObjectField(RATIO, treeMap.getRatio());
     if (treeMap.getRound() != null)
-      jgen.writeObjectField("round", treeMap.getRound());
+      jgen.writeObjectField(ROUND, treeMap.getRound());
 
-    jgen.writeObjectField("valueAccessor", treeMap.getValueAccessor());
+    jgen.writeObjectField(VALUE_ACCESSOR, treeMap.getValueAccessor());
 
     jgen.writeEndObject();
   }

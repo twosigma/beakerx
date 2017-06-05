@@ -16,23 +16,35 @@
 
 package com.twosigma.beaker.chart.actions;
 
+import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.chart.Chart;
+import com.twosigma.beaker.chart.xychart.Plot;
+import com.twosigma.beaker.jupyter.KernelManager;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ChartObjectManagerTest {
 
   private ChartObjectManager chartObjectManager;
+  protected KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
     chartObjectManager = new ChartObjectManager();
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    KernelManager.register(null);
   }
 
   @Test
   public void registerChart_containsThatChart() {
-    Chart chart = new Chart();
+    Chart chart = new Plot();
     //when
     chartObjectManager.registerChart("id1", chart);
     //then

@@ -25,15 +25,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class YAxisSerializer extends JsonSerializer<YAxis> {
 
+  public static final String TYPE = "type";
+  public static final String AUTO_RANGE_INCLUDES_ZERO = "auto_range_includes_zero";
+
   @Override
   public void serialize(YAxis yAxis, JsonGenerator jgen, SerializerProvider sp)
       throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
-    jgen.writeObjectField("type", yAxis.getClass().getSimpleName());
+    jgen.writeObjectField(TYPE, yAxis.getClass().getSimpleName());
     jgen.writeObjectField("label", yAxis.getLabel());
     jgen.writeObjectField("auto_range", yAxis.getAutoRange());
-    jgen.writeObjectField("auto_range_includes_zero", yAxis.getAutoRangeIncludesZero());
+    jgen.writeObjectField(AUTO_RANGE_INCLUDES_ZERO, yAxis.getAutoRangeIncludesZero());
     jgen.writeObjectField("lower_margin", yAxis.getLowerMargin());
     jgen.writeObjectField("upper_margin", yAxis.getUpperMargin());
     jgen.writeObjectField("lower_bound", yAxis.getLowerBound());

@@ -25,6 +25,10 @@ import java.io.IOException;
 
 public class UniqueEntriesHighlighterSerializer extends JsonSerializer<UniqueEntriesHighlighter> {
 
+  public static final String TYPE = "type";
+  public static final String STYLE = "style";
+  public static final String COL_NAME = "colName";
+
   @Override
   public void serialize(UniqueEntriesHighlighter value,
                         JsonGenerator jgen,
@@ -33,9 +37,9 @@ public class UniqueEntriesHighlighterSerializer extends JsonSerializer<UniqueEnt
 
     synchronized (value) {
       jgen.writeStartObject();
-      jgen.writeObjectField("type", value.getClass().getSimpleName());
-      jgen.writeObjectField("colName", value.getColName());
-      jgen.writeObjectField("style", value.getStyle());
+      jgen.writeObjectField(TYPE, value.getClass().getSimpleName());
+      jgen.writeObjectField(COL_NAME, value.getColName());
+      jgen.writeObjectField(STYLE, value.getStyle());
       jgen.writeEndObject();
     }
   }

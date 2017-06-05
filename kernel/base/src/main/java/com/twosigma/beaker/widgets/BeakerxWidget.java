@@ -25,7 +25,7 @@ public abstract class BeakerxWidget extends Widget {
   public static final String VIEW_MODULE_VALUE = "beakerx";
   public static final String MODEL = "model";
   public static final String MODEL_UPDATE = "model";
-  private UpdateModel updateModel = (item) -> {
+  private UpdateModel updateModel = (action, item) -> {
     //empty function
   };
 
@@ -53,11 +53,11 @@ public abstract class BeakerxWidget extends Widget {
   }
 
   public void sendModel() {
-    sendUpdate(MODEL, serializeToJsonObject());
+    this.updateModel.update(MODEL, serializeToJsonObject());
   }
 
   public void sendModelUpdate(Object item) {
-    this.updateModel.update(item);
+    this.updateModel.update(MODEL_UPDATE, serializeToJsonObject(item));
   }
 
   @Override
@@ -68,10 +68,10 @@ public abstract class BeakerxWidget extends Widget {
   }
 
   private void enableModelUpdate() {
-    updateModel = item -> sendUpdate(MODEL_UPDATE, serializeToJsonObject(item));
+    updateModel = (action, item) -> sendUpdate(action, item);
   }
 
   interface UpdateModel {
-    void update(Object item);
+    void update(String action, Object item);
   }
 }

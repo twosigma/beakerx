@@ -170,6 +170,9 @@ public class CategoryPlotTest extends AbstractChartTest<CategoryPlot> {
 
   @Override
   public CategoryPlot createWidget() {
-    return new CategoryPlot();
+    CategoryPlot categoryPlot = new CategoryPlot();
+    categoryPlot.display();
+    kernel.clearMessages();
+    return categoryPlot;
   }
 }

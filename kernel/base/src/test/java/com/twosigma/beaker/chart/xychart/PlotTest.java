@@ -137,6 +137,9 @@ public class PlotTest extends XYChartTest<Plot> {
 
   @Override
   public Plot createWidget() {
-    return new Plot();
+    Plot plot = new Plot();
+    plot.display();
+    kernel.clearMessages();
+    return plot;
   }
 }

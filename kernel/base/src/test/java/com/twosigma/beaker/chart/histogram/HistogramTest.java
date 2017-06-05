@@ -200,7 +200,10 @@ public class HistogramTest extends AbstractChartTest<Histogram> {
 
   @Override
   public Histogram createWidget() {
-    return new Histogram();
+    Histogram histogram = new Histogram();
+    histogram.display();
+    kernel.clearMessages();
+    return histogram;
   }
 
   @Test

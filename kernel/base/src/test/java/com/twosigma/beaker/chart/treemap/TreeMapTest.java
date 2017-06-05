@@ -147,7 +147,10 @@ public class TreeMapTest extends ChartTest<TreeMap> {
     TreeMapNode node01 = new TreeMapNode("01");
     node01.add(new TreeMapNode("011", 1, new DefaultValue(1)));
     node.add(node01);
-    return new TreeMap(node);
+    TreeMap treeMap = new TreeMap(node);
+    treeMap.display();
+    kernel.clearMessages();
+    return treeMap;
   }
 
 

@@ -73,6 +73,7 @@ public class HeatMapTest extends AbstractChartTest<HeatMap> {
   @Override
   public HeatMap createWidget() {
     HeatMap heatMap = new HeatMap();
+    heatMap.display();
     kernel.clearMessages();
     return heatMap;
   }

@@ -86,6 +86,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TableDisplayTest {
 
   public static final String COL_1 = "str1";
+
   protected KernelTest kernel;
 
   private TableDisplay tableDisplay;
@@ -95,6 +96,7 @@ public class TableDisplayTest {
     kernel = new KernelTest();
     KernelManager.register(kernel);
     tableDisplay = new TableDisplay(getListOfMapsData());
+    tableDisplay.display();
     kernel.clearMessages();
   }
 

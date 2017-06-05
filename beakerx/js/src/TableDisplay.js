@@ -60,9 +60,9 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   update: function() {
     TableDisplayView.__super__.update.apply(this);
 
-    var tableModel = this.model.get('model');
+    var tableModelUpdateData = this.model.get('model');
 
-    this._currentScope.setModelData(tableModel);
+    this._currentScope.updateModelData(tableModelUpdateData);
     this._currentScope.doResetAll();
   },
 

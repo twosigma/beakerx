@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SimpleTimePlotTest extends XYChartTest<SimpleTimePlot>{
+public class SimpleTimePlotTest extends XYChartTest<SimpleTimePlot> {
 
   Map<String, Object> parameters;
   List<Map<String, Object>> rates;
@@ -39,7 +39,7 @@ public class SimpleTimePlotTest extends XYChartTest<SimpleTimePlot>{
   @Test
   public void callConstructorWithDataAndColumns_shouldCreateSimpleTimePlot() {
     SimpleTimePlot simpleTimePlot =
-        new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
+            new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
     //then
     Assertions.assertThat(simpleTimePlot).isNotNull();
   }
@@ -48,7 +48,7 @@ public class SimpleTimePlotTest extends XYChartTest<SimpleTimePlot>{
   public void callConstructorWithParamsAndDataAndColumns_shouldCreateSimpleTimePlot() {
     //when
     SimpleTimePlot simpleTimePlot =
-        new SimpleTimePlot(parameters, rates, Arrays.asList("m3", "time", "num"));
+            new SimpleTimePlot(parameters, rates, Arrays.asList("m3", "time", "num"));
     //then
     Assertions.assertThat(simpleTimePlot).isNotNull();
   }
@@ -99,13 +99,13 @@ public class SimpleTimePlotTest extends XYChartTest<SimpleTimePlot>{
     SimpleTimePlot simpleTimePlot = createWidget();
     List<Map<String, Object>> data = new ArrayList<>();
     data.add(
-        new HashMap<String, Object>() {
-          {
-            put(columns.get(0), new Float(8.25));
-            put(columns.get(2), new Date());
-            put(columns.get(3), 123);
-          }
-        });
+            new HashMap<String, Object>() {
+              {
+                put(columns.get(0), new Float(8.25));
+                put(columns.get(2), new Date());
+                put(columns.get(3), 123);
+              }
+            });
     //when
     simpleTimePlot.setData(data);
     //then
@@ -157,9 +157,9 @@ public class SimpleTimePlotTest extends XYChartTest<SimpleTimePlot>{
     //then
     Assertions.assertThat(simpleTimePlot.getGraphics().get(0)).isInstanceOf(Line.class);
     Assertions.assertThat(simpleTimePlot.getGraphics().get(0).getDisplayName())
-        .isEqualTo("name1");
+            .isEqualTo("name1");
     Assertions.assertThat(simpleTimePlot.getGraphics().get(1).getDisplayName())
-        .isEqualTo("name2");
+            .isEqualTo("name2");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -172,36 +172,37 @@ public class SimpleTimePlotTest extends XYChartTest<SimpleTimePlot>{
     columns = Arrays.asList("m3", "name", "time", "num");
     rates = new ArrayList<>();
     rates.add(
-        new HashMap<String, Object>() {
-          {
-            put(columns.get(0), new Float(8.25));
-            put(columns.get(1), "one");
-            put(columns.get(2), new Long(633733200000L));
-            put(columns.get(3), 123);
-          }
-        });
+            new HashMap<String, Object>() {
+              {
+                put(columns.get(0), new Float(8.25));
+                put(columns.get(1), "one");
+                put(columns.get(2), new Long(633733200000L));
+                put(columns.get(3), 123);
+              }
+            });
     rates.add(
-        new HashMap<String, Object>() {
-          {
-            put(columns.get(0), new Float(9.0));
-            put(columns.get(1), "two");
-            put(columns.get(2), new Long(605733200000L));
-            put(columns.get(3), 345);
-          }
-        });
+            new HashMap<String, Object>() {
+              {
+                put(columns.get(0), new Float(9.0));
+                put(columns.get(1), "two");
+                put(columns.get(2), new Long(605733200000L));
+                put(columns.get(3), 345);
+              }
+            });
     parameters =
-        new HashMap<String, Object>() {
-          {
-            put("displayPoints", Boolean.TRUE);
-            put("anyParam", Boolean.TRUE);
-          }
-        };
+            new HashMap<String, Object>() {
+              {
+                put("displayPoints", Boolean.TRUE);
+                put("anyParam", Boolean.TRUE);
+              }
+            };
   }
 
   @Override
   public SimpleTimePlot createWidget() {
     createDataForSimpleTimePlot();
     SimpleTimePlot simpleTimePlot = new SimpleTimePlot(rates, Arrays.asList("m3", "time", "num"));
+    simpleTimePlot.display();
     kernel.clearMessages();
     return simpleTimePlot;
   }

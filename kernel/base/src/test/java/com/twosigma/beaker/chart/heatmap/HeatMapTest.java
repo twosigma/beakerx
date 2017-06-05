@@ -20,7 +20,9 @@ import com.twosigma.beaker.chart.AbstractChartTest;
 import com.twosigma.beaker.chart.GradientColor;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import static com.twosigma.beaker.chart.serializer.HeatMapSerializer.COLOR;
 import static com.twosigma.beaker.chart.serializer.HeatMapSerializer.GRAPHICS_LIST;
@@ -46,8 +48,10 @@ public class HeatMapTest extends AbstractChartTest<HeatMap> {
     heatMap.setColor(brownRedYellow);
     //then
     assertThat(heatMap.getColor()).isEqualTo(brownRedYellow);
-    LinkedHashMap model = getModel();
-    assertThat(model.get(COLOR)).isNotNull();
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    List<String> actual = (List<String>)model.get(COLOR);
+    assertThat(actual.get(0)).startsWith("#");
   }
 
   @Test
@@ -62,12 +66,14 @@ public class HeatMapTest extends AbstractChartTest<HeatMap> {
     heatMap.setData(data);
     //then
     assertThat(heatMap.getData()).isNotEmpty();
-    assertThat(getValueAsArray(GRAPHICS_LIST)).isNotEmpty();
+    List valueAsArray = getValueAsArray(GRAPHICS_LIST);
+    assertThat(valueAsArray).isNotEmpty();
   }
 
   @Override
   public HeatMap createWidget() {
     HeatMap heatMap = new HeatMap();
+    heatMap.display();
     kernel.clearMessages();
     return heatMap;
   }

@@ -39,6 +39,7 @@ public class CombinedPlotTest {
     kernel = new KernelTest();
     KernelManager.register(kernel);
     combinedPlot = new CombinedPlot();
+    combinedPlot.display();
   }
 
   @After
@@ -67,8 +68,8 @@ public class CombinedPlotTest {
     combinedPlot.add(new Plot());
     combinedPlot.add(new Plot());
     //then
-    Assertions.assertThat(combinedPlot.getSubplots().size()).isEqualTo(2);
-    Assertions.assertThat(combinedPlot.getWeights().size()).isEqualTo(2);
+    assertThat(combinedPlot.getSubplots().size()).isEqualTo(2);
+    assertThat(combinedPlot.getWeights().size()).isEqualTo(2);
   }
 
   @Test
@@ -77,8 +78,8 @@ public class CombinedPlotTest {
     combinedPlot.add(new Plot(), 3);
     combinedPlot.add(new Plot(), 3);
     //then
-    Assertions.assertThat(combinedPlot.getSubplots().size()).isEqualTo(2);
-    Assertions.assertThat(combinedPlot.getWeights().size()).isEqualTo(2);
+    assertThat(combinedPlot.getSubplots().size()).isEqualTo(2);
+    assertThat(combinedPlot.getWeights().size()).isEqualTo(2);
   }
 
   @Test
@@ -88,7 +89,7 @@ public class CombinedPlotTest {
     combinedPlot.add(new Plot(), 1);
     combinedPlot.leftShift(plot);
     //then
-    Assertions.assertThat(combinedPlot.getSubplots().get(1)).isEqualTo(plot);
+    assertThat(combinedPlot.getSubplots().get(1)).isEqualTo(plot);
   }
 
   @Test
@@ -98,7 +99,7 @@ public class CombinedPlotTest {
     combinedPlot.add(new Plot(), 1);
     combinedPlot.leftShift(Arrays.asList(plot, 3));
     //then
-    Assertions.assertThat(combinedPlot.getSubplots().get(1)).isEqualTo(plot);
+    assertThat(combinedPlot.getSubplots().get(1)).isEqualTo(plot);
   }
 
 }

@@ -30,6 +30,8 @@ import org.apache.commons.codec.binary.StringUtils;
 
 public class RastersSerializer extends JsonSerializer<Rasters> {
 
+  public static final String TYPE = "type";
+
   @Override
   public void serialize(Rasters rasters, JsonGenerator jgen, SerializerProvider sp)
       throws IOException {
@@ -37,7 +39,7 @@ public class RastersSerializer extends JsonSerializer<Rasters> {
 
     jgen.writeStartObject();
 
-    jgen.writeObjectField("type", rasters.getClass().getSimpleName());
+    jgen.writeObjectField(TYPE, rasters.getClass().getSimpleName());
     jgen.writeObjectField("x", rasters.getX());
     jgen.writeObjectField("y", rasters.getY());
     jgen.writeObjectField("opacity", rasters.getOpacity());

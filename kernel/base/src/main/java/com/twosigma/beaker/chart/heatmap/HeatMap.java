@@ -17,6 +17,7 @@
 package com.twosigma.beaker.chart.heatmap;
 
 import com.twosigma.beaker.chart.AbstractChart;
+import com.twosigma.beaker.chart.ChartToJson;
 import com.twosigma.beaker.chart.GradientColor;
 import com.twosigma.beaker.chart.legend.LegendLayout;
 import com.twosigma.beaker.chart.legend.LegendPosition;
@@ -53,7 +54,7 @@ public class HeatMap extends AbstractChart {
 
   public void setColor(GradientColor color) {
     this.color = color;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeHeatmapGradientColor(this.color));
   }
 
   public GradientColor getColor() {
@@ -66,6 +67,6 @@ public class HeatMap extends AbstractChart {
 
   public void setData(Number[][] data) {
     this.data = data;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeHeatmapData(this.data));
   }
 }

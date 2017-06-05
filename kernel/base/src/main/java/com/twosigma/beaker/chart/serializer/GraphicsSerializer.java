@@ -31,10 +31,12 @@ import java.util.Map;
  */
 public class GraphicsSerializer <T extends Graphics> extends JsonSerializer<T> {
 
+    public static final String TYPE = "type";
+
     @Override
     public void serialize(T graphics, JsonGenerator jgen, SerializerProvider sp)
             throws IOException, JsonProcessingException {
-        jgen.writeObjectField("type", graphics.getClass().getSimpleName());
+        jgen.writeObjectField(TYPE, graphics.getClass().getSimpleName());
         jgen.writeObjectField("uid", graphics.getUid());
         jgen.writeObjectField("visible", graphics.getVisible());
         jgen.writeObjectField("yAxis", graphics.getYAxis());

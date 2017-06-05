@@ -61,10 +61,10 @@ var PlotView = widgets.DOMWidgetView.extend({
   update: function() {
     PlotView.__super__.update.apply(this);
 
-    var plotModel = this.model.get('model');
+    var plotModelUpdateData = this.model.get('model');
 
-    this._currentScope.setModelData(plotModel);
-    this._currentScope.updateModel();
+    this._currentScope.updateModelData(plotModelUpdateData);
+    this._currentScope.updatePlot();
   },
 
   initStandardPlot: function (model) {

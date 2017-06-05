@@ -17,6 +17,7 @@
 package com.twosigma.beaker.chart.treemap;
 
 import com.twosigma.beaker.chart.Chart;
+import com.twosigma.beaker.chart.ChartToJson;
 import com.twosigma.beaker.chart.treemap.util.ColorProvider;
 import com.twosigma.beaker.chart.treemap.util.IToolTipBuilder;
 import com.twosigma.beaker.chart.treemap.util.RandomColorProvider;
@@ -118,7 +119,7 @@ public class TreeMap extends Chart {
 
   public void setMode(Mode mode) {
     this.mode = mode;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeTreeMapMode(this.mode));
   }
 
   public Double getRatio() {
@@ -127,7 +128,7 @@ public class TreeMap extends Chart {
 
   public void setRatio(Double ratio) {
     this.ratio = ratio;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeTreeMapRatio(this.ratio));
   }
 
   public Boolean getSticky() {
@@ -136,7 +137,7 @@ public class TreeMap extends Chart {
 
   public void setSticky(Boolean sticky) {
     this.sticky = sticky;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeTreeMapSticky(this.sticky));
   }
 
   public Boolean getRound() {
@@ -145,7 +146,7 @@ public class TreeMap extends Chart {
 
   public void setRound(Boolean round) {
     this.round = round;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeTreeMapRound(this.round));
   }
 
   public ValueAccessor getValueAccessor() {
@@ -154,7 +155,7 @@ public class TreeMap extends Chart {
 
   public void setValueAccessor(ValueAccessor valueAccessor) {
     this.valueAccessor = valueAccessor;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeTreeMapValueAccessor(this.valueAccessor));
   }
 
   public void setColorProvider(final ColorProvider newColorProvider) {

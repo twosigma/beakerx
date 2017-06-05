@@ -29,13 +29,15 @@ import java.io.IOException;
  */
 public class TextSerializer extends JsonSerializer<Text> {
 
+  public static final String TYPE = "type";
+
   @Override
   public void serialize(Text text, JsonGenerator jgen, SerializerProvider sp)
     throws IOException, JsonProcessingException {
 
     boolean isNanoPlot = NanoPlot.class.equals(text.getPlotType());
     jgen.writeStartObject();
-    jgen.writeObjectField("type", text.getClass().getSimpleName());
+    jgen.writeObjectField(TYPE, text.getClass().getSimpleName());
     jgen.writeObjectField("x", isNanoPlot ? processLargeNumber(text.getX()) : text.getX());
     jgen.writeObjectField("y", text.getY());
     jgen.writeObjectField("show_pointer", text.getShowPointer());

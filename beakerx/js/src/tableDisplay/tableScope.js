@@ -2805,6 +2805,13 @@ define([
     }
   };
 
+  // update model with partial model data
+  TableScope.prototype.updateModelData = function(data) {
+    if (this.model && this.model.model && data) {
+      this.model.model = _.extend(this.model.model, data);
+    }
+  };
+
   TableScope.prototype.buildTemplate = function() {
     var templateString = require('./table.html');
     var compiled = _.template(templateString);

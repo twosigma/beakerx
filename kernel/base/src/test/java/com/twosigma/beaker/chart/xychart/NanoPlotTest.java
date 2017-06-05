@@ -79,6 +79,9 @@ public class NanoPlotTest  extends XYChartTest<NanoPlot>{
 
   @Override
   public NanoPlot createWidget() {
-    return new NanoPlot();
+    NanoPlot nanoPlot = new NanoPlot();
+    nanoPlot.display();
+    kernel.clearMessages();
+    return nanoPlot;
   }
 }

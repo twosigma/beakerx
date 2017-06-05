@@ -47,7 +47,7 @@ public abstract class Chart extends ChartDetails {
 
   public Chart setInitWidth(int w) {
     this.initWidth = w;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeInitWidth(this.initWidth));
     return this;
   }
 
@@ -57,7 +57,7 @@ public abstract class Chart extends ChartDetails {
 
   public Chart setInitHeight(int h) {
     this.initHeight = h;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeInitHeight(this.initHeight));
     return this;
   }
 
@@ -67,7 +67,7 @@ public abstract class Chart extends ChartDetails {
 
   public Chart setTitle(String title) {
     this.title = title;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeTitle(this.title));
     return this;
   }
 
@@ -99,7 +99,7 @@ public abstract class Chart extends ChartDetails {
 
   public Chart setLegendPosition(LegendPosition legendPosition) {
     this.legendPosition = legendPosition;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeLegendPosition(this.legendPosition));
     return this;
   }
 
@@ -109,7 +109,7 @@ public abstract class Chart extends ChartDetails {
 
   public Chart setLegendLayout(LegendLayout legendLayout) {
     this.legendLayout = legendLayout;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeLegendLayout(this.legendLayout));
     return this;
   }
 
@@ -119,7 +119,7 @@ public abstract class Chart extends ChartDetails {
 
   public void setCustomStyles(List<String> customStyle) {
     this.customStyles = customStyle;
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeCustomStyles(this.customStyles));
   }
 
   public String getLabelStyle() {
@@ -128,7 +128,7 @@ public abstract class Chart extends ChartDetails {
 
   public void setLabelStyle(String style) {
     this.elementStyles.put(PLOT_LABEL, style);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeElementStyles(this.elementStyles));
   }
 
   public String getLabelXStyle() {
@@ -137,7 +137,7 @@ public abstract class Chart extends ChartDetails {
 
   public void setLabelXStyle(String style) {
     this.elementStyles.put(PLOT_LABEL_X, style);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeElementStyles(this.elementStyles));
   }
 
   public String getLabelYStyle() {
@@ -146,7 +146,7 @@ public abstract class Chart extends ChartDetails {
 
   public void setLabelYStyle(String style) {
     this.elementStyles.put(PLOT_LABEL_Y, style);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeElementStyles(this.elementStyles));
   }
 
   public String getGridLineStyle() {
@@ -155,7 +155,7 @@ public abstract class Chart extends ChartDetails {
 
   public void setGridLineStyle(String style) {
     this.elementStyles.put(PLOT_GRIDLINE, style);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeElementStyles(this.elementStyles));
   }
 
   public String getTitleStyle() {
@@ -164,7 +164,7 @@ public abstract class Chart extends ChartDetails {
 
   public void setTitleStyle(String style) {
     this.elementStyles.put(PLOT_TITLE, style);
-    sendModel();
+    sendModelUpdate(ChartToJson.serializeElementStyles(this.elementStyles));
   }
 
   public Map<String, String> getElementStyles() {
@@ -184,5 +184,10 @@ public abstract class Chart extends ChartDetails {
   @Override
   protected Map serializeToJsonObject() {
     return ChartToJson.toJson(this);
+  }
+
+  @Override
+  protected Map serializeToJsonObject(Object item) {
+    return ChartToJson.toJson(item);
   }
 }

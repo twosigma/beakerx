@@ -61,6 +61,9 @@ public class TimePlotTest extends XYChartTest<TimePlot> {
 
   @Override
   public TimePlot createWidget() {
-    return new TimePlot();
+    TimePlot timePlot = new TimePlot();
+    timePlot.display();
+    kernel.clearMessages();
+    return timePlot;
   }
 }

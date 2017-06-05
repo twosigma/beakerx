@@ -15,6 +15,27 @@
  */
 package com.twosigma.beaker.table;
 
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeAlignmentForColumn;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeAlignmentForType;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeCellHighlighters;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnOrder;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozen;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsFrozenRight;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeColumnsVisible;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeDataFontSize;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeDoubleClickAction;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeFilteredValues;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeFontColor;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeHasIndex;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeHeaderFontSize;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeHeadersVertical;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeRendererForColumn;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeRendererForType;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForColumn;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForTimes;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForType;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeTimeZone;
+import static com.twosigma.beaker.table.TableDisplayToJson.serializeTooltips;
 import static java.util.Arrays.asList;
 
 import com.twosigma.beaker.NamespaceClient;
@@ -33,7 +54,6 @@ import com.twosigma.beaker.widgets.RunWidgetClosure;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -153,7 +173,6 @@ public class TableDisplay extends BeakerxWidget {
 
   private void addToValues(List<List<?>> items) {
     values.addAll(items);
-    sendModel();
   }
 
   private List<List<?>> buildValues(Collection<Map<?, ?>> v, BeakerObjectConverter serializer) {
@@ -183,7 +202,7 @@ public class TableDisplay extends BeakerxWidget {
 
   protected void openComm() {
     super.openComm();
-    getComm().addMsgCallbackList((Handler<Message>)this::handleSetDetails);
+    getComm().addMsgCallbackList((Handler<Message>) this::handleSetDetails);
   }
 
   public static TableDisplay createTableDisplayForMap(Map<?, ?> v) {
@@ -196,7 +215,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setStringFormatForTimes(TimeUnit stringFormatForTimes) {
     this.stringFormatForTimes = stringFormatForTimes;
-    sendModel();
+    sendModelUpdate(serializeStringFormatForTimes(this.stringFormatForTimes));
   }
 
   public Map<ColumnType, TableDisplayStringFormat> getStringFormatForType() {
@@ -205,7 +224,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setStringFormatForType(ColumnType type, TableDisplayStringFormat format) {
     this.stringFormatForType.put(type, format);
-    sendModel();
+    sendModelUpdate(serializeStringFormatForType(this.stringFormatForType));
   }
 
   public Map<String, TableDisplayStringFormat> getStringFormatForColumn() {
@@ -214,7 +233,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setStringFormatForColumn(String column, TableDisplayStringFormat format) {
     this.stringFormatForColumn.put(column, format);
-    sendModel();
+    sendModelUpdate(serializeStringFormatForColumn(this.stringFormatForColumn));
   }
 
   public void setStringFormatForColumn(String column, Object closure) {
@@ -233,7 +252,7 @@ public class TableDisplay extends BeakerxWidget {
       throw new IllegalArgumentException("Can not create format using closure.", e);
     }
     this.stringFormatForColumn.put(column, new ValueStringFormat(column, formattedValues));
-    sendModel();
+    sendModelUpdate(serializeStringFormatForColumn(this.stringFormatForColumn));
   }
 
   public Map<ColumnType, TableDisplayCellRenderer> getRendererForType() {
@@ -242,7 +261,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setRendererForType(ColumnType type, TableDisplayCellRenderer renderer) {
     this.rendererForType.put(type, renderer);
-    sendModel();
+    sendModelUpdate(serializeRendererForType(this.rendererForType));
   }
 
   public Map<String, TableDisplayCellRenderer> getRendererForColumn() {
@@ -251,7 +270,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setRendererForColumn(String column, TableDisplayCellRenderer renderer) {
     this.rendererForColumn.put(column, renderer);
-    sendModel();
+    sendModelUpdate(serializeRendererForColumn(this.rendererForColumn));
   }
 
   public Map<ColumnType, TableDisplayAlignmentProvider> getAlignmentForType() {
@@ -260,7 +279,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setAlignmentProviderForType(ColumnType type, TableDisplayAlignmentProvider alignmentProvider) {
     this.alignmentForType.put(type, alignmentProvider);
-    sendModel();
+    sendModelUpdate(serializeAlignmentForType(this.alignmentForType));
   }
 
   public Map<String, TableDisplayAlignmentProvider> getAlignmentForColumn() {
@@ -269,7 +288,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setAlignmentProviderForColumn(String column, TableDisplayAlignmentProvider alignmentProvider) {
     this.alignmentForColumn.put(column, alignmentProvider);
-    sendModel();
+    sendModelUpdate(serializeAlignmentForColumn(this.alignmentForColumn));
   }
 
   public Map<String, Boolean> getColumnsFrozen() {
@@ -278,7 +297,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setColumnFrozen(String column, boolean frozen) {
     this.columnsFrozen.put(column, frozen);
-    sendModel();
+    sendModelUpdate(serializeColumnsFrozen(this.columnsFrozen));
   }
 
   public Map<String, Boolean> getColumnsFrozenRight() {
@@ -287,7 +306,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setColumnFrozenRight(String column, boolean frozen) {
     this.columnsFrozenRight.put(column, frozen);
-    sendModel();
+    sendModelUpdate(serializeColumnsFrozenRight(this.columnsFrozenRight));
   }
 
   public Map<String, Boolean> getColumnsVisible() {
@@ -296,7 +315,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setColumnVisible(String column, boolean visible) {
     this.columnsVisible.put(column, visible);
-    sendModel();
+    sendModelUpdate(serializeColumnsVisible(this.columnsVisible));
   }
 
   public List<String> getColumnOrder() {
@@ -309,7 +328,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void addCellHighlighter(TableDisplayCellHighlighter cellHighlighter) {
     this.cellHighlighters.add(cellHighlighter);
-    sendModel();
+    sendModelUpdate(serializeCellHighlighters(this.cellHighlighters));
   }
 
   public void addCellHighlighter(Object closure) {
@@ -338,12 +357,12 @@ public class TableDisplay extends BeakerxWidget {
 
   public void removeAllCellHighlighters() {
     this.cellHighlighters.clear();
-    sendModel();
+    sendModelUpdate(serializeCellHighlighters(this.cellHighlighters));
   }
 
   public void setColumnOrder(List<String> columnOrder) {
     this.columnOrder = columnOrder;
-    sendModel();
+    sendModelUpdate(serializeColumnOrder(this.columnOrder));
   }
 
   public void setToolTip(Object closure) {
@@ -360,7 +379,7 @@ public class TableDisplay extends BeakerxWidget {
     } catch (Throwable e) {
       throw new IllegalArgumentException("Can not set tooltip using closure.", e);
     }
-    sendModel();
+    sendModelUpdate(serializeTooltips(this.tooltips));
   }
 
   public List<List<String>> getTooltips() {
@@ -373,7 +392,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setDataFontSize(Integer dataFontSize) {
     this.dataFontSize = dataFontSize;
-    sendModel();
+    sendModelUpdate(serializeDataFontSize(this.dataFontSize));
   }
 
   public Integer getHeaderFontSize() {
@@ -382,7 +401,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setHeaderFontSize(Integer headerFontSize) {
     this.headerFontSize = headerFontSize;
-    sendModel();
+    sendModelUpdate(serializeHeaderFontSize(this.headerFontSize));
   }
 
   public List<List<Color>> getFontColor() {
@@ -403,7 +422,7 @@ public class TableDisplay extends BeakerxWidget {
     } catch (Throwable e) {
       throw new IllegalArgumentException("Can not set font color using closure.", e);
     }
-    sendModel();
+    sendModelUpdate(serializeFontColor(this.fontColor));
   }
 
   public void setRowFilter(Object closure) {
@@ -419,12 +438,12 @@ public class TableDisplay extends BeakerxWidget {
       throw new IllegalArgumentException("Can not set row filter using closure.", e);
     }
     this.filteredValues = filteredValues;
-    sendModel();
+    sendModelUpdate(serializeFilteredValues(this.filteredValues));
   }
 
   public void setHeadersVertical(boolean headersVertical) {
     this.headersVertical = headersVertical;
-    sendModel();
+    sendModelUpdate(serializeHeadersVertical(this.headersVertical));
   }
 
   public Boolean getHeadersVertical() {
@@ -433,7 +452,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setHasIndex(String hasIndex) {
     this.hasIndex = hasIndex;
-    sendModel();
+    sendModelUpdate(serializeHasIndex(this.hasIndex));
   }
 
   public String getHasIndex() {
@@ -442,7 +461,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setTimeZone(String timeZone) {
     this.timeZone = timeZone;
-    sendModel();
+    sendModelUpdate(serializeTimeZone(this.timeZone));
   }
 
   public String getTimeZone() {
@@ -527,29 +546,29 @@ public class TableDisplay extends BeakerxWidget {
   public void setDoubleClickAction(String tagName) {
     this.doubleClickListener = null;
     this.doubleClickTag = tagName;
-    sendModel();
+    sendModelUpdate(serializeDoubleClickAction(this.doubleClickTag,hasDoubleClickAction()));
   }
 
   public void setDoubleClickAction(Object listener) {
     this.doubleClickTag = null;
     this.doubleClickListener = listener;
-    getComm().addMsgCallbackList((Handler<Message>)this::handleDoubleClick);
-    sendModel();
+    getComm().addMsgCallbackList((Handler<Message>) this::handleDoubleClick);
+    sendModelUpdate(serializeDoubleClickAction(this.doubleClickTag,hasDoubleClickAction()));
   }
 
   private void handleDoubleClick(Message message) {
-    handleCommEventSync(message, CommActions.ONDOUBLECLICK, (ActionPerformed)this::onDoubleClickAction);
+    handleCommEventSync(message, CommActions.ONDOUBLECLICK, (ActionPerformed) this::onDoubleClickAction);
   }
 
   private void handleSetDetails(Message message) {
-    handleCommEventSync(message, CommActions.ACTIONDETAILS, (ActionPerformed)this::onActionDetails);
+    handleCommEventSync(message, CommActions.ACTIONDETAILS, (ActionPerformed) this::onActionDetails);
   }
 
   private void handleOnContextMenu(Message message) {
-    handleCommEventSync(message, CommActions.ONCONTEXTMENU, (ActionPerformed)this::onContextMenu);
+    handleCommEventSync(message, CommActions.ONCONTEXTMENU, (ActionPerformed) this::onContextMenu);
   }
 
-  private void onDoubleClickAction(HashMap content){
+  private void onDoubleClickAction(HashMap content) {
     Object row = content.get("row");
     Object column = content.get("column");
     List<Object> params = new ArrayList<>();
@@ -563,48 +582,48 @@ public class TableDisplay extends BeakerxWidget {
    *
    * @param content
    */
-  private void onActionDetails(HashMap content){
+  private void onActionDetails(HashMap content) {
     TableActionDetails details = new TableActionDetails();
 
-    if(content.containsKey("params")){
+    if (content.containsKey("params")) {
 
       HashMap params = (HashMap) content.get("params");
 
-      if(params.containsKey("actionType")){
-        TableActionType value = TableActionType.getByName((String)params.get("actionType"));
+      if (params.containsKey("actionType")) {
+        TableActionType value = TableActionType.getByName((String) params.get("actionType"));
         details.setActionType(value);
       }
-      if(params.containsKey("contextMenuItem")){
-        String value = (String)params.get("contextMenuItem");
+      if (params.containsKey("contextMenuItem")) {
+        String value = (String) params.get("contextMenuItem");
         details.setContextMenuItem(value);
       }
-      if(params.containsKey("row")){
-        Integer value = (Integer)params.get("row");
+      if (params.containsKey("row")) {
+        Integer value = (Integer) params.get("row");
         details.setRow(value);
       }
-      if(params.containsKey("col")){
-        Integer value = (Integer)params.get("col");
+      if (params.containsKey("col")) {
+        Integer value = (Integer) params.get("col");
         details.setCol(value);
       }
-      if(params.containsKey("tag")){
-        String value = (String)params.get("tag");
+      if (params.containsKey("tag")) {
+        String value = (String) params.get("tag");
         details.setTag(value);
       }
     }
     setDetails(details);
-    if(TableActionType.CONTEXT_MENU_CLICK.equals(details.getActionType())){
-      if(getContextMenuTags() != null && !getContextMenuTags().isEmpty() && details.getContextMenuItem() != null && !details.getContextMenuItem().isEmpty()){
+    if (TableActionType.CONTEXT_MENU_CLICK.equals(details.getActionType())) {
+      if (getContextMenuTags() != null && !getContextMenuTags().isEmpty() && details.getContextMenuItem() != null && !details.getContextMenuItem().isEmpty()) {
         NamespaceClient.getBeaker().runByTag(getContextMenuTags().get(details.getContextMenuItem()));
       }
-    }else if(TableActionType.DOUBLE_CLICK.equals(details.getActionType())){
-      if(getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()){
+    } else if (TableActionType.DOUBLE_CLICK.equals(details.getActionType())) {
+      if (getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()) {
         NamespaceClient.getBeaker().runByTag(getDoubleClickTag());
       }
     }
   }
 
-  private void onContextMenu(HashMap content){
-    String menuKey = (String)content.get("itemKey");
+  private void onContextMenu(HashMap content) {
+    String menuKey = (String) content.get("itemKey");
     Object row = content.get("row");
     Object column = content.get("column");
     List<Object> params = new ArrayList<>();
@@ -634,7 +653,7 @@ public class TableDisplay extends BeakerxWidget {
 
   public void addContextMenuItem(String name, Object closure) {
     this.contextMenuListeners.put(name, closure);
-    getComm().addMsgCallbackList((Handler<Message>)this::handleOnContextMenu);
+    getComm().addMsgCallbackList((Handler<Message>) this::handleOnContextMenu);
   }
 
   public void addContextMenuItem(String name, String tagName) {
@@ -676,5 +695,10 @@ public class TableDisplay extends BeakerxWidget {
   @Override
   protected Map serializeToJsonObject() {
     return TableDisplayToJson.toJson(this);
+  }
+
+  @Override
+  protected Map serializeToJsonObject(Object item) {
+    return TableDisplayToJson.toJson(item);
   }
 }

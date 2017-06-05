@@ -16,6 +16,7 @@
 package com.twosigma.beaker.scala;
 
 import com.twosigma.beaker.KernelSocketsServiceTest;
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.scala.evaluator.ScalaEvaluator;
 import com.twosigma.jupyter.KernelParameters;
@@ -44,7 +45,7 @@ public class ScalaKernelTest {
   @Before
   public void setUp() throws Exception {
     String sessionId = "sessionId2";
-    ScalaEvaluator evaluator = new ScalaEvaluator(null);
+    ScalaEvaluator evaluator = new ScalaEvaluator(NamespaceClient.getBeaker(sessionId).getObjectSerializer());
     evaluator.initialize(sessionId, sessionId);
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new ScalaKernel(sessionId, evaluator, kernelSocketsService);

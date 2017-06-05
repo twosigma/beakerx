@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.scala.evaluator;
 
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.scala.ScalaKernelMock;
@@ -38,8 +39,9 @@ public class ScalaAutocompleteTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    scalaEvaluator = new ScalaEvaluator(null);
-    scalaEvaluator.initialize("id", "sid");
+    String sid = "sid";
+    scalaEvaluator = new ScalaEvaluator(NamespaceClient.getBeaker(sid).getObjectSerializer());
+    scalaEvaluator.initialize("id", sid);
     scalaEvaluator.setShellOptions(kernelParameters());
   }
 

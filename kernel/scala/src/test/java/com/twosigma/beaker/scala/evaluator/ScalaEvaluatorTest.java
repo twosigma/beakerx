@@ -17,6 +17,7 @@
 package com.twosigma.beaker.scala.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -43,8 +44,9 @@ public class ScalaEvaluatorTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    scalaEvaluator = new ScalaEvaluator(null);
-    scalaEvaluator.initialize("id", "sid");
+    String sid = "sid";
+    scalaEvaluator = new ScalaEvaluator(NamespaceClient.getBeaker(sid).getObjectSerializer());
+    scalaEvaluator.initialize("id", sid);
   }
 
   @Before
@@ -60,7 +62,7 @@ public class ScalaEvaluatorTest {
 
   @Test
   public void evaluatePlot_shouldCreatePlotObject() throws Exception {
-    //given
+    //givencom.twosigma.beaker
     String code = "import com.twosigma.beaker.chart.xychart.Plot;\n" +
         "val plot = new Plot();\n" +
         "plot.setTitle(\"test title\");";
@@ -86,8 +88,6 @@ public class ScalaEvaluatorTest {
     Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
     Assertions.assertThat((String)seo.getPayload()).contains("java.lang.ArithmeticException");
   }
-
-  ;
 
   @Test
   public void javaImports_shouldBeAdjustedForScala() throws Exception {

@@ -48,17 +48,17 @@ public class ScalaEvaluator implements Evaluator {
 
   public final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());
 
-  protected String shellId;
-  protected String sessionId;
-  protected List<String> classPath;
-  protected List<String> imports;
-  protected String outDir;
-  protected boolean exit;
-  protected boolean updateLoader;
-  protected final BeakerCellExecutor executor;
-  protected workerThread myWorker;
-  protected String currentClassPath;
-  protected String currentImports;
+  private String shellId;
+  private String sessionId;
+  private List<String> classPath;
+  private List<String> imports;
+  private String outDir;
+  private boolean exit;
+  private boolean updateLoader;
+  private final BeakerCellExecutor executor;
+  private workerThread myWorker;
+  private String currentClassPath;
+  private String currentImports;
   private final BeakerObjectConverter objectSerializerProvider;
 
   protected class jobDescriptor {

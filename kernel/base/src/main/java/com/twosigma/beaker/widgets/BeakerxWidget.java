@@ -56,4 +56,10 @@ public abstract class BeakerxWidget extends Widget {
   public void sendModelUpdate(Object item){
     sendUpdate(MODEL_UPDATE, serializeToJsonObject(item));
   }
+
+  @Override
+  public void display() {
+    sendModel();
+    super.display();
+  }
 }

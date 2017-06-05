@@ -173,7 +173,6 @@ public class TableDisplay extends BeakerxWidget {
 
   private void addToValues(List<List<?>> items) {
     values.addAll(items);
-    sendModel();
   }
 
   private List<List<?>> buildValues(Collection<Map<?, ?>> v, BeakerObjectConverter serializer) {

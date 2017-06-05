@@ -550,12 +550,13 @@ public class TableDisplayTest {
   }
 
   @Test
-  public void shouldSendCommMsgWhenValuesChange() throws Exception {
+  public void shouldSendCommMsgWithAllModelWhenDisplay() throws Exception {
     //given
     kernel.clearMessages();
     ArrayList<Map<?, ?>> v = new ArrayList<>();
-    //when
     TableDisplay tableDisplay = new TableDisplay(v);
+    //when
+    tableDisplay.display();
     //then
     verifyOpenCommMsgWitoutLayout(kernel.getPublishedMessages(), TableDisplay.MODEL_NAME_VALUE, TableDisplay.VIEW_NAME_VALUE);
     Map valueForProperty = getValueForProperty(kernel.getPublishedMessages().get(1), TableDisplay.MODEL, Map.class);
@@ -669,8 +670,9 @@ public class TableDisplayTest {
   @Test
   public void shouldContainTime() throws Exception {
     //given
-    //when
     TableDisplay tableDisplay = new TableDisplay(new CsvPlotReader().readAsList(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV)));
+    //when
+    tableDisplay.display();
     //then
     assertThat(tableDisplay.getTypes()).contains(CsvPlotReader.TIME_COLUMN);
     LinkedHashMap model = getModel();

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,15 +14,12 @@
  *  limitations under the License.
  */
 
-include 'beakerx'
-include 'beakerx:js'
-include 'kernel'
-include 'kernel:base'
-include 'kernel:groovy'
-include 'kernel:scala'
-include 'kernel:java'
-include 'kernel:clojure'
-include 'kernel:sql'
-include 'kernel:cpp'
-include 'test'
+var path = require('path');
+var fs = require('fs');
 
+var BeakerPageObject = function() {
+
+  this.baseURL = 'http://127.0.0.1:8888/tree/demoFiles';
+
+};
+module.exports = BeakerPageObject;

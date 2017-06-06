@@ -1650,7 +1650,6 @@ define([
     var d3trans = d3.event.transform || d3.event;
     self.lastx = d3trans.x;
     self.lasty = d3trans.y;
-    // var newK = ((d3trans.k-1)*0.5)+1;
     var newK = d3trans.k;
     self.lastk = 1/newK;
 
@@ -1689,7 +1688,6 @@ define([
         self.zoomed = true;
       }
 
-      // var newK = ((d3trans.k-1)/2)+1;
       var newK = d3trans.k;
       var dx = d3trans.x - self.lastx,
         dy = d3trans.y - self.lasty,
@@ -2212,7 +2210,6 @@ define([
 
     self.resetSvg();
     self.zoomObj = d3.zoom().scaleExtent([0.7, Infinity]);
-    // self.zoomObj = d3.zoom();
 
     self.lastk = 1;
 

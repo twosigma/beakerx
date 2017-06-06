@@ -11,10 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from statsmodels.datasets import nile
-
 """Create a notebook containing code from a beaker notebook.
-
 Run as:  python bkr2ipynb.py [notebook name].bkr
 """
 import re

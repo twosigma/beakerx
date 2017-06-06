@@ -95,7 +95,7 @@ define([
     this.legendDone = false;
     this.legendResetPosition = false;
     this.doNotLoadState = false;
-    self.saveAsMenuContainer = null;
+    this.saveAsMenuContainer = null;
 
     this.data2scrX = null;
     this.data2scrY = null;
@@ -1558,12 +1558,6 @@ define([
     var self = this;
     var p1 = self.mousep1, p2 = self.mousep2;
 
-    // console.log('p1.x', p1.x);
-    // console.log('p2.x', p2.x);
-    // console.log('p1.y', p1.y);
-    // console.log('p2.y', p2.y);
-
-
     var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x),
       yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
     if (xr === xl) { xr = xl + 1; }
@@ -1574,26 +1568,28 @@ define([
       "w" : xr - xl,
       "h" : yr - yl
     };
+  };
 
-
-    var lMargin = self.layout.leftLayoutMargin,
+  PlotScope.prototype.updateLastZoomCoordinates = function() {
+    var self = this,
+      lMargin = self.layout.leftLayoutMargin,
       bMargin = self.layout.bottomLayoutMargin,
       W = plotUtils.safeWidth(self.jqsvg) - lMargin,
       H = plotUtils.safeHeight(self.jqsvg) - bMargin;
 
-    console.log('xr - xl', xr - xl);
-    console.log('yr - yl', yr - yl);
-    console.log('width', W);
-    console.log('height', H);
+    var scaleFactor = Math.max((self.locateBox.w) / W, (self.locateBox.h / H));
+    var scale = 1 / scaleFactor;
 
-    var scaleFactor = Math.max((xr - xl) / W, (yr - yl) / H);
+    var transform = d3.zoomTransform(this.svg.node());
+    var newK = transform.k * scale;
+    var newX = self.locateBox.x * newK;
+    var newY = self.locateBox.y * newK;
 
-    var scale = 1 / scaleFactor,
-      translate = [W / 2 - scale * xl, H / 2 - scale * yl];
-
-    console.log('scale', scale);
-    console.log('translate', translate);
-
+    // HACK: mutate transform object to apply current scale factor
+    // synchronization between area-zoom and wheel-zoom
+    transform.k = newK;
+    transform.x = transform.x - newX;
+    transform.y = transform.y - newY;
   };
 
   PlotScope.prototype.mouseDown = function() {
@@ -1671,7 +1667,6 @@ define([
   };
 
   PlotScope.prototype.zooming = function() {
-    console.log('zooming', this.interactMode);
     var self = this;
     if (self.interactMode === "other" || !self.zoom){
       return;
@@ -1693,8 +1688,6 @@ define([
       if (Math.abs(mx - self.mousep1.x)>0 || Math.abs(my - self.mousep1.y)>0){
         self.zoomed = true;
       }
-
-      console.log('d3trans.k', d3trans.k);
 
       // var newK = ((d3trans.k-1)/2)+1;
       var newK = d3trans.k;
@@ -1825,8 +1818,6 @@ define([
       self.fixFocus(self.focus);
       self.update();
     } else if (self.interactMode === 'locate') {
-      var d3trans = d3.event.transform || d3.event
-      console.log('d3trans', d3trans);
       self.zoomBoxZooming();
     }
   };
@@ -1846,6 +1837,7 @@ define([
 
       // draw rectangle for zoom-area and update chart
       } else {
+        self.updateLastZoomCoordinates();
         self.locateFocus();
         self.locateBox = null;
         self.update();
@@ -1973,6 +1965,9 @@ define([
 
     // disbale zoom events on double click
     self.svg.on("dblclick.zoom", null);
+
+    // prevent scroll down when scale extent reached
+    self.svg.on("wheel", function() { d3.event.preventDefault(); });
   };
 
   PlotScope.prototype.enableZoomWheel = function() {
@@ -2216,7 +2211,7 @@ define([
     };
 
     self.resetSvg();
-    self.zoomObj = d3.zoom().scaleExtent([0.7, 30]);
+    self.zoomObj = d3.zoom().scaleExtent([0.7, Infinity]);
     // self.zoomObj = d3.zoom();
 
     self.lastk = 1;

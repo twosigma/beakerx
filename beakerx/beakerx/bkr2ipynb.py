@@ -49,13 +49,6 @@ def getFixedCodeText(cell):
     ret = re.sub(r'\bbeaker\b', 'beakerx', ret)
     return ret;
 
-def getFixedCodeText_OLD(cell):
-    body = cell['body']
-    if isinstance(body, list):
-        return "\n".join(body)
-    return body
-
-
 def convertNotebook(notebook):
     nb = new_notebook()
     with open(notebook, encoding='utf-8') as data_file:

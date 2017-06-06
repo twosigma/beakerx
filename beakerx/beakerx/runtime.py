@@ -21,7 +21,7 @@ import os, json, pandas, numpy
 import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, IPython, datetime, calendar, math, traceback, time
 from traitlets import Unicode
 
-from beaker.plot import BaseObject, chart
+from beakerx.plot import BaseObject, chart
 from ipykernel.comm import Comm
 
 

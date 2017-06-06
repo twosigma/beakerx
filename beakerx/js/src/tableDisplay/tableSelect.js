@@ -21,22 +21,14 @@ module.exports = function(TableScope) {
     var self = this;
 
     $(this.table.table().container()).selectable({
-      filter: 'tr[role="row"]',
-      selected: function( event, ui ) {
-        setRowSelection(ui.selected, true);
-      },
-      unselected: function( event, ui ) {
-        setRowSelection(ui.unselected, false);
+      filter: 'tr[role="row"] td',
+      delay: 150,
+      stop: function( event, ui ) {
+        var cells = self.table.cells('.ui-selected');
+
+        self.table.cells({ selected: true }).deselect();
+        cells.select();
       }
     });
-
-    function setRowSelection(node, shouldSelect) {
-      var row = self.table.row(node);
-      var index = row.index();
-
-      self.selected[index] = shouldSelect;
-      $(row.node()).toggleClass('selected', shouldSelect);
-      self.selectFixedColumnRow(index, shouldSelect);
-    }
   };
 };

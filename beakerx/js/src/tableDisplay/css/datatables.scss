@@ -78,6 +78,10 @@ table.dataTable {
     .advanced-mode & {
       height: 22px;
     }
+    > .ui-selected,
+    > .ui-selecting {
+      background-color: #B0BED9;
+    }
   }
 }
 

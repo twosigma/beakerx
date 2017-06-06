@@ -21,6 +21,8 @@ define([
   'datatables.net-colreorder',
   'datatables.net-fixedcolumns',
   'datatables.net-keytable',
+  'datatables.net-select',
+  'datatables.net-buttons',
   './../shared/libs/datatables-colresize/dataTables.colResize',
   'moment-timezone/builds/moment-timezone-with-data',
   './../shared/bkUtils',
@@ -38,6 +40,8 @@ define([
   dataTablesFixedColumns,
   dataTablesKeyTable,
   dataTablesColResize,
+  dataTablesSelect,
+  dataTablesButtons,
   moment,
   bkUtils,
   cellHighlighters,
@@ -1622,6 +1626,7 @@ define([
       'scrollX': '10%',
       'searching': true,
       'deferRender': true,
+      'select': true,
       'language': {
         'emptyTable': 'empty table'
       },
@@ -2687,10 +2692,10 @@ define([
           return self.table.settings()[0].aiDisplay.indexOf(index) > -1;
         };
         var rows = self.table.rows(function(index, data, node) {
-          return isFiltered(index) && self.selected[index];
-        });
+          return isFiltered(index);
+        }, { selected: true });
         if (rows === undefined || rows.indexes().length === 0) {
-          rows = self.table.rows(isFiltered);
+          rows = self.table.rows(isFiltered, { selected: true });
         }
         var out = self.exportTo(rows, 'tabs');
         return out;
@@ -2707,7 +2712,15 @@ define([
         Jupyter.notebook.mode = currentNotebookMode;
         input.remove();
       };
+      var indexes = self.table.cells({ selected: true }).indexes();
+      var rowIndexes = indexes.pluck( 'row' );
+      var columnIndexes = indexes.pluck( 'column' );
+      var dataTmp2 = self.table.buttons.exportData({
+        rows: rowIndexes,
+        columns: columnIndexes
+      });
       var data = getTableData();
+      debugger;
       executeCopy(data);
     }
   };
@@ -3026,7 +3039,7 @@ define([
   // ---------
   // Add column reset methods
   require('./columnReset')(TableScope);
-  require('./rowSelectable')(TableScope);
+  require('./tableSelect')(TableScope);
 
   return TableScope;
 

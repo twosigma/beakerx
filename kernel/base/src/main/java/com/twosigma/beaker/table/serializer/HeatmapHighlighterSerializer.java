@@ -25,6 +25,9 @@ import java.io.IOException;
 
 public class HeatmapHighlighterSerializer<H extends HeatmapHighlighter> extends JsonSerializer<H> {
 
+  public static final String TYPE = "type";
+  public static final String STYLE = "style";
+
   @Override
   public void serialize(H value,
                         JsonGenerator jgen,
@@ -43,9 +46,9 @@ public class HeatmapHighlighterSerializer<H extends HeatmapHighlighter> extends 
                               SerializerProvider provider)
     throws IOException, JsonProcessingException {
 
-    jgen.writeObjectField("type", value.getClass().getSimpleName());
+    jgen.writeObjectField(TYPE, value.getClass().getSimpleName());
     jgen.writeObjectField("colName", value.getColName());
-    jgen.writeObjectField("style", value.getStyle());
+    jgen.writeObjectField(STYLE, value.getStyle());
     jgen.writeObjectField("minVal", value.getMinVal());
     jgen.writeObjectField("maxVal", value.getMaxVal());
     jgen.writeObjectField("minColor", value.getMinColor());

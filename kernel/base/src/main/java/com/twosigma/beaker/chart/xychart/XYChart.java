@@ -17,15 +17,18 @@
 package com.twosigma.beaker.chart.xychart;
 
 import com.twosigma.beaker.chart.AbstractChart;
+import com.twosigma.beaker.chart.ChartToJson;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantBand;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beaker.chart.xychart.plotitem.Rasters;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
+
 import java.util.ArrayList;
 import java.util.List;
 
-abstract public class XYChart extends AbstractChart{
+abstract public class XYChart extends AbstractChart {
+
   private final List<XYGraphics> xyGraphics = new ArrayList<>();
   private final List<ConstantLine> constantLines = new ArrayList<>();
   private final List<ConstantBand> constantBands = new ArrayList<>();
@@ -43,6 +46,7 @@ abstract public class XYChart extends AbstractChart{
   public XYChart add(XYGraphics graphics) {
     graphics.setPlotType(this.getClass());
     this.xyGraphics.add(graphics);
+    sendModelUpdate(ChartToJson.serializeXYGraphics(this.xyGraphics));
     return this;
   }
 
@@ -57,6 +61,7 @@ abstract public class XYChart extends AbstractChart{
   public XYChart add(ConstantLine constantLine) {
     constantLine.setPlotType(this.getClass());
     this.constantLines.add(constantLine);
+    sendModelUpdate(ChartToJson.serializeConstantLines(this.constantLines));
     return this;
   }
 
@@ -70,6 +75,7 @@ abstract public class XYChart extends AbstractChart{
 
   public XYChart add(ConstantBand constantBand) {
     this.constantBands.add(constantBand);
+    sendModelUpdate(ChartToJson.serializeConstantBands(this.constantBands));
     return this;
   }
 
@@ -84,6 +90,7 @@ abstract public class XYChart extends AbstractChart{
   public XYChart add(Text text) {
     text.setPlotType(this.getClass());
     this.texts.add(text);
+    sendModelUpdate(ChartToJson.serializeTexts(this.texts));
     return this;
   }
 
@@ -97,6 +104,7 @@ abstract public class XYChart extends AbstractChart{
 
   public XYChart add(Rasters raster) {
     this.rasters.add(raster);
+    sendModelUpdate(ChartToJson.serializeRasters(this.rasters));
     return this;
   }
 
@@ -129,6 +137,7 @@ abstract public class XYChart extends AbstractChart{
 
   public XYChart setXAutoRange(boolean xAutoRange) {
     this.xAutoRange = xAutoRange;
+    sendModelUpdate(ChartToJson.serializeXAutoRange(this.xAutoRange));
     return this;
   }
 
@@ -144,6 +153,7 @@ abstract public class XYChart extends AbstractChart{
     this.xAutoRange = false;
     this.xLowerBound = lower;
     this.xUpperBound = upper;
+    sendModelUpdate(ChartToJson.serializeXBound(this));
     return this;
   }
 
@@ -173,7 +183,7 @@ abstract public class XYChart extends AbstractChart{
   }
 
   public XYChart setYAutoRange(boolean yAutoRange) {
-    this.xAutoRange = yAutoRange;
+    setXAutoRange(yAutoRange);
     return this;
   }
 
@@ -181,8 +191,9 @@ abstract public class XYChart extends AbstractChart{
     return this.setYAutoRange(yAutoRange);
   }
 
-  protected XYChart setLogX(boolean logX) {
+  public XYChart setLogX(boolean logX) {
     this.logX = logX;
+    sendModelUpdate(ChartToJson.serializeLogX(this.logX));
     return this;
   }
 
@@ -196,6 +207,7 @@ abstract public class XYChart extends AbstractChart{
 
   public XYChart setXLogBase(double xLogBase) {
     this.xLogBase = xLogBase;
+    sendModelUpdate(ChartToJson.serializeXLogBase(this.xLogBase));
     return this;
   }
 
@@ -209,6 +221,7 @@ abstract public class XYChart extends AbstractChart{
 
   public void setLodThreshold(Integer lodThreshold) {
     this.lodThreshold = lodThreshold;
+    sendModelUpdate(ChartToJson.serializeLodThreshold(this.lodThreshold));
   }
 
   public boolean isxTickLabelsVisible() {
@@ -217,6 +230,7 @@ abstract public class XYChart extends AbstractChart{
 
   public void setxTickLabelsVisible(boolean xTickLabelsVisible) {
     this.xTickLabelsVisible = xTickLabelsVisible;
+    sendModelUpdate(ChartToJson.serializeXTickLabelsVisible(this.xTickLabelsVisible));
   }
 
   public boolean isyTickLabelsVisible() {
@@ -225,5 +239,6 @@ abstract public class XYChart extends AbstractChart{
 
   public void setyTickLabelsVisible(boolean yTickLabelsVisible) {
     this.yTickLabelsVisible = yTickLabelsVisible;
+    sendModelUpdate(ChartToJson.serializeYTickLabelsVisible(this.yTickLabelsVisible));
   }
 }

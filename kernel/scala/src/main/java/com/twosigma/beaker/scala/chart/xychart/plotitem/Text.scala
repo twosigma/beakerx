@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,23 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.table.action;
 
-public enum TableActionType {
-  DOUBLE_CLICK,
-  CONTEXT_MENU_CLICK;
+package com.twosigma.beaker.scala.chart.xychart.plotitem
 
-  public static TableActionType getByName(final String input){
-    TableActionType ret = null;
-    if(input != null){
-      for (TableActionType item : TableActionType.values()) {
-        if(item.name().equalsIgnoreCase(input.trim())){
-          ret = item;
-          break;
-        }
-      }
-    }
-    return ret;
+class Text extends com.twosigma.beaker.chart.xychart.plotitem.Text {
+
+  def this(x: AnyVal, y: AnyVal, text: String, pointerAngle: Double) {
+    this()
+    super.setX(x.asInstanceOf[Number])
+    super.setY(y.asInstanceOf[Number])
+    super.setText(text)
+    super.setPointerAngle(pointerAngle)
   }
-
 }

@@ -24,6 +24,9 @@ import java.io.IOException;
 
 public class ThreeColorHeatmapHighlighterSerializer extends HeatmapHighlighterSerializer<ThreeColorHeatmapHighlighter> {
 
+  public static final String MID_VAL = "midVal";
+  public static final String MID_COLOR = "midColor";
+
   @Override
   public void serialize(ThreeColorHeatmapHighlighter value,
                         JsonGenerator jgen,
@@ -33,8 +36,8 @@ public class ThreeColorHeatmapHighlighterSerializer extends HeatmapHighlighterSe
     synchronized (value) {
       jgen.writeStartObject();
       serializeObj(value, jgen, provider);
-      jgen.writeObjectField("midVal", value.getMidVal());
-      jgen.writeObjectField("midColor", value.getMidColor());
+      jgen.writeObjectField(MID_VAL, value.getMidVal());
+      jgen.writeObjectField(MID_COLOR, value.getMidColor());
       jgen.writeEndObject();
     }
   }

@@ -36,4 +36,5 @@ public enum ColumnType {
   public String toString() {
     return getType();
   }
+
 }

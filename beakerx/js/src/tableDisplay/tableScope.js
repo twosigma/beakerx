@@ -54,7 +54,7 @@ define([
 
   var jQuery = $;
 
-  function TableScope(wrapperId, tableDisplayModel) {
+  function TableScope(wrapperId) {
     this.wrapperId = wrapperId;
     this.id = null;
     this.element = null;
@@ -71,7 +71,8 @@ define([
     this.getCellDisp     =  [];
     this.getCellDispOpts =  [];
     this.allConverters = {};
-    this.tableDisplayModel = tableDisplayModel;
+    this.tableDisplayModel = null;
+    this.cellHighlighters = {};
     
     this.model = {
         model: {},
@@ -87,11 +88,16 @@ define([
 
     this.bindAllConverters();
     this.prepareDoubleWithPrecisionConverters();
+    this.prepareValueFormatter();
     this.setJqExtensions();
     this.linkMoment();
   }
 
   // ---------
+
+  TableScope.prototype.setWidgetModel = function(tableDisplayModel) {
+  	this.tableDisplayModel = tableDisplayModel;
+  };
 
   TableScope.prototype.linkMoment = function() {
     moment.tz.link(['Etc/GMT+1|GMT+01:00',
@@ -600,8 +606,7 @@ define([
 
     if (self.hasIndex) {
       if (self.columnNames !== undefined) {
-        self.indexName = self.columnNames[0];
-        self.columnNames.shift();
+        self.indexName = self.columnNames.shift();
       } else {
         self.indexName = '     ';
       }
@@ -756,19 +761,8 @@ define([
       });
     }
 
-    // cell highlighters
-    self.cellHighlighters = {}; //map: col index -> highlighter
-    var cellHighlightersDataRev = self.cellHighlightersData.slice().reverse();
-    _.forEach(cellHighlightersDataRev, function(highlighter) {
-      if (!highlighter) { return; }
-      if(_.isEmpty(self.cellHighlighters[highlighter.colInd])){
-        var jsHighlighter = cellHighlighters.createHighlighter(highlighter.type, highlighter);
-        if (jsHighlighter) {
-          self.cellHighlighters[highlighter.colInd] = jsHighlighter;
-        }
-      }
-    });
-    
+    self.setCellHighlighters();
+
     self.contextMenuItems = {};
     if (!_.isEmpty(model.contextMenuItems)) {
       _.forEach(model.contextMenuItems, function(item) {
@@ -790,18 +784,17 @@ define([
             callback: function(itemKey, options) {
               var index = self.table.cell(options.$trigger.get(0)).index();
               var params = {
-                actionType: 'CONTEXT_MENU_CLICK',
+                actionType: 'oncontextmenu',
                 contextMenuItem: itemKey,
                 row: index.row,
                 col: index.column - 1
               };
-              self.tableDisplayModel.send({event: 'actiondetails', params});
+              self.tableDisplayModel.send({event: 'actiondetails', params: params});
             }
           }
         }
       });
     }
-
 
     self.doCreateData(model);
     self.doCreateTable(model);
@@ -863,6 +856,22 @@ define([
     }
 
     return defaultResult;
+  };
+
+  TableScope.prototype.setCellHighlighters = function() {
+    var self = this;
+    // cell highlighters
+    self.cellHighlighters = {}; //map: col index -> highlighter
+    var cellHighlightersDataRev = self.cellHighlightersData.slice().reverse();
+    _.forEach(cellHighlightersDataRev, function(highlighter) {
+      if (!highlighter) { return; }
+      if(_.isEmpty(self.cellHighlighters[highlighter.colInd])){
+        var jsHighlighter = cellHighlighters.createHighlighter(highlighter.type, highlighter);
+        if (jsHighlighter) {
+          self.cellHighlighters[highlighter.colInd] = jsHighlighter;
+        }
+      }
+    });
   };
 
   TableScope.prototype.doCreateData = function(model) {
@@ -1828,11 +1837,11 @@ define([
 
       if (!_.isEmpty(model.doubleClickTag)) {
         var params = {
-          actionType: 'DOUBLE_CLICK',
+          actionType: 'ondoubleclick',
           row: index.row,
           col: index.column - 1
         };
-        self.tableDisplayModel.send({event: 'actiondetails', params});
+        self.tableDisplayModel.send({event: 'actiondetails', params: params});
       }
 
       e.stopPropagation();
@@ -2050,21 +2059,6 @@ define([
         bkElectron.clipboard.writeText(getTableData(), 'text/plain');
       }
     }
-  };
-
-  TableScope.prototype.showHeaderMenu = function() {
-    var self = this;
-    $('#' + self.id + '_modal_dialog').hide();
-    bkHelper.timeout(function() {
-      $('#' + self.id + '_dropdown_menu').click();
-      $('#' + self.id + '_show_column > .dropdown-menu').css('display', 'block');
-    }, 0);
-  };
-
-  TableScope.prototype.hideModal = function(){
-    var self = this;
-    var id = self.id + '_modal_dialog';
-    $('#'+id).hide()
   };
 
   TableScope.prototype.getDumpState = function() {
@@ -2712,15 +2706,7 @@ define([
         Jupyter.notebook.mode = currentNotebookMode;
         input.remove();
       };
-      var indexes = self.table.cells({ selected: true }).indexes();
-      var rowIndexes = indexes.pluck( 'row' );
-      var columnIndexes = indexes.pluck( 'column' );
-      var dataTmp2 = self.table.buttons.exportData({
-        rows: rowIndexes,
-        columns: columnIndexes
-      });
       var data = getTableData();
-      debugger;
       executeCopy(data);
     }
   };
@@ -2761,6 +2747,15 @@ define([
     self.init(self.getCellModel(), false);
   };
 
+  TableScope.prototype.prepareValueFormatter = function() {
+    var self = this;
+
+    self.valueFormatter = function(value, type, full, meta) {
+      var columnName = self.columnNames[meta.col - 1];
+      return self.stringFormatForColumn[columnName].values[columnName][meta.row];
+    };
+  };
+
   TableScope.prototype.run = function() {
     var self = this;
     self.init(this.model.getCellModel(), true);
@@ -2779,11 +2774,21 @@ define([
     }
   };
 
+  // update model with partial model data
+  TableScope.prototype.updateModelData = function(data) {
+    if (this.model && this.model.model && data) {
+      this.model.model = _.extend(this.model.model, data);
+    }
+  };
+
   TableScope.prototype.buildTemplate = function() {
     var templateString = require('./table.html');
     var compiled = _.template(templateString);
 
-    return compiled({ scopeId: this.id, wrapperId: this.wrapperId });
+    return compiled({
+      scopeId: this.id,
+      wrapperId: this.wrapperId
+    });
   };
 
   TableScope.prototype.setElement = function(el) {
@@ -3039,6 +3044,7 @@ define([
   // ---------
   // Add column reset methods
   require('./columnReset')(TableScope);
+  require('./tableModal')(TableScope);
   require('./tableSelect')(TableScope);
 
   return TableScope;

@@ -18,17 +18,14 @@ package com.twosigma.beaker.chart.xychart;
 
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Points;
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.KernelTest;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 
-public class NanoPlotTest {
+public class NanoPlotTest  extends XYChartTest<NanoPlot>{
   Line line;
   Points points;
 
@@ -42,12 +39,6 @@ public class NanoPlotTest {
     line = new Line();
     line.setX(Arrays.asList(val1, val1));
     line.setY(Arrays.asList(2, 3));
-    KernelManager.register(new KernelTest());
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
   }
 
   @Test
@@ -84,5 +75,13 @@ public class NanoPlotTest {
     nanoPlot.add(line);
     //then
     Assertions.assertThat(nanoPlot.getGraphics().size()).isEqualTo(2);
+  }
+
+  @Override
+  public NanoPlot createWidget() {
+    NanoPlot nanoPlot = new NanoPlot();
+    nanoPlot.display();
+    kernel.clearMessages();
+    return nanoPlot;
   }
 }

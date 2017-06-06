@@ -23,12 +23,15 @@ import java.io.IOException;
 
 public abstract class ObservableTableDisplaySerializer<T extends TableDisplay> extends JsonSerializer<T> {
 
+  public static final String HAS_DOUBLE_CLICK_ACTION = "hasDoubleClickAction";
+  public static final String DOUBLE_CLICK_TAG = "doubleClickTag";
+
   protected void serialize(T tableDisplay, JsonGenerator jgen) throws IOException {
 //    String id = updateManagerProvider.get().register(tableDisplay);
 //    tableObjectManagerProvider.get().registerTableDisplay(id, tableDisplay);
 //    jgen.writeStringField("update_id", id);
-    jgen.writeBooleanField("hasDoubleClickAction", tableDisplay.hasDoubleClickAction());
-    jgen.writeStringField("doubleClickTag", tableDisplay.getDoubleClickTag());
+    jgen.writeBooleanField(HAS_DOUBLE_CLICK_ACTION, tableDisplay.hasDoubleClickAction());
+    jgen.writeStringField(DOUBLE_CLICK_TAG, tableDisplay.getDoubleClickTag());
     jgen.writeObjectField("contextMenuItems", tableDisplay.getContextMenuItems());
     jgen.writeObjectField("contextMenuTags", tableDisplay.getContextMenuTags());
   }

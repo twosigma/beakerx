@@ -31,6 +31,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   public enum CommActions {
 
     ONDOUBLECLICK("ondoubleclick"),
+    ONCLICK("onclick"),
+    ONKEY("onkey"),
     ACTIONDETAILS("actiondetails"),
     ONCONTEXTMENU("oncontextmenu"),
     CLICK("click");
@@ -43,6 +45,19 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
 
     public String getAction() {
       return action;
+    }
+    
+    public static CommActions getByAction(final String input){
+      CommActions ret = null;
+      if(input != null){
+        for (CommActions item : CommActions.values()) {
+          if(item.name().equalsIgnoreCase(input.trim())){
+            ret = item;
+            break;
+          }
+        }
+      }
+      return ret;
     }
 
   }
@@ -82,14 +97,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     }
   }
 
-  public void beforeDisplay() {
-    //nothing to do in jupyter widgets.
-    //should be removed in the future.
-  }
-
   @Override
   public void display() {
-    beforeDisplay();
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, DISPLAY);
     getComm().setData(content);

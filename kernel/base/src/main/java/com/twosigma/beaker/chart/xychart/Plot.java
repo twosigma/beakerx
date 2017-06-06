@@ -36,8 +36,4 @@ public class Plot extends XYChart {
     return VIEW_NAME_VALUE;
   }
 
-  @Override
-  public XYChart setLogX(boolean logX) {
-    return super.setLogX(logX);
-  }
 }

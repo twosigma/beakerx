@@ -40,6 +40,8 @@ var PlotView = widgets.DOMWidgetView.extend({
   render: function() {
     var that = this;
 
+    this._currentScope = null;
+
     this.displayed.then(function() {
       var plotModel = that.model.get('model');
 
@@ -56,30 +58,40 @@ var PlotView = widgets.DOMWidgetView.extend({
     });
   },
 
-  initStandardPlot: function (data) {
-    var currentScope = new PlotScope('wrap_'+this.id);
-    var tmpl = currentScope.buildTemplate();
-    var tmplElement = $(tmpl);
+  update: function() {
+    PlotView.__super__.update.apply(this);
 
-    tmplElement.appendTo(this.$el);
+    var plotModelUpdateData = this.model.get('model');
 
-    currentScope.setElement(tmplElement.children('.dtcontainer'));
-    currentScope.setModelData(data);
-    currentScope.init(this.model);
+    this._currentScope.updateModelData(plotModelUpdateData);
+    this._currentScope.updatePlot();
   },
 
-  initCombinedPlot: function(data) {
-    var currentScope = new CombinedPlotScope('wrap_'+this.id);
-    var tmpl = currentScope.buildTemplate();
+  initStandardPlot: function (model) {
+    this._currentScope = new PlotScope('wrap_'+this.id);
+    var tmpl = this._currentScope.buildTemplate();
     var tmplElement = $(tmpl);
 
     tmplElement.appendTo(this.$el);
 
-    currentScope.setModelData(data);
-    currentScope.setElement(tmplElement);
-    currentScope.init(this.model);
+    this._currentScope.setWidgetModel(this.model);
+    this._currentScope.setElement(tmplElement.children('.dtcontainer'));
+    this._currentScope.setModelData(model);
+    this._currentScope.init(this.model);
+  },
+
+  initCombinedPlot: function(model) {
+    this._currentScope = new CombinedPlotScope('wrap_'+this.id);
+    var tmpl = this._currentScope.buildTemplate();
+    var tmplElement = $(tmpl);
+
+    tmplElement.appendTo(this.$el);
+
+    this._currentScope.setModelData(model);
+    this._currentScope.setElement(tmplElement);
+    this._currentScope.init(this.model);
   }
-  
+
 });
 
 module.exports = {

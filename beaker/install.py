@@ -4,13 +4,15 @@
 # Copyright (c) - Continuum Analytics
 
 import argparse
-import json
-import logging
 import os
 from os.path import exists, join
+import json
+import logging
+
+from traitlets.config.manager import BaseJSONConfigManager
 
 from jupyter_core.paths import jupyter_config_dir
-from traitlets.config.manager import BaseJSONConfigManager
+
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.StreamHandler())
@@ -96,22 +98,8 @@ def install(enable=False, disable=False, prefix=None, verbose=False):
     else:
         assert KSMC not in cfg["KernelSpecManager"]
 
-    install_groovymagic()
     log.info("{}abled BeakerX server config".format("En" if enable else "Dis"))
 
-def install_groovymagic():
-    log.debug("Installing Groovy Magic")
-    settings = "c = get_config()\n"
-    settings += "c.TerminalIPythonApp.display_banner = True\n"
-    settings += "c.InteractiveShellApp.log_level = 20\n"
-    settings += "c.InteractiveShellApp.extensions = [\n"
-    settings += "       'groovy_magic'\n"
-    settings += "]\n"
-
-    ipython_path = os.popen('ipython locate').read()
-    ipython_config_path = ipython_path.replace("\n", "") + '/profile_default/ipython_config.py'
-    with open(ipython_config_path, 'w+') as outfile:
-        outfile.write(settings)
 
 if __name__ == '__main__':
     install(**parser.parse_args().__dict__)

@@ -29,12 +29,37 @@ public class GroovyEvaluatorAutotranslationTest extends GroovyEvaluatorTest {
     Assertions.assertThat(result instanceof Number).isTrue();
   }
 
-  @Test
+ @Test
   public void parseGetBeakerObjectScript_returnBeakerObjectValue() {
     //when
     parseClassFromScript("beaker.x = 10 ");
     Object result = parseClassFromScript("beaker.x");
     //then
-    Assertions.assertThat(result instanceof Number).isTrue();
+    Assertions.assertThat(result).isNotNull();
+  }
+
+  @Test
+  public void parseGetBeakerObjectScript_graph() {
+    //when
+    parseClassFromScript("  def r = new Random()\n" +
+            "  def nnodes = 100\n" +
+            "  def nodes = []\n" +
+            "  def links = []\n" +
+            "\n" +
+            "  for (x in (0..nnodes)){\n" +
+            "    nodes.add(name:\"\" + x, group:((int) x*7/nnodes))\n" +
+            "  }\n" +
+            "\n" +
+            "for (x in (0..(int) nnodes*1.15)) {\n" +
+            "    source = x % nnodes\n" +
+            "    target = ((int) log(1 + r.nextInt(nnodes))/log(1.3))\n" +
+            "    value = 10.0 / (1 + abs(source - target))\n" +
+            "    links.add(source: source, target: target, value: value*value)\n" +
+            "  }\n" +
+            "\n" +
+            "beaker.graph = [nodes: nodes, links: links] \n");
+    Object result = parseClassFromScript("beaker.graph");
+    //then
+    Assertions.assertThat(result).isNotNull();
   }
 }

@@ -66,9 +66,27 @@ public class ScalaAutotranslationTest {
   }
 
   @Test
-  public void createFieldInBeakerObject() throws Exception {
+  public void createFieldInBeakerObject_graph() throws Exception {
     //given
-    String code = "beaker.x = Map(\"AL\" -> \"Alabama\", \"AK\" -> \"Alaska\")\n";
+    String code = "var r = scala.util.Random\n" +
+            "var nnodes = 100\n" +
+            "var nodes = scala.collection.mutable.ListBuffer.empty[Map[String,Any]]\n" +
+            "var links = scala.collection.mutable.ListBuffer.empty[Map[String,Double]]\n" +
+            "var x=0.0\n" +
+            "\n" +
+            "for (x <- 0 to nnodes){\n" +
+            "    nodes += Map(\"name\"->x.toString, \"group\"->((x*7)/nnodes));\n" +
+            "}\n" +
+            "\n" +
+            "for (x <-  0 to (nnodes*1.15).asInstanceOf[Int]) {\n" +
+            "    var source = (x % nnodes).asInstanceOf[Int]\n" +
+            "    val log = (scala.math.log(1.0 + r.nextInt(nnodes))).asInstanceOf[Int]\n" +
+            "    val int = (log / scala.math.log(1.3)).asInstanceOf[Int]\n" +
+            "    var target = int\n" +
+            "    var value = (10.0 / (1 + scala.math.abs(source - target)));\n" +
+            "    links += Map(\"source\" -> source, \"target\" -> target, \"value\" -> (value*value))\n" +
+            "}\n" +
+            "beaker.graph = Map(\"nodes\" -> nodes, \"links\" -> links)";
 
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when

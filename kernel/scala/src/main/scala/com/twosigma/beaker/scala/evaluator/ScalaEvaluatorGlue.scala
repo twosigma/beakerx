@@ -16,6 +16,10 @@
  
 package com.twosigma.beaker.scala.evaluator;
 
+import java.io.StringWriter
+
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.twosigma.beaker.autocomplete.AutocompleteResult
 import com.twosigma.beaker.jvm.`object`.SimpleEvaluationObject
 
@@ -116,5 +120,15 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     // There must be a better way to do this
     import scala.collection.JavaConverters._
     new AutocompleteResult(maybes.asScala.map(_.toString).asJava, offset)
+  }
+
+  def toJson(obj: Object): String ={
+    val mapper = new ObjectMapper()
+    mapper.registerModule(DefaultScalaModule)
+
+    val out = new StringWriter
+    mapper.writeValue(out, obj)
+    val json = out.toString()
+    json
   }
 }

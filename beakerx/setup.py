@@ -57,7 +57,6 @@ def update_package_data(distribution):
     # re-init build_py options which load package_data
     build_py.finalize_options()
 
-
 class NPM(Command):
     description = 'install package.json dependencies using npm'
 
@@ -137,7 +136,7 @@ setup_args = {
         'build_py': js_prerelease(build_py),
         'egg_info': js_prerelease(egg_info),
         'sdist': js_prerelease(sdist, strict=True),
-        'jsdeps': NPM,
+        'jsdeps': NPM
     },
 
     'author': 'Two Sigma Open Source, LLC',

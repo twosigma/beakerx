@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,36 +18,25 @@ var BeakerPageObject = require('./beaker.po.js');
 var beakerPO;
 
 describe('plotDemo', function() {
-    beforeEach(function(done) {
-        //browser.driver.waitForAngularEnabled(false);
+
+    beforeAll(function(done) {
         browser.driver.ignoreSynchronization = true;
         beakerPO = new BeakerPageObject();
         browser.driver.get(beakerPO.baseURL);
-        var e = browser.driver.findElement(by.css('#password_input'));
-        e.sendKeys('beakerx');
-        browser.driver.findElement(by.css('#login_submit')).click();
-        browser.driver.sleep(3000);
+        beakerPO.loginJupyter();
+        browser.driver.findElement(By.linkText('plotDemo.ipynb')).click();
+        browser.driver.sleep(1000);
+        browser.driver.getAllWindowHandles().then(function(handles){
+            browser.driver.switchTo().window(handles[1]);
+        });
         done();
     });
 
     it('can run Groovy cell', function(done) {
-        browser.driver.findElement(By.linkText('plotDemo.ipynb')).click();
-        browser.driver.sleep(1000);
-        browser.driver.getAllWindowHandles().then(function(handles){
-            browser.driver.switchTo().window(handles[1]).then(function(){
-                browser.driver.wait(function() {
-                    return browser.driver.findElement(By.css('i.kernel_idle_icon'))
-                        .then(function() { return true; }, function() { return false; });
-                }, 10000).then(done);
-                browser.driver.findElement(By.css('div.code_cell')).click();
-                browser.driver.findElement(By.css('button[data-jupyter-action="jupyter-notebook:run-cell-and-select-next"]')).click();
-                browser.driver.wait(function() {
-                    return browser.driver.findElement(By.css('i.kernel_idle_icon'))
-                        .then(function() { return true; }, function() { return false; });
-                }, 10000).then(done);
-                browser.driver.sleep(1000);
-            });
-        });
+        beakerPO.waitKernelIdleIcon();
+        browser.driver.findElement(By.css('div.code_cell')).click();
+        beakerPO.clickRunCell();
+        beakerPO.waitKernelIdleIcon();
         done();
     });
 

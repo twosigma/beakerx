@@ -335,7 +335,7 @@ def transformBack(obj):
         return obj
     return obj
 
-# should be inner class to Beaker
+# should be inner class to BeakerX
 class DataFrameEncoder(json.JSONEncoder):
     def default(self, obj):
         # similarly handle Panels.
@@ -416,8 +416,8 @@ class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
             #traceback.print_exc()
             return None
 
-class Beaker:
-    """Runtime support for Python code in Beaker."""
+class BeakerX:
+    """Runtime support for Python code in BeakerX."""
     _comm = Comm(target_name='beaker.autotranslation')
 
     def set4(self, var, val, unset, sync):

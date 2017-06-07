@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .runtime import Beaker
+from .runtime import BeakerX
 from .plot import *
 from ._version import version_info, __version__
 

@@ -141,17 +141,17 @@ define([
 
     // assign Beaker methods to window
     if (window) {
-      if (!window.beaker) {
-        window.beaker = {};
+      if (!window.beakerx) {
+        window.beakerx = {};
       }
 
       var plotApiList = plotApi.list();
       var bkApp = bkCoreManager.getBkApp();
       var bkObject = bkApp.getBeakerObject();
 
-      _.extend(window.beaker, plotApiList);
-      _.extend(window.beaker, htmlOutput);
-      window.beaker.prefs = bkObject.beakerObj.prefs;
+      _.extend(window.beakerx, plotApiList);
+      _.extend(window.beakerx, htmlOutput);
+      window.beakerx.prefs = bkObject.beakerObj.prefs;
     }
 
   };

@@ -95,7 +95,7 @@ define([
     this.legendDone = false;
     this.legendResetPosition = false;
     this.doNotLoadState = false;
-    this.saveAsMenuContainer = null;
+    self.saveAsMenuContainer = null;
 
     this.data2scrX = null;
     this.data2scrY = null;
@@ -1554,10 +1554,8 @@ define([
   };
 
   PlotScope.prototype.calcLocateBox = function() {
-
     var self = this;
     var p1 = self.mousep1, p2 = self.mousep2;
-
     var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x),
       yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
     if (xr === xl) { xr = xl + 1; }
@@ -1568,28 +1566,6 @@ define([
       "w" : xr - xl,
       "h" : yr - yl
     };
-  };
-
-  PlotScope.prototype.updateLastZoomCoordinates = function() {
-    var self = this,
-      lMargin = self.layout.leftLayoutMargin,
-      bMargin = self.layout.bottomLayoutMargin,
-      W = plotUtils.safeWidth(self.jqsvg) - lMargin,
-      H = plotUtils.safeHeight(self.jqsvg) - bMargin;
-
-    var scaleFactor = Math.max((self.locateBox.w) / W, (self.locateBox.h / H));
-    var scale = 1 / scaleFactor;
-
-    var transform = d3.zoomTransform(this.svg.node());
-    var newK = transform.k * scale;
-    var newX = self.locateBox.x * newK;
-    var newY = self.locateBox.y * newK;
-
-    // HACK: mutate transform object to apply current scale factor
-    // synchronization between area-zoom and wheel-zoom
-    transform.k = newK;
-    transform.x = transform.x - newX;
-    transform.y = transform.y - newY;
   };
 
   PlotScope.prototype.mouseDown = function() {
@@ -1650,7 +1626,7 @@ define([
     var d3trans = d3.event.transform || d3.event;
     self.lastx = d3trans.x;
     self.lasty = d3trans.y;
-    var newK = d3trans.k;
+    var newK = ((d3trans.k-1)*0.5)+1;
     self.lastk = 1/newK;
 
     var svgNode = self.svg.node();
@@ -1688,7 +1664,7 @@ define([
         self.zoomed = true;
       }
 
-      var newK = d3trans.k;
+      var newK = ((d3trans.k-1)/2)+1;
       var dx = d3trans.x - self.lastx,
         dy = d3trans.y - self.lasty,
         k = 1 / newK,
@@ -1835,7 +1811,6 @@ define([
 
       // draw rectangle for zoom-area and update chart
       } else {
-        self.updateLastZoomCoordinates();
         self.locateFocus();
         self.locateBox = null;
         self.update();
@@ -1963,9 +1938,6 @@ define([
 
     // disbale zoom events on double click
     self.svg.on("dblclick.zoom", null);
-
-    // prevent scroll down when scale extent reached
-    self.svg.on("wheel", function() { d3.event.preventDefault(); });
   };
 
   PlotScope.prototype.enableZoomWheel = function() {
@@ -2209,7 +2181,7 @@ define([
     };
 
     self.resetSvg();
-    self.zoomObj = d3.zoom().scaleExtent([0.7, Infinity]);
+    self.zoomObj = d3.zoom();
 
     self.lastk = 1;
 

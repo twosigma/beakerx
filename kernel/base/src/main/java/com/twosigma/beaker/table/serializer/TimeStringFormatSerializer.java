@@ -25,6 +25,11 @@ import java.io.IOException;
 
 public class TimeStringFormatSerializer extends JsonSerializer<TimeStringFormat> {
 
+  public static final String TYPE = "type";
+  public static final String VALUE_TIME = "time";
+  public static final String UNIT = "unit";
+  public static final String HUMAN_FRIENDLY = "humanFriendly";
+
   @Override
   public void serialize(TimeStringFormat value,
                         JsonGenerator jgen,
@@ -33,9 +38,9 @@ public class TimeStringFormatSerializer extends JsonSerializer<TimeStringFormat>
 
     synchronized (value) {
       jgen.writeStartObject();
-      jgen.writeObjectField("type", "time");
-      jgen.writeObjectField("unit", value.getUnit());
-      jgen.writeObjectField("humanFriendly", value.getHumanFriendly());
+      jgen.writeObjectField(TYPE, VALUE_TIME);
+      jgen.writeObjectField(UNIT, value.getUnit());
+      jgen.writeObjectField(HUMAN_FRIENDLY, value.getHumanFriendly());
       jgen.writeEndObject();
     }
   }

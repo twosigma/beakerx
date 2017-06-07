@@ -27,6 +27,10 @@ import java.util.List;
 public class CategoryPlotSerializer extends AbstractChartSerializer<CategoryPlot> {
 
   public static final String GRAPHICS_LIST = "graphics_list";
+  public static final String CATEGORY_NAMES = "categoryNames";
+  public static final String ORIENTATION = "orientation";
+  public static final String CATEGORY_MARGIN = "category_margin";
+  public static final String CATEGORY_NAMES_LABEL_ANGLE = "categoryNamesLabelAngle";
 
   @Override
   public void serialize(CategoryPlot categoryPlot, JsonGenerator jgen, SerializerProvider provider) throws
@@ -38,7 +42,7 @@ public class CategoryPlotSerializer extends AbstractChartSerializer<CategoryPlot
 
     List<String> categoryNames = categoryPlot.getCategoryNames();
     if (categoryNames != null) {
-      jgen.writeObjectField("categoryNames", categoryNames);
+      jgen.writeObjectField(CATEGORY_NAMES, categoryNames);
     }
     List<CategoryGraphics> categoryGraphicsList = categoryPlot.getGraphics();
     if (categoryGraphicsList != null) {
@@ -48,9 +52,9 @@ public class CategoryPlotSerializer extends AbstractChartSerializer<CategoryPlot
       jgen.writeObjectField(GRAPHICS_LIST, categoryGraphicsList);
     }
 
-    jgen.writeObjectField("orientation", categoryPlot.getOrientation());
-    jgen.writeObjectField("category_margin", categoryPlot.getCategoryMargin());
-    jgen.writeObjectField("categoryNamesLabelAngle", categoryPlot.getCategoryNamesLabelAngle());
+    jgen.writeObjectField(ORIENTATION, categoryPlot.getOrientation());
+    jgen.writeObjectField(CATEGORY_MARGIN, categoryPlot.getCategoryMargin());
+    jgen.writeObjectField(CATEGORY_NAMES_LABEL_ANGLE, categoryPlot.getCategoryNamesLabelAngle());
 
 
     jgen.writeEndObject();

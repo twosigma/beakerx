@@ -29,14 +29,17 @@ import java.io.IOException;
  */
 public class LegendPositionSerializer extends JsonSerializer<LegendPosition> {
 
+  public static final String TYPE = "type";
+  public static final String POSITION = "position";
+
   @Override
   public void serialize(LegendPosition legendPosition, JsonGenerator jgen, SerializerProvider sp)
     throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
-    jgen.writeObjectField("type", legendPosition.getClass().getSimpleName());
+    jgen.writeObjectField(TYPE, legendPosition.getClass().getSimpleName());
     if (legendPosition.getPosition() != null) {
-      jgen.writeObjectField("position", legendPosition.getPosition().name());
+      jgen.writeObjectField(POSITION, legendPosition.getPosition().name());
     }else{
       jgen.writeObjectField("x", legendPosition.getX());
       jgen.writeObjectField("y", legendPosition.getY());

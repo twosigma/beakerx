@@ -25,7 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CsvPlotReader {
-  private static String TIME_COLUMN = "time";
+
+  public static String TIME_COLUMN = "time";
 
   public List<Map<?, ?>> convert(Table table) {
     List<Map<?, ?>> result = new ArrayList<>();
@@ -53,28 +54,28 @@ public class CsvPlotReader {
     return convert(Table.createFromCsv(fileName));
   }
 
-  private Object convertToNumber(Object value){
-    if(value instanceof String && NumberUtils.isNumber((String) value)){
-      return Float.parseFloat((String)value);
+  private Object convertToNumber(Object value) {
+    if (value instanceof String && NumberUtils.isNumber((String) value)) {
+      return Float.parseFloat((String) value);
     } else {
       return value;
     }
   }
 
-  private Object convertDate(Object x){
-    if(x instanceof Number){
+  private Object convertDate(Object x) {
+    if (x instanceof Number) {
       return x;
     } else if (x instanceof Date) {
-      Date date = (Date)x;
-      return date.getTime();
-    } else if (x instanceof String){
+      Date date = (Date) x;
+      return date;
+    } else if (x instanceof String) {
       Date inputDate = null;
       try {
-        inputDate = new SimpleDateFormat("yyyy-MM-dd").parse((String)x);
+        inputDate = new SimpleDateFormat("yyyy-MM-dd").parse((String) x);
       } catch (ParseException e) {
         throw new IllegalArgumentException("time column accepts String date in a following format yyyy-MM-dd");
       }
-      return inputDate.getTime();
+      return inputDate;
     } else {
       throw new IllegalArgumentException("time column accepts numbers or java.util.Date objects or String date in a following format yyyy-MM-dd");
     }

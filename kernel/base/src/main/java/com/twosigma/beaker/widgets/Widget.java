@@ -97,14 +97,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     }
   }
 
-  public void beforeDisplay() {
-    //nothing to do in jupyter widgets.
-    //should be removed in the future.
-  }
-
   @Override
   public void display() {
-    beforeDisplay();
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, DISPLAY);
     getComm().setData(content);

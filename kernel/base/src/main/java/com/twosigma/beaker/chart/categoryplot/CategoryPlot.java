@@ -17,6 +17,7 @@
 package com.twosigma.beaker.chart.categoryplot;
 
 import com.twosigma.beaker.chart.AbstractChart;
+import com.twosigma.beaker.chart.ChartToJson;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
 import java.util.ArrayList;
@@ -57,9 +58,11 @@ public class CategoryPlot extends AbstractChart {
 
   public CategoryPlot add(CategoryGraphics graphics) {
     this.categoryGraphics.add(graphics);
+    sendModelUpdate(ChartToJson.serializeCategoryGraphics(this.categoryGraphics));
     return this;
   }
 
+  @Override
   public CategoryPlot add(List items) {
     for (Object o : items) {
       if (o instanceof CategoryGraphics) {
@@ -77,6 +80,7 @@ public class CategoryPlot extends AbstractChart {
 
   public CategoryPlot setCategoryNames(List<String> categoryNames) {
     this.categoryNames = categoryNames;
+    sendModelUpdate(ChartToJson.serializeCategoryNames(this.categoryNames));
     return this;
   }
 
@@ -90,6 +94,7 @@ public class CategoryPlot extends AbstractChart {
 
   public void setOrientation(PlotOrientationType orientation) {
     this.orientation = orientation;
+    sendModelUpdate(ChartToJson.serializePlotOrientationType(this.orientation));
   }
 
   public double getCategoryMargin() {
@@ -98,6 +103,7 @@ public class CategoryPlot extends AbstractChart {
 
   public void setCategoryMargin(double categoryMargin) {
     this.categoryMargin = categoryMargin;
+    sendModelUpdate(ChartToJson.serializeCategoryMargin(this.categoryMargin));
   }
 
   public double getCategoryNamesLabelAngle() {
@@ -106,5 +112,6 @@ public class CategoryPlot extends AbstractChart {
 
   public void setCategoryNamesLabelAngle(double categoryNamesLabelAngle) {
     this.categoryNamesLabelAngle = categoryNamesLabelAngle;
+    sendModelUpdate(ChartToJson.serializeCategoryNamesLabelAngle(this.categoryNamesLabelAngle));
   }
 }

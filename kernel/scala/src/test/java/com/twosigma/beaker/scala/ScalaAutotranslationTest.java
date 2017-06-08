@@ -55,14 +55,13 @@ public class ScalaAutotranslationTest {
   public void createStringInBeakerObject() throws Exception {
     //given
     String code = "beaker.x = \"Strings work fine\"\n";
-
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
-    //when
-    scalaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
-    //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    SimpleEvaluationObject seo = runCode(code);
     assertThat(seo.getPayload()).isNotNull();
+    //when
+    String code2 = "beaker.x";
+    SimpleEvaluationObject seo2 = runCode(code2);
+    //then
+    assertThat(seo2.getPayload()).isEqualTo("Strings work fine");
   }
 
   @Test
@@ -87,13 +86,18 @@ public class ScalaAutotranslationTest {
             "    links += Map(\"source\" -> source, \"target\" -> target, \"value\" -> (value*value))\n" +
             "}\n" +
             "beaker.graph = Map(\"nodes\" -> nodes, \"links\" -> links)";
-
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
-    scalaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    SimpleEvaluationObject seo = runCode(code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
     assertThat(seo.getPayload()).isNotNull();
   }
+
+  private SimpleEvaluationObject runCode(String code) throws InterruptedException {
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    scalaEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+    assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    return seo;
+  }
+
 }

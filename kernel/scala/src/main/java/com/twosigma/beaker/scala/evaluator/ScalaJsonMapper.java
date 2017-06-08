@@ -21,6 +21,9 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule;
 import java.io.IOException;
 import java.io.StringWriter;
 
+/**
+ * Used in object beaker extends Dynamic to convert object to json
+ */
 public class ScalaJsonMapper {
 
   private static ObjectMapper mapper = new ObjectMapper();
@@ -29,9 +32,6 @@ public class ScalaJsonMapper {
     mapper.registerModule(new DefaultScalaModule());
   }
 
-  /**
-   * Used in object beaker extends Dynamic to convert object to json
-   */
   public static String toJson(Object obj) {
     StringWriter out = new StringWriter();
     try {
@@ -42,13 +42,11 @@ public class ScalaJsonMapper {
     return out.toString();
   }
 
-  public static String fromJson(String obj) {
-    StringWriter out = new StringWriter();
+  public static Object fromJson(String obj) {
     try {
-      mapper.readValue(obj, Object.class);
+      return mapper.readValue(obj, Object.class);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    return out.toString();
   }
 }

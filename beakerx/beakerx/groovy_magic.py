@@ -32,7 +32,7 @@ class GroovyMagics(Magics):
 
         try:
             self.kc.wait_for_ready()
-            print("Groovy stated successfully \n")
+            print("Groovy started successfully\n")
         except AttributeError:
             self._wait_for_ready_backport()
 

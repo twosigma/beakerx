@@ -95,11 +95,16 @@ define([
     this.legendDone = false;
     this.legendResetPosition = false;
     this.doNotLoadState = false;
-    self.saveAsMenuContainer = null;
+    this.saveAsMenuContainer = null;
 
     this.data2scrX = null;
     this.data2scrY = null;
+    this.plotDisplayModel = null;
   }
+  
+  PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
+    this.plotDisplayModel = plotDisplayModel;
+  };
 
   PlotScope.prototype.initLayout = function() {
     var self = this;
@@ -342,7 +347,7 @@ define([
   };
 
   PlotScope.prototype.emitSizeChange = function() {
-    if (this.model.updateWidth !== null) {
+    if (this.model.updateWidth !== null && this.model.updateWidth !== undefined) {
       this.model.updateWidth(this.width);
     } // not stdmodel here
 
@@ -472,10 +477,16 @@ define([
               function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
               function () { console.error('set action details error'); } );
           } else {
-            plotService.setActionDetails(plotId, data.uid, this.model.getEvaluatorId(),
-              plotUtils.getActionObject(this.model.getCellModel().type, item)).then(
-              function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
-              function () { console.error('set action details error'); });
+            var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
+          	params.actionType = 'onkey';
+          	params.key = key;
+          	params.tag = data.keyTags[key];
+          	this.plotDisplayModel.send({
+            	event: 'actiondetails', 
+            	plotId: plotId,
+            	itemId: data.uid, 
+            	params: params
+            	});
           }
         } else if (data.keys != null && data.keys.indexOf(key) > -1) {
           this.legendDone = false;
@@ -484,10 +495,9 @@ define([
           if (this.model.onKey) {
             this.model.onKey(key, plotId, data, item);
           } else {
-            plotService.onKey(plotId, data.uid, this.model.getEvaluatorId(), {
-              key: key,
-              actionObject: plotUtils.getActionObject(this.model.getCellModel().type, item)
-            });
+          	var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
+          	params.key = key;
+          	this.plotDisplayModel.send({event: 'onkey', plotId: plotId, itemId: data.uid, params: params});
           }
         }
       }
@@ -520,13 +530,15 @@ define([
                   function () { console.error('set action details error'); }
                 );
               } else {
-                plotService.setActionDetails( plotId,
-                  item.uid,
-                  self.model.getEvaluatorId(),
-                  plotUtils.getActionObject(self.model.getCellModel().type, e)).then(
-                  function () { plotUtils.evaluateTagCell(item.clickTag); },
-                  function () { console.error('set action details error'); }
-                );
+              	var params = plotUtils.getActionObject(self.model.getCellModel().type, e);
+              	params.actionType = 'onclick';
+              	params.tag = item.clickTag;
+                self.plotDisplayModel.send({
+                	event: 'actiondetails', 
+                	plotId: plotId,
+                	itemId: item.uid, 
+                	params: params
+                	});
               }
             }else{
               self.legendDone = false;
@@ -536,8 +548,7 @@ define([
                 self.model.onClick(plotId, item, e);
                 return;
               } else {
-                plotService.onClick(plotId, item.uid, self.model.getEvaluatorId(),
-                  plotUtils.getActionObject(self.model.getCellModel().type, e));
+               	self.plotDisplayModel.send({event: 'onclick', plotId: plotId, itemId: item.uid, params: plotUtils.getActionObject(self.model.getCellModel().type, e)});
               }
             }
           }
@@ -2129,6 +2140,8 @@ define([
         items: plotUtils.getSavePlotAsContextMenuItems(self),
         trigger: 'none'
       });
+    } else if (self.model && self.model.getSaveAsMenuContainer) {
+      self.saveAsMenuContainer = self.model.getSaveAsMenuContainer();
     }
 
     var plotContainer = self.element.find('.plot-plotcontainer');
@@ -2193,6 +2206,50 @@ define([
     self.initZoom();
     self._defaultZoomWheelFn = self.svg.on('wheel.zoom');
     self.disableZoomWheel();
+
+    self.calcRange();
+
+
+    // init copies focus to defaultFocus, called only once
+    if(_.isEmpty(self.focus)){
+      _.extend(self.focus, self.defaultFocus);
+    }
+
+    // init remove pipe
+    self.removePipe = [];
+
+    self.calcMapping();
+
+    self.legendDone = false;
+    self.update();
+
+    self.fillCellModelWithPlotMethods();
+  };
+
+  PlotScope.prototype.updatePlot = function() {
+    var self = this;
+
+    // first standardize data
+    self.standardizeData();
+    // init flags
+    self.initFlags();
+
+    // see if previous state can be applied
+    self.focus = {};
+
+    if (!self.model.getCellModel().tips) {
+      self.model.getCellModel().tips = {};
+    }
+
+    self.tips = self.model.getCellModel().tips;
+    self.plotSize = {};
+
+    _.extend(self.plotSize, self.stdmodel.plotSize);
+
+    // create layout elements
+    self.initLayout();
+
+    self.resetSvg();
 
     self.calcRange();
 
@@ -2484,6 +2541,13 @@ define([
 
     if (self.model.getCellModel().type === "TreeMap"){
       bkoChartExtender.extend(self, self.element);
+    }
+  };
+
+  // update model with partial model data
+  PlotScope.prototype.updateModelData = function(data) {
+    if (this.model && this.model.model && data) {
+      this.model.model = _.extend(this.model.model, data);
     }
   };
 

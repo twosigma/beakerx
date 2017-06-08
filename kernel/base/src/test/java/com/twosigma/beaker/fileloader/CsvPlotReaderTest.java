@@ -28,34 +28,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CsvPlotReaderTest {
 
   private static final boolean IS_WINDOWS = System.getProperty("os.name").contains("indow");
+  public static final String TABLE_ROWS_TEST_CSV = "tableRowsTest.csv";
 
   @Test
   public void shouldReturnDataForPlot() throws Exception {
     //given
     CsvPlotReader reader = new CsvPlotReader();
     //when
-    Table values = reader.read(getOsAppropriatePath("tableRowsTest.csv"));
+    Table values = reader.read(getOsAppropriatePath(getClass().getClassLoader(), "tableRowsTest.csv"));
     //then
     assertThat(reader.convert(values).get(2).get("m3")).isEqualTo(8.0f);
     assertThat(reader.convert(values).get(2).get("time"))
-        .isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31").getTime());
+            .isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31"));
   }
 
   @Test
   public void shouldReturnDataAsListForPlot() throws Exception {
     //when
     List<Map<?, ?>> values =
-        new CsvPlotReader().readAsList(getOsAppropriatePath("tableRowsTest.csv"));
+            new CsvPlotReader().readAsList(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
     //then
     assertThat(values.get(2).get("m3")).isEqualTo(8.0f);
     assertThat(values.get(2).get("time"))
-        .isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31").getTime());
+            .isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31"));
   }
 
-  private String getOsAppropriatePath(String fileName) throws Exception {
-    URI uriToFile = getClass().getClassLoader().getResource(fileName).toURI();
+  public static String getOsAppropriatePath(ClassLoader classLoader, String fileName) throws Exception {
+    URI uriToFile = classLoader.getResource(fileName).toURI();
     return IS_WINDOWS
-        ? uriToFile.getSchemeSpecificPart().substring(1)
-        : uriToFile.getSchemeSpecificPart();
+            ? uriToFile.getSchemeSpecificPart().substring(1)
+            : uriToFile.getSchemeSpecificPart();
   }
 }

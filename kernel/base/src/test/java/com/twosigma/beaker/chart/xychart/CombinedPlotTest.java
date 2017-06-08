@@ -24,15 +24,22 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+
+import static com.twosigma.beaker.widgets.TestWidgetUtils.findValueForProperty;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CombinedPlotTest {
 
-  CombinedPlot combinedPlot;
+  private CombinedPlot combinedPlot;
+  private KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
-    KernelManager.register(new KernelTest());
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
     combinedPlot = new CombinedPlot();
+    combinedPlot.display();
   }
 
   @After
@@ -41,13 +48,28 @@ public class CombinedPlotTest {
   }
 
   @Test
+  public void shouldSendCommMsgWhenAddPlotByLeftShift() throws Exception {
+    //given
+    Plot plot = new Plot();
+    //when
+    combinedPlot.leftShift(plot);
+    //then
+    verifyModel();
+  }
+
+  private void verifyModel() {
+    LinkedHashMap model = findValueForProperty(kernel, XYChart.MODEL, LinkedHashMap.class);
+    assertThat(model).isNotNull();
+  }
+
+  @Test
   public void addTwoPlotsToCombinedPlot_hasSubplotsSizeIsTwoAndWeightListSizeIsTwo() {
     //when
     combinedPlot.add(new Plot());
     combinedPlot.add(new Plot());
     //then
-    Assertions.assertThat(combinedPlot.getSubplots().size()).isEqualTo(2);
-    Assertions.assertThat(combinedPlot.getWeights().size()).isEqualTo(2);
+    assertThat(combinedPlot.getSubplots().size()).isEqualTo(2);
+    assertThat(combinedPlot.getWeights().size()).isEqualTo(2);
   }
 
   @Test
@@ -56,8 +78,8 @@ public class CombinedPlotTest {
     combinedPlot.add(new Plot(), 3);
     combinedPlot.add(new Plot(), 3);
     //then
-    Assertions.assertThat(combinedPlot.getSubplots().size()).isEqualTo(2);
-    Assertions.assertThat(combinedPlot.getWeights().size()).isEqualTo(2);
+    assertThat(combinedPlot.getSubplots().size()).isEqualTo(2);
+    assertThat(combinedPlot.getWeights().size()).isEqualTo(2);
   }
 
   @Test
@@ -67,7 +89,7 @@ public class CombinedPlotTest {
     combinedPlot.add(new Plot(), 1);
     combinedPlot.leftShift(plot);
     //then
-    Assertions.assertThat(combinedPlot.getSubplots().get(1)).isEqualTo(plot);
+    assertThat(combinedPlot.getSubplots().get(1)).isEqualTo(plot);
   }
 
   @Test
@@ -77,7 +99,7 @@ public class CombinedPlotTest {
     combinedPlot.add(new Plot(), 1);
     combinedPlot.leftShift(Arrays.asList(plot, 3));
     //then
-    Assertions.assertThat(combinedPlot.getSubplots().get(1)).isEqualTo(plot);
+    assertThat(combinedPlot.getSubplots().get(1)).isEqualTo(plot);
   }
 
 }

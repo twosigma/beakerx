@@ -25,13 +25,17 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 public class DateSerializer extends JsonSerializer<Date> {
 
+  public static final String TYPE = "type";
+  public static final String VALUE_DATE = "Date";
+  public static final String TIMESTAMP = "timestamp";
+
   @Override
   public void serialize(Date v, JsonGenerator jgen, SerializerProvider provider)
       throws IOException, JsonProcessingException {
     synchronized(v) {
       jgen.writeStartObject();
-      jgen.writeStringField("type",  "Date");      
-      jgen.writeNumberField("timestamp", v.getTime());
+      jgen.writeStringField(TYPE, VALUE_DATE);
+      jgen.writeNumberField(TIMESTAMP, v.getTime());
       jgen.writeEndObject();
     }
   }

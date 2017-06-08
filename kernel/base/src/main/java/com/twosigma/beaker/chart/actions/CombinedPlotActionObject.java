@@ -16,6 +16,8 @@
 package com.twosigma.beaker.chart.actions;
 
 public class CombinedPlotActionObject extends XYGraphicsActionObject {
+  
+  private static final long serialVersionUID = -7537934020334107816L;
   private int subplotIndex;
 
   public int getSubplotIndex() {
@@ -25,4 +27,5 @@ public class CombinedPlotActionObject extends XYGraphicsActionObject {
   public void setSubplotIndex(int subplotIndex) {
     this.subplotIndex = subplotIndex;
   }
+  
 }

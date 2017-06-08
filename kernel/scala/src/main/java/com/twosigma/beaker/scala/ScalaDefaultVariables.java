@@ -23,5 +23,10 @@ import com.twosigma.beaker.DefaultJVMVariables;
  *
  */
 public class ScalaDefaultVariables extends DefaultJVMVariables {
-  
+
+    public ScalaDefaultVariables() {
+      addImports("com.twosigma.beaker.scala.chart.xychart._",
+          "com.twosigma.beaker.scala.chart.xychart.plotitem._",
+          "com.twosigma.beaker.scala.easyform.EasyForm");
+    }
 }

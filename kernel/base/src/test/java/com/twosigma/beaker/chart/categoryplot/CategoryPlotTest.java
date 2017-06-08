@@ -16,45 +16,112 @@
 
 package com.twosigma.beaker.chart.categoryplot;
 
+import com.twosigma.beaker.chart.AbstractChartTest;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryGraphics;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryLines;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryPoints;
 import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryStems;
+import com.twosigma.beaker.chart.serializer.CategoryPlotSerializer;
 import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.KernelTest;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
-public class CategoryPlotTest {
+import static com.twosigma.beaker.chart.serializer.CategoryPlotSerializer.CATEGORY_MARGIN;
+import static com.twosigma.beaker.chart.serializer.CategoryPlotSerializer.CATEGORY_NAMES;
+import static com.twosigma.beaker.chart.serializer.CategoryPlotSerializer.CATEGORY_NAMES_LABEL_ANGLE;
+import static com.twosigma.beaker.chart.serializer.CategoryPlotSerializer.GRAPHICS_LIST;
+import static com.twosigma.beaker.chart.serializer.CategoryPlotSerializer.ORIENTATION;
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class CategoryPlotTest extends AbstractChartTest<CategoryPlot> {
 
   Integer[] array1, array2;
   CategoryGraphics categoryBars, categoryLines, categoryPoints, categoryStems;
 
   @Before
   public void initStubData() {
-    array1 = new Integer[] {new Integer(1), new Integer(2)};
-    array2 = new Integer[] {new Integer(3), new Integer(4)};
+    array1 = new Integer[]{new Integer(1), new Integer(2)};
+    array2 = new Integer[]{new Integer(3), new Integer(4)};
     categoryBars = new CategoryBars();
-    categoryBars.setValue(new List[] {Arrays.asList(array1), Arrays.asList(array2)});
+    categoryBars.setValue(new List[]{Arrays.asList(array1), Arrays.asList(array2)});
     categoryLines = new CategoryLines();
-    categoryLines.setValue(new List[] {Arrays.asList(array1), Arrays.asList(array2)});
+    categoryLines.setValue(new List[]{Arrays.asList(array1), Arrays.asList(array2)});
     categoryPoints = new CategoryPoints();
-    categoryPoints.setValue(new List[] {Arrays.asList(array1), Arrays.asList(array2)});
+    categoryPoints.setValue(new List[]{Arrays.asList(array1), Arrays.asList(array2)});
     categoryStems = new CategoryStems();
-    categoryStems.setValue(new List[] {Arrays.asList(array1), Arrays.asList(array2)});
-    KernelManager.register(new KernelTest());
+    categoryStems.setValue(new List[]{Arrays.asList(array1), Arrays.asList(array2)});
   }
 
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
+  @Test
+  public void shouldSendCommMsgWhenCategoryNamesLabelAngleChange() throws Exception {
+    //given
+    CategoryPlot plot = createWidget();
+    //when
+    plot.setCategoryNamesLabelAngle(22.2);
+    //then
+    assertThat(plot.getCategoryNamesLabelAngle()).isEqualTo(22.2);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    assertThat(model.get(CATEGORY_NAMES_LABEL_ANGLE)).isEqualTo(22.2);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenCategoryMarginChange() throws Exception {
+    //given
+    CategoryPlot plot = createWidget();
+    //when
+    plot.setCategoryMargin(11.1);
+    //then
+    assertThat(plot.getCategoryMargin()).isEqualTo(11.1);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    assertThat(model.get(CATEGORY_MARGIN)).isEqualTo(11.1);
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenOrientationChange() throws Exception {
+    //given
+    CategoryPlot plot = createWidget();
+    //when
+    plot.setOrientation(PlotOrientationType.HORIZONTAL);
+    //then
+    assertThat(plot.getOrientation()).isEqualTo(PlotOrientationType.HORIZONTAL);
+    LinkedHashMap model = getModelUpdate();
+    assertThat(model.size()).isEqualTo(1);
+    assertThat(model.get(ORIENTATION)).isEqualTo(PlotOrientationType.HORIZONTAL.toString());
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenAddCategoryNamesByLeftShift() throws Exception {
+    //given
+    CategoryPlot plot = createWidget();
+    List<String> names = Arrays.asList("name1");
+    //when
+    plot.setCategoryNames(names);
+    //then
+    assertThat(plot.getCategoryNames()).isEqualTo(names);
+    List valueAsArray = getValueAsArray(CATEGORY_NAMES);
+    assertThat(valueAsArray).isNotEmpty();
+  }
+
+  @Test
+  public void shouldSendCommMsgWhenAddCategoryBarsByLeftShift() throws Exception {
+    //given
+    CategoryPlot plot = createWidget();
+    CategoryBars graphics = new CategoryBars();
+    //when
+    plot.leftShift(graphics);
+    //then
+    assertThat(plot.getGraphics().get(0)).isEqualTo(graphics);
+    List valueAsArray = getValueAsArray(CategoryPlotSerializer.GRAPHICS_LIST);
+    assertThat(valueAsArray).isNotEmpty();
   }
 
   @Test
@@ -84,8 +151,7 @@ public class CategoryPlotTest {
   }
 
   @Test
-  public void
-      threeCallsLeftShiftWithCategoryBarsPointsAndStemsParam_hasCategoryGraphicsListSizeIsThree() {
+  public void threeCallsLeftShiftWithCategoryBarsPointsAndStemsParam_hasCategoryGraphicsListSizeIsThree() {
     //when
     CategoryPlot categoryPlot = new CategoryPlot();
     categoryPlot.leftShift(categoryBars).leftShift(categoryPoints).leftShift(categoryStems);
@@ -100,5 +166,13 @@ public class CategoryPlotTest {
     categoryPlot.leftShift(categoryLines);
     //then
     Assertions.assertThat(categoryPlot.getGraphics().size()).isEqualTo(1);
+  }
+
+  @Override
+  public CategoryPlot createWidget() {
+    CategoryPlot categoryPlot = new CategoryPlot();
+    categoryPlot.display();
+    kernel.clearMessages();
+    return categoryPlot;
   }
 }

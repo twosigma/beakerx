@@ -29,6 +29,8 @@ import java.util.List;
 
 public class ConstantBandSerializer extends JsonSerializer<ConstantBand> {
 
+  public static final String TYPE = "type";
+
   @Override
   public void serialize(ConstantBand constantBand, JsonGenerator jgen, SerializerProvider sp)
     throws IOException, JsonProcessingException {
@@ -36,7 +38,7 @@ public class ConstantBandSerializer extends JsonSerializer<ConstantBand> {
     jgen.writeStartObject();
 
     boolean isNanoPlot = NanoPlot.class.equals(constantBand.getPlotType());
-    jgen.writeObjectField("type", constantBand.getClass().getSimpleName());
+    jgen.writeObjectField(TYPE, constantBand.getClass().getSimpleName());
     jgen.writeObjectField("x", isNanoPlot ? processLargeNumbers(constantBand.getX()) : constantBand.getX());
     jgen.writeObjectField("y", constantBand.getY());
     jgen.writeObjectField("visible", constantBand.getVisible());

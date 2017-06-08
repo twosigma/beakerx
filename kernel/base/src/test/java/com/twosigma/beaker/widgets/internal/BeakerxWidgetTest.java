@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeakerxWidgetTest {
@@ -52,18 +51,6 @@ public class BeakerxWidgetTest {
     assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(BeakerxWidget.VIEW_MODULE_VALUE);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
-  }
-
-  @Test
-  public void shouldSendCommMsgForSendModelForAllClassesWhichImplementInternalWidgetInterface() throws Exception {
-    new BeakerxWidgetTestRunner().test((clazz, groovyKernel) -> {
-      BeakerxWidget widget = clazz.newInstance();
-      //when
-      widget.beforeDisplay();
-      //then
-      String valueForProperty = getValueForProperty(groovyKernel.getPublishedMessages().get(1), BeakerxWidget.MODEL, String.class);
-      assertThat(valueForProperty).isNotNull();
-    });
   }
 
 }

@@ -30,12 +30,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  */
 public class CrosshairSerializer extends JsonSerializer<Crosshair>{
 
+  public static final String TYPE = "type";
+
   @Override
   public void serialize(Crosshair crosshair, JsonGenerator jgen, SerializerProvider sp)
       throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
-    jgen.writeObjectField("type", crosshair.getClass().getSimpleName());
+    jgen.writeObjectField(TYPE, crosshair.getClass().getSimpleName());
     if (crosshair.getColor() instanceof Color) {
       jgen.writeObjectField("color", crosshair.getColor());
     }

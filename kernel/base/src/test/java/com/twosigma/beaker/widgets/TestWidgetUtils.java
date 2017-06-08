@@ -20,6 +20,7 @@ import com.twosigma.beaker.jupyter.SearchMessages;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.jupyter.message.Message;
+import org.junit.Assert;
 
 import java.io.Serializable;
 import java.util.List;
@@ -63,14 +64,18 @@ public class TestWidgetUtils {
   }
 
   public static void verifyInternalOpenCommMsgWitLayout(List<Message> messages, String modelNameValue, String viewNameValue) {
+    verifyInternalOpenCommMsgWitLayout(messages, modelNameValue, viewNameValue, BeakerxWidget.MODEL_MODULE_VALUE, BeakerxWidget.VIEW_MODULE_VALUE);
+  }
+  
+  public static void verifyInternalOpenCommMsgWitLayout(List<Message> messages, String modelNameValue, String viewNameValue, String modelModule, String viewModule) {
     Message widget = SearchMessages.getListWidgetsByViewName(messages, viewNameValue).get(0);
     Message layout = SearchMessages.getLayoutForWidget(messages, widget);
 
     verifyTypeMsg(widget,COMM_OPEN);
     Map data = getData(widget);
     assertThat(data.get(Layout.LAYOUT)).isEqualTo(Layout.IPY_MODEL + layout.getContent().get(Comm.COMM_ID));
-    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(BeakerxWidget.MODEL_MODULE_VALUE);
-    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(BeakerxWidget.VIEW_MODULE_VALUE);
+    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(modelModule);
+    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(viewModule);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
@@ -118,5 +123,10 @@ public class TestWidgetUtils {
     assertThat(result.get(0)).isNotNull();
   }
 
+  public static <T> T findValueForProperty(KernelTest kernel, String propertyName, Class<T> clazz) {
+    List<Message> messages = SearchMessages.getListByDataAttr(kernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
+    Assert.assertTrue("No update comm message.",messages.size()>0);
+    return getValueForProperty(messages.get(0), propertyName, clazz);
+  }
 
 }

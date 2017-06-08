@@ -49,7 +49,7 @@ public class ButtonTest {
     //when
     new Button();
     //then
-    verifyInternalOpenCommMsgWitLayout(groovyKernel.getPublishedMessages(), Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(groovyKernel.getPublishedMessages(), Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE, Widget.MODEL_MODULE_VALUE, Widget.VIEW_MODULE_VALUE);
   }
 
   @Test

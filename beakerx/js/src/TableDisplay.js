@@ -16,6 +16,7 @@
 
 var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
+var $ = require('jquery');
 
 var TableScope = require('./tableDisplay/tableScope');
 
@@ -43,6 +44,8 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   render: function() {
     var that = this;
 
+    this._currentScope = null;
+
     this.$el.addClass('beaker-table-display');
 
     this.displayed.then(function() {
@@ -54,17 +57,28 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     });
   },
 
+  update: function() {
+    TableDisplayView.__super__.update.apply(this);
+
+    var tableModelUpdateData = this.model.get('model');
+
+    this._currentScope.updateModelData(tableModelUpdateData);
+    this._currentScope.doResetAll();
+  },
+
   initTableDisplay: function(data) {
-    var currentScope = new TableScope('wrap_'+this.id);
-    var tmpl = currentScope.buildTemplate();
+    this._currentScope = new TableScope('wrap_'+this.id);
+    var tmpl = this._currentScope.buildTemplate();
     var tmplElement = $(tmpl);
 
     tmplElement.appendTo(this.$el);
 
-    currentScope.setModelData(data);
-    currentScope.setElement(tmplElement.children('.dtcontainer'));
-    currentScope.enableJupyterKeyHandler();
-    currentScope.run();
+    this._currentScope.setWidgetModel(this.model);
+    this._currentScope.setModelData(data);
+    this._currentScope.setElement(tmplElement.children('.dtcontainer'));
+    this._currentScope.enableJupyterKeyHandler();
+    this._currentScope.run();
+    this._currentScope.initColumLimitModal();
   },
 
   showWarning: function(data) {
@@ -78,6 +92,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     var tmplElement = $(tmpl);
     tmplElement.appendTo(this.$el);
   }
+
 });
 
 

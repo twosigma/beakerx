@@ -17,20 +17,19 @@
 package com.twosigma.beaker.chart.actions;
 
 import com.twosigma.beaker.chart.Graphics;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.twosigma.beaker.widgets.Widget.CommActions;
 
 import java.io.Serializable;
 
-@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="@type")
-@JsonSubTypes({
-  @JsonSubTypes.Type(value = CategoryGraphicsActionObject.class, name = "categoryActionObject"),
-  @JsonSubTypes.Type(value = XYGraphicsActionObject.class, name = "xyActionObject"),
-  @JsonSubTypes.Type(value = CombinedPlotActionObject.class, name = "combinedActionObject")
-})
 public abstract class GraphicsActionObject implements Serializable{
 
+  private static final long serialVersionUID = -1010209669334228815L;
+  
   private Graphics graphics;
+  private CommActions actionType;
+  private String key;
+  private String tag;
+
 
   public Graphics getGraphics() {
     return graphics;
@@ -38,6 +37,30 @@ public abstract class GraphicsActionObject implements Serializable{
 
   public void setGraphics(Graphics graphics) {
     this.graphics = graphics;
+  }
+
+  public CommActions getActionType() {
+    return actionType;
+  }
+
+  public void setActionType(CommActions actionType) {
+    this.actionType = actionType;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
+  }
+
+  public String getTag() {
+    return tag;
+  }
+
+  public void setTag(String tag) {
+    this.tag = tag;
   }
 
 }

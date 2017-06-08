@@ -44,6 +44,7 @@ import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForRe
 import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
 import static com.twosigma.beaker.jupyter.comm.Comm.DATA;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
+import static com.twosigma.beaker.widgets.strings.TextTest.verifyTextField;
 
 public class InteractiveTest {
   private GroovyEvaluator groovyEvaluator;
@@ -66,7 +67,13 @@ public class InteractiveTest {
     //when
     callInteractWithStringParam("\"A\"");
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Text.MODEL_NAME_VALUE, Text.VIEW_NAME_VALUE);
+    verifyTextField(
+      groovyKernel.getPublishedMessages(),
+      Text.MODEL_NAME_VALUE,
+      Text.MODEL_MODULE_VALUE,
+      Text.VIEW_NAME_VALUE,
+      Text.VIEW_MODULE_VALUE
+    );
   }
 
   @Test

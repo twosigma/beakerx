@@ -15,12 +15,12 @@
  */
 package com.twosigma.beaker.widgets;
 
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 public class Button extends ValueWidget<Boolean> {
 
@@ -36,9 +36,7 @@ public class Button extends ValueWidget<Boolean> {
   private String tag;
   private String icon = "";
   private String button_style = ""; 
-  
-  private ActionPerformed actionPerformed = () -> {
-  };
+  private ActionPerformed actionPerformed = null;
 
   public Button() {
     super();
@@ -52,21 +50,11 @@ public class Button extends ValueWidget<Boolean> {
   }
 
   @Override
-  public String getModelModuleValue() {
-    return BeakerxWidget.MODEL_MODULE_VALUE;
-  }
-
-  @Override
-  public String getViewModuleValue() {
-    return BeakerxWidget.VIEW_MODULE_VALUE;
-  }
-
-  @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(TOOLTIP, tooltip);
     content.put(ICON, icon);
-    content.put(BUTTON_STYLE, "");
+    content.put(BUTTON_STYLE, button_style);
     return content;
   }
   
@@ -93,24 +81,21 @@ public class Button extends ValueWidget<Boolean> {
     this.actionPerformed = actionPerformed;
   }
 
-  public interface ActionPerformed {
-    void execute();
-  }
 
   private void handleOnClick(Message message) {
-    if (message.getContent() != null) {
-      Serializable data = message.getContent().get("data");
-      if (data != null && data instanceof LinkedHashMap) {
-        Object contentObject = ((LinkedHashMap) data).get("content");
-        if (contentObject instanceof LinkedHashMap) {
-          Object event = ((LinkedHashMap) contentObject).get("event");
-          if (event.equals("click")) {
-            actionPerformed.execute();
-          }
-        }
-      }
+    handleCommEventSync(message, CommActions.CLICK, (ActionPerformed)this::executeAction);
+  }
+  
+  
+  private void executeAction(HashMap content){
+    if(actionPerformed != null){
+      actionPerformed.executeAction(content);
+    }
+    if(getTag() != null && !getTag().isEmpty()){
+      NamespaceClient.getBeaker().runByTag(getTag());
     }
   }
+
 
   @Override
   public String getModelNameValue() {

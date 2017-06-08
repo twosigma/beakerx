@@ -24,17 +24,31 @@ import org.junit.Test;
 
 public class ColorDeserializerTest {
 
+  private String json = "\"#FF00FF00\"";
+
   @Test
   public void deserialize_resultObjectHasColor() throws Exception {
     //given
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode actualObj = mapper.readTree("\"#FF00FF00\"");
+    JsonNode actualObj = mapper.readTree(json);
     ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
     //when
     Color color = (Color) deserializer.deserialize(actualObj, mapper);
     //then
     Assertions.assertThat(color).isNotNull();
     Assertions.assertThat(color.getRGB()).isEqualTo(Color.GREEN.getRGB());
+  }
+
+  @Test
+  public void canBeUsed_returnTrue() throws Exception {
+    //given
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode actualObj = mapper.readTree(json);
+    ColorDeserializer deserializer = new ColorDeserializer(new BasicObjectSerializer());
+    //when
+    boolean result = deserializer.canBeUsed(actualObj);
+    //then
+    Assertions.assertThat(result).isTrue();
   }
 
 }

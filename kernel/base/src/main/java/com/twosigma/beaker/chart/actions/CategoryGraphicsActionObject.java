@@ -17,6 +17,9 @@
 package com.twosigma.beaker.chart.actions;
 
 public class CategoryGraphicsActionObject extends GraphicsActionObject {
+
+  private static final long serialVersionUID = -5089641975683705334L;
+  
   private int category;
   private int series;
 

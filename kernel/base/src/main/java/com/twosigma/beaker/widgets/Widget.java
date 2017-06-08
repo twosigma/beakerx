@@ -17,11 +17,50 @@ package com.twosigma.beaker.widgets;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
+
+import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
+import com.twosigma.jupyter.message.Message;
 
 public abstract class Widget implements CommFunctionality, DisplayableWidget {
+  
+  public enum CommActions {
+
+    ONDOUBLECLICK("ondoubleclick"),
+    ONCLICK("onclick"),
+    ONKEY("onkey"),
+    ACTIONDETAILS("actiondetails"),
+    ONCONTEXTMENU("oncontextmenu"),
+    CLICK("click");
+
+    private String action;
+
+    CommActions(String action) {
+      this.action = action;
+    }
+
+    public String getAction() {
+      return action;
+    }
+    
+    public static CommActions getByAction(final String input){
+      CommActions ret = null;
+      if(input != null){
+        for (CommActions item : CommActions.values()) {
+          if(item.name().equalsIgnoreCase(input.trim())){
+            ret = item;
+            break;
+          }
+        }
+      }
+      return ret;
+    }
+
+  }
 
   public static final String MODEL_MODULE = "_model_module";
   public static final String MODEL_NAME = "_model_name";
@@ -58,14 +97,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     }
   }
 
-  public void beforeDisplay() {
-    //nothing to do in jupyter widgets.
-    //should be removed in the future.
-  }
-
   @Override
   public void display() {
-    beforeDisplay();
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, DISPLAY);
     getComm().setData(content);
@@ -111,6 +144,32 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
 
   public void sendUpdate(String propertyName, Object value) {
     this.comm.sendUpdate(propertyName, value);
+  }
+  
+  public void handleCommEventSync(Message message, CommActions action, ActionPerformed handlerAction) {
+    wrapBusyIdle(KernelManager.get(), message, () -> {
+      handleCommEvent(message, action, handlerAction);
+    });
+  }
+  
+  private void handleCommEvent(Message message, CommActions action, ActionPerformed handlerAction) {
+    if (message.getContent() != null) {
+      Serializable data = message.getContent().get("data");
+      if (data != null && data instanceof LinkedHashMap) {
+        Object contentObject = ((LinkedHashMap) data).get("content");
+        if (contentObject instanceof LinkedHashMap) {
+          HashMap content = (LinkedHashMap) contentObject;
+          Object event = content.get("event");
+          if (event.equals(action.getAction())) {
+            handlerAction.executeAction(content);
+          }
+        }
+      }
+    }
+  }
+  
+  public interface ActionPerformed {
+    void executeAction(HashMap content);
   }
 
 }

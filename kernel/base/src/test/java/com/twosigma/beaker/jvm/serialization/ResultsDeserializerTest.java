@@ -19,22 +19,42 @@ package com.twosigma.beaker.jvm.serialization;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ResultsDeserializerTest {
 
+  private String json;
+  private boolean payload;
+
+  @Before
+  public void setUp() throws Exception {
+    payload = true;
+    json = "{\"type\":\"Results\",\"payload\":\"" + payload + "\"}";
+  }
+
   @Test
   public void deserialize_resultObjectHasPayload() throws Exception {
     //given
-    boolean payload = true;
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode actualObj = mapper.readTree(
-        "{\"type\":\"Results\",\"payload\":\"" + payload + "\"}");
+    JsonNode actualObj = mapper.readTree(json);
     ResultsDeserializer deserializer = new ResultsDeserializer(new BasicObjectSerializer());
     //when
     Boolean result = (Boolean) deserializer.deserialize(actualObj, mapper);
     //then
     Assertions.assertThat(result).isEqualTo(payload);
+  }
+
+  @Test
+  public void canBeUsed_returnTrue() throws Exception {
+    //given
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode actualObj = mapper.readTree(json);
+    ResultsDeserializer deserializer = new ResultsDeserializer(new BasicObjectSerializer());
+    //when
+    boolean result = deserializer.canBeUsed(actualObj);
+    //then
+    Assertions.assertThat(result).isTrue();
   }
 
 }

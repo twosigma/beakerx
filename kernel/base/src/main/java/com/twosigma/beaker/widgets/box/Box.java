@@ -63,10 +63,4 @@ public abstract class Box extends ValueWidget<String> {
     return getString(input);
   }
 
-
-  @Override
-  public void beforeDisplay() {
-    children.stream().forEach( x -> x.beforeDisplay());
-    super.beforeDisplay();
-  }
 }

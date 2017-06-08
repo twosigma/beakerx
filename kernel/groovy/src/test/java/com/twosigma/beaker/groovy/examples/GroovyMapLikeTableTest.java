@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 package com.twosigma.beaker.groovy.examples;
+import com.twosigma.beaker.groovy.GroovyKernelSetupTest;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.jupyter.message.Message;
 import org.junit.Test;
@@ -23,7 +24,7 @@ import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GroovyMapLikeTableTest extends GroovyExamplesSetupTest {
+public class GroovyMapLikeTableTest extends GroovyKernelSetupTest {
 
   @Test
   public void evaluateMap() throws Exception {

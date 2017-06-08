@@ -16,6 +16,7 @@
 package com.twosigma.beaker.groovy.examples;
 
 import com.twosigma.beaker.easyform.EasyFormView;
+import com.twosigma.beaker.groovy.GroovyKernelSetupTest;
 import com.twosigma.jupyter.message.Message;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GroovyEasyFormTest extends GroovyExamplesSetupTest {
+public class GroovyEasyFormTest extends GroovyKernelSetupTest {
 
   @Test
   public void evaluateEasyForm() throws Exception {

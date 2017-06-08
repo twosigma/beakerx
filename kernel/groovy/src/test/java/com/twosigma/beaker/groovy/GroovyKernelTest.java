@@ -16,47 +16,18 @@
 package com.twosigma.beaker.groovy;
 
 import com.twosigma.beaker.KernelSocketsServiceTest;
-import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.jupyter.KernelParameters;
-import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GroovyKernelTest {
-
-  private GroovyKernel kernel;
-  private KernelSocketsServiceTest kernelSocketsService;
-
-  @Before
-  public void setUp() throws Exception {
-    String sessionId = "sessionId2";
-    GroovyEvaluator evaluator = new GroovyEvaluator(sessionId, sessionId);
-    kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new GroovyKernel(sessionId, evaluator, kernelSocketsService);
-    kernel.setShellOptions(kernelParameters());
-    new Thread(() -> KernelRunner.run(() -> kernel)).start();
-    kernelSocketsService.waitForSockets();
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    kernelSocketsService.shutdown();
-  }
+public class GroovyKernelTest extends GroovyKernelSetupTest {
 
   @Test
   public void evaluate() throws Exception {
@@ -83,16 +54,11 @@ public class GroovyKernelTest {
   private void verifySentMsgs(KernelSocketsServiceTest service) {
     verifyExecuteReplyMessage(service.getReplyMessage());
   }
+
   private void verifyResult(Message result) {
     Map actual = ((Map) result.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
     assertThat(value).isEqualTo("8");
   }
 
-  private KernelParameters kernelParameters() {
-    Map<String, Object> params = new HashMap<>();
-    params.put(IMPORTS, new ArrayList<>());
-    params.put(CLASSPATH, new ArrayList<>());
-    return new KernelParameters(params);
-  }
 }

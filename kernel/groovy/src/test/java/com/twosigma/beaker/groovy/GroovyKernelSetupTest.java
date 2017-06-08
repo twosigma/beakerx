@@ -13,11 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy.examples;
+package com.twosigma.beaker.groovy;
 
 import com.twosigma.beaker.KernelSocketsServiceTest;
-import com.twosigma.beaker.groovy.GroovyDefaultVariables;
-import com.twosigma.beaker.groovy.GroovyKernel;
 import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.widgets.Widget;
 import com.twosigma.jupyter.KernelParameters;
@@ -35,7 +33,7 @@ import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLAS
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 import static org.junit.Assert.assertTrue;
 
-public abstract class GroovyExamplesSetupTest {
+public abstract class GroovyKernelSetupTest {
 
   protected static GroovyKernel kernel;
   protected static KernelSocketsServiceTest kernelSocketsService;

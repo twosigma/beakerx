@@ -74,10 +74,10 @@ public class NamespaceClientTest {
     //given
     NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("returnValue");
     //when
-    Object value = curNamespaceClient.set("x", new Integer(10));
+    Object value = curNamespaceClient.set("x", curNamespaceClient.getJson(new Integer(10)));
     //then
     Assertions.assertThat(value).isNotNull();
-    Assertions.assertThat(value).isEqualTo(new Integer(10));
+    Assertions.assertThat(value).isEqualTo("10");
   }
 
   @Test
@@ -85,7 +85,7 @@ public class NamespaceClientTest {
     //given
     NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("setAutotranslationData");
     //when
-    curNamespaceClient.set("x", new Integer(10));
+    curNamespaceClient.set("x", curNamespaceClient.getJson(new Integer(10)));
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Map data = (Map) kernel.getPublishedMessages().get(1).getContent().get("data");
@@ -99,7 +99,7 @@ public class NamespaceClientTest {
     //given
     NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("sendCommMessage");
     //when
-    curNamespaceClient.set("x", new Integer(10));
+    curNamespaceClient.set("x", curNamespaceClient.getJson(new Integer(10)));
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
   }

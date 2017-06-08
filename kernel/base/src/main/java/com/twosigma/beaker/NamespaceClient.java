@@ -89,52 +89,45 @@ public class NamespaceClient {
     currentSession = null;
   }
 
-  public synchronized Object get(final String name) {
-    return clientJsonMapper.fromJson(beakerData.get(name));
+  public synchronized String get(final String name) {
+    return beakerData.get(name);
   }
 
-  public synchronized Object set(String name, Object value) throws IOException {
-    beakerData.put(name, clientJsonMapper.getJson(value));
+  public synchronized Object set(String name, String value) {
+    isJSONValid(value);
+    beakerData.put(name, value);
 
     Comm c = getAutotranslationComm();
     HashMap<String, Serializable> data = new HashMap<>();
     data.put("name", name);
-    data.put("value", clientJsonMapper.getJson(value));
+    data.put("value", value);
     data.put("sync", true);
     c.setData(data);
     c.send();
     return value;
   }
 
-  public void setClientJsonMapper(ClientJsonMapper clientJsonMapper) {
-    this.clientJsonMapper = clientJsonMapper;
+  public String getJson(Object value) {
+    StringWriter sw = new StringWriter();
+    JsonGenerator jgen = null;
+    try {
+      jgen = objectMapper.getFactory().createGenerator(sw);
+      objectSerializer.writeObject(value, jgen, true);
+      jgen.flush();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    sw.flush();
+    return sw.toString();
   }
 
-  private ClientJsonMapper clientJsonMapper = new ClientJsonMapper() {
-    @Override
-    public String getJson(Object value) {
-      StringWriter sw = new StringWriter();
-      JsonGenerator jgen = null;
-      try {
-        jgen = objectMapper.getFactory().createGenerator(sw);
-        objectSerializer.writeObject(value, jgen, true);
-        jgen.flush();
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-      sw.flush();
-      return sw.toString();
+  public Object fromJson(String value) {
+    try {
+      return objectMapper.readValue(value, Object.class);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
-
-    @Override
-    public Object fromJson(String value) {
-      try {
-        return objectMapper.readValue(value, Object.class);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  };
+  }
 
   //TODO : Not Implemented
   public Object setFast(String name, Object value) {
@@ -185,7 +178,7 @@ public class NamespaceClient {
     Comm c = getCodeCellsComm();
     HashMap<String, Serializable> data = new HashMap<>();
     data.put("name", "CodeCells");
-    data.put("value", clientJsonMapper.getJson(tagFilter));
+    data.put("value", getJson(tagFilter));
     c.setData(data);
     c.send();
     // block
@@ -201,6 +194,15 @@ public class NamespaceClient {
     c.send();
   }
 
+  public static void isJSONValid(String jsonInString ) {
+    try {
+      final ObjectMapper mapper = new ObjectMapper();
+      mapper.readTree(jsonInString);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   private class ObjectHolder<T> {
 
     private T value;
@@ -214,10 +216,4 @@ public class NamespaceClient {
     }
 
   }
-
-  public interface ClientJsonMapper {
-    String getJson(Object value);
-    Object fromJson(String value);
-  }
-
 }

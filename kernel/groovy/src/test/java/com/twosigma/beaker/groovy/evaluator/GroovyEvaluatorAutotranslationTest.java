@@ -16,32 +16,63 @@
 
 package com.twosigma.beaker.groovy.evaluator;
 
-import org.assertj.core.api.Assertions;
+import com.twosigma.beaker.KernelSocketsServiceTest;
+import com.twosigma.beaker.groovy.GroovyDefaultVariables;
+import com.twosigma.beaker.groovy.GroovyKernel;
+import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.jupyter.KernelRunner;
+import com.twosigma.jupyter.message.Message;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class GroovyEvaluatorAutotranslationTest extends GroovyEvaluatorTest {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-  @Test
-  public void parseSetBeakerObjectScript_returnBeakerObjectValue() {
-    //when
-    Object result = parseClassFromScript("beaker.x = 10 ");
-    //then
-    Assertions.assertThat(result instanceof Number).isTrue();
+import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class GroovyEvaluatorAutotranslationTest {
+
+  private GroovyKernel kernel;
+  private KernelSocketsServiceTest kernelSocketsService;
+
+  @Before
+  public void setUp() throws Exception {
+    String sessionId = "sessionId2";
+    GroovyEvaluator evaluator = new GroovyEvaluator(sessionId, sessionId);
+    kernelSocketsService = new KernelSocketsServiceTest();
+    kernel = new GroovyKernel(sessionId, evaluator, kernelSocketsService);
+    kernel.setShellOptions(kernelParameters());
+    new Thread(() -> KernelRunner.run(() -> kernel)).start();
+    kernelSocketsService.waitForSockets();
   }
 
- @Test
-  public void parseGetBeakerObjectScript_returnBeakerObjectValue() {
-    //when
-    parseClassFromScript("beaker.x = 10 ");
-    Object result = parseClassFromScript("beaker.x");
-    //then
-    Assertions.assertThat(result).isNotNull();
+  @After
+  public void tearDown() throws Exception {
+    kernelSocketsService.shutdown();
   }
 
   @Test
-  public void parseGetBeakerObjectScript_graph() {
+  public void parseSetBeakerObjectScript_returnBeakerObjectValue() throws Exception {
+    //given
+    String code = "beaker.x = 10 ";
+    runCode(code);
+    kernelSocketsService.clear();
     //when
-    parseClassFromScript("  def r = new Random()\n" +
+    String code2 = "beaker.x";
+    runCode(code2);
+    //then
+
+  }
+
+  @Test
+  public void parseGetBeakerObjectScript_graph() throws InterruptedException {
+    String code ="  def r = new Random()\n" +
             "  def nnodes = 100\n" +
             "  def nodes = []\n" +
             "  def links = []\n" +
@@ -57,9 +88,28 @@ public class GroovyEvaluatorAutotranslationTest extends GroovyEvaluatorTest {
             "    links.add(source: source, target: target, value: value*value)\n" +
             "  }\n" +
             "\n" +
-            "beaker.graph = [nodes: nodes, links: links] \n");
-    Object result = parseClassFromScript("beaker.graph");
+            "beaker.graph = [nodes: nodes, links: links] \n";
+    runCode(code);
+    kernelSocketsService.clear();
+    //when
+    String code2 = "beaker.graph";
+    runCode(code2);
     //then
-    Assertions.assertThat(result).isNotNull();
+
+  }
+
+  private void runCode(String code) throws InterruptedException {
+    Message message = getExecuteRequestMessage(code);
+    kernelSocketsService.handleMsg(message);
+    Optional<Message> idleMessage = waitForResultAndReturnIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
+  }
+
+  private KernelParameters kernelParameters() {
+    GroovyDefaultVariables value = new GroovyDefaultVariables();
+    Map<String, Object> params = new HashMap<>();
+    params.put(IMPORTS, value.getImports());
+    params.put(CLASSPATH, value.getClassPath());
+    return new KernelParameters(params);
   }
 }

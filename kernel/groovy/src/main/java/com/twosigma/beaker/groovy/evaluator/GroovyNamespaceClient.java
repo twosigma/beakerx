@@ -13,29 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.scala.evaluator;
+package com.twosigma.beaker.groovy.evaluator;
 
 import com.twosigma.beaker.NamespaceClient;
 
+public class GroovyNamespaceClient {
 
-public class ScalaNamespaceClient  {
+  private NamespaceClient namespaceClient;
 
-  public synchronized static NamespaceClient getBeaker(String session) {
-    NamespaceClient beaker = NamespaceClient.getBeaker(session);
-    beaker.setClientJsonMapper(new NamespaceClient.ClientJsonMapper() {
-      @Override
-      public String getJson(Object value) {
-        return ScalaJsonMapper.toJson(value);
-      }
-
-      @Override
-      public Object fromJson(String value) {
-        return ScalaJsonMapper.fromJson(value);
-      }
-    });
-    return beaker;
+  public GroovyNamespaceClient(NamespaceClient namespaceClient) {
+    this.namespaceClient = namespaceClient;
   }
 
+  public Object get(final String name) {
+    return this.namespaceClient.fromJson(this.namespaceClient.get(name));
+  }
 
+  public Object set(String name, Object value) {
+    return this.namespaceClient.set(name, this.namespaceClient.getJson(value));
+  }
+
+  public synchronized void showProgressUpdate(String message, int progress) {
+    this.namespaceClient.showProgressUpdate(message, progress);
+  }
 
 }

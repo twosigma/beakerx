@@ -17,17 +17,52 @@
 require('jquery-ui/ui/widgets/selectable');
 
 module.exports = function(TableScope) {
+
+  TableScope.prototype.getCellsByRow = function(row) {
+    return this.table.cells(row.index(), this.table.columns().indexes());
+  };
+
+  TableScope.prototype.setRowSelection = function(rowSelector, shouldSelect) {
+    if (shouldSelect) {
+      return this.selectRows(rowSelector);
+    }
+
+    this.deselectRows(rowSelector);
+  };
+
+  TableScope.prototype.selectRows = function(rowSelector) {
+    var row = this.table.row(rowSelector);
+    var cells = this.getCellsByRow(row);
+
+    cells.select();
+  };
+
+  TableScope.prototype.deselectCells = function(cells) {
+    var $uiSelected = $(cells.nodes()).filter('.ui-selected');
+
+    cells.deselect();
+    $uiSelected.removeClass('ui-selected');
+  };
+
+  TableScope.prototype.deselectRows = function(rowSelector) {
+    var row = this.table.row(rowSelector);
+    var cells = this.getCellsByRow(row);
+
+    this.deselectCells(cells);
+  };
+
   TableScope.prototype.initRowSelectable = function() {
     var self = this;
 
-    $(this.table.table().container()).selectable({
+    $(this.element).selectable({
       filter: 'tr[role="row"] td',
       delay: 150,
-      stop: function( event, ui ) {
-        var cells = self.table.cells('.ui-selected');
-
-        self.table.cells({ selected: true }).deselect();
-        cells.select();
+      cancel: 'thead',
+      start: function() {
+        self.doDeselectAll();
+      },
+      stop: function() {
+        self.table.cells('.ui-selected').select();
       }
     });
   };

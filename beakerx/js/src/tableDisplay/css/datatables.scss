@@ -97,6 +97,7 @@ table.dataTable {
     .advanced-mode & {
       height: 22px;
     }
+    > .selected,
     > .ui-selected,
     > .ui-selecting {
       background-color: #B0BED9;
@@ -283,22 +284,19 @@ table.dataTable.DTFC_Cloned.stripe tbody tr,
 table.dataTable.DTFC_Cloned.display tbody tr {
   &.odd {
     background-color: $fixed-column-odd;
-    & > .sorting_1 :not(.selected),
-    & > .sorting_2 :not(.selected),
-    & > .sorting_3 :not(.selected) {
+    & > .sorting_1,
+    & > .sorting_2,
+    & > .sorting_3 {
       background-color: $fixed-column-odd-sorting;
     }
   }
   &.even {
     background-color: $fixed-column-even;
-    & > .sorting_1 :not(.selected),
-    & > .sorting_2 :not(.selected),
-    & > .sorting_3 :not(.selected)  {
+    & > .sorting_1,
+    & > .sorting_2,
+    & > .sorting_3  {
       background-color: $fixed-column-even-sorting;
     }
-  }
-  &.selected {
-    background-color: $fixed-column-selected;
   }
 }
 
@@ -527,4 +525,9 @@ $fix-col-separator-width: 3px;
 .ui-tooltip.ui-widget-shadow {
   opacity: 1;
   z-index: 900;
+}
+
+.ui-selectable-helper {
+  border: none;
+  outline: none;
 }

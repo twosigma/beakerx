@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -70,13 +71,20 @@ public class GroovyEvaluatorAutotranslationTest extends GroovyKernelSetupTest {
                     "}\n" +
                     "\n" +
                     "beaker.graph = [nodes: nodes, links: links] \n";
-    runCode(code);
+    runCodeAndWaitForIdle(code);
     kernelSocketsService.clear();
     //when
     String code2 = "beaker.graph";
-    runCode(code2);
+    runCodeAndWaitForIdle(code2);
     //then
 
+  }
+
+  private void runCodeAndWaitForIdle(String code2) throws InterruptedException {
+    Message message = getExecuteRequestMessage(code2);
+    kernelSocketsService.handleMsg(message);
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
   }
 
   private void runCode(String code) throws InterruptedException {

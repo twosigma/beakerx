@@ -74,7 +74,10 @@ module.exports = [
       'base/js/utils',
       'base/js/namespace',
       'base/js/events',
-      'require'
+      'require',
+      'base/js/dialog',
+      'notebook/js/celltoolbar',
+      'notebook/js/codecell'
     ],
     watchOptions: {
       ignored: /node_modules/

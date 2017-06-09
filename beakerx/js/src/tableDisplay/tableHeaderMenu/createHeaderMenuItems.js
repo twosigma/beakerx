@@ -166,6 +166,20 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         }
       },
       {
+        title: 'Color by unique',
+        shortcut: 'U',
+        isChecked: function (container) {
+          var colIdx = container.data('columnIndex');
+          var highlighter = self.cellHighlighters[colIdx];
+          return highlighter && highlighter instanceof cellHighlighters.UniqueEntriesHighlighter;
+        },
+        action: function (el) {
+          var container = el.closest('.bko-header-menu');
+          var colIdx = container.data('columnIndex');
+          self.showHideUniqueEntries(colIdx);
+        }
+      },
+      {
         title: 'Fix Left',
         isChecked: function (container) {
           return menuHelper.isFixedLeft(container);

@@ -81,5 +81,30 @@ style](https://google.github.io/styleguide/jsguide.html) with
 
 ## Attribution
 
-The kernel is originally derived from https://github.com/lappsgrid-incubator/jupyter-groovy-kernel, but has been rewritten in Java and refactored and expanded.
+Beaker contains and depends on many projects including:
+
+The kernel is originally derived from
+[lappsgrid](https://github.com/lappsgrid-incubator/jupyter-groovy-kernel),
+but has been rewritten in Java and refactored and expanded.
+
 The Java support uses Adrian Witas' org.abstractmeta.toolbox.
+
+<a href="http://www.antlr.org/license.html">ANTLR</a> Copyright (c) 2012 Terence Parr and Sam Harwell
+<a href="https://github.com/mbostock/d3/blob/master/LICENSE">d3</a> Copyright (c) 2010-2015, Michael Bostock
+<a href="https://github.com/ipython/ipython/blob/master/COPYING.rst">IPython</a> Copyright (c) 2008-2014, IPython Development Team
+Copyright (c) 2001-2007, Fernando Perez
+Copyright (c) 2001, Janko Hauser
+Copyright (c) 2001, Nathaniel Gray
+
+<a href="https://github.com/JuliaLang/julia/blob/master/LICENSE.md">Julia</a> Copyright (c) 2009-2015: Jeff Bezanson, Stefan Karpinski, Viral B. Shah, and other contributors
+
+<a href="http://www.scala-lang.org/license.html">Scala</a> Copyright (c) 2002-2015 EPFL
+      Copyright (c) 2011-2015 Typesafe, Inc.
+
+<a href=" http://www.h2database.com/html/license.html"> H2 database
+engine</a>
+This software contains unmodified binary redistributions for H2
+database engine (http://www.h2database.com/), which is dual licensed
+and available under the MPL 2.0 (Mozilla Public License) or under the
+EPL 1.0 (Eclipse Public License).  An original copy of the license
+agreement can be found at: http://www.h2database.com/html/license.html

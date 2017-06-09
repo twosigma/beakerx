@@ -16,26 +16,82 @@
 
 package com.twosigma.beaker.groovy.evaluator;
 
-import org.assertj.core.api.Assertions;
+import com.twosigma.beaker.groovy.GroovyKernelSetupTest;
+import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.jupyter.message.Message;
 import org.junit.Test;
 
-public class GroovyEvaluatorAutotranslationTest extends GroovyEvaluatorTest {
+import java.util.Map;
+import java.util.Optional;
+
+import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class GroovyEvaluatorAutotranslationTest extends GroovyKernelSetupTest {
 
   @Test
-  public void parseSetBeakerObjectScript_returnBeakerObjectValue() {
+  public void parseSetBeakerObjectScript_returnBeakerObjectValue() throws Exception {
+    //given
+    String code = "beaker.x = 10 ";
+    runCode(code);
+    kernelSocketsService.clear();
     //when
-    Object result = parseClassFromScript("beaker.x = 10 ");
+    String code2 = "beaker.x";
+    runCode(code2);
     //then
-    Assertions.assertThat(result instanceof Number).isTrue();
+    Message message = kernelSocketsService.getExecuteResultMessage().get();
+    verifyObjectValueResult(message);
   }
 
-  //TODO : After NamespaceClient.get() will be implemented - remove expected exception
-  @Test(expected = java.lang.RuntimeException.class)
-  public void parseGetBeakerObjectScript_returnBeakerObjectValue() {
-    //when
-    parseClassFromScript("beaker.x = 10 ");
-    Object result = parseClassFromScript("beaker.x");
-    //then
-    Assertions.assertThat(result instanceof Number).isTrue();
+  private void verifyObjectValueResult(Message result) {
+    Map actual = ((Map) result.getContent().get(Comm.DATA));
+    String value = (String) actual.get("text/plain");
+    assertThat(value).isEqualTo("10");
   }
+
+  @Test
+  public void parseGetBeakerObjectScript_graph() throws InterruptedException {
+    String code =
+            "def r = new Random()\n" +
+                    "def nnodes = 100\n" +
+                    "def nodes = []\n" +
+                    "def links = []\n" +
+                    "\n" +
+                    "for (x in (0..nnodes)){\n" +
+                    "  nodes.add(name:\"\" + x, group:((int) x*7/nnodes))\n" +
+                    "}\n" +
+                    "\n" +
+                    "for (x in (0..(int) nnodes*1.15)) {\n" +
+                    "    source = x % nnodes\n" +
+                    "    target = ((int) log(1 + r.nextInt(nnodes))/log(1.3))\n" +
+                    "    value = 10.0 / (1 + abs(source - target))\n" +
+                    "    links.add(source: source, target: target, value: value*value)\n" +
+                    "}\n" +
+                    "\n" +
+                    "beaker.graph = [nodes: nodes, links: links] \n";
+    runCodeAndWaitForIdle(code);
+    kernelSocketsService.clear();
+    //when
+    String code2 = "beaker.graph";
+    runCodeAndWaitForIdle(code2);
+    //then
+
+  }
+
+  private void runCodeAndWaitForIdle(String code2) throws InterruptedException {
+    Message message = getExecuteRequestMessage(code2);
+    kernelSocketsService.handleMsg(message);
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
+  }
+
+  private void runCode(String code) throws InterruptedException {
+    Message message = getExecuteRequestMessage(code);
+    kernelSocketsService.handleMsg(message);
+    Optional<Message> idleMessage = waitForResultAndReturnIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
+  }
+
 }

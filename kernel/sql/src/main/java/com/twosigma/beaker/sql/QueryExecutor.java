@@ -48,7 +48,7 @@ public class QueryExecutor {
   }
 
   public synchronized Object executeQuery(String script, NamespaceClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString)
-      throws SQLException, IOException, ReadVariableException {
+          throws SQLException, IOException, ReadVariableException {
 
     BeakerParser beakerParser = new BeakerParser(script, namespaceClient, defaultConnectionString, namedConnectionString, jdbcClient);
 
@@ -56,18 +56,18 @@ public class QueryExecutor {
 
     Properties info = null;
     if (beakerParser.getDbURI().getUser() != null && !beakerParser.getDbURI().getUser().isEmpty()) {
-      if(info == null){
+      if (info == null) {
         info = new Properties();
       }
       info.put("user", beakerParser.getDbURI().getUser());
     }
     if (beakerParser.getDbURI().getPassword() != null && !beakerParser.getDbURI().getPassword().isEmpty()) {
-      if(info == null){
+      if (info == null) {
         info = new Properties();
       }
       info.put("password", beakerParser.getDbURI().getPassword());
     }
-    
+
     boolean isConnectionExeption = true;
 
     // Workaround for "h2database" : do not work correctly with empty or null "Properties"
@@ -83,7 +83,7 @@ public class QueryExecutor {
         for (BeakerInputVar parameter : queryLine.getInputVars()) {
           if (parameter.isAll()) {
             basicIterationArray = parameter;
-            if(parameter.getErrorMessage() != null) throw new ReadVariableException(parameter.getErrorMessage());
+            if (parameter.getErrorMessage() != null) throw new ReadVariableException(parameter.getErrorMessage());
             //ToDo make recursively iteration over several arrays
             break;
           }
@@ -191,7 +191,7 @@ public class QueryExecutor {
       this.statement = statement;
       int n = 1;
       for (BeakerInputVar parameter : queryLine.getInputVars()) {
-        if(parameter.getErrorMessage() != null) throw new ReadVariableException(parameter.getErrorMessage());
+        if (parameter.getErrorMessage() != null) throw new ReadVariableException(parameter.getErrorMessage());
         Object obj;
         try {
           obj = namespaceClient.get(parameter.objectName);

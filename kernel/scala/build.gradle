@@ -49,6 +49,7 @@ dependencies {
   compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.12.2'
   compile group: 'org.scala-lang', name: 'scala-library', version: '2.12.2'
   compile group: 'jline', name: 'jline', version: '2.12'
+  compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-scala_2.12', version: '2.7.9'
 
   testCompile project(':kernel:base').sourceSets.test.output
   testCompile group: 'junit', name: 'junit', version: '4.11'

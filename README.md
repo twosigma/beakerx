@@ -90,7 +90,9 @@ but has been rewritten in Java and refactored and expanded.
 The Java support uses Adrian Witas' org.abstractmeta.toolbox.
 
 <a href="http://www.antlr.org/license.html">ANTLR</a> Copyright (c) 2012 Terence Parr and Sam Harwell
+
 <a href="https://github.com/mbostock/d3/blob/master/LICENSE">d3</a> Copyright (c) 2010-2015, Michael Bostock
+
 <a href="https://github.com/ipython/ipython/blob/master/COPYING.rst">IPython</a> Copyright (c) 2008-2014, IPython Development Team
 Copyright (c) 2001-2007, Fernando Perez
 Copyright (c) 2001, Janko Hauser

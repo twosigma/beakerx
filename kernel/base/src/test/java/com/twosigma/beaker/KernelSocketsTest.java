@@ -37,11 +37,11 @@ public class KernelSocketsTest extends KernelSockets {
   }
 
   public List<Message> getPublishedMessages() {
-    return publishedMessages;
+    return new ArrayList<>(publishedMessages);
   }
 
   public List<Message> getSentMessages() {
-    return sentMessages;
+    return new ArrayList<>(sentMessages);
   }
 
   public void clear() {

@@ -247,18 +247,25 @@ define([
   function run_init_cells () {
     console.log(log_prefix, 'running all initialization cells');
     var num = 0;
-    var cells = Jupyter.notebook.get_cells();
+    var cells = get_init_cells();
+
     for (var ii = 0; ii < cells.length; ii++) {
-      var cell = cells[ii];
-      if ((cell instanceof codecell.CodeCell) && cell.metadata.init_cell === true ) {
-        cell.execute();
-        num++;
-      }
+      cells[ii].execute();
+      num++;
     }
     console.log(log_prefix, 'finished running ' + num + ' initialization cell' + (num !== 1 ? 's' : ''));
   }
 
+  function get_init_cells () {
+    var cells = Jupyter.notebook.get_cells();
+
+    return cells.filter(function(cell) {
+      return ((cell instanceof codecell.CodeCell) && cell.metadata.init_cell === true );
+    });
+  }
+
   function callback_notebook_loaded () {
+    var initCells = get_init_cells();
     // update from metadata
     var md_opts = Jupyter.notebook.metadata[mod_name];
     if (md_opts !== undefined) {
@@ -274,7 +281,7 @@ define([
       CellToolbar.register_preset(toolbar_preset_name, ['init_cell.is_init_cell'], Jupyter.notebook);
     }
 
-    if (options.run_on_kernel_ready) {
+    if (options.run_on_kernel_ready && initCells.length) {
       if (!Jupyter.notebook.trusted) {
         dialog.modal({
           title : 'Initialization cells in untrusted notebook',

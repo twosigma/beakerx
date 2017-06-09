@@ -956,7 +956,9 @@ define([
       return xhr.responseText;
     },
     convertToXHTML: function (html) {
-      return html.replace(/input[^>]+"/g, "$&" + '/');
+      return html
+        .replace(/input[^>]+"/g, "$&" + '/')
+        .replace(/&nbsp;/g, ' ');
     },
     download: function(url, fileName) {
       var a = document.createElement('a');

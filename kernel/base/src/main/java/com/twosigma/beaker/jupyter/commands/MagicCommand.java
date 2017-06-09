@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.jupyter.commands;
 
+import com.twosigma.jupyter.Code;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.jupyter.KernelFunctionality;
@@ -37,7 +38,12 @@ import static com.twosigma.beaker.mimetype.MIMEContainer.JavaScript;
  * @author lasha
  */
 public class MagicCommand {
-  public Map<String, MagicCommandFunctionality> commands = new HashMap<String, MagicCommandFunctionality>();
+  public static final String JAVASCRIPT = "%%javascript";
+  public static final String HTML = "%%html";
+  public static final String BASH = "%%bash";
+  public static final String LSMAGIC = "%lsmagic";
+
+  private Map<String, MagicCommandFunctionality> commands = new HashMap<>();
   private MessageCreator messageCreator;
 
   public MagicCommand(KernelFunctionality kernel) {
@@ -45,40 +51,68 @@ public class MagicCommand {
     buildCommands();
   }
 
+  public void process(Code code, Message message, int executionCount) {
+    if (this.commands.containsKey(code.getCommand())) {
+      processCommand(code, message, executionCount);
+    } else {
+      processUnknownCommand(code.getCommand(), message, executionCount);
+    }
+  }
 
-  public void processUnknownCommand(String command, Message message, int executionCount) {
+  private void processCommand(Code code, Message message, int executionCount) {
+    this.commands.get(code.getCommand()).process(code, message, executionCount);
+  }
+
+  private void processUnknownCommand(String command, Message message, int executionCount) {
     String result = "Cell magic " + command + " not found";
     messageCreator.createMagicMessage(messageCreator.buildOutputMessage(message, result, true), executionCount, message);
   }
 
   private void buildCommands() {
-    commands.put("%%javascript", (code, message, executionCount) -> {
-      code = code.replace("%%javascript", "");
-      publishResults(JavaScript(code), message, executionCount);
-    });
-    commands.put("%%html", (code, message, executionCount) -> {
-      code = "<html>" + code.replace("%%html", "") + "</html>";
-      publishResults(HTML(code),message, executionCount);
-    });
-    commands.put("%%bash", (code, message, executionCount) -> {
-      String result = executeBashCode(code.replace("%%bash", ""));
+    commands.put(JAVASCRIPT, javascript());
+    commands.put(HTML, html());
+    commands.put(BASH, bash());
+    commands.put(LSMAGIC, lsmagic());
+  }
+
+  private MagicCommandFunctionality javascript() {
+    return (code, message, executionCount) -> {
+      MIMEContainer result = JavaScript(code.takeCodeWithoutCommand().asString());
+      publishResults(result, message, executionCount);
+    };
+  }
+
+  private MagicCommandFunctionality html() {
+    return (code, message, executionCount) -> {
+      MIMEContainer html = HTML("<html>" + code.takeCodeWithoutCommand().asString() + "</html>");
+      publishResults(html, message, executionCount);
+    };
+  }
+
+  private MagicCommandFunctionality bash() {
+    return (code, message, executionCount) -> {
+      String result = executeBashCode(code.takeCodeWithoutCommand());
       messageCreator.createMagicMessage(messageCreator.buildOutputMessage(message, result, false), executionCount, message);
-    });
-    commands.put("%lsmagic", (code, message, executionCount) -> {
+    };
+  }
+
+  private MagicCommandFunctionality lsmagic() {
+    return (code, message, executionCount) -> {
       String result = "Available magic commands:\n";
       result += commands.entrySet().stream()
-          .filter(map -> map.getKey() != "%lsmagic")
-          .map(Map.Entry::getKey)
-          .collect(Collectors.joining(" "));
+              .filter(map -> map.getKey() != LSMAGIC)
+              .map(Map.Entry::getKey)
+              .collect(Collectors.joining(" "));
       messageCreator.createMagicMessage(messageCreator.buildOutputMessage(message, result, false), executionCount, message);
-    });
+    };
   }
 
   private void publishResults(MIMEContainer result, Message message, int executionCount) {
-    messageCreator.createMagicMessage(messageCreator.buildMessage(message, result.getMime().getMime() ,result.getCode(), executionCount), executionCount, message);
+    messageCreator.createMagicMessage(messageCreator.buildMessage(message, result.getMime().getMime(), result.getCode(), executionCount), executionCount, message);
   }
-  private String executeBashCode(String code) {
-    String[] cmd = {"/bin/bash", "-c", code};
+
+  private String executeBashCode(Code code) {
+    String[] cmd = {"/bin/bash", "-c", code.asString()};
     ProcessBuilder pb = new ProcessBuilder(cmd);
     pb.redirectErrorStream(true);
     StringBuilder output = new StringBuilder();
@@ -87,7 +121,7 @@ public class MagicCommand {
       process.waitFor();
       String line;
       BufferedReader reader = new BufferedReader(new InputStreamReader(
-          process.getInputStream()));
+              process.getInputStream()));
       while ((line = reader.readLine()) != null) {
         output.append(line).append("\n");
       }

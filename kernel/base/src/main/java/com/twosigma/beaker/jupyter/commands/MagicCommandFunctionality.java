@@ -16,9 +16,10 @@
 
 package com.twosigma.beaker.jupyter.commands;
 
+import com.twosigma.jupyter.Code;
 import com.twosigma.jupyter.message.Message;
 
 
 public interface MagicCommandFunctionality {
-  void process(String code, Message message, int executionCount);
+  void process(Code code, Message message, int executionCount);
 }

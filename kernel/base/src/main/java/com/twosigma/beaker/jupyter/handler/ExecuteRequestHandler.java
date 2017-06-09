@@ -17,19 +17,19 @@ package com.twosigma.beaker.jupyter.handler;
 
 
 import com.twosigma.beaker.jupyter.commands.MagicCommand;
+import com.twosigma.jupyter.Code;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
 import static com.twosigma.beaker.jupyter.msg.JupyterMessages.EXECUTE_INPUT;
+import static com.twosigma.jupyter.Code.takeCodeFrom;
 
 /**
  * Does the actual work of executing user code.
@@ -61,51 +61,30 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     syncObject.acquire();
     kernel.sendBusyMessage(message);
     executionCount += 1;
-    String code = code(message);
+    Code code = takeCodeFrom(message);
     announceThatWeHaveTheCode(message, code);
-    if (isaMagicCommand(code)) {
-      executeMagicCommand(message, code);
+    if (code.isaMagicCommand()) {
+      magicCommand.process(code, message, executionCount);
       kernel.sendIdleMessage(message);
       syncObject.release();
     } else {
-      kernel.executeCode(code, message, executionCount, (seo) -> {
+      kernel.executeCode(code.asString(), message, executionCount, (seo) -> {
         kernel.sendIdleMessage(seo.getJupyterMessage());
         syncObject.release();
       });
     }
   }
 
-  private void executeMagicCommand(Message message, String code) {
-    String command = new Scanner(code).next();
-    if (magicCommand.commands.containsKey(command)) {
-      magicCommand.commands.get(command).process(code, message, executionCount);
-    } else {
-      magicCommand.processUnknownCommand(command, message, executionCount);
-    }
-  }
-
-  private boolean isaMagicCommand(String code) {
-    return code.startsWith("%");
-  }
-
-  private void announceThatWeHaveTheCode(Message message, String code) {
+  private void announceThatWeHaveTheCode(Message message, Code code) {
     Message reply = new Message();
     reply.setParentHeader(message.getHeader());
     reply.setIdentities(message.getIdentities());
     reply.setHeader(new Header(EXECUTE_INPUT, message.getHeader().getSession()));
     Map<String, Serializable> map1 = new HashMap<>(2);
     map1.put("execution_count", executionCount);
-    map1.put("code", code);
+    map1.put("code", code.asString());
     reply.setContent(map1);
     kernel.publish(reply);
-  }
-
-  private String code(Message message) {
-    String code = "";
-    if (message.getContent() != null && message.getContent().containsKey("code")) {
-      code = ((String) message.getContent().get("code")).trim();
-    }
-    return code;
   }
 
   @Override

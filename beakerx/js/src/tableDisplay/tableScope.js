@@ -1766,16 +1766,6 @@ define([
       e.stopPropagation();
     });
 
-    $(id + ' tbody').on('click', 'tr', function(event) {
-      if (!self.table) {
-        return;
-      }
-
-      var dtTR = self.getDtRow(this);
-
-      self.setRowSelection(dtTR, !$(event.target).hasClass('selected'));
-    });
-
     $(id + ' tbody')
       .on('mouseenter.bko-dt-highlight', 'tr', function() {
         if (!self.table) { return; }

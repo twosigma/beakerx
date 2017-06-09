@@ -38,10 +38,19 @@ module.exports = function(TableScope) {
   };
 
   TableScope.prototype.deselectCells = function(cells) {
-    var $uiSelected = $(cells.nodes()).filter('.ui-selected');
+    var $selected = $(cells.nodes()).filter('.ui-selected');
 
     cells.deselect();
-    $uiSelected.removeClass('ui-selected');
+    $selected.each(function () {
+      var selectee = $.data(this, "selectable-item");
+
+      $(this).removeClass('ui-selected');
+
+      if (selectee) {
+        selectee.selected = false;
+        selectee.startselected = false;
+      }
+    });
   };
 
   TableScope.prototype.deselectRows = function(rowSelector) {
@@ -59,10 +68,13 @@ module.exports = function(TableScope) {
       delay: 150,
       cancel: 'thead',
       start: function() {
-        self.doDeselectAll();
+        self.deselectCells(self.table.cells({ selected: true }));
       },
       stop: function() {
-        self.table.cells('.ui-selected').select();
+        var cells = self.table.cells('.ui-selected');
+
+        cells.select();
+        $(self.element).find('.ui-selected').removeClass('ui-selected');
       }
     });
   };

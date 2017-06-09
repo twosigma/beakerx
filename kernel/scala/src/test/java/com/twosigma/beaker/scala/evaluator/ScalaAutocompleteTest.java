@@ -16,45 +16,12 @@
 
 package com.twosigma.beaker.scala.evaluator;
 
-import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.scala.ScalaKernelMock;
-import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.beaker.scala.ScalaEvaluatorSetupTest;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
-
-public class ScalaAutocompleteTest {
-  private static ScalaEvaluator scalaEvaluator;
-
-  @BeforeClass
-  public static void setUpClass() throws Exception {
-    String sid = "sid";
-    scalaEvaluator = new ScalaEvaluator(NamespaceClient.getBeaker(sid).getObjectSerializer());
-    scalaEvaluator.initialize("id", sid);
-    scalaEvaluator.setShellOptions(kernelParameters());
-  }
-
-  @Before
-  public void setUp() throws Exception {
-    ScalaKernelMock kernel = new ScalaKernelMock("id", scalaEvaluator);
-    KernelManager.register(kernel);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
-  }
+public class ScalaAutocompleteTest extends ScalaEvaluatorSetupTest {
 
   @Test
   public void autocomplete_autocompleteResultNotEmpty() throws Exception {
@@ -74,11 +41,5 @@ public class ScalaAutocompleteTest {
     Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(24);
   }
 
-  private static KernelParameters kernelParameters() {
-    Map<String, Object> params = new HashMap<>();
-    params.put(IMPORTS, new ArrayList<>());
-    params.put(CLASSPATH, new ArrayList<>());
-    return new KernelParameters(params);
-  }
 
 }

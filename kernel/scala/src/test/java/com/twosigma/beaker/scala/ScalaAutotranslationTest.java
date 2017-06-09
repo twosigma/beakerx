@@ -16,40 +16,14 @@
 package com.twosigma.beaker.scala;
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beaker.NamespaceClient;
-import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.scala.evaluator.ScalaEvaluator;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ScalaAutotranslationTest {
-
-  private static ScalaEvaluator scalaEvaluator;
-
-  @BeforeClass
-  public static void setUpClass() throws Exception {
-    String sid = "sid";
-    scalaEvaluator = new ScalaEvaluator(NamespaceClient.getBeaker(sid).getObjectSerializer());
-    scalaEvaluator.initialize("id", sid);
-  }
-
-  @Before
-  public void setUp() throws Exception {
-    ScalaKernelMock kernel = new ScalaKernelMock("id", scalaEvaluator);
-    KernelManager.register(kernel);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
-  }
+public class ScalaAutotranslationTest extends ScalaEvaluatorSetupTest {
 
   @Test
   public void createStringInBeakerObject() throws Exception {

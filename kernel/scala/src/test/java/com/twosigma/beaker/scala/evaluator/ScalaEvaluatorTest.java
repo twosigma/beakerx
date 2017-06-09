@@ -17,16 +17,11 @@
 package com.twosigma.beaker.scala.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.chart.xychart.Plot;
-import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.scala.ScalaKernelMock;
+import com.twosigma.beaker.scala.ScalaEvaluatorSetupTest;
 import com.twosigma.jupyter.KernelParameters;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -39,33 +34,14 @@ import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPO
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
 import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 
-public class ScalaEvaluatorTest {
-  private static ScalaEvaluator scalaEvaluator;
-
-  @BeforeClass
-  public static void setUpClass() throws Exception {
-    String sid = "sid";
-    scalaEvaluator = new ScalaEvaluator(NamespaceClient.getBeaker(sid).getObjectSerializer());
-    scalaEvaluator.initialize("id", sid);
-  }
-
-  @Before
-  public void setUp() throws Exception {
-    ScalaKernelMock kernel = new ScalaKernelMock("id", scalaEvaluator);
-    KernelManager.register(kernel);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    KernelManager.register(null);
-  }
+public class ScalaEvaluatorTest extends ScalaEvaluatorSetupTest {
 
   @Test
   public void evaluatePlot_shouldCreatePlotObject() throws Exception {
     //givencom.twosigma.beaker
     String code = "import com.twosigma.beaker.chart.xychart.Plot;\n" +
-        "val plot = new Plot();\n" +
-        "plot.setTitle(\"test title\");";
+            "val plot = new Plot();\n" +
+            "plot.setTitle(\"test title\");";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     scalaEvaluator.evaluate(seo, code);
@@ -73,7 +49,7 @@ public class ScalaEvaluatorTest {
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
     Assertions.assertThat(seo.getPayload() instanceof Plot).isTrue();
-    Assertions.assertThat(((Plot)seo.getPayload()).getTitle()).isEqualTo("test title");
+    Assertions.assertThat(((Plot) seo.getPayload()).getTitle()).isEqualTo("test title");
   }
 
   @Test
@@ -86,7 +62,7 @@ public class ScalaEvaluatorTest {
     waitForResult(seo);
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
-    Assertions.assertThat((String)seo.getPayload()).contains("java.lang.ArithmeticException");
+    Assertions.assertThat((String) seo.getPayload()).contains("java.lang.ArithmeticException");
   }
 
   @Test

@@ -92,6 +92,17 @@ public class ScalaEvaluator implements Evaluator {
     currentImports = "";
     outDir = Evaluator.createJupyterTempFolder().toString();
     startWorker();
+    NamespaceClient.getBeaker(sessionId).setClientJsonMapper(new NamespaceClient.ClientJsonMapper() {
+      @Override
+      public String getJson(Object value) {
+        return ScalaJsonMapper.toJson(value);
+      }
+
+      @Override
+      public Object fromJson(String value) {
+        return ScalaJsonMapper.fromJson(value);
+      }
+    });
   }
 
   @Override
@@ -400,13 +411,12 @@ public class ScalaEvaluator implements Evaluator {
 
   private String code(String sessionId) {
     return  "import com.twosigma.beaker.NamespaceClient\n" +
-            "import com.twosigma.beaker.scala.evaluator.ScalaJsonMapper\n" +
             "import language.dynamics\n" +
             "var _beaker = NamespaceClient.getBeaker(\"" + sessionId + "\")\n" +
             "object beaker extends Dynamic {\n" +
-            "  def selectDynamic( field : String ) = ScalaJsonMapper.fromJson(_beaker.get(field))\n" +
+            "  def selectDynamic( field : String ) = _beaker.get(field)\n" +
             "  def updateDynamic (field : String)(value : Any) : Any = {\n" +
-            "    _beaker.set(field, ScalaJsonMapper.toJson(value))\n" +
+            "    _beaker.set(field, value)\n" +
             "    return value\n" +
             "  }\n" +
             "  def applyDynamic(methodName: String)(args: AnyRef*) = {\n" +

@@ -16,7 +16,7 @@ from enum import Enum
 from datetime import datetime
 import math
 
-from beaker.plot.utils import *
+from beakerx.plot.utils import *
 
 
 class ShapeType(Enum):

@@ -28,6 +28,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.util.ArrayList;
 import java.util.List;
+import static com.twosigma.beaker.evaluator.Evaluator.BEAKER_VARIABLE_NAME;
 
 public class GroovyAutocomplete {
   AutocompleteRegistry registry;
@@ -69,7 +70,7 @@ public class GroovyAutocomplete {
   }
 
   protected void moreSetup(ClassUtils cu) {    
-    cu.defineVariable("beaker", "com.twosigma.beaker.NamespaceClient");
+    cu.defineVariable(BEAKER_VARIABLE_NAME, "com.twosigma.beaker.NamespaceClient");
   }
 
   public void addImport(String imp) {

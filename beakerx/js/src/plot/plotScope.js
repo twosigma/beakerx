@@ -95,7 +95,7 @@ define([
     this.legendDone = false;
     this.legendResetPosition = false;
     this.doNotLoadState = false;
-    self.saveAsMenuContainer = null;
+    this.saveAsMenuContainer = null;
 
     this.data2scrX = null;
     this.data2scrY = null;
@@ -2140,6 +2140,8 @@ define([
         items: plotUtils.getSavePlotAsContextMenuItems(self),
         trigger: 'none'
       });
+    } else if (self.model && self.model.getSaveAsMenuContainer) {
+      self.saveAsMenuContainer = self.model.getSaveAsMenuContainer();
     }
 
     var plotContainer = self.element.find('.plot-plotcontainer');

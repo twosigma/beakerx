@@ -1147,6 +1147,10 @@ define([
     this.showHideHighlighter(columnIndex, cellHighlighters.HeatmapHighlighter);
   };
 
+  TableScope.prototype.showHideUniqueEntries = function(columnIndex) {
+    this.showHideHighlighter(columnIndex, cellHighlighters.UniqueEntriesHighlighter);
+  };
+
   TableScope.prototype.columnHasFormat = function(column, format) {
     var self = this;
     for (var i = 0; i < self.types.length; i++) {
@@ -1363,6 +1367,9 @@ define([
           break;
         case 'H':
           self.showHideHeatmap(column);
+          break;
+        case 'U':
+          self.showHideUniqueEntries(column);
           break;
       }
       if (key >= 48 && key <= 57){ //numbers 1..9

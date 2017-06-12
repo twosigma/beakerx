@@ -20,17 +20,22 @@ import com.twosigma.jupyter.Code;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.PathToJar;
+import com.twosigma.jupyter.handler.KernelHandlerWrapper;
 import com.twosigma.jupyter.message.Message;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.twosigma.beaker.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beaker.mimetype.MIMEContainer.JavaScript;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 /**
  * executes magic commands and sends message
@@ -38,29 +43,33 @@ import static com.twosigma.beaker.mimetype.MIMEContainer.JavaScript;
  * @author lasha
  */
 public class MagicCommand {
+
   public static final String JAVASCRIPT = "%%javascript";
   public static final String HTML = "%%html";
   public static final String BASH = "%%bash";
   public static final String LSMAGIC = "%lsmagic";
+  public static final String CLASSPATH = "%classpath";
+  public static final String CLASSPATH_ADD_JAR = CLASSPATH + " add jar";
+  public static final String CLASSPATH_REMOVE = CLASSPATH + " remove";
+  public static final String CLASSPATH_SHOW = CLASSPATH;
 
-  private Map<String, MagicCommandFunctionality> commands = new HashMap<>();
+  private Map<String, MagicCommandFunctionality> commands = new LinkedHashMap<>();
   private MessageCreator messageCreator;
+  private KernelFunctionality kernel;
 
   public MagicCommand(KernelFunctionality kernel) {
-    messageCreator = new MessageCreator(kernel);
+    this.kernel = checkNotNull(kernel);
+    messageCreator = new MessageCreator(this.kernel);
     buildCommands();
   }
 
   public void process(Code code, Message message, int executionCount) {
-    if (this.commands.containsKey(code.getCommand())) {
-      processCommand(code, message, executionCount);
+    Optional<MagicCommandFunctionality> functionality = getFuntionality(code);
+    if (functionality.isPresent()) {
+      functionality.get().process(code, message, executionCount);
     } else {
       processUnknownCommand(code.getCommand(), message, executionCount);
     }
-  }
-
-  private void processCommand(Code code, Message message, int executionCount) {
-    this.commands.get(code.getCommand()).process(code, message, executionCount);
   }
 
   private void processUnknownCommand(String command, Message message, int executionCount) {
@@ -73,6 +82,39 @@ public class MagicCommand {
     commands.put(HTML, html());
     commands.put(BASH, bash());
     commands.put(LSMAGIC, lsmagic());
+    commands.put(CLASSPATH_ADD_JAR, classpathAddJar());
+    commands.put(CLASSPATH_REMOVE, classpathRemove());
+    commands.put(CLASSPATH_SHOW, classpathShow());
+  }
+
+  private Optional<MagicCommandFunctionality> getFuntionality(Code code) {
+    final String command = code.getCommand();
+    Optional<String> first = commands.keySet().stream().
+            filter(c -> command.matches(c + " .*?") || command.matches(c)).
+            findFirst();
+    return first.map(s -> this.commands.get(s));
+  }
+
+  private MagicCommandFunctionality classpathShow() {
+    return (code, message, executionCount) -> {
+    };
+  }
+
+  private MagicCommandFunctionality classpathRemove() {
+    return (code, message, executionCount) -> {
+    };
+  }
+
+  private MagicCommandFunctionality classpathAddJar() {
+    return (code, message, executionCount) -> {
+      wrapBusyIdle(kernel, message, () -> {
+        String[] split = code.getCommand().split(" ");
+        if (split.length != 4) {
+          throw new RuntimeException("Wrong command format: " + CLASSPATH_ADD_JAR);
+        }
+        this.kernel.addJarToClasspath(new PathToJar(split[3]));
+      });
+    };
   }
 
   private MagicCommandFunctionality javascript() {

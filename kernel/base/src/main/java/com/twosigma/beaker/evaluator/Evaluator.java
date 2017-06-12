@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.twosigma.jupyter.PathToJar;
 import com.twosigma.jupyter.KernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,8 @@ public interface Evaluator {
   Logger logger = LoggerFactory.getLogger(Evaluator.class.getName());
 
   void setShellOptions(final KernelParameters kernelParameters) throws IOException;
+
+  void addJarToClasspath(PathToJar path);
 
   AutocompleteResult autocomplete(String code, int caretPosition);
 

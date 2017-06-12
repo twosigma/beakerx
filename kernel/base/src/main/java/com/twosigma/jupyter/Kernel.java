@@ -173,6 +173,11 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
+  public void addJarToClasspath(PathToJar path) {
+    this.evaluatorManager.addJarToClasspath(path);
+  }
+
+  @Override
   public void sendBusyMessage(Message message) {
     publish(this.messageCreator.createBusyMessage(message));
   }
@@ -181,4 +186,5 @@ public abstract class Kernel implements KernelFunctionality {
   public void sendIdleMessage(Message message) {
     publish(this.messageCreator.createIdleMessage(message));
   }
+
 }

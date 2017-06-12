@@ -41,7 +41,7 @@ public class Code {
 
   public String getCommand() {
     if(isaMagicCommand()){
-      return new Scanner(this.code).next();
+      return new Scanner(this.code).nextLine();
     }
     throw new RuntimeException("The code does not have magic command.");
   }

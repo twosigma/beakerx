@@ -25,6 +25,7 @@ import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.sql.autocomplete.SQLAutocomplete;
 import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.jupyter.PathToJar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -225,7 +226,7 @@ public class SQLEvaluator implements Evaluator {
     } else {
       for (String line : cp) {
         if (!line.trim().isEmpty()) {
-          classPath.add(line);
+          addJarToClasspath(new PathToJar(line));
         }
       }
     }
@@ -251,6 +252,16 @@ public class SQLEvaluator implements Evaluator {
     }
 
     resetEnvironment();
+  }
+
+  @Override
+  public void addJarToClasspath(PathToJar path) {
+    addJar(path);
+    resetEnvironment();
+  }
+
+  private void addJar(PathToJar path) {
+    classPath.add(path.getPath());
   }
 
   public void setShellUserPassword(String namedConnection, String user, String password) {

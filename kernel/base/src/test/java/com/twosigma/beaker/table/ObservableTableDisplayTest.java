@@ -80,7 +80,7 @@ public class ObservableTableDisplayTest {
     int result = negateValue(getRowValues(rowId, tableDisplay), colId);
     tableDisplay.addContextMenuItem("negate", getClosure(this::negateValue));
     //when
-    tableDisplay.fireContextMenuClick("negate", new ArrayList<Object>(Arrays.asList(rowId, colId)));
+    tableDisplay.fireContextMenuClick("negate", new ArrayList<Object>(Arrays.asList(rowId, colId)), null);
     //then
     Assertions.assertThat(tableDisplay.getValues().get(rowId).get(colId)).isEqualTo(result);
   }

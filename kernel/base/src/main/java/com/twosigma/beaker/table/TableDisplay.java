@@ -36,9 +36,11 @@ import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormat
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForType;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeTooltips;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 import static java.util.Arrays.asList;
 
 import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jupyter.KernelManager;
@@ -46,6 +48,7 @@ import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.beaker.table.action.TableActionDetails;
 import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 import com.twosigma.beaker.table.format.ValueStringFormat;
@@ -634,35 +637,22 @@ public class TableDisplay extends BeakerxWidget {
     List<Object> params = new ArrayList<>();
     params.add(row);
     params.add(column);
-    fireContextMenuClick(menuKey, params);
+    fireContextMenuClick(menuKey, params, message);
   }
 
   public String getDoubleClickTag() {
     return doubleClickTag;
   }
 
-  public void fireDoubleClick(List<Object> params , Message message) {
+  private Object doubleClickHandler(Object ... params) throws Exception {
+    Object[] values = ((List<List<?>>) params[0]).toArray();
+    return runClosure(this.doubleClickListener, values);
+  }
+  
+  public void fireDoubleClick(List<Object> params, Message message) {
     if (this.doubleClickListener != null) {
-      final MessageCreator mc = new MessageCreator(KernelManager.get());
-      SimpleEvaluationObject seo = new SimpleEvaluationObject("",(seoResult) -> {
-        //nothing to do
-      });
-      seo.setJupyterMessage(message);
-      seo.setOutputHandler();
-      seo.addObserver(KernelManager.get().getExecutionResultSender());
-      InternalVariable.setValue(seo);
-      KernelManager.get().publish(mc.buildClearOutput(message, true));
-      seo.clrOutputHandler();
-      Object result = null;
-      try {
-        params.add(this);
-        runClosure(this.doubleClickListener, params.toArray());
-      } catch (Exception e) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
-        seo.error(sw.toString());
-      }
+      params.add(this);
+      handleCompiledCode(message, this::doubleClickHandler, params);
     }
   }
 
@@ -695,15 +685,16 @@ public class TableDisplay extends BeakerxWidget {
     return this.details;
   }
 
-  public void fireContextMenuClick(String name, List<Object> params) {
+  private Object contextMenuClickHandler(Object ... params) throws Exception {
+    ArrayList<Object> other = (ArrayList<Object>) params[1];    
+    return runClosure(params[0], other.toArray());
+  }
+  
+  public void fireContextMenuClick(String name, List<Object> params, Message message) {
     Object contextMenuListener = this.contextMenuListeners.get(name);
     if (contextMenuListener != null) {
-      try {
-        params.add(this);
-        runClosure(contextMenuListener, params.toArray());
-      } catch (Exception e) {
-        throw new RuntimeException("Unable execute closure", e);
-      }
+      params.add(this);
+      handleCompiledCode(message, this::contextMenuClickHandler, contextMenuListener, params);
     }
   }
 

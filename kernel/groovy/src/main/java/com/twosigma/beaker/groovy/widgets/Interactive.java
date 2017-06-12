@@ -15,25 +15,19 @@
  */
 package com.twosigma.beaker.groovy.widgets;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.codehaus.groovy.runtime.MethodClosure;
-import org.codehaus.groovy.runtime.StackTraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beaker.SerializeToString;
-import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.mimetype.MIMEContainer;
+import com.twosigma.beaker.widgets.BeakerxWidget;
 import com.twosigma.beaker.widgets.InteractiveBase;
 import com.twosigma.beaker.widgets.ValueWidget;
 import com.twosigma.jupyter.message.Message;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Interactive extends InteractiveBase{
 
@@ -47,32 +41,13 @@ public class Interactive extends InteractiveBase{
     for (ValueWidget<?> widget : witgets) {
       widget.getComm().addMsgCallbackList(widget.new ValueChangeMsgCallbackHandler() {
         
+        private Object processCode(Object ... params) throws Exception {
+          return function.call(getWidgetValues()); 
+        }
+        
         @Override
         public void updateValue(Object value, Message message) {
-          SimpleEvaluationObject seo = new SimpleEvaluationObject("",(seoResult) -> {
-            //nothing to do
-          });
-          seo.setJupyterMessage(message);
-          seo.setOutputHandler();
-          seo.addObserver(KernelManager.get().getExecutionResultSender());
-          InternalVariable.setValue(seo);
-          KernelManager.get().publish(mc.buildClearOutput(message, true));
-          seo.clrOutputHandler();
-          Object result = null;
-          try {
-            result = function.call(getWidgetValues());
-          } catch (Exception e) {;
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            StackTraceUtils.sanitize(e).printStackTrace(pw);
-            seo.error(sw.toString());
-          }
-          MIMEContainer resultString = SerializeToString.doit(result);
-          if(result != null){
-            logger.info("interact result is = " + resultString.getMime());
-            KernelManager.get().publish(mc.buildDisplayData(message, resultString));
-          }
-
+          BeakerxWidget.handleCompiledCode(message, this::processCode, null);
         }
         
         private Object[] getWidgetValues(){

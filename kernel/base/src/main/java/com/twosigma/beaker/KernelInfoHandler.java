@@ -15,19 +15,19 @@
  */
 package com.twosigma.beaker;
 
+import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
+
+import com.google.common.collect.Lists;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
-import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class KernelInfoHandler extends KernelHandler<Message> {
 
@@ -39,9 +39,7 @@ public abstract class KernelInfoHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    wrapBusyIdle(kernel, message, () -> {
-      handleMsg(message);
-    });
+    wrapBusyIdle(kernel, message, () -> handleMsg(message));
   }
 
   private void handleMsg(Message message) {
@@ -64,14 +62,39 @@ public abstract class KernelInfoHandler extends KernelHandler<Message> {
     map.put("implementation_version", BeakerImplementationInfo.IMPLEMENTATION_VERSION);
     map.put("protocol_version", "5.0");
     map.put("language_info", languageInfo());
-    map.put("help_links", new ArrayList<String>());
+    map.put("help_links", getHelpLinks());
     map.put("beakerx", true);
     map.put("status", "ok");
     return doContent(map);
+  }
+
+  private ArrayList<HelpLink> getHelpLinks() {
+    HelpLink beakerXHome = new HelpLink("BeakerX Home", "https://github.com/twosigma/beakerx");
+    HelpLink fileAnIssue = new HelpLink("File an Issue", "https://github.com/twosigma/beakerx/issues/new");
+    HelpLink twoSigmaOpenSource = new HelpLink("Two Sigma Open Source", "http://opensource.twosigma.com/");
+
+    return Lists.newArrayList(beakerXHome, fileAnIssue, twoSigmaOpenSource);
   }
 
   protected abstract HashMap<String, Serializable> doLanguageInfo(HashMap<String, Serializable> languageInfo);
 
   protected abstract HashMap<String, Serializable> doContent(HashMap<String, Serializable> content);
 
+  private class HelpLink implements Serializable {
+    protected String text;
+    protected String url;
+
+    HelpLink(String text, String url) {
+      this.text = text;
+      this.url = url;
+    }
+
+    public String getText() {
+      return text;
+    }
+
+    public String getUrl() {
+      return url;
+    }
+  }
 }

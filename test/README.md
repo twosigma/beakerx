@@ -1,3 +1,6 @@
+##Dependencies
+Running the e2e tests from its GitHub source code requires Chrome browser version 58+.
+
 ##Setting Up a Test Environment
 
 Create a [notebook configuration file](http://jupyter-notebook.readthedocs.io/en/latest/public_server.html#prerequisite-a-notebook-configuration-file):
@@ -16,14 +19,22 @@ Verify password: beakerx
 [NotebookPasswordApp] Wrote hashed password to /Users/you/.jupyter/jupyter_notebook_config.json
 ```
 
-Install Protractor:
+Install Webdriver.io framework and Selenium server:
 
 ```
-npm install
+yarn install
+yarn run wdio-config
+yarn run setup-server
 ```
 
 ## Run the tests
 
 ```
 python ./runner.py
+```
+
+or
+
+```
+gradle test:e2e
 ```

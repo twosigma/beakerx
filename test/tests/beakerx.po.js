@@ -14,26 +14,22 @@
  *  limitations under the License.
  */
 
-var BeakerXPageObject = require('./beakerx.po.js');
-var beakerxPO;
+var BeakerXPageObject = function() {
 
-describe('plotDemo page', function() {
+    this.baseURL = 'http://127.0.0.1:8888/tree/demoFiles';
 
-    beforeEach(function(done) {
-        beakerxPO = new BeakerXPageObject();
-        browser
-            .url(beakerxPO.baseURL)
-            .call(done);
-        beakerxPO.loginJupyter();
-        browser.click('=plotDemo.ipynb');
-        browser.window(browser.windowHandles().value[1]);
-    });
+    this.loginJupyter = function(){
+        browser.setValue('#password_input', 'beakerx');
+        browser.click('#login_submit');
+        browser.waitForEnabled('=plotDemo.ipynb', 30000);
+    }
 
-    it('can run Groovy cell', function(done) {
+    this.clickRunCell = function(){
+        var cssRunCell = 'button[data-jupyter-action="jupyter-notebook:run-cell-and-select-next"]';
+        browser.waitForEnabled(cssRunCell, 30000);
+        browser.click(cssRunCell);
         browser.waitForEnabled('i.kernel_idle_icon', 30000);
-        browser.click('div.code_cell');
-        beakerxPO.clickRunCell();
-        browser.call(done);
-    });
+    }
 
-});
+};
+module.exports = BeakerXPageObject;

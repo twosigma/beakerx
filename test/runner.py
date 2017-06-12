@@ -18,16 +18,24 @@ import subprocess
 import signal
 
 here = os.path.abspath(os.path.dirname(__file__))
-parent_dir = os.path.abspath(os.path.join(here, ".."))
+beakerx_dir = os.path.abspath(os.path.join(here, ".."))
+test_dir = here
 
 # start selenium server
-webdriver_path = os.path.abspath(os.path.join(here, "node_modules/protractor/bin/webdriver-manager"))
-os.system("node %s update" % webdriver_path)
 with open(os.devnull, "w") as fnull:
-    webcontrol = subprocess.Popen([webdriver_path, "start"], stdout=fnull, stderr=fnull, preexec_fn=os.setsid);
+    webcontrol = subprocess.Popen(["yarn", "run", "start-server"], stdout=subprocess.PIPE, stderr=fnull, preexec_fn=os.setsid);
+# wait for selenium server to start up
+    while 1:
+        line = webcontrol.stdout.readline().decode('utf-8').strip()
+        if not line:
+            continue
+        print(line)
+        if 'Selenium started' in line: 
+            break
+
 
 # start jupyter notebook
-nb_command = 'source activate beakerx & jupyter notebook --no-browser --notebook-dir="%s"' % parent_dir
+nb_command = 'source activate beakerx & jupyter notebook --no-browser --notebook-dir="%s"' % beakerx_dir
 beakerx = subprocess.Popen(nb_command, shell=True, executable="/bin/bash", preexec_fn=os.setsid, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
 # wait for notebook server to start up
 while 1:
@@ -38,10 +46,8 @@ while 1:
     if 'The Jupyter Notebook is running' in line: 
         break
 
-#start protractor
-protractor_path = os.path.abspath(os.path.join(here, "node_modules/protractor/bin/protractor"))
-conf_path = os.path.abspath(os.path.join(here, "protractorConf.js"))
-result = os.system("%s %s" % (protractor_path, conf_path));
+#start webdriverio
+result=subprocess.call("yarn run test", shell=True)
 
 # Send the signal to all the process groups
 os.killpg(os.getpgid(beakerx.pid), signal.SIGTERM)

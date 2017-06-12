@@ -40,6 +40,10 @@ import static java.util.Arrays.asList;
 
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.evaluator.InternalVariable;
+import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.jupyter.msg.MessageCreator;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.table.action.TableActionDetails;
@@ -53,6 +57,8 @@ import com.twosigma.beaker.widgets.RunWidgetClosure;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -567,13 +573,13 @@ public class TableDisplay extends BeakerxWidget {
     handleCommEventSync(message, CommActions.ONCONTEXTMENU, (ActionPerformed) this::onContextMenu);
   }
 
-  private void onDoubleClickAction(HashMap content) {
+  private void onDoubleClickAction(HashMap content, Message message) {
     Object row = content.get("row");
     Object column = content.get("column");
     List<Object> params = new ArrayList<>();
     params.add(row);
     params.add(column);
-    fireDoubleClick(params);
+    fireDoubleClick(params, message);
   }
 
   /**
@@ -581,7 +587,7 @@ public class TableDisplay extends BeakerxWidget {
    *
    * @param content
    */
-  private void onActionDetails(HashMap content) {
+  private void onActionDetails(HashMap content, Message message) {
     TableActionDetails details = new TableActionDetails();
 
     if (content.containsKey("params")) {
@@ -621,7 +627,7 @@ public class TableDisplay extends BeakerxWidget {
     }
   }
 
-  private void onContextMenu(HashMap content) {
+  private void onContextMenu(HashMap content, Message message) {
     String menuKey = (String) content.get("itemKey");
     Object row = content.get("row");
     Object column = content.get("column");
@@ -635,13 +641,27 @@ public class TableDisplay extends BeakerxWidget {
     return doubleClickTag;
   }
 
-  public void fireDoubleClick(List<Object> params) {
+  public void fireDoubleClick(List<Object> params , Message message) {
     if (this.doubleClickListener != null) {
+      final MessageCreator mc = new MessageCreator(KernelManager.get());
+      SimpleEvaluationObject seo = new SimpleEvaluationObject("",(seoResult) -> {
+        //nothing to do
+      });
+      seo.setJupyterMessage(message);
+      seo.setOutputHandler();
+      seo.addObserver(KernelManager.get().getExecutionResultSender());
+      InternalVariable.setValue(seo);
+      KernelManager.get().publish(mc.buildClearOutput(message, true));
+      seo.clrOutputHandler();
+      Object result = null;
       try {
         params.add(this);
         runClosure(this.doubleClickListener, params.toArray());
       } catch (Exception e) {
-        throw new RuntimeException("Unable execute closure", e);
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        seo.error(sw.toString());
       }
     }
   }

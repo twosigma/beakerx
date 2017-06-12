@@ -15,10 +15,13 @@
  */
 package com.twosigma.beaker.groovy.widgets;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.groovy.runtime.MethodClosure;
+import org.codehaus.groovy.runtime.StackTraceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,11 +57,22 @@ public class Interactive extends InteractiveBase{
           seo.addObserver(KernelManager.get().getExecutionResultSender());
           InternalVariable.setValue(seo);
           KernelManager.get().publish(mc.buildClearOutput(message, true));
-          Object result = function.call(getWidgetValues());
           seo.clrOutputHandler();
+          Object result = null;
+          try {
+            result = function.call(getWidgetValues());
+          } catch (Exception e) {;
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            StackTraceUtils.sanitize(e).printStackTrace(pw);
+            seo.error(sw.toString());
+          }
           MIMEContainer resultString = SerializeToString.doit(result);
-          logger.info("interact result is = " + resultString.getMime());
-          KernelManager.get().publish(mc.buildDisplayData(message, resultString));
+          if(result != null){
+            logger.info("interact result is = " + resultString.getMime());
+            KernelManager.get().publish(mc.buildDisplayData(message, resultString));
+          }
+
         }
         
         private Object[] getWidgetValues(){

@@ -52,7 +52,8 @@ public abstract class Kernel implements KernelFunctionality {
   private KernelSockets kernelSockets;
   private MessageCreator messageCreator;
 
-  public Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory) {
+  public Kernel(final String sessionId, final Evaluator evaluator,
+      final KernelSocketsFactory kernelSocketsFactory) {
     this.messageCreator = new MessageCreator(this);
     this.sessionId = sessionId;
     this.kernelSocketsFactory = kernelSocketsFactory;
@@ -163,7 +164,8 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public SimpleEvaluationObject executeCode(String code, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback) {
+  public SimpleEvaluationObject executeCode(String code, Message message, int executionCount,
+      ExecuteCodeCallback executeCodeCallback) {
     return this.evaluatorManager.executeCode(code, message, executionCount, executeCodeCallback);
   }
 

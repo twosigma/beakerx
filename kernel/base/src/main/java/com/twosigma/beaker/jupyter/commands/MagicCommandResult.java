@@ -19,6 +19,7 @@ import com.twosigma.jupyter.Code;
 import com.twosigma.jupyter.message.Message;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class MagicCommandResult {
 
@@ -43,5 +44,9 @@ public class MagicCommandResult {
 
   public Code getCode() {
     return items.getLast().getCode().get();
+  }
+
+  public List<MagicCommandResultItem> getItems() {
+    return items;
   }
 }

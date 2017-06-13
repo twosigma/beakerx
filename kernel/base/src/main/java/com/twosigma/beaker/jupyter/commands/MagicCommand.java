@@ -26,13 +26,12 @@ import com.twosigma.jupyter.message.Message;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beaker.jupyter.commands.MagicCommandFinder.find;
 import static com.twosigma.beaker.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beaker.mimetype.MIMEContainer.JavaScript;
 
@@ -63,32 +62,19 @@ public class MagicCommand {
   }
 
   public MagicCommandResult process(Code code, Message message, int executionCount) {
+    MagicCommandFinder finder = find(code, this.commands, message, executionCount, this.messageCreator);
     MagicCommandResult result = new MagicCommandResult();
-    Map<String, MagicCommandFunctionality> functionalityToRun = new HashMap<>();
-    code.getCommands().forEach(c -> {
-      Optional<MagicCommandFunctionality> functionality = findFunctionality(this.commands, c);
-      if (functionality.isPresent()) {
-        functionalityToRun.put(c, functionality.get());
-      } else {
-        MagicCommandResultItem magicCommandResultItem = processUnknownCommand(c, message, executionCount);
-        result.addItem(magicCommandResultItem);
-        return;
-      }
-    });
-    functionalityToRun.keySet().
-            forEach(item -> {
-              MagicCommandResultItem magicCommandResultItem = functionalityToRun.get(item).process(code, item, message, executionCount);
-              result.addItem(magicCommandResultItem);
-            });
+    if (finder.hasErrors()) {
+      finder.getErrors().forEach(result::addItem);
+    } else {
+      Map<String, MagicCommandFunctionality> functionalitiesToRun = finder.getFunctionalitiesToRun();
+      functionalitiesToRun.keySet().
+              forEach(item -> {
+                MagicCommandResultItem magicCommandResultItem = functionalitiesToRun.get(item).process(code, item, message, executionCount);
+                result.addItem(magicCommandResultItem);
+              });
+    }
     return result;
-  }
-
-  private MagicCommandResultItem processUnknownCommand(String command, Message message, int executionCount) {
-    String result = "Cell magic " + command + " not found";
-    return new MagicCommandResultItem(
-            messageCreator.buildOutputMessage(message, result, true),
-            messageCreator.buildReplyWithoutStatus(message, executionCount)
-    );
   }
 
   private void buildCommands() {
@@ -99,12 +85,6 @@ public class MagicCommand {
     commands.put(CLASSPATH_ADD_JAR, classpathAddJar());
     commands.put(CLASSPATH_REMOVE, classpathRemove());
     commands.put(CLASSPATH_SHOW, classpathShow());
-  }
-
-  private Optional<MagicCommandFunctionality> findFunctionality(final Map<String, MagicCommandFunctionality> commands, final String command) {
-    return commands.keySet().stream().
-            filter(c -> command.matches(c + " .*?") || command.matches(c)).
-            findFirst().map(s -> this.commands.get(s));
   }
 
   private MagicCommandFunctionality classpathShow() {

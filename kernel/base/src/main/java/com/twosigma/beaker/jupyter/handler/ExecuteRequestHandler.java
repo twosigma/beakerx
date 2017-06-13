@@ -17,6 +17,7 @@ package com.twosigma.beaker.jupyter.handler;
 
 
 import com.twosigma.beaker.jupyter.commands.MagicCommand;
+import com.twosigma.beaker.jupyter.commands.MagicCommandResult;
 import com.twosigma.jupyter.Code;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.KernelHandler;
@@ -64,15 +65,29 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     Code code = takeCodeFrom(message);
     announceThatWeHaveTheCode(message, code);
     if (code.isaMagicCommand()) {
-      magicCommand.process(code, message, executionCount);
-      kernel.sendIdleMessage(message);
-      syncObject.release();
+      MagicCommandResult magicCommandResult = magicCommand.process(code, message, executionCount);
+      if (magicCommandResult.hasCodeToExecute()) {
+        runCode(magicCommandResult.getCode().asString(), message);
+      } else {
+        sendMagicCommandResult(message, magicCommandResult);
+      }
     } else {
-      kernel.executeCode(code.asString(), message, executionCount, (seo) -> {
-        kernel.sendIdleMessage(seo.getJupyterMessage());
-        syncObject.release();
-      });
+      runCode(code.asString(), message);
     }
+  }
+
+  private void sendMagicCommandResult(Message message, MagicCommandResult process) {
+    kernel.publish(process.getInfoMessage());
+    kernel.send(process.replyMessage());
+    kernel.sendIdleMessage(message);
+    syncObject.release();
+  }
+
+  private void runCode(String code, Message message) {
+    kernel.executeCode(code, message, executionCount, (seo) -> {
+      kernel.sendIdleMessage(seo.getJupyterMessage());
+      syncObject.release();
+    });
   }
 
   private void announceThatWeHaveTheCode(Message message, Code code) {

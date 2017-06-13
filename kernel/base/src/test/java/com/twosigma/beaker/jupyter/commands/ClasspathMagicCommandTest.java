@@ -43,13 +43,14 @@ public class ClasspathMagicCommandTest {
     //given
     Message message = new Message();
     String jar = SRC_TEST_RESOURCES + "BeakerXClasspathTest.jar";
-    Code code = new Code("%classpath add jar" + " " + jar);
+    String codeAsString = "" +
+            "%classpath add jar" + " " + jar+"\n" +
+            "code code code";
+    Code code = new Code(codeAsString);
     //when
-    sut.process(code, message, 1);
+    MagicCommandResult result = sut.process(code, message, 1);
     //then
-    assertThat(kernel.getClassPath()).contains(new PathToJar(jar));
-    assertThat(getIdleMessage(kernel.getPublishedMessages())).isPresent();
-    assertThat(getBusyMessage(kernel.getPublishedMessages())).isPresent();
+    assertThat(result.getCode()).isEqualTo(new Code("code code code"));
   }
 
   @Test
@@ -59,10 +60,9 @@ public class ClasspathMagicCommandTest {
     String jar = SRC_TEST_RESOURCES + "BeakerXClasspathTest.jar";
     Code code = new Code("%classpath2 add jar" + " " + jar);
     //when
-    sut.process(code, message, 1);
+    MagicCommandResult result = sut.process(code, message, 1);
     //then
-    Message actual = getErrorMsg(kernel.getPublishedMessages()).get();
-    assertThat(actual.getContent().get("text")).isEqualTo("Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found");
+    assertThat(result.getInfoMessage().getContent().get("text")).isEqualTo("Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found");
   }
 
 

@@ -25,8 +25,6 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.commands.MagicCommandAssertions.getErrorMsg;
-import static com.twosigma.beaker.jupyter.commands.MagicCommandAssertions.getExecuteResultMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaScriptMagicCommandTest {
@@ -44,13 +42,16 @@ public class JavaScriptMagicCommandTest {
   public void handleJavaScriptMagicCommand() throws Exception {
     //given
     Message message = new Message();
-    String jsCode = System.lineSeparator() + "alert()";
-    Code code = new Code(MagicCommand.JAVASCRIPT + jsCode);
+    String jsCode =
+            "require.config({\n" +
+                    "  paths: {\n" +
+                    "      d3: '//cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min'\n" +
+                    "  }});";
+    Code code = new Code(MagicCommand.JAVASCRIPT + System.lineSeparator() + jsCode);
     //when
-    sut.process(code, message, 1);
+    MagicCommandResult result = sut.process(code, message, 1);
     //then
-    Message actual = getExecuteResultMessage(kernel.getPublishedMessages()).get();
-    Map data = (Map) actual.getContent().get(Comm.DATA);
+    Map data = (Map) result.getInfoMessage().getContent().get(Comm.DATA);
     assertThat(data.get(MIMEContainer.MIME.APPLICATION_JAVASCRIPT.getMime())).isEqualTo(jsCode);
   }
 
@@ -61,10 +62,9 @@ public class JavaScriptMagicCommandTest {
     String jsCode = System.lineSeparator() + "alert()";
     Code code = new Code(MagicCommand.JAVASCRIPT + "wrong" + jsCode);
     //when
-    sut.process(code, message, 1);
+    MagicCommandResult result = sut.process(code, message, 1);
     //then
-    Message actual = getErrorMsg(kernel.getPublishedMessages()).get();
-    assertThat(actual.getContent().get("text")).isEqualTo("Cell magic "+MagicCommand.JAVASCRIPT + "wrong"+" not found");
+    assertThat(result.getInfoMessage().getContent().get("text")).isEqualTo("Cell magic " + MagicCommand.JAVASCRIPT + "wrong" + " not found");
   }
 
 }

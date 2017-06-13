@@ -1743,11 +1743,6 @@ define([
       var currentCell = self.table.cells(function(idx, data, node) {
         return idx.column === colIdx && idx.row ===  rowIdx;
       });
-      var currentCellNodes = $(currentCell.nodes());
-      var isCurrentCellSelected = currentCellNodes.hasClass('selected');
-      var row = self.table.row(rowIdx);
-
-      self.setRowSelection(row, !isCurrentCellSelected);
 
       var index = currentCell.indexes()[0];
       if (model.hasDoubleClickAction) {

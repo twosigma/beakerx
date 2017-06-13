@@ -807,7 +807,6 @@ define([
       show: { delay: 300, duration: 300 },
       position: { my: 'left bottom', at: 'center top' }
     });
-    self.initRowSelectable();
   };
 
   TableScope.prototype.getColumnTypeAndAlignment = function(colIdx) {
@@ -1909,6 +1908,8 @@ define([
       // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
 
     }, 0);
+
+    self.initTableSelect();
 
   };
 

@@ -18,25 +18,6 @@ require('jquery-ui/ui/widgets/selectable');
 
 module.exports = function(TableScope) {
 
-  TableScope.prototype.getCellsByRow = function(row) {
-    return this.table.cells(row.index(), this.table.columns().indexes());
-  };
-
-  TableScope.prototype.setRowSelection = function(rowSelector, shouldSelect) {
-    if (shouldSelect) {
-      return this.selectRows(rowSelector);
-    }
-
-    this.deselectRows(rowSelector);
-  };
-
-  TableScope.prototype.selectRows = function(rowSelector) {
-    var row = this.table.row(rowSelector);
-    var cells = this.getCellsByRow(row);
-
-    cells.select();
-  };
-
   TableScope.prototype.deselectCells = function(cells) {
     var $selected = $(cells.nodes()).filter('.ui-selected');
 
@@ -53,17 +34,10 @@ module.exports = function(TableScope) {
     });
   };
 
-  TableScope.prototype.deselectRows = function(rowSelector) {
-    var row = this.table.row(rowSelector);
-    var cells = this.getCellsByRow(row);
-
-    this.deselectCells(cells);
-  };
-
-  TableScope.prototype.initRowSelectable = function() {
+  TableScope.prototype.initTableSelect = function() {
     var self = this;
 
-    $(this.element).selectable({
+    $(this.table.table().container()).selectable({
       filter: 'tr[role="row"] td',
       delay: 150,
       cancel: 'thead',
@@ -77,5 +51,7 @@ module.exports = function(TableScope) {
         $(self.element).find('.ui-selected').removeClass('ui-selected');
       }
     });
+
+    self.element.focus();
   };
 };

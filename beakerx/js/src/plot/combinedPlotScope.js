@@ -45,6 +45,7 @@ define([
     this.id = null;
     this.childScopeNo = 1;
     this.scopes = [];
+    this.saveAsMenuContainer = null;
 
     this.model = {
       model: {},
@@ -127,6 +128,9 @@ define([
           this.setDumpState(self.dumpState());
 
           self.updateModels('focus');
+        },
+        getSaveAsMenuContainer: function() {
+          return self.saveAsMenuContainer;
         },
         updateWidth : function(width) {
           self.width = width;
@@ -230,10 +234,12 @@ define([
 
     self.id = 'bko-plot-' + bkUtils.generateId(6);
     self.element.find('.combplot-plotcontainer').attr('id', self.id);
+    self.saveAsMenuContainer = $('#' + self.id);
     $.contextMenu({
       selector: '#' + self.id,
       zIndex: 3,
-      items: plotUtils.getSavePlotAsContextMenuItems(self)
+      items: plotUtils.getSavePlotAsContextMenuItems(self),
+      trigger: 'none'
     });
 
     self.standardizeData();

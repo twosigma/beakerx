@@ -20,6 +20,7 @@ import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.Button;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;
+import com.twosigma.jupyter.message.Message;
 
 import java.util.HashMap;
 
@@ -32,7 +33,7 @@ public class ButtonComponentWidget extends ButtonComponent implements CommFuncti
     this.widget.registerOnClick(this::fireActionPerformed);
   }
   
-  private void fireActionPerformed(HashMap content){
+  private void fireActionPerformed(HashMap content, Message message){
     this.fireActionPerformed();
   }
 

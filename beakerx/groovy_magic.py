@@ -1,4 +1,4 @@
-# Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,5 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .runtime import Beaker
-from .plot import *
+from beakerx.groovy_magic import GroovyMagics
+
+def load_ipython_extension(ipython):
+    ipython.register_magics(GroovyMagics)
+
+def unload_ipython_extension(ipython):
+    pass

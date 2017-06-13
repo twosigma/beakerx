@@ -63,25 +63,25 @@ public abstract class ChartDetails extends BeakerxWidget {
   }
   
   
-  private void onKeyAction(HashMap content) {
+  private void onKeyAction(HashMap content, Message message) {
     GraphicsActionObject info = getDetailsFromMessage(content);
     String graphicsId = getGraphicsUid(content);
     Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
     if (g != null) {
-      g.fireOnKey(info.getKey(), info);
+      g.fireOnKey(info.getKey(), info, message);
     }
   }
 
-  private void onClickAction(HashMap content) {
+  private void onClickAction(HashMap content, Message message) {
     GraphicsActionObject info = getDetailsFromMessage(content);
     String graphicsId = getGraphicsUid(content);
     Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
     if (g != null) {
-      g.fireClick(info);
+      g.fireClick(info, message);
     }
   }
 
-  protected void onActionDetails(HashMap content) {
+  protected void onActionDetails(HashMap content, Message message) {
     GraphicsActionObject info = getDetailsFromMessage(content);
     String graphicsId = getGraphicsUid(content);
     Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);

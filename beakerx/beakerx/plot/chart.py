@@ -16,9 +16,9 @@ import json
 
 from datetime import datetime
 
-from beaker.plot.legend import LegendPosition, LegendLayout
-from beaker.plot.utils import BaseObject, getValue
-from beaker.plot.plotitem import *
+from beakerx.plot.legend import LegendPosition, LegendLayout
+from beakerx.plot.utils import BaseObject, getValue
+from beakerx.plot.plotitem import *
 
 from IPython.display import display
 from ipywidgets import DOMWidget, register

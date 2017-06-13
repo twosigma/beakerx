@@ -36,12 +36,19 @@ import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormat
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForType;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeTooltips;
+import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 import static java.util.Arrays.asList;
 
 import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.chart.Color;
+import com.twosigma.beaker.evaluator.InternalVariable;
+import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.jupyter.msg.MessageCreator;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.beaker.table.action.TableActionDetails;
 import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 import com.twosigma.beaker.table.format.ValueStringFormat;
@@ -53,6 +60,8 @@ import com.twosigma.beaker.widgets.RunWidgetClosure;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -567,13 +576,13 @@ public class TableDisplay extends BeakerxWidget {
     handleCommEventSync(message, CommActions.ONCONTEXTMENU, (ActionPerformed) this::onContextMenu);
   }
 
-  private void onDoubleClickAction(HashMap content) {
+  private void onDoubleClickAction(HashMap content, Message message) {
     Object row = content.get("row");
     Object column = content.get("column");
     List<Object> params = new ArrayList<>();
     params.add(row);
     params.add(column);
-    fireDoubleClick(params);
+    fireDoubleClick(params, message);
   }
 
   /**
@@ -581,7 +590,7 @@ public class TableDisplay extends BeakerxWidget {
    *
    * @param content
    */
-  private void onActionDetails(HashMap content) {
+  private void onActionDetails(HashMap content, Message message) {
     TableActionDetails details = new TableActionDetails();
 
     if (content.containsKey("params")) {
@@ -621,28 +630,29 @@ public class TableDisplay extends BeakerxWidget {
     }
   }
 
-  private void onContextMenu(HashMap content) {
+  private void onContextMenu(HashMap content, Message message) {
     String menuKey = (String) content.get("itemKey");
     Object row = content.get("row");
     Object column = content.get("column");
     List<Object> params = new ArrayList<>();
     params.add(row);
     params.add(column);
-    fireContextMenuClick(menuKey, params);
+    fireContextMenuClick(menuKey, params, message);
   }
 
   public String getDoubleClickTag() {
     return doubleClickTag;
   }
 
-  public void fireDoubleClick(List<Object> params) {
+  private Object doubleClickHandler(Object ... params) throws Exception {
+    Object[] values = ((List<List<?>>) params[0]).toArray();
+    return runClosure(this.doubleClickListener, values);
+  }
+  
+  public void fireDoubleClick(List<Object> params, Message message) {
     if (this.doubleClickListener != null) {
-      try {
-        params.add(this);
-        runClosure(this.doubleClickListener, params.toArray());
-      } catch (Exception e) {
-        throw new RuntimeException("Unable execute closure", e);
-      }
+      params.add(this);
+      handleCompiledCode(message, this::doubleClickHandler, params);
     }
   }
 
@@ -675,15 +685,16 @@ public class TableDisplay extends BeakerxWidget {
     return this.details;
   }
 
-  public void fireContextMenuClick(String name, List<Object> params) {
+  private Object contextMenuClickHandler(Object ... params) throws Exception {
+    ArrayList<Object> other = (ArrayList<Object>) params[1];    
+    return runClosure(params[0], other.toArray());
+  }
+  
+  public void fireContextMenuClick(String name, List<Object> params, Message message) {
     Object contextMenuListener = this.contextMenuListeners.get(name);
     if (contextMenuListener != null) {
-      try {
-        params.add(this);
-        runClosure(contextMenuListener, params.toArray());
-      } catch (Exception e) {
-        throw new RuntimeException("Unable execute closure", e);
-      }
+      params.add(this);
+      handleCompiledCode(message, this::contextMenuClickHandler, contextMenuListener, params);
     }
   }
 

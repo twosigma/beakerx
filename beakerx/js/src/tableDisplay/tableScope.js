@@ -1360,6 +1360,7 @@ define([
     var self = this;
     var key = onKeyEvent.keyCode;
     var charCode = String.fromCharCode(key);
+
     if (charCode) {
       switch(charCode.toUpperCase()){
         case 'B':
@@ -1625,6 +1626,7 @@ define([
 
     var id = '#' + self.id;
     var init = {
+      'keys': self.focussedCell || true,
       'destroy' : true,
       'data': self.data,
       'columns': self.columns,
@@ -1767,8 +1769,6 @@ define([
       'iFixedColumns': self.pagination.fixLeft + 1,
       'iFixedColumnsRight': self.pagination.fixRight
     });
-    self.keyTable = new $.fn.dataTable.KeyTable($(id));
-    self.refreshCells();
 
     if(init.paging !== false){
       var pagination = $(self.element).find(".bko-table-use-pagination");
@@ -1909,6 +1909,12 @@ define([
       .on('draw.dt', function() {
         self.updateRowDisplayBtts();
         self.updateToggleColumnBtts();
+      })
+      .on('key-focus', function ( e, datatable, cell, originalEvent) {
+        self.focussedCell = cell.index();
+      })
+      .on('key-blur', function ( e, datatable, cell) {
+        self.focussedCell = null;
       });
 
     function updateSize() {
@@ -1953,7 +1959,9 @@ define([
 
     self.updateFixedColumnsSeparator();
 
-    self.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
+    self.keyTable = self.table.settings()[0].keytable;
+    self.refreshCells();
+    self.fixcols = new $.fn.dataTable.FixedColumns(self.table, inits);
     self.fixcols.fnRedrawLayout();
     // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
 
@@ -1985,7 +1993,6 @@ define([
       // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
 
     }, 0);
-
   };
 
   // little hack: hide dropdown menu when click on CodeMirror instance

@@ -11,11 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Create a notebook containing code from a beaker notebook.
-
 Run as:  python bkr2ipynb.py [notebook name].bkr
 """
+import re
 import sys
 import json
 import nbformat
@@ -37,11 +36,15 @@ def setHeader(level, title):
         level -= 1
     return '{0} {1}'.format(dash, title)
 
-def getCode(cell):
+def getFixedCodeText(cell):
+    ret = '';
     body = cell['body']
     if isinstance(body, list):
-        return "\n".join(body)
-    return body
+        ret = "\n".join(body)
+    else:
+       ret = body
+    ret = re.sub(r'\bbeaker\b', 'beakerx', ret)
+    return ret;
 
 def convertNotebook(notebook):
     nb = new_notebook()
@@ -72,15 +75,15 @@ def convertNotebook(notebook):
                 metadata = {"tags": tags}
             if cell['evaluator'] != kernel_name:
                 if cell['evaluator'] == 'TeX':
-                    nb.cells.append(new_markdown_cell("${0}$".format(getCode(cell['input']))))
+                    nb.cells.append(new_markdown_cell("${0}$".format(getFixedCodeText(cell['input']))))
                 else:
                     nb.cells.append(
-                        new_code_cell(source='%%{0}\n{1}'.format(cell['evaluator'].lower(), getCode(cell['input'])),
+                        new_code_cell(source='%%{0}\n{1}'.format(cell['evaluator'].lower(), getFixedCodeText(cell['input'])),
                                       metadata=metadata))
             else:
-                nb.cells.append(new_code_cell(source=getCode(cell['input']), metadata=metadata))
+                nb.cells.append(new_code_cell(source=getFixedCodeText(cell['input']), metadata=metadata))
         if cell['type'] == 'markdown':
-            nb.cells.append(new_markdown_cell(getCode(cell)))
+            nb.cells.append(new_markdown_cell(getFixedCodeText(cell)))
         if cell['type'] == 'section':
             nb.cells.append(new_markdown_cell(setHeader(cell['level'], cell['title'])))
     nbformat.write(nb, notebook.partition('.')[0] + '.ipynb')

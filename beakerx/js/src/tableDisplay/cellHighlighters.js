@@ -213,6 +213,7 @@ define([
   return {
     HeatmapHighlighter: HeatmapHighlighter,
     ThreeColorHeatmapHighlighter: ThreeColorHeatmapHighlighter,
+    UniqueEntriesHighlighter: UniqueEntriesHighlighter,
     createHighlighter: function (type, data) {
       switch (type) {
         case 'HeatmapHighlighter':

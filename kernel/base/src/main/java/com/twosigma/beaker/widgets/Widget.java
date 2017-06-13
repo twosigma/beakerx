@@ -159,7 +159,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
           HashMap content = (LinkedHashMap) contentObject;
           Object event = content.get("event");
           if (event.equals(action.getAction())) {
-            handlerAction.executeAction(content);
+            handlerAction.executeAction(content, message);
           }
         }
       }
@@ -167,7 +167,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   }
   
   public interface ActionPerformed {
-    void executeAction(HashMap content);
+    void executeAction(HashMap content, Message message);
   }
 
 }

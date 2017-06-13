@@ -39,7 +39,7 @@ parser.add_argument(
     action="store_true"
 )
 
-CKSM = "beaker.kernel_spec.BeakerXKernelSpec"
+CKSM = "beakerx.kernel_spec.BeakerXKernelSpec"
 KSMC = "kernel_spec_class"
 
 

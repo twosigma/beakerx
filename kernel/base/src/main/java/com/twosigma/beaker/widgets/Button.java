@@ -87,9 +87,9 @@ public class Button extends ValueWidget<Boolean> {
   }
   
   
-  private void executeAction(HashMap content){
+  private void executeAction(HashMap content, Message message){
     if(actionPerformed != null){
-      actionPerformed.executeAction(content);
+      actionPerformed.executeAction(content, message);
     }
     if(getTag() != null && !getTag().isEmpty()){
       NamespaceClient.getBeaker().runByTag(getTag());

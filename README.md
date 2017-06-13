@@ -42,8 +42,8 @@ source activate beakerx
 ./gradlew --no-daemon build
 ./gradlew --no-daemon kernelInstall
 ./gradlew --no-daemon :beakerx:install
-pip install -e .
-python -m beaker.install --enable --prefix="${CONDA_PREFIX}"
+(cd beakerx; pip install -e .)
+python -m beakerx.install --enable --prefix="${CONDA_PREFIX}"
 jupyter notebook
 ```
 

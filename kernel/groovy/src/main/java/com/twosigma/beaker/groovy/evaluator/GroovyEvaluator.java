@@ -434,9 +434,9 @@ public class GroovyEvaluator implements Evaluator {
           Script instance = (Script) parsedClass.newInstance();
 
           if (LOCAL_DEV) {
-            scriptBinding.setVariable("beaker", new HashMap<String, Object>());
+            scriptBinding.setVariable(BEAKER_VARIABLE_NAME, new HashMap<String, Object>());
           } else {
-            scriptBinding.setVariable("beaker", NamespaceClient.getBeaker(sessionId));
+            scriptBinding.setVariable(BEAKER_VARIABLE_NAME, NamespaceClient.getBeaker(sessionId));
           }
 
           instance.setBinding(scriptBinding);

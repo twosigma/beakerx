@@ -69,7 +69,7 @@ public class ObservableTableDisplayTest {
     int result = sumAllElements(getRowValues(rowId, tableDisplay), colId);
     tableDisplay.setDoubleClickAction(getClosure(this::sumAllElements));
     //when
-    tableDisplay.fireDoubleClick(new ArrayList<Object>(Arrays.asList(rowId, colId)));
+    tableDisplay.fireDoubleClick(new ArrayList<Object>(Arrays.asList(rowId, colId)), null);
     //then
     Assertions.assertThat(tableDisplay.getValues().get(rowId).get(colId)).isEqualTo(result);
   }
@@ -80,7 +80,7 @@ public class ObservableTableDisplayTest {
     int result = negateValue(getRowValues(rowId, tableDisplay), colId);
     tableDisplay.addContextMenuItem("negate", getClosure(this::negateValue));
     //when
-    tableDisplay.fireContextMenuClick("negate", new ArrayList<Object>(Arrays.asList(rowId, colId)));
+    tableDisplay.fireContextMenuClick("negate", new ArrayList<Object>(Arrays.asList(rowId, colId)), null);
     //then
     Assertions.assertThat(tableDisplay.getValues().get(rowId).get(colId)).isEqualTo(result);
   }

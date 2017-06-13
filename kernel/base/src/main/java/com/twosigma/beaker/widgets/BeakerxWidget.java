@@ -15,23 +15,21 @@
  */
 package com.twosigma.beaker.widgets;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.mimetype.MIMEContainer;
+import com.twosigma.beaker.table.ContextMenuAction;
 import com.twosigma.jupyter.message.Message;
-
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BeakerxWidget extends Widget {
   
@@ -123,9 +121,39 @@ public abstract class BeakerxWidget extends Widget {
       }
     }
   }
-  
+
   public interface ExecuteCompiledCode {
     Object executeCode(Object ... params) throws Exception;
+  }
+
+  public static synchronized void handleCompiledCode(Message message, ContextMenuAction contextMenuAction, Integer row, Integer column) {
+    final MessageCreator mc = new MessageCreator(KernelManager.get());
+    final SimpleEvaluationObject seo = new SimpleEvaluationObject("",(seoResult) -> {
+      //nothing to do
+    });
+
+    if (message != null) {
+      seo.setJupyterMessage(message);
+      seo.setOutputHandler();
+      seo.addObserver(KernelManager.get().getExecutionResultSender());
+      InternalVariable.setValue(seo);
+      KernelManager.get().publish(mc.buildClearOutput(message, true));
+      seo.clrOutputHandler();
+    }
+
+    try {
+      contextMenuAction.apply(row, column, null);
+    } catch (Exception e) {
+      if (message != null) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        seo.error(sw.toString());
+      }else{
+        logger.info("Execution result ERROR: \n" + e);
+      }
+    }
+
   }
 
 }

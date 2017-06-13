@@ -36,19 +36,12 @@ import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormat
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeStringFormatForType;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beaker.table.TableDisplayToJson.serializeTooltips;
-import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 import static java.util.Arrays.asList;
 
 import com.twosigma.beaker.NamespaceClient;
-import com.twosigma.beaker.SerializeToString;
 import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.evaluator.InternalVariable;
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jupyter.msg.MessageCreator;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.beaker.mimetype.MIMEContainer;
 import com.twosigma.beaker.table.action.TableActionDetails;
 import com.twosigma.beaker.table.format.TableDisplayStringFormat;
 import com.twosigma.beaker.table.format.ValueStringFormat;
@@ -59,9 +52,6 @@ import com.twosigma.beaker.widgets.BeakerxWidget;
 import com.twosigma.beaker.widgets.RunWidgetClosure;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -142,7 +132,7 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public TableDisplay(Map<?, ?>[] v) {
-    this(new ArrayList<Map<?, ?>>(Arrays.asList(v)), new BasicObjectSerializer());
+    this(new ArrayList<>(Arrays.asList(v)), new BasicObjectSerializer());
   }
 
   public TableDisplay(Collection<Map<?, ?>> v, BeakerObjectConverter serializer) {
@@ -363,6 +353,29 @@ public class TableDisplay extends BeakerxWidget {
     }
   }
 
+  public void addCellHighlighter(CellHighlighter cellHighlighter) {
+    Map<String, List<Color>> colors = new HashMap<>();
+    try {
+      int rowSize = this.values.get(0).size();
+      for (int colInd = 0; colInd < rowSize; colInd++) {
+        boolean hasHighlightedValues = false;
+        List<Color> columnColors = new ArrayList<>();
+        for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
+          Color color = cellHighlighter.apply(rowInd, colInd, this);
+          if (color != null) {
+            hasHighlightedValues = true;
+          }
+          columnColors.add(color);
+        }
+        if (hasHighlightedValues) {
+          addCellHighlighter(new ValueHighlighter(this.columns.get(colInd), columnColors));
+        }
+      }
+    } catch (Throwable e) {
+      throw new IllegalArgumentException("Can not set cell highlighter using closure.", e);
+    }
+  }
+
   public void removeAllCellHighlighters() {
     this.cellHighlighters.clear();
     sendModelUpdate(serializeCellHighlighters(this.cellHighlighters));
@@ -381,6 +394,22 @@ public class TableDisplay extends BeakerxWidget {
         for (int colInd = 0; colInd < row.size(); colInd++) {
           Object[] params = new Object[]{rowInd, colInd, this};
           rowToolTips.add((String) runClosure(closure, params));
+        }
+        tooltips.add(rowToolTips);
+      }
+    } catch (Throwable e) {
+      throw new IllegalArgumentException("Can not set tooltip using closure.", e);
+    }
+    sendModelUpdate(serializeTooltips(this.tooltips));
+  }
+
+  public void setTooltip(TooltipAction tooltip) {
+    try {
+      for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
+        List<?> row = this.values.get(rowInd);
+        List<String> rowToolTips = new ArrayList<>();
+        for (int colInd = 0; colInd < row.size(); colInd++) {
+          rowToolTips.add(tooltip.apply(rowInd, colInd, this));
         }
         tooltips.add(rowToolTips);
       }
@@ -433,12 +462,43 @@ public class TableDisplay extends BeakerxWidget {
     sendModelUpdate(serializeFontColor(this.fontColor));
   }
 
+  public void setFontColorProvider(FontColorProvider fontColorProvider) {
+    try {
+      for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
+        List<?> row = this.values.get(rowInd);
+        List<Color> rowFontColors = new ArrayList<>();
+        for (int colInd = 0; colInd < row.size(); colInd++) {
+          rowFontColors.add(fontColorProvider.apply(rowInd, colInd, this));
+        }
+        this.fontColor.add(rowFontColors);
+      }
+    } catch (Throwable e) {
+      throw new IllegalArgumentException("Can not set font color using closure.", e);
+    }
+    sendModelUpdate(serializeFontColor(this.fontColor));
+  }
+
   public void setRowFilter(Object closure) {
     List<List<?>> filteredValues = new ArrayList<>();
     try {
       for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
         Object[] params = new Object[]{rowInd, this.values};
         if ((boolean) runClosure(closure, params)) {
+          filteredValues.add(values.get(rowInd));
+        }
+      }
+    } catch (Throwable e) {
+      throw new IllegalArgumentException("Can not set row filter using closure.", e);
+    }
+    this.filteredValues = filteredValues;
+    sendModelUpdate(serializeFilteredValues(this.filteredValues));
+  }
+
+  public void setRowFilter(RowFilter rowFilter) {
+    List<List<?>> filteredValues = new ArrayList<>();
+    try {
+      for (int rowInd = 0; rowInd < this.values.size(); rowInd++) {
+        if (rowFilter.apply(rowInd, this.values)) {
           filteredValues.add(values.get(rowInd));
         }
       }
@@ -503,7 +563,7 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   public static Map<String, Object> getValuesAsDictionary(List<List<?>> values) {
-    Map<String, Object> m = new HashMap<String, Object>();
+    Map<String, Object> m = new HashMap<>();
     for (List<?> l : values) {
       m.put(l.get(0).toString(), l.get(1));
     }
@@ -533,7 +593,6 @@ public class TableDisplay extends BeakerxWidget {
     }
     return null;
   }
-
 
   public List<List<?>> getValues() {
     return values;
@@ -565,15 +624,23 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   private void handleDoubleClick(Message message) {
-    handleCommEventSync(message, CommActions.ONDOUBLECLICK, (ActionPerformed) this::onDoubleClickAction);
+    handleCommEventSync(message, CommActions.ONDOUBLECLICK, this::onDoubleClickAction);
   }
 
   private void handleSetDetails(Message message) {
-    handleCommEventSync(message, CommActions.ACTIONDETAILS, (ActionPerformed) this::onActionDetails);
+    handleCommEventSync(message, CommActions.ACTIONDETAILS, this::onActionDetails);
+  }
+
+  private void handleOnContextMenu(Message message, Boolean clorjure) {
+    if (clorjure) {
+      handleCommEventSync(message, CommActions.ONCONTEXTMENU, this::onContextMenu);
+    } else {
+      handleCommEventSync(message, CommActions.ONCONTEXTMENU, this::onClickContextMenu);
+    }
   }
 
   private void handleOnContextMenu(Message message) {
-    handleCommEventSync(message, CommActions.ONCONTEXTMENU, (ActionPerformed) this::onContextMenu);
+    handleOnContextMenu(message, Boolean.TRUE);
   }
 
   private void onDoubleClickAction(HashMap content, Message message) {
@@ -640,6 +707,15 @@ public class TableDisplay extends BeakerxWidget {
     fireContextMenuClick(menuKey, params, message);
   }
 
+  private void onClickContextMenu(HashMap content, Message message) {
+    String menuKey = (String) content.get("itemKey");
+    Object row = content.get("row");
+    Object column = content.get("column");
+
+    ContextMenuAction contextMenuAction = (ContextMenuAction) this.contextMenuListeners.get(menuKey);
+    handleCompiledCode(message, contextMenuAction, (Integer) row, (Integer) column);
+  }
+
   public String getDoubleClickTag() {
     return doubleClickTag;
   }
@@ -648,7 +724,7 @@ public class TableDisplay extends BeakerxWidget {
     Object[] values = ((List<List<?>>) params[0]).toArray();
     return runClosure(this.doubleClickListener, values);
   }
-  
+
   public void fireDoubleClick(List<Object> params, Message message) {
     if (this.doubleClickListener != null) {
       params.add(this);
@@ -662,7 +738,12 @@ public class TableDisplay extends BeakerxWidget {
 
   public void addContextMenuItem(String name, Object closure) {
     this.contextMenuListeners.put(name, closure);
-    getComm().addMsgCallbackList((Handler<Message>) this::handleOnContextMenu);
+    getComm().addMsgCallbackList((this::handleOnContextMenu));
+  }
+
+  public void addContextMenuItem(String name, ContextMenuAction action) {
+    this.contextMenuListeners.put(name, action);
+    getComm().addMsgCallbackList((message -> handleOnContextMenu(message, Boolean.FALSE)));
   }
 
   public void addContextMenuItem(String name, String tagName) {
@@ -681,20 +762,17 @@ public class TableDisplay extends BeakerxWidget {
     this.details = details;
   }
 
-  public TableActionDetails getDetails() {
-    return this.details;
-  }
-
   private Object contextMenuClickHandler(Object ... params) throws Exception {
-    ArrayList<Object> other = (ArrayList<Object>) params[1];    
+    ArrayList<Object> other = (ArrayList<Object>) params[1];
     return runClosure(params[0], other.toArray());
   }
-  
+
   public void fireContextMenuClick(String name, List<Object> params, Message message) {
     Object contextMenuListener = this.contextMenuListeners.get(name);
     if (contextMenuListener != null) {
-      params.add(this);
-      handleCompiledCode(message, this::contextMenuClickHandler, contextMenuListener, params);
+
+        params.add(this);
+        handleCompiledCode(message, this::contextMenuClickHandler,contextMenuListener, params);
     }
   }
 

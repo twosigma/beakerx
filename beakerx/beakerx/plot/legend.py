@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from enum import Enum
-from beaker.plot.utils import *
+from beakerx.plot.utils import *
 
 class LegendLayout(Enum):
   HORIZONTAL = 1

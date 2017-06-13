@@ -16,9 +16,12 @@
 
 package com.twosigma.beaker.chart.actions;
 
+import com.twosigma.beaker.KernelTest;
 import com.twosigma.beaker.chart.KeyboardCodes;
 import com.twosigma.beaker.chart.xychart.plotitem.Bars;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
+import com.twosigma.beaker.jupyter.KernelManager;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +32,7 @@ public class GraphicsActionTest {
 
   private XYGraphics xyGraphics;
   private GraphicsActionListenerStub actionListener;
+  private KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
@@ -37,6 +41,8 @@ public class GraphicsActionTest {
     xyGraphics.setY(Arrays.asList(10, 20));
     xyGraphics.setDisplayName("test display name");
     actionListener = new GraphicsActionListenerStub();
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
   }
 
   @Test
@@ -44,7 +50,7 @@ public class GraphicsActionTest {
     //given
     xyGraphics.onClick(actionListener);
     //when
-    xyGraphics.fireClick(new XYGraphicsActionObject());
+    xyGraphics.fireClick(new XYGraphicsActionObject(), null);
     //then
     Assertions.assertThat(actionListener.getActionObject()).isNotNull();
     Assertions.assertThat(actionListener.getActionObject().getGraphics())
@@ -56,7 +62,7 @@ public class GraphicsActionTest {
     //given
     xyGraphics.onKey("CTRL", actionListener);
     //when
-    xyGraphics.fireOnKey("CTRL", new XYGraphicsActionObject());
+    xyGraphics.fireOnKey("CTRL", new XYGraphicsActionObject(), null);
     //then
     Assertions.assertThat(actionListener.getActionObject()).isNotNull();
     Assertions.assertThat(actionListener.getActionObject().getGraphics())
@@ -68,7 +74,7 @@ public class GraphicsActionTest {
     //given
     xyGraphics.onKey(KeyboardCodes.CTRL, actionListener);
     //when
-    xyGraphics.fireOnKey(KeyboardCodes.CTRL.name(), new XYGraphicsActionObject());
+    xyGraphics.fireOnKey(KeyboardCodes.CTRL.name(), new XYGraphicsActionObject(), null);
     //then
     Assertions.assertThat(actionListener.getActionObject()).isNotNull();
     Assertions.assertThat(actionListener.getActionObject().getGraphics())

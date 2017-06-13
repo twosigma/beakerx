@@ -18,13 +18,22 @@ package com.twosigma.beaker.chart;
 
 import com.twosigma.beaker.chart.actions.GraphicsActionListener;
 import com.twosigma.beaker.chart.actions.GraphicsActionObject;
+import com.twosigma.beaker.evaluator.InternalVariable;
+import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beaker.jupyter.msg.MessageCreator;
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.widgets.BeakerxWidget;
+import com.twosigma.jupyter.message.Message;
+
 import org.apache.commons.lang3.StringUtils;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+import java.io.PrintWriter;
 import java.io.Serializable;
-
+import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -91,10 +100,16 @@ public abstract class Graphics implements Serializable, Cloneable{
     return this;
   }
 
-  public void fireClick(GraphicsActionObject actionObject) {
+  private Object clickHandler(Object ... params) throws Exception {
+    GraphicsActionObject ao = (GraphicsActionObject)params[0];
+    ao.setGraphics(this);
+    onClickListener.execute(ao);
+    return null;
+  }
+  
+  public void fireClick(GraphicsActionObject actionObject, Message message) {
     if (onClickListener != null) {
-      actionObject.setGraphics(this);
-      onClickListener.execute(actionObject);
+      BeakerxWidget.handleCompiledCode(message, this::clickHandler, actionObject);
     }
   }
 
@@ -117,12 +132,19 @@ public abstract class Graphics implements Serializable, Cloneable{
     this.keyTags.put(key.name(), tag);
     return this;
   }
+  
+  private Object onKeyHandler(Object ... params) throws Exception {
+    GraphicsActionListener listener = (GraphicsActionListener)params[0];
+    GraphicsActionObject ao = (GraphicsActionObject)params[1];
+    ao.setGraphics(this);
+    listener.execute(ao);
+    return null;
+  }
 
-  public void fireOnKey(String key, GraphicsActionObject actionObject) {
+  public void fireOnKey(String key, GraphicsActionObject actionObject, Message message) {
     GraphicsActionListener listener = onKeyListeners.get(key);
     if (listener != null) {
-      actionObject.setGraphics(this);
-      listener.execute(actionObject);
+      BeakerxWidget.handleCompiledCode(message, this::onKeyHandler, listener, actionObject);
     }
   }
 

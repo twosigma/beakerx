@@ -19,6 +19,7 @@ import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beaker.jupyter.KernelManager;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.KernelTest;
+import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.widgets.integers.IntProgress;
 import org.junit.After;
 import org.junit.Before;
@@ -36,6 +37,7 @@ import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
 import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyTypeMsg;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static com.twosigma.beaker.evaluator.Evaluator.BEAKER_VARIABLE_NAME;
 
 public class GroovyEvaluatorProgressReportingTest {
 
@@ -59,7 +61,7 @@ public class GroovyEvaluatorProgressReportingTest {
     //given
     String code =
             "for ( int i = 0 ; i<5; i++) {\n" +
-            "  beaker.showProgressUpdate(\"msg\"+i, i)\n" +
+            "  "+ BEAKER_VARIABLE_NAME + ".showProgressUpdate(\"msg\"+i, i)\n" +
             "}\n" +
             "\"finished\"";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());

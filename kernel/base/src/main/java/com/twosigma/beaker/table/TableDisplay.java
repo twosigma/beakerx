@@ -653,6 +653,7 @@ public class TableDisplay extends BeakerxWidget {
     if (this.doubleClickListener != null) {
       params.add(this);
       handleCompiledCode(message, this::doubleClickHandler, params);
+      sendModel();
     }
   }
 
@@ -695,6 +696,7 @@ public class TableDisplay extends BeakerxWidget {
     if (contextMenuListener != null) {
       params.add(this);
       handleCompiledCode(message, this::contextMenuClickHandler, contextMenuListener, params);
+      sendModel();
     }
   }
 

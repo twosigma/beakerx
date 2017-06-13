@@ -16,28 +16,23 @@
 
 package com.twosigma.beaker.chart;
 
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.twosigma.beaker.chart.actions.GraphicsActionListener;
 import com.twosigma.beaker.chart.actions.GraphicsActionObject;
-import com.twosigma.beaker.evaluator.InternalVariable;
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jupyter.msg.MessageCreator;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.widgets.BeakerxWidget;
 import com.twosigma.jupyter.message.Message;
 
-import org.apache.commons.lang3.StringUtils;
-
-import org.apache.commons.lang3.SerializationUtils;
-
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public abstract class Graphics implements Serializable, Cloneable{
+
+  private static final long serialVersionUID = -1878979081955090695L;
+  
   private final String uid;
   private boolean visible     = true;
   private String  yAxisName   = null;

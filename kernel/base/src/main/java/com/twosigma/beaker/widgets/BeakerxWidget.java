@@ -109,7 +109,7 @@ public abstract class BeakerxWidget extends Widget {
       Object result = handler.executeCode(params);
       if(result != null && message != null){
         MIMEContainer resultString = SerializeToString.doit(result);
-        logger.info("interact result is = " + resultString.getMime());
+        logger.info("code execution result is = " + resultString.getMime());
         KernelManager.get().publish(mc.buildDisplayData(message, resultString));
       }
     } catch (Exception e) {

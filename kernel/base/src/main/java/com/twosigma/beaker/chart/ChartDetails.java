@@ -69,6 +69,7 @@ public abstract class ChartDetails extends BeakerxWidget {
     Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
     if (g != null) {
       g.fireOnKey(info.getKey(), info, message);
+      sendModel();
     }
   }
 
@@ -78,6 +79,7 @@ public abstract class ChartDetails extends BeakerxWidget {
     Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
     if (g != null) {
       g.fireClick(info, message);
+      sendModel();
     }
   }
 

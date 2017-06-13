@@ -19,8 +19,6 @@ import org.codehaus.groovy.runtime.MethodClosure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.beaker.widgets.BeakerxWidget;
 import com.twosigma.beaker.widgets.InteractiveBase;
 import com.twosigma.beaker.widgets.ValueWidget;
@@ -35,7 +33,7 @@ public class Interactive extends InteractiveBase{
   
   @SuppressWarnings("unchecked")
   public static synchronized void interact(MethodClosure function, Object... parameters) {
-    final MessageCreator mc = new MessageCreator(KernelManager.get());
+
     final List<ValueWidget<?>> witgets = widgetsFromAbbreviations(parameters);
     
     for (ValueWidget<?> widget : witgets) {

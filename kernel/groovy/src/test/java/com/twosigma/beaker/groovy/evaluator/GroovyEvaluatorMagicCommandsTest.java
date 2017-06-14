@@ -41,10 +41,9 @@ public class GroovyEvaluatorMagicCommandsTest {
   @Test
   public void addJarToClasspath() throws Exception {
     //given
-    PathToJar path = new PathToJar(SRC_TEST_RESOURCES + "BeakerXClasspathTest.jar");
+    PathToJar path = new PathToJar(SRC_TEST_RESOURCES + "lombok.jar");
     String code = "" +
-            "import com.beaker.BeakerXClasspathTest;" +
-            "BeakerXClasspathTest t = new BeakerXClasspathTest();\n";
+            "import lombok.Data;";
     SimpleEvaluationObject seo = runCode(code);
     assertThat(seo.getStatus()).isEqualTo(ERROR);
     //when

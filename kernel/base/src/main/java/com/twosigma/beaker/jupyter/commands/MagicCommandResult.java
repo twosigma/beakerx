@@ -13,13 +13,40 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.jupyter.commands;
 
 import com.twosigma.jupyter.Code;
 import com.twosigma.jupyter.message.Message;
 
+import java.util.LinkedList;
+import java.util.List;
 
-public interface MagicCommandFunctionality {
-  MagicCommandResultItem process(Code code, String command, Message message, int executionCount);
+public class MagicCommandResult {
+
+  private LinkedList<MagicCommandResultItem> items = new LinkedList<>();
+
+  public void addItem(MagicCommandResultItem magicCommandResultItem) {
+    this.items.add(magicCommandResultItem);
+  }
+
+  public boolean hasCodeToExecute() {
+    MagicCommandResultItem last = items.getLast();
+    return last.hasCodeToExecute();
+  }
+
+  public Message getInfoMessage() {
+    return items.getLast().getInfoMessage().get();
+  }
+
+  public Message replyMessage() {
+    return items.getLast().getReplyWithoutStatus().get();
+  }
+
+  public Code getCode() {
+    return items.getLast().getCode().get();
+  }
+
+  public List<MagicCommandResultItem> getItems() {
+    return items;
+  }
 }

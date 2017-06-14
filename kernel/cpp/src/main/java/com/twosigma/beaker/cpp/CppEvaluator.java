@@ -26,6 +26,7 @@ import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.jupyter.PathToJar;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -131,6 +132,11 @@ public class CppEvaluator implements Evaluator {
       userFlags = new ArrayList<>(Arrays.asList(flags));
       resetEnvironment();
     }
+  }
+
+  @Override
+  public void addJarToClasspath(PathToJar path) {
+    //no implementation
   }
 
   @Override

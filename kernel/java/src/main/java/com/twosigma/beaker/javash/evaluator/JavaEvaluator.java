@@ -25,6 +25,7 @@ import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.jupyter.PathToJar;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -156,7 +157,7 @@ public class JavaEvaluator implements Evaluator{
     } else {
       for (String line : listOfClassPath) {
         if (!line.trim().isEmpty()) {
-          classPath.add(line);
+          addJarToClasspath(new PathToJar(line));
         }
       }
     }
@@ -172,6 +173,16 @@ public class JavaEvaluator implements Evaluator{
     }
 
     resetEnvironment();
+  }
+
+  @Override
+  public void addJarToClasspath(PathToJar path) {
+    addJar(path);
+    resetEnvironment();
+  }
+
+  private void addJar(PathToJar path) {
+    classPath.add(path.getPath());
   }
 
 

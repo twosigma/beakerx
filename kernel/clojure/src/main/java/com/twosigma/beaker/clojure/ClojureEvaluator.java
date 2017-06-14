@@ -27,6 +27,7 @@ import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.jupyter.PathToJar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -270,24 +271,24 @@ public class ClojureEvaluator implements Evaluator {
 
   @Override
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-    
+
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
 
     Map<String, String> env = System.getenv();
 
-    if (listOfClassPath == null || listOfClassPath.isEmpty()){
+    if (listOfClassPath == null || listOfClassPath.isEmpty()) {
       classPath = new ArrayList<>();
     } else {
       for (String line : listOfClassPath) {
         if (!line.trim().isEmpty()) {
-          classPath.add(line);
+          addJarToClasspath(new PathToJar(line));
         }
       }
     }
-    
-    if (listOfImports == null || listOfImports.isEmpty()){
+
+    if (listOfImports == null || listOfImports.isEmpty()) {
       imports = new ArrayList<>();
     } else {
       for (String line : listOfImports) {
@@ -300,6 +301,15 @@ public class ClojureEvaluator implements Evaluator {
     resetEnvironment();
   }
 
+  @Override
+  public void addJarToClasspath(PathToJar path) {
+    addJar(path);
+    resetEnvironment();
+  }
+
+  private void addJar(PathToJar path) {
+    classPath.add(path.getPath());
+  }
 
   public AutocompleteResult autocomplete(String code, int caretPosition) {
 

@@ -118,7 +118,7 @@ public class MessageCreator {
     return reply;
   }
 
-  private Message buildReplyWithoutStatus(Message message, int executionCount) {
+  public Message buildReplyWithoutStatus(Message message, int executionCount) {
     Message reply = initMessage(EXECUTE_REPLY, message);
     Hashtable<String, Serializable> map6 = new Hashtable<String, Serializable>(3);
     map6.put("dependencies_met", true);
@@ -138,11 +138,6 @@ public class MessageCreator {
     reply.getContent().put("text", text);
     logger.debug("Console output:", "Error: " + hasError, text);
     return reply;
-  }
-
-  public synchronized void createMagicMessage(Message reply, int executionCount, Message message) {
-    kernel.publish(reply);
-    kernel.send(buildReplyWithoutStatus(message, executionCount));
   }
 
   public synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo) {

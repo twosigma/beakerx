@@ -19,6 +19,7 @@ import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.jupyter.PathToJar;
 import com.twosigma.jupyter.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +91,10 @@ public class EvaluatorManager {
 
   private void readyToExecuteCode() {
     codeExecutor = this::execute;
+  }
+
+  public void addJarToClasspath(PathToJar path) {
+   this.evaluator.addJarToClasspath(path);
   }
 
   interface CodeExecutor {

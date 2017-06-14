@@ -35,6 +35,7 @@ import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beaker.table.TableDisplay;
 import com.twosigma.beaker.table.serializer.TableDisplayDeSerializer;
 import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.jupyter.PathToJar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Predef;
@@ -177,7 +178,7 @@ public class ScalaEvaluator implements Evaluator {
     } else {
       for (String line : listOfClassPath) {
         if (!line.trim().isEmpty()) {
-          classPath.add(line);
+          addJarToClasspath(new PathToJar(line));
         }
       }
     }
@@ -193,6 +194,16 @@ public class ScalaEvaluator implements Evaluator {
     }
 
     resetEnvironment();
+  }
+
+  @Override
+  public void addJarToClasspath(PathToJar path) {
+    addJar(path);
+    resetEnvironment();
+  }
+
+  private void addJar(PathToJar path) {
+    classPath.add(path.getPath());
   }
 
   @Override

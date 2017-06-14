@@ -25,8 +25,10 @@ import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.jupyter.PathToJar;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,9 +43,10 @@ public class KernelTest implements KernelFunctionality {
   private String id;
   private Map<String, Comm> commMap = new HashMap<>();
   private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
-  private Boolean setShellOptions;
+  private KernelParameters setShellOptions;
   private EvaluatorManager evaluatorManager;
   private MessageCreator messageCreator;
+  private List<PathToJar> classPath = new ArrayList<>();
 
   public KernelTest() {
     this("KernelTestId1");
@@ -110,10 +113,23 @@ public class KernelTest implements KernelFunctionality {
 
   @Override
   public void setShellOptions(KernelParameters kernelParameters) {
-    this.setShellOptions = Boolean.TRUE;
+    this.setShellOptions = kernelParameters;
+  }
+
+  @Override
+  public void addJarToClasspath(PathToJar path) {
+    this.classPath.add(path);
+  }
+
+  public List<PathToJar> getClassPath() {
+    return classPath;
   }
 
   public Boolean isSetShellOptions() {
+    return setShellOptions != null;
+  }
+
+  public KernelParameters getSetShellOptions() {
     return setShellOptions;
   }
 
@@ -153,12 +169,15 @@ public class KernelTest implements KernelFunctionality {
 
   @Override
   public SimpleEvaluationObject executeCode(String code, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback) {
-    return null;
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
+    seo.setJupyterMessage(message);
+    executeCodeCallback.execute(seo);
+    return seo;
   }
 
   @Override
   public AutocompleteResult autocomplete(String code, int cursorPos) {
-    return this.evaluatorManager.autocomplete(code,cursorPos);
+    return this.evaluatorManager.autocomplete(code, cursorPos);
   }
 
   @Override

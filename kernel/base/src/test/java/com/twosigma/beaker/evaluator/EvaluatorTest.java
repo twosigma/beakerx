@@ -19,6 +19,7 @@ package com.twosigma.beaker.evaluator;
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.jupyter.PathToJar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +36,11 @@ public class EvaluatorTest implements Evaluator {
   @Override
   public void setShellOptions(KernelParameters kernelParameters) throws IOException {
     this.kernelParameters = kernelParameters;
+  }
+
+  @Override
+  public void addJarToClasspath(PathToJar path) {
+
   }
 
   @Override

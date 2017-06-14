@@ -61,6 +61,8 @@ public interface KernelFunctionality {
 
   void sendIdleMessage(Message message);
 
+  void addJarToClasspath(PathToJar path);
+
   interface ExecuteCodeCallback{
     void execute(SimpleEvaluationObject seo);
   }

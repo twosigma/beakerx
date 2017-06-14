@@ -24,7 +24,7 @@ import static java.util.stream.Collectors.toList;
 
 public class Classpath {
 
-  public static final String DELIMITER = ", ";
+  public static final String DELIMITER = System.lineSeparator();
 
   private List<PathToJar> paths = new ArrayList<>();
 

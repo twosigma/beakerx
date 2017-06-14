@@ -13,22 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.scala;
+package com.twosigma.beaker.table;
 
-import com.twosigma.beaker.DefaultJVMVariables;
+@FunctionalInterface
+public interface TooltipAction {
 
-/**
- * 
- * @author konst
- *
- */
-public class ScalaDefaultVariables extends DefaultJVMVariables {
+  String apply(Integer row, Integer col, TableDisplay tableDisplay);
 
-    public ScalaDefaultVariables() {
-      addImports("com.twosigma.beaker.scala.chart.xychart._",
-          "com.twosigma.beaker.scala.chart.xychart.plotitem._",
-          "com.twosigma.beaker.scala.easyform.EasyForm",
-          "com.twosigma.beaker.scala.table._",
-          "com.twosigma.beaker.scala.fileloader._");
-    }
 }

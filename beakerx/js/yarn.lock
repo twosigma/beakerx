@@ -937,6 +937,13 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
+datatables.net-buttons@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/datatables.net-buttons/-/datatables.net-buttons-1.3.1.tgz#86e3f207dc6c4433e9ecb982d994958367f2c9e5"
+  dependencies:
+    datatables.net ">=1.10.9"
+    jquery ">=1.7"
+
 datatables.net-colreorder-dt@^1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/datatables.net-colreorder-dt/-/datatables.net-colreorder-dt-1.3.3.tgz#ff1eb621f89bb8838196925b9ece35d4c4d1b48f"
@@ -985,6 +992,13 @@ datatables.net-keytable-dt@^2.2.1:
 datatables.net-keytable@>=2.0.0, datatables.net-keytable@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/datatables.net-keytable/-/datatables.net-keytable-2.2.1.tgz#792374a68fbe5af1f832f3c267bbfe4079164d13"
+  dependencies:
+    datatables.net ">=1.10.9"
+    jquery ">=1.7"
+
+datatables.net-select@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/datatables.net-select/-/datatables.net-select-1.2.2.tgz#9651793f52899f4e5745c0720821e8b8286fbf45"
   dependencies:
     datatables.net ">=1.10.9"
     jquery ">=1.7"

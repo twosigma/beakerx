@@ -13,22 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.scala;
+package com.twosigma.beaker.table;
 
-import com.twosigma.beaker.DefaultJVMVariables;
+import java.util.List;
 
-/**
- * 
- * @author konst
- *
- */
-public class ScalaDefaultVariables extends DefaultJVMVariables {
+@FunctionalInterface
+public interface RowFilter {
 
-    public ScalaDefaultVariables() {
-      addImports("com.twosigma.beaker.scala.chart.xychart._",
-          "com.twosigma.beaker.scala.chart.xychart.plotitem._",
-          "com.twosigma.beaker.scala.easyform.EasyForm",
-          "com.twosigma.beaker.scala.table._",
-          "com.twosigma.beaker.scala.fileloader._");
-    }
+  Boolean apply(Integer rowInd, List<List<?>> values);
+
 }

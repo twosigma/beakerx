@@ -21,14 +21,6 @@ import nbformat
 import argparse
 from nbformat.v4 import new_notebook, new_code_cell, new_markdown_cell
 
-parser = argparse.ArgumentParser()
-parser.add_argument('notebooks', nargs='+',
-                    help="beaker notebooks to be converted. Enter *.bkr in case you want to convert all notebooks at once.")
-if len(sys.argv) == 1:
-    parser.print_help()
-args = parser.parse_args()
-
-
 def setHeader(level, title):
     dash = ''
     while level != 0:
@@ -46,10 +38,8 @@ def getFixedCodeText(cell):
     ret = re.sub(r'\bbeaker\b', 'beakerx', ret)
     return ret;
 
-def convertNotebook(notebook):
+def parseBkr(data):
     nb = new_notebook()
-    with open(notebook, encoding='utf-8') as data_file:
-        data = json.load(data_file)
     evaluators = list((cell['evaluator']) for cell in data['cells'] if 'evaluator' in cell)
     kernel_name = max(evaluators, key=evaluators.count) if evaluators else 'IPython'
     if kernel_name in ['JavaScript', 'HTML', 'TeX']:
@@ -86,8 +76,24 @@ def convertNotebook(notebook):
             nb.cells.append(new_markdown_cell(getFixedCodeText(cell)))
         if cell['type'] == 'section':
             nb.cells.append(new_markdown_cell(setHeader(cell['level'], cell['title'])))
+    return nb
+
+def convertNotebook(notebook):
+    with open(notebook, encoding='utf-8') as data_file:
+        data = json.load(data_file)
+    nb = parseBkr(data)
     nbformat.write(nb, notebook.partition('.')[0] + '.ipynb')
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('notebooks', nargs='+',
+                        help="beaker notebooks to be converted. Enter *.bkr in case you want to convert all notebooks at once.")
+    if len(sys.argv) == 1:
+        parser.print_help()
+    args = parser.parse_args()
 
-for notebook in args.notebooks:
-    convertNotebook(notebook)
+    for notebook in args.notebooks:
+        convertNotebook(notebook)
+
+if __name__ == "__main__":
+    main()

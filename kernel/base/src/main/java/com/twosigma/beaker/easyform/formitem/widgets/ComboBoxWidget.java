@@ -16,19 +16,19 @@
 package com.twosigma.beaker.easyform.formitem.widgets;
 
 import com.twosigma.beaker.easyform.formitem.ComboBox;
+import com.twosigma.beaker.easyform.formitem.ComboBoxComponent;
 import com.twosigma.beaker.jupyter.comm.Comm;
 import com.twosigma.beaker.widgets.CommFunctionality;
 import com.twosigma.beaker.widgets.DOMWidget;
-import com.twosigma.beaker.widgets.selections.Dropdown;
 
 import java.util.Collection;
 
 public class ComboBoxWidget extends ComboBox implements CommFunctionality, EasyFormWidget {
 
-  private Dropdown widget;
+  private ComboBoxComponent widget;
 
   public ComboBoxWidget() {
-    this.widget = new Dropdown();
+    this.widget = new ComboBoxComponent();
   }
 
   @Override
@@ -54,8 +54,13 @@ public class ComboBoxWidget extends ComboBox implements CommFunctionality, EasyF
 
   @Override
   public void setEditable(Boolean editable) {
-    super.setEditable(editable);
+    this.widget.setEditable(editable);
     this.widget.setDisabled(editable);
+  }
+
+  @Override
+  public Boolean getEditable() {
+    return this.widget.getEditable();
   }
 
   @Override

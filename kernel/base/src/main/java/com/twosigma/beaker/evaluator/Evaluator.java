@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.twosigma.jupyter.Classpath;
 import com.twosigma.jupyter.PathToJar;
 import com.twosigma.jupyter.KernelParameters;
 import org.slf4j.Logger;
@@ -28,8 +29,8 @@ import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 
 public interface Evaluator {
-  
-  public static final String BEAKER_VARIABLE_NAME = "beakerx";
+
+  String BEAKER_VARIABLE_NAME = "beakerx";
 
   Logger logger = LoggerFactory.getLogger(Evaluator.class.getName());
 
@@ -57,4 +58,7 @@ public interface Evaluator {
     return ret.toAbsolutePath();
   }
 
+  Classpath getClasspath();
+
+  void resetEnvironment();
 }

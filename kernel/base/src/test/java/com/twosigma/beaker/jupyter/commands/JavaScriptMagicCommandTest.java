@@ -51,7 +51,7 @@ public class JavaScriptMagicCommandTest {
     //when
     MagicCommandResult result = sut.process(code, message, 1);
     //then
-    Map data = (Map) result.getInfoMessage().getContent().get(Comm.DATA);
+    Map data = (Map) result.getResultMessage().getContent().get(Comm.DATA);
     assertThat(data.get(MIMEContainer.MIME.APPLICATION_JAVASCRIPT.getMime())).isEqualTo(jsCode);
   }
 
@@ -64,7 +64,7 @@ public class JavaScriptMagicCommandTest {
     //when
     MagicCommandResult result = sut.process(code, message, 1);
     //then
-    assertThat(result.getInfoMessage().getContent().get("text")).isEqualTo("Cell magic " + MagicCommand.JAVASCRIPT + "wrong" + " not found");
+    assertThat(result.getResultMessage().getContent().get("text")).isEqualTo("Cell magic " + MagicCommand.JAVASCRIPT + "wrong" + " not found");
   }
 
 }

@@ -34,8 +34,8 @@ public class MagicCommandResult {
     return last.hasCodeToExecute();
   }
 
-  public Message getInfoMessage() {
-    return items.getLast().getInfoMessage().get();
+  public Message getResultMessage() {
+    return items.getLast().getResultMessage().get();
   }
 
   public Message replyMessage() {

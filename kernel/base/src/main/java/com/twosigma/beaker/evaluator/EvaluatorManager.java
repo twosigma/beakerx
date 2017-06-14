@@ -17,6 +17,7 @@ package com.twosigma.beaker.evaluator;
 
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.jupyter.Classpath;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.PathToJar;
@@ -95,6 +96,10 @@ public class EvaluatorManager {
 
   public void addJarToClasspath(PathToJar path) {
    this.evaluator.addJarToClasspath(path);
+  }
+
+  public Classpath getClasspath() {
+    return this.evaluator.getClasspath();
   }
 
   interface CodeExecutor {

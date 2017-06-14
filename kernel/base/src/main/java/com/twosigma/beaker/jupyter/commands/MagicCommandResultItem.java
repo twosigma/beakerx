@@ -24,11 +24,11 @@ import static java.util.Optional.ofNullable;
 public class MagicCommandResultItem {
 
   private Code code;
-  private Message infoMessage;
+  private Message resultMessage;
   private Message replyWithoutStatus;
 
-  public MagicCommandResultItem(Message infoMessage, Message replyWithoutStatus) {
-    this.infoMessage = infoMessage;
+  public MagicCommandResultItem(Message resultMessage, Message replyWithoutStatus) {
+    this.resultMessage = resultMessage;
     this.replyWithoutStatus = replyWithoutStatus;
   }
 
@@ -44,8 +44,8 @@ public class MagicCommandResultItem {
     return ofNullable(code);
   }
 
-  public Optional<Message> getInfoMessage() {
-    return ofNullable(infoMessage);
+  public Optional<Message> getResultMessage() {
+    return ofNullable(resultMessage);
   }
 
   public Optional<Message> getReplyWithoutStatus() {

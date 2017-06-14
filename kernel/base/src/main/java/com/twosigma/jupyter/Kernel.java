@@ -189,4 +189,8 @@ public abstract class Kernel implements KernelFunctionality {
     publish(this.messageCreator.createIdleMessage(message));
   }
 
+  @Override
+  public Classpath getClasspath() {
+    return this.evaluatorManager.getClasspath();
+  }
 }

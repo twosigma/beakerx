@@ -16,13 +16,15 @@
 package com.twosigma.jupyter;
 
 import com.twosigma.jupyter.message.Message;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.System.lineSeparator;
+import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -65,24 +67,25 @@ public class Code {
 
   private void setupCommandsAndCode() {
     Scanner scanner = new Scanner(this.code);
-    List<String> result = new ArrayList<>();
-    result.add(scanner.nextLine());
-    String nextLine = "";
-    while (scanner.hasNext()) {
-      nextLine = scanner.nextLine();
-      if (nextLine.startsWith(MAGIC_COMMAND_PREFIX)) {
-        result.add(nextLine);
-      }else{
-        break;
-      }
-    }
-    this.commands = result;
+    this.commands = commands(scanner);
+    this.codeWithoutCommands = join(restOfTheCode(scanner), lineSeparator());
+  }
+
+  private List<String> restOfTheCode(Scanner scanner) {
     List<String> codeWithoutCommands = new ArrayList<>();
-    codeWithoutCommands.add(nextLine);
     while (scanner.hasNext()) {
       codeWithoutCommands.add(scanner.nextLine());
     }
-    this.codeWithoutCommands = StringUtils.join(codeWithoutCommands, System.lineSeparator());
+    return codeWithoutCommands;
+  }
+
+  private List<String> commands(Scanner scanner) {
+    List<String> result = new ArrayList<>();
+    Pattern p = Pattern.compile("^%.*",Pattern.MULTILINE);
+    while (scanner.hasNext(p)) {
+      result.add(scanner.nextLine());
+    }
+    return result;
   }
 
   public static Code takeCodeFrom(Message message) {

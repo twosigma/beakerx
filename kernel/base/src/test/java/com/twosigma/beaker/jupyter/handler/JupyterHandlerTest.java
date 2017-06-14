@@ -22,6 +22,7 @@ import com.twosigma.beaker.jupyter.comm.KernelControlGetDefaultShellHandler;
 import com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler;
 import com.twosigma.beaker.jupyter.msg.JupyterMessages;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
+import com.twosigma.jupyter.Code;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -97,6 +98,14 @@ public class JupyterHandlerTest {
     return message;
   }
 
+  public static Message createExecuteRequestMessage(Code code) {
+    Message message = executeRequestMessage();
+    Map<String, Serializable> content = new LinkedHashMap<>();
+    content.put("code", code.asString());
+    message.setContent(content);
+    return message;
+  }
+
   public static Message initExecuteRequestMessage() {
     Map<String, Serializable> content = new LinkedHashMap<>();
     content.put("allow_stdin", Boolean.TRUE);
@@ -106,12 +115,17 @@ public class JupyterHandlerTest {
     content.put("silent", Boolean.FALSE);
     content.put("store_history", Boolean.TRUE);
 
+    Message message = executeRequestMessage();
+    message.setContent(content);
+    return message;
+  }
+
+  private static Message executeRequestMessage() {
     Message message = new Message();
     message.setIdentities(Arrays.asList("identities".getBytes()));
     message.setHeader(initHeader(JupyterMessages.EXECUTE_REQUEST));
     message.setParentHeader(null);
     message.setMetadata(new LinkedHashMap<>());
-    message.setContent(content);
     return message;
   }
 
@@ -137,16 +151,16 @@ public class JupyterHandlerTest {
     String commId = (String) openMessage.getContent().get(COMM_ID);
     String targetName = (String) openMessage.getContent().get(TARGET_NAME);
     Comm comm = new Comm(commId, targetName) {
-          @Override
-          public void handleMsg(Message parentMessage) {
-          }
-        };
+      @Override
+      public void handleMsg(Message parentMessage) {
+      }
+    };
     kernelTest.addComm(commId, comm);
     return commId;
   }
 
   @BeforeClass
-  public static void setUpClass(){
+  public static void setUpClass() {
     kernel = new KernelTest();
   }
 
@@ -192,7 +206,7 @@ public class JupyterHandlerTest {
 
   @Test
   public void handleOpenThenCloseCommMessages_shouldRemoveCommMessageFromStorageMap()
-      throws Exception {
+          throws Exception {
     //given
     Message openMessage = initOpenMessage();
     String commId = (String) openMessage.getContent().get(COMM_ID);
@@ -253,23 +267,23 @@ public class JupyterHandlerTest {
 
   @Test
   public void defaultShellHandlerHandleEmptyMessage_dontThrowNullPointerException()
-      throws Exception {
+          throws Exception {
     //given
     Message message = new Message();
     MessageTest.initMessage(message);
     //when
     KernelControlGetDefaultShellHandler handler =
-        new KernelControlGetDefaultShellHandler(kernel) {
-          @Override
-          public String[] getDefaultImports() {
-            return new String[0];
-          }
+            new KernelControlGetDefaultShellHandler(kernel) {
+              @Override
+              public String[] getDefaultImports() {
+                return new String[0];
+              }
 
-          @Override
-          public String[] getDefaultClassPath() {
-            return new String[0];
-          }
-        };
+              @Override
+              public String[] getDefaultClassPath() {
+                return new String[0];
+              }
+            };
     handler.handle(message);
   }
 

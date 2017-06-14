@@ -65,15 +65,6 @@ public class ExecuteRequestHandlerTest {
   }
 
   @Test
-  public void handleMessage_shouldSendTwoMessages() throws Exception {
-    //when
-    executeRequestHandler.handle(message);
-    //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
-    Assertions.assertThat(kernel.getPublishedMessages().size()).isEqualTo(2);
-  }
-
-  @Test
   public void handleMessage_firstSentMessageHasExecutionStateIsBusy() throws Exception {
     //when
     executeRequestHandler.handle(message);

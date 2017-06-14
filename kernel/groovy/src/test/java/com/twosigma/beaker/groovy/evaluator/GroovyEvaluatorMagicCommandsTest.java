@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyEvaluatorMagicCommandsTest {
 
-  public static final String SRC_TEST_RESOURCES = "../../demoFiles/";
+  public static final String SRC_TEST_RESOURCES = "src/test/resources/";
 
   private static GroovyEvaluator groovyEvaluator;
 

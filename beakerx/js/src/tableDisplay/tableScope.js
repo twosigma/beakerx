@@ -72,6 +72,7 @@ define([
     this.getCellDispOpts =  [];
     this.allConverters = {};
     this.tableDisplayModel = null;
+    this.tableDisplayView = null;
     this.cellHighlighters = {};
     
     this.model = {
@@ -99,6 +100,11 @@ define([
   	this.tableDisplayModel = tableDisplayModel;
   };
 
+  TableScope.prototype.setWidgetView = function(tableDisplayView) {
+    this.tableDisplayView = tableDisplayView;
+  };
+
+  
   TableScope.prototype.linkMoment = function() {
     moment.tz.link(['Etc/GMT+1|GMT+01:00',
       'Etc/GMT+2|GMT+02:00',
@@ -770,7 +776,7 @@ define([
           name: item,
           callback: function(itemKey, options) {
             var index = self.table.cell(options.$trigger.get(0)).index();
-            self.tableDisplayModel.send({event: 'oncontextmenu', itemKey : itemKey, row : index.row, column : index.column - 1});
+            self.tableDisplayModel.send({event: 'oncontextmenu', itemKey : itemKey, row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
           }
         }
       });
@@ -789,7 +795,7 @@ define([
                 row: index.row,
                 col: index.column - 1
               };
-              self.tableDisplayModel.send({event: 'actiondetails', params: params});
+              self.tableDisplayModel.send({event: 'actiondetails', params: params}, self.tableDisplayView.callbacks());
             }
           }
         }
@@ -1752,7 +1758,7 @@ define([
 
       var index = currentCell.indexes()[0];
       if (model.hasDoubleClickAction) {
-      	self.tableDisplayModel.send({event: 'ondoubleclick', row : index.row, column : index.column - 1});
+      	self.tableDisplayModel.send({event: 'ondoubleclick', row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
       }
 
       if (!_.isEmpty(model.doubleClickTag)) {
@@ -1761,7 +1767,7 @@ define([
           row: index.row,
           col: index.column - 1
         };
-        self.tableDisplayModel.send({event: 'actiondetails', params: params});
+        self.tableDisplayModel.send({event: 'actiondetails', params: params}, self.tableDisplayView.callbacks());
       }
 
       e.stopPropagation();

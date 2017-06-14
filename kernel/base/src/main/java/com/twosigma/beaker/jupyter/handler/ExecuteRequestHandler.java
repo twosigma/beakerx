@@ -77,7 +77,7 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
   }
 
   private void sendMagicCommandResult(Message message, MagicCommandResult process) {
-    kernel.publish(process.getInfoMessage());
+    kernel.publish(process.getResultMessage());
     kernel.send(process.replyMessage());
     kernel.sendIdleMessage(message);
     syncObject.release();

@@ -16,6 +16,9 @@
 
 package com.twosigma.beaker.jupyter.commands;
 
+import com.google.common.base.Joiner;
+import com.twosigma.beaker.jvm.object.OutputCell;
+import com.twosigma.jupyter.Classpath;
 import com.twosigma.jupyter.Code;
 import com.twosigma.beaker.jupyter.msg.MessageCreator;
 import com.twosigma.beaker.mimetype.MIMEContainer;
@@ -27,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -34,6 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.twosigma.beaker.jupyter.commands.MagicCommandFinder.find;
 import static com.twosigma.beaker.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beaker.mimetype.MIMEContainer.JavaScript;
+import static com.twosigma.beaker.mimetype.MIMEContainer.Text;
 
 /**
  * executes magic commands and sends message
@@ -88,7 +93,13 @@ public class MagicCommand {
   }
 
   private MagicCommandFunctionality classpathShow() {
-    return (code, command, message, executionCount) -> null;
+    return (code, command, message, executionCount) -> {
+      MIMEContainer result = Text(kernel.getClasspath());
+      return new MagicCommandResultItem(
+              messageCreator.buildMessage(message, result.getMime().getMime(), result.getCode(), executionCount),
+              messageCreator.buildReplyWithoutStatus(message, executionCount)
+      );
+    };
   }
 
   private MagicCommandFunctionality classpathRemove() {

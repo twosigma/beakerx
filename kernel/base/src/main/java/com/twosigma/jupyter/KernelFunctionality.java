@@ -63,7 +63,10 @@ public interface KernelFunctionality {
 
   void addJarToClasspath(PathToJar path);
 
-  interface ExecuteCodeCallback{
+  Classpath getClasspath();
+
+  interface ExecuteCodeCallback {
     void execute(SimpleEvaluationObject seo);
   }
+
 }

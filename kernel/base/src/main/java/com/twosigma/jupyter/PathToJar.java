@@ -16,6 +16,7 @@
 package com.twosigma.jupyter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -25,7 +26,8 @@ public class PathToJar {
   private String path;
 
   public PathToJar(final String path) {
-    this.path = checkNotNull(path);
+    checkState(!checkNotNull(path).isEmpty());
+    this.path = path;
   }
 
   public String getPath() {

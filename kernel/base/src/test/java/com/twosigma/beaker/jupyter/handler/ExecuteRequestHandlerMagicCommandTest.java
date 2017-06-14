@@ -23,7 +23,6 @@ import com.twosigma.jupyter.Code;
 import com.twosigma.jupyter.message.Message;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
@@ -32,17 +31,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExecuteRequestHandlerMagicCommandTest {
 
-  private static KernelTest kernel;
+  private KernelTest kernel;
+  private EvaluatorTest evaluator;
   private ExecuteRequestHandler executeRequestHandler;
-
-
-  @BeforeClass
-  public static void setUpClass(){
-    kernel = new KernelTest("sid", new EvaluatorTest());
-  }
 
   @Before
   public void setUp() {
+    evaluator = new EvaluatorTest();
+    kernel = new KernelTest("sid", evaluator);
     executeRequestHandler = new ExecuteRequestHandler(kernel);
   }
 
@@ -79,6 +75,19 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //then
     final List<Message> publishedMessages = kernel.getPublishedMessages();
     assertThat(publishedMessages.size()).isEqualTo(3);
+  }
+
+  @Test
+  public void noResetEnvironmentForDuplicatedPath() throws Exception {
+    //when
+    String code = "" +
+            "%classpath add jar BeakerXClasspathTest.jar\n" +
+            "%classpath add jar BeakerXClasspathTest.jar\n" +
+            "%classpath add jar BeakerXClasspathTest.jar\n";
+    Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
+    executeRequestHandler.handle(magicMessage);
+    //then
+    assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(1);
   }
 
   @Test

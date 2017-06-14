@@ -18,12 +18,14 @@ package com.twosigma.beaker.javash.evaluator;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.autocomplete.AutocompleteResult;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
+import com.twosigma.beaker.evaluator.BaseEvaluator;
 import com.twosigma.beaker.evaluator.Evaluator;
 import com.twosigma.beaker.evaluator.InternalVariable;
 import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import com.twosigma.jupyter.Classpath;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.PathToJar;
 import org.apache.commons.lang3.StringUtils;
@@ -48,12 +50,12 @@ import java.util.regex.Pattern;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
 import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 
-public class JavaEvaluator implements Evaluator{
+public class JavaEvaluator extends BaseEvaluator {
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
   protected final String shellId;
   protected final String sessionId;
   protected final String packageId;
-  protected List<String> classPath;
+  protected Classpath classPath;
   protected List<String> imports;
   protected String outDir;
   protected ClasspathScanner cps;
@@ -62,27 +64,27 @@ public class JavaEvaluator implements Evaluator{
   protected boolean updateLoader;
   protected workerThread myWorker;
   protected final BeakerCellExecutor executor;
-  
+
   protected class jobDescriptor {
     String codeToBeExecuted;
     SimpleEvaluationObject outputObject;
-    
-    jobDescriptor(String c , SimpleEvaluationObject o) {
+
+    jobDescriptor(String c, SimpleEvaluationObject o) {
       codeToBeExecuted = c;
       outputObject = o;
     }
   }
-  
+
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
   public JavaEvaluator(String id, String sId) {
     shellId = id;
     sessionId = sId;
-    packageId = "com.twosigma.beaker.javash.bkr"+shellId.split("-")[0];
+    packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
     cps = new ClasspathScanner();
     jac = createJavaAutocomplete(cps);
-    classPath = new ArrayList<String>();
+    classPath = new Classpath();
     imports = new ArrayList<String>();
     exit = false;
     updateLoader = false;
@@ -96,12 +98,14 @@ public class JavaEvaluator implements Evaluator{
     myWorker = new workerThread();
     myWorker.start();
   }
- 
+
   protected JavaAutocomplete createJavaAutocomplete(ClasspathScanner c) {
     return new JavaAutocomplete(c);
   }
 
-  public String getShellId() { return shellId; }
+  public String getShellId() {
+    return shellId;
+  }
 
   public void killAllThreads() {
     executor.killAllThreads();
@@ -113,9 +117,9 @@ public class JavaEvaluator implements Evaluator{
 
   public void resetEnvironment() {
     executor.killAllThreads();
-   
+
     String cpp = "";
-    for(String pt : classPath) {
+    for (String pt : classPath.getPathsAsStrings()) {
       cpp += pt;
       cpp += File.pathSeparator;
     }
@@ -123,18 +127,18 @@ public class JavaEvaluator implements Evaluator{
     cpp += outDir;
     cpp += File.pathSeparator;
     cpp += System.getProperty("java.class.path");
-    
+
     cps = new ClasspathScanner(cpp);
     jac = createJavaAutocomplete(cps);
-    
-    for(String st : imports)
+
+    for (String st : imports)
       jac.addImport(st);
-    
+
     // signal thread to create loader
     updateLoader = true;
     syncObject.release();
   }
-    
+
   @Override
   public void exit() {
     exit = true;
@@ -142,27 +146,26 @@ public class JavaEvaluator implements Evaluator{
     syncObject.release();
   }
 
-  
   @Override
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-    
+
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
 
     Map<String, String> env = System.getenv();
 
-    if (listOfClassPath == null || listOfClassPath.isEmpty()){
-      classPath = new ArrayList<>();
+    if (listOfClassPath == null || listOfClassPath.isEmpty()) {
+      classPath = new Classpath();
     } else {
       for (String line : listOfClassPath) {
         if (!line.trim().isEmpty()) {
-          addJarToClasspath(new PathToJar(line));
+          addJar(new PathToJar(line));
         }
       }
     }
-    
-    if (listOfImports == null || listOfImports.isEmpty()){
+
+    if (listOfImports == null || listOfImports.isEmpty()) {
       imports = new ArrayList<>();
     } else {
       for (String line : listOfImports) {
@@ -176,61 +179,60 @@ public class JavaEvaluator implements Evaluator{
   }
 
   @Override
-  public void addJarToClasspath(PathToJar path) {
-    addJar(path);
-    resetEnvironment();
+  public Classpath getClasspath() {
+    return this.classPath;
   }
 
-  private void addJar(PathToJar path) {
-    classPath.add(path.getPath());
+  @Override
+  protected boolean addJar(PathToJar path) {
+    return classPath.add(path);
   }
-
 
   @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
-    jobQueue.add(new jobDescriptor(code,seo));
+    jobQueue.add(new jobDescriptor(code, seo));
     syncObject.release();
   }
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     List<String> ret = jac.doAutocomplete(code, caretPosition);
-    
+
     if (!ret.isEmpty())
-      return new AutocompleteResult(ret,caretPosition);
-    
+      return new AutocompleteResult(ret, caretPosition);
+
     // this is a code sniplet... 
-    String [] codev = code.split("\n");
+    String[] codev = code.split("\n");
     int insert = 0;
-    while(insert < codev.length) {
+    while (insert < codev.length) {
       if (!codev[insert].contains("package") && !codev[insert].contains("import") && !codev[insert].trim().isEmpty())
         break;
       insert++;
     }
-     
+
     final String CODE_TO_INSERT = "public class " + WRAPPER_CLASS_NAME + " { public static void beakerRun() { \n";
-      
+
     StringBuilder sb = new StringBuilder();
-    for ( int i=0; i<insert; i++) {
+    for (int i = 0; i < insert; i++) {
       sb.append(codev[i]);
       sb.append('\n');
     }
-      
-    if (caretPosition>=sb.length()) {
+
+    if (caretPosition >= sb.length()) {
       caretPosition += CODE_TO_INSERT.length();
     }
     sb.append(CODE_TO_INSERT);
-    for ( int i=insert; i<codev.length; i++) {
+    for (int i = insert; i < codev.length; i++) {
       sb.append(codev[i]);
       sb.append('\n');
     }
-  
-    return new AutocompleteResult(jac.doAutocomplete(sb.toString(), caretPosition), caretPosition); 
+
+    return new AutocompleteResult(jac.doAutocomplete(sb.toString(), caretPosition), caretPosition);
   }
 
   protected class workerThread extends Thread {
-  
+
     public workerThread() {
       super("javash worker");
     }
@@ -238,32 +240,32 @@ public class JavaEvaluator implements Evaluator{
     /*
      * This thread performs all the evaluation
      */
-    
+
     public void run() {
       DynamicClassLoaderSimple loader = null;
       jobDescriptor j = null;
       org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler;
-  
+
       javaSourceCompiler = new JavaSourceCompiler();
-      NamespaceClient nc =null;
-      
-      while(!exit) {
+      NamespaceClient nc = null;
+
+      while (!exit) {
         try {
           // wait for work
           syncObject.acquire();
-          
+
           // check if we must create or update class loader
-          if (loader==null || updateLoader) {
-            loader=new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-            loader.addJars(classPath);
+          if (loader == null || updateLoader) {
+            loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+            loader.addJars(classPath.getPathsAsStrings());
             loader.addDynamicDir(outDir);
           }
-          
+
           // get next job descriptor
           j = jobQueue.poll();
-          if (j==null)
+          if (j == null)
             continue;
-  
+
           nc = NamespaceClient.getBeaker(sessionId);
           nc.setOutputObj(j.outputObject);
 
@@ -272,31 +274,31 @@ public class JavaEvaluator implements Evaluator{
           Pattern p;
           Matcher m;
           String pname = packageId;
-          
+
           org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(outDir));
-        
+
           // build the compiler class path
           String classpath = System.getProperty("java.class.path");
           String[] classpathEntries = classpath.split(File.pathSeparator);
-          if (classpathEntries!=null && classpathEntries.length>0)
+          if (classpathEntries != null && classpathEntries.length > 0)
             compilationUnit.addClassPathEntries(Arrays.asList(classpathEntries));
           if (!classPath.isEmpty())
-            compilationUnit.addClassPathEntries(classPath);
+            compilationUnit.addClassPathEntries(classPath.getPathsAsStrings());
           compilationUnit.addClassPathEntry(outDir);
-        
+
           // normalize and analyze code
           String code = ParserUtil.normalizeCode(j.codeToBeExecuted);
-        
-          String [] codev = code.split("\n");
+
+          String[] codev = code.split("\n");
           int ci = 0;
 
           ci = skipBlankLines(codev, ci);
 
           Map<Integer, Integer> lineNumbersMapping = new HashMap<>();
-          LineBrakingStringBuilderWrapper javaSourceCode =  new LineBrakingStringBuilderWrapper();
+          LineBrakingStringBuilderWrapper javaSourceCode = new LineBrakingStringBuilderWrapper();
           p = Pattern.compile("\\s*package\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*);.*");
           m = p.matcher(codev[ci]);
-        
+
           if (m.matches()) {
             pname = m.group(1);
             lineNumbersMapping.put(1, ci);
@@ -305,16 +307,16 @@ public class JavaEvaluator implements Evaluator{
           javaSourceCode.append("package ");
           javaSourceCode.append(pname);
           javaSourceCode.append(";\n");
-        
-          for(String i : imports) {
+
+          for (String i : imports) {
             javaSourceCode.append("import ");
             javaSourceCode.append(i);
             javaSourceCode.append(";\n");
           }
-        
+
           p = Pattern.compile("\\s*import(\\s+static)?\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*(?:\\.\\*)?);.*");
           m = p.matcher(codev[ci]);
-          while(m.matches()) {
+          while (m.matches()) {
             String impstr = m.group(2);
             String staticModifier = m.group(1);
             javaSourceCode.append("import ");
@@ -333,20 +335,20 @@ public class JavaEvaluator implements Evaluator{
           m = p.matcher(codev[ci]);
           if (m.matches()) {
             // this is a class definition
-        
+
             String cname = m.group(1);
 
             addTheRestOfCode(codev, ci, javaSourceCode, lineNumbersMapping);
 
-            compilationUnit.addJavaSource(pname+"."+cname, javaSourceCode.toString());
+            compilationUnit.addJavaSource(pname + "." + cname, javaSourceCode.toString());
             try {
               javaSourceCompiler.compile(compilationUnit);
               javaSourceCompiler.persistCompiledClasses(compilationUnit);
-              j.outputObject.finished(pname+"."+cname);
+              j.outputObject.finished(pname + "." + cname);
             } catch (CompilationException e) {
               j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
             } catch (Exception e) {
-              j.outputObject.error("ERROR: "+e.toString());
+              j.outputObject.error("ERROR: " + e.toString());
             } finally {
               if (j.outputObject != null) {
                 j.outputObject.executeCodeCallback();
@@ -354,7 +356,7 @@ public class JavaEvaluator implements Evaluator{
             }
           } else {
             String ret = "void";
-            if (codev[codev.length-1].matches("(^|.*\\s+)return\\s+.*"))
+            if (codev[codev.length - 1].matches("(^|.*\\s+)return\\s+.*"))
               ret = "Object";
             // this is an expression evaluation
             javaSourceCode.append("public class " + WRAPPER_CLASS_NAME + " {\n");
@@ -364,27 +366,27 @@ public class JavaEvaluator implements Evaluator{
             addTheRestOfCode(codev, ci, javaSourceCode, lineNumbersMapping);
             javaSourceCode.append("}\n");
             javaSourceCode.append("}\n");
-        
-            compilationUnit.addJavaSource(pname+ "." + WRAPPER_CLASS_NAME, javaSourceCode.toString());
+
+            compilationUnit.addJavaSource(pname + "." + WRAPPER_CLASS_NAME, javaSourceCode.toString());
 
             try {
               javaSourceCompiler.compile(compilationUnit);
-              
+
               javaSourceCompiler.persistCompiledClasses(compilationUnit);
-              Class<?> fooClass = loader.loadClass(pname+ "." + WRAPPER_CLASS_NAME);
+              Class<?> fooClass = loader.loadClass(pname + "." + WRAPPER_CLASS_NAME);
               Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
-              
+
               if (!executor.executeTask(new MyRunnable(mth, j.outputObject, ret.equals("Object"), loader))) {
                 j.outputObject.error("... cancelled!");
               }
-              if(nc!=null) {
+              if (nc != null) {
                 nc.setOutputObj(null);
                 nc = null;
               }
             } catch (CompilationException e) {
               j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
             } catch (Exception e) {
-              j.outputObject.error("ERROR: "+e.toString()); 
+              j.outputObject.error("ERROR: " + e.toString());
             } finally {
               if (j.outputObject != null) {
                 j.outputObject.executeCodeCallback();
@@ -392,10 +394,10 @@ public class JavaEvaluator implements Evaluator{
             }
           }
           j = null;
-        } catch(Throwable e) {
+        } catch (Throwable e) {
           e.printStackTrace();
         } finally {
-          if (nc!=null) {
+          if (nc != null) {
             nc.setOutputObj(null);
             nc = null;
           }
@@ -416,10 +418,10 @@ public class JavaEvaluator implements Evaluator{
       stringBuilder.append("ERROR: ").append(exception.getMessage()).append('\n');
       for (CompilationException.CompilationError compilationError : exception.getCompilationErrors()) {
         stringBuilder
-            .append("error at line ")
-            .append(mapLineNumber(lineNumbersMapping, compilationError.getLineNumber())).append(": ")
-            .append(prepareForFrontend(compilationError.getErrorMessage())).append('\n')
-            .append(compilationError.getCode());
+                .append("error at line ")
+                .append(mapLineNumber(lineNumbersMapping, compilationError.getLineNumber())).append(": ")
+                .append(prepareForFrontend(compilationError.getErrorMessage())).append('\n')
+                .append(compilationError.getCode());
       }
       return stringBuilder.toString();
     }
@@ -454,7 +456,7 @@ public class JavaEvaluator implements Evaluator{
         retObject = ro;
         loader = ld;
       }
-      
+
       @Override
       public void run() {
         ClassLoader oldld = Thread.currentThread().getContextClassLoader();
@@ -463,15 +465,15 @@ public class JavaEvaluator implements Evaluator{
         InternalVariable.setValue(theOutput);
         try {
           InternalVariable.setValue(theOutput);
-          Object o = theMth.invoke(null, (Object[])null);
+          Object o = theMth.invoke(null, (Object[]) null);
           if (retObject) {
             theOutput.finished(o);
           } else {
             theOutput.finished(null);
-          }          
-        } catch(Throwable e) {
+          }
+        } catch (Throwable e) {
           if (e instanceof InvocationTargetException)
-            e = ((InvocationTargetException)e).getTargetException();
+            e = ((InvocationTargetException) e).getTargetException();
           if ((e instanceof InterruptedException) || (e instanceof ThreadDeath)) {
             theOutput.error("... cancelled!");
           } else {
@@ -489,7 +491,9 @@ public class JavaEvaluator implements Evaluator{
         Thread.currentThread().setContextClassLoader(oldld);
       }
 
-    };
+    }
+
+    ;
   }
 
   private static class LineBrakingStringBuilderWrapper {

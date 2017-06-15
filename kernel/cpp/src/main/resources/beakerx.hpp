@@ -185,7 +185,7 @@ public:
     jobject jval = convert(val);
     jclass beakerxClass = globEnv->FindClass("com/twosigma/beakerx/cpp/utils/CppKernel");
     jmethodID javaBeakerxSet = globEnv->GetStaticMethodID(beakerxClass, "beakerxSet", "(Ljava/lang/String;Ljava/lang/Object;)I");
-    jint ret = globEnv->CallStaticIntMethod(beakerxClass, javaBeakerSet, jname, jval);
+    jint ret = globEnv->CallStaticIntMethod(beakerxClass, javaBeakerxSet, jname, jval);
     return (int) ret;
   }
 };

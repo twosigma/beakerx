@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.clojure;
+package com.twosigma.beakerx.clojure;
 
-import com.twosigma.beaker.autocomplete.AutocompleteResult;
-import com.twosigma.beaker.jupyter.KernelManager;
+import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.jupyter.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

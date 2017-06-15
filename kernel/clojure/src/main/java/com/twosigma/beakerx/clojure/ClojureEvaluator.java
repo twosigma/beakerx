@@ -14,19 +14,19 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.clojure;
+package com.twosigma.beakerx.clojure;
 
 import clojure.lang.RT;
 import clojure.lang.Var;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.twosigma.beaker.autocomplete.AutocompleteResult;
-import com.twosigma.beaker.evaluator.BaseEvaluator;
-import com.twosigma.beaker.evaluator.Evaluator;
-import com.twosigma.beaker.evaluator.InternalVariable;
-import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.evaluator.InternalVariable;
+import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.jupyter.Classpath;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.PathToJar;
@@ -46,8 +46,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 
 public class ClojureEvaluator extends BaseEvaluator {
 

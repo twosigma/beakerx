@@ -13,12 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.clojure;
+package com.twosigma.beakerx.clojure;
 
-import com.twosigma.beaker.clojure.handlers.ClojureCommOpenHandler;
-import com.twosigma.beaker.clojure.handlers.ClojureKernelInfoHandler;
-import com.twosigma.beaker.evaluator.Evaluator;
-import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
+import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
+import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
+import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.jupyter.handler.CommOpenHandler;
 import com.twosigma.jupyter.ConfigurationFile;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
@@ -30,7 +30,7 @@ import com.twosigma.jupyter.message.Message;
 
 import java.io.IOException;
 
-import static com.twosigma.beaker.jupyter.Utils.uuid;
+import static com.twosigma.beakerx.jupyter.Utils.uuid;
 
 public class ClojureKernel extends Kernel {
 

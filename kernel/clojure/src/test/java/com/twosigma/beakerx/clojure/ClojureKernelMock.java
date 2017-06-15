@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.clojure;
+package com.twosigma.beakerx.clojure;
 
-import com.twosigma.beaker.KernelTest;
-import com.twosigma.beaker.evaluator.Evaluator;
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.Evaluator;
 
 public class ClojureKernelMock extends KernelTest {
 

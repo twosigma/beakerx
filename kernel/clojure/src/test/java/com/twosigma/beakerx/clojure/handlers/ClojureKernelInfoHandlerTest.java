@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.clojure.handlers;
+package com.twosigma.beakerx.clojure.handlers;
 
-import com.twosigma.beaker.clojure.ClojureKernelMock;
+import com.twosigma.beakerx.clojure.ClojureKernelMock;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import com.twosigma.jupyter.message.MessageTest;
@@ -29,7 +29,7 @@ import org.junit.Test;
 import java.io.Serializable;
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
+import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
 
 public class ClojureKernelInfoHandlerTest {
 

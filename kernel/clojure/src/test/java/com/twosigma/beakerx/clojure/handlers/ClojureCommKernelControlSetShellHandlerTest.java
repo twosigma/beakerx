@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.clojure.handlers;
+package com.twosigma.beakerx.clojure.handlers;
 
-import com.twosigma.beaker.clojure.ClojureKernelMock;
-import com.twosigma.beaker.jupyter.comm.CommKernelControlGetDefaultShellHandlerTest;
+import com.twosigma.beakerx.clojure.ClojureKernelMock;
+import com.twosigma.beakerx.jupyter.comm.CommKernelControlGetDefaultShellHandlerTest;
 import com.twosigma.jupyter.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;

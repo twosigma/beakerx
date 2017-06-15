@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.clojure;
+package com.twosigma.beakerx.clojure;
 
-import com.twosigma.beaker.DefaultJVMVariables;
+import com.twosigma.beakerx.DefaultJVMVariables;
 
 public class ClojureDefaultVariables extends DefaultJVMVariables {
 

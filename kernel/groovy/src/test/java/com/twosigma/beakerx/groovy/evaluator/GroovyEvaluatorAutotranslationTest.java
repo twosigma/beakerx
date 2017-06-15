@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.groovy.evaluator;
+package com.twosigma.beakerx.groovy.evaluator;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class GroovyEvaluatorAutotranslationTest extends GroovyEvaluatorTest {
   @Test
   public void parseSetBeakerObjectScript_returnBeakerObjectValue() {
     //when
-    Object result = parseClassFromScript("beaker.x = 10 ");
+    Object result = parseClassFromScript("beakerx.x = 10 ");
     //then
     Assertions.assertThat(result instanceof Number).isTrue();
   }
@@ -33,8 +33,8 @@ public class GroovyEvaluatorAutotranslationTest extends GroovyEvaluatorTest {
   @Test(expected = java.lang.RuntimeException.class)
   public void parseGetBeakerObjectScript_returnBeakerObjectValue() {
     //when
-    parseClassFromScript("beaker.x = 10 ");
-    Object result = parseClassFromScript("beaker.x");
+    parseClassFromScript("beakerx.x = 10 ");
+    Object result = parseClassFromScript("beakerx.x");
     //then
     Assertions.assertThat(result instanceof Number).isTrue();
   }

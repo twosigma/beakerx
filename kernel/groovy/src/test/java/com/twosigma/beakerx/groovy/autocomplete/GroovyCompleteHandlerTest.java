@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.groovy.autocomplete;
+package com.twosigma.beakerx.groovy.autocomplete;
 
-import com.twosigma.beaker.groovy.GroovyKernelMock;
-import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
+import com.twosigma.beakerx.groovy.GroovyKernelMock;
+import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.jupyter.handler.CompleteHandler;
 import com.twosigma.jupyter.message.Message;
 import org.junit.After;

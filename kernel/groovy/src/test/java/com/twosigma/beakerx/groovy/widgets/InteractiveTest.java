@@ -14,21 +14,21 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.groovy.widgets;
+package com.twosigma.beakerx.groovy.widgets;
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beaker.KernelTest;
-import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jupyter.SearchMessages;
-import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.jupyter.handler.JupyterHandlerTest;
-import com.twosigma.beaker.jupyter.msg.JupyterMessages;
-import com.twosigma.beaker.jupyter.msg.MessageCreator;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.widgets.DOMWidget;
-import com.twosigma.beaker.widgets.Widget;
-import com.twosigma.beaker.widgets.strings.Text;
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
+import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.jupyter.SearchMessages;
+import com.twosigma.beakerx.jupyter.comm.Comm;
+import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
+import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.jupyter.msg.MessageCreator;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.widgets.DOMWidget;
+import com.twosigma.beakerx.widgets.Widget;
+import com.twosigma.beakerx.widgets.strings.Text;
 import com.twosigma.jupyter.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -40,11 +40,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beaker.jupyter.comm.Comm.COMM_ID;
-import static com.twosigma.beaker.jupyter.comm.Comm.DATA;
-import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
-import static com.twosigma.beaker.widgets.strings.TextTest.verifyTextField;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.jupyter.comm.Comm.COMM_ID;
+import static com.twosigma.beakerx.jupyter.comm.Comm.DATA;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
+import static com.twosigma.beakerx.widgets.strings.TextTest.verifyTextField;
 
 public class InteractiveTest {
   private GroovyEvaluator groovyEvaluator;

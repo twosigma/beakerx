@@ -1,4 +1,4 @@
-package com.twosigma.beaker.groovy.evaluator;
+package com.twosigma.beakerx.groovy.evaluator;
 /*
  *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -16,15 +16,15 @@ package com.twosigma.beaker.groovy.evaluator;
  */
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.PathToJar;
 import com.twosigma.jupyter.message.Message;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
-import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyEvaluatorMagicCommandsTest {

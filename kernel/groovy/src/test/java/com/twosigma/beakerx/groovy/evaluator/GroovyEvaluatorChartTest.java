@@ -14,29 +14,29 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.groovy.evaluator;
+package com.twosigma.beakerx.groovy.evaluator;
 
-import com.twosigma.beaker.chart.Color;
-import com.twosigma.beaker.chart.categoryplot.CategoryPlot;
-import com.twosigma.beaker.chart.categoryplot.plotitem.CategoryBars;
-import com.twosigma.beaker.chart.heatmap.HeatMap;
-import com.twosigma.beaker.chart.histogram.Histogram;
-import com.twosigma.beaker.chart.legend.LegendLayout;
-import com.twosigma.beaker.chart.legend.LegendPosition;
-import com.twosigma.beaker.chart.xychart.CombinedPlot;
-import com.twosigma.beaker.chart.xychart.NanoPlot;
-import com.twosigma.beaker.chart.xychart.Plot;
-import com.twosigma.beaker.chart.xychart.SimpleTimePlot;
-import com.twosigma.beaker.chart.xychart.TimePlot;
-import com.twosigma.beaker.chart.xychart.plotitem.Area;
-import com.twosigma.beaker.chart.xychart.plotitem.Bars;
-import com.twosigma.beaker.chart.xychart.plotitem.LabelPositionType;
-import com.twosigma.beaker.chart.xychart.plotitem.Line;
-import com.twosigma.beaker.chart.xychart.plotitem.PlotOrientationType;
-import com.twosigma.beaker.chart.xychart.plotitem.Points;
-import com.twosigma.beaker.chart.xychart.plotitem.ShapeType;
-import com.twosigma.beaker.chart.xychart.plotitem.Stems;
-import com.twosigma.beaker.chart.xychart.plotitem.StrokeType;
+import com.twosigma.beakerx.chart.Color;
+import com.twosigma.beakerx.chart.categoryplot.CategoryPlot;
+import com.twosigma.beakerx.chart.categoryplot.plotitem.CategoryBars;
+import com.twosigma.beakerx.chart.heatmap.HeatMap;
+import com.twosigma.beakerx.chart.histogram.Histogram;
+import com.twosigma.beakerx.chart.legend.LegendLayout;
+import com.twosigma.beakerx.chart.legend.LegendPosition;
+import com.twosigma.beakerx.chart.xychart.CombinedPlot;
+import com.twosigma.beakerx.chart.xychart.NanoPlot;
+import com.twosigma.beakerx.chart.xychart.Plot;
+import com.twosigma.beakerx.chart.xychart.SimpleTimePlot;
+import com.twosigma.beakerx.chart.xychart.TimePlot;
+import com.twosigma.beakerx.chart.xychart.plotitem.Area;
+import com.twosigma.beakerx.chart.xychart.plotitem.Bars;
+import com.twosigma.beakerx.chart.xychart.plotitem.LabelPositionType;
+import com.twosigma.beakerx.chart.xychart.plotitem.Line;
+import com.twosigma.beakerx.chart.xychart.plotitem.PlotOrientationType;
+import com.twosigma.beakerx.chart.xychart.plotitem.Points;
+import com.twosigma.beakerx.chart.xychart.plotitem.ShapeType;
+import com.twosigma.beakerx.chart.xychart.plotitem.Stems;
+import com.twosigma.beakerx.chart.xychart.plotitem.StrokeType;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 

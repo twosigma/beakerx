@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.groovy;
+package com.twosigma.beakerx.groovy;
 
-import com.twosigma.beaker.KernelTest;
-import com.twosigma.beaker.evaluator.Evaluator;
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.Evaluator;
 
 public class GroovyKernelMock extends KernelTest {
 

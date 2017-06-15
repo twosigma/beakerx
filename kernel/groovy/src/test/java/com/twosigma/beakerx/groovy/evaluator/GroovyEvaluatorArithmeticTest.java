@@ -13,18 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy.evaluator;
+package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
-import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyEvaluatorArithmeticTest {

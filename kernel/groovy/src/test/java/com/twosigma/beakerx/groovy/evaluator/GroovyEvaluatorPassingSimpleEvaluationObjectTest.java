@@ -13,15 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy.evaluator;
+package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.junit.Before;
 import org.junit.Test;
 import com.twosigma.jupyter.message.Message;
 
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyEvaluatorPassingSimpleEvaluationObjectTest {

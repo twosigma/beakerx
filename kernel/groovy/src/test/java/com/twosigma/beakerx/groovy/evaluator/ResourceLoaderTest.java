@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy.evaluator;
+package com.twosigma.beakerx.groovy.evaluator;
 
-import com.twosigma.beaker.fileloader.CsvPlotReader;
+import com.twosigma.beakerx.fileloader.CsvPlotReader;
 
 import java.net.URI;
 import java.util.List;

@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy.evaluator;
+package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beaker.evaluator.EvaluatorManager;
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.KernelTest;
-import com.twosigma.beaker.widgets.chart.BeakerxPlot;
+import com.twosigma.beakerx.evaluator.EvaluatorManager;
+import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.widgets.chart.BeakerxPlot;
 import com.twosigma.jupyter.KernelParameters;
 import org.junit.After;
 import org.junit.Before;
@@ -31,9 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
-import static com.twosigma.beaker.widgets.TestWidgetUtils.*;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 

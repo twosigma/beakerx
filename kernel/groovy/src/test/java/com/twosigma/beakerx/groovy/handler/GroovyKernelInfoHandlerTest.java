@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.groovy.handler;
+package com.twosigma.beakerx.groovy.handler;
 
-import com.twosigma.beaker.groovy.GroovyKernelMock;
+import com.twosigma.beakerx.groovy.GroovyKernelMock;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import com.twosigma.jupyter.message.MessageTest;
@@ -29,7 +29,7 @@ import org.junit.Test;
 import java.io.Serializable;
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
+import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
 
 public class GroovyKernelInfoHandlerTest {
 

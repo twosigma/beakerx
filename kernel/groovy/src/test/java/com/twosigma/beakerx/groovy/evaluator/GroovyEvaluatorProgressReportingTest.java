@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy.evaluator;
+package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.KernelTest;
-import com.twosigma.beaker.evaluator.Evaluator;
-import com.twosigma.beaker.widgets.integers.IntProgress;
+import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.widgets.integers.IntProgress;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,16 +28,16 @@ import com.twosigma.jupyter.message.Message;
 
 import java.util.List;
 
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMM_CLOSE;
-import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
-import static com.twosigma.beaker.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyDisplayMsg;
-import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyOpenCommMsg;
-import static com.twosigma.beaker.widgets.TestWidgetUtils.verifyTypeMsg;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_CLOSE;
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyDisplayMsg;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyTypeMsg;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static com.twosigma.beaker.evaluator.Evaluator.BEAKER_VARIABLE_NAME;
+import static com.twosigma.beakerx.evaluator.Evaluator.BEAKER_VARIABLE_NAME;
 
 public class GroovyEvaluatorProgressReportingTest {
 

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.groovy.evaluator;
+package com.twosigma.beakerx.groovy.evaluator;
 
 import groovy.lang.GroovyRuntimeException;
 import groovy.lang.MissingPropertyException;

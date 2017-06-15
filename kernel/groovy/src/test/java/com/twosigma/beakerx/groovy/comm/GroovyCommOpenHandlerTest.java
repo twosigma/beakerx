@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.groovy.comm;
+package com.twosigma.beakerx.groovy.comm;
 
-import com.twosigma.beaker.groovy.GroovyKernelMock;
-import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
-import com.twosigma.beaker.jupyter.handler.JupyterHandlerTest;
+import com.twosigma.beakerx.groovy.GroovyKernelMock;
+import com.twosigma.beakerx.jupyter.comm.TargetNamesEnum;
+import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;
 import org.assertj.core.api.Assertions;

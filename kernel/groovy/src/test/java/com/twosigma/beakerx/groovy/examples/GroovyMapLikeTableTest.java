@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy.examples;
-import com.twosigma.beaker.table.TableDisplay;
+package com.twosigma.beakerx.groovy.examples;
+import com.twosigma.beakerx.table.TableDisplay;
 import com.twosigma.jupyter.message.Message;
 import org.junit.Test;
 import java.util.Optional;
 
-import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyMapLikeTableTest extends GroovyExamplesSetupTest {

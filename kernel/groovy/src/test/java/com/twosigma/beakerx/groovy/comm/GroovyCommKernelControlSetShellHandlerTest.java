@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.groovy.comm;
+package com.twosigma.beakerx.groovy.comm;
 
-import com.twosigma.beaker.groovy.GroovyKernelMock;
-import com.twosigma.beaker.jupyter.comm.CommKernelControlGetDefaultShellHandlerTest;
+import com.twosigma.beakerx.groovy.GroovyKernelMock;
+import com.twosigma.beakerx.jupyter.comm.CommKernelControlGetDefaultShellHandlerTest;
 import com.twosigma.jupyter.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;

@@ -14,22 +14,22 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.javash.evaluator;
+package com.twosigma.beakerx.javash.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beaker.chart.xychart.Plot;
-import com.twosigma.beaker.javash.JavaKernelMock;
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.chart.xychart.Plot;
+import com.twosigma.beakerx.javash.JavaKernelMock;
+import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
-import static com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 
 public class JavaEvaluatorTest {
 
@@ -54,7 +54,7 @@ public class JavaEvaluatorTest {
   @Test
   public void evaluatePlot_shouldCreatePlotObject() throws Exception {
     //given
-    String code = "import com.twosigma.beaker.chart.xychart.*;\n" +
+    String code = "import com.twosigma.beakerx.chart.xychart.*;\n" +
         "Plot plot = new Plot(); plot.setTitle(\"test title\");\n" +
         "return plot;";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());

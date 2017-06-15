@@ -19,7 +19,7 @@
  * GNU Lesser General Public License for more details.
  */
 
-package com.twosigma.beaker.javash.evaluator;
+package com.twosigma.beakerx.javash.evaluator;
 
 
 import org.apache.commons.lang3.StringUtils;

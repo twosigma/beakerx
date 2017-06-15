@@ -13,10 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.javash.comm;
+package com.twosigma.beakerx.javash.comm;
 
-import com.twosigma.beaker.javash.JavaDefaultVariables;
-import com.twosigma.beaker.jupyter.comm.KernelControlGetDefaultShellHandler;
+import com.twosigma.beakerx.javash.JavaDefaultVariables;
+import com.twosigma.beakerx.jupyter.comm.KernelControlGetDefaultShellHandler;
 import com.twosigma.jupyter.KernelFunctionality;
 
 public class JavaCommKernelControlSetShellHandler extends KernelControlGetDefaultShellHandler{

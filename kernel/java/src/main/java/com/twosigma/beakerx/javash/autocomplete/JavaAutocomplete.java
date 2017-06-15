@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.javash.autocomplete;
+package com.twosigma.beakerx.javash.autocomplete;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.twosigma.beaker.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 
 public class JavaAutocomplete {
 

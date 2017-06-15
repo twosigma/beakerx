@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.javash;
+package com.twosigma.beakerx.javash;
 
-import com.twosigma.beaker.KernelSocketsServiceTest;
-import com.twosigma.beaker.javash.evaluator.JavaEvaluator;
-import com.twosigma.beaker.jupyter.comm.Comm;
+import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
+import com.twosigma.beakerx.jupyter.comm.Comm;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
@@ -31,10 +31,10 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
-import static com.twosigma.beaker.MessageFactoryTest.getExecuteRequestMessage;
-import static com.twosigma.beaker.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
+import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaKernelTest {

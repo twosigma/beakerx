@@ -13,18 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.javash.evaluator;
+package com.twosigma.beakerx.javash.evaluator;
 
-import com.twosigma.beaker.NamespaceClient;
-import com.twosigma.beaker.autocomplete.AutocompleteResult;
-import com.twosigma.beaker.autocomplete.ClasspathScanner;
-import com.twosigma.beaker.evaluator.BaseEvaluator;
-import com.twosigma.beaker.evaluator.Evaluator;
-import com.twosigma.beaker.evaluator.InternalVariable;
-import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
-import com.twosigma.beaker.jvm.classloader.DynamicClassLoaderSimple;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.evaluator.InternalVariable;
+import com.twosigma.beakerx.javash.autocomplete.JavaAutocomplete;
+import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.jupyter.Classpath;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.PathToJar;
@@ -47,8 +47,8 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 
 public class JavaEvaluator extends BaseEvaluator {
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";

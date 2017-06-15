@@ -123,7 +123,7 @@ public class InteractiveTest {
     return "public Object f(x){\n" +
            "    return x;\n" +
            "}\n" +
-           "com.twosigma.beaker.groovy.widgets.Interactive.interact(this.&f, " + arg + ");";
+           "com.twosigma.beakerx.groovy.widgets.Interactive.interact(this.&f, " + arg + ");";
   }
 
 }

@@ -37,7 +37,7 @@ public class GroovyEvaluatorPassingSimpleEvaluationObjectTest {
   public void shouldPassSimpleEvaluationObjectToShell() throws Exception {
     //given
     String code = "" +
-            "import com.twosigma.beaker.evaluator.InternalVariable\n" +
+            "import com.twosigma.beakerx.evaluator.InternalVariable\n" +
             "InternalVariable.getParentHeader()";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     Message message = new Message();

@@ -24,7 +24,7 @@ public class GroovyEvaluatorAutotranslationTest extends GroovyEvaluatorTest {
   @Test
   public void parseSetBeakerObjectScript_returnBeakerObjectValue() {
     //when
-    Object result = parseClassFromScript("beakerx.x = 10 ");
+    Object result = parseClassFromScript("beaker.x = 10 ");
     //then
     Assertions.assertThat(result instanceof Number).isTrue();
   }

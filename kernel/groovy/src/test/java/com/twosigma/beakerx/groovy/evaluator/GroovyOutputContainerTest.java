@@ -60,9 +60,9 @@ public class GroovyOutputContainerTest {
   public void shouldAddPlotToOutputContainerTest() throws Exception {
     //given
     String code =
-            "import com.twosigma.beaker.groovy.evaluator.ResourceLoaderTest;\n" +
-            "import com.twosigma.beaker.jvm.object.OutputContainer;\n" +
-            "import com.twosigma.beaker.chart.xychart.SimpleTimePlot;\n" +
+            "import com.twosigma.beakerx.groovy.evaluator.ResourceLoaderTest;\n" +
+            "import com.twosigma.beakerx.jvm.object.OutputContainer;\n" +
+            "import com.twosigma.beakerx.chart.xychart.SimpleTimePlot;\n" +
             "List<Map<?, ?>> rates = ResourceLoaderTest.readAsList(\"tableRowsTest.csv\");\n" +
             "plot2 = new SimpleTimePlot(rates, [\"m3\", \"y1\"], showLegend:false, initWidth: 300, initHeight: 400)\n" +
             "new OutputContainer() << plot2";

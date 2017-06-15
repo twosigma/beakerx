@@ -29,7 +29,7 @@ public class GroovyDefaultVariables extends DefaultJVMVariables {
       "static java.lang.Math.*",
       //"graxxia.*",
       //"com.twosigma.beaker.jvm.object.*",
-      "com.twosigma.beaker.chart.KeyboardCodes",
+      "com.twosigma.beakerx.chart.KeyboardCodes",
       "java.util.concurrent.TimeUnit",
       "com.github.lwhite1.tablesaw.api.*",
       "com.github.lwhite1.tablesaw.columns.*",
@@ -52,7 +52,7 @@ public class GroovyDefaultVariables extends DefaultJVMVariables {
       "static com.twosigma.beakerx.mimetype.ImageContainer.Image",
       "static com.twosigma.beakerx.mimetype.FileLinkContainer.FileLink",
       "static com.twosigma.beakerx.mimetype.FileLinkContainer.FileLinks",
-      "com.twosigma.beaker.mimetype.MIMEContainer"
+      "com.twosigma.beakerx.mimetype.MIMEContainer"
       //"com.twosigma.beaker.table.*",
       //"com.twosigma.beaker.table.format.*",
       //"com.twosigma.beaker.table.renderer.*",

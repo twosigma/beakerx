@@ -16,8 +16,8 @@
 
 package com.twosigma.jupyter.handler;
 
-import com.twosigma.beaker.KernelTest;
-import com.twosigma.beaker.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
 import java.io.Serializable;
@@ -29,7 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMPLETE_REPLY;
+import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMPLETE_REPLY;
 
 public class CompleteHandlerTest {
 

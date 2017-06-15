@@ -15,7 +15,7 @@
  */
 package com.twosigma.jupyter.handler;
 
-import com.twosigma.beaker.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.COMPLETE_REPLY;
+import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMPLETE_REPLY;
 import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 public class CompleteHandler extends KernelHandler<Message> {

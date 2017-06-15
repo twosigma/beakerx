@@ -15,7 +15,7 @@
  */
 package com.twosigma.jupyter;
 
-import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
+import com.twosigma.beakerx.jvm.threads.BeakerStdOutErrHandler;
 
 import java.io.IOException;
 

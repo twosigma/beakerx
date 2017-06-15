@@ -15,13 +15,13 @@
  */
 package com.twosigma.jupyter;
 
-import com.twosigma.beaker.jupyter.handler.CommCloseHandler;
-import com.twosigma.beaker.jupyter.handler.CommInfoHandler;
-import com.twosigma.beaker.jupyter.handler.CommMsgHandler;
-import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
-import com.twosigma.beaker.jupyter.handler.ExecuteRequestHandler;
-import com.twosigma.beaker.jupyter.msg.JupyterMessages;
-import com.twosigma.beaker.jupyter.msg.MessageCreator;
+import com.twosigma.beakerx.jupyter.handler.CommCloseHandler;
+import com.twosigma.beakerx.jupyter.handler.CommInfoHandler;
+import com.twosigma.beakerx.jupyter.handler.CommMsgHandler;
+import com.twosigma.beakerx.jupyter.handler.CommOpenHandler;
+import com.twosigma.beakerx.jupyter.handler.ExecuteRequestHandler;
+import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.jupyter.msg.MessageCreator;
 import com.twosigma.jupyter.handler.IsCompleteRequestHandler;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.handler.CompleteHandler;

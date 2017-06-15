@@ -15,7 +15,7 @@
  */
 package com.twosigma;
 
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.KernelFunctionality;
 
 public class ExecuteCodeCallbackTest implements KernelFunctionality.ExecuteCodeCallback {

@@ -15,7 +15,7 @@
  */
 package com.twosigma.jupyter.message;
 
-import static com.twosigma.beaker.jupyter.Utils.timestamp;
+import static com.twosigma.beakerx.jupyter.Utils.timestamp;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.twosigma.beaker.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
 
 @JsonPropertyOrder({"identities", "header", "parentHeader", "metadata", "content"})
 public class Message {

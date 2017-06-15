@@ -15,7 +15,7 @@
  */
 package com.twosigma.jupyter.socket;
 
-import com.twosigma.beaker.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
 import com.twosigma.jupyter.Config;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.KernelSockets;
@@ -36,8 +36,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.SHUTDOWN_REPLY;
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.SHUTDOWN_REQUEST;
+import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.SHUTDOWN_REPLY;
+import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.SHUTDOWN_REQUEST;
 import static java.util.Arrays.asList;
 import static com.twosigma.jupyter.message.MessageSerializer.toJson;
 

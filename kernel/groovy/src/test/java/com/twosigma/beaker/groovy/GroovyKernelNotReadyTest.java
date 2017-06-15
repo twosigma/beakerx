@@ -17,6 +17,7 @@ package com.twosigma.beaker.groovy;
 
 import com.twosigma.beaker.KernelSocketsServiceTest;
 import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
+import com.twosigma.beakerx.groovy.GroovyKernel;
 import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;
 import org.junit.After;

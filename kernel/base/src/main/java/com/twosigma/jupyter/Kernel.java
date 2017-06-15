@@ -15,16 +15,16 @@
  */
 package com.twosigma.jupyter;
 
-import com.twosigma.beaker.autocomplete.AutocompleteResult;
-import com.twosigma.beaker.evaluator.Evaluator;
-import com.twosigma.beaker.evaluator.EvaluatorManager;
-import com.twosigma.beaker.jupyter.comm.Comm;
-import com.twosigma.beaker.jupyter.KernelManager;
-import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
-import com.twosigma.beaker.jupyter.msg.JupyterMessages;
-import com.twosigma.beaker.jupyter.msg.MessageCreator;
-import com.twosigma.beaker.jupyter.threads.ExecutionResultSender;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.evaluator.EvaluatorManager;
+import com.twosigma.beakerx.jupyter.comm.Comm;
+import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.jupyter.handler.CommOpenHandler;
+import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.jupyter.msg.MessageCreator;
+import com.twosigma.beakerx.jupyter.threads.ExecutionResultSender;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.handler.KernelHandler;
 import com.twosigma.jupyter.message.Message;

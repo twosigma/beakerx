@@ -16,10 +16,10 @@
 package com.twosigma.beaker.groovy.examples;
 
 import com.twosigma.beaker.KernelSocketsServiceTest;
-import com.twosigma.beaker.groovy.GroovyDefaultVariables;
-import com.twosigma.beaker.groovy.GroovyKernel;
 import com.twosigma.beaker.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beaker.widgets.Widget;
+import com.twosigma.beakerx.groovy.GroovyDefaultVariables;
+import com.twosigma.beakerx.groovy.GroovyKernel;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.KernelRunner;
 import com.twosigma.jupyter.message.Message;

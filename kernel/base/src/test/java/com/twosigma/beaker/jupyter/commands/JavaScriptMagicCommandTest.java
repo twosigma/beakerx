@@ -23,6 +23,7 @@ import com.twosigma.jupyter.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,9 +53,15 @@ public class JavaScriptMagicCommandTest {
     MagicCommandResult result = sut.process(code, message, 1);
     //then
     Map data = (Map) result.getResultMessage().getContent().get(Comm.DATA);
-    assertThat(data.get(MIMEContainer.MIME.APPLICATION_JAVASCRIPT.getMime())).isEqualTo(jsCode);
+    String toCompare = (String)data.get(MIMEContainer.MIME.APPLICATION_JAVASCRIPT.getMime());
+    
+    toCompare = toCompare.replaceAll("\\s+","");
+    jsCode = jsCode.replaceAll("\\s+","");
+    
+    assertThat(toCompare.trim()).isEqualTo(jsCode);
   }
-
+  
+  
   @Test
   public void shouldCreateMsgWithWrongMagic() throws Exception {
     //given

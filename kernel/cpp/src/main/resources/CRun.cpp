@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 #include "CppKernel.h"
-#include "beaker.hpp"
+#include "beakerx.hpp"
 #include <string.h>
 #include <jni.h>
 #include <dlfcn.h>
 
-JNIEXPORT jboolean JNICALL Java_com_twosigma_beaker_cpp_utils_CppKernel_cLoad(JNIEnv *env, jobject obj, jstring jfile) {
+JNIEXPORT jboolean JNICALL Java_com_twosigma_beakerx_cpp_utils_CppKernel_cLoad(JNIEnv *env, jobject obj, jstring jfile) {
   const char* file = env->GetStringUTFChars(jfile, NULL);
   void* handle = dlopen(file, RTLD_LAZY | RTLD_GLOBAL);
   if (handle == NULL){
@@ -29,7 +29,7 @@ JNIEXPORT jboolean JNICALL Java_com_twosigma_beaker_cpp_utils_CppKernel_cLoad(JN
   }
 }
 
-JNIEXPORT jobject JNICALL Java_com_twosigma_beaker_cpp_utils_CppKernel_cLoadAndRun(JNIEnv *env, jobject obj, jstring jfile, jstring jtype) {
+JNIEXPORT jobject JNICALL Java_com_twosigma_beakerx_cpp_utils_CppKernel_cLoadAndRun(JNIEnv *env, jobject obj, jstring jfile, jstring jtype) {
   const char* file = env->GetStringUTFChars(jfile, NULL);
   void* handle;
 
@@ -40,7 +40,7 @@ JNIEXPORT jobject JNICALL Java_com_twosigma_beaker_cpp_utils_CppKernel_cLoadAndR
 
   const char* type = env->GetStringUTFChars(jtype, NULL);
 
-  handle = dlsym(handle, "call_beaker_main");
+  handle = dlsym(handle, "call_beakerx_main");
   if (handle == NULL) {
     return env->NewStringUTF(dlerror());
   }

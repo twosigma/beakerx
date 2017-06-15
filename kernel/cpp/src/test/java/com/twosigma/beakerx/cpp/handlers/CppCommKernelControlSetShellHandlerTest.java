@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.cpp.handlers;
+package com.twosigma.beakerx.cpp.handlers;
 
-import com.twosigma.beaker.jupyter.comm.CommKernelControlGetDefaultShellHandlerTest;
+import com.twosigma.beakerx.jupyter.comm.CommKernelControlGetDefaultShellHandlerTest;
 import com.twosigma.jupyter.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;

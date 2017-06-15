@@ -13,10 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.cpp;
+package com.twosigma.beakerx.cpp;
 
-import com.twosigma.beaker.cpp.autocomplete.CPP14BaseListener;
-import com.twosigma.beaker.cpp.autocomplete.CPP14Parser;
+import com.twosigma.beakerx.cpp.autocomplete.CPP14BaseListener;
+import com.twosigma.beakerx.cpp.autocomplete.CPP14Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

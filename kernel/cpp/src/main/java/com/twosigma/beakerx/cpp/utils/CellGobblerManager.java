@@ -13,10 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.cpp.utils;
+package com.twosigma.beakerx.cpp.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

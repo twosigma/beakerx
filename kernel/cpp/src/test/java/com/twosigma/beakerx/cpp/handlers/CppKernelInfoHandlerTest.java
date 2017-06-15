@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.cpp.handlers;
+package com.twosigma.beakerx.cpp.handlers;
 
 import com.twosigma.jupyter.message.Header;
 import com.twosigma.jupyter.message.Message;
@@ -28,7 +28,7 @@ import org.junit.Test;
 import java.io.Serializable;
 import java.util.Map;
 
-import static com.twosigma.beaker.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
+ import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
 
 public class CppKernelInfoHandlerTest {
 

@@ -23,9 +23,9 @@
 extern JNIEnv *globEnv;
 extern jobject globObj;
 
-class Beaker {
+class Beakerx {
 public:
-  Beaker(){
+  Beakerx(){
 
   }
   // Convert
@@ -168,13 +168,13 @@ public:
     return 1;
   }
 
-  // Beaker object
+  // Beakerx object
   template <typename T>
   static int get(std::string name, T &ret) {
     jstring jname = globEnv->NewStringUTF(name.c_str());
-    jclass beakerClass = globEnv->FindClass("com/twosigma/beaker/cpp/utils/CppKernel");
-    jmethodID javaBeakerGet = globEnv->GetStaticMethodID(beakerClass, "beakerGet", "(Ljava/lang/String;)Ljava/lang/Object;");
-    jobject obj = globEnv->CallStaticObjectMethod(beakerClass, javaBeakerGet, jname);
+    jclass beakerxClass = globEnv->FindClass("com/twosigma/beakerx/cpp/utils/CppKernel");
+    jmethodID javaBeakerxGet = globEnv->GetStaticMethodID(beakerxClass, "beakerxGet", "(Ljava/lang/String;)Ljava/lang/Object;");
+    jobject obj = globEnv->CallStaticObjectMethod(beakerxClass, javaBeakerxGet, jname);
     unconvert(obj, ret);
     return 1;
   }
@@ -183,11 +183,11 @@ public:
   static int set(std::string name, T val){
     jstring jname = globEnv->NewStringUTF(name.c_str());
     jobject jval = convert(val);
-    jclass beakerClass = globEnv->FindClass("com/twosigma/beaker/cpp/utils/CppKernel");
-    jmethodID javaBeakerSet = globEnv->GetStaticMethodID(beakerClass, "beakerSet", "(Ljava/lang/String;Ljava/lang/Object;)I");
-    jint ret = globEnv->CallStaticIntMethod(beakerClass, javaBeakerSet, jname, jval);
+    jclass beakerxClass = globEnv->FindClass("com/twosigma/beakerx/cpp/utils/CppKernel");
+    jmethodID javaBeakerxSet = globEnv->GetStaticMethodID(beakerxClass, "beakerxSet", "(Ljava/lang/String;Ljava/lang/Object;)I");
+    jint ret = globEnv->CallStaticIntMethod(beakerxClass, javaBeakerSet, jname, jval);
     return (int) ret;
   }
 };
 
-Beaker beaker;
+Beakerx beakerx;

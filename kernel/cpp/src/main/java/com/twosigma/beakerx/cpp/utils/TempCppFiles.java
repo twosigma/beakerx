@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.cpp.utils;
+package com.twosigma.beakerx.cpp.utils;
 
 import org.apache.commons.io.FileUtils;
 
@@ -27,7 +27,7 @@ import java.nio.file.Path;
 
 public class TempCppFiles {
 
-  public static final String BEAKER_HPP = "beaker.hpp";
+  public static final String BEAKER_HPP = "beakerx.hpp";
   public static final String CPP = "cpp";
   public static final String CPP_BAT = "cpp.bat";
   public static final String CPP_KERNEL_H = "CppKernel.h";

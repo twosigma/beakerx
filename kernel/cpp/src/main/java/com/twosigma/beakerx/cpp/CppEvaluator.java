@@ -13,18 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.cpp;
+package com.twosigma.beakerx.cpp;
 
-import com.twosigma.beaker.NamespaceClient;
-import com.twosigma.beaker.autocomplete.AutocompleteResult;
-import com.twosigma.beaker.cpp.autocomplete.CPP14Lexer;
-import com.twosigma.beaker.cpp.autocomplete.CPP14Parser;
-import com.twosigma.beaker.cpp.utils.CellGobblerManager;
-import com.twosigma.beaker.cpp.utils.TempCppFiles;
-import com.twosigma.beaker.evaluator.BaseEvaluator;
-import com.twosigma.beaker.evaluator.InternalVariable;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.cpp.autocomplete.CPP14Lexer;
+import com.twosigma.beakerx.cpp.autocomplete.CPP14Parser;
+import com.twosigma.beakerx.cpp.utils.CellGobblerManager;
+import com.twosigma.beakerx.cpp.utils.TempCppFiles;
+import com.twosigma.beakerx.cpp.utils.CLangCommand;
+import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.InternalVariable;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.jupyter.Classpath;
 import com.twosigma.jupyter.KernelParameters;
 import com.twosigma.jupyter.PathToJar;
@@ -58,8 +59,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
-import static com.twosigma.beaker.cpp.utils.CLangCommand.compileCommand;
-import static com.twosigma.beaker.jupyter.Utils.uuid;
+import static com.twosigma.beakerx.jupyter.Utils.uuid;
 
 public class CppEvaluator extends BaseEvaluator {
 
@@ -86,7 +86,7 @@ public class CppEvaluator extends BaseEvaluator {
     shellId = id;
     sessionId = sId;
     tempCppFiles = new TempCppFiles(id);
-    compileCommand = compileCommand(tempCppFiles);
+    compileCommand = CLangCommand.compileCommand(tempCppFiles);
     exit = false;
     executor = new BeakerCellExecutor("cpp");
     loadedCells = new HashSet<>();
@@ -271,7 +271,7 @@ public class CppEvaluator extends BaseEvaluator {
             StringBuilder builder = new StringBuilder(theCode);
             builder.insert(beakerMainEnd + 1, createMainCaller(cellType));
             // builder.insert(0, "extern Beaker beaker;\n");
-            builder.insert(0, "#include <beaker.hpp>\n");
+            builder.insert(0, "#include <beakerx.hpp>\n");
             processedCode = builder.toString();
           }
 

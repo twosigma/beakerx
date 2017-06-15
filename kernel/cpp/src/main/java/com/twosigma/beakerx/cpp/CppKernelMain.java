@@ -13,13 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.cpp;
+package com.twosigma.beakerx.cpp;
 
-import com.twosigma.beaker.cpp.handlers.CppCommOpenHandler;
-import com.twosigma.beaker.cpp.handlers.CppKernelInfoHandler;
-import com.twosigma.beaker.cpp.utils.CppKernel;
-import com.twosigma.beaker.evaluator.Evaluator;
-import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
+import com.twosigma.beakerx.cpp.handlers.CppCommOpenHandler;
+import com.twosigma.beakerx.cpp.handlers.CppKernelInfoHandler;
+import com.twosigma.beakerx.cpp.utils.CppKernel;
+import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.jupyter.handler.CommOpenHandler;
 import com.twosigma.jupyter.Kernel;
 import com.twosigma.jupyter.KernelConfigurationFile;
 import com.twosigma.jupyter.KernelRunner;
@@ -33,8 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.twosigma.beaker.cpp.CppEvaluator.EXECUTE;
-import static com.twosigma.beaker.jupyter.Utils.uuid;
+import static com.twosigma.beakerx.cpp.CppEvaluator.EXECUTE;
+ import static com.twosigma.beakerx.jupyter.Utils.uuid;
 
 public class CppKernelMain extends Kernel {
 

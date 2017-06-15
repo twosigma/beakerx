@@ -13,13 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.cpp.handlers;
+package com.twosigma.beakerx.cpp.handlers;
 
-import com.twosigma.beaker.jupyter.comm.KernelControlCommandListHandler;
-import com.twosigma.beaker.jupyter.comm.KernelControlInterrupt;
-import com.twosigma.beaker.jupyter.comm.KernelControlSetShellHandler;
-import com.twosigma.beaker.jupyter.comm.TargetNamesEnum;
-import com.twosigma.beaker.jupyter.handler.CommOpenHandler;
+import com.twosigma.beakerx.jupyter.comm.KernelControlCommandListHandler;
+import com.twosigma.beakerx.jupyter.comm.KernelControlInterrupt;
+import com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler;
+import com.twosigma.beakerx.jupyter.comm.TargetNamesEnum;
+import com.twosigma.beakerx.jupyter.handler.CommOpenHandler;
 import com.twosigma.jupyter.KernelFunctionality;
 import com.twosigma.jupyter.handler.Handler;
 import com.twosigma.jupyter.message.Message;

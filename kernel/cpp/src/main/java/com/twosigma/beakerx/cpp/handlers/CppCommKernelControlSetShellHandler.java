@@ -13,12 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.cpp.handlers;
+package com.twosigma.beakerx.cpp.handlers;
 
-import com.twosigma.beaker.cpp.CppDefaultVariables;
-import com.twosigma.beaker.jupyter.comm.KernelControlGetDefaultShellHandler;
+import com.twosigma.beakerx.cpp.CppDefaultVariables;
+import com.twosigma.beakerx.jupyter.comm.KernelControlGetDefaultShellHandler;
 import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.Handler;
 
 public class CppCommKernelControlSetShellHandler extends KernelControlGetDefaultShellHandler {
 

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.cpp.utils;
+package com.twosigma.beakerx.cpp.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-import static com.twosigma.beaker.cpp.utils.TempCppFiles.LIB_CRUN_JNILIB;
-
 public class CppKernel {
 
   private static final Logger logger = LoggerFactory.getLogger(CppKernel.class.getName());
@@ -35,7 +33,7 @@ public class CppKernel {
   public native Object cLoadAndRun(String fileName, String type);
 
   public CppKernel(final String tempDirectory) {
-    System.load(tempDirectory + "/" + LIB_CRUN_JNILIB);
+    System.load(tempDirectory + "/" + TempCppFiles.LIB_CRUN_JNILIB);
   }
 
   public int execute(final String mainCell, final String type, final String tempDirectory, List<String> otherCells) {

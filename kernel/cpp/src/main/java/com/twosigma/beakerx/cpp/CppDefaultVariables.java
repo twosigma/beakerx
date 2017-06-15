@@ -13,19 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx.cpp;
 
-package com.twosigma.beaker.cpp.handlers;
+import com.twosigma.beakerx.DefaultJVMVariables;
 
-import com.twosigma.beaker.KernelTest;
+public class CppDefaultVariables extends DefaultJVMVariables {
 
-public class CppKernelFunctionalityTest extends KernelTest {
-
-  public CppKernelFunctionalityTest() {
-    this("CppKernelTestId1");
-  }
-
-  public CppKernelFunctionalityTest(String id) {
-    super(id);
+  public CppDefaultVariables() {
   }
 
 }

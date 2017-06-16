@@ -59,9 +59,9 @@ public class CppKernelMainTest {
     //given
     String code = "" +
             "// A basic C++ cell\n" +
-            "// define a beaker_main function with an optional parameter for the return value\n" +
+            "// define a beakerx_main function with an optional parameter for the return value\n" +
             "#include <iostream>\n" +
-            "void beaker_main(){\n" +
+            "void beakerx_main(){\n" +
             "  std::cout << \"Hello world!\" << std::endl;\n" +
             "  return;\n" +
             "}";

@@ -222,19 +222,19 @@ public class CppEvaluator extends BaseEvaluator {
         if (type != "void") {
           builder.append("JNIEnv *globEnv;\n");
           builder.append("jobject globObj;\n");
-          builder.append("\nextern \"C\" jobject call_beaker_main(JNIEnv *e,jobject o) {\n");
+          builder.append("\nextern \"C\" jobject call_beakerx_main(JNIEnv *e,jobject o) {\n");
           builder.append("\t" + "globEnv=e;\n");
           builder.append("\t" + "globObj=o;\n");
           builder.append("\t" + type + " ret;\n");
-          builder.append("\t" + "beaker_main(ret);\n");
-          builder.append("\t" + "return Beaker::convert(ret);\n");
+          builder.append("\t" + "beakerx_main(ret);\n");
+          builder.append("\t" + "return Beakerx::convert(ret);\n");
         } else {
           builder.append("JNIEnv *globEnv;\n");
           builder.append("jobject globObj;\n");
-          builder.append("\nextern \"C\" void call_beaker_main(JNIEnv *e,jobject o) {\n");
+          builder.append("\nextern \"C\" void call_beakerx_main(JNIEnv *e,jobject o) {\n");
           builder.append("\t" + "globEnv=e;\n");
           builder.append("\t" + "globObj=o;\n");
-          builder.append("beaker_main();\n");
+          builder.append("beakerx_main();\n");
           builder.append("return;\n");
         }
         builder.append("}\n");
@@ -248,7 +248,7 @@ public class CppEvaluator extends BaseEvaluator {
         InternalVariable.setValue(theOutput);
 
         try {
-          // Parse code to find beaker_main and type
+          // Parse code to find beakerx_main and type
           CPP14Lexer lexer = new CPP14Lexer(new ANTLRInputStream(theCode));
           // Get a list of matched tokens
           CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -265,12 +265,12 @@ public class CppEvaluator extends BaseEvaluator {
           cellType = cellType.replaceAll(">>", "> >");
 
           String processedCode = theCode;
-          // If beaker_main was found
+          // If beakerx_main was found
           if (!cellType.equals("none")) {
             int beakerMainEnd = tokens.get(beakerMainLastToken).getStopIndex();
             StringBuilder builder = new StringBuilder(theCode);
             builder.insert(beakerMainEnd + 1, createMainCaller(cellType));
-            // builder.insert(0, "extern Beaker beaker;\n");
+            // builder.insert(0, "extern Beakerx beakerx;\n");
             builder.insert(0, "#include <beakerx.hpp>\n");
             processedCode = builder.toString();
           }

@@ -117,7 +117,7 @@ public class Extractor extends CPP14BaseListener {
     int depth = ctx.depth();
     CPP14Parser.DeclaratorContext decl = ctx.declarator();
     String declText = decl.getText();
-    if((depth == topFuncDepth) && (decl != null) && (declText.contains("beaker_main"))) {
+    if((depth == topFuncDepth) && (decl != null) && (declText.contains("beakerx_main"))) {
       ParserRuleContext declSpecSeq = ctx.declspecifierseq();
       CPP14Parser.ParameterdeclarationlistContext paramsList = 
         decl.ptrdeclarator().noptrdeclarator().parametersandqualifiers().parameterdeclarationclause()
@@ -131,13 +131,13 @@ public class Extractor extends CPP14BaseListener {
       ParserRuleContext virtSpecSeq = ctx.virtspecifierseq();
       ParserRuleContext attrSpecSeq = ctx.attributespecifierseq();
       if ((paramsList != null) && (paramsList.parameterdeclarationlist() != null)) {
-        logger.info("The beaker_main function must have zero or one paramters.");
+        logger.info("The beakerx_main function must have zero or one paramters.");
         return;
       } else if (attrSpecSeq != null) {
-        logger.info("The beaker_main function must not have attributes.");
+        logger.info("The beakerx_main function must not have attributes.");
         return;
       } else if (virtSpecSeq != null) {
-        logger.info("The beaker_main function cannot be virtual.");
+        logger.info("The beakerx_main function cannot be virtual.");
         return;
       }
 
@@ -146,7 +146,7 @@ public class Extractor extends CPP14BaseListener {
         if (isSupported(type)){
           returnType = type;
         } else {
-          logger.info("Beaker cannot recognize the return type of your cell.");
+          logger.info("Beakerx cannot recognize the return type of your cell.");
         }
       }
     }

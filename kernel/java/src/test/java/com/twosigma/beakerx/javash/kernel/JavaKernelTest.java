@@ -13,10 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.javash;
+package com.twosigma.beakerx.javash.kernel;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
+import com.twosigma.beakerx.javash.kernel.Java;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
@@ -39,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaKernelTest {
 
-  private JavaKernel kernel;
+  private Java kernel;
   private KernelSocketsServiceTest kernelSocketsService;
 
   @Before
@@ -47,7 +48,7 @@ public class JavaKernelTest {
     String sessionId = "sessionId2";
     JavaEvaluator evaluator = new JavaEvaluator(sessionId, sessionId);
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new JavaKernel(sessionId, evaluator, kernelSocketsService);
+    kernel = new Java(sessionId, evaluator, kernelSocketsService);
     kernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();

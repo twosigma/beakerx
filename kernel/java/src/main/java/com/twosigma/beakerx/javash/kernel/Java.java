@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.javash;
+package com.twosigma.beakerx.javash.kernel;
 
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
@@ -33,9 +33,9 @@ import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.message.Message;
 
 
-public class JavaKernel extends Kernel {
+public class Java extends Kernel {
 
-  public JavaKernel(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+  public Java(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
   }
 
@@ -54,7 +54,7 @@ public class JavaKernel extends Kernel {
       String id = uuid();
       JavaEvaluator e = new JavaEvaluator(id, id);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-      return new JavaKernel(id, e, kernelSocketsFactory);
+      return new Java(id, e, kernelSocketsFactory);
     });
   }
 

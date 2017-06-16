@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.javash.handler;
 
-import com.twosigma.beakerx.javash.JavaKernelMock;
+import com.twosigma.beakerx.javash.kernel.JavaKernelMock;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.message.MessageTest;

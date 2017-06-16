@@ -32,10 +32,15 @@ public class CodeTest {
             "  }});";
     //when
     Code result = new Code(MagicCommand.JAVASCRIPT + "\n" + jsCode);
+    
+    String toCompare = result.takeCodeWithoutCommand().asString().replaceAll("\\s+","");
+    jsCode = jsCode.replaceAll("\\s+","");
+
     //then
     assertThat(result.getCommands().size()).isEqualTo(1);
     assertThat(result.getCommands().get(0)).isEqualTo(MagicCommand.JAVASCRIPT);
-    assertThat(result.takeCodeWithoutCommand()).isEqualTo(new Code(jsCode));
+    assertThat(toCompare).isEqualTo(jsCode);
+    //assertThat(result.takeCodeWithoutCommand()).isEqualTo(new Code(jsCode));
   }
 
   @Test

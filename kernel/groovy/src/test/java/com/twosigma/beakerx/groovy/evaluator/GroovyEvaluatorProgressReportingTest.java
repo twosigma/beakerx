@@ -24,7 +24,7 @@ import com.twosigma.beakerx.widgets.integers.IntProgress;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.List;
 

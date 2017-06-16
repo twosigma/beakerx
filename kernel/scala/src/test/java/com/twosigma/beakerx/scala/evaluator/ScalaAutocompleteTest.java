@@ -19,7 +19,7 @@ package com.twosigma.beakerx.scala.evaluator;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.jupyter.KernelManager;
 import com.twosigma.beakerx.scala.ScalaKernelMock;
-import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

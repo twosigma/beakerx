@@ -17,7 +17,7 @@ package com.twosigma.beakerx.clojure.handlers;
 
 import com.twosigma.beakerx.clojure.ClojureDefaultVariables;
 import com.twosigma.beakerx.jupyter.comm.KernelControlGetDefaultShellHandler;
-import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
 
 public class ClojureCommKernelControlSetShellHandler extends KernelControlGetDefaultShellHandler {
 

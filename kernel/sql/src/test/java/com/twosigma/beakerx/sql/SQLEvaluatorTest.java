@@ -21,7 +21,7 @@ import com.twosigma.beakerx.jupyter.KernelManager;
 import com.twosigma.beakerx.jvm.object.OutputCell;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.table.TableDisplay;
-import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

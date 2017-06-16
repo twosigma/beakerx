@@ -18,7 +18,7 @@ package com.twosigma.beakerx.clojure.handlers;
 
 import com.twosigma.beakerx.clojure.ClojureKernelMock;
 import com.twosigma.beakerx.jupyter.comm.CommKernelControlGetDefaultShellHandlerTest;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;

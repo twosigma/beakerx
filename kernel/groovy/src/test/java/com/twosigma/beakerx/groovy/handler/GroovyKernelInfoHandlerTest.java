@@ -17,9 +17,9 @@
 package com.twosigma.beakerx.groovy.handler;
 
 import com.twosigma.beakerx.groovy.GroovyKernelMock;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
-import com.twosigma.jupyter.message.MessageTest;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.message.MessageTest;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

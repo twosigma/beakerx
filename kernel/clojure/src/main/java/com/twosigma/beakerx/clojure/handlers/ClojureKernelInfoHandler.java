@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.clojure.handlers;
 
 import com.twosigma.beakerx.KernelInfoHandler;
-import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

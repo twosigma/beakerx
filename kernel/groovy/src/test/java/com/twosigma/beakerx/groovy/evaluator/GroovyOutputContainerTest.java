@@ -21,11 +21,11 @@ import com.twosigma.beakerx.jupyter.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.widgets.chart.BeakerxPlot;
-import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.HashMap;
 import java.util.List;

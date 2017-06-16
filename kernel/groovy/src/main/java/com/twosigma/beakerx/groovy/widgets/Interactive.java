@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.twosigma.beakerx.widgets.BeakerxWidget;
 import com.twosigma.beakerx.widgets.InteractiveBase;
 import com.twosigma.beakerx.widgets.ValueWidget;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.ArrayList;
 import java.util.List;

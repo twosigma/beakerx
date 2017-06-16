@@ -17,9 +17,9 @@ package com.twosigma.beakerx.cpp;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.jupyter.comm.Comm;
-import com.twosigma.jupyter.KernelParameters;
-import com.twosigma.jupyter.KernelRunner;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.KernelRunner;
+import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
 

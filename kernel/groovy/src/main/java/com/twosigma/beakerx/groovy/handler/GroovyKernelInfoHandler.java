@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.groovy.handler;
 
 import com.twosigma.beakerx.KernelInfoHandler;
-import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
 import groovy.lang.GroovySystem;
 
 import java.io.Serializable;

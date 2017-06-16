@@ -17,8 +17,8 @@ package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.jupyter.PathToJar;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.message.Message;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

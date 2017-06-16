@@ -24,14 +24,14 @@ import com.twosigma.beakerx.javash.comm.JavaCommOpenHandler;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import com.twosigma.beakerx.javash.handler.JavaKernelInfoHandler;
 import com.twosigma.beakerx.jupyter.handler.CommOpenHandler;
-import com.twosigma.jupyter.ConfigurationFile;
-import com.twosigma.jupyter.Kernel;
-import com.twosigma.jupyter.KernelConfigurationFile;
-import com.twosigma.jupyter.KernelRunner;
-import com.twosigma.jupyter.KernelSocketsFactory;
-import com.twosigma.jupyter.KernelSocketsFactoryImpl;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.ConfigurationFile;
+import com.twosigma.beakerx.kernel.Kernel;
+import com.twosigma.beakerx.kernel.KernelConfigurationFile;
+import com.twosigma.beakerx.kernel.KernelRunner;
+import com.twosigma.beakerx.kernel.KernelSocketsFactory;
+import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
+import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.message.Message;
 
 
 public class JavaKernel extends Kernel {

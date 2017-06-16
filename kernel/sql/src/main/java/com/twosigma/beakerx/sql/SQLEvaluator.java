@@ -24,9 +24,9 @@ import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.sql.autocomplete.SQLAutocomplete;
-import com.twosigma.jupyter.Classpath;
-import com.twosigma.jupyter.KernelParameters;
-import com.twosigma.jupyter.PathToJar;
+import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.PathToJar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

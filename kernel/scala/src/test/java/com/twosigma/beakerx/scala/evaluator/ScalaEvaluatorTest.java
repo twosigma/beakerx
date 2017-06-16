@@ -21,7 +21,7 @@ import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.jupyter.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.scala.ScalaKernelMock;
-import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

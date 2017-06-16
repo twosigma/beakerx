@@ -19,13 +19,13 @@ import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.jupyter.handler.CommOpenHandler;
 import com.twosigma.beakerx.sql.handlers.SQLCommOpenHandler;
 import com.twosigma.beakerx.sql.handlers.SQLKernelInfoHandler;
-import com.twosigma.jupyter.Kernel;
-import com.twosigma.jupyter.KernelConfigurationFile;
-import com.twosigma.jupyter.KernelRunner;
-import com.twosigma.jupyter.KernelSocketsFactory;
-import com.twosigma.jupyter.KernelSocketsFactoryImpl;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.Kernel;
+import com.twosigma.beakerx.kernel.KernelConfigurationFile;
+import com.twosigma.beakerx.kernel.KernelRunner;
+import com.twosigma.beakerx.kernel.KernelSocketsFactory;
+import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
+import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.message.Message;
 
 import java.io.IOException;
 

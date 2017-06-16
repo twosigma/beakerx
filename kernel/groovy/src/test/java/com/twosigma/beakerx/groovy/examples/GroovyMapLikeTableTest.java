@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.examples;
 import com.twosigma.beakerx.table.TableDisplay;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 import java.util.Optional;
 

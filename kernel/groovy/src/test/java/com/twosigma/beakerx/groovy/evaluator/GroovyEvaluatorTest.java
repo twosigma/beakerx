@@ -21,7 +21,7 @@ import com.twosigma.beakerx.groovy.GroovyKernelMock;
 import com.twosigma.beakerx.jupyter.KernelManager;
 import com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler;
 import com.twosigma.beakerx.groovy.GroovyDefaultVariables;
-import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;

@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.javash.handler;
 
 import com.twosigma.beakerx.KernelInfoHandler;
-import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
 
 import java.io.Serializable;
 import java.util.HashMap;

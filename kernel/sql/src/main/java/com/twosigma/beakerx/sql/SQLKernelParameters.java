@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.sql;
 
-import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.beakerx.kernel.KernelParameters;
 
 import java.util.Collection;
 import java.util.Optional;

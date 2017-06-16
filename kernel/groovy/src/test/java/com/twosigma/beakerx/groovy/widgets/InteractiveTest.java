@@ -29,7 +29,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.widgets.DOMWidget;
 import com.twosigma.beakerx.widgets.Widget;
 import com.twosigma.beakerx.widgets.strings.Text;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

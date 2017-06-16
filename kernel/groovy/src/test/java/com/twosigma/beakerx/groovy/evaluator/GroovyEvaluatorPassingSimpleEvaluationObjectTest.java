@@ -19,7 +19,7 @@ import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.junit.Before;
 import org.junit.Test;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.comm;
 
-import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.groovy.GroovyDefaultVariables;
 import com.twosigma.beakerx.jupyter.comm.KernelControlGetDefaultShellHandler;
 

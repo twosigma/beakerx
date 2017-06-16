@@ -16,9 +16,9 @@
 package com.twosigma.beakerx.groovy.comm;
 
 import com.twosigma.beakerx.jupyter.comm.*;
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.Handler;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.jupyter.handler.CommOpenHandler;
 
 public class GroovyCommOpenHandler extends CommOpenHandler{

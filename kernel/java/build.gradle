@@ -20,7 +20,7 @@ apply plugin: 'maven-publish'
 def final kernelIdName = 'java'
 def final toReplace = '__PATH__'
 
-mainClassName = 'com.twosigma.beaker.javash.JavaKernel'
+mainClassName = 'com.twosigma.beakerx.javash.JavaKernel'
 
 configurations {
   antlr

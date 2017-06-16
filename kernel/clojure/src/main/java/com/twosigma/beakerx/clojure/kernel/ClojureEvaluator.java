@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.clojure;
+package com.twosigma.beakerx.clojure.kernel;
 
 import clojure.lang.RT;
 import clojure.lang.Var;

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.clojure;
+package com.twosigma.beakerx.clojure.kernel;
 
 import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
 import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
@@ -31,9 +31,9 @@ import java.io.IOException;
 
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
-public class ClojureKernel extends Kernel {
+public class Clojure extends Kernel {
 
-  public ClojureKernel(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+  public Clojure(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(sessionId, evaluator, kernelSocketsFactory);
   }
 
@@ -51,7 +51,7 @@ public class ClojureKernel extends Kernel {
     KernelRunner.run(() -> {
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-      return new ClojureKernel(id, new ClojureEvaluator(id, id), kernelSocketsFactory);
+      return new Clojure(id, new ClojureEvaluator(id, id), kernelSocketsFactory);
     });
   }
 }

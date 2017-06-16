@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.cpp.handlers;
 
-import com.twosigma.beakerx.cpp.CppDefaultVariables;
+import com.twosigma.beakerx.cpp.kernel.CppDefaultVariables;
 import com.twosigma.beakerx.kernel.comm.KernelControlGetDefaultShellHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 

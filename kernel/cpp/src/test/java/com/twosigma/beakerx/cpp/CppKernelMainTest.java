@@ -16,6 +16,8 @@
 package com.twosigma.beakerx.cpp;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.cpp.kernel.CppEvaluator;
+import com.twosigma.beakerx.cpp.kernel.Cpp;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
@@ -34,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CppKernelMainTest {
 
-  private CppKernelMain kernel;
+  private Cpp kernel;
 
   private KernelSocketsServiceTest kernelSocketsService;
 
@@ -44,7 +46,7 @@ public class CppKernelMainTest {
     CppEvaluator evaluator = new CppEvaluator(sessionId, sessionId);
     evaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new CppKernelMain(sessionId, evaluator, kernelSocketsService);
+    kernel = new Cpp(sessionId, evaluator, kernelSocketsService);
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.cpp;
+package com.twosigma.beakerx.cpp.kernel;
 
 import com.twosigma.beakerx.cpp.handlers.CppCommOpenHandler;
 import com.twosigma.beakerx.cpp.handlers.CppKernelInfoHandler;
@@ -33,12 +33,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.twosigma.beakerx.cpp.CppEvaluator.EXECUTE;
+import static com.twosigma.beakerx.cpp.kernel.CppEvaluator.EXECUTE;
  import static com.twosigma.beakerx.kernel.Utils.uuid;
 
-public class CppKernelMain extends Kernel {
+public class Cpp extends Kernel {
 
-  public CppKernelMain(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+  public Cpp(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
   }
 
@@ -59,7 +59,7 @@ public class CppKernelMain extends Kernel {
       KernelRunner.run(() -> {
         String id = uuid();
         KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-        return new CppKernelMain(id, new CppEvaluator(id, id), kernelSocketsFactory);
+        return new Cpp(id, new CppEvaluator(id, id), kernelSocketsFactory);
       });
     }
   }

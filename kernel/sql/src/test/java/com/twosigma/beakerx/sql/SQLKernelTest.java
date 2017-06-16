@@ -21,6 +21,8 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.sql.kernel.SQL;
+import com.twosigma.beakerx.sql.kernel.SQLEvaluator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,13 +35,13 @@ import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
  import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
  import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.sql.SQLForColorTable.CREATE_AND_SELECT_ALL;
-import static com.twosigma.beakerx.sql.SQLKernelParameters.DATASOURCES;
-import static com.twosigma.beakerx.sql.SQLKernelParameters.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DATASOURCES;
+import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SQLKernelTest {
 
-  private SQLKernel sqlKernel;
+  private SQL sqlKernel;
   private KernelSocketsServiceTest kernelSocketsService;
 
   @Before
@@ -47,7 +49,7 @@ public class SQLKernelTest {
     String sessionId = "sessionId2";
     SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId);
     kernelSocketsService = new KernelSocketsServiceTest();
-    sqlKernel = new SQLKernel(sessionId, sqlEvaluator, kernelSocketsService);
+    sqlKernel = new SQL(sessionId, sqlEvaluator, kernelSocketsService);
     sqlKernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> sqlKernel)).start();
     kernelSocketsService.waitForSockets();

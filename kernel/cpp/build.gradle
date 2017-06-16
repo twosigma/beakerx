@@ -21,7 +21,7 @@ sourceCompatibility = 1.8
 def final kernelIdName = 'cpp'
 def final toReplace = '__PATH__'
 
-mainClassName = 'com.twosigma.beakerx.cpp.CppKernelMain'
+mainClassName = 'com.twosigma.beakerx.cpp.kernel.Cpp'
 
 configurations {
   antlr

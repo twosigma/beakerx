@@ -21,6 +21,7 @@ import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.sql.kernel.SQLEvaluator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
  import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beakerx.sql.SQLKernelParameters.DATASOURCES;
-import static com.twosigma.beakerx.sql.SQLKernelParameters.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DATASOURCES;
+import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SQLAutocompleteTest {

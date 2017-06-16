@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.sql;
+package com.twosigma.beakerx.sql.kernel;
 
 
 import com.twosigma.beakerx.NamespaceClient;
@@ -23,6 +23,11 @@ import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.sql.ConnectionStringBean;
+import com.twosigma.beakerx.sql.ConnectionStringHolder;
+import com.twosigma.beakerx.sql.JDBCClient;
+import com.twosigma.beakerx.sql.QueryExecutor;
+import com.twosigma.beakerx.sql.ReadVariableException;
 import com.twosigma.beakerx.sql.autocomplete.SQLAutocomplete;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.KernelParameters;

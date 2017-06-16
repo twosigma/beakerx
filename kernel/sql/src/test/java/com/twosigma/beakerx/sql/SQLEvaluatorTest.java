@@ -20,6 +20,7 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.OutputCell;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.sql.kernel.SQLEvaluator;
 import com.twosigma.beakerx.table.TableDisplay;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import org.junit.After;
@@ -31,8 +32,8 @@ import java.util.Map;
 
  import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
  import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
-import static com.twosigma.beakerx.sql.SQLKernelParameters.DATASOURCES;
-import static com.twosigma.beakerx.sql.SQLKernelParameters.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DATASOURCES;
+import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SQLEvaluatorTest {

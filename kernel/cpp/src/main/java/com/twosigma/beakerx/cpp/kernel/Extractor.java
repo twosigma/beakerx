@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.cpp;
+package com.twosigma.beakerx.cpp.kernel;
 
 import com.twosigma.beakerx.cpp.autocomplete.CPP14BaseListener;
 import com.twosigma.beakerx.cpp.autocomplete.CPP14Parser;

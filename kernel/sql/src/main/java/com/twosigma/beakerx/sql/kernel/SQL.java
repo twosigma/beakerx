@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.sql;
+package com.twosigma.beakerx.sql.kernel;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
@@ -31,9 +31,9 @@ import java.io.IOException;
 
  import static com.twosigma.beakerx.kernel.Utils.uuid;
 
-public class SQLKernel extends Kernel {
+public class SQL extends Kernel {
 
-  public SQLKernel(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+  public SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(sessionId, evaluator, kernelSocketsFactory);
   }
 
@@ -51,7 +51,7 @@ public class SQLKernel extends Kernel {
     KernelRunner.run(() -> {
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-      return new SQLKernel(id, new SQLEvaluator(id, id), kernelSocketsFactory);
+      return new SQL(id, new SQLEvaluator(id, id), kernelSocketsFactory);
     });
   }
 }

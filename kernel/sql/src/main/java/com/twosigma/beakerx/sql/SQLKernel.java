@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.sql;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
-import com.twosigma.beakerx.jupyter.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.sql.handlers.SQLCommOpenHandler;
 import com.twosigma.beakerx.sql.handlers.SQLKernelInfoHandler;
 import com.twosigma.beakerx.kernel.Kernel;
@@ -29,7 +29,7 @@ import com.twosigma.beakerx.message.Message;
 
 import java.io.IOException;
 
- import static com.twosigma.beakerx.jupyter.Utils.uuid;
+ import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 public class SQLKernel extends Kernel {
 

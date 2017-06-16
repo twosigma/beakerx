@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.twosigma.beakerx.jupyter.Utils.getAsString;
+import static com.twosigma.beakerx.kernel.Utils.getAsString;
 
 /**
  * 

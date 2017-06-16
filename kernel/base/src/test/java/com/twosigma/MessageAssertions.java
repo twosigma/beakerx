@@ -15,7 +15,7 @@
  */
 package com.twosigma;
 
-import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;

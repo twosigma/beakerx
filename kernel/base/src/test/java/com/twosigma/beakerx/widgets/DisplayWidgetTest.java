@@ -16,15 +16,15 @@
 package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.widgets.integers.IntSlider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import com.twosigma.beakerx.message.Message;
 
-import static com.twosigma.beakerx.jupyter.comm.Comm.COMM_ID;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_MSG;
+import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getContent;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyDisplayMsg;
 import static org.assertj.core.api.Assertions.assertThat;

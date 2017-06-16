@@ -16,9 +16,12 @@
 package com.twosigma.beakerx.jupyter.msg;
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beakerx.jupyter.SocketEnum;
+import com.twosigma.beakerx.kernel.SocketEnum;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import com.twosigma.beakerx.kernel.msg.MessageHolder;
 import com.twosigma.beakerx.widgets.TestWidgetUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +30,7 @@ import com.twosigma.beakerx.message.Message;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.msg.MessageCreator.NULL_RESULT;
+import static com.twosigma.beakerx.kernel.msg.MessageCreator.NULL_RESULT;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 

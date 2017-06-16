@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 
 import org.reflections.Reflections;
 

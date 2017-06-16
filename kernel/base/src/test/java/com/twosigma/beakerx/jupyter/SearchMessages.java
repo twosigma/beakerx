@@ -16,8 +16,8 @@
 
 package com.twosigma.beakerx.jupyter;
 
-import com.twosigma.beakerx.jupyter.comm.Comm;
-import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.widgets.Layout;
 import com.twosigma.beakerx.widgets.Widget;
 import com.twosigma.beakerx.message.Message;

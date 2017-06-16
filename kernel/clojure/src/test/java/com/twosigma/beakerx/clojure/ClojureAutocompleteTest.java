@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.clojure;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

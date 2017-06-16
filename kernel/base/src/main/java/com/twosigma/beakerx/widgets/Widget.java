@@ -21,9 +21,9 @@ import java.util.LinkedHashMap;
 
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
-import com.twosigma.beakerx.jupyter.KernelManager;
-import com.twosigma.beakerx.jupyter.comm.Comm;
-import com.twosigma.beakerx.jupyter.comm.TargetNamesEnum;
+import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.message.Message;
 
 public abstract class Widget implements CommFunctionality, DisplayableWidget {

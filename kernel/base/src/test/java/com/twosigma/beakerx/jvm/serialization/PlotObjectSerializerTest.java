@@ -29,7 +29,7 @@ import com.twosigma.beakerx.chart.treemap.TreeMap;
 import com.twosigma.beakerx.chart.xychart.CombinedPlot;
 import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.chart.xychart.plotitem.Bars;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.ConsoleOutput;
 import net.sf.jtreemap.swing.TreeMapNode;
 import org.assertj.core.api.Assertions;

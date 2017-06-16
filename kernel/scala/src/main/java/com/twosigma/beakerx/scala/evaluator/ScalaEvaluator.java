@@ -62,8 +62,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
-import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
 
 public class ScalaEvaluator extends BaseEvaluator {
   private final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());

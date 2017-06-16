@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.jvm.object;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.widgets.box.GridView;
 import com.twosigma.beakerx.widgets.box.HBox;

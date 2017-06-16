@@ -24,7 +24,7 @@ import com.twosigma.beakerx.chart.categoryplot.CategoryPlot;
 import com.twosigma.beakerx.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beakerx.chart.categoryplot.plotitem.CategoryPoints;
 import com.twosigma.beakerx.chart.xychart.plotitem.PlotOrientationType;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
 import org.assertj.core.api.Assertions;
 import org.junit.After;

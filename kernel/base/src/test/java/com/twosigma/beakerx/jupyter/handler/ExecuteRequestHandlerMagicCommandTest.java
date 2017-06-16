@@ -18,8 +18,9 @@ package com.twosigma.beakerx.jupyter.handler;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
-import com.twosigma.beakerx.jupyter.commands.MagicCommand;
+import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.handler.ExecuteRequestHandler;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;

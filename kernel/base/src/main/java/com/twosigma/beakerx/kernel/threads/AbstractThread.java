@@ -13,13 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx.kernel.threads;
 
-package com.twosigma.beakerx.jupyter.commands;
+/**
+ * 
+ * @author konst
+ *
+ */
+public abstract class AbstractThread extends Thread {
 
-import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.message.Message;
+  protected boolean running = false;
 
+  @Override
+  public void start() {
+    running = true;
+    super.start();
+  }
 
-public interface MagicCommandFunctionality {
-  MagicCommandResultItem process(Code code, String command, Message message, int executionCount);
+  public void halt() {
+    running = false;
+  }
+
+  public boolean getRunning() {
+    return running;
+  }
+
 }

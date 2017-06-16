@@ -15,16 +15,15 @@
  */
 package com.twosigma.beakerx.scala;
 
-import static com.twosigma.beakerx.jupyter.Utils.uuid;
+import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 import java.io.IOException;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
-import com.twosigma.beakerx.jupyter.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.scala.comm.ScalaCommOpenHandler;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.handler.ScalaKernelInfoHandler;
-import com.twosigma.beakerx.kernel.ConfigurationFile;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.KernelRunner;

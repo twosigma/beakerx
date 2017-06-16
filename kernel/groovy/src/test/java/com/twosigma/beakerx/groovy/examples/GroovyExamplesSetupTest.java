@@ -31,8 +31,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
 import static org.junit.Assert.assertTrue;
 
 public abstract class GroovyExamplesSetupTest {

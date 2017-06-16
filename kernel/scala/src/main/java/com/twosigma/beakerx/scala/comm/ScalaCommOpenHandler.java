@@ -18,11 +18,11 @@ package com.twosigma.beakerx.scala.comm;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.jupyter.comm.KernelControlCommandListHandler;
-import com.twosigma.beakerx.jupyter.comm.KernelControlInterrupt;
-import com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler;
-import com.twosigma.beakerx.jupyter.comm.TargetNamesEnum;
-import com.twosigma.beakerx.jupyter.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.comm.KernelControlCommandListHandler;
+import com.twosigma.beakerx.kernel.comm.KernelControlInterrupt;
+import com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler;
+import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
+import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 
 public class ScalaCommOpenHandler extends CommOpenHandler{
 

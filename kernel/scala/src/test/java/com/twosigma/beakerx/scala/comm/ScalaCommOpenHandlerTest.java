@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.scala.comm;
 
-import com.twosigma.beakerx.jupyter.comm.TargetNamesEnum;
+import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
 import com.twosigma.beakerx.scala.ScalaKernelMock;
 import com.twosigma.beakerx.handler.Handler;

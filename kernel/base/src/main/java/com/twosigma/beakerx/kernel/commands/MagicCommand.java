@@ -14,13 +14,10 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.jupyter.commands;
+package com.twosigma.beakerx.kernel.commands;
 
-import com.google.common.base.Joiner;
-import com.twosigma.beakerx.jvm.object.OutputCell;
-import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.jupyter.msg.MessageCreator;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.PathToJar;
@@ -30,12 +27,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.twosigma.beakerx.jupyter.commands.MagicCommandFinder.find;
+import static com.twosigma.beakerx.kernel.commands.MagicCommandFinder.find;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;

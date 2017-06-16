@@ -17,8 +17,8 @@ package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jupyter.SearchMessages;
-import com.twosigma.beakerx.jupyter.comm.Comm;
-import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
 import org.junit.Assert;
 
@@ -26,7 +26,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
 import static com.twosigma.beakerx.widgets.Widget.DISPLAY;
 import static com.twosigma.beakerx.widgets.Widget.METHOD;
 import static org.assertj.core.api.Assertions.assertThat;

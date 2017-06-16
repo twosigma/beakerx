@@ -19,7 +19,7 @@ package com.twosigma.beakerx.chart.treemap.util;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.treemap.TreeMap;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import net.sf.jtreemap.swing.DefaultValue;
 import net.sf.jtreemap.swing.TreeMapNode;
 import org.assertj.core.api.Assertions;

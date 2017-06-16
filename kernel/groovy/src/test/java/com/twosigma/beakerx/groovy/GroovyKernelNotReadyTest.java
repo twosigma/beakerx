@@ -17,7 +17,6 @@ package com.twosigma.beakerx.groovy;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
-import com.twosigma.beakerx.groovy.GroovyKernel;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
@@ -31,7 +30,7 @@ import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorManager.THE_KERNEL_IS_NOT_READY;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForErrorAndReturnIdleMessage;
-import static com.twosigma.beakerx.jupyter.msg.MessageCreator.ERROR_MESSAGE;
+import static com.twosigma.beakerx.kernel.msg.MessageCreator.ERROR_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyKernelNotReadyTest {

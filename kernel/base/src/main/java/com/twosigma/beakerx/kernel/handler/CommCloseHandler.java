@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.jupyter.handler;
+package com.twosigma.beakerx.kernel.handler;
 
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.KernelHandler;
@@ -27,9 +27,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.comm.Comm.COMM_ID;
-import static com.twosigma.beakerx.jupyter.comm.Comm.DATA;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_CLOSE;
+import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
+import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 /**

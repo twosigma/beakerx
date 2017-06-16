@@ -18,8 +18,8 @@ package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.groovy.GroovyKernelMock;
-import com.twosigma.beakerx.jupyter.KernelManager;
-import com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler;
+import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler;
 import com.twosigma.beakerx.groovy.GroovyDefaultVariables;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import groovy.lang.Binding;

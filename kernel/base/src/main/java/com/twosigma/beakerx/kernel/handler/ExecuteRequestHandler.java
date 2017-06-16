@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jupyter.handler;
+package com.twosigma.beakerx.kernel.handler;
 
 
-import com.twosigma.beakerx.jupyter.commands.MagicCommand;
-import com.twosigma.beakerx.jupyter.commands.MagicCommandResult;
+import com.twosigma.beakerx.kernel.commands.MagicCommand;
+import com.twosigma.beakerx.kernel.commands.MagicCommandResult;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.KernelHandler;
@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.EXECUTE_INPUT;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
 import static com.twosigma.beakerx.kernel.Code.takeCodeFrom;
 
 /**

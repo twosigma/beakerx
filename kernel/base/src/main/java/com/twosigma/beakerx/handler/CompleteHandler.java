@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMPLETE_REPLY;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMPLETE_REPLY;
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 public class CompleteHandler extends KernelHandler<Message> {

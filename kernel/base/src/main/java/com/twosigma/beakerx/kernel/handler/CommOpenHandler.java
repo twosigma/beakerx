@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.jupyter.handler;
+package com.twosigma.beakerx.kernel.handler;
 
-import com.twosigma.beakerx.jupyter.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Header;
@@ -28,12 +28,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.comm.Comm.COMM_ID;
-import static com.twosigma.beakerx.jupyter.comm.Comm.DATA;
-import static com.twosigma.beakerx.jupyter.comm.Comm.TARGET_MODULE;
-import static com.twosigma.beakerx.jupyter.comm.Comm.TARGET_NAME;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_CLOSE;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
+import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
+import static com.twosigma.beakerx.kernel.comm.Comm.TARGET_MODULE;
+import static com.twosigma.beakerx.kernel.comm.Comm.TARGET_NAME;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import com.twosigma.beakerx.kernel.KernelFunctionality;

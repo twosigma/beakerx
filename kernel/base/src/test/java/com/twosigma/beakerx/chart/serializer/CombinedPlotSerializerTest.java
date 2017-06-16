@@ -26,7 +26,7 @@ import com.twosigma.beakerx.chart.xychart.CombinedPlot;
 import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.chart.xychart.SimpleTimePlot;
 import com.twosigma.beakerx.chart.xychart.XYChart;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
 import org.assertj.core.api.Assertions;
 import org.junit.After;

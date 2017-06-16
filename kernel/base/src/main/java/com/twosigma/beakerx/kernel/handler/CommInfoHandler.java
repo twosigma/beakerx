@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.jupyter.handler;
+package com.twosigma.beakerx.kernel.handler;
 
-import static com.twosigma.beakerx.jupyter.comm.Comm.COMMS;
-import static com.twosigma.beakerx.jupyter.comm.Comm.TARGET_NAME;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_INFO_REPLY;
+import static com.twosigma.beakerx.kernel.comm.Comm.COMMS;
+import static com.twosigma.beakerx.kernel.comm.Comm.TARGET_NAME;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_INFO_REPLY;
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import java.io.Serializable;
@@ -31,7 +31,7 @@ import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beakerx.jupyter.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.Comm;
 
 /**
  * @author konst

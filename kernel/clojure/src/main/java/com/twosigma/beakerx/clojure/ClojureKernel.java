@@ -18,8 +18,7 @@ package com.twosigma.beakerx.clojure;
 import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
 import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
 import com.twosigma.beakerx.evaluator.Evaluator;
-import com.twosigma.beakerx.jupyter.handler.CommOpenHandler;
-import com.twosigma.beakerx.kernel.ConfigurationFile;
+import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.KernelRunner;
@@ -30,7 +29,7 @@ import com.twosigma.beakerx.message.Message;
 
 import java.io.IOException;
 
-import static com.twosigma.beakerx.jupyter.Utils.uuid;
+import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 public class ClojureKernel extends Kernel {
 

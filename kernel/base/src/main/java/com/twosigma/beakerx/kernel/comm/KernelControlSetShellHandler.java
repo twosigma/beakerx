@@ -13,16 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jupyter.comm;
+package com.twosigma.beakerx.kernel.comm;
 
-import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
 import static com.twosigma.beakerx.kernel.KernelParameters.KERNEL_PARAMETERS;
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
-import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.twosigma.beakerx.kernel.KernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,14 +32,18 @@ import com.twosigma.beakerx.message.Message;
 /**
  * @author konst
  */
-public abstract class KernelControlGetDefaultShellHandler extends BaseHandler<Boolean> {
+public class KernelControlSetShellHandler extends BaseHandler<List<String>> {
 
-  public static final String GET_DEFAULT_SHELL = "get_default_shell";
+  public static final String IMPORTS = "imports";
+  public static final String CLASSPATH = "classpath";
+
   public static final String KERNEL_CONTROL_RESPONSE = "kernel_control_response";
+  public static final String RESPONSE_OK = "OK";
+  public static final String RESPONSE_ERROR = "ERROR";
 
-  private static final Logger logger = LoggerFactory.getLogger(KernelControlGetDefaultShellHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(KernelControlSetShellHandler.class);
 
-  public KernelControlGetDefaultShellHandler(KernelFunctionality kernel) {
+  public KernelControlSetShellHandler(KernelFunctionality kernel) {
     super(kernel);
   }
 
@@ -52,30 +56,31 @@ public abstract class KernelControlGetDefaultShellHandler extends BaseHandler<Bo
 
   private void handleMsg(Message message) {
     logger.debug("Handing comm message content");
-    Boolean ok = getValueFromData(message, getHandlerCommand());
-    if (ok != null && ok.booleanValue()) {
-
-      HashMap<String, Object> kernelParameters = new HashMap<>();
-      kernelParameters.put(IMPORTS, getDefaultImports());
-      kernelParameters.put(CLASSPATH, getDefaultClassPath());
-
-      HashMap<String, Object> shell = new HashMap<>();
-      shell.put(KERNEL_PARAMETERS, kernelParameters);
-
-      HashMap<String, Serializable> data = new HashMap<>();
-      data.put(KERNEL_CONTROL_RESPONSE, shell);
-      logger.debug("Response OK");
-      publish(createReplyMessage(message, data));
+    Map<String, List<String>> shell = getData(message);
+    if (shell != null) {
+      boolean ok = handleData(shell);
+      if (ok) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put(KERNEL_CONTROL_RESPONSE, ok ? RESPONSE_OK : RESPONSE_ERROR);
+        publish(createReplyMessage(message, data));
+      }
     }
+  }
+
+  public boolean handleData(Map<String, List<String>> data) {
+    boolean ret = false;
+    if (data.containsKey(KERNEL_PARAMETERS)) {
+      Map<String, Object> beakerxKernelParameters = (Map<String, Object>) data.get(KERNEL_PARAMETERS);
+      kernel.setShellOptions(new KernelParameters(beakerxKernelParameters));
+      ret = true;
+    }
+    return ret;
   }
 
   @Override
   public String getHandlerCommand() {
-    return GET_DEFAULT_SHELL;
+    // in this handler there are 2 commands
+    return null;
   }
-
-  public abstract String[] getDefaultImports();
-
-  public abstract String[] getDefaultClassPath();
 
 }

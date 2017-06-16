@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.easyform;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.widgets.Button;
 import com.twosigma.beakerx.widgets.DatePicker;

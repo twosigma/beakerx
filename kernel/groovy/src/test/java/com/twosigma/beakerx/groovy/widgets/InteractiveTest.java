@@ -19,12 +19,12 @@ package com.twosigma.beakerx.groovy.widgets;
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jupyter.SearchMessages;
-import com.twosigma.beakerx.jupyter.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
-import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
-import com.twosigma.beakerx.jupyter.msg.MessageCreator;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.widgets.DOMWidget;
 import com.twosigma.beakerx.widgets.Widget;
@@ -41,9 +41,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beakerx.jupyter.comm.Comm.COMM_ID;
-import static com.twosigma.beakerx.jupyter.comm.Comm.DATA;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
+import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
+import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
 import static com.twosigma.beakerx.widgets.strings.TextTest.verifyTextField;
 
 public class InteractiveTest {

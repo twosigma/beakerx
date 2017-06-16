@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.jupyter.msg;
+package com.twosigma.beakerx.kernel.msg;
 
 /**
  * Definitions of the strings used as message type values.

@@ -18,7 +18,7 @@ package com.twosigma.beakerx.table;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.Color;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.table.format.ValueStringFormat;
 import com.twosigma.beakerx.table.highlight.ValueHighlighter;
 import org.assertj.core.api.Assertions;

@@ -25,7 +25,7 @@ import com.twosigma.beakerx.chart.xychart.plotitem.ConstantBand;
 import com.twosigma.beakerx.chart.xychart.plotitem.ConstantLine;
 import com.twosigma.beakerx.chart.xychart.plotitem.Line;
 import com.twosigma.beakerx.chart.xychart.plotitem.Text;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
 import org.assertj.core.api.Assertions;
 import org.junit.After;

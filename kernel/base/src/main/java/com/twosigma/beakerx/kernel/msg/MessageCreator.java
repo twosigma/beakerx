@@ -13,16 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jupyter.msg;
+package com.twosigma.beakerx.kernel.msg;
 
-import static com.twosigma.beakerx.jupyter.Utils.timestamp;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.EXECUTE_REPLY;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.EXECUTE_RESULT;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.STATUS;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.STREAM;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.CLEAR_OUTPUT;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.DISPLAY_DATA;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.ERROR;
+import static com.twosigma.beakerx.kernel.Utils.timestamp;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_REPLY;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_RESULT;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.STATUS;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.STREAM;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.CLEAR_OUTPUT;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.ERROR;
 
 import java.io.Serializable;
 import java.util.List;
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import com.twosigma.beakerx.SerializeToString;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus;
-import com.twosigma.beakerx.jupyter.SocketEnum;
+import com.twosigma.beakerx.kernel.SocketEnum;
 
 /**
  * Converts SimpleEvaluationObject to Message

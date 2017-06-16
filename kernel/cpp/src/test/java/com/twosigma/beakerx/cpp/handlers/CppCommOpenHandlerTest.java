@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.cpp.handlers;
 
-import com.twosigma.beakerx.jupyter.comm.TargetNamesEnum;
+import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;

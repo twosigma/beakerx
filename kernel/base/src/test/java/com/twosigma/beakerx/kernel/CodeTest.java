@@ -15,10 +15,10 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.jupyter.commands.MagicCommand;
+import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.jupyter.commands.MagicCommand.CLASSPATH_ADD_JAR;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.CLASSPATH_ADD_JAR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CodeTest {

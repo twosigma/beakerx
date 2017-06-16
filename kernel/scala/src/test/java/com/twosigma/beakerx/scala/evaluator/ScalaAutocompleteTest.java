@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.scala.ScalaKernelMock;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import org.assertj.core.api.Assertions;
@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
 
 public class ScalaAutocompleteTest {
   private static ScalaEvaluator scalaEvaluator;

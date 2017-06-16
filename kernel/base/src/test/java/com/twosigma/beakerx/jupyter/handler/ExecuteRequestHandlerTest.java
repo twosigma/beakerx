@@ -16,10 +16,11 @@
 
 package com.twosigma.beakerx.jupyter.handler;
 
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.EXECUTE_REPLY;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_REPLY;
 import static com.twosigma.beakerx.message.MessageSerializer.parse;
 import static com.twosigma.beakerx.message.MessageSerializer.toJson;
 
+import com.twosigma.beakerx.kernel.handler.ExecuteRequestHandler;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +29,7 @@ import org.junit.Test;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
-import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 

@@ -16,11 +16,10 @@
 package com.twosigma.beakerx.widgets.strings;
 
 import com.twosigma.beakerx.jupyter.SearchMessages;
-import com.twosigma.beakerx.jupyter.comm.Comm;
-import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
 
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
 import org.junit.After;
 import org.junit.Before;
@@ -31,7 +30,7 @@ import java.util.Map;
 
 import java.security.NoSuchAlgorithmException;
 
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
 import static com.twosigma.beakerx.widgets.Widget.MODEL_NAME;
 import static com.twosigma.beakerx.widgets.Widget.MODEL_MODULE;
 import static com.twosigma.beakerx.widgets.Widget.VIEW_NAME;

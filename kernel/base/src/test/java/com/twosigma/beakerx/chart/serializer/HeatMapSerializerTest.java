@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.GradientColor;
 import com.twosigma.beakerx.chart.heatmap.HeatMap;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
 import org.assertj.core.api.Assertions;
 import org.junit.After;

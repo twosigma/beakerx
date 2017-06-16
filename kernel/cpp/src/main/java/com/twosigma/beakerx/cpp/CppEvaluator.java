@@ -59,7 +59,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
-import static com.twosigma.beakerx.jupyter.Utils.uuid;
+import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 public class CppEvaluator extends BaseEvaluator {
 

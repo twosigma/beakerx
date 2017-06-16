@@ -18,7 +18,7 @@ package com.twosigma.beakerx.table.serializer;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.Color;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.table.ClosureTest;
 import com.twosigma.beakerx.table.ColumnType;
 import com.twosigma.beakerx.table.ObservableTableDisplayTest;

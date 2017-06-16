@@ -16,10 +16,9 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.widgets.integers.IntProgress;
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +28,7 @@ import com.twosigma.beakerx.message.Message;
 import java.util.List;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_CLOSE;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyDisplayMsg;

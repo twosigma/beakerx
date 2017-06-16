@@ -17,8 +17,9 @@
 package com.twosigma.beakerx.jupyter.comm;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.KernelManager;
-import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

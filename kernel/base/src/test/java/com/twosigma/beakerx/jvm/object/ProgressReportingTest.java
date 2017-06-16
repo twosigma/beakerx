@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.jvm.object;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

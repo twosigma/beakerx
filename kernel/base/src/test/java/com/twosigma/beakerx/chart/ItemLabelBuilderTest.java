@@ -20,7 +20,7 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.categoryplot.CategoryPlot;
 import com.twosigma.beakerx.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beakerx.chart.categoryplot.plotitem.CategoryGraphics;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
 import org.junit.Before;

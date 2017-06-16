@@ -18,7 +18,7 @@ package com.twosigma.beakerx.jvm.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.CyclingOutputContainerLayoutManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;

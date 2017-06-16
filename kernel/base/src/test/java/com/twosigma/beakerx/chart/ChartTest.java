@@ -22,13 +22,12 @@ import com.twosigma.beakerx.chart.legend.LegendLayout;
 import com.twosigma.beakerx.chart.legend.LegendPosition;
 import com.twosigma.beakerx.chart.serializer.LegendPositionSerializer;
 import com.twosigma.beakerx.chart.xychart.XYChart;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.widgets.chart.BeakerxPlot;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;

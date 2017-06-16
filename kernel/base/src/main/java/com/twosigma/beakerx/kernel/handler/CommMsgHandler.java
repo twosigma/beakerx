@@ -13,10 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jupyter.handler;
+package com.twosigma.beakerx.kernel.handler;
 
-import com.twosigma.beakerx.jupyter.comm.Comm;
-import com.twosigma.beakerx.jupyter.msg.MessageCreator;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.message.Message;
@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.comm.Comm.COMM_ID;
+import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 public class CommMsgHandler extends KernelHandler<Message> {

@@ -25,7 +25,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeakerxWidgetTest {

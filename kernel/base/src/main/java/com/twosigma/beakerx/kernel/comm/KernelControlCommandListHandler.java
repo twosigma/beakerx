@@ -13,33 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jupyter.comm;
+package com.twosigma.beakerx.kernel.comm;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
 
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
-/**
- * @author konst
- */
-public class KernelControlInterrupt extends BaseHandler<Boolean> {
+public class KernelControlCommandListHandler extends BaseHandler<Boolean> {
 
-  public static final String KERNEL_INTERRUPT = "kernel_interrupt";
+  private static final Logger logger = LoggerFactory.getLogger(KernelControlCommandListHandler.class);
+
+  public static final String GET_KERNEL_CONTROL_COMMAND_LIST = "get_kernel_control_command_list";
   public static final String KERNEL_CONTROL_RESPONSE = "kernel_control_response";
-  public static final String TRUE = "true";
-  public static final String FALSE = "false";
 
-  private static final Logger logger = LoggerFactory.getLogger(KernelControlInterrupt.class);
-
-  public KernelControlInterrupt(KernelFunctionality kernel) {
+  public KernelControlCommandListHandler(KernelFunctionality kernel) {
     super(kernel);
   }
 
@@ -54,24 +50,25 @@ public class KernelControlInterrupt extends BaseHandler<Boolean> {
     logger.debug("Handing comm message content");
     Boolean value = getValueFromData(message, getHandlerCommand());
     if (value != null && value.booleanValue()) {
-      boolean ok = Kernel.isWindows();
-      if (ok) {
-        kernel.cancelExecution();
-      } else {
-        logger.debug("Cell execution interrupt not performed, done by SIGINT");
-      }
       HashMap<String, Serializable> data = new HashMap<>();
-      HashMap<String, String> body = new HashMap<>();
-      body.put(KERNEL_INTERRUPT, ok ? TRUE : FALSE);
-      data.put(KERNEL_CONTROL_RESPONSE, body);
-      logger.info("Response " + ok);
+      data.put(KERNEL_CONTROL_RESPONSE, getCommKernelControlCommandList());
       publish(createReplyMessage(message, data));
     }
   }
 
+  protected String[] getCommKernelControlCommandList() {
+    List<String> ret = new ArrayList<>();
+    ret.add(GET_KERNEL_CONTROL_COMMAND_LIST);
+    ret.add(KernelControlGetDefaultShellHandler.GET_DEFAULT_SHELL);
+    ret.add(KernelControlInterrupt.KERNEL_INTERRUPT);
+    ret.add(KernelControlSetShellHandler.CLASSPATH);
+    ret.add(KernelControlSetShellHandler.IMPORTS);
+    return ret.toArray(new String[ret.size()]);
+  }
+
   @Override
   public String getHandlerCommand() {
-    return KERNEL_INTERRUPT;
+    return GET_KERNEL_CONTROL_COMMAND_LIST;
   }
 
 }

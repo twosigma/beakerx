@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.scala;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
-import com.twosigma.beakerx.jupyter.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
@@ -32,8 +32,8 @@ import java.util.Optional;
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
-import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScalaKernelTest {

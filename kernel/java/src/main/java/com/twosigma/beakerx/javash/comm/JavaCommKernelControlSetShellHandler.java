@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.javash.comm;
 
 import com.twosigma.beakerx.javash.JavaDefaultVariables;
-import com.twosigma.beakerx.jupyter.comm.KernelControlGetDefaultShellHandler;
+import com.twosigma.beakerx.kernel.comm.KernelControlGetDefaultShellHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 
 public class JavaCommKernelControlSetShellHandler extends KernelControlGetDefaultShellHandler{

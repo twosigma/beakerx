@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.IS_COMPLETE_REPLY;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.IS_COMPLETE_REPLY;
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 public class IsCompleteRequestHandler extends KernelHandler<Message> {

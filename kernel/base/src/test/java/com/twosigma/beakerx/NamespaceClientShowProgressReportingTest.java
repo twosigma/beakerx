@@ -17,7 +17,7 @@ package com.twosigma.beakerx;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.evaluator.InternalVariable;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.junit.After;
 import org.junit.Before;

@@ -17,7 +17,8 @@
 package com.twosigma.beakerx.jupyter.handler;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import com.twosigma.beakerx.handler.Handler;
@@ -26,10 +27,10 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.comm.Comm.COMM_ID;
-import static com.twosigma.beakerx.jupyter.comm.Comm.DATA;
-import static com.twosigma.beakerx.jupyter.comm.Comm.TARGET_MODULE;
-import static com.twosigma.beakerx.jupyter.comm.Comm.TARGET_NAME;
+import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
+import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
+import static com.twosigma.beakerx.kernel.comm.Comm.TARGET_MODULE;
+import static com.twosigma.beakerx.kernel.comm.Comm.TARGET_NAME;
 
 public class CommOpenHandlerTest {
 

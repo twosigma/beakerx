@@ -47,8 +47,8 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
 
 public class JavaEvaluator extends BaseEvaluator {
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";

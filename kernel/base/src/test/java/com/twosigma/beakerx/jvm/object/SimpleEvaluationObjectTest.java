@@ -18,7 +18,7 @@ package com.twosigma.beakerx.jvm.object;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.ObserverObjectTest;
 import com.twosigma.beakerx.jvm.threads.BeakerOutputHandler;
 import org.assertj.core.api.Assertions;

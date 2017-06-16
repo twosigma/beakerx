@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.sql.handlers;
 
-import com.twosigma.beakerx.jupyter.comm.KernelControlGetDefaultShellHandler;
+import com.twosigma.beakerx.kernel.comm.KernelControlGetDefaultShellHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 
 public class SQLCommKernelControlSetShellHandler extends KernelControlGetDefaultShellHandler {

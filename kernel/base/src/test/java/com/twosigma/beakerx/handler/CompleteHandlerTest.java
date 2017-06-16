@@ -28,9 +28,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import com.twosigma.beakerx.handler.CompleteHandler;
 
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMPLETE_REPLY;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMPLETE_REPLY;
 
 public class CompleteHandlerTest {
 

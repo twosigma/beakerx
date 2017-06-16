@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx;
 
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.KERNEL_INFO_REPLY;
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import com.google.common.collect.Lists;

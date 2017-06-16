@@ -20,7 +20,7 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.xychart.XYChart;
 import com.twosigma.beakerx.fileloader.CsvPlotReader;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.serialization.DateSerializer;
 import com.twosigma.beakerx.table.format.TableDisplayStringFormat;
 import com.twosigma.beakerx.table.highlight.HeatmapHighlighter;

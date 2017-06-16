@@ -17,8 +17,8 @@ package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.SerializeToString;
 import com.twosigma.beakerx.evaluator.InternalVariable;
-import com.twosigma.beakerx.jupyter.KernelManager;
-import com.twosigma.beakerx.jupyter.msg.MessageCreator;
+import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.table.ContextMenuAction;

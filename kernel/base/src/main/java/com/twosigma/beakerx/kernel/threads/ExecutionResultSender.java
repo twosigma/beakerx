@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jupyter.threads;
+package com.twosigma.beakerx.kernel.threads;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -24,9 +24,9 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beakerx.jupyter.msg.MessageCreator;
-import com.twosigma.beakerx.jupyter.msg.MessageHolder;
-import com.twosigma.beakerx.jupyter.SocketEnum;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import com.twosigma.beakerx.kernel.msg.MessageHolder;
+import com.twosigma.beakerx.kernel.SocketEnum;
 
 public class ExecutionResultSender implements Observer {
 

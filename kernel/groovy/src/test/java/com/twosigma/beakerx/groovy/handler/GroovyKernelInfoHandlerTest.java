@@ -29,7 +29,7 @@ import org.junit.Test;
 import java.io.Serializable;
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.KERNEL_INFO_REPLY;
 
 public class GroovyKernelInfoHandlerTest {
 

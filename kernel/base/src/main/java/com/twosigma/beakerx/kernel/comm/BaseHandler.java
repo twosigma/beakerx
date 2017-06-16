@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jupyter.comm;
+package com.twosigma.beakerx.kernel.comm;
 
-import static com.twosigma.beakerx.jupyter.comm.Comm.COMM_ID;
-import static com.twosigma.beakerx.jupyter.comm.Comm.DATA;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_MSG;
+import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
+import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 
 import java.io.Serializable;
 import java.util.HashMap;

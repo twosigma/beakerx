@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.cpp.handlers;
 
 import com.twosigma.beakerx.cpp.CppDefaultVariables;
-import com.twosigma.beakerx.jupyter.comm.KernelControlGetDefaultShellHandler;
+import com.twosigma.beakerx.kernel.comm.KernelControlGetDefaultShellHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 
 public class CppCommKernelControlSetShellHandler extends KernelControlGetDefaultShellHandler {

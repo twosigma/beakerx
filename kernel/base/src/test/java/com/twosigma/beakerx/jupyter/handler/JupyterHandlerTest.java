@@ -17,12 +17,16 @@
 package com.twosigma.beakerx.jupyter.handler;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.comm.Comm;
-import com.twosigma.beakerx.jupyter.comm.KernelControlGetDefaultShellHandler;
-import com.twosigma.beakerx.jupyter.comm.KernelControlSetShellHandler;
-import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
-import com.twosigma.beakerx.jupyter.msg.MessageCreator;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.KernelControlGetDefaultShellHandler;
+import com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.handler.CommCloseHandler;
+import com.twosigma.beakerx.kernel.handler.CommInfoHandler;
+import com.twosigma.beakerx.kernel.handler.CommMsgHandler;
+import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -39,11 +43,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.comm.Comm.COMMS;
-import static com.twosigma.beakerx.jupyter.comm.Comm.COMM_ID;
-import static com.twosigma.beakerx.jupyter.comm.Comm.DATA;
-import static com.twosigma.beakerx.jupyter.comm.Comm.TARGET_MODULE;
-import static com.twosigma.beakerx.jupyter.comm.Comm.TARGET_NAME;
+import static com.twosigma.beakerx.kernel.comm.Comm.COMMS;
+import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
+import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
+import static com.twosigma.beakerx.kernel.comm.Comm.TARGET_MODULE;
+import static com.twosigma.beakerx.kernel.comm.Comm.TARGET_NAME;
 
 public class JupyterHandlerTest {
 

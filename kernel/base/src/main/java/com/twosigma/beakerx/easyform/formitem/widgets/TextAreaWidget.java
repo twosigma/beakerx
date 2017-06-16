@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.formitem.TextArea;
-import com.twosigma.beakerx.jupyter.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.widgets.CommFunctionality;
 import com.twosigma.beakerx.widgets.DOMWidget;
 import com.twosigma.beakerx.widgets.strings.Textarea;

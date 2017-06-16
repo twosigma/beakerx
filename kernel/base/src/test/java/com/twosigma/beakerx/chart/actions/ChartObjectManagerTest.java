@@ -19,7 +19,7 @@ package com.twosigma.beakerx.chart.actions;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.Chart;
 import com.twosigma.beakerx.chart.xychart.Plot;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

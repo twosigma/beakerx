@@ -18,9 +18,8 @@ package com.twosigma.beakerx.sql;
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.table.TableDisplay;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 
  import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
- import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static com.twosigma.beakerx.sql.SQLKernelParameters.DATASOURCES;
 import static com.twosigma.beakerx.sql.SQLKernelParameters.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;

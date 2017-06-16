@@ -19,7 +19,7 @@ package com.twosigma.beakerx.jvm.serialization;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.OutputContainerCell;
 import com.twosigma.beakerx.jvm.object.SimpleLayoutManager;
 import org.assertj.core.api.Assertions;

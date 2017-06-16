@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.SerializeToString;
-import com.twosigma.beakerx.jupyter.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ import com.twosigma.beakerx.message.Message;
 
 import java.util.Map;
 
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widgets.Widget.DISPLAY;
 import static org.assertj.core.api.Assertions.assertThat;

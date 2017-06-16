@@ -13,12 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jupyter.comm;
+package com.twosigma.beakerx.kernel.comm;
 
 import com.twosigma.beakerx.evaluator.InternalVariable;
-import com.twosigma.beakerx.jupyter.KernelManager;
-import com.twosigma.beakerx.jupyter.Utils;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.Utils;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Header;
@@ -32,9 +31,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_CLOSE;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_MSG;
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
 
 
 public class Comm {

@@ -16,21 +16,16 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.formitem.RadioButtonComponent;
-import com.twosigma.beakerx.jupyter.comm.Comm;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.widgets.CommFunctionality;
 import com.twosigma.beakerx.widgets.DOMWidget;
 import com.twosigma.beakerx.widgets.selections.RadioButtons;
-import com.twosigma.beakerx.widgets.box.Box;
 import com.twosigma.beakerx.widgets.box.HBox;
-import com.twosigma.beakerx.widgets.box.VBox;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
-import java.util.List;
-
-import static java.util.Arrays.asList;
 
 public class RadioButtonComponentWidget extends RadioButtonComponent implements CommFunctionality, EasyFormWidget {
 

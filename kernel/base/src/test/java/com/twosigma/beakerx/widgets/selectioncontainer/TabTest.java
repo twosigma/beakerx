@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.widgets.selectioncontainer;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.jupyter.KernelManager;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.widgets.Widget;
 import com.twosigma.beakerx.widgets.integers.IntSlider;
 import com.twosigma.beakerx.widgets.strings.Text;

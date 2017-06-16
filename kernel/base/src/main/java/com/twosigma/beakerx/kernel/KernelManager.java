@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.jupyter;
+package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 

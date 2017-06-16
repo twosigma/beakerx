@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.groovy;
+package com.twosigma.beakerx.groovy.kernel;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
 
@@ -33,9 +33,9 @@ import java.io.IOException;
 
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
-public class GroovyKernel extends Kernel {
+public class Groovy extends Kernel {
 
-  public GroovyKernel(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+  public Groovy(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
   }
 
@@ -53,7 +53,7 @@ public class GroovyKernel extends Kernel {
     KernelRunner.run(() -> {
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-      return new GroovyKernel(id, new GroovyEvaluator(id, id), kernelSocketsFactory);
+      return new Groovy(id, new GroovyEvaluator(id, id), kernelSocketsFactory);
     });
   }
 

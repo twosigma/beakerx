@@ -20,7 +20,7 @@ apply plugin: 'maven-publish'
 def final kernelIdName = 'groovy'
 def final toReplace = '__PATH__'
 
-mainClassName = 'com.twosigma.beakerx.groovy.GroovyKernel'
+mainClassName = 'com.twosigma.beakerx.groovy.kernel.Groovy'
 
 configurations {
   antlr

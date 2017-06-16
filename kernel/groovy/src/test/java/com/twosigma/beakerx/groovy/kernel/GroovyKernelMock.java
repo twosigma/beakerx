@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.groovy;
+package com.twosigma.beakerx.groovy.kernel;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.Evaluator;

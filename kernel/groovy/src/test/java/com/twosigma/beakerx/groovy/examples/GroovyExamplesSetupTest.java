@@ -17,9 +17,9 @@ package com.twosigma.beakerx.groovy.examples;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
+import com.twosigma.beakerx.groovy.kernel.GroovyDefaultVariables;
+import com.twosigma.beakerx.groovy.kernel.Groovy;
 import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.groovy.GroovyDefaultVariables;
-import com.twosigma.beakerx.groovy.GroovyKernel;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 
 public abstract class GroovyExamplesSetupTest {
 
-  protected static GroovyKernel kernel;
+  protected static Groovy kernel;
   protected static KernelSocketsServiceTest kernelSocketsService;
 
   @BeforeClass
@@ -45,7 +45,7 @@ public abstract class GroovyExamplesSetupTest {
     String sessionId = "sessionIdWidget";
     GroovyEvaluator evaluator = new GroovyEvaluator(sessionId, sessionId);
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new GroovyKernel(sessionId, evaluator, kernelSocketsService);
+    kernel = new Groovy(sessionId, evaluator, kernelSocketsService);
     kernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();

@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.groovy.comm;
 
-import com.twosigma.beakerx.groovy.GroovyKernelMock;
+import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.jupyter.comm.CommKernelControlGetDefaultShellHandlerTest;
 import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;

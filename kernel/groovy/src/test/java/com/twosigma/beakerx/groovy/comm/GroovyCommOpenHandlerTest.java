@@ -16,9 +16,9 @@
 
 package com.twosigma.beakerx.groovy.comm;
 
-import com.twosigma.beakerx.groovy.GroovyKernelMock;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
+import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;

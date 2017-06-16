@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.groovy;
+package com.twosigma.beakerx.groovy.kernel;
 
 import com.twosigma.beakerx.DefaultJVMVariables;
 

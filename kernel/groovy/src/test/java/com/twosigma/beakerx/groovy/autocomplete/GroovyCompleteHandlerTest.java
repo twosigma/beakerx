@@ -16,8 +16,8 @@
 
 package com.twosigma.beakerx.groovy.autocomplete;
 
-import com.twosigma.beakerx.groovy.GroovyKernelMock;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
+import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.handler.CompleteHandler;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;

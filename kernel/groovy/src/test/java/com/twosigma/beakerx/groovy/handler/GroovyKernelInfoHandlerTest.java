@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.groovy.handler;
 
-import com.twosigma.beakerx.groovy.GroovyKernelMock;
+import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.message.MessageTest;

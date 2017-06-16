@@ -16,10 +16,10 @@
 
 package com.twosigma.beakerx.javash.comm;
 
-import com.twosigma.beakerx.javash.JavaKernelMock;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
 import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.javash.kernel.JavaKernelMock;
 import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;

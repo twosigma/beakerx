@@ -13,11 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.clojure;
+package com.twosigma.beakerx.javash.kernel;
 
-import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
-import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
+import static com.twosigma.beakerx.kernel.Utils.uuid;
+
+import java.io.IOException;
+
 import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.javash.comm.JavaCommOpenHandler;
+import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
+import com.twosigma.beakerx.javash.handler.JavaKernelInfoHandler;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
@@ -27,31 +32,30 @@ import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.message.Message;
 
-import java.io.IOException;
 
-import static com.twosigma.beakerx.kernel.Utils.uuid;
+public class Java extends Kernel {
 
-public class ClojureKernel extends Kernel {
-
-  public ClojureKernel(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
-    super(sessionId, evaluator, kernelSocketsFactory);
+  public Java(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+    super(id, evaluator, kernelSocketsFactory);
   }
 
   @Override
   public CommOpenHandler getCommOpenHandler(Kernel kernel) {
-    return new ClojureCommOpenHandler(kernel);
+    return new JavaCommOpenHandler(kernel);
   }
 
   @Override
   public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
-    return new ClojureKernelInfoHandler(kernel);
+    return new JavaKernelInfoHandler(kernel);
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
+      JavaEvaluator e = new JavaEvaluator(id, id);
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-      return new ClojureKernel(id, new ClojureEvaluator(id, id), kernelSocketsFactory);
+      return new Java(id, e, kernelSocketsFactory);
     });
   }
+
 }

@@ -13,13 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.clojure;
 
-import com.twosigma.beakerx.DefaultJVMVariables;
+package com.twosigma.beakerx.javash.kernel;
 
-public class ClojureDefaultVariables extends DefaultJVMVariables {
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.Evaluator;
 
-  public ClojureDefaultVariables() {
+public class JavaKernelMock extends KernelTest {
+
+  public JavaKernelMock() {
+    this("JavaKernelTestId1");
   }
 
+  public JavaKernelMock(String id) {
+    super(id);
+  }
+
+  public JavaKernelMock(String id, Evaluator evaluator) {
+    super(id, evaluator);
+  }
 }

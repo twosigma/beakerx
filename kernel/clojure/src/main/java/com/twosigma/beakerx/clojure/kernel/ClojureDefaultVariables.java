@@ -13,15 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.javash;
+package com.twosigma.beakerx.clojure.kernel;
 
 import com.twosigma.beakerx.DefaultJVMVariables;
 
-/**
- * 
- * @author konst
- *
- */
-public class JavaDefaultVariables extends DefaultJVMVariables {
-  
+public class ClojureDefaultVariables extends DefaultJVMVariables {
+
+  public ClojureDefaultVariables() {
+  }
+
 }

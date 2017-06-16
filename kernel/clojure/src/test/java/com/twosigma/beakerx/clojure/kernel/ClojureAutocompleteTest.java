@@ -14,9 +14,10 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.clojure;
+package com.twosigma.beakerx.clojure.kernel;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.clojure.kernel.ClojureEvaluator;
 import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;

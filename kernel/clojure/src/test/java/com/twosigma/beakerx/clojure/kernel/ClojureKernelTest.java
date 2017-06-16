@@ -13,9 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.clojure;
+package com.twosigma.beakerx.clojure.kernel;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.clojure.kernel.ClojureEvaluator;
+import com.twosigma.beakerx.clojure.kernel.Clojure;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
@@ -35,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClojureKernelTest {
 
-  private ClojureKernel kernel;
+  private Clojure kernel;
 
   private KernelSocketsServiceTest kernelSocketsService;
 
@@ -44,7 +46,7 @@ public class ClojureKernelTest {
     String sessionId = "sessionId1";
     ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId);
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new ClojureKernel(sessionId, evaluator, kernelSocketsService);
+    kernel = new Clojure(sessionId, evaluator, kernelSocketsService);
     kernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();

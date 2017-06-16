@@ -16,9 +16,9 @@
 
 package com.twosigma.beakerx.clojure.handlers;
 
-import com.twosigma.beakerx.clojure.ClojureKernelMock;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
+import com.twosigma.beakerx.clojure.kernel.ClojureKernelMock;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;

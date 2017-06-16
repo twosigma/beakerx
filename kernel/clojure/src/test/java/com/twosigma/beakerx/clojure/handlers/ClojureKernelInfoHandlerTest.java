@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.clojure.handlers;
 
-import com.twosigma.beakerx.clojure.ClojureKernelMock;
+import com.twosigma.beakerx.clojure.kernel.ClojureKernelMock;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.message.MessageTest;

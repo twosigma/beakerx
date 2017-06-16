@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.scala;
+package com.twosigma.beakerx.scala.kernel;
 
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
@@ -33,9 +33,9 @@ import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.message.Message;
 
 
-public class ScalaKernel extends Kernel {
+public class Scala extends Kernel {
 
-  public ScalaKernel(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+  public Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
   }
 
@@ -56,7 +56,7 @@ public class ScalaKernel extends Kernel {
       se.initialize(id, id);
       //js.setupAutoTranslation(); -- uncomment
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
-      return new ScalaKernel(id, se, kernelSocketsFactory);
+      return new Scala(id, se, kernelSocketsFactory);
     });
   }
 }

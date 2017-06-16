@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.scala.comm;
 
 import com.twosigma.beakerx.kernel.comm.KernelControlGetDefaultShellHandler;
-import com.twosigma.beakerx.scala.ScalaDefaultVariables;
+import com.twosigma.beakerx.scala.kernel.ScalaDefaultVariables;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 
 public class ScalaCommKernelControlSetShellHandler extends KernelControlGetDefaultShellHandler{

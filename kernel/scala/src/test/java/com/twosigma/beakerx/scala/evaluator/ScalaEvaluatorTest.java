@@ -20,8 +20,9 @@ import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.scala.ScalaKernelMock;
 import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
+
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

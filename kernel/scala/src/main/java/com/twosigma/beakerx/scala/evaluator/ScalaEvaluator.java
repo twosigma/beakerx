@@ -373,7 +373,7 @@ public class ScalaEvaluator extends BaseEvaluator {
       NamespaceClient.getBeaker(sessionId);
 
       String r = shell.evaluate2(
-              "import com.twosigma.beaker.NamespaceClient\n" +
+              "import com.twosigma.beakerx.NamespaceClient\n" +
                       "import language.dynamics\n" +
                       "var _beaker = NamespaceClient.getBeaker(\"" + sessionId + "\")\n" +
                       "object beaker extends Dynamic {\n" +
@@ -446,7 +446,7 @@ public class ScalaEvaluator extends BaseEvaluator {
     NamespaceClient.getBeaker(sessionId);
 
     String r = acshell.evaluate2(
-            "import com.twosigma.beaker.NamespaceClient\n" +
+            "import com.twosigma.beakerx.NamespaceClient\n" +
                     "import language.dynamics\n" +
                     "var _beaker = NamespaceClient.getBeaker(\"" + sessionId + "\")\n" +
                     "object beaker extends Dynamic {\n" +

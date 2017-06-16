@@ -13,11 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.scala;
+package com.twosigma.beakerx.scala.kernel;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
+import com.twosigma.beakerx.scala.kernel.Scala;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
@@ -38,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScalaKernelTest {
 
-  private ScalaKernel kernel;
+  private Scala kernel;
   private KernelSocketsServiceTest kernelSocketsService;
 
   @Before
@@ -47,7 +48,7 @@ public class ScalaKernelTest {
     ScalaEvaluator evaluator = new ScalaEvaluator(null);
     evaluator.initialize(sessionId, sessionId);
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new ScalaKernel(sessionId, evaluator, kernelSocketsService);
+    kernel = new Scala(sessionId, evaluator, kernelSocketsService);
     kernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();

@@ -16,10 +16,11 @@
 
 package com.twosigma.beakerx.scala.handler;
 
-import com.twosigma.beakerx.scala.ScalaKernelMock;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.message.MessageTest;
+import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
+
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

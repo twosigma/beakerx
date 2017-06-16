@@ -34,9 +34,9 @@ import java.util.Map;
 import com.twosigma.beakerx.jvm.object.ConsoleOutput;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

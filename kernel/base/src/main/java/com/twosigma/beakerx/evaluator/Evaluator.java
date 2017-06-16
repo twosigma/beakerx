@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import com.twosigma.jupyter.Classpath;
-import com.twosigma.jupyter.PathToJar;
-import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

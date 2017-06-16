@@ -16,23 +16,24 @@
 
 package com.twosigma.beakerx.jupyter.handler;
 
-import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.evaluator.EvaluatorTest;
-import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
-import com.twosigma.jupyter.message.Header;
+import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.EXECUTE_REPLY;
+import static com.twosigma.beakerx.message.MessageSerializer.parse;
+import static com.twosigma.beakerx.message.MessageSerializer.toJson;
+
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import com.twosigma.jupyter.message.Message;
+
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.EXECUTE_REPLY;
-import static com.twosigma.jupyter.message.MessageSerializer.parse;
-import static com.twosigma.jupyter.message.MessageSerializer.toJson;
 
 public class ExecuteRequestHandlerTest {
 

@@ -18,13 +18,13 @@ package com.twosigma.beakerx.jupyter.commands;
 
 import com.google.common.base.Joiner;
 import com.twosigma.beakerx.jvm.object.OutputCell;
-import com.twosigma.jupyter.Classpath;
-import com.twosigma.jupyter.Code;
+import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.jupyter.msg.MessageCreator;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.PathToJar;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.message.Message;
 
 import java.io.BufferedReader;
 import java.io.IOException;

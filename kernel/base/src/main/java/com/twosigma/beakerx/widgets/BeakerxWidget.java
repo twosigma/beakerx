@@ -22,7 +22,7 @@ import com.twosigma.beakerx.jupyter.msg.MessageCreator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.table.ContextMenuAction;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;

@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;

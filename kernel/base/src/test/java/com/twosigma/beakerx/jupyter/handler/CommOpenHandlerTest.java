@@ -20,8 +20,8 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import com.twosigma.jupyter.handler.Handler;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 
 import java.util.Map;

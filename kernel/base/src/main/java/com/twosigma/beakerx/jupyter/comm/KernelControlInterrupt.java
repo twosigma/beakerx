@@ -21,11 +21,11 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.jupyter.Kernel;
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.Kernel;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.message.Message;
 
-import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
+import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 /**
  * @author konst

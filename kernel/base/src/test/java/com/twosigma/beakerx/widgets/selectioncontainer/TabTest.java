@@ -23,7 +23,7 @@ import com.twosigma.beakerx.widgets.strings.Text;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.List;
 import java.util.Map;

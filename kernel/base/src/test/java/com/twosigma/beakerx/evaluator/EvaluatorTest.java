@@ -18,9 +18,9 @@ package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.jupyter.Classpath;
-import com.twosigma.jupyter.KernelParameters;
-import com.twosigma.jupyter.PathToJar;
+import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.PathToJar;
 
 import java.io.IOException;
 import java.util.ArrayList;

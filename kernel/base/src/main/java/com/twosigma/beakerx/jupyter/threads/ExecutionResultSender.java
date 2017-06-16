@@ -20,7 +20,7 @@ import java.util.Observer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

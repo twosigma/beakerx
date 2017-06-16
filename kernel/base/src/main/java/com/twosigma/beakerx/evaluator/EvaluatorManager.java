@@ -17,11 +17,11 @@ package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.jupyter.Classpath;
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.KernelParameters;
-import com.twosigma.jupyter.PathToJar;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,8 +16,8 @@
 package com.twosigma.beakerx;
 
 import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
 import java.util.HashMap;

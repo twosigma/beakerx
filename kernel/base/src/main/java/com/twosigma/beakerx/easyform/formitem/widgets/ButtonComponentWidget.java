@@ -20,7 +20,7 @@ import com.twosigma.beakerx.jupyter.comm.Comm;
 import com.twosigma.beakerx.widgets.Button;
 import com.twosigma.beakerx.widgets.CommFunctionality;
 import com.twosigma.beakerx.widgets.DOMWidget;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.HashMap;
 

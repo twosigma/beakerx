@@ -19,7 +19,7 @@ import com.twosigma.beakerx.widgets.BeakerxWidget;
 import com.twosigma.beakerx.widgets.BeakerxWidgetTestRunner;
 import com.twosigma.beakerx.widgets.TestWidgetUtils;
 import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 
 import java.util.List;

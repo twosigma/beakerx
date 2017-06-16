@@ -21,7 +21,7 @@ import com.twosigma.beakerx.widgets.integers.IntSlider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 
 import static com.twosigma.beakerx.jupyter.comm.Comm.COMM_ID;
 import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_MSG;

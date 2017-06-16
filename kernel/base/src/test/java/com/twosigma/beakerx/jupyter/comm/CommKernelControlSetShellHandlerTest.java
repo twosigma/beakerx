@@ -17,10 +17,10 @@
 package com.twosigma.beakerx.jupyter.comm;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 
 import java.io.Serializable;

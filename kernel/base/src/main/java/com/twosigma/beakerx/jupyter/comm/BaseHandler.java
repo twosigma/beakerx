@@ -26,10 +26,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
 
 public abstract class BaseHandler<T> extends KernelHandler<Message> {
 

@@ -18,7 +18,7 @@ package com.twosigma.beakerx.jupyter.comm;
 
 import com.twosigma.beakerx.KernelTest;
 import org.junit.Before;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 
 import java.io.Serializable;
@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.twosigma.beakerx.jupyter.comm.KernelControlGetDefaultShellHandler.KERNEL_CONTROL_RESPONSE;
-import static com.twosigma.jupyter.KernelParameters.KERNEL_PARAMETERS;
+import static com.twosigma.beakerx.kernel.KernelParameters.KERNEL_PARAMETERS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommKernelControlGetDefaultShellHandlerTest {

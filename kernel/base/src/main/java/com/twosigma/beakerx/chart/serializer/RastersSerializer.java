@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.twosigma.beakerx.chart.xychart.plotitem.Rasters;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

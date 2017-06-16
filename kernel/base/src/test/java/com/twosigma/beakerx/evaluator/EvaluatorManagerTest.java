@@ -18,8 +18,8 @@ package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.jupyter.KernelParameters;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.message.Message;
 import org.apache.commons.collections.map.HashedMap;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;

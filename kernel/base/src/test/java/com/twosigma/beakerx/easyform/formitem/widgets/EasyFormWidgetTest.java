@@ -18,7 +18,7 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.jupyter.KernelManager;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

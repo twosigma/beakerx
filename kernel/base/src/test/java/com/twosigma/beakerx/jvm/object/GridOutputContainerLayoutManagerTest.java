@@ -22,7 +22,7 @@ import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.widgets.box.GridView;
 import com.twosigma.beakerx.widgets.box.HBox;
 import com.twosigma.beakerx.widgets.integers.IntText;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;

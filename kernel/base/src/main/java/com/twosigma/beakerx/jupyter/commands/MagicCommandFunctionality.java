@@ -16,8 +16,8 @@
 
 package com.twosigma.beakerx.jupyter.commands;
 
-import com.twosigma.jupyter.Code;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.message.Message;
 
 
 public interface MagicCommandFunctionality {

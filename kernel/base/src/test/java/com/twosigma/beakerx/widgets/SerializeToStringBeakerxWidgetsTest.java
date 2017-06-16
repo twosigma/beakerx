@@ -20,7 +20,7 @@ import com.twosigma.beakerx.jupyter.comm.Comm;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.Map;
 

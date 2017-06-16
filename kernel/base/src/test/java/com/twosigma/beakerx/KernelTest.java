@@ -23,12 +23,12 @@ import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
 import com.twosigma.beakerx.jupyter.msg.MessageCreator;
 import com.twosigma.beakerx.jupyter.threads.ExecutionResultSender;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.jupyter.Classpath;
-import com.twosigma.jupyter.KernelParameters;
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.PathToJar;
-import com.twosigma.jupyter.handler.Handler;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -21,15 +21,15 @@ import com.twosigma.beakerx.BeakerCodeCell;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.message.Message;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
+import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 
 public class GetCodeCellsHandler extends BaseHandler<Object> {

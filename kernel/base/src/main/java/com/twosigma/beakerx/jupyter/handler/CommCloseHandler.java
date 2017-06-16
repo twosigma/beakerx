@@ -16,10 +16,10 @@
 
 package com.twosigma.beakerx.jupyter.handler;
 
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ import java.util.Map;
 import static com.twosigma.beakerx.jupyter.comm.Comm.COMM_ID;
 import static com.twosigma.beakerx.jupyter.comm.Comm.DATA;
 import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.COMM_CLOSE;
-import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
+import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 /**
  * @author konst

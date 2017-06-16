@@ -27,8 +27,8 @@ import com.twosigma.beakerx.chart.categoryplot.CategoryPlot;
 import com.twosigma.beakerx.chart.xychart.CombinedPlot;
 import com.twosigma.beakerx.chart.xychart.XYChart;
 import com.twosigma.beakerx.widgets.BeakerxWidget;
-import com.twosigma.jupyter.handler.Handler;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.HashMap;
 import java.util.List;

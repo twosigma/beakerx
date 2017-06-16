@@ -16,12 +16,12 @@
 package com.twosigma.beakerx;
 
 import com.twosigma.MessageAssertions;
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.KernelSockets;
-import com.twosigma.jupyter.KernelSocketsFactory;
-import com.twosigma.jupyter.SocketCloseAction;
-import com.twosigma.jupyter.handler.Handler;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelSockets;
+import com.twosigma.beakerx.kernel.KernelSocketsFactory;
+import com.twosigma.beakerx.kernel.SocketCloseAction;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.List;
 import java.util.Optional;

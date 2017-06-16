@@ -15,19 +15,19 @@
  */
 package com.twosigma.beakerx.jupyter.comm;
 
-import static com.twosigma.jupyter.KernelParameters.KERNEL_PARAMETERS;
-import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
+import static com.twosigma.beakerx.kernel.KernelParameters.KERNEL_PARAMETERS;
+import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.twosigma.jupyter.KernelParameters;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.message.Message;
 
 /**
  * @author konst

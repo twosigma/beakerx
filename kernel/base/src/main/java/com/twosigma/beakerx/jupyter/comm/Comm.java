@@ -19,10 +19,10 @@ import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jupyter.KernelManager;
 import com.twosigma.beakerx.jupyter.Utils;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.Handler;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

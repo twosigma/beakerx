@@ -19,7 +19,7 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.jupyter.comm.Comm;
 import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import org.junit.Assert;
 
 import java.io.Serializable;

@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.jupyter.commands;
 
 import com.twosigma.MessageAssertions;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.List;
 import java.util.Optional;

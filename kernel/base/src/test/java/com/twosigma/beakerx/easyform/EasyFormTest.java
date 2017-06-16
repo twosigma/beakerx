@@ -29,7 +29,7 @@ import com.twosigma.beakerx.widgets.selections.RadioButtons;
 import com.twosigma.beakerx.widgets.selections.SelectMultiple;
 import com.twosigma.beakerx.widgets.strings.Text;
 import com.twosigma.beakerx.widgets.strings.Textarea;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

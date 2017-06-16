@@ -16,8 +16,8 @@
 package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.NamespaceClient;
-import com.twosigma.jupyter.handler.Handler;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
 import java.util.HashMap;

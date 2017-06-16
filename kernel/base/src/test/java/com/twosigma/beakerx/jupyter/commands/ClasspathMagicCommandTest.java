@@ -18,9 +18,9 @@ package com.twosigma.beakerx.jupyter.commands;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-import com.twosigma.jupyter.Code;
-import com.twosigma.jupyter.PathToJar;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 

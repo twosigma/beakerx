@@ -21,7 +21,7 @@ import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
 import com.twosigma.beakerx.jupyter.msg.MessageCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 
 public class CommMsgHandlerTest {

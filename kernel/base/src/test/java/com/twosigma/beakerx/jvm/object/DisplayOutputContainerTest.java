@@ -26,7 +26,7 @@ import com.twosigma.beakerx.widgets.selectioncontainer.Tab;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.Arrays;
 import java.util.List;

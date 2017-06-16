@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.jupyter;
 
-import com.twosigma.jupyter.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
 
 public class KernelManager {
 

@@ -16,13 +16,13 @@
 package com.twosigma.beakerx;
 
 import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.KERNEL_INFO_REPLY;
-import static com.twosigma.jupyter.handler.KernelHandlerWrapper.wrapBusyIdle;
+import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import com.google.common.collect.Lists;
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;

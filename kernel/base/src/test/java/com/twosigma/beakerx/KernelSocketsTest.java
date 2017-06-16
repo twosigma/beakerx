@@ -15,8 +15,8 @@
  */
 package com.twosigma.beakerx;
 
-import com.twosigma.jupyter.KernelSockets;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.KernelSockets;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.ArrayList;
 import java.util.List;

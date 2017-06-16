@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.evaluator;
 
-import com.twosigma.jupyter.PathToJar;
+import com.twosigma.beakerx.kernel.PathToJar;
 
 public abstract class BaseEvaluator implements Evaluator {
 

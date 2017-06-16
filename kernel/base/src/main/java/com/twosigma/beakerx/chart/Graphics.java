@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.twosigma.beakerx.chart.actions.GraphicsActionListener;
 import com.twosigma.beakerx.chart.actions.GraphicsActionObject;
 import com.twosigma.beakerx.widgets.BeakerxWidget;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
 import java.util.HashMap;

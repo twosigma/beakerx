@@ -18,11 +18,11 @@ package com.twosigma.beakerx.jupyter.handler;
 
 import com.twosigma.beakerx.jupyter.commands.MagicCommand;
 import com.twosigma.beakerx.jupyter.commands.MagicCommandResult;
-import com.twosigma.jupyter.Code;
-import com.twosigma.jupyter.KernelFunctionality;
-import com.twosigma.jupyter.handler.KernelHandler;
-import com.twosigma.jupyter.message.Header;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import static com.twosigma.beakerx.jupyter.msg.JupyterMessages.EXECUTE_INPUT;
-import static com.twosigma.jupyter.Code.takeCodeFrom;
+import static com.twosigma.beakerx.kernel.Code.takeCodeFrom;
 
 /**
  * Does the actual work of executing user code.

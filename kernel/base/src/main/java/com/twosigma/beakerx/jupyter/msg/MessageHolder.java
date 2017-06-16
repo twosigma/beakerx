@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.jupyter.msg;
 
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.jupyter.SocketEnum;
 
 public class MessageHolder {

@@ -19,7 +19,7 @@ package com.twosigma.beakerx.evaluator;
 import com.twosigma.beakerx.KernelSocketsTest;
 import com.twosigma.beakerx.jupyter.msg.JupyterMessages;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.jupyter.message.Message;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.Optional;
 

@@ -13,51 +13,44 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.twosigma.beaker.easyform.formitem;
 
-import com.twosigma.beaker.widgets.selections.SingleSelectionWidget;
-import com.twosigma.beaker.widgets.BeakerxWidget;
+import com.twosigma.beaker.easyform.EasyFormComponent;
+import java.util.Collection;
 
-public class ComboBoxComponent extends SingleSelectionWidget {
-
-  public static final String VIEW_NAME_VALUE = "ComboBoxView";
-  public static final String MODEL_NAME_VALUE = "ComboBoxModel";
-  public static final String EDITABLE = "editable";
+public abstract class ComboBoxComponent extends EasyFormComponent {
 
   private Boolean editable;
-
-  public ComboBoxComponent() {
-    super();
-    openComm();
-  }
+  private Collection<String> values;
+  private Integer width;
 
   @Override
-  public String getModelNameValue() {
-    return MODEL_NAME_VALUE;
-  }
-
-  @Override
-  public String getViewNameValue() {
-    return VIEW_NAME_VALUE;
-  }
-
-  @Override
-  public String getModelModuleValue() {
-    return BeakerxWidget.MODEL_MODULE_VALUE;
-  }
-
-  @Override
-  public String getViewModuleValue() {
-    return BeakerxWidget.VIEW_MODULE_VALUE;
+  protected boolean checkValue(final Object value) {
+    return editable || (values != null && values.contains(value));
   }
 
   public void setEditable(final Boolean editable) {
     this.editable = editable;
-    sendUpdate(EDITABLE, editable);
   }
 
   public Boolean getEditable() {
     return editable;
   }
 
+  public void setValues(final Collection<String> values) {
+    this.values = values;
+  }
+
+  public Collection<String> getValues() {
+    return values;
+  }
+
+  public void setWidth(final Integer width) {
+    this.width = width;
+  }
+
+  public Integer getWidth() {
+    return width;
+  }
 }

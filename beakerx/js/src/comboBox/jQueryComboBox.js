@@ -15,7 +15,7 @@
  */
 
 $( function() {
-  $.widget("custom.combobox", {
+  $.widget('custom.combobox', {
     options: {
       change: null,
       disabled: false
@@ -23,8 +23,8 @@ $( function() {
 
     _create: function () {
       this.editable = this.element.attr('easyform-editable') === 'true';
-      this.wrapper = $("<span>")
-        .addClass("easyform-combobox")
+      this.wrapper = $('<span>')
+        .addClass('easyform-combobox')
         .insertAfter(this.element);
 
       this.element.hide();
@@ -33,36 +33,38 @@ $( function() {
     },
 
     _createAutocomplete: function () {
-      var selected = this.element.children(":selected"),
-        value = selected.val() ? selected.text() : "";
+      var selected = this.element.children(':selected');
+      var value = selected.val() ? selected.text() : '';
 
-      this.input = $("<input>")
+      this.input = $('<input>')
         .appendTo(this.wrapper)
         .val(value)
-        .attr("title", "")
-        .addClass("easyform-combobox-input ui-widget ui-widget-content ui-corner-left")
+        .attr('title', '')
+        .addClass('easyform-combobox-input ui-widget ui-widget-content ui-corner-left')
         .autocomplete({
           delay: 150,
           minLength: 0,
-          source: $.proxy(this, "_source")
+          source: $.proxy(this, '_source')
         })
         .tooltip({
-          tooltipClass: "ui-state-highlight"
+          tooltipClass: 'ui-state-highlight'
         });
 
       if (!this.editable) {
-        this.input.attr('readonly', 'true');
-        var input = this.input, wasOpen = false;
+        var input = this.input;
+        var wasOpen = false;
+
         this.input
+          .attr('readonly', 'true')
           .mousedown(function () {
-            wasOpen = input.autocomplete("widget").is(":visible");
+            wasOpen = input.autocomplete('widget').is(':visible');
           })
           .click(function () {
             input.focus();
             if (wasOpen) {
               return;
             }
-            input.autocomplete("search", "");
+            input.autocomplete('search', '');
           });
       }
 
@@ -73,7 +75,7 @@ $( function() {
       this._on(this.input, {
         autocompleteselect: function (event, ui) {
           ui.item.option.selected = true;
-          this._trigger("select", event, {
+          this._trigger('select', event, {
             item: ui.item.option
           });
           if ($.isFunction(this.options.change)) {
@@ -89,50 +91,51 @@ $( function() {
     },
 
     _createShowAllButton: function () {
-      var input = this.input,
-        wasOpen = false;
+      var input = this.input;
+      var wasOpen = false;
 
       //use jquery button fn instead of bootstrap
       //reverts to jquery button fn
       var self = this;
-      var showAllButton = $("<a>")
-        .attr("tabIndex", -1)
-        .attr("title", "Show All Items")
+      var $showAllButton = $('<a>', {
+        tabIndex: -1,
+        title: 'Show All Items'
+      })
         .appendTo(this.wrapper)
         .button({
           icons: {
-            primary: "ui-icon-triangle-1-s"
+            primary: 'ui-icon-triangle-1-s'
           },
           text: false
         })
-        .removeClass("ui-corner-all")
-        .addClass("easyform-combobox-toggle ui-corner-right")
+        .removeClass('ui-corner-all')
+        .addClass('easyform-combobox-toggle ui-corner-right')
         .mousedown(function () {
           if (!self.options.disabled) {
-            wasOpen = input.autocomplete("widget").is(":visible");
+            wasOpen = input.autocomplete('widget').is(':visible');
           }
         })
         .click(function () {
           if (!self.options.disabled) {
             input.focus();
+
             if (wasOpen) {
               return;
             }
-            input.autocomplete("search", "");
+
+            input.autocomplete('search', '');
           }
         });
 
-      if (self.options.disabled) {
-        showAllButton.attr("disabled", "disabled");
-      } else {
-        showAllButton.removeAttr("disabled");
-      }
+      $showAllButton.prop('disabled', self.options.disabled);
     },
 
     _source: function (request, response) {
-      var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
-      response(this.element.children("option").map(function () {
+      var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), 'i');
+
+      response(this.element.children('option').map(function () {
         var text = $(this).text();
+
         if (this.value && ( !request.term || matcher.test(text) ))
           return {
             label: text,

@@ -19,10 +19,9 @@ import org.codehaus.groovy.runtime.MethodClosure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beakerx.widgets.BeakerxWidget;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widgets.InteractiveBase;
 import com.twosigma.beakerx.widgets.ValueWidget;
-import com.twosigma.beakerx.message.Message;
 
 import java.util.ArrayList;
 import java.util.List;

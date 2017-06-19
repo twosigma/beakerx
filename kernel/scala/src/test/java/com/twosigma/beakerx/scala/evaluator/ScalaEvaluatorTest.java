@@ -108,4 +108,17 @@ public class ScalaEvaluatorTest {
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
   }
+
+  @Test
+  public void incompleteInput_shouldBeDetected() throws Exception {
+    //given
+    String code = "1 to 10 map { i => i * 2";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    scalaEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
+    Assertions.assertThat((String)seo.getPayload()).contains("incomplete");
+  }
 }

@@ -69,7 +69,7 @@ public class ComboBox extends SingleSelectionWidget {
 
   @Override
   public void updateValue(Object value) {
-
+    setValue(value);
   }
 
   @Override

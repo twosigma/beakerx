@@ -23,6 +23,8 @@ import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.sql.ConnectionStringBean;
 import com.twosigma.beakerx.sql.ConnectionStringHolder;
 import com.twosigma.beakerx.sql.JDBCClient;
@@ -56,6 +58,7 @@ public class SQLEvaluator extends BaseEvaluator {
   private final String packageId;
 
   private Classpath classPath = new Classpath();
+  private Imports imports = new Imports();
   private Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
   private ConnectionStringHolder defaultConnectionString;
 
@@ -266,8 +269,18 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   @Override
+  public Imports getImports() {
+    return this.imports;
+  }
+
+  @Override
   protected boolean addJar(PathToJar path) {
     return classPath.add(path);
+  }
+
+  @Override
+  protected boolean addImportPath(ImportPath anImport) {
+    return this.imports.add(anImport);
   }
 
   public void setShellUserPassword(String namedConnection, String user, String password) {

@@ -26,6 +26,8 @@ import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +38,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,7 +57,7 @@ public class JavaEvaluator extends BaseEvaluator {
   protected final String sessionId;
   protected final String packageId;
   protected Classpath classPath;
-  protected List<String> imports;
+  protected Imports imports;
   protected String outDir;
   protected ClasspathScanner cps;
   protected JavaAutocomplete jac;
@@ -85,7 +86,7 @@ public class JavaEvaluator extends BaseEvaluator {
     cps = new ClasspathScanner();
     jac = createJavaAutocomplete(cps);
     classPath = new Classpath();
-    imports = new ArrayList<String>();
+    imports = new Imports();
     exit = false;
     updateLoader = false;
     outDir = Evaluator.createJupyterTempFolder().toString();
@@ -131,8 +132,8 @@ public class JavaEvaluator extends BaseEvaluator {
     cps = new ClasspathScanner(cpp);
     jac = createJavaAutocomplete(cps);
 
-    for (String st : imports)
-      jac.addImport(st);
+    for (ImportPath st : imports.getImportPaths())
+      jac.addImport(st.asString());
 
     // signal thread to create loader
     updateLoader = true;
@@ -166,11 +167,11 @@ public class JavaEvaluator extends BaseEvaluator {
     }
 
     if (listOfImports == null || listOfImports.isEmpty()) {
-      imports = new ArrayList<>();
+      imports = new Imports();
     } else {
       for (String line : listOfImports) {
         if (!line.trim().isEmpty()) {
-          imports.add(line);
+          imports.add(new ImportPath(line));
         }
       }
     }
@@ -184,8 +185,18 @@ public class JavaEvaluator extends BaseEvaluator {
   }
 
   @Override
+  public Imports getImports() {
+    return this.imports;
+  }
+
+  @Override
   protected boolean addJar(PathToJar path) {
     return classPath.add(path);
+  }
+
+  @Override
+  protected boolean addImportPath(ImportPath anImport) {
+    return imports.add(anImport);
   }
 
   @Override
@@ -308,9 +319,9 @@ public class JavaEvaluator extends BaseEvaluator {
           javaSourceCode.append(pname);
           javaSourceCode.append(";\n");
 
-          for (String i : imports) {
+          for (ImportPath i : imports.getImportPaths()) {
             javaSourceCode.append("import ");
-            javaSourceCode.append(i);
+            javaSourceCode.append(i.asString());
             javaSourceCode.append(";\n");
           }
 

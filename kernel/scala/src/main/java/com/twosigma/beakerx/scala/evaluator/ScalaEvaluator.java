@@ -33,6 +33,8 @@ import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beakerx.jvm.serialization.ObjectSerializer;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.table.TableDisplay;
 import com.twosigma.beakerx.table.serializer.TableDisplayDeSerializer;
 import com.twosigma.beakerx.kernel.Classpath;
@@ -71,7 +73,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   protected String shellId;
   protected String sessionId;
   protected Classpath classPath;
-  protected List<String> imports;
+  protected Imports imports;
   protected String outDir;
   protected boolean exit;
   protected boolean updateLoader;
@@ -105,7 +107,7 @@ public class ScalaEvaluator extends BaseEvaluator {
     shellId = id;
     sessionId = sId;
     classPath = new Classpath();
-    imports = new ArrayList<String>();
+    imports = new Imports();
     exit = false;
     updateLoader = false;
     currentClassPath = "";
@@ -187,11 +189,11 @@ public class ScalaEvaluator extends BaseEvaluator {
     }
 
     if (listOfImports == null || listOfImports.isEmpty()) {
-      imports = new ArrayList<>();
+      imports = new Imports();
     } else {
       for (String line : listOfImports) {
         if (!line.trim().isEmpty()) {
-          imports.add(line);
+          addImportPath(new ImportPath(line));
         }
       }
     }
@@ -205,8 +207,18 @@ public class ScalaEvaluator extends BaseEvaluator {
   }
 
   @Override
+  public Imports getImports() {
+    return null;
+  }
+
+  @Override
   protected boolean addJar(PathToJar path) {
     return classPath.add(path);
+  }
+
+  @Override
+  protected boolean addImportPath(ImportPath anImport) {
+    return   imports.add(anImport);
   }
 
   @Override
@@ -356,8 +368,8 @@ public class ScalaEvaluator extends BaseEvaluator {
               loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), outDir);
 
       if (!imports.isEmpty()) {
-        for (int i = 0; i < imports.size(); i++) {
-          String imp = imports.get(i).trim();
+        for (int i = 0; i < imports.getImportPaths().size(); i++) {
+          String imp = imports.getImportPaths().get(i).asString().trim();
           imp = adjustImport(imp);
           if (!imp.isEmpty()) {
             logger.debug("importing : {}", imp);
@@ -432,8 +444,8 @@ public class ScalaEvaluator extends BaseEvaluator {
             acloader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), outDir);
 
     if (!imports.isEmpty()) {
-      for (int i = 0; i < imports.size(); i++) {
-        String imp = imports.get(i).trim();
+      for (int i = 0; i < imports.getImportPaths().size(); i++) {
+        String imp = imports.getImportPaths().get(i).asString().trim();
         imp = adjustImport(imp);
         if (!imp.isEmpty()) {
           if (!acshell.addImport(imp))

@@ -26,6 +26,8 @@ import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import groovy.lang.Binding;
@@ -44,10 +46,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
@@ -67,7 +67,7 @@ public class GroovyEvaluator extends BaseEvaluator {
   protected final String shellId;
   protected final String sessionId;
   protected Classpath classPath;
-  protected List<String> imports;
+  protected Imports imports;
   //user entered source value
   protected String outDir;
   protected GroovyClasspathScanner cps;
@@ -104,7 +104,7 @@ public class GroovyEvaluator extends BaseEvaluator {
     shellId = id;
     sessionId = sId;
     classPath = new Classpath();
-    imports = new ArrayList<>();
+    imports = new Imports();
     cps = new GroovyClasspathScanner();
     gac = createGroovyAutocomplete(cps);
     exit = false;
@@ -149,8 +149,8 @@ public class GroovyEvaluator extends BaseEvaluator {
     cps = new GroovyClasspathScanner(cpp);
     gac = createGroovyAutocomplete(cps);
 
-    for (String st : imports)
-      gac.addImport(st);
+    for (ImportPath st : imports.getImportPaths())
+      gac.addImport(st.asString());
 
     updateLoader = true;
     syncObject.release();
@@ -165,6 +165,11 @@ public class GroovyEvaluator extends BaseEvaluator {
   @Override
   public Classpath getClasspath() {
     return this.classPath;
+  }
+
+  @Override
+  public Imports getImports() {
+    return this.imports;
   }
 
   @Override
@@ -185,16 +190,21 @@ public class GroovyEvaluator extends BaseEvaluator {
     }
 
     if (listOfImports == null || listOfImports.isEmpty()) {
-      imports = new ArrayList<>();
+      imports = new Imports();
     } else {
       for (String line : listOfImports) {
         if (!line.trim().isEmpty()) {
-          imports.add(line);
+          addImportPath(new ImportPath(line));
         }
       }
     }
 
     resetEnvironment();
+  }
+
+  @Override
+  protected boolean addImportPath(ImportPath anImport) {
+    return imports.add(anImport);
   }
 
   @Override
@@ -227,14 +237,14 @@ public class GroovyEvaluator extends BaseEvaluator {
     ImportCustomizer icz = new ImportCustomizer();
 
     if (!imports.isEmpty()) {
-      for (String importLine : imports) {
-        if (importLine.startsWith(STATIC_WORD_WITH_SPACE)) {
+      for (ImportPath importLine : imports.getImportPaths()) {
+        if (importLine.asString().startsWith(STATIC_WORD_WITH_SPACE)) {
 
-          String pureImport = importLine
+          String pureImport = importLine.asString()
                   .replace(STATIC_WORD_WITH_SPACE, StringUtils.EMPTY)
                   .replace(DOT_STAR_POSTFIX, StringUtils.EMPTY);
 
-          if (importLine.endsWith(DOT_STAR_POSTFIX)) {
+          if (importLine.asString().endsWith(DOT_STAR_POSTFIX)) {
             icz.addStaticStars(pureImport);
           } else {
             int index = pureImport.lastIndexOf('.');
@@ -246,10 +256,10 @@ public class GroovyEvaluator extends BaseEvaluator {
 
         } else {
 
-          if (importLine.endsWith(DOT_STAR_POSTFIX)) {
-            icz.addStarImports(importLine.replace(DOT_STAR_POSTFIX, StringUtils.EMPTY));
+          if (importLine.asString().endsWith(DOT_STAR_POSTFIX)) {
+            icz.addStarImports(importLine.asString().replace(DOT_STAR_POSTFIX, StringUtils.EMPTY));
           } else {
-            icz.addImports(importLine);
+            icz.addImports(importLine.asString());
           }
 
         }

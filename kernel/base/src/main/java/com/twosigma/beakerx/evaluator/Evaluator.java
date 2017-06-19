@@ -20,6 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import org.slf4j.Logger;
@@ -59,6 +61,10 @@ public interface Evaluator {
   }
 
   Classpath getClasspath();
+
+  Imports getImports();
+
+  void addImport(ImportPath anImport);
 
   void resetEnvironment();
 }

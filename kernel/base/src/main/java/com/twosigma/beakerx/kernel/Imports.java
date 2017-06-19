@@ -13,28 +13,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.evaluator;
+package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.kernel.ImportPath;
-import com.twosigma.beakerx.kernel.PathToJar;
+import java.util.ArrayList;
+import java.util.List;
 
-public abstract class BaseEvaluator implements Evaluator {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-  protected abstract boolean addJar(PathToJar path);
+public class Imports {
 
-  protected abstract boolean addImportPath(ImportPath anImport);
+  private List<ImportPath> imports = new ArrayList<>();
 
-  @Override
-  public void addJarToClasspath(PathToJar path) {
-    if (addJar(path)) {
-      resetEnvironment();
-    }
+  public List<ImportPath> getImportPaths() {
+    return imports;
   }
 
-  @Override
-  public void addImport(ImportPath anImport) {
-    if (addImportPath(anImport)) {
-      resetEnvironment();
+  public boolean add(ImportPath anImport) {
+    checkNotNull(anImport);
+    if(!this.imports.contains(anImport)){
+      return this.imports.add(anImport);
     }
+    return false;
+  }
+
+  public boolean isEmpty() {
+    return imports.isEmpty();
   }
 }

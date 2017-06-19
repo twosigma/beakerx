@@ -17,6 +17,7 @@
 package com.twosigma.beakerx.kernel.commands;
 
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
@@ -51,6 +52,8 @@ public class MagicCommand {
   public static final String CLASSPATH_ADD_JAR = CLASSPATH + " add jar";
   public static final String CLASSPATH_REMOVE = CLASSPATH + " remove";
   public static final String CLASSPATH_SHOW = CLASSPATH;
+  public static final String ADD_IMPORT = "%import";
+  public static final String UNIMPORT = "%unimport";
 
   private Map<String, MagicCommandFunctionality> commands = new LinkedHashMap<>();
   private MessageCreator messageCreator;
@@ -86,6 +89,23 @@ public class MagicCommand {
     commands.put(CLASSPATH_ADD_JAR, classpathAddJar());
     commands.put(CLASSPATH_REMOVE, classpathRemove());
     commands.put(CLASSPATH_SHOW, classpathShow());
+    commands.put(ADD_IMPORT, addImport());
+    commands.put(UNIMPORT, unimport());
+  }
+
+  private MagicCommandFunctionality unimport() {
+    return null;
+  }
+
+  private MagicCommandFunctionality addImport() {
+    return (code, command, message, executionCount) -> {
+      String[] parts = command.split(" ");
+      if (parts.length != 2) {
+        throw new RuntimeException("Wrong import format.");
+      }
+      this.kernel.addImport(new ImportPath(parts[1]));
+      return new MagicCommandResultItem(code.takeCodeWithoutCommand());
+    };
   }
 
   private MagicCommandFunctionality classpathShow() {

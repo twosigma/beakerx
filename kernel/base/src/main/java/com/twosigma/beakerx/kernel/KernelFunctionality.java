@@ -65,6 +65,10 @@ public interface KernelFunctionality {
 
   Classpath getClasspath();
 
+  Imports getImports();
+
+  void addImport(ImportPath anImport);
+
   interface ExecuteCodeCallback {
     void execute(SimpleEvaluationObject seo);
   }

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -16,15 +15,15 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.message.Message;
-import org.junit.Test;
-
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beakerx.widgets.Widget.DISABLED;
 import static com.twosigma.beakerx.widgets.Widget.VALUE;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.twosigma.beakerx.easyform.EasyFormComponent;
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widgets.selections.ComboBox;
+import org.junit.Test;
 
 public class ComboBoxWidgetTest extends EasyFormWidgetTest {
 
@@ -59,7 +58,7 @@ public class ComboBoxWidgetTest extends EasyFormWidgetTest {
   }
 
   private void verifyEditable(Message message, Boolean expected) {
-    Boolean value = getValueForProperty(message, DISABLED, Boolean.class);
+    Boolean value = getValueForProperty(message, ComboBox.EDITABLE, Boolean.class);
     assertThat(value).isEqualTo(expected);
   }
 

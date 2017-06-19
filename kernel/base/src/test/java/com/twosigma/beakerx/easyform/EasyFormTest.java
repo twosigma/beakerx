@@ -15,9 +15,23 @@
  */
 package com.twosigma.beakerx.easyform;
 
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.getData;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyDisplayMsg;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsg;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
+import static com.twosigma.beakerx.widgets.Widget.VALUE;
+import static com.twosigma.beakerx.widgets.strings.TextTest.verifyTextField;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jupyter.SearchMessages;
+import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widgets.BeakerxWidget;
 import com.twosigma.beakerx.widgets.Button;
 import com.twosigma.beakerx.widgets.DatePicker;
 import com.twosigma.beakerx.widgets.Widget;
@@ -29,25 +43,11 @@ import com.twosigma.beakerx.widgets.selections.RadioButtons;
 import com.twosigma.beakerx.widgets.selections.SelectMultiple;
 import com.twosigma.beakerx.widgets.strings.Text;
 import com.twosigma.beakerx.widgets.strings.Textarea;
-import com.twosigma.beakerx.message.Message;
+import java.util.List;
+import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Map;
-
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getData;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyDisplayMsg;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsg;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
-import static com.twosigma.beakerx.widgets.strings.TextTest.verifyTextField;
-import static com.twosigma.beakerx.widgets.Widget.VALUE;
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class EasyFormTest {
 
@@ -137,7 +137,8 @@ public class EasyFormTest {
   }
 
   private void verifyButton(List<Message> messages) {
-    verifyInternalOpenCommMsgWitLayout(messages, Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE, Widget.MODEL_MODULE_VALUE, Widget.VIEW_MODULE_VALUE);
+    verifyInternalOpenCommMsgWitLayout(messages, Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE,
+        Widget.MODEL_MODULE_VALUE, Widget.VIEW_MODULE_VALUE);
   }
 
   @Test
@@ -155,7 +156,8 @@ public class EasyFormTest {
   }
 
   private void verifyMultipleSelection(List<Message> messages) {
-    verifyInternalOpenCommMsgWitLayout(messages, SelectMultiple.MODEL_NAME_VALUE, SelectMultiple.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(messages, SelectMultiple.MODEL_NAME_VALUE,
+        SelectMultiple.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -173,7 +175,9 @@ public class EasyFormTest {
   }
 
   private void verifyCombobox(List<Message> messages) {
-    verifyOpenCommMsg(messages, ComboBox.MODEL_NAME_VALUE, ComboBox.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(messages, ComboBox.MODEL_NAME_VALUE,
+        ComboBox.VIEW_NAME_VALUE,
+        BeakerxWidget.MODEL_MODULE_VALUE, BeakerxWidget.VIEW_MODULE_VALUE);
   }
 
   @Test
@@ -223,18 +227,19 @@ public class EasyFormTest {
     DisplayEasyForm.display(easyForm);
     //then
     verifyTextField(
-      kernel.getPublishedMessages(),
-      Text.MODEL_NAME_VALUE,
-      Text.MODEL_MODULE_VALUE,
-      Text.VIEW_NAME_VALUE,
-      Text.VIEW_MODULE_VALUE
+        kernel.getPublishedMessages(),
+        Text.MODEL_NAME_VALUE,
+        Text.MODEL_MODULE_VALUE,
+        Text.VIEW_NAME_VALUE,
+        Text.VIEW_MODULE_VALUE
     );
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
     verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
   private void verifyEasyForm(List<Message> messages, List<Widget> children) {
-    Message msg = SearchMessages.getListWidgetsByViewName(messages, EasyFormView.VIEW_NAME_VALUE).get(0);
+    Message msg = SearchMessages.getListWidgetsByViewName(messages, EasyFormView.VIEW_NAME_VALUE)
+        .get(0);
     verifyInternalOpenCommMsg(msg, EasyFormView.MODEL_NAME_VALUE, EasyFormView.VIEW_NAME_VALUE);
     verifyChildren(msg, children);
   }
@@ -254,7 +259,8 @@ public class EasyFormTest {
   }
 
   private void verifyDatePicker(List<Message> messages) {
-    verifyInternalOpenCommMsgWitLayout(messages, DatePicker.MODEL_NAME_VALUE, DatePicker.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(messages, DatePicker.MODEL_NAME_VALUE,
+        DatePicker.VIEW_NAME_VALUE);
   }
 
   private void verifyChildren(Message message, List<Widget> children) {

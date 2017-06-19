@@ -78,13 +78,13 @@ define([
   var kernel_info = undefined;
   
   config.loaded.then(function() {
-    console.log('beaker extension loaded');
+    console.log('beakerx extension loaded');
   });
 
   Jupyter.notebook.events.on('kernel_ready.Kernel', function() {
     var kernel = Jupyter.notebook.kernel;
-    if (!window.beaker) {
-      window.beaker = {};
+    if (!window.beakerx) {
+      window.beakerx = {};
     }
     kernel.comm_manager.register_target('beaker.getcodecells',
       function(comm, msg) {
@@ -92,13 +92,13 @@ define([
           if(msg.content.data.name == "CodeCells"){
             sendJupyterCodeCells(JSON.parse(msg.content.data.value));
           }
-          window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
+          window.beakerx[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
     kernel.comm_manager.register_target('beaker.autotranslation',
       function(comm, msg) {
         comm.on_msg(function(msg) {
-          window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
+          window.beakerx[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
     kernel.comm_manager.register_target('beaker.tag.run',
@@ -307,19 +307,19 @@ define([
 
     // assign Beaker methods to window
     if (window) {
-      if (!window.beaker) {
-        window.beaker = {};
+      if (!window.beakerx) {
+        window.beakerx = {};
       }
 
       var plotApiList = plotApi.list();
       var bkApp = bkCoreManager.getBkApp();
       var bkObject = bkApp.getBeakerObject();
 
-      console.log('LOAD', window.beaker);
+      console.log('LOAD', window.beakerx);
 
-      _.extend(window.beaker, plotApiList);
-      _.extend(window.beaker, htmlOutput);
-      window.beaker.prefs = bkObject.beakerObj.prefs;
+      _.extend(window.beakerx, plotApiList);
+      _.extend(window.beakerx, htmlOutput);
+      window.beakerx.prefs = bkObject.beakerObj.prefs;
     }
 
     // ________ init cell extension code

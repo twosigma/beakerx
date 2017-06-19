@@ -24,7 +24,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 def final kernelIdName = 'sql'
 def final toReplace = '__PATH__'
 
-mainClassName = 'com.twosigma.beaker.sql.SQLKernel'
+mainClassName = 'com.twosigma.beakerx.sql.kernel.SQL'
 
 repositories {
   mavenCentral()

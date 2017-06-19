@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.easyform.formitem;
+package com.twosigma.beakerx.easyform.formitem;
 
-import com.twosigma.beaker.easyform.EasyFormComponent;
+import com.twosigma.beakerx.easyform.EasyFormComponent;
 import java.util.Collection;
 
 public abstract class ComboBoxComponent extends EasyFormComponent {

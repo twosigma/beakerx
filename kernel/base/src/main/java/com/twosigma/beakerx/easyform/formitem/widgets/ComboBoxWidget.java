@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.easyform.formitem.ComboBox;
+import com.twosigma.beakerx.easyform.formitem.ComboBoxComponent;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.widgets.CommFunctionality;
 import com.twosigma.beakerx.widgets.DOMWidget;

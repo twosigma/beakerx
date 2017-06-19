@@ -24,7 +24,7 @@ import com.twosigma.beakerx.widgets.Widget;
 import com.twosigma.beakerx.widgets.bools.Checkbox;
 import com.twosigma.beakerx.widgets.box.Box;
 import com.twosigma.beakerx.widgets.box.HBox;
-import com.twosigma.beakerx.widgets.selections.Dropdown;
+import com.twosigma.beakerx.widgets.selections.ComboBox;
 import com.twosigma.beakerx.widgets.selections.RadioButtons;
 import com.twosigma.beakerx.widgets.selections.SelectMultiple;
 import com.twosigma.beakerx.widgets.strings.Text;
@@ -173,7 +173,7 @@ public class EasyFormTest {
   }
 
   private void verifyCombobox(List<Message> messages) {
-    verifyOpenCommMsg(messages, Dropdown.MODEL_NAME_VALUE, Dropdown.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(messages, ComboBox.MODEL_NAME_VALUE, ComboBox.VIEW_NAME_VALUE);
   }
 
   @Test

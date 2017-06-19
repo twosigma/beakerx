@@ -29,7 +29,6 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ## Dependencies
 
-* [Oracle Java8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 * [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
@@ -38,6 +37,7 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ```
 conda create -y -n beakerx python=3.5 jupyter pandas
+conda install -c conda-forge openjdk
 source activate beakerx
 ./gradlew --no-daemon build
 ./gradlew --no-daemon kernelInstall

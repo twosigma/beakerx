@@ -100,11 +100,17 @@ define([
     this.data2scrX = null;
     this.data2scrY = null;
     this.plotDisplayModel = null;
+    this.plotDisplayView = null;
   }
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
     this.plotDisplayModel = plotDisplayModel;
   };
+  
+  PlotScope.prototype.setWidgetView = function(plotDisplayView) {
+    this.plotDisplayView = plotDisplayView;
+  };
+
 
   PlotScope.prototype.initLayout = function() {
     var self = this;
@@ -486,7 +492,7 @@ define([
             	plotId: plotId,
             	itemId: data.uid, 
             	params: params
-            	});
+            	}, this.plotDisplayView.callbacks());
           }
         } else if (data.keys != null && data.keys.indexOf(key) > -1) {
           this.legendDone = false;
@@ -497,7 +503,8 @@ define([
           } else {
           	var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
           	params.key = key;
-          	this.plotDisplayModel.send({event: 'onkey', plotId: plotId, itemId: data.uid, params: params});
+          	this.plotDisplayModel.send({event: 'onkey', plotId: plotId, itemId: data.uid, params: params},
+          	    this.plotDisplayView.callbacks());
           }
         }
       }
@@ -538,7 +545,7 @@ define([
                 	plotId: plotId,
                 	itemId: item.uid, 
                 	params: params
-                	});
+                	}, self.plotDisplayView.callbacks());
               }
             }else{
               self.legendDone = false;
@@ -548,7 +555,13 @@ define([
                 self.model.onClick(plotId, item, e);
                 return;
               } else {
-               	self.plotDisplayModel.send({event: 'onclick', plotId: plotId, itemId: item.uid, params: plotUtils.getActionObject(self.model.getCellModel().type, e)});
+               	self.plotDisplayModel.send(
+               	    {event: 'onclick', 
+               	      plotId: plotId,
+               	      itemId: item.uid, 
+               	      params: plotUtils.getActionObject(self.model.getCellModel().type, e)
+               	    }, self.plotDisplayView.callbacks());
+               	    
               }
             }
           }

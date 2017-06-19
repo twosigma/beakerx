@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
  
-package com.twosigma.beaker.scala.evaluator;
+package com.twosigma.beakerx.scala.evaluator;
 
-import com.twosigma.beaker.autocomplete.AutocompleteResult
-import com.twosigma.beaker.jvm.`object`.SimpleEvaluationObject
+import com.twosigma.beakerx.autocomplete.AutocompleteResult
+import com.twosigma.beakerx.jvm.`object`.SimpleEvaluationObject
 
 import scala.tools.jline_embedded.console.completer.Completer
 import scala.tools.nsc.Settings

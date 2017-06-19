@@ -54,7 +54,7 @@ var PlotView = widgets.DOMWidgetView.extend({
         default:
           that.initStandardPlot(plotModel);
           break;
-      }
+      } 
     });
   },
 
@@ -77,6 +77,7 @@ var PlotView = widgets.DOMWidgetView.extend({
     this._currentScope.setWidgetModel(this.model);
     this._currentScope.setElement(tmplElement.children('.dtcontainer'));
     this._currentScope.setModelData(model);
+    this._currentScope.setWidgetView(this);
     this._currentScope.init(this.model);
   },
 
@@ -84,11 +85,12 @@ var PlotView = widgets.DOMWidgetView.extend({
     this._currentScope = new CombinedPlotScope('wrap_'+this.id);
     var tmpl = this._currentScope.buildTemplate();
     var tmplElement = $(tmpl);
-
+    
     tmplElement.appendTo(this.$el);
-
+    
     this._currentScope.setModelData(model);
     this._currentScope.setElement(tmplElement);
+    this._currentScope.setWidgetView(this);
     this._currentScope.init(this.model);
   }
 

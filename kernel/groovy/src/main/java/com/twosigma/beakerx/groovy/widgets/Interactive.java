@@ -45,7 +45,7 @@ public class Interactive extends InteractiveBase{
         
         @Override
         public void updateValue(Object value, Message message) {
-          BeakerxWidget.handleCompiledCode(message, this::processCode, null);
+          widget.handleCompiledCode(message, this::processCode, null);
         }
         
         private Object[] getWidgetValues(){

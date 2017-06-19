@@ -21,6 +21,11 @@ here = os.path.abspath(os.path.dirname(__file__))
 beakerx_dir = os.path.abspath(os.path.join(here, ".."))
 test_dir = here
 
+# update environment
+subprocess.call("yarn install", shell=True)
+subprocess.call("yarn run setup-server", shell=True)
+subprocess.call("yarn run wdio-config", shell=True)
+
 # start selenium server
 with open(os.devnull, "w") as fnull:
     webcontrol = subprocess.Popen(["yarn", "run", "start-server"], stdout=subprocess.PIPE, stderr=fnull, preexec_fn=os.setsid);

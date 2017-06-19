@@ -19,22 +19,8 @@ Verify password: beakerx
 [NotebookPasswordApp] Wrote hashed password to /Users/you/.jupyter/jupyter_notebook_config.json
 ```
 
-Install Webdriver.io framework and Selenium server:
-
-```
-yarn install
-yarn run wdio-config
-yarn run setup-server
-```
-
 ## Run the tests
 
 ```
 python ./runner.py
-```
-
-or
-
-```
-gradle test:e2e
 ```

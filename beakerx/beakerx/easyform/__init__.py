@@ -12,15 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .runtime import BeakerX
-from .plot import *
 from .easyform import *
-from ._version import version_info, __version__
-
-def _jupyter_nbextension_paths():
-    return [{
-        'section': 'notebook',
-        'src': 'static',
-        'dest': 'beakerx',
-        'require': 'beakerx/extension'
-    }]

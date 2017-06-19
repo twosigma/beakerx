@@ -35,7 +35,8 @@ class BaseObject:
     self.type = self.__class__.__name__
 
   def transform(self):
-    return json.dumps(self, cls=ObjectEncoder)
+    model = json.dumps(self, cls=ObjectEncoder)
+    return json.loads(model)
 
   def transformBack(self, dict):
     self.__dict__ = dict

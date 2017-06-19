@@ -138,6 +138,11 @@ public class KernelTest implements KernelFunctionality {
     this.evaluatorManager.addImport(anImport);
   }
 
+  @Override
+  public void removeImport(ImportPath anImport) {
+    this.evaluatorManager.removeImport(anImport);
+  }
+
   public Boolean isSetShellOptions() {
     return setShellOptions != null;
   }

@@ -69,6 +69,8 @@ public interface KernelFunctionality {
 
   void addImport(ImportPath anImport);
 
+  void removeImport(ImportPath anImport);
+
   interface ExecuteCodeCallback {
     void execute(SimpleEvaluationObject seo);
   }

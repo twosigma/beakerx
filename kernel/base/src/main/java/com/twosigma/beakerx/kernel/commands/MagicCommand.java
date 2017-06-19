@@ -93,10 +93,6 @@ public class MagicCommand {
     commands.put(UNIMPORT, unimport());
   }
 
-  private MagicCommandFunctionality unimport() {
-    return null;
-  }
-
   private MagicCommandFunctionality addImport() {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
@@ -104,6 +100,17 @@ public class MagicCommand {
         throw new RuntimeException("Wrong import format.");
       }
       this.kernel.addImport(new ImportPath(parts[1]));
+      return new MagicCommandResultItem(code.takeCodeWithoutCommand());
+    };
+  }
+
+  private MagicCommandFunctionality unimport() {
+    return (code, command, message, executionCount) -> {
+      String[] parts = command.split(" ");
+      if (parts.length != 2) {
+        throw new RuntimeException("Wrong import format.");
+      }
+      this.kernel.removeImport(new ImportPath(parts[1]));
       return new MagicCommandResultItem(code.takeCodeWithoutCommand());
     };
   }

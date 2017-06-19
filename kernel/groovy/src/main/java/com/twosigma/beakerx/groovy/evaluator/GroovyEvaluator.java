@@ -208,6 +208,11 @@ public class GroovyEvaluator extends BaseEvaluator {
   }
 
   @Override
+  protected boolean removeImportPath(ImportPath anImport) {
+    return imports.remove(anImport);
+  }
+
+  @Override
   protected boolean addJar(PathToJar path) {
     return classPath.add(new PathToJar(envVariablesFilter(path.getPath(), System.getenv())));
   }

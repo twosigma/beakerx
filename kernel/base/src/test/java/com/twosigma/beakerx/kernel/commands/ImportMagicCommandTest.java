@@ -49,4 +49,19 @@ public class ImportMagicCommandTest {
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
   }
 
+  @Test
+  public void removeImport() throws Exception {
+    //given
+    Code addImport = new Code("" +
+            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n");
+    sut.process(addImport, new Message(), 1);
+    assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
+    //when
+    Code removeImport = new Code("" +
+            "%unimport com.twosigma.beakerx.widgets.integers.IntSlider\n");
+    sut.process(removeImport, new Message(), 1);
+    //then
+    assertThat(kernel.getImports().getImportPaths()).doesNotContain(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
+  }
+
 }

@@ -324,6 +324,11 @@ public class ClojureEvaluator extends BaseEvaluator {
     return imports.add(anImport);
   }
 
+  @Override
+  protected boolean removeImportPath(ImportPath anImport) {
+    return imports.remove(anImport);
+  }
+
   public AutocompleteResult autocomplete(String code, int caretPosition) {
 
     int i = caretPosition;

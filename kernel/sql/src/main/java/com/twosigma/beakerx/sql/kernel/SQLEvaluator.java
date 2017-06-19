@@ -283,6 +283,11 @@ public class SQLEvaluator extends BaseEvaluator {
     return this.imports.add(anImport);
   }
 
+  @Override
+  protected boolean removeImportPath(ImportPath anImport) {
+    return this.imports.remove(anImport);
+  }
+
   public void setShellUserPassword(String namedConnection, String user, String password) {
     if (namedConnection != null && !namedConnection.isEmpty()) {
       if (this.namedConnectionString != null) {

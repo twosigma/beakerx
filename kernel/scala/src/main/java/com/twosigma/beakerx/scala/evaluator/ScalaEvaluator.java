@@ -218,7 +218,12 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   protected boolean addImportPath(ImportPath anImport) {
-    return   imports.add(anImport);
+    return imports.add(anImport);
+  }
+
+  @Override
+  protected boolean removeImportPath(ImportPath anImport) {
+    return imports.remove(anImport);
   }
 
   @Override

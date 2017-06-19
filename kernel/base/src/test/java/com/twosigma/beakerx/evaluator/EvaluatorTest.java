@@ -115,6 +115,11 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
   @Override
+  protected boolean removeImportPath(ImportPath anImport) {
+    return imports.remove(anImport);
+  }
+
+  @Override
   public Imports getImports() {
     return imports;
   }
@@ -122,4 +127,5 @@ public class EvaluatorTest extends BaseEvaluator {
   public int getResetEnvironmentCounter() {
     return resetEnvironmentCounter;
   }
+
 }

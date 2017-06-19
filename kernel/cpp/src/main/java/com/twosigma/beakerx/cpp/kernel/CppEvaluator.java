@@ -150,6 +150,11 @@ public class CppEvaluator extends BaseEvaluator {
   }
 
   @Override
+  protected boolean removeImportPath(ImportPath anImport) {
+    return imports.remove(anImport);
+  }
+
+  @Override
   public Classpath getClasspath() {
     return this.classpath;
   }

@@ -36,6 +36,13 @@ public class Imports {
     return false;
   }
 
+  public boolean remove(ImportPath anImport) {
+    checkNotNull(anImport);
+    if(this.imports.contains(anImport)){
+      return this.imports.remove(anImport);
+    }
+    return false;
+  }
   public boolean isEmpty() {
     return imports.isEmpty();
   }

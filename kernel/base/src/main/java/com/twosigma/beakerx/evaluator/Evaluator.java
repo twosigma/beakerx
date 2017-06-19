@@ -67,4 +67,6 @@ public interface Evaluator {
   void addImport(ImportPath anImport);
 
   void resetEnvironment();
+
+  void removeImport(ImportPath anImport);
 }

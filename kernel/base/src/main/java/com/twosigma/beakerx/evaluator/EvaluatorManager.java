@@ -112,6 +112,10 @@ public class EvaluatorManager {
     this.evaluator.addImport(anImport);
   }
 
+  public void removeImport(ImportPath anImport) {
+    this.evaluator.removeImport(anImport);
+  }
+
   interface CodeExecutor {
     SimpleEvaluationObject executeCode(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback);
   }

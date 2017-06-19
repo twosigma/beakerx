@@ -200,6 +200,11 @@ public class JavaEvaluator extends BaseEvaluator {
   }
 
   @Override
+  protected boolean removeImportPath(ImportPath anImport) {
+    return imports.remove(anImport);
+  }
+
+  @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
     jobQueue.add(new jobDescriptor(code, seo));

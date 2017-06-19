@@ -20,6 +20,18 @@ import com.twosigma.beakerx.DefaultJVMVariables;
 public class ClojureDefaultVariables extends DefaultJVMVariables {
 
   public ClojureDefaultVariables() {
+    removeImports(
+        "com.twosigma.beakerx.chart.legend.*",
+        "com.twosigma.beakerx.chart.categoryplot.plotitem.*",
+        "com.twosigma.beakerx.table.*",
+        "com.twosigma.beakerx.chart.xychart.*",
+        "com.twosigma.beakerx.chart.categoryplot.*",
+        "com.twosigma.beakerx.chart.xychart.plotitem.*",
+        "com.twosigma.beakerx.chart.histogram.*",
+        "com.twosigma.beakerx.chart.treemap.*",
+        "net.sf.jtreemap.swing.*",
+        "com.twosigma.beakerx.chart.treemap.util.*"
+        );
   }
 
 }

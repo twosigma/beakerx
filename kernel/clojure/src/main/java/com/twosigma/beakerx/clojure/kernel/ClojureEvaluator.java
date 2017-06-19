@@ -149,13 +149,14 @@ public class ClojureEvaluator extends BaseEvaluator {
     Thread.currentThread().setContextClassLoader(loader);
 
     for (ImportPath s : imports.getImportPaths()) {
-      if (s != null & !s.asString().isEmpty())
+      if (s != null & !s.asString().isEmpty()) {
         try {
           loader.loadClass(s.asString());
           clojureLoadString.invoke(String.format("(import '%s)", s));
-        } catch (Exception e) {
-          logger.error(e.getMessage());
+        } catch (ClassNotFoundException e) {
+          logger.error("Could not find class while loading notebook: " + s);
         }
+      }
     }
 
     for (String s : requirements) {

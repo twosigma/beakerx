@@ -1787,6 +1787,9 @@ define([
         var rowIndex = self.table.row(dtTR).index();
         $(dtTR).removeClass('hover');
         self.highlightFixedColumnRow (rowIndex, false);
+      })
+      .on('click', function() {
+        self.element.focus();
       });
 
     $(self.table.table().container()).find('.dataTables_scrollHead').on('scroll', function() {

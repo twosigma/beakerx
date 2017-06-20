@@ -13,12 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jupyter.commands;
+package com.twosigma.beakerx.kernel.commands;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
-import com.twosigma.beakerx.kernel.commands.MagicCommandResult;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.PathToJar;
@@ -55,6 +53,7 @@ public class ClasspathMagicCommandTest {
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
     assertThat(result.getCode()).isEqualTo(new Code("code code code"));
+    assertThat(kernel.getClasspath().get(0)).isEqualTo(jar);
   }
 
   @Test
@@ -66,6 +65,7 @@ public class ClasspathMagicCommandTest {
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
     assertThat(result.getResultMessage().getContent().get("text")).isEqualTo("Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found");
+    assertThat(kernel.getClasspath().size()).isEqualTo(0);
   }
 
   @Test

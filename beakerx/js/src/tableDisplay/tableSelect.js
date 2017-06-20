@@ -51,7 +51,5 @@ module.exports = function(TableScope) {
         $(self.element).find('.ui-selected').removeClass('ui-selected');
       }
     });
-
-    self.element.focus();
   };
 };

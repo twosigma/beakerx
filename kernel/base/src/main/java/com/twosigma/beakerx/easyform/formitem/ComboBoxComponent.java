@@ -1,5 +1,5 @@
 /*
- *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,10 +17,9 @@
 package com.twosigma.beakerx.easyform.formitem;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-
 import java.util.Collection;
 
-public abstract class ComboBox extends EasyFormComponent {
+public abstract class ComboBoxComponent extends EasyFormComponent {
 
   private Boolean editable;
   private Collection<String> values;

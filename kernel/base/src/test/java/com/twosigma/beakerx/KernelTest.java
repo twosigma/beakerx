@@ -18,6 +18,8 @@ package com.twosigma.beakerx;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
@@ -124,6 +126,21 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public Classpath getClasspath() {
     return this.evaluatorManager.getClasspath();
+  }
+
+  @Override
+  public Imports getImports() {
+    return this.evaluatorManager.getImports();
+  }
+
+  @Override
+  public void addImport(ImportPath anImport) {
+    this.evaluatorManager.addImport(anImport);
+  }
+
+  @Override
+  public void removeImport(ImportPath anImport) {
+    this.evaluatorManager.removeImport(anImport);
   }
 
   public Boolean isSetShellOptions() {

@@ -27,6 +27,8 @@ import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -81,6 +83,7 @@ public class CppEvaluator extends BaseEvaluator {
 
   private HashSet<String> loadedCells;
   private Classpath classpath = new Classpath();
+  private Imports imports = new Imports();
 
   public CppEvaluator(String id, String sId) {
     shellId = id;
@@ -142,8 +145,23 @@ public class CppEvaluator extends BaseEvaluator {
   }
 
   @Override
+  protected boolean addImportPath(ImportPath anImport) {
+    return imports.add(anImport);
+  }
+
+  @Override
+  protected boolean removeImportPath(ImportPath anImport) {
+    return imports.remove(anImport);
+  }
+
+  @Override
   public Classpath getClasspath() {
     return this.classpath;
+  }
+
+  @Override
+  public Imports getImports() {
+    return this.imports;
   }
 
   @Override

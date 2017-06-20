@@ -1,8 +1,19 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
+# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 """
 This file originates from the 'jupyter-packaging' package, and
@@ -11,10 +22,12 @@ within a Python package.
 """
 
 import os
-from os.path import join as pjoin
+from os.path import join as pjoin, exists
+from os import makedirs
 import functools
 import pipes
 import sys
+import json
 from subprocess import check_call
 
 from setuptools import Command
@@ -23,6 +36,9 @@ from setuptools.command.sdist import sdist
 from setuptools.command.develop import develop
 from setuptools.command.bdist_egg import bdist_egg
 from distutils import log
+
+from traitlets.config.manager import BaseJSONConfigManager
+from jupyter_core.paths import jupyter_config_dir
 
 try:
     from wheel.bdist_wheel import bdist_wheel
@@ -35,8 +51,6 @@ else:
     def list2cmdline(cmd_list):
         return ' '.join(map(pipes.quote, cmd_list))
 
-
-__version__ = '0.1.0'
 
 # ---------------------------------------------------------------------------
 # Top Level Variables
@@ -61,6 +75,13 @@ else:
 # ---------------------------------------------------------------------------
 # Public Functions
 # ---------------------------------------------------------------------------
+
+
+def get_version(path):
+    version = {}
+    with open(pjoin(here, path)) as f:
+        exec(f.read(), {}, version)
+    return version['__version__']
 
 
 def get_data_files(top):
@@ -229,6 +250,7 @@ def mtime(path):
 def install_npm(path=None, build_dir=None, source_dir=None, build_cmd='build', force=False):
     """Return a Command for managing an npm installation.
     Note: The command is skipped if the `--skip-npm` flag is used.
+    
     Parameters
     ----------
     path: str, optional
@@ -268,6 +290,91 @@ def install_npm(path=None, build_dir=None, source_dir=None, build_cmd='build', f
                 run(['npm', 'run', build_cmd], cwd=node_package)
 
     return NPM
+
+
+def install_nb_conda_kernels(enable=False, disable=False, prefix=None):
+    """Return a Command for installing the nb_conda_kernels config piece.
+
+    Parameters
+    ----------
+    enable: bool
+        Enable the BeakerX server config on every notebook launch
+    disable: bool
+        Disable BeakerX server config
+    """
+
+    class NBCondaKernels(BaseCommand):
+        description = 'Install the nb_conda_kernels config piece'
+
+        def run(self):
+            CKSM = "beakerx.kernel_spec.BeakerXKernelSpec"
+            KSMC = "kernel_spec_class"
+            
+            def pretty(it): 
+                return json.dumps(it, indent=2)
+            
+            if enable == disable:
+                log.error("Please provide (one of) --enable or --disable")
+                raise ValueError(enable, disable)
+
+            log.info("{}abling BeakerX server config...".format("En" if enable else "Dis"))
+
+            path = jupyter_config_dir()
+
+            if prefix is not None:
+                path = join(prefix, "etc", "jupyter")
+                if not exists(path):
+                    log.debug("Making directory {}...".format(path))
+                    makedirs(path)
+
+            cm = BaseJSONConfigManager(config_dir=path)
+            cfg = cm.get("jupyter_notebook_config")
+
+            log.debug("Existing config in {}...\n{}".format(path, pretty(cfg)))
+
+            nb_app = cfg.setdefault("KernelSpecManager", {})
+
+            if enable:
+                nb_app.update({KSMC: CKSM})
+            elif disable and nb_app.get(KSMC, None) == CKSM:
+                nb_app.pop(KSMC)
+
+            log.debug("Writing config in {}...".format(path))
+
+            cm.set("jupyter_notebook_config", cfg)
+
+            cfg = cm.get("jupyter_notebook_config")
+
+            log.debug("Verifying config in {}...\n{}".format(path, pretty(cfg)))
+
+            if enable:
+                assert cfg["KernelSpecManager"][KSMC] == CKSM
+            else:
+                assert KSMC not in cfg["KernelSpecManager"]
+
+            log.info("{}abled BeakerX server config".format("En" if enable else "Dis"))
+
+    return NBCondaKernels
+    
+
+def run_gradle(path=here, cmd='build'):
+    """Return a Command for running gradle scripts.
+    
+    Parameters
+    ----------
+    path: str, optional
+        The base path of the node package.  Defaults to the repo root.
+    cmd: str, optional
+        The command to run with gradlew.
+    """
+
+    class Gradle(BaseCommand):
+        description = 'Run gradle script'
+
+        def run(self):
+            run(['./gradlew', '--no-daemon', cmd], cwd=path)
+
+    return Gradle
 
 
 def ensure_targets(targets):

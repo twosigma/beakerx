@@ -18,23 +18,16 @@ MAINTAINER Beaker Feedback <beaker-feedback@twosigma.com>
 
 RUN useradd beakerx --create-home
 
-ENV JAVA_VER 8
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
 RUN apt-get update && apt-get dist-upgrade -y
-
-RUN apt-get install -y sudo curl unzip software-properties-common apt-transport-https git clang bzip2
-
-RUN add-apt-repository -y ppa:webupd8team/java
-
+RUN apt-get install -y sudo curl unzip software-properties-common apt-transport-https git clang bzip2 wget
 RUN apt-get update
 
 ##########
 #  Java  #
 ##########
-RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
-RUN apt-get install -y oracle-java8-installer
-
+RUN apt-get install -y openjdk-8-jre
 
 ##########
 #  Node  #

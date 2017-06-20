@@ -17,7 +17,6 @@ FROM beakerx-base:latest
 MAINTAINER Beaker Feedback <beaker-feedback@twosigma.com>
 
 ENV PATH /opt/conda/bin:/opt/gradle/gradle-3.5/bin:$PATH
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 ENV CONDA_DIR /opt/conda
 ENV SHELL /bin/bash
 ENV NB_USER beakerx

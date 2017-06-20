@@ -321,9 +321,14 @@ define([
     this.allConverters = {
       // string
       0: function(value, type, full, meta) {
-        if (_.isObject(value) && value.type === 'Date') {
+        var objectValue = _.isObject(value);
+
+        if (objectValue && value.type === 'Date') {
           value = moment(value.timestamp).format('YYYYMMDD HH:mm:ss.SSS ZZ');
+        } else if (objectValue) {
+          value = JSON.stringify(value);
         }
+
         if (type === 'display' && value !== null && value !== undefined) {
           var escapedText = self.escapeHTML(value);
           var limitedText = self.truncateString(escapedText);

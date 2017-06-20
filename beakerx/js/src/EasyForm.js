@@ -22,6 +22,7 @@ var selectMultipleWidget = require('./easyForm/selectMultipleWidget');
 var selectMultipleSingleWidget = require('./easyForm/selectMultipleSingleWidget');
 var datePickerWidget = require('./easyForm/datePickerWidget');
 var textWidget = require('./easyForm/textWidget');
+var comboBoxWidget = require('./easyForm/comboBoxWidget');
 
 widgets.TextView.prototype.handleEnterKeyPress = function() {
   if (e.keyCode == 13) {
@@ -32,6 +33,7 @@ widgets.TextView.prototype.handleEnterKeyPress = function() {
 
 require('./easyForm/css/jupyter-easyform.scss');
 require('flatpickr/dist/flatpickr.css');
+require('jquery-ui/themes/base/all.css');
 
 var EasyFormModel = widgets.DOMWidgetModel.extend({
   defaults: function() {
@@ -98,3 +100,4 @@ _.extend(module.exports, selectMultipleWidget);
 _.extend(module.exports, selectMultipleSingleWidget);
 _.extend(module.exports, datePickerWidget);
 _.extend(module.exports, textWidget);
+_.extend(module.exports, comboBoxWidget);

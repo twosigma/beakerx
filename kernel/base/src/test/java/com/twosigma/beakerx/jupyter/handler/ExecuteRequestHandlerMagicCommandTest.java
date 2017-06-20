@@ -104,4 +104,31 @@ public class ExecuteRequestHandlerMagicCommandTest {
     assertThat(publishedMessages.size()).isEqualTo(4);
   }
 
+  @Test
+  public void handleImportMagicCommandAndExecuteTheCode() throws Exception {
+    //given
+    String code ="" +
+            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
+            "w = new IntSlider()";
+    Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
+    //when
+    executeRequestHandler.handle(magicMessage);
+    //then
+    final List<Message> publishedMessages = kernel.getPublishedMessages();
+    assertThat(publishedMessages.size()).isEqualTo(3);
+  }
+
+  @Test
+  public void noResetEnvironmentForDuplicatedImportPath() throws Exception {
+    //when
+    String code = "" +
+            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
+            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
+            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n";
+    Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
+    executeRequestHandler.handle(magicMessage);
+    //then
+    assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(1);
+  }
+
 }

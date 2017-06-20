@@ -37,8 +37,8 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ```
 conda create -y -n beakerx python=3.5 jupyter pandas
-conda install -c conda-forge openjdk
 source activate beakerx
+conda install -y -c conda-forge openjdk
 ./gradlew --no-daemon build
 ./gradlew --no-daemon kernelInstall
 ./gradlew --no-daemon :beakerx:install

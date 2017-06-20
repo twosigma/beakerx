@@ -28,6 +28,8 @@ import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import org.slf4j.Logger;
@@ -56,7 +58,7 @@ public class ClojureEvaluator extends BaseEvaluator {
   private final String shellId;
   private final String sessionId;
   private Classpath classPath;
-  private List<String> imports;
+  private Imports imports;
   private List<String> requirements;
   private boolean exit;
   private BeakerCellExecutor executor;
@@ -90,7 +92,7 @@ public class ClojureEvaluator extends BaseEvaluator {
     shellId = id;
     sessionId = sId;
     classPath = new Classpath();
-    imports = new ArrayList<String>();
+    imports = new Imports();
     requirements = new ArrayList<>();
     outDir = Evaluator.createJupyterTempFolder().toString();
     init();
@@ -146,14 +148,16 @@ public class ClojureEvaluator extends BaseEvaluator {
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(loader);
 
-    for (String s : imports) {
-      if (s != null & !s.isEmpty())
+    for (ImportPath s : imports.getImportPaths()) {
+      String ss = s.asString();
+      if (!ss.isEmpty()) {
         try {
-          loader.loadClass(s);
-          clojureLoadString.invoke(String.format("(import '%s)", s));
-        } catch (Exception e) {
-          logger.error(e.getMessage());
+          loader.loadClass(ss);
+          clojureLoadString.invoke(String.format("(import '%s)", ss));
+        } catch (ClassNotFoundException e) {
+          logger.error("Could not find class while loading notebook: " + ss);
         }
+      }
     }
 
     for (String s : requirements) {
@@ -179,6 +183,11 @@ public class ClojureEvaluator extends BaseEvaluator {
   @Override
   public Classpath getClasspath() {
     return this.classPath;
+  }
+
+  @Override
+  public Imports getImports() {
+    return this.imports;
   }
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
@@ -295,11 +304,11 @@ public class ClojureEvaluator extends BaseEvaluator {
     }
 
     if (listOfImports == null || listOfImports.isEmpty()) {
-      imports = new ArrayList<>();
+      imports = new Imports();
     } else {
       for (String line : listOfImports) {
         if (!line.trim().isEmpty()) {
-          imports.add(line);
+          addImportPath(new ImportPath(line));
         }
       }
     }
@@ -310,6 +319,16 @@ public class ClojureEvaluator extends BaseEvaluator {
   @Override
   protected boolean addJar(PathToJar path) {
     return classPath.add(path);
+  }
+
+  @Override
+  protected boolean addImportPath(ImportPath anImport) {
+    return imports.add(anImport);
+  }
+
+  @Override
+  protected boolean removeImportPath(ImportPath anImport) {
+    return imports.remove(anImport);
   }
 
   public AutocompleteResult autocomplete(String code, int caretPosition) {

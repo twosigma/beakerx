@@ -13,19 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jupyter.commands;
+package com.twosigma.beakerx.kernel.commands;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
-import com.twosigma.beakerx.kernel.commands.MagicCommandResult;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;

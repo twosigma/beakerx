@@ -113,6 +113,23 @@ class NanoPlot(TimePlot):
     self.chart.add(item)
     self.model = self.chart.transform()
     return self
+    
+  def getChartColors(self, columnNames, colors):
+    chartColors = []
+    if colors is not None:
+      for i in range(len(columnNames)):
+        if i < len(colors):
+          chartColors.append(self.chart.createChartColor(colors[i]))
+    return chartColors
+
+  def createChartColor(self, color):
+    if isinstance(color, list):
+      try:
+        return Color(color[0], color[1], color[2])
+      except  Exception:
+        raise Exception("Color list too short")
+    else:
+      return color
 
 
 class TimePlot(Plot):
@@ -221,36 +238,18 @@ class CombinedPlot(Plot):
     self.model = self.chart.transform()
 
   def add(self, item, weight):
-    if isinstance(item, XYChart):
-      self.chart.plots.append(item)
+    if isinstance(item.chart, XYChart):
+      self.chart.plots.append(item.chart)
       self.chart.weights.append(weight)
     elif isinstance(item, list):
       for elem in item:
-        self.chart.add(elem, 1)
+        self.chart.add(elem.chart, 1)
     else:
       raise Exception('CombinedPlot takes XYChart or List of XYChart')
     if len(self.chart.plots) == 1:
       self.chart.plot_type=self.chart.plots[0].type
     self.model = self.chart.transform()
     return self
-
-
-  def getChartColors(self, columnNames, colors):
-    chartColors = []
-    if colors is not None:
-      for i in range(len(columnNames)):
-        if i < len(colors):
-          chartColors.append(self.chart.createChartColor(colors[i]))
-    return chartColors
-
-  def createChartColor(self, color):
-    if isinstance(color, list):
-      try:
-        return Color(color[0], color[1], color[2])
-      except  Exception:
-        raise Exception("Color list too short")
-    else:
-      return color
 
 
 def parseJSON(out):

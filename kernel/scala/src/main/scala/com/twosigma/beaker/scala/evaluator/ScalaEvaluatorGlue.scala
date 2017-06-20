@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
  
-package com.twosigma.beaker.scala.evaluator;
+package com.twosigma.beakerx.scala.evaluator;
 
-import com.twosigma.beaker.autocomplete.AutocompleteResult
-import com.twosigma.beaker.jvm.`object`.SimpleEvaluationObject
+import com.twosigma.beakerx.autocomplete.AutocompleteResult
+import com.twosigma.beakerx.jvm.`object`.SimpleEvaluationObject
 
 import scala.tools.jline_embedded.console.completer.Completer
 import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter.Completion.Candidates
-import scala.tools.nsc.interpreter.Results.Success
+import scala.tools.nsc.interpreter.Results.{Error, Incomplete, Success}
 import scala.tools.nsc.interpreter.{Completion, IMain, JList, PresentationCompilerCompleter}
 
 case class ResetState(val state: String);
@@ -88,7 +88,8 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     try {
       interpreter.interpret(code) match {
         case Success => "";
-        case _ => baos.toString();
+        case Incomplete => "input is incomplete"
+        case Error => baos.toString();
       }
     } catch {
       case ex: Throwable => ex.toString();
@@ -102,7 +103,8 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     try {
       interpreter.interpret(code) match {
         case Success => out.finished(getOut.asInstanceOf[java.lang.Object]);
-        case _ => out.error(baos.toString());
+        case Incomplete => out.error("input is incomplete")
+        case Error => out.error(baos.toString());
       }
     } catch {
       case ex: Throwable => out.error(ex);

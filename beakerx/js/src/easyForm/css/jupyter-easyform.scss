@@ -55,3 +55,21 @@
     margin-bottom: 0;
   }
 }
+
+.easyform-combobox {
+  position: relative;
+  display: inline-block;
+
+  .easyform-combobox-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-left: -1px;
+    padding: 0;
+  }
+
+  .easyform-combobox-input {
+    margin: 0;
+    padding: 0 10px;
+  }
+}

@@ -60,9 +60,11 @@ def parseBkr(data):
     for cell in data['cells']:
         if cell['type'] == 'code':
             metadata = {}
+            if 'initialization' in cell:
+                metadata['init_cell'] = True
             if 'tags' in cell:
                 tags = [cell['tags']]
-                metadata = {"tags": tags}
+                metadata['tags'] = tags
             if cell['evaluator'] != kernel_name:
                 if cell['evaluator'] == 'TeX':
                     nb.cells.append(new_markdown_cell("${0}$".format(getFixedCodeText(cell['input']))))

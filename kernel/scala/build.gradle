@@ -21,7 +21,7 @@ apply plugin: 'maven-publish'
 def final kernelIdName = 'scala'
 def final toReplace = '__PATH__'
 
-mainClassName = 'com.twosigma.beaker.scala.ScalaKernel'
+mainClassName = 'com.twosigma.beakerx.scala.kernel.Scala'
 
 configurations {
   antlr

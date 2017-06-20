@@ -1829,12 +1829,6 @@ define([
         self.updateRowDisplayBtts();
         self.updateToggleColumnBtts();
       })
-      .on('key-focus', function ( e, datatable, cell, originalEvent) {
-        self.focussedCell = cell.index();
-      })
-      .on('key-blur', function ( e, datatable, cell) {
-        self.focussedCell = null;
-      })
       .on('column-reorder', function(e, settings, details) {
         var selectedCells = self.table.cells({ selected: true });
         var indexes = selectedCells.indexes();

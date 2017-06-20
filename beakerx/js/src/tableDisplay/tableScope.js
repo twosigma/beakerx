@@ -2482,7 +2482,9 @@ define([
           ].join('');
         }
 
-        out = out + exportOptions.eol;
+        if (!exportOptions.excludeHeaders) {
+          out = out + exportOptions.eol;
+        }
       }
 
       return out;
@@ -2595,7 +2597,7 @@ define([
     this.deselectCells(this.table.cells({ selected: true }));
   };
 
-  TableScope.prototype.doCopyToClipboard = function(excludeHeaders) {
+  TableScope.prototype.doCopyToClipboard = function() {
     var self = this;
     var queryCommandEnabled = true;
     try {
@@ -2622,7 +2624,7 @@ define([
     };
 
     var cells = self.table.cells({ selected: true });
-    var cellsData = self.exportCellsTo(cells, 'tabs', excludeHeaders);
+    var cellsData = self.exportCellsTo(cells, 'tabs', cells.indexes().length === 1);
 
     executeCopy(cellsData);
   };
@@ -2859,9 +2861,6 @@ define([
           break;
         case 'dt-copy-to-clipboard':
           self.doCopyToClipboard();
-          break;
-        case 'dt-copy-to-clipboard-as-text':
-          self.doCopyToClipboard(true);
           break;
         case 'dt-save-all':
           self.doCSVExport(false);

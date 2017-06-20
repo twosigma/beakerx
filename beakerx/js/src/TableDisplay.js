@@ -79,6 +79,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     this._currentScope.enableJupyterKeyHandler();
     this._currentScope.run();
     this._currentScope.initColumLimitModal();
+    this._currentScope.setWidgetView(this);
   },
 
   showWarning: function(data) {

@@ -28,3 +28,7 @@ kernel/*/build/
 /.project
 /.nb-gradle/
 .nb-gradle-properties
+__pycache__/
+beakerx/__pycache__/
+beakerx/plot/__pycache__/
+js/bower_components/

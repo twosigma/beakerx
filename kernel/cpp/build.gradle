@@ -21,7 +21,7 @@ sourceCompatibility = 1.8
 def final kernelIdName = 'cpp'
 def final toReplace = '__PATH__'
 
-mainClassName = 'com.twosigma.beaker.cpp.CppKernelMain'
+mainClassName = 'com.twosigma.beakerx.cpp.kernel.Cpp'
 
 configurations {
   antlr
@@ -46,7 +46,7 @@ dependencies {
 task antlr4_java(type: JavaExec) {
   main = "org.antlr.v4.Tool"
   workingDir = "src/main/antlr4/"
-  args = ["CPP14.g4", "-o", "../java/com/twosigma/beaker/cpp/autocomplete", "-listener", "-no-visitor", "-package", "com.twosigma.beaker.cpp.autocomplete", "-encoding", "UTF-8"]
+  args = ["CPP14.g4", "-o", "../java/com/twosigma/beakerx/cpp/autocomplete", "-listener", "-no-visitor", "-package", "com.twosigma.beakerx.cpp.autocomplete", "-encoding", "UTF-8"]
   classpath = configurations.antlr
 }
 
@@ -120,7 +120,7 @@ def java_home = System.properties.'java.home'
 task makeCppKernelHeader(type: Exec) {
   workingDir './build/classes/main'
   def jvmDir = project(':kernel:cpp').projectDir
-  commandLine 'javah', '-cp', "${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/resources/CppKernel.h', 'com.twosigma.beaker.cpp.utils.CppKernel'
+  commandLine 'javah', '-cp', "${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/resources/CppKernel.h', 'com.twosigma.beakerx.cpp.utils.CppKernel'
 }
 
 task makeCRunLib(type: Exec, dependsOn: ['makeCppKernelHeader']) {
@@ -194,7 +194,7 @@ jacocoTestReport {
   }
   afterEvaluate {
     classDirectories = files(classDirectories.files.collect {
-      fileTree(dir: it, exclude: 'com/twosigma/beaker/cpp/autocomplete/CPP14*')
+      fileTree(dir: it, exclude: 'com/twosigma/beakerx/cpp/autocomplete/CPP14*')
     })
   }
 }

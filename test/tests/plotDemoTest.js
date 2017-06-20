@@ -19,7 +19,7 @@ var beakerxPO;
 
 describe('plotDemo page', function() {
 
-    beforeEach(function(done) {
+    beforeAll(function(done) {
         beakerxPO = new BeakerXPageObject();
         browser
             .url(beakerxPO.baseURL)
@@ -29,10 +29,18 @@ describe('plotDemo page', function() {
         browser.window(browser.windowHandles().value[1]);
     });
 
-    it('can run Groovy cell', function(done) {
-        browser.waitForEnabled('i.kernel_idle_icon', 30000);
-        browser.click('div.code_cell');
-        beakerxPO.clickRunCell();
+    it('Can run Groovy cell', function(done) {
+        beakerxPO.kernelIdleIcon.waitForEnabled();
+        beakerxPO.runCodeCellByIndex(0);
+        browser.call(done);
+    });
+
+    it('Should create dtcontainer', function(done) {
+        beakerxPO.kernelIdleIcon.waitForEnabled();
+        var codeCell = beakerxPO.runCodeCellByIndex(0);
+
+        var dtContainer = codeCell.$('div.dtcontainer');
+        dtContainer.waitForEnabled();
         browser.call(done);
     });
 

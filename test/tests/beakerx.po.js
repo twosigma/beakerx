@@ -17,18 +17,31 @@
 var BeakerXPageObject = function() {
 
     this.baseURL = 'http://127.0.0.1:8888/tree/demoFiles';
+    this.kernelIdleIcon = $('i.kernel_idle_icon');
 
     this.loginJupyter = function(){
         browser.setValue('#password_input', 'beakerx');
         browser.click('#login_submit');
-        browser.waitForEnabled('=plotDemo.ipynb', 30000);
+        browser.waitForEnabled('=plotDemo.ipynb');
     }
 
     this.clickRunCell = function(){
         var cssRunCell = 'button[data-jupyter-action="jupyter-notebook:run-cell-and-select-next"]';
-        browser.waitForEnabled(cssRunCell, 30000);
+        browser.waitForEnabled(cssRunCell);
         browser.click(cssRunCell);
-        browser.waitForEnabled('i.kernel_idle_icon', 30000);
+        this.kernelIdleIcon.waitForEnabled();
+    }
+
+    this.getCodeCellByIndex = function(index){
+        return $$('div.code_cell')[index];
+    }
+
+    this.runCodeCellByIndex = function(index){
+        var codeCell = this.getCodeCellByIndex(index);
+        codeCell.scroll()
+        codeCell.click();
+        this.clickRunCell();
+        return codeCell;
     }
 
 };

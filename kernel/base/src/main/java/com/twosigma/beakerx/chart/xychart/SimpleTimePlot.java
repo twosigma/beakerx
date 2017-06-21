@@ -65,6 +65,7 @@ public class SimpleTimePlot extends TimePlot{
     }
 
     reinitialize();
+    this.sendModel();
   }
 
   private List<Color> getChartColors() {

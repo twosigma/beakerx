@@ -23,6 +23,7 @@ import com.twosigma.beakerx.chart.actions.GraphicsActionListener;
 import com.twosigma.beakerx.chart.actions.GraphicsActionObject;
 import com.twosigma.beakerx.widgets.BeakerxWidget;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -99,12 +100,12 @@ public abstract class Graphics implements Serializable, Cloneable{
     GraphicsActionObject ao = (GraphicsActionObject)params[0];
     ao.setGraphics(this);
     onClickListener.execute(ao);
-    return null;
+    return MIMEContainer.HIDDEN;
   }
   
-  public void fireClick(GraphicsActionObject actionObject, Message message) {
+  public void fireClick(BeakerxWidget widget, GraphicsActionObject actionObject, Message message) {
     if (onClickListener != null) {
-      BeakerxWidget.handleCompiledCode(message, this::clickHandler, actionObject);
+      widget.handleCompiledCode(message, false, this::clickHandler, actionObject);
     }
   }
 
@@ -133,13 +134,13 @@ public abstract class Graphics implements Serializable, Cloneable{
     GraphicsActionObject ao = (GraphicsActionObject)params[1];
     ao.setGraphics(this);
     listener.execute(ao);
-    return null;
+    return MIMEContainer.HIDDEN;
   }
 
-  public void fireOnKey(String key, GraphicsActionObject actionObject, Message message) {
+  public void fireOnKey(BeakerxWidget widget, String key, GraphicsActionObject actionObject, Message message) {
     GraphicsActionListener listener = onKeyListeners.get(key);
     if (listener != null) {
-      BeakerxWidget.handleCompiledCode(message, this::onKeyHandler, listener, actionObject);
+      widget.handleCompiledCode(message, false, this::onKeyHandler, listener, actionObject);
     }
   }
 

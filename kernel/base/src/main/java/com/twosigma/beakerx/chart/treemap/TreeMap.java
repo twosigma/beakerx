@@ -88,10 +88,10 @@ public class TreeMap extends Chart {
 
   public TreeMap(final TreeMapNode root) {
     super();
-    setRoot(root);
     openComm();
     setColorProvider(new RandomColorProvider());
     setShowLegend(false);
+    this.root = root;
     this.sendModel();
   }
 
@@ -112,6 +112,7 @@ public class TreeMap extends Chart {
    */
   public void setRoot(final TreeMapNode newRoot) {
     root = newRoot;
+    this.sendModel();
   }
 
   public Mode getMode() {

@@ -65,7 +65,7 @@ module.exports = function(TableScope) {
         }
       })
       .on('click', 'td', function(e) {
-        if (e.shiftKey && self.prevFocusedCell) {
+        if (e.shiftKey) {
           return;
         }
 
@@ -78,17 +78,22 @@ module.exports = function(TableScope) {
 
     self.table
       .on('key-blur', function () {
-        self.prevFocusedCell = _.clone(self.focussedCell);
         self.focussedCell = null;
       })
       .on('key-focus', function (e, datatable, cell, originalEvent) {
         self.focussedCell = cell.index();
 
-        if (!originalEvent.shiftKey || !self.prevFocusedCell) {
+        if (!originalEvent.shiftKey) {
           return;
         }
 
-        self.selectCellsRange(self.prevFocusedCell, cell);
+        var selectedCells = self.table.cells({ selected: true });
+        var selectedCellsIndexes = selectedCells.indexes();
+        var minSelectedRowIndex = Math.min.apply(null, selectedCellsIndexes.pluck('row').sort().unique());
+        var minSelectedColumnIndex = Math.min.apply(null, selectedCellsIndexes.pluck('column').sort().unique());
+
+        selectedCells.deselect();
+        self.selectCellsRange({ row: minSelectedRowIndex, column: minSelectedColumnIndex }, cell);
       });
   };
 };

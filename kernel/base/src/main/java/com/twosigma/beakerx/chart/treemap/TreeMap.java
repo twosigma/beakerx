@@ -82,13 +82,13 @@ public class TreeMap extends Chart {
   private ValueAccessor valueAccessor = ValueAccessor.VALUE;
 
 
-  public TreeMap(final TreeMapNode root) {
-    this();
-    setRoot(root);
+  public TreeMap() {
+    this(null);
   }
 
-  public TreeMap() {
+  public TreeMap(final TreeMapNode root) {
     super();
+    setRoot(root);
     openComm();
     setColorProvider(new RandomColorProvider());
     setShowLegend(false);

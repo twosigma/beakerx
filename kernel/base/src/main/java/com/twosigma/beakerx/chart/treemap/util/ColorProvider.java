@@ -55,8 +55,17 @@ public abstract class ColorProvider implements Serializable {
   }
 
   protected double getValue(TreeMapNode node) {
-    return (node != null ? ((valueAccessor == ValueAccessor.VALUE) ?
-      node.getValue().getValue() : node.getWeight()) : 0.00);
+    double ret = 0.00;
+    if(node != null){
+      if(ValueAccessor.VALUE == valueAccessor){
+        if(node.getValue() != null){
+          ret = node.getValue().getValue();
+        }
+      }else{
+        ret = node.getWeight();
+      }
+    }
+    return ret;
   }
 
   protected Double maxValue;

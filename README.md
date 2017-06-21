@@ -48,7 +48,7 @@ jupyter notebook
 ```
 
 ## Build including C++ kernel
-
+Make sure you have clang installed, then:
 ```
 ./gradlew --no-daemon build -DincludeCpp=true
 ./gradlew --no-daemon kernelInstall -DincludeCpp=true

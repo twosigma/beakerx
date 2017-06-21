@@ -92,6 +92,7 @@ public class TreeMap extends Chart {
     openComm();
     setColorProvider(new RandomColorProvider());
     setShowLegend(false);
+    this.sendModel();
   }
 
   /**

@@ -27,6 +27,7 @@ public class TimePlot extends XYChart {
   public TimePlot(){
     super();
     openComm();
+    this.sendModel();
   }
 
   @Override

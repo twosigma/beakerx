@@ -157,6 +157,7 @@ public class TableDisplay extends BeakerxWidget {
     }
     openComm();
     addToValues(buildValues(v, serializer));
+    this.sendModel();
   }
 
   public TableDisplay(Map<?, ?> v) {
@@ -167,6 +168,7 @@ public class TableDisplay extends BeakerxWidget {
     this.subtype = DICTIONARY_SUBTYPE;
     openComm();
     addToValues(buildValuesFromMap(v));
+    this.sendModel();
   }
 
   private void addToValues(List<List<?>> items) {

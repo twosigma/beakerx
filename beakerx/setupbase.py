@@ -58,10 +58,11 @@ else:
 
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
-is_repo = os.path.exists(pjoin(here, '.git'))
-node_modules = pjoin(here, 'node_modules')
+root = os.path.abspath(os.path.join(here, os.pardir))
+is_repo = os.path.exists(pjoin(root, '.git'))
+node_modules = pjoin(here, 'js', 'node_modules')
 npm_path = ':'.join([
-    pjoin(here, 'node_modules', '.bin'),
+    pjoin(node_modules, '.bin'),
     os.environ.get('PATH', os.defpath),
 ])
 
@@ -357,7 +358,7 @@ def install_nb_conda_kernels(enable=False, disable=False, prefix=None):
     return NBCondaKernels
     
 
-def run_gradle(path=here, cmd='build'):
+def run_gradle(path=root, cmd='build'):
     """Return a Command for running gradle scripts.
     
     Parameters

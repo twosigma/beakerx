@@ -1830,6 +1830,7 @@ define([
         self.interactMode = "zoom";
       }
 
+      self.enableZoomWheel();
     }
 
     self.jqsvg.css("cursor", "auto");

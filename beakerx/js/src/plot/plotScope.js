@@ -1833,6 +1833,7 @@ define([
     }
 
     self.jqsvg.css("cursor", "auto");
+    self.enableZoomWheel();
   };
 
   PlotScope.prototype.fixFocus = function(focus) {

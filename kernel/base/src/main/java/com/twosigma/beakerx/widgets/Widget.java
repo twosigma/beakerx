@@ -190,7 +190,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
    * @param handler
    * @param params
    */
-  public void handleCompiledCode(Message message, ExecuteCompiledCode handler, Object ... params) {
+  public void handleCompiledCode(Message message, boolean publishResult, ExecuteCompiledCode handler, Object ... params) {
     final MessageCreator mc = new MessageCreator(KernelManager.get());
     final SimpleEvaluationObject seo = new SimpleEvaluationObject("",(seoResult) -> {
       //nothing to do
@@ -208,7 +208,9 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
       if(result != null && message != null){
         MIMEContainer resultString = SerializeToString.doit(result);
         logger.info("code execution result is = " + resultString.getMime());
-        KernelManager.get().publish(mc.buildDisplayData(message, resultString));
+        if(publishResult){
+          KernelManager.get().publish(mc.buildDisplayData(message, resultString));
+        }
       }
     } catch (Exception e) {
       if(message != null){

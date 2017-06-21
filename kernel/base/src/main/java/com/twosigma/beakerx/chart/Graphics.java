@@ -105,7 +105,7 @@ public abstract class Graphics implements Serializable, Cloneable{
   
   public void fireClick(BeakerxWidget widget, GraphicsActionObject actionObject, Message message) {
     if (onClickListener != null) {
-      widget.handleCompiledCode(message, this::clickHandler, actionObject);
+      widget.handleCompiledCode(message, false, this::clickHandler, actionObject);
     }
   }
 
@@ -140,7 +140,7 @@ public abstract class Graphics implements Serializable, Cloneable{
   public void fireOnKey(BeakerxWidget widget, String key, GraphicsActionObject actionObject, Message message) {
     GraphicsActionListener listener = onKeyListeners.get(key);
     if (listener != null) {
-      widget.handleCompiledCode(message, this::onKeyHandler, listener, actionObject);
+      widget.handleCompiledCode(message, false, this::onKeyHandler, listener, actionObject);
     }
   }
 

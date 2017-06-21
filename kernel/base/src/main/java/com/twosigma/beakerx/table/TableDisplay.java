@@ -203,6 +203,8 @@ public class TableDisplay extends BeakerxWidget {
   protected void openComm() {
     super.openComm();
     getComm().addMsgCallbackList((Handler<Message>) this::handleSetDetails);
+    getComm().addMsgCallbackList(this::handleOnContextMenu);
+    getComm().addMsgCallbackList((Handler<Message>)this::handleDoubleClick);
   }
 
   public static TableDisplay createTableDisplayForMap(Map<?, ?> v) {
@@ -621,7 +623,6 @@ public class TableDisplay extends BeakerxWidget {
   public void setDoubleClickAction(Object listener) {
     this.doubleClickListener = listener;
     this.doubleClickTag = null;
-    getComm().addMsgCallbackList((Handler<Message>)this::handleDoubleClick);
     sendModelUpdate(serializeDoubleClickAction(this.doubleClickTag,hasDoubleClickAction()));
   }
 
@@ -641,7 +642,7 @@ public class TableDisplay extends BeakerxWidget {
   public void fireDoubleClick(List<Object> params, Message message) {
     if (this.doubleClickListener != null) {
       params.add(this);
-      handleCompiledCode(message, this::doubleClickHandler, params);
+      handleCompiledCode(message, false, this::doubleClickHandler, params);
       sendModel();
     }
   }
@@ -668,7 +669,7 @@ public class TableDisplay extends BeakerxWidget {
     Object contextMenuListener = this.contextMenuListeners.get(name);
     if (contextMenuListener != null) {
       params.add(this);
-      handleCompiledCode(message, this::contextMenuClickHandlerCommon, contextMenuListener, params);
+      handleCompiledCode(message, false, this::contextMenuClickHandlerCommon, contextMenuListener, params);
       sendModel();
     }
   }
@@ -747,7 +748,6 @@ public class TableDisplay extends BeakerxWidget {
 
   public void addContextMenuItem(String name, Object closure) {
     this.contextMenuListeners.put(name, closure);
-    getComm().addMsgCallbackList(this::handleOnContextMenu);
   }
 
   public void addContextMenuItem(String name, String tagName) {

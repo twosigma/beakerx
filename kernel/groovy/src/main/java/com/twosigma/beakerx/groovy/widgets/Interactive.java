@@ -44,7 +44,7 @@ public class Interactive extends InteractiveBase{
         
         @Override
         public void updateValue(Object value, Message message) {
-          widget.handleCompiledCode(message, this::processCode, null);
+          widget.handleCompiledCode(message, true, this::processCode, null);
         }
         
         private Object[] getWidgetValues(){

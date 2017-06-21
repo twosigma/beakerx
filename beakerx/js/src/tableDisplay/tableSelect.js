@@ -54,6 +54,7 @@ module.exports = function(TableScope) {
         filter: 'tr[role="row"] td',
         delay: 150,
         cancel: 'thead',
+        appendTo: self.element,
         start: function() {
           self.deselectCells(self.table.cells({ selected: true }));
         },

@@ -54,6 +54,10 @@ $highlight-blue: #39a9ed;
       visibility: visible;
     }
   }
+
+  .ui-selectable-helper {
+    border: none;
+  }
 }
 
 table.dataTable {
@@ -525,9 +529,4 @@ $fix-col-separator-width: 3px;
 .ui-tooltip.ui-widget-shadow {
   opacity: 1;
   z-index: 900;
-}
-
-.ui-selectable-helper {
-  border: none;
-  outline: none;
 }

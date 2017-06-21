@@ -1829,12 +1829,6 @@ define([
         self.updateRowDisplayBtts();
         self.updateToggleColumnBtts();
       })
-      .on('key-focus', function ( e, datatable, cell, originalEvent) {
-        self.focussedCell = cell.index();
-      })
-      .on('key-blur', function ( e, datatable, cell) {
-        self.focussedCell = null;
-      })
       .on('column-reorder', function(e, settings, details) {
         var selectedCells = self.table.cells({ selected: true });
         var indexes = selectedCells.indexes();
@@ -2401,19 +2395,22 @@ define([
     return this.exportCellsTo(this.table.cells(), 'csv');
   };
 
-  TableScope.prototype.exportCellsTo = function(cells, format) {
+  TableScope.prototype.exportCellsTo = function(cells, format, excludeHeaders) {
     var self = this;
     var i;
     var j;
     var len;
+    var data;
     var columnTitle;
-    var out = '';
-    var eol = '\n';
-    var sep = ',';
-    var qot = '"';
     var fix = function(s) { return s.replace(/"/g, '""');};
     var model = self.model.getCellModel();
     var hasIndex = model.hasIndex === "true";
+    var exportOptions = {
+      sep: ',',
+      qot: '"',
+      eol: '\n',
+      excludeHeaders: excludeHeaders
+    };
 
     function getExportOptions() {
       var cellIndexes = cells.indexes();
@@ -2437,47 +2434,69 @@ define([
       }
     }
 
+    function exportColumnHeaders(data, exportOptions) {
+      var out = '';
+
+      if (exportOptions.excludeHeaders) {
+        return out;
+      }
+
+      for (i = 0, len = data.header.length; i < len; i++) {
+        if (out !== '') {
+          out = out + exportOptions.sep;
+        }
+        columnTitle = (hasIndex && i === 0 && !data.header[i]) ? "Index" : fix(data.header[i]);
+        out = out + exportOptions.qot + columnTitle + exportOptions.qot;
+      }
+
+      return out + exportOptions.eol;
+    }
+
+    function exportCells(data, exportOptions) {
+      var out = '';
+
+      for (i = 0; i < data.body.length; i++) {
+        var row = data.body[i];
+
+        for (j = 0; j < row.length; j++) {
+          if (j !== 0) {
+            out = out + exportOptions.sep;
+          }
+
+          var cellData = row[j];
+          if (cellData == null) {
+            cellData = '';
+          }
+          cellData = cellData + '';
+          out = [
+            out,
+            exportOptions.qot,
+            (cellData !== undefined && cellData !== null ? fix(cellData) : ''),
+            exportOptions.qot
+          ].join('');
+        }
+
+        if (!exportOptions.excludeHeaders) {
+          out = out + exportOptions.eol;
+        }
+      }
+
+      return out;
+    }
+
     data = self.table.buttons.exportData(getExportOptions());
 
     if (format === 'tabs') {
-      sep = '\t';
-      qot = '';
+      exportOptions.sep = '\t';
+      exportOptions.qot = '';
       fix = function(s) { return s.replace(/\t/g, ' ');};
     }
 
     if (navigator.appVersion.indexOf('Win') !== -1) {
-      eol = '\r\n';
+      exportOptions.eol = '\r\n';
     }
 
-    for (i = 0, len = data.header.length; i < len; i++) {
-      if (out !== '') {
-        out = out + sep;
-      }
-      columnTitle = (hasIndex && i === 0 && !data.header[i]) ? "Index" : fix(data.header[i]);
-      out = out + qot + columnTitle + qot;
-    }
-
-    out = out + eol;
-
-    for (i = 0; i < data.body.length; i++) {
-      var row = data.body[i];
-
-      for (j = 0; j < row.length; j++) {
-        if (j !== 0) {
-          out = out + sep;
-        }
-
-        var d = row[j];
-        if (d == null) {
-          d = '';
-        }
-        d = d + '';
-        out = out + qot + (d !== undefined && d !== null ? fix(d) : '') + qot;
-      }
-      out = out + eol;
-    }
-
-    return out;
+    return  exportColumnHeaders(data, exportOptions) + exportCells(data, exportOptions);
   };
 
   TableScope.prototype.showFilterElements = function() {
@@ -2599,7 +2618,7 @@ define([
     };
 
     var cells = self.table.cells({ selected: true });
-    var cellsData = self.exportCellsTo(cells, 'tabs');
+    var cellsData = self.exportCellsTo(cells, 'tabs', cells.indexes().length === 1);
 
     executeCopy(cellsData);
   };

@@ -16,11 +16,37 @@
 
 package com.twosigma.beakerx.chart;
 
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.CROSSHAIR;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.DOMAIN_AXIS_LABEL;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.LOG_Y;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.OMIT_CHECKBOXES;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.RANGE_AXES;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.TIMEZONE;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.X_LOWER_MARGIN;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.X_UPPER_MARGIN;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_AUTO_RANGE;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_AUTO_RANGE_INCLUDES_ZERO;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_LABEL;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_LOWER_BOUND;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_LOWER_MARGIN;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_UPPER_BOUND;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_UPPER_MARGIN;
+import static com.twosigma.beakerx.chart.serializer.ChartSerializer.CHART_TITLE;
+import static com.twosigma.beakerx.chart.serializer.ChartSerializer.CUSTOM_STYLES;
+import static com.twosigma.beakerx.chart.serializer.ChartSerializer.ELEMENT_STYLES;
+import static com.twosigma.beakerx.chart.serializer.ChartSerializer.INIT_HEIGHT;
+import static com.twosigma.beakerx.chart.serializer.ChartSerializer.INIT_WIDTH;
+import static com.twosigma.beakerx.chart.serializer.ChartSerializer.LEGEND_LAYOUT;
+import static com.twosigma.beakerx.chart.serializer.ChartSerializer.LEGEND_POSITION;
+import static com.twosigma.beakerx.chart.serializer.HeatMapSerializer.COLOR;
+import static com.twosigma.beakerx.chart.serializer.XYChartSerializer.CONSTANT_LINES;
+
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.twosigma.beakerx.chart.categoryplot.CategoryPlot;
+import com.twosigma.beakerx.chart.categoryplot.plotitem.CategoryArea;
 import com.twosigma.beakerx.chart.categoryplot.plotitem.CategoryBars;
 import com.twosigma.beakerx.chart.categoryplot.plotitem.CategoryGraphics;
 import com.twosigma.beakerx.chart.categoryplot.plotitem.CategoryLines;
@@ -32,6 +58,7 @@ import com.twosigma.beakerx.chart.legend.LegendLayout;
 import com.twosigma.beakerx.chart.legend.LegendPosition;
 import com.twosigma.beakerx.chart.serializer.AreaSerializer;
 import com.twosigma.beakerx.chart.serializer.BarsSerializer;
+import com.twosigma.beakerx.chart.serializer.CategoryAreasSerializer;
 import com.twosigma.beakerx.chart.serializer.CategoryBarsSerializer;
 import com.twosigma.beakerx.chart.serializer.CategoryLinesSerializer;
 import com.twosigma.beakerx.chart.serializer.CategoryPlotSerializer;
@@ -58,7 +85,6 @@ import com.twosigma.beakerx.chart.serializer.YAxisSerializer;
 import com.twosigma.beakerx.chart.treemap.Mode;
 import com.twosigma.beakerx.chart.treemap.TreeMap;
 import com.twosigma.beakerx.chart.treemap.ValueAccessor;
-import com.twosigma.beakerx.chart.treemap.util.IToolTipBuilder;
 import com.twosigma.beakerx.chart.xychart.CombinedPlot;
 import com.twosigma.beakerx.chart.xychart.XYChart;
 import com.twosigma.beakerx.chart.xychart.plotitem.Area;
@@ -74,39 +100,13 @@ import com.twosigma.beakerx.chart.xychart.plotitem.Stems;
 import com.twosigma.beakerx.chart.xychart.plotitem.Text;
 import com.twosigma.beakerx.chart.xychart.plotitem.XYGraphics;
 import com.twosigma.beakerx.chart.xychart.plotitem.YAxis;
-import net.sf.jtreemap.swing.TreeMapNode;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.CROSSHAIR;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.DOMAIN_AXIS_LABEL;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.LOG_Y;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.OMIT_CHECKBOXES;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.RANGE_AXES;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.TIMEZONE;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.X_LOWER_MARGIN;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.X_UPPER_MARGIN;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_AUTO_RANGE;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_AUTO_RANGE_INCLUDES_ZERO;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_LABEL;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_LOWER_BOUND;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_LOWER_MARGIN;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_UPPER_BOUND;
-import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.Y_UPPER_MARGIN;
-import static com.twosigma.beakerx.chart.serializer.ChartSerializer.CHART_TITLE;
-import static com.twosigma.beakerx.chart.serializer.ChartSerializer.CUSTOM_STYLES;
-import static com.twosigma.beakerx.chart.serializer.ChartSerializer.ELEMENT_STYLES;
-import static com.twosigma.beakerx.chart.serializer.ChartSerializer.INIT_HEIGHT;
-import static com.twosigma.beakerx.chart.serializer.ChartSerializer.INIT_WIDTH;
-import static com.twosigma.beakerx.chart.serializer.ChartSerializer.LEGEND_LAYOUT;
-import static com.twosigma.beakerx.chart.serializer.ChartSerializer.LEGEND_POSITION;
-import static com.twosigma.beakerx.chart.serializer.HeatMapSerializer.COLOR;
-import static com.twosigma.beakerx.chart.serializer.XYChartSerializer.CONSTANT_LINES;
+import net.sf.jtreemap.swing.TreeMapNode;
 
 public class ChartToJson {
 
@@ -129,6 +129,7 @@ public class ChartToJson {
     serializerMap.put(Text.class, new TextSerializer());
     serializerMap.put(ConstantLine.class, new ConstantLineSerializer());
     serializerMap.put(ConstantBand.class, new ConstantBandSerializer());
+    serializerMap.put(CategoryArea.class, new CategoryAreasSerializer());
     serializerMap.put(CategoryBars.class, new CategoryBarsSerializer());
     serializerMap.put(CategoryStems.class, new CategoryStemsSerializer());
     serializerMap.put(CategoryPoints.class, new CategoryPointsSerializer());
@@ -473,7 +474,8 @@ public class ChartToJson {
     return value;
   }
 
-  public static Map<Object, Object> serializeCategoryGraphics(List<CategoryGraphics> categoryGraphics) {
+  public static Map<Object, Object> serializeCategoryGraphics(
+      List<CategoryGraphics> categoryGraphics) {
     List result = new ArrayList();
     for (CategoryGraphics item : categoryGraphics) {
       result.add(toJson(item));
@@ -489,13 +491,14 @@ public class ChartToJson {
     return value;
   }
 
-  public static Map<Object, Object> serializeCategoryNamesLabelAngle(double categoryNamesLabelAngle) {
+  public static Map<Object, Object> serializeCategoryNamesLabelAngle(
+      double categoryNamesLabelAngle) {
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put(CategoryPlotSerializer.CATEGORY_NAMES_LABEL_ANGLE, categoryNamesLabelAngle);
     return value;
   }
 
-  public static Map<Object, Object>  serializeCategoryMargin(double categoryMargin) {
+  public static Map<Object, Object> serializeCategoryMargin(double categoryMargin) {
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put(CategoryPlotSerializer.CATEGORY_MARGIN, categoryMargin);
     return value;

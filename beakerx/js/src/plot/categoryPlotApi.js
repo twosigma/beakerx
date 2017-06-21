@@ -108,6 +108,42 @@
    inheritsFrom(CategoryLines, CategoryGraphics);
    //add prototype methods here
 
+   var CategoryAreas = function (data) {
+     if (!data) { data = {}; }
+     CategoryGraphics.call(this, data);
+     _.extend(this, {
+       "type": "CategoryAreas",
+       "labelPosition": getValue(data, 'labelPosition', LabelPositionType.CENTER)
+     });
+     if (data.base instanceof Array) {
+       this.bases = data.base;
+     } else {
+       this.base = getValue(data, 'base', 0);
+     }
+     if (data.width instanceof Array) {
+       this.widths = data.width;
+     } else {
+       this.width = data.width;
+     }
+     if (data.outlineColor instanceof Array) {
+       this.outline_colors = getColor(data.outlineColor);
+     } else {
+       this.outline_color = getColor(data.outlineColor);
+     }
+     if (data.fill instanceof Array) {
+       this.fills = data.fill;
+     } else {
+       this.fill = data.fill;
+     }
+     if (data.drawOutline instanceof Array) {
+       this.outlines = data.drawOutline;
+     } else {
+       this.outline = getValue(data, 'drawOutline', false);
+     }
+   };
+   inheritsFrom(CategoryAreas, CategoryGraphics);
+   //add prototype methods here
+
    var CategoryBars = function (data) {
      if (!data) { data = {}; }
      CategoryGraphics.call(this, data);
@@ -235,6 +271,7 @@
    var api = {
      CategoryPlot: CategoryPlot,
      CategoryLines: CategoryLines,
+     CategoryAreas: CategoryAreas,
      CategoryBars: CategoryBars,
      CategoryPoints: CategoryPoints,
      CategoryStems: CategoryStems,

@@ -1830,6 +1830,7 @@ define([
         self.interactMode = "zoom";
       }
 
+      self.enableZoomWheel();
     }
 
     self.jqsvg.css("cursor", "auto");
@@ -1911,6 +1912,18 @@ define([
     focus.xspan = focus.xr - focus.xl;
     focus.yspan = focus.yr - focus.yl;
     focus.yspan_r = focus.yr_r - focus.yl_r;
+
+
+    // Calculate zoom level
+    var W = plotUtils.safeWidth(self.jqsvg);
+    var H = plotUtils.safeHeight(self.jqsvg);
+    var newK = ((1 / self.lastk) * (W / box.w + H / box.h) / 2); // Calculate average zoom level
+    var zoomLevel = ((newK - 1) / 0.5) + 1;
+    var transform = d3.zoomIdentity.scale(zoomLevel);
+
+    self.lastk = 1/newK;
+    self.svg.call(self.zoomObj.transform, transform);
+
     self.calcMapping(true);
     self.emitZoomLevelChange();
   };

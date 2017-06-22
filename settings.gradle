@@ -23,5 +23,7 @@ include 'kernel:scala'
 include 'kernel:java'
 include 'kernel:clojure'
 include 'kernel:sql'
-include 'kernel:cpp'
 
+if (System.getProperty('includeCpp', 'false') == 'true') {
+    include 'kernel:cpp'
+}

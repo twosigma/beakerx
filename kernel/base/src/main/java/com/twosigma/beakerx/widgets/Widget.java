@@ -15,18 +15,31 @@
  */
 package com.twosigma.beakerx.widgets;
 
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.twosigma.beakerx.SerializeToString;
+import com.twosigma.beakerx.evaluator.InternalVariable;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
+import com.twosigma.beakerx.table.ContextMenuAction;
 
 public abstract class Widget implements CommFunctionality, DisplayableWidget {
+  
+  private static final Logger logger = LoggerFactory.getLogger(Widget.class);
   
   public enum CommActions {
 
@@ -168,6 +181,51 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   
   public interface ActionPerformed {
     void executeAction(HashMap content, Message message);
+  }
+  
+  /**
+   * Please do not duplicate this method.
+   * 
+   * @param message
+   * @param handler
+   * @param params
+   */
+  public void handleCompiledCode(Message message, boolean publishResult, ExecuteCompiledCode handler, Object ... params) {
+    final MessageCreator mc = new MessageCreator(KernelManager.get());
+    final SimpleEvaluationObject seo = new SimpleEvaluationObject("",(seoResult) -> {
+      //nothing to do
+    });
+    if(message != null){
+      seo.setJupyterMessage(message);
+      seo.setOutputHandler();
+      seo.addObserver(KernelManager.get().getExecutionResultSender());
+      InternalVariable.setValue(seo);
+      KernelManager.get().publish(mc.buildClearOutput(message, true));
+      seo.clrOutputHandler();
+    }
+    try {
+      Object result = handler.executeCode(params);
+      if(result != null && message != null){
+        MIMEContainer resultString = SerializeToString.doit(result);
+        logger.info("code execution result is = " + resultString.getMime());
+        if(publishResult){
+          KernelManager.get().publish(mc.buildDisplayData(message, resultString));
+        }
+      }
+    } catch (Exception e) {
+      if(message != null){
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        seo.error(sw.toString());
+      }else{
+        logger.info("Execution result ERROR: \n" + e);
+      }
+    }
+  }
+
+  public interface ExecuteCompiledCode {
+    Object executeCode(Object ... params) throws Exception;
   }
 
 }

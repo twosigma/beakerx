@@ -18,6 +18,8 @@ package com.twosigma.beakerx.chart.actions;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.KeyboardCodes;
+import com.twosigma.beakerx.chart.categoryplot.CategoryPlot;
+import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.chart.xychart.plotitem.Bars;
 import com.twosigma.beakerx.chart.xychart.plotitem.XYGraphics;
 import com.twosigma.beakerx.kernel.KernelManager;
@@ -30,19 +32,21 @@ import java.util.Arrays;
 
 public class GraphicsActionTest {
 
+  private Plot widget;
   private XYGraphics xyGraphics;
   private GraphicsActionListenerStub actionListener;
   private KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
+    widget = createWidget();
     xyGraphics = new Bars();
     xyGraphics.setX(Arrays.asList(10, 20));
     xyGraphics.setY(Arrays.asList(10, 20));
     xyGraphics.setDisplayName("test display name");
     actionListener = new GraphicsActionListenerStub();
-    kernel = new KernelTest();
-    KernelManager.register(kernel);
   }
 
   @Test
@@ -50,7 +54,7 @@ public class GraphicsActionTest {
     //given
     xyGraphics.onClick(actionListener);
     //when
-    xyGraphics.fireClick(new XYGraphicsActionObject(), null);
+    xyGraphics.fireClick(widget, new XYGraphicsActionObject(), null);
     //then
     Assertions.assertThat(actionListener.getActionObject()).isNotNull();
     Assertions.assertThat(actionListener.getActionObject().getGraphics())
@@ -62,7 +66,7 @@ public class GraphicsActionTest {
     //given
     xyGraphics.onKey("CTRL", actionListener);
     //when
-    xyGraphics.fireOnKey("CTRL", new XYGraphicsActionObject(), null);
+    xyGraphics.fireOnKey(widget, "CTRL", new XYGraphicsActionObject(), null);
     //then
     Assertions.assertThat(actionListener.getActionObject()).isNotNull();
     Assertions.assertThat(actionListener.getActionObject().getGraphics())
@@ -74,7 +78,7 @@ public class GraphicsActionTest {
     //given
     xyGraphics.onKey(KeyboardCodes.CTRL, actionListener);
     //when
-    xyGraphics.fireOnKey(KeyboardCodes.CTRL.name(), new XYGraphicsActionObject(), null);
+    xyGraphics.fireOnKey(widget, KeyboardCodes.CTRL.name(), new XYGraphicsActionObject(), null);
     //then
     Assertions.assertThat(actionListener.getActionObject()).isNotNull();
     Assertions.assertThat(actionListener.getActionObject().getGraphics())
@@ -92,5 +96,12 @@ public class GraphicsActionTest {
     public GraphicsActionObject getActionObject() {
       return actionObject;
     }
+  }
+  
+  public Plot createWidget() {
+    Plot plot = new Plot();
+    plot.display();
+    kernel.clearMessages();
+    return plot;
   }
 }

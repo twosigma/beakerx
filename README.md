@@ -47,6 +47,13 @@ python -m beakerx.install --enable --prefix="${CONDA_PREFIX}"
 jupyter notebook
 ```
 
+## Build including C++ kernel
+Make sure you have clang installed, then:
+```
+./gradlew --no-daemon build -DincludeCpp=true
+./gradlew --no-daemon kernelInstall -DincludeCpp=true
+```
+
 ## Update after Java change
 The kernels are installed to run out of the repo, so just a build should update the java code.
 * `./gradlew build`

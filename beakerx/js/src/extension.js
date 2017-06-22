@@ -36,6 +36,10 @@ require('./../src/plot/bko-combinedplot.css');
 require('./../src/plot/bko-plot.css');
 require('jquery-contextmenu/dist/jquery.contextMenu.min.css');
 
+var bkLayout = require('./shared/bkLayout');
+
+bkLayout.setFontForCodeMirror('Roboto Mono');
+
 define([
   'services/config',
   'services/kernels/comm',

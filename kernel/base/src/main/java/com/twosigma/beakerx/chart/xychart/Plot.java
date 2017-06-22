@@ -24,7 +24,6 @@ public class Plot extends XYChart {
   public Plot(){
     super();
     openComm();
-    this.sendModel();
   }
 
   @Override

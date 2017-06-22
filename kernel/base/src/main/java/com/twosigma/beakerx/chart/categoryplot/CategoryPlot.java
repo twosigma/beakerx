@@ -36,7 +36,6 @@ public class CategoryPlot extends AbstractChart {
   public CategoryPlot() {
     super();
     openComm();
-    this.sendModel();
   }
 
   @Override

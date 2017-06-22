@@ -39,7 +39,6 @@ public class HeatMap extends AbstractChart {
     setLegendLayout(LegendLayout.HORIZONTAL);
     setLegendPosition(LegendPosition.BOTTOM_RIGHT);
     openComm();
-    this.sendModel();
   }
 
   @Override

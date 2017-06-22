@@ -43,7 +43,6 @@ public class CombinedPlot extends ChartDetails {
   public CombinedPlot(){
     super();
     openComm();
-    sendModel();
   }
 
   @Override

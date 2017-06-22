@@ -52,7 +52,6 @@ public class Histogram extends AbstractChart {
   public Histogram() {
     super();
     openComm();
-    this.sendModel();
   }
 
   @Override

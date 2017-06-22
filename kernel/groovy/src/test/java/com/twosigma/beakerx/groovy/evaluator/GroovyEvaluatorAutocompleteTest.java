@@ -49,4 +49,22 @@ public class GroovyEvaluatorAutocompleteTest {
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
     Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(21);
   }
+
+  @Test
+  public void shouldReturnImportWord() throws Exception {
+    String code = "im";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("import");
+  }
+
+  @Test
+  public void shouldRturnToStringWord() throws Exception {
+    String code = "def v = 'str'\nv.toS";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("toString()");
+  }
 }

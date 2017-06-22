@@ -1,0 +1,19 @@
+{
+  "name": "beakerxtests",
+  "version": "1.0.0",
+  "dependencies": {
+    "webdriverio": "^4.8.0",
+    "selenium-standalone": "^6.4.1",
+    "wdio-jasmine-framework": "^0.3.1",
+    "wdio-spec-reporter": "^0.1.0",
+    "copyfiles": "^1.2.0"
+  },
+  "scripts": {
+    "wdio-config": "copyfiles wdio.conf.js ./node_modules/.bin",
+    "setup-server": "./node_modules/.bin/selenium-standalone install",
+    "start-server": "./node_modules/.bin/selenium-standalone start",
+    "test": "./node_modules/.bin/wdio ./node_modules/.bin/wdio.conf.js"
+  }
+
+}
+

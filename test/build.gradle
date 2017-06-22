@@ -14,17 +14,8 @@
  *  limitations under the License.
  */
 
-include 'beakerx'
-include 'beakerx:js'
-include 'kernel'
-include 'kernel:base'
-include 'kernel:groovy'
-include 'kernel:scala'
-include 'kernel:java'
-include 'kernel:clojure'
-include 'kernel:sql'
-include 'test'
 
-if (System.getProperty('includeCpp', 'false') == 'true') {
-    include 'kernel:cpp'
+task e2e (type: Exec) {
+  commandLine 'python', './runner.py'  
 }
+

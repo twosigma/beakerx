@@ -35,7 +35,7 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 ## Build and run
 
 ```
-conda create -y -n beakerx python=3.5 jupyter pandas
+conda create -y -n beakerx python=3.5 jupyter pandas openjdk
 source activate beakerx
 pip install -e beakerx --verbose
 jupyter nbextension install --py --symlink --sys-prefix beakerx

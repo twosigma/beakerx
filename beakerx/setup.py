@@ -16,7 +16,7 @@
 # limitations under the License.
 
 from setuptools import setup, find_packages
-from setupbase import create_cmdclass, install_npm, install_nb_conda_kernels, run_gradle, get_version
+from setupbase import create_cmdclass, install_node_modules, install_nb_conda_kernels, run_gradle, get_version
 from os.path import join as pjoin
 
 
@@ -26,7 +26,7 @@ cmdclass = create_cmdclass([
     'java',
     'kernels',
 ])
-cmdclass['js'] = install_npm(
+cmdclass['js'] = install_node_modules(
     path=pjoin('js'), 
     build_dir=pjoin('js', 'dist'),
     source_dir=pjoin('js', 'src')

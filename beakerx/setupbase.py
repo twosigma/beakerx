@@ -17,7 +17,7 @@
 
 """
 This file originates from the 'jupyter-packaging' package, and
-contains a set of useful utilities for including npm packages
+contains a set of useful utilities for installing node modules
 within a Python package.
 """
 
@@ -61,17 +61,17 @@ here = os.path.abspath(os.path.dirname(sys.argv[0]))
 root = os.path.abspath(os.path.join(here, os.pardir))
 is_repo = os.path.exists(pjoin(root, '.git'))
 node_modules = pjoin(here, 'js', 'node_modules')
-npm_path = ':'.join([
+node_modules_path = ':'.join([
     pjoin(node_modules, '.bin'),
     os.environ.get('PATH', os.defpath),
 ])
 
-if "--skip-npm" in sys.argv:
-    print("Skipping npm install as requested.")
-    skip_npm = True
-    sys.argv.remove("--skip-npm")
+if "--skip-yarn" in sys.argv:
+    print("Skipping yarn install as requested.")
+    skip_yarn = True
+    sys.argv.remove("--skip-yarn")
 else:
-    skip_npm = False
+    skip_yarn = False
 
 # ---------------------------------------------------------------------------
 # Public Functions
@@ -248,9 +248,9 @@ def mtime(path):
     return os.stat(path).st_mtime
 
 
-def install_npm(path=None, build_dir=None, source_dir=None, build_cmd='build', force=False):
-    """Return a Command for managing an npm installation.
-    Note: The command is skipped if the `--skip-npm` flag is used.
+def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='build', force=False):
+    """Return a Command for managing an node_modules installation.
+    Note: The command is skipped if the `--skip-yarn` flag is used.
     
     Parameters
     ----------
@@ -262,35 +262,35 @@ def install_npm(path=None, build_dir=None, source_dir=None, build_cmd='build', f
     source_dir: str, optional
         The source code directory.
     build_cmd: str, optional
-        The npm command to build assets to the build_dir.
+        The yarn command to build assets to the build_dir.
     """
 
-    class NPM(BaseCommand):
-        description = 'install package.json dependencies using npm'
+    class Yarn(BaseCommand):
+        description = 'install package.json dependencies using yarn'
 
         def run(self):
-            if skip_npm:
-                log.info('Skipping npm-installation')
+            if skip_yarn:
+                log.info('Skipping yarn-installation')
                 return
             node_package = path or here
             node_modules = pjoin(node_package, 'node_modules')
 
-            if not which("npm"):
-                log.error("`npm` unavailable.  If you're running this command "
-                          "using sudo, make sure `npm` is availble to sudo")
+            if not which("yarn"):
+                log.error("`yarn` unavailable.  If you're running this command "
+                          "using sudo, make sure `yarn` is availble to sudo")
                 return
             if force or is_stale(node_modules, pjoin(node_package, 'package.json')):
-                log.info('Installing build dependencies with npm.  This may '
+                log.info('Installing build dependencies with yarn.  This may '
                          'take a while...')
-                run(['npm', 'install'], cwd=node_package)
+                run(['yarn', 'install'], cwd=node_package)
             if build_dir and source_dir and not force:
                 should_build = is_stale(build_dir, source_dir)
             else:
                 should_build = True
             if should_build:
-                run(['npm', 'run', build_cmd], cwd=node_package)
+                run(['yarn', 'run', build_cmd], cwd=node_package)
 
-    return NPM
+    return Yarn
 
 
 def install_nb_conda_kernels(enable=False, disable=False, prefix=None):
@@ -381,12 +381,12 @@ def run_gradle(path=root, cmd='build'):
 def ensure_targets(targets):
     """Return a Command that checks that certain files exist.
     Raises a ValueError if any of the files are missing.
-    Note: The check is skipped if the `--skip-npm` flag is used.
+    Note: The check is skipped if the `--skip-yarn` flag is used.
     """
 
     class TargetsCheck(BaseCommand):
         def run(self):
-            if skip_npm:
+            if skip_yarn:
                 log.info('Skipping target checks')
                 return
             missing = [t for t in targets if not os.path.exists(t)]

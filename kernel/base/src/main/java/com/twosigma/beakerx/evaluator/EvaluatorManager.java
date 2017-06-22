@@ -18,6 +18,8 @@ package com.twosigma.beakerx.evaluator;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
@@ -95,11 +97,23 @@ public class EvaluatorManager {
   }
 
   public void addJarToClasspath(PathToJar path) {
-   this.evaluator.addJarToClasspath(path);
+    this.evaluator.addJarToClasspath(path);
   }
 
   public Classpath getClasspath() {
     return this.evaluator.getClasspath();
+  }
+
+  public Imports getImports() {
+    return this.evaluator.getImports();
+  }
+
+  public void addImport(ImportPath anImport) {
+    this.evaluator.addImport(anImport);
+  }
+
+  public void removeImport(ImportPath anImport) {
+    this.evaluator.removeImport(anImport);
   }
 
   interface CodeExecutor {

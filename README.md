@@ -37,14 +37,21 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ```
 conda create -y -n beakerx python=3.5 jupyter pandas
-conda install -c conda-forge openjdk
 source activate beakerx
+conda install -y -c conda-forge openjdk
 ./gradlew --no-daemon build
 ./gradlew --no-daemon kernelInstall
 ./gradlew --no-daemon :beakerx:install
 (cd beakerx; pip install -e .)
 python -m beakerx.install --enable --prefix="${CONDA_PREFIX}"
 jupyter notebook
+```
+
+## Build including C++ kernel
+Make sure you have clang installed, then:
+```
+./gradlew --no-daemon build -DincludeCpp=true
+./gradlew --no-daemon kernelInstall -DincludeCpp=true
 ```
 
 ## Update after Java change

@@ -68,7 +68,7 @@ public abstract class ChartDetails extends BeakerxWidget {
     String graphicsId = getGraphicsUid(content);
     Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
     if (g != null) {
-      g.fireOnKey(info.getKey(), info, message);
+      g.fireOnKey(this, info.getKey(), info, message);
       sendModel();
     }
   }
@@ -78,7 +78,7 @@ public abstract class ChartDetails extends BeakerxWidget {
     String graphicsId = getGraphicsUid(content);
     Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
     if (g != null) {
-      g.fireClick(info, message);
+      g.fireClick(this, info, message);
       sendModel();
     }
   }

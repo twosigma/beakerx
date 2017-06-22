@@ -15,25 +15,16 @@
  */
 package com.twosigma.beakerx.widgets;
 
-import com.twosigma.beakerx.SerializeToString;
-import com.twosigma.beakerx.evaluator.InternalVariable;
-import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.mimetype.MIMEContainer;
-import com.twosigma.beakerx.table.ContextMenuAction;
-import com.twosigma.beakerx.message.Message;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class BeakerxWidget extends Widget {
   
-  private static final Logger logger = LoggerFactory.getLogger(SerializeToString.class);
+  private static final Logger logger = LoggerFactory.getLogger(BeakerxWidget.class);
 
   public static final String MODEL_MODULE_VALUE = "beakerx";
   public static final String VIEW_MODULE_VALUE = "beakerx";
@@ -87,73 +78,6 @@ public abstract class BeakerxWidget extends Widget {
 
   interface UpdateModel {
     void update(String action, Object item);
-  }
-  
-
-  public static synchronized void handleCompiledCode(Message message, ExecuteCompiledCode handler, Object ... params) {
-    final MessageCreator mc = new MessageCreator(KernelManager.get());
-    final SimpleEvaluationObject seo = new SimpleEvaluationObject("",(seoResult) -> {
-      //nothing to do
-    });
-    if(message != null){
-      seo.setJupyterMessage(message);
-      seo.setOutputHandler();
-      seo.addObserver(KernelManager.get().getExecutionResultSender());
-      InternalVariable.setValue(seo);
-      KernelManager.get().publish(mc.buildClearOutput(message, true));
-      seo.clrOutputHandler();
-    }
-    try {
-      Object result = handler.executeCode(params);
-      if(result != null && message != null){
-        MIMEContainer resultString = SerializeToString.doit(result);
-        logger.info("code execution result is = " + resultString.getMime());
-        KernelManager.get().publish(mc.buildDisplayData(message, resultString));
-      }
-    } catch (Exception e) {
-      if(message != null){
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
-        seo.error(sw.toString());
-      }else{
-        logger.info("Execution result ERROR: \n" + e);
-      }
-    }
-  }
-
-  public interface ExecuteCompiledCode {
-    Object executeCode(Object ... params) throws Exception;
-  }
-
-  public static synchronized void handleCompiledCode(Message message, ContextMenuAction contextMenuAction, Integer row, Integer column) {
-    final MessageCreator mc = new MessageCreator(KernelManager.get());
-    final SimpleEvaluationObject seo = new SimpleEvaluationObject("",(seoResult) -> {
-      //nothing to do
-    });
-
-    if (message != null) {
-      seo.setJupyterMessage(message);
-      seo.setOutputHandler();
-      seo.addObserver(KernelManager.get().getExecutionResultSender());
-      InternalVariable.setValue(seo);
-      KernelManager.get().publish(mc.buildClearOutput(message, true));
-      seo.clrOutputHandler();
-    }
-
-    try {
-      contextMenuAction.apply(row, column, null);
-    } catch (Exception e) {
-      if (message != null) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
-        seo.error(sw.toString());
-      }else{
-        logger.info("Execution result ERROR: \n" + e);
-      }
-    }
-
   }
 
 }

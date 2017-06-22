@@ -17,31 +17,31 @@
 var BeakerXPageObject = require('./beakerx.po.js');
 var beakerxPO;
 
-describe('plotDemo page', function() {
+describe('plotDemo page', function () {
 
-    beforeAll(function(done) {
-        beakerxPO = new BeakerXPageObject();
-        browser
-            .url(beakerxPO.baseURL)
-            .call(done);
-        beakerxPO.loginJupyter();
-        browser.click('=plotDemo.ipynb');
-        browser.window(browser.windowHandles().value[1]);
-    });
+  beforeAll(function (done) {
+    beakerxPO = new BeakerXPageObject();
+    browser
+      .url(beakerxPO.baseURL)
+      .call(done);
+    beakerxPO.loginJupyter();
+    browser.click('=plotDemo.ipynb');
+    browser.window(browser.windowHandles().value[1]);
+  });
 
-    it('Can run Groovy cell', function(done) {
-        beakerxPO.kernelIdleIcon.waitForEnabled();
-        beakerxPO.runCodeCellByIndex(0);
-        browser.call(done);
-    });
+  it('Can run Groovy cell', function (done) {
+    beakerxPO.kernelIdleIcon.waitForEnabled();
+    beakerxPO.runCodeCellByIndex(0);
+    browser.call(done);
+  });
 
-    it('Should create dtcontainer', function(done) {
-        beakerxPO.kernelIdleIcon.waitForEnabled();
-        var codeCell = beakerxPO.runCodeCellByIndex(0);
+  it('Should create dtcontainer', function (done) {
+    beakerxPO.kernelIdleIcon.waitForEnabled();
+    var codeCell = beakerxPO.runCodeCellByIndex(0);
 
-        var dtContainer = codeCell.$('div.dtcontainer');
-        dtContainer.waitForEnabled();
-        browser.call(done);
-    });
+    var dtContainer = codeCell.$('div.dtcontainer');
+    dtContainer.waitForEnabled();
+    browser.call(done);
+  });
 
 });

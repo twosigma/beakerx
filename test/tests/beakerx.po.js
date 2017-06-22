@@ -14,35 +14,35 @@
  *  limitations under the License.
  */
 
-var BeakerXPageObject = function() {
+var BeakerXPageObject = function () {
 
-    this.baseURL = 'http://127.0.0.1:8888/tree/demoFiles';
-    this.kernelIdleIcon = $('i.kernel_idle_icon');
+  this.baseURL = 'http://127.0.0.1:8888/tree/demoFiles';
+  this.kernelIdleIcon = $('i.kernel_idle_icon');
 
-    this.loginJupyter = function(){
-        browser.setValue('#password_input', 'beakerx');
-        browser.click('#login_submit');
-        browser.waitForEnabled('=plotDemo.ipynb');
-    }
+  this.loginJupyter = function () {
+    browser.setValue('#password_input', 'beakerx');
+    browser.click('#login_submit');
+    browser.waitForEnabled('=plotDemo.ipynb');
+  }
 
-    this.clickRunCell = function(){
-        var cssRunCell = 'button[data-jupyter-action="jupyter-notebook:run-cell-and-select-next"]';
-        browser.waitForEnabled(cssRunCell);
-        browser.click(cssRunCell);
-        this.kernelIdleIcon.waitForEnabled();
-    }
+  this.clickRunCell = function () {
+    var cssRunCell = 'button[data-jupyter-action="jupyter-notebook:run-cell-and-select-next"]';
+    browser.waitForEnabled(cssRunCell);
+    browser.click(cssRunCell);
+    this.kernelIdleIcon.waitForEnabled();
+  }
 
-    this.getCodeCellByIndex = function(index){
-        return $$('div.code_cell')[index];
-    }
+  this.getCodeCellByIndex = function (index) {
+    return $$('div.code_cell')[index];
+  }
 
-    this.runCodeCellByIndex = function(index){
-        var codeCell = this.getCodeCellByIndex(index);
-        codeCell.scroll()
-        codeCell.click();
-        this.clickRunCell();
-        return codeCell;
-    }
+  this.runCodeCellByIndex = function (index) {
+    var codeCell = this.getCodeCellByIndex(index);
+    codeCell.scroll()
+    codeCell.click();
+    this.clickRunCell();
+    return codeCell;
+  }
 
 };
 module.exports = BeakerXPageObject;

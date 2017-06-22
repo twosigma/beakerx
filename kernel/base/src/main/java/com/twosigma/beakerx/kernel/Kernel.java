@@ -192,4 +192,19 @@ public abstract class Kernel implements KernelFunctionality {
   public Classpath getClasspath() {
     return this.evaluatorManager.getClasspath();
   }
+
+  @Override
+  public Imports getImports() {
+    return this.evaluatorManager.getImports();
+  }
+
+  @Override
+  public void addImport(ImportPath anImport) {
+    this.evaluatorManager.addImport(anImport);
+  }
+
+  @Override
+  public void removeImport(ImportPath anImport) {
+    this.evaluatorManager.removeImport(anImport);
+  }
 }

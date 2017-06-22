@@ -18,30 +18,17 @@ MAINTAINER Beaker Feedback <beaker-feedback@twosigma.com>
 
 RUN useradd beakerx --create-home
 
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+ENV PATH /opt/conda/bin:$PATH
 
 RUN apt-get update && apt-get dist-upgrade -y
-RUN apt-get install -y sudo curl unzip software-properties-common apt-transport-https git clang bzip2 wget
+RUN apt-get install -y sudo curl unzip software-properties-common apt-transport-https git bzip2 wget
 RUN apt-get update
-
-##########
-#  Java  #
-##########
-RUN apt-get install -y openjdk-8-jre
 
 ##########
 #  Node  #
 ##########
 RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 RUN apt-get install -y nodejs
-
-##################
-#     Gradle     #
-##################
-RUN wget https://services.gradle.org/distributions/gradle-3.5-bin.zip && \
-mkdir /opt/gradle && \
-unzip -d /opt/gradle gradle-3.5-bin.zip && \
-rm -f gradle-3.5-bin.zip
 
 ##################
 #      Yarn      #
@@ -55,8 +42,11 @@ apt-get clean
 #    MiniConda   #
 ##################
 RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
-    wget --quiet https://repo.continuum.io/miniconda/Miniconda2-4.3.21-Linux-x86_64.sh -O ~/miniconda.sh && \
+    wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
     rm ~/miniconda.sh
 
-ENV PATH /opt/conda/bin:$PATH
+##########
+#  Java  #
+##########
+RUN conda install -y -c conda-forge openjdk

@@ -27,7 +27,6 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
 COPY setup.sh /home/beakerx
-RUN chmod +x /home/beakerx/setup.sh
 
 COPY start.sh /usr/local/bin/
 COPY start-notebook.sh /usr/local/bin/

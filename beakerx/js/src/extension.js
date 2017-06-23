@@ -38,7 +38,7 @@ require('jquery-contextmenu/dist/jquery.contextMenu.min.css');
 
 var bkLayout = require('./shared/bkLayout');
 
-bkLayout.setFontForCodeMirror('Roboto Mono');
+bkLayout.setBeakerxFonts();
 
 define([
   'services/config',

@@ -15,24 +15,46 @@
  */
 
 module.exports = {
-  setFontForCodeMirror: setFontForCodeMirror
+  setBeakerxFonts: setBeakerxFonts
 };
 
-function setFontForCodeMirror(fontFamily) {
-  var elem = document.getElementsByClassName('CodeMirror-line')[0];
-  var computedStyle = window.getComputedStyle(elem);
-  var currentFontFamily = computedStyle.getPropertyValue('font-family');
-  var fontIsDefault = currentFontFamily === 'monospace';
+// -----------
 
-  if (fontIsDefault) {
-    fontFamily = fontFamily || 'Roboto Mono';
+function setBeakerxFonts() {
+  var codeMirrorLine = document.getElementsByClassName('CodeMirror-line')[0];
+  var renderedHtml = document.getElementsByClassName('rendered_html')[0];
+  var outputArea = document.getElementsByClassName('output_text')[0];
+  var outputAreaPre = outputArea && outputArea.getElementsByTagName('pre')[0];
 
-    var styleString = '.CodeMirror pre  { font-family: '+fontFamily+' }';
-    var styleElem = document.createElement('style');
-
-    styleElem.type='text/css';
-    styleElem.appendChild(document.createTextNode(styleString));
-
-    document.getElementsByTagName('head')[0].appendChild(styleElem);
+  if (codeMirrorLine && _elementHasFontFamily(codeMirrorLine, 'monospace')) {
+    _setFontFamilyForSelector('.CodeMirror pre', 'Roboto Mono');
   }
+
+  if (renderedHtml && _elementHasFontFamily(renderedHtml, '"Helvetica Neue", Helvetica, Arial, sans-serif')) {
+    _setFontFamilyForSelector('.rendered_html, .cm-header-1, .cm-header-2, .cm-header-3, .cm-header-4, .cm-header-5, .cm-header-6', 'Lato');
+    _setFontFamilyForSelector('.rendered_html pre, .rendered_html code', 'Roboto Mono');
+  }
+
+  if (outputAreaPre && _elementHasFontFamily(outputAreaPre, 'monospace')) {
+    _setFontFamilyForSelector('.output_area pre', 'Roboto Mono');
+  }
+}
+
+// -----------
+
+function _setFontFamilyForSelector(cssSelector, fontFamily) {
+  var styleString = cssSelector + ' {font-family: '+fontFamily+'}';
+  var styleElem = document.createElement('style');
+
+  styleElem.type='text/css';
+  styleElem.appendChild(document.createTextNode(styleString));
+
+  document.getElementsByTagName('head')[0].appendChild(styleElem);
+}
+
+function _elementHasFontFamily(element, fontFamily) {
+  var computedStyle = window.getComputedStyle(element);
+  var currentFontFamily = computedStyle.getPropertyValue('font-family');
+  console.log('currentFontFamily', currentFontFamily);
+  return currentFontFamily === fontFamily;
 }

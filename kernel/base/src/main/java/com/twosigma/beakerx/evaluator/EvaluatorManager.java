@@ -24,10 +24,9 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.message.Message;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 public class EvaluatorManager {
 
@@ -42,7 +41,7 @@ public class EvaluatorManager {
     this.kernel = kernel;
     this.evaluator = evaluator;
     evaluator.startWorker();
-    this.codeExecutor = this::kernelNotReady;
+    this.codeExecutor = this::execute;
   }
 
   public synchronized void setShellOptions(final KernelParameters kernelParameters) {
@@ -63,7 +62,8 @@ public class EvaluatorManager {
     evaluator.killAllThreads();
   }
 
-  public synchronized SimpleEvaluationObject executeCode(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+  public synchronized SimpleEvaluationObject executeCode(String code, Message message,
+      int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
     return codeExecutor.executeCode(code, message, executionCount, executeCodeCallback);
   }
 
@@ -71,20 +71,25 @@ public class EvaluatorManager {
     evaluator.exit();
   }
 
-  private SimpleEvaluationObject execute(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(code, message, executionCount, executeCodeCallback);
+  private SimpleEvaluationObject execute(String code, Message message, int executionCount,
+      KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(code, message, executionCount,
+        executeCodeCallback);
     evaluator.evaluate(seo, code);
     return seo;
   }
 
-  private SimpleEvaluationObject kernelNotReady(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(code, message, executionCount, executeCodeCallback);
+  private SimpleEvaluationObject kernelNotReady(String code, Message message, int executionCount,
+      KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(code, message, executionCount,
+        executeCodeCallback);
     seo.error(THE_KERNEL_IS_NOT_READY);
     seo.executeCodeCallback();
     return seo;
   }
 
-  private SimpleEvaluationObject createSimpleEvaluationObject(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+  private SimpleEvaluationObject createSimpleEvaluationObject(String code, Message message,
+      int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
     seo.setJupyterMessage(message);
     seo.setExecutionCount(executionCount);
@@ -117,7 +122,9 @@ public class EvaluatorManager {
   }
 
   interface CodeExecutor {
-    SimpleEvaluationObject executeCode(String code, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback);
+
+    SimpleEvaluationObject executeCode(String code, Message message, int executionCount,
+        KernelFunctionality.ExecuteCodeCallback executeCodeCallback);
   }
 
 }

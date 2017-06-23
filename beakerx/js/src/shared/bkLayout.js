@@ -31,7 +31,7 @@ function setBeakerxFonts() {
   }
 
   if (renderedHtml && _elementHasFontFamily(renderedHtml, '"Helvetica Neue", Helvetica, Arial, sans-serif')) {
-    _setFontFamilyForSelector('.rendered_html', 'Lato');
+    _setFontFamilyForSelector('.rendered_html, .cm-header-1, .cm-header-2, .cm-header-3, .cm-header-4, .cm-header-5, .cm-header-6', 'Lato');
     _setFontFamilyForSelector('.rendered_html pre, .rendered_html code', 'Roboto Mono');
   }
 

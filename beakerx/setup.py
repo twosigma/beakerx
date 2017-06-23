@@ -17,6 +17,7 @@
 
 from setuptools import setup, find_packages
 from setupbase import create_cmdclass, install_node_modules, install_nb_conda_kernels, run_gradle, get_version
+import os
 from os.path import join as pjoin
 
 
@@ -31,7 +32,7 @@ cmdclass['js'] = install_node_modules(
     build_dir=pjoin('js', 'dist'),
     source_dir=pjoin('js', 'src')
 )
-cmdclass['nb_conda_kernels'] = install_nb_conda_kernels(enable=True)
+cmdclass['nb_conda_kernels'] = install_nb_conda_kernels(enable=True, prefix=os.environ['CONDA_PREFIX'])
 cmdclass['java'] = run_gradle(cmd='build')
 cmdclass['kernels'] = run_gradle(cmd='kernelInstall')
 

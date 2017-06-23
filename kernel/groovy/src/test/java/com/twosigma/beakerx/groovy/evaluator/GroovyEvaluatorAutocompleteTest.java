@@ -51,7 +51,7 @@ public class GroovyEvaluatorAutocompleteTest {
   }
 
   @Test
-  public void shouldReturnImportWord() throws Exception {
+  public void shouldReturnResultEqualToImport() throws Exception {
     String code = "im";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
@@ -60,11 +60,41 @@ public class GroovyEvaluatorAutocompleteTest {
   }
 
   @Test
-  public void shouldRturnToStringWord() throws Exception {
+  public void shouldReturnResultEqualToToString() throws Exception {
     String code = "def v = 'str'\nv.toS";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("toString()");
   }
+
+  @Test
+  public void shouldReturnResultEqualToValue() throws Exception {
+    String code = "def value = 'str'\n" +
+        "println \"test ${v\n";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("value");
+  }
+
+  @Test
+  public void shouldReturnResultEqualToBLUE() throws Exception {
+    String code = "import static java.awt.Color.BLUE\n" +
+        "println BL";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("BLUE");
+  }
+
+  @Test
+  public void autocompleteForImport_autocompleteIsNotEmpty() throws Exception {
+    String code = "import java.awt.C";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+  }
+
 }

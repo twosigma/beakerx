@@ -58,7 +58,7 @@ else:
 
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
-root = os.path.abspath(os.path.join(here, os.pardir))
+root = os.path.abspath(pjoin(here, os.pardir))
 is_repo = os.path.exists(pjoin(root, '.git'))
 node_modules = pjoin(here, 'js', 'node_modules')
 node_modules_path = ':'.join([
@@ -323,7 +323,7 @@ def install_nb_conda_kernels(enable=False, disable=False, prefix=None):
             path = jupyter_config_dir()
 
             if prefix is not None:
-                path = join(prefix, "etc", "jupyter")
+                path = pjoin(prefix, "etc", "jupyter")
                 if not exists(path):
                     log.debug("Making directory {}...".format(path))
                     makedirs(path)
@@ -444,7 +444,7 @@ def which(cmd, mode=os.F_OK | os.X_OK, path=None):
         if dir not in seen:
             seen.add(dir)
             for thefile in files:
-                name = os.path.join(dir, thefile)
+                name = pjoin(dir, thefile)
                 if _access_check(name, mode):
                     return name
     return None

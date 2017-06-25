@@ -125,8 +125,6 @@ define([
           	
           });
         });
-    
-    setBeakerxKernelParameters();
   });
 
   Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
@@ -177,51 +175,6 @@ define([
     data.kernel_interrupt = true;
     comm.send(data);
     comm.close();
-  }
-
-  function setBeakerxKernelParameters() {
-    getKernelInfo(function(info) {
-      if (info.beakerx) {
-        setBeakerxKernelParametersToKernel();
-      }
-    });
-  }
-
-  function setBeakerxKernelParametersToKernel() {
-    var kernel_control_target_name = "kernel.control.channel";
-    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, 
-                                                             null, null, null, utils.uuid());
-
-    var newNotebook = undefined == Jupyter.notebook.metadata.beakerx_kernel_parameters;
-
-    if (newNotebook) {
-      comm.on_msg(function(resp) {
-        if (undefined != resp.content.data.kernel_control_response) {
-          if ("OK" === resp.content.data.kernel_control_response) {
-          } else if (undefined != resp.content.data.kernel_control_response.beakerx_kernel_parameters) {
-            Jupyter.notebook.metadata.beakerx_kernel_parameters = resp.content.data.kernel_control_response.beakerx_kernel_parameters;
-
-            var theData = {};
-            if (Jupyter.notebook && Jupyter.notebook.metadata) {
-              theData.beakerx_kernel_parameters = Jupyter.notebook.metadata.beakerx_kernel_parameters;
-            }
-            comm.send(theData);
-            comm.close();
-          }
-        }
-      });
-
-      var data = {};
-      data.get_default_shell = true;
-      comm.send(data);
-    } else {
-      var data = {};
-      if (Jupyter.notebook && Jupyter.notebook.metadata) {
-        data.beakerx_kernel_parameters = Jupyter.notebook.metadata.beakerx_kernel_parameters;
-      }
-      comm.send(data);
-      comm.close();
-    }
   }
 
   // ________ init cell extension code

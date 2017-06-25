@@ -52,6 +52,8 @@ import com.twosigma.beakerx.widgets.BeakerxWidget;
 import com.twosigma.beakerx.widgets.RunWidgetClosure;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -201,6 +203,8 @@ public class TableDisplay extends BeakerxWidget {
   protected void openComm() {
     super.openComm();
     getComm().addMsgCallbackList((Handler<Message>) this::handleSetDetails);
+    getComm().addMsgCallbackList(this::handleOnContextMenu);
+    getComm().addMsgCallbackList((Handler<Message>)this::handleDoubleClick);
   }
 
   public static TableDisplay createTableDisplayForMap(Map<?, ?> v) {
@@ -619,28 +623,11 @@ public class TableDisplay extends BeakerxWidget {
   public void setDoubleClickAction(Object listener) {
     this.doubleClickListener = listener;
     this.doubleClickTag = null;
-    getComm().addMsgCallbackList((Handler<Message>)this::handleDoubleClick);
     sendModelUpdate(serializeDoubleClickAction(this.doubleClickTag,hasDoubleClickAction()));
   }
 
   private void handleDoubleClick(Message message) {
     handleCommEventSync(message, CommActions.ONDOUBLECLICK, this::onDoubleClickAction);
-  }
-
-  private void handleSetDetails(Message message) {
-    handleCommEventSync(message, CommActions.ACTIONDETAILS, this::onActionDetails);
-  }
-
-  private void handleOnContextMenu(Message message, Boolean clorjure) {
-    if (clorjure) {
-      handleCommEventSync(message, CommActions.ONCONTEXTMENU, this::onContextMenu);
-    } else {
-      handleCommEventSync(message, CommActions.ONCONTEXTMENU, this::onClickContextMenu);
-    }
-  }
-
-  private void handleOnContextMenu(Message message) {
-    handleOnContextMenu(message, Boolean.TRUE);
   }
 
   private void onDoubleClickAction(HashMap content, Message message) {
@@ -651,6 +638,54 @@ public class TableDisplay extends BeakerxWidget {
     params.add(column);
     fireDoubleClick(params, message);
   }
+  
+  public void fireDoubleClick(List<Object> params, Message message) {
+    if (this.doubleClickListener != null) {
+      params.add(this);
+      handleCompiledCode(message, false, this::doubleClickHandler, params);
+      sendModel();
+    }
+  }
+
+  private void handleSetDetails(Message message) {
+    handleCommEventSync(message, CommActions.ACTIONDETAILS, this::onActionDetails);
+  }
+
+  private void handleOnContextMenu(Message message) {
+    handleCommEventSync(message, CommActions.ONCONTEXTMENU, this::onContextMenu);
+  }
+
+  private void onContextMenu(HashMap content, Message message) {
+    String menuKey = (String) content.get("itemKey");
+    Object row = content.get("row");
+    Object column = content.get("column");
+    List<Object> params = new ArrayList<>();
+    params.add(row);
+    params.add(column);
+    fireContextMenuClick(menuKey, params, message);
+  }
+  
+  public void fireContextMenuClick(String name, List<Object> params, Message message) {
+    Object contextMenuListener = this.contextMenuListeners.get(name);
+    if (contextMenuListener != null) {
+      params.add(this);
+      handleCompiledCode(message, false, this::contextMenuClickHandlerCommon, contextMenuListener, params);
+      sendModel();
+    }
+  }
+  
+  private Object contextMenuClickHandlerCommon(Object ... params) throws Exception {
+    Object actionObject = params[0];
+    ArrayList<Object> other = (ArrayList<Object>) params[1];
+    if(actionObject instanceof ContextMenuAction){
+      ContextMenuAction action = (ContextMenuAction)actionObject;
+      action.apply((Integer)other.get(0), (Integer)other.get(1), this);
+    }else{
+      Object ret = runClosure(params[0], other.toArray());
+    }
+    return MIMEContainer.HIDDEN;
+  }
+  
 
   /**
    * Also sends "runByTag" event.
@@ -697,40 +732,14 @@ public class TableDisplay extends BeakerxWidget {
     }
   }
 
-  private void onContextMenu(HashMap content, Message message) {
-    String menuKey = (String) content.get("itemKey");
-    Object row = content.get("row");
-    Object column = content.get("column");
-    List<Object> params = new ArrayList<>();
-    params.add(row);
-    params.add(column);
-    fireContextMenuClick(menuKey, params, message);
-  }
-
-  private void onClickContextMenu(HashMap content, Message message) {
-    String menuKey = (String) content.get("itemKey");
-    Object row = content.get("row");
-    Object column = content.get("column");
-
-    ContextMenuAction contextMenuAction = (ContextMenuAction) this.contextMenuListeners.get(menuKey);
-    handleCompiledCode(message, contextMenuAction, (Integer) row, (Integer) column);
-  }
-
   public String getDoubleClickTag() {
     return doubleClickTag;
   }
 
   private Object doubleClickHandler(Object ... params) throws Exception {
     Object[] values = ((List<List<?>>) params[0]).toArray();
-    return runClosure(this.doubleClickListener, values);
-  }
-
-  public void fireDoubleClick(List<Object> params, Message message) {
-    if (this.doubleClickListener != null) {
-      params.add(this);
-      handleCompiledCode(message, this::doubleClickHandler, params);
-      sendModel();
-    }
+    Object ret = runClosure(this.doubleClickListener, values);
+    return MIMEContainer.HIDDEN;
   }
 
   public boolean hasDoubleClickAction() {
@@ -739,12 +748,6 @@ public class TableDisplay extends BeakerxWidget {
 
   public void addContextMenuItem(String name, Object closure) {
     this.contextMenuListeners.put(name, closure);
-    getComm().addMsgCallbackList((this::handleOnContextMenu));
-  }
-
-  public void addContextMenuItem(String name, ContextMenuAction action) {
-    this.contextMenuListeners.put(name, action);
-    getComm().addMsgCallbackList((message -> handleOnContextMenu(message, Boolean.FALSE)));
   }
 
   public void addContextMenuItem(String name, String tagName) {
@@ -761,20 +764,6 @@ public class TableDisplay extends BeakerxWidget {
 
   public void setDetails(TableActionDetails details) {
     this.details = details;
-  }
-
-  private Object contextMenuClickHandler(Object ... params) throws Exception {
-    ArrayList<Object> other = (ArrayList<Object>) params[1];
-    return runClosure(params[0], other.toArray());
-  }
-
-  public void fireContextMenuClick(String name, List<Object> params, Message message) {
-    Object contextMenuListener = this.contextMenuListeners.get(name);
-    if (contextMenuListener != null) {
-      params.add(this);
-      handleCompiledCode(message, this::contextMenuClickHandler, contextMenuListener, params);
-      sendModel();
-    }
   }
 
   protected Object runClosure(Object closure, Object... params) throws Exception {

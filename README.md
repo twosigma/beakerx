@@ -47,6 +47,13 @@ python -m beakerx.install --enable --prefix="${CONDA_PREFIX}"
 jupyter notebook
 ```
 
+## Build including C++ kernel
+Make sure you have clang installed, then:
+```
+./gradlew --no-daemon build -DincludeCpp=true
+./gradlew --no-daemon kernelInstall -DincludeCpp=true
+```
+
 ## Update after Java change
 The kernels are installed to run out of the repo, so just a build should update the java code.
 * `./gradlew build`
@@ -65,6 +72,20 @@ python -m bkr2ipynb *.bkr
 
 ## Autotranslation from Python to JavaScript:
 <img width="631" alt="screen shot 2016-12-10 at 10 43 22 pm" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
+
+## Running with docker
+
+Go to /docker/base
+
+`docker build . -t beakerx-base`
+
+Move to /docker
+
+`docker build . -t beakerx`
+
+Now if you would like to start BeakerX execute
+
+`docker run -p 8888:8888 beakerx `
 
 ## Contributing
 

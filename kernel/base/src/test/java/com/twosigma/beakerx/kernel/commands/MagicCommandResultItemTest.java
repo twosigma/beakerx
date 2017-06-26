@@ -17,6 +17,8 @@
 package com.twosigma.beakerx.kernel.commands;
 
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithCode;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,13 +26,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MagicCommandResultItemTest {
 
   @Test
-  public void resultHasCodeToExecute() throws Exception {
+  public void hasCodeToExecute() throws Exception {
     //given
     Code code = new Code("" +
             "%classpath add jar demoResources/beakerxTestLibrary.jar\n" +
             "code code code");
     //when
-    MagicCommandResultItem item = new MagicCommandResultItem(code);
+    MagicCommandItem item = new MagicCommandItemWithCode(code);
     //then
     assertThat(item.hasCodeToExecute()).isTrue();
   }
@@ -40,7 +42,7 @@ public class MagicCommandResultItemTest {
     //given
     Code code = new Code("%classpath add jar demoResources/beakerxTestLibrary.jar");
     //when
-    MagicCommandResultItem item = new MagicCommandResultItem(code);
+    MagicCommandItem item = new MagicCommandItemWithCode(code);
     //then
     assertThat(item.hasCodeToExecute()).isFalse();
   }

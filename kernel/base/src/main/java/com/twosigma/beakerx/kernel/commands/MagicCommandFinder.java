@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResult;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.message.Message;
@@ -27,16 +28,16 @@ import java.util.Optional;
 
 public class MagicCommandFinder {
 
-  private List<MagicCommandResultItem> errors = new ArrayList<>();
+  private List<MagicCommandItemWithResult> errors = new ArrayList<>();
   private LinkedHashMap<String, MagicCommandFunctionality> functionalitiesToRun = new LinkedHashMap<>();
 
-  private MagicCommandFinder(LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun, List<MagicCommandResultItem> errors) {
+  private MagicCommandFinder(LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun, List<MagicCommandItemWithResult> errors) {
     this.errors = errors;
     this.functionalitiesToRun = new LinkedHashMap<>(functionalityToRun);
   }
 
   public static MagicCommandFinder find(Code code, Map<String, MagicCommandFunctionality> commands, Message message, int executionCount, MessageCreator messageCreator) {
-    List<MagicCommandResultItem> errors = new ArrayList<>();
+    List<MagicCommandItemWithResult> errors = new ArrayList<>();
     LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun = new LinkedHashMap<>();
     code.getCommands().forEach(command -> {
       Optional<MagicCommandFunctionality> functionality = findFunctionality(commands, command);
@@ -55,9 +56,9 @@ public class MagicCommandFinder {
             findFirst().map(s -> commands.get(s));
   }
 
-  private static MagicCommandResultItem processUnknownCommand(String command, Message message, int executionCount, MessageCreator messageCreator) {
+  private static MagicCommandItemWithResult processUnknownCommand(String command, Message message, int executionCount, MessageCreator messageCreator) {
     String result = "Cell magic " + command + " not found";
-    return new MagicCommandResultItem(
+    return new MagicCommandItemWithResult(
             messageCreator.buildOutputMessage(message, result, true),
             messageCreator.buildReplyWithoutStatus(message, executionCount)
     );
@@ -67,7 +68,7 @@ public class MagicCommandFinder {
     return !errors.isEmpty();
   }
 
-  public List<MagicCommandResultItem> getErrors() {
+  public List<MagicCommandItemWithResult> getErrors() {
     return errors;
   }
 

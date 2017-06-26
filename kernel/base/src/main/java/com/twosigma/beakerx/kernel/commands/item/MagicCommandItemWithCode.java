@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel.commands;
+package com.twosigma.beakerx.kernel.commands.item;
 
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.message.Message;
@@ -23,43 +23,35 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
 
-public class MagicCommandResultItem {
+public class MagicCommandItemWithCode implements MagicCommandItem {
 
   private Code code;
-  private Message resultMessage;
-  private Message replyWithoutStatus;
 
-  public MagicCommandResultItem(Message replyWithoutStatus) {
-    this.replyWithoutStatus = checkNotNull(replyWithoutStatus);
-  }
-
-  public MagicCommandResultItem(Message resultMessage, Message replyWithoutStatus) {
-    this.resultMessage = checkNotNull(resultMessage);
-    this.replyWithoutStatus = checkNotNull(replyWithoutStatus);
-  }
-
-  public MagicCommandResultItem(Code code) {
+  public MagicCommandItemWithCode(Code code) {
     this.code = checkNotNull(code);
   }
 
+  @Override
   public boolean hasCodeToExecute() {
     return getCode().isPresent() && getCode().get().takeCodeWithoutCommand().isPresent();
   }
 
+  @Override
   public boolean hasResult() {
-    return getResultMessage().isPresent();
+    return false;
+  }
+
+  @Override
+  public Optional<Message> getResult() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Message> getReply() {
+    return Optional.empty();
   }
 
   public Optional<Code> getCode() {
     return ofNullable(code);
   }
-
-  public Optional<Message> getResultMessage() {
-    return ofNullable(resultMessage);
-  }
-
-  public Optional<Message> getReplyWithoutStatus() {
-    return ofNullable(replyWithoutStatus);
-  }
-
 }

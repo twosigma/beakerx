@@ -55,7 +55,6 @@ public class GroovyKernelNotReadyTest {
     kernelSocketsService.shutdown();
   }
 
-  @Test
   public void evaluateWhenKernelNotReady() throws Exception {
     //given
     String code = "16/2";

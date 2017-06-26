@@ -82,16 +82,16 @@ public class TreeMap extends Chart {
   private ValueAccessor valueAccessor = ValueAccessor.VALUE;
 
 
-  public TreeMap(final TreeMapNode root) {
-    this();
-    setRoot(root);
+  public TreeMap() {
+    this(null);
   }
 
-  public TreeMap() {
+  public TreeMap(final TreeMapNode root) {
     super();
     openComm();
     setColorProvider(new RandomColorProvider());
     setShowLegend(false);
+    this.root = root;
   }
 
   /**
@@ -111,6 +111,7 @@ public class TreeMap extends Chart {
    */
   public void setRoot(final TreeMapNode newRoot) {
     root = newRoot;
+    this.sendModel();
   }
 
   public Mode getMode() {

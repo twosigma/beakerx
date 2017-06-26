@@ -16,11 +16,12 @@
 package com.twosigma.beakerx.jvm.object;
 
 import com.twosigma.beakerx.SerializeToString;
+import com.twosigma.beakerx.widgets.BeakerxWidget;
 import com.twosigma.beakerx.widgets.Widget;
 import com.twosigma.beakerx.widgets.strings.HTML;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class OutputContainerLayoutManager {
 
@@ -36,11 +37,19 @@ public abstract class OutputContainerLayoutManager {
 
   public abstract void display(OutputContainer container);
 
-  protected static List<Widget> getWidgets(OutputContainer container) {
-    return container.getItems().stream().map(x -> toWidget(x)).collect(Collectors.toList());
+  protected List<Widget> getWidgets(OutputContainer container) {
+    List<Widget> ret = new ArrayList<>();
+    for (Object item : container.getItems()) {
+      Widget w = toWidget(item);
+      ret.add(w);
+      if(w instanceof BeakerxWidget){
+        ((BeakerxWidget)w).sendModel();
+      }
+    }
+    return ret;
   }
 
-  protected static Widget toWidget(Object item) {
+  private Widget toWidget(Object item) {
     Widget widget = SerializeToString.getTableDisplay(item);
     if (widget == null && item instanceof Widget) {
       widget = (Widget) item;
@@ -51,4 +60,7 @@ public abstract class OutputContainerLayoutManager {
     }
     return widget;
   }
+  
+  
+  
 }

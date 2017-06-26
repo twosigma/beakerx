@@ -20,6 +20,7 @@ import com.twosigma.beakerx.message.Message;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class MagicCommandResult {
 
@@ -34,8 +35,13 @@ public class MagicCommandResult {
     return last.hasCodeToExecute();
   }
 
-  public Message getResultMessage() {
-    return items.getLast().getResultMessage().get();
+  public boolean hasResult() {
+    MagicCommandResultItem last = items.getLast();
+    return last.hasResult();
+  }
+
+  public Optional<Message> getResultMessage() {
+    return items.getLast().getResultMessage();
   }
 
   public Message replyMessage() {

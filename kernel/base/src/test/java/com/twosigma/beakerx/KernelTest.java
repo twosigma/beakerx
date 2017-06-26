@@ -49,6 +49,7 @@ public class KernelTest implements KernelFunctionality {
   private KernelParameters setShellOptions;
   private EvaluatorManager evaluatorManager;
   private MessageCreator messageCreator;
+  private String code;
 
   public KernelTest() {
     this("KernelTestId1");
@@ -187,10 +188,15 @@ public class KernelTest implements KernelFunctionality {
 
   @Override
   public SimpleEvaluationObject executeCode(String code, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback) {
+    this.code = code;
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
     seo.setJupyterMessage(message);
     executeCodeCallback.execute(seo);
     return seo;
+  }
+
+  public String getCode() {
+    return code;
   }
 
   @Override

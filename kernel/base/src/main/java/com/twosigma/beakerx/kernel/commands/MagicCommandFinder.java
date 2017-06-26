@@ -20,7 +20,7 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,16 +28,16 @@ import java.util.Optional;
 public class MagicCommandFinder {
 
   private List<MagicCommandResultItem> errors = new ArrayList<>();
-  private Map<String, MagicCommandFunctionality> functionalitiesToRun = new HashMap<>();
+  private LinkedHashMap<String, MagicCommandFunctionality> functionalitiesToRun = new LinkedHashMap<>();
 
-  public MagicCommandFinder(Map<String, MagicCommandFunctionality> functionalityToRun, List<MagicCommandResultItem> errors) {
+  private MagicCommandFinder(LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun, List<MagicCommandResultItem> errors) {
     this.errors = errors;
-    this.functionalitiesToRun = functionalityToRun;
+    this.functionalitiesToRun = new LinkedHashMap<>(functionalityToRun);
   }
 
   public static MagicCommandFinder find(Code code, Map<String, MagicCommandFunctionality> commands, Message message, int executionCount, MessageCreator messageCreator) {
     List<MagicCommandResultItem> errors = new ArrayList<>();
-    Map<String, MagicCommandFunctionality> functionalityToRun = new HashMap<>();
+    LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun = new LinkedHashMap<>();
     code.getCommands().forEach(command -> {
       Optional<MagicCommandFunctionality> functionality = findFunctionality(commands, command);
       if (functionality.isPresent()) {
@@ -71,7 +71,11 @@ public class MagicCommandFinder {
     return errors;
   }
 
-  public Map<String, MagicCommandFunctionality> getFunctionalitiesToRun() {
-    return functionalitiesToRun;
+  public List<String> getCommands() {
+    return new ArrayList<>(functionalitiesToRun.keySet());
+  }
+
+  public MagicCommandFunctionality get(String command) {
+    return functionalitiesToRun.get(command);
   }
 }

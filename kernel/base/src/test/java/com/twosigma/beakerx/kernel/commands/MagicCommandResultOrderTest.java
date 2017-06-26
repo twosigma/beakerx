@@ -17,10 +17,9 @@ package com.twosigma.beakerx.kernel.commands;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
-import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,10 +27,8 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ClasspathMagicCommandTest {
+public class MagicCommandResultOrderTest {
 
-  private static final String SRC_TEST_RESOURCES = "./src/test/resources/";
-  private static final String CLASSPATH1 = "classpath1";
   private MagicCommand sut;
   private KernelTest kernel;
 
@@ -42,51 +39,44 @@ public class ClasspathMagicCommandTest {
   }
 
   @Test
-  public void handleClasspathAddJarMagicCommand() throws Exception {
+  public void codeResultShouldBeLast() throws Exception {
     //given
-    String jar = SRC_TEST_RESOURCES + "BeakerXClasspathTest.jar";
     String codeAsString = "" +
-            "%classpath add jar" + " " + jar + "\n" +
+            "%classpath add jar demoResources/beakerxTestLibrary.jar\n" +
+            "%classpath\n" +
             "code code code";
     Code code = new Code(codeAsString);
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(result.getCode()).isEqualTo(new Code("code code code"));
-    assertThat(kernel.getClasspath().get(0)).isEqualTo(jar);
+    assertThat(result.getItems().get(0).getCode().get()).isEqualTo(new Code("code code code"));
+    assertThat(result.getItems().get(1).getCode().get()).isEqualTo(new Code("code code code"));
   }
 
   @Test
-  public void shouldCreateMsgWithWrongMagic() throws Exception {
+  public void classpathAddJarShouldBeLast() throws Exception {
     //given
-    String jar = SRC_TEST_RESOURCES + "BeakerXClasspathTest.jar";
-    Code code = new Code("%classpath2 add jar" + " " + jar);
+    String codeAsString = "" +
+            "%classpath\n" +
+            "%classpath add jar demoResources/beakerxTestLibrary.jar\n";
+    Code code = new Code(codeAsString);
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(result.getResultMessage().get().getContent().get("text")).isEqualTo("Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found");
-    assertThat(kernel.getClasspath().size()).isEqualTo(0);
+    assertThat(result.getResultMessage().isPresent()).isFalse();
   }
 
   @Test
-  public void showClasspath() throws Exception {
+  public void classpathShouldBeLast() throws Exception {
     //given
-    kernel.addJarToClasspath(new PathToJar(CLASSPATH1));
+    String codeAsString = "" +
+            "%classpath add jar demoResources/beakerxTestLibrary.jar\n" +
+            "%classpath";
+    Code code = new Code(codeAsString);
     //when
-    MagicCommandResult result = sut.process(new Code("%classpath"), new Message(), 1);
+    MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(classpath(result)).isEqualTo(CLASSPATH1);
-  }
-
-  @Test
-  public void showClasspathShouldNotContainDuplication() throws Exception {
-    //given
-    kernel.addJarToClasspath(new PathToJar(CLASSPATH1));
-    //when
-    kernel.addJarToClasspath(new PathToJar(CLASSPATH1));
-    MagicCommandResult result = sut.process(new Code("%classpath"), new Message(), 1);
-    //then
-    assertThat(classpath(result)).isEqualTo(CLASSPATH1);
+    assertThat(classpath(result)).isEqualTo("demoResources/beakerxTestLibrary.jar");
   }
 
   private String classpath(MagicCommandResult result) {

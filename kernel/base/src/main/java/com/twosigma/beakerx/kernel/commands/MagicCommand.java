@@ -28,6 +28,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -71,10 +72,10 @@ public class MagicCommand {
     if (finder.hasErrors()) {
       finder.getErrors().forEach(result::addItem);
     } else {
-      Map<String, MagicCommandFunctionality> functionalitiesToRun = finder.getFunctionalitiesToRun();
-      functionalitiesToRun.keySet().
+      List<String> functionalitiesToRun = finder.getCommands();
+      functionalitiesToRun.
               forEach(item -> {
-                MagicCommandResultItem magicCommandResultItem = functionalitiesToRun.get(item).process(code, item, message, executionCount);
+                MagicCommandResultItem magicCommandResultItem = finder.get(item).process(code, item, message, executionCount);
                 result.addItem(magicCommandResultItem);
               });
     }
@@ -100,7 +101,7 @@ public class MagicCommand {
         throw new RuntimeException("Wrong import format.");
       }
       this.kernel.addImport(new ImportPath(parts[1]));
-      return new MagicCommandResultItem(code.takeCodeWithoutCommand());
+      return getMagicCommandResultItem(code, message, executionCount);
     };
   }
 
@@ -111,13 +112,16 @@ public class MagicCommand {
         throw new RuntimeException("Wrong import format.");
       }
       this.kernel.removeImport(new ImportPath(parts[1]));
-      return new MagicCommandResultItem(code.takeCodeWithoutCommand());
+      return getMagicCommandResultItem(code, message, executionCount);
     };
   }
 
   private MagicCommandFunctionality classpathShow() {
     return (code, command, message, executionCount) -> {
       MIMEContainer result = Text(kernel.getClasspath());
+      if(code.takeCodeWithoutCommand().isPresent()){
+        return new MagicCommandResultItem(code.takeCodeWithoutCommand().get());
+      }
       return new MagicCommandResultItem(
               messageCreator.buildMessage(message, result.getMime().getMime(), result.getCode(), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
@@ -136,13 +140,20 @@ public class MagicCommand {
         throw new RuntimeException("Wrong command format: " + CLASSPATH_ADD_JAR);
       }
       this.kernel.addJarToClasspath(new PathToJar(split[3]));
-      return new MagicCommandResultItem(code.takeCodeWithoutCommand());
+      return getMagicCommandResultItem(code, message, executionCount);
     };
+  }
+
+  private MagicCommandResultItem getMagicCommandResultItem(Code code, Message message, int executionCount) {
+    if(code.takeCodeWithoutCommand().isPresent()){
+      return new MagicCommandResultItem(code.takeCodeWithoutCommand().get());
+    }
+    return new MagicCommandResultItem(messageCreator.buildReplyWithoutStatus(message, executionCount));
   }
 
   private MagicCommandFunctionality javascript() {
     return (code, command, message, executionCount) -> {
-      MIMEContainer result = JavaScript(code.takeCodeWithoutCommand().asString());
+      MIMEContainer result = JavaScript(code.takeCodeWithoutCommand().get().asString());
       return new MagicCommandResultItem(
               messageCreator.buildMessage(message, result.getMime().getMime(), result.getCode(), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
@@ -152,7 +163,7 @@ public class MagicCommand {
 
   private MagicCommandFunctionality html() {
     return (code, command, message, executionCount) -> {
-      MIMEContainer html = HTML("<html>" + code.takeCodeWithoutCommand().asString() + "</html>");
+      MIMEContainer html = HTML("<html>" + code.takeCodeWithoutCommand().get().asString() + "</html>");
       return new MagicCommandResultItem(
               messageCreator.buildMessage(message, html.getMime().getMime(), html.getCode(), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
@@ -162,7 +173,7 @@ public class MagicCommand {
 
   private MagicCommandFunctionality bash() {
     return (code, command, message, executionCount) -> {
-      String result = executeBashCode(code.takeCodeWithoutCommand());
+      String result = executeBashCode(code.takeCodeWithoutCommand().get());
       return new MagicCommandResultItem(
               messageCreator.buildOutputMessage(message, result, false),
               messageCreator.buildReplyWithoutStatus(message, executionCount)

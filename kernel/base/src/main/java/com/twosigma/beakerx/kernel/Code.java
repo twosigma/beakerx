@@ -15,10 +15,9 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.message.Message;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -35,7 +34,7 @@ public class Code {
 
   private String code;
   private List<String> commands = new ArrayList<>();
-  private String codeWithoutCommands = "";
+  private String codeWithoutCommands = null;
 
   public Code(final String code) {
     this.code = checkNotNull(code);
@@ -61,14 +60,20 @@ public class Code {
     throw new RuntimeException("The code does not have magic command.");
   }
 
-  public Code takeCodeWithoutCommand() {
-    return new Code(this.codeWithoutCommands);
+  public Optional<Code> takeCodeWithoutCommand() {
+    if (this.codeWithoutCommands != null) {
+      return Optional.of(new Code(this.codeWithoutCommands));
+    }
+    return Optional.empty();
   }
 
   private void setupCommandsAndCode() {
     Scanner scanner = new Scanner(this.code);
     this.commands = commands(scanner);
-    this.codeWithoutCommands = join(restOfTheCode(scanner), lineSeparator());
+    String codeToExecute = join(restOfTheCode(scanner), lineSeparator());
+    if (!codeToExecute.isEmpty()) {
+      this.codeWithoutCommands = codeToExecute;
+    }
   }
 
   private List<String> restOfTheCode(Scanner scanner) {
@@ -81,19 +86,11 @@ public class Code {
 
   private List<String> commands(Scanner scanner) {
     List<String> result = new ArrayList<>();
-    Pattern p = Pattern.compile("^%.*",Pattern.MULTILINE);
+    Pattern p = Pattern.compile("^%.*", Pattern.MULTILINE);
     while (scanner.hasNext(p)) {
       result.add(scanner.nextLine());
     }
     return result;
-  }
-
-  public static Code takeCodeFrom(Message message) {
-    String code = "";
-    if (message.getContent() != null && message.getContent().containsKey("code")) {
-      code = ((String) message.getContent().get("code")).trim();
-    }
-    return new Code(code);
   }
 
   @Override

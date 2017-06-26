@@ -69,13 +69,53 @@ public class GroovyEvaluatorAutocompleteTest {
   }
 
   @Test
-  public void shouldReturnResultEqualToValue() throws Exception {
-    String code = "def value = 'str'\n" +
-        "println \"test ${v\n";
+  public void shouldReturnResultEqualToParamInt() throws Exception {
+    String code = "def paramInt = 10\n" +
+        "println par";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("value");
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramInt");
+  }
+
+  @Test
+  public void shouldReturnResultEqualToParamDouble() throws Exception {
+    String code = "def paramDouble = 10.0\n" +
+        "println par";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramDouble");
+  }
+
+  @Test
+  public void shouldReturnResultEqualToParamString() throws Exception {
+    String code = "def paramString = 'str'\n" +
+        "println \"test ${par\n";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramString");
+  }
+
+  @Test
+  public void shouldReturnResultEqualToParamArray() throws Exception {
+    String code = "def paramArray = [1, 3, 5]\n" +
+        "println par";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramArray");
+  }
+
+  @Test
+  public void shouldReturnResultEqualToParamMap() throws Exception {
+    String code = "def paramMap = ['abc':1, 'def':2, 'xyz':3]\n" +
+        "println par";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramMap");
   }
 
   @Test

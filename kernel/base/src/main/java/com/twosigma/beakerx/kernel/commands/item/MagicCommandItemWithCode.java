@@ -15,25 +15,24 @@
  */
 package com.twosigma.beakerx.kernel.commands.item;
 
-import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Optional.ofNullable;
 
 public class MagicCommandItemWithCode implements MagicCommandItem {
 
-  private Code code;
+  private CodeWithoutCommand code;
 
-  public MagicCommandItemWithCode(Code code) {
+  public MagicCommandItemWithCode(CodeWithoutCommand code) {
     this.code = checkNotNull(code);
   }
 
   @Override
   public boolean hasCodeToExecute() {
-    return getCode().isPresent() && getCode().get().takeCodeWithoutCommand().isPresent();
+    return true;
   }
 
   @Override
@@ -51,7 +50,7 @@ public class MagicCommandItemWithCode implements MagicCommandItem {
     return Optional.empty();
   }
 
-  public Optional<Code> getCode() {
-    return ofNullable(code);
+  public Optional<CodeWithoutCommand> getCode() {
+    return Optional.of(code);
   }
 }

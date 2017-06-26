@@ -64,16 +64,20 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     Code code = takeCodeFrom(message);
     announceThatWeHaveTheCode(message, code);
     if (code.isaMagicCommand()) {
-      MagicCommandResult magicCommandResult = magicCommand.process(code, message, executionCount);
-      if (magicCommandResult.hasCodeToExecute()) {
-        runCode(magicCommandResult.getCode().asString(), message);
-      } else if (magicCommandResult.hasResult()) {
-        sendMagicCommandResult(message, magicCommandResult.replyMessage(), magicCommandResult.getResultMessage().get());
-      } else {
-        sendMagicCommandResult(message, magicCommandResult.replyMessage());
-      }
+      handleMagicCommand(message, code);
     } else {
       runCode(code.asString(), message);
+    }
+  }
+
+  private void handleMagicCommand(Message message, Code code) {
+    MagicCommandResult magicCommandResult = magicCommand.process(code, message, executionCount);
+    if (magicCommandResult.hasCodeToExecute()) {
+      runCode(magicCommandResult.getCode().get().asString(), message);
+    } else if (magicCommandResult.hasResult()) {
+      sendMagicCommandReplyAndResult(message, magicCommandResult.replyMessage().get(), magicCommandResult.getResultMessage().get());
+    } else {
+      sendMagicCommandReply(message, magicCommandResult.replyMessage().get());
     }
   }
 
@@ -85,15 +89,15 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     return new Code(code);
   }
 
-  private void sendMagicCommandResult(Message message, Message replyMessage) {
+  private void sendMagicCommandReply(Message message, Message replyMessage) {
     kernel.send(replyMessage);
     kernel.sendIdleMessage(message);
     syncObject.release();
   }
 
-  private void sendMagicCommandResult(Message message, Message replyMessage, Message resultMessage) {
+  private void sendMagicCommandReplyAndResult(Message message, Message replyMessage, Message resultMessage) {
     kernel.publish(resultMessage);
-    sendMagicCommandResult(message, replyMessage);
+    sendMagicCommandReply(message, replyMessage);
   }
 
   private void runCode(String code, Message message) {

@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import com.google.common.base.Preconditions;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +24,11 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static java.lang.System.lineSeparator;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -37,7 +43,8 @@ public class Code {
   private String codeWithoutCommands = null;
 
   public Code(final String code) {
-    this.code = checkNotNull(code);
+    checkState(isNotBlank(checkNotNull(code)));
+    this.code = code;
     if (isaMagicCommand()) {
       setupCommandsAndCode();
     } else {
@@ -60,11 +67,11 @@ public class Code {
     throw new RuntimeException("The code does not have magic command.");
   }
 
-  public Optional<Code> takeCodeWithoutCommand() {
+  public Optional<CodeWithoutCommand> takeCodeWithoutCommand() {
     if (this.codeWithoutCommands != null) {
-      return Optional.of(new Code(this.codeWithoutCommands));
+      return of(new CodeWithoutCommand(this.codeWithoutCommands));
     }
-    return Optional.empty();
+    return empty();
   }
 
   private void setupCommandsAndCode() {

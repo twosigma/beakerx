@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.commands.item;
 
-import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.Optional;
@@ -52,7 +52,7 @@ public class MagicCommandItemWithReply implements MagicCommandItem {
   }
 
   @Override
-  public Optional<Code> getCode() {
+  public Optional<CodeWithoutCommand> getCode() {
     return Optional.empty();
   }
 }

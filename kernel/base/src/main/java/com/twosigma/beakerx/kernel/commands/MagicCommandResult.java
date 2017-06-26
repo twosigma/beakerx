@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
 import com.twosigma.beakerx.message.Message;
 
@@ -45,12 +45,12 @@ public class MagicCommandResult {
     return items.getLast().getResult();
   }
 
-  public Message replyMessage() {
-    return items.getLast().getReply().get();
+  public Optional<Message> replyMessage() {
+    return items.getLast().getReply();
   }
 
-  public Code getCode() {
-    return items.getLast().getCode().get();
+  public Optional<CodeWithoutCommand> getCode() {
+    return items.getLast().getCode();
   }
 
   public List<MagicCommandItem> getItems() {

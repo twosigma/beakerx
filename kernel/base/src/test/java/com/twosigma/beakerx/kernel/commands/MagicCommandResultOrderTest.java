@@ -18,6 +18,7 @@ package com.twosigma.beakerx.kernel.commands;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import org.junit.Before;
@@ -49,8 +50,8 @@ public class MagicCommandResultOrderTest {
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(result.getItems().get(0).getCode().get()).isEqualTo(new Code("code code code"));
-    assertThat(result.getItems().get(1).getCode().get()).isEqualTo(new Code("code code code"));
+    assertThat(result.getItems().get(0).getCode().get()).isEqualTo(new CodeWithoutCommand("code code code"));
+    assertThat(result.getItems().get(1).getCode().get()).isEqualTo(new CodeWithoutCommand("code code code"));
   }
 
   @Test

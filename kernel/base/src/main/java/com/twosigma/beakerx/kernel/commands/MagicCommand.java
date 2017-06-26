@@ -17,6 +17,7 @@
 package com.twosigma.beakerx.kernel.commands;
 
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithReply;
@@ -199,7 +200,7 @@ public class MagicCommand {
     };
   }
 
-  private String executeBashCode(Code code) {
+  private String executeBashCode(CodeWithoutCommand code) {
     String[] cmd = {"/bin/bash", "-c", code.asString()};
     ProcessBuilder pb = new ProcessBuilder(cmd);
     pb.redirectErrorStream(true);

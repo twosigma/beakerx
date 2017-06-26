@@ -58,7 +58,7 @@ public class CodeTest {
     assertThat(result.getCommands().get(0)).isEqualTo("%classpath add jar lib1.jar");
     assertThat(result.getCommands().get(1)).isEqualTo("%classpath add jar lib2.jar");
     assertThat(result.getCommands().get(2)).isEqualTo("%classpath add jar lib3.jar");
-    assertThat(result.takeCodeWithoutCommand().get()).isEqualTo(new Code("code code code"));
+    assertThat(result.takeCodeWithoutCommand().get()).isEqualTo(new CodeWithoutCommand("code code code"));
   }
 
 }

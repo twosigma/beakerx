@@ -35,7 +35,6 @@ import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-import com.twosigma.beakerx.table.ContextMenuAction;
 
 public abstract class Widget implements CommFunctionality, DisplayableWidget {
   
@@ -201,7 +200,6 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
       seo.addObserver(KernelManager.get().getExecutionResultSender());
       InternalVariable.setValue(seo);
       KernelManager.get().publish(mc.buildClearOutput(message, true));
-      seo.clrOutputHandler();
     }
     try {
       Object result = handler.executeCode(params);
@@ -222,6 +220,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
         logger.info("Execution result ERROR: \n" + e);
       }
     }
+    seo.clrOutputHandler();
   }
 
   public interface ExecuteCompiledCode {

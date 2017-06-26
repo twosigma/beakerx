@@ -627,7 +627,7 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   private void handleDoubleClick(Message message) {
-    handleCommEventSync(message, CommActions.ONDOUBLECLICK, this::onDoubleClickAction);
+    handleCommEventSync(message, CommActions.DOUBLE_CLICK, this::onDoubleClickAction);
   }
 
   private void onDoubleClickAction(HashMap content, Message message) {
@@ -652,7 +652,7 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   private void handleOnContextMenu(Message message) {
-    handleCommEventSync(message, CommActions.ONCONTEXTMENU, this::onContextMenu);
+    handleCommEventSync(message, CommActions.CONTEXT_MENU_CLICK, this::onContextMenu);
   }
 
   private void onContextMenu(HashMap content, Message message) {
@@ -721,11 +721,11 @@ public class TableDisplay extends BeakerxWidget {
       }
     }
     setDetails(details);
-    if(CommActions.ONCONTEXTMENU.equals(details.getActionType())){
+    if(CommActions.CONTEXT_MENU_CLICK.equals(details.getActionType())){
       if(getContextMenuTags() != null && !getContextMenuTags().isEmpty() && details.getContextMenuItem() != null && !details.getContextMenuItem().isEmpty()){
         NamespaceClient.getBeaker().runByTag(getContextMenuTags().get(details.getContextMenuItem()));
       }
-    }else if(CommActions.ONDOUBLECLICK.equals(details.getActionType())){
+    }else if(CommActions.DOUBLE_CLICK.equals(details.getActionType())){
       if(getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()){
         NamespaceClient.getBeaker().runByTag(getDoubleClickTag());
       }

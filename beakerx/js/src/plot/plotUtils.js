@@ -884,18 +884,6 @@ define([
       var styleEl = document.createElement('style');
       styleEl.setAttribute('type', 'text/css');
       var elementStyles = this.getElementStyles(element);
-      elementStyles += this.getFontToInject({
-        fontFamily: 'pt-sans',
-        urlformats: {'/./fonts/regular/pts55f-webfont.woff' : 'woff'},
-        fontWeight: 'normal',
-        fontStyle: 'normal'
-      });
-      elementStyles += this.getFontToInject({
-        fontFamily: 'pt-sans',
-        urlformats: {'/./fonts/bold/pts75f-webfont.woff' : 'woff'},
-        fontWeight: 'bold',
-        fontStyle: 'normal'
-      });
 
       var extraStylesCss = '';
       if(extraStyles) {

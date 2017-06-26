@@ -16,19 +16,18 @@
 
 package com.twosigma.beakerx.jupyter.handler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.handler.ExecuteRequestHandler;
 import com.twosigma.beakerx.message.Message;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExecuteRequestHandlerMagicCommandTest {
 
@@ -52,10 +51,10 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void handleMagicClasspathAddJarAndExecuteTheCode() throws Exception {
     //given
     String code = "" +
-            "%classpath add jar BeakerXClasspathTest.jar\n" +
-            "import com.beakerx.BeakerxObject;\n" +
-            "BeakerxObject beakerxObject = new BeakerxObject();\n" +
-            "beakerxObject.getObjectTest()\n";
+        "%classpath add jar ../../demoFiles/demoResources/BeakerXClasspathTest.jar\n" +
+        "import com.beakerx.BeakerxObject;\n" +
+        "BeakerxObject beakerxObject = new BeakerxObject();\n" +
+        "beakerxObject.getObjectTest()\n";
 
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     //when
@@ -68,9 +67,11 @@ public class ExecuteRequestHandlerMagicCommandTest {
 
   @Test
   public void handleMagicClasspathAddJar() throws Exception {
+    System.out.println("SIEMA " + System.getProperty("user.dir"));
+
     //when
     String code = "" +
-            "%classpath add jar BeakerXClasspathTest.jar";
+        "%classpath add jar ../../demoFiles/demoResources/BeakerXClasspathTest.jar";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     executeRequestHandler.handle(magicMessage);
     //then
@@ -82,9 +83,9 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void noResetEnvironmentForDuplicatedPath() throws Exception {
     //when
     String code = "" +
-            "%classpath add jar BeakerXClasspathTest.jar\n" +
-            "%classpath add jar BeakerXClasspathTest.jar\n" +
-            "%classpath add jar BeakerXClasspathTest.jar\n";
+        "%classpath add jar ../../demoFiles/demoResources/BeakerXClasspathTest.jar\n" +
+        "%classpath add jar ../../demoFiles/demoResources/BeakerXClasspathTest.jar\n" +
+        "%classpath add jar ../../demoFiles/demoResources/BeakerXClasspathTest.jar\n";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     executeRequestHandler.handle(magicMessage);
     //then
@@ -107,9 +108,9 @@ public class ExecuteRequestHandlerMagicCommandTest {
   @Test
   public void handleImportMagicCommandAndExecuteTheCode() throws Exception {
     //given
-    String code ="" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
-            "w = new IntSlider()";
+    String code = "" +
+        "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
+        "w = new IntSlider()";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     //when
     executeRequestHandler.handle(magicMessage);
@@ -122,9 +123,9 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void noResetEnvironmentForDuplicatedImportPath() throws Exception {
     //when
     String code = "" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n";
+        "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
+        "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
+        "%import com.twosigma.beakerx.widgets.integers.IntSlider\n";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     executeRequestHandler.handle(magicMessage);
     //then

@@ -17,26 +17,27 @@ package com.twosigma.beakerx.javash.kernel;
 
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
-import java.io.IOException;
-
 import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.javash.comm.JavaCommOpenHandler;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import com.twosigma.beakerx.javash.handler.JavaKernelInfoHandler;
-import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
-import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.message.Message;
+import java.io.IOException;
 
 
 public class Java extends Kernel {
 
-  public Java(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+  public Java(final String id, final Evaluator evaluator,
+      KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
+    setShellOptions(getKernelParameters(new JavaDefaultVariables()));
   }
 
   @Override
@@ -53,7 +54,8 @@ public class Java extends Kernel {
     KernelRunner.run(() -> {
       String id = uuid();
       JavaEvaluator e = new JavaEvaluator(id, id);
-      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
+      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
+          new KernelConfigurationFile(args));
       return new Java(id, e, kernelSocketsFactory);
     });
   }

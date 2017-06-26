@@ -43,11 +43,11 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   
   public enum CommActions {
 
-    ONDOUBLECLICK("ondoubleclick"),
+    ONDOUBLECLICK("DOUBLE_CLICK"),
     ONCLICK("onclick"),
     ONKEY("onkey"),
     ACTIONDETAILS("actiondetails"),
-    ONCONTEXTMENU("oncontextmenu"),
+    ONCONTEXTMENU("CONTEXT_MENU_CLICK"),
     CLICK("click");
 
     private String action;
@@ -64,7 +64,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
       CommActions ret = null;
       if(input != null){
         for (CommActions item : CommActions.values()) {
-          if(item.name().equalsIgnoreCase(input.trim())){
+          if(item.getAction().equalsIgnoreCase(input.trim())){
             ret = item;
             break;
           }

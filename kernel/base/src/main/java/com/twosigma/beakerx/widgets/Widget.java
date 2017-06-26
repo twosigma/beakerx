@@ -42,11 +42,11 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   
   public enum CommActions {
 
-    ONDOUBLECLICK("DOUBLE_CLICK"),
+    DOUBLE_CLICK("DOUBLE_CLICK"),
     ONCLICK("onclick"),
     ONKEY("onkey"),
     ACTIONDETAILS("actiondetails"),
-    ONCONTEXTMENU("CONTEXT_MENU_CLICK"),
+    CONTEXT_MENU_CLICK("CONTEXT_MENU_CLICK"),
     CLICK("click");
 
     private String action;

@@ -18,7 +18,7 @@ package com.twosigma.beakerx.jvm.object;
 import com.twosigma.beakerx.SerializeToString;
 import com.twosigma.beakerx.widgets.BeakerxWidget;
 import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.widgets.strings.Label;
+import com.twosigma.beakerx.widgets.strings.HTML;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +54,7 @@ public abstract class OutputContainerLayoutManager {
     if (widget == null && item instanceof Widget) {
       widget = (Widget) item;
     } else if (widget == null) {
-      Label label = new Label();
+      HTML label = new HTML();
       label.setValue(item.toString());
       widget = label;
     }

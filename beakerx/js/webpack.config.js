@@ -31,14 +31,12 @@ var rules = [
     "css-loader",
     "sass-loader"
   ] },
-  {
-    test: /\.(gif|png|jpg|svg)(\?|$)/,
-    use: 'url-loader?limit=8192'
-  },
-  {
-    test: /\.(eot|ttf|woff|woff2|mp4|wav|mp3)(\?[\w-]+(#[\w-]+)?)?$/,
-    use: 'file-loader'
-  },
+  { test: /\.(jpg|png|gif)$/, loader: "file-loader" },
+  { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" },
+  { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" },
+  { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/octet-stream" },
+  { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader" },
+  { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=image/svg+xml" },
   { test: /\.html$/, use: 'html-loader' }
 ];
 

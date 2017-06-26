@@ -14,17 +14,13 @@
  *  limitations under the License.
  */
 
-include 'beakerx'
-include 'beakerx:js'
-include 'kernel'
-include 'kernel:base'
-include 'kernel:groovy'
-include 'kernel:scala'
-include 'kernel:java'
-include 'kernel:clojure'
-include 'kernel:sql'
-include 'test'
+@mixin fontFace($family,$src,$style: normal,$weight: normal) {
+  @font-face {
+    font-family: $family;
+    src: url('#{$src}.woff') format('woff'), // standards
+    url('#{$src}.ttf') format('truetype'); // Safari, Android, iOS
 
-if (System.getProperty('includeCpp', 'false') == 'true') {
-    include 'kernel:cpp'
+    font-style: $style;
+    font-weight: $weight;
+  }
 }

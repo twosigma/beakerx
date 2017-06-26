@@ -72,17 +72,22 @@ module.exports = function(TableScope) {
 
         var cell = self.table.cell(e.target);
         var selected = cell.node().classList.contains('selected');
+        var selectedCells = self.table.cells({ selected: true });
 
-        self.table.cells({ selected: true }).deselect();
-        !selected && cell.select();
+        selectedCells.deselect();
+        (!selected || self.focusChanged || selectedCells.indexes().length > 1) && cell.select();
+
+        self.focusChanged = false;
       });
 
     self.table
       .on('key-blur', function () {
+        self.prevFocussedCell = _.clone(self.focussedCell);
         self.focussedCell = null;
       })
       .on('key-focus', function (e, datatable, cell, originalEvent) {
         self.focussedCell = cell.index();
+        self.focusChanged = true;
 
         if (!originalEvent.shiftKey) {
           return;

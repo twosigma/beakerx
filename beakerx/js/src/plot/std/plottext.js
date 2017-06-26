@@ -258,7 +258,7 @@ define([
         if (self.itemProps.show_pointer) {
           var size = self.itemProps.size;
 
-          var width = getTextWidth(d.txt, size + "px pt-sans, Helvetica, sans-serif");
+          var width = getTextWidth(d.txt, size + "px Lato, Helvetica, sans-serif");
           var height = size;
 
           var angle = self.itemProps.pointer_angle;

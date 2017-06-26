@@ -52,15 +52,15 @@ public class OutputContainer implements DisplayableWidget {
   }
 
 
-  public void addItem(java.lang.Object item) {
+  public void addItem(Object item) {
     addItem(item, items.size(), null);
   }
 
-  public void addItem(java.lang.Object item, int index) {
+  public void addItem(Object item, int index) {
     addItem(item, index, null);
   }
 
-  public void addItem(java.lang.Object item, int index, java.lang.String label) {
+  public void addItem(Object item, int index, String label) {
     items.add(index, item);
     labels.add(index, label);
   }

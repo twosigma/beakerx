@@ -72,7 +72,7 @@ public abstract class BeakerxWidget extends Widget {
     super.display();
   }
 
-  private void enableModelUpdate() {
+  public void enableModelUpdate() {
     updateModel = (action, item) -> sendUpdate(action, item);
   }
 

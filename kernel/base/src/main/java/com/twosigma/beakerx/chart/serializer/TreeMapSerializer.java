@@ -27,7 +27,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 public class TreeMapSerializer extends ChartSerializer<TreeMap> {
 
@@ -56,38 +55,39 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
     process(root, new Visitor<TreeMapNode>() {
       @Override
       public void visit(TreeMapNode node) {
-        Object userObject = node.getUserObject();
-        Map<String, Object> values;
-        if (userObject instanceof Map) {
-          values = (Map<String, Object>) userObject;
-          if (node.isLeaf()) {
-            Color color = treeMap.getColorProvider().getColor(node);
-            values.put("color", toHex(color));
+        if(node != null){
+          Object userObject = node.getUserObject();
+          Map<String, Object> values;
+          if (userObject instanceof Map) {
+            values = (Map<String, Object>) userObject;
+            if (node.isLeaf()) {
+              Color color = treeMap.getColorProvider().getColor(node);
+              values.put("color", toHex(color));
+              IToolTipBuilder toolTipBuilder = treeMap.getToolTipBuilder();
+              if (toolTipBuilder != null) {
+                values.put(TOOLTIP, toolTipBuilder.getToolTip(node));
+              } else {
+                values.put(TOOLTIP, values.get("label"));
+              }
+            }
+            node.setUserObject(values);
+          }else{
+            values = new HashMap<>();
+            values.put("label", userObject);
             IToolTipBuilder toolTipBuilder = treeMap.getToolTipBuilder();
             if (toolTipBuilder != null) {
               values.put(TOOLTIP, toolTipBuilder.getToolTip(node));
             } else {
-              values.put(TOOLTIP, values.get("label"));
+              values.put(TOOLTIP, userObject);
             }
           }
-          node.setUserObject(values);
-        }else{
-          values = new HashMap<>();
-          values.put("label", userObject);
-          IToolTipBuilder toolTipBuilder = treeMap.getToolTipBuilder();
-          if (toolTipBuilder != null) {
-            values.put(TOOLTIP, toolTipBuilder.getToolTip(node));
-          } else {
-            values.put(TOOLTIP, userObject);
+          if (node.isLeaf()) {
+            Color color = treeMap.getColorProvider().getColor(node);
+            values.put("color", toHex(color));
           }
-        }
-        if (node.isLeaf()) {
-          Color color = treeMap.getColorProvider().getColor(node);
-          values.put("color", toHex(color));
-        }
 
-        node.setUserObject(values);
-
+          node.setUserObject(values); 
+        }
       }
     });
 
@@ -114,10 +114,12 @@ public class TreeMapSerializer extends ChartSerializer<TreeMap> {
 
   private void process(TreeMapNode node, Visitor<TreeMapNode> visitor) {
     visitor.visit(node);
-    Iterable<TreeMapNode> children = node.getChildren();
-    if (children != null) {
-      for (TreeMapNode child : children) {
-        process(child, visitor);
+    if(node != null){
+      Iterable<TreeMapNode> children = node.getChildren();
+      if (children != null) {
+        for (TreeMapNode child : children) {
+          process(child, visitor);
+        }
       }
     }
   }

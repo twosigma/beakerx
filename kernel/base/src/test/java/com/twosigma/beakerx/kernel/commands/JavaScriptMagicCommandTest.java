@@ -23,6 +23,7 @@ import com.twosigma.beakerx.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;

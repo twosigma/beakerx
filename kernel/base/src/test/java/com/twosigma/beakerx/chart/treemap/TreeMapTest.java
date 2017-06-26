@@ -17,7 +17,6 @@
 package com.twosigma.beakerx.chart.treemap;
 
 import com.twosigma.beakerx.chart.ChartTest;
-import com.twosigma.beakerx.chart.categoryplot.CategoryPlot;
 import com.twosigma.beakerx.chart.treemap.util.IToolTipBuilder;
 import net.sf.jtreemap.swing.DefaultValue;
 import net.sf.jtreemap.swing.TreeMapNode;
@@ -25,7 +24,6 @@ import org.junit.Test;
 
 import java.util.LinkedHashMap;
 
-import static com.twosigma.beakerx.chart.serializer.CategoryPlotSerializer.CATEGORY_NAMES_LABEL_ANGLE;
 import static com.twosigma.beakerx.chart.serializer.TreeMapSerializer.MODE;
 import static com.twosigma.beakerx.chart.serializer.TreeMapSerializer.RATIO;
 import static com.twosigma.beakerx.chart.serializer.TreeMapSerializer.ROUND;

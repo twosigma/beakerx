@@ -79,17 +79,13 @@ define([
   var comm;
   var kernel_info = undefined;
   
-  config.loaded.then(function() {
-    console.log('beakerx extension loaded');
-  });
-
-  Jupyter.notebook.events.on('kernel_ready.Kernel', function() {
-    var kernel = Jupyter.notebook.kernel;
-    if (!window.beakerx) {
-      window.beakerx = {};
-    }
-    kernel.comm_manager.register_target('beaker.getcodecells',
-      function(comm, msg) {
+  function installKernelHandler() {
+    Jupyter.notebook.events.on('kernel_ready.Kernel', function() {
+      var kernel = Jupyter.notebook.kernel;
+      if (!window.beakerx) {
+        window.beakerx = {};
+      }
+      kernel.comm_manager.register_target('beaker.getcodecells', function(comm, msg) {
         comm.on_msg(function(msg) {
           if(msg.content.data.name == "CodeCells"){
             sendJupyterCodeCells(JSON.parse(msg.content.data.value));
@@ -97,35 +93,32 @@ define([
           window.beakerx[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
-    kernel.comm_manager.register_target('beaker.autotranslation',
-      function(comm, msg) {
+      kernel.comm_manager.register_target('beaker.autotranslation', function(comm, msg) {
         comm.on_msg(function(msg) {
           window.beakerx[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
-    kernel.comm_manager.register_target('beaker.tag.run',
-        function(comm, msg) {
-          comm.on_msg(function(msg) {
-            if(msg.content.data.runByTag != undefined){
-              var notebook = Jupyter.notebook;
-            	var cells = Jupyter.notebook.get_cells();
-              var indexList = cells.reduce(function(acc, cell, index) {
-                if (cell._metadata.tags && cell._metadata.tags.includes(msg.content.data.runByTag)) {
-                  acc.push(index);
-                }
-                return acc;
-              }, []);
-
-              notebook.execute_cells(indexList);
-            }
-          	
-          });
+      kernel.comm_manager.register_target('beaker.tag.run', function(comm, msg) {
+        comm.on_msg(function(msg) {
+          if(msg.content.data.runByTag != undefined){
+            var notebook = Jupyter.notebook;
+            var cells = Jupyter.notebook.get_cells();
+            var indexList = cells.reduce(function(acc, cell, index) {
+              if (cell._metadata.tags && cell._metadata.tags.includes(msg.content.data.runByTag)) {
+                acc.push(index);
+              }
+              return acc;
+            }, []);
+            notebook.execute_cells(indexList);
+          }
         });
-  });
-
-  Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
-    interrupt();
-  });
+      });
+    });
+    Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
+      interrupt();
+    });
+  };
+  installKernelHandler();
 
   function sendJupyterCodeCells(filter) {
     var comm = Jupyter.notebook.kernel.comm_manager.new_comm("beaker.getcodecells",

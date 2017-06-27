@@ -40,16 +40,6 @@ public class TextAreaWidget extends EasyFormComponent<Textarea> {
   }
 
   @Override
-  public String getLabel() {
-    return this.widget.getDescription();
-  }
-
-  @Override
-  public void setLabel(String label) {
-    this.widget.setDescription(label);
-  }
-
-  @Override
   public String getValue() {
     return this.widget.getValue();
   }

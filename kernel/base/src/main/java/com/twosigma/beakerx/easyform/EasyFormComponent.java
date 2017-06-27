@@ -33,9 +33,14 @@ public abstract class EasyFormComponent<T extends ValueWidget<?>> implements Com
   private List<EasyFormListener> onInitListeners = new LinkedList<>();
 
   //Acts like ID
-  public abstract String getLabel();
+  public String getLabel() {
+    return this.widget.getDescription();
+  }
 
-  public abstract void setLabel(final String label);
+  //Acts like ID
+  public void setLabel(String label) {
+    this.widget.setDescription(label);
+  }
 
   public abstract String getValue();
 

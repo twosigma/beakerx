@@ -40,15 +40,6 @@ public class ButtonComponentWidget extends EasyFormComponent<Button> {
     this.fireActionPerformed();
   }
 
-  @Override
-  public void setLabel(String label) {
-    this.widget.setDescription(label);
-  }
-
-  @Override
-  public String getLabel() {
-    return this.widget.getDescription();
-  }
 
   @Override
   public String getValue() {

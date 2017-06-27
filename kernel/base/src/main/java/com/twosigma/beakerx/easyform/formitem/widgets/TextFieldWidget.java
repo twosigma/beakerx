@@ -38,16 +38,6 @@ public class TextFieldWidget extends EasyFormComponent<Text> {
   }
 
   @Override
-  public String getLabel() {
-    return widget.getDescription();
-  }
-
-  @Override
-  public void setLabel(String label) {
-    this.widget.setDescription(label);
-  }
-
-  @Override
   public void setValue(String value) {
     this.widget.setValue(value);
   }

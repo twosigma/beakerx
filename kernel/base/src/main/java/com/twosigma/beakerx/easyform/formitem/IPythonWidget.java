@@ -8,16 +8,6 @@ public class IPythonWidget extends EasyFormComponent<ValueWidget<?>> {
   public IPythonWidget(ValueWidget<?> widget) {
     this.widget = widget;
   }
-  
-  @Override
-  public String getLabel() {
-    return this.widget.getDescription();
-  }
-
-  @Override
-  public void setLabel(String label) {
-    this.widget.setDescription(label);
-  }
 
   @Override
   public String getValue() {

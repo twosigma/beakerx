@@ -43,16 +43,6 @@ public class ComboBoxWidget extends EasyFormComponent<ComboBox> {
   }
 
   @Override
-  public String getLabel() {
-    return widget.getDescription();
-  }
-
-  @Override
-  public void setLabel(String label) {
-    widget.setDescription(label);
-  }
-
-  @Override
   public void setValue(String value) {
     widget.setValue(value);
 

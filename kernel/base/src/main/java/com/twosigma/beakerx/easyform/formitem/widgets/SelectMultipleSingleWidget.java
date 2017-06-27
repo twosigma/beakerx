@@ -27,16 +27,6 @@ public class SelectMultipleSingleWidget extends ListComponent<SelectMultipleSing
   }
 
   @Override
-  public String getLabel() {
-    return widget.getDescription();
-  }
-
-  @Override
-  public void setLabel(String label) {
-    this.widget.setDescription(label);
-  }
-
-  @Override
   public String getValue() {
     return null;
   }

@@ -1,0 +1,33 @@
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('fonts/robotomono/robotomono.woff') format('woff'),
+  url('fonts/robotomono/robotomono.ttf') format('truetype');
+
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('fonts/lato/Lato-Regular.woff') format('woff'),
+  url('fonts/lato/Lato-Regular.ttf') format('truetype');
+
+  font-style: normal;
+  font-weight: normal;
+}
+
+.CodeMirror pre,
+.rendered_html pre, 
+.rendered_html code,
+.output_area pre {
+  font-family: "Roboto Mono", monospace, sans-serif;
+}
+.rendered_html, 
+.cm-header-1, 
+.cm-header-2, 
+.cm-header-3, 
+.cm-header-4, 
+.cm-header-5, 
+.cm-header-6 {
+  font-family: "Lato", Helvetica, sans-serif;
+}

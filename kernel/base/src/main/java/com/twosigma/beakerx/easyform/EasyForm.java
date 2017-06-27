@@ -16,11 +16,9 @@
 
 package com.twosigma.beakerx.easyform;
 
-import com.twosigma.beakerx.easyform.formitem.ButtonComponent;
 import com.twosigma.beakerx.easyform.formitem.ListComponent;
 import com.twosigma.beakerx.easyform.formitem.LoadValuesButton;
 import com.twosigma.beakerx.easyform.formitem.SaveValuesButton;
-import com.twosigma.beakerx.easyform.formitem.TextArea;
 import com.twosigma.beakerx.easyform.formitem.widgets.ButtonComponentWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.CheckBoxGroupWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.CheckBoxWidget;
@@ -33,6 +31,7 @@ import com.twosigma.beakerx.easyform.formitem.widgets.TextAreaWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.TextFieldWidget;
 import com.twosigma.beakerx.widgets.DOMWidget;
 import com.twosigma.beakerx.widgets.DisplayableWidget;
+import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.Widget;
 import org.apache.commons.lang3.StringUtils;
 
@@ -90,7 +89,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
   }
 
   public EasyFormComponent addTextArea(final String label) throws Exception {
-    return addTextArea(label, null, TextArea.AUTO_WIDTH, TextArea.AUTO_HEIGHT);
+    return addTextArea(label, null, TextAreaWidget.AUTO_WIDTH, TextAreaWidget.AUTO_HEIGHT);
   }
 
   public EasyFormComponent addTextArea(final String label, final Integer width, final Integer height)
@@ -99,7 +98,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
   }
 
   public EasyFormComponent addTextArea(final String label, final String initialValue) throws Exception {
-    return addTextArea(label, initialValue, TextArea.AUTO_WIDTH, TextArea.AUTO_HEIGHT);
+    return addTextArea(label, initialValue, TextAreaWidget.AUTO_WIDTH, TextAreaWidget.AUTO_HEIGHT);
   }
 
   public EasyFormComponent addTextArea(final String label,
@@ -249,17 +248,23 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     return addComponentOrThrow(label, datePickerComponent);
   }
 
-  public ButtonComponent addButton(final String label) throws Exception {
+  public ButtonComponentWidget addButton(final String label) throws Exception {
     return addButton(label, null);
   }
 
-  public ButtonComponent addButton(final String label, final String actionCellTag) throws Exception {
+  public ButtonComponentWidget addButton(final String label, final String actionCellTag) throws Exception {
     ButtonComponentWidget buttonComponent = new ButtonComponentWidget();
     buttonComponent.registerUpdateValueCallback(buttonComponent::fireChanged);
     buttonComponent.setLabel(label);
     buttonComponent.setTag(actionCellTag);
     addComponentOrThrow(label, buttonComponent);
     return buttonComponent;
+  }
+  
+  public EasyFormComponent addWidget(final String label, final ValueWidget<?> widget) throws Exception {
+    EasyFormComponent ret = new EasyFormComponent<>(widget);
+    addComponentOrThrow(label, ret);
+    return ret;
   }
 
   private EasyFormComponent addComponentOrThrow(final String label,
@@ -378,7 +383,10 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
 
   @Override
   public void display() {
-    DisplayEasyForm.display(this);
+    this.setReady();
+    EasyFormView easyFormView = new EasyFormView(this.getCommFunctionalities());
+    easyFormView.setEasyFormName(this.getCaption());
+    easyFormView.display();
   }
 
 }

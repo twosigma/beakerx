@@ -17,10 +17,11 @@
 package com.twosigma.beakerx.easyform.formitem;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
+import com.twosigma.beakerx.widgets.selections.SelectionWidget;
 
 import java.util.Collection;
 
-public abstract class ListComponent extends EasyFormComponent {
+public abstract class ListComponent<T extends SelectionWidget<?>> extends EasyFormComponent<T> {
 
   private Boolean multipleSelection;
   private Collection<String> values;

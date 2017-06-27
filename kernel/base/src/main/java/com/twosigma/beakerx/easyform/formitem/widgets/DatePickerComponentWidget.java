@@ -17,16 +17,14 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.widgets.DatePicker;
-import com.twosigma.beakerx.widgets.ValueWidget;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DatePickerComponentWidget extends EasyFormComponent<ValueWidget<?>> {
+public class DatePickerComponentWidget extends EasyFormComponent<DatePicker> {
 
   private static final String DATE_FORMAT = "yyyyMMdd";
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-  private DatePicker widget;
 
   public DatePickerComponentWidget() {
     this.widget = new DatePicker();
@@ -50,11 +48,6 @@ public class DatePickerComponentWidget extends EasyFormComponent<ValueWidget<?>>
   @Override
   public void setValue(String value) {
     this.widget.setValue(value);
-  }
-
-  @Override
-  public ValueWidget<?> getWidget() {
-    return widget;
   }
   
   public void setShowTime(Boolean showTime) {

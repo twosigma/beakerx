@@ -16,14 +16,11 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.formitem.ListComponent;
-import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.selections.SelectMultipleSingle;
 
 import java.util.Collection;
 
-public class SelectMultipleSingleWidget extends ListComponent {
-
-  private SelectMultipleSingle widget;
+public class SelectMultipleSingleWidget extends ListComponent<SelectMultipleSingle> {
 
   public SelectMultipleSingleWidget() {
     this.widget = new SelectMultipleSingle();
@@ -62,12 +59,8 @@ public class SelectMultipleSingleWidget extends ListComponent {
   @Override
   public void setValues(Collection<String> values) {
     super.setValues(values);
-    this.widget.setOptions(values.stream().toArray(String[]::new));
+    this.getWidget().setOptions(values.stream().toArray(String[]::new));
   }
 
-  @Override
-  public ValueWidget<?> getWidget() {
-    return widget;
-  }
   
 }

@@ -16,12 +16,9 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.bools.Checkbox;
 
-public class CheckBoxWidget extends EasyFormComponent<ValueWidget<?>> {
-
-  private Checkbox widget;
+public class CheckBoxWidget extends EasyFormComponent<Checkbox> {
 
   public CheckBoxWidget() {
     this.widget = new Checkbox();
@@ -45,11 +42,6 @@ public class CheckBoxWidget extends EasyFormComponent<ValueWidget<?>> {
   @Override
   public void setValue(String value) {
     this.widget.setValue(Boolean.valueOf(value));
-  }
-
-  @Override
-  public ValueWidget<?> getWidget() {
-    return widget;
   }
   
   @Override

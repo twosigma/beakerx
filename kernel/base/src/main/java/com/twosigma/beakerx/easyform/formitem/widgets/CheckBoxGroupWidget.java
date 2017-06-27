@@ -32,11 +32,10 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
-public class CheckBoxGroupWidget extends EasyFormComponent<ValueWidget<?>> {
+public class CheckBoxGroupWidget extends EasyFormComponent<Box> {
 
   private List<Checkbox> checkboxes;
   private Label label;
-  private HBox widget;
   private Boolean horizontal;
 
   public CheckBoxGroupWidget() {
@@ -52,7 +51,6 @@ public class CheckBoxGroupWidget extends EasyFormComponent<ValueWidget<?>> {
     this.horizontal = horizontal;
   }
   
-
   @Override
   public String getLabel() {
     return this.label.getValue();
@@ -90,9 +88,5 @@ public class CheckBoxGroupWidget extends EasyFormComponent<ValueWidget<?>> {
     this.widget = new HBox(asList(label, rightSide));
   }
 
-  @Override
-  public ValueWidget<?> getWidget() {
-    return widget;
-  }
 
 }

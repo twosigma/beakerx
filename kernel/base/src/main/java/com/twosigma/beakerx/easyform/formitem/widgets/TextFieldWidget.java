@@ -16,18 +16,16 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.strings.Text;
 
 import static com.twosigma.beakerx.widgets.Layout.PX;
 
-public class TextFieldWidget extends EasyFormComponent<ValueWidget<?>> {
+public class TextFieldWidget extends EasyFormComponent<Text> {
 
-  private Text text;
   private Integer width;
   
   public TextFieldWidget() {
-    this.text = new Text();
+    this.widget = new Text();
   }
   
   public Integer getWidth() {
@@ -40,32 +38,27 @@ public class TextFieldWidget extends EasyFormComponent<ValueWidget<?>> {
   }
 
   @Override
-  public ValueWidget<?> getWidget() {
-    return text;
-  }
-
-  @Override
   public String getLabel() {
-    return text.getDescription();
+    return widget.getDescription();
   }
 
   @Override
   public void setLabel(String label) {
-    this.text.setDescription(label);
+    this.widget.setDescription(label);
   }
 
   @Override
   public void setValue(String value) {
-    this.text.setValue(value);
+    this.widget.setValue(value);
   }
 
   @Override
   public String getValue() {
-    return this.text.getValue();
+    return this.widget.getValue();
   }
 
   public TextFieldWidget setWidth(Integer width) {
-    text.getLayout().setWidth(width + PX);
+    widget.getLayout().setWidth(width + PX);
     this.width = width;
     return this;
   }

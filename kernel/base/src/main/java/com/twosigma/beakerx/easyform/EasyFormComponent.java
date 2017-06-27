@@ -27,14 +27,11 @@ import java.util.List;
 
 public abstract class EasyFormComponent<T extends ValueWidget<?>> implements CommFunctionality{
 
+  protected T widget;
   private boolean enabled = true;
   private List<EasyFormListener> onChangeListeners = new LinkedList<>();
   private List<EasyFormListener> onInitListeners = new LinkedList<>();
 
-  public EasyFormComponent() {
-  }
-
-  public abstract T getWidget();
   //Acts like ID
   public abstract String getLabel();
 
@@ -44,6 +41,10 @@ public abstract class EasyFormComponent<T extends ValueWidget<?>> implements Com
 
   public abstract void setValue(final String value);
 
+  public T getWidget() {
+    return widget;
+  }
+  
   public void fireInit() {
     for (EasyFormListener listener : onInitListeners) {
       listener.execute(getValue());

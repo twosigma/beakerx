@@ -18,23 +18,21 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.easyform.formitem.EasyFormListener;
 import com.twosigma.beakerx.widgets.Button;
-import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ButtonComponentWidget extends EasyFormComponent<ValueWidget<?>> {
+public class ButtonComponentWidget extends EasyFormComponent<Button> {
 
-  private Button widget;
   private List<EasyFormListener> actionListeners = new LinkedList<>();
   public EasyFormListener actionPerformed =  (value) -> {
     //empty function
   };
 
   public ButtonComponentWidget() {
-    this.widget = new Button();
+    widget = new Button();
     this.widget.registerOnClick(this::fireActionPerformed);
   }
   
@@ -69,11 +67,6 @@ public class ButtonComponentWidget extends EasyFormComponent<ValueWidget<?>> {
     return this.widget.getTag();
   }
 
-  @Override
-  public ValueWidget<?> getWidget() {
-    return widget;
-  }
-
   public void fireActionPerformed() {
     if (actionPerformed != null) {
       actionPerformed.execute(getLabel());
@@ -94,6 +87,7 @@ public class ButtonComponentWidget extends EasyFormComponent<ValueWidget<?>> {
     }
   }
 
+  @Override
   public boolean isButton() {
     return true;
   }

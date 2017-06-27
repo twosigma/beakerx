@@ -15,16 +15,13 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.widgets.ValueWidget;
-import com.twosigma.beakerx.widgets.strings.Textarea;
-
 import static com.twosigma.beakerx.widgets.Layout.PX;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
+import com.twosigma.beakerx.widgets.strings.Textarea;
 
-public class TextAreaWidget extends EasyFormComponent<ValueWidget<?>> {
+public class TextAreaWidget extends EasyFormComponent<Textarea> {
 
-  private Textarea widget;
   public static final Integer AUTO_HEIGHT = -1;
   public static final Integer AUTO_WIDTH = -1;
   private Integer width;
@@ -37,7 +34,6 @@ public class TextAreaWidget extends EasyFormComponent<ValueWidget<?>> {
   public Integer getWidth() {
     return width;
   }
-
 
   public Integer getHeight() {
     return height;
@@ -61,11 +57,6 @@ public class TextAreaWidget extends EasyFormComponent<ValueWidget<?>> {
   @Override
   public void setValue(String value) {
     this.widget.setValue(value);
-  }
-
-  @Override
-  public ValueWidget<?> getWidget() {
-    return widget;
   }
 
   public void setWidth(Integer width) {

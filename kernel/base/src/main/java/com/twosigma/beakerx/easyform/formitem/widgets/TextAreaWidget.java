@@ -15,38 +15,67 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import static com.twosigma.beakerx.widgets.Layout.PX;
-
-import com.twosigma.beakerx.easyform.EasyFormComponent;
+import com.twosigma.beakerx.easyform.formitem.TextArea;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.widgets.CommFunctionality;
+import com.twosigma.beakerx.widgets.DOMWidget;
 import com.twosigma.beakerx.widgets.strings.Textarea;
 
-public class TextAreaWidget extends EasyFormComponent<Textarea> {
+import static com.twosigma.beakerx.widgets.Layout.PX;
 
-  public static final Integer AUTO_HEIGHT = -1;
-  public static final Integer AUTO_WIDTH = -1;
-  private Integer width;
-  private Integer height;
-  
+public class TextAreaWidget extends TextArea implements CommFunctionality, EasyFormWidget {
+
+  private Textarea widget;
+
   public TextAreaWidget() {
     this.widget = new Textarea();
   }
 
-  public Integer getWidth() {
-    return width;
+  @Override
+  public String getLabel() {
+    return this.widget.getDescription();
   }
 
-  public Integer getHeight() {
-    return height;
+  @Override
+  public Comm getComm() {
+    return widget.getComm();
   }
 
+  @Override
+  public void setLabel(String label) {
+    this.widget.setDescription(label);
+  }
+
+  @Override
+  public String getValue() {
+    return this.widget.getValue();
+  }
+
+  @Override
+  public void setValue(String value) {
+    this.widget.setValue(value);
+  }
+
+  @Override
+  public DOMWidget getWidget() {
+    return widget;
+  }
+
+  @Override
   public void setWidth(Integer width) {
-    this.width = width;
+    super.setWidth(width);
     widget.getLayout().setWidth(width + PX);
   }
 
+  @Override
   public void setHeight(Integer height) {
-    this.height = height;
+    super.setHeight(height);
     widget.getLayout().setHeight(height + PX);
   }
-
+  
+  @Override
+  public void close() {
+    getComm().close();
+  }
+  
 }

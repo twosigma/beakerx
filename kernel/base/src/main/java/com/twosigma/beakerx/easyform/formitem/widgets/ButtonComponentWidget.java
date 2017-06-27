@@ -15,24 +15,21 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.easyform.formitem.EasyFormListener;
+import com.twosigma.beakerx.easyform.formitem.ButtonComponent;
+import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.widgets.Button;
+import com.twosigma.beakerx.widgets.CommFunctionality;
+import com.twosigma.beakerx.widgets.DOMWidget;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
-public class ButtonComponentWidget extends EasyFormComponent<Button> {
+public class ButtonComponentWidget extends ButtonComponent implements CommFunctionality, EasyFormWidget {
 
-  private List<EasyFormListener> actionListeners = new LinkedList<>();
-  public EasyFormListener actionPerformed =  (value) -> {
-    //empty function
-  };
+  private Button widget;
 
   public ButtonComponentWidget() {
-    widget = new Button();
+    this.widget = new Button();
     this.widget.registerOnClick(this::fireActionPerformed);
   }
   
@@ -40,6 +37,20 @@ public class ButtonComponentWidget extends EasyFormComponent<Button> {
     this.fireActionPerformed();
   }
 
+  @Override
+  public Comm getComm() {
+    return widget.getComm();
+  }
+
+  @Override
+  public void setLabel(String label) {
+    this.widget.setDescription(label);
+  }
+
+  @Override
+  public String getLabel() {
+    return this.widget.getDescription();
+  }
 
   @Override
   public String getValue() {
@@ -50,37 +61,24 @@ public class ButtonComponentWidget extends EasyFormComponent<Button> {
   public void setValue(String value) {
   }
 
+  @Override
   public void setTag(String tag) {
     this.widget.setTag(tag);
   }
 
+  @Override
   public String getTag() {
     return this.widget.getTag();
   }
 
-  public void fireActionPerformed() {
-    if (actionPerformed != null) {
-      actionPerformed.execute(getLabel());
-      for (EasyFormListener listener : actionListeners) {
-        listener.execute(getLabel());
-      }
-    }
-  }
-
-  public EasyFormComponent addAction(final EasyFormListener listener) {
-    addActionListener(listener);
-    return this;
-  }
-
-  public void addActionListener(final EasyFormListener listener) {
-    if (listener != null) {
-      actionListeners.add(listener);
-    }
+  @Override
+  public DOMWidget getWidget() {
+    return widget;
   }
 
   @Override
-  public boolean isButton() {
-    return true;
+  public void close() {
+    widget.getComm().close();
   }
   
 }

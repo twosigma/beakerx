@@ -15,47 +15,79 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.easyform.EasyFormComponent;
+import com.twosigma.beakerx.easyform.formitem.ComboBoxComponent;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.widgets.CommFunctionality;
+import com.twosigma.beakerx.widgets.DOMWidget;
 import com.twosigma.beakerx.widgets.selections.ComboBox;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class ComboBoxWidget extends EasyFormComponent<ComboBox> {
+public class ComboBoxWidget extends ComboBoxComponent implements CommFunctionality, EasyFormWidget {
 
-  private Integer width;
-  
+  private ComboBox comboBox;
+
   public ComboBoxWidget() {
-    widget = new ComboBox();
+    this.comboBox = new ComboBox();
   }
 
   @Override
-  protected boolean checkValue(final Object value) {
-    return getEditable() || (getValues() != null && getValues().contains(value));
+  public String getLabel() {
+    return comboBox.getDescription();
   }
 
-  public void setWidth(final Integer width) {
-    this.width = width;
+  @Override
+  public Comm getComm() {
+    return comboBox.getComm();
   }
 
-  public Integer getWidth() {
-    return width;
+  @Override
+  public void setLabel(String label) {
+    comboBox.setDescription(label);
   }
 
+  @Override
+  public void setValue(String value) {
+    comboBox.setValue(value);
+
+  }
+
+  @Override
+  public String getValue() {
+    return comboBox.getValue();
+  }
+
+  @Override
   public void setValues(Collection<String> values) {
-    this.widget.setOptions(values.toArray(new String[0]));
+    super.setValues(values);
+    this.comboBox.setOptions(values.toArray(new String[0]));
+
   }
 
+  @Override
   public Collection<String> getValues() {
-    return Arrays.stream(widget.getOptions()).collect(Collectors.toList());
+    return Arrays.stream(comboBox.getOptions()).collect(Collectors.toList());
   }
 
+  @Override
   public void setEditable(Boolean editable) {
-    this.widget.setEditable(editable);
+    this.comboBox.setEditable(editable);
   }
 
+  @Override
   public Boolean getEditable() {
-    return this.widget.getEditable();
+    return this.comboBox.getEditable();
+  }
+
+  @Override
+  public DOMWidget getWidget() {
+    return comboBox;
+  }
+
+  @Override
+  public void close() {
+    getComm().close();
   }
 
 }

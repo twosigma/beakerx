@@ -17,51 +17,30 @@
 package com.twosigma.beakerx.easyform;
 
 import com.twosigma.beakerx.easyform.formitem.EasyFormListener;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.widgets.CommFunctionality;
-import com.twosigma.beakerx.widgets.UpdateValueCallback;
-import com.twosigma.beakerx.widgets.ValueWidget;
+import com.twosigma.beakerx.widgets.DOMWidget;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunctionality{
+public abstract class EasyFormComponent<T extends DOMWidget> {
 
-  protected T widget;
   private boolean enabled = true;
   private List<EasyFormListener> onChangeListeners = new LinkedList<>();
   private List<EasyFormListener> onInitListeners = new LinkedList<>();
 
-  public EasyFormComponent(T widget){
-    this.widget = widget;
+  public EasyFormComponent() {
   }
-  
-  public EasyFormComponent(){
-    
-  }
-  
+
+  public abstract T getWidget();
   //Acts like ID
-  public String getLabel() {
-    return this.widget.getDescription();
-  }
+  public abstract String getLabel();
 
-  //Acts like ID
-  public void setLabel(String label) {
-    this.widget.setDescription(label);
-  }
+  public abstract void setLabel(final String label);
 
-  public String getValue() {
-    return this.widget.getValue().toString();
-  }
+  public abstract String getValue();
 
-  public void setValue(String value) {
-    this.widget.setValue(value);
-  }
+  public abstract void setValue(final String value);
 
-  public T getWidget() {
-    return widget;
-  }
-  
   public void fireInit() {
     for (EasyFormListener listener : onInitListeners) {
       listener.execute(getValue());
@@ -131,23 +110,8 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
   protected boolean checkValue(Object value) {
     return true;
   }
-  
-  public void registerUpdateValueCallback(final UpdateValueCallback updateValueCallback){
-    getWidget().register(updateValueCallback);
-  }
 
   public boolean isButton() {
     return false;
   }
-  
-  @Override
-  public Comm getComm() {
-    return getWidget().getComm();
-  }
-  
-  @Override
-  public void close() {
-    getComm().close();
-  }
-  
 }

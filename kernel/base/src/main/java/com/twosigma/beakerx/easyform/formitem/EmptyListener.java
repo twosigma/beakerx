@@ -16,32 +16,8 @@
 
 package com.twosigma.beakerx.easyform.formitem;
 
-import com.twosigma.beakerx.easyform.EasyFormComponent;
-
-import java.util.Collection;
-
-public abstract class ListComponent extends EasyFormComponent {
-
-  private Boolean multipleSelection;
-  private Collection<String> values;
-
-  public abstract void setSize(final Integer size);
-
-  public abstract Integer getSize();
-
-  public void setMultipleSelection(final Boolean multipleSelection) {
-    this.multipleSelection = multipleSelection;
-  }
-
-  public Boolean getMultipleSelection() {
-    return multipleSelection;
-  }
-
-  public void setValues(final Collection<String> values) {
-    this.values = values;
-  }
-
-  public Collection<String> getValues() {
-    return values;
+public class EmptyListener implements EasyFormListener {
+  @Override
+  public void execute(String value) {
   }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,24 +17,25 @@
 package com.twosigma.beakerx.easyform.formitem;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-
 import java.util.Collection;
 
-public abstract class ListComponent extends EasyFormComponent {
+public abstract class ComboBoxComponent extends EasyFormComponent {
 
-  private Boolean multipleSelection;
+  private Boolean editable;
   private Collection<String> values;
+  private Integer width;
 
-  public abstract void setSize(final Integer size);
-
-  public abstract Integer getSize();
-
-  public void setMultipleSelection(final Boolean multipleSelection) {
-    this.multipleSelection = multipleSelection;
+  @Override
+  protected boolean checkValue(final Object value) {
+    return editable || (values != null && values.contains(value));
   }
 
-  public Boolean getMultipleSelection() {
-    return multipleSelection;
+  public void setEditable(final Boolean editable) {
+    this.editable = editable;
+  }
+
+  public Boolean getEditable() {
+    return editable;
   }
 
   public void setValues(final Collection<String> values) {
@@ -43,5 +44,13 @@ public abstract class ListComponent extends EasyFormComponent {
 
   public Collection<String> getValues() {
     return values;
+  }
+
+  public void setWidth(final Integer width) {
+    this.width = width;
+  }
+
+  public Integer getWidth() {
+    return width;
   }
 }

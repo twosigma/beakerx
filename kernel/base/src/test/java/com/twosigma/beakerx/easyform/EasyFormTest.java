@@ -75,7 +75,7 @@ public class EasyFormTest {
     easyForm.addTextField("tf2").onInit(value -> easyForm.put(textField1, newValueForTf1));
     kernel.clearPublishedMessages();
     //when
-    easyForm.display();
+    DisplayEasyForm.display(easyForm);
     //then
     verifyOnInit(kernel.getPublishedMessages().get(0), newValueForTf1);
   }
@@ -92,7 +92,7 @@ public class EasyFormTest {
     //when
     EasyForm easyForm = new EasyForm("EasyForm with RadioButto");
     easyForm.addRadioButtons(label, asList("1", "2"));
-    easyForm.display();
+    DisplayEasyForm.display(easyForm);
     //then
     verifyRadioButton(kernel.getPublishedMessages());
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
@@ -111,7 +111,7 @@ public class EasyFormTest {
     //when
     EasyForm easyForm = new EasyForm("EasyForm with TextArea");
     easyForm.addTextArea(label);
-    easyForm.display();
+    DisplayEasyForm.display(easyForm);
     //then
     verifyTextArea(kernel.getPublishedMessages());
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
@@ -129,7 +129,7 @@ public class EasyFormTest {
     //when
     EasyForm easyForm = new EasyForm("EasyForm with button");
     easyForm.addButton(label);
-    easyForm.display();
+    DisplayEasyForm.display(easyForm);
     //then
     verifyButton(kernel.getPublishedMessages());
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
@@ -148,7 +148,7 @@ public class EasyFormTest {
     //when
     EasyForm easyForm = new EasyForm("EasyForm with MultipleSelection");
     easyForm.addList(label, asList("1", "2", "3"));
-    easyForm.display();
+    DisplayEasyForm.display(easyForm);
     //then
     verifyMultipleSelection(kernel.getPublishedMessages());
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
@@ -167,7 +167,7 @@ public class EasyFormTest {
     //when
     EasyForm easyForm = new EasyForm("EasyForm with Combobox");
     easyForm.addComboBox(label, asList("1", "2"));
-    easyForm.display();
+    DisplayEasyForm.display(easyForm);
     //then
     verifyCombobox(kernel.getPublishedMessages());
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
@@ -187,7 +187,7 @@ public class EasyFormTest {
     //when
     EasyForm easyForm = new EasyForm("EasyForm with checkbox");
     easyForm.addCheckBox(label);
-    easyForm.display();
+    DisplayEasyForm.display(easyForm);
     //then
     verifyCheckboxField(kernel.getPublishedMessages());
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
@@ -206,7 +206,7 @@ public class EasyFormTest {
     //when
     EasyForm easyForm = new EasyForm("EasyForm with CheckboxGroup");
     easyForm.addCheckBoxes(label, checkboxesLabels);
-    easyForm.display();
+    DisplayEasyForm.display(easyForm);
     //then
     verifyCheckboxGroup(kernel.getPublishedMessages());
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
@@ -224,7 +224,7 @@ public class EasyFormTest {
     //when
     EasyForm easyForm = new EasyForm("EasyForm with text field");
     easyForm.addTextField(label, 10);
-    easyForm.display();
+    DisplayEasyForm.display(easyForm);
     //then
     verifyTextField(
         kernel.getPublishedMessages(),
@@ -251,7 +251,7 @@ public class EasyFormTest {
     //when
     EasyForm easyForm = new EasyForm("EasyForm with DatePicker");
     easyForm.addDatePicker(label);
-    easyForm.display();
+    DisplayEasyForm.display(easyForm);
     //then
     verifyDatePicker(kernel.getPublishedMessages());
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());

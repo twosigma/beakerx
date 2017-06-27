@@ -17,42 +17,22 @@
 package com.twosigma.beakerx.easyform.formitem;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.DOMWidget;
 
-public class LoadValuesButton extends EasyFormComponent {
+import java.util.Collection;
 
-  private String path;
+public abstract class RadioButtonComponent extends EasyFormComponent {
 
-  public void setPath(final String path) {
-    this.path = path;
+  private Boolean horizontal;
+
+  public void setHorizontal(final Boolean horizontal) {
+    this.horizontal = horizontal;
   }
 
-  public String getPath() {
-    return path;
+  public Boolean getHorizontal() {
+    return horizontal;
   }
 
-  @Override
-  public DOMWidget getWidget() {
-    return null;
-  }
+  public abstract void setValues(final Collection<String> values);
 
-  @Override
-  public String getLabel() {
-    throw new RuntimeException("Not implemented yet.");
-  }
-
-  @Override
-  public void setLabel(String label) {
-    throw new RuntimeException("Not implemented yet.");
-  }
-
-  @Override
-  public String getValue() {
-    throw new RuntimeException("Not implemented yet.");
-  }
-
-  @Override
-  public void setValue(String value) {
-    throw new RuntimeException("Not implemented yet.");
-  }
+  public abstract Collection<String> getValues();
 }

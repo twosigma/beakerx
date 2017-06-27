@@ -17,42 +17,13 @@
 package com.twosigma.beakerx.easyform.formitem;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.DOMWidget;
 
-public class LoadValuesButton extends EasyFormComponent {
-
-  private String path;
-
-  public void setPath(final String path) {
-    this.path = path;
-  }
-
-  public String getPath() {
-    return path;
-  }
+public abstract class CheckBox extends EasyFormComponent {
 
   @Override
-  public DOMWidget getWidget() {
-    return null;
+  protected boolean checkValue(final Object value) {
+    return Boolean.TRUE.toString().equalsIgnoreCase(String.valueOf(value))
+        || Boolean.FALSE.toString().equalsIgnoreCase(String.valueOf(value));
   }
 
-  @Override
-  public String getLabel() {
-    throw new RuntimeException("Not implemented yet.");
-  }
-
-  @Override
-  public void setLabel(String label) {
-    throw new RuntimeException("Not implemented yet.");
-  }
-
-  @Override
-  public String getValue() {
-    throw new RuntimeException("Not implemented yet.");
-  }
-
-  @Override
-  public void setValue(String value) {
-    throw new RuntimeException("Not implemented yet.");
-  }
 }

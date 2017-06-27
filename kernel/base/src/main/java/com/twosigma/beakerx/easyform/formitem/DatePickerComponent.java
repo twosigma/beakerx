@@ -17,46 +17,30 @@
 package com.twosigma.beakerx.easyform.formitem;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.DOMWidget;
 
-public class SaveValuesButton extends EasyFormComponent {
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-  private String path;
+public abstract class DatePickerComponent extends EasyFormComponent {
 
-  public void setPath(final String path) {
-    this.path = path;
-  }
+  private static final String DATE_FORMAT = "yyyyMMdd";
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
-  public String getPath() {
-    return path;
-  }
+  public abstract void setShowTime(final Boolean showTime);
 
-  public boolean isButton() {
-    return true;
+  public abstract Boolean getShowTime();
+
+  @Override
+  protected boolean checkValue(final Object value) {
+    return value instanceof Date || value instanceof String;
   }
 
   @Override
-  public DOMWidget getWidget() {
-    return null;
-  }
-
-  @Override
-  public String getLabel() {
-    throw new RuntimeException("Not implemented yet.");
-  }
-
-  @Override
-  public void setLabel(String label) {
-    throw new RuntimeException("Not implemented yet.");
-  }
-
-  @Override
-  public String getValue() {
-    throw new RuntimeException("Not implemented yet.");
-  }
-
-  @Override
-  public void setValue(String value) {
-    throw new RuntimeException("Not implemented yet.");
+  public String formatValue(final Object value) {
+    if (value instanceof Date) {
+      return dateFormat.format(value);
+    } else {
+      return String.class.cast(value);
+    }
   }
 }

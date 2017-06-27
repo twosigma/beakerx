@@ -73,6 +73,20 @@ python -m bkr2ipynb *.bkr
 ## Autotranslation from Python to JavaScript:
 <img width="631" alt="screen shot 2016-12-10 at 10 43 22 pm" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
 
+## Running with docker
+
+Go to /docker/base
+
+`docker build . -t beakerx-base`
+
+Move to /docker
+
+`docker build . -t beakerx`
+
+Now if you would like to start BeakerX execute
+
+`docker run -p 8888:8888 beakerx `
+
 ## Contributing
 
 We welcome developers to extend and improve BeakerX in ways that can

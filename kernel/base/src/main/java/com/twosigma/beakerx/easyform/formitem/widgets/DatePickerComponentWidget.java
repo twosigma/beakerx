@@ -16,15 +16,13 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.widgets.CommFunctionality;
 import com.twosigma.beakerx.widgets.DatePicker;
 import com.twosigma.beakerx.widgets.ValueWidget;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DatePickerComponentWidget extends EasyFormComponent<ValueWidget<?>> implements CommFunctionality, EasyFormWidget {
+public class DatePickerComponentWidget extends EasyFormComponent<ValueWidget<?>> {
 
   private static final String DATE_FORMAT = "yyyyMMdd";
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
@@ -37,11 +35,6 @@ public class DatePickerComponentWidget extends EasyFormComponent<ValueWidget<?>>
   @Override
   public String getLabel() {
     return this.widget.getDescription();
-  }
-
-  @Override
-  public Comm getComm() {
-    return widget.getComm();
   }
 
   @Override
@@ -84,11 +77,6 @@ public class DatePickerComponentWidget extends EasyFormComponent<ValueWidget<?>>
     } else {
       return String.class.cast(value);
     }
-  }
-
-  @Override
-  public void close() {
-    getComm().close();
   }
 
 }

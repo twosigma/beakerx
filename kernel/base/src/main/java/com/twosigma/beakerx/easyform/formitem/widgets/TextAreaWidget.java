@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.widgets.CommFunctionality;
 import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.strings.Textarea;
 
@@ -24,7 +22,7 @@ import static com.twosigma.beakerx.widgets.Layout.PX;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 
-public class TextAreaWidget extends EasyFormComponent<ValueWidget<?>> implements CommFunctionality, EasyFormWidget {
+public class TextAreaWidget extends EasyFormComponent<ValueWidget<?>> {
 
   private Textarea widget;
   public static final Integer AUTO_HEIGHT = -1;
@@ -48,11 +46,6 @@ public class TextAreaWidget extends EasyFormComponent<ValueWidget<?>> implements
   @Override
   public String getLabel() {
     return this.widget.getDescription();
-  }
-
-  @Override
-  public Comm getComm() {
-    return widget.getComm();
   }
 
   @Override
@@ -84,10 +77,5 @@ public class TextAreaWidget extends EasyFormComponent<ValueWidget<?>> implements
     this.height = height;
     widget.getLayout().setHeight(height + PX);
   }
-  
-  @Override
-  public void close() {
-    getComm().close();
-  }
-  
+
 }

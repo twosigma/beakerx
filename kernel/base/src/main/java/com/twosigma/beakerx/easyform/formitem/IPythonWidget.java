@@ -1,12 +1,11 @@
-package com.twosigma.beakerx.easyform.formitem.widgets;
+package com.twosigma.beakerx.easyform.formitem;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.widgets.CommFunctionality;
 import com.twosigma.beakerx.widgets.ValueWidget;
 
-public class IPythonWidget extends EasyFormComponent<ValueWidget<?>> implements CommFunctionality, EasyFormWidget {
-
+public class IPythonWidget extends EasyFormComponent<ValueWidget<?>> {
 
   private ValueWidget<?> widget;
 
@@ -17,11 +16,6 @@ public class IPythonWidget extends EasyFormComponent<ValueWidget<?>> implements 
   @Override
   public String getLabel() {
     return this.widget.getDescription();
-  }
-
-  @Override
-  public Comm getComm() {
-    return widget.getComm();
   }
 
   @Override
@@ -42,11 +36,6 @@ public class IPythonWidget extends EasyFormComponent<ValueWidget<?>> implements 
   @Override
   public ValueWidget<?> getWidget() {
     return widget;
-  }
-  
-  @Override
-  public void close() {
-    getComm().close();
   }
 
 }

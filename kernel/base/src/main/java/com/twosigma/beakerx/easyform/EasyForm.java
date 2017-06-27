@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.easyform;
 
+import com.twosigma.beakerx.easyform.formitem.IPythonWidget;
 import com.twosigma.beakerx.easyform.formitem.ListComponent;
 import com.twosigma.beakerx.easyform.formitem.LoadValuesButton;
 import com.twosigma.beakerx.easyform.formitem.SaveValuesButton;
@@ -24,7 +25,6 @@ import com.twosigma.beakerx.easyform.formitem.widgets.CheckBoxGroupWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.ComboBoxWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.DatePickerComponentWidget;
-import com.twosigma.beakerx.easyform.formitem.widgets.IPythonWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.SelectMultipleSingleWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.SelectMultipleWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.RadioButtonComponentWidget;

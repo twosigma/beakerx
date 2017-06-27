@@ -16,15 +16,13 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.widgets.CommFunctionality;
 import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.selections.ComboBox;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class ComboBoxWidget extends EasyFormComponent<ValueWidget<?>> implements CommFunctionality, EasyFormWidget {
+public class ComboBoxWidget extends EasyFormComponent<ValueWidget<?>> {
 
   private ComboBox comboBox;
   private Integer width;
@@ -49,11 +47,6 @@ public class ComboBoxWidget extends EasyFormComponent<ValueWidget<?>> implements
   @Override
   public String getLabel() {
     return comboBox.getDescription();
-  }
-
-  @Override
-  public Comm getComm() {
-    return comboBox.getComm();
   }
 
   @Override
@@ -92,11 +85,6 @@ public class ComboBoxWidget extends EasyFormComponent<ValueWidget<?>> implements
   @Override
   public ValueWidget<?> getWidget() {
     return comboBox;
-  }
-
-  @Override
-  public void close() {
-    getComm().close();
   }
 
 }

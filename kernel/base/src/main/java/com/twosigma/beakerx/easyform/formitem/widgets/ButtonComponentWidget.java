@@ -17,9 +17,7 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.easyform.formitem.EasyFormListener;
-import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.widgets.Button;
-import com.twosigma.beakerx.widgets.CommFunctionality;
 import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.message.Message;
 
@@ -27,7 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ButtonComponentWidget extends EasyFormComponent implements CommFunctionality, EasyFormWidget {
+public class ButtonComponentWidget extends EasyFormComponent<ValueWidget<?>> {
 
   private Button widget;
   private List<EasyFormListener> actionListeners = new LinkedList<>();
@@ -42,11 +40,6 @@ public class ButtonComponentWidget extends EasyFormComponent implements CommFunc
   
   private void fireActionPerformed(HashMap content, Message message){
     this.fireActionPerformed();
-  }
-
-  @Override
-  public Comm getComm() {
-    return widget.getComm();
   }
 
   @Override
@@ -79,11 +72,6 @@ public class ButtonComponentWidget extends EasyFormComponent implements CommFunc
   @Override
   public ValueWidget<?> getWidget() {
     return widget;
-  }
-
-  @Override
-  public void close() {
-    widget.getComm().close();
   }
 
   public void fireActionPerformed() {

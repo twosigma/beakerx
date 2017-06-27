@@ -16,14 +16,12 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.widgets.CommFunctionality;
 import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.strings.Text;
 
 import static com.twosigma.beakerx.widgets.Layout.PX;
 
-public class TextFieldWidget extends EasyFormComponent<ValueWidget<?>> implements CommFunctionality, EasyFormWidget {
+public class TextFieldWidget extends EasyFormComponent<ValueWidget<?>> {
 
   private Text text;
   private Integer width;
@@ -66,20 +64,10 @@ public class TextFieldWidget extends EasyFormComponent<ValueWidget<?>> implement
     return this.text.getValue();
   }
 
-  @Override
-  public Comm getComm() {
-    return text.getComm();
-  }
-
   public TextFieldWidget setWidth(Integer width) {
     text.getLayout().setWidth(width + PX);
     this.width = width;
     return this;
   }
-  
-  @Override
-  public void close() {
-    getComm().close();
-  }
-  
+
 }

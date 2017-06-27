@@ -17,12 +17,15 @@
 package com.twosigma.beakerx.easyform;
 
 import com.twosigma.beakerx.easyform.formitem.EasyFormListener;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.widgets.CommFunctionality;
+import com.twosigma.beakerx.widgets.UpdateValueCallback;
 import com.twosigma.beakerx.widgets.ValueWidget;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class EasyFormComponent<T extends ValueWidget<?>> {
+public abstract class EasyFormComponent<T extends ValueWidget<?>> implements CommFunctionality{
 
   private boolean enabled = true;
   private List<EasyFormListener> onChangeListeners = new LinkedList<>();
@@ -110,8 +113,23 @@ public abstract class EasyFormComponent<T extends ValueWidget<?>> {
   protected boolean checkValue(Object value) {
     return true;
   }
+  
+  public void registerUpdateValueCallback(final UpdateValueCallback updateValueCallback){
+    getWidget().register(updateValueCallback);
+  }
 
   public boolean isButton() {
     return false;
   }
+  
+  @Override
+  public Comm getComm() {
+    return getWidget().getComm();
+  }
+  
+  @Override
+  public void close() {
+    getComm().close();
+  }
+  
 }

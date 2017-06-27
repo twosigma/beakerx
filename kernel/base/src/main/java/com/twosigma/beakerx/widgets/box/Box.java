@@ -65,7 +65,7 @@ public abstract class Box extends ValueWidget<String> {
 
   @Override
   public void display() {
-    this.children.forEach( child -> child.activateWidgetInContainer());
+    this.children.forEach(Widget::activateWidgetInContainer);
     super.display();
   }
 }

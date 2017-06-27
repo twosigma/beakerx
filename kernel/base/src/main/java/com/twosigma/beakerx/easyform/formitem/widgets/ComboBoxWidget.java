@@ -42,20 +42,8 @@ public class ComboBoxWidget extends EasyFormComponent<ComboBox> {
     return width;
   }
 
-  @Override
-  public void setValue(String value) {
-    widget.setValue(value);
-
-  }
-
-  @Override
-  public String getValue() {
-    return widget.getValue();
-  }
-
   public void setValues(Collection<String> values) {
     this.widget.setOptions(values.toArray(new String[0]));
-
   }
 
   public Collection<String> getValues() {

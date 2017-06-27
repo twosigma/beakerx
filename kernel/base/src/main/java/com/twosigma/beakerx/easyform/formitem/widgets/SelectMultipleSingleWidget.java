@@ -32,11 +32,6 @@ public class SelectMultipleSingleWidget extends ListComponent<SelectMultipleSing
   }
 
   @Override
-  public void setValue(String value) {
-    this.widget.setValue(value);
-  }
-
-  @Override
   public void setSize(Integer size) {
     this.widget.setSize(size);
   }

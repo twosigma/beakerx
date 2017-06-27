@@ -32,19 +32,13 @@ public class TextFieldWidget extends EasyFormComponent<Text> {
     return width;
   }
 
+  public String getValue() {
+    return this.widget.getValue();
+  }
+  
   @Override
   protected boolean checkValue(final Object value) {
     return value instanceof String;
-  }
-
-  @Override
-  public void setValue(String value) {
-    this.widget.setValue(value);
-  }
-
-  @Override
-  public String getValue() {
-    return this.widget.getValue();
   }
 
   public TextFieldWidget setWidth(Integer width) {

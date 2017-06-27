@@ -23,16 +23,12 @@ public class CheckBoxWidget extends EasyFormComponent<Checkbox> {
   public CheckBoxWidget() {
     this.widget = new Checkbox();
   }
-
-  @Override
-  public String getValue() {
-    return this.widget.getValue().toString();
-  }
-
+  
   @Override
   public void setValue(String value) {
     this.widget.setValue(Boolean.valueOf(value));
   }
+
   
   @Override
   protected boolean checkValue(final Object value) {

@@ -16,7 +16,6 @@
 
 package com.twosigma.beakerx.easyform;
 
-import com.twosigma.beakerx.easyform.formitem.IPythonWidget;
 import com.twosigma.beakerx.easyform.formitem.ListComponent;
 import com.twosigma.beakerx.easyform.formitem.LoadValuesButton;
 import com.twosigma.beakerx.easyform.formitem.SaveValuesButton;
@@ -262,8 +261,8 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     return buttonComponent;
   }
   
-  public IPythonWidget addWidget(final String label, final ValueWidget<?> widget) throws Exception {
-    IPythonWidget ret = new IPythonWidget(widget);
+  public EasyFormComponent addWidget(final String label, final ValueWidget<?> widget) throws Exception {
+    EasyFormComponent ret = new EasyFormComponent<>(widget);
     addComponentOrThrow(label, ret);
     return ret;
   }

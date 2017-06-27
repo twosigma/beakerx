@@ -25,13 +25,21 @@ import com.twosigma.beakerx.widgets.ValueWidget;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class EasyFormComponent<T extends ValueWidget<?>> implements CommFunctionality{
+public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunctionality{
 
   protected T widget;
   private boolean enabled = true;
   private List<EasyFormListener> onChangeListeners = new LinkedList<>();
   private List<EasyFormListener> onInitListeners = new LinkedList<>();
 
+  public EasyFormComponent(T widget){
+    this.widget = widget;
+  }
+  
+  public EasyFormComponent(){
+    
+  }
+  
   //Acts like ID
   public String getLabel() {
     return this.widget.getDescription();
@@ -42,9 +50,13 @@ public abstract class EasyFormComponent<T extends ValueWidget<?>> implements Com
     this.widget.setDescription(label);
   }
 
-  public abstract String getValue();
+  public String getValue() {
+    return this.widget.getValue().toString();
+  }
 
-  public abstract void setValue(final String value);
+  public void setValue(String value) {
+    this.widget.setValue(value);
+  }
 
   public T getWidget() {
     return widget;

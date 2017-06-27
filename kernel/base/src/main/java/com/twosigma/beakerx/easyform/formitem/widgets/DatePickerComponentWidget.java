@@ -29,16 +29,6 @@ public class DatePickerComponentWidget extends EasyFormComponent<DatePicker> {
   public DatePickerComponentWidget() {
     this.widget = new DatePicker();
   }
-
-  @Override
-  public String getValue() {
-    return this.widget.getValue().toString();
-  }
-
-  @Override
-  public void setValue(String value) {
-    this.widget.setValue(value);
-  }
   
   public void setShowTime(Boolean showTime) {
     this.widget.setShowTime(showTime);

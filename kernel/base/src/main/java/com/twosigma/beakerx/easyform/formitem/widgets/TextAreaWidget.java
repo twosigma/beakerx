@@ -39,16 +39,6 @@ public class TextAreaWidget extends EasyFormComponent<Textarea> {
     return height;
   }
 
-  @Override
-  public String getValue() {
-    return this.widget.getValue();
-  }
-
-  @Override
-  public void setValue(String value) {
-    this.widget.setValue(value);
-  }
-
   public void setWidth(Integer width) {
     this.width = width;
     widget.getLayout().setWidth(width + PX);

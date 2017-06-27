@@ -137,4 +137,17 @@ public class GroovyEvaluatorAutocompleteTest {
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
   }
 
+  @Test
+  public void autocompleteForClass_shouldReturnResultEqualToCoordinates() throws Exception {
+    String code = "class Coordinates {\n" +
+        "double latitude\n" +
+        "double longitude }\n" +
+        "def coordinates = new Coordinates(latitude: 43.23, longitude: 3.67)\n" +
+        "this.class.co";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("coordinates");
+  }
+
 }

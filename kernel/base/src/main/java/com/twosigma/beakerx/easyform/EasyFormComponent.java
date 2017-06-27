@@ -17,12 +17,12 @@
 package com.twosigma.beakerx.easyform;
 
 import com.twosigma.beakerx.easyform.formitem.EasyFormListener;
-import com.twosigma.beakerx.widgets.DOMWidget;
+import com.twosigma.beakerx.widgets.ValueWidget;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class EasyFormComponent<T extends DOMWidget> {
+public abstract class EasyFormComponent<T extends ValueWidget<?>> {
 
   private boolean enabled = true;
   private List<EasyFormListener> onChangeListeners = new LinkedList<>();

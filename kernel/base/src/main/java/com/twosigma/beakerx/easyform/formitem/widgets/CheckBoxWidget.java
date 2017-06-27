@@ -15,13 +15,13 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.easyform.formitem.CheckBox;
+import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.widgets.CommFunctionality;
-import com.twosigma.beakerx.widgets.DOMWidget;
+import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.bools.Checkbox;
 
-public class CheckBoxWidget extends CheckBox implements CommFunctionality, EasyFormWidget {
+public class CheckBoxWidget extends EasyFormComponent<ValueWidget<?>> implements CommFunctionality, EasyFormWidget {
 
   private Checkbox widget;
 
@@ -55,13 +55,19 @@ public class CheckBoxWidget extends CheckBox implements CommFunctionality, EasyF
   }
 
   @Override
-  public DOMWidget getWidget() {
+  public ValueWidget<?> getWidget() {
     return widget;
   }
   
   @Override
   public void close() {
     getComm().close();
+  }
+  
+  @Override
+  protected boolean checkValue(final Object value) {
+    return Boolean.TRUE.toString().equalsIgnoreCase(String.valueOf(value))
+        || Boolean.FALSE.toString().equalsIgnoreCase(String.valueOf(value));
   }
   
 }

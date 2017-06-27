@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.easyform.formitem;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.DOMWidget;
+import com.twosigma.beakerx.widgets.ValueWidget;
 
 public class LoadValuesButton extends EasyFormComponent {
 
@@ -32,7 +32,7 @@ public class LoadValuesButton extends EasyFormComponent {
   }
 
   @Override
-  public DOMWidget getWidget() {
+  public ValueWidget<?> getWidget() {
     return null;
   }
 

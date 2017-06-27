@@ -15,21 +15,35 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.easyform.formitem.ComboBoxComponent;
+import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.widgets.CommFunctionality;
-import com.twosigma.beakerx.widgets.DOMWidget;
+import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.selections.ComboBox;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class ComboBoxWidget extends ComboBoxComponent implements CommFunctionality, EasyFormWidget {
+public class ComboBoxWidget extends EasyFormComponent<ValueWidget<?>> implements CommFunctionality, EasyFormWidget {
 
   private ComboBox comboBox;
-
+  private Integer width;
+  
   public ComboBoxWidget() {
     this.comboBox = new ComboBox();
+  }
+
+  @Override
+  protected boolean checkValue(final Object value) {
+    return getEditable() || (getValues() != null && getValues().contains(value));
+  }
+
+  public void setWidth(final Integer width) {
+    this.width = width;
+  }
+
+  public Integer getWidth() {
+    return width;
   }
 
   @Override
@@ -58,30 +72,25 @@ public class ComboBoxWidget extends ComboBoxComponent implements CommFunctionali
     return comboBox.getValue();
   }
 
-  @Override
   public void setValues(Collection<String> values) {
-    super.setValues(values);
     this.comboBox.setOptions(values.toArray(new String[0]));
 
   }
 
-  @Override
   public Collection<String> getValues() {
     return Arrays.stream(comboBox.getOptions()).collect(Collectors.toList());
   }
 
-  @Override
   public void setEditable(Boolean editable) {
     this.comboBox.setEditable(editable);
   }
 
-  @Override
   public Boolean getEditable() {
     return this.comboBox.getEditable();
   }
 
   @Override
-  public DOMWidget getWidget() {
+  public ValueWidget<?> getWidget() {
     return comboBox;
   }
 

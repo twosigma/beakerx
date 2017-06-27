@@ -15,14 +15,19 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.easyform.formitem.DatePickerComponent;
+import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.widgets.CommFunctionality;
-import com.twosigma.beakerx.widgets.DOMWidget;
 import com.twosigma.beakerx.widgets.DatePicker;
+import com.twosigma.beakerx.widgets.ValueWidget;
 
-public class DatePickerComponentWidget extends DatePickerComponent implements CommFunctionality, EasyFormWidget {
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+public class DatePickerComponentWidget extends EasyFormComponent<ValueWidget<?>> implements CommFunctionality, EasyFormWidget {
+
+  private static final String DATE_FORMAT = "yyyyMMdd";
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
   private DatePicker widget;
 
   public DatePickerComponentWidget() {
@@ -55,18 +60,30 @@ public class DatePickerComponentWidget extends DatePickerComponent implements Co
   }
 
   @Override
-  public DOMWidget getWidget() {
+  public ValueWidget<?> getWidget() {
     return widget;
   }
-
-  @Override
+  
   public void setShowTime(Boolean showTime) {
     this.widget.setShowTime(showTime);
   }
 
-  @Override
   public Boolean getShowTime() {
     return this.widget.getShowTime();
+  }
+
+  @Override
+  protected boolean checkValue(final Object value) {
+    return value instanceof Date || value instanceof String;
+  }
+
+  @Override
+  public String formatValue(final Object value) {
+    if (value instanceof Date) {
+      return dateFormat.format(value);
+    } else {
+      return String.class.cast(value);
+    }
   }
 
   @Override

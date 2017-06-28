@@ -50,18 +50,13 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
   private static final Integer AUTO_WIDTH = -1;
 
   private final String caption;
-  private String id;
   private Boolean ready = Boolean.FALSE;
-  private Map<String, EasyFormComponent> componentMap = new LinkedHashMap<>();
+  private Map<String, EasyFormComponent<ValueWidget<?>>> componentMap = new LinkedHashMap<>();
   private SaveValuesButton saveValuesButton;
   private LoadValuesButton loadValuesButton;
 
   public EasyForm(final String caption) {
     this.caption = caption;
-  }
-
-  public void setId(final String id) {
-    this.id = id;
   }
 
   public void addSaveValuesButton(final String path) {
@@ -261,13 +256,13 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     return buttonComponent;
   }
   
-  public EasyFormComponent addWidget(final String label, final ValueWidget<?> widget) throws Exception {
-    EasyFormComponent ret = new EasyFormComponent<>(widget);
+  public EasyFormComponent<ValueWidget<?>> addWidget(final String label, final ValueWidget<?> widget) throws Exception {
+    EasyFormComponent<ValueWidget<?>> ret = new EasyFormComponent<>(widget);
     addComponentOrThrow(label, ret);
     return ret;
   }
 
-  private EasyFormComponent addComponentOrThrow(final String label,
+  private EasyFormComponent<ValueWidget<?>> addComponentOrThrow(final String label,
                                                 final EasyFormComponent component) throws Exception {
     if (getComponentMap().containsKey(label)) {
       throw new Exception(
@@ -278,7 +273,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     return component;
   }
 
-  public Map<String, EasyFormComponent> getComponentMap() {
+  public Map<String, EasyFormComponent<ValueWidget<?>>> getComponentMap() {
     return componentMap;
   }
 
@@ -328,7 +323,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
   @Override
   public String put(final String key, final Object value) {
     checkComponentExists(key);
-    final EasyFormComponent component = getComponentMap().get(key);
+    final EasyFormComponent<ValueWidget<?>> component = getComponentMap().get(key);
     if (!component.checkValue(value)) {
       throw new IllegalArgumentException(
               String.format("\"%s\" is not a valid option for %s \"%s\".",
@@ -369,7 +364,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
 
   public void setReady() {
     this.ready = Boolean.TRUE;
-    for (EasyFormComponent component : getComponentMap().values()) {
+    for (EasyFormComponent<ValueWidget<?>> component : getComponentMap().values()) {
       if (!component.isButton()) {
         getValuesMap().put(component.getLabel(), component.getValue());
       }

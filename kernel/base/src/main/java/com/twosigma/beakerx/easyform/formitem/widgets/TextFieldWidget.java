@@ -15,10 +15,10 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import static com.twosigma.beakerx.widgets.Layout.PX;
-
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.widgets.strings.Text;
+
+import static com.twosigma.beakerx.widgets.Layout.PX;
 
 public class TextFieldWidget extends EasyFormComponent<Text> {
 

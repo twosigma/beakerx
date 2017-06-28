@@ -25,6 +25,10 @@ public abstract class ListComponent<T extends SelectionWidget<?>> extends EasyFo
 
   private Boolean multipleSelection;
   private Collection<String> values;
+  
+  public ListComponent(T widget){
+    this.widget = widget;
+  }
 
   public abstract void setSize(final Integer size);
 

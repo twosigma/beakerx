@@ -17,26 +17,22 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.easyform.formitem.EasyFormListener;
-import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.widgets.Button;
-import com.twosigma.beakerx.widgets.CommFunctionality;
-import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ButtonComponentWidget extends EasyFormComponent implements CommFunctionality, EasyFormWidget {
+public class ButtonComponentWidget extends EasyFormComponent<Button> {
 
-  private Button widget;
   private List<EasyFormListener> actionListeners = new LinkedList<>();
   public EasyFormListener actionPerformed =  (value) -> {
     //empty function
   };
 
   public ButtonComponentWidget() {
-    this.widget = new Button();
+    super(new Button());
     this.widget.registerOnClick(this::fireActionPerformed);
   }
   
@@ -44,15 +40,6 @@ public class ButtonComponentWidget extends EasyFormComponent implements CommFunc
     this.fireActionPerformed();
   }
 
-  @Override
-  public void setLabel(String label) {
-    this.widget.setDescription(label);
-  }
-
-  @Override
-  public String getLabel() {
-    return this.widget.getDescription();
-  }
 
   @Override
   public String getValue() {
@@ -69,16 +56,6 @@ public class ButtonComponentWidget extends EasyFormComponent implements CommFunc
 
   public String getTag() {
     return this.widget.getTag();
-  }
-
-  @Override
-  public ValueWidget<?> getWidget() {
-    return widget;
-  }
-
-  @Override
-  public void close() {
-    widget.getComm().close();
   }
 
   public void fireActionPerformed() {
@@ -101,6 +78,7 @@ public class ButtonComponentWidget extends EasyFormComponent implements CommFunc
     }
   }
 
+  @Override
   public boolean isButton() {
     return true;
   }

@@ -15,8 +15,8 @@
  */
 package com.twosigma.beakerx.groovy.kernel;
 
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.groovy.comm.GroovyCommOpenHandler;

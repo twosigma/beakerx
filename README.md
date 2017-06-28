@@ -39,10 +39,9 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx
 conda install -y -c conda-forge openjdk
-./gradlew --no-daemon build
-./gradlew --no-daemon kernelInstall
-./gradlew --no-daemon :beakerx:install
-(cd beakerx; pip install -e .)
+(cd kernel; ./gradlew --no-daemon build kernelInstall)
+(cd ../beakerx/; yarn install)
+pip install -e .
 python -m beakerx.install --enable --prefix="${CONDA_PREFIX}"
 jupyter notebook
 ```

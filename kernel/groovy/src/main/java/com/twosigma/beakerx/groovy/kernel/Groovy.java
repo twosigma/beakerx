@@ -31,15 +31,14 @@ import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.message.Message;
+
 import java.io.IOException;
 import java.util.HashMap;
 
 public class Groovy extends Kernel {
 
-  public Groovy(final String id, final Evaluator evaluator,
-      KernelSocketsFactory kernelSocketsFactory) {
+  public Groovy(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
-    setShellOptions(getKernelParameters());
   }
 
   @Override
@@ -56,15 +55,15 @@ public class Groovy extends Kernel {
     KernelRunner.run(() -> {
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
-          new KernelConfigurationFile(args));
+              new KernelConfigurationFile(args));
       return new Groovy(id, new GroovyEvaluator(id, id), kernelSocketsFactory);
     });
   }
 
-  private KernelParameters getKernelParameters() {
+  @Override
+  public KernelParameters getKernelParameters() {
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new GroovyDefaultVariables().getImports());
-
     return new KernelParameters(kernelParameters);
   }
 }

@@ -25,8 +25,6 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 
 public class KernelParameters {
 
-  public static final String KERNEL_PARAMETERS = "beakerx_kernel_parameters";
-
   private Map<String, Object> params;
 
   public KernelParameters(Map<String, Object> params) {

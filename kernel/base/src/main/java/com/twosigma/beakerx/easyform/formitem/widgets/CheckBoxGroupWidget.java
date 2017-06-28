@@ -15,10 +15,9 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.easyform.formitem.CheckBoxGroup;
+import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.widgets.CommFunctionality;
-import com.twosigma.beakerx.widgets.DOMWidget;
 import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.Widget;
 import com.twosigma.beakerx.widgets.bools.BoolWidget;
@@ -35,16 +34,26 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
-public class CheckBoxGroupWidget extends CheckBoxGroup implements CommFunctionality, EasyFormWidget {
+public class CheckBoxGroupWidget extends EasyFormComponent<ValueWidget<?>> implements CommFunctionality, EasyFormWidget {
 
   private List<Checkbox> checkboxes;
   private Label label;
   private HBox widget;
+  private Boolean horizontal;
 
   public CheckBoxGroupWidget() {
     this.checkboxes = new ArrayList<>();
     this.label = new Label();
   }
+  
+  public Boolean getHorizontal() {
+    return horizontal;
+  }
+
+  public void setHorizontal(final Boolean horizontal) {
+    this.horizontal = horizontal;
+  }
+  
 
   @Override
   public String getLabel() {
@@ -65,12 +74,10 @@ public class CheckBoxGroupWidget extends CheckBoxGroup implements CommFunctional
   public void setValue(String value) {
   }
 
-  @Override
   public Collection<String> getValues() {
     return this.checkboxes.stream().filter(BoolWidget::getValue).map(ValueWidget::getDescription).collect(Collectors.toList());
   }
 
-  @Override
   public void setValues(Collection<String> values) {
     values.forEach(item -> {
       Checkbox checkbox = new Checkbox();
@@ -91,7 +98,7 @@ public class CheckBoxGroupWidget extends CheckBoxGroup implements CommFunctional
   }
 
   @Override
-  public DOMWidget getWidget() {
+  public ValueWidget<?> getWidget() {
     return widget;
   }
 
@@ -99,5 +106,5 @@ public class CheckBoxGroupWidget extends CheckBoxGroup implements CommFunctional
   public void close() {
     getComm().close();
   }
-  
+
 }

@@ -18,7 +18,7 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 import com.twosigma.beakerx.easyform.formitem.ListComponent;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.widgets.CommFunctionality;
-import com.twosigma.beakerx.widgets.DOMWidget;
+import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.selections.SelectMultiple;
 
 import java.util.Collection;
@@ -34,11 +34,6 @@ public class SelectMultipleWidget extends ListComponent implements CommFunctiona
   @Override
   public String getLabel() {
     return widget.getDescription();
-  }
-
-  @Override
-  public Comm getComm() {
-    return widget.getComm();
   }
 
   @Override
@@ -76,13 +71,8 @@ public class SelectMultipleWidget extends ListComponent implements CommFunctiona
   }
 
   @Override
-  public DOMWidget getWidget() {
+  public ValueWidget<?> getWidget() {
     return widget;
-  }
-  
-  @Override
-  public void close() {
-    getComm().close();
   }
   
 }

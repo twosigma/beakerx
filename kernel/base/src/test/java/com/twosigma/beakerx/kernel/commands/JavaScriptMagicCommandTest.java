@@ -52,7 +52,7 @@ public class JavaScriptMagicCommandTest {
     MagicCommandResult result = sut.process(code, message, 1);
     //then
     Map data = (Map) result.getResultMessage().getContent().get(Comm.DATA);
-    String toCompare = (String)data.get(MIMEContainer.MIME.APPLICATION_JAVASCRIPT.getMime());
+    String toCompare = (String)data.get(MIMEContainer.MIME.APPLICATION_JAVASCRIPT);
     
     toCompare = toCompare.replaceAll("\\s+","");
     jsCode = jsCode.replaceAll("\\s+","");

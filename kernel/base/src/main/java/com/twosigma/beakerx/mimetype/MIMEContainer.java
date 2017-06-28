@@ -20,52 +20,63 @@ import com.google.common.io.Files;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.net.URL;
+
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 public class MIMEContainer {
 
   public static final MIMEContainer HIDDEN = addMimeType(MIME.HIDDEN);
 
-  public enum MIME {
-
-    TEXT_PLAIN("text/plain"),
-    TEXT_HTML("text/html"),
-    TEXT_LATEX("text/latex"),
-    TEXT_MARKDOWN("text/markdown"),
-    APPLICATION_JAVASCRIPT("application/javascript"),
-    IMAGE_PNG("image/png"),
-    IMAGE_JPEG("image/jpeg"),
-    IMAGE_SVG("image/svg+xml"),
-    HIDDEN("x-beakerx/empty");
-
+  public static class MIME {
+    public static final String TEXT_PLAIN = "text/plain";
+    public static final String TEXT_HTML = "text/html";
+    public static final String TEXT_LATEX = "text/latex";
+    public static final String TEXT_MARKDOWN = "text/markdown";
+    public static final String APPLICATION_JAVASCRIPT = "application/javascript";
+    public static final String IMAGE_PNG = "image/png";
+    public static final String IMAGE_JPEG = "image/jpeg";
+    public static final String IMAGE_SVG = "image/svg+xml";
+    public static final String HIDDEN = "x-beakerx/empty";
     private String mime;
 
-    MIME(String mime) {
+    public MIME(String mime) {
       this.mime = mime;
     }
 
-    public String getMime() {
+    public String asString() {
       return mime;
     }
 
+    @Override
+    public boolean equals(Object o) {
+      return reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+      return reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+      return reflectionToString(this);
+    }
   }
 
   private MIME mime;
   private String code;
 
-  public MIMEContainer() {
-  }
-
-  public MIMEContainer(MIME mime) {
+  private MIMEContainer(MIME mime) {
     this.mime = mime;
   }
 
-  public MIMEContainer(MIME mime, String code) {
-    this.mime = mime;
+  public MIMEContainer(String mime, String code) {
+    this.mime = new MIME(mime);
     this.code = code;
   }
 
@@ -131,20 +142,12 @@ public class MIMEContainer {
     return addMimeType(MIME.TEXT_HTML, output);
   }
 
-  protected static MIMEContainer addMimeType(MIME mime) {
-    return new MIMEContainer(mime);
+  private static MIMEContainer addMimeType(String mime) {
+    return new MIMEContainer(new MIME(mime));
   }
 
-  protected static MIMEContainer addMimeType(MIME mime, Object code) {
+  protected static MIMEContainer addMimeType(String mime, Object code) {
     return new MIMEContainer(mime, code.toString());
-  }
-
-  protected static String exceptionToString(Exception e) {
-    StringWriter w = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(w);
-    e.printStackTrace(printWriter);
-    printWriter.flush();
-    return w.toString();
   }
 
   protected static boolean exists(String data) {
@@ -179,4 +182,15 @@ public class MIMEContainer {
   public String toString() {
     return this.getMime() + " CODE = " + this.getCode();
   }
+
+  @Override
+  public boolean equals(Object o) {
+    return reflectionEquals(this, o);
+  }
+
+  @Override
+  public int hashCode() {
+    return reflectionHashCode(this);
+  }
+
 }

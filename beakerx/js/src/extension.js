@@ -166,7 +166,7 @@ define([
     comm.close();
   }
 
-  var inNotebook = typeof(Jupyter.CellToolbar) != "undefined";
+  var inNotebook = !Jupyter.NotebookList;
   // ________ init cell extension code
   var CellToolbar = celltoolbar.CellToolbar;
 

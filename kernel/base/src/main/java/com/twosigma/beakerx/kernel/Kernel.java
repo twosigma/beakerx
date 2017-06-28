@@ -41,6 +41,7 @@ public abstract class Kernel implements KernelFunctionality {
   private static final Logger logger = LoggerFactory.getLogger(Kernel.class);
 
   public static String OS = System.getProperty("os.name").toLowerCase();
+  public static boolean showNullExecutionResult = true;
 
   private String sessionId;
   private KernelSocketsFactory kernelSocketsFactory;

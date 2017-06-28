@@ -16,6 +16,13 @@
   font-weight: normal;
 }
 
+@font-face {
+  font-family: 'Lato';
+  src: url('fonts/lato/Lato-Black.woff') format('woff'),
+  url('fonts/lato/Lato-Black.ttf') format('truetype');
+  font-weight: bold;
+}
+
 .CodeMirror pre,
 .rendered_html pre, 
 .rendered_html code,

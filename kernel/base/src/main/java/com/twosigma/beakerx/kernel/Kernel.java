@@ -65,9 +65,7 @@ public abstract class Kernel implements KernelFunctionality {
     setShellOptions(getKernelParameters());
   }
 
-  public KernelParameters getKernelParameters() {
-    return new KernelParameters(new HashMap<>());
-  }
+  public abstract KernelParameters getKernelParameters();
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 

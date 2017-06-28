@@ -19,6 +19,7 @@ import com.twosigma.beakerx.cpp.handlers.CppCommOpenHandler;
 import com.twosigma.beakerx.cpp.handlers.CppKernelInfoHandler;
 import com.twosigma.beakerx.cpp.utils.CppKernel;
 import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
@@ -31,8 +32,10 @@ import com.twosigma.beakerx.message.Message;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.cpp.kernel.CppEvaluator.EXECUTE;
  import static com.twosigma.beakerx.kernel.Utils.uuid;
 
@@ -77,4 +80,10 @@ public class Cpp extends Kernel {
     kern.execute(mainCell, type, tempDirectory, otherCells);
   }
 
+  @Override
+  public KernelParameters getKernelParameters() {
+    HashMap<String, Object> kernelParameters = new HashMap<>();
+    kernelParameters.put(IMPORTS, new CppDefaultVariables().getImports());
+    return new KernelParameters(kernelParameters);
+  }
 }

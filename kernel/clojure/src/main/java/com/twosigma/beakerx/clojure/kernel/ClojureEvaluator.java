@@ -288,8 +288,17 @@ public class ClojureEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+  public void initKernel(KernelParameters kernelParameters) {
+    configure(kernelParameters);
+  }
 
+  @Override
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    configure(kernelParameters);
+    resetEnvironment();
+  }
+
+  private void configure(KernelParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(DefaultJVMVariables.CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
@@ -315,8 +324,6 @@ public class ClojureEvaluator extends BaseEvaluator {
         }
       }
     }
-
-    resetEnvironment();
   }
 
   @Override

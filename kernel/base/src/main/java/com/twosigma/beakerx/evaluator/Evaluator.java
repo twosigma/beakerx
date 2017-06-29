@@ -36,6 +36,8 @@ public interface Evaluator {
 
   Logger logger = LoggerFactory.getLogger(Evaluator.class.getName());
 
+  void initKernel(KernelParameters kernelParameters);
+
   void setShellOptions(final KernelParameters kernelParameters) throws IOException;
 
   void addJarToClasspath(PathToJar path);

@@ -116,9 +116,9 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   public void resetEnvironment() {
+    killAllThreads();
     jdbcClient.loadDrivers(classPath.getPathsAsStrings());
     sac = createSqlAutocomplete(cps);
-    killAllThreads();
   }
 
   private SQLAutocomplete createSqlAutocomplete(ClasspathScanner c) {
@@ -230,8 +230,17 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+  public void initKernel(KernelParameters kernelParameters) {
+    configure(kernelParameters);
+  }
 
+  @Override
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    configure(kernelParameters);
+    resetEnvironment();
+  }
+
+  private void configure(KernelParameters kernelParameters) {
     SQLKernelParameters params = new SQLKernelParameters(kernelParameters);
     Collection<String> cp = params.getClassPath();
 
@@ -264,8 +273,6 @@ public class SQLEvaluator extends BaseEvaluator {
       }
       namedConnectionString.put(name, new ConnectionStringHolder(value, jdbcClient));
     }
-
-    resetEnvironment();
   }
 
   @Override

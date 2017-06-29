@@ -77,6 +77,11 @@ public class EvaluatorTest extends BaseEvaluator {
     this.resetEnvironmentCounter++;
   }
 
+  @Override
+  public void initKernel(KernelParameters kernelParameters) {
+
+  }
+
   public SimpleEvaluationObject getSeo() {
     return seo;
   }

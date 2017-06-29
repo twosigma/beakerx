@@ -135,6 +135,11 @@ public class CppEvaluator extends BaseEvaluator {
   }
 
   @Override
+  public void initKernel(KernelParameters kernelParameters) {
+
+  }
+
+  @Override
   public void setShellOptions(KernelParameters kernelParameters) throws IOException {
     Optional<String> flagStringOptional = kernelParameters.getParam("flagString", String.class);
     if (flagStringOptional.isPresent()) {

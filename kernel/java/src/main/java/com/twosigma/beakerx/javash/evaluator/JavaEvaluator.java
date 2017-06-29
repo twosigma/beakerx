@@ -151,9 +151,20 @@ public class JavaEvaluator extends BaseEvaluator {
     syncObject.release();
   }
 
+
+  @Override
+  public void initKernel(KernelParameters kernelParameters) {
+    configure(kernelParameters);
+  }
+
+
   @Override
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    configure(kernelParameters);
+    resetEnvironment();
+  }
 
+  private void configure(KernelParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
@@ -179,8 +190,6 @@ public class JavaEvaluator extends BaseEvaluator {
         }
       }
     }
-
-    resetEnvironment();
   }
 
   @Override

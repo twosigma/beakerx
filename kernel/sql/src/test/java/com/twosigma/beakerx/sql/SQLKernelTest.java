@@ -17,6 +17,7 @@ package com.twosigma.beakerx.sql;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.KernelSocketsTest;
+import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
@@ -47,7 +48,7 @@ public class SQLKernelTest {
   @Before
   public void setUp() throws Exception {
     String sessionId = "sessionId2";
-    SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId);
+    SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId, TestBeakerCellExecutor.cellExecutor());
     kernelSocketsService = new KernelSocketsServiceTest();
     sqlKernel = new SQL(sessionId, sqlEvaluator, kernelSocketsService);
     sqlKernel.setShellOptions(kernelParameters());

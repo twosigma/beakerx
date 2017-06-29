@@ -18,6 +18,7 @@ package com.twosigma.beakerx.javash.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.chart.xychart.Plot;
+import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.javash.kernel.JavaKernelMock;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -37,7 +38,7 @@ public class JavaEvaluatorTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    javaEvaluator = new JavaEvaluator("id", "sid");
+    javaEvaluator = new JavaEvaluator("id", "sid", TestBeakerCellExecutor.cellExecutor());
   }
 
   @Before

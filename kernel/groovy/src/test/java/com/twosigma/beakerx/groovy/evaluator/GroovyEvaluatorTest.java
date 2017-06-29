@@ -32,6 +32,7 @@ import java.util.HashMap;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 
 public class GroovyEvaluatorTest {
 
@@ -41,7 +42,7 @@ public class GroovyEvaluatorTest {
 
   @BeforeClass
   public static void initClassStubData() throws IOException {
-    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345");
+    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345", cellExecutor());
 
     GroovyDefaultVariables var = new GroovyDefaultVariables();
     HashMap<String, Object> params = new HashMap<>();

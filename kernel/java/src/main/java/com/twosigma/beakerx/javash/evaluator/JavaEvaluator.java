@@ -25,6 +25,7 @@ import com.twosigma.beakerx.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -64,7 +65,7 @@ public class JavaEvaluator extends BaseEvaluator {
   protected boolean exit;
   protected boolean updateLoader;
   protected workerThread myWorker;
-  protected final BeakerCellExecutor executor;
+  protected final CellExecutor executor;
 
   protected class jobDescriptor {
     String codeToBeExecuted;
@@ -80,6 +81,10 @@ public class JavaEvaluator extends BaseEvaluator {
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
   public JavaEvaluator(String id, String sId) {
+    this(id, sId, new BeakerCellExecutor("javash"));
+  }
+
+  public JavaEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
     sessionId = sId;
     packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
@@ -90,7 +95,7 @@ public class JavaEvaluator extends BaseEvaluator {
     exit = false;
     updateLoader = false;
     outDir = Evaluator.createJupyterTempFolder().toString();
-    executor = new BeakerCellExecutor("javash");
+    executor = cellExecutor;
     startWorker();
   }
 

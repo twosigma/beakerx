@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyCompleteHandlerTest {
@@ -38,7 +39,7 @@ public class GroovyCompleteHandlerTest {
 
   @BeforeClass
   public static void setUpClass(){
-    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("id", "sid"){
+    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("id", "sid", cellExecutor()){
       @Override
       public void startWorker() {
       }

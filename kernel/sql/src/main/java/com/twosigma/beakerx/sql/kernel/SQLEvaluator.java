@@ -23,6 +23,7 @@ import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.sql.ConnectionStringBean;
@@ -62,7 +63,7 @@ public class SQLEvaluator extends BaseEvaluator {
   private Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
   private ConnectionStringHolder defaultConnectionString;
 
-  private final BeakerCellExecutor executor;
+  private final CellExecutor executor;
   volatile private boolean exit;
 
   private ClasspathScanner cps;
@@ -74,13 +75,17 @@ public class SQLEvaluator extends BaseEvaluator {
   private final JDBCClient jdbcClient;
 
   public SQLEvaluator(String id, String sId) {
+    this(id, sId, new BeakerCellExecutor("sql"));
+  }
+
+  public SQLEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
     sessionId = sId;
     packageId = "com.twosigma.beaker.sql.bkr" + shellId.split("-")[0];
     jdbcClient = new JDBCClient();
     cps = new ClasspathScanner();
     sac = createSqlAutocomplete(cps);
-    executor = new BeakerCellExecutor("sql");
+    executor = cellExecutor;
     queryExecutor = new QueryExecutor(jdbcClient);
   }
 

@@ -17,6 +17,7 @@
 package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
@@ -38,7 +39,7 @@ public class ScalaAutocompleteTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    scalaEvaluator = new ScalaEvaluator(null);
+    scalaEvaluator = new ScalaEvaluator(null, TestBeakerCellExecutor.cellExecutor());
     scalaEvaluator.initialize("id", "sid");
     scalaEvaluator.setShellOptions(kernelParameters());
   }

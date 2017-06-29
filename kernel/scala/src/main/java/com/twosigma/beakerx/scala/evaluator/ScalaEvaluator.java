@@ -20,7 +20,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -33,6 +32,7 @@ import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beakerx.jvm.serialization.ObjectSerializer;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.table.TableDisplay;
@@ -77,7 +77,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   protected String outDir;
   protected boolean exit;
   protected boolean updateLoader;
-  protected final BeakerCellExecutor executor;
+  protected final CellExecutor executor;
   protected workerThread myWorker;
   protected String currentClassPath;
   protected String currentImports;
@@ -96,10 +96,13 @@ public class ScalaEvaluator extends BaseEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
-  @Inject
   public ScalaEvaluator(Provider<BeakerObjectConverter> osp) {
+    this(osp, new BeakerCellExecutor("scala"));
+  }
+
+  public ScalaEvaluator(Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor) {
     objectSerializerProvider = osp;
-    executor = new BeakerCellExecutor("scala");
+    executor = cellExecutor;
   }
 
   public void initialize(String id, String sId) {

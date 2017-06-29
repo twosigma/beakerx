@@ -25,6 +25,7 @@ import com.twosigma.beakerx.groovy.autocomplete.GroovyClasspathScanner;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -73,7 +74,7 @@ public class GroovyEvaluator extends BaseEvaluator {
   protected GroovyClasspathScanner cps;
   protected boolean exit;
   protected boolean updateLoader;
-  protected final BeakerCellExecutor executor;
+  protected final CellExecutor executor;
   protected GroovyAutocomplete gac;
 
   public static boolean LOCAL_DEV = false;
@@ -101,6 +102,10 @@ public class GroovyEvaluator extends BaseEvaluator {
   };
 
   public GroovyEvaluator(String id, String sId) {
+    this(id, sId, new BeakerCellExecutor("groovy"));
+  }
+
+  public GroovyEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
     sessionId = sId;
     classPath = new Classpath();
@@ -111,7 +116,7 @@ public class GroovyEvaluator extends BaseEvaluator {
     updateLoader = false;
     outDir = Evaluator.createJupyterTempFolder().toString();
     outDir = envVariablesFilter(outDir, System.getenv());
-    executor = new BeakerCellExecutor("groovy");
+    executor = cellExecutor;
     startWorker();
   }
 

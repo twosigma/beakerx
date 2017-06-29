@@ -87,6 +87,7 @@ public class SQLEvaluator extends BaseEvaluator {
     sac = createSqlAutocomplete(cps);
     executor = cellExecutor;
     queryExecutor = new QueryExecutor(jdbcClient);
+    startWorker();
   }
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
@@ -94,8 +95,7 @@ public class SQLEvaluator extends BaseEvaluator {
     syncObject.release();
   }
 
-  @Override
-  public void startWorker() {
+  private void startWorker() {
     WorkerThread workerThread = new WorkerThread();
     workerThread.start();
   }

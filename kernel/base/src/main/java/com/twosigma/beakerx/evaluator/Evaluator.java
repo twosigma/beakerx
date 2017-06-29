@@ -46,8 +46,6 @@ public interface Evaluator {
 
   void evaluate(SimpleEvaluationObject seo, String code);
 
-  void startWorker();
-
   void exit();
 
   static Path createJupyterTempFolder() {

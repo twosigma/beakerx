@@ -94,14 +94,14 @@ public class CppEvaluator extends BaseEvaluator {
     exit = false;
     executor = cellExecutor;
     loadedCells = new HashSet<>();
+    startWorker();
   }
 
   public CppEvaluator(String id, String sId) {
     this(id, sId, new BeakerCellExecutor("cpp"));
   }
 
-  @Override
-  public void startWorker() {
+  private void startWorker() {
     myWorker = new workerThread();
     myWorker.start();
   }

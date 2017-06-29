@@ -96,6 +96,7 @@ public class ClojureEvaluator extends BaseEvaluator {
     outDir = Evaluator.createJupyterTempFolder().toString();
     executor = cellExecutor;
     init();
+    startWorker();
   }
 
   public ClojureEvaluator(String id, String sId) {
@@ -123,8 +124,7 @@ public class ClojureEvaluator extends BaseEvaluator {
     exit = false;
   }
 
-  @Override
-  public void startWorker() {
+  private void startWorker() {
     myWorker = new workerThread();
     myWorker.start();
   }

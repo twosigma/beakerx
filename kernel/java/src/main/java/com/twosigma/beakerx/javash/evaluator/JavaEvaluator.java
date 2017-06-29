@@ -99,8 +99,7 @@ public class JavaEvaluator extends BaseEvaluator {
     startWorker();
   }
 
-  @Override
-  public void startWorker() {
+  private void startWorker() {
     myWorker = new workerThread();
     myWorker.start();
   }

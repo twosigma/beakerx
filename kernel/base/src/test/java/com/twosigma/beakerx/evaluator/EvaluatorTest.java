@@ -33,11 +33,13 @@ public class EvaluatorTest extends BaseEvaluator {
   private SimpleEvaluationObject seo;
   private String code;
   private boolean killAllThreads;
-  private boolean startWorker;
   private boolean exit;
   private Classpath classpath = new Classpath();
   private Imports imports = new Imports();
   private int resetEnvironmentCounter = 0;
+
+  public EvaluatorTest() {
+  }
 
   @Override
   public void setShellOptions(KernelParameters kernelParameters) throws IOException {
@@ -58,11 +60,6 @@ public class EvaluatorTest extends BaseEvaluator {
   public void evaluate(SimpleEvaluationObject seo, String code) {
     this.seo = seo;
     this.code = code;
-  }
-
-  @Override
-  public void startWorker() {
-    startWorker = true;
   }
 
   @Override
@@ -90,14 +87,6 @@ public class EvaluatorTest extends BaseEvaluator {
 
   public boolean isCallKillAllThreads() {
     return killAllThreads;
-  }
-
-  public boolean isCallStartWorker() {
-    return startWorker;
-  }
-
-  public void clearStartWorkerFlag() {
-    startWorker = false;
   }
 
   public boolean isCallExit() {

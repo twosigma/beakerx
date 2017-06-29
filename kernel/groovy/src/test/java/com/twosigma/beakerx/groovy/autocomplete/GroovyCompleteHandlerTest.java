@@ -41,7 +41,7 @@ public class GroovyCompleteHandlerTest {
   public static void setUpClass(){
     GroovyEvaluator groovyEvaluator = new GroovyEvaluator("id", "sid", cellExecutor()){
       @Override
-      public void startWorker() {
+      protected void startWorker() {
       }
     };
     groovyKernel = new GroovyKernelMock("sid", groovyEvaluator);

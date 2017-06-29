@@ -47,7 +47,6 @@ public class SQLEvaluatorTest {
     kernelTest = new KernelTest();
     KernelManager.register(kernelTest);
     sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1", TestBeakerCellExecutor.cellExecutor());
-    sqlEvaluator.startWorker();
     sqlEvaluator.setShellOptions(kernelParameters());
   }
 

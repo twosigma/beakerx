@@ -40,7 +40,6 @@ public class EvaluatorManager {
   public EvaluatorManager(KernelFunctionality kernel, Evaluator evaluator) {
     this.kernel = kernel;
     this.evaluator = evaluator;
-    evaluator.startWorker();
     this.codeExecutor = this::execute;
   }
 
@@ -50,7 +49,6 @@ public class EvaluatorManager {
     } catch (IOException e) {
       logger.error("Error while setting Shell Options", e);
     }
-    evaluator.startWorker();
     readyToExecuteCode();
   }
 

@@ -120,7 +120,7 @@ public class GroovyEvaluator extends BaseEvaluator {
     startWorker();
   }
 
-  public void startWorker() {
+  protected void startWorker() {
     workerThread myWorker = new workerThread();
     myWorker.start();
   }

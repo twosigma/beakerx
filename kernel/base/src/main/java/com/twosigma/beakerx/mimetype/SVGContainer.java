@@ -34,6 +34,10 @@ import java.net.URL;
 
 public class SVGContainer extends MIMEContainer {
 
+  public SVGContainer(String mime, String code) {
+    super(mime, code);
+  }
+
   public static MIMEContainer SVG(Object data) throws Exception {
     String code = "";
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -50,7 +54,7 @@ public class SVGContainer extends MIMEContainer {
 
   private static Document validateData(Object data, DocumentBuilder builder) throws SAXException, IOException {
     Document doc;
-    if(data instanceof String) {
+    if (data instanceof String) {
       String path = data.toString();
       if (isValidURL(path)) {
         doc = builder.parse(new URL(path).openStream());
@@ -60,9 +64,9 @@ public class SVGContainer extends MIMEContainer {
         throw new FileNotFoundException(path + " doesn't exist. ");
       }
     } else {
-      doc = builder.parse(new ByteArrayInputStream((byte[])data));
+      doc = builder.parse(new ByteArrayInputStream((byte[]) data));
     }
     return doc;
   }
-  
+
 }

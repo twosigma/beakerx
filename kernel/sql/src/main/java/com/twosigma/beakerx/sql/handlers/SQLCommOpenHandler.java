@@ -17,7 +17,6 @@ package com.twosigma.beakerx.sql.handlers;
 
 import com.twosigma.beakerx.kernel.comm.KernelControlCommandListHandler;
 import com.twosigma.beakerx.kernel.comm.KernelControlInterrupt;
-import com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
@@ -27,8 +26,6 @@ import com.twosigma.beakerx.message.Message;
 public class SQLCommOpenHandler extends CommOpenHandler{
 
  private Handler<?>[] KERNEL_CONTROL_CHANNEL_HANDLERS = {
-     new KernelControlSetShellHandler(kernel),
-     new SQLCommKernelControlSetShellHandler(kernel),
      new KernelControlInterrupt(kernel),
      new KernelControlCommandListHandler(kernel)};
 

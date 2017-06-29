@@ -29,10 +29,13 @@ import static com.twosigma.beakerx.kernel.Utils.getAsString;
  */
 public class DefaultJVMVariables {
 
+  public static final String IMPORTS = "imports";
+  public static final String CLASSPATH = "classpath";
+
   /**
    * Default imports
    */
-  private final Set<String> IMPORTS = new HashSet<>();
+  private final Set<String> IMPORT = new HashSet<>();
 
   /**
    * Default class path
@@ -66,19 +69,19 @@ public class DefaultJVMVariables {
   }
 
   public void addImports(String... input) {
-    IMPORTS.addAll(Arrays.asList(input));
+    IMPORT.addAll(Arrays.asList(input));
   }
 
   public void addImports(Collection<String> input) {
-    IMPORTS.addAll(input);
+    IMPORT.addAll(input);
   }
 
   public void removeImports(String... input) {
-    IMPORTS.removeAll(Arrays.asList(input));
+    IMPORT.removeAll(Arrays.asList(input));
   }
 
   public void removeImports(Collection<String> input) {
-    IMPORTS.removeAll(input);
+    IMPORT.removeAll(input);
   }
 
   public void addClassPath(String... input) {
@@ -98,15 +101,15 @@ public class DefaultJVMVariables {
   }
 
   public String[] getImportsAsArray() {
-    return getArray(IMPORTS);
+    return getArray(IMPORT);
   }
 
   public String getImportsAsString() {
-    return getAsString(IMPORTS);
+    return getAsString(IMPORT);
   }
 
   public Collection<String> getImports() {
-    return IMPORTS;
+    return IMPORT;
   }
 
   public String[] getClassPathAsArray() {

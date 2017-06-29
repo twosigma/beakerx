@@ -47,7 +47,6 @@ public class ClojureKernelTest {
     ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId);
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Clojure(sessionId, evaluator, kernelSocketsService);
-    kernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }
@@ -93,10 +92,5 @@ public class ClojureKernelTest {
     String value = (String) actual.get("text/plain");
     assertThat(value).isNotEmpty();
     //assertThat(value).contains("[0,1,1,2,3,5"); ->  https://github.com/twosigma/beakerx/issues/5147
-  }
-
-  private KernelParameters kernelParameters() {
-    Map<String, Object> params = new HashMap<>();
-    return new KernelParameters(params);
   }
 }

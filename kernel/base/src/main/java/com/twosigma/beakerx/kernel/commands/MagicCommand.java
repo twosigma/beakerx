@@ -128,7 +128,7 @@ public class MagicCommand {
         return new MagicCommandItemWithCode(code.takeCodeWithoutCommand().get());
       }
       return new MagicCommandItemWithResult(
-              messageCreator.buildMessage(message, result.getMime().getMime(), result.getCode(), executionCount),
+              messageCreator.buildMessage(message, result.getMime().asString(), result.getCode(), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };
@@ -160,7 +160,7 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       MIMEContainer result = JavaScript(code.takeCodeWithoutCommand().get().asString());
       return new MagicCommandItemWithResult(
-              messageCreator.buildMessage(message, result.getMime().getMime(), result.getCode(), executionCount),
+              messageCreator.buildMessage(message, result.getMime().asString(), result.getCode(), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };
@@ -170,7 +170,7 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       MIMEContainer html = HTML("<html>" + code.takeCodeWithoutCommand().get().asString() + "</html>");
       return new MagicCommandItemWithResult(
-              messageCreator.buildMessage(message, html.getMime().getMime(), html.getCode(), executionCount),
+              messageCreator.buildMessage(message, html.getMime().asString(), html.getCode(), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };

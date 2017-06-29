@@ -227,4 +227,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     Object executeCode(Object ... params) throws Exception;
   }
 
+  public void activateWidgetInContainer(){
+    // should be removed when our widgets will be rewritten to ipywidget style
+  }
+
 }

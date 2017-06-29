@@ -15,13 +15,11 @@
  */
 package com.twosigma.beakerx.groovy.comm;
 
-import com.twosigma.beakerx.kernel.comm.*;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.kernel.comm.GetCodeCellsHandler;
 import com.twosigma.beakerx.kernel.comm.KernelControlCommandListHandler;
 import com.twosigma.beakerx.kernel.comm.KernelControlInterrupt;
-import com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
@@ -29,8 +27,6 @@ import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 public class GroovyCommOpenHandler extends CommOpenHandler{
 
  private Handler<?>[] KERNEL_CONTROL_CHANNEL_HANDLERS = {
-     new KernelControlSetShellHandler(kernel),
-     new GroovyCommKernelControlSetShellHandler(kernel),
      new KernelControlInterrupt(kernel),
      new KernelControlCommandListHandler(kernel)};
 

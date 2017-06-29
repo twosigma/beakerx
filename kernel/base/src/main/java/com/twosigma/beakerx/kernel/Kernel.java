@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,6 +42,7 @@ public abstract class Kernel implements KernelFunctionality {
   private static final Logger logger = LoggerFactory.getLogger(Kernel.class);
 
   public static String OS = System.getProperty("os.name").toLowerCase();
+  public static boolean showNullExecutionResult = true;
 
   private String sessionId;
   private KernelSocketsFactory kernelSocketsFactory;
@@ -52,7 +54,7 @@ public abstract class Kernel implements KernelFunctionality {
   private MessageCreator messageCreator;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
-      final KernelSocketsFactory kernelSocketsFactory) {
+                final KernelSocketsFactory kernelSocketsFactory) {
     this.messageCreator = new MessageCreator(this);
     this.sessionId = sessionId;
     this.kernelSocketsFactory = kernelSocketsFactory;
@@ -61,7 +63,10 @@ public abstract class Kernel implements KernelFunctionality {
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     configureSignalHandler();
+    setShellOptions(getKernelParameters());
   }
+
+  public abstract KernelParameters getKernelParameters();
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 
@@ -164,7 +169,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public SimpleEvaluationObject executeCode(String code, Message message, int executionCount,
-      ExecuteCodeCallback executeCodeCallback) {
+                                            ExecuteCodeCallback executeCodeCallback) {
     return this.evaluatorManager.executeCode(code, message, executionCount, executeCodeCallback);
   }
 

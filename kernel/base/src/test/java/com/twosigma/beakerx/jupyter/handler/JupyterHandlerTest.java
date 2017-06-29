@@ -18,8 +18,6 @@ package com.twosigma.beakerx.jupyter.handler;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.comm.KernelControlGetDefaultShellHandler;
-import com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.Code;
@@ -267,37 +265,5 @@ public class JupyterHandlerTest {
     MessageTest.initMessage(message);
     //when
     commCloseHandler.handle(message);
-  }
-
-  @Test
-  public void defaultShellHandlerHandleEmptyMessage_dontThrowNullPointerException()
-          throws Exception {
-    //given
-    Message message = new Message();
-    MessageTest.initMessage(message);
-    //when
-    KernelControlGetDefaultShellHandler handler =
-            new KernelControlGetDefaultShellHandler(kernel) {
-              @Override
-              public String[] getDefaultImports() {
-                return new String[0];
-              }
-
-              @Override
-              public String[] getDefaultClassPath() {
-                return new String[0];
-              }
-            };
-    handler.handle(message);
-  }
-
-  @Test
-  public void setShellHandlerHandleEmptyMessage_dontThrowNullPointerException() throws Exception {
-    //given
-    Message message = new Message();
-    MessageTest.initMessage(message);
-    //when
-    KernelControlSetShellHandler handler = new KernelControlSetShellHandler(kernel);
-    handler.handle(message);
   }
 }

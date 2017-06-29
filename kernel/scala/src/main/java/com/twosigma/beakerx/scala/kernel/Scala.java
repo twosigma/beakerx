@@ -15,11 +15,14 @@
  */
 package com.twosigma.beakerx.scala.kernel;
 
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.scala.comm.ScalaCommOpenHandler;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
@@ -58,5 +61,12 @@ public class Scala extends Kernel {
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
       return new Scala(id, se, kernelSocketsFactory);
     });
+  }
+
+  @Override
+  public KernelParameters getKernelParameters() {
+    HashMap<String, Object> kernelParameters = new HashMap<>();
+    kernelParameters.put(IMPORTS, new ScalaDefaultVariables().getImports());
+    return new KernelParameters(kernelParameters);
   }
 }

@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class BeakerxWidget extends Widget {
-  
+
   private static final Logger logger = LoggerFactory.getLogger(BeakerxWidget.class);
 
   public static final String MODEL_MODULE_VALUE = "beakerx";
@@ -57,22 +57,21 @@ public abstract class BeakerxWidget extends Widget {
     return BeakerxWidget.VIEW_MODULE_VALUE;
   }
 
-  public void sendModel() {
+  protected void sendModel() {
     this.updateModel.update(MODEL, serializeToJsonObject());
   }
 
-  public void sendModelUpdate(Object item) {
+  protected void sendModelUpdate(Object item) {
     this.updateModel.update(MODEL_UPDATE, serializeToJsonObject(item));
   }
 
   @Override
   public void display() {
-    enableModelUpdate();
-    sendModel();
+    beforeDisplay();
     super.display();
   }
 
-  public void enableModelUpdate() {
+  private void enableModelUpdate() {
     updateModel = (action, item) -> sendUpdate(action, item);
   }
 
@@ -80,4 +79,14 @@ public abstract class BeakerxWidget extends Widget {
     void update(String action, Object item);
   }
 
+  @Override
+  public void activateWidgetInContainer() {
+    beforeDisplay();
+    super.activateWidgetInContainer();
+  }
+
+  private void beforeDisplay() {
+    enableModelUpdate();
+    sendModel();
+  }
 }

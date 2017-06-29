@@ -21,8 +21,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
- import static com.twosigma.beakerx.kernel.Utils.getAsString;
- import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
+import static com.twosigma.beakerx.kernel.Utils.getAsString;
 
 public class SQLKernelParameters {
 

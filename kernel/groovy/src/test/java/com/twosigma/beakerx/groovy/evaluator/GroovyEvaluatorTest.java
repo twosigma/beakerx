@@ -20,7 +20,6 @@ import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.groovy.kernel.GroovyDefaultVariables;
 import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
@@ -30,6 +29,9 @@ import org.junit.BeforeClass;
 
 import java.io.IOException;
 import java.util.HashMap;
+
+import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 
 public class GroovyEvaluatorTest {
 
@@ -43,8 +45,8 @@ public class GroovyEvaluatorTest {
 
     GroovyDefaultVariables var = new GroovyDefaultVariables();
     HashMap<String, Object> params = new HashMap<>();
-    params.put(KernelControlSetShellHandler.IMPORTS, var.getImports());
-    params.put(KernelControlSetShellHandler.CLASSPATH, var.getClassPath());
+    params.put(IMPORTS, var.getImports());
+    params.put(CLASSPATH, var.getClassPath());
     KernelParameters kernelParameters = new KernelParameters(params);
 
     groovyEvaluator.setShellOptions(kernelParameters);

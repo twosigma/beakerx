@@ -96,16 +96,17 @@ public class ScalaEvaluator extends BaseEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
-  public ScalaEvaluator(Provider<BeakerObjectConverter> osp) {
-    this(osp, new BeakerCellExecutor("scala"));
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp) {
+    this(id, sId, osp, new BeakerCellExecutor("scala"));
   }
 
-  public ScalaEvaluator(Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor) {
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor) {
     objectSerializerProvider = osp;
     executor = cellExecutor;
+    initialize(id, sId);
   }
 
-  public void initialize(String id, String sId) {
+  private void initialize(String id, String sId) {
     logger.debug("id: {}, sId: {}", id, sId);
     shellId = id;
     sessionId = sId;
@@ -117,6 +118,10 @@ public class ScalaEvaluator extends BaseEvaluator {
     currentImports = "";
     outDir = Evaluator.createJupyterTempFolder().toString();
     startWorker();
+    try {
+      newAutoCompleteEvaluator();
+    } catch (MalformedURLException e) {
+    }
   }
 
   private void startWorker() {

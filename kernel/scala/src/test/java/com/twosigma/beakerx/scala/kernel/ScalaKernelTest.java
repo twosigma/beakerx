@@ -40,8 +40,7 @@ public class ScalaKernelTest {
   @Before
   public void setUp() throws Exception {
     String sessionId = "sessionId2";
-    ScalaEvaluator evaluator = new ScalaEvaluator(null, TestBeakerCellExecutor.cellExecutor());
-    evaluator.initialize(sessionId, sessionId);
+    ScalaEvaluator evaluator = new ScalaEvaluator(sessionId,sessionId,null, TestBeakerCellExecutor.cellExecutor());
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Scala(sessionId, evaluator, kernelSocketsService);
     new Thread(() -> KernelRunner.run(() -> kernel)).start();

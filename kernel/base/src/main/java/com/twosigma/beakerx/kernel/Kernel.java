@@ -106,7 +106,7 @@ public abstract class Kernel implements KernelFunctionality {
     evaluatorManager.setShellOptions(kernelParameters);
   }
 
-  public synchronized void initKernel(final KernelParameters kernelParameters) {
+  public void initKernel(final KernelParameters kernelParameters) {
     evaluatorManager.initKernel(kernelParameters);
   }
 

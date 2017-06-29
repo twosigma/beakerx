@@ -45,8 +45,7 @@ public class ScalaEvaluatorTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    scalaEvaluator = new ScalaEvaluator(null, TestBeakerCellExecutor.cellExecutor());
-    scalaEvaluator.initialize("id", "sid");
+    scalaEvaluator = new ScalaEvaluator("id", "sid",null, TestBeakerCellExecutor.cellExecutor());
   }
 
   @Before

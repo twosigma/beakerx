@@ -34,7 +34,7 @@ import java.util.Optional;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
  import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
- import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleAndSentMessage;
 import static com.twosigma.beakerx.sql.SQLForColorTable.CREATE_AND_SELECT_ALL;
 import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DATASOURCES;
 import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DEFAULT_DATASOURCE;
@@ -67,7 +67,7 @@ public class SQLKernelTest {
     Message message = getExecuteRequestMessage(CREATE_AND_SELECT_ALL);
     //when
     kernelSocketsService.handleMsg(message);
-    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    Optional<Message> idleMessage = waitForIdleAndSentMessage(kernelSocketsService.getKernelSockets());
     //then
     verifyIdleMessage(idleMessage);
     verifyResult();

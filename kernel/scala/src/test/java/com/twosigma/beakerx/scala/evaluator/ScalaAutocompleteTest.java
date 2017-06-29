@@ -39,9 +39,7 @@ public class ScalaAutocompleteTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    scalaEvaluator = new ScalaEvaluator(null, TestBeakerCellExecutor.cellExecutor());
-    scalaEvaluator.initialize("id", "sid");
-    scalaEvaluator.setShellOptions(kernelParameters());
+    scalaEvaluator = new ScalaEvaluator("id", "sid",null, TestBeakerCellExecutor.cellExecutor());
   }
 
   @Before
@@ -72,12 +70,4 @@ public class ScalaAutocompleteTest {
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
     Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(24);
   }
-
-  private static KernelParameters kernelParameters() {
-    Map<String, Object> params = new HashMap<>();
-    params.put(IMPORTS, new ArrayList<>());
-    params.put(CLASSPATH, new ArrayList<>());
-    return new KernelParameters(params);
-  }
-
 }

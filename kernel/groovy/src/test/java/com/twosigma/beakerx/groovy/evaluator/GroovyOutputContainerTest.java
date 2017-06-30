@@ -17,6 +17,7 @@ package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
+import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.KernelTest;
@@ -47,7 +48,7 @@ public class GroovyOutputContainerTest {
   public void setUp() throws Exception {
     groovyKernel = new KernelTest();
     KernelManager.register(groovyKernel);
-    groovyEvaluator = new EvaluatorManager(groovyKernel, new GroovyEvaluator("id", "sid"));
+    groovyEvaluator = new EvaluatorManager(groovyKernel, TestGroovyEvaluator.groovyEvaluator());
     groovyEvaluator.setShellOptions(new KernelParameters(new HashMap()));
   }
 

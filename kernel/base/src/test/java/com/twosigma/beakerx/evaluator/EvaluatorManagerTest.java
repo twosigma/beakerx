@@ -47,22 +47,6 @@ public class EvaluatorManagerTest {
   }
 
   @Test
-  public void create_callEvaluatorToStartWorker() throws Exception {
-    //when
-    //then
-    Assertions.assertThat(evaluator.isCallStartWorker()).isTrue();
-  }
-
-  @Test
-  public void setShellOptions_callEvaluatorToStartWorker() throws Exception {
-    evaluator.clearStartWorkerFlag();
-    //when
-    evaluatorManager.setShellOptions(new KernelParameters(new HashedMap()));
-    //then
-    Assertions.assertThat(evaluator.isCallStartWorker()).isTrue();
-  }
-
-  @Test
   public void killAllThreads_callEvaluatorToKillAllThreads() throws Exception {
     //when
     evaluatorManager.killAllThreads();

@@ -16,23 +16,20 @@
 package com.twosigma.beakerx.clojure.kernel;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
-import com.twosigma.beakerx.clojure.kernel.ClojureEvaluator;
-import com.twosigma.beakerx.clojure.kernel.Clojure;
 import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClojureKernelTest {
@@ -44,7 +41,7 @@ public class ClojureKernelTest {
   @Before
   public void setUp() throws Exception {
     String sessionId = "sessionId1";
-    ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId);
+    ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId, cellExecutor());
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Clojure(sessionId, evaluator, kernelSocketsService);
     new Thread(() -> KernelRunner.run(() -> kernel)).start();

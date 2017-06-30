@@ -16,6 +16,7 @@ package com.twosigma.beakerx.groovy.evaluator;
  */
 
 import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.message.Message;
@@ -35,7 +36,7 @@ public class GroovyEvaluatorMagicCommandsTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    groovyEvaluator = new GroovyEvaluator("shellId1", "sessionId1");
+    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
   }
 
   @Test

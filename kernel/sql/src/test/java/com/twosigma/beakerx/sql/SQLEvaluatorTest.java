@@ -17,6 +17,7 @@ package com.twosigma.beakerx.sql;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.OutputCell;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -45,8 +46,7 @@ public class SQLEvaluatorTest {
   public void setUp() throws Exception {
     kernelTest = new KernelTest();
     KernelManager.register(kernelTest);
-    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1");
-    sqlEvaluator.startWorker();
+    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1", TestBeakerCellExecutor.cellExecutor());
     sqlEvaluator.setShellOptions(kernelParameters());
   }
 

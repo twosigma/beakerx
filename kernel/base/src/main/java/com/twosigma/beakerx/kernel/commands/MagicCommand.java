@@ -122,7 +122,7 @@ public class MagicCommand {
       MIMEContainer result = Text(kernel.getClasspath());
       return new MagicCommandResultItem(
           messageCreator
-              .buildMessage(message, result.getMime().getMime(), result.getCode(), executionCount),
+              .buildMessage(message, result.getMime().asString(), result.getCode(), executionCount),
           messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };
@@ -159,7 +159,7 @@ public class MagicCommand {
       MIMEContainer result = JavaScript(code.takeCodeWithoutCommand().asString());
       return new MagicCommandResultItem(
           messageCreator
-              .buildMessage(message, result.getMime().getMime(), result.getCode(), executionCount),
+              .buildMessage(message, result.getMime().asString(), result.getCode(), executionCount),
           messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };
@@ -170,7 +170,7 @@ public class MagicCommand {
       MIMEContainer html = HTML("<html>" + code.takeCodeWithoutCommand().asString() + "</html>");
       return new MagicCommandResultItem(
           messageCreator
-              .buildMessage(message, html.getMime().getMime(), html.getCode(), executionCount),
+              .buildMessage(message, html.getMime().asString(), html.getCode(), executionCount),
           messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };

@@ -20,6 +20,10 @@ import java.util.Base64;
 
 public class ImageContainer extends MIMEContainer {
 
+  public ImageContainer(String mime, String code) {
+    super(mime, code);
+  }
+
   public static MIMEContainer Image(Object data) throws Exception {
     byte[] image;
     if (data instanceof String) {

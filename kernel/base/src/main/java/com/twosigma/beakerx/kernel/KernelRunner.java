@@ -17,8 +17,6 @@ package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.jvm.threads.BeakerStdOutErrHandler;
 
-import java.io.IOException;
-
 public class KernelRunner {
 
   public static void run(KernelFactory kernelFactory) {

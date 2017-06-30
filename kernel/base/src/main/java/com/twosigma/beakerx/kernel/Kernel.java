@@ -40,10 +40,10 @@ import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
 public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFunctionality {
-
   private static final Logger logger = LoggerFactory.getLogger(Kernel.class);
 
   public static String OS = System.getProperty("os.name").toLowerCase();
+  public static boolean showNullExecutionResult = true;
 
   private String sessionId;
   private KernelSocketsFactory kernelSocketsFactory;
@@ -55,7 +55,7 @@ public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFun
   private MessageCreator messageCreator;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
-      final KernelSocketsFactory kernelSocketsFactory) {
+                final KernelSocketsFactory kernelSocketsFactory) {
     this.messageCreator = new MessageCreator(this);
     this.sessionId = sessionId;
     this.kernelSocketsFactory = kernelSocketsFactory;
@@ -64,7 +64,10 @@ public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFun
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     configureSignalHandler();
+    setShellOptions(getKernelParameters());
   }
+
+  public abstract KernelParameters getKernelParameters();
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 
@@ -167,7 +170,7 @@ public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFun
 
   @Override
   public SimpleEvaluationObject executeCode(String code, Message message, int executionCount,
-      ExecuteCodeCallback executeCodeCallback) {
+                                            ExecuteCodeCallback executeCodeCallback) {
     return this.evaluatorManager.executeCode(code, message, executionCount, executeCodeCallback);
   }
 

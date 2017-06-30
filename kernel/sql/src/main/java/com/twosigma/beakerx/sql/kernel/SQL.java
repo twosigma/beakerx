@@ -15,7 +15,9 @@
  */
 package com.twosigma.beakerx.sql.kernel;
 
+import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.sql.handlers.SQLCommOpenHandler;
 import com.twosigma.beakerx.sql.handlers.SQLKernelInfoHandler;
@@ -28,8 +30,10 @@ import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.IOException;
+import java.util.HashMap;
 
- import static com.twosigma.beakerx.kernel.Utils.uuid;
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 public class SQL extends Kernel {
 
@@ -54,4 +58,12 @@ public class SQL extends Kernel {
       return new SQL(id, new SQLEvaluator(id, id), kernelSocketsFactory);
     });
   }
+
+  @Override
+  public KernelParameters getKernelParameters() {
+    HashMap<String, Object> kernelParameters = new HashMap<>();
+    kernelParameters.put(IMPORTS, new DefaultJVMVariables().getImports());
+    return new KernelParameters(kernelParameters);
+  }
+
 }

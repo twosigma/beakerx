@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.groovy.kernel;
 
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -25,19 +24,17 @@ import com.twosigma.beakerx.groovy.handler.GroovyKernelInfoHandler;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
-import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.message.Message;
-
 import java.io.IOException;
-import java.util.HashMap;
 
 public class Groovy extends Kernel {
 
-  public Groovy(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+  public Groovy(final String id, final Evaluator evaluator,
+      KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
     setShellOptions(getKernelParameters(new GroovyDefaultVariables()));
   }
@@ -56,15 +53,8 @@ public class Groovy extends Kernel {
     KernelRunner.run(() -> {
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
-              new KernelConfigurationFile(args));
+          new KernelConfigurationFile(args));
       return new Groovy(id, new GroovyEvaluator(id, id), kernelSocketsFactory);
     });
-  }
-
-  @Override
-  public KernelParameters getKernelParameters() {
-    HashMap<String, Object> kernelParameters = new HashMap<>();
-    kernelParameters.put(IMPORTS, new GroovyDefaultVariables().getImports());
-    return new KernelParameters(kernelParameters);
   }
 }

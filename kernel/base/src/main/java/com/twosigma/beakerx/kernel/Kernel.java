@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
@@ -40,6 +40,7 @@ import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
 public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFunctionality {
+
   private static final Logger logger = LoggerFactory.getLogger(Kernel.class);
 
   public static String OS = System.getProperty("os.name").toLowerCase();
@@ -55,7 +56,7 @@ public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFun
   private MessageCreator messageCreator;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
-                final KernelSocketsFactory kernelSocketsFactory) {
+      final KernelSocketsFactory kernelSocketsFactory) {
     this.messageCreator = new MessageCreator(this);
     this.sessionId = sessionId;
     this.kernelSocketsFactory = kernelSocketsFactory;
@@ -64,10 +65,7 @@ public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFun
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     configureSignalHandler();
-    setShellOptions(getKernelParameters());
   }
-
-  public abstract KernelParameters getKernelParameters();
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 
@@ -170,7 +168,7 @@ public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFun
 
   @Override
   public SimpleEvaluationObject executeCode(String code, Message message, int executionCount,
-                                            ExecuteCodeCallback executeCodeCallback) {
+      ExecuteCodeCallback executeCodeCallback) {
     return this.evaluatorManager.executeCode(code, message, executionCount, executeCodeCallback);
   }
 

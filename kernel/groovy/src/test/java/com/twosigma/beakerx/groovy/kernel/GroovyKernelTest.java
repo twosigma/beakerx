@@ -17,7 +17,6 @@ package com.twosigma.beakerx.groovy.kernel;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
-import com.twosigma.beakerx.groovy.kernel.Groovy;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
@@ -26,16 +25,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyKernelTest {
@@ -49,7 +44,6 @@ public class GroovyKernelTest {
     GroovyEvaluator evaluator = new GroovyEvaluator(sessionId, sessionId);
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Groovy(sessionId, evaluator, kernelSocketsService);
-    kernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }
@@ -88,12 +82,5 @@ public class GroovyKernelTest {
     Map actual = ((Map) result.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
     assertThat(value).isEqualTo("8");
-  }
-
-  private KernelParameters kernelParameters() {
-    Map<String, Object> params = new HashMap<>();
-    params.put(IMPORTS, new ArrayList<>());
-    params.put(CLASSPATH, new ArrayList<>());
-    return new KernelParameters(params);
   }
 }

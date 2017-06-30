@@ -59,10 +59,7 @@ public class KernelControlCommandListHandler extends BaseHandler<Boolean> {
   protected String[] getCommKernelControlCommandList() {
     List<String> ret = new ArrayList<>();
     ret.add(GET_KERNEL_CONTROL_COMMAND_LIST);
-    ret.add(KernelControlGetDefaultShellHandler.GET_DEFAULT_SHELL);
     ret.add(KernelControlInterrupt.KERNEL_INTERRUPT);
-    ret.add(KernelControlSetShellHandler.CLASSPATH);
-    ret.add(KernelControlSetShellHandler.IMPORTS);
     return ret.toArray(new String[ret.size()]);
   }
 

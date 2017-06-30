@@ -20,6 +20,7 @@ import clojure.lang.RT;
 import clojure.lang.Var;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -47,9 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
 
 public class ClojureEvaluator extends BaseEvaluator {
 
@@ -288,8 +286,8 @@ public class ClojureEvaluator extends BaseEvaluator {
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
 
     Map<String, Object> params = kernelParameters.getParams();
-    Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
-    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
+    Collection<String> listOfClassPath = (Collection<String>) params.get(DefaultJVMVariables.CLASSPATH);
+    Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
 
     Map<String, String> env = System.getenv();
 

@@ -13,47 +13,44 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel.commands;
+package com.twosigma.beakerx.kernel.commands.item;
 
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
 import com.twosigma.beakerx.message.Message;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 
-public class MagicCommandResult {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-  private LinkedList<MagicCommandItem> items = new LinkedList<>();
+public class MagicCommandItemWithCode implements MagicCommandItem {
 
-  public void addItem(MagicCommandItem magicCommandResultItem) {
-    this.items.add(magicCommandResultItem);
+  private CodeWithoutCommand code;
+
+  public MagicCommandItemWithCode(CodeWithoutCommand code) {
+    this.code = checkNotNull(code);
   }
 
+  @Override
   public boolean hasCodeToExecute() {
-    MagicCommandItem last = items.getLast();
-    return last.hasCodeToExecute();
+    return true;
   }
 
+  @Override
   public boolean hasResult() {
-    MagicCommandItem last = items.getLast();
-    return last.hasResult();
+    return false;
   }
 
-  public Optional<Message> getResultMessage() {
-    return items.getLast().getResult();
+  @Override
+  public Optional<Message> getResult() {
+    return Optional.empty();
   }
 
-  public Optional<Message> replyMessage() {
-    return items.getLast().getReply();
+  @Override
+  public Optional<Message> getReply() {
+    return Optional.empty();
   }
 
   public Optional<CodeWithoutCommand> getCode() {
-    return items.getLast().getCode();
-  }
-
-  public List<MagicCommandItem> getItems() {
-    return items;
+    return Optional.of(code);
   }
 }

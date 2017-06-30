@@ -13,15 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx.kernel.commands.item;
 
-package com.twosigma.beakerx.kernel.commands;
-
-import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResult;
+import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.message.Message;
 
+import java.util.Optional;
 
-public interface MagicCommandFunctionality {
-  MagicCommandItem process(Code code, String command, Message message, int executionCount);
+public interface MagicCommandItem {
+
+  boolean hasCodeToExecute();
+
+  boolean hasResult();
+
+  Optional<Message> getResult();
+
+  Optional<Message> getReply();
+
+  Optional<CodeWithoutCommand> getCode();
 }

@@ -24,7 +24,6 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.handler.ExecuteRequestHandler;
 import com.twosigma.beakerx.message.Message;
-import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,8 +60,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
 
     executeRequestHandler.handle(magicMessage);
     //then
-    final List<Message> publishedMessages = kernel.getPublishedMessages();
-    assertThat(publishedMessages.size()).isEqualTo(3);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(3);
   }
 
   @Test
@@ -75,8 +73,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     executeRequestHandler.handle(magicMessage);
     //then
-    final List<Message> publishedMessages = kernel.getPublishedMessages();
-    assertThat(publishedMessages.size()).isEqualTo(3);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(3);
   }
 
   @Test
@@ -101,8 +98,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //when
     executeRequestHandler.handle(magicMessage);
     //then
-    final List<Message> publishedMessages = kernel.getPublishedMessages();
-    assertThat(publishedMessages.size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
   }
 
   @Test
@@ -115,8 +111,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //when
     executeRequestHandler.handle(magicMessage);
     //then
-    final List<Message> publishedMessages = kernel.getPublishedMessages();
-    assertThat(publishedMessages.size()).isEqualTo(3);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(3);
   }
 
   @Test
@@ -130,6 +125,46 @@ public class ExecuteRequestHandlerMagicCommandTest {
     executeRequestHandler.handle(magicMessage);
     //then
     assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(1);
+  }
+
+  @Test
+  public void noCodeToExecute() throws Exception {
+    //given
+    String code = "%classpath add jar ../../demoFiles/demoResources/beakerxTestLibrary.jar";
+    noCode(code);
+  }
+
+  @Test
+  public void noCodeToExecuteWithWhiteSpaces() throws Exception {
+    //given
+    String code = "%classpath add jar ../../demoFiles/demoResources/beakerxTestLibrary.jar\n" +
+        " \n" +
+        " \n" +
+        "    ";
+    noCode(code);
+  }
+
+  private void noCode(String code) {
+    Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
+    //when
+    executeRequestHandler.handle(magicMessage);
+    //then
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(3);
+    assertThat(kernel.getSentMessages().size()).isEqualTo(1);
+    assertThat(kernel.getCode()).isNull();
+  }
+
+  @Test
+  public void codeToExecute() throws Exception {
+    //given
+    String code = "%classpath add jar ../../demoFiles/demoResources/beakerxTestLibrary.jar\n" +
+        "code code code";
+    Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
+    //when
+    executeRequestHandler.handle(magicMessage);
+    //then
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(3);
+    assertThat(kernel.getCode()).isEqualTo("code code code");
   }
 
 }

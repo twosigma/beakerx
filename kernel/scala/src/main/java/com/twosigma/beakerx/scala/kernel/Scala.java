@@ -53,9 +53,9 @@ public class Scala extends Kernel {
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
-      ScalaEvaluator se = new ScalaEvaluator(
+      ScalaEvaluator se = new ScalaEvaluator(id, id,
           null);//TODO check what to put, need for autotranslation
-      se.initialize(id, id);
+
       //js.setupAutoTranslation(); -- uncomment
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
           new KernelConfigurationFile(args));

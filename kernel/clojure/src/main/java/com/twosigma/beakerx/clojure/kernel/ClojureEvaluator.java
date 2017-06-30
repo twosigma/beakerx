@@ -28,6 +28,7 @@ import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -59,7 +60,7 @@ public class ClojureEvaluator extends BaseEvaluator {
   private Imports imports;
   private List<String> requirements;
   private boolean exit;
-  private BeakerCellExecutor executor;
+  private CellExecutor executor;
   private workerThread myWorker;
   private String outDir;
   private String currenClojureNS;
@@ -86,14 +87,20 @@ public class ClojureEvaluator extends BaseEvaluator {
     return Resources.toString(url, Charsets.UTF_8);
   }
 
-  public ClojureEvaluator(String id, String sId) {
+  public ClojureEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
     sessionId = sId;
     classPath = new Classpath();
     imports = new Imports();
     requirements = new ArrayList<>();
     outDir = Evaluator.createJupyterTempFolder().toString();
+    executor = cellExecutor;
     init();
+    startWorker();
+  }
+
+  public ClojureEvaluator(String id, String sId) {
+    this(id, sId, new BeakerCellExecutor("clojure"));
   }
 
   private void init() {
@@ -115,11 +122,9 @@ public class ClojureEvaluator extends BaseEvaluator {
       logger.error(e.getMessage());
     }
     exit = false;
-    executor = new BeakerCellExecutor("clojure");
   }
 
-  @Override
-  public void startWorker() {
+  private void startWorker() {
     myWorker = new workerThread();
     myWorker.start();
   }
@@ -283,8 +288,17 @@ public class ClojureEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+  public void initKernel(KernelParameters kernelParameters) {
+    configure(kernelParameters);
+  }
 
+  @Override
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    configure(kernelParameters);
+    resetEnvironment();
+  }
+
+  private void configure(KernelParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(DefaultJVMVariables.CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
@@ -310,8 +324,6 @@ public class ClojureEvaluator extends BaseEvaluator {
         }
       }
     }
-
-    resetEnvironment();
   }
 
   @Override

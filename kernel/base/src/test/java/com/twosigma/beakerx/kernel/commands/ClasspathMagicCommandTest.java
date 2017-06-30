@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
@@ -51,7 +52,7 @@ public class ClasspathMagicCommandTest {
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(result.getCode()).isEqualTo(new Code("code code code"));
+    assertThat(result.getCode().get()).isEqualTo(new CodeWithoutCommand("code code code"));
     assertThat(kernel.getClasspath().get(0)).isEqualTo(jar);
   }
 
@@ -63,7 +64,7 @@ public class ClasspathMagicCommandTest {
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(result.getResultMessage().getContent().get("text")).isEqualTo(
+    assertThat(result.getResultMessage().get().getContent().get("text")).isEqualTo(
         "Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found");
     assertThat(kernel.getClasspath().size()).isEqualTo(0);
   }
@@ -90,7 +91,7 @@ public class ClasspathMagicCommandTest {
   }
 
   private String classpath(MagicCommandResult result) {
-    Map data = (Map) result.getResultMessage().getContent().get("data");
+    Map data = (Map) result.getResultMessage().get().getContent().get("data");
     return (String) data.get(MIMEContainer.MIME.TEXT_PLAIN);
   }
 

@@ -67,6 +67,7 @@ public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFun
     configureSignalHandler();
   }
 
+
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 
   public abstract KernelHandler<Message> getKernelInfoHandler(Kernel kernel);
@@ -103,6 +104,10 @@ public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFun
 
   public synchronized void setShellOptions(final KernelParameters kernelParameters) {
     evaluatorManager.setShellOptions(kernelParameters);
+  }
+
+  public void initKernel(final KernelParameters kernelParameters) {
+    evaluatorManager.initKernel(kernelParameters);
   }
 
   @Override

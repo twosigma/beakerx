@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
-import static com.twosigma.beakerx.kernel.Code.takeCodeFrom;
 
 /**
  * Does the actual work of executing user code.
@@ -65,22 +64,40 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     Code code = takeCodeFrom(message);
     announceThatWeHaveTheCode(message, code);
     if (code.isaMagicCommand()) {
-      MagicCommandResult magicCommandResult = magicCommand.process(code, message, executionCount);
-      if (magicCommandResult.hasCodeToExecute()) {
-        runCode(magicCommandResult.getCode().asString(), message);
-      } else {
-        sendMagicCommandResult(message, magicCommandResult);
-      }
+      handleMagicCommand(message, code);
     } else {
       runCode(code.asString(), message);
     }
   }
 
-  private void sendMagicCommandResult(Message message, MagicCommandResult process) {
-    kernel.publish(process.getResultMessage());
-    kernel.send(process.replyMessage());
+  private void handleMagicCommand(Message message, Code code) {
+    MagicCommandResult magicCommandResult = magicCommand.process(code, message, executionCount);
+    if (magicCommandResult.hasCodeToExecute()) {
+      runCode(magicCommandResult.getCode().get().asString(), message);
+    } else if (magicCommandResult.hasResult()) {
+      sendMagicCommandReplyAndResult(message, magicCommandResult.replyMessage().get(), magicCommandResult.getResultMessage().get());
+    } else {
+      sendMagicCommandReply(message, magicCommandResult.replyMessage().get());
+    }
+  }
+
+  private Code takeCodeFrom(Message message) {
+    String code = "";
+    if (message.getContent() != null && message.getContent().containsKey("code")) {
+      code = ((String) message.getContent().get("code")).trim();
+    }
+    return new Code(code);
+  }
+
+  private void sendMagicCommandReply(Message message, Message replyMessage) {
+    kernel.send(replyMessage);
     kernel.sendIdleMessage(message);
     syncObject.release();
+  }
+
+  private void sendMagicCommandReplyAndResult(Message message, Message replyMessage, Message resultMessage) {
+    kernel.publish(resultMessage);
+    sendMagicCommandReply(message, replyMessage);
   }
 
   private void runCode(String code, Message message) {

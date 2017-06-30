@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class GroovyEvaluatorAutocompleteTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    groovyEvaluator = new GroovyEvaluator("shellId1", "sessionId1");
+    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
   }
 
   //@Test https://github.com/twosigma/beaker-notebook-private/issues/115

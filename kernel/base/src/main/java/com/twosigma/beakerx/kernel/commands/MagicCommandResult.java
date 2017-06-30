@@ -15,38 +15,45 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.CodeWithoutCommand;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class MagicCommandResult {
 
-  private LinkedList<MagicCommandResultItem> items = new LinkedList<>();
+  private LinkedList<MagicCommandItem> items = new LinkedList<>();
 
-  public void addItem(MagicCommandResultItem magicCommandResultItem) {
+  public void addItem(MagicCommandItem magicCommandResultItem) {
     this.items.add(magicCommandResultItem);
   }
 
   public boolean hasCodeToExecute() {
-    MagicCommandResultItem last = items.getLast();
+    MagicCommandItem last = items.getLast();
     return last.hasCodeToExecute();
   }
 
-  public Message getResultMessage() {
-    return items.getLast().getResultMessage().get();
+  public boolean hasResult() {
+    MagicCommandItem last = items.getLast();
+    return last.hasResult();
   }
 
-  public Message replyMessage() {
-    return items.getLast().getReplyWithoutStatus().get();
+  public Optional<Message> getResultMessage() {
+    return items.getLast().getResult();
   }
 
-  public Code getCode() {
-    return items.getLast().getCode().get();
+  public Optional<Message> replyMessage() {
+    return items.getLast().getReply();
   }
 
-  public List<MagicCommandResultItem> getItems() {
+  public Optional<CodeWithoutCommand> getCode() {
+    return items.getLast().getCode();
+  }
+
+  public List<MagicCommandItem> getItems() {
     return items;
   }
 }

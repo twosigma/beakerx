@@ -18,6 +18,7 @@ package com.twosigma.beakerx.groovy.widgets;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jupyter.SearchMessages;
@@ -51,7 +52,7 @@ public class InteractiveTest {
 
   @Before
   public void setUp() throws Exception {
-    groovyEvaluator = new GroovyEvaluator("shellId1", "sessionId1");
+    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
     groovyKernel = new KernelTest();
     KernelManager.register(groovyKernel);
   }
@@ -67,11 +68,11 @@ public class InteractiveTest {
     callInteractWithStringParam("\"A\"");
     //then
     verifyTextField(
-      groovyKernel.getPublishedMessages(),
-      Text.MODEL_NAME_VALUE,
-      Text.MODEL_MODULE_VALUE,
-      Text.VIEW_NAME_VALUE,
-      Text.VIEW_MODULE_VALUE
+            groovyKernel.getPublishedMessages(),
+            Text.MODEL_NAME_VALUE,
+            Text.MODEL_MODULE_VALUE,
+            Text.VIEW_NAME_VALUE,
+            Text.VIEW_MODULE_VALUE
     );
   }
 
@@ -84,7 +85,7 @@ public class InteractiveTest {
     comm.handleMsg(initSyncDataMessage(comm.getCommId(), "TEST"));
     //then
     Message display = SearchMessages.getListMessagesByType(
-    groovyKernel.getPublishedMessages(), JupyterMessages.DISPLAY_DATA).get(0);
+            groovyKernel.getPublishedMessages(), JupyterMessages.DISPLAY_DATA).get(0);
     Map data = (Map) display.getContent().get(Comm.DATA);
     Assertions.assertThat(data).isNotEmpty();
     Assertions.assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo("TEST");
@@ -98,17 +99,19 @@ public class InteractiveTest {
     waitForResult(seo);
   }
 
-  private Comm getCommWidgetByViewName(String viewName){
+  private Comm getCommWidgetByViewName(String viewName) {
     Message widget = SearchMessages.getListWidgetsByViewName(
-    groovyKernel.getPublishedMessages(), viewName).get(0);
+            groovyKernel.getPublishedMessages(), viewName).get(0);
     String id = (String) widget.getContent().get(Comm.COMM_ID);
     return groovyKernel.getComm(id);
   }
 
-  private Message initSyncDataMessage(String id, String value){
+  private Message initSyncDataMessage(String id, String value) {
     Map<String, Serializable> data = new LinkedHashMap<>();
-    data.put(DOMWidget.SYNC_DATA, new LinkedHashMap<String, Serializable>(){
-      { put(Widget.VALUE, value); }
+    data.put(DOMWidget.SYNC_DATA, new LinkedHashMap<String, Serializable>() {
+      {
+        put(Widget.VALUE, value);
+      }
     });
     data.put("buffer_keys", new ArrayList());
     data.put(Comm.METHOD, "backbone");
@@ -118,11 +121,11 @@ public class InteractiveTest {
     return JupyterHandlerTest.initCommMessage(content);
   }
 
-  private String getInteractiveCode(String arg){
+  private String getInteractiveCode(String arg) {
     return "public Object f(x){\n" +
-           "    return x;\n" +
-           "}\n" +
-           "com.twosigma.beakerx.groovy.widgets.Interactive.interact(this.&f, " + arg + ");";
+            "    return x;\n" +
+            "}\n" +
+            "com.twosigma.beakerx.groovy.widgets.Interactive.interact(this.&f, " + arg + ");";
   }
 
 }

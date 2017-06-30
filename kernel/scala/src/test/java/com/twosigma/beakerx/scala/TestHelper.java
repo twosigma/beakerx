@@ -14,16 +14,20 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.scala.evaluator.object;
+package com.twosigma.beakerx.scala;
 
-/**
- * This class exists solely for testing the Scala import functionality.
- * The package name (containing "object") is significant.
- *
- * @see com.twosigma.beakerx.scala.evaluator.ScalaEvaluatorTest
- */
+import scala.collection.immutable.$colon$colon;
+import scala.collection.immutable.List;
+import scala.collection.immutable.List$;
 
-public class ImportTestHelper {
-  public static void staticMethod() {
+public class TestHelper {
+
+  public static <T> List<T> createScalaList(T ... ts) {
+    List<T> result = List$.MODULE$.empty();
+    for(int i = ts.length; i > 0; i--) {
+      result = new $colon$colon(ts[i - 1], result);
+    }
+    return result;
   }
+
 }

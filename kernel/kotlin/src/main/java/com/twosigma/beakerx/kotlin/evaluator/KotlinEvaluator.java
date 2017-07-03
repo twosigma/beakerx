@@ -98,7 +98,7 @@ public class KotlinEvaluator extends BaseEvaluator {
   public KotlinEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
     sessionId = sId;
-    packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
+    packageId = "com.twosigma.beaker.kotlin.bkr" + shellId.split("-")[0];
     cps = new ClasspathScanner();
     classPath = new Classpath();
     imports = new Imports();
@@ -236,7 +236,7 @@ public class KotlinEvaluator extends BaseEvaluator {
   protected class workerThread extends Thread {
 
     public workerThread() {
-      super("javash worker");
+      super("kotlin worker");
     }
     
     /*
@@ -341,6 +341,9 @@ public class KotlinEvaluator extends BaseEvaluator {
           if (nc != null) {
             nc.setOutputObj(null);
             nc = null;
+          }
+          if (j != null && j.outputObject != null) {
+            j.outputObject.executeCodeCallback();
           }
         }
       }

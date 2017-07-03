@@ -16,25 +16,20 @@
 package com.twosigma.beakerx.scala.kernel;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
-import com.twosigma.beakerx.scala.kernel.Scala;
-import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScalaKernelTest {
@@ -45,11 +40,9 @@ public class ScalaKernelTest {
   @Before
   public void setUp() throws Exception {
     String sessionId = "sessionId2";
-    ScalaEvaluator evaluator = new ScalaEvaluator(null);
-    evaluator.initialize(sessionId, sessionId);
+    ScalaEvaluator evaluator = new ScalaEvaluator(sessionId,sessionId,null, TestBeakerCellExecutor.cellExecutor());
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Scala(sessionId, evaluator, kernelSocketsService);
-    kernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }
@@ -89,13 +82,6 @@ public class ScalaKernelTest {
     Map actual = ((Map) result.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
     assertThat(value).isEqualTo("2");
-  }
-
-  private KernelParameters kernelParameters() {
-    Map<String, Object> params = new HashMap<>();
-    params.put(IMPORTS, new ArrayList<>());
-    params.put(CLASSPATH, new ArrayList<>());
-    return new KernelParameters(params);
   }
 
 }

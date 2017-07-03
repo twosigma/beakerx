@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class GroovyEvaluatorArithmeticTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    groovyEvaluator = new GroovyEvaluator("shellId1", "sessionId1");
+    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
   }
 
   @Test
@@ -48,7 +49,7 @@ public class GroovyEvaluatorArithmeticTest {
     assertThat(seo.getStatus()).isEqualTo(FINISHED);
     assertThat(seo.getPayload()).isEqualTo(new BigDecimal(8));
   }
-  
+
   @Test
   public void shouldCreateErrorResultWithArithmeticExceptionWhenDivisionByZero() throws Exception {
     //given
@@ -59,6 +60,6 @@ public class GroovyEvaluatorArithmeticTest {
     waitForResult(seo);
     //then
     assertThat(seo.getStatus()).isEqualTo(ERROR);
-    assertThat((String)seo.getPayload()).contains("java.lang.ArithmeticException: Division by zero");
+    assertThat((String) seo.getPayload()).contains("java.lang.ArithmeticException: Division by zero");
   }
 }

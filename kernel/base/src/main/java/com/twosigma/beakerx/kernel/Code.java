@@ -15,15 +15,20 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.message.Message;
+import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static java.lang.System.lineSeparator;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -35,10 +40,11 @@ public class Code {
 
   private String code;
   private List<String> commands = new ArrayList<>();
-  private String codeWithoutCommands = "";
+  private String codeWithoutCommands = null;
 
   public Code(final String code) {
-    this.code = checkNotNull(code);
+    checkState(isNotBlank(checkNotNull(code)));
+    this.code = code;
     if (isaMagicCommand()) {
       setupCommandsAndCode();
     } else {
@@ -61,14 +67,20 @@ public class Code {
     throw new RuntimeException("The code does not have magic command.");
   }
 
-  public Code takeCodeWithoutCommand() {
-    return new Code(this.codeWithoutCommands);
+  public Optional<CodeWithoutCommand> takeCodeWithoutCommand() {
+    if (this.codeWithoutCommands != null) {
+      return of(new CodeWithoutCommand(this.codeWithoutCommands));
+    }
+    return empty();
   }
 
   private void setupCommandsAndCode() {
     Scanner scanner = new Scanner(this.code);
     this.commands = commands(scanner);
-    this.codeWithoutCommands = join(restOfTheCode(scanner), lineSeparator());
+    String codeToExecute = join(restOfTheCode(scanner), lineSeparator());
+    if (!codeToExecute.isEmpty()) {
+      this.codeWithoutCommands = codeToExecute;
+    }
   }
 
   private List<String> restOfTheCode(Scanner scanner) {
@@ -81,19 +93,11 @@ public class Code {
 
   private List<String> commands(Scanner scanner) {
     List<String> result = new ArrayList<>();
-    Pattern p = Pattern.compile("^%.*",Pattern.MULTILINE);
+    Pattern p = Pattern.compile("^%.*", Pattern.MULTILINE);
     while (scanner.hasNext(p)) {
       result.add(scanner.nextLine());
     }
     return result;
-  }
-
-  public static Code takeCodeFrom(Message message) {
-    String code = "";
-    if (message.getContent() != null && message.getContent().containsKey("code")) {
-      code = ((String) message.getContent().get("code")).trim();
-    }
-    return new Code(code);
   }
 
   @Override

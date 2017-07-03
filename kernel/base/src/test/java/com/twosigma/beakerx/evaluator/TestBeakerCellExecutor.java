@@ -13,24 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.sql.handlers;
+package com.twosigma.beakerx.evaluator;
 
-import com.twosigma.beakerx.kernel.comm.KernelControlGetDefaultShellHandler;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 
-public class SQLCommKernelControlSetShellHandler extends KernelControlGetDefaultShellHandler {
+public class TestBeakerCellExecutor {
 
-  public SQLCommKernelControlSetShellHandler(KernelFunctionality kernel) {
-    super(kernel);
-  }
+  private static final int KILL_THREAD_SLEEP_IN_MILLIS = 1;
 
-  @Override
-  public String[] getDefaultImports() {
-    return new String[0];
-  }
-
-  @Override
-  public String[] getDefaultClassPath() {
-    return new String[0];
+  public static CellExecutor cellExecutor() {
+    return new BeakerCellExecutor("test", KILL_THREAD_SLEEP_IN_MILLIS);
   }
 }

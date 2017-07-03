@@ -20,7 +20,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -33,6 +32,7 @@ import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beakerx.jvm.serialization.ObjectSerializer;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.table.TableDisplay;
@@ -64,8 +64,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 
 public class ScalaEvaluator extends BaseEvaluator {
   private final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());
@@ -77,7 +77,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   protected String outDir;
   protected boolean exit;
   protected boolean updateLoader;
-  protected final BeakerCellExecutor executor;
+  protected final CellExecutor executor;
   protected workerThread myWorker;
   protected String currentClassPath;
   protected String currentImports;
@@ -96,13 +96,17 @@ public class ScalaEvaluator extends BaseEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
-  @Inject
-  public ScalaEvaluator(Provider<BeakerObjectConverter> osp) {
-    objectSerializerProvider = osp;
-    executor = new BeakerCellExecutor("scala");
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp) {
+    this(id, sId, osp, new BeakerCellExecutor("scala"));
   }
 
-  public void initialize(String id, String sId) {
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor) {
+    objectSerializerProvider = osp;
+    executor = cellExecutor;
+    initialize(id, sId);
+  }
+
+  private void initialize(String id, String sId) {
     logger.debug("id: {}, sId: {}", id, sId);
     shellId = id;
     sessionId = sId;
@@ -114,10 +118,13 @@ public class ScalaEvaluator extends BaseEvaluator {
     currentImports = "";
     outDir = Evaluator.createJupyterTempFolder().toString();
     startWorker();
+    try {
+      newAutoCompleteEvaluator();
+    } catch (MalformedURLException e) {
+    }
   }
 
-  @Override
-  public void startWorker() {
+  private void startWorker() {
     myWorker = new workerThread();
     myWorker.start();
   }
@@ -170,8 +177,17 @@ public class ScalaEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+  public void initKernel(KernelParameters kernelParameters) {
+    configure(kernelParameters);
+  }
 
+  @Override
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    configure(kernelParameters);
+    resetEnvironment();
+  }
+
+  private void configure(KernelParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
@@ -197,8 +213,6 @@ public class ScalaEvaluator extends BaseEvaluator {
         }
       }
     }
-
-    resetEnvironment();
   }
 
   @Override

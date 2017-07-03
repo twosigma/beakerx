@@ -19,6 +19,11 @@ package com.twosigma.beakerx.mimetype;
 import java.io.File;
 
 public class FileLinkContainer extends MIMEContainer {
+
+  public FileLinkContainer(String mime, String code) {
+    super(mime, code);
+  }
+
   public static MIMEContainer FileLink(String filePath) {
     File f = new File(filePath);
     if (f.isDirectory()) {

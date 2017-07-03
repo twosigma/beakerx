@@ -371,6 +371,10 @@ define([
     }
   };
 
+  CombinedPlotScope.prototype.setWidgetView = function(plotDisplayView) {
+    this.plotDisplayView = plotDisplayView;
+  };
+
   CombinedPlotScope.prototype.setElement = function(el) {
     this.element = el;
   };

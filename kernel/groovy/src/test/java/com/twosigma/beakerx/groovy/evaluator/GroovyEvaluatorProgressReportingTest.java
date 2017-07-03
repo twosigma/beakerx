@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.KernelTest;
@@ -45,7 +46,7 @@ public class GroovyEvaluatorProgressReportingTest {
 
   @Before
   public void setUp() throws Exception {
-    groovyEvaluator = new GroovyEvaluator("shellId1", "sessionId1");
+    groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
     groovyKernel = new KernelTest();
     KernelManager.register(groovyKernel);
   }

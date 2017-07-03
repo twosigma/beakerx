@@ -20,6 +20,7 @@ import com.github.lwhite1.tablesaw.api.Table;
 import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.chart.xychart.plotitem.XYGraphics;
 import com.twosigma.beakerx.fileloader.CsvPlotReader;
+import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.table.TableDisplay;
 import com.twosigma.beakerx.widgets.DisplayableWidget;
@@ -34,10 +35,17 @@ import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 public class SerializeToString {
 
   public static MIMEContainer doit(final Object input) {
+    MIMEContainer ret = null;
     if (input == null) {
-      return Text("null");
+      if(Kernel.showNullExecutionResult){
+        ret = Text("null");
+      }else{
+        ret = HIDDEN;
+      }
+    }else{
+      ret = getMimeContainer(input);
     }
-    return getMimeContainer(input);
+    return ret;
   }
 
   private static MIMEContainer getMimeContainer(final Object input) {

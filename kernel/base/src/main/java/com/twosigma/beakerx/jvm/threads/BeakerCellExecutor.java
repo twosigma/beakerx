@@ -15,9 +15,6 @@
  */
 package com.twosigma.beakerx.jvm.threads;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,9 +26,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-public class BeakerCellExecutor {
+public class BeakerCellExecutor implements CellExecutor {
 
-  private static final Logger logger = LoggerFactory.getLogger(BeakerCellExecutor.class.getName());
+  private static final int KILL_THREAD_SLEEP_IN_MILLIS = 2000;
 
   private final String prefix;
   private final ReentrantLock theLock;
@@ -39,28 +36,36 @@ public class BeakerCellExecutor {
   private ThreadGroup thrGroup;
   private ExecutorService worker;
   private static AtomicInteger count = new AtomicInteger();
-  
-  public BeakerCellExecutor(String prf) {
-    prefix   = prf;
-    theLock  = new ReentrantLock();
+
+  private int killThreadSleepInMillis;
+
+  public BeakerCellExecutor(String prf, int killThreadSleepInMillis) {
+    prefix = prf;
+    theLock = new ReentrantLock();
     thrGroup = new ThreadGroup(prefix + "TG" + count.getAndIncrement());
+    this.killThreadSleepInMillis = killThreadSleepInMillis;
     reset();
   }
-  
-  public void reset() {
+
+  public BeakerCellExecutor(String prf) {
+    this(prf, KILL_THREAD_SLEEP_IN_MILLIS);
+  }
+
+  private void reset() {
     theLock.lock();
     thrFactory = new BeakerSingleThreadFactory(thrGroup, prefix);
     worker = Executors.newSingleThreadExecutor(thrFactory);
     theLock.unlock();
   }
-  
+
+  @Override
   public boolean executeTask(Runnable tsk) {
     Future<?> ret;
-    
+
     try {
       theLock.lock();
       ret = worker.submit(tsk);
-    } catch(Throwable t) {
+    } catch (Throwable t) {
       t.printStackTrace();
       return false;
     } finally {
@@ -74,12 +79,12 @@ public class BeakerCellExecutor {
       return false;
     }
 
-    if(ret.isCancelled())
+    if (ret.isCancelled())
       return false;
     return true;
   }
-  
- 
+
+  @Override
   @SuppressWarnings("deprecation")
   public void cancelExecution() {
     //logger.info("cancelExecution begin");
@@ -94,18 +99,18 @@ public class BeakerCellExecutor {
       //logger.info("cancelExecution done");
     }
   }
-  
-  public List<Thread> getThreadList() { 
-    int nAlloc = thrGroup.activeCount( );
+
+  public List<Thread> getThreadList() {
+    int nAlloc = thrGroup.activeCount();
     if (nAlloc == 0)
       return new ArrayList<Thread>();
     int n = 0;
     Thread[] threads;
     do {
-        nAlloc *= 2;
-        threads = new Thread[ nAlloc ];
-        n = thrGroup.enumerate( threads );
-    } while ( n == nAlloc );
+      nAlloc *= 2;
+      threads = new Thread[nAlloc];
+      n = thrGroup.enumerate(threads);
+    } while (n == nAlloc);
     return Arrays.asList(threads);
   }
 
@@ -114,7 +119,7 @@ public class BeakerCellExecutor {
     //logger.info("interrupting");
     thr.interrupt();
     try {
-      Thread.sleep(2000);
+      Thread.sleep(killThreadSleepInMillis);
     } catch (InterruptedException ex) {
     }
     if (!thr.getState().equals(State.TERMINATED)) {
@@ -122,7 +127,8 @@ public class BeakerCellExecutor {
       thr.stop();
     }
   }
-  
+
+  @Override
   @SuppressWarnings("deprecation")
   public void killAllThreads() {
     //logger.info("killAllThreads begin");
@@ -134,11 +140,11 @@ public class BeakerCellExecutor {
 
       // then kill all remaining threads in the threadpool
       List<Thread> tlist = getThreadList();
-    
+
       for (Thread t : tlist) {
-	killThread(t);
+        killThread(t);
       }
-      
+
     } finally {
       theLock.unlock();
       reset();

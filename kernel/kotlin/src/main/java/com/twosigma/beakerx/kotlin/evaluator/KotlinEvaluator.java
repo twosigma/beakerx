@@ -15,26 +15,25 @@
  */
 package com.twosigma.beakerx.kotlin.evaluator;
 
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.kotlin.cli.common.ExitCode;
-import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler;
-
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
+import org.apache.commons.lang3.StringUtils;
+
+import org.jetbrains.kotlin.cli.common.ExitCode;
+import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,11 +48,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 
 public class KotlinEvaluator extends BaseEvaluator {
   
@@ -67,10 +73,11 @@ public class KotlinEvaluator extends BaseEvaluator {
   protected Classpath classPath;
   protected Imports imports;
   protected String outDir;
+  protected ClasspathScanner cps;
   protected boolean exit;
   protected boolean updateLoader;
   protected workerThread myWorker;
-  protected final BeakerCellExecutor executor;
+  protected final CellExecutor executor;
 
   protected class jobDescriptor {
     String codeToBeExecuted;
@@ -86,24 +93,27 @@ public class KotlinEvaluator extends BaseEvaluator {
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
   public KotlinEvaluator(String id, String sId) {
+    this(id, sId, new BeakerCellExecutor("kotlin"));
+  }
+
+  public KotlinEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
     sessionId = sId;
-    packageId = "com.twosigma.beakerx.kotlin.bkr" + shellId.split("-")[0];
+    packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
+    cps = new ClasspathScanner();
     classPath = new Classpath();
     imports = new Imports();
     exit = false;
     updateLoader = false;
     outDir = Evaluator.createJupyterTempFolder().toString();
-    executor = new BeakerCellExecutor("javash");
+    executor = cellExecutor;
     startWorker();
   }
 
-  @Override
-  public void startWorker() {
+  private void startWorker() {
     myWorker = new workerThread();
     myWorker.start();
   }
-
 
   public String getShellId() {
     return shellId;
@@ -130,6 +140,8 @@ public class KotlinEvaluator extends BaseEvaluator {
     cpp += File.pathSeparator;
     cpp += System.getProperty("java.class.path");
 
+    cps = new ClasspathScanner(cpp);
+
     // signal thread to create loader
     updateLoader = true;
     syncObject.release();
@@ -142,9 +154,20 @@ public class KotlinEvaluator extends BaseEvaluator {
     syncObject.release();
   }
 
+
+  @Override
+  public void initKernel(KernelParameters kernelParameters) {
+    configure(kernelParameters);
+  }
+
+
   @Override
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    configure(kernelParameters);
+    resetEnvironment();
+  }
 
+  private void configure(KernelParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
@@ -170,8 +193,6 @@ public class KotlinEvaluator extends BaseEvaluator {
         }
       }
     }
-
-    resetEnvironment();
   }
 
   @Override
@@ -216,12 +237,13 @@ public class KotlinEvaluator extends BaseEvaluator {
   protected class workerThread extends Thread {
 
     public workerThread() {
-      super("kotlin worker");
+      super("javash worker");
     }
     
     /*
      * This thread performs all the evaluation
      */
+
     public void run() {
       DynamicClassLoaderSimple loader = null;
       jobDescriptor j = null;
@@ -320,6 +342,7 @@ public class KotlinEvaluator extends BaseEvaluator {
       return ret;
     }
 
+
     protected class MyRunnable <T>implements Runnable {
 
       protected final SimpleEvaluationObject theOutput;
@@ -369,10 +392,7 @@ public class KotlinEvaluator extends BaseEvaluator {
         theOutput.clrOutputHandler();
         Thread.currentThread().setContextClassLoader(oldld);
       }
-
     }
-
-    ;
   }
 
   private static class LineBrakingStringBuilderWrapper {
@@ -399,5 +419,4 @@ public class KotlinEvaluator extends BaseEvaluator {
       return delegate.toString();
     }
   }
-  
 }

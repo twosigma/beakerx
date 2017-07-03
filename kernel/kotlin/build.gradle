@@ -22,10 +22,6 @@ def final toReplace = '__PATH__'
 
 mainClassName = 'com.twosigma.beakerx.kotlin.kernel.Kotlin'
 
-configurations {
-  antlr
-}
-
 repositories {
   mavenCentral()
 }
@@ -102,7 +98,7 @@ publishing {
             groupId 'com.twosigma'
             artifactId 'beaker-kernel-kotlin'
             version '2.0-SNAPSHOT'
-
+            
             from components.java
         }
     }

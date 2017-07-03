@@ -33,7 +33,12 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import org.apache.commons.lang3.StringUtils;
 
 import org.jetbrains.kotlin.cli.common.ExitCode;
+import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments;
+import org.jetbrains.kotlin.cli.common.messages.MessageCollector;
+import org.jetbrains.kotlin.cli.common.messages.MessageRenderer;
+import org.jetbrains.kotlin.cli.common.messages.PrintingMessageCollector;
 import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler;
+import org.jetbrains.kotlin.config.Services;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -48,15 +53,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
@@ -64,8 +65,6 @@ import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 public class KotlinEvaluator extends BaseEvaluator {
   
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
-  //TODO take from gradle source files
-  private static final String pathToKotlinCore = "./../kernel/kotlin/src/main/java/resources/";
   
   protected final String shellId;
   protected final String sessionId;
@@ -274,8 +273,6 @@ public class KotlinEvaluator extends BaseEvaluator {
 
           String classpath = System.getProperty("java.class.path");
           String[] classpathEntries = classpath.split(File.pathSeparator);
-          
-          Path pathToCore = Paths.get(pathToKotlinCore).toAbsolutePath().normalize();
             
           LineBrakingStringBuilderWrapper javaSourceCode = new LineBrakingStringBuilderWrapper();
           javaSourceCode.append("package ");
@@ -295,11 +292,27 @@ public class KotlinEvaluator extends BaseEvaluator {
           javaSourceCode.append("\n}\n");
           javaSourceCode.append("}\n");
 
+          K2JVMCompiler comp = new K2JVMCompiler();
+          ExitCode exitCode = null;
+          
           ByteArrayOutputStream errorBaos = new ByteArrayOutputStream();
           PrintStream errorPs = new PrintStream(errorBaos);
           Path sourceFile = Files.write(Paths.get(outDir + "\\" + WRAPPER_CLASS_NAME + ".kt"), javaSourceCode.toString().getBytes());
-          ExitCode exitCode = new K2JVMCompiler().exec(errorPs, sourceFile.toString(), "-kotlin-home", pathToCore.toString(), "-include-runtime", "-d", outDir, "-cp", getEntriesAsString(classpathEntries, ";"));
-  
+          
+          K2JVMCompilerArguments arguments = K2JVMCompilerArguments.createDefaultInstance();
+          //arguments.kotlinHome = pathToCore.toString();
+          arguments.includeRuntime = true;
+          arguments.destination = outDir;
+          arguments.classpath = getEntriesAsString(classpathEntries, ";");
+          arguments.verbose = false;
+          arguments.freeArgs = new ArrayList<>();
+          arguments.freeArgs.add(sourceFile.toString());
+          
+          MessageCollector collector = new PrintingMessageCollector(errorPs, MessageRenderer.PLAIN_RELATIVE_PATHS, arguments.verbose);
+          
+          exitCode = comp.exec(collector, Services.EMPTY, arguments);
+
+          
           if (ExitCode.COMPILATION_ERROR == exitCode) {
             j.outputObject.error("ERROR: " + new String(errorBaos.toByteArray(), StandardCharsets.UTF_8));
           } else if (ExitCode.OK == exitCode) {

@@ -30,7 +30,7 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getData;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,7 +57,7 @@ public class TabTest {
     //when
     new Tab(children, asList("t1", "t2"));
     //then
-    verifyOpenCommMsg(kernel.getPublishedMessages(), Tab.MODEL_NAME_VALUE, Tab.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(kernel.getPublishedMessages(), Tab.MODEL_NAME_VALUE, Tab.VIEW_NAME_VALUE);
     verifyChildren(children);
     verifyTitles();
   }

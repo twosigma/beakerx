@@ -63,7 +63,7 @@ public abstract class Kernel implements KernelFunctionality {
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     configureSignalHandler();
-    setShellOptions(getKernelParameters());
+    initKernel(getKernelParameters());
   }
 
   public abstract KernelParameters getKernelParameters();
@@ -104,6 +104,10 @@ public abstract class Kernel implements KernelFunctionality {
 
   public synchronized void setShellOptions(final KernelParameters kernelParameters) {
     evaluatorManager.setShellOptions(kernelParameters);
+  }
+
+  public void initKernel(final KernelParameters kernelParameters) {
+    evaluatorManager.initKernel(kernelParameters);
   }
 
   @Override

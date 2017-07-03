@@ -16,14 +16,12 @@
 package com.twosigma.beakerx.groovy.kernel;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
-import com.twosigma.beakerx.groovy.kernel.Groovy;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-
 import java.util.Map;
 import java.util.Optional;
 
@@ -42,7 +40,7 @@ public class GroovyKernelNotReadyTest {
   @Before
   public void setUp() throws Exception {
     String sessionId = "sessionId2";
-    GroovyEvaluator evaluator = new GroovyEvaluator(sessionId, sessionId);
+    GroovyEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Groovy(sessionId, evaluator, kernelSocketsService);
     // here we don't set up shell options 'kernel.setShellOptions(kernelParameters);'

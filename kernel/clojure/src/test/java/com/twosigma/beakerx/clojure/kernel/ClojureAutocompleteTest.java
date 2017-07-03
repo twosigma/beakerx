@@ -17,7 +17,6 @@
 package com.twosigma.beakerx.clojure.kernel;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.clojure.kernel.ClojureEvaluator;
 import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -25,12 +24,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.*;
+
 public class ClojureAutocompleteTest {
   private static ClojureEvaluator clojureEvaluator;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    clojureEvaluator = new ClojureEvaluator("id", "sid");
+    clojureEvaluator = new ClojureEvaluator("id", "sid", cellExecutor());
   }
 
   @Before

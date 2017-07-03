@@ -18,6 +18,7 @@ package com.twosigma.beakerx.kernel.commands;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.message.Message;
 import org.junit.Before;
@@ -45,7 +46,7 @@ public class ImportMagicCommandTest {
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(result.getCode()).isEqualTo(new Code("w = new IntSlider()"));
+    assertThat(result.getCode().get()).isEqualTo(new CodeWithoutCommand("w = new IntSlider()"));
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
   }
 

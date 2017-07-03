@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.groovy.examples;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.Groovy;
 import com.twosigma.beakerx.widgets.Widget;
@@ -27,6 +28,7 @@ import org.junit.BeforeClass;
 
 import java.io.Serializable;
 import java.util.Map;
+
 import static org.junit.Assert.assertTrue;
 
 public abstract class GroovyExamplesSetupTest {
@@ -37,7 +39,7 @@ public abstract class GroovyExamplesSetupTest {
   @BeforeClass
   public static void setUp() throws Exception {
     String sessionId = "sessionIdWidget";
-    GroovyEvaluator evaluator = new GroovyEvaluator(sessionId, sessionId);
+    GroovyEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Groovy(sessionId, evaluator, kernelSocketsService);
     new Thread(() -> KernelRunner.run(() -> kernel)).start();

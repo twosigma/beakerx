@@ -14,8 +14,3 @@
  *  limitations under the License.
  */
 
-@import 'fontface';
-
-@include fontFace('Roboto Mono', '../fonts/robotomono/robotomono');
-@include fontFace('Lato', '../fonts/lato/Lato-Regular', 'normal', 'normal');
-@include fontFace('LatoBold', '../fonts/lato/Lato-Bold', 'normal', 'normal');

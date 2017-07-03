@@ -33,10 +33,11 @@ public class LineTest {
   }
 
   @Test
-  public void createLineWithNumberListParam_lineHasXsListIsNullYsListIsNotNull() {
+  public void createLineWithNumberListParam_lineHasXsAndYsListsAreNotNulls() {
     //when
     Line line = new Line(Arrays.asList(new Integer(10), new Integer(20)));
     //then
+    Assertions.assertThat(line.getX()).isNotNull();
     Assertions.assertThat(line.getY()).isNotNull();
   }
 

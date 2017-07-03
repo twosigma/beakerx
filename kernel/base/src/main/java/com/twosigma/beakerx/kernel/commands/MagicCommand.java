@@ -16,19 +16,24 @@
 
 package com.twosigma.beakerx.kernel.commands;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.kernel.commands.MagicCommandFinder.find;
+import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
+import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
+import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
+
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.ImportPath;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithReply;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithCode;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResult;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
-import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithCode;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithReply;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResult;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
-
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,12 +41,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.twosigma.beakerx.kernel.commands.MagicCommandFinder.find;
-import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
-import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
-import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 
 /**
  * executes magic commands and sends message
@@ -72,17 +71,19 @@ public class MagicCommand {
   }
 
   public MagicCommandResult process(Code code, Message message, int executionCount) {
-    MagicCommandFinder finder = find(code, this.commands, message, executionCount, this.messageCreator);
+    MagicCommandFinder finder = find(code, this.commands, message, executionCount,
+        this.messageCreator);
     MagicCommandResult result = new MagicCommandResult();
     if (finder.hasErrors()) {
       finder.getErrors().forEach(result::addItem);
     } else {
       List<String> functionalitiesToRun = finder.getCommands();
       functionalitiesToRun.
-              forEach(item -> {
-                MagicCommandItem magicCommandResultItem = finder.get(item).process(code, item, message, executionCount);
-                result.addItem(magicCommandResultItem);
-              });
+          forEach(item -> {
+            MagicCommandItem magicCommandResultItem = finder.get(item)
+                .process(code, item, message, executionCount);
+            result.addItem(magicCommandResultItem);
+          });
     }
     return result;
   }
@@ -124,12 +125,13 @@ public class MagicCommand {
   private MagicCommandFunctionality classpathShow() {
     return (code, command, message, executionCount) -> {
       MIMEContainer result = Text(kernel.getClasspath());
-      if(code.takeCodeWithoutCommand().isPresent()){
+      if (code.takeCodeWithoutCommand().isPresent()) {
         return new MagicCommandItemWithCode(code.takeCodeWithoutCommand().get());
       }
       return new MagicCommandItemWithResult(
-              messageCreator.buildMessage(message, result.getMime().asString(), result.getCode(), executionCount),
-              messageCreator.buildReplyWithoutStatus(message, executionCount)
+          messageCreator
+              .buildMessage(message, result.getMime().asString(), result.getCode(), executionCount),
+          messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };
   }
@@ -141,37 +143,51 @@ public class MagicCommand {
   private MagicCommandFunctionality classpathAddJar() {
     return (code, command, message, executionCount) -> {
       String[] split = command.split(" ");
-      if (split.length != 4) {
-        throw new RuntimeException("Wrong command format: " + CLASSPATH_ADD_JAR);
+
+      try {
+        if (split.length != 4) {
+          throw new IllegalStateException("Wrong command format: " + CLASSPATH_ADD_JAR);
+        }
+
+        this.kernel.addJarToClasspath(new PathToJar(split[3]));
+        return getMagicCommandItem(code, message, executionCount);
+      } catch (IllegalStateException e) {
+        return new MagicCommandItemWithResult(
+            messageCreator
+                .buildOutputMessage(message, e.getMessage(), true),
+            messageCreator.buildReplyWithoutStatus(message, executionCount)
+        );
       }
-      this.kernel.addJarToClasspath(new PathToJar(split[3]));
-      return getMagicCommandItem(code, message, executionCount);
     };
   }
 
   private MagicCommandItem getMagicCommandItem(Code code, Message message, int executionCount) {
-    if(code.takeCodeWithoutCommand().isPresent()){
+    if (code.takeCodeWithoutCommand().isPresent()) {
       return new MagicCommandItemWithCode(code.takeCodeWithoutCommand().get());
     }
-    return new MagicCommandItemWithReply(messageCreator.buildReplyWithoutStatus(message, executionCount));
+    return new MagicCommandItemWithReply(
+        messageCreator.buildReplyWithoutStatus(message, executionCount));
   }
 
   private MagicCommandFunctionality javascript() {
     return (code, command, message, executionCount) -> {
       MIMEContainer result = JavaScript(code.takeCodeWithoutCommand().get().asString());
       return new MagicCommandItemWithResult(
-              messageCreator.buildMessage(message, result.getMime().asString(), result.getCode(), executionCount),
-              messageCreator.buildReplyWithoutStatus(message, executionCount)
+          messageCreator
+              .buildMessage(message, result.getMime().asString(), result.getCode(), executionCount),
+          messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };
   }
 
   private MagicCommandFunctionality html() {
     return (code, command, message, executionCount) -> {
-      MIMEContainer html = HTML("<html>" + code.takeCodeWithoutCommand().get().asString() + "</html>");
+      MIMEContainer html = HTML(
+          "<html>" + code.takeCodeWithoutCommand().get().asString() + "</html>");
       return new MagicCommandItemWithResult(
-              messageCreator.buildMessage(message, html.getMime().asString(), html.getCode(), executionCount),
-              messageCreator.buildReplyWithoutStatus(message, executionCount)
+          messageCreator
+              .buildMessage(message, html.getMime().asString(), html.getCode(), executionCount),
+          messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };
   }
@@ -180,8 +196,8 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String result = executeBashCode(code.takeCodeWithoutCommand().get());
       return new MagicCommandItemWithResult(
-              messageCreator.buildOutputMessage(message, result, false),
-              messageCreator.buildReplyWithoutStatus(message, executionCount)
+          messageCreator.buildOutputMessage(message, result, false),
+          messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };
   }
@@ -190,12 +206,12 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String result = "Available magic commands:\n";
       result += commands.entrySet().stream()
-              .filter(map -> map.getKey() != LSMAGIC)
-              .map(Map.Entry::getKey)
-              .collect(Collectors.joining(" "));
+          .filter(map -> map.getKey() != LSMAGIC)
+          .map(Map.Entry::getKey)
+          .collect(Collectors.joining(" "));
       return new MagicCommandItemWithResult(
-              messageCreator.buildOutputMessage(message, result, false),
-              messageCreator.buildReplyWithoutStatus(message, executionCount)
+          messageCreator.buildOutputMessage(message, result, false),
+          messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };
   }
@@ -210,7 +226,7 @@ public class MagicCommand {
       process.waitFor();
       String line;
       BufferedReader reader = new BufferedReader(new InputStreamReader(
-              process.getInputStream()));
+          process.getInputStream()));
       while ((line = reader.readLine()) != null) {
         output.append(line).append("\n");
       }

@@ -18,6 +18,7 @@ package com.twosigma.beakerx.scala.kernel;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.scala.evaluator.NoBeakerxObjectTestFactory;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
@@ -40,7 +41,7 @@ public class ScalaKernelTest {
   @Before
   public void setUp() throws Exception {
     String sessionId = "sessionId2";
-    ScalaEvaluator evaluator = new ScalaEvaluator(sessionId,sessionId,null, TestBeakerCellExecutor.cellExecutor());
+    ScalaEvaluator evaluator = new ScalaEvaluator(sessionId,sessionId,null, TestBeakerCellExecutor.cellExecutor(),new NoBeakerxObjectTestFactory());
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Scala(sessionId, evaluator, kernelSocketsService);
     new Thread(() -> KernelRunner.run(() -> kernel)).start();

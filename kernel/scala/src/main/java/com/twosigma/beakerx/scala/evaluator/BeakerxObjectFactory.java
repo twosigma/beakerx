@@ -13,29 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-task wrapper(type: Wrapper) {
-  gradleVersion = '3.5'
-}
+package com.twosigma.beakerx.scala.evaluator;
 
-project("kernel").subprojects {
-    apply plugin: 'jacoco'
-    apply plugin: 'java'
-    apply plugin: 'maven'
+public interface BeakerxObjectFactory {
 
-    jacoco {
-        toolVersion = "0.7.8"
-    }
-    jacocoTestReport {
-        reports {
-            html.enabled = true
-            xml.enabled = false
-            csv.enabled = false
-        }
-    }
-
-    test {
-        systemProperties 'java.awt.headless': "true"
-    }
-
-    test.finalizedBy jacocoTestReport
+  String create(String sessionId);
 }

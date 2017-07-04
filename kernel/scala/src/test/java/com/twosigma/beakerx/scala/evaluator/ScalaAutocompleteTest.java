@@ -26,12 +26,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 public class ScalaAutocompleteTest {
   private static ScalaEvaluator scalaEvaluator;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    scalaEvaluator = new ScalaEvaluator("id", "sid",null, TestBeakerCellExecutor.cellExecutor());
+    scalaEvaluator = new ScalaEvaluator("id", "sid",null, TestBeakerCellExecutor.cellExecutor(), new NoBeakerxObjectTestFactory());
   }
 
   @Before

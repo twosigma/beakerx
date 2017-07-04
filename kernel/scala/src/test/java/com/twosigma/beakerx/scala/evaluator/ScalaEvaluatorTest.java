@@ -45,7 +45,7 @@ public class ScalaEvaluatorTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    scalaEvaluator = new ScalaEvaluator("id", "sid",null, TestBeakerCellExecutor.cellExecutor());
+    scalaEvaluator = new ScalaEvaluator("id", "sid", null, TestBeakerCellExecutor.cellExecutor(), new NoBeakerxObjectTestFactory());
   }
 
   @Before
@@ -63,8 +63,8 @@ public class ScalaEvaluatorTest {
   public void evaluatePlot_shouldCreatePlotObject() throws Exception {
     //given
     String code = "import com.twosigma.beakerx.chart.xychart.Plot;\n" +
-        "val plot = new Plot();\n" +
-        "plot.setTitle(\"test title\");";
+            "val plot = new Plot();\n" +
+            "plot.setTitle(\"test title\");";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     scalaEvaluator.evaluate(seo, code);
@@ -72,7 +72,7 @@ public class ScalaEvaluatorTest {
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
     Assertions.assertThat(seo.getPayload() instanceof Plot).isTrue();
-    Assertions.assertThat(((Plot)seo.getPayload()).getTitle()).isEqualTo("test title");
+    Assertions.assertThat(((Plot) seo.getPayload()).getTitle()).isEqualTo("test title");
   }
 
   @Test
@@ -85,7 +85,7 @@ public class ScalaEvaluatorTest {
     waitForResult(seo);
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
-    Assertions.assertThat((String)seo.getPayload()).contains("java.lang.ArithmeticException");
+    Assertions.assertThat((String) seo.getPayload()).contains("java.lang.ArithmeticException");
   }
 
   @Test
@@ -117,6 +117,6 @@ public class ScalaEvaluatorTest {
     waitForResult(seo);
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
-    Assertions.assertThat((String)seo.getPayload()).contains("incomplete");
+    Assertions.assertThat((String) seo.getPayload()).contains("incomplete");
   }
 }

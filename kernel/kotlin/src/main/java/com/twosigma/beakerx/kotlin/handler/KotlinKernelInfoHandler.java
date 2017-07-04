@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.kotlin.handler;
 
+import static org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION;
+
 import com.twosigma.beakerx.KernelInfoHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 
@@ -29,19 +31,19 @@ public class KotlinKernelInfoHandler extends KernelInfoHandler {
 
   @Override
   protected HashMap<String, Serializable> doLanguageInfo(HashMap<String, Serializable> languageInfo) {
-    languageInfo.put("name", "Groovy");
-    languageInfo.put("version", "unkown"); //TODO put real value
+    languageInfo.put("name", "Kotlin");
+    languageInfo.put("version", VERSION);
     languageInfo.put("mimetype", "");
-    languageInfo.put("file_extension", ".groovy");
-    languageInfo.put("codemirror_mode", "groovy");
+    languageInfo.put("file_extension", ".kt");
+    languageInfo.put("codemirror_mode", "kt");
     languageInfo.put("nbconverter_exporter", "");
     return languageInfo;
   }
 
   @Override
   protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
-    content.put("implementation", "groovy");
-    content.put("banner", "BeakerX kernel for Apache Groovy");
+    content.put("implementation", "kotlin");
+    content.put("banner", "BeakerX kernel for Kotlin");
     return content;
   }
 

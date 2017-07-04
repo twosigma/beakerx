@@ -19,6 +19,7 @@ import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
 import static com.twosigma.beakerx.widgets.Widget.DISPLAY;
 import static com.twosigma.beakerx.widgets.Widget.METHOD;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jupyter.SearchMessages;
@@ -28,7 +29,6 @@ import com.twosigma.beakerx.message.Message;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import org.junit.Assert;
 
 public class TestWidgetUtils {
 
@@ -125,7 +125,7 @@ public class TestWidgetUtils {
   public static <T> T findValueForProperty(KernelTest kernel, String propertyName, Class<T> clazz) {
     List<Message> messages = SearchMessages
         .getListByDataAttr(kernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
-    Assert.assertTrue("No update comm message.", messages.size() > 0);
+    assertTrue("No update comm message.", messages.size() > 0);
     return getValueForProperty(messages.get(0), propertyName, clazz);
   }
 

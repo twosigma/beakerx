@@ -309,9 +309,7 @@ public class KotlinEvaluator extends BaseEvaluator {
           arguments.freeArgs.add(sourceFile.toString());
           
           MessageCollector collector = new PrintingMessageCollector(errorPs, MessageRenderer.PLAIN_RELATIVE_PATHS, arguments.verbose);
-          
           exitCode = comp.exec(collector, Services.EMPTY, arguments);
-
           
           if (ExitCode.COMPILATION_ERROR == exitCode) {
             j.outputObject.error("ERROR: " + new String(errorBaos.toByteArray(), StandardCharsets.UTF_8));

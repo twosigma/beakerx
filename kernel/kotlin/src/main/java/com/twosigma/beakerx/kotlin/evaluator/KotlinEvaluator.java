@@ -313,6 +313,7 @@ public class KotlinEvaluator extends BaseEvaluator {
           
           if (ExitCode.COMPILATION_ERROR == exitCode) {
             j.outputObject.error("ERROR: " + new String(errorBaos.toByteArray(), StandardCharsets.UTF_8));
+            j.outputObject.executeCodeCallback();
           } else if (ExitCode.OK == exitCode) {
 
             try {
@@ -339,9 +340,6 @@ public class KotlinEvaluator extends BaseEvaluator {
           if (nc != null) {
             nc.setOutputObj(null);
             nc = null;
-          }
-          if (j != null && j.outputObject != null) {
-            j.outputObject.executeCodeCallback();
           }
         }
       }

@@ -88,8 +88,6 @@ public class ScalaEvaluatorTest {
     Assertions.assertThat((String)seo.getPayload()).contains("java.lang.ArithmeticException");
   }
 
-  ;
-
   @Test
   public void javaImports_shouldBeAdjustedForScala() throws Exception {
     //given

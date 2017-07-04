@@ -27,6 +27,7 @@ import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationS
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.RUNNING;
 
 public class EvaluatorResultTestWatcher {
+
   public static final int ATTEMPT = 2000;
   public static final int SLEEP_IN_MILLIS = 10;
 
@@ -63,43 +64,15 @@ public class EvaluatorResultTestWatcher {
     return idleMessage;
   }
 
-  public static Optional<Message> waitForResultAndReturnIdleMessage(KernelSocketsTest socketsTest) throws InterruptedException {
+  public static Optional<Message> waitForSentMessage(KernelSocketsTest socketsTest) throws InterruptedException {
     int count = 0;
-    Optional<Message> idleMessage = getIdleMessage(socketsTest);
-    boolean idleAndResultPresent = idleMessage.isPresent() && getResult(socketsTest).isPresent();
-    while (!idleAndResultPresent && count < ATTEMPT) {
+    Optional<Message> sentMessage = getFirstSentMessage(socketsTest);
+    while (!sentMessage.isPresent() && count < ATTEMPT) {
       Thread.sleep(SLEEP_IN_MILLIS);
-      idleMessage = getIdleMessage(socketsTest);
-      idleAndResultPresent = idleMessage.isPresent() && getResult(socketsTest).isPresent();
+      sentMessage = getFirstSentMessage(socketsTest);
       count++;
     }
-    return idleMessage;
-  }
-
-  public static Optional<Message> waitForIdleAndSentMessage(KernelSocketsTest socketsTest) throws InterruptedException {
-    int count = 0;
-    Optional<Message> idleMessage = getIdleMessage(socketsTest);
-    boolean idleAndSentPresent = idleMessage.isPresent() && getFirstSentMessage(socketsTest).isPresent();
-    while (!idleAndSentPresent && count < ATTEMPT) {
-      Thread.sleep(SLEEP_IN_MILLIS);
-      idleMessage = getIdleMessage(socketsTest);
-      idleAndSentPresent = idleMessage.isPresent() && getFirstSentMessage(socketsTest).isPresent();
-      count++;
-    }
-    return idleMessage;
-  }
-
-  public static Optional<Message> waitForErrorAndReturnIdleMessage(KernelSocketsTest socketsTest) throws InterruptedException {
-    int count = 0;
-    Optional<Message> idleMessage = getIdleMessage(socketsTest);
-    boolean idleAndResultPresent = idleMessage.isPresent() && getError(socketsTest).isPresent();
-    while (!idleAndResultPresent && count < ATTEMPT) {
-      Thread.sleep(SLEEP_IN_MILLIS);
-      idleMessage = getIdleMessage(socketsTest);
-      idleAndResultPresent = idleMessage.isPresent() && getError(socketsTest).isPresent();
-      count++;
-    }
-    return idleMessage;
+    return sentMessage;
   }
 
   private static Optional<Message> getIdleMessage(KernelSocketsTest socketsTest) {

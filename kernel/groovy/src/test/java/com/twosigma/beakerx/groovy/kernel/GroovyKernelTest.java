@@ -30,7 +30,9 @@ import java.util.Optional;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyKernelTest {
@@ -60,12 +62,14 @@ public class GroovyKernelTest {
     Message message = getExecuteRequestMessage(code);
     //when
     kernelSocketsService.handleMsg(message);
-    Optional<Message> idleMessage = waitForResultAndReturnIdleMessage(kernelSocketsService.getKernelSockets());
     //then
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     assertThat(idleMessage).isPresent();
+    waitForResult(kernelSocketsService.getKernelSockets());
     verifyPublishedMsgs(kernelSocketsService);
-    verifySentMsgs(kernelSocketsService);
     verifyResult(kernelSocketsService.getExecuteResultMessage().get());
+    waitForSentMessage(kernelSocketsService.getKernelSockets());
+    verifySentMsgs(kernelSocketsService);
   }
 
   private void verifyPublishedMsgs(KernelSocketsServiceTest service) {

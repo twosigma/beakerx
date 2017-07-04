@@ -155,6 +155,7 @@ public class JavaEvaluator extends BaseEvaluator {
   @Override
   public void initKernel(KernelParameters kernelParameters) {
     configure(kernelParameters);
+    updateLoader = true;
   }
 
 

@@ -17,11 +17,9 @@ package com.twosigma.beakerx.jvm.object;
 
 public class SimpleLayoutManager extends OutputContainerLayoutManager {
 
-  public SimpleLayoutManager() {
-  }
-
   @Override
   public void display(OutputContainer container) {
-    container.getItems().forEach(item -> toWidget(item).display());
+    getWidgets(container).forEach(item -> item.display());
   }
+  
 }

@@ -15,9 +15,16 @@
  */
 package com.twosigma.beakerx.jvm.object;
 
-public class CyclingOutputContainerLayoutManager extends OutputContainerLayoutManager {
-  private long period = 5000L;
+import com.twosigma.beakerx.widgets.Widget;
+import com.twosigma.beakerx.widgets.box.VBox;
 
+import java.util.ArrayList;
+import java.util.List;
+
+public class CyclingOutputContainerLayoutManager extends OutputContainerLayoutManager {
+  
+  private volatile long  period = 5000L;
+  
   public long getPeriod() {
     return period;
   }
@@ -25,9 +32,47 @@ public class CyclingOutputContainerLayoutManager extends OutputContainerLayoutMa
   public void setPeriod(long period) {
     this.period = period;
   }
-
+  
   @Override
   public void display(OutputContainer container) {
-    throw new RuntimeException("Not implemented yet.");
+    List<WidgetHolder> tabList = new ArrayList<>();
+    for (Widget w : getWidgets(container)) {
+      List<Widget> list = new ArrayList<>();
+      list.add(w);
+      WidgetHolder item = new WidgetHolder();
+      item.box = new VBox(list);
+      item.dispalyed = Boolean.FALSE;
+      tabList.add(item);
+    }
+    
+    WidgetHolder currentBox = null;
+    boolean display = true;
+    while(display){
+      for (WidgetHolder box : tabList) {
+        if(currentBox != null){
+          currentBox.box.getLayout().setDisplay("none");
+        }
+        currentBox = box;
+        if(!currentBox.dispalyed){
+          currentBox.box.display();
+          currentBox.dispalyed = Boolean.TRUE;
+        }else{
+          currentBox.box.getLayout().setDisplay("");
+        }
+        try {
+          Thread.sleep(period);
+        } catch (InterruptedException e) {
+          display = false;
+          break;
+        }
+      }
+    }
   }
+  
+  
+  private class WidgetHolder {
+    private VBox box;
+    private boolean dispalyed = false;
+  }
+  
 }

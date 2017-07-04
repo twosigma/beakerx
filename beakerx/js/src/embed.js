@@ -8,5 +8,6 @@
 module.exports = require('./Plot.js');
 module.exports = require('./TableDisplay.js');
 module.exports = require('./EasyForm.js');
+module.exports = require('./TabView.js');
 module.exports = require('./GridView.js');
 module.exports['version'] = require('../package.json').version;

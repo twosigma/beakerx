@@ -14,7 +14,7 @@
 
 FROM beakerx-base:latest
 
-MAINTAINER Beaker Feedback <beaker-feedback@twosigma.com>
+MAINTAINER BeakerX Feedback <beakerx-feedback@twosigma.com>
 
 ENV PATH /opt/conda/bin:$PATH
 ENV CONDA_DIR /opt/conda

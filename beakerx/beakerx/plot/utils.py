@@ -31,11 +31,12 @@ def date_time_2_millis(dt):
 
 
 class BaseObject:
-  def __init__(self):
+  def __init__(self, **kwargs):
     self.type = self.__class__.__name__
 
   def transform(self):
-    return json.dumps(self, cls=ObjectEncoder)
+    model = json.dumps(self, cls=ObjectEncoder)
+    return json.loads(model)
 
   def transformBack(self, dict):
     self.__dict__ = dict

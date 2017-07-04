@@ -1,4 +1,4 @@
-    # Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,34 +20,35 @@ from traitlets import Unicode, Int, Dict, default
 
 class EasyForm(BaseObject):
     def __init__(self, **kwargs):
-        BaseObject.__init__(self)
-        self.caption = getValue(kwargs, 'title', "test")
-        print ('kwargs')
-        print (kwargs)
+        super(EasyForm, self).__init__(**kwargs)
+        self.easyFormName = getValue(kwargs, 'title', "test")
+        self.children = []
 
     def addTextField(self, title, value):
-        print ('title')
-        print (title)
+        print (title, value)
 
-@register('beakerx.EasyForm')
+
 class EasyFormView(DOMWidget):
-    def __init__(self, **kwargs):
-        super(EasyFormView, self).__init__()
-        self.form = EasyForm(**kwargs)
-        self.model = self.form.transform()
-        self.caption = 'title'
-
-    def addTextField(self, title, value):
-        print ('title')
-        print (title)
-
     _view_name = Unicode('EasyFormView').tag(sync=True)
     _model_name = Unicode('EasyFormModel').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
-    _view_module_version = Unicode('^0.0.1').tag(sync=True)
-    _model_module_version = Unicode('^0.0.1').tag(sync=True)
-    model = Unicode().tag(sync=True)
+    model = Dict().tag(sync=True)
+    easyFormName = ""
+    test = 'asasd'
+
+    def __init__(self, **kwargs):
+        super(EasyFormView, self).__init__(**kwargs)
+
+        self.chart = EasyForm(**kwargs)
+        self.model = self.chart.transform()
+        print(self.model)
+
+    def addTextField(self, title, value):
+        self.chart.addTextField(title, value)
+        self.model = self.chart.transform()
+        return self
+
 
 def parseJSON(out):
     print ("out")

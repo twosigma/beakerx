@@ -15,10 +15,8 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.easyform.formitem.RadioButtonComponent;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.widgets.CommFunctionality;
-import com.twosigma.beakerx.widgets.DOMWidget;
+import com.twosigma.beakerx.easyform.EasyFormComponent;
+import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.selections.RadioButtons;
 import com.twosigma.beakerx.widgets.box.HBox;
 
@@ -27,22 +25,26 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-public class RadioButtonComponentWidget extends RadioButtonComponent implements CommFunctionality, EasyFormWidget {
+public class RadioButtonComponentWidget extends EasyFormComponent<ValueWidget<?>> {
 
   private RadioButtons radioButtons;
+  private Boolean horizontal;
 
   public RadioButtonComponentWidget() {
     this.radioButtons = new RadioButtons();
   }
 
+  public void setHorizontal(final Boolean horizontal) {
+    this.horizontal = horizontal;
+  }
+
+  public Boolean getHorizontal() {
+    return horizontal;
+  }
+  
   @Override
   public String getLabel() {
     return radioButtons.getDescription();
-  }
-
-  @Override
-  public Comm getComm() {
-    return radioButtons.getComm();
   }
 
   @Override
@@ -60,28 +62,22 @@ public class RadioButtonComponentWidget extends RadioButtonComponent implements 
     radioButtons.setValue(value);
   }
 
-  @Override
   public void setValues(Collection<String> values) {
     this.radioButtons.setOptions(values.toArray(new String[0]));
   }
 
-  @Override
   public Collection<String> getValues() {
     return Arrays.stream(radioButtons.getOptions()).collect(Collectors.toList());
   }
 
   @Override
-  public DOMWidget getWidget() {
+  public ValueWidget<?> getWidget() {
     if (getHorizontal()) {
       return new HBox(Collections.singletonList(this.radioButtons));
     } else {
       return this.radioButtons;
     }
   }
-  
-  @Override
-  public void close() {
-    getComm().close();
-  }
+ 
 
 }

@@ -17,9 +17,9 @@
 package com.twosigma.beakerx.easyform.formitem;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.DOMWidget;
+import com.twosigma.beakerx.widgets.ValueWidget;
 
-public class SaveValuesButton extends EasyFormComponent {
+public class SaveValuesButton extends EasyFormComponent<ValueWidget<?>> {
 
   private String path;
 
@@ -36,7 +36,7 @@ public class SaveValuesButton extends EasyFormComponent {
   }
 
   @Override
-  public DOMWidget getWidget() {
+  public ValueWidget<?> getWidget() {
     return null;
   }
 

@@ -59,19 +59,18 @@ public class IntRangeSliderTest {
   public void setOrientation_sendCommMessage() throws Exception {
     String expected = "test";
     //given
-    IntRangeSlider intRangeSlider  = IntRangeSlider();
+    IntRangeSlider intRangeSlider = IntRangeSlider();
     //when
     intRangeSlider.setOrientation(expected);
     //then
     verifyMsgForProperty(groovyKernel, IntRangeSlider.ORIENTATION, expected);
   }
 
-
   @Test
   public void setReadOut_sendCommMessage() throws Exception {
     boolean expected = true;
     //given
-    IntRangeSlider intRangeSlider  = IntRangeSlider();
+    IntRangeSlider intRangeSlider = IntRangeSlider();
     //when
     intRangeSlider.setReadOut(expected);
     //then
@@ -82,7 +81,7 @@ public class IntRangeSliderTest {
   public void setContinuousUpdate_sendCommMessage() throws Exception {
     boolean expected = true;
     //given
-    IntRangeSlider intRangeSlider  = IntRangeSlider();
+    IntRangeSlider intRangeSlider = IntRangeSlider();
     //when
     intRangeSlider.setContinuous_update(expected);
     //then
@@ -93,7 +92,7 @@ public class IntRangeSliderTest {
   public void setOrientation_hasThatOrientation() throws Exception {
     String expected = "test";
     //given
-    IntRangeSlider intRangeSlider  = IntRangeSlider();
+    IntRangeSlider intRangeSlider = IntRangeSlider();
     //when
     intRangeSlider.setOrientation(expected);
     //then
@@ -101,10 +100,10 @@ public class IntRangeSliderTest {
   }
 
   @Test
-  public void setReadOut_hasThatOrientation() throws Exception {
+  public void setReadOut_hasThatReadOutFlag() throws Exception {
     boolean expected = true;
     //given
-    IntRangeSlider intRangeSlider  = IntRangeSlider();
+    IntRangeSlider intRangeSlider = IntRangeSlider();
     //when
     intRangeSlider.setReadOut(expected);
     //then
@@ -112,14 +111,81 @@ public class IntRangeSliderTest {
   }
 
   @Test
-  public void setContinuousUpdate_hasThatOrientation() throws Exception {
+  public void setContinuousUpdate_hasThatContinuousUpdateFlag() throws Exception {
     boolean expected = true;
     //given
-    IntRangeSlider intRangeSlider  = IntRangeSlider();
+    IntRangeSlider intRangeSlider = IntRangeSlider();
     //when
     intRangeSlider.setContinuous_update(expected);
     //then
     Assertions.assertThat(intRangeSlider.getContinuous_update()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setStep_hasThatStep() throws Exception {
+    Integer expected = new Integer(10);
+    //given
+    IntRangeSlider intRangeSlider = IntRangeSlider();
+    //when
+    intRangeSlider.setStep(expected);
+    //then
+    Assertions.assertThat(intRangeSlider.getStep()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setMax_hasThatMax() throws Exception {
+    Integer expected = new Integer(11);
+    //given
+    IntRangeSlider intRangeSlider = IntRangeSlider();
+    //when
+    intRangeSlider.setMax(expected);
+    //then
+    Assertions.assertThat(intRangeSlider.getMax()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setMin_hasThatMin() throws Exception {
+    Integer expected = new Integer(12);
+    //given
+    IntRangeSlider intRangeSlider = IntRangeSlider();
+    //when
+    intRangeSlider.setMin(expected);
+    //then
+    Assertions.assertThat(intRangeSlider.getMin()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setUpper_hasThatUpper() throws Exception {
+    Integer expected = new Integer(13);
+    //given
+    IntRangeSlider intRangeSlider = IntRangeSlider();
+    //when
+    intRangeSlider.setUpper(expected);
+    //then
+    Assertions.assertThat(intRangeSlider.getUpper()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setLower_hasThatLower() throws Exception {
+    Integer expected = new Integer(14);
+    //given
+    IntRangeSlider intRangeSlider = IntRangeSlider();
+    //when
+    intRangeSlider.setLower(expected);
+    //then
+    Assertions.assertThat(intRangeSlider.getLower()).isEqualTo(expected);
+  }
+
+  @Test
+  public void getValueFromObject_returnArrayOfIntegers() throws Exception {
+    Integer[] expected = {15, 16};
+    //given
+    IntRangeSlider intRangeSlider = IntRangeSlider();
+    //when
+    Integer[] result = intRangeSlider.getValueFromObject(expected);
+    //then
+    Assertions.assertThat(result[0]).isEqualTo(expected[0]);
+    Assertions.assertThat(result[1]).isEqualTo(expected[1]);
   }
 
   private IntRangeSlider IntRangeSlider() throws NoSuchAlgorithmException {

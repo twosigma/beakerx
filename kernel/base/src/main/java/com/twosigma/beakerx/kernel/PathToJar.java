@@ -21,12 +21,16 @@ import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
+import java.nio.file.Paths;
+
 public class PathToJar {
 
   private String path;
 
   public PathToJar(final String path) {
     checkState(!checkNotNull(path).isEmpty());
+    checkState(Paths.get(path).toFile().exists(), "Provided path is incorrect.");
+
     this.path = path;
   }
 

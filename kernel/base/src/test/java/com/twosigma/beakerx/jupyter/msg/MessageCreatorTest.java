@@ -182,4 +182,16 @@ public class MessageCreatorTest {
     assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
     assertThat(messages.get(1).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
   }
+
+  @Test
+  public void createMessageWithError_whenException() throws Exception {
+    //given
+    seo.error(new RuntimeException("oops"));
+    //when
+    List<MessageHolder> messages = messageCreator.createMessage(seo);
+    //then
+    assertThat(messages).isNotEmpty();
+    assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
+    assertThat(messages.get(1).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
+  }
 }

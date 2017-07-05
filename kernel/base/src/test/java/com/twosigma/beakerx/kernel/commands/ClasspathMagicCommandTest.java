@@ -31,7 +31,7 @@ import org.junit.Test;
 public class ClasspathMagicCommandTest {
 
   private static final String SRC_TEST_RESOURCES = "./src/test/resources/";
-  private static final String CLASSPATH = "../../demoFiles/demoResources/BeakerXClasspathTest.jar";
+  private static final String CLASSPATH_TO_JAR = "../../doc/contents/demoResources/BeakerXClasspathTest.jar";
   private MagicCommand sut;
   private KernelTest kernel;
 
@@ -44,16 +44,15 @@ public class ClasspathMagicCommandTest {
   @Test
   public void handleClasspathAddJarMagicCommand() throws Exception {
     //given
-    String jar = "../../demoFiles/demoResources/BeakerXClasspathTest.jar";
     String codeAsString = "" +
-        "%classpath add jar" + " " + jar + "\n" +
+        "%classpath add jar" + " " + CLASSPATH_TO_JAR + "\n" +
         "code code code";
     Code code = new Code(codeAsString);
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
     assertThat(result.getCode().get()).isEqualTo(new CodeWithoutCommand("code code code"));
-    assertThat(kernel.getClasspath().get(0)).isEqualTo(jar);
+    assertThat(kernel.getClasspath().get(0)).isEqualTo(CLASSPATH_TO_JAR);
   }
 
   @Test
@@ -72,22 +71,22 @@ public class ClasspathMagicCommandTest {
   @Test
   public void showClasspath() throws Exception {
     //given
-    kernel.addJarToClasspath(new PathToJar(CLASSPATH));
+    kernel.addJarToClasspath(new PathToJar(CLASSPATH_TO_JAR));
     //when
     MagicCommandResult result = sut.process(new Code("%classpath"), new Message(), 1);
     //then
-    assertThat(classpath(result)).isEqualTo(CLASSPATH);
+    assertThat(classpath(result)).isEqualTo(CLASSPATH_TO_JAR);
   }
 
   @Test
   public void showClasspathShouldNotContainDuplication() throws Exception {
     //given
-    kernel.addJarToClasspath(new PathToJar(CLASSPATH));
+    kernel.addJarToClasspath(new PathToJar(CLASSPATH_TO_JAR));
     //when
-    kernel.addJarToClasspath(new PathToJar(CLASSPATH));
+    kernel.addJarToClasspath(new PathToJar(CLASSPATH_TO_JAR));
     MagicCommandResult result = sut.process(new Code("%classpath"), new Message(), 1);
     //then
-    assertThat(classpath(result)).isEqualTo(CLASSPATH);
+    assertThat(classpath(result)).isEqualTo(CLASSPATH_TO_JAR);
   }
 
   private String classpath(MagicCommandResult result) {

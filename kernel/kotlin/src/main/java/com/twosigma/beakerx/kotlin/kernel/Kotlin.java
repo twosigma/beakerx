@@ -15,12 +15,14 @@
  */
 package com.twosigma.beakerx.kotlin.kernel;
 
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
@@ -30,6 +32,7 @@ import com.twosigma.beakerx.kotlin.evaluator.KotlinEvaluator;
 import com.twosigma.beakerx.kotlin.handler.KotlinKernelInfoHandler;
 import com.twosigma.beakerx.message.Message;
 import java.io.IOException;
+import java.util.HashMap;
 
 
 public class Kotlin extends Kernel {
@@ -37,7 +40,6 @@ public class Kotlin extends Kernel {
   public Kotlin(final String id, final Evaluator evaluator,
       KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
-    setShellOptions(getKernelParameters(new KotlinDefaultVariables()));
   }
 
   @Override
@@ -48,6 +50,13 @@ public class Kotlin extends Kernel {
   @Override
   public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
     return new KotlinKernelInfoHandler(kernel);
+  }
+
+  @Override
+  public KernelParameters getKernelParameters() {
+    HashMap<String, Object> kernelParameters = new HashMap<>();
+    kernelParameters.put(IMPORTS, new KotlinDefaultVariables().getImports());
+    return new KernelParameters(kernelParameters);
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {

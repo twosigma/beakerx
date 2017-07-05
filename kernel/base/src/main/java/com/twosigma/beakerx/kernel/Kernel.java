@@ -65,8 +65,10 @@ public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFun
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     configureSignalHandler();
+    initKernel(getKernelParameters());
   }
 
+  public abstract KernelParameters getKernelParameters();
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 
@@ -217,10 +219,4 @@ public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFun
     this.evaluatorManager.removeImport(anImport);
   }
 
-  protected KernelParameters getKernelParameters(T defaultVariables) {
-    HashMap<String, Object> kernelParameters = new HashMap<>();
-    kernelParameters.put(IMPORTS, defaultVariables.getImports());
-
-    return new KernelParameters(kernelParameters);
-  }
 }

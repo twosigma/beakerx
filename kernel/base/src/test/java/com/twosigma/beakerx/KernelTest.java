@@ -21,6 +21,7 @@ import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
@@ -37,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
+import java.util.Optional;
 import java.util.Set;
 
 public class KernelTest implements KernelFunctionality {
@@ -214,5 +216,13 @@ public class KernelTest implements KernelFunctionality {
   public void sendIdleMessage(Message message) {
     Message idleMessage = this.messageCreator.createIdleMessage(message);
     publish(idleMessage);
+  }
+
+  public Optional<String> getDefaultDatasource() {
+    return setShellOptions.getParam(MagicCommand.DEFAULT_DATASOURCE, String.class);
+  }
+
+  public Optional<String> getDatasource() {
+    return setShellOptions.getParam(MagicCommand.DATASOURCES, String.class);
   }
 }

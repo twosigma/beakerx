@@ -307,6 +307,7 @@ public class KotlinEvaluator extends BaseEvaluator {
           arguments.classpath = getEntriesAsString(classpathEntries, Kernel.isWindows() ? ";" : ":");
           arguments.verbose = false;
           arguments.suppressWarnings = true;
+          arguments.noStdlib = true;
           arguments.coroutinesState = K2JVMCompilerArguments.ERROR;
           arguments.freeArgs = new ArrayList<>();
           arguments.freeArgs.add(sourceFile.toString());

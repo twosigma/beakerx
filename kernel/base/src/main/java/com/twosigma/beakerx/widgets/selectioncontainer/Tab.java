@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widgets.selectioncontainer;
 
 import java.util.List;
 
+import com.twosigma.beakerx.widgets.BeakerxWidget;
 import com.twosigma.beakerx.widgets.Widget;
 
 public class Tab extends SelectionContainer {
@@ -43,6 +44,16 @@ public class Tab extends SelectionContainer {
   @Override
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
+  }
+
+  @Override
+  public String getModelModuleValue() {
+    return BeakerxWidget.MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  public String getViewModuleValue() {
+    return BeakerxWidget.VIEW_MODULE_VALUE;
   }
 
 }

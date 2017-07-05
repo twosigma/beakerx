@@ -1,0 +1,6 @@
+{
+  "argv": [ "java", "-jar", "__PATH__", "{connection_file}" ],
+  "display_name": "Kotlin",
+  "language": "kotlin",
+  "env": { "PS1":"kotlin>"}
+}

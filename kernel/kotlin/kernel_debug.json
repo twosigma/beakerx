@@ -1,0 +1,6 @@
+{
+  "argv": [ "java", "-jar", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9090", "__PATH__", "{connection_file}" ],
+  "display_name": "Kotlin",
+  "language": "kotlin",
+  "env": { "PS1":"kotlin>"}
+}

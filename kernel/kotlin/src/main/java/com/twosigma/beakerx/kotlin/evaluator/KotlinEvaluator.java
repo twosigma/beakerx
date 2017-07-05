@@ -28,6 +28,7 @@ import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
+import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import org.apache.commons.lang3.StringUtils;
@@ -303,8 +304,10 @@ public class KotlinEvaluator extends BaseEvaluator {
           //arguments.kotlinHome = pathToCore.toString();
           arguments.includeRuntime = true;
           arguments.destination = outDir;
-          arguments.classpath = getEntriesAsString(classpathEntries, ";");
+          arguments.classpath = getEntriesAsString(classpathEntries, Kernel.isWindows() ? ";" : ":");
           arguments.verbose = false;
+          arguments.suppressWarnings = true;
+          arguments.coroutinesState = K2JVMCompilerArguments.ERROR;
           arguments.freeArgs = new ArrayList<>();
           arguments.freeArgs.add(sourceFile.toString());
           
@@ -312,7 +315,7 @@ public class KotlinEvaluator extends BaseEvaluator {
           exitCode = comp.exec(collector, Services.EMPTY, arguments);
           
           if (ExitCode.COMPILATION_ERROR == exitCode) {
-            j.outputObject.error("ERROR: " + new String(errorBaos.toByteArray(), StandardCharsets.UTF_8));
+            j.outputObject.error(new String(errorBaos.toByteArray(), StandardCharsets.UTF_8));
             j.outputObject.executeCodeCallback();
           } else if (ExitCode.OK == exitCode) {
 

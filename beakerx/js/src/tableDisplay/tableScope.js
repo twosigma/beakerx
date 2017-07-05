@@ -1923,6 +1923,7 @@ define([
       }
       // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
 
+      self.adjustRedraw();
     }, 0);
 
     self.initTableSelect();

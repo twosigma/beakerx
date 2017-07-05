@@ -15,8 +15,8 @@
  */
 package com.twosigma.beakerx.widgets.integers;
 
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -27,7 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
-public class IntProgressTest {
+public class BoundedIntTextTest {
 
   private KernelTest groovyKernel;
 
@@ -43,39 +43,32 @@ public class IntProgressTest {
   }
 
   @Test
-  public void shouldSendCommOpenWhenCreate() throws Exception {
+  public void createByEmptyConstructor_sendCommOpenMessage() throws Exception {
     //given
     //when
-    new IntProgress();
+    new BoundedIntText();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), IntProgress.MODEL_NAME_VALUE, IntProgress.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(
+        groovyKernel.getPublishedMessages(),
+        BoundedIntText.MODEL_NAME_VALUE,
+        BoundedIntText.VIEW_NAME_VALUE
+    );
   }
 
   @Test
-  public void shouldSendCommMsgWhenOrientationChange() throws Exception {
-    //given
-    IntProgress intProgress = intProgress();
-    //when
-    intProgress.setOrientation("vertical");
-    //then
-    verifyMsgForProperty(groovyKernel, IntSlider.ORIENTATION, "vertical");
-  }
-
-  @Test
-  public void setOrientation_hasThatOrientation() throws Exception {
+  public void setValue_sendCommMessage() throws Exception {
     String expected = "test";
     //given
-    IntProgress intProgress = intProgress();
+    BoundedIntText boundedIntText = BoundedIntText();
     //when
-    intProgress.setOrientation(expected);
+    boundedIntText.setValue(expected);
     //then
-    Assertions.assertThat(intProgress.getOrientation()).isEqualTo(expected);
+    verifyMsgForProperty(groovyKernel, boundedIntText.VALUE, expected);
   }
 
-  private IntProgress intProgress() throws NoSuchAlgorithmException {
-    IntProgress progress = new IntProgress();
+  private BoundedIntText BoundedIntText() throws NoSuchAlgorithmException {
+    BoundedIntText boundedIntText = new BoundedIntText();
     groovyKernel.clearPublishedMessages();
-    return progress;
+    return boundedIntText;
   }
-
 }

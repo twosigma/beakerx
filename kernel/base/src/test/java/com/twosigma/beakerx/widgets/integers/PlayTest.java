@@ -15,8 +15,8 @@
  */
 package com.twosigma.beakerx.widgets.integers;
 
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -27,7 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
-public class IntProgressTest {
+public class PlayTest {
 
   private KernelTest groovyKernel;
 
@@ -43,39 +43,50 @@ public class IntProgressTest {
   }
 
   @Test
-  public void shouldSendCommOpenWhenCreate() throws Exception {
+  public void createByEmptyConstructor_sendCommOpenMessage() throws Exception {
     //given
     //when
-    new IntProgress();
+    new Play();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), IntProgress.MODEL_NAME_VALUE, IntProgress.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Play.MODEL_NAME_VALUE, Play.VIEW_NAME_VALUE);
   }
 
   @Test
-  public void shouldSendCommMsgWhenOrientationChange() throws Exception {
+  public void setValue_sendCommMessage() throws Exception {
     //given
-    IntProgress intProgress = intProgress();
+    Play play = Play();
     //when
-    intProgress.setOrientation("vertical");
+    play.setValue(11);
     //then
-    verifyMsgForProperty(groovyKernel, IntSlider.ORIENTATION, "vertical");
+    verifyMsgForProperty(groovyKernel, Play.VALUE, 11);
   }
 
   @Test
   public void setOrientation_hasThatOrientation() throws Exception {
-    String expected = "test";
+    int expected = 50;
     //given
-    IntProgress intProgress = intProgress();
+    Play play = Play();
     //when
-    intProgress.setOrientation(expected);
+    play.setOrientation(expected);
     //then
-    Assertions.assertThat(intProgress.getOrientation()).isEqualTo(expected);
+    Assertions.assertThat(play.getOrientation()).isEqualTo(expected);
   }
 
-  private IntProgress intProgress() throws NoSuchAlgorithmException {
-    IntProgress progress = new IntProgress();
+  @Test
+  public void setOrientation_sendCommMessage() throws Exception {
+    int expected = 50;
+    //given
+    Play play = Play();
+    //when
+    play.setOrientation(expected);
+    //then
+    verifyMsgForProperty(groovyKernel, Play.INTERVAL, expected);
+  }
+
+  private Play Play() throws NoSuchAlgorithmException {
+    Play play = new Play();
     groovyKernel.clearPublishedMessages();
-    return progress;
+    return play;
   }
 
 }

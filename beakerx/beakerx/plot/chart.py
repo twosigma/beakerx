@@ -22,12 +22,12 @@ from beakerx.plot.plotitem import *
 
 from IPython.display import display
 from ipywidgets import DOMWidget, register
-from traitlets import Unicode, Int, Dict, default 
+from traitlets import Unicode, Dict
 
 
 class Chart(BaseObject):
   def __init__(self, **kwargs):
-    BaseObject.__init__(self)
+    super(Chart, self).__init__(**kwargs)
     self.init_width = getValue(kwargs, 'initWidth', 640)
     self.init_height = getValue(kwargs, 'initHeight', 480)
     self.chart_title = getValue(kwargs, 'title')
@@ -39,8 +39,7 @@ class Chart(BaseObject):
 
 class AbstractChart(Chart):
   def __init__(self, **kwargs):
-    Chart.__init__(self, **kwargs)
-
+    super(AbstractChart, self).__init__(**kwargs)
     self.rangeAxes = getValue(kwargs, 'yAxes', [])
     if len(self.rangeAxes) == 0:
       self.rangeAxes.append(YAxis(**kwargs))
@@ -62,7 +61,7 @@ class AbstractChart(Chart):
 
 class XYChart(AbstractChart):
   def __init__(self, **kwargs):
-    AbstractChart.__init__(self, **kwargs)
+    super(XYChart, self).__init__(**kwargs)
     self.graphics_list = getValue(kwargs, 'graphics', [])
     self.constant_lines = getValue(kwargs, 'constantLines', [])
     self.constant_bands = getValue(kwargs, 'constantBands', [])
@@ -91,56 +90,56 @@ class XYChart(AbstractChart):
     return self
 
 
-class TimePlot(XYChart):
+class Plot(DOMWidget):
+  _view_name = Unicode('PlotView').tag(sync=True)
+  _model_name = Unicode('PlotModel').tag(sync=True)
+  _view_module = Unicode('beakerx').tag(sync=True)
+  _model_module = Unicode('beakerx').tag(sync=True)
+  # _view_module_version = Unicode('^0.0.1').tag(sync=True)
+  # _model_module_version = Unicode('^0.0.1').tag(sync=True)
+  model = Dict().tag(sync=True)
+  
   def __init__(self, **kwargs):
     XYChart.__init__(self, **kwargs)
 
 
 class NanoPlot(TimePlot):
   def __init__(self, **kwargs):
-    TimePlot.__init__(self, **kwargs)
-
-  def transform(self):
-    for graphics in self.graphics_list:
-      graphics.x = [str(x) for x in graphics.x]
-    result = super().transform()
-    for graphics in self.graphics_list:
-      graphics.x = [int(x) for x in graphics.x]
-    return result
-
-
-class CombinedPlot(BaseObject):
-  def __init__(self, **kwargs):
-    BaseObject.__init__(self)
-    self.init_width = getValue(kwargs, 'initWidth', 640)
-    self.init_height = getValue(kwargs, 'initHeight', 480)
-    self.title = getValue(kwargs, 'title')
-    self.x_label = getValue(kwargs, 'xLabel')
-    self.plots = getValue(kwargs, 'plots', [])
-    self.weights = getValue(kwargs, 'weights', [])
-    self.version = 'groovy'
-
-  def add(self, item, weight):
-    if isinstance(item, XYChart):
-      self.plots.append(item)
-      self.weights.append(weight)
-    elif isinstance(item, list):
-      for elem in item:
-        self.add(elem, 1)
-    else:
-      raise Exception('CombinedPlot takes XYChart or List of XYChart')
-
-    if len(self.plots) == 1:
-      self.plot_type=self.plots[0].type
-
-
+    super(Plot, self).__init__(**kwargs)
+    self.chart = XYChart(**kwargs)
+    self.model = self.chart.transform()
+    
+  def add(self, item):
+    self.chart.add(item)
+    self.model = self.chart.transform()
     return self
+    
+  def getChartColors(self, columnNames, colors):
+    chartColors = []
+    if colors is not None:
+      for i in range(len(columnNames)):
+        if i < len(colors):
+          chartColors.append(self.chart.createChartColor(colors[i]))
+    return chartColors
+
+  def createChartColor(self, color):
+    if isinstance(color, list):
+      try:
+        return Color(color[0], color[1], color[2])
+      except  Exception:
+        raise Exception("Color list too short")
+    else:
+      return color
+
+
+class TimePlot(Plot):
+  def __init__(self, **kwargs):
+    super(TimePlot, self).__init__(**kwargs)
 
 
 class SimpleTimePlot(TimePlot):
   def __init__(self, *args, **kwargs):
-    TimePlot.__init__(self, **kwargs)
-
+    super(SimpleTimePlot, self).__init__(**kwargs)
     self.type = 'TimePlot'
     self.use_tool_tip = True
     self.show_legend = True
@@ -167,7 +166,7 @@ class SimpleTimePlot(TimePlot):
     dataColumnsNames = []
 
     if tableData is not None and columnNames is not None:
-      dataColumnsNames.extend(list(tableData[0].keys()))
+      dataColumnsNames.extend(list(tableData[0]))
 
       for row in tableData:
         x = row[timeColumn]
@@ -212,40 +211,45 @@ class SimpleTimePlot(TimePlot):
 
           self.add(points)
 
-  def getChartColors(self, columnNames, colors):
 
-    chartColors = []
-    if colors is not None:
-      for i in range(len(columnNames)):
-        if i < len(colors):
-          chartColors.append(self.createChartColor(colors[i]))
-
-    return chartColors
-
-  def createChartColor(self, color):
-    if isinstance(color, list):
-      try:
-        return Color(color[0], color[1], color[2])
-      except  Exception:
-        raise Exception("Color list too short")
-    else:
-      return color
-
-
-@register('beakerx.Plot')
-class Plot(DOMWidget):
+class NanoPlot(TimePlot):
   def __init__(self, **kwargs):
-    super(Plot, self).__init__()
-    self.chart = XYChart(**kwargs)
+    super(NanoPlot, self).__init__(**kwargs)
+
+  def transform(self):
+    for graphics in self.graphics_list:
+      graphics.x = [str(x) for x in graphics.x]
+    result = super().transform()
+    for graphics in self.graphics_list:
+      graphics.x = [int(x) for x in graphics.x]
+    return result
+
+
+class CombinedPlot(Plot):
+  def __init__(self, **kwargs):
+    super(CombinedPlot, self).__init__(**kwargs)
+    self.chart.init_width = getValue(kwargs, 'initWidth', 640)
+    self.chart.init_height = getValue(kwargs, 'initHeight', 480)
+    self.chart.title = getValue(kwargs, 'title')
+    self.chart.x_label = getValue(kwargs, 'xLabel')
+    self.chart.plots = getValue(kwargs, 'plots', [])
+    self.chart.weights = getValue(kwargs, 'weights', [])
+    self.chart.version = 'groovy'
     self.model = self.chart.transform()
-    
-  _view_name = Unicode('PlotView').tag(sync=True)
-  _model_name = Unicode('PlotModel').tag(sync=True)
-  _view_module = Unicode('beakerx').tag(sync=True)
-  _model_module = Unicode('beakerx').tag(sync=True)
-  _view_module_version = Unicode('^0.0.1').tag(sync=True)
-  _model_module_version = Unicode('^0.0.1').tag(sync=True)
-  model = Unicode().tag(sync=True)
+
+  def add(self, item, weight):
+    if isinstance(item.chart, XYChart):
+      self.chart.plots.append(item.chart)
+      self.chart.weights.append(weight)
+    elif isinstance(item, list):
+      for elem in item:
+        self.chart.add(elem.chart, 1)
+    else:
+      raise Exception('CombinedPlot takes XYChart or List of XYChart')
+    if len(self.chart.plots) == 1:
+      self.chart.plot_type=self.chart.plots[0].type
+    self.model = self.chart.transform()
+    return self
 
 
 def parseJSON(out):

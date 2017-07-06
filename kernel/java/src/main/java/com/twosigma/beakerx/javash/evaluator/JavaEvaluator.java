@@ -93,7 +93,7 @@ public class JavaEvaluator extends BaseEvaluator {
     classPath = new Classpath();
     imports = new Imports();
     exit = false;
-    updateLoader = false;
+    updateLoader = true;
     outDir = Evaluator.createJupyterTempFolder().toString();
     executor = cellExecutor;
     startWorker();

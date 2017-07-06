@@ -26,7 +26,6 @@ import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
-import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -70,28 +69,19 @@ public class CppEvaluator extends BaseEvaluator {
 
   public static final String EXECUTE = "execute";
 
-  private final String shellId;
-  private final String sessionId;
   private List<String> compileCommand;
-  private boolean exit;
   private workerThread myWorker;
-  private final CellExecutor executor;
   private List<String> userFlags = new ArrayList<>();
   private Process cellProc;
   private TempCppFiles tempCppFiles;
-  private final Semaphore syncObject = new Semaphore(0, true);
   private final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
-
   private HashSet<String> loadedCells;
-  private Classpath classpath = new Classpath();
-  private Imports imports = new Imports();
+
 
   public CppEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    shellId = id;
-    sessionId = sId;
+    super(id, sId);
     tempCppFiles = new TempCppFiles(id);
     compileCommand = CLangCommand.compileCommand(tempCppFiles);
-    exit = false;
     executor = cellExecutor;
     loadedCells = new HashSet<>();
     startWorker();
@@ -127,13 +117,6 @@ public class CppEvaluator extends BaseEvaluator {
     syncObject.release();
   }
 
-  public void exit() {
-    tempCppFiles.close();
-    exit = true;
-    cancelExecution();
-    syncObject.release();
-  }
-
   @Override
   public void initKernel(KernelParameters kernelParameters) {
 
@@ -152,26 +135,6 @@ public class CppEvaluator extends BaseEvaluator {
   @Override
   protected boolean addJar(PathToJar path) {
     return false;
-  }
-
-  @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
-  }
-
-  @Override
-  protected boolean removeImportPath(ImportPath anImport) {
-    return imports.remove(anImport);
-  }
-
-  @Override
-  public Classpath getClasspath() {
-    return this.classpath;
-  }
-
-  @Override
-  public Imports getImports() {
-    return this.imports;
   }
 
   @Override

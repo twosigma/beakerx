@@ -54,13 +54,7 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(ClojureEvaluator.class.getName());
 
-  private final String shellId;
-  private final String sessionId;
-  private Classpath classPath;
-  private Imports imports;
   private List<String> requirements;
-  private boolean exit;
-  private CellExecutor executor;
   private workerThread myWorker;
   private String outDir;
   private String currenClojureNS;
@@ -88,23 +82,10 @@ public class ClojureEvaluator extends BaseEvaluator {
   }
 
   public ClojureEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    shellId = id;
-    sessionId = sId;
-    classPath = new Classpath();
-    imports = new Imports();
+    super(id, sId);
     requirements = new ArrayList<>();
     outDir = Evaluator.createJupyterTempFolder().toString();
     executor = cellExecutor;
-    init();
-    startWorker();
-  }
-
-  public ClojureEvaluator(String id, String sId) {
-    this(id, sId, new BeakerCellExecutor("clojure"));
-  }
-
-  private void init() {
-
     loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
     loader.addJars(classPath.getPathsAsStrings());
     loader.addDynamicDir(outDir);
@@ -121,24 +102,16 @@ public class ClojureEvaluator extends BaseEvaluator {
     } catch (IOException e) {
       logger.error(e.getMessage());
     }
-    exit = false;
+    startWorker();
+  }
+
+  public ClojureEvaluator(String id, String sId) {
+    this(id, sId, new BeakerCellExecutor("clojure"));
   }
 
   private void startWorker() {
     myWorker = new workerThread();
     myWorker.start();
-  }
-
-  public String getShellId() {
-    return shellId;
-  }
-
-  public void killAllThreads() {
-    executor.killAllThreads();
-  }
-
-  public void cancelExecution() {
-    executor.cancelExecution();
   }
 
   public void resetEnvironment() {
@@ -175,22 +148,6 @@ public class ClojureEvaluator extends BaseEvaluator {
     Thread.currentThread().setContextClassLoader(oldLoader);
 
     syncObject.release();
-  }
-
-  public void exit() {
-    exit = true;
-    cancelExecution();
-    syncObject.release();
-  }
-
-  @Override
-  public Classpath getClasspath() {
-    return this.classPath;
-  }
-
-  @Override
-  public Imports getImports() {
-    return this.imports;
   }
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
@@ -289,16 +246,6 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   @Override
   public void initKernel(KernelParameters kernelParameters) {
-    configure(kernelParameters);
-  }
-
-  @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-    configure(kernelParameters);
-    resetEnvironment();
-  }
-
-  private void configure(KernelParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(DefaultJVMVariables.CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
@@ -329,16 +276,6 @@ public class ClojureEvaluator extends BaseEvaluator {
   @Override
   protected boolean addJar(PathToJar path) {
     return classPath.add(path);
-  }
-
-  @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
-  }
-
-  @Override
-  protected boolean removeImportPath(ImportPath anImport) {
-    return imports.remove(anImport);
   }
 
   public AutocompleteResult autocomplete(String code, int caretPosition) {

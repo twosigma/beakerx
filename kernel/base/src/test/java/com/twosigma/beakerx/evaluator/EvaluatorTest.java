@@ -33,12 +33,10 @@ public class EvaluatorTest extends BaseEvaluator {
   private SimpleEvaluationObject seo;
   private String code;
   private boolean killAllThreads;
-  private boolean exit;
-  private Classpath classpath = new Classpath();
-  private Imports imports = new Imports();
   private int resetEnvironmentCounter = 0;
 
-  public EvaluatorTest() {
+  public EvaluatorTest(String id, String sId) {
+    super(id, sId);
   }
 
   @Override
@@ -68,11 +66,6 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
   @Override
-  public Classpath getClasspath() {
-    return this.classpath;
-  }
-
-  @Override
   public void resetEnvironment() {
     this.resetEnvironmentCounter++;
   }
@@ -98,28 +91,13 @@ public class EvaluatorTest extends BaseEvaluator {
     return exit;
   }
 
-  @Override
-  protected boolean addJar(PathToJar path) {
-    return classpath.add(path);
-  }
-
-  @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
-  }
-
-  @Override
-  protected boolean removeImportPath(ImportPath anImport) {
-    return imports.remove(anImport);
-  }
-
-  @Override
-  public Imports getImports() {
-    return imports;
-  }
-
   public int getResetEnvironmentCounter() {
     return resetEnvironmentCounter;
+  }
+
+  @Override
+  protected boolean addJar(PathToJar path) {
+    return classPath.add(path);
   }
 
 }

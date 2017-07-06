@@ -24,8 +24,6 @@ import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
-import com.twosigma.beakerx.kernel.ImportPath;
-import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.sql.ConnectionStringBean;
 import com.twosigma.beakerx.sql.ConnectionStringHolder;
 import com.twosigma.beakerx.sql.JDBCClient;
@@ -38,7 +36,6 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,28 +46,16 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
 
 public class SQLEvaluator extends BaseEvaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(SQLEvaluator.class.getName());
 
-  private final String shellId;
-  private final String sessionId;
-  private final String packageId;
-
-  private Classpath classPath = new Classpath();
-  private Imports imports = new Imports();
   private Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
   private ConnectionStringHolder defaultConnectionString;
 
-  private final CellExecutor executor;
-  volatile private boolean exit;
-
   private ClasspathScanner cps;
   private SQLAutocomplete sac;
-
-  private final Semaphore syncObject = new Semaphore(0, true);
   private final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<>();
   private final QueryExecutor queryExecutor;
   private final JDBCClient jdbcClient;
@@ -80,9 +65,7 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   public SQLEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    shellId = id;
-    sessionId = sId;
-    packageId = "com.twosigma.beaker.sql.bkr" + shellId.split("-")[0];
+    super(id, sId);
     jdbcClient = new JDBCClient();
     cps = new ClasspathScanner();
     sac = createSqlAutocomplete(cps);
@@ -101,19 +84,14 @@ public class SQLEvaluator extends BaseEvaluator {
     workerThread.start();
   }
 
-  public void exit() {
-    exit = true;
-    cancelExecution();
-  }
-
-  private void cancelExecution() {
-    executor.cancelExecution();
+  public void cancelExecution() {
+    super.cancelExecution();
     queryExecutor.cancel();
   }
 
   public void killAllThreads() {
     queryExecutor.cancel();
-    executor.killAllThreads();
+    super.killAllThreads();
   }
 
   public void resetEnvironment() {
@@ -229,19 +207,9 @@ public class SQLEvaluator extends BaseEvaluator {
       }
     }
   }
-
+  
   @Override
   public void initKernel(KernelParameters kernelParameters) {
-    configure(kernelParameters);
-  }
-
-  @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-    configure(kernelParameters);
-    resetEnvironment();
-  }
-
-  private void configure(KernelParameters kernelParameters) {
     SQLKernelParameters params = new SQLKernelParameters(kernelParameters);
     Optional<Collection<String>> cp = params.getClassPath();
 
@@ -283,28 +251,8 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public Classpath getClasspath() {
-    return this.classPath;
-  }
-
-  @Override
-  public Imports getImports() {
-    return this.imports;
-  }
-
-  @Override
   protected boolean addJar(PathToJar path) {
     return classPath.add(path);
-  }
-
-  @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return this.imports.add(anImport);
-  }
-
-  @Override
-  protected boolean removeImportPath(ImportPath anImport) {
-    return this.imports.remove(anImport);
   }
 
   public void setShellUserPassword(String namedConnection, String user, String password) {

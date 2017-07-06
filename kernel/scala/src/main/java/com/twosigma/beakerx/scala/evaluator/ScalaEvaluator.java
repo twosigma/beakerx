@@ -70,20 +70,15 @@ import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 public class ScalaEvaluator extends BaseEvaluator {
   private final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());
 
-  protected String shellId;
-  protected String sessionId;
-  protected Classpath classPath;
-  protected Imports imports;
   protected String outDir;
-  protected boolean exit;
   protected boolean updateLoader;
-  protected final CellExecutor executor;
   private BeakerxObjectFactory beakerxObjectFactory;
   protected workerThread myWorker;
   protected String currentClassPath;
   protected String currentImports;
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
-
+  protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
+  
   protected class jobDescriptor {
     String codeToBeExecuted;
     SimpleEvaluationObject outputObject;
@@ -94,27 +89,16 @@ public class ScalaEvaluator extends BaseEvaluator {
     }
   }
 
-  protected final Semaphore syncObject = new Semaphore(0, true);
-  protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
-
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp) {
     this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl());
   }
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory) {
+    super(id, sId);
+    logger.debug("id: {}, sId: {}", id, sId);
     objectSerializerProvider = osp;
     executor = cellExecutor;
     this.beakerxObjectFactory = beakerxObjectFactory;
-    initialize(id, sId);
-  }
-
-  private void initialize(String id, String sId) {
-    logger.debug("id: {}, sId: {}", id, sId);
-    shellId = id;
-    sessionId = sId;
-    classPath = new Classpath();
-    imports = new Imports();
-    exit = false;
     updateLoader = false;
     currentClassPath = "";
     currentImports = "";
@@ -129,10 +113,6 @@ public class ScalaEvaluator extends BaseEvaluator {
   private void startWorker() {
     myWorker = new workerThread(this.beakerxObjectFactory);
     myWorker.start();
-  }
-
-  public String getShellId() {
-    return shellId;
   }
 
   private static boolean autoTranslationSetup = false;
@@ -154,14 +134,6 @@ public class ScalaEvaluator extends BaseEvaluator {
     autoTranslationSetup = true;
   }
 
-  public void killAllThreads() {
-    executor.killAllThreads();
-  }
-
-  public void cancelExecution() {
-    executor.cancelExecution();
-  }
-
   public void resetEnvironment() {
     executor.killAllThreads();
     updateLoader = true;
@@ -172,24 +144,9 @@ public class ScalaEvaluator extends BaseEvaluator {
     }
   }
 
-  public void exit() {
-    exit = true;
-    cancelExecution();
-    syncObject.release();
-  }
 
   @Override
   public void initKernel(KernelParameters kernelParameters) {
-    configure(kernelParameters);
-  }
-
-  @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-    configure(kernelParameters);
-    resetEnvironment();
-  }
-
-  private void configure(KernelParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
@@ -218,28 +175,8 @@ public class ScalaEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public Classpath getClasspath() {
-    return this.classPath;
-  }
-
-  @Override
-  public Imports getImports() {
-    return null;
-  }
-
-  @Override
   protected boolean addJar(PathToJar path) {
     return classPath.add(path);
-  }
-
-  @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
-  }
-
-  @Override
-  protected boolean removeImportPath(ImportPath anImport) {
-    return imports.remove(anImport);
   }
 
   @Override

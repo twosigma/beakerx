@@ -45,7 +45,7 @@ public class ExecuteRequestHandlerTest {
 
   @BeforeClass
   public static void setUpClass(){
-    kernel = new KernelTest("sid", new EvaluatorTest()){
+    kernel = new KernelTest("sid", new EvaluatorTest("abc","abc")){
       @Override
       public void publish(Message message) {
         super.publish(copyMessage(message));

@@ -15,6 +15,16 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
+import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import org.codehaus.groovy.runtime.StackTraceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -31,18 +41,8 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
-import groovy.lang.Binding;
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.Script;
-import org.apache.commons.lang3.StringUtils;
-import org.codehaus.groovy.control.CompilerConfiguration;
-import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import org.codehaus.groovy.runtime.StackTraceUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -51,12 +51,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.Script;
 
 public class GroovyEvaluator extends BaseEvaluator {
 
@@ -64,18 +64,12 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   private static final String STATIC_WORD_WITH_SPACE = "static ";
   private static final String DOT_STAR_POSTFIX = ".*";
-
-  protected final String shellId;
-  protected final String sessionId;
-  protected Classpath classPath;
-  protected Imports imports;
   //user entered source value
   protected String outDir;
   protected GroovyClasspathScanner cps;
-  protected boolean exit;
   protected boolean updateLoader;
-  protected final CellExecutor executor;
   protected GroovyAutocomplete gac;
+  protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
   public static boolean LOCAL_DEV = false;
 
@@ -93,9 +87,6 @@ public class GroovyEvaluator extends BaseEvaluator {
     }
   }
 
-  protected final Semaphore syncObject = new Semaphore(0, true);
-  protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
-
   protected static Pattern[] envVariablePatterns = {
           Pattern.compile("\\$\\{([a-z_][a-z0-9_]*)\\}", Pattern.CASE_INSENSITIVE),
           Pattern.compile("\\$([a-z_][a-z0-9_]*)", Pattern.CASE_INSENSITIVE)
@@ -106,13 +97,9 @@ public class GroovyEvaluator extends BaseEvaluator {
   }
 
   public GroovyEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    shellId = id;
-    sessionId = sId;
-    classPath = new Classpath();
-    imports = new Imports();
+    super(id, sId);
     cps = new GroovyClasspathScanner();
     gac = createGroovyAutocomplete(cps);
-    exit = false;
     updateLoader = false;
     outDir = Evaluator.createJupyterTempFolder().toString();
     outDir = envVariablesFilter(outDir, System.getenv());
@@ -127,18 +114,6 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   protected GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c) {
     return new GroovyAutocomplete(c);
-  }
-
-  public String getShellId() {
-    return shellId;
-  }
-
-  public void killAllThreads() {
-    executor.killAllThreads();
-  }
-
-  public void cancelExecution() {
-    executor.cancelExecution();
   }
 
   public void resetEnvironment() {
@@ -161,34 +136,8 @@ public class GroovyEvaluator extends BaseEvaluator {
     syncObject.release();
   }
 
-  public void exit() {
-    exit = true;
-    cancelExecution();
-    syncObject.release();
-  }
-
-  @Override
-  public Classpath getClasspath() {
-    return this.classPath;
-  }
-
-  @Override
-  public Imports getImports() {
-    return this.imports;
-  }
-
   @Override
   public void initKernel(KernelParameters kernelParameters) {
-    configure(kernelParameters);
-  }
-
-  @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-    configure(kernelParameters);
-    resetEnvironment();
-  }
-
-  private void configure(KernelParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
@@ -212,16 +161,6 @@ public class GroovyEvaluator extends BaseEvaluator {
         }
       }
     }
-  }
-
-  @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
-  }
-
-  @Override
-  protected boolean removeImportPath(ImportPath anImport) {
-    return imports.remove(anImport);
   }
 
   @Override

@@ -16,7 +16,7 @@
 # limitations under the License.
 
 from setuptools import setup, find_packages
-from setupbase import create_cmdclass, install_node_modules, install_nb_conda_kernels, run_gradle, get_version
+from setupbase import create_cmdclass, install_node_modules, install_nb_conda_kernels, copy_files, run_gradle, get_version
 import os
 from os.path import join as pjoin
 
@@ -24,6 +24,7 @@ from os.path import join as pjoin
 cmdclass = create_cmdclass([
     'js',
     'nb_conda_kernels',
+    'nb_custom_css',
     'java',
     'kernels',
 ])
@@ -33,6 +34,10 @@ cmdclass['js'] = install_node_modules(
     source_dir=pjoin('js', 'src')
 )
 cmdclass['nb_conda_kernels'] = install_nb_conda_kernels(enable=True, prefix=os.environ['CONDA_PREFIX'])
+cmdclass['nb_custom_css'] = copy_files(
+    src='custom', 
+    dest=pjoin(os.environ['CONDA_PREFIX'], 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
+)
 cmdclass['java'] = run_gradle(cmd='build')
 cmdclass['kernels'] = run_gradle(cmd='kernelInstall')
 
@@ -66,9 +71,9 @@ setup_args = dict(
     packages            = find_packages(),
     data_files          = [
         ('share/jupyter/nbextensions/beakerx', [
-            'beakerx/static/extension.js',
-            'beakerx/static/index.js',
-            'beakerx/static/index.js.map',
+            'static/extension.js',
+            'static/index.js',
+            'static/index.js.map',
         ]),
     ],
     install_requires    = [

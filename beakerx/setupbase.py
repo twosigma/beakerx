@@ -22,7 +22,9 @@ within a Python package.
 """
 
 import os
-from os.path import join as pjoin, exists
+import shutil
+from glob import glob
+from os.path import join as pjoin, exists, isdir
 from os import makedirs
 import functools
 import pipes
@@ -357,6 +359,34 @@ def install_nb_conda_kernels(enable=False, disable=False, prefix=None):
 
     return NBCondaKernels
     
+
+def copy_files(src, dest):
+    """Copy files from one directory to another.
+
+    Parameters
+    ----------
+    src: Source directory
+    dest: Destination directory
+    """
+
+    class CopyFiles(BaseCommand):
+        description = 'Copy files from one directory to another.'
+
+        def run(self):
+            for item in os.listdir(src):
+                s = pjoin(src, item)
+                d = pjoin(dest, item)
+                if isdir(s):
+                    if exists(d):
+                        shutil.rmtree(d)
+                    shutil.copytree(s, d)
+                else:
+                    if exists(d):
+                        os.remove(d)
+                    shutil.copy2(s, d)
+
+    return CopyFiles
+
 
 def run_gradle(path=root, cmd='build'):
     """Return a Command for running gradle scripts.

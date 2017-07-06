@@ -37,7 +37,7 @@ public class ClasspathMagicCommandTest {
 
   @Before
   public void setUp() throws Exception {
-    this.kernel = new KernelTest("id2", new EvaluatorTest());
+    this.kernel = new KernelTest("id2", new EvaluatorTest("abc","abc"));
     this.sut = new MagicCommand(kernel);
   }
 

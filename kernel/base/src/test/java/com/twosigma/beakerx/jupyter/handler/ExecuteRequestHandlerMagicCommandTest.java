@@ -38,7 +38,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
 
   @Before
   public void setUp() {
-    evaluator = new EvaluatorTest();
+    evaluator = new EvaluatorTest("abc", "abc");
     kernel = new KernelTest("sid", evaluator);
     executeRequestHandler = new ExecuteRequestHandler(kernel);
   }

@@ -16,15 +16,15 @@
 
 package com.twosigma.beakerx.evaluator;
 
-import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.kernel.KernelParameters;
-import com.twosigma.beakerx.message.Message;
-import org.apache.commons.collections.map.HashedMap;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.message.Message;
 
 import java.util.HashMap;
 
@@ -41,7 +41,7 @@ public class EvaluatorManagerTest {
 
   @Before
   public void setUp() throws Exception {
-    evaluator = new EvaluatorTest();
+    evaluator = new EvaluatorTest("abc", "abc");
     evaluatorManager = new EvaluatorManager(kernel, evaluator);
     evaluatorManager.setShellOptions(new KernelParameters(new HashMap()));
   }

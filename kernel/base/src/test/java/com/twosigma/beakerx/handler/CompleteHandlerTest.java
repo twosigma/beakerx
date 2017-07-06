@@ -39,7 +39,7 @@ public class CompleteHandlerTest {
 
   @BeforeClass
   public static void setUpClass(){
-    kernel = new KernelTest("sid", new EvaluatorTest());
+    kernel = new KernelTest("sid", new EvaluatorTest("abc", "abc"));
   }
 
   @Before

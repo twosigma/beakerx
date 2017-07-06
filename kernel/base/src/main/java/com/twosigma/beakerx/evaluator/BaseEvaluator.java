@@ -15,17 +15,79 @@
  */
 package com.twosigma.beakerx.evaluator;
 
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
+import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 
+import java.io.IOException;
+import java.util.concurrent.Semaphore;
+
 public abstract class BaseEvaluator implements Evaluator {
-
+  
+  protected Classpath classPath;
+  protected Imports imports;
+  protected final String shellId;
+  protected final String sessionId;
+  protected volatile boolean exit;
+  protected final Semaphore syncObject = new Semaphore(0, true);
+  protected CellExecutor executor;
+  
+  public BaseEvaluator(String id, String sId) {
+    this.shellId = id;
+    this.sessionId = sId;
+    this.classPath = new Classpath();
+    this.imports = new Imports();
+    this.exit = false;
+  }
+  
   protected abstract boolean addJar(PathToJar path);
+  
+  public void killAllThreads() {
+    executor.killAllThreads();
+  }
 
-  protected abstract boolean addImportPath(ImportPath anImport);
+  public void cancelExecution() {
+    executor.cancelExecution();
+  }
+  
+  public String getShellId() {
+    return shellId;
+  }
+  
+  @Override
+  public Classpath getClasspath() {
+    return this.classPath;
+  }
 
-  protected abstract boolean removeImportPath(ImportPath anImport);
+  @Override
+  public Imports getImports() {
+    return this.imports;
+  }
+  
+  @Override
+  public void exit() {
+    exit = true;
+    cancelExecution();
+    syncObject.release();
+  }
 
+  protected boolean addImportPath(ImportPath anImport) {
+    return imports.add(anImport);
+  }
+
+  protected boolean removeImportPath(ImportPath anImport) {
+    return imports.remove(anImport);
+  }
+
+  @Override
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    initKernel(kernelParameters);
+    resetEnvironment();
+  }
+  
   @Override
   public void addJarToClasspath(PathToJar path) {
     if (addJar(path)) {

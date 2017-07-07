@@ -18,6 +18,7 @@ package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.chart.xychart.Plot;
+import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelParameters;
@@ -34,8 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 
@@ -44,8 +45,7 @@ public class ScalaEvaluatorTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    scalaEvaluator = new ScalaEvaluator(null);
-    scalaEvaluator.initialize("id", "sid");
+    scalaEvaluator = new ScalaEvaluator("id", "sid", null, TestBeakerCellExecutor.cellExecutor(), new NoBeakerxObjectTestFactory());
   }
 
   @Before
@@ -63,8 +63,8 @@ public class ScalaEvaluatorTest {
   public void evaluatePlot_shouldCreatePlotObject() throws Exception {
     //given
     String code = "import com.twosigma.beakerx.chart.xychart.Plot;\n" +
-        "val plot = new Plot();\n" +
-        "plot.setTitle(\"test title\");";
+            "val plot = new Plot();\n" +
+            "plot.setTitle(\"test title\");";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     scalaEvaluator.evaluate(seo, code);
@@ -72,7 +72,7 @@ public class ScalaEvaluatorTest {
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
     Assertions.assertThat(seo.getPayload() instanceof Plot).isTrue();
-    Assertions.assertThat(((Plot)seo.getPayload()).getTitle()).isEqualTo("test title");
+    Assertions.assertThat(((Plot) seo.getPayload()).getTitle()).isEqualTo("test title");
   }
 
   @Test
@@ -85,10 +85,8 @@ public class ScalaEvaluatorTest {
     waitForResult(seo);
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
-    Assertions.assertThat((String)seo.getPayload()).contains("java.lang.ArithmeticException");
+    Assertions.assertThat((String) seo.getPayload()).contains("java.lang.ArithmeticException");
   }
-
-  ;
 
   @Test
   public void javaImports_shouldBeAdjustedForScala() throws Exception {
@@ -119,6 +117,6 @@ public class ScalaEvaluatorTest {
     waitForResult(seo);
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
-    Assertions.assertThat((String)seo.getPayload()).contains("incomplete");
+    Assertions.assertThat((String) seo.getPayload()).contains("incomplete");
   }
 }

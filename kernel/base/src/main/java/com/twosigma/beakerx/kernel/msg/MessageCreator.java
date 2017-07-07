@@ -97,7 +97,7 @@ public class MessageCreator {
     reply.setContent(new HashMap<String, Serializable>());
     reply.getContent().put("metadata", new HashMap<>());
     HashMap<String, Serializable> map3 = new HashMap<>();
-    map3.put(value.getMime().getMime(), value.getCode());
+    map3.put(value.getMime().asString(), value.getCode());
     reply.getContent().put("data", map3);
     return reply;
   }
@@ -210,7 +210,7 @@ public class MessageCreator {
     map4.put("ename", ename);
     map4.put("evalue", evalue);
     map4.put("traceback", markRed(errorMessage));
-    map4.put(ERROR_MESSAGE, (String) seo.getPayload());
+    map4.put(ERROR_MESSAGE, seo.getPayload().toString());
     reply.setContent(map4);
     return new MessageHolder(SocketEnum.IOPUB_SOCKET, reply);
   }
@@ -246,9 +246,9 @@ public class MessageCreator {
   private MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
     MessageHolder ret = null;
     MIMEContainer resultString = SerializeToString.doit(seo.getPayload());
-    if (!MIMEContainer.MIME.HIDDEN.equals(resultString.getMime())) {
+    if (!MIMEContainer.HIDDEN.getMime().equals(resultString.getMime())) {
       ret = new MessageHolder(SocketEnum.IOPUB_SOCKET,
-          buildMessage(message, resultString.getMime().getMime(),
+          buildMessage(message, resultString.getMime().asString(),
               resultString.getCode()+outputdataResult(seo.getOutputdata()),
               seo.getExecutionCount()));
     }

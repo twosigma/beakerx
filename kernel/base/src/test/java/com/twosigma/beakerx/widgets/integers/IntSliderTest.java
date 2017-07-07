@@ -18,6 +18,7 @@ package com.twosigma.beakerx.widgets.integers;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.widgets.Widget;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -169,6 +170,50 @@ public class IntSliderTest {
     intSlider.setContinuous_update(false);
     //then
     verifyMsgForProperty(groovyKernel, IntSlider.CONTINUOUS_UPDATE, false);
+  }
+
+  @Test
+  public void setOrientation_hasThatOrientation() throws Exception {
+    String expected = "test";
+    //given
+    IntSlider intSlider = intSlider();
+    //when
+    intSlider.setOrientation(expected);
+    //then
+    Assertions.assertThat(intSlider.getOrientation()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setColor_hasThatColor() throws Exception {
+    String expected = "test_color";
+    //given
+    IntSlider intSlider = intSlider();
+    //when
+    intSlider.setSlider_color(expected);
+    //then
+    Assertions.assertThat(intSlider.getSlider_color()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setReadout_hasThatReadoutFlag() throws Exception {
+    boolean expected = true;
+    //given
+    IntSlider intSlider = intSlider();
+    //when
+    intSlider.setReadOut(expected);
+    //then
+    Assertions.assertThat(intSlider.getReadOut()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setContinuousUpdate_hasThatContinuousUpdateFlag() throws Exception {
+    boolean expected = true;
+    //given
+    IntSlider intSlider = intSlider();
+    //when
+    intSlider.setContinuous_update(expected);
+    //then
+    Assertions.assertThat(intSlider.getContinuous_update()).isEqualTo(expected);
   }
 
   private IntSlider intSlider() throws NoSuchAlgorithmException {

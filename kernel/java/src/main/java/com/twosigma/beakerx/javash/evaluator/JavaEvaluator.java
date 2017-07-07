@@ -25,6 +25,7 @@ import com.twosigma.beakerx.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -48,8 +49,8 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 
 public class JavaEvaluator extends BaseEvaluator {
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
@@ -64,7 +65,7 @@ public class JavaEvaluator extends BaseEvaluator {
   protected boolean exit;
   protected boolean updateLoader;
   protected workerThread myWorker;
-  protected final BeakerCellExecutor executor;
+  protected final CellExecutor executor;
 
   protected class jobDescriptor {
     String codeToBeExecuted;
@@ -80,6 +81,10 @@ public class JavaEvaluator extends BaseEvaluator {
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
   public JavaEvaluator(String id, String sId) {
+    this(id, sId, new BeakerCellExecutor("javash"));
+  }
+
+  public JavaEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
     sessionId = sId;
     packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
@@ -88,14 +93,13 @@ public class JavaEvaluator extends BaseEvaluator {
     classPath = new Classpath();
     imports = new Imports();
     exit = false;
-    updateLoader = false;
+    updateLoader = true;
     outDir = Evaluator.createJupyterTempFolder().toString();
-    executor = new BeakerCellExecutor("javash");
+    executor = cellExecutor;
     startWorker();
   }
 
-  @Override
-  public void startWorker() {
+  private void startWorker() {
     myWorker = new workerThread();
     myWorker.start();
   }
@@ -147,9 +151,20 @@ public class JavaEvaluator extends BaseEvaluator {
     syncObject.release();
   }
 
+
+  @Override
+  public void initKernel(KernelParameters kernelParameters) {
+    configure(kernelParameters);
+  }
+
+
   @Override
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    configure(kernelParameters);
+    resetEnvironment();
+  }
 
+  private void configure(KernelParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
@@ -175,8 +190,6 @@ public class JavaEvaluator extends BaseEvaluator {
         }
       }
     }
-
-    resetEnvironment();
   }
 
   @Override

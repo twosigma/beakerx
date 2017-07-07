@@ -25,6 +25,7 @@ import com.twosigma.beakerx.groovy.autocomplete.GroovyClasspathScanner;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -54,8 +55,8 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 
 public class GroovyEvaluator extends BaseEvaluator {
 
@@ -73,7 +74,7 @@ public class GroovyEvaluator extends BaseEvaluator {
   protected GroovyClasspathScanner cps;
   protected boolean exit;
   protected boolean updateLoader;
-  protected final BeakerCellExecutor executor;
+  protected final CellExecutor executor;
   protected GroovyAutocomplete gac;
 
   public static boolean LOCAL_DEV = false;
@@ -101,6 +102,10 @@ public class GroovyEvaluator extends BaseEvaluator {
   };
 
   public GroovyEvaluator(String id, String sId) {
+    this(id, sId, new BeakerCellExecutor("groovy"));
+  }
+
+  public GroovyEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
     sessionId = sId;
     classPath = new Classpath();
@@ -111,11 +116,11 @@ public class GroovyEvaluator extends BaseEvaluator {
     updateLoader = false;
     outDir = Evaluator.createJupyterTempFolder().toString();
     outDir = envVariablesFilter(outDir, System.getenv());
-    executor = new BeakerCellExecutor("groovy");
+    executor = cellExecutor;
     startWorker();
   }
 
-  public void startWorker() {
+  protected void startWorker() {
     workerThread myWorker = new workerThread();
     myWorker.start();
   }
@@ -173,8 +178,17 @@ public class GroovyEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+  public void initKernel(KernelParameters kernelParameters) {
+    configure(kernelParameters);
+  }
 
+  @Override
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    configure(kernelParameters);
+    resetEnvironment();
+  }
+
+  private void configure(KernelParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
@@ -198,8 +212,6 @@ public class GroovyEvaluator extends BaseEvaluator {
         }
       }
     }
-
-    resetEnvironment();
   }
 
   @Override

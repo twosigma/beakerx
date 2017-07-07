@@ -15,8 +15,8 @@
  */
 package com.twosigma.beakerx.groovy.kernel;
 
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.groovy.comm.GroovyCommOpenHandler;
@@ -39,7 +39,6 @@ public class Groovy extends Kernel {
   public Groovy(final String id, final Evaluator evaluator,
       KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
-    setShellOptions(getKernelParameters());
   }
 
   @Override
@@ -61,10 +60,10 @@ public class Groovy extends Kernel {
     });
   }
 
-  private KernelParameters getKernelParameters() {
+  @Override
+  public KernelParameters getKernelParameters() {
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new GroovyDefaultVariables().getImports());
-
     return new KernelParameters(kernelParameters);
   }
 }

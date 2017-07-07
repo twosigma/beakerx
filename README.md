@@ -63,7 +63,7 @@ The kernels are installed to run out of the repo, so just a build should update 
 
 ## Beaker Notebooks Converter
 ```
-python -m bkr2ipynb *.bkr
+python -m beakerx.bkr2ipynb *.bkr
 ```
 
 ## Groovy with Interactive Plotting and Table Saw:
@@ -73,6 +73,9 @@ python -m bkr2ipynb *.bkr
 <img width="631" alt="screen shot 2016-12-10 at 10 43 22 pm" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
 
 ## Running with docker
+In root project call
+
+`gradle clean`
 
 Go to /docker/base
 

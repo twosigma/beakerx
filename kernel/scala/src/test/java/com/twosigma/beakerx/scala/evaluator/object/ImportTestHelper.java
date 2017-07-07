@@ -20,7 +20,7 @@ package com.twosigma.beakerx.scala.evaluator.object;
  * This class exists solely for testing the Scala import functionality.
  * The package name (containing "object") is significant.
  *
- * @see com.twosigma.beaker.scala.evaluator.ScalaEvaluatorTest
+ * @see com.twosigma.beakerx.scala.evaluator.ScalaEvaluatorTest
  */
 
 public class ImportTestHelper {

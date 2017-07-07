@@ -18,6 +18,7 @@ package com.twosigma.beakerx.sql;
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelParameters;
@@ -30,8 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 
  import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DATASOURCES;
-import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SQLAutocompleteTest {
@@ -43,8 +44,7 @@ public class SQLAutocompleteTest {
   public void setUp() throws Exception {
     kernelTest = new KernelTest();
     KernelManager.register(kernelTest);
-    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1");
-    sqlEvaluator.startWorker();
+    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1", TestBeakerCellExecutor.cellExecutor());
     sqlEvaluator.setShellOptions(kernelParameters());
   }
 

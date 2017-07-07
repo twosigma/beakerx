@@ -15,32 +15,36 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+
+import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.handler.Handler;
-import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.message.Message;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-public abstract class Kernel implements KernelFunctionality {
+public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFunctionality {
 
   private static final Logger logger = LoggerFactory.getLogger(Kernel.class);
 
   public static String OS = System.getProperty("os.name").toLowerCase();
+  public static boolean showNullExecutionResult = true;
 
   private String sessionId;
   private KernelSocketsFactory kernelSocketsFactory;
@@ -61,7 +65,10 @@ public abstract class Kernel implements KernelFunctionality {
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     configureSignalHandler();
+    initKernel(getKernelParameters());
   }
+
+  public abstract KernelParameters getKernelParameters();
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 
@@ -99,6 +106,10 @@ public abstract class Kernel implements KernelFunctionality {
 
   public synchronized void setShellOptions(final KernelParameters kernelParameters) {
     evaluatorManager.setShellOptions(kernelParameters);
+  }
+
+  public void initKernel(final KernelParameters kernelParameters) {
+    evaluatorManager.initKernel(kernelParameters);
   }
 
   @Override
@@ -207,4 +218,5 @@ public abstract class Kernel implements KernelFunctionality {
   public void removeImport(ImportPath anImport) {
     this.evaluatorManager.removeImport(anImport);
   }
+
 }

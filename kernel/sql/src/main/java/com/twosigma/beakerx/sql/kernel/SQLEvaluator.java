@@ -23,6 +23,7 @@ import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.sql.ConnectionStringBean;
@@ -45,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
@@ -62,7 +64,7 @@ public class SQLEvaluator extends BaseEvaluator {
   private Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
   private ConnectionStringHolder defaultConnectionString;
 
-  private final BeakerCellExecutor executor;
+  private final CellExecutor executor;
   volatile private boolean exit;
 
   private ClasspathScanner cps;
@@ -74,14 +76,19 @@ public class SQLEvaluator extends BaseEvaluator {
   private final JDBCClient jdbcClient;
 
   public SQLEvaluator(String id, String sId) {
+    this(id, sId, new BeakerCellExecutor("sql"));
+  }
+
+  public SQLEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
     sessionId = sId;
     packageId = "com.twosigma.beaker.sql.bkr" + shellId.split("-")[0];
     jdbcClient = new JDBCClient();
     cps = new ClasspathScanner();
     sac = createSqlAutocomplete(cps);
-    executor = new BeakerCellExecutor("sql");
+    executor = cellExecutor;
     queryExecutor = new QueryExecutor(jdbcClient);
+    startWorker();
   }
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
@@ -89,8 +96,7 @@ public class SQLEvaluator extends BaseEvaluator {
     syncObject.release();
   }
 
-  @Override
-  public void startWorker() {
+  private void startWorker() {
     WorkerThread workerThread = new WorkerThread();
     workerThread.start();
   }
@@ -111,9 +117,9 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   public void resetEnvironment() {
+    killAllThreads();
     jdbcClient.loadDrivers(classPath.getPathsAsStrings());
     sac = createSqlAutocomplete(cps);
-    killAllThreads();
   }
 
   private SQLAutocomplete createSqlAutocomplete(ClasspathScanner c) {
@@ -225,42 +231,55 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   @Override
+  public void initKernel(KernelParameters kernelParameters) {
+    configure(kernelParameters);
+  }
+
+  @Override
   public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    configure(kernelParameters);
+    resetEnvironment();
+  }
 
+  private void configure(KernelParameters kernelParameters) {
     SQLKernelParameters params = new SQLKernelParameters(kernelParameters);
-    Collection<String> cp = params.getClassPath();
+    Optional<Collection<String>> cp = params.getClassPath();
 
-    if (cp == null || cp.isEmpty()) {
-      classPath = new Classpath();
-    } else {
-      for (String line : cp) {
-        if (!line.trim().isEmpty()) {
-          addJar(new PathToJar(line));
+    if (cp.isPresent()) {
+      if (cp.get() == null || cp.get().isEmpty()) {
+        classPath = new Classpath();
+      } else {
+        for (String line : cp.get()) {
+          if (!line.trim().isEmpty()) {
+            addJar(new PathToJar(line));
+          }
         }
       }
+      jdbcClient.loadDrivers(classPath.getPathsAsStrings());
     }
 
-    jdbcClient.loadDrivers(classPath.getPathsAsStrings());
-
-    this.defaultConnectionString = new ConnectionStringHolder(params.defaultDatasource().orElse(""), jdbcClient);
-    this.namedConnectionString = new HashMap<>();
-    Scanner sc = new Scanner(params.datasources().orElse(""));
-    while (sc.hasNext()) {
-      String line = sc.nextLine();
-      int i = line.indexOf('=');
-      if (i < 1 || i == line.length() - 1) {
-        logger.warn("Error in datasource line, this line will be ignored: {}.", line);
-        continue;
+    if (params.defaultDatasource().isPresent()) {
+      this.defaultConnectionString = new ConnectionStringHolder(params.defaultDatasource().orElse(""), jdbcClient);
+    }
+    if (params.datasources().isPresent()) {
+      this.namedConnectionString = new HashMap<>();
+      Scanner sc = new Scanner(params.datasources().orElse(""));
+      while (sc.hasNext()) {
+        String line = sc.nextLine();
+        int i = line.indexOf('=');
+        if (i < 1 || i == line.length() - 1) {
+          logger.warn("Error in datasource line, this line will be ignored: {}.", line);
+          continue;
+        }
+        String name = line.substring(0, i).trim();
+        String value = line.substring(i + 1).trim();
+        if (value.startsWith("\"") && value.endsWith("\"")) {
+          value = value.substring(1, value.length() - 1);
+        }
+        namedConnectionString.put(name, new ConnectionStringHolder(value, jdbcClient));
       }
-      String name = line.substring(0, i).trim();
-      String value = line.substring(i + 1).trim();
-      if (value.startsWith("\"") && value.endsWith("\"")) {
-        value = value.substring(1, value.length() - 1);
-      }
-      namedConnectionString.put(name, new ConnectionStringHolder(value, jdbcClient));
     }
 
-    resetEnvironment();
   }
 
   @Override

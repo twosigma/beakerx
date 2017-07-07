@@ -166,6 +166,7 @@ define([
     comm.close();
   }
 
+  var inNotebook = !Jupyter.NotebookList;
   // ________ init cell extension code
   var CellToolbar = celltoolbar.CellToolbar;
 
@@ -270,37 +271,39 @@ define([
       window.beakerx.prefs = bkObject.beakerObj.prefs;
     }
 
-    // ________ init cell extension code
-    // register action
-    var prefix = 'auto';
-    var action_name = 'run-initialization-cells';
-    var action = {
-      icon: 'fa-calculator',
-      help: 'Run all initialization cells',
-      help_index : 'zz',
-      handler : run_init_cells
-    };
-    var action_full_name = Jupyter.notebook.keyboard_manager.actions.register(action, action_name, prefix);
+    if (inNotebook) {
+      // ________ init cell extension code
+      // register action
+      var prefix = 'auto';
+      var action_name = 'run-initialization-cells';
+      var action = {
+        icon: 'fa-calculator',
+        help: 'Run all initialization cells',
+        help_index : 'zz',
+        handler : run_init_cells
+      };
+      var action_full_name = Jupyter.notebook.keyboard_manager.actions.register(action, action_name, prefix);
 
-    // add toolbar button
-    Jupyter.toolbar.add_buttons_group([action_full_name]);
+      // add toolbar button
+      Jupyter.toolbar.add_buttons_group([action_full_name]);
 
-    // setup things to run on loading config/notebook
-    Jupyter.notebook.config.loaded
-      .then(function update_options_from_config () {
-        $.extend(true, options, Jupyter.notebook.config.data[mod_name]);
-      }, function (reason) {
-        console.warn(log_prefix, 'error loading config:', reason);
-      })
-      .then(function () {
-        if (Jupyter.notebook._fully_loaded) {
-          callback_notebook_loaded();
-        }
-        events.on('notebook_loaded.Notebook', callback_notebook_loaded);
-      }).catch(function (reason) {
-      console.error(log_prefix, 'unhandled error:', reason);
-    });
-    // ________ init cell extension code - end
+      // setup things to run on loading config/notebook
+      Jupyter.notebook.config.loaded
+        .then(function update_options_from_config () {
+          $.extend(true, options, Jupyter.notebook.config.data[mod_name]);
+        }, function (reason) {
+          console.warn(log_prefix, 'error loading config:', reason);
+        })
+        .then(function () {
+          if (Jupyter.notebook._fully_loaded) {
+            callback_notebook_loaded();
+          }
+          events.on('notebook_loaded.Notebook', callback_notebook_loaded);
+        }).catch(function (reason) {
+          console.error(log_prefix, 'unhandled error:', reason);
+        });
+      // ________ init cell extension code - end
+    }
 
   };
 

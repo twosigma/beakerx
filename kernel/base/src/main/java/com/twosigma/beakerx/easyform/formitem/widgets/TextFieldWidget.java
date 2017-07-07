@@ -15,61 +15,36 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.easyform.formitem.TextField;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.widgets.CommFunctionality;
-import com.twosigma.beakerx.widgets.DOMWidget;
+import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.widgets.strings.Text;
 
 import static com.twosigma.beakerx.widgets.Layout.PX;
 
-public class TextFieldWidget extends TextField implements CommFunctionality, EasyFormWidget {
+public class TextFieldWidget extends EasyFormComponent<Text> {
 
-  private Text text;
-
+  private Integer width;
+  
   public TextFieldWidget() {
-    this.text = new Text();
+    super(new Text());
+  }
+  
+  public Integer getWidth() {
+    return width;
   }
 
-  @Override
-  public DOMWidget getWidget() {
-    return text;
-  }
-
-  @Override
-  public String getLabel() {
-    return text.getDescription();
-  }
-
-  @Override
-  public void setLabel(String label) {
-    this.text.setDescription(label);
-  }
-
-  @Override
-  public void setValue(String value) {
-    this.text.setValue(value);
-  }
-
-  @Override
   public String getValue() {
-    return this.text.getValue();
-  }
-
-  @Override
-  public Comm getComm() {
-    return text.getComm();
-  }
-
-  @Override
-  public TextField setWidth(Integer width) {
-    text.getLayout().setWidth(width + PX);
-    return super.setWidth(width);
+    return this.widget.getValue();
   }
   
   @Override
-  public void close() {
-    getComm().close();
+  protected boolean checkValue(final Object value) {
+    return value instanceof String;
   }
-  
+
+  public TextFieldWidget setWidth(Integer width) {
+    widget.getLayout().setWidth(width + PX);
+    this.width = width;
+    return this;
+  }
+
 }

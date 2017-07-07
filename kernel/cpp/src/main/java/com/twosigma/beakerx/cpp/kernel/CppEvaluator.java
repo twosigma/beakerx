@@ -26,6 +26,7 @@ import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -74,7 +75,7 @@ public class CppEvaluator extends BaseEvaluator {
   private List<String> compileCommand;
   private boolean exit;
   private workerThread myWorker;
-  private final BeakerCellExecutor executor;
+  private final CellExecutor executor;
   private List<String> userFlags = new ArrayList<>();
   private Process cellProc;
   private TempCppFiles tempCppFiles;
@@ -85,18 +86,22 @@ public class CppEvaluator extends BaseEvaluator {
   private Classpath classpath = new Classpath();
   private Imports imports = new Imports();
 
-  public CppEvaluator(String id, String sId) {
+  public CppEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
     sessionId = sId;
     tempCppFiles = new TempCppFiles(id);
     compileCommand = CLangCommand.compileCommand(tempCppFiles);
     exit = false;
-    executor = new BeakerCellExecutor("cpp");
+    executor = cellExecutor;
     loadedCells = new HashSet<>();
+    startWorker();
   }
 
-  @Override
-  public void startWorker() {
+  public CppEvaluator(String id, String sId) {
+    this(id, sId, new BeakerCellExecutor("cpp"));
+  }
+
+  private void startWorker() {
     myWorker = new workerThread();
     myWorker.start();
   }
@@ -127,6 +132,11 @@ public class CppEvaluator extends BaseEvaluator {
     exit = true;
     cancelExecution();
     syncObject.release();
+  }
+
+  @Override
+  public void initKernel(KernelParameters kernelParameters) {
+
   }
 
   @Override

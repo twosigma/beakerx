@@ -42,7 +42,7 @@ public abstract class Box extends ValueWidget<String> {
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    List<String> commIds = children.stream().map(x -> IPY_MODEL +x.getComm().getCommId()).collect(Collectors.toList());
+    List<String> commIds = children.stream().map(x -> IPY_MODEL + x.getComm().getCommId()).collect(Collectors.toList());
     content.put(CHILDREN, commIds.toArray());
     super.content(content);
     return content;
@@ -57,10 +57,20 @@ public abstract class Box extends ValueWidget<String> {
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
-  
+
   @Override
   public String getValueFromObject(Object input) {
     return getString(input);
   }
 
+  @Override
+  public void display() {
+    activateWidgetInContainer();
+    super.display();
+  }
+
+  @Override
+  public void activateWidgetInContainer() {
+    this.children.forEach(Widget::activateWidgetInContainer);
+  }
 }

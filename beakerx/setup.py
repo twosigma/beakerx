@@ -154,7 +154,7 @@ setup_args = {
     },
 
     'author': 'Two Sigma Open Source, LLC',
-    'author_email': 'beaker-feedback@twosigma.com',
+    'author_email': 'beakerx-feedback@twosigma.com',
     'url': 'http://beakernotebook.com',
     'keywords': [
         'ipython',

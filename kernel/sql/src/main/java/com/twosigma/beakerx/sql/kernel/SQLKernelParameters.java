@@ -21,13 +21,12 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
- import static com.twosigma.beakerx.kernel.Utils.getAsString;
- import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
+import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
+import static com.twosigma.beakerx.kernel.Utils.getAsString;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
 
 public class SQLKernelParameters {
-
-  public static final String DEFAULT_DATASOURCE = "defaultDatasource";
-  public static final String DATASOURCES = "datasources";
 
   private KernelParameters kernelParameters;
 
@@ -40,8 +39,11 @@ public class SQLKernelParameters {
     return getAsString(listOfClassPath);
   }
   
-  public Collection<String> getClassPath() {
-    return (Collection<String>) kernelParameters.getParams().get(CLASSPATH);
+  public Optional<Collection<String>> getClassPath() {
+    if(kernelParameters.getParams().containsKey(CLASSPATH)){
+      return Optional.of((Collection<String>) kernelParameters.getParams().get(CLASSPATH));
+    }
+    return Optional.empty();
   }
 
 

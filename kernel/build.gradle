@@ -14,23 +14,27 @@
  *  limitations under the License.
  */
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.5'
+  gradleVersion = '3.5'
 }
 
 subprojects {
-    apply plugin: 'jacoco'
-    apply plugin: 'java'
-    apply plugin: 'maven'
+  apply plugin: 'jacoco'
+  apply plugin: 'java'
+  apply plugin: 'maven'
 
-    jacoco {
-        toolVersion = "0.7.8"
+  jacoco {
+    toolVersion = "0.7.8"
+  }
+  jacocoTestReport {
+    reports {
+      html.enabled = true
+      xml.enabled = false
+      csv.enabled = false
     }
-    jacocoTestReport {
-        reports {
-            html.enabled = true
-            xml.enabled = false
-            csv.enabled = false
-        }
-    }
-    test.finalizedBy jacocoTestReport
+  }
+  test.finalizedBy jacocoTestReport
+
+  test {
+    systemProperties 'java.awt.headless': "true"
+  }
 }

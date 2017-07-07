@@ -24,14 +24,18 @@ import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
- import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
- import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResultAndReturnIdleMessage;
+import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CppKernelMainTest {
@@ -43,7 +47,7 @@ public class CppKernelMainTest {
   @Before
   public void setUp() throws Exception {
     String sessionId = "sessionId1";
-    CppEvaluator evaluator = new CppEvaluator(sessionId, sessionId);
+    CppEvaluator evaluator = new CppEvaluator(sessionId, sessionId, cellExecutor());
     evaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Cpp(sessionId, evaluator, kernelSocketsService);
@@ -71,12 +75,14 @@ public class CppKernelMainTest {
     Message message = getExecuteRequestMessage(code);
     //when
     kernelSocketsService.handleMsg(message);
-    Optional<Message> idleMessage = waitForResultAndReturnIdleMessage(kernelSocketsService.getKernelSockets());
     //then
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     assertThat(idleMessage).isPresent();
+    waitForResult(kernelSocketsService.getKernelSockets());
     verifyPublishedMsgs(kernelSocketsService);
-    verifySentMsgs(kernelSocketsService);
     verifyResult(kernelSocketsService.getExecuteResultMessage().get());
+    waitForSentMessage(kernelSocketsService.getKernelSockets());
+    verifySentMsgs(kernelSocketsService);
   }
 
   private void verifyPublishedMsgs(KernelSocketsServiceTest service) {

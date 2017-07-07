@@ -17,6 +17,8 @@ package com.twosigma.beakerx.sql;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.KernelSocketsTest;
+import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
+import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
@@ -33,10 +35,9 @@ import java.util.Optional;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
  import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
- import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
 import static com.twosigma.beakerx.sql.SQLForColorTable.CREATE_AND_SELECT_ALL;
-import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DATASOURCES;
-import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SQLKernelTest {
@@ -47,7 +48,7 @@ public class SQLKernelTest {
   @Before
   public void setUp() throws Exception {
     String sessionId = "sessionId2";
-    SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId);
+    SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId, TestBeakerCellExecutor.cellExecutor());
     kernelSocketsService = new KernelSocketsServiceTest();
     sqlKernel = new SQL(sessionId, sqlEvaluator, kernelSocketsService);
     sqlKernel.setShellOptions(kernelParameters());
@@ -66,11 +67,12 @@ public class SQLKernelTest {
     Message message = getExecuteRequestMessage(CREATE_AND_SELECT_ALL);
     //when
     kernelSocketsService.handleMsg(message);
-    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     //then
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     verifyIdleMessage(idleMessage);
     verifyResult();
     verifyPublishedMsgs(kernelSocketsService);
+    waitForSentMessage(kernelSocketsService.getKernelSockets());
     verifySentMsgs(kernelSocketsService);
   }
 
@@ -102,8 +104,8 @@ public class SQLKernelTest {
 
   private KernelParameters kernelParameters() {
     Map<String, Object> params = new HashMap<>();
-    params.put(DATASOURCES, "chemistry=jdbc:h2:mem:chemistry");
-    params.put(DEFAULT_DATASOURCE, "jdbc:h2:mem:db1");
+    params.put(MagicCommand.DATASOURCES, "chemistry=jdbc:h2:mem:chemistry");
+    params.put(MagicCommand.DEFAULT_DATASOURCE, "jdbc:h2:mem:db1");
     return new KernelParameters(params);
   }
 }

@@ -24,7 +24,9 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.message.Message;
+
 import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +37,15 @@ public class EvaluatorManager {
 
   protected Evaluator evaluator = null;
   protected KernelFunctionality kernel;
-  private CodeExecutor codeExecutor;
 
   public EvaluatorManager(KernelFunctionality kernel, Evaluator evaluator) {
     this.kernel = kernel;
     this.evaluator = evaluator;
-    evaluator.startWorker();
-    this.codeExecutor = this::execute;
+  }
+
+
+  public void initKernel(KernelParameters kernelParameters) {
+    evaluator.initKernel(kernelParameters);
   }
 
   public synchronized void setShellOptions(final KernelParameters kernelParameters) {
@@ -50,8 +54,6 @@ public class EvaluatorManager {
     } catch (IOException e) {
       logger.error("Error while setting Shell Options", e);
     }
-    evaluator.startWorker();
-    readyToExecuteCode();
   }
 
   public AutocompleteResult autocomplete(String code, int caretPosition) {
@@ -63,8 +65,8 @@ public class EvaluatorManager {
   }
 
   public synchronized SimpleEvaluationObject executeCode(String code, Message message,
-      int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    return codeExecutor.executeCode(code, message, executionCount, executeCodeCallback);
+                                                         int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+    return execute(code, message, executionCount, executeCodeCallback);
   }
 
   public void exit() {
@@ -72,33 +74,20 @@ public class EvaluatorManager {
   }
 
   private SimpleEvaluationObject execute(String code, Message message, int executionCount,
-      KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+                                         KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
     SimpleEvaluationObject seo = createSimpleEvaluationObject(code, message, executionCount,
-        executeCodeCallback);
+            executeCodeCallback);
     evaluator.evaluate(seo, code);
     return seo;
   }
 
-  private SimpleEvaluationObject kernelNotReady(String code, Message message, int executionCount,
-      KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(code, message, executionCount,
-        executeCodeCallback);
-    seo.error(THE_KERNEL_IS_NOT_READY);
-    seo.executeCodeCallback();
-    return seo;
-  }
-
   private SimpleEvaluationObject createSimpleEvaluationObject(String code, Message message,
-      int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+                                                              int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
     seo.setJupyterMessage(message);
     seo.setExecutionCount(executionCount);
     seo.addObserver(kernel.getExecutionResultSender());
     return seo;
-  }
-
-  private void readyToExecuteCode() {
-    codeExecutor = this::execute;
   }
 
   public void addJarToClasspath(PathToJar path) {
@@ -119,12 +108,6 @@ public class EvaluatorManager {
 
   public void removeImport(ImportPath anImport) {
     this.evaluator.removeImport(anImport);
-  }
-
-  interface CodeExecutor {
-
-    SimpleEvaluationObject executeCode(String code, Message message, int executionCount,
-        KernelFunctionality.ExecuteCodeCallback executeCodeCallback);
   }
 
 }

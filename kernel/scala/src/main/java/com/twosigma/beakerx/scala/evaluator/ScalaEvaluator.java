@@ -20,7 +20,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -33,6 +32,7 @@ import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beakerx.jvm.serialization.ObjectSerializer;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.table.TableDisplay;
@@ -64,8 +64,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
+import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 
 public class ScalaEvaluator extends BaseEvaluator {
   private final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());
@@ -77,7 +77,8 @@ public class ScalaEvaluator extends BaseEvaluator {
   protected String outDir;
   protected boolean exit;
   protected boolean updateLoader;
-  protected final BeakerCellExecutor executor;
+  protected final CellExecutor executor;
+  private BeakerxObjectFactory beakerxObjectFactory;
   protected workerThread myWorker;
   protected String currentClassPath;
   protected String currentImports;
@@ -96,13 +97,18 @@ public class ScalaEvaluator extends BaseEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
-  @Inject
-  public ScalaEvaluator(Provider<BeakerObjectConverter> osp) {
-    objectSerializerProvider = osp;
-    executor = new BeakerCellExecutor("scala");
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp) {
+    this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl());
   }
 
-  public void initialize(String id, String sId) {
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory) {
+    objectSerializerProvider = osp;
+    executor = cellExecutor;
+    this.beakerxObjectFactory = beakerxObjectFactory;
+    initialize(id, sId);
+  }
+
+  private void initialize(String id, String sId) {
     logger.debug("id: {}, sId: {}", id, sId);
     shellId = id;
     sessionId = sId;
@@ -114,11 +120,14 @@ public class ScalaEvaluator extends BaseEvaluator {
     currentImports = "";
     outDir = Evaluator.createJupyterTempFolder().toString();
     startWorker();
+    try {
+      newAutoCompleteEvaluator();
+    } catch (MalformedURLException e) {
+    }
   }
 
-  @Override
-  public void startWorker() {
-    myWorker = new workerThread();
+  private void startWorker() {
+    myWorker = new workerThread(this.beakerxObjectFactory);
     myWorker.start();
   }
 
@@ -170,8 +179,17 @@ public class ScalaEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+  public void initKernel(KernelParameters kernelParameters) {
+    configure(kernelParameters);
+  }
 
+  @Override
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    configure(kernelParameters);
+    resetEnvironment();
+  }
+
+  private void configure(KernelParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
@@ -197,8 +215,6 @@ public class ScalaEvaluator extends BaseEvaluator {
         }
       }
     }
-
-    resetEnvironment();
   }
 
   @Override
@@ -256,8 +272,11 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   protected class workerThread extends Thread {
 
-    public workerThread() {
+    private BeakerxObjectFactory beakerxObjectFactory;
+
+    public workerThread(BeakerxObjectFactory beakerxObjectFactory) {
       super("scala worker");
+      this.beakerxObjectFactory = beakerxObjectFactory;
     }
 
     /*
@@ -293,7 +312,7 @@ public class ScalaEvaluator extends BaseEvaluator {
 
           nc = NamespaceClient.getBeaker(sessionId);
           nc.setOutputObj(j.outputObject);
-          if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject))) {
+          if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject, this.beakerxObjectFactory))) {
             j.outputObject.error("... cancelled!");
           }
           if (nc != null) {
@@ -319,10 +338,12 @@ public class ScalaEvaluator extends BaseEvaluator {
 
       protected final String theCode;
       protected final SimpleEvaluationObject theOutput;
+      private BeakerxObjectFactory beakerxObjectFactory;
 
-      public MyRunnable(String code, SimpleEvaluationObject out) {
+      public MyRunnable(String code, SimpleEvaluationObject out, BeakerxObjectFactory beakerxObjectFactory) {
         theCode = code;
         theOutput = out;
+        this.beakerxObjectFactory = beakerxObjectFactory;
       }
 
       @Override
@@ -389,23 +410,7 @@ public class ScalaEvaluator extends BaseEvaluator {
       // ensure object is created
       NamespaceClient.getBeaker(sessionId);
 
-      String r = shell.evaluate2(
-              "import com.twosigma.beakerx.NamespaceClient\n" +
-                      "import language.dynamics\n" +
-                      "var _beaker = NamespaceClient.getBeaker(\"" + sessionId + "\")\n" +
-                      "object beaker extends Dynamic {\n" +
-                      "  def selectDynamic( field : String ) = _beaker.get(field)\n" +
-                      "  def updateDynamic (field : String)(value : Any) : Any = {\n" +
-                      "    _beaker.set(field,value)\n" +
-                      "    return value\n" +
-                      "  }\n" +
-                      "  def applyDynamic(methodName: String)(args: AnyRef*) = {\n" +
-                      "    def argtypes = args.map(_.getClass)\n" +
-                      "    def method = _beaker.getClass.getMethod(methodName, argtypes: _*)\n" +
-                      "    method.invoke(_beaker,args: _*)\n" +
-                      "  }\n" +
-                      "}\n"
-      );
+      String r = shell.evaluate2(this.beakerxObjectFactory.create(sessionId));
       if (r != null && !r.isEmpty()) {
         logger.warn("ERROR creating beaker object: {}", r);
       }
@@ -462,23 +467,7 @@ public class ScalaEvaluator extends BaseEvaluator {
     // ensure object is created
     NamespaceClient.getBeaker(sessionId);
 
-    String r = acshell.evaluate2(
-            "import com.twosigma.beakerx.NamespaceClient\n" +
-                    "import language.dynamics\n" +
-                    "var _beaker = NamespaceClient.getBeaker(\"" + sessionId + "\")\n" +
-                    "object beaker extends Dynamic {\n" +
-                    "  def selectDynamic( field : String ) = _beaker.get(field)\n" +
-                    "  def updateDynamic (field : String)(value : Any) : Any = {\n" +
-                    "    _beaker.set(field,value)\n" +
-                    "    return value\n" +
-                    "  }\n" +
-                    "  def applyDynamic(methodName: String)(args: AnyRef*) = {\n" +
-                    "    def argtypes = args.map(_.getClass)\n" +
-                    "    def method = _beaker.getClass.getMethod(methodName, argtypes: _*)\n" +
-                    "    method.invoke(_beaker,args: _*)\n" +
-                    "  }\n" +
-                    "}\n"
-    );
+    String r = acshell.evaluate2(this.beakerxObjectFactory.create(this.sessionId));
     if (r != null && !r.isEmpty()) {
       logger.warn("ERROR creating beaker beaker: {}", r);
     }

@@ -15,21 +15,24 @@
  */
 package com.twosigma.beakerx.sql.kernel;
 
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.kernel.Utils.uuid;
+
+import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.evaluator.Evaluator;
-import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
-import com.twosigma.beakerx.sql.handlers.SQLCommOpenHandler;
-import com.twosigma.beakerx.sql.handlers.SQLKernelInfoHandler;
+import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
-import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.message.Message;
-
+import com.twosigma.beakerx.sql.handlers.SQLCommOpenHandler;
+import com.twosigma.beakerx.sql.handlers.SQLKernelInfoHandler;
 import java.io.IOException;
-
- import static com.twosigma.beakerx.kernel.Utils.uuid;
+import java.util.HashMap;
 
 public class SQL extends Kernel {
 
@@ -50,8 +53,16 @@ public class SQL extends Kernel {
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
-      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(new KernelConfigurationFile(args));
+      KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
+          new KernelConfigurationFile(args));
       return new SQL(id, new SQLEvaluator(id, id), kernelSocketsFactory);
     });
+  }
+
+  @Override
+  public KernelParameters getKernelParameters() {
+    HashMap<String, Object> kernelParameters = new HashMap<>();
+    kernelParameters.put(IMPORTS, new DefaultJVMVariables().getImports());
+    return new KernelParameters(kernelParameters);
   }
 }

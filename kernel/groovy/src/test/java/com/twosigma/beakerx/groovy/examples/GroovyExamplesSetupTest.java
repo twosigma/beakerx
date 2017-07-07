@@ -16,11 +16,10 @@
 package com.twosigma.beakerx.groovy.examples;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
-import com.twosigma.beakerx.groovy.kernel.GroovyDefaultVariables;
 import com.twosigma.beakerx.groovy.kernel.Groovy;
 import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
@@ -28,11 +27,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.CLASSPATH;
-import static com.twosigma.beakerx.kernel.comm.KernelControlSetShellHandler.IMPORTS;
 import static org.junit.Assert.assertTrue;
 
 public abstract class GroovyExamplesSetupTest {
@@ -43,10 +39,9 @@ public abstract class GroovyExamplesSetupTest {
   @BeforeClass
   public static void setUp() throws Exception {
     String sessionId = "sessionIdWidget";
-    GroovyEvaluator evaluator = new GroovyEvaluator(sessionId, sessionId);
+    GroovyEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Groovy(sessionId, evaluator, kernelSocketsService);
-    kernel.setShellOptions(kernelParameters());
     new Thread(() -> KernelRunner.run(() -> kernel)).start();
     kernelSocketsService.waitForSockets();
   }
@@ -59,14 +54,6 @@ public abstract class GroovyExamplesSetupTest {
   @After
   public void tearDown() throws Exception {
     kernelSocketsService.clear();
-  }
-
-  private static KernelParameters kernelParameters() {
-    GroovyDefaultVariables groovyDefaultVariables = new GroovyDefaultVariables();
-    Map<String, Object> params = new HashMap<>();
-    params.put(IMPORTS, groovyDefaultVariables.getImports());
-    params.put(CLASSPATH, groovyDefaultVariables.getClassPath());
-    return new KernelParameters(params);
   }
 
   public void assertMessageExists(final String errorMessage, final String viewNameValue) {

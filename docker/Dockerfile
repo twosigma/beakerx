@@ -14,40 +14,30 @@
 
 FROM beakerx-base:latest
 
-MAINTAINER Beaker Feedback <beaker-feedback@twosigma.com>
+MAINTAINER BeakerX Feedback <beakerx-feedback@twosigma.com>
 
 ENV PATH /opt/conda/bin:$PATH
 ENV CONDA_DIR /opt/conda
 ENV SHELL /bin/bash
-ENV NB_USER beakerx
 ENV NB_UID 1000
 ENV HOME /home/$NB_USER
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US.UTF-8
 
-COPY setup.sh /home/beakerx
+COPY docker/setup.sh /home/beakerx
+COPY docker/start.sh /usr/local/bin/
+COPY docker/start-notebook.sh /usr/local/bin/
+COPY docker/start-singleuser.sh /usr/local/bin/
+COPY docker/jupyter_notebook_config.py /etc/jupyter/
 
-COPY start.sh /usr/local/bin/
-COPY start-notebook.sh /usr/local/bin/
-COPY start-singleuser.sh /usr/local/bin/
-COPY jupyter_notebook_config.py /etc/jupyter/
-RUN chmod +x /usr/local/bin/*
+COPY / $HOME
 
-WORKDIR /home/beakerx
+RUN chown -R beakerx:beakerx /home/beakerx
 
-RUN chown -R beakerx:users /home/beakerx
+USER $NB_USER
+WORKDIR $HOME
 
 ###################
 #      Build      #
 ###################
-RUN git clone https://github.com/twosigma/beakerx.git
-RUN chown -R beakerx:users /home/beakerx
-
-WORKDIR /home/beakerx/beakerx
-
-USER $NB_USER
-
 RUN /home/beakerx/setup.sh
 
 EXPOSE 8888

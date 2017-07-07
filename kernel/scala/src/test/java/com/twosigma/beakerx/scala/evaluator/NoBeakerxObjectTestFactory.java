@@ -1,5 +1,5 @@
 /*
- *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,26 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx.scala.evaluator;
 
-package com.twosigma.beakerx.easyform.formitem;
+public class NoBeakerxObjectTestFactory implements BeakerxObjectFactory {
 
-import com.twosigma.beakerx.easyform.EasyFormComponent;
-
-import java.util.Collection;
-
-public abstract class CheckBoxGroup extends EasyFormComponent {
-
-  private Boolean horizontal;
-
-  public abstract Collection<String> getValues();
-
-  public abstract void setValues(final Collection<String> values) ;
-
-  public Boolean getHorizontal() {
-    return horizontal;
-  }
-
-  public void setHorizontal(final Boolean horizontal) {
-    this.horizontal = horizontal;
+  @Override
+  public String create(String sessionId) {
+    return "()";
   }
 }

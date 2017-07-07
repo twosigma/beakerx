@@ -13,16 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.easyform.formitem.widgets;
+package com.twosigma.beakerx.scala.evaluator;
 
-import com.twosigma.beakerx.widgets.DOMWidget;
-import com.twosigma.beakerx.widgets.UpdateValueCallback;
+public interface BeakerxObjectFactory {
 
-public interface EasyFormWidget {
-
-  DOMWidget getWidget();
-
-  default void registerUpdateValueCallback(final UpdateValueCallback updateValueCallback){
-    getWidget().register(updateValueCallback);
-  }
+  String create(String sessionId);
 }

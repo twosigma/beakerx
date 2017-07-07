@@ -15,21 +15,21 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class MagicCommandResultOrderTest {
 
+  public static final String DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/contents/demoResources/beakerxTestLibrary.jar";
   private MagicCommand sut;
   private KernelTest kernel;
 
@@ -43,23 +43,25 @@ public class MagicCommandResultOrderTest {
   public void codeResultShouldBeLast() throws Exception {
     //given
     String codeAsString = "" +
-            "%classpath add jar demoResources/beakerxTestLibrary.jar\n" +
-            "%classpath\n" +
-            "code code code";
+            "%classpath add jar " + DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR +"\n"+
+        "%classpath\n" +
+        "code code code";
     Code code = new Code(codeAsString);
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(result.getItems().get(0).getCode().get()).isEqualTo(new CodeWithoutCommand("code code code"));
-    assertThat(result.getItems().get(1).getCode().get()).isEqualTo(new CodeWithoutCommand("code code code"));
+    assertThat(result.getItems().get(0).getCode().get())
+        .isEqualTo(new CodeWithoutCommand("code code code"));
+    assertThat(result.getItems().get(1).getCode().get())
+        .isEqualTo(new CodeWithoutCommand("code code code"));
   }
 
   @Test
   public void classpathAddJarShouldBeLast() throws Exception {
     //given
     String codeAsString = "" +
-            "%classpath\n" +
-            "%classpath add jar demoResources/beakerxTestLibrary.jar\n";
+        "%classpath\n" +
+        "%classpath add jar " +DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR+"\n";
     Code code = new Code(codeAsString);
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
@@ -71,13 +73,13 @@ public class MagicCommandResultOrderTest {
   public void classpathShouldBeLast() throws Exception {
     //given
     String codeAsString = "" +
-            "%classpath add jar demoResources/beakerxTestLibrary.jar\n" +
-            "%classpath";
+        "%classpath add jar "+DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR +"\n"+
+        "%classpath";
     Code code = new Code(codeAsString);
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(classpath(result)).isEqualTo("demoResources/beakerxTestLibrary.jar");
+    assertThat(classpath(result)).isEqualTo(DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR);
   }
 
   private String classpath(MagicCommandResult result) {

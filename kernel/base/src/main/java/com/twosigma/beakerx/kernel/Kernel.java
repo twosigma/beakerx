@@ -15,29 +15,31 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+
+import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.handler.Handler;
-import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.message.Message;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-public abstract class Kernel implements KernelFunctionality {
+public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFunctionality {
 
   private static final Logger logger = LoggerFactory.getLogger(Kernel.class);
 
@@ -54,7 +56,7 @@ public abstract class Kernel implements KernelFunctionality {
   private MessageCreator messageCreator;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
-                final KernelSocketsFactory kernelSocketsFactory) {
+      final KernelSocketsFactory kernelSocketsFactory) {
     this.messageCreator = new MessageCreator(this);
     this.sessionId = sessionId;
     this.kernelSocketsFactory = kernelSocketsFactory;
@@ -173,7 +175,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public SimpleEvaluationObject executeCode(String code, Message message, int executionCount,
-                                            ExecuteCodeCallback executeCodeCallback) {
+      ExecuteCodeCallback executeCodeCallback) {
     return this.evaluatorManager.executeCode(code, message, executionCount, executeCodeCallback);
   }
 
@@ -216,4 +218,5 @@ public abstract class Kernel implements KernelFunctionality {
   public void removeImport(ImportPath anImport) {
     this.evaluatorManager.removeImport(anImport);
   }
+
 }

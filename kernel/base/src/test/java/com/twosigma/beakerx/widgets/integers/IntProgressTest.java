@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widgets.integers;
 
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +59,17 @@ public class IntProgressTest {
     intProgress.setOrientation("vertical");
     //then
     verifyMsgForProperty(groovyKernel, IntSlider.ORIENTATION, "vertical");
+  }
+
+  @Test
+  public void setOrientation_hasThatOrientation() throws Exception {
+    String expected = "test";
+    //given
+    IntProgress intProgress = intProgress();
+    //when
+    intProgress.setOrientation(expected);
+    //then
+    Assertions.assertThat(intProgress.getOrientation()).isEqualTo(expected);
   }
 
   private IntProgress intProgress() throws NoSuchAlgorithmException {

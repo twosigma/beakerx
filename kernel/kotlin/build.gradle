@@ -1,0 +1,105 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+apply plugin: 'application'
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+def final kernelIdName = 'kotlin'
+def final toReplace = '__PATH__'
+
+mainClassName = 'com.twosigma.beakerx.kotlin.kernel.Kotlin'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile project(':kernel:base')
+  compile group: 'org.jetbrains.kotlin', name: 'kotlin-compiler', version: '1.1.3'
+  compile group: 'org.jetbrains.kotlin', name: 'kotlin-script-runtime', version: '1.1.3'
+  compile group: 'org.jetbrains.kotlin', name: 'kotlin-runtime', version: '1.1.3'
+  compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: '1.1.3'
+  
+}
+
+jar {
+  manifest {
+    attributes "Main-Class": "$mainClassName"
+  }
+
+  from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  } {
+    exclude "META-INF/*.SF"
+    exclude "META-INF/*.DSA"
+    exclude "META-INF/*.RSA"
+  }
+}
+
+task prepareJson(dependsOn: 'build') {
+  doLast {
+    println "Prepare JSON for Jupyter notebook"
+    println "Copy kernel.json to build/libs/json/ and replacing PATH with kotlin.jar path"
+
+    def jarLocation = file('build/libs/kotlin.jar').getAbsolutePath()
+    jarLocation = jarLocation.replace("\\", "/");
+    def text = file('kernel.json').text.replace(toReplace, jarLocation)
+    def folder = file('build/libs/json')
+    if (!folder.exists()) {
+      println "Creating folder build/libs/json"
+      folder.mkdirs()
+    }
+
+    file('build/libs/json/kernel.json').withWriter { w ->
+      w << text
+    }
+  }
+}
+
+task kernelInstall(dependsOn: 'prepareJson') {
+  doLast {
+    println "Installing 'kotlin' to jupyter notebook"
+
+    def hashStdOut = new ByteArrayOutputStream()
+    def jsonFolder = file('build/libs/json/').getAbsolutePath();
+    exec {
+      commandLine "jupyter",
+              "kernelspec",
+              "install",
+              "--sys-prefix",
+              "--replace",
+              "--name",
+              kernelIdName,
+              jsonFolder;
+      standardOutput = hashStdOut
+    }
+    println hashStdOut.toString().trim();
+    println "DONE"
+  }
+}
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.twosigma'
+            artifactId 'beaker-kernel-kotlin'
+            version '2.0-SNAPSHOT'
+            
+            from components.java
+        }
+    }
+}

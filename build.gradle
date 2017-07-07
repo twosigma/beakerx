@@ -13,27 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import org.apache.tools.ant.taskdefs.condition.Os
-
-
 task wrapper(type: Wrapper) {
   gradleVersion = '3.5'
 }
 
 project("kernel").subprojects {
-  apply plugin: 'jacoco'
-  apply plugin: 'java'
-  apply plugin: 'maven'
+    apply plugin: 'jacoco'
+    apply plugin: 'java'
+    apply plugin: 'maven'
 
-  jacoco {
-    toolVersion = "0.7.8"
-  }
-  jacocoTestReport {
-    reports {
-      html.enabled = true
-      xml.enabled = false
-      csv.enabled = false
+    jacoco {
+        toolVersion = "0.7.8"
     }
-  }
-  test.finalizedBy jacocoTestReport
+    jacocoTestReport {
+        reports {
+            html.enabled = true
+            xml.enabled = false
+            csv.enabled = false
+        }
+    }
+
+    test {
+        systemProperties 'java.awt.headless': "true"
+    }
+
+    test.finalizedBy jacocoTestReport
 }

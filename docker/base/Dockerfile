@@ -13,7 +13,7 @@
 # limitations under the License.
 FROM ubuntu:16.04
 
-MAINTAINER Beaker Feedback <beaker-feedback@twosigma.com>
+MAINTAINER BeakerX Feedback <beakerx-feedback@twosigma.com>
 
 RUN useradd beakerx --create-home
 

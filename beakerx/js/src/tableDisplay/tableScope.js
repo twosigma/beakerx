@@ -1710,7 +1710,7 @@ define([
     if (!self.colorder) {
       self.colorder = _.range(self.columnNames.length + 1);
     }
-    self.colreorg = new $.fn.dataTable.ColReorder($(id), {
+    self.colreorg = new dataTablesColReorder($(id), {
       'order': self.colorder,
       'fnReorderCallback': function() {
         if (self.colreorg === undefined || self.colreorg.s == null) {
@@ -1892,7 +1892,7 @@ define([
 
     self.keyTable = self.table.settings()[0].keytable;
     self.refreshCells();
-    self.fixcols = new $.fn.dataTable.FixedColumns(self.table, inits);
+    self.fixcols = new dataTablesFixedColumns(self.table, inits);
     self.fixcols.fnRedrawLayout();
     // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
 
@@ -1923,6 +1923,7 @@ define([
       }
       // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
 
+      self.adjustRedraw();
     }, 0);
 
     self.initTableSelect();
@@ -2657,6 +2658,10 @@ define([
     var self = this;
     self.table.state.clear();
     self.init(self.getCellModel(), false);
+  };
+
+  TableScope.prototype.adjustRedraw = function() {
+    this.table.columns.adjust().draw();
   };
 
   TableScope.prototype.prepareValueFormatter = function() {

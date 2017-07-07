@@ -16,19 +16,22 @@
 
 package com.twosigma.beakerx.jupyter.handler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.handler.ExecuteRequestHandler;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExecuteRequestHandlerMagicCommandTest {
 
+  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR = "../../doc/contents/demoResources/BeakerXClasspathTest.jar";
+  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/contents/demoResources/beakerxTestLibrary.jar";
   private KernelTest kernel;
   private EvaluatorTest evaluator;
   private ExecuteRequestHandler executeRequestHandler;
@@ -49,10 +52,10 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void handleMagicClasspathAddJarAndExecuteTheCode() throws Exception {
     //given
     String code = "" +
-            "%classpath add jar BeakerXClasspathTest.jar\n" +
-            "import com.beakerx.BeakerxObject;\n" +
-            "BeakerxObject beakerxObject = new BeakerxObject();\n" +
-            "beakerxObject.getObjectTest()\n";
+            "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR + "\n" +
+        "import com.beakerx.BeakerxObject;\n" +
+        "BeakerxObject beakerxObject = new BeakerxObject();\n" +
+        "beakerxObject.getObjectTest()\n";
 
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     //when
@@ -64,9 +67,11 @@ public class ExecuteRequestHandlerMagicCommandTest {
 
   @Test
   public void handleMagicClasspathAddJar() throws Exception {
+    System.out.println("SIEMA " + System.getProperty("user.dir"));
+
     //when
     String code = "" +
-            "%classpath add jar BeakerXClasspathTest.jar";
+            "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR;
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     executeRequestHandler.handle(magicMessage);
     //then
@@ -77,9 +82,9 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void noResetEnvironmentForDuplicatedPath() throws Exception {
     //when
     String code = "" +
-            "%classpath add jar BeakerXClasspathTest.jar\n" +
-            "%classpath add jar BeakerXClasspathTest.jar\n" +
-            "%classpath add jar BeakerXClasspathTest.jar\n";
+            "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR + "\n" +
+            "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR + "\n" +
+            "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR + "\n";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     executeRequestHandler.handle(magicMessage);
     //then
@@ -102,8 +107,8 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void handleImportMagicCommandAndExecuteTheCode() throws Exception {
     //given
     String code = "" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
-            "w = new IntSlider()";
+        "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
+        "w = new IntSlider()";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     //when
     executeRequestHandler.handle(magicMessage);
@@ -115,9 +120,9 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void noResetEnvironmentForDuplicatedImportPath() throws Exception {
     //when
     String code = "" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n";
+        "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
+        "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
+        "%import com.twosigma.beakerx.widgets.integers.IntSlider\n";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     executeRequestHandler.handle(magicMessage);
     //then
@@ -127,17 +132,17 @@ public class ExecuteRequestHandlerMagicCommandTest {
   @Test
   public void noCodeToExecute() throws Exception {
     //given
-    String code = "%classpath add jar demoResources/beakerxTestLibrary.jar";
+    String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR;
     noCode(code);
   }
 
   @Test
   public void noCodeToExecuteWithWhiteSpaces() throws Exception {
     //given
-    String code = "%classpath add jar demoResources/beakerxTestLibrary.jar\n" +
-            " \n" +
-            " \n" +
-            "    ";
+    String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
+        " \n" +
+        " \n" +
+        "    ";
     noCode(code);
   }
 
@@ -154,8 +159,8 @@ public class ExecuteRequestHandlerMagicCommandTest {
   @Test
   public void codeToExecute() throws Exception {
     //given
-    String code = "%classpath add jar demoResources/beakerxTestLibrary.jar\n" +
-            "code code code";
+    String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
+        "code code code";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     //when
     executeRequestHandler.handle(magicMessage);

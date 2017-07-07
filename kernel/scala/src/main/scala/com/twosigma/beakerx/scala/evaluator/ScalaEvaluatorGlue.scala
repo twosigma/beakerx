@@ -16,8 +16,6 @@
 
 package com.twosigma.beakerx.scala.evaluator
 
-;
-
 import com.twosigma.beakerx.autocomplete.AutocompleteResult
 import com.twosigma.beakerx.jvm.`object`.SimpleEvaluationObject
 

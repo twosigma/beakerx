@@ -30,6 +30,8 @@ import org.junit.Test;
 
 public class ExecuteRequestHandlerMagicCommandTest {
 
+  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR = "../../doc/contents/demoResources/BeakerXClasspathTest.jar";
+  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/contents/demoResources/beakerxTestLibrary.jar";
   private KernelTest kernel;
   private EvaluatorTest evaluator;
   private ExecuteRequestHandler executeRequestHandler;
@@ -50,7 +52,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void handleMagicClasspathAddJarAndExecuteTheCode() throws Exception {
     //given
     String code = "" +
-        "%classpath add jar ../../demoFiles/demoResources/BeakerXClasspathTest.jar\n" +
+            "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR + "\n" +
         "import com.beakerx.BeakerxObject;\n" +
         "BeakerxObject beakerxObject = new BeakerxObject();\n" +
         "beakerxObject.getObjectTest()\n";
@@ -69,7 +71,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
 
     //when
     String code = "" +
-        "%classpath add jar ../../demoFiles/demoResources/BeakerXClasspathTest.jar";
+            "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR;
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     executeRequestHandler.handle(magicMessage);
     //then
@@ -80,9 +82,9 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void noResetEnvironmentForDuplicatedPath() throws Exception {
     //when
     String code = "" +
-        "%classpath add jar ../../demoFiles/demoResources/BeakerXClasspathTest.jar\n" +
-        "%classpath add jar ../../demoFiles/demoResources/BeakerXClasspathTest.jar\n" +
-        "%classpath add jar ../../demoFiles/demoResources/BeakerXClasspathTest.jar\n";
+            "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR + "\n" +
+            "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR + "\n" +
+            "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR + "\n";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     executeRequestHandler.handle(magicMessage);
     //then
@@ -130,14 +132,14 @@ public class ExecuteRequestHandlerMagicCommandTest {
   @Test
   public void noCodeToExecute() throws Exception {
     //given
-    String code = "%classpath add jar ../../demoFiles/demoResources/beakerxTestLibrary.jar";
+    String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR;
     noCode(code);
   }
 
   @Test
   public void noCodeToExecuteWithWhiteSpaces() throws Exception {
     //given
-    String code = "%classpath add jar ../../demoFiles/demoResources/beakerxTestLibrary.jar\n" +
+    String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
         " \n" +
         " \n" +
         "    ";
@@ -157,7 +159,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
   @Test
   public void codeToExecute() throws Exception {
     //given
-    String code = "%classpath add jar ../../demoFiles/demoResources/beakerxTestLibrary.jar\n" +
+    String code = "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
         "code code code";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     //when

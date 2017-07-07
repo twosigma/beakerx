@@ -15,53 +15,25 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import com.twosigma.beakerx.easyform.formitem.CheckBox;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.widgets.CommFunctionality;
-import com.twosigma.beakerx.widgets.DOMWidget;
+import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.widgets.bools.Checkbox;
 
-public class CheckBoxWidget extends CheckBox implements CommFunctionality, EasyFormWidget {
-
-  private Checkbox widget;
+public class CheckBoxWidget extends EasyFormComponent<Checkbox> {
 
   public CheckBoxWidget() {
-    this.widget = new Checkbox();
+    super(new Checkbox());
   }
-
-  @Override
-  public String getLabel() {
-    return this.widget.getDescription();
-  }
-
-  @Override
-  public Comm getComm() {
-    return widget.getComm();
-  }
-
-  @Override
-  public void setLabel(String label) {
-    this.widget.setDescription(label);
-  }
-
-  @Override
-  public String getValue() {
-    return this.widget.getValue().toString();
-  }
-
+  
   @Override
   public void setValue(String value) {
     this.widget.setValue(Boolean.valueOf(value));
   }
 
-  @Override
-  public DOMWidget getWidget() {
-    return widget;
-  }
   
   @Override
-  public void close() {
-    getComm().close();
+  protected boolean checkValue(final Object value) {
+    return Boolean.TRUE.toString().equalsIgnoreCase(String.valueOf(value))
+        || Boolean.FALSE.toString().equalsIgnoreCase(String.valueOf(value));
   }
   
 }

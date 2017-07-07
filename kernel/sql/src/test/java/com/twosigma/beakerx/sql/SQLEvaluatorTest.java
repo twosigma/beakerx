@@ -33,8 +33,8 @@ import java.util.Map;
 
  import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
  import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
-import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DATASOURCES;
-import static com.twosigma.beakerx.sql.kernel.SQLKernelParameters.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SQLEvaluatorTest {

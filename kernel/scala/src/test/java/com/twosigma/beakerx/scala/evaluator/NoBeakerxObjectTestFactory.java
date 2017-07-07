@@ -19,6 +19,6 @@ public class NoBeakerxObjectTestFactory implements BeakerxObjectFactory {
 
   @Override
   public String create(String sessionId) {
-    return "";
+    return "()";
   }
 }

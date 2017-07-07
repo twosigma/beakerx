@@ -80,10 +80,4 @@ public class Cpp extends Kernel {
     kern.execute(mainCell, type, tempDirectory, otherCells);
   }
 
-  @Override
-  public KernelParameters getKernelParameters() {
-    HashMap<String, Object> kernelParameters = new HashMap<>();
-    kernelParameters.put(IMPORTS, new CppDefaultVariables().getImports());
-    return new KernelParameters(kernelParameters);
-  }
 }

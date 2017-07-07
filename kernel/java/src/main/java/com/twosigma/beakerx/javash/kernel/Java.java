@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.javash.kernel;
 
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -24,12 +25,14 @@ import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import com.twosigma.beakerx.javash.handler.JavaKernelInfoHandler;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.message.Message;
 import java.io.IOException;
+import java.util.HashMap;
 
 
 public class Java extends Kernel {
@@ -37,7 +40,6 @@ public class Java extends Kernel {
   public Java(final String id, final Evaluator evaluator,
       KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
-    setShellOptions(getKernelParameters(new JavaDefaultVariables()));
   }
 
   @Override
@@ -59,5 +61,13 @@ public class Java extends Kernel {
       return new Java(id, e, kernelSocketsFactory);
     });
   }
+
+  @Override
+  public KernelParameters getKernelParameters() {
+    HashMap<String, Object> kernelParameters = new HashMap<>();
+    kernelParameters.put(IMPORTS, new JavaDefaultVariables().getImports());
+    return new KernelParameters(kernelParameters);
+  }
+
 
 }

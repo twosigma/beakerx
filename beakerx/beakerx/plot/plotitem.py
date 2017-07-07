@@ -44,16 +44,16 @@ class StrokeType(Enum):
 
 class Graphics(BaseObject):
   def __init__(self, **kwargs):
-    BaseObject.__init__(self)
-
+    super(Graphics, self).__init__(**kwargs)
     self.type = self.__class__.__name__
     self.visible = getValue(kwargs, 'visible', True)
     self.yAxis = getValue(kwargs, 'yAxis')
+    self.hasClickAction = getValue(kwargs, 'hasClickAction', False)
 
 
 class ConstantLine(Graphics):
   def __init__(self, **kwargs):
-    Graphics.__init__(self, **kwargs)
+    super(ConstantLine, self).__init__(**kwargs)
     self.x = getValue(kwargs, 'x')
     self.y = getValue(kwargs, 'y')
     self.color = getColor(getValue(kwargs, 'color'))
@@ -64,7 +64,7 @@ class ConstantLine(Graphics):
 
 class ConstantBand(Graphics):
   def __init__(self, **kwargs):
-    Graphics.__init__(self, **kwargs)
+    super(ConstantBand, self).__init__(**kwargs)
     self.x = getValue(kwargs, 'x')
     self.y = getValue(kwargs, 'y')
     self.color = getColor(getValue(kwargs, 'color', Color(0, 127, 255, 127)))
@@ -72,7 +72,7 @@ class ConstantBand(Graphics):
 
 class XYGraphics(Graphics):
   def __init__(self, **kwargs):
-    Graphics.__init__(self, **kwargs)
+    super(XYGraphics, self).__init__(**kwargs)
     defY = getValue(kwargs, 'y')
     if defY is not None:
       defX = list(range(0, len(defY)))
@@ -84,6 +84,7 @@ class XYGraphics(Graphics):
       for idx in range(len(self.x)):
         x = self.x[idx]
         if isinstance(x, datetime):
+          print('datatime')
           self.x[idx] = date_time_2_millis(x)
 
     self.y = defY
@@ -95,7 +96,7 @@ class XYGraphics(Graphics):
 
 class Line(XYGraphics):
   def __init__(self, **kwargs):
-    XYGraphics.__init__(self, **kwargs)
+    super(Line, self).__init__(**kwargs)
     self.width = getValue(kwargs, 'width', 1.5)
     self.style = getValue(kwargs, 'style')
     self.interpolation = getValue(kwargs, 'interpolation')
@@ -104,7 +105,7 @@ class Line(XYGraphics):
 
 class BasedXYGraphics(XYGraphics):
   def __init__(self, **kwargs):
-    XYGraphics.__init__(self, **kwargs)
+    super(BasedXYGraphics, self).__init__(**kwargs)
     base = getValue(kwargs, 'base')
     if isinstance(base, list):
       self.bases = base
@@ -114,7 +115,7 @@ class BasedXYGraphics(XYGraphics):
 
 class Bars(BasedXYGraphics):
   def __init__(self, **kwargs):
-    BasedXYGraphics.__init__(self, **kwargs)
+    super(Bars, self).__init__(**kwargs)
 
     width = getValue(kwargs, 'width')
     if isinstance(width, list):
@@ -137,7 +138,7 @@ class Bars(BasedXYGraphics):
 
 class Points(XYGraphics):
   def __init__(self, **kwargs):
-    XYGraphics.__init__(self, **kwargs)
+    super(Points, self).__init__(**kwargs)
 
     shape = getColor(getValue(kwargs, 'shape'))
     if isinstance(shape, list):
@@ -172,7 +173,7 @@ class Points(XYGraphics):
 
 class Stems(BasedXYGraphics):
   def __init__(self, **kwargs):
-    BasedXYGraphics.__init__(self, **kwargs)
+    super(Stems, self).__init__(**kwargs)
     self.width = getValue(kwargs, 'width', 1.5)
     color = getColor(getValue(kwargs, 'color'))
     if isinstance(color, list):
@@ -189,14 +190,14 @@ class Stems(BasedXYGraphics):
 
 class Area(BasedXYGraphics):
   def __init__(self, **kwargs):
-    BasedXYGraphics.__init__(self, **kwargs)
+    super(Area, self).__init__(**kwargs)
     self.color = getColor(getValue(kwargs, 'color'))
     self.interpolation = getValue(kwargs, 'interpolation')
 
 
 class Text(BaseObject):
   def __init__(self, **kwargs):
-    BaseObject.__init__(self)
+    super(Text, self).__init__(**kwargs)
     self.x = getValue(kwargs, 'x', 0)
     self.y = getValue(kwargs, 'y', 0)
     self.color = getColor(getValue(kwargs, 'color'))
@@ -208,21 +209,26 @@ class Text(BaseObject):
 
 class YAxis(BaseObject):
   def __init__(self, **kwargs):
-    BaseObject.__init__(self)
+    super(YAxis, self).__init__(**kwargs)
     self.label = getValue(kwargs, 'label', '')
-    self.autoRange = getValue(kwargs, 'autoRange')
-    self.autoRangeIncludesZero = getValue(kwargs, 'autoRangeIncludesZero')
+    self.auto_range = getValue(kwargs, 'autoRange', True)
+    self.auto_range_includes_zero = getValue(kwargs, 'autoRangeIncludesZero', False)
     self.lower_margin = getValue(kwargs, 'lowerMargin', 0.05)
     self.upper_margin = getValue(kwargs, 'upperMargin', 0.05)
-    self.lower_bound = getValue(kwargs, 'lowerBound')
-    self.upper_bound = getValue(kwargs, 'upperBound')
-    self.use_log = getValue(kwargs, 'log')
-    self.log_base = getValue(kwargs, 'logBase')
+    self.lower_bound = getValue(kwargs, 'lowerBound', 0.0)
+    self.upper_bound = getValue(kwargs, 'upperBound', 0.0)
+    self.use_log = getValue(kwargs, 'logY', False)
+    self.log_base = getValue(kwargs, 'logBase', 10.0)
+    self.type = 'YAxis'
 
+  def setBound(self, min, max):
+    self.lower_bound = min
+    self.upper_bound = max
+    return self.transform()
 
 class XYStacker(BaseObject):
-  def __init__(self):
-    BaseObject.__init__(self)
+  def __init__(self, **kwargs):
+    super(XYStacker, self).__init__(**kwargs)
 
   def stack(self, graphicsList):
     if graphicsList is None or len(graphicsList) == 1:
@@ -252,7 +258,7 @@ class XYStacker(BaseObject):
 
 class Crosshair(BasedXYGraphics):
   def __init__(self, **kwargs):
-    BasedXYGraphics.__init__(self, **kwargs)
+    super(Crosshair, self).__init__(**kwargs)
     self.width = getValue(kwargs, 'width')
     self.style = getValue(kwargs, 'style')
     self.color = getColor(getValue(kwargs, 'color'))

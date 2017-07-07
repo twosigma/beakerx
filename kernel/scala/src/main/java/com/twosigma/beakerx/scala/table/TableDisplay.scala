@@ -25,43 +25,44 @@ import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer
 
 import scala.collection.JavaConverters._
 
+
 object TableDisplay {
 
-  private def create(v: Map[_,_]) = {
-    new com.twosigma.beakerx.table.TableDisplay(mapAsJavaMap(v))
+  private def create(v: Map[_, _]) = {
+    new com.twosigma.beakerx.table.TableDisplay(v.asJava)
   }
 
   private def create(v: List[List[_]], co: List[String], cl: List[String]) = {
-    val javaList : List[java.util.List[_]] = v.map(entry => entry.asJava)
-    val javaListOfList : java.util.List[java.util.List[_]] = javaList.asJava
+    val javaList: List[java.util.List[_]] = v.map(entry => entry.asJava)
+    val javaListOfList: java.util.List[java.util.List[_]] = javaList.asJava
 
     new com.twosigma.beakerx.table.TableDisplay(javaListOfList, co.asJava, cl.asJava)
   }
 
   private def create(v: Array[Map[_, _]]): com.twosigma.beakerx.table.TableDisplay = {
-    val javaStandardized : Array[java.util.Map[_, _]]= v.map(v => mapAsJavaMap(v)).toArray
+    val javaStandardized: Array[java.util.Map[_, _]] = v.map(v => v.asJava).toArray
 
     new com.twosigma.beakerx.table.TableDisplay(javaStandardized)
   }
 
   private def create(v: List[Map[_, _]]): com.twosigma.beakerx.table.TableDisplay = {
-    val javaMaps : List[java.util.Map[_,_]] = v.map(entry => mapAsJavaMap(entry))
-    val javaCollection : java.util.Collection[java.util.Map[_,_]] = javaMaps.asJavaCollection
+    val javaMaps: List[java.util.Map[_, _]] = v.map(entry => entry.asJava)
+    val javaCollection: java.util.Collection[java.util.Map[_, _]] = javaMaps.asJavaCollection
 
     new com.twosigma.beakerx.table.TableDisplay(javaCollection)
   }
 
   private def create(v: List[Map[_, _]], serializer: BeakerObjectConverter): com.twosigma.beakerx.table.TableDisplay = {
-    val javaMaps : List[java.util.Map[_,_]] = v.map(entry => mapAsJavaMap(entry))
-    val javaCollection : java.util.Collection[java.util.Map[_,_]] = javaMaps.asJavaCollection
+    val javaMaps: List[java.util.Map[_, _]] = v.map(entry => entry.asJava)
+    val javaCollection: java.util.Collection[java.util.Map[_, _]] = javaMaps.asJavaCollection
 
     new com.twosigma.beakerx.table.TableDisplay(javaCollection, serializer)
   }
 
 }
 
-class TableDisplay private (tableDisplay: com.twosigma.beakerx.table.TableDisplay) {
-  def this(v: Map[_,_]) = {
+class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay) {
+  def this(v: Map[_, _]) = {
     this(TableDisplay.create(v))
   }
 
@@ -83,7 +84,8 @@ class TableDisplay private (tableDisplay: com.twosigma.beakerx.table.TableDispla
 
   def display = tableDisplay.display()
 
-  def setStringFormatForTimes(timeUnit : TimeUnit) = tableDisplay.setStringFormatForTimes(timeUnit)
+
+  def setStringFormatForTimes(timeUnit: TimeUnit) = tableDisplay.setStringFormatForTimes(timeUnit)
 
   def setAlignmentProviderForType(columnType: ColumnType, tableDisplayAlignmentProvider: TableDisplayAlignmentProvider) = tableDisplay.setAlignmentProviderForType(columnType, tableDisplayAlignmentProvider)
 

@@ -70,6 +70,7 @@ public class Layout extends Widget {
     content.put("top", "");
     content.put("visibility", "");
     content.put(WIDTH, getWidth());
+
     return content;
   }
 

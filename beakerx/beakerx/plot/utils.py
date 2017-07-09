@@ -16,6 +16,7 @@ import json
 import inspect
 import time
 from datetime import datetime
+from dateutil import parser
 
 from enum import Enum
 
@@ -23,19 +24,19 @@ current_milli_time = lambda: int(round(time.time() * 1000))
 
 def unix_time(dt):
   epoch = datetime.utcfromtimestamp(0)
-  delta = dt - epoch
+  delta = parser.parse(dt) - epoch
   return delta.total_seconds()
 
 def date_time_2_millis(dt):
   return int(unix_time(dt) * 1000.0)
 
-
 class BaseObject:
-  def __init__(self):
+  def __init__(self, **kwargs):
     self.type = self.__class__.__name__
 
   def transform(self):
-    return json.dumps(self, cls=ObjectEncoder)
+    model = json.dumps(self, cls=ObjectEncoder)
+    return json.loads(model)
 
   def transformBack(self, dict):
     self.__dict__ = dict

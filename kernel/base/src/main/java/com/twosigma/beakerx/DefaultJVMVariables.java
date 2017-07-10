@@ -15,17 +15,15 @@
  */
 package com.twosigma.beakerx;
 
+import static com.twosigma.beakerx.kernel.Utils.getAsString;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.twosigma.beakerx.kernel.Utils.getAsString;
-
 /**
- * 
  * @author konst
- *
  */
 public class DefaultJVMVariables {
 

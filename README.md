@@ -40,8 +40,8 @@ conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx
 conda install -y -c conda-forge openjdk
 (cd kernel; ./gradlew --no-daemon build kernelInstall)
-(cd ../beakerx/; yarn install)
-pip install -e .
+(cd beakerx/js; yarn install)
+(cd beakerx; pip install -e .)
 python -m beakerx.install --enable --prefix="${CONDA_PREFIX}"
 jupyter notebook
 ```

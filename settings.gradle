@@ -25,5 +25,5 @@ include 'kernel:sql'
 include 'test'
 
 if (System.getProperty('includeCpp', 'false') == 'true') {
-  include 'kernel:cpp'
+    include 'kernel:cpp'
 }

@@ -15,9 +15,8 @@
  */
 package com.twosigma.beakerx.widgets.floats;
 
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
-import org.assertj.core.api.Assertions;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
-public class FloatProgressTest {
+public class BoundedFloatTextTest {
 
   private KernelTest groovyKernel;
 
@@ -43,39 +42,32 @@ public class FloatProgressTest {
   }
 
   @Test
-  public void shouldSendCommOpenWhenCreate() throws Exception {
+  public void createByEmptyConstructor_sendCommOpenMessage() throws Exception {
     //given
     //when
-    new FloatProgress();
+    new BoundedFloatText();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), FloatProgress.MODEL_NAME_VALUE, FloatProgress.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(
+        groovyKernel.getPublishedMessages(),
+        BoundedFloatText.MODEL_NAME_VALUE,
+        BoundedFloatText.VIEW_NAME_VALUE
+    );
   }
 
   @Test
-  public void shouldSendCommMsgWhenOrientationChange() throws Exception {
-    //given
-    FloatProgress floatProgress = floatProgress();
-    //when
-    floatProgress.setOrientation("vertical");
-    //then
-    verifyMsgForProperty(groovyKernel, FloatProgress.ORIENTATION, "vertical");
-  }
-
-  @Test
-  public void setOrientation_hasThatOrientation() throws Exception {
+  public void setValue_sendCommMessage() throws Exception {
     String expected = "test";
     //given
-    FloatProgress floatProgress = floatProgress();
+    BoundedFloatText boundedFloatText = boundedFloatText();
     //when
-    floatProgress.setOrientation(expected);
+    boundedFloatText.setValue(expected);
     //then
-    Assertions.assertThat(floatProgress.getOrientation()).isEqualTo(expected);
+    verifyMsgForProperty(groovyKernel, boundedFloatText.VALUE, expected);
   }
 
-  private FloatProgress floatProgress() throws NoSuchAlgorithmException {
-    FloatProgress progress = new FloatProgress();
+  private BoundedFloatText boundedFloatText() throws NoSuchAlgorithmException {
+    BoundedFloatText boundedFloatText = new BoundedFloatText();
     groovyKernel.clearPublishedMessages();
-    return progress;
+    return boundedFloatText;
   }
-
 }

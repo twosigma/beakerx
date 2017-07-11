@@ -48,7 +48,7 @@ Start the Jupyter Notebook server: `jupyter notebook`
 
 ## Update after Java change
 The kernels are installed to run out of the repo, so just a build should update the java code.
-* `./gradlew build`
+* `(cd kernel; ./gradlew build)`
 
 ## Update after JS change
 

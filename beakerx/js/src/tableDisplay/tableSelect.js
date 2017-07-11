@@ -89,7 +89,7 @@ module.exports = function(TableScope) {
         self.focussedCell = cell.index();
         self.focusChanged = true;
 
-        if (!originalEvent.shiftKey) {
+        if (!originalEvent || !originalEvent.shiftKey) {
           return;
         }
 

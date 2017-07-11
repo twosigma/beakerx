@@ -14,16 +14,14 @@
  *  limitations under the License.
  */
 
-include 'kernel'
-include 'kernel:base'
-include 'kernel:groovy'
-include 'kernel:kotlin'
-include 'kernel:scala'
-include 'kernel:java'
-include 'kernel:clojure'
-include 'kernel:sql'
-include 'test'
+include 'base'
+include 'groovy'
+include 'kotlin'
+include 'scala'
+include 'java'
+include 'clojure'
+include 'sql'
 
 if (System.getProperty('includeCpp', 'false') == 'true') {
-    include 'kernel:cpp'
+    include 'cpp'
 }

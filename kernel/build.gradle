@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 task wrapper(type: Wrapper) {
   gradleVersion = '3.5'
 }
@@ -32,6 +33,7 @@ subprojects {
       csv.enabled = false
     }
   }
+
   test.finalizedBy jacocoTestReport
 
   test {

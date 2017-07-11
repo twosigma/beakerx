@@ -1915,10 +1915,10 @@ define([
     var W = plotUtils.safeWidth(self.jqsvg);
     var H = plotUtils.safeHeight(self.jqsvg);
     var zoomLevel = (self.lastTransK || 1) + ((W / box.w + H / box.h) / 2); // Calculate average zoom level
-    var transform = d3.zoomIdentity.scale(zoomLevel);
+    var transform = d3.zoomTransform(self.svg.node());
 
     self.lastTransK = zoomLevel;
-    self.svg.call(self.zoomObj.transform, transform);
+    transform.k = zoomLevel;
 
     self.calcMapping(true);
     self.emitZoomLevelChange();

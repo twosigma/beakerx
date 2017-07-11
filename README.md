@@ -34,28 +34,21 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ## Build and run
 
-
 ```
-conda create -y -n beakerx python=3.5 jupyter pandas
+conda create -y -n beakerx python=3.5 jupyter pandas openjdk
 source activate beakerx
-conda install -y -c conda-forge openjdk
-(cd kernel; ./gradlew --no-daemon build kernelInstall)
-(cd beakerx/js; yarn install)
-(cd beakerx; pip install -e .)
-python -m beakerx.install --enable --prefix="${CONDA_PREFIX}"
-jupyter notebook
+pip install -e beakerx --verbose
+jupyter nbextension install --py --symlink --sys-prefix beakerx
+jupyter nbextension enable --py --sys-prefix beakerx
 ```
 
-## Build including C++ kernel
-Make sure you have clang installed, then:
-```
-./gradlew --no-daemon build -DincludeCpp=true
-./gradlew --no-daemon kernelInstall -DincludeCpp=true
-```
+## Usage
+
+Start the Jupyter Notebook server: `jupyter notebook`
 
 ## Update after Java change
 The kernels are installed to run out of the repo, so just a build should update the java code.
-* `./gradlew build`
+* `(cd kernel; ./gradlew build)`
 
 ## Update after JS change
 

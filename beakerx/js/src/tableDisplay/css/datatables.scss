@@ -105,7 +105,11 @@ table.dataTable {
     > .selected,
     > .ui-selected,
     > .ui-selecting {
-      background-color: #B0BED9;
+        background-color: #B0BED9;
+
+      &[class*="sorting_"] {
+        background-color: #bec9e0 !important;
+      }
     }
   }
 }

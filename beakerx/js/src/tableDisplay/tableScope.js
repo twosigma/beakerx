@@ -1497,30 +1497,6 @@ define([
         }
       });
 
-      // if (obj.type === 8) { //datetime
-      //   items = items.concat(getTimeSubitems());
-      //   return;
-      // }
-      // var item = {
-      //   title: obj.name,
-      //   isChecked: function(container) {
-      //     var colIdx = container.data('columnIndex');
-      //     return self.actualtype[self.colorder[colIdx] - 1] === obj.type;
-      //   }
-      // };
-      // if (obj.type === 4) { //double with precision
-      //   item.items = getPrecisionSubitems;
-      // } else {
-      //   item.action = function(el) {
-      //     var container = el.closest('.bko-header-menu');
-      //     var colIdx = container.data('columnIndex');
-      //
-      //     self.getCellDisp[self.colorder[colIdx] - 1] = obj.type;
-      //     self.actualtype[self.colorder[colIdx] - 1] = obj.type;
-      //     self.applyChanges();
-      //   }
-      // };
-
       return items;
     };
 

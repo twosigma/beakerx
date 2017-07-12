@@ -40,3 +40,15 @@ subprojects {
     systemProperties 'java.awt.headless': "true"
   }
 }
+
+def windows() {
+  return System.getProperty('os.name').contains('Windows')
+}
+
+def classPathSeparator() {
+  if (windows()) {
+    return ";"
+  } else {
+    return ":"
+  }
+}

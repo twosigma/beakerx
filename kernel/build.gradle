@@ -38,5 +38,10 @@ subprojects {
 
   test {
     systemProperties 'java.awt.headless': "true"
+    if (project.hasProperty('showTestOut')){
+      testLogging {
+        showStandardStreams = true
+      }
+    }
   }
 }

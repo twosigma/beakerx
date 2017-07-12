@@ -416,7 +416,7 @@ define([
           if (_.isObject(value) && value.type === 'Date') {
             return bkUtils.formatTimestamp(value.timestamp, self.tz, format);
           }
-          var milli = value / 1000 / 1000;
+          var milli = value * 1000;
           return bkUtils.formatTimestamp(milli, self.tz, format);
         }
         return value;
@@ -844,7 +844,7 @@ define([
       };
     }
 
-    if (self.types[index] === 'integer') {
+    if (self.types[index] === 'integer' || self.types[index] === 'int64') {
       return {
         actualtype: 2,
         actualalign: 'R'
@@ -1483,6 +1483,12 @@ define([
                      (unit === self.formatForTimes || unit == 'DATETIME' && _.isEmpty(self.formatForTimes));
             },
             action: function(el) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+
+              self.getCellDisp[self.colorder[colIdx] - 1] = 8;
+              self.actualtype[self.colorder[colIdx] - 1] = 8;
+
               self.changeTimeFormat(unit);
             }
           };
@@ -1490,6 +1496,30 @@ define([
           items.push(item);
         }
       });
+
+      // if (obj.type === 8) { //datetime
+      //   items = items.concat(getTimeSubitems());
+      //   return;
+      // }
+      // var item = {
+      //   title: obj.name,
+      //   isChecked: function(container) {
+      //     var colIdx = container.data('columnIndex');
+      //     return self.actualtype[self.colorder[colIdx] - 1] === obj.type;
+      //   }
+      // };
+      // if (obj.type === 4) { //double with precision
+      //   item.items = getPrecisionSubitems;
+      // } else {
+      //   item.action = function(el) {
+      //     var container = el.closest('.bko-header-menu');
+      //     var colIdx = container.data('columnIndex');
+      //
+      //     self.getCellDisp[self.colorder[colIdx] - 1] = obj.type;
+      //     self.actualtype[self.colorder[colIdx] - 1] = obj.type;
+      //     self.applyChanges();
+      //   }
+      // };
 
       return items;
     };
@@ -2180,7 +2210,7 @@ define([
           self.getCellDispOpts.push(self.allStringTypes);
         } else if (self.types[order - 1] === 'double') {
           self.getCellDispOpts.push(self.allDoubleTypes);
-        } else if (self.types[order - 1] === 'integer') {
+        } else if (self.types[order - 1] === 'integer' || self.types[order - 1] === 'int64') {
           self.getCellDispOpts.push(self.allIntTypes);
         } else if (self.types[order - 1] === 'time' || self.types[order - 1] === 'datetime') {
           self.getCellDispOpts.push(self.allTimeTypes);

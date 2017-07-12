@@ -61,6 +61,7 @@ else:
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 root = os.path.abspath(pjoin(here, os.pardir))
+kernel_path = root + '/kernel'
 is_repo = os.path.exists(pjoin(root, '.git'))
 node_modules = pjoin(here, 'js', 'node_modules')
 node_modules_path = ':'.join([
@@ -388,9 +389,9 @@ def copy_files(src, dest):
     return CopyFiles
 
 
-def run_gradle(path=root, cmd='build'):
+def run_gradle(path=kernel_path, cmd='build'):
     """Return a Command for running gradle scripts.
-    
+
     Parameters
     ----------
     path: str, optional

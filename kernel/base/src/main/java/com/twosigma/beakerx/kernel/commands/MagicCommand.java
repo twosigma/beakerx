@@ -23,6 +23,7 @@ import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 
+import com.google.common.collect.Maps;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.ImportPath;
@@ -39,11 +40,10 @@ import com.twosigma.beakerx.mimetype.MIMEContainer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -177,6 +177,7 @@ public class MagicCommand {
   private MagicCommandFunctionality classpathAddJar() {
     return (code, command, message, executionCount) -> {
       String[] split = command.split(" ");
+      Map<Path, String> pathWithJarNames = Maps.newHashMap();
 
       try {
         if (split.length != 4) {
@@ -186,14 +187,17 @@ public class MagicCommand {
         String path = split[3];
         if (doesPathContainsWildCards(path)) {
           validateWildcardPath(path);
-          getPaths(path)
-              .forEach(currentPath -> kernel.addJarToClasspath(new PathToJar(currentPath)));
+          pathWithJarNames.putAll(getPaths(path));
+          pathWithJarNames.keySet().forEach(currentPath -> this.kernel.addJarToClasspath(new PathToJar(currentPath.toString())));
         } else {
           validatePath(path);
+          Path currentPath = Paths.get(path);
+          pathWithJarNames.put(currentPath, currentPath.getFileName().toString());
           this.kernel.addJarToClasspath(new PathToJar(path));
         }
 
-        return getMagicCommandItem(code, message, executionCount);
+
+        return getMagicCommandItem(pathWithJarNames.values(), code, message, executionCount);
       } catch (IllegalStateException e) {
         return new MagicCommandItemWithResult(
                 messageCreator
@@ -214,14 +218,13 @@ public class MagicCommand {
     return path.length() - path.replace("*", "").length() == 1;
   }
 
-  private List<String> getPaths(String pathWithWildcard) {
+  private Map<Path, String> getPaths(String pathWithWildcard) {
     String pathWithoutWildcards = pathWithWildcard.replace("*", "");
     try {
 
-      List<String> paths = Files.list(Paths.get(pathWithoutWildcards))
-                                .map(Path::toString)
-                                .filter(path -> path.toLowerCase().endsWith(".jar"))
-                                .collect(Collectors.toList());
+      Map<Path, String> paths = Files.list(Paths.get(pathWithoutWildcards))
+                                .filter(path -> path.toString().toLowerCase().endsWith(".jar"))
+                                .collect(Collectors.toMap(p -> p, o -> o.getFileName().toString()));
 
       if (paths == null || paths.isEmpty()) {
         throw new IllegalStateException("Cannot find any jars files in selected path");
@@ -238,10 +241,24 @@ public class MagicCommand {
     return path.contains("*");
   }
 
+  private MagicCommandItem getMagicCommandItem(Collection<String> values, Code code, Message message, int executionCount) {
+    String textMessage = "Added jar" + (values.size() > 1 ? "s: " : ": ") + values;
+
+    if (code.takeCodeWithoutCommand().isPresent()) {
+      return new MagicCommandItemWithCode(code.takeCodeWithoutCommand().get());
+    }
+
+    return new MagicCommandItemWithResult(
+            messageCreator
+                    .buildOutputMessage(message, textMessage, false),
+            messageCreator.buildReplyWithoutStatus(message, executionCount));
+  }
+
   private MagicCommandItem getMagicCommandItem(Code code, Message message, int executionCount) {
     if (code.takeCodeWithoutCommand().isPresent()) {
       return new MagicCommandItemWithCode(code.takeCodeWithoutCommand().get());
     }
+
     return new MagicCommandItemWithReply(
             messageCreator.buildReplyWithoutStatus(message, executionCount));
   }

@@ -75,7 +75,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(3);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
   }
 
   @Test
@@ -151,7 +151,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //when
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(3);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
     assertThat(kernel.getSentMessages().size()).isEqualTo(1);
     assertThat(kernel.getCode()).isNull();
   }

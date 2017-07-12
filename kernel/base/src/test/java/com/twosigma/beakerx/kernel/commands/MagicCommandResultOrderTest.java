@@ -66,7 +66,7 @@ public class MagicCommandResultOrderTest {
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(result.getResultMessage().isPresent()).isFalse();
+    assertThat(result.getResultMessage().isPresent()).isTrue();
   }
 
   @Test

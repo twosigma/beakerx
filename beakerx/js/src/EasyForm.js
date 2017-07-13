@@ -60,10 +60,7 @@ var EasyFormView = widgets.BoxView.extend({
       .addClass('widget-vbox');
 
     var formTitle = this.model.get('easyFormName');
-    if (formTitle === undefined){
-        var plotModel = that.model.get('model');
-        formTitle = plotModel.easyFormName;
-    }
+
     this.$fieldset = $('<fieldset></fieldset>').addClass('beaker-fieldset');
     this.$legend = $('<legend>'+formTitle+'</legend>');
 

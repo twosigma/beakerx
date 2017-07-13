@@ -16,8 +16,8 @@
     "ipywidgets"
   ],
   "scripts": {
-    "prepublish": "webpack",
-    "postinstall": "webpack",
+    "build": "webpack",
+    "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "stats": "webpack --env production --profile --json > stats.json"
   },

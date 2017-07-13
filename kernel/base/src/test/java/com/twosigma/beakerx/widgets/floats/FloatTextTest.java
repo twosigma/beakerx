@@ -15,9 +15,8 @@
  */
 package com.twosigma.beakerx.widgets.floats;
 
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
-import org.assertj.core.api.Assertions;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
-public class FloatProgressTest {
+public class FloatTextTest {
 
   private KernelTest groovyKernel;
 
@@ -43,39 +42,27 @@ public class FloatProgressTest {
   }
 
   @Test
-  public void shouldSendCommOpenWhenCreate() throws Exception {
+  public void createByEmptyConstructor_sendCommOpenMessage() throws Exception {
     //given
     //when
-    new FloatProgress();
+    new FloatText();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), FloatProgress.MODEL_NAME_VALUE, FloatProgress.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), FloatText.MODEL_NAME_VALUE, FloatText.VIEW_NAME_VALUE);
   }
 
   @Test
-  public void shouldSendCommMsgWhenOrientationChange() throws Exception {
+  public void setValue_sendCommMessage() throws Exception {
     //given
-    FloatProgress floatProgress = floatProgress();
+    FloatText floatText = floatText();
     //when
-    floatProgress.setOrientation("vertical");
+    floatText.setValue(5f);
     //then
-    verifyMsgForProperty(groovyKernel, FloatProgress.ORIENTATION, "vertical");
+    verifyMsgForProperty(groovyKernel, FloatText.VALUE, 5f);
   }
 
-  @Test
-  public void setOrientation_hasThatOrientation() throws Exception {
-    String expected = "test";
-    //given
-    FloatProgress floatProgress = floatProgress();
-    //when
-    floatProgress.setOrientation(expected);
-    //then
-    Assertions.assertThat(floatProgress.getOrientation()).isEqualTo(expected);
-  }
-
-  private FloatProgress floatProgress() throws NoSuchAlgorithmException {
-    FloatProgress progress = new FloatProgress();
+  private FloatText floatText() throws NoSuchAlgorithmException {
+    FloatText floatText = new FloatText();
     groovyKernel.clearPublishedMessages();
-    return progress;
+    return floatText;
   }
-
 }

@@ -36,11 +36,11 @@ public abstract class OutputContainerLayoutManager {
 
   public abstract void display(OutputContainer container);
 
-  protected static List<Widget> getWidgets(OutputContainer container) {
+  protected List<Widget> getWidgets(OutputContainer container) {
     return container.getItems().stream().map(x -> toWidget(x)).collect(Collectors.toList());
   }
 
-  protected static Widget toWidget(Object item) {
+  private Widget toWidget(Object item) {
     Widget widget = SerializeToString.getTableDisplay(item);
     if (widget == null && item instanceof Widget) {
       widget = (Widget) item;

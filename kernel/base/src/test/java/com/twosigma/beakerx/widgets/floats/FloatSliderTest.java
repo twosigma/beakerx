@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widgets.floats;
 
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -128,6 +129,50 @@ public class FloatSliderTest {
     floatSlider.setContinuous_update(false);
     //then
     verifyMsgForProperty(groovyKernel, FloatSlider.CONTINUOUS_UPDATE, false);
+  }
+
+  @Test
+  public void setOrientation_hasThatOrientation() throws Exception {
+    String expected = "test";
+    //given
+    FloatSlider floatSlider = floatSlider();
+    //when
+    floatSlider.setOrientation(expected);
+    //then
+    Assertions.assertThat(floatSlider.getOrientation()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setColor_hasThatColor() throws Exception {
+    String expected = "test_color";
+    //given
+    FloatSlider floatSlider = floatSlider();
+    //when
+    floatSlider.setSlider_color(expected);
+    //then
+    Assertions.assertThat(floatSlider.getSlider_color()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setReadout_hasThatReadoutFlag() throws Exception {
+    boolean expected = true;
+    //given
+    FloatSlider floatSlider = floatSlider();
+    //when
+    floatSlider.setReadOut(expected);
+    //then
+    Assertions.assertThat(floatSlider.getReadOut()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setContinuousUpdate_hasThatContinuousUpdateFlag() throws Exception {
+    boolean expected = true;
+    //given
+    FloatSlider floatSlider = floatSlider();
+    //when
+    floatSlider.setContinuous_update(expected);
+    //then
+    Assertions.assertThat(floatSlider.getContinuous_update()).isEqualTo(expected);
   }
 
   private FloatSlider floatSlider() throws NoSuchAlgorithmException {

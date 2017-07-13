@@ -14,7 +14,7 @@ jupyter-groovy-kernel.log
 .ipynb_checkpoints/
 /*.ipynb
 #.gitignore
-
+/gradle*
 beaker.egg-info/
 
 beakerx/static/

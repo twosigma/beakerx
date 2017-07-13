@@ -32,13 +32,13 @@ repositories {
 }
 
 dependencies {
-  compile project(':kernel:base')
+  compile project(':base')
   compile group: 'org.abstractmeta', name: 'compilation-toolbox', version: '0.3.2'
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
   antlr group: 'org.antlr', name: 'antlr4', version: '4.5'
   compile 'commons-io:commons-io:2.5'
 
-  testCompile project(':kernel:base').sourceSets.test.output
+  testCompile project(':base').sourceSets.test.output
   testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
   testCompile group: 'junit', name: 'junit', version: '4.12'
 }
@@ -119,7 +119,7 @@ def java_home = System.properties.'java.home'
 
 task makeCppKernelHeader(type: Exec) {
   workingDir './build/classes/main'
-  def jvmDir = project(':kernel:cpp').projectDir
+  def jvmDir = project(':cpp').projectDir
   commandLine 'javah', '-cp', "${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/resources/CppKernel.h', 'com.twosigma.beakerx.cpp.utils.CppKernel'
 }
 

@@ -17,6 +17,7 @@
 package com.twosigma.beakerx.kernel.commands;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.twosigma.beakerx.kernel.commands.MagicCommandFinder.find;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
@@ -35,10 +36,14 @@ import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResult;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -178,7 +183,16 @@ public class MagicCommand {
           throw new IllegalStateException("Wrong command format: " + CLASSPATH_ADD_JAR);
         }
 
-        this.kernel.addJarToClasspath(new PathToJar(split[3]));
+        String path = split[3];
+        if (doesPathContainsWildCards(path)) {
+          validateWildcardPath(path);
+          getPaths(path)
+              .forEach(currentPath -> kernel.addJarToClasspath(new PathToJar(currentPath)));
+        } else {
+          validatePath(path);
+          this.kernel.addJarToClasspath(new PathToJar(path));
+        }
+
         return getMagicCommandItem(code, message, executionCount);
       } catch (IllegalStateException e) {
         return new MagicCommandItemWithResult(
@@ -188,6 +202,40 @@ public class MagicCommand {
         );
       }
     };
+  }
+
+  private void validateWildcardPath(String path) {
+    if (!containsSingleWildcardSymbol(path) || !path.endsWith("*")) {
+      throw new IllegalStateException("Wildcard can only appear at end of classpath: " + path);
+    }
+  }
+
+  private Boolean containsSingleWildcardSymbol(String path) {
+    return path.length() - path.replace("*", "").length() == 1;
+  }
+
+  private List<String> getPaths(String pathWithWildcard) {
+    String pathWithoutWildcards = pathWithWildcard.replace("*", "");
+    try {
+
+      List<String> paths = Files.list(Paths.get(pathWithoutWildcards))
+                                .map(Path::toString)
+                                .filter(path -> path.toLowerCase().endsWith(".jar"))
+                                .collect(Collectors.toList());
+
+      if (paths == null || paths.isEmpty()) {
+        throw new IllegalStateException("Cannot find any jars files in selected path");
+      }
+
+      return paths;
+
+    } catch (IOException e) {
+      throw new IllegalStateException("Cannot find any jars files in selected path");
+    }
+  }
+
+  private Boolean doesPathContainsWildCards(String path) {
+    return path.contains("*");
   }
 
   private MagicCommandItem getMagicCommandItem(Code code, Message message, int executionCount) {
@@ -265,6 +313,11 @@ public class MagicCommand {
     }
 
     return output.toString();
+  }
+
+  private void validatePath(String path) {
+    checkState(!checkNotNull(path).isEmpty());
+    checkState(Paths.get(path).toFile().exists(), "Provided path is incorrect.");
   }
 
 }

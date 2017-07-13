@@ -54,5 +54,5 @@ def classPathSeparator() {
 }
 
 def pathToBaseLibs(){
-  return file("./base/build/baseLibs/*").getAbsolutePath()
+  return file("base/build/baseLibs/*").getAbsolutePath()
 }

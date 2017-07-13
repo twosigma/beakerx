@@ -13,10 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widgets.selections;
+package com.twosigma.beakerx.widgets.strings;
 
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,14 +26,15 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
-public class RadioButtonsTest {
+public class HTMLMathTest {
 
-  private KernelTest kernel;
+
+  private KernelTest groovyKernel;
 
   @Before
   public void setUp() throws Exception {
-    kernel = new KernelTest();
-    KernelManager.register(kernel);
+    groovyKernel = new KernelTest();
+    KernelManager.register(groovyKernel);
   }
 
   @After
@@ -45,34 +46,30 @@ public class RadioButtonsTest {
   public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     //when
-    new RadioButtons();
+    new HTMLMath();
     //then
-    verifyOpenCommMsg(kernel.getPublishedMessages(), RadioButtons.MODEL_NAME_VALUE, RadioButtons.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(
+        groovyKernel.getPublishedMessages(),
+        HTMLMath.MODEL_NAME_VALUE,
+        HTMLMath.VIEW_NAME_VALUE
+    );
   }
 
   @Test
   public void shouldSendCommMsgWhenValueChange() throws Exception {
+    String expected = "<b>123</b>";
     //given
-    RadioButtons widget = radioButtons();
+    HTMLMath widget = htmlMath();
     //when
-    widget.setValue("1");
+    widget.setValue(expected);
     //then
-    verifyMsgForProperty(kernel, RadioButtons.VALUE, "1");
+    verifyMsgForProperty(groovyKernel, HTMLMath.VALUE, expected);
   }
 
-  @Test
-  public void shouldSendCommMsgWhenOptionsChange() throws Exception {
-    //given
-    RadioButtons widget = radioButtons();
-    //when
-    widget.setOptions(new String[]{"2", "3"});
-    //then
-    verifyMsgForProperty(kernel, RadioButtons.OPTIONS_LABELS, new String[]{"2", "3"});
-  }
-
-  private RadioButtons radioButtons() throws NoSuchAlgorithmException {
-    RadioButtons widget = new RadioButtons();
-    kernel.clearPublishedMessages();
+  private HTMLMath htmlMath() throws NoSuchAlgorithmException {
+    HTMLMath widget = new HTMLMath();
+    groovyKernel.clearPublishedMessages();
     return widget;
   }
+
 }

@@ -885,7 +885,22 @@ define([
       styleEl.setAttribute('type', 'text/css');
       var elementStyles = this.getElementStyles(element);
 
-      elementStyles += this.getFontToInject({
+      var extraStylesCss = '';
+      if(extraStyles) {
+        extraStylesCss = extraStyles.join('\n');
+      }
+
+      styleEl.innerHTML = '<![CDATA[\n' + elementStyles + '\n' + extraStylesCss + '\n]]>';
+      var defsEl = document.createElement('defs');
+      defsEl.appendChild(styleEl);
+      element.insertBefore(defsEl, element.firstChild);
+    },
+    addInlineFonts: function(element) {
+      var styleEl = document.createElement('style');
+      styleEl.setAttribute('type', 'text/css');
+      var fontFace = '';
+
+      fontFace += this.getFontToInject({
         fontFamily: 'Lato',
         urlformats: [{
           base64: require('!base64-loader!./../shared/fonts/lato/Lato-Regular.woff'),
@@ -894,7 +909,7 @@ define([
         fontWeight: 'normal',
         fontStyle: 'normal'
       });
-      elementStyles += this.getFontToInject({
+      fontFace += this.getFontToInject({
         fontFamily: 'Lato',
         urlformats: [{
           base64: require('!base64-loader!./../shared/fonts/lato/Lato-Black.woff'),
@@ -904,12 +919,7 @@ define([
         fontStyle: 'normal'
       });
 
-      var extraStylesCss = '';
-      if(extraStyles) {
-        extraStylesCss = extraStyles.join('\n');
-      }
-
-      styleEl.innerHTML = '<![CDATA[\n' + elementStyles + '\n' + extraStylesCss + '\n]]>';
+      styleEl.innerHTML = '<![CDATA[\n' + fontFace + '\n]]>';
       var defsEl = document.createElement('defs');
       defsEl.appendChild(styleEl);
       element.insertBefore(defsEl, element.firstChild);

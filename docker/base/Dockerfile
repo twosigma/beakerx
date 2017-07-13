@@ -17,6 +17,8 @@ MAINTAINER BeakerX Feedback <beakerx-feedback@twosigma.com>
 
 RUN useradd beakerx --create-home
 
+ENV CONDA_DIR /opt/conda
+ENV PATH /opt/conda/bin:$PATH
 ENV NB_USER beakerx
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8

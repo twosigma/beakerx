@@ -29,12 +29,26 @@ def final mainClassToReplace = '__MAIN_CLASS__'
 
 mainClassName = 'com.twosigma.beakerx.clojure.kernel.Clojure'
 
+configurations {
+  provided
+}
+
+sourceSets {
+  main {
+    compileClasspath += configurations.provided
+  }
+  test {
+    compileClasspath += configurations.provided
+    runtimeClasspath += configurations.provided
+  }
+}
+
 repositories {
   mavenCentral()
 }
 
 dependencies {
-  compile project(':base')
+  provided project(':base')
   compile group: 'org.clojure', name: 'clojure', version: '1.8.0'
   compile group: 'com.cemerick', name: 'pomegranate', version: '0.3.1'
 
@@ -57,8 +71,8 @@ task prepareJson(dependsOn: 'build') {
     println "Copy kernel.json to build/libs/json/ and replacing PATH with clojure.jar path"
 
     def jarLocation = file('build/install/clojure/lib/').getAbsolutePath()
-    jarLocation = jarLocation.replace("\\", "/");
-    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/*").replace(mainClassToReplace, "$mainClassName")
+    jarLocation = jarLocation.replace("\\", "/")
+    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/*"+ classPathSeparator() + pathToBaseLibs()).replace(mainClassToReplace, "$mainClassName")
     def folder = file('build/libs/json')
     if (!folder.exists()) {
       println "Creating folder build/libs/json"

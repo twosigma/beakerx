@@ -24,7 +24,18 @@ def final mainClassToReplace = '__MAIN_CLASS__'
 mainClassName = 'com.twosigma.beakerx.javash.kernel.Java'
 
 configurations {
+  provided
   antlr
+}
+
+sourceSets {
+  main {
+    compileClasspath += configurations.provided
+  }
+  test {
+    compileClasspath += configurations.provided
+    runtimeClasspath += configurations.provided
+  }
 }
 
 repositories {
@@ -32,7 +43,7 @@ repositories {
 }
 
 dependencies {
-  compile project(':base')
+  provided project(':base')
   antlr group: 'org.antlr', name: 'antlr4', version: '4.5'
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
 
@@ -57,7 +68,7 @@ task prepareJson(dependsOn: 'build') {
 
     def jarLocation = file('build/install/java/lib/').getAbsolutePath()
     jarLocation = jarLocation.replace("\\", "/");
-    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/*").replace(mainClassToReplace, "$mainClassName")
+    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/*"+ classPathSeparator() + pathToBaseLibs()).replace(mainClassToReplace, "$mainClassName")
     def folder = file('build/libs/json')
     if (!folder.exists()) {
       println "Creating folder build/libs/json"

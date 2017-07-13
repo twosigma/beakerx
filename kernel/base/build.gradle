@@ -74,3 +74,12 @@ task prepareBuildVerion() {
 }
 
 compileJava.dependsOn prepareBuildVerion
+
+
+task copyDependencies(type: Copy) {
+    from configurations.runtime
+    from jar
+    into new File("build", 'baseLibs')
+}
+
+build.finalizedBy copyDependencies

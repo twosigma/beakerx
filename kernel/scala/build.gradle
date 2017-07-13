@@ -25,18 +25,24 @@ def final mainClassToReplace = '__MAIN_CLASS__'
 mainClassName = 'com.twosigma.beakerx.scala.kernel.Scala'
 
 configurations {
+  provided
   antlr
 }
 
 //need for compiling scala before java
 sourceSets {
   main {
+    compileClasspath += configurations.provided
     scala {
       srcDirs = ['src/main/scala', 'src/main/java']
     }
     java {
       srcDirs = []
     }
+  }
+  test {
+    compileClasspath += configurations.provided
+    runtimeClasspath += configurations.provided
   }
 }
 
@@ -45,7 +51,7 @@ repositories {
 }
 
 dependencies {
-  compile project(':base')
+  provided project(':base')
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
   compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.11'
   compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.11'
@@ -73,7 +79,7 @@ task prepareJson(dependsOn: 'build') {
 
     def jarLocation = file('build/install/scala/lib').getAbsolutePath()
     jarLocation = jarLocation.replace("\\", "/");
-    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/*").replace(mainClassToReplace, "$mainClassName")
+    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/*" + classPathSeparator() + pathToBaseLibs()).replace(mainClassToReplace, "$mainClassName")
     def folder = file('build/libs/json')
     if (!folder.exists()) {
       println "Creating folder build/libs/json"

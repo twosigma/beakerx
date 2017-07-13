@@ -33,7 +33,7 @@ repositories {
 
 dependencies {
   compile project(':base')
-  antlr group : 'org.antlr', name :'antlr4', version: '4.5'
+  antlr group: 'org.antlr', name: 'antlr4', version: '4.5'
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
 
   testCompile project(':base').sourceSets.test.output
@@ -57,7 +57,7 @@ task prepareJson(dependsOn: 'build') {
 
     def jarLocation = file('build/install/java/lib/').getAbsolutePath()
     jarLocation = jarLocation.replace("\\", "/");
-    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/java.jar" + classPathSeparator() + jarLocation + "/*").replace(mainClassToReplace,"$mainClassName")
+    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/*").replace(mainClassToReplace, "$mainClassName")
     def folder = file('build/libs/json')
     if (!folder.exists()) {
       println "Creating folder build/libs/json"
@@ -93,13 +93,13 @@ task kernelInstall(dependsOn: 'prepareJson') {
 }
 
 publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'com.twosigma'
-            artifactId 'beaker-kernel-java'
-            version '2.0-SNAPSHOT'
+  publications {
+    maven(MavenPublication) {
+      groupId 'com.twosigma'
+      artifactId 'beaker-kernel-java'
+      version '2.0-SNAPSHOT'
 
-            from components.java
-        }
+      from components.java
     }
+  }
 }

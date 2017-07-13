@@ -51,7 +51,7 @@ task prepareJson(dependsOn: 'build') {
 
     def jarLocation = file('build/install/kotlin/lib/').getAbsolutePath()
     jarLocation = jarLocation.replace("\\", "/");
-    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/kotlin.jar" + classPathSeparator() + jarLocation + "/*").replace(mainClassToReplace,"$mainClassName")
+    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/*").replace(mainClassToReplace, "$mainClassName")
     def folder = file('build/libs/json')
     if (!folder.exists()) {
       println "Creating folder build/libs/json"
@@ -87,13 +87,13 @@ task kernelInstall(dependsOn: 'prepareJson') {
 }
 
 publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'com.twosigma'
-            artifactId 'beaker-kernel-kotlin'
-            version '2.0-SNAPSHOT'
+  publications {
+    maven(MavenPublication) {
+      groupId 'com.twosigma'
+      artifactId 'beaker-kernel-kotlin'
+      version '2.0-SNAPSHOT'
 
-            from components.java
-        }
+      from components.java
     }
+  }
 }

@@ -59,7 +59,7 @@ task prepareJson(dependsOn: 'build') {
 
     def jarLocation = file('build/install/sql/lib/').getAbsolutePath()
     jarLocation = jarLocation.replace("\\", "/");
-    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/sql.jar" + classPathSeparator() + jarLocation + "/*").replace(mainClassToReplace,"$mainClassName")
+    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/*").replace(mainClassToReplace, "$mainClassName")
     def folder = file('build/libs/json')
     if (!folder.exists()) {
       println "Creating folder build/libs/json"

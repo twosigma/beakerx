@@ -70,13 +70,13 @@ In root project call
 
 `gradle clean`
 
-Go to /docker/base
+To build beakerx base image execute
 
-`docker build . -t beakerx-base`
+`docker build -t beakerx-base -f docker/base/Dockerfile .`
 
-Move to /docker
+To build beakerx image execute
 
-`docker build . -t beakerx`
+`docker build -t beakerx -f docker/Dockerfile .`
 
 Now if you would like to start BeakerX execute
 

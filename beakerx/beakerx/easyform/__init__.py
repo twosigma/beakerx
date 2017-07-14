@@ -1,4 +1,4 @@
-# Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,15 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .runtime import BeakerX
-from .plot import *
 from .easyform import *
-from ._version import version_info, __version__
-
-def _jupyter_nbextension_paths():
-    return [{
-        'section': 'notebook',
-        'src': 'static',
-        'dest': 'beakerx',
-        'require': 'beakerx/extension'
-    }]

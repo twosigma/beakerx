@@ -401,7 +401,7 @@ def run_gradle(path=kernel_path, cmd='build'):
     return Gradle
     
 
-def install_kernel(kernelspec_path='', kernelspec_name=''):
+def install_kernel(kernelspec_path='', kernelspec_name=None):
     """Install a Jupyter kernelspec.
     
     Parameters
@@ -412,19 +412,6 @@ def install_kernel(kernelspec_path='', kernelspec_name=''):
         The kernel ID name.
     """
 
-    class InstallKernel(BaseCommand):
-        description = 'Install a Jupyter kernelspec'
-
-        def run(self):
-            name = kernelspec_name if kernelspec_name else os.path.pardir()
-            classpath = [os.path.abspath('./beakerx/static/kernel/base/lib/*'), os.path.abspath('./beakerx/static/kernel/{name}/lib/*')].join(';' if sys.platform == 'win32' else ':')
-            with open(kernelspec_path) as infile, open(pjoin('tmp', 'kernel.json'), 'w') as outfile:
-                for line in infile:
-                    line = line.replace('__PATH__', classpath)
-                    outfile.write(line)
-            run(['jupyter', 'kernelspec', 'install', '--sys-prefix', '--replace', '--name', name, kernelspec_path], cwd=path)
-
-    return InstallKernel
     
 def install_kernels(kernels_dir=''):
     """Install all kernels in a directory.
@@ -439,10 +426,24 @@ def install_kernels(kernels_dir=''):
         description = 'Install all kernels in a directory'
 
         def run(self):
+            def install_kernel(kernelspec_path='', kernelspec_name=None):
+                name = kernelspec_name if kernelspec_name else os.path.basename(kernelspec_path)
+                classpath = os.path.abspath('./beakerx/static/kernel/base/lib/*') + (';' if sys.platform == 'win32' else ':') + os.path.abspath('./beakerx/static/kernel/{}/lib/*'.format(name))
+                lines = []
+                with open(pjoin(kernelspec_path, 'kernel.json')) as infile:
+                    for line in infile:
+                        line = line.replace('__PATH__', classpath)
+                        lines.append(line)
+                with open(pjoin(kernelspec_path, 'kernel.json'), 'w') as outfile:
+                    for line in lines:
+                        outfile.write(line)
+                run(['jupyter', 'kernelspec', 'install', '--sys-prefix', '--replace', '--name', name, kernelspec_path])
+                
             for dir, subdirs, files in os.walk(kernels_dir):
-                if 'kernel.json' not in files:
+                if 'kernel.json' in files:
+                    install_kernel(dir)
+                else:
                     continue
-                install_kernel(pjoin(dir, 'kernel.json'))
 
     return InstallKernels
 

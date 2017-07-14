@@ -15,7 +15,8 @@
 import json
 
 from beakerx.plot.utils import getValue
-from ipywidgets import Box, DOMWidget, Text, Label, Textarea, Button, SelectMultiple, Select, Dropdown, Checkbox, HBox, VBox, RadioButtons, register
+from ipywidgets import Box, DOMWidget, Text, Label, Textarea, Button, SelectMultiple, Select, Dropdown, Checkbox, HBox, \
+    VBox, RadioButtons, register
 from traitlets import Unicode, Bool, Int, Dict, ObjectName, Unicode, default
 
 
@@ -33,6 +34,7 @@ class DatePicker(DOMWidget):
     value = Unicode(default_value="").tag(sync=True)
     description = Unicode(default_value="").tag(sync=True)
 
+
 class TextArea(Textarea):
     def __init__(self, **kwargs):
         super(TextArea, self).__init__(**kwargs)
@@ -40,16 +42,18 @@ class TextArea(Textarea):
     width = Unicode(default_value="200").tag(sync=True)
     height = Unicode(default_value="200").tag(sync=True)
 
+
 class SelectMultipleWithRows(SelectMultiple):
-    def __init__(self,  **kwargs):
+    def __init__(self, **kwargs):
         super(SelectMultipleWithRows, self).__init__(**kwargs)
 
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     size = Int(5, help="The number of rows to display.").tag(sync=True)
 
+
 class SelectMultipleSingle(Select):
-    def __init__(self,  **kwargs):
+    def __init__(self, **kwargs):
         super(SelectMultipleSingle, self).__init__(**kwargs)
 
     _view_name = Unicode('SelectMultipleSingleView').tag(sync=True)
@@ -58,14 +62,17 @@ class SelectMultipleSingle(Select):
     _model_module = Unicode('beakerx').tag(sync=True)
     size = Int(5, help="The number of rows to display.").tag(sync=True)
 
+
 class ComboBox(Dropdown):
-    def __init__(self,  **kwargs):
+    def __init__(self, **kwargs):
         super(ComboBox, self).__init__(**kwargs)
+
     _view_name = Unicode('ComboBoxView').tag(sync=True)
     _model_name = Unicode('ComboBoxModel').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     editable = Bool(default_value=False).tag(sync=True)
+
 
 class EasyForm(Box):
     _view_name = Unicode('EasyFormView').tag(sync=True)
@@ -83,24 +90,26 @@ class EasyForm(Box):
         if self.easyFormName == "" and len(args) > 0:
             self.easyFormName = args[0]
 
+    def _handle_msg(self, msg):
+        print(msg)
 
     def addTextField(self, **kwargs):
         text = Text(description=getValue(kwargs, 'description', ""))
         text.width = getValue(kwargs, 'width', "")
-        self.children += (text, )
+        self.children += (text,)
         return text
 
     def addTextArea(self, **kwargs):
         textarea = TextArea(description=getValue(kwargs, 'description', ""))
-        textarea.width =  str(getValue(kwargs, 'width', 200)) + "px"
-        textarea.height =  str(getValue(kwargs, 'height', 200)) + "px"
-        self.children += (textarea, )
+        textarea.width = str(getValue(kwargs, 'width', 200)) + "px"
+        textarea.height = str(getValue(kwargs, 'height', 200)) + "px"
+        self.children += (textarea,)
         return textarea
 
     def addButton(self, **kwargs):
         button = Button(description=getValue(kwargs, 'description', ""))
         button.tag = getValue(kwargs, 'tag', "")
-        self.children += (button, )
+        self.children += (button,)
 
         return button
 
@@ -113,14 +122,13 @@ class EasyForm(Box):
         list.options = getValue(kwargs, 'options', [])
         list.size = getValue(kwargs, 'rows', 2)
 
-        self.children += (list, )
+        self.children += (list,)
 
         return list
 
     def addDatePicker(self, **kwargs):
         data_picker = DatePicker(description=getValue(kwargs, 'description', ""))
-        #data_picker.value = ""
-        self.children += (data_picker, )
+        self.children += (data_picker,)
 
         return data_picker
 
@@ -128,13 +136,13 @@ class EasyForm(Box):
         dropdown = ComboBox(description=getValue(kwargs, 'description', ""))
         dropdown.options = getValue(kwargs, 'options', [])
         dropdown.editable = getValue(kwargs, 'editable', False)
-        self.children += (dropdown, )
+        self.children += (dropdown,)
 
         return dropdown
 
     def addCheckBox(self, **kwargs):
         checkbox = Checkbox(description=getValue(kwargs, 'description', ""))
-        self.children += (checkbox, )
+        self.children += (checkbox,)
 
         return checkbox
 
@@ -148,9 +156,10 @@ class EasyForm(Box):
 
         for checkBoxItem in getValue(kwargs, 'options', []):
             checkbox = Checkbox(description=checkBoxItem)
-            box.children += (checkbox, )
-        layout.children += (Label(value=getValue(kwargs, 'value', "")), box, )
-        self.children += (layout, )
+            box.children += (checkbox,)
+        layout.children += (Label(value=getValue(kwargs, 'value', "")), box,)
+        self.children += (layout,)
+
         return layout
 
     def addRadioButtons(self, **kwargs):
@@ -158,14 +167,13 @@ class EasyForm(Box):
         radio_buttons = RadioButtons(options=getValue(kwargs, 'options', []), description=getValue(kwargs, 'value', ""))
 
         if orientation == EasyForm.VERTICAL:
-            self.children += (radio_buttons, )
+            self.children += (radio_buttons,)
         else:
             box = HBox()
-            box.children += (radio_buttons, )
-            self.children += (box, )
+            box.children += (radio_buttons,)
+            self.children += (box,)
 
         return radio_buttons
-
 
     def keySet(self):
         return self.children

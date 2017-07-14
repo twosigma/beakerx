@@ -38,6 +38,7 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 conda create -y -n beakerx python=3.5 jupyter pandas yarn
 source activate beakerx
 pip install -e beakerx --verbose
+(cd kernel; gradle staticContent)
 jupyter nbextension install --py --symlink --sys-prefix beakerx
 jupyter nbextension enable --py --sys-prefix beakerx
 ```

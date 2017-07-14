@@ -1862,16 +1862,24 @@ define([
 
     self.element.find(id + '_dropdown_menu')
       .on('click.bko-dropdown', function() {
-        var isOpen = $(this).parents('.dropdown').hasClass('open');
+        var $toggleBtn = $(this);
+        var isOpen = $toggleBtn.parent().hasClass('open');
+        var $dropdown = $toggleBtn.parent();
+        var $menu = $dropdown.find('> .dropdown-menu');
+        var height = $menu.height();
+        var pageHeight = window.innerHeight || document.documentElement.clientHeight;
+        var pixelsBelow = Math.ceil(height + $dropdown.offset().top - pageHeight);
+        var shouldPosition = pixelsBelow > 0;
 
         if (!isOpen) {
-          self.setCodeMirrorListener($(this));
+          self.setCodeMirrorListener($toggleBtn);
         }
-      });
 
-    // self.$on(GLOBALS.EVENTS.ADVANCED_MODE_TOGGLED, function() {
-    //   updateSize();
-    // });
+        $menu.css({
+          top: shouldPosition ? (- pixelsBelow - 20) : '100%',
+          left: shouldPosition ? '100%' : ''
+        });
+      });
 
     var inits = {'heightMatch': 'none'};
     if ((self.pagination.fixLeft + self.pagination.fixRight) > (self.columns.length - 1)) {

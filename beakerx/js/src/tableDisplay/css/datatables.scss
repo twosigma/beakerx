@@ -535,3 +535,28 @@ $fix-col-separator-width: 3px;
   opacity: 1;
   z-index: 900;
 }
+
+.dropdown-menu {
+  .list-showcolumn {
+    display: block;
+    border: none;
+    box-shadow: none;
+    position: relative;
+  }
+
+  .dropdown-menu-search {
+    width: 100%;
+    padding: 0 5px;
+
+    input {
+      width: 100%;
+    }
+
+    .fa-search {
+      cursor: default;
+      right: 6px;
+      top: 6px;
+      opacity: 0.5;
+    }
+  }
+}

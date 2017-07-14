@@ -407,6 +407,52 @@ def run_gradle(path=kernel_path, cmd='build'):
             run(['./gradlew', '--no-daemon', cmd], cwd=path)
 
     return Gradle
+    
+
+def install_kernel(kernelspec_path='', kernelspec_name=''):
+    """Install a Jupyter kernelspec.
+    
+    Parameters
+    ----------
+    kernelspec_path: str
+        The path to the kernel.json.
+    kernelspec_name: str, optional
+        The kernel ID name.
+    """
+
+    class InstallKernel(BaseCommand):
+        description = 'nstall a Jupyter kernelspec'
+
+        def run(self):
+            name = kernelspec_name if kernelspec_name else os.path.pardir()
+            classpath = [os.path.abspath('./beakerx/static/kernel/base/*'), os.path.abspath('./beakerx/static/kernel/{name}/lib/*'.format(name))].join(':')
+            with open(kernelspec_path) as infile, open(pjoin('tmp', 'kernel.json'), 'w') as outfile:
+                for line in infile:
+                    line = line.replace('__PATH__', classpath)
+                    outfile.write(line)
+            run(['jupyter', 'kernelspec', 'install', '--sys-prefix', '--replace', '--name', name, kernelspec_path], cwd=path)
+
+    return InstallKernel
+    
+def install_kernels(kernels_dir=''):
+    """Install all kernels in a directory.
+    
+    Parameters
+    ----------
+    kernels_dir: str
+        The path of a directory containing kernels.
+    """
+
+    class InstallKernels(BaseCommand):
+        description = 'Install all kernels in a directory'
+
+        def run(self):
+            for dir, subdirs, files in os.walk(kernels_dir):
+                if 'kernel.json' not in files:
+                    continue
+                install_kernel(pjoin(dir, 'kernel.json'))
+
+    return InstallKernels
 
 
 def ensure_targets(targets):

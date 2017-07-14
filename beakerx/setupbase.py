@@ -296,7 +296,7 @@ def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='
     return Yarn
 
 
-def install_nb_conda_kernels(enable=False, disable=False, prefix=None):
+def update_kernelspec_class(enable=False, disable=False, prefix=None):
     """Return a Command for installing the nb_conda_kernels config piece.
 
     Parameters
@@ -307,8 +307,8 @@ def install_nb_conda_kernels(enable=False, disable=False, prefix=None):
         Disable BeakerX server config
     """
 
-    class NBCondaKernels(BaseCommand):
-        description = 'Install the nb_conda_kernels config piece'
+    class UpdateKernelspec(BaseCommand):
+        description = 'Update kernelspec_class in jupyter_notebook_config.json'
 
         def run(self):
             CKSM = "beakerx.kernel_spec.BeakerXKernelSpec"
@@ -358,7 +358,7 @@ def install_nb_conda_kernels(enable=False, disable=False, prefix=None):
 
             log.info("{}abled BeakerX server config".format("En" if enable else "Dis"))
 
-    return NBCondaKernels
+    return UpdateKernelspec
     
 
 def copy_files(src, dest):
@@ -413,7 +413,7 @@ def install_kernel(kernelspec_path='', kernelspec_name=''):
     """
 
     class InstallKernel(BaseCommand):
-        description = 'nstall a Jupyter kernelspec'
+        description = 'Install a Jupyter kernelspec'
 
         def run(self):
             name = kernelspec_name if kernelspec_name else os.path.pardir()

@@ -1873,6 +1873,18 @@ define([
         if (!isOpen) {
           self.setCodeMirrorListener($(this));
         }
+      })
+      .parent()
+      .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
+        var searchText = this.value;
+
+        $(this).parent().next('.list-showcolumn').find('li').each(function (index, element) {
+          $(element).toggleClass('hidden', searchText ? element.textContent.indexOf(searchText) === -1 : false);
+        });
+      }, 250))
+      .on('click', '.dropdown-menu-search .fa-search', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
       });
 
     // self.$on(GLOBALS.EVENTS.ADVANCED_MODE_TOGGLED, function() {

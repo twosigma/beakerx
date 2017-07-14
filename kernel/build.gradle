@@ -77,13 +77,15 @@ def createKernelJson(kernelIdName, pathToKernelLibs, pathToReplace, mainClassToR
   text
 }
 
-def saveBeakerxStaticKernelJson(kernelIdName, mainClassName, pathToReplace, mainClassToReplace) {
-  def kernelJson = createKernelJson(
+def createStaticKernelJson(kernelIdName, mainClassToReplace, mainClassName) {
+  def text = file(kernelIdName + '/kernel.json').text.replace(mainClassToReplace, mainClassName)
+  text
+}
+
+def saveBeakerxStaticKernelJson(kernelIdName, mainClassName, mainClassToReplace) {
+  def kernelJson = createStaticKernelJson(
           kernelIdName,
-          pathToStaticContent() + kernelIdName + '/lib/',
-          pathToReplace,
           mainClassToReplace,
-          pathToStaticBaseLibs(),
           mainClassName)
   file(pathToStaticContent() + kernelIdName + "/kernel.json").withWriter { w ->
     w << kernelJson

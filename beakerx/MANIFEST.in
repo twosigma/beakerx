@@ -1,1 +1,6 @@
-recursive-include beakerx/static *.*
+recursive-include beakerx/static *
+
+include LICENSE
+include CONTRIBUTING.md
+include README.md
+include setupbase.py

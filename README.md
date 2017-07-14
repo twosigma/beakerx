@@ -32,12 +32,13 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 * [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
-## Build and run
+## Install and build
 
 ```
-conda create -y -n beakerx python=3.5 jupyter pandas openjdk
+conda create -y -n beakerx python=3.5 jupyter pandas yarn
 source activate beakerx
 pip install -e beakerx --verbose
+(cd kernel; gradle staticContent)
 jupyter nbextension install --py --symlink --sys-prefix beakerx
 jupyter nbextension enable --py --sys-prefix beakerx
 ```

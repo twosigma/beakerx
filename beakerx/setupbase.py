@@ -296,7 +296,7 @@ def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='
     return Yarn
 
 
-def install_nb_conda_kernels(enable=False, disable=False, prefix=None):
+def update_kernelspec_class(enable=False, disable=False, prefix=None):
     """Return a Command for installing the nb_conda_kernels config piece.
 
     Parameters
@@ -307,8 +307,8 @@ def install_nb_conda_kernels(enable=False, disable=False, prefix=None):
         Disable BeakerX server config
     """
 
-    class NBCondaKernels(BaseCommand):
-        description = 'Install the nb_conda_kernels config piece'
+    class UpdateKernelspec(BaseCommand):
+        description = 'Update kernelspec_class in jupyter_notebook_config.json'
 
         def run(self):
             CKSM = "beakerx.kernel_spec.BeakerXKernelSpec"
@@ -358,7 +358,7 @@ def install_nb_conda_kernels(enable=False, disable=False, prefix=None):
 
             log.info("{}abled BeakerX server config".format("En" if enable else "Dis"))
 
-    return NBCondaKernels
+    return UpdateKernelspec
     
 
 def copy_files(src, dest):
@@ -374,17 +374,9 @@ def copy_files(src, dest):
         description = 'Copy files from one directory to another.'
 
         def run(self):
-            for item in os.listdir(src):
-                s = pjoin(src, item)
-                d = pjoin(dest, item)
-                if isdir(s):
-                    if exists(d):
-                        shutil.rmtree(d)
-                    shutil.copytree(s, d)
-                else:
-                    if exists(d):
-                        os.remove(d)
-                    shutil.copy2(s, d)
+            if exists(dest):
+                shutil.rmtree(dest)
+            shutil.copytree(src, dest)
 
     return CopyFiles
 
@@ -407,6 +399,53 @@ def run_gradle(path=kernel_path, cmd='build'):
             run(['./gradlew', '--no-daemon', cmd], cwd=path)
 
     return Gradle
+    
+
+def install_kernel(kernelspec_path='', kernelspec_name=None):
+    """Install a Jupyter kernelspec.
+    
+    Parameters
+    ----------
+    kernelspec_path: str
+        The path to the kernel.json.
+    kernelspec_name: str, optional
+        The kernel ID name.
+    """
+
+    
+def install_kernels(kernels_dir=''):
+    """Install all kernels in a directory.
+    
+    Parameters
+    ----------
+    kernels_dir: str
+        The path of a directory containing kernels.
+    """
+
+    class InstallKernels(BaseCommand):
+        description = 'Install all kernels in a directory'
+
+        def run(self):
+            def install_kernel(kernelspec_path='', kernelspec_name=None):
+                name = kernelspec_name if kernelspec_name else os.path.basename(kernelspec_path)
+                classpath = os.path.abspath('./beakerx/static/kernel/base/lib/*') + (';' if sys.platform == 'win32' else ':') + os.path.abspath('./beakerx/static/kernel/{}/lib/*'.format(name))
+                lines = []
+                with open(pjoin(kernelspec_path, 'kernel.json')) as infile:
+                    for line in infile:
+                        line = line.replace('__PATH__', classpath)
+                        lines.append(line)
+                with open(pjoin(kernelspec_path, 'kernel.json'), 'w') as outfile:
+                    for line in lines:
+                        outfile.write(line)
+                run(['jupyter', 'kernelspec', 'install', '--sys-prefix', '--replace', '--name', name, kernelspec_path])
+                
+            for dir, subdirs, files in os.walk(kernels_dir):
+                if 'kernel.json' in files:
+                    install_kernel(dir)
+                else:
+                    continue
+
+    return InstallKernels
 
 
 def ensure_targets(targets):

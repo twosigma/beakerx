@@ -100,11 +100,17 @@ define([
     this.data2scrX = null;
     this.data2scrY = null;
     this.plotDisplayModel = null;
+    this.plotDisplayView = null;
   }
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
     this.plotDisplayModel = plotDisplayModel;
   };
+  
+  PlotScope.prototype.setWidgetView = function(plotDisplayView) {
+    this.plotDisplayView = plotDisplayView;
+  };
+
 
   PlotScope.prototype.initLayout = function() {
     var self = this;
@@ -486,7 +492,7 @@ define([
             	plotId: plotId,
             	itemId: data.uid, 
             	params: params
-            	});
+            	}, this.plotDisplayView.callbacks());
           }
         } else if (data.keys != null && data.keys.indexOf(key) > -1) {
           this.legendDone = false;
@@ -497,7 +503,8 @@ define([
           } else {
           	var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
           	params.key = key;
-          	this.plotDisplayModel.send({event: 'onkey', plotId: plotId, itemId: data.uid, params: params});
+          	this.plotDisplayModel.send({event: 'onkey', plotId: plotId, itemId: data.uid, params: params},
+          	    this.plotDisplayView.callbacks());
           }
         }
       }
@@ -538,7 +545,7 @@ define([
                 	plotId: plotId,
                 	itemId: item.uid, 
                 	params: params
-                	});
+                	}, self.plotDisplayView.callbacks());
               }
             }else{
               self.legendDone = false;
@@ -548,7 +555,13 @@ define([
                 self.model.onClick(plotId, item, e);
                 return;
               } else {
-               	self.plotDisplayModel.send({event: 'onclick', plotId: plotId, itemId: item.uid, params: plotUtils.getActionObject(self.model.getCellModel().type, e)});
+               	self.plotDisplayModel.send(
+               	    {event: 'onclick', 
+               	      plotId: plotId,
+               	      itemId: item.uid, 
+               	      params: plotUtils.getActionObject(self.model.getCellModel().type, e)
+               	    }, self.plotDisplayView.callbacks());
+               	    
               }
             }
           }
@@ -1626,8 +1639,7 @@ define([
     var d3trans = d3.event.transform || d3.event;
     self.lastx = d3trans.x;
     self.lasty = d3trans.y;
-    var newK = ((d3trans.k-1)*0.5)+1;
-    self.lastk = 1/newK;
+    self.lastTransK = d3trans.k;
 
     var svgNode = self.svg.node();
 
@@ -1664,22 +1676,21 @@ define([
         self.zoomed = true;
       }
 
-      var newK = ((d3trans.k-1)/2)+1;
-      var dx = d3trans.x - self.lastx,
-        dy = d3trans.y - self.lasty,
-        k = 1 / newK,
-        kDiff = k - self.lastk,
-        kNew = k/self.lastk;
+      var ZOOM_TICK = 0.1;
+      var zoomDirection = Math.sign(self.lastTransK - d3trans.k);
+      var dx = d3trans.x - self.lastx;
+      var dy = d3trans.y - self.lasty;
+      var zoomRate =  Math.abs(zoomDirection + ZOOM_TICK);
 
       self.lastx = d3trans.x;
       self.lasty = d3trans.y;
-      self.lastk = k;
+      self.lastTransK = d3trans.k;
 
       var tx = -dx / W * focus.xspan,
         ty = dy / H * focus.yspan,
         ty_r = dy / H * focus.yspan_r;
 
-      if(kDiff === 0){
+      if(zoomDirection === 0){
         // for translating, moving the graph
         if (focus.xl + tx>=0 && focus.xr + tx<=1){
           focus.xl += tx;
@@ -1729,8 +1740,8 @@ define([
         if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin) {
           // scale y
           var ym = focus.yl + self.scr2dataYp(my) * focus.yspan;
-          var nyl = ym - kNew * (ym - focus.yl),
-            nyr = ym + kNew * (focus.yr - ym),
+          var nyl = ym - zoomRate * (ym - focus.yl),
+            nyr = ym + zoomRate * (focus.yr - ym),
             nyspan = nyr - nyl;
           if (nyspan >= level.minSpanY && nyspan <= level.maxScaleY) {
             focus.yl = nyl;
@@ -1747,8 +1758,8 @@ define([
 
           // scale y right
           var ym_r = focus.yl_r + self.scr2dataYp_r(my) * focus.yspan_r;
-          var nyl_r = ym_r - kNew * (ym_r - focus.yl_r),
-            nyr_r = ym_r + kNew * (focus.yr_r - ym_r),
+          var nyl_r = ym_r - zoomRate * (ym_r - focus.yl_r),
+            nyr_r = ym_r + zoomRate * (focus.yr_r - ym_r),
             nyspan_r = nyr_r - nyl_r;
           if (nyspan_r >= level.minSpanY && nyspan_r <= level.maxScaleY) {
             focus.yl_r = nyl_r;
@@ -1766,8 +1777,8 @@ define([
         if (mx >= self.layout.leftLayoutMargin) {
           // scale x
           var xm = focus.xl + self.scr2dataXp(mx) * focus.xspan;
-          var nxl = xm - kNew * (xm - focus.xl),
-            nxr = xm + kNew * (focus.xr - xm),
+          var nxl = xm - zoomRate * (xm - focus.xl),
+            nxr = xm + zoomRate * (focus.xr - xm),
             nxspan = nxr - nxl;
           if(nxspan >= level.minSpanX && nxspan <= level.maxScaleX) {
             focus.xl = nxl;
@@ -1817,6 +1828,7 @@ define([
         self.interactMode = "zoom";
       }
 
+      self.enableZoomWheel();
     }
 
     self.jqsvg.css("cursor", "auto");
@@ -1848,7 +1860,6 @@ define([
 
     var t = d3.zoomIdentity.translate(0, 0).scale(1);
     self.svg.call(self.zoomObj.transform, t);
-    self.lastk = 1;
 
     var lMargin = self.layout.leftLayoutMargin,
       bMargin = self.layout.bottomLayoutMargin;
@@ -1898,6 +1909,17 @@ define([
     focus.xspan = focus.xr - focus.xl;
     focus.yspan = focus.yr - focus.yl;
     focus.yspan_r = focus.yr_r - focus.yl_r;
+
+
+    // Calculate zoom level
+    var W = plotUtils.safeWidth(self.jqsvg);
+    var H = plotUtils.safeHeight(self.jqsvg);
+    var zoomLevel = (self.lastTransK || 1) + ((W / box.w + H / box.h) / 2); // Calculate average zoom level
+    var transform = d3.zoomTransform(self.svg.node());
+
+    self.lastTransK = zoomLevel;
+    transform.k = zoomLevel;
+
     self.calcMapping(true);
     self.emitZoomLevelChange();
   };
@@ -2184,8 +2206,6 @@ define([
 
     self.resetSvg();
     self.zoomObj = d3.zoom();
-
-    self.lastk = 1;
 
     // set zoom object
     self.svg

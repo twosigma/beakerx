@@ -29,27 +29,26 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ## Dependencies
 
-* [Oracle Java8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 * [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
 ## Build and run
 
-
 ```
-conda create -y -n beakerx python=3.5 jupyter pandas
+conda create -y -n beakerx python=3.5 jupyter pandas openjdk
 source activate beakerx
-./gradlew --no-daemon build
-./gradlew --no-daemon kernelInstall
-./gradlew --no-daemon :beakerx:install
-(cd beakerx; pip install -e .)
-python -m beakerx.install --enable --prefix="${CONDA_PREFIX}"
-jupyter notebook
+pip install -e beakerx --verbose
+jupyter nbextension install --py --symlink --sys-prefix beakerx
+jupyter nbextension enable --py --sys-prefix beakerx
 ```
+
+## Usage
+
+Start the Jupyter Notebook server: `jupyter notebook`
 
 ## Update after Java change
 The kernels are installed to run out of the repo, so just a build should update the java code.
-* `./gradlew build`
+* `(cd kernel; ./gradlew build)`
 
 ## Update after JS change
 
@@ -57,7 +56,7 @@ The kernels are installed to run out of the repo, so just a build should update 
 
 ## Beaker Notebooks Converter
 ```
-python -m bkr2ipynb *.bkr
+python -m beakerx.bkr2ipynb *.bkr
 ```
 
 ## Groovy with Interactive Plotting and Table Saw:
@@ -65,6 +64,23 @@ python -m bkr2ipynb *.bkr
 
 ## Autotranslation from Python to JavaScript:
 <img width="631" alt="screen shot 2016-12-10 at 10 43 22 pm" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
+
+## Running with docker
+In root project call
+
+`gradle clean`
+
+Go to /docker/base
+
+`docker build . -t beakerx-base`
+
+Move to /docker
+
+`docker build . -t beakerx`
+
+Now if you would like to start BeakerX execute
+
+`docker run -p 8888:8888 beakerx `
 
 ## Contributing
 

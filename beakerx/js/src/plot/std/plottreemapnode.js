@@ -193,11 +193,11 @@ define([
       .on("mouseover", function (d) {
         if (scope.stdmodel.useToolTip === true && d.data.tooltip) {
           scope.tooltip.style("visibility", "visible");
-          scope.tooltip.transition().duration(200).style("opacity", 0.9);
+          scope.tooltip.transition().duration(100).style("opacity", 0.9);
         }
       })
       .on("mousemove", function (d) {
-        var xPosition = d3.event.layerX + 2;
+        var xPosition = d3.event.layerX + 16;
         var yPosition = d3.event.layerY - 2;
 
         scope.tooltip
@@ -209,7 +209,7 @@ define([
         }
       })
       .on("mouseout", function () {
-        scope.tooltip.transition().duration(500).style("opacity", 0);
+        scope.tooltip.transition().duration(200).style("opacity", 0);
       });
 
     cell.append("svg:rect")

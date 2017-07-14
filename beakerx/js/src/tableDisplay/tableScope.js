@@ -21,6 +21,8 @@ define([
   'datatables.net-colreorder',
   'datatables.net-fixedcolumns',
   'datatables.net-keytable',
+  'datatables.net-select',
+  'datatables.net-buttons',
   './../shared/libs/datatables-colresize/dataTables.colResize',
   'moment-timezone/builds/moment-timezone-with-data',
   './../shared/bkUtils',
@@ -38,6 +40,8 @@ define([
   dataTablesFixedColumns,
   dataTablesKeyTable,
   dataTablesColResize,
+  dataTablesSelect,
+  dataTablesButtons,
   moment,
   bkUtils,
   cellHighlighters,
@@ -68,6 +72,7 @@ define([
     this.getCellDispOpts =  [];
     this.allConverters = {};
     this.tableDisplayModel = null;
+    this.tableDisplayView = null;
     this.cellHighlighters = {};
     
     this.model = {
@@ -95,6 +100,11 @@ define([
   	this.tableDisplayModel = tableDisplayModel;
   };
 
+  TableScope.prototype.setWidgetView = function(tableDisplayView) {
+    this.tableDisplayView = tableDisplayView;
+  };
+
+  
   TableScope.prototype.linkMoment = function() {
     moment.tz.link(['Etc/GMT+1|GMT+01:00',
       'Etc/GMT+2|GMT+02:00',
@@ -311,9 +321,14 @@ define([
     this.allConverters = {
       // string
       0: function(value, type, full, meta) {
-        if (_.isObject(value) && value.type === 'Date') {
+        var objectValue = _.isObject(value);
+
+        if (objectValue && value.type === 'Date') {
           value = moment(value.timestamp).format('YYYYMMDD HH:mm:ss.SSS ZZ');
+        } else if (objectValue) {
+          value = JSON.stringify(value);
         }
+
         if (type === 'display' && value !== null && value !== undefined) {
           var escapedText = self.escapeHTML(value);
           var limitedText = self.truncateString(escapedText);
@@ -401,7 +416,7 @@ define([
           if (_.isObject(value) && value.type === 'Date') {
             return bkUtils.formatTimestamp(value.timestamp, self.tz, format);
           }
-          var milli = value / 1000 / 1000;
+          var milli = value * 1000;
           return bkUtils.formatTimestamp(milli, self.tz, format);
         }
         return value;
@@ -766,11 +781,12 @@ define([
           name: item,
           callback: function(itemKey, options) {
             var index = self.table.cell(options.$trigger.get(0)).index();
-            self.tableDisplayModel.send({event: 'oncontextmenu', itemKey : itemKey, row : index.row, column : index.column - 1});
+            self.tableDisplayModel.send({event: 'oncontextmenu', itemKey : itemKey, row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
           }
         }
       });
     }
+
     if (!_.isEmpty(model.contextMenuTags)) {
       _.forEach(model.contextMenuTags, function(tag, name) {
         if (model.contextMenuTags.hasOwnProperty(name)) {
@@ -779,12 +795,12 @@ define([
             callback: function(itemKey, options) {
               var index = self.table.cell(options.$trigger.get(0)).index();
               var params = {
-                actionType: 'oncontextmenu',
+                actionType: 'CONTEXT_MENU_CLICK',
                 contextMenuItem: itemKey,
                 row: index.row,
                 col: index.column - 1
               };
-              self.tableDisplayModel.send({event: 'actiondetails', params: params});
+              self.tableDisplayModel.send({event: 'actiondetails', params: params}, self.tableDisplayView.callbacks());
             }
           }
         }
@@ -828,7 +844,7 @@ define([
       };
     }
 
-    if (self.types[index] === 'integer') {
+    if (self.types[index] === 'integer' || self.types[index] === 'int64') {
       return {
         actualtype: 2,
         actualalign: 'R'
@@ -875,26 +891,20 @@ define([
     if (!self.hasIndex) {
       var data = [];
       var r;
-      var selected = [];
       for (r = 0; r < values.length; r++) {
         var row = [];
         row.push(r);
         data.push(row.concat(values[r]));
-        selected.push(false);
       }
       self.data = data;
-      self.selected = selected;
     } else {
       var data = [];
       var r;
-      var selected = [];
       for (r = 0; r < values.length; r++) {
         var row = [];
         data.push(row.concat(values[r]));
-        selected.push(false);
       }
       self.data = data;
-      self.selected = selected;
     }
   };
 
@@ -919,41 +929,6 @@ define([
     }
   };
 
-  TableScope.prototype.selectFixedColumnRow = function(dtRowIndex, select) {
-    var self = this;
-    if (self.fixcols) {
-      var doSelect = function(row){
-        var cells = row.find('td');
-        if (select) {
-          row.addClass('selected');
-        } else {
-          row.removeClass('selected');
-          cells.removeClass('selected');
-        }
-      };
-      var row = self.table.row(dtRowIndex).node();
-      if (!row) { return; }
-      var fixRowIndex = row.rowIndex;
-      var fixedColumns = self.fixcols.dom.clone;
-      if(fixedColumns.left.body){
-        doSelect($(fixedColumns.left.body.rows[fixRowIndex]));
-      }
-      if(fixedColumns.right.body){
-        doSelect($(fixedColumns.right.body.rows[fixRowIndex]));
-      }
-    }
-  };
-
-  TableScope.prototype.selectFixedColumnCell = function(jqFixedCell, select) {
-    if (jqFixedCell) {
-      if (select) {
-        jqFixedCell.addClass('selected');
-      } else {
-        jqFixedCell.removeClass('selected');
-      }
-    }
-  };
-
   TableScope.prototype.highlightFixedColumnRow = function(dtRowIndex, highlight) {
     var self = this;
     if (self.fixcols) {
@@ -975,29 +950,6 @@ define([
         doHighlight($(fixedColumns.right.body.rows[fixRowIndex]));
       }
     }
-  };
-
-  //jscs:disable
-  TableScope.prototype.update_selected = function() {
-    //jscs:enable
-    var self = this;
-    if (self.table === undefined) {
-      return;
-    }
-    self.table.rows().eq(0).each(function(index) {
-      var row = self.table.row(index);
-      var tr = row.node();
-      if (tr !== undefined) {
-        var iPos = row.index();
-        if (!self.selected[iPos]) {
-          $(tr).removeClass('selected');
-          self.selectFixedColumnRow(iPos, false);
-        } else {
-          $(tr).addClass('selected');
-          self.selectFixedColumnRow(iPos, true);
-        }
-      }
-    });
   };
 
   TableScope.prototype.updateBackground = function() {
@@ -1360,6 +1312,7 @@ define([
     var self = this;
     var key = onKeyEvent.keyCode;
     var charCode = String.fromCharCode(key);
+
     if (charCode) {
       switch(charCode.toUpperCase()){
         case 'B':
@@ -1530,6 +1483,12 @@ define([
                      (unit === self.formatForTimes || unit == 'DATETIME' && _.isEmpty(self.formatForTimes));
             },
             action: function(el) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+
+              self.getCellDisp[self.colorder[colIdx] - 1] = 8;
+              self.actualtype[self.colorder[colIdx] - 1] = 8;
+
               self.changeTimeFormat(unit);
             }
           };
@@ -1625,6 +1584,7 @@ define([
 
     var id = '#' + self.id;
     var init = {
+      'keys': self.focussedCell || true,
       'destroy' : true,
       'data': self.data,
       'columns': self.columns,
@@ -1636,6 +1596,10 @@ define([
       'scrollX': '10%',
       'searching': true,
       'deferRender': true,
+      'select': {
+        items: 'cells',
+        info: false
+      },
       'language': {
         'emptyTable': 'empty table'
       },
@@ -1672,7 +1636,6 @@ define([
       'drawCallback': function(settings) {
         //jscs:disable
         self.update_size();
-        self.update_selected();
         self.updateBackground();
         self.updateDTMenu();
         //jscs:enable
@@ -1753,7 +1716,7 @@ define([
     if (!self.colorder) {
       self.colorder = _.range(self.columnNames.length + 1);
     }
-    self.colreorg = new $.fn.dataTable.ColReorder($(id), {
+    self.colreorg = new dataTablesColReorder($(id), {
       'order': self.colorder,
       'fnReorderCallback': function() {
         if (self.colreorg === undefined || self.colreorg.s == null) {
@@ -1767,8 +1730,6 @@ define([
       'iFixedColumns': self.pagination.fixLeft + 1,
       'iFixedColumnsRight': self.pagination.fixRight
     });
-    self.keyTable = new $.fn.dataTable.KeyTable($(id));
-    self.refreshCells();
 
     if(init.paging !== false){
       var pagination = $(self.element).find(".bko-table-use-pagination");
@@ -1805,61 +1766,22 @@ define([
       var currentCell = self.table.cells(function(idx, data, node) {
         return idx.column === colIdx && idx.row ===  rowIdx;
       });
-      var currentCellNodes = $(currentCell.nodes());
-
-      var isCurrentCellSelected = currentCellNodes.hasClass('selected');
-
-      if (self.selected[rowIdx]) {
-        self.selected[rowIdx] = false;
-        $(self.table.row(rowIdx).node()).removeClass('selected');
-        self.selectFixedColumnRow(rowIdx, false);
-      }
-
-      $(self.table.cells().nodes()).removeClass('selected');
-      if (self.fixcols) {
-        _.each(self.selected, function(selected, index){
-          if(!selected){
-            self.selectFixedColumnRow(index, false);
-          }
-        });
-      }
-      if (!isCurrentCellSelected) {
-        currentCellNodes.addClass('selected');
-        if(iPos === undefined) {
-          self.selectFixedColumnCell($(this), true);
-        }
-      }
 
       var index = currentCell.indexes()[0];
       if (model.hasDoubleClickAction) {
-      	self.tableDisplayModel.send({event: 'ondoubleclick', row : index.row, column : index.column - 1});
+      	self.tableDisplayModel.send({event: 'ondoubleclick', row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
       }
 
       if (!_.isEmpty(model.doubleClickTag)) {
         var params = {
-          actionType: 'ondoubleclick',
+          actionType: 'DOUBLE_CLICK',
           row: index.row,
           col: index.column - 1
         };
-        self.tableDisplayModel.send({event: 'actiondetails', params: params});
+        self.tableDisplayModel.send({event: 'actiondetails', params: params}, self.tableDisplayView.callbacks());
       }
 
       e.stopPropagation();
-    });
-
-    $(id + ' tbody').on('click', 'tr', function(event) {
-      if (!self.table) { return; }
-      var dtTR = self.getDtRow(this);
-      var iPos = self.table.row(dtTR).index();
-      if (self.selected[iPos]) {
-        self.selected[iPos] = false;
-        $(dtTR).removeClass('selected');
-        self.selectFixedColumnRow(iPos, false);
-      } else {
-        self.selected[iPos] = true;
-        $(dtTR).addClass('selected');
-        self.selectFixedColumnRow(iPos, true);
-      }
     });
 
     $(id + ' tbody')
@@ -1876,6 +1798,9 @@ define([
         var rowIndex = self.table.row(dtTR).index();
         $(dtTR).removeClass('hover');
         self.highlightFixedColumnRow (rowIndex, false);
+      })
+      .on('click', function() {
+        self.element.focus();
       });
 
     $(self.table.table().container()).find('.dataTables_scrollHead').on('scroll', function() {
@@ -1896,19 +1821,38 @@ define([
         originalEvent.preventDefault();
         self.onKeyAction(cell.index().column, originalEvent);
       })
-      .on('column-visibility.dt', function(e, settings, column, state) {
+      .on('column-visibility.dt', _.debounce(function(e, settings, column, state) {
         self.getCellSho[self.colorder[column] - 1] = state;
+
         setTimeout(function(){
           self.updateHeaderLayout();
           self.table.draw(false);
         }, 0);
-      })
+      }, 100))
       .on( 'column-sizing.dt', function( e, settings ) {
         self.updateTableWidth();
       })
-      .on('draw.dt', function() {
+      .on('draw.dt', _.debounce(function() {
         self.updateRowDisplayBtts();
         self.updateToggleColumnBtts();
+      }, 100))
+      .on('column-reorder', function(e, settings, details) {
+        var selectedCells = self.table.cells({ selected: true });
+        var indexes = selectedCells.indexes();
+        var columnIndexes = indexes.pluck('column').unique();
+        var rowIndexes;
+
+        if (_.contains(columnIndexes, details.to)) {
+          return;
+        }
+
+        rowIndexes = indexes.pluck('row').unique();
+
+        self.deselectCells(self.table.cells(rowIndexes, details.to));
+        self.table.cells(
+          rowIndexes,
+          columnIndexes
+        ).select();
       });
 
     function updateSize() {
@@ -1953,7 +1897,9 @@ define([
 
     self.updateFixedColumnsSeparator();
 
-    self.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
+    self.keyTable = self.table.settings()[0].keytable;
+    self.refreshCells();
+    self.fixcols = new dataTablesFixedColumns(self.table, inits);
     self.fixcols.fnRedrawLayout();
     // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
 
@@ -1984,7 +1930,10 @@ define([
       }
       // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
 
+      self.adjustRedraw();
     }, 0);
+
+    self.initTableSelect();
 
   };
 
@@ -2023,42 +1972,6 @@ define([
 
   TableScope.prototype.setJupyterCommandMode = function() {
     Jupyter.keyboard_manager.command_mode();
-  };
-
-  TableScope.prototype.menuToggle = function() {
-    var self = this;
-    var getTableData = function() {
-      var rows = self.table.rows(function(index, data, node) {
-        return self.selected[index];
-      });
-      if (rows === undefined || rows.indexes().length === 0) {
-        rows = self.table.rows();
-      }
-      var out = self.exportTo(rows, 'tabs');
-      return out;
-    };
-
-    var queryCommandEnabled = true;
-    try {
-      document.execCommand('Copy');
-    } catch (e) {
-      queryCommandEnabled = false;
-    }
-
-    if (((!bkUtils.isElectron) && (self.clipclient === undefined) && !queryCommandEnabled)
-        || bkHelper.isSafari) {
-      self.clipclient = new ZeroClipboard();
-      var d = document.getElementById(self.id + '_dt_copy');
-      self.clipclient.clip(d);
-      self.clipclient.on('copy', function(event) {
-        var clipboard = event.clipboardData;
-        clipboard.setData('text/plain', getTableData());
-      });
-    } else if (bkUtils.isElectron) {
-      document.getElementById(self.id + '_dt_copy').onclick = function() {
-        bkElectron.clipboard.writeText(getTableData(), 'text/plain');
-      }
-    }
   };
 
   TableScope.prototype.getDumpState = function() {
@@ -2274,7 +2187,7 @@ define([
           self.getCellDispOpts.push(self.allStringTypes);
         } else if (self.types[order - 1] === 'double') {
           self.getCellDispOpts.push(self.allDoubleTypes);
-        } else if (self.types[order - 1] === 'integer') {
+        } else if (self.types[order - 1] === 'integer' || self.types[order - 1] === 'int64') {
           self.getCellDispOpts.push(self.allIntTypes);
         } else if (self.types[order - 1] === 'time' || self.types[order - 1] === 'datetime') {
           self.getCellDispOpts.push(self.allTimeTypes);
@@ -2482,97 +2395,116 @@ define([
     return rowsNumber * rowHeight;
   };
 
-  TableScope.prototype.getCSV = function(selectedRows) {
-    var self = this;
-    var data;
-    var filename;
-    var isFiltered = function(index) {
-      return self.table.settings()[0].aiDisplay.indexOf(index) > -1;
-    };
-    if (!selectedRows) {
-      data = self.table.rows(isFiltered).data();
-    } else {
-      data = self.table.rows(function(index, data, node) {
-        return self.selected[index] && isFiltered(index);
-      });
+  TableScope.prototype.getCSV = function(selectedOnly) {
+    if (selectedOnly) {
+      return this.exportCellsTo(this.table.cells({ selected: true }), 'csv');
     }
-    return self.exportTo(data, 'csv');
+
+    return this.exportCellsTo(this.table.cells(), 'csv');
   };
 
-  TableScope.prototype.exportTo = function(rows, format) {
+  TableScope.prototype.exportCellsTo = function(cells, format, excludeHeaders) {
     var self = this;
-    var data = rows.data();
-    var settings = self.table.settings()[0];
-    var rowIndexes = rows[0];
     var i;
     var j;
-    var startingColumnIndex = 1;
-    var order;
-    var out = '';
-    var eol = '\n';
-    var sep = ',';
-    var qot = '"';
+    var len;
+    var data;
+    var columnTitle;
     var fix = function(s) { return s.replace(/"/g, '""');};
     var model = self.model.getCellModel();
     var hasIndex = model.hasIndex === "true";
-    if (hasIndex) {
-      startingColumnIndex = 0;
+    var exportOptions = {
+      sep: ',',
+      qot: '"',
+      eol: '\n',
+      excludeHeaders: excludeHeaders
+    };
+
+    function getExportOptions() {
+      var cellIndexes = cells.indexes();
+      var columnIndexes = cellIndexes.pluck('column').unique();
+
+      if (!columnIndexes.length) {
+        columnIndexes = self.table.columns().indexes();
+      }
+
+      if (!hasIndex) {
+        columnIndexes[0] === 0 && columnIndexes.shift();
+      }
+
+      if (!cellIndexes.length) {
+        return { columns: columnIndexes };
+      }
+
+      return {
+        rows: cellIndexes.pluck('row').unique(),
+        columns: columnIndexes
+      }
     }
+
+    function exportColumnHeaders(data, exportOptions) {
+      var out = '';
+
+      if (exportOptions.excludeHeaders) {
+        return out;
+      }
+
+      for (i = 0, len = data.header.length; i < len; i++) {
+        if (out !== '') {
+          out = out + exportOptions.sep;
+        }
+        columnTitle = (hasIndex && i === 0 && !data.header[i]) ? "Index" : fix(data.header[i]);
+        out = out + exportOptions.qot + columnTitle + exportOptions.qot;
+      }
+
+      return out + exportOptions.eol;
+    }
+
+    function exportCells(data, exportOptions) {
+      var out = '';
+
+      for (i = 0; i < data.body.length; i++) {
+        var row = data.body[i];
+
+        for (j = 0; j < row.length; j++) {
+          if (j !== 0) {
+            out = out + exportOptions.sep;
+          }
+
+          var cellData = row[j];
+          if (cellData == null) {
+            cellData = '';
+          }
+          cellData = cellData + '';
+          out = [
+            out,
+            exportOptions.qot,
+            (cellData !== undefined && cellData !== null ? fix(cellData) : ''),
+            exportOptions.qot
+          ].join('');
+        }
+
+        if (!exportOptions.excludeHeaders) {
+          out = out + exportOptions.eol;
+        }
+      }
+
+      return out;
+    }
+
+    data = self.table.buttons.exportData(getExportOptions());
 
     if (format === 'tabs') {
-      sep = '\t';
-      qot = '';
+      exportOptions.sep = '\t';
+      exportOptions.qot = '';
       fix = function(s) { return s.replace(/\t/g, ' ');};
     }
+
     if (navigator.appVersion.indexOf('Win') !== -1) {
-      eol = '\r\n';
+      exportOptions.eol = '\r\n';
     }
 
-    for (i = startingColumnIndex; i < self.columns.length; i++) {
-      order = self.colorder[i];
-      if (!self.table.column(i).visible()) {
-        continue;
-      }
-      if (out !== '') {
-        out = out + sep;
-      }
-      var columnTitle
-        = (hasIndex && i === startingColumnIndex)
-        ? "Index"
-        : fix($(self.columns[order].title).text());
-      out = out + qot + columnTitle + qot;
-    }
-    out = out + eol;
-
-    for (i = 0; i < data.length; i++) {
-      var row = data[i];
-      var some = false;
-      for (j = startingColumnIndex; j < row.length; j++) {
-        order = self.colorder[j];
-        if (!self.table.column(j).visible()) {
-          continue;
-        }
-        if (!some) {
-          some = true;
-        } else {
-          out = out + sep;
-        }
-        var d = row[j];
-        if (self.columns[order].render !== undefined) {
-          d = self.columns[order].render(d, 'csv', null,
-            {settings: settings,
-              row: rowIndexes[i],
-              col: order});
-        }
-        if (d == null) {
-          d = '';
-        }
-        d = d + '';
-        out = out + qot + (d !== undefined && d !== null ? fix(d) : '') + qot;
-      }
-      out = out + eol;
-    }
-    return out;
+    return  exportColumnHeaders(data, exportOptions) + exportCells(data, exportOptions);
   };
 
   TableScope.prototype.showFilterElements = function() {
@@ -2592,7 +2524,7 @@ define([
       event.stopPropagation();
     }
 
-    self.updateToggleColumnBtts();
+    self.updateToggleColumnBtts(column.index());
 
     if (column.visible()){
       var el = $('#' + self.id);
@@ -2644,7 +2576,9 @@ define([
     for (var i = 1; i < self.columns.length; i++) {
       cLength.push(i);
     }
-    table.columns(cLength).visible(visible);
+
+    table.columns(cLength).visible(visible, false);
+    table.columns.adjust();
     self.updateToggleColumnBtts();
   };
 
@@ -2659,43 +2593,12 @@ define([
     self.updateUsePaginationBtt();
   };
 
-  TableScope.prototype.doSelectAll = function() {
-    var self = this;
-    if (self.table === undefined) {
-      return;
-    }
-    for (var i in self.selected) {
-      self.selected[i] = true;
-    }
-    //jscs:disable
-    self.update_selected();
-    //jscs:enable
-  };
-
   TableScope.prototype.doDeselectAll = function() {
-    var self = this;
-    if (self.table === undefined) {
+    if (this.table === undefined) {
       return;
     }
-    for (var i in self.selected) {
-      self.selected[i] = false;
-    }
-    //jscs:disable
-    self.update_selected();
-    //jscs:enable
-  };
 
-  TableScope.prototype.doReverseSelection = function() {
-    var self = this;
-    if (self.table === undefined) {
-      return;
-    }
-    for (var i in self.selected) {
-      self.selected[i] = !self.selected[i];
-    }
-    //jscs:disable
-    self.update_selected();
-    //jscs:enable
+    this.deselectCells(this.table.cells({ selected: true }));
   };
 
   TableScope.prototype.doCopyToClipboard = function() {
@@ -2706,38 +2609,31 @@ define([
     } catch (e) {
       queryCommandEnabled = false;
     }
-    if (!bkUtils.isElectron && queryCommandEnabled) {
-      var getTableData = function() {
-        var isFiltered = function(index) {
-          return self.table.settings()[0].aiDisplay.indexOf(index) > -1;
-        };
-        var rows = self.table.rows(function(index, data, node) {
-          return isFiltered(index) && self.selected[index];
-        });
-        if (rows === undefined || rows.indexes().length === 0) {
-          rows = self.table.rows(isFiltered);
-        }
-        var out = self.exportTo(rows, 'tabs');
-        return out;
-      };
-      var executeCopy = function(text) {
-        var input = document.createElement('textarea');
-        var currentNotebookMode = Jupyter.notebook.mode;
 
-        document.body.appendChild(input);
-        input.value = text;
-        input.select();
-        Jupyter.notebook.mode = 'edit';
-        document.execCommand('Copy', false, null);
-        Jupyter.notebook.mode = currentNotebookMode;
-        input.remove();
-      };
-      var data = getTableData();
-      executeCopy(data);
+    if (bkUtils.isElectron || !queryCommandEnabled) {
+      return;
     }
+
+    var executeCopy = function(text) {
+      var input = document.createElement('textarea');
+      var currentNotebookMode = Jupyter.notebook.mode;
+
+      document.body.appendChild(input);
+      input.value = text;
+      input.select();
+      Jupyter.notebook.mode = 'edit';
+      document.execCommand('Copy', false, null);
+      Jupyter.notebook.mode = currentNotebookMode;
+      input.remove();
+    };
+
+    var cells = self.table.cells({ selected: true });
+    var cellsData = self.exportCellsTo(cells, 'tabs', cells.indexes().length === 1);
+
+    executeCopy(cellsData);
   };
 
-  TableScope.prototype.doCSVExport = function(selectedRows) {
+  TableScope.prototype.doCSVExport = function(selectedOnly) {
     var self = this;
     bkHelper.showFileSaveDialog({
       extension: "csv",
@@ -2745,14 +2641,14 @@ define([
       saveButtonTitle : 'Save'
     }).then(function(ret) {
       if (ret.uri) {
-        return bkHelper.saveFile(ret.uri, self.getCSV(selectedRows), true);
+        return bkHelper.saveFile(ret.uri, self.getCSV(selectedOnly), true);
       }
     });
   };
 
-  TableScope.prototype.doCSVDownload = function(selectedRows) {
+  TableScope.prototype.doCSVDownload = function(selectedOnly) {
     var self = this;
-    var href = 'data:attachment/csv;charset=utf-8,' + encodeURI(self.getCSV(selectedRows));
+    var href = 'data:attachment/csv;charset=utf-8,' + encodeURI(self.getCSV(selectedOnly));
     var target = '_black';
     var filename = 'tableRows.csv';
     var anchor = document.createElement('a');
@@ -2771,6 +2667,10 @@ define([
     var self = this;
     self.table.state.clear();
     self.init(self.getCellModel(), false);
+  };
+
+  TableScope.prototype.adjustRedraw = function() {
+    this.table.columns.adjust().draw();
   };
 
   TableScope.prototype.prepareValueFormatter = function() {
@@ -2914,14 +2814,18 @@ define([
     }
   };
 
-  TableScope.prototype.updateToggleColumnBtts = function() {
+  TableScope.prototype.updateToggleColumnBtts = function(columnIndex) {
     var self = this;
-    var list = self.element.find('.dtmenu > ul.dropdown-menu ul.list-showcolumn li');
+    var list = self.element.find('.dtmenu > ul.dropdown-menu ul.list-showcolumn li input[type="checkbox"]');
+    var columnsVisibility = this.table.columns().visible();
 
-    list.each(function(i) {
-      var checked = self.isColumnVisible(i+1);
-      $(this).children('input[type="checkbox"]').prop('checked', checked);
-    });
+    if (columnIndex) {
+      list[columnIndex - 1].checked = columnsVisibility[columnIndex];
+    } else {
+      list.each(function(i) {
+        this.checked = columnsVisibility[i + 1];
+      });
+    }
   };
 
   TableScope.prototype.updateRowDisplayBtts = function() {
@@ -2964,14 +2868,8 @@ define([
         case 'dt-use-pagination':
           self.doUsePagination();
           break;
-        case 'dt-select-all':
-          self.doSelectAll();
-          break;
         case 'dt-deselect-all':
           self.doDeselectAll();
-          break;
-        case 'dt-reverse-selection':
-          self.doReverseSelection();
           break;
         case 'dt-copy-to-clipboard':
           self.doCopyToClipboard();
@@ -3071,6 +2969,7 @@ define([
   // Add column reset methods
   require('./columnReset')(TableScope);
   require('./tableModal')(TableScope);
+  require('./tableSelect')(TableScope);
 
   return TableScope;
 

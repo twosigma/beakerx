@@ -29,7 +29,9 @@ if (window.require) {
         }
     });
 }
+__webpack_public_path__ = document.querySelector('body').getAttribute('data-base-url') + 'nbextensions/beakerx/';
 
+require('./../src/shared/style/beakerx.scss');
 require('./../src/plot/bko-combinedplot.css');
 require('./../src/plot/bko-plot.css');
 require('jquery-contextmenu/dist/jquery.contextMenu.min.css');
@@ -77,55 +79,46 @@ define([
   var comm;
   var kernel_info = undefined;
   
-  config.loaded.then(function() {
-    console.log('beaker extension loaded');
-  });
-
-  Jupyter.notebook.events.on('kernel_ready.Kernel', function() {
-    var kernel = Jupyter.notebook.kernel;
-    if (!window.beaker) {
-      window.beaker = {};
-    }
-    kernel.comm_manager.register_target('beaker.getcodecells',
-      function(comm, msg) {
+  function installKernelHandler() {
+    Jupyter.notebook.events.on('kernel_ready.Kernel', function() {
+      var kernel = Jupyter.notebook.kernel;
+      if (!window.beakerx) {
+        window.beakerx = {};
+      }
+      kernel.comm_manager.register_target('beaker.getcodecells', function(comm, msg) {
         comm.on_msg(function(msg) {
           if(msg.content.data.name == "CodeCells"){
             sendJupyterCodeCells(JSON.parse(msg.content.data.value));
           }
-          window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
+          window.beakerx[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
-    kernel.comm_manager.register_target('beaker.autotranslation',
-      function(comm, msg) {
+      kernel.comm_manager.register_target('beaker.autotranslation', function(comm, msg) {
         comm.on_msg(function(msg) {
-          window.beaker[msg.content.data.name] = JSON.parse(msg.content.data.value);
+          window.beakerx[msg.content.data.name] = JSON.parse(msg.content.data.value);
         });
       });
-    kernel.comm_manager.register_target('beaker.tag.run',
-        function(comm, msg) {
-          comm.on_msg(function(msg) {
-            if(msg.content.data.runByTag != undefined){
-              var notebook = Jupyter.notebook;
-            	var cells = Jupyter.notebook.get_cells();
-              var indexList = cells.reduce(function(acc, cell, index) {
-                if (cell._metadata.tags && cell._metadata.tags.includes(msg.content.data.runByTag)) {
-                  acc.push(index);
-                }
-                return acc;
-              }, []);
-
-              notebook.execute_cells(indexList);
-            }
-          	
-          });
+      kernel.comm_manager.register_target('beaker.tag.run', function(comm, msg) {
+        comm.on_msg(function(msg) {
+          if(msg.content.data.runByTag != undefined){
+            var notebook = Jupyter.notebook;
+            var cells = Jupyter.notebook.get_cells();
+            var indexList = cells.reduce(function(acc, cell, index) {
+              if (cell._metadata.tags && cell._metadata.tags.includes(msg.content.data.runByTag)) {
+                acc.push(index);
+              }
+              return acc;
+            }, []);
+            notebook.execute_cells(indexList);
+          }
         });
-    
-    setBeakerxKernelParameters();
-  });
-
-  Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
-    interrupt();
-  });
+      });
+    });
+    Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
+      interrupt();
+    });
+  };
+  installKernelHandler();
 
   function sendJupyterCodeCells(filter) {
     var comm = Jupyter.notebook.kernel.comm_manager.new_comm("beaker.getcodecells",
@@ -173,51 +166,7 @@ define([
     comm.close();
   }
 
-  function setBeakerxKernelParameters() {
-    getKernelInfo(function(info) {
-      if (info.beakerx) {
-        setBeakerxKernelParametersToKernel();
-      }
-    });
-  }
-
-  function setBeakerxKernelParametersToKernel() {
-    var kernel_control_target_name = "kernel.control.channel";
-    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, 
-                                                             null, null, null, utils.uuid());
-
-    var newNotebook = undefined == Jupyter.notebook.metadata.beakerx_kernel_parameters;
-
-    if (newNotebook) {
-      comm.on_msg(function(resp) {
-        if (undefined != resp.content.data.kernel_control_response) {
-          if ("OK" === resp.content.data.kernel_control_response) {
-          } else if (undefined != resp.content.data.kernel_control_response.beakerx_kernel_parameters) {
-            Jupyter.notebook.metadata.beakerx_kernel_parameters = resp.content.data.kernel_control_response.beakerx_kernel_parameters;
-
-            var theData = {};
-            if (Jupyter.notebook && Jupyter.notebook.metadata) {
-              theData.beakerx_kernel_parameters = Jupyter.notebook.metadata.beakerx_kernel_parameters;
-            }
-            comm.send(theData);
-            comm.close();
-          }
-        }
-      });
-
-      var data = {};
-      data.get_default_shell = true;
-      comm.send(data);
-    } else {
-      var data = {};
-      if (Jupyter.notebook && Jupyter.notebook.metadata) {
-        data.beakerx_kernel_parameters = Jupyter.notebook.metadata.beakerx_kernel_parameters;
-      }
-      comm.send(data);
-      comm.close();
-    }
-  }
-
+  var inNotebook = !Jupyter.NotebookList;
   // ________ init cell extension code
   var CellToolbar = celltoolbar.CellToolbar;
 
@@ -322,37 +271,39 @@ define([
       window.beakerx.prefs = bkObject.beakerObj.prefs;
     }
 
-    // ________ init cell extension code
-    // register action
-    var prefix = 'auto';
-    var action_name = 'run-initialization-cells';
-    var action = {
-      icon: 'fa-calculator',
-      help: 'Run all initialization cells',
-      help_index : 'zz',
-      handler : run_init_cells
-    };
-    var action_full_name = Jupyter.notebook.keyboard_manager.actions.register(action, action_name, prefix);
+    if (inNotebook) {
+      // ________ init cell extension code
+      // register action
+      var prefix = 'auto';
+      var action_name = 'run-initialization-cells';
+      var action = {
+        icon: 'fa-calculator',
+        help: 'Run all initialization cells',
+        help_index : 'zz',
+        handler : run_init_cells
+      };
+      var action_full_name = Jupyter.notebook.keyboard_manager.actions.register(action, action_name, prefix);
 
-    // add toolbar button
-    Jupyter.toolbar.add_buttons_group([action_full_name]);
+      // add toolbar button
+      Jupyter.toolbar.add_buttons_group([action_full_name]);
 
-    // setup things to run on loading config/notebook
-    Jupyter.notebook.config.loaded
-      .then(function update_options_from_config () {
-        $.extend(true, options, Jupyter.notebook.config.data[mod_name]);
-      }, function (reason) {
-        console.warn(log_prefix, 'error loading config:', reason);
-      })
-      .then(function () {
-        if (Jupyter.notebook._fully_loaded) {
-          callback_notebook_loaded();
-        }
-        events.on('notebook_loaded.Notebook', callback_notebook_loaded);
-      }).catch(function (reason) {
-      console.error(log_prefix, 'unhandled error:', reason);
-    });
-    // ________ init cell extension code - end
+      // setup things to run on loading config/notebook
+      Jupyter.notebook.config.loaded
+        .then(function update_options_from_config () {
+          $.extend(true, options, Jupyter.notebook.config.data[mod_name]);
+        }, function (reason) {
+          console.warn(log_prefix, 'error loading config:', reason);
+        })
+        .then(function () {
+          if (Jupyter.notebook._fully_loaded) {
+            callback_notebook_loaded();
+          }
+          events.on('notebook_loaded.Notebook', callback_notebook_loaded);
+        }).catch(function (reason) {
+          console.error(log_prefix, 'unhandled error:', reason);
+        });
+      // ________ init cell extension code - end
+    }
 
   };
 

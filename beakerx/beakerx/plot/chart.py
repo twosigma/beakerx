@@ -22,12 +22,12 @@ from beakerx.plot.plotitem import *
 
 from IPython.display import display
 from ipywidgets import DOMWidget, register
-from traitlets import Unicode, Int, Dict, default 
+from traitlets import Unicode, Dict
 
 
 class Chart(BaseObject):
   def __init__(self, **kwargs):
-    BaseObject.__init__(self)
+    super(Chart, self).__init__(**kwargs)
     self.init_width = getValue(kwargs, 'initWidth', 640)
     self.init_height = getValue(kwargs, 'initHeight', 480)
     self.chart_title = getValue(kwargs, 'title')
@@ -39,8 +39,7 @@ class Chart(BaseObject):
 
 class AbstractChart(Chart):
   def __init__(self, **kwargs):
-    Chart.__init__(self, **kwargs)
-
+    super(AbstractChart, self).__init__(**kwargs)
     self.rangeAxes = getValue(kwargs, 'yAxes', [])
     if len(self.rangeAxes) == 0:
       self.rangeAxes.append(YAxis(**kwargs))
@@ -54,7 +53,7 @@ class AbstractChart(Chart):
     self.y_upper_margin = getValue(kwargs, 'yUpperMargin')
     self.y_lower_bound = getValue(kwargs, 'yLowerBound')
     self.y_upper_bound = getValue(kwargs, 'yUpperBound')
-    self.log_y = getValue(kwargs, 'logY')
+    self.log_y = getValue(kwargs, 'logY', False)
     self.omit_checkboxes = getValue(kwargs, 'omitCheckboxes', False)
     self.crosshair = getValue(kwargs, 'crosshair')
     self.timezone = getValue(kwargs, 'timeZone')
@@ -62,7 +61,7 @@ class AbstractChart(Chart):
 
 class XYChart(AbstractChart):
   def __init__(self, **kwargs):
-    AbstractChart.__init__(self, **kwargs)
+    super(XYChart, self).__init__(**kwargs)
     self.graphics_list = getValue(kwargs, 'graphics', [])
     self.constant_lines = getValue(kwargs, 'constantLines', [])
     self.constant_bands = getValue(kwargs, 'constantBands', [])
@@ -75,7 +74,9 @@ class XYChart(AbstractChart):
     self.lodThreshold = getValue(kwargs, 'lodThreshold')
 
   def add(self, item):
-    if isinstance(item, XYGraphics):
+    if isinstance(item, YAxis):
+      self.rangeAxes.append(item)
+    elif isinstance(item, XYGraphics):
       self.graphics_list.append(item)
     elif isinstance(item, Text):
       self.texts.append(item)
@@ -86,62 +87,85 @@ class XYChart(AbstractChart):
     elif isinstance(item, list):
       for elem in item:
         self.add(elem)
-    elif isinstance(item, YAxis):
-      self.rangeAxes.append(item)
     return self
 
-
-class TimePlot(XYChart):
+class CombinedChart(BaseObject):
   def __init__(self, **kwargs):
-    XYChart.__init__(self, **kwargs)
-
-
-class NanoPlot(TimePlot):
-  def __init__(self, **kwargs):
-    TimePlot.__init__(self, **kwargs)
-
-  def transform(self):
-    for graphics in self.graphics_list:
-      graphics.x = [str(x) for x in graphics.x]
-    result = super().transform()
-    for graphics in self.graphics_list:
-      graphics.x = [int(x) for x in graphics.x]
-    return result
-
-
-class CombinedPlot(BaseObject):
-  def __init__(self, **kwargs):
-    BaseObject.__init__(self)
+    super(CombinedChart, self).__init__(**kwargs)
     self.init_width = getValue(kwargs, 'initWidth', 640)
     self.init_height = getValue(kwargs, 'initHeight', 480)
     self.title = getValue(kwargs, 'title')
-    self.x_label = getValue(kwargs, 'xLabel')
+    self.x_label = getValue(kwargs, 'xLabel', 'Linear')
     self.plots = getValue(kwargs, 'plots', [])
     self.weights = getValue(kwargs, 'weights', [])
     self.version = 'groovy'
+    self.type= 'CombinedPlot'
+    self.y_tickLabels_visible = True
+    self.x_tickLabels_visible = True
+    self.plot_type = 'Plot'
 
-  def add(self, item, weight):
-    if isinstance(item, XYChart):
-      self.plots.append(item)
-      self.weights.append(weight)
-    elif isinstance(item, list):
-      for elem in item:
-        self.add(elem, 1)
+class Plot(DOMWidget):
+  _view_name = Unicode('PlotView').tag(sync=True)
+  _model_name = Unicode('PlotModel').tag(sync=True)
+  _view_module = Unicode('beakerx').tag(sync=True)
+  _model_module = Unicode('beakerx').tag(sync=True)
+  model = Dict().tag(sync=True)
+
+  def __init__(self, **kwargs):
+    super(Plot, self).__init__(**kwargs)
+    self.chart = XYChart(**kwargs)
+    self.model = self.chart.transform()
+
+  def add(self, item):
+    self.chart.add(item)
+    self.model = self.chart.transform()
+    return self
+
+  def getYAxes(self):
+    return self.chart.rangeAxes
+
+class TimePlot(Plot):
+  def __init__(self, **kwargs):
+    super(TimePlot, self).__init__(**kwargs)
+    self.chart.type = 'TimePlot'
+
+  def getChartColors(self, columnNames, colors):
+    chartColors = []
+    if colors is not None:
+      for i in range(len(columnNames)):
+        if i < len(colors):
+          chartColors.append(self.createChartColor(colors[i]))
+    return chartColors
+
+  def createChartColor(self, color):
+    if isinstance(color, list):
+      try:
+        return Color(color[0], color[1], color[2])
+      except  Exception:
+        raise Exception("Color list too short")
     else:
-      raise Exception('CombinedPlot takes XYChart or List of XYChart')
+      return color
 
-    if len(self.plots) == 1:
-      self.plot_type=self.plots[0].type
+class NanoPlot(TimePlot):
+  def __init__(self, **kwargs):
+    super(NanoPlot, self).__init__(**kwargs)
+    self.chart.type = 'NanoPlot'
 
-
+  def add(self, item):
+    super(NanoPlot, self).add(item)
+    converted = []
+    for l in self.chart.graphics_list:
+      for x in l.x:
+        converted.append(str(x))
+      l.x = converted
+    self.model = self.chart.transform()
     return self
 
 
 class SimpleTimePlot(TimePlot):
   def __init__(self, *args, **kwargs):
-    TimePlot.__init__(self, **kwargs)
-
-    self.type = 'TimePlot'
+    super(SimpleTimePlot, self).__init__(**kwargs)
+    self.chart.type = 'TimePlot'
     self.use_tool_tip = True
     self.show_legend = True
     self.domain_axis_label = 'Time'
@@ -167,12 +191,11 @@ class SimpleTimePlot(TimePlot):
     dataColumnsNames = []
 
     if tableData is not None and columnNames is not None:
-      dataColumnsNames.extend(list(tableData[0].keys()))
+      dataColumnsNames.extend(list(tableData[0]))
 
       for row in tableData:
         x = row[timeColumn]
-        if isinstance(x, datetime):
-          x = date_time_2_millis(x)
+        x = date_time_2_millis(x)
         xs.append(x)
 
         for idx in range(len(columnNames)):
@@ -212,45 +235,33 @@ class SimpleTimePlot(TimePlot):
 
           self.add(points)
 
-  def getChartColors(self, columnNames, colors):
-
-    chartColors = []
-    if colors is not None:
-      for i in range(len(columnNames)):
-        if i < len(colors):
-          chartColors.append(self.createChartColor(colors[i]))
-
-    return chartColors
-
-  def createChartColor(self, color):
-    if isinstance(color, list):
-      try:
-        return Color(color[0], color[1], color[2])
-      except  Exception:
-        raise Exception("Color list too short")
-    else:
-      return color
-
-
-@register('beakerx.Plot')
-class Plot(DOMWidget):
-  def __init__(self, **kwargs):
-    super(Plot, self).__init__()
-    self.chart = XYChart(**kwargs)
-    self.model = self.chart.transform()
-    
+class CombinedPlot(DOMWidget):
   _view_name = Unicode('PlotView').tag(sync=True)
   _model_name = Unicode('PlotModel').tag(sync=True)
   _view_module = Unicode('beakerx').tag(sync=True)
   _model_module = Unicode('beakerx').tag(sync=True)
-  _view_module_version = Unicode('^0.0.1').tag(sync=True)
-  _model_module_version = Unicode('^0.0.1').tag(sync=True)
-  model = Unicode().tag(sync=True)
+  model = Dict().tag(sync=True)
 
+  def __init__(self, **kwargs):
+    super(CombinedPlot, self).__init__(**kwargs)
+    self.chart = CombinedChart(**kwargs)
+    self.model = self.chart.transform()
+
+  def add(self, item, weight):
+    if isinstance(item.chart, XYChart):
+      self.chart.plots.append(item.chart)
+      self.chart.weights.append(weight)
+    elif isinstance(item, list):
+      for elem in item:
+        self.chart.add(elem.chart, 1)
+    else:
+      raise Exception('CombinedPlot takes XYChart or List of XYChart')
+
+    self.model = self.chart.transform()
+    return self
 
 def parseJSON(out):
   return json.loads(out, object_hook=transformBack)
-
 
 def transformBack(obj):
   if 'type' in obj:

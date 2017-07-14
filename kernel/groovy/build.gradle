@@ -20,7 +20,7 @@ apply plugin: 'maven-publish'
 def final kernelIdName = 'groovy'
 def final toReplace = '__PATH__'
 
-mainClassName = 'com.twosigma.beaker.groovy.GroovyKernel'
+mainClassName = 'com.twosigma.beakerx.groovy.kernel.Groovy'
 
 configurations {
   antlr
@@ -31,12 +31,12 @@ repositories {
 }
 
 dependencies {
-  compile project(':kernel:base')
+  compile project(':base')
   compile group: "org.codehaus.groovy", name: "groovy-all", version : "2.4.3"
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
   antlr group: 'org.antlr', name: 'antlr4', version: '4.5'
 
-  testCompile project(':kernel:base').sourceSets.test.output
+  testCompile project(':base').sourceSets.test.output
   testCompile group: 'junit', name: 'junit', version: '4.11'
   testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
   testCompile group: 'org.reflections', name: 'reflections', version: '0.9.10'
@@ -45,13 +45,13 @@ dependencies {
 task antlr4_groovy_lexer(type: JavaExec) {
   main = "org.antlr.v4.Tool"
   workingDir = "src/main/antlr4/"
-  args = ["GroovyLexer.g4", "-o", "../java/com/twosigma/beaker/groovy/autocomplete", "-listener", "-no-visitor", "-package", "com.twosigma.beaker.groovy.autocomplete", "-encoding", "UTF-8"]
+  args = ["GroovyLexer.g4", "-o", "../java/com/twosigma/beakerx/groovy/autocomplete", "-listener", "-no-visitor", "-package", "com.twosigma.beakerx.groovy.autocomplete", "-encoding", "UTF-8"]
   classpath = configurations.antlr
 }
 task antlr4_groovy_parser(type: JavaExec) {
   main = "org.antlr.v4.Tool"
   workingDir = "src/main/antlr4/"
-  args = ["GroovyParser.g4", "-o", "../java/com/twosigma/beaker/groovy/autocomplete", "-listener", "-no-visitor", "-package", "com.twosigma.beaker.groovy.autocomplete", "-encoding", "UTF-8"]
+  args = ["GroovyParser.g4", "-o", "../java/com/twosigma/beakerx/groovy/autocomplete", "-listener", "-no-visitor", "-package", "com.twosigma.beakerx.groovy.autocomplete", "-encoding", "UTF-8"]
   classpath = configurations.antlr
 }
 compileJava.dependsOn antlr4_groovy_lexer
@@ -122,8 +122,8 @@ jacocoTestReport {
   afterEvaluate {
     classDirectories = files(classDirectories.files.collect {
       fileTree(dir: it,
-              exclude: ['com/twosigma/beaker/groovy/autocomplete/GroovyParser*',
-                        'com/twosigma/beaker/groovy/autocomplete/GroovyLexer*'
+              exclude: ['com/twosigma/beakerx/groovy/autocomplete/GroovyParser*',
+                        'com/twosigma/beakerx/groovy/autocomplete/GroovyLexer*'
       ])
     })
   }

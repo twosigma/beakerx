@@ -54,6 +54,10 @@ $highlight-blue: #39a9ed;
       visibility: visible;
     }
   }
+
+  .ui-selectable-helper {
+    border: none;
+  }
 }
 
 table.dataTable {
@@ -75,6 +79,7 @@ table.dataTable {
     &.focus {
       z-index: 99;
     }
+    font-family: "Lato", Helvetica, sans-serif;
   }
   thead {
     background-color: #E6E6E6;
@@ -96,6 +101,15 @@ table.dataTable {
     height: 22px; // standard: 27px
     .advanced-mode & {
       height: 22px;
+    }
+    > .selected,
+    > .ui-selected,
+    > .ui-selecting {
+        background-color: #B0BED9;
+
+      &[class*="sorting_"] {
+        background-color: #bec9e0 !important;
+      }
     }
   }
 }
@@ -279,22 +293,19 @@ table.dataTable.DTFC_Cloned.stripe tbody tr,
 table.dataTable.DTFC_Cloned.display tbody tr {
   &.odd {
     background-color: $fixed-column-odd;
-    & > .sorting_1 :not(.selected),
-    & > .sorting_2 :not(.selected),
-    & > .sorting_3 :not(.selected) {
+    & > .sorting_1,
+    & > .sorting_2,
+    & > .sorting_3 {
       background-color: $fixed-column-odd-sorting;
     }
   }
   &.even {
     background-color: $fixed-column-even;
-    & > .sorting_1 :not(.selected),
-    & > .sorting_2 :not(.selected),
-    & > .sorting_3 :not(.selected)  {
+    & > .sorting_1,
+    & > .sorting_2,
+    & > .sorting_3  {
       background-color: $fixed-column-even-sorting;
     }
-  }
-  &.selected {
-    background-color: $fixed-column-selected;
   }
 }
 

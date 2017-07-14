@@ -21,7 +21,7 @@ apply plugin: 'maven-publish'
 def final kernelIdName = 'scala'
 def final toReplace = '__PATH__'
 
-mainClassName = 'com.twosigma.beaker.scala.ScalaKernel'
+mainClassName = 'com.twosigma.beakerx.scala.kernel.Scala'
 
 configurations {
   antlr
@@ -44,13 +44,13 @@ repositories {
 }
 
 dependencies {
-  compile project(':kernel:base')
+  compile project(':base')
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
-  compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.12.2'
-  compile group: 'org.scala-lang', name: 'scala-library', version: '2.12.2'
+  compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.11'
+  compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.11'
   compile group: 'jline', name: 'jline', version: '2.12'
 
-  testCompile project(':kernel:base').sourceSets.test.output
+  testCompile project(':base').sourceSets.test.output
   testCompile group: 'junit', name: 'junit', version: '4.11'
   testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
   testCompile group: 'org.reflections', name: 'reflections', version: '0.9.10'

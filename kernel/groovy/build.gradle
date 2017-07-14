@@ -18,7 +18,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 def final kernelIdName = 'groovy'
-def final toReplace = '__PATH__'
+def final pathToReplace = '__PATH__'
 def final mainClassToReplace = '__MAIN_CLASS__'
 
 mainClassName = 'com.twosigma.beakerx.groovy.kernel.Groovy'
@@ -81,9 +81,13 @@ task prepareJson(dependsOn: 'build') {
   doLast {
     println "Prepare JSON for Jupyter notebook"
     println "Copy kernel.json to build/libs/json/ and replacing PATH with groovy.jar path"
-    def jarLocation = file('build/install/groovy/lib/').getAbsolutePath()
-    jarLocation = jarLocation.replace("\\", "/")
-    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/*" + classPathSeparator() + pathToBaseLibs() + "/*").replace(mainClassToReplace, "$mainClassName")
+    def text = createKernelJson(
+            kernelIdName,
+            kernelIdName + '/build/install/groovy/lib/',
+            pathToReplace,
+            mainClassToReplace,
+            pathToBaseLibs(),
+            "$mainClassName")
     def folder = file('build/libs/json')
     if (!folder.exists()) {
       println "Creating folder build/libs/json"
@@ -146,8 +150,15 @@ publishing {
       groupId 'com.twosigma'
       artifactId 'beaker-kernel-groovy'
       version '2.0-SNAPSHOT'
-
       from components.java
     }
+  }
+}
+
+task staticContent(dependsOn: build) {
+  doLast {
+    cleanBeakerxStatic(kernelIdName)
+    copyLibsToBeakerxStatic(kernelIdName, configurations)
+    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", pathToReplace, mainClassToReplace)
   }
 }

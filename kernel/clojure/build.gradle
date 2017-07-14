@@ -24,7 +24,7 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 def final kernelIdName = 'clojure'
-def final toReplace = '__PATH__'
+def final pathToReplace = '__PATH__'
 def final mainClassToReplace = '__MAIN_CLASS__'
 
 mainClassName = 'com.twosigma.beakerx.clojure.kernel.Clojure'
@@ -69,10 +69,13 @@ task prepareJson(dependsOn: 'build') {
   doLast {
     println "Prepare clojure JSON for Jupyter notebook"
     println "Copy kernel.json to build/libs/json/ and replacing PATH with clojure.jar path"
-
-    def jarLocation = file('build/install/clojure/lib/').getAbsolutePath()
-    jarLocation = jarLocation.replace("\\", "/")
-    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/*"+ classPathSeparator() + pathToBaseLibs()+"/*").replace(mainClassToReplace, "$mainClassName")
+    def text = createKernelJson(
+            kernelIdName,
+            kernelIdName + '/build/install/clojure/lib/',
+            pathToReplace,
+            mainClassToReplace,
+            pathToBaseLibs(),
+            "$mainClassName")
     def folder = file('build/libs/json')
     if (!folder.exists()) {
       println "Creating folder build/libs/json"
@@ -116,5 +119,13 @@ publishing {
 
       from components.java
     }
+  }
+}
+
+task staticContent(dependsOn: build) {
+  doLast {
+    cleanBeakerxStatic(kernelIdName)
+    copyLibsToBeakerxStatic(kernelIdName, configurations)
+    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", pathToReplace, mainClassToReplace)
   }
 }

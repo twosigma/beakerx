@@ -33,6 +33,13 @@ class DatePicker(DOMWidget):
     value = Unicode(default_value="").tag(sync=True)
     description = Unicode(default_value="").tag(sync=True)
 
+class TextArea(Textarea):
+    def __init__(self, **kwargs):
+        super(TextArea, self).__init__(**kwargs)
+
+    width = Unicode(default_value="200").tag(sync=True)
+    height = Unicode(default_value="200").tag(sync=True)
+
 class SelectMultipleWithRows(SelectMultiple):
     def __init__(self,  **kwargs):
         super(SelectMultipleWithRows, self).__init__(**kwargs)
@@ -51,6 +58,14 @@ class SelectMultipleSingle(Select):
     _model_module = Unicode('beakerx').tag(sync=True)
     size = Int(5, help="The number of rows to display.").tag(sync=True)
 
+class ComboBox(Dropdown):
+    def __init__(self,  **kwargs):
+        super(ComboBox, self).__init__(**kwargs)
+    _view_name = Unicode('ComboBoxView').tag(sync=True)
+    _model_name = Unicode('ComboBoxModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    editable = Bool(default_value=False).tag(sync=True)
 
 class EasyForm(Box):
     _view_name = Unicode('EasyFormView').tag(sync=True)
@@ -76,9 +91,9 @@ class EasyForm(Box):
         return text
 
     def addTextArea(self, **kwargs):
-        textarea = Textarea(description=getValue(kwargs, 'description', ""))
-        textarea.width =  getValue(kwargs, 'width', "200")
-        textarea.height =  getValue(kwargs, 'height', "200")
+        textarea = TextArea(description=getValue(kwargs, 'description', ""))
+        textarea.width =  str(getValue(kwargs, 'width', 200)) + "px"
+        textarea.height =  str(getValue(kwargs, 'height', 200)) + "px"
         self.children += (textarea, )
         return textarea
 
@@ -110,9 +125,9 @@ class EasyForm(Box):
         return data_picker
 
     def addComboBox(self, **kwargs):
-        dropdown = Dropdown(description=getValue(kwargs, 'description', ""))
+        dropdown = ComboBox(description=getValue(kwargs, 'description', ""))
         dropdown.options = getValue(kwargs, 'options', [])
-        dropdown.disabled = getValue(kwargs, 'disabled', False)
+        dropdown.editable = getValue(kwargs, 'editable', False)
         self.children += (dropdown, )
 
         return dropdown
@@ -139,19 +154,17 @@ class EasyForm(Box):
         return layout
 
     def addRadioButtons(self, **kwargs):
-        layout = HBox()
-        orientation = getValue(kwargs, 'orientation', 2)
-        radio_buttons = RadioButtons(options=getValue(kwargs, 'options', []))
-        radio_buttons.label = "test"
-        if orientation == EasyForm.VERTICAL:
-            box = VBox()
-            box.children += (radio_buttons, )
-            layout.children += (Label(value=getValue(kwargs, 'value', "")), box, )
-        else:
-            layout.children += (Label(value=getValue(kwargs, 'value', "")), radio_buttons, )
+        orientation = getValue(kwargs, 'orientation', EasyForm.VERTICAL)
+        radio_buttons = RadioButtons(options=getValue(kwargs, 'options', []), description=getValue(kwargs, 'value', ""))
 
-        self.children += (layout, )
-        return layout
+        if orientation == EasyForm.VERTICAL:
+            self.children += (radio_buttons, )
+        else:
+            box = HBox()
+            box.children += (radio_buttons, )
+            self.children += (box, )
+
+        return radio_buttons
 
 
     def keySet(self):

@@ -89,6 +89,6 @@ build.finalizedBy copyDependencies
 task staticContent(dependsOn: build) {
   doLast {
     cleanBeakerxStatic(kernelIdName)
-    copyLibsToBeakerxStatic(kernelIdName, configurations)
+    copyLibsToBeakerxStatic(kernelIdName, configurations, jar)
   }
 }

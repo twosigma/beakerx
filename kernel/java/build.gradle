@@ -122,7 +122,7 @@ publishing {
 task staticContent(dependsOn: build) {
   doLast {
     cleanBeakerxStatic(kernelIdName)
-    copyLibsToBeakerxStatic(kernelIdName, configurations)
+    copyLibsToBeakerxStatic(kernelIdName, configurations, jar)
     saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", pathToReplace, mainClassToReplace)
   }
 }

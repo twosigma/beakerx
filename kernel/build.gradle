@@ -90,9 +90,10 @@ def saveBeakerxStaticKernelJson(kernelIdName, mainClassName, pathToReplace, main
   }
 }
 
-def copyLibsToBeakerxStatic(kernelIdName, configurations) {
+def copyLibsToBeakerxStatic(kernelIdName, configurations, jar) {
   copy {
     from configurations.runtime
+    from jar
     into new File(pathToStaticContent(), kernelIdName + '/lib')
   }
 }

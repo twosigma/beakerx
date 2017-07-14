@@ -21,11 +21,12 @@ import org.junit.Test;
 
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SelectMultipleWidgetTest extends EasyFormWidgetTest {
 
   @Test
-  public void setValues() throws Exception {
+  public void setValue() throws Exception {
     //given
     String[] newValue = new String[]{"1", "2"};
     SelectMultipleWidget widget = new SelectMultipleWidget();
@@ -35,6 +36,7 @@ public class SelectMultipleWidgetTest extends EasyFormWidgetTest {
     widget.setValue(newValue);
     //then
     verifyMsgForProperty(kernel, SelectMultiple.VALUE, new String[]{"1", "2"});
+    assertThat(widget.getValue()).isEqualTo("1,2");
   }
 
   @Test

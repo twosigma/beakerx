@@ -27,15 +27,6 @@ public class SelectMultipleWidget extends ListComponent<SelectMultiple> {
   }
 
   @Override
-  public String getValue() {
-    return null;
-  }
-
-  @Override
-  public void setValue(String value) {
-  }
-
-  @Override
   public void setSize(Integer size) {
     this.widget.setSize(size);
   }
@@ -55,5 +46,9 @@ public class SelectMultipleWidget extends ListComponent<SelectMultiple> {
     this.widget.setValue(value);
   }
 
-  
+  @Override
+  public String getValue() {
+    return String.join(",", this.widget.getValue());
+  }
+
 }

@@ -417,7 +417,7 @@ def install_kernel(kernelspec_path='', kernelspec_name=''):
 
         def run(self):
             name = kernelspec_name if kernelspec_name else os.path.pardir()
-            classpath = [os.path.abspath('./beakerx/static/kernel/base/*'), os.path.abspath('./beakerx/static/kernel/{name}/lib/*'.format(name))].join(':')
+            classpath = [os.path.abspath('./beakerx/static/kernel/base/lib/*'), os.path.abspath('./beakerx/static/kernel/{name}/lib/*')].join(';' if sys.platform == 'win32' else ':')
             with open(kernelspec_path) as infile, open(pjoin('tmp', 'kernel.json'), 'w') as outfile:
                 for line in infile:
                     line = line.replace('__PATH__', classpath)

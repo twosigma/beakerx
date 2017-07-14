@@ -19,7 +19,7 @@ apply plugin: 'scala'
 apply plugin: 'maven-publish'
 
 def final kernelIdName = 'scala'
-def final toReplace = '__PATH__'
+def final pathToReplace = '__PATH__'
 def final mainClassToReplace = '__MAIN_CLASS__'
 
 mainClassName = 'com.twosigma.beakerx.scala.kernel.Scala'
@@ -76,10 +76,13 @@ task prepareJson(dependsOn: 'build') {
   doLast {
     println "Prepare JSON for Jupyter notebook"
     println "Copy kernel.json to build/libs/json/ and replasing PATH with scala.jar parh"
-
-    def jarLocation = file('build/install/scala/lib').getAbsolutePath()
-    jarLocation = jarLocation.replace("\\", "/");
-    def text = file('kernel.json').text.replace(toReplace, jarLocation + "/*" + classPathSeparator() + pathToBaseLibs()+"/*").replace(mainClassToReplace, "$mainClassName")
+    def text = createKernelJson(
+            kernelIdName,
+            kernelIdName + '/build/install/scala/lib/',
+            pathToReplace,
+            mainClassToReplace,
+            pathToBaseLibs(),
+            "$mainClassName")
     def folder = file('build/libs/json')
     if (!folder.exists()) {
       println "Creating folder build/libs/json"
@@ -129,5 +132,13 @@ publishing {
 
       from components.java
     }
+  }
+}
+
+task staticContent(dependsOn: build) {
+  doLast {
+    cleanBeakerxStatic(kernelIdName)
+    copyLibsToBeakerxStatic(kernelIdName, configurations, jar)
+    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", pathToReplace, mainClassToReplace)
   }
 }

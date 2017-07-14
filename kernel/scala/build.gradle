@@ -139,6 +139,6 @@ task staticContent(dependsOn: build) {
   doLast {
     cleanBeakerxStatic(kernelIdName)
     copyLibsToBeakerxStatic(kernelIdName, configurations, jar)
-    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", pathToReplace, mainClassToReplace)
+    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", mainClassToReplace)
   }
 }

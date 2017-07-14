@@ -374,17 +374,9 @@ def copy_files(src, dest):
         description = 'Copy files from one directory to another.'
 
         def run(self):
-            for item in os.listdir(src):
-                s = pjoin(src, item)
-                d = pjoin(dest, item)
-                if isdir(s):
-                    if exists(d):
-                        shutil.rmtree(d)
-                    shutil.copytree(s, d)
-                else:
-                    if exists(d):
-                        os.remove(d)
-                    shutil.copy2(s, d)
+            if exists(dest):
+                shutil.rmtree(dest)
+            shutil.copytree(src, dest)
 
     return CopyFiles
 

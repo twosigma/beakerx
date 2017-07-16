@@ -61,6 +61,10 @@ public class DefaultJVMVariables {
         "com.twosigma.beakerx.easyform.EasyForm",
         "com.twosigma.beakerx.table.*",
         "com.twosigma.beakerx.fileloader.CsvPlotReader",
+        "com.twosigma.beakerx.jvm.object.OutputContainer",
+        "com.twosigma.beakerx.jvm.object.TabbedOutputContainerLayoutManager",
+        "com.twosigma.beakerx.jvm.object.GridOutputContainerLayoutManager",
+        "com.twosigma.beakerx.jvm.object.CyclingOutputContainerLayoutManager",
         "com.twosigma.beakerx.jvm.object.OutputCell"
 
     );

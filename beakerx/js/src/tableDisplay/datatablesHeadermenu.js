@@ -158,17 +158,29 @@ define([
           var menuItems = el.data('menu');
           var colIdx = that.s.dt.column(el.parent().index() + ':visible').index();
 
+          function getPixelsBelowViewport($menu) {
+            return Math.ceil($menu.height() + el.offset().top + 2 * el.height() - pageHeight);
+          }
+
+          function getMenuPositionLeft(shouldMoveRight) {
+            return el.offset().left - el.parent().offsetParent().offset().left + (shouldMoveRight > 0 ? el.height() : 0);
+          }
+
           if ($.isArray(menuItems)) {
             var $menu = $("<ul/>", { 'class': 'dropdown-menu' });
             var node = this.dom.container;
+            var pageHeight = window.innerHeight || document.documentElement.clientHeight;
             node.data('columnIndex', colIdx);
 
             that._buildMenuItems(menuItems, $menu);
+            $menu.appendTo(node);
 
-            $menu.css('top', el.height() + 1)
-              .css('left', el.offset().left - el.parent().offsetParent().offset().left)
-              .css('display', 'block')
-              .appendTo(node);
+            var pixelsBelow = getPixelsBelowViewport($menu);
+
+            $menu
+              .css('top', el.height() + 1 - (pixelsBelow > 0 ? pixelsBelow : 0))
+              .css('left', getMenuPositionLeft(pixelsBelow > 0))
+              .css('display', 'block');
             that.dom.menu = $menu;
           }
         },

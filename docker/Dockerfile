@@ -16,8 +16,6 @@ FROM beakerx-base:latest
 
 MAINTAINER BeakerX Feedback <beakerx-feedback@twosigma.com>
 
-ENV PATH /opt/conda/bin:$PATH
-ENV CONDA_DIR /opt/conda
 ENV SHELL /bin/bash
 ENV NB_UID 1000
 ENV HOME /home/$NB_USER

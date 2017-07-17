@@ -24,12 +24,13 @@
                 <li><a tabindex="-1" href="#" class="dt-show-all" data-dtAction="dt-show-all">Show All Columns</a></li>
                 <li class="dropdown-submenu" id="<%=scopeId%>_show_column">
                     <a tabindex="-1" href="" class="dt-show-columns" data-toggle="dropdown">Show Column</a>
-                    <div class="dropdown-menu dropdown-menu-search">
-                        <i class="fa fa-search"></i>
-                        <input placeholder="search...">
+                    <div class="dropdown-menu dropdown-submenu-scrollable" role="menu" aria-labelledby="dLabel">
+                        <div class="dropdown-menu-search">
+                            <i class="fa fa-search"></i>
+                            <input placeholder="search...">
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-items list-showcolumn"></ul>
                     </div>
-                    <ul class="dropdown-menu dropdown-submenu-scrollable list-showcolumn" role="menu" aria-labelledby="dLabel">
-                    </ul>
                 </li>
                 <li><a tabindex="-1" href="#" class="dt-hide-all" data-dtAction="dt-hide-all">Hide All Columns</a></li>
                 <li class="dt-use-pagination-wrapper">

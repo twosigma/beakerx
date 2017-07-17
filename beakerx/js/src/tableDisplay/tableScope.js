@@ -416,7 +416,7 @@ define([
           if (_.isObject(value) && value.type === 'Date') {
             return bkUtils.formatTimestamp(value.timestamp, self.tz, format);
           }
-          var milli = value / 1000 / 1000;
+          var milli = value * 1000;
           return bkUtils.formatTimestamp(milli, self.tz, format);
         }
         return value;
@@ -844,7 +844,7 @@ define([
       };
     }
 
-    if (self.types[index] === 'integer') {
+    if (self.types[index] === 'integer' || self.types[index] === 'int64') {
       return {
         actualtype: 2,
         actualalign: 'R'
@@ -1483,6 +1483,12 @@ define([
                      (unit === self.formatForTimes || unit == 'DATETIME' && _.isEmpty(self.formatForTimes));
             },
             action: function(el) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+
+              self.getCellDisp[self.colorder[colIdx] - 1] = 8;
+              self.actualtype[self.colorder[colIdx] - 1] = 8;
+
               self.changeTimeFormat(unit);
             }
           };
@@ -1879,6 +1885,18 @@ define([
           top: shouldPosition ? (- pixelsBelow - 20) : '100%',
           left: shouldPosition ? '100%' : ''
         });
+      })
+      .parent()
+      .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
+        var searchText = this.value;
+
+        $(this).parent().next('.list-showcolumn').find('li').each(function (index, element) {
+          $(element).toggleClass('hidden', searchText ? element.textContent.indexOf(searchText) === -1 : false);
+        });
+      }, 250))
+      .on('click', '.dropdown-menu-search .fa-search', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
       });
 
     var inits = {'heightMatch': 'none'};
@@ -2189,7 +2207,7 @@ define([
           self.getCellDispOpts.push(self.allStringTypes);
         } else if (self.types[order - 1] === 'double') {
           self.getCellDispOpts.push(self.allDoubleTypes);
-        } else if (self.types[order - 1] === 'integer') {
+        } else if (self.types[order - 1] === 'integer' || self.types[order - 1] === 'int64') {
           self.getCellDispOpts.push(self.allIntTypes);
         } else if (self.types[order - 1] === 'time' || self.types[order - 1] === 'datetime') {
           self.getCellDispOpts.push(self.allTimeTypes);

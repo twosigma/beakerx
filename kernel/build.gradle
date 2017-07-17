@@ -38,10 +38,68 @@ subprojects {
 
   test {
     systemProperties 'java.awt.headless': "true"
-    if (project.hasProperty('showTestOut')){
+    if (project.hasProperty('showTestOut')) {
       testLogging {
         showStandardStreams = true
       }
     }
   }
+}
+
+def windows() {
+  return System.getProperty('os.name').contains('Windows')
+}
+
+def classPathSeparator() {
+  if (windows()) {
+    return ";"
+  } else {
+    return ":"
+  }
+}
+
+def pathToBaseLibs() {
+  return file("base/build/baseLibs").getAbsolutePath().replace("\\", "/")
+}
+
+def pathToStaticContent() {
+  return '../beakerx/beakerx/static/kernel/'
+}
+
+def pathToStaticBaseLibs() {
+  return file(pathToStaticContent() + "base/lib").getAbsolutePath().replace("\\", "/")
+}
+
+def createKernelJson(kernelIdName, pathToKernelLibs, pathToReplace, mainClassToReplace, pathToBaseLibs, mainClassName) {
+  def jarLocation = file(pathToKernelLibs).getAbsolutePath()
+  jarLocation = jarLocation.replace("\\", "/")
+  def text = file(kernelIdName + '/kernel.json').text.replace(pathToReplace, jarLocation + "/*" + classPathSeparator() + pathToBaseLibs + "/*").replace(mainClassToReplace, mainClassName)
+  text
+}
+
+def createStaticKernelJson(kernelIdName, mainClassToReplace, mainClassName) {
+  def text = file(kernelIdName + '/kernel.json').text.replace(mainClassToReplace, mainClassName)
+  text
+}
+
+def saveBeakerxStaticKernelJson(kernelIdName, mainClassName, mainClassToReplace) {
+  def kernelJson = createStaticKernelJson(
+          kernelIdName,
+          mainClassToReplace,
+          mainClassName)
+  file(pathToStaticContent() + kernelIdName + "/kernel.json").withWriter { w ->
+    w << kernelJson
+  }
+}
+
+def copyLibsToBeakerxStatic(kernelIdName, configurations, jar) {
+  copy {
+    from configurations.runtime
+    from jar
+    into new File(pathToStaticContent(), kernelIdName + '/lib')
+  }
+}
+
+def cleanBeakerxStatic(kernelIdName) {
+  delete pathToStaticContent() + kernelIdName
 }

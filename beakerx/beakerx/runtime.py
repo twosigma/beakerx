@@ -22,6 +22,7 @@ import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error,
 from traitlets import Unicode
 
 from beakerx.plot import BaseObject, chart
+from beakerx.easyform import easyform
 from ipykernel.comm import Comm
 
 
@@ -260,6 +261,8 @@ def transformBack(obj):
               or out['type'] == "SimpleTimePlot" \
               or out['type'] == "CombinedPlot":
                 return chart.transformBack(out)
+            if out['type'] == 'EasyForm':
+                return easyform.transformBack(out)
             if out['type'] == "BeakerCodeCell":
                 c = BeakerCodeCell(out['cellId'], out['evaluatorId'])
                 if 'code' in out:

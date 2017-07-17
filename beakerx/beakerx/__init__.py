@@ -14,6 +14,7 @@
 
 from .runtime import BeakerX
 from .plot import *
+from .easyform import *
 from ._version import version_info, __version__
 
 def _jupyter_nbextension_paths():

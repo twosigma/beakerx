@@ -781,7 +781,7 @@ define([
           name: item,
           callback: function(itemKey, options) {
             var index = self.table.cell(options.$trigger.get(0)).index();
-            self.tableDisplayModel.send({event: 'oncontextmenu', itemKey : itemKey, row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
+            self.tableDisplayModel.send({event: 'CONTEXT_MENU_CLICK', itemKey : itemKey, row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
           }
         }
       });
@@ -1769,7 +1769,7 @@ define([
 
       var index = currentCell.indexes()[0];
       if (model.hasDoubleClickAction) {
-      	self.tableDisplayModel.send({event: 'ondoubleclick', row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
+	self.tableDisplayModel.send({event: 'DOUBLE_CLICK', row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
       }
 
       if (!_.isEmpty(model.doubleClickTag)) {

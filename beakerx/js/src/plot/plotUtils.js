@@ -895,6 +895,35 @@ define([
       defsEl.appendChild(styleEl);
       element.insertBefore(defsEl, element.firstChild);
     },
+    addInlineFonts: function(element) {
+      var styleEl = document.createElement('style');
+      styleEl.setAttribute('type', 'text/css');
+      var fontFace = '';
+
+      fontFace += this.getFontToInject({
+        fontFamily: 'Lato',
+        urlformats: [{
+          base64: require('!base64-loader!./../shared/fonts/lato/Lato-Regular.woff'),
+          format: 'woff'
+        }],
+        fontWeight: 'normal',
+        fontStyle: 'normal'
+      });
+      fontFace += this.getFontToInject({
+        fontFamily: 'Lato',
+        urlformats: [{
+          base64: require('!base64-loader!./../shared/fonts/lato/Lato-Black.woff'),
+          format: 'woff'
+        }],
+        fontWeight: 'bold',
+        fontStyle: 'normal'
+      });
+
+      styleEl.innerHTML = '<![CDATA[\n' + fontFace + '\n]]>';
+      var defsEl = document.createElement('defs');
+      defsEl.appendChild(styleEl);
+      element.insertBefore(defsEl, element.firstChild);
+    },
     getElementStyles: function(element) {
       var elementStyles = "";
       var styleSheets = document.styleSheets;
@@ -919,15 +948,9 @@ define([
     },
     getFontToInject: function(font) {
       var src = '';
-      for (var url in font.urlformats) {
-        if (font.urlformats.hasOwnProperty(url)) {
-          var format = font.urlformats[url];
-          if (this.base64Fonts[url] == null) {
-            this.base64Fonts[url] = bkHelper.base64Encode(this.getFileSynchronously(url));
-          }
-          src += "url('data:application/font-" + format + ";charset=utf-8;base64," + this.base64Fonts[url] + "') format('" + format + "'), ";
-        }
-      }
+      font.urlformats.forEach(function(fontDef) {
+        src += "url('data:application/font-" + fontDef.format + ";charset=utf-8;base64," + fontDef.base64 + "') format('" + fontDef.format + "'), ";
+      });
       src = src.replace(/,\s*$/, "");
       return '@font-face' + " { " +
              "font-family: '" + font.fontFamily + "';" +

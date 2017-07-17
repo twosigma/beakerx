@@ -15,13 +15,10 @@
 
 conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx
-gradle --no-daemon clean
-gradle --no-daemon build
-gradle --no-daemon kernelInstall
 
 rm -r /home/beakerx/beakerx/js/node_modules
 rm -r /home/beakerx/beakerx/js/dist
 
-gradle --no-daemon :beakerx:install -x test
-(cd /home/beakerx/beakerx; pip install -e .)
-python -m beakerx.install --enable --prefix="${CONDA_PREFIX}"
+pip install -e beakerx --verbose
+jupyter nbextension install --py --symlink --sys-prefix beakerx
+jupyter nbextension enable --py --sys-prefix beakerx

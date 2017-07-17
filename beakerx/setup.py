@@ -16,30 +16,47 @@
 # limitations under the License.
 
 from setuptools import setup, find_packages
-from setupbase import create_cmdclass, install_node_modules, install_nb_conda_kernels, copy_files, run_gradle, get_version
+# from setuptools.command.build_py import build_py
+from setuptools.command.develop import develop
+from setuptools.command.sdist import sdist
+from setuptools.command.bdist_egg import bdist_egg
+from setupbase import (
+    create_cmdclass,
+    install_node_modules, 
+    update_kernelspec_class,
+    install_kernels,
+    copy_files, 
+    run_gradle, 
+    get_version,
+    get_data_files,
+    here
+)
 import os
 from os.path import join as pjoin
 
 
 cmdclass = create_cmdclass([
     'js',
-    'nb_conda_kernels',
-    'nb_custom_css',
     'java',
     'kernels',
+    'kernelspec_class',
+    'custom_css'
 ])
 cmdclass['js'] = install_node_modules(
-    path=pjoin('js'), 
-    build_dir=pjoin('js', 'dist'),
-    source_dir=pjoin('js', 'src')
-)
-cmdclass['nb_conda_kernels'] = install_nb_conda_kernels(enable=True, prefix=os.environ['CONDA_PREFIX'])
-cmdclass['nb_custom_css'] = copy_files(
-    src='custom', 
-    dest=pjoin(os.environ['CONDA_PREFIX'], 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
+    path='js', 
+    build_dir=pjoin(here, 'js', 'dist'),
+    source_dir=pjoin(here, 'js', 'src')
 )
 cmdclass['java'] = run_gradle(cmd='build')
-cmdclass['kernels'] = run_gradle(cmd='kernelInstall')
+cmdclass['kernels'] = install_kernels(pjoin(here, 'beakerx', 'static', 'kernel'))
+cmdclass['kernelspec_class'] = update_kernelspec_class(
+    enable=True, 
+    prefix=os.environ['CONDA_PREFIX']
+)
+cmdclass['custom_css'] = copy_files(
+    src=pjoin(here, 'custom'), 
+    dest=pjoin(os.environ['CONDA_PREFIX'], 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
+)
 
 setup_args = dict(
     name                = 'beakerx',
@@ -67,20 +84,18 @@ setup_args = dict(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
-    include_package_data= True,
-    packages            = find_packages(),
-    data_files          = [
-        ('share/jupyter/nbextensions/beakerx', [
-            'static/extension.js',
-            'static/index.js',
-            'static/index.js.map',
-        ]),
-    ],
+    data_files          = [(
+        'share/jupyter/nbextensions/beakerx', 
+        get_data_files(pjoin('beaker', 'static'))
+    )],
     install_requires    = [
+        'notebook>=4.3.1',
         'ipywidgets >=5.1.5, <=6.0.0'
     ],
     zip_safe            = False,
-    cmdclass            = cmdclass,
+    include_package_data= True,
+    packages            = find_packages(),
+    cmdclass            = cmdclass
 )
 
 if __name__ == '__main__':

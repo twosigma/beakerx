@@ -18,15 +18,17 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.widgets.selections.SelectMultiple;
 import com.twosigma.beakerx.widgets.selections.SelectMultipleSingle;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SelectMultipleSingleWidgetTest extends EasyFormWidgetTest {
 
   @Test
-  public void setValues() throws Exception {
+  public void setValue() throws Exception {
     //given
     String newValue = "2";
     SelectMultipleSingleWidget widget = new SelectMultipleSingleWidget();
@@ -36,6 +38,7 @@ public class SelectMultipleSingleWidgetTest extends EasyFormWidgetTest {
     widget.setValue(newValue);
     //then
     verifyMsgForProperty(kernel, SelectMultiple.VALUE, "2");
+    assertThat(widget.getValue()).isEqualTo("2");
   }
 
   @Test

@@ -75,8 +75,6 @@ jar {
   }
 }
 
-distZip.dependsOn installDist
-
 task prepareJson(dependsOn: 'build') {
   doLast {
     println "Prepare JSON for Jupyter notebook"
@@ -155,10 +153,19 @@ publishing {
   }
 }
 
-task staticContent(dependsOn: build) {
+installDist.into new File(pathToStaticContent, kernelIdName)
+distZip.dependsOn installDist
+
+task staticContent() {
+  doLast {
+    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", mainClassToReplace)
+  }
+}
+
+build.finalizedBy staticContent
+
+task cleanStaticContent() {
   doLast {
     cleanBeakerxStatic(kernelIdName)
-    copyLibsToBeakerxStatic(kernelIdName, configurations, jar)
-    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", mainClassToReplace)
   }
 }

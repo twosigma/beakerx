@@ -81,14 +81,13 @@ compileJava.dependsOn prepareBuildVerion
 task copyDependencies(type: Copy) {
   from configurations.runtime
   from jar
-  into new File("build", 'baseLibs')
+  into new File(pathToStaticContent, 'base/lib')
 }
 
-build.finalizedBy copyDependencies
+jar.finalizedBy copyDependencies
 
-task staticContent(dependsOn: build) {
+task cleanStaticContent() {
   doLast {
     cleanBeakerxStatic(kernelIdName)
-    copyLibsToBeakerxStatic(kernelIdName, configurations, jar)
   }
 }

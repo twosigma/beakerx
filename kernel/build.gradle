@@ -44,7 +44,10 @@ subprojects {
       }
     }
   }
+  ext.pathToStaticContent = '../../beakerx/beakerx/static/kernel/'
 }
+
+ext.pathToStaticContent = '../beakerx/beakerx/static/kernel/'
 
 def windows() {
   return System.getProperty('os.name').contains('Windows')
@@ -62,12 +65,8 @@ def pathToBaseLibs() {
   return file("base/build/baseLibs").getAbsolutePath().replace("\\", "/")
 }
 
-def pathToStaticContent() {
-  return '../beakerx/beakerx/static/kernel/'
-}
-
 def pathToStaticBaseLibs() {
-  return file(pathToStaticContent() + "base/lib").getAbsolutePath().replace("\\", "/")
+  return file(pathToStaticContent + "base/lib").getAbsolutePath().replace("\\", "/")
 }
 
 def createKernelJson(kernelIdName, pathToKernelLibs, pathToReplace, mainClassToReplace, pathToBaseLibs, mainClassName) {
@@ -87,19 +86,11 @@ def saveBeakerxStaticKernelJson(kernelIdName, mainClassName, mainClassToReplace)
           kernelIdName,
           mainClassToReplace,
           mainClassName)
-  file(pathToStaticContent() + kernelIdName + "/kernel.json").withWriter { w ->
+  file(pathToStaticContent + kernelIdName + "/kernel.json").withWriter { w ->
     w << kernelJson
   }
 }
 
-def copyLibsToBeakerxStatic(kernelIdName, configurations, jar) {
-  copy {
-    from configurations.runtime
-    from jar
-    into new File(pathToStaticContent(), kernelIdName + '/lib')
-  }
-}
-
 def cleanBeakerxStatic(kernelIdName) {
-  delete pathToStaticContent() + kernelIdName
+  delete pathToStaticContent + kernelIdName
 }

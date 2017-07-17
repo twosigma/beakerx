@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kernel.msg;
 
 import static com.twosigma.beakerx.kernel.Utils.timestamp;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMPLETE_REPLY;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_REPLY;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_RESULT;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.STATUS;

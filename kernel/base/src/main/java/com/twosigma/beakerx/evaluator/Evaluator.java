@@ -40,7 +40,7 @@ public interface Evaluator {
 
   void setShellOptions(final KernelParameters kernelParameters) throws IOException;
 
-  void addJarToClasspath(PathToJar path);
+  boolean addJarToClasspath(PathToJar path);
 
   AutocompleteResult autocomplete(String code, int caretPosition);
 

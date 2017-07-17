@@ -27,10 +27,13 @@ public abstract class BaseEvaluator implements Evaluator {
   protected abstract boolean removeImportPath(ImportPath anImport);
 
   @Override
-  public void addJarToClasspath(PathToJar path) {
-    if (addJar(path)) {
+  public boolean addJarToClasspath(PathToJar path) {
+    boolean added = addJar(path);
+    if (added) {
       resetEnvironment();
     }
+
+    return added;
   }
 
   @Override

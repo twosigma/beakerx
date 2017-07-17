@@ -28,12 +28,12 @@ import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
 public class DropdownTest {
 
-  private KernelTest groovyKernel;
+  private KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
-    groovyKernel = new KernelTest();
-    KernelManager.register(groovyKernel);
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
   }
 
   @After
@@ -47,7 +47,7 @@ public class DropdownTest {
     //when
     new Dropdown();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Dropdown.MODEL_NAME_VALUE, Dropdown.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(kernel.getPublishedMessages(), Dropdown.MODEL_NAME_VALUE, Dropdown.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -57,7 +57,7 @@ public class DropdownTest {
     //when
     dropdown.setValue("1");
     //then
-    verifyMsgForProperty(groovyKernel, Dropdown.VALUE, "1");
+    verifyMsgForProperty(kernel, Dropdown.VALUE, "1");
   }
 
   @Test
@@ -67,14 +67,13 @@ public class DropdownTest {
     //when
     dropdown.setOptions(new String[]{"2", "3"});
     //then
-    verifyMsgForProperty(groovyKernel, Dropdown.OPTIONS_LABELS, new String[]{"2", "3"});
+    verifyMsgForProperty(kernel, Dropdown.OPTIONS_LABELS, new String[]{"2", "3"});
   }
 
   private Dropdown dropdown() throws NoSuchAlgorithmException {
     Dropdown widget = new Dropdown();
-    groovyKernel.clearPublishedMessages();
+    kernel.clearPublishedMessages();
     return widget;
   }
-
 
 }

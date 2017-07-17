@@ -326,7 +326,9 @@ define([
 
   CombinedPlotScope.prototype.saveAsSvg = function() {
     var self = this;
-    var html = plotUtils.convertToXHTML(self.getSvgToSave().outerHTML);
+    var svgToSave = self.getSvgToSave();
+    plotUtils.addInlineFonts(svgToSave);
+    var html = plotUtils.convertToXHTML(svgToSave.outerHTML);
     var fileName = _.isEmpty(self.stdmodel.title) ? 'combinedplot' : self.stdmodel.title;
     plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + '.svg');
   };
@@ -334,6 +336,7 @@ define([
   CombinedPlotScope.prototype.saveAsPng = function() {
     var self = this;
     var svg = self.getSvgToSave();
+    plotUtils.addInlineFonts(svg);
 
     self.canvas.width = svg.getAttribute("width");
     self.canvas.height = svg.getAttribute("height");

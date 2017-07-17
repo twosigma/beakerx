@@ -28,7 +28,7 @@ public class SelectMultipleSingleWidget extends ListComponent<SelectMultipleSing
 
   @Override
   public String getValue() {
-    return null;
+    return this.widget.getValue();
   }
 
   @Override
@@ -47,5 +47,5 @@ public class SelectMultipleSingleWidget extends ListComponent<SelectMultipleSing
     this.getWidget().setOptions(values.stream().toArray(String[]::new));
   }
 
-  
+
 }

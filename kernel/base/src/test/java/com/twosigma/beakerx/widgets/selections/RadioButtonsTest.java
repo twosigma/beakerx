@@ -28,12 +28,12 @@ import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
 public class RadioButtonsTest {
 
-  private KernelTest groovyKernel;
+  private KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
-    groovyKernel = new KernelTest();
-    KernelManager.register(groovyKernel);
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
   }
 
   @After
@@ -47,7 +47,7 @@ public class RadioButtonsTest {
     //when
     new RadioButtons();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), RadioButtons.MODEL_NAME_VALUE, RadioButtons.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(kernel.getPublishedMessages(), RadioButtons.MODEL_NAME_VALUE, RadioButtons.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -57,7 +57,7 @@ public class RadioButtonsTest {
     //when
     widget.setValue("1");
     //then
-    verifyMsgForProperty(groovyKernel, RadioButtons.VALUE, "1");
+    verifyMsgForProperty(kernel, RadioButtons.VALUE, "1");
   }
 
   @Test
@@ -67,12 +67,12 @@ public class RadioButtonsTest {
     //when
     widget.setOptions(new String[]{"2", "3"});
     //then
-    verifyMsgForProperty(groovyKernel, RadioButtons.OPTIONS_LABELS, new String[]{"2", "3"});
+    verifyMsgForProperty(kernel, RadioButtons.OPTIONS_LABELS, new String[]{"2", "3"});
   }
 
   private RadioButtons radioButtons() throws NoSuchAlgorithmException {
     RadioButtons widget = new RadioButtons();
-    groovyKernel.clearPublishedMessages();
+    kernel.clearPublishedMessages();
     return widget;
   }
 }

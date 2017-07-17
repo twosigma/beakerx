@@ -20,6 +20,7 @@ beaker.egg-info/
 beakerx/static/
 beakerx.egg-info/
 beakerx/beakerx/static/
+beakerx/dist
 
 kernel/build/
 kernel/*/build/

@@ -396,7 +396,7 @@ def run_gradle(path=kernel_path, cmd='build'):
         description = 'Run gradle script'
 
         def run(self):
-            run(['gradlew', '--no-daemon', cmd], cwd=path)
+            run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', cmd], cwd=path)
 
     return Gradle
     

@@ -23,9 +23,7 @@ apply plugin: 'maven-publish'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-def final kernelIdName = 'clojure'
-def final mainClassToReplace = '__MAIN_CLASS__'
-
+ext.kernelIdName = 'clojure'
 mainClassName = 'com.twosigma.beakerx.clojure.kernel.Clojure'
 
 configurations {
@@ -76,17 +74,3 @@ publishing {
 
 installDist.into new File(pathToStaticContent, kernelIdName)
 distZip.dependsOn installDist
-
-task staticContent() {
-  doLast {
-    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", mainClassToReplace)
-  }
-}
-
-build.finalizedBy staticContent
-
-task cleanStaticContent() {
-  doLast {
-    cleanBeakerxStatic(kernelIdName)
-  }
-}

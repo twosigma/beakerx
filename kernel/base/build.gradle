@@ -16,7 +16,7 @@
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
-def final kernelIdName = 'base'
+ext.kernelIdName = 'base'
 
 repositories {
   mavenCentral()
@@ -85,8 +85,6 @@ task copyDependencies(type: Copy) {
 
 jar.finalizedBy copyDependencies
 
-task cleanStaticContent() {
-  doLast {
-    cleanBeakerxStatic(kernelIdName)
-  }
+staticContent {
+  ext.executeStaticContent = false
 }

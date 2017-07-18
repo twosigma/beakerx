@@ -17,10 +17,7 @@ apply plugin: 'application'
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
-def final kernelIdName = 'java'
-def final pathToReplace = '__PATH__'
-def final mainClassToReplace = '__MAIN_CLASS__'
-
+ext.kernelIdName = 'java'
 mainClassName = 'com.twosigma.beakerx.javash.kernel.Java'
 
 configurations {
@@ -71,20 +68,5 @@ publishing {
   }
 }
 
-
 installDist.into new File(pathToStaticContent, kernelIdName)
 distZip.dependsOn installDist
-
-task staticContent() {
-  doLast {
-    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", mainClassToReplace)
-  }
-}
-
-build.finalizedBy staticContent
-
-task cleanStaticContent() {
-  doLast {
-    cleanBeakerxStatic(kernelIdName)
-  }
-}

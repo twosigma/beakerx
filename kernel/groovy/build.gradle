@@ -17,9 +17,7 @@ apply plugin: 'application'
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
-def final kernelIdName = 'groovy'
-def final mainClassToReplace = '__MAIN_CLASS__'
-
+ext.kernelIdName = 'groovy'
 mainClassName = 'com.twosigma.beakerx.groovy.kernel.Groovy'
 
 configurations {
@@ -109,17 +107,3 @@ publishing {
 
 installDist.into new File(pathToStaticContent, kernelIdName)
 distZip.dependsOn installDist
-
-task staticContent() {
-  doLast {
-    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", mainClassToReplace)
-  }
-}
-
-build.finalizedBy staticContent
-
-task cleanStaticContent() {
-  doLast {
-    cleanBeakerxStatic(kernelIdName)
-  }
-}

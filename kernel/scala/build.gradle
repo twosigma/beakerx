@@ -18,10 +18,7 @@ apply plugin: 'java'
 apply plugin: 'scala'
 apply plugin: 'maven-publish'
 
-def final kernelIdName = 'scala'
-def final pathToReplace = '__PATH__'
-def final mainClassToReplace = '__MAIN_CLASS__'
-
+ext.kernelIdName = 'scala'
 mainClassName = 'com.twosigma.beakerx.scala.kernel.Scala'
 
 configurations {
@@ -89,17 +86,3 @@ publishing {
 
 installDist.into new File(pathToStaticContent, kernelIdName)
 distZip.dependsOn installDist
-
-task staticContent() {
-  doLast {
-    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", mainClassToReplace)
-  }
-}
-
-build.finalizedBy staticContent
-
-task cleanStaticContent() {
-  doLast {
-    cleanBeakerxStatic(kernelIdName)
-  }
-}

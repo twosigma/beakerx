@@ -80,8 +80,6 @@ public class TableDisplay extends BeakerxWidget {
   public static final String MATRIX_SUBTYPE = "Matrix";
   public static final String DICTIONARY_SUBTYPE = "Dictionary";
 
-  private final static Logger LOGGER = LoggerFactory.getLogger(TableDisplay.class.getName());
-
   private final List<List<?>> values;
   private List<String> columns;
   private final List<String> classes;
@@ -635,8 +633,6 @@ public class TableDisplay extends BeakerxWidget {
   private void handleDoubleClick(Message message) {
     if (isCorrectEvent(message, CommActions.DOUBLE_CLICK)) {
       handleCommEventSync(message, CommActions.DOUBLE_CLICK, this::onDoubleClickAction);
-    } else {
-      LOGGER.warn("Warning: double click handler received non-double-click message " + message.toString());
     }
   }
 
@@ -668,18 +664,12 @@ public class TableDisplay extends BeakerxWidget {
   private void handleSetDetails(Message message) {
     if (isCorrectEvent(message, CommActions.ACTIONDETAILS)) {
       handleCommEventSync(message, CommActions.ACTIONDETAILS, this::onActionDetails);
-    } else {
-      LOGGER.warn(
-          "Warning: set details handler received non-set details message " + message.toString());
     }
   }
 
   private void handleOnContextMenu(Message message) {
     if (isCorrectEvent(message, CommActions.CONTEXT_MENU_CLICK)) {
       handleCommEventSync(message, CommActions.CONTEXT_MENU_CLICK, this::onContextMenu);
-    } else {
-      LOGGER.warn(
-          "Warning: on context handler received non-context menu message " + message.toString());
     }
   }
 

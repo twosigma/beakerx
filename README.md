@@ -64,7 +64,7 @@ python -m beakerx.bkr2ipynb *.bkr
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 
 ## Autotranslation from Python to JavaScript:
-<img width="900" alt="screen shot" src="">
+<img width="900" alt="screen shot" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
 
 ## Running with Docker
 In root project call

@@ -396,7 +396,7 @@ def run_gradle(path=kernel_path, cmd='build'):
         description = 'Run gradle script'
 
         def run(self):
-            run(['./gradlew', '--no-daemon', cmd], cwd=path)
+            run(['gradlew', '--no-daemon', cmd], cwd=path)
 
     return Gradle
     
@@ -429,6 +429,7 @@ def install_kernels(kernels_dir=''):
             def install_kernel(kernelspec_path='', kernelspec_name=None):
                 name = kernelspec_name if kernelspec_name else os.path.basename(kernelspec_path)
                 classpath = os.path.abspath('./beakerx/static/kernel/base/lib/*') + (';' if sys.platform == 'win32' else ':') + os.path.abspath('./beakerx/static/kernel/{}/lib/*'.format(name))
+                classpath = classpath.replace('\\', '/')
                 lines = []
                 with open(pjoin(kernelspec_path, 'kernel.json')) as infile:
                     for line in infile:

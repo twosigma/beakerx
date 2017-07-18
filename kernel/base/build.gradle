@@ -77,7 +77,6 @@ task prepareBuildVerion() {
 
 compileJava.dependsOn prepareBuildVerion
 
-
 task copyDependencies(type: Copy) {
   from configurations.runtime
   from jar

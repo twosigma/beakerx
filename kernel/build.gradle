@@ -49,33 +49,6 @@ subprojects {
 
 ext.pathToStaticContent = '../beakerx/beakerx/static/kernel/'
 
-def windows() {
-  return System.getProperty('os.name').contains('Windows')
-}
-
-def classPathSeparator() {
-  if (windows()) {
-    return ";"
-  } else {
-    return ":"
-  }
-}
-
-def pathToBaseLibs() {
-  return file("base/build/baseLibs").getAbsolutePath().replace("\\", "/")
-}
-
-def pathToStaticBaseLibs() {
-  return file(pathToStaticContent + "base/lib").getAbsolutePath().replace("\\", "/")
-}
-
-def createKernelJson(kernelIdName, pathToKernelLibs, pathToReplace, mainClassToReplace, pathToBaseLibs, mainClassName) {
-  def jarLocation = file(pathToKernelLibs).getAbsolutePath()
-  jarLocation = jarLocation.replace("\\", "/")
-  def text = file(kernelIdName + '/kernel.json').text.replace(pathToReplace, jarLocation + "/*" + classPathSeparator() + pathToBaseLibs + "/*").replace(mainClassToReplace, mainClassName)
-  text
-}
-
 def createStaticKernelJson(kernelIdName, mainClassToReplace, mainClassName) {
   def text = file(kernelIdName + '/kernel.json').text.replace(mainClassToReplace, mainClassName)
   text

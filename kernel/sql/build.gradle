@@ -64,52 +64,6 @@ jar {
   }
 }
 
-task prepareJson(dependsOn: 'build') {
-  doLast {
-    println "Prepare sql JSON for Jupyter notebook"
-    println "Copy kernel.json to build/libs/json/ and replacing PATH with sql.jar path"
-    def text = createKernelJson(
-            kernelIdName,
-            kernelIdName + '/build/install/sql/lib/',
-            pathToReplace,
-            mainClassToReplace,
-            pathToBaseLibs(),
-            "$mainClassName")
-    def folder = file('build/libs/json')
-    if (!folder.exists()) {
-      println "Creating folder build/libs/json"
-      folder.mkdirs()
-    }
-
-    file('build/libs/json/kernel.json').withWriter { w ->
-      w << text
-    }
-  }
-}
-
-task kernelInstall(dependsOn: 'prepareJson') {
-  doLast {
-    println "Installing 'sql' to Jupyter notebook"
-
-    def hashStdOut = new ByteArrayOutputStream()
-    def jsonFolder = file('build/libs/json/').getAbsolutePath();
-    exec {
-      commandLine "jupyter",
-              "kernelspec",
-              "install",
-              "--sys-prefix",
-              "--replace",
-              "--name",
-              kernelIdName,
-              jsonFolder;
-      standardOutput = hashStdOut
-    }
-    println hashStdOut.toString().trim();
-    println "DONE"
-  }
-}
-
-
 installDist.into new File(pathToStaticContent, kernelIdName)
 distZip.dependsOn installDist
 

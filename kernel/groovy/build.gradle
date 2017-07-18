@@ -18,7 +18,6 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 def final kernelIdName = 'groovy'
-def final pathToReplace = '__PATH__'
 def final mainClassToReplace = '__MAIN_CLASS__'
 
 mainClassName = 'com.twosigma.beakerx.groovy.kernel.Groovy'
@@ -72,51 +71,6 @@ compileJava.dependsOn antlr4_groovy_parser
 jar {
   manifest {
     attributes "Main-Class": "$mainClassName"
-  }
-}
-
-task prepareJson(dependsOn: 'build') {
-  doLast {
-    println "Prepare JSON for Jupyter notebook"
-    println "Copy kernel.json to build/libs/json/ and replacing PATH with groovy.jar path"
-    def text = createKernelJson(
-            kernelIdName,
-            kernelIdName + '/build/install/groovy/lib/',
-            pathToReplace,
-            mainClassToReplace,
-            pathToBaseLibs(),
-            "$mainClassName")
-    def folder = file('build/libs/json')
-    if (!folder.exists()) {
-      println "Creating folder build/libs/json"
-      folder.mkdirs()
-    }
-
-    file('build/libs/json/kernel.json').withWriter { w ->
-      w << text
-    }
-  }
-}
-
-task kernelInstall(dependsOn: 'prepareJson') {
-  doLast {
-    println "Installing 'groovy' to jupyter notebook"
-
-    def hashStdOut = new ByteArrayOutputStream()
-    def jsonFolder = file('build/libs/json/').getAbsolutePath();
-    exec {
-      commandLine "jupyter",
-              "kernelspec",
-              "install",
-              "--sys-prefix",
-              "--replace",
-              "--name",
-              kernelIdName,
-              jsonFolder;
-      standardOutput = hashStdOut
-    }
-    println hashStdOut.toString().trim();
-    println "DONE"
   }
 }
 

@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,6 +88,39 @@ public class ImageTest {
     widget.setWidth("321");
     //then
     TestWidgetUtils.verifyMsgForProperty(groovyKernel, Image.WIDTH, "321");
+  }
+
+  @Test
+  public void setWidth_hasThatWidth() throws Exception {
+    String expected = "123";
+    //given
+    Image widget = image();
+    //when
+    widget.setWidth(expected);
+    //then
+    Assertions.assertThat(widget.getWidth()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setHeight_hasThatHeight() throws Exception {
+    String expected = "123";
+    //given
+    Image widget = image();
+    //when
+    widget.setHeight(expected);
+    //then
+    Assertions.assertThat(widget.getHeight()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setFormat_hasThatFormat() throws Exception {
+    String expected = "test";
+    //given
+    Image widget = image();
+    //when
+    widget.setFormat(expected);
+    //then
+    Assertions.assertThat(widget.getFormat()).isEqualTo(expected);
   }
 
   private Image image() throws NoSuchAlgorithmException {

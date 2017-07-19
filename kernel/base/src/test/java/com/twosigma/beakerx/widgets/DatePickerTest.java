@@ -63,17 +63,6 @@ public class DatePickerTest {
   }
 
   @Test
-  public void updateValue_hasThatValue() throws Exception {
-    String expected = "20120101";
-    //given
-    DatePicker widget = widget();
-    //when
-    widget.updateValue(expected);
-    //then
-    Assertions.assertThat(widget.getValue()).isEqualTo(expected);
-  }
-
-  @Test
   public void setShowTime_shouldSendCommMessage() throws Exception {
     //given
     DatePicker widget = widget();

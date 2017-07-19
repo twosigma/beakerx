@@ -1371,7 +1371,10 @@ define([
   TableScope.prototype.updateHeaderFontSize = function() {
     var self = this;
     if (self.headerFontSize) {
-      $(self.table.table().container()).find('thead tr:not(".filterRow") th').css({'font-size': self.headerFontSize});
+      $(self.table.table().container()).find('thead tr:not(".filterRow") th').css({
+        'font-size': self.headerFontSize,
+        'line-height': self.headerFontSize + 'px'
+      });
     }
   };
 
@@ -1385,11 +1388,15 @@ define([
     var headerTextMaxWidth = Math.max.apply(null, headerTexts.map(function() {
       return $(this).width();
     }).get());
-    var lineHeight = parseFloat(headerTexts.css('line-height'));
+    var lineHeight = parseFloat(headerTexts.css('font-size'));
     if (self.headersVertical) {
       headerTexts.addClass('rotate');
       var padding = 10;
-      headerTexts.css('transform', 'rotate(270deg) translateX(-' + (lineHeight - padding) + 'px)');
+      headerTexts.css({
+        'line-height': lineHeight + 'px',
+        'transform': 'rotate(270deg) translateX(-' + (lineHeight - padding) + 'px)',
+        'width': (headerTextMaxWidth - padding) + 'px'
+      });
       headerCols.css({
         'height': headerTextMaxWidth + padding + 'px',
         'max-width': lineHeight,

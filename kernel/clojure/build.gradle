@@ -23,10 +23,7 @@ apply plugin: 'maven-publish'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-def final kernelIdName = 'clojure'
-def final pathToReplace = '__PATH__'
-def final mainClassToReplace = '__MAIN_CLASS__'
-
+ext.kernelIdName = 'clojure'
 mainClassName = 'com.twosigma.beakerx.clojure.kernel.Clojure'
 
 configurations {
@@ -63,53 +60,6 @@ jar {
   }
 }
 
-distZip.dependsOn installDist
-
-task prepareJson(dependsOn: 'build') {
-  doLast {
-    println "Prepare clojure JSON for Jupyter notebook"
-    println "Copy kernel.json to build/libs/json/ and replacing PATH with clojure.jar path"
-    def text = createKernelJson(
-            kernelIdName,
-            kernelIdName + '/build/install/clojure/lib/',
-            pathToReplace,
-            mainClassToReplace,
-            pathToBaseLibs(),
-            "$mainClassName")
-    def folder = file('build/libs/json')
-    if (!folder.exists()) {
-      println "Creating folder build/libs/json"
-      folder.mkdirs()
-    }
-
-    file('build/libs/json/kernel.json').withWriter { w ->
-      w << text
-    }
-  }
-}
-
-task kernelInstall(dependsOn: 'prepareJson') {
-  doLast {
-    println "Installing 'clojure' to Jupyter notebook"
-
-    def hashStdOut = new ByteArrayOutputStream()
-    def jsonFolder = file('build/libs/json/').getAbsolutePath();
-    exec {
-      commandLine "jupyter",
-              "kernelspec",
-              "install",
-              "--sys-prefix",
-              "--replace",
-              "--name",
-              kernelIdName,
-              jsonFolder;
-      standardOutput = hashStdOut
-    }
-    println hashStdOut.toString().trim();
-    println "DONE"
-  }
-}
-
 publishing {
   publications {
     maven(MavenPublication) {
@@ -122,10 +72,5 @@ publishing {
   }
 }
 
-task staticContent(dependsOn: build) {
-  doLast {
-    cleanBeakerxStatic(kernelIdName)
-    copyLibsToBeakerxStatic(kernelIdName, configurations, jar)
-    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", mainClassToReplace)
-  }
-}
+installDist.into new File(pathToStaticContent, kernelIdName)
+distZip.dependsOn installDist

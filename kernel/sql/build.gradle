@@ -20,11 +20,7 @@ apply plugin: 'java'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-
-def final kernelIdName = 'sql'
-def final pathToReplace = '__PATH__'
-def final mainClassToReplace = '__MAIN_CLASS__'
-
+ext.kernelIdName = 'sql'
 mainClassName = 'com.twosigma.beakerx.sql.kernel.SQL'
 
 configurations {
@@ -64,58 +60,5 @@ jar {
   }
 }
 
+installDist.into new File(pathToStaticContent, kernelIdName)
 distZip.dependsOn installDist
-
-task prepareJson(dependsOn: 'build') {
-  doLast {
-    println "Prepare sql JSON for Jupyter notebook"
-    println "Copy kernel.json to build/libs/json/ and replacing PATH with sql.jar path"
-    def text = createKernelJson(
-            kernelIdName,
-            kernelIdName + '/build/install/sql/lib/',
-            pathToReplace,
-            mainClassToReplace,
-            pathToBaseLibs(),
-            "$mainClassName")
-    def folder = file('build/libs/json')
-    if (!folder.exists()) {
-      println "Creating folder build/libs/json"
-      folder.mkdirs()
-    }
-
-    file('build/libs/json/kernel.json').withWriter { w ->
-      w << text
-    }
-  }
-}
-
-task kernelInstall(dependsOn: 'prepareJson') {
-  doLast {
-    println "Installing 'sql' to Jupyter notebook"
-
-    def hashStdOut = new ByteArrayOutputStream()
-    def jsonFolder = file('build/libs/json/').getAbsolutePath();
-    exec {
-      commandLine "jupyter",
-              "kernelspec",
-              "install",
-              "--sys-prefix",
-              "--replace",
-              "--name",
-              kernelIdName,
-              jsonFolder;
-      standardOutput = hashStdOut
-    }
-    println hashStdOut.toString().trim();
-    println "DONE"
-  }
-}
-
-task staticContent(dependsOn: build) {
-  doLast {
-    cleanBeakerxStatic(kernelIdName)
-    copyLibsToBeakerxStatic(kernelIdName, configurations, jar)
-    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", mainClassToReplace)
-  }
-}
-

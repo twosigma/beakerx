@@ -781,7 +781,7 @@ define([
           name: item,
           callback: function(itemKey, options) {
             var index = self.table.cell(options.$trigger.get(0)).index();
-            self.tableDisplayModel.send({event: 'oncontextmenu', itemKey : itemKey, row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
+            self.tableDisplayModel.send({event: 'CONTEXT_MENU_CLICK', itemKey : itemKey, row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
           }
         }
       });
@@ -1769,7 +1769,7 @@ define([
 
       var index = currentCell.indexes()[0];
       if (model.hasDoubleClickAction) {
-      	self.tableDisplayModel.send({event: 'ondoubleclick', row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
+	self.tableDisplayModel.send({event: 'DOUBLE_CLICK', row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
       }
 
       if (!_.isEmpty(model.doubleClickTag)) {
@@ -1868,11 +1868,23 @@ define([
 
     self.element.find(id + '_dropdown_menu')
       .on('click.bko-dropdown', function() {
-        var isOpen = $(this).parents('.dropdown').hasClass('open');
+        var $toggleBtn = $(this);
+        var isOpen = $toggleBtn.parent().hasClass('open');
+        var $dropdown = $toggleBtn.parent();
+        var $menu = $dropdown.find('> .dropdown-menu');
+        var height = $menu.height();
+        var pageHeight = window.innerHeight || document.documentElement.clientHeight;
+        var pixelsBelow = Math.ceil(height + $dropdown.offset().top - pageHeight);
+        var shouldPosition = pixelsBelow > 0;
 
         if (!isOpen) {
-          self.setCodeMirrorListener($(this));
+          self.setCodeMirrorListener($toggleBtn);
         }
+
+        $menu.css({
+          top: shouldPosition ? (- pixelsBelow - 20) : '100%',
+          left: shouldPosition ? '100%' : ''
+        });
       })
       .parent()
       .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
@@ -1886,10 +1898,6 @@ define([
         e.preventDefault();
         e.stopPropagation();
       });
-
-    // self.$on(GLOBALS.EVENTS.ADVANCED_MODE_TOGGLED, function() {
-    //   updateSize();
-    // });
 
     var inits = {'heightMatch': 'none'};
     if ((self.pagination.fixLeft + self.pagination.fixRight) > (self.columns.length - 1)) {

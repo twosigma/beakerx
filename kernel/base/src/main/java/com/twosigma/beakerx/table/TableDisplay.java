@@ -54,15 +54,19 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TableDisplay extends BeakerxWidget {
 
@@ -627,7 +631,17 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   private void handleDoubleClick(Message message) {
-    handleCommEventSync(message, CommActions.DOUBLE_CLICK, this::onDoubleClickAction);
+    if (isCorrectEvent(message, CommActions.DOUBLE_CLICK)) {
+      handleCommEventSync(message, CommActions.DOUBLE_CLICK, this::onDoubleClickAction);
+    }
+  }
+
+  private boolean isCorrectEvent(Message message, CommActions commActions) {
+    LinkedHashMap<String, LinkedHashMap> data = (LinkedHashMap) message.getContent().get("data");
+    LinkedHashMap content = data.get("content");
+    String event = (String) content.get("event");
+
+    return commActions.getAction().equals(event);
   }
 
   private void onDoubleClickAction(HashMap content, Message message) {
@@ -648,11 +662,15 @@ public class TableDisplay extends BeakerxWidget {
   }
 
   private void handleSetDetails(Message message) {
-    handleCommEventSync(message, CommActions.ACTIONDETAILS, this::onActionDetails);
+    if (isCorrectEvent(message, CommActions.ACTIONDETAILS)) {
+      handleCommEventSync(message, CommActions.ACTIONDETAILS, this::onActionDetails);
+    }
   }
 
   private void handleOnContextMenu(Message message) {
-    handleCommEventSync(message, CommActions.CONTEXT_MENU_CLICK, this::onContextMenu);
+    if (isCorrectEvent(message, CommActions.CONTEXT_MENU_CLICK)) {
+      handleCommEventSync(message, CommActions.CONTEXT_MENU_CLICK, this::onContextMenu);
+    }
   }
 
   private void onContextMenu(HashMap content, Message message) {

@@ -249,7 +249,7 @@ define([
     this.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
       bottomLayoutMargin : 30,
       topLayoutMargin : 0,
-      leftLayoutMargin : calcVertLayoutMargin(this.stdmodel.yAxis),
+      leftLayoutMargin : calcVertLayoutMargin.call(this, this.stdmodel.yAxis),
       rightLayoutMargin : this.stdmodel.yAxisR ? calcVertLayoutMargin(this.stdmodel.yAxisR) : 0,
       legendMargin : 10,
       legendBoxSize : 10
@@ -303,7 +303,7 @@ define([
     this.legendResetPosition = true;
 
     this.jqcontainer.on('resize', function(e, ui) {
-      self.watchModelGetWidth();
+      self.updateModelWidth();
     });
 
     // self.$watch("model.getWidth()", function(newWidth) {
@@ -332,7 +332,7 @@ define([
     this.update();
   };
 
-  PlotScope.prototype.watchModelGetWidth = function(newWidth) {
+  PlotScope.prototype.updateModelWidth = function(newWidth) {
     if (this.width === newWidth) { return; }
     this.width = newWidth;
     this.jqcontainer.css("width", newWidth );
@@ -352,9 +352,9 @@ define([
     }
   };
 
-  PlotScope.prototype.emitSizeChange = function() {
+  PlotScope.prototype.emitSizeChange = function(useMinWidth) {
     if (this.model.updateWidth !== null && this.model.updateWidth !== undefined) {
-      this.model.updateWidth(this.width);
+      this.model.updateWidth(this.width, useMinWidth);
     } // not stdmodel here
 
     // self.$emit('plotSizeChanged', {
@@ -608,7 +608,7 @@ define([
         return plotTip.untooltip(self, d);
       })
       .on("click.resp", function(d) {
-        return plotTip.toggleTooltip(self, d);
+        return plotTip.untooltip(self, d);
       });
   };
 
@@ -2169,7 +2169,7 @@ define([
     var plotContainer = self.element.find('.plot-plotcontainer');
     plotContainer.resizable({
       maxWidth: self.element.width(), // no wider than the width of the cell
-      minWidth: 450,
+      minWidth: 150,
       minHeight: 150,
       handles: "e, s, se",
       resize : function(event, ui) {
@@ -2244,6 +2244,16 @@ define([
     self.update();
 
     self.fillCellModelWithPlotMethods();
+    self.updateModelWidth(self.getPlotWithLegendWidth());
+    self.emitSizeChange(true);
+  };
+
+  PlotScope.prototype.getPlotWithLegendWidth = function() {
+    var containerWidth = this.jqlegendcontainer.width();
+    var plotWidth = this.jqcontainer.width();
+    var legendWidth = this.jqlegendcontainer.find('.plot-legend').width();
+
+    return (containerWidth < plotWidth ? containerWidth : plotWidth) - (legendWidth + this.layout.legendMargin + 2);
   };
 
   PlotScope.prototype.updatePlot = function() {
@@ -2652,16 +2662,25 @@ define([
   }
 
   function calcVertLayoutMargin(axis, pStyle) {
-    var result = 80;
+    var result = 0;
+    var MIN_LEFT_MARGIN = 80;
+    var MIN_WIDTH = 300;
+
     if (axis && axis.axisType === 'linear') {
       var l = axis.axisValL.toFixed(axis.axisFixed) + '';
       var r = axis.axisValL.toFixed(axis.axisFixed) + '';
 
       var m = l.length > r.length ? l : r;
       var size = measureText(m, 13, pStyle);
+
       result = size.width + size.height * 2;
     }
-    return result > 80 ? result : 80;
+
+    if (this.jqcontainer && this.jqcontainer.width() > MIN_WIDTH && result < MIN_LEFT_MARGIN) {
+      return MIN_LEFT_MARGIN;
+    }
+
+    return result;
   }
 
   function getColorInfoUid(dat) {

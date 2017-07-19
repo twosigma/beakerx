@@ -58,7 +58,7 @@ var CyclingDisplayBoxView = widgets.BoxView.extend({
   
   draw_widget: function() {
     var element = this.model.get('children')[currentWidgetIndex];
-    if(element){
+    if(element && this.children_views){
       this.children_views.update([element]);
     }
   },

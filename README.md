@@ -35,10 +35,9 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 ## Install and build
 
 ```
-conda create -y -n beakerx python=3.5 jupyter pandas yarn
+conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx
 pip install -e beakerx --verbose
-(cd kernel; gradle staticContent)
 jupyter nbextension install --py --symlink --sys-prefix beakerx
 jupyter nbextension enable --py --sys-prefix beakerx
 ```
@@ -61,15 +60,15 @@ python -m beakerx.bkr2ipynb *.bkr
 ```
 
 ## Groovy with Interactive Plotting and Table Saw:
-<img width="942" alt="screen shot 2016-12-20 at 11 35 17 am" src="https://cloud.githubusercontent.com/assets/963093/21402566/1680b928-c787-11e6-8acf-dc4fdeba0651.png">
+<img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 
 ## Autotranslation from Python to JavaScript:
-<img width="631" alt="screen shot 2016-12-10 at 10 43 22 pm" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
+<img width="900" alt="screen shot" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
 
-## Running with docker
+## Running with Docker
 In root project call
 
-`gradle clean`
+`(cd kernel; gradle clean)`
 
 To build beakerx base image execute
 

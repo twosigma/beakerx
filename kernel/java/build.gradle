@@ -17,10 +17,7 @@ apply plugin: 'application'
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
-def final kernelIdName = 'java'
-def final pathToReplace = '__PATH__'
-def final mainClassToReplace = '__MAIN_CLASS__'
-
+ext.kernelIdName = 'java'
 mainClassName = 'com.twosigma.beakerx.javash.kernel.Java'
 
 configurations {
@@ -59,54 +56,6 @@ jar {
   }
 }
 
-distZip.dependsOn installDist
-
-task prepareJson(dependsOn: 'build') {
-  doLast {
-    println "Prepare JSON for Jupyter notebook"
-    println "Copy kernel.json to build/libs/json/ and replasing PATH with java.jar parh"
-    def text = createKernelJson(
-            kernelIdName,
-            kernelIdName + '/build/install/java/lib/',
-            pathToReplace,
-            mainClassToReplace,
-            pathToBaseLibs(),
-            "$mainClassName")
-
-    def folder = file('build/libs/json')
-    if (!folder.exists()) {
-      println "Creating folder build/libs/json"
-      folder.mkdirs()
-    }
-
-    file('build/libs/json/kernel.json').withWriter { w ->
-      w << text
-    }
-  }
-}
-
-task kernelInstall(dependsOn: 'prepareJson') {
-  doLast {
-    println "Installing 'Java' to jupyter notebook"
-
-    def hashStdOut = new ByteArrayOutputStream()
-    def jsonFolder = file('build/libs/json/').getAbsolutePath();
-    exec {
-      commandLine "jupyter",
-              "kernelspec",
-              "install",
-              "--sys-prefix",
-              "--replace",
-              "--name",
-              kernelIdName,
-              jsonFolder;
-      standardOutput = hashStdOut
-    }
-    println hashStdOut.toString().trim();
-    println "DONE"
-  }
-}
-
 publishing {
   publications {
     maven(MavenPublication) {
@@ -119,10 +68,5 @@ publishing {
   }
 }
 
-task staticContent(dependsOn: build) {
-  doLast {
-    cleanBeakerxStatic(kernelIdName)
-    copyLibsToBeakerxStatic(kernelIdName, configurations, jar)
-    saveBeakerxStaticKernelJson(kernelIdName, "$mainClassName", mainClassToReplace)
-  }
-}
+installDist.into new File(pathToStaticContent, kernelIdName)
+distZip.dependsOn installDist

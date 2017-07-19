@@ -22,9 +22,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
-
+import java.text.SimpleDateFormat;
+import static com.twosigma.beakerx.widgets.DatePicker.YYYY_MM_DD;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DatePickerTest {
 
@@ -58,6 +60,7 @@ public class DatePickerTest {
     widget.setValue("20120101");
     //then
     TestWidgetUtils.verifyMsgForProperty(groovyKernel, DatePicker.VALUE, "20120101");
+    assertThat(widget.getValue()).isEqualTo(new SimpleDateFormat(YYYY_MM_DD).parse("20120101"));
   }
 
   @Test

@@ -18,7 +18,10 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 import com.twosigma.beakerx.easyform.formitem.ListComponent;
 import com.twosigma.beakerx.widgets.selections.SelectMultiple;
 
+import java.util.ArrayList;
 import java.util.Collection;
+
+import static java.util.Arrays.asList;
 
 public class SelectMultipleWidget extends ListComponent<SelectMultiple> {
 
@@ -42,13 +45,13 @@ public class SelectMultipleWidget extends ListComponent<SelectMultiple> {
     this.widget.setOptions(values.stream().toArray(String[]::new));
   }
 
-  public void setValue(String[] value) {
-    this.widget.setValue(value);
+  @Override
+  public Object getValue() {
+    return new ArrayList<>(asList(this.widget.getValue()));
   }
 
-  @Override
-  public String getValue() {
-    return String.join(",", this.widget.getValue());
+  public void setValue(String[] value) {
+    this.widget.setValue(value);
   }
 
 }

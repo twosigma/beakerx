@@ -17,16 +17,15 @@ package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import static com.twosigma.beakerx.widgets.DatePicker.YYYY_MM_DD;
+
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class DatePickerTest {
 
@@ -53,24 +52,35 @@ public class DatePickerTest {
   }
 
   @Test
-  public void shouldSendCommMsgWhenValueChange() throws Exception {
+  public void changeValue_shouldSendCommMessage() throws Exception {
+    String expected = "20120101";
     //given
     DatePicker widget = widget();
     //when
-    widget.setValue("20120101");
+    widget.setValue(expected);
     //then
-    TestWidgetUtils.verifyMsgForProperty(groovyKernel, DatePicker.VALUE, "20120101");
-    assertThat(widget.getValue()).isEqualTo(new SimpleDateFormat(YYYY_MM_DD).parse("20120101"));
+    TestWidgetUtils.verifyMsgForProperty(groovyKernel, DatePicker.VALUE, expected);
   }
 
   @Test
-  public void shouldSendCommMsgWhenShowTimeChange() throws Exception {
+  public void setShowTime_shouldSendCommMessage() throws Exception {
     //given
     DatePicker widget = widget();
     //when
     widget.setShowTime(true);
     //then
     verifyMsgForProperty(groovyKernel, DatePicker.SHOW_TIME, true);
+  }
+
+  @Test
+  public void setShowTimeFlag_hasThatShowTimeFlag() throws Exception {
+    boolean expected = true;
+    //given
+    DatePicker widget = widget();
+    //when
+    widget.setShowTime(expected);
+    //then
+    Assertions.assertThat(widget.getShowTime()).isEqualTo(expected);
   }
 
   private DatePicker widget() throws NoSuchAlgorithmException {

@@ -28,9 +28,8 @@ public class Layout extends Widget {
   public static final String WIDTH = "width";
   public static final String HEIGHT = "height";
   public static final String PX = "px";
-
-  private String VIEW_NAME_VALUE = "LayoutView";
-  private String MODEL_NAME_VALUE = "LayoutModel";
+  public static final String VIEW_NAME_VALUE = "LayoutView";
+  public static final String MODEL_NAME_VALUE = "LayoutModel";
 
   private String display;
   private String align_items;

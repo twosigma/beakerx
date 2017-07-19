@@ -17,6 +17,8 @@ package com.twosigma.beakerx.widgets.bools;
 
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.widgets.integers.IntProgress;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,6 +72,38 @@ public class ToggleButtonTest {
     verifyMsgForProperty(groovyKernel, ToggleButton.TOOLTIP, "Tooltip 2");
   }
 
+  @Test
+  public void setButtonStyle_hasThatButtonStyle() throws Exception {
+    String expected = "test";
+    //given
+    ToggleButton toggleButton = toggleButton();
+    //when
+    toggleButton.setButton_style(expected);
+    //then
+    Assertions.assertThat(toggleButton.getButton_style()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setIcon_hasThatIcon() throws Exception {
+    String expected = "test";
+    //given
+    ToggleButton toggleButton = toggleButton();
+    //when
+    toggleButton.setIcon(expected);
+    //then
+    Assertions.assertThat(toggleButton.getIcon()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setTooltip_hasThatTooltip() throws Exception {
+    String expected = "test";
+    //given
+    ToggleButton toggleButton = toggleButton();
+    //when
+    toggleButton.setTooltip(expected);
+    //then
+    Assertions.assertThat(toggleButton.getTooltip()).isEqualTo(expected);
+  }
 
   private ToggleButton toggleButton() throws NoSuchAlgorithmException {
     ToggleButton widget = new ToggleButton();

@@ -29,7 +29,7 @@ import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationS
 public class EvaluatorResultTestWatcher {
 
   public static final int ATTEMPT = 2000;
-  public static final int SLEEP_IN_MILLIS = 10;
+  public static final int SLEEP_IN_MILLIS = 20;
 
   public static void waitForResult(SimpleEvaluationObject seo) throws InterruptedException {
     int count = 0;

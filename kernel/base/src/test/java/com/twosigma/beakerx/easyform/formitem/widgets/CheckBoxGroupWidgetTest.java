@@ -42,7 +42,7 @@ public class CheckBoxGroupWidgetTest extends EasyFormWidgetTest {
     widget.setValues(newValue);
     //then
     assertTrue("Comm msgs should be 9", kernel.getPublishedMessages().size() == 9);
-    Assertions.assertThat(widget.getValues()).isEqualTo(EMPTY);
+    Assertions.assertThat(widget.getValue()).isEqualTo(EMPTY);
   }
 
   @Override

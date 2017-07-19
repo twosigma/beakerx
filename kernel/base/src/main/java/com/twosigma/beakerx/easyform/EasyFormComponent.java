@@ -25,21 +25,21 @@ import com.twosigma.beakerx.widgets.ValueWidget;
 import java.util.LinkedList;
 import java.util.List;
 
-public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunctionality{
+public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunctionality {
 
   protected T widget;
   private boolean enabled = true;
   private List<EasyFormListener> onChangeListeners = new LinkedList<>();
   private List<EasyFormListener> onInitListeners = new LinkedList<>();
 
-  public EasyFormComponent(T widget){
+  public EasyFormComponent(T widget) {
     this.widget = widget;
   }
-  
-  public EasyFormComponent(){
-    
+
+  public EasyFormComponent() {
+
   }
-  
+
   //Acts like ID
   public String getLabel() {
     return this.widget.getDescription();
@@ -50,8 +50,8 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
     this.widget.setDescription(label);
   }
 
-  public String getValue() {
-    return this.widget.getValue().toString();
+  public Object getValue() {
+    return this.widget.getValue();
   }
 
   public void setValue(String value) {
@@ -61,10 +61,10 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
   public T getWidget() {
     return widget;
   }
-  
+
   public void fireInit() {
     for (EasyFormListener listener : onInitListeners) {
-      listener.execute(getValue());
+      listener.execute((getValue() != null) ? getValue().toString() : null);
     }
   }
 
@@ -92,7 +92,7 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
 
   public void fireChanged() {
     for (EasyFormListener listener : onChangeListeners) {
-      listener.execute(this.getValue());
+      listener.execute((this.getValue() != null) ? this.getValue().toString() : null);
     }
   }
 
@@ -131,23 +131,23 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
   protected boolean checkValue(Object value) {
     return true;
   }
-  
-  public void registerUpdateValueCallback(final UpdateValueCallback updateValueCallback){
+
+  public void registerUpdateValueCallback(final UpdateValueCallback updateValueCallback) {
     getWidget().register(updateValueCallback);
   }
 
   public boolean isButton() {
     return false;
   }
-  
+
   @Override
   public Comm getComm() {
     return getWidget().getComm();
   }
-  
+
   @Override
   public void close() {
     getComm().close();
   }
-  
+
 }

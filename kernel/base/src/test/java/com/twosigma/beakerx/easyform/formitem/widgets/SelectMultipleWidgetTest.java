@@ -36,7 +36,7 @@ public class SelectMultipleWidgetTest extends EasyFormWidgetTest {
     widget.setValue(newValue);
     //then
     verifyMsgForProperty(kernel, SelectMultiple.VALUE, new String[]{"1", "2"});
-    assertThat(widget.getValue()).isEqualTo("1,2");
+    assertThat(widget.getValue()).isEqualTo(asList("1", "2"));
   }
 
   @Test

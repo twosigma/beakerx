@@ -40,12 +40,6 @@ public class ButtonComponentWidget extends EasyFormComponent<Button> {
     this.fireActionPerformed();
   }
 
-
-  @Override
-  public String getValue() {
-    return null;
-  }
-
   @Override
   public void setValue(String value) {
   }

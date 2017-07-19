@@ -334,9 +334,12 @@ $fix-col-separator-width: 3px;
 
 .header-text.rotate {
   transform-origin: top left;
-  display: inline-block;
+  display: block;
   white-space: nowrap;
   text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .table_modal {

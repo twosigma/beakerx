@@ -1371,7 +1371,10 @@ define([
   TableScope.prototype.updateHeaderFontSize = function() {
     var self = this;
     if (self.headerFontSize) {
-      $(self.table.table().container()).find('thead tr:not(".filterRow") th').css({'font-size': self.headerFontSize});
+      $(self.table.table().container()).find('thead tr:not(".filterRow") th').css({
+        'font-size': self.headerFontSize,
+        'line-height': self.headerFontSize + 'px'
+      });
     }
   };
 

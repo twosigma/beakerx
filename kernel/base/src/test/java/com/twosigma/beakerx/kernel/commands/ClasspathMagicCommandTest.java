@@ -90,8 +90,7 @@ public class ClasspathMagicCommandTest {
   }
 
   private String classpath(MagicCommandResult result) {
-    Map data = (Map) result.getResultMessage().get().getContent().get("data");
-    return (String) data.get(MIMEContainer.MIME.TEXT_PLAIN);
+    return result.getResultMessage().get().getContent().get("text").toString();
   }
 
 }

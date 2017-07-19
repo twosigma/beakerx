@@ -34,6 +34,7 @@ import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithCode;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithReply;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResult;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResultAndCode;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
@@ -159,14 +160,16 @@ public class MagicCommand {
   private MagicCommandFunctionality classpathShow() {
     return (code, command, message, executionCount) -> {
       MIMEContainer result = Text(kernel.getClasspath());
+
       if (code.takeCodeWithoutCommand().isPresent()) {
-        return new MagicCommandItemWithCode(code.takeCodeWithoutCommand().get());
+        return new MagicCommandItemWithResultAndCode(
+            messageCreator.buildOutputMessage(message, result.getCode(), false),
+            messageCreator.buildReplyWithoutStatus(message, executionCount),
+            code.takeCodeWithoutCommand().get());
       }
-      return new MagicCommandItemWithResult(
-              messageCreator
-                      .buildMessage(message, result.getMime().asString(), result.getCode(), executionCount),
-              messageCreator.buildReplyWithoutStatus(message, executionCount)
-      );
+
+      return new MagicCommandItemWithResult(messageCreator.buildOutputMessage(message, result.getCode(), false),
+          messageCreator.buildReplyWithoutStatus(message, executionCount));
     };
   }
 

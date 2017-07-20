@@ -56,11 +56,11 @@ conda install conda-build
 conda upgrade conda
 conda upgrade conda-build
 # inside of beakerx env and beakerx project root
-conda-build --python 3.5 PATH_TO_RECIPE
-# conda-build will output something like `anaconda upload PATH_TO_beakerx-0.1.0.dev0-py35ha45f985_0.tar.bz2`
-conda install --use-local PATH_TO_beakerx-0.1.0.dev0-py35ha45f985_0.tar.bz2
-conda convert --platform all PATH_TO_beakerx-0.1.0.dev0-py35ha45f985_0.tar.bz2 -o beakerx/dist
-anaconda upload beakerx/dist/beakerx-0.1.0.dev0-py35ha45f985_0.tar.bz2
+conda build --python 3.5 PATH_TO_RECIPE
+# conda-build will output something like `anaconda upload PATH_TO_beakerx-VERSION-py35HASH.tar.bz2`
+conda install --use-local beakerx
+conda convert --platform all PATH_TO_beakerx-VERSION-py35HASH.tar.bz2 -o beakerx/dist
+anaconda upload beakerx/dist/beakerx-VERSION-py35HASH.tar.bz2
 ```
 
 - Fork https://github.com/conda-forge/beakerx-feedstock

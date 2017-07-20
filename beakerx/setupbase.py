@@ -402,7 +402,7 @@ def run_gradle(path=kernel_path, cmd='build'):
     return Gradle
     
 
-def install_kernels(kernels_dir=''):
+def install_kernels(kernels_dir=pjoin(here, 'beakerx', 'static', 'kernel')):
     """Install all kernels in a directory.
     
     Parameters
@@ -417,7 +417,7 @@ def install_kernels(kernels_dir=''):
         def run(self):
             def install_kernel(kernelspec_path='', kernelspec_name=None):
                 name = kernelspec_name if kernelspec_name else os.path.basename(kernelspec_path)
-                classpath = os.path.abspath('./beakerx/static/kernel/base/lib/*') + (';' if sys.platform == 'win32' else ':') + os.path.abspath('./beakerx/static/kernel/{}/lib/*'.format(name))
+                classpath = os.path.abspath(pjoin(kernels_dir, 'base', 'lib', '*')) + (';' if sys.platform == 'win32' else ':') + os.path.abspath(pjoin(kernels_dir, name, 'lib', '*'))
                 classpath = classpath.replace('\\', '/')
                 lines = []
                 with open(pjoin(kernelspec_path, 'kernel.json')) as infile:

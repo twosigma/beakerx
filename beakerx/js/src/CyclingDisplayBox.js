@@ -59,7 +59,14 @@ var CyclingDisplayBoxView = widgets.BoxView.extend({
   draw_widget: function() {
     var element = this.model.get('children')[currentWidgetIndex];
     if(element && this.children_views){
-      this.children_views.update([element]);
+      this.children_views.update([element])
+        .then(function(views) {
+          var heights = views.map(function (view) {
+            return view.$el.height();
+          });
+
+          views[0].$el.parent().css('min-height', Math.max.apply(null, heights));
+        });
     }
   },
   

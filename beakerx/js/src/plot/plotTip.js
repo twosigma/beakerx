@@ -22,6 +22,8 @@ define([
   plotUtils
 ) {
 
+  var TOOLTIP_ANIMATION_TIME = 300;
+
   var getTipElement = function (scope, d) {
     if (!d || !d.id) {
       return;
@@ -34,7 +36,10 @@ define([
     if (hide !== true) {
       delete scope.tips[d.id];
     }
-    scope.jqcontainer.find("#tip_" + d.id).remove();
+    var tip = scope.jqcontainer.find("#tip_" + d.id).removeAttr('id').css('opacity', 0);
+
+    setTimeout(function() { tip.remove(); }, TOOLTIP_ANIMATION_TIME);
+
     if (d.isresp === true) {
       scope.jqsvg.find("#" + d.id).css("opacity", 0);
     } else {
@@ -142,10 +147,11 @@ define([
           if (tipdiv.length === 0) {
             var tiptext = data[d.idx].createTip(d.ele, d.g, scope.stdmodel);
 
-            tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
+            tipdiv = $("<div></div>")
+              .appendTo(scope.jqcontainer)
+              .css({ "border-color": data[d.idx].tip_color })
               .attr("id", tipid)
               .attr("class", "plot-tooltip")
-              .css("border-color", data[d.idx].tip_color)
               .append(tiptext)
               .on('mouseup', function (e) {
                 if (e.which == 3) {
@@ -153,6 +159,9 @@ define([
                   $(this).remove();
                 }
               });
+
+            setTimeout(function() { tipdiv.css({ "opacity": 1 }); });
+
             if (data[d.idx].tip_class) {
               tipdiv.addClass(data[d.idx].tip_class);
             }

@@ -25,7 +25,7 @@ public class ResourceLoaderTest {
   private static final boolean IS_WINDOWS = System.getProperty("os.name").contains("indow");
 
   public static List readAsList(String fileName) throws Exception {
-    return new CsvPlotReader().readAsList(ResourceLoaderTest.getOsAppropriatePath(fileName, ResourceLoaderTest.class));
+    return new CsvPlotReader().read(ResourceLoaderTest.getOsAppropriatePath(fileName, ResourceLoaderTest.class));
   }
 
   public static String getOsAppropriatePath(String fileName, Class clazz) throws Exception {

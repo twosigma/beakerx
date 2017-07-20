@@ -30,13 +30,6 @@ public class KotlinDefaultVariables extends DefaultJVMVariables {
       //"com.twosigma.beaker.jvm.object.*",
       "com.twosigma.beakerx.chart.KeyboardCodes",
       "java.util.concurrent.TimeUnit",
-      "com.github.lwhite1.tablesaw.api.*",
-      "com.github.lwhite1.tablesaw.columns.*",
-      "com.github.lwhite1.tablesaw.api.ml.clustering.*",
-      "com.github.lwhite1.tablesaw.reducing.*",
-      "com.github.lwhite1.tablesaw.api.ml.regression.*",
-      "com.github.lwhite1.tablesaw.filtering.*",
-      
       "com.twosigma.beakerx.mimetype.MIMEContainer.HTML",
       "com.twosigma.beakerx.mimetype.MIMEContainer.Latex",
       "com.twosigma.beakerx.mimetype.MIMEContainer.Markdown",
@@ -52,8 +45,6 @@ public class KotlinDefaultVariables extends DefaultJVMVariables {
       "com.twosigma.beakerx.mimetype.FileLinkContainer.FileLink",
       "com.twosigma.beakerx.mimetype.FileLinkContainer.FileLinks",
       "java.lang.Math.*",
-      "com.github.lwhite1.tablesaw.api.QueryHelper.*",
-      
       "com.twosigma.beakerx.mimetype.MIMEContainer"
       //"com.twosigma.beaker.table.*",
       //"com.twosigma.beaker.table.format.*",

@@ -35,7 +35,7 @@ dependencies {
   compile group: 'com.google.inject', name: 'guice', version: '3.0'
   compile group: 'com.google.guava', name: 'guava', version: '22.0'
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
-  compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: '2.8.9'
+  compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.6.5'
   compile group: 'com.opencsv', name: 'opencsv', version: '3.10'
 
 

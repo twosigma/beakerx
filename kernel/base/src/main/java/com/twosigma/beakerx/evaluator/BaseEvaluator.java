@@ -15,8 +15,13 @@
  */
 package com.twosigma.beakerx.evaluator;
 
+import com.google.common.collect.Lists;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class BaseEvaluator implements Evaluator {
 
@@ -37,6 +42,20 @@ public abstract class BaseEvaluator implements Evaluator {
   }
 
   @Override
+  public List<Path> addJarsToClasspath(List<PathToJar> paths) {
+    LinkedList<Path> addedPaths = Lists.newLinkedList();
+    paths.forEach(path -> {
+      if (addJar(path)) {
+        addedPaths.add(Paths.get(path.getPath()));
+      }
+    });
+
+    resetEnvironment();
+
+    return addedPaths;
+  }
+
+  @Override
   public void addImport(ImportPath anImport) {
     if (addImportPath(anImport)) {
       resetEnvironment();
@@ -49,4 +68,5 @@ public abstract class BaseEvaluator implements Evaluator {
       resetEnvironment();
     }
   }
+
 }

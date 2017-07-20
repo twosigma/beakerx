@@ -23,6 +23,7 @@ import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
@@ -180,34 +181,32 @@ public class MagicCommand {
   private MagicCommandFunctionality classpathAddJar() {
     return (code, command, message, executionCount) -> {
       String[] split = command.split(" ");
-      Map<Path, String> pathWithJarNames = Maps.newHashMap();
+      List<String> addedJarsName = Lists.newLinkedList();
 
       try {
         if (split.length != 4) {
           throw new IllegalStateException("Wrong command format: " + CLASSPATH_ADD_JAR);
         }
 
-        boolean isNewOne;
         String path = split[3];
         if (doesPathContainsWildCards(path)) {
           validateWildcardPath(path);
-          Map<Path, String> collect = getPaths(path).keySet().stream()
-              .filter(
-                  currentPath -> kernel.addJarToClasspath(new PathToJar(currentPath.toString())))
-              .collect(Collectors.toMap(o -> o, Path::toString));
-          pathWithJarNames.putAll(collect);
 
-          pathWithJarNames.keySet().forEach(currentPath -> this.kernel.addJarToClasspath(new PathToJar(currentPath.toString())));
+          List<PathToJar> pathsToJars = getPaths(path).keySet().stream()
+              .map(currentPath -> new PathToJar(currentPath.toString()))
+              .collect(Collectors.toList());
+
+          List<Path> addedPaths = kernel.addJarsToClasspath(pathsToJars);
+          addedJarsName.addAll(addedPaths.stream().map(Path::toString).collect(Collectors.toList()));
         } else {
           validatePath(path);
           Path currentPath = Paths.get(path);
           if (this.kernel.addJarToClasspath(new PathToJar(path))) {
-            pathWithJarNames.put(currentPath, currentPath.getFileName().toString());
+            addedJarsName.add(currentPath.getFileName().toString());
           }
         }
 
-
-        return getMagicCommandItem(pathWithJarNames.values(), code, message, executionCount);
+        return getMagicCommandItem(addedJarsName, code, message, executionCount);
       } catch (IllegalStateException e) {
         return new MagicCommandItemWithResult(
                 messageCreator

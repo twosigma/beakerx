@@ -30,7 +30,9 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
+import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -187,6 +189,11 @@ public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFun
   @Override
   public boolean addJarToClasspath(PathToJar path) {
     return this.evaluatorManager.addJarToClasspath(path);
+  }
+
+  @Override
+  public List<Path> addJarsToClasspath(List<PathToJar> paths) {
+    return this.evaluatorManager.addJarsToClasspath(paths);
   }
 
   @Override

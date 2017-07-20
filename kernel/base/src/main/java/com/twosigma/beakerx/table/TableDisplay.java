@@ -133,15 +133,15 @@ public class TableDisplay extends BeakerxWidget {
   }
 
 
-  public TableDisplay(Collection<Map<?, ?>> v) {
+  public TableDisplay(Collection<Map<String, Object>> v) {
     this(v, new BasicObjectSerializer());
   }
 
-  public TableDisplay(Map<?, ?>[] v) {
+  public TableDisplay(Map<String, Object>[] v) {
     this(new ArrayList<>(Arrays.asList(v)), new BasicObjectSerializer());
   }
 
-  public TableDisplay(Collection<Map<?, ?>> v, BeakerObjectConverter serializer) {
+  public TableDisplay(Collection<Map<String, Object>> v, BeakerObjectConverter serializer) {
     super();
     values = new ArrayList<>();
     columns = new ArrayList<>();
@@ -149,7 +149,7 @@ public class TableDisplay extends BeakerxWidget {
     subtype = LIST_OF_MAPS_SUBTYPE;
 
     // create columns
-    for (Map<?, ?> m : v) {
+    for (Map<String, Object> m : v) {
       Set<?> w = m.entrySet();
       for (Object s : w) {
         Entry<?, ?> e = (Entry<?, ?>) s;
@@ -179,7 +179,7 @@ public class TableDisplay extends BeakerxWidget {
     values.addAll(items);
   }
 
-  private List<List<?>> buildValues(Collection<Map<?, ?>> v, BeakerObjectConverter serializer) {
+  private List<List<?>> buildValues(Collection<Map<String, Object>> v, BeakerObjectConverter serializer) {
     List<List<?>> values = new ArrayList<>();
     for (Map<?, ?> m : v) {
       List<Object> vals = new ArrayList<>();

@@ -555,7 +555,7 @@ public class TableDisplayTest {
   public void shouldSendCommMsgWithAllModelWhenDisplay() throws Exception {
     //given
     kernel.clearMessages();
-    ArrayList<Map<?, ?>> v = new ArrayList<>();
+    ArrayList<Map<String, Object>> v = new ArrayList<>();
     TableDisplay tableDisplay = new TableDisplay(v);
     //when
     tableDisplay.display();
@@ -672,7 +672,8 @@ public class TableDisplayTest {
   @Test
   public void shouldContainTime() throws Exception {
     //given
-    TableDisplay tableDisplay = new TableDisplay(new CsvPlotReader().readAsList(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV)));
+    List<Map<String, Object>> data = new CsvPlotReader().read(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
+    TableDisplay tableDisplay = new TableDisplay(data);
     //when
     tableDisplay.display();
     //then
@@ -705,8 +706,8 @@ public class TableDisplayTest {
     assertThat(actual).isEmpty();
   }
 
-  private List<Map<?, ?>> getListOfMapsData() {
-    List<Map<?, ?>> list = new ArrayList<>();
+  private List<Map<String, Object>> getListOfMapsData() {
+    List<Map<String, Object>> list = new ArrayList<>();
     List<String> cols = getStringList();
     List<?> row = getRowData();
     list.add(

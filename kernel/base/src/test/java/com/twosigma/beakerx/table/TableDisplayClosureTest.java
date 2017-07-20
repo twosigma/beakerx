@@ -177,8 +177,8 @@ public class TableDisplayClosureTest {
     tableDisplay.setRowFilter(new Object());
   }
 
-  private List<Map<?, ?>> getListOfMapsData() {
-    List<Map<?, ?>> list = new ArrayList<>();
+  private List<Map<String, Object>> getListOfMapsData() {
+    List<Map<String, Object>> list = new ArrayList<>();
     list.add(
         new HashMap<String, Object>() {
           {

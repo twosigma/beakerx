@@ -16,10 +16,8 @@
 
 package com.twosigma.beakerx;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.chart.xychart.plotitem.XYGraphics;
-import com.twosigma.beakerx.fileloader.CsvPlotReader;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.table.TableDisplay;
@@ -56,10 +54,6 @@ public class SerializeToString {
     TableDisplay table = getTableDisplay(input);
     if (table != null) {
       table.display();
-      return HIDDEN;
-    }
-    if (input instanceof Table) {
-      new TableDisplay(new CsvPlotReader().convert((Table) input)).display();
       return HIDDEN;
     }
     if (input instanceof XYGraphics) {

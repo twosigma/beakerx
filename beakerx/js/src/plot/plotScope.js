@@ -1038,6 +1038,7 @@ define([
     var self = this;
     var isHorizontal = this.stdmodel.legendLayout === "HORIZONTAL";
     var draggable = {
+      containment: 'parent',
       start: function(event, ui) {
         $(this).css({//avoid resizing for bottom-stacked legend
           "bottom": "auto"

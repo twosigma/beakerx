@@ -58,6 +58,9 @@ define([
     },
     newDeferred: function() {
       return jQuery.Deferred();
+    },
+    sanitizeRegExpString: function(string) {
+      return string.replace(/[-\\.,_*+?^$[\](){}!=|]/g, '\\$&');
     }
   };
 

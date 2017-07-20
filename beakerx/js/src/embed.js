@@ -5,10 +5,26 @@
 // already be loaded by the notebook otherwise.
 
 // Export widget models and views, and the npm package version number.
-module.exports = require('./Plot.js');
-module.exports = require('./TableDisplay.js');
-module.exports = require('./EasyForm.js');
-module.exports = require('./TabView.js');
-module.exports = require('./GridView.js');
-module.exports = require('./CyclingDisplayBox.js');
+module.exports = {};
+
+var loadedModules = [
+  require("./Plot"),
+  require("./TableDisplay"),
+  require("./EasyForm"),
+  require("./TabView"),
+  require("./GridView"),
+  require("./CyclingDisplayBox")
+];
+
+for (var i in loadedModules) {
+  if (loadedModules.hasOwnProperty(i)) {
+    var loadedModule = loadedModules[i];
+    for (var target_name in loadedModule) {
+      if (loadedModule.hasOwnProperty(target_name)) {
+        module.exports[target_name] = loadedModule[target_name];
+      }
+    }
+  }
+}
+
 module.exports['version'] = require('../package.json').version;

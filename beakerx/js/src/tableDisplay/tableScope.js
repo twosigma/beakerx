@@ -416,7 +416,7 @@ define([
           if (_.isObject(value) && value.type === 'Date') {
             return bkUtils.formatTimestamp(value.timestamp, self.tz, format);
           }
-          var milli = value / 1000 / 1000;
+          var milli = value * 1000;
           return bkUtils.formatTimestamp(milli, self.tz, format);
         }
         return value;
@@ -781,7 +781,7 @@ define([
           name: item,
           callback: function(itemKey, options) {
             var index = self.table.cell(options.$trigger.get(0)).index();
-            self.tableDisplayModel.send({event: 'oncontextmenu', itemKey : itemKey, row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
+            self.tableDisplayModel.send({event: 'CONTEXT_MENU_CLICK', itemKey : itemKey, row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
           }
         }
       });
@@ -844,7 +844,7 @@ define([
       };
     }
 
-    if (self.types[index] === 'integer') {
+    if (self.types[index] === 'integer' || self.types[index] === 'int64') {
       return {
         actualtype: 2,
         actualalign: 'R'
@@ -1371,7 +1371,10 @@ define([
   TableScope.prototype.updateHeaderFontSize = function() {
     var self = this;
     if (self.headerFontSize) {
-      $(self.table.table().container()).find('thead tr:not(".filterRow") th').css({'font-size': self.headerFontSize});
+      $(self.table.table().container()).find('thead tr:not(".filterRow") th').css({
+        'font-size': self.headerFontSize,
+        'line-height': self.headerFontSize + 'px'
+      });
     }
   };
 
@@ -1385,11 +1388,15 @@ define([
     var headerTextMaxWidth = Math.max.apply(null, headerTexts.map(function() {
       return $(this).width();
     }).get());
-    var lineHeight = parseFloat(headerTexts.css('line-height'));
+    var lineHeight = parseFloat(headerTexts.css('font-size'));
     if (self.headersVertical) {
       headerTexts.addClass('rotate');
       var padding = 10;
-      headerTexts.css('transform', 'rotate(270deg) translateX(-' + (lineHeight - padding) + 'px)');
+      headerTexts.css({
+        'line-height': lineHeight + 'px',
+        'transform': 'rotate(270deg) translateX(-' + (lineHeight - padding) + 'px)',
+        'width': (headerTextMaxWidth - padding) + 'px'
+      });
       headerCols.css({
         'height': headerTextMaxWidth + padding + 'px',
         'max-width': lineHeight,
@@ -1483,6 +1490,12 @@ define([
                      (unit === self.formatForTimes || unit == 'DATETIME' && _.isEmpty(self.formatForTimes));
             },
             action: function(el) {
+              var container = el.closest('.bko-header-menu');
+              var colIdx = container.data('columnIndex');
+
+              self.getCellDisp[self.colorder[colIdx] - 1] = 8;
+              self.actualtype[self.colorder[colIdx] - 1] = 8;
+
               self.changeTimeFormat(unit);
             }
           };
@@ -1763,7 +1776,7 @@ define([
 
       var index = currentCell.indexes()[0];
       if (model.hasDoubleClickAction) {
-      	self.tableDisplayModel.send({event: 'ondoubleclick', row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
+	self.tableDisplayModel.send({event: 'DOUBLE_CLICK', row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
       }
 
       if (!_.isEmpty(model.doubleClickTag)) {
@@ -1815,20 +1828,21 @@ define([
         originalEvent.preventDefault();
         self.onKeyAction(cell.index().column, originalEvent);
       })
-      .on('column-visibility.dt', function(e, settings, column, state) {
+      .on('column-visibility.dt', _.debounce(function(e, settings, column, state) {
         self.getCellSho[self.colorder[column] - 1] = state;
+
         setTimeout(function(){
           self.updateHeaderLayout();
           self.table.draw(false);
         }, 0);
-      })
+      }, 100))
       .on( 'column-sizing.dt', function( e, settings ) {
         self.updateTableWidth();
       })
-      .on('draw.dt', function() {
+      .on('draw.dt', _.debounce(function() {
         self.updateRowDisplayBtts();
         self.updateToggleColumnBtts();
-      })
+      }, 100))
       .on('column-reorder', function(e, settings, details) {
         var selectedCells = self.table.cells({ selected: true });
         var indexes = selectedCells.indexes();
@@ -1861,16 +1875,36 @@ define([
 
     self.element.find(id + '_dropdown_menu')
       .on('click.bko-dropdown', function() {
-        var isOpen = $(this).parents('.dropdown').hasClass('open');
+        var $toggleBtn = $(this);
+        var isOpen = $toggleBtn.parent().hasClass('open');
+        var $dropdown = $toggleBtn.parent();
+        var $menu = $dropdown.find('> .dropdown-menu');
+        var height = $menu.height();
+        var pageHeight = window.innerHeight || document.documentElement.clientHeight;
+        var pixelsBelow = Math.ceil(height + $dropdown.offset().top - pageHeight);
+        var shouldPosition = pixelsBelow > 0;
 
         if (!isOpen) {
-          self.setCodeMirrorListener($(this));
+          self.setCodeMirrorListener($toggleBtn);
         }
-      });
 
-    // self.$on(GLOBALS.EVENTS.ADVANCED_MODE_TOGGLED, function() {
-    //   updateSize();
-    // });
+        $menu.css({
+          top: shouldPosition ? (- pixelsBelow - 20) : '100%',
+          left: shouldPosition ? '100%' : ''
+        });
+      })
+      .parent()
+      .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
+        var searchText = this.value;
+
+        $(this).parent().next('.list-showcolumn').find('li').each(function (index, element) {
+          $(element).toggleClass('hidden', searchText ? element.textContent.indexOf(searchText) === -1 : false);
+        });
+      }, 250))
+      .on('click', '.dropdown-menu-search .fa-search', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      });
 
     var inits = {'heightMatch': 'none'};
     if ((self.pagination.fixLeft + self.pagination.fixRight) > (self.columns.length - 1)) {
@@ -2180,7 +2214,7 @@ define([
           self.getCellDispOpts.push(self.allStringTypes);
         } else if (self.types[order - 1] === 'double') {
           self.getCellDispOpts.push(self.allDoubleTypes);
-        } else if (self.types[order - 1] === 'integer') {
+        } else if (self.types[order - 1] === 'integer' || self.types[order - 1] === 'int64') {
           self.getCellDispOpts.push(self.allIntTypes);
         } else if (self.types[order - 1] === 'time' || self.types[order - 1] === 'datetime') {
           self.getCellDispOpts.push(self.allTimeTypes);
@@ -2517,7 +2551,7 @@ define([
       event.stopPropagation();
     }
 
-    self.updateToggleColumnBtts();
+    self.updateToggleColumnBtts(column.index());
 
     if (column.visible()){
       var el = $('#' + self.id);
@@ -2569,7 +2603,9 @@ define([
     for (var i = 1; i < self.columns.length; i++) {
       cLength.push(i);
     }
-    table.columns(cLength).visible(visible);
+
+    table.columns(cLength).visible(visible, false);
+    table.columns.adjust();
     self.updateToggleColumnBtts();
   };
 
@@ -2805,14 +2841,18 @@ define([
     }
   };
 
-  TableScope.prototype.updateToggleColumnBtts = function() {
+  TableScope.prototype.updateToggleColumnBtts = function(columnIndex) {
     var self = this;
-    var list = self.element.find('.dtmenu > ul.dropdown-menu ul.list-showcolumn li');
+    var list = self.element.find('.dtmenu > ul.dropdown-menu ul.list-showcolumn li input[type="checkbox"]');
+    var columnsVisibility = this.table.columns().visible();
 
-    list.each(function(i) {
-      var checked = self.isColumnVisible(i+1);
-      $(this).children('input[type="checkbox"]').prop('checked', checked);
-    });
+    if (columnIndex) {
+      list[columnIndex - 1].checked = columnsVisibility[columnIndex];
+    } else {
+      list.each(function(i) {
+        this.checked = columnsVisibility[i + 1];
+      });
+    }
   };
 
   TableScope.prototype.updateRowDisplayBtts = function() {

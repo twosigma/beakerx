@@ -132,8 +132,8 @@ define([
         getSaveAsMenuContainer: function() {
           return self.saveAsMenuContainer;
         },
-        updateWidth : function(width) {
-          self.width = width;
+        updateWidth : function(width, useMinWidth) {
+          self.width = useMinWidth ? self.getMinScopesWidth() : width;
           self.element.find("#combplotTitle").css("width", width);
 
           self.updateModels('width');
@@ -225,6 +225,10 @@ define([
       ret.subplots.push(self.models[i].state);
     }
     return ret;
+  };
+
+  CombinedPlotScope.prototype.getMinScopesWidth = function () {
+    return Math.min.apply(null, this.scopes.map(function(scope) { return scope.width; }));
   };
 
   CombinedPlotScope.prototype.init = function() {
@@ -326,7 +330,9 @@ define([
 
   CombinedPlotScope.prototype.saveAsSvg = function() {
     var self = this;
-    var html = plotUtils.convertToXHTML(self.getSvgToSave().outerHTML);
+    var svgToSave = self.getSvgToSave();
+    plotUtils.addInlineFonts(svgToSave);
+    var html = plotUtils.convertToXHTML(svgToSave.outerHTML);
     var fileName = _.isEmpty(self.stdmodel.title) ? 'combinedplot' : self.stdmodel.title;
     plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + '.svg');
   };
@@ -334,6 +340,7 @@ define([
   CombinedPlotScope.prototype.saveAsPng = function() {
     var self = this;
     var svg = self.getSvgToSave();
+    plotUtils.addInlineFonts(svg);
 
     self.canvas.width = svg.getAttribute("width");
     self.canvas.height = svg.getAttribute("height");
@@ -351,7 +358,7 @@ define([
       if (updateType === 'focus') {
         scope.onModelFucusUpdate(self.focus);
       } else if (updateType === 'width') {
-        scope.watchModelGetWidth(self.width);
+        scope.updateModelWidth(self.width);
       }
     });
   };

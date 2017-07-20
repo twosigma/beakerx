@@ -16,8 +16,6 @@
 
 package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-
 public class KernelManager {
 
   private static KernelFunctionality groovyKernelInst;

@@ -16,7 +16,7 @@
 
 <div id="<%=wrapperId%>">
     <div class="dtcontainer" tabindex="-1">
-        <div class="dropdown dtmenu clearfix" style="float: left; z-index: 10" id="<%=scopeId%>_tabel_menu">
+        <div class="dropdown dtmenu clearfix" style="float: left; z-index: 10" id="<%=scopeId%>_table_menu">
             <a class="dropdown-toggle" data-toggle="dropdown" id="<%=scopeId%>_dropdown_menu">
                 <span class="bko-menu" aria-hidden="true"></span>
             </a>
@@ -24,12 +24,13 @@
                 <li><a tabindex="-1" href="#" class="dt-show-all" data-dtAction="dt-show-all">Show All Columns</a></li>
                 <li class="dropdown-submenu" id="<%=scopeId%>_show_column">
                     <a tabindex="-1" href="" class="dt-show-columns" data-toggle="dropdown">Show Column</a>
-                    <div class="dropdown-menu dropdown-menu-search">
-                        <i class="fa fa-search"></i>
-                        <input placeholder="search...">
+                    <div class="dropdown-menu dropdown-submenu-scrollable" role="menu" aria-labelledby="dLabel">
+                        <div class="dropdown-menu-search">
+                            <i class="fa fa-search"></i>
+                            <input placeholder="search...">
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-items list-showcolumn"></ul>
                     </div>
-                    <ul class="dropdown-menu dropdown-submenu-scrollable list-showcolumn" role="menu" aria-labelledby="dLabel">
-                    </ul>
                 </li>
                 <li><a tabindex="-1" href="#" class="dt-hide-all" data-dtAction="dt-hide-all">Hide All Columns</a></li>
                 <li class="dt-use-pagination-wrapper">

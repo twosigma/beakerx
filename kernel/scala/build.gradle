@@ -18,24 +18,28 @@ apply plugin: 'java'
 apply plugin: 'scala'
 apply plugin: 'maven-publish'
 
-def final kernelIdName = 'scala'
-def final toReplace = '__PATH__'
-
+ext.kernelIdName = 'scala'
 mainClassName = 'com.twosigma.beakerx.scala.kernel.Scala'
 
 configurations {
+  provided
   antlr
 }
 
 //need for compiling scala before java
 sourceSets {
   main {
+    compileClasspath += configurations.provided
     scala {
       srcDirs = ['src/main/scala', 'src/main/java']
     }
     java {
       srcDirs = []
     }
+  }
+  test {
+    compileClasspath += configurations.provided
+    runtimeClasspath += configurations.provided
   }
 }
 
@@ -44,13 +48,13 @@ repositories {
 }
 
 dependencies {
-  compile project(':kernel:base')
+  provided project(':base')
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
-  compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.12.2'
-  compile group: 'org.scala-lang', name: 'scala-library', version: '2.12.2'
+  compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.11'
+  compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.11'
   compile group: 'jline', name: 'jline', version: '2.12'
 
-  testCompile project(':kernel:base').sourceSets.test.output
+  testCompile project(':base').sourceSets.test.output
   testCompile group: 'junit', name: 'junit', version: '4.11'
   testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
   testCompile group: 'org.reflections', name: 'reflections', version: '0.9.10'
@@ -59,56 +63,6 @@ dependencies {
 jar {
   manifest {
     attributes "Main-Class": "$mainClassName"
-  }
-
-  from {
-    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-  } {
-    exclude "META-INF/*.SF"
-    exclude "META-INF/*.DSA"
-    exclude "META-INF/*.RSA"
-  }
-}
-
-task prepareJson(dependsOn: 'build') {
-  doLast {
-    println "Prepare JSON for Jupyter notebook"
-    println "Copy kernel.json to build/libs/json/ and replasing PATH with scala.jar parh"
-
-    def jarLocation = file('build/libs/scala.jar').getAbsolutePath()
-    jarLocation = jarLocation.replace("\\", "/");
-    def text = file('kernel.json').text.replace(toReplace, jarLocation)
-    def folder = file('build/libs/json')
-    if (!folder.exists()) {
-      println "Creating folder build/libs/json"
-      folder.mkdirs()
-    }
-
-    file('build/libs/json/kernel.json').withWriter { w ->
-      w << text
-    }
-  }
-}
-
-task kernelInstall(dependsOn: 'prepareJson') {
-  doLast {
-    println "Installing 'Scala' to jupyter notebook"
-
-    def hashStdOut = new ByteArrayOutputStream()
-    def jsonFolder = file('build/libs/json/').getAbsolutePath();
-    exec {
-      commandLine "jupyter",
-              "kernelspec",
-              "install",
-              "--sys-prefix",
-              "--replace",
-              "--name",
-              kernelIdName,
-              jsonFolder;
-      standardOutput = hashStdOut
-    }
-    println hashStdOut.toString().trim();
-    println "DONE"
   }
 }
 
@@ -119,13 +73,16 @@ realclean.dependsOn(clean)
 // GroovyParserBaseListener.java GroovyParserListener.java
 
 publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'com.twosigma'
-            artifactId 'beaker-kernel-scala'
-            version '2.0-SNAPSHOT'
+  publications {
+    maven(MavenPublication) {
+      groupId 'com.twosigma'
+      artifactId 'beaker-kernel-scala'
+      version '2.0-SNAPSHOT'
 
-            from components.java
-        }
+      from components.java
     }
+  }
 }
+
+installDist.into new File(pathToStaticContent, kernelIdName)
+distZip.dependsOn installDist

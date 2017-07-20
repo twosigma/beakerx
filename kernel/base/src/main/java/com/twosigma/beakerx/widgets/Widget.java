@@ -186,8 +186,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
         Object contentObject = ((LinkedHashMap) data).get("content");
         if (contentObject instanceof LinkedHashMap) {
           HashMap content = (LinkedHashMap) contentObject;
-          Object event = content.get("event");
-          if (event.equals(action.getAction())) {
+          if (handlerAction != null) {
             handlerAction.executeAction(content, message);
           }
         }

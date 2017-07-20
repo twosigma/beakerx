@@ -25,7 +25,7 @@ import org.junit.Test;
 public class OutputContainerDeserializerTest {
 
   private String json = "{\"type\":\"OutputContainer\"," +
-      "\"labels\":[\"label\"],\"items\":[1],\"layout\":{\"borderDisplayed\":false}}";
+      "\"labels\":[\"label\"],\"items\":[1]}";
 
   @Test
   public void deserialize_resultObjectHasItems() throws Exception {

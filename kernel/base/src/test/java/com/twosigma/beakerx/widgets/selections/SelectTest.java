@@ -28,12 +28,12 @@ import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
 public class SelectTest {
 
-  private KernelTest groovyKernel;
+  private KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
-    groovyKernel = new KernelTest();
-    KernelManager.register(groovyKernel);
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
   }
 
   @After
@@ -47,7 +47,7 @@ public class SelectTest {
     //when
     new Select();
     //then
-    verifyOpenCommMsg(groovyKernel.getPublishedMessages(), Select.MODEL_NAME_VALUE, Select.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(kernel.getPublishedMessages(), Select.MODEL_NAME_VALUE, Select.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -57,7 +57,7 @@ public class SelectTest {
     //when
     widget.setValue("1");
     //then
-    verifyMsgForProperty(groovyKernel, Select.VALUE, "1");
+    verifyMsgForProperty(kernel, Select.VALUE, "1");
   }
 
   @Test
@@ -67,12 +67,12 @@ public class SelectTest {
     //when
     widget.setOptions(new String[]{"2", "3"});
     //then
-    verifyMsgForProperty(groovyKernel, RadioButtons.OPTIONS_LABELS, new String[]{"2", "3"});
+    verifyMsgForProperty(kernel, RadioButtons.OPTIONS_LABELS, new String[]{"2", "3"});
   }
 
   private Select select() throws NoSuchAlgorithmException {
     Select widget = new Select();
-    groovyKernel.clearPublishedMessages();
+    kernel.clearPublishedMessages();
     return widget;
   }
 

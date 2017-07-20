@@ -94,7 +94,7 @@ public class ValueWidgetTest {
   @Test
   public void getDoubleWithIntegerParam_returnDouble() throws Exception {
     //when
-    Double value = valueWidget.getDouble(new Double(123d));
+    Double value = valueWidget.getDouble(new Integer(123));
     //then
     Assertions.assertThat(value.doubleValue()).isEqualTo(123d);
   }

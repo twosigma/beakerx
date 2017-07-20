@@ -1,5 +1,4 @@
-
-/*
+ /*
  *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +15,9 @@
  */
 package com.twosigma.beakerx.widgets;
 
-
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +48,12 @@ public class ButtonTest {
     //when
     new Button();
     //then
-    verifyInternalOpenCommMsgWitLayout(groovyKernel.getPublishedMessages(), Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE, Widget.MODEL_MODULE_VALUE, Widget.VIEW_MODULE_VALUE);
+    verifyInternalOpenCommMsgWitLayout(
+        groovyKernel.getPublishedMessages(),
+        Button.MODEL_NAME_VALUE,
+        Button.VIEW_NAME_VALUE,
+        Widget.MODEL_MODULE_VALUE,
+        Widget.VIEW_MODULE_VALUE);
   }
 
   @Test
@@ -70,6 +74,28 @@ public class ButtonTest {
     widget.setTag("Tag2");
     //then
     verifyMsgForProperty(groovyKernel, Button.TAG, "Tag2");
+  }
+
+  @Test
+  public void setButtonStyle_hasThatButtonStyle() throws Exception {
+    String expected = "test";
+    //given
+    Button button = button();
+    //when
+    button.setButton_style(expected);
+    //then
+    Assertions.assertThat(button.getButton_style()).isEqualTo(expected);
+  }
+
+  @Test
+  public void setTooltip_hasThatTooltip() throws Exception {
+    String expected = "test";
+    //given
+    Button button = button();
+    //when
+    button.setTooltip(expected);
+    //then
+    Assertions.assertThat(button.getTooltip()).isEqualTo(expected);
   }
 
   private Button button() throws NoSuchAlgorithmException {

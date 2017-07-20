@@ -32,31 +32,23 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 * [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
-## Build and run
-
+## Install and build
 
 ```
 conda create -y -n beakerx python=3.5 jupyter pandas
 source activate beakerx
-conda install -y -c conda-forge openjdk
-./gradlew --no-daemon build
-./gradlew --no-daemon kernelInstall
-./gradlew --no-daemon :beakerx:install
-(cd beakerx; pip install -e .)
-python -m beakerx.install --enable --prefix="${CONDA_PREFIX}"
-jupyter notebook
+pip install -e beakerx --verbose
+jupyter nbextension install --py --symlink --sys-prefix beakerx
+jupyter nbextension enable --py --sys-prefix beakerx
 ```
 
-## Build including C++ kernel
-Make sure you have clang installed, then:
-```
-./gradlew --no-daemon build -DincludeCpp=true
-./gradlew --no-daemon kernelInstall -DincludeCpp=true
-```
+## Usage
+
+Start the Jupyter Notebook server: `jupyter notebook`
 
 ## Update after Java change
 The kernels are installed to run out of the repo, so just a build should update the java code.
-* `./gradlew build`
+* `(cd kernel; ./gradlew build)`
 
 ## Update after JS change
 
@@ -68,23 +60,23 @@ python -m beakerx.bkr2ipynb *.bkr
 ```
 
 ## Groovy with Interactive Plotting and Table Saw:
-<img width="942" alt="screen shot 2016-12-20 at 11 35 17 am" src="https://cloud.githubusercontent.com/assets/963093/21402566/1680b928-c787-11e6-8acf-dc4fdeba0651.png">
+<img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 
 ## Autotranslation from Python to JavaScript:
-<img width="631" alt="screen shot 2016-12-10 at 10 43 22 pm" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
+<img width="900" alt="screen shot" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
 
-## Running with docker
+## Running with Docker
 In root project call
 
-`gradle clean`
+`(cd kernel; gradle clean)`
 
-Go to /docker/base
+To build beakerx base image execute
 
-`docker build . -t beakerx-base`
+`docker build -t beakerx-base -f docker/base/Dockerfile .`
 
-Move to /docker
+To build beakerx image execute
 
-`docker build . -t beakerx`
+`docker build -t beakerx -f docker/Dockerfile .`
 
 Now if you would like to start BeakerX execute
 

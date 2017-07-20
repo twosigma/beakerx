@@ -13,15 +13,56 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-apply plugin: 'java'
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
-repositories {
-  mavenCentral()
+task wrapper(type: Wrapper) {
+  gradleVersion = '3.5'
 }
 
-dependencies {
-  testCompile 'junit:junit:4.11'
+subprojects {
+  apply plugin: 'jacoco'
+  apply plugin: 'java'
+  apply plugin: 'maven'
+
+  jacoco {
+    toolVersion = "0.7.8"
+  }
+  jacocoTestReport {
+    reports {
+      html.enabled = true
+      xml.enabled = false
+      csv.enabled = false
+    }
+  }
+
+  test.finalizedBy jacocoTestReport
+
+  test {
+    systemProperties 'java.awt.headless': "true"
+    if (project.hasProperty('showTestOut')) {
+      testLogging {
+        showStandardStreams = true
+      }
+    }
+  }
+  ext.pathToStaticContent = '../../beakerx/beakerx/static/kernel/'
+
+  task staticContent {
+    ext.executeStaticContent = true
+    doLast {
+      if (executeStaticContent) {
+        def kernelJson = file('kernel.json').text.replace('__MAIN_CLASS__', mainClassName)
+        file(pathToStaticContent + kernelIdName + "/kernel.json").withWriter { w ->
+          w << kernelJson
+        }
+      }
+    }
+  }
+  build.finalizedBy staticContent
+
+  task cleanStaticContent {
+    doLast {
+      delete pathToStaticContent + kernelIdName
+    }
+  }
+  clean.dependsOn cleanStaticContent
 }

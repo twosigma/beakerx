@@ -17,10 +17,14 @@
 package com.twosigma.beakerx.scala.easyform
 
 import com.twosigma.beakerx.easyform.EasyFormComponent
-import com.twosigma.beakerx.easyform.formitem.widgets.ButtonComponentWidget
-import com.twosigma.beakerx.widgets.{DOMWidget, DisplayableWidget}
+import com.twosigma.beakerx.widgets.DOMWidget
 
 import scala.collection.JavaConverters._
+
+object EasyForm {
+  val HORIZONTAL = 1
+  val VERTICAL = 2
+}
 
 class EasyForm(var caption: String) extends com.twosigma.beakerx.easyform.EasyForm(caption) {
 

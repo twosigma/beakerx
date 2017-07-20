@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widgets.floats;
 
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +59,17 @@ public class FloatProgressTest {
     floatProgress.setOrientation("vertical");
     //then
     verifyMsgForProperty(groovyKernel, FloatProgress.ORIENTATION, "vertical");
+  }
+
+  @Test
+  public void setOrientation_hasThatOrientation() throws Exception {
+    String expected = "test";
+    //given
+    FloatProgress floatProgress = floatProgress();
+    //when
+    floatProgress.setOrientation(expected);
+    //then
+    Assertions.assertThat(floatProgress.getOrientation()).isEqualTo(expected);
   }
 
   private FloatProgress floatProgress() throws NoSuchAlgorithmException {

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2014 - 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,9 +15,14 @@
  */
 package com.twosigma.beakerx.jvm.object;
 
-public class CyclingOutputContainerLayoutManager extends OutputContainerLayoutManager {
-  private long period = 5000L;
+import com.twosigma.beakerx.widgets.box.CyclingDisplayBox;
 
+public class CyclingOutputContainerLayoutManager extends OutputContainerLayoutManager {
+  
+  public static final String PERIOD = "period";
+  
+  private volatile long  period = 5000L;
+  
   public long getPeriod() {
     return period;
   }
@@ -25,9 +30,12 @@ public class CyclingOutputContainerLayoutManager extends OutputContainerLayoutMa
   public void setPeriod(long period) {
     this.period = period;
   }
-
+  
   @Override
   public void display(OutputContainer container) {
-    throw new RuntimeException("Not implemented yet.");
+    CyclingDisplayBox gridView = new CyclingDisplayBox(getWidgets(container));
+    gridView.sendUpdate(PERIOD, period);
+    gridView.display();
   }
+  
 }

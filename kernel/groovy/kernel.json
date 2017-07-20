@@ -1,6 +1,10 @@
 {
-  "argv": [ "java", "-jar", "__PATH__", "{connection_file}" ],
+  "argv": [
+    "java", "-cp", "__PATH__", "__MAIN_CLASS__",  "{connection_file}"
+  ],
   "display_name": "Groovy",
   "language": "groovy",
-  "env": { "PS1":"groovy>"}
+  "env": {
+    "PS1": "groovy>"
+  }
 }

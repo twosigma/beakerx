@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,6 +70,16 @@ public class ColorPickerTest {
     TestWidgetUtils.verifyMsgForProperty(groovyKernel, ColorPicker.CONCISE, true);
   }
 
+  @Test
+  public void setConciseFlag_hasThatConciseFlag() throws Exception {
+    boolean expected = true;
+    //given
+    ColorPicker colorPicker = colorPicker();
+    //when
+    colorPicker.setConcise(expected);
+    //then
+    Assertions.assertThat(colorPicker.getConcise()).isEqualTo(expected);
+  }
 
   private ColorPicker colorPicker() throws NoSuchAlgorithmException {
     ColorPicker widget = new ColorPicker();

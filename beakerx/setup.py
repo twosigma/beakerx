@@ -49,10 +49,7 @@ cmdclass['js'] = install_node_modules(
 )
 cmdclass['java'] = run_gradle(cmd='build')
 cmdclass['kernels'] = install_kernels(pjoin(here, 'beakerx', 'static', 'kernel'))
-cmdclass['kernelspec_class'] = update_kernelspec_class(
-    enable=True, 
-    prefix=os.environ['CONDA_PREFIX']
-)
+cmdclass['kernelspec_class'] = update_kernelspec_class(prefix=os.environ['CONDA_PREFIX'])
 cmdclass['custom_css'] = copy_files(
     src=pjoin(here, 'custom'), 
     dest=pjoin(os.environ['CONDA_PREFIX'], 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
@@ -89,7 +86,7 @@ setup_args = dict(
         get_data_files(pjoin('beaker', 'static'))
     )],
     install_requires    = [
-        'notebook>=4.3.1',
+        'notebook >=4.3.1',
         'ipywidgets >=5.1.5, <=6.0.0'
     ],
     zip_safe            = False,

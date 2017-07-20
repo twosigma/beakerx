@@ -61,7 +61,7 @@ else:
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 root = os.path.abspath(pjoin(here, os.pardir))
-kernel_path = root + '/kernel'
+kernel_path = pjoin(root, 'kernel')
 is_repo = os.path.exists(pjoin(root, '.git'))
 node_modules = pjoin(here, 'js', 'node_modules')
 node_modules_path = ':'.join([
@@ -296,19 +296,24 @@ def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='
     return Yarn
 
 
-def update_kernelspec_class(enable=False, disable=False, prefix=None):
-    """Return a Command for installing the nb_conda_kernels config piece.
+def update_kernelspec_class(prefix=None):
+    """Return a Command for updating kernelspec_class in jupyter_notebook_config.json.
 
     Parameters
     ----------
-    enable: bool
-        Enable the BeakerX server config on every notebook launch
-    disable: bool
-        Disable BeakerX server config
+    prefix: string
+        Base path of Python environment
     """
 
     class UpdateKernelspec(BaseCommand):
         description = 'Update kernelspec_class in jupyter_notebook_config.json'
+        
+        user_options = [
+            ('disable', 'd', 'disable'),
+        ]
+
+        def initialize_options(self):
+            self.disable = False
 
         def run(self):
             CKSM = "beakerx.kernel_spec.BeakerXKernelSpec"
@@ -317,11 +322,7 @@ def update_kernelspec_class(enable=False, disable=False, prefix=None):
             def pretty(it): 
                 return json.dumps(it, indent=2)
             
-            if enable == disable:
-                log.error("Please provide (one of) --enable or --disable")
-                raise ValueError(enable, disable)
-
-            log.info("{}abling BeakerX server config...".format("En" if enable else "Dis"))
+            log.info("{}abling BeakerX server config...".format("Dis" if self.disable else "En"))
 
             path = jupyter_config_dir()
 
@@ -338,10 +339,10 @@ def update_kernelspec_class(enable=False, disable=False, prefix=None):
 
             nb_app = cfg.setdefault("KernelSpecManager", {})
 
-            if enable:
-                nb_app.update({KSMC: CKSM})
-            elif disable and nb_app.get(KSMC, None) == CKSM:
+            if self.disable and nb_app.get(KSMC, None) == CKSM:
                 nb_app.pop(KSMC)
+            else:
+                nb_app.update({KSMC: CKSM})
 
             log.debug("Writing config in {}...".format(path))
 
@@ -351,12 +352,12 @@ def update_kernelspec_class(enable=False, disable=False, prefix=None):
 
             log.debug("Verifying config in {}...\n{}".format(path, pretty(cfg)))
 
-            if enable:
-                assert cfg["KernelSpecManager"][KSMC] == CKSM
-            else:
+            if self.disable:
                 assert KSMC not in cfg["KernelSpecManager"]
+            else:
+                assert cfg["KernelSpecManager"][KSMC] == CKSM
 
-            log.info("{}abled BeakerX server config".format("En" if enable else "Dis"))
+            log.info("{}abled BeakerX server config".format("Dis" if self.disable else "En"))
 
     return UpdateKernelspec
     
@@ -401,18 +402,6 @@ def run_gradle(path=kernel_path, cmd='build'):
     return Gradle
     
 
-def install_kernel(kernelspec_path='', kernelspec_name=None):
-    """Install a Jupyter kernelspec.
-    
-    Parameters
-    ----------
-    kernelspec_path: str
-        The path to the kernel.json.
-    kernelspec_name: str, optional
-        The kernel ID name.
-    """
-
-    
 def install_kernels(kernels_dir=''):
     """Install all kernels in a directory.
     

@@ -15,6 +15,7 @@
  */
 
 require('jquery-ui/ui/widgets/selectable');
+var _ = require('underscore');
 
 module.exports = function(TableScope) {
 

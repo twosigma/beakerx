@@ -1994,11 +1994,15 @@ define([
   };
 
   TableScope.prototype.setJupyterEditMode = function() {
-    Jupyter.keyboard_manager.edit_mode();
+    try {
+      Jupyter.keyboard_manager.edit_mode();
+    } catch (e) {}
   };
 
   TableScope.prototype.setJupyterCommandMode = function() {
-    Jupyter.keyboard_manager.command_mode();
+    try {
+      Jupyter.keyboard_manager.command_mode();
+    } catch (e) {}
   };
 
   TableScope.prototype.getDumpState = function() {

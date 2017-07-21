@@ -40,6 +40,28 @@ shasum -a 256 dist/*.tar.gz
 ```
 
 Publish on conda-forge
+----------------------
+
+To update the conda-feedstock repo:
+
+- Fork https://github.com/conda-forge/beakerx-feedstock
+- Update the `version` and `sha256` variable values in `recipe/meta.yaml`
+- Commit changes and submit a PR for the new version
+
+To build and upload a conda package:
+
+```
+# outside of beakerx conda environment
+conda install conda-build
+conda upgrade conda
+conda upgrade conda-build
+# inside of beakerx env and beakerx project root
+conda build --python 3.5 PATH_TO_RECIPE
+# conda-build will output something like `anaconda upload PATH_TO_beakerx-VERSION-py35HASH.tar.bz2`
+conda install --use-local beakerx
+conda convert --platform all PATH_TO_beakerx-VERSION-py35HASH.tar.bz2 -o beakerx/dist
+anaconda upload beakerx/dist/beakerx-VERSION-py35HASH.tar.bz2
+```
 
 - Fork https://github.com/conda-forge/beakerx-feedstock
 - Update the `version` and `sha256` variable values in `recipe/meta.yaml`

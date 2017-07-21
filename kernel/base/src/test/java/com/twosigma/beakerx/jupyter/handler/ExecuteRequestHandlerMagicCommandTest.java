@@ -31,7 +31,7 @@ import org.junit.Test;
 public class ExecuteRequestHandlerMagicCommandTest {
 
   public static final String DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR = "../../doc/contents/demoResources/BeakerXClasspathTest.jar";
-  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/contents/demoResources/beakerxTestLibrary.jar";
+  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/contents/demoResources/demo.jar";
   private KernelTest kernel;
   private EvaluatorTest evaluator;
   private ExecuteRequestHandler executeRequestHandler;
@@ -53,9 +53,9 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //given
     String code = "" +
             "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR + "\n" +
-        "import com.beakerx.BeakerxObject;\n" +
-        "BeakerxObject beakerxObject = new BeakerxObject();\n" +
-        "beakerxObject.getObjectTest()\n";
+        "import com.example.Demo;\n" +
+        "Demo demo = new Demo();\n" +
+        "demo.getObjectTest()\n";
 
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     //when
@@ -67,8 +67,6 @@ public class ExecuteRequestHandlerMagicCommandTest {
 
   @Test
   public void handleMagicClasspathAddJar() throws Exception {
-    System.out.println("SIEMA " + System.getProperty("user.dir"));
-
     //when
     String code = "" +
             "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR;

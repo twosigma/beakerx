@@ -45,7 +45,7 @@ conda install -c beakerx beakerx
 Using conda:
 
 ```
-conda install -c conda-forge beakerx
+conda install -c beakerx beakerx
 ```
 
 Using pip:

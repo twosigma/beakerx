@@ -33,12 +33,18 @@ define([
   };
 
   var clear = function (scope, d, hide) {
-    if (hide !== true) {
+    if (!hide) {
       delete scope.tips[d.id];
     }
-    var tip = scope.jqcontainer.find("#tip_" + d.id).removeAttr('id').css('opacity', 0);
 
-    setTimeout(function() { tip.remove(); }, TOOLTIP_ANIMATION_TIME);
+    var tip = scope.jqcontainer.find("#tip_" + d.id);
+
+    if (!hide) {
+      tip.remove();
+    } else {
+      tip.css({ opacity: 0, transition: 'opacity 0.4s' });
+      setTimeout(function() { tip.remove(); }, TOOLTIP_ANIMATION_TIME);
+    }
 
     if (d.isresp === true) {
       scope.jqsvg.find("#" + d.id).css("opacity", 0);
@@ -160,7 +166,14 @@ define([
                 }
               });
 
-            setTimeout(function() { tipdiv.css({ "opacity": 1 }); });
+            if (!scope.tipmoving) {
+              setTimeout(function() {
+                tipdiv.css({ opacity: 1, transition: 'opacity 0.4s'  });
+              });
+            } else {
+              tipdiv.css({ opacity: 1, transition: 'opacity 0s' });
+              scope.tipmoving = false;
+            }
 
             if (data[d.idx].tip_class) {
               tipdiv.addClass(data[d.idx].tip_class);
@@ -216,6 +229,10 @@ define([
     },
 
     tooltip: function (scope, d, mousePos) {
+      Object.keys(scope.tips).forEach(function(id) {
+        clear(scope, scope.tips[id]);
+      });
+
       if (scope.tips[d.id] != null) {
         return;
       }
@@ -241,7 +258,7 @@ define([
         return;
       }
       if (scope.tips[d.id].sticking === false) {
-        clear(scope, d);
+        clear(scope, d, true);
         impl.renderTips(scope);
       }
     },

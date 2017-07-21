@@ -590,18 +590,19 @@ define([
     if (model.useToolTip === false) {
       return;
     }
+
     this.svg.selectAll(".plot-resp")
       .on('mouseenter', function(d) {
         self.drawLegendPointer(d);
         return plotTip.tooltip(self, d, d3.mouse(self.svg.node()));
       })
       .on('mousemove', function(d) {
+        self.tipmoving = true;
 
-        self.removeLegendPointer();
-        plotTip.untooltip(self, d);
-
-        self.drawLegendPointer(d);
-        return plotTip.tooltip(self, d, d3.mouse(self.svg.node()));
+        self.tipTimeout && clearTimeout(self.tipTimeout);
+        self.tipTimeout = setTimeout(function() {
+          self.tipmoving = false;
+        }, 50);
       })
       .on("mouseleave", function(d) {
         self.removeLegendPointer();

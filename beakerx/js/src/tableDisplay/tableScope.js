@@ -1895,7 +1895,7 @@ define([
       })
       .parent()
       .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
-        var searchExp = this.value ? new RegExp(bkUtils.sanitizeRegExpString(this.value), 'i') : null;
+        var searchExp = this.value ? new RegExp(this.value, 'i') : null;
 
         $(this).parent().next('.list-showcolumn').find('li').each(function (index, element) {
           $(element).toggleClass('hidden', _.isRegExp(searchExp) ? !searchExp.test(element.textContent) : false);

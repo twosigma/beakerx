@@ -15,17 +15,19 @@
  */
 package com.twosigma.beakerx.clojure.handlers;
 
+import com.twosigma.beakerx.BeakerImplementationInfo;
 import com.twosigma.beakerx.KernelInfoHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import java.io.Serializable;
+import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 public class ClojureKernelInfoHandler extends KernelInfoHandler {
 
+  public static final String CLOJURE_VERSION = "1.7";
   private final static Logger logger = LoggerFactory.getLogger(ClojureKernelInfoHandler.class);
+
 
   public ClojureKernelInfoHandler(KernelFunctionality kernel) {
     super(kernel);
@@ -34,7 +36,7 @@ public class ClojureKernelInfoHandler extends KernelInfoHandler {
   @Override
   protected HashMap<String, Serializable> doLanguageInfo(HashMap<String, Serializable> languageInfo) {
     languageInfo.put("name", "Clojure");
-    languageInfo.put("version", "1.7");
+    languageInfo.put("version", CLOJURE_VERSION);
     languageInfo.put("mimetype", "text/x-clojure");
     languageInfo.put("file_extension", ".clj");
     languageInfo.put("codemirror_mode", "Clojure");
@@ -45,7 +47,7 @@ public class ClojureKernelInfoHandler extends KernelInfoHandler {
   @Override
   protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
     content.put("implementation", "clojure");
-    content.put("banner", "BeakerX kernel for Clojure");
+    content.put("banner", "BeakerX kernel for Clojure version " + CLOJURE_VERSION + "\n" + BeakerImplementationInfo.IMPLEMENTATION_VERSION);
     return content;
   }
 

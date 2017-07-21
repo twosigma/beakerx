@@ -40,7 +40,15 @@ Using [conda](https://conda.io/docs/install/quick.html) (except on Windows, see 
 conda install -c beakerx beakerx
 ```
 
-Using [pip](https://pip.pypa.io/en/stable/):
+## Install
+
+Using conda:
+
+```
+conda install -c conda-forge beakerx
+```
+
+Using pip:
 
 ```
 pip install beakerx
@@ -61,7 +69,7 @@ Dependencies:
 * [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
 ```
-conda create -y -n beakerx python=3.5 jupyter openjdk pandas
+conda create -y -n beakerx python=3.5 jupyter openjdk yarn
 source activate beakerx
 (cd beakerx; python setup.py install --single-version-externally-managed --record record.txt && python setup.py kernels)
 jupyter nbextension install beakerx --py --sys-prefix

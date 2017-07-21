@@ -23,7 +23,7 @@ import scala.collection.JavaConverters._
 class CsvPlotReader extends com.twosigma.beakerx.fileloader.CsvPlotReader {
 
   def readFile(fileName: String): List[Map[_, _]] = {
-    val javaOutput: util.List[util.Map[_, _]] = super.readAsList(fileName)
+    val javaOutput: util.List[util.Map[String, AnyRef]] = super.read(fileName)
     val refactoredOutput: List[util.Map[_, _]] = javaOutput.asScala.toList
 
     refactoredOutput.map(ro => ro.asScala.toMap)

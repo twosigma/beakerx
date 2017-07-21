@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.fileloader;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import org.junit.Test;
 
 import java.net.URI;
@@ -31,22 +30,10 @@ public class CsvPlotReaderTest {
   public static final String TABLE_ROWS_TEST_CSV = "tableRowsTest.csv";
 
   @Test
-  public void shouldReturnDataForPlot() throws Exception {
-    //given
-    CsvPlotReader reader = new CsvPlotReader();
-    //when
-    Table values = reader.read(getOsAppropriatePath(getClass().getClassLoader(), "tableRowsTest.csv"));
-    //then
-    assertThat(reader.convert(values).get(2).get("m3")).isEqualTo(8.0f);
-    assertThat(reader.convert(values).get(2).get("time"))
-            .isEqualTo(new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-31"));
-  }
-
-  @Test
   public void shouldReturnDataAsListForPlot() throws Exception {
     //when
-    List<Map<?, ?>> values =
-            new CsvPlotReader().readAsList(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
+    List<Map<String, Object>> values =
+            new CsvPlotReader().read(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
     //then
     assertThat(values.get(2).get("m3")).isEqualTo(8.0f);
     assertThat(values.get(2).get("time"))

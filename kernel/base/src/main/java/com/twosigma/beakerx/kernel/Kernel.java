@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
@@ -30,7 +29,6 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;

@@ -37,7 +37,7 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 Using conda:
 
 ```
-conda install -c conda-forge beakerx
+conda install -c beakerx beakerx
 ```
 
 Using pip:

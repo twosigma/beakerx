@@ -16,9 +16,10 @@
 
 package com.twosigma.beakerx.fileloader;
 
-import com.github.lwhite1.tablesaw.api.Table;
+import com.opencsv.CSVReader;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,17 +29,20 @@ public class CsvPlotReader {
 
   public static String TIME_COLUMN = "time";
 
-  public List<Map<?, ?>> convert(Table table) {
-    List<Map<?, ?>> result = new ArrayList<>();
-    for (int r = 0; r < table.rowCount(); r++) {
+  public List<Map<String, Object>> read(String fileName) throws IOException {
+    CSVReader reader = new CSVReader(new FileReader(fileName));
+
+    List<Map<String, Object>> result = new ArrayList<>();
+    String[] header = getHeader(reader);
+    String[] row;
+    while ((row = reader.readNext()) != null) {
       Map<String, Object> entry = new HashMap<>();
-      for (int c = 0; c < table.columnCount(); c++) {
-        Object value = table.get(c, r);
-        String headerName = table.columnNames().get(c);
-        if (headerName.equals(TIME_COLUMN)) {
-          entry.put(headerName, convertDate(value));
+      int index = 0;
+      for (String hc : header) {
+        if (hc.equals(TIME_COLUMN)){
+          entry.put(hc,convertDate(row[index++]));
         } else {
-          entry.put(headerName, convertToNumber(value));
+          entry.put(hc, convertToNumber(row[index++]));
         }
       }
       result.add(entry);
@@ -46,32 +50,24 @@ public class CsvPlotReader {
     return result;
   }
 
-  public Table read(String fileName) throws IOException {
-    return Table.createFromCsv(fileName);
-  }
-
-  public List<Map<?, ?>> readAsList(String fileName) throws IOException {
-    return convert(Table.createFromCsv(fileName));
-  }
-
-  private Object convertToNumber(Object value) {
-    if (value instanceof String && NumberUtils.isNumber((String) value)) {
-      return Float.parseFloat((String) value);
+  private Object convertToNumber(Object value){
+    if(value instanceof String && NumberUtils.isNumber((String) value)){
+      return Float.parseFloat((String)value);
     } else {
       return value;
     }
   }
 
-  private Object convertDate(Object x) {
-    if (x instanceof Number) {
+  private Object convertDate(Object x){
+    if(x instanceof Number){
       return x;
     } else if (x instanceof Date) {
-      Date date = (Date) x;
+      Date date = (Date)x;
       return date;
-    } else if (x instanceof String) {
+    } else if (x instanceof String){
       Date inputDate = null;
       try {
-        inputDate = new SimpleDateFormat("yyyy-MM-dd").parse((String) x);
+        inputDate = new SimpleDateFormat("yyyy-MM-dd").parse((String)x);
       } catch (ParseException e) {
         throw new IllegalArgumentException("time column accepts String date in a following format yyyy-MM-dd");
       }
@@ -79,6 +75,10 @@ public class CsvPlotReader {
     } else {
       throw new IllegalArgumentException("time column accepts numbers or java.util.Date objects or String date in a following format yyyy-MM-dd");
     }
+  }
+
+  private String[] getHeader(CSVReader reader) throws IOException {
+    return reader.readNext();
   }
 
 }

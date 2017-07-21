@@ -515,9 +515,9 @@ public class ScalaEvaluator extends BaseEvaluator {
       logger.debug("list of maps");
       // convert this 'on the fly' to a datatable
       Collection<?> col = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
-      List<Map<?, ?>> tab = new ArrayList<Map<?, ?>>();
+      List<Map<String, Object>> tab = new ArrayList<Map<String, Object>>();
       for (Object o : col) {
-        Map<?, ?> row = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<?, ?>) o);
+        Map<String, Object> row = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<String, Object>) o);
         tab.add(row);
       }
       TableDisplay t = new TableDisplay(tab, parent);

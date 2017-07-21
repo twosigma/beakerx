@@ -251,7 +251,7 @@ public class MagicCommand {
       return getMagicCommandItem(code, message, executionCount);
     }
 
-    String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
+    String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars + "\n";
 
     if (code.takeCodeWithoutCommand().isPresent()) {
       return new MagicCommandItemWithResultAndCode(

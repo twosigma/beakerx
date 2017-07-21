@@ -190,6 +190,6 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //when
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(6);
   }
 }

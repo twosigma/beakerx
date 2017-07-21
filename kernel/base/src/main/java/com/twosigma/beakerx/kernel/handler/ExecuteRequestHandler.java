@@ -72,16 +72,19 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
 
   private void handleMagicCommand(Message message, Code code) {
     MagicCommandResult magicCommandResult = magicCommand.process(code, message, executionCount);
-    if (magicCommandResult.hasCodeToExecute() && magicCommandResult.hasResult()) {
-      kernel.publish(magicCommandResult.getResultMessage().get());
-      runCode(magicCommandResult.getCode().get().asString(), message);
-    } else if (magicCommandResult.hasCodeToExecute()) {
-      runCode(magicCommandResult.getCode().get().asString(), message);
-    } else if (magicCommandResult.hasResult()) {
-      sendMagicCommandReplyAndResult(message, magicCommandResult.replyMessage().get(), magicCommandResult.getResultMessage().get());
-    } else {
-      sendMagicCommandReply(message, magicCommandResult.replyMessage().get());
-    }
+
+    magicCommandResult.getItems().forEach( item -> {
+      if(item.hasCodeToExecute()){
+        if(item.hasResult()){
+          kernel.publish(item.getResult().get());
+        }
+        runCode(item.getCode().get().asString(), message);
+      } else if (item.hasResult()) {
+        sendMagicCommandReplyAndResult(message, item.getReply().get(), item.getResult().get());
+      } else {
+        sendMagicCommandReply(message, item.getReply().get());
+      }
+    } );
   }
 
   private Code takeCodeFrom(Message message) {

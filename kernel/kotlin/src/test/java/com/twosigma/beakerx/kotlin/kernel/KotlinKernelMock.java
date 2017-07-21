@@ -20,15 +20,15 @@ import com.twosigma.beakerx.evaluator.Evaluator;
 
 public class KotlinKernelMock extends KernelTest {
 
-    public KotlinKernelMock() {
-        this("KotlinKernelTestId1");
-    }
+  public KotlinKernelMock() {
+    this("KotlinKernelTestId1");
+  }
 
-    public KotlinKernelMock(String id) {
-        super(id);
-    }
+  public KotlinKernelMock(String id) {
+    super(id);
+  }
 
-    public KotlinKernelMock(String id, Evaluator evaluator) {
-        super(id, evaluator);
-    }
+  public KotlinKernelMock(String id, Evaluator evaluator) {
+    super(id, evaluator);
+  }
 }

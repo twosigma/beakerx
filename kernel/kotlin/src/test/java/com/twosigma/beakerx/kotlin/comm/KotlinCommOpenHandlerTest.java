@@ -26,40 +26,39 @@ import org.junit.Test;
 
 public class KotlinCommOpenHandlerTest {
 
-    private KotlinKernelMock kernel;
-    private KotlinCommOpenHandler commOpenHandler;
-    private String targetName = TargetNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName();
+  private KotlinKernelMock kernel;
+  private KotlinCommOpenHandler commOpenHandler;
+  private String targetName = TargetNamesEnum.KERNEL_CONTROL_CHANNEL.getTargetName();
 
-    @Before
-    public void setUp() {
-        kernel = new KotlinKernelMock();
-        commOpenHandler = new KotlinCommOpenHandler(kernel);
-    }
+  @Before
+  public void setUp() {
+    kernel = new KotlinKernelMock();
+    commOpenHandler = new KotlinCommOpenHandler(kernel);
+  }
 
-    @Test
-    public void handleMessage_shouldSendShellSocketMessage() throws Exception {
-        //given
-        Message message = JupyterHandlerTest.initOpenMessage();
-        //when
-        commOpenHandler.handle(message);
-        //then
-        Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
-    }
+  @Test
+  public void handleMessage_shouldSendShellSocketMessage() throws Exception {
+    //given
+    Message message = JupyterHandlerTest.initOpenMessage();
+    //when
+    commOpenHandler.handle(message);
+    //then
+    Assertions.assertThat(kernel.getSentMessages()).isNotEmpty();
+  }
 
-    @Test
-    public void getControlHandlersWithEmptyString_returnEmptyHandlersArray() throws Exception {
-        //when
-        Handler<Message>[] handlers = commOpenHandler.getKernelControlChanelHandlers("");
-        //then
-        Assertions.assertThat(handlers).isEmpty();
-    }
+  @Test
+  public void getControlHandlersWithEmptyString_returnEmptyHandlersArray() throws Exception {
+    //when
+    Handler<Message>[] handlers = commOpenHandler.getKernelControlChanelHandlers("");
+    //then
+    Assertions.assertThat(handlers).isEmpty();
+  }
 
-    @Test
-    public void getControlHandlersWithTargetName_returnNotEmptyHandlersArray() throws Exception {
-        //when
-        Handler<Message>[] handlers = commOpenHandler.getKernelControlChanelHandlers(targetName);
-        //then
-        Assertions.assertThat(handlers).isNotEmpty();
-    }
-
+  @Test
+  public void getControlHandlersWithTargetName_returnNotEmptyHandlersArray() throws Exception {
+    //when
+    Handler<Message>[] handlers = commOpenHandler.getKernelControlChanelHandlers(targetName);
+    //then
+    Assertions.assertThat(handlers).isNotEmpty();
+  }
 }

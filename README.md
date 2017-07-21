@@ -27,20 +27,15 @@ development, including incompatible changes without notice.
 BeakerX is the successor to the [Beaker
 Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).
 
-## Dependencies
-
-* [yarn](https://yarnpkg.com/lang/en/docs/install/)
-* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
-
 ## Install
 
-Using conda:
+Using [conda](https://conda.io/docs/install/quick.html):
 
 ```
 conda install -c beakerx beakerx
 ```
 
-Using pip:
+Using [pip](https://pip.pypa.io/en/stable/):
 
 ```
 pip install beakerx
@@ -53,6 +48,11 @@ jupyter nbextension enable beakerx --py --sys-prefix
 Start the Jupyter Notebook server: `jupyter notebook`
 
 ## Developer Install
+
+Dependencies:
+
+* [yarn](https://yarnpkg.com/lang/en/docs/install/)
+* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
 ```
 conda create -y -n beakerx python=3.5 jupyter openjdk yarn

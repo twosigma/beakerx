@@ -1928,11 +1928,14 @@ define([
         ).select();
       });
 
-    $(document).on('keydown', _.debounce(function(event) {
+    var handleTableHeaderMenuClose = _.debounce(function(event) {
       if (event.which === 27) {
         self.element.find(id + '_table_menu').removeClass('open');
       }
-    }, 250));
+    }, 250);
+
+    $(document).off('keydown', handleTableHeaderMenuClose);
+    $(document).on('keydown', handleTableHeaderMenuClose);
 
     function updateSize() {
       clearTimeout(self.refresh_size);

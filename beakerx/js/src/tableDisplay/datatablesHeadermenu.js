@@ -70,9 +70,16 @@ define([
             }
           };
 
+          var closeMenuHandler = _.debounce(function(event) {
+            if (event.which === 27) {
+              that._hide();
+            }
+          }, 250);
+
           $(document.body).on('click.table-headermenu', clickHandler);
           dtSettings.oApi._fnCallbackReg(dtSettings, 'aoDestroyCallback', $.proxy(this._destroy, this), 'HeaderMenu');
-
+          $(document).off('keydown', closeMenuHandler);
+          $(document).on('keydown', closeMenuHandler);
         },
 
         _appendMenuContainer: function()

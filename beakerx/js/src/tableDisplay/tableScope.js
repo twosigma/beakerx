@@ -1895,10 +1895,10 @@ define([
       })
       .parent()
       .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
-        var searchText = this.value;
+        var searchExp = this.value ? new RegExp(this.value, 'i') : null;
 
         $(this).parent().next('.list-showcolumn').find('li').each(function (index, element) {
-          $(element).toggleClass('hidden', searchText ? element.textContent.indexOf(searchText) === -1 : false);
+          $(element).toggleClass('hidden', _.isRegExp(searchExp) ? !searchExp.test(element.textContent) : false);
         });
       }, 250))
       .on('click', '.dropdown-menu-search .fa-search', function(e) {

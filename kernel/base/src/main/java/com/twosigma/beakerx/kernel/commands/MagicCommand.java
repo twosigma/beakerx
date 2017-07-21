@@ -38,6 +38,7 @@ import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResultAndCo
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -163,13 +164,14 @@ public class MagicCommand {
 
       if (code.takeCodeWithoutCommand().isPresent()) {
         return new MagicCommandItemWithResultAndCode(
-            messageCreator.buildOutputMessage(message, result.getCode(), false),
-            messageCreator.buildReplyWithoutStatus(message, executionCount),
-            code.takeCodeWithoutCommand().get());
+                messageCreator.buildOutputMessage(message, result.getCode(), false),
+                messageCreator.buildReplyWithoutStatus(message, executionCount),
+                code.takeCodeWithoutCommand().get());
       }
 
-      return new MagicCommandItemWithResult(messageCreator.buildOutputMessage(message, result.getCode(), false),
-          messageCreator.buildReplyWithoutStatus(message, executionCount));
+      return new MagicCommandItemWithResult(
+              messageCreator.buildOutputMessage(message, result.getCode(), false),
+              messageCreator.buildReplyWithoutStatus(message, executionCount));
     };
   }
 
@@ -180,42 +182,35 @@ public class MagicCommand {
   private MagicCommandFunctionality classpathAddJar() {
     return (code, command, message, executionCount) -> {
       String[] split = command.split(" ");
-      Map<Path, String> pathWithJarNames = Maps.newHashMap();
-
-      try {
-        if (split.length != 4) {
-          throw new IllegalStateException("Wrong command format: " + CLASSPATH_ADD_JAR);
-        }
-
-        boolean isNewOne;
-        String path = split[3];
-        if (doesPathContainsWildCards(path)) {
-          validateWildcardPath(path);
-          Map<Path, String> collect = getPaths(path).keySet().stream()
-              .filter(
-                  currentPath -> kernel.addJarToClasspath(new PathToJar(currentPath.toString())))
-              .collect(Collectors.toMap(o -> o, Path::toString));
-          pathWithJarNames.putAll(collect);
-
-          pathWithJarNames.keySet().forEach(currentPath -> this.kernel.addJarToClasspath(new PathToJar(currentPath.toString())));
-        } else {
-          validatePath(path);
-          Path currentPath = Paths.get(path);
-          if (this.kernel.addJarToClasspath(new PathToJar(path))) {
-            pathWithJarNames.put(currentPath, currentPath.getFileName().toString());
-          }
-        }
-
-
-        return getMagicCommandItem(pathWithJarNames.values(), code, message, executionCount);
-      } catch (IllegalStateException e) {
+      if (split.length != 4) {
         return new MagicCommandItemWithResult(
                 messageCreator
-                        .buildOutputMessage(message, e.getMessage(), true),
+                        .buildOutputMessage(message, "Wrong command format: " + CLASSPATH_ADD_JAR, true),
                 messageCreator.buildReplyWithoutStatus(message, executionCount)
         );
       }
+      String path = split[3];
+      return getMagicCommandItem(addJars(path), code, message, executionCount);
     };
+  }
+
+  private Collection<String> addJars(String path) {
+    Map<Path, String> addedJars = Maps.newHashMap();
+    if (doesPathContainsWildCards(path)) {
+      validateWildcardPath(path);
+      Map<Path, String> collect = getPaths(path).keySet().stream()
+              .filter(
+                      currentPath -> kernel.addJarToClasspath(new PathToJar(currentPath.toString())))
+              .collect(Collectors.toMap(o -> o, Path::toString));
+      addedJars.putAll(collect);
+    } else {
+      validatePath(path);
+      Path currentPath = Paths.get(path);
+      if (this.kernel.addJarToClasspath(new PathToJar(path))) {
+        addedJars.put(currentPath, currentPath.getFileName().toString());
+      }
+    }
+    return addedJars.values();
   }
 
   private void validateWildcardPath(String path) {
@@ -233,8 +228,8 @@ public class MagicCommand {
     try {
 
       Map<Path, String> paths = Files.list(Paths.get(pathWithoutWildcards))
-                                .filter(path -> path.toString().toLowerCase().endsWith(".jar"))
-                                .collect(Collectors.toMap(p -> p, o -> o.getFileName().toString()));
+              .filter(path -> path.toString().toLowerCase().endsWith(".jar"))
+              .collect(Collectors.toMap(p -> p, o -> o.getFileName().toString()));
 
       if (paths == null || paths.isEmpty()) {
         throw new IllegalStateException("Cannot find any jars files in selected path");
@@ -251,15 +246,18 @@ public class MagicCommand {
     return path.contains("*");
   }
 
-  private MagicCommandItem getMagicCommandItem(Collection<String> values, Code code, Message message, int executionCount) {
-    if (values.isEmpty()) {
+  private MagicCommandItem getMagicCommandItem(Collection<String> newAddedJars, Code code, Message message, int executionCount) {
+    if (newAddedJars.isEmpty()) {
       return getMagicCommandItem(code, message, executionCount);
     }
 
-    String textMessage = "Added jar" + (values.size() > 1 ? "s: " : ": ") + values;
+    String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
 
     if (code.takeCodeWithoutCommand().isPresent()) {
-      return new MagicCommandItemWithCode(code.takeCodeWithoutCommand().get());
+      return new MagicCommandItemWithResultAndCode(
+              messageCreator.buildOutputMessage(message, textMessage, false),
+              messageCreator.buildReplyWithoutStatus(message, executionCount),
+              code.takeCodeWithoutCommand().get());
     }
 
     return new MagicCommandItemWithResult(

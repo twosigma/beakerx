@@ -23,7 +23,6 @@ import com.twosigma.beakerx.kotlin.evaluator.KotlinEvaluator;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Map;
 import java.util.Optional;
@@ -59,7 +58,7 @@ public class KotlinKernelTest {
   //@Test
   public void evaluate() throws Exception {
     //given
-    String code = "println(\"test\")";
+    String code = "10/2";
     Message message = getExecuteRequestMessage(code);
     //when
     kernelSocketsService.handleMsg(message);

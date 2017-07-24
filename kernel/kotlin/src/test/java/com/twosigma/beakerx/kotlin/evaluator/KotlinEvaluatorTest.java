@@ -24,7 +24,6 @@ import com.twosigma.beakerx.kotlin.kernel.KotlinKernelMock;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
@@ -50,9 +49,9 @@ public class KotlinEvaluatorTest {
   public void evaluatePlot_shouldCreatePlotObject() throws Exception {
     //given
     String code =
-        "import com.twosigma.beakerx.chart.xychart.*;\n"
-            + "Plot plot = new Plot(); plot.setTitle(\"test title\");\n"
-            + "return plot;";
+        "val plot = Plot()\n" +
+                "plot.setTitle(\"test title\");\n" +
+                "plot.display();";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     evaluator.evaluate(seo, code);

@@ -43,18 +43,18 @@ public class GroovyEvaluatorMagicCommandsTest {
   public void addJarToClasspath() throws Exception {
     //given
     String code = "" +
-            "import com.beakerx.BeakerxObject;\n" +
-            "BeakerxObject beakerxObject = new BeakerxObject();\n" +
-            "beakerxObject.getObjectTest()\n";
+            "import com.example.Demo;\n" +
+            "Demo demo = new Demo();\n" +
+            "demo.getObjectTest()\n";
     SimpleEvaluationObject seo = runCode(code);
     assertThat(seo.getStatus()).isEqualTo(ERROR);
     //when
-    PathToJar path = new PathToJar(SRC_TEST_RESOURCES + "beakerxTestLibrary.jar");
+    PathToJar path = new PathToJar(SRC_TEST_RESOURCES + "demo.jar");
     groovyEvaluator.addJarToClasspath(path);
     //then
     SimpleEvaluationObject seo2 = runCode(code);
     assertThat(seo2.getStatus()).isEqualTo(FINISHED);
-    assertThat(seo2.getPayload()).isEqualTo("BeakerxObject_test_123");
+    assertThat(seo2.getPayload()).isEqualTo("Demo_test_123");
   }
 
   private SimpleEvaluationObject runCode(String code) throws InterruptedException {

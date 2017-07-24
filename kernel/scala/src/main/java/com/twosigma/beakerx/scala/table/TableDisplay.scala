@@ -39,22 +39,22 @@ object TableDisplay {
     new com.twosigma.beakerx.table.TableDisplay(javaListOfList, co.asJava, cl.asJava)
   }
 
-  private def create(v: Array[Map[_, _]]): com.twosigma.beakerx.table.TableDisplay = {
-    val javaStandardized: Array[java.util.Map[_, _]] = v.map(v => v.asJava).toArray
+  private def create(v: Array[Map[String, AnyRef]]): com.twosigma.beakerx.table.TableDisplay = {
+    val javaStandardized: Array[java.util.Map[String, AnyRef]] = v.map(v => v.asJava).toArray
 
     new com.twosigma.beakerx.table.TableDisplay(javaStandardized)
   }
 
-  private def create(v: List[Map[_, _]]): com.twosigma.beakerx.table.TableDisplay = {
-    val javaMaps: List[java.util.Map[_, _]] = v.map(entry => entry.asJava)
-    val javaCollection: java.util.Collection[java.util.Map[_, _]] = javaMaps.asJavaCollection
+  private def create(v: List[Map[String, AnyRef]]): com.twosigma.beakerx.table.TableDisplay = {
+    val javaMaps: List[java.util.Map[String, AnyRef]] = v.map(entry => entry.asJava)
+    val javaCollection: java.util.Collection[java.util.Map[String, AnyRef]] = javaMaps.asJavaCollection
 
     new com.twosigma.beakerx.table.TableDisplay(javaCollection)
   }
 
-  private def create(v: List[Map[_, _]], serializer: BeakerObjectConverter): com.twosigma.beakerx.table.TableDisplay = {
-    val javaMaps: List[java.util.Map[_, _]] = v.map(entry => entry.asJava)
-    val javaCollection: java.util.Collection[java.util.Map[_, _]] = javaMaps.asJavaCollection
+  private def create(v: List[Map[String, AnyRef]], serializer: BeakerObjectConverter): com.twosigma.beakerx.table.TableDisplay = {
+    val javaMaps: List[java.util.Map[String, AnyRef]] = v.map(entry => entry.asJava)
+    val javaCollection: java.util.Collection[java.util.Map[String, AnyRef]] = javaMaps.asJavaCollection
 
     new com.twosigma.beakerx.table.TableDisplay(javaCollection, serializer)
   }
@@ -70,15 +70,15 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
     this(TableDisplay.create(v, co, cl))
   }
 
-  def this(v: Array[Map[_, _]]) = {
+  def this(v: Array[Map[String, AnyRef]]) = {
     this(TableDisplay.create(v))
   }
 
-  def this(v: List[Map[_, _]]) = {
+  def this(v: List[Map[String, AnyRef]]) = {
     this(TableDisplay.create(v))
   }
 
-  def this(v: List[Map[_, _]], serializer: BeakerObjectConverter) = {
+  def this(v: List[Map[String, AnyRef]], serializer: BeakerObjectConverter) = {
     this(TableDisplay.create(v, serializer))
   }
 

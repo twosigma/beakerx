@@ -1749,6 +1749,69 @@ define([
         .appendTo(pagination);
     }
 
+    self.bindEvents();
+
+    var inits = {'heightMatch': 'none'};
+    if ((self.pagination.fixLeft + self.pagination.fixRight) > (self.columns.length - 1)) {
+      self.pagination.fixLeft = 0;
+      self.pagination.fixRight = 0;
+    }
+    if (self.pagination.fixLeft) {
+      inits.leftColumns = 1 + self.pagination.fixLeft;
+    } else {
+      inits.leftColumns = 1;
+    }
+    if (self.pagination.fixRight) {
+      inits.rightColumns = self.pagination.fixRight;
+    } else {
+      inits.rightColumns = 0;
+    }
+
+    self.updateFixedColumnsSeparator();
+
+    self.keyTable = self.table.settings()[0].keytable;
+    self.refreshCells();
+    self.fixcols = new dataTablesFixedColumns(self.table, inits);
+    self.fixcols.fnRedrawLayout();
+    // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
+
+    setTimeout(function(){
+      if (!self.table) { return; }
+      self.applyFilters();
+      if (self.columnFilter) {
+        self.table.columns().every(function(i) {
+          var column = this;
+          var jqInput = self.getColumnFilter(column);
+          if (i === 0) {
+            var filterValue = self.tableFilter;
+            jqInput.val(filterValue);
+            if (self.columnSearchActive && !_.isEmpty(filterValue)) {
+              self.table.search(filterValue);
+            }
+          } else {
+            var filterValue = self.columnFilter[self.colorder[i] - 1];
+            jqInput.val(filterValue);
+            if (self.columnSearchActive && !_.isEmpty(filterValue)) {
+              column.search(filterValue);
+            }
+          }
+        });
+      }
+      if (self.showFilter) {
+        self.doShowFilter(null, self.columnSearchActive);
+      }
+      // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
+
+      self.adjustRedraw();
+    }, 0);
+
+    self.initTableSelect();
+  };
+
+  TableScope.prototype.bindEvents = function() {
+    var self = this;
+    var id = '#' + self.id;
+
     $(id + ' tbody').on('dblclick', 'td', function(e) {
       if (!self.table) { return; }
       var rowIdx;
@@ -1776,7 +1839,10 @@ define([
 
       var index = currentCell.indexes()[0];
       if (model.hasDoubleClickAction) {
-	self.tableDisplayModel.send({event: 'DOUBLE_CLICK', row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
+        self.tableDisplayModel.send(
+          {event: 'DOUBLE_CLICK', row : index.row, column : index.column - 1},
+          self.tableDisplayView.callbacks()
+        );
       }
 
       if (!_.isEmpty(model.doubleClickTag)) {
@@ -1862,6 +1928,15 @@ define([
         ).select();
       });
 
+    var handleTableHeaderMenuClose = _.debounce(function(event) {
+      if (event.which === 27) {
+        self.element.find(id + '_table_menu').removeClass('open');
+      }
+    }, 250);
+
+    $(document).off('keydown', handleTableHeaderMenuClose);
+    $(document).on('keydown', handleTableHeaderMenuClose);
+
     function updateSize() {
       clearTimeout(self.refresh_size);
       self.refresh_size = setTimeout(function() {
@@ -1895,73 +1970,16 @@ define([
       })
       .parent()
       .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
-        var searchText = this.value;
+        var searchExp = this.value ? new RegExp(this.value, 'i') : null;
 
         $(this).parent().next('.list-showcolumn').find('li').each(function (index, element) {
-          $(element).toggleClass('hidden', searchText ? element.textContent.indexOf(searchText) === -1 : false);
+          $(element).toggleClass('hidden', _.isRegExp(searchExp) ? !searchExp.test(element.textContent) : false);
         });
       }, 250))
       .on('click', '.dropdown-menu-search .fa-search', function(e) {
         e.preventDefault();
         e.stopPropagation();
       });
-
-    var inits = {'heightMatch': 'none'};
-    if ((self.pagination.fixLeft + self.pagination.fixRight) > (self.columns.length - 1)) {
-      self.pagination.fixLeft = 0;
-      self.pagination.fixRight = 0;
-    }
-    if (self.pagination.fixLeft) {
-      inits.leftColumns = 1 + self.pagination.fixLeft;
-    } else {
-      inits.leftColumns = 1;
-    }
-    if (self.pagination.fixRight) {
-      inits.rightColumns = self.pagination.fixRight;
-    } else {
-      inits.rightColumns = 0;
-    }
-
-    self.updateFixedColumnsSeparator();
-
-    self.keyTable = self.table.settings()[0].keytable;
-    self.refreshCells();
-    self.fixcols = new dataTablesFixedColumns(self.table, inits);
-    self.fixcols.fnRedrawLayout();
-    // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
-
-    setTimeout(function(){
-      if (!self.table) { return; }
-      self.applyFilters();
-      if (self.columnFilter) {
-        self.table.columns().every(function(i) {
-          var column = this;
-          var jqInput = self.getColumnFilter(column);
-          if (i === 0) {
-            var filterValue = self.tableFilter;
-            jqInput.val(filterValue);
-            if (self.columnSearchActive && !_.isEmpty(filterValue)) {
-              self.table.search(filterValue);
-            }
-          } else {
-            var filterValue = self.columnFilter[self.colorder[i] - 1];
-            jqInput.val(filterValue);
-            if (self.columnSearchActive && !_.isEmpty(filterValue)) {
-              column.search(filterValue);
-            }
-          }
-        });
-      }
-      if (self.showFilter) {
-        self.doShowFilter(null, self.columnSearchActive);
-      }
-      // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
-
-      self.adjustRedraw();
-    }, 0);
-
-    self.initTableSelect();
-
   };
 
   // little hack: hide dropdown menu when click on CodeMirror instance
@@ -2004,120 +2022,6 @@ define([
   TableScope.prototype.getDumpState = function() {
     return this.model.getDumpState();
   };
-
-  // var savedstate = self.model.getDumpState();
-  // if (savedstate !== undefined && savedstate.datatablestate !== undefined) {
-  //   self.savedstate = savedstate.datatablestate;
-  // }
-  //
-  // self.$on('$destroy', function() {
-  //   self.doDestroy(true);
-  // });
-  //
-  // self.$watch('getDumpState()', function(result) {
-  //   if (result !== undefined && result.datatablestate === undefined) {
-  //     var state = {
-  //       'pagination'  : self.pagination
-  //     };
-  //     if (self.columnNames !== undefined) {
-  //       state.columnNames = self.columnNames.slice(0);
-  //     }
-  //     if (self.actualtype !== undefined) {
-  //       state.actualtype = self.actualtype.slice(0);
-  //     }
-  //     if (self.actualalign !== undefined) {
-  //       state.actualalign = self.actualalign.slice(0);
-  //     }
-  //     if (self.colorder !== undefined) {
-  //       state.colorder = self.colorder.slice(0);
-  //     }
-  //     if (self.getCellSho !== undefined) {
-  //       state.getCellSho = self.getCellSho;
-  //     }
-  //     if (self.barsOnColumn !== undefined) {
-  //       state.barsOnColumn = self.barsOnColumn;
-  //     }
-  //     if (self.cellHighlighters !== undefined) {
-  //       state.cellHighlightersData = _.map(self.cellHighlighters, function(highlighter, colInd){
-  //         return highlighter;
-  //       });
-  //     }
-  //     if (self.tableFilter !== undefined) {
-  //       state.tableFilter = self.tableFilter;
-  //     }
-  //     if (self.showFilter !== undefined) {
-  //       state.showFilter = self.showFilter;
-  //     }
-  //     if (self.columnSearchActive !== undefined) {
-  //       state.columnSearchActive = self.columnSearchActive;
-  //     }
-  //     if (self.columnFilter !== undefined) {
-  //       state.columnFilter = self.columnFilter;
-  //     }
-  //     if (self.columnWidth !== undefined) {
-  //       state.columnWidth = self.columnWidth;
-  //     }
-  //     if (self.tableOrder !== undefined) {
-  //       state.tableOrder = self.tableOrder.slice(0);
-  //     }
-  //
-  //     if (self.formatForTimes !== undefined) {
-  //       state.formatForTimes = self.formatForTimes;
-  //     }
-  //
-  //     if (self.stringFormatForType !== undefined) {
-  //       state.stringFormatForType = self.stringFormatForType;
-  //     }
-  //
-  //     if (self.stringFormatForColumn !== undefined) {
-  //       state.stringFormatForColumn = self.stringFormatForColumn;
-  //     }
-  //
-  //     if (self.tooltips !== undefined) {
-  //       state.tooltips = self.tooltips;
-  //     }
-  //
-  //     if (self.headerFontSize !== undefined) {
-  //       state.headerFontSize = self.headerFontSize;
-  //     }
-  //
-  //     if (self.dataFontSize !== undefined) {
-  //       state.dataFontSize = self.dataFontSize;
-  //     }
-  //
-  //     if (self.fontColor !== undefined) {
-  //       state.fontColor = self.fontColor;
-  //     }
-  //
-  //     if (self.headersVertical !== undefined) {
-  //       state.headersVertical = self.headersVertical;
-  //     }
-  //
-  //     if (self.model.setDumpState !== undefined) {
-  //       self.model.setDumpState({datatablestate: state});
-  //     }
-  //   }
-  // });
-  //
-  // self.$watch('getCellModel()', function(m) {
-  //   if(!angular.equals(m, cellModel)){
-  //     cellModel = m;
-  //     if (self.update) {
-  //       self.applyChanges();
-  //     } else {
-  //       self.init(m, true);
-  //     }
-  //     self.tableChanged = true;
-  //   }
-  // });
-  //
-  // self.$on('beaker.section.toggled', function(e, isCollapsed) {
-  //   if (!isCollapsed && self.table !== undefined) {
-  //     bkHelper.timeout(function() {
-  //       self.table.draw(false);
-  //     });
-  //   }
-  // });
 
   TableScope.prototype.getCellModel = function() {
     return this.model.getCellModel();

@@ -221,6 +221,8 @@
   border: 1px solid;
   background-color: white;
   padding: 0.8em;
+  opacity: 0;
+  transition: opacity 0.4s;
 }
 
 .text-line-style {

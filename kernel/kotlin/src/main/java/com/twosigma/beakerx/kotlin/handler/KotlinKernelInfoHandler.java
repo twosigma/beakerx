@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kotlin.handler;
 
 import static org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION;
 
+import com.twosigma.beakerx.BeakerImplementationInfo;
 import com.twosigma.beakerx.KernelInfoHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 
@@ -43,7 +44,7 @@ public class KotlinKernelInfoHandler extends KernelInfoHandler {
   @Override
   protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
     content.put("implementation", "kotlin");
-    content.put("banner", "BeakerX kernel for Kotlin");
+    content.put("banner", "BeakerX kernel for Kotlin version " + VERSION + "\n" + BeakerImplementationInfo.IMPLEMENTATION_VERSION);
     return content;
   }
 

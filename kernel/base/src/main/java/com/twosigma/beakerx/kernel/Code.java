@@ -43,7 +43,6 @@ public class Code {
   private String codeWithoutCommands = null;
 
   public Code(final String code) {
-    checkState(isNotBlank(checkNotNull(code)));
     this.code = code;
     if (isaMagicCommand()) {
       setupCommandsAndCode();

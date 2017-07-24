@@ -22,6 +22,8 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Observer;
 import java.util.Set;
 
@@ -61,7 +63,9 @@ public interface KernelFunctionality {
 
   void sendIdleMessage(Message message);
 
-  void addJarToClasspath(PathToJar path);
+  boolean addJarToClasspath(PathToJar path);
+
+  List<Path> addJarsToClasspath(List<PathToJar> paths);
 
   Classpath getClasspath();
 

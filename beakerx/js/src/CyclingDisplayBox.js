@@ -32,18 +32,19 @@ var CyclingDisplayBoxView = widgets.BoxView.extend({
   
   initialize: function() {
     CyclingDisplayBoxView.__super__.initialize.apply(this, arguments);
-    period = this.model.get("period");
+    this.interval = undefined;
+    this.period = this.model.get("period");
   },
 
   update_children: function() {
-    that = this;
-    if(interval){
-      clearInterval(interval); 
+    var that = this;
+    if(this.interval){
+      clearInterval(this.interval);
     }
 
     that.draw_widget();
-    if(period){
-      interval = setInterval(function() {
+    if(this.period){
+      this.interval = setInterval(function() {
         var max = that.model.get('children').length - 1; 
         if(currentWidgetIndex >= max){
           currentWidgetIndex = 0;
@@ -52,7 +53,7 @@ var CyclingDisplayBoxView = widgets.BoxView.extend({
         }
         that.draw_widget();
         
-      }, period);
+      }, this.period);
     } 
   },
   

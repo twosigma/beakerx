@@ -122,8 +122,8 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public void addJarToClasspath(PathToJar path) {
-    this.evaluatorManager.addJarToClasspath(path);
+  public boolean addJarToClasspath(PathToJar path) {
+    return this.evaluatorManager.addJarToClasspath(path);
   }
 
   @Override

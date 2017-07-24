@@ -72,7 +72,10 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
 
   private void handleMagicCommand(Message message, Code code) {
     MagicCommandResult magicCommandResult = magicCommand.process(code, message, executionCount);
-    if (magicCommandResult.hasCodeToExecute()) {
+    if (magicCommandResult.hasCodeToExecute() && magicCommandResult.hasResult()) {
+      kernel.publish(magicCommandResult.getResultMessage().get());
+      runCode(magicCommandResult.getCode().get().asString(), message);
+    } else if (magicCommandResult.hasCodeToExecute()) {
       runCode(magicCommandResult.getCode().get().asString(), message);
     } else if (magicCommandResult.hasResult()) {
       sendMagicCommandReplyAndResult(message, magicCommandResult.replyMessage().get(), magicCommandResult.getResultMessage().get());

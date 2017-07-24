@@ -90,8 +90,8 @@ public class EvaluatorManager {
     return seo;
   }
 
-  public void addJarToClasspath(PathToJar path) {
-    this.evaluator.addJarToClasspath(path);
+  public boolean addJarToClasspath(PathToJar path) {
+    return this.evaluator.addJarToClasspath(path);
   }
 
   public Classpath getClasspath() {

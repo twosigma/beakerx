@@ -597,12 +597,16 @@ define([
         return plotTip.tooltip(self, d, d3.mouse(self.svg.node()));
       })
       .on('mousemove', function(d) {
+        self.removeLegendPointer();
+        self.drawLegendPointer(d);
         self.tipmoving = true;
 
         self.tipTimeout && clearTimeout(self.tipTimeout);
         self.tipTimeout = setTimeout(function() {
           self.tipmoving = false;
         }, 50);
+
+        plotTip.movetooltip(self, d, d3.mouse(self.svg.node()));
       })
       .on("mouseleave", function(d) {
         self.removeLegendPointer();

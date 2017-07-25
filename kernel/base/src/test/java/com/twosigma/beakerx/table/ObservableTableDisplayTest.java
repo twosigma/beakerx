@@ -116,8 +116,8 @@ public class ObservableTableDisplayTest {
     return rowValues.get(colId)*(-1);
   }
 
-  public static List<Map<?, ?>> getListOfMapsData() {
-    List<Map<?, ?>> list = new ArrayList<>();
+  public static List<Map<String, Object>> getListOfMapsData() {
+    List<Map<String, Object>> list = new ArrayList<>();
     list.add(
         new HashMap<String, Object>() {
           {

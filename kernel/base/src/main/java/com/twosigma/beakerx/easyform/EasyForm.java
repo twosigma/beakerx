@@ -255,7 +255,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     addComponentOrThrow(label, buttonComponent);
     return buttonComponent;
   }
-  
+
   public EasyFormComponent<ValueWidget<?>> addWidget(final String label, final ValueWidget<?> widget) throws Exception {
     EasyFormComponent<ValueWidget<?>> ret = new EasyFormComponent<>(widget);
     addComponentOrThrow(label, ret);
@@ -263,7 +263,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
   }
 
   private EasyFormComponent<ValueWidget<?>> addComponentOrThrow(final String label,
-                                                final EasyFormComponent component) throws Exception {
+                                                                final EasyFormComponent component) throws Exception {
     if (getComponentMap().containsKey(label)) {
       throw new Exception(
               String.format("EasyForm already contains component with such label: %s.", label));
@@ -315,7 +315,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
   }
 
   @Override
-  public String get(final Object key) {
+  public Object get(final Object key) {
     checkComponentExists((String) key);
     return getComponentMap().get(key).getValue();
   }
@@ -330,7 +330,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
                       value, component.getClass().getSimpleName(), key));
     }
     final String currentValue = component.formatValue(value);
-    final String previousValue = component.getValue();
+    final String previousValue = (component.getValue() == null) ? "" : component.getValue().toString();
     component.setValue(currentValue);
     getValuesMap().put(key, currentValue);
     setChanged();

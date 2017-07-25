@@ -27,6 +27,8 @@ import com.twosigma.beakerx.message.Message;
 
 import java.io.IOException;
 
+import java.nio.file.Path;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,6 +96,9 @@ public class EvaluatorManager {
     return this.evaluator.addJarToClasspath(path);
   }
 
+  public List<Path> addJarsToClasspath(List<PathToJar> paths) {
+        return this.evaluator.addJarsToClasspath(paths);
+  }
   public Classpath getClasspath() {
     return this.evaluator.getClasspath();
   }

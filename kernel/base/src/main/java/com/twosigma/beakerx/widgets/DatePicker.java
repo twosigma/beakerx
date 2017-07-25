@@ -16,18 +16,22 @@
 package com.twosigma.beakerx.widgets;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
-public class DatePicker extends ValueWidget<String> {
+public class DatePicker extends ValueWidget<Date> {
   public static final String VIEW_NAME_VALUE = "DatePickerView";
   public static final String MODEL_NAME_VALUE = "DatePickerModel";
   public static final String SHOW_TIME = "showTime";
+  public static final String YYYY_MM_DD = "yyyyMMdd";
 
   private Boolean showTime;
 
   public DatePicker() {
     super();
-    this.value = "";
+    this.value = null;
     openComm();
   }
 
@@ -43,13 +47,18 @@ public class DatePicker extends ValueWidget<String> {
 
   @Override
   public void updateValue(Object value) {
-    this.value = (String) value;
+    this.value = getValueFromObject(value);
   }
 
   @Override
-  public String getValueFromObject(Object input) {
-    return (String) input;
+  public Date getValueFromObject(Object input) {
+    try {
+      return new SimpleDateFormat(YYYY_MM_DD).parse((String) input);
+    } catch (ParseException e) {
+      throw new RuntimeException(e);
+    }
   }
+
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {

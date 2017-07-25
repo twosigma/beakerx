@@ -42,7 +42,7 @@ public class CheckBoxGroupWidget extends EasyFormComponent<Box> {
     this.checkboxes = new ArrayList<>();
     this.label = new Label();
   }
-  
+
   public Boolean getHorizontal() {
     return horizontal;
   }
@@ -50,7 +50,7 @@ public class CheckBoxGroupWidget extends EasyFormComponent<Box> {
   public void setHorizontal(final Boolean horizontal) {
     this.horizontal = horizontal;
   }
-  
+
   @Override
   public String getLabel() {
     return this.label.getValue();
@@ -62,15 +62,15 @@ public class CheckBoxGroupWidget extends EasyFormComponent<Box> {
   }
 
   @Override
-  public String getValue() {
-    return String.join(",", getValues());
+  public Object getValue() {
+    return new ArrayList<>(getValues());
   }
 
   @Override
   public void setValue(String value) {
   }
 
-  public Collection<String> getValues() {
+  private Collection<String> getValues() {
     return this.checkboxes.stream().filter(BoolWidget::getValue).map(ValueWidget::getDescription).collect(Collectors.toList());
   }
 

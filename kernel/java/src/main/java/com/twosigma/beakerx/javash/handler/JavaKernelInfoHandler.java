@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.javash.handler;
 
+import com.twosigma.beakerx.BeakerImplementationInfo;
 import com.twosigma.beakerx.KernelInfoHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 
@@ -41,7 +42,7 @@ public class JavaKernelInfoHandler extends KernelInfoHandler {
   @Override
   protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
     content.put("implementation", "java");
-    content.put("banner", "BeakerX kernel for Java");
+    content.put("banner", "BeakerX kernel for Java version " + System.getProperty("java.version") + "\n" + BeakerImplementationInfo.IMPLEMENTATION_VERSION);
     return content;
   }
 

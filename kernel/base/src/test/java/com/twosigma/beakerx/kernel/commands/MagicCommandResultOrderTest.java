@@ -29,7 +29,7 @@ import org.junit.Test;
 
 public class MagicCommandResultOrderTest {
 
-  public static final String DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/contents/demoResources/beakerxTestLibrary.jar";
+  public static final String DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/contents/demoResources/demo.jar";
   private MagicCommand sut;
   private KernelTest kernel;
 

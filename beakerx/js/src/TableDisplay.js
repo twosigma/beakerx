@@ -58,7 +58,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
 
     this.listenTo(this.model, 'beakerx-tabSelected', function() {
       that._currentScope.adjustRedraw();
-    })
+    });
 
     this.listenTo(this.model, 'change:updateData', that.handleModellUpdate);
   },
@@ -70,7 +70,6 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     this._currentScope.updateModelData(change);
     this._currentScope.doResetAll();
     this.model.set('model', updatedModel, {updated_view: this});
-    // this.touch();
   },
 
   initTableDisplay: function(data) {

@@ -56,15 +56,17 @@ var PlotView = widgets.DOMWidgetView.extend({
           break;
       } 
     });
+
+    this.listenTo(this.model, 'change:updateData', that.handleModellUpdate);
   },
 
-  update: function() {
-    PlotView.__super__.update.apply(this);
-
-    var plotModelUpdateData = this.model.get('model');
-
-    this._currentScope.updateModelData(plotModelUpdateData);
+  handleModellUpdate: function() {
+    var change = this.model.get('updateData');
+    var currentModel = this.model.get('model');
+    var updatedModel = _.extend(currentModel, change);
+    this._currentScope.updateModelData(change);
     this._currentScope.updatePlot();
+    this.model.set('model', updatedModel, {updated_view: this});
   },
 
   initStandardPlot: function (model) {

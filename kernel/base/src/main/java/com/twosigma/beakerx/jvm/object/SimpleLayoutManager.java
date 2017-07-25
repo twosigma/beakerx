@@ -15,11 +15,13 @@
  */
 package com.twosigma.beakerx.jvm.object;
 
+import com.twosigma.beakerx.widgets.Widget;
+
 public class SimpleLayoutManager extends OutputContainerLayoutManager {
 
 
   @Override
   public void display(OutputContainer container) {
-    getWidgets(container).forEach(item -> item.display());
+    getWidgets(container).forEach(Widget::display);
   }
 }

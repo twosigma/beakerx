@@ -639,9 +639,14 @@ public class TableDisplay extends BeakerxWidget {
   private boolean isCorrectEvent(Message message, CommActions commActions) {
     LinkedHashMap<String, LinkedHashMap> data = (LinkedHashMap) message.getContent().get("data");
     LinkedHashMap content = data.get("content");
-    String event = (String) content.get("event");
 
-    return commActions.getAction().equals(event);
+    if (null != content && !content.isEmpty()) {
+      String event = (String) content.getOrDefault("event", "");
+      return commActions.getAction().equals(event);
+    }
+
+    return false;
+
   }
 
   private void onDoubleClickAction(HashMap content, Message message) {

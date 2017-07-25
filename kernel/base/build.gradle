@@ -24,6 +24,7 @@ repositories {
 
 compileJava {
   options.compilerArgs << '-XDignore.symbol.file'
+  options.forkOptions.executable = 'javac'
   options.fork = true
 }
 

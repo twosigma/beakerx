@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.kernel;
 
-
-import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
@@ -39,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
-public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFunctionality {
+public abstract class Kernel implements KernelFunctionality {
 
   private static final Logger logger = LoggerFactory.getLogger(Kernel.class);
 

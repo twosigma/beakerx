@@ -33,6 +33,7 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,8 +123,13 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public void addJarToClasspath(PathToJar path) {
-    this.evaluatorManager.addJarToClasspath(path);
+  public boolean addJarToClasspath(PathToJar path) {
+    return this.evaluatorManager.addJarToClasspath(path);
+  }
+
+  @Override
+  public List<Path> addJarsToClasspath(List<PathToJar> paths) {
+    return this.evaluatorManager.addJarsToClasspath(paths);
   }
 
   @Override

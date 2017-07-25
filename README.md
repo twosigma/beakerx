@@ -27,34 +27,56 @@ development, including incompatible changes without notice.
 BeakerX is the successor to the [Beaker
 Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).
 
-## Dependencies
+## Install
 
-* [yarn](https://yarnpkg.com/lang/en/docs/install/)
-* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
-
-## Install and build
+Using [conda](https://conda.io/docs/install/quick.html):
 
 ```
-conda create -y -n beakerx python=3.5 jupyter pandas
-source activate beakerx
-pip install -e beakerx --verbose
-jupyter nbextension install --py --symlink --sys-prefix beakerx
-jupyter nbextension enable --py --sys-prefix beakerx
+conda install -c beakerx beakerx
+```
+
+Using [pip](https://pip.pypa.io/en/stable/):
+
+```
+pip install beakerx
+jupyter nbextension install beakerx --py --sys-prefix
+jupyter nbextension enable beakerx --py --sys-prefix
 ```
 
 ## Usage
 
 Start the Jupyter Notebook server: `jupyter notebook`
 
-## Update after Java change
+## Developer Install
+
+Dependencies:
+
+* [yarn](https://yarnpkg.com/lang/en/docs/install/)
+* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
+
+```
+conda create -y -n beakerx python=3.5 jupyter openjdk yarn
+source activate beakerx
+pip install -e beakerx --verbose
+```
+
+
+### Update after Java change
+
 The kernels are installed to run out of the repo, so just a build should update the java code.
-* `(cd kernel; ./gradlew build)`
 
-## Update after JS change
+```
+(cd kernel; ./gradlew build)
+```
 
-* `cd beakerx/js; yarn webpack`
+### Update after JS change
+
+```
+(cd beakerx/js; yarn webpack)
+```
 
 ## Beaker Notebooks Converter
+
 ```
 python -m beakerx.bkr2ipynb *.bkr
 ```

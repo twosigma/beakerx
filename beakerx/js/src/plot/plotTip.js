@@ -22,6 +22,8 @@ define([
   plotUtils
 ) {
 
+  var TOOLTIP_ANIMATION_TIME = 300;
+
   var getTipElement = function (scope, d) {
     if (!d || !d.id) {
       return;
@@ -31,10 +33,19 @@ define([
   };
 
   var clear = function (scope, d, hide) {
-    if (hide !== true) {
+    if (!hide) {
       delete scope.tips[d.id];
     }
-    scope.jqcontainer.find("#tip_" + d.id).remove();
+
+    var tip = scope.jqcontainer.find("#tip_" + d.id);
+
+    if (!hide) {
+      tip.remove();
+    } else {
+      tip.css({ opacity: 0, transition: 'opacity 0.4s' });
+      setTimeout(function() { tip.remove(); }, TOOLTIP_ANIMATION_TIME);
+    }
+
     if (d.isresp === true) {
       scope.jqsvg.find("#" + d.id).css("opacity", 0);
     } else {
@@ -102,6 +113,24 @@ define([
       .attr("y1", y1);
   };
 
+  var extendTipsData = function (scope, d, mousePos) {
+    if (!scope.tips[d.id]) {
+      return d;
+    }
+
+    _.extend(scope.tips[d.id], d);
+    var tipData = scope.tips[d.id];
+    tipData.sticking = false;
+
+    tipData.targetx = d.tooltip_cx ? scope.scr2dataX(d.tooltip_cx) : scope.scr2dataX(mousePos[0]);
+    tipData.targety = d.tooltip_cy ? scope.scr2dataY(d.tooltip_cy) : scope.scr2dataY(mousePos[1]);
+
+    tipData.datax = scope.scr2dataX(mousePos[0] + 5);
+    tipData.datay = scope.scr2dataY(mousePos[1] + 5);
+
+    return tipData;
+  };
+
 
   /**
    * This code checks that tip is in the grid area
@@ -142,10 +171,11 @@ define([
           if (tipdiv.length === 0) {
             var tiptext = data[d.idx].createTip(d.ele, d.g, scope.stdmodel);
 
-            tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
+            tipdiv = $("<div></div>")
+              .appendTo(scope.jqcontainer)
+              .css({ "border-color": data[d.idx].tip_color })
               .attr("id", tipid)
               .attr("class", "plot-tooltip")
-              .css("border-color", data[d.idx].tip_color)
               .append(tiptext)
               .on('mouseup', function (e) {
                 if (e.which == 3) {
@@ -153,6 +183,16 @@ define([
                   $(this).remove();
                 }
               });
+
+            if (!scope.tipmoving) {
+              setTimeout(function() {
+                tipdiv.css({ opacity: 1, transition: 'opacity 0.4s'  });
+              });
+            } else {
+              tipdiv.css({ opacity: 1, transition: 'opacity 0s' });
+              scope.tipmoving = false;
+            }
+
             if (data[d.idx].tip_class) {
               tipdiv.addClass(data[d.idx].tip_class);
             }
@@ -207,6 +247,10 @@ define([
     },
 
     tooltip: function (scope, d, mousePos) {
+      Object.keys(scope.tips).forEach(function(id) {
+        clear(scope, scope.tips[id]);
+      });
+
       if (scope.tips[d.id] != null) {
         return;
       }
@@ -214,15 +258,7 @@ define([
         scope.jqsvg.find("#" + d.id).css("opacity", 1);
       }
       scope.tips[d.id] = {};
-      _.extend(scope.tips[d.id], d);
-      var d = scope.tips[d.id];
-      d.sticking = false;
-
-      d.targetx = d.tooltip_cx ? scope.scr2dataX(d.tooltip_cx) : scope.scr2dataX(mousePos[0]);
-      d.targety = d.tooltip_cy ? scope.scr2dataY(d.tooltip_cy) : scope.scr2dataY(mousePos[1]);
-
-      d.datax = scope.scr2dataX(mousePos[0] + 5);
-      d.datay = scope.scr2dataY(mousePos[1] + 5);
+      var d = extendTipsData(scope, d, mousePos);
 
       impl.renderTips(scope);
     },
@@ -232,10 +268,21 @@ define([
         return;
       }
       if (scope.tips[d.id].sticking === false) {
-        clear(scope, d);
+        clear(scope, d, true);
         impl.renderTips(scope);
       }
     },
+
+    movetooltip: function (scope, d, mousePos) {
+      var x = mousePos[0] + 5;
+      var y = mousePos[1] + 5;
+
+      var d = extendTipsData(scope, d, mousePos);
+
+      scope.jqcontainer.find("#tip_" + d.id)
+        .css("left", x + plotUtils.fonts.tooltipWidth)
+        .css("top", y);
+    }
   };
 
   return impl;

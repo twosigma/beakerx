@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.handler;
 
+import com.twosigma.beakerx.BeakerImplementationInfo;
 import com.twosigma.beakerx.KernelInfoHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import groovy.lang.GroovySystem;
@@ -42,7 +43,7 @@ public class GroovyKernelInfoHandler extends KernelInfoHandler {
   @Override
   protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
     content.put("implementation", "groovy");
-    content.put("banner", "BeakerX kernel for Apache Groovy");
+    content.put("banner", "BeakerX kernel for Apache Groovy version " + GroovySystem.getVersion() + "\n" + BeakerImplementationInfo.IMPLEMENTATION_VERSION);
     return content;
   }
 

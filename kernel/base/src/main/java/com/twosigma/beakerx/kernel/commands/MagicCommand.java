@@ -23,6 +23,8 @@ import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.ImportPath;
@@ -177,6 +179,7 @@ public class MagicCommand {
   private MagicCommandFunctionality classpathAddJar() {
     return (code, command, message, executionCount) -> {
       String[] split = command.split(" ");
+      List<String> addedJarsName = Lists.newLinkedList();
 
       try {
         if (split.length != 4) {
@@ -186,11 +189,18 @@ public class MagicCommand {
         String path = split[3];
         if (doesPathContainsWildCards(path)) {
           validateWildcardPath(path);
-          getPaths(path)
-              .forEach(currentPath -> kernel.addJarToClasspath(new PathToJar(currentPath)));
+          List<PathToJar> pathsToJars = getPaths(path).stream()
+                            .map(PathToJar::new)
+                            .collect(Collectors.toList());
+          List<Path> addedPaths = kernel.addJarsToClasspath(pathsToJars);
+          addedJarsName.addAll(addedPaths.stream().map(Path::toString).collect(Collectors.toList()));
+
         } else {
           validatePath(path);
-          this.kernel.addJarToClasspath(new PathToJar(path));
+          Path currentPath = Paths.get(path);
+          if (this.kernel.addJarToClasspath(new PathToJar(path))) {
+            addedJarsName.add(currentPath.getFileName().toString());
+          }
         }
 
         return getMagicCommandItem(code, message, executionCount);

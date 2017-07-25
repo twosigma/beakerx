@@ -16,11 +16,16 @@
 package com.twosigma.beakerx.jvm.object;
 
 import com.twosigma.beakerx.SerializeToString;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.widgets.Widget;
 import com.twosigma.beakerx.widgets.strings.HTML;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 public abstract class OutputContainerLayoutManager {
 
@@ -37,18 +42,41 @@ public abstract class OutputContainerLayoutManager {
   public abstract void display(OutputContainer container);
 
   protected List<Widget> getWidgets(OutputContainer container) {
-    return container.getItems().stream().map(x -> toWidget(x)).collect(Collectors.toList());
+    return container.getItems().stream().
+            map(this::toWidget).
+            filter(Optional::isPresent).
+            map(Optional::get).
+            collect(Collectors.toList());
   }
 
-  private Widget toWidget(Object item) {
-    Widget widget = SerializeToString.getTableDisplay(item);
-    if (widget == null && item instanceof Widget) {
-      widget = (Widget) item;
-    } else if (widget == null) {
-      HTML label = new HTML();
-      label.setValue(item.toString());
-      widget = label;
+  private Optional<Widget> toWidget(Object item) {
+    if (item == null) {
+      return handleNull();
     }
-    return widget;
+    Widget widget = SerializeToString.getTableDisplay(item);
+    if (widget != null) {
+      return of(widget);
+    }
+    if (item instanceof Widget) {
+      return of((Widget) item);
+    }
+    if (item instanceof MIMEContainer) {
+      return of(createHTML(((MIMEContainer) item).getCode()));
+    }
+    return of(createHTML(item.toString()));
+  }
+
+  private Optional<Widget> handleNull() {
+    MIMEContainer mimeContainerForNull = SerializeToString.getMimeContainerForNull();
+    if (mimeContainerForNull.getMime().asString().equals(MIMEContainer.MIME.HIDDEN)) {
+      return empty();
+    }
+    return of(createHTML(mimeContainerForNull.getCode()));
+  }
+
+  private Widget createHTML(String value) {
+    HTML label = new HTML();
+    label.setValue(value);
+    return label;
   }
 }

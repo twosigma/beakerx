@@ -24,6 +24,7 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.KernelParameters;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,9 @@ public interface Evaluator {
 
   void setShellOptions(final KernelParameters kernelParameters) throws IOException;
 
-  void addJarToClasspath(PathToJar path);
+  boolean addJarToClasspath(PathToJar path);
+
+  List<Path> addJarsToClasspath(List<PathToJar> paths);
 
   AutocompleteResult autocomplete(String code, int caretPosition);
 

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.scala.handler;
 
+import com.twosigma.beakerx.BeakerImplementationInfo;
 import com.twosigma.beakerx.KernelInfoHandler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 
@@ -41,7 +42,7 @@ public class ScalaKernelInfoHandler  extends KernelInfoHandler {
   @Override
   protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
     content.put("implementation", "scala");
-    content.put("banner", "BeakerX kernel for Scala");
+    content.put("banner", "BeakerX kernel for Scala version " + scala.util.Properties.scalaPropOrElse("version.number", "(unknown)") + "\n" + BeakerImplementationInfo.IMPLEMENTATION_VERSION);
     return content;
   }
 

@@ -78,13 +78,17 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
         if(item.hasResult()){
           kernel.publish(item.getResult().get());
         }
-        runCode(item.getCode().get().asString(), message);
       } else if (item.hasResult()) {
         sendMagicCommandReplyAndResult(message, item.getReply().get(), item.getResult().get());
       } else {
         sendMagicCommandReply(message, item.getReply().get());
       }
     } );
+
+    if (!magicCommandResult.getItems().isEmpty()) {
+      magicCommandResult.getItems().get(0).getCode().ifPresent(codeToExecute -> runCode(codeToExecute.asString(), message));
+    }
+
   }
 
   private Code takeCodeFrom(Message message) {

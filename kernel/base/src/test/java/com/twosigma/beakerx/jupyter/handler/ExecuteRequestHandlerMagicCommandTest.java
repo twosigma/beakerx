@@ -192,4 +192,18 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //then
     assertThat(kernel.getPublishedMessages().size()).isEqualTo(6);
   }
+
+  @Test
+  public void handleMagicClasspathAddJarAndShowClasspathWithCode() throws Exception {
+    //given
+    String code = "" +
+        "%classpath add jar " + DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
+        "%classpath" + "\n" +
+        "5+5";
+    Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
+    //when
+    executeRequestHandler.handle(magicMessage);
+    //then
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
+  }
 }

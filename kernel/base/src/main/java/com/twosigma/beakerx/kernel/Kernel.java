@@ -15,9 +15,6 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
-
-import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
@@ -30,7 +27,6 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
-public abstract class Kernel<T extends DefaultJVMVariables> implements KernelFunctionality {
+public abstract class Kernel implements KernelFunctionality {
 
   private static final Logger logger = LoggerFactory.getLogger(Kernel.class);
 

@@ -49,7 +49,7 @@ module.exports = function(TableScope) {
   TableScope.prototype.initTableSelect = function() {
     var self = this;
 
-    $(this.table.table().container())
+    self.element.find('.DTFC_ScrollWrapper')
       .selectable({
         filter: 'tr[role="row"] td',
         delay: 150,

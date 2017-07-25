@@ -55,9 +55,9 @@ Dependencies:
 * [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
 ```
-conda create -y -n beakerx python=3.5 jupyter openjdk yarn
+conda create -y -n beakerx python=3.5 jupyter openjdk
 source activate beakerx
-pip install -e beakerx --verbose
+(cd beakerx; python setup.py install --single-version-externally-managed --record record.txt && python setup.py kernels)
 ```
 
 

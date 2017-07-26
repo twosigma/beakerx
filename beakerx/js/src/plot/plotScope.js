@@ -613,7 +613,7 @@ define([
         return plotTip.untooltip(self, d);
       })
       .on("click.resp", function(d) {
-        return plotTip.untooltip(self, d);
+        return plotTip.toggleTooltip(self, d);
       });
   };
 

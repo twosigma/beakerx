@@ -23,9 +23,8 @@ repositories {
 }
 
 compileJava {
-  options.compilerArgs << '-XDignore.symbol.file'
-  options.forkOptions.executable = 'javac'
-  options.fork = true
+  options.compilerArgs << '-Xlint:sunapi'
+  options.compilerArgs << '-XDenableSunApiLintControl'
 }
 
 dependencies {

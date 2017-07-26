@@ -17,14 +17,14 @@ package com.twosigma.beakerx.kernel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.Signal;
 
+@SuppressWarnings("sunapi")
 class KernelSignalHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(KernelSignalHandler.class);
 
   static void addSigIntHandler(Action action) {
-    Signal.handle(new Signal("INT"), sig -> {
+    sun.misc.Signal.handle(new sun.misc.Signal("INT"), sig -> {
       logger.info("Got " + sig.getName() + " signal, canceling cell execution");
       action.execute();
     });

@@ -2746,6 +2746,10 @@ define([
   };
 
   TableScope.prototype.updateToggleColumnBtts = function(columnIndex) {
+    if (!this.table) {
+      return;
+    }
+
     var self = this;
     var list = self.element.find('.dtmenu > ul.dropdown-menu ul.list-showcolumn li input[type="checkbox"]');
     var columnsVisibility = this.table.columns().visible();

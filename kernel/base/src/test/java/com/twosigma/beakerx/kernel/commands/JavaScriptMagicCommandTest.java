@@ -51,7 +51,7 @@ public class JavaScriptMagicCommandTest {
     //when
     MagicCommandResult result = sut.process(code, message, 1);
     //then
-    Map data = (Map) result.getResultMessage().get().getContent().get(Comm.DATA);
+    Map data = (Map) result.getItems().get(0).getResult().get().getContent().get(Comm.DATA);
     String toCompare = (String)data.get(MIMEContainer.MIME.APPLICATION_JAVASCRIPT);
     
     toCompare = toCompare.replaceAll("\\s+","");
@@ -70,7 +70,7 @@ public class JavaScriptMagicCommandTest {
     //when
     MagicCommandResult result = sut.process(code, message, 1);
     //then
-    assertThat(result.getResultMessage().get().getContent().get("text")).isEqualTo("Cell magic " + MagicCommand.JAVASCRIPT + "wrong" + " not found");
+    assertThat(result.getItems().get(0).getResult().get().getContent().get("text")).isEqualTo("Cell magic " + MagicCommand.JAVASCRIPT + "wrong" + " not found");
   }
 
 }

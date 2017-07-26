@@ -33,17 +33,17 @@ import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 public class SerializeToString {
 
   public static MIMEContainer doit(final Object input) {
-    MIMEContainer ret = null;
     if (input == null) {
-      if(Kernel.showNullExecutionResult){
-        ret = Text("null");
-      }else{
-        ret = HIDDEN;
-      }
-    }else{
-      ret = getMimeContainer(input);
+      return getMimeContainerForNull();
     }
-    return ret;
+    return getMimeContainer(input);
+  }
+
+  public static MIMEContainer getMimeContainerForNull() {
+    if (Kernel.showNullExecutionResult) {
+      return Text("null");
+    }
+    return HIDDEN;
   }
 
   private static MIMEContainer getMimeContainer(final Object input) {

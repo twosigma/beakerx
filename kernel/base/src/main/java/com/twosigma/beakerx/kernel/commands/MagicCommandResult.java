@@ -15,13 +15,10 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
-import com.twosigma.beakerx.message.Message;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 public class MagicCommandResult {
 
@@ -29,28 +26,6 @@ public class MagicCommandResult {
 
   public void addItem(MagicCommandItem magicCommandResultItem) {
     this.items.add(magicCommandResultItem);
-  }
-
-  public boolean hasCodeToExecute() {
-    MagicCommandItem last = items.getLast();
-    return last.hasCodeToExecute();
-  }
-
-  public boolean hasResult() {
-    MagicCommandItem last = items.getLast();
-    return last.hasResult();
-  }
-
-  public Optional<Message> getResultMessage() {
-    return items.getLast().getResult();
-  }
-
-  public Optional<Message> replyMessage() {
-    return items.getLast().getReply();
-  }
-
-  public Optional<CodeWithoutCommand> getCode() {
-    return items.getLast().getCode();
   }
 
   public List<MagicCommandItem> getItems() {

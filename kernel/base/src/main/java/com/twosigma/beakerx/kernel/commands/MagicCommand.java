@@ -182,18 +182,25 @@ public class MagicCommand {
   }
 
   private MagicCommandFunctionality classpathAddJar() {
-    return (code, command, message, executionCount) -> {
-      String[] split = command.split(" ");
-      if (split.length != 4) {
-        return new MagicCommandItemWithResult(
-                messageCreator
-                        .buildOutputMessage(message, "Wrong command format: " + CLASSPATH_ADD_JAR, true),
-                messageCreator.buildReplyWithoutStatus(message, executionCount)
-        );
-      }
-      String path = split[3];
-      return getMagicCommandItem(addJars(path), code, message, executionCount);
-    };
+
+      return (code, command, message, executionCount) -> {
+        try {
+          String[] split = command.split(" ");
+          if (split.length != 4) {
+            throw new IllegalStateException("Wrong command format: " + CLASSPATH_ADD_JAR);
+          }
+
+          String path = split[3];
+          return getMagicCommandItem(addJars(path), code, message, executionCount);
+
+        } catch (IllegalStateException e) {
+          return new MagicCommandItemWithResult(
+              messageCreator
+                  .buildOutputMessage(message, e.getMessage(), true),
+              messageCreator.buildReplyWithoutStatus(message, executionCount)
+          );
+        }
+      };
   }
 
   private Collection<String> addJars(String path) {

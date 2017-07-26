@@ -182,50 +182,44 @@ public class MagicCommand {
   }
 
   private MagicCommandFunctionality classpathAddJar() {
-
       return (code, command, message, executionCount) -> {
-        try {
           String[] split = command.split(" ");
           if (split.length != 4) {
-            throw new IllegalStateException("Wrong command format: " + CLASSPATH_ADD_JAR);
+            return sendErrorMessage(message, "Wrong command format: " + CLASSPATH_ADD_JAR, executionCount);
           }
 
           String path = split[3];
-          return getMagicCommandItem(addJars(path), code, message, executionCount);
-
-        } catch (IllegalStateException e) {
-          return new MagicCommandItemWithResult(
-              messageCreator
-                  .buildOutputMessage(message, e.getMessage(), true),
-              messageCreator.buildReplyWithoutStatus(message, executionCount)
-          );
-        }
+          if (isValidPath(path)) {
+            return getMagicCommandItem(addJars(path), code, message, executionCount);
+          } else {
+            return sendErrorMessage(message, "Provided path is incorrect.", executionCount);
+          }
       };
+  }
+
+  private MagicCommandItem sendErrorMessage(Message message, String messageText, int executionCount) {
+    return new MagicCommandItemWithResult(
+        messageCreator
+            .buildOutputMessage(message, messageText, true),
+        messageCreator.buildReplyWithoutStatus(message, executionCount)
+    );
   }
 
   private Collection<String> addJars(String path) {
     Map<Path, String> addedJars = Maps.newHashMap();
     if (doesPathContainsWildCards(path)) {
-      validateWildcardPath(path);
       Map<Path, String> collect = getPaths(path).keySet().stream()
               .filter(
                       currentPath -> kernel.addJarToClasspath(new PathToJar(currentPath.toString())))
               .collect(Collectors.toMap(o -> o, Path::toString));
       addedJars.putAll(collect);
     } else {
-      validatePath(path);
       Path currentPath = Paths.get(path);
       if (this.kernel.addJarToClasspath(new PathToJar(path))) {
         addedJars.put(currentPath, currentPath.getFileName().toString());
       }
     }
     return addedJars.values();
-  }
-
-  private void validateWildcardPath(String path) {
-    if (!containsSingleWildcardSymbol(path) || !path.endsWith("*")) {
-      throw new IllegalStateException("Wildcard can only appear at end of classpath: " + path);
-    }
   }
 
   private Boolean containsSingleWildcardSymbol(String path) {
@@ -353,9 +347,14 @@ public class MagicCommand {
     return output.toString();
   }
 
-  private void validatePath(String path) {
-    checkState(!checkNotNull(path).isEmpty());
-    checkState(Paths.get(path).toFile().exists(), "Provided path is incorrect.");
+  private Boolean isValidPath(String path) {
+    boolean isNonEmpty = !checkNotNull(path).isEmpty();
+
+    if (path.contains("*")) {
+      return containsSingleWildcardSymbol(path) && path.endsWith("*") && isNonEmpty;
+    } else {
+      return Paths.get(path).toFile().exists() && isNonEmpty;
+    }
   }
 
 }

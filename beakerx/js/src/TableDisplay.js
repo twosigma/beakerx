@@ -54,11 +54,11 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
         that.showWarning(tableModel);
       }
       that.initTableDisplay(tableModel);
-    });
 
-    this.listenTo(this.model, 'beakerx-tabSelected', function() {
-      that._currentScope.adjustRedraw();
-    })
+      that.listenTo(that.model, 'beakerx-tabSelected', function() {
+        that._currentScope.adjustRedraw();
+      });
+    });
   },
 
   update: function() {

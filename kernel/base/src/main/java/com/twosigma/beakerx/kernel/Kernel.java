@@ -27,15 +27,17 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
+
+import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
 
 public abstract class Kernel implements KernelFunctionality {
 
@@ -54,7 +56,7 @@ public abstract class Kernel implements KernelFunctionality {
   private MessageCreator messageCreator;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
-      final KernelSocketsFactory kernelSocketsFactory) {
+                final KernelSocketsFactory kernelSocketsFactory) {
     this.messageCreator = new MessageCreator(this);
     this.sessionId = sessionId;
     this.kernelSocketsFactory = kernelSocketsFactory;
@@ -160,20 +162,14 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   private void configureSignalHandler() {
-    SignalHandler handler = new SignalHandler() {
-      public void handle(Signal sig) {
-        logger.info("Got " + sig.getName() + " signal, canceling cell execution");
-        cancelExecution();
-      }
-    };
     if (!isWindows()) {
-      Signal.handle(new Signal("INT"), handler);
+      addSigIntHandler(this::cancelExecution);
     }
   }
 
   @Override
   public SimpleEvaluationObject executeCode(String code, Message message, int executionCount,
-      ExecuteCodeCallback executeCodeCallback) {
+                                            ExecuteCodeCallback executeCodeCallback) {
     return this.evaluatorManager.executeCode(code, message, executionCount, executeCodeCallback);
   }
 
@@ -188,7 +184,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-   public List<Path> addJarsToClasspath(List<PathToJar> paths) {
+  public List<Path> addJarsToClasspath(List<PathToJar> paths) {
     return this.evaluatorManager.addJarsToClasspath(paths);
   }
 

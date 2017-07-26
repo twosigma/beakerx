@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('./beakerx.po.js');
 var beakerxPO;
 
-describe('plotDemo page', function () {
+describe('PlotFeatures notebook', function () {
 
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
@@ -25,7 +25,7 @@ describe('plotDemo page', function () {
       .url(beakerxPO.baseURL)
       .call(done);
     beakerxPO.loginJupyter();
-    browser.click('=plotDemo.ipynb');
+    browser.click('=PlotFeatures.ipynb');
     browser.window(browser.windowHandles().value[1]);
   });
 

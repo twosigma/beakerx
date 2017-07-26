@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,15 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jvm.object;
+package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.widgets.Widget;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SimpleLayoutManager extends OutputContainerLayoutManager {
+@SuppressWarnings("sunapi")
+class KernelSignalHandler {
 
+  private static final Logger logger = LoggerFactory.getLogger(KernelSignalHandler.class);
 
-  @Override
-  public void display(OutputContainer container) {
-    getWidgets(container).forEach(Widget::display);
+  static void addSigIntHandler(Action action) {
+    sun.misc.Signal.handle(new sun.misc.Signal("INT"), sig -> {
+      logger.info("Got " + sig.getName() + " signal, canceling cell execution");
+      action.execute();
+    });
+  }
+
+  interface Action {
+    void execute();
   }
 }

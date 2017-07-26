@@ -16,17 +16,64 @@
 
 package com.twosigma.beakerx.jvm.object;
 
-import org.assertj.core.api.Assertions;
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
+import com.twosigma.beakerx.widgets.Widget;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.findValueForProperty;
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class SimpleLayoutManagerTest {
+
+
+  private KernelTest kernel;
+
+  @Before
+  public void setUp() throws Exception {
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    KernelManager.register(null);
+  }
+
 
   @Test
   public void create_borderDisplayedIsFalse() throws Exception {
     //when
     SimpleLayoutManager manager = new SimpleLayoutManager();
     //then
-    Assertions.assertThat(manager.isBorderDisplayed()).isFalse();
+    assertThat(manager.isBorderDisplayed()).isFalse();
   }
 
+  @Test
+  public void outputContainerWithHtml() throws Exception {
+    //given
+    String code = "<h4>Title</h4>";
+    OutputContainer outputContainer = new OutputContainer();
+    outputContainer.leftShift(MIMEContainer.HTML(code));
+    //when
+    outputContainer.display();
+    //then
+    String value = findValueForProperty(kernel, Widget.VALUE, String.class);
+    assertThat(value).isEqualTo(code);
+  }
+
+  @Test
+  public void outputContainerWithNull() throws Exception {
+    //given
+    OutputContainer outputContainer = new OutputContainer();
+    outputContainer.leftShift(null);
+    //when
+    outputContainer.display();
+    //then
+    String value = findValueForProperty(kernel, Widget.VALUE, String.class);
+    assertThat(value).isEqualTo("null");
+  }
 }

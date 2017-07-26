@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,15 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.jvm.object;
 
-import com.twosigma.beakerx.widgets.Widget;
+package com.twosigma.beakerx.kotlin.evaluator.object;
 
-public class SimpleLayoutManager extends OutputContainerLayoutManager {
+/**
+ * This class exists solely for testing the Kotlin import functionality.
+ * The package name (containing "object") is significant.
+ *
+ * @see com.twosigma.beakerx.kotlin.evaluator.KotlinEvaluatorTest
+ */
 
-
-  @Override
-  public void display(OutputContainer container) {
-    getWidgets(container).forEach(Widget::display);
+public class ImportTestHelper {
+  public static void staticMethod() {
   }
 }

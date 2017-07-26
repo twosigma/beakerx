@@ -55,9 +55,9 @@ Dependencies:
 * [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
 ```
-conda create -y -n beakerx python=3.5 jupyter openjdk yarn
+conda create -y -n beakerx python=3.5 jupyter openjdk
 source activate beakerx
-pip install -e beakerx --verbose
+(cd beakerx; python setup.py install --single-version-externally-managed --record record.txt && python setup.py kernels)
 ```
 
 
@@ -68,6 +68,10 @@ The kernels are installed to run out of the repo, so just a build should update 
 ```
 (cd kernel; ./gradlew build)
 ```
+
+Note this is currently broken and you need to do a complete rebuild
+after a java change. See
+[#5739](https://github.com/twosigma/beakerx/issues/5739).
 
 ### Update after JS change
 

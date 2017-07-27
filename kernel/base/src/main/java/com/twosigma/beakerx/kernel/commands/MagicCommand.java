@@ -189,10 +189,11 @@ public class MagicCommand {
           }
 
           String path = split[3];
-          if (isValidPath(path)) {
-            return getMagicCommandItem(addJars(path), code, message, executionCount);
+          ErrorData errorData = isValidPath(path);
+          if (errorData.hasError) {
+            return sendErrorMessage(message, errorData.message, executionCount);
           } else {
-            return sendErrorMessage(message, "Provided path is incorrect.", executionCount);
+            return getMagicCommandItem(addJars(path), code, message, executionCount);
           }
       };
   }
@@ -230,15 +231,9 @@ public class MagicCommand {
     String pathWithoutWildcards = pathWithWildcard.replace("*", "");
     try {
 
-      Map<Path, String> paths = Files.list(Paths.get(pathWithoutWildcards))
+      return Files.list(Paths.get(pathWithoutWildcards))
               .filter(path -> path.toString().toLowerCase().endsWith(".jar"))
               .collect(Collectors.toMap(p -> p, o -> o.getFileName().toString()));
-
-      if (paths == null || paths.isEmpty()) {
-        throw new IllegalStateException("Cannot find any jars files in selected path");
-      }
-
-      return paths;
 
     } catch (IOException e) {
       throw new IllegalStateException("Cannot find any jars files in selected path");
@@ -347,14 +342,34 @@ public class MagicCommand {
     return output.toString();
   }
 
-  private Boolean isValidPath(String path) {
-    boolean isNonEmpty = !checkNotNull(path).isEmpty();
+  private ErrorData isValidPath(String path) {
+    boolean isEmpty = checkNotNull(path).isEmpty();
 
-    if (path.contains("*")) {
-      return containsSingleWildcardSymbol(path) && path.endsWith("*") && isNonEmpty;
-    } else {
-      return Paths.get(path).toFile().exists() && isNonEmpty;
+    if (isEmpty) {
+      return new ErrorData(true, "Please provide a path");
     }
+
+    if (doesPathContainsWildCards(path)) {
+      if (!containsSingleWildcardSymbol(path) || !path.endsWith("*")) {
+        return new ErrorData(true, "Bad classpath wildcard syntax, path can only end with *");
+       } else if (!Paths.get(path.replace("*", "")).toFile().exists()) {
+        return new ErrorData(true, "Bad classpath, directory cannot be find");
+      }
+    } else if (!Paths.get(path).toFile().exists()) {
+      return new ErrorData(true, "Bad classpath, file not found");
+    }
+
+    return new ErrorData(false, "");
   }
 
+  private class ErrorData {
+
+    public ErrorData(boolean hasError, String message) {
+      this.hasError = hasError;
+      this.message = message;
+    }
+
+    boolean hasError;
+    String message;
+  }
 }

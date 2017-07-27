@@ -13,22 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel.commands;
+package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
-import java.util.List;
+@SuppressWarnings("sunapi")
+class KernelSignalHandler {
 
-public class MagicCommandResult {
+  private static final Logger logger = LoggerFactory.getLogger(KernelSignalHandler.class);
 
-  private LinkedList<MagicCommandItem> items = new LinkedList<>();
-
-  public void addItem(MagicCommandItem magicCommandResultItem) {
-    this.items.add(magicCommandResultItem);
+  static void addSigIntHandler(Action action) {
+    sun.misc.Signal.handle(new sun.misc.Signal("INT"), sig -> {
+      logger.info("Got " + sig.getName() + " signal, canceling cell execution");
+      action.execute();
+    });
   }
 
-  public List<MagicCommandItem> getItems() {
-    return items;
+  interface Action {
+    void execute();
   }
 }

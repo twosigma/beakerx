@@ -69,6 +69,10 @@ The kernels are installed to run out of the repo, so just a build should update 
 (cd kernel; ./gradlew build)
 ```
 
+Note this is currently broken and you need to do a complete rebuild
+after a java change. See
+[#5739](https://github.com/twosigma/beakerx/issues/5739).
+
 ### Update after JS change
 
 ```

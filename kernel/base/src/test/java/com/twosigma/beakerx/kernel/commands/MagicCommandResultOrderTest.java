@@ -66,7 +66,7 @@ public class MagicCommandResultOrderTest {
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(result.getResultMessage().isPresent()).isFalse();
+    assertThat(result.getItems().get(0).getResult().isPresent()).isTrue();
   }
 
   @Test
@@ -83,8 +83,7 @@ public class MagicCommandResultOrderTest {
   }
 
   private String classpath(MagicCommandResult result) {
-    Map data = (Map) result.getResultMessage().get().getContent().get("data");
-    return (String) data.get(MIMEContainer.MIME.TEXT_PLAIN);
+    return result.getItems().get(1).getResult().get().getContent().get("text").toString();
   }
 
 }

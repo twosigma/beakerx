@@ -46,7 +46,7 @@ public class ImportMagicCommandTest {
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(result.getCode().get()).isEqualTo(new CodeWithoutCommand("w = new IntSlider()"));
+    assertThat(result.getItems().get(0).getCode().get()).isEqualTo(new CodeWithoutCommand("w = new IntSlider()"));
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
   }
 

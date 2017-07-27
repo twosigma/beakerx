@@ -13,22 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
+package com.twosigma.beakerx.kotlin.kernel;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.Evaluator;
 
-public class MagicCommandResult {
+public class KotlinKernelMock extends KernelTest {
 
-  private LinkedList<MagicCommandItem> items = new LinkedList<>();
-
-  public void addItem(MagicCommandItem magicCommandResultItem) {
-    this.items.add(magicCommandResultItem);
+  public KotlinKernelMock() {
+    this("KotlinKernelTestId1");
   }
 
-  public List<MagicCommandItem> getItems() {
-    return items;
+  public KotlinKernelMock(String id) {
+    super(id);
+  }
+
+  public KotlinKernelMock(String id, Evaluator evaluator) {
+    super(id, evaluator);
   }
 }

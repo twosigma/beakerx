@@ -13,22 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
+package com.twosigma.beakerx.kotlin.evaluator.object;
 
-import java.util.LinkedList;
-import java.util.List;
+/**
+ * This class exists solely for testing the Kotlin import functionality.
+ * The package name (containing "object") is significant.
+ *
+ * @see com.twosigma.beakerx.kotlin.evaluator.KotlinEvaluatorTest
+ */
 
-public class MagicCommandResult {
-
-  private LinkedList<MagicCommandItem> items = new LinkedList<>();
-
-  public void addItem(MagicCommandItem magicCommandResultItem) {
-    this.items.add(magicCommandResultItem);
-  }
-
-  public List<MagicCommandItem> getItems() {
-    return items;
+public class ImportTestHelper {
+  public static void staticMethod() {
   }
 }

@@ -57,7 +57,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     });
 
     this.listenTo(this.model, 'beakerx-tabSelected', function() {
-      that._currentScope.adjustRedraw();
+      that._currentScope && that._currentScope.adjustRedraw();
     })
   },
 

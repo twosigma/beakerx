@@ -54,7 +54,11 @@ var PlotView = widgets.DOMWidgetView.extend({
         default:
           that.initStandardPlot(plotModel);
           break;
-      } 
+      }
+
+      that.listenTo(that.model, 'beakerx-tabSelected', function() {
+        that._currentScope.adjustModelWidth();
+      });
     });
   },
 

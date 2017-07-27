@@ -2250,13 +2250,17 @@ define([
     self.update();
 
     self.fillCellModelWithPlotMethods();
-    self.updateModelWidth(self.getPlotWithLegendWidth());
+    self.adjustModelWidth();
     self.emitSizeChange(true);
+  };
+
+  PlotScope.prototype.adjustModelWidth = function() {
+    this.updateModelWidth(this.getPlotWithLegendWidth());
   };
 
   PlotScope.prototype.getPlotWithLegendWidth = function() {
     var containerWidth = this.jqlegendcontainer.width();
-    var plotWidth = this.jqcontainer.width();
+    var plotWidth = this.plotSize.width;
     var legendWidth = this.jqlegendcontainer.find('.plot-legend').width();
 
     return (containerWidth < plotWidth ? containerWidth : plotWidth) - (legendWidth + this.layout.legendMargin + 2);

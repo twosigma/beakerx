@@ -197,22 +197,26 @@ public class MagicCommand {
   }
 
   private Collection<String> addJars(String path) {
-    Map<Path, String> addedJars = Maps.newHashMap();
+    List<String> addedJarsName = Lists.newLinkedList();
+
     if (doesPathContainsWildCards(path)) {
       validateWildcardPath(path);
-      Map<Path, String> collect = getPaths(path).keySet().stream()
-              .filter(
-                      currentPath -> kernel.addJarToClasspath(new PathToJar(currentPath.toString())))
-              .collect(Collectors.toMap(o -> o, Path::toString));
-      addedJars.putAll(collect);
+      List<PathToJar> pathsToJars = getPaths(path).keySet().stream()
+          .map(currentPath -> new PathToJar(currentPath.toString()))
+          .collect(Collectors.toList());
+
+      List<Path> addedPaths = kernel.addJarsToClasspath(pathsToJars);
+      addedJarsName.addAll(addedPaths.stream().map(Path::toString).collect(Collectors.toList()));
+
     } else {
       validatePath(path);
       Path currentPath = Paths.get(path);
       if (this.kernel.addJarToClasspath(new PathToJar(path))) {
-        addedJars.put(currentPath, currentPath.getFileName().toString());
+        addedJarsName.add(currentPath.getFileName().toString());
       }
     }
-    return addedJars.values();
+
+    return addedJarsName;
   }
 
   private void validateWildcardPath(String path) {
@@ -230,8 +234,8 @@ public class MagicCommand {
     try {
 
       Map<Path, String> paths = Files.list(Paths.get(pathWithoutWildcards))
-              .filter(path -> path.toString().toLowerCase().endsWith(".jar"))
-              .collect(Collectors.toMap(p -> p, o -> o.getFileName().toString()));
+                                     .filter(path -> path.toString().toLowerCase().endsWith(".jar"))
+                                     .collect(Collectors.toMap(p -> p, o -> o.getFileName().toString()));
 
       if (paths == null || paths.isEmpty()) {
         throw new IllegalStateException("Cannot find any jars files in selected path");

@@ -44,5 +44,9 @@ var BeakerXPageObject = function () {
     return codeCell;
   }
 
+  this.getDtContainer = function(codeCell){
+    return codeCell.$('div.dtcontainer');
+  }
+
 };
 module.exports = BeakerXPageObject;

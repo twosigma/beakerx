@@ -54,20 +54,28 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
         that.showWarning(tableModel);
       }
       that.initTableDisplay(tableModel);
-    });
 
-    this.listenTo(this.model, 'beakerx-tabSelected', function() {
-      that._currentScope.adjustRedraw();
-    })
+      that.listenTo(that.model, 'beakerx-tabSelected', function() {
+        that._currentScope.adjustRedraw();
+      });
+
+      that.listenTo(that.model, 'change:updateData', that.handleUpdateData);
+      that.listenTo(that.model, 'change:model', that.handleModellUpdate);
+    });
   },
 
-  update: function() {
-    TableDisplayView.__super__.update.apply(this);
-
-    var tableModelUpdateData = this.model.get('model');
-
-    this._currentScope.updateModelData(tableModelUpdateData);
+  handleModellUpdate: function() {
+    var newModel = this.model.get('model');
+    this._currentScope.updateModelData(newModel);
     this._currentScope.doResetAll();
+  },
+
+  handleUpdateData: function() {
+    var change = this.model.get('updateData');
+    var currentModel = this.model.get('model');
+    var updatedModel = _.extend(currentModel, change);
+    this.model.set('model', updatedModel, {updated_view: this});
+    this.handleModellUpdate();
   },
 
   initTableDisplay: function(data) {

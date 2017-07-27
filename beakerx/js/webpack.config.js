@@ -45,6 +45,11 @@ var plugins = [
   new webpack.LoaderOptionsPlugin({
     minimize: true,
     debug: false
+  }),
+  new webpack.ProvidePlugin({
+    "$":"jquery",
+    "jQuery":"jquery",
+    "window.jQuery":"jquery"
   })
 ];
 
@@ -126,6 +131,7 @@ module.exports = [
     output: {
       filename: 'index.js',
       path: path.resolve(__dirname, './dist/'),
+      library: 'beakerx',
       libraryTarget: 'amd',
       publicPath: 'https://unpkg.com/beakerx@' + version + '/dist/'
     },

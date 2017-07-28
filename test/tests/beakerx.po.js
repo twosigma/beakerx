@@ -16,13 +16,13 @@
 
 var BeakerXPageObject = function () {
 
-  this.baseURL = 'http://127.0.0.1:8888/tree/demoFiles';
+  this.baseURL = 'http://127.0.0.1:8888/tree/doc/contents';
   this.kernelIdleIcon = $('i.kernel_idle_icon');
 
   this.loginJupyter = function () {
     browser.setValue('#password_input', 'beakerx');
     browser.click('#login_submit');
-    browser.waitForEnabled('=plotDemo.ipynb');
+    browser.waitForEnabled('=demoResources');
   }
 
   this.clickRunCell = function () {
@@ -42,6 +42,10 @@ var BeakerXPageObject = function () {
     codeCell.click();
     this.clickRunCell();
     return codeCell;
+  }
+
+  this.getDtContainer = function(codeCell){
+    return codeCell.$('div.dtcontainer');
   }
 
 };

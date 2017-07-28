@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('./beakerx.po.js');
 var beakerxPO;
 
-describe('plotDemo page', function () {
+describe('PlotFeatures notebook', function () {
 
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
@@ -25,7 +25,7 @@ describe('plotDemo page', function () {
       .url(beakerxPO.baseURL)
       .call(done);
     beakerxPO.loginJupyter();
-    browser.click('=plotDemo.ipynb');
+    browser.click('=PlotFeatures.ipynb');
     browser.window(browser.windowHandles().value[1]);
   });
 
@@ -35,13 +35,35 @@ describe('plotDemo page', function () {
     browser.call(done);
   });
 
-  it('Should create dtcontainer', function (done) {
+  function runCellToDtContainer(index){
     beakerxPO.kernelIdleIcon.waitForEnabled();
-    var codeCell = beakerxPO.runCodeCellByIndex(0);
+    var codeCell = beakerxPO.runCodeCellByIndex(index);
+    return beakerxPO.getDtContainer(codeCell);
+  }
 
-    var dtContainer = codeCell.$('div.dtcontainer');
-    dtContainer.waitForEnabled();
-    browser.call(done);
+  describe('Title and Axis Labels', function () {
+
+    it('Should create dtcontainer', function (done) {
+      var dtContainer = runCellToDtContainer(0);
+      dtContainer.waitForEnabled();
+      browser.call(done);
+    });
+
+    it('Should create Title', function (done) {
+      var dtContainer = runCellToDtContainer(0);
+      dtContainer.waitForEnabled();
+      expect(dtContainer.$('#plotTitle').getText()).toEqual('We Will Control the Title');
+      browser.call(done);
+    });
+
+    it('Should create Axes Labels', function (done) {
+      var dtContainer = runCellToDtContainer(0);
+      dtContainer.waitForEnabled();
+      expect(dtContainer.$('#xlabel').getText()).toEqual('Horizontal');
+      expect(dtContainer.$('#ylabel').getText()).toEqual('Vertical');
+      browser.call(done);
+    });
+
   });
 
 });

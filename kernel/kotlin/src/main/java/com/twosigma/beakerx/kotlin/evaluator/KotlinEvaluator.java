@@ -282,9 +282,10 @@ public class KotlinEvaluator extends BaseEvaluator {
 
           for (ImportPath i : imports.getImportPaths()) {
             javaSourceCode.append("import ");
-            javaSourceCode.append(i.asString());
+            javaSourceCode.append(adjustImport(i));
             javaSourceCode.append("\n");
           }
+
           javaSourceCode.append("\n");
 
           javaSourceCode.append("class " + WRAPPER_CLASS_NAME + " {\n");
@@ -409,6 +410,23 @@ public class KotlinEvaluator extends BaseEvaluator {
         Thread.currentThread().setContextClassLoader(oldld);
       }
     }
+  }
+
+  private String adjustImport(ImportPath importPath) {
+    String currentImportPath = importPath.asString();
+    if (currentImportPath.startsWith("import")) {
+      currentImportPath = currentImportPath.substring(6).trim();
+    }
+
+    if (currentImportPath.startsWith("static")) {
+      currentImportPath = currentImportPath.substring(6).trim();
+    }
+
+    if (currentImportPath.contains(".object.")) {
+      currentImportPath = currentImportPath.replace(".object.", ".`object`.");
+    }
+
+    return currentImportPath;
   }
 
   private static class LineBrakingStringBuilderWrapper {

@@ -31,13 +31,15 @@ import org.junit.Test;
 public class ClasspathMagicCommandTest {
 
   private static final String SRC_TEST_RESOURCES = "./src/test/resources/";
-  private static final String CLASSPATH_TO_JAR = "../../doc/contents/demoResources/BeakerXClasspathTest.jar";
+  private static final String CLASSPATH_TO_JAR = SRC_TEST_RESOURCES + "dirWithTwoJars/foo.jar";
   private MagicCommand sut;
   private KernelTest kernel;
+  private EvaluatorTest evaluator;
 
   @Before
   public void setUp() throws Exception {
-    this.kernel = new KernelTest("id2", new EvaluatorTest());
+    this.evaluator = new EvaluatorTest();
+    this.kernel = new KernelTest("id2", evaluator);
     this.sut = new MagicCommand(kernel);
   }
 
@@ -53,6 +55,19 @@ public class ClasspathMagicCommandTest {
     //then
     assertThat(result.getItems().get(0).getCode().get()).isEqualTo(new CodeWithoutCommand("code code code"));
     assertThat(kernel.getClasspath().get(0)).isEqualTo(CLASSPATH_TO_JAR);
+  }
+
+  @Test
+  public void handleClasspathAddJarWildcardMagicCommand() throws Exception {
+    //given
+    String codeAsString = "" +
+        "%classpath add jar " + SRC_TEST_RESOURCES + "dirWithTwoJars/*";
+    Code code = new Code(codeAsString);
+    //when
+    MagicCommandResult result = sut.process(code, new Message(), 1);
+    //then
+    assertThat(classpath(result)).contains("foo.jar", "bar.jar");
+    assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(1);
   }
 
   @Test

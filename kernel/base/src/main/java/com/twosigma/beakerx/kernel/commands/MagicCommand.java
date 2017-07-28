@@ -177,13 +177,13 @@ public class MagicCommand {
 
       if (code.takeCodeWithoutCommand().isPresent()) {
         return new MagicCommandItemWithResultAndCode(
-                messageCreator.buildOutputMessage(message, result.getCode(), false),
+                messageCreator.buildOutputMessage(message, result.getData().toString(), false),
                 messageCreator.buildReplyWithoutStatus(message, executionCount),
                 code.takeCodeWithoutCommand().get());
       }
 
       return new MagicCommandItemWithResult(
-              messageCreator.buildOutputMessage(message, result.getCode(), false),
+              messageCreator.buildOutputMessage(message, result.getData().toString(), false),
               messageCreator.buildReplyWithoutStatus(message, executionCount));
     };
   }
@@ -293,7 +293,7 @@ public class MagicCommand {
       MIMEContainer result = JavaScript(code.takeCodeWithoutCommand().get().asString());
       return new MagicCommandItemWithResult(
               messageCreator
-                      .buildMessage(message, result.getMime().asString(), result.getCode(), executionCount),
+                      .buildMessage(message, result.getMime().asString(), result.getData().toString(), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };
@@ -305,7 +305,7 @@ public class MagicCommand {
               "<html>" + code.takeCodeWithoutCommand().get().asString() + "</html>");
       return new MagicCommandItemWithResult(
               messageCreator
-                      .buildMessage(message, html.getMime().asString(), html.getCode(), executionCount),
+                      .buildMessage(message, html.getMime().asString(), html.getData().toString(), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };

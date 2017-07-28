@@ -17,14 +17,11 @@
 package com.twosigma.beakerx.kernel.commands;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.twosigma.beakerx.kernel.commands.MagicCommandFinder.find;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Maps;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
@@ -40,7 +37,6 @@ import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResultAndCo
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -73,6 +69,7 @@ public class MagicCommand {
   public static final String CLASSPATH_REMOVE = CLASSPATH + " remove";
   public static final String CLASSPATH_SHOW = CLASSPATH;
   public static final String ADD_IMPORT = "%import";
+  public static final String ADD_STATIC_IMPORT = ADD_IMPORT + " static";
   public static final String UNIMPORT = "%unimport";
 
   private Map<String, MagicCommandFunctionality> commands = new LinkedHashMap<>();
@@ -111,6 +108,7 @@ public class MagicCommand {
     commands.put(CLASSPATH_ADD_JAR, classpathAddJar());
     commands.put(CLASSPATH_REMOVE, classpathRemove());
     commands.put(CLASSPATH_SHOW, classpathShow());
+    commands.put(ADD_STATIC_IMPORT, addStaticImport());
     commands.put(ADD_IMPORT, addImport());
     commands.put(UNIMPORT, unimport());
     commands.put(DATASOURCES, dataSources());
@@ -138,11 +136,23 @@ public class MagicCommand {
     };
   }
 
+  private MagicCommandFunctionality addStaticImport() {
+    return (code, command, message, executionCount) -> {
+      String[] parts = command.split(" ");
+      if (parts.length != 3) {
+        sendErrorMessage(message, "Wrong import static format.", executionCount);
+      }
+
+      this.kernel.addImport(new ImportPath(parts[1] + " " + parts[2]));
+      return getMagicCommandItem(code, message, executionCount);
+    };
+  }
+
   private MagicCommandFunctionality addImport() {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        throw new RuntimeException("Wrong import format.");
+        sendErrorMessage(message, "Wrong import format.", executionCount);
       }
       this.kernel.addImport(new ImportPath(parts[1]));
       return getMagicCommandItem(code, message, executionCount);
@@ -153,7 +163,7 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        throw new RuntimeException("Wrong import format.");
+        sendErrorMessage(message, "Wrong import format.", executionCount);
       }
       this.kernel.removeImport(new ImportPath(parts[1]));
       return getMagicCommandItem(code, message, executionCount);

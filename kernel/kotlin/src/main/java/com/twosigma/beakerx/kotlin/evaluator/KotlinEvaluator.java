@@ -312,7 +312,8 @@ public class KotlinEvaluator extends BaseEvaluator {
           arguments.coroutinesState = K2JVMCompilerArguments.ERROR;
           arguments.freeArgs = new ArrayList<>();
           arguments.freeArgs.add(sourceFile.toString());
-          
+          arguments.skipRuntimeVersionCheck = true;
+
           MessageCollector collector = new PrintingMessageCollector(errorPs, MessageRenderer.PLAIN_RELATIVE_PATHS, arguments.verbose);
           exitCode = comp.exec(collector, Services.EMPTY, arguments);
           

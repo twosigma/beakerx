@@ -225,6 +225,11 @@
   transition: opacity 0.4s;
 }
 
+.plot-tooltip > div {
+  width: 100%;
+  overflow: hidden;
+}
+
 .text-line-style {
   fill: black;
   stroke: black

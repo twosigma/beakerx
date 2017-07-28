@@ -55,14 +55,17 @@ define([
 
   var pinCloseIcon = function (scope, d) {
     var tip = getTipElement(scope, d);
-    if (tip.has("i").length > 0)
+    if (tip.has("i").length > 0) {
       return;
+    }
+
     var closeIcon = $('<i/>', {class: 'fa fa-times'})
       .on('click', function () {
         clear(scope, d);
         $(this).parent('.plot-tooltip').remove();
-        impl.renderTips(scope);
+        scope.maing.selectAll('#' + d.id + "_line").remove();
       });
+
     tip.prepend(closeIcon);
   };
 
@@ -107,6 +110,7 @@ define([
     svg.append("line")
       .style("stroke", data[d.idx].tip_color)
       .attr("class", "plot-tooltip-line")
+      .attr("id", d.id + "_line")
       .attr("x2", x2)
       .attr("y2", y2)
       .attr("x1", x1)
@@ -199,7 +203,7 @@ define([
           }
           var w = tipdiv.outerWidth(), h = tipdiv.outerHeight();
           if (d.hidden === true || outsideGrid(scope, x, y, w, h)) {
-            clear(scope, d, true);
+            clear(scope, d);
             tipdiv.remove();
             return;
           }
@@ -248,7 +252,7 @@ define([
 
     tooltip: function (scope, d, mousePos) {
       Object.keys(scope.tips).forEach(function(id) {
-        clear(scope, scope.tips[id]);
+        !scope.tips[id].sticking && clear(scope, scope.tips[id]);
       });
 
       if (scope.tips[d.id] != null) {
@@ -264,16 +268,36 @@ define([
     },
 
     untooltip: function (scope, d) {
-      if (scope.tips[d.id] == null) {
+      if (scope.tips[d.id] == null || scope.tips[d.id].sticking === true) {
         return;
       }
-      if (scope.tips[d.id].sticking === false) {
-        clear(scope, d, true);
-        impl.renderTips(scope);
+
+      clear(scope, d, true);
+      impl.renderTips(scope);
+    },
+
+    toggleTooltip: function (scope, d) {
+      if (scope.zoomed === true) {
+        return;
+      } // prevent dragging and toggling at the same time
+
+      var id = d.id;
+      if (!scope.tips[id]) {
+        impl.tooltip(scope, d, d3.mouse(scope.svg[0][0]));
+      } else {
+        scope.tips[id].sticking = !scope.tips[id].sticking;
+        if (scope.tips[id].sticking === false) {
+          impl.untooltip(scope, d);
+        }
       }
+      impl.renderTips(scope);
     },
 
     movetooltip: function (scope, d, mousePos) {
+      if (scope.tips[d.id].sticking === true) {
+        return;
+      }
+
       var x = mousePos[0] + 5;
       var y = mousePos[1] + 5;
 

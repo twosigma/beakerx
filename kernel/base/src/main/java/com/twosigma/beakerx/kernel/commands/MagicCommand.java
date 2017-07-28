@@ -182,25 +182,34 @@ public class MagicCommand {
   }
 
   private MagicCommandFunctionality classpathAddJar() {
-    return (code, command, message, executionCount) -> {
-      String[] split = command.split(" ");
-      if (split.length != 4) {
-        return new MagicCommandItemWithResult(
-                messageCreator
-                        .buildOutputMessage(message, "Wrong command format: " + CLASSPATH_ADD_JAR, true),
-                messageCreator.buildReplyWithoutStatus(message, executionCount)
-        );
-      }
-      String path = split[3];
-      return getMagicCommandItem(addJars(path), code, message, executionCount);
-    };
+      return (code, command, message, executionCount) -> {
+          String[] split = command.split(" ");
+          if (split.length != 4) {
+            return sendErrorMessage(message, "Wrong command format: " + CLASSPATH_ADD_JAR, executionCount);
+          }
+
+          String path = split[3];
+          ErrorData errorData = isValidPath(path);
+          if (errorData.hasError) {
+            return sendErrorMessage(message, errorData.message, executionCount);
+          } else {
+            return getMagicCommandItem(addJars(path), code, message, executionCount);
+          }
+      };
+  }
+
+  private MagicCommandItem sendErrorMessage(Message message, String messageText, int executionCount) {
+    return new MagicCommandItemWithResult(
+        messageCreator
+            .buildOutputMessage(message, messageText, true),
+        messageCreator.buildReplyWithoutStatus(message, executionCount)
+    );
   }
 
   private Collection<String> addJars(String path) {
     List<String> addedJarsName = Lists.newLinkedList();
 
     if (doesPathContainsWildCards(path)) {
-      validateWildcardPath(path);
       List<PathToJar> pathsToJars = getPaths(path).keySet().stream()
           .map(currentPath -> new PathToJar(currentPath.toString()))
           .collect(Collectors.toList());
@@ -209,7 +218,6 @@ public class MagicCommand {
       addedJarsName.addAll(addedPaths.stream().map(Path::toString).collect(Collectors.toList()));
 
     } else {
-      validatePath(path);
       Path currentPath = Paths.get(path);
       if (this.kernel.addJarToClasspath(new PathToJar(path))) {
         addedJarsName.add(currentPath.getFileName().toString());
@@ -217,12 +225,6 @@ public class MagicCommand {
     }
 
     return addedJarsName;
-  }
-
-  private void validateWildcardPath(String path) {
-    if (!containsSingleWildcardSymbol(path) || !path.endsWith("*")) {
-      throw new IllegalStateException("Wildcard can only appear at end of classpath: " + path);
-    }
   }
 
   private Boolean containsSingleWildcardSymbol(String path) {
@@ -233,15 +235,9 @@ public class MagicCommand {
     String pathWithoutWildcards = pathWithWildcard.replace("*", "");
     try {
 
-      Map<Path, String> paths = Files.list(Paths.get(pathWithoutWildcards))
+      return Files.list(Paths.get(pathWithoutWildcards))
                                      .filter(path -> path.toString().toLowerCase().endsWith(".jar"))
                                      .collect(Collectors.toMap(p -> p, o -> o.getFileName().toString()));
-
-      if (paths == null || paths.isEmpty()) {
-        throw new IllegalStateException("Cannot find any jars files in selected path");
-      }
-
-      return paths;
 
     } catch (IOException e) {
       throw new IllegalStateException("Cannot find any jars files in selected path");
@@ -350,9 +346,34 @@ public class MagicCommand {
     return output.toString();
   }
 
-  private void validatePath(String path) {
-    checkState(!checkNotNull(path).isEmpty());
-    checkState(Paths.get(path).toFile().exists(), "Provided path is incorrect.");
+  private ErrorData isValidPath(String path) {
+    boolean isEmpty = checkNotNull(path).isEmpty();
+
+    if (isEmpty) {
+      return new ErrorData(true, "Please provide a path");
+    }
+
+    if (doesPathContainsWildCards(path)) {
+      if (!containsSingleWildcardSymbol(path) || !path.endsWith("*")) {
+        return new ErrorData(true, "Bad classpath wildcard syntax, path can only end with *");
+       } else if (!Paths.get(path.replace("*", "")).toFile().exists()) {
+        return new ErrorData(true, "Bad classpath, directory cannot be find");
+      }
+    } else if (!Paths.get(path).toFile().exists()) {
+      return new ErrorData(true, "Bad classpath, file not found");
+    }
+
+    return new ErrorData(false, "");
   }
 
+  private class ErrorData {
+
+    public ErrorData(boolean hasError, String message) {
+      this.hasError = hasError;
+      this.message = message;
+    }
+
+    boolean hasError;
+    String message;
+  }
 }

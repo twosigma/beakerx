@@ -738,7 +738,6 @@ define([
           item.elements.push(ele);
           newmodel.data.push(item);
         }
-        console.log("new model",model.rasters);
       }
       newmodel.yIncludeZero = yAxisSettings.yIncludeZero;
       newmodel.yRIncludeZero = yAxisRSettings.yIncludeZero;

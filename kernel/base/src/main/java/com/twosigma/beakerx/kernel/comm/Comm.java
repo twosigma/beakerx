@@ -51,6 +51,7 @@ public class Comm {
   public static final String COMMS = "comms";
 
   private String commId;
+  private String msg_type;
   private String targetName;
   private HashMap<?, ?> data;
   private String targetModule;
@@ -94,6 +95,10 @@ public class Comm {
     this.data = data;
   }
 
+  public void setMsgType(String type) {
+    this.msg_type = type;
+  }
+
   public String getTargetModule() {
     return targetModule;
   }
@@ -134,11 +139,23 @@ public class Comm {
       message.setParentHeader(getParentMessage().getHeader());
     }
     HashMap<String, Serializable> map = new HashMap<>();
+    HashMap<String, Object> state = new HashMap<>();
+    state.put("state", data);
+    state.put("method", data.get("method"));
     map.put(COMM_ID, getCommId());
     map.put(TARGET_NAME, getTargetName());
-    map.put(DATA, data);
+    map.put(DATA, state);
     map.put(TARGET_MODULE, getTargetModule());
     message.setContent(map);
+
+    HashMap<String, Serializable> metadata = new HashMap<>();
+    metadata.put("version", "2");
+    message.setMetadata(metadata);
+
+    if (this.msg_type != null) {
+      message.getHeader().setType(this.msg_type);
+    }
+
     kernel.publish(message);
     kernel.addComm(getCommId(), this);
   }
@@ -160,6 +177,14 @@ public class Comm {
     map.put(COMM_ID, getCommId());
     map.put(DATA, new HashMap<>());
     message.setContent(map);
+    HashMap<String, Serializable> metadata = new HashMap<>();
+    metadata.put("version", "2");
+    message.setMetadata(metadata);
+
+    if (this.msg_type != null) {
+      message.getHeader().setType(this.msg_type);
+    }
+
     kernel.removeComm(getCommId());
     kernel.publish(message);
   }
@@ -175,6 +200,13 @@ public class Comm {
     map.put(COMM_ID, getCommId());
     map.put(DATA, data);
     message.setContent(map);
+    HashMap<String, Serializable> metadata = new HashMap<>();
+    metadata.put("version", "2");
+    message.setMetadata(metadata);
+
+    if (this.msg_type != null) {
+      message.getHeader().setType(this.msg_type);
+    }
     kernel.publish(message);
   }
 

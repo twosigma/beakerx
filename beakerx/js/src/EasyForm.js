@@ -15,7 +15,7 @@
  */
 
 var ENTER_KEY_CODE = 13;
-var widgets = require('jupyter-js-widgets');
+var widgets = require('@jupyter-widgets/controls');
 var _ = require('underscore');
 
 var selectMultipleWidget = require('./easyForm/selectMultipleWidget');

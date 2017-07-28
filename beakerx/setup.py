@@ -86,8 +86,8 @@ setup_args = dict(
         get_data_files(pjoin('beaker', 'static'))
     )],
     install_requires    = [
-        'notebook >=4.3.1',
-        'ipywidgets >=5.1.5, <=6.0.0'
+        'notebook >=4.4.0',
+        'ipywidgets >=7.0.0b2'
     ],
     zip_safe            = False,
     include_package_data= True,

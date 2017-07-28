@@ -17,43 +17,30 @@
 var BeakerXPageObject = require('./beakerx.po.js');
 var beakerxPO;
 
-describe('PlotFeatures notebook', function () {
+describe('ClojureTutorial notebook', function () {
 
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('PlotFeatures.ipynb', done);
+    beakerxPO.runNotebookByName('ClojureTutorial.ipynb', done);
   });
 
   afterAll(function(){
     browser.close();
-  });
+  })
 
-  it('Can run Groovy cell', function (done) {
+  it('Can run Clojure cell', function (done) {
     beakerxPO.kernelIdleIcon.waitForEnabled();
     beakerxPO.runCodeCellByIndex(0);
     browser.call(done);
   });
 
-  function runCellToDtContainer(index){
-    beakerxPO.kernelIdleIcon.waitForEnabled();
-    var codeCell = beakerxPO.runCodeCellByIndex(index);
-    return beakerxPO.getDtContainer(codeCell);
-  }
-
-  describe('Run "Title and Axis Labels" cell', function () {
-
-    it('Code cell has dtcontainer', function (done) {
-      var dtContainer = runCellToDtContainer(0);
-      dtContainer.waitForEnabled();
-      browser.call(done);
-    });
-
-    it('Plot has Title and Axes Labels', function (done) {
-      var dtContainer = runCellToDtContainer(0);
-      dtContainer.waitForEnabled();
-      expect(dtContainer.$('#plotTitle').getText()).toEqual('We Will Control the Title');
-      expect(dtContainer.$('#xlabel').getText()).toEqual('Horizontal');
-      expect(dtContainer.$('#ylabel').getText()).toEqual('Vertical');
+  describe('Run first cell', function () {
+    it('Output Result contains "clojure.lang.LazySeq"', function (done) {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var codeCell = beakerxPO.runCodeCellByIndex(0);
+      var outputText = codeCell.$('.output_subarea.output_text.output_result');
+      outputText.waitForEnabled();
+      expect(outputText.getText()).toMatch('clojure.lang.LazySeq');
       browser.call(done);
     });
   });

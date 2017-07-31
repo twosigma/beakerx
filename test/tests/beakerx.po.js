@@ -25,6 +25,15 @@ var BeakerXPageObject = function () {
     browser.waitForEnabled('=demoResources');
   }
 
+  this.runNotebookByName = function(name, done){
+    browser
+      .url(this.baseURL)
+      .call(done);
+    this.loginJupyter();
+    browser.click('=' + name);
+    browser.window(browser.windowHandles().value[1]);
+  }
+
   this.clickRunCell = function () {
     var cssRunCell = 'button[data-jupyter-action="jupyter-notebook:run-cell-and-select-next"]';
     browser.waitForEnabled(cssRunCell);

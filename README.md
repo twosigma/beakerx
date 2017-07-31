@@ -24,6 +24,8 @@ autotranslation, and other extensions to the Jupyter Notebook and
 Jupyter Lab.  BeakerX is in alpha, with major features still under
 development, including incompatible changes without notice.
 
+The [documentation](https://github.com/twosigma/beakerx/blob/master/doc/StartHere.ipynb) consists of tutorial notebooks on GitHub.
+
 BeakerX is the successor to the [Beaker
 Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).
 

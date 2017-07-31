@@ -21,9 +21,9 @@ import static com.twosigma.beakerx.kernel.commands.MagicCommandFinder.find;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
+import static java.util.Collections.singletonList;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.ImportPath;
@@ -293,7 +293,7 @@ public class MagicCommand {
       MIMEContainer result = JavaScript(code.takeCodeWithoutCommand().get().asString());
       return new MagicCommandItemWithResult(
               messageCreator
-                      .buildMessage(message, result.getMime().asString(), result.getData().toString(), executionCount),
+                      .buildMessage(message, singletonList(result), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };
@@ -305,7 +305,7 @@ public class MagicCommand {
               "<html>" + code.takeCodeWithoutCommand().get().asString() + "</html>");
       return new MagicCommandItemWithResult(
               messageCreator
-                      .buildMessage(message, html.getMime().asString(), html.getData().toString(), executionCount),
+                      .buildMessage(message, singletonList(html), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };

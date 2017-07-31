@@ -18,6 +18,12 @@ task wrapper(type: Wrapper) {
   gradleVersion = '3.5'
 }
 
+allprojects {
+  repositories {
+    maven { url 'https://jitpack.io' }
+  }
+}
+
 subprojects {
   apply plugin: 'jacoco'
   apply plugin: 'java'

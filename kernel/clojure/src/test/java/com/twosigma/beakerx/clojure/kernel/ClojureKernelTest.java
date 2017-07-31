@@ -92,6 +92,6 @@ public class ClojureKernelTest {
     Map actual = ((Map) result.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
     assertThat(value).isNotEmpty();
-    //assertThat(value).contains("[0,1,1,2,3,5"); ->  https://github.com/twosigma/beakerx/issues/5147
+    assertThat(value).contains("[0, 1, 1, 2, 3, 5");
   }
 }

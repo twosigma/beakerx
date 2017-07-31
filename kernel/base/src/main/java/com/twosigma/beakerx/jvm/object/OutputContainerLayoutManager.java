@@ -67,11 +67,11 @@ public abstract class OutputContainerLayoutManager {
   }
 
   private Optional<Widget> handleNull() {
-    MIMEContainer mimeContainerForNull = SerializeToString.getMimeContainerForNull();
-    if (mimeContainerForNull.getMime().asString().equals(MIMEContainer.MIME.HIDDEN)) {
+    List<MIMEContainer> mimeContainerForNull = SerializeToString.getMimeContainerForNull();
+    if (mimeContainerForNull.contains(MIMEContainer.HIDDEN)) {
       return empty();
     }
-    return of(createHTML(mimeContainerForNull.getData().toString()));
+    return of(createHTML(mimeContainerForNull.get(0).getData().toString()));
   }
 
   private Widget createHTML(String value) {

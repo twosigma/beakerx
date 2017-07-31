@@ -2259,11 +2259,15 @@ define([
   };
 
   PlotScope.prototype.getPlotWithLegendWidth = function() {
-    var containerWidth = this.jqlegendcontainer.width();
-    var plotWidth = this.plotSize.width;
+    var containerWidth = this.jqcontainer.parents('.widget-subarea').width();
+    var plotWidth = containerWidth && containerWidth < this.plotSize.width ? containerWidth : this.plotSize.width;
     var legendWidth = this.jqlegendcontainer.find('.plot-legend').width();
+    var legendPosition = this.stdmodel.legendPosition.position;
+    // Logic based on updateLegendPosition method
+    var isLegendPlacedHorizontaly = (["LEFT", "RIGTH"].indexOf(legendPosition) !== -1) ||
+      (["TOP", "BOTTOM"].indexOf(legendPosition) === -1 && this.stdmodel.legendLayout === "VERTICAL");
 
-    return (containerWidth < plotWidth ? containerWidth : plotWidth) - (legendWidth + this.layout.legendMargin + 2);
+    return isLegendPlacedHorizontaly ? plotWidth - (legendWidth + this.layout.legendMargin + 2) : plotWidth;
   };
 
   PlotScope.prototype.updatePlot = function() {

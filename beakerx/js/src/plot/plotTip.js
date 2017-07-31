@@ -294,7 +294,7 @@ define([
     },
 
     movetooltip: function (scope, d, mousePos) {
-      if (scope.tips[d.id].sticking === true) {
+      if (scope.tips[d.id] && scope.tips[d.id].sticking === true) {
         return;
       }
 

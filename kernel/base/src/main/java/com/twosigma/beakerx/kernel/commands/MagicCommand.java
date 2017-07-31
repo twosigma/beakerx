@@ -17,14 +17,12 @@
 package com.twosigma.beakerx.kernel.commands;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.twosigma.beakerx.kernel.commands.MagicCommandFinder.find;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Maps;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
@@ -40,7 +38,6 @@ import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResultAndCo
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -73,6 +70,7 @@ public class MagicCommand {
   public static final String CLASSPATH_REMOVE = CLASSPATH + " remove";
   public static final String CLASSPATH_SHOW = CLASSPATH;
   public static final String ADD_IMPORT = "%import";
+  public static final String ADD_STATIC_IMPORT = ADD_IMPORT + " static";
   public static final String UNIMPORT = "%unimport";
 
   private Map<String, MagicCommandFunctionality> commands = new LinkedHashMap<>();
@@ -111,6 +109,7 @@ public class MagicCommand {
     commands.put(CLASSPATH_ADD_JAR, classpathAddJar());
     commands.put(CLASSPATH_REMOVE, classpathRemove());
     commands.put(CLASSPATH_SHOW, classpathShow());
+    commands.put(ADD_STATIC_IMPORT, addStaticImport());
     commands.put(ADD_IMPORT, addImport());
     commands.put(UNIMPORT, unimport());
     commands.put(DATASOURCES, dataSources());
@@ -138,11 +137,23 @@ public class MagicCommand {
     };
   }
 
+  private MagicCommandFunctionality addStaticImport() {
+    return (code, command, message, executionCount) -> {
+      String[] parts = command.split(" ");
+      if (parts.length != 3) {
+        sendErrorMessage(message, "Wrong import static format.", executionCount);
+      }
+
+      this.kernel.addImport(new ImportPath(parts[1] + " " + parts[2]));
+      return getMagicCommandItem(code, message, executionCount);
+    };
+  }
+
   private MagicCommandFunctionality addImport() {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        throw new RuntimeException("Wrong import format.");
+        sendErrorMessage(message, "Wrong import format.", executionCount);
       }
       this.kernel.addImport(new ImportPath(parts[1]));
       return getMagicCommandItem(code, message, executionCount);
@@ -153,7 +164,7 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        throw new RuntimeException("Wrong import format.");
+        sendErrorMessage(message, "Wrong import format.", executionCount);
       }
       this.kernel.removeImport(new ImportPath(parts[1]));
       return getMagicCommandItem(code, message, executionCount);
@@ -166,13 +177,13 @@ public class MagicCommand {
 
       if (code.takeCodeWithoutCommand().isPresent()) {
         return new MagicCommandItemWithResultAndCode(
-                messageCreator.buildOutputMessage(message, result.getCode(), false),
+                messageCreator.buildOutputMessage(message, result.getData().toString(), false),
                 messageCreator.buildReplyWithoutStatus(message, executionCount),
                 code.takeCodeWithoutCommand().get());
       }
 
       return new MagicCommandItemWithResult(
-              messageCreator.buildOutputMessage(message, result.getCode(), false),
+              messageCreator.buildOutputMessage(message, result.getData().toString(), false),
               messageCreator.buildReplyWithoutStatus(message, executionCount));
     };
   }
@@ -207,20 +218,24 @@ public class MagicCommand {
   }
 
   private Collection<String> addJars(String path) {
-    Map<Path, String> addedJars = Maps.newHashMap();
+    List<String> addedJarsName = Lists.newLinkedList();
+
     if (doesPathContainsWildCards(path)) {
-      Map<Path, String> collect = getPaths(path).keySet().stream()
-              .filter(
-                      currentPath -> kernel.addJarToClasspath(new PathToJar(currentPath.toString())))
-              .collect(Collectors.toMap(o -> o, Path::toString));
-      addedJars.putAll(collect);
+      List<PathToJar> pathsToJars = getPaths(path).keySet().stream()
+          .map(currentPath -> new PathToJar(currentPath.toString()))
+          .collect(Collectors.toList());
+
+      List<Path> addedPaths = kernel.addJarsToClasspath(pathsToJars);
+      addedJarsName.addAll(addedPaths.stream().map(Path::toString).collect(Collectors.toList()));
+
     } else {
       Path currentPath = Paths.get(path);
       if (this.kernel.addJarToClasspath(new PathToJar(path))) {
-        addedJars.put(currentPath, currentPath.getFileName().toString());
+        addedJarsName.add(currentPath.getFileName().toString());
       }
     }
-    return addedJars.values();
+
+    return addedJarsName;
   }
 
   private Boolean containsSingleWildcardSymbol(String path) {
@@ -232,8 +247,8 @@ public class MagicCommand {
     try {
 
       return Files.list(Paths.get(pathWithoutWildcards))
-              .filter(path -> path.toString().toLowerCase().endsWith(".jar"))
-              .collect(Collectors.toMap(p -> p, o -> o.getFileName().toString()));
+                                     .filter(path -> path.toString().toLowerCase().endsWith(".jar"))
+                                     .collect(Collectors.toMap(p -> p, o -> o.getFileName().toString()));
 
     } catch (IOException e) {
       throw new IllegalStateException("Cannot find any jars files in selected path");
@@ -278,7 +293,7 @@ public class MagicCommand {
       MIMEContainer result = JavaScript(code.takeCodeWithoutCommand().get().asString());
       return new MagicCommandItemWithResult(
               messageCreator
-                      .buildMessage(message, result.getMime().asString(), result.getCode(), executionCount),
+                      .buildMessage(message, result.getMime().asString(), result.getData().toString(), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };
@@ -290,7 +305,7 @@ public class MagicCommand {
               "<html>" + code.takeCodeWithoutCommand().get().asString() + "</html>");
       return new MagicCommandItemWithResult(
               messageCreator
-                      .buildMessage(message, html.getMime().asString(), html.getCode(), executionCount),
+                      .buildMessage(message, html.getMime().asString(), html.getData().toString(), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     };

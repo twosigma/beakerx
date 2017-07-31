@@ -17,7 +17,9 @@ package com.twosigma.beakerx.clojure.kernel;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
+import static java.util.Arrays.stream;
 
+import clojure.lang.LazySeq;
 import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
 import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -30,8 +32,16 @@ import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
+import jupyter.Displayer;
+import jupyter.Displayers;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Clojure extends Kernel {
 
@@ -53,8 +63,21 @@ public class Clojure extends Kernel {
     KernelRunner.run(() -> {
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
-          new KernelConfigurationFile(args));
+              new KernelConfigurationFile(args));
       return new Clojure(id, new ClojureEvaluator(id, id), kernelSocketsFactory);
+    });
+  }
+
+  @Override
+  protected void configureJvmRepr() {
+    Displayers.register(LazySeq.class, new Displayer<LazySeq>() {
+      @Override
+      public Map<String, String> display(LazySeq value) {
+        return new HashMap<String, String>() {{
+          List<String> collect = stream(value.toArray()).map(Object::toString).collect(Collectors.toList());
+          put(MIMEContainer.MIME.TEXT_PLAIN, new ArrayList<>(collect).toString());
+        }};
+      }
     });
   }
 

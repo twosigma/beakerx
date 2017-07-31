@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.twosigma.beakerx.jvm.object.ConsoleOutput;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -73,22 +74,23 @@ public class MessageCreator {
     return reply;
   }
 
-  public Message buildMessage(Message message, String mime, Object code, int executionCount) {
+  public Message buildMessage(Message message, List<MIMEContainer> mimes, int executionCount) {
     Message reply = initMessage(EXECUTE_RESULT, message);
-    reply.setContent(new HashMap<String, Serializable>());
+    reply.setContent(new HashMap<>());
     reply.getContent().put("execution_count", executionCount);
     HashMap<String, Object> map3 = new HashMap<>();
-    map3.put(mime, code);
+    mimes.forEach(mimeItem -> map3.put(mimeItem.getMime().asString(), mimeItem.getData()));
     reply.getContent().put("data", map3);
     reply.getContent().put("metadata", new HashMap<>());
     return reply;
   }
 
-  public Message buildMessage(Message message, String mime, Object data, String outputdataResult, int executionCount) {
+  private Message buildMessage(Message message, List<MIMEContainer> mimes, String outputdataResult, int executionCount) {
     if (!outputdataResult.isEmpty()) {
-      return buildMessage(message, mime, data + outputdataResult, executionCount);
+      List<MIMEContainer> collect = mimes.stream().map(x -> new MIMEContainer(x.getMime().asString(), x.getData() + outputdataResult)).collect(Collectors.toList());
+      return buildMessage(message, collect, executionCount);
     }
-    return buildMessage(message, mime, data, executionCount);
+    return buildMessage(message, mimes, executionCount);
   }
 
   public Message buildClearOutput(Message message, boolean wait) {
@@ -99,12 +101,12 @@ public class MessageCreator {
     return reply;
   }
 
-  public Message buildDisplayData(Message message, MIMEContainer value) {
+  public Message buildDisplayData(Message message, List<MIMEContainer> mimes) {
     Message reply = initMessage(DISPLAY_DATA, message);
-    reply.setContent(new HashMap<String, Serializable>());
+    reply.setContent(new HashMap<>());
     reply.getContent().put("metadata", new HashMap<>());
-    HashMap<String, Serializable> map3 = new HashMap<>();
-    map3.put(value.getMime().asString(), value.getData().toString());
+    HashMap<String, Object> map3 = new HashMap<>();
+    mimes.forEach(mimeItem -> map3.put(mimeItem.getMime().asString(), mimeItem.getData()));
     reply.getContent().put("data", map3);
     return reply;
   }
@@ -252,12 +254,10 @@ public class MessageCreator {
 
   private MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
     MessageHolder ret = null;
-    MIMEContainer resultString = SerializeToString.doit(seo.getPayload());
-    if (!MIMEContainer.HIDDEN.getMime().equals(resultString.getMime())) {
+    List<MIMEContainer> mimes = SerializeToString.doit(seo.getPayload());
+    if (!mimes.contains(MIMEContainer.HIDDEN)) {
       ret = new MessageHolder(SocketEnum.IOPUB_SOCKET,
-              buildMessage(message, resultString.getMime().asString(),
-                      resultString.getData(), outputdataResult(seo.getOutputdata()),
-                      seo.getExecutionCount()));
+              buildMessage(message, mimes, outputdataResult(seo.getOutputdata()), seo.getExecutionCount()));
     }
     return ret;
   }

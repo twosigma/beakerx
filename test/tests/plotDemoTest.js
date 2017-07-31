@@ -24,10 +24,6 @@ describe('PlotFeatures notebook', function () {
     beakerxPO.runNotebookByName('PlotFeatures.ipynb', done);
   });
 
-  afterAll(function(){
-    browser.close();
-  });
-
   it('Can run Groovy cell', function (done) {
     beakerxPO.kernelIdleIcon.waitForEnabled();
     beakerxPO.runCodeCellByIndex(0);
@@ -42,7 +38,7 @@ describe('PlotFeatures notebook', function () {
 
   describe('Run "Title and Axis Labels" cell', function () {
 
-    it('Code cell has dtcontainer', function (done) {
+    it('Widget area has dtcontainer', function (done) {
       var dtContainer = runCellToDtContainer(0);
       dtContainer.waitForEnabled();
       browser.call(done);

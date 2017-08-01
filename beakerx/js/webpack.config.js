@@ -45,6 +45,12 @@ var plugins = [
   new webpack.LoaderOptionsPlugin({
     minimize: true,
     debug: false
+  }),
+  new webpack.ProvidePlugin({
+    $: 'jquery',
+    jQuery: 'jquery',
+    __assign: ['tslib', '__assign'],
+    __extends: ['tslib', '__extends']
   })
 ];
 
@@ -102,7 +108,7 @@ module.exports = [
       modules: ['web_modules', 'node_modules'],
       extensions: ['.jsx','.js','.less','.css']
     },
-    externals: ['jupyter-js-widgets'],
+    externals: ['@jupyter-widgets/controls', '@jupyter-widgets/base'],
     watchOptions: {
       ignored: /node_modules/
     },
@@ -137,7 +143,7 @@ module.exports = [
       modules: ['web_modules', 'node_modules'],
       extensions: ['.jsx','.js','.less','.css']
     },
-    externals: ['jupyter-js-widgets'],
+    externals: ['@jupyter-widgets/controls', '@jupyter-widgets/base'],
     watchOptions: {
       ignored: /node_modules/
     },

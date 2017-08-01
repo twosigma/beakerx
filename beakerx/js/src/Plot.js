@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-var widgets = require('@jupyter-widgets/controls');
+var widgets = require('@jupyter-widgets/base');
 var _ = require('underscore');
 var d3 = require('d3');
 

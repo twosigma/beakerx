@@ -93,60 +93,60 @@ class EasyForm(Box):
     def _handle_msg(self, msg):
         print(msg)
 
-    def addTextField(self, **kwargs):
-        text = Text(description=getValue(kwargs, 'description', ""))
+    def addTextField(self, *args, **kwargs):
+        text = Text(description=self.getDescription(args, kwargs))
         text.width = getValue(kwargs, 'width', "")
         self.children += (text,)
         return text
 
-    def addTextArea(self, **kwargs):
-        textarea = TextArea(description=getValue(kwargs, 'description', ""))
+    def addTextArea(self, *args, **kwargs):
+        textarea = TextArea(description=self.getDescription(args, kwargs))
         textarea.width = str(getValue(kwargs, 'width', 200)) + "px"
         textarea.height = str(getValue(kwargs, 'height', 200)) + "px"
         self.children += (textarea,)
         return textarea
 
-    def addButton(self, **kwargs):
-        button = Button(description=getValue(kwargs, 'description', ""))
+    def addButton(self, *args, **kwargs):
+        button = Button(description=self.getDescription(args, kwargs))
         button.tag = getValue(kwargs, 'tag', "")
         self.children += (button,)
 
         return button
 
-    def addList(self, **kwargs):
+    def addList(self, *args, **kwargs):
         multi_select = getValue(kwargs, 'multi', True)
         if multi_select:
-            list = SelectMultipleWithRows(description=getValue(kwargs, 'description', ""))
+            list = SelectMultipleWithRows(description=self.getDescription(args, kwargs))
         else:
-            list = SelectMultipleSingle(description=getValue(kwargs, 'description', ""))
-        list.options = getValue(kwargs, 'options', [])
+            list = SelectMultipleSingle(description=self.getDescription(args, kwargs))
+        list.options = self.getOptions(args, kwargs)
         list.size = getValue(kwargs, 'rows', 2)
 
         self.children += (list,)
 
         return list
 
-    def addDatePicker(self, **kwargs):
-        data_picker = DatePicker(description=getValue(kwargs, 'description', ""))
+    def addDatePicker(self, *args, **kwargs):
+        data_picker = DatePicker(description=self.getDescription(args, kwargs))
         self.children += (data_picker,)
 
         return data_picker
 
-    def addComboBox(self, **kwargs):
-        dropdown = ComboBox(description=getValue(kwargs, 'description', ""))
-        dropdown.options = getValue(kwargs, 'options', [])
+    def addComboBox(self, *args, **kwargs):
+        dropdown = ComboBox(description=self.getDescription(args, kwargs))
+        dropdown.options = self.getOptions(args, kwargs)
         dropdown.editable = getValue(kwargs, 'editable', False)
         self.children += (dropdown,)
 
         return dropdown
 
-    def addCheckBox(self, **kwargs):
-        checkbox = Checkbox(description=getValue(kwargs, 'description', ""))
+    def addCheckBox(self, *args, **kwargs):
+        checkbox = Checkbox(description=self.getDescription(args, kwargs))
         self.children += (checkbox,)
 
         return checkbox
 
-    def addCheckBoxes(self, **kwargs):
+    def addCheckBoxes(self, *args, **kwargs):
         layout = HBox()
         orientation = getValue(kwargs, 'orientation', 2)
         if orientation == EasyForm.HORIZONTAL:
@@ -154,7 +154,7 @@ class EasyForm(Box):
         else:
             box = VBox()
 
-        for checkBoxItem in getValue(kwargs, 'options', []):
+        for checkBoxItem in self.getOptions(args, kwargs):
             checkbox = Checkbox(description=checkBoxItem)
             box.children += (checkbox,)
         layout.children += (Label(value=getValue(kwargs, 'value', "")), box,)
@@ -162,9 +162,10 @@ class EasyForm(Box):
 
         return layout
 
-    def addRadioButtons(self, **kwargs):
+    def addRadioButtons(self, *args, **kwargs):
         orientation = getValue(kwargs, 'orientation', EasyForm.VERTICAL)
-        radio_buttons = RadioButtons(options=getValue(kwargs, 'options', []), description=getValue(kwargs, 'value', ""))
+        radio_buttons = RadioButtons(options=self.getOptions(args, kwargs),
+                                     description=self.getDescription(args, kwargs))
 
         if orientation == EasyForm.VERTICAL:
             self.children += (radio_buttons,)
@@ -194,3 +195,17 @@ class EasyForm(Box):
             if child.description == key:
                 child.value = value
                 break
+
+    @staticmethod
+    def getDescription(args, kwargs):
+        if len(args) > 0:
+            return args[0]
+        else:
+            return getValue(kwargs, 'description', "")
+
+    @staticmethod
+    def getOptions(args, kwargs):
+        if len(args) > 1:
+            return args[1]
+        else:
+            return getValue(kwargs, 'options', [])

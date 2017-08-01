@@ -69,7 +69,7 @@ public class MIMEContainer {
   }
 
   private MIME mime;
-  private Object data;
+  private Object data = "";
 
   private MIMEContainer(MIME mime) {
     this.mime = mime;

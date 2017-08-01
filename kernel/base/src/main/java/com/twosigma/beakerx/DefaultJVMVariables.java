@@ -69,7 +69,8 @@ public class DefaultJVMVariables {
             "com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer",
             "com.twosigma.beakerx.table.format.TableDisplayStringFormat",
             "com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter",
-            "com.twosigma.beakerx.table.highlight.ThreeColorHeatmapHighlighter"
+            "com.twosigma.beakerx.table.highlight.ThreeColorHeatmapHighlighter",
+            "com.twosigma.beakerx.table.TableDisplayConverter"
 
     );
   }

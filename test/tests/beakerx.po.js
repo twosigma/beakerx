@@ -20,6 +20,7 @@ var BeakerXPageObject = function () {
   this.kernelIdleIcon = $('i.kernel_idle_icon');
 
   this.loginJupyter = function () {
+    browser.waitForEnabled('#password_input');
     browser.setValue('#password_input', 'beakerx');
     browser.click('#login_submit');
     browser.waitForEnabled('=demoResources');
@@ -55,6 +56,13 @@ var BeakerXPageObject = function () {
 
   this.getDtContainer = function(codeCell){
     return codeCell.$('div.dtcontainer');
+  }
+
+  this.checkOutputText = function(index, expectedText){
+    var codeCell = this.runCodeCellByIndex(index);
+    var outputText = codeCell.$('.output_subarea.output_text');
+    outputText.waitForEnabled();
+    expect(outputText.getText()).toMatch(expectedText);
   }
 
 };

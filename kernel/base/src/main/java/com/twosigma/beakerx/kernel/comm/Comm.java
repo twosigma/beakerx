@@ -34,6 +34,7 @@ import java.util.List;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 
 
 public class Comm {
@@ -43,6 +44,7 @@ public class Comm {
   public static final String METHOD = "method";
   public static final String UPDATE = "update";
   public static final String STATE = "state";
+  public static final String VERSION = "version";
 
   public static final String COMM_ID = "comm_id";
   public static final String TARGET_NAME = "target_name";
@@ -51,7 +53,7 @@ public class Comm {
   public static final String COMMS = "comms";
 
   private String commId;
-  private String msg_type;
+  private String msgType;
   private String targetName;
   private HashMap<?, ?> data;
   private String targetModule;
@@ -96,7 +98,7 @@ public class Comm {
   }
 
   public void setMsgType(String type) {
-    this.msg_type = type;
+    this.msgType = type;
   }
 
   public String getTargetModule() {
@@ -139,21 +141,21 @@ public class Comm {
       message.setParentHeader(getParentMessage().getHeader());
     }
     HashMap<String, Serializable> map = new HashMap<>();
-    HashMap<String, Object> state = new HashMap<>();
-    state.put("state", data);
-    state.put("method", data.get("method"));
     map.put(COMM_ID, getCommId());
     map.put(TARGET_NAME, getTargetName());
+
+    HashMap<String, Serializable> state = new HashMap<>();
+    state.put(STATE, data);
+    state.put(METHOD, (Serializable) data.get(METHOD));
     map.put(DATA, state);
+
     map.put(TARGET_MODULE, getTargetModule());
     message.setContent(map);
 
-    HashMap<String, Serializable> metadata = new HashMap<>();
-    metadata.put("version", "2");
-    message.setMetadata(metadata);
+    message.setMetadata(buildMetadata());
 
-    if (this.msg_type != null) {
-      message.getHeader().setType(this.msg_type);
+    if (this.msgType != null) {
+      message.getHeader().setType(this.msgType);
     }
 
     kernel.publish(message);
@@ -177,13 +179,7 @@ public class Comm {
     map.put(COMM_ID, getCommId());
     map.put(DATA, new HashMap<>());
     message.setContent(map);
-    HashMap<String, Serializable> metadata = new HashMap<>();
-    metadata.put("version", "2");
-    message.setMetadata(metadata);
-
-    if (this.msg_type != null) {
-      message.getHeader().setType(this.msg_type);
-    }
+    message.setMetadata(buildMetadata());
 
     kernel.removeComm(getCommId());
     kernel.publish(message);
@@ -200,12 +196,11 @@ public class Comm {
     map.put(COMM_ID, getCommId());
     map.put(DATA, data);
     message.setContent(map);
-    HashMap<String, Serializable> metadata = new HashMap<>();
-    metadata.put("version", "2");
-    message.setMetadata(metadata);
 
-    if (this.msg_type != null) {
-      message.getHeader().setType(this.msg_type);
+    message.setMetadata(buildMetadata());
+
+    if (this.msgType != null) {
+      message.getHeader().setType(this.msgType);
     }
     kernel.publish(message);
   }
@@ -230,6 +225,13 @@ public class Comm {
         handler.handle(parentMessage);
       }
     }
+  }
+
+  private HashMap<String, Serializable> buildMetadata() {
+    HashMap<String, Serializable> metadata = new HashMap<>();
+    metadata.put(VERSION, "2");
+
+    return metadata;
   }
 
   @Override

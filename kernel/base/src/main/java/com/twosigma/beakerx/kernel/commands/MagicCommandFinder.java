@@ -40,6 +40,7 @@ public class MagicCommandFinder {
     List<MagicCommandItemWithResult> errors = new ArrayList<>();
     LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun = new LinkedHashMap<>();
     code.getCommands().forEach(command -> {
+      command = command.replaceAll("\\s+"," ");
       Optional<MagicCommandFunctionality> functionality = findFunctionality(commands, command);
       if (functionality.isPresent()) {
         functionalityToRun.put(command, functionality.get());

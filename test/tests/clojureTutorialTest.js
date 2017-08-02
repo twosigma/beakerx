@@ -24,39 +24,32 @@ describe('ClojureTutorial notebook', function () {
     beakerxPO.runNotebookByName('ClojureTutorial.ipynb', done);
   });
 
-  it('Can run Clojure cell', function (done) {
+  it('Can run Clojure cell. ', function (done) {
     beakerxPO.kernelIdleIcon.waitForEnabled();
     beakerxPO.runCodeCellByIndex(0);
     browser.call(done);
   });
 
-  function checkOutputText(index, expectedText){
-    var codeCell = beakerxPO.runCodeCellByIndex(index);
-    var outputText = codeCell.$('.output_subarea.output_text');
-    outputText.waitForEnabled();
-    expect(outputText.getText()).toMatch(expectedText);
-  }
-
-  describe('Run first cell', function () {
-    it('Output contains "clojure.lang.LazySeq"', function (done) {
+  describe('Run first cell. ', function () {
+    it('Output contains "0, 1, 1, 2, 3, 5"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      checkOutputText(0, 'clojure.lang.LazySeq');
+      beakerxPO.runCallAndCheckOutputText(0, '0, 1, 1, 2, 3, 5');
       browser.call(done);
     });
   });
 
-  describe('Run 2nd cell', function () {
+  describe('Run 2nd cell. ', function () {
     it('Output contains "Will print"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      checkOutputText(1, 'Will print');
+      beakerxPO.runCallAndCheckOutputText(1, 'Will print');
       browser.call(done);
     });
   });
 
-  describe('Run 3rd cell', function () {
+  describe('Run 3rd cell. ', function () {
     it('Output contains "Distinct: 36"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      checkOutputText(2, 'Distinct: 36');
+      beakerxPO.runCallAndCheckOutputText(2, 'Distinct: 36');
       browser.call(done);
     });
   });

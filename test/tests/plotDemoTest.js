@@ -24,28 +24,22 @@ describe('PlotFeatures notebook', function () {
     beakerxPO.runNotebookByName('PlotFeatures.ipynb', done);
   });
 
-  it('Can run Groovy cell', function (done) {
+  it('Can run Groovy cell. ', function (done) {
     beakerxPO.kernelIdleIcon.waitForEnabled();
     beakerxPO.runCodeCellByIndex(0);
     browser.call(done);
   });
 
-  function runCellToDtContainer(index){
-    beakerxPO.kernelIdleIcon.waitForEnabled();
-    var codeCell = beakerxPO.runCodeCellByIndex(index);
-    return beakerxPO.getDtContainer(codeCell);
-  }
-
-  describe('Run "Title and Axis Labels" cell', function () {
+  describe('Run "Title and Axis Labels" cell. ', function () {
 
     it('Widget area has dtcontainer', function (done) {
-      var dtContainer = runCellToDtContainer(0);
+      var dtContainer = beakerxPO.runCellToGetDtContainer(0);
       dtContainer.waitForEnabled();
       browser.call(done);
     });
 
     it('Plot has Title and Axes Labels', function (done) {
-      var dtContainer = runCellToDtContainer(0);
+      var dtContainer = beakerxPO.runCellToGetDtContainer(0);
       dtContainer.waitForEnabled();
       expect(dtContainer.$('#plotTitle').getText()).toEqual('We Will Control the Title');
       expect(dtContainer.$('#xlabel').getText()).toEqual('Horizontal');

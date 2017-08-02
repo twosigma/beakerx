@@ -15,6 +15,7 @@
 import json
 
 from beakerx.plot.utils import getValue
+from ipykernel.comm import Comm
 from ipywidgets import Box, DOMWidget, Text, Label, Textarea, Button, SelectMultiple, Select, Dropdown, Checkbox, HBox, \
     VBox, RadioButtons, register
 from traitlets import Unicode, Bool, Int, Dict, ObjectName, Unicode, default
@@ -111,9 +112,17 @@ class EasyForm(Box):
     def addButton(self, *args, **kwargs):
         button = Button(description=self.getDescription(args, kwargs))
         button.tag = getValue(kwargs, 'tag', "")
+        button.on_click(self.buttonCallback)
         self.children += (button,)
 
         return button
+
+    def buttonCallback(self, *args):
+        if len(args) > 0:
+            arguments= dict(target_name='beaker.tag.run')
+            comm = Comm(**arguments)
+            msg = {'runByTag': args[0].tag}
+            comm.send(data=msg, buffers=[])
 
     def addList(self, *args, **kwargs):
         multi_select = getValue(kwargs, 'multi', True)

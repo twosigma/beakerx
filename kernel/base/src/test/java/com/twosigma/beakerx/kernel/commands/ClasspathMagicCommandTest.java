@@ -104,6 +104,14 @@ public class ClasspathMagicCommandTest {
     assertThat(classpath(result)).isEqualTo(CLASSPATH_TO_JAR);
   }
 
+  @Test
+  public void allowExtraWhitespaces() {
+    MagicCommandResult result = sut
+        .process(new Code("%classpath  add  jar          " + CLASSPATH_TO_JAR), new Message(), 1);
+
+    assertThat(classpath(result)).isEqualTo("Added jar: [foo.jar]\n");
+  }
+
   private String classpath(MagicCommandResult result) {
     return result.getItems().get(0).getResult().get().getContent().get("text").toString();
   }

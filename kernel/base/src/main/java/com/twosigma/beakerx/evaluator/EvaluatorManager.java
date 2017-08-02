@@ -62,6 +62,10 @@ public class EvaluatorManager {
     return evaluator.autocomplete(code, caretPosition);
   }
 
+  public void cancelExecution() {
+    evaluator.cancelExecution();
+  }
+
   public synchronized void killAllThreads() {
     evaluator.killAllThreads();
   }
@@ -114,5 +118,4 @@ public class EvaluatorManager {
   public void removeImport(ImportPath anImport) {
     this.evaluator.removeImport(anImport);
   }
-
 }

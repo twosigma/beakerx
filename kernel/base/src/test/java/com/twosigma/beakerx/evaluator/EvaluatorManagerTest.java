@@ -55,6 +55,14 @@ public class EvaluatorManagerTest {
   }
 
   @Test
+  public void cancelExecution() throws Exception {
+    //when
+    evaluatorManager.cancelExecution();
+    //then
+    Assertions.assertThat(evaluator.isCallCancelExecution()).isTrue();
+  }
+
+  @Test
   public void exit_callEvaluatorToExit() throws Exception {
     //when
     evaluatorManager.exit();

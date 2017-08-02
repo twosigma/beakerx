@@ -106,7 +106,7 @@ public class SQLEvaluator extends BaseEvaluator {
     cancelExecution();
   }
 
-  private void cancelExecution() {
+  public void cancelExecution() {
     executor.cancelExecution();
     queryExecutor.cancel();
   }

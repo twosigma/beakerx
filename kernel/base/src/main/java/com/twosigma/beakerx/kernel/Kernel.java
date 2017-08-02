@@ -118,7 +118,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public synchronized void cancelExecution() {
-    evaluatorManager.killAllThreads();
+    evaluatorManager.cancelExecution();
   }
 
   public synchronized boolean isCommPresent(String hash) {

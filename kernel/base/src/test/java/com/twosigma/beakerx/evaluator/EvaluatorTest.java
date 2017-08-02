@@ -33,6 +33,7 @@ public class EvaluatorTest extends BaseEvaluator {
   private SimpleEvaluationObject seo;
   private String code;
   private boolean killAllThreads;
+  private boolean cancelExecution;
   private boolean exit;
   private Classpath classpath = new Classpath();
   private Imports imports = new Imports();
@@ -54,6 +55,11 @@ public class EvaluatorTest extends BaseEvaluator {
   @Override
   public void killAllThreads() {
     killAllThreads = true;
+  }
+
+  @Override
+  public void cancelExecution() {
+    cancelExecution = true;
   }
 
   @Override
@@ -92,6 +98,10 @@ public class EvaluatorTest extends BaseEvaluator {
 
   public boolean isCallKillAllThreads() {
     return killAllThreads;
+  }
+
+  public boolean isCallCancelExecution() {
+    return cancelExecution;
   }
 
   public boolean isCallExit() {

@@ -95,14 +95,16 @@ class EasyForm(Box):
 
     def addTextField(self, *args, **kwargs):
         text = Text(description=self.getDescription(args, kwargs))
-        text.width = getValue(kwargs, 'width', "")
+        text.layout.width = str(getValue(kwargs, 'width', 380)) + 'px'
         self.children += (text,)
         return text
 
     def addTextArea(self, *args, **kwargs):
         textarea = TextArea(description=self.getDescription(args, kwargs))
-        textarea.width = str(getValue(kwargs, 'width', 200)) + "px"
-        textarea.height = str(getValue(kwargs, 'height', 200)) + "px"
+        textarea.layout.width = str(getValue(kwargs, 'width', 380)) + "px"
+        height = getValue(kwargs, 'height', -1)
+        if height != -1:
+            textarea.layout.height = str(height) + "px"
         self.children += (textarea,)
         return textarea
 

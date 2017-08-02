@@ -22,6 +22,8 @@ import com.twosigma.beakerx.message.Message;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import static com.twosigma.beakerx.kernel.Utils.EMPTY_STRING;
+
 public class Button extends ValueWidget<Boolean> {
 
   public static final String VIEW_NAME_VALUE = "ButtonView";
@@ -32,10 +34,10 @@ public class Button extends ValueWidget<Boolean> {
   public static final String ICON = "icon";
   public static final String BUTTON_STYLE = "button_style";
 
-  private String tooltip;
+  private String tooltip= EMPTY_STRING;
   private String tag;
-  private String icon = "";
-  private String button_style = ""; 
+  private String icon = EMPTY_STRING;
+  private String button_style = EMPTY_STRING;
   private ActionPerformed actionPerformed = null;
 
   public Button() {

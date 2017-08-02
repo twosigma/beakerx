@@ -48,21 +48,29 @@ var BeakerXPageObject = function () {
 
   this.runCodeCellByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll()
+    codeCell.scroll();
     codeCell.click();
     this.clickRunCell();
     return codeCell;
   }
 
-  this.getDtContainer = function(codeCell){
+  this.runCellToGetDtContainer = function(index){
+    this.kernelIdleIcon.waitForEnabled();
+    var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.dtcontainer');
   }
 
-  this.checkOutputText = function(index, expectedText){
+  this.runCallAndCheckOutputText = function(index, expectedText){
     var codeCell = this.runCodeCellByIndex(index);
     var outputText = codeCell.$('.output_subarea.output_text');
+    outputText.waitForExist();
     outputText.waitForEnabled();
     expect(outputText.getText()).toMatch(expectedText);
+  }
+
+  this.plotLegendContainerIsEnabled = function(dtcontainer){
+    var plotLegendContainer = dtcontainer.$('#plotLegendContainer');
+    plotLegendContainer.waitForEnabled();
   }
 
 };

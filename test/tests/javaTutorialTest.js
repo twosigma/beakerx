@@ -33,7 +33,7 @@ describe('JavaTutorial notebook', function () {
   describe('Run first cell. ', function () {
     it('Output contains "test.beaker.BeakerTest"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkOutputText(0, 'test.beaker.BeakerTest');
+      beakerxPO.runCallAndCheckOutputText(0, 'test.beaker.BeakerTest');
       browser.call(done);
     });
   });
@@ -41,7 +41,49 @@ describe('JavaTutorial notebook', function () {
   describe('Run 2nd cell. ', function () {
     it('Output contains "Today:"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkOutputText(1, 'Today:');
+      beakerxPO.runCallAndCheckOutputText(1, 'Today:');
+      browser.call(done);
+    });
+  });
+
+  describe('Run 6th cell. ', function () {
+    it('PlotLegendContainer is enabled', function (done) {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var dtContainer = beakerxPO.runCellToGetDtContainer(5);
+      beakerxPO.plotLegendContainerIsEnabled(dtContainer);
+      browser.call(done);
+    });
+  });
+
+  describe('Run 7th cell. ', function () {
+    it('Output contains "DateGetter"', function (done) {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(6, 'DateGetter');
+      browser.call(done);
+    });
+  });
+
+  describe('Run 8th cell. ', function () {
+    it('Output contains "DG2"', function (done) {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(7, 'DG2');
+      browser.call(done);
+    });
+  });
+
+  describe('Run 10th cell. ', function () {
+    it('Output contains "beakerx/doc/contents"', function (done) {
+      beakerxPO.runCodeCellByIndex(8);
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(9, 'beakerx\.doc\.contents');
+      browser.call(done);
+    });
+  });
+
+  describe('Run 11th cell. ', function () {
+    it('Output contains "static_123 object_123"', function (done) {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(10, '((static_123)\.*\n*(object_123))');
       browser.call(done);
     });
   });

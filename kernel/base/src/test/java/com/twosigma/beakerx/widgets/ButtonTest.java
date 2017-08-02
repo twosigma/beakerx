@@ -28,7 +28,7 @@ import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCom
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
 
- public class ButtonTest {
+public class ButtonTest {
 
   private KernelTest groovyKernel;
 

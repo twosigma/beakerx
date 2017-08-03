@@ -72,14 +72,6 @@ define([
         scope.plotSize = {};
 
         _.extend(scope.plotSize, scope.stdmodel.plotSize);
-        // var savedstate = scope.model.getDumpState();
-        // if (savedstate !== undefined && savedstate.plotSize !== undefined) {
-        //   scope.loadState(savedstate);
-        // } else {
-        //   if (scope.setDumpState !== undefined) {
-        //     scope.setDumpState(scope.dumpState());
-        //   }
-        // }
 
         // create layout elements
         scope.initLayout();
@@ -155,24 +147,6 @@ define([
         };
 
         scope.legendResetPosition = true;
-
-        // scope.$watch("model.getWidth()", function (newWidth) {
-        //   if (scope.width == newWidth) {
-        //     return;
-        //   }
-        //   scope.width = newWidth;
-        //   scope.jqcontainer.css("width", newWidth);
-        //   scope.jqsvg.css("width", newWidth);
-        //   scope.legendDone = false;
-        //   scope.legendResetPosition = true;
-        //   scope.update();
-        // });
-
-        // scope.$watch('model.isShowOutput()', function (prev, next) {
-        //   if (prev !== next) {
-        //     scope.update();
-        //   }
-        // });
 
         $("<div></div>").appendTo(scope.jqlegendcontainer)
           .attr("id", "tooltip")

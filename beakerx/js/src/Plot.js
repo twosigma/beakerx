@@ -59,6 +59,18 @@ var PlotView = widgets.DOMWidgetView.extend({
       that.listenTo(that.model, 'beakerx-tabSelected', function() {
         that._currentScope.adjustModelWidth();
       });
+
+      that.on('remove', function() {
+        if (that._currentScope instanceof CombinedPlotScope) {
+          that._currentScope.scopes.forEach(function(scope) {
+            scope.destroy();
+          })
+        } else {
+          that._currentScope.destroy();
+        }
+
+        setTimeout(function() { that._currentScope = null; });
+      });
     });
   },
 

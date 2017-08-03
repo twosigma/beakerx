@@ -2553,6 +2553,11 @@ define([
     });
     legendCopy.css("position", "inherit");
 
+    legendCopy.css("top", "auto");
+    legendCopy.css("left", "auto");
+    legendCopy.css("bottom", "auto");
+    legendCopy.css("right", "auto");
+
     //remove base from urls
     legendCopy.find("[style*='url']").each(function(i, item){
       var style = $(item).attr('style');
@@ -2573,6 +2578,7 @@ define([
       .attr("x", x)
       .attr("y", y)
       .append("xhtml:body")
+      .attr('style', 'position: relative;')
       .attr("xmlns", "http://www.w3.org/1999/xhtml")
       .html(legendCopy[0].outerHTML);
   };

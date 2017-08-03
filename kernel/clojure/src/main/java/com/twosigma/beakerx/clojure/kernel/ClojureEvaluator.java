@@ -225,7 +225,7 @@ public class ClojureEvaluator extends BaseEvaluator {
           j.outputObject.started();
 
           if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject))) {
-            j.outputObject.error("... cancelled!");
+            j.outputObject.error(INTERUPTED_MSG);
           }
         } catch (Throwable e) {
           logger.error(e.getMessage());
@@ -269,7 +269,7 @@ public class ClojureEvaluator extends BaseEvaluator {
           }
         } catch (Throwable e) {
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
-            theOutput.error("... cancelled!");
+            theOutput.error(INTERUPTED_MSG);
           } else {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);

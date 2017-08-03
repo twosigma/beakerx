@@ -327,7 +327,7 @@ public class KotlinEvaluator extends BaseEvaluator {
               Class<?> fooClass = loader.loadClass(packageId + "." + WRAPPER_CLASS_NAME);
               Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
               if (!executor.executeTask(new MyRunnable(fooClass.newInstance(), mth, j.outputObject, false, loader))) {
-                j.outputObject.error("... cancelled!");
+                j.outputObject.error(INTERUPTED_MSG);
               }
               if (nc != null) {
                 nc.setOutputObj(null);
@@ -395,7 +395,7 @@ public class KotlinEvaluator extends BaseEvaluator {
           if (e instanceof InvocationTargetException)
             e = ((InvocationTargetException) e).getTargetException();
           if ((e instanceof InterruptedException) || (e instanceof ThreadDeath)) {
-            theOutput.error("... cancelled!");
+            theOutput.error(INTERUPTED_MSG);
           } else {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);

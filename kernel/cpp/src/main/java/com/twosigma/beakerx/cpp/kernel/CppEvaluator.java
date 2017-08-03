@@ -214,7 +214,7 @@ public class CppEvaluator extends BaseEvaluator {
           String code = normalizeCode(j.codeToBeExecuted);
 
           if (!executor.executeTask(new MyRunnable(j.outputObject, code, j.cellId))) {
-            j.outputObject.error("... cancelled!");
+            j.outputObject.error(INTERUPTED_MSG);
           }
           if (nc != null) {
             nc.setOutputObj(null);
@@ -393,7 +393,7 @@ public class CppEvaluator extends BaseEvaluator {
           if (e instanceof InvocationTargetException)
             e = ((InvocationTargetException) e).getTargetException();
           if ((e instanceof InterruptedException) || (e instanceof ThreadDeath)) {
-            theOutput.error("... cancelled!");
+            theOutput.error(INTERUPTED_MSG);
           } else {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);

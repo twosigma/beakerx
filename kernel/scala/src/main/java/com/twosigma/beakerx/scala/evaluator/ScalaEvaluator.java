@@ -313,7 +313,7 @@ public class ScalaEvaluator extends BaseEvaluator {
           nc = NamespaceClient.getBeaker(sessionId);
           nc.setOutputObj(j.outputObject);
           if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject, this.beakerxObjectFactory))) {
-            j.outputObject.error("... cancelled!");
+            j.outputObject.error(INTERUPTED_MSG);
           }
           if (nc != null) {
             nc.setOutputObj(null);
@@ -354,7 +354,7 @@ public class ScalaEvaluator extends BaseEvaluator {
           shell.evaluate(theOutput, theCode);
         } catch (Throwable e) {
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
-            theOutput.error("... cancelled!");
+            theOutput.error(INTERUPTED_MSG);
           } else {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);

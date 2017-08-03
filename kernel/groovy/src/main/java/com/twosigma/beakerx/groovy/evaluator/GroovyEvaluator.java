@@ -407,7 +407,7 @@ public class GroovyEvaluator extends BaseEvaluator {
           String code = j.codeToBeExecuted;
 
           if (!executor.executeTask(new MyRunnable(code, j.outputObject, loader))) {
-            j.outputObject.error("... cancelled!");
+            j.outputObject.error(INTERUPTED_MSG);
           }
 
           if (nc != null) {
@@ -494,7 +494,7 @@ public class GroovyEvaluator extends BaseEvaluator {
           }
 
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
-            theOutput.error("... cancelled!");
+            theOutput.error(INTERUPTED_MSG);
           } else {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);

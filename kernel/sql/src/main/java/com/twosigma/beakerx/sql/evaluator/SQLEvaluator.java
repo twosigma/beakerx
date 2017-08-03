@@ -24,8 +24,6 @@ import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
-import com.twosigma.beakerx.kernel.ImportPath;
-import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.sql.ConnectionStringBean;
 import com.twosigma.beakerx.sql.ConnectionStringHolder;
 import com.twosigma.beakerx.sql.JDBCClient;
@@ -56,16 +54,9 @@ public class SQLEvaluator extends BaseEvaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(SQLEvaluator.class.getName());
 
-  private final String shellId;
-  private final String sessionId;
   private final String packageId;
-
-  private Classpath classPath = new Classpath();
-  private Imports imports = new Imports();
   private Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
   private ConnectionStringHolder defaultConnectionString;
-
-  private final CellExecutor executor;
   volatile private boolean exit;
 
   private ClasspathScanner cps;
@@ -81,13 +72,11 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   public SQLEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    shellId = id;
-    sessionId = sId;
+    super(id, sId, cellExecutor);
     packageId = "com.twosigma.beaker.sql.bkr" + shellId.split("-")[0];
     jdbcClient = new JDBCClient();
     cps = new ClasspathScanner();
     sac = createSqlAutocomplete(cps);
-    executor = cellExecutor;
     queryExecutor = new QueryExecutor(jdbcClient);
     startWorker();
   }
@@ -130,33 +119,6 @@ public class SQLEvaluator extends BaseEvaluator {
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     return sac.doAutocomplete(code, caretPosition);
-  }
-
-  private class JobDescriptor {
-    private String code;
-
-    private SimpleEvaluationObject simpleEvaluationObject;
-
-    private JobDescriptor(String code, SimpleEvaluationObject seo) {
-      this.code = code;
-      simpleEvaluationObject = seo;
-    }
-
-    public String getCode() {
-      return code;
-    }
-
-    public void setCode(String code) {
-      this.code = code;
-    }
-
-    private SimpleEvaluationObject getSimpleEvaluationObject() {
-      return simpleEvaluationObject;
-    }
-
-    public void setSimpleEvaluationObject(SimpleEvaluationObject simpleEvaluationObject) {
-      this.simpleEvaluationObject = simpleEvaluationObject;
-    }
   }
 
   private class WorkerThread extends Thread {
@@ -242,7 +204,8 @@ public class SQLEvaluator extends BaseEvaluator {
     resetEnvironment();
   }
 
-  private void configure(KernelParameters kernelParameters) {
+  @Override
+  protected void configure(KernelParameters kernelParameters) {
     SQLKernelParameters params = new SQLKernelParameters(kernelParameters);
     Optional<Collection<String>> cp = params.getClassPath();
 
@@ -281,31 +244,6 @@ public class SQLEvaluator extends BaseEvaluator {
       }
     }
 
-  }
-
-  @Override
-  public Classpath getClasspath() {
-    return this.classPath;
-  }
-
-  @Override
-  public Imports getImports() {
-    return this.imports;
-  }
-
-  @Override
-  protected boolean addJar(PathToJar path) {
-    return classPath.add(path);
-  }
-
-  @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return this.imports.add(anImport);
-  }
-
-  @Override
-  protected boolean removeImportPath(ImportPath anImport) {
-    return this.imports.remove(anImport);
   }
 
   public void setShellUserPassword(String namedConnection, String user, String password) {

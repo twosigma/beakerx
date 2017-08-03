@@ -20,10 +20,8 @@ import clojure.lang.RT;
 import clojure.lang.Var;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -32,8 +30,6 @@ import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
-import com.twosigma.beakerx.kernel.KernelParameters;
-import com.twosigma.beakerx.kernel.PathToJar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +42,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
@@ -54,32 +49,17 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(ClojureEvaluator.class.getName());
 
-  private final String shellId;
-  private final String sessionId;
-  private Classpath classPath;
-  private Imports imports;
   private List<String> requirements;
   private boolean exit;
-  private CellExecutor executor;
   private workerThread myWorker;
-  private String outDir;
+
   private String currenClojureNS;
   private DynamicClassLoaderSimple loader;
-
-  private class jobDescriptor {
-    String codeToBeExecuted;
-    SimpleEvaluationObject outputObject;
-
-    jobDescriptor(String c, SimpleEvaluationObject o) {
-      codeToBeExecuted = c;
-      outputObject = o;
-    }
-  }
 
   private static final String beaker_clojure_ns = "beaker_clojure_shell";
   private Var clojureLoadString = null;
   private final Semaphore syncObject = new Semaphore(0, true);
-  private final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
+  private final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<JobDescriptor>();
 
   private String initScriptSource()
           throws IOException {
@@ -88,13 +68,8 @@ public class ClojureEvaluator extends BaseEvaluator {
   }
 
   public ClojureEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    shellId = id;
-    sessionId = sId;
-    classPath = new Classpath();
-    imports = new Imports();
+    super(id, sId, cellExecutor);
     requirements = new ArrayList<>();
-    outDir = Evaluator.createJupyterTempFolder().toString();
-    executor = cellExecutor;
     init();
     startWorker();
   }
@@ -195,7 +170,7 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
-    jobQueue.add(new jobDescriptor(code, seo));
+    jobQueue.add(new JobDescriptor(code, seo));
     syncObject.release();
   }
 
@@ -210,7 +185,7 @@ public class ClojureEvaluator extends BaseEvaluator {
      */
 
     public void run() {
-      jobDescriptor j = null;
+      JobDescriptor j = null;
 
       while (!exit) {
         try {
@@ -285,60 +260,6 @@ public class ClojureEvaluator extends BaseEvaluator {
         Thread.currentThread().setContextClassLoader(oldLoader);
       }
     }
-  }
-
-  @Override
-  public void initKernel(KernelParameters kernelParameters) {
-    configure(kernelParameters);
-  }
-
-  @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-    configure(kernelParameters);
-    resetEnvironment();
-  }
-
-  private void configure(KernelParameters kernelParameters) {
-    Map<String, Object> params = kernelParameters.getParams();
-    Collection<String> listOfClassPath = (Collection<String>) params.get(DefaultJVMVariables.CLASSPATH);
-    Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
-
-    Map<String, String> env = System.getenv();
-
-    if (listOfClassPath == null || listOfClassPath.isEmpty()) {
-      classPath = new Classpath();
-    } else {
-      for (String line : listOfClassPath) {
-        if (!line.trim().isEmpty()) {
-          addJar(new PathToJar(line));
-        }
-      }
-    }
-
-    if (listOfImports == null || listOfImports.isEmpty()) {
-      imports = new Imports();
-    } else {
-      for (String line : listOfImports) {
-        if (!line.trim().isEmpty()) {
-          addImportPath(new ImportPath(line));
-        }
-      }
-    }
-  }
-
-  @Override
-  protected boolean addJar(PathToJar path) {
-    return classPath.add(path);
-  }
-
-  @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
-  }
-
-  @Override
-  protected boolean removeImportPath(ImportPath anImport) {
-    return imports.remove(anImport);
   }
 
   public AutocompleteResult autocomplete(String code, int caretPosition) {

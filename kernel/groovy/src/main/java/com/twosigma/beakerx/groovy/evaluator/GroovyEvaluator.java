@@ -18,7 +18,6 @@ package com.twosigma.beakerx.groovy.evaluator;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyClasspathScanner;
@@ -26,10 +25,7 @@ import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
-import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
-import com.twosigma.beakerx.kernel.Imports;
-import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
@@ -42,12 +38,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -55,8 +49,6 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 
 public class GroovyEvaluator extends BaseEvaluator {
 
@@ -65,36 +57,18 @@ public class GroovyEvaluator extends BaseEvaluator {
   private static final String STATIC_WORD_WITH_SPACE = "static ";
   private static final String DOT_STAR_POSTFIX = ".*";
 
-  protected final String shellId;
-  protected final String sessionId;
-  protected Classpath classPath;
-  protected Imports imports;
   //user entered source value
-  protected String outDir;
   protected GroovyClasspathScanner cps;
   protected boolean exit;
   protected boolean updateLoader;
-  protected final CellExecutor executor;
   protected GroovyAutocomplete gac;
-
   public static boolean LOCAL_DEV = false;
-
   public static String GROOVY_JAR_PATH = "GROOVY_JAR_PATH";
-
   private Binding scriptBinding = null;
 
-  protected class jobDescriptor {
-    public String codeToBeExecuted;
-    public SimpleEvaluationObject outputObject;
-
-    jobDescriptor(String c, SimpleEvaluationObject o) {
-      codeToBeExecuted = c;
-      outputObject = o;
-    }
-  }
 
   protected final Semaphore syncObject = new Semaphore(0, true);
-  protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
+  protected final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<JobDescriptor>();
 
   protected static Pattern[] envVariablePatterns = {
           Pattern.compile("\\$\\{([a-z_][a-z0-9_]*)\\}", Pattern.CASE_INSENSITIVE),
@@ -106,17 +80,12 @@ public class GroovyEvaluator extends BaseEvaluator {
   }
 
   public GroovyEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    shellId = id;
-    sessionId = sId;
-    classPath = new Classpath();
-    imports = new Imports();
+    super(id,sId,cellExecutor);
     cps = new GroovyClasspathScanner();
     gac = createGroovyAutocomplete(cps);
     exit = false;
     updateLoader = false;
-    outDir = Evaluator.createJupyterTempFolder().toString();
     outDir = envVariablesFilter(outDir, System.getenv());
-    executor = cellExecutor;
     startWorker();
   }
 
@@ -165,63 +134,6 @@ public class GroovyEvaluator extends BaseEvaluator {
     exit = true;
     cancelExecution();
     syncObject.release();
-  }
-
-  @Override
-  public Classpath getClasspath() {
-    return this.classPath;
-  }
-
-  @Override
-  public Imports getImports() {
-    return this.imports;
-  }
-
-  @Override
-  public void initKernel(KernelParameters kernelParameters) {
-    configure(kernelParameters);
-  }
-
-  @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-    configure(kernelParameters);
-    resetEnvironment();
-  }
-
-  private void configure(KernelParameters kernelParameters) {
-    Map<String, Object> params = kernelParameters.getParams();
-    Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
-    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
-
-    if (listOfClassPath == null || listOfClassPath.isEmpty()) {
-      classPath = new Classpath();
-    } else {
-      for (String line : listOfClassPath) {
-        if (!line.trim().isEmpty()) {
-          addJar(new PathToJar(line));
-        }
-      }
-    }
-
-    if (listOfImports == null || listOfImports.isEmpty()) {
-      imports = new Imports();
-    } else {
-      for (String line : listOfImports) {
-        if (!line.trim().isEmpty()) {
-          addImportPath(new ImportPath(line));
-        }
-      }
-    }
-  }
-
-  @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
-  }
-
-  @Override
-  protected boolean removeImportPath(ImportPath anImport) {
-    return imports.remove(anImport);
   }
 
   @Override
@@ -337,7 +249,7 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
-    jobQueue.add(new jobDescriptor(code, seo));
+    jobQueue.add(new JobDescriptor(code, seo));
     syncObject.release();
   }
 
@@ -363,7 +275,7 @@ public class GroovyEvaluator extends BaseEvaluator {
      */
 
     public void run() {
-      jobDescriptor j = null;
+      JobDescriptor j = null;
       NamespaceClient nc = null;
 
       while (!exit) {
@@ -506,9 +418,6 @@ public class GroovyEvaluator extends BaseEvaluator {
         Thread.currentThread().setContextClassLoader(oldld);
       }
     }
-
-    ;
-
   }
 
   static class GroovyNotFoundException extends RuntimeException {

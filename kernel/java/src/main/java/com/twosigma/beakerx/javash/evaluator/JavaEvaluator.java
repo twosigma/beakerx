@@ -19,7 +19,6 @@ import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
@@ -29,18 +28,14 @@ import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
-import com.twosigma.beakerx.kernel.KernelParameters;
-import com.twosigma.beakerx.kernel.PathToJar;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,44 +44,24 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
-
 public class JavaEvaluator extends BaseEvaluator {
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
-  protected final String shellId;
-  protected final String sessionId;
   protected final String packageId;
-  protected Classpath classPath;
-  protected Imports imports;
-  protected String outDir;
   protected ClasspathScanner cps;
   protected JavaAutocomplete jac;
   protected boolean exit;
   protected boolean updateLoader;
   protected workerThread myWorker;
-  protected final CellExecutor executor;
-
-  protected class jobDescriptor {
-    String codeToBeExecuted;
-    SimpleEvaluationObject outputObject;
-
-    jobDescriptor(String c, SimpleEvaluationObject o) {
-      codeToBeExecuted = c;
-      outputObject = o;
-    }
-  }
 
   protected final Semaphore syncObject = new Semaphore(0, true);
-  protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
+  protected final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<JobDescriptor>();
 
   public JavaEvaluator(String id, String sId) {
     this(id, sId, new BeakerCellExecutor("javash"));
   }
 
   public JavaEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    shellId = id;
-    sessionId = sId;
+    super(id, sId, cellExecutor);
     packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
     cps = new ClasspathScanner();
     jac = createJavaAutocomplete(cps);
@@ -94,8 +69,6 @@ public class JavaEvaluator extends BaseEvaluator {
     imports = new Imports();
     exit = false;
     updateLoader = true;
-    outDir = Evaluator.createJupyterTempFolder().toString();
-    executor = cellExecutor;
     startWorker();
   }
 
@@ -151,76 +124,10 @@ public class JavaEvaluator extends BaseEvaluator {
     syncObject.release();
   }
 
-
-  @Override
-  public void initKernel(KernelParameters kernelParameters) {
-    configure(kernelParameters);
-  }
-
-
-  @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-    configure(kernelParameters);
-    resetEnvironment();
-  }
-
-  private void configure(KernelParameters kernelParameters) {
-    Map<String, Object> params = kernelParameters.getParams();
-    Collection<String> listOfClassPath = (Collection<String>) params.get(CLASSPATH);
-    Collection<String> listOfImports = (Collection<String>) params.get(IMPORTS);
-
-    Map<String, String> env = System.getenv();
-
-    if (listOfClassPath == null || listOfClassPath.isEmpty()) {
-      classPath = new Classpath();
-    } else {
-      for (String line : listOfClassPath) {
-        if (!line.trim().isEmpty()) {
-          addJar(new PathToJar(line));
-        }
-      }
-    }
-
-    if (listOfImports == null || listOfImports.isEmpty()) {
-      imports = new Imports();
-    } else {
-      for (String line : listOfImports) {
-        if (!line.trim().isEmpty()) {
-          imports.add(new ImportPath(line));
-        }
-      }
-    }
-  }
-
-  @Override
-  public Classpath getClasspath() {
-    return this.classPath;
-  }
-
-  @Override
-  public Imports getImports() {
-    return this.imports;
-  }
-
-  @Override
-  protected boolean addJar(PathToJar path) {
-    return classPath.add(path);
-  }
-
-  @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
-  }
-
-  @Override
-  protected boolean removeImportPath(ImportPath anImport) {
-    return imports.remove(anImport);
-  }
-
   @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
-    jobQueue.add(new jobDescriptor(code, seo));
+    jobQueue.add(new JobDescriptor(code, seo));
     syncObject.release();
   }
 
@@ -272,7 +179,7 @@ public class JavaEvaluator extends BaseEvaluator {
 
     public void run() {
       DynamicClassLoaderSimple loader = null;
-      jobDescriptor j = null;
+      JobDescriptor j = null;
       org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler;
 
       javaSourceCompiler = new JavaSourceCompiler();

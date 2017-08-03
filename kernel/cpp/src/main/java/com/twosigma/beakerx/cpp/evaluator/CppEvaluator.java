@@ -71,12 +71,9 @@ public class CppEvaluator extends BaseEvaluator {
 
   public static final String EXECUTE = "execute";
 
-  private final String shellId;
-  private final String sessionId;
   private List<String> compileCommand;
   private boolean exit;
   private workerThread myWorker;
-  private final CellExecutor executor;
   private List<String> userFlags = new ArrayList<>();
   private Process cellProc;
   private TempCppFiles tempCppFiles;
@@ -84,16 +81,12 @@ public class CppEvaluator extends BaseEvaluator {
   private final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
   private HashSet<String> loadedCells;
-  private Classpath classpath = new Classpath();
-  private Imports imports = new Imports();
 
   public CppEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    shellId = id;
-    sessionId = sId;
+    super(id,sId,cellExecutor);
     tempCppFiles = new TempCppFiles(id);
     compileCommand = CLangCommand.compileCommand(tempCppFiles);
     exit = false;
-    executor = cellExecutor;
     loadedCells = new HashSet<>();
     startWorker();
   }
@@ -153,26 +146,6 @@ public class CppEvaluator extends BaseEvaluator {
   @Override
   protected boolean addJar(PathToJar path) {
     return false;
-  }
-
-  @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
-  }
-
-  @Override
-  protected boolean removeImportPath(ImportPath anImport) {
-    return imports.remove(anImport);
-  }
-
-  @Override
-  public Classpath getClasspath() {
-    return this.classpath;
-  }
-
-  @Override
-  public Imports getImports() {
-    return this.imports;
   }
 
   @Override

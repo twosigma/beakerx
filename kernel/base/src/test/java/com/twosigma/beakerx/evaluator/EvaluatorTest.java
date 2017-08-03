@@ -18,6 +18,7 @@ package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -39,7 +40,13 @@ public class EvaluatorTest extends BaseEvaluator {
   private Imports imports = new Imports();
   private int resetEnvironmentCounter = 0;
 
+
   public EvaluatorTest() {
+    this("idEvaluatorTest", "sIdEvaluatorTest", TestBeakerCellExecutor.cellExecutor());
+  }
+
+  public EvaluatorTest(String id, String sId, CellExecutor cellExecutor) {
+    super(id, sId, cellExecutor);
   }
 
   @Override

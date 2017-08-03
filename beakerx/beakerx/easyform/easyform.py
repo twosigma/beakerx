@@ -18,7 +18,7 @@ from beakerx.plot.utils import getValue
 from ipykernel.comm import Comm
 from ipywidgets import Box, DOMWidget, Text, Label, Textarea, Button, SelectMultiple, Select, Dropdown, Checkbox, HBox, \
     VBox, RadioButtons, register
-from traitlets import Unicode, Bool, Int, Dict, ObjectName, Unicode, default
+from traitlets import Unicode, Bool, Int, Dict, ObjectName, Unicode, default, Any, Union, List
 
 
 class DatePicker(DOMWidget):
@@ -73,7 +73,15 @@ class ComboBox(Dropdown):
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     editable = Bool(default_value=False).tag(sync=True)
+    original_options = Union([List(), Dict()])
 
+
+    def _handle_msg(self, msg):
+        if 'value' in msg['content']['data']['sync_data']:
+            if msg['content']['data']['sync_data']['value'] not in self.options:
+                self.options = self.original_options[:]
+                self.options += (msg['content']['data']['sync_data']['value'], )
+        super(ComboBox, self)._handle_msg(msg)
 
 class EasyForm(Box):
     _view_name = Unicode('EasyFormView').tag(sync=True)
@@ -146,6 +154,7 @@ class EasyForm(Box):
     def addComboBox(self, *args, **kwargs):
         dropdown = ComboBox(description=self.getDescription(args, kwargs))
         dropdown.options = self.getOptions(args, kwargs)
+        dropdown.original_options = self.getOptions(args, kwargs)
         dropdown.editable = getValue(kwargs, 'editable', False)
         self.children += (dropdown,)
 
@@ -217,6 +226,6 @@ class EasyForm(Box):
     @staticmethod
     def getOptions(args, kwargs):
         if len(args) > 1:
-            return args[1]
+            return args[1][:]
         else:
             return getValue(kwargs, 'options', [])

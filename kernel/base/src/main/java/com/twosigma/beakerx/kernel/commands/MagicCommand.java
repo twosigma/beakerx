@@ -44,6 +44,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -194,7 +195,7 @@ public class MagicCommand {
 
   private MagicCommandFunctionality classpathAddJar() {
       return (code, command, message, executionCount) -> {
-          String[] split = command.split(" ");
+          String[] split = splitPath(command);
           if (split.length != 4) {
             return sendErrorMessage(message, "Wrong command format: " + CLASSPATH_ADD_JAR, executionCount);
           }
@@ -207,6 +208,23 @@ public class MagicCommand {
             return getMagicCommandItem(addJars(path), code, message, executionCount);
           }
       };
+  }
+
+  private String[] splitPath(String command) {
+    if (command.contains("\"")) {
+      int startQuotesIndex = command.indexOf("\"");
+      int endQuotesIndex = command.length();
+
+      String[] firstPart = command.substring(0, startQuotesIndex).split(" ");
+      String secondPart = command.substring(startQuotesIndex, endQuotesIndex).replace("\"", "");
+
+      String[] resultArray = Arrays.copyOf(firstPart, firstPart.length + 1);
+      resultArray[resultArray.length - 1] = secondPart;
+
+      return resultArray;
+    } else {
+      return command.split(" ");
+    }
   }
 
   private MagicCommandItem sendErrorMessage(Message message, String messageText, int executionCount) {
@@ -359,10 +377,11 @@ public class MagicCommand {
 
   private ErrorData isValidPath(String path) {
     boolean isEmpty = checkNotNull(path).isEmpty();
-
     if (isEmpty) {
       return new ErrorData(true, "Please provide a path");
     }
+
+    path = path.replace("\"", "");
 
     if (doesPathContainsWildCards(path)) {
       if (!containsSingleWildcardSymbol(path) || !path.endsWith("*")) {

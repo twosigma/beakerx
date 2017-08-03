@@ -40,7 +40,16 @@ public class MagicCommandFinder {
     List<MagicCommandItemWithResult> errors = new ArrayList<>();
     LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun = new LinkedHashMap<>();
     code.getCommands().forEach(command -> {
-      command = command.replaceAll("\\s+"," ");
+      if (command.contains("\"")) {
+        int indexOfFirstQuote = command.indexOf("\"");
+        String commandWithoutSpaces = command.substring(0, indexOfFirstQuote)
+                                             .replaceAll("\\s+"," ");
+        String path = command.substring(indexOfFirstQuote, command.length());
+        command = commandWithoutSpaces + " " + path;
+      } else {
+        command = command.replaceAll("\\s+"," ");
+      }
+
       Optional<MagicCommandFunctionality> functionality = findFunctionality(commands, command);
       if (functionality.isPresent()) {
         functionalityToRun.put(command, functionality.get());

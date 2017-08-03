@@ -93,10 +93,6 @@ public class ScalaEvaluator extends BaseEvaluator {
     myWorker.start();
   }
 
-  public String getShellId() {
-    return shellId;
-  }
-
   private static boolean autoTranslationSetup = false;
 
   public void setupAutoTranslation() {
@@ -116,18 +112,9 @@ public class ScalaEvaluator extends BaseEvaluator {
     autoTranslationSetup = true;
   }
 
-  public void killAllThreads() {
-    executor.killAllThreads();
-  }
-
-  public void cancelExecution() {
-    executor.cancelExecution();
-  }
-
-  public void resetEnvironment() {
-    executor.killAllThreads();
+  @Override
+  protected void doResetEnvironment() {
     updateLoader = true;
-    syncObject.release();
     try {
       newAutoCompleteEvaluator();
     } catch (MalformedURLException e) {

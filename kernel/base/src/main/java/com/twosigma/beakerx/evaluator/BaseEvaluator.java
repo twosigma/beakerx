@@ -172,4 +172,19 @@ public abstract class BaseEvaluator implements Evaluator {
     }
   }
 
+  public void killAllThreads() {
+    executor.killAllThreads();
+  }
+
+  public void cancelExecution() {
+    executor.cancelExecution();
+  }
+
+  public void resetEnvironment() {
+    executor.killAllThreads();
+    doResetEnvironment();
+    syncObject.release();
+  }
+
+  protected abstract void doResetEnvironment();
 }

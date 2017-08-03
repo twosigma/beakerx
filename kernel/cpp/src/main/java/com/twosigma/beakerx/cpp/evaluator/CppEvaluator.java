@@ -102,20 +102,20 @@ public class CppEvaluator extends BaseEvaluator {
     return null;
   }
 
+  @Override
   public void killAllThreads() {
     // executor.killAllThreads();
   }
-
+  @Override
   public void cancelExecution() {
     if (cellProc != null) {
       cellProc.destroy();
     }
   }
 
-  public void resetEnvironment() {
+  @Override
+  protected void doResetEnvironment() {
     loadedCells.clear();
-    executor.killAllThreads();
-    syncObject.release();
   }
 
   public void exit() {

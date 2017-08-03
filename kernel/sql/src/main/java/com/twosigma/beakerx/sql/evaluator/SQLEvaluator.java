@@ -92,20 +92,27 @@ public class SQLEvaluator extends BaseEvaluator {
     cancelExecution();
   }
 
+  @Override
   public void cancelExecution() {
-    executor.cancelExecution();
+    super.cancelExecution();
     queryExecutor.cancel();
   }
 
+  @Override
   public void killAllThreads() {
+    super.killAllThreads();
     queryExecutor.cancel();
-    executor.killAllThreads();
   }
 
+  @Override
   public void resetEnvironment() {
     killAllThreads();
     jdbcClient.loadDrivers(classPath.getPathsAsStrings());
     sac = createSqlAutocomplete(cps);
+  }
+
+  @Override
+  protected void doResetEnvironment() {
   }
 
   private SQLAutocomplete createSqlAutocomplete(ClasspathScanner c) {

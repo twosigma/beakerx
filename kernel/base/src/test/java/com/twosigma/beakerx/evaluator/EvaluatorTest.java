@@ -91,8 +91,11 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
   @Override
-  public void initKernel(KernelParameters kernelParameters) {
+  protected void doResetEnvironment() {
+  }
 
+  @Override
+  public void initKernel(KernelParameters kernelParameters) {
   }
 
   public SimpleEvaluationObject getSeo() {

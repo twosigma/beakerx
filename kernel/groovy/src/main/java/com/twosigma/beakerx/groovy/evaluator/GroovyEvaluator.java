@@ -43,9 +43,8 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static com.twosigma.beakerx.groovy.evaluator.EnvVariablesFilter.envVariablesFilter;
 
 
 public class GroovyEvaluator extends BaseEvaluator {
@@ -63,11 +62,6 @@ public class GroovyEvaluator extends BaseEvaluator {
   public static boolean LOCAL_DEV = false;
   public static String GROOVY_JAR_PATH = "GROOVY_JAR_PATH";
   private Binding scriptBinding = null;
-
-  protected static Pattern[] envVariablePatterns = {
-          Pattern.compile("\\$\\{([a-z_][a-z0-9_]*)\\}", Pattern.CASE_INSENSITIVE),
-          Pattern.compile("\\$([a-z_][a-z0-9_]*)", Pattern.CASE_INSENSITIVE)
-  };
 
   public GroovyEvaluator(String id, String sId) {
     this(id, sId, new BeakerCellExecutor("groovy"));
@@ -92,21 +86,8 @@ public class GroovyEvaluator extends BaseEvaluator {
     return new GroovyAutocomplete(c);
   }
 
-  public String getShellId() {
-    return shellId;
-  }
-
-  public void killAllThreads() {
-    executor.killAllThreads();
-  }
-
-  public void cancelExecution() {
-    executor.cancelExecution();
-  }
-
-  public void resetEnvironment() {
-    executor.killAllThreads();
-
+  @Override
+  protected void doResetEnvironment() {
     String cpp = "";
     for (String pt : classPath.getPathsAsStrings()) {
       cpp += pt;
@@ -121,7 +102,6 @@ public class GroovyEvaluator extends BaseEvaluator {
       gac.addImport(st.asString());
 
     updateLoader = true;
-    syncObject.release();
   }
 
   public void exit() {
@@ -203,42 +183,6 @@ public class GroovyEvaluator extends BaseEvaluator {
 
     scriptBinding = new Binding();
     return new GroovyClassLoader(newClassLoader(), compilerConfiguration);
-  }
-
-  static String envVariablesFilter(String p, Map<String, String> env) {
-
-    if (p == null) return p;
-
-    for (Pattern pattern : envVariablePatterns) {
-
-      Matcher matcher = pattern.matcher(p);
-
-      String r = "";
-
-      int lastIndex = 0;
-
-      while (matcher.find()) {
-
-        String var = matcher.group(1);
-
-        String substitute = env.get(var);
-
-        if (substitute == null) substitute = "";
-
-        r += p.substring(lastIndex, matcher.start());
-
-        r += substitute;
-
-        lastIndex = matcher.end();
-      }
-
-      r += p.substring(lastIndex, p.length());
-
-      p = r;
-
-    }
-
-    return p;
   }
 
   public void evaluate(SimpleEvaluationObject seo, String code) {

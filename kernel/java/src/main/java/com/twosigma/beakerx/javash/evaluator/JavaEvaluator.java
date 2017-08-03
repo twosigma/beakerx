@@ -76,21 +76,9 @@ public class JavaEvaluator extends BaseEvaluator {
     return new JavaAutocomplete(c);
   }
 
-  public String getShellId() {
-    return shellId;
-  }
 
-  public void killAllThreads() {
-    executor.killAllThreads();
-  }
-
-  public void cancelExecution() {
-    executor.cancelExecution();
-  }
-
-  public void resetEnvironment() {
-    executor.killAllThreads();
-
+  @Override
+  protected void doResetEnvironment() {
     String cpp = "";
     for (String pt : classPath.getPathsAsStrings()) {
       cpp += pt;
@@ -109,7 +97,6 @@ public class JavaEvaluator extends BaseEvaluator {
 
     // signal thread to create loader
     updateLoader = true;
-    syncObject.release();
   }
 
   @Override

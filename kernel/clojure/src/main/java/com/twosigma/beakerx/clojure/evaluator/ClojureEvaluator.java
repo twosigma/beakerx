@@ -97,22 +97,8 @@ public class ClojureEvaluator extends BaseEvaluator {
     myWorker = new workerThread();
     myWorker.start();
   }
-
-  public String getShellId() {
-    return shellId;
-  }
-
-  public void killAllThreads() {
-    executor.killAllThreads();
-  }
-
-  public void cancelExecution() {
-    executor.cancelExecution();
-  }
-
-  public void resetEnvironment() {
-    executor.killAllThreads();
-
+  @Override
+  protected void doResetEnvironment() {
     loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
     loader.addJars(classPath.getPathsAsStrings());
     loader.addDynamicDir(outDir);
@@ -142,8 +128,6 @@ public class ClojureEvaluator extends BaseEvaluator {
     }
 
     Thread.currentThread().setContextClassLoader(oldLoader);
-
-    syncObject.release();
   }
 
   public void exit() {
@@ -223,7 +207,6 @@ public class ClojureEvaluator extends BaseEvaluator {
         Thread.currentThread().setContextClassLoader(loader);
 
         theOutput.setOutputHandler();
-        Object result;
         try {
           InternalVariable.setValue(theOutput);
           Object o = clojureLoadString.invoke(theCode);

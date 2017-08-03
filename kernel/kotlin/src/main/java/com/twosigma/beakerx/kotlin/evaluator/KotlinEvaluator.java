@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KotlinEvaluator extends BaseEvaluator {
-  
+
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
 
   protected final String packageId;
@@ -64,7 +64,7 @@ public class KotlinEvaluator extends BaseEvaluator {
   }
 
   public KotlinEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    super(id,sId,cellExecutor);
+    super(id, sId, cellExecutor);
     packageId = "com.twosigma.beaker.kotlin.bkr" + shellId.split("-")[0];
     cps = new ClasspathScanner();
     exit = false;
@@ -77,21 +77,8 @@ public class KotlinEvaluator extends BaseEvaluator {
     myWorker.start();
   }
 
-  public String getShellId() {
-    return shellId;
-  }
-
-  public void killAllThreads() {
-    executor.killAllThreads();
-  }
-
-  public void cancelExecution() {
-    executor.cancelExecution();
-  }
-
-  public void resetEnvironment() {
-    executor.killAllThreads();
-
+  @Override
+  protected void doResetEnvironment() {
     String cpp = "";
     for (String pt : classPath.getPathsAsStrings()) {
       cpp += pt;
@@ -106,7 +93,6 @@ public class KotlinEvaluator extends BaseEvaluator {
 
     // signal thread to create loader
     updateLoader = true;
-    syncObject.release();
   }
 
   @Override
@@ -170,7 +156,7 @@ public class KotlinEvaluator extends BaseEvaluator {
 
           String classpath = System.getProperty("java.class.path");
           String[] classpathEntries = classpath.split(File.pathSeparator);
-            
+
           LineBrakingStringBuilderWrapper javaSourceCode = new LineBrakingStringBuilderWrapper();
           javaSourceCode.append("package ");
           javaSourceCode.append(packageId);
@@ -192,11 +178,11 @@ public class KotlinEvaluator extends BaseEvaluator {
 
           K2JVMCompiler comp = new K2JVMCompiler();
           ExitCode exitCode = null;
-          
+
           ByteArrayOutputStream errorBaos = new ByteArrayOutputStream();
           PrintStream errorPs = new PrintStream(errorBaos);
           Path sourceFile = Files.write(Paths.get(outDir + "\\" + WRAPPER_CLASS_NAME + ".kt"), javaSourceCode.toString().getBytes());
-          
+
           K2JVMCompilerArguments arguments = K2JVMCompilerArguments.createDefaultInstance();
           //arguments.kotlinHome = pathToCore.toString();
           arguments.includeRuntime = true;
@@ -212,7 +198,7 @@ public class KotlinEvaluator extends BaseEvaluator {
 
           MessageCollector collector = new PrintingMessageCollector(errorPs, MessageRenderer.PLAIN_RELATIVE_PATHS, arguments.verbose);
           exitCode = comp.exec(collector, Services.EMPTY, arguments);
-          
+
           if (ExitCode.COMPILATION_ERROR == exitCode) {
             j.outputObject.error(new String(errorBaos.toByteArray(), StandardCharsets.UTF_8));
             j.outputObject.executeCodeCallback();
@@ -247,17 +233,17 @@ public class KotlinEvaluator extends BaseEvaluator {
       }
       NamespaceClient.delBeaker(sessionId);
     }
-    
-    public String getEntriesAsString(String[] classpathEntries, String separator){
+
+    public String getEntriesAsString(String[] classpathEntries, String separator) {
       String ret = "";
       for (String string : classpathEntries) {
-        ret += string + separator; 
+        ret += string + separator;
       }
       return ret;
     }
 
 
-    protected class MyRunnable <T>implements Runnable {
+    protected class MyRunnable<T> implements Runnable {
 
       protected final SimpleEvaluationObject theOutput;
       protected final T instance;
@@ -265,7 +251,7 @@ public class KotlinEvaluator extends BaseEvaluator {
       protected final boolean retObject;
       protected final ClassLoader loader;
 
-      public MyRunnable(T instance,  Method mth, SimpleEvaluationObject out, boolean ro, ClassLoader ld) {
+      public MyRunnable(T instance, Method mth, SimpleEvaluationObject out, boolean ro, ClassLoader ld) {
         this.instance = instance;
         theMth = mth;
         theOutput = out;

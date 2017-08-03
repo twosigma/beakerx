@@ -39,13 +39,13 @@ public abstract class BaseEvaluator implements Evaluator {
 
   protected final String shellId;
   protected final String sessionId;
-  protected final CellExecutor executor;
   protected String outDir;
   protected Classpath classPath;
   protected Imports imports;
 
-  protected final Semaphore syncObject = new Semaphore(0, true);
-  protected final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<JobDescriptor>();
+  protected final CellExecutor executor;
+  public final Semaphore syncObject = new Semaphore(0, true);
+  public final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<JobDescriptor>();
 
   public BaseEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
@@ -187,4 +187,12 @@ public abstract class BaseEvaluator implements Evaluator {
   }
 
   protected abstract void doResetEnvironment();
+
+  public String getSessionId() {
+    return sessionId;
+  }
+
+  public String getOutDir() {
+    return outDir;
+  }
 }

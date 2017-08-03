@@ -13,12 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.cpp.kernel;
+package com.twosigma.beakerx.cpp.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.cpp.autocomplete.CPP14Lexer;
 import com.twosigma.beakerx.cpp.autocomplete.CPP14Parser;
+import com.twosigma.beakerx.cpp.kernel.Extractor;
 import com.twosigma.beakerx.cpp.utils.CellGobblerManager;
 import com.twosigma.beakerx.cpp.utils.TempCppFiles;
 import com.twosigma.beakerx.cpp.utils.CLangCommand;

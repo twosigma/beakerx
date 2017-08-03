@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.cpp;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
-import com.twosigma.beakerx.cpp.kernel.CppEvaluator;
+import com.twosigma.beakerx.cpp.evaluator.CppEvaluator;
 import com.twosigma.beakerx.cpp.kernel.Cpp;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.KernelParameters;
@@ -24,7 +24,6 @@ import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;

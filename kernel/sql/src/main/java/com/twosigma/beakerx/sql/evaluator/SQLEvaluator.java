@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.sql.kernel;
+package com.twosigma.beakerx.sql.evaluator;
 
 
 import com.twosigma.beakerx.NamespaceClient;
@@ -35,6 +35,7 @@ import com.twosigma.beakerx.sql.autocomplete.SQLAutocomplete;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.sql.kernel.SQLKernelParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

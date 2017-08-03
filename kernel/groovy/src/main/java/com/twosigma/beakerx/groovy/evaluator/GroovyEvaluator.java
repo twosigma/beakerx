@@ -44,8 +44,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,10 +63,6 @@ public class GroovyEvaluator extends BaseEvaluator {
   public static boolean LOCAL_DEV = false;
   public static String GROOVY_JAR_PATH = "GROOVY_JAR_PATH";
   private Binding scriptBinding = null;
-
-
-  protected final Semaphore syncObject = new Semaphore(0, true);
-  protected final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<JobDescriptor>();
 
   protected static Pattern[] envVariablePatterns = {
           Pattern.compile("\\$\\{([a-z_][a-z0-9_]*)\\}", Pattern.CASE_INSENSITIVE),

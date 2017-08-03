@@ -77,13 +77,10 @@ public class CppEvaluator extends BaseEvaluator {
   private List<String> userFlags = new ArrayList<>();
   private Process cellProc;
   private TempCppFiles tempCppFiles;
-  private final Semaphore syncObject = new Semaphore(0, true);
-  private final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
-
   private HashSet<String> loadedCells;
 
   public CppEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    super(id,sId,cellExecutor);
+    super(id, sId, cellExecutor);
     tempCppFiles = new TempCppFiles(id);
     compileCommand = CLangCommand.compileCommand(tempCppFiles);
     exit = false;
@@ -151,7 +148,7 @@ public class CppEvaluator extends BaseEvaluator {
   @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
-    jobQueue.add(new jobDescriptor(seo, code, uuid()));
+    jobQueue.add(new JobDescriptor(code, seo, uuid()));
     syncObject.release();
   }
 
@@ -165,7 +162,7 @@ public class CppEvaluator extends BaseEvaluator {
      */
 
     public void run() {
-      jobDescriptor j = null;
+      JobDescriptor j = null;
       NamespaceClient nc = null;
 
 
@@ -416,18 +413,6 @@ public class CppEvaluator extends BaseEvaluator {
         c2.append(c);
       }
       return c2.toString().replaceAll("\n\n+", "\n").trim();
-    }
-  }
-
-  protected class jobDescriptor {
-    private SimpleEvaluationObject outputObject;
-    private String codeToBeExecuted;
-    private String cellId;
-
-    jobDescriptor(SimpleEvaluationObject o, String c, String cid) {
-      outputObject = o;
-      codeToBeExecuted = c;
-      cellId = cid;
     }
   }
 }

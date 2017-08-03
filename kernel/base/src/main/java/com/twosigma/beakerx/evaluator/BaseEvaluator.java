@@ -32,6 +32,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 
 public abstract class BaseEvaluator implements Evaluator {
 
@@ -41,6 +43,9 @@ public abstract class BaseEvaluator implements Evaluator {
   protected String outDir;
   protected Classpath classPath;
   protected Imports imports;
+
+  protected final Semaphore syncObject = new Semaphore(0, true);
+  protected final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<JobDescriptor>();
 
   public BaseEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
@@ -73,8 +78,6 @@ public abstract class BaseEvaluator implements Evaluator {
     if (!addedPaths.isEmpty()) {
       resetEnvironment();
     }
-
-
     return addedPaths;
   }
 
@@ -149,9 +152,15 @@ public abstract class BaseEvaluator implements Evaluator {
     configure(kernelParameters);
   }
 
-  protected class JobDescriptor {
+  public class JobDescriptor {
     public String codeToBeExecuted;
     public SimpleEvaluationObject outputObject;
+    public String cellId;
+
+    public JobDescriptor(String c, SimpleEvaluationObject o, String cid) {
+      this(c, o);
+      cellId = cid;
+    }
 
     public JobDescriptor(String c, SimpleEvaluationObject o) {
       codeToBeExecuted = c;

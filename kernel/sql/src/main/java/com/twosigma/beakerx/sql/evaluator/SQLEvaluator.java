@@ -58,12 +58,8 @@ public class SQLEvaluator extends BaseEvaluator {
   private Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
   private ConnectionStringHolder defaultConnectionString;
   volatile private boolean exit;
-
   private ClasspathScanner cps;
   private SQLAutocomplete sac;
-
-  private final Semaphore syncObject = new Semaphore(0, true);
-  private final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<>();
   private final QueryExecutor queryExecutor;
   private final JDBCClient jdbcClient;
 

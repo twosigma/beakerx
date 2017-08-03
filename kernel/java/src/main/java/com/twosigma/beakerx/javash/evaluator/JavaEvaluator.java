@@ -39,8 +39,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,9 +50,6 @@ public class JavaEvaluator extends BaseEvaluator {
   protected boolean exit;
   protected boolean updateLoader;
   protected workerThread myWorker;
-
-  protected final Semaphore syncObject = new Semaphore(0, true);
-  protected final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<JobDescriptor>();
 
   public JavaEvaluator(String id, String sId) {
     this(id, sId, new BeakerCellExecutor("javash"));

@@ -42,8 +42,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
 
 public class ClojureEvaluator extends BaseEvaluator {
 
@@ -52,14 +50,10 @@ public class ClojureEvaluator extends BaseEvaluator {
   private List<String> requirements;
   private boolean exit;
   private workerThread myWorker;
-
   private String currenClojureNS;
   private DynamicClassLoaderSimple loader;
-
   private static final String beaker_clojure_ns = "beaker_clojure_shell";
   private Var clojureLoadString = null;
-  private final Semaphore syncObject = new Semaphore(0, true);
-  private final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<JobDescriptor>();
 
   private String initScriptSource()
           throws IOException {

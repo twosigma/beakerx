@@ -56,8 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
 
 public class ScalaEvaluator extends BaseEvaluator {
 
@@ -70,9 +68,6 @@ public class ScalaEvaluator extends BaseEvaluator {
   protected String currentClassPath;
   protected String currentImports;
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
-
-  protected final Semaphore syncObject = new Semaphore(0, true);
-  protected final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<JobDescriptor>();
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp) {
     this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl());

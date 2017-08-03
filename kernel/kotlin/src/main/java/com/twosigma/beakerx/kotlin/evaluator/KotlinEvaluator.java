@@ -48,8 +48,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
 
 public class KotlinEvaluator extends BaseEvaluator {
   
@@ -60,9 +58,6 @@ public class KotlinEvaluator extends BaseEvaluator {
   protected boolean exit;
   protected boolean updateLoader;
   protected workerThread myWorker;
-
-  protected final Semaphore syncObject = new Semaphore(0, true);
-  protected final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<JobDescriptor>();
 
   public KotlinEvaluator(String id, String sId) {
     this(id, sId, new BeakerCellExecutor("kotlin"));

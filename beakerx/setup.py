@@ -52,7 +52,7 @@ cmdclass['js'] = install_node_modules(
     source_dir=pjoin(here, 'js', 'src')
 )
 cmdclass['java'] = run_gradle(cmd='build')
-cmdclass['kernels'] = install_kernels(pjoin(os.environ['CONDA_PREFIX'], 'lib', 'python3.5', 'site-packages', 'beakerx', 'static', 'kernel'))
+cmdclass['kernels'] = install_kernels(kernels_dir=pjoin(here, 'beakerx', 'static', 'kernel'))
 cmdclass['kernelspec_class'] = update_kernelspec_class(prefix=os.environ['CONDA_PREFIX'])
 cmdclass['custom_css'] = copy_files(
     src=pjoin(here,  'beakerx', 'static', 'custom'), 

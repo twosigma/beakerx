@@ -24,12 +24,6 @@ describe('Kotlin-example notebook', function () {
     beakerxPO.runNotebookByName('Kotlin-example.ipynb', done);
   });
 
-  it('Can run Kotlin cell. ', function (done) {
-    beakerxPO.kernelIdleIcon.waitForEnabled();
-    beakerxPO.runCodeCellByIndex(0);
-    browser.call(done);
-  });
-
   describe('Run first cell. ', function () {
     it('Output contains "Hello, world!"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();

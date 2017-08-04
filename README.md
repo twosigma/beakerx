@@ -40,14 +40,6 @@ Using [conda](https://conda.io/docs/install/quick.html) (except on Windows, see 
 conda install -c beakerx beakerx
 ```
 
-## Install
-
-Using conda:
-
-```
-conda install -c beakerx beakerx
-```
-
 Using pip:
 
 ```
@@ -57,33 +49,29 @@ jupyter nbextension enable beakerx --py --sys-prefix
 ```
 And then follow the guide on [Issue #5720](https://github.com/twosigma/beakerx/issues/5720).
 
-## Usage
-
-Start the Jupyter Notebook server: `jupyter notebook`
-
 ## Developer Install
 
-Dependencies:
+### Dependencies:
 
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 * [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
+### Install
+
 ```
 conda create -y -n beakerx python=3.5 jupyter openjdk yarn
 source activate beakerx
-(cd beakerx; python setup.py install --single-version-externally-managed --record record.txt && python setup.py kernels)
+(cd beakerx; pip install -e . --verbose)
 jupyter nbextension install beakerx --py --sys-prefix
 jupyter nbextension enable beakerx --py --sys-prefix
-
 ```
-
 
 ### Update after Java change
 
 The kernels are installed to run out of the repo, so just a build should update the java code.
 
 ```
-(cd kernel; ./gradlew build)
+(cd beakerx; python setup.py java)
 ```
 
 Note this is currently broken and you need to do a complete rebuild
@@ -93,23 +81,25 @@ after a java change. See
 ### Update after JS change
 
 ```
-(cd beakerx/js; yarn webpack)
+(cd beakerx; python setup.py js)
 ```
 
 ## Beaker Notebooks Converter
 
 ```
-python -m beakerx.bkr2ipynb *.bkr
+(cd beakerx; python -m beakerx.bkr2ipynb *.bkr)
 ```
 
 ## Groovy with Interactive Plotting and Tables:
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 
-## Autotranslation from Python to JavaScript:
+### Autotranslation from Python to JavaScript
+
 <img width="900" alt="screen shot" src="https://cloud.githubusercontent.com/assets/963093/21077947/261def64-bf2a-11e6-8518-4845caf75690.png">
 
 ## Running with Docker
-In root project call
+
+From project root:
 
 `(cd kernel; gradle clean)`
 

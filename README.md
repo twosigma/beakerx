@@ -18,11 +18,16 @@
 
 [![Build Status](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/buildStatus/icon?job=BeakerX%20master)](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/job/BeakerX%20master)
 [![Gitter chat](https://badges.gitter.im/twosigma/beakerx.png)](https://gitter.im/twosigma/beakerx)
+[![Release](https://jitpack.io/v/twosigma/beakerx.svg)](https://jitpack.io/#twosigma/beakerx)
+[![NPM version](https://badge.fury.io/js/beakerx.svg)](http://badge.fury.io/js/beakerx)
+[![PyPI Version](https://badge.fury.io/py/beakerx.svg)](http://badge.fury.io/py/beakerx)
 
 BeakerX is a collection of JVM kernels with widgets, plotting, tables,
 autotranslation, and other extensions to the Jupyter Notebook and
 Jupyter Lab.  BeakerX is in alpha, with major features still under
 development, including incompatible changes without notice.
+
+The [documentation](https://github.com/twosigma/beakerx/blob/master/doc/StartHere.ipynb) consists of tutorial notebooks on GitHub.
 
 BeakerX is the successor to the [Beaker
 Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).
@@ -55,7 +60,7 @@ Dependencies:
 * [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
 ```
-conda create -y -n beakerx python=3.5 jupyter openjdk
+conda create -y -n beakerx python=3.5 jupyter openjdk pandas
 source activate beakerx
 (cd beakerx; python setup.py install --single-version-externally-managed --record record.txt && python setup.py kernels)
 ```

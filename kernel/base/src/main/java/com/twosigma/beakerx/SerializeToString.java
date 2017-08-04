@@ -22,48 +22,57 @@ import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.table.TableDisplay;
 import com.twosigma.beakerx.widgets.DisplayableWidget;
+import jupyter.Displayers;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.twosigma.beakerx.mimetype.MIMEContainer.HIDDEN;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
+import static java.util.Collections.singletonList;
 
 
 public class SerializeToString {
+  private static List<MIMEContainer> HIDDEN_MIME = singletonList(HIDDEN);
 
-  public static MIMEContainer doit(final Object input) {
+  public static List<MIMEContainer> doit(final Object input) {
     if (input == null) {
       return getMimeContainerForNull();
     }
     return getMimeContainer(input);
   }
 
-  public static MIMEContainer getMimeContainerForNull() {
+  public static List<MIMEContainer> getMimeContainerForNull() {
     if (Kernel.showNullExecutionResult) {
-      return Text("null");
+      return singletonList(Text("null"));
     }
-    return HIDDEN;
+
+    return HIDDEN_MIME;
   }
 
-  private static MIMEContainer getMimeContainer(final Object input) {
+  private static List<MIMEContainer> getMimeContainer(final Object input) {
     if (input instanceof DisplayableWidget) {
       ((DisplayableWidget) input).display();
-      return HIDDEN;
+      return HIDDEN_MIME;
     }
     TableDisplay table = getTableDisplay(input);
     if (table != null) {
       table.display();
-      return HIDDEN;
+      return HIDDEN_MIME;
     }
     if (input instanceof XYGraphics) {
       new Plot().add((XYGraphics) input).display();
-      return HIDDEN;
+      return HIDDEN_MIME;
     }
     if (input instanceof MIMEContainer) {
-      return (MIMEContainer) input;
+      return singletonList((MIMEContainer) input);
     }
-    return Text(input.toString());
+
+    return Displayers.display(input).entrySet().stream().
+            map(item -> new MIMEContainer(item.getKey(), item.getValue())).
+            collect(Collectors.toList());
   }
 
   public static TableDisplay getTableDisplay(final Object input) {

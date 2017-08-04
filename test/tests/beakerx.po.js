@@ -20,9 +20,19 @@ var BeakerXPageObject = function () {
   this.kernelIdleIcon = $('i.kernel_idle_icon');
 
   this.loginJupyter = function () {
+    browser.waitForEnabled('#password_input');
     browser.setValue('#password_input', 'beakerx');
     browser.click('#login_submit');
     browser.waitForEnabled('=demoResources');
+  }
+
+  this.runNotebookByName = function(name, done){
+    browser
+      .url(this.baseURL)
+      .call(done);
+    this.loginJupyter();
+    browser.click('=' + name);
+    browser.window(browser.windowHandles().value[1]);
   }
 
   this.clickRunCell = function () {
@@ -38,14 +48,29 @@ var BeakerXPageObject = function () {
 
   this.runCodeCellByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
-    codeCell.scroll()
+    codeCell.scroll();
     codeCell.click();
     this.clickRunCell();
     return codeCell;
   }
 
-  this.getDtContainer = function(codeCell){
+  this.runCellToGetDtContainer = function(index){
+    this.kernelIdleIcon.waitForEnabled();
+    var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.dtcontainer');
+  }
+
+  this.runCallAndCheckOutputText = function(index, expectedText){
+    var codeCell = this.runCodeCellByIndex(index);
+    var outputText = codeCell.$('.output_subarea.output_text');
+    outputText.waitForExist();
+    outputText.waitForEnabled();
+    expect(outputText.getText()).toMatch(expectedText);
+  }
+
+  this.plotLegendContainerIsEnabled = function(dtcontainer){
+    var plotLegendContainer = dtcontainer.$('#plotLegendContainer');
+    plotLegendContainer.waitForEnabled();
   }
 
 };

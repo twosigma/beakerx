@@ -49,6 +49,8 @@ public interface Evaluator {
 
   void killAllThreads();
 
+  void cancelExecution();
+
   void evaluate(SimpleEvaluationObject seo, String code);
 
   void exit();

@@ -2259,11 +2259,15 @@ define([
   };
 
   PlotScope.prototype.getPlotWithLegendWidth = function() {
-    var containerWidth = this.jqlegendcontainer.width();
-    var plotWidth = this.plotSize.width;
+    var containerWidth = this.jqcontainer.parents('.widget-subarea').width();
+    var plotWidth = containerWidth && containerWidth < this.plotSize.width ? containerWidth : this.plotSize.width;
     var legendWidth = this.jqlegendcontainer.find('.plot-legend').width();
+    var legendPosition = this.stdmodel.legendPosition.position;
+    // Logic based on updateLegendPosition method
+    var isLegendPlacedHorizontaly = (["LEFT", "RIGTH"].indexOf(legendPosition) !== -1) ||
+      (["TOP", "BOTTOM"].indexOf(legendPosition) === -1 && this.stdmodel.legendLayout === "VERTICAL");
 
-    return (containerWidth < plotWidth ? containerWidth : plotWidth) - (legendWidth + this.layout.legendMargin + 2);
+    return isLegendPlacedHorizontaly ? plotWidth - (legendWidth + this.layout.legendMargin + 2) : plotWidth;
   };
 
   PlotScope.prototype.updatePlot = function() {
@@ -2549,6 +2553,11 @@ define([
     });
     legendCopy.css("position", "inherit");
 
+    legendCopy.css("top", "auto");
+    legendCopy.css("left", "auto");
+    legendCopy.css("bottom", "auto");
+    legendCopy.css("right", "auto");
+
     //remove base from urls
     legendCopy.find("[style*='url']").each(function(i, item){
       var style = $(item).attr('style');
@@ -2569,6 +2578,7 @@ define([
       .attr("x", x)
       .attr("y", y)
       .append("xhtml:body")
+      .attr('style', 'position: relative;')
       .attr("xmlns", "http://www.w3.org/1999/xhtml")
       .html(legendCopy[0].outerHTML);
   };

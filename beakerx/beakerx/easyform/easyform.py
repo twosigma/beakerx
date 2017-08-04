@@ -15,182 +15,221 @@
 import json
 
 from beakerx.plot.utils import getValue
-from ipywidgets import Box, DOMWidget, Text, Label, Textarea, Button, SelectMultiple, Select, Dropdown, Checkbox, HBox, \
-    VBox, RadioButtons, register
-from traitlets import Unicode, Bool, Int, Dict, ObjectName, Unicode, default
+from ipykernel.comm import Comm
+from ipywidgets import Box, DOMWidget, Text, Label, Textarea, Button, \
+  SelectMultiple, Select, Dropdown, Checkbox, HBox, \
+  VBox, RadioButtons, register
+from traitlets import Unicode, Bool, Int, Dict, ObjectName, Unicode, default, \
+  Any, Union, List
 
 
 class DatePicker(DOMWidget):
-    def __init__(self, value=None, **kwargs):
-        if value is not None:
-            kwargs['value'] = value
-        super(DatePicker, self).__init__(**kwargs)
+  def __init__(self, value=None, **kwargs):
+    if value is not None:
+      kwargs['value'] = value
+    super(DatePicker, self).__init__(**kwargs)
 
-    _view_name = Unicode('DatePickerView').tag(sync=True)
-    _model_name = Unicode('DatePickerModel').tag(sync=True)
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
-    showTime = Bool(default_value=False, help="Enable or disable user changes.").tag(sync=True)
-    value = Unicode(default_value="").tag(sync=True)
-    description = Unicode(default_value="").tag(sync=True)
+  _view_name = Unicode('DatePickerView').tag(sync=True)
+  _model_name = Unicode('DatePickerModel').tag(sync=True)
+  _view_module = Unicode('beakerx').tag(sync=True)
+  _model_module = Unicode('beakerx').tag(sync=True)
+  showTime = Bool(default_value=False,
+                  help="Enable or disable user changes.").tag(sync=True)
+  value = Unicode(default_value="").tag(sync=True)
+  description = Unicode(default_value="").tag(sync=True)
 
 
 class TextArea(Textarea):
-    def __init__(self, **kwargs):
-        super(TextArea, self).__init__(**kwargs)
+  def __init__(self, **kwargs):
+    super(TextArea, self).__init__(**kwargs)
 
-    width = Unicode(default_value="200").tag(sync=True)
-    height = Unicode(default_value="200").tag(sync=True)
+  width = Unicode(default_value="200").tag(sync=True)
+  height = Unicode(default_value="200").tag(sync=True)
 
 
 class SelectMultipleWithRows(SelectMultiple):
-    def __init__(self, **kwargs):
-        super(SelectMultipleWithRows, self).__init__(**kwargs)
+  def __init__(self, **kwargs):
+    super(SelectMultipleWithRows, self).__init__(**kwargs)
 
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
-    size = Int(5, help="The number of rows to display.").tag(sync=True)
+  _view_module = Unicode('beakerx').tag(sync=True)
+  _model_module = Unicode('beakerx').tag(sync=True)
+  size = Int(5, help="The number of rows to display.").tag(sync=True)
 
 
 class SelectMultipleSingle(Select):
-    def __init__(self, **kwargs):
-        super(SelectMultipleSingle, self).__init__(**kwargs)
+  def __init__(self, **kwargs):
+    super(SelectMultipleSingle, self).__init__(**kwargs)
 
-    _view_name = Unicode('SelectMultipleSingleView').tag(sync=True)
-    _model_name = Unicode('SelectMultipleSingleModel').tag(sync=True)
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
-    size = Int(5, help="The number of rows to display.").tag(sync=True)
+  _view_name = Unicode('SelectMultipleSingleView').tag(sync=True)
+  _model_name = Unicode('SelectMultipleSingleModel').tag(sync=True)
+  _view_module = Unicode('beakerx').tag(sync=True)
+  _model_module = Unicode('beakerx').tag(sync=True)
+  size = Int(5, help="The number of rows to display.").tag(sync=True)
 
 
 class ComboBox(Dropdown):
-    def __init__(self, **kwargs):
-        super(ComboBox, self).__init__(**kwargs)
+  def __init__(self, **kwargs):
+    super(ComboBox, self).__init__(**kwargs)
 
-    _view_name = Unicode('ComboBoxView').tag(sync=True)
-    _model_name = Unicode('ComboBoxModel').tag(sync=True)
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
-    editable = Bool(default_value=False).tag(sync=True)
+  _view_name = Unicode('ComboBoxView').tag(sync=True)
+  _model_name = Unicode('ComboBoxModel').tag(sync=True)
+  _view_module = Unicode('beakerx').tag(sync=True)
+  _model_module = Unicode('beakerx').tag(sync=True)
+  editable = Bool(default_value=False).tag(sync=True)
+  original_options = Union([List(), Dict()])
+
+  def _handle_msg(self, msg):
+    if 'value' in msg['content']['data']['sync_data']:
+      if msg['content']['data']['sync_data']['value'] not in self.options:
+        self.options = self.original_options[:]
+        self.options += (msg['content']['data']['sync_data']['value'],)
+    super(ComboBox, self)._handle_msg(msg)
 
 
 class EasyForm(Box):
-    _view_name = Unicode('EasyFormView').tag(sync=True)
-    _model_name = Unicode('EasyFormModel').tag(sync=True)
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
-    easyFormName = Unicode(default_value='Form default').tag(sync=True)
-    test = ""
-    HORIZONTAL = 1
-    VERTICAL = 2
+  _view_name = Unicode('EasyFormView').tag(sync=True)
+  _model_name = Unicode('EasyFormModel').tag(sync=True)
+  _view_module = Unicode('beakerx').tag(sync=True)
+  _model_module = Unicode('beakerx').tag(sync=True)
+  easyFormName = Unicode(default_value='Form default').tag(sync=True)
+  test = ""
+  HORIZONTAL = 1
+  VERTICAL = 2
 
-    def __init__(self, *args, **kwargs):
-        super(EasyForm, self).__init__(**kwargs)
-        self.easyFormName = getValue(kwargs, 'title', "")
-        if self.easyFormName == "" and len(args) > 0:
-            self.easyFormName = args[0]
+  def __init__(self, *args, **kwargs):
+    super(EasyForm, self).__init__(**kwargs)
+    self.easyFormName = getValue(kwargs, 'title', "")
+    if self.easyFormName == "" and len(args) > 0:
+      self.easyFormName = args[0]
 
-    def _handle_msg(self, msg):
-        print(msg)
+  def _handle_msg(self, msg):
+    print(msg)
 
-    def addTextField(self, **kwargs):
-        text = Text(description=getValue(kwargs, 'description', ""))
-        text.width = getValue(kwargs, 'width', "")
-        self.children += (text,)
-        return text
+  def addTextField(self, *args, **kwargs):
+    text = Text(description=self.getDescription(args, kwargs))
+    text.layout.width = str(getValue(kwargs, 'width', 380)) + 'px'
+    self.children += (text,)
+    return text
 
-    def addTextArea(self, **kwargs):
-        textarea = TextArea(description=getValue(kwargs, 'description', ""))
-        textarea.width = str(getValue(kwargs, 'width', 200)) + "px"
-        textarea.height = str(getValue(kwargs, 'height', 200)) + "px"
-        self.children += (textarea,)
-        return textarea
+  def addTextArea(self, *args, **kwargs):
+    textarea = TextArea(description=self.getDescription(args, kwargs))
+    textarea.layout.width = str(getValue(kwargs, 'width', 380)) + "px"
+    height = getValue(kwargs, 'height', -1)
+    if height != -1:
+      textarea.layout.height = str(height) + "px"
+    self.children += (textarea,)
+    return textarea
 
-    def addButton(self, **kwargs):
-        button = Button(description=getValue(kwargs, 'description', ""))
-        button.tag = getValue(kwargs, 'tag', "")
-        self.children += (button,)
+  def addButton(self, *args, **kwargs):
+    button = Button(description=self.getDescription(args, kwargs))
+    button.tag = getValue(kwargs, 'tag', "")
+    button.on_click(self.buttonCallback)
+    self.children += (button,)
 
-        return button
+    return button
 
-    def addList(self, **kwargs):
-        multi_select = getValue(kwargs, 'multi', True)
-        if multi_select:
-            list = SelectMultipleWithRows(description=getValue(kwargs, 'description', ""))
-        else:
-            list = SelectMultipleSingle(description=getValue(kwargs, 'description', ""))
-        list.options = getValue(kwargs, 'options', [])
-        list.size = getValue(kwargs, 'rows', 2)
+  def buttonCallback(self, *args):
+    if len(args) > 0:
+      arguments = dict(target_name='beaker.tag.run')
+      comm = Comm(**arguments)
+      msg = {'runByTag': args[0].tag}
+      comm.send(data=msg, buffers=[])
 
-        self.children += (list,)
+  def addList(self, *args, **kwargs):
+    multi_select = getValue(kwargs, 'multi', True)
+    if multi_select:
+      list = SelectMultipleWithRows(
+        description=self.getDescription(args, kwargs))
+    else:
+      list = SelectMultipleSingle(description=self.getDescription(args, kwargs))
+    list.options = self.getOptions(args, kwargs)
+    list.size = getValue(kwargs, 'rows', 2)
 
-        return list
+    self.children += (list,)
 
-    def addDatePicker(self, **kwargs):
-        data_picker = DatePicker(description=getValue(kwargs, 'description', ""))
-        self.children += (data_picker,)
+    return list
 
-        return data_picker
+  def addDatePicker(self, *args, **kwargs):
+    data_picker = DatePicker(description=self.getDescription(args, kwargs))
+    self.children += (data_picker,)
 
-    def addComboBox(self, **kwargs):
-        dropdown = ComboBox(description=getValue(kwargs, 'description', ""))
-        dropdown.options = getValue(kwargs, 'options', [])
-        dropdown.editable = getValue(kwargs, 'editable', False)
-        self.children += (dropdown,)
+    return data_picker
 
-        return dropdown
+  def addComboBox(self, *args, **kwargs):
+    dropdown = ComboBox(description=self.getDescription(args, kwargs))
+    dropdown.options = self.getOptions(args, kwargs)
+    dropdown.original_options = self.getOptions(args, kwargs)
+    dropdown.editable = getValue(kwargs, 'editable', False)
+    self.children += (dropdown,)
 
-    def addCheckBox(self, **kwargs):
-        checkbox = Checkbox(description=getValue(kwargs, 'description', ""))
-        self.children += (checkbox,)
+    return dropdown
 
-        return checkbox
+  def addCheckBox(self, *args, **kwargs):
+    checkbox = Checkbox(description=self.getDescription(args, kwargs))
+    self.children += (checkbox,)
 
-    def addCheckBoxes(self, **kwargs):
-        layout = HBox()
-        orientation = getValue(kwargs, 'orientation', 2)
-        if orientation == EasyForm.HORIZONTAL:
-            box = HBox()
-        else:
-            box = VBox()
+    return checkbox
 
-        for checkBoxItem in getValue(kwargs, 'options', []):
-            checkbox = Checkbox(description=checkBoxItem)
-            box.children += (checkbox,)
-        layout.children += (Label(value=getValue(kwargs, 'value', "")), box,)
-        self.children += (layout,)
+  def addCheckBoxes(self, *args, **kwargs):
+    layout = HBox()
+    orientation = getValue(kwargs, 'orientation', 2)
+    if orientation == EasyForm.HORIZONTAL:
+      box = HBox()
+    else:
+      box = VBox()
 
-        return layout
+    for checkBoxItem in self.getOptions(args, kwargs):
+      checkbox = Checkbox(description=checkBoxItem)
+      box.children += (checkbox,)
+    layout.children += (Label(value=getValue(kwargs, 'value', "")), box,)
+    self.children += (layout,)
 
-    def addRadioButtons(self, **kwargs):
-        orientation = getValue(kwargs, 'orientation', EasyForm.VERTICAL)
-        radio_buttons = RadioButtons(options=getValue(kwargs, 'options', []), description=getValue(kwargs, 'value', ""))
+    return layout
 
-        if orientation == EasyForm.VERTICAL:
-            self.children += (radio_buttons,)
-        else:
-            box = HBox()
-            box.children += (radio_buttons,)
-            self.children += (box,)
+  def addRadioButtons(self, *args, **kwargs):
+    orientation = getValue(kwargs, 'orientation', EasyForm.VERTICAL)
+    radio_buttons = RadioButtons(options=self.getOptions(args, kwargs),
+                                 description=self.getDescription(args, kwargs))
 
-        return radio_buttons
+    if orientation == EasyForm.VERTICAL:
+      self.children += (radio_buttons,)
+    else:
+      box = HBox()
+      box.children += (radio_buttons,)
+      self.children += (box,)
 
-    def keySet(self):
-        return self.children
+    return radio_buttons
 
-    def __getitem__(self, key):
-        return self.get(key)
+  def keySet(self):
+    return self.children
 
-    def __setitem__(self, key, value):
-        self.put(key, value)
+  def __getitem__(self, key):
+    return self.get(key)
 
-    def get(self, key):
-        for child in self.children:
-            if child.description == key:
-                return child.value
+  def __setitem__(self, key, value):
+    self.put(key, value)
 
-    def put(self, key, value):
-        for child in self.children:
-            if child.description == key:
-                child.value = value
-                break
+  def get(self, key):
+    for child in self.children:
+      if child.description == key:
+        return child.value
+
+  def put(self, key, value):
+    for child in self.children:
+      if child.description == key:
+        child.value = value
+        break
+
+  @staticmethod
+  def getDescription(args, kwargs):
+    if len(args) > 0:
+      return args[0]
+    else:
+      return getValue(kwargs, 'description', "")
+
+  @staticmethod
+  def getOptions(args, kwargs):
+    if len(args) > 1:
+      return args[1][:]
+    else:
+      return getValue(kwargs, 'options', [])

@@ -16,7 +16,6 @@
 package com.twosigma.beakerx.kernel.msg;
 
 import static com.twosigma.beakerx.kernel.Utils.timestamp;
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMPLETE_REPLY;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_REPLY;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_RESULT;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.STATUS;
@@ -31,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.twosigma.beakerx.jvm.object.ConsoleOutput;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -74,15 +74,23 @@ public class MessageCreator {
     return reply;
   }
 
-  public Message buildMessage(Message message, String mime, String code, int executionCount) {
+  public Message buildMessage(Message message, List<MIMEContainer> mimes, int executionCount) {
     Message reply = initMessage(EXECUTE_RESULT, message);
-    reply.setContent(new HashMap<String, Serializable>());
+    reply.setContent(new HashMap<>());
     reply.getContent().put("execution_count", executionCount);
-    HashMap<String, String> map3 = new HashMap<>();
-    map3.put(mime, code);
+    HashMap<String, Object> map3 = new HashMap<>();
+    mimes.forEach(mimeItem -> map3.put(mimeItem.getMime().asString(), mimeItem.getData()));
     reply.getContent().put("data", map3);
     reply.getContent().put("metadata", new HashMap<>());
     return reply;
+  }
+
+  private Message buildMessage(Message message, List<MIMEContainer> mimes, String outputdataResult, int executionCount) {
+    if (!outputdataResult.isEmpty()) {
+      List<MIMEContainer> collect = mimes.stream().map(x -> new MIMEContainer(x.getMime().asString(), x.getData() + outputdataResult)).collect(Collectors.toList());
+      return buildMessage(message, collect, executionCount);
+    }
+    return buildMessage(message, mimes, executionCount);
   }
 
   public Message buildClearOutput(Message message, boolean wait) {
@@ -93,12 +101,12 @@ public class MessageCreator {
     return reply;
   }
 
-  public Message buildDisplayData(Message message, MIMEContainer value) {
+  public Message buildDisplayData(Message message, List<MIMEContainer> mimes) {
     Message reply = initMessage(DISPLAY_DATA, message);
-    reply.setContent(new HashMap<String, Serializable>());
+    reply.setContent(new HashMap<>());
     reply.getContent().put("metadata", new HashMap<>());
-    HashMap<String, Serializable> map3 = new HashMap<>();
-    map3.put(value.getMime().asString(), value.getCode());
+    HashMap<String, Object> map3 = new HashMap<>();
+    mimes.forEach(mimeItem -> map3.put(mimeItem.getMime().asString(), mimeItem.getData()));
     reply.getContent().put("data", map3);
     return reply;
   }
@@ -159,7 +167,7 @@ public class MessageCreator {
     List<MessageHolder> ret = new ArrayList<>();
     if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
       MessageHolder mh = createFinishResult(seo, message);
-      if(mh != null){
+      if (mh != null) {
         ret.add(mh);
       }
     } else if (EvaluationStatus.ERROR == seo.getStatus()) {
@@ -189,20 +197,20 @@ public class MessageCreator {
   private MessageHolder createErrorResult(SimpleEvaluationObject seo, Message message) {
     String[] errorMessage = seo.getPayload().toString().split("\n");
     errorMessage = clearText(errorMessage);
-    if(errorMessage != null && errorMessage.length > 0){
+    if (errorMessage != null && errorMessage.length > 0) {
       logger.info("Execution result ERROR: " + errorMessage[0]);
     }
     Message reply = initMessage(ERROR, message);
     Hashtable<String, Serializable> map4 = new Hashtable<String, Serializable>(2);
     String ename = "";
     String evalue = "";
-    if(errorMessage != null && errorMessage[0] != null && !errorMessage[0].isEmpty()){
+    if (errorMessage != null && errorMessage[0] != null && !errorMessage[0].isEmpty()) {
       String[] temp = errorMessage[0].split(":");
-      if(temp != null){
-        if(temp.length == 1){
+      if (temp != null) {
+        if (temp.length == 1) {
           ename = temp[0];
           evalue = temp[0];
-        }else if(temp.length > 1){
+        } else if (temp.length > 1) {
           ename = temp[0];
           evalue = temp[1];
         }
@@ -216,14 +224,14 @@ public class MessageCreator {
     return new MessageHolder(SocketEnum.IOPUB_SOCKET, reply);
   }
 
-  private String[] clearText(String[] input){
+  private String[] clearText(String[] input) {
     List<String> ret = new ArrayList<>();
-    if(input != null){
+    if (input != null) {
       for (String line : input) {
-        if(line != null){
-          if(line.endsWith("\r")){
-            ret.add( line.substring(0, line.length() - 1));
-          }else{
+        if (line != null) {
+          if (line.endsWith("\r")) {
+            ret.add(line.substring(0, line.length() - 1));
+          } else {
             ret.add(line);
           }
         }
@@ -232,11 +240,11 @@ public class MessageCreator {
     return ret.stream().toArray(String[]::new);
   }
 
-  private String[] markRed(String[] input){
+  private String[] markRed(String[] input) {
     List<String> ret = new ArrayList<>();
-    if(input != null){
+    if (input != null) {
       for (String line : input) {
-        if(line != null){
+        if (line != null) {
           ret.add("\u001b[0;31m" + line + "");
         }
       }
@@ -246,12 +254,10 @@ public class MessageCreator {
 
   private MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
     MessageHolder ret = null;
-    MIMEContainer resultString = SerializeToString.doit(seo.getPayload());
-    if (!MIMEContainer.HIDDEN.getMime().equals(resultString.getMime())) {
+    List<MIMEContainer> mimes = SerializeToString.doit(seo.getPayload());
+    if (!mimes.contains(MIMEContainer.HIDDEN)) {
       ret = new MessageHolder(SocketEnum.IOPUB_SOCKET,
-          buildMessage(message, resultString.getMime().asString(),
-              resultString.getCode()+outputdataResult(seo.getOutputdata()),
-              seo.getExecutionCount()));
+              buildMessage(message, mimes, outputdataResult(seo.getOutputdata()), seo.getExecutionCount()));
     }
     return ret;
   }
@@ -270,10 +276,10 @@ public class MessageCreator {
 
   private boolean showResult(SimpleEvaluationObject seo) {
     boolean ret = true;
-    if(seo != null && seo.getPayload() != null && seo.getPayload() instanceof MIMEContainer){
+    if (seo != null && seo.getPayload() != null && seo.getPayload() instanceof MIMEContainer) {
       MIMEContainer input = (MIMEContainer) seo.getPayload();
-      ret = !MIMEContainer.MIME.HIDDEN.equals(input.getMime());
-    } else if((seo!=null && !seo.getOutputdata().isEmpty())){
+      ret = !MIMEContainer.MIME.HIDDEN.equals(input.getMime().asString());
+    } else if ((seo != null && !seo.getOutputdata().isEmpty())) {
       ret = true;
     }
     return ret;

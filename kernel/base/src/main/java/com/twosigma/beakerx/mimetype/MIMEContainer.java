@@ -69,52 +69,53 @@ public class MIMEContainer {
   }
 
   private MIME mime;
-  private String code;
+  private Object data = "";
 
   private MIMEContainer(MIME mime) {
     this.mime = mime;
   }
 
-  public MIMEContainer(String mime, String code) {
+  public MIMEContainer(String mime, Object code) {
     this.mime = new MIME(mime);
-    this.code = code;
+    this.data = code;
   }
 
   public MIME getMime() {
     return mime;
   }
 
-  public String getCode() {
-    return code;
+  public Object getData() {
+    return data;
   }
 
-  public static MIMEContainer JavaScript(Object code) {
-    return addMimeType(MIME.APPLICATION_JAVASCRIPT, code);
+
+  public static MIMEContainer JavaScript(Object data) {
+    return addMimeType(MIME.APPLICATION_JAVASCRIPT, data);
   }
 
-  public static MIMEContainer HTML(Object code) {
-    return addMimeType(MIME.TEXT_HTML, code);
+  public static MIMEContainer HTML(Object data) {
+    return addMimeType(MIME.TEXT_HTML, data);
   }
 
-  public static MIMEContainer Latex(Object code) {
-    return addMimeType(MIME.TEXT_LATEX, code);
+  public static MIMEContainer Latex(Object data) {
+    return addMimeType(MIME.TEXT_LATEX, data);
   }
 
-  public static MIMEContainer Text(Object code) {
-    return addMimeType(MIME.TEXT_PLAIN, code);
+  public static MIMEContainer Text(Object data) {
+    return addMimeType(MIME.TEXT_PLAIN, data);
   }
 
-  public static MIMEContainer Markdown(Object code) {
-    return addMimeType(MIME.TEXT_MARKDOWN, code);
+  public static MIMEContainer Markdown(Object data) {
+    return addMimeType(MIME.TEXT_MARKDOWN, data);
   }
 
-  public static MIMEContainer Math(String code) {
-    code = StringUtils.strip(code, "$");
-    return addMimeType(MIME.TEXT_LATEX, "$$" + code + "$$");
+  public static MIMEContainer Math(String data) {
+    data = StringUtils.strip(data, "$");
+    return addMimeType(MIME.TEXT_LATEX, "$$" + data + "$$");
   }
 
-  public static MIMEContainer Javascript(Object code) {
-    return addMimeType(MIME.APPLICATION_JAVASCRIPT, code);
+  public static MIMEContainer Javascript(Object data) {
+    return addMimeType(MIME.APPLICATION_JAVASCRIPT, data);
   }
 
   public static MIMEContainer IFrame(String src, Object width, int height) {
@@ -138,7 +139,7 @@ public class MIMEContainer {
   }
 
   public static MIMEContainer Video(String src) {
-    String output = String.format("<video src='%1$s' controls> Your browser does not support the <code>video</code> element. </video>", src);
+    String output = String.format("<video src='%1$s' controls> Your browser does not support the <data>video</data> element. </video>", src);
     return addMimeType(MIME.TEXT_HTML, output);
   }
 
@@ -146,8 +147,8 @@ public class MIMEContainer {
     return new MIMEContainer(new MIME(mime));
   }
 
-  protected static MIMEContainer addMimeType(String mime, Object code) {
-    return new MIMEContainer(mime, code.toString());
+  protected static MIMEContainer addMimeType(String mime, Object data) {
+    return new MIMEContainer(mime, data.toString());
   }
 
   protected static boolean exists(String data) {
@@ -180,7 +181,7 @@ public class MIMEContainer {
 
   @Override
   public String toString() {
-    return this.getMime() + " CODE = " + this.getCode();
+    return this.getMime() + " CODE = " + this.getData();
   }
 
   @Override

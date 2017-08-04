@@ -35,9 +35,13 @@ import os
 from os.path import join as pjoin
 
 
-cmdclass = create_cmdclass([
+cmdclass = create_cmdclass(develop_wrappers=[
     'js',
     'java',
+    'kernels',
+    'kernelspec_class',
+    'custom_css'
+], install_wrappers=[
     'kernels',
     'kernelspec_class',
     'custom_css'

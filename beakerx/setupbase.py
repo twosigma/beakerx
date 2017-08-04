@@ -33,10 +33,11 @@ import json
 from subprocess import check_call
 
 from setuptools import Command
+from setuptools.command.develop import develop
 from setuptools.command.build_py import build_py
 from setuptools.command.sdist import sdist
-from setuptools.command.develop import develop
 from setuptools.command.bdist_egg import bdist_egg
+from distutils.command.install_data import install_data
 from distutils import log
 
 from traitlets.config.manager import BaseJSONConfigManager
@@ -122,7 +123,7 @@ def update_package_data(distribution):
     build_py.finalize_options()
 
 
-def create_cmdclass(wrappers=None, data_dirs=None):
+def create_cmdclass(develop_wrappers=None, install_wrappers=None, data_dirs=None):
     """Create a command class with the given optional wrappers.
     Parameters
     ----------
@@ -131,18 +132,19 @@ def create_cmdclass(wrappers=None, data_dirs=None):
     data_dirs: list(str), optional.
         The directories containing static data.
     """
-    egg = bdist_egg if 'bdist_egg' in sys.argv else bdist_egg_disabled
-    wrappers = wrappers or []
+    develop_wrappers = develop_wrappers or []
+    install_wrappers = install_wrappers or []
     data_dirs = data_dirs or []
-    wrapper = functools.partial(wrap_command, wrappers, data_dirs)
+    develop_wrapper = functools.partial(wrap_command, develop_wrappers, data_dirs)
+    install_wrapper = functools.partial(wrap_command, install_wrappers, data_dirs)
     cmdclass = dict(
-        build_py=wrapper(build_py, strict=is_repo),
-        sdist=wrapper(sdist, strict=True),
-        bdist_egg=egg,
-        develop=wrapper(develop, strict=True)
+        develop=develop_wrapper(develop, strict=True),
+        install_data=install_wrapper(install_data, strict=is_repo),
+        sdist=develop_wrapper(sdist, strict=True),
+        bdist_egg=bdist_egg if 'bdist_egg' in sys.argv else bdist_egg_disabled
     )
     if bdist_wheel:
-        cmdclass['bdist_wheel'] = wrapper(bdist_wheel, strict=True)
+        cmdclass['bdist_wheel'] = bdist_wheel
     return cmdclass
 
 

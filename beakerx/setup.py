@@ -91,7 +91,8 @@ setup_args = dict(
     )],
     install_requires    = [
         'notebook >=4.3.1',
-        'ipywidgets >=5.1.5, <=6.0.0'
+        'ipywidgets >=5.1.5, <=6.0.0',
+        'pandas'
     ],
     zip_safe            = False,
     include_package_data= True,

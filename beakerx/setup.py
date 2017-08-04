@@ -16,10 +16,6 @@
 # limitations under the License.
 
 from setuptools import setup, find_packages
-# from setuptools.command.build_py import build_py
-from setuptools.command.develop import develop
-from setuptools.command.sdist import sdist
-from setuptools.command.bdist_egg import bdist_egg
 from setupbase import (
     create_cmdclass,
     install_node_modules, 

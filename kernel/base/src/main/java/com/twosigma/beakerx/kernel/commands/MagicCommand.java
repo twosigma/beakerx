@@ -44,13 +44,14 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.text.StrMatcher;
+import org.apache.commons.text.StrTokenizer;
 
 /**
  * executes magic commands and sends message
@@ -211,20 +212,9 @@ public class MagicCommand {
   }
 
   private String[] splitPath(String command) {
-    if (command.contains("\"")) {
-      int startQuotesIndex = command.indexOf("\"");
-      int endQuotesIndex = command.length();
+    StrTokenizer tokenizer = new StrTokenizer(command, StrMatcher.spaceMatcher(), StrMatcher.quoteMatcher());
 
-      String[] firstPart = command.substring(0, startQuotesIndex).split(" ");
-      String secondPart = command.substring(startQuotesIndex, endQuotesIndex).replace("\"", "");
-
-      String[] resultArray = Arrays.copyOf(firstPart, firstPart.length + 1);
-      resultArray[resultArray.length - 1] = secondPart;
-
-      return resultArray;
-    } else {
-      return command.split(" ");
-    }
+    return tokenizer.getTokenArray();
   }
 
   private MagicCommandItem sendErrorMessage(Message message, String messageText, int executionCount) {
@@ -380,8 +370,6 @@ public class MagicCommand {
     if (isEmpty) {
       return new ErrorData(true, "Please provide a path");
     }
-
-    path = path.replace("\"", "");
 
     if (doesPathContainsWildCards(path)) {
       if (!containsSingleWildcardSymbol(path) || !path.endsWith("*")) {

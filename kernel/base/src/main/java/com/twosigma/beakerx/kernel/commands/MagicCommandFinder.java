@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 
 public class MagicCommandFinder {
 
@@ -40,12 +41,12 @@ public class MagicCommandFinder {
     List<MagicCommandItemWithResult> errors = new ArrayList<>();
     LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun = new LinkedHashMap<>();
     code.getCommands().forEach(command -> {
+
       if (command.contains("\"")) {
         int indexOfFirstQuote = command.indexOf("\"");
-        String commandWithoutSpaces = command.substring(0, indexOfFirstQuote)
-                                             .replaceAll("\\s+"," ");
-        String path = command.substring(indexOfFirstQuote, command.length());
-        command = commandWithoutSpaces + " " + path;
+        command = command.substring(0, indexOfFirstQuote)
+                         .replaceAll("\\s+"," ")
+                         .concat(command.substring(indexOfFirstQuote, command.length()));
       } else {
         command = command.replaceAll("\\s+"," ");
       }

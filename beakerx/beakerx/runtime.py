@@ -23,6 +23,7 @@ from traitlets import Unicode
 
 from beakerx.plot import BaseObject, chart
 from beakerx.easyform import easyform
+from beakerx.dataframetable import dataframetable
 from ipykernel.comm import Comm
 
 

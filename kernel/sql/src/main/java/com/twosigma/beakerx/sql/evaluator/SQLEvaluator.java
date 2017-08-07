@@ -47,17 +47,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
 
 public class SQLEvaluator extends BaseEvaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(SQLEvaluator.class.getName());
 
+  Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
+  ConnectionStringHolder defaultConnectionString;
+  volatile protected boolean exit;
   private final String packageId;
-  private Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
-  private ConnectionStringHolder defaultConnectionString;
-  volatile private boolean exit;
   private ClasspathScanner cps;
   private SQLAutocomplete sac;
   private final QueryExecutor queryExecutor;
@@ -74,17 +72,13 @@ public class SQLEvaluator extends BaseEvaluator {
     cps = new ClasspathScanner();
     sac = createSqlAutocomplete(cps);
     queryExecutor = new QueryExecutor(jdbcClient);
-    startWorker();
+    SQLWorkerThread workerThread = new SQLWorkerThread(this);
+    workerThread.start();
   }
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
     jobQueue.add(new JobDescriptor(code, seo));
     syncObject.release();
-  }
-
-  private void startWorker() {
-    WorkerThread workerThread = new WorkerThread();
-    workerThread.start();
   }
 
   public void exit() {
@@ -122,78 +116,6 @@ public class SQLEvaluator extends BaseEvaluator {
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     return sac.doAutocomplete(code, caretPosition);
-  }
-
-  private class WorkerThread extends Thread {
-
-    private WorkerThread() {
-      super("sql worker");
-    }
-        /*
-        * This thread performs all the evaluation
-        */
-
-    public void run() {
-      JobDescriptor job;
-      NamespaceClient namespaceClient;
-
-      while (!exit) {
-        try {
-          syncObject.acquire();
-        } catch (InterruptedException e) {
-          logger.error(e.getMessage());
-        }
-
-        if (exit) {
-          break;
-        }
-
-        job = jobQueue.poll();
-        job.getSimpleEvaluationObject().started();
-
-        job.getSimpleEvaluationObject().setOutputHandler();
-        namespaceClient = NamespaceClient.getBeaker(sessionId);
-        namespaceClient.setOutputObj(job.getSimpleEvaluationObject());
-
-        executor.executeTask(new MyRunnable(job.getSimpleEvaluationObject(), namespaceClient));
-
-        job.getSimpleEvaluationObject().clrOutputHandler();
-
-        namespaceClient.setOutputObj(null);
-        namespaceClient = null;
-        if (job != null && job.getSimpleEvaluationObject() != null) {
-          job.getSimpleEvaluationObject().executeCodeCallback();
-        }
-      }
-    }
-  }
-
-  protected class MyRunnable implements Runnable {
-
-    private final SimpleEvaluationObject simpleEvaluationObject;
-    private final NamespaceClient namespaceClient;
-
-    private MyRunnable(SimpleEvaluationObject seo, NamespaceClient namespaceClient) {
-      this.simpleEvaluationObject = seo;
-      this.namespaceClient = namespaceClient;
-    }
-
-    @Override
-    public void run() {
-      try {
-        InternalVariable.setValue(simpleEvaluationObject);
-        simpleEvaluationObject.finished(queryExecutor.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, defaultConnectionString, namedConnectionString));
-      } catch (SQLException e) {
-        simpleEvaluationObject.error(e.toString());
-      } catch (ThreadDeath e) {
-        simpleEvaluationObject.error("... cancelled!");
-      } catch (ReadVariableException e) {
-        simpleEvaluationObject.error(e.getMessage());
-      } catch (Throwable e) {
-        logger.error(e.getMessage());
-        simpleEvaluationObject.error(e.toString());
-      }
-    }
   }
 
   @Override
@@ -293,4 +215,11 @@ public class SQLEvaluator extends BaseEvaluator {
     return ret;
   }
 
+  public Object executeQuery(String expression, NamespaceClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) throws SQLException, IOException, ReadVariableException {
+    return queryExecutor.executeQuery(expression, namespaceClient, defaultConnectionString, namedConnectionString);
+  }
+
+  public boolean executeTask(SQLCodeRunner sqlCodeRunner) {
+    return executor.executeTask(sqlCodeRunner);
+  }
 }

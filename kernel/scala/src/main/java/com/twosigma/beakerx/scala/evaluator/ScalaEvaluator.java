@@ -202,9 +202,4 @@ public class ScalaEvaluator extends BaseEvaluator {
     }
 
   }
-
-  public boolean executeTask(ScalaCodeRunner scalaCodeRunner) {
-    return executor.executeTask(scalaCodeRunner);
-  }
-
 }

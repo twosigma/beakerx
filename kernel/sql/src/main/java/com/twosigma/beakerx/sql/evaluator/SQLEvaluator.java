@@ -218,8 +218,4 @@ public class SQLEvaluator extends BaseEvaluator {
   public Object executeQuery(String expression, NamespaceClient namespaceClient, ConnectionStringHolder defaultConnectionString, Map<String, ConnectionStringHolder> namedConnectionString) throws SQLException, IOException, ReadVariableException {
     return queryExecutor.executeQuery(expression, namespaceClient, defaultConnectionString, namedConnectionString);
   }
-
-  public boolean executeTask(SQLCodeRunner sqlCodeRunner) {
-    return executor.executeTask(sqlCodeRunner);
-  }
 }

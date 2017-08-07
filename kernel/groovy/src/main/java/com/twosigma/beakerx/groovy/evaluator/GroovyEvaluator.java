@@ -94,10 +94,6 @@ public class GroovyEvaluator extends BaseEvaluator {
     return classPath.add(new PathToJar(envVariablesFilter(path.getPath(), System.getenv())));
   }
 
-  boolean executeTask(GroovyCodeRunner groovyCodeRunner) {
-    return executor.executeTask(groovyCodeRunner);
-  }
-
   private GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c) {
     return new GroovyAutocomplete(c);
   }

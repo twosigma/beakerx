@@ -56,6 +56,10 @@ public abstract class BaseEvaluator implements Evaluator {
     imports = new Imports();
   }
 
+  public boolean executeTask(Runnable codeRunner) {
+    return executor.executeTask(codeRunner);
+  }
+
   @Override
   public boolean addJarToClasspath(PathToJar path) {
     boolean added = addJar(path);

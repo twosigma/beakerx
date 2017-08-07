@@ -128,10 +128,6 @@ public class ClojureEvaluator extends BaseEvaluator {
     return ClojureAutocomplete.autocomplete(code,caretPosition, clojureLoadString,shellId);
   }
 
-  public boolean executeTask(ClojureCodeRunner clojureCodeRunner) {
-    return executor.executeTask(clojureCodeRunner);
-  }
-
   public Object runCode(String theCode) {
     return clojureLoadString.invoke(theCode);
   }

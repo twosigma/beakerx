@@ -90,8 +90,4 @@ public class KotlinEvaluator extends BaseEvaluator {
     //TODO
     return new AutocompleteResult(ret, -1);
   }
-
-  public boolean executeTask(KotlinCodeRunner kotlinCodeRunner) {
-    return executor.executeTask(kotlinCodeRunner);
-  }
 }

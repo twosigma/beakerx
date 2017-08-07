@@ -111,10 +111,6 @@ public class CppEvaluator extends BaseEvaluator {
     syncObject.release();
   }
 
-  public boolean executeTask(CppCodeRunner cppCodeRunner) {
-    return executor.executeTask(cppCodeRunner);
-  }
-
   public List<String> getUserFlags() {
     return userFlags;
   }

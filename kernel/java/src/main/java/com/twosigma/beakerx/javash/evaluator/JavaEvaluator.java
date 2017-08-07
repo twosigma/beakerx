@@ -103,8 +103,4 @@ public class JavaEvaluator extends BaseEvaluator {
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     return jac.doAutocomplete(code, caretPosition);
   }
-
-  public boolean executeTask(JavaCodeRunner javaCodeRunner) {
-    return executor.executeTask(javaCodeRunner);
-  }
 }

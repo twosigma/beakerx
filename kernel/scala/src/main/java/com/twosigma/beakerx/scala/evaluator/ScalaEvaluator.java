@@ -16,46 +16,30 @@
 
 package com.twosigma.beakerx.scala.evaluator;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Provider;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.beakerx.jvm.serialization.ObjectDeserializer;
-import com.twosigma.beakerx.jvm.serialization.ObjectSerializer;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
-import com.twosigma.beakerx.table.TableDisplay;
-import com.twosigma.beakerx.table.serializer.TableDisplayDeSerializer;
 import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.scala.serializers.ScalaCollectionDeserializer;
+import com.twosigma.beakerx.scala.serializers.ScalaCollectionSerializer;
+import com.twosigma.beakerx.scala.serializers.ScalaListOfPrimitiveTypeMapsSerializer;
+import com.twosigma.beakerx.scala.serializers.ScalaMapDeserializer;
+import com.twosigma.beakerx.scala.serializers.ScalaMapSerializer;
+import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeListOfListSerializer;
+import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeMapSerializer;
+import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.Predef;
-import scala.Tuple2;
-import scala.collection.Iterable;
-import scala.collection.JavaConverters;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 public class ScalaEvaluator extends BaseEvaluator {
 
@@ -64,7 +48,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   protected boolean exit;
   protected boolean updateLoader;
   private BeakerxObjectFactory beakerxObjectFactory;
-  protected workerThread myWorker;
+  protected ScalaWorkerThread workerThread;
   protected String currentClassPath;
   protected String currentImports;
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
@@ -74,23 +58,19 @@ public class ScalaEvaluator extends BaseEvaluator {
   }
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory) {
-    super(id,sId,cellExecutor);
+    super(id, sId, cellExecutor);
     objectSerializerProvider = osp;
     this.beakerxObjectFactory = beakerxObjectFactory;
     exit = false;
     updateLoader = false;
     currentClassPath = "";
     currentImports = "";
-    startWorker();
+    workerThread = new ScalaWorkerThread(this, this.beakerxObjectFactory);
+    workerThread.start();
     try {
       newAutoCompleteEvaluator();
     } catch (MalformedURLException e) {
     }
-  }
-
-  private void startWorker() {
-    myWorker = new workerThread(this.beakerxObjectFactory);
-    myWorker.start();
   }
 
   private static boolean autoTranslationSetup = false;
@@ -166,154 +146,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   protected ScalaEvaluatorGlue acshell;
   protected String acloader_cp = "";
 
-  protected class workerThread extends Thread {
-
-    private BeakerxObjectFactory beakerxObjectFactory;
-
-    public workerThread(BeakerxObjectFactory beakerxObjectFactory) {
-      super("scala worker");
-      this.beakerxObjectFactory = beakerxObjectFactory;
-    }
-
-    /*
-     * This thread performs all the evaluation
-     */
-
-    public void run() {
-      JobDescriptor j = null;
-      NamespaceClient nc = null;
-
-      while (!exit) {
-        logger.debug("looping");
-        try {
-          // wait for work
-          syncObject.acquire();
-
-          // check if we must create or update class loader
-          if (updateLoader) {
-            shell = null;
-          }
-
-          // get next job descriptor
-          j = jobQueue.poll();
-          if (j == null)
-            continue;
-
-          if (shell == null) {
-            updateLoader = false;
-            newEvaluator();
-          }
-
-          j.outputObject.started();
-
-          nc = NamespaceClient.getBeaker(sessionId);
-          nc.setOutputObj(j.outputObject);
-          if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject, this.beakerxObjectFactory))) {
-            j.outputObject.error("... cancelled!");
-          }
-          if (nc != null) {
-            nc.setOutputObj(null);
-            nc = null;
-          }
-        } catch (Throwable e) {
-          e.printStackTrace();
-        } finally {
-          if (nc != null) {
-            nc.setOutputObj(null);
-            nc = null;
-          }
-          if (j != null && j.outputObject != null) {
-            j.outputObject.executeCodeCallback();
-          }
-        }
-      }
-      NamespaceClient.delBeaker(sessionId);
-    }
-
-    protected class MyRunnable implements Runnable {
-
-      protected final String theCode;
-      protected final SimpleEvaluationObject theOutput;
-      private BeakerxObjectFactory beakerxObjectFactory;
-
-      public MyRunnable(String code, SimpleEvaluationObject out, BeakerxObjectFactory beakerxObjectFactory) {
-        theCode = code;
-        theOutput = out;
-        this.beakerxObjectFactory = beakerxObjectFactory;
-      }
-
-      @Override
-      public void run() {
-        theOutput.setOutputHandler();
-        try {
-          InternalVariable.setValue(theOutput);
-          shell.evaluate(theOutput, theCode);
-        } catch (Throwable e) {
-          if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
-            theOutput.error("... cancelled!");
-          } else {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
-            theOutput.error(sw.toString());
-          }
-        }
-        theOutput.setOutputHandler();
-      }
-
-    }
-
-    ;
-
-    /*
-     * Scala uses multiple classloaders and (unfortunately) cannot fallback to the java one while compiling scala code so we
-     * have to build our DynamicClassLoader and also build a proper classpath for the compiler classloader.
-     */
-    protected ClassLoader newClassLoader() throws MalformedURLException {
-      logger.debug("creating new loader");
-
-      loader_cp = "";
-      for (int i = 0; i < classPath.size(); i++) {
-        loader_cp += classPath.get(i);
-        loader_cp += File.pathSeparatorChar;
-      }
-      loader_cp += outDir;
-      DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-      cl.addJars(classPath.getPathsAsStrings());
-      cl.addDynamicDir(outDir);
-      return cl;
-    }
-
-    protected void newEvaluator() throws MalformedURLException {
-      logger.debug("creating new evaluator");
-      shell = new ScalaEvaluatorGlue(newClassLoader(),
-              loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), outDir);
-
-      if (!imports.isEmpty()) {
-        for (int i = 0; i < imports.getImportPaths().size(); i++) {
-          String imp = imports.getImportPaths().get(i).asString().trim();
-          imp = adjustImport(imp);
-          if (!imp.isEmpty()) {
-            logger.debug("importing : {}", imp);
-            if (!shell.addImport(imp))
-              logger.warn("ERROR: cannot add import '{}'", imp);
-          }
-        }
-      }
-
-      logger.debug("creating beaker object");
-
-      // ensure object is created
-      NamespaceClient.getBeaker(sessionId);
-
-      String r = shell.evaluate2(this.beakerxObjectFactory.create(sessionId));
-      if (r != null && !r.isEmpty()) {
-        logger.warn("ERROR creating beaker object: {}", r);
-      }
-    }
-  }
-
-  private String adjustImport(String imp) {
+  String adjustImport(String imp) {
     if (imp.startsWith("import"))
       imp = imp.substring(6).trim();
     // Scala doesn't need "static"
@@ -370,349 +203,8 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   }
 
-  class ScalaListOfPrimitiveTypeMapsSerializer implements ObjectSerializer {
-    private final BeakerObjectConverter parent;
-
-    public ScalaListOfPrimitiveTypeMapsSerializer(BeakerObjectConverter p) {
-      parent = p;
-    }
-
-    @Override
-    public boolean canBeUsed(Object obj, boolean expand) {
-      if (!expand)
-        return false;
-
-      if (!(obj instanceof scala.collection.immutable.Seq<?>))
-        return false;
-
-      Collection<?> col = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
-      if (col.isEmpty())
-        return false;
-
-      for (Object o : col) {
-        if (!(o instanceof scala.collection.Map<?, ?>))
-          return false;
-
-        Map<?, ?> m = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<?, ?>) o);
-        Set<?> keys = m.keySet();
-        for (Object key : keys) {
-          if (key != null && !parent.isPrimitiveType(key.getClass().getName()))
-            return false;
-          Object val = m.get(key);
-          if (val != null && !parent.isPrimitiveType(val.getClass().getName()))
-            return false;
-        }
-      }
-      return true;
-    }
-
-    @Override
-    public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.debug("list of maps");
-      // convert this 'on the fly' to a datatable
-      Collection<?> col = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
-      List<Map<String, Object>> tab = new ArrayList<Map<String, Object>>();
-      for (Object o : col) {
-        Map<String, Object> row = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<String, Object>) o);
-        tab.add(row);
-      }
-      TableDisplay t = new TableDisplay(tab, parent);
-      jgen.writeObject(t);
-      return true;
-    }
-  }
-
-  class ScalaPrimitiveTypeListOfListSerializer implements ObjectSerializer {
-    private final BeakerObjectConverter parent;
-
-    public ScalaPrimitiveTypeListOfListSerializer(BeakerObjectConverter p) {
-      parent = p;
-    }
-
-    @Override
-    public boolean canBeUsed(Object obj, boolean expand) {
-      if (!expand)
-        return false;
-
-      if (!(obj instanceof scala.collection.immutable.Seq<?>))
-        return false;
-
-      Collection<?> col = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
-      if (col.isEmpty())
-        return false;
-
-      for (Object o : col) {
-        if (!(o instanceof scala.collection.immutable.Seq))
-          return false;
-
-        Collection<?> col2 = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) o);
-        for (Object o2 : col2) {
-          if (!parent.isPrimitiveType(o2.getClass().getName()))
-            return false;
-        }
-      }
-      return true;
-    }
-
-    @Override
-    public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.debug("collection of collections");
-
-      Collection<?> m = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
-      int max = 0;
-
-      for (Object entry : m) {
-        Collection<?> e = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) entry);
-        if (max < e.size())
-          max = e.size();
-      }
-      List<String> columns = new ArrayList<String>();
-      for (int i = 0; i < max; i++)
-        columns.add("c" + i);
-      List<List<?>> values = new ArrayList<List<?>>();
-      for (Object entry : m) {
-        Collection<?> e = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) entry);
-        List<Object> l2 = new ArrayList<Object>(e);
-        if (l2.size() < max) {
-          for (int i = l2.size(); i < max; i++)
-            l2.add(null);
-        }
-        values.add(l2);
-      }
-      jgen.writeStartObject();
-      jgen.writeObjectField("type", "TableDisplay");
-      jgen.writeObjectField("columnNames", columns);
-      jgen.writeObjectField("values", values);
-      jgen.writeObjectField("subtype", TableDisplay.MATRIX_SUBTYPE);
-      jgen.writeEndObject();
-      return true;
-    }
-  }
-
-  class ScalaPrimitiveTypeMapSerializer implements ObjectSerializer {
-    private final BeakerObjectConverter parent;
-
-    public ScalaPrimitiveTypeMapSerializer(BeakerObjectConverter p) {
-      parent = p;
-    }
-
-    @Override
-    public boolean canBeUsed(Object obj, boolean expand) {
-      if (!expand)
-        return false;
-
-      if (!(obj instanceof scala.collection.immutable.Map))
-        return false;
-
-      Map<?, ?> m = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<?, ?>) obj);
-      Set<?> keys = m.keySet();
-      for (Object key : keys) {
-        if (key != null && !parent.isPrimitiveType(key.getClass().getName()))
-          return false;
-        Object val = m.get(key);
-        if (val != null && !parent.isPrimitiveType(val.getClass().getName()))
-          return false;
-      }
-      return true;
-    }
-
-    @Override
-    public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.debug("primitive type map");
-
-      List<String> columns = new ArrayList<String>();
-      columns.add("Key");
-      columns.add("Value");
-
-      List<List<?>> values = new ArrayList<List<?>>();
-
-      Map<?, ?> m = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<?, ?>) obj);
-      Set<?> keys = m.keySet();
-      for (Object key : keys) {
-        Object val = m.get(key);
-        List<Object> l = new ArrayList<Object>();
-        l.add(key.toString());
-        l.add(val);
-        values.add(l);
-      }
-
-      jgen.writeStartObject();
-      jgen.writeObjectField("type", "TableDisplay");
-      jgen.writeObjectField("columnNames", columns);
-      jgen.writeObjectField("values", values);
-      jgen.writeObjectField("subtype", TableDisplay.DICTIONARY_SUBTYPE);
-      jgen.writeEndObject();
-      return true;
-    }
-  }
-
-  class ScalaCollectionSerializer implements ObjectSerializer {
-    private final BeakerObjectConverter parent;
-
-    public ScalaCollectionSerializer(BeakerObjectConverter p) {
-      parent = p;
-    }
-
-    @Override
-    public boolean canBeUsed(Object obj, boolean expand) {
-      return obj instanceof scala.collection.immutable.Seq<?>;
-    }
-
-    @Override
-    public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.debug("collection");
-      // convert this 'on the fly' to an array of objects
-      Collection<?> c = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
-      jgen.writeStartArray();
-      for (Object o : c) {
-        if (!parent.writeObject(o, jgen, false))
-          jgen.writeObject(o.toString());
-      }
-      jgen.writeEndArray();
-      return true;
-    }
-  }
-
-  class ScalaMapSerializer implements ObjectSerializer {
-    private final BeakerObjectConverter parent;
-
-    public ScalaMapSerializer(BeakerObjectConverter p) {
-      parent = p;
-    }
-
-    @Override
-    public boolean canBeUsed(Object obj, boolean expand) {
-      return obj instanceof scala.collection.immutable.Map<?, ?>;
-    }
-
-    @Override
-    public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
-      logger.debug("generic map");
-      // convert this 'on the fly' to a map of objects
-      Map<?, ?> m = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<?, ?>) obj);
-
-
-      Set<?> keys = m.keySet();
-      for (Object key : keys) {
-        if (key == null || !(key instanceof String)) {
-          jgen.writeObject(obj.toString());
-          return true;
-        }
-      }
-
-      jgen.writeStartObject();
-      for (Object key : keys) {
-        Object val = m.get(key);
-        jgen.writeFieldName(key.toString());
-        if (!parent.writeObject(val, jgen, false))
-          jgen.writeObject(val != null ? (val.toString()) : "null");
-      }
-      jgen.writeEndObject();
-      return true;
-    }
-  }
-
-  class ScalaTableDeSerializer implements ObjectDeserializer {
-    private final BeakerObjectConverter parent;
-
-    public ScalaTableDeSerializer(BeakerObjectConverter p) {
-      parent = p;
-      parent.addKnownBeakerType("TableDisplay");
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Object deserialize(JsonNode n, ObjectMapper mapper) {
-      org.apache.commons.lang3.tuple.Pair<String, Object> deserializeObject = TableDisplayDeSerializer.getDeserializeObject(parent, n, mapper);
-      String subtype = deserializeObject.getLeft();
-      if (subtype != null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
-        return JavaConverters.mapAsScalaMapConverter((Map<String, Object>) deserializeObject.getRight()).asScala().toMap(Predef.<Tuple2<String, Object>>conforms());
-      } else if (subtype != null && subtype.equals(TableDisplay.LIST_OF_MAPS_SUBTYPE)) {
-        List<Map<String, Object>> rows = (List<Map<String, Object>>) deserializeObject.getRight();
-        List<Object> oo = new ArrayList<Object>();
-        for (Map<String, Object> row : rows) {
-          oo.add(JavaConverters.mapAsScalaMapConverter(row).asScala().toMap(Predef.<Tuple2<String, Object>>conforms()));
-        }
-        return scala.collection.JavaConversions.collectionAsScalaIterable(oo);
-      } else if (subtype != null && subtype.equals(TableDisplay.MATRIX_SUBTYPE)) {
-        List<List<?>> matrix = (List<List<?>>) deserializeObject.getRight();
-        ArrayList<Object> ll = new ArrayList<Object>();
-        for (List<?> ob : matrix) {
-          ll.add(scala.collection.JavaConversions.asScalaBuffer(ob).toList());
-        }
-        return scala.collection.JavaConversions.asScalaBuffer(ll).toList();
-      }
-
-      return deserializeObject.getRight();
-    }
-
-    @Override
-    public boolean canBeUsed(JsonNode n) {
-      return n.has("type") && n.get("type").asText().equals("TableDisplay");
-    }
-  }
-
-  public class ScalaCollectionDeserializer implements ObjectDeserializer {
-    private final BeakerObjectConverter parent;
-
-    public ScalaCollectionDeserializer(BeakerObjectConverter p) {
-      parent = p;
-    }
-
-    @Override
-    public boolean canBeUsed(JsonNode n) {
-      return n.isArray();
-    }
-
-    @Override
-    public Object deserialize(JsonNode n, ObjectMapper mapper) {
-      List<Object> o = new ArrayList<Object>();
-      try {
-        logger.debug("using custom array deserializer");
-        for (int i = 0; i < n.size(); i++) {
-          o.add(parent.deserialize(n.get(i), mapper));
-        }
-      } catch (Exception e) {
-        logger.error("exception deserializing Collection {}", e.getMessage());
-        o = null;
-      }
-      if (o != null)
-        return scala.collection.JavaConversions.asScalaBuffer(o).toList();
-      return null;
-    }
-  }
-
-  public class ScalaMapDeserializer implements ObjectDeserializer {
-    private final BeakerObjectConverter parent;
-
-    public ScalaMapDeserializer(BeakerObjectConverter p) {
-      parent = p;
-    }
-
-    @Override
-    public boolean canBeUsed(JsonNode n) {
-      return n.isObject() && (!n.has("type") || !parent.isKnownBeakerType(n.get("type").asText()));
-    }
-
-    @Override
-    public Object deserialize(JsonNode n, ObjectMapper mapper) {
-      HashMap<String, Object> o = new HashMap<String, Object>();
-      try {
-        logger.debug("using custom map deserializer");
-        Iterator<Entry<String, JsonNode>> e = n.fields();
-        while (e.hasNext()) {
-          Entry<String, JsonNode> ee = e.next();
-          o.put(ee.getKey(), parent.deserialize(ee.getValue(), mapper));
-        }
-      } catch (Exception e) {
-        logger.error("exception deserializing Map {}", e.getMessage());
-        o = null;
-      }
-      if (o != null)
-        return JavaConverters.mapAsScalaMapConverter(o).asScala().toMap(Predef.<Tuple2<String, Object>>conforms());
-      return null;
-    }
-
+  public boolean executeTask(ScalaCodeRunner scalaCodeRunner) {
+    return executor.executeTask(scalaCodeRunner);
   }
 
 }

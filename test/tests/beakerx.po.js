@@ -23,14 +23,14 @@ var BeakerXPageObject = function () {
     browser.waitForEnabled('#password_input');
     browser.setValue('#password_input', 'beakerx');
     browser.click('#login_submit');
-    browser.waitForEnabled('=demoResources');
   }
 
-  this.runNotebookByName = function(name, done){
+  this.runNotebookByName = function(name, done, subDir){
     browser
-      .url(this.baseURL)
+      .url(subDir === undefined ? this.baseURL : this.baseURL + '/' + subDir)
       .call(done);
     this.loginJupyter();
+    browser.waitForEnabled('=' + name);
     browser.click('=' + name);
     browser.window(browser.windowHandles().value[1]);
   }

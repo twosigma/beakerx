@@ -36,7 +36,7 @@ public class JavaEvaluator extends BaseEvaluator {
   protected JavaAutocomplete jac;
   protected boolean exit;
   protected boolean updateLoader;
-  protected JavaWorkerThread myWorker;
+  protected JavaWorkerThread workerThread;
 
   public JavaEvaluator(String id, String sId) {
     this(id, sId, new BeakerCellExecutor("javash"));
@@ -51,12 +51,8 @@ public class JavaEvaluator extends BaseEvaluator {
     imports = new Imports();
     exit = false;
     updateLoader = true;
-    startWorker();
-  }
-
-  private void startWorker() {
-    myWorker = new JavaWorkerThread(this);
-    myWorker.start();
+    workerThread = new JavaWorkerThread(this);
+    workerThread.start();
   }
 
   protected JavaAutocomplete createJavaAutocomplete(ClasspathScanner c) {
@@ -83,20 +79,19 @@ public class JavaEvaluator extends BaseEvaluator {
 
     // signal thread to create loader
     updateLoader = true;
+    workerThread.halt();
   }
 
   @Override
   public void exit() {
     exit = true;
     cancelExecution();
-    syncObject.release();
+    workerThread.halt();
   }
 
   @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {
-    // send job to thread
-    jobQueue.add(new JobDescriptor(code, seo));
-    syncObject.release();
+    workerThread.add(new JobDescriptor(code, seo));
   }
 
   @Override

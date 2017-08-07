@@ -99,30 +99,18 @@ public class ScalaEvaluator extends BaseEvaluator {
       newAutoCompleteEvaluator();
     } catch (MalformedURLException e) {
     }
+    workerThread.halt();
   }
 
   public void exit() {
     exit = true;
     cancelExecution();
-    syncObject.release();
-  }
-
-  @Override
-  public void initKernel(KernelParameters kernelParameters) {
-    configure(kernelParameters);
-  }
-
-  @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-    configure(kernelParameters);
-    resetEnvironment();
+    workerThread.halt();
   }
 
   @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {
-    // send job to thread
-    jobQueue.add(new JobDescriptor(code, seo));
-    syncObject.release();
+    workerThread.add(new JobDescriptor(code, seo));
   }
 
   @Override

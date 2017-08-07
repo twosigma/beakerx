@@ -16,10 +16,11 @@
 package com.twosigma.beakerx.clojure.evaluator;
 
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.WorkerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class ClojureWorkerThread extends Thread {
+class ClojureWorkerThread extends WorkerThread {
 
   private final static Logger logger = LoggerFactory.getLogger(ClojureWorkerThread.class.getName());
   private ClojureEvaluator clojureEvaluator;
@@ -39,10 +40,10 @@ class ClojureWorkerThread extends Thread {
     while (!clojureEvaluator.exit) {
       try {
         // wait for work
-        clojureEvaluator.syncObject.acquire();
+        syncObject.acquire();
 
         // get next job descriptor
-        j = clojureEvaluator.jobQueue.poll();
+        j = jobQueue.poll();
         if (j == null)
           continue;
 

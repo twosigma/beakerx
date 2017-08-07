@@ -17,10 +17,11 @@ package com.twosigma.beakerx.sql.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.WorkerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class SQLWorkerThread extends Thread {
+class SQLWorkerThread extends WorkerThread {
 
   private final static Logger logger = LoggerFactory.getLogger(SQLWorkerThread.class.getName());
   private SQLEvaluator sqlEvaluator;
@@ -39,7 +40,7 @@ class SQLWorkerThread extends Thread {
 
     while (!sqlEvaluator.exit) {
       try {
-        sqlEvaluator.syncObject.acquire();
+        syncObject.acquire();
       } catch (InterruptedException e) {
         logger.error(e.getMessage());
       }
@@ -48,7 +49,7 @@ class SQLWorkerThread extends Thread {
         break;
       }
 
-      job = sqlEvaluator.jobQueue.poll();
+      job = jobQueue.poll();
       job.getSimpleEvaluationObject().started();
 
       job.getSimpleEvaluationObject().setOutputHandler();

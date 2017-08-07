@@ -75,18 +75,18 @@ public class CppEvaluator extends BaseEvaluator {
   @Override
   protected void doResetEnvironment() {
     loadedCells.clear();
+    workerThread.halt();
   }
 
   public void exit() {
     tempCppFiles.close();
     exit = true;
     cancelExecution();
-    syncObject.release();
+    workerThread.halt();
   }
 
   @Override
   public void initKernel(KernelParameters kernelParameters) {
-
   }
 
   @Override
@@ -107,8 +107,7 @@ public class CppEvaluator extends BaseEvaluator {
   @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
-    jobQueue.add(new JobDescriptor(code, seo, uuid()));
-    syncObject.release();
+    workerThread.add(new JobDescriptor(code, seo, uuid()));
   }
 
   public List<String> getUserFlags() {

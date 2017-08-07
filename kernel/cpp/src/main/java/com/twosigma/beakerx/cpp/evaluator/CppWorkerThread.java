@@ -17,8 +17,9 @@ package com.twosigma.beakerx.cpp.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.WorkerThread;
 
-class CppWorkerThread extends Thread {
+class CppWorkerThread extends WorkerThread {
 
   private CppEvaluator cppEvaluator;
   private CppCodeRunner cppCodeRunner;
@@ -39,10 +40,10 @@ class CppWorkerThread extends Thread {
     while (!cppEvaluator.exit) {
       try {
         // wait for work
-        cppEvaluator.syncObject.acquire();
+        syncObject.acquire();
 
         // get next job descriptor
-        j = cppEvaluator.jobQueue.poll();
+        j = jobQueue.poll();
         if (j == null)
           continue;
 

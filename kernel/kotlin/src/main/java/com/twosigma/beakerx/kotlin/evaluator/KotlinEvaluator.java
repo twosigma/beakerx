@@ -32,7 +32,7 @@ public class KotlinEvaluator extends BaseEvaluator {
   protected ClasspathScanner cps;
   protected boolean exit;
   protected boolean updateLoader;
-  protected KotlinWorkerThread myWorker;
+  protected KotlinWorkerThread workerThread;
 
   public KotlinEvaluator(String id, String sId) {
     this(id, sId, new BeakerCellExecutor("kotlin"));
@@ -44,12 +44,8 @@ public class KotlinEvaluator extends BaseEvaluator {
     cps = new ClasspathScanner();
     exit = false;
     updateLoader = true;
-    startWorker();
-  }
-
-  private void startWorker() {
-    myWorker = new KotlinWorkerThread(this);
-    myWorker.start();
+    workerThread = new KotlinWorkerThread(this);
+    workerThread.start();
   }
 
   @Override
@@ -68,20 +64,20 @@ public class KotlinEvaluator extends BaseEvaluator {
 
     // signal thread to create loader
     updateLoader = true;
+    workerThread.halt();
   }
 
   @Override
   public void exit() {
     exit = true;
     cancelExecution();
-    syncObject.release();
+    workerThread.halt();
   }
 
   @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
-    jobQueue.add(new JobDescriptor(code, seo));
-    syncObject.release();
+    workerThread.add(new JobDescriptor(code, seo));
   }
 
   @Override

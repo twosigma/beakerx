@@ -17,6 +17,7 @@ package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.WorkerThread;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.MalformedURLException;
 
-class ScalaWorkerThread extends Thread {
+class ScalaWorkerThread extends WorkerThread {
 
   private final static Logger logger = LoggerFactory.getLogger(ScalaWorkerThread.class.getName());
 
@@ -49,7 +50,7 @@ class ScalaWorkerThread extends Thread {
       logger.debug("looping");
       try {
         // wait for work
-        scalaEvaluator.syncObject.acquire();
+        syncObject.acquire();
 
         // check if we must create or update class loader
         if (scalaEvaluator.updateLoader) {
@@ -57,7 +58,7 @@ class ScalaWorkerThread extends Thread {
         }
 
         // get next job descriptor
-        j = scalaEvaluator.jobQueue.poll();
+        j = jobQueue.poll();
         if (j == null)
           continue;
 

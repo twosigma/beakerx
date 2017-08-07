@@ -17,6 +17,7 @@ package com.twosigma.beakerx.javash.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.WorkerThread;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.kernel.ImportPath;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +30,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class JavaWorkerThread extends Thread {
+class JavaWorkerThread extends WorkerThread {
 
   private JavaEvaluator javaEvaluator;
 
@@ -53,7 +54,7 @@ class JavaWorkerThread extends Thread {
     while (!javaEvaluator.exit) {
       try {
         // wait for work
-        javaEvaluator.syncObject.acquire();
+        syncObject.acquire();
 
         // check if we must create or update class loader
         if (loader == null || javaEvaluator.updateLoader) {
@@ -63,7 +64,7 @@ class JavaWorkerThread extends Thread {
         }
 
         // get next job descriptor
-        j = javaEvaluator.jobQueue.poll();
+        j = jobQueue.poll();
         if (j == null)
           continue;
 

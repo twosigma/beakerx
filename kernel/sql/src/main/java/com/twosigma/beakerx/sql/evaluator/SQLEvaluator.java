@@ -60,6 +60,7 @@ public class SQLEvaluator extends BaseEvaluator {
   private SQLAutocomplete sac;
   private final QueryExecutor queryExecutor;
   private final JDBCClient jdbcClient;
+  private SQLWorkerThread workerThread;
 
   public SQLEvaluator(String id, String sId) {
     this(id, sId, new BeakerCellExecutor("sql"));
@@ -72,13 +73,12 @@ public class SQLEvaluator extends BaseEvaluator {
     cps = new ClasspathScanner();
     sac = createSqlAutocomplete(cps);
     queryExecutor = new QueryExecutor(jdbcClient);
-    SQLWorkerThread workerThread = new SQLWorkerThread(this);
+    workerThread= new SQLWorkerThread(this);
     workerThread.start();
   }
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
-    jobQueue.add(new JobDescriptor(code, seo));
-    syncObject.release();
+    workerThread.add(new JobDescriptor(code, seo));
   }
 
   public void exit() {
@@ -107,6 +107,7 @@ public class SQLEvaluator extends BaseEvaluator {
 
   @Override
   protected void doResetEnvironment() {
+    workerThread.halt();
   }
 
   private SQLAutocomplete createSqlAutocomplete(ClasspathScanner c) {

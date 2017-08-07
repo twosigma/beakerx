@@ -110,22 +110,22 @@ public class ClojureEvaluator extends BaseEvaluator {
     }
 
     Thread.currentThread().setContextClassLoader(oldLoader);
+    workerThread.halt();
   }
 
   public void exit() {
     exit = true;
     cancelExecution();
-    syncObject.release();
+    workerThread.halt();
   }
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
-    jobQueue.add(new JobDescriptor(code, seo));
-    syncObject.release();
+    workerThread.add(new JobDescriptor(code, seo));
   }
 
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    return ClojureAutocomplete.autocomplete(code,caretPosition, clojureLoadString,shellId);
+    return ClojureAutocomplete.autocomplete(code, caretPosition, clojureLoadString, shellId);
   }
 
   public Object runCode(String theCode) {

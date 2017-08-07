@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kotlin.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.WorkerThread;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Kernel;
@@ -39,7 +40,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-class KotlinWorkerThread extends Thread {
+class KotlinWorkerThread extends WorkerThread {
 
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
 
@@ -63,7 +64,7 @@ class KotlinWorkerThread extends Thread {
     while (!kotlinEvaluator.exit) {
       try {
         // wait for work
-        kotlinEvaluator.syncObject.acquire();
+        syncObject.acquire();
 
         // check if we must create or update class loader
         if (loader == null || kotlinEvaluator.updateLoader) {
@@ -73,7 +74,7 @@ class KotlinWorkerThread extends Thread {
         }
 
         // get next job descriptor
-        j = kotlinEvaluator.jobQueue.poll();
+        j = jobQueue.poll();
         if (j == null)
           continue;
 

@@ -17,6 +17,7 @@ package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.WorkerThread;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newEvaluator;
 
-class GroovyWorkerThread extends Thread {
+class GroovyWorkerThread extends WorkerThread {
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyWorkerThread.class.getName());
 
@@ -48,7 +49,7 @@ class GroovyWorkerThread extends Thread {
     while (!groovyEvaluator.exit) {
       try {
         // wait for work
-        groovyEvaluator.syncObject.acquire();
+        syncObject.acquire();
 
         // check if we must create or update class loader
         if (groovyEvaluator.updateLoader) {
@@ -63,7 +64,7 @@ class GroovyWorkerThread extends Thread {
         }
 
         // get next job descriptor
-        j = groovyEvaluator.jobQueue.poll();
+        j = jobQueue.poll();
         if (j == null)
           continue;
 

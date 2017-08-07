@@ -57,8 +57,7 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
-    jobQueue.add(new JobDescriptor(code, seo));
-    syncObject.release();
+    worker.add(new JobDescriptor(code, seo));
   }
 
   public AutocompleteResult autocomplete(String code, int caretPosition) {
@@ -81,12 +80,13 @@ public class GroovyEvaluator extends BaseEvaluator {
       gac.addImport(st.asString());
 
     updateLoader = true;
+    worker.halt();
   }
 
   public void exit() {
     exit = true;
     cancelExecution();
-    syncObject.release();
+    worker.halt();
   }
 
   @Override

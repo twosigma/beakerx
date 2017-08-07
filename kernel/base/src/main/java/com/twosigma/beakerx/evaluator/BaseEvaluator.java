@@ -32,8 +32,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
 
 public abstract class BaseEvaluator implements Evaluator {
 
@@ -44,8 +42,6 @@ public abstract class BaseEvaluator implements Evaluator {
   protected Imports imports;
 
   protected final CellExecutor executor;
-  public final Semaphore syncObject = new Semaphore(0, true);
-  public final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<JobDescriptor>();
 
   public BaseEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
@@ -187,7 +183,6 @@ public abstract class BaseEvaluator implements Evaluator {
   public void resetEnvironment() {
     executor.killAllThreads();
     doResetEnvironment();
-    syncObject.release();
   }
 
   protected abstract void doResetEnvironment();

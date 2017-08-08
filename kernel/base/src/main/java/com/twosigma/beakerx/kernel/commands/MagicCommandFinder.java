@@ -41,7 +41,7 @@ public class MagicCommandFinder {
     LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun = new LinkedHashMap<>();
     code.getCommands().forEach(command -> {
       if (command.startsWith("%%") && isCellmagicHeadNonEmpty(command)) {
-        errors.add(processIllegalCommand( "Cell magic head contains data move it to body.", message, executionCount, messageCreator));
+        errors.add(processIllegalCommand( "Cell magic head contains data, move it to body.", message, executionCount, messageCreator));
         return;
       }
 

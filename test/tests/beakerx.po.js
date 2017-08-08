@@ -73,5 +73,10 @@ var BeakerXPageObject = function () {
     plotLegendContainer.waitForEnabled();
   }
 
+  this.dataTablesIsEnabled = function(dtcontainer){
+    var dataTables = dtcontainer.$('.dataTables_scroll');
+    dataTables.waitForEnabled();
+  }
+
 };
 module.exports = BeakerXPageObject;

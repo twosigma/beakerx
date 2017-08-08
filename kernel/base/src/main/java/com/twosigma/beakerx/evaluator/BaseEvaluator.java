@@ -17,7 +17,6 @@ package com.twosigma.beakerx.evaluator;
 
 import com.google.common.collect.Lists;
 import com.twosigma.beakerx.DefaultJVMVariables;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
@@ -49,10 +48,6 @@ public abstract class BaseEvaluator implements Evaluator {
     outDir = Evaluator.createJupyterTempFolder().toString();
     classPath = new Classpath();
     imports = new Imports();
-  }
-
-  public boolean executeTask(Runnable codeRunner) {
-    return executor.executeTask(codeRunner);
   }
 
   @Override
@@ -149,6 +144,11 @@ public abstract class BaseEvaluator implements Evaluator {
   @Override
   public void initKernel(KernelParameters kernelParameters) {
     configure(kernelParameters);
+  }
+
+
+  public boolean executeTask(Runnable codeRunner) {
+    return executor.executeTask(codeRunner);
   }
 
   public void killAllThreads() {

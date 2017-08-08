@@ -76,10 +76,12 @@ public class SQLEvaluator extends BaseEvaluator {
     workerThread.start();
   }
 
+  @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {
     workerThread.add(new JobDescriptor(code, seo));
   }
 
+  @Override
   public void exit() {
     workerThread.doExit();
     cancelExecution();
@@ -116,17 +118,6 @@ public class SQLEvaluator extends BaseEvaluator {
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     return sac.doAutocomplete(code, caretPosition);
-  }
-
-  @Override
-  public void initKernel(KernelParameters kernelParameters) {
-    configure(kernelParameters);
-  }
-
-  @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
-    configure(kernelParameters);
-    resetEnvironment();
   }
 
   @Override

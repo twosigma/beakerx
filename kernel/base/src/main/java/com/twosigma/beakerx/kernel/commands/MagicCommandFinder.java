@@ -38,17 +38,27 @@ public class MagicCommandFinder {
 
   public static MagicCommandFinder find(Code code, Map<String, MagicCommandFunctionality> commands, Message message, int executionCount, MessageCreator messageCreator) {
     List<MagicCommandItemWithResult> errors = new ArrayList<>();
-    LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun = new LinkedHashMap<>();
+     LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun = new LinkedHashMap<>();
     code.getCommands().forEach(command -> {
+      if (command.startsWith("%%") && isCellmagicHeadNonEmpty(command)) {
+        errors.add(processIllegalCommand( "Cell magic head contains data move it to body.", message, executionCount, messageCreator));
+        return;
+      }
+
       command = command.replaceAll("\\s+"," ");
       Optional<MagicCommandFunctionality> functionality = findFunctionality(commands, command);
       if (functionality.isPresent()) {
         functionalityToRun.put(command, functionality.get());
       } else {
-        errors.add(processUnknownCommand(command, message, executionCount, messageCreator));
+        errors.add(processIllegalCommand("Cell magic " + command + " not found", message, executionCount, messageCreator));
       }
     });
     return new MagicCommandFinder(functionalityToRun, errors);
+  }
+
+  private static boolean isCellmagicHeadNonEmpty(String command) {
+    return !(command.replace(MagicCommand.BASH, "").replace(" ", "").length() < 1 ||
+            command.replace(MagicCommand.HTML, "").replace(" ", "").length() < 1);
   }
 
   private static Optional<MagicCommandFunctionality> findFunctionality(final Map<String, MagicCommandFunctionality> commands, final String command) {
@@ -57,10 +67,9 @@ public class MagicCommandFinder {
             findFirst().map(s -> commands.get(s));
   }
 
-  private static MagicCommandItemWithResult processUnknownCommand(String command, Message message, int executionCount, MessageCreator messageCreator) {
-    String result = "Cell magic " + command + " not found";
+  private static MagicCommandItemWithResult processIllegalCommand(String errorMessage, Message message, int executionCount, MessageCreator messageCreator) {
     return new MagicCommandItemWithResult(
-            messageCreator.buildOutputMessage(message, result, true),
+            messageCreator.buildOutputMessage(message, errorMessage, true),
             messageCreator.buildReplyWithoutStatus(message, executionCount)
     );
   }

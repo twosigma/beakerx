@@ -860,6 +860,8 @@ define([
         .attr("y", titleSize.height)
         .style("text-anchor", "middle")
         .text(title.text());
+
+      title.remove();
     },
     adjustStyleForSvg: function(styleString) {
       var colorArr = styleString.match(/color:(.*)\;/g);

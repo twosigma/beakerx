@@ -33,10 +33,14 @@ import java.util.regex.Pattern;
 class JavaWorkerThread extends WorkerThread {
 
   private JavaEvaluator javaEvaluator;
+  private boolean exit;
+  private boolean updateLoader;
 
   public JavaWorkerThread(JavaEvaluator javaEvaluator) {
     super("javash worker");
     this.javaEvaluator = javaEvaluator;
+    exit = false;
+    updateLoader = true;
   }
 
   /*
@@ -51,13 +55,13 @@ class JavaWorkerThread extends WorkerThread {
     javaSourceCompiler = new JavaSourceCompiler();
     NamespaceClient nc = null;
 
-    while (!javaEvaluator.exit) {
+    while (!exit) {
       try {
         // wait for work
         syncObject.acquire();
 
         // check if we must create or update class loader
-        if (loader == null || javaEvaluator.updateLoader) {
+        if (loader == null || updateLoader) {
           loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
           loader.addJars(javaEvaluator.getClasspath().getPathsAsStrings());
           loader.addDynamicDir(javaEvaluator.getOutDir());
@@ -243,6 +247,14 @@ class JavaWorkerThread extends WorkerThread {
       javaSourceCode.append("\n");
       lineNumbersMapping.put(javaSourceCode.getLinesCount(), ci);
     }
+  }
+
+  public void updateLoader() {
+    this.updateLoader = true;
+  }
+
+  public void doExit() {
+    this.exit = true;
   }
 
   private static class LineBrakingStringBuilderWrapper {

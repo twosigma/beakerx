@@ -34,8 +34,6 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   //user entered source value
   protected GroovyClasspathScanner cps;
-  protected boolean exit;
-  protected boolean updateLoader;
   protected GroovyAutocomplete gac;
   public static boolean LOCAL_DEV = false;
   private GroovyWorkerThread worker = null;
@@ -48,15 +46,12 @@ public class GroovyEvaluator extends BaseEvaluator {
     super(id, sId, cellExecutor);
     cps = new GroovyClasspathScanner();
     gac = createGroovyAutocomplete(cps);
-    exit = false;
-    updateLoader = false;
     outDir = envVariablesFilter(outDir, System.getenv());
     worker = new GroovyWorkerThread(this);
     worker.start();
   }
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
-    // send job to thread
     worker.add(new JobDescriptor(code, seo));
   }
 
@@ -79,12 +74,12 @@ public class GroovyEvaluator extends BaseEvaluator {
     for (ImportPath st : imports.getImportPaths())
       gac.addImport(st.asString());
 
-    updateLoader = true;
+    worker.updateLoader();
     worker.halt();
   }
 
   public void exit() {
-    exit = true;
+    worker.doExit();
     cancelExecution();
     worker.halt();
   }

@@ -30,8 +30,6 @@ public class KotlinEvaluator extends BaseEvaluator {
 
   protected final String packageId;
   protected ClasspathScanner cps;
-  protected boolean exit;
-  protected boolean updateLoader;
   protected KotlinWorkerThread workerThread;
 
   public KotlinEvaluator(String id, String sId) {
@@ -42,8 +40,6 @@ public class KotlinEvaluator extends BaseEvaluator {
     super(id, sId, cellExecutor);
     packageId = "com.twosigma.beaker.kotlin.bkr" + shellId.split("-")[0];
     cps = new ClasspathScanner();
-    exit = false;
-    updateLoader = true;
     workerThread = new KotlinWorkerThread(this);
     workerThread.start();
   }
@@ -63,13 +59,13 @@ public class KotlinEvaluator extends BaseEvaluator {
     cps = new ClasspathScanner(cpp);
 
     // signal thread to create loader
-    updateLoader = true;
+    workerThread.updateLoader();
     workerThread.halt();
   }
 
   @Override
   public void exit() {
-    exit = true;
+    workerThread.doExit();
     cancelExecution();
     workerThread.halt();
   }

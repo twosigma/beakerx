@@ -25,6 +25,7 @@ class SQLWorkerThread extends WorkerThread {
 
   private final static Logger logger = LoggerFactory.getLogger(SQLWorkerThread.class.getName());
   private SQLEvaluator sqlEvaluator;
+  volatile protected boolean exit;
 
   SQLWorkerThread(SQLEvaluator sqlEvaluator) {
     super("sql worker");
@@ -38,14 +39,14 @@ class SQLWorkerThread extends WorkerThread {
     BaseEvaluator.JobDescriptor job;
     NamespaceClient namespaceClient;
 
-    while (!sqlEvaluator.exit) {
+    while (!exit) {
       try {
         syncObject.acquire();
       } catch (InterruptedException e) {
         logger.error(e.getMessage());
       }
 
-      if (sqlEvaluator.exit) {
+      if (exit) {
         break;
       }
 
@@ -65,5 +66,9 @@ class SQLWorkerThread extends WorkerThread {
         job.getSimpleEvaluationObject().executeCodeCallback();
       }
     }
+  }
+
+  public void doExit() {
+    this.exit = true;
   }
 }

@@ -37,7 +37,6 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 public class CppEvaluator extends BaseEvaluator {
   public static final String EXECUTE = "execute";
   private List<String> compileCommand;
-  protected boolean exit;
   private CppWorkerThread workerThread;
   private List<String> userFlags = new ArrayList<>();
   private TempCppFiles tempCppFiles;
@@ -47,7 +46,6 @@ public class CppEvaluator extends BaseEvaluator {
     super(id, sId, cellExecutor);
     tempCppFiles = new TempCppFiles(id);
     compileCommand = CLangCommand.compileCommand(tempCppFiles);
-    exit = false;
     loadedCells = new HashSet<>();
     workerThread = new CppWorkerThread(this);
     workerThread.start();
@@ -80,7 +78,7 @@ public class CppEvaluator extends BaseEvaluator {
 
   public void exit() {
     tempCppFiles.close();
-    exit = true;
+    workerThread.doExit();
     cancelExecution();
     workerThread.halt();
   }

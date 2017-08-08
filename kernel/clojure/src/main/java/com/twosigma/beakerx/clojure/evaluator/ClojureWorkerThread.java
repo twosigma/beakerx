@@ -24,10 +24,12 @@ class ClojureWorkerThread extends WorkerThread {
 
   private final static Logger logger = LoggerFactory.getLogger(ClojureWorkerThread.class.getName());
   private ClojureEvaluator clojureEvaluator;
+  private boolean exit;
 
   public ClojureWorkerThread(ClojureEvaluator clojureEvaluator) {
     super("clojure worker");
     this.clojureEvaluator = clojureEvaluator;
+    this.exit = false;
   }
 
   /*
@@ -37,7 +39,7 @@ class ClojureWorkerThread extends WorkerThread {
   public void run() {
     BaseEvaluator.JobDescriptor j = null;
 
-    while (!clojureEvaluator.exit) {
+    while (!exit) {
       try {
         // wait for work
         syncObject.acquire();
@@ -62,4 +64,7 @@ class ClojureWorkerThread extends WorkerThread {
     }
   }
 
+  public void doExit() {
+    this.exit = true;
+  }
 }

@@ -45,10 +45,14 @@ class KotlinWorkerThread extends WorkerThread {
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
 
   private KotlinEvaluator kotlinEvaluator;
+  protected boolean exit;
+  protected boolean updateLoader;
 
   public KotlinWorkerThread(KotlinEvaluator kotlinEvaluator) {
     super("kotlin worker");
     this.kotlinEvaluator = kotlinEvaluator;
+    exit = false;
+    updateLoader = true;
   }
 
   /*
@@ -61,13 +65,13 @@ class KotlinWorkerThread extends WorkerThread {
 
     NamespaceClient nc = null;
 
-    while (!kotlinEvaluator.exit) {
+    while (!exit) {
       try {
         // wait for work
         syncObject.acquire();
 
         // check if we must create or update class loader
-        if (loader == null || kotlinEvaluator.updateLoader) {
+        if (loader == null || updateLoader) {
           loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
           loader.addJars(kotlinEvaluator.getClasspath().getPathsAsStrings());
           loader.addDynamicDir(kotlinEvaluator.getOutDir());
@@ -189,6 +193,13 @@ class KotlinWorkerThread extends WorkerThread {
     return ret;
   }
 
+  public void updateLoader() {
+    this.updateLoader = true;
+  }
+
+  public void doExit() {
+    this.exit = true;
+  }
 
   private static class LineBrakingStringBuilderWrapper {
     private static final String LINE_BREAK = "\n";

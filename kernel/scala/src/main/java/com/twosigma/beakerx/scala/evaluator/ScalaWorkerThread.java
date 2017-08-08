@@ -31,11 +31,15 @@ class ScalaWorkerThread extends WorkerThread {
 
   private ScalaEvaluator scalaEvaluator;
   private BeakerxObjectFactory beakerxObjectFactory;
+  protected boolean exit;
+  protected boolean updateLoader;
 
   public ScalaWorkerThread(ScalaEvaluator scalaEvaluator, BeakerxObjectFactory beakerxObjectFactory) {
     super("scala worker");
     this.scalaEvaluator = scalaEvaluator;
     this.beakerxObjectFactory = beakerxObjectFactory;
+    exit = false;
+    updateLoader = false;
   }
 
   /*
@@ -46,14 +50,14 @@ class ScalaWorkerThread extends WorkerThread {
     BaseEvaluator.JobDescriptor j = null;
     NamespaceClient nc = null;
 
-    while (!scalaEvaluator.exit) {
+    while (!exit) {
       logger.debug("looping");
       try {
         // wait for work
         syncObject.acquire();
 
         // check if we must create or update class loader
-        if (scalaEvaluator.updateLoader) {
+        if (updateLoader) {
           scalaEvaluator.shell = null;
         }
 
@@ -63,7 +67,7 @@ class ScalaWorkerThread extends WorkerThread {
           continue;
 
         if (scalaEvaluator.shell == null) {
-          scalaEvaluator.updateLoader = false;
+          updateLoader = false;
           newEvaluator();
         }
 
@@ -140,5 +144,13 @@ class ScalaWorkerThread extends WorkerThread {
     if (r != null && !r.isEmpty()) {
       logger.warn("ERROR creating beaker object: {}", r);
     }
+  }
+
+  public void updateLoader() {
+    this.updateLoader = true;
+  }
+
+  public void doExit() {
+    this.exit = true;
   }
 }

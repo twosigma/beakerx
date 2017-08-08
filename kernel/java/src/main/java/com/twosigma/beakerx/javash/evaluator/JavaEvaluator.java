@@ -34,8 +34,6 @@ public class JavaEvaluator extends BaseEvaluator {
   protected final String packageId;
   protected ClasspathScanner cps;
   protected JavaAutocomplete jac;
-  protected boolean exit;
-  protected boolean updateLoader;
   protected JavaWorkerThread workerThread;
 
   public JavaEvaluator(String id, String sId) {
@@ -49,8 +47,6 @@ public class JavaEvaluator extends BaseEvaluator {
     jac = createJavaAutocomplete(cps);
     classPath = new Classpath();
     imports = new Imports();
-    exit = false;
-    updateLoader = true;
     workerThread = new JavaWorkerThread(this);
     workerThread.start();
   }
@@ -78,13 +74,13 @@ public class JavaEvaluator extends BaseEvaluator {
       jac.addImport(st.asString());
 
     // signal thread to create loader
-    updateLoader = true;
+    workerThread.updateLoader();
     workerThread.halt();
   }
 
   @Override
   public void exit() {
-    exit = true;
+    workerThread.doExit();
     cancelExecution();
     workerThread.halt();
   }

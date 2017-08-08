@@ -32,10 +32,14 @@ class GroovyWorkerThread extends WorkerThread {
   protected GroovyEvaluator groovyEvaluator;
   protected GroovyClassLoader groovyClassLoader;
   protected Binding scriptBinding = null;
+  private boolean exit;
+  private boolean updateLoader;
 
-  public GroovyWorkerThread(GroovyEvaluator groovyEvaluator) {
+  GroovyWorkerThread(GroovyEvaluator groovyEvaluator) {
     super("groovy worker");
     this.groovyEvaluator = groovyEvaluator;
+    exit = false;
+    updateLoader = false;
   }
 
   /*
@@ -46,13 +50,13 @@ class GroovyWorkerThread extends WorkerThread {
     BaseEvaluator.JobDescriptor j = null;
     NamespaceClient nc = null;
 
-    while (!groovyEvaluator.exit) {
+    while (!exit) {
       try {
         // wait for work
         syncObject.acquire();
 
         // check if we must create or update class loader
-        if (groovyEvaluator.updateLoader) {
+        if (updateLoader) {
           if (groovyClassLoader != null) {
             try {
               groovyClassLoader.close();
@@ -69,7 +73,7 @@ class GroovyWorkerThread extends WorkerThread {
           continue;
 
         if (groovyClassLoader == null) {
-          groovyEvaluator.updateLoader = false;
+          updateLoader = false;
           //reload classloader
           groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir());
           scriptBinding = new Binding();
@@ -117,4 +121,11 @@ class GroovyWorkerThread extends WorkerThread {
     NamespaceClient.delBeaker(groovyEvaluator.getSessionId());
   }
 
+  public void updateLoader() {
+    this.updateLoader = true;
+  }
+
+  public void doExit() {
+    this.exit = true;
+  }
 }

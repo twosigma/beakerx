@@ -42,7 +42,6 @@ public class ClojureEvaluator extends BaseEvaluator {
   public static final String beaker_clojure_ns = "beaker_clojure_shell";
   private final static Logger logger = LoggerFactory.getLogger(ClojureEvaluator.class.getName());
 
-  protected boolean exit;
   private List<String> requirements;
   private ClojureWorkerThread workerThread;
   protected DynamicClassLoaderSimple loader;
@@ -78,7 +77,6 @@ public class ClojureEvaluator extends BaseEvaluator {
     } catch (IOException e) {
       logger.error(e.getMessage());
     }
-    exit = false;
   }
 
   @Override
@@ -114,7 +112,7 @@ public class ClojureEvaluator extends BaseEvaluator {
   }
 
   public void exit() {
-    exit = true;
+    workerThread.doExit();
     cancelExecution();
     workerThread.halt();
   }

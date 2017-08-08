@@ -38,15 +38,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 
 public class ScalaEvaluator extends BaseEvaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());
-
-  protected boolean exit;
-  protected boolean updateLoader;
   private BeakerxObjectFactory beakerxObjectFactory;
   protected ScalaWorkerThread workerThread;
   protected String currentClassPath;
@@ -61,8 +57,6 @@ public class ScalaEvaluator extends BaseEvaluator {
     super(id, sId, cellExecutor);
     objectSerializerProvider = osp;
     this.beakerxObjectFactory = beakerxObjectFactory;
-    exit = false;
-    updateLoader = false;
     currentClassPath = "";
     currentImports = "";
     workerThread = new ScalaWorkerThread(this, this.beakerxObjectFactory);
@@ -94,7 +88,7 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   protected void doResetEnvironment() {
-    updateLoader = true;
+    workerThread.updateLoader();
     try {
       newAutoCompleteEvaluator();
     } catch (MalformedURLException e) {
@@ -103,7 +97,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   }
 
   public void exit() {
-    exit = true;
+    workerThread.doExit();
     cancelExecution();
     workerThread.halt();
   }

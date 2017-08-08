@@ -23,10 +23,12 @@ class CppWorkerThread extends WorkerThread {
 
   private CppEvaluator cppEvaluator;
   private CppCodeRunner cppCodeRunner;
+  protected boolean exit;
 
   public CppWorkerThread(CppEvaluator cppEvaluator) {
     super("cpp worker");
     this.cppEvaluator = cppEvaluator;
+    exit = false;
   }
   /*
    * This thread performs all the evaluation
@@ -37,7 +39,7 @@ class CppWorkerThread extends WorkerThread {
     NamespaceClient nc = null;
 
 
-    while (!cppEvaluator.exit) {
+    while (!exit) {
       try {
         // wait for work
         syncObject.acquire();
@@ -112,8 +114,12 @@ class CppWorkerThread extends WorkerThread {
   }
 
   public void cancelExecution() {
-    if(cppCodeRunner!=null){
+    if (cppCodeRunner != null) {
       cppCodeRunner.cancelExecution();
     }
+  }
+
+  public void doExit() {
+    this.exit = true;
   }
 }

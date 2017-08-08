@@ -54,7 +54,6 @@ public class SQLEvaluator extends BaseEvaluator {
 
   Map<String, ConnectionStringHolder> namedConnectionString = new HashMap<>();
   ConnectionStringHolder defaultConnectionString;
-  volatile protected boolean exit;
   private final String packageId;
   private ClasspathScanner cps;
   private SQLAutocomplete sac;
@@ -82,7 +81,7 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   public void exit() {
-    exit = true;
+    workerThread.doExit();
     cancelExecution();
   }
 

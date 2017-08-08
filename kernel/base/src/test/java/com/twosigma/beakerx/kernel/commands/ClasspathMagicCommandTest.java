@@ -112,14 +112,6 @@ public class ClasspathMagicCommandTest {
     assertThat(classpath(result)).isEqualTo("Added jar: [foo.jar]\n");
   }
 
-  @Test
-  public void allowQuotesInMagics() {
-    MagicCommandResult result = sut
-        .process(new Code("%classpath  add  jar          \"" + SRC_TEST_RESOURCES + "/dir with extra characters /:'/hello quotes '.jar\""), new Message(), 1);
-
-    assertThat(classpath(result)).isEqualTo("Added jar: [hello quotes '.jar]\n");
-  }
-
   private String classpath(MagicCommandResult result) {
     return result.getItems().get(0).getResult().get().getContent().get("text").toString();
   }

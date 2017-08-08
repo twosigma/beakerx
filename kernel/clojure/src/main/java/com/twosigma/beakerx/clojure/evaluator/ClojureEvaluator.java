@@ -45,7 +45,7 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   private List<String> requirements;
   private ClojureWorkerThread workerThread;
-  protected DynamicClassLoaderSimple loader;
+  private DynamicClassLoaderSimple loader;
   private Var clojureLoadString = null;
 
   public ClojureEvaluator(String id, String sId, CellExecutor cellExecutor) {
@@ -58,26 +58,6 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   public ClojureEvaluator(String id, String sId) {
     this(id, sId, new BeakerCellExecutor("clojure"));
-  }
-
-  private String initScriptSource()
-          throws IOException {
-    URL url = this.getClass().getClassLoader().getResource("init_clojure_script.txt");
-    return Resources.toString(url, Charsets.UTF_8);
-  }
-
-  private void init() {
-    loader = ClojureClassLoaderFactory.newInstance(classPath, outDir);
-    String loadFunctionPrefix = "run_str";
-    try {
-      String clojureInitScript = String.format(initScriptSource(), beaker_clojure_ns, shellId,
-              loadFunctionPrefix);
-      clojureLoadString = RT.var(String.format("%1$s_%2$s", beaker_clojure_ns, shellId),
-              String.format("%1$s_%2$s", loadFunctionPrefix, shellId));
-      clojure.lang.Compiler.load(new StringReader(clojureInitScript));
-    } catch (IOException e) {
-      logger.error(e.getMessage());
-    }
   }
 
   @Override
@@ -112,22 +92,47 @@ public class ClojureEvaluator extends BaseEvaluator {
     workerThread.halt();
   }
 
+  @Override
   public void exit() {
     workerThread.doExit();
     cancelExecution();
     workerThread.halt();
   }
 
+  @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {
-    // send job to thread
     workerThread.add(new JobDescriptor(code, seo));
   }
-
+  @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     return ClojureAutocomplete.autocomplete(code, caretPosition, clojureLoadString, shellId);
   }
 
-  public Object runCode(String theCode) {
+  Object runCode(String theCode) {
     return clojureLoadString.invoke(theCode);
+  }
+
+  private void init() {
+    loader = ClojureClassLoaderFactory.newInstance(classPath, outDir);
+    String loadFunctionPrefix = "run_str";
+    try {
+      String clojureInitScript = String.format(initScriptSource(), beaker_clojure_ns, shellId,
+              loadFunctionPrefix);
+      clojureLoadString = RT.var(String.format("%1$s_%2$s", beaker_clojure_ns, shellId),
+              String.format("%1$s_%2$s", loadFunctionPrefix, shellId));
+      clojure.lang.Compiler.load(new StringReader(clojureInitScript));
+    } catch (IOException e) {
+      logger.error(e.getMessage());
+    }
+  }
+
+  private String initScriptSource()
+          throws IOException {
+    URL url = this.getClass().getClassLoader().getResource("init_clojure_script.txt");
+    return Resources.toString(url, Charsets.UTF_8);
+  }
+
+  public DynamicClassLoaderSimple getLoader() {
+    return loader;
   }
 }

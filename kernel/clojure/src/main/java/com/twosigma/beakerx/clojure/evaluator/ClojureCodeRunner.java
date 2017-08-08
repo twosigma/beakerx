@@ -38,7 +38,7 @@ class ClojureCodeRunner implements Runnable {
   public void run() {
 
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(clojureEvaluator.loader);
+    Thread.currentThread().setContextClassLoader(clojureEvaluator.getLoader());
 
     theOutput.setOutputHandler();
     try {

@@ -21,6 +21,8 @@ import com.twosigma.beakerx.evaluator.WorkerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+
 class ScalaWorkerThread extends WorkerThread {
 
   private final static Logger logger = LoggerFactory.getLogger(ScalaWorkerThread.class.getName());
@@ -69,7 +71,7 @@ class ScalaWorkerThread extends WorkerThread {
         nc = NamespaceClient.getBeaker(scalaEvaluator.getSessionId());
         nc.setOutputObj(j.outputObject);
         if (!scalaEvaluator.executeTask(new ScalaCodeRunner(scalaEvaluator, j.codeToBeExecuted, j.outputObject))) {
-          j.outputObject.error("... cancelled!");
+          j.outputObject.error(INTERUPTED_MSG);
         }
         if (nc != null) {
           nc.setOutputObj(null);

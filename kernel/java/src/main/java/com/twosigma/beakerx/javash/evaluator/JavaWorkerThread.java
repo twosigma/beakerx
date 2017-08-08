@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+
 class JavaWorkerThread extends WorkerThread {
 
   private JavaEvaluator javaEvaluator;
@@ -183,7 +185,7 @@ class JavaWorkerThread extends WorkerThread {
             Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
 
             if (!javaEvaluator.executeTask(new JavaCodeRunner(mth, j.outputObject, ret.equals("Object"), loader))) {
-              j.outputObject.error("... cancelled!");
+              j.outputObject.error(INTERUPTED_MSG);
             }
             if (nc != null) {
               nc.setOutputObj(null);

@@ -20,6 +20,8 @@ import com.twosigma.beakerx.evaluator.WorkerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+
 class ClojureWorkerThread extends WorkerThread {
 
   private final static Logger logger = LoggerFactory.getLogger(ClojureWorkerThread.class.getName());
@@ -52,7 +54,7 @@ class ClojureWorkerThread extends WorkerThread {
         j.outputObject.started();
 
         if (!clojureEvaluator.executeTask(new ClojureCodeRunner(clojureEvaluator, j.codeToBeExecuted, j.outputObject))) {
-          j.outputObject.error("... cancelled!");
+          j.outputObject.error(INTERUPTED_MSG);
         }
       } catch (Throwable e) {
         logger.error(e.getMessage());

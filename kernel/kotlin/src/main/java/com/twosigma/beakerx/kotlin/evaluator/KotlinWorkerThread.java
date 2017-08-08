@@ -40,6 +40,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+
 class KotlinWorkerThread extends WorkerThread {
 
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
@@ -142,7 +144,7 @@ class KotlinWorkerThread extends WorkerThread {
             Class<?> fooClass = loader.loadClass(kotlinEvaluator.getPackageId() + "." + WRAPPER_CLASS_NAME);
             Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
             if (!kotlinEvaluator.executeTask(new KotlinCodeRunner(fooClass.newInstance(), mth, j.outputObject, false, loader))) {
-              j.outputObject.error("... cancelled!");
+              j.outputObject.error(INTERUPTED_MSG);
             }
             if (nc != null) {
               nc.setOutputObj(null);

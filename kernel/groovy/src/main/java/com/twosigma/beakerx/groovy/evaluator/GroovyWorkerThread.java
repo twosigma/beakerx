@@ -23,6 +23,7 @@ import groovy.lang.GroovyClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newEvaluator;
 
 class GroovyWorkerThread extends WorkerThread {
@@ -91,7 +92,7 @@ class GroovyWorkerThread extends WorkerThread {
         String code = j.codeToBeExecuted;
 
         if (!groovyEvaluator.executeTask(new GroovyCodeRunner(this, code, j.outputObject))) {
-          j.outputObject.error("... cancelled!");
+          j.outputObject.error(INTERUPTED_MSG);
         }
 
         if (nc != null) {

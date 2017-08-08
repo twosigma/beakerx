@@ -29,6 +29,8 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
+import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+
 class GroovyCodeRunner implements Runnable {
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyCodeRunner.class.getName());
@@ -88,7 +90,7 @@ class GroovyCodeRunner implements Runnable {
       }
 
       if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
-        theOutput.error("... cancelled!");
+        theOutput.error(INTERUPTED_MSG);
       } else {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);

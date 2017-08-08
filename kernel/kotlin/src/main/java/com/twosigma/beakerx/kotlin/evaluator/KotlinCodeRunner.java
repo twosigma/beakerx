@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 
 class KotlinCodeRunner<T> implements Runnable {
 
@@ -59,7 +60,7 @@ class KotlinCodeRunner<T> implements Runnable {
       if (e instanceof InvocationTargetException)
         e = ((InvocationTargetException) e).getTargetException();
       if ((e instanceof InterruptedException) || (e instanceof ThreadDeath)) {
-        theOutput.error("... cancelled!");
+        theOutput.error(INTERUPTED_MSG);
       } else {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);

@@ -34,6 +34,8 @@ import java.util.Map;
 
 public abstract class BaseEvaluator implements Evaluator {
 
+  public static String INTERUPTED_MSG = "interrupted";
+
   protected final String shellId;
   protected final String sessionId;
   protected String outDir;

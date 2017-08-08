@@ -22,6 +22,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
+import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+
 class ScalaCodeRunner implements Runnable {
 
   private ScalaEvaluator scalaEvaluator;
@@ -42,7 +44,7 @@ class ScalaCodeRunner implements Runnable {
       scalaEvaluator.getShell().evaluate(theOutput, theCode);
     } catch (Throwable e) {
       if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
-        theOutput.error("... cancelled!");
+        theOutput.error(INTERUPTED_MSG);
       } else {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);

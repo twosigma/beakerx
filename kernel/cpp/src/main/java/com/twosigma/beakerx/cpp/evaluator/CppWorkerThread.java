@@ -59,7 +59,7 @@ class CppWorkerThread extends WorkerThread {
 
         cppCodeRunner = new CppCodeRunner(cppEvaluator, j.outputObject, code, j.cellId);
         if (!cppEvaluator.executeTask(cppCodeRunner)) {
-          j.outputObject.error("... cancelled!");
+          j.outputObject.error(INTERUPTED_MSG);
         }
         if (nc != null) {
           nc.setOutputObj(null);

@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
+import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+
 class SQLCodeRunner implements Runnable {
 
   private final static Logger logger = LoggerFactory.getLogger(SQLCodeRunner.class.getName());
@@ -46,7 +48,7 @@ class SQLCodeRunner implements Runnable {
     } catch (SQLException e) {
       simpleEvaluationObject.error(e.toString());
     } catch (ThreadDeath e) {
-      simpleEvaluationObject.error("... cancelled!");
+      simpleEvaluationObject.error(INTERUPTED_MSG);
     } catch (ReadVariableException e) {
       simpleEvaluationObject.error(e.getMessage());
     } catch (Throwable e) {

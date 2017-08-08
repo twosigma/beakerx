@@ -210,7 +210,7 @@ class CppCodeRunner implements Runnable {
       if (e instanceof InvocationTargetException)
         e = ((InvocationTargetException) e).getTargetException();
       if ((e instanceof InterruptedException) || (e instanceof ThreadDeath)) {
-        theOutput.error("... cancelled!");
+        theOutput.error(INTERUPTED_MSG);
       } else {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);

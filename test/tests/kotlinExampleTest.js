@@ -17,33 +17,34 @@
 var BeakerXPageObject = require('./beakerx.po.js');
 var beakerxPO;
 
-describe('ClojureTutorial notebook', function () {
+describe('Kotlin-example notebook', function () {
 
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('ClojureTutorial.ipynb', done);
+    beakerxPO.runNotebookByName('Kotlin-example.ipynb', done);
   });
 
   describe('Run first cell. ', function () {
-    it('Output contains "0, 1, 1, 2, 3, 5"', function (done) {
+    it('Output contains "Hello, world!"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(0, '0, 1, 1, 2, 3, 5');
+      beakerxPO.runCallAndCheckOutputText(0, 'Hello, world!');
       browser.call(done);
     });
   });
 
   describe('Run 2nd cell. ', function () {
-    it('Output contains "Will print"', function (done) {
+    it('PlotLegendContainer is enabled', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(1, 'Will print');
+      var dtContainer = beakerxPO.runCellToGetDtContainer(1);
+      beakerxPO.plotLegendContainerIsEnabled(dtContainer);
       browser.call(done);
     });
   });
 
   describe('Run 3rd cell. ', function () {
-    it('Output contains "Distinct: 36"', function (done) {
+    it('Output contains "Kotlin"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(2, 'Distinct: 36');
+      beakerxPO.runCallAndCheckOutputText(2, 'Kotlin');
       browser.call(done);
     });
   });

@@ -30,8 +30,8 @@ class GroovyWorkerThread extends WorkerThread {
   private static final Logger logger = LoggerFactory.getLogger(GroovyWorkerThread.class.getName());
 
   protected GroovyEvaluator groovyEvaluator;
-  protected GroovyClassLoader groovyClassLoader;
-  protected Binding scriptBinding = null;
+  private GroovyClassLoader groovyClassLoader;
+  private Binding scriptBinding = null;
   private boolean exit;
   private boolean updateLoader;
 
@@ -120,11 +120,19 @@ class GroovyWorkerThread extends WorkerThread {
     NamespaceClient.delBeaker(groovyEvaluator.getSessionId());
   }
 
-  public void updateLoader() {
+  void updateLoader() {
     this.updateLoader = true;
   }
 
-  public void doExit() {
+  void doExit() {
     this.exit = true;
+  }
+
+  GroovyClassLoader getGroovyClassLoader() {
+    return groovyClassLoader;
+  }
+
+  Binding getScriptBinding() {
+    return scriptBinding;
   }
 }

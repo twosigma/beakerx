@@ -26,7 +26,7 @@ class ClojureWorkerThread extends WorkerThread {
   private ClojureEvaluator clojureEvaluator;
   private boolean exit;
 
-  public ClojureWorkerThread(ClojureEvaluator clojureEvaluator) {
+  ClojureWorkerThread(ClojureEvaluator clojureEvaluator) {
     super("clojure worker");
     this.clojureEvaluator = clojureEvaluator;
     this.exit = false;
@@ -64,7 +64,7 @@ class ClojureWorkerThread extends WorkerThread {
     }
   }
 
-  public void doExit() {
+  void doExit() {
     this.exit = true;
   }
 }

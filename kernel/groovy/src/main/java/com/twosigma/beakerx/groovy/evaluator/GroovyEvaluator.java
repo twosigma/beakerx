@@ -61,7 +61,7 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    return gac.doAutocomplete(code, caretPosition, worker.groovyClassLoader);
+    return gac.doAutocomplete(code, caretPosition, worker.getGroovyClassLoader());
   }
 
   @Override

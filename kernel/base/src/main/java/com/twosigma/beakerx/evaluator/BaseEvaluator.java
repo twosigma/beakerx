@@ -89,10 +89,12 @@ public abstract class BaseEvaluator implements Evaluator {
     }
   }
 
+  @Override
   public Classpath getClasspath() {
     return classPath;
   }
 
+  @Override
   public Imports getImports() {
     return imports;
   }
@@ -146,19 +148,21 @@ public abstract class BaseEvaluator implements Evaluator {
     configure(kernelParameters);
   }
 
-
   public boolean executeTask(Runnable codeRunner) {
     return executor.executeTask(codeRunner);
   }
 
+  @Override
   public void killAllThreads() {
     executor.killAllThreads();
   }
 
+  @Override
   public void cancelExecution() {
     executor.cancelExecution();
   }
 
+  @Override
   public void resetEnvironment() {
     executor.killAllThreads();
     doResetEnvironment();

@@ -18,9 +18,9 @@ package com.twosigma.beakerx.clojure.evaluator;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.kernel.Classpath;
 
-public class ClojureClassLoaderFactory {
+class ClojureClassLoaderFactory {
 
-  public static DynamicClassLoaderSimple newInstance(Classpath classPath, String outDir) {
+  static DynamicClassLoaderSimple newInstance(Classpath classPath, String outDir) {
     DynamicClassLoaderSimple loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
     loader.addJars(classPath.getPathsAsStrings());
     loader.addDynamicDir(outDir);

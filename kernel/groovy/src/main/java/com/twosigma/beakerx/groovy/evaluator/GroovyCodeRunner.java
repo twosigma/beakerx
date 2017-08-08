@@ -50,19 +50,19 @@ class GroovyCodeRunner implements Runnable {
 
     try {
 
-      Thread.currentThread().setContextClassLoader(groovyWorkerThread.groovyClassLoader);
+      Thread.currentThread().setContextClassLoader(groovyWorkerThread.getGroovyClassLoader());
 
-      Class<?> parsedClass = groovyWorkerThread.groovyClassLoader.parseClass(theCode);
+      Class<?> parsedClass = groovyWorkerThread.getGroovyClassLoader().parseClass(theCode);
 
       Script instance = (Script) parsedClass.newInstance();
 
       if (GroovyEvaluator.LOCAL_DEV) {
-        groovyWorkerThread.scriptBinding.setVariable(Evaluator.BEAKER_VARIABLE_NAME, new HashMap<String, Object>());
+        groovyWorkerThread.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, new HashMap<String, Object>());
       } else {
-        groovyWorkerThread.scriptBinding.setVariable(Evaluator.BEAKER_VARIABLE_NAME, NamespaceClient.getBeaker(groovyWorkerThread.groovyEvaluator.getSessionId()));
+        groovyWorkerThread.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, NamespaceClient.getBeaker(groovyWorkerThread.groovyEvaluator.getSessionId()));
       }
 
-      instance.setBinding(groovyWorkerThread.scriptBinding);
+      instance.setBinding(groovyWorkerThread.getScriptBinding());
 
       InternalVariable.setValue(theOutput);
 
@@ -70,7 +70,7 @@ class GroovyCodeRunner implements Runnable {
 
       if (GroovyEvaluator.LOCAL_DEV) {
         logger.info("Result: {}", result);
-        logger.info("Variables: {}", groovyWorkerThread.scriptBinding.getVariables());
+        logger.info("Variables: {}", groovyWorkerThread.getScriptBinding().getVariables());
       }
 
       theOutput.finished(result);

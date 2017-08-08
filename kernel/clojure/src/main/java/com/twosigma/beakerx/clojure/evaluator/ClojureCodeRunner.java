@@ -36,7 +36,6 @@ class ClojureCodeRunner implements Runnable {
 
   @Override
   public void run() {
-
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(clojureEvaluator.getLoader());
 
@@ -45,10 +44,7 @@ class ClojureCodeRunner implements Runnable {
       InternalVariable.setValue(theOutput);
       Object o = clojureEvaluator.runCode(theCode);
       try {
-        //workaround, checking of corrupted clojure objects
-        if (null != o) {
-          o.hashCode();
-        }
+        checkingOfCorruptedClojureObjects(o);
         theOutput.finished(o);
       } catch (Exception e) {
         theOutput.error("Object: " + o.getClass() + ", value cannot be displayed due to following error: " + e.getMessage());
@@ -69,5 +65,11 @@ class ClojureCodeRunner implements Runnable {
     }
     theOutput.setOutputHandler();
     Thread.currentThread().setContextClassLoader(oldLoader);
+  }
+
+  private void checkingOfCorruptedClojureObjects(Object o) {
+    if (null != o) {
+      o.hashCode();
+    }
   }
 }

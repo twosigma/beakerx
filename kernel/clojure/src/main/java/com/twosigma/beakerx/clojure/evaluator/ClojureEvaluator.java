@@ -132,7 +132,7 @@ public class ClojureEvaluator extends BaseEvaluator {
     return Resources.toString(url, Charsets.UTF_8);
   }
 
-  public DynamicClassLoaderSimple getLoader() {
+  DynamicClassLoaderSimple getLoader() {
     return loader;
   }
 }

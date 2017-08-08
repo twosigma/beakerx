@@ -32,10 +32,10 @@ import java.io.File;
 public class JavaEvaluator extends BaseEvaluator {
 
   public static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
-  protected final String packageId;
-  protected ClasspathScanner cps;
-  protected JavaAutocomplete jac;
-  protected JavaWorkerThread workerThread;
+  private final String packageId;
+  private ClasspathScanner cps;
+  private JavaAutocomplete jac;
+  private JavaWorkerThread workerThread;
 
   public JavaEvaluator(String id, String sId) {
     this(id, sId, new BeakerCellExecutor("javash"));
@@ -52,29 +52,11 @@ public class JavaEvaluator extends BaseEvaluator {
     workerThread.start();
   }
 
-  protected JavaAutocomplete createJavaAutocomplete(ClasspathScanner c) {
-    return new JavaAutocomplete(c);
-  }
-
   @Override
   protected void doResetEnvironment() {
-    String cpp = "";
-    for (String pt : classPath.getPathsAsStrings()) {
-      cpp += pt;
-      cpp += File.pathSeparator;
-    }
-    cpp += File.pathSeparator;
-    cpp += outDir;
-    cpp += File.pathSeparator;
-    cpp += System.getProperty("java.class.path");
-
+    String cpp = createClasspath(classPath, outDir);
     cps = new ClasspathScanner(cpp);
-    jac = createJavaAutocomplete(cps);
-
-    for (ImportPath st : imports.getImportPaths())
-      jac.addImport(st.asString());
-
-    // signal thread to create loader
+    jac = createAutocomplete(imports, cps);
     workerThread.updateLoader();
     workerThread.halt();
   }
@@ -94,5 +76,33 @@ public class JavaEvaluator extends BaseEvaluator {
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     return jac.doAutocomplete(code, caretPosition);
+  }
+
+  private JavaAutocomplete createJavaAutocomplete(ClasspathScanner c) {
+    return new JavaAutocomplete(c);
+  }
+
+  private JavaAutocomplete createAutocomplete(Imports imports, ClasspathScanner cps) {
+    JavaAutocomplete jac = createJavaAutocomplete(cps);
+    for (ImportPath st : imports.getImportPaths())
+      jac.addImport(st.asString());
+    return jac;
+  }
+
+  private String createClasspath(Classpath classPath, String outDir) {
+    String cpp = "";
+    for (String pt : classPath.getPathsAsStrings()) {
+      cpp += pt;
+      cpp += File.pathSeparator;
+    }
+    cpp += File.pathSeparator;
+    cpp += outDir;
+    cpp += File.pathSeparator;
+    cpp += System.getProperty("java.class.path");
+    return cpp;
+  }
+
+  public String getPackageId() {
+    return packageId;
   }
 }

@@ -79,7 +79,7 @@ class JavaWorkerThread extends WorkerThread {
 
         Pattern p;
         Matcher m;
-        String pname = javaEvaluator.packageId;
+        String pname = javaEvaluator.getPackageId();
 
         org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(javaEvaluator.getOutDir()));
 

@@ -23,16 +23,18 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 class JavaCodeRunner implements Runnable {
 
-  protected final SimpleEvaluationObject theOutput;
-  protected final Method theMth;
-  protected final boolean retObject;
-  protected final ClassLoader loader;
+  private final SimpleEvaluationObject theOutput;
+  private final Method theMth;
+  private final boolean retObject;
+  private final ClassLoader loader;
 
   public JavaCodeRunner(Method mth, SimpleEvaluationObject out, boolean ro, ClassLoader ld) {
     theMth = mth;
-    theOutput = out;
+    theOutput = checkNotNull(out);
     retObject = ro;
     loader = ld;
   }
@@ -63,9 +65,8 @@ class JavaCodeRunner implements Runnable {
         theOutput.error(sw.toString());
       }
     } finally {
-      if (theOutput != null) {
-        theOutput.executeCodeCallback();
-      }
+      theOutput.executeCodeCallback();
+
     }
     theOutput.clrOutputHandler();
     Thread.currentThread().setContextClassLoader(oldld);

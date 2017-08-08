@@ -220,7 +220,7 @@ public class SQLEvaluator extends BaseEvaluator {
       } catch (SQLException e) {
         simpleEvaluationObject.error(e.toString());
       } catch (ThreadDeath e) {
-        simpleEvaluationObject.error("... cancelled!");
+        simpleEvaluationObject.error(INTERUPTED_MSG);
       } catch (ReadVariableException e) {
         simpleEvaluationObject.error(e.getMessage());
       } catch (Throwable e) {

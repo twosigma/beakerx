@@ -25,6 +25,8 @@ import java.util.List;
 
 public abstract class BaseEvaluator implements Evaluator {
 
+  protected static String INTERUPTED_MSG = "interrupted";
+
   protected abstract boolean addJar(PathToJar path);
 
   protected abstract boolean addImportPath(ImportPath anImport);

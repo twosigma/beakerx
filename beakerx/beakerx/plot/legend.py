@@ -15,28 +15,30 @@
 from enum import Enum
 from beakerx.plot.utils import *
 
+
 class LegendLayout(Enum):
-  HORIZONTAL = 1
-  VERTICAL = 2
+    HORIZONTAL = 1
+    VERTICAL = 2
+
 
 class LegendPosition():
-  def __init__(self, **kwargs):
-    self.position = getValue(kwargs, 'position')
-    self.x = getValue(kwargs, 'x')
-    self.y = getValue(kwargs, 'y')
-
-    if self.x is None and self.y is None and self.position is None:
-      self.position = LegendPosition.Position.TOP_RIGHT
-    elif self.position is not None:
-      self.x = None
-      self.y = None
-
-  class Position(Enum):
-    TOP = 1
-    LEFT = 2
-    BOTTOM = 3
-    RIGHT = 4
-    TOP_LEFT = 5
-    TOP_RIGHT = 6
-    BOTTOM_LEFT = 7
-    BOTTOM_RIGHT = 8
+    def __init__(self, **kwargs):
+        self.position = getValue(kwargs, 'position')
+        self.x = getValue(kwargs, 'x')
+        self.y = getValue(kwargs, 'y')
+        
+        if self.x is None and self.y is None and self.position is None:
+            self.position = LegendPosition.Position.TOP_RIGHT
+        elif self.position is not None:
+            self.x = None
+            self.y = None
+    
+    class Position(Enum):
+        TOP = 1
+        LEFT = 2
+        BOTTOM = 3
+        RIGHT = 4
+        TOP_LEFT = 5
+        TOP_RIGHT = 6
+        BOTTOM_LEFT = 7
+        BOTTOM_RIGHT = 8

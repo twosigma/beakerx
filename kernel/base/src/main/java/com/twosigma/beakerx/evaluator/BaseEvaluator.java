@@ -40,8 +40,7 @@ public abstract class BaseEvaluator implements Evaluator {
   protected String outDir;
   protected Classpath classPath;
   protected Imports imports;
-
-  protected final CellExecutor executor;
+  private final CellExecutor executor;
 
   public BaseEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;

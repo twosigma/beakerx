@@ -22,7 +22,9 @@ import com.twosigma.beakerx.groovy.autocomplete.GroovyClasspathScanner;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
+import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
 
 import java.io.File;
@@ -32,10 +34,10 @@ import static com.twosigma.beakerx.groovy.evaluator.EnvVariablesFilter.envVariab
 
 public class GroovyEvaluator extends BaseEvaluator {
 
-  //user entered source value
-  protected GroovyClasspathScanner cps;
-  protected GroovyAutocomplete gac;
   public static boolean LOCAL_DEV = false;
+
+  private GroovyClasspathScanner cps;
+  private GroovyAutocomplete gac;
   private GroovyWorkerThread worker = null;
 
   public GroovyEvaluator(String id, String sId) {
@@ -51,33 +53,26 @@ public class GroovyEvaluator extends BaseEvaluator {
     worker.start();
   }
 
+  @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {
     worker.add(new JobDescriptor(code, seo));
   }
 
+  @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     return gac.doAutocomplete(code, caretPosition, worker.groovyClassLoader);
   }
 
   @Override
   protected void doResetEnvironment() {
-    String cpp = "";
-    for (String pt : classPath.getPathsAsStrings()) {
-      cpp += pt;
-      cpp += File.pathSeparator;
-    }
-    cpp += File.pathSeparator;
-    cpp += System.getProperty("java.class.path");
+    String cpp = createClasspath(classPath);
     cps = new GroovyClasspathScanner(cpp);
-    gac = createGroovyAutocomplete(cps);
-
-    for (ImportPath st : imports.getImportPaths())
-      gac.addImport(st.asString());
-
+    gac = createAutocomplete(cps, imports);
     worker.updateLoader();
     worker.halt();
   }
 
+  @Override
   public void exit() {
     worker.doExit();
     cancelExecution();
@@ -93,14 +88,25 @@ public class GroovyEvaluator extends BaseEvaluator {
     return new GroovyAutocomplete(c);
   }
 
-  static class GroovyNotFoundException extends RuntimeException {
-
-    private static final long serialVersionUID = 1L;
-
-    public GroovyNotFoundException(String message) {
-      super(message);
+  private GroovyAutocomplete createAutocomplete(GroovyClasspathScanner cps, Imports imports) {
+    GroovyAutocomplete gac = createGroovyAutocomplete(cps);
+    for (ImportPath st : imports.getImportPaths()) {
+      gac.addImport(st.asString());
     }
-
+    return gac;
   }
+
+  private String createClasspath(Classpath classPath) {
+    StringBuilder cppBuilder = new StringBuilder();
+    for (String pt : classPath.getPathsAsStrings()) {
+      cppBuilder.append(pt);
+      cppBuilder.append(File.pathSeparator);
+    }
+    String cpp = cppBuilder.toString();
+    cpp += File.pathSeparator;
+    cpp += System.getProperty("java.class.path");
+    return cpp;
+  }
+
 
 }

@@ -45,7 +45,7 @@ public class GroovyClassLoaderFactory {
       } else {
         errorMsg = "Default groovy libary not found. No GROOVY_JAR_PATH variable set.";
       }
-      throw new GroovyEvaluator.GroovyNotFoundException(errorMsg);
+      throw new GroovyNotFoundException(errorMsg);
     }
 
     ImportCustomizer icz = new ImportCustomizer();

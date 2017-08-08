@@ -100,7 +100,7 @@ class GroovyWorkerThread extends WorkerThread {
           nc = null;
         }
       } catch (Throwable e) {
-        if (e instanceof GroovyEvaluator.GroovyNotFoundException) {
+        if (e instanceof GroovyNotFoundException) {
           logger.warn(e.getLocalizedMessage());
           if (j != null) {
             j.outputObject.error(e.getLocalizedMessage());

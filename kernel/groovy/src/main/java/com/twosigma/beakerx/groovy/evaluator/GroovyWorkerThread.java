@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
-import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.WorkerThread;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
@@ -38,16 +38,15 @@ class GroovyWorkerThread extends WorkerThread {
   GroovyWorkerThread(GroovyEvaluator groovyEvaluator) {
     super("groovy worker");
     this.groovyEvaluator = groovyEvaluator;
-    exit = false;
-    updateLoader = false;
+    this.exit = false;
+    this.updateLoader = false;
   }
 
   /*
    * This thread performs all the evaluation
    */
-
   public void run() {
-    BaseEvaluator.JobDescriptor j = null;
+    JobDescriptor j = null;
     NamespaceClient nc = null;
 
     while (!exit) {

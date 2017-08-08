@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.kotlin.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
-import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.WorkerThread;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.kernel.ImportPath;
@@ -61,7 +61,7 @@ class KotlinWorkerThread extends WorkerThread {
 
   public void run() {
     DynamicClassLoaderSimple loader = null;
-    BaseEvaluator.JobDescriptor j = null;
+    JobDescriptor j = null;
 
     NamespaceClient nc = null;
 

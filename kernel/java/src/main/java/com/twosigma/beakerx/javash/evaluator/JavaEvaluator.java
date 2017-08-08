@@ -18,6 +18,7 @@ package com.twosigma.beakerx.javash.evaluator;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;

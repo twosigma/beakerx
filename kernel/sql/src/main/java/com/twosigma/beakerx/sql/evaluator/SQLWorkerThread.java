@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.sql.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
-import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.WorkerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ class SQLWorkerThread extends WorkerThread {
       */
 
   public void run() {
-    BaseEvaluator.JobDescriptor job;
+    JobDescriptor job;
     NamespaceClient namespaceClient;
 
     while (!exit) {

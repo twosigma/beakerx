@@ -33,8 +33,8 @@ class GroovyCodeRunner implements Runnable {
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyCodeRunner.class.getName());
   private GroovyWorkerThread groovyWorkerThread;
-  protected final String theCode;
-  protected final SimpleEvaluationObject theOutput;
+  private final String theCode;
+  private final SimpleEvaluationObject theOutput;
 
   public GroovyCodeRunner(GroovyWorkerThread groovyWorkerThread, String code, SimpleEvaluationObject out) {
     this.groovyWorkerThread = groovyWorkerThread;

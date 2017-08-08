@@ -17,6 +17,7 @@ package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyClasspathScanner;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;

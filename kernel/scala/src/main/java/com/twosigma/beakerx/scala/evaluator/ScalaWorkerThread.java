@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
-import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.WorkerThread;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ class ScalaWorkerThread extends WorkerThread {
    */
 
   public void run() {
-    BaseEvaluator.JobDescriptor j = null;
+    JobDescriptor j = null;
     NamespaceClient nc = null;
 
     while (!exit) {

@@ -151,26 +151,6 @@ public abstract class BaseEvaluator implements Evaluator {
     configure(kernelParameters);
   }
 
-  public class JobDescriptor {
-    public String codeToBeExecuted;
-    public SimpleEvaluationObject outputObject;
-    public String cellId;
-
-    public JobDescriptor(String c, SimpleEvaluationObject o, String cid) {
-      this(c, o);
-      cellId = cid;
-    }
-
-    public JobDescriptor(String c, SimpleEvaluationObject o) {
-      codeToBeExecuted = c;
-      outputObject = o;
-    }
-
-    public SimpleEvaluationObject getSimpleEvaluationObject() {
-      return outputObject;
-    }
-  }
-
   public void killAllThreads() {
     executor.killAllThreads();
   }

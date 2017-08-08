@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.javash.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
-import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.WorkerThread;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.kernel.ImportPath;
@@ -49,7 +49,7 @@ class JavaWorkerThread extends WorkerThread {
 
   public void run() {
     DynamicClassLoaderSimple loader = null;
-    BaseEvaluator.JobDescriptor j = null;
+    JobDescriptor j = null;
     org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler;
 
     javaSourceCompiler = new JavaSourceCompiler();

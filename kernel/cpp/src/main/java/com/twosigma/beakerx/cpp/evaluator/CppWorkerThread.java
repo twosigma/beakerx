@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.cpp.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
-import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.WorkerThread;
 
 class CppWorkerThread extends WorkerThread {
@@ -35,7 +35,7 @@ class CppWorkerThread extends WorkerThread {
    */
 
   public void run() {
-    BaseEvaluator.JobDescriptor j = null;
+    JobDescriptor j = null;
     NamespaceClient nc = null;
 
 

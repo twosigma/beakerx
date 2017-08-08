@@ -15,24 +15,24 @@
  */
 package com.twosigma.beakerx.evaluator;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 
-public class WorkerThread extends Thread {
+public class JobDescriptor {
+  public String codeToBeExecuted;
+  public SimpleEvaluationObject outputObject;
+  public String cellId;
 
-  protected final Semaphore syncObject = new Semaphore(0, true);
-  protected final ConcurrentLinkedQueue<JobDescriptor> jobQueue = new ConcurrentLinkedQueue<>();
-
-  public WorkerThread(String name) {
-    super(name);
+  public JobDescriptor(String c, SimpleEvaluationObject o, String cid) {
+    this(c, o);
+    cellId = cid;
   }
 
-  public void add(JobDescriptor jobDescriptor) {
-    jobQueue.add(jobDescriptor);
-    syncObject.release();
+  public JobDescriptor(String c, SimpleEvaluationObject o) {
+    codeToBeExecuted = c;
+    outputObject = o;
   }
 
-  public void halt() {
-    syncObject.release();
+  public SimpleEvaluationObject getSimpleEvaluationObject() {
+    return outputObject;
   }
 }

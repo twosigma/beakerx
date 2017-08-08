@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.clojure.evaluator;
 
-import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.WorkerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ class ClojureWorkerThread extends WorkerThread {
    */
 
   public void run() {
-    BaseEvaluator.JobDescriptor j = null;
+    JobDescriptor j = null;
 
     while (!exit) {
       try {

@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.text.StrTokenizer;
 
 public class MagicCommandFinder {
 
@@ -64,8 +65,9 @@ public class MagicCommandFinder {
   }
 
   private static boolean isCellmagicHeadNonEmpty(String command) {
-    return !(command.replace(MagicCommand.BASH, "").replace(" ", "").length() < 1 ||
-            command.replace(MagicCommand.HTML, "").replace(" ", "").length() < 1);
+    List<String> tokens = new StrTokenizer(command).getTokenList();
+
+    return !(command.replace(tokens.get(0), "").replace(" ", "").length() < 1);
   }
 
   private static Optional<MagicCommandFunctionality> findFunctionality(final Map<String, MagicCommandFunctionality> commands, final String command) {

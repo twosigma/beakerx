@@ -51,6 +51,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.text.StrMatcher;
+import org.apache.commons.text.StrTokenizer;
 
 /**
  * executes magic commands and sends message
@@ -197,7 +199,7 @@ public class MagicCommand {
 
   private MagicCommandFunctionality classpathAddJar() {
       return (code, command, message, executionCount) -> {
-          String[] split = command.split(" ");
+          String[] split = splitPath(command);
           if (split.length != 4) {
             return sendErrorMessage(message, "Wrong command format: " + CLASSPATH_ADD_JAR, executionCount);
           }
@@ -211,6 +213,12 @@ public class MagicCommand {
             return getMagicCommandItem(addJars(path), code, message, executionCount);
           }
       };
+  }
+
+  private String[] splitPath(String command) {
+    StrTokenizer tokenizer = new StrTokenizer(command, StrMatcher.spaceMatcher(), StrMatcher.quoteMatcher());
+
+    return tokenizer.getTokenArray();
   }
 
   private MagicCommandItemWithResult sendErrorMessage(Message message, String messageText, int executionCount) {
@@ -370,7 +378,6 @@ public class MagicCommand {
 
   private ErrorData isValidPath(String path) {
     boolean isEmpty = checkNotNull(path).isEmpty();
-
     if (isEmpty) {
       return new ErrorData(true, "Please provide a path");
     }

@@ -17,33 +17,34 @@
 var BeakerXPageObject = require('./beakerx.po.js');
 var beakerxPO;
 
-describe('ClojureTutorial notebook', function () {
+describe('Scala notebook', function () {
 
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('ClojureTutorial.ipynb', done);
+    beakerxPO.runNotebookByName('scala.ipynb', done, 'scala');
   });
 
   describe('Run first cell. ', function () {
-    it('Output contains "0, 1, 1, 2, 3, 5"', function (done) {
+    it('Output contains "defined class Greeter"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(0, '0, 1, 1, 2, 3, 5');
+      beakerxPO.runCallAndCheckOutputText(0, 'defined class Greeter');
       browser.call(done);
     });
   });
 
   describe('Run 2nd cell. ', function () {
-    it('Output contains "Will print"', function (done) {
+    it('Output contains "Hello, Scala developer!"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(1, 'Will print');
+      beakerxPO.runCallAndCheckOutputText(1, 'Hello, Scala developer!');
       browser.call(done);
     });
   });
 
   describe('Run 3rd cell. ', function () {
-    it('Output contains "Distinct: 36"', function (done) {
+    it('PlotLegendContainer is enabled', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(2, 'Distinct: 36');
+      var dtContainer = beakerxPO.runCellToGetDtContainer(2);
+      beakerxPO.plotLegendContainerIsEnabled(dtContainer);
       browser.call(done);
     });
   });

@@ -24,12 +24,6 @@ describe('JavaTutorial notebook', function () {
     beakerxPO.runNotebookByName('javaTutorial.ipynb', done);
   });
 
-  it('Can run Java cell. ', function (done) {
-    beakerxPO.kernelIdleIcon.waitForEnabled();
-    beakerxPO.runCodeCellByIndex(0);
-    browser.call(done);
-  });
-
   describe('Run first cell. ', function () {
     it('Output contains "test.beaker.BeakerTest"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();

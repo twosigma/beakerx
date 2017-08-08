@@ -15,11 +15,10 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
+import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResult;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.message.Message;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,14 +37,22 @@ public class MagicCommandFinder {
 
   public static MagicCommandFinder find(Code code, Map<String, MagicCommandFunctionality> commands, Message message, int executionCount, MessageCreator messageCreator) {
     List<MagicCommandItemWithResult> errors = new ArrayList<>();
-     LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun = new LinkedHashMap<>();
+    LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun = new LinkedHashMap<>();
     code.getCommands().forEach(command -> {
       if (command.startsWith("%%") && isCellmagicHeadNonEmpty(command)) {
         errors.add(processIllegalCommand( "Cell magic head contains data move it to body.", message, executionCount, messageCreator));
         return;
       }
 
-      command = command.replaceAll("\\s+"," ");
+      if (command.contains("\"")) {
+        int indexOfFirstQuote = command.indexOf("\"");
+        command = command.substring(0, indexOfFirstQuote)
+                         .replaceAll("\\s+"," ")
+                         .concat(command.substring(indexOfFirstQuote, command.length()));
+      } else {
+        command = command.replaceAll("\\s+"," ");
+      }
+
       Optional<MagicCommandFunctionality> functionality = findFunctionality(commands, command);
       if (functionality.isPresent()) {
         functionalityToRun.put(command, functionality.get());

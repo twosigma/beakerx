@@ -18,26 +18,20 @@ package com.twosigma.beakerx.scala.evaluator;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.WorkerThread;
-import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.net.MalformedURLException;
 
 class ScalaWorkerThread extends WorkerThread {
 
   private final static Logger logger = LoggerFactory.getLogger(ScalaWorkerThread.class.getName());
 
   private ScalaEvaluator scalaEvaluator;
-  private BeakerxObjectFactory beakerxObjectFactory;
-  protected boolean exit;
-  protected boolean updateLoader;
+  private boolean exit;
+  private boolean updateLoader;
 
-  public ScalaWorkerThread(ScalaEvaluator scalaEvaluator, BeakerxObjectFactory beakerxObjectFactory) {
+  public ScalaWorkerThread(ScalaEvaluator scalaEvaluator) {
     super("scala worker");
     this.scalaEvaluator = scalaEvaluator;
-    this.beakerxObjectFactory = beakerxObjectFactory;
     exit = false;
     updateLoader = false;
   }
@@ -45,7 +39,6 @@ class ScalaWorkerThread extends WorkerThread {
   /*
    * This thread performs all the evaluation
    */
-
   public void run() {
     JobDescriptor j = null;
     NamespaceClient nc = null;
@@ -58,7 +51,7 @@ class ScalaWorkerThread extends WorkerThread {
 
         // check if we must create or update class loader
         if (updateLoader) {
-          scalaEvaluator.shell = null;
+          scalaEvaluator.clearShell();
         }
 
         // get next job descriptor
@@ -66,9 +59,9 @@ class ScalaWorkerThread extends WorkerThread {
         if (j == null)
           continue;
 
-        if (scalaEvaluator.shell == null) {
+        if (scalaEvaluator.getShell() == null) {
           updateLoader = false;
-          newEvaluator();
+          scalaEvaluator.newEvaluator();
         }
 
         j.outputObject.started();
@@ -95,55 +88,6 @@ class ScalaWorkerThread extends WorkerThread {
       }
     }
     NamespaceClient.delBeaker(scalaEvaluator.getSessionId());
-  }
-
-  ;
-
-  /*
-   * Scala uses multiple classloaders and (unfortunately) cannot fallback to the java one while compiling scala code so we
-   * have to build our DynamicClassLoader and also build a proper classpath for the compiler classloader.
-   */
-  protected ClassLoader newClassLoader() throws MalformedURLException {
-    logger.debug("creating new loader");
-
-    scalaEvaluator.loader_cp = "";
-    for (int i = 0; i < scalaEvaluator.getClasspath().size(); i++) {
-      scalaEvaluator.loader_cp += scalaEvaluator.getClasspath().get(i);
-      scalaEvaluator.loader_cp += File.pathSeparatorChar;
-    }
-    scalaEvaluator.loader_cp += scalaEvaluator.getOutDir();
-    DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-    cl.addJars(scalaEvaluator.getClasspath().getPathsAsStrings());
-    cl.addDynamicDir(scalaEvaluator.getOutDir());
-    return cl;
-  }
-
-  protected void newEvaluator() throws MalformedURLException {
-    logger.debug("creating new evaluator");
-    scalaEvaluator.shell = new ScalaEvaluatorGlue(newClassLoader(),
-            scalaEvaluator.loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), scalaEvaluator.getOutDir());
-
-    if (!scalaEvaluator.getImports().isEmpty()) {
-      for (int i = 0; i < scalaEvaluator.getImports().getImportPaths().size(); i++) {
-        String imp = scalaEvaluator.getImports().getImportPaths().get(i).asString().trim();
-        imp = scalaEvaluator.adjustImport(imp);
-        if (!imp.isEmpty()) {
-          logger.debug("importing : {}", imp);
-          if (!scalaEvaluator.shell.addImport(imp))
-            logger.warn("ERROR: cannot add import '{}'", imp);
-        }
-      }
-    }
-
-    logger.debug("creating beaker object");
-
-    // ensure object is created
-    NamespaceClient.getBeaker(scalaEvaluator.getSessionId());
-
-    String r = scalaEvaluator.shell.evaluate2(this.beakerxObjectFactory.create(scalaEvaluator.getSessionId()));
-    if (r != null && !r.isEmpty()) {
-      logger.warn("ERROR creating beaker object: {}", r);
-    }
   }
 
   public void updateLoader() {

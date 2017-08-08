@@ -25,13 +25,13 @@ import java.lang.reflect.InvocationTargetException;
 class ScalaCodeRunner implements Runnable {
 
   private ScalaEvaluator scalaEvaluator;
-  protected final String theCode;
-  protected final SimpleEvaluationObject theOutput;
+  private final String theCode;
+  private final SimpleEvaluationObject theOutput;
 
   public ScalaCodeRunner(ScalaEvaluator scalaEvaluator, String code, SimpleEvaluationObject out) {
     this.scalaEvaluator = scalaEvaluator;
-    theCode = code;
-    theOutput = out;
+    this.theCode = code;
+    this.theOutput = out;
   }
 
   @Override
@@ -39,7 +39,7 @@ class ScalaCodeRunner implements Runnable {
     theOutput.setOutputHandler();
     try {
       InternalVariable.setValue(theOutput);
-      scalaEvaluator.shell.evaluate(theOutput, theCode);
+      scalaEvaluator.getShell().evaluate(theOutput, theCode);
     } catch (Throwable e) {
       if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
         theOutput.error("... cancelled!");

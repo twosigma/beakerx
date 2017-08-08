@@ -44,10 +44,9 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());
   private BeakerxObjectFactory beakerxObjectFactory;
-  protected ScalaWorkerThread workerThread;
-  protected String currentClassPath;
-  protected String currentImports;
+  private ScalaWorkerThread workerThread;
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
+  private static boolean autoTranslationSetup = false;
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp) {
     this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl());
@@ -57,33 +56,12 @@ public class ScalaEvaluator extends BaseEvaluator {
     super(id, sId, cellExecutor);
     objectSerializerProvider = osp;
     this.beakerxObjectFactory = beakerxObjectFactory;
-    currentClassPath = "";
-    currentImports = "";
-    workerThread = new ScalaWorkerThread(this, this.beakerxObjectFactory);
+    workerThread = new ScalaWorkerThread(this);
     workerThread.start();
     try {
       newAutoCompleteEvaluator();
     } catch (MalformedURLException e) {
     }
-  }
-
-  private static boolean autoTranslationSetup = false;
-
-  public void setupAutoTranslation() {
-    if (autoTranslationSetup)
-      return;
-
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaCollectionSerializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaMapSerializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaPrimitiveTypeListOfListSerializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaListOfPrimitiveTypeMapsSerializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaPrimitiveTypeMapSerializer(objectSerializerProvider.get()));
-
-    objectSerializerProvider.get().addfTypeDeserializer(new ScalaCollectionDeserializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeDeserializer(new ScalaMapDeserializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeDeserializer(new ScalaTableDeSerializer(objectSerializerProvider.get()));
-
-    autoTranslationSetup = true;
   }
 
   @Override
@@ -96,6 +74,7 @@ public class ScalaEvaluator extends BaseEvaluator {
     workerThread.halt();
   }
 
+  @Override
   public void exit() {
     workerThread.doExit();
     cancelExecution();
@@ -123,10 +102,27 @@ public class ScalaEvaluator extends BaseEvaluator {
     return null;
   }
 
-  protected ScalaEvaluatorGlue shell;
-  protected String loader_cp = "";
-  protected ScalaEvaluatorGlue acshell;
-  protected String acloader_cp = "";
+  public void setupAutoTranslation() {
+    if (autoTranslationSetup)
+      return;
+
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaCollectionSerializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaMapSerializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaPrimitiveTypeListOfListSerializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaListOfPrimitiveTypeMapsSerializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaPrimitiveTypeMapSerializer(objectSerializerProvider.get()));
+
+    objectSerializerProvider.get().addfTypeDeserializer(new ScalaCollectionDeserializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeDeserializer(new ScalaMapDeserializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeDeserializer(new ScalaTableDeSerializer(objectSerializerProvider.get()));
+
+    autoTranslationSetup = true;
+  }
+
+  private ScalaEvaluatorGlue shell;
+  private String loader_cp = "";
+  private ScalaEvaluatorGlue acshell;
+  private String acloader_cp = "";
 
   String adjustImport(String imp) {
     if (imp.startsWith("import"))
@@ -143,8 +139,7 @@ public class ScalaEvaluator extends BaseEvaluator {
     return imp;
   }
 
-
-  protected ClassLoader newAutoCompleteClassLoader() throws MalformedURLException {
+  private ClassLoader newAutoCompleteClassLoader() throws MalformedURLException {
     logger.debug("creating new autocomplete loader");
     acloader_cp = "";
     for (int i = 0; i < classPath.size(); i++) {
@@ -159,7 +154,7 @@ public class ScalaEvaluator extends BaseEvaluator {
     return cl;
   }
 
-  protected void newAutoCompleteEvaluator() throws MalformedURLException {
+  private void newAutoCompleteEvaluator() throws MalformedURLException {
     logger.debug("creating new autocomplete evaluator");
     acshell = new ScalaEvaluatorGlue(newAutoCompleteClassLoader(),
             acloader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), outDir);
@@ -182,6 +177,61 @@ public class ScalaEvaluator extends BaseEvaluator {
     if (r != null && !r.isEmpty()) {
       logger.warn("ERROR creating beaker beaker: {}", r);
     }
+  }
 
+  void newEvaluator() throws MalformedURLException {
+    logger.debug("creating new evaluator");
+    shell = new ScalaEvaluatorGlue(newClassLoader(),
+            loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), getOutDir());
+
+    if (!getImports().isEmpty()) {
+      for (int i = 0; i < getImports().getImportPaths().size(); i++) {
+        String imp = getImports().getImportPaths().get(i).asString().trim();
+        imp = adjustImport(imp);
+        if (!imp.isEmpty()) {
+          logger.debug("importing : {}", imp);
+          if (!shell.addImport(imp))
+            logger.warn("ERROR: cannot add import '{}'", imp);
+        }
+      }
+    }
+
+    logger.debug("creating beaker object");
+
+    // ensure object is created
+    NamespaceClient.getBeaker(getSessionId());
+
+    String r = shell.evaluate2(this.beakerxObjectFactory.create(getSessionId()));
+    if (r != null && !r.isEmpty()) {
+      logger.warn("ERROR creating beaker object: {}", r);
+    }
+  }
+
+  /*
+ * Scala uses multiple classloaders and (unfortunately) cannot fallback to the java one while compiling scala code so we
+ * have to build our DynamicClassLoader and also build a proper classpath for the compiler classloader.
+ */
+  private ClassLoader newClassLoader() throws MalformedURLException {
+    logger.debug("creating new loader");
+
+    loader_cp = "";
+    for (int i = 0; i < getClasspath().size(); i++) {
+      loader_cp += getClasspath().get(i);
+      loader_cp += File.pathSeparatorChar;
+    }
+    loader_cp += getOutDir();
+    DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+    cl.addJars(getClasspath().getPathsAsStrings());
+    cl.addDynamicDir(getOutDir());
+    return cl;
+  }
+
+
+  public ScalaEvaluatorGlue getShell() {
+    return shell;
+  }
+
+  public void clearShell() {
+    this.shell = null;
   }
 }

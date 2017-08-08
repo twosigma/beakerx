@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.text.StrMatcher;
 import org.apache.commons.text.StrTokenizer;
@@ -74,6 +75,8 @@ public class MagicCommand {
   public static final String ADD_IMPORT = "%import";
   public static final String ADD_STATIC_IMPORT = ADD_IMPORT + " static";
   public static final String UNIMPORT = "%unimport";
+
+  public static final String USAGE_ERROR_MSG = "UsageError: %s is a cell magic, but the cell body is empty.";
 
   private Map<String, MagicCommandFunctionality> commands = new LinkedHashMap<>();
   private MessageCreator messageCreator;
@@ -203,8 +206,9 @@ public class MagicCommand {
 
           String path = split[3];
           ErrorData errorData = isValidPath(path);
-          if (errorData.hasError) {
-            return sendErrorMessage(message, errorData.message, executionCount);
+
+          if (errorData.hasError()) {
+            return sendErrorMessage(message, errorData.getMessage(), executionCount);
           } else {
             return getMagicCommandItem(addJars(path), code, message, executionCount);
           }
@@ -217,7 +221,7 @@ public class MagicCommand {
     return tokenizer.getTokenArray();
   }
 
-  private MagicCommandItem sendErrorMessage(Message message, String messageText, int executionCount) {
+  private MagicCommandItemWithResult sendErrorMessage(Message message, String messageText, int executionCount) {
     return new MagicCommandItemWithResult(
         messageCreator
             .buildOutputMessage(message, messageText, true),
@@ -308,32 +312,39 @@ public class MagicCommand {
   }
 
   private MagicCommandFunctionality html() {
-    return (code, command, message, executionCount) -> {
-      MIMEContainer html = HTML(
-              "<html>" + code.takeCodeWithoutCommand().get().asString() + "</html>");
-      return new MagicCommandItemWithResult(
+    return (code, command, message, executionCount) -> code.takeCodeWithoutCommand()
+        .map(codeWithoutCommand -> {
+          MIMEContainer html = HTML(
+              "<html>" + codeWithoutCommand.asString() + "</html>");
+          return new MagicCommandItemWithResult(
               messageCreator
-                      .buildMessage(message, singletonList(html), executionCount),
+                  .buildMessage(message, singletonList(html), executionCount),
               messageCreator.buildReplyWithoutStatus(message, executionCount)
-      );
-    };
+          );
+        }).orElse(sendErrorMessage(message, String.format(USAGE_ERROR_MSG, HTML), executionCount));
   }
 
   private MagicCommandFunctionality bash() {
-    return (code, command, message, executionCount) -> {
-      String result = executeBashCode(code.takeCodeWithoutCommand().get());
+    return (code, command, message, executionCount) -> code.takeCodeWithoutCommand().map(codeWithoutCommand -> {
+
+      ErrorData errorData = executeBashCode(codeWithoutCommand);
+
+      if (errorData.hasError()) {
+        return sendErrorMessage(message, errorData.getMessage(), executionCount);
+      }
+
       return new MagicCommandItemWithResult(
-              messageCreator.buildOutputMessage(message, result, false),
-              messageCreator.buildReplyWithoutStatus(message, executionCount)
+          messageCreator.buildOutputMessage(message, errorData.getMessage(), false),
+          messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
-    };
+    }).orElse(sendErrorMessage(message, String.format(USAGE_ERROR_MSG, BASH), executionCount));
   }
 
   private MagicCommandFunctionality lsmagic() {
     return (code, command, message, executionCount) -> {
       String result = "Available magic commands:\n";
       result += commands.entrySet().stream()
-              .filter(map -> map.getKey() != LSMAGIC)
+              .filter(map -> !Objects.equals(map.getKey(), LSMAGIC))
               .map(Map.Entry::getKey)
               .collect(Collectors.joining(" "));
       return new MagicCommandItemWithResult(
@@ -343,7 +354,7 @@ public class MagicCommand {
     };
   }
 
-  private String executeBashCode(CodeWithoutCommand code) {
+  private ErrorData executeBashCode(CodeWithoutCommand code) {
     String[] cmd = {"/bin/bash", "-c", code.asString()};
     ProcessBuilder pb = new ProcessBuilder(cmd);
     pb.redirectErrorStream(true);
@@ -359,10 +370,10 @@ public class MagicCommand {
       }
       process.destroy();
     } catch (IOException | InterruptedException e) {
-      e.printStackTrace();
+      return new ErrorData(true, e.getMessage());
     }
 
-    return output.toString();
+    return new ErrorData(false,  output.toString());
   }
 
   private ErrorData isValidPath(String path) {
@@ -387,11 +398,19 @@ public class MagicCommand {
   private class ErrorData {
 
     public ErrorData(boolean hasError, String message) {
-      this.hasError = hasError;
+      this.error = hasError;
       this.message = message;
     }
 
-    boolean hasError;
+    boolean error;
     String message;
+
+    public boolean hasError() {
+      return error;
+    }
+
+    public String getMessage() {
+      return message;
+    }
   }
 }

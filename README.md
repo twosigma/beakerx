@@ -34,7 +34,19 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ## Install
 
-Using [conda](https://conda.io/docs/install/quick.html) (except on Windows, see [Issue #5720](https://github.com/twosigma/beakerx/issues/5720)).
+### Dependencies:
+
+* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda)
+
+Set up conda environment:
+
+```
+conda create -y -n beakerx python=3.5 jupyter openjdk nodejs yarn
+source activate beakerx
+```
+
+
+Install using [conda](https://conda.io/docs/install/quick.html):
 
 ```
 conda install -c beakerx beakerx

@@ -92,7 +92,7 @@ class KotlinWorkerThread extends WorkerThread {
 
         LineBrakingStringBuilderWrapper javaSourceCode = new LineBrakingStringBuilderWrapper();
         javaSourceCode.append("package ");
-        javaSourceCode.append(kotlinEvaluator.packageId);
+        javaSourceCode.append(kotlinEvaluator.getPackageId());
         javaSourceCode.append("\n\n");
 
         for (ImportPath i : kotlinEvaluator.getImports().getImportPaths()) {
@@ -139,7 +139,7 @@ class KotlinWorkerThread extends WorkerThread {
 
           try {
 
-            Class<?> fooClass = loader.loadClass(kotlinEvaluator.packageId + "." + WRAPPER_CLASS_NAME);
+            Class<?> fooClass = loader.loadClass(kotlinEvaluator.getPackageId() + "." + WRAPPER_CLASS_NAME);
             Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
             if (!kotlinEvaluator.executeTask(new KotlinCodeRunner(fooClass.newInstance(), mth, j.outputObject, false, loader))) {
               j.outputObject.error("... cancelled!");

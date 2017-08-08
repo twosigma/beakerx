@@ -22,6 +22,8 @@ import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
+import com.twosigma.beakerx.kernel.Classpath;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,9 +31,9 @@ import java.util.List;
 
 public class KotlinEvaluator extends BaseEvaluator {
 
-  protected final String packageId;
-  protected ClasspathScanner cps;
-  protected KotlinWorkerThread workerThread;
+  private final String packageId;
+  private ClasspathScanner cps;
+  private KotlinWorkerThread workerThread;
 
   public KotlinEvaluator(String id, String sId) {
     this(id, sId, new BeakerCellExecutor("kotlin"));
@@ -47,19 +49,8 @@ public class KotlinEvaluator extends BaseEvaluator {
 
   @Override
   protected void doResetEnvironment() {
-    String cpp = "";
-    for (String pt : classPath.getPathsAsStrings()) {
-      cpp += pt;
-      cpp += File.pathSeparator;
-    }
-    cpp += File.pathSeparator;
-    cpp += outDir;
-    cpp += File.pathSeparator;
-    cpp += System.getProperty("java.class.path");
-
+    String cpp = createClasspath(classPath, outDir);
     cps = new ClasspathScanner(cpp);
-
-    // signal thread to create loader
     workerThread.updateLoader();
     workerThread.halt();
   }
@@ -73,7 +64,6 @@ public class KotlinEvaluator extends BaseEvaluator {
 
   @Override
   public void evaluate(SimpleEvaluationObject seo, String code) {
-    // send job to thread
     workerThread.add(new JobDescriptor(code, seo));
   }
 
@@ -82,5 +72,21 @@ public class KotlinEvaluator extends BaseEvaluator {
     List<String> ret = new ArrayList<>();
     //TODO
     return new AutocompleteResult(ret, -1);
+  }
+  private String createClasspath(Classpath classPath, String outDir) {
+    String cpp = "";
+    for (String pt : classPath.getPathsAsStrings()) {
+      cpp += pt;
+      cpp += File.pathSeparator;
+    }
+    cpp += File.pathSeparator;
+    cpp += outDir;
+    cpp += File.pathSeparator;
+    cpp += System.getProperty("java.class.path");
+    return cpp;
+  }
+
+  public String getPackageId() {
+    return packageId;
   }
 }

@@ -131,7 +131,6 @@ module.exports = [
     output: {
       filename: 'index.js',
       path: path.resolve(__dirname, './dist/'),
-      library: 'beakerx',
       libraryTarget: 'amd',
       publicPath: 'https://unpkg.com/beakerx@' + version + '/dist/'
     },
@@ -143,10 +142,7 @@ module.exports = [
       modules: ['web_modules', 'node_modules'],
       extensions: ['.jsx','.js','.less','.css']
     },
-    externals: ['jupyter-js-widgets'],
-    watchOptions: {
-      ignored: /node_modules/
-    },
+    externals: ['jupyter-js-widgets', '@jupyter-widgets/base'],
     plugins: plugins
   }
 ];

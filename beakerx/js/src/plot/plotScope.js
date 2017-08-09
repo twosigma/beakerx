@@ -59,6 +59,10 @@ define([
       }
     };
 
+    this.initProperties();
+  }
+
+  PlotScope.prototype.initProperties = function() {
     this.element = null;
     this.stdmodel = {};
     this.container = null;
@@ -76,6 +80,7 @@ define([
     this.renderFixed = null;
     this.layout = {};
     this.zoomLevel = {};
+    this.zoomObj = null;
     this.labelPadding = {};
     this.intervalStepHint = {};
     this.numIntervals = {};
@@ -101,7 +106,7 @@ define([
     this.data2scrY = null;
     this.plotDisplayModel = null;
     this.plotDisplayView = null;
-  }
+  };
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
     this.plotDisplayModel = plotDisplayModel;
@@ -2172,8 +2177,7 @@ define([
       self.saveAsMenuContainer = self.model.getSaveAsMenuContainer();
     }
 
-    var plotContainer = self.element.find('.plot-plotcontainer');
-    plotContainer.resizable({
+    self.jqcontainer.resizable({
       maxWidth: self.element.width(), // no wider than the width of the cell
       minWidth: 150,
       minHeight: 150,
@@ -2204,10 +2208,7 @@ define([
 
     self.resizeFunction = function() {
       // update resize maxWidth when the browser window resizes
-      var width = self.element.width();
-      self.jqcontainer.resizable({
-        maxWidth : width
-      });
+      self.jqcontainer.resizable("option", "maxWidth", self.element.width());
     };
 
     self.resetSvg();
@@ -2218,9 +2219,6 @@ define([
       .on("mousedown", function() {
         return self.mouseDown();
       })
-      //   .on("mouseup", function() {
-      //   return self.mouseUp();
-      // })
       .on("mouseleave", function() {
         return self.disableZoomWheel();
       });
@@ -2386,23 +2384,20 @@ define([
     return bkHelper.getTheme();
   };
 
-  // self.$watch('getTheme()', function(newValue, oldValue) {
-  //   if(newValue !== oldValue) {
-  //     if (self.model.setDumpState !== undefined) {
-  //       self.model.setDumpState(self.dumpState());
-  //     }
-  //     self.legendDone = false;
-  //     self.init();
-  //   }
-  // });
-
-  // todo handle destroy
   PlotScope.prototype.destroy = function() {
-    $(window).off('resize',this.resizeFunction);
-    this.svg.selectAll("*").remove();
-    this.jqlegendcontainer.find("#plotLegend").remove();
+    $(window).off('resize', this.resizeFunction);
+    this.svg.remove();
+    this.jqcontainer.resizable({ disabled: true }).resizable('destroy');
+    this.jqlegendcontainer.remove();
+    this.jqsvg.remove();
+    this.element.remove();
+
+    this.resetSvg();
     this.removeOnKeyListeners();
-    $.contextMenu('destroy', { selector: '#' + self.id});
+
+    setTimeout(this.initProperties.bind(this));
+
+    $.contextMenu('destroy', { selector: '#' + this.id});
   };
 
   PlotScope.prototype.getSvgToSave = function() {

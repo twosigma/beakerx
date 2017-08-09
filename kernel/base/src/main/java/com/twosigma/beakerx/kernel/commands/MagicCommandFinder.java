@@ -15,16 +15,16 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
+import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResult;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.message.Message;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.text.StrTokenizer;
 
 public class MagicCommandFinder {
 
@@ -40,15 +40,34 @@ public class MagicCommandFinder {
     List<MagicCommandItemWithResult> errors = new ArrayList<>();
     LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun = new LinkedHashMap<>();
     code.getCommands().forEach(command -> {
-      command = command.replaceAll("\\s+"," ");
+      if (command.startsWith("%%") && isCellmagicHeadNonEmpty(command)) {
+        errors.add(processIllegalCommand( "Cell magic head contains data, move it to body.", message, executionCount, messageCreator));
+        return;
+      }
+
+      if (command.contains("\"")) {
+        int indexOfFirstQuote = command.indexOf("\"");
+        command = command.substring(0, indexOfFirstQuote)
+                         .replaceAll("\\s+"," ")
+                         .concat(command.substring(indexOfFirstQuote, command.length()));
+      } else {
+        command = command.replaceAll("\\s+"," ");
+      }
+
       Optional<MagicCommandFunctionality> functionality = findFunctionality(commands, command);
       if (functionality.isPresent()) {
         functionalityToRun.put(command, functionality.get());
       } else {
-        errors.add(processUnknownCommand(command, message, executionCount, messageCreator));
+        errors.add(processIllegalCommand("Cell magic " + command + " not found", message, executionCount, messageCreator));
       }
     });
     return new MagicCommandFinder(functionalityToRun, errors);
+  }
+
+  private static boolean isCellmagicHeadNonEmpty(String command) {
+    List<String> tokens = new StrTokenizer(command).getTokenList();
+
+    return !(command.replace(tokens.get(0), "").replace(" ", "").length() < 1);
   }
 
   private static Optional<MagicCommandFunctionality> findFunctionality(final Map<String, MagicCommandFunctionality> commands, final String command) {
@@ -57,10 +76,9 @@ public class MagicCommandFinder {
             findFirst().map(s -> commands.get(s));
   }
 
-  private static MagicCommandItemWithResult processUnknownCommand(String command, Message message, int executionCount, MessageCreator messageCreator) {
-    String result = "Cell magic " + command + " not found";
+  private static MagicCommandItemWithResult processIllegalCommand(String errorMessage, Message message, int executionCount, MessageCreator messageCreator) {
     return new MagicCommandItemWithResult(
-            messageCreator.buildOutputMessage(message, result, true),
+            messageCreator.buildOutputMessage(message, errorMessage, true),
             messageCreator.buildReplyWithoutStatus(message, executionCount)
     );
   }

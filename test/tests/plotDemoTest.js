@@ -24,12 +24,6 @@ describe('PlotFeatures notebook', function () {
     beakerxPO.runNotebookByName('PlotFeatures.ipynb', done);
   });
 
-  it('Can run Groovy cell. ', function (done) {
-    beakerxPO.kernelIdleIcon.waitForEnabled();
-    beakerxPO.runCodeCellByIndex(0);
-    browser.call(done);
-  });
-
   describe('Run "Title and Axis Labels" cell. ', function () {
 
     it('Widget area has dtcontainer', function (done) {

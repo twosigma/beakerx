@@ -37,6 +37,8 @@ module.exports = function(TableScope) {
         self.hideModal();
       });
 
+    this.columnLimitModal = $modal;
+
     this.element.prepend($modal);
 
     if (this.columnNames.length > this.outputColumnLimit) {

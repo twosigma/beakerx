@@ -35,4 +35,17 @@ describe('SQL Examples notebook', function () {
     });
   });
 
+  describe('Autocomplete cell', function () {
+    it('Autocomplete list is not empty', function (done) {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var codeCell = beakerxPO.getCodeCellByIndex(5);
+      codeCell.scroll();
+      codeCell.click();
+      browser.keys("Tab");
+      var completeList = $$('#complete > select > option');
+      expect(completeList.length).toBeGreaterThan(0);
+      browser.call(done);
+    });
+  });
+
 });

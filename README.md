@@ -32,20 +32,7 @@ The [documentation](https://github.com/twosigma/beakerx/blob/master/doc/StartHer
 BeakerX is the successor to the [Beaker
 Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).
 
-## Getting started
-
-### Dependencies
-
-* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment with Jupyter Notebook installed should be fine, but our documentation assumes conda)
-
-### Create conda environment
-
-```
-conda create -y -n beakerx python=3.5 jupyter
-source activate beakerx
-```
-
-### Install beakerx
+## Install
 
 Install using [conda](https://conda.io/docs/install/quick.html):
 

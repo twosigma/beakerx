@@ -87,7 +87,7 @@ setup_args = dict(
     )],
     install_requires    = [
         'notebook >=4.4.0',
-        'ipywidgets >=7.0.0b2'
+        'ipywidgets >=7.0.0b9'
     ],
     zip_safe            = False,
     include_package_data= True,

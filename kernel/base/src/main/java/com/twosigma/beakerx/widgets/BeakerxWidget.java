@@ -29,7 +29,7 @@ public abstract class BeakerxWidget extends Widget {
   public static final String MODEL_MODULE_VALUE = "beakerx";
   public static final String VIEW_MODULE_VALUE = "beakerx";
   public static final String MODEL = "model";
-  public static final String MODEL_UPDATE = "model";
+  public static final String MODEL_UPDATE = "updateData";
   private UpdateModel updateModel = (action, item) -> {
     //empty function
   };
@@ -63,6 +63,10 @@ public abstract class BeakerxWidget extends Widget {
 
   protected void sendModelUpdate(Object item) {
     this.updateModel.update(MODEL_UPDATE, serializeToJsonObject(item));
+  }
+
+  protected void sendModelUpdate() {
+    this.updateModel.update(MODEL_UPDATE, serializeToJsonObject());
   }
 
   @Override

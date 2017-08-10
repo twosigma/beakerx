@@ -55,7 +55,8 @@ define([
   // Plot JS API
   './plot/plotApi',
   './shared/bkCoreManager',
-  'big.js'
+  'big.js',
+  './GistPublish.js'
 ], function(
   configmod,
   comm,
@@ -70,7 +71,8 @@ define([
   htmlOutput,
   plotApi,
   bkCoreManager,
-  big
+  big,
+  GistPublish
 ) {
   "use strict";
 

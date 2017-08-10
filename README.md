@@ -34,7 +34,7 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ## Install
 
-Using [conda](https://conda.io/docs/install/quick.html):
+Using [conda](https://conda.io/docs/install/quick.html) (except on Windows, see [Issue #5720](https://github.com/twosigma/beakerx/issues/5720)).
 
 ```
 conda install -c beakerx beakerx
@@ -47,6 +47,7 @@ pip install beakerx
 jupyter nbextension install beakerx --py --sys-prefix
 jupyter nbextension enable beakerx --py --sys-prefix
 ```
+And then follow the guide on [Issue #5720](https://github.com/twosigma/beakerx/issues/5720).
 
 ## Usage
 
@@ -63,6 +64,9 @@ Dependencies:
 conda create -y -n beakerx python=3.5 jupyter openjdk pandas
 source activate beakerx
 (cd beakerx; python setup.py install --single-version-externally-managed --record record.txt && python setup.py kernels)
+jupyter nbextension install beakerx --py --sys-prefix
+jupyter nbextension enable beakerx --py --sys-prefix
+
 ```
 
 

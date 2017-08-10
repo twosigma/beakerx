@@ -25,9 +25,9 @@ describe('Kotlin-example notebook', function () {
   });
 
   describe('Run first cell. ', function () {
-    it('Output contains "Hello, world!"', function (done) {
+    it('Output contains "hello, 14"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(0, 'Hello, world!');
+      beakerxPO.runCallAndCheckOutputText(0, 'hello, 14');
       browser.call(done);
     });
   });
@@ -37,14 +37,6 @@ describe('Kotlin-example notebook', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var dtContainer = beakerxPO.runCellToGetDtContainer(1);
       beakerxPO.plotLegendContainerIsEnabled(dtContainer);
-      browser.call(done);
-    });
-  });
-
-  describe('Run 3rd cell. ', function () {
-    it('Output contains "Kotlin"', function (done) {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(2, 'Kotlin');
       browser.call(done);
     });
   });

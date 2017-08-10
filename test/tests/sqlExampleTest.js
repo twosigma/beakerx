@@ -38,7 +38,7 @@ describe('SQL Examples notebook', function () {
   describe('Autocomplete cell', function () {
     it('Autocomplete list is not empty', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      var codeCell = beakerxPO.getCodeCellByIndex(5);
+      var codeCell = beakerxPO.getCodeCellByIndex(3);
       codeCell.scroll();
       codeCell.click();
       browser.keys("Tab");

@@ -40,46 +40,46 @@ describe('JavaTutorial notebook', function () {
     });
   });
 
-  describe('Run 6th cell. ', function () {
+  describe('Run 3rd cell. ', function () {
     it('PlotLegendContainer is enabled', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      var dtContainer = beakerxPO.runCellToGetDtContainer(5);
+      var dtContainer = beakerxPO.runCellToGetDtContainer(2);
       beakerxPO.plotLegendContainerIsEnabled(dtContainer);
       browser.call(done);
     });
   });
 
-  describe('Run 7th cell. ', function () {
+  describe('Run 4th cell. ', function () {
     it('Output contains "DateGetter"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(6, 'DateGetter');
+      beakerxPO.runCallAndCheckOutputText(3, 'DateGetter');
       browser.call(done);
     });
+  });
+
+  describe('Run 5th cell. ', function () {
+    it('Output contains "DG2"', function (done) {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(4, 'DG2');
+      browser.call(done);
+    }, 2);
+  });
+
+  describe('Run 7th cell. ', function () {
+    it('Output contains "beakerx/doc/contents"', function (done) {
+      beakerxPO.runCodeCellByIndex(5);
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(6, 'beakerx\.doc\.contents');
+      browser.call(done);
+    }, 2);
   });
 
   describe('Run 8th cell. ', function () {
-    it('Output contains "DG2"', function (done) {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(7, 'DG2');
-      browser.call(done);
-    });
-  });
-
-  describe('Run 10th cell. ', function () {
-    it('Output contains "beakerx/doc/contents"', function (done) {
-      beakerxPO.runCodeCellByIndex(8);
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(9, 'beakerx\.doc\.contents');
-      browser.call(done);
-    });
-  });
-
-  describe('Run 11th cell. ', function () {
     it('Output contains "static_123 object_123"', function (done) {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(10, '((static_123)\.*\n*(object_123))');
+      beakerxPO.runCallAndCheckOutputText(7, '((static_123)\.*\n*(object_123))');
       browser.call(done);
-    });
+    }, 2);
   });
 
 });

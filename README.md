@@ -94,7 +94,7 @@ after a java change. See
 python -m beakerx.bkr2ipynb *.bkr
 ```
 
-## Groovy with Interactive Plotting and Table Saw:
+## Groovy with Interactive Plotting and Tablesaw:
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 
 ## Autotranslation from Python to JavaScript:

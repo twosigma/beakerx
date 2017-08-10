@@ -47,10 +47,9 @@ var plugins = [
     debug: false
   }),
   new webpack.ProvidePlugin({
-    $: 'jquery',
-    jQuery: 'jquery',
-    __assign: ['tslib', '__assign'],
-    __extends: ['tslib', '__extends']
+    "$":"jquery",
+    "jQuery":"jquery",
+    "window.jQuery":"jquery"
   })
 ];
 

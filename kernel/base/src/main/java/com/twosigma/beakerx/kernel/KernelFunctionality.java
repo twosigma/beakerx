@@ -75,6 +75,8 @@ public interface KernelFunctionality {
 
   void removeImport(ImportPath anImport);
 
+  String getName();
+
   interface ExecuteCodeCallback {
     void execute(SimpleEvaluationObject seo);
   }

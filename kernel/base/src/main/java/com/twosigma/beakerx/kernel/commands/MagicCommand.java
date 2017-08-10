@@ -21,8 +21,13 @@ import static com.twosigma.beakerx.kernel.commands.MagicCommandFinder.find;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
+import static java.util.Collections.max;
 import static java.util.Collections.singletonList;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
@@ -46,9 +51,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.text.StrMatcher;
@@ -78,7 +83,7 @@ public class MagicCommand {
 
   public static final String USAGE_ERROR_MSG = "UsageError: %s is a cell magic, but the cell body is empty.";
 
-  private Map<String, MagicCommandFunctionality> commands = new LinkedHashMap<>();
+  private ImmutableMap<ImmutableMap<String, MagicCommandFunctionality>, String> commands;
   private MessageCreator messageCreator;
   private KernelFunctionality kernel;
 
@@ -89,7 +94,11 @@ public class MagicCommand {
   }
 
   public MagicCommandResult process(Code code, Message message, int executionCount) {
-    MagicCommandFinder finder = find(code, this.commands, message, executionCount,
+    Map<String, MagicCommandFunctionality> flatterMap = commands.entrySet().stream().map(Entry::getKey)
+        .flatMap(a -> a.entrySet().stream())
+        .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+
+    MagicCommandFinder finder = find(code, flatterMap, message, executionCount,
             this.messageCreator);
     MagicCommandResult result = new MagicCommandResult();
     if (finder.hasErrors()) {
@@ -107,18 +116,22 @@ public class MagicCommand {
   }
 
   private void buildCommands() {
-    commands.put(JAVASCRIPT, javascript());
-    commands.put(HTML, html());
-    commands.put(BASH, bash());
-    commands.put(LSMAGIC, lsmagic());
-    commands.put(CLASSPATH_ADD_JAR, classpathAddJar());
-    commands.put(CLASSPATH_REMOVE, classpathRemove());
-    commands.put(CLASSPATH_SHOW, classpathShow());
-    commands.put(ADD_STATIC_IMPORT, addStaticImport());
-    commands.put(ADD_IMPORT, addImport());
-    commands.put(UNIMPORT, unimport());
-    commands.put(DATASOURCES, dataSources());
-    commands.put(DEFAULT_DATASOURCE, defaultDataSources());
+    Builder<ImmutableMap<String, MagicCommandFunctionality>, String> commandsBuilder = ImmutableMap.builder();
+
+    commandsBuilder.put(ImmutableMap.of(JAVASCRIPT, javascript()), "");
+    commandsBuilder.put(ImmutableMap.of(HTML, html()), "");
+    commandsBuilder.put(ImmutableMap.of(BASH, bash()), "");
+    commandsBuilder.put(ImmutableMap.of(LSMAGIC, lsmagic()), "None");
+    commandsBuilder.put(ImmutableMap.of(CLASSPATH_ADD_JAR, classpathAddJar()), "");
+    commandsBuilder.put(ImmutableMap.of(CLASSPATH_REMOVE, classpathRemove()), "");
+    commandsBuilder.put(ImmutableMap.of(CLASSPATH_SHOW, classpathShow()), "");
+    commandsBuilder.put(ImmutableMap.of(ADD_STATIC_IMPORT, addStaticImport()), "");
+    commandsBuilder.put(ImmutableMap.of(ADD_IMPORT, addImport()), "");
+    commandsBuilder.put(ImmutableMap.of(UNIMPORT, unimport()), "");
+    commandsBuilder.put(ImmutableMap.of(DATASOURCES, dataSources()), "SQL");
+    commandsBuilder.put(ImmutableMap.of(DEFAULT_DATASOURCE, defaultDataSources()), "SQL");
+
+    commands = commandsBuilder.build();
   }
 
   private MagicCommandFunctionality defaultDataSources() {
@@ -343,10 +356,13 @@ public class MagicCommand {
   private MagicCommandFunctionality lsmagic() {
     return (code, command, message, executionCount) -> {
       String result = "Available magic commands:\n";
+
       result += commands.entrySet().stream()
-              .filter(map -> !Objects.equals(map.getKey(), LSMAGIC))
-              .map(Map.Entry::getKey)
-              .collect(Collectors.joining(" "));
+                         .filter(map -> (map.getValue().equals("") || map.getValue().equals(kernel.getName())))
+                         .map(Entry::getKey)
+                         .flatMap(map -> map.keySet().stream())
+                         .collect(Collectors.joining("\n"));
+
       return new MagicCommandItemWithResult(
               messageCreator.buildOutputMessage(message, result, false),
               messageCreator.buildReplyWithoutStatus(message, executionCount)

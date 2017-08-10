@@ -69,5 +69,8 @@ public class Java extends Kernel {
     return new KernelParameters(kernelParameters);
   }
 
-
+  @Override
+  public String getName() {
+    return "Java";
+  }
 }

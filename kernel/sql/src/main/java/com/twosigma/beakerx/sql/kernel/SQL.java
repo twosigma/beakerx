@@ -65,4 +65,9 @@ public class SQL extends Kernel {
     kernelParameters.put(IMPORTS, new DefaultJVMVariables().getImports());
     return new KernelParameters(kernelParameters);
   }
+
+  @Override
+  public String getName() {
+    return "SQL";
+  }
 }

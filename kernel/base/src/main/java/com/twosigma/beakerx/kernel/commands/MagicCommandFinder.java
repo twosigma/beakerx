@@ -73,7 +73,7 @@ public class MagicCommandFinder {
   private static Optional<MagicCommandFunctionality> findFunctionality(final Map<String, MagicCommandFunctionality> commands, final String command) {
     return commands.keySet().stream().
             filter(c -> command.matches(c + " .*?") || command.matches(c)).
-            findFirst().map(s -> commands.get(s));
+            findFirst().map(commands::get);
   }
 
   private static MagicCommandItemWithResult processIllegalCommand(String errorMessage, Message message, int executionCount, MessageCreator messageCreator) {

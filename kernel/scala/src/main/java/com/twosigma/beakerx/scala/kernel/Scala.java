@@ -71,4 +71,9 @@ public class Scala extends Kernel {
     kernelParameters.put(IMPORTS, new ScalaDefaultVariables().getImports());
     return new KernelParameters(kernelParameters);
   }
+
+  @Override
+  public String getName() {
+    return "Scala";
+  }
 }

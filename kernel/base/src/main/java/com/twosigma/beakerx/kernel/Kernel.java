@@ -66,6 +66,7 @@ public abstract class Kernel implements KernelFunctionality {
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     configureSignalHandler();
     initKernel(getKernelParameters());
+    configureJvmRepr();
   }
 
   public abstract KernelParameters getKernelParameters();
@@ -73,6 +74,9 @@ public abstract class Kernel implements KernelFunctionality {
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 
   public abstract KernelHandler<Message> getKernelInfoHandler(Kernel kernel);
+
+  protected void configureJvmRepr(){
+  }
 
   @Override
   public void run() {
@@ -114,7 +118,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public synchronized void cancelExecution() {
-    evaluatorManager.killAllThreads();
+    evaluatorManager.cancelExecution();
   }
 
   public synchronized boolean isCommPresent(String hash) {

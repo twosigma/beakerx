@@ -17,7 +17,7 @@ package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
-import org.assertj.core.api.Assertions;
+import com.twosigma.beakerx.kernel.Utils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +26,7 @@ import java.security.NoSuchAlgorithmException;
 
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ButtonTest {
 
@@ -57,6 +58,15 @@ public class ButtonTest {
   }
 
   @Test
+  public void noTooltipAsDefault() throws Exception {
+    //given
+    //when
+    Button widget = button();
+        //then
+    assertThat(widget.getTooltip()).isEqualTo(Utils.EMPTY_STRING);
+  }
+
+  @Test
   public void shouldSendCommMsgWhenTooltipChange() throws Exception {
     //given
     Button widget = button();
@@ -84,7 +94,7 @@ public class ButtonTest {
     //when
     button.setButton_style(expected);
     //then
-    Assertions.assertThat(button.getButton_style()).isEqualTo(expected);
+    assertThat(button.getButton_style()).isEqualTo(expected);
   }
 
   @Test
@@ -95,7 +105,7 @@ public class ButtonTest {
     //when
     button.setTooltip(expected);
     //then
-    Assertions.assertThat(button.getTooltip()).isEqualTo(expected);
+    assertThat(button.getTooltip()).isEqualTo(expected);
   }
 
   private Button button() throws NoSuchAlgorithmException {

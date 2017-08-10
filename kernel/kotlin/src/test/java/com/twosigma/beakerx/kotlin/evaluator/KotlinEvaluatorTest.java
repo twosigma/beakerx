@@ -13,14 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beakerx.kotlin.evaluator;
 
+import com.twosigma.ExecuteCodeCallbackTest;
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 
-import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
@@ -33,21 +32,20 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import com.twosigma.beakerx.chart.xychart.Plot;
+
+import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
 
 public class KotlinEvaluatorTest {
-  private static KotlinEvaluator kotlinEvaluator;
 
-  @BeforeClass
-  public static void setUpClass() throws Exception {
-    kotlinEvaluator = new KotlinEvaluator("id", "sid", TestBeakerCellExecutor.cellExecutor());
-  }
+  private KotlinEvaluator evaluator;
 
   @Before
   public void setUp() throws Exception {
-    KotlinKernelMock kotlinKernelMock = new KotlinKernelMock("id", kotlinEvaluator);
-    KernelManager.register(kotlinKernelMock);
+    evaluator = new KotlinEvaluator("id", "sid", TestBeakerCellExecutor.cellExecutor());
+    KotlinKernelMock kernel = new KotlinKernelMock("id", evaluator);
+    KernelManager.register(kernel);
   }
 
   @After
@@ -65,12 +63,45 @@ public class KotlinEvaluatorTest {
     paramMap.put(IMPORTS, imports);
     KernelParameters kernelParameters = new KernelParameters(paramMap);
     //when
-    kotlinEvaluator.setShellOptions(kernelParameters);
+    evaluator.setShellOptions(kernelParameters);
     String code = "val x = staticMethod()";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
-    kotlinEvaluator.evaluate(seo, code);
+    evaluator.evaluate(seo, code);
     waitForResult(seo);
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
   }
+
+  @Test
+  public void evaluatePlot_shouldCreatePlotObject() throws Exception {
+    //given
+    Map<String, Object> paramMap = new HashMap<>();
+    paramMap.put(IMPORTS, Arrays.asList("import com.twosigma.beakerx.chart.xychart.*"));
+    evaluator.setShellOptions(new KernelParameters(paramMap));
+    String code = "val plot = Plot()\n" +
+                "plot.setTitle(\"test title\");\n" +
+                "plot.display();";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    evaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+//    Assertions.assertThat(seo.getPayload() instanceof Plot).isTrue();
+//    Assertions.assertThat(((Plot) seo.getPayload()).getTitle()).isEqualTo("test title");
+  }
+
+  @Test
+  public void evaluateDivisionByZero_shouldReturnArithmeticException() throws Exception {
+    //given
+    String code = "16/0";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    evaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
+    Assertions.assertThat((String) seo.getPayload()).contains("java.lang.ArithmeticException");
+  }
+
 }

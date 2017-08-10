@@ -17,17 +17,46 @@ package com.twosigma.beakerx;
 
 import com.twosigma.beakerx.jvm.object.OutputCell;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
+import jupyter.Displayer;
+import jupyter.Displayers;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.twosigma.beakerx.mimetype.MIMEContainer.MIME.TEXT_HTML;
+import static java.util.Arrays.stream;
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class SerializeToStringTest {
+
+  @Test
+  public void integerAsTextHtml() throws Exception {
+    //given
+    Displayers.register(Integer.class, new Displayer<Integer>() {
+      @Override
+      public Map<String, String> display(Integer value) {
+        return new HashMap<String, String>() {{
+          put(TEXT_HTML, "<div><h1>" + value + "</h1></div>");
+        }};
+      }
+    });
+    //when
+    List<MIMEContainer> result = SerializeToString.doit(2);
+    //then
+    assertThat(result.get(0)).isEqualTo(new MIMEContainer(TEXT_HTML, "<div><h1>" + 2 + "</h1></div>"));
+  }
 
   @Test
   public void OutputCellHIDDENShouldReturnMIMEContainerHidden() throws Exception {
     //give
     //when
-    MIMEContainer result = SerializeToString.doit(OutputCell.HIDDEN);
+    List<MIMEContainer> result = SerializeToString.doit(OutputCell.HIDDEN);
     //then
-    Assertions.assertThat(result).isEqualTo(MIMEContainer.HIDDEN);
+    assertThat(result.get(0)).isEqualTo(MIMEContainer.HIDDEN);
   }
 }

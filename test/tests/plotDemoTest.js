@@ -17,31 +17,29 @@
 var BeakerXPageObject = require('./beakerx.po.js');
 var beakerxPO;
 
-describe('plotDemo page', function () {
+describe('PlotFeatures notebook', function () {
 
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
-    browser
-      .url(beakerxPO.baseURL)
-      .call(done);
-    beakerxPO.loginJupyter();
-    browser.click('=plotDemo.ipynb');
-    browser.window(browser.windowHandles().value[1]);
+    beakerxPO.runNotebookByName('PlotFeatures.ipynb', done);
   });
 
-  it('Can run Groovy cell', function (done) {
-    beakerxPO.kernelIdleIcon.waitForEnabled();
-    beakerxPO.runCodeCellByIndex(0);
-    browser.call(done);
-  });
+  describe('Run "Title and Axis Labels" cell. ', function () {
 
-  it('Should create dtcontainer', function (done) {
-    beakerxPO.kernelIdleIcon.waitForEnabled();
-    var codeCell = beakerxPO.runCodeCellByIndex(0);
+    it('Widget area has dtcontainer', function (done) {
+      var dtContainer = beakerxPO.runCellToGetDtContainer(0);
+      dtContainer.waitForEnabled();
+      browser.call(done);
+    });
 
-    var dtContainer = codeCell.$('div.dtcontainer');
-    dtContainer.waitForEnabled();
-    browser.call(done);
+    it('Plot has Title and Axes Labels', function (done) {
+      var dtContainer = beakerxPO.runCellToGetDtContainer(0);
+      dtContainer.waitForEnabled();
+      expect(dtContainer.$('#plotTitle').getText()).toEqual('We Will Control the Title');
+      expect(dtContainer.$('#xlabel').getText()).toEqual('Horizontal');
+      expect(dtContainer.$('#ylabel').getText()).toEqual('Vertical');
+      browser.call(done);
+    });
   });
 
 });

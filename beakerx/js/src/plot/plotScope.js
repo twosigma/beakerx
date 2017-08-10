@@ -59,6 +59,10 @@ define([
       }
     };
 
+    this.initProperties();
+  }
+
+  PlotScope.prototype.initProperties = function() {
     this.element = null;
     this.stdmodel = {};
     this.container = null;
@@ -76,6 +80,7 @@ define([
     this.renderFixed = null;
     this.layout = {};
     this.zoomLevel = {};
+    this.zoomObj = null;
     this.labelPadding = {};
     this.intervalStepHint = {};
     this.numIntervals = {};
@@ -101,7 +106,7 @@ define([
     this.data2scrY = null;
     this.plotDisplayModel = null;
     this.plotDisplayView = null;
-  }
+  };
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
     this.plotDisplayModel = plotDisplayModel;
@@ -2180,8 +2185,7 @@ define([
       self.saveAsMenuContainer = self.model.getSaveAsMenuContainer();
     }
 
-    var plotContainer = self.element.find('.plot-plotcontainer');
-    plotContainer.resizable({
+    self.jqcontainer.resizable({
       maxWidth: self.element.width(), // no wider than the width of the cell
       minWidth: 150,
       minHeight: 150,
@@ -2212,10 +2216,7 @@ define([
 
     self.resizeFunction = function() {
       // update resize maxWidth when the browser window resizes
-      var width = self.element.width();
-      self.jqcontainer.resizable({
-        maxWidth : width
-      });
+      self.jqcontainer.resizable("option", "maxWidth", self.element.width());
     };
 
     self.resetSvg();
@@ -2226,9 +2227,6 @@ define([
       .on("mousedown", function() {
         return self.mouseDown();
       })
-      //   .on("mouseup", function() {
-      //   return self.mouseUp();
-      // })
       .on("mouseleave", function() {
         return self.disableZoomWheel();
       });
@@ -2258,16 +2256,24 @@ define([
     self.update();
 
     self.fillCellModelWithPlotMethods();
-    self.updateModelWidth(self.getPlotWithLegendWidth());
+    self.adjustModelWidth();
     self.emitSizeChange(true);
   };
 
-  PlotScope.prototype.getPlotWithLegendWidth = function() {
-    var containerWidth = this.jqlegendcontainer.width();
-    var plotWidth = this.jqcontainer.width();
-    var legendWidth = this.jqlegendcontainer.find('.plot-legend').width();
+  PlotScope.prototype.adjustModelWidth = function() {
+    this.updateModelWidth(this.getPlotWithLegendWidth());
+  };
 
-    return (containerWidth < plotWidth ? containerWidth : plotWidth) - (legendWidth + this.layout.legendMargin + 2);
+  PlotScope.prototype.getPlotWithLegendWidth = function() {
+    var containerWidth = this.jqcontainer.parents('.widget-subarea').width();
+    var plotWidth = containerWidth && containerWidth < this.plotSize.width ? containerWidth : this.plotSize.width;
+    var legendWidth = this.jqlegendcontainer.find('.plot-legend').width();
+    var legendPosition = this.stdmodel.legendPosition.position;
+    // Logic based on updateLegendPosition method
+    var isLegendPlacedHorizontaly = (["LEFT", "RIGTH"].indexOf(legendPosition) !== -1) ||
+      (["TOP", "BOTTOM"].indexOf(legendPosition) === -1 && this.stdmodel.legendLayout === "VERTICAL");
+
+    return isLegendPlacedHorizontaly ? plotWidth - (legendWidth + this.layout.legendMargin + 2) : plotWidth;
   };
 
   PlotScope.prototype.updatePlot = function() {
@@ -2386,23 +2392,20 @@ define([
     return bkHelper.getTheme();
   };
 
-  // self.$watch('getTheme()', function(newValue, oldValue) {
-  //   if(newValue !== oldValue) {
-  //     if (self.model.setDumpState !== undefined) {
-  //       self.model.setDumpState(self.dumpState());
-  //     }
-  //     self.legendDone = false;
-  //     self.init();
-  //   }
-  // });
-
-  // todo handle destroy
   PlotScope.prototype.destroy = function() {
-    $(window).off('resize',this.resizeFunction);
-    this.svg.selectAll("*").remove();
-    this.jqlegendcontainer.find("#plotLegend").remove();
+    $(window).off('resize', this.resizeFunction);
+    this.svg.remove();
+    this.jqcontainer.resizable({ disabled: true }).resizable('destroy');
+    this.jqlegendcontainer.remove();
+    this.jqsvg.remove();
+    this.element.remove();
+
+    this.resetSvg();
     this.removeOnKeyListeners();
-    $.contextMenu('destroy', { selector: '#' + self.id});
+
+    setTimeout(this.initProperties.bind(this));
+
+    $.contextMenu('destroy', { selector: '#' + this.id});
   };
 
   PlotScope.prototype.getSvgToSave = function() {
@@ -2553,6 +2556,11 @@ define([
     });
     legendCopy.css("position", "inherit");
 
+    legendCopy.css("top", "auto");
+    legendCopy.css("left", "auto");
+    legendCopy.css("bottom", "auto");
+    legendCopy.css("right", "auto");
+
     //remove base from urls
     legendCopy.find("[style*='url']").each(function(i, item){
       var style = $(item).attr('style');
@@ -2573,6 +2581,7 @@ define([
       .attr("x", x)
       .attr("y", y)
       .append("xhtml:body")
+      .attr('style', 'position: relative;')
       .attr("xmlns", "http://www.w3.org/1999/xhtml")
       .html(legendCopy[0].outerHTML);
   };

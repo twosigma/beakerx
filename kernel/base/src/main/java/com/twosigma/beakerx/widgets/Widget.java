@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
@@ -220,8 +221,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     try {
       Object result = handler.executeCode(params);
       if(result != null && message != null){
-        MIMEContainer resultString = SerializeToString.doit(result);
-        logger.info("code execution result is = " + resultString.getMime());
+        List<MIMEContainer> resultString = SerializeToString.doit(result);
         if(publishResult){
           KernelManager.get().publish(mc.buildDisplayData(message, resultString));
         }

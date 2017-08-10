@@ -54,7 +54,6 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -65,8 +64,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TableDisplay extends BeakerxWidget {
 
@@ -175,6 +172,10 @@ public class TableDisplay extends BeakerxWidget {
     addToValues(buildValuesFromMap(v));
   }
 
+  public TableDisplay(int rowCount, int columnCount, List<String> columnNames, Element element) {
+    this(TableDisplayConverter.convert(rowCount, columnCount, columnNames, element));
+  }
+
   private void addToValues(List<List<?>> items) {
     values.addAll(items);
   }
@@ -208,7 +209,7 @@ public class TableDisplay extends BeakerxWidget {
     super.openComm();
     getComm().addMsgCallbackList((Handler<Message>) this::handleSetDetails);
     getComm().addMsgCallbackList(this::handleOnContextMenu);
-    getComm().addMsgCallbackList((Handler<Message>)this::handleDoubleClick);
+    getComm().addMsgCallbackList((Handler<Message>) this::handleDoubleClick);
   }
 
   public static TableDisplay createTableDisplayForMap(Map<?, ?> v) {
@@ -621,13 +622,13 @@ public class TableDisplay extends BeakerxWidget {
   public void setDoubleClickAction(String tagName) {
     this.doubleClickListener = null;
     this.doubleClickTag = tagName;
-    sendModelUpdate(serializeDoubleClickAction(this.doubleClickTag,hasDoubleClickAction()));
+    sendModelUpdate(serializeDoubleClickAction(this.doubleClickTag, hasDoubleClickAction()));
   }
 
   public void setDoubleClickAction(Object listener) {
     this.doubleClickListener = listener;
     this.doubleClickTag = null;
-    sendModelUpdate(serializeDoubleClickAction(this.doubleClickTag,hasDoubleClickAction()));
+    sendModelUpdate(serializeDoubleClickAction(this.doubleClickTag, hasDoubleClickAction()));
   }
 
   private void handleDoubleClick(Message message) {
@@ -657,7 +658,7 @@ public class TableDisplay extends BeakerxWidget {
     params.add(column);
     fireDoubleClick(params, message);
   }
-  
+
   public void fireDoubleClick(List<Object> params, Message message) {
     if (this.doubleClickListener != null) {
       params.add(this);
@@ -687,7 +688,7 @@ public class TableDisplay extends BeakerxWidget {
     params.add(column);
     fireContextMenuClick(menuKey, params, message);
   }
-  
+
   public void fireContextMenuClick(String name, List<Object> params, Message message) {
     Object contextMenuListener = this.contextMenuListeners.get(name);
     if (contextMenuListener != null) {
@@ -696,19 +697,19 @@ public class TableDisplay extends BeakerxWidget {
       sendModel();
     }
   }
-  
-  private Object contextMenuClickHandlerCommon(Object ... params) throws Exception {
+
+  private Object contextMenuClickHandlerCommon(Object... params) throws Exception {
     Object actionObject = params[0];
     ArrayList<Object> other = (ArrayList<Object>) params[1];
-    if(actionObject instanceof ContextMenuAction){
-      ContextMenuAction action = (ContextMenuAction)actionObject;
-      action.apply((Integer)other.get(0), (Integer)other.get(1), this);
-    }else{
+    if (actionObject instanceof ContextMenuAction) {
+      ContextMenuAction action = (ContextMenuAction) actionObject;
+      action.apply((Integer) other.get(0), (Integer) other.get(1), this);
+    } else {
       Object ret = runClosure(params[0], other.toArray());
     }
     return MIMEContainer.HIDDEN;
   }
-  
+
 
   /**
    * Also sends "runByTag" event.
@@ -721,9 +722,9 @@ public class TableDisplay extends BeakerxWidget {
     if (content.containsKey("params")) {
 
       HashMap params = (HashMap) content.get("params");
-      
-      if(params.containsKey("actionType")){
-        CommActions value = CommActions.getByAction((String)params.get("actionType"));
+
+      if (params.containsKey("actionType")) {
+        CommActions value = CommActions.getByAction((String) params.get("actionType"));
         details.setActionType(value);
       }
       if (params.containsKey("contextMenuItem")) {
@@ -744,12 +745,12 @@ public class TableDisplay extends BeakerxWidget {
       }
     }
     setDetails(details);
-    if(CommActions.CONTEXT_MENU_CLICK.equals(details.getActionType())){
-      if(getContextMenuTags() != null && !getContextMenuTags().isEmpty() && details.getContextMenuItem() != null && !details.getContextMenuItem().isEmpty()){
+    if (CommActions.CONTEXT_MENU_CLICK.equals(details.getActionType())) {
+      if (getContextMenuTags() != null && !getContextMenuTags().isEmpty() && details.getContextMenuItem() != null && !details.getContextMenuItem().isEmpty()) {
         NamespaceClient.getBeaker().runByTag(getContextMenuTags().get(details.getContextMenuItem()));
       }
-    }else if(CommActions.DOUBLE_CLICK.equals(details.getActionType())){
-      if(getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()){
+    } else if (CommActions.DOUBLE_CLICK.equals(details.getActionType())) {
+      if (getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()) {
         NamespaceClient.getBeaker().runByTag(getDoubleClickTag());
       }
     }
@@ -759,7 +760,7 @@ public class TableDisplay extends BeakerxWidget {
     return doubleClickTag;
   }
 
-  private Object doubleClickHandler(Object ... params) throws Exception {
+  private Object doubleClickHandler(Object... params) throws Exception {
     Object[] values = ((List<List<?>>) params[0]).toArray();
     Object ret = runClosure(this.doubleClickListener, values);
     return MIMEContainer.HIDDEN;
@@ -801,5 +802,9 @@ public class TableDisplay extends BeakerxWidget {
   @Override
   protected Map serializeToJsonObject(Object item) {
     return TableDisplayToJson.toJson(item);
+  }
+
+  public interface Element {
+    String get(int columnIndex, int rowIndex);
   }
 }

@@ -65,4 +65,12 @@ public class ImportMagicCommandTest {
     assertThat(kernel.getImports().getImportPaths()).doesNotContain(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
   }
 
+  @Test
+  public void allowExtraWhitespaces() {
+    MagicCommandResult result = sut
+        .process(new Code("%import       com.twosigma.beakerx.widgets.integers.IntSlider"), new Message(), 1);
+
+    assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
+  }
+
 }

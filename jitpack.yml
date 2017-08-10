@@ -2,9 +2,9 @@ jdk:
   - oraclejdk8
 
 install:
-   - ./gradlew -p kernel/base publishToMavenLocal
-   - ./gradlew -p kernel/clojure publishToMavenLocal
-   - ./gradlew -p kernel/groovy publishToMavenLocal
-   - ./gradlew -p kernel/java publishToMavenLocal
-   - ./gradlew -p kernel/scala publishToMavenLocal
+   - ./kernel/gradlew -p kernel/base publishToMavenLocal
+   - ./kernel/gradlew -p kernel/clojure publishToMavenLocal
+   - ./kernel/gradlew -p kernel/groovy publishToMavenLocal
+   - ./kernel/gradlew -p kernel/java publishToMavenLocal
+   - ./kernel/gradlew -p kernel/scala publishToMavenLocal
 

@@ -255,7 +255,7 @@ define([
         !scope.tips[id].sticking && clear(scope, scope.tips[id]);
       });
 
-      if (scope.tips[d.id] != null) {
+      if (!d || scope.tips[d.id] != null) {
         return;
       }
       if (d.isresp === true) {
@@ -268,7 +268,7 @@ define([
     },
 
     untooltip: function (scope, d) {
-      if (scope.tips[d.id] == null || scope.tips[d.id].sticking === true) {
+      if (!d || scope.tips[d.id] == null || scope.tips[d.id].sticking === true) {
         return;
       }
 
@@ -277,7 +277,7 @@ define([
     },
 
     toggleTooltip: function (scope, d) {
-      if (scope.zoomed === true) {
+      if (!d || scope.zoomed === true) {
         return;
       } // prevent dragging and toggling at the same time
 
@@ -294,7 +294,7 @@ define([
     },
 
     movetooltip: function (scope, d, mousePos) {
-      if (scope.tips[d.id].sticking === true) {
+      if (scope.tips[d.id] && scope.tips[d.id].sticking === true) {
         return;
       }
 

@@ -32,19 +32,20 @@ The [documentation](https://github.com/twosigma/beakerx/blob/master/doc/StartHer
 BeakerX is the successor to the [Beaker
 Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).
 
-## Install
+## Getting started
 
-### Dependencies:
+### Dependencies
 
-* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda)
+* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment with Jupyter Notebook installed should be fine, but our documentation assumes conda)
 
-Set up conda environment:
+### Create conda environment
 
 ```
-conda create -y -n beakerx python=3.5 jupyter openjdk nodejs yarn
+conda create -y -n beakerx python=3.5 jupyter
 source activate beakerx
 ```
 
+### Install beakerx
 
 Install using [conda](https://conda.io/docs/install/quick.html):
 
@@ -52,26 +53,25 @@ Install using [conda](https://conda.io/docs/install/quick.html):
 conda install -c beakerx beakerx
 ```
 
-Using pip:
+Using [pip](https://pypi.python.org/pypi/pip):
 
 ```
 pip install beakerx
 jupyter nbextension install beakerx --py --sys-prefix
 jupyter nbextension enable beakerx --py --sys-prefix
 ```
-And then follow the guide on [Issue #5720](https://github.com/twosigma/beakerx/issues/5720).
 
 ## Developer Install
 
 ### Dependencies:
 
+* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment with [Jupyter Notebook](https://pypi.python.org/pypi/notebook), [Node.js](https://nodejs.org/en/), and [JDK](http://jdk.java.net/8/) installed should be fine, but our documentation assumes conda)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
-* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment should be fine, but our documentation assumes conda).
 
 ### Install
 
 ```
-conda create -y -n beakerx python=3.5 jupyter openjdk yarn
+conda create -y -n beakerx python=3.5 jupyter openjdk nodejs
 source activate beakerx
 (cd beakerx; pip install -e . --verbose)
 jupyter nbextension install beakerx --py --sys-prefix

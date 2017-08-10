@@ -326,7 +326,6 @@ def install_kernels(kernels_dir=pjoin(here, 'beakerx', 'static', 'kernel')):
                 run(['jupyter', 'kernelspec', 'install', '--sys-prefix', '--replace', '--name', name, kernelspec_path])
                 
             for dir, subdirs, files in os.walk(kernels_dir):
-                print('walking {}'.format(dir))
                 if 'kernel.json' in files:
                     install_kernel(dir)
                 else:

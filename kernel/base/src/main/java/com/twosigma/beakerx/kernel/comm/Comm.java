@@ -49,6 +49,7 @@ public class Comm {
   public static final String COMM_ID = "comm_id";
   public static final String TARGET_NAME = "target_name";
   public static final String DATA = "data";
+  public static final String METADATA = "metadata";
   public static final String TARGET_MODULE = "target_module";
   public static final String COMMS = "comms";
 
@@ -56,6 +57,7 @@ public class Comm {
   private String msgType;
   private String targetName;
   private HashMap<?, ?> data;
+  private HashMap<?, ?> metadata;
   private String targetModule;
   private KernelFunctionality kernel;
   private List<Handler<Message>> msgCallbackList = new ArrayList<>();
@@ -67,6 +69,7 @@ public class Comm {
     this.commId = commId;
     this.targetName = targetName;
     this.data = new HashMap<>();
+    this.metadata = new HashMap<>();
   }
 
   public Comm(String commId, TargetNamesEnum targetName) {
@@ -95,6 +98,10 @@ public class Comm {
 
   public void setData(HashMap<?, ?> data) {
     this.data = data;
+  }
+
+  public void setMetaData(HashMap<?, ?> metadata) {
+    this.metadata = metadata;
   }
 
   public void setMsgType(String type) {
@@ -148,6 +155,7 @@ public class Comm {
     state.put(STATE, data);
     state.put(METHOD, (Serializable) data.get(METHOD));
     map.put(DATA, state);
+    map.put(METADATA, metadata);
 
     map.put(TARGET_MODULE, getTargetModule());
     message.setContent(map);
@@ -178,6 +186,7 @@ public class Comm {
     HashMap<String, Serializable> map = new HashMap<>();
     map.put(COMM_ID, getCommId());
     map.put(DATA, new HashMap<>());
+    map.put(METADATA, new HashMap<>());
     message.setContent(map);
     message.setMetadata(buildMetadata());
 
@@ -195,6 +204,7 @@ public class Comm {
     HashMap<String, Serializable> map = new HashMap<>(6);
     map.put(COMM_ID, getCommId());
     map.put(DATA, data);
+    map.put(METADATA, metadata);
     message.setContent(map);
 
     message.setMetadata(buildMetadata());

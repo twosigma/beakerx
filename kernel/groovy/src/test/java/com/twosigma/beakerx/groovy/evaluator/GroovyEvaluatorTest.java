@@ -33,6 +33,7 @@ import java.util.HashMap;
 import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
+import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newEvaluator;
 
 public class GroovyEvaluatorTest {
 
@@ -51,7 +52,7 @@ public class GroovyEvaluatorTest {
     KernelParameters kernelParameters = new KernelParameters(params);
 
     groovyEvaluator.setShellOptions(kernelParameters);
-    groovyClassLoader = groovyEvaluator.newEvaluator();
+    groovyClassLoader = newEvaluator(groovyEvaluator.getImports(),groovyEvaluator.getClasspath(),groovyEvaluator.getOutDir());
     scriptBinding = new Binding();
     scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));
     groovyKernel = new GroovyKernelMock();

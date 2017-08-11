@@ -16,22 +16,41 @@
 package com.twosigma.beakerx.evaluator;
 
 import com.google.common.collect.Lists;
+import com.twosigma.beakerx.DefaultJVMVariables;
+import com.twosigma.beakerx.jvm.threads.CellExecutor;
+import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
+
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class BaseEvaluator implements Evaluator {
 
-  protected static String INTERUPTED_MSG = "interrupted";
+  public static String INTERUPTED_MSG = "interrupted";
 
-  protected abstract boolean addJar(PathToJar path);
+  protected final String shellId;
+  protected final String sessionId;
+  protected String outDir;
+  protected Classpath classPath;
+  protected Imports imports;
+  private final CellExecutor executor;
 
-  protected abstract boolean addImportPath(ImportPath anImport);
-
-  protected abstract boolean removeImportPath(ImportPath anImport);
+  public BaseEvaluator(String id, String sId, CellExecutor cellExecutor) {
+    shellId = id;
+    sessionId = sId;
+    executor = cellExecutor;
+    outDir = Evaluator.createJupyterTempFolder().toString();
+    classPath = new Classpath();
+    imports = new Imports();
+  }
 
   @Override
   public boolean addJarToClasspath(PathToJar path) {
@@ -55,8 +74,6 @@ public abstract class BaseEvaluator implements Evaluator {
     if (!addedPaths.isEmpty()) {
       resetEnvironment();
     }
-
-
     return addedPaths;
   }
 
@@ -72,5 +89,94 @@ public abstract class BaseEvaluator implements Evaluator {
     if (removeImportPath(anImport)) {
       resetEnvironment();
     }
+  }
+
+  @Override
+  public Classpath getClasspath() {
+    return classPath;
+  }
+
+  @Override
+  public Imports getImports() {
+    return imports;
+  }
+
+  protected boolean addJar(PathToJar path) {
+    return classPath.add(path);
+  }
+
+  protected boolean addImportPath(ImportPath anImport) {
+    return imports.add(anImport);
+  }
+
+  protected boolean removeImportPath(ImportPath anImport) {
+    return imports.remove(anImport);
+  }
+
+  protected void configure(KernelParameters kernelParameters) {
+    Map<String, Object> params = kernelParameters.getParams();
+    Collection<String> listOfClassPath = (Collection<String>) params.get(DefaultJVMVariables.CLASSPATH);
+    Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
+
+    if (listOfClassPath == null || listOfClassPath.isEmpty()) {
+      classPath = new Classpath();
+    } else {
+      for (String line : listOfClassPath) {
+        if (!line.trim().isEmpty()) {
+          addJar(new PathToJar(line));
+        }
+      }
+    }
+
+    if (listOfImports == null || listOfImports.isEmpty()) {
+      imports = new Imports();
+    } else {
+      for (String line : listOfImports) {
+        if (!line.trim().isEmpty()) {
+          addImportPath(new ImportPath(line));
+        }
+      }
+    }
+  }
+
+  @Override
+  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+    configure(kernelParameters);
+    resetEnvironment();
+  }
+
+  @Override
+  public void initKernel(KernelParameters kernelParameters) {
+    configure(kernelParameters);
+  }
+
+  public boolean executeTask(Runnable codeRunner) {
+    return executor.executeTask(codeRunner);
+  }
+
+  @Override
+  public void killAllThreads() {
+    executor.killAllThreads();
+  }
+
+  @Override
+  public void cancelExecution() {
+    executor.cancelExecution();
+  }
+
+  @Override
+  public void resetEnvironment() {
+    executor.killAllThreads();
+    doResetEnvironment();
+  }
+
+  protected abstract void doResetEnvironment();
+
+  public String getSessionId() {
+    return sessionId;
+  }
+
+  public String getOutDir() {
+    return outDir;
   }
 }

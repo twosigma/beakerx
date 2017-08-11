@@ -22,6 +22,7 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.commands.MagicCommand;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
@@ -41,6 +42,7 @@ import java.util.Map;
 import java.util.Observer;
 import java.util.Optional;
 import java.util.Set;
+import org.assertj.core.util.Lists;
 
 public class KernelTest implements KernelFunctionality {
 
@@ -53,20 +55,24 @@ public class KernelTest implements KernelFunctionality {
   private EvaluatorManager evaluatorManager;
   private MessageCreator messageCreator;
   private String code;
+  private MagicCommand magicCommand;
 
   public KernelTest() {
     this("KernelTestId1");
+    this.magicCommand = new MagicCommand(this);
   }
 
   public KernelTest(String id) {
     this.id = id;
     this.messageCreator = new MessageCreator(this);
+    this.magicCommand = new MagicCommand(this);
   }
 
   public KernelTest(String id, Evaluator evaluator) {
     this.id = id;
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.messageCreator = new MessageCreator(this);
+    this.magicCommand = new MagicCommand(this);
   }
 
   @Override
@@ -153,8 +159,23 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public String getName() {
-    return "Test";
+  public List<MagicCommandType> getMagicCommands() {
+    return Lists.newArrayList(
+        new MagicCommandType(MagicCommand.JAVASCRIPT, "", magicCommand.javascript()),
+        new MagicCommandType(MagicCommand.HTML, "", magicCommand.html()),
+        new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
+        new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
+        new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
+        new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
+        new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
+        new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
+        new MagicCommandType(MagicCommand.ADD_IMPORT, "<classpath>", magicCommand.addImport()),
+        new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
+    );
+  }
+
+  public MagicCommand getMagicCommand() {
+    return magicCommand;
   }
 
   public Boolean isSetShellOptions() {

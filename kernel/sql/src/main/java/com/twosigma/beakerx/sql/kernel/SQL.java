@@ -17,7 +17,10 @@ package com.twosigma.beakerx.sql.kernel;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
 
+import com.google.common.collect.Lists;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
@@ -27,12 +30,14 @@ import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.sql.handlers.SQLCommOpenHandler;
 import com.twosigma.beakerx.sql.handlers.SQLKernelInfoHandler;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 public class SQL extends Kernel {
 
@@ -67,7 +72,11 @@ public class SQL extends Kernel {
   }
 
   @Override
-  public String getName() {
-    return "SQL";
+  public List<MagicCommandType> getMagicCommands() {
+    List<MagicCommandType> magicCommands = super.getMagicCommands();
+    magicCommands.add(new MagicCommandType(DATASOURCES, "<jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", getMagicCommand().dataSources()));
+    magicCommands.add(new MagicCommandType(DEFAULT_DATASOURCE, "<sourceName=jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", getMagicCommand().defaultDataSources()));
+
+    return magicCommands;
   }
 }

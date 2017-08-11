@@ -87,9 +87,4 @@ public class Clojure extends Kernel {
     kernelParameters.put(IMPORTS, new ClojureDefaultVariables().getImports());
     return new KernelParameters(kernelParameters);
   }
-
-  @Override
-  public String getName() {
-    return "Clojure";
-  }
 }

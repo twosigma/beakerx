@@ -69,9 +69,4 @@ public class Kotlin extends Kernel {
     });
   }
 
-  @Override
-  public String getName() {
-    return "Kotlin";
-  }
-
 }

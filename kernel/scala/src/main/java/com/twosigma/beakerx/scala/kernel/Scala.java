@@ -72,8 +72,4 @@ public class Scala extends Kernel {
     return new KernelParameters(kernelParameters);
   }
 
-  @Override
-  public String getName() {
-    return "Scala";
-  }
 }

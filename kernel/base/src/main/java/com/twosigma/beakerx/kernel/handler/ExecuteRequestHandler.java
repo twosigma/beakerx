@@ -133,4 +133,7 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
   public void exit() {
   }
 
+  public MagicCommand getMagicCommand() {
+    return magicCommand;
+  }
 }

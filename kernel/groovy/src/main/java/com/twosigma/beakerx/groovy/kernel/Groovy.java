@@ -66,9 +66,4 @@ public class Groovy extends Kernel {
     kernelParameters.put(IMPORTS, new GroovyDefaultVariables().getImports());
     return new KernelParameters(kernelParameters);
   }
-
-  @Override
-  public String getName() {
-    return "Groovy";
-  }
 }

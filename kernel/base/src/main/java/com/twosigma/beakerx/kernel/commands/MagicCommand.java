@@ -35,7 +35,6 @@ import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithCode;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithReply;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResult;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResultAndCode;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
@@ -60,9 +59,6 @@ import org.apache.commons.text.StrTokenizer;
  */
 public class MagicCommand {
 
-  public static final String DEFAULT_DATASOURCE = "%defaultDatasource";
-  public static final String DATASOURCES = "%datasources";
-
   public static final String JAVASCRIPT = "%%javascript";
   public static final String HTML = "%%html";
   public static final String BASH = "%%bash";
@@ -74,21 +70,21 @@ public class MagicCommand {
   public static final String ADD_IMPORT = "%import";
   public static final String ADD_STATIC_IMPORT = ADD_IMPORT + " static";
   public static final String UNIMPORT = "%unimport";
+  public static final String DEFAULT_DATASOURCE = "%defaultDatasource";
+  public static final String DATASOURCES = "%datasources";
 
   public static final String USAGE_ERROR_MSG = "UsageError: %s is a cell magic, but the cell body is empty.";
 
-  private List<MagicCommandType> commands;
   private MessageCreator messageCreator;
   private KernelFunctionality kernel;
 
   public MagicCommand(KernelFunctionality kernel) {
     this.kernel = checkNotNull(kernel);
     messageCreator = new MessageCreator(this.kernel);
-    buildCommands();
   }
 
   public MagicCommandResult process(Code code, Message message, int executionCount) {
-    MagicCommandFinder finder = find(code, commands, message, executionCount,
+    MagicCommandFinder finder = find(code, kernel.getMagicCommands(), message, executionCount,
             this.messageCreator);
     MagicCommandResult result = new MagicCommandResult();
     if (finder.hasErrors()) {
@@ -105,28 +101,11 @@ public class MagicCommand {
     return result;
   }
 
-  private void buildCommands() {
-    commands = Lists.newArrayList(
-        new MagicCommandType(JAVASCRIPT, "", javascript(), ""),
-        new MagicCommandType(HTML, "", html(), ""),
-        new MagicCommandType(BASH, "", bash(), ""),
-        new MagicCommandType(LSMAGIC, "", lsmagic(), "None"),
-        new MagicCommandType(CLASSPATH_ADD_JAR, "<jar path>", classpathAddJar(), ""),
-        new MagicCommandType(CLASSPATH_REMOVE, "<jar path>", classpathRemove(), ""),
-        new MagicCommandType(CLASSPATH_SHOW, "", classpathShow(), ""),
-        new MagicCommandType(ADD_STATIC_IMPORT, "<classpath>", addStaticImport(), ""),
-        new MagicCommandType(ADD_IMPORT, "<classpath>", addImport(), ""),
-        new MagicCommandType(UNIMPORT, "<classpath>", unimport(), ""),
-        new MagicCommandType(DATASOURCES, "<jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", dataSources(), "SQL"),
-        new MagicCommandType(DEFAULT_DATASOURCE, "<sourceName=jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", defaultDataSources(), "SQL")
-    );
-  }
-
-  private MagicCommandFunctionality defaultDataSources() {
+  public MagicCommandFunctionality defaultDataSources() {
     return dataSource(DEFAULT_DATASOURCE);
   }
 
-  private MagicCommandFunctionality dataSources() {
+  public MagicCommandFunctionality dataSources() {
     return dataSource(DATASOURCES);
   }
 
@@ -143,7 +122,7 @@ public class MagicCommand {
     };
   }
 
-  private MagicCommandFunctionality addStaticImport() {
+  public MagicCommandFunctionality addStaticImport() {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 3) {
@@ -155,29 +134,29 @@ public class MagicCommand {
     };
   }
 
-  private MagicCommandFunctionality addImport() {
+  public MagicCommandFunctionality addImport() {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        sendErrorMessage(message, "Wrong import format.", executionCount);
+        return sendErrorMessage(message, "Wrong import format.", executionCount);
       }
       this.kernel.addImport(new ImportPath(parts[1]));
       return getMagicCommandItem(code, message, executionCount);
     };
   }
 
-  private MagicCommandFunctionality unimport() {
+  public MagicCommandFunctionality unimport() {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        sendErrorMessage(message, "Wrong import format.", executionCount);
+        return sendErrorMessage(message, "Wrong import format.", executionCount);
       }
       this.kernel.removeImport(new ImportPath(parts[1]));
       return getMagicCommandItem(code, message, executionCount);
     };
   }
 
-  private MagicCommandFunctionality classpathShow() {
+  public MagicCommandFunctionality classpathShow() {
     return (code, command, message, executionCount) -> {
       MIMEContainer result = Text(kernel.getClasspath());
 
@@ -194,11 +173,11 @@ public class MagicCommand {
     };
   }
 
-  private MagicCommandFunctionality classpathRemove() {
+  public MagicCommandFunctionality classpathRemove() {
     return (code, command, message, executionCount) -> null;
   }
 
-  private MagicCommandFunctionality classpathAddJar() {
+  public MagicCommandFunctionality classpathAddJar() {
       return (code, command, message, executionCount) -> {
           String[] split = splitPath(command);
           if (split.length != 4) {
@@ -301,7 +280,7 @@ public class MagicCommand {
             messageCreator.buildReplyWithoutStatus(message, executionCount));
   }
 
-  private MagicCommandFunctionality javascript() {
+  public MagicCommandFunctionality javascript() {
     return (code, command, message, executionCount) -> {
       MIMEContainer result = JavaScript(code.takeCodeWithoutCommand().get().asString());
       return new MagicCommandItemWithResult(
@@ -312,7 +291,7 @@ public class MagicCommand {
     };
   }
 
-  private MagicCommandFunctionality html() {
+  public MagicCommandFunctionality html() {
     return (code, command, message, executionCount) -> code.takeCodeWithoutCommand()
         .map(codeWithoutCommand -> {
           MIMEContainer html = HTML(
@@ -325,7 +304,7 @@ public class MagicCommand {
         }).orElse(sendErrorMessage(message, String.format(USAGE_ERROR_MSG, HTML), executionCount));
   }
 
-  private MagicCommandFunctionality bash() {
+  public MagicCommandFunctionality bash() {
     return (code, command, message, executionCount) -> code.takeCodeWithoutCommand().map(codeWithoutCommand -> {
 
       ErrorData errorData = executeBashCode(codeWithoutCommand);
@@ -341,14 +320,13 @@ public class MagicCommand {
     }).orElse(sendErrorMessage(message, String.format(USAGE_ERROR_MSG, BASH), executionCount));
   }
 
-  private MagicCommandFunctionality lsmagic() {
+  public MagicCommandFunctionality lsmagic() {
     return (code, command, message, executionCount) -> {
       String result = "Available magic commands:\n";
 
-      result += commands.stream()
-                         .filter(commandType -> (commandType.getSuitableKernelsNames().equals("") || commandType.getSuitableKernelsNames().equals(kernel.getName())))
-                         .map(commandType -> commandType.getCommand() + " " + commandType.getParameters())
-                         .collect(Collectors.joining("\n"));
+      result += kernel.getMagicCommands().stream()
+                                         .map(commandType -> commandType.getCommand() + " " + commandType.getParameters())
+                                         .collect(Collectors.joining("\n"));
 
       return new MagicCommandItemWithResult(
               messageCreator.buildOutputMessage(message, result, false),

@@ -15,25 +15,25 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.KernelTest;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.twosigma.beakerx.SQLKernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class SQLMagicCommandTest {
 
   private MagicCommand sut;
-  private KernelTest kernel;
+  private SQLKernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
-    this.kernel = new KernelTest("id2", new EvaluatorTest());
+    this.kernel = new SQLKernelTest("id2", new EvaluatorTest());
     this.sut = new MagicCommand(kernel);
   }
 

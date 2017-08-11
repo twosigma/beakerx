@@ -283,10 +283,18 @@ define([
         },
 
         _destroy: function(){
+          var jqTableContainer = $(this.s.dt.table().container());
+          var jqHeaderMenus = jqTableContainer.find(".bko-column-header-menu");
+
           $(document.body).off('click.table-headermenu');
+          $(document).off( 'init.dt.dtr keydown');
+          jqTableContainer.find('.bko-column-header-menu').remove();
+          jqTableContainer.off('click.headermenu');
+          jqHeaderMenus.remove();
           this.dom.container.remove();
-          $(this.s.dt.table().container()).find('.bko-column-header-menu').remove();
-          $(this.s.dt.table().container()).off('click.headermenu');
+          this.dom = undefined;
+          this.c = undefined;
+          this.s = undefined;
         }
       };
 

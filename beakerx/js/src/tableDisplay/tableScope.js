@@ -302,54 +302,64 @@ define([
     }
   };
 
-  TableScope.prototype.unregisterOutputExpandEventListener = function() {
-
-  };
-
   TableScope.prototype.doDestroy = function(all) {
     var self = this;
     if (self.table) {
+      var $tableContainer = $(self.table.table().container());
+      var $document = $(document);
+      var $body = $(document.body);
+      var $tBody = $('#' + self.id + ' tbody');
       //jscs:disable
       clearTimeout(self.refresh_size);
       //jscs:enable
       $(window).unbind('resize.' + self.id);
-      $('#' + self.id + ' tbody').off('click');
-      $('#' + self.id + ' tbody').off('dblclick');
-      self.removeOnKeyListeners();
-      $('#' + self.id + ' tbody').off('mouseleave.bko-dt-highlight');
-      $('#' + self.id + ' tbody').off('mouseenter.bko-dt-highlight');
-      self.removeInteractionListeners();
-      self.table.off('key');
-      self.table.off('column-visibility.dt');
-      self.removeFilterListeners();
-      $(self.table.table().container()).find('.dataTables_scrollHead').off('scroll');
-      $(self.element).find(".bko-table-use-pagination").remove();
+      $tBody
+        .off('click')
+        .off('dblclick')
+        .off('mouseenter.bko-dt-highlight')
+        .off('mouseleave.bko-dt-highlight');
+      self.table
+        .off('key')
+        .off('draw.dt')
+        .off('column-reorder')
+        .off('column-sizing.dt')
+        .off('column-visibility.dt');
 
-      $.contextMenu('destroy', {
-        selector: '#' + self.id + ' tbody td'
-      });
-      $.contextMenu('destroy', {
-        selector: '#' + self.id +'_wrapper thead'
-      });
-      $(document).off('contextmenu.bko-dt-header', '#' + self.id +'_wrapper thead th');
-      $(document).off('keydown.handleTableHeaderMenuClose');
+      self.removeOnKeyListeners();
+      self.removeInteractionListeners();
+      self.removeFilterListeners();
+      $(self.element).find(".bko-table-use-pagination").remove();
+      self.destroyTableSelect();
+      self.destroyTableMenuElements();
+
+      $.contextMenu('destroy', '#' + self.id + ' tbody td');
+      $.contextMenu('destroy', '#' + self.id +'_wrapper thead');
+      $body.off('click.bko-dt-container');
+      $document
+        .off('contextmenu.bko-dt-header')
+        .off('keydown.handleTableHeaderMenuClose');
+      $tableContainer.find('.dataTables_scrollHead').off('scroll');
+      $tableContainer
+        .off('keyup.column-filter change.column-filter')
+        .off("mouseenter.bko-dt-interaction")
+        .off("mouseleave.bko-dt-interaction")
+        .off('click');
+
       self.columnLimitModal.off('click');
+      self.clipclient && self.clipclient.destroy();
+      self.clipclient = undefined;
+      self.table.off('');
 
       if (all) {
+        self.table.state.clear();
         self.table.destroy(true);
+        self.element.remove();
+        self.keyTable = undefined;
+        self.table = undefined;
+        self.colreorg = undefined;
       }
-
-      self.keyTable = undefined;
-      self.table = undefined;
-      self.colreorg = undefined;
-      if (self.clipclient !== undefined) {
-        self.clipclient.destroy();
-        self.clipclient = undefined;
-      }
-      self.fixcols = undefined;
-      self.fixcreated = false;
-      self.renderMenu = false;
     }
+
     if (all) {
       self.timeStrings = undefined;
       self.tz = undefined;
@@ -360,9 +370,12 @@ define([
       self.data = undefined;
       self.update = undefined;
       self.tableOrder = undefined;
-      $(document.body).off('click.bko-dt-container', self.containerClickFunction);
+      self.fixcols = undefined;
+      self.fixcreated = false;
+      self.renderMenu = false;
+      self.element = undefined;
+      self.columns = [];
     }
-    self.unregisterOutputExpandEventListener();
 
     // self.$on(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED, function() {
     //   var parents = self.element.parents();
@@ -381,9 +394,8 @@ define([
     // });
   };
 
-  TableScope.prototype.init = function(model, destroy) {
+  TableScope.prototype.init = function(model) {
     var self = this;
-    self.doDestroy(destroy);
 
     // unregisterOutputExpandEventListener = self.$on(GLOBALS.EVENTS.CELL_OUTPUT_EXPANDED, function() {
     //   var parents = self.element.parents();
@@ -2075,12 +2087,9 @@ define([
   };
 
   TableScope.prototype.removeFilterListeners = function() {
-    var self = this;
-    var filterInputSelector = '.filterRow .filter-input';
-    var clearFilterSelector = '.filterRow .clear-filter';
-    $(self.table.table().container()).off('keyup.column-filter change.column-filter keydown.column-filter ' +
-                                          'blur.column-filter focus.column-filter', filterInputSelector);
-    $(self.table.table().container()).off('mousedown.column-filter', clearFilterSelector);
+    $(this.table.table().container()).off(
+      'mousedown.column-filter keyup.column-filter change.column-filter keydown.column-filter blur.column-filter focus.column-filter',
+    );
   };
 
   TableScope.prototype.getColumn = function(filterNode){
@@ -2428,7 +2437,7 @@ define([
   TableScope.prototype.doResetAll = function() {
     var self = this;
     self.table.state.clear();
-    self.init(self.getCellModel(), false);
+    self.init(self.getCellModel());
   };
 
   TableScope.prototype.adjustRedraw = function() {
@@ -2446,7 +2455,7 @@ define([
 
   TableScope.prototype.run = function() {
     var self = this;
-    self.init(this.model.getCellModel(), true);
+    self.init(this.model.getCellModel());
     self.tableChanged = true;
     self.bindTableActions();
   };
@@ -2508,6 +2517,20 @@ define([
         trs.eq(1).append(filterTd);
       });
 
+    }
+  };
+
+  TableScope.prototype.destroyTableMenuElements = function() {
+    var self = this;
+    if (self.columnNames) {
+      var globalDropdownMenu = self.element.find('.dtmenu > ul.dropdown-menu');
+      var showColumnMenu = globalDropdownMenu.find('ul.list-showcolumn');
+      var rowsToShowMenu = globalDropdownMenu.find('ul.list-rowstoshow');
+
+      showColumnMenu.find('li').remove();
+      rowsToShowMenu.find('li').remove();
+      showColumnMenu.remove();
+      rowsToShowMenu.remove();
     }
   };
 

@@ -2462,13 +2462,15 @@ define([
     plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + ".svg");
   };
 
-  PlotScope.prototype.saveAsPng = function() {
+  PlotScope.prototype.saveAsPng = function(scale) {
     var self = this;
     var svg = self.getSvgToSave();
     plotUtils.addInlineFonts(svg);
 
-    self.canvas.width = svg.getAttribute("width");
-    self.canvas.height = svg.getAttribute("height");
+    scale = scale === undefined ? 1 : scale;
+
+    self.canvas.width = svg.getAttribute("width") * scale;
+    self.canvas.height = svg.getAttribute("height") * scale;
 
     var imgsrc = 'data:image/svg+xml;base64,' +
                  btoa(unescape(encodeURIComponent(plotUtils.convertToXHTML(svg.outerHTML))));
@@ -2483,11 +2485,10 @@ define([
     var legendContainer = self.jqlegendcontainer.find("#plotLegend");
     var containerLeftMargin = parseFloat(self.jqcontainer.css("margin-left"));
 
-
     var W = plotUtils.outerWidth(self.jqcontainer) + containerLeftMargin + 1;//add 1 because jQuery round size
     var H = plotUtils.outerHeight(self.jqcontainer) + titleOuterHeight + 1;
-    var legendW = plotUtils.getActualCss(legendContainer, 'outerWidth', true);
-    var legendH = plotUtils.getActualCss(legendContainer, 'outerHeight', true);
+    var legendW = plotUtils.getActualCss(legendContainer, 'outerWidth', true) || 0;
+    var legendH = plotUtils.getActualCss(legendContainer, 'outerHeight', true) || 0;
     var legendPosition = self.stdmodel.legendPosition;
 
     if (!legendPosition.position) {
@@ -2648,8 +2649,8 @@ define([
     model.saveAsSvg = function () {
       return self.saveAsSvg();
     };
-    model.saveAsPng = function () {
-      return self.saveAsPng();
+    model.saveAsPng = function (scale) {
+      return self.saveAsPng(scale);
     };
     model.updateLegendPosition = function () {
       return self.updateLegendPosition();

@@ -158,7 +158,7 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        sendErrorMessage(message, "Wrong import format.", executionCount);
+        return sendErrorMessage(message, "Wrong import format.", executionCount);
       }
       this.kernel.addImport(new ImportPath(parts[1]));
       return getMagicCommandItem(code, message, executionCount);
@@ -169,7 +169,7 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        sendErrorMessage(message, "Wrong import format.", executionCount);
+        return sendErrorMessage(message, "Wrong import format.", executionCount);
       }
       this.kernel.removeImport(new ImportPath(parts[1]));
       return getMagicCommandItem(code, message, executionCount);

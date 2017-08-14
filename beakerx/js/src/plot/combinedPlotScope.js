@@ -17,7 +17,6 @@
 define([
   'underscore',
   'jquery',
-  'jquery-ui',
   'jquery-ui/ui/widgets/resizable',
   'd3',
   './plotUtils',
@@ -29,7 +28,6 @@ define([
 ], function(
   _,
   $,
-  jqui,
   resizable,
   d3,
   plotUtils,

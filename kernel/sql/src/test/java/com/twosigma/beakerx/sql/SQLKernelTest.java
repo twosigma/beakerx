@@ -24,7 +24,7 @@ import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.sql.kernel.SQL;
-import com.twosigma.beakerx.sql.kernel.SQLEvaluator;
+import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

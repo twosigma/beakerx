@@ -172,7 +172,7 @@ public class TreeMap extends Chart {
 
   public void setToolTipBuilder(IToolTipBuilder toolTipBuilder) {
     this.toolTipBuilder = toolTipBuilder;
-    sendModel();
+    sendModelUpdate();
   }
 
   @Override

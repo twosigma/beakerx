@@ -29,12 +29,12 @@ import java.io.IOException;
 
 import java.nio.file.Path;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EvaluatorManager {
 
-  public static final String THE_KERNEL_IS_NOT_READY = "The kernel was not ready, run the cell again.";
   public static Logger logger = LoggerFactory.getLogger(EvaluatorManager.class);
 
   protected Evaluator evaluator = null;
@@ -101,8 +101,9 @@ public class EvaluatorManager {
   }
 
   public List<Path> addJarsToClasspath(List<PathToJar> paths) {
-        return this.evaluator.addJarsToClasspath(paths);
+    return this.evaluator.addJarsToClasspath(paths);
   }
+
   public Classpath getClasspath() {
     return this.evaluator.getClasspath();
   }

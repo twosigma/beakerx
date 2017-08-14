@@ -17,8 +17,8 @@
 define([
   'underscore',
   'jquery',
-  'jquery-ui',
   'jquery-ui/ui/widgets/draggable',
+  'jquery-ui/ui/widgets/resizable',
   'd3',
   './plotUtils',
   './plotTip',
@@ -33,8 +33,8 @@ define([
 ], function(
   _,
   $,
-  jqui,
-  jquiDraggable,
+  draggable,
+  resizable,
   d3,
   plotUtils,
   plotTip,
@@ -157,60 +157,68 @@ define([
     var deepcopy = function(original){
       return JSON.parse(JSON.stringify(original));
     };
-    var caja = IPython.security.caja;    
-    window.cssSchemaFixed = false;
-    var sanitize = function(styleString){
-      if (!window.cssSchemaFixed){
-        // fix caja to support svg color/painting attributes before using it. 
-        // some of the attributes can be directly copied. some of them needs modification
-        // for details, see https://github.com/google/caja/blob/1056be89dad487f9178d89f462fe5cb207c7e604/src/com/google/caja/lang/css/css3-defs.json
-        var ATTRIBS = window.cssSchema;
-        ATTRIBS['color-rendering'] = deepcopy(ATTRIBS['speak']);
-        ATTRIBS['color-rendering'].cssLitGroup[0][0] = "auto";
-        ATTRIBS['color-rendering'].cssLitGroup[1][0] = "optimizeSpeed";
-        ATTRIBS['color-rendering'].cssLitGroup[2][0] = "optimizeQuality";
-        ATTRIBS['fill'] = ATTRIBS['color'];
-        ATTRIBS['fill-opacity'] = ATTRIBS['opacity'];
-        ATTRIBS['fill-rule'] = deepcopy(ATTRIBS['speak-header']);
-        ATTRIBS['fill-rule'].cssLitGroup[0][0] = "nonzero";
-        ATTRIBS['fill-rule'].cssLitGroup[1][0] = "evenodd";
-        ATTRIBS['image-rendering'] = ATTRIBS['color-rendering'];
-        ATTRIBS['marker-start'] = ATTRIBS['cue-before'];
-        ATTRIBS['marker-mid'] = ATTRIBS['cue-before'];
-        ATTRIBS['marker-end'] = ATTRIBS['cue-before'];
-        ATTRIBS['shape-rendering'] = deepcopy(ATTRIBS['text-transform']);
-        ATTRIBS['shape-rendering'].cssLitGroup[0][0] = "optimizeSpeed";
-        ATTRIBS['shape-rendering'].cssLitGroup[0][1] = "crispEdges";
-        ATTRIBS['shape-rendering'].cssLitGroup[0][2] = "geometricPrecision";
-        ATTRIBS['shape-rendering'].cssLitGroup[1][0] = "auto";
-        ATTRIBS['stroke'] = ATTRIBS['color'];
-        ATTRIBS['stroke-linecap'] = deepcopy(ATTRIBS['speak']);
-        ATTRIBS['stroke-linecap'].cssLitGroup[0][0] = "butt";
-        ATTRIBS['stroke-linecap'].cssLitGroup[1][0] = "round";
-        ATTRIBS['stroke-linecap'].cssLitGroup[2][0] = "square";
-        ATTRIBS['stroke-linejoin'] = deepcopy(ATTRIBS['speak']);
-        ATTRIBS['stroke-linejoin'].cssLitGroup[0][0] = "miter";
-        ATTRIBS['stroke-linejoin'].cssLitGroup[1][0] = "round";
-        ATTRIBS['stroke-linejoin'].cssLitGroup[2][0] = "bevel";
-        ATTRIBS['stroke-miterlimit'] = ATTRIBS['stress']; 
-        ATTRIBS['stroke-opacity'] = ATTRIBS['opacity'];
-        ATTRIBS['stroke-width'] = ATTRIBS['max-width'];
-        ATTRIBS['text-rendering'] = deepcopy(ATTRIBS['shape-rendering']);
-        ATTRIBS['text-rendering'].cssLitGroup[0][1] = "optimizeLegibility";
-        window.cssSchemaFixed = true;
-      }
 
-      return caja.sanitizeStylesheet(
-        window.location.pathname,
-        styleString,
-        {
-          containerClass: null,
-          idSuffix: '',
-          virtualizeAttrName: noop
-        },
-        noop
-      );
+    var sanitize = null;
+    try {
+      var caja = IPython.security.caja;
+      console.log('ip',IPython);
+      window.cssSchemaFixed = false;
+      sanitize = function(styleString){
+        if (!window.cssSchemaFixed){
+          // fix caja to support svg color/painting attributes before using it.
+          // some of the attributes can be directly copied. some of them needs modification
+          // for details, see https://github.com/google/caja/blob/1056be89dad487f9178d89f462fe5cb207c7e604/src/com/google/caja/lang/css/css3-defs.json
+          var ATTRIBS = window.cssSchema;
+          ATTRIBS['color-rendering'] = deepcopy(ATTRIBS['speak']);
+          ATTRIBS['color-rendering'].cssLitGroup[0][0] = "auto";
+          ATTRIBS['color-rendering'].cssLitGroup[1][0] = "optimizeSpeed";
+          ATTRIBS['color-rendering'].cssLitGroup[2][0] = "optimizeQuality";
+          ATTRIBS['fill'] = ATTRIBS['color'];
+          ATTRIBS['fill-opacity'] = ATTRIBS['opacity'];
+          ATTRIBS['fill-rule'] = deepcopy(ATTRIBS['speak-header']);
+          ATTRIBS['fill-rule'].cssLitGroup[0][0] = "nonzero";
+          ATTRIBS['fill-rule'].cssLitGroup[1][0] = "evenodd";
+          ATTRIBS['image-rendering'] = ATTRIBS['color-rendering'];
+          ATTRIBS['marker-start'] = ATTRIBS['cue-before'];
+          ATTRIBS['marker-mid'] = ATTRIBS['cue-before'];
+          ATTRIBS['marker-end'] = ATTRIBS['cue-before'];
+          ATTRIBS['shape-rendering'] = deepcopy(ATTRIBS['text-transform']);
+          ATTRIBS['shape-rendering'].cssLitGroup[0][0] = "optimizeSpeed";
+          ATTRIBS['shape-rendering'].cssLitGroup[0][1] = "crispEdges";
+          ATTRIBS['shape-rendering'].cssLitGroup[0][2] = "geometricPrecision";
+          ATTRIBS['shape-rendering'].cssLitGroup[1][0] = "auto";
+          ATTRIBS['stroke'] = ATTRIBS['color'];
+          ATTRIBS['stroke-linecap'] = deepcopy(ATTRIBS['speak']);
+          ATTRIBS['stroke-linecap'].cssLitGroup[0][0] = "butt";
+          ATTRIBS['stroke-linecap'].cssLitGroup[1][0] = "round";
+          ATTRIBS['stroke-linecap'].cssLitGroup[2][0] = "square";
+          ATTRIBS['stroke-linejoin'] = deepcopy(ATTRIBS['speak']);
+          ATTRIBS['stroke-linejoin'].cssLitGroup[0][0] = "miter";
+          ATTRIBS['stroke-linejoin'].cssLitGroup[1][0] = "round";
+          ATTRIBS['stroke-linejoin'].cssLitGroup[2][0] = "bevel";
+          ATTRIBS['stroke-miterlimit'] = ATTRIBS['stress'];
+          ATTRIBS['stroke-opacity'] = ATTRIBS['opacity'];
+          ATTRIBS['stroke-width'] = ATTRIBS['max-width'];
+          ATTRIBS['text-rendering'] = deepcopy(ATTRIBS['shape-rendering']);
+          ATTRIBS['text-rendering'].cssLitGroup[0][1] = "optimizeLegibility";
+          window.cssSchemaFixed = true;
+        }
+
+        return caja.sanitizeStylesheet(
+          window.location.pathname,
+          styleString,
+          {
+            containerClass: null,
+            idSuffix: '',
+            virtualizeAttrName: noop
+          },
+          noop
+        );
+      }
+    } catch (e) {
+      sanitize = function (r) {return r;}
     }
+
     // Apply advanced custom styles set directly by user
     if(model.customStyles) {
       var customStyleString = model.customStyles.map(function(s) {

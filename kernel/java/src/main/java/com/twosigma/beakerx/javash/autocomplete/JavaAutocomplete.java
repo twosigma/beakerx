@@ -17,9 +17,11 @@
 package com.twosigma.beakerx.javash.autocomplete;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
+
+import static com.twosigma.beakerx.javash.evaluator.JavaEvaluator.WRAPPER_CLASS_NAME;
 
 public class JavaAutocomplete {
 
@@ -31,9 +33,35 @@ public class JavaAutocomplete {
     // TODO
   }
 
-  public List<String> doAutocomplete(String code, int caretPosition) {
-    // TODO
-    return new ArrayList<>();
+  public AutocompleteResult doAutocomplete(String code, int caretPosition) {
+
+    // this is a code sniplet...
+    String[] codev = code.split("\n");
+    int insert = 0;
+    while (insert < codev.length) {
+      if (!codev[insert].contains("package") && !codev[insert].contains("import") && !codev[insert].trim().isEmpty())
+        break;
+      insert++;
+    }
+
+    final String CODE_TO_INSERT = "public class " + WRAPPER_CLASS_NAME + " { public static void beakerRun() { \n";
+
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < insert; i++) {
+      sb.append(codev[i]);
+      sb.append('\n');
+    }
+
+    if (caretPosition >= sb.length()) {
+      caretPosition += CODE_TO_INSERT.length();
+    }
+    sb.append(CODE_TO_INSERT);
+    for (int i = insert; i < codev.length; i++) {
+      sb.append(codev[i]);
+      sb.append('\n');
+    }
+
+    return new AutocompleteResult(new ArrayList<>(), caretPosition);
   }
 
 }

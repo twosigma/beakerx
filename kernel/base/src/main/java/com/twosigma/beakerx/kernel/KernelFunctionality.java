@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.handler.Handler;
@@ -74,6 +75,8 @@ public interface KernelFunctionality {
   void addImport(ImportPath anImport);
 
   void removeImport(ImportPath anImport);
+
+  List<MagicCommandType> getMagicCommands();
 
   interface ExecuteCodeCallback {
     void execute(SimpleEvaluationObject seo);

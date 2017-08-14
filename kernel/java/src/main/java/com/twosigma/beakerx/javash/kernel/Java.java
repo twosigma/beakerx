@@ -68,6 +68,4 @@ public class Java extends Kernel {
     kernelParameters.put(IMPORTS, new JavaDefaultVariables().getImports());
     return new KernelParameters(kernelParameters);
   }
-
-
 }

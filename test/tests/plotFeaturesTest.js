@@ -53,8 +53,39 @@ describe('PlotFeatures notebook', function () {
     it('Should specify color, width and style of line', function(done){
       var svgElement = beakerxPO.runCellToGetSvgElement(2);
       svgElement.waitForEnabled();
-      var plotLine = svgElement.$('#i0 > path.plot-line');
-      expect(plotLine.getCssProperty('stroke').value).toEqual('rgb(255,0,0)');
+      var plotLine = svgElement.$('#i3 > path.plot-line');
+      expect(plotLine.getCssProperty('stroke').value).toEqual('rgb(212,57,59)');
+      expect(plotLine.getCssProperty('stroke-width').value).toEqual('2px');
+      expect(plotLine.getCssProperty('stroke-dasharray').value).toEqual('2px, 2px');
+      browser.call(done);
+    });
+  });
+
+  describe('Run cell with stems', function(){
+    it('Plot has 6 stems', function(done){
+      var svgElement = beakerxPO.runCellToGetSvgElement(3);
+      svgElement.waitForEnabled();
+      var plotStems = svgElement.$$('g > line.plot-resp.normal');
+      expect(plotStems.length).toEqual(6);
+      browser.call(done);
+    });
+
+    it('Should set the base of stems', function(done){
+      var svgElement = beakerxPO.runCellToGetSvgElement(4);
+      svgElement.waitForEnabled();
+      var baseY1 = Math.round(svgElement.$('#gridline_y_0').getAttribute('y1'));
+      var stemY1 = Math.round(svgElement.$$('#i0 > line.plot-resp.normal')[1].getAttribute('y1'));
+      expect(baseY1).toEqual(stemY1);
+      browser.call(done);
+    });
+  });
+
+  describe('Run cell with bars', function(){
+    it('Plot has 5 bars', function(done){
+      var svgElement = beakerxPO.runCellToGetSvgElement(5);
+      svgElement.waitForEnabled();
+      var plotBars = svgElement.$$('g > rect.plot-resp');
+      expect(plotBars.length).toEqual(5);
       browser.call(done);
     });
   });

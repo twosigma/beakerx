@@ -335,13 +335,15 @@ define([
     plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + '.svg');
   };
 
-  CombinedPlotScope.prototype.saveAsPng = function() {
+  CombinedPlotScope.prototype.saveAsPng = function(scale) {
     var self = this;
     var svg = self.getSvgToSave();
     plotUtils.addInlineFonts(svg);
 
-    self.canvas.width = svg.getAttribute("width");
-    self.canvas.height = svg.getAttribute("height");
+    scale = scale === undefined ? 1 : scale;
+
+    self.canvas.width = svg.getAttribute("width") * scale;
+    self.canvas.height = svg.getAttribute("height") * scale;
 
     var html = plotUtils.convertToXHTML(svg.outerHTML);
     var imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html)));

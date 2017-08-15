@@ -16,10 +16,6 @@
 # limitations under the License.
 
 from setuptools import setup, find_packages
-# from setuptools.command.build_py import build_py
-from setuptools.command.develop import develop
-from setuptools.command.sdist import sdist
-from setuptools.command.bdist_egg import bdist_egg
 from setupbase import (
     create_cmdclass,
     install_node_modules, 
@@ -35,9 +31,13 @@ import os
 from os.path import join as pjoin
 
 
-cmdclass = create_cmdclass([
+cmdclass = create_cmdclass(develop_wrappers=[
     'js',
     'java',
+    'kernels',
+    'kernelspec_class',
+    'custom_css'
+], install_wrappers=[
     'kernels',
     'kernelspec_class',
     'custom_css'
@@ -48,7 +48,7 @@ cmdclass['js'] = install_node_modules(
     source_dir=pjoin(here, 'js', 'src')
 )
 cmdclass['java'] = run_gradle(cmd='build')
-cmdclass['kernels'] = install_kernels(pjoin(os.environ['CONDA_PREFIX'], 'lib', 'python3.5', 'site-packages', 'beakerx', 'static', 'kernel'))
+cmdclass['kernels'] = install_kernels(kernels_dir=pjoin(here, 'beakerx', 'static', 'kernel'))
 cmdclass['kernelspec_class'] = update_kernelspec_class(prefix=os.environ['CONDA_PREFIX'])
 cmdclass['custom_css'] = copy_files(
     src=pjoin(here,  'beakerx', 'static', 'custom'), 
@@ -87,7 +87,8 @@ setup_args = dict(
     )],
     install_requires    = [
         'notebook >=4.3.1',
-        'ipywidgets >=5.1.5, <=6.0.0'
+        'ipywidgets >=5.1.5, <=6.0.0',
+        'pandas'
     ],
     zip_safe            = False,
     include_package_data= True,

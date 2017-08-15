@@ -41,10 +41,6 @@ public interface Evaluator {
 
   void setShellOptions(final KernelParameters kernelParameters) throws IOException;
 
-  boolean addJarToClasspath(PathToJar path);
-
-  List<Path> addJarsToClasspath(List<PathToJar> paths);
-
   AutocompleteResult autocomplete(String code, int caretPosition);
 
   void killAllThreads();
@@ -65,13 +61,17 @@ public interface Evaluator {
     return ret.toAbsolutePath();
   }
 
+  void resetEnvironment();
+
+  boolean addJarToClasspath(PathToJar path);
+
+  List<Path> addJarsToClasspath(List<PathToJar> paths);
+
   Classpath getClasspath();
 
   Imports getImports();
 
   void addImport(ImportPath anImport);
-
-  void resetEnvironment();
 
   void removeImport(ImportPath anImport);
 }

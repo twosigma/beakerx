@@ -19,6 +19,7 @@ apply plugin: 'java'
 sourceCompatibility = 1.8
 
 def final kernelIdName = 'cpp'
+ext.kernelIdName = kernelIdName
 def final toReplace = '__PATH__'
 
 mainClassName = 'com.twosigma.beakerx.cpp.kernel.Cpp'
@@ -197,4 +198,8 @@ jacocoTestReport {
       fileTree(dir: it, exclude: 'com/twosigma/beakerx/cpp/autocomplete/CPP14*')
     })
   }
+}
+
+staticContent {
+  ext.executeStaticContent = false
 }

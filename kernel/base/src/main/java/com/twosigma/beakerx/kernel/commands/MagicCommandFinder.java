@@ -17,12 +17,12 @@ package com.twosigma.beakerx.kernel.commands;
 
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResult;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.text.StrTokenizer;
 
@@ -36,7 +36,7 @@ public class MagicCommandFinder {
     this.functionalitiesToRun = new LinkedHashMap<>(functionalityToRun);
   }
 
-  public static MagicCommandFinder find(Code code, Map<String, MagicCommandFunctionality> commands, Message message, int executionCount, MessageCreator messageCreator) {
+  public static MagicCommandFinder find(Code code, List<MagicCommandType> commands, Message message, int executionCount, MessageCreator messageCreator) {
     List<MagicCommandItemWithResult> errors = new ArrayList<>();
     LinkedHashMap<String, MagicCommandFunctionality> functionalityToRun = new LinkedHashMap<>();
     code.getCommands().forEach(command -> {
@@ -70,10 +70,11 @@ public class MagicCommandFinder {
     return !(command.replace(tokens.get(0), "").replace(" ", "").length() < 1);
   }
 
-  private static Optional<MagicCommandFunctionality> findFunctionality(final Map<String, MagicCommandFunctionality> commands, final String command) {
-    return commands.keySet().stream().
-            filter(c -> command.matches(c + " .*?") || command.matches(c)).
-            findFirst().map(s -> commands.get(s));
+  private static Optional<MagicCommandFunctionality> findFunctionality(final List<MagicCommandType> commands, final String command) {
+    return commands.stream()
+                   .filter(c -> command.matches(c.getCommand() + " .*?") || command.matches(c.getCommand()))
+                   .map(MagicCommandType::getFunctionality)
+                   .findFirst();
   }
 
   private static MagicCommandItemWithResult processIllegalCommand(String errorMessage, Message message, int executionCount, MessageCreator messageCreator) {

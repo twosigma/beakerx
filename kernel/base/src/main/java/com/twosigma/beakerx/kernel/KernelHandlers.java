@@ -66,6 +66,10 @@ public class KernelHandlers {
     return handlers.get(type);
   }
 
+  public ExecuteRequestHandler getExecuteRequestHandler() {
+    return (ExecuteRequestHandler) handlers.get(JupyterMessages.EXECUTE_REQUEST);
+  }
+
   public void exit() {
     for (KernelHandler<Message> handler : this.handlers.values()) {
       handler.exit();

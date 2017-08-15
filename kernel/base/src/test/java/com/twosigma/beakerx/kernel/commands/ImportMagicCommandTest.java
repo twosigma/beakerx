@@ -15,16 +15,19 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.message.Message;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ImportMagicCommandTest {
 
@@ -71,6 +74,19 @@ public class ImportMagicCommandTest {
         .process(new Code("%import       com.twosigma.beakerx.widgets.integers.IntSlider"), new Message(), 1);
 
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
+  }
+
+  @Test
+  public void wrongImportFormat() {
+    Code wrongFormatImport = new Code("%import ");
+    MagicCommandResult process = sut.process(wrongFormatImport, new Message(), 1);
+
+    Optional<Message> result = process.getItems().get(0).getResult();
+    assertThat(result.isPresent()).isTrue();
+    result.ifPresent(r -> {
+      Map<String, Serializable> content = r.getContent();
+      assertThat(content.get("text").equals("Wrong import format."));
+    });
   }
 
 }

@@ -20,6 +20,7 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 import static java.util.Arrays.stream;
 
 import clojure.lang.LazySeq;
+import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
 import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
 import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
 import com.twosigma.beakerx.evaluator.Evaluator;

@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.clojure.kernel;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;

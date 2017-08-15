@@ -22,7 +22,7 @@ import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelParameters;
-import com.twosigma.beakerx.sql.kernel.SQLEvaluator;
+import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

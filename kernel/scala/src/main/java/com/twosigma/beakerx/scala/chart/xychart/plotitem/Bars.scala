@@ -21,27 +21,27 @@ import scala.collection.JavaConverters._
 
 class Bars extends com.twosigma.beakerx.chart.xychart.plotitem.Bars {
 
-  def this(x: List[Int], y: List[Int]) {
+  def this(x: Seq[Int], y: Seq[Int]) {
     this()
     super.setX(x.map(x => x.asInstanceOf[AnyRef]).asJava)
     super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
   }
 
-  def this(x: List[Int], y: List[Int], colors: List[Color], outLineColor: Color, width: Number) {
+  def this(x: Seq[Int], y: Seq[Int], colors: Seq[Color], outLineColor: Color, width: Number) {
     this(x, y)
     super.setColor(colors.map(x => x.asInstanceOf[AnyRef]).asJava)
     super.setOutlineColor(outLineColor)
     super.setWidth(width)
   }
 
-  def this(x: List[Int], y: List[Int], color: Color, outLineColor: Color, width: Number) {
+  def this(x: Seq[Int], y: Seq[Int], color: Color, outLineColor: Color, width: Number) {
     this(x, y)
     super.setColor(color)
     super.setOutlineColor(outLineColor)
     super.setWidth(width)
   }
 
-  def this(displayName: String, x: List[Int], y: List[Int], width: Number) {
+  def this(displayName: String, x: Seq[Int], y: Seq[Int], width: Number) {
     this(x, y)
     super.setDisplayName(displayName)
     super.setWidth(width)

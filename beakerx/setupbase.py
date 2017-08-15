@@ -33,10 +33,11 @@ import json
 from subprocess import check_call
 
 from setuptools import Command
+from setuptools.command.develop import develop
 from setuptools.command.build_py import build_py
 from setuptools.command.sdist import sdist
-from setuptools.command.develop import develop
 from setuptools.command.bdist_egg import bdist_egg
+from distutils.command.install_data import install_data
 from distutils import log
 
 from traitlets.config.manager import BaseJSONConfigManager
@@ -122,7 +123,7 @@ def update_package_data(distribution):
     build_py.finalize_options()
 
 
-def create_cmdclass(wrappers=None, data_dirs=None):
+def create_cmdclass(develop_wrappers=None, install_wrappers=None, data_dirs=None):
     """Create a command class with the given optional wrappers.
     Parameters
     ----------
@@ -131,18 +132,19 @@ def create_cmdclass(wrappers=None, data_dirs=None):
     data_dirs: list(str), optional.
         The directories containing static data.
     """
-    egg = bdist_egg if 'bdist_egg' in sys.argv else bdist_egg_disabled
-    wrappers = wrappers or []
+    develop_wrappers = develop_wrappers or []
+    install_wrappers = install_wrappers or []
     data_dirs = data_dirs or []
-    wrapper = functools.partial(wrap_command, wrappers, data_dirs)
+    develop_wrapper = functools.partial(wrap_command, develop_wrappers, data_dirs)
+    install_wrapper = functools.partial(wrap_command, install_wrappers, data_dirs)
     cmdclass = dict(
-        build_py=wrapper(build_py, strict=is_repo),
-        sdist=wrapper(sdist, strict=True),
-        bdist_egg=egg,
-        develop=wrapper(develop, strict=True)
+        develop=develop_wrapper(develop, strict=True),
+        install_data=install_wrapper(install_data, strict=is_repo),
+        sdist=develop_wrapper(sdist, strict=True),
+        bdist_egg=bdist_egg if 'bdist_egg' in sys.argv else bdist_egg_disabled
     )
     if bdist_wheel:
-        cmdclass['bdist_wheel'] = wrapper(bdist_wheel, strict=True)
+        cmdclass['bdist_wheel'] = bdist_wheel
     return cmdclass
 
 
@@ -296,6 +298,42 @@ def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='
     return Yarn
 
 
+def install_kernels(kernels_dir=pjoin(here, 'beakerx', 'static', 'kernel')):
+    """Install all kernels in a directory.
+    
+    Parameters
+    ----------
+    kernels_dir: str
+        The path of a directory containing kernels.
+    """
+
+    class InstallKernels(BaseCommand):
+        description = 'Install all kernels in a directory'
+
+        def run(self):
+            def install_kernel(kernelspec_path='', kernelspec_name=None):
+                name = kernelspec_name if kernelspec_name else os.path.basename(kernelspec_path)
+                classpath = os.path.abspath(pjoin(kernels_dir, 'base', 'lib', '*')) + (';' if sys.platform == 'win32' else ':') + os.path.abspath(pjoin(kernels_dir, name, 'lib', '*'))
+                classpath = classpath.replace('\\', '/')
+                lines = []
+                with open(pjoin(kernelspec_path, 'kernel.json')) as infile:
+                    for line in infile:
+                        line = line.replace('__PATH__', classpath)
+                        lines.append(line)
+                with open(pjoin(kernelspec_path, 'kernel.json'), 'w') as outfile:
+                    for line in lines:
+                        outfile.write(line)
+                run(['jupyter', 'kernelspec', 'install', '--sys-prefix', '--replace', '--name', name, kernelspec_path])
+                
+            for dir, subdirs, files in os.walk(kernels_dir):
+                if 'kernel.json' in files:
+                    install_kernel(dir)
+                else:
+                    continue
+
+    return InstallKernels
+
+
 def update_kernelspec_class(prefix=None):
     """Return a Command for updating kernelspec_class in jupyter_notebook_config.json.
 
@@ -400,42 +438,6 @@ def run_gradle(path=kernel_path, cmd='build'):
             run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', cmd], cwd=path)
 
     return Gradle
-    
-
-def install_kernels(kernels_dir=pjoin(here, 'beakerx', 'static', 'kernel')):
-    """Install all kernels in a directory.
-    
-    Parameters
-    ----------
-    kernels_dir: str
-        The path of a directory containing kernels.
-    """
-
-    class InstallKernels(BaseCommand):
-        description = 'Install all kernels in a directory'
-
-        def run(self):
-            def install_kernel(kernelspec_path='', kernelspec_name=None):
-                name = kernelspec_name if kernelspec_name else os.path.basename(kernelspec_path)
-                classpath = os.path.abspath(pjoin(kernels_dir, 'base', 'lib', '*')) + (';' if sys.platform == 'win32' else ':') + os.path.abspath(pjoin(kernels_dir, name, 'lib', '*'))
-                classpath = classpath.replace('\\', '/')
-                lines = []
-                with open(pjoin(kernelspec_path, 'kernel.json')) as infile:
-                    for line in infile:
-                        line = line.replace('__PATH__', classpath)
-                        lines.append(line)
-                with open(pjoin(kernelspec_path, 'kernel.json'), 'w') as outfile:
-                    for line in lines:
-                        outfile.write(line)
-                run(['jupyter', 'kernelspec', 'install', '--sys-prefix', '--replace', '--name', name, kernelspec_path])
-                
-            for dir, subdirs, files in os.walk(kernels_dir):
-                if 'kernel.json' in files:
-                    install_kernel(dir)
-                else:
-                    continue
-
-    return InstallKernels
 
 
 def ensure_targets(targets):

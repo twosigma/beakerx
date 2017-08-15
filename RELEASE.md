@@ -28,7 +28,7 @@ We publish a Python source package and a Python universal binary wheel. We also 
 See the Python docs on [package uploading](https://packaging.python.org/guides/tool-recommendations/)
 for twine setup instructions and for why twine is the recommended method.
 
-Update the version in `beakerx/_version.py` and commit the change and push the git tag.
+Update the version in `beakerx/beakerx/_version.py` and commit the change and push the git tag.
 
 ```bash
 rm -rf dist

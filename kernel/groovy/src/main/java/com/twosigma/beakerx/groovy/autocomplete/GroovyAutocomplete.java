@@ -113,13 +113,13 @@ public class GroovyAutocomplete {
 //      }
 //    }
 
-    if (txt.charAt(cur - 1) == '.') {
-      for (int i = 0; i < ret.size(); i++) {
-        String s = ret.get(i);
-        if (s.startsWith("."))
-          ret.set(i, s.substring(1));
-      }
-    }
+//    if (txt.charAt(cur - 1) == '.') {
+//      for (int i = 0; i < ret.size(); i++) {
+//        String s = ret.get(i);
+//        if (s.startsWith("."))
+//          ret.set(i, s.substring(1));
+//      }
+//    }
 
     // this shows the GUI
     if (GroovyCompletionTypes.debug)

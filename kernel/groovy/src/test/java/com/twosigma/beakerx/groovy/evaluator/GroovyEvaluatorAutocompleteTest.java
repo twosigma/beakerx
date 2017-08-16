@@ -221,4 +221,44 @@ public class GroovyEvaluatorAutocompleteTest {
     //then
     Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualTo("System");
   }
+
+  @Test
+  public void shouldAutocompleteToJavaIo() throws Exception {
+    String code = "import java.io.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+  }
+
+  @Test
+  public void shouldAutocompleteToB() throws Exception {
+    String code = "import java.awt.Color\n" +
+                  "println Color.B";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+  }
+
+
+  @Test
+  public void shouldAutocompleteWithAsterisk() throws Exception {
+    String code = "import java.awt.*\n" +
+            "println Color.B";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+  }
+
+  @Test
+  public void autocompleteShouldNotMatchForEmptyString() throws Exception {
+    String code = "";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isEmpty();
+  }
+
 }

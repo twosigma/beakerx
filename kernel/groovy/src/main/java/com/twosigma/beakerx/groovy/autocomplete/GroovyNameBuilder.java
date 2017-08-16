@@ -61,15 +61,7 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
             classUtils.defineVariable(ctx.getChild(1).getText(), classUtils.getVariableType(typpen));
           }
         } else if(ctx.getChild(3).getChild(0) instanceof NewInstanceRuleContext) {
-          ParseTree t = findChildrenByType(ctx.getChild(3).getChild(0),ClassNameExpressionContext.class);
-          if(t!=null) {
-            String ttype = t.getText().trim();
-            AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(1).getText());
-            registry.addCandidate(c);
-            if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(1).getText()+" "+ttype);
-            if(ttype!=null)
-              classUtils.defineVariable(ctx.getChild(1).getText(), ttype);
-          }
+          nameDeclaration(ctx);
         } else {
           if(GroovyCompletionTypes.debug) System.out.println(((ExpressionContext)ctx.getChild(3)).getStart().getType());
 
@@ -92,6 +84,18 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
             classUtils.defineVariable(ctx.getChild(1).getText(), typpen);
         }
       }
+    }
+  }
+
+  private void nameDeclaration(DeclarationRuleContext ctx) {
+    ParseTree t = findChildrenByType(ctx.getChild(3).getChild(0),ClassNameExpressionContext.class);
+    if(t!=null) {
+      String ttype = t.getText().trim();
+      AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(1).getText());
+      registry.addCandidate(c);
+      if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(1).getText()+" "+ttype);
+      if(ttype!=null)
+        classUtils.defineVariable(ctx.getChild(1).getText(), ttype);
     }
   }
 

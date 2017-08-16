@@ -61,7 +61,7 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    return gac.doAutocomplete(code, caretPosition, worker.getGroovyClassLoader());
+    return gac.doAutocomplete(code, caretPosition, worker.getGroovyClassLoader(), imports);
   }
 
   @Override
@@ -91,9 +91,7 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   private GroovyAutocomplete createAutocomplete(GroovyClasspathScanner cps, Imports imports) {
     GroovyAutocomplete gac = createGroovyAutocomplete(cps);
-    for (ImportPath st : imports.getImportPaths()) {
-      gac.addImport(st.asString());
-    }
+
     return gac;
   }
 

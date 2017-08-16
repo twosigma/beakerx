@@ -20,6 +20,8 @@ import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
 import com.twosigma.beakerx.autocomplete.AutocompleteRegistry;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.Imports;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
@@ -36,12 +38,10 @@ import static com.twosigma.beakerx.groovy.autocomplete.AutocompleteRegistryFacto
 public class GroovyAutocomplete {
   AutocompleteRegistry registry;
   private GroovyClasspathScanner cps;
-  private List<String> imports;
 
   public GroovyAutocomplete(GroovyClasspathScanner _cps) {
     cps = _cps;
     registry = AutocompleteRegistryFactory.createRegistry(cps);
-    imports = new ArrayList<>();
   }
 
   /*
@@ -50,22 +50,18 @@ public class GroovyAutocomplete {
   private void moreSetup(AutocompleteRegistry r) {
   }
 
-  public void addImport(String imp) {
-    imports.add(imp);
-  }
-
   private ClassUtils createClassUtils(ClassLoader l) {
     return new GroovyClassUtils(cps, l);
   }
 
-  public AutocompleteResult doAutocomplete(String txt, int cur, ClassLoader l) {
+  public AutocompleteResult doAutocomplete(String txt, int cur, ClassLoader l, Imports imports) {
     ClassUtils cu = createClassUtils(l);
     registry = AutocompleteRegistryFactory.createRegistry(cps);
     setup(cu, registry);
 //    registry.clearForType(GroovyCompletionTypes.CUSTOM_TYPE);
 //    registry.clearForType(GroovyCompletionTypes.FIELD);
     //registry.clearForType(GroovyCompletionTypes.NAME);
-    AutocompleteRegistryFactory.addDefaultImports(cu, registry, imports, cps);
+    AutocompleteRegistryFactory.addDefaultImports(cu, registry, imports.toListOfStrings(), cps);
     AutocompleteRegistryFactory.moreSetup(cu);
     moreSetup(registry);
 

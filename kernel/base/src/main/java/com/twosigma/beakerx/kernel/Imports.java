@@ -30,7 +30,7 @@ public class Imports {
 
   public boolean add(ImportPath anImport) {
     checkNotNull(anImport);
-    if(!this.imports.contains(anImport)){
+    if (!this.imports.contains(anImport)) {
       return this.imports.add(anImport);
     }
     return false;
@@ -38,12 +38,21 @@ public class Imports {
 
   public boolean remove(ImportPath anImport) {
     checkNotNull(anImport);
-    if(this.imports.contains(anImport)){
+    if (this.imports.contains(anImport)) {
       return this.imports.remove(anImport);
     }
     return false;
   }
+
   public boolean isEmpty() {
     return imports.isEmpty();
+  }
+
+  public List<String> toListOfStrings() {
+    List<String> importsAsStrings = new ArrayList<>();
+    for (ImportPath st : getImportPaths()) {
+      importsAsStrings.add(st.asString());
+    }
+    return importsAsStrings;
   }
 }

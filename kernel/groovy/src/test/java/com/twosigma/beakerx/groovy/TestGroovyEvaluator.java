@@ -16,12 +16,25 @@
 package com.twosigma.beakerx.groovy;
 
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
+import com.twosigma.beakerx.groovy.kernel.GroovyDefaultVariables;
+import com.twosigma.beakerx.kernel.KernelParameters;
 
+import java.util.HashMap;
+
+import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 
 public class TestGroovyEvaluator {
 
   public static GroovyEvaluator groovyEvaluator() {
-    return new GroovyEvaluator("id", "sid", cellExecutor());
+    GroovyEvaluator evaluator = new GroovyEvaluator("id", "sid", cellExecutor());
+    evaluator.initKernel(getKernelParameters());
+    return evaluator;
+  }
+
+  public static KernelParameters getKernelParameters() {
+    HashMap<String, Object> kernelParameters = new HashMap<>();
+    kernelParameters.put(IMPORTS, new GroovyDefaultVariables().getImports());
+    return new KernelParameters(kernelParameters);
   }
 }

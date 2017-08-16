@@ -35,9 +35,9 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(
             "System.out.printl\n" +
-                 "System.out.print\n" +
-                 "System.out.prin\n" +
-                 "System.out.pri\n", 17);
+                    "System.out.print\n" +
+                    "System.out.prin\n" +
+                    "System.out.pri\n", 17);
     //then
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
     Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(11);
@@ -48,9 +48,9 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(
             "System.out.printl\n" +
-                  "System.out.print\n" +
-                  "System.out.prin\n" +
-                  "System.out.pri\n", 34);
+                    "System.out.print\n" +
+                    "System.out.prin\n" +
+                    "System.out.pri\n", 34);
     //then
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
     Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(29);
@@ -60,7 +60,7 @@ public class GroovyEvaluatorAutocompleteTest {
   public void shouldReturnAutocompleteForPrintlnWithComment() throws Exception {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(
-              "//comment\n" +
+            "//comment\n" +
                     "System.out.printl\n" +
                     "System.out.printl", 27);
     //then
@@ -109,7 +109,7 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void shouldReturnResultEqualToParamString() throws Exception {
     String code = "def paramString = 'str'\n" +
-        "println \"test ${par";
+            "println \"test ${par";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
@@ -234,7 +234,7 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void shouldAutocompleteToB() throws Exception {
     String code = "import java.awt.Color\n" +
-                  "println Color.B";
+            "println Color.B";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
@@ -260,5 +260,23 @@ public class GroovyEvaluatorAutocompleteTest {
     //then
     Assertions.assertThat(autocomplete.getMatches()).isEmpty();
   }
+
+  @Test
+  public void defaultImportsAutocompleteToRED() throws Exception {
+    String code = "def colors = [ Color.RE";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+  }
+
+//  @Test
+//  public void autocompleteToRED() throws Exception {
+//    String code = "Color.";
+//    //when
+//    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+//    //then
+//    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+//  }
 
 }

@@ -14,9 +14,6 @@
 
 import sys
 
-if sys.version_info < (3,0):
-    raise RuntimeError('Python2 was found when trying to start Python3. _beaker_python_mismatch_')
-
 import os, json, pandas, numpy
 import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, IPython, datetime, calendar, math, traceback, time
 from traitlets import Unicode

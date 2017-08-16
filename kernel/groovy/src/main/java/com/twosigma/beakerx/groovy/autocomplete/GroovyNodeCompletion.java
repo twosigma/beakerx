@@ -65,21 +65,21 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
     if (ctx.getStart().getStartIndex() < cursor && ctx.getStop().getStopIndex() + 1 >= cursor) {
 //        // is this the start of a compilation unit?
 //        // it might be package
-      if (ctx.getParent().getParent() != null && ctx.getParent().getParent() instanceof StatementContext && ctx.getParent().getParent().getChildCount() == 1 &&
-              ctx.getParent().getParent().getParent() != null && ctx.getParent().getParent().getParent() instanceof CompilationUnitContext &&
-              ctx.getParent().getParent().getParent().getChild(0).equals(ctx.getParent().getParent())) {
-        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.INITIAL, ctx.getText());
-        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
-      }
+//      if (ctx.getParent().getParent() != null && ctx.getParent().getParent() instanceof StatementContext && ctx.getParent().getParent().getChildCount() == 1 &&
+//              ctx.getParent().getParent().getParent() != null && ctx.getParent().getParent().getParent() instanceof CompilationUnitContext &&
+//              ctx.getParent().getParent().getParent().getChild(0).equals(ctx.getParent().getParent())) {
+//        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.INITIAL, ctx.getText());
+//        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+//      }
 ////
 //        // is this leftmost part of an statement?
 //        // it might be import
-      if (ctx.getParent().getChild(0).equals(ctx) &&
-              ctx.getParent().getParent() != null && ctx.getParent().getParent() instanceof StatementContext &&
-              ctx.getParent().getParent().getChild(0).equals(ctx.getParent())) {
-        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, ctx.getText());
-        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
-      }
+//      if (ctx.getParent().getChild(0).equals(ctx) &&
+//              ctx.getParent().getParent() != null && ctx.getParent().getParent() instanceof StatementContext &&
+//              ctx.getParent().getParent().getChild(0).equals(ctx.getParent())) {
+//        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, ctx.getText());
+//        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+//      }
 
 //        // check out for implements and/or extends
 //        CommandExpressionStatementContext st = (CommandExpressionStatementContext) findParentNode(ctx,CommandExpressionStatementContext.class);

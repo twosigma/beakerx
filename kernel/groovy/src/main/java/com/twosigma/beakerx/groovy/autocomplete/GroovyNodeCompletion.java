@@ -99,8 +99,8 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
 //          addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
         addQuery(classUtils.expandExpression(ctx.getText(), registry, classUtils.DO_ALL), AutocompleteGroovyResult.getStartIndex(ctx));
       } else {
-        AutocompleteCandidate c;//= new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getText());
-//          addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+        AutocompleteCandidate c ;//= new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getText());
+         // addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
         c = new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, ctx.getText());
         addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
       }
@@ -167,18 +167,18 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
   public void exitCompilationUnit(CompilationUnitContext ctx) {
     if (ctx.getStop() != null && ctx.getStop().getStopIndex() + 1 == cursor) {
       if (ctx.getChildCount() > 0) {
-        String t = ctx.getChild(ctx.getChildCount() - 2).getText();
-        if (t.endsWith("\n")) {
-          String txt = ctx.getChild(ctx.getChildCount() - 1).getText();
-          if (txt.contains(".")) {
-//            addQuery(classUtils.expandExpression(txt, registry, classUtils.DO_ALL), AutocompleteGroovyResult.getStartIndex(ctx));
-          } else {
-//            AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, txt);
-//            addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
-//            c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, txt);
-//            addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
-          }
-        } else {
+//        String t = ctx.getChild(ctx.getChildCount() - 2).getText();
+//        if (t.endsWith("\n")) {
+//          String txt = ctx.getChild(ctx.getChildCount() - 1).getText();
+//          if (txt.contains(".")) {
+////            addQuery(classUtils.expandExpression(txt, registry, classUtils.DO_ALL), AutocompleteGroovyResult.getStartIndex(ctx));
+//          } else {
+////            AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, txt);
+////            addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+////            c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, txt);
+////            addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+//          }
+//        } else {
           for (int i = ctx.getChildCount() - 1; i >= 0; i--) {
             if (!ctx.getChild(i).getText().isEmpty() && !ctx.getChild(i).getText().equals("<EOF>")) {
               String txt = ctx.getChild(i).getText();
@@ -190,9 +190,11 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
               }
               break;
             }
-          }
+      //    }
         }
       }
+      String t = ctx.getText().substring(0,ctx.getText().length()-5);
+      addQuery(classUtils.expandExpression(t, registry, classUtils.DO_ALL), AutocompleteGroovyResult.getStartIndex(ctx));
     }
   }
 }

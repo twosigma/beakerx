@@ -69,6 +69,24 @@ public class GroovyEvaluatorAutocompleteTest {
   }
 
   @Test
+  public void autocompleteMatchesForSystemAfterDot() throws Exception {
+    String code = "System.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+  }
+
+  @Test
+  public void autocompleteMatchesForSystemOutAfterDot() throws Exception {
+    String code = "System.out.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+  }
+
+  @Test
   public void shouldReturnResultEqualToImport() throws Exception {
     String code = "im";
     //when
@@ -270,13 +288,12 @@ public class GroovyEvaluatorAutocompleteTest {
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
   }
 
-//  @Test
-//  public void autocompleteToRED() throws Exception {
-//    String code = "Color.";
-//    //when
-//    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
-//    //then
-//    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
-//  }
-
+  @Test
+  public void autocompleteMatchesForColorAfterDot() throws Exception {
+    String code = "Color.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+  }
 }

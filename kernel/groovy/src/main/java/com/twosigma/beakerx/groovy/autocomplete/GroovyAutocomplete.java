@@ -91,23 +91,23 @@ public class GroovyAutocomplete {
       q.addAll(extractor3.getQuery());
     List<String> ret = registry.searchCandidates(q);
 
-//    if (ret.isEmpty()) {
-//      q.clear();
-//      for (int i=cur-1; i>=0; i--) {
-//        if(i<txt.length() && Character.isWhitespace(txt.charAt(i))) {
-//          String tx = txt.substring(i+1, cur).trim();
-//          if(!txt.isEmpty()) {
-//            if(tx.contains(".")) {
-//              q.add(cu.expandExpression(tx, registry, cu.DO_ALL));
-//            } else {
-//              q.add(new AutocompleteCandidate(GroovyCompletionTypes.NAME, tx));
-//            }
-//            ret = registry.searchCandidates(q);
-//          }
-//          break;
-//        }
-//      }
-//    }
+    if (ret.isEmpty()) {
+      q.clear();
+      for (int i=cur-1; i>=0; i--) {
+        if(i<txt.length() && Character.isWhitespace(txt.charAt(i))) {
+          String tx = txt.substring(i+1, cur).trim();
+          if(!txt.isEmpty()) {
+            if(tx.contains(".")) {
+              q.add(cu.expandExpression(tx, registry, cu.DO_ALL));
+            } else {
+              q.add(new AutocompleteCandidate(GroovyCompletionTypes.NAME, tx));
+            }
+            ret = registry.searchCandidates(q);
+          }
+          break;
+        }
+      }
+    }
 
 //    if (txt.charAt(cur - 1) == '.') {
 //      for (int i = 0; i < ret.size(); i++) {

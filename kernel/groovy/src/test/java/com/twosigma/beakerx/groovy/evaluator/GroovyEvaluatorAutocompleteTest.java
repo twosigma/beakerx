@@ -296,4 +296,17 @@ public class GroovyEvaluatorAutocompleteTest {
     //then
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
   }
+
+
+  @Test
+  public void autocompleteWithMagicCommands() throws Exception {
+    String code = "%classpath add jar demoResources/BeakerXClasspathTest.jar\n" +
+                  "System.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+  }
+
+
 }

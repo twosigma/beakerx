@@ -28,7 +28,6 @@ from setupbase import (
     here
 )
 import os
-from os.path import join as pjoin
 
 
 cmdclass = create_cmdclass(develop_wrappers=[
@@ -47,23 +46,23 @@ cmdclass = create_cmdclass(develop_wrappers=[
 ])
 cmdclass['js'] = install_node_modules(
     path='js', 
-    build_dir=pjoin(here, 'js', 'dist'),
-    source_dir=pjoin(here, 'js', 'src')
+    build_dir=os.path.join(here, 'js', 'dist'),
+    source_dir=os.path.join(here, 'js', 'src')
 )
 cmdclass['java'] = run_gradle(cmd='build')
-cmdclass['kernels_develop'] = install_kernels(source_dir=pjoin(here, 'beakerx', 'static', 'kernel'), target_dir=pjoin(here, 'beakerx', 'static', 'kernel'))
-cmdclass['kernels_install'] = install_kernels(source_dir=pjoin(here, 'beakerx', 'static', 'kernel'))
+cmdclass['kernels_develop'] = install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel'), target_dir=os.path.join(here, 'beakerx', 'static', 'kernel'))
+cmdclass['kernels_install'] = install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel'))
 cmdclass['kernelspec_class'] = update_kernelspec_class(prefix=os.environ['CONDA_PREFIX'])
 cmdclass['custom_css'] = copy_files(
-    src=pjoin(here, 'beakerx', 'static', 'custom'), 
-    dest=pjoin(os.environ['CONDA_PREFIX'], 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
+    src=os.path.join(here, 'beakerx', 'static', 'custom'), 
+    dest=os.path.join(os.environ['CONDA_PREFIX'], 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
 )
 
 setup_args = dict(
     name                = 'beakerx',
     description         = 'BeakerX: Beaker Extensions for Jupyter Notebook',
     long_description    = 'BeakerX: Beaker Extensions for Jupyter Notebook',
-    version             = get_version(pjoin('beakerx', '_version.py')),
+    version             = get_version(os.path.join('beakerx', '_version.py')),
     author              = 'Two Sigma Open Source, LLC',
     author_email        = 'beaker-feedback@twosigma.com',
     url                 = 'http://beakernotebook.com',
@@ -87,7 +86,7 @@ setup_args = dict(
     ],
     data_files          = [(
         'share/jupyter/nbextensions/beakerx', 
-        get_data_files(pjoin('beaker', 'static'))
+        get_data_files(os.path.join('beaker', 'static'))
     )],
     install_requires    = [
         'notebook >=4.3.1',

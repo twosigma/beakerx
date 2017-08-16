@@ -24,8 +24,6 @@ within a Python package.
 import os
 import shutil
 from glob import glob
-from os.path import join as pjoin, exists, isdir
-from os import makedirs
 import functools
 import pipes
 import sys
@@ -62,13 +60,13 @@ else:
 
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
-root = os.path.abspath(pjoin(here, os.pardir))
-kernel_path = pjoin(root, 'kernel')
+root = os.path.abspath(os.path.join(here, os.pardir))
+kernel_path = os.path.join(root, 'kernel')
 site_packages = site.getsitepackages()[0]
-is_repo = os.path.exists(pjoin(root, '.git'))
-node_modules = pjoin(here, 'js', 'node_modules')
+is_repo = os.path.exists(os.path.join(root, '.git'))
+node_modules = os.path.join(here, 'js', 'node_modules')
 node_modules_path = ':'.join([
-    pjoin(node_modules, '.bin'),
+    os.path.join(node_modules, '.bin'),
     os.environ.get('PATH', os.defpath),
 ])
 
@@ -86,7 +84,7 @@ else:
 
 def get_version(path):
     version = {}
-    with open(pjoin(here, path)) as f:
+    with open(os.path.join(here, path)) as f:
         exec(f.read(), {}, version)
     return version['__version__']
 
@@ -100,7 +98,7 @@ def get_data_files(top):
     for (d, _, filenames) in os.walk(top):
         data_files.append((
             d[ntrim:],
-            [pjoin(d, f) for f in filenames]
+            [os.path.join(d, f) for f in filenames]
         ))
     return data_files
 
@@ -111,7 +109,7 @@ def find_packages(top):
     """
     packages = []
     for d, dirs, _ in os.walk(top, followlinks=True):
-        if os.path.exists(pjoin(d, '__init__.py')):
+        if os.path.exists(os.path.join(d, '__init__.py')):
             packages.append(os.path.relpath(d, top).replace(os.path.sep, '.'))
         elif d != top:
             # Do not look for packages in subfolders if current is not a package
@@ -231,7 +229,7 @@ def compare_recursive_mtime(path, cutoff, newest=True):
             return True
     for dirname, _, filenames in os.walk(path, topdown=False):
         for filename in filenames:
-            mt = mtime(pjoin(dirname, filename))
+            mt = mtime(os.path.join(dirname, filename))
             if newest:  # Put outside of loop?
                 if mt > cutoff:
                     return True
@@ -247,7 +245,7 @@ def recursive_mtime(path, newest=True):
     current_extreme = None
     for dirname, _, filenames in os.walk(path, topdown=False):
         for filename in filenames:
-            mt = mtime(pjoin(dirname, filename))
+            mt = mtime(os.path.join(dirname, filename))
             if newest:  # Put outside of loop?
                 if mt >= (current_extreme or mt):
                     current_extreme = mt
@@ -286,13 +284,13 @@ def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='
                 log.info('Skipping yarn-installation')
                 return
             node_package = path or here
-            node_modules = pjoin(node_package, 'node_modules')
+            node_modules = os.path.join(node_package, 'node_modules')
 
             if not which("yarn"):
                 log.error("`yarn` unavailable.  If you're running this command "
                           "using sudo, make sure `yarn` is availble to sudo")
                 return
-            if force or is_stale(node_modules, pjoin(node_package, 'package.json')):
+            if force or is_stale(node_modules, os.path.join(node_package, 'package.json')):
                 log.info('Installing build dependencies with yarn.  This may '
                          'take a while...')
                 run(['yarn', 'install'], cwd=node_package)
@@ -306,7 +304,7 @@ def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='
     return Yarn
 
 
-def install_kernels(source_dir=pjoin(here, 'beakerx', 'static', 'kernel'), target_dir=pjoin(site_packages, 'beakerx', 'static', 'kernel')):
+def install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel'), target_dir=os.path.join(site_packages, 'beakerx', 'static', 'kernel')):
     """Install all kernels in a directory.
     
     Parameters
@@ -321,14 +319,14 @@ def install_kernels(source_dir=pjoin(here, 'beakerx', 'static', 'kernel'), targe
         def run(self):
             def install_kernel(source_kernelspec='', kernelspec_name=None):
                 name = kernelspec_name if kernelspec_name else os.path.basename(source_kernelspec)
-                classpath = (os.path.abspath(pjoin(target_dir, 'base', 'lib', '*')) + (';' if sys.platform == 'win32' else ':') + os.path.abspath(pjoin(target_dir, name, 'lib', '*'))).replace('\\', '/')
-                target_kernelspec = pjoin(target_dir, os.path.relpath(source_dir, source_kernelspec))
+                classpath = (os.path.abspath(os.path.join(target_dir, 'base', 'lib', '*')) + (';' if sys.platform == 'win32' else ':') + os.path.abspath(os.path.join(target_dir, name, 'lib', '*'))).replace('\\', '/')
+                target_kernelspec = os.path.join(target_dir, os.path.relpath(source_dir, source_kernelspec))
                 lines = []
-                with open(pjoin(source_kernelspec, 'kernel.json')) as infile:
+                with open(os.path.join(source_kernelspec, 'kernel.json')) as infile:
                     for line in infile:
                         line = line.replace('__PATH__', classpath)
                         lines.append(line)
-                with open(pjoin(target_kernelspec, 'kernel.json'), 'w') as outfile:
+                with open(os.path.join(target_kernelspec, 'kernel.json'), 'w') as outfile:
                     for line in lines:
                         outfile.write(line)
                 run(['jupyter', 'kernelspec', 'install', '--sys-prefix', '--replace', '--name', name, target_kernelspec])
@@ -373,10 +371,10 @@ def update_kernelspec_class(prefix=None):
             path = jupyter_config_dir()
 
             if prefix is not None:
-                path = pjoin(prefix, "etc", "jupyter")
-                if not exists(path):
+                path = os.path.join(prefix, "etc", "jupyter")
+                if not os.path.exists(path):
                     log.debug("Making directory {}...".format(path))
-                    makedirs(path)
+                    os.makedirs(path)
 
             cm = BaseJSONConfigManager(config_dir=path)
             cfg = cm.get("jupyter_notebook_config")
@@ -421,7 +419,7 @@ def copy_files(src, dest):
         description = 'Copy files from one directory to another.'
 
         def run(self):
-            if exists(dest):
+            if os.path.exists(dest):
                 shutil.rmtree(dest)
             shutil.copytree(src, dest)
 
@@ -493,7 +491,7 @@ def which(cmd, mode=os.F_OK | os.X_OK, path=None):
     if sys.platform == "win32":
         # The current directory takes precedence on Windows.
         if os.curdir not in path:
-            path.insert(0, os.curdir)
+            os.path.insert(0, os.curdir)
 
         # PATHEXT is necessary to check on Windows.
         pathext = os.environ.get("PATHEXT", "").split(os.pathsep)
@@ -514,7 +512,7 @@ def which(cmd, mode=os.F_OK | os.X_OK, path=None):
         if dir not in seen:
             seen.add(dir)
             for thefile in files:
-                name = pjoin(dir, thefile)
+                name = os.path.join(dir, thefile)
                 if _access_check(name, mode):
                     return name
     return None

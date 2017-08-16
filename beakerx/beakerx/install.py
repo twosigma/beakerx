@@ -12,49 +12,65 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+'''Installs the beakerx kernels.'''
+
 import argparse
-import beakerx
 import os
-import shutil
+import pkg_resources
 import subprocess
 import sys
-
-def install_kernels(package_dir):
-    kernels_dir = os.path.join(package_dir, "static", "kernel")
-    expanded_kernels_dir = os.path.join(package_dir, "static", "expanded_kernel")
-    def install_kernel(kernel_dir):
-        kernel_name = os.path.basename(kernel_dir)
-        sep = ';' if sys.platform == 'win32' else ':'
-        classpath = (os.path.abspath(os.path.join(kernels_dir, 'base', 'lib', '*')) + sep +
-                     os.path.abspath(os.path.join(kernel_dir, 'lib', '*')))
-        classpath = classpath.replace('\\', '/')
-        spec_file_name = os.path.join(kernel_dir, 'kernel.json')
-        with open(spec_file_name, 'r') as spec_file:
-            spec_content = spec_file.read()
-        spec_content = spec_content.replace('__PATH__', classpath)
-        expanded_dir = os.path.join(expanded_kernels_dir, kernel_name)
-        shutil.rmtree(expanded_dir, ignore_errors=True)
-        os.makedirs(expanded_dir)
-        expanded_spec_file_name = os.path.join(expanded_dir, 'kernel.json')
-        with open(expanded_spec_file_name, "w") as expanded_spec_file:
-            expanded_spec_file.write(spec_content)
-        install_cmd = ['jupyter', 'kernelspec', 'install', '--sys-prefix',
-                       '--replace', '--name', kernel_name, expanded_dir]
-        subprocess.run(install_cmd, check=True)
-    for dir, subdirs, files in os.walk(kernels_dir):
-        if 'kernel.json' in files:
-            install_kernel(dir)
-        else:
-            continue
-        
+import tempfile
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--prefix",
-                        help="location of the environment to install into")
-    args = parser.parse_args()
-    install_kernels(os.path.dirname(beakerx.__file__))
+def _all_kernels():
+    kernels = pkg_resources.resource_listdir(
+        'beakerx', os.path.join('static', 'kernel'))
+    return [kernel for kernel in kernels if kernel != 'base']
+
+
+def _classpath_for(kernel):
+    return pkg_resources.resource_filename(
+        'beakerx', os.path.join('static', 'kernel', kernel, 'lib', '*'))
+
+
+def _install_kernels():
+    base_classpath = _classpath_for('base')
+    kernels_dir = os.path.join(sys.prefix, 'share', 'jupyter', 'kernels')
+
+    for kernel in _all_kernels():
+        kernel_classpath = _classpath_for(kernel)
+        classpath = os.pathsep.join([base_classpath, kernel_classpath])
+        # TODO: replace with string.Template, though this requires the
+        # developer install to change too, so not doing right now.
+        template = pkg_resources.resource_string(
+            'beakerx', os.path.join('static', 'kernel', kernel, 'kernel.json'))
+        contents = template.decode().replace('__PATH__', classpath)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with open(os.path.join(tmpdir, 'kernel.json'), 'w') as f:
+                f.write(contents)
+            install_cmd = [
+                'jupyter', 'kernelspec', 'install',
+                '--sys-prefix', '--replace',
+                '--name', kernel, tmpdir
+            ]
+            subprocess.check_call(install_cmd)
+
+    return 0
+
+
+def make_parser():
+    parser = argparse.ArgumentParser(description=__doc__)
+    return parser
+
+
+def install_kernels():
+    try:
+        parser = make_parser()
+        args = parser.parse_args()
+        return _install_kernels()
+    except KeyboardInterrupt:
+        return 130
+
 
 if __name__ == "__main__":
-    main()
+    install_kernels()

@@ -82,6 +82,14 @@ setup_args = dict(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
+    entry_points={
+        'console_scripts': [
+            'beakerx-installkernels = beakerx.install:install_kernels'
+        ]
+    },
+    package_data={
+        'beakerx': 'static/kernel/*/kernel.json'
+    },
     data_files          = [(
         'share/jupyter/nbextensions/beakerx', 
         get_data_files(os.path.join('beaker', 'static'))

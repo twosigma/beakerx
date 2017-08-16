@@ -141,4 +141,64 @@ describe('PlotFeatures notebook', function () {
     });
   });
 
+  describe('Run cell with text', function(){
+    it('Plot has 8 text elements', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(14);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('g.plot-text').length).toEqual(8);
+    });
+  });
+
+  describe('Run cell with crosshair', function(){
+    it('Plot has crosshair', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(15);
+      svgElement.waitForEnabled();
+      var pointElement = svgElement.$('rect#i2_0');
+      pointElement.scroll();
+      pointElement.click();
+      expect(svgElement.$('#cursor_xlabel').isVisible()).toBeTruthy();
+      expect(svgElement.$('#cursor_ylabel').isVisible()).toBeTruthy();
+    });
+  });
+
+  describe('"Simple Time Plot" cell', function(){
+    it('Time Plot has points elements', function(){
+      beakerxPO.runCodeCellByIndex(17);
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var svgElement = beakerxPO.runCellToGetSvgElement(18);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
+    });
+  });
+
+  describe('"Second Y Axis" cell', function(){
+    it('Plot has second Y Axis', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(19);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('#yrlabel').isVisible()).toBeTruthy();
+      expect(svgElement.$('#label_yr_1').isVisible()).toBeTruthy();
+    });
+  });
+
+  describe('"Logarithmic Scale" cells', function(){
+    it('Plot has 2 lines', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(20);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('path.plot-line').length).toEqual(2);
+      svgElement = beakerxPO.runCellToGetSvgElement(21);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('path.plot-line').length).toEqual(2);
+    });
+  });
+
+  describe('"Date Objects for the Time Coordinate" cell', function(){
+    it('Plot has points elements', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(22);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
+    });
+  });
+
 });

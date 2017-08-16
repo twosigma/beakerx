@@ -54,17 +54,4 @@ public class AutocompleteRegistryTest {
     Assertions.assertThat(ret).isNotEmpty();
     Assertions.assertThat(ret.size()).isEqualTo(3);
   }
-
-  @Test
-  public void clearForType_dontFindCandidates(){
-    //given
-    autocompleteRegistry.addCandidate(aParent);
-    AutocompleteCandidate aSearch = new AutocompleteCandidate(type, keys);
-    //when
-    autocompleteRegistry.clearForType(type);
-    //then
-    List<String> ret = autocompleteRegistry.searchCandidates(Arrays.asList(aSearch));
-    Assertions.assertThat(ret).isEmpty();
-  }
-
 }

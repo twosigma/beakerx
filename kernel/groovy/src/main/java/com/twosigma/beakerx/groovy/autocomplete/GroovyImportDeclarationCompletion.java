@@ -53,22 +53,21 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
     /*
      * This is used to autocomplete IMPORT statements and to add to our type definitions every imported package and class
      */
-
     if(ctx.getStart().getStartIndex() < cursor && ctx.getStop().getStopIndex()+1 >= cursor) {
       // match... we are autocompleting this import declaration
 
       if(text.charAt(cursor-1)=='.') {
         // looking for next package name
-        String st = ctx.getText();
-        if(st.startsWith("import"))
-          st = st.substring(6).trim();
-        if(GroovyCompletionTypes.debug) logger.info("wants next package name for {}", st);
-        String [] txtv = (st+"X").split("\\.");
-        txtv[txtv.length-1] = "";
-        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
-        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
-        c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
-        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+//        String st = ctx.getText();
+//        if(st.startsWith("import"))
+//          st = st.substring(6).trim();
+//        if(GroovyCompletionTypes.debug) logger.info("wants next package name for {}", st);
+//        String [] txtv = (st+"X").split("\\.");
+//        txtv[txtv.length-1] = "";
+//        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
+//        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+//        c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
+//        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
       } else {
         // looking to autocomplete a package name
         String st = ctx.getText();
@@ -82,29 +81,29 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
         addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
       }
     } else {
-      // add this import declaration
+//      // add this import declaration
       String st = ctx.getText();
       if(st.startsWith("import"))
         st = st.substring(6).trim();
       if(GroovyCompletionTypes.debug) logger.info("adding import for {}", st);
       // is this imports using '*' ?
       if (st.endsWith(".*")) {
-        String [] txtv = st.split("\\.");
-        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
-        registry.addCandidate(c);
-        st = st.substring(0,st.length()-2);
-        List<String> cls = cps.getClasses(st);
-        if(cls!=null) {
-          c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
-          AutocompleteCandidate l = c.findLeaf();
-          for ( String s : cls) {
-            l.addChildren(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
-            registry.addCandidate(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
-            classUtils.defineClassShortName(s, st+"."+s);
-            if(GroovyCompletionTypes.debug)  logger.info("define {} {}.{}", s, st, s);
-          }
-          registry.addCandidate(c);
-        }
+//        String [] txtv = st.split("\\.");
+//        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
+//        registry.addCandidate(c);
+//        st = st.substring(0,st.length()-2);
+//        List<String> cls = cps.getClasses(st);
+//        if(cls!=null) {
+//          c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
+//          AutocompleteCandidate l = c.findLeaf();
+//          for ( String s : cls) {
+//            l.addChildren(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
+//            registry.addCandidate(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
+//            classUtils.defineClassShortName(s, st+"."+s);
+//            if(GroovyCompletionTypes.debug)  logger.info("define {} {}.{}", s, st, s);
+//          }
+//          registry.addCandidate(c);
+//        }
       } else {
         // this imports a specific type
         String [] txtv = st.split("\\.");

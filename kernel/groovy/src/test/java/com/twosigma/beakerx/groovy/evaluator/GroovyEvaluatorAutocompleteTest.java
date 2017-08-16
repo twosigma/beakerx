@@ -30,22 +30,39 @@ public class GroovyEvaluatorAutocompleteTest {
     groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
   }
 
-  //@Test https://github.com/twosigma/beaker-notebook-private/issues/115
-  public void shouldReturnAutocompleteForPrintln() throws Exception {
+  @Test
+  public void shouldReturnPrintlnForFirstLine() throws Exception {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(
-                    "System.out.printl",17);
+            "System.out.printl\n" +
+                 "System.out.print\n" +
+                 "System.out.prin\n" +
+                 "System.out.pri\n", 17);
     //then
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
     Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(11);
   }
 
   @Test
+  public void shouldReturnPrintlnForSecondLine() throws Exception {
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(
+            "System.out.printl\n" +
+                  "System.out.print\n" +
+                  "System.out.prin\n" +
+                  "System.out.pri\n", 34);
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(29);
+  }
+
+  @Test
   public void shouldReturnAutocompleteForPrintlnWithComment() throws Exception {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(
-            "//comment\n" +
-            "System.out.printl",27);
+              "//comment\n" +
+                    "System.out.printl\n" +
+                    "System.out.printl", 27);
     //then
     Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
     Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(21);
@@ -72,7 +89,7 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void shouldReturnResultEqualToParamInt() throws Exception {
     String code = "def paramInt = 10\n" +
-        "println par";
+            "println par";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
@@ -82,7 +99,7 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void shouldReturnResultEqualToParamDouble() throws Exception {
     String code = "def paramDouble = 10.0\n" +
-        "println par";
+            "println par";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
@@ -92,7 +109,7 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void shouldReturnResultEqualToParamString() throws Exception {
     String code = "def paramString = 'str'\n" +
-        "println \"test ${par\n";
+        "println \"test ${par";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
@@ -102,7 +119,7 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void shouldReturnResultEqualToParamArray() throws Exception {
     String code = "def paramArray = [1, 3, 5]\n" +
-        "println par";
+            "println par";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
@@ -112,7 +129,7 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void shouldReturnResultEqualToParamMap() throws Exception {
     String code = "def paramMap = ['abc':1, 'def':2, 'xyz':3]\n" +
-        "println par";
+            "println par";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
@@ -122,7 +139,7 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void shouldReturnResultEqualToBLUE() throws Exception {
     String code = "import static java.awt.Color.BLUE\n" +
-        "println BL";
+            "println BL";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
@@ -141,14 +158,67 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void autocompleteForClass_shouldReturnResultEqualToCoordinates() throws Exception {
     String code = "class Coordinates {\n" +
-        "double latitude\n" +
-        "double longitude }\n" +
-        "def coordinates = new Coordinates(latitude: 43.23, longitude: 3.67)\n" +
-        "this.class.co";
+            "double latitude\n" +
+            "double longitude }\n" +
+            "def coordinates = new Coordinates(latitude: 43.23, longitude: 3.67)\n" +
+            "this.class.co";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("coordinates");
   }
 
+  @Test
+  public void shouldReturnResultEqualToPackage() throws Exception {
+    String code = "pack";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+  }
+
+  @Test
+  public void shouldReturnImplements() throws Exception {
+    String code = "class Coordinates implemen";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualTo("implements");
+  }
+
+  @Test
+  public void shouldReturnExtends() throws Exception {
+    String code = "class Coordinates exten";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualTo("extends");
+  }
+
+  @Test
+  public void shouldReturnClass() throws Exception {
+    String code = "cla";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualTo("class");
+  }
+
+  @Test
+  public void shouldImportBoolean() throws Exception {
+    String code = "import java.lang.Boo";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualTo("Boolean");
+  }
+
+  @Test
+  public void shouldAutocompleteToSystem() throws Exception {
+    String code = "Syste";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualTo("System");
+  }
 }

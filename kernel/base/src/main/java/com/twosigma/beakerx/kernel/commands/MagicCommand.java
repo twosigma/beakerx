@@ -67,8 +67,8 @@ public class MagicCommand {
   public static final String CLASSPATH_ADD_JAR = CLASSPATH + " add jar";
   public static final String CLASSPATH_REMOVE = CLASSPATH + " remove";
   public static final String CLASSPATH_SHOW = CLASSPATH;
-  public static final String ADD_IMPORT = "%import";
-  public static final String ADD_STATIC_IMPORT = ADD_IMPORT + " static";
+  public static final String IMPORT = "%import";
+  public static final String ADD_STATIC_IMPORT = IMPORT + " static";
   public static final String UNIMPORT = "%unimport";
   public static final String DEFAULT_DATASOURCE = "%defaultDatasource";
   public static final String DATASOURCES = "%datasources";
@@ -138,11 +138,18 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        return sendErrorMessage(message, "Wrong import format.", executionCount);
+        return createResultWithCustomMessage(kernel.getImports().toString(), message, executionCount);
       }
       this.kernel.addImport(new ImportPath(parts[1]));
       return getMagicCommandItem(code, message, executionCount);
     };
+  }
+
+  private MagicCommandItem createResultWithCustomMessage(String customMessage, Message message, int executionCount) {
+    return new MagicCommandItemWithResult(
+        messageCreator
+            .buildOutputMessage(message, customMessage, false),
+        messageCreator.buildReplyWithoutStatus(message, executionCount));
   }
 
   public MagicCommandFunctionality unimport() {
@@ -167,9 +174,7 @@ public class MagicCommand {
                 code.takeCodeWithoutCommand().get());
       }
 
-      return new MagicCommandItemWithResult(
-              messageCreator.buildOutputMessage(message, result.getData().toString(), false),
-              messageCreator.buildReplyWithoutStatus(message, executionCount));
+      return createResultWithCustomMessage(result.getData().toString(), message, executionCount);
     };
   }
 

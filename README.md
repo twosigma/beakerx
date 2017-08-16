@@ -34,11 +34,11 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ## Install
 
-Install using [conda](https://conda.io/docs/install/quick.html):
+<!-- Install using [conda](https://conda.io/docs/install/quick.html):
 
 ```
 conda install -c beakerx beakerx
-```
+``` -->
 
 Using [pip](https://pypi.python.org/pypi/pip):
 

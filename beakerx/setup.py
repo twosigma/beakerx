@@ -34,11 +34,14 @@ from os.path import join as pjoin
 cmdclass = create_cmdclass(develop_wrappers=[
     'js',
     'java',
-    'kernels',
+    'kernels_develop',
     'kernelspec_class',
     'custom_css'
+], distribute_wrappers=[
+    'js',
+    'java'
 ], install_wrappers=[
-    'kernels',
+    'kernels_install',
     'kernelspec_class',
     'custom_css'
 ])
@@ -48,10 +51,11 @@ cmdclass['js'] = install_node_modules(
     source_dir=pjoin(here, 'js', 'src')
 )
 cmdclass['java'] = run_gradle(cmd='build')
-cmdclass['kernels'] = install_kernels(kernels_dir=pjoin(here, 'beakerx', 'static', 'kernel'))
+cmdclass['kernels_develop'] = install_kernels(source_dir=pjoin(here, 'beakerx', 'static', 'kernel'), target_dir=pjoin(here, 'beakerx', 'static', 'kernel'))
+cmdclass['kernels_install'] = install_kernels(source_dir=pjoin(here, 'beakerx', 'static', 'kernel'))
 cmdclass['kernelspec_class'] = update_kernelspec_class(prefix=os.environ['CONDA_PREFIX'])
 cmdclass['custom_css'] = copy_files(
-    src=pjoin(here,  'beakerx', 'static', 'custom'), 
+    src=pjoin(here, 'beakerx', 'static', 'custom'), 
     dest=pjoin(os.environ['CONDA_PREFIX'], 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
 )
 

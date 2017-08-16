@@ -29,6 +29,7 @@ from os import makedirs
 import functools
 import pipes
 import sys
+import site
 import json
 from subprocess import check_call
 
@@ -63,6 +64,7 @@ else:
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 root = os.path.abspath(pjoin(here, os.pardir))
 kernel_path = pjoin(root, 'kernel')
+site_packages = site.getsitepackages()[0]
 is_repo = os.path.exists(pjoin(root, '.git'))
 node_modules = pjoin(here, 'js', 'node_modules')
 node_modules_path = ':'.join([
@@ -123,24 +125,30 @@ def update_package_data(distribution):
     build_py.finalize_options()
 
 
-def create_cmdclass(develop_wrappers=None, install_wrappers=None, data_dirs=None):
+def create_cmdclass(develop_wrappers=None, distribute_wrappers=None, install_wrappers=None, data_dirs=None):
     """Create a command class with the given optional wrappers.
     Parameters
     ----------
-    wrappers: list(str), optional
+    develop_wrapper: list(str), optional
+        The cmdclass names to run before running other commands
+    distribute_wrappers: list(str), optional
+        The cmdclass names to run before running other commands
+    install_wrappers: list(str), optional
         The cmdclass names to run before running other commands
     data_dirs: list(str), optional.
         The directories containing static data.
     """
     develop_wrappers = develop_wrappers or []
+    distribute_wrappers = distribute_wrappers or []
     install_wrappers = install_wrappers or []
     data_dirs = data_dirs or []
     develop_wrapper = functools.partial(wrap_command, develop_wrappers, data_dirs)
+    distribute_wrapper = functools.partial(wrap_command, distribute_wrappers, data_dirs)
     install_wrapper = functools.partial(wrap_command, install_wrappers, data_dirs)
     cmdclass = dict(
         develop=develop_wrapper(develop, strict=True),
         install_data=install_wrapper(install_data, strict=is_repo),
-        sdist=develop_wrapper(sdist, strict=True),
+        sdist=distribute_wrapper(sdist, strict=True),
         bdist_egg=bdist_egg if 'bdist_egg' in sys.argv else bdist_egg_disabled
     )
     if bdist_wheel:
@@ -298,12 +306,12 @@ def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='
     return Yarn
 
 
-def install_kernels(kernels_dir=pjoin(here, 'beakerx', 'static', 'kernel')):
+def install_kernels(source_dir=pjoin(here, 'beakerx', 'static', 'kernel'), target_dir=pjoin(site_packages, 'beakerx', 'static', 'kernel')):
     """Install all kernels in a directory.
     
     Parameters
     ----------
-    kernels_dir: str
+    target_dir: str
         The path of a directory containing kernels.
     """
 
@@ -311,21 +319,21 @@ def install_kernels(kernels_dir=pjoin(here, 'beakerx', 'static', 'kernel')):
         description = 'Install all kernels in a directory'
 
         def run(self):
-            def install_kernel(kernelspec_path='', kernelspec_name=None):
-                name = kernelspec_name if kernelspec_name else os.path.basename(kernelspec_path)
-                classpath = os.path.abspath(pjoin(kernels_dir, 'base', 'lib', '*')) + (';' if sys.platform == 'win32' else ':') + os.path.abspath(pjoin(kernels_dir, name, 'lib', '*'))
-                classpath = classpath.replace('\\', '/')
+            def install_kernel(source_kernelspec='', kernelspec_name=None):
+                name = kernelspec_name if kernelspec_name else os.path.basename(source_kernelspec)
+                classpath = (os.path.abspath(pjoin(target_dir, 'base', 'lib', '*')) + (';' if sys.platform == 'win32' else ':') + os.path.abspath(pjoin(target_dir, name, 'lib', '*'))).replace('\\', '/')
+                target_kernelspec = pjoin(target_dir, os.path.relpath(source_dir, source_kernelspec))
                 lines = []
-                with open(pjoin(kernelspec_path, 'kernel.json')) as infile:
+                with open(pjoin(source_kernelspec, 'kernel.json')) as infile:
                     for line in infile:
                         line = line.replace('__PATH__', classpath)
                         lines.append(line)
-                with open(pjoin(kernelspec_path, 'kernel.json'), 'w') as outfile:
+                with open(pjoin(target_kernelspec, 'kernel.json'), 'w') as outfile:
                     for line in lines:
                         outfile.write(line)
-                run(['jupyter', 'kernelspec', 'install', '--sys-prefix', '--replace', '--name', name, kernelspec_path])
+                run(['jupyter', 'kernelspec', 'install', '--sys-prefix', '--replace', '--name', name, target_kernelspec])
                 
-            for dir, subdirs, files in os.walk(kernels_dir):
+            for dir, subdirs, files in os.walk(source_dir):
                 if 'kernel.json' in files:
                     install_kernel(dir)
                 else:

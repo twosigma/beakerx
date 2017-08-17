@@ -72,6 +72,8 @@ conda install conda-build
 conda upgrade conda
 conda upgrade conda-build
 # inside of beakerx env and beakerx project root
+# clear conda-build cache
+conda build purge
 conda build --python 3.5 PATH_TO_RECIPE
 # conda-build will output something like `anaconda upload PATH_TO_beakerx-VERSION-py35HASH.tar.bz2`
 conda install --use-local beakerx

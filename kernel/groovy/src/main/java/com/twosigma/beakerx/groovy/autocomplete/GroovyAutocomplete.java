@@ -91,36 +91,32 @@ public class GroovyAutocomplete {
       q.addAll(extractor3.getQuery());
     List<String> ret = registry.searchCandidates(q);
 
-    if (ret.isEmpty()) {
-      q.clear();
-      for (int i=cur-1; i>=0; i--) {
-        if(i<txt.length() && Character.isWhitespace(txt.charAt(i))) {
-          String tx = txt.substring(i+1, cur).trim();
-          if(!txt.isEmpty()) {
-            if(tx.contains(".")) {
-              q.add(cu.expandExpression(tx, registry, cu.DO_ALL));
-            } else {
-              q.add(new AutocompleteCandidate(GroovyCompletionTypes.NAME, tx));
-            }
-            ret = registry.searchCandidates(q);
+    if (!ret.isEmpty()) {
+      return new AutocompleteResult(ret, getStartIndex(extractor, extractor2, extractor3));
+    }
+    return findAutocompleteResult(txt, cur, cu);
+  }
+
+  private AutocompleteResult findAutocompleteResult(String txt, int cur, ClassUtils cu) {
+    List<AutocompleteCandidate> q = new ArrayList<>();
+    List<String> ret = new ArrayList<>();
+    int startIndex = 0;
+    for (int i = cur - 1; i >= 0; i--) {
+      if (i < txt.length() && Character.isWhitespace(txt.charAt(i))) {
+        String tx = txt.substring(i + 1, cur).trim();
+        if (!txt.isEmpty()) {
+          if (tx.contains(".")) {
+            q.add(cu.expandExpression(tx, registry, cu.DO_ALL));
+          } else {
+            q.add(new AutocompleteCandidate(GroovyCompletionTypes.NAME, tx));
           }
-          break;
+          ret = registry.searchCandidates(q);
+          startIndex = txt.indexOf(tx) + tx.length();
         }
+        break;
       }
     }
-
-//    if (txt.charAt(cur - 1) == '.') {
-//      for (int i = 0; i < ret.size(); i++) {
-//        String s = ret.get(i);
-//        if (s.startsWith("."))
-//          ret.set(i, s.substring(1));
-//      }
-//    }
-
-    // this shows the GUI
-    if (GroovyCompletionTypes.debug)
-      t.inspect(parser);
-    return new AutocompleteResult(ret, getStartIndex(extractor, extractor2, extractor3));
+    return new AutocompleteResult(ret, startIndex);
   }
 
   private int getStartIndex(GroovyImportDeclarationCompletion extractor, GroovyNameBuilder extractor2, GroovyNodeCompletion extractor3) {

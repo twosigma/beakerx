@@ -312,6 +312,25 @@ public class GroovyEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
+  @Test
+  public void autocompleteMatchesToColor() throws Exception {
+    String code = "Colo";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(0);
+  }
+
+  @Test
+  public void autocompleteMatchesToRED() throws Exception {
+    String code = "Color.R";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-1);
+  }
 
   @Test
   public void autocompleteWithMagicCommands() throws Exception {

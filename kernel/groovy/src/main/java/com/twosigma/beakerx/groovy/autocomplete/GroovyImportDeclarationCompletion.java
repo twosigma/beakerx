@@ -91,9 +91,9 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
     String[] txtv = (st + "X").split("\\.");
     txtv[txtv.length - 1] = "";
     AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
-    addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+    addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx)+1);
     c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
-    addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+    addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx)+1);
   }
 
   private void importPackageName(ImportStatementContext ctx) {

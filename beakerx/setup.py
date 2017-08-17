@@ -40,7 +40,6 @@ cmdclass = create_cmdclass(develop_wrappers=[
     'js',
     'java'
 ], install_wrappers=[
-    'kernels_install',
     'kernelspec_class',
     'custom_css'
 ])
@@ -51,7 +50,6 @@ cmdclass['js'] = install_node_modules(
 )
 cmdclass['java'] = run_gradle(cmd='build')
 cmdclass['kernels_develop'] = install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel'), target_dir=os.path.join(here, 'beakerx', 'static', 'kernel'))
-cmdclass['kernels_install'] = install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel'))
 cmdclass['kernelspec_class'] = update_kernelspec_class(prefix=os.environ['CONDA_PREFIX'])
 cmdclass['custom_css'] = copy_files(
     src=os.path.join(here, 'beakerx', 'static', 'custom'), 
@@ -84,6 +82,14 @@ setup_args = dict(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
+    entry_points={
+        'console_scripts': [
+            'beakerx-installkernels = beakerx.install:install_kernels'
+        ]
+    },
+    package_data={
+        'beakerx': 'static/kernel/*/kernel.json'
+    },
     data_files          = [(
         'share/jupyter/nbextensions/beakerx', 
         get_data_files(os.path.join('beaker', 'static'))

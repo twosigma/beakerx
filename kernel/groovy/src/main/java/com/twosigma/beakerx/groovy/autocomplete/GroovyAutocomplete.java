@@ -58,9 +58,6 @@ public class GroovyAutocomplete {
     ClassUtils cu = createClassUtils(l);
     registry = AutocompleteRegistryFactory.createRegistry(cps);
     setup(cu, registry);
-//    registry.clearForType(GroovyCompletionTypes.CUSTOM_TYPE);
-//    registry.clearForType(GroovyCompletionTypes.FIELD);
-    //registry.clearForType(GroovyCompletionTypes.NAME);
     AutocompleteRegistryFactory.addDefaultImports(cu, registry, imports.toListOfStrings(), cps);
     AutocompleteRegistryFactory.moreSetup(cu);
     moreSetup(registry);

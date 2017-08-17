@@ -27,10 +27,6 @@ public class AutocompleteRegistry {
       children = new ArrayList<>();
     }
 
-    void clear() {
-      children.clear();
-    }
-
     void add(AutocompleteCandidate c) {
       for (AutocompleteCandidate c1 : children) {
         if (c1.getKey().equals(c.getKey())) {
@@ -55,10 +51,6 @@ public class AutocompleteRegistry {
     for (int i = 0; i < numt; i++)
       registry[i] = new AutocompleteRegistryForType();
   }
-
-//  public void clearForType(int t) {
-//    registry[t].clear();
-//  }
 
   public void addCandidate(AutocompleteCandidate c) {
     registry[c.getType()].add(c);

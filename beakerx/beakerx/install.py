@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-'''Installs BeakerX.'''
+'''Installs BeakerX into a Jupyter and Python environment.'''
 
 import argparse
 import os
 import pkg_resources
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -38,9 +39,21 @@ def _install_nbextension():
     subprocess.check_call(["jupyter", "nbextension", "enable", "beakerx", "--py", "--sys-prefix"])
 
 
+def _copy_tree(src, dest):
+    if os.path.exists(dest):
+        shutil.rmtree(dest)
+    shutil.copytree(src, dest)
+
+
+def _install_css(prefix):
+    src_base = pkg_resources.resource_filename('beakerx', os.path.join('static', 'custom'))
+    dest_base = os.path.join(prefix, 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
+    _copy_tree(os.path.join(src_base, 'fonts'), os.path.join(dest_base, 'fonts'))
+    shutil.copyfile(os.path.join(src_base, 'custom.css'), os.path.join(dest_base, 'custom.css'))
+
+
 def _install_kernels():
     base_classpath = _classpath_for('base')
-    kernels_dir = os.path.join(sys.prefix, 'share', 'jupyter', 'kernels')
 
     for kernel in _all_kernels():
         kernel_classpath = _classpath_for(kernel)
@@ -60,11 +73,12 @@ def _install_kernels():
             ]
             subprocess.check_call(install_cmd)
 
-    return 0
-
 
 def make_parser():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prefix",
+                        help="location of the environment to install into",
+                        default=sys.prefix)
     return parser
 
 
@@ -74,6 +88,7 @@ def install():
         args = parser.parse_args()
         _install_nbextension()
         _install_kernels()
+        _install_css(args.prefix)
     except KeyboardInterrupt:
         return 130
     return 0

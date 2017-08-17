@@ -99,6 +99,12 @@ public class AutocompleteCandidate {
 		}
 		if(key.startsWith(a.key) && !ret.contains(key))
 			ret.add(key);
+
+		if(children!=null) {
+			for (AutocompleteCandidate c1 : children) {
+				c1.searchCandidates(ret, a);
+			}
+		}
 	}
 	
 	public AutocompleteCandidate findLeaf() {

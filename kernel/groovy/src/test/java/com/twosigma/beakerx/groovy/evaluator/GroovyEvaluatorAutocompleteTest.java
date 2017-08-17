@@ -350,7 +350,17 @@ public class GroovyEvaluatorAutocompleteTest {
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+    assertThat(autocomplete.getStartIndex()).isEqualTo(0);
+  }
+
+  @Test
+  public void autocompleteToList() throws Exception {
+    String code = "Li";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
   @Test

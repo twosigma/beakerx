@@ -65,20 +65,10 @@ public class AutocompleteRegistry {
   }
 
   public List<String> searchCandidates(List<AutocompleteCandidate> cands) {
-    List<String> ret = new ArrayList<String>();
+    List<String> ret = new ArrayList<>();
     for (AutocompleteCandidate a : cands) {
       if (a != null)
         registry[a.getType()].searchCandidates(ret, a);
-    }
-    if (ret.isEmpty()) {
-      for (int i = 0; i < registry.length; i++) {
-        for (AutocompleteCandidate a : cands) {
-          if (a != null) {
-            registry[i].searchCandidates(ret, a);
-          }
-        }
-
-      }
     }
     return ret;
   }

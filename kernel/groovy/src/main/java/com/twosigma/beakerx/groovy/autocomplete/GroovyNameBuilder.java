@@ -101,45 +101,45 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
 
   @Override
   public void exitAssignmentExpression(AssignmentExpressionContext ctx) {
-//    if(ctx.getChildCount()==3 &&
-//        ctx.getChild(1).getText().equals("=") &&
-//        !ctx.getChild(0).getText().contains(".")) {
-//
-//      if(ctx.getChild(2).getChild(0) instanceof PathExpressionContext) {
-//        String typpen = ctx.getChild(2).getChild(0).getText().trim();
-//        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(0).getText());
-//        registry.addCandidate(c);
-//        if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(0).getText()+" "+typpen);
-//        if(classUtils.getVariableType(typpen)!=null) {
-//            classUtils.defineVariable(ctx.getChild(0).getText(), classUtils.getVariableType(typpen));
-//        }
-//      } else if(ctx.getChild(2).getChild(0) instanceof NewInstanceRuleContext) {
-//        ParseTree t = findChildrenByType(ctx.getChild(2).getChild(0),ClassNameExpressionContext.class);
-//        if(t!=null) {
-//          String ttype = t.getText().trim();
-//          AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(0).getText());
-//          registry.addCandidate(c);
-//          if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(0).getText()+" "+ttype);
-//          if(ttype!=null)
-//            classUtils.defineVariable(ctx.getChild(0).getText(), ttype);
-//        }
-//      } else {
-//        if(GroovyCompletionTypes.debug) System.out.println(((ExpressionContext)ctx.getChild(2)).getStart().getType());
-//
-//        String typpen = null;
-//        switch(((ExpressionContext)ctx.getChild(2)).getStart().getType()) {
-//        case GroovyLexer.STRING: typpen="String"; break;
-//        case GroovyLexer.INTEGER: typpen="Integer"; break;
-//        case GroovyLexer.DECIMAL: typpen="Double"; break;
-//        }
-//        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(0).getText());
-//        registry.addCandidate(c);
-//        if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(0).getText()+" "+typpen);
-//        if(typpen!=null)
-//          classUtils.defineVariable(ctx.getChild(0).getText(), typpen);
-//      }
-//
-//    }
+    if(ctx.getChildCount()==3 &&
+        ctx.getChild(1).getText().equals("=") &&
+        !ctx.getChild(0).getText().contains(".")) {
+
+      if(ctx.getChild(2).getChild(0) instanceof PathExpressionContext) {
+        String typpen = ctx.getChild(2).getChild(0).getText().trim();
+        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(0).getText());
+        registry.addCandidate(c);
+        if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(0).getText()+" "+typpen);
+        if(classUtils.getVariableType(typpen)!=null) {
+            classUtils.defineVariable(ctx.getChild(0).getText(), classUtils.getVariableType(typpen));
+        }
+      } else if(ctx.getChild(2).getChild(0) instanceof NewInstanceRuleContext) {
+        ParseTree t = findChildrenByType(ctx.getChild(2).getChild(0),ClassNameExpressionContext.class);
+        if(t!=null) {
+          String ttype = t.getText().trim();
+          AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(0).getText());
+          registry.addCandidate(c);
+          if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(0).getText()+" "+ttype);
+          if(ttype!=null)
+            classUtils.defineVariable(ctx.getChild(0).getText(), ttype);
+        }
+      } else {
+        if(GroovyCompletionTypes.debug) System.out.println(((ExpressionContext)ctx.getChild(2)).getStart().getType());
+
+        String typpen = null;
+        switch(((ExpressionContext)ctx.getChild(2)).getStart().getType()) {
+        case GroovyLexer.STRING: typpen="String"; break;
+        case GroovyLexer.INTEGER: typpen="Integer"; break;
+        case GroovyLexer.DECIMAL: typpen="Double"; break;
+        }
+        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(0).getText());
+        registry.addCandidate(c);
+        if(GroovyCompletionTypes.debug) logger.info("define variable of type "+ctx.getChild(0).getText()+" "+typpen);
+        if(typpen!=null)
+          classUtils.defineVariable(ctx.getChild(0).getText(), typpen);
+      }
+
+    }
 
   }
   

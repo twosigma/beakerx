@@ -23,6 +23,8 @@ import groovy.lang.GroovyClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
+
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newEvaluator;
 
@@ -130,6 +132,17 @@ class GroovyWorkerThread extends WorkerThread {
   }
 
   GroovyClassLoader getGroovyClassLoader() {
+    return groovyClassLoader;
+  }
+
+  GroovyClassLoader getGroovyClassLoaderInstance() {
+    if (groovyClassLoader == null) {
+      try {
+        this.groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir());
+      } catch (MalformedURLException e) {
+        throw new RuntimeException(e);
+      }
+    }
     return groovyClassLoader;
   }
 

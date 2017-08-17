@@ -20,6 +20,8 @@ import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyEvaluatorAutocompleteTest {
@@ -365,12 +367,50 @@ public class GroovyEvaluatorAutocompleteTest {
 
   @Test
   public void autocompleteArrayListAfterDot() throws Exception {
-    String code = "ArrayList list = new ArrayList();\n" +
-                  "list.";
+    String code = "List myList = new ArrayList();\n" +
+                  "myList.";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches().stream().filter( x -> x.contains("add")).collect(Collectors.toList())).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
+
+  @Test
+  public void autocompleteMapAfterDot() throws Exception {
+    String code = "Map myMap = new HashMap<>();\n" +
+                  "myMap.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches().stream().filter( x -> x.contains("put")).collect(Collectors.toList())).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+  }
+
+  @Test
+  public void autocompleteArrayListWithGenericsAfterDot() throws Exception {
+    String code = "List<String> myList = new ArrayList();\n" +
+                  "myList.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches().stream().filter( x -> x.contains("add")).collect(Collectors.toList())).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+  }
+
+  @Test
+  public void autocompleteMapWithGenericsAfterDot() throws Exception {
+    String code = "Map<String,String> myMap = new HashMap<>();\n" +
+            "myMap.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches().stream().filter( x -> x.contains("put")).collect(Collectors.toList())).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+  }
+
 }

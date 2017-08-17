@@ -54,7 +54,14 @@ public class ClassUtils {
   }
 
   public void defineVariable(String name, String type) {
-    typeMap.put(name, type);
+    typeMap.put(groovyVariableNameGenericParserProblems(name), type);
+  }
+
+  private String groovyVariableNameGenericParserProblems(String name) {
+    if(name.contains(">")){
+      return name.substring(name.indexOf(">")+1,name.length());
+    }
+    return name;
   }
 
   public String getVariableType(String name) {

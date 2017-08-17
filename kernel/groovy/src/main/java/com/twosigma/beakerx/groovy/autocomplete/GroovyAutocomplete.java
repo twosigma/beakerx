@@ -20,7 +20,6 @@ import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
 import com.twosigma.beakerx.autocomplete.AutocompleteRegistry;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
-import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -31,8 +30,6 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.twosigma.beakerx.evaluator.Evaluator.BEAKER_VARIABLE_NAME;
-import static com.twosigma.beakerx.groovy.autocomplete.AutocompleteRegistryFactory.addDefaultImports;
 import static com.twosigma.beakerx.groovy.autocomplete.AutocompleteRegistryFactory.setup;
 
 public class GroovyAutocomplete {
@@ -50,13 +47,13 @@ public class GroovyAutocomplete {
   private void moreSetup(AutocompleteRegistry r) {
   }
 
-  private ClassUtils createClassUtils(ClassLoader l) {
+  private GroovyClassUtils createClassUtils(ClassLoader l) {
     return new GroovyClassUtils(cps, l);
   }
 
   public AutocompleteResult doAutocomplete(String txt, int cur, ClassLoader l, Imports imports) {
-    ClassUtils cu = createClassUtils(l);
     registry = AutocompleteRegistryFactory.createRegistry(cps);
+    GroovyClassUtils cu = createClassUtils(l);
     setup(cu, registry);
     AutocompleteRegistryFactory.addDefaultImports(cu, registry, imports.toListOfStrings(), cps);
     AutocompleteRegistryFactory.moreSetup(cu);

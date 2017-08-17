@@ -84,7 +84,7 @@ setup_args = dict(
     ],
     entry_points={
         'console_scripts': [
-            'beakerx-installkernels = beakerx.install:install_kernels'
+            'beakerx-install = beakerx.install:install'
         ]
     },
     package_data={

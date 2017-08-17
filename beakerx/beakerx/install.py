@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-'''Installs the beakerx kernels.'''
+'''Installs BeakerX.'''
 
 import argparse
 import os
@@ -31,6 +31,11 @@ def _all_kernels():
 def _classpath_for(kernel):
     return pkg_resources.resource_filename(
         'beakerx', os.path.join('static', 'kernel', kernel, 'lib', '*'))
+
+
+def _install_nbextension():
+    subprocess.check_call(["jupyter", "nbextension", "install", "beakerx", "--py", "--sys-prefix"])
+    subprocess.check_call(["jupyter", "nbextension", "enable", "beakerx", "--py", "--sys-prefix"])
 
 
 def _install_kernels():
@@ -63,14 +68,16 @@ def make_parser():
     return parser
 
 
-def install_kernels():
+def install():
     try:
         parser = make_parser()
         args = parser.parse_args()
-        return _install_kernels()
+        _install_nbextension()
+        _install_kernels()
     except KeyboardInterrupt:
         return 130
+    return 0
 
 
 if __name__ == "__main__":
-    install_kernels()
+    install()

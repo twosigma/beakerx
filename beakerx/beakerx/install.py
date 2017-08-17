@@ -15,12 +15,16 @@
 '''Installs BeakerX into a Jupyter and Python environment.'''
 
 import argparse
+import json
 import os
 import pkg_resources
 import shutil
 import subprocess
 import sys
 import tempfile
+
+from traitlets.config.manager import BaseJSONConfigManager
+from distutils import log
 
 
 def _all_kernels():
@@ -46,6 +50,7 @@ def _copy_tree(src, dest):
 
 
 def _install_css(prefix):
+    log.info("installing custom CSS...")
     src_base = pkg_resources.resource_filename('beakerx', os.path.join('static', 'custom'))
     dest_base = os.path.join(prefix, 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
     _copy_tree(os.path.join(src_base, 'fonts'), os.path.join(dest_base, 'fonts'))
@@ -74,6 +79,41 @@ def _install_kernels():
             subprocess.check_call(install_cmd)
 
 
+def _pretty(it): 
+    return json.dumps(it, indent=2)
+
+def _install_kernelspec_manager(prefix, disable=False):
+    CKSM = "beakerx.kernel_spec.BeakerXKernelSpec"
+    KSMC = "kernel_spec_class"
+
+    action_prefix = "Dis" if disable else "En"
+    log.info("{}abling BeakerX server config...".format(action_prefix))
+    path = os.path.join(prefix, "etc", "jupyter")
+    if not os.path.exists(path):
+        log.debug("Making directory {}...".format(path))
+        os.makedirs(path)
+    cm = BaseJSONConfigManager(config_dir=path)
+    cfg = cm.get("jupyter_notebook_config")
+    log.debug("Existing config in {}...\n{}".format(path, _pretty(cfg)))
+    nb_app = cfg.setdefault("KernelSpecManager", {})
+    if disable and nb_app.get(KSMC, None) == CKSM:
+        nb_app.pop(KSMC)
+    else:
+        nb_app.update({KSMC: CKSM})
+
+    log.debug("Writing config in {}...".format(path))
+    cm.set("jupyter_notebook_config", cfg)
+    cfg = cm.get("jupyter_notebook_config")
+
+    log.debug("Verifying config in {}...\n{}".format(path, _pretty(cfg)))
+    if disable:
+        assert KSMC not in cfg["KernelSpecManager"]
+    else:
+        assert cfg["KernelSpecManager"][KSMC] == CKSM
+
+    log.info("{}abled BeakerX server config".format(action_prefix))
+    
+
 def make_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prefix",
@@ -89,6 +129,7 @@ def install():
         _install_nbextension()
         _install_kernels()
         _install_css(args.prefix)
+        _install_kernelspec_manager(args.prefix)
     except KeyboardInterrupt:
         return 130
     return 0

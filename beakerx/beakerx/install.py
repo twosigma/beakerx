@@ -43,18 +43,19 @@ def _install_nbextension():
     subprocess.check_call(["jupyter", "nbextension", "enable", "beakerx", "--py", "--sys-prefix"])
 
 
-def _copy_tree(src, dest):
-    if os.path.exists(dest):
-        shutil.rmtree(dest)
-    shutil.copytree(src, dest)
+def _copy_tree(src, dst):
+    if os.path.exists(dst):
+        shutil.rmtree(dst)
+    shutil.copytree(src, dst)
 
 
-def _install_css(prefix):
+def _install_css():
     log.info("installing custom CSS...")
-    src_base = pkg_resources.resource_filename('beakerx', os.path.join('static', 'custom'))
-    dest_base = os.path.join(prefix, 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
-    _copy_tree(os.path.join(src_base, 'fonts'), os.path.join(dest_base, 'fonts'))
-    shutil.copyfile(os.path.join(src_base, 'custom.css'), os.path.join(dest_base, 'custom.css'))
+    resource = os.path.join('static', 'custom')
+    src_base = pkg_resources.resource_filename('beakerx', resource)
+    dst_base = pkg_resources.resource_filename('notebook', resource)
+    _copy_tree(os.path.join(src_base, 'fonts'), os.path.join(dst_base, 'fonts'))
+    shutil.copyfile(os.path.join(src_base, 'custom.css'), os.path.join(dst_base, 'custom.css'))
 
 
 def _install_kernels():
@@ -128,7 +129,7 @@ def install():
         args = parser.parse_args()
         _install_nbextension()
         _install_kernels()
-        _install_css(args.prefix)
+        _install_css()
         _install_kernelspec_manager(args.prefix)
     except KeyboardInterrupt:
         return 130

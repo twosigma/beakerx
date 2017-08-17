@@ -161,7 +161,7 @@ describe('PlotFeatures notebook', function () {
     });
   });
 
-  describe('"Simple Time Plot" cell', function(){
+  describe('Run "Simple Time Plot" cell', function(){
     it('Time Plot has points elements', function(){
       beakerxPO.runCodeCellByIndex(17);
       beakerxPO.kernelIdleIcon.waitForEnabled();
@@ -172,7 +172,7 @@ describe('PlotFeatures notebook', function () {
     });
   });
 
-  describe('"Second Y Axis" cell', function(){
+  describe('Run "Second Y Axis" cell', function(){
     it('Plot has second Y Axis', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(19);
       svgElement.waitForEnabled();
@@ -181,7 +181,7 @@ describe('PlotFeatures notebook', function () {
     });
   });
 
-  describe('"Logarithmic Scale" cells', function(){
+  describe('Run "Logarithmic Scale" cells', function(){
     it('Plot has 2 lines', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(20);
       svgElement.waitForEnabled();
@@ -192,12 +192,51 @@ describe('PlotFeatures notebook', function () {
     });
   });
 
-  describe('"Date Objects for the Time Coordinate" cell', function(){
+  describe('Run "Date Objects for the Time Coordinate" cell', function(){
     it('Plot has points elements', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(22);
       svgElement.waitForEnabled();
       expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
       expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
+    });
+  });
+
+  describe('Run "Nanosecond Resolution" cell', function(){
+    it('Plot has points elements', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(23);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
+    });
+  });
+
+  describe('Run "Formating control" cells', function(){
+    it("Plot doesn't have tick labels", function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(24);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('g#labelg > text.plot-label').length).toEqual(0);
+    });
+
+    it("Plot has advanced styling", function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(25);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('g#labelg > text.plot-label')[0].getCssProperty('fill').value).toEqual('rgb(0,128,0)');
+    });
+  });
+
+  describe('Run "Raster" cell', function(){
+    it('Plot has 3 raster elements', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(26);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('g.plot-raster').length).toEqual(3);
+    });
+  });
+
+  describe('Run cell with axis bounds', function(){
+    it('Plot has 2 axis bounds', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(27);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('text#label_y_0').getText()).toEqual('1.0');
+      expect(svgElement.$('text#label_yr_0').getText()).toEqual('3.0');
     });
   });
 

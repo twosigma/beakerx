@@ -17,9 +17,10 @@ package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
-import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyEvaluatorAutocompleteTest {
 
@@ -39,8 +40,8 @@ public class GroovyEvaluatorAutocompleteTest {
                     "System.out.prin\n" +
                     "System.out.pri\n", 17);
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
-    Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(11);
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(11);
   }
 
   @Test
@@ -52,8 +53,8 @@ public class GroovyEvaluatorAutocompleteTest {
                     "System.out.prin\n" +
                     "System.out.pri\n", 34);
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
-    Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(29);
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(29);
   }
 
   @Test
@@ -64,8 +65,8 @@ public class GroovyEvaluatorAutocompleteTest {
                     "System.out.printl\n" +
                     "System.out.printl", 27);
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
-    Assertions.assertThat(autocomplete.getStartIndex()).isEqualTo(21);
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(21);
   }
 
   @Test
@@ -74,7 +75,7 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches()).isNotEmpty();
   }
 
   @Test
@@ -83,7 +84,7 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches()).isNotEmpty();
   }
 
   @Test
@@ -92,7 +93,7 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("import");
+    assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("import");
   }
 
   @Test
@@ -101,7 +102,7 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("toString()");
+    assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("toString()");
   }
 
   @Test
@@ -111,7 +112,7 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramInt");
+    assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramInt");
   }
 
   @Test
@@ -121,7 +122,7 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramDouble");
+    assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramDouble");
   }
 
   @Test
@@ -131,7 +132,7 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramString");
+    assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramString");
   }
 
   @Test
@@ -141,7 +142,7 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramArray");
+    assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramArray");
   }
 
   @Test
@@ -151,7 +152,7 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramMap");
+    assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("paramMap");
   }
 
   @Test
@@ -161,7 +162,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("BLUE");
+    assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("BLUE");
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-2);
   }
 
   @Test
@@ -170,7 +172,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-1);
   }
 
   @Test
@@ -183,7 +186,7 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("coordinates");
+    assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("coordinates");
   }
 
   @Test
@@ -192,7 +195,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
   @Test
@@ -201,7 +205,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualTo("implements");
+    assertThat(autocomplete.getMatches().get(0)).isEqualTo("implements");
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-8);
   }
 
   @Test
@@ -210,7 +215,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualTo("extends");
+    assertThat(autocomplete.getMatches().get(0)).isEqualTo("extends");
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() -5);
   }
 
   @Test
@@ -219,7 +225,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualTo("class");
+    assertThat(autocomplete.getMatches().get(0)).isEqualTo("class");
+    assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
   @Test
@@ -228,7 +235,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualTo("Boolean");
+    assertThat(autocomplete.getMatches().get(0)).isEqualTo("Boolean");
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-3);
   }
 
   @Test
@@ -237,7 +245,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches().get(0)).isEqualTo("System");
+    assertThat(autocomplete.getMatches().get(0)).isEqualTo("System");
+    assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
   @Test
@@ -246,7 +255,9 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
   @Test
@@ -256,9 +267,9 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-1);
   }
-
 
   @Test
   public void shouldAutocompleteWithAsterisk() throws Exception {
@@ -267,7 +278,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-1);
   }
 
   @Test
@@ -276,7 +288,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isEmpty();
+    assertThat(autocomplete.getMatches()).isEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
   @Test
@@ -285,7 +298,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-2);
   }
 
   @Test
@@ -294,7 +308,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
 
@@ -305,7 +320,8 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    Assertions.assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
 

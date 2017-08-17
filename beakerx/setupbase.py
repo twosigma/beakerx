@@ -36,7 +36,6 @@ from setuptools.command.develop import develop
 from setuptools.command.build_py import build_py
 from setuptools.command.sdist import sdist
 from setuptools.command.bdist_egg import bdist_egg
-from distutils.command.install_data import install_data
 from distutils import log
 
 from traitlets.config.manager import BaseJSONConfigManager
@@ -123,30 +122,22 @@ def update_package_data(distribution):
     build_py.finalize_options()
 
 
-def create_cmdclass(develop_wrappers=None, distribute_wrappers=None, install_wrappers=None, data_dirs=None):
+def create_cmdclass(wrappers=None, data_dirs=None):
     """Create a command class with the given optional wrappers.
     Parameters
     ----------
-    develop_wrapper: list(str), optional
-        The cmdclass names to run before running other commands
-    distribute_wrappers: list(str), optional
-        The cmdclass names to run before running other commands
-    install_wrappers: list(str), optional
+    wrappers: list(str), optional
         The cmdclass names to run before running other commands
     data_dirs: list(str), optional.
         The directories containing static data.
     """
-    develop_wrappers = develop_wrappers or []
-    distribute_wrappers = distribute_wrappers or []
-    install_wrappers = install_wrappers or []
+    wrappers = wrappers or []
     data_dirs = data_dirs or []
-    develop_wrapper = functools.partial(wrap_command, develop_wrappers, data_dirs)
-    distribute_wrapper = functools.partial(wrap_command, distribute_wrappers, data_dirs)
-    install_wrapper = functools.partial(wrap_command, install_wrappers, data_dirs)
+    wrapper = functools.partial(wrap_command, wrappers, data_dirs)
     cmdclass = dict(
-        develop=develop_wrapper(develop, strict=True),
-        install_data=install_wrapper(install_data, strict=is_repo),
-        sdist=distribute_wrapper(sdist, strict=True),
+        develop=wrapper(develop, strict=True),
+        build_py=build_py,
+        sdist=wrapper(sdist, strict=True),
         bdist_egg=bdist_egg if 'bdist_egg' in sys.argv else bdist_egg_disabled
     )
     if bdist_wheel:

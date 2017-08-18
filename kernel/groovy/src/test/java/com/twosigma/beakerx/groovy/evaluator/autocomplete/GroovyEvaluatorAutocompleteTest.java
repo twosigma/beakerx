@@ -13,10 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.groovy.evaluator;
+package com.twosigma.beakerx.groovy.evaluator.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
+import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -160,7 +161,7 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void shouldReturnResultEqualToBLUE() throws Exception {
     String code = "import static java.awt.Color.BLUE\n" +
-                  "println BL";
+            "println BL";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
@@ -337,36 +338,36 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void autocompleteArrayListAfterDot() throws Exception {
     String code = "List myList = new ArrayList();\n" +
-                  "myList.";
+            "myList.";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getMatches().stream().filter( x -> x.contains("add")).collect(Collectors.toList())).isNotEmpty();
+    assertThat(autocomplete.getMatches().stream().filter(x -> x.contains("add")).collect(Collectors.toList())).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
   @Test
   public void autocompleteMapAfterDot() throws Exception {
     String code = "Map myMap = new HashMap<>();\n" +
-                  "myMap.";
+            "myMap.";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getMatches().stream().filter( x -> x.contains("put")).collect(Collectors.toList())).isNotEmpty();
+    assertThat(autocomplete.getMatches().stream().filter(x -> x.contains("put")).collect(Collectors.toList())).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
   @Test
   public void autocompleteArrayListWithGenericsAfterDot() throws Exception {
     String code = "List<String> myList = new ArrayList();\n" +
-                  "myList.";
+            "myList.";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getMatches().stream().filter( x -> x.contains("add")).collect(Collectors.toList())).isNotEmpty();
+    assertThat(autocomplete.getMatches().stream().filter(x -> x.contains("add")).collect(Collectors.toList())).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
@@ -378,37 +379,8 @@ public class GroovyEvaluatorAutocompleteTest {
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getMatches().stream().filter( x -> x.contains("put")).collect(Collectors.toList())).isNotEmpty();
+    assertThat(autocomplete.getMatches().stream().filter(x -> x.contains("put")).collect(Collectors.toList())).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
-  @Test
-  public void autocompleteToClassWithPackage() throws Exception {
-    String code = "def f = new java.text.SimpleDateFor";
-    //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
-    //then
-    assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-13);
-  }
-
-  @Test
-  public void autocompleteToIntegerClassWithPackage() throws Exception {
-    String code = "def f = new java.lang.Inte";
-    //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
-    //then
-    assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-4);
-  }
-
-  @Test
-  public void autocompleteToClassWithoutPackage() throws Exception {
-    String code = "def f = new Inte";
-    //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
-    //then
-    assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-4);
-  }
 }

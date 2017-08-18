@@ -13,16 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.groovy.evaluator;
+package com.twosigma.beakerx.groovy.evaluator.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
+import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GroovyEvaluatorAutocompleteImportTest {
+public class GroovyEvaluatorAutocompleteClassNameExpressionTest {
 
   private static GroovyEvaluator groovyEvaluator;
 
@@ -32,34 +33,44 @@ public class GroovyEvaluatorAutocompleteImportTest {
   }
 
   @Test
-  public void autocompleteForImport_autocompleteIsNotEmpty() throws Exception {
-    String code = "import java.awt.C";
+  public void autocompleteToClassWithPackage() throws Exception {
+    String code = "def f = new java.text.SimpleDateFor";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 1);
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-13);
   }
 
   @Test
-  public void shouldImportBoolean() throws Exception {
-    String code = "import java.lang.Boo";
+  public void autocompleteToClassWithoutPackage() throws Exception {
+    String code = "def f = new Inte";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    assertThat(autocomplete.getMatches().get(0)).isEqualTo("Boolean");
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 3);
+    assertThat(autocomplete.getMatches().size()).isEqualTo(1);
+    assertThat(autocomplete.getMatches().get(0)).isEqualTo("Integer");
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-4);
   }
 
   @Test
-  public void shouldAutocompleteToJavaIo() throws Exception {
-    String code = "import java.io.";
+  public void autocompleteToIntegerClassWithPackage() throws Exception {
+    String code = "def f = new java.lang.Inte";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 4);
+  }
 
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+  @Test
+  public void autocompleteCreateNewIntegerWithPackage() throws Exception {
+    String code = "new java.lang.Inte";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 4);
   }
 
 }

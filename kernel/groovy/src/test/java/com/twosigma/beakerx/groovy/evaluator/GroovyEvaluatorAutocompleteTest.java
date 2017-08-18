@@ -160,22 +160,12 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void shouldReturnResultEqualToBLUE() throws Exception {
     String code = "import static java.awt.Color.BLUE\n" +
-            "println BL";
+                  "println BL";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("BLUE");
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 2);
-  }
-
-  @Test
-  public void autocompleteForImport_autocompleteIsNotEmpty() throws Exception {
-    String code = "import java.awt.C";
-    //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
-    //then
-    assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 1);
   }
 
   @Test
@@ -232,16 +222,6 @@ public class GroovyEvaluatorAutocompleteTest {
   }
 
   @Test
-  public void shouldImportBoolean() throws Exception {
-    String code = "import java.lang.Boo";
-    //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
-    //then
-    assertThat(autocomplete.getMatches().get(0)).isEqualTo("Boolean");
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 3);
-  }
-
-  @Test
   public void shouldAutocompleteToSystem() throws Exception {
     String code = "Syste";
     //when
@@ -249,17 +229,6 @@ public class GroovyEvaluatorAutocompleteTest {
     //then
     assertThat(autocomplete.getMatches().get(0)).isEqualTo("System");
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
-  }
-
-  @Test
-  public void shouldAutocompleteToJavaIo() throws Exception {
-    String code = "import java.io.";
-    //when
-    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
-    //then
-    assertThat(autocomplete.getMatches()).isNotEmpty();
-
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
   @Test

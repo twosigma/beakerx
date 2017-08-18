@@ -423,4 +423,15 @@ public class GroovyEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(0);
   }
 
+  @Test
+  public void autocompleteStringMethod() throws Exception {
+    String code = "String a = \"ABC\";\n" +
+                  "a.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+  }
+
 }

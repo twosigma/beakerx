@@ -52,6 +52,7 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
         // complete with standard groovy extension functions
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, ctx.getText().substring(ctx.getText().lastIndexOf(".") + 1));
         addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+        completeClassFromPath(ctx);
       } else {
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getText());
         addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
@@ -59,6 +60,13 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
         addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
       }
     }
+  }
+
+  private void completeClassFromPath(ClassNameExpressionContext ctx) {
+    String text = ctx.getText();
+    text = text.substring(text.lastIndexOf(".")+1,text.length());
+    AutocompleteCandidate cName = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, text);
+    addQuery(cName, AutocompleteGroovyResult.getStartIndex(ctx));
   }
 
   @Override

@@ -413,4 +413,33 @@ public class GroovyEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
+  @Test
+  public void autocompleteToClassWithPackage() throws Exception {
+    String code = "def f = new java.text.SimpleDateFor";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-13);
+  }
+
+  @Test
+  public void autocompleteToIntegerClassWithPackage() throws Exception {
+    String code = "def f = new java.lang.Inte";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-4);
+  }
+
+  @Test
+  public void autocompleteToClassWithoutPackage() throws Exception {
+    String code = "def f = new Inte";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-4);
+  }
 }

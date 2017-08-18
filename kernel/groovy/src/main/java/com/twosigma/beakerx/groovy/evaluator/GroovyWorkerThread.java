@@ -77,8 +77,7 @@ class GroovyWorkerThread extends WorkerThread {
         if (groovyClassLoader == null) {
           updateLoader = false;
           //reload classloader
-          groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir());
-          scriptBinding = new Binding();
+          reloadClassloader();
         }
 
         //if(loader!=null)
@@ -123,6 +122,11 @@ class GroovyWorkerThread extends WorkerThread {
     NamespaceClient.delBeaker(groovyEvaluator.getSessionId());
   }
 
+  private void reloadClassloader() throws MalformedURLException {
+    this.groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir());
+    this.scriptBinding = new Binding();
+  }
+
   void updateLoader() {
     this.updateLoader = true;
   }
@@ -138,7 +142,7 @@ class GroovyWorkerThread extends WorkerThread {
   GroovyClassLoader getGroovyClassLoaderInstance() {
     if (groovyClassLoader == null) {
       try {
-        this.groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir());
+        reloadClassloader();
       } catch (MalformedURLException e) {
         throw new RuntimeException(e);
       }

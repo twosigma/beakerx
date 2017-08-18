@@ -383,4 +383,44 @@ public class GroovyEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
+  @Test
+  public void autocompleteForJavaAwtAfterDotPackage() throws Exception {
+    String code = "java.awt.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+  }
+
+  @Test
+  public void autocompleteForJavaAwtPackage() throws Exception {
+    String code = "java.aw";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-2);
+  }
+
+  @Test
+  public void autocompleteForJavaPackage() throws Exception {
+    String code = "java.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+  }
+
+  @Test
+  public void autocompleteToJavaPackage() throws Exception {
+    String code = "jav";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(0);
+  }
+
 }

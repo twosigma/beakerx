@@ -30,7 +30,7 @@ development, including incompatible changes without notice.
 The [documentation](https://github.com/twosigma/beakerx/blob/master/doc/StartHere.ipynb) consists of tutorial notebooks on GitHub.
 
 BeakerX is the successor to the [Beaker
-Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).
+Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).  It comes from [Two Sigma Open Source](http://opensource.twosigma.com/). Yes we are [hiring](https://www.twosigma.com/careers).
 
 ## Install
 

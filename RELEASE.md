@@ -31,6 +31,7 @@ for twine setup instructions and for why twine is the recommended method.
 Update the version in `beakerx/beakerx/_version.py` and commit the change and push the git tag.
 
 ```bash
+cd beakerx
 rm -rf dist
 python setup.py sdist
 python setup.py bdist_wheel --universal

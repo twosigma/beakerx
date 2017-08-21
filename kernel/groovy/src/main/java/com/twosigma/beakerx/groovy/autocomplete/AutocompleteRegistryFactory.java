@@ -301,16 +301,20 @@ public class AutocompleteRegistryFactory {
           registry.addCandidate(c);
         }
       } else {
-        String[] txtv = imp.split("\\.");
-        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv, txtv.length - 1);
-        registry.addCandidate(c);
-        c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
-        registry.addCandidate(c);
-        c = new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, txtv[txtv.length - 1]);
-        registry.addCandidate(c);
-        cu.defineClassShortName(txtv[txtv.length - 1], imp);
+        createImportAutocompleteCandidate(cu, registry, imp);
       }
     }
+  }
+
+  public static void createImportAutocompleteCandidate(ClassUtils cu, AutocompleteRegistry registry, String imp) {
+    String[] txtv = imp.split("\\.");
+    AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv, txtv.length - 1);
+    registry.addCandidate(c);
+    c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
+    registry.addCandidate(c);
+    c = new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, txtv[txtv.length - 1]);
+    registry.addCandidate(c);
+    cu.defineClassShortName(txtv[txtv.length - 1], imp);
   }
 
 

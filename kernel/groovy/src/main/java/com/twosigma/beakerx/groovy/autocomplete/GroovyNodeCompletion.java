@@ -25,6 +25,8 @@ import com.twosigma.beakerx.groovy.autocomplete.GroovyParser.PathExpressionConte
 import org.antlr.v4.runtime.ParserRuleContext;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyParser.StatementContext;
 
+import static com.twosigma.beakerx.autocomplete.AutocompleteCandidate.EMPTY_NODE;
+
 public class GroovyNodeCompletion extends GroovyAbstractListener {
   private AutocompleteRegistry registry;
   private int cursor;
@@ -198,18 +200,21 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
 //      }
       String t = ctx.getText().substring(0, ctx.getText().length() - 5);
       addQuery(classUtils.expandExpression(t, registry, classUtils.DO_ALL), calculateStartIndex(t, ctx));
-      //AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, t);
-      //addQuery(c, calculateStartIndex(t, ctx));
-      String[] txtv;
-      if (t.endsWith(".")) {
-        txtv = (t + "X").split("\\.");
-        txtv[txtv.length - 1] = "";
-      } else {
-        txtv = (t).split("\\.");
-      }
+      String[] txtv = splitByDot(t);
       AutocompleteCandidate c2 = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
       addQuery(c2, calculateStartIndex(t, ctx));
     }
+  }
+
+  private String[] splitByDot(String t) {
+    String[] txtv;
+    if (t.endsWith(".")) {
+      txtv = (t + "X").split("\\.");
+      txtv[txtv.length - 1] = EMPTY_NODE;
+    } else {
+      txtv = (t).split("\\.");
+    }
+    return txtv;
   }
 
   private int calculateStartIndex(String t, ParserRuleContext ctx) {

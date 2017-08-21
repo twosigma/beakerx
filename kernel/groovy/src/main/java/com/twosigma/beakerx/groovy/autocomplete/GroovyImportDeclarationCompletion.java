@@ -26,6 +26,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static com.twosigma.beakerx.autocomplete.AutocompleteCandidate.EMPTY_NODE;
+import static com.twosigma.beakerx.groovy.autocomplete.AutocompleteRegistryFactory.createImportAutocompleteCandidate;
+
 public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyImportDeclarationCompletion.class.getName());
@@ -64,7 +67,7 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
       if (isWildcard(st)) {
         importWithWildcard(st);
       } else {
-        importsSpecificType(st);
+        createImportAutocompleteCandidate(classUtils,registry,st);
       }
     }
   }
@@ -89,7 +92,7 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
     st = removeImportWord(st);
     if (GroovyCompletionTypes.debug) logger.info("wants next package name for {}", st);
     String[] txtv = (st + "X").split("\\.");
-    txtv[txtv.length - 1] = "";
+    txtv[txtv.length - 1] = EMPTY_NODE;
     AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
     addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx)+1);
     c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
@@ -105,18 +108,6 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
     addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
     c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
     addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
-  }
-
-  private void importsSpecificType(String st) {
-    // this imports a specific type
-    String[] txtv = st.split("\\.");
-    AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv, txtv.length - 1);
-    registry.addCandidate(c);
-    c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
-    registry.addCandidate(c);
-    c = new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, txtv[txtv.length - 1]);
-    registry.addCandidate(c);
-    classUtils.defineClassShortName(txtv[txtv.length - 1], st);
   }
 
   private void importWithWildcard(String st) {

@@ -67,7 +67,7 @@ public class GroovyEvaluator extends BaseEvaluator {
   protected void doResetEnvironment() {
     String cpp = createClasspath(classPath);
     cps = new GroovyClasspathScanner(cpp);
-    gac = createAutocomplete(cps, imports);
+    gac = createGroovyAutocomplete(cps);
     worker.updateLoader();
     worker.halt();
   }
@@ -86,12 +86,6 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   private GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c) {
     return new GroovyAutocomplete(c);
-  }
-
-  private GroovyAutocomplete createAutocomplete(GroovyClasspathScanner cps, Imports imports) {
-    GroovyAutocomplete gac = createGroovyAutocomplete(cps);
-
-    return gac;
   }
 
   private String createClasspath(Classpath classPath) {

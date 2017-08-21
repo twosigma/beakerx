@@ -71,4 +71,5 @@ public class Scala extends Kernel {
     kernelParameters.put(IMPORTS, new ScalaDefaultVariables().getImports());
     return new KernelParameters(kernelParameters);
   }
+
 }

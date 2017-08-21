@@ -20,6 +20,7 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.Utils;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
@@ -195,9 +196,13 @@ public class Comm {
   }
 
   public void send() {
+    send(COMM_MSG);
+  }
+
+  public void send(JupyterMessages type) {
     Message parentMessage = getParentMessage();// can be null
     Message message = new Message();
-    message.setHeader(new Header(COMM_MSG, parentMessage != null ? parentMessage.getHeader().getSession() : null));
+    message.setHeader(new Header(type, parentMessage != null ? parentMessage.getHeader().getSession() : null));
     if (parentMessage != null) {
       message.setParentHeader(getParentMessage().getHeader());
     }
@@ -228,7 +233,7 @@ public class Comm {
   private Message getParentMessage() {
     return InternalVariable.getParentHeader();
   }
-  
+
   public void handleMsg(Message parentMessage) {
     if (this.getMsgCallbackList() != null && !this.getMsgCallbackList().isEmpty()) {
       for (Handler<Message> handler : getMsgCallbackList()) {

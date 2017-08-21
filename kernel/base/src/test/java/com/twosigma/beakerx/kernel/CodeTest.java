@@ -18,7 +18,6 @@ package com.twosigma.beakerx.kernel;
 import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.CLASSPATH_ADD_JAR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CodeTest {
@@ -47,9 +46,9 @@ public class CodeTest {
   public void shouldReadAllMagicCommands() throws Exception {
     //give
     String code = "" +
-            CLASSPATH_ADD_JAR + " lib1.jar\n" +
-            CLASSPATH_ADD_JAR + " lib2.jar\n" +
-            CLASSPATH_ADD_JAR + " lib3.jar\n" +
+            MagicCommand.CLASSPATH_ADD_JAR + " lib1.jar\n" +
+            MagicCommand.CLASSPATH_ADD_JAR + " lib2.jar\n" +
+            MagicCommand.CLASSPATH_ADD_JAR + " lib3.jar\n" +
             "code code code";
     //when
     Code result = new Code(code);

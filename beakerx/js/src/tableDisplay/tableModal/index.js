@@ -15,6 +15,7 @@
  */
 
 var bkHelper = require('./../../shared/bkHelper');
+var _ = require('underscore');
 
 module.exports = function(TableScope) {
 

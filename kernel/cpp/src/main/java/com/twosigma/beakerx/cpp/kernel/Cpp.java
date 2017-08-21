@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.cpp.kernel;
 
+import com.twosigma.beakerx.cpp.evaluator.CppEvaluator;
 import com.twosigma.beakerx.cpp.handlers.CppCommOpenHandler;
 import com.twosigma.beakerx.cpp.handlers.CppKernelInfoHandler;
 import com.twosigma.beakerx.cpp.utils.CppKernel;
@@ -36,7 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
-import static com.twosigma.beakerx.cpp.kernel.CppEvaluator.EXECUTE;
+import static com.twosigma.beakerx.cpp.evaluator.CppEvaluator.EXECUTE;
  import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 public class Cpp extends Kernel {

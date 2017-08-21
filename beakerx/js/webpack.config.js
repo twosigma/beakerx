@@ -15,7 +15,7 @@
  */
 
 var webpack = require('webpack');
-var version = require('./package.json').version;
+var package = require('./package.json');
 var path = require('path');
 
 // Custom webpack loaders are generally the same for all webpack bundles, hence
@@ -132,7 +132,7 @@ module.exports = [
       filename: 'index.js',
       path: path.resolve(__dirname, './dist/'),
       libraryTarget: 'amd',
-      publicPath: 'https://unpkg.com/beakerx@' + version + '/dist/'
+      publicPath: 'https://unpkg.com/' + package.name + '@' + package.version + '/dist/'
     },
     devtool: 'source-map',
     module: {
@@ -142,10 +142,7 @@ module.exports = [
       modules: ['web_modules', 'node_modules'],
       extensions: ['.jsx','.js','.less','.css']
     },
-    externals: ['@jupyter-widgets/controls', '@jupyter-widgets/base'],
-    watchOptions: {
-      ignored: /node_modules/
-    },
+    externals: ['@jupyter-widgets/controls', '@jupyter-widgets/base', '@jupyter-widgets/base'],
     plugins: plugins
   }
 ];

@@ -59,7 +59,7 @@ public class DisplayWidgetTest {
   }
 
   private void verifyCommDisplayMsg(IntSlider widget) {
-    assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(1);
+    assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(2);
     Message message = groovyKernel.getPublishedMessages().get(0);
     assertThat(getData(message).get(METHOD)).isEqualTo(DISPLAY_DATA.getName());
     verifyDisplayMsg(message);

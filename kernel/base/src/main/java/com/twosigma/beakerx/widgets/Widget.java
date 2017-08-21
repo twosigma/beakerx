@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +39,11 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
 public abstract class Widget implements CommFunctionality, DisplayableWidget {
-  
+
   private static final Logger logger = LoggerFactory.getLogger(Widget.class);
-  
+  public static final String APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON = "application/vnd.jupyter.widget-view+json";
+  public static final String MODEL_ID = "model_id";
+
   public enum CommActions {
 
     DOUBLE_CLICK("DOUBLE_CLICK"),
@@ -112,6 +115,20 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
 
   @Override
   public void display() {
+    sendDisplay();
+    sendDisplayData();
+  }
+
+  private void sendDisplayData() {
+    HashMap<String, Serializable> data = new HashMap<>(6);
+    data.put(MODEL_ID, getComm().getCommId());
+    HashMap<String, Serializable> content2 = new HashMap<>();
+    content2.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, data);
+    getComm().setData(content2);
+    getComm().send(DISPLAY_DATA);
+  }
+
+  private void sendDisplay() {
     HashMap<String, Serializable> content = new HashMap<>();
     HashMap<String, Serializable> data = new HashMap<>();
     //These magic numbers needs to be clarified

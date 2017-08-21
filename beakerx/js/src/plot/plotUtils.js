@@ -96,16 +96,27 @@ define([
     getSavePlotAsContextMenuItems: function (scope) {
       return [
         {
+          name: 'Save as SVG',
+          callback: function () {
+            scope.saveAsSvg();
+          }
+        },
+        {
           name: 'Save as PNG',
           callback: function () {
             scope.saveAsPng();
           }
         },
         {
-          name: 'Save as SVG',
-          callback: function () {
-            scope.saveAsSvg();
-          }
+          name: 'Save as PNG at high DPI...',
+          items: [2,3,4,5].map(function(scale) {
+            return {
+              name: scale + 'x',
+              callback: function() {
+                scope.saveAsPng(scale);
+              }
+            }
+          })
         }
       ];
     },
@@ -877,7 +888,7 @@ define([
       var image = new Image;
       image.src = imgsrc;
       image.onload = function() {
-        context.drawImage(image, 0, 0);
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
         download(canvas.toDataURL("image/png"), fileName);
         context.clearRect(0, 0, canvas.width, canvas.height);
       };

@@ -64,7 +64,10 @@ def _install_kernels():
     for kernel in _all_kernels():
         kernel_classpath = _classpath_for(kernel)
         classpath = os.pathsep.join([base_classpath, kernel_classpath])
-        # TODO: replace with string.Template, though this requires the
+        # workaround #5864
+        if sys.platform == 'win32':
+            classpath = classpath.replace('\\', '/')
+        # #5859: replace with string.Template, though this requires the
         # developer install to change too, so not doing right now.
         template = pkg_resources.resource_string(
             'beakerx', os.path.join('static', 'kernel', kernel, 'kernel.json'))

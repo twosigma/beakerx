@@ -60,6 +60,12 @@ var BeakerXPageObject = function () {
     return codeCell.$('div.dtcontainer');
   }
 
+  this.runCellToGetSvgElement = function(index){
+    this.kernelIdleIcon.waitForEnabled();
+    var codeCell = this.runCodeCellByIndex(index);
+    return codeCell.$('#svgg');
+  }
+
   this.runCallAndCheckOutputText = function(index, expectedText){
     var codeCell = this.runCodeCellByIndex(index);
     var outputText = codeCell.$('.output_subarea.output_text');

@@ -425,7 +425,7 @@ public class GroovyEvaluatorAutocompleteTest {
 
   @Test
   public void autocompleteStringMethod() throws Exception {
-    String code = "String a = \"ABC\";\n" +
+    String code = "a = \"ABC\";\n" +
             "a.";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
@@ -460,6 +460,16 @@ public class GroovyEvaluatorAutocompleteTest {
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
-
+  @Test
+  public void autocompleteToFileMethods() throws Exception {
+    String code = "fname = \"demoResources/bar-chart.vg.json\"\n" +
+                  "fileContents = new File(fname)\n" +
+                  "fileContents.t";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-1);
+  }
 
 }

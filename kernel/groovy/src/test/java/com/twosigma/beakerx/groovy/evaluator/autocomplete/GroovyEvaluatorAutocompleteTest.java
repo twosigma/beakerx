@@ -435,7 +435,7 @@ public class GroovyEvaluatorAutocompleteTest {
   }
 
   @Test
-  public void autocompleteToMethodsForImportedClasses() throws Exception {
+  public void autocompleteToMethodsForImportedClassesSeparatedByNewLine() throws Exception {
     String code = "import com.twosigma.beakerx.mimetype.MIMEContainer\n" +
             "import groovy.json.JsonSlurper\n" +
             "def jsonSlurper = new JsonSlurper()\n" +
@@ -446,6 +446,20 @@ public class GroovyEvaluatorAutocompleteTest {
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
+
+  @Test
+  public void autocompleteToMethodsForImportedClassesSeparatedBySemicolon() throws Exception {
+    String code = "import com.twosigma.beakerx.mimetype.MIMEContainer;" +
+            "import groovy.json.JsonSlurper\n" +
+            "def jsonSlurper = new JsonSlurper()\n" +
+            "def json = jsonSlurper.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+  }
+
 
 
 }

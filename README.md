@@ -36,7 +36,7 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ### Dependencies:
 
-* [conda](https://conda.io/docs/install/quick.html) (any Python 3
+* [conda](https://www.continuum.io/downloads) (any Python 3
   environment with [Jupyter Notebook](https://jupyter.org), a
   [JDK](http://jdk.java.net/8/), and
   [Pandas](http://pandas.pydata.org/) installed should be fine, but
@@ -64,7 +64,7 @@ beakerx-install
 
 ### Dependencies:
 
-* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment with [Jupyter Notebook](https://pypi.python.org/pypi/notebook), [Node.js](https://nodejs.org/en/), and [JDK](http://jdk.java.net/8/) installed should be fine, but our documentation assumes conda)
+* [conda](https://www.continuum.io/downloads) (any Python 3 environment with [Jupyter Notebook](https://pypi.python.org/pypi/notebook), [Node.js](https://nodejs.org/en/), and [JDK](http://jdk.java.net/8/) installed should be fine, but our documentation assumes conda)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 
 ### Install

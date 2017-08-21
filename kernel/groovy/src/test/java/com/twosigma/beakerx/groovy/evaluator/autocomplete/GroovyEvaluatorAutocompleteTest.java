@@ -400,7 +400,7 @@ public class GroovyEvaluatorAutocompleteTest {
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
-    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length()-2);
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 2);
   }
 
   @Test
@@ -426,12 +426,26 @@ public class GroovyEvaluatorAutocompleteTest {
   @Test
   public void autocompleteStringMethod() throws Exception {
     String code = "String a = \"ABC\";\n" +
-                  "a.";
+            "a.";
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
+
+  @Test
+  public void autocompleteToMethodsForImportedClasses() throws Exception {
+    String code = "import com.twosigma.beakerx.mimetype.MIMEContainer\n" +
+            "import groovy.json.JsonSlurper\n" +
+            "def jsonSlurper = new JsonSlurper()\n" +
+            "def json = jsonSlurper.";
+    //when
+    AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
+    //then
+    assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
+  }
+
 
 }

@@ -16,7 +16,6 @@
 package com.twosigma.beakerx.easyform;
 
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getData;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getState;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyDisplayMsg;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsg;
@@ -265,7 +264,7 @@ public class EasyFormTest {
   }
 
   private void verifyChildren(Message message, List<Widget> children) {
-    Map data = getState(message);
+    Map data = getData(message);
     Object[] objects = (Object[]) data.get(Box.CHILDREN);
     assertThat(objects.length).isEqualTo(children.size());
     for (int i = 0; i < children.size(); i++) {

@@ -35,7 +35,6 @@ import java.util.List;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 
 
 public class Comm {
@@ -45,20 +44,16 @@ public class Comm {
   public static final String METHOD = "method";
   public static final String UPDATE = "update";
   public static final String STATE = "state";
-  public static final String VERSION = "version";
 
   public static final String COMM_ID = "comm_id";
   public static final String TARGET_NAME = "target_name";
   public static final String DATA = "data";
-  public static final String METADATA = "metadata";
   public static final String TARGET_MODULE = "target_module";
   public static final String COMMS = "comms";
 
   private String commId;
-  private String msgType;
   private String targetName;
   private HashMap<?, ?> data;
-  private HashMap<?, ?> metadata;
   private String targetModule;
   private KernelFunctionality kernel;
   private List<Handler<Message>> msgCallbackList = new ArrayList<>();
@@ -70,7 +65,6 @@ public class Comm {
     this.commId = commId;
     this.targetName = targetName;
     this.data = new HashMap<>();
-    this.metadata = new HashMap<>();
   }
 
   public Comm(String commId, TargetNamesEnum targetName) {
@@ -99,14 +93,6 @@ public class Comm {
 
   public void setData(HashMap<?, ?> data) {
     this.data = data;
-  }
-
-  public void setMetaData(HashMap<?, ?> metadata) {
-    this.metadata = metadata;
-  }
-
-  public void setMsgType(String type) {
-    this.msgType = type;
   }
 
   public String getTargetModule() {
@@ -151,22 +137,9 @@ public class Comm {
     HashMap<String, Serializable> map = new HashMap<>();
     map.put(COMM_ID, getCommId());
     map.put(TARGET_NAME, getTargetName());
-
-    HashMap<String, Serializable> state = new HashMap<>();
-    state.put(STATE, data);
-    state.put(METHOD, (Serializable) data.get(METHOD));
-    map.put(DATA, state);
-    map.put(METADATA, metadata);
-
+    map.put(DATA, data);
     map.put(TARGET_MODULE, getTargetModule());
     message.setContent(map);
-
-    message.setMetadata(buildMetadata());
-
-    if (this.msgType != null) {
-      message.getHeader().setType(this.msgType);
-    }
-
     kernel.publish(message);
     kernel.addComm(getCommId(), this);
   }
@@ -187,10 +160,7 @@ public class Comm {
     HashMap<String, Serializable> map = new HashMap<>();
     map.put(COMM_ID, getCommId());
     map.put(DATA, new HashMap<>());
-    map.put(METADATA, new HashMap<>());
     message.setContent(map);
-    message.setMetadata(buildMetadata());
-
     kernel.removeComm(getCommId());
     kernel.publish(message);
   }
@@ -209,14 +179,7 @@ public class Comm {
     HashMap<String, Serializable> map = new HashMap<>(6);
     map.put(COMM_ID, getCommId());
     map.put(DATA, data);
-    map.put(METADATA, metadata);
     message.setContent(map);
-
-    message.setMetadata(buildMetadata());
-
-    if (this.msgType != null) {
-      message.getHeader().setType(this.msgType);
-    }
     kernel.publish(message);
   }
 
@@ -240,13 +203,6 @@ public class Comm {
         handler.handle(parentMessage);
       }
     }
-  }
-
-  private HashMap<String, Serializable> buildMetadata() {
-    HashMap<String, Serializable> metadata = new HashMap<>();
-    metadata.put(VERSION, "2");
-
-    return metadata;
   }
 
   @Override

@@ -107,7 +107,7 @@ module.exports = [
       modules: ['web_modules', 'node_modules'],
       extensions: ['.jsx','.js','.less','.css']
     },
-    externals: ['@jupyter-widgets/controls', '@jupyter-widgets/base'],
+    externals: ['jupyter-js-widgets'],
     watchOptions: {
       ignored: /node_modules/
     },
@@ -142,7 +142,7 @@ module.exports = [
       modules: ['web_modules', 'node_modules'],
       extensions: ['.jsx','.js','.less','.css']
     },
-    externals: ['@jupyter-widgets/controls', '@jupyter-widgets/base', '@jupyter-widgets/base'],
+    externals: ['jupyter-js-widgets', '@jupyter-widgets/base'],
     plugins: plugins
   }
 ];

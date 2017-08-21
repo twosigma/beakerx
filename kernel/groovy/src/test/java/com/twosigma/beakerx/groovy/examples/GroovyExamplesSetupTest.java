@@ -29,7 +29,6 @@ import org.junit.BeforeClass;
 import java.io.Serializable;
 import java.util.Map;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getState;
 import static org.junit.Assert.assertTrue;
 
 public abstract class GroovyExamplesSetupTest {
@@ -67,7 +66,7 @@ public abstract class GroovyExamplesSetupTest {
 
   private boolean isWidget(Message message, String viewNameValue) {
     if (message.getContent() != null) {
-      Map<String, Serializable> data = getState(message);
+      Map<String, Serializable> data = (Map<String, Serializable>) message.getContent().get("data");
       if (data != null) {
         Serializable easyForm = data.get(Widget.VIEW_NAME);
         if (easyForm != null) {

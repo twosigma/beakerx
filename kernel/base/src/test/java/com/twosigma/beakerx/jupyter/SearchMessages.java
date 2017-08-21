@@ -33,7 +33,7 @@ public class SearchMessages {
   }
 
   public static Message getLayoutForWidget(List<Message> messages, Message widget){
-    Map map = (Map) ((Map) widget.getContent().get(Comm.DATA)).get(Comm.STATE);
+    Map map = ((Map)widget.getContent().get(Comm.DATA));
     if(map == null || map.get(Layout.LAYOUT) == null) return null;
     String id = ((String) map.get(Layout.LAYOUT)).replace(Layout.IPY_MODEL, "");
     return getMessageByCommId(messages, id);
@@ -50,13 +50,7 @@ public class SearchMessages {
   public static List<Message> getListByDataAttr(List<Message> messages, String key, String value){
     return messages.stream()
         .filter(m -> {
-          Map map;
-          if (key.equals(Comm.METHOD)) {
-            map = (Map) m.getContent().get(Comm.DATA);
-          } else {
-            map = (Map) ((Map)m.getContent().get(Comm.DATA)).get(Comm.STATE);
-          }
-
+          Map map = ((Map)m.getContent().get(Comm.DATA));
           return map != null && map.containsKey(key) && value.equals(map.get(key));
         })
         .collect(Collectors.toList());

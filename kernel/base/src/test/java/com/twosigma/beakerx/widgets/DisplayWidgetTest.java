@@ -24,11 +24,8 @@ import org.junit.Test;
 import com.twosigma.beakerx.message.Message;
 
 import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
-import static com.twosigma.beakerx.kernel.comm.Comm.METHOD;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getContent;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getData;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyDisplayMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,7 +58,7 @@ public class DisplayWidgetTest {
   private void verifyCommDisplayMsg(IntSlider widget) {
     assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(2);
     Message message = groovyKernel.getPublishedMessages().get(0);
-    assertThat(getData(message).get(METHOD)).isEqualTo(DISPLAY_DATA.getName());
+    assertThat(message.getHeader().getType()).isEqualTo(COMM_MSG.getName());
     verifyDisplayMsg(message);
     assertThat(getContent(message).get(COMM_ID)).isEqualTo(widget.getComm().getCommId());
   }

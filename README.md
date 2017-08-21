@@ -34,6 +34,17 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ## Install
 
+### Dependencies:
+
+* [conda](https://conda.io/docs/install/quick.html) (any Python 3
+  environment with [Jupyter Notebook](https://jupyter.org), a
+  [JDK](http://jdk.java.net/8/), and
+  [Pandas](http://pandas.pydata.org/) installed should be fine, but
+  our documentation assumes conda).  Right now the easiest way to get
+  started is to create an environment with conda and then install
+  BeakerX with pip.  A conda package for BeakerX should be ready
+  soon.
+
 <!-- Install using [conda](https://conda.io/docs/install/quick.html):
 
 ```
@@ -43,6 +54,8 @@ conda install -c beakerx beakerx
 Using [pip](https://pypi.python.org/pypi/pip):
 
 ```
+conda create -y -n beakerx python=3.5 jupyter openjdk pandas
+source activate beakerx
 pip install beakerx
 beakerx-install
 ```

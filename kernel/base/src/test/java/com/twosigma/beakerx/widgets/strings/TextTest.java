@@ -31,7 +31,6 @@ import java.util.Map;
 import java.security.NoSuchAlgorithmException;
 
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getState;
 import static com.twosigma.beakerx.widgets.Widget.MODEL_NAME;
 import static com.twosigma.beakerx.widgets.Widget.MODEL_MODULE;
 import static com.twosigma.beakerx.widgets.Widget.VIEW_NAME;
@@ -100,7 +99,7 @@ public class TextTest {
     Message layout = SearchMessages.getLayoutForWidget(messages, widget);
 
     verifyTypeMsg(widget,COMM_OPEN);
-    Map data = getState(widget);
+    Map data = getData(widget);
     assertThat(data.get(LAYOUT)).isEqualTo(IPY_MODEL + layout.getContent().get(Comm.COMM_ID));
     assertThat(data.get(MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(MODEL_MODULE)).isEqualTo(modelModuleValue);

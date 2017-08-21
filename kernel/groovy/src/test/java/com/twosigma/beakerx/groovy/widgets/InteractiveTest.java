@@ -85,7 +85,7 @@ public class InteractiveTest {
     comm.handleMsg(initSyncDataMessage(comm.getCommId(), "TEST"));
     //then
     Message display = SearchMessages.getListMessagesByType(
-            groovyKernel.getPublishedMessages(), JupyterMessages.DISPLAY_DATA).get(1);
+            groovyKernel.getPublishedMessages(), JupyterMessages.DISPLAY_DATA).get(2);
     Map data = (Map) display.getContent().get(Comm.DATA);
     Assertions.assertThat(data).isNotEmpty();
     Assertions.assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo("TEST");

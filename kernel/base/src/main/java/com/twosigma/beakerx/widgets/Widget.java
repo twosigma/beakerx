@@ -83,8 +83,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   public static final String VIEW_MODULE = "_view_module";
   public static final String VIEW_NAME = "_view_name";
 
-  public static final String MODEL_MODULE_VALUE = "jupyter-js-widgets";
-  public static final String VIEW_MODULE_VALUE = "jupyter-js-widgets";
+  public static final String MODEL_MODULE_VALUE = "@jupyter-widgets/controls";
+  public static final String VIEW_MODULE_VALUE = "@jupyter-widgets/controls";
 
   public static final String VALUE = "value";
   public static final String DISABLED = "disabled";
@@ -116,16 +116,6 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   @Override
   public void display() {
     sendDisplay();
-    sendDisplayData();
-  }
-
-  private void sendDisplayData() {
-    HashMap<String, Serializable> data = new HashMap<>(6);
-    data.put(MODEL_ID, getComm().getCommId());
-    HashMap<String, Serializable> content2 = new HashMap<>();
-    content2.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, data);
-    getComm().setData(content2);
-    getComm().send(DISPLAY_DATA);
   }
 
   private void sendDisplay() {
@@ -137,7 +127,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     data.put("model_id", this.comm.getCommId());
 
     content.put(METHOD, DISPLAY);
-    content.put("application/vnd.jupyter.widget-view+json", data);
+    content.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, data);
     getComm().setData(content);
     getComm().setMsgType(DISPLAY);
     getComm().send();

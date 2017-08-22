@@ -131,5 +131,12 @@ public class Layout extends Widget {
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
-  
+
+  public String getModelModuleValue(){
+    return "@jupyter-widgets/base";
+  }
+
+  public String getViewModuleValue(){
+    return "@jupyter-widgets/base";
+  }
 }

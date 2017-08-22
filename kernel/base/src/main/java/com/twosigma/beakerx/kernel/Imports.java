@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kernel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -68,5 +69,10 @@ public class Imports {
 
   private void clear() {
     this.importsAsStrings = null;
+  }
+
+  @Override
+  public String toString() {
+    return imports.stream().map(ImportPath::asString).collect(Collectors.joining("\n"));
   }
 }

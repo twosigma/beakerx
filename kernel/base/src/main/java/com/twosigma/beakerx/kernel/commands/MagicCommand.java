@@ -74,6 +74,7 @@ public class MagicCommand {
   public static final String DATASOURCES = "%datasources";
 
   public static final String USAGE_ERROR_MSG = "UsageError: %s is a cell magic, but the cell body is empty.";
+  public static final String WRONG_FORMAT_MSG = "Wrong format. ";
 
   private MessageCreator messageCreator;
   private KernelFunctionality kernel;
@@ -113,8 +114,11 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        throw new RuntimeException("Wrong format.");
+        return sendErrorMessage(message, WRONG_FORMAT_MSG, executionCount);
+      } else if (!parts[1].contains("jdbc:")) {
+        return sendErrorMessage(message, "Incorrect jdbc url.", executionCount);
       }
+
       HashMap<String, Object> params = new HashMap<>();
       params.put(source, parts[1]);
       this.kernel.setShellOptions(new KernelParameters(params));
@@ -126,7 +130,7 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 3) {
-        sendErrorMessage(message, "Wrong import static format.", executionCount);
+        sendErrorMessage(message, WRONG_FORMAT_MSG, executionCount);
       }
 
       this.kernel.addImport(new ImportPath(parts[1] + " " + parts[2]));
@@ -156,7 +160,7 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        return sendErrorMessage(message, "Wrong import format.", executionCount);
+        return sendErrorMessage(message, WRONG_FORMAT_MSG, executionCount);
       }
       this.kernel.removeImport(new ImportPath(parts[1]));
       return getMagicCommandItem(code, message, executionCount);
@@ -186,7 +190,7 @@ public class MagicCommand {
       return (code, command, message, executionCount) -> {
           String[] split = splitPath(command);
           if (split.length != 4) {
-            return sendErrorMessage(message, "Wrong command format: " + CLASSPATH_ADD_JAR, executionCount);
+            return sendErrorMessage(message, WRONG_FORMAT_MSG + CLASSPATH_ADD_JAR, executionCount);
           }
 
           String path = split[3];

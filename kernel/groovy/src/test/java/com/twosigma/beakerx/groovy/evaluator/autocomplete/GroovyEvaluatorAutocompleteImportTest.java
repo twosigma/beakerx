@@ -48,7 +48,7 @@ public class GroovyEvaluatorAutocompleteImportTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    assertThat(autocomplete.getMatches().get(0)).isEqualTo("Boolean");
+    assertThat(autocomplete.getMatches()).contains("Boolean");
     assertThat(autocomplete.getStartIndex()).isEqualTo(code.length() - 3);
   }
 

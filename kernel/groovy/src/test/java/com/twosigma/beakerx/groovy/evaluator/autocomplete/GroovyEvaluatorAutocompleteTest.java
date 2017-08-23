@@ -88,6 +88,8 @@ public class GroovyEvaluatorAutocompleteTest {
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
     assertThat(autocomplete.getMatches()).isNotEmpty();
+    assertThat(autocomplete.getMatches()).contains("println");
+    assertThat(autocomplete.getStartIndex()).isEqualTo(code.length());
   }
 
   @Test
@@ -105,7 +107,7 @@ public class GroovyEvaluatorAutocompleteTest {
     //when
     AutocompleteResult autocomplete = groovyEvaluator.autocomplete(code, code.length());
     //then
-    assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("toString()");
+    assertThat(autocomplete.getMatches().get(0)).isEqualToIgnoringCase("toString");
   }
 
   @Test

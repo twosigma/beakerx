@@ -23,6 +23,7 @@ from traitlets import Unicode
 
 from beakerx.plot import BaseObject, chart
 from beakerx.easyform import easyform
+from beakerx.tabledisplay import *
 from ipykernel.comm import Comm
 
 
@@ -418,11 +419,17 @@ class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
             #print(e)
             #traceback.print_exc()
             return None
-
+        
+def _ipython_display_(self):
+    TableDisplay(self)._send({"method": "display"})
+    
 class BeakerX:
     """Runtime support for Python code in BeakerX."""
     _comm = Comm(target_name='beaker.autotranslation')
-
+    
+    def __init__(self):
+        pandas.DataFrame._ipython_display_ = _ipython_display_
+        
     def set4(self, var, val, unset, sync):
         args = {'name': var, 'sync':sync}
         if not unset:

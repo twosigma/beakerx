@@ -24,7 +24,6 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
-import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
 
@@ -61,14 +60,14 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    return gac.doAutocomplete(code, caretPosition, worker.getGroovyClassLoader());
+    return gac.doAutocomplete(code, caretPosition, worker.getGroovyClassLoaderInstance(), imports);
   }
 
   @Override
   protected void doResetEnvironment() {
     String cpp = createClasspath(classPath);
     cps = new GroovyClasspathScanner(cpp);
-    gac = createAutocomplete(cps, imports);
+    gac = createGroovyAutocomplete(cps);
     worker.updateLoader();
     worker.halt();
   }
@@ -87,14 +86,6 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   private GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c) {
     return new GroovyAutocomplete(c);
-  }
-
-  private GroovyAutocomplete createAutocomplete(GroovyClasspathScanner cps, Imports imports) {
-    GroovyAutocomplete gac = createGroovyAutocomplete(cps);
-    for (ImportPath st : imports.getImportPaths()) {
-      gac.addImport(st.asString());
-    }
-    return gac;
   }
 
   private String createClasspath(Classpath classPath) {

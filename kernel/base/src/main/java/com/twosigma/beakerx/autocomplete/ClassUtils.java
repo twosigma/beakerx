@@ -54,7 +54,14 @@ public class ClassUtils {
   }
 
   public void defineVariable(String name, String type) {
-    typeMap.put(name, type);
+    typeMap.put(groovyVariableNameGenericParserProblems(name), type);
+  }
+
+  private String groovyVariableNameGenericParserProblems(String name) {
+    if(name.contains(">")){
+      return name.substring(name.indexOf(">")+1,name.length());
+    }
+    return name;
   }
 
   public String getVariableType(String name) {
@@ -169,20 +176,7 @@ public class ClassUtils {
             if(!mm.getName().contains("$") && Modifier.isPublic(mm.getModifiers()) &&
                 ((Modifier.isStatic(mm.getModifiers()) && (type != DO_NON_STATIC)) ||
                     (!Modifier.isStatic(mm.getModifiers()) && (type != DO_STATIC))) ) {
-              String mtn = mm.getName();
-              Class<?>[] pt = mm.getParameterTypes();
-              if(pt!=null) {
-                mtn += "(";
-                for(int id=0; id<pt.length; id++) {
-                  if(id>0) mtn += ",";
-                  int idx = pt[id].getName().lastIndexOf('.');
-                  if(idx<0) idx=0; else idx++;
-                  mtn += "a"+pt[id].getName().substring(idx);
-                }
-                mtn += ")";
-              } else
-                mtn += "()";
-              AutocompleteCandidate c2 = new AutocompleteCandidate(GenericCompletionTypes.FIELD, mtn);
+              AutocompleteCandidate c2 = new AutocompleteCandidate(GenericCompletionTypes.FIELD, mm.getName());
               l.addChildren(c2);
             }
           }

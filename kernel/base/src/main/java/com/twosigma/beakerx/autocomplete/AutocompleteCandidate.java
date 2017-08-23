@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AutocompleteCandidate {
+
+	public static final String EMPTY_NODE = "";
+
 	private int type;
 	private String key;
 	private List<AutocompleteCandidate> children;
@@ -99,6 +102,12 @@ public class AutocompleteCandidate {
 		}
 		if(key.startsWith(a.key) && !ret.contains(key))
 			ret.add(key);
+
+		if(a.getKey()!= EMPTY_NODE && children!=null) {
+			for (AutocompleteCandidate c1 : children) {
+				c1.searchCandidates(ret, a);
+			}
+		}
 	}
 	
 	public AutocompleteCandidate findLeaf() {

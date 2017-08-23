@@ -19,35 +19,59 @@ import com.twosigma.beakerx.autocomplete.ClassUtils;
 import groovy.lang.GroovyClassLoader;
 
 import java.io.File;
+import java.util.List;
+import java.util.Optional;
 
 public class GroovyClassUtils extends ClassUtils {
 
   private GroovyClasspathScanner classpathscanner;
   private GroovyClassLoader gloader;
-  
+
   public GroovyClassUtils(GroovyClasspathScanner cps, ClassLoader l) {
     super(l);
     classpathscanner = cps;
   }
 
+  @Override
   protected Class<?> getClass(String name) throws ClassNotFoundException {
     try {
       Class<?> c = super.getClass(name);
-      if(c!=null)
+      if (c != null)
         return c;
-    } catch(Exception e) { }
+    } catch (Exception e) {
+    }
 
     String fname = classpathscanner.getFileForClass(name);
-    if(fname != null) {
+    if (fname != null) {
       try {
-        if(gloader==null)
-          gloader = new GroovyClassLoader(loader!=null ? loader : getClass().getClassLoader());
+        if (gloader == null)
+          gloader = new GroovyClassLoader(loader != null ? loader : getClass().getClassLoader());
         Class<?> groovyClass = gloader.parseClass(new File(fname));
         return groovyClass;
-      } catch(Exception e) { e.printStackTrace(); }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    Class<?> aClass = getClass(name, classpathscanner);
+    return aClass;
+  }
+
+
+  public Class<?> getClass(String name, GroovyClasspathScanner cps) {
+    for (String pkg : cps.getPackages()) {
+      List<String> cls = cps.getClasses(pkg);
+      if (cls != null && !cls.isEmpty()) {
+        Optional<String> clazz = cls.stream().filter(x -> x.equals(name)).findFirst();
+        if (clazz.isPresent()) {
+          try {
+            return Class.forName(pkg + "." + clazz.get());
+          } catch (ClassNotFoundException e) {
+            return null;
+          }
+        }
+      }
     }
     return null;
   }
-
-  
 }

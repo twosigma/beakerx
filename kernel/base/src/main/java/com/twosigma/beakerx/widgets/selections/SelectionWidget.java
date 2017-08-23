@@ -54,4 +54,12 @@ public abstract class SelectionWidget<T extends Serializable> extends ValueWidge
     sendUpdate(SIZE, size);
   }
 
+  public String getModelModuleValue(){
+    return "@jupyter-widgets/controls";
+  }
+
+  public String getViewModuleValue(){
+    return "@jupyter-widgets/controls";
+  }
+
 }

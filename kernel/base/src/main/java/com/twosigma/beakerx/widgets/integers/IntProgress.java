@@ -24,7 +24,7 @@ import java.util.HashMap;
 public class IntProgress extends BoundedIntWidget {
 
   public static final String VIEW_NAME_VALUE = "ProgressView";
-  public static final String MODEL_NAME_VALUE = "ProgressModel";
+  public static final String MODEL_NAME_VALUE = "IntProgressModel";
   protected static final String ORIENTATION = "orientation";
 
   private String orientation = "horizontal";

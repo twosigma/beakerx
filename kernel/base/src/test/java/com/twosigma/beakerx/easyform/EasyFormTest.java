@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.easyform;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getData;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getState;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyDisplayMsg;

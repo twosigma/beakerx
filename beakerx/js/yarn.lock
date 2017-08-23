@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@jupyter-widgets/base@^0.6.9":
-  version "0.6.9"
-  resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-0.6.9.tgz#640ffb504f48d57ed7b865771d611e67f67dccb6"
+"@jupyter-widgets/base@^0.6.12":
+  version "0.6.12"
+  resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-0.6.12.tgz#123cbe505eb9c7b2ff9ad5e8d948d001b0d7f82d"
   dependencies:
     "@jupyter-widgets/schema" "^0.3.0-beta.7"
     "@jupyterlab/services" "^0.48.0"
@@ -17,14 +17,14 @@
     "@types/semver" "^5.3.30"
     backbone "1.2.3"
     jquery "^3.1.1"
+    lodash "^4.17.4"
     semver "^5.1.0"
-    underscore "^1.8.3"
 
-"@jupyter-widgets/controls@^0.6.8":
-  version "0.6.15"
-  resolved "https://registry.yarnpkg.com/@jupyter-widgets/controls/-/controls-0.6.15.tgz#8dd141cf31f6c8a5659d8fdfe8d51005f9459c30"
+"@jupyter-widgets/controls@^0.6.4":
+  version "0.6.18"
+  resolved "https://registry.yarnpkg.com/@jupyter-widgets/controls/-/controls-0.6.18.tgz#2a1e0e45059d75c2f67b745d0fff5ac788384b96"
   dependencies:
-    "@jupyter-widgets/base" "^0.6.9"
+    "@jupyter-widgets/base" "^0.6.12"
     "@jupyter-widgets/schema" "^0.3.0-beta.7"
     "@jupyterlab/services" "^0.48.0"
     "@phosphor/algorithm" "^1.1.0"
@@ -1156,13 +1156,7 @@ datatables.net-select@^1.2.2:
     datatables.net ">=1.10.9"
     jquery ">=1.7"
 
-datatables.net@>=1.10.9:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-2.1.1.tgz#6f1103ef08054642aecf85e7e25efd592822ee78"
-  dependencies:
-    jquery ">=1.7"
-
-datatables.net@^1.10.15:
+datatables.net@>=1.10.9, datatables.net@^1.10.15:
   version "1.10.15"
   resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.10.15.tgz#c789077bbfe385e75ff5a233fa5f23251a72df68"
   dependencies:
@@ -1984,7 +1978,7 @@ lodash.uniq@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
 
-lodash@^4.0.0, lodash@^4.14.0, lodash@~4.17.4:
+lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.4, lodash@~4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -2998,11 +2992,7 @@ scss-tokenizer@^0.2.3:
     js-base64 "^2.1.8"
     source-map "^0.4.2"
 
-"semver@2 || 3 || 4 || 5", semver@^5.1.0, semver@^5.3.0:
-  version "5.4.1"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-5.4.1.tgz#e059c09d8571f0540823733433505d3a2f00b18e"
-
-semver@~5.3.0:
+"semver@2 || 3 || 4 || 5", semver@^5.1.0, semver@^5.3.0, semver@~5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
 

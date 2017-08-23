@@ -35,6 +35,7 @@ public class TestWidgetUtils {
   public static void verifyOpenCommMsg(List<Message> messages, String modelNameValue,
       String viewNameValue) {
     verifyInternalOpenCommMsgWitLayout(messages, modelNameValue, viewNameValue,
+
         Widget.MODEL_MODULE_VALUE,
         Widget.VIEW_MODULE_VALUE);
   }
@@ -52,8 +53,6 @@ public class TestWidgetUtils {
       String viewNameValue) {
     verifyTypeMsg(message, COMM_OPEN);
     Map data = getState(message);
-    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(BeakerxWidget.MODEL_MODULE_VALUE);
-    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(BeakerxWidget.VIEW_MODULE_VALUE);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
@@ -73,8 +72,6 @@ public class TestWidgetUtils {
     Map data = getState(widget);
     assertThat(data.get(Layout.LAYOUT))
         .isEqualTo(Layout.IPY_MODEL + layout.getContent().get(Comm.COMM_ID));
-    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(modelModule);
-    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(viewModule);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }

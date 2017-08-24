@@ -21,17 +21,17 @@ import scala.collection.JavaConverters._
 
 class ConstantBand extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantBand {
 
-  def this(x: List[_]) {
+  def this(x: Seq[_]) {
     this()
     super.setX(x.map(x => x.asInstanceOf[AnyRef]).asJava)
   }
 
-  def this(x: List[_], y: List[_]) {
+  def this(x: Seq[_], y: Seq[_]) {
     this(x)
     super.setY(x.map(x => x.asInstanceOf[Number]).asJava)
   }
 
-  def this(x: List[_], color: Color) {
+  def this(x: Seq[_], color: Color) {
     this(x)
     super.setColor(color)
   }

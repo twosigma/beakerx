@@ -19,19 +19,19 @@ package com.twosigma.beakerx.scala.chart.xychart.plotitem
 import scala.collection.JavaConverters._
 
 
-class Line(var xs: List[AnyVal], var ys: List[AnyVal]) extends com.twosigma.beakerx.chart.xychart.plotitem.Line(xs.map(x => x.asInstanceOf[AnyRef]).asJava, ys.map(x => x.asInstanceOf[Number]).asJava) {
+class Line(var xs: Seq[AnyVal], var ys: Seq[AnyVal]) extends com.twosigma.beakerx.chart.xychart.plotitem.Line(xs.map(x => x.asInstanceOf[AnyRef]).asJava, ys.map(x => x.asInstanceOf[Number]).asJava) {
 
-  def this(ys: List[AnyVal]) {
+  def this(ys: Seq[AnyVal]) {
     this(List(), ys)
     super.setY(ys.map(x => x.asInstanceOf[Number]).asJava)
   }
 
-  def this(ys: List[AnyVal], displayName: String) {
+  def this(ys: Seq[AnyVal], displayName: String) {
     this(ys)
     super.setDisplayName(displayName)
   }
 
-  def this(displayName: String, xs: List[AnyVal], ys: List[AnyVal], width: Float) {
+  def this(displayName: String, xs: Seq[AnyVal], ys: Seq[AnyVal], width: Float) {
     this(xs, ys)
     super.setDisplayName(displayName)
     super.setWidth(width)

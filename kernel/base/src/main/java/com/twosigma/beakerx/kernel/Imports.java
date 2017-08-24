@@ -17,12 +17,14 @@ package com.twosigma.beakerx.kernel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class Imports {
 
   private List<ImportPath> imports = new ArrayList<>();
+  private List<String> importsAsStrings = null;
 
   public List<ImportPath> getImportPaths() {
     return imports;
@@ -30,7 +32,8 @@ public class Imports {
 
   public boolean add(ImportPath anImport) {
     checkNotNull(anImport);
-    if(!this.imports.contains(anImport)){
+    if (!this.imports.contains(anImport)) {
+      clear();
       return this.imports.add(anImport);
     }
     return false;
@@ -38,12 +41,38 @@ public class Imports {
 
   public boolean remove(ImportPath anImport) {
     checkNotNull(anImport);
-    if(this.imports.contains(anImport)){
+    if (this.imports.contains(anImport)) {
+      clear();
       return this.imports.remove(anImport);
     }
     return false;
   }
+
   public boolean isEmpty() {
     return imports.isEmpty();
+  }
+
+  public List<String> toListOfStrings() {
+    if (importsAsStrings == null) {
+      this.importsAsStrings = importsToStrings();
+    }
+    return this.importsAsStrings;
+  }
+
+  private List<String> importsToStrings() {
+    List<String> importsAsStrings = new ArrayList<>();
+    for (ImportPath st : getImportPaths()) {
+      importsAsStrings.add(st.asString());
+    }
+    return importsAsStrings;
+  }
+
+  private void clear() {
+    this.importsAsStrings = null;
+  }
+
+  @Override
+  public String toString() {
+    return imports.stream().map(ImportPath::asString).collect(Collectors.joining("\n"));
   }
 }

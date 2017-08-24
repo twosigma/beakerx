@@ -28,47 +28,47 @@ object EasyForm {
 
 class EasyForm(var caption: String) extends com.twosigma.beakerx.easyform.EasyForm(caption) {
 
-  def addComboBox(label: String, values: List[String]): EasyFormComponent[_ <: DOMWidget] = {
+  def addComboBox(label: String, values: Seq[String]): EasyFormComponent[_ <: DOMWidget] = {
     super.addComboBox(label, values.asJava, false)
   }
 
-  def addComboBox(label: String, values: List[String], editable: Boolean): EasyFormComponent[_ <: DOMWidget] = {
+  def addComboBox(label: String, values: Seq[String], editable: Boolean): EasyFormComponent[_ <: DOMWidget] = {
     super.addComboBox(label, values.asJava, editable)
   }
 
-  def addComboBox(label: String, values: List[String], editable: Boolean, width: Integer): EasyFormComponent[_ <: DOMWidget] = {
+  def addComboBox(label: String, values: Seq[String], editable: Boolean, width: Integer): EasyFormComponent[_ <: DOMWidget] = {
     super.addComboBox(label, values.asJava, editable, width)
   }
 
-  def addList(label: String, values: List[String]): EasyFormComponent[_ <: DOMWidget] = {
+  def addList(label: String, values: Seq[String]): EasyFormComponent[_ <: DOMWidget] = {
     super.addList(label, values.asJava)
   }
 
-  def addList(label: String, values: List[String], multipleSelection: Boolean): EasyFormComponent[_ <: DOMWidget] = {
+  def addList(label: String, values: Seq[String], multipleSelection: Boolean): EasyFormComponent[_ <: DOMWidget] = {
     super.addList(label, values.asJava, multipleSelection)
   }
 
-  def addList(label: String, values: List[String], size: Integer): EasyFormComponent[_ <: DOMWidget] = {
+  def addList(label: String, values: Seq[String], size: Integer): EasyFormComponent[_ <: DOMWidget] = {
     super.addList(label, values.asJava, size)
   }
 
-  def addList(label: String, values: List[String], multipleSelection: Boolean, size: Integer): EasyFormComponent[_ <: DOMWidget] = {
+  def addList(label: String, values: Seq[String], multipleSelection: Boolean, size: Integer): EasyFormComponent[_ <: DOMWidget] = {
     super.addList(label, values.asJava, multipleSelection, size)
   }
 
-  def addRadioButtons(label: String, values: List[String]): EasyFormComponent[_ <: DOMWidget] = {
+  def addRadioButtons(label: String, values: Seq[String]): EasyFormComponent[_ <: DOMWidget] = {
     super.addRadioButtons(label, values.asJava)
   }
 
-  def addRadioButtons(label: String, values: List[String], orientation: Integer): EasyFormComponent[_ <: DOMWidget] = {
+  def addRadioButtons(label: String, values: Seq[String], orientation: Integer): EasyFormComponent[_ <: DOMWidget] = {
     super.addRadioButtons(label, values.asJava, orientation)
   }
 
-  def addCheckBoxes(label: String, values: List[String]): EasyFormComponent[_ <: DOMWidget] = {
+  def addCheckBoxes(label: String, values: Seq[String]): EasyFormComponent[_ <: DOMWidget] = {
     super.addCheckBoxes(label, values.asJava)
   }
 
-  def addCheckBoxes(label: String, values: List[String], orientation: Integer): EasyFormComponent[_ <: DOMWidget] = {
+  def addCheckBoxes(label: String, values: Seq[String], orientation: Integer): EasyFormComponent[_ <: DOMWidget] = {
     super.addCheckBoxes(label, values.asJava, orientation)
   }
 }

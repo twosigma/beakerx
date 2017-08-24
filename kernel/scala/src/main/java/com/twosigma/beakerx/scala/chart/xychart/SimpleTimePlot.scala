@@ -22,7 +22,7 @@ import scala.collection.JavaConverters._
 
 class SimpleTimePlot(data: util.List[util.Map[String, AnyRef]], columns: util.List[String]) extends com.twosigma.beakerx.chart.xychart.SimpleTimePlot(data, columns) {
 
-  def this(data: util.List[util.Map[String, AnyRef]], columns: List[String], yLabel: String, displayNames: List[String]) {
+  def this(data: util.List[util.Map[String, AnyRef]], columns: Seq[String], yLabel: String, displayNames: Seq[String]) {
     this(data, columns.asJava)
     super.setYLabel(yLabel)
     super.setDisplayNames(displayNames.asJava)

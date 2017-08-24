@@ -140,3 +140,10 @@ class TableDisplay(DOMWidget):
         self.chart.cellHighlighters = []
         self.model = self.chart.transform()
         return self
+    
+    def addCellHighlighter(self, highlighter):
+        if isinstance(highlighter, HeatmapHighlighter):
+            self.chart.cellHighlighters.append(highlighter)
+            self.model = self.chart.transform()
+        return self
+        

@@ -72,6 +72,21 @@ class DecimalStringFormat:
         self.minDecimals = min
         self.maxDecimals = max
 
+class HighlightStyle(Enum):
+    FULL_ROW = 1
+    SINGLE_COLUMN = 2
+
+
+class HeatmapHighlighter:
+    type = "HeatmapHighlighter"
+    def __init__(self, colName, style, minVal, maxVal, minColor, maxColor):
+        self.colName = colName
+        self.style = style.name
+        self.minVal = minVal
+        self.maxVal = maxVal
+        self.minColor = minColor
+        self.maxColor = maxColor
+
 
 class TableDisplayCellRenderer:
     @staticmethod
@@ -83,3 +98,13 @@ class TableDisplayStringFormat:
     @staticmethod
     def getDecimalFormat(min, max):
         return DecimalStringFormat(min, max)
+
+class TableDisplayCellHighlighter:
+    FULL_ROW = HighlightStyle.FULL_ROW
+    SINGLE_COLUMN = HighlightStyle.SINGLE_COLUMN
+    defaultStyle = HighlightStyle.FULL_ROW
+    
+    @staticmethod
+    def getHeatmapHighlighter(colName, style=defaultStyle, minVal=None, maxVal=None, minColor=None, maxColor=None):
+        return HeatmapHighlighter (colName, style, minVal, maxVal, minColor, maxColor)
+        

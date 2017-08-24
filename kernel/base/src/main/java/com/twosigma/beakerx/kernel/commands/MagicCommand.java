@@ -70,13 +70,14 @@ public class MagicCommand {
   public static final String CLASSPATH_ADD_JAR = CLASSPATH + " add jar";
   public static final String CLASSPATH_REMOVE = CLASSPATH + " remove";
   public static final String CLASSPATH_SHOW = CLASSPATH;
-  public static final String ADD_IMPORT = "%import";
-  public static final String ADD_STATIC_IMPORT = ADD_IMPORT + " static";
+  public static final String IMPORT = "%import";
+  public static final String ADD_STATIC_IMPORT = IMPORT + " static";
   public static final String UNIMPORT = "%unimport";
   public static final String DEFAULT_DATASOURCE = "%defaultDatasource";
   public static final String DATASOURCES = "%datasources";
 
   public static final String USAGE_ERROR_MSG = "UsageError: %s is a cell magic, but the cell body is empty.";
+  public static final String WRONG_FORMAT_MSG = "Wrong format. ";
 
   private MessageCreator messageCreator;
   private KernelFunctionality kernel;
@@ -116,8 +117,11 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        throw new RuntimeException("Wrong format.");
+        return sendErrorMessage(message, WRONG_FORMAT_MSG, executionCount);
+      } else if (!parts[1].contains("jdbc:")) {
+        return sendErrorMessage(message, "Incorrect jdbc url.", executionCount);
       }
+
       HashMap<String, Object> params = new HashMap<>();
       params.put(source, parts[1]);
       this.kernel.setShellOptions(new KernelParameters(params));
@@ -129,7 +133,7 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 3) {
-        sendErrorMessage(message, "Wrong import static format.", executionCount);
+        sendErrorMessage(message, WRONG_FORMAT_MSG, executionCount);
       }
 
       this.kernel.addImport(new ImportPath(parts[1] + " " + parts[2]));
@@ -141,7 +145,7 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        return sendErrorMessage(message, "Wrong import format.", executionCount);
+        return createResultWithCustomMessage(kernel.getImports().toString(), message, executionCount);
       }
 
       if (isValidImport(parts[1], executionCount)) {
@@ -167,11 +171,18 @@ public class MagicCommand {
     }
   }
 
+  private MagicCommandItem createResultWithCustomMessage(String customMessage, Message message, int executionCount) {
+    return new MagicCommandItemWithResult(
+        messageCreator
+            .buildOutputMessage(message, customMessage, false),
+        messageCreator.buildReplyWithoutStatus(message, executionCount));
+  }
+
   public MagicCommandFunctionality unimport() {
     return (code, command, message, executionCount) -> {
       String[] parts = command.split(" ");
       if (parts.length != 2) {
-        return sendErrorMessage(message, "Wrong import format.", executionCount);
+        return sendErrorMessage(message, WRONG_FORMAT_MSG, executionCount);
       }
       this.kernel.removeImport(new ImportPath(parts[1]));
       return getMagicCommandItem(code, message, executionCount);
@@ -189,9 +200,7 @@ public class MagicCommand {
                 code.takeCodeWithoutCommand().get());
       }
 
-      return new MagicCommandItemWithResult(
-              messageCreator.buildOutputMessage(message, result.getData().toString(), false),
-              messageCreator.buildReplyWithoutStatus(message, executionCount));
+      return createResultWithCustomMessage(result.getData().toString(), message, executionCount);
     };
   }
 
@@ -203,7 +212,7 @@ public class MagicCommand {
       return (code, command, message, executionCount) -> {
           String[] split = splitPath(command);
           if (split.length != 4) {
-            return sendErrorMessage(message, "Wrong command format: " + CLASSPATH_ADD_JAR, executionCount);
+            return sendErrorMessage(message, WRONG_FORMAT_MSG + CLASSPATH_ADD_JAR, executionCount);
           }
 
           String path = split[3];

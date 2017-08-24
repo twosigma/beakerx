@@ -30,63 +30,77 @@ development, including incompatible changes without notice.
 The [documentation](https://github.com/twosigma/beakerx/blob/master/doc/StartHere.ipynb) consists of tutorial notebooks on GitHub.
 
 BeakerX is the successor to the [Beaker
-Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).
+Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).  It comes from [Two Sigma Open Source](http://opensource.twosigma.com/). Yes we are [hiring](https://www.twosigma.com/careers).
 
 ## Install
 
-Install using [conda](https://conda.io/docs/install/quick.html):
+### Dependencies:
+
+* [conda](https://www.continuum.io/downloads) (any Python 3
+  environment with [Jupyter Notebook](https://jupyter.org), a
+  [JDK](http://jdk.java.net/8/), and
+  [Pandas](http://pandas.pydata.org/) installed should be fine, but
+  our documentation assumes conda).  Right now the easiest way to get
+  started is to create an environment with conda and then install
+  BeakerX with pip.  A conda package for BeakerX should be ready
+  soon.
+
+<!-- Install using [conda](https://conda.io/docs/install/quick.html):
 
 ```
 conda install -c beakerx beakerx
-```
+``` -->
 
 Using [pip](https://pypi.python.org/pypi/pip):
 
 ```
+conda create -y -n beakerx python=3.5 jupyter openjdk pandas
+source activate beakerx
 pip install beakerx
-jupyter nbextension install beakerx --py --sys-prefix
-jupyter nbextension enable beakerx --py --sys-prefix
+beakerx-install
 ```
 
 ## Developer Install
 
 ### Dependencies:
 
-* [conda](https://conda.io/docs/install/quick.html) (any Python 3 environment with [Jupyter Notebook](https://pypi.python.org/pypi/notebook), [Node.js](https://nodejs.org/en/), and [JDK](http://jdk.java.net/8/) installed should be fine, but our documentation assumes conda)
+* [conda](https://www.continuum.io/downloads) (any Python 3 environment with [Jupyter Notebook](https://pypi.python.org/pypi/notebook), [Node.js](https://nodejs.org/en/), and [JDK](http://jdk.java.net/8/) installed should be fine, but our documentation assumes conda)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 
 ### Install
 
 ```
-conda create -y -n beakerx python=3.5 jupyter openjdk nodejs
+conda create -y -n beakerx python=3.5 jupyter openjdk nodejs pandas
 source activate beakerx
 (cd beakerx; pip install -e . --verbose)
-jupyter nbextension install beakerx --py --sys-prefix
-jupyter nbextension enable beakerx --py --sys-prefix
+beakerx-install
 ```
 
 ### Update after Java change
 
-The kernels are installed to run out of the repo, so just a build should update the java code.
+The kernels are installed to run out of the repo, so just a local
+build should suffice:
 
 ```
-(cd beakerx; python setup.py java)
+(cd kernel; ./gradlew build)
 ```
-
-Note this is currently broken and you need to do a complete rebuild
-after a java change. See
-[#5739](https://github.com/twosigma/beakerx/issues/5739).
 
 ### Update after JS change
 
+The notebook extensions are installed to run out of the repo, so just
+a local build should suffice:
+
 ```
-(cd beakerx; python setup.py js)
+(cd beakerx/js; yarn install)
 ```
 
 ## Beaker Notebooks Converter
 
+You can convert classic Beaker Notebook files (with file suffix
+".bkr") to Jupyter Notebooks (with file suffix ".ipynb") as follows:
+
 ```
-(cd beakerx; python -m beakerx.bkr2ipynb *.bkr)
+python -m beakerx.bkr2ipynb *.bkr
 ```
 
 ## Groovy with Interactive Plotting and Tables:

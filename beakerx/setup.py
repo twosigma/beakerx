@@ -28,45 +28,52 @@ from setupbase import (
     here
 )
 import os
-from os.path import join as pjoin
 
 
 cmdclass = create_cmdclass(develop_wrappers=[
     'js',
     'java',
-    'kernels',
+    'kernels_develop',
     'kernelspec_class',
     'custom_css'
+], distribute_wrappers=[
+    'js',
+    'java'
 ], install_wrappers=[
-    'kernels',
     'kernelspec_class',
     'custom_css'
 ])
 cmdclass['js'] = install_node_modules(
     path='js', 
-    build_dir=pjoin(here, 'js', 'dist'),
-    source_dir=pjoin(here, 'js', 'src')
+    build_dir=os.path.join(here, 'js', 'dist'),
+    source_dir=os.path.join(here, 'js', 'src')
 )
 cmdclass['java'] = run_gradle(cmd='build')
-cmdclass['kernels'] = install_kernels(kernels_dir=pjoin(here, 'beakerx', 'static', 'kernel'))
+cmdclass['kernels_develop'] = install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel'), target_dir=os.path.join(here, 'beakerx', 'static', 'kernel'))
 cmdclass['kernelspec_class'] = update_kernelspec_class(prefix=os.environ['CONDA_PREFIX'])
 cmdclass['custom_css'] = copy_files(
-    src=pjoin(here,  'beakerx', 'static', 'custom'), 
-    dest=pjoin(os.environ['CONDA_PREFIX'], 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
+    src=os.path.join(here, 'beakerx', 'static', 'custom'), 
+    dest=os.path.join(os.environ['CONDA_PREFIX'], 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
 )
 
 setup_args = dict(
     name                = 'beakerx',
     description         = 'BeakerX: Beaker Extensions for Jupyter Notebook',
     long_description    = 'BeakerX: Beaker Extensions for Jupyter Notebook',
-    version             = get_version(pjoin('beakerx', '_version.py')),
+    version             = get_version(os.path.join('beakerx', '_version.py')),
     author              = 'Two Sigma Open Source, LLC',
-    author_email        = 'beaker-feedback@twosigma.com',
-    url                 = 'http://beakernotebook.com',
+    author_email        = 'beakerx-feedback@twosigma.com',
+    url                 = 'http://github.com/twosigma/beakerx',
     keywords            = [
         'ipython',
         'jupyter',
         'widgets',
+        'java',
+        'clojure',
+        'groovy',
+        'scala',
+        'kotlin',
+        'sql',
     ],
     classifiers         = [
         'Development Status :: 4 - Beta',
@@ -81,9 +88,17 @@ setup_args = dict(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
+    entry_points={
+        'console_scripts': [
+            'beakerx-install = beakerx.install:install'
+        ]
+    },
+    package_data={
+        'beakerx': 'static/kernel/*/kernel.json'
+    },
     data_files          = [(
         'share/jupyter/nbextensions/beakerx', 
-        get_data_files(pjoin('beaker', 'static'))
+        get_data_files(os.path.join('beaker', 'static'))
     )],
     install_requires    = [
         'notebook >=4.3.1',

@@ -18,7 +18,6 @@ package com.twosigma.beakerx.groovy.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
 import com.twosigma.beakerx.autocomplete.AutocompleteRegistry;
-import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClassUtils;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyParser.ImportStatementContext;
@@ -26,6 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+
+import static com.twosigma.beakerx.autocomplete.AutocompleteCandidate.EMPTY_NODE;
+import static com.twosigma.beakerx.groovy.autocomplete.AutocompleteRegistryFactory.createImportAutocompleteCandidate;
 
 public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
 
@@ -45,78 +47,85 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
     classUtils = cu;
   }
 
+  /**
+   * This is used to autocomplete IMPORT statements and to add to our type definitions every imported package and class
+   *
+   * @param ctx
+   */
   @Override
   public void exitImportStatement(ImportStatementContext ctx) {
-    if(cursor==0)
-      return;
-
-    /*
-     * This is used to autocomplete IMPORT statements and to add to our type definitions every imported package and class
-     */
-
-    if(ctx.getStart().getStartIndex() < cursor && ctx.getStop().getStopIndex()+1 >= cursor) {
-      // match... we are autocompleting this import declaration
-
-      if(text.charAt(cursor-1)=='.') {
-        // looking for next package name
-        String st = ctx.getText();
-        if(st.startsWith("import"))
-          st = st.substring(6).trim();
-        if(GroovyCompletionTypes.debug) logger.info("wants next package name for {}", st);
-        String [] txtv = (st+"X").split("\\.");
-        txtv[txtv.length-1] = "";
-        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
-        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
-        c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
-        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+    if (isAutocompleteOfImportStatement(ctx)) {
+      if (text.charAt(cursor - 1) == '.') {
+        importPackageNameAfterDot(ctx);
       } else {
-        // looking to autocomplete a package name
-        String st = ctx.getText();
-        if(st.startsWith("import"))
-          st = st.substring(6).trim();
-        if(GroovyCompletionTypes.debug) logger.info("wants to finish package name for {}", st);
-        String [] txtv = st.split("\\.");
-        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
-        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
-        c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
-        addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+        importPackageName(ctx);
       }
     } else {
-      // add this import declaration
       String st = ctx.getText();
-      if(st.startsWith("import"))
-        st = st.substring(6).trim();
-      if(GroovyCompletionTypes.debug) logger.info("adding import for {}", st);
-      // is this imports using '*' ?
-      if (st.endsWith(".*")) {
-        String [] txtv = st.split("\\.");
-        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
-        registry.addCandidate(c);
-        st = st.substring(0,st.length()-2);
-        List<String> cls = cps.getClasses(st);
-        if(cls!=null) {
-          c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
-          AutocompleteCandidate l = c.findLeaf();
-          for ( String s : cls) {
-            l.addChildren(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
-            registry.addCandidate(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
-            classUtils.defineClassShortName(s, st+"."+s);
-            if(GroovyCompletionTypes.debug)  logger.info("define {} {}.{}", s, st, s);
-          }
-          registry.addCandidate(c);
-        }
+      st = removeImportWord(st);
+      if (GroovyCompletionTypes.debug) logger.info("adding import for {}", st);
+      if (isWildcard(st)) {
+        importWithWildcard(st);
       } else {
-        // this imports a specific type
-        String [] txtv = st.split("\\.");
-        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv, txtv.length-1);
-        registry.addCandidate(c);
-        c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
-        registry.addCandidate(c);
-        c = new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, txtv[txtv.length-1]);
-        registry.addCandidate(c);
-        classUtils.defineClassShortName(txtv[txtv.length-1], st);
-
+        createImportAutocompleteCandidate(classUtils,registry,st);
       }
+    }
+  }
+
+  private boolean isWildcard(String st) {
+    return st.endsWith(".*");
+  }
+
+  private boolean isAutocompleteOfImportStatement(ImportStatementContext ctx) {
+    return ctx.getStart().getStartIndex() < cursor && ctx.getStop().getStopIndex() + 1 >= cursor;
+  }
+
+  private String removeImportWord(String st) {
+    if (st.startsWith("import")) {
+      st = st.substring(6).trim();
+    }
+    return st;
+  }
+
+  private void importPackageNameAfterDot(ImportStatementContext ctx) {
+    String st = ctx.getText();
+    st = removeImportWord(st);
+    if (GroovyCompletionTypes.debug) logger.info("wants next package name for {}", st);
+    String[] txtv = (st + "X").split("\\.");
+    txtv[txtv.length - 1] = EMPTY_NODE;
+    AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
+    addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx)+1);
+    c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
+    addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx)+1);
+  }
+
+  private void importPackageName(ImportStatementContext ctx) {
+    String st = ctx.getText();
+    st = removeImportWord(st);
+    if (GroovyCompletionTypes.debug) logger.info("wants to finish package name for {}", st);
+    String[] txtv = st.split("\\.");
+    AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
+    addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+    c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
+    addQuery(c, AutocompleteGroovyResult.getStartIndex(ctx));
+  }
+
+  private void importWithWildcard(String st) {
+    String[] txtv = st.split("\\.");
+    AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
+    registry.addCandidate(c);
+    st = st.substring(0, st.length() - 2);
+    List<String> cls = cps.getClasses(st);
+    if (cls != null) {
+      c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
+      AutocompleteCandidate l = c.findLeaf();
+      for (String s : cls) {
+        l.addChildren(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
+        registry.addCandidate(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
+        classUtils.defineClassShortName(s, st + "." + s);
+        if (GroovyCompletionTypes.debug) logger.info("define {} {}.{}", s, st, s);
+      }
+      registry.addCandidate(c);
     }
   }
 

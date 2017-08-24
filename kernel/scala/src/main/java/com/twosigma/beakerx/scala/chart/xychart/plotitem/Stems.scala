@@ -23,7 +23,7 @@ import com.twosigma.beakerx.chart.xychart.plotitem.StrokeType
 
 class Stems extends com.twosigma.beakerx.chart.xychart.plotitem.Stems {
 
-  def this(y: List[Double], colors: List[Color], style: StrokeType, width: Float) {
+  def this(y: Seq[Double], colors: Seq[Color], style: StrokeType, width: Float) {
     this()
     super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
     super.setColor(colors.asJava)
@@ -31,7 +31,7 @@ class Stems extends com.twosigma.beakerx.chart.xychart.plotitem.Stems {
     super.setWidth(width)
   }
 
-  def this(y: List[Double], colors: List[Color], styles: List[StrokeType], width: Float) {
+  def this(y: Seq[Double], colors: Seq[Color], styles: Seq[StrokeType], width: Float) {
     this()
     super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
     super.setColor(colors.asJava)

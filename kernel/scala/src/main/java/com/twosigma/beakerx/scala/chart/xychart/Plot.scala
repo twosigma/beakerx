@@ -59,7 +59,7 @@ class Plot extends com.twosigma.beakerx.chart.xychart.Plot {
     super.setTitleStyle(title)
   }
 
-  def add(items: List[Object]): XYChart = {
+  def add(items: Seq[Object]): XYChart = {
     add(items.asJava)
   }
 }

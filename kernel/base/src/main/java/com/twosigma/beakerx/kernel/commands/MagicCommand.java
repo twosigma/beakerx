@@ -24,6 +24,7 @@ import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 import static java.util.Collections.singletonList;
 
 import com.google.common.collect.Lists;
+import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
@@ -153,17 +154,17 @@ public class MagicCommand {
         return getMagicCommandItem(code, message, executionCount);
       }
 
-      return sendErrorMessage(message, "Provided import doesn't exists. \n"
-          + "Try firstly add jar which contains class to classpath.", executionCount);
+      return sendErrorMessage(message, "Could not import " + parts[1] + ", class not found.",
+          executionCount);
     };
   }
 
   private boolean isValidImport(String part, int executionCount) {
     try {
+      part = part.replace(";","");
       CompletableFuture<Boolean> validImportFuture = new CompletableFuture<>();
-      kernel.executeCode("Class.forName(\"" + part + "\")", new Message(), executionCount, seo -> {
-          validImportFuture.complete(!seo.getStatus().equals(EvaluationStatus.ERROR));
-      });
+      kernel.executeCode("Class.forName(\"" + part + "\");", new Message(), executionCount,
+          seo -> validImportFuture.complete(!seo.getStatus().equals(EvaluationStatus.ERROR)));
 
       return validImportFuture.get();
     } catch (InterruptedException | ExecutionException e) {

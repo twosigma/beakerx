@@ -1,4 +1,4 @@
-# Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License")
 # you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 from ipywidgets import DOMWidget, Box
 from traitlets import Unicode, Dict
 from beakerx.plot.utils import BaseObject
+from beakerx.tabledisplay.tableitems import *
 
 
 class Table(BaseObject):
@@ -23,12 +24,17 @@ class Table(BaseObject):
         self.values = []
         self.types = []
         for column in self.columnNames:
-            self.types.append(args[0].dtypes[column].name)
+            self.types.append(self.convertType(args[0].dtypes[column].name,
+                                               args[0][column][0]))
         
         for tuple in args[0].iterrows():
             row = []
             for columnName in self.columnNames:
-                row.append(tuple[1][columnName])
+                value = tuple[1][columnName]
+                if isinstance(value, str) and is_date(value):
+                    row.append(DateType(value))
+                else:
+                    row.append(value)
             self.values.append(row)
         
         self.headersVertical = False
@@ -57,6 +63,12 @@ class Table(BaseObject):
         self.columnsFrozenRight = {}
         self.columnsVisible = {}
         self.hasDoubleClickAction = False
+    
+    def convertType(self, type, value):
+        if type == "float64":
+            return "double"
+        if is_date(value):
+            return "time"
 
 
 class TableDisplay(DOMWidget):
@@ -70,3 +82,61 @@ class TableDisplay(DOMWidget):
         super(TableDisplay, self).__init__(**kwargs)
         self.chart = Table(*args, **kwargs)
         self.model = self.chart.transform()
+    
+    def setAlignmentProviderForColumn(self, column_name, display_alignment):
+        if isinstance(display_alignment, TableDisplayAlignmentProvider):
+            self.chart.alignmentForColumn[column_name] = display_alignment.value
+        self.model = self.chart.transform()
+        return self
+    
+    def setStringFormatForTimes(self, time_unit):
+        self.chart.stringFormatForTimes = time_unit.name
+        self.model = self.chart.transform()
+        return self
+    
+    def setStringFormatForType(self, type, formater):
+        if isinstance(type, ColumnType):
+            self.chart.stringFormatForType[type.value] = formater
+            self.model = self.chart.transform()
+            return self
+    
+    def setStringFormatForColumn(self, column, formater):
+        self.chart.stringFormatForColumn[column] = formater
+        self.model = self.chart.transform()
+        return self
+    
+    def setRendererForColumn(self, column, renderer):
+        self.chart.rendererForColumn[column] = renderer
+        self.model = self.chart.transform()
+        return self
+    
+    def setRendererForType(self, type, renderer):
+        if isinstance(type, ColumnType):
+            self.chart.rendererForType[type.value] = renderer
+            self.model = self.chart.transform()
+        return self
+    
+    def setColumnFrozen(self, column, visible):
+        self.chart.columnsFrozen[column] = visible
+        self.model = self.chart.transform()
+        return self
+    
+    def setColumnFrozenRight(self, column, visible):
+        self.chart.columnsFrozenRight[column] = visible
+        self.model = self.chart.transform()
+        return self
+    
+    def setColumnVisible(self, column, visible):
+        self.chart.columnsVisible[column] = visible
+        self.model = self.chart.transform()
+        return self
+    
+    def setColumnOrder(self, order):
+        self.chart.columnOrder = order
+        self.model = self.chart.transform()
+        return self
+    
+    def removeAllCellHighlighters(self):
+        self.chart.cellHighlighters = []
+        self.model = self.chart.transform()
+        return self

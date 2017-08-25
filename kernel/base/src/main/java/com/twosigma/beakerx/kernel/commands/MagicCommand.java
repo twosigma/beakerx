@@ -24,7 +24,6 @@ import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 import static java.util.Collections.singletonList;
 
 import com.google.common.collect.Lists;
-import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
@@ -161,7 +160,6 @@ public class MagicCommand {
 
   private boolean isValidImport(String part, int executionCount) {
     try {
-      part = part.replace(";","");
       CompletableFuture<Boolean> validImportFuture = new CompletableFuture<>();
       kernel.executeCode("Class.forName(\"" + part + "\");", new Message(), executionCount,
           seo -> validImportFuture.complete(!seo.getStatus().equals(EvaluationStatus.ERROR)));

@@ -93,9 +93,6 @@ setup_args = dict(
             'beakerx-install = beakerx.install:install'
         ]
     },
-    package_data={
-        'beakerx': 'static/kernel/*/kernel.json'
-    },
     data_files          = [(
         'share/jupyter/nbextensions/beakerx', 
         get_data_files(os.path.join('beaker', 'static'))

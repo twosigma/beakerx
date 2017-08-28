@@ -853,7 +853,7 @@ define([
 
     if (self.types[index] === 'int64') {
       return {
-        actualtype: 1,
+        actualtype: 0,
         actualalign: 'R'
       };
     }

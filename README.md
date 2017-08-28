@@ -45,6 +45,8 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
   BeakerX with pip.  A conda package for BeakerX should be ready
   soon.
 
+Note: see [#5883](https://github.com/twosigma/beakerx/issues/5883) about `widgetsnbextension`.
+
 <!-- Install using [conda](https://conda.io/docs/install/quick.html):
 
 ```
@@ -55,6 +57,7 @@ Using [pip](https://pypi.python.org/pypi/pip):
 
 ```
 conda create -y -n beakerx python=3.5 jupyter openjdk pandas
+conda install widgetsnbextension=2.0.0
 source activate beakerx
 pip install beakerx
 beakerx-install
@@ -71,6 +74,7 @@ beakerx-install
 
 ```
 conda create -y -n beakerx python=3.5 jupyter openjdk nodejs pandas
+conda install widgetsnbextension=2.0.0
 source activate beakerx
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
@@ -89,6 +93,10 @@ build should suffice:
 
 The notebook extensions are installed to run out of the repo, so just
 a local build should suffice:
+
+Note this is [currently
+broken](https://github.com/twosigma/beakerx/issues/5878), do a full
+build instead.
 
 ```
 (cd beakerx/js; yarn install)

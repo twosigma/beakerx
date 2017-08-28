@@ -39,22 +39,22 @@ object TableDisplay {
     new com.twosigma.beakerx.table.TableDisplay(javaListOfList, co.asJava, cl.asJava)
   }
 
-  private def create(v: Array[Map[String, AnyRef]]): com.twosigma.beakerx.table.TableDisplay = {
-    val javaStandardized: Array[java.util.Map[String, AnyRef]] = v.map(v => v.asJava).toArray
+  private def create(v: Array[Map[String, Any]]): com.twosigma.beakerx.table.TableDisplay = {
+    val javaStandardized: Array[java.util.Map[String, Object]] = v.map(v => v.mapValues(_.asInstanceOf[Object]).asJava)
 
     new com.twosigma.beakerx.table.TableDisplay(javaStandardized)
   }
 
-  private def create(v: Seq[Map[String, AnyRef]]): com.twosigma.beakerx.table.TableDisplay = {
-    val javaMaps: Seq[java.util.Map[String, AnyRef]] = v.map(entry => entry.asJava)
-    val javaCollection: java.util.Collection[java.util.Map[String, AnyRef]] = javaMaps.asJavaCollection
+  private def create(v: Seq[Map[String, Any]]): com.twosigma.beakerx.table.TableDisplay = {
+    val javaMaps: Seq[java.util.Map[String, Object]] = v.map(m => m.mapValues(_.asInstanceOf[Object]).asJava)
+    val javaCollection: java.util.Collection[java.util.Map[String, Object]] = javaMaps.asJava
 
     new com.twosigma.beakerx.table.TableDisplay(javaCollection)
   }
 
-  private def create(v: Seq[Map[String, AnyRef]], serializer: BeakerObjectConverter): com.twosigma.beakerx.table.TableDisplay = {
-    val javaMaps: Seq[java.util.Map[String, AnyRef]] = v.map(entry => entry.asJava)
-    val javaCollection: java.util.Collection[java.util.Map[String, AnyRef]] = javaMaps.asJavaCollection
+  private def create(v: Seq[Map[String, Any]], serializer: BeakerObjectConverter): com.twosigma.beakerx.table.TableDisplay = {
+    val javaMaps: Seq[java.util.Map[String, Object]] = v.map(m => m.mapValues(_.asInstanceOf[Object]).asJava)
+    val javaCollection: java.util.Collection[java.util.Map[String, Object]] = javaMaps.asJava
 
     new com.twosigma.beakerx.table.TableDisplay(javaCollection, serializer)
   }
@@ -70,15 +70,15 @@ class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay
     this(TableDisplay.create(v, co, cl))
   }
 
-  def this(v: Array[Map[String, AnyRef]]) = {
+  def this(v: Array[Map[String, Any]]) = {
     this(TableDisplay.create(v))
   }
 
-  def this(v: Seq[Map[String, AnyRef]]) = {
+  def this(v: Seq[Map[String, Any]]) = {
     this(TableDisplay.create(v))
   }
 
-  def this(v: Seq[Map[String, AnyRef]], serializer: BeakerObjectConverter) = {
+  def this(v: Seq[Map[String, Any]], serializer: BeakerObjectConverter) = {
     this(TableDisplay.create(v, serializer))
   }
 

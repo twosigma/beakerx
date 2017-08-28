@@ -14,10 +14,9 @@
 
 import json
 
-from datetime import datetime
-
+from pandas import DataFrame
 from beakerx.plot.legend import LegendPosition, LegendLayout
-from beakerx.plot.utils import BaseObject, getValue
+from beakerx.utils import BaseObject, getValue
 from beakerx.plot.plotitem import *
 
 from IPython.display import display
@@ -197,6 +196,9 @@ class SimpleTimePlot(TimePlot):
         yss = []
         dataColumnsNames = []
         
+        if isinstance(tableData, DataFrame):
+            tableData = tableData.to_dict(orient='rows')
+       
         if tableData is not None and columnNames is not None:
             dataColumnsNames.extend(list(tableData[0]))
             

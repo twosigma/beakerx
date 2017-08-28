@@ -15,9 +15,10 @@
 from enum import Enum
 from datetime import datetime
 import math
+import pandas as pd
+from beakerx.utils import *
 
-from beakerx.plot.utils import *
-
+from dateutil.parser import parse
 
 class ShapeType(Enum):
     SQUARE = 1
@@ -70,26 +71,35 @@ class ConstantBand(Graphics):
         self.color = getColor(
                 getValue(kwargs, 'color', Color(0, 127, 255, 127)))
 
-
+def is_date(string):
+    try:
+        parse(string)
+        return True
+    except Exception:
+        return False
+    
 class XYGraphics(Graphics):
     def __init__(self, **kwargs):
         super(XYGraphics, self).__init__(**kwargs)
         defY = getValue(kwargs, 'y')
         if defY is not None:
+            if isinstance(defY, pd.Series):
+                defY = defY.tolist()
             defX = list(range(0, len(defY)))
         else:
             defX = []
         
         self.x = getValue(kwargs, 'x', defX)
         if self.x is not None:
+            if isinstance(self.x, pd.Series):
+                self.x = self.x.tolist()
             for idx in range(len(self.x)):
                 x = self.x[idx]
-                if isinstance(x, datetime):
-                    print('datatime')
-                    self.x[idx] = date_time_2_millis(x)
+                if isinstance(x, datetime) or is_date(x):
+                    self.x[idx] = unix_time(x)
         
         self.y = defY
-        
+
         self.display_name = getValue(kwargs, 'displayName')
         self.lod_filter = getValue(kwargs, 'lodFilter')
         self.tooltips = getValue(kwargs, 'tooltips')

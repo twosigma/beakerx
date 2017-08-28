@@ -45,7 +45,6 @@ public class EvaluatorManager {
     this.evaluator = evaluator;
   }
 
-
   public void initKernel(KernelParameters kernelParameters) {
     evaluator.initKernel(kernelParameters);
   }
@@ -118,5 +117,9 @@ public class EvaluatorManager {
 
   public void removeImport(ImportPath anImport) {
     this.evaluator.removeImport(anImport);
+  }
+
+  public Path getTempFolder() {
+    return evaluator.getTempFolder();
   }
 }

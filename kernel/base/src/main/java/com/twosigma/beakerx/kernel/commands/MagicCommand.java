@@ -59,6 +59,8 @@ import org.apache.commons.text.StrTokenizer;
  */
 public class MagicCommand {
 
+  public static final String MVN_DIR = "/mvnJars";
+
   public static final String JAVASCRIPT = "%%javascript";
   public static final String HTML = "%%html";
   public static final String BASH = "%%bash";
@@ -67,12 +69,13 @@ public class MagicCommand {
   public static final String CLASSPATH_ADD_JAR = CLASSPATH + " add jar";
   public static final String CLASSPATH_REMOVE = CLASSPATH + " remove";
   public static final String CLASSPATH_SHOW = CLASSPATH;
+  public static final String CLASSPATH_ADD_MVN = CLASSPATH + " add mvn";
   public static final String IMPORT = "%import";
   public static final String ADD_STATIC_IMPORT = IMPORT + " static";
   public static final String UNIMPORT = "%unimport";
   public static final String DEFAULT_DATASOURCE = "%defaultDatasource";
-  public static final String DATASOURCES = "%datasources";
 
+  public static final String DATASOURCES = "%datasources";
   public static final String USAGE_ERROR_MSG = "UsageError: %s is a cell magic, but the cell body is empty.";
   public static final String WRONG_FORMAT_MSG = "Wrong format. ";
 
@@ -202,6 +205,21 @@ public class MagicCommand {
             return getMagicCommandItem(addJars(path), code, message, executionCount);
           }
       };
+  }
+
+  public MagicCommandFunctionality classpathAddMvn() {
+    return (code, command, message, executionCount) -> {
+      String[] split = splitPath(command);
+      if (split.length != 6) {
+        return sendErrorMessage(message, "Wrong command format: " + CLASSPATH_ADD_MVN, executionCount);
+      }
+      String tempFolder = kernel.getTempFolder().toString();
+      String mvnDirectory = tempFolder + MVN_DIR;
+      String IVY_CACHE = tempFolder+"/../beakerIvyCache";
+      ClasspathAddMvnCommand classpathAddMvnCommand = new ClasspathAddMvnCommand(IVY_CACHE, mvnDirectory);
+      classpathAddMvnCommand.retrieve(split[3], split[4], split[5]);
+      return getMagicCommandItem(addJars(mvnDirectory+"/*"), code, message, executionCount);
+    };
   }
 
   private String[] splitPath(String command) {

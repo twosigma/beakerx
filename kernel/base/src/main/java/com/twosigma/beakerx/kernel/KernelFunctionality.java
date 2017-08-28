@@ -78,6 +78,8 @@ public interface KernelFunctionality {
 
   List<MagicCommandType> getMagicCommands();
 
+  Path getTempFolder();
+
   interface ExecuteCodeCallback {
     void execute(SimpleEvaluationObject seo);
   }

@@ -42,12 +42,14 @@ public abstract class BaseEvaluator implements Evaluator {
   protected Classpath classPath;
   protected Imports imports;
   private final CellExecutor executor;
+  protected Path tempFolder;
 
   public BaseEvaluator(String id, String sId, CellExecutor cellExecutor) {
     shellId = id;
     sessionId = sId;
     executor = cellExecutor;
-    outDir = Evaluator.createJupyterTempFolder().toString();
+    tempFolder = Evaluator.createJupyterTempFolder();
+    outDir = tempFolder.toString();
     classPath = new Classpath();
     imports = new Imports();
   }
@@ -178,5 +180,10 @@ public abstract class BaseEvaluator implements Evaluator {
 
   public String getOutDir() {
     return outDir;
+  }
+
+  @Override
+  public Path getTempFolder() {
+    return tempFolder;
   }
 }

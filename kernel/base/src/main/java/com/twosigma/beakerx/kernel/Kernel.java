@@ -32,11 +32,13 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +80,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   public abstract KernelHandler<Message> getKernelInfoHandler(Kernel kernel);
 
-  protected void configureJvmRepr(){
+  protected void configureJvmRepr() {
   }
 
   @Override
@@ -232,16 +234,22 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public List<MagicCommandType> getMagicCommands() {
     return Lists.newArrayList(
-        new MagicCommandType(MagicCommand.JAVASCRIPT, "", magicCommand.javascript()),
-        new MagicCommandType(MagicCommand.HTML, "", magicCommand.html()),
-        new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
-        new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
-        new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
-        new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
-        new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
-        new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
-        new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
-        new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
+            new MagicCommandType(MagicCommand.JAVASCRIPT, "", magicCommand.javascript()),
+            new MagicCommandType(MagicCommand.HTML, "", magicCommand.html()),
+            new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
+            new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
+            new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
+            new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<jar path>", magicCommand.classpathAddMvn()),
+            new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
+            new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
+            new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
+            new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
+            new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
     );
+  }
+
+  @Override
+  public Path getTempFolder() {
+    return evaluatorManager.getTempFolder();
   }
 }

@@ -24,7 +24,9 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.KernelParameters;
+
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,4 +76,6 @@ public interface Evaluator {
   void addImport(ImportPath anImport);
 
   void removeImport(ImportPath anImport);
+
+  Path getTempFolder();
 }

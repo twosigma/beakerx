@@ -56,6 +56,7 @@ public class KernelTest implements KernelFunctionality {
   private MessageCreator messageCreator;
   private String code;
   private MagicCommand magicCommand;
+  private Path tempFolder;
 
   public KernelTest() {
     this("KernelTestId1");
@@ -66,6 +67,7 @@ public class KernelTest implements KernelFunctionality {
     this.id = id;
     this.messageCreator = new MessageCreator(this);
     this.magicCommand = new MagicCommand(this);
+    this.tempFolder = Evaluator.createJupyterTempFolder();
   }
 
   public KernelTest(String id, Evaluator evaluator) {
@@ -73,6 +75,7 @@ public class KernelTest implements KernelFunctionality {
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.messageCreator = new MessageCreator(this);
     this.magicCommand = new MagicCommand(this);
+    this.tempFolder = evaluator.getTempFolder();
   }
 
   @Override
@@ -166,12 +169,18 @@ public class KernelTest implements KernelFunctionality {
         new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
         new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
         new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
+        new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<jar path>", magicCommand.classpathAddMvn()),
         new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
         new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
         new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
         new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
         new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
     );
+  }
+
+  @Override
+  public Path getTempFolder() {
+    return this.tempFolder;
   }
 
   public MagicCommand getMagicCommand() {

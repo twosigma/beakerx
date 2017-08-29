@@ -156,6 +156,9 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
   }
 
   public void setupNewValue(Message message) {
+    if (message.getContent() == null) {
+      return;
+    }
     Map<String, Map<String,String>> dataMap = ((Map<String, Map<String, String>>) message.getContent().get(DATA));
     if (dataMap != null && !dataMap.isEmpty()) {
       Map<String, String> stateMap = dataMap.get(STATE);

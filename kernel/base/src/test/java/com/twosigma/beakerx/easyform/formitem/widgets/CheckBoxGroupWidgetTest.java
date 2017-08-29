@@ -36,10 +36,10 @@ public class CheckBoxGroupWidgetTest extends EasyFormWidgetTest {
   public void setValues() throws Exception {
     //given
     List<String> newValue = Arrays.asList("1", "2", "3");
-    CheckBoxGroupWidget widget = new CheckBoxGroupWidget(newValue, true);
+    CheckBoxGroupWidget widget = new CheckBoxGroupWidget(newValue);
     kernel.clearPublishedMessages();
     //then
-    assertTrue("Comm msgs should be 9", kernel.getPublishedMessages().size() == 9);
+    assertTrue("Comm msgs should be 0", kernel.getPublishedMessages().size() == 0);
     Assertions.assertThat(widget.getValue()).isEqualTo(EMPTY);
   }
 

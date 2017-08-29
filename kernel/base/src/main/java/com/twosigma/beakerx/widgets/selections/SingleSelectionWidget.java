@@ -29,6 +29,9 @@ public abstract class SingleSelectionWidget extends SelectionWidget<String> {
 
   @Override
   public String getValueFromObject(Object input) {
+    if (this instanceof RadioButtons) {
+      return getOptions()[(Integer) input];
+    }
     return getString(input);
   }
 

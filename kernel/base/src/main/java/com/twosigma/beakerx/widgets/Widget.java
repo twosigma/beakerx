@@ -83,8 +83,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   public static final String VIEW_MODULE = "_view_module";
   public static final String VIEW_NAME = "_view_name";
 
-  public static final String MODEL_MODULE_VALUE = "@jupyter-widgets/base";
-  public static final String VIEW_MODULE_VALUE = "@jupyter-widgets/base";
+  public static final String MODEL_MODULE_VALUE = "jupyter-js-widgets";
+  public static final String VIEW_MODULE_VALUE = "jupyter-js-widgets";
 
   public static final String VALUE = "value";
   public static final String DISABLED = "disabled";
@@ -124,13 +124,13 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     //These magic numbers needs to be clarified
     data.put("version_major", "2");
     data.put("version_minor", "0");
-    data.put("model_id", this.comm.getCommId());
+    data.put(MODEL_ID, getComm().getCommId());
 
     content.put(METHOD, DISPLAY);
     content.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, data);
     getComm().setData(content);
     getComm().setMsgType(DISPLAY);
-    getComm().send();
+    getComm().send(DISPLAY_DATA);
   }
 
   private HashMap<String, Serializable> createContent() {

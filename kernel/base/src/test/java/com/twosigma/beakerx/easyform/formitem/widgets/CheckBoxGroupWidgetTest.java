@@ -36,10 +36,8 @@ public class CheckBoxGroupWidgetTest extends EasyFormWidgetTest {
   public void setValues() throws Exception {
     //given
     List<String> newValue = Arrays.asList("1", "2", "3");
-    CheckBoxGroupWidget widget = new CheckBoxGroupWidget();
+    CheckBoxGroupWidget widget = new CheckBoxGroupWidget(newValue, true);
     kernel.clearPublishedMessages();
-    //when
-    widget.setValues(newValue);
     //then
     assertTrue("Comm msgs should be 9", kernel.getPublishedMessages().size() == 9);
     Assertions.assertThat(widget.getValue()).isEqualTo(EMPTY);
@@ -47,7 +45,7 @@ public class CheckBoxGroupWidgetTest extends EasyFormWidgetTest {
 
   @Override
   protected EasyFormComponent createWidget() {
-    return new CheckBoxGroupWidget();
+    return new CheckBoxGroupWidget(Arrays.asList("1", "2", "3"), true);
   }
 
   @Override

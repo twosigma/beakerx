@@ -31,7 +31,14 @@ public class RadioButtonComponentWidget extends EasyFormComponent<ValueWidget<?>
   private Boolean horizontal;
 
   public RadioButtonComponentWidget() {
-    this.radioButtons = new RadioButtons();
+    super(new RadioButtons());
+    radioButtons = (RadioButtons) widget;
+  }
+
+  public RadioButtonComponentWidget(Collection<String> values, boolean horizontal) {
+    this();
+    setValues(values);
+    setHorizontal(horizontal);
   }
 
   public void setHorizontal(final Boolean horizontal) {

@@ -29,6 +29,7 @@ import com.twosigma.beakerx.widgets.ValueWidget;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunctionality {
 
@@ -155,23 +156,28 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
     getComm().close();
   }
 
-  public void setupNewValue(Message message) {
+  private void setupNewValue(Message message) {
     if (message.getContent() == null) {
       return;
     }
     Map<String, Map<String,String>> dataMap = ((Map<String, Map<String, String>>) message.getContent().get(DATA));
+
     if (dataMap != null && !dataMap.isEmpty()) {
       Map<String, String> stateMap = dataMap.get(STATE);
       if (stateMap != null && !stateMap.isEmpty()) {
-        Object newValue = null;
-        if (stateMap.containsKey("value")) {
-          newValue = stateMap.get("value");
-        } else if (stateMap.containsKey("index")) {
-          newValue = stateMap.get("index");
-        }
-        widget.setValue(newValue);
+        getNewValue(stateMap).ifPresent(newValue -> widget.setValue(newValue));
       }
     }
+  }
+
+  private Optional<Object> getNewValue(Map<String, String> stateMap) {
+    if (stateMap.containsKey("value")) {
+      return Optional.of(stateMap.get("value"));
+    } else if (stateMap.containsKey("index")) {
+      return Optional.of(stateMap.get("index"));
+    }
+
+    return Optional.empty();
   }
 
 }

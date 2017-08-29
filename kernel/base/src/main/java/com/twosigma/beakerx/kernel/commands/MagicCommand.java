@@ -148,10 +148,13 @@ public class MagicCommand {
         return createResultWithCustomMessage(kernel.getImports().toString(), message, executionCount);
       }
 
+      this.kernel.addImport(new ImportPath(parts[1]));
+
       if (isValidImport(parts[1], executionCount)) {
-        this.kernel.addImport(new ImportPath(parts[1]));
         return getMagicCommandItem(code, message, executionCount);
       }
+
+      this.kernel.removeImport(new ImportPath(parts[1]));
 
       return sendErrorMessage(message, "Could not import " + parts[1] + ", class not found.",
           executionCount);
@@ -161,7 +164,7 @@ public class MagicCommand {
   private boolean isValidImport(String part, int executionCount) {
     try {
       CompletableFuture<Boolean> validImportFuture = new CompletableFuture<>();
-      kernel.executeCode("Class.forName(\"" + part + "\");", new Message(), executionCount,
+      kernel.executeCode("", new Message(), executionCount,
           seo -> validImportFuture.complete(!seo.getStatus().equals(EvaluationStatus.ERROR)));
 
       return validImportFuture.get();

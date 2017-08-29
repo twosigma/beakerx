@@ -35,6 +35,7 @@ public class TestWidgetUtils {
   public static void verifyOpenCommMsg(List<Message> messages, String modelNameValue,
       String viewNameValue) {
     verifyInternalOpenCommMsgWitLayout(messages, modelNameValue, viewNameValue,
+
         Widget.MODEL_MODULE_VALUE,
         Widget.VIEW_MODULE_VALUE);
   }
@@ -43,7 +44,7 @@ public class TestWidgetUtils {
       String viewNameValue) {
     Message message = SearchMessages.getListWidgetsByViewName(messages, viewNameValue).get(0);
     verifyTypeMsg(message, COMM_OPEN);
-    Map data = getData(message);
+    Map data = getState(message);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
@@ -51,9 +52,7 @@ public class TestWidgetUtils {
   public static void verifyInternalOpenCommMsg(Message message, String modelNameValue,
       String viewNameValue) {
     verifyTypeMsg(message, COMM_OPEN);
-    Map data = getData(message);
-    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(BeakerxWidget.MODEL_MODULE_VALUE);
-    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(BeakerxWidget.VIEW_MODULE_VALUE);
+    Map data = getState(message);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
@@ -70,11 +69,9 @@ public class TestWidgetUtils {
     Message layout = SearchMessages.getLayoutForWidget(messages, widget);
 
     verifyTypeMsg(widget, COMM_OPEN);
-    Map data = getData(widget);
+    Map data = getState(widget);
     assertThat(data.get(Layout.LAYOUT))
         .isEqualTo(Layout.IPY_MODEL + layout.getContent().get(Comm.COMM_ID));
-    assertThat(data.get(Widget.MODEL_MODULE)).isEqualTo(modelModule);
-    assertThat(data.get(Widget.VIEW_MODULE)).isEqualTo(viewModule);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
@@ -87,6 +84,16 @@ public class TestWidgetUtils {
   public static Map getData(Message message) {
     Map<String, Serializable> content = getContent(message);
     return (Map) content.get(Comm.DATA);
+  }
+
+  public static Map getState(Message message) {
+    Map<String, Serializable> content = getContent(message);
+    Serializable data = content.getOrDefault(Comm.DATA, null);
+    if (null != data) {
+      return (Map) ((Map) data).getOrDefault(Comm.STATE, null);
+    }
+
+    return null;
   }
 
   public static Map getContent(Message message) {
@@ -105,15 +112,14 @@ public class TestWidgetUtils {
   }
 
   public static <T> T getValueForProperty(Message message, String propertyName, Class<T> clazz) {
-    Map data = TestWidgetUtils.getData(message);
-    assertThat(data.get(Comm.METHOD)).isEqualTo(Comm.UPDATE);
-    Object o = ((Map) data.get(Comm.STATE)).get(propertyName);
+    Map data = TestWidgetUtils.getState(message);
+    assertThat(getMethod(message)).isEqualTo(Comm.UPDATE);
+    Object o = data.get(propertyName);
     return clazz.cast(o);
   }
 
   public static void verifyDisplayMsg(Message message) {
-    Map data = getData(message);
-    assertThat(data.get(METHOD)).isEqualTo(DISPLAY);
+    assertThat(getMethod(message)).isEqualTo(DISPLAY);
   }
 
   public static void verifyDisplayMsg(List<Message> messages) {
@@ -127,6 +133,12 @@ public class TestWidgetUtils {
         .getListByDataAttr(kernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
     assertTrue("No update comm message.", messages.size() > 0);
     return getValueForProperty(messages.get(0), propertyName, clazz);
+  }
+
+
+  public static String getMethod(Message message) {
+    return (String) ((Map)(message.getContent().get(Comm.DATA))).get(Comm.METHOD);
+
   }
 
 }

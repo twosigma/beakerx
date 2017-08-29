@@ -59,7 +59,7 @@ public class TabbedOutputContainerLayoutManagerTest {
   }
 
   private Message plotUpdateMsg() {
-    return groovyKernel.getPublishedMessages().get(groovyKernel.getPublishedMessages().size() - 3);
+    return groovyKernel.getPublishedMessages().get(4);
   }
 
 }

@@ -77,7 +77,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
 
   public EasyFormComponent addTextField(final String label, final Integer width) throws Exception {
     TextFieldWidget textField = new TextFieldWidget();
-    textField.registerUpdateValueCallback(textField::fireChanged);
+
     textField.setLabel(label);
     textField.setWidth(width);
     return addComponentOrThrow(label, textField);
@@ -201,11 +201,8 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
   public EasyFormComponent addRadioButtons(final String label,
                                            final Collection<String> values,
                                            final Integer orientation) throws Exception {
-    RadioButtonComponentWidget radioButtonComponent = new RadioButtonComponentWidget();
-    radioButtonComponent.setLabel(label);
-    radioButtonComponent.setHorizontal(
-            orientation != null && EasyForm.HORIZONTAL.equals(orientation));
-    radioButtonComponent.setValues(values);
+    RadioButtonComponentWidget radioButtonComponent = new RadioButtonComponentWidget(values, EasyForm.HORIZONTAL.equals(orientation));
+    radioButtonComponent.setLabel(label);;
     radioButtonComponent.registerUpdateValueCallback(radioButtonComponent::fireChanged);
     return addComponentOrThrow(label, radioButtonComponent);
   }
@@ -218,11 +215,8 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
   public EasyFormComponent addCheckBoxes(final String label,
                                          final Collection<String> values,
                                          final Integer orientation) throws Exception {
-    CheckBoxGroupWidget checkBoxGroup = new CheckBoxGroupWidget();
+    CheckBoxGroupWidget checkBoxGroup = new CheckBoxGroupWidget(values, EasyForm.HORIZONTAL.equals(orientation));
     checkBoxGroup.setLabel(label);
-    checkBoxGroup.setHorizontal(orientation != null && EasyForm.HORIZONTAL.equals(orientation));
-    checkBoxGroup.setValues(values);
-    checkBoxGroup.createWidget();
     checkBoxGroup.registerUpdateValueCallback(checkBoxGroup::fireChanged);
     return addComponentOrThrow(label, checkBoxGroup);
   }

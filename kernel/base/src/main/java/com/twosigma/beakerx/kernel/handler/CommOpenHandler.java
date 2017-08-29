@@ -97,7 +97,7 @@ public abstract class CommOpenHandler extends KernelHandler<Message> {
 
   protected Comm readComm(Map<String, Serializable> map) {
     Comm ret = new Comm(getString(map, COMM_ID), getString(map, TARGET_NAME));
-    ret.setData((HashMap<?, ?>) map.get(DATA));
+    ret.setData((HashMap<String, Serializable>) map.get(DATA));
     ret.setTargetModule(getString(map, TARGET_MODULE));
     return ret;
   }

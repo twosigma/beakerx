@@ -94,15 +94,16 @@ public abstract class Kernel implements KernelFunctionality {
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     } finally {
-      exit();
+      doExit();
+      logger.debug("Jupyter kernel shoutdown.");
     }
-    logger.debug("Jupyter kernel shoutdown.");
   }
 
-  private void exit() {
+  private void doExit() {
     this.evaluatorManager.exit();
     this.handlers.exit();
     this.executionResultSender.exit();
+    System.exit(0);
   }
 
   private void closeComms() {

@@ -23,6 +23,7 @@ import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,6 +53,11 @@ public class ScalaKernelInfoHandlerTest {
   @After
   public void tearDown() throws Exception {
     kernel.clearSentMessages();
+  }
+
+  @AfterClass
+  public static void tearDownClass() throws Exception {
+    kernel.exit();
   }
 
   @Test

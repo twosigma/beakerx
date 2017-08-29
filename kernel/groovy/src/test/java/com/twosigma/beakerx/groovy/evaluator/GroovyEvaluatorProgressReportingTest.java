@@ -47,13 +47,14 @@ public class GroovyEvaluatorProgressReportingTest {
   @Before
   public void setUp() throws Exception {
     groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
-    groovyKernel = new KernelTest();
+    groovyKernel = new KernelTest("groovyEvaluatorProgressReportingTest", groovyEvaluator);
     KernelManager.register(groovyKernel);
   }
 
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
+    groovyKernel.exit();
   }
 
   @Test
@@ -61,9 +62,9 @@ public class GroovyEvaluatorProgressReportingTest {
     //given
     String code =
             "for ( int i = 0 ; i<5; i++) {\n" +
-            "  "+ BEAKER_VARIABLE_NAME + ".showProgressUpdate(\"msg\"+i, i)\n" +
-            "}\n" +
-            "\"finished\"";
+                    "  " + BEAKER_VARIABLE_NAME + ".showProgressUpdate(\"msg\"+i, i)\n" +
+                    "}\n" +
+                    "\"finished\"";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     groovyEvaluator.evaluate(seo, code);
@@ -82,19 +83,19 @@ public class GroovyEvaluatorProgressReportingTest {
 
     verifyDisplayMsg(messages.get(2));
 
-    verifyUpdate(messages.get(4), messages.get(5),0);
-    verifyUpdate(messages.get(6), messages.get(7),1);
-    verifyUpdate(messages.get(8), messages.get(9),2);
-    verifyUpdate(messages.get(10), messages.get(11),3);
-    verifyUpdate(messages.get(12), messages.get(13),4);
+    verifyUpdate(messages.get(4), messages.get(5), 0);
+    verifyUpdate(messages.get(6), messages.get(7), 1);
+    verifyUpdate(messages.get(8), messages.get(9), 2);
+    verifyUpdate(messages.get(10), messages.get(11), 3);
+    verifyUpdate(messages.get(12), messages.get(13), 4);
 
     Message closeMessage = messages.get(14);
     verifyTypeMsg(closeMessage, COMM_CLOSE);
   }
 
-  private void verifyUpdate(Message value, Message description,int index) {
+  private void verifyUpdate(Message value, Message description, int index) {
     assertThat(getValueForProperty(value, IntProgress.VALUE, Integer.class)).isEqualTo(index);
-    assertThat(getValueForProperty(description, IntProgress.DESCRIPTION, String.class)).isEqualTo("msg"+index);
+    assertThat(getValueForProperty(description, IntProgress.DESCRIPTION, String.class)).isEqualTo("msg" + index);
   }
 
 

@@ -18,6 +18,8 @@ package com.twosigma.beakerx.groovy.evaluator;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
+import com.twosigma.beakerx.evaluator.TempFolderFactory;
+import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyClasspathScanner;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -41,11 +43,11 @@ public class GroovyEvaluator extends BaseEvaluator {
   private GroovyWorkerThread worker = null;
 
   public GroovyEvaluator(String id, String sId) {
-    this(id, sId, new BeakerCellExecutor("groovy"));
+    this(id, sId, new BeakerCellExecutor("groovy"), new TempFolderFactoryImpl());
   }
 
-  public GroovyEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    super(id, sId, cellExecutor);
+  public GroovyEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory) {
+    super(id, sId, cellExecutor, tempFolderFactory);
     cps = new GroovyClasspathScanner();
     gac = createGroovyAutocomplete(cps);
     outDir = envVariablesFilter(outDir, System.getenv());
@@ -74,6 +76,7 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   @Override
   public void exit() {
+    super.exit();
     worker.doExit();
     cancelExecution();
     worker.halt();

@@ -53,16 +53,6 @@ public interface Evaluator {
 
   void exit();
 
-  static Path createJupyterTempFolder() {
-    Path ret = null;
-    try {
-      ret = Files.createTempDirectory("beaker");
-    } catch (IOException e) {
-      logger.error("No temp folder set for beaker", e);
-    }
-    return ret.toAbsolutePath();
-  }
-
   void resetEnvironment();
 
   boolean addJarToClasspath(PathToJar path);

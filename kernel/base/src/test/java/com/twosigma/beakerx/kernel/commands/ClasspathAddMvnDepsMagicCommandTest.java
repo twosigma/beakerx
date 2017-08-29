@@ -19,6 +19,7 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.message.Message;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,6 +42,11 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     this.evaluator = new EvaluatorTest();
     this.kernel = new KernelTest("id2", evaluator);
     this.sut = new MagicCommand(kernel);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    this.evaluator.exit();
   }
 
   @Test

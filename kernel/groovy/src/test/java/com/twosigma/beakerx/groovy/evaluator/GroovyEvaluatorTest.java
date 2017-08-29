@@ -17,6 +17,7 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.groovy.kernel.GroovyDefaultVariables;
 import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.kernel.KernelManager;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newEvaluator;
 
@@ -40,10 +42,11 @@ public class GroovyEvaluatorTest {
   static GroovyClassLoader groovyClassLoader;
   static GroovyKernelMock groovyKernel;
   static Binding scriptBinding;
+  static GroovyEvaluator groovyEvaluator;
 
   @BeforeClass
   public static void initClassStubData() throws IOException {
-    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345", cellExecutor());
+    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345", cellExecutor(), getTestTempFolderFactory());
 
     GroovyDefaultVariables var = new GroovyDefaultVariables();
     HashMap<String, Object> params = new HashMap<>();
@@ -52,16 +55,17 @@ public class GroovyEvaluatorTest {
     KernelParameters kernelParameters = new KernelParameters(params);
 
     groovyEvaluator.setShellOptions(kernelParameters);
-    groovyClassLoader = newEvaluator(groovyEvaluator.getImports(),groovyEvaluator.getClasspath(),groovyEvaluator.getOutDir());
+    groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir());
     scriptBinding = new Binding();
     scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));
-    groovyKernel = new GroovyKernelMock();
+    groovyKernel = new GroovyKernelMock("groovyEvaluatorTest", groovyEvaluator);
     KernelManager.register(groovyKernel);
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
     KernelManager.register(null);
+    groovyKernel.exit();
   }
 
   public Object parseClassFromScript(String script) {

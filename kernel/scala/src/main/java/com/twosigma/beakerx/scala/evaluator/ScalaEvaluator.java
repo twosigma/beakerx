@@ -21,6 +21,8 @@ import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
+import com.twosigma.beakerx.evaluator.TempFolderFactory;
+import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
@@ -49,11 +51,11 @@ public class ScalaEvaluator extends BaseEvaluator {
   private static boolean autoTranslationSetup = false;
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp) {
-    this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl());
+    this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl(), new TempFolderFactoryImpl());
   }
 
-  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory) {
-    super(id, sId, cellExecutor);
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory) {
+    super(id, sId, cellExecutor,tempFolderFactory);
     objectSerializerProvider = osp;
     this.beakerxObjectFactory = beakerxObjectFactory;
     workerThread = new ScalaWorkerThread(this);
@@ -76,6 +78,7 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   public void exit() {
+    super.exit();
     workerThread.doExit();
     cancelExecution();
     workerThread.halt();

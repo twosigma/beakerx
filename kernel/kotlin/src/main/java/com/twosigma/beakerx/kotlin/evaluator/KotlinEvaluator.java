@@ -19,6 +19,8 @@ import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
+import com.twosigma.beakerx.evaluator.TempFolderFactory;
+import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
@@ -36,11 +38,11 @@ public class KotlinEvaluator extends BaseEvaluator {
   private KotlinWorkerThread workerThread;
 
   public KotlinEvaluator(String id, String sId) {
-    this(id, sId, new BeakerCellExecutor("kotlin"));
+    this(id, sId, new BeakerCellExecutor("kotlin"), new TempFolderFactoryImpl());
   }
 
-  public KotlinEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    super(id, sId, cellExecutor);
+  public KotlinEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory) {
+    super(id, sId, cellExecutor,tempFolderFactory);
     packageId = "com.twosigma.beaker.kotlin.bkr" + shellId.split("-")[0];
     cps = new ClasspathScanner();
     workerThread = new KotlinWorkerThread(this);
@@ -57,6 +59,7 @@ public class KotlinEvaluator extends BaseEvaluator {
 
   @Override
   public void exit() {
+    super.exit();
     workerThread.doExit();
     cancelExecution();
     workerThread.halt();

@@ -20,6 +20,7 @@ import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.message.Message;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,6 +38,11 @@ public class GroovyEvaluatorMagicCommandsTest {
   @BeforeClass
   public static void setUpClass() throws Exception {
     groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    groovyEvaluator.exit();
   }
 
   @Test

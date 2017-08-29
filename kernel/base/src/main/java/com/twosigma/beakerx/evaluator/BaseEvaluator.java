@@ -23,7 +23,9 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,11 +46,11 @@ public abstract class BaseEvaluator implements Evaluator {
   private final CellExecutor executor;
   protected Path tempFolder;
 
-  public BaseEvaluator(String id, String sId, CellExecutor cellExecutor) {
+  public BaseEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory) {
     shellId = id;
     sessionId = sId;
     executor = cellExecutor;
-    tempFolder = Evaluator.createJupyterTempFolder();
+    tempFolder = tempFolderFactory.createTempFolder();
     outDir = tempFolder.toString();
     classPath = new Classpath();
     imports = new Imports();
@@ -185,5 +187,18 @@ public abstract class BaseEvaluator implements Evaluator {
   @Override
   public Path getTempFolder() {
     return tempFolder;
+  }
+
+  @Override
+  public void exit() {
+    removeTempFolder();
+  }
+
+  private void removeTempFolder() {
+    try {
+      FileUtils.deleteDirectory(new File(getTempFolder().toString()));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

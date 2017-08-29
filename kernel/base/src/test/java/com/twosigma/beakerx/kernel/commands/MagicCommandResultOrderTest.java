@@ -24,6 +24,8 @@ import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import java.util.Map;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,6 +39,11 @@ public class MagicCommandResultOrderTest {
   public void setUp() throws Exception {
     this.kernel = new KernelTest("id2", new EvaluatorTest());
     this.sut = new MagicCommand(kernel);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    kernel.exit();
   }
 
   @Test

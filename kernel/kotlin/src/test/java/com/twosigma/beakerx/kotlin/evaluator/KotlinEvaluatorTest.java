@@ -18,9 +18,10 @@ package com.twosigma.beakerx.kotlin.evaluator;
 import com.twosigma.ExecuteCodeCallbackTest;
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 
-import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.KernelParameters;
@@ -43,7 +44,7 @@ public class KotlinEvaluatorTest {
 
   @Before
   public void setUp() throws Exception {
-    evaluator = new KotlinEvaluator("id", "sid", TestBeakerCellExecutor.cellExecutor());
+    evaluator = new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory());
     KotlinKernelMock kernel = new KotlinKernelMock("id", evaluator);
     KernelManager.register(kernel);
   }
@@ -51,6 +52,7 @@ public class KotlinEvaluatorTest {
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
+    evaluator.exit();
   }
 
   @Test

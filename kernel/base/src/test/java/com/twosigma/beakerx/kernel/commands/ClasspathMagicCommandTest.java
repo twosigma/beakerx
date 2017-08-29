@@ -24,7 +24,10 @@ import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
+
 import java.util.Map;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,12 +46,17 @@ public class ClasspathMagicCommandTest {
     this.sut = new MagicCommand(kernel);
   }
 
+  @After
+  public void tearDown() throws Exception {
+    kernel.exit();
+  }
+
   @Test
   public void handleClasspathAddJarMagicCommand() throws Exception {
     //given
     String codeAsString = "" +
-        "%classpath add jar" + " " + CLASSPATH_TO_JAR + "\n" +
-        "code code code";
+            "%classpath add jar" + " " + CLASSPATH_TO_JAR + "\n" +
+            "code code code";
     Code code = new Code(codeAsString);
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
@@ -61,7 +69,7 @@ public class ClasspathMagicCommandTest {
   public void handleClasspathAddJarWildcardMagicCommand() throws Exception {
     //given
     String codeAsString = "" +
-        "%classpath add jar " + SRC_TEST_RESOURCES + "dirWithTwoJars/*";
+            "%classpath add jar " + SRC_TEST_RESOURCES + "dirWithTwoJars/*";
     Code code = new Code(codeAsString);
     //when
     MagicCommandResult result = sut.process(code, new Message(), 1);
@@ -79,7 +87,7 @@ public class ClasspathMagicCommandTest {
     MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
     assertThat(result.getItems().get(0).getResult().get().getContent().get("text")).isEqualTo(
-        "Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found");
+            "Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found");
     assertThat(kernel.getClasspath().size()).isEqualTo(0);
   }
 
@@ -107,7 +115,7 @@ public class ClasspathMagicCommandTest {
   @Test
   public void allowExtraWhitespaces() {
     MagicCommandResult result = sut
-        .process(new Code("%classpath  add  jar          " + CLASSPATH_TO_JAR), new Message(), 1);
+            .process(new Code("%classpath  add  jar          " + CLASSPATH_TO_JAR), new Message(), 1);
 
     assertThat(classpath(result)).isEqualTo("Added jar: [foo.jar]\n");
   }

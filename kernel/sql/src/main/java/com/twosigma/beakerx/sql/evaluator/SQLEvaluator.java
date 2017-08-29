@@ -21,6 +21,8 @@ import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
+import com.twosigma.beakerx.evaluator.TempFolderFactory;
+import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
@@ -62,17 +64,17 @@ public class SQLEvaluator extends BaseEvaluator {
   private SQLWorkerThread workerThread;
 
   public SQLEvaluator(String id, String sId) {
-    this(id, sId, new BeakerCellExecutor("sql"));
+    this(id, sId, new BeakerCellExecutor("sql"), new TempFolderFactoryImpl());
   }
 
-  public SQLEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    super(id, sId, cellExecutor);
+  public SQLEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory) {
+    super(id, sId, cellExecutor, tempFolderFactory);
     packageId = "com.twosigma.beaker.sql.bkr" + shellId.split("-")[0];
     jdbcClient = new JDBCClient();
     cps = new ClasspathScanner();
     sac = createSqlAutocomplete(cps);
     queryExecutor = new QueryExecutor(jdbcClient);
-    workerThread= new SQLWorkerThread(this);
+    workerThread = new SQLWorkerThread(this);
     workerThread.start();
   }
 
@@ -83,6 +85,7 @@ public class SQLEvaluator extends BaseEvaluator {
 
   @Override
   public void exit() {
+    super.exit();
     workerThread.doExit();
     cancelExecution();
   }

@@ -16,11 +16,13 @@
 
 package com.twosigma.beakerx.groovy.autocomplete;
 
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.handler.CompleteHandler;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,7 +41,7 @@ public class GroovyCompleteHandlerTest {
 
   @BeforeClass
   public static void setUpClass(){
-    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("id", "sid", cellExecutor());
+    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("id", "sid", cellExecutor(), EvaluatorTest.getTestTempFolderFactory());
     groovyKernel = new GroovyKernelMock("sid", groovyEvaluator);
   }
 
@@ -51,6 +53,11 @@ public class GroovyCompleteHandlerTest {
   @After
   public void tearDown() throws Exception {
     groovyKernel.clearSentMessages();
+  }
+
+  @AfterClass
+  public static void tearDownClass() throws Exception {
+    groovyKernel.exit();
   }
 
   @Test

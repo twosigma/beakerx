@@ -24,6 +24,8 @@ import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.clojure.autocomplete.ClojureAutocomplete;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
+import com.twosigma.beakerx.evaluator.TempFolderFactory;
+import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
@@ -48,8 +50,8 @@ public class ClojureEvaluator extends BaseEvaluator {
   private DynamicClassLoaderSimple loader;
   private Var clojureLoadString = null;
 
-  public ClojureEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    super(id, sId, cellExecutor);
+  public ClojureEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory) {
+    super(id, sId, cellExecutor, tempFolderFactory);
     requirements = new ArrayList<>();
     init();
     workerThread = new ClojureWorkerThread(this);
@@ -57,7 +59,7 @@ public class ClojureEvaluator extends BaseEvaluator {
   }
 
   public ClojureEvaluator(String id, String sId) {
-    this(id, sId, new BeakerCellExecutor("clojure"));
+    this(id, sId, new BeakerCellExecutor("clojure"), new TempFolderFactoryImpl());
   }
 
   @Override
@@ -94,6 +96,7 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   @Override
   public void exit() {
+    super.exit();
     workerThread.doExit();
     cancelExecution();
     workerThread.halt();
@@ -103,6 +106,7 @@ public class ClojureEvaluator extends BaseEvaluator {
   public void evaluate(SimpleEvaluationObject seo, String code) {
     workerThread.add(new JobDescriptor(code, seo));
   }
+
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     return ClojureAutocomplete.autocomplete(code, caretPosition, clojureLoadString, shellId);

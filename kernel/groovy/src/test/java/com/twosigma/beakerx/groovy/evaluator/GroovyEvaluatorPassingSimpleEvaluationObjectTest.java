@@ -18,6 +18,7 @@ package com.twosigma.beakerx.groovy.evaluator;
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import com.twosigma.beakerx.message.Message;
@@ -32,6 +33,11 @@ public class GroovyEvaluatorPassingSimpleEvaluationObjectTest {
   @Before
   public void setUp() throws Exception {
     groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    groovyEvaluator.exit();
   }
 
   @Test

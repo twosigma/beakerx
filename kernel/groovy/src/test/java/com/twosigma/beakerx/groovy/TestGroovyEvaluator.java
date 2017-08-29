@@ -22,12 +22,13 @@ import com.twosigma.beakerx.kernel.KernelParameters;
 import java.util.HashMap;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 
 public class TestGroovyEvaluator {
 
   public static GroovyEvaluator groovyEvaluator() {
-    GroovyEvaluator evaluator = new GroovyEvaluator("id", "sid", cellExecutor());
+    GroovyEvaluator evaluator = new GroovyEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory());
     evaluator.initKernel(getKernelParameters());
     return evaluator;
   }

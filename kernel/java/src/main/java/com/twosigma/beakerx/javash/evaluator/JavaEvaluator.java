@@ -19,6 +19,8 @@ import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
+import com.twosigma.beakerx.evaluator.TempFolderFactory;
+import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
@@ -38,11 +40,11 @@ public class JavaEvaluator extends BaseEvaluator {
   private JavaWorkerThread workerThread;
 
   public JavaEvaluator(String id, String sId) {
-    this(id, sId, new BeakerCellExecutor("javash"));
+    this(id, sId, new BeakerCellExecutor("javash"), new TempFolderFactoryImpl());
   }
 
-  public JavaEvaluator(String id, String sId, CellExecutor cellExecutor) {
-    super(id, sId, cellExecutor);
+  public JavaEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory) {
+    super(id, sId, cellExecutor, tempFolderFactory);
     packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
     cps = new ClasspathScanner();
     jac = createJavaAutocomplete(cps);
@@ -63,6 +65,7 @@ public class JavaEvaluator extends BaseEvaluator {
 
   @Override
   public void exit() {
+    super.exit();
     workerThread.doExit();
     cancelExecution();
     workerThread.halt();

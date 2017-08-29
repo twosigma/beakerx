@@ -228,7 +228,7 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
         ret.add(getString(input));
       }
     }
-    return ((ArrayList<String>) ret).stream().toArray(String[]::new);
+    return ret.stream().toArray(String[]::new);
   }
 
   public Boolean getBoolean(Object input) {

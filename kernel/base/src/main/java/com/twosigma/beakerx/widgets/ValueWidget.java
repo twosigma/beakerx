@@ -242,12 +242,4 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
     }
     return ret;
   }
-
-  public String getModelModuleValue(){
-    return "@jupyter-widgets/controls";
-  }
-
-  public String getViewModuleValue(){
-    return "@jupyter-widgets/controls";
-  }
 }

@@ -16,13 +16,20 @@
 
 package com.twosigma.beakerx;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.kernel.KernelManager;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NamespaceClientTest {
 
@@ -47,8 +54,8 @@ public class NamespaceClientTest {
     //when
     NamespaceClient curNamespaceClient = NamespaceClient.getBeaker(SESSION_ID);
     //then
-    Assertions.assertThat(namespaceClient).isNotNull();
-    Assertions.assertThat(curNamespaceClient).isEqualTo(namespaceClient);
+    assertThat(namespaceClient).isNotNull();
+    assertThat(curNamespaceClient).isEqualTo(namespaceClient);
   }
 
   @Test
@@ -56,8 +63,8 @@ public class NamespaceClientTest {
     //when
     NamespaceClient curNamespaceClient = NamespaceClient.getBeaker();
     //then
-    Assertions.assertThat(curNamespaceClient).isNotNull();
-    Assertions.assertThat(curNamespaceClient).isEqualTo(namespaceClient);
+    assertThat(curNamespaceClient).isNotNull();
+    assertThat(curNamespaceClient).isEqualTo(namespaceClient);
   }
 
   @Test
@@ -66,7 +73,7 @@ public class NamespaceClientTest {
     NamespaceClient.delBeaker(SESSION_ID);
     NamespaceClient curNamespaceClient = NamespaceClient.getBeaker();
     //then
-    Assertions.assertThat(curNamespaceClient).isNull();
+    assertThat(curNamespaceClient).isNull();
   }
 
   @Test
@@ -76,8 +83,8 @@ public class NamespaceClientTest {
     //when
     Object value = curNamespaceClient.set("x", new Integer(10));
     //then
-    Assertions.assertThat(value).isNotNull();
-    Assertions.assertThat(value).isEqualTo(new Integer(10));
+    assertThat(value).isNotNull();
+    assertThat(value).isEqualTo(new Integer(10));
   }
 
   @Test
@@ -87,11 +94,45 @@ public class NamespaceClientTest {
     //when
     curNamespaceClient.set("x", new Integer(10));
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Map data = (Map) kernel.getPublishedMessages().get(1).getContent().get("data");
-    Assertions.assertThat(data.get("name")).isEqualTo("x");
-    Assertions.assertThat(data.get("value")).isEqualTo("10");
-    Assertions.assertThat(data.get("sync")).isEqualTo(Boolean.TRUE);
+    assertThat(data.get("name")).isEqualTo("x");
+    assertThat(data.get("value")).isEqualTo("10");
+    assertThat(data.get("sync")).isEqualTo(Boolean.TRUE);
+  }
+
+  @Test
+  public void setBigInt() throws Exception {
+    //given
+    long millis = new Date().getTime();
+    long nanos = millis * 1000 * 1000L;
+
+    List<Map<String, String>> table = asList(
+            new HashMap<String, String>() {{
+              put("time", (nanos + 7 * 1) + "");
+              put("next_time", ((nanos + 77) * 1) + "");
+              put("temp", 14.6 + "");
+            }},
+            new HashMap<String, String>() {{
+              put("time", (nanos + 7 * 1) + "");
+              put("next_time", ((nanos + 88) * 2) + "");
+              put("temp", 18.1 + "");
+            }},
+            new HashMap<String, String>() {{
+              put("time", (nanos + 7 * 1) + "");
+              put("next_time", ((nanos + 99) * 3) + "");
+              put("temp", 23.6 + "");
+            }}
+    );
+
+    NamespaceClient curNamespaceClient = NamespaceClient.getBeaker("setBigInt");
+    //when
+    curNamespaceClient.set("table_with_longs", table);
+    //then
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    Map data = (Map) kernel.getPublishedMessages().get(2).getContent().get("data");
+    assertThat(data.get("name")).isEqualTo("table_with_longs");
+    assertThat(isJSONValid(data.get("value"))).isTrue();
   }
 
   @Test
@@ -101,6 +142,16 @@ public class NamespaceClientTest {
     //when
     curNamespaceClient.set("x", new Integer(10));
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
+  }
+
+  public static boolean isJSONValid(Object jsonInString ) {
+    try {
+      final ObjectMapper mapper = new ObjectMapper();
+      mapper.readTree((String)jsonInString);
+      return true;
+    } catch (IOException e) {
+      return false;
+    }
   }
 }

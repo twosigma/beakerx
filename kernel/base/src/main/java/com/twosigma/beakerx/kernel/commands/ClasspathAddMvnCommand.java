@@ -27,9 +27,9 @@ import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.resolver.IBiblioResolver;
 
 import java.io.File;
-import java.io.IOException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.ivy.core.LogOptions.LOG_QUIET;
 
 public class ClasspathAddMvnCommand {
 
@@ -41,23 +41,25 @@ public class ClasspathAddMvnCommand {
     this.pathToTempRepo = checkNotNull(pathToTempRepo);
   }
 
-  public void retrieve(String groupId, String artifactId, String version) {
-    IBiblioResolver br = createBiblioResolver();
-    IvySettings ivySettings = createIvyInstance(this.pathToCache, br);
-
-    Ivy ivy = Ivy.newInstance(ivySettings);
-    ResolveOptions resolveOptions = createResolveOptions();
-    ModuleDescriptor moduleDescriptor = getModuleDescriptor(groupId, artifactId, version, ivy, resolveOptions);
-
+  public AddMvnCommandResult retrieve(String groupId, String artifactId, String version) {
     try {
+      IBiblioResolver br = createBiblioResolver();
+      IvySettings ivySettings = createIvyInstance(this.pathToCache, br);
+
+      Ivy ivy = Ivy.newInstance(ivySettings);
+      ResolveOptions resolveOptions = createResolveOptions();
+      ModuleDescriptor moduleDescriptor = getModuleDescriptor(groupId, artifactId, version, ivy, resolveOptions);
+
+
       String absolutePath = new File(this.pathToTempRepo).getAbsolutePath();
       ivy.retrieve(
               moduleDescriptor.getModuleRevisionId(),
               absolutePath + "/[artifact](-[classifier]).[ext]",
               new RetrieveOptions().setConfs(new String[]{"default"})
       );
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+      return AddMvnCommandResult.SUCCESS;
+    } catch (Exception e) {
+      return AddMvnCommandResult.error(e.getMessage());
     }
   }
 
@@ -96,8 +98,7 @@ public class ClasspathAddMvnCommand {
 
   private ResolveOptions createResolveOptions() {
     ResolveOptions ro = new ResolveOptions();
-//    ro.setOutputReport(false);
-//    ro.setLog(LOG_QUIET);
+    ro.setLog(LOG_QUIET);
     ro.setTransitive(true);
     ro.setDownload(true);
     return ro;
@@ -119,4 +120,32 @@ public class ClasspathAddMvnCommand {
     return ivySettings;
   }
 
+  public static class AddMvnCommandResult {
+
+    public static final AddMvnCommandResult SUCCESS = new AddMvnCommandResult(true, "");
+
+    private boolean jarRetrieved;
+    private String errorMessage;
+
+    private AddMvnCommandResult(boolean retrieved, String errorMessage) {
+      this.jarRetrieved = retrieved;
+      this.errorMessage = errorMessage;
+    }
+
+    public boolean isJarRetrieved() {
+      return jarRetrieved;
+    }
+
+    public String getErrorMessage() {
+      return errorMessage;
+    }
+
+    public static AddMvnCommandResult success() {
+      return SUCCESS;
+    }
+
+    public static AddMvnCommandResult error(String msg) {
+      return new AddMvnCommandResult(false, msg);
+    }
+  }
 }

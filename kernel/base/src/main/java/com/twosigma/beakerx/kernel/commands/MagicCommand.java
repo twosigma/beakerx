@@ -38,6 +38,7 @@ import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResultAndCo
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -49,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.apache.commons.text.StrMatcher;
 import org.apache.commons.text.StrTokenizer;
 
@@ -70,6 +72,7 @@ public class MagicCommand {
   public static final String CLASSPATH_REMOVE = CLASSPATH + " remove";
   public static final String CLASSPATH_SHOW = CLASSPATH;
   public static final String CLASSPATH_ADD_MVN = CLASSPATH + " add mvn";
+  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be " + CLASSPATH_ADD_MVN + " group name version";
   public static final String IMPORT = "%import";
   public static final String ADD_STATIC_IMPORT = IMPORT + " static";
   public static final String UNIMPORT = "%unimport";
@@ -154,9 +157,9 @@ public class MagicCommand {
 
   private MagicCommandItem createResultWithCustomMessage(String customMessage, Message message, int executionCount) {
     return new MagicCommandItemWithResult(
-        messageCreator
-            .buildOutputMessage(message, customMessage, false),
-        messageCreator.buildReplyWithoutStatus(message, executionCount));
+            messageCreator
+                    .buildOutputMessage(message, customMessage, false),
+            messageCreator.buildReplyWithoutStatus(message, executionCount));
   }
 
   public MagicCommandFunctionality unimport() {
@@ -190,35 +193,38 @@ public class MagicCommand {
   }
 
   public MagicCommandFunctionality classpathAddJar() {
-      return (code, command, message, executionCount) -> {
-          String[] split = splitPath(command);
-          if (split.length != 4) {
-            return sendErrorMessage(message, WRONG_FORMAT_MSG + CLASSPATH_ADD_JAR, executionCount);
-          }
+    return (code, command, message, executionCount) -> {
+      String[] split = splitPath(command);
+      if (split.length != 4) {
+        return sendErrorMessage(message, WRONG_FORMAT_MSG + CLASSPATH_ADD_JAR, executionCount);
+      }
 
-          String path = split[3];
-          ErrorData errorData = isValidPath(path);
+      String path = split[3];
+      ErrorData errorData = isValidPath(path);
 
-          if (errorData.hasError()) {
-            return sendErrorMessage(message, errorData.getMessage(), executionCount);
-          } else {
-            return getMagicCommandItem(addJars(path), code, message, executionCount);
-          }
-      };
+      if (errorData.hasError()) {
+        return sendErrorMessage(message, errorData.getMessage(), executionCount);
+      } else {
+        return getMagicCommandItem(addJars(path), code, message, executionCount);
+      }
+    };
   }
 
   public MagicCommandFunctionality classpathAddMvn() {
     return (code, command, message, executionCount) -> {
       String[] split = splitPath(command);
       if (split.length != 6) {
-        return sendErrorMessage(message, "Wrong command format: " + CLASSPATH_ADD_MVN, executionCount);
+        return sendErrorMessage(message, ADD_MVN_FORMAT_ERROR_MESSAGE, executionCount);
       }
       String tempFolder = kernel.getTempFolder().toString();
       String mvnDirectory = tempFolder + MVN_DIR;
-      String IVY_CACHE = tempFolder+"/../beakerIvyCache";
+      String IVY_CACHE = tempFolder + "/../beakerIvyCache";
       ClasspathAddMvnCommand classpathAddMvnCommand = new ClasspathAddMvnCommand(IVY_CACHE, mvnDirectory);
-      classpathAddMvnCommand.retrieve(split[3], split[4], split[5]);
-      return getMagicCommandItem(addJars(mvnDirectory+"/*"), code, message, executionCount);
+      ClasspathAddMvnCommand.AddMvnCommandResult result = classpathAddMvnCommand.retrieve(split[3], split[4], split[5]);
+      if (result.isJarRetrieved()) {
+        return getMagicCommandItem(addJars(mvnDirectory + "/*"), code, message, executionCount);
+      }
+      return sendErrorMessage(message, result.getErrorMessage(), executionCount);
     };
   }
 
@@ -230,9 +236,9 @@ public class MagicCommand {
 
   private MagicCommandItemWithResult sendErrorMessage(Message message, String messageText, int executionCount) {
     return new MagicCommandItemWithResult(
-        messageCreator
-            .buildOutputMessage(message, messageText, true),
-        messageCreator.buildReplyWithoutStatus(message, executionCount)
+            messageCreator
+                    .buildOutputMessage(message, messageText, true),
+            messageCreator.buildReplyWithoutStatus(message, executionCount)
     );
   }
 
@@ -241,8 +247,8 @@ public class MagicCommand {
 
     if (doesPathContainsWildCards(path)) {
       List<PathToJar> pathsToJars = getPaths(path).keySet().stream()
-          .map(currentPath -> new PathToJar(currentPath.toString()))
-          .collect(Collectors.toList());
+              .map(currentPath -> new PathToJar(currentPath.toString()))
+              .collect(Collectors.toList());
 
       List<Path> addedPaths = kernel.addJarsToClasspath(pathsToJars);
       addedJarsName.addAll(addedPaths.stream().map(Path::toString).collect(Collectors.toList()));
@@ -266,8 +272,8 @@ public class MagicCommand {
     try {
 
       return Files.list(Paths.get(pathWithoutWildcards))
-                                     .filter(path -> path.toString().toLowerCase().endsWith(".jar"))
-                                     .collect(Collectors.toMap(p -> p, o -> o.getFileName().toString()));
+              .filter(path -> path.toString().toLowerCase().endsWith(".jar"))
+              .collect(Collectors.toMap(p -> p, o -> o.getFileName().toString()));
 
     } catch (IOException e) {
       throw new IllegalStateException("Cannot find any jars files in selected path");
@@ -320,15 +326,15 @@ public class MagicCommand {
 
   public MagicCommandFunctionality html() {
     return (code, command, message, executionCount) -> code.takeCodeWithoutCommand()
-        .map(codeWithoutCommand -> {
-          MIMEContainer html = HTML(
-              "<html>" + codeWithoutCommand.asString() + "</html>");
-          return new MagicCommandItemWithResult(
-              messageCreator
-                  .buildMessage(message, singletonList(html), executionCount),
-              messageCreator.buildReplyWithoutStatus(message, executionCount)
-          );
-        }).orElse(sendErrorMessage(message, String.format(USAGE_ERROR_MSG, HTML), executionCount));
+            .map(codeWithoutCommand -> {
+              MIMEContainer html = HTML(
+                      "<html>" + codeWithoutCommand.asString() + "</html>");
+              return new MagicCommandItemWithResult(
+                      messageCreator
+                              .buildMessage(message, singletonList(html), executionCount),
+                      messageCreator.buildReplyWithoutStatus(message, executionCount)
+              );
+            }).orElse(sendErrorMessage(message, String.format(USAGE_ERROR_MSG, HTML), executionCount));
   }
 
   public MagicCommandFunctionality bash() {
@@ -341,8 +347,8 @@ public class MagicCommand {
       }
 
       return new MagicCommandItemWithResult(
-          messageCreator.buildOutputMessage(message, errorData.getMessage(), false),
-          messageCreator.buildReplyWithoutStatus(message, executionCount)
+              messageCreator.buildOutputMessage(message, errorData.getMessage(), false),
+              messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
     }).orElse(sendErrorMessage(message, String.format(USAGE_ERROR_MSG, BASH), executionCount));
   }
@@ -352,8 +358,8 @@ public class MagicCommand {
       String result = "Available magic commands:\n";
 
       result += kernel.getMagicCommands().stream()
-                                         .map(commandType -> commandType.getCommand() + " " + commandType.getParameters())
-                                         .collect(Collectors.joining("\n"));
+              .map(commandType -> commandType.getCommand() + " " + commandType.getParameters())
+              .collect(Collectors.joining("\n"));
 
       return new MagicCommandItemWithResult(
               messageCreator.buildOutputMessage(message, result, false),
@@ -381,7 +387,7 @@ public class MagicCommand {
       return new ErrorData(true, e.getMessage());
     }
 
-    return new ErrorData(false,  output.toString());
+    return new ErrorData(false, output.toString());
   }
 
   private ErrorData isValidPath(String path) {
@@ -393,7 +399,7 @@ public class MagicCommand {
     if (doesPathContainsWildCards(path)) {
       if (!containsSingleWildcardSymbol(path) || !path.endsWith("*")) {
         return new ErrorData(true, "Bad classpath wildcard syntax, path can only end with *");
-       } else if (!Paths.get(path.replace("*", "")).toFile().exists()) {
+      } else if (!Paths.get(path.replace("*", "")).toFile().exists()) {
         return new ErrorData(true, "Bad classpath, directory cannot be find");
       }
     } else if (!Paths.get(path).toFile().exists()) {

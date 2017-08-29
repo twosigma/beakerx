@@ -18,6 +18,7 @@ package com.twosigma.beakerx.kernel.commands;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
@@ -26,9 +27,12 @@ import org.junit.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.ADD_MVN_FORMAT_ERROR_MESSAGE;
+import static com.twosigma.beakerx.kernel.msg.MessageCreator.TEXT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClasspathAddMvnDepsMagicCommandTest {
@@ -63,4 +67,35 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     assertThat(dep).isPresent();
     assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
   }
+
+  @Test
+  public void unresolvedDependency() throws Exception {
+    //given
+    String codeAsString = "%classpath add mvn com.fasterxml.jackson.core1 jackson-databind 2.6.5";
+    Code code = new Code(codeAsString);
+    //when
+    MagicCommandResult process = sut.process(code, new Message(), 1);
+    //then
+    String text = getErrorText(process);
+    assertThat(text).contains("unresolved dependency");
+  }
+
+  @Test
+  public void wrongCommandFormat() throws Exception {
+    //given
+    String codeAsString = "%classpath add mvn com.fasterxml.jackson.core1 jackson-databind";
+    Code code = new Code(codeAsString);
+    //when
+    MagicCommandResult process = sut.process(code, new Message(), 1);
+    //then
+    String text = getErrorText(process);
+    assertThat(text).isEqualTo(ADD_MVN_FORMAT_ERROR_MESSAGE);
+  }
+
+  private String getErrorText(MagicCommandResult process) {
+    MagicCommandItem magicCommandItem = process.getItems().get(0);
+    Message message = magicCommandItem.getResult().get();
+    return (String) message.getContent().get(TEXT);
+  }
+
 }

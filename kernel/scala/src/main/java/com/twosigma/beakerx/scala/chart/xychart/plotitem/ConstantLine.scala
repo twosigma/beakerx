@@ -20,23 +20,23 @@ import com.twosigma.beakerx.chart.xychart.plotitem.StrokeType
 
 class ConstantLine extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantLine {
 
-  def this(x: AnyVal) {
+  def this(x: Any) {
     this()
     super.setX(x.asInstanceOf[Number])
   }
 
-  def this(x: AnyVal, y: AnyVal) {
+  def this(x: Any, y: Any) {
     this(x)
     super.setY(y.asInstanceOf[Number])
   }
 
-  def this(x: AnyVal, y: AnyVal, style: StrokeType, color: Color) {
+  def this(x: Any, y: Any, style: StrokeType, color: Color) {
     this(x, y)
     super.setStyle(style)
     super.setColor(color)
   }
 
-  def this(x: AnyVal, y: AnyVal, color: Color, width: Float, showLabel: Boolean) {
+  def this(x: Any, y: Any, color: Color, width: Float, showLabel: Boolean) {
     this(x, y)
     super.setColor(color)
     super.setWidth(width)

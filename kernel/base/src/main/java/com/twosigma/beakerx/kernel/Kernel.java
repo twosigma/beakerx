@@ -240,7 +240,7 @@ public abstract class Kernel implements KernelFunctionality {
             new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
             new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
-            new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<jar path>", magicCommand.classpathAddMvn()),
+            new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<group name version>", magicCommand.classpathAddMvn()),
             new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
             new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
             new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),

@@ -14,7 +14,7 @@
 
 import json
 
-from beakerx.plot.utils import getValue
+from beakerx.utils import getValue
 from ipykernel.comm import Comm
 from ipywidgets import Box, DOMWidget, Text, Label, Textarea, Button, \
     SelectMultiple, Select, Dropdown, Checkbox, HBox, \

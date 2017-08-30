@@ -14,7 +14,7 @@
 
 from ipywidgets import DOMWidget, Box
 from traitlets import Unicode, Dict
-from beakerx.plot.utils import BaseObject
+from beakerx.utils import *
 from beakerx.tabledisplay.tableitems import *
 
 

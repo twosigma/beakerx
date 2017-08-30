@@ -62,13 +62,6 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
       that.listenTo(that.model, 'change:updateData', that.handleUpdateData);
       that.listenTo(that.model, 'change:model', that.handleModellUpdate);
     });
-
-    this.on('remove', function() {
-      if (that._currentScope) {
-        that._currentScope.doDestroy(true);
-        that._currentScope = null;
-      }
-    });
   },
 
   handleModellUpdate: function() {

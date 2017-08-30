@@ -94,7 +94,9 @@ setup_args = dict(
         ]
     },
     package_data={
-        'beakerx': 'static/kernel/*/kernel.json'
+        'beakerx': [
+            'static/kernel/*/kernel.json'
+        ]
     },
     data_files          = [(
         'share/jupyter/nbextensions/beakerx',

@@ -40,6 +40,7 @@ subprojects {
     }
   }
 
+
   test.finalizedBy jacocoTestReport
 
   test {

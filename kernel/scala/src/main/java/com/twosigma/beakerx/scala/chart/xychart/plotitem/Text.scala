@@ -18,7 +18,7 @@ package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 class Text extends com.twosigma.beakerx.chart.xychart.plotitem.Text {
 
-  def this(x: AnyVal, y: AnyVal, text: String, pointerAngle: Double) {
+  def this(x: Any, y: Any, text: String, pointerAngle: Double) {
     this()
     super.setX(x.asInstanceOf[Number])
     super.setY(y.asInstanceOf[Number])

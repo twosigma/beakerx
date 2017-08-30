@@ -93,7 +93,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   public static final String MSG_THROTTLE = "msg_throttle";
 
   public static final String METHOD = "method";
-  public static final String DISPLAY = "display";
+  public static final String DISPLAY = "display_data";
 
   private Comm comm;
 
@@ -116,23 +116,21 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   @Override
   public void display() {
     sendDisplay();
-    sendDisplayData();
-  }
-
-  private void sendDisplayData() {
-    HashMap<String, Serializable> data = new HashMap<>(6);
-    data.put(MODEL_ID, getComm().getCommId());
-    HashMap<String, Serializable> content2 = new HashMap<>();
-    content2.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, data);
-    getComm().setData(content2);
-    getComm().send(DISPLAY_DATA);
   }
 
   private void sendDisplay() {
     HashMap<String, Serializable> content = new HashMap<>();
+    HashMap<String, Serializable> data = new HashMap<>();
+    //These magic numbers needs to be clarified
+    data.put("version_major", "2");
+    data.put("version_minor", "0");
+    data.put(MODEL_ID, getComm().getCommId());
+
     content.put(METHOD, DISPLAY);
+    content.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, data);
     getComm().setData(content);
-    getComm().send();
+    getComm().setMsgType(DISPLAY);
+    getComm().send(DISPLAY_DATA);
   }
 
   private HashMap<String, Serializable> createContent() {

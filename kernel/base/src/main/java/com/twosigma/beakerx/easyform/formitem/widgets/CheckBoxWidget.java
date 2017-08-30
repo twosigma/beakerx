@@ -23,6 +23,10 @@ public class CheckBoxWidget extends EasyFormComponent<Checkbox> {
   public CheckBoxWidget() {
     super(new Checkbox());
   }
+
+  public CheckBoxWidget(String description) {
+    super(new Checkbox(description));
+  }
   
   @Override
   public void setValue(String value) {

@@ -17,6 +17,8 @@ package com.twosigma.beakerx.easyform;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.widgets.ValueWidget;
+import com.twosigma.beakerx.widgets.strings.Text;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,13 +44,12 @@ public class EasyFormUpdateValueTest {
   public void shouldUpdateTextField() throws Exception {
     //given
     String label = "text1";
-    final StringBuilder result = new StringBuilder();
     EasyForm easyForm = new EasyForm("EasyForm with text field");
-    easyForm.addTextField(label).onChange(value -> result.append(value));
+    easyForm.addTextField(label);
     //when
     easyForm.getWidget(label).doUpdateValueWithCallback("new Value");
     //then
-    assertThat(result.toString()).isEqualTo("new Value");
+    assertThat(((ValueWidget) easyForm.getWidget(label)).getValue()).isEqualTo("new Value");
   }
 
 
@@ -56,13 +57,12 @@ public class EasyFormUpdateValueTest {
   public void shouldUpdateRadioButton() throws Exception {
     //given
     String label = "RadioButto1";
-    final StringBuilder result = new StringBuilder();
     EasyForm easyForm = new EasyForm("EasyForm with RadioButto");
-    easyForm.addRadioButtons(label, asList("1", "2")).onChange(value -> result.append(value));
+    easyForm.addRadioButtons(label, asList("1", "2"));
     //when
     easyForm.getWidget(label).doUpdateValueWithCallback("new Value");
     //then
-    assertThat(result.toString()).isEqualTo("new Value");
+    assertThat(((ValueWidget) easyForm.getWidget(label)).getValue()).isEqualTo("new Value");
   }
 
   @Test

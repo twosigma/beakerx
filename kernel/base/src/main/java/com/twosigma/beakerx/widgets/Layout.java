@@ -131,5 +131,5 @@ public class Layout extends Widget {
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
-  
+
 }

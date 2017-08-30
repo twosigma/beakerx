@@ -18,11 +18,11 @@
 from setuptools import setup, find_packages
 from setupbase import (
     create_cmdclass,
-    install_node_modules, 
+    install_node_modules,
     update_kernelspec_class,
     install_kernels,
-    copy_files, 
-    run_gradle, 
+    copy_files,
+    run_gradle,
     get_version,
     get_data_files,
     here
@@ -44,7 +44,7 @@ cmdclass = create_cmdclass(develop_wrappers=[
     'custom_css'
 ])
 cmdclass['js'] = install_node_modules(
-    path='js', 
+    path='js',
     build_dir=os.path.join(here, 'js', 'dist'),
     source_dir=os.path.join(here, 'js', 'src')
 )
@@ -52,7 +52,7 @@ cmdclass['java'] = run_gradle(cmd='build')
 cmdclass['kernels_develop'] = install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel'), target_dir=os.path.join(here, 'beakerx', 'static', 'kernel'))
 cmdclass['kernelspec_class'] = update_kernelspec_class(prefix=os.environ['CONDA_PREFIX'])
 cmdclass['custom_css'] = copy_files(
-    src=os.path.join(here, 'beakerx', 'static', 'custom'), 
+    src=os.path.join(here, 'beakerx', 'static', 'custom'),
     dest=os.path.join(os.environ['CONDA_PREFIX'], 'lib', 'python3.5', 'site-packages', 'notebook', 'static', 'custom')
 )
 
@@ -94,15 +94,17 @@ setup_args = dict(
         ]
     },
     package_data={
-        'beakerx': 'static/kernel/*/kernel.json'
+        'beakerx': [
+            'static/kernel/*/kernel.json'
+        ]
     },
     data_files          = [(
-        'share/jupyter/nbextensions/beakerx', 
+        'share/jupyter/nbextensions/beakerx',
         get_data_files(os.path.join('beaker', 'static'))
     )],
     install_requires    = [
-        'notebook >=4.3.1',
-        'ipywidgets >=5.1.5, <=6.0.0',
+        'notebook >=4.4.0',
+        'ipywidgets >=7.0.0',
         'pandas'
     ],
     zip_safe            = False,

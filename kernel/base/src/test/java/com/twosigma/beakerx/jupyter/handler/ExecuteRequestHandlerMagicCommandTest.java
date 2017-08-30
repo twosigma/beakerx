@@ -46,6 +46,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
   @After
   public void tearDown() throws Exception {
     kernel.clearMessages();
+    evaluator.exit();
   }
 
   @Test

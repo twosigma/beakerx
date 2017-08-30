@@ -23,6 +23,7 @@ import com.twosigma.beakerx.SQLKernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.message.Message;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,6 +36,11 @@ public class SQLMagicCommandTest {
   public void setUp() throws Exception {
     this.kernel = new SQLKernelTest("id2", new EvaluatorTest());
     this.sut = new MagicCommand(kernel);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    kernel.exit();
   }
 
   @Test

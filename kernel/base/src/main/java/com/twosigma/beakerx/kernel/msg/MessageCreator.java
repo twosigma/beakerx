@@ -58,6 +58,7 @@ public class MessageCreator {
   public static final String TEXT_PLAIN = "text/plain";
   public static final String NULL_RESULT = "null";
   public static final String ERROR_MESSAGE = "text";
+  public static final String TEXT = "text";
 
   public static Logger logger = LoggerFactory.getLogger(MessageCreator.class);
   protected KernelFunctionality kernel;
@@ -144,7 +145,7 @@ public class MessageCreator {
     Message reply = initMessage(STREAM, message);
     reply.setContent(new HashMap<String, Serializable>());
     reply.getContent().put("name", hasError ? "stderr" : "stdout");
-    reply.getContent().put("text", text);
+    reply.getContent().put(TEXT, text);
     logger.debug("Console output:", "Error: " + hasError, text);
     return reply;
   }

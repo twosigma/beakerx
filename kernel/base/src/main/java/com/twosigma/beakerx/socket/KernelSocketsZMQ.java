@@ -147,7 +147,7 @@ public class KernelSocketsZMQ extends KernelSockets {
   @Override
   public void run() {
     try {
-      while (!this.isInterrupted()) {
+      while (!this.isShutdown()) {
         sockets.poll();
         if (isControlMsg()) {
           handleControlMsg();
@@ -265,7 +265,6 @@ public class KernelSocketsZMQ extends KernelSockets {
   private void shutdown() {
     logger.debug("kernel shutdown");
     this.shutdownSystem = true;
-    System.exit(0);
   }
 
   private boolean isShutdown() {

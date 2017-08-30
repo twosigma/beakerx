@@ -60,6 +60,7 @@ public abstract class ChartTest<T extends Chart> {
 
   @After
   public void tearDown() throws Exception {
+    kernel.exit();
     KernelManager.register(null);
   }
 

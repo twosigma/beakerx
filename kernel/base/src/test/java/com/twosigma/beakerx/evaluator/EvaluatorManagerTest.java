@@ -22,6 +22,7 @@ import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.collections.map.HashedMap;
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,6 +45,11 @@ public class EvaluatorManagerTest {
     evaluator = new EvaluatorTest();
     evaluatorManager = new EvaluatorManager(kernel, evaluator);
     evaluatorManager.setShellOptions(new KernelParameters(new HashMap()));
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    this.evaluator.exit();
   }
 
   @Test

@@ -18,6 +18,7 @@ package com.twosigma.beakerx;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.comm.Comm;
@@ -34,6 +35,8 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +45,8 @@ import java.util.Map;
 import java.util.Observer;
 import java.util.Optional;
 import java.util.Set;
+
+import org.apache.commons.io.FileUtils;
 import org.assertj.core.util.Lists;
 
 public class KernelTest implements KernelFunctionality {
@@ -56,6 +61,7 @@ public class KernelTest implements KernelFunctionality {
   private MessageCreator messageCreator;
   private String code;
   private MagicCommand magicCommand;
+  private Path tempFolder;
 
   public KernelTest() {
     this("KernelTestId1");
@@ -74,6 +80,7 @@ public class KernelTest implements KernelFunctionality {
     this.messageCreator = new MessageCreator(this);
     this.magicCommand = new MagicCommand(this);
   }
+
 
   @Override
   public void publish(Message message) {
@@ -161,17 +168,34 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public List<MagicCommandType> getMagicCommands() {
     return Lists.newArrayList(
-        new MagicCommandType(MagicCommand.JAVASCRIPT, "", magicCommand.javascript()),
-        new MagicCommandType(MagicCommand.HTML, "", magicCommand.html()),
-        new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
-        new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
-        new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
-        new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
-        new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
-        new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
-        new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
-        new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
+            new MagicCommandType(MagicCommand.JAVASCRIPT, "", magicCommand.javascript()),
+            new MagicCommandType(MagicCommand.HTML, "", magicCommand.html()),
+            new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
+            new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
+            new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
+            new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<jar path>", magicCommand.classpathAddMvn()),
+            new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
+            new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
+            new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
+            new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
+            new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
     );
+  }
+
+  @Override
+  public Path getTempFolder() {
+    if (this.tempFolder == null) {
+      this.tempFolder = tempFolder();
+    }
+    return this.tempFolder;
+  }
+
+  private Path tempFolder() {
+    if (this.evaluatorManager == null) {
+      return EvaluatorTest.getTestTempFolderFactory().createTempFolder();
+    } else {
+      return evaluatorManager.getTempFolder();
+    }
   }
 
   public MagicCommand getMagicCommand() {
@@ -257,4 +281,21 @@ public class KernelTest implements KernelFunctionality {
   public Optional<String> getDatasource() {
     return setShellOptions.getParam(MagicCommand.DATASOURCES, String.class);
   }
+
+  public void exit() {
+    if (evaluatorManager != null) {
+      evaluatorManager.exit();
+    } else {
+      removeTempFolder();
+    }
+  }
+
+  private void removeTempFolder() {
+    try {
+      FileUtils.deleteDirectory(new File(getTempFolder().toString()));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 }

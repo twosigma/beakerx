@@ -48,7 +48,7 @@ public class CombinedPlotSerializerTest {
   static CombinedPlotSerializer combinedPlotSerializer;
   JsonGenerator jgen;
   StringWriter sw;
-  
+  KernelTest kernel;
 
   @BeforeClass
   public static void initClassStubData() {
@@ -64,11 +64,13 @@ public class CombinedPlotSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
-    KernelManager.register(new KernelTest());
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
   }
 
   @After
   public void tearDown() throws Exception {
+    kernel.exit();
     KernelManager.register(null);
   }
 

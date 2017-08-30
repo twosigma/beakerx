@@ -17,7 +17,6 @@ package com.twosigma.beakerx.sql;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.KernelSocketsTest;
-import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.KernelParameters;
@@ -34,9 +33,11 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
- import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.sql.SQLForColorTable.CREATE_AND_SELECT_ALL;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,21 +45,25 @@ public class SQLKernelTest {
 
   private SQL sqlKernel;
   private KernelSocketsServiceTest kernelSocketsService;
+  private SQLEvaluator sqlEvaluator;
+  private Thread kernelThread;
 
   @Before
   public void setUp() throws Exception {
     String sessionId = "sessionId2";
-    SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId, TestBeakerCellExecutor.cellExecutor());
+    sqlEvaluator = new SQLEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory());
     kernelSocketsService = new KernelSocketsServiceTest();
     sqlKernel = new SQL(sessionId, sqlEvaluator, kernelSocketsService);
     sqlKernel.setShellOptions(kernelParameters());
-    new Thread(() -> KernelRunner.run(() -> sqlKernel)).start();
+    kernelThread = new Thread(() -> KernelRunner.run(() -> sqlKernel));
+    kernelThread.start();
     kernelSocketsService.waitForSockets();
   }
 
   @After
   public void tearDown() throws Exception {
     kernelSocketsService.shutdown();
+    kernelThread.join();
   }
 
   @Test

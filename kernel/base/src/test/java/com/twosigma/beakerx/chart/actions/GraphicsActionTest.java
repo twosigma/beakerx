@@ -25,6 +25,7 @@ import com.twosigma.beakerx.chart.xychart.plotitem.XYGraphics;
 import com.twosigma.beakerx.kernel.KernelManager;
 
 import org.assertj.core.api.Assertions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,6 +48,12 @@ public class GraphicsActionTest {
     xyGraphics.setY(Arrays.asList(10, 20));
     xyGraphics.setDisplayName("test display name");
     actionListener = new GraphicsActionListenerStub();
+  }
+
+
+  @After
+  public void tearDown() throws Exception {
+    kernel.exit();
   }
 
   @Test

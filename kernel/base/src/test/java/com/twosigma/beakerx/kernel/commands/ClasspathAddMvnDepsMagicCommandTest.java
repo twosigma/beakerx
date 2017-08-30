@@ -22,24 +22,19 @@ import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.twosigma.beakerx.kernel.commands.ClasspathAddMvnDepsMagicCommandTest.TestRunner.runIfInternetAvailable;
 import static com.twosigma.beakerx.kernel.commands.MagicCommand.ADD_MVN_FORMAT_ERROR_MESSAGE;
 import static com.twosigma.beakerx.kernel.msg.MessageCreator.TEXT;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore
 public class ClasspathAddMvnDepsMagicCommandTest {
 
   private MagicCommand sut;
@@ -60,80 +55,47 @@ public class ClasspathAddMvnDepsMagicCommandTest {
 
   @Test
   public void handleClasspathAddMvnDep() throws Exception {
-    runIfInternetAvailable(() -> {
-      //given
-      String codeAsString = "%classpath add mvn com.fasterxml.jackson.core jackson-databind 2.6.5";
-      Code code = new Code(codeAsString);
-      //when
-      MagicCommandResult process = sut.process(code, new Message(), 1);
-      //then
-      String mvnDir = kernel.getTempFolder().toString() + MagicCommand.MVN_DIR;
-      Stream<Path> paths = Files.walk(Paths.get(mvnDir));
-      Optional<Path> dep = paths.filter(file -> file.getFileName().toFile().getName().contains("jackson-databind")).findFirst();
-      assertThat(dep).isPresent();
-      assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
-      assertThat(getText(process)).contains("jackson-databind.jar");
-    });
+    //given
+    String codeAsString = "%classpath add mvn com.fasterxml.jackson.core jackson-databind 2.6.5";
+    Code code = new Code(codeAsString);
+    //when
+    MagicCommandResult process = sut.process(code, new Message(), 1);
+    //then
+    String mvnDir = kernel.getTempFolder().toString() + MagicCommand.MVN_DIR;
+    Stream<Path> paths = Files.walk(Paths.get(mvnDir));
+    Optional<Path> dep = paths.filter(file -> file.getFileName().toFile().getName().contains("jackson-databind")).findFirst();
+    assertThat(dep).isPresent();
+    assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
+    assertThat(getText(process)).contains("jackson-databind.jar");
   }
 
   @Test
   public void unresolvedDependency() throws Exception {
-    runIfInternetAvailable(() -> {
-      //given
-      String codeAsString = "%classpath add mvn com.fasterxml.jackson.core1 jackson-databind 2.6.5";
-      Code code = new Code(codeAsString);
-      //when
-      MagicCommandResult process = sut.process(code, new Message(), 1);
-      //then
-      String text = getText(process);
-      assertThat(text).contains("unresolved dependency");
-    });
+    //given
+    String codeAsString = "%classpath add mvn com.fasterxml.jackson.core1 jackson-databind 2.6.5";
+    Code code = new Code(codeAsString);
+    //when
+    MagicCommandResult process = sut.process(code, new Message(), 1);
+    //then
+    String text = getText(process);
+    assertThat(text).contains("unresolved dependency");
   }
 
   @Test
   public void wrongCommandFormat() throws Exception {
-    runIfInternetAvailable(() -> {
-      //given
-      String codeAsString = "%classpath add mvn com.fasterxml.jackson.core1 jackson-databind";
-      Code code = new Code(codeAsString);
-      //when
-      MagicCommandResult process = sut.process(code, new Message(), 1);
-      //then
-      String text = getText(process);
-      assertThat(text).isEqualTo(ADD_MVN_FORMAT_ERROR_MESSAGE);
-    });
+    //given
+    String codeAsString = "%classpath add mvn com.fasterxml.jackson.core1 jackson-databind";
+    Code code = new Code(codeAsString);
+    //when
+    MagicCommandResult process = sut.process(code, new Message(), 1);
+    //then
+    String text = getText(process);
+    assertThat(text).isEqualTo(ADD_MVN_FORMAT_ERROR_MESSAGE);
   }
 
   private String getText(MagicCommandResult process) {
     MagicCommandItem magicCommandItem = process.getItems().get(0);
     Message message = magicCommandItem.getResult().get();
     return (String) message.getContent().get(TEXT);
-  }
-
-  public static class TestRunner {
-    static Logger logger = LoggerFactory.getLogger(TestRunner.class.getName());
-
-    public static void runIfInternetAvailable(TestFactory testFactory) throws IOException {
-      if (isInternetAvailable()) {
-        testFactory.run();
-      } else {
-        logger.warn("Internet not available");
-      }
-    }
-
-    public interface TestFactory {
-      void run() throws IOException;
-    }
-
-    private static boolean isInternetAvailable() {
-      try {
-        final URL url = new URL("https://repo1.maven.org/");
-        final URLConnection conn = url.openConnection();
-        conn.connect();
-        return true;
-      } catch (Exception e) {
-        return false;
-      }
-    }
   }
 }

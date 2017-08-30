@@ -79,6 +79,13 @@ public class TableDisplayToJson {
   private static ObjectMapper mapper;
 
   static {
+    SimpleModule module = tableDisplayModule();
+    mapper = new ObjectMapper();
+    mapper.enable(WRITE_ENUMS_USING_TO_STRING);
+    mapper.registerModule(module);
+  }
+
+  public static SimpleModule tableDisplayModule() {
     SimpleModule module = new SimpleModule("TableDisplaySerializer", new Version(1, 0, 0, null));
     module.addSerializer(TableDisplay.class, new TableDisplaySerializer());
     module.addSerializer(ValueStringFormat.class, new ValueStringFormatSerializer());
@@ -91,11 +98,7 @@ public class TableDisplayToJson {
     module.addSerializer(ValueHighlighter.class, new ValueHighlighterSerializer());
     module.addSerializer(Date.class, new DateSerializer());
     module.addSerializer(Color.class, new ColorSerializer());
-
-
-    mapper = new ObjectMapper();
-    mapper.enable(WRITE_ENUMS_USING_TO_STRING);
-    mapper.registerModule(module);
+    return module;
   }
 
   public static Map toJson(Object item) {

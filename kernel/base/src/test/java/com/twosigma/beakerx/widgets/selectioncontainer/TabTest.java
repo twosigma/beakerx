@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getData;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.getState;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static java.util.Arrays.asList;
@@ -64,7 +65,7 @@ public class TabTest {
 
   private void verifyChildren(List<Widget> children) {
     Message message = kernel.getPublishedMessages().get(1);
-    Map data = getData(message);
+    Map data = getState(message);
     Object[] objects = (Object[]) data.get(Tab.CHILDREN);
     assertThat(objects[0]).isEqualTo(Tab.IPY_MODEL + children.get(0).getComm().getCommId());
     assertThat(objects[1]).isEqualTo(Tab.IPY_MODEL + children.get(1).getComm().getCommId());

@@ -15,7 +15,8 @@
  */
 
 var ENTER_KEY_CODE = 13;
-var widgets = require('jupyter-js-widgets');
+var widgets = require('@jupyter-widgets/base');
+var controls = require('@jupyter-widgets/controls');
 var _ = require('underscore');
 
 var selectMultipleWidget = require('./easyForm/selectMultipleWidget');
@@ -24,7 +25,7 @@ var datePickerWidget = require('./easyForm/datePickerWidget');
 var textWidget = require('./easyForm/textWidget');
 var comboBoxWidget = require('./easyForm/comboBoxWidget');
 
-widgets.TextView.prototype.handleEnterKeyPress = function() {
+controls.TextView.prototype.handleEnterKeyPress = function() {
   if (e.keyCode == 13) {
     this.send({ event: 'submit' });
     e.preventDefault();
@@ -51,7 +52,7 @@ var EasyFormModel = widgets.DOMWidgetModel.extend({
   }, widgets.DOMWidgetModel.serializers)
 });
 
-var EasyFormView = widgets.BoxView.extend({
+var EasyFormView = controls.BoxView.extend({
   render: function() {
     var that = this;
 

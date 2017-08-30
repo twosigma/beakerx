@@ -58,7 +58,7 @@ Using [pip](https://pypi.python.org/pypi/pip):
 ```
 conda create -y -n beakerx python=3.5 jupyter openjdk pandas
 source activate beakerx
-conda install widgetsnbextension=2.0.0
+conda install -c conda-forge ipywidgets=7.0.0
 pip install beakerx
 beakerx-install
 ```
@@ -75,7 +75,7 @@ beakerx-install
 ```
 conda create -y -n beakerx python=3.5 jupyter openjdk nodejs pandas
 source activate beakerx
-conda install widgetsnbextension=2.0.0
+conda install -c conda-forge ipywidgets=7.0.0
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 ```

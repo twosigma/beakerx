@@ -34,13 +34,18 @@ import static java.util.Arrays.asList;
 
 public class CheckBoxGroupWidget extends EasyFormComponent<Box> {
 
-  private List<Checkbox> checkboxes;
-  private Label label;
-  private Boolean horizontal;
+  private List<CheckBoxWidget> checkboxes = new ArrayList<>();
+  private Label label = new Label();
+  private boolean horizontal;
 
-  public CheckBoxGroupWidget() {
-    this.checkboxes = new ArrayList<>();
-    this.label = new Label();
+  public CheckBoxGroupWidget(Collection<String> values) {
+    this(values,false);
+  }
+
+  public CheckBoxGroupWidget(Collection<String> values, boolean horizontal) {
+    super();
+    this.horizontal = horizontal;
+    createWidget(values);
   }
 
   public Boolean getHorizontal() {
@@ -66,27 +71,22 @@ public class CheckBoxGroupWidget extends EasyFormComponent<Box> {
     return new ArrayList<>(getValues());
   }
 
-  @Override
-  public void setValue(String value) {
-  }
-
   private Collection<String> getValues() {
-    return this.checkboxes.stream().filter(BoolWidget::getValue).map(ValueWidget::getDescription).collect(Collectors.toList());
+    return this.checkboxes.stream().map(EasyFormComponent::getWidget).filter(BoolWidget::getValue).map(ValueWidget::getDescription).collect(Collectors.toList());
   }
 
   public void setValues(Collection<String> values) {
     values.forEach(item -> {
-      Checkbox checkbox = new Checkbox();
-      checkbox.setDescription(item);
+      CheckBoxWidget checkbox = new CheckBoxWidget(item);
       checkboxes.add(checkbox);
     });
   }
 
-  public void createWidget() {
-    List<Widget> comms = checkboxes.stream().map(x -> (Widget) x).collect(Collectors.toList());
+  private void createWidget(Collection<String> values) {
+    setValues(values);
+    List<Widget> comms = checkboxes.stream().map(EasyFormComponent::getWidget).collect(Collectors.toList());
     Box rightSide = (getHorizontal()) ? new HBox(comms) : new VBox(comms);
     this.widget = new HBox(asList(label, rightSide));
   }
-
 
 }

@@ -65,13 +65,14 @@ public class ClasspathAddMvnDepsMagicCommandTest {
       String codeAsString = "%classpath add mvn com.fasterxml.jackson.core jackson-databind 2.6.5";
       Code code = new Code(codeAsString);
       //when
-      sut.process(code, new Message(), 1);
+      MagicCommandResult process = sut.process(code, new Message(), 1);
       //then
       String mvnDir = kernel.getTempFolder().toString() + MagicCommand.MVN_DIR;
       Stream<Path> paths = Files.walk(Paths.get(mvnDir));
       Optional<Path> dep = paths.filter(file -> file.getFileName().toFile().getName().contains("jackson-databind")).findFirst();
       assertThat(dep).isPresent();
       assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
+      assertThat(getText(process)).contains("jackson-databind.jar");
     });
   }
 
@@ -84,7 +85,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
       //when
       MagicCommandResult process = sut.process(code, new Message(), 1);
       //then
-      String text = getErrorText(process);
+      String text = getText(process);
       assertThat(text).contains("unresolved dependency");
     });
   }
@@ -98,12 +99,12 @@ public class ClasspathAddMvnDepsMagicCommandTest {
       //when
       MagicCommandResult process = sut.process(code, new Message(), 1);
       //then
-      String text = getErrorText(process);
+      String text = getText(process);
       assertThat(text).isEqualTo(ADD_MVN_FORMAT_ERROR_MESSAGE);
     });
   }
 
-  private String getErrorText(MagicCommandResult process) {
+  private String getText(MagicCommandResult process) {
     MagicCommandItem magicCommandItem = process.getItems().get(0);
     Message message = magicCommandItem.getResult().get();
     return (String) message.getContent().get(TEXT);

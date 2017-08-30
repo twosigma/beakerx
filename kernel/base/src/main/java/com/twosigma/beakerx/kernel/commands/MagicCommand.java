@@ -270,12 +270,13 @@ public class MagicCommand {
     List<String> addedJarsName = Lists.newLinkedList();
 
     if (doesPathContainsWildCards(path)) {
-      List<PathToJar> pathsToJars = getPaths(path).keySet().stream()
+      Map<Path, String> paths = getPaths(path);
+      List<PathToJar> pathsToJars = paths.keySet().stream()
               .map(currentPath -> new PathToJar(currentPath.toString()))
               .collect(Collectors.toList());
 
       List<Path> addedPaths = kernel.addJarsToClasspath(pathsToJars);
-      addedJarsName.addAll(addedPaths.stream().map(Path::toString).collect(Collectors.toList()));
+      addedJarsName.addAll(addedPaths.stream().map(x -> x.getFileName().toString()).collect(Collectors.toList()));
 
     } else {
       Path currentPath = Paths.get(path);

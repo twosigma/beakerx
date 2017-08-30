@@ -17,15 +17,23 @@ import inspect
 import time
 from datetime import datetime
 from dateutil import parser
-
 from enum import Enum
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 
+def is_date(string):
+    try:
+        parser.parse(string)
+        return True
+    except Exception:
+        return False
+
+
 def unix_time(dt):
-    epoch = datetime.utcfromtimestamp(0)
+    epoch = parser.parse("1970-01-01 00:00:00+00:00")
     delta = parser.parse(dt) - epoch
+    
     return delta.total_seconds()
 
 

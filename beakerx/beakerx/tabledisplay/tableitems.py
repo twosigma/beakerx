@@ -32,13 +32,6 @@ class TimeUnit(Enum):
     HOURS = 7
 
 
-def is_date(string):
-    try:
-        parse(string)
-        return True
-    except Exception:
-        return False
-
 
 class ColumnType(Enum):
     String = "string"

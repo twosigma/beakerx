@@ -24,6 +24,7 @@ import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 import static java.util.Collections.singletonList;
 
 import com.google.common.collect.Lists;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.ImportPath;
@@ -48,6 +49,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import org.apache.commons.text.StrMatcher;
 import org.apache.commons.text.StrTokenizer;
@@ -144,9 +147,30 @@ public class MagicCommand {
       if (parts.length != 2) {
         return createResultWithCustomMessage(kernel.getImports().toString(), message, executionCount);
       }
+
       this.kernel.addImport(new ImportPath(parts[1]));
-      return getMagicCommandItem(code, message, executionCount);
+
+      if (isValidImport(parts[1], executionCount)) {
+        return getMagicCommandItem(code, message, executionCount);
+      }
+
+      this.kernel.removeImport(new ImportPath(parts[1]));
+
+      return sendErrorMessage(message, "Could not import " + parts[1] + ", class not found.",
+          executionCount);
     };
+  }
+
+  private boolean isValidImport(String part, int executionCount) {
+    try {
+      CompletableFuture<Boolean> validImportFuture = new CompletableFuture<>();
+      kernel.executeCode("", new Message(), executionCount,
+          seo -> validImportFuture.complete(!seo.getStatus().equals(EvaluationStatus.ERROR)));
+
+      return validImportFuture.get();
+    } catch (InterruptedException | ExecutionException e) {
+     return Boolean.FALSE;
+    }
   }
 
   private MagicCommandItem createResultWithCustomMessage(String customMessage, Message message, int executionCount) {

@@ -17,13 +17,14 @@ package com.twosigma.beakerx;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
-
+import com.twosigma.beakerx.table.TableDisplayToJson;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -32,6 +33,8 @@ import java.util.Map;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SynchronousQueue;
+
+import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
 
 public class NamespaceClient {
   
@@ -45,7 +48,10 @@ public class NamespaceClient {
   private Comm codeCellsComm = null;
 
   public NamespaceClient() {
+    SimpleModule module = TableDisplayToJson.tableDisplayModule();
     objectMapper = new ObjectMapper();
+    objectMapper.enable(WRITE_ENUMS_USING_TO_STRING);
+    objectMapper.registerModule(module);
     objectSerializer = new BasicObjectSerializer();
   }
 

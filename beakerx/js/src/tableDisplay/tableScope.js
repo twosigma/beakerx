@@ -683,9 +683,16 @@ define([
       };
     }
 
-    if (self.types[index] === 'integer' || self.types[index] === 'int64') {
+    if (self.types[index] === 'integer') {
       return {
         actualtype: 2,
+        actualalign: 'R'
+      };
+    }
+
+    if (self.types[index] === 'int64') {
+      return {
+        actualtype: 0,
         actualalign: 'R'
       };
     }

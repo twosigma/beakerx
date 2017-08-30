@@ -16,14 +16,20 @@
 
 package com.twosigma.beakerx.easyform;
 
+import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
+import static com.twosigma.beakerx.kernel.comm.Comm.STATE;
+
 import com.twosigma.beakerx.easyform.formitem.EasyFormListener;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widgets.CommFunctionality;
 import com.twosigma.beakerx.widgets.UpdateValueCallback;
 import com.twosigma.beakerx.widgets.ValueWidget;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunctionality {
 
@@ -34,10 +40,10 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
 
   public EasyFormComponent(T widget) {
     this.widget = widget;
+    widget.getComm().addMsgCallbackList(this::setupNewValue);
   }
 
   public EasyFormComponent() {
-
   }
 
   //Acts like ID
@@ -148,6 +154,30 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
   @Override
   public void close() {
     getComm().close();
+  }
+
+  private void setupNewValue(Message message) {
+    if (message.getContent() == null) {
+      return;
+    }
+    Map<String, Map<String,String>> dataMap = ((Map<String, Map<String, String>>) message.getContent().get(DATA));
+
+    if (dataMap != null && !dataMap.isEmpty()) {
+      Map<String, String> stateMap = dataMap.get(STATE);
+      if (stateMap != null && !stateMap.isEmpty()) {
+        getNewValue(stateMap).ifPresent(newValue -> widget.setValue(newValue));
+      }
+    }
+  }
+
+  private Optional<Object> getNewValue(Map<String, String> stateMap) {
+    if (stateMap.containsKey("value")) {
+      return Optional.of(stateMap.get("value"));
+    } else if (stateMap.containsKey("index")) {
+      return Optional.of(stateMap.get("index"));
+    }
+
+    return Optional.empty();
   }
 
 }

@@ -25,6 +25,11 @@ public class Checkbox extends BoolWidget {
     openComm();
   }
 
+  public Checkbox(String description) {
+    this();
+    setDescription(description);
+  }
+
   @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;

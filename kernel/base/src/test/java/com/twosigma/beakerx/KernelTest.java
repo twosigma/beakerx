@@ -22,6 +22,7 @@ import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.commands.MavenJarResolver;
 import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
@@ -47,7 +48,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.ivy.plugins.resolver.FileSystemResolver;
+import org.apache.ivy.plugins.resolver.RepositoryResolver;
 import org.assertj.core.util.Lists;
+
+import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
 
 public class KernelTest implements KernelFunctionality {
 
@@ -173,13 +178,25 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
             new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
-            new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<jar path>", magicCommand.classpathAddMvn()),
+            new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<group name version>", magicCommand.classpathAddMvn(
+                    new MavenJarResolver.ResolverParams(
+                            new File("src/test/resources/testIvyCache").getAbsolutePath(),
+                            getTempFolder().toString() + MVN_DIR,
+                            createRepositoryResolver()
+                    )
+            )),
             new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
             new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
             new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
             new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
             new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
     );
+  }
+
+  private RepositoryResolver createRepositoryResolver() {
+    FileSystemResolver br = new FileSystemResolver();
+    br.setName("central");
+    return br;
   }
 
   @Override

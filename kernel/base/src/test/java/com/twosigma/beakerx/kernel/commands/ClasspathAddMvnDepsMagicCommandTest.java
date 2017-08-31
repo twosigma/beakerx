@@ -22,7 +22,6 @@ import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,11 +29,11 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
 import static com.twosigma.beakerx.kernel.commands.MagicCommand.ADD_MVN_FORMAT_ERROR_MESSAGE;
 import static com.twosigma.beakerx.kernel.msg.MessageCreator.TEXT;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore
 public class ClasspathAddMvnDepsMagicCommandTest {
 
   private MagicCommand sut;
@@ -56,23 +55,23 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   @Test
   public void handleClasspathAddMvnDep() throws Exception {
     //given
-    String codeAsString = "%classpath add mvn com.fasterxml.jackson.core jackson-databind 2.6.5";
+    String codeAsString = "%classpath add mvn com.google.code.gson gson 2.6.2";
     Code code = new Code(codeAsString);
     //when
     MagicCommandResult process = sut.process(code, new Message(), 1);
     //then
-    String mvnDir = kernel.getTempFolder().toString() + MagicCommand.MVN_DIR;
+    String mvnDir = kernel.getTempFolder().toString() + MVN_DIR;
     Stream<Path> paths = Files.walk(Paths.get(mvnDir));
-    Optional<Path> dep = paths.filter(file -> file.getFileName().toFile().getName().contains("jackson-databind")).findFirst();
+    Optional<Path> dep = paths.filter(file -> file.getFileName().toFile().getName().contains("gson")).findFirst();
     assertThat(dep).isPresent();
     assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
-    assertThat(getText(process)).contains("jackson-databind.jar");
+    assertThat(getText(process)).contains("gson.jar");
   }
 
   @Test
   public void unresolvedDependency() throws Exception {
     //given
-    String codeAsString = "%classpath add mvn com.fasterxml.jackson.core1 jackson-databind 2.6.5";
+    String codeAsString = "%classpath add mvn com.google.code.XXXX gson 2.6.2";
     Code code = new Code(codeAsString);
     //when
     MagicCommandResult process = sut.process(code, new Message(), 1);
@@ -84,7 +83,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   @Test
   public void wrongCommandFormat() throws Exception {
     //given
-    String codeAsString = "%classpath add mvn com.fasterxml.jackson.core1 jackson-databind";
+    String codeAsString = "%classpath add mvn com.google.code.XXXX gson";
     Code code = new Code(codeAsString);
     //when
     MagicCommandResult process = sut.process(code, new Message(), 1);

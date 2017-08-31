@@ -423,8 +423,16 @@ def _ipython_display_(self):
 class BeakerX:
     """Runtime support for Python code in BeakerX."""
     _comm = Comm(target_name='beaker.autotranslation')
-    
+
     def __init__(self):
+        BeakerX.pandas_display_table()
+
+    @staticmethod
+    def pandas_display_default():
+        pandas.DataFrame._ipython_display_ = None
+
+    @staticmethod
+    def pandas_display_table():
         pandas.DataFrame._ipython_display_ = _ipython_display_
         
     def set4(self, var, val, unset, sync):

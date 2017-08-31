@@ -64,8 +64,6 @@ import org.apache.commons.text.StrTokenizer;
  */
 public class MagicCommand {
 
-  public static final String MVN_DIR = "/mvnJars";
-
   public static final String JAVASCRIPT = "%%javascript";
   public static final String HTML = "%%html";
   public static final String BASH = "%%bash";
@@ -234,19 +232,16 @@ public class MagicCommand {
     };
   }
 
-  public MagicCommandFunctionality classpathAddMvn() {
+  public MagicCommandFunctionality classpathAddMvn(MavenJarResolver.ResolverParams commandParams) {
     return (code, command, message, executionCount) -> {
       String[] split = splitPath(command);
       if (split.length != 6) {
         return sendErrorMessage(message, ADD_MVN_FORMAT_ERROR_MESSAGE, executionCount);
       }
-      String tempFolder = kernel.getTempFolder().toString();
-      String mvnDirectory = tempFolder + MVN_DIR;
-      String IVY_CACHE = tempFolder + "/../beakerIvyCache";
-      ClasspathAddMvnCommand classpathAddMvnCommand = new ClasspathAddMvnCommand(IVY_CACHE, mvnDirectory);
-      ClasspathAddMvnCommand.AddMvnCommandResult result = classpathAddMvnCommand.retrieve(split[3], split[4], split[5]);
+      MavenJarResolver classpathAddMvnCommand = new MavenJarResolver(commandParams);
+      MavenJarResolver.AddMvnCommandResult result = classpathAddMvnCommand.retrieve(split[3], split[4], split[5]);
       if (result.isJarRetrieved()) {
-        return getMagicCommandItem(addJars(mvnDirectory + "/*"), code, message, executionCount);
+        return getMagicCommandItem(addJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*"), code, message, executionCount);
       }
       return sendErrorMessage(message, result.getErrorMessage(), executionCount);
     };

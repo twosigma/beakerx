@@ -25,33 +25,35 @@ import org.apache.ivy.core.resolve.ResolveOptions;
 import org.apache.ivy.core.retrieve.RetrieveOptions;
 import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.resolver.IBiblioResolver;
+import org.apache.ivy.plugins.resolver.RepositoryResolver;
 
 import java.io.File;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.ivy.core.LogOptions.LOG_QUIET;
 
-public class ClasspathAddMvnCommand {
+public class MavenJarResolver {
 
-  private String pathToCache;
-  private String pathToTempRepo;
+  public static final String MVN_DIR = "/mvnJars";
+  private final String pathToMavenRepo;
+  private ResolverParams commandParams;
 
-  public ClasspathAddMvnCommand(String pathToCache, String pathToTempRepo) {
-    this.pathToCache = checkNotNull(pathToCache);
-    this.pathToTempRepo = checkNotNull(pathToTempRepo);
+  public MavenJarResolver(final ResolverParams commandParams) {
+    this.commandParams = checkNotNull(commandParams);
+    this.pathToMavenRepo = getMvnDir(commandParams.getPathToMavenRepo());
   }
 
   public AddMvnCommandResult retrieve(String groupId, String artifactId, String version) {
     try {
-      IBiblioResolver br = createBiblioResolver();
-      IvySettings ivySettings = createIvyInstance(this.pathToCache, br);
+      RepositoryResolver br = commandParams.getRepositoryResolver();
+      IvySettings ivySettings = createIvyInstance(this.commandParams.getPathToCache(), br);
 
       Ivy ivy = Ivy.newInstance(ivySettings);
       ResolveOptions resolveOptions = createResolveOptions();
       ModuleDescriptor moduleDescriptor = getModuleDescriptor(groupId, artifactId, version, ivy, resolveOptions);
 
 
-      String absolutePath = new File(this.pathToTempRepo).getAbsolutePath();
+      String absolutePath = new File(this.getPathToMavenRepo()).getAbsolutePath();
       ivy.retrieve(
               moduleDescriptor.getModuleRevisionId(),
               absolutePath + "/[artifact](-[classifier]).[ext]",
@@ -104,20 +106,16 @@ public class ClasspathAddMvnCommand {
     return ro;
   }
 
-  private IBiblioResolver createBiblioResolver() {
-    IBiblioResolver br = new IBiblioResolver();
-    br.setM2compatible(true);
-    br.setUsepoms(true);
-    br.setName("central");
-    return br;
-  }
-
-  private IvySettings createIvyInstance(String pathToCache, IBiblioResolver br) {
+  private IvySettings createIvyInstance(String pathToCache, RepositoryResolver br) {
     IvySettings ivySettings = new IvySettings();
     ivySettings.setDefaultCache(new File(pathToCache));
     ivySettings.addResolver(br);
     ivySettings.setDefaultResolver(br.getName());
     return ivySettings;
+  }
+
+  public String getPathToMavenRepo() {
+    return pathToMavenRepo;
   }
 
   public static class AddMvnCommandResult {
@@ -147,5 +145,50 @@ public class ClasspathAddMvnCommand {
     public static AddMvnCommandResult error(String msg) {
       return new AddMvnCommandResult(false, msg);
     }
+  }
+
+  public static class ResolverParams {
+    private String pathToCache;
+    private String pathToMavenRepo;
+    private RepositoryResolver repositoryResolver;
+
+    public ResolverParams(String pathToCache, String pathToMavenRepo, RepositoryResolver repositoryResolver) {
+      this.pathToCache = checkNotNull(pathToCache);
+      this.pathToMavenRepo = checkNotNull(pathToMavenRepo);
+      this.repositoryResolver = checkNotNull(repositoryResolver);
+    }
+
+    public String getPathToCache() {
+      return pathToCache;
+    }
+
+    public String getPathToMavenRepo() {
+      return pathToMavenRepo;
+    }
+
+    public RepositoryResolver getRepositoryResolver() {
+      return repositoryResolver;
+    }
+  }
+
+
+  private String getMvnDir(String pathToMavenRepo) {
+    File theDir = new File(pathToMavenRepo);
+    if (!theDir.exists()) {
+      try {
+        theDir.mkdir();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return pathToMavenRepo;
+  }
+
+  public static RepositoryResolver createBiblioResolver() {
+    IBiblioResolver br = new IBiblioResolver();
+    br.setM2compatible(true);
+    br.setUsepoms(true);
+    br.setName("central");
+    return br;
   }
 }

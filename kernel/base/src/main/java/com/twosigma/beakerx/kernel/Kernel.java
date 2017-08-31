@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kernel;
 
 import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
+import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
 
 import com.google.common.collect.Lists;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
@@ -25,6 +26,7 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.commands.MavenJarResolver;
 import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
@@ -38,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -240,7 +241,12 @@ public abstract class Kernel implements KernelFunctionality {
             new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
             new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
-            new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<group name version>", magicCommand.classpathAddMvn()),
+            new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<group name version>",
+                    magicCommand.classpathAddMvn(new MavenJarResolver.ResolverParams(
+                            getTempFolder().toString() + "/../beakerIvyCache",
+                            getTempFolder().toString() + MVN_DIR,
+                            MavenJarResolver.createBiblioResolver()
+                    ))),
             new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
             new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
             new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
@@ -248,6 +254,7 @@ public abstract class Kernel implements KernelFunctionality {
             new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
     );
   }
+
 
   @Override
   public Path getTempFolder() {

@@ -128,6 +128,41 @@ class Plot(DOMWidget):
     def getYAxes(self):
         return self.chart.rangeAxes
 
+class HeatMap(DOMWidget):
+    _view_name = Unicode('PlotView').tag(sync=True)
+    _model_name = Unicode('PlotModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    model = Dict().tag(sync=True)
+
+    def __init__(self, **kwargs):
+        super(HeatMap, self).__init__(**kwargs)
+        if 'data' in kwargs:
+            kwargs['graphics'] = kwargs['data']
+        if not 'xLowerMargin' in kwargs:
+            kwargs['xLowerMargin'] = 0.0
+        if not 'yLowerMargin' in kwargs:
+            kwargs['yLowerMargin'] = 0.0
+        if not 'yUpperMargin' in kwargs:
+            kwargs['yUpperMargin'] = 0.0
+        if not 'xUpperMargin' in kwargs:
+            kwargs['xUpperMargin'] = 0.0
+        if not 'legendLayout' in kwargs:
+            kwargs['legendLayout'] = LegendLayout.HORIZONTAL
+        if not 'legendPosition' in kwargs:
+            kwargs['legendPosition'] =  LegendPosition(position = LegendPosition.Position.BOTTOM_RIGHT)
+        self.chart = XYChart(**kwargs)
+        color = getValue(kwargs, 'color', ["#FF780004", "#FFF15806", "#FFFFCE1F"])
+
+        if isinstance(color, GradientColor):
+            self.chart.color = color.color
+        else:
+            self.chart.color = color
+
+        self.chart.type = 'HeatMap'
+
+        self.model = self.chart.transform()
+
 
 class TimePlot(Plot):
     def __init__(self, **kwargs):

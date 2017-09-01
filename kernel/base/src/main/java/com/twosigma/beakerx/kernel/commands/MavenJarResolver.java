@@ -34,7 +34,7 @@ import static org.apache.ivy.core.LogOptions.LOG_QUIET;
 
 public class MavenJarResolver {
 
-  public static final String MVN_DIR = "/mvnJars";
+  public static final String MVN_DIR = File.separator + "mvnJars";
   private final String pathToMavenRepo;
   private ResolverParams commandParams;
 

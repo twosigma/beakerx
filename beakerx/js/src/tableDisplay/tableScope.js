@@ -483,6 +483,7 @@ define([
 
   TableScope.prototype.doDestroy = function(all) {
     var self = this;
+    var $body = $(document.body);
     if (self.table) {
       //jscs:disable
       clearTimeout(self.refresh_size);
@@ -533,9 +534,10 @@ define([
       delete self.data;
       delete self.update;
       delete self.tableOrder;
-      $(document.body).off('click.bko-dt-container', self.containerClickFunction);
+      $body.off('click.bko-dt-container', self.containerClickFunction);
     }
     self.unregisterOutputExpandEventListener();
+    $body.tooltip('instance') && $body.tooltip('destroy');
 
     // self.$on(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED, function() {
     //   var parents = self.element.parents();

@@ -47,13 +47,14 @@ public class GroovyEvaluatorProgressReportingTest {
   @Before
   public void setUp() throws Exception {
     groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
-    groovyKernel = new KernelTest();
+    groovyKernel = new KernelTest("groovyEvaluatorProgressReportingTest", groovyEvaluator);
     KernelManager.register(groovyKernel);
   }
 
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
+    groovyKernel.exit();
   }
 
   @Test

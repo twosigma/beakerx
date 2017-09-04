@@ -18,7 +18,6 @@ package com.twosigma.beakerx.javash.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.chart.xychart.Plot;
-import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.javash.kernel.JavaKernelMock;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -28,6 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 
@@ -37,7 +38,7 @@ public class JavaEvaluatorTest {
 
   @Before
   public void setUp() throws Exception {
-    javaEvaluator = new JavaEvaluator("id", "sid", TestBeakerCellExecutor.cellExecutor());
+    javaEvaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory());
     JavaKernelMock kernel = new JavaKernelMock("id", javaEvaluator);
     KernelManager.register(kernel);
   }
@@ -45,14 +46,15 @@ public class JavaEvaluatorTest {
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
+    javaEvaluator.exit();
   }
 
   @Test
   public void evaluatePlot_shouldCreatePlotObject() throws Exception {
     //given
     String code = "import com.twosigma.beakerx.chart.xychart.*;\n" +
-        "Plot plot = new Plot(); plot.setTitle(\"test title\");\n" +
-        "return plot;";
+            "Plot plot = new Plot(); plot.setTitle(\"test title\");\n" +
+            "return plot;";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     javaEvaluator.evaluate(seo, code);
@@ -60,7 +62,7 @@ public class JavaEvaluatorTest {
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
     Assertions.assertThat(seo.getPayload() instanceof Plot).isTrue();
-    Assertions.assertThat(((Plot)seo.getPayload()).getTitle()).isEqualTo("test title");
+    Assertions.assertThat(((Plot) seo.getPayload()).getTitle()).isEqualTo("test title");
   }
 
   @Test
@@ -73,7 +75,7 @@ public class JavaEvaluatorTest {
     waitForResult(seo);
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
-    Assertions.assertThat((String)seo.getPayload()).contains("java.lang.ArithmeticException");
+    Assertions.assertThat((String) seo.getPayload()).contains("java.lang.ArithmeticException");
   }
 
 }

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,10 +37,12 @@ public class CompleteHandlerTest {
   private CompleteHandler completeHandler;
   private Message message;
   private static KernelTest kernel;
+  private static EvaluatorTest evaluator;
 
   @BeforeClass
   public static void setUpClass(){
-    kernel = new KernelTest("sid", new EvaluatorTest());
+    evaluator = new EvaluatorTest();
+    kernel = new KernelTest("sid", evaluator);
   }
 
   @Before
@@ -51,6 +54,11 @@ public class CompleteHandlerTest {
   @After
   public void tearDown() throws Exception {
     kernel.clearSentMessages();
+  }
+
+  @AfterClass
+  public static void tearDownClass() throws Exception {
+    evaluator.exit();
   }
 
   @Test

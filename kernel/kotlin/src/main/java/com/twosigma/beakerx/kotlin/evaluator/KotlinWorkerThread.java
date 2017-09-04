@@ -32,6 +32,7 @@ import org.jetbrains.kotlin.config.Services;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -201,6 +202,15 @@ class KotlinWorkerThread extends WorkerThread {
 
   public void doExit() {
     this.exit = true;
+    removeKtFile();
+  }
+
+  private void removeKtFile() {
+    try {
+      Files.deleteIfExists(new File(kotlinEvaluator.getOutDir()+ "\\" + WRAPPER_CLASS_NAME + ".kt").toPath());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private static class LineBrakingStringBuilderWrapper {

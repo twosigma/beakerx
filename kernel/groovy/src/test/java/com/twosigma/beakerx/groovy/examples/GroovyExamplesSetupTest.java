@@ -36,6 +36,7 @@ public abstract class GroovyExamplesSetupTest {
 
   protected static Groovy kernel;
   protected static KernelSocketsServiceTest kernelSocketsService;
+  private static Thread kernelThread;
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -43,13 +44,15 @@ public abstract class GroovyExamplesSetupTest {
     GroovyEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Groovy(sessionId, evaluator, kernelSocketsService);
-    new Thread(() -> KernelRunner.run(() -> kernel)).start();
+    kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
+    kernelThread.start();
     kernelSocketsService.waitForSockets();
   }
 
   @AfterClass
   public static void tearDownClass() throws Exception {
     kernelSocketsService.shutdown();
+    kernelThread.join();
   }
 
   @After

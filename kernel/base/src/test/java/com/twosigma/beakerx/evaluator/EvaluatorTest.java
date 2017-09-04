@@ -24,8 +24,12 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class EvaluatorTest extends BaseEvaluator {
@@ -46,7 +50,22 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
   public EvaluatorTest(String id, String sId, CellExecutor cellExecutor) {
-    super(id, sId, cellExecutor);
+    super(id, sId, cellExecutor, getTestTempFolderFactory());
+  }
+
+  public static TempFolderFactory getTestTempFolderFactory() {
+    return new TempFolderFactory() {
+      @Override
+      public Path createTempFolder() {
+        Path path;
+        try {
+          path = Files.createTempDirectory("beakerxTest");
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+        return path;
+      }
+    };
   }
 
   @Override
@@ -78,6 +97,15 @@ public class EvaluatorTest extends BaseEvaluator {
   @Override
   public void exit() {
     exit = true;
+    removeTempFolder();
+  }
+
+  private void removeTempFolder() {
+    try {
+      FileUtils.deleteDirectory(new File(getTempFolder().toString()));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override

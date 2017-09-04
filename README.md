@@ -58,7 +58,7 @@ Using [pip](https://pypi.python.org/pypi/pip):
 ```
 conda create -y -n beakerx python=3.5 jupyter openjdk pandas
 source activate beakerx
-conda install -c conda-forge ipywidgets=7.0.0
+conda install -y -c conda-forge ipywidgets=7.0.0 widgetsnbextension
 pip install beakerx
 beakerx-install
 ```
@@ -67,7 +67,7 @@ beakerx-install
 
 ### Dependencies:
 
-* [conda](https://www.continuum.io/downloads) (any Python 3 environment with [Jupyter Notebook](https://pypi.python.org/pypi/notebook), [Node.js](https://nodejs.org/en/), and [JDK](http://jdk.java.net/8/) installed should be fine, but our documentation assumes conda)
+* [conda](https://www.continuum.io/downloads) (any Python 3 environment with [Jupyter Notebook](https://pypi.python.org/pypi/notebook), [Node.js](https://nodejs.org/en/), and a [JDK](http://jdk.java.net/8/) installed should be fine, but our documentation assumes conda)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 
 ### Install
@@ -75,7 +75,7 @@ beakerx-install
 ```
 conda create -y -n beakerx python=3.5 jupyter openjdk nodejs pandas
 source activate beakerx
-conda install -c conda-forge ipywidgets=7.0.0
+conda install -y -c conda-forge ipywidgets=7.0.0 widgetsnbextension
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 ```

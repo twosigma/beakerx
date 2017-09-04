@@ -17,22 +17,26 @@
 package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
+
 public class ScalaAutocompleteTest {
+
   private static ScalaEvaluator scalaEvaluator;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    scalaEvaluator = new ScalaEvaluator("id", "sid",null, TestBeakerCellExecutor.cellExecutor(), new NoBeakerxObjectTestFactory());
+    scalaEvaluator = new ScalaEvaluator("id", "sid", null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory());
   }
 
   @Before
@@ -44,6 +48,11 @@ public class ScalaAutocompleteTest {
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
+  }
+
+  @AfterClass
+  public static void tearDownClass() throws Exception {
+    scalaEvaluator.exit();
   }
 
   @Test

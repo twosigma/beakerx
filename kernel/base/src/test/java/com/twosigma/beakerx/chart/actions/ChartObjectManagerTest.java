@@ -39,6 +39,7 @@ public class ChartObjectManagerTest {
 
   @After
   public void tearDown() throws Exception {
+    kernel.exit();
     KernelManager.register(null);
   }
 

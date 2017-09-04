@@ -24,7 +24,9 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.KernelParameters;
+
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,16 +53,6 @@ public interface Evaluator {
 
   void exit();
 
-  static Path createJupyterTempFolder() {
-    Path ret = null;
-    try {
-      ret = Files.createTempDirectory("beaker");
-    } catch (IOException e) {
-      logger.error("No temp folder set for beaker", e);
-    }
-    return ret.toAbsolutePath();
-  }
-
   void resetEnvironment();
 
   boolean addJarToClasspath(PathToJar path);
@@ -74,4 +66,6 @@ public interface Evaluator {
   void addImport(ImportPath anImport);
 
   void removeImport(ImportPath anImport);
+
+  Path getTempFolder();
 }

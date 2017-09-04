@@ -23,6 +23,7 @@ import static com.twosigma.beakerx.message.MessageSerializer.toJson;
 import com.twosigma.beakerx.kernel.handler.ExecuteRequestHandler;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,13 +40,15 @@ import java.util.List;
 public class ExecuteRequestHandlerTest {
 
   private static KernelTest kernel;
+  private static EvaluatorTest evaluatorTest;
   private ExecuteRequestHandler executeRequestHandler;
   private Message message;
   private Message magicMessage;
 
   @BeforeClass
-  public static void setUpClass(){
-    kernel = new KernelTest("sid", new EvaluatorTest()){
+  public static void setUpClass() {
+    evaluatorTest = new EvaluatorTest();
+    kernel = new KernelTest("sid", evaluatorTest) {
       @Override
       public void publish(Message message) {
         super.publish(copyMessage(message));
@@ -64,6 +67,11 @@ public class ExecuteRequestHandlerTest {
   @After
   public void tearDown() throws Exception {
     kernel.clearPublishedMessages();
+  }
+
+  @AfterClass
+  public static void tearDownClass() throws Exception {
+    evaluatorTest.exit();
   }
 
   @Test
@@ -96,7 +104,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(publishMessage.getHeader().getType())
-        .isEqualTo(JupyterMessages.STATUS.getName());
+            .isEqualTo(JupyterMessages.STATUS.getName());
   }
 
   @Test
@@ -121,7 +129,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(0);
     Assertions.assertThat(new String(publishMessage.getIdentities().get(0)))
-        .isEqualTo(expectedIdentities);
+            .isEqualTo(expectedIdentities);
   }
 
   @Test
@@ -144,7 +152,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(publishMessage.getHeader().getType())
-        .isEqualTo(JupyterMessages.EXECUTE_INPUT.getName());
+            .isEqualTo(JupyterMessages.EXECUTE_INPUT.getName());
   }
 
   @Test
@@ -191,7 +199,7 @@ public class ExecuteRequestHandlerTest {
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
     Assertions.assertThat(new String(publishMessage.getIdentities().get(0)))
-        .isEqualTo(expectedIdentities);
+            .isEqualTo(expectedIdentities);
   }
 
   @Test

@@ -18,7 +18,6 @@ package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.chart.xychart.Plot;
-import com.twosigma.beakerx.evaluator.TestBeakerCellExecutor;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelParameters;
@@ -26,6 +25,7 @@ import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,6 +37,8 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 
@@ -45,7 +47,7 @@ public class ScalaEvaluatorTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    scalaEvaluator = new ScalaEvaluator("id", "sid", null, TestBeakerCellExecutor.cellExecutor(), new NoBeakerxObjectTestFactory());
+    scalaEvaluator = new ScalaEvaluator("id", "sid", null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory());
   }
 
   @Before
@@ -57,6 +59,11 @@ public class ScalaEvaluatorTest {
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
+  }
+
+  @AfterClass
+  public static void tearDownClass() throws Exception {
+    scalaEvaluator.exit();
   }
 
   @Test

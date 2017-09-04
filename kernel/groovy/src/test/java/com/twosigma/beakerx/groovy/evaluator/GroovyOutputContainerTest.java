@@ -41,20 +41,22 @@ import static org.junit.Assert.assertTrue;
 public class GroovyOutputContainerTest {
 
   public static final Message HEADER_MESSAGE = new Message();
-  private EvaluatorManager groovyEvaluator;
+  private EvaluatorManager groovyEvaluatorManager;
   private KernelTest groovyKernel;
 
   @Before
   public void setUp() throws Exception {
-    groovyKernel = new KernelTest();
+    GroovyEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
+    groovyKernel = new KernelTest("GroovyOutputContainerTest", evaluator);
+    groovyEvaluatorManager = new EvaluatorManager(groovyKernel, evaluator);
+    groovyEvaluatorManager.setShellOptions(new KernelParameters(new HashMap()));
     KernelManager.register(groovyKernel);
-    groovyEvaluator = new EvaluatorManager(groovyKernel, TestGroovyEvaluator.groovyEvaluator());
-    groovyEvaluator.setShellOptions(new KernelParameters(new HashMap()));
   }
 
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
+    groovyKernel.exit();
   }
 
   @Test
@@ -62,14 +64,14 @@ public class GroovyOutputContainerTest {
     //given
     String code =
             "import com.twosigma.beakerx.groovy.evaluator.ResourceLoaderTest;\n" +
-            "import com.twosigma.beakerx.jvm.object.OutputContainer;\n" +
-            "import com.twosigma.beakerx.chart.xychart.SimpleTimePlot;\n" +
-            "List<Map<?, ?>> rates = ResourceLoaderTest.readAsList(\"tableRowsTest.csv\");\n" +
-            "plot2 = new SimpleTimePlot(rates, [\"m3\", \"y1\"], showLegend:false, initWidth: 300, initHeight: 400)\n" +
-            "new OutputContainer() << plot2";
+                    "import com.twosigma.beakerx.jvm.object.OutputContainer;\n" +
+                    "import com.twosigma.beakerx.chart.xychart.SimpleTimePlot;\n" +
+                    "List<Map<?, ?>> rates = ResourceLoaderTest.readAsList(\"tableRowsTest.csv\");\n" +
+                    "plot2 = new SimpleTimePlot(rates, [\"m3\", \"y1\"], showLegend:false, initWidth: 300, initHeight: 400)\n" +
+                    "new OutputContainer() << plot2";
 
     //when
-    SimpleEvaluationObject seo = groovyEvaluator.executeCode(code, HEADER_MESSAGE, 1, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = groovyEvaluatorManager.executeCode(code, HEADER_MESSAGE, 1, new ExecuteCodeCallbackTest());
     waitForResult(seo);
     //then
     assertTrue(seo.getPayload().toString(), seo.getStatus().equals(FINISHED));

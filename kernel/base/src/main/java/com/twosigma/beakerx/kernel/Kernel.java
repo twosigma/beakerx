@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kernel;
 
 import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
+import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
 
 import com.google.common.collect.Lists;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
@@ -25,6 +26,7 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.commands.MavenJarResolver;
 import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
@@ -32,6 +34,7 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +81,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   public abstract KernelHandler<Message> getKernelInfoHandler(Kernel kernel);
 
-  protected void configureJvmRepr(){
+  protected void configureJvmRepr() {
   }
 
   @Override
@@ -92,15 +95,16 @@ public abstract class Kernel implements KernelFunctionality {
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     } finally {
-      exit();
+      doExit();
+      logger.debug("Jupyter kernel shoutdown.");
     }
-    logger.debug("Jupyter kernel shoutdown.");
   }
 
-  private void exit() {
+  private void doExit() {
     this.evaluatorManager.exit();
     this.handlers.exit();
     this.executionResultSender.exit();
+    System.exit(0);
   }
 
   private void closeComms() {
@@ -232,16 +236,28 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public List<MagicCommandType> getMagicCommands() {
     return Lists.newArrayList(
-        new MagicCommandType(MagicCommand.JAVASCRIPT, "", magicCommand.javascript()),
-        new MagicCommandType(MagicCommand.HTML, "", magicCommand.html()),
-        new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
-        new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
-        new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
-        new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
-        new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
-        new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
-        new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
-        new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
+            new MagicCommandType(MagicCommand.JAVASCRIPT, "", magicCommand.javascript()),
+            new MagicCommandType(MagicCommand.HTML, "", magicCommand.html()),
+            new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
+            new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
+            new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
+            new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<group name version>",
+                    magicCommand.classpathAddMvn(new MavenJarResolver.ResolverParams(
+                            getTempFolder().toString() + "/../beakerIvyCache",
+                            getTempFolder().toString() + MVN_DIR,
+                            MavenJarResolver.createBiblioResolver()
+                    ))),
+            new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
+            new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
+            new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
+            new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
+            new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
     );
+  }
+
+
+  @Override
+  public Path getTempFolder() {
+    return evaluatorManager.getTempFolder();
   }
 }

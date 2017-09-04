@@ -50,13 +50,15 @@ public class CppKernelMainTest {
     evaluator.setShellOptions(kernelParameters());
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Cpp(sessionId, evaluator, kernelSocketsService);
-    new Thread(() -> KernelRunner.run(() -> kernel)).start();
+    Thread kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
+    kernelThread.start();
     kernelSocketsService.waitForSockets();
   }
 
   @After
   public void tearDown() throws Exception {
     kernelSocketsService.shutdown();
+    kernelThread.join();
   }
 
   //@Test //disabled because of problem on jenkins

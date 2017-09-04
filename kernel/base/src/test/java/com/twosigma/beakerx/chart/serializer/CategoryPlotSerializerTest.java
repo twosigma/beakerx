@@ -42,6 +42,7 @@ public class CategoryPlotSerializerTest {
   static CategoryPlotSerializer categoryPlotSerializer;
   JsonGenerator jgen;
   StringWriter sw;
+  KernelTest kernel;
 
   @BeforeClass
   public static void initClassStubData() {
@@ -53,14 +54,15 @@ public class CategoryPlotSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
-    KernelManager.register(new KernelTest());
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
   }
 
   @After
   public void tearDown() throws Exception {
+    kernel.exit();
     KernelManager.register(null);
   }
-
 
   @Test
   public void serializeCategoryNamesOfCategoryPlot_resultJsonHasCategoryNames() throws IOException {
@@ -105,7 +107,7 @@ public class CategoryPlotSerializerTest {
 
   @Test
   public void serializeCategoryMarginOfCategoryPlot_resultJsonHasCategoryMargin()
-      throws IOException {
+          throws IOException {
     //when
     CategoryPlot categoryPlot = new CategoryPlot();
     categoryPlot.setCategoryMargin(0.5);
@@ -119,7 +121,7 @@ public class CategoryPlotSerializerTest {
 
   @Test
   public void serializeCategoryNamesLabelAngleOfCategoryPlot_resultJsonHasCategoryNamesLabelAngle()
-      throws IOException {
+          throws IOException {
     //when
     CategoryPlot categoryPlot = new CategoryPlot();
     categoryPlot.setCategoryNamesLabelAngle(0.5);

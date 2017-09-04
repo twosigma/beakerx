@@ -22,6 +22,7 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.message.MessageTest;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,6 +52,11 @@ public class GroovyKernelInfoHandlerTest {
   @After
   public void tearDown() throws Exception {
     kernel.clearSentMessages();
+  }
+
+  @AfterClass
+  public static void tearDownClass() throws Exception {
+    kernel.exit();
   }
 
   @Test

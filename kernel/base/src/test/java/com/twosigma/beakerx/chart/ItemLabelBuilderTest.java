@@ -32,10 +32,12 @@ import java.util.Arrays;
 public class ItemLabelBuilderTest {
   private CategoryGraphics categoryGraphics;
   private CategoryPlot categoryPlot;
+  private static KernelTest kernel;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    KernelManager.register(new KernelTest());
+    kernel = new KernelTest();
+    KernelManager.register(kernel);
   }
 
   @Before
@@ -50,6 +52,7 @@ public class ItemLabelBuilderTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
+    kernel.exit();
     KernelManager.register(null);
   }
 

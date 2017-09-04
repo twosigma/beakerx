@@ -22,63 +22,56 @@ describe('JavaTutorial notebook', function () {
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByName('javaTutorial.ipynb', done);
-  });
+  }, 2);
 
   describe('Run first cell. ', function () {
-    it('Output contains "test.beaker.BeakerTest"', function (done) {
+    it('Output contains "test.beaker.BeakerTest"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(0, 'test.beaker.BeakerTest');
-      browser.call(done);
     });
   });
 
   describe('Run 2nd cell. ', function () {
-    it('Output contains "Today:"', function (done) {
+    it('Output contains "Today:"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(1, 'Today:');
-      browser.call(done);
     });
   });
 
   describe('Run 3rd cell. ', function () {
-    it('PlotLegendContainer is enabled', function (done) {
+    it('PlotLegendContainer is enabled', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var dtContainer = beakerxPO.runCellToGetDtContainer(2);
       beakerxPO.plotLegendContainerIsEnabled(dtContainer);
-      browser.call(done);
     });
   });
 
   describe('Run 4th cell. ', function () {
-    it('Output contains "DateGetter"', function (done) {
+    it('Output contains "DateGetter"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(3, 'DateGetter');
-      browser.call(done);
     });
   });
 
   describe('Run 5th cell. ', function () {
-    it('Output contains "DG2"', function (done) {
+    it('Output contains "DG2"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(4, 'DG2');
-      browser.call(done);
     }, 2);
   });
 
   describe('Run 7th cell. ', function () {
-    it('Output contains "beakerx/doc/contents"', function (done) {
+    it('Output contains "beakerx/doc/contents"', function () {
       beakerxPO.runCodeCellByIndex(5);
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(6, 'beakerx\.doc\.contents');
-      browser.call(done);
     }, 2);
   });
 
   describe('Run 8th cell. ', function () {
-    it('Output contains "static_123 object_123"', function (done) {
+    it('Output contains "static_123 object_123"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(7, '((static_123)\.*\n*(object_123))');
-      browser.call(done);
     }, 2);
   });
 

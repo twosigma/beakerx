@@ -22,29 +22,26 @@ describe('ClojureTutorial notebook', function () {
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByName('ClojureTutorial.ipynb', done);
-  });
+  }, 2);
 
   describe('Run first cell. ', function () {
-    it('Output contains "0, 1, 1, 2, 3, 5"', function (done) {
+    it('Output contains "0, 1, 1, 2, 3, 5"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(0, '0, 1, 1, 2, 3, 5');
-      browser.call(done);
     });
   });
 
   describe('Run 2nd cell. ', function () {
-    it('Output contains "Will print"', function (done) {
+    it('Output contains "Will print"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(1, 'Will print');
-      browser.call(done);
     });
   });
 
   describe('Run 3rd cell. ', function () {
-    it('Output contains "Distinct: 36"', function (done) {
+    it('Output contains "Distinct: 36"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(2, 'Distinct: 36');
-      browser.call(done);
     });
   });
 

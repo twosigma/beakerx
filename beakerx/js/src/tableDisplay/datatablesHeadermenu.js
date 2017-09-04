@@ -151,7 +151,7 @@ define([
 
         _hide: function()
         {
-          if (this.dom.menu) {
+          if (this.dom && this.dom.menu) {
             this.dom.menu.remove();
             this.dom.menu = null;
           }
@@ -284,17 +284,11 @@ define([
 
         _destroy: function(){
           var jqTableContainer = $(this.s.dt.table().container());
-          var jqHeaderMenus = jqTableContainer.find(".bko-column-header-menu");
 
           $(document.body).off('click.table-headermenu');
-          $(document).off( 'init.dt.dtr keydown');
-          jqTableContainer.find('.bko-column-header-menu').remove();
           jqTableContainer.off('click.headermenu');
-          jqHeaderMenus.remove();
+          jqTableContainer.find(".bko-column-header-menu").remove();
           this.dom.container.remove();
-          this.dom = undefined;
-          this.c = undefined;
-          this.s = undefined;
         }
       };
 

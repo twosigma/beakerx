@@ -363,7 +363,6 @@ define([
     if (all) {
       self.timeStrings = undefined;
       self.tz = undefined;
-      self.columnNames = undefined;
       self.types = undefined;
       self.actualtype = undefined;
       self.actualalign = undefined;
@@ -374,7 +373,6 @@ define([
       self.fixcreated = false;
       self.renderMenu = false;
       self.element = undefined;
-      self.columns = [];
     }
 
     // self.$on(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED, function() {
@@ -811,7 +809,7 @@ define([
         var value = $(td).text();
         if ($.isNumeric(value)) {
           $(td).empty();
-          var barsRenderer = self.barsOnColumn[self.colorder[colInd]];
+          var barsRenderer = self.colorder ? self.barsOnColumn[self.colorder[colInd]] : undefined;
           if (barsRenderer) {
             var cellDiv = $("<div></div>", {
               "class": "dt-cell-div"

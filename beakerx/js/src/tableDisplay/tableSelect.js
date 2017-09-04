@@ -108,8 +108,10 @@ module.exports = function(TableScope) {
     var $scrollWrapper = this.element.find('.DTFC_ScrollWrapper');
 
     this.table.off('key-blur key-focus');
-    $scrollWrapper.length && $scrollWrapper
-      .selectable('destroy')
-      .on('click', 'td', null);
+
+    if ($scrollWrapper.length) {
+      $scrollWrapper.off('click', 'td');
+      $scrollWrapper.selectable('instance') && $scrollWrapper.selectable('destroy');
+    }
   }
 };

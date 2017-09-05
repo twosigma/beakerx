@@ -36,6 +36,41 @@ describe('GroovyExamples notebook', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(1, 'groovy.lang.MissingPropertyException');
     });
-  });
+  }, 2);
+
+  describe('Run 3rd cell. ', function () {
+    it('Output contains "2"', function () {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(2, '2');
+    });
+  }, 2);
+
+  describe('Run 4th cell. ', function () {
+    it('Output contains "run_closure"', function () {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(3, 'run_closure');
+    });
+  }, 2);
+
+  describe('Run 5th cell. ', function () {
+    it('Output contains "8"', function () {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(4, '8');
+    });
+  }, 2);
+
+  describe('Run 6th cell. ', function () {
+    it('Output contains "Multiplying Strings!Multiplying Strings!"', function () {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(5, 'Multiplying Strings!Multiplying Strings!');
+    });
+  }, 2);
+
+  describe('Run 7th cell. ', function () {
+    it('Output contains "9.265"', function () {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(6, '9.265');
+    });
+  }, 2);
 
 });

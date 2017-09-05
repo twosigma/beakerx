@@ -2265,9 +2265,9 @@ define([
   };
 
   PlotScope.prototype.getPlotWithLegendWidth = function() {
-    var containerWidth = this.jqcontainer.parents('.widget-subarea').width();
+    var containerWidth = this.jqcontainer.parents('.output_subarea').width();
     var plotWidth = containerWidth && containerWidth < this.plotSize.width ? containerWidth : this.plotSize.width;
-    var legendWidth = this.jqlegendcontainer.find('.plot-legend').width();
+    var legendWidth = this.jqlegendcontainer.find('.plot-legend').width() || 0;
     var legendPosition = this.stdmodel.legendPosition.position;
     // Logic based on updateLegendPosition method
     var isLegendPlacedHorizontaly = (["LEFT", "RIGTH"].indexOf(legendPosition) !== -1) ||

@@ -55,7 +55,6 @@ public class Comm {
   public static final String COMMS = "comms";
 
   private String commId;
-  private String msgType;
   private String targetName;
   private HashMap<?, ?> data;
   private HashMap<?, ?> metadata;
@@ -103,10 +102,6 @@ public class Comm {
 
   public void setMetaData(HashMap<?, ?> metadata) {
     this.metadata = metadata;
-  }
-
-  public void setMsgType(String type) {
-    this.msgType = type;
   }
 
   public String getTargetModule() {
@@ -160,13 +155,7 @@ public class Comm {
 
     map.put(TARGET_MODULE, getTargetModule());
     message.setContent(map);
-
     message.setMetadata(buildMetadata());
-
-    if (this.msgType != null) {
-      message.getHeader().setType(this.msgType);
-    }
-
     kernel.publish(message);
     kernel.addComm(getCommId(), this);
   }
@@ -211,12 +200,7 @@ public class Comm {
     map.put(DATA, data);
     map.put(METADATA, metadata);
     message.setContent(map);
-
     message.setMetadata(buildMetadata());
-
-    if (this.msgType != null) {
-      message.getHeader().setType(this.msgType);
-    }
     kernel.publish(message);
   }
 

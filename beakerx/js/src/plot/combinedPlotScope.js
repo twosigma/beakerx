@@ -226,7 +226,10 @@ define([
   };
 
   CombinedPlotScope.prototype.getMinScopesWidth = function () {
-    return Math.min.apply(null, this.scopes.map(function(scope) { return scope.width; }));
+    return Math.min.apply(
+      null,
+      this.scopes.map(function(scope) { return scope.width; }).filter(function(width) { return !!width; })
+    );
   };
 
   CombinedPlotScope.prototype.init = function() {

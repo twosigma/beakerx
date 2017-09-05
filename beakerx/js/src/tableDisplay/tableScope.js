@@ -1845,14 +1845,17 @@ define([
       });
 
       var index = currentCell.indexes()[0];
-      if (model.hasDoubleClickAction) {
+
+      var model = self.model.getCellModel();
+
+      if (model && model.hasDoubleClickAction) {
         self.tableDisplayModel.send(
           {event: 'DOUBLE_CLICK', row : index.row, column : index.column - 1},
           self.tableDisplayView.callbacks()
         );
       }
 
-      if (!_.isEmpty(model.doubleClickTag)) {
+      if (!_.isEmpty(model && model.doubleClickTag)) {
         var params = {
           actionType: 'DOUBLE_CLICK',
           row: index.row,

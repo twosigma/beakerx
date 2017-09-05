@@ -52,6 +52,7 @@ import org.apache.ivy.plugins.resolver.FileSystemResolver;
 import org.apache.ivy.plugins.resolver.RepositoryResolver;
 import org.assertj.core.util.Lists;
 
+import static com.twosigma.beakerx.kernel.commands.ClasspathAddMvnDepsMagicCommandTest.TEST_IVY_CACHE;
 import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
 
 public class KernelTest implements KernelFunctionality {
@@ -180,7 +181,7 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<group name version>", magicCommand.classpathAddMvn(
                     new MavenJarResolver.ResolverParams(
-                            new File("src/test/resources/testIvyCache").getAbsolutePath(),
+                            new File(TEST_IVY_CACHE).getAbsolutePath(),
                             getTempFolder().toString() + MVN_DIR,
                             createRepositoryResolver()
                     )

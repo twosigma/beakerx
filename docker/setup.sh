@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-conda create -y -n beakerx python=3.5 jupyter pandas
+conda create -y -n beakerx python=3.5 jupyter openjdk nodejs pandas
 source activate beakerx
+conda install -y -c conda-forge ipywidgets=7.0.0 widgetsnbextension
 
 rm -r /home/beakerx/beakerx/js/node_modules
 rm -r /home/beakerx/beakerx/js/dist
 
-pip install -e beakerx --verbose
-jupyter nbextension install --py --symlink --sys-prefix beakerx
-jupyter nbextension enable --py --sys-prefix beakerx
+(cd beakerx; pip install -e . --verbose)
+beakerx-install

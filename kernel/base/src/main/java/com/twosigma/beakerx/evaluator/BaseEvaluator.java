@@ -196,8 +196,8 @@ public abstract class BaseEvaluator implements Evaluator {
 
   private void removeTempFolder() {
     try {
-      FileUtils.deleteDirectory(new File(getTempFolder().toString()));
-    } catch (IOException e) {
+      FileUtils.deleteQuietly(new File(getTempFolder().toString()));
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }

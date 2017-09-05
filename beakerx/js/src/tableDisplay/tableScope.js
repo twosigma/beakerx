@@ -304,10 +304,11 @@ define([
 
   TableScope.prototype.doDestroy = function(all) {
     var self = this;
+    var $body = $(document.body);
+
     if (self.table) {
       var $tableContainer = $(self.table.table().container());
       var $document = $(document);
-      var $body = $(document.body);
       var $tBody = $('#' + self.id + ' tbody');
       //jscs:disable
       clearTimeout(self.refresh_size);
@@ -374,6 +375,8 @@ define([
       self.renderMenu = false;
       self.element = undefined;
     }
+
+    $body.tooltip('instance') && $body.tooltip('destroy');
 
     // self.$on(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED, function() {
     //   var parents = self.element.parents();

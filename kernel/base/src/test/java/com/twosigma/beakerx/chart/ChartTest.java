@@ -23,6 +23,7 @@ import com.twosigma.beakerx.chart.legend.LegendPosition;
 import com.twosigma.beakerx.chart.serializer.LegendPositionSerializer;
 import com.twosigma.beakerx.chart.xychart.XYChart;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widgets.chart.BeakerxPlot;
 import org.junit.After;
 import org.junit.Before;
@@ -32,6 +33,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.twosigma.beakerx.chart.Chart.PLOT_GRIDLINE;
 import static com.twosigma.beakerx.chart.Chart.PLOT_LABEL;
@@ -45,7 +47,8 @@ import static com.twosigma.beakerx.chart.serializer.ChartSerializer.INIT_HEIGHT;
 import static com.twosigma.beakerx.chart.serializer.ChartSerializer.INIT_WIDTH;
 import static com.twosigma.beakerx.chart.serializer.ChartSerializer.LEGEND_LAYOUT;
 import static com.twosigma.beakerx.chart.serializer.ChartSerializer.LEGEND_POSITION;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.findValueForProperty;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.getMessageUpdate;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class ChartTest<T extends Chart> {
@@ -264,11 +267,14 @@ public abstract class ChartTest<T extends Chart> {
     return (List) model.get(field);
   }
 
-  protected LinkedHashMap getModel() {
-    return findValueForProperty(kernel, XYChart.MODEL, LinkedHashMap.class);
-  }
   protected LinkedHashMap getModelUpdate() {
-    return findValueForProperty(kernel, XYChart.MODEL_UPDATE, LinkedHashMap.class);
+    Optional<Message> messageUpdate = getMessageUpdate(kernel);
+    assertThat(messageUpdate).isPresent();
+    return getModelUpdate(messageUpdate.get());
+  }
+
+  private LinkedHashMap getModelUpdate(Message message) {
+    return getValueForProperty(message,  XYChart.MODEL_UPDATE, LinkedHashMap.class);
   }
 
 }

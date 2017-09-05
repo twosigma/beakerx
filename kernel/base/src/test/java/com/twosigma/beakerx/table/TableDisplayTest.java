@@ -22,6 +22,8 @@ import com.twosigma.beakerx.chart.xychart.XYChart;
 import com.twosigma.beakerx.fileloader.CsvPlotReader;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.serialization.DateSerializer;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.table.format.TableDisplayStringFormat;
 import com.twosigma.beakerx.table.highlight.HeatmapHighlighter;
 import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter;
@@ -46,6 +48,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.twosigma.beakerx.fileloader.CsvPlotReaderTest.TABLE_ROWS_TEST_CSV;
@@ -79,9 +82,11 @@ import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.VALUES;
 import static com.twosigma.beakerx.table.serializer.ValueStringFormatSerializer.VALUE_STRING;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.findValueForProperty;
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.getMessageUpdate;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class TableDisplayTest {
 
@@ -753,11 +758,17 @@ public class TableDisplayTest {
     return findValueForProperty(kernel, XYChart.MODEL, LinkedHashMap.class);
   }
 
-  protected LinkedHashMap getModelUpdate() {
-    return findValueForProperty(kernel, XYChart.MODEL_UPDATE, LinkedHashMap.class);
+  private LinkedHashMap getModelUpdate() {
+    Optional<Message> messageUpdate = getMessageUpdate(kernel);
+    assertTrue("No " + JupyterMessages.COMM_MSG.getName() + " msg.", messageUpdate.isPresent());
+    return getModelUpdate(messageUpdate.get());
   }
 
-  protected Map getValueAsMap(final Map model, final String field) {
+  private LinkedHashMap getModelUpdate(Message message) {
+    return getValueForProperty(message, XYChart.MODEL_UPDATE, LinkedHashMap.class);
+  }
+
+  private Map getValueAsMap(final Map model, final String field) {
     return (Map) model.get(field);
   }
 

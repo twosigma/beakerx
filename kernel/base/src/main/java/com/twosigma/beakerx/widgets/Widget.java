@@ -129,7 +129,6 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     content.put(METHOD, DISPLAY);
     content.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, data);
     getComm().setData(content);
-    getComm().setMsgType(DISPLAY);
     getComm().send(DISPLAY_DATA);
   }
 

@@ -102,8 +102,8 @@ public class EvaluatorTest extends BaseEvaluator {
 
   private void removeTempFolder() {
     try {
-      FileUtils.deleteDirectory(new File(getTempFolder().toString()));
-    } catch (IOException e) {
+      FileUtils.deleteQuietly(new File(getTempFolder().toString()));
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }

@@ -103,4 +103,15 @@ module.exports = function(TableScope) {
         self.selectCellsRange({ row: minSelectedRowIndex, column: minSelectedColumnIndex }, cell);
       });
   };
+
+  TableScope.prototype.destroyTableSelect = function() {
+    var $scrollWrapper = this.element.find('.DTFC_ScrollWrapper');
+
+    this.table.off('key-blur key-focus');
+
+    if ($scrollWrapper.length) {
+      $scrollWrapper.off('click', 'td');
+      $scrollWrapper.selectable('instance') && $scrollWrapper.selectable('destroy');
+    }
+  }
 };

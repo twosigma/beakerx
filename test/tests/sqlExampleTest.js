@@ -22,21 +22,20 @@ describe('SQL Examples notebook', function () {
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByName('SQLExamples.ipynb', done);
-  });
+  }, 2);
 
   describe('Create and select table (H2 database)', function () {
-    it('Output contains table', function (done) {
+    it('Output contains table', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCodeCellByIndex(0);
       beakerxPO.runCodeCellByIndex(1);
       var dtContainer = beakerxPO.runCellToGetDtContainer(2);
       beakerxPO.dataTablesIsEnabled(dtContainer);
-      browser.call(done);
     });
   });
 
   describe('Autocomplete cell', function () {
-    it('Autocomplete list is not empty', function (done) {
+    it('Autocomplete list is not empty', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var codeCell = beakerxPO.getCodeCellByIndex(3);
       codeCell.scroll();
@@ -44,7 +43,6 @@ describe('SQL Examples notebook', function () {
       browser.keys("Tab");
       var completeList = $$('#complete > select > option');
       expect(completeList.length).toBeGreaterThan(0);
-      browser.call(done);
     });
   });
 

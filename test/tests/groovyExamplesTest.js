@@ -17,62 +17,60 @@
 var BeakerXPageObject = require('./beakerx.po.js');
 var beakerxPO;
 
-describe('JavaTutorial notebook', function () {
+describe('GroovyExamples notebook', function () {
 
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('javaTutorial.ipynb', done);
+    beakerxPO.runNotebookByName('GroovyExamples.ipynb', done);
   }, 2);
 
   describe('Run first cell. ', function () {
-    it('Output contains "test.beaker.BeakerTest"', function () {
+    it('Output contains "2"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(0, 'test.beaker.BeakerTest');
+      beakerxPO.runCallAndCheckOutputText(0, '2');
     });
   });
 
   describe('Run 2nd cell. ', function () {
-    it('Output contains "Today:"', function () {
+    it('Output contains "groovy.lang.MissingPropertyException"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(1, 'Today:');
+      beakerxPO.runCallAndCheckOutputText(1, 'groovy.lang.MissingPropertyException');
     });
-  });
+  }, 2);
 
   describe('Run 3rd cell. ', function () {
-    it('PlotLegendContainer is enabled', function () {
+    it('Output contains "2"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      var dtContainer = beakerxPO.runCellToGetDtContainer(2);
-      beakerxPO.plotLegendContainerIsEnabled(dtContainer);
+      beakerxPO.runCallAndCheckOutputText(2, '2');
     });
-  });
+  }, 2);
 
   describe('Run 4th cell. ', function () {
-    it('Output contains "DateGetter"', function () {
+    it('Output contains "run_closure"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(3, 'DateGetter');
+      beakerxPO.runCallAndCheckOutputText(3, 'run_closure');
     });
-  });
+  }, 2);
 
   describe('Run 5th cell. ', function () {
-    it('Output contains "DG2"', function () {
+    it('Output contains "8"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(4, 'DG2');
-    }, 2);
-  });
+      beakerxPO.runCallAndCheckOutputText(4, '8');
+    });
+  }, 2);
+
+  describe('Run 6th cell. ', function () {
+    it('Output contains "Multiplying Strings!Multiplying Strings!"', function () {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(5, 'Multiplying Strings!Multiplying Strings!');
+    });
+  }, 2);
 
   describe('Run 7th cell. ', function () {
-    it('Output contains "beakerx/doc/contents"', function () {
-      beakerxPO.runCodeCellByIndex(5);
+    it('Output contains "9.265"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(6, 'beakerx\.doc\.contents');
-    }, 2);
-  });
-
-  describe('Run 8th cell. ', function () {
-    it('Output contains "static_123 object_123"', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(7, '((static_123)\.*\n*(object_123))');
-    }, 2);
-  });
+      beakerxPO.runCallAndCheckOutputText(6, '9.265');
+    });
+  }, 2);
 
 });

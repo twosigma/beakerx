@@ -22,30 +22,27 @@ describe('Scala notebook', function () {
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByName('scala.ipynb', done, 'scala');
-  });
+  }, 2);
 
   describe('Run first cell. ', function () {
-    it('Output contains "defined class Greeter"', function (done) {
+    it('Output contains "defined class Greeter"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(0, 'defined class Greeter');
-      browser.call(done);
     });
   });
 
   describe('Run 2nd cell. ', function () {
-    it('Output contains "Hello, Scala developer!"', function (done) {
+    it('Output contains "Hello, Scala developer!"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(1, 'Hello, Scala developer!');
-      browser.call(done);
     });
   });
 
   describe('Run 3rd cell. ', function () {
-    it('PlotLegendContainer is enabled', function (done) {
+    it('PlotLegendContainer is enabled', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var dtContainer = beakerxPO.runCellToGetDtContainer(2);
       beakerxPO.plotLegendContainerIsEnabled(dtContainer);
-      browser.call(done);
     });
   });
 

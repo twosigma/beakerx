@@ -22,22 +22,20 @@ describe('Kotlin-example notebook', function () {
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByName('Kotlin-example.ipynb', done);
-  });
+  }, 2);
 
   describe('Run first cell. ', function () {
-    it('Output contains "hello, 14"', function (done) {
+    it('Output contains "hello, 14"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(0, 'hello, 14');
-      browser.call(done);
     });
   });
 
   describe('Run 2nd cell. ', function () {
-    it('PlotLegendContainer is enabled', function (done) {
+    it('PlotLegendContainer is enabled', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var dtContainer = beakerxPO.runCellToGetDtContainer(1);
       beakerxPO.plotLegendContainerIsEnabled(dtContainer);
-      browser.call(done);
     });
   });
 

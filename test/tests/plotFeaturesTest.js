@@ -22,7 +22,7 @@ describe('PlotFeatures notebook', function () {
   beforeAll(function (done) {
     beakerxPO = new BeakerXPageObject();
     beakerxPO.runNotebookByName('PlotFeatures.ipynb', done);
-  });
+  }, 2);
 
   describe('Run "Title and Axis Labels" cell. ', function () {
     it('Widget area has dtcontainer', function () {

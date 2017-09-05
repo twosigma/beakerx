@@ -251,7 +251,8 @@ public abstract class Kernel implements KernelFunctionality {
             new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
             new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
             new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
-            new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
+            new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport()),
+            new MagicCommandType(MagicCommand.TIME_LINE, "", magicCommand.time())
     );
   }
 

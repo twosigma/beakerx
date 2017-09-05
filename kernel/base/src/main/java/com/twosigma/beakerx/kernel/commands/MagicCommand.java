@@ -43,6 +43,8 @@ import com.twosigma.beakerx.mimetype.MIMEContainer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.text.StrMatcher;
@@ -78,6 +81,7 @@ public class MagicCommand {
   public static final String ADD_STATIC_IMPORT = IMPORT + " static";
   public static final String UNIMPORT = "%unimport";
   public static final String DEFAULT_DATASOURCE = "%defaultDatasource";
+  public static final String TIME_LINE = "%time";
 
   public static final String DATASOURCES = "%datasources";
   public static final String USAGE_ERROR_MSG = "UsageError: %s is a cell magic, but the cell body is empty.";
@@ -388,6 +392,63 @@ public class MagicCommand {
     };
   }
 
+  public MagicCommandFunctionality time() {
+    CompletableFuture<TimeMeasureData> compileTime = new CompletableFuture<>();
+
+    return (code, command, message, executionCount) -> {
+      ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+      long currentThreadId = Thread.currentThread().getId();
+
+      Long startWallTime = System.nanoTime();
+      Long startCpuTotalTime = threadMXBean.getCurrentThreadCpuTime();
+      Long startUserTime = threadMXBean.getCurrentThreadUserTime();
+
+      String codeToExecute = code.asString().replace(TIME_LINE, "");
+      kernel.executeCode(codeToExecute, message, executionCount,seo -> {
+        Long endWallTime = System.nanoTime();
+        Long endCpuTotalTime = threadMXBean.getThreadCpuTime(currentThreadId);
+        Long endUserTime = threadMXBean.getThreadUserTime(currentThreadId);
+
+        compileTime.complete(new TimeMeasureData(endCpuTotalTime - startCpuTotalTime,
+            endUserTime - startUserTime,
+            endWallTime - startWallTime));
+      });
+
+      String messageInfo = "CPU times: user %s, sys: %s, total: %s \nWall Time: %s\n";
+
+      try {
+        TimeMeasureData timeMeasuredData = compileTime.get();
+
+        return new MagicCommandItemWithResult(
+            messageCreator.buildOutputMessage(message, String.format(messageInfo,
+                format(timeMeasuredData.getCpuUserTime()),
+                format(timeMeasuredData.getCpuTotalTime() - timeMeasuredData.getCpuUserTime()),
+                format(timeMeasuredData.getCpuTotalTime()),
+                format(timeMeasuredData.getWallTime())), false),
+            messageCreator.buildReplyWithoutStatus(message, executionCount));
+
+      } catch (InterruptedException | ExecutionException e) {
+        return sendErrorMessage(message, "There occurs problem during measuring time for your statement.", executionCount);
+      }
+    };
+  }
+
+  private String format(Long nanoSeconds) {
+    if (nanoSeconds < 1000) {
+      //leave in ns
+      return nanoSeconds + " ns";
+    } else if (nanoSeconds >= 1000 && nanoSeconds < 1_000_000) {
+      //convert to µs
+      return TimeUnit.NANOSECONDS.toMicros(nanoSeconds) + " µs";
+    } else if (nanoSeconds > 1_000_000 && nanoSeconds < 1_000_000_000) {
+      //convert to ms
+      return TimeUnit.NANOSECONDS.toMillis(nanoSeconds) + " ms";
+    } else {
+      //convert to s
+      return TimeUnit.NANOSECONDS.toSeconds(nanoSeconds) + " s";
+    }
+  }
+
   private ErrorData executeBashCode(CodeWithoutCommand code) {
     String[] cmd = {"/bin/bash", "-c", code.asString()};
     ProcessBuilder pb = new ProcessBuilder(cmd);
@@ -429,6 +490,30 @@ public class MagicCommand {
     return new ErrorData(false, "");
   }
 
+  private class TimeMeasureData {
+    private Long cpuTotalTime;
+    private Long cpuUserTime;
+    private Long wallTime;
+
+    public TimeMeasureData(Long cpuTotalTime, Long cpuUserTime, Long wallTime) {
+      this.cpuTotalTime = cpuTotalTime;
+      this.cpuUserTime = cpuUserTime;
+      this.wallTime = wallTime;
+    }
+
+    public Long getCpuTotalTime() {
+      return cpuTotalTime;
+    }
+
+    public Long getCpuUserTime() {
+      return cpuUserTime;
+    }
+
+    public Long getWallTime() {
+      return wallTime;
+    }
+  }
+
   private class ErrorData {
 
     public ErrorData(boolean hasError, String message) {
@@ -447,4 +532,5 @@ public class MagicCommand {
       return message;
     }
   }
+
 }

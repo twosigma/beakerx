@@ -21,6 +21,8 @@ import static com.twosigma.beakerx.kernel.commands.MagicCommandFinder.find;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
+import static java.util.Collections.max;
+import static java.util.Collections.min;
 import static java.util.Collections.singletonList;
 
 import com.google.common.collect.Lists;
@@ -39,7 +41,6 @@ import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResultAndCo
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -48,6 +49,7 @@ import java.lang.management.ThreadMXBean;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +58,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
+import java.util.stream.IntStream;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.text.StrMatcher;
 import org.apache.commons.text.StrTokenizer;
 
@@ -82,6 +89,9 @@ public class MagicCommand {
   public static final String UNIMPORT = "%unimport";
   public static final String DEFAULT_DATASOURCE = "%defaultDatasource";
   public static final String TIME_LINE = "%time";
+  public static final String TIME_CELL = "%" + TIME_LINE;
+  public static final String TIMEIT_LINE = "%timeit";
+  public static final String TIMEIT_CELL = "%" + TIMEIT_LINE;
 
   public static final String DATASOURCES = "%datasources";
   public static final String USAGE_ERROR_MSG = "UsageError: %s is a cell magic, but the cell body is empty.";
@@ -392,45 +402,171 @@ public class MagicCommand {
     };
   }
 
-  public MagicCommandFunctionality time() {
+  public MagicCommandFunctionality timeLineMode() {
+    return (code, command, message, executionCount) -> {
+      String codeToExecute = code.asString().replace(TIME_LINE, "");
+      return time(codeToExecute, message, executionCount);
+    };
+  }
+
+  public MagicCommandFunctionality timeCellMode() {
+    return (code, command, message, executionCount) -> time(code.takeCodeWithoutCommand().get().asString(), message, executionCount);
+  }
+
+  public MagicCommandItemWithResult time(String codeToExecute, Message message, int executionCount) {
     CompletableFuture<TimeMeasureData> compileTime = new CompletableFuture<>();
 
+    ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+    long currentThreadId = Thread.currentThread().getId();
+
+    Long startWallTime = System.nanoTime();
+    Long startCpuTotalTime = threadMXBean.getCurrentThreadCpuTime();
+    Long startUserTime = threadMXBean.getCurrentThreadUserTime();
+
+    kernel.executeCode(codeToExecute, message, executionCount,seo -> {
+      Long endWallTime = System.nanoTime();
+      Long endCpuTotalTime = threadMXBean.getThreadCpuTime(currentThreadId);
+      Long endUserTime = threadMXBean.getThreadUserTime(currentThreadId);
+
+      compileTime.complete(new TimeMeasureData(endCpuTotalTime - startCpuTotalTime,
+          endUserTime - startUserTime,
+          endWallTime - startWallTime));
+    });
+
+    String messageInfo = "CPU times: user %s, sys: %s, total: %s \nWall Time: %s\n";
+
+    try {
+      TimeMeasureData timeMeasuredData = compileTime.get();
+
+      return new MagicCommandItemWithResult(
+          messageCreator.buildOutputMessage(message, String.format(messageInfo,
+              format(timeMeasuredData.getCpuUserTime()),
+              format(timeMeasuredData.getCpuTotalTime() - timeMeasuredData.getCpuUserTime()),
+              format(timeMeasuredData.getCpuTotalTime()),
+              format(timeMeasuredData.getWallTime())), false),
+          messageCreator.buildReplyWithoutStatus(message, executionCount));
+
+    } catch (InterruptedException | ExecutionException e) {
+      return sendErrorMessage(message, "There occurs problem during measuring time for your statement.", executionCount);
+    }
+  }
+
+  private Options createForTimeIt() {
+    Options options = new Options();
+    options.addOption("n", true, "Execute the given statement <N> times in a loop");
+    options.addOption("r", true, "Repeat the loop iteration <R> times and take the best result. Default: 3");
+    options.addOption("p", true, "Use a precision of <P> digits to display the timing result. Default: 3");
+    options.addOption("q", "Quiet, do not print result.");
+
+    return options;
+  }
+
+
+  public MagicCommandFunctionality timeItLineMode() {
     return (code, command, message, executionCount) -> {
-      ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
-      long currentThreadId = Thread.currentThread().getId();
+        String codeToExecute = code.asString().replace(TIMEIT_LINE, "");
+        codeToExecute = codeToExecute.replaceAll("(-.)(\\d*\\s)", "");
+        return timeIt(buildTimeItOption(code), codeToExecute, message, executionCount);
 
-      Long startWallTime = System.nanoTime();
-      Long startCpuTotalTime = threadMXBean.getCurrentThreadCpuTime();
-      Long startUserTime = threadMXBean.getCurrentThreadUserTime();
+    };
+  }
 
-      String codeToExecute = code.asString().replace(TIME_LINE, "");
-      kernel.executeCode(codeToExecute, message, executionCount,seo -> {
-        Long endWallTime = System.nanoTime();
-        Long endCpuTotalTime = threadMXBean.getThreadCpuTime(currentThreadId);
-        Long endUserTime = threadMXBean.getThreadUserTime(currentThreadId);
+  public MagicCommandFunctionality timeItCellMode() {
+    return (code, command, message, executionCount) -> timeIt(buildTimeItOption(code), code.takeCodeWithoutCommand().get().asString(), message, executionCount);
+  }
 
-        compileTime.complete(new TimeMeasureData(endCpuTotalTime - startCpuTotalTime,
-            endUserTime - startUserTime,
-            endWallTime - startWallTime));
+  private TimeItOption buildTimeItOption(Code code) {
+    TimeItOption timeItOption = new TimeItOption();
+
+    try {
+      StrTokenizer tokenizer = new StrTokenizer(code.asString());
+
+      CommandLineParser parser = new DefaultParser();
+      CommandLine cmd = parser.parse(createForTimeIt(), tokenizer.getTokenArray());
+
+      if (cmd.hasOption('n')) {
+        timeItOption.setNumber(Integer.valueOf(cmd.getOptionValue('n')));
+      }
+      if (cmd.hasOption('r')) {
+        timeItOption.setRepeat(Integer.valueOf(cmd.getOptionValue('r')));
+      }
+      if (cmd.hasOption('p')) {
+        timeItOption.setPrecision(Integer.valueOf(cmd.getOptionValue('p')));
+      }
+      if (cmd.hasOption('q')) {
+        timeItOption.setQuietMode(true);
+      }
+
+      return timeItOption;
+    } catch (ParseException e) {
+      throw new IllegalStateException("Cannot parse code to obtain.");
+    }
+  }
+
+  public MagicCommandItemWithResult timeIt(TimeItOption timeItOption, String codeToExecute,
+      Message message, int executionCount) {
+    //TODO add support for setup precision
+    String output = "%s ± %s per loop (mean ± std. dev. of %d run, %d loop each)";
+
+    if (timeItOption.getNumber() < 0) {
+      return sendErrorMessage(message, "Number of execution must be bigger then 0", executionCount);
+    }
+    int number = timeItOption.getNumber() == 0 ? getBestNumber() : timeItOption.getNumber();
+
+    if (timeItOption.getRepeat() == 0) {
+      return sendErrorMessage(message, "Repeat value must be bigger then 0", executionCount);
+    }
+
+    List<Long> allRuns = new ArrayList<>();
+    List<Long> timings = new ArrayList<>();
+    CompletableFuture<Boolean> isReady = new CompletableFuture<>();
+    IntStream.range(0, timeItOption.getRepeat()).forEach(repeatIter -> {
+      Long startNumberTime = System.nanoTime();
+      IntStream.range(0, number).forEach(numberIter -> {
+        kernel.executeCode(codeToExecute, message, executionCount, executeCodeCallback -> {
+          Long endTime = System.nanoTime() - startNumberTime;
+          allRuns.add(endTime);
+          if (repeatIter == timeItOption.getRepeat() - 1 && numberIter == number - 1) {
+            isReady.complete(true);
+          }
+        });
       });
+    });
 
-      String messageInfo = "CPU times: user %s, sys: %s, total: %s \nWall Time: %s\n";
+    try {
+      if (isReady.get()) {
+        Long bestTime = min(allRuns) / number;
+        Long worstTime = max(allRuns) / number;
+        allRuns.forEach(run -> timings.add(run / number));
 
-      try {
-        TimeMeasureData timeMeasuredData = compileTime.get();
+        //calculating average
+        long average = timings.stream().reduce((aLong, aLong2) -> aLong + aLong2)
+            .orElse(0L) / timings.size();
+        double stdev = Math.pow(timings.stream().map(currentValue -> Math.pow(currentValue - average, 2))
+                                                .reduce((aDouble, aDouble2) -> aDouble + aDouble2)
+                                                .orElse(0.0) / timings.size(), 0.5);
+
+        if (timeItOption.getQuietMode()) {
+          output = "";
+        } else {
+          output = String.format(output, format(average), format((long) stdev), timeItOption.getRepeat(), number);
+        }
 
         return new MagicCommandItemWithResult(
-            messageCreator.buildOutputMessage(message, String.format(messageInfo,
-                format(timeMeasuredData.getCpuUserTime()),
-                format(timeMeasuredData.getCpuTotalTime() - timeMeasuredData.getCpuUserTime()),
-                format(timeMeasuredData.getCpuTotalTime()),
-                format(timeMeasuredData.getWallTime())), false),
+            messageCreator.buildOutputMessage(message, output, false),
             messageCreator.buildReplyWithoutStatus(message, executionCount));
-
-      } catch (InterruptedException | ExecutionException e) {
-        return sendErrorMessage(message, "There occurs problem during measuring time for your statement.", executionCount);
       }
-    };
+    } catch (InterruptedException | ExecutionException e) {
+      return sendErrorMessage(message, "There occurs problem with " + e.getMessage(), executionCount);
+    }
+
+    return sendErrorMessage(message, "There occurs problem with timeIt operations", executionCount);
+
+  }
+
+  private int getBestNumber() {
+    //TODO search fitting value
+    return 1;
   }
 
   private String format(Long nanoSeconds) {
@@ -533,4 +669,45 @@ public class MagicCommand {
     }
   }
 
+  private class TimeItOption {
+    Integer number = 0;
+    Integer repeat = 3;
+    Integer precision = 3;
+    Boolean quietMode = false;
+
+    public TimeItOption() {
+    }
+
+    public void setNumber(Integer number) {
+      this.number = number;
+    }
+
+    public void setRepeat(Integer repeat) {
+      this.repeat = repeat;
+    }
+
+    public void setPrecision(Integer precision) {
+      this.precision = precision;
+    }
+
+    public void setQuietMode(Boolean quietMode) {
+      this.quietMode = quietMode;
+    }
+
+    public Integer getNumber() {
+      return number;
+    }
+
+    public Integer getRepeat() {
+      return repeat;
+    }
+
+    public Integer getPrecision() {
+      return precision;
+    }
+
+    public Boolean getQuietMode() {
+      return quietMode;
+    }
+  }
 }

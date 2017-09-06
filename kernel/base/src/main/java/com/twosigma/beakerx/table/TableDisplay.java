@@ -36,6 +36,7 @@ import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringForma
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForType;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTooltips;
+import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCompiledCode;
 import static java.util.Arrays.asList;
 
 import com.twosigma.beakerx.NamespaceClient;
@@ -662,7 +663,7 @@ public class TableDisplay extends BeakerxWidget {
   public void fireDoubleClick(List<Object> params, Message message) {
     if (this.doubleClickListener != null) {
       params.add(this);
-      handleCompiledCode(message, false, this::doubleClickHandler, params);
+      runCompiledCode(message, this::doubleClickHandler, params);
       sendModel();
     }
   }
@@ -693,7 +694,7 @@ public class TableDisplay extends BeakerxWidget {
     Object contextMenuListener = this.contextMenuListeners.get(name);
     if (contextMenuListener != null) {
       params.add(this);
-      handleCompiledCode(message, false, this::contextMenuClickHandlerCommon, contextMenuListener, params);
+      runCompiledCode(message, this::contextMenuClickHandlerCommon, contextMenuListener, params);
       sendModel();
     }
   }

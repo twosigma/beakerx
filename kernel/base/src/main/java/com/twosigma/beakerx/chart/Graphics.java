@@ -21,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.twosigma.beakerx.chart.actions.GraphicsActionListener;
 import com.twosigma.beakerx.chart.actions.GraphicsActionObject;
-import com.twosigma.beakerx.widgets.BeakerxWidget;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
@@ -30,13 +29,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class Graphics implements Serializable, Cloneable{
+import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCompiledCode;
+
+public abstract class Graphics implements Serializable, Cloneable {
 
   private static final long serialVersionUID = -1878979081955090695L;
-  
+
   private final String uid;
-  private boolean visible     = true;
-  private String  yAxisName   = null;
+  private boolean visible = true;
+  private String yAxisName = null;
   private GraphicsActionListener onClickListener;
   private String clickTag;
   private Map<String, GraphicsActionListener> onKeyListeners = new HashMap<String, GraphicsActionListener>();
@@ -78,11 +79,11 @@ public abstract class Graphics implements Serializable, Cloneable{
     return clickTag;
   }
 
-  public Map<String, String> getKeyTags (){
+  public Map<String, String> getKeyTags() {
     return this.keyTags;
   }
 
-  public Object[] getKeys () {
+  public Object[] getKeys() {
     return this.onKeyListeners.keySet().toArray();
   }
 
@@ -96,16 +97,17 @@ public abstract class Graphics implements Serializable, Cloneable{
     return this;
   }
 
-  private Object clickHandler(Object ... params) throws Exception {
-    GraphicsActionObject ao = (GraphicsActionObject)params[0];
-    ao.setGraphics(this);
-    onClickListener.execute(ao);
-    return MIMEContainer.HIDDEN;
-  }
-  
-  public void fireClick(BeakerxWidget widget, GraphicsActionObject actionObject, Message message) {
+  public void fireClick(GraphicsActionObject actionObject, Message message) {
     if (onClickListener != null) {
-      widget.handleCompiledCode(message, false, this::clickHandler, actionObject);
+      runCompiledCode(
+              message,
+              params -> {
+                GraphicsActionObject ao = (GraphicsActionObject) params[0];
+                ao.setGraphics(this);
+                onClickListener.execute(ao);
+                return MIMEContainer.HIDDEN;
+              },
+              actionObject);
     }
   }
 
@@ -128,19 +130,21 @@ public abstract class Graphics implements Serializable, Cloneable{
     this.keyTags.put(key.name(), tag);
     return this;
   }
-  
-  private Object onKeyHandler(Object ... params) throws Exception {
-    GraphicsActionListener listener = (GraphicsActionListener)params[0];
-    GraphicsActionObject ao = (GraphicsActionObject)params[1];
-    ao.setGraphics(this);
-    listener.execute(ao);
-    return MIMEContainer.HIDDEN;
-  }
 
-  public void fireOnKey(BeakerxWidget widget, String key, GraphicsActionObject actionObject, Message message) {
+  public void fireOnKey(String key, GraphicsActionObject actionObject, Message message) {
     GraphicsActionListener listener = onKeyListeners.get(key);
     if (listener != null) {
-      widget.handleCompiledCode(message, false, this::onKeyHandler, listener, actionObject);
+      runCompiledCode(
+              message,
+              params -> {
+                GraphicsActionListener listener1 = (GraphicsActionListener) params[0];
+                GraphicsActionObject ao = (GraphicsActionObject) params[1];
+                ao.setGraphics(this);
+                listener1.execute(ao);
+                return MIMEContainer.HIDDEN;
+              },
+              listener,
+              actionObject);
     }
   }
 
@@ -150,5 +154,6 @@ public abstract class Graphics implements Serializable, Cloneable{
   }
 
   abstract public void setColori(Color color);
+
   abstract public Color getColor();
 }

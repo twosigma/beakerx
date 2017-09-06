@@ -43,7 +43,17 @@ class StrokeType(Enum):
     DASHDOT = 5
     LONGDASH = 5
 
+class PlotOrientationType(Enum):
+    VERTICAL = 1
+    HORIZONTAL =2
 
+class LabelPositionType(Enum):
+    VALUE_OUTSIDE = 1
+    VALUE_INSIDE = 2
+    CENTER = 3
+    BASE_OUTSIDE = 4
+    BASE_INSIDE = 5
+    
 class GradientColor:
     def __init__(self, *args):
         self.color = args[0]
@@ -67,7 +77,6 @@ GradientColor.WHITE_BLUE = GradientColor([Color(255, 255, 217),
                                          Color(34, 94, 168),
                                          Color(37, 52, 148),
                                          Color(8, 29, 88)])
-
 
 class Graphics(BaseObject):
     def __init__(self, **kwargs):
@@ -304,3 +313,77 @@ class Crosshair(BasedXYGraphics):
         self.width = getValue(kwargs, 'width')
         self.style = getValue(kwargs, 'style')
         self.color = getColor(getValue(kwargs, 'color'))
+
+
+class CategoryGraphics(Graphics):
+    def __init__(self, **kwargs):
+        super(CategoryGraphics, self).__init__(**kwargs)
+        self.center_series = getValue(kwargs, 'centerSeries', False)
+        self.use_tool_tip = getValue(kwargs, 'useToolTip', True)
+        self.showItemLabel = getValue(kwargs, 'showItemLabel', False)
+        self.outline = getValue(kwargs, 'outline', False)
+        self.labelPosition = getValue(kwargs, 'labelPosition', "CENTER")
+        self.fills = getValue(kwargs, 'fill')
+        self.itemLabels = getValue(kwargs, 'itemLabel')
+        self.seriesNames = getValue(kwargs, 'seriesNames')
+        self.style = getValue(kwargs, 'style')
+        self.size = getValue(kwargs, 'size')
+
+        outline = getValue(kwargs, 'outlineColor')
+        if isinstance(outline, list):
+            self.outline_colors = outline
+        else:
+            self.outline_color = outline
+
+        drawOutline = getValue(kwargs, 'drawOutline')
+        if isinstance(drawOutline, list):
+            self.outlines = drawOutline
+        else:
+            self.outline = drawOutline
+            
+        base = getValue(kwargs, 'base', 0.0)
+        if isinstance(base, list):
+            self.bases = base
+        else:
+            self.base = base
+            
+        width = getValue(kwargs, 'width')
+        if isinstance(width, list):
+            self.widths = width
+        else:
+            self.width = width
+
+        style = getValue(kwargs, 'style')
+        if isinstance(style, list):
+            self.styles = style
+        else:
+            self.style = style
+
+
+        self.value = getValue(kwargs, 'value', [])
+        
+        color = getColor(getValue(kwargs, 'color'))
+        if isinstance(color, list):
+            self.colors = color
+        else:
+            self.color = color
+class CategoryBars(CategoryGraphics):
+    def __init__(self, **kwargs):
+        super(CategoryBars, self).__init__(**kwargs)
+        
+        
+class CategoryStems(CategoryGraphics):
+    def __init__(self, **kwargs):
+        super(CategoryStems, self).__init__(**kwargs)
+
+class CategoryPoints(CategoryGraphics):
+    def __init__(self, **kwargs):
+        super(CategoryPoints, self).__init__(**kwargs)
+        
+class CategoryLines(CategoryGraphics):
+    def __init__(self, **kwargs):
+        super(CategoryLines, self).__init__(**kwargs)
+        
+class CategoryArea(CategoryGraphics):
+    def __init__(self, **kwargs):
+        super(CategoryArea, self).__init__(**kwargs)

@@ -77,7 +77,7 @@ class XYChart(AbstractChart):
     def add(self, item):
         if isinstance(item, YAxis):
             self.rangeAxes.append(item)
-        elif isinstance(item, XYGraphics):
+        elif isinstance(item, Graphics):
             self.graphics_list.append(item)
         elif isinstance(item, Text):
             self.texts.append(item)
@@ -90,23 +90,24 @@ class XYChart(AbstractChart):
                 self.add(elem)
         return self
 
+
 class HistogramChart(XYChart):
     def __init__(self, **kwargs):
         self.log = getValue(kwargs, 'log', False)
         if self.log:
             kwargs['logY'] = True
-
+        
         super(HistogramChart, self).__init__(**kwargs)
         self.type = 'Histogram'
         self.bin_count = getValue(kwargs, 'binCount')
         self.cumulative = getValue(kwargs, 'cumulative', False)
         self.normed = getValue(kwargs, 'normed', False)
-
+        
         self.range_min = getValue(kwargs, 'rangeMin')
         self.range_max = getValue(kwargs, 'rangeMax')
         self.names = getValue(kwargs, 'names')
         self.displayMode = getValue(kwargs, 'displayMode')
-
+        
         color = getValue(kwargs, 'color')
         if color is not None:
             if isinstance(color, Color):
@@ -114,6 +115,26 @@ class HistogramChart(XYChart):
                 self.colors.append(color)
             else:
                 self.colors = color
+
+
+class CategoryChart(XYChart):
+    def __init__(self, **kwargs):
+        super(CategoryChart, self).__init__(**kwargs)
+        self.type = 'CategoryPlot'
+        self.categoryNamesLabelAngle = getValue(kwargs,
+                                                'categoryNamesLabelAngle', 0.0)
+        self.categoryNames = getValue(kwargs, 'categoryNames', [])
+        self.y_upper_margin = getValue(kwargs, 'upperMargin', 0.0)
+        self.y_lower_bound = getValue(kwargs, 'lowerMargin', 0.0)
+        self.x_upper_margin = getValue(kwargs, 'upperMargin', 0.05)
+        self.x_lower_margin = getValue(kwargs, 'lowerMargin', 0.05)
+        self.category_margin = getValue(kwargs, 'categoryMargin', 0.2)
+        self.y_auto_range_includes_zero = getValue(kwargs,
+                                                   'y_auto_range_includes_zero',
+                                                   False)
+        self.y_auto_range = getValue(kwargs, 'y_auto_range', True)
+        self.orientation = getValue(kwargs, 'orientation')
+
 
 class CombinedChart(BaseObject):
     def __init__(self, **kwargs):
@@ -151,13 +172,32 @@ class Plot(DOMWidget):
     def getYAxes(self):
         return self.chart.rangeAxes
 
+
+class CategoryPlot(DOMWidget):
+    _view_name = Unicode('PlotView').tag(sync=True)
+    _model_name = Unicode('PlotModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    model = Dict().tag(sync=True)
+    
+    def __init__(self, **kwargs):
+        super(CategoryPlot, self).__init__(**kwargs)
+        self.chart = CategoryChart(**kwargs)
+        self.model = self.chart.transform()
+    
+    def add(self, item):
+        self.chart.add(item)
+        self.model = self.chart.transform()
+        return self
+
+
 class HeatMap(DOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)
     _model_name = Unicode('PlotModel').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     model = Dict().tag(sync=True)
-
+    
     def __init__(self, **kwargs):
         super(HeatMap, self).__init__(**kwargs)
         if 'data' in kwargs:
@@ -173,32 +213,34 @@ class HeatMap(DOMWidget):
         if not 'legendLayout' in kwargs:
             kwargs['legendLayout'] = LegendLayout.HORIZONTAL
         if not 'legendPosition' in kwargs:
-            kwargs['legendPosition'] =  LegendPosition(position = LegendPosition.Position.BOTTOM_RIGHT)
+            kwargs['legendPosition'] = LegendPosition(
+                position=LegendPosition.Position.BOTTOM_RIGHT)
         self.chart = XYChart(**kwargs)
-        color = getValue(kwargs, 'color', ["#FF780004", "#FFF15806", "#FFFFCE1F"])
-
+        color = getValue(kwargs, 'color',
+                         ["#FF780004", "#FFF15806", "#FFFFCE1F"])
+        
         if isinstance(color, GradientColor):
             self.chart.color = color.color
         else:
             self.chart.color = color
-
+        
         self.chart.type = 'HeatMap'
-
+        
         self.model = self.chart.transform()
 
-class Histogram(DOMWidget):
 
+class Histogram(DOMWidget):
     class DisplayMode(Enum):
         OVERLAP = 1
         STACK = 2
         SIDE_BY_SIDE = 3
-
+    
     _view_name = Unicode('PlotView').tag(sync=True)
     _model_name = Unicode('PlotModel').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     model = Dict().tag(sync=True)
-
+    
     def __init__(self, **kwargs):
         super(Histogram, self).__init__()
         self.chart = HistogramChart(**kwargs)
@@ -209,6 +251,7 @@ class Histogram(DOMWidget):
         else:
             self.chart.graphics_list.append(data)
         self.model = self.chart.transform()
+
 
 class TimePlot(Plot):
     def __init__(self, **kwargs):
@@ -279,7 +322,7 @@ class SimpleTimePlot(TimePlot):
         
         if isinstance(tableData, DataFrame):
             tableData = tableData.to_dict(orient='rows')
-       
+        
         if tableData is not None and columnNames is not None:
             dataColumnsNames.extend(list(tableData[0]))
             

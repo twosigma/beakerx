@@ -21,8 +21,6 @@ import static com.twosigma.beakerx.kernel.commands.MagicCommandFinder.find;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
-import static java.util.Collections.max;
-import static java.util.Collections.min;
 import static java.util.Collections.singletonList;
 
 import com.google.common.collect.Lists;
@@ -455,7 +453,6 @@ public class MagicCommand {
     Options options = new Options();
     options.addOption("n", true, "Execute the given statement <N> times in a loop");
     options.addOption("r", true, "Repeat the loop iteration <R> times and take the best result. Default: 3");
-    options.addOption("p", true, "Use a precision of <P> digits to display the timing result. Default: 3");
     options.addOption("q", "Quiet, do not print result.");
 
     return options;
@@ -490,9 +487,6 @@ public class MagicCommand {
       if (cmd.hasOption('r')) {
         timeItOption.setRepeat(Integer.valueOf(cmd.getOptionValue('r')));
       }
-      if (cmd.hasOption('p')) {
-        timeItOption.setPrecision(Integer.valueOf(cmd.getOptionValue('p')));
-      }
       if (cmd.hasOption('q')) {
         timeItOption.setQuietMode(true);
       }
@@ -505,13 +499,12 @@ public class MagicCommand {
 
   public MagicCommandItemWithResult timeIt(TimeItOption timeItOption, String codeToExecute,
       Message message, int executionCount) {
-    //TODO add support for setup precision
     String output = "%s ± %s per loop (mean ± std. dev. of %d run, %d loop each)";
 
     if (timeItOption.getNumber() < 0) {
       return sendErrorMessage(message, "Number of execution must be bigger then 0", executionCount);
     }
-    int number = timeItOption.getNumber() == 0 ? getBestNumber() : timeItOption.getNumber();
+    int number = timeItOption.getNumber() == 0 ? getBestNumber(codeToExecute) : timeItOption.getNumber();
 
     if (timeItOption.getRepeat() == 0) {
       return sendErrorMessage(message, "Repeat value must be bigger then 0", executionCount);
@@ -535,8 +528,6 @@ public class MagicCommand {
 
     try {
       if (isReady.get()) {
-        Long bestTime = min(allRuns) / number;
-        Long worstTime = max(allRuns) / number;
         allRuns.forEach(run -> timings.add(run / number));
 
         //calculating average
@@ -564,9 +555,36 @@ public class MagicCommand {
 
   }
 
-  private int getBestNumber() {
-    //TODO search fitting value
-    return 1;
+  private int getBestNumber(String codeToExecute) {
+    for (int value=0; value < 10;) {
+      Double numberOfExecution = Math.pow(10, value);
+      CompletableFuture<Boolean> keepLooking = new CompletableFuture<>();
+
+      Long startTime = System.nanoTime();
+      IntStream.range(0, numberOfExecution.intValue()).forEach(indexOfExecution -> {
+        kernel.executeCode(codeToExecute, new Message(), 0, seo -> {
+          if (numberOfExecution.intValue() - 1 == indexOfExecution) {
+            if (TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime) > 0.2) {
+              keepLooking.complete(false);
+            } else {
+              keepLooking.complete(true);
+            }
+          }
+        });
+      });
+
+      try {
+        if (keepLooking.get()) {
+          value++;
+        } else {
+          return numberOfExecution.intValue();
+        }
+      } catch (ExecutionException | InterruptedException e) {
+        throw new IllegalStateException("Cannot find best number of execution.");
+      }
+    }
+
+    throw new IllegalStateException("Cannot find best number of execution.");
   }
 
   private String format(Long nanoSeconds) {
@@ -672,7 +690,6 @@ public class MagicCommand {
   private class TimeItOption {
     Integer number = 0;
     Integer repeat = 3;
-    Integer precision = 3;
     Boolean quietMode = false;
 
     public TimeItOption() {
@@ -686,10 +703,6 @@ public class MagicCommand {
       this.repeat = repeat;
     }
 
-    public void setPrecision(Integer precision) {
-      this.precision = precision;
-    }
-
     public void setQuietMode(Boolean quietMode) {
       this.quietMode = quietMode;
     }
@@ -700,10 +713,6 @@ public class MagicCommand {
 
     public Integer getRepeat() {
       return repeat;
-    }
-
-    public Integer getPrecision() {
-      return precision;
     }
 
     public Boolean getQuietMode() {

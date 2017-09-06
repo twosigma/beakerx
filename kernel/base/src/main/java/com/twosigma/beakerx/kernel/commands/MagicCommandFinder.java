@@ -67,7 +67,9 @@ public class MagicCommandFinder {
   private static boolean isCellmagicHeadNonEmpty(String command) {
     List<String> tokens = new StrTokenizer(command).getTokenList();
 
-    return !(command.replace(tokens.get(0), "").replace(" ", "").length() < 1);
+    return !(command.replace(tokens.get(0), "")
+                    .replaceAll("(-.)(\\d*\\s)", "")
+                    .replace(" ", "").length() < 1);
   }
 
   private static Optional<MagicCommandFunctionality> findFunctionality(final List<MagicCommandType> commands, final String command) {

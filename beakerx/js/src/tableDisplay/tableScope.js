@@ -329,9 +329,10 @@ define([
       self.removeOnKeyListeners();
       self.removeInteractionListeners();
       self.removeFilterListeners();
-      $(self.element).find(".bko-table-use-pagination").remove();
       self.destroyTableSelect();
       self.destroyTableMenuElements();
+      $(self.element).find(".bko-table-use-pagination").remove();
+      $body.tooltip('instance') && $body.tooltip('destroy');
 
       $.contextMenu('destroy', '#' + self.id + ' tbody td');
       $.contextMenu('destroy', '#' + self.id +'_wrapper thead');
@@ -375,8 +376,6 @@ define([
       self.renderMenu = false;
       self.element = undefined;
     }
-
-    $body.tooltip('instance') && $body.tooltip('destroy');
 
     // self.$on(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED, function() {
     //   var parents = self.element.parents();

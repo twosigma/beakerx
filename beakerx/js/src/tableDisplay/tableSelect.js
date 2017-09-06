@@ -61,9 +61,14 @@ module.exports = function(TableScope) {
         },
         stop: function() {
           var cells = self.table.cells('.ui-selected');
+          var nodes = cells.nodes();
 
           cells.select();
-          $(self.element).find('.ui-selected').removeClass('ui-selected');
+          _.each(nodes, function (element) {
+            $(element).removeClass('ui-selected').removeData('selectable-item');
+          });
+
+          cells = null;
         }
       })
       .on('click', 'td', function(e) {
@@ -113,5 +118,7 @@ module.exports = function(TableScope) {
       $scrollWrapper.off('click', 'td');
       $scrollWrapper.selectable('instance') && $scrollWrapper.selectable('destroy');
     }
+
+    $scrollWrapper = null;
   }
 };

@@ -44,7 +44,6 @@ class KotlinCodeRunner<T> implements Runnable {
 
   @Override
   public void run() {
-    Long startTime = System.nanoTime();
     ClassLoader oldld = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(loader);
     theOutput.setOutputHandler();
@@ -69,7 +68,6 @@ class KotlinCodeRunner<T> implements Runnable {
         theOutput.error(sw.toString());
       }
     } finally {
-      theOutput.setPeriodOfEvaluationInNanoseconds(System.nanoTime() - startTime);
       theOutput.executeCodeCallback();
     }
     theOutput.clrOutputHandler();

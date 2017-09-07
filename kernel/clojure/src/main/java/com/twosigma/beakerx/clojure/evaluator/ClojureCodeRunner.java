@@ -38,7 +38,6 @@ class ClojureCodeRunner implements Runnable {
 
   @Override
   public void run() {
-    Long startTime = System.nanoTime();
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(clojureEvaluator.getLoader());
 
@@ -49,7 +48,6 @@ class ClojureCodeRunner implements Runnable {
       try {
         checkingOfCorruptedClojureObjects(o);
         theOutput.finished(o);
-        theOutput.setPeriodOfEvaluationInNanoseconds(System.nanoTime() - startTime);
       } catch (Exception e) {
         theOutput.error("Object: " + o.getClass() + ", value cannot be displayed due to following error: " + e.getMessage());
       }

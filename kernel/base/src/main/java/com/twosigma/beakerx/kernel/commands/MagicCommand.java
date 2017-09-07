@@ -24,11 +24,14 @@ import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 import static java.util.Collections.singletonList;
 
 import com.google.common.collect.Lists;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelFunctionality.ExecuteCodeCallback;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
@@ -512,16 +515,18 @@ public class MagicCommand {
 
     List<Long> allRuns = new ArrayList<>();
     List<Long> timings = new ArrayList<>();
+
     CompletableFuture<Boolean> isReady = new CompletableFuture<>();
 
     IntStream.range(0, timeItOption.getRepeat()).forEach(repeatIter -> {
       IntStream.range(0, number).forEach(numberIter -> {
-        kernel.executeCode(codeToExecute, message, executionCount, executeCodeCallback -> {
-          allRuns.add(executeCodeCallback.getPeriodOfEvaluationInNanoseconds());
-          if (repeatIter == timeItOption.getRepeat() - 1 && numberIter == number - 1) {
-            isReady.complete(true);
-          }
-        });
+            kernel.executeCodeWithTimeMeasurement(codeToExecute, message, executionCount,
+                executeCodeCallbackWithTime -> {
+                  allRuns.add(executeCodeCallbackWithTime.getPeriodOfEvaluationInNanoseconds());
+                  if (repeatIter == timeItOption.getRepeat() - 1 && numberIter == number - 1) {
+                    isReady.complete(true);
+                  }
+                });
       });
     });
 

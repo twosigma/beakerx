@@ -48,7 +48,12 @@ public class SimpleEvaluationObject extends Observable {
   private BeakerOutputHandler stderr;
   private Queue<ConsoleOutput> consoleOutput = new ConcurrentLinkedQueue<ConsoleOutput>();
   private ProgressReporting progressReporting;
-  private Long periodOfEvaluationInNanoseconds;
+
+  public SimpleEvaluationObject(String e) {
+    expression = e;
+    status = EvaluationStatus.QUEUED;
+    this.executeCodeCallback = null;
+  }
 
   public SimpleEvaluationObject(String e, final KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
     expression = e;
@@ -108,14 +113,6 @@ public class SimpleEvaluationObject extends Observable {
       progressReporting = new ProgressReporting();
     }
     progressReporting.structuredUpdate(message,progress);
-  }
-
-  public Long getPeriodOfEvaluationInNanoseconds() {
-    return periodOfEvaluationInNanoseconds;
-  }
-
-  public void setPeriodOfEvaluationInNanoseconds(Long periodOfEvaluationInNanoseconds) {
-    this.periodOfEvaluationInNanoseconds = periodOfEvaluationInNanoseconds;
   }
 
   public static enum EvaluationStatus {

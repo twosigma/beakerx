@@ -2424,6 +2424,9 @@ define([
     self.appendLegendToSvg(d3.select(svg));
     ///////
 
+    //tooltips
+    self.appendTooltipsToSvg(d3.select(svg));
+
     plotUtils.translateChildren(svg, 0, titleOuterHeight);
     plotUtils.addTitleToSvg(svg, plotTitle, {
       width: plotTitle.width(),
@@ -2456,7 +2459,6 @@ define([
     var self = this;
     var svgToSave = self.getSvgToSave();
     plotUtils.addInlineFonts(svgToSave);
-    console.log('svgToSave', svgToSave);
     var html = plotUtils.convertToXHTML(svgToSave.outerHTML);
     var fileName = _.isEmpty(self.stdmodel.title) ? 'plot' : self.stdmodel.title;
     plotUtils.download('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(html))), fileName + ".svg");
@@ -2585,6 +2587,47 @@ define([
       .attr('style', 'position: relative;')
       .attr("xmlns", "http://www.w3.org/1999/xhtml")
       .html(legendCopy[0].outerHTML);
+  };
+
+  PlotScope.prototype.appendTooltipsToSvg = function(svg) {
+    var self = this;
+
+    var tooltipElements = self.jqcontainer.find(".plot-tooltip").toArray();
+    var scopeTipsSize = Object.keys(self.tips).length;
+
+    if (scopeTipsSize > 0 && tooltipElements.length > 0) {
+      tooltipElements.forEach(function(tooltip) {
+        tooltip = $(tooltip);
+        var tooltipCopy = tooltip.clone();
+
+        tooltipCopy.css({
+          position: 'inherit',
+          top: 'auto',
+          left: 'auto',
+          bottom: 'auto',
+          right: 'auto'
+        });
+
+        var getPositive = function(value) {
+          return value > 0 ? value : 0;
+        };
+
+        var position = plotUtils.getActualCss(tooltip, 'position');
+        var x = getPositive(position.left);
+        var y = position.top != null ? getPositive(position.top) : getPositive(position.bottom);
+
+        svg.append('foreignObject')
+          .attr("width", plotUtils.getActualCss(tooltip, 'outerWidth', true) + 1)//add 1 because jQuery round size
+          .attr("height", plotUtils.getActualCss(tooltip, 'outerHeight', true) + 1)
+          .attr("x", x)
+          .attr("y", y)
+          .append('xhtml:body')
+          .attr('style', 'position: relative;')
+          .attr('xmlns', 'http://www.w3.org/1999/xhtml')
+          .html(tooltipCopy[0].outerHTML);
+      });
+    }
+
   };
 
   PlotScope.prototype.setModelData = function(data) {

@@ -39,21 +39,29 @@ import com.twosigma.beakerx.kernel.commands.item.MagicCommandItemWithResultAndCo
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
+import java.util.stream.IntStream;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.text.StrMatcher;
 import org.apache.commons.text.StrTokenizer;
 
@@ -78,6 +86,10 @@ public class MagicCommand {
   public static final String ADD_STATIC_IMPORT = IMPORT + " static";
   public static final String UNIMPORT = "%unimport";
   public static final String DEFAULT_DATASOURCE = "%defaultDatasource";
+  public static final String TIME_LINE = "%time";
+  public static final String TIME_CELL = "%" + TIME_LINE;
+  public static final String TIMEIT_LINE = "%timeit";
+  public static final String TIMEIT_CELL = "%" + TIMEIT_LINE;
 
   public static final String DATASOURCES = "%datasources";
   public static final String USAGE_ERROR_MSG = "UsageError: %s is a cell magic, but the cell body is empty.";
@@ -388,6 +400,225 @@ public class MagicCommand {
     };
   }
 
+  public MagicCommandFunctionality timeLineMode() {
+    return (code, command, message, executionCount) -> {
+      String codeToExecute = code.asString().replace(TIME_LINE, "");
+      return time(codeToExecute, message, executionCount);
+    };
+  }
+
+  public MagicCommandFunctionality timeCellMode() {
+    return (code, command, message, executionCount) -> time(code.takeCodeWithoutCommand().get().asString(), message, executionCount);
+  }
+
+  public MagicCommandItemWithResult time(String codeToExecute, Message message, int executionCount) {
+    CompletableFuture<TimeMeasureData> compileTime = new CompletableFuture<>();
+
+    ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+    long currentThreadId = Thread.currentThread().getId();
+
+    Long startWallTime = System.nanoTime();
+    Long startCpuTotalTime = threadMXBean.getCurrentThreadCpuTime();
+    Long startUserTime = threadMXBean.getCurrentThreadUserTime();
+
+    kernel.executeCode(codeToExecute, message, executionCount,seo -> {
+      Long endWallTime = System.nanoTime();
+      Long endCpuTotalTime = threadMXBean.getThreadCpuTime(currentThreadId);
+      Long endUserTime = threadMXBean.getThreadUserTime(currentThreadId);
+
+      compileTime.complete(new TimeMeasureData(endCpuTotalTime - startCpuTotalTime,
+          endUserTime - startUserTime,
+          endWallTime - startWallTime));
+    });
+
+    String messageInfo = "CPU times: user %s, sys: %s, total: %s \nWall Time: %s\n";
+
+    try {
+      TimeMeasureData timeMeasuredData = compileTime.get();
+
+      return new MagicCommandItemWithResult(
+          messageCreator.buildOutputMessage(message, String.format(messageInfo,
+              format(timeMeasuredData.getCpuUserTime()),
+              format(timeMeasuredData.getCpuTotalTime() - timeMeasuredData.getCpuUserTime()),
+              format(timeMeasuredData.getCpuTotalTime()),
+              format(timeMeasuredData.getWallTime())), false),
+          messageCreator.buildReplyWithoutStatus(message, executionCount));
+
+    } catch (InterruptedException | ExecutionException e) {
+      return sendErrorMessage(message, "There occurs problem during measuring time for your statement.", executionCount);
+    }
+  }
+
+  private Options createForTimeIt() {
+    Options options = new Options();
+    options.addOption("n", true, "Execute the given statement <N> times in a loop");
+    options.addOption("r", true, "Repeat the loop iteration <R> times and take the best result. Default: 3");
+    options.addOption("q", "Quiet, do not print result.");
+
+    return options;
+  }
+
+
+  public MagicCommandFunctionality timeItLineMode() {
+    return (code, command, message, executionCount) -> {
+        String codeToExecute = code.asString().replace(TIMEIT_LINE, "");
+        codeToExecute = codeToExecute.replaceAll("(-.)(\\d*\\s)", "");
+        return timeIt(buildTimeItOption(code), codeToExecute, message, executionCount);
+
+    };
+  }
+
+  public MagicCommandFunctionality timeItCellMode() {
+    return (code, command, message, executionCount) -> timeIt(buildTimeItOption(code), code.takeCodeWithoutCommand().get().asString(), message, executionCount);
+  }
+
+  private TimeItOption buildTimeItOption(Code code) {
+    TimeItOption timeItOption = new TimeItOption();
+
+    try {
+      StrTokenizer tokenizer = new StrTokenizer(code.asString());
+
+      CommandLineParser parser = new DefaultParser();
+      CommandLine cmd = parser.parse(createForTimeIt(), tokenizer.getTokenArray());
+
+      if (cmd.hasOption('n')) {
+        timeItOption.setNumber(Integer.valueOf(cmd.getOptionValue('n')));
+      }
+      if (cmd.hasOption('r')) {
+        timeItOption.setRepeat(Integer.valueOf(cmd.getOptionValue('r')));
+      }
+      if (cmd.hasOption('q')) {
+        timeItOption.setQuietMode(true);
+      }
+
+      return timeItOption;
+    } catch (ParseException e) {
+      throw new IllegalStateException("Cannot parse code to obtain.");
+    }
+  }
+
+  public MagicCommandItemWithResult timeIt(TimeItOption timeItOption, String codeToExecute,
+      Message message, int executionCount) {
+    String output = "%s ± %s per loop (mean ± std. dev. of %d run, %d loop each)";
+
+    if (timeItOption.getNumber() < 0) {
+      return sendErrorMessage(message, "Number of execution must be bigger then 0", executionCount);
+    }
+    int number = timeItOption.getNumber() == 0 ? getBestNumber(codeToExecute) : timeItOption.getNumber();
+
+    if (timeItOption.getRepeat() == 0) {
+      return sendErrorMessage(message, "Repeat value must be bigger then 0", executionCount);
+    }
+
+    CompletableFuture<Boolean> isStatementsCorrect = new CompletableFuture<>();
+    kernel.executeCodeWithTimeMeasurement(codeToExecute, message, executionCount,
+        executeCodeCallbackWithTime -> {
+          if (executeCodeCallbackWithTime.getStatus().equals(EvaluationStatus.ERROR)) {
+            isStatementsCorrect.complete(false);
+          } else {
+            isStatementsCorrect.complete(true);
+          }
+        });
+    try {
+
+      if (!isStatementsCorrect.get()) {
+        return sendErrorMessage(message, "Please correct your statement", executionCount);
+      }
+
+      List<Long> allRuns = new ArrayList<>();
+      List<Long> timings = new ArrayList<>();
+
+      CompletableFuture<Boolean> isReady = new CompletableFuture<>();
+
+      IntStream.range(0, timeItOption.getRepeat()).forEach(repeatIter -> {
+        IntStream.range(0, number).forEach(numberIter -> {
+          kernel.executeCodeWithTimeMeasurement(codeToExecute, message, executionCount,
+              executeCodeCallbackWithTime -> {
+                allRuns.add(executeCodeCallbackWithTime.getPeriodOfEvaluationInNanoseconds());
+                if (repeatIter == timeItOption.getRepeat() - 1 && numberIter == number - 1) {
+                  isReady.complete(true);
+                }
+              });
+        });
+      });
+
+      if (isReady.get()) {
+        allRuns.forEach(run -> timings.add(run / number));
+
+        //calculating average
+        long average = timings.stream()
+                              .reduce((aLong, aLong2) -> aLong + aLong2)
+                              .orElse(0L) / timings.size();
+        double stdev = Math.pow(timings.stream().map(currentValue -> Math.pow(currentValue - average, 2))
+                                                .reduce((aDouble, aDouble2) -> aDouble + aDouble2)
+                                                .orElse(0.0) / timings.size(), 0.5);
+
+        if (timeItOption.getQuietMode()) {
+          output = "";
+        } else {
+          output = String.format(output, format(average), format((long) stdev), timeItOption.getRepeat(), number);
+        }
+
+        return new MagicCommandItemWithResult(
+            messageCreator.buildOutputMessage(message, output, false),
+            messageCreator.buildReplyWithoutStatus(message, executionCount));
+      }
+    } catch (InterruptedException | ExecutionException e) {
+      return sendErrorMessage(message, "There occurs problem with " + e.getMessage(), executionCount);
+    }
+
+    return sendErrorMessage(message, "There occurs problem with timeIt operations", executionCount);
+
+  }
+
+  private int getBestNumber(String codeToExecute) {
+    for (int value=0; value < 10;) {
+      Double numberOfExecution = Math.pow(10, value);
+      CompletableFuture<Boolean> keepLooking = new CompletableFuture<>();
+
+      Long startTime = System.nanoTime();
+      IntStream.range(0, numberOfExecution.intValue()).forEach(indexOfExecution -> {
+        kernel.executeCode(codeToExecute, new Message(), 0, seo -> {
+          if (numberOfExecution.intValue() - 1 == indexOfExecution) {
+            if (TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime) > 0.2) {
+              keepLooking.complete(false);
+            } else {
+              keepLooking.complete(true);
+            }
+          }
+        });
+      });
+
+      try {
+        if (keepLooking.get()) {
+          value++;
+        } else {
+          return numberOfExecution.intValue();
+        }
+      } catch (ExecutionException | InterruptedException e) {
+        throw new IllegalStateException("Cannot find best number of execution.");
+      }
+    }
+
+    throw new IllegalStateException("Cannot find best number of execution.");
+  }
+
+  private String format(Long nanoSeconds) {
+    if (nanoSeconds < 1000) {
+      //leave in ns
+      return nanoSeconds + " ns";
+    } else if (nanoSeconds >= 1000 && nanoSeconds < 1_000_000) {
+      //convert to µs
+      return TimeUnit.NANOSECONDS.toMicros(nanoSeconds) + " µs";
+    } else if (nanoSeconds > 1_000_000 && nanoSeconds < 1_000_000_000) {
+      //convert to ms
+      return TimeUnit.NANOSECONDS.toMillis(nanoSeconds) + " ms";
+    } else {
+      //convert to s
+      return TimeUnit.NANOSECONDS.toSeconds(nanoSeconds) + " s";
+    }
+  }
+
   private ErrorData executeBashCode(CodeWithoutCommand code) {
     String[] cmd = {"/bin/bash", "-c", code.asString()};
     ProcessBuilder pb = new ProcessBuilder(cmd);
@@ -429,6 +660,30 @@ public class MagicCommand {
     return new ErrorData(false, "");
   }
 
+  private class TimeMeasureData {
+    private Long cpuTotalTime;
+    private Long cpuUserTime;
+    private Long wallTime;
+
+    public TimeMeasureData(Long cpuTotalTime, Long cpuUserTime, Long wallTime) {
+      this.cpuTotalTime = cpuTotalTime;
+      this.cpuUserTime = cpuUserTime;
+      this.wallTime = wallTime;
+    }
+
+    public Long getCpuTotalTime() {
+      return cpuTotalTime;
+    }
+
+    public Long getCpuUserTime() {
+      return cpuUserTime;
+    }
+
+    public Long getWallTime() {
+      return wallTime;
+    }
+  }
+
   private class ErrorData {
 
     public ErrorData(boolean hasError, String message) {
@@ -445,6 +700,39 @@ public class MagicCommand {
 
     public String getMessage() {
       return message;
+    }
+  }
+
+  private class TimeItOption {
+    Integer number = 0;
+    Integer repeat = 3;
+    Boolean quietMode = false;
+
+    public TimeItOption() {
+    }
+
+    public void setNumber(Integer number) {
+      this.number = number;
+    }
+
+    public void setRepeat(Integer repeat) {
+      this.repeat = repeat;
+    }
+
+    public void setQuietMode(Boolean quietMode) {
+      this.quietMode = quietMode;
+    }
+
+    public Integer getNumber() {
+      return number;
+    }
+
+    public Integer getRepeat() {
+      return repeat;
+    }
+
+    public Boolean getQuietMode() {
+      return quietMode;
     }
   }
 }

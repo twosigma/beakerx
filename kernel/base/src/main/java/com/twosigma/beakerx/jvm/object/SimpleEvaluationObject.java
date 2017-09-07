@@ -49,6 +49,11 @@ public class SimpleEvaluationObject extends Observable {
   private Queue<ConsoleOutput> consoleOutput = new ConcurrentLinkedQueue<ConsoleOutput>();
   private ProgressReporting progressReporting;
 
+  public SimpleEvaluationObject(String e) {
+    expression = e;
+    status = EvaluationStatus.QUEUED;
+    this.executeCodeCallback = null;
+  }
 
   public SimpleEvaluationObject(String e, final KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
     expression = e;

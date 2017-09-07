@@ -25,6 +25,7 @@ import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.commands.MavenJarResolver;
 import com.twosigma.beakerx.kernel.commands.MagicCommand;
@@ -185,6 +186,12 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
+  public SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message,
+      int executionCount, ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
+    return this.evaluatorManager.executeCodeWithTimeMeasurement(code, message, executionCount, executeCodeCallbackWithTime);
+  }
+
+  @Override
   public AutocompleteResult autocomplete(String code, int cursorPos) {
     return this.evaluatorManager.autocomplete(code, cursorPos);
   }
@@ -251,7 +258,11 @@ public abstract class Kernel implements KernelFunctionality {
             new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
             new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
             new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
-            new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
+            new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport()),
+            new MagicCommandType(MagicCommand.TIME_LINE, "", magicCommand.timeLineMode()),
+            new MagicCommandType(MagicCommand.TIME_CELL, "", magicCommand.timeCellMode()),
+            new MagicCommandType(MagicCommand.TIMEIT_LINE, "", magicCommand.timeItLineMode()),
+            new MagicCommandType(MagicCommand.TIMEIT_CELL, "", magicCommand.timeItCellMode())
     );
   }
 

@@ -38,7 +38,6 @@ class ScalaCodeRunner implements Runnable {
 
   @Override
   public void run() {
-    Long startTime = System.nanoTime();
     theOutput.setOutputHandler();
     try {
       InternalVariable.setValue(theOutput);
@@ -53,7 +52,6 @@ class ScalaCodeRunner implements Runnable {
         theOutput.error(sw.toString());
       }
     }
-    theOutput.setPeriodOfEvaluationInNanoseconds(System.nanoTime() - startTime);
     theOutput.setOutputHandler();
   }
 

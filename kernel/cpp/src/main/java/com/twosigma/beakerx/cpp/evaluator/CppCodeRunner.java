@@ -89,6 +89,7 @@ class CppCodeRunner implements Runnable {
   @Override
   public void run() {
     theOutput.setOutputHandler();
+
     InternalVariable.setValue(theOutput);
 
     try {

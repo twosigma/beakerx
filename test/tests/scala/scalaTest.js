@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-var BeakerXPageObject = require('./beakerx.po.js');
+var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
 describe('Scala notebook', function () {
@@ -28,7 +28,7 @@ describe('Scala notebook', function () {
     it('Output contains "defined class Greeter"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(0, 'defined class Greeter');
-    });
+    }, 2);
   });
 
   describe('Run 2nd cell. ', function () {

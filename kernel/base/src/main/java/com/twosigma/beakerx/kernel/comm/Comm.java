@@ -35,7 +35,6 @@ import java.util.List;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 
 
 public class Comm {
@@ -110,10 +109,6 @@ public class Comm {
 
   public void setTargetModule(String targetModule) {
     this.targetModule = targetModule;
-  }
-
-  public List<Handler<Message>> getMsgCallbackList() {
-    return msgCallbackList;
   }
 
   public void addMsgCallbackList(Handler<Message>... handlers) {
@@ -219,10 +214,8 @@ public class Comm {
   }
 
   public void handleMsg(Message parentMessage) {
-    if (this.getMsgCallbackList() != null && !this.getMsgCallbackList().isEmpty()) {
-      for (Handler<Message> handler : getMsgCallbackList()) {
-        handler.handle(parentMessage);
-      }
+    for (Handler<Message> handler : this.msgCallbackList) {
+      handler.handle(parentMessage);
     }
   }
 

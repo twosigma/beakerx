@@ -19,7 +19,6 @@ package com.twosigma.beakerx.jupyter.handler;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.handler.CommCloseHandler;
 import com.twosigma.beakerx.kernel.handler.CommInfoHandler;
@@ -177,7 +176,7 @@ public class JupyterHandlerTest {
     };
     commCloseHandler = new CommCloseHandler(kernel);
     commInfoHandler = new CommInfoHandler(kernel);
-    commMsgHandler = new CommMsgHandler(kernel, new MessageCreator(kernel));
+    commMsgHandler = new CommMsgHandler(kernel);
   }
 
   @After

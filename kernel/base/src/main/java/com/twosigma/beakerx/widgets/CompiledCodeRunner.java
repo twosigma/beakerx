@@ -26,7 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class CompiledCodeRunner {
@@ -37,8 +40,25 @@ public class CompiledCodeRunner {
     Object executeCode(Object... params) throws Exception;
   }
 
+  static void runCommEvent(Message message, CommActions action, Widget.ActionPerformed handlerAction) {
+    if (message.getContent() != null) {
+      Serializable data = message.getContent().get("data");
+      if (data != null && data instanceof LinkedHashMap) {
+        Object contentObject = ((LinkedHashMap) data).get("content");
+        if (contentObject instanceof LinkedHashMap) {
+          HashMap content = (LinkedHashMap) contentObject;
+          if (handlerAction != null) {
+            final SimpleEvaluationObject seo = initOutput(message);
+            handlerAction.executeAction(content, message);
+            seo.clrOutputHandler();
+          }
+        }
+      }
+    }
+  }
+
   public static void runCompiledCode(Message message, ExecuteCompiledCode handler, Object... params) {
-    final SimpleEvaluationObject seo = createSimpleEvaluationObject(message);
+    final SimpleEvaluationObject seo = initOutput(message);
     InternalVariable.setValue(seo);
     try {
       Object result = handler.executeCode(params);
@@ -53,7 +73,7 @@ public class CompiledCodeRunner {
 
   public static void runCompiledCodeAndPublish(Message message, ExecuteCompiledCode handler, Object... params) {
     final MessageCreator mc = new MessageCreator(KernelManager.get());
-    final SimpleEvaluationObject seo = createSimpleEvaluationObject(message);
+    final SimpleEvaluationObject seo = initOutput(message);
     InternalVariable.setValue(seo);
     KernelManager.get().publish(mc.buildClearOutput(message, true));
     try {
@@ -68,7 +88,7 @@ public class CompiledCodeRunner {
     seo.clrOutputHandler();
   }
 
-  private static SimpleEvaluationObject createSimpleEvaluationObject(Message message) {
+  private static SimpleEvaluationObject initOutput(Message message) {
     final SimpleEvaluationObject seo = new SimpleEvaluationObject("", (seoResult) -> {
       //nothing to do
     });

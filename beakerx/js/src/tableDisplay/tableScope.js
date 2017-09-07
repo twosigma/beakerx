@@ -2099,7 +2099,7 @@ define([
 
   TableScope.prototype.removeFilterListeners = function() {
     $(this.table.table().container()).off(
-      'mousedown.column-filter keyup.column-filter change.column-filter keydown.column-filter blur.column-filter focus.column-filter',
+      'mousedown.column-filter keyup.column-filter change.column-filter keydown.column-filter blur.column-filter focus.column-filter'
     );
   };
 

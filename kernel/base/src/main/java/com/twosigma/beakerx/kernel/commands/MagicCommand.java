@@ -513,12 +513,11 @@ public class MagicCommand {
     List<Long> allRuns = new ArrayList<>();
     List<Long> timings = new ArrayList<>();
     CompletableFuture<Boolean> isReady = new CompletableFuture<>();
+
     IntStream.range(0, timeItOption.getRepeat()).forEach(repeatIter -> {
-      Long startNumberTime = System.nanoTime();
       IntStream.range(0, number).forEach(numberIter -> {
         kernel.executeCode(codeToExecute, message, executionCount, executeCodeCallback -> {
-          Long endTime = System.nanoTime() - startNumberTime;
-          allRuns.add(endTime);
+          allRuns.add(executeCodeCallback.getPeriodOfEvaluationInNanoseconds());
           if (repeatIter == timeItOption.getRepeat() - 1 && numberIter == number - 1) {
             isReady.complete(true);
           }
@@ -531,8 +530,9 @@ public class MagicCommand {
         allRuns.forEach(run -> timings.add(run / number));
 
         //calculating average
-        long average = timings.stream().reduce((aLong, aLong2) -> aLong + aLong2)
-            .orElse(0L) / timings.size();
+        long average = timings.stream()
+                              .reduce((aLong, aLong2) -> aLong + aLong2)
+                              .orElse(0L) / timings.size();
         double stdev = Math.pow(timings.stream().map(currentValue -> Math.pow(currentValue - average, 2))
                                                 .reduce((aDouble, aDouble2) -> aDouble + aDouble2)
                                                 .orElse(0.0) / timings.size(), 0.5);

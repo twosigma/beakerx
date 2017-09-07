@@ -46,6 +46,7 @@ class GroovyCodeRunner implements Runnable {
 
   @Override
   public void run() {
+    Long startTime = System.nanoTime();
     Object result;
     ClassLoader oldld = Thread.currentThread().getContextClassLoader();
     theOutput.setOutputHandler();
@@ -76,6 +77,7 @@ class GroovyCodeRunner implements Runnable {
       }
 
       theOutput.finished(result);
+      theOutput.setPeriodOfEvaluationInNanoseconds(System.nanoTime() - startTime);
 
     } catch (Throwable e) {
 

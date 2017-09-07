@@ -65,11 +65,23 @@ public class MagicCommandFinder {
   }
 
   private static boolean isCellmagicHeadNonEmpty(String command) {
-    List<String> tokens = new StrTokenizer(command).getTokenList();
+    List<String> commands = new StrTokenizer(command).getTokenList();
 
-    return !(command.replace(tokens.get(0), "")
-                    .replaceAll("(-.)(\\d*\\s)", "")
+    String commandWithoutOptions = removeOptionsFromHead(commands);
+
+    return !(commandWithoutOptions.replace(commands.get(0), "")
                     .replace(" ", "").length() < 1);
+  }
+
+  private static String removeOptionsFromHead(List<String> commands) {
+    StringBuilder stringBuilder = new StringBuilder();
+    for (String command : commands) {
+      if (!(command.startsWith("-r") || command.startsWith("-n") || command.startsWith("-q"))) {
+        stringBuilder.append(command);
+      }
+    }
+
+    return stringBuilder.toString();
   }
 
   private static Optional<MagicCommandFunctionality> findFunctionality(final List<MagicCommandType> commands, final String command) {

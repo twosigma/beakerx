@@ -43,8 +43,10 @@ class SQLCodeRunner implements Runnable {
   @Override
   public void run() {
     try {
+      Long starTime = System.nanoTime();
       InternalVariable.setValue(simpleEvaluationObject);
       simpleEvaluationObject.finished(sqlEvaluator.executeQuery(simpleEvaluationObject.getExpression(), namespaceClient, sqlEvaluator.defaultConnectionString, sqlEvaluator.namedConnectionString));
+      simpleEvaluationObject.setPeriodOfEvaluationInNanoseconds(System.nanoTime() - starTime);
     } catch (SQLException e) {
       simpleEvaluationObject.error(e.toString());
     } catch (ThreadDeath e) {

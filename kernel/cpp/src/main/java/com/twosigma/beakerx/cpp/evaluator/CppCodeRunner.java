@@ -89,7 +89,7 @@ class CppCodeRunner implements Runnable {
   @Override
   public void run() {
     theOutput.setOutputHandler();
-
+    Long startTime = System.nanoTime();
     InternalVariable.setValue(theOutput);
 
     try {
@@ -220,6 +220,7 @@ class CppCodeRunner implements Runnable {
     } finally {
       if (theOutput != null) {
         theOutput.executeCodeCallback();
+        theOutput.setPeriodOfEvaluationInNanoseconds(System.nanoTime() - starTime);
       }
     }
     theOutput.clrOutputHandler();

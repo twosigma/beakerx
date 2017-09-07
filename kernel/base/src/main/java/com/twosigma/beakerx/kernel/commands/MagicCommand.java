@@ -24,14 +24,11 @@ import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 import static java.util.Collections.singletonList;
 
 import com.google.common.collect.Lists;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.KernelFunctionality.ExecuteCodeCallback;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
@@ -513,24 +510,38 @@ public class MagicCommand {
       return sendErrorMessage(message, "Repeat value must be bigger then 0", executionCount);
     }
 
-    List<Long> allRuns = new ArrayList<>();
-    List<Long> timings = new ArrayList<>();
-
-    CompletableFuture<Boolean> isReady = new CompletableFuture<>();
-
-    IntStream.range(0, timeItOption.getRepeat()).forEach(repeatIter -> {
-      IntStream.range(0, number).forEach(numberIter -> {
-            kernel.executeCodeWithTimeMeasurement(codeToExecute, message, executionCount,
-                executeCodeCallbackWithTime -> {
-                  allRuns.add(executeCodeCallbackWithTime.getPeriodOfEvaluationInNanoseconds());
-                  if (repeatIter == timeItOption.getRepeat() - 1 && numberIter == number - 1) {
-                    isReady.complete(true);
-                  }
-                });
-      });
-    });
-
+    CompletableFuture<Boolean> isStatementsCorrect = new CompletableFuture<>();
+    kernel.executeCodeWithTimeMeasurement(codeToExecute, message, executionCount,
+        executeCodeCallbackWithTime -> {
+          if (executeCodeCallbackWithTime.getStatus().equals(EvaluationStatus.ERROR)) {
+            isStatementsCorrect.complete(false);
+          } else {
+            isStatementsCorrect.complete(true);
+          }
+        });
     try {
+
+      if (!isStatementsCorrect.get()) {
+        return sendErrorMessage(message, "Please correct your statement", executionCount);
+      }
+
+      List<Long> allRuns = new ArrayList<>();
+      List<Long> timings = new ArrayList<>();
+
+      CompletableFuture<Boolean> isReady = new CompletableFuture<>();
+
+      IntStream.range(0, timeItOption.getRepeat()).forEach(repeatIter -> {
+        IntStream.range(0, number).forEach(numberIter -> {
+          kernel.executeCodeWithTimeMeasurement(codeToExecute, message, executionCount,
+              executeCodeCallbackWithTime -> {
+                allRuns.add(executeCodeCallbackWithTime.getPeriodOfEvaluationInNanoseconds());
+                if (repeatIter == timeItOption.getRepeat() - 1 && numberIter == number - 1) {
+                  isReady.complete(true);
+                }
+              });
+        });
+      });
+
       if (isReady.get()) {
         allRuns.forEach(run -> timings.add(run / number));
 

@@ -59,6 +59,9 @@ public class MessageCreator {
   public static final String NULL_RESULT = "null";
   public static final String ERROR_MESSAGE = "text";
   public static final String TEXT = "text";
+  public static final String NAME = "name";
+  public static final String STDERR = "stderr";
+  public static final String STDOUT = "stdout";
 
   public static Logger logger = LoggerFactory.getLogger(MessageCreator.class);
   protected KernelFunctionality kernel;
@@ -144,7 +147,7 @@ public class MessageCreator {
   public Message buildOutputMessage(Message message, String text, boolean hasError) {
     Message reply = initMessage(STREAM, message);
     reply.setContent(new HashMap<String, Serializable>());
-    reply.getContent().put("name", hasError ? "stderr" : "stdout");
+    reply.getContent().put(NAME, hasError ? STDERR : STDOUT);
     reply.getContent().put(TEXT, text);
     logger.debug("Console output:", "Error: " + hasError, text);
     return reply;

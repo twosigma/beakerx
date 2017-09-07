@@ -85,7 +85,7 @@ public class Button extends ValueWidget<Boolean> {
 
 
   private void handleOnClick(Message message) {
-    handleCommEventSync(message, CommActions.CLICK, (ActionPerformed)this::executeAction);
+    handleCommEventSync(message, CommActions.CLICK, this::executeAction);
   }
   
   

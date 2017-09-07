@@ -52,7 +52,7 @@ public class ButtonComponentWidget extends EasyFormComponent<Button> {
     return this.widget.getTag();
   }
 
-  public void fireActionPerformed() {
+  private void fireActionPerformed() {
     if (actionPerformed != null) {
       actionPerformed.execute(getLabel());
       for (EasyFormListener listener : actionListeners) {

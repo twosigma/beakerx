@@ -17,13 +17,9 @@ package com.twosigma.beakerx.widgets;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCommEvent;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
@@ -31,42 +27,8 @@ import com.twosigma.beakerx.message.Message;
 
 public abstract class Widget implements CommFunctionality, DisplayableWidget {
 
-  private static final Logger logger = LoggerFactory.getLogger(Widget.class);
   public static final String APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON = "application/vnd.jupyter.widget-view+json";
   public static final String MODEL_ID = "model_id";
-
-  public enum CommActions {
-
-    DOUBLE_CLICK("DOUBLE_CLICK"),
-    ONCLICK("onclick"),
-    ONKEY("onkey"),
-    ACTIONDETAILS("actiondetails"),
-    CONTEXT_MENU_CLICK("CONTEXT_MENU_CLICK"),
-    CLICK("click");
-
-    private String action;
-
-    CommActions(String action) {
-      this.action = action;
-    }
-
-    public String getAction() {
-      return action;
-    }
-
-    public static CommActions getByAction(final String input) {
-      CommActions ret = null;
-      if (input != null) {
-        for (CommActions item : CommActions.values()) {
-          if (item.getAction().equalsIgnoreCase(input.trim())) {
-            ret = item;
-            break;
-          }
-        }
-      }
-      return ret;
-    }
-  }
 
   public static final String MODEL_MODULE = "_model_module";
   public static final String MODEL_NAME = "_model_name";
@@ -163,23 +125,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     this.comm.sendUpdate(propertyName, value);
   }
 
-  public void handleCommEventSync(Message message, CommActions action, ActionPerformed handlerAction) {
-    wrapBusyIdle(KernelManager.get(), message, () -> handleCommEvent(message, action, handlerAction));
-  }
-
-  private void handleCommEvent(Message message, CommActions action, ActionPerformed handlerAction) {
-    if (message.getContent() != null) {
-      Serializable data = message.getContent().get("data");
-      if (data != null && data instanceof LinkedHashMap) {
-        Object contentObject = ((LinkedHashMap) data).get("content");
-        if (contentObject instanceof LinkedHashMap) {
-          HashMap content = (LinkedHashMap) contentObject;
-          if (handlerAction != null) {
-            handlerAction.executeAction(content, message);
-          }
-        }
-      }
-    }
+  protected void handleCommEventSync(Message message, CommActions action, ActionPerformed handlerAction) {
+    wrapBusyIdle(KernelManager.get(), message, () -> runCommEvent(message, action, handlerAction));
   }
 
   public interface ActionPerformed {

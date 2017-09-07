@@ -16,7 +16,6 @@
 package com.twosigma.beakerx.kernel.handler;
 
 import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.message.Message;
@@ -33,11 +32,8 @@ public class CommMsgHandler extends KernelHandler<Message> {
 
   private final static Logger logger = LoggerFactory.getLogger(CommMsgHandler.class);
 
-  private MessageCreator messageCreator;
-
-  public CommMsgHandler(final KernelFunctionality kernel, final MessageCreator messageCreator) {
+  public CommMsgHandler(final KernelFunctionality kernel) {
     super(kernel);
-    this.messageCreator = messageCreator;
   }
 
   public void handle(Message message) {

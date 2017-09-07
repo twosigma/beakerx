@@ -50,6 +50,7 @@ import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beakerx.table.highlight.ValueHighlighter;
 import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
 import com.twosigma.beakerx.widgets.BeakerxWidget;
+import com.twosigma.beakerx.widgets.CommActions;
 import com.twosigma.beakerx.widgets.RunWidgetClosure;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;

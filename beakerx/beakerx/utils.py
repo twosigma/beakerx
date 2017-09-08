@@ -55,6 +55,10 @@ class BaseObject:
 
 class Color:
     def __init__(self, r, g, b, a=255):
+        self.R = r
+        self.B = b
+        self.G = g
+        self.A = a
         self.value = ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | (
             (g & 0xFF) << 8) | (b & 0xFF)
         if self.value < 0:
@@ -62,7 +66,9 @@ class Color:
     
     def hex(self):
         return '#%02x' % self.value
-
+    
+    def shorthex(self):
+        return '#%06x' % (self.value & 0x00FFFFFF)
 
 Color.white = Color(255, 255, 255)
 Color.WHITE = Color.white
@@ -135,6 +141,9 @@ class ObjectEncoder(json.JSONEncoder):
                     for key, value in inspect.getmembers(obj)
                     if value is not None
                     and not key == "Position"
+                    and not key == "colorProvider"
+                    and not key == "toolTipBuilder"
+                    and not key == "parent"
                     and not key.startswith("__")
                     and not inspect.isabstract(value)
                     and not inspect.isbuiltin(value)
@@ -147,3 +156,39 @@ class ObjectEncoder(json.JSONEncoder):
             )
             return self.default(d)
         return obj
+
+class ColorUtils:
+    @staticmethod
+    def interpolateColor(color1, color2, fraction):
+        fraction = min(fraction, 1.0)
+        fraction = max(fraction, 0.0)
+        
+        red1 = color1.R
+        green1 = color1.G
+        blue1 = color1.B
+        alpha1 = color1.A
+        
+        red2 = color2.R
+        green2 = color2.G
+        blue2 = color2.B
+        alpha2 = color2.A
+        
+        delta_red = red2 - red1
+        delta_green = green2 - green1
+        delta_blue = blue2 - blue1
+        delta_alpha = alpha2 - alpha1
+        
+        red = red1 + (delta_red * fraction)
+        green = green1 + (delta_green * fraction)
+        blue = blue1 + (delta_blue * fraction)
+        alpha = alpha1 + (delta_alpha * fraction)
+
+        red = min(red, 255.0)
+        red = max(red, 0.0)
+        green = min(green, 255.0)
+        green = max(green, 0.0)
+        blue = min(blue, 255.0)
+        blue = max(blue, 0.0)
+        alpha = min(alpha, 255.0)
+        alpha = max(alpha, 0.0)
+        return Color(round(red), round(green), round(blue), round(alpha))

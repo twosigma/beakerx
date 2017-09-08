@@ -21,8 +21,10 @@ import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.scala.TestScalaEvaluator;
 import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
 
+import com.twosigma.beakerx.widgets.DisplayableWidget;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -37,8 +39,6 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
-import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 
@@ -47,7 +47,7 @@ public class ScalaEvaluatorTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    scalaEvaluator = new ScalaEvaluator("id", "sid", null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory());
+    scalaEvaluator = TestScalaEvaluator.evaluator();
   }
 
   @Before
@@ -126,4 +126,19 @@ public class ScalaEvaluatorTest {
     Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
     Assertions.assertThat((String) seo.getPayload()).contains("incomplete");
   }
+
+  @Test
+  public void displayTable() throws Exception {
+    //given
+    String code = "val table = new TableDisplay(new CsvPlotReader().readFile(\"src/test/resources/tableRowsTest.csv\"))\n" +
+            "table";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    scalaEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getPayload() instanceof DisplayableWidget).isTrue();
+  }
+
 }
+

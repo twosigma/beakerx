@@ -22,6 +22,7 @@ import com.twosigma.beakerx.table._
 import com.twosigma.beakerx.table.format.TableDisplayStringFormat
 import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter
 import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer
+import com.twosigma.beakerx.widgets.DisplayableWidget
 
 import scala.collection.JavaConverters._
 
@@ -61,7 +62,7 @@ object TableDisplay {
 
 }
 
-class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay) {
+class TableDisplay private(tableDisplay: com.twosigma.beakerx.table.TableDisplay) extends DisplayableWidget{
   def this(v: Map[_, _]) = {
     this(TableDisplay.create(v))
   }

@@ -59,7 +59,7 @@ public class DynamicClassLoaderSimple extends ClassLoader {
     }
     myloader = new URLClassLoader(urlList.toArray(new URL[urlList.size()]), null);
   }
-  
+
   public void addDynamicDir(String o) {
     outDir = o + File.separator;
   }

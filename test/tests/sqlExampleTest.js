@@ -31,7 +31,7 @@ describe('SQL Examples notebook', function () {
       beakerxPO.runCodeCellByIndex(1);
       var dtContainer = beakerxPO.runCellToGetDtContainer(2);
       beakerxPO.dataTablesIsEnabled(dtContainer);
-    });
+    }, 2);
   });
 
   describe('Autocomplete cell', function () {
@@ -43,7 +43,7 @@ describe('SQL Examples notebook', function () {
       browser.keys("Tab");
       var completeList = $$('#complete > select > option');
       expect(completeList.length).toBeGreaterThan(0);
-    });
+    }, 2);
   });
 
 });

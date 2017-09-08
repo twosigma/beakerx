@@ -14,7 +14,10 @@
  *  limitations under the License.
  */
 
-(function(){
+define([
+  'jquery',
+  'base/js/dialog'
+], function($, dialog) {
 
   var inNotebook = !Jupyter.NotebookList;
   if (!inNotebook) {
@@ -31,7 +34,7 @@
       headers : {},
       data : JSON.stringify({
         public : true,
-        files : filedata,
+        files : filedata
       }),
       success : function (data, status) {
         console.log("gist successfully published: " + data.id);
@@ -43,17 +46,34 @@
       }
     };
     $.ajax(url, settings);  
-  }
-  
+  };
+
+  var beforePublish = function() {
+    dialog.modal({
+      title : 'Publish',
+      body : 'Publish to an anonymous Github Gist, and open in nbviewer?',
+      buttons: {
+        'OK': {
+          'class' : 'btn-primary',
+          'click': function() {
+            do_publish();
+          }
+        },
+        'Cancel': {}
+      }
+    });
+  };
+
   Jupyter.toolbar.add_buttons_group([{
-    'label'   : 'Publish as Gist',
+    'label'   : 'Publish...',
     'icon'    : 'fa-share-alt',
-    'callback': do_publish
+    'callback': beforePublish
   }]);
 
   var publish_menu = $('<li>').attr('id', 'publish_gist')
                               .append($('<a>').attr('href', '#')
-                                              .html('Publish as Gist ...'));
+                                              .html('Publish...'));
   publish_menu.insertAfter($('#print_preview'));
-  publish_menu.click(do_publish);
-})();
+  publish_menu.click(beforePublish);
+
+});

@@ -28,11 +28,18 @@ import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.scala.comm.ScalaCommOpenHandler;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.handler.ScalaKernelInfoHandler;
+import com.twosigma.beakerx.scala.table.TableDisplay;
+import jupyter.Displayer;
+import jupyter.Displayers;
+import scala.collection.immutable.AbstractMap;
+
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class Scala extends Kernel {
@@ -50,6 +57,40 @@ public class Scala extends Kernel {
   @Override
   public KernelHandler<Message> getKernelInfoHandler(Kernel kernel) {
     return new ScalaKernelInfoHandler(kernel);
+  }
+
+  @Override
+  protected void configureJvmRepr() {
+    super.configureJvmRepr();
+
+    Displayers.register(TableDisplay.class, new Displayer<TableDisplay>() {
+      @Override
+      public Map<String, String> display(TableDisplay tableDisplay) {
+        tableDisplay.display();
+        HashMap<String, String> displayMap = new HashMap<>();
+        displayMap.put(MIMEContainer.MIME.HIDDEN, "");
+        return displayMap;
+      }
+    });
+
+    /*
+     * Why AbstractMap?  jvm-repr can't handle Java interfaces or Scala traits.
+     * It's sheer luck that the Scala library introduces AbstractMap as an
+     * implementation detail (for code size).
+     *
+     * See https://github.com/jupyter/jvm-repr/issues/8 and
+     * https://github.com/scala/scala/blob/v2.12.3/src/library/scala/collection/immutable/Map.scala#L215
+     */
+    Displayers.register(AbstractMap.class, new Displayer<AbstractMap>() {
+      @Override
+      public Map<String, String> display(AbstractMap abstractMap) {
+        TableDisplay td = new TableDisplay(abstractMap);
+        td.display();
+        HashMap<String, String> displayMap = new HashMap<>();
+        displayMap.put(MIMEContainer.MIME.HIDDEN, "");
+        return displayMap;
+      }
+    });
   }
 
   public static void main(final String[] args) throws InterruptedException, IOException {

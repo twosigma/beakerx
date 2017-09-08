@@ -26,4 +26,4 @@ def _jupyter_nbextension_paths():
         'require': 'beakerx/extension'
     }]
 
-runtime = BeakerX()
+beaker = BeakerX()

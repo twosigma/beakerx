@@ -143,9 +143,8 @@ class TreeMapChart(XYChart):
         self.type = 'TreeMap'
         self.showLegend = getValue(kwargs, 'showLegend', True)
         self.title = getValue(kwargs, 'title', "")
-        print ("colorProvider: ", self.__dict__.get('colorProvider'))
         self.colorProvider = getValue(kwargs, 'colorProvider',
-                                      RandomColorProvider(RandomColorProvider.COLOURS))
+                                      RandomColorProvider())
         self.toolTipBuilder = getValue(kwargs, 'toolTipBuilder')
         self.mode = getValue(kwargs, 'mode', Mode.SQUARIFY).value
         self.ratio = getValue(kwargs, 'ratio')

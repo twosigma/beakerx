@@ -16,10 +16,9 @@ import json
 
 from pandas import DataFrame
 from beakerx.plot.legend import LegendPosition, LegendLayout
-from beakerx.utils import BaseObject, getValue
+from beakerx.utils import *
 from beakerx.plot.plotitem import *
-
-from IPython.display import display
+from enum import Enum
 from ipywidgets import DOMWidget, register
 from traitlets import Unicode, Dict
 
@@ -91,6 +90,30 @@ class XYChart(AbstractChart):
                 self.add(elem)
         return self
 
+class HistogramChart(XYChart):
+    def __init__(self, **kwargs):
+        self.log = getValue(kwargs, 'log', False)
+        if self.log:
+            kwargs['logY'] = True
+
+        super(HistogramChart, self).__init__(**kwargs)
+        self.type = 'Histogram'
+        self.bin_count = getValue(kwargs, 'binCount')
+        self.cumulative = getValue(kwargs, 'cumulative', False)
+        self.normed = getValue(kwargs, 'normed', False)
+
+        self.range_min = getValue(kwargs, 'rangeMin')
+        self.range_max = getValue(kwargs, 'rangeMax')
+        self.names = getValue(kwargs, 'names')
+        self.displayMode = getValue(kwargs, 'displayMode')
+
+        color = getValue(kwargs, 'color')
+        if color is not None:
+            if isinstance(color, Color):
+                self.colors = []
+                self.colors.append(color)
+            else:
+                self.colors = color
 
 class CombinedChart(BaseObject):
     def __init__(self, **kwargs):
@@ -128,6 +151,64 @@ class Plot(DOMWidget):
     def getYAxes(self):
         return self.chart.rangeAxes
 
+class HeatMap(DOMWidget):
+    _view_name = Unicode('PlotView').tag(sync=True)
+    _model_name = Unicode('PlotModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    model = Dict().tag(sync=True)
+
+    def __init__(self, **kwargs):
+        super(HeatMap, self).__init__(**kwargs)
+        if 'data' in kwargs:
+            kwargs['graphics'] = kwargs['data']
+        if not 'xLowerMargin' in kwargs:
+            kwargs['xLowerMargin'] = 0.0
+        if not 'yLowerMargin' in kwargs:
+            kwargs['yLowerMargin'] = 0.0
+        if not 'yUpperMargin' in kwargs:
+            kwargs['yUpperMargin'] = 0.0
+        if not 'xUpperMargin' in kwargs:
+            kwargs['xUpperMargin'] = 0.0
+        if not 'legendLayout' in kwargs:
+            kwargs['legendLayout'] = LegendLayout.HORIZONTAL
+        if not 'legendPosition' in kwargs:
+            kwargs['legendPosition'] =  LegendPosition(position = LegendPosition.Position.BOTTOM_RIGHT)
+        self.chart = XYChart(**kwargs)
+        color = getValue(kwargs, 'color', ["#FF780004", "#FFF15806", "#FFFFCE1F"])
+
+        if isinstance(color, GradientColor):
+            self.chart.color = color.color
+        else:
+            self.chart.color = color
+
+        self.chart.type = 'HeatMap'
+
+        self.model = self.chart.transform()
+
+class Histogram(DOMWidget):
+
+    class DisplayMode(Enum):
+        OVERLAP = 1
+        STACK = 2
+        SIDE_BY_SIDE = 3
+
+    _view_name = Unicode('PlotView').tag(sync=True)
+    _model_name = Unicode('PlotModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    model = Dict().tag(sync=True)
+
+    def __init__(self, **kwargs):
+        super(Histogram, self).__init__()
+        self.chart = HistogramChart(**kwargs)
+        data = getValue(kwargs, 'data', [])
+        if len(data) > 1 and isinstance(data[0], list):
+            for x in data:
+                self.chart.graphics_list.append(x)
+        else:
+            self.chart.graphics_list.append(data)
+        self.model = self.chart.transform()
 
 class TimePlot(Plot):
     def __init__(self, **kwargs):

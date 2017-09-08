@@ -74,6 +74,8 @@ describe('Scala notebook', function () {
     });
   });
 
+  //TODO cell with XYStacker hasn't worked yet
+
   describe('Run cell with constant lines', function(){
     it('Plot has 3 constant lines', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(7);
@@ -137,5 +139,41 @@ describe('Scala notebook', function () {
       expect(svgElement.$$('path.plot-line').length).toEqual(2);
     });
   });
+
+  describe('Run "Date Objects for the Time Coordinate" cell', function(){
+    it('Plot has points elements', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(15);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
+    });
+  });
+
+  describe('Run "Nanosecond Resolution" cell', function(){
+    it('Plot has points elements', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(16);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
+    });
+  });
+
+  describe('Run cell with advanced styling', function(){
+    it("Plot has advanced styling", function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(17);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('g#labelg > text.plot-label')[0].getCssProperty('fill').value).toEqual('rgb(0,128,0)');
+    });
+  });
+
+
+  describe('Run "Raster" cell', function(){
+    it('Plot has 3 raster elements', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(18);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('g.plot-raster').length).toEqual(3);
+    });
+  });
+
+  //TODO cell with axis bounds hasn't worked yet
 
 });

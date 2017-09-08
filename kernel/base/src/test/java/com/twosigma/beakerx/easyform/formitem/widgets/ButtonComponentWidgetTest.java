@@ -15,16 +15,24 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
+import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.easyform.EasyFormComponent;
+import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
+import com.twosigma.beakerx.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.beakerx.widgets.Button;
 import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
+import java.util.Optional;
 
+import static com.twosigma.beakerx.kernel.msg.MessageCreator.NAME;
+import static com.twosigma.beakerx.kernel.msg.MessageCreator.STDOUT;
+import static com.twosigma.beakerx.kernel.msg.MessageCreator.TEXT;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class ButtonComponentWidgetTest extends EasyFormWidgetTest {
 
@@ -52,21 +60,9 @@ public class ButtonComponentWidgetTest extends EasyFormWidgetTest {
     ButtonComponentWidget widget = new ButtonComponentWidget();
     widget.actionPerformed = value -> result.append("action done 1");
     //when
-    widget.getComm().getMsgCallbackList().forEach(x -> x.handle(messageWithClickEvent()));
+    widget.getComm().handleMsg(messageWithClickEvent());
     //then
     assertThat(result.toString()).isEqualTo("action done 1");
-  }
-
-  private Message messageWithClickEvent() {
-    Message message = new Message();
-    LinkedHashMap<String, Serializable> content = new LinkedHashMap<>();
-    LinkedHashMap<Object, Object> eventContent = new LinkedHashMap<>();
-    LinkedHashMap<Object, Object> eventClick = new LinkedHashMap<>();
-    eventClick.put("event","click");
-    eventContent.put("content", eventClick);
-    content.put("data", eventContent);
-    message.setContent(content);
-    return message;
   }
 
   @Test
@@ -76,9 +72,47 @@ public class ButtonComponentWidgetTest extends EasyFormWidgetTest {
     ButtonComponentWidget widget = new ButtonComponentWidget();
     widget.actionPerformed = value -> result.append("action done 2");
     //when
-    widget.getComm().getMsgCallbackList().forEach(x -> x.handle(messageWithoutClickEvent()));
+    widget.getComm().handleMsg(messageWithoutClickEvent());
     //then
     assertThat(result.toString()).isEqualTo("no action");
+  }
+
+  private Message messageWithClickEvent() {
+    Message message = new Message();
+    LinkedHashMap<String, Serializable> content = new LinkedHashMap<>();
+    LinkedHashMap<Object, Object> eventContent = new LinkedHashMap<>();
+    LinkedHashMap<Object, Object> eventClick = new LinkedHashMap<>();
+    eventClick.put("event", "click");
+    eventContent.put("content", eventClick);
+    content.put("data", eventContent);
+    message.setContent(content);
+    return message;
+  }
+
+  @Test
+  public void handleStdOut() throws Exception {
+    try {
+      //given
+      String outputText = "handleOutput";
+      BeakerStdOutErrHandler.init();
+      ButtonComponentWidget widget = new ButtonComponentWidget();
+      kernel.clearPublishedMessages();
+      widget.actionPerformed = value -> System.out.print(outputText);
+      //when
+      widget.getComm().handleMsg(messageWithClickEvent());
+      //then
+      Message outputMessage = getOutputMessage(kernel);
+      assertThat(outputMessage.getContent().get(NAME)).isEqualTo(STDOUT);
+      assertThat(outputMessage.getContent().get(TEXT)).isEqualTo(outputText);
+    } finally {
+      BeakerStdOutErrHandler.fini();
+    }
+  }
+
+  private Message getOutputMessage(KernelTest kernel) throws InterruptedException {
+    Optional<Message> message = EvaluatorResultTestWatcher.waitForStreamMessage(kernel);
+    assertTrue("No output message", message.isPresent());
+    return message.get();
   }
 
   private Message messageWithoutClickEvent() {

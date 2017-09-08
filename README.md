@@ -47,11 +47,13 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 Note: see [#5883](https://github.com/twosigma/beakerx/issues/5883) about `widgetsnbextension`.
 
-<!-- Install using [conda](https://conda.io/docs/install/quick.html):
+Install using [conda](https://conda.io/docs/install/quick.html):
 
 ```
-conda install -c beakerx beakerx
-``` -->
+conda create -y -n beakerx python=3.5 jupyter openjdk pandas
+source activate beakerx
+conda install -y -c conda-forge ipywidgets=7.0.0 widgetsnbextension beakerx
+```
 
 Using [pip](https://pypi.python.org/pypi/pip):
 

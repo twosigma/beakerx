@@ -36,6 +36,7 @@ import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringForma
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForType;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTooltips;
+import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCompiledCode;
 import static java.util.Arrays.asList;
 
 import com.twosigma.beakerx.NamespaceClient;
@@ -49,6 +50,7 @@ import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beakerx.table.highlight.ValueHighlighter;
 import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
 import com.twosigma.beakerx.widgets.BeakerxWidget;
+import com.twosigma.beakerx.widgets.CommActions;
 import com.twosigma.beakerx.widgets.RunWidgetClosure;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
@@ -662,7 +664,7 @@ public class TableDisplay extends BeakerxWidget {
   public void fireDoubleClick(List<Object> params, Message message) {
     if (this.doubleClickListener != null) {
       params.add(this);
-      handleCompiledCode(message, false, this::doubleClickHandler, params);
+      runCompiledCode(message, this::doubleClickHandler, params);
       sendModel();
     }
   }
@@ -693,7 +695,7 @@ public class TableDisplay extends BeakerxWidget {
     Object contextMenuListener = this.contextMenuListeners.get(name);
     if (contextMenuListener != null) {
       params.add(this);
-      handleCompiledCode(message, false, this::contextMenuClickHandlerCommon, contextMenuListener, params);
+      runCompiledCode(message, this::contextMenuClickHandlerCommon, contextMenuListener, params);
       sendModel();
     }
   }

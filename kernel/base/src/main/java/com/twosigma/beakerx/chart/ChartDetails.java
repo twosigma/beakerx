@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.chart;
 
+import com.twosigma.beakerx.widgets.CommActions;
 import org.apache.commons.lang3.StringUtils;
 
 import com.twosigma.beakerx.NamespaceClient;
@@ -51,24 +52,23 @@ public abstract class ChartDetails extends BeakerxWidget {
   }
   
   private void handleSetDetails(Message message) {
-    handleCommEventSync(message, CommActions.ACTIONDETAILS, (ActionPerformed)this::onActionDetails);
+    handleCommEventSync(message, CommActions.ACTIONDETAILS, this::onActionDetails);
   }
   
   private void handleClick(Message message) {
-    handleCommEventSync(message, CommActions.ONCLICK, (ActionPerformed)this::onClickAction);
+    handleCommEventSync(message, CommActions.ONCLICK, this::onClickAction);
   }
   
   private void handleKey(Message message) {
-    handleCommEventSync(message, CommActions.ONKEY, (ActionPerformed)this::onKeyAction);
+    handleCommEventSync(message, CommActions.ONKEY, this::onKeyAction);
   }
-  
-  
+
   private void onKeyAction(HashMap content, Message message) {
     GraphicsActionObject info = getDetailsFromMessage(content);
     String graphicsId = getGraphicsUid(content);
     Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
     if (g != null) {
-      g.fireOnKey(this, info.getKey(), info, message);
+      g.fireOnKey(info.getKey(), info, message);
       sendModel();
     }
   }
@@ -78,7 +78,7 @@ public abstract class ChartDetails extends BeakerxWidget {
     String graphicsId = getGraphicsUid(content);
     Graphics g = getGraphicsById(getGraphics(info, this), graphicsId);
     if (g != null) {
-      g.fireClick(this, info, message);
+      g.fireClick(info, message);
       sendModel();
     }
   }

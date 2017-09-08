@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
@@ -58,6 +59,8 @@ public interface KernelFunctionality {
 
   SimpleEvaluationObject executeCode(String code, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback);
 
+  SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message, int executionCount, ExecuteCodeCallbackWithTime executeCodeCallbackWithTime);
+
   AutocompleteResult autocomplete(String code, int cursorPos);
 
   void sendBusyMessage(Message message);
@@ -84,4 +87,7 @@ public interface KernelFunctionality {
     void execute(SimpleEvaluationObject seo);
   }
 
+  interface ExecuteCodeCallbackWithTime {
+    void execute(SimpleEvaluationObjectWithTime seowt);
+  }
 }

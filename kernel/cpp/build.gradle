@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-  compile project(':base')
+  provided project(':base')
   compile group: 'org.abstractmeta', name: 'compilation-toolbox', version: '0.3.2'
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
   antlr group: 'org.antlr', name: 'antlr4', version: '4.5'

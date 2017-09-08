@@ -114,7 +114,17 @@ define([
               }
               return acc;
             }, []);
-            notebook.execute_cells(indexList);
+            if (indexList.length === 0) {
+              dialog.modal({
+                title: 'No cell with the tag !',
+                body: 'Tag: ' + msg.content.data.runByTag,
+                buttons: {'OK': {'class': 'btn-primary'}},
+                notebook: Jupyter.notebook,
+                keyboard_manager: Jupyter.keyboard_manager,
+              });
+            } else {
+              notebook.execute_cells(indexList);
+            }
           }
         });
       });

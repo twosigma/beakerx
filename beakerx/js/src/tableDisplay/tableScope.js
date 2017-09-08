@@ -329,9 +329,10 @@ define([
       self.removeOnKeyListeners();
       self.removeInteractionListeners();
       self.removeFilterListeners();
-      $(self.element).find(".bko-table-use-pagination").remove();
       self.destroyTableSelect();
       self.destroyTableMenuElements();
+      $(self.element).find(".bko-table-use-pagination").remove();
+      $body.tooltip('instance') && $body.tooltip('destroy');
 
       $.contextMenu('destroy', '#' + self.id + ' tbody td');
       $.contextMenu('destroy', '#' + self.id +'_wrapper thead');
@@ -375,8 +376,6 @@ define([
       self.renderMenu = false;
       self.element = undefined;
     }
-
-    $body.tooltip('instance') && $body.tooltip('destroy');
 
     // self.$on(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED, function() {
     //   var parents = self.element.parents();
@@ -2099,7 +2098,7 @@ define([
 
   TableScope.prototype.removeFilterListeners = function() {
     $(this.table.table().container()).off(
-      'mousedown.column-filter keyup.column-filter change.column-filter keydown.column-filter blur.column-filter focus.column-filter',
+      'mousedown.column-filter keyup.column-filter change.column-filter keydown.column-filter blur.column-filter focus.column-filter'
     );
   };
 

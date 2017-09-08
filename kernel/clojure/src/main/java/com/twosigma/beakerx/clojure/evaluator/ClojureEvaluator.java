@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.clojure.evaluator;
 
+import clojure.lang.DynamicClassLoader;
 import clojure.lang.RT;
 import clojure.lang.Var;
 import com.google.common.base.Charsets;
@@ -26,7 +27,6 @@ import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
-import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
@@ -47,7 +47,7 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   private List<String> requirements;
   private ClojureWorkerThread workerThread;
-  private DynamicClassLoaderSimple loader;
+  private DynamicClassLoader loader;
   private Var clojureLoadString = null;
 
   public ClojureEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory) {
@@ -136,7 +136,7 @@ public class ClojureEvaluator extends BaseEvaluator {
     return Resources.toString(url, Charsets.UTF_8);
   }
 
-  DynamicClassLoaderSimple getLoader() {
+  DynamicClassLoader getLoader() {
     return loader;
   }
 }

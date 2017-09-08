@@ -18,6 +18,7 @@ from pandas import DataFrame
 from beakerx.plot.legend import LegendPosition, LegendLayout
 from beakerx.utils import *
 from beakerx.plot.plotitem import *
+from beakerx.plot.plotitem_treemap import *
 from enum import Enum
 from ipywidgets import DOMWidget, register
 from traitlets import Unicode, Dict
@@ -136,6 +137,43 @@ class CategoryChart(XYChart):
         self.orientation = getValue(kwargs, 'orientation')
 
 
+class TreeMapChart(XYChart):
+    def __init__(self, **kwargs):
+        super(TreeMapChart, self).__init__(**kwargs)
+        self.type = 'TreeMap'
+        self.showLegend = getValue(kwargs, 'showLegend', True)
+        self.title = getValue(kwargs, 'title', "")
+        print ("colorProvider: ", self.__dict__.get('colorProvider'))
+        self.colorProvider = getValue(kwargs, 'colorProvider',
+                                      RandomColorProvider(RandomColorProvider.COLOURS))
+        self.toolTipBuilder = getValue(kwargs, 'toolTipBuilder')
+        self.mode = getValue(kwargs, 'mode', Mode.SQUARIFY).value
+        self.ratio = getValue(kwargs, 'ratio')
+        self.valueAccessor = getValue(kwargs, 'valueAccessor',
+                                      ValueAccessor.VALUE)
+        self.custom_styles = []
+        self.element_styles = {}
+        self.graphics_list = getValue(kwargs, 'root')
+    
+    def transform(self):
+        
+        self.process(self.graphics_list)
+        return super(TreeMapChart, self).transform()
+    
+    def process(self, node):
+        children = node.children
+        
+        if children is not None:
+            for child in children:
+                self.process(child)
+        
+        if node.isLeaf():
+            node.color = self.colorProvider.getColor(node)
+            toolTipBuilder = self.toolTipBuilder
+            if toolTipBuilder is not None:
+                node.tooltip = toolTipBuilder.getToolTip(node)
+
+
 class CombinedChart(BaseObject):
     def __init__(self, **kwargs):
         super(CombinedChart, self).__init__(**kwargs)
@@ -214,7 +252,7 @@ class HeatMap(DOMWidget):
             kwargs['legendLayout'] = LegendLayout.HORIZONTAL
         if not 'legendPosition' in kwargs:
             kwargs['legendPosition'] = LegendPosition(
-                position=LegendPosition.Position.BOTTOM_RIGHT)
+                    position=LegendPosition.Position.BOTTOM_RIGHT)
         self.chart = XYChart(**kwargs)
         color = getValue(kwargs, 'color',
                          ["#FF780004", "#FFF15806", "#FFFFCE1F"])
@@ -250,6 +288,23 @@ class Histogram(DOMWidget):
                 self.chart.graphics_list.append(x)
         else:
             self.chart.graphics_list.append(data)
+        self.model = self.chart.transform()
+
+
+class TreeMap(DOMWidget):
+    _view_name = Unicode('PlotView').tag(sync=True)
+    _model_name = Unicode('PlotModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    model = Dict().tag(sync=True)
+    
+    def __init__(self, **kwargs):
+        super(TreeMap, self).__init__()
+        self.chart = TreeMapChart(**kwargs)
+        self.model = self.chart.transform()
+    
+    def setColorProvider(self, provider):
+        self.chart.colorProvider = provider
         self.model = self.chart.transform()
 
 

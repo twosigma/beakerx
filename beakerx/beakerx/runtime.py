@@ -22,7 +22,7 @@ from beakerx.plot import BaseObject, chart
 from beakerx.easyform import easyform
 from beakerx.tabledisplay import *
 from ipykernel.comm import Comm
-
+from IPython.display import display_html
 
 
 class OutputContainer:
@@ -416,16 +416,27 @@ class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
             #print(e)
             #traceback.print_exc()
             return None
-        
-def _ipython_display_(self):
-    TableDisplay(self)._send({"method": "display"})
+
+class TableDisplayWrapper(object):
+    def __get__(self, model_instance, model_class):
+        def f():
+            display_html(TableDisplay(model_instance))
+        return f
     
 class BeakerX:
     """Runtime support for Python code in BeakerX."""
     _comm = Comm(target_name='beaker.autotranslation')
-    
+
     def __init__(self):
-        pandas.DataFrame._ipython_display_ = _ipython_display_
+        BeakerX.pandas_display_table()
+
+    @staticmethod
+    def pandas_display_default():
+        pandas.DataFrame._ipython_display_ = None
+
+    @staticmethod
+    def pandas_display_table():
+        pandas.DataFrame._ipython_display_ = TableDisplayWrapper()
         
     def set4(self, var, val, unset, sync):
         args = {'name': var, 'sync':sync}

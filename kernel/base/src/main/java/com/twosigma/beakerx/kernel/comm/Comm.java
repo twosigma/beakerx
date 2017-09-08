@@ -35,7 +35,6 @@ import java.util.List;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 
 
 public class Comm {
@@ -55,7 +54,6 @@ public class Comm {
   public static final String COMMS = "comms";
 
   private String commId;
-  private String msgType;
   private String targetName;
   private HashMap<?, ?> data;
   private HashMap<?, ?> metadata;
@@ -105,20 +103,12 @@ public class Comm {
     this.metadata = metadata;
   }
 
-  public void setMsgType(String type) {
-    this.msgType = type;
-  }
-
   public String getTargetModule() {
     return targetModule;
   }
 
   public void setTargetModule(String targetModule) {
     this.targetModule = targetModule;
-  }
-
-  public List<Handler<Message>> getMsgCallbackList() {
-    return msgCallbackList;
   }
 
   public void addMsgCallbackList(Handler<Message>... handlers) {
@@ -160,13 +150,7 @@ public class Comm {
 
     map.put(TARGET_MODULE, getTargetModule());
     message.setContent(map);
-
     message.setMetadata(buildMetadata());
-
-    if (this.msgType != null) {
-      message.getHeader().setType(this.msgType);
-    }
-
     kernel.publish(message);
     kernel.addComm(getCommId(), this);
   }
@@ -211,12 +195,7 @@ public class Comm {
     map.put(DATA, data);
     map.put(METADATA, metadata);
     message.setContent(map);
-
     message.setMetadata(buildMetadata());
-
-    if (this.msgType != null) {
-      message.getHeader().setType(this.msgType);
-    }
     kernel.publish(message);
   }
 
@@ -235,10 +214,8 @@ public class Comm {
   }
 
   public void handleMsg(Message parentMessage) {
-    if (this.getMsgCallbackList() != null && !this.getMsgCallbackList().isEmpty()) {
-      for (Handler<Message> handler : getMsgCallbackList()) {
-        handler.handle(parentMessage);
-      }
+    for (Handler<Message> handler : this.msgCallbackList) {
+      handler.handle(parentMessage);
     }
   }
 

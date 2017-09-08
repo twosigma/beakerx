@@ -19,6 +19,7 @@ import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.comm.Comm;
@@ -52,6 +53,7 @@ import org.apache.ivy.plugins.resolver.FileSystemResolver;
 import org.apache.ivy.plugins.resolver.RepositoryResolver;
 import org.assertj.core.util.Lists;
 
+import static com.twosigma.beakerx.kernel.commands.ClasspathAddMvnDepsMagicCommandTest.TEST_IVY_CACHE;
 import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
 
 public class KernelTest implements KernelFunctionality {
@@ -180,7 +182,7 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<group name version>", magicCommand.classpathAddMvn(
                     new MavenJarResolver.ResolverParams(
-                            new File("src/test/resources/testIvyCache").getAbsolutePath(),
+                            new File(TEST_IVY_CACHE).getAbsolutePath(),
                             getTempFolder().toString() + MVN_DIR,
                             createRepositoryResolver()
                     )
@@ -268,6 +270,16 @@ public class KernelTest implements KernelFunctionality {
     seo.setJupyterMessage(message);
     executeCodeCallback.execute(seo);
     return seo;
+  }
+
+  @Override
+  public SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message,
+      int executionCount, ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
+    this.code = code;
+    SimpleEvaluationObjectWithTime seowt = new SimpleEvaluationObjectWithTime(code, executeCodeCallbackWithTime);
+    seowt.setJupyterMessage(message);
+    executeCodeCallbackWithTime.execute(seowt);
+    return seowt;
   }
 
   public String getCode() {

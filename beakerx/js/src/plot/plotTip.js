@@ -49,7 +49,7 @@ define([
     if (d.isresp === true) {
       scope.jqsvg.find("#" + d.id).css("opacity", 0);
     } else {
-      scope.jqsvg.find("#" + d.id).removeAttr("filter");
+      scope.jqsvg.find("#" + d.id).removeAttr("font-weight");
     }
   };
 
@@ -230,7 +230,7 @@ define([
           if (d.isresp === true) {
             scope.jqsvg.find("#" + d.id).attr("opacity", 1);
           } else {
-            scope.jqsvg.find("#" + d.id).attr("filter", "url(" + window.location.pathname + "#svgfilter)");
+            scope.jqsvg.find("#" + d.id).attr("font-weight", "bold");
           }
           if (d.sticking == true) {
             pinCloseIcon(scope, d);

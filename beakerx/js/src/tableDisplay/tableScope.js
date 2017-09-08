@@ -31,7 +31,8 @@ define([
   './datatablesHeadermenu',
   './consts',
   'jquery-contextmenu',
-  'jquery-ui/ui/widgets/tooltip'
+  'jquery-ui/ui/widgets/tooltip',
+  './tableUtils'
 ], function(
   _,
   $,
@@ -49,10 +50,13 @@ define([
   datatablesHeadermenu,
   tableConsts,
   contextMenu,
-  tooltip
+  tooltip,
+  tableUtils
 ) {
 
   var jQuery = $;
+
+  tableUtils.setJqExtentions();
 
   function TableScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -135,185 +139,6 @@ define([
   };
 
   TableScope.prototype.setJqExtensions = function() {
-    $.fn.dataTable.moment = function(format, locale) {
-      var types = $.fn.dataTable.ext.type;
-      // Add type detection
-      types.detect.unshift(function(d) {
-        // Null and empty values are acceptable
-        if (d === '' || d === null) {
-          return 'moment-' + format;
-        }
-        return (d.timestamp !== undefined && moment(d.timestamp).isValid()) ?
-          'moment-' + format :
-          null;
-      });
-      // Add sorting method - use an integer for the sorting
-      types.order['moment-' + format + '-pre'] = function(d) {
-        return d === '' || d === null ?
-          -Infinity :
-          parseInt(d.timestamp, 10);
-      };
-    };
-
-    $.fn.dataTable.moment('YYYYMMDD HH:mm:ss');
-    $.fn.dataTable.moment('YYYYMMDD');
-    $.fn.dataTable.moment('DD/MM/YYYY');
-
-    $.fn.dataTable.Api.register( 'column().data().max()', function () {
-      return this.length ? this.reduce( function (a, b) {
-        var x = parseFloat( a ) || 0;
-        var y = parseFloat( b ) || 0;
-        return Math.max(x, y);
-      } ) : 0;
-    } );
-
-    $.fn.dataTable.Api.register( 'column().data().min()', function () {
-      return this.length ? this.reduce( function (a, b) {
-        var x = parseFloat( a ) || 0;
-        var y = parseFloat( b ) || 0;
-        return Math.min(x, y);
-      } ) : 0;
-    } );
-
-    // detect and sort by file size
-    jQuery.extend(jQuery.fn.dataTableExt.oSort, {
-      'file-size-pre': function(a) {
-        var x = a.substring(0, a.length - 2);
-        var xUnit = (a.substring(a.length - 2, a.length).toLowerCase() == 'mb' ?
-          1000 : (a.substring(a.length - 2, a.length).toLowerCase() == 'gb' ? 1000000 : 1));
-        return parseInt(x * xUnit, 10);
-      },
-      'file-size-asc': function(a, b) {
-        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-      },
-      'file-size-desc': function(a, b) {
-        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-      }
-    });
-
-    $.fn.dataTable.ext.search.push(
-      function (settings, formattedRow, rowIndex, row) {
-
-        if (!$(settings.nTHead).find('.filterRow').is(':visible')
-            || $(settings.nTHead).find('.filter-input').hasClass('search-active')) {
-          return true; // no filtering
-        }
-
-        var isValidJSIdentifier = function (columnTitle) {
-          try {
-            eval('var ' + columnTitle);
-          } catch (e) { return false; }
-          return true;
-        };
-        var formatValue = function (value) {
-          if (typeof value === 'string') { return "'" + value + "'"; }
-          if (value && value.type === 'Date') { return value.timestamp; }
-          return value;
-        };
-        var evalExpression = function (expression, vars) {
-          var result = true;
-          if (!_.isEmpty(expression)) {
-            try {
-              result = eval(vars + expression);
-            } catch (e) {
-              if (!(e instanceof SyntaxError && e.message === 'Unexpected end of input')) {
-                result = false;
-                console.log(e.message);
-              }
-            }
-          }
-          return result;
-        };
-
-        var $$ = {};
-        var variables = "var $ = undefined;";
-        _.forEach(settings.aoColumns, function (column, index) {
-          var title = $(column.sTitle).text();
-          $$[title] = row[index];
-          if (isValidJSIdentifier(title)) {
-            variables += ('var ' + title + '=' + formatValue(row[index]) + ';');
-          }
-        });
-
-        var tableFilterValue = findFilterInput(settings, 0).val();
-        if (!evalExpression(tableFilterValue, variables)) {
-          return false;
-        }
-
-        for (var colInd = 1; colInd < row.length; colInd++) {
-          var columnFilter = findFilterInput(settings, colInd);
-          if (columnFilter.hasClass('search-active')) {
-            return true; //use expression parsing only for filtering
-          }
-
-          var columnFilterValue = columnFilter.val();
-
-          if (_.isEmpty(columnFilterValue)) { continue; }
-
-          variables += '$=' + formatValue(row[colInd]) + ';';
-          if (!evalExpression(columnFilterValue, variables)) {
-            return false;
-          }
-        }
-        return true;
-      }
-    );
-
-    jQuery.fn.dataTableExt.aTypes.unshift(function(sData) {
-      if (typeof sData !== 'string') {
-        return;
-      }
-
-      var sValidChars = '123456789';
-      var Char;
-
-      /* Check the numeric part */
-      for (var i = 0; i < (sData.length - 3); i++) {
-        Char = sData.charAt(i);
-        if (sValidChars.indexOf(Char) == -1) {
-          return null;
-        }
-      }
-      /* Check for size unit KB, MB or GB */
-      if (sData.substring(sData.length - 2, sData.length).toLowerCase() == 'kb' ||
-          sData.substring(sData.length - 2, sData.length).toLowerCase() == 'mb' ||
-          sData.substring(sData.length - 2, sData.length).toLowerCase() == 'gb') {
-        return 'file-size';
-      }
-      return null;
-    });
-
-    // detect and sort by IP addresses
-    jQuery.fn.dataTableExt.aTypes.unshift(function(sData) {
-      if (/^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$/.test(sData)) {
-        return 'ip-address';
-      }
-      return null;
-    });
-
-    jQuery.extend(jQuery.fn.dataTableExt.oSort, {
-      'ip-address-pre': function(a) {
-        var m = a.split('.');
-        var x = '';
-        for (var i = 0; i < m.length; i++) {
-          var item = m[i];
-          if (item.length === 1) {
-            x += '00' + item;
-          } else if (item.length === 2) {
-            x += '0' + item;
-          } else {
-            x += item;
-          }
-        }
-        return x;
-      },
-      'ip-address-asc': function(a, b) {
-        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-      },
-      'ip-address-desc': function(a, b) {
-        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-      }
-    });
   };
 
   TableScope.prototype.bindAllConverters = function() {
@@ -477,67 +302,80 @@ define([
     }
   };
 
-  TableScope.prototype.unregisterOutputExpandEventListener = function() {
-
-  };
-
   TableScope.prototype.doDestroy = function(all) {
     var self = this;
     var $body = $(document.body);
+
     if (self.table) {
+      var $tableContainer = $(self.table.table().container());
+      var $document = $(document);
+      var $tBody = $('#' + self.id + ' tbody');
       //jscs:disable
       clearTimeout(self.refresh_size);
       //jscs:enable
       $(window).unbind('resize.' + self.id);
-      $('#' + self.id + ' tbody').off('click');
-      $('#' + self.id + ' tbody').off('dblclick');
-      self.removeOnKeyListeners();
-      $('#' + self.id + ' tbody').off('mouseleave.bko-dt-highlight');
-      $('#' + self.id + ' tbody').off('mouseenter.bko-dt-highlight');
-      self.removeInteractionListeners();
-      self.table.off('key');
-      self.table.off('column-visibility.dt');
-      self.removeFilterListeners();
-      $(self.table.table().container()).find('.dataTables_scrollHead').off('scroll');
-      $(self.element).find(".bko-table-use-pagination").remove();
+      $tBody
+        .off('click')
+        .off('dblclick')
+        .off('mouseenter.bko-dt-highlight')
+        .off('mouseleave.bko-dt-highlight');
+      self.table
+        .off('key')
+        .off('draw.dt')
+        .off('column-reorder')
+        .off('column-sizing.dt')
+        .off('column-visibility.dt');
 
-      $.contextMenu('destroy', {
-        selector: '#' + self.id + ' tbody td'
-      });
-      $.contextMenu('destroy', {
-        selector: '#' + self.id +'_wrapper thead'
-      });
-      $(document).off('contextmenu.bko-dt-header', '#' + self.id +'_wrapper thead th');
+      self.removeOnKeyListeners();
+      self.removeInteractionListeners();
+      self.removeFilterListeners();
+      self.destroyTableSelect();
+      self.destroyTableMenuElements();
+      $(self.element).find(".bko-table-use-pagination").remove();
+      $body.tooltip('instance') && $body.tooltip('destroy');
+
+      $.contextMenu('destroy', '#' + self.id + ' tbody td');
+      $.contextMenu('destroy', '#' + self.id +'_wrapper thead');
+      $body.off('click.bko-dt-container');
+      $document
+        .off('contextmenu.bko-dt-header')
+        .off('keydown.handleTableHeaderMenuClose');
+      $tableContainer.find('.dataTables_scrollHead').off('scroll');
+      $tableContainer
+        .off('keyup.column-filter change.column-filter')
+        .off("mouseenter.bko-dt-interaction")
+        .off("mouseleave.bko-dt-interaction")
+        .off('click');
+
+      self.columnLimitModal.off('click');
+      self.clipclient && self.clipclient.destroy();
+      self.clipclient = undefined;
+      self.table.off('');
 
       if (all) {
+        self.table.state.clear();
         self.table.destroy(true);
+        self.element.remove();
+        self.keyTable = undefined;
+        self.table = undefined;
+        self.colreorg = undefined;
       }
+    }
 
-      delete self.keyTable;
-      delete self.table;
-      delete self.colreorg;
-      if (self.clipclient !== undefined) {
-        self.clipclient.destroy();
-        delete self.clipclient;
-      }
-      delete self.fixcols;
+    if (all) {
+      self.timeStrings = undefined;
+      self.tz = undefined;
+      self.types = undefined;
+      self.actualtype = undefined;
+      self.actualalign = undefined;
+      self.data = undefined;
+      self.update = undefined;
+      self.tableOrder = undefined;
+      self.fixcols = undefined;
       self.fixcreated = false;
       self.renderMenu = false;
+      self.element = undefined;
     }
-    if (all) {
-      delete self.timeStrings;
-      delete self.tz;
-      delete self.columnNames;
-      delete self.types;
-      delete self.actualtype;
-      delete self.actualalign;
-      delete self.data;
-      delete self.update;
-      delete self.tableOrder;
-      $body.off('click.bko-dt-container', self.containerClickFunction);
-    }
-    self.unregisterOutputExpandEventListener();
-    $body.tooltip('instance') && $body.tooltip('destroy');
 
     // self.$on(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED, function() {
     //   var parents = self.element.parents();
@@ -556,9 +394,8 @@ define([
     // });
   };
 
-  TableScope.prototype.init = function(model, destroy) {
+  TableScope.prototype.init = function(model) {
     var self = this;
-    self.doDestroy(destroy);
 
     // unregisterOutputExpandEventListener = self.$on(GLOBALS.EVENTS.CELL_OUTPUT_EXPANDED, function() {
     //   var parents = self.element.parents();
@@ -974,7 +811,7 @@ define([
         var value = $(td).text();
         if ($.isNumeric(value)) {
           $(td).empty();
-          var barsRenderer = self.barsOnColumn[self.colorder[colInd]];
+          var barsRenderer = self.colorder ? self.barsOnColumn[self.colorder[colInd]] : undefined;
           if (barsRenderer) {
             var cellDiv = $("<div></div>", {
               "class": "dt-cell-div"
@@ -1062,7 +899,7 @@ define([
           var column = self.getColumnIndexByCellNode(this);
           var listener = self.onKeyListeners[column];
           if (listener) {
-            delete self.onKeyListeners[column];
+            self.onKeyListeners[column] = undefined;
             $(document).off("keydown.bko-datatable", listener);
           }
         });
@@ -1082,7 +919,7 @@ define([
   TableScope.prototype.showHideBars = function(column) {
     var self = this;
     if (self.barsOnColumn[column]) {
-      delete self.barsOnColumn[column];
+      self.barsOnColumn[column] = undefined;
     } else {
       self.barsOnColumn[column] = {includeText: true};
     }
@@ -1099,7 +936,7 @@ define([
       self.cellHighlighters[columnIndex] = new highlighterType({ colInd: columnIndex });
     } else {
       highlighter.removeHighlight(self);
-      delete self.cellHighlighters[columnIndex];
+      self.cellHighlighters[columnIndex] = undefined;
     }
     _.defer(function() { self.table.draw(false);  });
   };
@@ -1346,7 +1183,7 @@ define([
 
   TableScope.prototype.getColumnIndexByCellNode = function(cellNode) {
     var self = this;
-    return findDTColumnIndex(self.table.settings()[0], cellNode);
+    return tableUtils.findDTColumnIndex(self.table.settings()[0], cellNode);
   };
 
   TableScope.prototype.removeOnKeyListeners = function() {
@@ -1847,14 +1684,17 @@ define([
       });
 
       var index = currentCell.indexes()[0];
-      if (model.hasDoubleClickAction) {
+
+      var model = self.model.getCellModel();
+
+      if (model && model.hasDoubleClickAction) {
         self.tableDisplayModel.send(
           {event: 'DOUBLE_CLICK', row : index.row, column : index.column - 1},
           self.tableDisplayView.callbacks()
         );
       }
 
-      if (!_.isEmpty(model.doubleClickTag)) {
+      if (!_.isEmpty(model && model.doubleClickTag)) {
         var params = {
           actionType: 'DOUBLE_CLICK',
           row: index.row,
@@ -1943,8 +1783,8 @@ define([
       }
     }, 250);
 
-    $(document).off('keydown', handleTableHeaderMenuClose);
-    $(document).on('keydown', handleTableHeaderMenuClose);
+    $(document).off('keydown.handleTableHeaderMenuClose', handleTableHeaderMenuClose);
+    $(document).on('keydown.handleTableHeaderMenuClose', handleTableHeaderMenuClose);
 
     function updateSize() {
       clearTimeout(self.refresh_size);
@@ -2182,7 +2022,7 @@ define([
   };
 
   TableScope.prototype.getColumnFilter = function(column){
-    return findFilterInput(this.table.settings()[0], column.index());
+    return tableUtils.findFilterInput(this.table.settings()[0], column.index());
   };
 
   TableScope.prototype.updateFixedColumnsSeparator = function() {
@@ -2257,12 +2097,9 @@ define([
   };
 
   TableScope.prototype.removeFilterListeners = function() {
-    var self = this;
-    var filterInputSelector = '.filterRow .filter-input';
-    var clearFilterSelector = '.filterRow .clear-filter';
-    $(self.table.table().container()).off('keyup.column-filter change.column-filter keydown.column-filter ' +
-                                          'blur.column-filter focus.column-filter', filterInputSelector);
-    $(self.table.table().container()).off('mousedown.column-filter', clearFilterSelector);
+    $(this.table.table().container()).off(
+      'mousedown.column-filter keyup.column-filter change.column-filter keydown.column-filter blur.column-filter focus.column-filter'
+    );
   };
 
   TableScope.prototype.getColumn = function(filterNode){
@@ -2610,7 +2447,7 @@ define([
   TableScope.prototype.doResetAll = function() {
     var self = this;
     self.table.state.clear();
-    self.init(self.getCellModel(), false);
+    self.init(self.getCellModel());
   };
 
   TableScope.prototype.adjustRedraw = function() {
@@ -2628,7 +2465,7 @@ define([
 
   TableScope.prototype.run = function() {
     var self = this;
-    self.init(this.model.getCellModel(), true);
+    self.init(this.model.getCellModel());
     self.tableChanged = true;
     self.bindTableActions();
   };
@@ -2690,6 +2527,20 @@ define([
         trs.eq(1).append(filterTd);
       });
 
+    }
+  };
+
+  TableScope.prototype.destroyTableMenuElements = function() {
+    var self = this;
+    if (self.columnNames) {
+      var globalDropdownMenu = self.element.find('.dtmenu > ul.dropdown-menu');
+      var showColumnMenu = globalDropdownMenu.find('ul.list-showcolumn');
+      var rowsToShowMenu = globalDropdownMenu.find('ul.list-rowstoshow');
+
+      showColumnMenu.find('li').remove();
+      rowsToShowMenu.find('li').remove();
+      showColumnMenu.remove();
+      rowsToShowMenu.remove();
     }
   };
 
@@ -2858,60 +2709,6 @@ define([
     '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
   };
 
-  var findFilterInput = function (dtSettings, colInd) {
-    var colsLength = 0;
-    _.forEach(dtSettings.aoColumns, function(value, key){
-      if(dtSettings.aoColumns.hasOwnProperty(key) && value.bVisible){
-        colsLength++;
-      }
-    });
-    var fixedCols = dtSettings._oFixedColumns;
-    var leftFixedHeader = fixedCols ? fixedCols.dom.clone.left.header : null;
-    var rightFixedHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
-    var isFixedLeft = function (colInd) {
-      return leftFixedHeader && fixedCols.s.leftColumns > colInd;
-    };
-    var isFixedRight = function (colInd) {
-      return rightFixedHeader && fixedCols.s.rightColumns >= colsLength - colInd;
-    };
-    var jqInput;
-    if (isFixedLeft(colInd)) {
-      jqInput = $(leftFixedHeader).find('.filterRow th:eq(' + colInd + ') .filter-input');
-    } else if (isFixedRight(colInd)) {
-      var idxInRightClone = colInd - (colsLength - fixedCols.s.rightColumns);
-      jqInput = $(rightFixedHeader).find('.filterRow th:eq(' + idxInRightClone + ') .filter-input');
-    } else {
-      var header = dtSettings.aoHeader[1][colInd];
-      if (header) {
-        jqInput = $(header.cell).find('.filter-input');
-      }
-    }
-    return jqInput;
-  };
-
-  var findDTColumnIndex = function(dtSettings, dtElement){
-    var colInd;
-    var dtCellNode = $(dtElement).closest('td').length ? $(dtElement).closest('td') : $(dtElement).closest('th');
-    var fixedCols = dtSettings._oFixedColumns;
-    if (dtCellNode.is('td')) {
-      colInd = fixedCols.fnGetPosition(dtCellNode[0])[2];
-    } else if (dtCellNode.is('th')) {
-      var thInd = dtCellNode.index();
-      var rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
-      if (rightHeader && $(rightHeader).has(dtCellNode).length) {
-        var colsLength = 0;
-        _.forEach(dtSettings.aoColumns, function(value, key){
-          if(dtSettings.aoColumns.hasOwnProperty(key) && value.bVisible){
-            colsLength++;
-          }
-        });
-        colInd = colsLength - fixedCols.s.rightColumns + thInd;
-      } else {
-        colInd = thInd;
-      }
-    }
-    return colInd;
-  };
 
   // ---------
   // Add column reset methods

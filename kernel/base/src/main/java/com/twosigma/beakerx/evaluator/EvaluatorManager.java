@@ -17,6 +17,7 @@ package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -74,6 +75,11 @@ public class EvaluatorManager {
     return execute(code, message, executionCount, executeCodeCallback);
   }
 
+  public synchronized SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message,
+      int executionCount, KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
+    return executeWithTimeMeasurement(code, message, executionCount, executeCodeCallbackWithTime);
+  }
+
   public void exit() {
     evaluator.exit();
   }
@@ -86,6 +92,14 @@ public class EvaluatorManager {
     return seo;
   }
 
+  private SimpleEvaluationObjectWithTime executeWithTimeMeasurement(String code, Message message, int executionCount,
+      KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
+    SimpleEvaluationObjectWithTime seowt = createSimpleEvaluationObjectWithTime(code, message, executionCount,
+        executeCodeCallbackWithTime);
+    evaluator.evaluate(seowt, code);
+    return seowt;
+  }
+
   private SimpleEvaluationObject createSimpleEvaluationObject(String code, Message message,
                                                               int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
@@ -93,6 +107,14 @@ public class EvaluatorManager {
     seo.setExecutionCount(executionCount);
     seo.addObserver(kernel.getExecutionResultSender());
     return seo;
+  }
+
+  private SimpleEvaluationObjectWithTime createSimpleEvaluationObjectWithTime(String code, Message message,
+      int executionCount, KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
+    SimpleEvaluationObjectWithTime seowt = new SimpleEvaluationObjectWithTime(code, executeCodeCallbackWithTime);
+    seowt.setJupyterMessage(message);
+    seowt.setExecutionCount(executionCount);
+    return seowt;
   }
 
   public boolean addJarToClasspath(PathToJar path) {

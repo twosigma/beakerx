@@ -20,9 +20,13 @@ import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
 import com.twosigma.beakerx.message.Message;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,6 +40,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClasspathAddMvnDepsMagicCommandTest {
 
+  public static final String TEST_IVY_CACHE = "build/testIvyCache";
+  private static final String SRC_TEST_RESOURCES_TEST_IVY_CACHE = "src/test/resources/testIvyCache";
+
   private MagicCommand sut;
   private KernelTest kernel;
   private EvaluatorTest evaluator;
@@ -45,6 +52,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     this.evaluator = new EvaluatorTest();
     this.kernel = new KernelTest("id2", evaluator);
     this.sut = new MagicCommand(kernel);
+    copyIvyCacheToBuildDirectoryBecauseIvyChangeDatesInCache();
   }
 
   @After
@@ -96,5 +104,9 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     MagicCommandItem magicCommandItem = process.getItems().get(0);
     Message message = magicCommandItem.getResult().get();
     return (String) message.getContent().get(TEXT);
+  }
+
+  private void copyIvyCacheToBuildDirectoryBecauseIvyChangeDatesInCache() throws IOException {
+    FileUtils.copyDirectory(new File(SRC_TEST_RESOURCES_TEST_IVY_CACHE),new File(TEST_IVY_CACHE));
   }
 }

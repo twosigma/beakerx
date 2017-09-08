@@ -29,6 +29,7 @@ import com.twosigma.beakerx.message.Message;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class TestWidgetUtils {
 
@@ -135,6 +136,12 @@ public class TestWidgetUtils {
     return getValueForProperty(messages.get(0), propertyName, clazz);
   }
 
+  public static Optional<Message> getMessageUpdate(KernelTest kernel) {
+    List<Message> messages = SearchMessages
+            .getListByDataAttr(kernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
+    assertTrue("No update comm message.", messages.size() > 0);
+    return messages.stream().filter(x -> x.getHeader().getType().equals(JupyterMessages.COMM_MSG.getName())).findFirst();
+  }
 
   public static String getMethod(Message message) {
     return (String) ((Map)(message.getContent().get(Comm.DATA))).get(Comm.METHOD);

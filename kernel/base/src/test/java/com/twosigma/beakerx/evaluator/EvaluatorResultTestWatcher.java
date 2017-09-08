@@ -17,10 +17,13 @@
 package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.KernelSocketsTest;
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.message.Message;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.QUEUED;
@@ -74,6 +77,23 @@ public class EvaluatorResultTestWatcher {
     }
     return sentMessage;
   }
+
+  public static Optional<Message> waitForStreamMessage(KernelTest kernelTest) throws InterruptedException {
+    int count = 0;
+    Optional<Message> sentMessage = getStreamMessage(kernelTest);
+    while (!sentMessage.isPresent() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      sentMessage = getStreamMessage(kernelTest);
+      count++;
+    }
+    return sentMessage;
+  }
+
+  private static Optional<Message> getStreamMessage(KernelTest kernelTest) {
+    List<Message> listMessagesByType = SearchMessages.getListMessagesByType(kernelTest.getPublishedMessages(), JupyterMessages.STREAM);
+    return listMessagesByType.stream().findFirst();
+  }
+
 
   private static Optional<Message> getIdleMessage(KernelSocketsTest socketsTest) {
     return socketsTest.getPublishedMessages().stream().

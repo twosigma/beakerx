@@ -18,7 +18,6 @@ package com.twosigma.beakerx.jupyter.handler;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.handler.CommMsgHandler;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -34,7 +33,7 @@ public class CommMsgHandlerTest {
   @Before
   public void setUp() {
     kernel = new KernelTest();
-    commMsgHandler = new CommMsgHandler(kernel, new MessageCreator(kernel));
+    commMsgHandler = new CommMsgHandler(kernel);
     message = JupyterHandlerTest.initCommMessage();
     JupyterHandlerTest.initKernelCommMapWithOneComm(kernel);
   }

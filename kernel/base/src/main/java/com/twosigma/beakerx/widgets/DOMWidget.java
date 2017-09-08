@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class DOMWidget extends Widget {
 
   public static final String DATA = "data";
-  public static final String SYNC_DATA = "sync_data";
+  public static final String SYNC_DATA = "state";
 
   private Layout layout;
 

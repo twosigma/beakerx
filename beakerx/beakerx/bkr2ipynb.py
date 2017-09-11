@@ -19,6 +19,7 @@ import sys
 import json
 import nbformat
 import argparse
+import glob
 from nbformat.v4 import new_notebook, new_code_cell, new_markdown_cell
 
 def setHeader(level, title):
@@ -94,7 +95,7 @@ def main():
         parser.print_help()
     args = parser.parse_args()
 
-    for notebook in args.notebooks:
+    for notebook in glob.glob(args.notebooks[0]):
         convertNotebook(notebook)
 
 if __name__ == "__main__":

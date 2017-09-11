@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from .runtime import BeakerX
-from .plot import Plot
+from .plot import *
 from .easyform import *
 from .tabledisplay import *
 from ._version import version_info, __version__

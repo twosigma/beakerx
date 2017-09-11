@@ -23,8 +23,8 @@ import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.table.TableDisplay;
 import com.twosigma.beakerx.widgets.DisplayableWidget;
 import jupyter.Displayers;
-
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,6 +35,7 @@ import static java.util.Collections.singletonList;
 
 
 public class SerializeToString {
+
   private static List<MIMEContainer> HIDDEN_MIME = singletonList(HIDDEN);
 
   public static List<MIMEContainer> doit(final Object input) {
@@ -62,6 +63,11 @@ public class SerializeToString {
       table.display();
       return HIDDEN_MIME;
     }
+
+    if (input instanceof Collection) {
+      return singletonList(MIMEContainer.Text(collectionToString((Collection<?>) input)));
+    }
+
     if (input instanceof XYGraphics) {
       new Plot().add((XYGraphics) input).display();
       return HIDDEN_MIME;
@@ -95,6 +101,22 @@ public class SerializeToString {
       }
     }
     return ret;
+  }
+
+  private static <E> String collectionToString(Collection<E> collection) {
+    Iterator<E> it = collection.iterator();
+    if (!it.hasNext())
+      return "[]";
+
+    StringBuilder sb = new StringBuilder();
+    sb.append('[');
+    for (;;) {
+      E e = it.next();
+      sb.append(e);
+      if (! it.hasNext())
+        return sb.append(']').toString();
+      sb.append(',').append(' ');
+    }
   }
 
 }

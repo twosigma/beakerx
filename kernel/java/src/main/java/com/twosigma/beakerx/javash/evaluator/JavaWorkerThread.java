@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,6 +68,7 @@ class JavaWorkerThread extends WorkerThread {
           loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
           loader.addJars(javaEvaluator.getClasspath().getPathsAsStrings());
           loader.addDynamicDir(javaEvaluator.getOutDir());
+          this.updateLoader = false;
         }
 
         // get next job descriptor
@@ -163,11 +165,13 @@ class JavaWorkerThread extends WorkerThread {
             }
           }
         } else {
+
+          String classId = generateClassId();
           String ret = "void";
           if (codev[codev.length - 1].matches("(^|.*\\s+)return\\s+.*"))
             ret = "Object";
           // this is an expression evaluation
-          javaSourceCode.append("public class " + JavaEvaluator.WRAPPER_CLASS_NAME + " {\n");
+          javaSourceCode.append("public class " + JavaEvaluator.WRAPPER_CLASS_NAME + classId + " {\n");
           javaSourceCode.append("public static ");
           javaSourceCode.append(ret);
           javaSourceCode.append(" beakerRun() throws Exception {\n");
@@ -175,13 +179,13 @@ class JavaWorkerThread extends WorkerThread {
           javaSourceCode.append("}\n");
           javaSourceCode.append("}\n");
 
-          compilationUnit.addJavaSource(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME, javaSourceCode.toString());
+          compilationUnit.addJavaSource(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId, javaSourceCode.toString());
 
           try {
             javaSourceCompiler.compile(compilationUnit);
 
             javaSourceCompiler.persistCompiledClasses(compilationUnit);
-            Class<?> fooClass = loader.loadClass(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME);
+            Class<?> fooClass = loader.loadClass(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId);
             Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
 
             if (!javaEvaluator.executeTask(new JavaCodeRunner(mth, j.outputObject, ret.equals("Object"), loader))) {
@@ -212,6 +216,10 @@ class JavaWorkerThread extends WorkerThread {
       }
     }
     NamespaceClient.delBeaker(javaEvaluator.getSessionId());
+  }
+
+  private String generateClassId() {
+    return "Id" + UUID.randomUUID().toString().replace("-","");
   }
 
   private int skipBlankLines(String[] lines, int ci) {

@@ -33,7 +33,7 @@ module.exports = function(TableScope) {
     var menuHelper = new MenuHelper(this);
 
     if (menuHelper.isFixedRight(container)) {
-      this.pagination.fixRight = 0;git
+      this.pagination.fixRight = 0;
     }
     if (menuHelper.isFixedLeft(container)) {
       this.pagination.fixLeft = 0;

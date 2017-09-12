@@ -28,7 +28,6 @@ define([
   './../shared/bkUtils',
   './cellHighlighters',
   './../shared/bkHelper',
-  './datatablesHeadermenu',
   './consts',
   'jquery-contextmenu',
   'jquery-ui/ui/widgets/tooltip',
@@ -47,7 +46,6 @@ define([
   bkUtils,
   cellHighlighters,
   bkHelper,
-  datatablesHeadermenu,
   tableConsts,
   contextMenu,
   tooltip,
@@ -1652,6 +1650,9 @@ define([
     }, 0);
 
     self.initTableSelect();
+
+    var createColumnMenu = require('./tableHeaderMenu/ColumnMenu').default;
+    var columnMenu = createColumnMenu(self);
   };
 
   TableScope.prototype.bindEvents = function() {

@@ -18,8 +18,7 @@ var _ = require('underscore');
 
 function MenuHelper (tableScope) {
   return {
-    doAlignment: function(el, key) {
-      var container = el.closest('.bko-header-menu');
+    doAlignment: function(container, key) {
       var colIdx = container.data('columnIndex');
 
       //table variables
@@ -55,8 +54,7 @@ function MenuHelper (tableScope) {
       var colIdx = container.data('columnIndex');
       return tableScope.actualalign[tableScope.colorder[colIdx] - 1] === key;
     },
-    doSorting: function(el, direction) {
-      var container = el.closest('.bko-header-menu');
+    doSorting: function(container, direction) {
       var colIdx = container.data('columnIndex');
 
       if (_.contains(['asc', 'desc'], direction)) {
@@ -78,15 +76,13 @@ function MenuHelper (tableScope) {
         return (order[0][0] !== colIdx);
       }
     },
-    doFixColumnLeft: function(el) {
-      var container = el.closest('.bko-header-menu');
+    doFixColumnLeft: function(container) {
       var colIdx = container.data('columnIndex');
       var fixed = this.isFixedLeft(container);
       tableScope.pagination.fixLeft = fixed ? 0 : colIdx;
       tableScope.applyChanges();
     },
-    doFixColumnRight: function(el) {
-      var container = el.closest('.bko-header-menu');
+    doFixColumnRight: function(container) {
       var colIdx = container.data('columnIndex');
       var fixed = this.isFixedRight(container);
       tableScope.pagination.fixRight = fixed ? 0 : tableScope.columns.length - colIdx;

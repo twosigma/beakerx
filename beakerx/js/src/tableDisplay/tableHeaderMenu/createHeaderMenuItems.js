@@ -25,9 +25,8 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
   var self = this;
   var menuHelper = new (require('./MenuHelper'))(self);
 
-  function setColumnsOrder(el, newIndex) {
+  function setColumnsOrder(container, newIndex) {
     var table = self.table;
-    var container = el.closest('.bko-header-menu');
     var colIdx = container.data('columnIndex');
     var columnIndexes = table.columns().indexes();
 
@@ -41,9 +40,8 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
     items: [
       {
         title: 'Hide column',
-        action: function (el) {
+        action: function (container) {
           var table = self.table;
-          var container = el.closest('.bko-header-menu');
           var colIdx = container.data('columnIndex');
           var column = table.column(colIdx);
 
@@ -54,9 +52,8 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         title: 'Filter by Expression',
         icon: 'fa fa-filter',
         tooltip: 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"',
-        action: function (el) {
+        action: function (container) {
           var table = self.table;
-          var container = el.closest('.bko-header-menu');
           var colIdx = container.data('columnIndex');
           var column = table.column(colIdx);
 
@@ -67,9 +64,8 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         title: 'Search for Substring',
         icon: 'fa fa-search',
         tooltip: 'search this column for a substring',
-        action: function (el) {
+        action: function (container) {
           var table = self.table;
-          var container = el.closest('.bko-header-menu');
           var colIdx = container.data('columnIndex');
           var column = table.column(colIdx);
 
@@ -87,8 +83,8 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         isChecked: function (container) {
           return menuHelper.checkSorting(container, 'asc');
         },
-        action: function (el) {
-          menuHelper.doSorting(el, 'asc');
+        action: function (container) {
+          menuHelper.doSorting(container, 'asc');
         }
       },
       {
@@ -96,8 +92,8 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         isChecked: function (container) {
           return menuHelper.checkSorting(container, 'desc');
         },
-        action: function (el) {
-          menuHelper.doSorting(el, 'desc');
+        action: function (container) {
+          menuHelper.doSorting(container, 'desc');
         }
       },
       {
@@ -115,8 +111,8 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         isChecked: function (container) {
           return menuHelper.checkAlignment(container, 'L');
         },
-        action: function (el) {
-          menuHelper.doAlignment(el, 'L');
+        action: function (container) {
+          menuHelper.doAlignment(container, 'L');
         }
       },
       {
@@ -124,8 +120,8 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         isChecked: function (container) {
           return menuHelper.checkAlignment(container, 'C');
         },
-        action: function (el) {
-          menuHelper.doAlignment(el, 'C');
+        action: function (container) {
+          menuHelper.doAlignment(container, 'C');
         }
       },
       {
@@ -133,8 +129,8 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         isChecked: function (container) {
           return menuHelper.checkAlignment(container, 'R');
         },
-        action: function (el) {
-          menuHelper.doAlignment(el, 'R');
+        action: function (container) {
+          menuHelper.doAlignment(container, 'R');
         }
       },
       {
@@ -146,8 +142,7 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
           var highlighter = self.cellHighlighters[colIdx];
           return highlighter && highlighter instanceof cellHighlighters.HeatmapHighlighter;
         },
-        action: function (el) {
-          var container = el.closest('.bko-header-menu');
+        action: function (container) {
           var colIdx = container.data('columnIndex');
           self.showHideHeatmap(colIdx);
         }
@@ -159,8 +154,7 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
           var colIdx = container.data('columnIndex');
           return typeof(self.barsOnColumn[self.colorder[colIdx]]) !== 'undefined';
         },
-        action: function (el) {
-          var container = el.closest('.bko-header-menu');
+        action: function (container) {
           var colIdx = container.data('columnIndex');
           self.showHideBars(self.colorder[colIdx]);
         }
@@ -173,8 +167,7 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
           var highlighter = self.cellHighlighters[colIdx];
           return highlighter && highlighter instanceof cellHighlighters.UniqueEntriesHighlighter;
         },
-        action: function (el) {
-          var container = el.closest('.bko-header-menu');
+        action: function (container) {
           var colIdx = container.data('columnIndex');
           self.showHideUniqueEntries(colIdx);
         }
@@ -184,8 +177,8 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         isChecked: function (container) {
           return menuHelper.isFixedLeft(container);
         },
-        action: function (el) {
-          menuHelper.doFixColumnLeft(el);
+        action: function (container) {
+          menuHelper.doFixColumnLeft(container);
         }
       },
       {
@@ -193,37 +186,36 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         isChecked: function (container) {
           return menuHelper.isFixedRight(container);
         },
-        action: function (el) {
-          menuHelper.doFixColumnRight(el);
+        action: function (container) {
+          menuHelper.doFixColumnRight(container);
         }
       },
       {
         title: 'Move column to front',
         separator: true,
-        action: function (el) {
-          setColumnsOrder(el, 1);
+        action: function (container) {
+          setColumnsOrder(container, 1);
         }
       },
       {
         title: 'Move column to end',
-        action: function (el) {
+        action: function (container) {
           var columnIndexes = self.table.columns().indexes();
 
-          setColumnsOrder(el, columnIndexes.length);
+          setColumnsOrder(container, columnIndexes.length);
         }
       },
       {
         title: 'Reset formatting',
         separator: true,
-        action: function (el) {
-          var container = el.closest('.bko-header-menu');
+        action: function (container) {
           var colIdx = container.data('columnIndex');
           var column = self.table.column(colIdx);
 
           column.state.clear();
 
           self.resetColumnContainerFixed(container);
-          self.resetColumnTypesAndAlignments(el, colIdx);
+          self.resetColumnTypesAndAlignments(container, colIdx);
           self.resetColumnHeatmap(colIdx, cellHighlighters);
           self.resetColumnDataBars(colIdx);
           self.resetColumnFilters(colIdx);

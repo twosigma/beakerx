@@ -35,6 +35,8 @@ controls.TextView.prototype.handleEnterKeyPress = function() {
 require('./easyForm/css/jupyter-easyform.scss');
 require('flatpickr/dist/flatpickr.css');
 require('jquery-ui/themes/base/all.css');
+require('jquery-ui/ui/widgets/button');
+require('jquery-ui/ui/widgets/autocomplete');
 
 var EasyFormModel = widgets.DOMWidgetModel.extend({
   defaults: function() {

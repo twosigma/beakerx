@@ -149,10 +149,10 @@ public class TableDisplay extends BeakerxWidget {
 
     // create columns
     for (Map<String, Object> m : v) {
-      Set<?> w = m.entrySet();
-      for (Object s : w) {
-        Entry<?, ?> e = (Entry<?, ?>) s;
-        String c = e.getKey().toString();
+      Set<Entry<String, Object>> w = m.entrySet();
+      for (Entry<String, Object> s : w) {
+        Entry<String, Object> e = s;
+        String c = e.getKey();
         if (!columns.contains(c)) {
           columns.add(c);
           String n = e.getValue() != null ? e.getValue().getClass().getName() : "string";

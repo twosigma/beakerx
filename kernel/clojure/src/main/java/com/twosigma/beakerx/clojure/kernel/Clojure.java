@@ -20,11 +20,13 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 import static java.util.Arrays.stream;
 
 import clojure.lang.LazySeq;
+import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
 import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
 import com.twosigma.beakerx.clojure.handlers.ClojureKernelInfoHandler;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.KernelParameters;
@@ -48,6 +50,10 @@ public class Clojure extends Kernel {
 
   public Clojure(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(sessionId, evaluator, kernelSocketsFactory);
+  }
+
+  public Clojure(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction);
   }
 
   @Override
@@ -80,6 +86,7 @@ public class Clojure extends Kernel {
         }};
       }
     });
+    DisplayerDataMapper.turnOn();
   }
 
   @Override

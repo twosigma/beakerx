@@ -17,15 +17,15 @@ package com.twosigma.beakerx.clojure.kernel;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
-import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widgets.TestWidgetUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -50,7 +50,7 @@ public class ClojureKernelTest {
     String sessionId = "sessionId1";
     evaluator = new ClojureEvaluator(sessionId, sessionId, cellExecutor(), EvaluatorTest.getTestTempFolderFactory());
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new Clojure(sessionId, evaluator, kernelSocketsService);
+    kernel = new Clojure(sessionId, evaluator, kernelSocketsService, () -> {});
     kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
     kernelThread.start();
     kernelSocketsService.waitForSockets();
@@ -101,4 +101,26 @@ public class ClojureKernelTest {
     assertThat(value).isNotEmpty();
     assertThat(value).contains("[0, 1, 1, 2, 3, 5");
   }
+
+  @Test
+  public void shouldDisplayTableDisplay() throws Exception {
+    //given
+    String code = "[{:foo 1}{:foo 2}]";
+    Message message = getExecuteRequestMessage(code);
+    //when
+    kernelSocketsService.handleMsg(message);
+    //then
+    waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    verifyTableDisplay(kernelSocketsService);
+  }
+
+  private void verifyTableDisplay(KernelSocketsServiceTest kernelSocketsService) {
+    Optional<Message> messageUpdate = TestWidgetUtils.getMessageUpdate(kernelSocketsService.getPublishedMessages());
+    Message message = messageUpdate.get();
+    Map model = (Map)TestWidgetUtils.getState(message).get("model");
+    List<List> values = (List<List>)model.get("values");
+    assertThat(values.get(0).get(0)).isEqualTo(1);
+    assertThat(values.get(1).get(0)).isEqualTo(2);
+  }
+
 }

@@ -67,3 +67,12 @@ anaconda upload beakerx/dist/beakerx-VERSION-py35HASH.tar.bz2
 - Fork https://github.com/conda-forge/beakerx-feedstock
 - Update the `version` and `sha256` variable values in `recipe/meta.yaml`
 - Commit changes and submit a PR for the new version
+
+Publish on npmjs
+----------------
+
+To update the embedded version of our widget library:
+
+- Increase the version in beakerx/js/package.json
+- Do a full build.
+- Run `npm publish`

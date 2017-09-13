@@ -18,10 +18,13 @@ var webpack = require('webpack');
 var package = require('./package.json');
 var path = require('path');
 
+var tsLoader = require('awesome-typescript-loader');
+
 // Custom webpack loaders are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
 var rules = [
   { test: /\.json$/, use: 'json-loader' },
+  { test: /\.ts$/, use: 'awesome-typescript-loader' },
   { test: /\.css$/, use: [
     "style-loader",
     "css-loader"
@@ -50,7 +53,8 @@ var plugins = [
     "$":"jquery",
     "jQuery":"jquery",
     "window.jQuery":"jquery"
-  })
+  }),
+  new tsLoader.CheckerPlugin()
 ];
 
 module.exports = [
@@ -105,7 +109,7 @@ module.exports = [
     },
     resolve: {
       modules: ['web_modules', 'node_modules'],
-      extensions: ['.jsx','.js','.less','.css']
+      extensions: ['.ts', '.jsx','.js','.less','.css']
     },
     externals: ['@jupyter-widgets/controls', '@jupyter-widgets/base'],
     watchOptions: {
@@ -140,7 +144,7 @@ module.exports = [
     },
     resolve: {
       modules: ['web_modules', 'node_modules'],
-      extensions: ['.jsx','.js','.less','.css']
+      extensions: ['.ts', '.jsx','.js','.less','.css']
     },
     externals: ['@jupyter-widgets/controls', '@jupyter-widgets/base'],
     plugins: plugins

@@ -18,10 +18,7 @@ var _ = require('underscore');
 
 function MenuHelper (tableScope) {
   return {
-    doAlignment: function(el, key) {
-      var container = el.closest('.bko-header-menu');
-      var colIdx = container.data('columnIndex');
-
+    doAlignment: function(colIdx, key) {
       //table variables
       var table = tableScope.table;
       var bodyColumn = table.column(colIdx).nodes().to$();
@@ -51,21 +48,16 @@ function MenuHelper (tableScope) {
       tableScope.actualalign[tableScope.colorder[colIdx] - 1] = key;
       // bkSessionManager.setNotebookModelEdited(true); //TODO - check if needed
     },
-    checkAlignment: function(container, key) {
-      var colIdx = container.data('columnIndex');
+    checkAlignment: function(colIdx, key) {
       return tableScope.actualalign[tableScope.colorder[colIdx] - 1] === key;
     },
-    doSorting: function(el, direction) {
-      var container = el.closest('.bko-header-menu');
-      var colIdx = container.data('columnIndex');
-
+    doSorting: function(colIdx, direction) {
       if (_.contains(['asc', 'desc'], direction)) {
         tableScope.table.order([colIdx, direction]).draw();
       }
     },
-    checkSorting: function(container, direction) {
+    checkSorting: function(colIdx, direction) {
       var order = tableScope.table.order();
-      var colIdx = container.data('columnIndex');
 
       // server ordering
       if (0 === order.length) {
@@ -78,26 +70,20 @@ function MenuHelper (tableScope) {
         return (order[0][0] !== colIdx);
       }
     },
-    doFixColumnLeft: function(el) {
-      var container = el.closest('.bko-header-menu');
-      var colIdx = container.data('columnIndex');
-      var fixed = this.isFixedLeft(container);
+    doFixColumnLeft: function(colIdx) {
+      var fixed = this.isFixedLeft(colIdx);
       tableScope.pagination.fixLeft = fixed ? 0 : colIdx;
       tableScope.applyChanges();
     },
-    doFixColumnRight: function(el) {
-      var container = el.closest('.bko-header-menu');
-      var colIdx = container.data('columnIndex');
-      var fixed = this.isFixedRight(container);
+    doFixColumnRight: function(colIdx) {
+      var fixed = this.isFixedRight(colIdx);
       tableScope.pagination.fixRight = fixed ? 0 : tableScope.columns.length - colIdx;
       tableScope.applyChanges();
     },
-    isFixedRight: function(container) {
-      var colIdx = container.data('columnIndex');
+    isFixedRight: function(colIdx) {
       return tableScope.columns.length - colIdx === tableScope.pagination.fixRight;
     },
-    isFixedLeft: function(container) {
-      var colIdx = container.data('columnIndex');
+    isFixedLeft: function(colIdx) {
       return tableScope.pagination.fixLeft === colIdx;
     }
   }

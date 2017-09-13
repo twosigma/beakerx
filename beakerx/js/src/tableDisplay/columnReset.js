@@ -29,25 +29,25 @@ module.exports = function(TableScope) {
     this.barsOnColumn.hasOwnProperty(columnIndex) && this.showHideBars(columnIndex);
   };
 
-  TableScope.prototype.resetColumnContainerFixed = function(container) {
+  TableScope.prototype.resetColumnContainerFixed = function(columnIndex) {
     var menuHelper = new MenuHelper(this);
 
-    if (menuHelper.isFixedRight(container)) {
-      this.pagination.fixRight = 0;git
+    if (menuHelper.isFixedRight(columnIndex)) {
+      this.pagination.fixRight = 0;
     }
-    if (menuHelper.isFixedLeft(container)) {
+    if (menuHelper.isFixedLeft(columnIndex)) {
       this.pagination.fixLeft = 0;
     }
 
     this.updateFixedColumnsSeparator();
   };
 
-  TableScope.prototype.resetColumnTypesAndAlignments = function(el, columnIndex) {
+  TableScope.prototype.resetColumnTypesAndAlignments = function(columnIndex) {
     var menuHelper = new MenuHelper(this);
     var typesAndAllignments = this.getColumnTypeAndAlignment(columnIndex);
 
     this.actualtype[columnIndex - 1] = typesAndAllignments.actualtype;
-    menuHelper.doAlignment(el, typesAndAllignments.actualalign);
+    menuHelper.doAlignment(columnIndex, typesAndAllignments.actualalign);
   };
 
   TableScope.prototype.resetColumnFilters = function(columnIndex) {

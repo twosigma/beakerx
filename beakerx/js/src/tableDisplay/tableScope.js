@@ -28,7 +28,6 @@ define([
   './../shared/bkUtils',
   './cellHighlighters',
   './../shared/bkHelper',
-  './datatablesHeadermenu',
   './consts',
   'jquery-contextmenu',
   'jquery-ui/ui/widgets/tooltip',
@@ -47,7 +46,6 @@ define([
   bkUtils,
   cellHighlighters,
   bkHelper,
-  datatablesHeadermenu,
   tableConsts,
   contextMenu,
   tooltip,
@@ -1265,96 +1263,8 @@ define([
     var cols = [];
     var i;
 
-    var getFormatSubitems = function(container) {
-      var colIdx = container.data('columnIndex');
-      var types = self.getCellDispOptsF(colIdx - 1);
-      var items = [];
-
-      _.each(types, function(obj) {
-        if (obj.type === 8) { //datetime
-          items = items.concat(getTimeSubitems());
-          return;
-        }
-        var item = {
-          title: obj.name,
-          isChecked: function(container) {
-            var colIdx = container.data('columnIndex');
-            return self.actualtype[self.colorder[colIdx] - 1] === obj.type;
-          }
-        };
-        if (obj.type === 4) { //double with precision
-          item.items = getPrecisionSubitems;
-        } else {
-          item.action = function(el) {
-            var container = el.closest('.bko-header-menu');
-            var colIdx = container.data('columnIndex');
-
-            self.getCellDisp[self.colorder[colIdx] - 1] = obj.type;
-            self.actualtype[self.colorder[colIdx] - 1] = obj.type;
-            self.applyChanges();
-          }
-        };
-        items.push(item);
-      });
-
-      return items;
-    };
-
-    var getPrecisionSubitems = function(container) {
-      var items = [];
-
-      _.each(self.doubleWithPrecisionConverters, function(func, precision) {
-        var item = {
-          title: precision,
-          isChecked: function(container) {
-            var colIdx = container.data('columnIndex');
-            return self.actualtype[self.colorder[colIdx] - 1] == self.getActualTypeByPrecision(precision);
-          },
-          action: function(el) {
-            var container = el.closest('.bko-header-menu');
-            var colIdx = container.data('columnIndex');
-            self.changePrecision(self.colorder[colIdx] - 1, precision);
-          }
-        };
-
-        items.push(item);
-      });
-
-      return items;
-    };
-
-    var getTimeSubitems = function() {
-      var items = [];
-
-      _.forEach(tableConsts.TIME_UNIT_FORMATS, function(value, unit) {
-        if (tableConsts.TIME_UNIT_FORMATS.hasOwnProperty(unit)) {
-          var item = {
-            title: value.title,
-            isChecked: function(container) {
-              var colIdx = container.data('columnIndex');
-              return self.actualtype[self.colorder[colIdx] - 1] === 8 &&
-                     (unit === self.formatForTimes || unit == 'DATETIME' && _.isEmpty(self.formatForTimes));
-            },
-            action: function(el) {
-              var container = el.closest('.bko-header-menu');
-              var colIdx = container.data('columnIndex');
-
-              self.getCellDisp[self.colorder[colIdx] - 1] = 8;
-              self.actualtype[self.colorder[colIdx] - 1] = 8;
-
-              self.changeTimeFormat(unit);
-            }
-          };
-
-          items.push(item);
-        }
-      });
-
-      return items;
-    };
-
     var createHeaderMenuItems = require('./tableHeaderMenu/createHeaderMenuItems');
-    var headerMenuItems = createHeaderMenuItems.call(self, cellHighlighters, getFormatSubitems);
+    var headerMenuItems = createHeaderMenuItems.call(self, cellHighlighters);
 
     // build configuration
     var converter = self.allConverters[1];
@@ -1364,7 +1274,7 @@ define([
       }
     };
     if (self.hasIndex) {
-      for (var i = 0; i < self.allTypes.length; i++) {
+      for (i = 0; i < self.allTypes.length; i++) {
         if (self.allTypes[i].name === self.indexType) {
           converter = self.allConverters[self.allTypes[i].type];
           break;
@@ -1613,13 +1523,16 @@ define([
       inits.rightColumns = 0;
     }
 
-    self.updateFixedColumnsSeparator();
-
     self.keyTable = self.table.settings()[0].keytable;
-    self.refreshCells();
     self.fixcols = new dataTablesFixedColumns(self.table, inits);
-    self.fixcols.fnRedrawLayout();
+    self.refreshCells();
+
+    var columnColumnMenus = require('./tableHeaderMenu/ColumnMenu').default;
+    var columnMenus = columnColumnMenus(self);
+
     // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
+    self.fixcols.fnRedrawLayout();
+    self.updateFixedColumnsSeparator();
 
     setTimeout(function(){
       if (!self.table) { return; }

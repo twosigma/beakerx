@@ -21,14 +21,13 @@
  * @param getFormatSubitems
  * @returns Object { items: [] }
  */
-function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
+function createHeaderMenuItems (cellHighlighters) {
   var self = this;
   var menuHelper = new (require('./MenuHelper'))(self);
+  var tableConsts = require('../consts');
 
-  function setColumnsOrder(el, newIndex) {
+  function setColumnsOrder(colIdx, newIndex) {
     var table = self.table;
-    var container = el.closest('.bko-header-menu');
-    var colIdx = container.data('columnIndex');
     var columnIndexes = table.columns().indexes();
 
     columnIndexes = columnIndexes.filter(function (index) { return index !== colIdx; });
@@ -37,14 +36,88 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
     table.colReorder.order(columnIndexes);
   }
 
+  function getFormatSubitems(colIdx) {
+    var types = self.getCellDispOptsF(colIdx - 1);
+    var items = [];
+
+    _.each(types, function(obj) {
+      if (obj.type === 8) { //datetime
+        items = items.concat(getTimeSubitems());
+        return;
+      }
+      var item = {
+        title: obj.name,
+        isChecked: function(colIdx) {
+          return self.actualtype[self.colorder[colIdx] - 1] === obj.type;
+        }
+      };
+      if (obj.type === 4) { //double with precision
+        item.items = getPrecisionSubitems;
+      } else {
+        item.action = function(colIdx) {
+          self.getCellDisp[self.colorder[colIdx] - 1] = obj.type;
+          self.actualtype[self.colorder[colIdx] - 1] = obj.type;
+          self.applyChanges();
+        }
+      }
+      items.push(item);
+    });
+
+    return items;
+  }
+
+  function getPrecisionSubitems() {
+    var items = [];
+
+    _.each(self.doubleWithPrecisionConverters, function(func, precision) {
+      var item = {
+        title: precision,
+        isChecked: function(colIdx) {
+          return self.actualtype[self.colorder[colIdx] - 1] === self.getActualTypeByPrecision(precision);
+        },
+        action: function(colIdx) {
+          self.changePrecision(self.colorder[colIdx] - 1, precision);
+        }
+      };
+
+      items.push(item);
+    });
+
+    return items;
+  }
+
+  function getTimeSubitems() {
+    var items = [];
+
+    _.forEach(tableConsts.TIME_UNIT_FORMATS, function(value, unit) {
+      if (tableConsts.TIME_UNIT_FORMATS.hasOwnProperty(unit)) {
+        var item = {
+          title: value.title,
+          isChecked: function(colIdx) {
+            return self.actualtype[self.colorder[colIdx] - 1] === 8 &&
+                (unit === self.formatForTimes || unit == 'DATETIME' && _.isEmpty(self.formatForTimes));
+          },
+          action: function(colIdx) {
+            self.getCellDisp[self.colorder[colIdx] - 1] = 8;
+            self.actualtype[self.colorder[colIdx] - 1] = 8;
+
+            self.changeTimeFormat(unit);
+          }
+        };
+
+        items.push(item);
+      }
+    });
+
+    return items;
+  }
+
   return {
     items: [
       {
         title: 'Hide column',
-        action: function (el) {
+        action: function (colIdx) {
           var table = self.table;
-          var container = el.closest('.bko-header-menu');
-          var colIdx = container.data('columnIndex');
           var column = table.column(colIdx);
 
           column.visible(!column.visible());
@@ -54,10 +127,8 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         title: 'Filter by Expression',
         icon: 'fa fa-filter',
         tooltip: 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"',
-        action: function (el) {
+        action: function (colIdx) {
           var table = self.table;
-          var container = el.closest('.bko-header-menu');
-          var colIdx = container.data('columnIndex');
           var column = table.column(colIdx);
 
           self.doShowFilter(column, false);
@@ -67,10 +138,8 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
         title: 'Search for Substring',
         icon: 'fa fa-search',
         tooltip: 'search this column for a substring',
-        action: function (el) {
+        action: function (colIdx) {
           var table = self.table;
-          var container = el.closest('.bko-header-menu');
-          var colIdx = container.data('columnIndex');
           var column = table.column(colIdx);
 
           self.doShowFilter(column, true);
@@ -84,26 +153,26 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
       {
         title: 'Sort Ascending',
         separator: true,
-        isChecked: function (container) {
-          return menuHelper.checkSorting(container, 'asc');
+        isChecked: function (colIdx) {
+          return menuHelper.checkSorting(colIdx, 'asc');
         },
-        action: function (el) {
-          menuHelper.doSorting(el, 'asc');
+        action: function (colIdx) {
+          menuHelper.doSorting(colIdx, 'asc');
         }
       },
       {
         title: 'Sort Descending',
-        isChecked: function (container) {
-          return menuHelper.checkSorting(container, 'desc');
+        isChecked: function (colIdx) {
+          return menuHelper.checkSorting(colIdx, 'desc');
         },
-        action: function (el) {
-          menuHelper.doSorting(el, 'desc');
+        action: function (colIdx) {
+          menuHelper.doSorting(colIdx, 'desc');
         }
       },
       {
         title: 'No Sort',
-        isChecked: function (container) {
-          return menuHelper.checkSorting(container);
+        isChecked: function (colIdx) {
+          return menuHelper.checkSorting(colIdx);
         },
         action: function () {
           self.table.order([0, 'asc']).draw();
@@ -112,118 +181,107 @@ function createHeaderMenuItems (cellHighlighters, getFormatSubitems) {
       {
         title: 'Align Left',
         separator: true,
-        isChecked: function (container) {
-          return menuHelper.checkAlignment(container, 'L');
+        isChecked: function (colIdx) {
+          return menuHelper.checkAlignment(colIdx, 'L');
         },
-        action: function (el) {
-          menuHelper.doAlignment(el, 'L');
+        action: function (colIdx) {
+          menuHelper.doAlignment(colIdx, 'L');
         }
       },
       {
         title: 'Align Center',
-        isChecked: function (container) {
-          return menuHelper.checkAlignment(container, 'C');
+        isChecked: function (colIdx) {
+          return menuHelper.checkAlignment(colIdx, 'C');
         },
-        action: function (el) {
-          menuHelper.doAlignment(el, 'C');
+        action: function (colIdx) {
+          menuHelper.doAlignment(colIdx, 'C');
         }
       },
       {
         title: 'Align Right',
-        isChecked: function (container) {
-          return menuHelper.checkAlignment(container, 'R');
+        isChecked: function (colIdx) {
+          return menuHelper.checkAlignment(colIdx, 'R');
         },
-        action: function (el) {
-          menuHelper.doAlignment(el, 'R');
+        action: function (colIdx) {
+          menuHelper.doAlignment(colIdx, 'R');
         }
       },
       {
         title: 'Heatmap',
         shortcut: 'H',
         separator: true,
-        isChecked: function (container) {
-          var colIdx = container.data('columnIndex');
-          var highlighter = self.cellHighlighters[colIdx];
+        isChecked: function (colIdx) {
+          var highlighter = self.cellHighlighters[self.colorder[colIdx]];
           return highlighter && highlighter instanceof cellHighlighters.HeatmapHighlighter;
         },
-        action: function (el) {
-          var container = el.closest('.bko-header-menu');
-          var colIdx = container.data('columnIndex');
-          self.showHideHeatmap(colIdx);
+        action: function (colIdx) {
+          self.showHideHeatmap(self.colorder[colIdx]);
         }
       },
       {
         title: 'Data Bars',
         shortcut: 'B',
-        isChecked: function (container) {
-          var colIdx = container.data('columnIndex');
+        isChecked: function (colIdx) {
           return typeof(self.barsOnColumn[self.colorder[colIdx]]) !== 'undefined';
         },
-        action: function (el) {
-          var container = el.closest('.bko-header-menu');
-          var colIdx = container.data('columnIndex');
+        action: function (colIdx) {
           self.showHideBars(self.colorder[colIdx]);
         }
       },
       {
         title: 'Color by unique',
         shortcut: 'U',
-        isChecked: function (container) {
-          var colIdx = container.data('columnIndex');
-          var highlighter = self.cellHighlighters[colIdx];
+        isChecked: function (colIdx) {
+          var highlighter = self.cellHighlighters[self.colorder[colIdx]];
           return highlighter && highlighter instanceof cellHighlighters.UniqueEntriesHighlighter;
         },
-        action: function (el) {
-          var container = el.closest('.bko-header-menu');
-          var colIdx = container.data('columnIndex');
-          self.showHideUniqueEntries(colIdx);
+        action: function (colIdx) {
+          self.showHideUniqueEntries(self.colorder[colIdx]);
         }
       },
       {
         title: 'Fix Left',
-        isChecked: function (container) {
-          return menuHelper.isFixedLeft(container);
+        isChecked: function (colIdx) {
+          return menuHelper.isFixedLeft(colIdx);
         },
-        action: function (el) {
-          menuHelper.doFixColumnLeft(el);
+        action: function (colIdx) {
+          menuHelper.doFixColumnLeft(colIdx);
         }
       },
       {
         title: 'Fix Right',
-        isChecked: function (container) {
-          return menuHelper.isFixedRight(container);
+        isChecked: function (colIdx) {
+          return menuHelper.isFixedRight(colIdx);
         },
-        action: function (el) {
-          menuHelper.doFixColumnRight(el);
+        action: function (colIdx) {
+          menuHelper.doFixColumnRight(colIdx);
         }
       },
       {
         title: 'Move column to front',
         separator: true,
-        action: function (el) {
-          setColumnsOrder(el, 1);
+        action: function (colIdx) {
+          setColumnsOrder(colIdx, 1);
         }
       },
       {
         title: 'Move column to end',
-        action: function (el) {
+        action: function (colIdx) {
           var columnIndexes = self.table.columns().indexes();
 
-          setColumnsOrder(el, columnIndexes.length);
+          setColumnsOrder(colIdx, columnIndexes.length);
         }
       },
       {
         title: 'Reset formatting',
         separator: true,
-        action: function (el) {
-          var container = el.closest('.bko-header-menu');
-          var colIdx = container.data('columnIndex');
+        action: function (colIdx) {
           var column = self.table.column(colIdx);
 
           column.state.clear();
 
-          self.resetColumnContainerFixed(container);
-          self.resetColumnTypesAndAlignments(el, colIdx);
+          self.resetColumnContainerFixed(colIdx);
+          self.resetColumnTypesAndAlignments(colIdx);
           self.resetColumnHeatmap(colIdx, cellHighlighters);
           self.resetColumnDataBars(colIdx);
           self.resetColumnFilters(colIdx);

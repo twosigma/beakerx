@@ -56,7 +56,7 @@ public class SaveValuesButton extends EasyFormComponent<ValueWidget<?>> {
   }
 
   @Override
-  public void setValue(String value) {
+  public void setValue(Object value) {
     throw new RuntimeException("Not implemented yet.");
   }
 }

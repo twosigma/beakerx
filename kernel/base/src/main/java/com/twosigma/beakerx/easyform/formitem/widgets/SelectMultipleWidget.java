@@ -50,7 +50,7 @@ public class SelectMultipleWidget extends ListComponent<SelectMultiple> {
     return new ArrayList<>(asList(this.widget.getValue()));
   }
 
-  public void setValue(String[] value) {
+  public void setValue(Object[] value) {
     this.widget.setValue(value);
   }
 

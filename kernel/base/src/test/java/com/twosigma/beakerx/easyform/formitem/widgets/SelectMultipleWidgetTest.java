@@ -28,15 +28,15 @@ public class SelectMultipleWidgetTest extends EasyFormWidgetTest {
   @Test
   public void setValue() throws Exception {
     //given
-    String[] newValue = new String[]{"1", "2"};
+    Integer[] newValue = new Integer[]{1, 2};
     SelectMultipleWidget widget = new SelectMultipleWidget();
     widget.setValues(asList("1", "2", "3"));
     kernel.clearPublishedMessages();
     //when
     widget.setValue(newValue);
     //then
-    verifyMsgForProperty(kernel, SelectMultiple.VALUE, new String[]{"1", "2"});
-    assertThat(widget.getValue()).isEqualTo(asList("1", "2"));
+    verifyMsgForProperty(kernel, SelectMultiple.VALUE, new Integer[]{1, 2});
+    assertThat(widget.getValue()).isEqualTo(asList("2", "3"));
   }
 
   @Test

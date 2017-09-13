@@ -60,7 +60,7 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
     return this.widget.getValue();
   }
 
-  public void setValue(String value) {
+  public void setValue(Object value) {
     this.widget.setValue(value);
   }
 

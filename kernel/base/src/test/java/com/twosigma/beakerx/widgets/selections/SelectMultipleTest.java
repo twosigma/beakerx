@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
@@ -57,9 +58,9 @@ public class SelectMultipleTest {
     widget.setOptions(new String[]{"1","2", "3"});
     kernel.clearPublishedMessages();
     //when
-    widget.setValue(new String[]{"2", "3"});
+    widget.setValue(Arrays.asList(1,2));
     //then
-    verifyMsgForProperty(kernel, SelectMultiple.VALUE, new String[]{"2", "3"});
+    verifyMsgForProperty(kernel, SelectMultiple.VALUE, Arrays.asList(1,2));
   }
 
   @Test

@@ -231,6 +231,26 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
     return ret.stream().toArray(String[]::new);
   }
 
+  public List<Integer> getIntegerArray(Object input) {
+    List<Integer> ret = new ArrayList<>();
+    if (input != null) {
+      if (input instanceof Object[]) {
+        Object[] array = (Object[]) input;
+        for (Object o : array) {
+          ret.add(getInteger(o));
+        }
+      }else if(input instanceof Collection<?>){
+        Collection<Integer> array = (Collection<Integer>) input;
+        for (Object o : array) {
+          ret.add(getInteger(o));
+        }
+      } else {
+        ret.add(getInteger(input));
+      }
+    }
+    return ret;
+  }
+
   public Boolean getBoolean(Object input) {
     Boolean ret = false;
     if (input != null) {

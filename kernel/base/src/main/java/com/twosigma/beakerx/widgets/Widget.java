@@ -47,6 +47,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   public static final String METHOD = "method";
   public static final String DISPLAY = "display_data";
 
+  public static final String INDEX = "index";
+
   private Comm comm;
 
   public Widget() {

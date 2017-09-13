@@ -30,6 +30,7 @@ class ColumnMenu {
   private column: any;
   private dtApi: any;
   private cell: any;
+  public columnIndex: any;
 
   private commands: CommandRegistry = new CommandRegistry();
 
@@ -41,14 +42,11 @@ class ColumnMenu {
       container:  $(this.dtApi.table().container()),
       menu:       null
     };
-    this.menu = new Menu({ commands: this.commands });
-    this.menu.addClass('bko-header-menu');
-    this.menu.addClass('dropdown');
 
-    $(this.menu.contentNode).addClass('dropdown-menu');
+    this.buildMenu();
 
-    this.buildCellMenu(scope);
-    // dtSettings.oApi._fnCallbackReg(dtSettings, 'aoDestroyCallback', $.proxy(this._destroy, this), 'HeaderMenu');
+    const dtSettings = this.dtApi.settings()[0];
+    dtSettings.oApi._fnCallbackReg(dtSettings, 'aoDestroyCallback', $.proxy(this.destroy, this), 'HeaderMenu');
     $(document).off('keydown', this.closeMenu);
     $(document).on('keydown', this.closeMenu);
   }
@@ -61,45 +59,63 @@ class ColumnMenu {
     }, 250);
   }
 
-  buildCellMenu(scope: any): void {
+  private buildMenu(): void {
     const menu = this.column.header && this.column.header.menu;
-    const $el = $("<span/>", { 'class': 'bko-menu bko-column-header-menu' });
-    const $notebookCell = scope.element.closest('.cell');
+    const $trigger = $("<span/>", { 'class': 'bko-menu bko-column-header-menu' });
     const self = this;
 
     if (!this.cell || !menu || !$.isArray(menu.items)) {
       return;
     }
+    $(this.cell).append($trigger);
 
-    $(this.cell).append($el);
+    this.dom.menu = $trigger;
+    this.columnIndex = self.getColumnIndex();
 
-    this.dom.menu = $el;
-    this.dom.menu.data('columnIndex', $(this.cell).data('columnIndex'));
+    this.menu = new Menu({ commands: this.commands });
+    this.menu.addClass('bko-header-menu');
+    this.menu.addClass('dropdown');
+    $(this.menu.contentNode).addClass('dropdown-menu');
 
     this.buildMenuItems(menu.items, this.menu);
-
-    this.dom.menu.on('click', function() {
-      self.setCodeMirrorListener();
-
-      self.menu.node.style.top =  $(self.cell).offset().top - $notebookCell.offset().top + $el.height() + 'px';
-      self.menu.node.style.left = $(self.cell).offset().left - $notebookCell.offset().left + 'px';
-
-      const fixedCols = self.dtApi.settings()[0]._oFixedColumns;
-      const rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
-      let colIdx = $(this).parent().index();
-
-      if (rightHeader && $(rightHeader).has(this).length) {
-        colIdx = self.dtApi.columns(':visible')[0].length - fixedCols.s.rightColumns + colIdx;
-      }
-
-      self.dom.menu.data('columnIndex', colIdx);
-      Widget.attach(self.menu, $notebookCell[0]);
-      self.menu.addClass('open');
-      self.menu.show();
-    });
   }
 
-  setCodeMirrorListener(): void {
+  open($notebookCell, $trigger): void {
+    this.setCodeMirrorListener();
+
+    Widget.attach(this.menu, $notebookCell[0]);
+    this.menu.addClass('open');
+    this.menu.show();
+
+    const menuPosition = this.getMenuPosition($notebookCell, $trigger);
+    this.menu.node.style.top =  menuPosition.top + 'px';
+    this.menu.node.style.left = menuPosition.left + 'px';
+  }
+
+  private getColumnIndex(): number {
+    let columnIndex = this.dtApi.column($(this.cell).index() + ':visible').index();
+    const fixedCols = this.dtApi.settings()[0]._oFixedColumns;
+    const rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
+
+    if (rightHeader && $(rightHeader).has(this.dom.menu).length) {
+      columnIndex = this.dtApi.columns(':visible')[0].length - fixedCols.s.rightColumns + columnIndex;
+    }
+
+    return columnIndex;
+  }
+
+  private getMenuPosition($notebookCell, $trigger) {
+    const $cell = $trigger.parent();
+    const pageHeight = window.innerHeight || document.documentElement.clientHeight;
+    const pixelsBelowViewport = Math.ceil($(this.menu.contentNode).height() + $cell.offset().top + 2 * $cell.height() - pageHeight);
+
+    return {
+      top: ($cell.offset().top - $notebookCell.offset().top + $trigger.height() - (pixelsBelowViewport > 0 ? pixelsBelowViewport : 0)),
+      left: $cell.offset().left - $notebookCell.offset().left + (pixelsBelowViewport > 0 ? $trigger.height() : 0)
+    };
+  }
+
+  private setCodeMirrorListener(): void {
     const self = this;
     const CodeMirrorInstance = $(this.cell).find('.CodeMirror');
 
@@ -112,24 +128,12 @@ class ColumnMenu {
     }
   }
 
-  buildMenuItems(options: any[], menu: Menu): void {
+  private buildMenuItems(options: any[], menu: Menu): void {
     for (let i = 0, ien = options.length; i < ien; i++) {
       let option = options[i];
-      const subitems = (typeof option.items == 'function') ? option.items(this.dom.menu) : option.items;
+      const subitems = (typeof option.items == 'function') ? option.items(this.columnIndex) : option.items;
       const hasSubitems = $.isArray(subitems) && subitems.length;
 
-      // var $item = $('<a/>')
-      //   .attr('href', '#')
-      //   .attr('tabindex', '-1')
-      //   .attr('id', 'dt-select-all')
-      //   .text(oItem.title)
-      //   .data('action', oItem.action || '')
-      //   .bind('click', function(e) {
-      //     // that._handleItemClick($(this));
-      //     e.preventDefault();
-      //     e.stopPropagation();
-      //   });
-      //
       this.commands.addCommand(option.title, {
         label: option.title,
         usage: option.tooltip || '',
@@ -138,22 +142,21 @@ class ColumnMenu {
             return option.icon;
           }
 
-          if (typeof option.isChecked == 'function' && option.isChecked(this.dom.menu)) {
+          if (typeof option.isChecked == 'function' && option.isChecked(this.columnIndex)) {
             return 'fa fa-check';
           }
 
           return '';
         },
         execute: (): void => {
-          if (option.action && option.action !== '' && typeof option.action == 'function') {
-            option.action(this.dom.menu);
+          if (option.action && typeof option.action == 'function') {
+            option.action(this.columnIndex);
           }
-
-          menu.hide();
         }
       });
 
-      !hasSubitems && menu.addItem({ command: option.title });
+      option.separator && menu.addItem({ type: 'separator' });
+      !hasSubitems && menu.addItem({command: option.title});
 
       if (option.shortcut) {
         this.commands.addKeyBinding({
@@ -174,22 +177,25 @@ class ColumnMenu {
         this.buildMenuItems(subitems, submenu);
       }
 
-      if (option.separator) {
-        menu.addItem({ type: 'separator' });
-      }
-
       //
       // if (!_.isEmpty(oItem.tooltip)) {
       //   $li.attr('title', oItem.tooltip);
       // }
     }
   }
+
+  destroy(): void {
+    $(document.body).off('click.table-headermenu');
+    this.dom.container.off('click.headermenu');
+    this.dom.container = null;
+  }
 }
 
-export default function createColumnMenu(scope) {
+export default function columnColumnMenus(scope) {
   const settings = scope.table.settings()[0];
   const init = settings.oInit.columns;
   const columns = scope.columns;
+  const menus: ColumnMenu[] = [];
 
   if (init !== false && (init || columns)) {
     const allColumns = { ...init, ...columns };
@@ -197,10 +203,27 @@ export default function createColumnMenu(scope) {
 
     for (let i = 0, len = cells.length; i < len ; i++) {
       if (allColumns && allColumns[i] !== undefined) {
-        new ColumnMenu(scope, allColumns[i], cells[i]);
+        menus.push(new ColumnMenu(scope, allColumns[i], cells[i]));
       }
     }
   }
 
-  return ColumnMenu;
+  $(scope.table.table().container()).on('click.headermenu', '.bko-column-header-menu', function(e) {
+    var colIdx = $(this).parent().index();
+    var fixedCols = scope.table.settings()[0]._oFixedColumns;
+    var rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
+
+    if (rightHeader && $(rightHeader).has(this).length) {
+      colIdx = scope.table.columns(':visible')[0].length - fixedCols.s.rightColumns + colIdx;
+    }
+
+    for(let i = 0; i < menus.length; i++) {
+      if (menus[i].columnIndex === colIdx) {
+        menus[i].open($(scope.table.table().container()).closest('.cell'), $(this));
+        break;
+      }
+    }
+  });
+
+  return menus;
 };

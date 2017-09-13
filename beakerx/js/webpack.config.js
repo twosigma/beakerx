@@ -17,7 +17,6 @@
 var webpack = require('webpack');
 var package = require('./package.json');
 var path = require('path');
-var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 var tsLoader = require('awesome-typescript-loader');
 
@@ -55,14 +54,7 @@ var plugins = [
     "jQuery":"jquery",
     "window.jQuery":"jquery"
   }),
-  new tsLoader.CheckerPlugin(),
-  // new UglifyJSPlugin({
-  //   exclude: /node_modules/,
-  //   parallel: true,
-  //   uglifyOptions: {
-  //     mangle: false
-  //   }
-  // })
+  new tsLoader.CheckerPlugin()
 ];
 
 module.exports = [

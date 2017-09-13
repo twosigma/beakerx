@@ -78,4 +78,40 @@ public class JavaEvaluatorTest {
     Assertions.assertThat((String) seo.getPayload()).contains("java.lang.ArithmeticException");
   }
 
+  @Test
+  public void singleImport() throws Exception {
+    //given
+    String code = "import java.util.Date;";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    javaEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+  }
+
+  @Test
+  public void onlyPackage() throws Exception {
+    //given
+    String code = "package beaker.test;";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    javaEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+  }
+
+  @Test
+  public void noCode() throws Exception {
+    //given
+    String code = "";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    javaEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+  }
+
 }

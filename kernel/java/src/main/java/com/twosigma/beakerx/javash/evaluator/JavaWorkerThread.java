@@ -84,24 +84,12 @@ class JavaWorkerThread extends WorkerThread {
         Pattern p;
         Matcher m;
         String pname = javaEvaluator.getPackageId();
-
         org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(javaEvaluator.getOutDir()));
-
-        // build the compiler class path
-        String classpath = System.getProperty("java.class.path");
-        String[] classpathEntries = classpath.split(File.pathSeparator);
-        if (classpathEntries != null && classpathEntries.length > 0)
-          compilationUnit.addClassPathEntries(Arrays.asList(classpathEntries));
-        if (!javaEvaluator.getClasspath().isEmpty())
-          compilationUnit.addClassPathEntries(javaEvaluator.getClasspath().getPathsAsStrings());
-        compilationUnit.addClassPathEntry(javaEvaluator.getOutDir());
-
-        // normalize and analyze code
+        buildClasspath(compilationUnit);
         String code = ParserUtil.normalizeCode(j.codeToBeExecuted);
-
         String[] codev = code.split("\n");
-        int ci = 0;
 
+        int ci = 0;
         ci = skipBlankLines(codev, ci);
 
         Map<Integer, Integer> lineNumbersMapping = new HashMap<>();
@@ -216,6 +204,16 @@ class JavaWorkerThread extends WorkerThread {
       }
     }
     NamespaceClient.delBeaker(javaEvaluator.getSessionId());
+  }
+
+  private void buildClasspath(org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit) {
+    String classpath = System.getProperty("java.class.path");
+    String[] classpathEntries = classpath.split(File.pathSeparator);
+    if (classpathEntries != null && classpathEntries.length > 0)
+      compilationUnit.addClassPathEntries(Arrays.asList(classpathEntries));
+    if (!javaEvaluator.getClasspath().isEmpty())
+      compilationUnit.addClassPathEntries(javaEvaluator.getClasspath().getPathsAsStrings());
+    compilationUnit.addClassPathEntry(javaEvaluator.getOutDir());
   }
 
   private String generateClassId() {

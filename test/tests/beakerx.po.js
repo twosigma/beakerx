@@ -42,6 +42,21 @@ var BeakerXPageObject = function () {
     this.kernelIdleIcon.waitForEnabled();
   }
 
+  this.clickSaveNotebook = function () {
+    browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
+  }
+
+  this.closeAndHaltNotebook = function (done) {
+    this.clickSaveNotebook();
+    browser.click('=File');
+    browser.waitForVisible('=Close and Halt');
+    browser.click('=Close and Halt');
+    browser.waitUntil(function () {
+      return browser.windowHandles().length === 1
+    }, 10000);
+    browser.call(done);
+  }
+
   this.getCodeCellByIndex = function (index) {
     return $$('div.code_cell')[index];
   }
@@ -82,6 +97,12 @@ var BeakerXPageObject = function () {
   this.dataTablesIsEnabled = function(dtcontainer){
     var dataTables = dtcontainer.$('.dataTables_scroll');
     dataTables.waitForEnabled();
+  }
+
+  this.runCellToGetWidgetElement = function(index){
+    this.kernelIdleIcon.waitForEnabled();
+    var codeCell = this.runCodeCellByIndex(index);
+    return codeCell.$('div.jupyter-widgets');
   }
 
 };

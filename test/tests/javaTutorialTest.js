@@ -24,6 +24,10 @@ describe('JavaTutorial notebook', function () {
     beakerxPO.runNotebookByName('javaTutorial.ipynb', done);
   }, 2);
 
+  afterAll(function (done) {
+    beakerxPO.closeAndHaltNotebook(done);
+  });
+
   describe('Run first cell. ', function () {
     it('Output contains "test.beaker.BeakerTest"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();

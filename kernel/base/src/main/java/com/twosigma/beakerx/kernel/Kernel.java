@@ -80,7 +80,7 @@ public abstract class Kernel implements KernelFunctionality {
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     this.magicCommand = handlers.getExecuteRequestHandler().getMagicCommand();
-    DisplayerDataMapper.turnOff();
+    DisplayerDataMapper.init();
     configureSignalHandler();
     initKernel(getKernelParameters());
     configureJvmRepr();

@@ -20,6 +20,7 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 import static java.util.Arrays.stream;
 
 import clojure.lang.LazySeq;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
 import com.twosigma.beakerx.clojure.handlers.ClojureCommOpenHandler;
@@ -86,8 +87,15 @@ public class Clojure extends Kernel {
         }};
       }
     });
-    DisplayerDataMapper.turnOn();
+    DisplayerDataMapper.register(converter);
   }
+
+  private static ObjectMapper mapper = new ObjectMapper();
+  private static DisplayerDataMapper.Converter converter = data -> {
+    String s = mapper.writeValueAsString(data);
+    return mapper.readValue(s, Object.class);
+  };
+
 
   @Override
   public KernelParameters getKernelParameters() {

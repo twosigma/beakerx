@@ -15,32 +15,31 @@
  */
 package com.twosigma.beakerx;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class DisplayerDataMapper {
 
-  private static ObjectMapper mapper = new ObjectMapper();
   private static Converter none = data -> data;
-  private static Converter simple = data -> {
-    String s = mapper.writeValueAsString(data);
-    return mapper.readValue(s, Object.class);
-  };
-  private static Converter converter = none;
+  private static DisplayerDataMapper INSTANCE = new DisplayerDataMapper();
+
+  private Converter converter;
+
+  private DisplayerDataMapper() {
+    this.converter = none;
+  }
+
+  public static void register(Converter converter){
+    INSTANCE.converter = converter;
+  }
 
   static Object convert(Object data) {
     try {
-      return converter.convert(data);
+      return INSTANCE.converter.convert(data);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  public static void turnOn() {
-    converter = simple;
-  }
-
-  public static void turnOff() {
-    converter = none;
+  public static void init() {
+    INSTANCE.converter = none;
   }
 
   @FunctionalInterface

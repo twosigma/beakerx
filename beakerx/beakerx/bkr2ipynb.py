@@ -19,6 +19,7 @@ import sys
 import json
 import nbformat
 import argparse
+import glob
 from nbformat.v4 import new_notebook, new_code_cell, new_markdown_cell
 
 def setHeader(level, title):
@@ -87,6 +88,8 @@ def convertNotebook(notebook):
     nbformat.write(nb, notebook.partition('.')[0] + '.ipynb')
 
 def main():
+    if '*' in sys.argv[-1]:
+        sys.argv[-1:] = glob.glob(sys.argv[-1])
     parser = argparse.ArgumentParser()
     parser.add_argument('notebooks', nargs='+',
                         help="beaker notebooks to be converted. Enter *.bkr in case you want to convert all notebooks at once.")

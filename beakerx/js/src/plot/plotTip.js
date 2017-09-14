@@ -273,7 +273,6 @@ define([
       }
 
       clear(scope, d, true);
-      impl.renderTips(scope);
     },
 
     toggleTooltip: function (scope, d) {

@@ -1,6 +1,6 @@
 {
   "argv": [
-    "java", "-cp", "__PATH__", "__MAIN_CLASS__",  "{connection_file}"
+    "java", "-cp", ${PATH}, "__MAIN_CLASS__",  "{connection_file}"
   ],
   "display_name": "SQL",
   "language": "SQL",

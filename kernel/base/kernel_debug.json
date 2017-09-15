@@ -1,5 +1,5 @@
 {
-  "argv": [ "java", "-jar", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9000", "__PATH__", "{connection_file}" ],
+  "argv": [ "java", "-jar", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9000", ${PATH}, "{connection_file}" ],
   "display_name": "Groovy",
   "language": "groovy",
   "env": { "PS1":"groovy>"}

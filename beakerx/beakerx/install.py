@@ -22,6 +22,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from string import Template
 
 from traitlets.config.manager import BaseJSONConfigManager
 from distutils import log
@@ -75,7 +76,7 @@ def _install_kernels():
         # developer install to change too, so not doing right now.
         template = pkg_resources.resource_string(
             'beakerx', os.path.join('static', 'kernel', kernel, 'kernel.json'))
-        contents = template.decode().replace('__PATH__', classpath)
+        contents = Template(template.decode()).substitute(PATH=classpath)
         with tempfile.TemporaryDirectory() as tmpdir:
             with open(os.path.join(tmpdir, 'kernel.json'), 'w') as f:
                 f.write(contents)

@@ -1,6 +1,6 @@
 {
   "argv": [
-    "java", "-cp", ${PATH}, "__MAIN_CLASS__",  "{connection_file}"
+    "java", "-cp", ${PATH}, $MAIN_CLASS,  "{connection_file}"
   ],
   "display_name": "Scala",
   "language": "scala",

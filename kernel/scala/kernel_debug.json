@@ -1,6 +1,6 @@
 {
   "argv": [ "java", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9010",
-                    "-cp", ${PATH}, "__MAIN_CLASS__", "{connection_file}" ],
+                    "-cp", ${PATH}, $MAIN_CLASS, "{connection_file}" ],
   "display_name": "Scala",
   "language": "scala",
   "env": { "PS1":"scala>"}

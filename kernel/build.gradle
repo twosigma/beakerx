@@ -57,7 +57,7 @@ subprojects {
     ext.executeStaticContent = true
     doLast {
       if (executeStaticContent) {
-        def kernelJson = file('kernel.json').text.replace('__MAIN_CLASS__', mainClassName)
+        def kernelJson = file('kernel.json').text.replace('$MAIN_CLASS', '"' + mainClassName + '"')
         file(pathToStaticContent + kernelIdName + "/kernel.json").withWriter { w ->
           w << kernelJson
         }

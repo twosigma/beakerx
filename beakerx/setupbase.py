@@ -325,7 +325,6 @@ def install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel')
                     src_spec_file = os.path.join(source_kernelspec, 'kernel.json')
                     target_spec_file = src_spec_file + '.tmp'
                     with open(src_spec_file) as infile:
-                        #classpath = "\"" + classpath + "\""
                         lines = Template(infile.read()).substitute(PATH="\"" + classpath + "\"")
                     with open(target_spec_file, 'w') as outfile:
                         outfile.write(lines)

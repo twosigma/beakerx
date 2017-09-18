@@ -444,13 +444,13 @@ define([
     if (model.columnNames !== undefined)
       self.columnNames = model.columnNames.slice(0);
     else
-      self.columnNames = undefined;
+      self.columnNames = [];
     self.timeStrings = model.timeStrings;
     self.tz          = model.timeZone;
     if (model.types !== undefined)
       self.types = model.types.slice(0);
     else
-      self.types = undefined;
+      self.types = [];
 
     if (self.hasIndex) {
       if (self.columnNames !== undefined) {
@@ -482,7 +482,7 @@ define([
         self.pagination.fixRight = 0;
       }
       self.barsOnColumn          = self.savedstate.barsOnColumn || {};
-      self.cellHighlightersData  = self.savedstate.cellHighlightersData || {};
+      self.cellHighlightersData  = self.savedstate.cellHighlightersData || [];
       self.tableFilter           = self.savedstate.tableFilter || '';
       self.columnFilter          = self.savedstate.columnFilter || [];
       self.showFilter            = self.savedstate.showFilter;
@@ -545,7 +545,7 @@ define([
 
       self.cellHighlightersData = model.cellHighlighters ? _.map(model.cellHighlighters, function(highlighter){
         return _.extend({ colInd: self.getColumnIndexByColName(highlighter.colName) }, highlighter);
-      }) : {};
+      }) : [];
       self.tableFilter       = '';
       self.columnFilter      = [];
       self.showFilter        = false;
@@ -586,12 +586,12 @@ define([
       self.actualtype = [];
       self.actualalign = [];
 
-      for (i = 0; i < self.columnNames.length; i++) {
-        typesAndAlignments = self.getColumnTypeAndAlignment(i + 1);
+      _.forEach(self.columnNames, function(column, index) {
+        typesAndAlignments = self.getColumnTypeAndAlignment(index + 1);
 
         self.actualtype.push(typesAndAlignments.actualtype);
         self.actualalign.push(typesAndAlignments.actualalign);
-      }
+      });
 
       if (!_.isEmpty(model.alignmentForType)) {
         _.forEach(model.types, function(type, index) {
@@ -731,7 +731,7 @@ define([
   TableScope.prototype.doCreateData = function(model) {
     var self = this;
     // create a dummy column to keep server ordering if not already present
-    var values = model.hasOwnProperty('filteredValues') ? model.filteredValues : model.values;
+    var values = model.hasOwnProperty('filteredValues') ? model.filteredValues : model.values || [];
     if (!self.hasIndex) {
       var data = [];
       var r;

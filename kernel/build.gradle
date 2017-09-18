@@ -54,7 +54,13 @@ subprojects {
   ext.pathToStaticContent = '../../beakerx/beakerx/static/kernel/'
 
   task staticContent {
-
+    doLast {
+        copy {
+          from '.'
+          into pathToStaticContent + kernelIdName
+          include '*.png'
+        }
+    }
   }
   build.finalizedBy staticContent
 

@@ -24,6 +24,10 @@ describe('ClojureTutorial notebook', function () {
     beakerxPO.runNotebookByName('ClojureTutorial.ipynb', done);
   }, 2);
 
+  afterAll(function (done) {
+    beakerxPO.closeAndHaltNotebook(done);
+  });
+
   describe('Run first cell. ', function () {
     it('Output contains "0, 1, 1, 2, 3, 5"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();

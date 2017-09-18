@@ -545,10 +545,7 @@ define([
             var plotId = self.stdmodel.plotId;
             if(!_.isEmpty(item.clickTag)){
               if (self.model.setActionDetails) {
-                self.model.setActionDetails(plotId, item, e).then(
-                  function () { plotUtils.evaluateTagCell(item.clickTag); },
-                  function () { console.error('set action details error'); }
-                );
+                self.model.setActionDetails(plotId, item, e);
               } else {
               	var params = plotUtils.getActionObject(self.model.getCellModel().type, e);
               	params.actionType = 'onclick';

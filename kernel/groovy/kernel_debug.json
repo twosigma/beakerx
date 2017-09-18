@@ -1,5 +1,5 @@
 {
-  "argv": [ "java", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9000", "-cp", ${PATH}, $MAIN_CLASS,"{connection_file}" ],
+  "argv": [ "java", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9000", "-cp", ${PATH}, "com.twosigma.beakerx.groovy.kernel.Groovy","{connection_file}" ],
   "display_name": "Groovy",
   "language": "groovy",
   "env": { "PS1":"groovy>"}

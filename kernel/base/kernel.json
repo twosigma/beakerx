@@ -1,6 +1,0 @@
-{
-  "argv": [ "java", "-jar", ${PATH}, "{connection_file}" ],
-  "display_name": "Groovy",
-  "language": "groovy",
-  "env": { "PS1":"groovy>"}
-}

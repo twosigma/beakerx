@@ -1,6 +1,6 @@
 {
   "argv": [
-    "java", "-cp", ${PATH}, $MAIN_CLASS,  "{connection_file}"
+    "java", "-cp", ${PATH}, "com.twosigma.beakerx.javash.kernel.Java",  "{connection_file}"
   ],
   "display_name": "Java",
   "language": "java",

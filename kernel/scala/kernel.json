@@ -1,6 +1,6 @@
 {
   "argv": [
-    "java", "-cp", ${PATH}, $MAIN_CLASS,  "{connection_file}"
+    "java", "-cp", ${PATH}, "com.twosigma.beakerx.scala.kernel.Scala",  "{connection_file}"
   ],
   "display_name": "Scala",
   "language": "scala",

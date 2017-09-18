@@ -35,7 +35,7 @@ def _all_kernels():
 
 def convert_path(path):
     if sys.platform == 'win32':
-        return path.replace('\\', '')
+        return path.replace('\\', '/')
     return path
 
 def _classpath_for(kernel):
@@ -75,7 +75,8 @@ def _install_kernels():
         classpath = json.dumps(os.pathsep.join([base_classpath, kernel_classpath]))
         template = pkg_resources.resource_string(
             'beakerx', os.path.join('static', 'kernel', kernel, 'kernel.json'))
-        contents = Template(template.decode()).substitute(PATH="\"" + classpath + "\"")
+        contents = Template(template.decode()).substitute(PATH=classpath)
+
         with tempfile.TemporaryDirectory() as tmpdir:
             with open(os.path.join(tmpdir, 'kernel.json'), 'w') as f:
                 f.write(contents)

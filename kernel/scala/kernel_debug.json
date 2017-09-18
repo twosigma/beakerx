@@ -1,6 +1,6 @@
 {
   "argv": [ "java", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9010",
-                    "-cp", ${PATH}, $MAIN_CLASS, "{connection_file}" ],
+                    "-cp", ${PATH}, "com.twosigma.beakerx.scala.kernel.Scala", "{connection_file}" ],
   "display_name": "Scala",
   "language": "scala",
   "env": { "PS1":"scala>"}

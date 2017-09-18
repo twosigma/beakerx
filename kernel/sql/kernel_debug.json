@@ -1,6 +1,6 @@
 {
   "argv": [ "java", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9070",
-                    "-cp", ${PATH}, $MAIN_CLASS, "{connection_file}" ],
+                    "-cp", ${PATH}, "com.twosigma.beakerx.sql.kernel.SQL", "{connection_file}" ],
   "display_name": "SQL",
   "language": "SQL",
   "env": { "PS1":"SQL>"}

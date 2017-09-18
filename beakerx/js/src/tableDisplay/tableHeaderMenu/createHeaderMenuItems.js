@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+var _ = require('underscore');
+
 /**
  * This function should be called in tableScope context:
  * createHeaderMenuItems.call(tableScope, menuHelper, getFormatSubitems)

@@ -24,6 +24,10 @@ describe('Kotlin-example notebook', function () {
     beakerxPO.runNotebookByName('Kotlin-example.ipynb', done);
   }, 2);
 
+  afterAll(function (done) {
+    beakerxPO.closeAndHaltNotebook(done);
+  });
+
   describe('Run first cell. ', function () {
     it('Output contains "hello, 14"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();

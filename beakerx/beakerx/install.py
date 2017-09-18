@@ -22,7 +22,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
-
+from jupyter_client.kernelspecapp import KernelSpecManager
 from traitlets.config.manager import BaseJSONConfigManager
 from distutils import log
 
@@ -32,6 +32,9 @@ def _all_kernels():
         'beakerx', os.path.join('static', 'kernel'))
     return [kernel for kernel in kernels if kernel != 'base']
 
+def _base_classpath_for(kernel):
+    return pkg_resources.resource_filename(
+            'beakerx', os.path.join('static', 'kernel', kernel))
 
 def _classpath_for(kernel):
     return pkg_resources.resource_filename(
@@ -52,7 +55,15 @@ def _copy_tree(src, dst):
         shutil.rmtree(dst)
     shutil.copytree(src, dst)
 
-
+def _copy_icons():
+    log.info("installing icons...")
+    kernels = KernelSpecManager().find_kernel_specs()
+    for kernel in _all_kernels():
+        dst_base = kernels.get(kernel)
+        src_base = _base_classpath_for(kernel)
+        shutil.copyfile(os.path.join(src_base, 'logo-32x32.png'), os.path.join(dst_base, 'logo-32x32.png'))
+        shutil.copyfile(os.path.join(src_base, 'logo-64x64.png'), os.path.join(dst_base, 'logo-64x64.png'))
+    
 def _install_css():
     log.info("installing custom CSS...")
     resource = os.path.join('static', 'custom')
@@ -137,6 +148,7 @@ def install():
         _install_nbextension()
         _install_kernels()
         _install_css()
+        _copy_icons()
         _install_kernelspec_manager(args.prefix)
     except KeyboardInterrupt:
         return 130

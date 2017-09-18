@@ -61,6 +61,11 @@ subprojects {
         file(pathToStaticContent + kernelIdName + "/kernel.json").withWriter { w ->
           w << kernelJson
         }
+        copy {
+          from '.'
+          into pathToStaticContent + kernelIdName
+          include '*.png'
+        }
       }
     }
   }

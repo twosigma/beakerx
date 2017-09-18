@@ -84,12 +84,15 @@ class ColumnMenu {
     this.setCodeMirrorListener();
 
     Widget.attach(this.menu, $notebookCell[0]);
+    this.menu.node.style.top = null;
+    this.menu.node.style.bottom = '0px';
     this.menu.addClass('open');
     this.menu.show();
 
     const menuPosition = this.getMenuPosition($notebookCell, $trigger);
     this.menu.node.style.top =  menuPosition.top + 'px';
     this.menu.node.style.left = menuPosition.left + 'px';
+    this.menu.node.style.bottom = null;
   }
 
   private getColumnIndex(): number {
@@ -106,8 +109,9 @@ class ColumnMenu {
 
   private getMenuPosition($notebookCell, $trigger) {
     const $cell = $trigger.parent();
+    const rectObject = $trigger[0].getBoundingClientRect();
     const pageHeight = window.innerHeight || document.documentElement.clientHeight;
-    const pixelsBelowViewport = Math.ceil($(this.menu.contentNode).height() + $cell.offset().top + 2 * $cell.height() - pageHeight);
+    const pixelsBelowViewport = Math.ceil($(this.menu.contentNode).height() + rectObject.bottom - pageHeight);
 
     return {
       top: ($cell.offset().top - $notebookCell.offset().top + $trigger.height() - (pixelsBelowViewport > 0 ? pixelsBelowViewport : 0)),
@@ -208,7 +212,7 @@ export default function columnColumnMenus(scope) {
     }
   }
 
-  $(scope.table.table().container()).on('click.headermenu', '.bko-column-header-menu', function(e) {
+  $(scope.element).on('click.headermenu', '.bko-column-header-menu', function(e) {
     var colIdx = $(this).parent().index();
     var fixedCols = scope.table.settings()[0]._oFixedColumns;
     var rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
@@ -219,7 +223,7 @@ export default function columnColumnMenus(scope) {
 
     for(let i = 0; i < menus.length; i++) {
       if (menus[i].columnIndex === colIdx) {
-        menus[i].open($(scope.table.table().container()).closest('.cell'), $(this));
+        menus[i].open($(scope.element).closest('.cell'), $(this));
         break;
       }
     }

@@ -54,7 +54,10 @@ var plugins = [
     "jQuery":"jquery",
     "window.jQuery":"jquery"
   }),
-  new tsLoader.CheckerPlugin()
+  new tsLoader.CheckerPlugin(),
+  new webpack.DefinePlugin({
+    BEAKERX_VERSION: JSON.stringify(package.version)
+  })
 ];
 
 module.exports = [

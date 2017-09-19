@@ -108,7 +108,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     var columnLength = data.columnNames.length;
     var rowLimit = data.rowLimit;
     var tmpl = '<div id="' + this.wrapperId + '">' +
-      '<p class="ansired">Error: table is too big to display. ' +
+      '<p class="ansired">Note: table is too big to display. ' +
       'The limit is ' + rowLimit + ' rows, but this table has ' + rowLength + ' rows. ' +
       'The first 1000 rows are displayed as a preview.</p></div>';
     var tmplElement = $(tmpl);

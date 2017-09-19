@@ -41,7 +41,7 @@ import java.util.HashMap;
 public class FloatProgress extends BoundedFloatWidget {
 
   public static final String VIEW_NAME_VALUE = "ProgressView";
-  public static final String MODEL_NAME_VALUE = "ProgressModel";
+  public static final String MODEL_NAME_VALUE = "FloatProgressModel";
   protected static final String ORIENTATION = "orientation";
 
   private String orientation = "horizontal";

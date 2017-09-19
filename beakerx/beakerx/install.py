@@ -34,18 +34,13 @@ def _all_kernels():
         'beakerx', os.path.join('static', 'kernel'))
     return [kernel for kernel in kernels if kernel != 'base']
 
-def convert_path(path):
-    if sys.platform == 'win32':
-        return path.replace('\\', '/')
-    return path
-
 def _base_classpath_for(kernel):
     return pkg_resources.resource_filename(
             'beakerx', os.path.join('static', 'kernel', kernel))
 
 def _classpath_for(kernel):
-    return convert_path(pkg_resources.resource_filename(
-        'beakerx', os.path.join('static', 'kernel', kernel, 'lib', '*')))
+    return pkg_resources.resource_filename(
+        'beakerx', os.path.join('static', 'kernel', kernel, 'lib', '*'))
 
 
 def _install_nbextension():

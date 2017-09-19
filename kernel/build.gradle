@@ -54,19 +54,13 @@ subprojects {
   ext.pathToStaticContent = '../../beakerx/beakerx/static/kernel/'
 
   task staticContent {
-    ext.executeStaticContent = true
     doLast {
-      if (executeStaticContent) {
-        def kernelJson = file('kernel.json').text.replace('__MAIN_CLASS__', mainClassName)
-        file(pathToStaticContent + kernelIdName + "/kernel.json").withWriter { w ->
-          w << kernelJson
-        }
         copy {
           from '.'
           into pathToStaticContent + kernelIdName
           include '*.png'
+          include 'kernel.json'
         }
-      }
     }
   }
   build.finalizedBy staticContent

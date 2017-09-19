@@ -1,5 +1,5 @@
 {
-  "argv": [ "java", "-jar", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9110", "__PATH__", "{connection_file}" ],
+  "argv": [ "java", "-jar", "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9110", ${PATH}, "{connection_file}" ],
   "display_name": "C++",
   "language": "cpp",
   "env": { "PS1":"cpp>"}

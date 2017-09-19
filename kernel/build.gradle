@@ -59,6 +59,7 @@ subprojects {
           from '.'
           into pathToStaticContent + kernelIdName
           include '*.png'
+          include 'kernel.json'
         }
     }
   }

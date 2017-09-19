@@ -37,5 +37,4 @@ public abstract class FloatWidget<T extends Serializable> extends ValueWidget<T>
   public T getValueFromObject(Object input) {
     return (T) getDouble(input);
   }
-
 }

@@ -31,8 +31,8 @@ var PlotModel = widgets.DOMWidgetModel.extend({
       _view_name : 'PlotView',
       _model_module : 'beakerx',
       _view_module : 'beakerx',
-      _model_module_version: BEAKERX_VERSION,
-      _view_module_version: BEAKERX_VERSION
+      _model_module_version: '*',
+      _view_module_version: '*'
     });
   }
 });

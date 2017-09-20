@@ -30,7 +30,8 @@ import sys
 import site
 import json
 from subprocess import check_call
-
+from string import Template
+from beakerx.install import _classpath_for
 from setuptools import Command
 from setuptools.command.develop import develop
 from setuptools.command.build_py import build_py
@@ -320,17 +321,15 @@ def install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel')
             try:
                 def install_kernel(source_kernelspec='', kernelspec_name=None):
                     name = kernelspec_name if kernelspec_name else os.path.basename(source_kernelspec)
-                    classpath = (os.path.abspath(os.path.join(target_dir, 'base', 'lib', '*')) + (';' if sys.platform == 'win32' else ':') + os.path.abspath(os.path.join(target_dir, name, 'lib', '*'))).replace('\\', '/')
+                    base_classpath = _classpath_for('base')
+                    kernel_classpath = _classpath_for(name)
+                    classpath = json.dumps(os.pathsep.join([base_classpath, kernel_classpath]))
                     src_spec_file = os.path.join(source_kernelspec, 'kernel.json')
                     target_spec_file = src_spec_file + '.tmp'
-                    lines = []
                     with open(src_spec_file) as infile:
-                        for line in infile:
-                            line = line.replace('__PATH__', classpath)
-                            lines.append(line)
+                        lines = Template(infile.read()).substitute(PATH=classpath)
                     with open(target_spec_file, 'w') as outfile:
-                        for line in lines:
-                            outfile.write(line)
+                        outfile.write(lines)
                     os.remove(src_spec_file)
                     os.rename(target_spec_file, src_spec_file)
                     run(['jupyter', 'kernelspec', 'install', '--sys-prefix', '--replace', '--name', name, source_kernelspec])

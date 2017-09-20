@@ -33,7 +33,9 @@ var TableDisplayModel = widgets.DOMWidgetModel.extend({
       _model_name: 'TableDisplayModel',
       _view_name: 'TableDisplayView',
       _model_module: 'beakerx',
-      _view_module: 'beakerx'
+      _view_module: 'beakerx',
+      _model_module_version: '*',
+      _view_module_version: '*'
     });
   }
 });
@@ -106,7 +108,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     var columnLength = data.columnNames.length;
     var rowLimit = data.rowLimit;
     var tmpl = '<div id="' + this.wrapperId + '">' +
-      '<p class="ansired">Error: table is too big to display. ' +
+      '<p class="ansired">Note: table is too big to display. ' +
       'The limit is ' + rowLimit + ' rows, but this table has ' + rowLength + ' rows. ' +
       'The first 1000 rows are displayed as a preview.</p></div>';
     var tmplElement = $(tmpl);

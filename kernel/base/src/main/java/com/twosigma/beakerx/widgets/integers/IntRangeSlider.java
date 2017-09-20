@@ -25,8 +25,8 @@ import java.util.HashMap;
  */
 public class IntRangeSlider extends BoundedIntRangeWidget{
   
-  public static final String VIEW_NAME_VALUE = "IntSliderView";
-  public static final String MODEL_NAME_VALUE = "IntSliderModel";
+  public static final String VIEW_NAME_VALUE = "IntRangeSliderView";
+  public static final String MODEL_NAME_VALUE = "IntRangeSliderModel";
   
   protected static final String ORIENTATION = "orientation";
   protected static final String CONTINUOUS_UPDATE = "continuous_update";

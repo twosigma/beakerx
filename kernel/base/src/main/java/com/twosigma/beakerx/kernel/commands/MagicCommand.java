@@ -59,7 +59,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.text.StrMatcher;
@@ -451,9 +451,9 @@ public class MagicCommand {
 
   private Options createForTimeIt() {
     Options options = new Options();
-    options.addOption("n", true, "Execute the given statement <N> times in a loop");
-    options.addOption("r", true, "Repeat the loop iteration <R> times and take the best result. Default: 3");
-    options.addOption("q", "Quiet, do not print result.");
+    //options.addOption("n", true, "Execute the given statement <N> times in a loop");
+    //options.addOption("r", true, "Repeat the loop iteration <R> times and take the best result. Default: 3");
+    options.addOption("q", false, "Quiet, do not print result.");
 
     return options;
   }
@@ -478,7 +478,7 @@ public class MagicCommand {
     try {
       StrTokenizer tokenizer = new StrTokenizer(code.asString());
 
-      CommandLineParser parser = new DefaultParser();
+      CommandLineParser parser = new BasicParser();
       CommandLine cmd = parser.parse(createForTimeIt(), tokenizer.getTokenArray());
 
       if (cmd.hasOption('n')) {
@@ -493,7 +493,7 @@ public class MagicCommand {
 
       return timeItOption;
     } catch (ParseException e) {
-      throw new IllegalStateException("Cannot parse code to obtain.");
+      throw new IllegalStateException(e.toString());
     }
   }
 

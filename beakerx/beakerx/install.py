@@ -22,7 +22,9 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from string import Template
 
+from jupyter_client.kernelspecapp import KernelSpecManager
 from traitlets.config.manager import BaseJSONConfigManager
 from distutils import log
 
@@ -32,6 +34,9 @@ def _all_kernels():
         'beakerx', os.path.join('static', 'kernel'))
     return [kernel for kernel in kernels if kernel != 'base']
 
+def _base_classpath_for(kernel):
+    return pkg_resources.resource_filename(
+            'beakerx', os.path.join('static', 'kernel', kernel))
 
 def _classpath_for(kernel):
     return pkg_resources.resource_filename(
@@ -52,7 +57,15 @@ def _copy_tree(src, dst):
         shutil.rmtree(dst)
     shutil.copytree(src, dst)
 
-
+def _copy_icons():
+    log.info("installing icons...")
+    kernels = KernelSpecManager().find_kernel_specs()
+    for kernel in _all_kernels():
+        dst_base = kernels.get(kernel)
+        src_base = _base_classpath_for(kernel)
+        shutil.copyfile(os.path.join(src_base, 'logo-32x32.png'), os.path.join(dst_base, 'logo-32x32.png'))
+        shutil.copyfile(os.path.join(src_base, 'logo-64x64.png'), os.path.join(dst_base, 'logo-64x64.png'))
+    
 def _install_css():
     log.info("installing custom CSS...")
     resource = os.path.join('static', 'custom')
@@ -67,15 +80,11 @@ def _install_kernels():
 
     for kernel in _all_kernels():
         kernel_classpath = _classpath_for(kernel)
-        classpath = os.pathsep.join([base_classpath, kernel_classpath])
-        # workaround #5864
-        if sys.platform == 'win32':
-            classpath = classpath.replace('\\', '/')
-        # #5859: replace with string.Template, though this requires the
-        # developer install to change too, so not doing right now.
+        classpath = json.dumps(os.pathsep.join([base_classpath, kernel_classpath]))
         template = pkg_resources.resource_string(
             'beakerx', os.path.join('static', 'kernel', kernel, 'kernel.json'))
-        contents = template.decode().replace('__PATH__', classpath)
+        contents = Template(template.decode()).substitute(PATH=classpath)
+
         with tempfile.TemporaryDirectory() as tmpdir:
             with open(os.path.join(tmpdir, 'kernel.json'), 'w') as f:
                 f.write(contents)
@@ -85,7 +94,6 @@ def _install_kernels():
                 '--name', kernel, tmpdir
             ]
             subprocess.check_call(install_cmd)
-
 
 def _pretty(it): 
     return json.dumps(it, indent=2)
@@ -137,6 +145,7 @@ def install():
         _install_nbextension()
         _install_kernels()
         _install_css()
+        _copy_icons()
         _install_kernelspec_manager(args.prefix)
     except KeyboardInterrupt:
         return 130

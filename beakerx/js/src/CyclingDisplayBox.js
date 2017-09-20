@@ -25,7 +25,9 @@ var CyclingDisplayBoxModel = widgets.BoxModel.extend({
   _model_name : 'CyclingDisplayBoxModel',
   _view_name : 'CyclingDisplayBoxView',
   _model_module : 'beakerx',
-  _view_module : 'beakerx'
+  _view_module : 'beakerx',
+  _model_module_version: '*',
+  _view_module_version: '*'
 });
 
 var CyclingDisplayBoxView = widgets.BoxView.extend({

@@ -154,13 +154,13 @@ define([
         getWidth : function() {
           return self.width;
         },
-        onClick: function(subplotId, item, e) {
+        onClick: function(plotIndex, item, e) {
           for (var i = 0; i < self.stdmodel.plots.length; i++) {
             var subplot = self.stdmodel.plots[i];
-            if (subplotId === subplot.plotId) {
+            if (plotIndex === subplot.plotIndex) {
               self.sendEvent(
                 'onclick',
-                subplotId,
+                plotIndex,
                 item.uid,
                 plotUtils.getActionObject(self.model.getCellModel().type, e, i)
               );
@@ -168,28 +168,28 @@ define([
             }
           }
         },
-        onKey: function(key, subplotId, item, e) {
+        onKey: function(key, plotIndex, item, e) {
           for (var i = 0; i < self.stdmodel.plots.length; i++) {
             var subplot = self.stdmodel.plots[i];
-            if (subplotId === subplot.plotId) {
+            if (plotIndex === subplot.plotIndex) {
               var params = plotUtils.getActionObject(self.model.getCellModel().type, e, i);
 
               params.key = key;
-              self.sendEvent('onkey', subplotId, item.uid, params);
+              self.sendEvent('onkey', plotIndex, item.uid, params);
               break;
             }
           }
         },
-        setActionDetails: function(subplotId, item, e) {
+        setActionDetails: function(plotIndex, item, e) {
           for (var i = 0; i < self.stdmodel.plots.length; i++) {
             var subplot = self.stdmodel.plots[i];
 
-            if (subplotId === subplot.plotId) {
+            if (plotIndex === subplot.plotIndex) {
               var params = plotUtils.getActionObject(self.model.getCellModel().type, e, i);
               params.actionType = 'onclick';
               params.tag = item.clickTag;
 
-              self.sendEvent('actiondetails', subplotId, item.uid, params);
+              self.sendEvent('actiondetails', plotIndex, item.uid, params);
               break;
             }
           }

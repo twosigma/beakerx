@@ -176,6 +176,7 @@ public class NamespaceClient {
     HashMap<String, Serializable> state = new HashMap<>();
     state.put("runByTag", tag);
     data.put("state", state);
+    data.put("buffer_paths", new HashMap<>());
     c.setData(data);
     c.send();
   }

@@ -154,47 +154,71 @@ define([
         getWidth : function() {
           return self.width;
         },
-        onClick: function(subplotId, item, e) {
+        onClick: function(plotIndex, item, e) {
           for (var i = 0; i < self.stdmodel.plots.length; i++) {
             var subplot = self.stdmodel.plots[i];
-            if (subplotId === subplot.plotId) {
+            if (plotIndex === subplot.plotIndex) {
+              self.sendEvent(
+                'onclick',
+                plotIndex,
+                item.uid,
+                plotUtils.getActionObject(self.model.getCellModel().type, e, i)
+              );
+              break;
+            }
+          }
+        },
+        onKey: function(key, plotIndex, item, e) {
+          for (var i = 0; i < self.stdmodel.plots.length; i++) {
+            var subplot = self.stdmodel.plots[i];
+            if (plotIndex === subplot.plotIndex) {
               var params = plotUtils.getActionObject(self.model.getCellModel().type, e, i);
-              plotService.onClick(self.model.getCellModel().update_id,
-                item.uid,
-                self.model.getEvaluatorId(),
-                params);
+
+              params.key = key;
+              self.sendEvent('onkey', plotIndex, item.uid, params);
+              break;
             }
           }
         },
-        onKey: function(key, subplotId, item, e) {
+        setActionDetails: function(plotIndex, item, e) {
           for (var i = 0; i < self.stdmodel.plots.length; i++) {
             var subplot = self.stdmodel.plots[i];
-            if (subplotId === subplot.plotId) {
-              var actionObject = plotUtils.getActionObject(self.model.getCellModel().type, e, i);
-              plotService.onKey(self.model.getCellModel().update_id,
-                item.uid,
-                self.model.getEvaluatorId(),
-                { key: key, actionObject: actionObject });
+
+            if (plotIndex === subplot.plotIndex) {
+              var params = plotUtils.getActionObject(self.model.getCellModel().type, e, i);
+              params.actionType = 'onclick';
+              params.tag = item.clickTag;
+
+              self.sendEvent('actiondetails', plotIndex, item.uid, params);
+              break;
             }
           }
-        },
-        setActionDetails: function(subplotId, item, e) {
-          var actionObject;
-          for (var i = 0; i < self.stdmodel.plots.length; i++) {
-            var subplot = self.stdmodel.plots[i];
-            if (subplotId === subplot.plotId) {
-              actionObject = plotUtils.getActionObject(self.model.getCellModel().type, e, i);
-            }
-          }
-          return plotService.setActionDetails(self.model.getCellModel().update_id,
-            item.uid,
-            self.model.getEvaluatorId(),
-            actionObject);
         }
       };
       models.push(pl);
     }
     self.models = models;
+  };
+
+  CombinedPlotScope.prototype.sendEvent = function(eventName, plotId, itemId, params) {
+    this.plotDisplayView.model.send({
+      event: eventName,
+      plotId: plotId,
+      itemId: itemId,
+      params: params
+    }, this.plotDisplayView.model.callbacks(this.plotDisplayView));
+  };
+
+  CombinedPlotScope.prototype.updateModelData = function(data) {
+    if (this.model && this.model.model && data) {
+      this.model.model = _.extend(this.model.model, data);
+    }
+  };
+
+  CombinedPlotScope.prototype.updatePlot = function() {
+    _.each(this.scopes, function(scope) {
+      scope.update();
+    });
   };
 
   CombinedPlotScope.prototype.calcRange = function() {

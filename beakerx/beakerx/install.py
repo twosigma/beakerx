@@ -31,16 +31,16 @@ from distutils import log
 
 def _all_kernels():
     kernels = pkg_resources.resource_listdir(
-        'beakerx', os.path.join('static', 'kernel'))
+        'beakerx', 'kernel')
     return [kernel for kernel in kernels if kernel != 'base']
 
 def _base_classpath_for(kernel):
     return pkg_resources.resource_filename(
-            'beakerx', os.path.join('static', 'kernel', kernel))
+            'beakerx', os.path.join('kernel', kernel))
 
 def _classpath_for(kernel):
     return pkg_resources.resource_filename(
-        'beakerx', os.path.join('static', 'kernel', kernel, 'lib', '*'))
+        'beakerx', os.path.join('kernel', kernel, 'lib', '*'))
 
 
 def _install_nbextension():
@@ -82,7 +82,7 @@ def _install_kernels():
         kernel_classpath = _classpath_for(kernel)
         classpath = json.dumps(os.pathsep.join([base_classpath, kernel_classpath]))
         template = pkg_resources.resource_string(
-            'beakerx', os.path.join('static', 'kernel', kernel, 'kernel.json'))
+            'beakerx', os.path.join('kernel', kernel, 'kernel.json'))
         contents = Template(template.decode()).substitute(PATH=classpath)
 
         with tempfile.TemporaryDirectory() as tmpdir:

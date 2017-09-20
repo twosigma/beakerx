@@ -51,7 +51,7 @@ subprojects {
       }
     }
   }
-  ext.pathToStaticContent = '../../beakerx/beakerx/static/kernel/'
+  ext.pathToStaticContent = '../../beakerx/beakerx/kernel/'
 
   task staticContent {
     doLast {

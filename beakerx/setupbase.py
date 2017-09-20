@@ -305,7 +305,7 @@ def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='
     return Yarn
 
 
-def install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel'), target_dir=os.path.join(site_packages, 'beakerx', 'static', 'kernel')):
+def install_kernels(source_dir=os.path.join(here, 'beakerx', 'kernel'), target_dir=os.path.join(site_packages, 'beakerx', 'kernel')):
     """Install all kernels in a directory.
     
     Parameters

@@ -49,7 +49,7 @@ cmdclass['js'] = install_node_modules(
     source_dir=os.path.join(here, 'js', 'src')
 )
 cmdclass['java'] = run_gradle(cmd='build')
-cmdclass['kernels_develop'] = install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel'), target_dir=os.path.join(here, 'beakerx', 'static', 'kernel'))
+cmdclass['kernels_develop'] = install_kernels(source_dir=os.path.join(here, 'beakerx', 'kernel'), target_dir=os.path.join(here, 'beakerx', 'kernel'))
 cmdclass['kernelspec_class'] = update_kernelspec_class(prefix=os.environ['CONDA_PREFIX'])
 cmdclass['custom_css'] = copy_files(
     src=os.path.join(here, 'beakerx', 'static', 'custom'),
@@ -95,12 +95,12 @@ setup_args = dict(
     },
     package_data={
         'beakerx': [
-            'static/kernel/*/kernel.json'
+            'kernel/*/kernel.json'
         ]
     },
     data_files          = [(
         'share/jupyter/nbextensions/beakerx',
-        get_data_files(os.path.join('beaker', 'static'))
+        get_data_files(os.path.join('beaker'))
     )],
     install_requires    = [
         'notebook >=4.4.0',

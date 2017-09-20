@@ -424,12 +424,6 @@ define([
     }
     var val = this.getValue(pct);
 
-    var padStr = function(val, len) {
-      var str = "" + Math.abs(val);
-      while (str.length < len) str = "0" + str;
-      return str;
-    };
-
     var d, ret = "", nanosec;
     if (this.axisType === "time") {
       d = Math.ceil(val * 1000) / 1000;
@@ -446,9 +440,9 @@ define([
     } else if (plotUtils.lte(span, this.HOUR)) {
       if(this.axisType === "nanotime"){
         if (moment(d) < this.SECOND) {
-          ret = "." + padStr(nanosec, 9);
+          ret = "." + plotUtils.padStr(nanosec, 9);
         } else {
-          ret = bkUtils.formatTimestamp(d, this.axisTimezone, "HH:mm:ss") + "." + padStr(nanosec, 9);
+          ret = bkUtils.formatTimestamp(d, this.axisTimezone, "HH:mm:ss") + "." + plotUtils.padStr(nanosec, 9);
         }
       }else{
         ret = bkUtils.formatTimestamp(d, this.axisTimezone, "HH:mm:ss");

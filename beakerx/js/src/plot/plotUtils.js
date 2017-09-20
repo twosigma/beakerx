@@ -478,7 +478,7 @@ define([
       if (axis.axisType === "nanotime") {
         var d = parseFloat(val.div(1000000).toFixed(0));
         var nanosec = val.mod(1000000000).toFixed(0);
-        return bkUtils.formatTimestamp(d, axis.axisTimezone, "YYYY MMM DD ddd, HH:mm:ss") + "." + this.padStr(nanosec, 9);
+        return bkUtils.formatTimestamp(d, axis.axisTimezone, "YYYY MMM DD ddd, HH:mm:ss") + "." + plotUtils.padStr(nanosec, 9);
       }
       if (typeof(val) === "number") {
         if (fixed === true) {
@@ -996,6 +996,11 @@ define([
         return keyCodeMap[keyCode];
       }
     },
+    padStr: function(val, len) {
+      var str = "" + Math.abs(val);
+      while (str.length < len) str = "0" + str;
+      return str;
+    }
   };
 
   return plotUtils;

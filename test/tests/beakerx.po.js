@@ -16,7 +16,8 @@
 
 var BeakerXPageObject = function () {
 
-  this.baseURL = 'http://127.0.0.1:8888/tree/doc/contents';
+  this.baseDocURL = 'http://127.0.0.1:8888/tree/doc/contents';
+  this.baseTestURL = 'http://127.0.0.1:8888/tree/test/notebooks';
   this.kernelIdleIcon = $('i.kernel_idle_icon');
 
   this.loginJupyter = function () {
@@ -27,12 +28,20 @@ var BeakerXPageObject = function () {
 
   this.runNotebookByName = function(name, done, subDir){
     browser
-      .url(subDir === undefined ? this.baseURL : this.baseURL + '/' + subDir)
+      .url(subDir === undefined ? this.baseDocURL : this.baseDocURL + '/' + subDir)
       .call(done);
     this.loginJupyter();
     browser.waitForEnabled('=' + name);
     browser.click('=' + name);
     browser.window(browser.windowHandles().value[1]);
+  }
+
+  this.runNotebookByUrl = function(url, done){
+    browser
+      .url('http://127.0.0.1:8888' + url)
+      .call(done);
+    this.loginJupyter();
+    this.kernelIdleIcon.waitForEnabled();
   }
 
   this.clickRunCell = function () {
@@ -103,6 +112,12 @@ var BeakerXPageObject = function () {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.jupyter-widgets');
+  }
+
+  this.runCellToGetEasyForm = function(index){
+    this.kernelIdleIcon.waitForEnabled();
+    var codeCell = this.runCodeCellByIndex(index);
+    return codeCell.$('div.beaker-easyform-container');
   }
 
 };

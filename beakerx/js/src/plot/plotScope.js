@@ -1982,14 +1982,22 @@ define([
 
   PlotScope.prototype.enableZoomWheel = function() {
     var self = this;
+
     if (self._defaultZoomWheelFn) {
       self.svg.on('wheel.zoom', self._defaultZoomWheelFn);
+      self.jqcontainer
+        .off('wheel.zoom')
+        .on('wheel.zoom', function(event) {
+          d3.event = event.originalEvent;
+          self.svg.dispatch('wheel.zoom', self._defaultZoomWheelFn);
+        });
     }
   };
 
   PlotScope.prototype.disableZoomWheel = function() {
     var self = this;
     self.svg.on('wheel.zoom', null);
+    self.jqcontainer.off('wheel.zoom');
   };
 
   PlotScope.prototype.mouseleaveClear = function() {
@@ -2225,8 +2233,8 @@ define([
     self.svg
       .on("mousedown", function() {
         return self.mouseDown();
-      })
-      .on("mouseleave", function() {
+      });
+    self.jqcontainer.on("mouseleave", function() {
         return self.disableZoomWheel();
       });
     self.jqsvg.mousemove(function(e) {

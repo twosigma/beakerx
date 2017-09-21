@@ -17,6 +17,8 @@ from .plot import *
 from .easyform import *
 from .tabledisplay import *
 from ._version import version_info, __version__
+import pandas
+from IPython.display import display_html
 
 def _jupyter_nbextension_paths():
     return [{
@@ -26,4 +28,18 @@ def _jupyter_nbextension_paths():
         'require': 'beakerx/extension'
     }]
 
-beaker = BeakerX()
+
+class TableDisplayWrapper(object):
+    def __get__(self, model_instance, model_class):
+        def f():
+            display_html(TableDisplay(model_instance))
+        return f
+
+def pandas_display_default():
+    pandas.DataFrame._ipython_display_ = None
+
+def pandas_display_table():
+    pandas.DataFrame._ipython_display_ = TableDisplayWrapper()
+
+#Display pandas default as TableDisplay Widget
+pandas_display_table()

@@ -32,28 +32,97 @@ describe('Testing of EasyForm', function () {
       expect(codeCell.$('div.beaker-easyform-container').isEnabled()).toBeTruthy();
     }, 2);
 
-    it('EasyForm has text field', function () {
+    it('EasyForm has Text field', function () {
       var easyForm = beakerxPO.runCellToGetEasyForm(1);
       expect(easyForm.$('div.widget-text').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name');
+      expect(easyForm.$('label').getText()).toBe('field name2');
       expect(easyForm.$('input[type="text"]').isEnabled()).toBeTruthy();
     });
 
-    it('EasyForm has textarea field', function () {
+    it('EasyForm has Textarea field', function () {
       var easyForm = beakerxPO.runCellToGetEasyForm(2);
       expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
-      expect(easyForm.$('label').getText()).toBe('field name');
+      expect(easyForm.$('label').getText()).toBe('field name3');
       expect(easyForm.$('textarea').isEnabled()).toBeTruthy();
     });
 
-    it('EasyForm has checkbox field', function () {
+    it('EasyForm has Checkbox field', function () {
       var easyForm = beakerxPO.runCellToGetEasyForm(3);
       expect(easyForm.$('div.widget-checkbox').isEnabled()).toBeTruthy();
-      expect(easyForm.$('span').getText()).toBe('field name');
+      expect(easyForm.$('span').getText()).toBe('field name4');
       expect(easyForm.$('input[type="checkbox"]').isEnabled()).toBeTruthy();
     });
 
+    it('EasyForm has Combobox field', function () {
+      var easyForm = beakerxPO.runCellToGetEasyForm(4);
+      expect(easyForm.$('div.widget-combobox').isEnabled()).toBeTruthy();
+      expect(easyForm.$('label').getText()).toBe('field name5');
+      expect(easyForm.$('select').getValue()).toBe('one');
+      expect(easyForm.$('span.easyform-combobox').isEnabled()).toBeTruthy();
+    });
+
+    it('EasyForm has List field', function () {
+      var easyForm = beakerxPO.runCellToGetEasyForm(5);
+      expect(easyForm.$('div.widget-select').isEnabled()).toBeTruthy();
+      expect(easyForm.$('label').getText()).toBe('field name6');
+      easyForm.$('select').selectByVisibleText('one');
+      expect(easyForm.$('select').getValue()).toBe('one');
+    });
+
+    it('EasyForm has CheckBoxes field', function () {
+      var easyForm = beakerxPO.runCellToGetEasyForm(6);
+      expect(easyForm.$$('div.widget-checkbox').length).toBe(3);
+      expect(easyForm.$$('input[type="checkbox"]').length).toBe(3);
+      expect(easyForm.$('div.widget-label').getText()).toBe('field name7');
+    });
+
+    it('EasyForm has RadioButtons field', function () {
+      var easyForm = beakerxPO.runCellToGetEasyForm(7);
+      expect(easyForm.$('div.widget-radio-box').isEnabled()).toBeTruthy();
+      expect(easyForm.$$('input[type="radio"]').length).toBe(3);
+      expect(easyForm.$('label.widget-label').getText()).toBe('field name8');
+    });
+
+    it('EasyForm has DatePicker field', function () {
+      var easyForm = beakerxPO.runCellToGetEasyForm(8);
+      expect(easyForm.$('div.datepicker-container').isEnabled()).toBeTruthy();
+      expect(easyForm.$('label.widget-label').getText()).toBe('field name9');
+      easyForm.$('a.date-picker-button').click();
+      browser.$('span.flatpickr-day=25').click();
+      expect(easyForm.$('input[type="text"]').getValue()).toMatch('25');
+    });
   });
 
+  describe("EasyForm Actions", function(){
+    var inputs;
+
+    it('EasyForm has two buttons', function () {
+      var easyForm = beakerxPO.runCellToGetEasyForm(9);
+      easyForm.$('button=run tag').click();
+      browser.pause(1000);
+      easyForm.$('button=actionPerformed').click();
+    });
+
+    it('tag should create EasyForm', function () {
+      var codeCell_11 = beakerxPO.getCodeCellByIndex(11);
+      var easyForm = codeCell_11.$('div.beaker-easyform-container');
+      expect(easyForm.isEnabled()).toBeTruthy();
+      inputs = easyForm.$$('input[type="text"]');
+    });
+
+    it('onChange action should change text value', function () {
+      beakerxPO.runCallAndCheckOutputText(10, 'test text');
+      expect(inputs[1].getValue()).toBe('test text');
+      expect(inputs[2].getValue()).toBe('test text from onChange');
+    });
+
+    it('onInit action should change text value', function () {
+      expect(inputs[0].getValue()).toBe('from onInit');
+    });
+
+    it('actionPerformed should change text value', function () {
+      expect(inputs[3].getValue()).toBe('from actionPerformed');
+    });
+  });
 
 });

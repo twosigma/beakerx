@@ -14,28 +14,20 @@
  *  limitations under the License.
  */
 
-import { CommandRegistry } from '@phosphor/commands';
-import { Menu, Widget } from '@phosphor/widgets';
 import $ from 'jquery';
-import _ from 'underscore';
+import HeaderMenu from './HeaderMenu';
 
 interface Dom {
   container: any,
   menu: any
 }
 
-class ColumnMenu {
+class ColumnMenu extends HeaderMenu {
   private dom: Dom;
-  private menu: Menu;
   private column: any;
-  private dtApi: any;
-  private cell: any;
-  public columnIndex: any;
-
-  private commands: CommandRegistry = new CommandRegistry();
 
   constructor(scope, column, cellSettings) {
-    this.dtApi = scope.table;
+    super(scope);
     this.column = column;
     this.cell = cellSettings.cell;
     this.dom = {
@@ -44,22 +36,9 @@ class ColumnMenu {
     };
 
     this.buildMenu();
-
-    const dtSettings = this.dtApi.settings()[0];
-    dtSettings.oApi._fnCallbackReg(dtSettings, 'aoDestroyCallback', $.proxy(this.destroy, this), 'HeaderMenu');
-    $(document).off('keydown', this.closeMenu);
-    $(document).on('keydown', this.closeMenu);
   }
 
-  closeMenu(): Function {
-    return _.debounce((event) => {
-      if (event.which === 27) {
-        this.menu.hide();
-      }
-    }, 250);
-  }
-
-  private buildMenu(): void {
+  protected buildMenu(): void {
     const menu = this.column.header && this.column.header.menu;
     const $trigger = $("<span/>", { 'class': 'bko-menu bko-column-header-menu' });
     const self = this;
@@ -72,27 +51,11 @@ class ColumnMenu {
     this.dom.menu = $trigger;
     this.columnIndex = self.getColumnIndex();
 
-    this.menu = new Menu({ commands: this.commands });
     this.menu.addClass('bko-header-menu');
     this.menu.addClass('dropdown');
     $(this.menu.contentNode).addClass('dropdown-menu');
 
-    this.buildMenuItems(menu.items, this.menu);
-  }
-
-  open($notebookCell, $trigger): void {
-    this.setCodeMirrorListener();
-
-    Widget.attach(this.menu, $notebookCell[0]);
-    this.menu.node.style.top = null;
-    this.menu.node.style.bottom = '0px';
-    this.menu.addClass('open');
-    this.menu.show();
-
-    const menuPosition = this.getMenuPosition($notebookCell, $trigger);
-    this.menu.node.style.top =  menuPosition.top + 'px';
-    this.menu.node.style.left = menuPosition.left + 'px';
-    this.menu.node.style.bottom = null;
+    this.createItems(menu.items, this.menu);
   }
 
   private getColumnIndex(): number {
@@ -107,87 +70,6 @@ class ColumnMenu {
     return columnIndex;
   }
 
-  private getMenuPosition($notebookCell, $trigger) {
-    const $cell = $trigger.parent();
-    const rectObject = $trigger[0].getBoundingClientRect();
-    const pageHeight = window.innerHeight || document.documentElement.clientHeight;
-    const pixelsBelowViewport = Math.ceil($(this.menu.contentNode).height() + rectObject.bottom - pageHeight);
-
-    return {
-      top: ($cell.offset().top - $notebookCell.offset().top + $trigger.height() - (pixelsBelowViewport > 0 ? pixelsBelowViewport : 0)),
-      left: $cell.offset().left - $notebookCell.offset().left + (pixelsBelowViewport > 0 ? $trigger.height() : 0)
-    };
-  }
-
-  private setCodeMirrorListener(): void {
-    const self = this;
-    const CodeMirrorInstance = $(this.cell).find('.CodeMirror');
-
-    if (CodeMirrorInstance) {
-      CodeMirrorInstance.off('mousedown.beakerDropdown');
-      CodeMirrorInstance.on('mousedown.beakerDropdown', function() {
-        self.menu.hide();
-        CodeMirrorInstance.off('mousedown.beakerDropdown');
-      });
-    }
-  }
-
-  private buildMenuItems(options: any[], menu: Menu): void {
-    for (let i = 0, ien = options.length; i < ien; i++) {
-      let option = options[i];
-      const subitems = (typeof option.items == 'function') ? option.items(this.columnIndex) : option.items;
-      const hasSubitems = $.isArray(subitems) && subitems.length;
-
-      this.commands.addCommand(option.title, {
-        label: option.title,
-        usage: option.tooltip || '',
-        iconClass: () => {
-          if (option.icon) {
-            return option.icon;
-          }
-
-          if (typeof option.isChecked == 'function' && option.isChecked(this.columnIndex)) {
-            return 'fa fa-check';
-          }
-
-          return '';
-        },
-        execute: (): void => {
-          if (option.action && typeof option.action == 'function') {
-            option.action(this.columnIndex);
-          }
-        }
-      });
-
-      option.separator && menu.addItem({ type: 'separator' });
-      !hasSubitems && menu.addItem({command: option.title});
-
-      if (option.shortcut) {
-        this.commands.addKeyBinding({
-          keys: [option.shortcut],
-          selector: '.cell',
-          command: option.title
-        });
-      }
-
-      if (hasSubitems) {
-        const submenu = new Menu({ commands: this.commands });
-
-        submenu.addClass('dropdown-submenu');
-        submenu.title.label = option.title;
-        submenu.setHidden(false);
-        menu.addItem({ type: 'submenu', submenu });
-
-        this.buildMenuItems(subitems, submenu);
-      }
-
-      //
-      // if (!_.isEmpty(oItem.tooltip)) {
-      //   $li.attr('title', oItem.tooltip);
-      // }
-    }
-  }
-
   destroy(): void {
     $(document.body).off('click.table-headermenu');
     this.dom.container.off('click.headermenu');
@@ -195,7 +77,7 @@ class ColumnMenu {
   }
 }
 
-export default function columnColumnMenus(scope) {
+export default function columnMenus(scope) {
   const settings = scope.table.settings()[0];
   const init = settings.oInit.columns;
   const columns = scope.columns;
@@ -213,9 +95,9 @@ export default function columnColumnMenus(scope) {
   }
 
   $(scope.element).on('click.headermenu', '.bko-column-header-menu', function(e) {
-    var colIdx = $(this).parent().index();
-    var fixedCols = scope.table.settings()[0]._oFixedColumns;
-    var rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
+    let colIdx = $(this).parent().index();
+    const fixedCols = scope.table.settings()[0]._oFixedColumns;
+    const rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
 
     if (rightHeader && $(rightHeader).has(this).length) {
       colIdx = scope.table.columns(':visible')[0].length - fixedCols.s.rightColumns + colIdx;

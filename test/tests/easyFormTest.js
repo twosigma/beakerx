@@ -99,11 +99,12 @@ describe('Testing of EasyForm', function () {
     it('EasyForm has two buttons', function () {
       var easyForm = beakerxPO.runCellToGetEasyForm(9);
       easyForm.$('button=run tag').click();
-      browser.pause(1000);
+      beakerxPO.kernelIdleIcon.waitForEnabled();
       easyForm.$('button=actionPerformed').click();
     });
 
     it('tag should create EasyForm', function () {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
       var codeCell_11 = beakerxPO.getCodeCellByIndex(11);
       var easyForm = codeCell_11.$('div.beaker-easyform-container');
       expect(easyForm.isEnabled()).toBeTruthy();
@@ -122,6 +123,17 @@ describe('Testing of EasyForm', function () {
 
     it('actionPerformed should change text value', function () {
       expect(inputs[3].getValue()).toBe('from actionPerformed');
+    });
+  });
+
+  describe('IntSlider widget in EasyForm', function(){
+    it('EasyForm has IntSlider widget', function(){
+      var easyForm = beakerxPO.runCellToGetEasyForm(12);
+      expect(easyForm.$('div.slider-container')).toBeTruthy();
+    });
+
+    it('IntSlider has value 50', function(){
+      beakerxPO.runCallAndCheckOutputText(13, '50');
     });
   });
 

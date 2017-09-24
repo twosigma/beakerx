@@ -40,19 +40,14 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
   environment with [Jupyter Notebook](https://jupyter.org), a
   [JDK](http://jdk.java.net/8/), and
   [Pandas](http://pandas.pydata.org/) installed should be fine, but
-  our documentation assumes conda).  Right now the easiest way to get
-  started is to create an environment with conda and then install
-  BeakerX with pip.  A conda package for BeakerX should be ready
-  soon.
-
-Note: see [#5883](https://github.com/twosigma/beakerx/issues/5883) about `widgetsnbextension`.
+  our documentation assumes conda).
 
 Install using [conda](https://conda.io/docs/install/quick.html):
 
 ```
 conda create -y -n beakerx python=3.5 jupyter openjdk pandas
 source activate beakerx
-conda install -y -c conda-forge ipywidgets=7.0.0 widgetsnbextension beakerx
+conda install -y -c conda-forge ipywidgets widgetsnbextension beakerx
 ```
 
 Using [pip](https://pypi.python.org/pypi/pip):
@@ -60,7 +55,7 @@ Using [pip](https://pypi.python.org/pypi/pip):
 ```
 conda create -y -n beakerx python=3.5 jupyter openjdk pandas
 source activate beakerx
-conda install -y -c conda-forge ipywidgets=7.0.0 widgetsnbextension
+conda install -y -c conda-forge ipywidgets widgetsnbextension
 pip install beakerx
 beakerx-install
 ```
@@ -77,7 +72,7 @@ beakerx-install
 ```
 conda create -y -n beakerx python=3.5 jupyter openjdk nodejs pandas
 source activate beakerx
-conda install -y -c conda-forge ipywidgets=7.0.0 widgetsnbextension
+conda install -y -c conda-forge ipywidgets widgetsnbextension
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 ```

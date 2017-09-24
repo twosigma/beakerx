@@ -32,7 +32,7 @@ The [documentation](https://github.com/twosigma/beakerx/blob/master/doc/StartHer
 BeakerX is the successor to the [Beaker
 Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).  It comes from [Two Sigma Open Source](http://opensource.twosigma.com/). Yes we are [hiring](https://www.twosigma.com/careers).
 
-## Install
+## User Install
 
 ### Dependencies:
 
@@ -60,14 +60,24 @@ pip install beakerx
 beakerx-install
 ```
 
-## Developer Install
+### Run
+
+The following command will start jupyter, and open your web browser
+and connect to it.  If you are running it on a server, it will print a
+URL that you can connect to.
+
+```
+jupyter notebook
+```
+
+## Developer Build
 
 ### Dependencies:
 
 * [conda](https://www.continuum.io/downloads) (any Python 3 environment with [Jupyter Notebook](https://pypi.python.org/pypi/notebook), [Node.js](https://nodejs.org/en/), and a [JDK](http://jdk.java.net/8/) installed should be fine, but our documentation assumes conda)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 
-### Install
+### Build and Install
 
 ```
 conda create -y -n beakerx python=3.5 jupyter openjdk nodejs pandas

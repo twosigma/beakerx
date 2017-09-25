@@ -6,7 +6,7 @@ This document guides a contributor through creating a release of BeakerX.
 Install
 -------
 
-Review ``RAEDME.md`` and make sure that all dependencies are installed.
+Review ``README.md`` and make sure that all dependencies are installed.
 
 Clean the repository
 --------------------

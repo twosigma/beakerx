@@ -19,10 +19,14 @@ var beakerxPO;
 
 describe('Testing of EasyForm', function () {
 
-  beforeAll(function (done) {
+  beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/EasyFormTest.ipynb', done);
+    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/EasyFormTest.ipynb');
   }, 2);
+
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
+  });
 
   describe('EasyForm widget', function () {
     it('Cell has EasyForm widget', function () {

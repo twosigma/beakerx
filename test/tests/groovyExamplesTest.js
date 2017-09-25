@@ -19,10 +19,14 @@ var beakerxPO;
 
 describe('GroovyExamples notebook', function () {
 
-  beforeAll(function (done) {
+  beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('GroovyExamples.ipynb', done);
+    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/GroovyExamples.ipynb');
   }, 2);
+
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
+  });
 
   describe('Run first cell. ', function () {
     it('Output contains "2"', function () {

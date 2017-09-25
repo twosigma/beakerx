@@ -19,10 +19,14 @@ var beakerxPO;
 
 describe('Java widgets notebook', function () {
 
-  beforeAll(function (done) {
+  beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('JavaWidgets.ipynb', done);
+    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/JavaWidgets.ipynb');
   }, 2);
+
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
+  });
 
   describe('IntSlider widget', function () {
     it('Cell has IntSlider widget', function () {

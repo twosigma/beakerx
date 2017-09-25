@@ -19,10 +19,14 @@ var beakerxPO;
 
 describe('PlotFeatures notebook', function () {
 
-  beforeAll(function (done) {
+  beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('PlotFeatures.ipynb', done);
+    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/PlotFeatures.ipynb');
   }, 2);
+
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
+  });
 
   describe('Run "Title and Axis Labels" cell. ', function () {
     it('Widget area has dtcontainer', function () {

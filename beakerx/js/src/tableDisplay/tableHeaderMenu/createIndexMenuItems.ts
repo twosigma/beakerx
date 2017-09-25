@@ -58,6 +58,7 @@ export default function createIndexMenuItems(scope: any): MenuItem[] {
     },
     {
       title: 'Show Column',
+      enableItemsFiltering: true,
       items: createShowColumnSubmenu
     },
     {

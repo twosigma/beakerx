@@ -28,6 +28,8 @@ export default abstract class HeaderMenu {
   protected dtApi: any;
   protected cell: any;
 
+  static DEBOUNCE_DELAY: number = 250;
+
   constructor(scope) {
     this.dtApi = scope.table;
     this.commands = new CommandRegistry();
@@ -44,19 +46,6 @@ export default abstract class HeaderMenu {
 
   protected abstract buildMenu($trigger?: any): void
 
-  private setCodeMirrorListener(): void {
-    const self = this;
-    const CodeMirrorInstance = $(this.cell).find('.CodeMirror');
-
-    if (CodeMirrorInstance) {
-      CodeMirrorInstance.off('mousedown.beakerDropdown');
-      CodeMirrorInstance.on('mousedown.beakerDropdown', function() {
-        self.menu.hide();
-        CodeMirrorInstance.off('mousedown.beakerDropdown');
-      });
-    }
-  }
-
   protected getMenuPosition($notebookCell, $trigger) {
     const $cell = $trigger.parent();
     const rectObject = $trigger[0].getBoundingClientRect();
@@ -71,8 +60,6 @@ export default abstract class HeaderMenu {
   }
 
   open($notebookCell, $trigger): void {
-    this.setCodeMirrorListener();
-
     Widget.attach(this.menu, $notebookCell[0]);
     this.menu.node.style.top = null;
     this.menu.node.style.bottom = '0px';
@@ -92,6 +79,31 @@ export default abstract class HeaderMenu {
       }
     }, 250);
   }
+
+  private addItemsFiltering(menu: Menu): void {
+    const filterWrapper = document.createElement('div');
+
+    filterWrapper.classList.add('dropdown-menu-search');
+    filterWrapper.innerHTML = '<i class="fa fa-search"></i><input placeholder="search regexp...">';
+
+    menu.node.insertAdjacentElement('afterbegin', filterWrapper);
+
+    $(menu.node)
+      .on('click, keydown', '.dropdown-menu-search input', (e) => { e.stopImmediatePropagation(); })
+      .on('click', '.dropdown-menu-search input', (e) => { $(e.currentTarget).focus(); })
+      .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
+        const searchExp = this.value ? new RegExp(this.value, 'i') : null;
+
+        menu.items.forEach((item, index) => {
+          const node = $(menu.contentNode).find('.p-Menu-item').get(index);
+
+          $(node).toggleClass(
+            'hidden',
+            searchExp && _.isRegExp(searchExp) ? !searchExp.test(item.label) : false
+          );
+        });
+      }, HeaderMenu.DEBOUNCE_DELAY));
+  };
 
   createItems(items: MenuItem[], menu: Menu): void {
     for (let i = 0, ien = items.length; i < ien; i++) {
@@ -137,6 +149,11 @@ export default abstract class HeaderMenu {
 
         submenu.addClass('dropdown-submenu');
         submenu.title.label = menuItem.title;
+
+        if (menuItem.enableItemsFiltering) {
+          this.addItemsFiltering(submenu);
+        }
+
         submenu.setHidden(false);
         menu.addItem({ type: 'submenu', submenu });
 

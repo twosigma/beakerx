@@ -72,6 +72,7 @@ class ColumnMenu extends HeaderMenu {
 
   destroy(): void {
     $(document.body).off('click.table-headermenu');
+    $(this.menu.node).off('keyup.keyTable, change');
     this.dom.container.off('click.headermenu');
     this.dom.container = null;
   }

@@ -51,5 +51,6 @@ export default class IndexMenu extends HeaderMenu {
 
   protected destroy(): void {
     $(this.scopeElement).off('click.headermenu');
+    $(this.menu.node).off('keyup.keyTable, change');
   }
 }

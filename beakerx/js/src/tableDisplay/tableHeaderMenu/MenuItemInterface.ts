@@ -17,6 +17,7 @@
 export default interface MenuItem {
   title: string,
   action?: Function,
+  enableItemsFiltering?: boolean,
   icon?: string,
   inputPlaceholder?: string,
   inputAction?: Function,

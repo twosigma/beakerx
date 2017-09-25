@@ -1685,15 +1685,6 @@ define([
         ).select();
       });
 
-    var handleTableHeaderMenuClose = _.debounce(function(event) {
-      if (event.which === 27) {
-        self.element.find(id + '_table_menu').removeClass('open');
-      }
-    }, 250);
-
-    $(document).off('keydown.handleTableHeaderMenuClose', handleTableHeaderMenuClose);
-    $(document).on('keydown.handleTableHeaderMenuClose', handleTableHeaderMenuClose);
-
     function updateSize() {
       clearTimeout(self.refresh_size);
       self.refresh_size = setTimeout(function() {
@@ -1704,54 +1695,6 @@ define([
     $(window).bind('resize.' + self.id, function() {
       updateSize();
     });
-
-    self.element.find(id + '_dropdown_menu')
-      .on('click.bko-dropdown', function() {
-        var $toggleBtn = $(this);
-        var isOpen = $toggleBtn.parent().hasClass('open');
-        var $dropdown = $toggleBtn.parent();
-        var $menu = $dropdown.find('> .dropdown-menu');
-        var height = $menu.height();
-        var pageHeight = window.innerHeight || document.documentElement.clientHeight;
-        var pixelsBelow = Math.ceil(height + $dropdown.offset().top - pageHeight);
-        var shouldPosition = pixelsBelow > 0;
-
-        if (!isOpen) {
-          self.setCodeMirrorListener($toggleBtn);
-        }
-
-        $menu.css({
-          top: shouldPosition ? (- pixelsBelow - 20) : '100%',
-          left: shouldPosition ? '100%' : ''
-        });
-      })
-      .parent()
-      .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
-        var searchExp = this.value ? new RegExp(this.value, 'i') : null;
-
-        $(this).parent().next('.list-showcolumn').find('li').each(function (index, element) {
-          $(element).toggleClass('hidden', _.isRegExp(searchExp) ? !searchExp.test(element.textContent) : false);
-        });
-      }, 250))
-      .on('click', '.dropdown-menu-search .fa-search', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-      });
-  };
-
-  // little hack: hide dropdown menu when click on CodeMirror instance
-  // CodeMirror stops propagation of 'click' event on first click
-  TableScope.prototype.setCodeMirrorListener = function(el) {
-    var CodeMirrorInstance = el.parents('.cell').find('.CodeMirror');
-    var dropdown = el.parent('.dropdown');
-
-    if (CodeMirrorInstance) {
-      CodeMirrorInstance.off('mousedown.beakerDropdown');
-      CodeMirrorInstance.on('mousedown.beakerDropdown', function() {
-        dropdown.removeClass('open');
-        CodeMirrorInstance.off('mousedown.beakerDropdown');
-      });
-    }
   };
 
   TableScope.prototype.enableJupyterKeyHandler = function() {

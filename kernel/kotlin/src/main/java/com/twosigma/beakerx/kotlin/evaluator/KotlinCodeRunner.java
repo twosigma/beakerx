@@ -31,14 +31,12 @@ class KotlinCodeRunner<T> implements Runnable {
   private final SimpleEvaluationObject theOutput;
   private final T instance;
   private final Method theMth;
-  private final boolean retObject;
   private final ClassLoader loader;
 
-  public KotlinCodeRunner(T instance, Method mth, SimpleEvaluationObject out, boolean ro, ClassLoader ld) {
+  public KotlinCodeRunner(T instance, Method mth, SimpleEvaluationObject out, ClassLoader ld) {
     this.instance = instance;
     theMth = mth;
     theOutput = checkNotNull(out);
-    retObject = ro;
     loader = ld;
   }
 
@@ -51,11 +49,7 @@ class KotlinCodeRunner<T> implements Runnable {
     try {
       InternalVariable.setValue(theOutput);
       Object o = theMth.invoke(instance, (Object[]) null);
-      if (retObject) {
-        theOutput.finished(o);
-      } else {
-        theOutput.finished(null);
-      }
+      theOutput.finished(o);
     } catch (Throwable e) {
       if (e instanceof InvocationTargetException)
         e = ((InvocationTargetException) e).getTargetException();

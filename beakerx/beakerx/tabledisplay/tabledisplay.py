@@ -40,6 +40,8 @@ class Table(BaseObject):
                     row.append(DateType(value))
                 elif value_type == "double":
                     row.append(float(value))
+                elif value_type == "integer" or value_type == "int64":
+                    row.append(int(value))
                 elif value_type == "string":
                     if isinstance(value, float):
                         if math.isnan(value):
@@ -86,8 +88,12 @@ class Table(BaseObject):
         if isinstance(value, float):
             if math.isnan(value):
                 return "string"
-        if object_type == "float64" or object_type == "int64":
+        if object_type == "float64":
             return "double"
+        if object_type == "int64":
+            return "integer"
+        if object_type == "uint64":
+            return "int64"
         if isinstance(value, str):
             return "string"
         if is_date(value):

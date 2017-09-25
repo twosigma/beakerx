@@ -107,7 +107,11 @@ class KotlinWorkerThread extends WorkerThread {
         javaSourceCode.append("\n");
 
         javaSourceCode.append("class " + WRAPPER_CLASS_NAME + " {\n");
-        javaSourceCode.append("fun beakerRun() {\n");
+        javaSourceCode.append("fun beakerRun()");
+        if (containsReturnStatement(j.codeToBeExecuted)) {
+          javaSourceCode.append(": Any ");
+        }
+        javaSourceCode.append("{\n");
         javaSourceCode.append(j.codeToBeExecuted);
         javaSourceCode.append("\n}\n");
         javaSourceCode.append("}\n");
@@ -144,7 +148,7 @@ class KotlinWorkerThread extends WorkerThread {
 
             Class<?> fooClass = loader.loadClass(kotlinEvaluator.getPackageId() + "." + WRAPPER_CLASS_NAME);
             Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
-            if (!kotlinEvaluator.executeTask(new KotlinCodeRunner(fooClass.newInstance(), mth, j.outputObject, false, loader))) {
+            if (!kotlinEvaluator.executeTask(new KotlinCodeRunner(fooClass.newInstance(), mth, j.outputObject, loader))) {
               j.outputObject.error(INTERUPTED_MSG);
             }
             if (nc != null) {
@@ -168,6 +172,11 @@ class KotlinWorkerThread extends WorkerThread {
       }
     }
     NamespaceClient.delBeaker(kotlinEvaluator.getSessionId());
+  }
+
+  private boolean containsReturnStatement(String code) {
+    String[] split = code.split("\n");
+    return split[split.length - 1].matches("(^|.*\\s+)return\\s+.*");
   }
 
   private String adjustImport(ImportPath importPath) {
@@ -207,7 +216,7 @@ class KotlinWorkerThread extends WorkerThread {
 
   private void removeKtFile() {
     try {
-      Files.deleteIfExists(new File(kotlinEvaluator.getOutDir()+ "\\" + WRAPPER_CLASS_NAME + ".kt").toPath());
+      Files.deleteIfExists(new File(kotlinEvaluator.getOutDir() + "\\" + WRAPPER_CLASS_NAME + ".kt").toPath());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

@@ -276,8 +276,6 @@ define([
       var bkApp = bkCoreManager.getBkApp();
       var bkObject = bkApp.getBeakerObject();
 
-      console.log('LOAD', window.beakerx);
-
       _.extend(window.beakerx, plotApiList);
       _.extend(window.beakerx, htmlOutput);
       window.beakerx.prefs = bkObject.beakerObj.prefs;

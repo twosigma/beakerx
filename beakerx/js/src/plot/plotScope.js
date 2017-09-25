@@ -161,7 +161,6 @@ define([
     var sanitize = null;
     try {
       var caja = IPython.security.caja;
-      console.log('ip',IPython);
       window.cssSchemaFixed = false;
       sanitize = function(styleString){
         if (!window.cssSchemaFixed){

@@ -31,10 +31,8 @@ import site
 import json
 from subprocess import check_call
 from string import Template
-from beakerx.install import _classpath_for
 from setuptools import Command
 from setuptools.command.develop import develop
-from setuptools.command.build_py import build_py
 from setuptools.command.sdist import sdist
 from setuptools.command.bdist_egg import bdist_egg
 from distutils.command.install_data import install_data
@@ -81,7 +79,9 @@ else:
 # ---------------------------------------------------------------------------
 # Public Functions
 # ---------------------------------------------------------------------------
-
+def _classpath_for(kernel):
+    return pkg_resources.resource_filename(
+            'beakerx', os.path.join('kernel', kernel, 'lib', '*'))
 
 def get_version(path):
     version = {}

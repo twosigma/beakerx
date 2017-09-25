@@ -318,7 +318,6 @@ def install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel')
         description = 'Install all kernels in a directory'
 
         def run(self):
-            try:
                 def install_kernel(source_kernelspec='', kernelspec_name=None):
                     name = kernelspec_name if kernelspec_name else os.path.basename(source_kernelspec)
                     base_classpath = _classpath_for('base')
@@ -339,8 +338,6 @@ def install_kernels(source_dir=os.path.join(here, 'beakerx', 'static', 'kernel')
                         install_kernel(dir)
                     else:
                         continue
-            except Exception as e:
-                log.error(str(e))
 
     return InstallKernels
 

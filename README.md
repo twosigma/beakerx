@@ -40,7 +40,7 @@ how to install and run BeakerX.
 
 ### Dependencies:
 
-* [conda](https://conda.io/docs/install/quick.html)
+* [conda](https://www.anaconda.com/download/)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 
 ### Build and Install

@@ -40,10 +40,20 @@ twine upload dist/*
 shasum -a 256 dist/*.tar.gz
 ```
 
+Make a test installation with pip.
+
 Publish on conda-forge
 ----------------------
 
-First test it locally:
+```
+
+Then update the feedstock repo:
+
+- Make a branch or fork of https://github.com/conda-forge/beakerx-feedstock.
+- Update the `version` and `sha256` variable values in `recipe/meta.yaml`.
+  Return  build number to 0.
+
+Then test it locally:
 
 ```
 # outside of beakerx conda environment
@@ -56,12 +66,7 @@ conda build --python 3.5 PATH_TO_RECIPE
 conda install --use-local beakerx
 ```
 
-Then update the feedstock repo:
-
-- Make a branch or fork of https://github.com/conda-forge/beakerx-feedstock.
-- Update the `version` and `sha256` variable values in `recipe/meta.yaml`.
-  Return  build number to 0.
-- Commit changes and submit a PR for the new version.
+- Then commit changes and submit a PR for the new version.
 - After CI passes, merge the PR.
 
 

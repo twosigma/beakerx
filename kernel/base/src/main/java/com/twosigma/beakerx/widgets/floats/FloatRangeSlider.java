@@ -50,7 +50,7 @@ import java.util.HashMap;
  */
 public class FloatRangeSlider extends BoundedFloatRangeWidget {
 
-  public static final String VIEW_NAME_VALUE = "FloatRangeSliderModel";
+  public static final String VIEW_NAME_VALUE = "FloatRangeSliderView";
   public static final String MODEL_NAME_VALUE = "FloatRangeSliderModel";
 
   protected static final String ORIENTATION = "orientation";

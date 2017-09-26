@@ -21,6 +21,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -54,6 +55,10 @@ public class CsvPlotReader {
     if (value instanceof String && NumberUtils.isCreatable((String) value)) {
       try {
         return Integer.parseInt((String) value);
+      } catch (Exception ignored) {
+      }
+      try {
+        return new BigInteger((String) value);
       } catch (Exception ignored) {
       }
       return Float.parseFloat((String) value);

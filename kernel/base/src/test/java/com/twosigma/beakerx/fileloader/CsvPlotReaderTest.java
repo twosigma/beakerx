@@ -17,6 +17,7 @@ package com.twosigma.beakerx.fileloader;
 
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -29,6 +30,7 @@ public class CsvPlotReaderTest {
   private static final boolean IS_WINDOWS = System.getProperty("os.name").contains("indow");
   public static final String TABLE_ROWS_TEST_CSV = "tableRowsTest.csv";
   public static final String INT_ROWS_TEST_CSV = "intTableTest.csv";
+  public static final String BIG_INT_ROWS_TEST_CSV = "bigIntTableTest.csv";
   public static final String FLOAT_ROWS_TEST_CSV = "floatTableTest.csv";
 
   @Test
@@ -56,6 +58,15 @@ public class CsvPlotReaderTest {
             new CsvPlotReader().read(getOsAppropriatePath(getClass().getClassLoader(), INT_ROWS_TEST_CSV));
     //then
     assertThat(values.get(0).get("a")).isEqualTo(1);
+  }
+
+  @Test
+  public void shouldReturnBigInt() throws Exception {
+    //when
+    List<Map<String, Object>> values =
+            new CsvPlotReader().read(getOsAppropriatePath(getClass().getClassLoader(), BIG_INT_ROWS_TEST_CSV));
+    //then
+    assertThat(values.get(0).get("a")).isEqualTo(new BigInteger("123456789123456789"));
   }
 
   @Test

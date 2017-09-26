@@ -17,7 +17,7 @@ from traitlets import Unicode, Dict
 from beakerx.utils import *
 from beakerx.tabledisplay.tableitems import *
 import math
-
+import numpy
 class Table(BaseObject):
     def __init__(self, *args, **kwargs):
         self.columnNames = args[0].columns.tolist()
@@ -93,7 +93,7 @@ class Table(BaseObject):
         if object_type == "float64":
             return "double"
         if object_type == "int64":
-            if value > (pow(2, 31) - 1) or value < -(pow(2, 31)):
+            if value > numpy.iinfo(numpy.int32).max or value < numpy.iinfo(numpy.int32).min:
                 return "int64"
             else:
                 return "integer"

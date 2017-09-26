@@ -1959,12 +1959,9 @@ define([
       };
       var updateFixesCols = function(index, side) {
         var indexList = [];
-        var lastIndex = self.columns.length-1;
-        if (side === 'left') {
-          for (var i=0; i<=index; i++) {indexList.push(i)}
-        } else if (side === 'right') {
-          for (var j=index; j<=lastIndex; j++) {indexList.push(j)}
-        }
+        var startIndex = side === 'left' ? 0 : index;
+        var endIndex = side === 'left' ? index : self.columns.length-1;
+        for (var i=startIndex; i<=endIndex; i++) {indexList.push(i)}
         addClassToColumnsNodes(indexList);
       };
       updateColumn(self.pagination.fixLeft, tableConsts.FC_LEFT_SEPARATOR_CLASS);

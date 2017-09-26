@@ -43,13 +43,7 @@ shasum -a 256 dist/*.tar.gz
 Publish on conda-forge
 ----------------------
 
-To update the conda-feedstock repo:
-
-- Fork https://github.com/conda-forge/beakerx-feedstock
-- Update the `version` and `sha256` variable values in `recipe/meta.yaml`
-- Commit changes and submit a PR for the new version
-
-To build and upload a conda package:
+First test it locally:
 
 ```
 # outside of beakerx conda environment
@@ -60,13 +54,16 @@ conda upgrade conda-build
 conda build --python 3.5 PATH_TO_RECIPE
 # conda-build will output something like `anaconda upload PATH_TO_beakerx-VERSION-py35HASH.tar.bz2`
 conda install --use-local beakerx
-conda convert --platform all PATH_TO_beakerx-VERSION-py35HASH.tar.bz2 -o beakerx/dist
-anaconda upload beakerx/dist/beakerx-VERSION-py35HASH.tar.bz2
 ```
 
-- Fork https://github.com/conda-forge/beakerx-feedstock
-- Update the `version` and `sha256` variable values in `recipe/meta.yaml`
-- Commit changes and submit a PR for the new version
+Then update the feedstock repo:
+
+- Make a branch or fork of https://github.com/conda-forge/beakerx-feedstock.
+- Update the `version` and `sha256` variable values in `recipe/meta.yaml`.
+  Return  build number to 0.
+- Commit changes and submit a PR for the new version.
+- After CI passes, merge the PR.
+
 
 Publish on npmjs
 ----------------
@@ -76,3 +73,22 @@ To update the embedded version of our widget library:
 - Increase the version in beakerx/js/package.json
 - Do a full build.
 - Run `npm publish`
+
+Release to Docker Hub
+---------------------
+
+```
+(cd kernel; gradle clean)
+docker build -t beakerx-base -f docker/base/Dockerfile .
+docker build -t beakerx -f docker/Dockerfile .
+docker run -p 8888:8888 beakerx
+```
+
+Test it, then
+
+```
+docker push beakerx/beakerx
+```
+
+Update description/version on [Docker
+Hub](https://hub.docker.com/r/beakerx/beakerx/)

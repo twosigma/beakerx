@@ -127,21 +127,9 @@ python -m beakerx.bkr2ipynb *.bkr
 
 ## Running with Docker
 
-From project root:
-
-`(cd kernel; gradle clean)`
-
-To build beakerx base image execute
-
-`docker build -t beakerx-base -f docker/base/Dockerfile .`
-
-To build beakerx image execute
-
-`docker build -t beakerx -f docker/Dockerfile .`
-
-Now if you would like to start BeakerX execute
-
-`docker run -p 8888:8888 beakerx `
+```
+docker run -p 8888:8888 beakerx/beakerx
+```
 
 ## Contributing
 

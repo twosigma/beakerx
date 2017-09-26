@@ -2291,9 +2291,8 @@ define([
   };
 
   TableScope.prototype.doResetAll = function() {
-    var self = this;
-    self.table.state.clear();
-    self.init(self.getCellModel());
+    this.doDestroy(true);
+    this.tableDisplayView.render();
   };
 
   TableScope.prototype.adjustRedraw = function() {

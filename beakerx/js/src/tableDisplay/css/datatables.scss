@@ -67,8 +67,11 @@ table.dataTable {
   font-size: 13px;
   border-width: 0;
 
-  thead th, tbody td {
+  thead th {
     position: relative;
+  }
+
+  thead th, tbody td {
     padding: 3px 10px 0 10px;
     white-space: nowrap;
     border: 1px solid $border-color;
@@ -79,7 +82,12 @@ table.dataTable {
       border-left-width: 1px;
     }
     &.focus {
+      position: relative;
       z-index: 99;
+    }
+    &.fix-col-fixed.focus {
+      position: static;
+      z-index: 1;
     }
     font-family: "Lato", Helvetica, sans-serif;
   }
@@ -311,6 +319,16 @@ table.dataTable.DTFC_Cloned.display tbody tr {
     }
   }
 }
+
+//div.DTFC_RightWrapper,
+//div.DTFC_LeftWrapper {
+//  z-index: 98;
+//}
+//
+//.DTFC_LeftWrapper table.dataTable tbody td.focus {
+//  position: relative;
+//  z-index: 100;
+//}
 
 $fix-col-separator-width: 3px;
 

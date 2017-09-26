@@ -1874,9 +1874,24 @@ define([
         $(column.nodes()).addClass(cssClass);
         columnHeader.addClass(cssClass);
       };
+      var addClassToColumnsNodes = function(columnIndexList) {
+        columnIndexList.forEach(function(columnIndex) {
+          var nodes = self.table.column(columnIndex).nodes();
+          $(nodes).addClass(tableConsts.FC_COL_FIXED_CLASS);
+        });
+      };
+      var updateFixesCols = function(index, side) {
+        var indexList = [];
+        var startIndex = side === 'left' ? 0 : index;
+        var endIndex = side === 'left' ? index : self.columns.length-1;
+        for (var i=startIndex; i<=endIndex; i++) {indexList.push(i)}
+        addClassToColumnsNodes(indexList);
+      };
       updateColumn(self.pagination.fixLeft, tableConsts.FC_LEFT_SEPARATOR_CLASS);
+      updateFixesCols(self.pagination.fixLeft, 'left');
       if (self.pagination.fixRight) {
         updateColumn(self.columns.length - self.pagination.fixRight, tableConsts.FC_RIGHT_SEPARATOR_CLASS);
+        updateFixesCols(self.columns.length - self.pagination.fixRight, 'right');
       }
     }
   };

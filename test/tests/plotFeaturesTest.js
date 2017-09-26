@@ -80,9 +80,9 @@ describe('PlotFeatures notebook', function () {
 
   describe('Run cell with bars', function(){
     it('Plot has 5 bars', function(){
-      var svgElement = beakerxPO.runCellToGetSvgElement(5);
-      svgElement.waitForEnabled();
-      expect(svgElement.$$('g > rect.plot-resp').length).toEqual(5);
+      var svgElement5 = beakerxPO.runCellToGetSvgElement(5);
+      svgElement5.waitForEnabled();
+      expect(svgElement5.$$('g#i0 > rect.plot-resp').length).toEqual(5);
     });
   });
 

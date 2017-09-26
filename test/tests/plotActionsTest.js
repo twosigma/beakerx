@@ -41,7 +41,7 @@ describe('Testing of plot Actions', function () {
       expect(height2).toBeGreaterThan(height1);
     });
 
-    it('onKey "T" should run tag', function () {
+    it('onKey "T" should run the tag', function () {
       svgElement1.$('rect#i0_0').click();
       browser.keys("t");
       beakerxPO.kernelIdleIcon.waitForEnabled();
@@ -53,34 +53,27 @@ describe('Testing of plot Actions', function () {
     });
   });
 
-  // describe("onClick action", function(){
-  //   var svgElement2;
+  describe("onClick action", function(){
+    var svgElement2;
 
-    // it('Plot has bars', function () {
-    //   svgElement1 = beakerxPO.runCellToGetSvgElement(0);
-    //   expect(svgElement1.$('g.plot-bar').isEnabled()).toBeTruthy();
-    // });
-    //
-    // it('onKey "SHIFT" should change bar value', function () {
-    //   var height1 = Math.round(svgElement1.$('rect#i0_0').getAttribute('height'));
-    //   svgElement1.$('rect#i0_0').click();
-    //   browser.keys("Shift");
-    //   beakerxPO.kernelIdleIcon.waitForEnabled();
-    //   var height2 = Math.round(svgElement1.$('rect#i0_0').getAttribute('height'));
-    //   expect(height2).toBeGreaterThan(height1);
-    // });
-    //
-    // it('onKey "T" should run tag', function () {
-    //   svgElement1.$('rect#i0_0').click();
-    //   browser.keys("t");
-    //   beakerxPO.kernelIdleIcon.waitForEnabled();
-    //   var codeCell = beakerxPO.getCodeCellByIndex(1);
-    //   codeCell.scroll();
-    //   var outputText = codeCell.$('.output_subarea.output_text');
-    //   outputText.waitForExist();
-    //   browser.pause(5000);
-    //   expect(outputText.getText()).toMatch('1:6');
-    // });
-  // });
+    it('Click on the bar should change its value', function () {
+      svgElement2 = beakerxPO.runCellToGetSvgElement(2);
+      var height1 = Math.round(svgElement2.$('rect#i0_0').getAttribute('height'));
+      svgElement2.$('rect#i0_0').click();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var height2 = Math.round(svgElement2.$('rect#i0_0').getAttribute('height'));
+      expect(height2).toBeGreaterThan(height1);
+    });
+
+    it('Click on the bar should run the tag', function () {
+      svgElement2.$('rect#i0_1').click();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var codeCell = beakerxPO.getCodeCellByIndex(3);
+      codeCell.scroll();
+      var outputText = codeCell.$('.output_subarea.output_text');
+      outputText.waitForExist();
+      expect(outputText.getText()).toMatch('2:3');
+    });
+  });
 
 });

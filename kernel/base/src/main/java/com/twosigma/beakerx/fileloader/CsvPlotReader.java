@@ -21,6 +21,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -39,8 +40,8 @@ public class CsvPlotReader {
       Map<String, Object> entry = new HashMap<>();
       int index = 0;
       for (String hc : header) {
-        if (hc.equals(TIME_COLUMN)){
-          entry.put(hc,convertDate(row[index++]));
+        if (hc.equals(TIME_COLUMN)) {
+          entry.put(hc, convertDate(row[index++]));
         } else {
           entry.put(hc, convertToNumber(row[index++]));
         }
@@ -50,24 +51,31 @@ public class CsvPlotReader {
     return result;
   }
 
-  private Object convertToNumber(Object value){
-    if(value instanceof String && NumberUtils.isNumber((String) value)){
-      return Float.parseFloat((String)value);
-    } else {
-      return value;
+  private Object convertToNumber(Object value) {
+    if (value instanceof String && NumberUtils.isCreatable((String) value)) {
+      try {
+        return Integer.parseInt((String) value);
+      } catch (Exception ignored) {
+      }
+      try {
+        return new BigInteger((String) value);
+      } catch (Exception ignored) {
+      }
+      return Float.parseFloat((String) value);
     }
+    return value;
   }
 
-  private Object convertDate(Object x){
-    if(x instanceof Number){
+  private Object convertDate(Object x) {
+    if (x instanceof Number) {
       return x;
     } else if (x instanceof Date) {
-      Date date = (Date)x;
+      Date date = (Date) x;
       return date;
-    } else if (x instanceof String){
+    } else if (x instanceof String) {
       Date inputDate = null;
       try {
-        inputDate = new SimpleDateFormat("yyyy-MM-dd").parse((String)x);
+        inputDate = new SimpleDateFormat("yyyy-MM-dd").parse((String) x);
       } catch (ParseException e) {
         throw new IllegalArgumentException("time column accepts String date in a following format yyyy-MM-dd");
       }

@@ -17,7 +17,9 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import { CommandRegistry } from '@phosphor/commands';
-import { Menu, Widget } from '@phosphor/widgets';
+import { Widget } from '@phosphor/widgets';
+import { Message } from '@phosphor/messaging';
+import Menu from './BkoMenu';
 import MenuItem from './MenuItemInterface';
 
 export default abstract class HeaderMenu {
@@ -36,9 +38,6 @@ export default abstract class HeaderMenu {
     this.menu = new Menu({ commands: this.commands });
 
     const dtSettings = this.dtApi.settings()[0];
-
-    $(document).off('keydown', this.closeMenu);
-    $(document).on('keydown', this.closeMenu);
     dtSettings.oApi._fnCallbackReg(dtSettings, 'aoDestroyCallback', $.proxy(this.destroy, this), 'HeaderMenu');
   }
 
@@ -72,12 +71,72 @@ export default abstract class HeaderMenu {
     this.menu.node.style.bottom = null;
   }
 
-  closeMenu(): Function {
-    return _.debounce((event) => {
-      if (event.which === 27) {
-        this.menu.hide();
+  createItems(items: MenuItem[], menu: Menu): void {
+    for (let i = 0, ien = items.length; i < ien; i++) {
+      let menuItem = items[i];
+
+      const subitems = (typeof menuItem.items == 'function') ? menuItem.items(this.columnIndex) : menuItem.items;
+      const hasSubitems = $.isArray(subitems) && subitems.length;
+
+      menuItem.separator && menu.addItem({ type: 'separator' });
+
+      if (!hasSubitems) {
+        this.addCommand(menuItem, menu);
+        menu.addItem({command: menuItem.title});
+
+        continue;
       }
-    }, 250);
+
+      menu.addItem({ type: 'submenu', submenu: this.createSubmenu(menuItem, subitems) });
+    }
+  }
+
+  addCommand(menuItem: MenuItem, menu: Menu): void {
+    this.commands.addCommand(menuItem.title, {
+      label: menuItem.title,
+      usage: menuItem.tooltip || '',
+      iconClass: () => {
+        if (menuItem.icon) {
+          return menuItem.icon;
+        }
+
+        if (typeof menuItem.isChecked == 'function' && menuItem.isChecked(this.columnIndex)) {
+          return 'fa fa-check';
+        }
+
+        return '';
+      },
+      execute: (): void => {
+        if (menuItem.action && typeof menuItem.action == 'function') {
+          menuItem.action(this.columnIndex);
+          menuItem.updateLayout && menu.update();
+        }
+      }
+    });
+
+    if (menuItem.shortcut) {
+      this.commands.addKeyBinding({
+        keys: [menuItem.shortcut],
+        selector: '.cell',
+        command: menuItem.title
+      });
+    }
+  }
+
+  createSubmenu(menuItem: MenuItem, subitems: MenuItem[]): Menu {
+    const submenu = new Menu({ commands: this.commands });
+
+    submenu.addClass('dropdown-submenu');
+    submenu.title.label = menuItem.title;
+
+    menuItem.enableItemsFiltering && this.addItemsFiltering(submenu);
+    submenu.keepOpen = menuItem.keepOpen;
+
+    submenu.setHidden(false);
+
+    this.createItems(subitems, submenu);
+
+    return submenu;
   }
 
   private addItemsFiltering(menu: Menu): void {
@@ -89,8 +148,8 @@ export default abstract class HeaderMenu {
     menu.node.insertAdjacentElement('afterbegin', filterWrapper);
 
     $(menu.node)
-      .on('click, keydown', '.dropdown-menu-search input', (e) => { e.stopImmediatePropagation(); })
-      .on('click', '.dropdown-menu-search input', (e) => { $(e.currentTarget).focus(); })
+      .on('mouseup, keydown', '.dropdown-menu-search input', (e) => { e.stopImmediatePropagation(); })
+      .on('mouseup', '.dropdown-menu-search input', (e) => { $(e.currentTarget).focus(); })
       .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
         const searchExp = this.value ? new RegExp(this.value, 'i') : null;
 
@@ -103,62 +162,5 @@ export default abstract class HeaderMenu {
           );
         });
       }, HeaderMenu.DEBOUNCE_DELAY));
-  };
-
-  createItems(items: MenuItem[], menu: Menu): void {
-    for (let i = 0, ien = items.length; i < ien; i++) {
-      let menuItem = items[i];
-
-      const subitems = (typeof menuItem.items == 'function') ? menuItem.items(this.columnIndex) : menuItem.items;
-      const hasSubitems = $.isArray(subitems) && subitems.length;
-
-      !hasSubitems && this.commands.addCommand(menuItem.title, {
-        label: menuItem.title,
-        usage: menuItem.tooltip || '',
-        iconClass: () => {
-          if (menuItem.icon) {
-            return menuItem.icon;
-          }
-
-          if (typeof menuItem.isChecked == 'function' && menuItem.isChecked(this.columnIndex)) {
-            return 'fa fa-check';
-          }
-
-          return '';
-        },
-        execute: (): void => {
-          if (menuItem.action && typeof menuItem.action == 'function') {
-            menuItem.action(this.columnIndex);
-          }
-        }
-      });
-
-      menuItem.separator && menu.addItem({ type: 'separator' });
-      !hasSubitems && menu.addItem({command: menuItem.title});
-
-      if (menuItem.shortcut) {
-        this.commands.addKeyBinding({
-          keys: [menuItem.shortcut],
-          selector: '.cell',
-          command: menuItem.title
-        });
-      }
-
-      if (hasSubitems) {
-        const submenu = new Menu({ commands: this.commands });
-
-        submenu.addClass('dropdown-submenu');
-        submenu.title.label = menuItem.title;
-
-        if (menuItem.enableItemsFiltering) {
-          this.addItemsFiltering(submenu);
-        }
-
-        submenu.setHidden(false);
-        menu.addItem({ type: 'submenu', submenu });
-
-        this.createItems(subitems, submenu);
-      }
-    }
   }
 }

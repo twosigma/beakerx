@@ -336,7 +336,6 @@ define([
       $body.off('click.bko-dt-container');
       $document
         .off('contextmenu.bko-dt-header')
-        .off('keydown.handleTableHeaderMenuClose');
       $tableContainer.find('.dataTables_scrollHead').off('scroll');
       $tableContainer
         .off('keyup.column-filter change.column-filter')
@@ -1398,7 +1397,6 @@ define([
         //jscs:disable
         self.update_size();
         self.updateBackground();
-        self.updateDTMenu();
         //jscs:enable
       },
       'bSortCellsTop': true,
@@ -1525,8 +1523,8 @@ define([
     self.fixcols = new dataTablesFixedColumns(self.table, inits);
     self.refreshCells();
 
-    var columnColumnMenus = require('./tableHeaderMenu/ColumnMenu').default;
-    var columnMenus = columnColumnMenus(self);
+    var createColumnMenus = require('./tableHeaderMenu/createColumnMenus').default;
+    createColumnMenus(self);
 
     self.createTableMenuElements();
     // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
@@ -1733,19 +1731,6 @@ define([
 
   TableScope.prototype.isShowOutput = function() {
     return this.model.isShowOutput();
-  };
-
-  TableScope.prototype.updateDTMenu = function(){
-    var self = this;
-    if(self.table){
-      var orderInfo = self.table.order()[0];
-      if (orderInfo) {
-        self.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
-        // if (!(self.$$phase || $rootScope.$$phase)) {
-        //   self.$apply();
-        // }
-      }
-    }
   };
 
   TableScope.prototype.getDtRow = function(node) {

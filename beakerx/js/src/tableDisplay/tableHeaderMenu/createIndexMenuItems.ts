@@ -25,7 +25,8 @@ export default function createIndexMenuItems(scope: any): MenuItem[] {
       items.push({
         title: columnName,
         isChecked: () => scope.isColumnVisible(index+1),
-        action: () => scope.showColumn(index + 1)
+        action: () => scope.showColumn(index + 1),
+        updateLayout: true
       });
     });
 
@@ -59,6 +60,7 @@ export default function createIndexMenuItems(scope: any): MenuItem[] {
     {
       title: 'Show Column',
       enableItemsFiltering: true,
+      keepOpen: true,
       items: createShowColumnSubmenu
     },
     {

@@ -29,19 +29,21 @@ class Table(BaseObject):
                              args[0][column][0])
             self.types.append(column_type)
             types_map[column] = column_type
-            
-        for tuple in args[0].iterrows():
+
+        for ix in range(len(args[0])):
             row = []
             for columnName in self.columnNames:
-                value = tuple[1][columnName]
+                value = args[0][columnName][ix]
                 value_type = types_map.get(columnName)
-                
+               
                 if value_type == "time":
                     row.append(DateType(value))
                 elif value_type == "double":
-                    row.append(float(value))
-                elif value_type == "integer" or value_type == "int64":
-                    row.append(int(value))
+                    row.append(value.astype('str'))
+                elif value_type == "integer":
+                    row.append(value.item())
+                elif value_type == "int64":
+                    row.append(value.astype('str'))
                 elif value_type == "string":
                     if isinstance(value, float):
                         if math.isnan(value):
@@ -91,7 +93,10 @@ class Table(BaseObject):
         if object_type == "float64":
             return "double"
         if object_type == "int64":
-            return "integer"
+            if value > (pow(2, 31) - 1) or value < -(pow(2, 31)):
+                return "int64"
+            else:
+                return "integer"
         if object_type == "uint64":
             return "int64"
         if isinstance(value, str):

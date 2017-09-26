@@ -45,9 +45,7 @@ Make a test installation with pip.
 Publish on conda-forge
 ----------------------
 
-```
-
-Then update the feedstock repo:
+Update the feedstock repo:
 
 - Make a branch or fork of https://github.com/conda-forge/beakerx-feedstock.
 - Update the `version` and `sha256` variable values in `recipe/meta.yaml`.

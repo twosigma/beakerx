@@ -36,28 +36,12 @@ Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-arch
 
 ### Dependencies:
 
-* [conda](https://www.continuum.io/downloads) (any Python 3
-  environment with [Jupyter Notebook](https://jupyter.org), a
-  [JDK](http://jdk.java.net/8/), and
-  [Pandas](http://pandas.pydata.org/) installed should be fine, but
-  our documentation assumes conda).
-
 Install using [conda](https://conda.io/docs/install/quick.html):
 
 ```
-conda create -y -n beakerx python=3.5 jupyter openjdk pandas
+conda create -y -n beakerx python=3.5
 source activate beakerx
-conda install -y -c conda-forge ipywidgets widgetsnbextension beakerx
-```
-
-Using [pip](https://pypi.python.org/pypi/pip):
-
-```
-conda create -y -n beakerx python=3.5 jupyter openjdk pandas
-source activate beakerx
-conda install -y -c conda-forge ipywidgets widgetsnbextension
-pip install beakerx
-beakerx-install
+conda install -y -c conda-forge ipywidgets beakerx
 ```
 
 ### Run
@@ -74,15 +58,15 @@ jupyter notebook
 
 ### Dependencies:
 
-* [conda](https://www.continuum.io/downloads) (any Python 3 environment with [Jupyter Notebook](https://pypi.python.org/pypi/notebook), [Node.js](https://nodejs.org/en/), and a [JDK](http://jdk.java.net/8/) installed should be fine, but our documentation assumes conda)
+* [conda](https://conda.io/docs/install/quick.html)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 
 ### Build and Install
 
 ```
-conda create -y -n beakerx python=3.5 jupyter openjdk nodejs pandas
+conda create -y -n beakerx python=3.5 nodejs
 source activate beakerx
-conda install -y -c conda-forge ipywidgets widgetsnbextension
+conda install -y -c conda-forge ipywidgets
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 ```

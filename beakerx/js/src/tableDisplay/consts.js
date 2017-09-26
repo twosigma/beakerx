@@ -69,6 +69,7 @@ define(function() {
     MIN_ROWS_FOR_PAGING: 25,
     FC_LEFT_SEPARATOR_CLASS: 'left-fix-col-separator',
     FC_RIGHT_SEPARATOR_CLASS: 'right-fix-col-separator',
+    FC_COL_FIXED_CLASS: 'fix-col-fixed',
     TIME_UNIT_FORMATS: {
       DATETIME:     { title: 'datetime', format: 'YYYYMMDD HH:mm:ss.SSS' },
       DAYS:         { title: 'date', format: 'YYYYMMDD' },

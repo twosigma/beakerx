@@ -75,15 +75,6 @@ build instead.
 (cd beakerx/js; yarn install)
 ```
 
-## Beaker Notebooks Converter
-
-You can convert classic Beaker Notebook files (with file suffix
-".bkr") to Jupyter Notebooks (with file suffix ".ipynb") as follows:
-
-```
-python -m beakerx.bkr2ipynb *.bkr
-```
-
 ## Groovy with Interactive Plotting and Tables:
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 

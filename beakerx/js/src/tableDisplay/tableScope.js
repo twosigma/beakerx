@@ -1963,7 +1963,7 @@ define([
         if (side === 'left') {
           for (var i=0; i<=index; i++) {indexList.push(i)}
         } else if (side === 'right') {
-          for (var j=index; j<=lastIndex; j++) {indexList.push(j)};
+          for (var j=index; j<=lastIndex; j++) {indexList.push(j)}
         }
         addClassToColumnsNodes(indexList);
       };

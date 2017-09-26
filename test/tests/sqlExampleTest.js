@@ -19,10 +19,14 @@ var beakerxPO;
 
 describe('SQL Examples notebook', function () {
 
-  beforeAll(function (done) {
+  beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('SQLExamples.ipynb', done);
+    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/SQLExamples.ipynb');
   }, 2);
+
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
+  });
 
   describe('Create and select table (H2 database)', function () {
     it('Output contains table', function () {

@@ -36,10 +36,8 @@ var BeakerXPageObject = function () {
     browser.window(browser.windowHandles().value[1]);
   }
 
-  this.runNotebookByUrl = function(url, done){
-    browser
-      .url('http://127.0.0.1:8888' + url)
-      .call(done);
+  this.runNotebookByUrl = function(url){
+    browser.url('http://127.0.0.1:8888' + url);
     this.loginJupyter();
     this.kernelIdleIcon.waitForEnabled();
   }
@@ -55,15 +53,12 @@ var BeakerXPageObject = function () {
     browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
   }
 
-  this.closeAndHaltNotebook = function (done) {
+  this.closeAndHaltNotebook = function () {
     this.clickSaveNotebook();
     browser.click('=File');
     browser.waitForVisible('=Close and Halt');
     browser.click('=Close and Halt');
-    browser.waitUntil(function () {
-      return browser.windowHandles().length === 1
-    }, 10000);
-    browser.call(done);
+    browser.endAll();
   }
 
   this.getCodeCellByIndex = function (index) {

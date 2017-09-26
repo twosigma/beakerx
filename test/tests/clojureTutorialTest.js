@@ -19,13 +19,13 @@ var beakerxPO;
 
 describe('ClojureTutorial notebook', function () {
 
-  beforeAll(function (done) {
+  beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('ClojureTutorial.ipynb', done);
+    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/ClojureTutorial.ipynb');
   }, 2);
 
-  afterAll(function (done) {
-    beakerxPO.closeAndHaltNotebook(done);
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
   });
 
   describe('Run first cell. ', function () {

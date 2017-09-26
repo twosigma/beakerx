@@ -19,13 +19,13 @@ var beakerxPO;
 
 describe('Kotlin-example notebook', function () {
 
-  beforeAll(function (done) {
+  beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('Kotlin-example.ipynb', done);
+    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/Kotlin-example.ipynb');
   }, 2);
 
-  afterAll(function (done) {
-    beakerxPO.closeAndHaltNotebook(done);
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
   });
 
   describe('Run first cell. ', function () {

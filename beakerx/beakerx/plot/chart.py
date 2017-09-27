@@ -353,11 +353,10 @@ class SimpleTimePlot(TimePlot):
         self.use_tool_tip = True
         self.show_legend = True
         self.domain_axis_label = 'Time'
-        
+        time_column_default = 'time'
         displayNames = getValue(kwargs, 'displayNames')
         displayLines = getValue(kwargs, 'displayLines', True)
         displayPoints = getValue(kwargs, 'displayPoints', False)
-        timeColumn = getValue(kwargs, 'timeColumn', 'time')
         colors = getValue(kwargs, 'colors')
         
         if len(args) > 0:
@@ -375,8 +374,11 @@ class SimpleTimePlot(TimePlot):
         dataColumnsNames = []
         
         if isinstance(tableData, DataFrame):
+            if tableData.index.name is not None:
+                time_column_default = tableData.index.name
             tableData = tableData.to_dict(orient='rows')
-        
+            
+        timeColumn = getValue(kwargs, 'timeColumn', time_column_default)
         if tableData is not None and columnNames is not None:
             dataColumnsNames.extend(list(tableData[0]))
             

@@ -18,7 +18,6 @@ import $ from 'jquery';
 import _ from 'underscore';
 import { CommandRegistry } from '@phosphor/commands';
 import { Widget } from '@phosphor/widgets';
-import { Message } from '@phosphor/messaging';
 import Menu from './BkoMenu';
 import MenuItem from './MenuItemInterface';
 
@@ -29,6 +28,7 @@ export default abstract class HeaderMenu {
   protected menu: Menu;
   protected dtApi: any;
   protected cell: any;
+  protected scopeElement: any;
 
   static DEBOUNCE_DELAY: number = 250;
 
@@ -36,14 +36,21 @@ export default abstract class HeaderMenu {
     this.dtApi = scope.table;
     this.commands = new CommandRegistry();
     this.menu = new Menu({ commands: this.commands });
+    this.scopeElement = scope.element;
+    this.handleKeydownEvent = this.handleKeydownEvent.bind(this);
 
-    const dtSettings = this.dtApi.settings()[0];
-    dtSettings.oApi._fnCallbackReg(dtSettings, 'aoDestroyCallback', $.proxy(this.destroy, this), 'HeaderMenu');
+    this.bindEvents();
   }
 
-  protected abstract destroy(): void
-
   protected abstract buildMenu($trigger?: any): void
+
+  protected destroy(): void {
+    this.scopeElement.off('click.HeaderMenu, keydown.HeaderMenu');
+    $(this.menu.node).off('keyup.keyTable, change');
+    $(document.body).off('click.table-headermenu');
+    $(document).off('keydown.keyTable', this.handleKeydownEvent);
+    $(this.menu.node).off('keydown.HeaderMenu', '.dropdown-menu-search input', this.handleKeydownEvent)
+  }
 
   protected getMenuPosition($notebookCell, $trigger) {
     const $cell = $trigger.parent();
@@ -139,6 +146,18 @@ export default abstract class HeaderMenu {
     return submenu;
   }
 
+  private handleKeydownEvent(event: KeyboardEvent): void {
+    this.menu.isVisible && this.menu.handleEvent(event);
+  }
+
+  private bindEvents(): void {
+    const dtSettings = this.dtApi.settings()[0];
+
+    dtSettings.oApi._fnCallbackReg(dtSettings, 'aoDestroyCallback', $.proxy(this.destroy, this), 'HeaderMenu');
+    this.scopeElement.on('keydown.HeaderMenu', this.handleKeydownEvent);
+    $(document).on('keydown.keyTable', this.handleKeydownEvent);
+  }
+
   private addItemsFiltering(menu: Menu): void {
     const filterWrapper = document.createElement('div');
 
@@ -148,10 +167,19 @@ export default abstract class HeaderMenu {
     menu.node.insertAdjacentElement('afterbegin', filterWrapper);
 
     $(menu.node)
-      .on('mouseup, keydown', '.dropdown-menu-search input', (e) => { e.stopImmediatePropagation(); })
-      .on('mouseup', '.dropdown-menu-search input', (e) => { $(e.currentTarget).focus(); })
-      .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
+      .on('mouseup', '.dropdown-menu-search input', (e) => {
+        $(e.currentTarget).focus();
+        e.stopImmediatePropagation();
+      })
+      .on('keydown.keyTable', '.dropdown-menu-search input', function(event) { event.stopImmediatePropagation(); })
+      .on('keyup.HeaderMenu, change', '.dropdown-menu-search input', function(event) {
         const searchExp = this.value ? new RegExp(this.value, 'i') : null;
+
+        if (event.keyCode === 27) {
+          menu.close();
+
+          return;
+        }
 
         menu.items.forEach((item, index) => {
           const node = $(menu.contentNode).find('.p-Menu-item').get(index);
@@ -161,6 +189,6 @@ export default abstract class HeaderMenu {
             searchExp && _.isRegExp(searchExp) ? !searchExp.test(item.label) : false
           );
         });
-      }, HeaderMenu.DEBOUNCE_DELAY));
+      });
   }
 }

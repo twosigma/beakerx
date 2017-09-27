@@ -21,13 +21,11 @@ import HeaderMenu from './HeaderMenu';
 
 export default class IndexMenu extends HeaderMenu {
   private menuItems: MenuItem[];
-  private scopeElement: any;
 
   constructor(scope: any, $trigger: any) {
     super(scope);
 
     this.columnIndex = 0;
-    this.scopeElement = scope.element;
     this.menuItems = createIndexMenuItems(scope);
     this.buildMenu($trigger);
   }
@@ -39,7 +37,7 @@ export default class IndexMenu extends HeaderMenu {
     const self = this;
 
     $(this.menu.contentNode).addClass('dropdown-menu');
-    $(this.scopeElement).on('click.headermenu', `#${$trigger.attr('id')}`, function(event) {
+    $(this.scopeElement).on('click.HeaderMenu', `#${$trigger.attr('id')}`, function(event) {
       event.preventDefault();
       event.stopPropagation();
 
@@ -47,10 +45,5 @@ export default class IndexMenu extends HeaderMenu {
     });
 
     this.createItems(this.menuItems, this.menu);
-  }
-
-  protected destroy(): void {
-    $(this.scopeElement).off('click.headermenu');
-    $(this.menu.node).off('keyup.keyTable, change');
   }
 }

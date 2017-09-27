@@ -19,6 +19,7 @@ import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
 import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
 
 import com.google.common.collect.Lists;
+import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +52,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   public static String OS = System.getProperty("os.name").toLowerCase();
   public static boolean showNullExecutionResult = true;
+  private final CloseKernelAction closeKernelAction;
 
   private String sessionId;
   private KernelSocketsFactory kernelSocketsFactory;
@@ -63,14 +66,21 @@ public abstract class Kernel implements KernelFunctionality {
 
   public Kernel(final String sessionId, final Evaluator evaluator,
                 final KernelSocketsFactory kernelSocketsFactory) {
+    this(sessionId, evaluator, kernelSocketsFactory, () -> System.exit(0));
+  }
+
+  public Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory,
+                CloseKernelAction closeKernelAction) {
     this.messageCreator = new MessageCreator(this);
     this.sessionId = sessionId;
     this.kernelSocketsFactory = kernelSocketsFactory;
+    this.closeKernelAction = closeKernelAction;
     this.commMap = new ConcurrentHashMap<>();
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
     this.magicCommand = handlers.getExecuteRequestHandler().getMagicCommand();
+    DisplayerDataMapper.init();
     configureSignalHandler();
     initKernel(getKernelParameters());
     configureJvmRepr();
@@ -105,7 +115,7 @@ public abstract class Kernel implements KernelFunctionality {
     this.evaluatorManager.exit();
     this.handlers.exit();
     this.executionResultSender.exit();
-    System.exit(0);
+    this.closeKernelAction.close();
   }
 
   private void closeComms() {
@@ -187,7 +197,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message,
-      int executionCount, ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
+                                                                       int executionCount, ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
     return this.evaluatorManager.executeCodeWithTimeMeasurement(code, message, executionCount, executeCodeCallbackWithTime);
   }
 

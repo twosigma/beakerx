@@ -23,6 +23,7 @@ import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.table.TableDisplay;
 import com.twosigma.beakerx.widgets.DisplayableWidget;
 import jupyter.Displayers;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -53,11 +54,15 @@ public class SerializeToString {
     return HIDDEN_MIME;
   }
 
-  private static List<MIMEContainer> getMimeContainer(final Object input) {
+  private static List<MIMEContainer> getMimeContainer(final Object data) {
+
+    Object input = DisplayerDataMapper.convert(data);
+
     if (input instanceof DisplayableWidget) {
       ((DisplayableWidget) input).display();
       return HIDDEN_MIME;
     }
+
     TableDisplay table = getTableDisplay(input);
     if (table != null) {
       table.display();
@@ -91,7 +96,9 @@ public class SerializeToString {
       if (!items.isEmpty()) {
         Object item = items.iterator().next();
         if (item instanceof Map) {
-          ret = new TableDisplay(items);
+          if (((Map) item).keySet().stream().allMatch(o -> o instanceof String)) {
+            ret = new TableDisplay(items);
+          }
         }
       }
     } else if (input instanceof Map[]) {
@@ -110,10 +117,10 @@ public class SerializeToString {
 
     StringBuilder sb = new StringBuilder();
     sb.append('[');
-    for (;;) {
+    for (; ; ) {
       E e = it.next();
       sb.append(e);
-      if (! it.hasNext())
+      if (!it.hasNext())
         return sb.append(']').toString();
       sb.append(',').append(' ');
     }

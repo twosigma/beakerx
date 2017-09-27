@@ -26,6 +26,7 @@ import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -34,15 +35,15 @@ import java.util.Optional;
 public class TestWidgetUtils {
 
   public static void verifyOpenCommMsg(List<Message> messages, String modelNameValue,
-      String viewNameValue) {
+                                       String viewNameValue) {
     verifyInternalOpenCommMsgWitLayout(messages, modelNameValue, viewNameValue,
 
-        Widget.MODEL_MODULE_VALUE,
-        Widget.VIEW_MODULE_VALUE);
+            Widget.MODEL_MODULE_VALUE,
+            Widget.VIEW_MODULE_VALUE);
   }
 
   public static void verifyOpenCommMsgWitoutLayout(List<Message> messages, String modelNameValue,
-      String viewNameValue) {
+                                                   String viewNameValue) {
     Message message = SearchMessages.getListWidgetsByViewName(messages, viewNameValue).get(0);
     verifyTypeMsg(message, COMM_OPEN);
     Map data = getState(message);
@@ -51,7 +52,7 @@ public class TestWidgetUtils {
   }
 
   public static void verifyInternalOpenCommMsg(Message message, String modelNameValue,
-      String viewNameValue) {
+                                               String viewNameValue) {
     verifyTypeMsg(message, COMM_OPEN);
     Map data = getState(message);
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
@@ -59,20 +60,20 @@ public class TestWidgetUtils {
   }
 
   public static void verifyInternalOpenCommMsgWitLayout(List<Message> messages,
-      String modelNameValue, String viewNameValue) {
+                                                        String modelNameValue, String viewNameValue) {
     verifyInternalOpenCommMsgWitLayout(messages, modelNameValue, viewNameValue,
-        BeakerxWidget.MODEL_MODULE_VALUE, BeakerxWidget.VIEW_MODULE_VALUE);
+            BeakerxWidget.MODEL_MODULE_VALUE, BeakerxWidget.VIEW_MODULE_VALUE);
   }
 
   public static void verifyInternalOpenCommMsgWitLayout(List<Message> messages,
-      String modelNameValue, String viewNameValue, String modelModule, String viewModule) {
+                                                        String modelNameValue, String viewNameValue, String modelModule, String viewModule) {
     Message widget = SearchMessages.getListWidgetsByViewName(messages, viewNameValue).get(0);
     Message layout = SearchMessages.getLayoutForWidget(messages, widget);
 
     verifyTypeMsg(widget, COMM_OPEN);
     Map data = getState(widget);
     assertThat(data.get(Layout.LAYOUT))
-        .isEqualTo(Layout.IPY_MODEL + layout.getContent().get(Comm.COMM_ID));
+            .isEqualTo(Layout.IPY_MODEL + layout.getContent().get(Comm.COMM_ID));
     assertThat(data.get(Widget.MODEL_NAME)).isEqualTo(modelNameValue);
     assertThat(data.get(Widget.VIEW_NAME)).isEqualTo(viewNameValue);
   }
@@ -131,20 +132,25 @@ public class TestWidgetUtils {
 
   public static <T> T findValueForProperty(KernelTest kernel, String propertyName, Class<T> clazz) {
     List<Message> messages = SearchMessages
-        .getListByDataAttr(kernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
+            .getListByDataAttr(kernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
     assertTrue("No update comm message.", messages.size() > 0);
     return getValueForProperty(messages.get(0), propertyName, clazz);
   }
 
   public static Optional<Message> getMessageUpdate(KernelTest kernel) {
-    List<Message> messages = SearchMessages
-            .getListByDataAttr(kernel.getPublishedMessages(), Comm.METHOD, Comm.UPDATE);
-    assertTrue("No update comm message.", messages.size() > 0);
-    return messages.stream().filter(x -> x.getHeader().getType().equals(JupyterMessages.COMM_MSG.getName())).findFirst();
+    return getMessageUpdate(kernel.getPublishedMessages());
   }
 
+  public static Optional<Message> getMessageUpdate(List<Message> messages) {
+    List<Message> list = SearchMessages
+            .getListByDataAttr(messages, Comm.METHOD, Comm.UPDATE);
+    assertTrue("No update comm message.", list.size() > 0);
+    return list.stream().filter(x -> x.getHeader().getType().equals(JupyterMessages.COMM_MSG.getName())).findFirst();
+  }
+
+
   public static String getMethod(Message message) {
-    return (String) ((Map)(message.getContent().get(Comm.DATA))).get(Comm.METHOD);
+    return (String) ((Map) (message.getContent().get(Comm.DATA))).get(Comm.METHOD);
 
   }
 

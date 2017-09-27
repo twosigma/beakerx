@@ -28,6 +28,14 @@ describe('Testing of plot Actions', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
+  function checkCellOutput(index, text){
+    var codeCell = beakerxPO.getCodeCellByIndex(index);
+    codeCell.scroll();
+    var outputText = codeCell.$('.output_subarea.output_text');
+    outputText.waitForEnabled();
+    expect(outputText.getText()).toMatch(text);
+  }
+
   describe("onKey action", function(){
     var svgElement1;
 
@@ -41,15 +49,18 @@ describe('Testing of plot Actions', function () {
       expect(height2).toBeGreaterThan(height1);
     });
 
-    it('onKey "T" should run the tag', function () {
+    it('onKey "T" should run the tag (by string name)', function () {
       svgElement1.$('rect#i0_0').click();
       browser.keys("t");
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      var codeCell = beakerxPO.getCodeCellByIndex(1);
-      codeCell.scroll();
-      var outputText = codeCell.$('.output_subarea.output_text');
-      outputText.waitForExist();
-      expect(outputText.getText()).toMatch('1:6');
+      checkCellOutput(1, '1:6');
+    });
+
+    it('onKey "K" should run the tag (by closure)', function () {
+      svgElement1.$('rect#i0_2').click();
+      browser.keys("k");
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      checkCellOutput(1, '3:3');
     });
   });
 
@@ -65,14 +76,17 @@ describe('Testing of plot Actions', function () {
       expect(height2).toBeGreaterThan(height1);
     });
 
-    it('Click on the bar should run the tag', function () {
+    it('Click on the bar should run the tag (by closure)', function () {
       svgElement2.$('rect#i0_1').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      var codeCell = beakerxPO.getCodeCellByIndex(3);
-      codeCell.scroll();
-      var outputText = codeCell.$('.output_subarea.output_text');
-      outputText.waitForExist();
-      expect(outputText.getText()).toMatch('2:3');
+      checkCellOutput(3, '2:3');
+    });
+
+    it('Click on the bar should run the tag (by string name)', function () {
+      var svgElement3 = beakerxPO.runCellToGetSvgElement(4);
+      svgElement3.$('rect#i0_0').click();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      checkCellOutput(5, '1:5');
     });
   });
 

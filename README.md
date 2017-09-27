@@ -32,57 +32,23 @@ The [documentation](https://github.com/twosigma/beakerx/blob/master/doc/StartHer
 BeakerX is the successor to the [Beaker
 Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).  It comes from [Two Sigma Open Source](http://opensource.twosigma.com/). Yes we are [hiring](https://www.twosigma.com/careers).
 
-## User Install
+This README is for developers.  Users should see the
+[documentation](http://beakerx.com/documentation) on the homepage for
+how to install and run BeakerX.
+
+
 
 ### Dependencies:
 
-* [conda](https://www.continuum.io/downloads) (any Python 3
-  environment with [Jupyter Notebook](https://jupyter.org), a
-  [JDK](http://jdk.java.net/8/), and
-  [Pandas](http://pandas.pydata.org/) installed should be fine, but
-  our documentation assumes conda).
-
-Install using [conda](https://conda.io/docs/install/quick.html):
-
-```
-conda create -y -n beakerx python=3.5 jupyter openjdk pandas
-source activate beakerx
-conda install -y -c conda-forge ipywidgets widgetsnbextension beakerx
-```
-
-Using [pip](https://pypi.python.org/pypi/pip):
-
-```
-conda create -y -n beakerx python=3.5 jupyter openjdk pandas
-source activate beakerx
-conda install -y -c conda-forge ipywidgets widgetsnbextension
-pip install beakerx
-beakerx-install
-```
-
-### Run
-
-The following command will start jupyter, and open your web browser
-and connect to it.  If you are running it on a server, it will print a
-URL that you can connect to.
-
-```
-jupyter notebook
-```
-
-## Developer Build
-
-### Dependencies:
-
-* [conda](https://www.continuum.io/downloads) (any Python 3 environment with [Jupyter Notebook](https://pypi.python.org/pypi/notebook), [Node.js](https://nodejs.org/en/), and a [JDK](http://jdk.java.net/8/) installed should be fine, but our documentation assumes conda)
+* [conda](https://www.anaconda.com/download/)
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 
 ### Build and Install
 
 ```
-conda create -y -n beakerx python=3.5 jupyter openjdk nodejs pandas
+conda create -y -n beakerx python=3.5 nodejs pandas
 source activate beakerx
-conda install -y -c conda-forge ipywidgets widgetsnbextension
+conda install -y -c conda-forge ipywidgets
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 ```
@@ -109,15 +75,6 @@ build instead.
 (cd beakerx/js; yarn install)
 ```
 
-## Beaker Notebooks Converter
-
-You can convert classic Beaker Notebook files (with file suffix
-".bkr") to Jupyter Notebooks (with file suffix ".ipynb") as follows:
-
-```
-python -m beakerx.bkr2ipynb *.bkr
-```
-
 ## Groovy with Interactive Plotting and Tables:
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 
@@ -127,21 +84,9 @@ python -m beakerx.bkr2ipynb *.bkr
 
 ## Running with Docker
 
-From project root:
-
-`(cd kernel; gradle clean)`
-
-To build beakerx base image execute
-
-`docker build -t beakerx-base -f docker/base/Dockerfile .`
-
-To build beakerx image execute
-
-`docker build -t beakerx -f docker/Dockerfile .`
-
-Now if you would like to start BeakerX execute
-
-`docker run -p 8888:8888 beakerx `
+```
+docker run -p 8888:8888 beakerx/beakerx
+```
 
 ## Contributing
 

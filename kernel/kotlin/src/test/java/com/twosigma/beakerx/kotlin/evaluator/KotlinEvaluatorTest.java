@@ -98,7 +98,7 @@ public class KotlinEvaluatorTest {
   @Test
   public void evaluateDivisionByZero_shouldReturnArithmeticException() throws Exception {
     //given
-    String code = "return 16/0";
+    String code = "16/0";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     evaluator.evaluate(seo, code);
@@ -111,7 +111,7 @@ public class KotlinEvaluatorTest {
   @Test
   public void returnString() throws Exception {
     //given
-    String code = "return \"Hello\"";
+    String code = "\"Hello\"";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     evaluator.evaluate(seo, code);
@@ -119,6 +119,19 @@ public class KotlinEvaluatorTest {
     //then
     Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
     Assertions.assertThat((String) seo.getPayload()).contains("Hello");
+  }
+
+  @Test
+  public void returnPrintln() throws Exception {
+    //given
+    String code = "println(\"Hello\")";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    evaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    Assertions.assertThat((String) seo.getPayload()).isNull();
   }
 
   @Test
@@ -131,7 +144,7 @@ public class KotlinEvaluatorTest {
             "val f = {x: Double -> a*x + b}\n" +
             "\n" +
             "println(f(2.0))\n" +
-            "return f(2.0)";
+            "f(2.0)";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     evaluator.evaluate(seo, code);

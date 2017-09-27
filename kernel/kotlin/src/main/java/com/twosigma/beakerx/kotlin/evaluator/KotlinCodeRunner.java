@@ -49,7 +49,7 @@ class KotlinCodeRunner<T> implements Runnable {
     try {
       InternalVariable.setValue(theOutput);
       Object o = theMth.invoke(instance, (Object[]) null);
-      theOutput.finished(o);
+      theOutput.finished(calculateResult(o));
     } catch (Throwable e) {
       if (e instanceof InvocationTargetException)
         e = ((InvocationTargetException) e).getTargetException();
@@ -66,5 +66,12 @@ class KotlinCodeRunner<T> implements Runnable {
     }
     theOutput.clrOutputHandler();
     Thread.currentThread().setContextClassLoader(oldld);
+  }
+
+  private Object calculateResult(Object o) {
+    if (o != null && o.toString().equals("kotlin.Unit")) {
+      return null;
+    }
+    return o;
   }
 }

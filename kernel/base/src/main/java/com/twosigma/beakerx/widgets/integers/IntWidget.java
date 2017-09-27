@@ -42,14 +42,4 @@ public abstract class IntWidget<T extends Serializable> extends ValueWidget<T> {
   public T getValueFromObject(Object input){
     return (T)getInteger(input);
   }
-
-
-  public String getModelModuleValue(){
-    return "@jupyter-widgets/controls";
-  }
-
-  public String getViewModuleValue(){
-    return "@jupyter-widgets/controls";
-  }
-
 }

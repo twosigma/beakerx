@@ -57,23 +57,25 @@ public abstract class DOMWidget extends Widget {
   public abstract class ValueChangeMsgCallbackHandler implements Handler<Message> {
 
     @SuppressWarnings("unchecked")
-    public Optional<Object> getSyncDataValue(Message msg){
+    public Optional<Object> getSyncDataValue(Message msg) {
       Optional<Object> ret = Optional.empty();
       if (msg != null && msg.getContent() != null && msg.getContent().containsKey(DATA)) {
-        Map<String,Serializable> data = (Map<String,Serializable>) msg.getContent().get(DATA);
+        Map<String, Serializable> data = (Map<String, Serializable>) msg.getContent().get(DATA);
         if (data.containsKey(SYNC_DATA)) {
-          Map<String,Serializable> sync_data = (Map<String,Serializable>) data.get(SYNC_DATA);
+          Map<String, Serializable> sync_data = (Map<String, Serializable>) data.get(SYNC_DATA);
           if (sync_data.containsKey(VALUE)) {
             ret = Optional.of(sync_data.get(VALUE));
+          } else if (sync_data.containsKey(INDEX)) {
+            ret = Optional.of(sync_data.get(INDEX));
           }
         }
       }
       return ret;
     }
-    
-    public void handle(Message message){
+
+    public void handle(Message message) {
       Optional<Object> value = getSyncDataValue(message);
-      if(value.isPresent()){
+      if (value.isPresent()) {
         updateValue(value.get(), message);
       }
     }
@@ -88,7 +90,7 @@ public abstract class DOMWidget extends Widget {
 
   public abstract void updateValue(Object value);
 
-  public void doUpdateValueWithCallback(Object value){
+  public void doUpdateValueWithCallback(Object value) {
     updateValue(value);
     this.updateValueCallback.execute();
   }
@@ -106,10 +108,10 @@ public abstract class DOMWidget extends Widget {
   }
 
   public Layout getLayout() {
-    if(layout == null){
+    if (layout == null) {
       layout = new Layout();
     }
     return layout;
   }
-  
+
 }

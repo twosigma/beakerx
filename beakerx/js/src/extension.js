@@ -24,10 +24,7 @@ if (window.require) {
         map: {
             "*" : {
                 "beakerx": "nbextensions/beakerx/index",
-                "jupyter-js-widgets": "nbextensions/jupyter-js-widgets/extension",
-                "@jupyter-widgets/controls": "nbextensions/jupyter-js-widgets/extension",
-                "@jupyter-widgets/base": "nbextensions/jupyter-js-widgets/extension",
-                '@jupyter-widgets/output': 'nbextensions/jupyter-js-widgets/extension'
+                "jupyter-js-widgets": "nbextensions/jupyter-js-widgets/extension"
             }
         }
     });
@@ -105,11 +102,11 @@ define([
       });
       kernel.comm_manager.register_target('beaker.tag.run', function(comm, msg) {
         comm.on_msg(function(msg) {
-          if(msg.content.data.runByTag != undefined){
+          if(msg.content.data.state && msg.content.data.state.runByTag){
             var notebook = Jupyter.notebook;
             var cells = Jupyter.notebook.get_cells();
             var indexList = cells.reduce(function(acc, cell, index) {
-              if (cell._metadata.tags && cell._metadata.tags.includes(msg.content.data.runByTag)) {
+              if (cell._metadata.tags && cell._metadata.tags.includes(msg.content.data.state.runByTag)) {
                 acc.push(index);
               }
               return acc;
@@ -117,7 +114,7 @@ define([
             if (indexList.length === 0) {
               dialog.modal({
                 title: 'No cell with the tag !',
-                body: 'Tag: ' + msg.content.data.runByTag,
+                body: 'Tag: ' + msg.content.data.state.runByTag,
                 buttons: {'OK': {'class': 'btn-primary'}},
                 notebook: Jupyter.notebook,
                 keyboard_manager: Jupyter.keyboard_manager,
@@ -278,8 +275,6 @@ define([
       var plotApiList = plotApi.list();
       var bkApp = bkCoreManager.getBkApp();
       var bkObject = bkApp.getBeakerObject();
-
-      console.log('LOAD', window.beakerx);
 
       _.extend(window.beakerx, plotApiList);
       _.extend(window.beakerx, htmlOutput);

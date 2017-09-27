@@ -15,8 +15,7 @@
  */
 
 var ENTER_KEY_CODE = 13;
-var widgets = require('@jupyter-widgets/base');
-var controls = require('@jupyter-widgets/controls');
+var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
 
 var selectMultipleWidget = require('./easyForm/selectMultipleWidget');
@@ -25,7 +24,7 @@ var datePickerWidget = require('./easyForm/datePickerWidget');
 var textWidget = require('./easyForm/textWidget');
 var comboBoxWidget = require('./easyForm/comboBoxWidget');
 
-controls.TextView.prototype.handleEnterKeyPress = function() {
+widgets.TextView.prototype.handleEnterKeyPress = function() {
   if (e.keyCode == 13) {
     this.send({ event: 'submit' });
     e.preventDefault();
@@ -35,6 +34,8 @@ controls.TextView.prototype.handleEnterKeyPress = function() {
 require('./easyForm/css/jupyter-easyform.scss');
 require('flatpickr/dist/flatpickr.css');
 require('jquery-ui/themes/base/all.css');
+require('jquery-ui/ui/widgets/button');
+require('jquery-ui/ui/widgets/autocomplete');
 
 var EasyFormModel = widgets.DOMWidgetModel.extend({
   defaults: function() {
@@ -43,6 +44,8 @@ var EasyFormModel = widgets.DOMWidgetModel.extend({
       _view_name: 'EasyFormView',
       _model_module: 'beakerx',
       _view_module: 'beakerx',
+      _model_module_version: '*',
+      _view_module_version: '*',
       children: []
     });
   }
@@ -52,7 +55,7 @@ var EasyFormModel = widgets.DOMWidgetModel.extend({
   }, widgets.DOMWidgetModel.serializers)
 });
 
-var EasyFormView = controls.BoxView.extend({
+var EasyFormView = widgets.BoxView.extend({
   render: function() {
     var that = this;
 

@@ -16,25 +16,45 @@ from ipywidgets import DOMWidget, Box
 from traitlets import Unicode, Dict
 from beakerx.utils import *
 from beakerx.tabledisplay.tableitems import *
-
-
+import math
+import numpy
 class Table(BaseObject):
     def __init__(self, *args, **kwargs):
         self.columnNames = args[0].columns.tolist()
         self.values = []
         self.types = []
+        types_map = dict()
         for column in self.columnNames:
-            self.types.append(self.convertType(args[0].dtypes[column].name,
-                                               args[0][column][0]))
-        
-        for tuple in args[0].iterrows():
+            column_type = self.convertType(args[0].dtypes[column].name,
+                             args[0][column][0])
+            self.types.append(column_type)
+            types_map[column] = column_type
+
+        for ix in range(len(args[0])):
             row = []
             for columnName in self.columnNames:
-                value = tuple[1][columnName]
-                if isinstance(value, str) and is_date(value):
+                value = args[0][columnName][ix]
+                value_type = types_map.get(columnName)
+               
+                if value_type == "time":
                     row.append(DateType(value))
+                elif value_type == "double":
+                    row.append(value.astype('str'))
+                elif value_type == "integer":
+                    row.append(value.item())
+                elif value_type == "int64":
+                    row.append(value.astype('str'))
+                elif value_type == "string":
+                    if isinstance(value, float):
+                        if math.isnan(value):
+                            row.append("")
+                        else:
+                            row.append(str(value))
+                    else:
+                        row.append(str(value))
+                        
                 else:
-                    row.append(value)
+                    row.append(str(value))
             self.values.append(row)
         
         self.headersVertical = False
@@ -64,11 +84,27 @@ class Table(BaseObject):
         self.columnsVisible = {}
         self.hasDoubleClickAction = False
     
-    def convertType(self, type, value):
-        if type == "float64":
+    def convertType(self, object_type, value):
+        if value == "":
+            return "string"
+        if isinstance(value, float):
+            if math.isnan(value):
+                return "string"
+        if object_type == "float64":
             return "double"
+        if object_type == "int64":
+            if value > numpy.iinfo(numpy.int32).max or value < numpy.iinfo(numpy.int32).min:
+                return "int64"
+            else:
+                return "integer"
+        if object_type == "uint64":
+            return "int64"
+        if isinstance(value, str):
+            return "string"
         if is_date(value):
             return "time"
+
+        return "string"
 
 
 class TableDisplay(DOMWidget):

@@ -31,6 +31,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit;
+
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 
 class JavaWorkerThread extends WorkerThread {
@@ -52,7 +54,7 @@ class JavaWorkerThread extends WorkerThread {
 
   public void run() {
     DynamicClassLoaderSimple loader = null;
-    JobDescriptor j = null;
+    JobDescriptor j;
     org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler;
 
     javaSourceCompiler = new JavaSourceCompiler();
@@ -60,152 +62,18 @@ class JavaWorkerThread extends WorkerThread {
 
     while (!exit) {
       try {
-        // wait for work
         syncObject.acquire();
-
-        // check if we must create or update class loader
         if (loader == null || updateLoader) {
-          loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-          loader.addJars(javaEvaluator.getClasspath().getPathsAsStrings());
-          loader.addDynamicDir(javaEvaluator.getOutDir());
+          loader = newClassLoader();
           this.updateLoader = false;
         }
-
-        // get next job descriptor
         j = jobQueue.poll();
-        if (j == null)
+        if (j == null) {
           continue;
-
+        }
         nc = NamespaceClient.getBeaker(javaEvaluator.getSessionId());
         nc.setOutputObj(j.outputObject);
-
-        j.outputObject.started();
-
-        Pattern p;
-        Matcher m;
-        String pname = javaEvaluator.getPackageId();
-
-        org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(javaEvaluator.getOutDir()));
-
-        // build the compiler class path
-        String classpath = System.getProperty("java.class.path");
-        String[] classpathEntries = classpath.split(File.pathSeparator);
-        if (classpathEntries != null && classpathEntries.length > 0)
-          compilationUnit.addClassPathEntries(Arrays.asList(classpathEntries));
-        if (!javaEvaluator.getClasspath().isEmpty())
-          compilationUnit.addClassPathEntries(javaEvaluator.getClasspath().getPathsAsStrings());
-        compilationUnit.addClassPathEntry(javaEvaluator.getOutDir());
-
-        // normalize and analyze code
-        String code = ParserUtil.normalizeCode(j.codeToBeExecuted);
-
-        String[] codev = code.split("\n");
-        int ci = 0;
-
-        ci = skipBlankLines(codev, ci);
-
-        Map<Integer, Integer> lineNumbersMapping = new HashMap<>();
-        LineBrakingStringBuilderWrapper javaSourceCode = new LineBrakingStringBuilderWrapper();
-        p = Pattern.compile("\\s*package\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*);.*");
-        m = p.matcher(codev[ci]);
-
-        if (m.matches()) {
-          pname = m.group(1);
-          lineNumbersMapping.put(1, ci);
-          ci = skipBlankLines(codev, ci + 1);
-        }
-        javaSourceCode.append("package ");
-        javaSourceCode.append(pname);
-        javaSourceCode.append(";\n");
-
-        for (ImportPath i : javaEvaluator.getImports().getImportPaths()) {
-          javaSourceCode.append("import ");
-          javaSourceCode.append(i.asString());
-          javaSourceCode.append(";\n");
-        }
-
-        p = Pattern.compile("\\s*import(\\s+static)?\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*(?:\\.\\*)?);.*");
-        m = p.matcher(codev[ci]);
-        while (m.matches()) {
-          String impstr = m.group(2);
-          String staticModifier = m.group(1);
-          javaSourceCode.append("import ");
-          if (staticModifier != null) {
-            javaSourceCode.append("static ");
-          }
-          javaSourceCode.append(impstr);
-          javaSourceCode.append(";\n");
-          lineNumbersMapping.put(javaSourceCode.getLinesCount(), ci);
-
-          ci = skipBlankLines(codev, ci + 1);
-          m = p.matcher(codev[ci]);
-        }
-
-        p = Pattern.compile("(?:^|.*\\s+)(?:(?:class)|(?:interface))\\s+([a-zA-Z]\\w*).*");
-        m = p.matcher(codev[ci]);
-        if (m.matches()) {
-          // this is a class definition
-
-          String cname = m.group(1);
-
-          addTheRestOfCode(codev, ci, javaSourceCode, lineNumbersMapping);
-
-          compilationUnit.addJavaSource(pname + "." + cname, javaSourceCode.toString());
-          try {
-            javaSourceCompiler.compile(compilationUnit);
-            javaSourceCompiler.persistCompiledClasses(compilationUnit);
-            j.outputObject.finished(pname + "." + cname);
-          } catch (CompilationException e) {
-            j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
-          } catch (Exception e) {
-            j.outputObject.error("ERROR: " + e.toString());
-          } finally {
-            if (j.outputObject != null) {
-              j.outputObject.executeCodeCallback();
-            }
-          }
-        } else {
-
-          String classId = generateClassId();
-          String ret = "void";
-          if (codev[codev.length - 1].matches("(^|.*\\s+)return\\s+.*"))
-            ret = "Object";
-          // this is an expression evaluation
-          javaSourceCode.append("public class " + JavaEvaluator.WRAPPER_CLASS_NAME + classId + " {\n");
-          javaSourceCode.append("public static ");
-          javaSourceCode.append(ret);
-          javaSourceCode.append(" beakerRun() throws Exception {\n");
-          addTheRestOfCode(codev, ci, javaSourceCode, lineNumbersMapping);
-          javaSourceCode.append("}\n");
-          javaSourceCode.append("}\n");
-
-          compilationUnit.addJavaSource(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId, javaSourceCode.toString());
-
-          try {
-            javaSourceCompiler.compile(compilationUnit);
-
-            javaSourceCompiler.persistCompiledClasses(compilationUnit);
-            Class<?> fooClass = loader.loadClass(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId);
-            Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
-
-            if (!javaEvaluator.executeTask(new JavaCodeRunner(mth, j.outputObject, ret.equals("Object"), loader))) {
-              j.outputObject.error(INTERUPTED_MSG);
-            }
-            if (nc != null) {
-              nc.setOutputObj(null);
-              nc = null;
-            }
-          } catch (CompilationException e) {
-            j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
-          } catch (Exception e) {
-            j.outputObject.error("ERROR: " + e.toString());
-          } finally {
-            if (j.outputObject != null) {
-              j.outputObject.executeCodeCallback();
-            }
-          }
-        }
-        j = null;
+        runCode(loader, j, javaSourceCompiler);
       } catch (Throwable e) {
         e.printStackTrace();
       } finally {
@@ -218,15 +86,161 @@ class JavaWorkerThread extends WorkerThread {
     NamespaceClient.delBeaker(javaEvaluator.getSessionId());
   }
 
-  private String generateClassId() {
-    return "Id" + UUID.randomUUID().toString().replace("-","");
+  private void runCode(DynamicClassLoaderSimple loader, JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler) {
+    j.outputObject.started();
+    CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(javaEvaluator.getOutDir()));
+    buildClasspath(compilationUnit);
+    Map<Integer, Integer> lineNumbersMapping = new HashMap<>();
+    LineBrakingStringBuilderWrapper javaSourceCode = new LineBrakingStringBuilderWrapper();
+    String code = ParserUtil.normalizeCode(j.codeToBeExecuted);
+    Codev codev = new Codev(code);
+    String pname = configurePackage(codev, lineNumbersMapping, javaSourceCode);
+    configureImports(codev, lineNumbersMapping, javaSourceCode);
+    compileCode(loader, j, javaSourceCompiler, pname, compilationUnit, codev, lineNumbersMapping, javaSourceCode);
   }
 
-  private int skipBlankLines(String[] lines, int ci) {
-    while (ci < lines.length - 1 && StringUtils.isBlank(lines[ci])) {
-      ci++;
+  private void compileCode(DynamicClassLoaderSimple loader, JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler, String pname, CompilationUnit compilationUnit, Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
+    if (codev.hasLineToProcess()) {
+      Codev.CodeLine codeLine = codev.getNotBlankLine();
+      Pattern p = Pattern.compile("(?:^|.*\\s+)(?:(?:class)|(?:interface))\\s+([a-zA-Z]\\w*).*");
+      Matcher m = p.matcher(codeLine.getLine());
+      if (m.matches()) {
+        compileNewDefinitionClass(j, javaSourceCompiler, m, pname, compilationUnit, codev, lineNumbersMapping, javaSourceCode);
+      } else {
+        compileAndRunCode(loader, j, javaSourceCompiler, pname, compilationUnit, codev, lineNumbersMapping, javaSourceCode);
+      }
+    } else {
+      compileAndRunCode(loader, j, javaSourceCompiler, pname, compilationUnit, codev, lineNumbersMapping, javaSourceCode);
     }
-    return ci;
+  }
+
+  private void configureImports(Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
+    if (codev.hasLineToProcess()) {
+      Pattern p = Pattern.compile("\\s*import(\\s+static)?\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*(?:\\.\\*)?);.*");
+      Codev.CodeLine codeLine = codev.getNotBlankLine();
+      Matcher m = p.matcher(codeLine.getLine());
+      while (m.matches()) {
+        String impstr = m.group(2);
+        String staticModifier = m.group(1);
+        javaSourceCode.append("import ");
+        if (staticModifier != null) {
+          javaSourceCode.append("static ");
+        }
+        javaSourceCode.append(impstr);
+        javaSourceCode.append(";\n");
+        lineNumbersMapping.put(javaSourceCode.getLinesCount(), codeLine.getIndex());
+
+        codev.moveToNextLine();
+        if (!codev.hasLineToProcess()) {
+          break;
+        }
+        codeLine = codev.getNotBlankLine();
+        m = p.matcher(codeLine.getLine());
+      }
+    }
+  }
+
+  private String configurePackage(Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
+    String pname = javaEvaluator.getPackageId();
+    Codev.CodeLine codeLine = codev.getNotBlankLine();
+    Pattern p = Pattern.compile("\\s*package\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*);.*");
+    Matcher m = p.matcher(codeLine.getLine());
+
+    if (m.matches()) {
+      pname = m.group(1);
+      lineNumbersMapping.put(1, codeLine.getIndex());
+      codev.moveToNextLine();
+    }
+    javaSourceCode.append("package ");
+    javaSourceCode.append(pname);
+    javaSourceCode.append(";\n");
+
+    for (ImportPath i : javaEvaluator.getImports().getImportPaths()) {
+      javaSourceCode.append("import ");
+      javaSourceCode.append(i.asString());
+      javaSourceCode.append(";\n");
+    }
+    return pname;
+  }
+
+  private void compileAndRunCode(DynamicClassLoaderSimple loader, JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler, String pname, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit, Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
+    String classId = generateClassId();
+    String ret = "void";
+    if (codev.getLastLine().matches("(^|.*\\s+)return\\s+.*"))
+      ret = "Object";
+    // this is an expression evaluation
+    javaSourceCode.append("public class " + JavaEvaluator.WRAPPER_CLASS_NAME + classId + " {\n");
+    javaSourceCode.append("public static ");
+    javaSourceCode.append(ret);
+    javaSourceCode.append(" beakerRun() throws Exception {\n");
+    addTheRestOfCode(codev, javaSourceCode, lineNumbersMapping);
+    javaSourceCode.append("}\n");
+    javaSourceCode.append("}\n");
+
+    compilationUnit.addJavaSource(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId, javaSourceCode.toString());
+
+    try {
+      javaSourceCompiler.compile(compilationUnit);
+
+      javaSourceCompiler.persistCompiledClasses(compilationUnit);
+      Class<?> fooClass = loader.loadClass(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId);
+      Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
+
+      if (!javaEvaluator.executeTask(new JavaCodeRunner(mth, j.outputObject, ret.equals("Object"), loader))) {
+        j.outputObject.error(INTERUPTED_MSG);
+      }
+    } catch (CompilationException e) {
+      j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
+    } catch (Exception e) {
+      j.outputObject.error("ERROR: " + e.toString());
+    } finally {
+      if (j.outputObject != null) {
+        j.outputObject.executeCodeCallback();
+      }
+    }
+  }
+
+  private void compileNewDefinitionClass(JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler, Matcher m, String pname, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit, Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
+    String cname = m.group(1);
+
+    addTheRestOfCode(codev, javaSourceCode, lineNumbersMapping);
+
+    compilationUnit.addJavaSource(pname + "." + cname, javaSourceCode.toString());
+    try {
+      javaSourceCompiler.compile(compilationUnit);
+      javaSourceCompiler.persistCompiledClasses(compilationUnit);
+      j.outputObject.finished(pname + "." + cname);
+    } catch (CompilationException e) {
+      j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
+    } catch (Exception e) {
+      j.outputObject.error("ERROR: " + e.toString());
+    } finally {
+      if (j.outputObject != null) {
+        j.outputObject.executeCodeCallback();
+      }
+    }
+  }
+
+  private DynamicClassLoaderSimple newClassLoader() {
+    DynamicClassLoaderSimple loader;
+    loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+    loader.addJars(javaEvaluator.getClasspath().getPathsAsStrings());
+    loader.addDynamicDir(javaEvaluator.getOutDir());
+    return loader;
+  }
+
+  private void buildClasspath(org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit) {
+    String classpath = System.getProperty("java.class.path");
+    String[] classpathEntries = classpath.split(File.pathSeparator);
+    if (classpathEntries != null && classpathEntries.length > 0)
+      compilationUnit.addClassPathEntries(Arrays.asList(classpathEntries));
+    if (!javaEvaluator.getClasspath().isEmpty())
+      compilationUnit.addClassPathEntries(javaEvaluator.getClasspath().getPathsAsStrings());
+    compilationUnit.addClassPathEntry(javaEvaluator.getOutDir());
+  }
+
+  private String generateClassId() {
+    return "Id" + UUID.randomUUID().toString().replace("-", "");
   }
 
   private String buildErrorMessage(CompilationException exception, Map<Integer, Integer> lineNumbersMapping) {
@@ -251,12 +265,14 @@ class JavaWorkerThread extends WorkerThread {
     return usersNumber == null ? ourNumber : usersNumber + 1;
   }
 
-  private void addTheRestOfCode(String[] codev, int ci, LineBrakingStringBuilderWrapper javaSourceCode, Map<Integer, Integer> lineNumbersMapping) {
-    for (; ci < codev.length; ci++) {
-      javaSourceCode.append(codev[ci]);
+  private void addTheRestOfCode(Codev codev, LineBrakingStringBuilderWrapper javaSourceCode, Map<Integer, Integer> lineNumbersMapping) {
+    while (codev.hasLineToProcess()) {
+      javaSourceCode.append(codev.getNotBlankLine().getLine());
       javaSourceCode.append("\n");
-      lineNumbersMapping.put(javaSourceCode.getLinesCount(), ci);
+      lineNumbersMapping.put(javaSourceCode.getLinesCount(), codev.getNotBlankLine().getIndex());
+      codev.moveToNextLine();
     }
+
   }
 
   public void updateLoader() {

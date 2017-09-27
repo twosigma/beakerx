@@ -1,5 +1,6 @@
 var $ = require('jquery');
 var jQuery = require('jquery');
+var _ = require('underscore');
 
 module.exports = {
   setJqExtentions: setJqExtentions,

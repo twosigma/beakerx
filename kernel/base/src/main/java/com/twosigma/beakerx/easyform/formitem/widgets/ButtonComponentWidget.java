@@ -41,7 +41,7 @@ public class ButtonComponentWidget extends EasyFormComponent<Button> {
   }
 
   @Override
-  public void setValue(String value) {
+  public void setValue(Object value) {
   }
 
   public void setTag(String tag) {

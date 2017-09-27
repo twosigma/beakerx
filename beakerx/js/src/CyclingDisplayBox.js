@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-var widgets = require('@jupyter-widgets/controls');
+var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
 
 var interval = undefined;
@@ -25,7 +25,9 @@ var CyclingDisplayBoxModel = widgets.BoxModel.extend({
   _model_name : 'CyclingDisplayBoxModel',
   _view_name : 'CyclingDisplayBoxView',
   _model_module : 'beakerx',
-  _view_module : 'beakerx'
+  _view_module : 'beakerx',
+  _model_module_version: '*',
+  _view_module_version: '*'
 });
 
 var CyclingDisplayBoxView = widgets.BoxView.extend({

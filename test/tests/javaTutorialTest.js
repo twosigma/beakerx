@@ -19,10 +19,14 @@ var beakerxPO;
 
 describe('JavaTutorial notebook', function () {
 
-  beforeAll(function (done) {
+  beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('javaTutorial.ipynb', done);
+    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/javaTutorial.ipynb');
   }, 2);
+
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
+  });
 
   describe('Run first cell. ', function () {
     it('Output contains "test.beaker.BeakerTest"', function () {

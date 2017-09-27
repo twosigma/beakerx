@@ -34,9 +34,13 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   public static final String MODEL_NAME = "_model_name";
   public static final String VIEW_MODULE = "_view_module";
   public static final String VIEW_NAME = "_view_name";
+  public static final String VIEW_MODULE_VERSION = "_view_module_version";
+  public static final String MODEL_MODULE_VERSION = "_model_module_version";
 
   public static final String MODEL_MODULE_VALUE = "jupyter-js-widgets";
   public static final String VIEW_MODULE_VALUE = "jupyter-js-widgets";
+  public static final String MODEL_MODULE_VERSION_VALUE = "*";
+  public static final String VIEW_MODULE_VERSION_VALUE = "*";
 
   public static final String VALUE = "value";
   public static final String DISABLED = "disabled";
@@ -46,6 +50,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
 
   public static final String METHOD = "method";
   public static final String DISPLAY = "display_data";
+
+  public static final String INDEX = "index";
 
   private Comm comm;
 
@@ -74,8 +80,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     HashMap<String, Serializable> content = new HashMap<>();
     HashMap<String, Serializable> data = new HashMap<>();
     //These magic numbers needs to be clarified
-    data.put("version_major", "2");
-    data.put("version_minor", "0");
+    data.put("version_major", 2);
+    data.put("version_minor", 0);
     data.put(MODEL_ID, getComm().getCommId());
 
     content.put(METHOD, DISPLAY);
@@ -88,6 +94,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     HashMap<String, Serializable> result = new HashMap<>();
     result.put(MODEL_MODULE, getModelModuleValue());
     result.put(VIEW_MODULE, getViewModuleValue());
+    result.put(VIEW_MODULE_VERSION, getViewModuleVersion());
+    result.put(MODEL_MODULE_VERSION, getModelModuleVersion());
     String mn = getModelNameValue();
     if (mn != null && !mn.isEmpty()) {
       result.put(MODEL_NAME, mn);
@@ -110,6 +118,14 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
 
   public String getViewModuleValue() {
     return VIEW_MODULE_VALUE;
+  }
+
+  public String getModelModuleVersion() {
+    return MODEL_MODULE_VERSION_VALUE;
+  }
+
+  public String getViewModuleVersion() {
+    return VIEW_MODULE_VERSION_VALUE;
   }
 
   protected abstract void addValueChangeMsgCallback();

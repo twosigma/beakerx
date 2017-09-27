@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-var widgets = require('@jupyter-widgets/controls');
+var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
 
 var SelectMultipleModel = widgets.SelectMultipleModel.extend({

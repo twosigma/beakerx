@@ -173,7 +173,10 @@ public class NamespaceClient {
   public synchronized void runByTag(String tag) {
     Comm c = getTagRunComm();
     HashMap<String, Serializable> data = new HashMap<>();
-    data.put("runByTag", tag);
+    HashMap<String, Serializable> state = new HashMap<>();
+    state.put("runByTag", tag);
+    data.put("state", state);
+    data.put("buffer_paths", new HashMap<>());
     c.setData(data);
     c.send();
   }

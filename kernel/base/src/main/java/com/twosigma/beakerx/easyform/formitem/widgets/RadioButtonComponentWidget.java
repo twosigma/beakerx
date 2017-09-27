@@ -65,7 +65,7 @@ public class RadioButtonComponentWidget extends EasyFormComponent<ValueWidget<?>
   }
 
   @Override
-  public void setValue(String value) {
+  public void setValue(Object value) {
     radioButtons.setValue(value);
   }
 

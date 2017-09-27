@@ -19,10 +19,14 @@ var beakerxPO;
 
 describe('PlotFeatures notebook', function () {
 
-  beforeAll(function (done) {
+  beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('PlotFeatures.ipynb', done);
+    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/PlotFeatures.ipynb');
   }, 2);
+
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
+  });
 
   describe('Run "Title and Axis Labels" cell. ', function () {
     it('Widget area has dtcontainer', function () {
@@ -76,9 +80,9 @@ describe('PlotFeatures notebook', function () {
 
   describe('Run cell with bars', function(){
     it('Plot has 5 bars', function(){
-      var svgElement = beakerxPO.runCellToGetSvgElement(5);
-      svgElement.waitForEnabled();
-      expect(svgElement.$$('g > rect.plot-resp').length).toEqual(5);
+      var svgElement5 = beakerxPO.runCellToGetSvgElement(5);
+      svgElement5.waitForEnabled();
+      expect(svgElement5.$$('g#i0 > rect.plot-resp').length).toEqual(5);
     });
   });
 

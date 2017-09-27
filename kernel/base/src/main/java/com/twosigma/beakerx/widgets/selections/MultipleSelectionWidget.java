@@ -16,7 +16,10 @@
 package com.twosigma.beakerx.widgets.selections;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> {
 
@@ -29,7 +32,13 @@ public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> 
 
   @Override
   public String[] getValueFromObject(Object input) {
-    return getStringArray(input);
+    Collection<Integer> indexes = indexes(input);
+    List<String> collect = indexes.stream().map(x -> getOptions()[x]).collect(Collectors.toList());
+    return collect.toArray(new String[collect.size()]);
+  }
+
+  private Collection<Integer> indexes(Object input) {
+    return getIntegerArray(input);
   }
 
 }

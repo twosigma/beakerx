@@ -52,7 +52,7 @@ public class LoadValuesButton extends EasyFormComponent {
   }
 
   @Override
-  public void setValue(String value) {
+  public void setValue(Object value) {
     throw new RuntimeException("Not implemented yet.");
   }
 }

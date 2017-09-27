@@ -28,7 +28,6 @@ define([
   './../shared/bkUtils',
   './cellHighlighters',
   './../shared/bkHelper',
-  './datatablesHeadermenu',
   './consts',
   'jquery-contextmenu',
   'jquery-ui/ui/widgets/tooltip',
@@ -47,7 +46,6 @@ define([
   bkUtils,
   cellHighlighters,
   bkHelper,
-  datatablesHeadermenu,
   tableConsts,
   contextMenu,
   tooltip,
@@ -330,7 +328,6 @@ define([
       self.removeInteractionListeners();
       self.removeFilterListeners();
       self.destroyTableSelect();
-      self.destroyTableMenuElements();
       $(self.element).find(".bko-table-use-pagination").remove();
       $body.tooltip('instance') && $body.tooltip('destroy');
 
@@ -339,7 +336,6 @@ define([
       $body.off('click.bko-dt-container');
       $document
         .off('contextmenu.bko-dt-header')
-        .off('keydown.handleTableHeaderMenuClose');
       $tableContainer.find('.dataTables_scrollHead').off('scroll');
       $tableContainer
         .off('keyup.column-filter change.column-filter')
@@ -446,13 +442,13 @@ define([
     if (model.columnNames !== undefined)
       self.columnNames = model.columnNames.slice(0);
     else
-      self.columnNames = undefined;
+      self.columnNames = [];
     self.timeStrings = model.timeStrings;
     self.tz          = model.timeZone;
     if (model.types !== undefined)
       self.types = model.types.slice(0);
     else
-      self.types = undefined;
+      self.types = [];
 
     if (self.hasIndex) {
       if (self.columnNames !== undefined) {
@@ -484,7 +480,7 @@ define([
         self.pagination.fixRight = 0;
       }
       self.barsOnColumn          = self.savedstate.barsOnColumn || {};
-      self.cellHighlightersData  = self.savedstate.cellHighlightersData || {};
+      self.cellHighlightersData  = self.savedstate.cellHighlightersData || [];
       self.tableFilter           = self.savedstate.tableFilter || '';
       self.columnFilter          = self.savedstate.columnFilter || [];
       self.showFilter            = self.savedstate.showFilter;
@@ -547,7 +543,7 @@ define([
 
       self.cellHighlightersData = model.cellHighlighters ? _.map(model.cellHighlighters, function(highlighter){
         return _.extend({ colInd: self.getColumnIndexByColName(highlighter.colName) }, highlighter);
-      }) : {};
+      }) : [];
       self.tableFilter       = '';
       self.columnFilter      = [];
       self.showFilter        = false;
@@ -588,12 +584,12 @@ define([
       self.actualtype = [];
       self.actualalign = [];
 
-      for (i = 0; i < self.columnNames.length; i++) {
-        typesAndAlignments = self.getColumnTypeAndAlignment(i + 1);
+      _.forEach(self.columnNames, function(column, index) {
+        typesAndAlignments = self.getColumnTypeAndAlignment(index + 1);
 
         self.actualtype.push(typesAndAlignments.actualtype);
         self.actualalign.push(typesAndAlignments.actualalign);
-      }
+      });
 
       if (!_.isEmpty(model.alignmentForType)) {
         _.forEach(model.types, function(type, index) {
@@ -733,7 +729,7 @@ define([
   TableScope.prototype.doCreateData = function(model) {
     var self = this;
     // create a dummy column to keep server ordering if not already present
-    var values = model.hasOwnProperty('filteredValues') ? model.filteredValues : model.values;
+    var values = model.hasOwnProperty('filteredValues') ? model.filteredValues : model.values || [];
     if (!self.hasIndex) {
       var data = [];
       var r;
@@ -1265,96 +1261,8 @@ define([
     var cols = [];
     var i;
 
-    var getFormatSubitems = function(container) {
-      var colIdx = container.data('columnIndex');
-      var types = self.getCellDispOptsF(colIdx - 1);
-      var items = [];
-
-      _.each(types, function(obj) {
-        if (obj.type === 8) { //datetime
-          items = items.concat(getTimeSubitems());
-          return;
-        }
-        var item = {
-          title: obj.name,
-          isChecked: function(container) {
-            var colIdx = container.data('columnIndex');
-            return self.actualtype[self.colorder[colIdx] - 1] === obj.type;
-          }
-        };
-        if (obj.type === 4) { //double with precision
-          item.items = getPrecisionSubitems;
-        } else {
-          item.action = function(el) {
-            var container = el.closest('.bko-header-menu');
-            var colIdx = container.data('columnIndex');
-
-            self.getCellDisp[self.colorder[colIdx] - 1] = obj.type;
-            self.actualtype[self.colorder[colIdx] - 1] = obj.type;
-            self.applyChanges();
-          }
-        };
-        items.push(item);
-      });
-
-      return items;
-    };
-
-    var getPrecisionSubitems = function(container) {
-      var items = [];
-
-      _.each(self.doubleWithPrecisionConverters, function(func, precision) {
-        var item = {
-          title: precision,
-          isChecked: function(container) {
-            var colIdx = container.data('columnIndex');
-            return self.actualtype[self.colorder[colIdx] - 1] == self.getActualTypeByPrecision(precision);
-          },
-          action: function(el) {
-            var container = el.closest('.bko-header-menu');
-            var colIdx = container.data('columnIndex');
-            self.changePrecision(self.colorder[colIdx] - 1, precision);
-          }
-        };
-
-        items.push(item);
-      });
-
-      return items;
-    };
-
-    var getTimeSubitems = function() {
-      var items = [];
-
-      _.forEach(tableConsts.TIME_UNIT_FORMATS, function(value, unit) {
-        if (tableConsts.TIME_UNIT_FORMATS.hasOwnProperty(unit)) {
-          var item = {
-            title: value.title,
-            isChecked: function(container) {
-              var colIdx = container.data('columnIndex');
-              return self.actualtype[self.colorder[colIdx] - 1] === 8 &&
-                     (unit === self.formatForTimes || unit == 'DATETIME' && _.isEmpty(self.formatForTimes));
-            },
-            action: function(el) {
-              var container = el.closest('.bko-header-menu');
-              var colIdx = container.data('columnIndex');
-
-              self.getCellDisp[self.colorder[colIdx] - 1] = 8;
-              self.actualtype[self.colorder[colIdx] - 1] = 8;
-
-              self.changeTimeFormat(unit);
-            }
-          };
-
-          items.push(item);
-        }
-      });
-
-      return items;
-    };
-
-    var createHeaderMenuItems = require('./tableHeaderMenu/createHeaderMenuItems');
-    var headerMenuItems = createHeaderMenuItems.call(self, cellHighlighters, getFormatSubitems);
+    var createColumnMenuItems = require('./tableHeaderMenu/createColumnMenuItems');
+    var headerMenuItems = createColumnMenuItems.call(self, cellHighlighters);
 
     // build configuration
     var converter = self.allConverters[1];
@@ -1364,7 +1272,7 @@ define([
       }
     };
     if (self.hasIndex) {
-      for (var i = 0; i < self.allTypes.length; i++) {
+      for (i = 0; i < self.allTypes.length; i++) {
         if (self.allTypes[i].name === self.indexType) {
           converter = self.allConverters[self.allTypes[i].type];
           break;
@@ -1431,7 +1339,6 @@ define([
 
     if (self.tableElementsCreated === false) {
       self.createTableElements();
-      self.createTableMenuElements();
       self.tableElementsCreated = true;
     }
 
@@ -1490,7 +1397,6 @@ define([
         //jscs:disable
         self.update_size();
         self.updateBackground();
-        self.updateDTMenu();
         //jscs:enable
       },
       'bSortCellsTop': true,
@@ -1613,13 +1519,17 @@ define([
       inits.rightColumns = 0;
     }
 
-    self.updateFixedColumnsSeparator();
-
     self.keyTable = self.table.settings()[0].keytable;
-    self.refreshCells();
     self.fixcols = new dataTablesFixedColumns(self.table, inits);
-    self.fixcols.fnRedrawLayout();
+    self.refreshCells();
+
+    var createColumnMenus = require('./tableHeaderMenu/createColumnMenus').default;
+    createColumnMenus(self);
+
+    self.createTableMenuElements();
     // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
+    self.fixcols.fnRedrawLayout();
+    self.updateFixedColumnsSeparator();
 
     setTimeout(function(){
       if (!self.table) { return; }
@@ -1754,10 +1664,6 @@ define([
       .on( 'column-sizing.dt', function( e, settings ) {
         self.updateTableWidth();
       })
-      .on('draw.dt', _.debounce(function() {
-        self.updateRowDisplayBtts();
-        self.updateToggleColumnBtts();
-      }, 100))
       .on('column-reorder', function(e, settings, details) {
         var selectedCells = self.table.cells({ selected: true });
         var indexes = selectedCells.indexes();
@@ -1777,15 +1683,6 @@ define([
         ).select();
       });
 
-    var handleTableHeaderMenuClose = _.debounce(function(event) {
-      if (event.which === 27) {
-        self.element.find(id + '_table_menu').removeClass('open');
-      }
-    }, 250);
-
-    $(document).off('keydown.handleTableHeaderMenuClose', handleTableHeaderMenuClose);
-    $(document).on('keydown.handleTableHeaderMenuClose', handleTableHeaderMenuClose);
-
     function updateSize() {
       clearTimeout(self.refresh_size);
       self.refresh_size = setTimeout(function() {
@@ -1796,54 +1693,6 @@ define([
     $(window).bind('resize.' + self.id, function() {
       updateSize();
     });
-
-    self.element.find(id + '_dropdown_menu')
-      .on('click.bko-dropdown', function() {
-        var $toggleBtn = $(this);
-        var isOpen = $toggleBtn.parent().hasClass('open');
-        var $dropdown = $toggleBtn.parent();
-        var $menu = $dropdown.find('> .dropdown-menu');
-        var height = $menu.height();
-        var pageHeight = window.innerHeight || document.documentElement.clientHeight;
-        var pixelsBelow = Math.ceil(height + $dropdown.offset().top - pageHeight);
-        var shouldPosition = pixelsBelow > 0;
-
-        if (!isOpen) {
-          self.setCodeMirrorListener($toggleBtn);
-        }
-
-        $menu.css({
-          top: shouldPosition ? (- pixelsBelow - 20) : '100%',
-          left: shouldPosition ? '100%' : ''
-        });
-      })
-      .parent()
-      .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
-        var searchExp = this.value ? new RegExp(this.value, 'i') : null;
-
-        $(this).parent().next('.list-showcolumn').find('li').each(function (index, element) {
-          $(element).toggleClass('hidden', _.isRegExp(searchExp) ? !searchExp.test(element.textContent) : false);
-        });
-      }, 250))
-      .on('click', '.dropdown-menu-search .fa-search', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-      });
-  };
-
-  // little hack: hide dropdown menu when click on CodeMirror instance
-  // CodeMirror stops propagation of 'click' event on first click
-  TableScope.prototype.setCodeMirrorListener = function(el) {
-    var CodeMirrorInstance = el.parents('.cell').find('.CodeMirror');
-    var dropdown = el.parent('.dropdown');
-
-    if (CodeMirrorInstance) {
-      CodeMirrorInstance.off('mousedown.beakerDropdown');
-      CodeMirrorInstance.on('mousedown.beakerDropdown', function() {
-        dropdown.removeClass('open');
-        CodeMirrorInstance.off('mousedown.beakerDropdown');
-      });
-    }
   };
 
   TableScope.prototype.enableJupyterKeyHandler = function() {
@@ -1882,19 +1731,6 @@ define([
 
   TableScope.prototype.isShowOutput = function() {
     return this.model.isShowOutput();
-  };
-
-  TableScope.prototype.updateDTMenu = function(){
-    var self = this;
-    if(self.table){
-      var orderInfo = self.table.order()[0];
-      if (orderInfo) {
-        self.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
-        // if (!(self.$$phase || $rootScope.$$phase)) {
-        //   self.$apply();
-        // }
-      }
-    }
   };
 
   TableScope.prototype.getDtRow = function(node) {
@@ -2038,9 +1874,24 @@ define([
         $(column.nodes()).addClass(cssClass);
         columnHeader.addClass(cssClass);
       };
+      var addClassToColumnsNodes = function(columnIndexList) {
+        columnIndexList.forEach(function(columnIndex) {
+          var nodes = self.table.column(columnIndex).nodes();
+          $(nodes).addClass(tableConsts.FC_COL_FIXED_CLASS);
+        });
+      };
+      var updateFixesCols = function(index, side) {
+        var indexList = [];
+        var startIndex = side === 'left' ? 0 : index;
+        var endIndex = side === 'left' ? index : self.columns.length-1;
+        for (var i=startIndex; i<=endIndex; i++) {indexList.push(i)}
+        addClassToColumnsNodes(indexList);
+      };
       updateColumn(self.pagination.fixLeft, tableConsts.FC_LEFT_SEPARATOR_CLASS);
+      updateFixesCols(self.pagination.fixLeft, 'left');
       if (self.pagination.fixRight) {
         updateColumn(self.columns.length - self.pagination.fixRight, tableConsts.FC_RIGHT_SEPARATOR_CLASS);
+        updateFixesCols(self.columns.length - self.pagination.fixRight, 'right');
       }
     }
   };
@@ -2305,8 +2156,6 @@ define([
       event.stopPropagation();
     }
 
-    self.updateToggleColumnBtts(column.index());
-
     if (column.visible()){
       var el = $('#' + self.id);
       var table = el.DataTable();
@@ -2330,7 +2179,6 @@ define([
     self.pagination.rowsToDisplay = len;
     if (self.pagination.use) {
       self.table.page.len(len).draw();
-      self.updateRowDisplayBtts();
     } else {
       var scrollBody = $('#' + self.id).parent();
       scrollBody.css('max-height', self.getScrollY());
@@ -2360,7 +2208,6 @@ define([
 
     table.columns(cLength).visible(visible, false);
     table.columns.adjust();
-    self.updateToggleColumnBtts();
   };
 
   TableScope.prototype.doUsePagination = function() {
@@ -2371,7 +2218,6 @@ define([
     }
     // reorder the table data
     self.applyChanges();
-    self.updateUsePaginationBtt();
   };
 
   TableScope.prototype.doDeselectAll = function() {
@@ -2445,9 +2291,8 @@ define([
   };
 
   TableScope.prototype.doResetAll = function() {
-    var self = this;
-    self.table.state.clear();
-    self.init(self.getCellModel());
+    this.doDestroy(true);
+    this.tableDisplayView.render();
   };
 
   TableScope.prototype.adjustRedraw = function() {
@@ -2467,7 +2312,6 @@ define([
     var self = this;
     self.init(this.model.getCellModel());
     self.tableChanged = true;
-    self.bindTableActions();
   };
 
   TableScope.prototype.setModelData = function(data) {
@@ -2530,176 +2374,13 @@ define([
     }
   };
 
-  TableScope.prototype.destroyTableMenuElements = function() {
-    var self = this;
-    if (self.columnNames) {
-      var globalDropdownMenu = self.element.find('.dtmenu > ul.dropdown-menu');
-      var showColumnMenu = globalDropdownMenu.find('ul.list-showcolumn');
-      var rowsToShowMenu = globalDropdownMenu.find('ul.list-rowstoshow');
-
-      showColumnMenu.find('li').remove();
-      rowsToShowMenu.find('li').remove();
-      showColumnMenu.remove();
-      rowsToShowMenu.remove();
-    }
-  };
-
   TableScope.prototype.createTableMenuElements = function() {
-    var self = this;
-    if (self.columnNames) {
-      var globalDropdownMenu = self.element.find('.dtmenu > ul.dropdown-menu');
-      var showColumnMenu = globalDropdownMenu.find('ul.list-showcolumn');
-      var rowsToShowMenu = globalDropdownMenu.find('ul.list-rowstoshow');
-      var toggleColummBtt = null;
-      var rowDisplayBtt = null;
+    if (this.columnNames) {
+      var triggerId = '#' + this.id + '_dropdown_menu';
+      var $trigger = this.element.find(triggerId);
 
-      showColumnMenu.empty();
-
-      self.columnNames.forEach(function(col, i) {
-        toggleColummBtt = self.createToggleColumnBtt(col, i);
-        showColumnMenu.append(toggleColummBtt);
-      });
-
-      self.rowsToDisplayMenu[0].forEach(function(item, i) {
-        rowDisplayBtt = self.createRowDisplayBtt(item, i);
-        rowsToShowMenu.append(rowDisplayBtt);
-      });
-
-      self.updateRowDisplayBtts();
+      new (require('./tableHeaderMenu/IndexMenu').default)(this, $trigger);
     }
-  };
-
-  TableScope.prototype.createToggleColumnBtt = function(colName, index) {
-    var self = this;
-    var elem = $('<li>' +
-                 '<a tabindex="-1">'+colName+'</a>' +
-                 '<input type="checkbox" id="'+self.id+'-'+index+'-visible" class="beforeCheckbox" checked="'+self.isColumnVisible(index+1)+'" />' +
-                 '<label for="'+self.id+'-'+index+'-visible" class="checkbox-label"></label>' +
-                 '</li>');
-
-    elem.on('click', 'a, input', function(ev) {
-      self.showColumn(index+1, ev);
-    });
-
-    return elem;
-  };
-
-  TableScope.prototype.createRowDisplayBtt = function(val, index) {
-    var self = this;
-    var elem = $('<li>' +
-                 '<a tabindex="-1">'+self.rowsToDisplayMenu[1][index]+'</a>' +
-                 '<i class="fa fa-check" aria-hidden="true"></i>' +
-                 '</li>');
-
-    elem.on('click', 'a', function() {
-      self.changePageLength(val);
-    });
-
-    return elem;
-  };
-
-  TableScope.prototype.updateUsePaginationBtt = function() {
-    var self = this;
-    var check = self.element.find('.dtmenu > ul.dropdown-menu li.dt-use-pagination-wrapper i');
-
-    if (self.pagination.use) {
-      check.show();
-    } else {
-      check.hide();
-    }
-  };
-
-  TableScope.prototype.updateToggleColumnBtts = function(columnIndex) {
-    if (!this.table) {
-      return;
-    }
-
-    var self = this;
-    var list = self.element.find('.dtmenu > ul.dropdown-menu ul.list-showcolumn li input[type="checkbox"]');
-    var columnsVisibility = this.table.columns().visible();
-
-    if (columnIndex) {
-      list[columnIndex - 1].checked = columnsVisibility[columnIndex];
-    } else {
-      list.each(function(i) {
-        this.checked = columnsVisibility[i + 1];
-      });
-    }
-  };
-
-  TableScope.prototype.updateRowDisplayBtts = function() {
-    var self = this;
-    var list = self.element.find('.dtmenu > ul.dropdown-menu ul.list-rowstoshow li');
-    var currentValue = null;
-
-    if (self.table) {
-      var len = self.table.page.len();
-      var itemIndex = self.rowsToDisplayMenu[0].indexOf(len);
-      var title =  self.rowsToDisplayMenu[1][itemIndex];
-      currentValue = title.toString();
-      // var settings = self.table.settings()[0];
-      // currentValue = settings._iDisplayLength.toString();
-    }
-
-    list.each(function(i) {
-      var thisText = $(this).children('a').text();
-      var checked =  currentValue === thisText;
-      var iElem = $(this).children('i');
-      if (checked) {
-        iElem.show();
-      } else {
-        iElem.hide();
-      }
-    });
-  };
-
-  TableScope.prototype.bindTableActions = function() {
-    var self = this;
-    self.element.find('div.dtmenu ul.dropdown-menu').on('click', function(ev) {
-      var dtAction = $(ev.target).attr('data-dtAction');
-      switch (dtAction) {
-        case 'dt-show-all':
-          self.toggleColumnsVisibility(true);
-          break;
-        case 'dt-hide-all':
-          self.toggleColumnsVisibility(false);
-          break;
-        case 'dt-use-pagination':
-          self.doUsePagination();
-          break;
-        case 'dt-deselect-all':
-          self.doDeselectAll();
-          break;
-        case 'dt-copy-to-clipboard':
-          self.doCopyToClipboard();
-          break;
-        case 'dt-save-all':
-          self.doCSVExport(false);
-          break;
-        case 'dt-save-selected':
-          self.doCSVExport(true);
-          break;
-        case 'dt-download-all':
-          self.doCSVDownload(false);
-          break;
-        case 'dt-download-selected':
-          self.doCSVDownload(true);
-          break;
-        case 'dt-search':
-          self.doShowFilter(self.table.column(0), true);
-          break;
-        case 'dt-filter':
-          self.doShowFilter(self.table.column(0), false);
-          break;
-        case 'dt-hide-filter':
-          self.hideFilter();
-          break;
-        case 'dt-reset-all':
-          self.doResetAll();
-          break;
-        default:
-      }
-    })
   };
 
   // ---------

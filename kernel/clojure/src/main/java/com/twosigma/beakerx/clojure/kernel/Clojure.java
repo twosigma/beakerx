@@ -91,11 +91,11 @@ public class Clojure extends Kernel {
   }
 
   private static ObjectMapper mapper = new ObjectMapper();
-  private static DisplayerDataMapper.Converter converter = data -> {
-    String s = mapper.writeValueAsString(data);
-    return mapper.readValue(s, Object.class);
-  };
 
+  private static DisplayerDataMapper.Converter converter = data -> {
+    String json = mapper.writeValueAsString(data);
+    return mapper.readValue(json, Object.class);
+  };
 
   @Override
   public KernelParameters getKernelParameters() {

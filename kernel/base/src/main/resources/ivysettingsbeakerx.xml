@@ -1,0 +1,12 @@
+<ivysettings>
+    <settings defaultResolver='chain'/>
+    <resolvers>
+        <ibiblio name='central' m2compatible='true'/>
+        <ibiblio name='clojars.org' m2compatible='true' root="http://clojars.org/repo"/>
+
+        <chain name="chain">
+            <resolver ref="central"/>
+            <resolver ref="clojars.org"/>
+        </chain>
+    </resolvers>
+</ivysettings>

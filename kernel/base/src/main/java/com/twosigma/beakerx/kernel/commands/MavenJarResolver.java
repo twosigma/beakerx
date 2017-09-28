@@ -24,10 +24,9 @@ import org.apache.ivy.core.report.ResolveReport;
 import org.apache.ivy.core.resolve.ResolveOptions;
 import org.apache.ivy.core.retrieve.RetrieveOptions;
 import org.apache.ivy.core.settings.IvySettings;
-import org.apache.ivy.plugins.resolver.IBiblioResolver;
-import org.apache.ivy.plugins.resolver.RepositoryResolver;
 
 import java.io.File;
+import java.net.URL;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.ivy.core.LogOptions.LOG_QUIET;
@@ -35,6 +34,7 @@ import static org.apache.ivy.core.LogOptions.LOG_QUIET;
 public class MavenJarResolver {
 
   public static final String MVN_DIR = File.separator + "mvnJars";
+  public static final String IVYSETTINGSBEAKERX_XML = "ivysettingsbeakerx.xml";
   private final String pathToMavenRepo;
   private ResolverParams commandParams;
 
@@ -45,13 +45,10 @@ public class MavenJarResolver {
 
   public AddMvnCommandResult retrieve(String groupId, String artifactId, String version) {
     try {
-      RepositoryResolver br = commandParams.getRepositoryResolver();
-      IvySettings ivySettings = createIvyInstance(this.commandParams.getPathToCache(), br);
-
+      IvySettings ivySettings = createIvyInstance(this.commandParams.getPathToCache());
       Ivy ivy = Ivy.newInstance(ivySettings);
       ResolveOptions resolveOptions = createResolveOptions();
       ModuleDescriptor moduleDescriptor = getModuleDescriptor(groupId, artifactId, version, ivy, resolveOptions);
-
 
       String absolutePath = new File(this.getPathToMavenRepo()).getAbsolutePath();
       ivy.retrieve(
@@ -106,11 +103,15 @@ public class MavenJarResolver {
     return ro;
   }
 
-  private IvySettings createIvyInstance(String pathToCache, RepositoryResolver br) {
+  private IvySettings createIvyInstance(String pathToCache) {
     IvySettings ivySettings = new IvySettings();
+    URL resource = getClass().getClassLoader().getResource(IVYSETTINGSBEAKERX_XML);
+    try {
+      ivySettings.load(resource);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
     ivySettings.setDefaultCache(new File(pathToCache));
-    ivySettings.addResolver(br);
-    ivySettings.setDefaultResolver(br.getName());
     return ivySettings;
   }
 
@@ -150,12 +151,10 @@ public class MavenJarResolver {
   public static class ResolverParams {
     private String pathToCache;
     private String pathToMavenRepo;
-    private RepositoryResolver repositoryResolver;
 
-    public ResolverParams(String pathToCache, String pathToMavenRepo, RepositoryResolver repositoryResolver) {
+    public ResolverParams(String pathToCache, String pathToMavenRepo) {
       this.pathToCache = checkNotNull(pathToCache);
       this.pathToMavenRepo = checkNotNull(pathToMavenRepo);
-      this.repositoryResolver = checkNotNull(repositoryResolver);
     }
 
     public String getPathToCache() {
@@ -165,12 +164,7 @@ public class MavenJarResolver {
     public String getPathToMavenRepo() {
       return pathToMavenRepo;
     }
-
-    public RepositoryResolver getRepositoryResolver() {
-      return repositoryResolver;
-    }
   }
-
 
   private String getMvnDir(String pathToMavenRepo) {
     File theDir = new File(pathToMavenRepo);
@@ -182,13 +176,5 @@ public class MavenJarResolver {
       }
     }
     return pathToMavenRepo;
-  }
-
-  public static RepositoryResolver createBiblioResolver() {
-    IBiblioResolver br = new IBiblioResolver();
-    br.setM2compatible(true);
-    br.setUsepoms(true);
-    br.setName("central");
-    return br;
   }
 }

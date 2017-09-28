@@ -503,6 +503,8 @@ public class MagicCommand {
 
     } catch (ParseException e) {
       throw new IllegalArgumentException(e.getMessage());
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException("Expected value must be a number " + e.getMessage().toLowerCase());
     }
 
     return timeItOption;

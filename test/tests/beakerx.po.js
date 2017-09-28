@@ -115,5 +115,11 @@ var BeakerXPageObject = function () {
     return codeCell.$('div.beaker-easyform-container');
   }
 
+  this.runCellToGetTableElement = function(index){
+    this.kernelIdleIcon.waitForEnabled();
+    var codeCell = this.runCodeCellByIndex(index);
+    return codeCell.$('div.dataTables_scrollBody');
+  }
+
 };
 module.exports = BeakerXPageObject;

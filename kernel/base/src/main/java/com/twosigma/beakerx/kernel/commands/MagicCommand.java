@@ -463,13 +463,23 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
         String codeToExecute = code.asString().replace(TIMEIT_LINE, "");
         codeToExecute = codeToExecute.replaceAll("(-.)(\\d*\\s)", "");
-        return timeIt(buildTimeItOption(code), codeToExecute, message, executionCount);
-
+        try {
+          return timeIt(buildTimeItOption(code), codeToExecute, message, executionCount);
+        } catch (IllegalArgumentException e) {
+          return sendErrorMessage(message, e.getMessage(), executionCount);
+        }
     };
   }
 
   public MagicCommandFunctionality timeItCellMode() {
-    return (code, command, message, executionCount) -> timeIt(buildTimeItOption(code), code.takeCodeWithoutCommand().get().asString(), message, executionCount);
+    return (code, command, message, executionCount) -> {
+      try {
+        return timeIt(buildTimeItOption(code), code.takeCodeWithoutCommand().get().asString(), message,
+            executionCount);
+      } catch (IllegalArgumentException e) {
+        return sendErrorMessage(message, e.getMessage(), executionCount);
+      }
+    };
   }
 
   private TimeItOption buildTimeItOption(Code code) {
@@ -492,7 +502,9 @@ public class MagicCommand {
       }
 
     } catch (ParseException e) {
-      //ignore
+      throw new IllegalArgumentException(e.getMessage());
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException("Expected value must be a number " + e.getMessage().toLowerCase());
     }
 
     return timeItOption;

@@ -52,6 +52,11 @@
 .output_area pre {
   font-family: "Roboto Mono", monospace, sans-serif;
 }
+
+div.output_text {
+  line-height: 1.3em;
+}
+
 .rendered_html,
 .cm-header-1,
 .cm-header-2,

@@ -63,7 +63,7 @@ setup_args = dict(
     version             = get_version(os.path.join('beakerx', '_version.py')),
     author              = 'Two Sigma Open Source, LLC',
     author_email        = 'beakerx-feedback@twosigma.com',
-    url                 = 'http://github.com/twosigma/beakerx',
+    url                 = 'http://beakerx.com',
     keywords            = [
         'ipython',
         'jupyter',

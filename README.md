@@ -14,6 +14,8 @@
     limitations under the License.
 -->
 
+[banner](https://user-images.githubusercontent.com/963093/30990429-3319ede6-a46f-11e7-9540-41da66ec5275.png)
+
 # BeakerX: Beaker extensions for Jupyter
 
 [![Build Status](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/buildStatus/icon?job=BeakerX%20master)](http://ec2-54-175-192-115.compute-1.amazonaws.com:8080/job/BeakerX%20master)

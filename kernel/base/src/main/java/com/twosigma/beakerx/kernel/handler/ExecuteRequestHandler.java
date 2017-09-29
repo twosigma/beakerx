@@ -25,6 +25,13 @@ import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
@@ -51,9 +58,25 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
   @Override
   public void handle(Message message) {
     try {
+      encodeCodeToUTF8(message);
       handleMsg(message);
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private String encodeCodeToUTF8(Message message) {
+    String code = message.getContent().get("code").toString();
+
+    Charset charset = Charset.forName(StandardCharsets.UTF_8.toString());
+    CharsetDecoder charsetDecoder = charset.newDecoder();
+    CharsetEncoder charsetEncoder = charset.newEncoder();
+
+    try {
+      return charsetEncoder.encode(CharBuffer.wrap(code)).toString();
+    } catch (CharacterCodingException e) {
+      //ignore
+      return null;
     }
   }
 

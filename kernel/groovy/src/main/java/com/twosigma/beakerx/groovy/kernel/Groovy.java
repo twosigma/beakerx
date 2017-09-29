@@ -23,7 +23,6 @@ import com.twosigma.beakerx.groovy.comm.GroovyCommOpenHandler;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.groovy.handler.GroovyKernelInfoHandler;
 import com.twosigma.beakerx.handler.KernelHandler;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.KernelParameters;

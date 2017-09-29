@@ -28,14 +28,6 @@ describe('Testing of table Actions', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  function checkCellOutput(index, text){
-    var codeCell = beakerxPO.getCodeCellByIndex(index);
-    codeCell.scroll();
-    var outputText = codeCell.$('.output_subarea.output_text');
-    outputText.waitForEnabled();
-    expect(outputText.getText()).toMatch(text);
-  }
-
   function getTableElement(index){
     return beakerxPO.getCodeCellByIndex(index).$('div.dataTables_scrollBody');
   }
@@ -59,7 +51,7 @@ describe('Testing of table Actions', function () {
       cell_1.rightClick();
       browser.click('span=tag1ByStr');
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      checkCellOutput(1, '0:1=2');
+      beakerxPO.checkCellOutput(1, '0:1=2');
     });
 
     it('ContextMenuItem should run tag (by closure)', function () {
@@ -68,7 +60,7 @@ describe('Testing of table Actions', function () {
       browser.click('span=tag1ByClosure');
       beakerxPO.kernelIdleIcon.waitForEnabled();
       //TODO enable when action details will be fixed
-      //checkCellOutput(1, '0:2=3');
+      //beakerxPO.checkCellOutput(1, '0:2=3');
     });
 
   });
@@ -90,7 +82,7 @@ describe('Testing of table Actions', function () {
       var cell_1 = tblElement.$$('td.ui-selectee')[2];
       cell_1.doubleClick();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      checkCellOutput(4, '0:1=2');
+      beakerxPO.checkCellOutput(4, '0:1=2');
     });
 
     it('DoubleClickAction should run tag (by closure)', function () {
@@ -99,7 +91,7 @@ describe('Testing of table Actions', function () {
       cell_1.doubleClick();
       beakerxPO.kernelIdleIcon.waitForEnabled();
       //TODO enable when action details will be fixed
-      //checkCellOutput(6, '0:1=2');
+      //beakerxPO.checkCellOutput(6, '0:1=2');
     });
   });
 

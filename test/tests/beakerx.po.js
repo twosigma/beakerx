@@ -121,5 +121,13 @@ var BeakerXPageObject = function () {
     return codeCell.$('div.dataTables_scrollBody');
   }
 
+  this.checkCellOutput = function(index, text){
+    var codeCell = this.getCodeCellByIndex(index);
+    codeCell.scroll();
+    var outputText = codeCell.$('.output_subarea.output_text');
+    outputText.waitForEnabled();
+    expect(outputText.getText()).toMatch(text);
+  }
+
 };
 module.exports = BeakerXPageObject;

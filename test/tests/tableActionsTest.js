@@ -43,14 +43,14 @@ describe('Testing of table Actions', function () {
   describe("ContextMenuItem action", function(){
 
     it('ContextMenuItem should change table cell value', function () {
-      var index = 1;
+      var tblcell_index = 1;
       var tblElement = beakerxPO.runCellToGetTableElement(0);
-      var cell_0 = tblElement.$$('td.ui-selectee')[index];
+      var cell_0 = tblElement.$$('td.ui-selectee')[tblcell_index];
       var value1 = parseInt(cell_0.getText());
       cell_0.rightClick();
       browser.click('span=plusOne');
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      var value2 = parseInt(getTableElement(0).$$('td.ui-selectee')[index].getText());
+      var value2 = parseInt(getTableElement(0).$$('td.ui-selectee')[tblcell_index].getText());
       expect(value2).toBeGreaterThan(value1);
     });
 
@@ -60,6 +60,46 @@ describe('Testing of table Actions', function () {
       browser.click('span=tag1ByStr');
       beakerxPO.kernelIdleIcon.waitForEnabled();
       checkCellOutput(1, '0:1=2');
+    });
+
+    it('ContextMenuItem should run tag (by closure)', function () {
+      var cell_2 = getTableElement(0).$$('td.ui-selectee')[3];
+      cell_2.rightClick();
+      browser.click('span=tag1ByClosure');
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      //TODO enable when action details will be fixed
+      //checkCellOutput(1, '0:2=3');
+    });
+
+  });
+
+  describe("DoubleClickAction action", function(){
+
+    it('DoubleClickAction should change table cell value', function () {
+      var tblcell_index = 1;
+      var cell_0 = beakerxPO.runCellToGetTableElement(2).$$('td.ui-selectee')[tblcell_index];
+      var value1 = parseInt(cell_0.getText());
+      cell_0.doubleClick();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var value2 = parseInt(getTableElement(2).$$('td.ui-selectee')[tblcell_index].getText());
+      expect(value2).toBeGreaterThan(value1);
+    });
+
+    it('DoubleClickAction should run tag (by string)', function () {
+      var tblElement = beakerxPO.runCellToGetTableElement(3);
+      var cell_1 = tblElement.$$('td.ui-selectee')[2];
+      cell_1.doubleClick();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      checkCellOutput(4, '0:1=2');
+    });
+
+    it('DoubleClickAction should run tag (by closure)', function () {
+      var tblElement = beakerxPO.runCellToGetTableElement(5);
+      var cell_1 = tblElement.$$('td.ui-selectee')[2];
+      cell_1.doubleClick();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      //TODO enable when action details will be fixed
+      //checkCellOutput(6, '0:1=2');
     });
   });
 

@@ -19,10 +19,14 @@ var beakerxPO;
 
 describe('Scala notebook', function () {
 
-  beforeAll(function (done) {
+  beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('plotScalaDemo.ipynb', done, 'scala');
+    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/scala/plotScalaDemo.ipynb');
   }, 2);
+
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
+  });
 
   describe('Run cell with stems', function(){
     it('Plot has 6 stems', function(){

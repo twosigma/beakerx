@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-var BeakerXPageObject = require('./beakerx.po.js');
+var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Testing of EasyForm', function () {
+describe('Testing of EasyForm (groovy)', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/EasyFormTest.ipynb');
+    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/EasyFormTest.ipynb');
   }, 2);
 
   afterAll(function () {

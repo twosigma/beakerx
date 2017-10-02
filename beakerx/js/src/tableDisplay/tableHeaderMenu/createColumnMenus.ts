@@ -27,6 +27,8 @@ export default function createColumnMenus(scope) {
       colIdx = scope.table.columns(':visible')[0].length - fixedCols.s.rightColumns + colIdx;
     }
 
+    colIdx = scope.table.columns(':visible')[0][colIdx];
+
     for(let i = 0; i < menus.length; i++) {
       if (menus[i].columnIndex === colIdx) {
         menus[i].open($(scope.element).closest('.cell'), $(this));

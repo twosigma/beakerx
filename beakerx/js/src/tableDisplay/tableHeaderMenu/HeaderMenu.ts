@@ -18,7 +18,6 @@ import $ from 'jquery';
 import _ from 'underscore';
 import { CommandRegistry } from '@phosphor/commands';
 import { Widget } from '@phosphor/widgets';
-import { Message } from '@phosphor/messaging';
 import Menu from './BkoMenu';
 import MenuItem from './MenuItemInterface';
 

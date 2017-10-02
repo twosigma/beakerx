@@ -1261,7 +1261,7 @@ define([
     var cols = [];
     var i;
 
-    var createColumnMenuItems = require('./tableHeaderMenu/createColumnMenuItems');
+    var createColumnMenuItems = require('./tableHeaderMenu/createColumnMenuItems').default;
     var headerMenuItems = createColumnMenuItems.call(self, cellHighlighters);
 
     // build configuration

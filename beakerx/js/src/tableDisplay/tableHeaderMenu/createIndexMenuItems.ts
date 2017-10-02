@@ -15,6 +15,7 @@
  */
 
 import MenuItem from './MenuItemInterface';
+import createFormatSubitems from './createFormatMenuItems';
 
 export default function createIndexMenuItems(scope: any): MenuItem[] {
 
@@ -66,6 +67,12 @@ export default function createIndexMenuItems(scope: any): MenuItem[] {
     {
       title: 'Hide All Columns',
       action: () => scope.toggleColumnsVisibility(false)
+    },
+    {
+      title: 'Format',
+      enableItemsFiltering: true,
+      keepOpen: true,
+      items: () => createFormatSubitems(scope)
     },
     {
       title: 'Use pagination',

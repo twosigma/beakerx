@@ -17,6 +17,7 @@ from .plot import *
 from .easyform import *
 from .tabledisplay import *
 from ._version import version_info, __version__
+from .handlers import load_jupyter_server_extension
 
 def _jupyter_nbextension_paths():
     return [{
@@ -24,6 +25,14 @@ def _jupyter_nbextension_paths():
         'src': 'static',
         'dest': 'beakerx',
         'require': 'beakerx/extension'
+    }, {
+        'section': 'notebook',
+        'src': 'static',
+        'dest': 'beakerx',
+        'require': 'beakerx/main'
     }]
+
+def _jupyter_server_extension_paths():
+    return [dict(module="beakerx")]
 
 beakerx = BeakerX()

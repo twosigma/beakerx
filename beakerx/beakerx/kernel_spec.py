@@ -18,8 +18,7 @@ from os import environ
 class BeakerXKernelSpec(KernelSpec):
     def __init__(self, **kw):
         super(BeakerXKernelSpec, self).__init__(**kw)
-        clean_name = self.display_name.lower().replace(' ', '')
-        base_var_name = 'beakerx_' + clean_name + '_java_arg'
+        base_var_name = 'beakerx_java_arg'
         if base_var_name in environ:
             args = [environ[base_var_name]]
             n = 2

@@ -16,11 +16,9 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.Layout;
 import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.widgets.Layout.PX;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widgets.Widget.VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,11 +51,11 @@ public class TextFieldWidgetTest extends EasyFormWidgetTest {
     //when
     widget.setWidth(newValue);
     //then
-    verifyTextFieldWidth(kernel.getPublishedMessages().get(0), "11" + PX);
+    verifyTextFieldWidth(kernel.getPublishedMessages().get(0), 11);
   }
 
-  private void verifyTextFieldWidth(Message message, String expected) {
-    String label = getValueForProperty(message, Layout.WIDTH, String.class);
+  private void verifyTextFieldWidth(Message message, Integer expected) {
+    Integer label = getValueForProperty(message, "width", Integer.class);
     assertThat(label).isEqualTo(expected);
   }
 

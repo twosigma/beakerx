@@ -42,7 +42,7 @@ var DatePickerView = widgets.LabeledDOMWidgetView.extend({
 
     this.el.classList.add('jupyter-widgets');
     this.el.classList.add('widget-inline-hbox');
-    this.el.classList.add('widget-text');
+    this.el.classList.add('widget-select');
     this.el.classList.add('datepicker-container');
     this.el.classList.add('flatpickr');
 

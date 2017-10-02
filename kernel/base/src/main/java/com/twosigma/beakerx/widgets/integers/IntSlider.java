@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widgets.integers;
 
+import com.twosigma.beakerx.widgets.styles.SliderStyle;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -35,10 +36,12 @@ public class IntSlider extends BoundedIntWidget {
   private String slider_color;
   private Boolean readOut = true;
   private Boolean continuous_update = true;
+  private SliderStyle style;
 
   public IntSlider() {
     super();
     openComm();
+    style = new SliderStyle();
   }
 
   @Override
@@ -87,6 +90,16 @@ public class IntSlider extends BoundedIntWidget {
   public void setContinuous_update(Boolean continuous_update) {
     this.continuous_update = continuous_update;
     sendUpdate(CONTINUOUS_UPDATE, continuous_update);
+  }
+
+  @Override
+  public SliderStyle getStyle() {
+    return style;
+  }
+
+  @Override
+  public void setStyle(SliderStyle style) {
+    this.style = style;
   }
 
   @Override

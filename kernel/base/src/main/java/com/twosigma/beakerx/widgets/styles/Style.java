@@ -13,41 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widgets.floats;
+package com.twosigma.beakerx.widgets.styles;
 
-import com.twosigma.beakerx.widgets.styles.SliderStyle;
+import com.twosigma.beakerx.widgets.Widget;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import com.twosigma.beakerx.widgets.ValueWidget;
+public abstract class Style extends Widget {
 
-public abstract class FloatWidget<T extends Serializable> extends ValueWidget<T> {
+  public static final String VIEW_NAME_VALUE = "StyleView";
+  public static final String MODEL_NAME_VALUE = "StyleModel";
 
-  protected SliderStyle style;
-
-  protected FloatWidget() {
+  public Style() {
     super();
-    style = new SliderStyle();
   }
 
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(VALUE, this.value);
-    return content;
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
   }
 
   @Override
-  public T getValueFromObject(Object input) {
-    return (T) getDouble(input);
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 
-  @Override
-  public SliderStyle getStyle() {
-    return style;
-  }
-
-  public void setStyle(SliderStyle style) {
-    this.style = style;
-  }
 }

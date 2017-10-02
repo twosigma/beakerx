@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.widgets.floats;
 
+import com.twosigma.beakerx.widgets.styles.SliderStyle;
+import com.twosigma.beakerx.widgets.styles.Style;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -61,6 +63,8 @@ public class FloatSlider extends BoundedFloatWidget {
   private String slider_color;
   private Boolean readOut = true;
   private Boolean continuous_update = true;
+  private SliderStyle style;
+
 
   public FloatSlider() {
     super();
@@ -125,4 +129,12 @@ public class FloatSlider extends BoundedFloatWidget {
     return VIEW_NAME_VALUE;
   }
 
+  @Override
+  public SliderStyle getStyle() {
+    return style;
+  }
+
+  public void setStyle(SliderStyle style) {
+    this.style = style;
+  }
 }

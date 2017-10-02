@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widgets;
 
+import com.twosigma.beakerx.widgets.styles.Style;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,7 @@ public abstract class DOMWidget extends Widget {
   public static final String SYNC_DATA = "state";
 
   private Layout layout;
+  private Style style;
 
   private UpdateValueCallback updateValueCallback = () -> {
   };
@@ -114,4 +116,7 @@ public abstract class DOMWidget extends Widget {
     return layout;
   }
 
+  public Style getStyle() {
+    return style;
+  }
 }

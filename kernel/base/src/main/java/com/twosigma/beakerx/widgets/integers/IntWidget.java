@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widgets.integers;
 
+import com.twosigma.beakerx.widgets.styles.SliderStyle;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -27,8 +28,11 @@ import com.twosigma.beakerx.widgets.ValueWidget;
  */
 public abstract class IntWidget<T extends Serializable> extends ValueWidget<T> {
 
+  protected SliderStyle style;
+
   protected IntWidget() {
     super();
+    style = new SliderStyle();
   }
   
   @Override
@@ -36,10 +40,19 @@ public abstract class IntWidget<T extends Serializable> extends ValueWidget<T> {
     super.content(content);
     content.put(VALUE, this.value);
     return content;
-  } 
+  }
   
   @Override
   public T getValueFromObject(Object input){
     return (T)getInteger(input);
+  }
+
+  @Override
+  public SliderStyle getStyle() {
+    return style;
+  }
+
+  public void setStyle(SliderStyle style) {
+    this.style = style;
   }
 }

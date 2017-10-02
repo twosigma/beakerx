@@ -133,7 +133,8 @@ class EasyForm(Box):
             arguments = dict(target_name='beaker.tag.run')
             comm = Comm(**arguments)
             msg = {'runByTag': args[0].tag}
-            comm.send(data=msg, buffers=[])
+            state = {'state': msg}
+            comm.send(data=state, buffers=[])
     
     def addList(self, *args, **kwargs):
         multi_select = getValue(kwargs, 'multi', True)

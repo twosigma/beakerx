@@ -193,7 +193,7 @@ class EasyForm(Box):
         radio_buttons = RadioButtons(options=self.getOptions(args, kwargs),
                                      description=self.getDescription(args,
                                                                      kwargs))
-        
+        radio_buttons.index = None
         if orientation == EasyForm.VERTICAL:
             self.children += (radio_buttons,)
         else:
@@ -216,6 +216,7 @@ class EasyForm(Box):
         for child in self.children:
             if child.description == key:
                 return child.value
+
     
     def put(self, key, value):
         for child in self.children:

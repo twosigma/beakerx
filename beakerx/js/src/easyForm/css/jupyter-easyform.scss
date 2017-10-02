@@ -9,11 +9,14 @@
   }
 
   .widget-textarea,
-  .widget-text,
   .widget-select,
   .widget-select-multiple {
     width: 380px;
     min-width: 380px;
+  }
+
+  .widget-text {
+    width: auto;
   }
 
   .widget-radio-box input {

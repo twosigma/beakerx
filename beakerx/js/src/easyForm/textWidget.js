@@ -16,6 +16,9 @@
 
 var widgets = require('jupyter-js-widgets');
 var _ = require('underscore');
+var $ = require('jquery');
+
+var TEXT_INPUT_WIDTH_UNIT = 'ch';
 
 var TextModel = widgets.TextModel.extend({
   defaults: function() {
@@ -33,6 +36,16 @@ var TextView = widgets.TextView.extend({
     if (e.keyCode == 13) {
       this.send({ event: 'submit' });
       e.preventDefault();
+    }
+  },
+
+  render: function() {
+    TextView.__super__.render.call(this);
+
+    var width = this.model.get('width');
+
+    if (width >= 0) {
+      this.textbox.style.maxWidth = width + TEXT_INPUT_WIDTH_UNIT;
     }
   }
 });

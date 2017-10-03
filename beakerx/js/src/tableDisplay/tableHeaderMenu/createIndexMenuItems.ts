@@ -70,9 +70,8 @@ export default function createIndexMenuItems(scope: any): MenuItem[] {
     },
     {
       title: 'Format',
-      enableItemsFiltering: true,
-      keepOpen: true,
-      items: () => createFormatSubitems(scope)
+      separator: true,
+      items: (colIdx) => createFormatSubitems(scope, colIdx)
     },
     {
       title: 'Use pagination',

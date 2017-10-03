@@ -17,7 +17,7 @@
 import createFormatSubitems from './createFormatMenuItems';
 import * as MenuHelper from './MenuHelper';
 
-export default function createHeaderMenuItems(cellHighlighters) {
+export default function createColumnMenuItems(cellHighlighters) {
   var self = this;
   var menuHelper = MenuHelper(self);
 

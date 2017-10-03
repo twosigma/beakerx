@@ -458,6 +458,7 @@ define([
       }
       if (self.types !== undefined) {
         self.indexType = self.types[0];
+        self.indexActualType = self.getTypeAndAlignmentByTypeString(self.types[0]).actualtype;
         self.types.shift();
       } else {
         self.indexType = 'index';
@@ -672,29 +673,33 @@ define([
       return defaultResult;
     }
 
-    if (self.types[index] === 'time' || self.types[index] === 'datetime') {
+    return self.getTypeAndAlignmentByTypeString(self.types[index], stringFormatForColumn);
+  };
+
+  TableScope.prototype.getTypeAndAlignmentByTypeString = function(type, stringFormatForColumn) {
+    if (type === 'time' || type === 'datetime') {
       return {
         actualtype: 8,
         actualalign: 'C'
       };
     }
 
-    if (self.types[index] === 'integer') {
+    if (type === 'integer') {
       return {
         actualtype: 2,
         actualalign: 'R'
       };
     }
 
-    if (self.types[index] === 'int64') {
+    if (type === 'int64') {
       return {
         actualtype: 0,
         actualalign: 'R'
       };
     }
 
-    if (self.types[index] === 'double') {
-      if (self.stringFormatForType.double || stringFormatForColumn) {
+    if (type === 'double') {
+      if (this.stringFormatForType && this.stringFormatForType.double || stringFormatForColumn) {
         return {
           actualtype: 3,
           actualalign: 'R'
@@ -707,7 +712,10 @@ define([
       };
     }
 
-    return defaultResult;
+    return {
+      actualtype: 0,
+      actualalign: 'L'
+    };
   };
 
   TableScope.prototype.setCellHighlighters = function() {
@@ -1273,10 +1281,22 @@ define([
     };
     if (self.hasIndex) {
       for (i = 0; i < self.allTypes.length; i++) {
-        if (self.allTypes[i].name === self.indexType) {
-          converter = self.allConverters[self.allTypes[i].type];
+        if (self.allTypes[i].type !== self.indexActualType) {
+          continue;
+        }
+
+        converter = self.allConverters[self.allTypes[i].type];
+        if (!self.indexActualType) {
           break;
         }
+
+        if (self.isDoubleWithPrecision(self.indexActualType)) {
+          converter = self.doubleWithPrecisionConverters[self.getDoublePrecision(self.indexActualType)];
+        } else if (self.allConverters[self.indexActualType] !== undefined) {
+          converter = self.allConverters[self.indexActualType];
+        }
+
+        break;
       }
       cols.push({'title' : self.indexName, 'className': 'dtright', 'render': converter, createdCell: createdCell});
     } else {
@@ -1293,7 +1313,7 @@ define([
       var col = {
         'title' : '<span class="header-text">' + self.columnNames[i] +'</span>',
         'header': { 'menu': headerMenuItems },
-        'visible': i<self.outputColumnLimit,
+        'visible': i<self.outputColumnLimit
       };
       col.createdCell = function(td, cellData, rowData, row, col) {
         if(!_.isEmpty(self.tooltips)){
@@ -1781,6 +1801,34 @@ define([
     }
   };
 
+  TableScope.prototype.getAllowedTypesByType = function(type) {
+    if (!this.types) {
+      return this.allTypes;
+    }
+
+    if (type === 'string') {
+      return this.allStringTypes;
+    }
+
+    if (type === 'double') {
+      return this.allDoubleTypes;
+    }
+
+    if (type === 'integer' || type === 'int64') {
+      return this.allIntTypes;
+    }
+
+    if (type === 'time' || type === 'datetime') {
+      return this.allTimeTypes;
+    }
+
+    if (type === 'boolean') {
+      return this.allBoolTypes;
+    }
+
+    return this.allStringTypes;
+  };
+
   TableScope.prototype.refreshCells = function() {
     var self = this;
     self.getCellIdx      =  [];
@@ -1802,23 +1850,7 @@ define([
       self.getCellSho.push(self.getColumnByInitialIndex(i).visible());
       self.getCellDisp.push(self.actualtype[order - 1]);
       self.getCellAlign.push(self.actualalign[order - 1]);
-      if (self.types) {
-        if (self.types[order - 1] === 'string') {
-          self.getCellDispOpts.push(self.allStringTypes);
-        } else if (self.types[order - 1] === 'double') {
-          self.getCellDispOpts.push(self.allDoubleTypes);
-        } else if (self.types[order - 1] === 'integer' || self.types[order - 1] === 'int64') {
-          self.getCellDispOpts.push(self.allIntTypes);
-        } else if (self.types[order - 1] === 'time' || self.types[order - 1] === 'datetime') {
-          self.getCellDispOpts.push(self.allTimeTypes);
-        } else if (self.types[order - 1] === 'boolean') {
-          self.getCellDispOpts.push(self.allBoolTypes);
-        } else {
-          self.getCellDispOpts.push(self.allStringTypes);
-        }
-      } else {
-        self.getCellDispOpts.push(self.allTypes);
-      }
+      self.getCellDispOpts.push(self.getAllowedTypesByType(self.types && self.types[order - 1]));
     }
     $(self.table.table().header()).find("th").each(function(i){
       var events = jQuery._data(this, 'events');

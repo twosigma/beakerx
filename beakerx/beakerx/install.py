@@ -42,6 +42,9 @@ def _classpath_for(kernel):
     return pkg_resources.resource_filename(
         'beakerx', os.path.join('static', 'kernel', kernel, 'lib', '*'))
 
+def _uninstall_nbextension():
+    subprocess.check_call(["jupyter", "nbextension", "disable", "beakerx", "--py", "--sys-prefix"])
+    subprocess.check_call(["jupyter", "nbextension", "uninstall", "beakerx", "--py", "--sys-prefix"])
 
 def _install_nbextension():
     if sys.platform == 'win32':
@@ -94,7 +97,14 @@ def _install_kernels():
                 '--name', kernel, tmpdir
             ]
             subprocess.check_call(install_cmd)
-
+            
+def _uninstall_kernels():
+    for kernel in _all_kernels():
+        uninstall_cmd = [
+            'jupyter', 'kernelspec', 'remove', kernel, '-y', '-f'
+        ]
+        subprocess.check_call(uninstall_cmd)
+    
 def _pretty(it): 
     return json.dumps(it, indent=2)
 
@@ -129,24 +139,35 @@ def _install_kernelspec_manager(prefix, disable=False):
 
     log.info("{}abled BeakerX server config".format(action_prefix))
     
-
 def make_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prefix",
                         help="location of the environment to install into",
                         default=sys.prefix)
+    parser.add_argument("--disable",
+                        help="Remove Beakerx extension",
+                        action='store_true')
     return parser
 
-
+def _disable_beakerx():
+    _uninstall_nbextension()
+    _uninstall_kernels()
+    
+def _install_beakerx(args):
+    _install_nbextension()
+    _install_kernels()
+    _install_css()
+    _copy_icons()
+    _install_kernelspec_manager(args.prefix)
+    
 def install():
     try:
         parser = make_parser()
         args = parser.parse_args()
-        _install_nbextension()
-        _install_kernels()
-        _install_css()
-        _copy_icons()
-        _install_kernelspec_manager(args.prefix)
+        if args.disable:
+            _disable_beakerx()
+        else:
+            _install_beakerx(args)
     except KeyboardInterrupt:
         return 130
     return 0

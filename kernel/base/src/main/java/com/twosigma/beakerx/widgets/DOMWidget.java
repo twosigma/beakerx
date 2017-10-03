@@ -15,15 +15,15 @@
  */
 package com.twosigma.beakerx.widgets;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widgets.styles.Style;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import com.twosigma.beakerx.handler.Handler;
-import com.twosigma.beakerx.message.Message;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public abstract class DOMWidget extends Widget {
 
@@ -31,6 +31,7 @@ public abstract class DOMWidget extends Widget {
   public static final String SYNC_DATA = "state";
 
   private Layout layout;
+  protected Style style;
 
   private UpdateValueCallback updateValueCallback = () -> {
   };
@@ -75,9 +76,7 @@ public abstract class DOMWidget extends Widget {
 
     public void handle(Message message) {
       Optional<Object> value = getSyncDataValue(message);
-      if (value.isPresent()) {
-        updateValue(value.get(), message);
-      }
+      value.ifPresent(o -> updateValue(o, message));
     }
 
     public abstract void updateValue(Object value, Message message);
@@ -98,6 +97,9 @@ public abstract class DOMWidget extends Widget {
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     content.put(Layout.LAYOUT, Layout.IPY_MODEL + getLayout().getComm().getCommId());
+    if (style != null) {
+      content.put(Style.STYLE, Layout.IPY_MODEL + getStyle().getComm().getCommId());
+    }
     content.put("font_family", "");
     content.put("font_size", "");
     content.put("font_style", "");
@@ -114,4 +116,7 @@ public abstract class DOMWidget extends Widget {
     return layout;
   }
 
+  public Style getStyle() {
+    return style;
+  }
 }

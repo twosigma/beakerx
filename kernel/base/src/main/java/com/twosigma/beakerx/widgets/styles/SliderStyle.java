@@ -3,15 +3,14 @@ package com.twosigma.beakerx.widgets.styles;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class SliderStyle extends Style {
+public class SliderStyle extends DescriptionStyle {
 
   public static final String MODEL_NAME_VALUE = "SliderStyleModel";
 
-  private String handle_color = "pink";
+  private String handle_color;
 
   public SliderStyle() {
     super();
-    this.handle_color = "pink";
     openComm();
   }
 

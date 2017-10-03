@@ -23,6 +23,7 @@ public abstract class Style extends Widget {
 
   public static final String VIEW_NAME_VALUE = "StyleView";
   public static final String MODEL_NAME_VALUE = "StyleModel";
+  public static final String STYLE = "style";
 
   public Style() {
     super();

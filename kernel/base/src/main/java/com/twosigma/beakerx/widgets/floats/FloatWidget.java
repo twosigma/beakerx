@@ -15,19 +15,14 @@
  */
 package com.twosigma.beakerx.widgets.floats;
 
-import com.twosigma.beakerx.widgets.styles.SliderStyle;
+import com.twosigma.beakerx.widgets.ValueWidget;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import com.twosigma.beakerx.widgets.ValueWidget;
-
 public abstract class FloatWidget<T extends Serializable> extends ValueWidget<T> {
-
-  protected SliderStyle style;
 
   protected FloatWidget() {
     super();
-    style = new SliderStyle();
   }
 
   @Override
@@ -42,12 +37,4 @@ public abstract class FloatWidget<T extends Serializable> extends ValueWidget<T>
     return (T) getDouble(input);
   }
 
-  @Override
-  public SliderStyle getStyle() {
-    return style;
-  }
-
-  public void setStyle(SliderStyle style) {
-    this.style = style;
-  }
 }

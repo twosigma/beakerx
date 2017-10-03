@@ -42,7 +42,7 @@ public class ScalaKernelInfoHandler  extends KernelInfoHandler {
   @Override
   protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
     content.put("implementation", "scala");
-    content.put("banner", "BeakerX kernel for Scala version " + scala.util.Properties.scalaPropOrElse("version.number", "(unknown)") + "\n" + BeakerImplementationInfo.IMPLEMENTATION_VERSION);
+    content.put("banner", String.format(BeakerImplementationInfo.IMPLEMENTATION_VERSION, "Scala", scala.util.Properties.scalaPropOrElse("version.number", "(unknown)")));
     return content;
   }
 

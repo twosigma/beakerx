@@ -42,7 +42,7 @@ public class JavaKernelInfoHandler extends KernelInfoHandler {
   @Override
   protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
     content.put("implementation", "java");
-    content.put("banner", "BeakerX kernel for Java version " + System.getProperty("java.version") + "\n" + BeakerImplementationInfo.IMPLEMENTATION_VERSION);
+    content.put("banner", String.format(BeakerImplementationInfo.IMPLEMENTATION_VERSION, "Java", System.getProperty("java.version")));
     return content;
   }
 

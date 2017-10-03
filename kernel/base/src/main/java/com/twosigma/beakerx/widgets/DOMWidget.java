@@ -97,7 +97,9 @@ public abstract class DOMWidget extends Widget {
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     content.put(Layout.LAYOUT, Layout.IPY_MODEL + getLayout().getComm().getCommId());
-    content.put(Style.STYLE, Layout.IPY_MODEL + getStyle().getComm().getCommId());
+    if (style != null) {
+      content.put(Style.STYLE, Layout.IPY_MODEL + getStyle().getComm().getCommId());
+    }
     content.put("font_family", "");
     content.put("font_size", "");
     content.put("font_style", "");

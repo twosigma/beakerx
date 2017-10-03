@@ -133,7 +133,8 @@ class EasyForm(Box):
             arguments = dict(target_name='beaker.tag.run')
             comm = Comm(**arguments)
             msg = {'runByTag': args[0].tag}
-            comm.send(data=msg, buffers=[])
+            state = {'state': msg}
+            comm.send(data=state, buffers=[])
     
     def addList(self, *args, **kwargs):
         multi_select = getValue(kwargs, 'multi', True)
@@ -192,7 +193,7 @@ class EasyForm(Box):
         radio_buttons = RadioButtons(options=self.getOptions(args, kwargs),
                                      description=self.getDescription(args,
                                                                      kwargs))
-        
+        radio_buttons.index = None
         if orientation == EasyForm.VERTICAL:
             self.children += (radio_buttons,)
         else:
@@ -215,6 +216,7 @@ class EasyForm(Box):
         for child in self.children:
             if child.description == key:
                 return child.value
+
     
     def put(self, key, value):
         for child in self.children:

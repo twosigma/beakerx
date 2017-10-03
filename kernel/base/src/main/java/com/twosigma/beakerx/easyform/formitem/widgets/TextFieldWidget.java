@@ -38,8 +38,8 @@ public class TextFieldWidget extends EasyFormComponent<Text> {
   }
 
   public TextFieldWidget setWidth(Integer width) {
-    widget.getLayout().setWidth(width + PX);
     this.width = width;
+    getWidget().sendUpdate("width", width);
     return this;
   }
 

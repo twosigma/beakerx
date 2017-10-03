@@ -98,4 +98,27 @@ describe('Testing of EasyForm (python)', function () {
     });
   });
 
+  describe("EasyForm Actions", function(){
+    var inputs;
+
+    it('EasyForm has button', function () {
+      var easyForm = beakerxPO.runCellToGetEasyForm(9);
+      easyForm.$('button=run tag').click();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+    });
+
+    it('tag should create EasyForm', function () {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var codeCell_11 = beakerxPO.getCodeCellByIndex(11);
+      var easyForm = codeCell_11.$('div.beaker-easyform-container');
+      expect(easyForm.isEnabled()).toBeTruthy();
+      inputs = easyForm.$('input[type="text"]');
+    });
+
+    it('should change text value', function () {
+      beakerxPO.runCodeCellByIndex(10);
+      expect(inputs.getValue()).toBe('test text');
+    });
+  });
+
 });

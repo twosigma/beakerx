@@ -17,6 +17,8 @@ package com.twosigma.beakerx.kotlin.evaluator;
 
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import org.jetbrains.kotlin.cli.common.repl.ReplEvalResult;
+import org.jetbrains.kotlin.cli.jvm.repl.ReplInterpreter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -29,15 +31,15 @@ import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 class KotlinCodeRunner<T> implements Runnable {
 
   private final SimpleEvaluationObject theOutput;
-  private final T instance;
-  private final Method theMth;
   private final ClassLoader loader;
+  private final ReplInterpreter repl;
+  public String codeToBeExecuted;
 
-  public KotlinCodeRunner(T instance, Method mth, SimpleEvaluationObject out, ClassLoader ld) {
-    this.instance = instance;
-    theMth = mth;
-    theOutput = checkNotNull(out);
-    loader = ld;
+  public KotlinCodeRunner(T instance, Method mth, SimpleEvaluationObject out, ClassLoader ld, ReplInterpreter repl, String codeToBeExecuted) {
+    this.theOutput = checkNotNull(out);
+    this.loader = ld;
+    this.repl = repl;
+    this.codeToBeExecuted = codeToBeExecuted;
   }
 
   @Override
@@ -48,8 +50,8 @@ class KotlinCodeRunner<T> implements Runnable {
     InternalVariable.setValue(theOutput);
     try {
       InternalVariable.setValue(theOutput);
-      Object o = theMth.invoke(instance, (Object[]) null);
-      theOutput.finished(calculateResult(o));
+      ReplEvalResult eval = repl.eval(this.codeToBeExecuted);
+      theOutput.finished(calculateResult(eval));
     } catch (Throwable e) {
       if (e instanceof InvocationTargetException)
         e = ((InvocationTargetException) e).getTargetException();
@@ -69,8 +71,13 @@ class KotlinCodeRunner<T> implements Runnable {
   }
 
   private Object calculateResult(Object o) {
-    if (o != null && o.toString().equals("kotlin.Unit")) {
-      return null;
+    if (o != null) {
+      if (o.toString().contains("UnitResult")) {
+        return null;
+      }
+      if (o instanceof ReplEvalResult.ValueResult) {
+        return ((ReplEvalResult.ValueResult) o).getValue();
+      }
     }
     return o;
   }

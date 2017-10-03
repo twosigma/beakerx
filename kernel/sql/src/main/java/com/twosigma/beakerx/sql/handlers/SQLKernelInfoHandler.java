@@ -42,7 +42,7 @@ public class SQLKernelInfoHandler extends KernelInfoHandler {
   @Override
   protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
     content.put("implementation", "sql");
-    content.put("banner", "BeakerX kernel for SQL" + "\n" + BeakerImplementationInfo.IMPLEMENTATION_VERSION);
+    content.put("banner", String.format(BeakerImplementationInfo.IMPLEMENTATION_VERSION, "SQL", ""));
     return content;
   }
 

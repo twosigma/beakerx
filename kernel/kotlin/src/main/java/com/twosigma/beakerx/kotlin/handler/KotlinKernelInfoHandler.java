@@ -44,7 +44,7 @@ public class KotlinKernelInfoHandler extends KernelInfoHandler {
   @Override
   protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
     content.put("implementation", "kotlin");
-    content.put("banner", "BeakerX kernel for Kotlin version " + VERSION + "\n" + BeakerImplementationInfo.IMPLEMENTATION_VERSION);
+    content.put("banner", String.format(BeakerImplementationInfo.IMPLEMENTATION_VERSION, "Kotlin", VERSION));
     return content;
   }
 

@@ -47,7 +47,7 @@ public class ClojureKernelInfoHandler extends KernelInfoHandler {
   @Override
   protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
     content.put("implementation", "clojure");
-    content.put("banner", "BeakerX kernel for Clojure version " + CLOJURE_VERSION + "\n" + BeakerImplementationInfo.IMPLEMENTATION_VERSION);
+    content.put("banner", String.format(BeakerImplementationInfo.IMPLEMENTATION_VERSION, "Clojure", CLOJURE_VERSION));
     return content;
   }
 

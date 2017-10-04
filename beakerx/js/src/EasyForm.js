@@ -24,6 +24,7 @@ var datePickerWidget = require('./easyForm/datePickerWidget');
 var comboBoxWidget = require('./easyForm/comboBoxWidget');
 var textWidget = require('./easyForm/textWidget').default;
 var TextareaWidget = require('./easyForm/TextareaWidget').default;
+var checkboxWidget = require('./easyForm/checkboxWidget').default;
 
 widgets.TextView.prototype.handleEnterKeyPress = function() {
   if (e.keyCode == 13) {
@@ -107,3 +108,4 @@ _.extend(module.exports, datePickerWidget);
 _.extend(module.exports, textWidget);
 _.extend(module.exports, TextareaWidget);
 _.extend(module.exports, comboBoxWidget);
+_.extend(module.exports, checkboxWidget);

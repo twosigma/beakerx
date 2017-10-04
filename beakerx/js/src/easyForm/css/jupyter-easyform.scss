@@ -8,7 +8,6 @@
     }
   }
 
-  .widget-textarea,
   .widget-select,
   .widget-select-multiple {
     width: 380px;
@@ -27,6 +26,7 @@
     }
   }
 
+  .widget-textarea,
   .widget-text {
     width: auto;
   }
@@ -46,6 +46,14 @@
     text-align: right;
   }
 
+  .widget-checkbox {
+    width: auto;
+
+    > .checkbox {
+      flex: unset;
+    }
+  }
+
   .widget-hbox {
     .widget-radio {
       width: auto;
@@ -61,6 +69,13 @@
     }
   }
 
+  .p-Panel {
+    .widget-checkbox {
+      .widget-label {
+        min-width: 0;
+      }
+    }
+  }
 }
 
 .beaker-fieldset {

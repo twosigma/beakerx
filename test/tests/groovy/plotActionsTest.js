@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-var BeakerXPageObject = require('./beakerx.po.js');
+var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
 describe('Testing of plot Actions', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/PlotActionsTest.ipynb');
+    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/PlotActionsTest.ipynb');
   }, 2);
 
   afterAll(function () {

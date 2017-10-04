@@ -36,6 +36,7 @@ class Chart(BaseObject):
                                         LegendPosition())
         self.legend_layout = getValue(kwargs, 'legendLayout',
                                       LegendLayout.VERTICAL)
+        self.type = "Plot"
 
 
 class AbstractChart(Chart):
@@ -78,14 +79,14 @@ class XYChart(AbstractChart):
     def add(self, item):
         if isinstance(item, YAxis):
             self.rangeAxes.append(item)
-        elif isinstance(item, Graphics):
-            self.graphics_list.append(item)
         elif isinstance(item, Text):
             self.texts.append(item)
         elif isinstance(item, ConstantLine):
             self.constant_lines.append(item)
         elif isinstance(item, ConstantBand):
             self.constant_bands.append(item)
+        elif isinstance(item, Graphics):
+            self.graphics_list.append(item)
         elif isinstance(item, list):
             for elem in item:
                 self.add(elem)

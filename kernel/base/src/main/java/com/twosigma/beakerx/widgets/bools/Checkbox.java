@@ -19,6 +19,8 @@ public class Checkbox extends BoolWidget {
 
   public static String VIEW_NAME_VALUE = "CheckboxView";
   public static String MODEL_NAME_VALUE = "CheckboxModel";
+  public static final String MODEL_MODULE_VALUE = "beakerx";
+  public static final String VIEW_MODULE_VALUE = "beakerx";
 
   public Checkbox() {
     super();
@@ -38,5 +40,15 @@ public class Checkbox extends BoolWidget {
   @Override
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
+  }
+
+  @Override
+  public String getModelModuleValue(){
+    return MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  public String getViewModuleValue(){
+    return VIEW_MODULE_VALUE;
   }
 }

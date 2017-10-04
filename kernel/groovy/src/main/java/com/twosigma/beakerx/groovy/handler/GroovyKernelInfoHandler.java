@@ -43,7 +43,7 @@ public class GroovyKernelInfoHandler extends KernelInfoHandler {
   @Override
   protected HashMap<String, Serializable> doContent(HashMap<String, Serializable> content) {
     content.put("implementation", "groovy");
-    content.put("banner", "BeakerX kernel for Apache Groovy version " + GroovySystem.getVersion() + "\n" + BeakerImplementationInfo.IMPLEMENTATION_VERSION);
+    content.put("banner", String.format(BeakerImplementationInfo.IMPLEMENTATION_VERSION, "Groovy", GroovySystem.getVersion()));
     return content;
   }
 

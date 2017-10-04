@@ -14,6 +14,18 @@
     min-width: 380px;
   }
 
+  .widget-select-multiple,
+  .widget-select {
+    > select {
+      flex: unset;
+      min-width: 30px;
+
+      &[size] {
+        overflow: auto;
+      }
+    }
+  }
+
   .widget-textarea,
   .widget-text {
     width: auto;

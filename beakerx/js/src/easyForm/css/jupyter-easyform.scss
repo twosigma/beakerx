@@ -34,6 +34,14 @@
     text-align: right;
   }
 
+  .widget-checkbox {
+    width: auto;
+
+    > .checkbox {
+      flex: unset;
+    }
+  }
+
   .widget-hbox {
     .widget-radio {
       width: auto;
@@ -49,6 +57,13 @@
     }
   }
 
+  .p-Panel {
+    .widget-checkbox {
+      .widget-label {
+        min-width: 0;
+      }
+    }
+  }
 }
 
 .beaker-fieldset {

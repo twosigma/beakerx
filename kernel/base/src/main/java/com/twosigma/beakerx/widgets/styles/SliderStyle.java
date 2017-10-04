@@ -13,33 +13,43 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widgets.integers;
+package com.twosigma.beakerx.widgets.styles;
 
-import com.twosigma.beakerx.widgets.ValueWidget;
 import java.io.Serializable;
 import java.util.HashMap;
 
-/**
- * Base class for widgets that represent an integer.
- * 
- * @param <T>
- */
-public abstract class IntWidget<T extends Serializable> extends ValueWidget<T> {
+public class SliderStyle extends DescriptionStyle {
 
-  protected IntWidget() {
+  public static final String MODEL_NAME_VALUE = "SliderStyleModel";
+
+  private String handle_color;
+
+  public SliderStyle() {
     super();
+    openComm();
   }
-  
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  protected void addValueChangeMsgCallback() {
+  }
+
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(VALUE, this.value);
+    content.put("handle_color", handle_color);
     return content;
   }
-  
-  @Override
-  public T getValueFromObject(Object input){
-    return (T)getInteger(input);
+
+  public String getHandle_color() {
+    return handle_color;
   }
 
+  public void setHandle_color(String handle_color) {
+    this.handle_color = handle_color;
+    sendUpdate("handle_color", handle_color);
+  }
 }

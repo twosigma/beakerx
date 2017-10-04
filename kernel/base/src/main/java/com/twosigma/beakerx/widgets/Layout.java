@@ -30,12 +30,14 @@ public class Layout extends Widget {
   public static final String PX = "px";
   public static final String VIEW_NAME_VALUE = "LayoutView";
   public static final String MODEL_NAME_VALUE = "LayoutModel";
+  public static final String VISIBILITY = "visibility";
 
   private String display;
   private String align_items;
   private String flex_flow;
   private String width;
   private String height;
+  private String visibility;
 
   public Layout() {
     super();
@@ -67,7 +69,7 @@ public class Layout extends Widget {
     content.put("padding", "");
     content.put("right", "");
     content.put("top", "");
-    content.put("visibility", "");
+    content.put(VISIBILITY, getVisibility());
     content.put(WIDTH, getWidth());
 
     return content;
@@ -132,4 +134,12 @@ public class Layout extends Widget {
     return VIEW_NAME_VALUE;
   }
 
+  public String getVisibility() {
+    return visibility;
+  }
+
+  public void setVisibility(String visibility) {
+    this.visibility = visibility;
+    sendUpdate(VISIBILITY, visibility);
+  }
 }

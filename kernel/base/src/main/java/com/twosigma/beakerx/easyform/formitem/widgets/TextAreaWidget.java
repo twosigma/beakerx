@@ -41,12 +41,12 @@ public class TextAreaWidget extends EasyFormComponent<Textarea> {
 
   public void setWidth(Integer width) {
     this.width = width;
-    widget.getLayout().setWidth(width + PX);
+    getWidget().sendUpdate("width", width);
   }
 
   public void setHeight(Integer height) {
     this.height = height;
-    widget.getLayout().setHeight(height + PX);
+    getWidget().sendUpdate("height", height);
   }
 
 }

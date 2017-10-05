@@ -13,30 +13,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx.widgets.styles;
 
-import { Menu } from '@phosphor/widgets'
+import com.twosigma.beakerx.widgets.Widget;
+import java.io.Serializable;
+import java.util.HashMap;
 
-export default class BkoMenu extends Menu {
-  keepOpen: boolean|undefined;
+public abstract class Style extends Widget {
 
-  triggerActiveItem(): void {
-    if (!this.keepOpen) {
-      super.triggerActiveItem();
-      return;
-    }
+  public static final String VIEW_NAME_VALUE = "StyleView";
+  public static final String MODEL_NAME_VALUE = "StyleModel";
+  public static final String STYLE = "style";
 
-    if (!this.isAttached) {
-      return;
-    }
-
-    const item = this.activeItem;
-    if (!item) {
-      return;
-    }
-
-    const command = item.command, args = item.args;
-    if (this.commands.isEnabled(command, args)) {
-      this.commands.execute(command, args);
-    }
+  public Style() {
+    super();
   }
+
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
+  }
+
+  @Override
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
+  }
+
 }

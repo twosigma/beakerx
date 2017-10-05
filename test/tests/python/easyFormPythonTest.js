@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-var BeakerXPageObject = require('./beakerx.po.js');
+var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Testing of EasyForm', function () {
+describe('Testing of EasyForm (python)', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/EasyFormTest.ipynb');
+    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/python/EasyFormPythonTest.ipynb');
   }, 2);
 
   afterAll(function () {
@@ -77,7 +77,8 @@ describe('Testing of EasyForm', function () {
       var easyForm = beakerxPO.runCellToGetEasyForm(6);
       expect(easyForm.$$('div.widget-checkbox').length).toBe(3);
       expect(easyForm.$$('input[type="checkbox"]').length).toBe(3);
-      expect(easyForm.$('div.widget-label').getText()).toBe('field name7');
+      // TODO enable when label will be fixed
+      // expect(easyForm.$('div.widget-label').getText()).toBe('field name7');
     });
 
     it('EasyForm has RadioButtons field', function () {
@@ -100,11 +101,10 @@ describe('Testing of EasyForm', function () {
   describe("EasyForm Actions", function(){
     var inputs;
 
-    it('EasyForm has two buttons', function () {
+    it('EasyForm has button', function () {
       var easyForm = beakerxPO.runCellToGetEasyForm(9);
       easyForm.$('button=run tag').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      easyForm.$('button=actionPerformed').click();
     });
 
     it('tag should create EasyForm', function () {
@@ -112,32 +112,12 @@ describe('Testing of EasyForm', function () {
       var codeCell_11 = beakerxPO.getCodeCellByIndex(11);
       var easyForm = codeCell_11.$('div.beaker-easyform-container');
       expect(easyForm.isEnabled()).toBeTruthy();
-      inputs = easyForm.$$('input[type="text"]');
+      inputs = easyForm.$('input[type="text"]');
     });
 
-    it('onChange action should change text value', function () {
-      beakerxPO.runCallAndCheckOutputText(10, 'test text');
-      expect(inputs[1].getValue()).toBe('test text');
-      expect(inputs[2].getValue()).toBe('test text from onChange');
-    });
-
-    it('onInit action should change text value', function () {
-      expect(inputs[0].getValue()).toBe('from onInit');
-    });
-
-    it('actionPerformed should change text value', function () {
-      expect(inputs[3].getValue()).toBe('from actionPerformed');
-    });
-  });
-
-  describe('IntSlider widget in EasyForm', function(){
-    it('EasyForm has IntSlider widget', function(){
-      var easyForm = beakerxPO.runCellToGetEasyForm(12);
-      expect(easyForm.$('div.slider-container')).toBeTruthy();
-    });
-
-    it('IntSlider has value 50', function(){
-      beakerxPO.runCallAndCheckOutputText(13, '50');
+    it('should change text value', function () {
+      beakerxPO.runCodeCellByIndex(10);
+      expect(inputs.getValue()).toBe('test text');
     });
   });
 

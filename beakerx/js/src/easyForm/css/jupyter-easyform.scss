@@ -8,13 +8,25 @@
     }
   }
 
-  .widget-textarea,
   .widget-select,
   .widget-select-multiple {
     width: 380px;
     min-width: 380px;
   }
 
+  .widget-select-multiple,
+  .widget-select {
+    > select {
+      flex: unset;
+      min-width: 30px;
+
+      &[size] {
+        overflow: auto;
+      }
+    }
+  }
+
+  .widget-textarea,
   .widget-text {
     width: auto;
   }
@@ -34,6 +46,14 @@
     text-align: right;
   }
 
+  .widget-checkbox {
+    width: auto;
+
+    > .checkbox {
+      flex: unset;
+    }
+  }
+
   .widget-hbox {
     .widget-radio {
       width: auto;
@@ -49,6 +69,13 @@
     }
   }
 
+  .p-Panel {
+    .widget-checkbox {
+      .widget-label {
+        min-width: 0;
+      }
+    }
+  }
 }
 
 .beaker-fieldset {

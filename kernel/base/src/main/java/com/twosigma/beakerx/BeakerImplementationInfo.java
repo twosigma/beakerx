@@ -31,7 +31,11 @@ public class BeakerImplementationInfo {
       String version = resource("version");
       String hash = resource("hash");
       String build_time = resource("build_time");
-      return "branch: " + version + ", hash:" + hash + ", build time:" + build_time;
+      String info = "BeakerX " + version + "\n";
+      info += "%s %s\n" ;
+      info += "hash " + hash + "\n";
+      info += "build time " + build_time;
+      return info;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

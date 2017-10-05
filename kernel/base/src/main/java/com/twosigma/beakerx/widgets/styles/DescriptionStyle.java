@@ -13,30 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx.widgets.styles;
 
-import { Menu } from '@phosphor/widgets'
+public abstract class DescriptionStyle extends Style {
 
-export default class BkoMenu extends Menu {
-  keepOpen: boolean|undefined;
+  public static final String MODEL_NAME_VALUE = "DescriptionStyleModel";
 
-  triggerActiveItem(): void {
-    if (!this.keepOpen) {
-      super.triggerActiveItem();
-      return;
-    }
-
-    if (!this.isAttached) {
-      return;
-    }
-
-    const item = this.activeItem;
-    if (!item) {
-      return;
-    }
-
-    const command = item.command, args = item.args;
-    if (this.commands.isEnabled(command, args)) {
-      this.commands.execute(command, args);
-    }
+  @Override
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
   }
+
 }

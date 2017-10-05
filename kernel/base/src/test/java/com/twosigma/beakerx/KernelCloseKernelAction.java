@@ -13,30 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx;
 
-import { Menu } from '@phosphor/widgets'
+import com.twosigma.beakerx.kernel.CloseKernelAction;
 
-export default class BkoMenu extends Menu {
-  keepOpen: boolean|undefined;
+public class KernelCloseKernelAction {
 
-  triggerActiveItem(): void {
-    if (!this.keepOpen) {
-      super.triggerActiveItem();
-      return;
-    }
-
-    if (!this.isAttached) {
-      return;
-    }
-
-    const item = this.activeItem;
-    if (!item) {
-      return;
-    }
-
-    const command = item.command, args = item.args;
-    if (this.commands.isEnabled(command, args)) {
-      this.commands.execute(command, args);
-    }
-  }
+  public static CloseKernelAction NO_ACTION = () -> {
+  };
 }

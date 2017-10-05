@@ -75,6 +75,7 @@ docker run -p 8888:8888 beakerx
 Test it, then
 
 ```
+docker tag beakerx beakerx/beakerx
 docker push beakerx/beakerx
 ```
 

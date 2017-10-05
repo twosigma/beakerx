@@ -19,10 +19,14 @@ var beakerxPO;
 
 describe('Scala notebook', function () {
 
-  beforeAll(function (done) {
+  beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByName('scala.ipynb', done, 'scala');
+    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/scala/scala.ipynb');
   }, 2);
+
+  afterAll(function () {
+    beakerxPO.closeAndHaltNotebook();
+  });
 
   describe('Run first cell. ', function () {
     it('Output contains "defined class Greeter"', function () {

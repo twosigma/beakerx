@@ -1,3 +1,4 @@
+import groovy.time.TimeCategory
 /*
  *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -51,16 +52,27 @@ subprojects {
       }
     }
   }
+
+  test {
+    testLogging {
+      afterSuite { desc, result ->
+        if (!desc.parent) {
+          println "Tests run: ${result.testCount}, Successes: ${result.successfulTestCount}, Failures: ${result.failedTestCount}, Skipped: ${result.skippedTestCount}, Total time: ${TimeCategory.minus(new Date(result.endTime), new Date(result.startTime))} "
+        }
+      }
+    }
+  }
+
   ext.pathToStaticContent = '../../beakerx/beakerx/static/kernel/'
 
   task staticContent {
     doLast {
-        copy {
-          from '.'
-          into pathToStaticContent + kernelIdName
-          include '*.png'
-          include 'kernel.json'
-        }
+      copy {
+        from '.'
+        into pathToStaticContent + kernelIdName
+        include '*.png'
+        include 'kernel.json'
+      }
     }
   }
   build.finalizedBy staticContent

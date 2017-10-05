@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widgets.integers;
 
+import com.twosigma.beakerx.widgets.styles.SliderStyle;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -32,15 +33,14 @@ public class IntRangeSlider extends BoundedIntRangeWidget{
   protected static final String CONTINUOUS_UPDATE = "continuous_update";
   protected static final String _RANGE = "_range";
   protected static final String READOUT = "readout";
-  protected static final String SLIDER_COLOR = "slider_color";
-  
+
   private String orientation = "horizontal";
   private Boolean continuous_update = true;
   private Boolean readOut = true;
-  private String slider_color;
-  
+
   public IntRangeSlider() {
     super();
+    this.style = new SliderStyle();
     openComm();
   }
   
@@ -50,7 +50,6 @@ public class IntRangeSlider extends BoundedIntRangeWidget{
     content.put(ORIENTATION, orientation);
     content.put(_RANGE, true);
     content.put(READOUT, this.readOut);
-    content.put(SLIDER_COLOR, this.slider_color);
     content.put(CONTINUOUS_UPDATE, this.continuous_update);
     return content;
   }

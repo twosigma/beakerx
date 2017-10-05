@@ -14,19 +14,12 @@
  *  limitations under the License.
  */
 
-var _ = require('underscore');
+import createFormatSubitems from './createFormatMenuItems';
+import * as MenuHelper from './MenuHelper';
 
-/**
- * This function should be called in tableScope context:
- * createHeaderMenuItems.call(tableScope, menuHelper, getFormatSubitems)
- *
- * @param getFormatSubitems
- * @returns Object { items: [] }
- */
-function createHeaderMenuItems (cellHighlighters) {
+export default function createColumnMenuItems(cellHighlighters) {
   var self = this;
-  var menuHelper = new (require('./MenuHelper'))(self);
-  var tableConsts = require('../consts');
+  var menuHelper = MenuHelper(self);
 
   function setColumnsOrder(colIdx, newIndex) {
     var table = self.table;
@@ -36,82 +29,6 @@ function createHeaderMenuItems (cellHighlighters) {
     columnIndexes.splice(newIndex, 0, colIdx);
 
     table.colReorder.order(columnIndexes);
-  }
-
-  function getFormatSubitems(colIdx) {
-    var types = self.getCellDispOptsF(colIdx - 1);
-    var items = [];
-
-    _.each(types, function(obj) {
-      if (obj.type === 8) { //datetime
-        items = items.concat(getTimeSubitems());
-        return;
-      }
-      var item = {
-        title: obj.name,
-        isChecked: function(colIdx) {
-          return self.actualtype[self.colorder[colIdx] - 1] === obj.type;
-        }
-      };
-      if (obj.type === 4) { //double with precision
-        item.items = getPrecisionSubitems;
-      } else {
-        item.action = function(colIdx) {
-          self.getCellDisp[self.colorder[colIdx] - 1] = obj.type;
-          self.actualtype[self.colorder[colIdx] - 1] = obj.type;
-          self.applyChanges();
-        }
-      }
-      items.push(item);
-    });
-
-    return items;
-  }
-
-  function getPrecisionSubitems() {
-    var items = [];
-
-    _.each(self.doubleWithPrecisionConverters, function(func, precision) {
-      var item = {
-        title: precision,
-        isChecked: function(colIdx) {
-          return self.actualtype[self.colorder[colIdx] - 1] === self.getActualTypeByPrecision(precision);
-        },
-        action: function(colIdx) {
-          self.changePrecision(self.colorder[colIdx] - 1, precision);
-        }
-      };
-
-      items.push(item);
-    });
-
-    return items;
-  }
-
-  function getTimeSubitems() {
-    var items = [];
-
-    _.forEach(tableConsts.TIME_UNIT_FORMATS, function(value, unit) {
-      if (tableConsts.TIME_UNIT_FORMATS.hasOwnProperty(unit)) {
-        var item = {
-          title: value.title,
-          isChecked: function(colIdx) {
-            return self.actualtype[self.colorder[colIdx] - 1] === 8 &&
-                (unit === self.formatForTimes || unit == 'DATETIME' && _.isEmpty(self.formatForTimes));
-          },
-          action: function(colIdx) {
-            self.getCellDisp[self.colorder[colIdx] - 1] = 8;
-            self.actualtype[self.colorder[colIdx] - 1] = 8;
-
-            self.changeTimeFormat(unit);
-          }
-        };
-
-        items.push(item);
-      }
-    });
-
-    return items;
   }
 
   return {
@@ -150,7 +67,7 @@ function createHeaderMenuItems (cellHighlighters) {
       {
         title: 'Format',
         action: null,
-        items: getFormatSubitems
+        items: (colIdx) => createFormatSubitems(self, colIdx)
       },
       {
         title: 'Sort Ascending',
@@ -294,7 +211,5 @@ function createHeaderMenuItems (cellHighlighters) {
         }
       }
     ]
-  }
+  };
 }
-
-module.exports = createHeaderMenuItems;

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widgets.floats;
 
+import com.twosigma.beakerx.widgets.styles.SliderStyle;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -53,17 +54,16 @@ public class FloatSlider extends BoundedFloatWidget {
   public static final String MODEL_NAME_VALUE = "FloatSliderModel";
 
   protected static final String ORIENTATION = "orientation";
-  protected static final String SLIDER_COLOR = "slider_color";
   protected static final String READOUT = "readout";
   protected static final String CONTINUOUS_UPDATE = "continuous_update";
 
   private String orientation = "horizontal";
-  private String slider_color;
   private Boolean readOut = true;
   private Boolean continuous_update = true;
 
   public FloatSlider() {
     super();
+    this.style = new SliderStyle();
     openComm();
   }
 
@@ -73,7 +73,6 @@ public class FloatSlider extends BoundedFloatWidget {
     content.put(CONTINUOUS_UPDATE, this.continuous_update);
     content.put(ORIENTATION, orientation);
     content.put(READOUT, this.readOut);
-    content.put(SLIDER_COLOR, this.slider_color);
     content.put("_range", false);
     content.put("readout_format", ".2f");
     return content;
@@ -86,15 +85,6 @@ public class FloatSlider extends BoundedFloatWidget {
   public void setOrientation(String orientation) {
     this.orientation = orientation;
     sendUpdate(ORIENTATION, orientation);
-  }
-
-  public String getSlider_color() {
-    return slider_color;
-  }
-
-  public void setSlider_color(String slider_color) {
-    this.slider_color = slider_color;
-    sendUpdate(SLIDER_COLOR, slider_color);
   }
 
   public Boolean getReadOut() {
@@ -124,5 +114,4 @@ public class FloatSlider extends BoundedFloatWidget {
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
-
 }

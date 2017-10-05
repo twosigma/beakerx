@@ -2231,9 +2231,11 @@ define([
     // set zoom object
     self.svg
       .on("mousedown", function() {
+        self.jqcontainer.addClass('bko-focused');
         return self.mouseDown();
       });
     self.jqcontainer.on("mouseleave", function() {
+        self.jqcontainer.removeClass('bko-focused');
         return self.disableZoomWheel();
       });
     self.jqsvg.mousemove(function(e) {

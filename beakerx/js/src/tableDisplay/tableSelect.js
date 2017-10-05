@@ -94,10 +94,12 @@ module.exports = function(TableScope) {
       .on('key-blur', function () {
         self.prevFocussedCell = _.clone(self.focussedCell);
         self.focussedCell = null;
+        self.element.removeClass('bko-focused');
       })
       .on('key-focus', function (e, datatable, cell, originalEvent) {
         self.focussedCell = cell.index();
         self.focusChanged = true;
+        self.element.addClass('bko-focused');
 
         if (!originalEvent || !originalEvent.shiftKey) {
           return;

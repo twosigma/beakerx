@@ -116,7 +116,7 @@ public class ReplWithClassLoaderFactory {
     return currentImportPath;
   }
 
-  private static class ReplWithClassLoader {
+  public static class ReplWithClassLoader {
     private ReplClassLoader loader;
     private ReplInterpreter repl;
 

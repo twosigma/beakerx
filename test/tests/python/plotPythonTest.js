@@ -36,6 +36,43 @@ describe('Testing of Plot (python)', function () {
       expect(dtContainer.$('#xlabel').getText()).toEqual('x label');
       expect(dtContainer.$('#ylabel').getText()).toEqual('y label');
     });
+
+    it('Plot has 3 Bars', function () {
+      var svgElement = beakerxPO.runCellToGetSvgElement(1);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('g.plot-bar').isVisible()).toBeTruthy();
+      expect(svgElement.$$('rect.plot-resp').length).toEqual(3);
+    });
+
+    it('Plot has Line', function () {
+      var svgElement = beakerxPO.runCellToGetSvgElement(2);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('circle.plot-resp').length).toEqual(3);
+      expect(svgElement.$('path.plot-line').isVisible()).toBeTruthy();
+    });
+
+    it('Plot has 5 Points', function () {
+      var svgElement = beakerxPO.runCellToGetSvgElement(3);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('g.plot-point').isVisible()).toBeTruthy();
+      expect(svgElement.$$('polygon.plot-resp').length).toEqual(5);
+    });
+  });
+
+  describe('Pandas library', function () {
+    it('Plot has over 300 Bars', function () {
+      var svgElement = beakerxPO.runCellToGetSvgElement(4);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('g.plot-bar').isVisible()).toBeTruthy();
+      expect(svgElement.$$('rect.plot-resp').length).toBeGreaterThan(300);
+    });
+
+    it('Plot has Line', function () {
+      var svgElement = beakerxPO.runCellToGetSvgElement(5);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('circle.plot-resp').length).toEqual(7);
+      expect(svgElement.$('path.plot-line').isVisible()).toBeTruthy();
+    });
   });
 
 });

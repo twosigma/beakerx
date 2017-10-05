@@ -70,10 +70,6 @@ build should suffice:
 The notebook extensions are installed to run out of the repo, so just
 a local build should suffice:
 
-Note this is [currently
-broken](https://github.com/twosigma/beakerx/issues/5878), do a full
-build instead.
-
 ```
 (cd beakerx/js; yarn install)
 ```

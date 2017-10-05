@@ -15,34 +15,28 @@
  */
 package com.twosigma.beakerx.kotlin.evaluator;
 
-import com.intellij.openapi.util.Disposer;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.WorkerThread;
-import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
-import com.twosigma.beakerx.kernel.ImportPath;
-import org.jetbrains.kotlin.cli.jvm.repl.ConsoleReplConfiguration;
+import com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.ReplWithClassLoader;
+import org.jetbrains.kotlin.cli.common.repl.ReplClassLoader;
 import org.jetbrains.kotlin.cli.jvm.repl.ReplInterpreter;
-import org.jetbrains.kotlin.config.CommonConfigurationKeys;
-import org.jetbrains.kotlin.config.CompilerConfiguration;
-import org.jetbrains.kotlin.utils.PathUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
-import static org.jetbrains.kotlin.cli.jvm.config.JvmContentRootsKt.addJvmClasspathRoot;
-import static org.jetbrains.kotlin.cli.jvm.config.JvmContentRootsKt.addJvmClasspathRoots;
+import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createReplWithClassLoader;
 
 class KotlinWorkerThread extends WorkerThread {
 
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
-
   private KotlinEvaluator kotlinEvaluator;
   protected boolean exit;
   protected boolean updateLoader;
+  private ReplInterpreter repl;
+
 
   public KotlinWorkerThread(KotlinEvaluator kotlinEvaluator) {
     super("kotlin worker");
@@ -51,34 +45,24 @@ class KotlinWorkerThread extends WorkerThread {
     updateLoader = true;
   }
 
-  /*
-   * This thread performs all the evaluation
-   */
-
+  @Override
   public void run() {
-    DynamicClassLoaderSimple loader = null;
+    ReplClassLoader loader = null;
     JobDescriptor j = null;
 
     NamespaceClient nc = null;
 
     while (!exit) {
       try {
-        // wait for work
         syncObject.acquire();
 
-        // check if we must create or update class loader
         if (loader == null || updateLoader) {
-          loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-          loader.addJars(kotlinEvaluator.getClasspath().getPathsAsStrings());
-          loader.addDynamicDir(kotlinEvaluator.getOutDir());
-
-          String classpath = System.getProperty("java.class.path");
-          String[] classpathEntries = classpath.split(File.pathSeparator);
-          repl = createReplInterpreter(classpathEntries);
+          ReplWithClassLoader replWithClassLoader = createReplWithClassLoader(this.kotlinEvaluator);
+          repl = replWithClassLoader.getRepl();
+          loader = replWithClassLoader.getLoader();
           this.updateLoader = false;
         }
 
-        // get next job descriptor
         j = jobQueue.poll();
         if (j == null)
           continue;
@@ -89,7 +73,7 @@ class KotlinWorkerThread extends WorkerThread {
         j.outputObject.started();
 
         try {
-          if (!kotlinEvaluator.executeTask(new KotlinCodeRunner(null, null, j.outputObject, loader, repl, j.codeToBeExecuted))) {
+          if (!kotlinEvaluator.executeTask(new KotlinCodeRunner(j.outputObject, loader, repl, j.codeToBeExecuted))) {
             j.outputObject.error(INTERUPTED_MSG);
           }
           if (nc != null) {
@@ -100,8 +84,6 @@ class KotlinWorkerThread extends WorkerThread {
         } catch (Exception e) {
           j.outputObject.error(e);
         }
-        //}
-
         j = null;
       } catch (Throwable e) {
         e.printStackTrace();
@@ -113,47 +95,6 @@ class KotlinWorkerThread extends WorkerThread {
       }
     }
     NamespaceClient.delBeaker(kotlinEvaluator.getSessionId());
-  }
-
-  private ReplInterpreter repl;
-
-  private ReplInterpreter createReplInterpreter(String[] classpathEntries) {
-    CompilerConfiguration compilerConfiguration = new CompilerConfiguration();
-    compilerConfiguration.put(CommonConfigurationKeys.MODULE_NAME, "kotlin-script-module-" + System.currentTimeMillis());
-    addJvmClasspathRoots(compilerConfiguration, PathUtil.getJdkClassesRootsFromCurrentJre());
-    Arrays.stream(classpathEntries).forEach(x -> {
-      addJvmClasspathRoot(compilerConfiguration, new File(x));
-    });
-    ReplInterpreter replInterpreter = new ReplInterpreter(
-            Disposer.newDisposable(),
-            compilerConfiguration,
-            new ConsoleReplConfiguration());
-
-    StringBuilder javaSourceCode = new StringBuilder();
-    for (ImportPath i : kotlinEvaluator.getImports().getImportPaths()) {
-      javaSourceCode.append("import ");
-      javaSourceCode.append(adjustImport(i));
-      javaSourceCode.append("\n");
-    }
-    replInterpreter.eval(javaSourceCode.toString());
-    return replInterpreter;
-  }
-
-  private String adjustImport(ImportPath importPath) {
-    String currentImportPath = importPath.asString();
-    if (currentImportPath.startsWith("import")) {
-      currentImportPath = currentImportPath.substring(6).trim();
-    }
-
-    if (currentImportPath.startsWith("static")) {
-      currentImportPath = currentImportPath.substring(6).trim();
-    }
-
-    if (currentImportPath.contains(".object.")) {
-      currentImportPath = currentImportPath.replace(".object.", ".`object`.");
-    }
-
-    return currentImportPath;
   }
 
   public void updateLoader() {

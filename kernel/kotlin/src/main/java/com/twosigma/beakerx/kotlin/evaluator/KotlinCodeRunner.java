@@ -23,22 +23,21 @@ import org.jetbrains.kotlin.cli.jvm.repl.ReplInterpreter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 
-class KotlinCodeRunner<T> implements Runnable {
+class KotlinCodeRunner implements Runnable {
 
   private final SimpleEvaluationObject theOutput;
   private final ClassLoader loader;
   private final ReplInterpreter repl;
-  public String codeToBeExecuted;
+  private final String codeToBeExecuted;
 
-  public KotlinCodeRunner(T instance, Method mth, SimpleEvaluationObject out, ClassLoader ld, ReplInterpreter repl, String codeToBeExecuted) {
+  public KotlinCodeRunner(SimpleEvaluationObject out, ClassLoader ld, ReplInterpreter repl, String codeToBeExecuted) {
     this.theOutput = checkNotNull(out);
-    this.loader = ld;
-    this.repl = repl;
+    this.loader = checkNotNull(ld);
+    this.repl = checkNotNull(repl);
     this.codeToBeExecuted = codeToBeExecuted;
   }
 
@@ -51,7 +50,7 @@ class KotlinCodeRunner<T> implements Runnable {
     try {
       InternalVariable.setValue(theOutput);
       ReplEvalResult eval = repl.eval(this.codeToBeExecuted);
-      theOutput.finished(calculateResult(eval));
+      interpretResult(eval);
     } catch (Throwable e) {
       if (e instanceof InvocationTargetException)
         e = ((InvocationTargetException) e).getTargetException();
@@ -70,15 +69,17 @@ class KotlinCodeRunner<T> implements Runnable {
     Thread.currentThread().setContextClassLoader(oldld);
   }
 
-  private Object calculateResult(Object o) {
-    if (o != null) {
-      if (o.toString().contains("UnitResult")) {
-        return null;
-      }
-      if (o instanceof ReplEvalResult.ValueResult) {
-        return ((ReplEvalResult.ValueResult) o).getValue();
-      }
+  private void interpretResult(Object o) {
+    if (o == null) {
+      theOutput.finished(null);
+    } else if (o instanceof ReplEvalResult.UnitResult) {
+      theOutput.finished(null);
+    } else if (o instanceof ReplEvalResult.ValueResult) {
+      theOutput.finished(((ReplEvalResult.ValueResult) o).getValue());
+    } else if (o instanceof ReplEvalResult.Error) {
+      theOutput.error(((ReplEvalResult.Error) o).getMessage());
+    } else {
+      theOutput.error(o);
     }
-    return o;
   }
 }

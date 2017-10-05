@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kotlin.kernel;
 
+import com.twosigma.beakerx.KernelCloseKernelAction;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.comm.Comm;
@@ -48,7 +49,7 @@ public class KotlinKernelTest {
     KotlinEvaluator evaluator =
             new KotlinEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory());
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new Kotlin(sessionId, evaluator, kernelSocketsService);
+    kernel = new Kotlin(sessionId, evaluator, kernelSocketsService, KernelCloseKernelAction.NO_ACTION);
     kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
     kernelThread.start();
     kernelSocketsService.waitForSockets();

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.clojure.kernel;
 
+import com.twosigma.beakerx.KernelCloseKernelAction;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
@@ -50,7 +51,7 @@ public class ClojureKernelTest {
     String sessionId = "sessionId1";
     evaluator = new ClojureEvaluator(sessionId, sessionId, cellExecutor(), EvaluatorTest.getTestTempFolderFactory());
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new Clojure(sessionId, evaluator, kernelSocketsService, () -> {});
+    kernel = new Clojure(sessionId, evaluator, kernelSocketsService, KernelCloseKernelAction.NO_ACTION);
     kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
     kernelThread.start();
     kernelSocketsService.waitForSockets();

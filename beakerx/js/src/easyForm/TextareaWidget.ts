@@ -19,8 +19,7 @@ const widgets = require('jupyter-js-widgets');
 
 import { TEXT_INPUT_WIDTH_UNIT } from './textWidget';
 
-const TEXT_INPUT_HEIGHT_UNIT = 'em';
-const LINE_HEIGHT_FACTOR = 1.3;
+const TEXT_INPUT_HEIGHT_UNIT = 'px';
 
 class TextareaModel extends widgets.TextareaModel {
   defaults() {
@@ -40,15 +39,29 @@ class TextareaView extends widgets.TextareaView {
 
     const width = this.model.get('width');
     const height = this.model.get('height');
+    const rows = this.model.get('rows');
+    const cols = this.model.get('cols');
 
-    if (width >= 0) {
-      this.textbox.style.maxWidth = width + TEXT_INPUT_WIDTH_UNIT;
-    }
+    width >= 0 && this.setWidth(width);
+    height >= 0 && this.setHeight(height);
+    rows >= 0 && this.setRows(rows);
+    cols >= 0 && this.setCols(cols);
+  }
 
-    if (height >= 0) {
-      this.textbox.style.lineHeight = LINE_HEIGHT_FACTOR + TEXT_INPUT_HEIGHT_UNIT;
-      this.textbox.style.height = (LINE_HEIGHT_FACTOR * height) + TEXT_INPUT_HEIGHT_UNIT;
-    }
+  setWidth(width: number): void {
+    this.textbox.style.maxWidth = width + TEXT_INPUT_WIDTH_UNIT;
+  }
+
+  setHeight(height: number): void {
+    this.textbox.style.height = height + TEXT_INPUT_HEIGHT_UNIT;
+  }
+
+  setRows(rows: number): void {
+    this.textbox.setAttribute('rows', rows);
+  }
+
+  setCols(cols: number): void {
+    this.textbox.setAttribute('cols', cols);
   }
 }
 

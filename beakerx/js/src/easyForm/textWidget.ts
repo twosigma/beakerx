@@ -17,7 +17,7 @@
 declare function require(moduleName: string): any;
 const widgets = require('jupyter-js-widgets');
 
-export const TEXT_INPUT_WIDTH_UNIT = 'ex';
+export const TEXT_INPUT_WIDTH_UNIT = 'px';
 
 class TextModel extends widgets.TextModel {
   defaults() {
@@ -42,11 +42,19 @@ class TextView extends widgets.TextView {
   render() {
     super.render.call(this);
 
-    var width = this.model.get('width');
+    const width = this.model.get('width');
+    const size = this.model.get('size');
 
-    if (width >= 0) {
-      this.textbox.style.maxWidth = width + TEXT_INPUT_WIDTH_UNIT;
-    }
+    width >= 0 && this.setWidth(width);
+    size >= 0 && this.setSize(size);
+  }
+
+  setWidth(width: number): void {
+    this.textbox.style.maxWidth = width + TEXT_INPUT_WIDTH_UNIT;
+  }
+
+  setSize(size: number): void {
+    this.textbox.setAttribute('size', size);
   }
 }
 

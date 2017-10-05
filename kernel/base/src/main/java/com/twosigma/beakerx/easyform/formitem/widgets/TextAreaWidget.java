@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
-import static com.twosigma.beakerx.widgets.Layout.PX;
-
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.widgets.strings.Textarea;
 
@@ -26,9 +24,19 @@ public class TextAreaWidget extends EasyFormComponent<Textarea> {
   public static final Integer AUTO_WIDTH = -1;
   private Integer width;
   private Integer height;
-  
+  private Integer cols;
+  private Integer rows;
+
   public TextAreaWidget() {
     super(new Textarea());
+  }
+
+  public Integer getCols() {
+    return cols;
+  }
+
+  public Integer getRows() {
+    return rows;
   }
 
   public Integer getWidth() {
@@ -37,6 +45,16 @@ public class TextAreaWidget extends EasyFormComponent<Textarea> {
 
   public Integer getHeight() {
     return height;
+  }
+
+  public void setCols(Integer cols) {
+    this.cols = cols;
+    getWidget().sendUpdate("cols", cols);
+  }
+
+  public void setRows(Integer rows) {
+    this.rows = rows;
+    getWidget().sendUpdate("rows", rows);
   }
 
   public void setWidth(Integer width) {

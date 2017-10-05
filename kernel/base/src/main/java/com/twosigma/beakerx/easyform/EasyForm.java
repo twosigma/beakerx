@@ -75,11 +75,11 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     return addTextField(label, -1);
   }
 
-  public EasyFormComponent addTextField(final String label, final Integer width) throws Exception {
+  public EasyFormComponent addTextField(final String label, final Integer size) throws Exception {
     TextFieldWidget textField = new TextFieldWidget();
 
     textField.setLabel(label);
-    textField.setWidth(width);
+    textField.setSize(size);
     return addComponentOrThrow(label, textField);
   }
 
@@ -87,9 +87,9 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     return addTextArea(label, null, TextAreaWidget.AUTO_WIDTH, TextAreaWidget.AUTO_HEIGHT);
   }
 
-  public EasyFormComponent addTextArea(final String label, final Integer width, final Integer height)
+  public EasyFormComponent addTextArea(final String label, final Integer cols, final Integer rows)
           throws Exception {
-    return addTextArea(label, null, width, height);
+    return addTextArea(label, null, cols, rows);
   }
 
   public EasyFormComponent addTextArea(final String label, final String initialValue) throws Exception {
@@ -98,13 +98,13 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
 
   public EasyFormComponent addTextArea(final String label,
                                        final String initialValue,
-                                       final Integer width,
-                                       final Integer height) throws Exception {
+                                       final Integer cols,
+                                       final Integer rows) throws Exception {
     TextAreaWidget textArea = new TextAreaWidget();
     textArea.registerUpdateValueCallback(textArea::fireChanged);
     textArea.setLabel(label);
-    textArea.setWidth(width);
-    textArea.setHeight(height);
+    textArea.setCols(cols);
+    textArea.setRows(rows);
     textArea.setValue(initialValue);
     return addComponentOrThrow(label, textArea);
   }

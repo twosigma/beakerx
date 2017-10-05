@@ -29,6 +29,11 @@
   .widget-textarea,
   .widget-text {
     width: auto;
+
+    > [size],
+    > [cols] {
+      flex-grow: 0;
+    }
   }
 
   .widget-radio-box input {

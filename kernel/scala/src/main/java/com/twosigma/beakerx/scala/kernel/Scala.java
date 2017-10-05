@@ -20,6 +20,7 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.KernelParameters;
@@ -31,15 +32,19 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.comm.ScalaCommOpenHandler;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.handler.ScalaKernelInfoHandler;
+
 import java.io.IOException;
 import java.util.HashMap;
 
 
 public class Scala extends Kernel {
 
-  public Scala(final String id, final Evaluator evaluator,
-      KernelSocketsFactory kernelSocketsFactory) {
+  private Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
+  }
+
+  public Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+    super(id, evaluator, kernelSocketsFactory, closeKernelAction);
   }
 
   @Override
@@ -56,11 +61,11 @@ public class Scala extends Kernel {
     KernelRunner.run(() -> {
       String id = uuid();
       ScalaEvaluator se = new ScalaEvaluator(id, id,
-          null);//TODO check what to put, need for autotranslation
+              null);//TODO check what to put, need for autotranslation
 
       //js.setupAutoTranslation(); -- uncomment
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
-          new KernelConfigurationFile(args));
+              new KernelConfigurationFile(args));
       return new Scala(id, se, kernelSocketsFactory);
     });
   }

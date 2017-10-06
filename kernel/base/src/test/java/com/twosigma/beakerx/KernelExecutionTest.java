@@ -15,14 +15,8 @@
  */
 package com.twosigma.beakerx;
 
-import com.twosigma.beakerx.kernel.CloseKernelAction;
-import com.twosigma.beakerx.kernel.Kernel;
-import com.twosigma.beakerx.kernel.KernelRunner;
-import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
@@ -35,29 +29,7 @@ import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForR
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class KernelExecutionTest {
-
-  protected KernelSocketsServiceTest kernelSocketsService;
-  private Kernel kernel;
-  private Thread kernelThread;
-
-  @Before
-  public void setUp() throws Exception {
-    String sessionId = "sessionId2";
-    kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = createKernel(sessionId, kernelSocketsService, KernelCloseKernelAction.NO_ACTION);
-    kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
-    kernelThread.start();
-    kernelSocketsService.waitForSockets();
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    kernelSocketsService.shutdown();
-    kernelThread.join();
-  }
-
-  protected abstract Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction);
+public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   @Test
   public void evaluate16Divide2() throws Exception {

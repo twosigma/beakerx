@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.javash.kernel;
 
+import com.twosigma.beakerx.KernelCloseKernelAction;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import com.twosigma.beakerx.kernel.comm.Comm;
@@ -47,7 +48,7 @@ public class JavaKernelTest {
     String sessionId = "sessionId2";
     JavaEvaluator evaluator = new JavaEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory());
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new Java(sessionId, evaluator, kernelSocketsService);
+    kernel = new Java(sessionId, evaluator, kernelSocketsService, KernelCloseKernelAction.NO_ACTION);
     kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
     kernelThread.start();
     kernelSocketsService.waitForSockets();

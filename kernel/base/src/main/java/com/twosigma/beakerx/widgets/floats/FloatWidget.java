@@ -15,10 +15,9 @@
  */
 package com.twosigma.beakerx.widgets.floats;
 
+import com.twosigma.beakerx.widgets.ValueWidget;
 import java.io.Serializable;
 import java.util.HashMap;
-
-import com.twosigma.beakerx.widgets.ValueWidget;
 
 public abstract class FloatWidget<T extends Serializable> extends ValueWidget<T> {
 
@@ -37,4 +36,5 @@ public abstract class FloatWidget<T extends Serializable> extends ValueWidget<T>
   public T getValueFromObject(Object input) {
     return (T) getDouble(input);
   }
+
 }

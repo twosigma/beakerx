@@ -23,6 +23,7 @@
 [![Release](https://jitpack.io/v/twosigma/beakerx.svg)](https://jitpack.io/#twosigma/beakerx)
 [![NPM version](https://badge.fury.io/js/beakerx.svg)](http://badge.fury.io/js/beakerx)
 [![PyPI Version](https://badge.fury.io/py/beakerx.svg)](http://badge.fury.io/py/beakerx)
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/beakerx/badges/version.svg)](https://anaconda.org/conda-forge/beakerx)
 
 BeakerX is a collection of JVM kernels with widgets, plotting, tables,
 autotranslation, and other extensions to the Jupyter Notebook and
@@ -68,10 +69,6 @@ build should suffice:
 
 The notebook extensions are installed to run out of the repo, so just
 a local build should suffice:
-
-Note this is [currently
-broken](https://github.com/twosigma/beakerx/issues/5878), do a full
-build instead.
 
 ```
 (cd beakerx/js; yarn install)

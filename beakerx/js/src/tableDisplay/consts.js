@@ -71,7 +71,7 @@ define(function() {
     FC_RIGHT_SEPARATOR_CLASS: 'right-fix-col-separator',
     FC_COL_FIXED_CLASS: 'fix-col-fixed',
     TIME_UNIT_FORMATS: {
-      DATETIME:     { title: 'datetime', format: 'YYYYMMDD HH:mm:ss.SSS' },
+      DATETIME:     { title: 'datetime', format: 'YYYYMMDD HH:mm:ss.SSS ZZ' },
       DAYS:         { title: 'date', format: 'YYYYMMDD' },
       HOURS:        { title: 'hours', format: 'YYYYMMDD HH:mm ZZ' },
       MINUTES:      { title: 'minutes', format: 'HH:mm ZZ' },

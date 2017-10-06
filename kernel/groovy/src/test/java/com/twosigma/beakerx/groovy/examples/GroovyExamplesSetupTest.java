@@ -29,6 +29,7 @@ import org.junit.BeforeClass;
 import java.io.Serializable;
 import java.util.Map;
 
+import static com.twosigma.beakerx.KernelCloseKernelAction.NO_ACTION;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getState;
 import static org.junit.Assert.assertTrue;
 
@@ -43,7 +44,7 @@ public abstract class GroovyExamplesSetupTest {
     String sessionId = "sessionIdWidget";
     GroovyEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new Groovy(sessionId, evaluator, kernelSocketsService);
+    kernel = new Groovy(sessionId, evaluator, kernelSocketsService,NO_ACTION);
     kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
     kernelThread.start();
     kernelSocketsService.waitForSockets();

@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 
 public class Clojure extends Kernel {
 
-  public Clojure(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+  private Clojure(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(sessionId, evaluator, kernelSocketsFactory);
   }
 

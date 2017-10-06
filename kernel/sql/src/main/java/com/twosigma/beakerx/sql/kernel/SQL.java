@@ -20,10 +20,10 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
 import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
 
-import com.google.common.collect.Lists;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
 import com.twosigma.beakerx.kernel.KernelParameters;
@@ -36,14 +36,19 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import com.twosigma.beakerx.sql.handlers.SQLCommOpenHandler;
 import com.twosigma.beakerx.sql.handlers.SQLKernelInfoHandler;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 public class SQL extends Kernel {
 
-  public SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
+  private SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(sessionId, evaluator, kernelSocketsFactory);
+  }
+
+  public SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction);
   }
 
   @Override
@@ -60,7 +65,7 @@ public class SQL extends Kernel {
     KernelRunner.run(() -> {
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
-          new KernelConfigurationFile(args));
+              new KernelConfigurationFile(args));
       return new SQL(id, new SQLEvaluator(id, id), kernelSocketsFactory);
     });
   }

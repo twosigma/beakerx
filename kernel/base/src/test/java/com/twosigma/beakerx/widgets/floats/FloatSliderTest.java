@@ -102,16 +102,6 @@ public class FloatSliderTest {
   }
 
   @Test
-  public void shouldSendCommMsgWhenSliderColorChange() throws Exception {
-    //given
-    FloatSlider floatSlider = floatSlider();
-    //when
-    floatSlider.setSlider_color("#456789");
-    //then
-    verifyMsgForProperty(groovyKernel, FloatSlider.SLIDER_COLOR, "#456789");
-  }
-
-  @Test
   public void shouldSendCommMsgWhenReadOutChange() throws Exception {
     //given
     FloatSlider floatSlider = floatSlider();
@@ -140,17 +130,6 @@ public class FloatSliderTest {
     floatSlider.setOrientation(expected);
     //then
     Assertions.assertThat(floatSlider.getOrientation()).isEqualTo(expected);
-  }
-
-  @Test
-  public void setColor_hasThatColor() throws Exception {
-    String expected = "test_color";
-    //given
-    FloatSlider floatSlider = floatSlider();
-    //when
-    floatSlider.setSlider_color(expected);
-    //then
-    Assertions.assertThat(floatSlider.getSlider_color()).isEqualTo(expected);
   }
 
   @Test

@@ -52,6 +52,7 @@ public class Comm {
   public static final String METADATA = "metadata";
   public static final String TARGET_MODULE = "target_module";
   public static final String COMMS = "comms";
+  public static final String BUFFER_PATHS = "buffer_paths";
 
   private String commId;
   private String targetName;
@@ -205,6 +206,7 @@ public class Comm {
     HashMap<Object, Object> state = new HashMap<>();
     state.put(propertyName, value);
     content.put(STATE, state);
+    content.put(BUFFER_PATHS, new HashMap<>());
     this.setData(content);
     this.send();
   }

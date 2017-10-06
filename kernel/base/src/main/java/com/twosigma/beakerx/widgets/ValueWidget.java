@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.widgets;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -131,6 +132,8 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
           ret = Double.parseDouble((String) input);
         } catch (NumberFormatException e) {
         }
+      } else if (input instanceof BigDecimal) {
+        ret = ((BigDecimal) input).doubleValue();
       } else if (input instanceof Object[]) {
         Object[] array = (Object[]) input;
         if (array.length > 0) {

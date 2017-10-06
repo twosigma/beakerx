@@ -13,33 +13,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widgets.integers;
+package com.twosigma.beakerx.widgets.styles;
 
-import com.twosigma.beakerx.widgets.ValueWidget;
+import com.twosigma.beakerx.widgets.Widget;
 import java.io.Serializable;
 import java.util.HashMap;
 
-/**
- * Base class for widgets that represent an integer.
- * 
- * @param <T>
- */
-public abstract class IntWidget<T extends Serializable> extends ValueWidget<T> {
+public abstract class Style extends Widget {
 
-  protected IntWidget() {
+  public static final String VIEW_NAME_VALUE = "StyleView";
+  public static final String MODEL_NAME_VALUE = "StyleModel";
+  public static final String STYLE = "style";
+
+  public Style() {
     super();
   }
-  
+
   @Override
-  protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
-    super.content(content);
-    content.put(VALUE, this.value);
-    return content;
+  public String getModelNameValue() {
+    return MODEL_NAME_VALUE;
   }
-  
+
   @Override
-  public T getValueFromObject(Object input){
-    return (T)getInteger(input);
+  public String getViewNameValue() {
+    return VIEW_NAME_VALUE;
   }
 
 }

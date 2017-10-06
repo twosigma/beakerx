@@ -13,24 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package com.twosigma.beakerx;
 
-$focusColor: #66bb6a;
+import com.twosigma.beakerx.kernel.CloseKernelAction;
 
-.context-menu-root .context-menu-item span {
-  font-family: "Lato", Helvetica, sans-serif;
-}
+public class KernelCloseKernelAction {
 
-.bko-focused {
-  border: 1px solid $focusColor !important;
-
-  &:before {
-    position: absolute;
-    display: block;
-    top: -1px;
-    left: -1px;
-    width: 5px;
-    height: calc(100% + 2px);
-    content: '';
-    background: $focusColor;
-  }
+  public static CloseKernelAction NO_ACTION = () -> {
+  };
 }

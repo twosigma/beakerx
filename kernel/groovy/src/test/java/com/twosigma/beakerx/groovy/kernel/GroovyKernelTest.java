@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.kernel;
 
+import com.twosigma.beakerx.KernelCloseKernelAction;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
@@ -46,7 +47,7 @@ public class GroovyKernelTest {
     String sessionId = "sessionId2";
     GroovyEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new Groovy(sessionId, evaluator, kernelSocketsService);
+    kernel = new Groovy(sessionId, evaluator, kernelSocketsService, KernelCloseKernelAction.NO_ACTION);
     kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
     kernelThread.start();
     kernelSocketsService.waitForSockets();

@@ -57,21 +57,74 @@ describe('Testing of Plot (python)', function () {
       expect(svgElement.$('g.plot-point').isVisible()).toBeTruthy();
       expect(svgElement.$$('polygon.plot-resp').length).toEqual(5);
     });
+
+    it('Plot has 4 Stems', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(4);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('g.plot-stem').isVisible()).toBeTruthy();
+      expect(svgElement.$$('line.plot-resp.normal').length).toEqual(4);
+    });
+
+    it('Plot has Area', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(5);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('polygon.plot-area').isVisible()).toBeTruthy();
+    });
+
+    it('Plot has Crosshair', function(){
+      var svgElement = beakerxPO.getCodeCellByIndex(5).$('#svgg');
+      svgElement.waitForEnabled();
+      var rectElement = svgElement.$('rect#i0_0');
+      rectElement.scroll();
+      rectElement.click();
+      expect(svgElement.$('#cursor_xlabel').isVisible()).toBeTruthy();
+      expect(svgElement.$('#cursor_ylabel').isVisible()).toBeTruthy();
+    });
+
+    it('Plot has 3 ConstantLines', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(6);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('g.plot-constline').length).toEqual(2);
+      expect(svgElement.$$('g.plot-constline > line').length).toEqual(3)
+    });
+
+    it('Plot has 2 ConstantBands', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(7);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('g.plot-constband').isVisible()).toBeTruthy();
+      expect(svgElement.$$('g.plot-constband > rect').length).toEqual(2);
+    });
+
+    it('Plot has 4 text elements', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(8);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('g.plot-text').length).toEqual(4);
+      expect(svgElement.$$('g.plot-text > line').length).toEqual(4);
+      expect(svgElement.$('text#i1_0').getText()).toEqual('test');
+    });
   });
 
   describe('Pandas library', function () {
     it('Plot has over 300 Bars', function () {
-      var svgElement = beakerxPO.runCellToGetSvgElement(4);
+      var svgElement = beakerxPO.runCellToGetSvgElement(9);
       svgElement.waitForEnabled();
       expect(svgElement.$('g.plot-bar').isVisible()).toBeTruthy();
       expect(svgElement.$$('rect.plot-resp').length).toBeGreaterThan(300);
     });
 
     it('Plot has Line', function () {
-      var svgElement = beakerxPO.runCellToGetSvgElement(5);
+      var svgElement = beakerxPO.runCellToGetSvgElement(10);
       svgElement.waitForEnabled();
       expect(svgElement.$$('circle.plot-resp').length).toEqual(7);
       expect(svgElement.$('path.plot-line').isVisible()).toBeTruthy();
+    });
+  });
+
+  describe('Stacking', function(){
+    it('Plot has 2 areas', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(11);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('g > polygon.plot-area').length).toEqual(2);
     });
   });
 

@@ -13,20 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.clojure.kernel;
+package com.twosigma.beakerx;
 
-import com.twosigma.beakerx.KernelExecutionTest;
-import com.twosigma.beakerx.KernelSocketsServiceTest;
-import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
-import com.twosigma.beakerx.kernel.CloseKernelAction;
-import com.twosigma.beakerx.kernel.Kernel;
-import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.TestWidgetUtils;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,32 +27,14 @@ import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
-import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
-import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ClojureKernelTest extends KernelExecutionTest {
-
-  @Override
-  protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory());
-    return new Clojure(sessionId, evaluator, kernelSocketsFactory, closeKernelAction);
-  }
-
-  @Override
-  protected String codeFor16Divide2() {
-    return "(/ 16 2)";
-  }
+public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   @Test
-  public void evaluateFibSeq() throws Exception {
+  public void evaluate16Divide2() throws Exception {
     //given
-    String code = "" +
-            "(def fib-seq-lazy \n" +
-            "  ((fn rfib [a b] \n" +
-            "     (lazy-seq (cons a (rfib b (+ a b)))))\n" +
-            "   0 1))\n" +
-            "(take 20 fib-seq-lazy)";
+    String code = codeFor16Divide2();
     Message message = getExecuteRequestMessage(code);
     //when
     kernelSocketsService.handleMsg(message);
@@ -72,6 +46,10 @@ public class ClojureKernelTest extends KernelExecutionTest {
     verifyResult(kernelSocketsService.getExecuteResultMessage().get());
     waitForSentMessage(kernelSocketsService.getKernelSockets());
     verifySentMsgs(kernelSocketsService);
+  }
+
+  protected String codeFor16Divide2() {
+    return "16/2";
   }
 
   private void verifyPublishedMsgs(KernelSocketsServiceTest service) {
@@ -88,29 +66,8 @@ public class ClojureKernelTest extends KernelExecutionTest {
   private void verifyResult(Message result) {
     Map actual = ((Map) result.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
-    assertThat(value).isNotEmpty();
-    assertThat(value).contains("[0, 1, 1, 2, 3, 5");
+    assertThat(value).isEqualTo("8");
   }
 
-  @Test
-  public void shouldDisplayTableDisplay() throws Exception {
-    //given
-    String code = "[{:foo 1}{:foo 2}]";
-    Message message = getExecuteRequestMessage(code);
-    //when
-    kernelSocketsService.handleMsg(message);
-    //then
-    waitForIdleMessage(kernelSocketsService.getKernelSockets());
-    verifyTableDisplay(kernelSocketsService);
-  }
-
-  private void verifyTableDisplay(KernelSocketsServiceTest kernelSocketsService) {
-    Optional<Message> messageUpdate = TestWidgetUtils.getMessageUpdate(kernelSocketsService.getPublishedMessages());
-    Message message = messageUpdate.get();
-    Map model = (Map) TestWidgetUtils.getState(message).get("model");
-    List<List> values = (List<List>) model.get("values");
-    assertThat(values.get(0).get(0)).isEqualTo(1);
-    assertThat(values.get(1).get(0)).isEqualTo(2);
-  }
 
 }

@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.junit.After;
@@ -28,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyEvaluatorPassingSimpleEvaluationObjectTest {
 
-  private GroovyEvaluator groovyEvaluator;
+  private BaseEvaluator groovyEvaluator;
 
   @Before
   public void setUp() throws Exception {

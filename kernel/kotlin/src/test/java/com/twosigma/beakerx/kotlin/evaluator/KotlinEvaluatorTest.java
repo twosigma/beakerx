@@ -94,45 +94,6 @@ public class KotlinEvaluatorTest {
   }
 
   @Test
-  public void evaluateDivisionByZero_shouldReturnArithmeticException() throws Exception {
-    //given
-    String code = "16/0";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
-    //when
-    evaluator.evaluate(seo, code);
-    waitForResult(seo);
-    //then
-    assertThat(seo.getStatus()).isEqualTo(ERROR);
-    assertThat((String) seo.getPayload()).contains("java.lang.ArithmeticException");
-  }
-
-  @Test
-  public void returnString() throws Exception {
-    //given
-    String code = "\"Hello\"";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
-    //when
-    evaluator.evaluate(seo, code);
-    waitForResult(seo);
-    //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    assertThat((String) seo.getPayload()).contains("Hello");
-  }
-
-  @Test
-  public void returnPrintln() throws Exception {
-    //given
-    String code = "println(\"Hello\")";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
-    //when
-    evaluator.evaluate(seo, code);
-    waitForResult(seo);
-    //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    assertThat((String) seo.getPayload()).isNull();
-  }
-
-  @Test
   public void executePlot() throws Exception {
     //given
     String code = "" +

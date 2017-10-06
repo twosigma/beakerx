@@ -18,6 +18,7 @@ package com.twosigma.beakerx.groovy.widgets;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.kernel.KernelManager;
@@ -47,7 +48,7 @@ import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
 import static com.twosigma.beakerx.widgets.strings.TextTest.verifyTextField;
 
 public class InteractiveTest {
-  private GroovyEvaluator groovyEvaluator;
+  private BaseEvaluator groovyEvaluator;
   private KernelTest groovyKernel;
 
   @Before

@@ -13,30 +13,37 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.groovy;
+package com.twosigma.beakerx.kotlin.evaluator;
 
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
-import com.twosigma.beakerx.groovy.kernel.GroovyDefaultVariables;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
-import java.util.HashMap;
-
-import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 
-public class TestGroovyEvaluator {
+public class KotlinBaseEvaluatorTest extends EvaluatorBaseTest {
 
-  public static BaseEvaluator groovyEvaluator() {
-    GroovyEvaluator evaluator = new GroovyEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory());
-    evaluator.initKernel(getKernelParameters());
-    return evaluator;
+  private static BaseEvaluator evaluator;
+
+  @BeforeClass
+  public static void setUpClass() throws Exception {
+    evaluator = new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory());
   }
 
-  public static KernelParameters getKernelParameters() {
-    HashMap<String, Object> kernelParameters = new HashMap<>();
-    kernelParameters.put(IMPORTS, new GroovyDefaultVariables().getImports());
-    return new KernelParameters(kernelParameters);
+  @AfterClass
+  public static void tearDown() throws Exception {
+    evaluator.exit();
+  }
+
+  @Override
+  protected BaseEvaluator createNewEvaluator() {
+    return new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory());
+  }
+
+  @Override
+  public BaseEvaluator evaluator() {
+    return evaluator;
   }
 }

@@ -15,32 +15,35 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
+import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
-import org.junit.Test;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
-import java.nio.file.Files;
+public class GroovyBaseEvaluatorTest extends EvaluatorBaseTest {
 
-import static org.assertj.core.api.Assertions.assertThat;
+  private static BaseEvaluator evaluator;
 
-public class GroovyEvaluatorTempFolderTest {
-
-  @Test
-  public void shouldCreateTempFolder() throws Exception {
-    //given
-    //when
-    GroovyEvaluator groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
-    //then
-    assertThat(Files.exists(groovyEvaluator.getTempFolder())).isTrue();
-    groovyEvaluator.exit();
+  @BeforeClass
+  public static void setUpClass() throws Exception {
+    evaluator = TestGroovyEvaluator.groovyEvaluator();
   }
 
-  @Test
-  public void shouldRemoveTempFolder() throws Exception {
-    //given
-    GroovyEvaluator groovyEvaluator = TestGroovyEvaluator.groovyEvaluator();
-    //when
-    groovyEvaluator.exit();
-    //then
-    assertThat(Files.exists(groovyEvaluator.getTempFolder())).isFalse();
+  @AfterClass
+  public static void tearDown() throws Exception {
+    evaluator.exit();
   }
+
+  @Override
+  protected BaseEvaluator createNewEvaluator(){
+    return TestGroovyEvaluator.groovyEvaluator();
+  }
+
+  @Override
+  public BaseEvaluator evaluator() {
+    return evaluator;
+  }
+
+
 }

@@ -45,9 +45,7 @@ public abstract class EvaluatorBaseTest {
     assertThat(seo.getPayload().toString()).isEqualTo("8");
   }
 
-  protected String codeForDivide16By2() {
-    return "16/2";
-  }
+  protected abstract String codeForDivide16By2();
 
   @Test
   public void shouldCreateErrorResultWithArithmeticExceptionWhenDivisionByZero() throws Exception {
@@ -59,12 +57,14 @@ public abstract class EvaluatorBaseTest {
     waitForResult(seo);
     //then
     assertThat(seo.getStatus()).isEqualTo(ERROR);
-    assertThat((String) seo.getPayload()).contains("java.lang.ArithmeticException");
+    assertThat((String) seo.getPayload()).contains(textAssertionForDivisionByZero());
   }
 
-  protected String codeForDivisionByZero() {
-    return "1/0";
+  protected String textAssertionForDivisionByZero() {
+    return "java.lang.ArithmeticException";
   }
+
+  protected abstract String codeForDivisionByZero();
 
   @Test
   public void returnHelloString() throws Exception {
@@ -79,9 +79,7 @@ public abstract class EvaluatorBaseTest {
     assertThat((String) seo.getPayload()).contains("Hello");
   }
 
-  protected String codeForHello() {
-    return "\"Hello\"";
-  }
+  protected abstract String codeForHello();
 
   @Test
   public void returnPrintln() throws Exception {
@@ -96,9 +94,7 @@ public abstract class EvaluatorBaseTest {
     assertThat((String) seo.getPayload()).isNull();
   }
 
-  protected String codeForPrintln() {
-    return "println(\"Hello\")";
-  }
+  protected abstract String codeForPrintln();
 
   @Test
   public void shouldCreateTempFolder() throws Exception {

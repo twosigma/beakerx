@@ -13,23 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kotlin.evaluator;
+package com.twosigma.beakerx.sql;
 
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
+import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
 
-public class KotlinBaseEvaluatorTest extends EvaluatorBaseTest {
+public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
 
   private static BaseEvaluator evaluator;
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    evaluator = new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory());
+    evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory());
+    evaluator.setShellOptions(kernelParameters());
   }
 
   @AfterClass
@@ -39,7 +48,13 @@ public class KotlinBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @Override
   protected BaseEvaluator createNewEvaluator() {
-    return new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory());
+    SQLEvaluator evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory());
+    try {
+      evaluator.setShellOptions(kernelParameters());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    return evaluator;
   }
 
   @Override
@@ -47,19 +62,40 @@ public class KotlinBaseEvaluatorTest extends EvaluatorBaseTest {
     return evaluator;
   }
 
+  @Override
   protected String codeForDivide16By2() {
-    return "16/2";
+    return "select 16/2";
   }
 
+  @Override
   protected String codeForDivisionByZero() {
-    return "1/0";
+    return "select 1/0";
   }
 
+  @Override
+  protected String textAssertionForDivisionByZero() {
+    return "Division by zero:";
+  }
+
+  @Override
   protected String codeForHello() {
-    return "\"Hello\"";
+    return "select 'Hello'";
   }
 
+  @Override
   protected String codeForPrintln() {
-    return "println(\"Hello\")";
+    return null;
+  }
+
+  @Override
+  public void returnPrintln() throws Exception {
+    // exclude test
+  }
+
+  private static KernelParameters kernelParameters() {
+    Map<String, Object> params = new HashMap<>();
+    params.put(DATASOURCES, "chemistry=jdbc:h2:mem:chemistry");
+    params.put(DEFAULT_DATASOURCE, "jdbc:h2:mem:db1");
+    return new KernelParameters(params);
   }
 }

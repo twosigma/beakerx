@@ -45,5 +45,20 @@ public class GroovyBaseEvaluatorTest extends EvaluatorBaseTest {
     return evaluator;
   }
 
+  protected String codeForDivide16By2() {
+    return "16/2";
+  }
+
+  protected String codeForDivisionByZero() {
+    return "1/0";
+  }
+
+  protected String codeForHello() {
+    return "\"Hello\"";
+  }
+
+  protected String codeForPrintln() {
+    return "println(\"Hello\")";
+  }
 
 }

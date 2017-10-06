@@ -73,7 +73,7 @@ public class KotlinKernelTest {
     assertThat(idleMessage).isPresent();
     waitForResult(kernelSocketsService.getKernelSockets());
     verifyPublishedMsgs(kernelSocketsService);
-    //   verifyResult(kernelSocketsService.getExecuteResultMessage().get());
+    verifyResult(kernelSocketsService.getExecuteResultMessage().get());
     waitForSentMessage(kernelSocketsService.getKernelSockets());
     verifySentMsgs(kernelSocketsService);
   }

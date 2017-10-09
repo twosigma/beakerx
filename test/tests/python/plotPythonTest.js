@@ -141,15 +141,40 @@ describe('Testing of Plot (python)', function () {
       expect(svgElement.$('g#i1 > path.plot-line').isVisible()).toBeTruthy();
       expect(svgElement.$('text#label_x_0').getText()).toEqual('1990');
     });
+
+    it('Time Plot has millisecond resolution', function(){
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var dtContainer = beakerxPO.runCellToGetDtContainer(13);
+      var svgElement = dtContainer.$('#svgg');
+      svgElement.waitForEnabled();
+      svgElement.$('rect#i0_0').click();
+      var tipElement = dtContainer.$('div#tip_i0_0');
+      tipElement.waitForEnabled();
+      expect(tipElement.getText()).toMatch('x: 2017 Oct 09 Mon, 05:26:41 .624');
+    });
+
+    it('Time Plot has nanosecond resolution', function(){
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var dtContainer = beakerxPO.runCellToGetDtContainer(14);
+      var svgElement = dtContainer.$('#svgg');
+      svgElement.waitForEnabled();
+      svgElement.$('rect#i0_1').click();
+      var tipElement = dtContainer.$('div#tip_i0_1');
+      tipElement.waitForEnabled();
+      expect(tipElement.getText()).toMatch('x: 2017 Oct 09 Mon, 09:26:41.624000007');
+    });
+
+    describe('Second Y Axis', function(){
+      it('Plot has second Y Axis', function(){
+        var svgElement = beakerxPO.runCellToGetSvgElement(15);
+        svgElement.waitForEnabled();
+        expect(svgElement.$('text#yrlabel').getText()).toEqual('Test y axis');
+        expect(svgElement.$('text#label_yr_0').getText()).toEqual('10');
+        expect(svgElement.$('line#tick_yr_0').isEnabled()).toBeTruthy();
+      });
+    });
+
   });
 
-  describe('Time Plot', function(){
-    it('Time Plot time axis', function(){
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      var svgElement = beakerxPO.runCellToGetSvgElement(12);
-      svgElement.waitForEnabled();
-      expect(svgElement.$('div#tip_i0_0').getText()).toEqual('1990');
-    });
-  });
 
 });

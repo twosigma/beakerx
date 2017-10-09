@@ -32,7 +32,8 @@ var loadedModules = [
   require("./EasyForm"),
   require("./TabView"),
   require("./GridView"),
-  require("./CyclingDisplayBox")
+  require("./CyclingDisplayBox"),
+  require("./HTMLPre").default
 ];
 
 for (var i in loadedModules) {

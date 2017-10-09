@@ -105,11 +105,11 @@ describe('Testing of Plot (python)', function () {
   });
 
   describe('Pandas library', function () {
-    it('Plot has over 300 Bars', function () {
+    it('Plot has Bars', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(9);
       svgElement.waitForEnabled();
       expect(svgElement.$('g.plot-bar').isVisible()).toBeTruthy();
-      expect(svgElement.$$('rect.plot-resp').length).toBeGreaterThan(300);
+      expect(svgElement.$$('rect.plot-resp').length).toBeGreaterThan(0);
     });
 
     it('Plot has Line', function () {
@@ -120,11 +120,35 @@ describe('Testing of Plot (python)', function () {
     });
   });
 
-  describe('Stacking', function(){
-    it('Plot has 2 areas', function(){
+  describe('Plot Stacking', function(){
+    it('Plot has 2 Areas', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(11);
       svgElement.waitForEnabled();
       expect(svgElement.$$('g > polygon.plot-area').length).toEqual(2);
+      expect(svgElement.getLocation('rect#i0_0', 'y')).toBeGreaterThan(svgElement.getLocation('rect#i1_0', 'y'));
+      expect(svgElement.getLocation('rect#i0_0', 'x')).toBe(svgElement.getLocation('rect#i1_0', 'x'));
+    });
+  });
+
+  describe('Simple Time Plot', function(){
+    it('Time Plot has 2 lines and time axis', function(){
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var svgElement = beakerxPO.runCellToGetSvgElement(12);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('g#i0 > circle').length).toBeGreaterThan(0);
+      expect(svgElement.$$('g#i1 > circle').length).toBeGreaterThan(0);
+      expect(svgElement.$('g#i0 > path.plot-line').isVisible()).toBeTruthy();
+      expect(svgElement.$('g#i1 > path.plot-line').isVisible()).toBeTruthy();
+      expect(svgElement.$('text#label_x_0').getText()).toEqual('1990');
+    });
+  });
+
+  describe('Time Plot', function(){
+    it('Time Plot time axis', function(){
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var svgElement = beakerxPO.runCellToGetSvgElement(12);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('div#tip_i0_0').getText()).toEqual('1990');
     });
   });
 

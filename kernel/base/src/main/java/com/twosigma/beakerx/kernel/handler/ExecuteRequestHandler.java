@@ -16,20 +16,19 @@
 package com.twosigma.beakerx.kernel.handler;
 
 
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
-import com.twosigma.beakerx.kernel.commands.MagicCommandResult;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
+
+import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.commands.CommandExecutor;
+import com.twosigma.beakerx.kernel.commands.CommandExecutorImpl;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
-
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
 
 /**
  * Does the actual work of executing user code.
@@ -38,14 +37,14 @@ import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
  */
 public class ExecuteRequestHandler extends KernelHandler<Message> {
 
-  private MagicCommand magicCommand;
   private int executionCount;
   private final Semaphore syncObject = new Semaphore(1, true);
+  private CommandExecutor commandExecutor;
 
   public ExecuteRequestHandler(KernelFunctionality kernel) {
     super(kernel);
     this.executionCount = 0;
-    magicCommand = new MagicCommand(kernel);
+    commandExecutor = new CommandExecutorImpl(kernel);
   }
 
   @Override
@@ -63,58 +62,8 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     executionCount += 1;
     Code code = takeCodeFrom(message);
     announceThatWeHaveTheCode(message, code);
-    if (code.isaMagicCommand()) {
-      handleMagicCommand(message, code);
-    } else {
-      runCode(code.asString(), message);
-    }
-  }
-
-  private void handleMagicCommand(Message message, Code code) {
-    MagicCommandResult magicCommandResult = magicCommand.process(code, message, executionCount);
-
-    magicCommandResult.getItems().forEach( item -> {
-      if(item.hasCodeToExecute()){
-        if(item.hasResult()){
-          kernel.publish(item.getResult().get());
-        }
-      } else if (item.hasResult()) {
-        sendMagicCommandReplyAndResult(message, item.getReply().get(), item.getResult().get());
-      } else {
-        sendMagicCommandReply(message, item.getReply().get());
-      }
-    } );
-
-    if (!magicCommandResult.getItems().isEmpty()) {
-      magicCommandResult.getItems().get(0).getCode().ifPresent(codeToExecute -> runCode(codeToExecute.asString(), message));
-    }
-
-  }
-
-  private Code takeCodeFrom(Message message) {
-    String code = "";
-    if (message.getContent() != null && message.getContent().containsKey("code")) {
-      code = ((String) message.getContent().get("code")).trim();
-    }
-    return new Code(code);
-  }
-
-  private void sendMagicCommandReply(Message message, Message replyMessage) {
-    kernel.send(replyMessage);
-    kernel.sendIdleMessage(message);
+    commandExecutor.execute(message, executionCount);
     syncObject.release();
-  }
-
-  private void sendMagicCommandReplyAndResult(Message message, Message replyMessage, Message resultMessage) {
-    kernel.publish(resultMessage);
-    sendMagicCommandReply(message, replyMessage);
-  }
-
-  private void runCode(String code, Message message) {
-    kernel.executeCode(code, message, executionCount, (seo) -> {
-      kernel.sendIdleMessage(seo.getJupyterMessage());
-      syncObject.release();
-    });
   }
 
   private void announceThatWeHaveTheCode(Message message, Code code) {
@@ -129,11 +78,15 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     kernel.publish(reply);
   }
 
-  @Override
-  public void exit() {
+  private Code takeCodeFrom(Message message) {
+    String code = "";
+    if (message.getContent() != null && message.getContent().containsKey("code")) {
+      code = ((String) message.getContent().get("code")).trim();
+    }
+    return new Code(code);
   }
 
-  public MagicCommand getMagicCommand() {
-    return magicCommand;
+  @Override
+  public void exit() {
   }
 }

@@ -13,11 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel.commands;
+package com.twosigma.beakerx.kernel.commands.type;
 
-import com.twosigma.beakerx.kernel.commands.item.CommandItem;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.CodeWithoutCommand;
+import com.twosigma.beakerx.kernel.commands.MagicCommandFunctionality;
+import com.twosigma.beakerx.kernel.commands.item.CommandItemWithCode;
 
-public interface MagicCommandFunctionality {
-  CommandItem process(String code, Message message, int executionCount);
+public class PlainCode implements Command {
+
+  @Override
+  public MagicCommandFunctionality build() {
+    return (code, message, executionCount) -> new CommandItemWithCode(new CodeWithoutCommand(code));
+  }
 }

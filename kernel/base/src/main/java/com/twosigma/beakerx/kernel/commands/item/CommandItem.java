@@ -20,7 +20,7 @@ import com.twosigma.beakerx.message.Message;
 
 import java.util.Optional;
 
-public interface MagicCommandItem {
+public interface CommandItem {
 
   boolean hasCodeToExecute();
 

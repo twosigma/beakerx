@@ -79,8 +79,6 @@ public interface KernelFunctionality {
 
   void removeImport(ImportPath anImport);
 
-  List<MagicCommandType> getMagicCommands();
-
   Path getTempFolder();
 
   interface ExecuteCodeCallback {

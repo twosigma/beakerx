@@ -181,10 +181,7 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<group name version>", magicCommand.classpathAddMvn(
-                    new MavenJarResolver.ResolverParams(
-                            new File(TEST_IVY_CACHE).getAbsolutePath(),
-                            getTempFolder().toString() + MVN_DIR
-                    )
+
             )),
             new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
             new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),

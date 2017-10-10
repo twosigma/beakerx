@@ -15,9 +15,31 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.kernel.commands.item.CommandItem;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.commands.type.Command;
 
-public interface MagicCommandFunctionality {
-  CommandItem process(String code, Message message, int executionCount);
+public class CommandCode {
+
+  private Command command;
+  private String code;
+
+  public CommandCode(Command command, String code) {
+    this.command = command;
+    this.code = code;
+  }
+
+  public Command getCommand() {
+    return command;
+  }
+
+  public void setCommand(Command command) {
+    this.command = command;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
+  }
 }

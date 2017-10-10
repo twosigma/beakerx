@@ -15,9 +15,20 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.kernel.commands.item.CommandItem;
-import com.twosigma.beakerx.message.Message;
+public class ErrorData {
+  private boolean error;
+  private String message;
 
-public interface MagicCommandFunctionality {
-  CommandItem process(String code, Message message, int executionCount);
+  public ErrorData(boolean hasError, String message) {
+    this.error = hasError;
+    this.message = message;
+  }
+
+  public boolean hasError() {
+    return error;
+  }
+
+  public String getMessage() {
+    return message;
+  }
 }

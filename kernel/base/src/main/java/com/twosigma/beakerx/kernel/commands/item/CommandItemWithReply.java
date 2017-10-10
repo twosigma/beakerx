@@ -23,27 +23,27 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
 
-public class MagicCommandItemWithResult implements MagicCommandItem{
+public class CommandItemWithReply implements CommandItem {
 
-  private Message resultMessage;
   private Message replyWithoutStatus;
 
-  public MagicCommandItemWithResult(Message resultMessage, Message replyWithoutStatus) {
-    this.resultMessage = checkNotNull(resultMessage);
+  public CommandItemWithReply(Message replyWithoutStatus) {
     this.replyWithoutStatus = checkNotNull(replyWithoutStatus);
   }
 
+  @Override
   public boolean hasCodeToExecute() {
     return false;
   }
 
+  @Override
   public boolean hasResult() {
-    return getResult().isPresent();
+    return false;
   }
 
   @Override
   public Optional<Message> getResult() {
-    return ofNullable(resultMessage);
+    return Optional.empty();
   }
 
   @Override

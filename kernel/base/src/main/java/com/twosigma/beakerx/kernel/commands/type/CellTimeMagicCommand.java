@@ -13,22 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel.commands;
+package com.twosigma.beakerx.kernel.commands.type;
 
-import com.twosigma.beakerx.kernel.commands.item.CommandItem;
+import com.google.common.collect.Sets;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.commands.MagicCommandFunctionality;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import java.util.Set;
 
-import java.util.LinkedList;
-import java.util.List;
+public class CellTimeMagicCommand extends AbstractTimeMagicCommand {
 
-public class MagicCommandResult {
-
-  private LinkedList<CommandItem> items = new LinkedList<>();
-
-  public void addItem(CommandItem magicCommandResultItem) {
-    this.items.add(magicCommandResultItem);
+  public CellTimeMagicCommand(KernelFunctionality kernel, MessageCreator messageCreator) {
+    super(TIME_CELL, "", Sets.newHashSet(MagicCommandType.CELL), messageCreator, kernel);
   }
 
-  public List<CommandItem> getItems() {
-    return items;
+  @Override
+  public MagicCommandFunctionality build() {
+    return this::time;
   }
 }

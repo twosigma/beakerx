@@ -18,7 +18,7 @@ package com.twosigma.beakerx.kernel.commands;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
+import com.twosigma.beakerx.kernel.commands.item.CommandItem;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -101,7 +101,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   }
 
   private String getText(MagicCommandResult process) {
-    MagicCommandItem magicCommandItem = process.getItems().get(0);
+    CommandItem magicCommandItem = process.getItems().get(0);
     Message message = magicCommandItem.getResult().get();
     return (String) message.getContent().get(TEXT);
   }

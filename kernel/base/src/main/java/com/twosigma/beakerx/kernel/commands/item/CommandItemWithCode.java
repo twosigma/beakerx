@@ -21,19 +21,18 @@ import com.twosigma.beakerx.message.Message;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Optional.ofNullable;
 
-public class MagicCommandItemWithReply implements MagicCommandItem {
+public class CommandItemWithCode implements CommandItem {
 
-  private Message replyWithoutStatus;
+  private CodeWithoutCommand code;
 
-  public MagicCommandItemWithReply(Message replyWithoutStatus) {
-    this.replyWithoutStatus = checkNotNull(replyWithoutStatus);
+  public CommandItemWithCode(CodeWithoutCommand code) {
+    this.code = checkNotNull(code);
   }
 
   @Override
   public boolean hasCodeToExecute() {
-    return false;
+    return true;
   }
 
   @Override
@@ -48,11 +47,10 @@ public class MagicCommandItemWithReply implements MagicCommandItem {
 
   @Override
   public Optional<Message> getReply() {
-    return ofNullable(replyWithoutStatus);
+    return Optional.empty();
   }
 
-  @Override
   public Optional<CodeWithoutCommand> getCode() {
-    return Optional.empty();
+    return Optional.of(code);
   }
 }

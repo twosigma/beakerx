@@ -15,25 +15,24 @@
  */
 package com.twosigma.beakerx.groovy.kernel;
 
-import com.twosigma.beakerx.KernelSocketsServiceTest;
-import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
-import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.KernelRunner;
-import com.twosigma.beakerx.message.Message;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Map;
-import java.util.Optional;
-
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
+import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
+import com.twosigma.beakerx.kernel.KernelRunner;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.message.Message;
+import java.util.Map;
+import java.util.Optional;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class GroovyKernelTest {
 

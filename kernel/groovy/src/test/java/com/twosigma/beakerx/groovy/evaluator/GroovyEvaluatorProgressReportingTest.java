@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -41,7 +42,7 @@ import static com.twosigma.beakerx.evaluator.Evaluator.BEAKER_VARIABLE_NAME;
 
 public class GroovyEvaluatorProgressReportingTest {
 
-  private GroovyEvaluator groovyEvaluator;
+  private BaseEvaluator groovyEvaluator;
   private KernelTest groovyKernel;
 
   @Before

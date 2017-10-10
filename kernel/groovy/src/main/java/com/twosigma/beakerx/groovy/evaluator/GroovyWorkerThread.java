@@ -42,7 +42,7 @@ class GroovyWorkerThread extends WorkerThread {
     super("groovy worker");
     this.groovyEvaluator = groovyEvaluator;
     this.exit = false;
-    this.updateLoader = false;
+    this.updateLoader = true;
   }
 
   /*
@@ -65,23 +65,14 @@ class GroovyWorkerThread extends WorkerThread {
             } catch (Exception ex) {
             }
           }
-          groovyClassLoader = null;
-          scriptBinding = null;
+          reloadClassloader();
+          updateLoader = false;
         }
 
         // get next job descriptor
         j = jobQueue.poll();
         if (j == null)
           continue;
-
-        if (groovyClassLoader == null) {
-          updateLoader = false;
-          //reload classloader
-          reloadClassloader();
-        }
-
-        //if(loader!=null)
-        //  loader.resetDynamicLoader();
 
         if (!GroovyEvaluator.LOCAL_DEV) {
           nc = NamespaceClient.getBeaker(groovyEvaluator.getSessionId());

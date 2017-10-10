@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.groovy.examples;
 
 import com.twosigma.beakerx.KernelSocketsServiceTest;
+import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.Groovy;
@@ -42,7 +43,7 @@ public abstract class GroovyExamplesSetupTest {
   @BeforeClass
   public static void setUp() throws Exception {
     String sessionId = "sessionIdWidget";
-    GroovyEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
+    BaseEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
     kernelSocketsService = new KernelSocketsServiceTest();
     kernel = new Groovy(sessionId, evaluator, kernelSocketsService,NO_ACTION);
     kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));

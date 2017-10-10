@@ -83,19 +83,6 @@ public class ScalaEvaluatorTest {
   }
 
   @Test
-  public void evaluateDivisionByZero_shouldReturnArithmeticException() throws Exception {
-    //given
-    String code = "16/0";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
-    //when
-    scalaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
-    //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
-    Assertions.assertThat((String) seo.getPayload()).contains("java.lang.ArithmeticException");
-  }
-
-  @Test
   public void javaImports_shouldBeAdjustedForScala() throws Exception {
     //given
     Map<String, Object> paramMap = new HashMap<>();

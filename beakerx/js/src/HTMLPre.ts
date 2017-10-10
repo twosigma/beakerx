@@ -14,31 +14,32 @@
  *  limitations under the License.
  */
 
-$focusColor: #66bb6a;
+declare function require(moduleName: string): any;
+const widgets = require('jupyter-js-widgets');
 
-.context-menu-root .context-menu-item span {
-  font-family: "Lato", Helvetica, sans-serif;
-}
-
-.bko-focused {
-  border: 1px solid $focusColor !important;
-
-  &:before {
-    position: absolute;
-    display: block;
-    top: -1px;
-    left: -1px;
-    width: 5px;
-    height: calc(100% + 2px);
-    content: '';
-    background: $focusColor;
+class HTMLPreModel extends widgets.StringModel {
+  defaults() {
+    return {
+      ...super.defaults(),
+      _view_name: "HTMLPreView",
+      _model_name: "HTMLPreModel",
+      _model_module: 'beakerx',
+      _view_module: 'beakerx'
+    };
   }
 }
 
-.rendered_html {
-  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-    font-weight: 500;
-    line-height: 1.1;
-    color: inherit;
+class HTMLPreView extends widgets.DescriptionView {
+  render() {
+    const pre = document.createElement('pre');
+
+    pre.innerHTML = this.model.get('value');
+    this.el.appendChild(pre);
+    this.el.classList.add('widget-html-pre');
   }
 }
+
+export default {
+  HTMLPreModel,
+  HTMLPreView
+};

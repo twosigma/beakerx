@@ -102,13 +102,14 @@ public class KernelSocketsZMQ extends KernelSockets {
     ZMsg newZmsg = new ZMsg();
     message.getIdentities().forEach(newZmsg::add);
     newZmsg.add(DELIM);
-    newZmsg.add(digest.getBytes());
-    newZmsg.add(header.getBytes());
-    newZmsg.add(parent.getBytes());
-    newZmsg.add(meta.getBytes());
-    newZmsg.add(content.getBytes());
+    newZmsg.add(digest.getBytes(StandardCharsets.UTF_8));
+    newZmsg.add(header.getBytes(StandardCharsets.UTF_8));
+    newZmsg.add(parent.getBytes(StandardCharsets.UTF_8));
+    newZmsg.add(meta.getBytes(StandardCharsets.UTF_8));
+    newZmsg.add(content.getBytes(StandardCharsets.UTF_8));
     newZmsg.send(socket);
   }
+
 
   private Message readMessage(ZMQ.Socket socket) {
     ZMsg zmsg = null;
@@ -232,7 +233,7 @@ public class KernelSocketsZMQ extends KernelSockets {
 
   private void verifySignatures(byte[] expectedSig, byte[] header, byte[] parent, byte[] metadata, byte[] content) {
     String actualSig = hmac.signBytes(new ArrayList<>(asList(header, parent, metadata, content)));
-    String expectedSigAsString = new String(expectedSig);
+    String expectedSigAsString = new String(expectedSig, StandardCharsets.UTF_8);
     if (!expectedSigAsString.equals(actualSig)) {
       throw new RuntimeException("Signatures do not match.");
     }
@@ -272,6 +273,6 @@ public class KernelSocketsZMQ extends KernelSockets {
   }
 
   private <T> T parse(byte[] bytes, Class<T> theClass) {
-    return bytes != null ? MessageSerializer.parse(new String(bytes), theClass) : null;
+    return bytes != null ? MessageSerializer.parse(new String(bytes, StandardCharsets.UTF_8), theClass) : null;
   }
 }

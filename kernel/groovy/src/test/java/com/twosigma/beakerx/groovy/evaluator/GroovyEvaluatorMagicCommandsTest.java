@@ -16,6 +16,7 @@ package com.twosigma.beakerx.groovy.evaluator;
  */
 
 import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.PathToJar;
@@ -33,7 +34,7 @@ public class GroovyEvaluatorMagicCommandsTest {
 
   public static final String SRC_TEST_RESOURCES = "src/test/resources/";
 
-  private static GroovyEvaluator groovyEvaluator;
+  private static BaseEvaluator groovyEvaluator;
 
   @BeforeClass
   public static void setUpClass() throws Exception {

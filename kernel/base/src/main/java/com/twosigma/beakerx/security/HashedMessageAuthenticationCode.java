@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.security;
 
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -40,11 +41,11 @@ public class HashedMessageAuthenticationCode {
   public HashedMessageAuthenticationCode(String key) {
     checkNotNull(key, "No key specified");
     logger.debug("Using signing hmac: {}", key);
-    spec = new SecretKeySpec(key.getBytes(), TYPE);
+    spec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), TYPE);
   }
 
   public String sign(List<String> msg) {
-    List<byte[]> collect = msg.stream().map(String::getBytes).collect(Collectors.toList());
+    List<byte[]> collect = msg.stream().map(x -> x.getBytes(StandardCharsets.UTF_8)).collect(Collectors.toList());
     return signBytes(collect);
   }
 

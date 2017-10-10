@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ipywidgets import DOMWidget, Box
+from beakerx.beakerx_widgets import *
 from traitlets import Unicode, Dict
 from beakerx.utils import *
 from beakerx.tabledisplay.tableitems import *
@@ -107,11 +107,9 @@ class Table(BaseObject):
         return "string"
 
 
-class TableDisplay(DOMWidget):
+class TableDisplay(BeakerxDOMWidget):
     _view_name = Unicode('TableDisplayView').tag(sync=True)
     _model_name = Unicode('TableDisplayModel').tag(sync=True)
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
     model = Dict().tag(sync=True)
     
     def __init__(self, *args, **kwargs):

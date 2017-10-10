@@ -20,8 +20,9 @@ from beakerx.utils import *
 from beakerx.plot.plotitem import *
 from beakerx.plot.plotitem_treemap import *
 from enum import Enum
-from ipywidgets import DOMWidget, register
 from traitlets import Unicode, Dict
+from beakerx.beakerx_widgets import BeakerxTextArea, BeakerxText, BeakerxBox, \
+    BeakerxDOMWidget
 
 
 class Chart(BaseObject):
@@ -190,11 +191,9 @@ class CombinedChart(BaseObject):
         self.plot_type = 'Plot'
 
 
-class Plot(DOMWidget):
+class Plot(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)
     _model_name = Unicode('PlotModel').tag(sync=True)
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
     model = Dict().tag(sync=True)
     
     def __init__(self, **kwargs):
@@ -211,7 +210,7 @@ class Plot(DOMWidget):
         return self.chart.rangeAxes
 
 
-class CategoryPlot(DOMWidget):
+class CategoryPlot(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)
     _model_name = Unicode('PlotModel').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
@@ -229,7 +228,7 @@ class CategoryPlot(DOMWidget):
         return self
 
 
-class HeatMap(DOMWidget):
+class HeatMap(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)
     _model_name = Unicode('PlotModel').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
@@ -267,7 +266,7 @@ class HeatMap(DOMWidget):
         self.model = self.chart.transform()
 
 
-class Histogram(DOMWidget):
+class Histogram(BeakerxDOMWidget):
     class DisplayMode(Enum):
         OVERLAP = 1
         STACK = 2
@@ -291,7 +290,7 @@ class Histogram(DOMWidget):
         self.model = self.chart.transform()
 
 
-class TreeMap(DOMWidget):
+class TreeMap(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)
     _model_name = Unicode('PlotModel').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
@@ -378,7 +377,7 @@ class SimpleTimePlot(TimePlot):
             if tableData.index.name is not None:
                 time_column_default = tableData.index.name
             tableData = tableData.to_dict(orient='rows')
-            
+        
         timeColumn = getValue(kwargs, 'timeColumn', time_column_default)
         if tableData is not None and columnNames is not None:
             dataColumnsNames.extend(list(tableData[0]))
@@ -426,7 +425,7 @@ class SimpleTimePlot(TimePlot):
                     self.add(points)
 
 
-class CombinedPlot(DOMWidget):
+class CombinedPlot(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)
     _model_name = Unicode('PlotModel').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)

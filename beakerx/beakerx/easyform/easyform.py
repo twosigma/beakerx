@@ -13,15 +13,13 @@
 # limitations under the License.
 
 from beakerx.utils import getValue
-from beakerx.beakerx_widgets import BeakerxTextArea, BeakerxText, BeakerxBox, \
-    BeakerxDOMWidget, BeakerxButton
+from beakerx.beakerx_widgets import *
 from ipykernel.comm import Comm
 from traitlets import Unicode, Bool, Int, Dict, ObjectName, Unicode, default, \
     Any, Union, List
 
-from ipywidgets import Label, Button, \
-    SelectMultiple, Select, Dropdown, Checkbox, HBox, \
-    VBox, RadioButtons, register
+from ipywidgets import SelectMultiple, Select, Dropdown, HBox, \
+    VBox, RadioButtons
 
 
 class DatePicker(BeakerxDOMWidget):
@@ -155,9 +153,8 @@ class EasyForm(BeakerxBox):
         return dropdown
     
     def addCheckBox(self, *args, **kwargs):
-        checkbox = Checkbox(description=self.getDescription(args, kwargs))
+        checkbox = BeakerxCheckbox(description=self.getDescription(args, kwargs))
         self.children += (checkbox,)
-        
         return checkbox
     
     def addCheckBoxes(self, *args, **kwargs):
@@ -169,9 +166,10 @@ class EasyForm(BeakerxBox):
             box = VBox()
         
         for checkBoxItem in self.getOptions(args, kwargs):
-            checkbox = Checkbox(description=checkBoxItem)
+            checkbox = BeakerxCheckbox(description=checkBoxItem)
             box.children += (checkbox,)
-        layout.children += (Label(value=getValue(kwargs, 'value', "")), box,)
+            
+        layout.children += (BeakerxLabel(value=self.getDescription(args, kwargs)), box,)
         self.children += (layout,)
         
         return layout

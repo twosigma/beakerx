@@ -163,17 +163,49 @@ describe('Testing of Plot (python)', function () {
       tipElement.waitForEnabled();
       expect(tipElement.getText()).toMatch('x: 2017 Oct 09 Mon, 09:26:41.624000007');
     });
+  });
 
-    describe('Second Y Axis', function(){
-      it('Plot has second Y Axis', function(){
-        var svgElement = beakerxPO.runCellToGetSvgElement(15);
-        svgElement.waitForEnabled();
-        expect(svgElement.$('text#yrlabel').getText()).toEqual('Test y axis');
-        expect(svgElement.$('text#label_yr_0').getText()).toEqual('10');
-        expect(svgElement.$('line#tick_yr_0').isEnabled()).toBeTruthy();
-      });
+  describe('Second Y Axis', function(){
+    it('Plot has second Y Axis', function(){
+      var svgElement = beakerxPO.runCellToGetSvgElement(15);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('text#yrlabel').getText()).toEqual('Test y axis');
+      expect(svgElement.$('text#label_yr_0').getText()).toEqual('10');
+      expect(svgElement.$('line#tick_yr_0').isEnabled()).toBeTruthy();
+    });
+  });
+
+  function getCircleAttr(elem, index, attribute){
+    return elem.$('circle#' + index).getAttribute(attribute)
+  }
+
+  function getMaingG(elem, index){
+    return elem.$$('div.dtcontainer')[index].$('g#i0');
+  }
+
+  describe('Logarithmic Scale', function(){
+    var combPlot;
+
+    it('Combined plot has 3 plots', function(){
+      combPlot = beakerxPO.runCodeCellByIndex(16).$('div.combplot-plotcontainer');
+      combPlot.waitForEnabled();
+      expect(combPlot.isVisible()).toBeTruthy();
+      expect(combPlot.$$('div.dtcontainer').length).toEqual(3);
     });
 
+    it('Second plot has Log Y axis', function(){
+      var g0 = getMaingG(combPlot, 0);
+      var g1 = getMaingG(combPlot, 1);
+      expect(getCircleAttr(g0, 'i0_0', 'cy')).toBe(getCircleAttr(g1, 'i0_0', 'cy'));
+      expect(getCircleAttr(g0, 'i0_50', 'cy')).toBeGreaterThan(getCircleAttr(g1, 'i0_50', 'cy'));
+    });
+
+    it('Third plot has Log X axis', function(){
+      var g0 = getMaingG(combPlot, 0);
+      var g2 = getMaingG(combPlot, 2);
+      expect(getCircleAttr(g0, 'i0_0', 'cx')).toBe(getCircleAttr(g2, 'i0_0', 'cx'));
+      expect(getCircleAttr(g0, 'i0_50', 'cx')).toBeLessThan(getCircleAttr(g2, 'i0_50', 'cx'));
+    });
   });
 
 

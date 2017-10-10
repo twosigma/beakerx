@@ -12,18 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-
 from beakerx.utils import getValue
+from beakerx.beakerx_widgets import BeakerxTextArea, BeakerxText, BeakerxBox, \
+    BeakerxDOMWidget, BeakerxButton
 from ipykernel.comm import Comm
-from ipywidgets import Box, DOMWidget, Text, Label, Textarea, Button, \
-    SelectMultiple, Select, Dropdown, Checkbox, HBox, \
-    VBox, RadioButtons, register
 from traitlets import Unicode, Bool, Int, Dict, ObjectName, Unicode, default, \
     Any, Union, List
 
+from ipywidgets import Label, Button, \
+    SelectMultiple, Select, Dropdown, Checkbox, HBox, \
+    VBox, RadioButtons, register
 
-class DatePicker(DOMWidget):
+
+class DatePicker(BeakerxDOMWidget):
     def __init__(self, value=None, **kwargs):
         if value is not None:
             kwargs['value'] = value
@@ -31,20 +32,10 @@ class DatePicker(DOMWidget):
     
     _view_name = Unicode('DatePickerView').tag(sync=True)
     _model_name = Unicode('DatePickerModel').tag(sync=True)
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
     showTime = Bool(default_value=False,
                     help="Enable or disable user changes.").tag(sync=True)
     value = Unicode(default_value="").tag(sync=True)
     description = Unicode(default_value="").tag(sync=True)
-
-
-class TextArea(Textarea):
-    def __init__(self, **kwargs):
-        super(TextArea, self).__init__(**kwargs)
-    
-    width = Unicode(default_value="200").tag(sync=True)
-    height = Unicode(default_value="200").tag(sync=True)
 
 
 class SelectMultipleWithRows(SelectMultiple):
@@ -86,11 +77,9 @@ class ComboBox(Dropdown):
         super(ComboBox, self)._handle_msg(msg)
 
 
-class EasyForm(Box):
+class EasyForm(BeakerxBox):
     _view_name = Unicode('EasyFormView').tag(sync=True)
     _model_name = Unicode('EasyFormModel').tag(sync=True)
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
     easyFormName = Unicode(default_value='Form default').tag(sync=True)
     test = ""
     HORIZONTAL = 1
@@ -106,22 +95,21 @@ class EasyForm(Box):
         print(msg)
     
     def addTextField(self, *args, **kwargs):
-        text = Text(description=self.getDescription(args, kwargs))
-        text.layout.width = str(getValue(kwargs, 'width', 380)) + 'px'
+        text = BeakerxText(description=self.getDescription(args, kwargs))
+        text.width = getValue(kwargs, 'width', -1)
         self.children += (text,)
         return text
     
     def addTextArea(self, *args, **kwargs):
-        textarea = TextArea(description=self.getDescription(args, kwargs))
-        textarea.layout.width = str(getValue(kwargs, 'width', 380)) + "px"
-        height = getValue(kwargs, 'height', -1)
-        if height != -1:
-            textarea.layout.height = str(height) + "px"
+        textarea = BeakerxTextArea(
+                description=self.getDescription(args, kwargs))
+        textarea.width = getValue(kwargs, 'width', -1)
+        textarea.height = getValue(kwargs, 'height', -1)
         self.children += (textarea,)
         return textarea
     
     def addButton(self, *args, **kwargs):
-        button = Button(description=self.getDescription(args, kwargs))
+        button = BeakerxButton(description=self.getDescription(args, kwargs))
         button.tag = getValue(kwargs, 'tag', "")
         button.on_click(self.buttonCallback)
         self.children += (button,)
@@ -216,7 +204,6 @@ class EasyForm(Box):
         for child in self.children:
             if child.description == key:
                 return child.value
-
     
     def put(self, key, value):
         for child in self.children:

@@ -624,7 +624,18 @@ define([
         return plotTip.untooltip(self, d);
       })
       .on("click.resp", function(d) {
-        return plotTip.toggleTooltip(self, d);
+        var model = self.stdmodel;
+        var hasClickAction;
+
+        for (var i = 0; i < model.data.length; i++) {
+          var item = model.data[i];
+          if(item.hasClickAction === true && (item.id === d.id || d.id.indexOf(item.id + "_") === 0)) {
+            hasClickAction = true;
+            break;
+          }
+        }
+
+        return !hasClickAction && plotTip.toggleTooltip(self, d);
       });
   };
 

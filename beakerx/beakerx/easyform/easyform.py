@@ -18,8 +18,7 @@ from ipykernel.comm import Comm
 from traitlets import Unicode, Bool, Int, Dict, ObjectName, Unicode, default, \
     Any, Union, List
 
-from ipywidgets import SelectMultiple, Select, Dropdown, HBox, \
-    VBox, RadioButtons
+from ipywidgets import SelectMultiple, Select, Dropdown, RadioButtons
 
 
 class DatePicker(BeakerxDOMWidget):
@@ -158,12 +157,12 @@ class EasyForm(BeakerxBox):
         return checkbox
     
     def addCheckBoxes(self, *args, **kwargs):
-        layout = HBox()
+        layout = BeakerxHBox()
         orientation = getValue(kwargs, 'orientation', 2)
         if orientation == EasyForm.HORIZONTAL:
-            box = HBox()
+            box = BeakerxHBox()
         else:
-            box = VBox()
+            box = BeakerxVBox()
         
         for checkBoxItem in self.getOptions(args, kwargs):
             checkbox = BeakerxCheckbox(description=checkBoxItem)
@@ -183,7 +182,7 @@ class EasyForm(BeakerxBox):
         if orientation == EasyForm.VERTICAL:
             self.children += (radio_buttons,)
         else:
-            box = HBox()
+            box = BeakerxHBox()
             box.children += (radio_buttons,)
             self.children += (box,)
         

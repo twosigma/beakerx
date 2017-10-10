@@ -126,8 +126,8 @@ class BeakerxCheckbox(Checkbox):
     def __init__(self, **kwargs):
         super(BeakerxCheckbox, self).__init__(**kwargs)
         
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
     
@@ -137,6 +137,30 @@ class BeakerxCheckbox(Checkbox):
 class BeakerxLabel(Label):
     def __init__(self, **kwargs):
         super(BeakerxLabel, self).__init__(**kwargs)
+    
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
+    
+    layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
+    style = None
+
+class BeakerxHBox(HBox):
+    def __init__(self, **kwargs):
+        super(BeakerxHBox, self).__init__(**kwargs)
+    
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
+    
+    layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
+    style = None
+
+class BeakerxVBox(VBox):
+    def __init__(self, **kwargs):
+        super(BeakerxVBox, self).__init__(**kwargs)
     
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)

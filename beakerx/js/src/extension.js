@@ -80,6 +80,7 @@ define([
   var config = new configmod.ConfigSection('notebook', {base_url: base_url});
   var comm;
   var kernel_info = undefined;
+  var LINE_COMMENT_CHAR = '//';
   
   function installKernelHandler() {
     Jupyter.notebook.events.on('kernel_ready.Kernel', function() {
@@ -125,12 +126,28 @@ define([
           }
         });
       });
+
+      Jupyter.notebook.get_cells().map(function(cell, i) {
+        if (cell.cell_type === 'code'){
+          setCodeMirrorLineComment(cell.code_mirror);
+        }
+      });
     });
     Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
       interrupt();
     });
-  };
+  }
+
   installKernelHandler();
+
+  function setCodeMirrorLineComment(cm) {
+    var docMode = cm.doc && cm.doc.getMode();
+    !cm.options.lineComment && cm.setOption('lineComment', LINE_COMMENT_CHAR);
+
+    if (!docMode.lineComment) {
+      docMode.lineComment = LINE_COMMENT_CHAR;
+    }
+  }
 
   function sendJupyterCodeCells(filter) {
     var comm = Jupyter.notebook.kernel.comm_manager.new_comm("beaker.getcodecells",

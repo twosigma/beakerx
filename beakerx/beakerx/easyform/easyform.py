@@ -93,15 +93,15 @@ class EasyForm(BeakerxBox):
     
     def addTextField(self, *args, **kwargs):
         text = BeakerxText(description=self.getDescription(args, kwargs))
-        text.width = getValue(kwargs, 'width', -1)
+        text.size = getValue(kwargs, 'width', -1)
         self.children += (text,)
         return text
     
     def addTextArea(self, *args, **kwargs):
         textarea = BeakerxTextArea(
                 description=self.getDescription(args, kwargs))
-        textarea.width = getValue(kwargs, 'width', -1)
-        textarea.height = getValue(kwargs, 'height', -1)
+        textarea.cols = getValue(kwargs, 'width', -1)
+        textarea.rows = getValue(kwargs, 'height', -1)
         self.children += (textarea,)
         return textarea
     

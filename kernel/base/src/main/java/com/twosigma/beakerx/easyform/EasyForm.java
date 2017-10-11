@@ -47,7 +47,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
 
   public static final Integer HORIZONTAL = 1;
   public static final Integer VERTICAL = 2;
-  private static final Integer AUTO_WIDTH = -1;
+  private static final Integer AUTO_SIZE = 20;
 
   private final String caption;
   private Boolean ready = Boolean.FALSE;
@@ -129,19 +129,19 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
   public EasyFormComponent addComboBox(final String label,
                                        final Collection<String> values,
                                        final Boolean editable) throws Exception {
-    return addComboBox(label, values, editable, EasyForm.AUTO_WIDTH);
+    return addComboBox(label, values, editable, EasyForm.AUTO_SIZE);
   }
 
   public EasyFormComponent addComboBox(final String label,
                                        final Collection<String> values,
                                        final Boolean editable,
-                                       final Integer width) throws Exception {
+                                       final Integer size) throws Exception {
     ComboBoxWidget comboBox = new ComboBoxWidget();
     comboBox.registerUpdateValueCallback(comboBox::fireChanged);
     comboBox.setLabel(label);
     comboBox.setEditable(editable);
     comboBox.setValues(values);
-    comboBox.setWidth(width);
+    comboBox.setSize(size);
     if (values != null && values.size() > 0) {
       comboBox.setValue(values.iterator().next());
     }

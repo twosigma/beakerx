@@ -26,7 +26,7 @@ public class DisplayerDataMapper {
     this.converter = none;
   }
 
-  public static void register(Converter converter){
+  public static void register(Converter converter) {
     INSTANCE.converter = converter;
   }
 
@@ -34,7 +34,7 @@ public class DisplayerDataMapper {
     try {
       return INSTANCE.converter.convert(data);
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      return data;
     }
   }
 

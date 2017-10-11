@@ -45,6 +45,7 @@ define([
           .appendTo(this.wrapper)
           .val(value)
           .attr('title', '')
+          .attr('size',this.element.attr('size'))
           .addClass('easyform-combobox-input ui-widget ui-widget-content ui-corner-left')
           .autocomplete({
             delay: 150,

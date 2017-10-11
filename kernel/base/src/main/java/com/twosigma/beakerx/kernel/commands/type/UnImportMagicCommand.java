@@ -32,13 +32,9 @@ public class UnImportMagicCommand extends ImportMagicCommand {
   @Override
   public MagicCommandFunctionality build() {
     return (code, message, executionCount) -> {
-//      String[] parts = command.split(" ");
-//      if (parts.length != 2) {
-//        return createErrorMessage(message, WRONG_FORMAT_MSG, executionCount);
-//      }
       this.kernel.removeImport(new ImportPath(code));
 
-      return new CommandItemWithReply(message);
+      return new CommandItemWithReply(getMessageCreator().buildReplyWithoutStatus(message, executionCount));
     };
   }
 }

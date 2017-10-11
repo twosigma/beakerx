@@ -33,7 +33,7 @@ public class AddStaticImportMagicCommand extends ImportMagicCommand {
   public MagicCommandFunctionality build() {
     return (code, message, executionCount) -> {
       this.kernel.addImport(new ImportPath("static " + code));
-      return new CommandItemWithReply(message);
+      return new CommandItemWithReply(getMessageCreator().buildReplyWithoutStatus(message, executionCount));
     };
   }
 }

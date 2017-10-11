@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.commands.item.CommandItem;
+import com.twosigma.beakerx.kernel.commands.item.CommandItemWithResult;
 import com.twosigma.beakerx.kernel.commands.type.AddImportMagicCommand;
 import com.twosigma.beakerx.kernel.commands.type.AddStaticImportMagicCommand;
 import com.twosigma.beakerx.kernel.commands.type.BashMagicCommand;
@@ -28,6 +29,8 @@ import com.twosigma.beakerx.kernel.commands.type.ClassPathRemoveJarMagicCommand;
 import com.twosigma.beakerx.kernel.commands.type.ClassPathShowMagicCommand;
 import com.twosigma.beakerx.kernel.commands.type.ClasspathAddJarMagicCommand;
 import com.twosigma.beakerx.kernel.commands.type.ClasspathAddMvnMagicCommand;
+import com.twosigma.beakerx.kernel.commands.type.DataSourceMagicCommand;
+import com.twosigma.beakerx.kernel.commands.type.DefaultDataSourcesMagicCommand;
 import com.twosigma.beakerx.kernel.commands.type.HTMLMagicCommand;
 import com.twosigma.beakerx.kernel.commands.type.JavascriptMagicCommand;
 import com.twosigma.beakerx.kernel.commands.type.LSMagicCommand;
@@ -40,6 +43,7 @@ import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,11 +57,11 @@ public class CommandExecutorImpl implements CommandExecutor {
     this.kernel = kernel;
     this.messageCreator = new MessageCreator(kernel);
     this.availableCommands = buildAvailableCommands();
+    availableCommands.add(new LSMagicCommand(availableCommands, messageCreator));
   }
 
   private List<MagicCommand> buildAvailableCommands() {
     ArrayList<MagicCommand> magicCommands = Lists.newArrayList(new BashMagicCommand(messageCreator),
-                                                               new LSMagicCommand(messageCreator),
                                                                new HTMLMagicCommand(messageCreator),
                                                                new JavascriptMagicCommand(messageCreator),
                                                                new ClasspathAddJarMagicCommand(kernel, messageCreator),
@@ -67,66 +71,79 @@ public class CommandExecutorImpl implements CommandExecutor {
                                                                new AddStaticImportMagicCommand(kernel, messageCreator),
                                                                new AddImportMagicCommand(kernel, messageCreator),
                                                                new UnImportMagicCommand(kernel, messageCreator),
-                                                               new LineTimeMagicCommand(kernel, messageCreator),
-                                                               new CellTimeMagicCommand(kernel, messageCreator),
                                                                new LineTimeItMagicCommand(kernel, messageCreator),
-                                                               new CellTimeItMagicCommand(kernel, messageCreator));
+                                                               new CellTimeItMagicCommand(kernel, messageCreator),
+                                                               new LineTimeMagicCommand(kernel, messageCreator),
+                                                               new CellTimeMagicCommand(kernel, messageCreator));
 
+    if (kernel.getClass().getName().contains("SQL")) {
+      magicCommands.add(new DefaultDataSourcesMagicCommand(kernel, messageCreator));
+      magicCommands.add(new DataSourceMagicCommand(kernel, messageCreator));
+    }
 
-    //TODO add DATASOURCES ONLY FOR SQL KERNEL
     return magicCommands;
   }
 
   @Override
   public void execute(Message message, int executionCount) {
-    Code code = takeCodeFrom(message);
-    List<CommandItem> commandItems = buildCommandsMap(code).stream()
-        .map(commandCode -> commandCode.getCommand().build().process(commandCode.getCode(), message, executionCount))
-        .collect(Collectors.toList());
+    try {
+      Code code = takeCodeFrom(message);
+      List<CommandItem> commandItems = buildCommandsMap(code).stream()
+          .map(commandCode -> commandCode.getCommand().build().process(commandCode.getCode(), message, executionCount))
+          .collect(Collectors.toList());
 
 
-    commandItems.forEach(commandItem -> {
+      commandItems.forEach(commandItem -> {
+        if (commandItem.hasCodeToExecute() && !commandItem.hasResult()) {
+          kernel.executeCode(commandItem.getCode().get().asString(), message, executionCount, (seo) -> kernel.sendIdleMessage(seo.getJupyterMessage()));
+        } else if (commandItem.hasCodeToExecute() && commandItem.hasResult()) {
+          kernel.publish(message);
+        } else if (commandItem.hasResult()) {
+          kernel.publish(commandItem.getResult().get());
+          kernel.send(commandItem.getReply().get());
+          kernel.sendIdleMessage(message);
+        } else {
+          kernel.send(commandItem.getReply().get());
+          kernel.sendIdleMessage(message);
+        }
+      });
+    } catch (IllegalStateException e) {
+      CommandItemWithResult errorMessage = new CommandItemWithResult(
+          messageCreator.buildOutputMessage(message, e.getMessage(), true),
+          messageCreator.buildReplyWithoutStatus(message, executionCount)
+      );
 
-      if (commandItem.hasCodeToExecute() && !commandItem.hasResult()) {
-        kernel.executeCode(commandItem.getCode().get().asString(), message, executionCount, (seo) -> kernel.sendIdleMessage(seo.getJupyterMessage()));
-      } else if (commandItem.hasCodeToExecute() && commandItem.hasResult()) {
-        kernel.publish(message);
-      } else if (commandItem.hasResult()) {
-        kernel.publish(commandItem.getResult().get());
-        kernel.send(commandItem.getReply().get());
-        kernel.sendIdleMessage(message);
-      } else {
-        kernel.send(commandItem.getReply().get());
-        kernel.sendIdleMessage(message);
-      }
-    });
+      kernel.publish(errorMessage.getResult().get());
+      kernel.send(errorMessage.getReply().get());
+      kernel.sendIdleMessage(message);
+    }
+
   }
 
   private List<CommandCode> buildCommandsMap(Code code) {
     List<CommandCode> commandsToExecute = Lists.newArrayList();
 
-    Arrays.stream(code.asString().split("\\r\\n|\\n|\\r"))
-        .forEach(lineOfCode -> {
-          if (isThatMagic(lineOfCode)) {
+    for (String lineOfCode: code.asString().split("\\r\\n|\\n|\\r")) {
+      if (isThatMagic(lineOfCode)) {
+        if (isThatMagicCell(lineOfCode)) {
+          commandsToExecute.add(getMagicCommandCellAndCode(code));
+          break;
+        } else {
+          commandsToExecute.add(getMagicCommandLineAndCode(lineOfCode));
+        }
 
-            if (isThatMagicCell(lineOfCode)) {
-              commandsToExecute.add(getMagicCommandCellAndCode(code));
-            } else {
-              commandsToExecute.add(getMagicCommandLineAndCode(lineOfCode));
-            }
+      } else {
 
-          } else {
+        if (!commandsToExecute.isEmpty() && commandsToExecute.get(commandsToExecute.size() - 1).getCommand() instanceof PlainCode) {
+          CommandCode commandCode = commandsToExecute.get(commandsToExecute.size() - 1);
+          commandCode.setCode(commandCode.getCode() + "\n" + lineOfCode);
+        } else {
+          CommandCode commandCode = new CommandCode(new PlainCode(), lineOfCode);
+          commandsToExecute.add(commandCode);
+        }
 
-            if (!commandsToExecute.isEmpty() && commandsToExecute.get(commandsToExecute.size() - 1).getCommand() instanceof PlainCode) {
-              CommandCode commandCode = commandsToExecute.get(commandsToExecute.size() - 1);
-              commandCode.setCode(commandCode.getCode() + "\n" + lineOfCode);
-            } else {
-              CommandCode commandCode = new CommandCode(new PlainCode(), lineOfCode);
-              commandsToExecute.add(commandCode);
-            }
-
-          }
-        });
+      }
+    }
 
     return commandsToExecute;
   }

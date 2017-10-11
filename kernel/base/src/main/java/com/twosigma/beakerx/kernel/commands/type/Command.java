@@ -34,7 +34,7 @@ public interface Command {
   String DEFAULT_DATASOURCE = "%defaultDatasource";
   String TIME_LINE = "%time";
   String TIME_CELL = "%" + TIME_LINE;
-  String TIMEIT_LINE = "%timeit";
+  String TIMEIT_LINE = "%timeit ";
   String TIMEIT_CELL = "%" + TIMEIT_LINE;
   String DATASOURCES = "%datasources";
   String USAGE_ERROR_MSG = "UsageError: %s is a cell magic, but the cell body is empty.";

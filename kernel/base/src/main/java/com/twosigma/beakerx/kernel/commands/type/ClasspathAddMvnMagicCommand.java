@@ -33,13 +33,14 @@ public class ClasspathAddMvnMagicCommand extends ClassPathMagicCommand {
     return (code, message, executionCount) -> {
 
       String[] split = splitPath(code);
-      if (split.length != 6) {
+
+      if (split.length != 3) {
         return createErrorMessage(message, ADD_MVN_FORMAT_ERROR_MESSAGE, executionCount);
       }
 
       MavenJarResolver classpathAddMvnCommand = new MavenJarResolver(new ResolverParams(kernel.getTempFolder().toString() + "/../beakerIvyCache",
                                                                                         kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR));
-      MavenJarResolver.AddMvnCommandResult result = classpathAddMvnCommand.retrieve(split[3], split[4], split[5]);
+      MavenJarResolver.AddMvnCommandResult result = classpathAddMvnCommand.retrieve(split[0], split[1], split[2]);
       if (result.isJarRetrieved()) {
         return getMagicCommandItem(addJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*"), code, message, executionCount);
       }

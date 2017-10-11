@@ -19,22 +19,31 @@ import com.google.common.collect.Sets;
 import com.twosigma.beakerx.kernel.commands.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.commands.item.CommandItemWithResult;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class LSMagicCommand extends MagicCommand {
 
-  public LSMagicCommand(MessageCreator messageCreator) {
+  private List<MagicCommand> list;
+
+  public LSMagicCommand(List<MagicCommand> magicList, MessageCreator messageCreator) {
     super(LSMAGIC, "", Sets.newHashSet(MagicCommandType.LINE), messageCreator);
+    this.list = magicList;
   }
 
   @Override
   public MagicCommandFunctionality build() {
     return (code, message, executionCount) -> {
-      String result = "Available magic commands:\n";
+      StringBuilder result = new StringBuilder("Available magic commands:\n");
+      list.forEach(item -> {
+        result.append(item.getName())
+              .append(" ")
+              .append(item.getParameters()).append("\n");
+      });
 
       return new CommandItemWithResult(
-          getMessageCreator().buildOutputMessage(message, result, false),
+          getMessageCreator().buildOutputMessage(message, result.toString(), false),
           getMessageCreator().buildReplyWithoutStatus(message, executionCount)
       );
     };

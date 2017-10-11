@@ -16,7 +16,6 @@
 package com.twosigma.beakerx.kernel.commands.type;
 
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus;
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.commands.item.CommandItemWithResult;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;

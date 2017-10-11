@@ -16,8 +16,10 @@
 package com.twosigma.beakerx.kernel.commands.type;
 
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.commands.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import java.util.HashMap;
 import java.util.Set;
 
 public abstract class AbstractDataSourceMagicCommand extends MagicCommand {
@@ -33,19 +35,14 @@ public abstract class AbstractDataSourceMagicCommand extends MagicCommand {
 
   protected MagicCommandFunctionality dataSource(String source) {
     return (code, message, executionCount) -> {
-      /*String[] parts = command.split(" ");
-      if (parts.length != 2) {
-        return createErrorMessage(message, WRONG_FORMAT_MSG, executionCount);
-      } else if (!parts[1].contains("jdbc:")) {
+      if (!code.contains("jdbc:")) {
         return createErrorMessage(message, "Incorrect jdbc url.", executionCount);
       }
 
       HashMap<String, Object> params = new HashMap<>();
-      params.put(source, parts[1]);
+      params.put(source, code);
       this.kernel.setShellOptions(new KernelParameters(params));
-      return getMagicCommandItem(code.asString());*/
-      return null;
-      //TODO
+      return getMagicCommandItem(code);
     };
   }
 }

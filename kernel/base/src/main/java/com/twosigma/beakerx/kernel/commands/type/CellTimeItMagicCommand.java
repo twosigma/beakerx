@@ -31,8 +31,9 @@ public class CellTimeItMagicCommand extends AbstractTimeMagicCommand {
   public MagicCommandFunctionality build() {
     return (code, message, executionCount) -> {
       try {
-        return timeIt(buildTimeItOption(code), code, message,
-            executionCount);
+        String codeToExecute = code.replaceAll("(-.)(\\d*\\s)", "");
+
+        return timeIt(buildTimeItOption(code), codeToExecute, message, executionCount);
       } catch (IllegalArgumentException e) {
         return createErrorMessage(message, e.getMessage(), executionCount);
       }

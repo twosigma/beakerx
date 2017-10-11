@@ -48,7 +48,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommandExecutorImpl implements CommandExecutor {
-
   private List<MagicCommand> availableCommands;
   private MessageCreator messageCreator;
   private KernelFunctionality kernel;
@@ -99,12 +98,9 @@ public class CommandExecutorImpl implements CommandExecutor {
         } else if (commandItem.hasCodeToExecute() && commandItem.hasResult()) {
           kernel.publish(message);
         } else if (commandItem.hasResult()) {
-          kernel.publish(commandItem.getResult().get());
-          kernel.send(commandItem.getReply().get());
-          kernel.sendIdleMessage(message);
+          sendCommandReplyAndResult(message, commandItem.getReply().get(), commandItem.getResult().get());
         } else {
-          kernel.send(commandItem.getReply().get());
-          kernel.sendIdleMessage(message);
+          sendCommandReply(message, commandItem.getReply().get());
         }
       });
     } catch (IllegalStateException e) {
@@ -113,9 +109,7 @@ public class CommandExecutorImpl implements CommandExecutor {
           messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
 
-      kernel.publish(errorMessage.getResult().get());
-      kernel.send(errorMessage.getReply().get());
-      kernel.sendIdleMessage(message);
+      sendCommandReplyAndResult(message, errorMessage.getReply().get(), errorMessage.getResult().get());
     }
 
   }
@@ -175,5 +169,15 @@ public class CommandExecutorImpl implements CommandExecutor {
       code = ((String) message.getContent().get("code")).trim();
     }
     return new Code(code);
+  }
+
+  private void sendCommandReply(Message message, Message replyMessage) {
+    kernel.send(replyMessage);
+    kernel.sendIdleMessage(message);
+  }
+
+  private void sendCommandReplyAndResult(Message message, Message replyMessage, Message resultMessage) {
+    kernel.publish(resultMessage);
+    sendCommandReply(message, replyMessage);
   }
 }

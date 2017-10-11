@@ -18,7 +18,6 @@ package com.twosigma.beakerx.kernel.commands;
 import com.twosigma.beakerx.kernel.commands.type.Command;
 
 public class CommandCode {
-
   private Command command;
   private String code;
 

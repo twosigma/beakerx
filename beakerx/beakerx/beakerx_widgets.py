@@ -122,6 +122,10 @@ class BeakerxButton(Button):
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
     style = None
 
+    def actionPerformed(self, *args, **kwargs):
+        pass
+
+
 class BeakerxCheckbox(Checkbox):
     def __init__(self, **kwargs):
         super(BeakerxCheckbox, self).__init__(**kwargs)

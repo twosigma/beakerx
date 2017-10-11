@@ -36,6 +36,7 @@ var ComboBoxView = widgets.SelectView.extend({
     this.el.classList.add('widget-combobox');
     this.$select = $(this.el).find('select');
     this.$select.attr('easyform-editable', this.model.get('editable'));
+    this.$select.attr('size', this.model.get('size'));
     this.$select.combobox({
       change: this.setValueToModel.bind(this)
     });

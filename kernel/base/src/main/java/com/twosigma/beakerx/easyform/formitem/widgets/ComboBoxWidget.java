@@ -58,4 +58,7 @@ public class ComboBoxWidget extends EasyFormComponent<ComboBox> {
     return this.widget.getEditable();
   }
 
+  public void setSize(Integer size) {
+    this.widget.setSize(size);
+  }
 }

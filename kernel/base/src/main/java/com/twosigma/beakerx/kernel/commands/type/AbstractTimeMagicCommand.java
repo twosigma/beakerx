@@ -190,7 +190,6 @@ public abstract class AbstractTimeMagicCommand extends MagicCommand {
   }
 
   private class TimeMeasureData {
-
     private Long cpuTotalTime;
     private Long cpuUserTime;
     private Long wallTime;
@@ -215,13 +214,9 @@ public abstract class AbstractTimeMagicCommand extends MagicCommand {
   }
 
   protected class TimeItOption {
-
     Integer number = 0;
     Integer repeat = 3;
     Boolean quietMode = false;
-
-    public TimeItOption() {
-    }
 
     public void setNumber(Integer number) {
       this.number = number;

@@ -66,13 +66,4 @@ public class SQL extends Kernel {
     kernelParameters.put(IMPORTS, new DefaultJVMVariables().getImports());
     return new KernelParameters(kernelParameters);
   }
-/*
-  @Override
-  public List<MagicCommandType> getMagicCommands() {
-    List<MagicCommandType> magicCommands = super.getMagicCommands();
-    magicCommands.add(new MagicCommandType(DATASOURCES, "<jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", getMagicCommand().dataSources()));
-    magicCommands.add(new MagicCommandType(DEFAULT_DATASOURCE, "<sourceName=jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", getMagicCommand().defaultDataSources()));
-
-    return magicCommands;
-  }*/
 }

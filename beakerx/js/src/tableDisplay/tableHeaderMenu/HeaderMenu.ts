@@ -65,7 +65,7 @@ export default abstract class HeaderMenu {
     };
   }
 
-  open($notebookCell, $trigger): void {
+  open($notebookCell: any, $trigger: any, submenuIndex?: number): void {
     Widget.attach(this.menu, $notebookCell[0]);
     this.menu.node.style.top = null;
     this.menu.node.style.bottom = '0px';
@@ -76,6 +76,14 @@ export default abstract class HeaderMenu {
     this.menu.node.style.top =  menuPosition.top + 'px';
     this.menu.node.style.left = menuPosition.left + 'px';
     this.menu.node.style.bottom = null;
+
+    if (submenuIndex !== undefined) {
+      let item = this.menu.items[submenuIndex];
+      if (item.type === 'submenu') {
+        this.menu.activeIndex = submenuIndex;
+        this.menu.triggerActiveItem();
+      }
+    }
   }
 
   createItems(items: MenuItem[], menu: Menu): void {

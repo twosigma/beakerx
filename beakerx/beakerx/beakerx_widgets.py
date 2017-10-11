@@ -122,12 +122,16 @@ class BeakerxButton(Button):
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
     style = None
 
+    def actionPerformed(self, *args, **kwargs):
+        pass
+
+
 class BeakerxCheckbox(Checkbox):
     def __init__(self, **kwargs):
         super(BeakerxCheckbox, self).__init__(**kwargs)
         
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
     

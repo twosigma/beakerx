@@ -124,7 +124,7 @@ export default abstract class HeaderMenu {
     if (menuItem.shortcut) {
       this.commands.addKeyBinding({
         keys: [menuItem.shortcut],
-        selector: '.cell',
+        selector: 'body',
         command: menuItem.title
       });
     }

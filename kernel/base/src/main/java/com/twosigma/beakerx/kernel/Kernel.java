@@ -61,7 +61,7 @@ public abstract class Kernel implements KernelFunctionality {
     this(sessionId, evaluator, kernelSocketsFactory, () -> System.exit(0));
   }
 
-  public Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory,
+  protected Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory,
                 CloseKernelAction closeKernelAction) {
     this.messageCreator = new MessageCreator(this);
     this.sessionId = sessionId;

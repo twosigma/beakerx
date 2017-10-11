@@ -15,79 +15,18 @@
  */
 package com.twosigma.beakerx.groovy.kernel;
 
-import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
-import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
-import static org.assertj.core.api.Assertions.assertThat;
+import com.twosigma.beakerx.KernelExecutionTest;
+import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.Kernel;
+import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 
-import com.twosigma.beakerx.KernelSocketsServiceTest;
-import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
-import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
-import com.twosigma.beakerx.kernel.KernelRunner;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.message.Message;
-import java.util.Map;
-import java.util.Optional;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static com.twosigma.beakerx.groovy.TestGroovyEvaluator.groovyEvaluator;
 
-public class GroovyKernelTest {
+public class GroovyKernelTest extends KernelExecutionTest {
 
-  private Groovy kernel;
-  private KernelSocketsServiceTest kernelSocketsService;
-  private Thread kernelThread;
-
-  @Before
-  public void setUp() throws Exception {
-    String sessionId = "sessionId2";
-    GroovyEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
-    kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new Groovy(sessionId, evaluator, kernelSocketsService);
-    kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
-    kernelThread.start();
-    kernelSocketsService.waitForSockets();
+  @Override
+  protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+    return new Groovy(sessionId, groovyEvaluator(), kernelSocketsFactory, closeKernelAction);
   }
 
-  @After
-  public void tearDown() throws Exception {
-    kernelSocketsService.shutdown();
-    kernelThread.join();
-  }
-
-  @Test
-  public void evaluate() throws Exception {
-    //given
-    String code = "16/2";
-    Message message = getExecuteRequestMessage(code);
-    //when
-    kernelSocketsService.handleMsg(message);
-    //then
-    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
-    assertThat(idleMessage).isPresent();
-    waitForResult(kernelSocketsService.getKernelSockets());
-    verifyPublishedMsgs(kernelSocketsService);
-    verifyResult(kernelSocketsService.getExecuteResultMessage().get());
-    waitForSentMessage(kernelSocketsService.getKernelSockets());
-    verifySentMsgs(kernelSocketsService);
-  }
-
-  private void verifyPublishedMsgs(KernelSocketsServiceTest service) {
-    assertThat(service.getBusyMessage()).isPresent();
-    assertThat(service.getExecuteInputMessage()).isPresent();
-    assertThat(service.getExecuteResultMessage()).isPresent();
-    assertThat(service.getIdleMessage()).isPresent();
-  }
-
-  private void verifySentMsgs(KernelSocketsServiceTest service) {
-    verifyExecuteReplyMessage(service.getReplyMessage());
-  }
-
-  private void verifyResult(Message result) {
-    Map actual = ((Map) result.getContent().get(Comm.DATA));
-    String value = (String) actual.get("text/plain");
-    assertThat(value).isEqualTo("8");
-  }
 }

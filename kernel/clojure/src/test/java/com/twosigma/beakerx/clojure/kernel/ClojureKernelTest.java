@@ -15,16 +15,17 @@
  */
 package com.twosigma.beakerx.clojure.kernel;
 
+import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
-import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.Kernel;
+import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widgets.TestWidgetUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,36 +35,25 @@ import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ClojureKernelTest {
+public class ClojureKernelTest extends KernelExecutionTest {
 
-  private Clojure kernel;
-
-  private KernelSocketsServiceTest kernelSocketsService;
-  private ClojureEvaluator evaluator;
-  private Thread kernelThread;
-
-  @Before
-  public void setUp() throws Exception {
-    String sessionId = "sessionId1";
-    evaluator = new ClojureEvaluator(sessionId, sessionId, cellExecutor(), EvaluatorTest.getTestTempFolderFactory());
-    kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new Clojure(sessionId, evaluator, kernelSocketsService, () -> {});
-    kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
-    kernelThread.start();
-    kernelSocketsService.waitForSockets();
+  @Override
+  protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+    ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory());
+    return new Clojure(sessionId, evaluator, kernelSocketsFactory, closeKernelAction);
   }
 
-  @After
-  public void tearDown() throws Exception {
-    kernelSocketsService.shutdown();
-    kernelThread.join();
+  @Override
+  protected String codeFor16Divide2() {
+    return "(/ 16 2)";
   }
 
   @Test
-  public void evaluate() throws Exception {
+  public void evaluateFibSeq() throws Exception {
     //given
     String code = "" +
             "(def fib-seq-lazy \n" +
@@ -117,8 +107,8 @@ public class ClojureKernelTest {
   private void verifyTableDisplay(KernelSocketsServiceTest kernelSocketsService) {
     Optional<Message> messageUpdate = TestWidgetUtils.getMessageUpdate(kernelSocketsService.getPublishedMessages());
     Message message = messageUpdate.get();
-    Map model = (Map)TestWidgetUtils.getState(message).get("model");
-    List<List> values = (List<List>)model.get("values");
+    Map model = (Map) TestWidgetUtils.getState(message).get("model");
+    List<List> values = (List<List>) model.get("values");
     assertThat(values.get(0).get(0)).isEqualTo(1);
     assertThat(values.get(1).get(0)).isEqualTo(2);
   }

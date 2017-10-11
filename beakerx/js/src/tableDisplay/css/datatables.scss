@@ -30,6 +30,9 @@ $highlight-blue: #39a9ed;
 .dtcontainer {
   position: relative;
   width: 100%;
+  border: 1px solid transparent;
+  padding: 10px 20px;
+
   .dropdown-menu {
     margin-top: 1px;
   }
@@ -211,7 +214,7 @@ td.dtcenter {
 
 div.dtmenu {
   position: absolute;
-  top: 1px;
+  top: 11px;
   cursor: pointer;
   overflow: hidden;
   &:hover {

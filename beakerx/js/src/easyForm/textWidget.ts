@@ -14,43 +14,51 @@
  *  limitations under the License.
  */
 
-var widgets = require('jupyter-js-widgets');
-var _ = require('underscore');
-var $ = require('jquery');
+declare function require(moduleName: string): any;
+const widgets = require('jupyter-js-widgets');
 
-var TEXT_INPUT_WIDTH_UNIT = 'ch';
+export const TEXT_INPUT_WIDTH_UNIT = 'px';
 
-var TextModel = widgets.TextModel.extend({
-  defaults: function() {
-    return _.extend({}, widgets.TextModel.prototype.defaults.apply(this), {
+class TextModel extends widgets.TextModel {
+  defaults() {
+    return {
+      ...super.defaults(),
       _view_name: "TextView",
       _model_name: "TextModel",
       _model_module: 'beakerx',
       _view_module: 'beakerx'
-    });
+    };
   }
-});
+}
 
-var TextView = widgets.TextView.extend({
-  handleKeypress: function(e) {
+class TextView extends widgets.TextView {
+  handleKeypress(e) {
     if (e.keyCode == 13) {
       this.send({ event: 'submit' });
       e.preventDefault();
     }
-  },
-
-  render: function() {
-    TextView.__super__.render.call(this);
-
-    var width = this.model.get('width');
-
-    if (width >= 0) {
-      this.textbox.style.maxWidth = width + TEXT_INPUT_WIDTH_UNIT;
-    }
   }
-});
 
-module.exports = {
-  TextModel: TextModel,
-  TextView: TextView
+  render() {
+    super.render.call(this);
+
+    const width = this.model.get('width');
+    const size = this.model.get('size');
+
+    width >= 0 && this.setWidth(width);
+    size >= 0 && this.setSize(size);
+  }
+
+  setWidth(width: number): void {
+    this.textbox.style.maxWidth = width + TEXT_INPUT_WIDTH_UNIT;
+  }
+
+  setSize(size: number): void {
+    this.textbox.setAttribute('size', size);
+  }
+}
+
+export default {
+  TextModel,
+  TextView
 };

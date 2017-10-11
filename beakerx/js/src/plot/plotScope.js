@@ -624,7 +624,18 @@ define([
         return plotTip.untooltip(self, d);
       })
       .on("click.resp", function(d) {
-        return plotTip.toggleTooltip(self, d);
+        var model = self.stdmodel;
+        var hasClickAction;
+
+        for (var i = 0; i < model.data.length; i++) {
+          var item = model.data[i];
+          if(item.hasClickAction === true && (item.id === d.id || d.id.indexOf(item.id + "_") === 0)) {
+            hasClickAction = true;
+            break;
+          }
+        }
+
+        return !hasClickAction && plotTip.toggleTooltip(self, d);
       });
   };
 
@@ -2231,9 +2242,11 @@ define([
     // set zoom object
     self.svg
       .on("mousedown", function() {
+        self.jqcontainer.addClass('bko-focused');
         return self.mouseDown();
       });
     self.jqcontainer.on("mouseleave", function() {
+        self.jqcontainer.removeClass('bko-focused');
         return self.disableZoomWheel();
       });
     self.jqsvg.mousemove(function(e) {

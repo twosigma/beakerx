@@ -15,17 +15,18 @@
  */
 package com.twosigma.beakerx.sql;
 
+import com.twosigma.beakerx.KernelSetUpFixtureTest;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.KernelSocketsTest;
+import com.twosigma.beakerx.kernel.CloseKernelAction;
+import com.twosigma.beakerx.kernel.Kernel;
+import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.kernel.KernelParameters;
-import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.sql.kernel.SQL;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
-import org.junit.After;
-import org.junit.Before;
+import com.twosigma.beakerx.sql.kernel.SQL;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -41,29 +42,14 @@ import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor
 import static com.twosigma.beakerx.sql.SQLForColorTable.CREATE_AND_SELECT_ALL;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SQLKernelTest {
+public class SQLKernelTest extends KernelSetUpFixtureTest {
 
-  private SQL sqlKernel;
-  private KernelSocketsServiceTest kernelSocketsService;
-  private SQLEvaluator sqlEvaluator;
-  private Thread kernelThread;
-
-  @Before
-  public void setUp() throws Exception {
-    String sessionId = "sessionId2";
-    sqlEvaluator = new SQLEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory());
-    kernelSocketsService = new KernelSocketsServiceTest();
-    sqlKernel = new SQL(sessionId, sqlEvaluator, kernelSocketsService);
+  @Override
+  protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+    SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory());
+    Kernel sqlKernel = new SQL(sessionId, sqlEvaluator, kernelSocketsFactory, closeKernelAction);
     sqlKernel.setShellOptions(kernelParameters());
-    kernelThread = new Thread(() -> KernelRunner.run(() -> sqlKernel));
-    kernelThread.start();
-    kernelSocketsService.waitForSockets();
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    kernelSocketsService.shutdown();
-    kernelThread.join();
+    return sqlKernel;
   }
 
   @Test

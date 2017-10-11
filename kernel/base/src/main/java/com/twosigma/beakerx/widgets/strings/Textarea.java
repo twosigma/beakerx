@@ -19,6 +19,8 @@ public class Textarea extends StringWidget {
 
   public static final String VIEW_NAME_VALUE = "TextareaView";
   public static final String MODEL_NAME_VALUE = "TextareaModel";
+  public static final String MODEL_MODULE_VALUE = "beakerx";
+  public static final String VIEW_MODULE_VALUE = "beakerx";
 
   public Textarea() {
     super();
@@ -33,6 +35,16 @@ public class Textarea extends StringWidget {
   @Override
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
+  }
+
+  @Override
+  public String getModelModuleValue(){
+    return MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  public String getViewModuleValue(){
+    return VIEW_MODULE_VALUE;
   }
 
 }

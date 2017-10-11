@@ -52,27 +52,27 @@ export default abstract class HeaderMenu {
     $(this.menu.node).off('keydown.HeaderMenu', '.dropdown-menu-search input', this.handleKeydownEvent)
   }
 
-  protected getMenuPosition($notebookCell, $trigger) {
-    const $cell = $trigger.parent();
+  protected getMenuPosition($container: any, $trigger: any) {
     const rectObject = $trigger[0].getBoundingClientRect();
+    const containerRectObj = $container[0].getBoundingClientRect();
     const pageHeight = window.innerHeight || document.documentElement.clientHeight;
     const pixelsBelowViewport = Math.ceil($(this.menu.contentNode).height() + rectObject.bottom - pageHeight);
-    const triggerHeight = $trigger.height() || 20;
+    const triggerHeight = rectObject.height || 20;
 
     return {
-      top: ($cell.offset().top - $notebookCell.offset().top + triggerHeight - (pixelsBelowViewport > 0 ? pixelsBelowViewport : 0)),
-      left: $cell.offset().left - $notebookCell.offset().left + (pixelsBelowViewport > 0 ? triggerHeight : 0)
+      top: rectObject.bottom - containerRectObj.top + triggerHeight - (pixelsBelowViewport > 0 ? pixelsBelowViewport : 0),
+      left: rectObject.left + (pixelsBelowViewport > 0 ? triggerHeight : 0)
     };
   }
 
-  open($notebookCell: any, $trigger: any, submenuIndex?: number): void {
-    Widget.attach(this.menu, $notebookCell[0]);
+  open($container: any, $trigger: any, submenuIndex?: number): void {
+    Widget.attach(this.menu, $container[0]);
     this.menu.node.style.top = null;
     this.menu.node.style.bottom = '0px';
     this.menu.addClass('open');
     this.menu.show();
 
-    const menuPosition = this.getMenuPosition($notebookCell, $trigger);
+    const menuPosition = this.getMenuPosition($container, $trigger);
     this.menu.node.style.top =  menuPosition.top + 'px';
     this.menu.node.style.left = menuPosition.left + 'px';
     this.menu.node.style.bottom = null;
@@ -132,7 +132,7 @@ export default abstract class HeaderMenu {
     if (menuItem.shortcut) {
       this.commands.addKeyBinding({
         keys: [menuItem.shortcut],
-        selector: '.cell',
+        selector: 'body',
         command: menuItem.title
       });
     }

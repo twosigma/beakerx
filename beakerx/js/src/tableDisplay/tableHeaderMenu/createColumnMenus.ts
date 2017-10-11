@@ -47,7 +47,8 @@ export default function createColumnMenus(scope) {
 
     for(let i = 0; i < menus.length; i++) {
       if (menus[i].columnIndex === colIdx) {
-        menus[i].open($(scope.element).closest('.cell'), $(this));
+        const $container = scope.element.closest('.container');
+        menus[i].open($container.length ? $container : $(document.body), $(this));
         break;
       }
     }

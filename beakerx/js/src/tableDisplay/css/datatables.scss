@@ -28,8 +28,10 @@ $highlight-blue: #39a9ed;
 }
 
 .dtcontainer {
+  display: inline-block;
   position: relative;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   border: 1px solid transparent;
   padding: 10px 20px;
 

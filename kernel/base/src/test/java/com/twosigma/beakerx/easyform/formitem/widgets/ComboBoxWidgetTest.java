@@ -62,6 +62,23 @@ public class ComboBoxWidgetTest extends EasyFormWidgetTest {
     assertThat(value).isEqualTo(expected);
   }
 
+  @Test
+  public void setSize() throws Exception {
+    //given
+    Integer newValue = 20;
+    ComboBoxWidget widget = new ComboBoxWidget();
+    kernel.clearPublishedMessages();
+    //when
+    widget.setSize(newValue);
+    //then
+    verifySize(kernel.getPublishedMessages().get(0), newValue);
+  }
+
+  private void verifySize(Message message, Integer expectedSize) {
+    Integer value = getValueForProperty(message, ComboBox.SIZE, Integer.class);
+    assertThat(value).isEqualTo(expectedSize);
+  }
+
 
   @Override
   protected EasyFormComponent createWidget() {

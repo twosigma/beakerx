@@ -60,7 +60,7 @@ Publish on npmjs
 To update the embedded version of our widget library:
 
 - Do a full build.
-- Run `npm publish`
+- Run `(cd beakerx/js; npm publish)`
 
 Release to Docker Hub
 ---------------------

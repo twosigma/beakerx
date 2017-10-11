@@ -17,7 +17,6 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import { CommandRegistry } from '@phosphor/commands';
-import { Widget } from '@phosphor/widgets';
 import Menu from './BkoMenu';
 import MenuItem from './MenuItemInterface';
 
@@ -52,30 +51,25 @@ export default abstract class HeaderMenu {
     $(this.menu.node).off('keydown.HeaderMenu', '.dropdown-menu-search input', this.handleKeydownEvent)
   }
 
-  protected getMenuPosition($container: any, $trigger: any) {
+  protected getMenuPosition($trigger: any) {
     const rectObject = $trigger[0].getBoundingClientRect();
-    const containerRectObj = $container[0].getBoundingClientRect();
     const pageHeight = window.innerHeight || document.documentElement.clientHeight;
     const pixelsBelowViewport = Math.ceil($(this.menu.contentNode).height() + rectObject.bottom - pageHeight);
     const triggerHeight = rectObject.height || 20;
+    const triggerOffset = $trigger.offset();
 
     return {
-      top: rectObject.bottom - containerRectObj.top + triggerHeight - (pixelsBelowViewport > 0 ? pixelsBelowViewport : 0),
-      left: rectObject.left + (pixelsBelowViewport > 0 ? triggerHeight : 0)
+      top: triggerOffset.top + triggerHeight - (pixelsBelowViewport > 0 ? pixelsBelowViewport : 0),
+      left: triggerOffset.left + (pixelsBelowViewport > 0 ? triggerHeight : 0)
     };
   }
 
-  open($container: any, $trigger: any, submenuIndex?: number): void {
-    Widget.attach(this.menu, $container[0]);
-    this.menu.node.style.top = null;
-    this.menu.node.style.bottom = '0px';
+  open($trigger: any, submenuIndex?: number): void {
     this.menu.addClass('open');
-    this.menu.show();
 
-    const menuPosition = this.getMenuPosition($container, $trigger);
-    this.menu.node.style.top =  menuPosition.top + 'px';
-    this.menu.node.style.left = menuPosition.left + 'px';
-    this.menu.node.style.bottom = null;
+    const menuPosition = this.getMenuPosition($trigger);
+    this.menu.show();
+    this.menu.open(menuPosition.left, menuPosition.top);
 
     if (submenuIndex !== undefined) {
       let item = this.menu.items[submenuIndex];

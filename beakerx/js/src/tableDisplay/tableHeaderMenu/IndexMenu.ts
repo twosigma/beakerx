@@ -41,8 +41,7 @@ export default class IndexMenu extends HeaderMenu {
       event.preventDefault();
       event.stopPropagation();
 
-      const $container = self.scopeElement.closest('.container');
-      self.open($container.length ? $container : $(document.body), $trigger);
+      self.open($trigger);
     });
 
     this.createItems(this.menuItems, this.menu);

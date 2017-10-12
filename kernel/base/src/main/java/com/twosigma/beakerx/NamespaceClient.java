@@ -180,19 +180,5 @@ public class NamespaceClient {
     c.setData(data);
     c.send();
   }
-  
-  private class ObjectHolder<T>{
-    
-    private T value;
 
-    public T getValue() {
-      return value;
-    }
-
-    public void setValue(T value) {
-      this.value = value;
-    }
-    
-  }
-  
 }

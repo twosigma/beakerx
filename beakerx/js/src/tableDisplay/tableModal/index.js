@@ -52,9 +52,8 @@ module.exports = function(TableScope) {
     $('#' + self.id + '_modal_dialog').hide();
     bkHelper.timeout(function() {
       var $trigger = $('#' + self.id + '_dropdown_menu');
-      var $notebookCell = self.element.closest('.cell');
 
-      self.indexMenu.open($notebookCell, $trigger, 1);
+      self.indexMenu.open($trigger, 1);
     }, 0);
   };
 

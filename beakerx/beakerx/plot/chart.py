@@ -209,6 +209,10 @@ class Plot(BeakerxDOMWidget):
     def getYAxes(self):
         return self.chart.rangeAxes
 
+    def setShowLegend(self, show):
+        self.chart.show_legend = show
+        self.model = self.chart.transform()
+        return self
 
 class CategoryPlot(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)

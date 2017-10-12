@@ -52,24 +52,30 @@ export default abstract class HeaderMenu {
   }
 
   protected getMenuPosition($trigger: any) {
-    const rectObject = $trigger[0].getBoundingClientRect();
-    const pageHeight = window.innerHeight || document.documentElement.clientHeight;
-    const pixelsBelowViewport = Math.ceil($(this.menu.contentNode).height() + rectObject.bottom - pageHeight);
-    const triggerHeight = rectObject.height || 20;
+    const triggerHeight = $trigger.height() || 20;
     const triggerOffset = $trigger.offset();
 
     return {
-      top: triggerOffset.top + triggerHeight - (pixelsBelowViewport > 0 ? pixelsBelowViewport : 0),
-      left: triggerOffset.left + (pixelsBelowViewport > 0 ? triggerHeight : 0)
+      top: triggerOffset.top + triggerHeight,
+      left: triggerOffset.left
     };
   }
 
-  open($trigger: any, submenuIndex?: number): void {
-    this.menu.addClass('open');
+  protected correctPosition($trigger: any) {
+    const menuRectObject = this.menu.node.getBoundingClientRect();
+    const triggerRectObject = $trigger[0].getBoundingClientRect();
 
+    if (menuRectObject.top < triggerRectObject.bottom && menuRectObject.left <= triggerRectObject.right) {
+      this.menu.node.style.left = triggerRectObject.right + 'px';
+    }
+  }
+
+  open($trigger: any, submenuIndex?: number): void {
     const menuPosition = this.getMenuPosition($trigger);
-    this.menu.show();
+
+    this.menu.addClass('open');
     this.menu.open(menuPosition.left, menuPosition.top);
+    this.correctPosition($trigger);
 
     if (submenuIndex !== undefined) {
       let item = this.menu.items[submenuIndex];

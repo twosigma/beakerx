@@ -18,12 +18,14 @@ define([
   'underscore',
   './../shared/bkUtils',
   './../shared/bkGlobals',
-  './../shared/bkHelper'
+  './../shared/bkHelper',
+  'd3-scale'
 ], function(
   _,
   bkUtils,
   GLOBALS,
-  bkHelper
+  bkHelper,
+  d3scale
 ) {
 
   ///////////////constants///////////////
@@ -95,7 +97,7 @@ define([
     });
 
     this.colorScale = function (min, max) {
-      return d3.scaleLinear().domain([min, max]).range([this.minColor, this.maxColor]);
+      return d3scale.scaleLinear().domain([min, max]).range([this.minColor, this.maxColor]);
     };
 
     this.doHighlight = function (tableScope) {
@@ -139,7 +141,7 @@ define([
       if (this.midVal == null) {
         this.midVal = (min + max) / 2;
       }
-      return d3.scaleLinear(min, max).domain([min, this.midVal, max]).range([this.minColor, this.midColor, this.maxColor]);
+      return d3scale.scaleLinear(min, max).domain([min, this.midVal, max]).range([this.minColor, this.midColor, this.maxColor]);
     };
   };
   //////////ThreeColorHeatmap Highlighter//////////

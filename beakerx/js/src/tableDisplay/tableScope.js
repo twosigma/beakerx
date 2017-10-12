@@ -1713,6 +1713,10 @@ define([
     $(window).bind('resize.' + self.id, function() {
       updateSize();
     });
+
+    self.element[0].addEventListener('update.bko-table', function() {
+      self.applyChanges();
+    });
   };
 
   TableScope.prototype.enableJupyterKeyHandler = function() {

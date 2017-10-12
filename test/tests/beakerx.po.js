@@ -70,23 +70,26 @@ var BeakerXPageObject = function () {
     codeCell.scroll();
     codeCell.click();
     this.clickRunCell();
-    return codeCell;
+    return this.getCodeCellByIndex(index);
   }
 
   this.runCellToGetDtContainer = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
+    codeCell.waitForEnabled();
     return codeCell.$('div.dtcontainer');
   }
 
   this.runCellToGetSvgElement = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
+    codeCell.waitForEnabled();
     return codeCell.$('#svgg');
   }
 
   this.runCallAndCheckOutputText = function(index, expectedText){
     var codeCell = this.runCodeCellByIndex(index);
+    this.kernelIdleIcon.waitForEnabled();
     var outputText = codeCell.$('.output_subarea.output_text');
     outputText.waitForExist();
     outputText.waitForEnabled();

@@ -17,7 +17,7 @@ from ipywidgets import Box, DOMWidget, CoreWidget, Text, Label, Textarea, \
     SelectMultiple, Select, Dropdown, Checkbox, HBox, \
     VBox, RadioButtons, register, Layout, widget_serialization
 from ipywidgets.widgets.trait_types import InstanceDict
-from traitlets import Int, Unicode
+from traitlets import Int, Unicode, Tuple, Bool, Union, List, Dict
 from IPython.display import display
 
 
@@ -26,7 +26,7 @@ class BeakerxLayout(Layout):
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
-    
+
     def __init__(self, **kwargs):
         super(BeakerxLayout, self).__init__(**kwargs)
 
@@ -36,12 +36,12 @@ class BeakerxDOMWidget(DOMWidget):
     _model_module = Unicode('beakerx').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
-    
+
     def __init__(self, **kwargs):
         super(BeakerxDOMWidget, self).__init__(**kwargs)
-    
+
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
-    
+
     def _ipython_display_(self, **kwargs):
         data = {
             'application/vnd.jupyter.widget-view+json': {
@@ -51,21 +51,21 @@ class BeakerxDOMWidget(DOMWidget):
             }
         }
         display(data, raw=True)
-        
+
         self._handle_displayed(**kwargs)
 
 
 class BeakerxBox(Box):
     def __init__(self, **kwargs):
         super(BeakerxBox, self).__init__(**kwargs)
-    
+
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
-    
+
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
-    
+
     def _ipython_display_(self, **kwargs):
         data = {
             'application/vnd.jupyter.widget-view+json': {
@@ -76,19 +76,19 @@ class BeakerxBox(Box):
             'method': 'display_data'
         }
         display(data, raw=True)
-        
+
         self._handle_displayed(**kwargs)
 
 
 class BeakerxTextArea(Textarea):
     def __init__(self, **kwargs):
         super(BeakerxTextArea, self).__init__(**kwargs)
-    
+
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
-    
+
     cols = Int(default_value=-1).tag(sync=True)
     rows = Int(default_value=-1).tag(sync=True)
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
@@ -98,12 +98,12 @@ class BeakerxTextArea(Textarea):
 class BeakerxText(Text):
     def __init__(self, **kwargs):
         super(BeakerxText, self).__init__(**kwargs)
-    
+
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
-    
+
     size = Int(default_value=-1).tag(sync=True)
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
     style = None
@@ -112,13 +112,13 @@ class BeakerxText(Text):
 class BeakerxButton(Button):
     def __init__(self, **kwargs):
         super(BeakerxButton, self).__init__(**kwargs)
-    
+
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
     align_self = Unicode('*').tag(sync=True)
-    
+
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
     style = None
 
@@ -126,50 +126,81 @@ class BeakerxButton(Button):
         pass
 
 
+class BeakerxComboBox(Dropdown):
+    def __init__(self, **kwargs):
+        super(BeakerxComboBox, self).__init__(**kwargs)
+
+    _view_name = Unicode('ComboBoxView').tag(sync=True)
+    _model_name = Unicode('ComboBoxModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    editable = Bool(default_value=False).tag(sync=True)
+    original_options = Union([List(), Dict()])
+
+    def _handle_msg(self, msg):
+        if 'value' in msg['content']['data']['state']:
+            value = msg['content']['data']['state']['value']
+            if msg['content']['data']['state']['value'] not in self.options:
+                self.options = self.original_options[:]
+                self.options += (msg['content']['data']['state']['value'],)
+            self.value = value
+        super(BeakerxComboBox, self)._handle_msg(msg)
+
+
 class BeakerxCheckbox(Checkbox):
     def __init__(self, **kwargs):
         super(BeakerxCheckbox, self).__init__(**kwargs)
-        
+
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
-    
+
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
     style = None
+
+
+class BeakerxCheckboxGroup():
+    children = []
+    value = property(lambda self: [item.description for item in self.children if item.value])
+
+    def addChildren(self, children):
+        self.children.append(children)
 
 class BeakerxLabel(Label):
     def __init__(self, **kwargs):
         super(BeakerxLabel, self).__init__(**kwargs)
-    
+
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
-    
+
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
     style = None
+
 
 class BeakerxHBox(HBox):
     def __init__(self, **kwargs):
         super(BeakerxHBox, self).__init__(**kwargs)
-    
+
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
-    
+
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
     style = None
+
 
 class BeakerxVBox(VBox):
     def __init__(self, **kwargs):
         super(BeakerxVBox, self).__init__(**kwargs)
-    
+
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
-    
+
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
     style = None

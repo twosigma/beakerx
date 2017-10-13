@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-var BeakerXPageObject = require('./beakerx.po.js');
+var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
 describe('ClojureTutorial notebook', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/ClojureTutorial.ipynb');
+    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/clojure/ClojureTest.ipynb');
   }, 2);
 
   afterAll(function () {

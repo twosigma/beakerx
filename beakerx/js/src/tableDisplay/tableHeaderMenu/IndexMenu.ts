@@ -41,7 +41,7 @@ export default class IndexMenu extends HeaderMenu {
       event.preventDefault();
       event.stopPropagation();
 
-      self.open($trigger);
+      self.toggleMenu($trigger);
     });
 
     this.createItems(this.menuItems, this.menu);

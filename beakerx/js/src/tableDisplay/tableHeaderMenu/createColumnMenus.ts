@@ -48,7 +48,7 @@ export default function createColumnMenus(scope) {
 
     for(let i = 0; i < menus.length; i++) {
       if (menus[i].columnIndex === colIdx) {
-        menus[i].open($(this));
+        menus[i].toggleMenu($(this));
         break;
       }
     }

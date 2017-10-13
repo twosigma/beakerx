@@ -28,6 +28,7 @@ export default abstract class HeaderMenu {
   protected dtApi: any;
   protected cell: any;
   protected scopeElement: any;
+  private TRIGGER_CLASS_OPENED: string = 'opened';
 
   static DEBOUNCE_DELAY: number = 250;
 
@@ -77,6 +78,8 @@ export default abstract class HeaderMenu {
     this.menu.open(menuPosition.left, menuPosition.top);
     this.correctPosition($trigger);
 
+    $trigger.addClass(this.TRIGGER_CLASS_OPENED);
+
     if (submenuIndex !== undefined) {
       let item = this.menu.items[submenuIndex];
       if (item.type === 'submenu') {
@@ -84,6 +87,12 @@ export default abstract class HeaderMenu {
         this.menu.triggerActiveItem();
       }
     }
+  }
+
+  toggleMenu($trigger: any, submenuIndex?: number): void {
+    $trigger.hasClass(this.TRIGGER_CLASS_OPENED) ?
+      $trigger.removeClass(this.TRIGGER_CLASS_OPENED) :
+      this.open($trigger, submenuIndex);
   }
 
   createItems(items: MenuItem[], menu: Menu): void {

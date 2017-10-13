@@ -17,11 +17,13 @@
 define([
   'underscore',
   './../plotUtils',
-  './../plotTip'
+  './../plotTip',
+  'd3-scale'
 ], function(
   _,
   plotUtils,
-  plotTip
+  plotTip,
+  d3scale
 ) {
 
   var HeatMap = function(data) {
@@ -42,7 +44,7 @@ define([
       domain.push(this.minValue + valueStep * i);
     }
 
-    this.colorScale = d3.scaleLinear()
+    this.colorScale = d3scale.scaleLinear()
       .domain(domain)
       .range(this.colors);
 

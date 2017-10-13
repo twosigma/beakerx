@@ -93,15 +93,15 @@ class EasyForm(BeakerxBox):
     
     def addTextField(self, *args, **kwargs):
         text = BeakerxText(description=self.getDescription(args, kwargs))
-        text.width = getValue(kwargs, 'width', -1)
+        text.size = getValue(kwargs, 'width', -1)
         self.children += (text,)
         return text
     
     def addTextArea(self, *args, **kwargs):
         textarea = BeakerxTextArea(
                 description=self.getDescription(args, kwargs))
-        textarea.width = getValue(kwargs, 'width', -1)
-        textarea.height = getValue(kwargs, 'height', -1)
+        textarea.cols = getValue(kwargs, 'width', -1)
+        textarea.rows = getValue(kwargs, 'height', -1)
         self.children += (textarea,)
         return textarea
     
@@ -115,6 +115,7 @@ class EasyForm(BeakerxBox):
     
     def buttonCallback(self, *args):
         if len(args) > 0:
+            args[0].actionPerformed()
             arguments = dict(target_name='beaker.tag.run')
             comm = Comm(**arguments)
             msg = {'runByTag': args[0].tag}

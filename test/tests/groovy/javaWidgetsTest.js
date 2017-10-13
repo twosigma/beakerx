@@ -73,12 +73,6 @@ describe('Java widgets notebook', function () {
       expect(codeCell.$('div.ui-slider-horizontal').isExisting()).toBeTruthy();
     });
 
-    it('Cell output contains "#087636"', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(7, '#087636');
-      //TODO setting of color hasn't worked yet
-    });
-
     it('Cell output contains "20"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(8, '20');

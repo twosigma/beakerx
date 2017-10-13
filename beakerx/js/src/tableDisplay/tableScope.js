@@ -334,8 +334,7 @@ define([
       $.contextMenu('destroy', '#' + self.id + ' tbody td');
       $.contextMenu('destroy', '#' + self.id +'_wrapper thead');
       $body.off('click.bko-dt-container');
-      $document
-        .off('contextmenu.bko-dt-header')
+      $document.off('contextmenu.bko-dt-header');
       $tableContainer.find('.dataTables_scrollHead').off('scroll');
       $tableContainer
         .off('keyup.column-filter change.column-filter')
@@ -347,6 +346,7 @@ define([
       self.clipclient && self.clipclient.destroy();
       self.clipclient = undefined;
       self.table.off('');
+      self.indexMenu = undefined;
 
       if (all) {
         self.table.state.clear();
@@ -1713,6 +1713,10 @@ define([
     $(window).bind('resize.' + self.id, function() {
       updateSize();
     });
+
+    self.element[0].addEventListener('update.bko-table', function() {
+      self.applyChanges();
+    });
   };
 
   TableScope.prototype.enableJupyterKeyHandler = function() {
@@ -2411,7 +2415,7 @@ define([
       var triggerId = '#' + this.id + '_dropdown_menu';
       var $trigger = this.element.find(triggerId);
 
-      new (require('./tableHeaderMenu/IndexMenu').default)(this, $trigger);
+      this.indexMenu = new (require('./tableHeaderMenu/IndexMenu').default)(this, $trigger);
     }
   };
 

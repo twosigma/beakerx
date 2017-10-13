@@ -21,7 +21,7 @@ describe('GroovyExamples notebook', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/GroovyExamples.ipynb');
+    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/GroovyTest.ipynb');
   }, 2);
 
   afterAll(function () {
@@ -74,6 +74,37 @@ describe('GroovyExamples notebook', function () {
     it('Output contains "9.265"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(6, '9.265');
+    });
+  }, 2);
+
+  function checkCyrilicString(str){
+    expect(str.charCodeAt(0).toString(16)).toEqual('44d');
+    expect(str.charCodeAt(1).toString(16)).toEqual('44e');
+    expect(str.charCodeAt(2).toString(16)).toEqual('44f');
+  }
+
+  describe('Cyrillic symbols', function () {
+    var codeCell;
+
+    it('Output contains UTF-8 hex string', function () {
+      codeCell = beakerxPO.runCodeCellByIndex(7);
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      expect(codeCell.$('.output_subarea.output_text').getText()).toMatch('d18dd18ed18f');
+    });
+
+    it('Plot title is cyrillic (cp1521)', function () {
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      checkCyrilicString(codeCell.$('div#plotTitle').getText());
+    });
+
+    it('Plot x label is cyrillic (utf8 from cp1521)', function () {
+      var svg = codeCell.$('#svgg');
+      checkCyrilicString(svg.$('text#xlabel').getText());
+    });
+
+    it('Plot y label is cyrillic (utf-8)', function () {
+      var svg = codeCell.$('#svgg');
+      checkCyrilicString(svg.$('text#ylabel').getText());
     });
   }, 2);
 

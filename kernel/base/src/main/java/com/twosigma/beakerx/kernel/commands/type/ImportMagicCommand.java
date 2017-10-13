@@ -34,7 +34,7 @@ public abstract class ImportMagicCommand extends MagicCommand {
     this.kernel = kernel;
   }
 
-  private boolean isValidImport(String part, int executionCount) {
+  protected boolean isValidImport(String part, int executionCount) {
     try {
       CompletableFuture<Boolean> validImportFuture = new CompletableFuture<>();
       kernel.executeCode("", new Message(), executionCount,

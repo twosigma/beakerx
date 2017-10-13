@@ -16,12 +16,12 @@
 
 package com.twosigma.beakerx.jupyter.handler;
 
+import static com.twosigma.beakerx.kernel.commands.type.Command.JAVASCRIPT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.handler.ExecuteRequestHandler;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
@@ -63,7 +63,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
 
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
   }
 
   @Test
@@ -86,7 +86,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
   }
 
   @Test
@@ -106,12 +106,12 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void handleMagicJavaScriptCommand() throws Exception {
     //given
     String jsCode = System.lineSeparator() + "alert()";
-    Code code = new Code(MagicCommand.JAVASCRIPT + jsCode);
+    Code code = new Code(JAVASCRIPT + jsCode);
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(3);
   }
 
   @Test
@@ -124,7 +124,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //when
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(3);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
   }
 
   @Test
@@ -176,7 +176,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //when
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
     assertThat(kernel.getCode()).isEqualTo("code code code");
   }
 
@@ -205,6 +205,6 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //when
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(7);
   }
 }

@@ -16,22 +16,10 @@
 package com.twosigma.beakerx;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
-import java.util.List;
 
 public class SQLKernelTest extends KernelTest {
 
   public SQLKernelTest(String id, Evaluator evaluator) {
     super(id, evaluator);
-  }
-
-  @Override
-  public List<MagicCommandType> getMagicCommands() {
-    List<MagicCommandType> magicCommands = super.getMagicCommands();
-    magicCommands.add(new MagicCommandType(MagicCommand.DATASOURCES, "<jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", getMagicCommand().dataSources()));
-    magicCommands.add(new MagicCommandType(MagicCommand.DEFAULT_DATASOURCE, "<sourceName=jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", getMagicCommand().defaultDataSources()));
-
-    return magicCommands;
   }
 }

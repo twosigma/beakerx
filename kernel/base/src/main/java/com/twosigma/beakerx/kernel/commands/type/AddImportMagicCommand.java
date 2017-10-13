@@ -20,6 +20,7 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.commands.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.commands.item.CommandItemWithReply;
+import com.twosigma.beakerx.kernel.commands.item.CommandItemWithResult;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import java.util.Set;
 
@@ -32,8 +33,20 @@ public class AddImportMagicCommand extends ImportMagicCommand {
   @Override
   public MagicCommandFunctionality build() {
     return (code, message, executionCount) -> {
-      this.kernel.addImport(new ImportPath(code));
-      return new CommandItemWithReply(getMessageCreator().buildReplyWithoutStatus(message, executionCount));
+
+      ImportPath importPath = new ImportPath(code);
+      this.kernel.addImport(importPath);
+
+      if (isValidImport(code, 0)) {
+        return new CommandItemWithReply(getMessageCreator().buildReplyWithoutStatus(message, executionCount));
+      }
+
+      kernel.removeImport(importPath);
+      return new CommandItemWithResult(
+          getMessageCreator()
+              .buildOutputMessage(message, "Could not import " + code + ", class not found.", true),
+          getMessageCreator().buildReplyWithoutStatus(message, executionCount)
+      );
     };
   }
 }

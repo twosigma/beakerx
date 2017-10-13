@@ -17,10 +17,12 @@ package com.twosigma.beakerx.kernel.commands.type;
 
 import com.google.common.collect.Sets;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
+import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.commands.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.commands.item.CommandItemWithCode;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import java.util.Optional;
 import java.util.Set;
 
 public class ClassPathRemoveJarMagicCommand extends ClassPathMagicCommand {
@@ -31,6 +33,12 @@ public class ClassPathRemoveJarMagicCommand extends ClassPathMagicCommand {
 
   @Override
   public MagicCommandFunctionality build() {
-    return (code, message, executionCount) -> new CommandItemWithCode(new CodeWithoutCommand(code));
+    return (code, message, executionCount) -> {
+      kernel.getImports().getImportPaths().stream()
+          .filter(importPath -> importPath.asString().equals(code)).findFirst().ifPresent(
+              kernel::removeImport);
+
+      return createResultWithCustomMessage("Classpath " + code + " has been removed.", message, executionCount);
+    };
   }
 }

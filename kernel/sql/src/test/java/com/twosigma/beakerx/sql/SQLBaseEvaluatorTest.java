@@ -15,21 +15,20 @@
  */
 package com.twosigma.beakerx.sql;
 
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
+import static com.twosigma.beakerx.kernel.commands.type.Command.DATASOURCES;
+import static com.twosigma.beakerx.kernel.commands.type.Command.DEFAULT_DATASOURCE;
+
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
-import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
 

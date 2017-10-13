@@ -37,26 +37,26 @@ import com.twosigma.beakerx.kernel.commands.type.LSMagicCommand;
 import com.twosigma.beakerx.kernel.commands.type.LineTimeItMagicCommand;
 import com.twosigma.beakerx.kernel.commands.type.LineTimeMagicCommand;
 import com.twosigma.beakerx.kernel.commands.type.MagicCommand;
-import com.twosigma.beakerx.kernel.commands.type.PlainCode;
 import com.twosigma.beakerx.kernel.commands.type.UnImportMagicCommand;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CommandExecutorImpl implements CommandExecutor {
   private List<MagicCommand> availableCommands;
   private MessageCreator messageCreator;
   private KernelFunctionality kernel;
+  private CommandProcessor commandProcessor;
+  private CommandPublisher commandPublisher;
 
   public CommandExecutorImpl(KernelFunctionality kernel) {
     this.kernel = kernel;
     this.messageCreator = new MessageCreator(kernel);
     this.availableCommands = buildAvailableCommands();
     availableCommands.add(new LSMagicCommand(availableCommands, messageCreator));
+    this.commandProcessor = new CommandProcessorImpl(availableCommands);
+    this.commandPublisher = new CommandPublisherImpl(kernel);
   }
 
   private List<MagicCommand> buildAvailableCommands() {
@@ -84,100 +84,25 @@ public class CommandExecutorImpl implements CommandExecutor {
   }
 
   @Override
+  public List<MagicCommand> getCommands() {
+    return availableCommands;
+  }
+
+  @Override
   public void execute(Message message, int executionCount) {
+    List<CommandItem> commandItems;
+
     try {
-      Code code = takeCodeFrom(message);
-      List<CommandItem> commandItems = buildCommandsMap(code).stream()
-          .map(commandCode -> commandCode.getCommand().build().process(commandCode.getCode(), message, executionCount))
-          .collect(Collectors.toList());
-
-
-      commandItems.forEach(commandItem -> {
-        if (commandItem.hasCodeToExecute() && !commandItem.hasResult()) {
-          kernel.executeCode(commandItem.getCode().get().asString(), message, executionCount, (seo) -> kernel.sendIdleMessage(seo.getJupyterMessage()));
-        } else if (commandItem.hasCodeToExecute() && commandItem.hasResult()) {
-          kernel.publish(message);
-        } else if (commandItem.hasResult()) {
-          sendCommandReplyAndResult(message, commandItem.getReply().get(), commandItem.getResult().get());
-        } else {
-          sendCommandReply(message, commandItem.getReply().get());
-        }
-      });
+      commandItems = commandProcessor.process(message, executionCount);
     } catch (IllegalStateException e) {
+      commandItems = Lists.newArrayList();
       CommandItemWithResult errorMessage = new CommandItemWithResult(
           messageCreator.buildOutputMessage(message, e.getMessage(), true),
           messageCreator.buildReplyWithoutStatus(message, executionCount)
       );
-
-      sendCommandReplyAndResult(message, errorMessage.getReply().get(), errorMessage.getResult().get());
+      commandItems.add(errorMessage);
     }
 
-  }
-
-  private List<CommandCode> buildCommandsMap(Code code) {
-    List<CommandCode> commandsToExecute = Lists.newArrayList();
-
-    for (String lineOfCode: code.asString().split("\\r\\n|\\n|\\r")) {
-      if (isThatMagic(lineOfCode)) {
-        if (isThatMagicCell(lineOfCode)) {
-          commandsToExecute.add(getMagicCommandCellAndCode(code));
-          break;
-        } else {
-          commandsToExecute.add(getMagicCommandLineAndCode(lineOfCode));
-        }
-
-      } else {
-
-        if (!commandsToExecute.isEmpty() && commandsToExecute.get(commandsToExecute.size() - 1).getCommand() instanceof PlainCode) {
-          CommandCode commandCode = commandsToExecute.get(commandsToExecute.size() - 1);
-          commandCode.setCode(commandCode.getCode() + "\n" + lineOfCode);
-        } else {
-          CommandCode commandCode = new CommandCode(new PlainCode(), lineOfCode);
-          commandsToExecute.add(commandCode);
-        }
-
-      }
-    }
-
-    return commandsToExecute;
-  }
-
-  private CommandCode getMagicCommandCellAndCode(Code code) {
-    return availableCommands.stream()
-                            .filter(magicCommand -> code.asString().startsWith(magicCommand.getName()))
-                            .map(magicCommand -> new CommandCode(magicCommand, code.asString().replace(magicCommand.getName(), "")))
-                            .findFirst().orElseThrow(() -> new IllegalStateException("Cannot find magic cell command."));
-  }
-
-  private CommandCode getMagicCommandLineAndCode(String lineOfCode) {
-    return availableCommands.stream()
-                            .filter(magicCommand -> lineOfCode.startsWith(magicCommand.getName()))
-                            .map(magicCommand -> new CommandCode(magicCommand, lineOfCode.replace(magicCommand.getName(), "")))
-                            .findFirst().orElseThrow(() -> new IllegalStateException("Cannot find magic line command."));
-  }
-
-  private Boolean isThatMagic(String line) {
-    return line.startsWith("%");
-  }
-  private Boolean isThatMagicCell(String line ) {
-    return line.startsWith("%%");
-  }
-
-  private Code takeCodeFrom(Message message) {
-    String code = "";
-    if (null != message.getContent() && message.getContent().containsKey("code")) {
-      code = ((String) message.getContent().get("code")).trim();
-    }
-    return new Code(code);
-  }
-
-  private void sendCommandReply(Message message, Message replyMessage) {
-    kernel.send(replyMessage);
-    kernel.sendIdleMessage(message);
-  }
-
-  private void sendCommandReplyAndResult(Message message, Message replyMessage, Message resultMessage) {
-    kernel.publish(resultMessage);
-    sendCommandReply(message, replyMessage);
+    commandPublisher.publish(messageCreator, commandItems, message, executionCount);
   }
 }

@@ -12,7 +12,8 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+ *//*
+
 package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.kernel.commands.MagicCommand;
@@ -31,7 +32,7 @@ public class CodeTest {
             "  }});";
     //when
     Code result = new Code(MagicCommand.JAVASCRIPT + "\n" + jsCode);
-    
+
     String toCompare = result.takeCodeWithoutCommand().get().asString().replaceAll("\\s+","");
     jsCode = jsCode.replaceAll("\\s+","");
 
@@ -60,4 +61,4 @@ public class CodeTest {
     assertThat(result.takeCodeWithoutCommand().get()).isEqualTo(new CodeWithoutCommand("code code code"));
   }
 
-}
+}*/

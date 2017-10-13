@@ -16,14 +16,23 @@
 package com.twosigma.beakerx.kernel.commands;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.commands.item.CommandItem;
+import com.twosigma.beakerx.kernel.commands.type.AddImportMagicCommand;
+import com.twosigma.beakerx.kernel.commands.type.ImportMagicCommand;
+import com.twosigma.beakerx.kernel.commands.type.UnImportMagicCommand;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,13 +42,21 @@ import org.junit.Test;
 
 public class ImportMagicCommandTest {
 
-  private MagicCommand sut;
   private KernelTest kernel;
+  private ImportMagicCommand addImportMagicCommand;
+  private ImportMagicCommand removeImportMagicCommand;
+  private MessageCreator messageCreator;
+  private CommandExecutor commandExecutor;
+  private CommandProcessor commandProcessor;
 
   @Before
   public void setUp() throws Exception {
     this.kernel = new KernelTest("id2", new EvaluatorTest());
-    this.sut = new MagicCommand(kernel);
+    this.messageCreator = new MessageCreator(kernel);
+    this.addImportMagicCommand = new AddImportMagicCommand(kernel, messageCreator);
+    this.removeImportMagicCommand = new UnImportMagicCommand(kernel, messageCreator);
+    this.commandExecutor = new CommandExecutorImpl(kernel);
+    this.commandProcessor = new CommandProcessorImpl(commandExecutor.getCommands());
   }
 
   @After
@@ -50,50 +67,49 @@ public class ImportMagicCommandTest {
   @Test
   public void addImport() throws Exception {
     //given
-    Code code = new Code("" +
+    String code = "" +
             "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
-            "w = new IntSlider()");
+            "w = new IntSlider()";
+    Message message = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
+
     //when
-    MagicCommandResult result = sut.process(code, new Message(), 1);
+    List<CommandItem> commandItems = commandProcessor.process(message, 1);
+
     //then
-    assertThat(result.getItems().get(0).getCode().get()).isEqualTo(new CodeWithoutCommand("w = new IntSlider()"));
+    assertThat(commandItems.get(1).getCode().get()).isEqualTo(new CodeWithoutCommand("w = new IntSlider()"));
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
   }
 
   @Test
   public void removeImport() throws Exception {
     //given
-    Code addImport = new Code("" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n");
-    sut.process(addImport, new Message(), 1);
+    String addImport = "com.twosigma.beakerx.widgets.integers.IntSlider";
+    addImportMagicCommand.build().process(addImport, new Message(), 1);
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
     //when
-    Code removeImport = new Code("" +
-            "%unimport com.twosigma.beakerx.widgets.integers.IntSlider\n");
-    sut.process(removeImport, new Message(), 1);
+    String removeImport = "com.twosigma.beakerx.widgets.integers.IntSlider";
+    removeImportMagicCommand.build().process(removeImport, new Message(), 1);
     //then
     assertThat(kernel.getImports().getImportPaths()).doesNotContain(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
   }
 
   @Test
   public void allowExtraWhitespaces() {
-    MagicCommandResult result = sut
-        .process(new Code("%import       com.twosigma.beakerx.widgets.integers.IntSlider"), new Message(), 1);
+    Message message = JupyterHandlerTest.createExecuteRequestMessage(
+        new Code("%import       com.twosigma.beakerx.widgets.integers.IntSlider"));
+
+    commandExecutor.execute(message, 1);
 
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
   }
 
   @Test
   public void wrongImportFormat() {
-    Code wrongFormatImport = new Code("%import ");
-    MagicCommandResult process = sut.process(wrongFormatImport, new Message(), 1);
+    String wrongFormatImport = "%import ";
+    Message message = JupyterHandlerTest.createExecuteRequestMessage(new Code(wrongFormatImport));
 
-    Optional<Message> result = process.getItems().get(0).getResult();
-    assertThat(result.isPresent()).isTrue();
-    result.ifPresent(r -> {
-      Map<String, Serializable> content = r.getContent();
-      assertThat(content.get("text").equals("Wrong import format."));
-    });
+    assertThatThrownBy(() -> commandProcessor.process(message, 1))
+                     .isInstanceOf(IllegalStateException.class);
   }
 
 }

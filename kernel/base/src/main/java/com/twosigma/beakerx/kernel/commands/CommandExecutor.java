@@ -15,8 +15,11 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
+import com.twosigma.beakerx.kernel.commands.type.MagicCommand;
 import com.twosigma.beakerx.message.Message;
+import java.util.List;
 
 public interface CommandExecutor {
+  List<MagicCommand> getCommands();
   void execute(Message message, int executionCount);
 }

@@ -28,9 +28,9 @@ public interface Command {
   String CLASSPATH_SHOW = CLASSPATH;
   String CLASSPATH_ADD_MVN = CLASSPATH + " add mvn ";
   String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be " + CLASSPATH_ADD_MVN + " group name version";
-  String IMPORT = "%import ";
+  String IMPORT = "%import";
   String ADD_STATIC_IMPORT = IMPORT + " static ";
-  String UNIMPORT = "%unimport ";
+  String UNIMPORT = "%unimport";
   String DEFAULT_DATASOURCE = "%defaultDatasource";
   String TIME_LINE = "%time";
   String TIME_CELL = "%" + TIME_LINE;

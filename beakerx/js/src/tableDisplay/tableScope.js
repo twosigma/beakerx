@@ -328,7 +328,8 @@ define([
       self.removeInteractionListeners();
       self.removeFilterListeners();
       self.destroyTableSelect();
-      $(self.element).find(".bko-table-use-pagination").remove();
+      self.doDestroyMenus();
+      self.element.find(".bko-table-use-pagination").remove();
       $body.tooltip('instance') && $body.tooltip('destroy');
 
       $.contextMenu('destroy', '#' + self.id + ' tbody td');
@@ -346,7 +347,6 @@ define([
       self.clipclient && self.clipclient.destroy();
       self.clipclient = undefined;
       self.table.off('');
-      self.indexMenu = undefined;
 
       if (all) {
         self.table.state.clear();
@@ -1544,7 +1544,7 @@ define([
     self.refreshCells();
 
     var createColumnMenus = require('./tableHeaderMenu/createColumnMenus').default;
-    createColumnMenus(self);
+    self.columnMenus = createColumnMenus(self);
 
     self.createTableMenuElements();
     // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
@@ -1719,6 +1719,17 @@ define([
     });
   };
 
+  TableScope.prototype.doDestroyMenus = function() {
+    this.element.off('click.headermenu');
+    this.columnMenus && this.columnMenus.forEach(function(menu) {
+      menu.destroy();
+    });
+
+    this.indexMenu && this.indexMenu.destroy();
+    this.indexMenu = undefined;
+    this.columnMenus = undefined;
+  };
+
   TableScope.prototype.enableJupyterKeyHandler = function() {
     this.element
       .on('focusin', this.elementFocusIn.bind(this))
@@ -1859,19 +1870,8 @@ define([
     $(self.table.table().header()).find("th").each(function(i){
       var events = jQuery._data(this, 'events');
       if (events && events.click) {
-        var click = events.click[0].handler;
         $(this).unbind('click.DT');
         $(this).bind('click.DT', function(e) {
-          if(!$(e.target).hasClass('bko-column-header-menu')){
-            click(e);
-            setTimeout(function(){
-              self.tableOrder = [];
-              var order = self.table.order();
-              for(var i = 0; i < order.length; i++){
-                self.tableOrder.push([self.colorder[order[i][0]], order[i][1]]);
-              }
-            }, 0);
-          }
           $(this).blur(); //outline is not removed for fixed columns so remove it manually
         });
       }

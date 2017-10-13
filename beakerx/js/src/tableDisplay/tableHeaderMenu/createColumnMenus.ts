@@ -34,7 +34,8 @@ export default function createColumnMenus(scope) {
     }
   }
 
-  $(scope.element).on('click.headermenu', '.bko-column-header-menu', function(e) {
+  scope.element.off('click.headermenu', '.bko-column-header-menu');
+  scope.element.on('click.headermenu', '.bko-column-header-menu', function(e) {
     let colIdx = $(this).parent().index();
     const fixedCols = scope.table.settings()[0]._oFixedColumns;
     const rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;

@@ -20,6 +20,7 @@ import $ from 'jquery';
 
 export default class BkoMenu extends Menu {
   keepOpen: boolean|undefined;
+  trigger: any;
 
   triggerActiveItem(): void {
     if (!this.keepOpen) {
@@ -68,5 +69,13 @@ export default class BkoMenu extends Menu {
     if (rect.bottom > clientHeight) {
       this.node.style.top = `${itemOffset - (rect.bottom - clientHeight)}px`;
     }
+  }
+
+  close() {
+    super.close.call(this);
+
+    setTimeout(() => {
+      this.trigger && this.trigger.removeClass('opened');
+    });
   }
 }

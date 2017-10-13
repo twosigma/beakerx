@@ -45,7 +45,7 @@ export default abstract class HeaderMenu {
   protected abstract buildMenu($trigger?: any): void
 
   protected destroy(): void {
-    this.scopeElement.off('click.HeaderMenu, keydown.HeaderMenu');
+    this.scopeElement.off('mousedown.headermenu, keydown.HeaderMenu');
     $(this.menu.node).off('keyup.keyTable, change');
     $(document.body).off('click.table-headermenu');
     $(document).off('keydown.keyTable', this.handleKeydownEvent);
@@ -74,6 +74,7 @@ export default abstract class HeaderMenu {
   open($trigger: any, submenuIndex?: number): void {
     const menuPosition = this.getMenuPosition($trigger);
 
+    this.menu.trigger = $trigger;
     this.menu.addClass('open');
     this.menu.open(menuPosition.left, menuPosition.top);
     this.correctPosition($trigger);

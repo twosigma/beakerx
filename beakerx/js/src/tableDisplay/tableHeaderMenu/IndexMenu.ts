@@ -36,8 +36,8 @@ export default class IndexMenu extends HeaderMenu {
     const self = this;
 
     this.menu.contentNode.classList.add('dropdown-menu');
-    this.scopeElement.off('click.HeaderMenu', `#${$trigger.attr('id')}`);
-    this.scopeElement.on('click.HeaderMenu', `#${$trigger.attr('id')}`, function(event) {
+    this.scopeElement.off('mousedown.headermenu', `#${$trigger.attr('id')}`);
+    this.scopeElement.on('mousedown.headermenu', `#${$trigger.attr('id')}`, function(event) {
       event.preventDefault();
       event.stopPropagation();
 

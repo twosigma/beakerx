@@ -36,8 +36,7 @@ public class JavascriptMagicCommand extends MagicCommand {
     return (code, message, executionCount) -> {
       MIMEContainer result = JavaScript(code);
       return new CommandItemWithResult(
-          getMessageCreator()
-              .buildMessage(message, singletonList(result), executionCount),
+          getMessageCreator().buildMessage(message, singletonList(result), executionCount),
           getMessageCreator().buildReplyWithoutStatus(message, executionCount)
       );
     };

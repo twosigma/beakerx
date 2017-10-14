@@ -328,7 +328,8 @@ define([
       self.removeInteractionListeners();
       self.removeFilterListeners();
       self.destroyTableSelect();
-      $(self.element).find(".bko-table-use-pagination").remove();
+      self.doDestroyMenus();
+      self.element.find(".bko-table-use-pagination").remove();
       $body.tooltip('instance') && $body.tooltip('destroy');
 
       $.contextMenu('destroy', '#' + self.id + ' tbody td');
@@ -346,7 +347,6 @@ define([
       self.clipclient && self.clipclient.destroy();
       self.clipclient = undefined;
       self.table.off('');
-      self.indexMenu = undefined;
 
       if (all) {
         self.table.state.clear();
@@ -1544,7 +1544,7 @@ define([
     self.refreshCells();
 
     var createColumnMenus = require('./tableHeaderMenu/createColumnMenus').default;
-    createColumnMenus(self);
+    self.columnMenus = createColumnMenus(self);
 
     self.createTableMenuElements();
     // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
@@ -1717,6 +1717,17 @@ define([
     self.element[0].addEventListener('update.bko-table', function() {
       self.applyChanges();
     });
+  };
+
+  TableScope.prototype.doDestroyMenus = function() {
+    this.element.off('click.headermenu');
+    this.columnMenus && this.columnMenus.forEach(function(menu) {
+      menu.destroy();
+    });
+
+    this.indexMenu && this.indexMenu.destroy();
+    this.indexMenu = undefined;
+    this.columnMenus = undefined;
   };
 
   TableScope.prototype.enableJupyterKeyHandler = function() {

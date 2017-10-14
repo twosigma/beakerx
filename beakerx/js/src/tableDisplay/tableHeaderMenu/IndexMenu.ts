@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import $ from 'jquery';
 import createIndexMenuItems from './createIndexMenuItems';
 import MenuItem from './MenuItemInterface';
 import HeaderMenu from './HeaderMenu';
@@ -36,12 +35,13 @@ export default class IndexMenu extends HeaderMenu {
 
     const self = this;
 
-    $(this.menu.contentNode).addClass('dropdown-menu');
-    $(this.scopeElement).on('click.HeaderMenu', `#${$trigger.attr('id')}`, function(event) {
+    this.menu.contentNode.classList.add('dropdown-menu');
+    this.scopeElement.off('mousedown.headermenu', `#${$trigger.attr('id')}`);
+    this.scopeElement.on('mousedown.headermenu', `#${$trigger.attr('id')}`, function(event) {
       event.preventDefault();
       event.stopPropagation();
 
-      self.open($trigger);
+      self.toggleMenu($trigger);
     });
 
     this.createItems(this.menuItems, this.menu);

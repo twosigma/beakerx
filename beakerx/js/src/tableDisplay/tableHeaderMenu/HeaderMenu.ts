@@ -28,6 +28,7 @@ export default abstract class HeaderMenu {
   protected dtApi: any;
   protected cell: any;
   protected scopeElement: any;
+  private TRIGGER_CLASS_OPENED: string = 'opened';
 
   static DEBOUNCE_DELAY: number = 250;
 
@@ -44,7 +45,7 @@ export default abstract class HeaderMenu {
   protected abstract buildMenu($trigger?: any): void
 
   protected destroy(): void {
-    this.scopeElement.off('click.HeaderMenu, keydown.HeaderMenu');
+    this.scopeElement.off('mousedown.headermenu, keydown.HeaderMenu');
     $(this.menu.node).off('keyup.keyTable, change');
     $(document.body).off('click.table-headermenu');
     $(document).off('keydown.keyTable', this.handleKeydownEvent);
@@ -73,9 +74,12 @@ export default abstract class HeaderMenu {
   open($trigger: any, submenuIndex?: number): void {
     const menuPosition = this.getMenuPosition($trigger);
 
+    this.menu.trigger = $trigger;
     this.menu.addClass('open');
     this.menu.open(menuPosition.left, menuPosition.top);
     this.correctPosition($trigger);
+
+    $trigger.addClass(this.TRIGGER_CLASS_OPENED);
 
     if (submenuIndex !== undefined) {
       let item = this.menu.items[submenuIndex];
@@ -84,6 +88,12 @@ export default abstract class HeaderMenu {
         this.menu.triggerActiveItem();
       }
     }
+  }
+
+  toggleMenu($trigger: any, submenuIndex?: number): void {
+    $trigger.hasClass(this.TRIGGER_CLASS_OPENED) ?
+      $trigger.removeClass(this.TRIGGER_CLASS_OPENED) :
+      this.open($trigger, submenuIndex);
   }
 
   createItems(items: MenuItem[], menu: Menu): void {

@@ -1870,19 +1870,19 @@ define([
     $(self.table.table().header()).find("th").each(function(i){
       var events = jQuery._data(this, 'events');
       if (events && events.click) {
-        var click = events.click[0].handler;		
+        var click = events.click[0].handler;
         $(this).unbind('click.DT');
         $(this).bind('click.DT', function(e) {
-          if(!$(e.target).hasClass('bko-column-header-menu')){		
-            click(e);		
-            setTimeout(function(){		
-              self.tableOrder = [];		
-              var order = self.table.order();		
-              for(var i = 0; i < order.length; i++){		
-                self.tableOrder.push([self.colorder[order[i][0]], order[i][1]]);		
-              }		
-            }, 0);		
-          }		
+          if(!$(e.target).hasClass('bko-column-header-menu')){
+            click(e);
+            setTimeout(function(){
+              self.tableOrder = [];
+              var order = self.table.order();
+              for(var i = 0; i < order.length; i++){
+                self.tableOrder.push([self.colorder[order[i][0]], order[i][1]]);
+              }
+            }, 0);
+          }
           $(this).blur(); //outline is not removed for fixed columns so remove it manually
         });
       }

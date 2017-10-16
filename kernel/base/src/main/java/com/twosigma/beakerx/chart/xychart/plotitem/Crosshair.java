@@ -48,16 +48,13 @@ public class Crosshair implements Serializable{
     return this.width;
   }
 
-  public Crosshair setColor(Object color) {
-    if (color instanceof Color) {
-      this.color = (Color) color;
-    } else if (color instanceof java.awt.Color) {
-      this.color = new Color((java.awt.Color) color);
-    } else {
-      throw new IllegalArgumentException(
-        "setColor takes Color or java.awt.Color");
-    }
+  public Crosshair setColor(Color color) {
+    this.color = color;
     return this;
+  }
+
+  public Crosshair setColor(java.awt.Color color) {
+    return setColor(new Color(color));
   }
 
   public Color getColor() {

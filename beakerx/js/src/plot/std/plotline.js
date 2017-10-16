@@ -242,7 +242,7 @@ define([
     itemsvg.selectAll("path")
       .data(props, function(d) { return d.id; }).exit().remove();
     itemsvg.selectAll("path")
-      .data([props], function(d) { return d.id; }).enter().append("path")
+      .data([props], function(d) { return d.id; }).enter().insert("path", ':first-child')
       .attr("class", this.plotClass + " " + this.actionClass)
       .style("stroke", function(d) { return d.st; })
       .style("stroke-dasharray", function(d) { return d.st_da; })

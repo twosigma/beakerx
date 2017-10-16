@@ -604,10 +604,14 @@ define([
 
     this.svg.selectAll(".plot-resp")
       .on('mouseenter', function(d) {
+        d3.event.stopPropagation();
+
         self.drawLegendPointer(d);
         return plotTip.tooltip(self, d, d3.mouse(self.svg.node()));
       })
       .on('mousemove', function(d) {
+        d3.event.stopPropagation();
+
         self.removeLegendPointer();
         self.drawLegendPointer(d);
         self.tipmoving = true;
@@ -620,6 +624,8 @@ define([
         plotTip.movetooltip(self, d, d3.mouse(self.svg.node()));
       })
       .on("mouseleave", function(d) {
+        d3.event.stopPropagation();
+
         self.removeLegendPointer();
         return plotTip.untooltip(self, d);
       })

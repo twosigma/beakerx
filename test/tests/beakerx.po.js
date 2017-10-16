@@ -70,6 +70,7 @@ var BeakerXPageObject = function () {
     codeCell.scroll();
     codeCell.click();
     this.clickRunCell();
+    this.kernelIdleIcon.waitForEnabled();
     return this.getCodeCellByIndex(index);
   }
 

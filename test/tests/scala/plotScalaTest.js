@@ -21,7 +21,7 @@ describe('Scala notebook', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/scala/plotScalaDemo.ipynb');
+    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/scala/PlotScalaTest.ipynb');
   }, 2);
 
   afterAll(function () {

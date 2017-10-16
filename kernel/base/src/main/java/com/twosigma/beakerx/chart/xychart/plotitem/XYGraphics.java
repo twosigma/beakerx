@@ -19,6 +19,7 @@ package com.twosigma.beakerx.chart.xychart.plotitem;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.Filter;
 import com.twosigma.beakerx.chart.Graphics;
+import com.twosigma.beakerx.chart.ListColorConverter;
 import com.twosigma.beakerx.widgets.RunWidgetClosure;
 
 import java.util.ArrayList;
@@ -139,39 +140,21 @@ abstract public class XYGraphics extends Graphics {
 
   }
 
-  public void setColor(Object color) {
-    if (color instanceof Color) {
-      this.baseColor = (Color) color;
-    } else if (color instanceof java.awt.Color) {
-      this.baseColor = new Color((java.awt.Color) color);
-    } else if (color instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Object> cs = (List<Object>) color;
-      setColors(cs);
-    } else {
-      throw new IllegalArgumentException(
-              "setColor takes Color or List of Color");
-    }
+  public void setColor(Color color) {
+    this.baseColor = color;
   }
 
-  private void setColors(List<Object> colors) {
-    if (colors != null) {
-      this.colors = new ArrayList<>(colors.size());
-      for (Object c : colors) {
-        if (c instanceof Color) {
-          this.colors.add((Color) c);
-        } else if (c instanceof java.awt.Color) {
-          this.colors.add(new Color((java.awt.Color) c));
-        } else {
-          throw new IllegalArgumentException("setColor takes Color or List of Color");
-        }
-      }
+  public void setColor(java.awt.Color color) {
+    setColor(new Color(color));
+  }
+
+  public void setColor(List<Object> colorList) {
+    if (colorList != null) {
+      this.colors = ListColorConverter.convert(colorList);
     } else {
       this.colors = null;
     }
-
   }
-
 
   public List<Color> getColors() {
     return this.colors;

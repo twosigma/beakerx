@@ -19,9 +19,8 @@ package com.twosigma.beakerx.chart.histogram;
 import com.twosigma.beakerx.chart.AbstractChart;
 import com.twosigma.beakerx.chart.ChartToJson;
 import com.twosigma.beakerx.chart.Color;
+import com.twosigma.beakerx.chart.ListColorConverter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.twosigma.beakerx.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
@@ -139,34 +138,25 @@ public class Histogram extends AbstractChart {
     return this;
   }
 
-  @SuppressWarnings("unchecked")
-  public void setColor(Object color) {
-    if (color instanceof Color) {
-      this.baseColor = (Color) color;
-      sendModelUpdate(ChartToJson.serializeColor(this.baseColor));
-    } else if (color instanceof java.awt.Color) {
-      this.baseColor = new Color((java.awt.Color) color);
-      sendModelUpdate(ChartToJson.serializeColor(this.baseColor));
-    } else if (color instanceof List) {
-      if (color != null) {
-        List cs = (List) color;
-        this.colors = new ArrayList<>(cs.size());
-        for (Object c : cs) {
-          if (c instanceof Color) {
-            this.colors.add((Color) c);
-          } else if (c instanceof java.awt.Color) {
-            this.colors.add(new Color((java.awt.Color) c));
-          } else {
-            throw new IllegalArgumentException("setColor takes Color or List of Color");
-          }
-        }
-        sendModelUpdate(ChartToJson.serializeColors(this.colors));
-      } else {
-        this.colors = null;
-      }
+  public void setColor(Color color) {
+    this.baseColor = color;
+    sendModelUpdate(ChartToJson.serializeColor(this.baseColor));
+  }
+
+  public void setColor(java.awt.Color color) {
+    setColor(new Color(color));
+  }
+
+  public void setColor(List<Object> colorList) {
+    setColors(colorList);
+  }
+
+  private void setColors(List<Object> colorList) {
+    if (colorList != null) {
+      this.colors = ListColorConverter.convert(colorList);
+      sendModelUpdate(ChartToJson.serializeColors(this.colors));
     } else {
-      throw new IllegalArgumentException(
-              "setColor takes Color or List of Color");
+      this.colors = null;
     }
   }
 

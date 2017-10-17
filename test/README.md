@@ -21,5 +21,5 @@ Verify password: beakerx
 ## Run the tests
 
 ```
-python ./runner.py
+python ./run_notebook.py && python ./run_tests.py
 ```

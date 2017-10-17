@@ -37,8 +37,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   public static final String VIEW_MODULE_VERSION = "_view_module_version";
   public static final String MODEL_MODULE_VERSION = "_model_module_version";
 
-  public static final String MODEL_MODULE_VALUE = "jupyter-js-widgets";
-  public static final String VIEW_MODULE_VALUE = "jupyter-js-widgets";
+  public static final String MODEL_MODULE_VALUE = "@jupyter-widgets/controls";
+  public static final String VIEW_MODULE_VALUE = "@jupyter-widgets/controls";
   public static final String MODEL_MODULE_VERSION_VALUE = "*";
   public static final String VIEW_MODULE_VERSION_VALUE = "*";
 

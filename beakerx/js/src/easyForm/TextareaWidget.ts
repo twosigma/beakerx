@@ -15,7 +15,7 @@
  */
 
 declare function require(moduleName: string): any;
-const widgets = require('jupyter-js-widgets');
+const widgets = require('@jupyter-widgets/controls');
 
 import { TEXT_INPUT_WIDTH_UNIT } from './textWidget';
 

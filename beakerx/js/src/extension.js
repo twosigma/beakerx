@@ -24,7 +24,9 @@ if (window.require) {
         map: {
             "*" : {
                 "beakerx": "nbextensions/beakerx/index",
-                "jupyter-js-widgets": "nbextensions/jupyter-js-widgets/extension"
+                "jupyter-js-widgets": "nbextensions/jupyter-js-widgets/extension",
+                "@jupyter-widgets/base": "nbextensions/jupyter-js-widgets/extension",
+                "@jupyter-widgets/controls": "nbextensions/jupyter-js-widgets/extension"
             }
         }
     });

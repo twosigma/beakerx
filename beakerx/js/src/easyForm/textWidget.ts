@@ -15,7 +15,7 @@
  */
 
 declare function require(moduleName: string): any;
-const widgets = require('jupyter-js-widgets');
+const widgets = require('@jupyter-widgets/controls');
 
 export const TEXT_INPUT_WIDTH_UNIT = 'px';
 
@@ -33,6 +33,13 @@ class TextModel extends widgets.TextModel {
 
 class TextView extends widgets.TextView {
   handleKeypress(e) {
+    if (e.keyCode == 13) {
+      this.send({ event: 'submit' });
+      e.preventDefault();
+    }
+  }
+
+  handleEnterKeyPress(e) {
     if (e.keyCode == 13) {
       this.send({ event: 'submit' });
       e.preventDefault();

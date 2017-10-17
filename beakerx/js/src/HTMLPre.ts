@@ -15,7 +15,7 @@
  */
 
 declare function require(moduleName: string): any;
-const widgets = require('jupyter-js-widgets');
+const widgets = require('@jupyter-widgets/controls');
 
 class HTMLPreModel extends widgets.StringModel {
   defaults() {

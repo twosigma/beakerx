@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-var widgets = require('jupyter-js-widgets');
+var widgets = require('@jupyter-widgets/base');
 var _ = require('underscore');
 var $ = require('jquery');
 

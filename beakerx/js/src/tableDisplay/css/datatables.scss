@@ -21,6 +21,7 @@ $highlight-blue: #39a9ed;
 
 .beaker-table-display {
   overflow: visible;
+  display: inline-block;
 
   :focus {
     outline: none;

@@ -356,7 +356,6 @@ class SimpleTimePlot(TimePlot):
         self.chart.type = 'TimePlot'
         self.use_tool_tip = True
         self.show_legend = True
-        self.domain_axis_label = 'Time'
         time_column_default = 'time'
         displayNames = getValue(kwargs, 'displayNames')
         displayLines = getValue(kwargs, 'displayLines', True)
@@ -383,6 +382,7 @@ class SimpleTimePlot(TimePlot):
             tableData = tableData.to_dict(orient='rows')
         
         timeColumn = getValue(kwargs, 'timeColumn', time_column_default)
+        self.chart.domain_axis_label = getValue(kwargs, 'xLabel', timeColumn)
         if tableData is not None and columnNames is not None:
             dataColumnsNames.extend(list(tableData[0]))
             

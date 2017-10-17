@@ -53,7 +53,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     this.evaluator = new EvaluatorTest();
     this.kernel = new KernelTest("id2", evaluator);
     this.messageCreator = new MessageCreator(kernel);
-    this.classpathAddMvnMagicCommand = new ClasspathAddMvnMagicCommand(kernel, messageCreator);
+    this.classpathAddMvnMagicCommand = new ClasspathAddMvnMagicCommand(kernel, messageCreator, new File(TEST_IVY_CACHE).getAbsolutePath());
     copyIvyCacheToBuildDirectoryBecauseIvyChangeDatesInCache();
   }
 
@@ -65,11 +65,11 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   @Test
   public void handleClasspathAddMvnDep() throws Exception {
     //given
-    String codeAsString = "com.google.code.gson gson 2.2.4";
+    String codeAsString = "com.google.code.gson gson 2.6.2";
 
     //when
-    CommandItem process = classpathAddMvnMagicCommand.build()
-        .process(codeAsString, new Message(), 1);
+    CommandItem process = classpathAddMvnMagicCommand.build().process(codeAsString, new Message(), 1);
+
     //then
     String mvnDir = kernel.getTempFolder().toString() + MVN_DIR;
     Stream<Path> paths = Files.walk(Paths.get(mvnDir));

@@ -24,8 +24,11 @@ import com.twosigma.beakerx.kernel.msg.MessageCreator;
 
 public class ClasspathAddMvnMagicCommand extends ClassPathMagicCommand {
 
-  public ClasspathAddMvnMagicCommand(KernelFunctionality kernel, MessageCreator messageCreator) {
+  private String pathToCache;
+
+  public ClasspathAddMvnMagicCommand(KernelFunctionality kernel, MessageCreator messageCreator, String pathToCache) {
     super(CLASSPATH_ADD_MVN, "<group name version>", Sets.newHashSet(MagicCommandType.LINE), messageCreator, kernel);
+    this.pathToCache = pathToCache;
   }
 
   @Override
@@ -38,7 +41,7 @@ public class ClasspathAddMvnMagicCommand extends ClassPathMagicCommand {
         return createErrorMessage(message, ADD_MVN_FORMAT_ERROR_MESSAGE, executionCount);
       }
 
-      MavenJarResolver classpathAddMvnCommand = new MavenJarResolver(new ResolverParams(kernel.getTempFolder().toString() + "/../beakerIvyCache",
+      MavenJarResolver classpathAddMvnCommand = new MavenJarResolver(new ResolverParams(pathToCache,
                                                                                         kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR));
       MavenJarResolver.AddMvnCommandResult result = classpathAddMvnCommand.retrieve(split[0], split[1], split[2]);
       if (result.isJarRetrieved()) {

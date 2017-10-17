@@ -64,7 +64,7 @@ public class CommandExecutorImpl implements CommandExecutor {
                                                                new HTMLMagicCommand(messageCreator),
                                                                new JavascriptMagicCommand(messageCreator),
                                                                new ClasspathAddJarMagicCommand(kernel, messageCreator),
-                                                               new ClasspathAddMvnMagicCommand(kernel, messageCreator),
+                                                               new ClasspathAddMvnMagicCommand(kernel, messageCreator, kernel.getTempFolder().toString() + "/../beakerIvyCache"),
                                                                new ClassPathRemoveJarMagicCommand(kernel, messageCreator),
                                                                new ClassPathShowMagicCommand(kernel, messageCreator),
                                                                new AddStaticImportMagicCommand(kernel, messageCreator),

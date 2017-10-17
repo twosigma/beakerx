@@ -13,11 +13,11 @@
 # limitations under the License.
 
 from ipywidgets import Box, DOMWidget, CoreWidget, Text, Label, Textarea, \
-    Button, \
+    Button, Widget, \
     SelectMultiple, Select, Dropdown, Checkbox, HBox, \
-    VBox, RadioButtons, register, Layout, widget_serialization
+    VBox, RadioButtons, register, Layout, widget_serialization, HTML
 from ipywidgets.widgets.trait_types import InstanceDict
-from traitlets import Int, Unicode, Tuple, Bool, Union, List, Dict
+from traitlets import Int, Unicode, Dict, Bool, Union, List
 from IPython.display import display
 
 
@@ -29,6 +29,11 @@ class BeakerxLayout(Layout):
 
     def __init__(self, **kwargs):
         super(BeakerxLayout, self).__init__(**kwargs)
+
+
+class BeakerxWidget(Widget):
+    def __init__(self, **kwargs):
+        super(BeakerxWidget, self).__init__(**kwargs)
 
 
 class BeakerxDOMWidget(DOMWidget):
@@ -109,6 +114,34 @@ class BeakerxText(Text):
     style = None
 
 
+class BeakerxHTML(HTML):
+    def __init__(self, *args, **kwargs):
+        super(BeakerxHTML, self).__init__(**kwargs)
+        if len(args) > 0:
+            self.value = args[0]
+
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
+
+    layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
+    style = None
+
+
+class BeakerxHTMLPre(HTML):
+    def __init__(self, **kwargs):
+        super(BeakerxHTMLPre, self).__init__(**kwargs)
+
+    _view_name = Unicode('HTMLPreView').tag(sync=True)
+    _model_name = Unicode('HTMLPreModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
+
+    layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
+    style = None
+
+
 class BeakerxButton(Button):
     def __init__(self, **kwargs):
         super(BeakerxButton, self).__init__(**kwargs)
@@ -121,6 +154,7 @@ class BeakerxButton(Button):
 
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
     style = None
+
 
     def actionPerformed(self, *args, **kwargs):
         pass
@@ -181,8 +215,10 @@ class BeakerxLabel(Label):
 
 
 class BeakerxHBox(HBox):
-    def __init__(self, **kwargs):
+    def __init__(self, children=None, **kwargs):
         super(BeakerxHBox, self).__init__(**kwargs)
+        if children is not None:
+            self.children += tuple(children)
 
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
@@ -204,3 +240,47 @@ class BeakerxVBox(VBox):
 
     layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
     style = None
+
+
+class CyclingDisplayBox(BeakerxBox):
+    _view_name = Unicode('CyclingDisplayBoxView').tag(sync=True)
+    _model_name = Unicode('CyclingDisplayBoxModel').tag(sync=True)
+    period = Int(5000).tag(sync=True)
+
+    def __init__(self, children):
+        super(CyclingDisplayBox, self).__init__()
+        self.children += tuple(children)
+
+    def setPeriod(self, period):
+        self.period = period
+
+
+class GridView(BeakerxVBox):
+    _view_name = Unicode('GridView').tag(sync=True)
+    _model_name = Unicode('GridViewModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+
+    def __init__(self, rows):
+        super(GridView, self).__init__()
+        self.children += tuple(rows)
+
+
+class SelectionContainer(BeakerxBox):
+    _titles = Dict().tag(sync=True)
+
+    def __init__(self, childrens, labels):
+        super(SelectionContainer, self).__init__()
+        labels_dict = dict()
+        for x in labels:
+            labels_dict[len(labels_dict)] = x
+        self._titles = labels_dict
+        self.children += tuple(childrens)
+
+
+class Tab(SelectionContainer):
+    _view_name = Unicode('TabView').tag(sync=True)
+    _model_name = Unicode('TabModel').tag(sync=True)
+
+    def __init__(self, childrens, labels):
+        super(Tab, self).__init__(childrens, labels)

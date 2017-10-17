@@ -34,7 +34,8 @@ export default function createColumnMenus(scope) {
     }
   }
 
-  $(scope.element).on('click.headermenu', '.bko-column-header-menu', function(e) {
+  scope.element.off('mousedown.headermenu', '.bko-column-header-menu');
+  scope.element.on('mousedown.headermenu', '.bko-column-header-menu', function(e) {
     let colIdx = $(this).parent().index();
     const fixedCols = scope.table.settings()[0]._oFixedColumns;
     const rightHeader = fixedCols ? fixedCols.dom.clone.right.header : null;
@@ -47,7 +48,7 @@ export default function createColumnMenus(scope) {
 
     for(let i = 0; i < menus.length; i++) {
       if (menus[i].columnIndex === colIdx) {
-        menus[i].open($(scope.element).closest('.cell'), $(this));
+        menus[i].toggleMenu($(this));
         break;
       }
     }

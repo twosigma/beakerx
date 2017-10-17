@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
+import java.util
+
 import com.twosigma.beakerx.chart.Color
 import com.twosigma.beakerx.chart.xychart.plotitem.ShapeType
 
@@ -46,7 +48,8 @@ class Points extends com.twosigma.beakerx.chart.xychart.plotitem.Points {
 
   def this(y: Seq[_], size: Number, color: Seq[Color]) {
     this(y)
-    super.setColor(color.asJava)
+    val toList: util.List[Object] = color.map(x => x.asInstanceOf[Object]).asJava
+    super.setColor(toList)
     super.setSize(size)
   }
 

@@ -328,14 +328,14 @@ define([
       self.removeInteractionListeners();
       self.removeFilterListeners();
       self.destroyTableSelect();
-      $(self.element).find(".bko-table-use-pagination").remove();
+      self.doDestroyMenus();
+      self.element.find(".bko-table-use-pagination").remove();
       $body.tooltip('instance') && $body.tooltip('destroy');
 
       $.contextMenu('destroy', '#' + self.id + ' tbody td');
       $.contextMenu('destroy', '#' + self.id +'_wrapper thead');
       $body.off('click.bko-dt-container');
-      $document
-        .off('contextmenu.bko-dt-header')
+      $document.off('contextmenu.bko-dt-header');
       $tableContainer.find('.dataTables_scrollHead').off('scroll');
       $tableContainer
         .off('keyup.column-filter change.column-filter')
@@ -1544,7 +1544,7 @@ define([
     self.refreshCells();
 
     var createColumnMenus = require('./tableHeaderMenu/createColumnMenus').default;
-    createColumnMenus(self);
+    self.columnMenus = createColumnMenus(self);
 
     self.createTableMenuElements();
     // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
@@ -1713,6 +1713,21 @@ define([
     $(window).bind('resize.' + self.id, function() {
       updateSize();
     });
+
+    self.element[0].addEventListener('update.bko-table', function() {
+      self.applyChanges();
+    });
+  };
+
+  TableScope.prototype.doDestroyMenus = function() {
+    this.element.off('click.headermenu');
+    this.columnMenus && this.columnMenus.forEach(function(menu) {
+      menu.destroy();
+    });
+
+    this.indexMenu && this.indexMenu.destroy();
+    this.indexMenu = undefined;
+    this.columnMenus = undefined;
   };
 
   TableScope.prototype.enableJupyterKeyHandler = function() {
@@ -2411,7 +2426,7 @@ define([
       var triggerId = '#' + this.id + '_dropdown_menu';
       var $trigger = this.element.find(triggerId);
 
-      new (require('./tableHeaderMenu/IndexMenu').default)(this, $trigger);
+      this.indexMenu = new (require('./tableHeaderMenu/IndexMenu').default)(this, $trigger);
     }
   };
 

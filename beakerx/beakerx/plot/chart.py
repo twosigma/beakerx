@@ -21,8 +21,7 @@ from beakerx.plot.plotitem import *
 from beakerx.plot.plotitem_treemap import *
 from enum import Enum
 from traitlets import Unicode, Dict
-from beakerx.beakerx_widgets import BeakerxTextArea, BeakerxText, BeakerxBox, \
-    BeakerxDOMWidget
+from beakerx.beakerx_widgets import BeakerxDOMWidget
 
 
 class Chart(BaseObject):

@@ -17,11 +17,11 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('PlotFeatures notebook', function () {
+describe('Plot groovy tests', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/PlotFeatures.ipynb');
+    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/PlotGroovyTest.ipynb');
   }, 2);
 
   afterAll(function () {

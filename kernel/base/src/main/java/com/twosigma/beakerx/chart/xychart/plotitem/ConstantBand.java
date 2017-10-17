@@ -25,13 +25,12 @@ import java.util.List;
 
 /**
  * ConstantBand
- *
  */
 public class ConstantBand extends Graphics {
-  private List<Number>  xs;
-  private List<Number>  ys;
-  private Color         baseColor;
-  private Class         plotType;
+  private List<Number> xs;
+  private List<Number> ys;
+  private Color baseColor;
+  private Class plotType;
 
   public List<Number> getX() {
     return xs;
@@ -39,12 +38,12 @@ public class ConstantBand extends Graphics {
 
   public void setX(List<Object> xs) {
     this.xs = new ArrayList<>();
-    if(xs != null){
+    if (xs != null) {
       for (Object x : xs) {
         if (x instanceof Number) {
-          this.xs.add((Number)x);
+          this.xs.add((Number) x);
         } else if (x instanceof Date) {
-          Date date = (Date)x;
+          Date date = (Date) x;
           this.xs.add(date.getTime());
         } else {
           throw new IllegalArgumentException("x coordinates should be the list of numbers or java.util.Date objects");
@@ -61,15 +60,12 @@ public class ConstantBand extends Graphics {
     this.ys = y;
   }
 
-  public void setColor(Object color) {
-    if (color instanceof Color) {
-      this.baseColor = (Color) color;
-    } else if (color instanceof java.awt.Color) {
-      this.baseColor = new Color((java.awt.Color) color);
-    } else {
-      throw new IllegalArgumentException(
-        "setColor takes Color or java.awt.Color");
-    }
+  public void setColor(Color color) {
+    this.baseColor = color;
+  }
+
+  public void setColor(java.awt.Color color) {
+    setColor(new Color(color));
   }
 
   @Override

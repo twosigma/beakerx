@@ -15,9 +15,12 @@
  */
 
 import { Menu } from '@phosphor/widgets'
+import { Message } from '@phosphor/messaging'
+import $ from 'jquery';
 
 export default class BkoMenu extends Menu {
   keepOpen: boolean|undefined;
+  trigger: any;
 
   triggerActiveItem(): void {
     if (!this.keepOpen) {
@@ -38,5 +41,41 @@ export default class BkoMenu extends Menu {
     if (this.commands.isEnabled(command, args)) {
       this.commands.execute(command, args);
     }
+  }
+
+  protected onBeforeAttach(msg: Message): void {
+    super.onBeforeAttach(msg);
+
+    if (this.parentMenu && this.parentMenu.activeItem && this.parentMenu.activeItem.type === 'submenu') {
+      this.hide();
+    }
+  }
+
+  protected onActivateRequest(msg: Message) {
+    super.onActivateRequest(msg);
+
+    if (!this.parentMenu || !this.parentMenu.activeItem || this.parentMenu.activeItem.type !== 'submenu') {
+      return;
+    }
+
+    const itemNode = this.parentMenu.contentNode.children[this.parentMenu.activeIndex];
+    const itemOffset = $(itemNode).offset().top;
+    this.node.style.top = `${itemOffset}px`;
+
+    this.show();
+    const rect = this.node.getBoundingClientRect();
+    const clientHeight = window.innerHeight || document.documentElement.clientHeight;
+
+    if (rect.bottom > clientHeight) {
+      this.node.style.top = `${itemOffset - (rect.bottom - clientHeight)}px`;
+    }
+  }
+
+  close() {
+    super.close.call(this);
+
+    setTimeout(() => {
+      this.trigger && this.trigger.removeClass('opened');
+    });
   }
 }

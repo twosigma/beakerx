@@ -17,7 +17,6 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import { CommandRegistry } from '@phosphor/commands';
-import { Widget } from '@phosphor/widgets';
 import Menu from './BkoMenu';
 import MenuItem from './MenuItemInterface';
 
@@ -29,6 +28,7 @@ export default abstract class HeaderMenu {
   protected dtApi: any;
   protected cell: any;
   protected scopeElement: any;
+  private TRIGGER_CLASS_OPENED: string = 'opened';
 
   static DEBOUNCE_DELAY: number = 250;
 
@@ -45,37 +45,55 @@ export default abstract class HeaderMenu {
   protected abstract buildMenu($trigger?: any): void
 
   protected destroy(): void {
-    this.scopeElement.off('click.HeaderMenu, keydown.HeaderMenu');
+    this.scopeElement.off('mousedown.headermenu, keydown.HeaderMenu');
     $(this.menu.node).off('keyup.keyTable, change');
     $(document.body).off('click.table-headermenu');
     $(document).off('keydown.keyTable', this.handleKeydownEvent);
     $(this.menu.node).off('keydown.HeaderMenu', '.dropdown-menu-search input', this.handleKeydownEvent)
   }
 
-  protected getMenuPosition($notebookCell, $trigger) {
-    const $cell = $trigger.parent();
-    const rectObject = $trigger[0].getBoundingClientRect();
-    const pageHeight = window.innerHeight || document.documentElement.clientHeight;
-    const pixelsBelowViewport = Math.ceil($(this.menu.contentNode).height() + rectObject.bottom - pageHeight);
+  protected getMenuPosition($trigger: any) {
     const triggerHeight = $trigger.height() || 20;
+    const triggerOffset = $trigger.offset();
 
     return {
-      top: ($cell.offset().top - $notebookCell.offset().top + triggerHeight - (pixelsBelowViewport > 0 ? pixelsBelowViewport : 0)),
-      left: $cell.offset().left - $notebookCell.offset().left + (pixelsBelowViewport > 0 ? triggerHeight : 0)
+      top: triggerOffset.top + triggerHeight,
+      left: triggerOffset.left
     };
   }
 
-  open($notebookCell, $trigger): void {
-    Widget.attach(this.menu, $notebookCell[0]);
-    this.menu.node.style.top = null;
-    this.menu.node.style.bottom = '0px';
-    this.menu.addClass('open');
-    this.menu.show();
+  protected correctPosition($trigger: any) {
+    const menuRectObject = this.menu.node.getBoundingClientRect();
+    const triggerRectObject = $trigger[0].getBoundingClientRect();
 
-    const menuPosition = this.getMenuPosition($notebookCell, $trigger);
-    this.menu.node.style.top =  menuPosition.top + 'px';
-    this.menu.node.style.left = menuPosition.left + 'px';
-    this.menu.node.style.bottom = null;
+    if (menuRectObject.top < triggerRectObject.bottom && menuRectObject.left <= triggerRectObject.right) {
+      this.menu.node.style.left = triggerRectObject.right + 'px';
+    }
+  }
+
+  open($trigger: any, submenuIndex?: number): void {
+    const menuPosition = this.getMenuPosition($trigger);
+
+    this.menu.trigger = $trigger;
+    this.menu.addClass('open');
+    this.menu.open(menuPosition.left, menuPosition.top);
+    this.correctPosition($trigger);
+
+    $trigger.addClass(this.TRIGGER_CLASS_OPENED);
+
+    if (submenuIndex !== undefined) {
+      let item = this.menu.items[submenuIndex];
+      if (item.type === 'submenu') {
+        this.menu.activeIndex = submenuIndex;
+        this.menu.triggerActiveItem();
+      }
+    }
+  }
+
+  toggleMenu($trigger: any, submenuIndex?: number): void {
+    $trigger.hasClass(this.TRIGGER_CLASS_OPENED) ?
+      $trigger.removeClass(this.TRIGGER_CLASS_OPENED) :
+      this.open($trigger, submenuIndex);
   }
 
   createItems(items: MenuItem[], menu: Menu): void {
@@ -124,7 +142,7 @@ export default abstract class HeaderMenu {
     if (menuItem.shortcut) {
       this.commands.addKeyBinding({
         keys: [menuItem.shortcut],
-        selector: '.cell',
+        selector: 'body',
         command: menuItem.title
       });
     }

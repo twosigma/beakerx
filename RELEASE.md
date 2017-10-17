@@ -12,7 +12,8 @@ Review ``README.md`` and make sure that all dependencies are installed.
 Create the release
 ------------------
 
-Update the version in `beakerx/beakerx/_version.py` and commit the change and push the git tag.
+Update the version in `beakerx/beakerx/_version.py` and
+`beakerx/js/package.json`.  Commit the change and push the git tag.
 
 ```bash
 git clean -xfd
@@ -58,9 +59,8 @@ Publish on npmjs
 
 To update the embedded version of our widget library:
 
-- Increase the version in beakerx/js/package.json
 - Do a full build.
-- Run `npm publish`
+- Run `(cd beakerx/js; npm publish)`
 
 Release to Docker Hub
 ---------------------

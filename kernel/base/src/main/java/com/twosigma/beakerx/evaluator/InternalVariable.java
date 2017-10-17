@@ -20,7 +20,7 @@ import com.twosigma.beakerx.message.Message;
 
 public class InternalVariable {
 
-  private static ThreadLocal<SimpleEvaluationObject> threadLocal = new ThreadLocal<>();
+  private static SimpleEvaluationObject simpleEvaluationObject = null;
 
   public static Message getParentHeader() {
     SimpleEvaluationObject simpleEvaluationObject = getSimpleEvaluationObject();
@@ -31,11 +31,11 @@ public class InternalVariable {
   }
 
   public static SimpleEvaluationObject getSimpleEvaluationObject() {
-    return threadLocal.get();
+    return simpleEvaluationObject;
   }
 
   public static void setValue(SimpleEvaluationObject value) {
-    threadLocal.set(value);
+    simpleEvaluationObject = value;
   }
 
 }

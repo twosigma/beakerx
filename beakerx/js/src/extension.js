@@ -126,12 +126,6 @@ define([
           }
         });
       });
-
-      Jupyter.notebook.get_cells().map(function(cell, i) {
-        if (cell.cell_type === 'code'){
-          setCodeMirrorLineComment(cell.code_mirror);
-        }
-      });
     });
     Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
       interrupt();
@@ -140,7 +134,12 @@ define([
 
   installKernelHandler();
 
-  function setCodeMirrorLineComment(cm) {
+  function setCodeMirrorLineComment(cell) {
+    if (cell.cell_type !== 'code') {
+      return;
+    }
+
+    var cm = cell.code_mirror;
     var docMode = cm.doc && cm.doc.getMode();
     !cm.options.lineComment && cm.setOption('lineComment', LINE_COMMENT_CHAR);
 
@@ -326,10 +325,17 @@ define([
             callback_notebook_loaded();
           }
           events.on('notebook_loaded.Notebook', callback_notebook_loaded);
+          events.on('create.Cell', function(data, cell) {
+            cell.cell && setCodeMirrorLineComment(cell.cell);
+          });
         }).catch(function (reason) {
           console.error(log_prefix, 'unhandled error:', reason);
         });
       // ________ init cell extension code - end
+
+      Jupyter.notebook.get_cells().map(function(cell, i) {
+        setCodeMirrorLineComment(cell);
+      });
     }
 
   };

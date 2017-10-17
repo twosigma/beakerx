@@ -1,7 +1,7 @@
 {
   "name": "beakerx",
-  "version": "0.0.9",
-  "description": "Beaker Extensions for Jupyter",
+  "version": "0.6.2",
+  "description": "BeakerX: Beaker Extensions for Jupyter",
   "author": "Two Sigma Open Source, LLC",
   "main": "src/index.js",
   "license": "Apache-2.0",

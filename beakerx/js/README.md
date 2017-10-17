@@ -1,5 +1,5 @@
 # BeakerX NPM module
 
-BeakerX is the Beaker Extenson for Jupyter.
+BeakerX: Beaker Extensions for Jupyter.
 This NPM module has the BeakerX widgets.
-See https://github.com/twosigma/beakerx
+See http://BeakerX.com

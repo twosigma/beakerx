@@ -252,7 +252,7 @@ class Text(BaseObject):
         self.size = getValue(kwargs, 'size', 13)
         self.text = getValue(kwargs, 'text', '')
         self.show_pointer = getValue(kwargs, 'show_pointer', True)
-        self.pointer_angle = getValue(kwargs, 'pointer_angle',
+        self.pointer_angle = getValue(kwargs, 'pointerAngle',
                                       (-0.25) * math.pi)
 
 

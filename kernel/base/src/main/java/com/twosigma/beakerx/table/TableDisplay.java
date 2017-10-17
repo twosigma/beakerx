@@ -60,7 +60,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -68,8 +67,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class TableDisplay extends BeakerxWidget {
-
-  public static final String TAG = "tag";
 
   public static final String VIEW_NAME_VALUE = "TableDisplayView";
   public static final String MODEL_NAME_VALUE = "TableDisplayModel";
@@ -110,6 +107,7 @@ public class TableDisplay extends BeakerxWidget {
   private Map<String, Object> contextMenuListeners = new HashMap<>();
   private Map<String, String> contextMenuTags = new HashMap<>();
   private TableActionDetails details;
+  private TableDisplayActions displayActions = new TableDisplayActions(this);
 
   @Override
   public String getModelNameValue() {
@@ -131,7 +129,6 @@ public class TableDisplay extends BeakerxWidget {
     addToValues(v);
   }
 
-
   public TableDisplay(Collection<Map<String, Object>> v) {
     this(v, new BasicObjectSerializer());
   }
@@ -149,10 +146,10 @@ public class TableDisplay extends BeakerxWidget {
 
     // create columns
     for (Map<String, Object> m : v) {
-      Set<?> w = m.entrySet();
-      for (Object s : w) {
-        Entry<?, ?> e = (Entry<?, ?>) s;
-        String c = e.getKey().toString();
+      Set<Entry<String, Object>> w = m.entrySet();
+      for (Entry<String, Object> s : w) {
+        Entry<String, Object> e = s;
+        String c = e.getKey();
         if (!columns.contains(c)) {
           columns.add(c);
           String n = e.getValue() != null ? e.getValue().getClass().getName() : "string";
@@ -207,15 +204,16 @@ public class TableDisplay extends BeakerxWidget {
     return values;
   }
 
-  protected void openComm() {
-    super.openComm();
-    getComm().addMsgCallbackList((Handler<Message>) this::handleSetDetails);
-    getComm().addMsgCallbackList(this::handleOnContextMenu);
-    getComm().addMsgCallbackList((Handler<Message>) this::handleDoubleClick);
-  }
-
   public static TableDisplay createTableDisplayForMap(Map<?, ?> v) {
     return new TableDisplay(v);
+  }
+
+  @Override
+  protected void openComm() {
+    super.openComm();
+    getComm().addMsgCallbackList((Handler<Message>) message -> displayActions.handleSetDetails(message));
+    getComm().addMsgCallbackList((Handler<Message>) message -> displayActions.handleOnContextMenu(message));
+    getComm().addMsgCallbackList((Handler<Message>) message -> displayActions.handleDoubleClick(message));
   }
 
   public TimeUnit getStringFormatForTimes() {
@@ -633,62 +631,12 @@ public class TableDisplay extends BeakerxWidget {
     sendModelUpdate(serializeDoubleClickAction(this.doubleClickTag, hasDoubleClickAction()));
   }
 
-  private void handleDoubleClick(Message message) {
-    if (isCorrectEvent(message, CommActions.DOUBLE_CLICK)) {
-      handleCommEventSync(message, CommActions.DOUBLE_CLICK, this::onDoubleClickAction);
-    }
-  }
-
-  private boolean isCorrectEvent(Message message, CommActions commActions) {
-    LinkedHashMap<String, LinkedHashMap> data = (LinkedHashMap) message.getContent().get("data");
-    LinkedHashMap content = data.get("content");
-
-    if (null != content && !content.isEmpty()) {
-      String event = (String) content.getOrDefault("event", "");
-      return commActions.getAction().equals(event);
-    }
-
-    return false;
-
-  }
-
-  private void onDoubleClickAction(HashMap content, Message message) {
-    Object row = content.get("row");
-    Object column = content.get("column");
-    List<Object> params = new ArrayList<>();
-    params.add(row);
-    params.add(column);
-    fireDoubleClick(params, message);
-  }
-
   public void fireDoubleClick(List<Object> params, Message message) {
     if (this.doubleClickListener != null) {
       params.add(this);
       runCompiledCode(message, this::doubleClickHandler, params);
       sendModel();
     }
-  }
-
-  private void handleSetDetails(Message message) {
-    if (isCorrectEvent(message, CommActions.ACTIONDETAILS)) {
-      handleCommEventSync(message, CommActions.ACTIONDETAILS, this::onActionDetails);
-    }
-  }
-
-  private void handleOnContextMenu(Message message) {
-    if (isCorrectEvent(message, CommActions.CONTEXT_MENU_CLICK)) {
-      handleCommEventSync(message, CommActions.CONTEXT_MENU_CLICK, this::onContextMenu);
-    }
-  }
-
-  private void onContextMenu(HashMap content, Message message) {
-    String menuKey = (String) content.get("itemKey");
-    Object row = content.get("row");
-    Object column = content.get("column");
-    List<Object> params = new ArrayList<>();
-    params.add(row);
-    params.add(column);
-    fireContextMenuClick(menuKey, params, message);
   }
 
   public void fireContextMenuClick(String name, List<Object> params, Message message) {
@@ -712,51 +660,6 @@ public class TableDisplay extends BeakerxWidget {
     return MIMEContainer.HIDDEN;
   }
 
-
-  /**
-   * Also sends "runByTag" event.
-   *
-   * @param content
-   */
-  private void onActionDetails(HashMap content, Message message) {
-    TableActionDetails details = new TableActionDetails();
-
-    if (content.containsKey("params")) {
-
-      HashMap params = (HashMap) content.get("params");
-
-      if (params.containsKey("actionType")) {
-        CommActions value = CommActions.getByAction((String) params.get("actionType"));
-        details.setActionType(value);
-      }
-      if (params.containsKey("contextMenuItem")) {
-        String value = (String) params.get("contextMenuItem");
-        details.setContextMenuItem(value);
-      }
-      if (params.containsKey("row")) {
-        Integer value = (Integer) params.get("row");
-        details.setRow(value);
-      }
-      if (params.containsKey("col")) {
-        Integer value = (Integer) params.get("col");
-        details.setCol(value);
-      }
-      if (params.containsKey("tag")) {
-        String value = (String) params.get("tag");
-        details.setTag(value);
-      }
-    }
-    setDetails(details);
-    if (CommActions.CONTEXT_MENU_CLICK.equals(details.getActionType())) {
-      if (getContextMenuTags() != null && !getContextMenuTags().isEmpty() && details.getContextMenuItem() != null && !details.getContextMenuItem().isEmpty()) {
-        NamespaceClient.getBeaker().runByTag(getContextMenuTags().get(details.getContextMenuItem()));
-      }
-    } else if (CommActions.DOUBLE_CLICK.equals(details.getActionType())) {
-      if (getDoubleClickTag() != null && !getDoubleClickTag().isEmpty()) {
-        NamespaceClient.getBeaker().runByTag(getDoubleClickTag());
-      }
-    }
-  }
 
   public String getDoubleClickTag() {
     return doubleClickTag;
@@ -792,6 +695,10 @@ public class TableDisplay extends BeakerxWidget {
     this.details = details;
   }
 
+  public TableActionDetails getDetails() {
+    return details;
+  }
+
   protected Object runClosure(Object closure, Object... params) throws Exception {
     return RunWidgetClosure.runClosure(closure, params);
   }
@@ -809,4 +716,5 @@ public class TableDisplay extends BeakerxWidget {
   public interface Element {
     String get(int columnIndex, int rowIndex);
   }
+
 }

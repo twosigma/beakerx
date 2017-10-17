@@ -1,17 +1,39 @@
 .beaker-easyform-container {
 
-  .widget-inline-hbox .widget-label {
-    min-width: 120px;
-    max-width: 200px;
-    margin-right: 15px;
+  .widget-inline-hbox {
+    .widget-label {
+      min-width: 120px;
+      max-width: 200px;
+      margin-right: 15px;
+    }
+  }
+
+  .widget-select,
+  .widget-select-multiple {
+    width: 100%;
+    min-width: 380px;
+  }
+
+  .widget-select-multiple,
+  .widget-select {
+    > select {
+      flex: unset;
+      min-width: 30px;
+
+      &[size] {
+        overflow: auto;
+      }
+    }
   }
 
   .widget-textarea,
-  .widget-text,
-  .widget-select,
-  .widget-select-multiple {
-    width: 380px;
-    min-width: 380px;
+  .widget-text {
+    width: auto;
+
+    > [size],
+    > [cols] {
+      flex-grow: 0;
+    }
   }
 
   .widget-radio-box input {
@@ -29,7 +51,19 @@
     text-align: right;
   }
 
+  .widget-checkbox {
+    width: auto;
+
+    > .checkbox {
+      flex: unset;
+    }
+  }
+
   .widget-hbox {
+    .widget-radio {
+      width: auto;
+    }
+
     .widget-radio-box {
       flex-direction: row;
 
@@ -40,6 +74,13 @@
     }
   }
 
+  .p-Panel {
+    .widget-checkbox {
+      .widget-label {
+        min-width: 0;
+      }
+    }
+  }
 }
 
 .beaker-fieldset {

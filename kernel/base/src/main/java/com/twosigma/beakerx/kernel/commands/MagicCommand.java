@@ -59,9 +59,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
 import org.apache.commons.text.StrMatcher;
 import org.apache.commons.text.StrTokenizer;
 
@@ -451,8 +451,8 @@ public class MagicCommand {
 
   private Options createForTimeIt() {
     Options options = new Options();
-    //options.addOption("n", true, "Execute the given statement <N> times in a loop");
-    //options.addOption("r", true, "Repeat the loop iteration <R> times and take the best result. Default: 3");
+    options.addOption("n", true, "Execute the given statement <N> times in a loop");
+    options.addOption("r", true, "Repeat the loop iteration <R> times and take the best result. Default: 3");
     options.addOption("q", false, "Quiet, do not print result.");
 
     return options;
@@ -463,13 +463,23 @@ public class MagicCommand {
     return (code, command, message, executionCount) -> {
         String codeToExecute = code.asString().replace(TIMEIT_LINE, "");
         codeToExecute = codeToExecute.replaceAll("(-.)(\\d*\\s)", "");
-        return timeIt(buildTimeItOption(code), codeToExecute, message, executionCount);
-
+        try {
+          return timeIt(buildTimeItOption(code), codeToExecute, message, executionCount);
+        } catch (IllegalArgumentException e) {
+          return sendErrorMessage(message, e.getMessage(), executionCount);
+        }
     };
   }
 
   public MagicCommandFunctionality timeItCellMode() {
-    return (code, command, message, executionCount) -> timeIt(buildTimeItOption(code), code.takeCodeWithoutCommand().get().asString(), message, executionCount);
+    return (code, command, message, executionCount) -> {
+      try {
+        return timeIt(buildTimeItOption(code), code.takeCodeWithoutCommand().get().asString(), message,
+            executionCount);
+      } catch (IllegalArgumentException e) {
+        return sendErrorMessage(message, e.getMessage(), executionCount);
+      }
+    };
   }
 
   private TimeItOption buildTimeItOption(Code code) {
@@ -478,7 +488,7 @@ public class MagicCommand {
     try {
       StrTokenizer tokenizer = new StrTokenizer(code.asString());
 
-      CommandLineParser parser = new BasicParser();
+      CommandLineParser parser = new PosixParser();
       CommandLine cmd = parser.parse(createForTimeIt(), tokenizer.getTokenArray());
 
       if (cmd.hasOption('n')) {
@@ -491,10 +501,13 @@ public class MagicCommand {
         timeItOption.setQuietMode(true);
       }
 
-      return timeItOption;
     } catch (ParseException e) {
-      throw new IllegalStateException(e.toString());
+      throw new IllegalArgumentException(e.getMessage());
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException("Expected value must be a number " + e.getMessage().toLowerCase());
     }
+
+    return timeItOption;
   }
 
   public MagicCommandItemWithResult timeIt(TimeItOption timeItOption, String codeToExecute,

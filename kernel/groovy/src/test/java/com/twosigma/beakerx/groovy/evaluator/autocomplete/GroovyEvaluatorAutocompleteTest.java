@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.groovy.evaluator.autocomplete;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import org.junit.AfterClass;
@@ -28,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyEvaluatorAutocompleteTest {
 
-  private static GroovyEvaluator groovyEvaluator;
+  private static BaseEvaluator groovyEvaluator;
 
   @BeforeClass
   public static void setUpClass() throws Exception {

@@ -42,13 +42,16 @@ def _classpath_for(kernel):
     return pkg_resources.resource_filename(
             'beakerx', os.path.join('kernel', kernel, 'lib', '*'))
 
+def _uninstall_nbextension():
+    subprocess.check_call(["jupyter", "nbextension", "disable", "beakerx", "--py", "--sys-prefix"])
+    subprocess.check_call(["jupyter", "nbextension", "uninstall", "beakerx", "--py", "--sys-prefix"])
 
 def _install_nbextension():
     if sys.platform == 'win32':
         subprocess.check_call(["jupyter", "nbextension", "install", "beakerx", "--py", "--sys-prefix"])
     else:
         subprocess.check_call(["jupyter", "nbextension", "install", "beakerx", "--py", "--symlink", "--sys-prefix"])
-    
+
     subprocess.check_call(["jupyter", "nbextension", "enable", "beakerx", "--py", "--sys-prefix"])
 
 
@@ -65,7 +68,7 @@ def _copy_icons():
         src_base = _base_classpath_for(kernel)
         shutil.copyfile(os.path.join(src_base, 'logo-32x32.png'), os.path.join(dst_base, 'logo-32x32.png'))
         shutil.copyfile(os.path.join(src_base, 'logo-64x64.png'), os.path.join(dst_base, 'logo-64x64.png'))
-
+    
 def _install_css():
     log.info("installing custom CSS...")
     resource = os.path.join('static', 'custom')
@@ -74,16 +77,17 @@ def _install_css():
     _copy_tree(os.path.join(src_base, 'fonts'), os.path.join(dst_base, 'fonts'))
     shutil.copyfile(os.path.join(src_base, 'custom.css'), os.path.join(dst_base, 'custom.css'))
 
+
 def _install_kernels():
     base_classpath = _classpath_for('base')
-    
+
     for kernel in _all_kernels():
         kernel_classpath = _classpath_for(kernel)
         classpath = json.dumps(os.pathsep.join([base_classpath, kernel_classpath]))
         template = pkg_resources.resource_string(
-                'beakerx', os.path.join('kernel', kernel, 'kernel.json'))
+            'beakerx', os.path.join('kernel', kernel, 'kernel.json'))
         contents = Template(template.decode()).substitute(PATH=classpath)
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             with open(os.path.join(tmpdir, 'kernel.json'), 'w') as f:
                 f.write(contents)
@@ -94,13 +98,20 @@ def _install_kernels():
             ]
             subprocess.check_call(install_cmd)
 
-def _pretty(it):
+def _uninstall_kernels():
+    for kernel in _all_kernels():
+        uninstall_cmd = [
+            'jupyter', 'kernelspec', 'remove', kernel, '-y', '-f'
+        ]
+        subprocess.check_call(uninstall_cmd)
+
+def _pretty(it): 
     return json.dumps(it, indent=2)
 
 def _install_kernelspec_manager(prefix, disable=False):
     CKSM = "beakerx.kernel_spec.BeakerXKernelSpec"
     KSMC = "kernel_spec_class"
-    
+
     action_prefix = "Dis" if disable else "En"
     log.info("{}abling BeakerX server config...".format(action_prefix))
     path = os.path.join(prefix, "etc", "jupyter")
@@ -115,17 +126,17 @@ def _install_kernelspec_manager(prefix, disable=False):
         nb_app.pop(KSMC)
     else:
         nb_app.update({KSMC: CKSM})
-    
+
     log.debug("Writing config in {}...".format(path))
     cm.set("jupyter_notebook_config", cfg)
     cfg = cm.get("jupyter_notebook_config")
-    
+
     log.debug("Verifying config in {}...\n{}".format(path, _pretty(cfg)))
     if disable:
         assert KSMC not in cfg["KernelSpecManager"]
     else:
         assert cfg["KernelSpecManager"][KSMC] == CKSM
-    
+
     log.info("{}abled BeakerX server config".format(action_prefix))
 
 
@@ -134,18 +145,30 @@ def make_parser():
     parser.add_argument("--prefix",
                         help="location of the environment to install into",
                         default=sys.prefix)
+    parser.add_argument("--disable",
+                        help="Remove Beakerx extension",
+                        action='store_true')
     return parser
 
+def _disable_beakerx():
+    _uninstall_nbextension()
+    _uninstall_kernels()
+
+def _install_beakerx(args):
+    _install_nbextension()
+    _install_kernels()
+    _install_css()
+    _copy_icons()
+    _install_kernelspec_manager(args.prefix)
 
 def install():
     try:
         parser = make_parser()
         args = parser.parse_args()
-        _install_nbextension()
-        _install_kernels()
-        _install_css()
-        _copy_icons()
-        _install_kernelspec_manager(args.prefix)
+        if args.disable:
+            _disable_beakerx()
+        else:
+            _install_beakerx(args)
     except KeyboardInterrupt:
         return 130
     return 0

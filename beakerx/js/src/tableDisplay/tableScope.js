@@ -328,16 +328,14 @@ define([
       self.removeInteractionListeners();
       self.removeFilterListeners();
       self.destroyTableSelect();
-      self.destroyTableMenuElements();
-      $(self.element).find(".bko-table-use-pagination").remove();
+      self.doDestroyMenus();
+      self.element.find(".bko-table-use-pagination").remove();
       $body.tooltip('instance') && $body.tooltip('destroy');
 
       $.contextMenu('destroy', '#' + self.id + ' tbody td');
       $.contextMenu('destroy', '#' + self.id +'_wrapper thead');
       $body.off('click.bko-dt-container');
-      $document
-        .off('contextmenu.bko-dt-header')
-        .off('keydown.handleTableHeaderMenuClose');
+      $document.off('contextmenu.bko-dt-header');
       $tableContainer.find('.dataTables_scrollHead').off('scroll');
       $tableContainer
         .off('keyup.column-filter change.column-filter')
@@ -460,6 +458,7 @@ define([
       }
       if (self.types !== undefined) {
         self.indexType = self.types[0];
+        self.indexActualType = self.getTypeAndAlignmentByTypeString(self.types[0]).actualtype;
         self.types.shift();
       } else {
         self.indexType = 'index';
@@ -674,29 +673,33 @@ define([
       return defaultResult;
     }
 
-    if (self.types[index] === 'time' || self.types[index] === 'datetime') {
+    return self.getTypeAndAlignmentByTypeString(self.types[index], stringFormatForColumn);
+  };
+
+  TableScope.prototype.getTypeAndAlignmentByTypeString = function(type, stringFormatForColumn) {
+    if (type === 'time' || type === 'datetime') {
       return {
         actualtype: 8,
         actualalign: 'C'
       };
     }
 
-    if (self.types[index] === 'integer') {
+    if (type === 'integer') {
       return {
         actualtype: 2,
         actualalign: 'R'
       };
     }
 
-    if (self.types[index] === 'int64') {
+    if (type === 'int64') {
       return {
         actualtype: 0,
         actualalign: 'R'
       };
     }
 
-    if (self.types[index] === 'double') {
-      if (self.stringFormatForType.double || stringFormatForColumn) {
+    if (type === 'double') {
+      if (this.stringFormatForType && this.stringFormatForType.double || stringFormatForColumn) {
         return {
           actualtype: 3,
           actualalign: 'R'
@@ -709,7 +712,10 @@ define([
       };
     }
 
-    return defaultResult;
+    return {
+      actualtype: 0,
+      actualalign: 'L'
+    };
   };
 
   TableScope.prototype.setCellHighlighters = function() {
@@ -1263,8 +1269,8 @@ define([
     var cols = [];
     var i;
 
-    var createHeaderMenuItems = require('./tableHeaderMenu/createHeaderMenuItems');
-    var headerMenuItems = createHeaderMenuItems.call(self, cellHighlighters);
+    var createColumnMenuItems = require('./tableHeaderMenu/createColumnMenuItems').default;
+    var headerMenuItems = createColumnMenuItems.call(self, cellHighlighters);
 
     // build configuration
     var converter = self.allConverters[1];
@@ -1275,10 +1281,22 @@ define([
     };
     if (self.hasIndex) {
       for (i = 0; i < self.allTypes.length; i++) {
-        if (self.allTypes[i].name === self.indexType) {
-          converter = self.allConverters[self.allTypes[i].type];
+        if (self.allTypes[i].type !== self.indexActualType) {
+          continue;
+        }
+
+        converter = self.allConverters[self.allTypes[i].type];
+        if (!self.indexActualType) {
           break;
         }
+
+        if (self.isDoubleWithPrecision(self.indexActualType)) {
+          converter = self.doubleWithPrecisionConverters[self.getDoublePrecision(self.indexActualType)];
+        } else if (self.allConverters[self.indexActualType] !== undefined) {
+          converter = self.allConverters[self.indexActualType];
+        }
+
+        break;
       }
       cols.push({'title' : self.indexName, 'className': 'dtright', 'render': converter, createdCell: createdCell});
     } else {
@@ -1295,7 +1313,7 @@ define([
       var col = {
         'title' : '<span class="header-text">' + self.columnNames[i] +'</span>',
         'header': { 'menu': headerMenuItems },
-        'visible': i<self.outputColumnLimit,
+        'visible': i<self.outputColumnLimit
       };
       col.createdCell = function(td, cellData, rowData, row, col) {
         if(!_.isEmpty(self.tooltips)){
@@ -1341,7 +1359,6 @@ define([
 
     if (self.tableElementsCreated === false) {
       self.createTableElements();
-      self.createTableMenuElements();
       self.tableElementsCreated = true;
     }
 
@@ -1400,7 +1417,6 @@ define([
         //jscs:disable
         self.update_size();
         self.updateBackground();
-        self.updateDTMenu();
         //jscs:enable
       },
       'bSortCellsTop': true,
@@ -1527,9 +1543,10 @@ define([
     self.fixcols = new dataTablesFixedColumns(self.table, inits);
     self.refreshCells();
 
-    var columnColumnMenus = require('./tableHeaderMenu/ColumnMenu').default;
-    var columnMenus = columnColumnMenus(self);
+    var createColumnMenus = require('./tableHeaderMenu/createColumnMenus').default;
+    self.columnMenus = createColumnMenus(self);
 
+    self.createTableMenuElements();
     // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
     self.fixcols.fnRedrawLayout();
     self.updateFixedColumnsSeparator();
@@ -1667,10 +1684,6 @@ define([
       .on( 'column-sizing.dt', function( e, settings ) {
         self.updateTableWidth();
       })
-      .on('draw.dt', _.debounce(function() {
-        self.updateRowDisplayBtts();
-        self.updateToggleColumnBtts();
-      }, 100))
       .on('column-reorder', function(e, settings, details) {
         var selectedCells = self.table.cells({ selected: true });
         var indexes = selectedCells.indexes();
@@ -1690,15 +1703,6 @@ define([
         ).select();
       });
 
-    var handleTableHeaderMenuClose = _.debounce(function(event) {
-      if (event.which === 27) {
-        self.element.find(id + '_table_menu').removeClass('open');
-      }
-    }, 250);
-
-    $(document).off('keydown.handleTableHeaderMenuClose', handleTableHeaderMenuClose);
-    $(document).on('keydown.handleTableHeaderMenuClose', handleTableHeaderMenuClose);
-
     function updateSize() {
       clearTimeout(self.refresh_size);
       self.refresh_size = setTimeout(function() {
@@ -1710,53 +1714,20 @@ define([
       updateSize();
     });
 
-    self.element.find(id + '_dropdown_menu')
-      .on('click.bko-dropdown', function() {
-        var $toggleBtn = $(this);
-        var isOpen = $toggleBtn.parent().hasClass('open');
-        var $dropdown = $toggleBtn.parent();
-        var $menu = $dropdown.find('> .dropdown-menu');
-        var height = $menu.height();
-        var pageHeight = window.innerHeight || document.documentElement.clientHeight;
-        var pixelsBelow = Math.ceil(height + $dropdown.offset().top - pageHeight);
-        var shouldPosition = pixelsBelow > 0;
-
-        if (!isOpen) {
-          self.setCodeMirrorListener($toggleBtn);
-        }
-
-        $menu.css({
-          top: shouldPosition ? (- pixelsBelow - 20) : '100%',
-          left: shouldPosition ? '100%' : ''
-        });
-      })
-      .parent()
-      .on('keyup.keyTable, change', '.dropdown-menu-search input', _.debounce(function() {
-        var searchExp = this.value ? new RegExp(this.value, 'i') : null;
-
-        $(this).parent().next('.list-showcolumn').find('li').each(function (index, element) {
-          $(element).toggleClass('hidden', _.isRegExp(searchExp) ? !searchExp.test(element.textContent) : false);
-        });
-      }, 250))
-      .on('click', '.dropdown-menu-search .fa-search', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-      });
+    self.element[0].addEventListener('update.bko-table', function() {
+      self.applyChanges();
+    });
   };
 
-  // little hack: hide dropdown menu when click on CodeMirror instance
-  // CodeMirror stops propagation of 'click' event on first click
-  TableScope.prototype.setCodeMirrorListener = function(el) {
-    var CodeMirrorInstance = el.parents('.cell').find('.CodeMirror');
-    var dropdown = el.parent('.dropdown');
+  TableScope.prototype.doDestroyMenus = function() {
+    this.element.off('click.headermenu');
+    this.columnMenus && this.columnMenus.forEach(function(menu) {
+      menu.destroy();
+    });
 
-    if (CodeMirrorInstance) {
-      CodeMirrorInstance.off('mousedown.beakerDropdown');
-      CodeMirrorInstance.on('mousedown.beakerDropdown', function() {
-        dropdown.removeClass('open');
-        CodeMirrorInstance.off('mousedown.beakerDropdown');
-      });
-    }
+    this.indexMenu && this.indexMenu.destroy();
+    this.indexMenu = undefined;
+    this.columnMenus = undefined;
   };
 
   TableScope.prototype.enableJupyterKeyHandler = function() {
@@ -1795,19 +1766,6 @@ define([
 
   TableScope.prototype.isShowOutput = function() {
     return this.model.isShowOutput();
-  };
-
-  TableScope.prototype.updateDTMenu = function(){
-    var self = this;
-    if(self.table){
-      var orderInfo = self.table.order()[0];
-      if (orderInfo) {
-        self.isIndexColumnDesc = orderInfo[0] === 0 && orderInfo[1] === 'desc';
-        // if (!(self.$$phase || $rootScope.$$phase)) {
-        //   self.$apply();
-        // }
-      }
-    }
   };
 
   TableScope.prototype.getDtRow = function(node) {
@@ -1858,6 +1816,34 @@ define([
     }
   };
 
+  TableScope.prototype.getAllowedTypesByType = function(type) {
+    if (!this.types) {
+      return this.allTypes;
+    }
+
+    if (type === 'string') {
+      return this.allStringTypes;
+    }
+
+    if (type === 'double') {
+      return this.allDoubleTypes;
+    }
+
+    if (type === 'integer' || type === 'int64') {
+      return this.allIntTypes;
+    }
+
+    if (type === 'time' || type === 'datetime') {
+      return this.allTimeTypes;
+    }
+
+    if (type === 'boolean') {
+      return this.allBoolTypes;
+    }
+
+    return this.allStringTypes;
+  };
+
   TableScope.prototype.refreshCells = function() {
     var self = this;
     self.getCellIdx      =  [];
@@ -1879,23 +1865,7 @@ define([
       self.getCellSho.push(self.getColumnByInitialIndex(i).visible());
       self.getCellDisp.push(self.actualtype[order - 1]);
       self.getCellAlign.push(self.actualalign[order - 1]);
-      if (self.types) {
-        if (self.types[order - 1] === 'string') {
-          self.getCellDispOpts.push(self.allStringTypes);
-        } else if (self.types[order - 1] === 'double') {
-          self.getCellDispOpts.push(self.allDoubleTypes);
-        } else if (self.types[order - 1] === 'integer' || self.types[order - 1] === 'int64') {
-          self.getCellDispOpts.push(self.allIntTypes);
-        } else if (self.types[order - 1] === 'time' || self.types[order - 1] === 'datetime') {
-          self.getCellDispOpts.push(self.allTimeTypes);
-        } else if (self.types[order - 1] === 'boolean') {
-          self.getCellDispOpts.push(self.allBoolTypes);
-        } else {
-          self.getCellDispOpts.push(self.allStringTypes);
-        }
-      } else {
-        self.getCellDispOpts.push(self.allTypes);
-      }
+      self.getCellDispOpts.push(self.getAllowedTypesByType(self.types && self.types[order - 1]));
     }
     $(self.table.table().header()).find("th").each(function(i){
       var events = jQuery._data(this, 'events');
@@ -1951,9 +1921,24 @@ define([
         $(column.nodes()).addClass(cssClass);
         columnHeader.addClass(cssClass);
       };
+      var addClassToColumnsNodes = function(columnIndexList) {
+        columnIndexList.forEach(function(columnIndex) {
+          var nodes = self.table.column(columnIndex).nodes();
+          $(nodes).addClass(tableConsts.FC_COL_FIXED_CLASS);
+        });
+      };
+      var updateFixesCols = function(index, side) {
+        var indexList = [];
+        var startIndex = side === 'left' ? 0 : index;
+        var endIndex = side === 'left' ? index : self.columns.length-1;
+        for (var i=startIndex; i<=endIndex; i++) {indexList.push(i)}
+        addClassToColumnsNodes(indexList);
+      };
       updateColumn(self.pagination.fixLeft, tableConsts.FC_LEFT_SEPARATOR_CLASS);
+      updateFixesCols(self.pagination.fixLeft, 'left');
       if (self.pagination.fixRight) {
         updateColumn(self.columns.length - self.pagination.fixRight, tableConsts.FC_RIGHT_SEPARATOR_CLASS);
+        updateFixesCols(self.columns.length - self.pagination.fixRight, 'right');
       }
     }
   };
@@ -2218,8 +2203,6 @@ define([
       event.stopPropagation();
     }
 
-    self.updateToggleColumnBtts(column.index());
-
     if (column.visible()){
       var el = $('#' + self.id);
       var table = el.DataTable();
@@ -2243,7 +2226,6 @@ define([
     self.pagination.rowsToDisplay = len;
     if (self.pagination.use) {
       self.table.page.len(len).draw();
-      self.updateRowDisplayBtts();
     } else {
       var scrollBody = $('#' + self.id).parent();
       scrollBody.css('max-height', self.getScrollY());
@@ -2273,7 +2255,6 @@ define([
 
     table.columns(cLength).visible(visible, false);
     table.columns.adjust();
-    self.updateToggleColumnBtts();
   };
 
   TableScope.prototype.doUsePagination = function() {
@@ -2284,7 +2265,6 @@ define([
     }
     // reorder the table data
     self.applyChanges();
-    self.updateUsePaginationBtt();
   };
 
   TableScope.prototype.doDeselectAll = function() {
@@ -2358,9 +2338,8 @@ define([
   };
 
   TableScope.prototype.doResetAll = function() {
-    var self = this;
-    self.table.state.clear();
-    self.init(self.getCellModel());
+    this.doDestroy(true);
+    this.tableDisplayView.render();
   };
 
   TableScope.prototype.adjustRedraw = function() {
@@ -2380,7 +2359,6 @@ define([
     var self = this;
     self.init(this.model.getCellModel());
     self.tableChanged = true;
-    self.bindTableActions();
   };
 
   TableScope.prototype.setModelData = function(data) {
@@ -2443,176 +2421,13 @@ define([
     }
   };
 
-  TableScope.prototype.destroyTableMenuElements = function() {
-    var self = this;
-    if (self.columnNames) {
-      var globalDropdownMenu = self.element.find('.dtmenu > ul.dropdown-menu');
-      var showColumnMenu = globalDropdownMenu.find('ul.list-showcolumn');
-      var rowsToShowMenu = globalDropdownMenu.find('ul.list-rowstoshow');
-
-      showColumnMenu.find('li').remove();
-      rowsToShowMenu.find('li').remove();
-      showColumnMenu.remove();
-      rowsToShowMenu.remove();
-    }
-  };
-
   TableScope.prototype.createTableMenuElements = function() {
-    var self = this;
-    if (self.columnNames) {
-      var globalDropdownMenu = self.element.find('.dtmenu > ul.dropdown-menu');
-      var showColumnMenu = globalDropdownMenu.find('ul.list-showcolumn');
-      var rowsToShowMenu = globalDropdownMenu.find('ul.list-rowstoshow');
-      var toggleColummBtt = null;
-      var rowDisplayBtt = null;
+    if (this.columnNames) {
+      var triggerId = '#' + this.id + '_dropdown_menu';
+      var $trigger = this.element.find(triggerId);
 
-      showColumnMenu.empty();
-
-      self.columnNames.forEach(function(col, i) {
-        toggleColummBtt = self.createToggleColumnBtt(col, i);
-        showColumnMenu.append(toggleColummBtt);
-      });
-
-      self.rowsToDisplayMenu[0].forEach(function(item, i) {
-        rowDisplayBtt = self.createRowDisplayBtt(item, i);
-        rowsToShowMenu.append(rowDisplayBtt);
-      });
-
-      self.updateRowDisplayBtts();
+      this.indexMenu = new (require('./tableHeaderMenu/IndexMenu').default)(this, $trigger);
     }
-  };
-
-  TableScope.prototype.createToggleColumnBtt = function(colName, index) {
-    var self = this;
-    var elem = $('<li>' +
-                 '<a tabindex="-1">'+colName+'</a>' +
-                 '<input type="checkbox" id="'+self.id+'-'+index+'-visible" class="beforeCheckbox" checked="'+self.isColumnVisible(index+1)+'" />' +
-                 '<label for="'+self.id+'-'+index+'-visible" class="checkbox-label"></label>' +
-                 '</li>');
-
-    elem.on('click', 'a, input', function(ev) {
-      self.showColumn(index+1, ev);
-    });
-
-    return elem;
-  };
-
-  TableScope.prototype.createRowDisplayBtt = function(val, index) {
-    var self = this;
-    var elem = $('<li>' +
-                 '<a tabindex="-1">'+self.rowsToDisplayMenu[1][index]+'</a>' +
-                 '<i class="fa fa-check" aria-hidden="true"></i>' +
-                 '</li>');
-
-    elem.on('click', 'a', function() {
-      self.changePageLength(val);
-    });
-
-    return elem;
-  };
-
-  TableScope.prototype.updateUsePaginationBtt = function() {
-    var self = this;
-    var check = self.element.find('.dtmenu > ul.dropdown-menu li.dt-use-pagination-wrapper i');
-
-    if (self.pagination.use) {
-      check.show();
-    } else {
-      check.hide();
-    }
-  };
-
-  TableScope.prototype.updateToggleColumnBtts = function(columnIndex) {
-    if (!this.table) {
-      return;
-    }
-
-    var self = this;
-    var list = self.element.find('.dtmenu > ul.dropdown-menu ul.list-showcolumn li input[type="checkbox"]');
-    var columnsVisibility = this.table.columns().visible();
-
-    if (columnIndex) {
-      list[columnIndex - 1].checked = columnsVisibility[columnIndex];
-    } else {
-      list.each(function(i) {
-        this.checked = columnsVisibility[i + 1];
-      });
-    }
-  };
-
-  TableScope.prototype.updateRowDisplayBtts = function() {
-    var self = this;
-    var list = self.element.find('.dtmenu > ul.dropdown-menu ul.list-rowstoshow li');
-    var currentValue = null;
-
-    if (self.table) {
-      var len = self.table.page.len();
-      var itemIndex = self.rowsToDisplayMenu[0].indexOf(len);
-      var title =  self.rowsToDisplayMenu[1][itemIndex];
-      currentValue = title.toString();
-      // var settings = self.table.settings()[0];
-      // currentValue = settings._iDisplayLength.toString();
-    }
-
-    list.each(function(i) {
-      var thisText = $(this).children('a').text();
-      var checked =  currentValue === thisText;
-      var iElem = $(this).children('i');
-      if (checked) {
-        iElem.show();
-      } else {
-        iElem.hide();
-      }
-    });
-  };
-
-  TableScope.prototype.bindTableActions = function() {
-    var self = this;
-    self.element.find('div.dtmenu ul.dropdown-menu').on('click', function(ev) {
-      var dtAction = $(ev.target).attr('data-dtAction');
-      switch (dtAction) {
-        case 'dt-show-all':
-          self.toggleColumnsVisibility(true);
-          break;
-        case 'dt-hide-all':
-          self.toggleColumnsVisibility(false);
-          break;
-        case 'dt-use-pagination':
-          self.doUsePagination();
-          break;
-        case 'dt-deselect-all':
-          self.doDeselectAll();
-          break;
-        case 'dt-copy-to-clipboard':
-          self.doCopyToClipboard();
-          break;
-        case 'dt-save-all':
-          self.doCSVExport(false);
-          break;
-        case 'dt-save-selected':
-          self.doCSVExport(true);
-          break;
-        case 'dt-download-all':
-          self.doCSVDownload(false);
-          break;
-        case 'dt-download-selected':
-          self.doCSVDownload(true);
-          break;
-        case 'dt-search':
-          self.doShowFilter(self.table.column(0), true);
-          break;
-        case 'dt-filter':
-          self.doShowFilter(self.table.column(0), false);
-          break;
-        case 'dt-hide-filter':
-          self.hideFilter();
-          break;
-        case 'dt-reset-all':
-          self.doResetAll();
-          break;
-        default:
-      }
-    })
   };
 
   // ---------

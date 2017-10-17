@@ -711,7 +711,7 @@ public class TableDisplayTest {
     assertThat(actual).isEmpty();
   }
 
-  private List<Map<String, Object>> getListOfMapsData() {
+  public static List<Map<String, Object>> getListOfMapsData() {
     List<Map<String, Object>> list = new ArrayList<>();
     List<String> cols = getStringList();
     List<?> row = getRowData();
@@ -746,11 +746,11 @@ public class TableDisplayTest {
     };
   }
 
-  private List<String> getStringList() {
+  private static List<String> getStringList() {
     return Arrays.asList(COL_1, "str2", "str3");
   }
 
-  private List<?> getRowData() {
+  private static List<?> getRowData() {
     return Arrays.asList(new Float(1.0), 1490970521000L, "value1");
   }
 

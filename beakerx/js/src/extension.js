@@ -80,6 +80,7 @@ define([
   var config = new configmod.ConfigSection('notebook', {base_url: base_url});
   var comm;
   var kernel_info = undefined;
+  var LINE_COMMENT_CHAR = '//';
   
   function installKernelHandler() {
     Jupyter.notebook.events.on('kernel_ready.Kernel', function() {
@@ -102,11 +103,11 @@ define([
       });
       kernel.comm_manager.register_target('beaker.tag.run', function(comm, msg) {
         comm.on_msg(function(msg) {
-          if(msg.content.data.runByTag != undefined){
+          if(msg.content.data.state && msg.content.data.state.runByTag){
             var notebook = Jupyter.notebook;
             var cells = Jupyter.notebook.get_cells();
             var indexList = cells.reduce(function(acc, cell, index) {
-              if (cell._metadata.tags && cell._metadata.tags.includes(msg.content.data.runByTag)) {
+              if (cell._metadata.tags && cell._metadata.tags.includes(msg.content.data.state.runByTag)) {
                 acc.push(index);
               }
               return acc;
@@ -114,7 +115,7 @@ define([
             if (indexList.length === 0) {
               dialog.modal({
                 title: 'No cell with the tag !',
-                body: 'Tag: ' + msg.content.data.runByTag,
+                body: 'Tag: ' + msg.content.data.state.runByTag,
                 buttons: {'OK': {'class': 'btn-primary'}},
                 notebook: Jupyter.notebook,
                 keyboard_manager: Jupyter.keyboard_manager,
@@ -129,8 +130,23 @@ define([
     Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
       interrupt();
     });
-  };
+  }
+
   installKernelHandler();
+
+  function setCodeMirrorLineComment(cell) {
+    if (cell.cell_type !== 'code') {
+      return;
+    }
+
+    var cm = cell.code_mirror;
+    var docMode = cm.doc && cm.doc.getMode();
+    !cm.options.lineComment && cm.setOption('lineComment', LINE_COMMENT_CHAR);
+
+    if (!docMode.lineComment) {
+      docMode.lineComment = LINE_COMMENT_CHAR;
+    }
+  }
 
   function sendJupyterCodeCells(filter) {
     var comm = Jupyter.notebook.kernel.comm_manager.new_comm("beaker.getcodecells",
@@ -276,8 +292,6 @@ define([
       var bkApp = bkCoreManager.getBkApp();
       var bkObject = bkApp.getBeakerObject();
 
-      console.log('LOAD', window.beakerx);
-
       _.extend(window.beakerx, plotApiList);
       _.extend(window.beakerx, htmlOutput);
       window.beakerx.prefs = bkObject.beakerObj.prefs;
@@ -311,10 +325,17 @@ define([
             callback_notebook_loaded();
           }
           events.on('notebook_loaded.Notebook', callback_notebook_loaded);
+          events.on('create.Cell', function(data, cell) {
+            cell.cell && setCodeMirrorLineComment(cell.cell);
+          });
         }).catch(function (reason) {
           console.error(log_prefix, 'unhandled error:', reason);
         });
       // ________ init cell extension code - end
+
+      Jupyter.notebook.get_cells().map(function(cell, i) {
+        setCodeMirrorLineComment(cell);
+      });
     }
 
   };

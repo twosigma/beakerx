@@ -16,19 +16,35 @@
 
 define([
   'jquery',
-  'base/js/dialog'
-], function($, dialog) {
+  'base/js/dialog',
+  './shared/bkUtils'
+], function($, dialog, bkUtils) {
 
   var inNotebook = !Jupyter.NotebookList;
   if (!inNotebook) {
     return;
   }
 
+  function saveWidgetsState() {
+    var deferred = bkUtils.newDeferred();
+
+    if (Jupyter.menubar.actions.exists('widgets:save-with-widgets')) {
+      Jupyter.menubar.actions.call('widgets:save-with-widgets');
+      deferred.resolve();
+    } else {
+      deferred.reject();
+    }
+
+    return deferred.promise();
+  }
+
   var do_publish = function() {
     var url = "https://api.github.com/gists";
-    var filedata = {};
     var nbjson = Jupyter.notebook.toJSON();
+    var filedata = {};
+
     filedata[Jupyter.notebook.notebook_name] = {content : JSON.stringify(nbjson, undefined, 1)};
+
     var settings = {
       type : 'POST',
       headers : {},
@@ -56,7 +72,7 @@ define([
         'OK': {
           'class' : 'btn-primary',
           'click': function() {
-            do_publish();
+            saveWidgetsState().then(do_publish);
           }
         },
         'Cancel': {}

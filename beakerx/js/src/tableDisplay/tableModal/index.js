@@ -16,6 +16,7 @@
 
 var bkHelper = require('./../../shared/bkHelper');
 var _ = require('underscore');
+var $ = require('jquery');
 
 module.exports = function(TableScope) {
 
@@ -50,8 +51,9 @@ module.exports = function(TableScope) {
     var self = this;
     $('#' + self.id + '_modal_dialog').hide();
     bkHelper.timeout(function() {
-      $('#' + self.id + '_dropdown_menu').click();
-      $('#' + self.id + '_show_column > .dropdown-menu').css('display', 'block');
+      var $trigger = $('#' + self.id + '_dropdown_menu');
+
+      self.indexMenu.open($trigger, 1);
     }, 0);
   };
 

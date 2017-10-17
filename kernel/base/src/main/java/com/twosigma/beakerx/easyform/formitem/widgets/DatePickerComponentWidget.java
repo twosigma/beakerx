@@ -29,14 +29,6 @@ public class DatePickerComponentWidget extends EasyFormComponent<DatePicker> {
   public DatePickerComponentWidget() {
     super(new DatePicker());
   }
-  
-  public void setShowTime(Boolean showTime) {
-    this.widget.setShowTime(showTime);
-  }
-
-  public Boolean getShowTime() {
-    return this.widget.getShowTime();
-  }
 
   @Override
   protected boolean checkValue(final Object value) {

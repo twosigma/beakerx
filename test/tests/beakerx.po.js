@@ -16,7 +16,8 @@
 
 var BeakerXPageObject = function () {
 
-  this.baseURL = 'http://127.0.0.1:8888/tree/doc/contents';
+  this.baseDocURL = 'http://127.0.0.1:8888/tree/doc/contents';
+  this.baseTestURL = 'http://127.0.0.1:8888/tree/test/notebooks';
   this.kernelIdleIcon = $('i.kernel_idle_icon');
 
   this.loginJupyter = function () {
@@ -27,12 +28,18 @@ var BeakerXPageObject = function () {
 
   this.runNotebookByName = function(name, done, subDir){
     browser
-      .url(subDir === undefined ? this.baseURL : this.baseURL + '/' + subDir)
+      .url(subDir === undefined ? this.baseDocURL : this.baseDocURL + '/' + subDir)
       .call(done);
     this.loginJupyter();
     browser.waitForEnabled('=' + name);
     browser.click('=' + name);
     browser.window(browser.windowHandles().value[1]);
+  }
+
+  this.runNotebookByUrl = function(url){
+    browser.url('http://127.0.0.1:8888' + url);
+    this.loginJupyter();
+    this.kernelIdleIcon.waitForEnabled();
   }
 
   this.clickRunCell = function () {
@@ -46,15 +53,12 @@ var BeakerXPageObject = function () {
     browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
   }
 
-  this.closeAndHaltNotebook = function (done) {
+  this.closeAndHaltNotebook = function () {
     this.clickSaveNotebook();
     browser.click('=File');
     browser.waitForVisible('=Close and Halt');
     browser.click('=Close and Halt');
-    browser.waitUntil(function () {
-      return browser.windowHandles().length === 1
-    }, 10000);
-    browser.call(done);
+    browser.endAll();
   }
 
   this.getCodeCellByIndex = function (index) {
@@ -66,23 +70,27 @@ var BeakerXPageObject = function () {
     codeCell.scroll();
     codeCell.click();
     this.clickRunCell();
-    return codeCell;
+    this.kernelIdleIcon.waitForEnabled();
+    return this.getCodeCellByIndex(index);
   }
 
   this.runCellToGetDtContainer = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
+    codeCell.waitForEnabled();
     return codeCell.$('div.dtcontainer');
   }
 
   this.runCellToGetSvgElement = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
+    codeCell.waitForEnabled();
     return codeCell.$('#svgg');
   }
 
   this.runCallAndCheckOutputText = function(index, expectedText){
     var codeCell = this.runCodeCellByIndex(index);
+    this.kernelIdleIcon.waitForEnabled();
     var outputText = codeCell.$('.output_subarea.output_text');
     outputText.waitForExist();
     outputText.waitForEnabled();
@@ -103,6 +111,26 @@ var BeakerXPageObject = function () {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.jupyter-widgets');
+  }
+
+  this.runCellToGetEasyForm = function(index){
+    this.kernelIdleIcon.waitForEnabled();
+    var codeCell = this.runCodeCellByIndex(index);
+    return codeCell.$('div.beaker-easyform-container');
+  }
+
+  this.runCellToGetTableElement = function(index){
+    this.kernelIdleIcon.waitForEnabled();
+    var codeCell = this.runCodeCellByIndex(index);
+    return codeCell.$('div.dataTables_scrollBody');
+  }
+
+  this.checkCellOutput = function(index, text){
+    var codeCell = this.getCodeCellByIndex(index);
+    codeCell.scroll();
+    var outputText = codeCell.$('.output_subarea.output_text');
+    outputText.waitForEnabled();
+    expect(outputText.getText()).toMatch(text);
   }
 
 };

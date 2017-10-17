@@ -53,14 +53,24 @@ subprojects {
   }
   ext.pathToStaticContent = '../../beakerx/beakerx/kernel/'
 
+  test {
+    testLogging {
+      afterSuite { desc, result ->
+        if (!desc.parent) {
+          println "Tests run: ${result.testCount}, Successes: ${result.successfulTestCount}, Failures: ${result.failedTestCount}, Skipped: ${result.skippedTestCount}, Total time: ${TimeCategory.minus(new Date(result.endTime), new Date(result.startTime))} "
+        }
+      }
+    }
+  }
+
   task staticContent {
     doLast {
-        copy {
-          from '.'
-          into pathToStaticContent + kernelIdName
-          include '*.png'
-          include 'kernel.json'
-        }
+      copy {
+        from '.'
+        into pathToStaticContent + kernelIdName
+        include '*.png'
+        include 'kernel.json'
+      }
     }
   }
   build.finalizedBy staticContent

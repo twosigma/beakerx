@@ -18,12 +18,20 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.widgets.strings.Text;
 
-import static com.twosigma.beakerx.widgets.Layout.PX;
-
 public class TextFieldWidget extends EasyFormComponent<Text> {
 
   private Integer width;
-  
+  private Integer size;
+
+  public Integer getSize() {
+    return size;
+  }
+
+  public void setSize(Integer size) {
+    this.size = size;
+    getWidget().sendUpdate("size", size);
+  }
+
   public TextFieldWidget() {
     super(new Text());
   }
@@ -38,8 +46,8 @@ public class TextFieldWidget extends EasyFormComponent<Text> {
   }
 
   public TextFieldWidget setWidth(Integer width) {
-    widget.getLayout().setWidth(width + PX);
     this.width = width;
+    getWidget().sendUpdate("width", width);
     return this;
   }
 

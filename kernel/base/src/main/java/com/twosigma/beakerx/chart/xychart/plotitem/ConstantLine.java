@@ -23,16 +23,15 @@ import java.util.Date;
 
 /**
  * ConstantLine
- *
  */
-public class ConstantLine extends Graphics{
-  private Number      x;
-  private Number      y;
-  private Color       baseColor;
-  private Float       width       = 1.5f;
-  private StrokeType  style;
-  private Class       plotType;
-  private boolean     showLabel;
+public class ConstantLine extends Graphics {
+  private Number x;
+  private Number y;
+  private Color baseColor;
+  private Float width = 1.5f;
+  private StrokeType style;
+  private Class plotType;
+  private boolean showLabel;
 
 
   public Number getX() {
@@ -41,9 +40,9 @@ public class ConstantLine extends Graphics{
 
   public void setX(Object x) {
     if (x instanceof Number) {
-      this.x = (Number)x;
+      this.x = (Number) x;
     } else if (x instanceof Date) {
-      this.x = ((Date)x).getTime();
+      this.x = ((Date) x).getTime();
     } else {
       throw new IllegalArgumentException("x takes Number or Date");
     }
@@ -57,15 +56,12 @@ public class ConstantLine extends Graphics{
     this.y = y;
   }
 
-  public void setColor(Object color) {
-    if (color instanceof Color) {
-      this.baseColor = (Color) color;
-    } else if (color instanceof java.awt.Color) {
-      this.baseColor = new Color((java.awt.Color) color);
-    } else {
-      throw new IllegalArgumentException(
-        "setColor takes Color or java.awt.Color");
-    }
+  public void setColor(Color color) {
+    this.baseColor = color;
+  }
+
+  public void setColor(java.awt.Color color) {
+    setColor(new Color(color));
   }
 
   @Override

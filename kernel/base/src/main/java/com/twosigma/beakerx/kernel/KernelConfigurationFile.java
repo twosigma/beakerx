@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 public class KernelConfigurationFile implements ConfigurationFile {
@@ -37,7 +38,7 @@ public class KernelConfigurationFile implements ConfigurationFile {
   public Config getConfig() {
     if (configuration == null) {
       logger.debug("Path to config file : " + config.getAbsolutePath());
-      configuration = MessageSerializer.parse(new String(readConfig()), Config.class);
+      configuration = MessageSerializer.parse(new String(readConfig(), StandardCharsets.UTF_8), Config.class);
       logger.debug("Creating signing hmac with: {}", configuration.getKey());
     }
     return configuration;

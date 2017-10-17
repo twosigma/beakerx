@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.widgets.floats;
 
+import com.twosigma.beakerx.widgets.styles.SliderStyle;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -50,22 +51,21 @@ import java.util.HashMap;
  */
 public class FloatRangeSlider extends BoundedFloatRangeWidget {
 
-  public static final String VIEW_NAME_VALUE = "FloatRangeSliderModel";
+  public static final String VIEW_NAME_VALUE = "FloatRangeSliderView";
   public static final String MODEL_NAME_VALUE = "FloatRangeSliderModel";
 
   protected static final String ORIENTATION = "orientation";
   protected static final String CONTINUOUS_UPDATE = "continuous_update";
   protected static final String _RANGE = "_range";
   protected static final String READOUT = "readout";
-  protected static final String SLIDER_COLOR = "slider_color";
 
   private String orientation = "horizontal";
   private Boolean continuous_update = true;
   private Boolean readOut = true;
-  private String slider_color;
 
   public FloatRangeSlider() {
     super();
+    this.style = new SliderStyle();
     openComm();
   }
 
@@ -75,7 +75,6 @@ public class FloatRangeSlider extends BoundedFloatRangeWidget {
     content.put(ORIENTATION, orientation);
     content.put(_RANGE, true);
     content.put(READOUT, this.readOut);
-    content.put(SLIDER_COLOR, this.slider_color);
     content.put(CONTINUOUS_UPDATE, this.continuous_update);
     return content;
   }

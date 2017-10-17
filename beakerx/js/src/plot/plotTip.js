@@ -272,6 +272,7 @@ define([
         return;
       }
 
+      impl.hideTips(scope, d.id);
       clear(scope, d, true);
     },
 
@@ -286,6 +287,7 @@ define([
       } else {
         scope.tips[id].sticking = !scope.tips[id].sticking;
         if (scope.tips[id].sticking === false) {
+          impl.hideTips(scope, d.id);
           impl.untooltip(scope, d);
         }
       }

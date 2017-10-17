@@ -19,6 +19,7 @@ import com.twosigma.beakerx.SerializeToString;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.widgets.Widget;
 import com.twosigma.beakerx.widgets.strings.HTML;
+import com.twosigma.beakerx.widgets.strings.HTMLPre;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +64,8 @@ public abstract class OutputContainerLayoutManager {
     if (item instanceof MIMEContainer) {
       return of(createHTML(((MIMEContainer) item).getData().toString()));
     }
-    return of(createHTML(item.toString()));
+
+    return of(createHTMLPre(item.toString()));
   }
 
   private Optional<Widget> handleNull() {
@@ -71,12 +73,18 @@ public abstract class OutputContainerLayoutManager {
     if (mimeContainerForNull.contains(MIMEContainer.HIDDEN)) {
       return empty();
     }
-    return of(createHTML(mimeContainerForNull.get(0).getData().toString()));
+    return of(createHTMLPre(mimeContainerForNull.get(0).getData().toString()));
   }
 
   private Widget createHTML(String value) {
     HTML label = new HTML();
     label.setValue(value);
     return label;
+  }
+
+  private Widget createHTMLPre(String value) {
+    HTMLPre pre = new HTMLPre();
+    pre.setValue(value);
+    return pre;
   }
 }

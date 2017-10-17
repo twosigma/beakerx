@@ -18,9 +18,9 @@ import time
 from datetime import datetime
 from dateutil import parser
 from enum import Enum
+import pytz
 
 current_milli_time = lambda: int(round(time.time() * 1000))
-
 
 def is_date(string):
     try:
@@ -32,7 +32,7 @@ def is_date(string):
 
 def unix_time(dt):
     epoch = parser.parse("1970-01-01 00:00:00+00:00")
-    delta = parser.parse(dt) - epoch
+    delta = parser.parse(dt).replace(tzinfo=pytz.utc) - epoch
     
     return delta.total_seconds()
 

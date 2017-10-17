@@ -47,7 +47,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
 
   public static final Integer HORIZONTAL = 1;
   public static final Integer VERTICAL = 2;
-  private static final Integer AUTO_WIDTH = -1;
+  private static final Integer AUTO_SIZE = 20;
 
   private final String caption;
   private Boolean ready = Boolean.FALSE;
@@ -75,11 +75,11 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     return addTextField(label, -1);
   }
 
-  public EasyFormComponent addTextField(final String label, final Integer width) throws Exception {
+  public EasyFormComponent addTextField(final String label, final Integer size) throws Exception {
     TextFieldWidget textField = new TextFieldWidget();
 
     textField.setLabel(label);
-    textField.setWidth(width);
+    textField.setSize(size);
     return addComponentOrThrow(label, textField);
   }
 
@@ -87,9 +87,9 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     return addTextArea(label, null, TextAreaWidget.AUTO_WIDTH, TextAreaWidget.AUTO_HEIGHT);
   }
 
-  public EasyFormComponent addTextArea(final String label, final Integer width, final Integer height)
+  public EasyFormComponent addTextArea(final String label, final Integer cols, final Integer rows)
           throws Exception {
-    return addTextArea(label, null, width, height);
+    return addTextArea(label, null, cols, rows);
   }
 
   public EasyFormComponent addTextArea(final String label, final String initialValue) throws Exception {
@@ -98,13 +98,13 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
 
   public EasyFormComponent addTextArea(final String label,
                                        final String initialValue,
-                                       final Integer width,
-                                       final Integer height) throws Exception {
+                                       final Integer cols,
+                                       final Integer rows) throws Exception {
     TextAreaWidget textArea = new TextAreaWidget();
     textArea.registerUpdateValueCallback(textArea::fireChanged);
     textArea.setLabel(label);
-    textArea.setWidth(width);
-    textArea.setHeight(height);
+    textArea.setCols(cols);
+    textArea.setRows(rows);
     textArea.setValue(initialValue);
     return addComponentOrThrow(label, textArea);
   }
@@ -129,19 +129,19 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
   public EasyFormComponent addComboBox(final String label,
                                        final Collection<String> values,
                                        final Boolean editable) throws Exception {
-    return addComboBox(label, values, editable, EasyForm.AUTO_WIDTH);
+    return addComboBox(label, values, editable, EasyForm.AUTO_SIZE);
   }
 
   public EasyFormComponent addComboBox(final String label,
                                        final Collection<String> values,
                                        final Boolean editable,
-                                       final Integer width) throws Exception {
+                                       final Integer size) throws Exception {
     ComboBoxWidget comboBox = new ComboBoxWidget();
     comboBox.registerUpdateValueCallback(comboBox::fireChanged);
     comboBox.setLabel(label);
     comboBox.setEditable(editable);
     comboBox.setValues(values);
-    comboBox.setWidth(width);
+    comboBox.setSize(size);
     if (values != null && values.size() > 0) {
       comboBox.setValue(values.iterator().next());
     }
@@ -222,18 +222,9 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
   }
 
   public EasyFormComponent addDatePicker(final String label) throws Exception {
-    return addDatePicker(label, Boolean.FALSE);
-  }
-
-  public EasyFormComponent addDateTimePicker(final String label) throws Exception {
-    return addDatePicker(label, Boolean.TRUE);
-  }
-
-  public EasyFormComponent addDatePicker(final String label, final Boolean showTime) throws Exception {
     DatePickerComponentWidget datePickerComponent = new DatePickerComponentWidget();
     datePickerComponent.registerUpdateValueCallback(datePickerComponent::fireChanged);
     datePickerComponent.setLabel(label);
-    datePickerComponent.setShowTime(showTime);
     return addComponentOrThrow(label, datePickerComponent);
   }
 

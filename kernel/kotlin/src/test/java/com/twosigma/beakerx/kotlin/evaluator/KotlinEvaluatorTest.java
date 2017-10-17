@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kotlin.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
+
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
@@ -26,31 +27,32 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kotlin.kernel.KotlinKernelMock;
-import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import com.twosigma.beakerx.chart.xychart.Plot;
 
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KotlinEvaluatorTest {
 
-  private KotlinEvaluator evaluator;
+  private static KotlinEvaluator evaluator;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeClass
+  public static void setUp() throws Exception {
     evaluator = new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory());
     KotlinKernelMock kernel = new KotlinKernelMock("id", evaluator);
     KernelManager.register(kernel);
   }
 
-  @After
-  public void tearDown() throws Exception {
+  @AfterClass
+  public static void tearDown() throws Exception {
     KernelManager.register(null);
     evaluator.exit();
   }
@@ -60,8 +62,8 @@ public class KotlinEvaluatorTest {
     //given
     Map<String, Object> paramMap = new HashMap<>();
     // This import tests both "static" removal and "object" escaping.
-    List<String> imports = Arrays.asList(
-        "import static com.twosigma.beakerx.kotlin.evaluator.object.ImportTestHelper.staticMethod");
+    List<String> imports = asList(
+            "import static com.twosigma.beakerx.kotlin.evaluator.object.ImportTestHelper.staticMethod");
     paramMap.put(IMPORTS, imports);
     KernelParameters kernelParameters = new KernelParameters(paramMap);
     //when
@@ -71,39 +73,72 @@ public class KotlinEvaluatorTest {
     evaluator.evaluate(seo, code);
     waitForResult(seo);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(seo.getStatus()).isEqualTo(FINISHED);
   }
 
   @Test
   public void evaluatePlot_shouldCreatePlotObject() throws Exception {
     //given
     Map<String, Object> paramMap = new HashMap<>();
-    paramMap.put(IMPORTS, Arrays.asList("import com.twosigma.beakerx.chart.xychart.*"));
+    paramMap.put(IMPORTS, asList("import com.twosigma.beakerx.chart.xychart.*"));
     evaluator.setShellOptions(new KernelParameters(paramMap));
     String code = "val plot = Plot()\n" +
-                "plot.setTitle(\"test title\");\n" +
-                "plot.display();";
+            "plot.setTitle(\"test title\");\n" +
+            "plot.display();";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     evaluator.evaluate(seo, code);
     waitForResult(seo);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
-//    Assertions.assertThat(seo.getPayload() instanceof Plot).isTrue();
-//    Assertions.assertThat(((Plot) seo.getPayload()).getTitle()).isEqualTo("test title");
+    assertThat(seo.getStatus()).isEqualTo(FINISHED);
   }
 
   @Test
-  public void evaluateDivisionByZero_shouldReturnArithmeticException() throws Exception {
+  public void executePlot() throws Exception {
     //given
-    String code = "16/0";
+    String code = "" +
+            "import com.twosigma.beakerx.chart.xychart.*\n" +
+            "val plot = Plot()";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when
     evaluator.evaluate(seo, code);
     waitForResult(seo);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
-    Assertions.assertThat((String) seo.getPayload()).contains("java.lang.ArithmeticException");
+    assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(seo.getPayload()).isNull();
+  }
+
+  @Test
+  public void handleErrors() throws Exception {
+    //given
+    String code = "val plot = UndefinedPlot()";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    evaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    assertThat(seo.getStatus()).isEqualTo(ERROR);
+    assertThat((String)seo.getPayload()).contains("unresolved reference: UndefinedPlot");
+  }
+
+  @Test
+  public void returnFromFunction() throws Exception {
+    //given
+    String code = "" +
+            "val a = 2.2\n" +
+            "val b = 14\n" +
+            "\n" +
+            "val f = {x: Double -> a*x + b}\n" +
+            "\n" +
+            "println(f(2.0))\n" +
+            "f(2.0)";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    evaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat((Double) seo.getPayload()).isEqualTo(18.4);
   }
 
 }

@@ -161,7 +161,6 @@ define([
     var sanitize = null;
     try {
       var caja = IPython.security.caja;
-      console.log('ip',IPython);
       window.cssSchemaFixed = false;
       sanitize = function(styleString){
         if (!window.cssSchemaFixed){
@@ -490,9 +489,10 @@ define([
       var data = this.stdmodel.data[i];
       if (data.id === item.id || item.id.indexOf(data.id + "_") === 0) {
         var plotId = this.stdmodel.plotId;
+        var plotIndex = this.stdmodel.plotIndex;
         if (data.keyTags != null && !_.isEmpty(data.keyTags[key])) {
           if (this.model.setActionDetails) {
-            this.model.setActionDetails(plotId, data, item).then(
+            this.model.setActionDetails(plotIndex, data, item).then(
               function () { plotUtils.evaluateTagCell(data.keyTags[key]); },
               function () { console.error('set action details error'); } );
           } else {
@@ -512,7 +512,7 @@ define([
           this.legendResetPosition = true;
           this.doNotLoadState = true;
           if (this.model.onKey) {
-            this.model.onKey(key, plotId, data, item);
+            this.model.onKey(key, plotIndex, data, item);
           } else {
           	var params = plotUtils.getActionObject(this.model.getCellModel().type, item);
           	params.key = key;
@@ -543,12 +543,10 @@ define([
           var item = model.data[i];
           if(item.hasClickAction === true && (item.id === e.id || e.id.indexOf(item.id + "_") === 0)) {
             var plotId = self.stdmodel.plotId;
+            var plotIndex = self.stdmodel.plotIndex;
             if(!_.isEmpty(item.clickTag)){
               if (self.model.setActionDetails) {
-                self.model.setActionDetails(plotId, item, e).then(
-                  function () { plotUtils.evaluateTagCell(item.clickTag); },
-                  function () { console.error('set action details error'); }
-                );
+                self.model.setActionDetails(plotIndex, item, e);
               } else {
               	var params = plotUtils.getActionObject(self.model.getCellModel().type, e);
               	params.actionType = 'onclick';
@@ -565,7 +563,7 @@ define([
               self.legendResetPosition = true;
               self.doNotLoadState = true;
               if (self.model.onClick) {
-                self.model.onClick(plotId, item, e);
+                self.model.onClick(plotIndex, item, e);
                 return;
               } else {
                	self.plotDisplayModel.send(
@@ -606,10 +604,14 @@ define([
 
     this.svg.selectAll(".plot-resp")
       .on('mouseenter', function(d) {
+        d3.event.stopPropagation();
+
         self.drawLegendPointer(d);
         return plotTip.tooltip(self, d, d3.mouse(self.svg.node()));
       })
       .on('mousemove', function(d) {
+        d3.event.stopPropagation();
+
         self.removeLegendPointer();
         self.drawLegendPointer(d);
         self.tipmoving = true;
@@ -622,11 +624,24 @@ define([
         plotTip.movetooltip(self, d, d3.mouse(self.svg.node()));
       })
       .on("mouseleave", function(d) {
+        d3.event.stopPropagation();
+
         self.removeLegendPointer();
         return plotTip.untooltip(self, d);
       })
       .on("click.resp", function(d) {
-        return plotTip.toggleTooltip(self, d);
+        var model = self.stdmodel;
+        var hasClickAction;
+
+        for (var i = 0; i < model.data.length; i++) {
+          var item = model.data[i];
+          if(item.hasClickAction === true && (item.id === d.id || d.id.indexOf(item.id + "_") === 0)) {
+            hasClickAction = true;
+            break;
+          }
+        }
+
+        return !hasClickAction && plotTip.toggleTooltip(self, d);
       });
   };
 
@@ -1983,14 +1998,22 @@ define([
 
   PlotScope.prototype.enableZoomWheel = function() {
     var self = this;
+
     if (self._defaultZoomWheelFn) {
       self.svg.on('wheel.zoom', self._defaultZoomWheelFn);
+      self.jqcontainer
+        .off('wheel.zoom')
+        .on('wheel.zoom', function(event) {
+          d3.event = event.originalEvent;
+          self.svg.dispatch('wheel.zoom', self._defaultZoomWheelFn);
+        });
     }
   };
 
   PlotScope.prototype.disableZoomWheel = function() {
     var self = this;
     self.svg.on('wheel.zoom', null);
+    self.jqcontainer.off('wheel.zoom');
   };
 
   PlotScope.prototype.mouseleaveClear = function() {
@@ -2225,9 +2248,11 @@ define([
     // set zoom object
     self.svg
       .on("mousedown", function() {
+        self.jqcontainer.addClass('bko-focused');
         return self.mouseDown();
-      })
-      .on("mouseleave", function() {
+      });
+    self.jqcontainer.on("mouseleave", function() {
+        self.jqcontainer.removeClass('bko-focused');
         return self.disableZoomWheel();
       });
     self.jqsvg.mousemove(function(e) {

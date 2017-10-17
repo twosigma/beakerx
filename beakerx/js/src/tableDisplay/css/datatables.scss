@@ -28,8 +28,14 @@ $highlight-blue: #39a9ed;
 }
 
 .dtcontainer {
+  display: inline-block;
   position: relative;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
+  min-width: 100px;
+  border: 1px solid transparent;
+  padding: 10px 20px;
+
   .dropdown-menu {
     margin-top: 1px;
   }
@@ -67,8 +73,11 @@ table.dataTable {
   font-size: 13px;
   border-width: 0;
 
-  thead th, tbody td {
+  thead th {
     position: relative;
+  }
+
+  thead th, tbody td {
     padding: 3px 10px 0 10px;
     white-space: nowrap;
     border: 1px solid $border-color;
@@ -79,7 +88,12 @@ table.dataTable {
       border-left-width: 1px;
     }
     &.focus {
+      position: relative;
       z-index: 99;
+    }
+    &.fix-col-fixed.focus {
+      position: static;
+      z-index: 1;
     }
     font-family: "Lato", Helvetica, sans-serif;
   }
@@ -203,8 +217,9 @@ td.dtcenter {
 
 div.dtmenu {
   position: absolute;
-  top: 1px;
+  top: 11px;
   cursor: pointer;
+  overflow: hidden;
   &:hover {
     background-color: #39A9ED;
   }
@@ -310,6 +325,16 @@ table.dataTable.DTFC_Cloned.display tbody tr {
     }
   }
 }
+
+//div.DTFC_RightWrapper,
+//div.DTFC_LeftWrapper {
+//  z-index: 98;
+//}
+//
+//.DTFC_LeftWrapper table.dataTable tbody td.focus {
+//  position: relative;
+//  z-index: 100;
+//}
 
 $fix-col-separator-width: 3px;
 
@@ -580,13 +605,15 @@ $fix-col-separator-width: 3px;
 
 .p-Menu-content {
   border-collapse: collapse;
-  display: table;
+  display: block;
   position: relative;
   top: 0;
   left: 0;
   overflow: visible;
+  width: 100%;
 
   .p-Menu-item {
+    display: block;
     font-weight: normal;
     line-height: 1.42857143;
     color: #333333;
@@ -601,17 +628,23 @@ $fix-col-separator-width: 3px;
   .p-Menu-itemLabel {
     padding: 3px;
     white-space: nowrap;
+    display: inline-block;
   }
 
   .p-Menu-itemIcon,
   .p-Menu-itemShortcut {
-    min-width: 15px;
+    min-width: 22px;
     position: static;
     padding: 4px;
+    display: inline-block;
   }
 
   .p-Menu-itemSubmenuIcon {
+    display: inline-block;
+    position: absolute;
+    right: 0px;
     padding-right: 10px;
+    margin-top: 3px;
   }
 
   [data-type="submenu"] .p-Menu-itemSubmenuIcon {
@@ -632,5 +665,19 @@ $fix-col-separator-width: 3px;
 
   [data-type="separator"] {
     border-bottom: 1px solid #ccc;
+    height: 5px;
+  }
+}
+
+.dropdown-menu-search {
+  padding: 4px;
+  margin-bottom: 10px;
+
+  input {
+    max-width: 150px;
+  }
+
+  .fa {
+    margin-right: 6px;
   }
 }

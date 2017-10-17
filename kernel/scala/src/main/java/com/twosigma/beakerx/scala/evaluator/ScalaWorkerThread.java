@@ -62,8 +62,8 @@ class ScalaWorkerThread extends WorkerThread {
           continue;
 
         if (scalaEvaluator.getShell() == null) {
-          updateLoader = false;
           scalaEvaluator.newEvaluator();
+          updateLoader = false;
         }
 
         j.outputObject.started();

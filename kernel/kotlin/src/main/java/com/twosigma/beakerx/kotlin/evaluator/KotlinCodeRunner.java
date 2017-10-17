@@ -17,29 +17,28 @@ package com.twosigma.beakerx.kotlin.evaluator;
 
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import org.jetbrains.kotlin.cli.common.repl.ReplEvalResult;
+import org.jetbrains.kotlin.cli.jvm.repl.ReplInterpreter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 
-class KotlinCodeRunner<T> implements Runnable {
+class KotlinCodeRunner implements Runnable {
 
   private final SimpleEvaluationObject theOutput;
-  private final T instance;
-  private final Method theMth;
-  private final boolean retObject;
   private final ClassLoader loader;
+  private final ReplInterpreter repl;
+  private final String codeToBeExecuted;
 
-  public KotlinCodeRunner(T instance, Method mth, SimpleEvaluationObject out, boolean ro, ClassLoader ld) {
-    this.instance = instance;
-    theMth = mth;
-    theOutput = checkNotNull(out);
-    retObject = ro;
-    loader = ld;
+  public KotlinCodeRunner(SimpleEvaluationObject out, ClassLoader ld, ReplInterpreter repl, String codeToBeExecuted) {
+    this.theOutput = checkNotNull(out);
+    this.loader = checkNotNull(ld);
+    this.repl = checkNotNull(repl);
+    this.codeToBeExecuted = codeToBeExecuted;
   }
 
   @Override
@@ -50,12 +49,8 @@ class KotlinCodeRunner<T> implements Runnable {
     InternalVariable.setValue(theOutput);
     try {
       InternalVariable.setValue(theOutput);
-      Object o = theMth.invoke(instance, (Object[]) null);
-      if (retObject) {
-        theOutput.finished(o);
-      } else {
-        theOutput.finished(null);
-      }
+      ReplEvalResult eval = repl.eval(this.codeToBeExecuted);
+      interpretResult(eval);
     } catch (Throwable e) {
       if (e instanceof InvocationTargetException)
         e = ((InvocationTargetException) e).getTargetException();
@@ -72,5 +67,19 @@ class KotlinCodeRunner<T> implements Runnable {
     }
     theOutput.clrOutputHandler();
     Thread.currentThread().setContextClassLoader(oldld);
+  }
+
+  private void interpretResult(Object o) {
+    if (o == null) {
+      theOutput.finished(null);
+    } else if (o instanceof ReplEvalResult.UnitResult) {
+      theOutput.finished(null);
+    } else if (o instanceof ReplEvalResult.ValueResult) {
+      theOutput.finished(((ReplEvalResult.ValueResult) o).getValue());
+    } else if (o instanceof ReplEvalResult.Error) {
+      theOutput.error(((ReplEvalResult.Error) o).getMessage());
+    } else {
+      theOutput.error(o);
+    }
   }
 }

@@ -119,6 +119,7 @@ class XYGraphics(Graphics):
     def __init__(self, **kwargs):
         super(XYGraphics, self).__init__(**kwargs)
         defY = getValue(kwargs, 'y')
+
         if defY is not None:
             if isinstance(defY, pd.Series):
                 defY = defY.tolist()
@@ -132,10 +133,17 @@ class XYGraphics(Graphics):
                 self.x = self.x.tolist()
             for idx in range(len(self.x)):
                 x = self.x[idx]
+                if isinstance(x, float) and math.isnan(x):
+                    self.x[idx] = "NaN"
                 if isinstance(x, datetime) or is_date(x):
                     self.x[idx] = unix_time(x)
 
         self.y = defY
+        if self.y is not None:
+            for idx in range(len(self.y)):
+                y = self.y[idx]
+                if isinstance(y, float) and math.isnan(y):
+                    self.y[idx] = "NaN"
 
         self.display_name = getValue(kwargs, 'displayName')
         self.lod_filter = getValue(kwargs, 'lodFilter')

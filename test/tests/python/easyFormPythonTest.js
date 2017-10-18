@@ -77,8 +77,7 @@ describe('Testing of EasyForm (python)', function () {
       var easyForm = beakerxPO.runCellToGetEasyForm(6);
       expect(easyForm.$$('div.widget-checkbox').length).toBe(3);
       expect(easyForm.$$('input[type="checkbox"]').length).toBe(3);
-      // TODO enable when label will be fixed
-      // expect(easyForm.$('div.widget-label').getText()).toBe('field name7');
+      expect(easyForm.$('div.widget-label').getText()).toBe('field name7');
     });
 
     it('EasyForm has RadioButtons field', function () {
@@ -105,6 +104,8 @@ describe('Testing of EasyForm (python)', function () {
       var easyForm = beakerxPO.runCellToGetEasyForm(9);
       easyForm.$('button=run tag').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      easyForm.$('button=actionPerformed').click();
     });
 
     it('tag should create EasyForm', function () {
@@ -112,12 +113,16 @@ describe('Testing of EasyForm (python)', function () {
       var codeCell_11 = beakerxPO.getCodeCellByIndex(11);
       var easyForm = codeCell_11.$('div.beaker-easyform-container');
       expect(easyForm.isEnabled()).toBeTruthy();
-      inputs = easyForm.$('input[type="text"]');
+      inputs = easyForm.$$('input[type="text"]');
     });
 
     it('should change text value', function () {
       beakerxPO.runCodeCellByIndex(10);
-      expect(inputs.getValue()).toBe('test text');
+      expect(inputs[0].getValue()).toBe('test text');
+    });
+
+    it('actionPerformed should change text value', function () {
+      expect(inputs[1].getValue()).toBe('from actionPerformed');
     });
   });
 

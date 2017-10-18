@@ -30,7 +30,7 @@ public abstract class SingleSelectionWidget extends SelectionWidget<String> {
 
   @Override
   public String getValueFromObject(Object input) {
-    if ((this instanceof SelectMultipleSingle || this instanceof RadioButtons || this instanceof Select) && input instanceof Integer) {
+    if ((this instanceof Dropdown || this instanceof SelectMultipleSingle || this instanceof RadioButtons || this instanceof Select) && input instanceof Integer) {
       return getOptions()[(Integer) input];
     }
     return getString(input);

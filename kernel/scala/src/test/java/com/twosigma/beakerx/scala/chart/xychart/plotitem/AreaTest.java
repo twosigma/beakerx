@@ -84,4 +84,5 @@ public class AreaTest {
     Assertions.assertThat(area.getDisplayName()).isEqualTo(testString);
   }
 
+
 }

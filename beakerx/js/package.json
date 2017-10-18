@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "build": "webpack",
+    "build:prod": "webpack --config webpack.prod.js",
     "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "stats": "webpack --env production --profile --json > stats.json"
@@ -33,8 +34,10 @@
     "source-map-loader": "^0.2.1",
     "style-loader": "^0.18.1",
     "typescript": "^2.5.2",
+    "uglifyjs-webpack-plugin": "^1.0.0-beta.3",
     "url-loader": "^0.5.9",
-    "webpack": "^3.5.6"
+    "webpack": "^3.5.6",
+    "webpack-merge": "^4.1.0"
   },
   "dependencies": {
     "@phosphor/widgets": "^1.5.0",

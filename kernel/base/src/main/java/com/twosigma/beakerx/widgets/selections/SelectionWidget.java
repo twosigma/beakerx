@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.widgets.selections;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import com.twosigma.beakerx.widgets.ValueWidget;
@@ -43,6 +44,16 @@ public abstract class SelectionWidget<T extends Serializable> extends ValueWidge
   public void setOptions(Object options) {
     this.options = getStringArray(options);
     sendUpdate(OPTIONS_LABELS, options);
+  }
+
+  public Integer getSelectedOptionIndex(String option) {
+    for (int i=0; options.length > 0 && i<options.length+1; i++) {
+      if (options[i].equals(option)) {
+        return i;
+      }
+    }
+
+    return 0;
   }
 
   public Integer getSize() {

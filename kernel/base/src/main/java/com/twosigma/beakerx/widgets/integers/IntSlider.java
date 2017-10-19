@@ -79,6 +79,10 @@ public class IntSlider extends BoundedIntWidget {
     sendUpdate(CONTINUOUS_UPDATE, continuous_update);
   }
 
+  public void setSlider_color(String color) {
+    ((SliderStyle) style).setHandle_color(color);
+  }
+
   @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;

@@ -2209,7 +2209,7 @@ define([
     }
 
     self.jqcontainer.resizable({
-      maxWidth: self.element.width(), // no wider than the width of the cell
+      maxWidth: self.element.parent().width(), // no wider than the width of the cell
       minWidth: 150,
       minHeight: 150,
       handles: "e, s, se",
@@ -2239,7 +2239,7 @@ define([
 
     self.resizeFunction = function() {
       // update resize maxWidth when the browser window resizes
-      self.jqcontainer.resizable("option", "maxWidth", self.element.width());
+      self.jqcontainer.resizable("option", "maxWidth", self.element.parent().width());
     };
 
     self.resetSvg();

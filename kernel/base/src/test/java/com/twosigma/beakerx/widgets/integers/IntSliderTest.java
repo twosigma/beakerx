@@ -78,7 +78,7 @@ public class IntSliderTest {
     //given
     IntSlider intSlider = intSlider();
     //when
-    intSlider.setVisible(false);
+    intSlider.getLayout().setVisibility("hidden");
     //then
     verifyMsgForProperty(groovyKernel, Layout.VISIBILITY, "hidden");
   }

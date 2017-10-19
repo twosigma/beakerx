@@ -68,9 +68,9 @@ public class SelectMultipleTest {
     //given
     SelectMultiple widget = selectMultiple();
     //when
-    widget.setOptions(new String[]{"Fork", "Knife"});
+    widget.setOptions(new String[]{"1", "2"});
     //then
-    verifyMsgForProperty(kernel, SelectMultiple.OPTIONS_LABELS, new String[]{"Fork", "Knife"});
+    verifyMsgForProperty(kernel, SelectMultiple.OPTIONS_LABELS, new String[]{"1", "2"});
   }
 
   private SelectMultiple selectMultiple() throws NoSuchAlgorithmException {

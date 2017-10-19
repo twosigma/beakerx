@@ -44,7 +44,7 @@ public abstract class SelectionWidget<T extends Serializable> extends ValueWidge
     sendUpdate(OPTIONS_LABELS, options);
     sendUpdate(INDEX, 0);
     if (this instanceof SelectMultiple) {
-      setValue(this.options);
+      setValue(options);
     } else {
       setValue(this.options[0]);
     }

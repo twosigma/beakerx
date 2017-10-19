@@ -119,13 +119,4 @@ public abstract class DOMWidget extends Widget {
   public Style getStyle() {
     return style;
   }
-
-  public void setVisible(Boolean visible) {
-    if (visible) {
-      layout.setVisibility("none");
-    } else {
-      layout.setVisibility("hidden");
-    }
-
-  }
 }

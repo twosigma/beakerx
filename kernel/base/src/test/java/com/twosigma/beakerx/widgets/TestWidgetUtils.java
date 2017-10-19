@@ -108,7 +108,6 @@ public class TestWidgetUtils {
   }
 
   public static <T> T getValueForProperty(KernelTest kernel, String propertyName, Class<T> clazz) {
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(1);
     Message message = kernel.getPublishedMessages().get(0);
     return getValueForProperty(message, propertyName, clazz);
   }

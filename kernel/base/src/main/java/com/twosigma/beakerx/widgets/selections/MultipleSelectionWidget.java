@@ -15,11 +15,13 @@
  */
 package com.twosigma.beakerx.widgets.selections;
 
+import com.google.common.collect.Lists;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> {
 
@@ -38,7 +40,11 @@ public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> 
   }
 
   private Collection<Integer> indexes(Object input) {
-    return getIntegerArray(input);
+    if (input instanceof Object[]) {
+      return IntStream.range(0, ((Object[]) input).length).mapToObj(i -> i).collect(Collectors.toList());
+    } else if (input instanceof List) {
+      return IntStream.range(0, ((List) input).size()).mapToObj(i -> i).collect(Collectors.toList());
+    }
+    return Lists.newArrayList(0);
   }
-
 }

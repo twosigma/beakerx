@@ -15,16 +15,17 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
+import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
+import static com.twosigma.beakerx.kernel.commands.type.Command.ADD_MVN_FORMAT_ERROR_MESSAGE;
+import static com.twosigma.beakerx.kernel.msg.MessageCreator.TEXT;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
-import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
+import com.twosigma.beakerx.kernel.commands.item.CommandItem;
+import com.twosigma.beakerx.kernel.commands.type.ClasspathAddMvnMagicCommand;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,18 +33,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.ADD_MVN_FORMAT_ERROR_MESSAGE;
-import static com.twosigma.beakerx.kernel.msg.MessageCreator.TEXT;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ClasspathAddMvnDepsMagicCommandTest {
 
   public static final String TEST_IVY_CACHE = "build/testIvyCache";
   private static final String SRC_TEST_RESOURCES_TEST_IVY_CACHE = "src/test/resources/testIvyCache";
 
-  private MagicCommand sut;
+  private ClasspathAddMvnMagicCommand classpathAddMvnMagicCommand;
+  private MessageCreator messageCreator;
   private KernelTest kernel;
   private EvaluatorTest evaluator;
 
@@ -51,7 +52,8 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   public void setUp() throws Exception {
     this.evaluator = new EvaluatorTest();
     this.kernel = new KernelTest("id2", evaluator);
-    this.sut = new MagicCommand(kernel);
+    this.messageCreator = new MessageCreator(kernel);
+    this.classpathAddMvnMagicCommand = new ClasspathAddMvnMagicCommand(kernel, messageCreator, new File(TEST_IVY_CACHE).getAbsolutePath());
     copyIvyCacheToBuildDirectoryBecauseIvyChangeDatesInCache();
   }
 
@@ -63,10 +65,11 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   @Test
   public void handleClasspathAddMvnDep() throws Exception {
     //given
-    String codeAsString = "%classpath add mvn com.google.code.gson gson 2.6.2";
-    Code code = new Code(codeAsString);
+    String codeAsString = "com.google.code.gson gson 2.6.2";
+
     //when
-    MagicCommandResult process = sut.process(code, new Message(), 1);
+    CommandItem process = classpathAddMvnMagicCommand.build().process(codeAsString, new Message(), 1);
+
     //then
     String mvnDir = kernel.getTempFolder().toString() + MVN_DIR;
     Stream<Path> paths = Files.walk(Paths.get(mvnDir));
@@ -79,30 +82,30 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   @Test
   public void unresolvedDependency() throws Exception {
     //given
-    String codeAsString = "%classpath add mvn com.google.code.XXXX gson 2.6.2";
-    Code code = new Code(codeAsString);
+    String codeAsString = "com.google.code.XXXX gson 2.6.2";
+
     //when
-    MagicCommandResult process = sut.process(code, new Message(), 1);
+    CommandItem commandItem = classpathAddMvnMagicCommand.build().process(codeAsString, new Message(), 1);
     //then
-    String text = getText(process);
+    String text = getText(commandItem);
     assertThat(text).contains("unresolved dependency");
   }
 
   @Test
   public void wrongCommandFormat() throws Exception {
     //given
-    String codeAsString = "%classpath add mvn com.google.code.XXXX gson";
-    Code code = new Code(codeAsString);
+    String codeAsString = "com.google.code.XXXX gson";
+
     //when
-    MagicCommandResult process = sut.process(code, new Message(), 1);
+    CommandItem commandItem = classpathAddMvnMagicCommand.build()
+        .process(codeAsString, new Message(), 1);
     //then
-    String text = getText(process);
+    String text = getText(commandItem);
     assertThat(text).isEqualTo(ADD_MVN_FORMAT_ERROR_MESSAGE);
   }
 
-  private String getText(MagicCommandResult process) {
-    MagicCommandItem magicCommandItem = process.getItems().get(0);
-    Message message = magicCommandItem.getResult().get();
+  private String getText(CommandItem commandItem) {
+    Message message = commandItem.getResult().get();
     return (String) message.getContent().get(TEXT);
   }
 

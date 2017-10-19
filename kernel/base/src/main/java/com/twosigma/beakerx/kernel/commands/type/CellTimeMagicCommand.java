@@ -13,13 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx;
+package com.twosigma.beakerx.kernel.commands.type;
 
-import com.twosigma.beakerx.evaluator.Evaluator;
+import com.google.common.collect.Sets;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.commands.MagicCommandFunctionality;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import java.util.Set;
 
-public class SQLKernelTest extends KernelTest {
+public class CellTimeMagicCommand extends AbstractTimeMagicCommand {
 
-  public SQLKernelTest(String id, Evaluator evaluator) {
-    super(id, evaluator);
+  public CellTimeMagicCommand(KernelFunctionality kernel, MessageCreator messageCreator) {
+    super(TIME_CELL, "", Sets.newHashSet(MagicCommandType.CELL), messageCreator, kernel);
+  }
+
+  @Override
+  public MagicCommandFunctionality build() {
+    return this::time;
   }
 }

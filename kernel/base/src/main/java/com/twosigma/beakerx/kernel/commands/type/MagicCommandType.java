@@ -13,13 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx;
+package com.twosigma.beakerx.kernel.commands.type;
 
-import com.twosigma.beakerx.evaluator.Evaluator;
-
-public class SQLKernelTest extends KernelTest {
-
-  public SQLKernelTest(String id, Evaluator evaluator) {
-    super(id, evaluator);
-  }
+public enum MagicCommandType {
+  CELL, LINE
 }

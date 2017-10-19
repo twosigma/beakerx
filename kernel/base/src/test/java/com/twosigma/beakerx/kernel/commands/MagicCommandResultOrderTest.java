@@ -19,12 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
+import com.twosigma.beakerx.kernel.commands.item.CommandItem;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.mimetype.MIMEContainer;
-import java.util.Map;
-
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,13 +33,17 @@ import org.junit.Test;
 public class MagicCommandResultOrderTest {
 
   public static final String DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/contents/demoResources/demo.jar";
-  private MagicCommand sut;
+  private CommandExecutor commandExecutor;
+  private CommandProcessor commandProcessor;
+  private MessageCreator messageCreator;
   private KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
     this.kernel = new KernelTest("id2", new EvaluatorTest());
-    this.sut = new MagicCommand(kernel);
+    this.messageCreator = new MessageCreator(kernel);
+    this.commandExecutor = new CommandExecutorImpl(kernel);
+    this.commandProcessor = new CommandProcessorImpl(commandExecutor.getCommands());
   }
 
   @After
@@ -53,14 +58,13 @@ public class MagicCommandResultOrderTest {
             "%classpath add jar " + DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR +"\n"+
         "%classpath\n" +
         "code code code";
-    Code code = new Code(codeAsString);
+    Message message = JupyterHandlerTest.createExecuteRequestMessage(new Code(codeAsString));
+
     //when
-    MagicCommandResult result = sut.process(code, new Message(), 1);
+    List<CommandItem> commandItems = commandProcessor.process(message, 1);
+
     //then
-    assertThat(result.getItems().get(0).getCode().get())
-        .isEqualTo(new CodeWithoutCommand("code code code"));
-    assertThat(result.getItems().get(1).getCode().get())
-        .isEqualTo(new CodeWithoutCommand("code code code"));
+    assertThat(commandItems.get(2).getCode().get()).isEqualTo(new CodeWithoutCommand("code code code"));
   }
 
   @Test
@@ -69,11 +73,12 @@ public class MagicCommandResultOrderTest {
     String codeAsString = "" +
         "%classpath\n" +
         "%classpath add jar " +DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR+"\n";
-    Code code = new Code(codeAsString);
+    Message message = JupyterHandlerTest.createExecuteRequestMessage(new Code(codeAsString));
+
     //when
-    MagicCommandResult result = sut.process(code, new Message(), 1);
+    List<CommandItem> commandItems = commandProcessor.process(message, 1);
     //then
-    assertThat(result.getItems().get(0).getResult().isPresent()).isTrue();
+    assertThat(commandItems.get(0).getResult().isPresent()).isTrue();
   }
 
   @Test
@@ -82,15 +87,16 @@ public class MagicCommandResultOrderTest {
     String codeAsString = "" +
         "%classpath add jar "+DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR +"\n"+
         "%classpath";
-    Code code = new Code(codeAsString);
+    Message message = JupyterHandlerTest.createExecuteRequestMessage(new Code(codeAsString));
+
     //when
-    MagicCommandResult result = sut.process(code, new Message(), 1);
+    List<CommandItem> commandItems = commandProcessor.process(message,1);
     //then
-    assertThat(classpath(result)).isEqualTo(DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR);
+    assertThat(classpath(commandItems)).isEqualTo(DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR);
   }
 
-  private String classpath(MagicCommandResult result) {
-    return result.getItems().get(1).getResult().get().getContent().get("text").toString();
+  private String classpath(List<CommandItem> result) {
+    return result.get(1).getResult().get().getContent().get("text").toString();
   }
 
 }

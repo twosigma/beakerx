@@ -13,22 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel.commands.item;
+package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.kernel.CodeWithoutCommand;
-import com.twosigma.beakerx.message.Message;
+public class ErrorData {
+  private boolean error;
+  private String message;
 
-import java.util.Optional;
+  public ErrorData(boolean hasError, String message) {
+    this.error = hasError;
+    this.message = message;
+  }
 
-public interface MagicCommandItem {
+  public boolean hasError() {
+    return error;
+  }
 
-  boolean hasCodeToExecute();
-
-  boolean hasResult();
-
-  Optional<Message> getResult();
-
-  Optional<Message> getReply();
-
-  Optional<CodeWithoutCommand> getCode();
+  public String getMessage() {
+    return message;
+  }
 }

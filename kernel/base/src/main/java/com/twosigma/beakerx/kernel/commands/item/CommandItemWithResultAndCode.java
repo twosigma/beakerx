@@ -4,13 +4,13 @@ import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.message.Message;
 import java.util.Optional;
 
-public class MagicCommandItemWithResultAndCode implements MagicCommandItem {
+public class CommandItemWithResultAndCode implements CommandItem {
 
   private Message resultMessage;
   private Message replyMessage;
   private CodeWithoutCommand code;
 
-  public MagicCommandItemWithResultAndCode(Message resultMessage,
+  public CommandItemWithResultAndCode(Message resultMessage,
       Message replyMessage, CodeWithoutCommand code) {
     this.resultMessage = resultMessage;
     this.replyMessage = replyMessage;

@@ -16,26 +16,38 @@
 package com.twosigma.beakerx.kernel.commands;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.mimetype.MIMEContainer;
+import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.commands.item.CommandItem;
+import com.twosigma.beakerx.kernel.commands.type.JavascriptMagicCommand;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
 
+import static com.twosigma.beakerx.kernel.commands.type.Command.JAVASCRIPT;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class JavaScriptMagicCommandTest {
 
-  private MagicCommand sut;
+  private MessageCreator messageCreator;
+  private JavascriptMagicCommand javascriptMagicCommand;
   private KernelTest kernel;
+  private CommandExecutor commandExecutor;
+  private CommandProcessor commandProcessor;
 
   @Before
   public void setUp() throws Exception {
     this.kernel = new KernelTest();
-    this.sut = new MagicCommand(kernel);
+    this.messageCreator = new MessageCreator(kernel);
+    this.javascriptMagicCommand = new JavascriptMagicCommand(messageCreator);
+    this.commandExecutor = new CommandExecutorImpl(kernel);
+    this.commandProcessor = new CommandProcessorImpl(commandExecutor.getCommands());
   }
 
   @Test
@@ -47,11 +59,10 @@ public class JavaScriptMagicCommandTest {
                     "  paths: {\n" +
                     "      d3: '//cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min'\n" +
                     "  }});";
-    Code code = new Code(MagicCommand.JAVASCRIPT + System.lineSeparator() + jsCode);
     //when
-    MagicCommandResult result = sut.process(code, message, 1);
+    CommandItem commandItem = javascriptMagicCommand.build().process(jsCode, message, 1);
     //then
-    Map data = (Map) result.getItems().get(0).getResult().get().getContent().get(Comm.DATA);
+    Map data = (Map) commandItem.getResult().get().getContent().get(Comm.DATA);
     String toCompare = (String)data.get(MIMEContainer.MIME.APPLICATION_JAVASCRIPT);
     
     toCompare = toCompare.replaceAll("\\s+","");
@@ -64,13 +75,16 @@ public class JavaScriptMagicCommandTest {
   @Test
   public void shouldCreateMsgWithWrongMagic() throws Exception {
     //given
-    Message message = new Message();
     String jsCode = System.lineSeparator() + "alert()";
-    Code code = new Code(MagicCommand.JAVASCRIPT + "wrong" + jsCode);
+    String finalCode = JAVASCRIPT + "wrong" + jsCode;
+
     //when
-    MagicCommandResult result = sut.process(code, message, 1);
+    Message message = JupyterHandlerTest.createExecuteRequestMessage(new Code(finalCode));
+
     //then
-    assertThat(result.getItems().get(0).getResult().get().getContent().get("text")).isEqualTo("Cell magic " + MagicCommand.JAVASCRIPT + "wrong" + " not found");
+    assertThatThrownBy(() -> commandProcessor.process(message, 1))
+                                             .isInstanceOf(RuntimeException.class)
+                                             .hasMessage("Cell magic %%javascriptwrong not found");
   }
 
 }

@@ -19,24 +19,20 @@ import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
+import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.commands.MavenJarResolver;
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.kernel.Classpath;
-import com.twosigma.beakerx.kernel.KernelParameters;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.PathToJar;
-import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -45,16 +41,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
-import java.util.Optional;
 import java.util.Set;
-
 import org.apache.commons.io.FileUtils;
-import org.apache.ivy.plugins.resolver.FileSystemResolver;
-import org.apache.ivy.plugins.resolver.RepositoryResolver;
-import org.assertj.core.util.Lists;
-
-import static com.twosigma.beakerx.kernel.commands.ClasspathAddMvnDepsMagicCommandTest.TEST_IVY_CACHE;
-import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
 
 public class KernelTest implements KernelFunctionality {
 
@@ -67,25 +55,21 @@ public class KernelTest implements KernelFunctionality {
   private EvaluatorManager evaluatorManager;
   private MessageCreator messageCreator;
   private String code;
-  private MagicCommand magicCommand;
   private Path tempFolder;
 
   public KernelTest() {
     this("KernelTestId1");
-    this.magicCommand = new MagicCommand(this);
   }
 
   public KernelTest(String id) {
     this.id = id;
     this.messageCreator = new MessageCreator(this);
-    this.magicCommand = new MagicCommand(this);
   }
 
   public KernelTest(String id, Evaluator evaluator) {
     this.id = id;
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.messageCreator = new MessageCreator(this);
-    this.magicCommand = new MagicCommand(this);
   }
 
 
@@ -173,34 +157,6 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public List<MagicCommandType> getMagicCommands() {
-    return Lists.newArrayList(
-            new MagicCommandType(MagicCommand.JAVASCRIPT, "", magicCommand.javascript()),
-            new MagicCommandType(MagicCommand.HTML, "", magicCommand.html()),
-            new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
-            new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
-            new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
-            new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<group name version>", magicCommand.classpathAddMvn(
-                    new MavenJarResolver.ResolverParams(
-                            new File(TEST_IVY_CACHE).getAbsolutePath(),
-                            getTempFolder().toString() + MVN_DIR
-                    )
-            )),
-            new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
-            new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
-            new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
-            new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
-            new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
-    );
-  }
-
-  private RepositoryResolver createRepositoryResolver() {
-    FileSystemResolver br = new FileSystemResolver();
-    br.setName("central");
-    return br;
-  }
-
-  @Override
   public Path getTempFolder() {
     if (this.tempFolder == null) {
       this.tempFolder = tempFolder();
@@ -214,14 +170,6 @@ public class KernelTest implements KernelFunctionality {
     } else {
       return evaluatorManager.getTempFolder();
     }
-  }
-
-  public MagicCommand getMagicCommand() {
-    return magicCommand;
-  }
-
-  public Boolean isSetShellOptions() {
-    return setShellOptions != null;
   }
 
   public KernelParameters getSetShellOptions() {
@@ -300,14 +248,6 @@ public class KernelTest implements KernelFunctionality {
   public void sendIdleMessage(Message message) {
     Message idleMessage = this.messageCreator.createIdleMessage(message);
     publish(idleMessage);
-  }
-
-  public Optional<String> getDefaultDatasource() {
-    return setShellOptions.getParam(MagicCommand.DEFAULT_DATASOURCE, String.class);
-  }
-
-  public Optional<String> getDatasource() {
-    return setShellOptions.getParam(MagicCommand.DATASOURCES, String.class);
   }
 
   public void exit() {

@@ -15,6 +15,17 @@
  */
 package com.twosigma.beakerx.sql;
 
+import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
+import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
+import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
+import static com.twosigma.beakerx.kernel.commands.type.Command.DATASOURCES;
+import static com.twosigma.beakerx.kernel.commands.type.Command.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.sql.SQLForColorTable.CREATE_AND_SELECT_ALL;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.KernelSocketsTest;
@@ -22,25 +33,14 @@ import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import com.twosigma.beakerx.sql.kernel.SQL;
-import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
-import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
-import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
-import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
-import static com.twosigma.beakerx.sql.SQLForColorTable.CREATE_AND_SELECT_ALL;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
 
 public class SQLKernelTest extends KernelSetUpFixtureTest {
 
@@ -95,8 +95,8 @@ public class SQLKernelTest extends KernelSetUpFixtureTest {
 
   private KernelParameters kernelParameters() {
     Map<String, Object> params = new HashMap<>();
-    params.put(MagicCommand.DATASOURCES, "chemistry=jdbc:h2:mem:chemistry");
-    params.put(MagicCommand.DEFAULT_DATASOURCE, "jdbc:h2:mem:db1");
+    params.put(DATASOURCES, "chemistry=jdbc:h2:mem:chemistry");
+    params.put(DEFAULT_DATASOURCE, "jdbc:h2:mem:db1");
     return new KernelParameters(params);
   }
 }

@@ -15,18 +15,31 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
+import static com.twosigma.beakerx.kernel.commands.type.Command.CLASSPATH;
+import static com.twosigma.beakerx.kernel.commands.type.Command.CLASSPATH_ADD_JAR;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeWithoutCommand;
 import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.kernel.commands.item.CommandItem;
+import com.twosigma.beakerx.kernel.commands.type.ClassPathMagicCommand;
+import com.twosigma.beakerx.kernel.commands.type.ClassPathRemoveJarMagicCommand;
+import com.twosigma.beakerx.kernel.commands.type.ClassPathShowMagicCommand;
+import com.twosigma.beakerx.kernel.commands.type.ClasspathAddJarMagicCommand;
+import com.twosigma.beakerx.kernel.commands.type.ClasspathAddMvnMagicCommand;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
+import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.util.Maps;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +48,11 @@ public class ClasspathMagicCommandTest {
 
   private static final String SRC_TEST_RESOURCES = "./src/test/resources/";
   private static final String CLASSPATH_TO_JAR = SRC_TEST_RESOURCES + "dirWithTwoJars/foo.jar";
-  private MagicCommand sut;
+  private ClassPathMagicCommand classpathAddJarMagicCommand;
+  private ClassPathMagicCommand classpathShowJarMagicCommand;
+  private CommandProcessor commandProcessor;
+  private CommandExecutor commandExecutor;
+  private MessageCreator messageCreator;
   private KernelTest kernel;
   private EvaluatorTest evaluator;
 
@@ -43,7 +60,11 @@ public class ClasspathMagicCommandTest {
   public void setUp() throws Exception {
     this.evaluator = new EvaluatorTest();
     this.kernel = new KernelTest("id2", evaluator);
-    this.sut = new MagicCommand(kernel);
+    this.messageCreator = new MessageCreator(kernel);
+    this.classpathAddJarMagicCommand = new ClasspathAddJarMagicCommand(kernel, messageCreator);
+    this.classpathShowJarMagicCommand = new ClassPathShowMagicCommand(kernel, messageCreator);
+    this.commandExecutor = new CommandExecutorImpl(kernel);
+    this.commandProcessor = new CommandProcessorImpl(commandExecutor.getCommands());
   }
 
   @After
@@ -57,24 +78,26 @@ public class ClasspathMagicCommandTest {
     String codeAsString = "" +
             "%classpath add jar" + " " + CLASSPATH_TO_JAR + "\n" +
             "code code code";
-    Code code = new Code(codeAsString);
+
+    Message message = JupyterHandlerTest.createExecuteRequestMessage(new Code(codeAsString));
+
     //when
-    MagicCommandResult result = sut.process(code, new Message(), 1);
+    List<CommandItem> commandItems = commandProcessor.process(message, 1);
+
     //then
-    assertThat(result.getItems().get(0).getCode().get()).isEqualTo(new CodeWithoutCommand("code code code"));
+    assertThat(commandItems.get(1).getCode().get()).isEqualTo(new CodeWithoutCommand("code code code"));
     assertThat(kernel.getClasspath().get(0)).isEqualTo(CLASSPATH_TO_JAR);
   }
 
   @Test
   public void handleClasspathAddJarWildcardMagicCommand() throws Exception {
     //given
-    String codeAsString = "" +
-            "%classpath add jar " + SRC_TEST_RESOURCES + "dirWithTwoJars/*";
-    Code code = new Code(codeAsString);
+    String codeAsString = SRC_TEST_RESOURCES + "dirWithTwoJars/*";
     //when
-    MagicCommandResult result = sut.process(code, new Message(), 1);
+    CommandItem commandItem = classpathAddJarMagicCommand.build()
+        .process(codeAsString, new Message(), 1);
     //then
-    assertThat(classpath(result)).contains("foo.jar", "bar.jar");
+    assertThat(classpath(commandItem)).contains("foo.jar", "bar.jar");
     assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(1);
   }
 
@@ -82,12 +105,15 @@ public class ClasspathMagicCommandTest {
   public void shouldCreateMsgWithWrongMagic() throws Exception {
     //given
     String jar = SRC_TEST_RESOURCES + "BeakerXClasspathTest.jar";
-    Code code = new Code("%classpath2 add jar" + " " + jar);
+    Message message = JupyterHandlerTest.createExecuteRequestMessage(new Code("%classpath2 add jar" + " " + jar));
+
     //when
-    MagicCommandResult result = sut.process(code, new Message(), 1);
     //then
-    assertThat(result.getItems().get(0).getResult().get().getContent().get("text")).isEqualTo(
-            "Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found");
+    assertThatThrownBy(() -> commandProcessor.process(message, 1))
+                                             .isInstanceOf(RuntimeException.class)
+                                             .hasMessage("Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found");
+
+
     assertThat(kernel.getClasspath().size()).isEqualTo(0);
   }
 
@@ -96,9 +122,9 @@ public class ClasspathMagicCommandTest {
     //given
     kernel.addJarToClasspath(new PathToJar(CLASSPATH_TO_JAR));
     //when
-    MagicCommandResult result = sut.process(new Code("%classpath"), new Message(), 1);
+    CommandItem commandItem = classpathShowJarMagicCommand.build().process(CLASSPATH, new Message(), 1);
     //then
-    assertThat(classpath(result)).isEqualTo(CLASSPATH_TO_JAR);
+    assertThat(classpath(commandItem)).isEqualTo(CLASSPATH_TO_JAR);
   }
 
   @Test
@@ -107,21 +133,25 @@ public class ClasspathMagicCommandTest {
     kernel.addJarToClasspath(new PathToJar(CLASSPATH_TO_JAR));
     //when
     kernel.addJarToClasspath(new PathToJar(CLASSPATH_TO_JAR));
-    MagicCommandResult result = sut.process(new Code("%classpath"), new Message(), 1);
+    CommandItem process = classpathShowJarMagicCommand.build().process(CLASSPATH, new Message(), 1);
     //then
-    assertThat(classpath(result)).isEqualTo(CLASSPATH_TO_JAR);
+    assertThat(classpath(process)).isEqualTo(CLASSPATH_TO_JAR);
   }
 
   @Test
   public void allowExtraWhitespaces() {
-    MagicCommandResult result = sut
-            .process(new Code("%classpath  add  jar          " + CLASSPATH_TO_JAR), new Message(), 1);
+    //given
+    String code = CLASSPATH_ADD_JAR + "          " + CLASSPATH_TO_JAR;
+    Message message = JupyterHandlerTest.createExecuteRequestMessage(new Code(code));
 
-    assertThat(classpath(result)).isEqualTo("Added jar: [foo.jar]\n");
+    //when
+    List<CommandItem> commandItems = commandProcessor.process(message, 1);
+    //then
+    assertThat(classpath(commandItems.get(0))).isEqualTo("Added jar: [foo.jar]\n");
   }
 
-  private String classpath(MagicCommandResult result) {
-    return result.getItems().get(0).getResult().get().getContent().get("text").toString();
+  private String classpath(CommandItem commandItem) {
+    return commandItem.getResult().get().getContent().get("text").toString();
   }
 
 }

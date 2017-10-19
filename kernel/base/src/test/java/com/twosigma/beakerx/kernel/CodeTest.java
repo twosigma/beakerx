@@ -13,12 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.twosigma.beakerx.kernel.commands.type.MagicCommand;
+import org.junit.Test;
 
 public class CodeTest {
 
@@ -31,7 +32,7 @@ public class CodeTest {
             "  }});";
     //when
     Code result = new Code(MagicCommand.JAVASCRIPT + "\n" + jsCode);
-    
+
     String toCompare = result.takeCodeWithoutCommand().get().asString().replaceAll("\\s+","");
     jsCode = jsCode.replaceAll("\\s+","");
 

@@ -15,16 +15,15 @@
  */
 package com.twosigma.beakerx.sql.kernel;
 
-import com.twosigma.beakerx.kernel.KernelParameters;
-
-import java.util.Collection;
-import java.util.Optional;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
 import static com.twosigma.beakerx.kernel.Utils.getAsString;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.kernel.commands.type.Command.DATASOURCES;
+import static com.twosigma.beakerx.kernel.commands.type.Command.DEFAULT_DATASOURCE;
+
+import com.twosigma.beakerx.kernel.KernelParameters;
+import java.util.Collection;
+import java.util.Optional;
 
 public class SQLKernelParameters {
 

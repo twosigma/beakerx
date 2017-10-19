@@ -13,13 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx;
+package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.kernel.commands.item.CommandItem;
+import com.twosigma.beakerx.message.Message;
+import java.util.List;
 
-public class SQLKernelTest extends KernelTest {
-
-  public SQLKernelTest(String id, Evaluator evaluator) {
-    super(id, evaluator);
-  }
+public interface CommandProcessor {
+  List<CommandItem> process(Message message, Integer executionCount);
 }

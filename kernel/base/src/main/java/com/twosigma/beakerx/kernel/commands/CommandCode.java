@@ -13,13 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx;
+package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.kernel.commands.type.Command;
 
-public class SQLKernelTest extends KernelTest {
+public class CommandCode {
+  private Command command;
+  private String code;
 
-  public SQLKernelTest(String id, Evaluator evaluator) {
-    super(id, evaluator);
+  public CommandCode(Command command, String code) {
+    this.command = command;
+    this.code = code;
+  }
+
+  public Command getCommand() {
+    return command;
+  }
+
+  public void setCommand(Command command) {
+    this.command = command;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
   }
 }

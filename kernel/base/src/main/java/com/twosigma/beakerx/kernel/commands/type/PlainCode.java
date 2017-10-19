@@ -13,13 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx;
+package com.twosigma.beakerx.kernel.commands.type;
 
-import com.twosigma.beakerx.evaluator.Evaluator;
+import com.twosigma.beakerx.kernel.CodeWithoutCommand;
+import com.twosigma.beakerx.kernel.commands.MagicCommandFunctionality;
+import com.twosigma.beakerx.kernel.commands.item.CommandItemWithCode;
 
-public class SQLKernelTest extends KernelTest {
+public class PlainCode implements Command {
 
-  public SQLKernelTest(String id, Evaluator evaluator) {
-    super(id, evaluator);
+  @Override
+  public MagicCommandFunctionality build() {
+    return (code, message, executionCount) -> new CommandItemWithCode(new CodeWithoutCommand(code));
   }
 }

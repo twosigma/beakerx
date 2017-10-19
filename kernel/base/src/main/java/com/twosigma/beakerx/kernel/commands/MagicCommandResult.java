@@ -15,20 +15,20 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
+import com.twosigma.beakerx.kernel.commands.item.CommandItem;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class MagicCommandResult {
 
-  private LinkedList<MagicCommandItem> items = new LinkedList<>();
+  private LinkedList<CommandItem> items = new LinkedList<>();
 
-  public void addItem(MagicCommandItem magicCommandResultItem) {
+  public void addItem(CommandItem magicCommandResultItem) {
     this.items.add(magicCommandResultItem);
   }
 
-  public List<MagicCommandItem> getItems() {
+  public List<CommandItem> getItems() {
     return items;
   }
 }

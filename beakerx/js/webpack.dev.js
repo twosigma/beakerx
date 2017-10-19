@@ -14,27 +14,15 @@
  *  limitations under the License.
  */
 
-const webpack = require('webpack');
 const merge = require('webpack-merge');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const config = require('./webpack.config');
 
-const prodConfig = {
-  devtool: 'source-map',
-  plugins: [
-    new UglifyJSPlugin({
-      sourceMap: true
-    }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    })
-  ]
+const devConfig = {
+  devtool: 'source-map'
 };
 
 for (var i in config) {
-  config[i] = merge(config[i], prodConfig);
+  config[i] = merge(config[i], devConfig);
 }
 
 module.exports = config;

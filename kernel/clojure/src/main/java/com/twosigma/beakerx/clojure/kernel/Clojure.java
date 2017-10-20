@@ -42,6 +42,7 @@ import jupyter.Displayers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,8 +94,11 @@ public class Clojure extends Kernel {
   private static ObjectMapper mapper = new ObjectMapper();
 
   private static DisplayerDataMapper.Converter converter = data -> {
-    String json = mapper.writeValueAsString(data);
-    return mapper.readValue(json, Object.class);
+    if (data instanceof Collection) {
+      String json = mapper.writeValueAsString(data);
+      return mapper.readValue(json, Object.class);
+    }
+    return data;
   };
 
   @Override

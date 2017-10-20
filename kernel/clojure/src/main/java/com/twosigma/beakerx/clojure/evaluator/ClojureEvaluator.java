@@ -130,8 +130,7 @@ public class ClojureEvaluator extends BaseEvaluator {
     }
   }
 
-  private String initScriptSource()
-          throws IOException {
+  private String initScriptSource() throws IOException {
     URL url = this.getClass().getClassLoader().getResource("init_clojure_script.txt");
     return Resources.toString(url, Charsets.UTF_8);
   }

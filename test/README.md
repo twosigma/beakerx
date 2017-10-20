@@ -21,5 +21,5 @@ Verify password: beakerx
 ## Run the tests
 
 ```
-python ./run_notebook.py && python ./run_tests.py
+source activate beakerx && python ./run_tests.py
 ```

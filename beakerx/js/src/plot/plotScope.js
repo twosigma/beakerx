@@ -2476,8 +2476,13 @@ define([
       extraStyles = extraStyles.concat(cellModel.custom_styles);
 
     plotUtils.addInlineStyles(svg, extraStyles);
+    self.svgReplaceNbspCharacters(svg);
 
     return svg;
+  };
+
+  PlotScope.prototype.svgReplaceNbspCharacters = function(svg) {
+    svg.innerHTML = svg.innerHTML.replace(/\&nbsp;/g, ' ');
   };
 
   PlotScope.prototype.saveAsSvg = function() {

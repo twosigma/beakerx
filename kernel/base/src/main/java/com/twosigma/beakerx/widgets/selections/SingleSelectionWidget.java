@@ -24,15 +24,26 @@ public abstract class SingleSelectionWidget extends SelectionWidget<String> {
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
     content.put(VALUE, this.value);
+    content.put(INDEX, getSelectedOptionIndex(value));
     return content;
   }
 
   @Override
   public String getValueFromObject(Object input) {
-    if ((this instanceof SelectMultipleSingle || this instanceof RadioButtons) && input instanceof Integer) {
+    if (input instanceof Integer) {
       return getOptions()[(Integer) input];
     }
     return getString(input);
+  }
+
+  public String getValue() {
+    return this.value;
+  }
+
+  public void setValue(Object value) {
+    this.value = getValueFromObject(value);
+    sendUpdate(VALUE, value);
+    sendUpdate(INDEX, getSelectedOptionIndex((String) value));
   }
 
 }

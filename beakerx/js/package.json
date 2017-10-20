@@ -16,25 +16,30 @@
     "ipywidgets"
   ],
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --config webpack.prod.js --progress",
+    "build:prod": "webpack --config webpack.prod.js --progress",
+    "build:dev": "webpack --config webpack.dev.js --progress",
     "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "stats": "webpack --env production --profile --json > stats.json"
   },
   "devDependencies": {
-    "awesome-typescript-loader": "^3.2.3",
     "base64-loader": "^1.0.0",
     "css-loader": "^0.28.4",
     "file-loader": "^0.10.0",
+    "fork-ts-checker-webpack-plugin": "^0.2.8",
     "html-loader": "^0.4.5",
     "json-loader": "^0.5.4",
     "node-sass": "^4.5.2",
     "sass-loader": "^6.0.5",
     "source-map-loader": "^0.2.1",
     "style-loader": "^0.18.1",
+    "ts-loader": "^3.0.3",
     "typescript": "^2.5.2",
+    "uglifyjs-webpack-plugin": "^1.0.0-beta.3",
     "url-loader": "^0.5.9",
-    "webpack": "^3.5.6"
+    "webpack": "^3.5.6",
+    "webpack-merge": "^4.1.0"
   },
   "dependencies": {
     "@phosphor/widgets": "^1.5.0",

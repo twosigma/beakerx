@@ -43,8 +43,8 @@ class OutputContainerLayoutManager:
         if item is None:
             return self.createHTML("None")
 
-        # if isinstance(item, DataFrame):
-        #    return TableDisplay(item)
+        if isinstance(item, DataFrame):
+            return TableDisplay(item)
 
         if isinstance(item, Widget):
             return item

@@ -22,3 +22,16 @@ rm -r /home/beakerx/beakerx/js/dist
 
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
+
+rm -r docker/
+rm -r .DS_Store
+rm -r .git/
+rm -r .gradle/
+rm -r .idea/
+rm -r jitpack.yml
+rm -r kernel/
+rm -r LICENSE
+rm -r NOTICE
+rm -r README.md
+rm -r RELEASE.md
+rm -r test/

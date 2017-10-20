@@ -75,10 +75,14 @@ describe('Testing of Plot (python)', function () {
       var svgElement = beakerxPO.getCodeCellByIndex(5).$('#svgg');
       svgElement.waitForEnabled();
       var rectElement = svgElement.$('rect#i0_0');
+      rectElement.waitForEnabled();
       rectElement.scroll();
       rectElement.click();
-      expect(svgElement.$('#cursor_xlabel').isVisible()).toBeTruthy();
-      expect(svgElement.$('#cursor_ylabel').isVisible()).toBeTruthy();
+      svgElement.moveToObject('rect#i2_1');
+      var divPlot = beakerxPO.getCodeCellByIndex(5).$('#svgg');
+      divPlot.$('line#cursor_x').waitForEnabled();
+      expect(divPlot.$('#cursor_xlabel').isVisible()).toBeTruthy();
+      expect(divPlot.$('#cursor_ylabel').isVisible()).toBeTruthy();
     });
 
     it('Plot has 3 ConstantLines', function(){

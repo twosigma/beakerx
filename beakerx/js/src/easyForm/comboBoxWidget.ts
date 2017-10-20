@@ -58,20 +58,8 @@ class ComboBoxView extends widgets.SelectView {
     super.update();
 
     let value = this.model.get('value');
-    let editable = this.model.get('editable');
 
-    if (editable) {
-      this.listbox.value = value;
-      this.$el.find('.easyform-combobox-input').val(value);
-      return;
-    }
-
-    for (let option of this.listbox.children) {
-      if (option.value === value) {
-        this.model.set('index', option.index);
-        break;
-      }
-    }
+    this.$el.find('.easyform-combobox-input').val(value);
   }
 }
 

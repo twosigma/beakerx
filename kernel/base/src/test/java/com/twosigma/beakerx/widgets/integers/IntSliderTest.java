@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widgets.integers;
 
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.widgets.Layout;
 import com.twosigma.beakerx.widgets.Widget;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -77,9 +78,9 @@ public class IntSliderTest {
     //given
     IntSlider intSlider = intSlider();
     //when
-    intSlider.setVisible(false);
+    intSlider.getLayout().setVisibility("hidden");
     //then
-    verifyMsgForProperty(groovyKernel, Widget.VISIBLE, false);
+    verifyMsgForProperty(groovyKernel, Layout.VISIBILITY, "hidden");
   }
 
   @Test

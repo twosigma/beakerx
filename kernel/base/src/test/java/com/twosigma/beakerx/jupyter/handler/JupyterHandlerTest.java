@@ -137,7 +137,7 @@ public class JupyterHandlerTest {
     return message;
   }
 
-  private static Header initHeader(JupyterMessages jupyterMessages) {
+  public static Header initHeader(JupyterMessages jupyterMessages) {
     Header header = new Header();
     header.setId("messageId");
     header.setUsername("username");

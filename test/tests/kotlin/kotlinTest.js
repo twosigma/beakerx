@@ -14,40 +14,34 @@
  *  limitations under the License.
  */
 
-var BeakerXPageObject = require('./beakerx.po.js');
+var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('SQL Examples notebook', function () {
+describe('Kotlin-example notebook', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/doc/contents/SQLExamples.ipynb');
+    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/kotlin/KotlinTest.ipynb');
   }, 2);
 
   afterAll(function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
-  describe('Create and select table (H2 database)', function () {
-    it('Output contains table', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
+  describe('Run first cell. ', function () {
+    it('Output contains "hello, 623"', function () {
       beakerxPO.runCodeCellByIndex(0);
-      beakerxPO.runCodeCellByIndex(1);
-      var dtContainer = beakerxPO.runCellToGetDtContainer(2);
-      beakerxPO.dataTablesIsEnabled(dtContainer);
-    }, 2);
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(1, 'hello, 623');
+    });
   });
 
-  describe('Autocomplete cell', function () {
-    it('Autocomplete list is not empty', function () {
+  describe('Run 2nd cell. ', function () {
+    it('PlotLegendContainer is enabled', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      var codeCell = beakerxPO.getCodeCellByIndex(3);
-      codeCell.scroll();
-      codeCell.click();
-      browser.keys("Tab");
-      var completeList = $$('#complete > select > option');
-      expect(completeList.length).toBeGreaterThan(0);
-    }, 2);
+      var dtContainer = beakerxPO.runCellToGetDtContainer(2);
+      beakerxPO.plotLegendContainerIsEnabled(dtContainer);
+    });
   });
 
 });

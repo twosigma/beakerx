@@ -604,10 +604,14 @@ define([
 
     this.svg.selectAll(".plot-resp")
       .on('mouseenter', function(d) {
+        d3.event.stopPropagation();
+
         self.drawLegendPointer(d);
         return plotTip.tooltip(self, d, d3.mouse(self.svg.node()));
       })
       .on('mousemove', function(d) {
+        d3.event.stopPropagation();
+
         self.removeLegendPointer();
         self.drawLegendPointer(d);
         self.tipmoving = true;
@@ -620,6 +624,8 @@ define([
         plotTip.movetooltip(self, d, d3.mouse(self.svg.node()));
       })
       .on("mouseleave", function(d) {
+        d3.event.stopPropagation();
+
         self.removeLegendPointer();
         return plotTip.untooltip(self, d);
       })
@@ -2203,7 +2209,7 @@ define([
     }
 
     self.jqcontainer.resizable({
-      maxWidth: self.element.width(), // no wider than the width of the cell
+      maxWidth: self.element.parent().width(), // no wider than the width of the cell
       minWidth: 150,
       minHeight: 150,
       handles: "e, s, se",
@@ -2233,7 +2239,7 @@ define([
 
     self.resizeFunction = function() {
       // update resize maxWidth when the browser window resizes
-      self.jqcontainer.resizable("option", "maxWidth", self.element.width());
+      self.jqcontainer.resizable("option", "maxWidth", self.element.parent().width());
     };
 
     self.resetSvg();

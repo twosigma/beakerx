@@ -141,7 +141,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     this.comm.sendUpdate(propertyName, value);
   }
 
-  protected void handleCommEventSync(Message message, CommActions action, ActionPerformed handlerAction) {
+  public void handleCommEventSync(Message message, CommActions action, ActionPerformed handlerAction) {
     wrapBusyIdle(KernelManager.get(), message, () -> runCommEvent(message, action, handlerAction));
   }
 

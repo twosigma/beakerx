@@ -2295,14 +2295,21 @@ define([
 
     var executeCopy = function(text) {
       var input = document.createElement('textarea');
-      var currentNotebookMode = Jupyter.notebook.mode;
+      var currentNotebookMode = Jupyter && Jupyter.notebook.mode;
+      var notInNotebook = !Jupyter || !Jupyter.NotebookList;
 
       document.body.appendChild(input);
       input.value = text;
       input.select();
-      Jupyter.notebook.mode = 'edit';
-      document.execCommand('Copy', false, null);
-      Jupyter.notebook.mode = currentNotebookMode;
+
+      if (notInNotebook || currentNotebookMode === 'edit') {
+        document.execCommand('Copy', false, null);
+      } else {
+        Jupyter.notebook.mode = 'edit';
+        document.execCommand('Copy', false, null);
+        Jupyter.notebook.mode = currentNotebookMode;
+      }
+
       input.remove();
     };
 

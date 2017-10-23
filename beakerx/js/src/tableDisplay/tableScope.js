@@ -949,6 +949,11 @@ define([
     this.showHideHighlighter(columnIndex, cellHighlighters.HeatmapHighlighter);
   };
 
+  TableScope.prototype.haColumnUniqueEntriesHighlighted = function(columnIndex) {
+    var highlighter = this.cellHighlighters[this.colorder[columnIndex]];
+    return highlighter && highlighter instanceof cellHighlighters.UniqueEntriesHighlighter;
+  };
+
   TableScope.prototype.showHideUniqueEntries = function(columnIndex) {
     this.showHideHighlighter(columnIndex, cellHighlighters.UniqueEntriesHighlighter);
   };
@@ -2440,7 +2445,7 @@ define([
 
   // ---------
   // Add column reset methods
-  require('./columnReset')(TableScope);
+  require('./columnReset').default(TableScope);
   require('./tableModal')(TableScope);
   require('./tableSelect')(TableScope);
 

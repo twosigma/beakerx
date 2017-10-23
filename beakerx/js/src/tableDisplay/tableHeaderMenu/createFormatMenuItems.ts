@@ -15,10 +15,9 @@
  */
 
 import MenuItem from "./MenuItemInterface";
+import _ from 'underscore';
 
 declare function require(moduleName: string): any;
-
-import _ from 'underscore';
 const tableConsts = require('../consts');
 
 const getColumnTypes = (scope: any, colIdx: number): object[] => {

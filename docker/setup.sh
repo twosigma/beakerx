@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-conda create -y -n beakerx python=3.5 jupyter openjdk nodejs pandas
+conda create -y -n beakerx 'python>=3' jupyter openjdk nodejs pandas
 source activate beakerx
-conda install -y -c conda-forge ipywidgets=7.0.0 widgetsnbextension
+conda install -y -c conda-forge ipywidgets widgetsnbextension
 
 rm -r /home/beakerx/beakerx/js/node_modules
 rm -r /home/beakerx/beakerx/js/dist
@@ -23,4 +23,4 @@ rm -r /home/beakerx/beakerx/js/dist
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 
-ls | grep -v .bash_logout | grep -v .bashrc | grep -v beakerx | grep -v .cache | grep -v .conda | grep -v doc | grep -v docker | grep -v .local | grep -v .profile | grep -v setup.sh | xargs rm -r
+rm -rf docker .DS_Store .git .gradle .idea jitpack.yml kernel RELEASE.md test

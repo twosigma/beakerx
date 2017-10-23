@@ -18,21 +18,26 @@ from .easyform import *
 from .tabledisplay import *
 from ._version import version_info, __version__
 from .handlers import load_jupyter_server_extension
+from .environment import *
+
 
 def _jupyter_nbextension_paths():
     return [{
-        'section': 'notebook',
+        'section': 'tree',
         'src': 'static',
         'dest': 'beakerx',
-        'require': 'beakerx/extension'
+        'require': 'beakerx/tree'
     }, {
         'section': 'notebook',
         'src': 'static',
         'dest': 'beakerx',
-        'require': 'beakerx/main'
-    }]
+        'require': 'beakerx/extension'
+    }
+    ]
+
 
 def _jupyter_server_extension_paths():
     return [dict(module="beakerx")]
+
 
 beakerx = BeakerX()

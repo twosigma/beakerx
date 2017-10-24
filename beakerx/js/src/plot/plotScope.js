@@ -1309,7 +1309,7 @@ define([
         lodTypeMenuItems.push(createLodTypeMenuItem('off', id));
 
         var lodhint = $(
-          '<div style="float: right; width: auto;">' +
+          '<div style="width: auto;">' +
           '<div class="dropdown dropdown-promoted lod-dropdown-menu">' +
           '<a class="dropdown-toggle plot-legendlodtype"></a>' +
           '<ul class="dropdown-menu"></ul>' +

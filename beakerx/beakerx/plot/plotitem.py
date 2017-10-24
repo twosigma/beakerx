@@ -13,13 +13,13 @@
 # limitations under the License.
 
 from enum import Enum
-from datetime import datetime
 import math
 import pandas as pd
 from beakerx.utils import *
 
 from dateutil.parser import parse
-
+import numpy as np
+import datetime as dt
 
 class ShapeType(Enum):
     SQUARE = 1
@@ -135,8 +135,13 @@ class XYGraphics(Graphics):
                 x = self.x[idx]
                 if isinstance(x, float) and math.isnan(x):
                     self.x[idx] = "NaN"
-                if isinstance(x, datetime) or is_date(x):
-                    self.x[idx] = unix_time(x)
+                if isinstance(x, dt.date) or isinstance(x, dt.time):
+                    self.x[idx] = date_time_2_millis(x.isoformat())
+                if is_date(x):
+                    self.x[idx] = date_time_2_millis(x)
+                if isinstance(x, np.datetime64):
+                    self.x[idx] = date_time_2_millis(x.__str__())
+
 
         self.y = defY
         if self.y is not None:

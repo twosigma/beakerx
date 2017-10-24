@@ -56,6 +56,7 @@ var plugins = [
     "window.jQuery":"jquery"
   }),
   new ForkTsCheckerWebpackPlugin({
+    watch: 'src',
     workers: ForkTsCheckerWebpackPlugin.TWO_CPUS_FREE
   }),
   new webpack.DefinePlugin({

@@ -142,7 +142,8 @@
 }
 
 .plot-legendlod {
-  margin: 0px 5px;
+  margin: 0px 5px 0px 10px;
+  display: inline-block;
 }
 .plot-legendlod ul {
   list-style: none;

@@ -43,12 +43,6 @@ public abstract class SelectionWidget<T extends Serializable> extends ValueWidge
     this.options = getStringArray(options);
     sendUpdate(OPTIONS_LABELS, options);
     sendUpdate(INDEX, 0);
-    if (this instanceof SelectMultiple) {
-      setValue(options);
-    } else {
-      setValue(this.options[0]);
-    }
-
   }
 
   public Integer getSelectedOptionIndex(String option) {

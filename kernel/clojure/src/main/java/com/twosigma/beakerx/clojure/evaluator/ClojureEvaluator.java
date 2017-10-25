@@ -70,8 +70,8 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   private void killClojureThreads() {
     runCode("(import 'clojure.lang.Agent)\n" +
-            "(.shutdownNow Agent/soloExecutor)");
-    runCode("(import 'java.util.concurrent.Executors) \n" +
+            "(.shutdownNow Agent/soloExecutor)\n" +
+            "(import 'java.util.concurrent.Executors) \n" +
             "(set! Agent/soloExecutor (Executors/newCachedThreadPool))");
   }
 

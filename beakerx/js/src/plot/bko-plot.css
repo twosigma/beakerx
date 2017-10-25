@@ -157,7 +157,7 @@
   color: #73be3b;
   cursor: pointer;
   display: inline-block;
-  background: url("../shared/images/down@2x.png") no-repeat center right;
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAICAYAAADwdn+XAAAAUUlEQVQoFZ3RSwoAIAhF0XK3rqJahbuVeEERlf0EZ94z0YtIJKLgPkZVk0f3gyBm5liAV6TG6Bpwi/TxBJyQMV4CFrKKTWBErBh328F3sLujDB1vOtcHeTAhAAAAAElFTkSuQmCC') no-repeat center right;
   padding-right: 13px;
   background-size: 8px;
 }

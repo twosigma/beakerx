@@ -28,6 +28,7 @@ class Table(BaseObject):
         self.types = []
         types_map = dict()
         self.columnNames = []
+        self.hasIndex = None
         if isinstance(args[0], DataFrame):
             self.convert_from_pandas(args, types_map)
         elif isinstance(args[0], dict):
@@ -36,7 +37,6 @@ class Table(BaseObject):
             self.convert_from_list(args, types_map)
 
         self.headersVertical = False
-        self.hasIndex = None
         self.headerFontSize = None
         self.contextMenuItems = []
         self.alignmentForType = {}
@@ -101,7 +101,14 @@ class Table(BaseObject):
                 value_type = types_map.get(columnName)
 
                 row.append(self.convert_value(value, value_type))
+            if args[0].index.name is not None:
+                row[:0] = [self.convert_value(args[0].index.get_values()[index], type(args[0].index.get_values()[index]))]
             self.values.append(row)
+
+        if args[0].index.name is not None:
+            self.hasIndex = "true"
+            self.columnNames[:0] = [args[0].index.name]
+            self.types[:0] = [self.convert_type("", args[0][column][0])]
 
     @staticmethod
     def convert_value(value, value_type):

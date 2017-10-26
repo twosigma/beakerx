@@ -165,7 +165,7 @@ define([
     }
     this.lodOn = lod;
 
-    if (this.lodOn === true) {
+    if (this.lodOn === true && this.lodplotter) {
       this.sample(scope);
       this.lodplotter.render(scope, this.elementSamples);
     } else {
@@ -174,7 +174,7 @@ define([
   };
 
   PlotLineLodLoader.prototype.setHighlighted = function(scope, highlighted) {
-    if (this.lodOn === true) {
+    if (this.lodOn === true && this.lodplotter) {
       this.lodplotter.setHighlighted(scope, highlighted);
     } else {
       this.plotter.setHighlighted(scope, highlighted);
@@ -246,7 +246,7 @@ define([
   };
 
   PlotLineLodLoader.prototype.createTip = function(ele) {
-    if (this.lodOn === false) {
+    if (this.lodOn === false ||  !this.lodplotter) {
       return this.plotter.createTip(ele);
     }
     var xAxis = this.xAxis,

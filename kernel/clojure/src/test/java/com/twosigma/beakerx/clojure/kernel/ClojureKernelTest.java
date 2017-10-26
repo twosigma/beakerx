@@ -24,6 +24,8 @@ import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widgets.TestWidgetUtils;
+import com.twosigma.beakerx.widgets.chart.BeakerxPlot;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.util.List;
@@ -37,6 +39,7 @@ import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForR
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
+import static com.twosigma.beakerx.widgets.Widget.MODEL_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClojureKernelTest extends KernelExecutionTest {
@@ -102,6 +105,36 @@ public class ClojureKernelTest extends KernelExecutionTest {
     //then
     waitForIdleMessage(kernelSocketsService.getKernelSockets());
     verifyTableDisplay(kernelSocketsService);
+  }
+
+  @Test
+  public void shouldDisplayPlot() throws Exception {
+    //given
+    String code = "" +
+            "(import '[com.twosigma.beakerx.chart.xychart Plot]\n" +
+            "        '[com.twosigma.beakerx.chart.xychart.plotitem Line])\n" +
+            "(doto (Plot.)\n" +
+            "            (.setTitle \"We Will Control the Title\")\n" +
+            "            (.setXLabel \"Horizontal\")\n" +
+            "            (.setYLabel \"Vertical\")\n" +
+            "            (.add (doto (Line.)\n" +
+            "                        (.setX [0, 1, 2, 3, 4, 5])\n" +
+            "                        (.setY [0, 1, 6, 5, 2, 8]))))";
+    Message message = getExecuteRequestMessage(code);
+    //when
+    kernelSocketsService.handleMsg(message);
+    //then
+    waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    verifyPlot(kernelSocketsService);
+  }
+
+  private void verifyPlot(KernelSocketsServiceTest kernelSocketsService) {
+    List<Message> publishedMessages = kernelSocketsService.getPublishedMessages();
+    List<Message> openMessages = TestWidgetUtils.getOpenMessages(publishedMessages);
+    Assertions.assertThat(openMessages.size()).isEqualTo(1);
+    Map data = TestWidgetUtils.getData(openMessages.get(0));
+    Map state = (Map) data.get("state");
+    Assertions.assertThat(state.get(MODEL_NAME)).isEqualTo(BeakerxPlot.MODEL_NAME_VALUE);
   }
 
   private void verifyTableDisplay(KernelSocketsServiceTest kernelSocketsService) {

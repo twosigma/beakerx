@@ -58,9 +58,9 @@ public class SelectMultipleTest {
     widget.setOptions(new String[]{"1","2", "3"});
     kernel.clearPublishedMessages();
     //when
-    widget.setValue(Arrays.asList(1,2));
+    widget.setValue(Arrays.asList("1","2"));
     //then
-    verifyMsgForProperty(kernel, SelectMultiple.VALUE, Arrays.asList(1,2));
+    verifyMsgForProperty(kernel, SelectMultiple.VALUE, Arrays.asList("1","2"));
   }
 
   @Test
@@ -68,9 +68,9 @@ public class SelectMultipleTest {
     //given
     SelectMultiple widget = selectMultiple();
     //when
-    widget.setOptions(new String[]{"2", "3"});
+    widget.setOptions(new String[]{"1", "2"});
     //then
-    verifyMsgForProperty(kernel, SelectMultiple.OPTIONS_LABELS, new String[]{"2", "3"});
+    verifyMsgForProperty(kernel, SelectMultiple.OPTIONS_LABELS, new String[]{"1", "2"});
   }
 
   private SelectMultiple selectMultiple() throws NoSuchAlgorithmException {

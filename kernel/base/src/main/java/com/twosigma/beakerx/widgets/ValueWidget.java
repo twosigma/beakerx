@@ -23,10 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 
- * @author konst
- *
  * @param <T>
+ * @author konst
  */
 public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
 
@@ -47,11 +45,15 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
 
   @Override
   public void updateValue(Object input) {
-    this.value = getValueFromObject(input);
+    this.value = updateValueFromObject(input);
   }
 
   public abstract T getValueFromObject(Object input);
-  
+
+  public T updateValueFromObject(Object input) {
+    return getValueFromObject(input);
+  }
+
   public Boolean getDisabled() {
     return disabled;
   }
@@ -87,7 +89,7 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
     this.msg_throttle = getInteger(msg_throttle);
     sendUpdate(MSG_THROTTLE, msg_throttle);
   }
-  
+
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
@@ -222,7 +224,7 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
         for (Object o : array) {
           ret.add(getString(o));
         }
-      }else if(input instanceof Collection<?>){
+      } else if (input instanceof Collection<?>) {
         Collection<Object> array = (Collection<Object>) input;
         for (Object o : array) {
           ret.add(getString(o));
@@ -242,7 +244,7 @@ public abstract class ValueWidget<T extends Serializable> extends DOMWidget {
         for (Object o : array) {
           ret.add(getInteger(o));
         }
-      }else if(input instanceof Collection<?>){
+      } else if (input instanceof Collection<?>) {
         Collection<Integer> array = (Collection<Integer>) input;
         for (Object o : array) {
           ret.add(getInteger(o));

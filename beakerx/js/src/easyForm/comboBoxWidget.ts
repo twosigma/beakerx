@@ -14,43 +14,56 @@
  *  limitations under the License.
  */
 
-var widgets = require('jupyter-js-widgets');
-var _ = require('underscore');
-var comboBox = require('../comboBox/jQueryComboBox');
+declare function require(moduleName: string): any;
+const widgets = require('jupyter-js-widgets');
+const comboBox = require('../comboBox/jQueryComboBox');
 
-var ComboBoxModel = widgets.SelectModel.extend({
-  defaults: function() {
-    return _.extend({}, widgets.SelectModel.prototype.defaults.apply(this), {
+import $ from 'jquery';
+
+class ComboBoxModel extends widgets.SelectModel {
+  defaults() {
+    return {
+      ...super.defaults(),
       _view_name: "ComboBoxView",
       _model_name: "ComboBoxModel",
       _model_module: 'beakerx',
       _view_module: 'beakerx'
-    });
+    };
   }
-});
+}
 
-var ComboBoxView = widgets.SelectView.extend({
-  render: function() {
-    ComboBoxView.__super__.render.apply(this);
+class ComboBoxView extends widgets.SelectView {
+  render(): void {
+    super.render();
 
     this.el.classList.add('widget-combobox');
-    this.$select = $(this.el).find('select');
-    this.$select.attr('easyform-editable', this.model.get('editable'));
-    this.$select.attr('size', this.model.get('size'));
-    this.$select.combobox({
-      change: this.setValueToModel.bind(this)
+    this.listbox.setAttribute('easyform-editable', this.model.get('editable'));
+    this.listbox.setAttribute('size', this.model.get('size'));
+
+    setTimeout(() => {
+      $(this.listbox).combobox({
+        change: this.setValueToModel.bind(this),
+      });
+
+      this.update();
     });
+  }
 
-    this.update();
-  },
-
-  setValueToModel: function(value) {
+  setValueToModel(value) {
     this.model.set('value', value, { updated_view: this });
     this.touch();
   }
-});
 
-module.exports = {
-  ComboBoxModel: ComboBoxModel,
-  ComboBoxView: ComboBoxView
+  update() {
+    super.update();
+
+    let value = this.model.get('value');
+
+    this.$el.find('.easyform-combobox-input').val(value);
+  }
+}
+
+export default {
+  ComboBoxModel,
+  ComboBoxView
 };

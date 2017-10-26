@@ -15,13 +15,19 @@
  */
 package com.twosigma.beakerx.widgets.selections;
 
+import com.google.common.collect.Lists;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> {
+
+  private static final ArrayList<String> DEFAULT = Lists.newArrayList("0");
 
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
@@ -32,13 +38,29 @@ public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> 
 
   @Override
   public String[] getValueFromObject(Object input) {
+    List<String> result = DEFAULT;
+    if (input instanceof Object[]) {
+      result = Arrays.stream((Object[]) input).map(i -> (String) i).collect(Collectors.toList());
+    } else if (input instanceof List) {
+      result = (List<String>) input;
+    }
+    return result.toArray(new String[result.size()]);
+  }
+
+  @Override
+  public String[] updateValueFromObject(Object input) {
     Collection<Integer> indexes = indexes(input);
     List<String> collect = indexes.stream().map(x -> getOptions()[x]).collect(Collectors.toList());
     return collect.toArray(new String[collect.size()]);
   }
 
   private Collection<Integer> indexes(Object input) {
-    return getIntegerArray(input);
+    if (input instanceof Object[]) {
+      return Arrays.stream((Object[]) input).map(i -> (Integer) i).collect(Collectors.toList());
+    } else if (input instanceof List) {
+      return ((List<Integer>) input);
+    }
+    return Lists.newArrayList(0);
   }
 
 }

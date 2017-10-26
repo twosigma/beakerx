@@ -158,10 +158,14 @@ describe('Plot groovy tests', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(15);
       svgElement.waitForEnabled();
       var pointElement = svgElement.$('rect#i2_0');
+      pointElement.waitForEnabled();
       pointElement.scroll();
       pointElement.click();
-      expect(svgElement.$('#cursor_xlabel').isVisible()).toBeTruthy();
-      expect(svgElement.$('#cursor_ylabel').isVisible()).toBeTruthy();
+      svgElement.moveToObject('rect#i2_1');
+      var divPlot = beakerxPO.getCodeCellByIndex(15).$('#svgg');
+      divPlot.$('line#cursor_x').waitForEnabled();
+      expect(divPlot.$('#cursor_xlabel').isVisible()).toBeTruthy();
+      expect(divPlot.$('#cursor_ylabel').isVisible()).toBeTruthy();
     });
   });
 

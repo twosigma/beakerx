@@ -29,21 +29,33 @@ subprocess.call("yarn run wdio-config", shell=True)
 # start selenium server
 with open(os.devnull, "w") as fnull:
     webcontrol = subprocess.Popen(["yarn", "run", "start-server"], stdout=subprocess.PIPE, stderr=fnull, preexec_fn=os.setsid);
-# wait for selenium server to start up
+    # wait for selenium server to start up
     while 1:
         line = webcontrol.stdout.readline().decode('utf-8').strip()
         if not line:
             continue
         print(line)
-        if 'Selenium started' in line: 
+        if 'Selenium started' in line:
             break
+
+# start jupyter notebook
+nb_command = 'jupyter notebook --no-browser --notebook-dir="%s"' % beakerx_dir
+beakerx = subprocess.Popen(nb_command, shell=True, executable="/bin/bash", preexec_fn=os.setsid, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+# wait for notebook server to start up
+while 1:
+    line = beakerx.stdout.readline().decode('utf-8').strip()
+    if not line:
+        continue
+    print(line)
+    if 'The Jupyter Notebook is running' in line:
+        break
 
 #start webdriverio
 result=subprocess.call("yarn run test", shell=True)
 
 # Send the signal to all the process groups
-os.system("kill -9 `pgrep -f jupyter`")
-os.killpg(os.getpgid(webcontrol.pid), signal.SIGTERM)
+os.killpg(os.getpgid(beakerx.pid), signal.SIGKILL)
+os.killpg(os.getpgid(webcontrol.pid), signal.SIGKILL)
 
 if result:
     sys.exit(20)

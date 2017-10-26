@@ -108,7 +108,6 @@ public class TestWidgetUtils {
   }
 
   public static <T> T getValueForProperty(KernelTest kernel, String propertyName, Class<T> clazz) {
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(1);
     Message message = kernel.getPublishedMessages().get(0);
     return getValueForProperty(message, propertyName, clazz);
   }
@@ -151,7 +150,9 @@ public class TestWidgetUtils {
 
   public static String getMethod(Message message) {
     return (String) ((Map) (message.getContent().get(Comm.DATA))).get(Comm.METHOD);
-
   }
 
+  public static List<Message> getOpenMessages(List<Message> messages) {
+    return SearchMessages.getListMessagesByType(messages, JupyterMessages.COMM_OPEN);
+  }
 }

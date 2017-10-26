@@ -72,6 +72,8 @@ public class DropdownTest {
 
   private Dropdown dropdown() throws NoSuchAlgorithmException {
     Dropdown widget = new Dropdown();
+    widget.setOptions(new String[]{"0", "1", "2"});
+
     kernel.clearPublishedMessages();
     return widget;
   }

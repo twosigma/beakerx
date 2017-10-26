@@ -1309,7 +1309,7 @@ define([
         lodTypeMenuItems.push(createLodTypeMenuItem('off', id));
 
         var lodhint = $(
-          '<div style="float: right; width: auto;">' +
+          '<div style="width: auto;">' +
           '<div class="dropdown dropdown-promoted lod-dropdown-menu">' +
           '<a class="dropdown-toggle plot-legendlodtype"></a>' +
           '<ul class="dropdown-menu"></ul>' +
@@ -2209,7 +2209,7 @@ define([
     }
 
     self.jqcontainer.resizable({
-      maxWidth: self.element.width(), // no wider than the width of the cell
+      maxWidth: self.element.parent().width(), // no wider than the width of the cell
       minWidth: 150,
       minHeight: 150,
       handles: "e, s, se",
@@ -2239,7 +2239,7 @@ define([
 
     self.resizeFunction = function() {
       // update resize maxWidth when the browser window resizes
-      self.jqcontainer.resizable("option", "maxWidth", self.element.width());
+      self.jqcontainer.resizable("option", "maxWidth", self.element.parent().width());
     };
 
     self.resetSvg();
@@ -2476,8 +2476,13 @@ define([
       extraStyles = extraStyles.concat(cellModel.custom_styles);
 
     plotUtils.addInlineStyles(svg, extraStyles);
+    self.svgReplaceNbspCharacters(svg);
 
     return svg;
+  };
+
+  PlotScope.prototype.svgReplaceNbspCharacters = function(svg) {
+    svg.innerHTML = svg.innerHTML.replace(/\&nbsp;/g, ' ');
   };
 
   PlotScope.prototype.saveAsSvg = function() {

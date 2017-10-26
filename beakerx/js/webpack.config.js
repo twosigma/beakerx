@@ -17,14 +17,15 @@
 var webpack = require('webpack');
 var package = require('./package.json');
 var path = require('path');
-
-var tsLoader = require('awesome-typescript-loader');
+var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 // Custom webpack loaders are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
 var rules = [
   { test: /\.json$/, use: 'json-loader' },
-  { test: /\.ts$/, use: 'awesome-typescript-loader' },
+  { test: /\.ts$/, loader: 'ts-loader', options: {
+    transpileOnly: true
+  }},
   { test: /\.css$/, use: [
     "style-loader",
     "css-loader"
@@ -45,16 +46,15 @@ var rules = [
 
 var plugins = [
   new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-  new webpack.LoaderOptionsPlugin({
-    minimize: true,
-    debug: false
-  }),
   new webpack.ProvidePlugin({
     "$":"jquery",
     "jQuery":"jquery",
     "window.jQuery":"jquery"
   }),
-  new tsLoader.CheckerPlugin(),
+  new ForkTsCheckerWebpackPlugin({
+    watch: 'src',
+    workers: ForkTsCheckerWebpackPlugin.TWO_CPUS_FREE
+  }),
   new webpack.DefinePlugin({
     BEAKERX_VERSION: JSON.stringify(package.version)
   })
@@ -106,7 +106,6 @@ module.exports = [
       path: path.resolve(__dirname, '../beakerx/static'),
       libraryTarget: 'amd'
     },
-    devtool: 'source-map',
     module: {
       rules: rules
     },
@@ -141,7 +140,6 @@ module.exports = [
       libraryTarget: 'amd',
       publicPath: 'https://unpkg.com/' + package.name + '@' + package.version + '/dist/'
     },
-    devtool: 'source-map',
     module: {
       rules: rules
     },

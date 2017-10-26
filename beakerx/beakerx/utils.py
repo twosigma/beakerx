@@ -19,6 +19,7 @@ from datetime import datetime
 from dateutil import parser
 from enum import Enum
 import pytz
+from pandas._libs.tslib import Timestamp
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
@@ -31,9 +32,14 @@ def is_date(string):
 
 
 def unix_time(dt):
+    if isinstance(dt, Timestamp):
+        date = dt.to_pydatetime()
+    else:
+        date = parser.parse(dt)
+
     epoch = parser.parse("1970-01-01 00:00:00+00:00")
-    delta = parser.parse(dt).replace(tzinfo=pytz.utc) - epoch
-    
+    delta = date.replace(tzinfo=pytz.utc) - epoch
+
     return delta.total_seconds()
 
 

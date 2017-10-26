@@ -59,8 +59,7 @@ describe('Testing of table Actions', function () {
       cell_2.rightClick();
       browser.click('span=tag1ByClosure');
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      //TODO enable when action details will be fixed
-      //beakerxPO.checkCellOutput(1, '0:2=3');
+      beakerxPO.checkCellOutput(1, '0:2=3');
     });
 
   });
@@ -87,11 +86,10 @@ describe('Testing of table Actions', function () {
 
     it('DoubleClickAction should run tag (by closure)', function () {
       var tblElement = beakerxPO.runCellToGetTableElement(5);
-      var cell_1 = tblElement.$$('td.ui-selectee')[2];
+      var cell_1 = tblElement.$$('td.ui-selectee')[3];
       cell_1.doubleClick();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      //TODO enable when action details will be fixed
-      //beakerxPO.checkCellOutput(6, '0:1=2');
+      beakerxPO.checkCellOutput(6, '0:2=3');
     });
   });
 

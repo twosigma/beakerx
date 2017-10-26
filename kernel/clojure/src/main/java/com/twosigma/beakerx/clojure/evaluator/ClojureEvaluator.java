@@ -63,6 +63,19 @@ public class ClojureEvaluator extends BaseEvaluator {
   }
 
   @Override
+  public void resetEnvironment() {
+    killClojureThreads();
+    super.resetEnvironment();
+  }
+
+  private void killClojureThreads() {
+    runCode("(import 'clojure.lang.Agent)\n" +
+            "(.shutdownNow Agent/soloExecutor)\n" +
+            "(import 'java.util.concurrent.Executors) \n" +
+            "(set! Agent/soloExecutor (Executors/newCachedThreadPool))");
+  }
+
+  @Override
   protected void doResetEnvironment() {
     loader = ClojureClassLoaderFactory.newInstance(classPath, outDir);
 
@@ -130,8 +143,7 @@ public class ClojureEvaluator extends BaseEvaluator {
     }
   }
 
-  private String initScriptSource()
-          throws IOException {
+  private String initScriptSource() throws IOException {
     URL url = this.getClass().getClassLoader().getResource("init_clojure_script.txt");
     return Resources.toString(url, Charsets.UTF_8);
   }

@@ -150,7 +150,9 @@ public class TestWidgetUtils {
 
   public static String getMethod(Message message) {
     return (String) ((Map) (message.getContent().get(Comm.DATA))).get(Comm.METHOD);
-
   }
 
+  public static List<Message> getOpenMessages(List<Message> messages) {
+    return SearchMessages.getListMessagesByType(messages, JupyterMessages.COMM_OPEN);
+  }
 }

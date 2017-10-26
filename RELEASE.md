@@ -20,13 +20,15 @@ git clean -xfd
 cd beakerx
 python setup.py sdist
 python setup.py bdist_wheel --universal
+```
+
+Make a test installation with pip into a fresh environment, if it works then continue with:
+```
 pip install twine
 twine upload dist/*
 # get the sha256 hash for conda-forge install
 shasum -a 256 dist/*.tar.gz
 ```
-
-Make a test installation with pip into a fresh environment.
 
 Publish on conda-forge
 ----------------------

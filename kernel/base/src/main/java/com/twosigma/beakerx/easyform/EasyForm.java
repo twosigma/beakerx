@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
+
 @SuppressWarnings("unchecked")
 public class EasyForm extends ObservableMap<String, Object> implements DisplayableWidget {
 
@@ -175,8 +177,10 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     list.setSize(size);
     list.setMultipleSelection(multipleSelection);
     list.setValues(values);
-    if (values != null && values.size() > 0) {
-      list.setValue(0);
+    if (values != null && values.size() > 0 && multipleSelection) {
+      list.setValue(singletonList(values.iterator().next()));
+    } else {
+      list.setValue(values.iterator().next());
     }
     return addComponentOrThrow(label, list);
   }
@@ -202,7 +206,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
                                            final Collection<String> values,
                                            final Integer orientation) throws Exception {
     RadioButtonComponentWidget radioButtonComponent = new RadioButtonComponentWidget(values, EasyForm.HORIZONTAL.equals(orientation));
-    radioButtonComponent.setLabel(label);;
+    radioButtonComponent.setLabel(label);
     radioButtonComponent.registerUpdateValueCallback(radioButtonComponent::fireChanged);
     return addComponentOrThrow(label, radioButtonComponent);
   }

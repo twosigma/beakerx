@@ -23,7 +23,14 @@ const prodConfig = {
   devtool: 'source-map',
   plugins: [
     new UglifyJSPlugin({
-      sourceMap: true
+      sourceMap: true,
+      parallel: true,
+      include: '/\/src/',
+      uglifyOptions: {
+        compress: {
+          unused: false
+        }
+      }
     }),
     new webpack.DefinePlugin({
       'process.env': {

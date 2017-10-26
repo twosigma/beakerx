@@ -46,16 +46,13 @@ var rules = [
 
 var plugins = [
   new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-  new webpack.LoaderOptionsPlugin({
-    minimize: true,
-    debug: false
-  }),
   new webpack.ProvidePlugin({
     "$":"jquery",
     "jQuery":"jquery",
     "window.jQuery":"jquery"
   }),
   new ForkTsCheckerWebpackPlugin({
+    watch: 'src',
     workers: ForkTsCheckerWebpackPlugin.TWO_CPUS_FREE
   }),
   new webpack.DefinePlugin({

@@ -41,10 +41,13 @@ import com.twosigma.beakerx.widgets.box.HBox;
 import com.twosigma.beakerx.widgets.selections.ComboBox;
 import com.twosigma.beakerx.widgets.selections.RadioButtons;
 import com.twosigma.beakerx.widgets.selections.SelectMultiple;
+import com.twosigma.beakerx.widgets.selections.SelectMultipleSingle;
 import com.twosigma.beakerx.widgets.strings.Text;
 import com.twosigma.beakerx.widgets.strings.Textarea;
+
 import java.util.List;
 import java.util.Map;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -138,7 +141,7 @@ public class EasyFormTest {
 
   private void verifyButton(List<Message> messages) {
     verifyInternalOpenCommMsgWitLayout(messages, Button.MODEL_NAME_VALUE, Button.VIEW_NAME_VALUE,
-        Widget.MODEL_MODULE_VALUE, Widget.VIEW_MODULE_VALUE);
+            Widget.MODEL_MODULE_VALUE, Widget.VIEW_MODULE_VALUE);
   }
 
   @Test
@@ -157,7 +160,25 @@ public class EasyFormTest {
 
   private void verifyMultipleSelection(List<Message> messages) {
     verifyInternalOpenCommMsgWitLayout(messages, SelectMultiple.MODEL_NAME_VALUE,
-        SelectMultiple.VIEW_NAME_VALUE);
+            SelectMultiple.VIEW_NAME_VALUE);
+  }
+
+  @Test
+  public void shouldCreateEasyFormWithSelectMultipleSingle() throws Exception {
+    //given
+    String label = "MultipleSelectionLabel1";
+    //when
+    EasyForm easyForm = new EasyForm("EasyForm with SelectMultipleSingle");
+    easyForm.addList(label, asList("1", "2", "3"), Boolean.FALSE);
+    easyForm.display();
+    //then
+    verifySelectMultipleSingle(kernel.getPublishedMessages());
+    verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages());
+  }
+  private void verifySelectMultipleSingle(List<Message> messages) {
+    verifyInternalOpenCommMsgWitLayout(messages, SelectMultipleSingle.MODEL_NAME_VALUE,
+            SelectMultipleSingle.VIEW_NAME_VALUE);
   }
 
   @Test
@@ -176,8 +197,8 @@ public class EasyFormTest {
 
   private void verifyCombobox(List<Message> messages) {
     verifyInternalOpenCommMsgWitLayout(messages, ComboBox.MODEL_NAME_VALUE,
-        ComboBox.VIEW_NAME_VALUE,
-        BeakerxWidget.MODEL_MODULE_VALUE, BeakerxWidget.VIEW_MODULE_VALUE);
+            ComboBox.VIEW_NAME_VALUE,
+            BeakerxWidget.MODEL_MODULE_VALUE, BeakerxWidget.VIEW_MODULE_VALUE);
   }
 
   @Test
@@ -227,11 +248,11 @@ public class EasyFormTest {
     easyForm.display();
     //then
     verifyTextField(
-        kernel.getPublishedMessages(),
-        Text.MODEL_NAME_VALUE,
-        Text.MODEL_MODULE_VALUE,
-        Text.VIEW_NAME_VALUE,
-        Text.VIEW_MODULE_VALUE
+            kernel.getPublishedMessages(),
+            Text.MODEL_NAME_VALUE,
+            Text.MODEL_MODULE_VALUE,
+            Text.VIEW_NAME_VALUE,
+            Text.VIEW_MODULE_VALUE
     );
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
     verifyDisplayMsg(kernel.getPublishedMessages());
@@ -239,7 +260,7 @@ public class EasyFormTest {
 
   private void verifyEasyForm(List<Message> messages, List<Widget> children) {
     Message msg = SearchMessages.getListWidgetsByViewName(messages, EasyFormView.VIEW_NAME_VALUE)
-        .get(0);
+            .get(0);
     verifyInternalOpenCommMsg(msg, EasyFormView.MODEL_NAME_VALUE, EasyFormView.VIEW_NAME_VALUE);
     verifyChildren(msg, children);
   }
@@ -260,7 +281,7 @@ public class EasyFormTest {
 
   private void verifyDatePicker(List<Message> messages) {
     verifyInternalOpenCommMsgWitLayout(messages, DatePicker.MODEL_NAME_VALUE,
-        DatePicker.VIEW_NAME_VALUE);
+            DatePicker.VIEW_NAME_VALUE);
   }
 
   private void verifyChildren(Message message, List<Widget> children) {

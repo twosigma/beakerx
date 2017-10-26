@@ -48,6 +48,7 @@ import com.twosigma.beakerx.widgets.strings.Textarea;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -153,14 +154,15 @@ public class EasyFormTest {
     easyForm.addList(label, asList("1", "2", "3"));
     easyForm.display();
     //then
-    verifyMultipleSelection(kernel.getPublishedMessages());
+    verifyMultipleSelection(kernel.getPublishedMessages(), easyForm);
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
     verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
-  private void verifyMultipleSelection(List<Message> messages) {
-    verifyInternalOpenCommMsgWitLayout(messages, SelectMultiple.MODEL_NAME_VALUE,
-            SelectMultiple.VIEW_NAME_VALUE);
+  private void verifyMultipleSelection(List<Message> messages, EasyForm easyForm) {
+    verifyInternalOpenCommMsgWitLayout(messages, SelectMultiple.MODEL_NAME_VALUE, SelectMultiple.VIEW_NAME_VALUE);
+    Object multipleSelectionValue = easyForm.get("MultipleSelectionLabel1");
+    Assertions.assertThat((List) multipleSelectionValue).isEmpty();
   }
 
   @Test
@@ -176,6 +178,7 @@ public class EasyFormTest {
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
     verifyDisplayMsg(kernel.getPublishedMessages());
   }
+
   private void verifySelectMultipleSingle(List<Message> messages) {
     verifyInternalOpenCommMsgWitLayout(messages, SelectMultipleSingle.MODEL_NAME_VALUE,
             SelectMultipleSingle.VIEW_NAME_VALUE);

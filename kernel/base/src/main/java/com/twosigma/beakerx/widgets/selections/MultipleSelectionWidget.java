@@ -54,7 +54,7 @@ public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> 
     return collect.toArray(new String[collect.size()]);
   }
 
-  private Collection<Integer> indexes(Object input) {
+  protected Collection<Integer> indexes(Object input) {
     if (input instanceof Object[]) {
       return Arrays.stream((Object[]) input).map(i -> (Integer) i).collect(Collectors.toList());
     } else if (input instanceof List) {

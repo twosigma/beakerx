@@ -17,14 +17,19 @@ package com.twosigma.beakerx.widgets.selections;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.widgets.Widget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
 
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 public class SelectMultipleSingleTest {
 
@@ -42,6 +47,43 @@ public class SelectMultipleSingleTest {
   }
 
   @Test
+  public void noSelection() throws Exception {
+    SelectMultipleSingle widget = selectMultipleSingle();
+    kernel.clearPublishedMessages();
+    //when
+    widget.setOptions(new String[]{"1", "2", "3"});
+    //then
+    Integer index = getValueForProperty(kernel.getPublishedMessages().get(1), Widget.INDEX, Integer.class);
+    assertThat(index).isEqualTo(-1);
+  }
+
+  @Test
+  public void updateValue() throws Exception {
+    SelectMultipleSingle widget = selectMultipleSingle();
+    widget.setOptions(new String[]{"1", "2", "3"});
+    kernel.clearPublishedMessages();
+    //when
+    widget.updateValue(1);
+    //then
+    assertThat(widget.getValue()).isEqualTo(new String[]{"2"});
+  }
+
+  @Test
+  public void shouldNotUpdateValueWhenArrayOfIndexes() throws Exception {
+    SelectMultipleSingle widget = selectMultipleSingle();
+    widget.setOptions(new String[]{"1", "2", "3"});
+    kernel.clearPublishedMessages();
+    //when
+    try {
+      widget.updateValue(asList(1, 2));
+      fail("should not update value when list of indexes");
+    } catch (Exception e) {
+      // then
+      // test passes
+    }
+  }
+
+  @Test
   public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     //when
@@ -54,7 +96,7 @@ public class SelectMultipleSingleTest {
   public void shouldSendCommMsgWhenValueChange() throws Exception {
     //given
     SelectMultipleSingle widget = selectMultipleSingle();
-    widget.setOptions(new String[]{"1","2", "3"});
+    widget.setOptions(new String[]{"1", "2", "3"});
     kernel.clearPublishedMessages();
     //when
     widget.setValue("2");

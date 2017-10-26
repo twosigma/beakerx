@@ -17,14 +17,27 @@ package com.twosigma.beakerx.widgets.selections;
 
 import com.twosigma.beakerx.widgets.BeakerxWidget;
 
-public class SelectMultipleSingle extends SingleSelectionWidget {
+import java.util.Collection;
+
+import static java.util.Collections.singletonList;
+
+public class SelectMultipleSingle extends MultipleSelectionWidget {
 
   public static String VIEW_NAME_VALUE = "SelectMultipleSingleView";
   public static String MODEL_NAME_VALUE = "SelectMultipleSingleModel";
 
   public SelectMultipleSingle() {
     super();
+    this.defaultIndex = -1;
     openComm();
+  }
+
+  @Override
+  protected Collection<Integer> indexes(Object input) {
+    if (input instanceof Integer) {
+      return singletonList((Integer) input);
+    }
+    throw new RuntimeException("Index for SelectMultipleSingle should be Integer, your index: " + input);
   }
 
   @Override

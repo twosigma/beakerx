@@ -71,7 +71,7 @@ public abstract class KernelInfoHandler extends KernelHandler<Message> {
   }
 
   private ArrayList<HelpLink> getHelpLinks() {
-    HelpLink beakerXHome = new HelpLink("BeakerX Home", "https://github.com/twosigma/beakerx");
+    HelpLink beakerXHome = new HelpLink("BeakerX Home", "http://BeakerX.com");
     HelpLink fileAnIssue = new HelpLink("File an Issue", "https://github.com/twosigma/beakerx/issues/new");
     HelpLink twoSigmaOpenSource = new HelpLink("Two Sigma Open Source", "http://opensource.twosigma.com/");
 

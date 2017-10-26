@@ -18,31 +18,60 @@ from notebook.base.handlers import APIHandler
 import json
 from tornado import web
 from .environment import *
+import beakerx
+import tornado
 
 
 class SettingsHandler(APIHandler):
-
     def data_received(self, chunk):
         pass
 
+    @staticmethod
+    def _read_property():
+        jvm = {}
+        jvm_map = EnvironmentSettings.read_beakerx_env_map_settings(EnvironmentSettings.suffix_java)
+        for x in jvm_map:
+            key = x.replace(EnvironmentSettings.java_var_name, "")
+
+            value = jvm_map[x].replace(key, "")
+            if key == "-Xmx":
+                value = value.replace("g", "")
+
+            jvm[key] = value
+
+        data = {
+            'other': EnvironmentSettings.read_beakerx_env_settings(EnvironmentSettings.suffix_other),
+            'jvm': jvm
+        }
+
+        return data
+
     @web.authenticated
     def get(self):
-        data = {'jvm': EnvironmentSettings.read_beakerx_env_settings()}
-        self.finish(json.dumps(data))
+        self.finish(json.dumps(SettingsHandler._read_property()))
 
     @web.authenticated
     def post(self):
-        arguments = self.get_arguments('jvm[]')
-        if isinstance(arguments, list):
-            EnvironmentSettings.set_beakerx_env_settings(arguments)
+        data = tornado.escape.json_decode(self.request.body)
 
-        data = {'jvm': EnvironmentSettings.read_beakerx_env_settings()}
+        if 'payload' in data:
+            EnvironmentSettings.set_beakerx_env_settings(data['payload'])
+
+        self.finish(json.dumps(SettingsHandler._read_property()))
+
+
+class VersionHandler(APIHandler):
+    @web.authenticated
+    def get(self):
+        data = {'version': beakerx.__version__}
         self.finish(json.dumps(data))
 
 
 def load_jupyter_server_extension(nbapp):
     web_app = nbapp.web_app
     host_pattern = '.*$'
-    route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/settings')
-    web_app.add_handlers(host_pattern, [(route_pattern, SettingsHandler)])
+    settings_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/settings')
+    version_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/version')
+    web_app.add_handlers(host_pattern, [(settings_route_pattern, SettingsHandler)])
+    web_app.add_handlers(host_pattern, [(version_route_pattern, VersionHandler)])
     nbapp.log.info("[beakerx] enabled")

@@ -19,11 +19,12 @@ define(function (require) {
     var Jupyter = require('base/js/namespace');
     var utils = require('base/js/utils');
     var urls = require('./urls');
+    var dialogs = require('./dialog');
 
     function AjaxSettings(settings) {
         settings.cache = false;
         settings.dataType = 'json';
-
+        settings.processData = false;
         if (!settings.type) {
             settings.type = 'GET';
         }
@@ -47,48 +48,117 @@ define(function (require) {
         }
     }
 
-    var error_callback = MakeErrorCallback('Error', 'An error occurred while load Beakerx setings');
+    function InpuChanged(e) {
+        var result = "";
+        var other_property = $('#other_property input');
+        other_property.each(function () {
+            var value = $(this).val().trim();
+            if (value.length > 0) {
+                result += value + " "
+            }
+        });
 
+
+        var $java_property = $('#java_property input');
+        $java_property.each(function () {
+            var value = $(this).val().trim();
+            if (value.length > 0) {
+                result += this.id + ":" + value + " "
+            }
+        });
+        var $default_property = $('#default_options input');
+        $default_property.each(function () {
+            var value = $(this).val().trim();
+            if (value.length > 0) {
+                result += '-Xmx:' + value + 'g'
+            }
+        });
+
+        $('#result').text(result)
+    }
+
+    var error_callback = MakeErrorCallback('Error', 'An error occurred while load Beakerx setings');
+    var version = {
+        versionBox: "beakerx_info",
+        load: function () {
+            var that = this;
+
+            function handle_response(data, status, xhr) {
+                var version_element = $('#' + that.versionBox);
+                $(version_element).html("<a href=\"http://BeakerX.com\">BeakerX</a>" +
+                    " from <a href=\"http://opensource.twosigma.com/\">\n" +
+                    " Two Sigma Open Source\n </a>\n" +
+                    " version " + data.version)
+            }
+
+            var settings = AjaxSettings({
+                success: SuccessWrapper(handle_response, error_callback),
+                error: error_callback
+            });
+
+            return utils.ajax(urls.api_url + 'version', settings);
+        }
+    };
     var settings = {
         formId: 'beakerx_jvm_settings_form',
         input_id: 0,
 
-        appendField: function (id, name, value, parentNode) {
-            var input = document.createElement('input');
-            var label = document.createElement('label');
-            var wrapper = document.createElement('div');
+        appendField: function (opts) {
+            var input = $('<input>');
+            var wrapper = $('<div>');
 
-            input.setAttribute('name', id);
-            input.setAttribute('id', id);
-            input.setAttribute('pattern', "^\-X.*");
-            input.setAttribute('title', "Should be valid -X Command-line Options");
-            input.value = value;
-
-            label.innerText = name;
-            label.setAttribute('for', id);
-            wrapper.appendChild(label);
-            wrapper.appendChild(input);
-            parentNode.appendChild(wrapper);
+            input.attr('name', opts.name);
+            input.attr('id', opts.id);
+            input.val(opts.value);
+            input.keyup(InpuChanged);
+            if (opts.add_label) {
+                var label = $('<label>');
+                label.text(opts.name);
+                label.attr('for', opts.id);
+                wrapper.append(label);
+            }
+            wrapper.append(input);
+            $(opts.parent).append(wrapper);
+            InpuChanged({});
         },
 
         load: function () {
             var that = this;
 
             function handle_response(data, status, xhr) {
-                var $inputs = $('#' + that.formId + ' input');
-                $inputs.each(function () {
-                    val = $(this);
-                    $("label").attr("for", val.id).remove();
-                    val.remove()
-                });
+                $('#java_property').empty();
+                $('#other_property').empty();
                 that.input_id = 0;
 
-                var fieldset = document.querySelector('#' + that.formId + ' fieldset');
-                for (var i = 0; i < data.jvm.length; i++) {
+                var other_fieldset = $('#other_property');
+                for (var i = 0; i < data.other.length; i++) {
                     that.input_id += 1;
                     var id = "beakerx_" + that.input_id + ": ";
-                    that.appendField(id, id, data.jvm[i], fieldset);
+                    var opts = {
+                        id: id,
+                        name: id,
+                        value: data.other[i],
+                        parent: other_fieldset,
+                        add_label: false
+                    };
+                    that.appendField(opts);
                 }
+                var jvm_fieldset = $('#java_property');
+                for (var key in data.jvm) {
+                    if (key == "-Xmx")
+                        continue
+                    var opts = {
+                        id: key,
+                        name: key,
+                        value: data.jvm[key],
+                        parent: jvm_fieldset,
+                        add_label: true
+                    };
+                    that.appendField(opts);
+                }
+
+                $('#-Xmx').val(data.jvm['-Xmx'])
+                InpuChanged({});
             }
 
             var settings = AjaxSettings({
@@ -113,12 +183,18 @@ define(function (require) {
 
             return utils.ajax(urls.api_url + 'settings', settings);
         },
-        createField: function () {
+        createField: function (parent) {
             var that = this;
-            var fieldset = document.querySelector('#' + that.formId + ' fieldset');
             that.input_id += 1;
             var id = "beakerx_" + that.input_id + ": ";
-            that.appendField(id, id, "", fieldset);
+            var opts = {
+                id: id,
+                name: "",
+                value: "",
+                parent: parent,
+                add_label: false
+            };
+            that.appendField(opts);
         }
     };
 
@@ -136,32 +212,83 @@ define(function (require) {
                                 .attr('id', 'beakerx_tab')
                                 .attr('href', '#beakerx')
                                 .attr('data-toggle', 'tab')
-                                .text('Beakerx Sett.')
+                                .text('BeakerX')
                                 .click(function (e) {
                                     window.history.pushState(null, null, '#beakerx');
+                                    version.load();
                                     settings.load();
+
                                 })
                         )
                 );
 
-                document.getElementById("jvm_settings_submit").addEventListener("click", function (event) {
+                $("#jvm_settings_submit").click(function (event) {
                     event.preventDefault();
-                    var $inputs = $('#' + settings.formId + ' input');
+
+                    var val = $("#-Xmx").val();
+                    if (val.length > 0 && !(/^\d+$/.test(val))) {
+                        dialogs.show_Warning("'Heap Size' can contain only digits");
+                        return
+                    }
+                    var other_property = $('#other_property input');
+                    other_property.each(function () {
+                        var value = $(this).val().trim();
+                        if (val.length > 0 && !value.startsWith("-")) {
+                            dialogs.show_Warning("All options should start with '-")
+                            return
+                        }
+                    });
+                    var payload = {};
+
                     var values = [];
-                    $inputs.each(function () {
+                    other_property.each(function () {
                         var value = $(this).val().trim();
                         if (value.length > 0) {
                             values.push(value);
                         }
                     });
-                    settings.setVariables({"jvm": values});
+                    payload['other'] = values;
+                    var java_values = {};
+                    var $java_property = $('#java_property input');
+                    $java_property.each(function () {
+                        var value = $(this).val().trim();
+                        if (value.length > 0) {
+                            java_values[this.id] = value
+                        }
+                    });
+                    var $default_property = $('#default_options input');
+                    $default_property.each(function () {
+                        var value = $(this).val().trim();
+                        if (value.length > 0) {
+                            java_values['-Xmx'] = value
+                        }
+                    });
+                    payload['jvm'] = java_values;
+                    settings.setVariables(JSON.stringify({'payload': payload}));
                     settings.load();
                 });
-                document.getElementById("new_jvm_sett").addEventListener("click", function (event) {
+
+                $("#add_property_jvm_sett").click(function (event) {
                     event.preventDefault();
-                    settings.createField();
+                    var parent = $('#java_property');
+                    dialogs.new_property_prompt(function (name, type) {
+                        var opts = {
+                            id: name,
+                            name: name,
+                            value: type,
+                            parent: parent,
+                            add_label: true
+                        };
+                        settings.appendField(opts);
+                    });
                 });
 
+                $("#add_option_jvm_sett").click(function (event) {
+                    event.preventDefault();
+                    var fieldset = $('#other_property');
+                    settings.createField(fieldset);
+                });
+                $('#-Xmx').keyup(InpuChanged);
                 $(".tab-content").submit();
 
                 if (window.location.hash === '#beakerx') {

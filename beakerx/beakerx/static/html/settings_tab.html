@@ -1,19 +1,57 @@
-<div id="beakerx" class="tab-pane">
-  <div id="environments">
-    <div id="env_toolbar" class="list_toolbar row">
-      <div class="col-xs-10 no-padding">
-        <span id="env_list_info" class="toolbar_info">Beakerx settings</span>
-      </div>
-    </div>
-  </div>
-  <div class="list_container">
-    <form id="beakerx_jvm_settings_form">
+<!--
+  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
 
-      <fieldset>
-        <legend>JVM:</legend>
-        <button type="button" id="new_jvm_sett" title="" class="btn btn-default btn-xs" data-original-title="add new"><i class="fa fa-plus"></i></button>
-      </fieldset>
-      <button type="button" id="jvm_settings_submit">Submit</button>
-    </form>
-  </div>
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<div id="beakerx" class="tab-pane">
+    <div id="version">
+        <div id="env_toolbar" class="list_toolbar row">
+            <div class="col-xs-10 no-padding">
+        <span id="beakerx_info" class="toolbar_info">
+
+        </span>
+            </div>
+        </div>
+    </div>
+    <div class="beakerx_container">
+        <form id="beakerx_jvm_settings_form">
+            <fieldset id="header">
+                <legend>JVM Options:</legend>
+                <label for="add_property_jvm_sett">add property: </label>
+                <button type="button" id="add_property_jvm_sett" title="" class="btn btn-default btn-xs"
+                        data-original-title="add new"><i class="fa fa-plus"></i></button>
+                <br/>
+
+            </fieldset>
+            <fieldset id="default_options">
+                <label for="-Xmx">Heap Size in GB</label>
+                <input id="-Xmx" name="heap_size_prop" value="">
+            </fieldset>
+            <fieldset id="java_property">
+                <legend>java</legend>
+            </fieldset>
+            <br/>
+            <label for="add_option_jvm_sett">add other options: </label>
+            <button type="button" id="add_option_jvm_sett" title="" class="btn btn-default btn-xs"
+                    data-original-title="add new"><i class="fa fa-plus"></i></button>
+            <br/>
+            <fieldset id="other_property">
+            </fieldset>
+            <br/>
+            <span>Result: java </span><span id="result"></span><br/>
+            <br/>
+            <button type="button" id="jvm_settings_submit">Submit</button>
+
+        </form>
+    </div>
 </div>

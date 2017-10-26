@@ -16,39 +16,53 @@ from os import environ, putenv, getenv
 
 
 class EnvironmentSettings:
-    base_var_name = 'beakerx_java_arg'
+    suffix_other = '_other_'
+    suffix_java = '_java_'
+    _base_var_name = 'beakerx_java_arg'
+    other_var_name = _base_var_name + suffix_other
+    java_var_name = _base_var_name + suffix_java
 
     @staticmethod
-    def read_beakerx_env_settings():
-        base_var_name = EnvironmentSettings.base_var_name
+    def read_beakerx_env_map_settings(suffix=""):
+        args = {}
+
+        for x in environ:
+            if x.startswith(EnvironmentSettings._base_var_name + suffix):
+                args[x] = environ[x]
+
+        return args
+
+    @staticmethod
+    def read_beakerx_env_settings(suffix=""):
         args = []
 
-        var_name = base_var_name
-        n = 1
-        while True:
-            if var_name in environ:
-                args.append(environ[var_name])
-            else:
-                break
+        for x in environ:
+            if x.startswith(EnvironmentSettings._base_var_name + suffix):
+                args.append(environ[x])
 
-            var_name = base_var_name + str(n)
-            n += 1
         return args
 
     @staticmethod
     def set_beakerx_env_settings(jvm_settings):
         EnvironmentSettings.clear_beakerx_env_setting()
-        base_var_name = EnvironmentSettings.base_var_name
+        other_var_name = EnvironmentSettings.other_var_name
 
         n = 1
-        var_name = base_var_name
-        for x in jvm_settings:
+        var_name = other_var_name
+        for x in jvm_settings['other']:
             environ[var_name] = x
-            var_name = base_var_name + str(n)
+            var_name = other_var_name + str(n)
             n += 1
+
+        for x in jvm_settings['jvm']:
+            var_name = EnvironmentSettings.java_var_name + str(x)
+            value = x + jvm_settings['jvm'][x]
+            if x == "-Xmx":
+                value += "g"
+            environ[var_name] = value
 
     @staticmethod
     def clear_beakerx_env_setting():
         for x in environ:
-            if x.startswith(EnvironmentSettings.base_var_name):
+            if x.startswith(EnvironmentSettings._base_var_name):
                 del environ[x]

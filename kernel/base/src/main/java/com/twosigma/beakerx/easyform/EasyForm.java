@@ -176,11 +176,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     list.setSize(size);
     list.setMultipleSelection(multipleSelection);
     list.setValues(values);
-    if (values != null && values.size() > 0 && multipleSelection) {
-      list.setValue(Collections.EMPTY_LIST);
-    } else {
-      list.setValue(values.iterator().next());
-    }
+    list.setValue(Collections.EMPTY_LIST);
     return addComponentOrThrow(label, list);
   }
 

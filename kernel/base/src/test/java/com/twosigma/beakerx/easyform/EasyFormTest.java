@@ -154,15 +154,15 @@ public class EasyFormTest {
     easyForm.addList(label, asList("1", "2", "3"));
     easyForm.display();
     //then
-    verifyMultipleSelection(kernel.getPublishedMessages(), easyForm);
+    Object multipleSelectionValue = easyForm.get(label);
+    verifyMultipleSelection(kernel.getPublishedMessages(), (List) multipleSelectionValue);
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
     verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
-  private void verifyMultipleSelection(List<Message> messages, EasyForm easyForm) {
+  private void verifyMultipleSelection(List<Message> messages, List multipleSelectionValue) {
     verifyInternalOpenCommMsgWitLayout(messages, SelectMultiple.MODEL_NAME_VALUE, SelectMultiple.VIEW_NAME_VALUE);
-    Object multipleSelectionValue = easyForm.get("MultipleSelectionLabel1");
-    Assertions.assertThat((List) multipleSelectionValue).isEmpty();
+    Assertions.assertThat(multipleSelectionValue).isEmpty();
   }
 
   @Test
@@ -174,14 +174,16 @@ public class EasyFormTest {
     easyForm.addList(label, asList("1", "2", "3"), Boolean.FALSE);
     easyForm.display();
     //then
-    verifySelectMultipleSingle(kernel.getPublishedMessages());
+    Object multipleSelectionSingleValue = easyForm.get(label);
+    verifySelectMultipleSingle(kernel.getPublishedMessages(), (List) multipleSelectionSingleValue);
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
     verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
-  private void verifySelectMultipleSingle(List<Message> messages) {
+  private void verifySelectMultipleSingle(List<Message> messages, List multipleSelectionSingleValue) {
     verifyInternalOpenCommMsgWitLayout(messages, SelectMultipleSingle.MODEL_NAME_VALUE,
             SelectMultipleSingle.VIEW_NAME_VALUE);
+    Assertions.assertThat(multipleSelectionSingleValue).isEmpty();
   }
 
   @Test

@@ -78,14 +78,15 @@ public class ClasspathScanner {
         JarFile jar = null;
         try {
           jar = new JarFile(file);
-        } catch (Exception ex) {	
+        } catch (Exception ex) {
         }
         if (jar != null) {
           try {
             Manifest mf = jar.getManifest();
             if(mf != null){
               String cp = mf.getMainAttributes().getValue("Class-Path");
-              if(StringUtils.isNotEmpty(cp)){
+              if(StringUtils.isNotEmpty(cp) && !cp.equals(".")){
+                cp = cp.replace(". ", "");
                 for(String fn : cp.split(" ")){
                   File child = new File(file.getParent() + System.getProperty("file.separator") + fn);
                   if(child.getAbsolutePath().equals(jar.getName())){

@@ -15,11 +15,11 @@
  */
 
 import createFormatSubitems from './createFormatMenuItems';
-import * as MenuHelper from './MenuHelper';
+import MenuHelper from './MenuHelper';
 
 export default function createColumnMenuItems(cellHighlighters) {
   var self = this;
-  var menuHelper = MenuHelper(self);
+  var menuHelper = new MenuHelper(self);
 
   function setColumnsOrder(colIdx, newIndex) {
     var table = self.table;
@@ -150,10 +150,7 @@ export default function createColumnMenuItems(cellHighlighters) {
       {
         title: 'Color by unique',
         shortcut: 'U',
-        isChecked: function (colIdx) {
-          var highlighter = self.cellHighlighters[self.colorder[colIdx]];
-          return highlighter && highlighter instanceof cellHighlighters.UniqueEntriesHighlighter;
-        },
+        isChecked: self.haColumnUniqueEntriesHighlighted.bind(self),
         action: function (colIdx) {
           self.showHideUniqueEntries(self.colorder[colIdx]);
         }
@@ -203,6 +200,7 @@ export default function createColumnMenuItems(cellHighlighters) {
           self.resetColumnTypesAndAlignments(colIdx);
           self.resetColumnHeatmap(colIdx, cellHighlighters);
           self.resetColumnDataBars(colIdx);
+          self.resetColumnColorByUnique(colIdx);
           self.resetColumnFilters(colIdx);
           self.resetColumnSort(colIdx);
           self.resetColumnSearch(colIdx);

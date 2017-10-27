@@ -36,6 +36,7 @@ import com.twosigma.beakerx.widgets.Widget;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -175,9 +176,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     list.setSize(size);
     list.setMultipleSelection(multipleSelection);
     list.setValues(values);
-    if (values != null && values.size() > 0) {
-      list.setValue(0);
-    }
+    list.setValue(Collections.EMPTY_LIST);
     return addComponentOrThrow(label, list);
   }
 
@@ -202,7 +201,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
                                            final Collection<String> values,
                                            final Integer orientation) throws Exception {
     RadioButtonComponentWidget radioButtonComponent = new RadioButtonComponentWidget(values, EasyForm.HORIZONTAL.equals(orientation));
-    radioButtonComponent.setLabel(label);;
+    radioButtonComponent.setLabel(label);
     radioButtonComponent.registerUpdateValueCallback(radioButtonComponent::fireChanged);
     return addComponentOrThrow(label, radioButtonComponent);
   }

@@ -949,6 +949,11 @@ define([
     this.showHideHighlighter(columnIndex, cellHighlighters.HeatmapHighlighter);
   };
 
+  TableScope.prototype.haColumnUniqueEntriesHighlighted = function(columnIndex) {
+    var highlighter = this.cellHighlighters[this.colorder[columnIndex]];
+    return highlighter && highlighter instanceof cellHighlighters.UniqueEntriesHighlighter;
+  };
+
   TableScope.prototype.showHideUniqueEntries = function(columnIndex) {
     this.showHideHighlighter(columnIndex, cellHighlighters.UniqueEntriesHighlighter);
   };
@@ -2290,14 +2295,21 @@ define([
 
     var executeCopy = function(text) {
       var input = document.createElement('textarea');
-      var currentNotebookMode = Jupyter.notebook.mode;
+      var currentNotebookMode = Jupyter && Jupyter.notebook.mode;
+      var notInNotebook = !Jupyter || !Jupyter.NotebookList;
 
       document.body.appendChild(input);
       input.value = text;
       input.select();
-      Jupyter.notebook.mode = 'edit';
-      document.execCommand('Copy', false, null);
-      Jupyter.notebook.mode = currentNotebookMode;
+
+      if (notInNotebook || currentNotebookMode === 'edit') {
+        document.execCommand('Copy', false, null);
+      } else {
+        Jupyter.notebook.mode = 'edit';
+        document.execCommand('Copy', false, null);
+        Jupyter.notebook.mode = currentNotebookMode;
+      }
+
       input.remove();
     };
 
@@ -2440,7 +2452,7 @@ define([
 
   // ---------
   // Add column reset methods
-  require('./columnReset')(TableScope);
+  require('./columnReset').default(TableScope);
   require('./tableModal')(TableScope);
   require('./tableSelect')(TableScope);
 

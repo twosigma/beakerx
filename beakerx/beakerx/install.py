@@ -31,16 +31,16 @@ from distutils import log
 
 def _all_kernels():
     kernels = pkg_resources.resource_listdir(
-        'beakerx', os.path.join('static', 'kernel'))
+            'beakerx', 'kernel')
     return [kernel for kernel in kernels if kernel != 'base']
 
 def _base_classpath_for(kernel):
     return pkg_resources.resource_filename(
-            'beakerx', os.path.join('static', 'kernel', kernel))
+            'beakerx', os.path.join('kernel', kernel))
 
 def _classpath_for(kernel):
     return pkg_resources.resource_filename(
-        'beakerx', os.path.join('static', 'kernel', kernel, 'lib', '*'))
+            'beakerx', os.path.join('kernel', kernel, 'lib', '*'))
 
 def _uninstall_nbextension():
     subprocess.check_call(["jupyter", "nbextension", "disable", "beakerx", "--py", "--sys-prefix"])
@@ -85,7 +85,7 @@ def _install_kernels():
         kernel_classpath = _classpath_for(kernel)
         classpath = json.dumps(os.pathsep.join([base_classpath, kernel_classpath]))
         template = pkg_resources.resource_string(
-            'beakerx', os.path.join('static', 'kernel', kernel, 'kernel.json'))
+            'beakerx', os.path.join('kernel', kernel, 'kernel.json'))
         contents = Template(template.decode()).substitute(PATH=classpath)
 
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -97,14 +97,14 @@ def _install_kernels():
                 '--name', kernel, tmpdir
             ]
             subprocess.check_call(install_cmd)
-            
+
 def _uninstall_kernels():
     for kernel in _all_kernels():
         uninstall_cmd = [
             'jupyter', 'kernelspec', 'remove', kernel, '-y', '-f'
         ]
         subprocess.check_call(uninstall_cmd)
-    
+
 def _pretty(it): 
     return json.dumps(it, indent=2)
 
@@ -138,7 +138,8 @@ def _install_kernelspec_manager(prefix, disable=False):
         assert cfg["KernelSpecManager"][KSMC] == CKSM
 
     log.info("{}abled BeakerX server config".format(action_prefix))
-    
+
+
 def make_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prefix",
@@ -152,14 +153,14 @@ def make_parser():
 def _disable_beakerx():
     _uninstall_nbextension()
     _uninstall_kernels()
-    
+
 def _install_beakerx(args):
     _install_nbextension()
     _install_kernels()
     _install_css()
     _copy_icons()
     _install_kernelspec_manager(args.prefix)
-    
+
 def install():
     try:
         parser = make_parser()

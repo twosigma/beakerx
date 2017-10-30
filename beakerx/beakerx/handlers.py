@@ -28,27 +28,11 @@ class SettingsHandler(APIHandler):
 
     @staticmethod
     def _read_property():
-        jvm = {}
-        jvm_map = EnvironmentSettings.read_beakerx_env_map_settings(EnvironmentSettings.suffix_java)
-        for x in jvm_map:
-            key = x.replace(EnvironmentSettings.java_var_name, "")
-
-            value = jvm_map[x].replace(key, "")
-            if key == "-Xmx":
-                value = value.replace("g", "")
-
-            jvm[key] = value
-
-        data = {
-            'other': EnvironmentSettings.read_beakerx_env_settings(EnvironmentSettings.suffix_other),
-            'jvm': jvm
-        }
-
-        return data
+        return EnvironmentSettings.read_setting_from_file()
 
     @web.authenticated
     def get(self):
-        self.finish(json.dumps(SettingsHandler._read_property()))
+        self.finish(SettingsHandler._read_property())
 
     @web.authenticated
     def post(self):
@@ -57,10 +41,15 @@ class SettingsHandler(APIHandler):
         if 'payload' in data:
             EnvironmentSettings.set_beakerx_env_settings(data['payload'])
 
+        EnvironmentSettings.save_setting_to_file(json.dumps(data))
+
         self.finish(json.dumps(SettingsHandler._read_property()))
 
 
 class VersionHandler(APIHandler):
+    def data_received(self, chunk):
+        pass
+
     @web.authenticated
     def get(self):
         data = {'version': beakerx.__version__}

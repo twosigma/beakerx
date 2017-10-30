@@ -19,7 +19,7 @@ from .tabledisplay import *
 from ._version import version_info, __version__
 from .handlers import load_jupyter_server_extension
 from .environment import *
-
+import json
 
 def _jupyter_nbextension_paths():
     return [{
@@ -41,3 +41,6 @@ def _jupyter_server_extension_paths():
 
 
 beakerx = BeakerX()
+
+content = EnvironmentSettings.read_setting_from_file()
+EnvironmentSettings.set_beakerx_env_settings(json.loads(content)['payload'])

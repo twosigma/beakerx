@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from os import environ, putenv, getenv
+from os import environ, path
 
 
 class EnvironmentSettings:
@@ -21,6 +21,25 @@ class EnvironmentSettings:
     _base_var_name = 'beakerx_java_arg'
     other_var_name = _base_var_name + suffix_other
     java_var_name = _base_var_name + suffix_java
+    path = '~/.jupyter/beakerx.json'
+
+    @staticmethod
+    def save_setting_to_file(content):
+        file = open(path.expanduser(EnvironmentSettings.path), 'w+')
+        file.write(content)
+        file.close()
+
+    @staticmethod
+    def read_setting_from_file():
+        try:
+            file = open(path.expanduser(EnvironmentSettings.path), 'r')
+            content = file.read()
+        except IOError:
+            content = "{\"payload\": {\"other\": [], \"jvm\": {}}}"
+        else:
+            file.close()
+
+        return content
 
     @staticmethod
     def read_beakerx_env_map_settings(suffix=""):

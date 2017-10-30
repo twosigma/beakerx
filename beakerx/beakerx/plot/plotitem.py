@@ -127,21 +127,24 @@ class XYGraphics(Graphics):
         else:
             defX = []
 
-        self.x = getValue(kwargs, 'x', defX)
-        if self.x is not None:
-            if isinstance(self.x, pd.Series):
-                self.x = self.x.tolist()
-            for idx in range(len(self.x)):
-                x = self.x[idx]
+        local_x = getValue(kwargs, 'x', defX)
+
+        if local_x is not None:
+            if isinstance(local_x, pd.Series):
+                local_x = local_x.tolist()
+            self.x = [None] * len(local_x)
+            for idx in range(len(local_x)):
+                x = local_x[idx]
                 if isinstance(x, float) and math.isnan(x):
                     self.x[idx] = "NaN"
-                if isinstance(x, dt.date) or isinstance(x, dt.time):
+                elif isinstance(x, dt.date) or isinstance(x, dt.time):
                     self.x[idx] = date_time_2_millis(x.isoformat())
-                if is_date(x):
+                elif is_date(x):
                     self.x[idx] = date_time_2_millis(x)
-                if isinstance(x, np.datetime64):
+                elif isinstance(x, np.datetime64):
                     self.x[idx] = date_time_2_millis(x.__str__())
-
+                else:
+                    self.x[idx] = x
 
         self.y = defY
         if self.y is not None:

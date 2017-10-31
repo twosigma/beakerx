@@ -21,17 +21,22 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.Optional;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
 import static com.twosigma.beakerx.kernel.commands.MagicCommand.ADD_MVN_FORMAT_ERROR_MESSAGE;
@@ -40,24 +45,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClasspathAddMvnDepsMagicCommandTest {
 
-  public static final String TEST_IVY_CACHE = "build/testIvyCache";
-  private static final String SRC_TEST_RESOURCES_TEST_IVY_CACHE = "src/test/resources/testIvyCache";
+  private static final String SRC_TEST_RESOURCES_TEST_IVY_CACHE = "src/test/resources/testMvnCache";
+  public static final String BUILD_PATH = "build";
+  public static final String TEST_MVN_CACHE = BUILD_PATH + "/testMvnCache";
 
-  private MagicCommand sut;
-  private KernelTest kernel;
-  private EvaluatorTest evaluator;
+  private static MagicCommand sut;
+  private static KernelTest kernel;
+  private static EvaluatorTest evaluator;
 
-  @Before
-  public void setUp() throws Exception {
-    this.evaluator = new EvaluatorTest();
-    this.kernel = new KernelTest("id2", evaluator);
-    this.sut = new MagicCommand(kernel);
-    copyIvyCacheToBuildDirectoryBecauseIvyChangeDatesInCache();
+  @BeforeClass
+  public static void setUp() throws Exception {
+    evaluator = new EvaluatorTest();
+    kernel = new KernelTest("id2", evaluator);
+    sut = new MagicCommand(kernel);
+    prepareLocalMavenRepository();
   }
 
-  @After
-  public void tearDown() throws Exception {
-    this.evaluator.exit();
+  @AfterClass
+  public static void tearDown() throws Exception {
+    evaluator.exit();
   }
 
   @Test
@@ -73,7 +79,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     Optional<Path> dep = paths.filter(file -> file.getFileName().toFile().getName().contains("gson")).findFirst();
     assertThat(dep).isPresent();
     assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
-    assertThat(getText(process)).contains("gson.jar");
+    assertThat(getText(process)).contains("gson-2.6.2.jar");
   }
 
   @Test
@@ -85,7 +91,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     MagicCommandResult process = sut.process(code, new Message(), 1);
     //then
     String text = getText(process);
-    assertThat(text).contains("unresolved dependency");
+    assertThat(text).contains("Could not resolve dependencies for: com.google.code.XXXX : gson : 2.6.2");
   }
 
   @Test
@@ -106,7 +112,43 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     return (String) message.getContent().get(TEXT);
   }
 
-  private void copyIvyCacheToBuildDirectoryBecauseIvyChangeDatesInCache() throws IOException {
-    FileUtils.copyDirectory(new File(SRC_TEST_RESOURCES_TEST_IVY_CACHE),new File(TEST_IVY_CACHE));
+  private static void prepareLocalMavenRepository() throws IOException {
+    FileUtils.copyDirectory(new File(SRC_TEST_RESOURCES_TEST_IVY_CACHE), new File(BUILD_PATH));
+    unzipRepo();
+  }
+
+  private static void unzipRepo() {
+    try {
+      ZipFile zipFile = new ZipFile(BUILD_PATH + "/testMvnCache.zip");
+      Enumeration<?> enu = zipFile.entries();
+      while (enu.hasMoreElements()) {
+        ZipEntry zipEntry = (ZipEntry) enu.nextElement();
+        String name = BUILD_PATH + "/" + zipEntry.getName();
+        File file = new File(name);
+        if (name.endsWith("/")) {
+          file.mkdirs();
+          continue;
+        }
+
+        File parent = file.getParentFile();
+        if (parent != null) {
+          parent.mkdirs();
+        }
+
+        InputStream is = zipFile.getInputStream(zipEntry);
+        FileOutputStream fos = new FileOutputStream(file);
+        byte[] bytes = new byte[1024];
+        int length;
+        while ((length = is.read(bytes)) >= 0) {
+          fos.write(bytes, 0, length);
+        }
+        is.close();
+        fos.close();
+
+      }
+      zipFile.close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

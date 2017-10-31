@@ -25,17 +25,14 @@
     </div>
     <div class="beakerx_container">
         <form id="beakerx_jvm_settings_form">
-            <fieldset id="header">
+            <fieldset id="default_options">
                 <legend>JVM Options:</legend>
+                <label for="-Xmx">Heap Size in GB</label>
+                <input id="-Xmx" name="heap_size_prop" value=""><br/>
                 <label for="add_property_jvm_sett">add property: </label>
                 <button type="button" id="add_property_jvm_sett" title="" class="btn btn-default btn-xs"
                         data-original-title="add new"><i class="fa fa-plus"></i></button>
                 <br/>
-
-            </fieldset>
-            <fieldset id="default_options">
-                <label for="-Xmx">Heap Size in GB</label>
-                <input id="-Xmx" name="heap_size_prop" value="">
             </fieldset>
             <fieldset id="java_property">
                 <legend>java</legend>

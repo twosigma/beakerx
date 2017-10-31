@@ -52,7 +52,19 @@ define(function (require) {
     var result = "";
     var enable_button = true;
     var show_error = false;
-    var show_error_heap = false;
+
+    var val = $("#-Xmx").val().trim();
+
+    if (val.length > 0) {
+      if ((/^[0-9]+(\.)?[0-9]*$/.test(val))) {
+        if (/^\d+$/.test(val)) {
+          result += '-Xmx' + val + 'g '
+        } else {
+          result += '-Xmx' + parseInt(val * 1024) + 'm '
+        }
+      }
+    }
+
     var other_property = $('#other_property input');
     other_property.each(function () {
       var value = $(this).val().trim();
@@ -70,25 +82,22 @@ define(function (require) {
       var children = $($(this).children());
       var value = $(children.get(1)).val().trim();
       var name = $(children.get(0)).val().trim();
-      var value_combined = name + value;
+      var value_combined = '-D' + name + '=' + value;
 
-      result += value_combined + " ";
+      if (name.length > 0 && value.length > 0) {
+        result += value_combined + " ";
+      }
 
-      if (value_combined.length > 1 && !(value_combined.startsWith("-X") || value_combined.startsWith("-D"))) {
+      if (value_combined.length > 4 && !(value_combined.startsWith("-X") || value_combined.startsWith("-D"))) {
         show_error = show_error || true;
         enable_button = false
       }
     });
-    var val = $("#-Xmx").val().trim();
-
-    if (val.length > 0) {
-      result += '-Xmx' + val + 'g'
-    }
 
     $('#result').text(result);
     $('#errors').empty();
 
-    if (val.length > 0 && !(/^\d+$/.test(val))) {
+    if (val.length > 0 && !(/^[0-9]+(\.)?[0-9]*$/.test(val))) {
       $('#errors').append($('<span>').text("Heap Size' can contain only digits"));
       enable_button = false;
     }
@@ -148,11 +157,13 @@ define(function (require) {
 
       input.attr('id', this.randId());
       input.val(opts.value);
+      input.attr('placeholder', 'value');
       input.keyup(InpuChanged);
       if (opts.add_label) {
         var label = $('<input>');
         label.val(opts.name);
         label.attr('id', this.randId());
+        label.attr('placeholder', 'name');
         label.keyup(InpuChanged);
         wrapper.append(label);
       }
@@ -284,7 +295,7 @@ define(function (require) {
           default_property.each(function () {
             var value = $(this).val().trim();
             if (value.length > 0) {
-              java_values['-Xmx'] = value
+              payload['-Xmx'] = value
             }
           });
           payload['jvm'] = java_values;

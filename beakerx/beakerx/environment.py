@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from os import environ, path
+from jupyter_core import paths
 
 
 class EnvironmentSettings:
@@ -21,21 +22,21 @@ class EnvironmentSettings:
     _base_var_name = 'beakerx_java_arg'
     other_var_name = _base_var_name + suffix_other
     java_var_name = _base_var_name + suffix_java
-    path = '~/.jupyter/beakerx.json'
+    config_path = path.join(paths.jupyter_config_dir(), 'beakerx.json')
 
     @staticmethod
     def save_setting_to_file(content):
-        file = open(path.expanduser(EnvironmentSettings.path), 'w+')
+        file = open(EnvironmentSettings.config_path, 'w+')
         file.write(content)
         file.close()
 
     @staticmethod
     def read_setting_from_file():
         try:
-            file = open(path.expanduser(EnvironmentSettings.path), 'r')
+            file = open(EnvironmentSettings.config_path, 'r')
             content = file.read()
         except IOError:
-            content = "{\"payload\": {\"other\": [], \"jvm\": {}}}"
+            content = "{\"payload\": {\"Xmx\": \"\", \"other\": [], \"jvm\": {}}}"
         else:
             file.close()
 
@@ -75,10 +76,18 @@ class EnvironmentSettings:
 
         for x in jvm_settings['jvm']:
             var_name = EnvironmentSettings.java_var_name + str(x)
-            value = x + jvm_settings['jvm'][x]
-            if x == "-Xmx":
-                value += "g"
+            value = '-D' + x + '=' + jvm_settings['jvm'][x]
             environ[var_name] = value
+
+        if '-Xmx' in jvm_settings and jvm_settings['-Xmx']:
+            var_name = EnvironmentSettings.java_var_name + str(jvm_settings['-Xmx'])
+            val = float(jvm_settings['-Xmx'])
+            if val.is_integer():
+                value = '-Xmx' + jvm_settings['-Xmx'] + 'g'
+            else:
+                value = '-Xmx' + str(int(val * 1024)) + 'm'
+            environ[var_name] = value
+
 
     @staticmethod
     def clear_beakerx_env_setting():

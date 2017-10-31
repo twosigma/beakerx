@@ -15,13 +15,13 @@
  */
 
 define(["base/js/namespace"], function (Jupyter) {
-    var base_url = (Jupyter.notebook_list || Jupyter.notebook).base_url;
-    var api_url = base_url + "beakerx/";
-    var static_url = base_url + "nbextensions/beakerx/html/";
+  var base_url = (Jupyter.notebook_list || Jupyter.notebook).base_url;
+  var api_url = base_url + "beakerx/";
+  var static_url = base_url + "nbextensions/beakerx/html/";
 
-    return {
-        base_url: base_url,
-        api_url: api_url,
-        static_url: static_url
-    };
+  return {
+    base_url: base_url,
+    api_url: api_url,
+    static_url: static_url
+  };
 });

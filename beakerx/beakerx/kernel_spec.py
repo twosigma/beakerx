@@ -13,21 +13,12 @@
 # limitations under the License.
 
 from jupyter_client.kernelspec import KernelSpec
-from os import environ
+from .environment import EnvironmentSettings
+
 
 class BeakerXKernelSpec(KernelSpec):
     def __init__(self, **kw):
         super(BeakerXKernelSpec, self).__init__(**kw)
-        clean_name = self.display_name.lower().replace(' ', '')
-        base_var_name = 'beakerx_' + clean_name + '_java_arg'
-        if base_var_name in environ:
-            args = [environ[base_var_name]]
-            n = 2
-            while True:
-                var_name = base_var_name + str(n)
-                if var_name in environ:
-                    args.append(environ[var_name])
-                else:
-                    break
-                n += 1
+        if self.argv[0] == 'java':
+            args = EnvironmentSettings.read_beakerx_env_settings()
             self.argv[1:1] = args

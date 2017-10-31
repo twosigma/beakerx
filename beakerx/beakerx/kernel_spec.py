@@ -19,6 +19,6 @@ from .environment import EnvironmentSettings
 class BeakerXKernelSpec(KernelSpec):
     def __init__(self, **kw):
         super(BeakerXKernelSpec, self).__init__(**kw)
-        if 'java' in self.argv:
+        if self.argv[0] == 'java':
             args = EnvironmentSettings.read_beakerx_env_settings()
             self.argv[1:1] = args

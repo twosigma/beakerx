@@ -203,7 +203,7 @@ define(function (require) {
           that.appendField(opts);
         }
 
-        $('#-Xmx').val(data.jvm['-Xmx']);
+        $('#-Xmx').val(data['-Xmx']);
         InpuChanged({});
       }
 

@@ -1,0 +1,26 @@
+{
+  "name": "beakerx-jupyterlab",
+  "version": "0.1.0",
+  "description": "BeakerX: Beaker Extensions for JupyterLab",
+  "author": "Two Sigma Open Source, LLC",
+  "main": "index.js",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "ipywidgets",
+    "jupyterlab",
+    "jupyterlab extension"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@jupyter-widgets/jupyterlab-manager": "^0.28.0"
+  },
+  "jupyterlab": {
+    "extension": true
+  }
+}

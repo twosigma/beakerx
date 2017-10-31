@@ -154,5 +154,29 @@ module.exports = [
     resolve: resolve,
     externals: externals,
     plugins: plugins
+  },
+  {// Beakerx JupyterLab bundle
+    //
+    // This bundle is generally almost identical to the embeddable bundle
+    //
+    entry: './src/embed.js',
+    output: {
+      filename: 'index.js',
+      path: path.resolve(__dirname, './jupyterlab/lib/'),
+      libraryTarget: 'amd'
+    },
+    module: {
+      rules: rules
+    },
+    resolve: resolve,
+    externals: [
+      '@jupyter-widgets/base',
+      '@jupyter-widgets/jupyterlab-manager',
+      '@jupyter-widgets/controls',
+      '@phosphor/widgets',
+      '@phosphor/commands',
+      '@phosphor/messaging'
+    ],
+    plugins: plugins
   }
 ];

@@ -40,9 +40,10 @@ export default class ColumnMenu extends HeaderMenu {
     $(this.cell).append($trigger);
 
     this.columnIndex = self.getColumnIndex($trigger);
-    this.menu.addClass('bko-header-menu');
+    this.menu.addClass('bko-table-menu');
     this.menu.addClass('dropdown');
     $(this.menu.contentNode).addClass('dropdown-menu');
+    $(this.menu.contentNode).addClass('bko-table-menu-content');
 
     this.createItems(menu.items, this.menu);
   }

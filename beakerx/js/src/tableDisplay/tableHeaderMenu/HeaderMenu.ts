@@ -153,6 +153,7 @@ export default abstract class HeaderMenu {
     const submenu = new Menu({ commands: this.commands });
 
     submenu.addClass('dropdown-submenu');
+    submenu.addClass('bko-table-menu');
     submenu.title.label = menuItem.title;
 
     menuItem.enableItemsFiltering && this.addItemsFiltering(submenu);

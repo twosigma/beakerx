@@ -41,7 +41,7 @@ public class MavenJarResolver {
 
   private final String pathToMavenRepo;
   private ResolverParams commandParams;
-  private File mavenLocation;
+  private String mavenLocation;
 
   public MavenJarResolver(final ResolverParams commandParams) {
     this.commandParams = checkNotNull(commandParams);
@@ -68,23 +68,24 @@ public class MavenJarResolver {
 
   private Invoker getInvoker() {
     Invoker invoker = new DefaultInvoker();
-    invoker.setMavenHome(mavenLocation());
+    String mvn = findMvn();
+    System.setProperty("maven.home", mvn);
     invoker.setLogger(new MavenJarResolverSilentLogger());
     invoker.setOutputHandler(new MavenInvocationSilentOutputHandler());
     invoker.setLocalRepositoryDirectory(getOrCreateFile(this.commandParams.getPathToCache()));
     return invoker;
   }
 
-  private File mavenLocation() {
+  public String findMvn() {
     if (mavenLocation == null) {
-      try {
-        InputStream mvnNameStream = getClass().getClassLoader().getResourceAsStream("mvnLocation");
-        String mvnName = IOUtils.toString(mvnNameStream, StandardCharsets.UTF_8);
-        //System.setProperty("maven.home",mvnName+"/bin/mvn");
-        mavenLocation = new File(mvnName);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
+      for (String dirname : System.getenv("PATH").split(File.pathSeparator)) {
+        File file = new File(dirname, "mvn");
+        if (file.isFile() && file.canExecute()) {
+          mavenLocation = file.getAbsolutePath();
+          return mavenLocation;
+        }
       }
+      throw new AssertionError("No mvn found");
     }
     return mavenLocation;
   }

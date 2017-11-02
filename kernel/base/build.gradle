@@ -82,19 +82,6 @@ task prepareBuildVerion() {
   }
 }
 
-
-task unzipMaven(type: Copy) {
-  def zipFile = file('src/main/externalLibs/apache-maven-3.5.2-bin.zip')
-  def outputDir = file(pathToStaticContent+ '/base')
-
-  from zipTree(zipFile)
-  into outputDir
-
-  doLast {
-    new File(resourceDir, 'mvnLocation').write(outputDir.canonicalPath + "/apache-maven-3.5.2")
-  }
-}
-
 compileJava.dependsOn prepareBuildVerion
 
 task copyDependencies(type: Copy) {
@@ -104,7 +91,6 @@ task copyDependencies(type: Copy) {
 }
 
 jar.finalizedBy copyDependencies
-copyDependencies.finalizedBy unzipMaven
 
 staticContent {
   ext.executeStaticContent = false

@@ -21,6 +21,7 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.commands.item.MagicCommandItem;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -74,6 +75,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     //when
     MagicCommandResult process = sut.process(code, new Message(), 1);
     //then
+    Assertions.assertThat(getText(process)).contains("Added jar1");
     String mvnDir = kernel.getTempFolder().toString() + MVN_DIR;
     Stream<Path> paths = Files.walk(Paths.get(mvnDir));
     Optional<Path> dep = paths.filter(file -> file.getFileName().toFile().getName().contains("gson")).findFirst();

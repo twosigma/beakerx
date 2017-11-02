@@ -18,7 +18,7 @@ from beakerx.utils import *
 from beakerx.tabledisplay.tableitems import *
 import math
 import numpy
-from pandas import DataFrame
+from pandas import DataFrame, RangeIndex, MultiIndex
 
 
 class Table(BaseObject):
@@ -89,26 +89,32 @@ class Table(BaseObject):
 
     def convert_from_pandas(self, args, types_map):
         self.columnNames = args[0].columns.tolist()
+        if args[0].index.name is not None and args[0].index.name in self.columnNames:
+            self.columnNames.remove(args[0].index.name)
+
         for column in self.columnNames:
             column_type = self.convert_type(args[0].dtypes[column].name,
-                                            args[0][column][0])
+                                            args[0][column].get_values()[0])
             self.types.append(column_type)
             types_map[column] = column_type
         for index in range(len(args[0])):
             row = []
             for columnName in self.columnNames:
-                value = args[0][columnName][index]
+                value = args[0][columnName].get_values()[index]
                 value_type = types_map.get(columnName)
 
                 row.append(self.convert_value(value, value_type))
-            if args[0].index.name is not None:
+            if not isinstance(args[0].index, RangeIndex):
                 row[:0] = [self.convert_value(args[0].index.get_values()[index], type(args[0].index.get_values()[index]))]
             self.values.append(row)
 
-        if args[0].index.name is not None:
+        if not isinstance(args[0].index, RangeIndex):
             self.hasIndex = "true"
-            self.columnNames[:0] = [args[0].index.name]
-            self.types[:0] = [self.convert_type("", args[0][column][0])]
+            if isinstance(args[0].index, MultiIndex):
+                self.columnNames[:0] = [', '.join(args[0].index.names)]
+            else:
+                self.columnNames[:0] = [args[0].index.name]
+            self.types[:0] = [self.convert_type("", args[0][column].get_values()[0])]
 
     @staticmethod
     def convert_value(value, value_type):

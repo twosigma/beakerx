@@ -41,6 +41,7 @@ public class MavenJarResolver {
 
   private final String pathToMavenRepo;
   private ResolverParams commandParams;
+  private File mavenLocation;
 
   public MavenJarResolver(final ResolverParams commandParams) {
     this.commandParams = checkNotNull(commandParams);
@@ -66,10 +67,24 @@ public class MavenJarResolver {
 
   private Invoker getInvoker() {
     Invoker invoker = new DefaultInvoker();
+    invoker.setMavenHome(mavenLocation());
     invoker.setLogger(new MavenJarResolverSilentLogger());
     invoker.setOutputHandler(new MavenInvocationSilentOutputHandler());
     invoker.setLocalRepositoryDirectory(getOrCreateFile(this.commandParams.getPathToCache()));
     return invoker;
+  }
+
+  private File mavenLocation() {
+    if (mavenLocation == null) {
+      try {
+        InputStream mvnNameStream = getClass().getClassLoader().getResourceAsStream("mvnLocation");
+        String mvnName = IOUtils.toString(mvnNameStream, StandardCharsets.UTF_8);
+        mavenLocation = new File(mvnName);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return mavenLocation;
   }
 
   private AddMvnCommandResult getResult(InvocationResult invocationResult, String groupId, String artifactId, String version) {

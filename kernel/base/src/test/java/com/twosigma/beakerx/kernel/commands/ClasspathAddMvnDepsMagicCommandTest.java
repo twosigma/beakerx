@@ -75,7 +75,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     //when
     MagicCommandResult process = sut.process(code, new Message(), 1);
     //then
-    Assertions.assertThat(getText(process)).contains("Added jar1");
+    Assertions.assertThat(getText(process)).contains("Added jar");
     String mvnDir = kernel.getTempFolder().toString() + MVN_DIR;
     Stream<Path> paths = Files.walk(Paths.get(mvnDir));
     Optional<Path> dep = paths.filter(file -> file.getFileName().toFile().getName().contains("gson")).findFirst();

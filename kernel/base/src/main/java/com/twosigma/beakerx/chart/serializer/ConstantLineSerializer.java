@@ -36,7 +36,7 @@ public class ConstantLineSerializer extends JsonSerializer<ConstantLine> {
 
     jgen.writeStartObject();
 
-    boolean isNanoPlot = NanoPlot.class.equals(constantLine.getPlotType());
+    boolean isNanoPlot = NanoPlot.isNanoPlotClass(constantLine.getPlotType());
     jgen.writeObjectField(TYPE, constantLine.getClass().getSimpleName());
     jgen.writeObjectField("x", isNanoPlot ? processLargeNumber(constantLine.getX()) : constantLine.getX());
     jgen.writeObjectField("y", constantLine.getY());

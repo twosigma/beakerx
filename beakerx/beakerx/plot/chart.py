@@ -374,21 +374,26 @@ class SimpleTimePlot(TimePlot):
         xs = []
         yss = []
         dataColumnsNames = []
-        
+        parse_x = True
+
         if isinstance(tableData, DataFrame):
             if tableData.index.name is not None:
                 time_column_default = tableData.index.name
+            if not isinstance(tableData.index, pd.RangeIndex):
+                parse_x = False
+                xs = tableData.index.get_values()
             tableData = tableData.to_dict(orient='rows')
         
         timeColumn = getValue(kwargs, 'timeColumn', time_column_default)
         self.chart.domain_axis_label = getValue(kwargs, 'xLabel', timeColumn)
         if tableData is not None and columnNames is not None:
             dataColumnsNames.extend(list(tableData[0]))
-            
+
             for row in tableData:
-                x = row[timeColumn]
-                x = date_time_2_millis(x)
-                xs.append(x)
+                if parse_x:
+                    x = row[timeColumn]
+                    x = date_time_2_millis(x)
+                    xs.append(x)
                 
                 for idx in range(len(columnNames)):
                     column = columnNames[idx]

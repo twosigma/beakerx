@@ -13,12 +13,13 @@
 # limitations under the License.
 
 from enum import Enum
-from datetime import datetime
 import math
 import pandas as pd
 from beakerx.utils import *
 
 from dateutil.parser import parse
+import numpy as np
+import datetime as dt
 
 
 class ShapeType(Enum):
@@ -43,9 +44,11 @@ class StrokeType(Enum):
     DASHDOT = 5
     LONGDASH = 5
 
+
 class PlotOrientationType(Enum):
     VERTICAL = 1
-    HORIZONTAL =2
+    HORIZONTAL = 2
+
 
 class LabelPositionType(Enum):
     VALUE_OUTSIDE = 1
@@ -53,7 +56,8 @@ class LabelPositionType(Enum):
     CENTER = 3
     BASE_OUTSIDE = 4
     BASE_INSIDE = 5
-    
+
+
 class GradientColor:
     def __init__(self, *args):
         self.color = args[0]
@@ -69,14 +73,15 @@ GradientColor.GREEN_YELLOW_WHITE = GradientColor([Color(0, 170, 0),
                                                   Color(238, 187, 153),
                                                   Color(255, 255, 255)])
 GradientColor.WHITE_BLUE = GradientColor([Color(255, 255, 217),
-                                         Color(237, 248, 177),
-                                         Color(199, 233, 180),
-                                         Color(127, 205, 187),
-                                         Color(65, 182, 196),
-                                         Color(29, 145, 192),
-                                         Color(34, 94, 168),
-                                         Color(37, 52, 148),
-                                         Color(8, 29, 88)])
+                                          Color(237, 248, 177),
+                                          Color(199, 233, 180),
+                                          Color(127, 205, 187),
+                                          Color(65, 182, 196),
+                                          Color(29, 145, 192),
+                                          Color(34, 94, 168),
+                                          Color(37, 52, 148),
+                                          Color(8, 29, 88)])
+
 
 class Graphics(BaseObject):
     def __init__(self, **kwargs):
@@ -116,27 +121,39 @@ def is_date(string):
 
 
 class XYGraphics(Graphics):
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(XYGraphics, self).__init__(**kwargs)
-        defY = getValue(kwargs, 'y')
-
-        if defY is not None:
-            if isinstance(defY, pd.Series):
-                defY = defY.tolist()
-            defX = list(range(0, len(defY)))
+        if len(args) > 0 and isinstance(args[0], pd.Series):
+            defX = args[0].index.tolist()
+            defY = args[0].tolist()
         else:
-            defX = []
+            defY = getValue(kwargs, 'y')
 
-        self.x = getValue(kwargs, 'x', defX)
-        if self.x is not None:
-            if isinstance(self.x, pd.Series):
-                self.x = self.x.tolist()
-            for idx in range(len(self.x)):
-                x = self.x[idx]
+            if defY is not None:
+                if isinstance(defY, pd.Series):
+                    defY = defY.tolist()
+                defX = list(range(0, len(defY)))
+            else:
+                defX = []
+
+        local_x = getValue(kwargs, 'x', defX)
+
+        if local_x is not None:
+            if isinstance(local_x, pd.Series):
+                local_x = local_x.tolist()
+            self.x = [None] * len(local_x)
+            for idx in range(len(local_x)):
+                x = local_x[idx]
                 if isinstance(x, float) and math.isnan(x):
                     self.x[idx] = "NaN"
-                if isinstance(x, datetime) or is_date(x):
-                    self.x[idx] = unix_time(x)
+                elif isinstance(x, dt.date) or isinstance(x, dt.time):
+                    self.x[idx] = date_time_2_millis(x.isoformat())
+                elif is_date(x):
+                    self.x[idx] = date_time_2_millis(x)
+                elif isinstance(x, np.datetime64):
+                    self.x[idx] = date_time_2_millis(x.__str__())
+                else:
+                    self.x[idx] = x
 
         self.y = defY
         if self.y is not None:
@@ -151,8 +168,8 @@ class XYGraphics(Graphics):
 
 
 class Line(XYGraphics):
-    def __init__(self, **kwargs):
-        super(Line, self).__init__(**kwargs)
+    def __init__(self, *args, **kwargs):
+        super(Line, self).__init__(*args, **kwargs)
         self.width = getValue(kwargs, 'width', 1.5)
         self.style = getValue(kwargs, 'style')
         self.interpolation = getValue(kwargs, 'interpolation')
@@ -160,8 +177,8 @@ class Line(XYGraphics):
 
 
 class BasedXYGraphics(XYGraphics):
-    def __init__(self, **kwargs):
-        super(BasedXYGraphics, self).__init__(**kwargs)
+    def __init__(self, *args, **kwargs):
+        super(BasedXYGraphics, self).__init__(*args, **kwargs)
         base = getValue(kwargs, 'base')
         if isinstance(base, list):
             self.bases = base
@@ -170,8 +187,8 @@ class BasedXYGraphics(XYGraphics):
 
 
 class Bars(BasedXYGraphics):
-    def __init__(self, **kwargs):
-        super(Bars, self).__init__(**kwargs)
+    def __init__(self, *args, **kwargs):
+        super(Bars, self).__init__(*args, **kwargs)
 
         width = getValue(kwargs, 'width')
         if isinstance(width, list):
@@ -193,8 +210,8 @@ class Bars(BasedXYGraphics):
 
 
 class Points(XYGraphics):
-    def __init__(self, **kwargs):
-        super(Points, self).__init__(**kwargs)
+    def __init__(self, *args, **kwargs):
+        super(Points, self).__init__(*args, **kwargs)
 
         shape = getColor(getValue(kwargs, 'shape'))
         if isinstance(shape, list):
@@ -228,8 +245,8 @@ class Points(XYGraphics):
 
 
 class Stems(BasedXYGraphics):
-    def __init__(self, **kwargs):
-        super(Stems, self).__init__(**kwargs)
+    def __init__(self, *args, **kwargs):
+        super(Stems, self).__init__(*args, **kwargs)
         self.width = getValue(kwargs, 'width', 1.5)
         color = getColor(getValue(kwargs, 'color'))
         if isinstance(color, list):
@@ -245,8 +262,8 @@ class Stems(BasedXYGraphics):
 
 
 class Area(BasedXYGraphics):
-    def __init__(self, **kwargs):
-        super(Area, self).__init__(**kwargs)
+    def __init__(self, *args, **kwargs):
+        super(Area, self).__init__(*args, **kwargs)
         self.color = getColor(getValue(kwargs, 'color'))
         self.interpolation = getValue(kwargs, 'interpolation')
 
@@ -316,8 +333,8 @@ class XYStacker(BaseObject):
 
 
 class Crosshair(BasedXYGraphics):
-    def __init__(self, **kwargs):
-        super(Crosshair, self).__init__(**kwargs)
+    def __init__(self, *args, **kwargs):
+        super(Crosshair, self).__init__(*args, **kwargs)
         self.width = getValue(kwargs, 'width')
         self.style = getValue(kwargs, 'style')
         self.color = getColor(getValue(kwargs, 'color'))
@@ -348,13 +365,13 @@ class CategoryGraphics(Graphics):
             self.outlines = drawOutline
         else:
             self.outline = drawOutline
-            
+
         base = getValue(kwargs, 'base', 0.0)
         if isinstance(base, list):
             self.bases = base
         else:
             self.base = base
-            
+
         width = getValue(kwargs, 'width')
         if isinstance(width, list):
             self.widths = width
@@ -367,31 +384,35 @@ class CategoryGraphics(Graphics):
         else:
             self.style = style
 
-
         self.value = getValue(kwargs, 'value', [])
-        
+
         color = getColor(getValue(kwargs, 'color'))
         if isinstance(color, list):
             self.colors = color
         else:
             self.color = color
+
+
 class CategoryBars(CategoryGraphics):
     def __init__(self, **kwargs):
         super(CategoryBars, self).__init__(**kwargs)
-        
-        
+
+
 class CategoryStems(CategoryGraphics):
     def __init__(self, **kwargs):
         super(CategoryStems, self).__init__(**kwargs)
 
+
 class CategoryPoints(CategoryGraphics):
     def __init__(self, **kwargs):
         super(CategoryPoints, self).__init__(**kwargs)
-        
+
+
 class CategoryLines(CategoryGraphics):
     def __init__(self, **kwargs):
         super(CategoryLines, self).__init__(**kwargs)
-        
+
+
 class CategoryArea(CategoryGraphics):
     def __init__(self, **kwargs):
         super(CategoryArea, self).__init__(**kwargs)

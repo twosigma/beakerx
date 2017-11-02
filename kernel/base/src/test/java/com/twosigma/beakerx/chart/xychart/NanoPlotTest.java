@@ -77,6 +77,15 @@ public class NanoPlotTest  extends XYChartTest<NanoPlot>{
     Assertions.assertThat(nanoPlot.getGraphics().size()).isEqualTo(2);
   }
 
+  @Test
+  public void nanoPlotSubclassIsNanoPlot() {
+    class FemtoPlot extends NanoPlot {
+
+    }
+    NanoPlot plot = new FemtoPlot();
+    Assertions.assertThat(NanoPlot.isNanoPlotClass(plot.getClass())).isTrue();
+  }
+
   @Override
   public NanoPlot createWidget() {
     NanoPlot nanoPlot = new NanoPlot();

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,12 +14,14 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.chart.xychart;
+define(["base/js/namespace"], function (Jupyter) {
+  var base_url = (Jupyter.notebook_list || Jupyter.notebook).base_url;
+  var api_url = base_url + "beakerx/";
+  var static_url = base_url + "nbextensions/beakerx/html/";
 
-import javax.annotation.Nullable;
-
-public class NanoPlot extends TimePlot {
-  static public boolean isNanoPlotClass(@Nullable Class<?> plotClass) {
-    return plotClass != null && NanoPlot.class.isAssignableFrom(plotClass);
-  }
-}
+  return {
+    base_url: base_url,
+    api_url: api_url,
+    static_url: static_url
+  };
+});

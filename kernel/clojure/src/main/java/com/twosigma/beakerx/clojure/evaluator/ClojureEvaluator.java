@@ -63,6 +63,19 @@ public class ClojureEvaluator extends BaseEvaluator {
   }
 
   @Override
+  public void resetEnvironment() {
+    killClojureThreads();
+    super.resetEnvironment();
+  }
+
+  private void killClojureThreads() {
+    runCode("(import 'clojure.lang.Agent)\n" +
+            "(.shutdownNow Agent/soloExecutor)\n" +
+            "(import 'java.util.concurrent.Executors) \n" +
+            "(set! Agent/soloExecutor (Executors/newCachedThreadPool))");
+  }
+
+  @Override
   protected void doResetEnvironment() {
     loader = ClojureClassLoaderFactory.newInstance(classPath, outDir);
 

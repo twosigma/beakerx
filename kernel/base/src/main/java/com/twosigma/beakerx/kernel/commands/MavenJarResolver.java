@@ -59,7 +59,7 @@ public class MavenJarResolver {
       InvocationResult invocationResult = invoker.execute(request);
       return getResult(invocationResult, groupId, artifactId, version);
     } catch (Exception e) {
-      return AddMvnCommandResult.error(e.getMessage());
+      return AddMvnCommandResult.error(e.toString());
     } finally {
       deletePomFolder(finalPom);
     }
@@ -79,6 +79,7 @@ public class MavenJarResolver {
       try {
         InputStream mvnNameStream = getClass().getClassLoader().getResourceAsStream("mvnLocation");
         String mvnName = IOUtils.toString(mvnNameStream, StandardCharsets.UTF_8);
+        //System.setProperty("maven.home",mvnName+"/bin/mvn");
         mavenLocation = new File(mvnName);
       } catch (Exception e) {
         throw new RuntimeException(e);
@@ -118,6 +119,7 @@ public class MavenJarResolver {
     String pomAsString = IOUtils.toString(pom, StandardCharsets.UTF_8);
     pomAsString = configureOutputDir(pomAsString);
     pomAsString = configureDependencies(groupId, artifactId, version, pomAsString);
+
     File finalPom = new File(this.commandParams.getPathToNotebookJars() + "/poms/pom-" + UUID.randomUUID() + "-" + groupId + artifactId + version + "xml");
     FileUtils.writeStringToFile(finalPom, pomAsString, StandardCharsets.UTF_8);
     return finalPom;

@@ -59,7 +59,8 @@ public class MavenJarResolver {
       InvocationResult invocationResult = invoker.execute(request);
       return getResult(invocationResult, groupId, artifactId, version);
     } catch (Exception e) {
-      return AddMvnCommandResult.error(e.toString());
+      e.printStackTrace();
+      return AddMvnCommandResult.error(e.getMessage());
     } finally {
       deletePomFolder(finalPom);
     }

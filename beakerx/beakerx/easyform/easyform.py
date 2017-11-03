@@ -15,44 +15,7 @@
 from beakerx.utils import getValue
 from beakerx.beakerx_widgets import *
 from ipykernel.comm import Comm
-from traitlets import Unicode, Bool, Int, Dict, ObjectName, Unicode, default, \
-    Any, Union, List
-
-from ipywidgets import SelectMultiple, Select, Dropdown, RadioButtons
-
-
-class DatePicker(BeakerxDOMWidget):
-    def __init__(self, value=None, **kwargs):
-        if value is not None:
-            kwargs['value'] = value
-        super(DatePicker, self).__init__(**kwargs)
-
-    _view_name = Unicode('DatePickerView').tag(sync=True)
-    _model_name = Unicode('DatePickerModel').tag(sync=True)
-    showTime = Bool(default_value=False,
-                    help="Enable or disable user changes.").tag(sync=True)
-    value = Unicode(default_value="").tag(sync=True)
-    description = Unicode(default_value="").tag(sync=True)
-
-
-class SelectMultipleWithRows(SelectMultiple):
-    def __init__(self, **kwargs):
-        super(SelectMultipleWithRows, self).__init__(**kwargs)
-
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
-    size = Int(5, help="The number of rows to display.").tag(sync=True)
-
-
-class SelectMultipleSingle(Select):
-    def __init__(self, **kwargs):
-        super(SelectMultipleSingle, self).__init__(**kwargs)
-
-    _view_name = Unicode('SelectMultipleSingleView').tag(sync=True)
-    _model_name = Unicode('SelectMultipleSingleModel').tag(sync=True)
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
-    size = Int(5, help="The number of rows to display.").tag(sync=True)
+from traitlets import Bool, Unicode
 
 
 class EasyForm(BeakerxBox):
@@ -62,7 +25,6 @@ class EasyForm(BeakerxBox):
     test = ""
     HORIZONTAL = 1
     VERTICAL = 2
-    components = dict()
 
     def __init__(self, *args, **kwargs):
         super(EasyForm, self).__init__(**kwargs)

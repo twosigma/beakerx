@@ -11,7 +11,7 @@
     <repositories>
         <repository>
             <id>project-repo</id>
-            <url>file://${project.basedir}/src/main/resources/testMvnCache</url>
+            <url>file://${project.basedir}/build/testMvnCache</url>
         </repository>
     </repositories>
 

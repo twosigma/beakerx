@@ -59,7 +59,6 @@ public class MavenJarResolver {
       InvocationResult invocationResult = invoker.execute(request);
       return getResult(invocationResult, groupId, artifactId, version);
     } catch (Exception e) {
-      e.printStackTrace();
       return AddMvnCommandResult.error(e.getMessage());
     } finally {
       deletePomFolder(finalPom);
@@ -78,13 +77,22 @@ public class MavenJarResolver {
 
   public String findMvn() {
     if (mavenLocation == null) {
+
+      if (System.getenv("M2_HOME") != null) {
+        mavenLocation = System.getenv("M2_HOME") + "/bin/mvn";
+        return mavenLocation;
+      }
+
       for (String dirname : System.getenv("PATH").split(File.pathSeparator)) {
-        File file = new File(dirname, "mvn");
-        if (file.isFile() && file.canExecute()) {
-          mavenLocation = file.getAbsolutePath();
-          return mavenLocation;
+        if (dirname.contains("envs")) {
+          File file = new File(dirname, "mvn");
+          if (file.isFile() && file.canExecute()) {
+            mavenLocation = file.getAbsolutePath();
+            return mavenLocation;
+          }
         }
       }
+
       throw new AssertionError("No mvn found");
     }
     return mavenLocation;

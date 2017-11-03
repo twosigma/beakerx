@@ -193,7 +193,7 @@ public class MagicCommand {
     return new MagicCommandItemWithResult(
             messageCreator
                     .buildOutputMessage(message, customMessage, false),
-            messageCreator.buildReplyWithoutStatus(message, executionCount));
+            messageCreator.buildReplyWithOkStatus(message, executionCount));
   }
 
   public MagicCommandFunctionality unimport() {
@@ -214,7 +214,7 @@ public class MagicCommand {
       if (code.takeCodeWithoutCommand().isPresent()) {
         return new MagicCommandItemWithResultAndCode(
                 messageCreator.buildOutputMessage(message, result.getData().toString(), false),
-                messageCreator.buildReplyWithoutStatus(message, executionCount),
+                messageCreator.buildReplyWithOkStatus(message, executionCount),
                 code.takeCodeWithoutCommand().get());
       }
 
@@ -269,7 +269,7 @@ public class MagicCommand {
     return new MagicCommandItemWithResult(
             messageCreator
                     .buildOutputMessage(message, messageText, true),
-            messageCreator.buildReplyWithoutStatus(message, executionCount)
+            messageCreator.buildReplyWithErrorStatus(message, executionCount)
     );
   }
 
@@ -326,14 +326,14 @@ public class MagicCommand {
     if (code.takeCodeWithoutCommand().isPresent()) {
       return new MagicCommandItemWithResultAndCode(
               messageCreator.buildOutputMessage(message, textMessage, false),
-              messageCreator.buildReplyWithoutStatus(message, executionCount),
+              messageCreator.buildReplyWithOkStatus(message, executionCount),
               code.takeCodeWithoutCommand().get());
     }
 
     return new MagicCommandItemWithResult(
             messageCreator
                     .buildOutputMessage(message, textMessage, false),
-            messageCreator.buildReplyWithoutStatus(message, executionCount));
+            messageCreator.buildReplyWithOkStatus(message, executionCount));
   }
 
   private MagicCommandItem getMagicCommandItem(Code code, Message message, int executionCount) {
@@ -342,7 +342,7 @@ public class MagicCommand {
     }
 
     return new MagicCommandItemWithReply(
-            messageCreator.buildReplyWithoutStatus(message, executionCount));
+            messageCreator.buildReplyWithOkStatus(message, executionCount));
   }
 
   public MagicCommandFunctionality javascript() {
@@ -351,7 +351,7 @@ public class MagicCommand {
       return new MagicCommandItemWithResult(
               messageCreator
                       .buildMessage(message, singletonList(result), executionCount),
-              messageCreator.buildReplyWithoutStatus(message, executionCount)
+              messageCreator.buildReplyWithOkStatus(message, executionCount)
       );
     };
   }
@@ -364,7 +364,7 @@ public class MagicCommand {
               return new MagicCommandItemWithResult(
                       messageCreator
                               .buildMessage(message, singletonList(html), executionCount),
-                      messageCreator.buildReplyWithoutStatus(message, executionCount)
+                      messageCreator.buildReplyWithOkStatus(message, executionCount)
               );
             }).orElse(sendErrorMessage(message, String.format(USAGE_ERROR_MSG, HTML), executionCount));
   }
@@ -380,7 +380,7 @@ public class MagicCommand {
 
       return new MagicCommandItemWithResult(
               messageCreator.buildOutputMessage(message, errorData.getMessage(), false),
-              messageCreator.buildReplyWithoutStatus(message, executionCount)
+              messageCreator.buildReplyWithOkStatus(message, executionCount)
       );
     }).orElse(sendErrorMessage(message, String.format(USAGE_ERROR_MSG, BASH), executionCount));
   }
@@ -395,7 +395,7 @@ public class MagicCommand {
 
       return new MagicCommandItemWithResult(
               messageCreator.buildOutputMessage(message, result, false),
-              messageCreator.buildReplyWithoutStatus(message, executionCount)
+              messageCreator.buildReplyWithOkStatus(message, executionCount)
       );
     };
   }
@@ -442,7 +442,7 @@ public class MagicCommand {
               format(timeMeasuredData.getCpuTotalTime() - timeMeasuredData.getCpuUserTime()),
               format(timeMeasuredData.getCpuTotalTime()),
               format(timeMeasuredData.getWallTime())), false),
-          messageCreator.buildReplyWithoutStatus(message, executionCount));
+          messageCreator.buildReplyWithOkStatus(message, executionCount));
 
     } catch (InterruptedException | ExecutionException e) {
       return sendErrorMessage(message, "There occurs problem during measuring time for your statement.", executionCount);

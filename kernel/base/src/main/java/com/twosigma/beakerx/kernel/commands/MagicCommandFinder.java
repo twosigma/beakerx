@@ -94,7 +94,7 @@ public class MagicCommandFinder {
   private static MagicCommandItemWithResult processIllegalCommand(String errorMessage, Message message, int executionCount, MessageCreator messageCreator) {
     return new MagicCommandItemWithResult(
             messageCreator.buildOutputMessage(message, errorMessage, true),
-            messageCreator.buildReplyWithoutStatus(message, executionCount)
+            messageCreator.buildReplyWithErrorStatus(message, executionCount)
     );
   }
 

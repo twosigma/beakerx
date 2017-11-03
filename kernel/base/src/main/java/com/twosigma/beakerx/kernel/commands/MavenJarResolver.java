@@ -92,8 +92,7 @@ public class MavenJarResolver {
           }
         }
       }
-
-      throw new AssertionError("No mvn found");
+      throw new RuntimeException("No mvn found, please install mvn by 'conda install maven' or setup M2_HOME");
     }
     return mavenLocation;
   }

@@ -162,7 +162,7 @@ module.exports = [
     entry: './src/embed.js',
     output: {
       filename: 'index.js',
-      path: path.resolve(__dirname, './jupyterlab/lib/'),
+      path: path.resolve(__dirname, '../jslab/lib/'),
       libraryTarget: 'amd'
     },
     module: {

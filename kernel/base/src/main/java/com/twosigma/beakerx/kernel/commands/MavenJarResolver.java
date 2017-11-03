@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
+import com.google.common.io.Resources;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
@@ -26,6 +27,7 @@ import org.apache.maven.shared.invoker.Invoker;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -77,8 +79,11 @@ public class MavenJarResolver {
   private File mavenLocation() {
     if (mavenLocation == null) {
       try {
-        InputStream mvnNameStream = getClass().getClassLoader().getResourceAsStream("mvnLocation");
-        String mvnName = IOUtils.toString(mvnNameStream, StandardCharsets.UTF_8);
+        URL url = Resources.getResource("mvnLocation.txt");
+        if(url==null){
+          throw new RuntimeException("Cannot find maven location file.");
+        }
+        String mvnName = Resources.toString(url, StandardCharsets.UTF_8);
         mavenLocation = new File(mvnName);
       } catch (Exception e) {
         throw new RuntimeException(e);

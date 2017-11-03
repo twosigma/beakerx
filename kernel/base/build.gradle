@@ -91,7 +91,7 @@ task unzipMaven(type: Copy) {
   into outputDir
 
   doLast {
-    new File(resourceDir, 'mvnLocation').write(outputDir.canonicalPath + "/apache-maven-3.5.2")
+    new File(resourceDir, 'mvnLocation.txt').write(outputDir.canonicalPath + "/apache-maven-3.5.2")
   }
 }
 

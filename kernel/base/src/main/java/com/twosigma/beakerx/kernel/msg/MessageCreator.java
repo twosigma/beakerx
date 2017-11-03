@@ -144,6 +144,20 @@ public class MessageCreator {
     return reply;
   }
 
+  public Message buildReplyWithOkStatus(Message message, int executionCount) {
+    Message messageWithStatus = buildReplyWithoutStatus(message, executionCount);
+    messageWithStatus.getContent().put("status", "ok");
+
+    return messageWithStatus;
+  }
+
+  public Message buildReplyWithErrorStatus(Message message, int executionCount) {
+    Message messageWithStatus = buildReplyWithoutStatus(message, executionCount);
+    messageWithStatus.getContent().put("status", "error");
+
+    return messageWithStatus;
+  }
+
   public Message buildOutputMessage(Message message, String text, boolean hasError) {
     Message reply = initMessage(STREAM, message);
     reply.setContent(new HashMap<String, Serializable>());
@@ -304,5 +318,4 @@ public class MessageCreator {
     reply.setContent(map1);
     return reply;
   }
-
 }

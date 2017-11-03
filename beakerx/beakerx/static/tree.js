@@ -142,12 +142,12 @@ define(function (require) {
     },
     appendField: function (opts) {
       var id = this.randId();
-      var input = $('<input>');
-      var wrapper = $('<div>');
+      var input = $('<input>', { class: 'form-control' });
+      var wrapper = $('<div>', { class: 'form-group form-inline bko-spacing' });
       wrapper.attr('id', id);
       var remove_button = $('<button>');
       remove_button.attr('type', 'button');
-      remove_button.attr('class', 'btn btn-default btn-xs');
+      remove_button.attr('class', 'btn btn-default btn-sm');
       remove_button.attr('data-original-title', 'remove row');
       remove_button.append($('<i>').attr('class', 'fa fa-times'));
       remove_button.click(function (event) {
@@ -160,7 +160,7 @@ define(function (require) {
       input.attr('placeholder', 'value');
       input.keyup(InpuChanged);
       if (opts.add_label) {
-        var label = $('<input>');
+        var label = $('<input>', { class: 'form-control' });
         label.val(opts.name);
         label.attr('id', this.randId());
         label.attr('placeholder', 'name');

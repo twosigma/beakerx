@@ -98,7 +98,7 @@ define(function (require) {
     $('#errors').empty();
 
     if (val.length > 0 && !(/^[0-9]+(\.)?[0-9]*$/.test(val))) {
-      $('#errors').append($('<span>').text("Heap Size' can contain only digits"));
+      $('#errors').append($('<span>').text("Heap Size must be a decimal number."));
       enable_button = false;
     }
 

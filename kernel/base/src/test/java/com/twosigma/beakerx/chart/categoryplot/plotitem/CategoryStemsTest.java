@@ -61,17 +61,4 @@ public class CategoryStemsTest {
     //then
     Assertions.assertThat(categoryStems.getValue()).isNotEmpty();
   }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void setBaseWithStringParam_throwIllegalArgumentException() {
-    //when
-    categoryStems.setBase("123");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void setStyleWithStringParam_throwIllegalArgumentException() {
-    //when
-    categoryStems.setStyle("DOT");
-  }
-
 }

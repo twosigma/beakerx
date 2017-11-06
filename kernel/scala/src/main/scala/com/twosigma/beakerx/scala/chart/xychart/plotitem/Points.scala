@@ -42,7 +42,7 @@ class Points extends com.twosigma.beakerx.chart.xychart.plotitem.Points {
 
   def this(y: Seq[_], size: Seq[_], color: Color) {
     this(y)
-    super.setSize(size.map(x => x.isInstanceOf[Number]).asJava)
+    super.setSize(size.map(x => x.asInstanceOf[Number]).asJava)
     super.setColor(color)
   }
 
@@ -69,12 +69,12 @@ class Points extends com.twosigma.beakerx.chart.xychart.plotitem.Points {
     this(y)
     super.setSize(size)
     super.setColor(color)
-    super.setOutlineColor(outlineColors.asJava)
+    super.setOutlineColor(outlineColors.map(x => x.asInstanceOf[Object]).asJava)
   }
 
   def this(y: Seq[_], size: Number, color: Color, fill: Seq[Boolean], outlineColor: Color) {
     this(y, size, color, outlineColor)
-    super.setFill(fill.asJava)
+    super.setFill(fill.map(x => x.asInstanceOf[java.lang.Boolean]).asJava)
   }
 
   def this(x: Seq[_], y: Seq[_]) {

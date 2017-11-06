@@ -16,17 +16,17 @@ from os import environ, path
 from jupyter_core import paths
 import json
 
-sadsd = "" \
-        ""
-default_config = "{" \
-                 "\"beakerx\": {" \
-                 "\"jvm_options\": {" \
-                 "\"heap_GB\": \"\"," \
-                 "\"other\": []," \
-                 "\"properties\": {}" \
-                 "}" \
-                 "}" \
-                 "}"
+default_config = """
+{
+    "beakerx": {
+        "jvm_options": {
+            "heap_GB": "",
+            "other": [],
+            "properties": {}
+        }
+    }
+}
+"""
 
 
 class EnvironmentSettings:

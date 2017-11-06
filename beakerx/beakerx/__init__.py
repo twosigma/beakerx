@@ -42,6 +42,3 @@ def _jupyter_server_extension_paths():
 
 
 beakerx = BeakerX()
-
-content = EnvironmentSettings.read_setting_from_file()
-EnvironmentSettings.set_beakerx_env_settings(json.loads(content)['payload'])

@@ -38,9 +38,6 @@ class SettingsHandler(APIHandler):
     def post(self):
         data = tornado.escape.json_decode(self.request.body)
 
-        if 'payload' in data:
-            EnvironmentSettings.set_beakerx_env_settings(data['payload'])
-
         EnvironmentSettings.save_setting_to_file(json.dumps(data))
 
         self.finish(json.dumps(SettingsHandler._read_property()))

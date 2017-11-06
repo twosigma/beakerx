@@ -19,7 +19,6 @@ define(function (require) {
   var Jupyter = require('base/js/namespace');
   var utils = require('base/js/utils');
   var urls = require('./urls');
-  var error_msg = "All options should start with '-X' or '-D'";
 
   function AjaxSettings(settings) {
     settings.cache = false;
@@ -51,13 +50,12 @@ define(function (require) {
   function InpuChanged(e) {
     var result = "";
     var enable_button = true;
-    var show_error = false;
 
-    var val = $("#-Xmx").val().trim();
+    var val = $("#heap_GB").val().trim();
 
     if (val.length > 0) {
-      if ((/^[0-9]+(\.)?[0-9]*$/.test(val))) {
-        if (/^\d+$/.test(val)) {
+      if (!isNaN(val)) {
+        if (val % 1 === 0) {
           result += '-Xmx' + val + 'g '
         } else {
           result += '-Xmx' + parseInt(val * 1024) + 'm '
@@ -65,31 +63,31 @@ define(function (require) {
       }
     }
 
+
     var other_property = $('#other_property input');
     other_property.each(function () {
       var value = $(this).val().trim();
       result += value + " ";
 
-      if (value.length > 2 && !(value.startsWith("-X") || value.startsWith("-D"))) {
-        show_error = show_error || true;
+      if (value.length < 1) {
         enable_button = false
       }
     });
 
-    var java_property = $('#java_property div');
+    var java_property = $('#properties_property div');
 
     java_property.each(function () {
       var children = $($(this).children());
       var value = $(children.get(1)).val().trim();
       var name = $(children.get(0)).val().trim();
+
       var value_combined = '-D' + name + '=' + value;
 
-      if (name.length > 0 && value.length > 0) {
+      if (name.length > 0) {
         result += value_combined + " ";
       }
 
-      if (value_combined.length > 4 && !(value_combined.startsWith("-X") || value_combined.startsWith("-D"))) {
-        show_error = show_error || true;
+      if (value_combined.length < 1) {
         enable_button = false
       }
     });
@@ -97,7 +95,7 @@ define(function (require) {
     $('#result').text(result);
     $('#errors').empty();
 
-    if (val.length > 0 && !(/^[0-9]+(\.)?[0-9]*$/.test(val))) {
+    if (val.length > 0 && isNaN(val)) {
       $('#errors').append($('<span>').text("Heap Size must be a decimal number."));
       enable_button = false;
     }
@@ -105,10 +103,6 @@ define(function (require) {
     if (enable_button) {
       $('#jvm_settings_submit').removeAttr('disabled');
     } else {
-      if (show_error) {
-        $('#errors').append($('<span>').text(error_msg))
-      }
-
       $('#jvm_settings_submit').prop('disabled', true);
     }
   }
@@ -142,8 +136,8 @@ define(function (require) {
     },
     appendField: function (opts) {
       var id = this.randId();
-      var input = $('<input>', { class: 'form-control' });
-      var wrapper = $('<div>', { class: 'form-group form-inline bko-spacing' });
+      var input = $('<input>', {class: 'form-control'});
+      var wrapper = $('<div>', {class: 'form-group form-inline bko-spacing'});
       wrapper.attr('id', id);
       var remove_button = $('<button>');
       remove_button.attr('type', 'button');
@@ -160,7 +154,7 @@ define(function (require) {
       input.attr('placeholder', 'value');
       input.keyup(InpuChanged);
       if (opts.add_label) {
-        var label = $('<input>', { class: 'form-control' });
+        var label = $('<input>', {class: 'form-control'});
         label.val(opts.name);
         label.attr('id', this.randId());
         label.attr('placeholder', 'name');
@@ -177,9 +171,9 @@ define(function (require) {
       var that = this;
 
       function handle_response(response, status, xhr) {
-        data = response.payload;
-        $('#java_property').empty();
+        var data = response.beakerx.jvm_options;
         $('#other_property').empty();
+        $('#properties_property').empty();
 
         var other_fieldset = $('#other_property');
         for (var i = 0; i < data.other.length; i++) {
@@ -190,20 +184,20 @@ define(function (require) {
           };
           that.appendField(opts);
         }
-        var jvm_fieldset = $('#java_property');
-        for (var key in data.jvm) {
+        var properties_fieldset = $('#properties_property');
+        for (var key in data.properties) {
           if (key == "-Xmx")
-            continue
+            continue;
           var opts = {
             name: key,
-            value: data.jvm[key],
-            parent: jvm_fieldset,
+            value: data.properties[key],
+            parent: properties_fieldset,
             add_label: true
           };
           that.appendField(opts);
         }
 
-        $('#-Xmx').val(data['-Xmx']);
+        $('#heap_GB').val(data['heap_GB']);
         InpuChanged({});
       }
 
@@ -269,7 +263,7 @@ define(function (require) {
           event.preventDefault();
 
           var payload = {};
-
+          payload['jvm_options'] = {};
           var values = [];
           var other_property = $('#other_property input');
           other_property.each(function () {
@@ -278,15 +272,15 @@ define(function (require) {
               values.push(value);
             }
           });
-          payload['other'] = values;
+          payload['jvm_options']['other'] = values;
           var java_values = {};
-          var java_property = $('#java_property div');
+          var java_property = $('#properties_property div');
           java_property.each(function () {
             var children = $($(this).children());
             var value = $(children.get(1)).val().trim();
             var name = $(children.get(0)).val().trim();
 
-            if (value.length > 0 && name.length > 0) {
+            if (name.length > 0) {
               java_values[name] = value
             }
 
@@ -295,17 +289,17 @@ define(function (require) {
           default_property.each(function () {
             var value = $(this).val().trim();
             if (value.length > 0) {
-              payload['-Xmx'] = value
+              payload['jvm_options']['heap_GB'] = value
             }
           });
-          payload['jvm'] = java_values;
-          settings.setVariables(JSON.stringify({'payload': payload}));
+          payload['jvm_options']['properties'] = java_values;
+          settings.setVariables(JSON.stringify({'beakerx': payload}));
           settings.load();
         });
 
         $("#add_property_jvm_sett").click(function (event) {
           event.preventDefault();
-          var parent = $('#java_property');
+          var parent = $('#properties_property');
 
           var opts = {
             name: "",
@@ -322,7 +316,7 @@ define(function (require) {
           var fieldset = $('#other_property');
           settings.createField(fieldset);
         });
-        $('#-Xmx').keyup(InpuChanged);
+        $('#heap_GB').keyup(InpuChanged);
         $(".tab-content").submit();
 
         if (window.location.hash === '#beakerx') {

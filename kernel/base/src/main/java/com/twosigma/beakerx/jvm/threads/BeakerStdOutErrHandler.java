@@ -18,6 +18,8 @@ package com.twosigma.beakerx.jvm.threads;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,8 +93,12 @@ public class BeakerStdOutErrHandler {
   private void theinit() {
     orig_out = System.out;
     orig_err = System.err;
-    System.setOut(new PrintStream(new MyOutputStream(true)));
-    System.setErr(new PrintStream(new MyOutputStream(false)));
+    try {
+      System.setOut(new PrintStream(new MyOutputStream(true), false, StandardCharsets.UTF_8.name()));
+      System.setErr(new PrintStream(new MyOutputStream(false), false, StandardCharsets.UTF_8.name()));
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private void thefini() {

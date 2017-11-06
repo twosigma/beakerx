@@ -155,11 +155,10 @@ class Table(BaseObject):
                 return "integer"
         if object_type == "uint64":
             return "int64"
-        if isinstance(value, str):
-            return "string"
         if is_date(value):
             return "time"
-
+        if isinstance(value, str):
+            return "string"
         return "string"
 
 

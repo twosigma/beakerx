@@ -18,6 +18,9 @@ package com.twosigma.beakerx.scala.kernel;
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
@@ -32,15 +35,19 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.comm.ScalaCommOpenHandler;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.handler.ScalaKernelInfoHandler;
-
 import java.io.IOException;
 import java.util.HashMap;
-
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import scala.collection.JavaConverters;
+import scala.collection.Seq;
 
 public class Scala extends Kernel {
 
   private Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory) {
     super(id, evaluator, kernelSocketsFactory);
+    DisplayerDataMapper.register(converter);
   }
 
   public Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
@@ -68,6 +75,26 @@ public class Scala extends Kernel {
               new KernelConfigurationFile(args));
       return new Scala(id, se, kernelSocketsFactory);
     });
+  }
+
+  private static DisplayerDataMapper.Converter converter = Scala::asJava;
+
+  private static Object asJava(Object scalaObject) {
+    if (scalaObject instanceof scala.collection.Seq) {
+      List objects = Lists.newArrayList(
+          JavaConverters.asJavaCollectionConverter((Seq<?>) scalaObject).asJavaCollection());
+
+      return objects.stream().map(Scala::asJava).collect(Collectors.toList());
+    } else if (scalaObject instanceof scala.collection.immutable.Map) {
+      @SuppressWarnings("unchecked")
+      scala.collection.immutable.Map<Object, Object> map = (scala.collection.immutable.Map<Object, Object>) scalaObject;
+      Map<Object, Object> objects = Maps.newHashMap(JavaConverters.mapAsJavaMapConverter(map).asJava());
+
+      return objects.entrySet().stream()
+                               .collect(Collectors.toMap(incomingMap -> asJava(incomingMap.getKey()), incomingMap -> asJava(incomingMap.getValue())));
+    }
+
+    return scalaObject;
   }
 
   @Override

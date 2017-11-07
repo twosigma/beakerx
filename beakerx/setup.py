@@ -75,7 +75,8 @@ setup_args = dict(
     ],
     entry_points={
         'console_scripts': [
-            'beakerx-install = beakerx.install:install'
+            'beakerx-install = beakerx.install:install',
+            'bkr2ipynb = beakerx.bkr2ipynb:main',
         ]
     },
     package_data={

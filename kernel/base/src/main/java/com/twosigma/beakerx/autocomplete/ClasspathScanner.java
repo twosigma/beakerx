@@ -83,24 +83,25 @@ public class ClasspathScanner {
         if (jar != null) {
           try {
             Manifest mf = jar.getManifest();
-            if(mf != null){
+            if (mf != null){
               String cp = mf.getMainAttributes().getValue("Class-Path");
-              if(StringUtils.isNotEmpty(cp)&& !cp.equals(".")){
-                cp = cp.replace(". ", "");
-                for(String fn : cp.split(" ")){
-                  if (!fn.equals(".")) {File child = new File(file.getParent() + System.getProperty("file.separator") + fn);
-                  if(child.getAbsolutePath().equals(jar.getName())){
+              if (StringUtils.isNotEmpty(cp) && !cp.equals(".")){
+                for (String fn : cp.split(" ")){
+                  if (!fn.equals(".")) {
+                    File child = new File(file.getParent() + System.getProperty("file.separator") + fn);
+                    if (child.getAbsolutePath().equals(jar.getName())) {
                     continue; //skip bad jars, that contain references to themselves in MANIFEST.MF
                   }
-                  if(child.exists()){
+                  if (child.exists()) {
                     if (!findClasses(root, child, includeJars)) {
-                      return false;}
+                      return false;
                     }
+                  }
                   }
                 }
               }
             }
-          }catch (IOException e){
+          } catch (IOException e) {
           }
 
           Enumeration<JarEntry> entries = jar.entries();

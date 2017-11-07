@@ -1,0 +1,80 @@
+<!--
+  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<div id="beakerx" class="tab-pane">
+    <style>
+        .bko-spacing .form-control { margin-right: 10px; }
+    </style>
+    <div id="beakerx_env_toolbar" class="list_toolbar row">
+        <div class="col-xs-12 no-padding">
+           <span id="beakerx_info" class="toolbar_info"></span>
+        </div>
+    </div><br/>
+
+    <div class="beakerx_container">
+        <form id="beakerx_jvm_settings_form" class="form-horizontal">
+            <fieldset id="default_options">
+                <legend>JVM Options:</legend>
+                <div class="form-inline form-group">
+                    <label class="mr-sm-2 control-label" for="heap_GB">Heap Size</label>
+                    <div class="input-group">
+                        <input id="heap_GB" name="heap_size_prop" value="" class="form-control mb-2 mr-sm-2 mb-sm-0">
+                        <div class="input-group-addon">GB</div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <div class="panel panel-default">
+                    <div class="panel-heading row">
+                        <div class="col-xs-4">Properties</div>
+                        <div class="col-xs-8">
+                            <div class="pull-right">
+                                <label for="add_property_jvm_sett">add property: </label>
+                                <button type="button"
+                                        id="add_property_jvm_sett"
+                                        class="btn btn-default btn-xs"
+                                        data-original-title="add new">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="properties_property" class="panel-body"></div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <div class="panel panel-default">
+                    <div class="panel-heading row">
+                        <div class="col-xs-4">Other Command Line Options</div>
+                        <div class="col-xs-8">
+                            <div class="pull-right">
+                                <label for="add_option_jvm_sett">add option: </label>
+                                <button type="button" id="add_option_jvm_sett" title="" class="btn btn-default btn-xs"
+                                        data-original-title="add new"><i class="fa fa-plus"></i></button>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="other_property" class="panel-body"></div>
+                </div>
+            </fieldset>
+            <div class="form-group text-primary">
+                <span>Result: java </span><span id="result"></span>
+            </div>
+            <div id="errors" style="color: red"></div>
+            <button type="button" id="jvm_settings_submit" class="btn btn-primary">OK</button>
+        </form>
+    </div>
+</div>

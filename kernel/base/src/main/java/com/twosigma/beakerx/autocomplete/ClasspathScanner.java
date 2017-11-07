@@ -85,16 +85,16 @@ public class ClasspathScanner {
             Manifest mf = jar.getManifest();
             if(mf != null){
               String cp = mf.getMainAttributes().getValue("Class-Path");
-              if(StringUtils.isNotEmpty(cp) && !cp.equals(".")){
+              if(StringUtils.isNotEmpty(cp)&& !cp.equals(".")){
                 cp = cp.replace(". ", "");
                 for(String fn : cp.split(" ")){
-                  File child = new File(file.getParent() + System.getProperty("file.separator") + fn);
+                  if (!fn.equals(".")) {File child = new File(file.getParent() + System.getProperty("file.separator") + fn);
                   if(child.getAbsolutePath().equals(jar.getName())){
                     continue; //skip bad jars, that contain references to themselves in MANIFEST.MF
                   }
                   if(child.exists()){
                     if (!findClasses(root, child, includeJars)) {
-                      return false;
+                      return false;}
                     }
                   }
                 }
@@ -106,7 +106,7 @@ public class ClasspathScanner {
           Enumeration<JarEntry> entries = jar.entries();
           while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
-            String name = entry.getName();						
+            String name = entry.getName();
             int extIndex = name.lastIndexOf(".class");
             if (extIndex > 0 && !name.contains("$")) {
               String cname = name.substring(0, extIndex).replace("/", ".");

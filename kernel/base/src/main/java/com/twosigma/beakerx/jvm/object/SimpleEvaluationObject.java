@@ -18,6 +18,7 @@ package com.twosigma.beakerx.jvm.object;
 import com.twosigma.beakerx.jvm.threads.BeakerOutputHandler;
 import com.twosigma.beakerx.jvm.threads.BeakerStdOutErrHandler;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -131,21 +132,21 @@ public class SimpleEvaluationObject extends Observable {
     public void write(int b) {
       byte [] ba = new byte[1];
       ba[0] = (byte) b;
-      consoleOutput.add(new ConsoleOutput(error, new String(ba)));
+      consoleOutput.add(new ConsoleOutput(error, new String(ba, StandardCharsets.UTF_8)));
       setChanged();
       notifyObservers();
     }
 
     @Override
     public void write(byte[] b) {
-      consoleOutput.add(new ConsoleOutput(error, new String(b)));
+      consoleOutput.add(new ConsoleOutput(error, new String(b, StandardCharsets.UTF_8)));
       setChanged();
       notifyObservers();
     }
 
     @Override
     public void write(byte[] b, int off, int len) {
-      consoleOutput.add(new ConsoleOutput(error, new String(b,off,len)));
+      consoleOutput.add(new ConsoleOutput(error, new String(b, off, len, StandardCharsets.UTF_8)));
       setChanged();
       notifyObservers();
     }

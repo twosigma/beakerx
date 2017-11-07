@@ -35,7 +35,7 @@ public class TextSerializer extends JsonSerializer<Text> {
   public void serialize(Text text, JsonGenerator jgen, SerializerProvider sp)
     throws IOException, JsonProcessingException {
 
-    boolean isNanoPlot = NanoPlot.class.equals(text.getPlotType());
+    boolean isNanoPlot = NanoPlot.isNanoPlotClass(text.getPlotType());
     jgen.writeStartObject();
     jgen.writeObjectField(TYPE, text.getClass().getSimpleName());
     jgen.writeObjectField("x", isNanoPlot ? processLargeNumber(text.getX()) : text.getX());

@@ -1,6 +1,0 @@
-<ivysettings>
-    <settings defaultResolver='libraries'/>
-    <resolvers>
-        <filesystem name="libraries"></filesystem>
-    </resolvers>
-</ivysettings>

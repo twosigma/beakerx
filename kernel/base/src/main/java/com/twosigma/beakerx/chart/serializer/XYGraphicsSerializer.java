@@ -42,7 +42,7 @@ public class XYGraphicsSerializer<T extends XYGraphics> extends GraphicsSerializ
 
     super.serialize(xyGraphics, jgen, sp);
 
-    boolean isNanoPlot = NanoPlot.class.equals(xyGraphics.getPlotType());
+    boolean isNanoPlot = NanoPlot.isNanoPlotClass(xyGraphics.getPlotType());
     jgen.writeObjectField("x", isNanoPlot ? processLargeNumbers(xyGraphics.getX()) : xyGraphics.getX());
     jgen.writeObjectField("y", xyGraphics.getY());
     jgen.writeObjectField(DISPLAY_NAME, xyGraphics.getDisplayName());

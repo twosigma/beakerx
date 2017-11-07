@@ -37,7 +37,7 @@ public class ConstantBandSerializer extends JsonSerializer<ConstantBand> {
 
     jgen.writeStartObject();
 
-    boolean isNanoPlot = NanoPlot.class.equals(constantBand.getPlotType());
+    boolean isNanoPlot = NanoPlot.isNanoPlotClass(constantBand.getPlotType());
     jgen.writeObjectField(TYPE, constantBand.getClass().getSimpleName());
     jgen.writeObjectField("x", isNanoPlot ? processLargeNumbers(constantBand.getX()) : constantBand.getX());
     jgen.writeObjectField("y", constantBand.getY());

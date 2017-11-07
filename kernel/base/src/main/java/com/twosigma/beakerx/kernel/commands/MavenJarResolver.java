@@ -15,104 +15,136 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
-import org.apache.ivy.Ivy;
-import org.apache.ivy.core.module.descriptor.DefaultDependencyDescriptor;
-import org.apache.ivy.core.module.descriptor.DefaultModuleDescriptor;
-import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
-import org.apache.ivy.core.module.id.ModuleRevisionId;
-import org.apache.ivy.core.report.ResolveReport;
-import org.apache.ivy.core.resolve.ResolveOptions;
-import org.apache.ivy.core.retrieve.RetrieveOptions;
-import org.apache.ivy.core.settings.IvySettings;
+import com.google.common.io.Resources;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.DefaultInvoker;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.InvocationResult;
+import org.apache.maven.shared.invoker.Invoker;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.apache.ivy.core.LogOptions.LOG_QUIET;
 
 public class MavenJarResolver {
 
   public static final String MVN_DIR = File.separator + "mvnJars";
-  public static final String IVYSETTINGSBEAKERX_XML = "ivysettingsbeakerx.xml";
+  public static final String POM_XML = "PomTemplateMagicCommand.xml";
+  public static final List<String> GOALS = Arrays.asList("validate");
+
   private final String pathToMavenRepo;
   private ResolverParams commandParams;
+  private File mavenLocation;
 
   public MavenJarResolver(final ResolverParams commandParams) {
     this.commandParams = checkNotNull(commandParams);
-    this.pathToMavenRepo = getMvnDir(commandParams.getPathToMavenRepo());
+    this.pathToMavenRepo = getOrCreateFile(commandParams.getPathToNotebookJars()).getAbsolutePath();
   }
 
   public AddMvnCommandResult retrieve(String groupId, String artifactId, String version) {
+    File finalPom = null;
     try {
-      IvySettings ivySettings = createIvyInstance(this.commandParams.getPathToCache());
-      Ivy ivy = Ivy.newInstance(ivySettings);
-      ResolveOptions resolveOptions = createResolveOptions();
-      ModuleDescriptor moduleDescriptor = getModuleDescriptor(groupId, artifactId, version, ivy, resolveOptions);
-
-      String absolutePath = new File(this.getPathToMavenRepo()).getAbsolutePath();
-      ivy.retrieve(
-              moduleDescriptor.getModuleRevisionId(),
-              absolutePath + "/[artifact](-[classifier]).[ext]",
-              new RetrieveOptions().setConfs(new String[]{"default"})
-      );
-      return AddMvnCommandResult.SUCCESS;
+      finalPom = getPom(groupId, artifactId, version);
+      InvocationRequest request = createInvocationRequest();
+      request.setOffline(commandParams.getOffline());
+      request.setPomFile(finalPom);
+      Invoker invoker = getInvoker();
+      InvocationResult invocationResult = invoker.execute(request);
+      return getResult(invocationResult, groupId, artifactId, version);
     } catch (Exception e) {
       return AddMvnCommandResult.error(e.getMessage());
+    } finally {
+      deletePomFolder(finalPom);
     }
   }
 
-  private ModuleDescriptor getModuleDescriptor(String groupId, String artifactId, String version, Ivy ivy, ResolveOptions ro) {
-    DefaultModuleDescriptor md = DefaultModuleDescriptor.newDefaultInstance(
-            ModuleRevisionId.newInstance(
-                    groupId,
-                    artifactId + "-envelope",
-                    version
-            )
-    );
-    ModuleRevisionId ri = ModuleRevisionId.newInstance(
-            groupId,
-            artifactId,
-            version
-    );
-    DefaultDependencyDescriptor dd = new DefaultDependencyDescriptor(md, ri, false, false, true);
-    dd.addDependencyConfiguration("default", "default");
-    md.addDependency(dd);
-    ResolveReport rr = getResolveReport(ivy, ro, md);
-    return rr.getModuleDescriptor();
+  private Invoker getInvoker() {
+    Invoker invoker = new DefaultInvoker();
+    invoker.setMavenHome(mavenLocation());
+    invoker.setLogger(new MavenJarResolverSilentLogger());
+    invoker.setOutputHandler(new MavenInvocationSilentOutputHandler());
+    invoker.setLocalRepositoryDirectory(getOrCreateFile(this.commandParams.getPathToCache()));
+    return invoker;
   }
 
-  private ResolveReport getResolveReport(Ivy ivy, ResolveOptions ro, DefaultModuleDescriptor md) {
-    ResolveReport rr = null;
-    try {
-      rr = ivy.resolve(md, ro);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+  private File mavenLocation() {
+    if (mavenLocation == null) {
+      try {
+        URL url = Resources.getResource("mvnLocation.txt");
+        if(url==null){
+          throw new RuntimeException("Cannot find maven location file.");
+        }
+        String mvnName = Resources.toString(url, StandardCharsets.UTF_8);
+        mavenLocation = new File(mvnName);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
-    if (rr.hasError()) {
-      throw new RuntimeException(rr.getAllProblemMessages().toString());
-    }
-    return rr;
+    return mavenLocation;
   }
 
-  private ResolveOptions createResolveOptions() {
-    ResolveOptions ro = new ResolveOptions();
-    ro.setLog(LOG_QUIET);
-    ro.setTransitive(true);
-    ro.setDownload(true);
-    return ro;
+  private AddMvnCommandResult getResult(InvocationResult invocationResult, String groupId, String artifactId, String version) {
+    if (invocationResult.getExitCode() != 0) {
+      if (invocationResult.getExecutionException() != null) {
+        return AddMvnCommandResult.error(invocationResult.getExecutionException().getMessage());
+      }
+      return AddMvnCommandResult.error("Could not resolve dependencies for: " + groupId + " : " + artifactId + " : " + version);
+    }
+    return AddMvnCommandResult.SUCCESS;
   }
 
-  private IvySettings createIvyInstance(String pathToCache) {
-    IvySettings ivySettings = new IvySettings();
-    URL resource = getClass().getClassLoader().getResource(IVYSETTINGSBEAKERX_XML);
-    try {
-      ivySettings.load(resource);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+  private InvocationRequest createInvocationRequest() {
+    InvocationRequest request = new DefaultInvocationRequest();
+    request.setGoals(GOALS);
+    return request;
+  }
+
+  private void deletePomFolder(File finalPom) {
+    if (finalPom != null) {
+      File parentFile = new File(finalPom.getParent());
+      try {
+        FileUtils.deleteDirectory(parentFile);
+      } catch (IOException e) {
+      }
     }
-    ivySettings.setDefaultCache(new File(pathToCache));
-    return ivySettings;
+  }
+
+  private File getPom(String groupId, String artifactId, String version) throws IOException {
+    InputStream pom = getClass().getClassLoader().getResourceAsStream(POM_XML);
+    String pomAsString = IOUtils.toString(pom, StandardCharsets.UTF_8);
+    pomAsString = configureOutputDir(pomAsString);
+    pomAsString = configureDependencies(groupId, artifactId, version, pomAsString);
+    File finalPom = new File(this.commandParams.getPathToNotebookJars() + "/poms/pom-" + UUID.randomUUID() + "-" + groupId + artifactId + version + "xml");
+    FileUtils.writeStringToFile(finalPom, pomAsString, StandardCharsets.UTF_8);
+    return finalPom;
+  }
+
+  private String configureDependencies(String groupId, String artifactId, String version, String pomAsString) {
+    return pomAsString.replace(
+            "<dependencies></dependencies>",
+            "<dependencies>\n" +
+                    "  <dependency>\n" +
+                    "    <groupId>" + groupId + "</groupId>\n" +
+                    "    <artifactId>" + artifactId + "</artifactId>\n" +
+                    "    <version>" + version + "</version>\n" +
+                    "  </dependency>\n" +
+                    "</dependencies>");
+  }
+
+  private String configureOutputDir(String pomAsString) {
+    String absolutePath = new File(this.getPathToMavenRepo()).getAbsolutePath();
+    return pomAsString.replace(
+            "<outputDirectory>pathToNotebookJars</outputDirectory>",
+            "<outputDirectory>" + absolutePath + "</outputDirectory>");
   }
 
   public String getPathToMavenRepo() {
@@ -149,24 +181,35 @@ public class MavenJarResolver {
   }
 
   public static class ResolverParams {
-    private String pathToCache;
-    private String pathToMavenRepo;
 
-    public ResolverParams(String pathToCache, String pathToMavenRepo) {
+    private String pathToCache;
+    private String pathToNotebookJars;
+    private boolean offline = false;
+
+    public ResolverParams(String pathToCache, String pathToNotebookJars, boolean offline) {
       this.pathToCache = checkNotNull(pathToCache);
-      this.pathToMavenRepo = checkNotNull(pathToMavenRepo);
+      this.pathToNotebookJars = checkNotNull(pathToNotebookJars);
+      this.offline = offline;
+    }
+
+    public ResolverParams(String pathToCache, String pathToNotebookJars) {
+      this(pathToCache, pathToNotebookJars, false);
     }
 
     public String getPathToCache() {
       return pathToCache;
     }
 
-    public String getPathToMavenRepo() {
-      return pathToMavenRepo;
+    public String getPathToNotebookJars() {
+      return pathToNotebookJars;
+    }
+
+    public boolean getOffline() {
+      return offline;
     }
   }
 
-  private String getMvnDir(String pathToMavenRepo) {
+  private File getOrCreateFile(String pathToMavenRepo) {
     File theDir = new File(pathToMavenRepo);
     if (!theDir.exists()) {
       try {
@@ -175,6 +218,6 @@ public class MavenJarResolver {
         throw new RuntimeException(e);
       }
     }
-    return pathToMavenRepo;
+    return theDir;
   }
 }

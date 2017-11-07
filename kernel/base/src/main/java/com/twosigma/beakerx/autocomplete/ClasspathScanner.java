@@ -78,22 +78,24 @@ public class ClasspathScanner {
         JarFile jar = null;
         try {
           jar = new JarFile(file);
-        } catch (Exception ex) {	
+        } catch (Exception ex) {
         }
         if (jar != null) {
           try {
             Manifest mf = jar.getManifest();
             if(mf != null){
               String cp = mf.getMainAttributes().getValue("Class-Path");
-              if(StringUtils.isNotEmpty(cp)){
-                for(String fn : cp.split(" ")){
-                  File child = new File(file.getParent() + System.getProperty("file.separator") + fn);
-                  if(child.getAbsolutePath().equals(jar.getName())){
-                    continue; //skip bad jars, that contain references to themselves in MANIFEST.MF
-                  }
-                  if(child.exists()){
-                    if (!findClasses(root, child, includeJars)) {
-                      return false;
+              if (StringUtils.isNotEmpty(cp)) {
+                for (String fn : cp.split(" ")) {
+                  if (!fn.equals(".")) {
+                    File child = new File(file.getParent() + System.getProperty("file.separator") + fn);
+                    if (child.getAbsolutePath().equals(jar.getName())) {
+                      continue; //skip bad jars, that contain references to themselves in MANIFEST.MF
+                    }
+                    if (child.exists()) {
+                      if (!findClasses(root, child, includeJars)) {
+                        return false;
+                      }
                     }
                   }
                 }
@@ -105,7 +107,7 @@ public class ClasspathScanner {
           Enumeration<JarEntry> entries = jar.entries();
           while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
-            String name = entry.getName();						
+            String name = entry.getName();
             int extIndex = name.lastIndexOf(".class");
             if (extIndex > 0 && !name.contains("$")) {
               String cname = name.substring(0, extIndex).replace("/", ".");

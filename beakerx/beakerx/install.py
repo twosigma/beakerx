@@ -152,7 +152,10 @@ def _install_kernelspec_manager(prefix, disable=False):
 
 
 def _apply_permissions():
-    log.info("installing icons...")
+    log.info("applying permissions...")
+    if sys.platform == 'win32':
+        return
+
     kernels = KernelSpecManager().find_kernel_specs()
 
     kernel_path = ""
@@ -162,7 +165,6 @@ def _apply_permissions():
         chmod_cmd_add_x = [
             'chmod', 'a+x', kernel_path
         ]
-        print("command x: ", chmod_cmd_add_x)
         subprocess.check_call(chmod_cmd_add_x)
 
     if kernel_path:
@@ -170,7 +172,6 @@ def _apply_permissions():
         chmod_cmd_add_r = [
            'chmod', '-R', 'a+r', jupyter_path
         ]
-        print("command r: ", chmod_cmd_add_r)
         subprocess.check_call(chmod_cmd_add_r)
 
 def make_parser():

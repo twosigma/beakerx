@@ -84,13 +84,13 @@ public class MavenJarResolver {
       }
 
       for (String dirname : System.getenv("PATH").split(File.pathSeparator)) {
-        if (dirname.contains("envs")) {
+        //if (dirname.contains("envs")) {
           File file = new File(dirname, "mvn");
           if (file.isFile() && file.canExecute()) {
             mavenLocation = file.getAbsolutePath();
             return mavenLocation;
           }
-        }
+        //}
       }
       throw new RuntimeException("No mvn found, please install mvn by 'conda install maven' or setup M2_HOME");
     }

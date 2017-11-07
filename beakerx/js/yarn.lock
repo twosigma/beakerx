@@ -1119,19 +1119,19 @@ datatables.net-fixedcolumns@>=3.1.0, datatables.net-fixedcolumns@^3.2.2:
     datatables.net ">=1.10.9"
     jquery ">=1.7"
 
-datatables.net-keytable-dt@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/datatables.net-keytable-dt/-/datatables.net-keytable-dt-2.2.1.tgz#9f557fa73dfa7509f592f452795130ef515a6b8e"
+datatables.net-keytable-dt@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/datatables.net-keytable-dt/-/datatables.net-keytable-dt-2.3.2.tgz#9f489f42256318a361a0bdb14f84086d38da2766"
   dependencies:
-    datatables.net ">=1.10.9"
-    datatables.net-keytable ">=2.0.0"
+    datatables.net-dt "^1.10.15"
+    datatables.net-keytable "2.3.2"
     jquery ">=1.7"
 
-datatables.net-keytable@>=2.0.0, datatables.net-keytable@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/datatables.net-keytable/-/datatables.net-keytable-2.2.1.tgz#792374a68fbe5af1f832f3c267bbfe4079164d13"
+datatables.net-keytable@2.3.2, datatables.net-keytable@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/datatables.net-keytable/-/datatables.net-keytable-2.3.2.tgz#2b1f787492a9482f7be353e4345a34df7d0e4b81"
   dependencies:
-    datatables.net ">=1.10.9"
+    datatables.net "^1.10.15"
     jquery ">=1.7"
 
 datatables.net-select@^1.2.2:

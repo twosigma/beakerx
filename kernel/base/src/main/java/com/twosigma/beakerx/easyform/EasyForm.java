@@ -78,7 +78,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
 
   public EasyFormComponent addTextField(final String label, final Integer size) throws Exception {
     TextFieldWidget textField = new TextFieldWidget();
-
+    textField.registerUpdateValueCallback(textField::fireChanged);
     textField.setLabel(label);
     textField.setSize(size);
     return addComponentOrThrow(label, textField);

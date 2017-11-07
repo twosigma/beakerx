@@ -27,24 +27,28 @@ from string import Template
 from jupyter_client.kernelspecapp import KernelSpecManager
 from traitlets.config.manager import BaseJSONConfigManager
 from distutils import log
-
+from pathlib import Path
 
 def _all_kernels():
     kernels = pkg_resources.resource_listdir(
-            'beakerx', 'kernel')
+        'beakerx', 'kernel')
     return [kernel for kernel in kernels if kernel != 'base']
+
 
 def _base_classpath_for(kernel):
     return pkg_resources.resource_filename(
-            'beakerx', os.path.join('kernel', kernel))
+        'beakerx', os.path.join('kernel', kernel))
+
 
 def _classpath_for(kernel):
     return pkg_resources.resource_filename(
-            'beakerx', os.path.join('kernel', kernel, 'lib', '*'))
+        'beakerx', os.path.join('kernel', kernel, 'lib', '*'))
+
 
 def _uninstall_nbextension():
     subprocess.check_call(["jupyter", "nbextension", "disable", "beakerx", "--py", "--sys-prefix"])
     subprocess.check_call(["jupyter", "nbextension", "uninstall", "beakerx", "--py", "--sys-prefix"])
+
 
 def _install_nbextension():
     if sys.platform == 'win32':
@@ -53,7 +57,7 @@ def _install_nbextension():
         subprocess.check_call(["jupyter", "nbextension", "install", "beakerx", "--py", "--symlink", "--sys-prefix"])
 
     subprocess.check_call(["jupyter", "nbextension", "enable", "beakerx", "--py", "--sys-prefix"])
-    
+
     subprocess.check_call(["jupyter", "serverextension", "enable", "beakerx", "--py", "--sys-prefix"])
 
 
@@ -61,6 +65,7 @@ def _copy_tree(src, dst):
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(src, dst)
+
 
 def _copy_icons():
     log.info("installing icons...")
@@ -70,7 +75,8 @@ def _copy_icons():
         src_base = _base_classpath_for(kernel)
         shutil.copyfile(os.path.join(src_base, 'logo-32x32.png'), os.path.join(dst_base, 'logo-32x32.png'))
         shutil.copyfile(os.path.join(src_base, 'logo-64x64.png'), os.path.join(dst_base, 'logo-64x64.png'))
-    
+
+
 def _install_css():
     log.info("installing custom CSS...")
     resource = os.path.join('static', 'custom')
@@ -100,6 +106,7 @@ def _install_kernels():
             ]
             subprocess.check_call(install_cmd)
 
+
 def _uninstall_kernels():
     for kernel in _all_kernels():
         uninstall_cmd = [
@@ -107,8 +114,10 @@ def _uninstall_kernels():
         ]
         subprocess.check_call(uninstall_cmd)
 
-def _pretty(it): 
+
+def _pretty(it):
     return json.dumps(it, indent=2)
+
 
 def _install_kernelspec_manager(prefix, disable=False):
     CKSM = "beakerx.kernel_spec.BeakerXKernelSpec"
@@ -142,6 +151,28 @@ def _install_kernelspec_manager(prefix, disable=False):
     log.info("{}abled BeakerX server config".format(action_prefix))
 
 
+def _apply_permissions():
+    log.info("installing icons...")
+    kernels = KernelSpecManager().find_kernel_specs()
+
+    kernel_path = ""
+    for kernel in _all_kernels():
+        kernel_path = kernels.get(kernel)
+
+        chmod_cmd_add_x = [
+            'chmod', 'a+x', kernel_path
+        ]
+        print("command x: ", chmod_cmd_add_x)
+        subprocess.check_call(chmod_cmd_add_x)
+
+    if kernel_path:
+        jupyter_path = Path(kernel_path).parent
+        chmod_cmd_add_r = [
+           'chmod', '-R', 'a+r', jupyter_path
+        ]
+        print("command r: ", chmod_cmd_add_r)
+        subprocess.check_call(chmod_cmd_add_r)
+
 def make_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prefix",
@@ -152,16 +183,20 @@ def make_parser():
                         action='store_true')
     return parser
 
+
 def _disable_beakerx():
     _uninstall_nbextension()
     _uninstall_kernels()
+
 
 def _install_beakerx(args):
     _install_nbextension()
     _install_kernels()
     _install_css()
     _copy_icons()
+    _apply_permissions()
     _install_kernelspec_manager(args.prefix)
+
 
 def install():
     try:

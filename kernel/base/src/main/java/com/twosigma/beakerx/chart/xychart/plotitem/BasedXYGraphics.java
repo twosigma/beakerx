@@ -21,17 +21,13 @@ public abstract class BasedXYGraphics extends XYGraphics {
   private Number baseBase = 0.0d;
   private List<Number> bases;
 
-  public void setBase(Object base) {
-    if (base instanceof Number) {
-      this.baseBase = ((Number) base).floatValue();
-    } else if (base instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Number> ss = (List<Number>) base;
-      setBases(ss);
-    } else {
-      throw new IllegalArgumentException(
-        "setBase takes Number or List of Number");
-    }
+  public void setBase(Number base) {
+    this.baseBase = base.floatValue();
+    super.setBase(base);
+  }
+
+  public void setBase(List<Number> base) {
+    setBases(base);
     super.setBase(base);
   }
 

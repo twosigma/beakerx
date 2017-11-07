@@ -33,19 +33,16 @@ public class ConstantLine extends Graphics {
   private Class plotType;
   private boolean showLabel;
 
-
   public Number getX() {
     return x;
   }
 
-  public void setX(Object x) {
-    if (x instanceof Number) {
-      this.x = (Number) x;
-    } else if (x instanceof Date) {
-      this.x = ((Date) x).getTime();
-    } else {
-      throw new IllegalArgumentException("x takes Number or Date");
-    }
+  public void setX(Number x) {
+    this.x = x;
+  }
+
+  public void setX(Date x) {
+    this.x = x.getTime();
   }
 
   public Number getY() {

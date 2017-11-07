@@ -21,6 +21,7 @@ import com.twosigma.beakerx.chart.ChartToJson;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.ListColorConverter;
 
+import java.util.Collection;
 import java.util.List;
 
 import static com.twosigma.beakerx.widgets.chart.BeakerxPlot.MODEL_NAME_VALUE;
@@ -169,11 +170,10 @@ public class Histogram extends AbstractChart {
   }
 
   @SuppressWarnings("unchecked")
-  public void setData(Object data) {
-    List<?> list = (List<?>) data;
-    if (list.size() > 0) {
+  public void setData(List<?> data) {
+    if (data.size() > 0) {
       try {
-        if (list.get(0) instanceof List) {
+        if (data.get(0) instanceof List) {
           this.listData = (List<List<Number>>) data;
           sendModelUpdate(ChartToJson.serializeHistogramListData(this.listData));
         } else {
@@ -185,7 +185,6 @@ public class Histogram extends AbstractChart {
                 "setData takes List of Number or List of List of Number");
       }
     }
-
   }
 
   public List<Number> getData() {

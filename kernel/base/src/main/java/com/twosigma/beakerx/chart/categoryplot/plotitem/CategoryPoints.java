@@ -34,17 +34,12 @@ public class CategoryPoints extends CategoryGraphics {
   private Color           baseOutlineColor;
   private List<Object>     outlineColors;
 
-  public void setSize(Object size) {
-    if (size instanceof Number) {
-      this.baseSize = ((Number) size).floatValue();
-    } else if (size instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Number> ss = (List<Number>) size;
-      setSizes(ss);
-    } else {
-      throw new IllegalArgumentException(
-        "setSize takes Number or List of Number");
-    }
+  public void setSize(Number size) {
+    this.baseSize = size.floatValue();
+  }
+
+  public void setSize(List<Number> sizes) {
+    setSizes(sizes);
   }
 
   private void setSizes(List<Number> sizes) {
@@ -59,17 +54,12 @@ public class CategoryPoints extends CategoryGraphics {
     return this.sizes;
   }
 
-  public void setShape(Object shape) {
-    if (shape instanceof ShapeType) {
-      this.baseShape = (ShapeType) shape;
-    } else if (shape instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<ShapeType> ss = (List<ShapeType>) shape;
-      setShapes(ss);
-    } else {
-      throw new IllegalArgumentException(
-        "setShape takes ShapeType or List of ShapeType");
-    }
+  public void setShape(ShapeType shape) {
+    this.baseShape = shape;
+  }
+
+  public void setShape(List<ShapeType> shapes) {
+    setShapes(shapes);
   }
 
   private void setShapes(List<ShapeType> shapes) {
@@ -84,17 +74,12 @@ public class CategoryPoints extends CategoryGraphics {
     return this.shapes;
   }
 
-  public void setFill(Object fill) {
-    if (fill instanceof Boolean) {
-      this.baseFill = (Boolean) fill;
-    } else if (fill instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Boolean> fs = (List<Boolean>) fill;
-      setFills(fs);
-    } else {
-      throw new IllegalArgumentException(
-        "setFill takes boolean or List of boolean");
-    }
+  public void setFill(Boolean fill) {
+    this.baseFill = fill;
+  }
+
+  public void setFill(List<Boolean> fill) {
+    setFills(fill);
   }
 
   private void setFills(List<Boolean> fills) {
@@ -109,19 +94,16 @@ public class CategoryPoints extends CategoryGraphics {
     return this.fills;
   }
 
-  public void setOutlineColor(Object color) {
-    if (color instanceof Color) {
-      this.baseOutlineColor = (Color) color;
-    } else if (color instanceof java.awt.Color) {
-      this.baseOutlineColor = new Color((java.awt.Color) color);
-    } else if (color instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Object> cs = (List<Object>) color;
-      setOutlineColors(cs);
-    } else {
-      throw new IllegalArgumentException(
-        "setOutlineColor takes Color or List of Color");
-    }
+  public void setOutlineColor(Color color) {
+    this.baseOutlineColor = color;
+  }
+
+  public void setOutlineColor(java.awt.Color color) {
+    this.baseOutlineColor = new Color(color);
+  }
+
+  public void setOutlineColor(List<Object> colors) {
+    setOutlineColors(colors);
   }
 
   private void setOutlineColors(List<Object> colors) {

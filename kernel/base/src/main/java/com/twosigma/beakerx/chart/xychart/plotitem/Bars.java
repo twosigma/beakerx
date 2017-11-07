@@ -33,17 +33,12 @@ public class Bars extends BasedXYGraphics {
   private Color baseOutlineColor;
   private List<Color> outlineColors;
 
-  public void setWidth(Object width) {
-    if (width instanceof Number) {
-      this.baseWidth = ((Number) width).floatValue();
-    } else if (width instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Number> ws = (List<Number>) width;
-      setWidths(ws);
-    } else {
-      throw new IllegalArgumentException(
-          "setWidth takes Number or List of Number");
-    }
+  public void setWidth(Number width) {
+    this.baseWidth = width.floatValue();
+  }
+
+  public void setWidth(List<Number> width) {
+    setWidths(width);
   }
 
   private void setWidths(List<Number> widths) {
@@ -58,19 +53,16 @@ public class Bars extends BasedXYGraphics {
     return this.widths;
   }
 
-  public void setOutlineColor(Object color) {
-    if (color instanceof Color) {
-      this.baseOutlineColor = (Color) color;
-    } else if (color instanceof java.awt.Color) {
-      this.baseOutlineColor = new Color((java.awt.Color) color);
-    } else if (color instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<Object> cs = (List<Object>) color;
-      setOutlineColors(cs);
-    } else {
-      throw new IllegalArgumentException(
-          "setOutlineColor takes Color or List of Color");
-    }
+  public void setOutlineColor(Color color) {
+    this.baseOutlineColor = color;
+  }
+
+  public void setOutlineColor(java.awt.Color color) {
+    this.baseOutlineColor = new Color(color);
+  }
+
+  public void setOutlineColor(List<Object> colors) {
+    setOutlineColors(colors);
   }
 
   private void setOutlineColors(List<Object> colors) {

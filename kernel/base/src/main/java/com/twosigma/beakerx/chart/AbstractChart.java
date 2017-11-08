@@ -180,20 +180,18 @@ public abstract class AbstractChart extends Chart {
     return this;
   }
 
-  public AbstractChart setYBound(List bound) {
+  public AbstractChart setYBound(List<Number> bound) {
     if (bound.size() != 2) {
       throw new IllegalArgumentException("to set the y bound, the list needs to be of size=2");
     }
-    if (!(bound.get(0) instanceof Number) || !(bound.get(1) instanceof Number)) {
-      throw new IllegalArgumentException("the elements in the list needs to be numbers");
-    }
-    Number n0 = (Number) bound.get(0);
-    Number n1 = (Number) bound.get(1);
+
+    Number n0 = bound.get(0);
+    Number n1 = bound.get(1);
     setYBound(n0.doubleValue(), n1.doubleValue());
     return this;
   }
 
-  public AbstractChart setyBound(List bound) {
+  public AbstractChart setyBound(List<Number> bound) {
     return this.setYBound(bound);
   }
 

@@ -15,6 +15,12 @@
  */
 package com.twosigma.beakerx.groovy.widgets;
 
+import com.google.common.collect.Lists;
+import com.twosigma.beakerx.widgets.Widget;
+import com.twosigma.beakerx.widgets.box.HBox;
+import com.twosigma.beakerx.widgets.box.VBox;
+import com.twosigma.beakerx.widgets.strings.Label;
+import java.util.Arrays;
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +47,8 @@ public class Interactive extends InteractiveBase {
       widget.getComm().addMsgCallbackList(widget.new ValueChangeMsgCallbackHandler() {
 
         private Object processCode(Object... params) throws Exception {
+          witgets.forEach(Widget::display);
+
           return function.call(getWidgetValues());
         }
 

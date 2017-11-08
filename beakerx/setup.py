@@ -35,9 +35,9 @@ cmdclass = create_cmdclass(develop_wrappers=[
     'java'
 ])
 cmdclass['js'] = install_node_modules(
-    path='js',
-    build_dir=os.path.join(here, 'js', 'dist'),
-    source_dir=os.path.join(here, 'js', 'src')
+    path='../js',
+    build_dir=os.path.join(here, '../js', 'dist'),
+    source_dir=os.path.join(here, '../js', 'src')
 )
 cmdclass['java'] = run_gradle(cmd='build')
 

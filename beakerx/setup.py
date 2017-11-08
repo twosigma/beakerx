@@ -93,7 +93,7 @@ setup_args = dict(
         'pandas'
 
     ],
-    python_requires='~=3.0',
+    python_requires='>=3',
     zip_safe            = False,
     include_package_data= True,
     packages            = find_packages(),

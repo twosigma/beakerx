@@ -40,12 +40,6 @@ public class StemsTest {
     Assertions.assertThat(stems.getStyle()).isNotNull();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void setStyleWithShapeTypeParam_throwIllegalArgumentException() {
-    //when
-    stems.setStyle(ShapeType.DEFAULT);
-  }
-
   @Test
   public void setStyleWithStrokeTypeListParam_hasStyleListIsNotNull() {
     //when

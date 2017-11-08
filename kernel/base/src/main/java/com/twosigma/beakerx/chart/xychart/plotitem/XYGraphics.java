@@ -23,6 +23,7 @@ import com.twosigma.beakerx.chart.ListColorConverter;
 import com.twosigma.beakerx.widgets.RunWidgetClosure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
@@ -69,6 +70,10 @@ abstract public class XYGraphics extends Graphics {
     this.toolTips = toolTips;
   }
 
+  public void setX(Object[] xs) {
+    setX(Arrays.asList(xs));
+  }
+
   public void setX(List<Object> xs) {
     this.xs = new ArrayList<>();
     if (xs != null) {
@@ -97,6 +102,10 @@ abstract public class XYGraphics extends Graphics {
       generateXs();
     }
     return this.xs;
+  }
+
+  public void setY(Number[] ys) {
+    setY(Arrays.asList(ys));
   }
 
   public void setY(List<Number> ys) {

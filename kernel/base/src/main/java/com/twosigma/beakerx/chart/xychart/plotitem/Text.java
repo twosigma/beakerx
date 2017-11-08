@@ -41,16 +41,12 @@ public class Text implements Serializable, Cloneable {
     return x;
   }
 
-  public void setX(Object x) {
-    if (x instanceof Number) {
-      this.x = (Number) x;
-    } else if (x instanceof Date) {
-      Date date = (Date) x;
-      this.x = date.getTime();
-    } else {
-      throw new IllegalArgumentException("x coordinate should be a number or java.util.Date object");
-    }
+  public void setX(Number x) {
+    this.x = x;
+  }
 
+  public void setX(Date x) {
+    this.x = x.getTime();
   }
 
   public Number getY() {

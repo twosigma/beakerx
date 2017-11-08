@@ -260,7 +260,7 @@ public abstract class Kernel implements KernelFunctionality {
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<group name version>",
                     magicCommand.classpathAddMvn(new MavenJarResolver.ResolverParams(
-                            getTempFolder().toString() + "/../beakerIvyCache",
+                            getTempFolder().toString() + "/../beakerMvnCache",
                             getTempFolder().toString() + MVN_DIR
                     ))),
             new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),

@@ -41,17 +41,12 @@ public class Stems extends BasedXYGraphics {
     return this.width;
   }
 
-  public void setStyle(Object style) {
-    if (style instanceof StrokeType) {
-      this.baseStyle = (StrokeType) style;
-    } else if (style instanceof List) {
-      @SuppressWarnings("unchecked")
-      List<StrokeType> ss = (List<StrokeType>) style;
-      setStyles(ss);
-    } else {
-      throw new IllegalArgumentException(
-          "setStyle takes ShapeType or List of ShapeType");
-    }
+  public void setStyle(StrokeType style) {
+    this.baseStyle = style;
+  }
+
+  public void setStyle(List<StrokeType> styles) {
+    setStyles(styles);
   }
 
   private void setStyles(List<StrokeType> styles) {

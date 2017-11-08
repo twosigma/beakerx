@@ -15,12 +15,33 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
+import com.twosigma.beakerx.message.Message;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR;
+import static com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand.JAVASCRIPT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CodeTest {
+
+  private static KernelTest kernel;
+  private static EvaluatorTest evaluator;
+
+  @BeforeClass
+  public static void setUp() throws Exception {
+    evaluator = new EvaluatorTest();
+    kernel = new KernelTest("id2", evaluator);
+  }
+
+  @AfterClass
+  public static void tearDown() throws Exception {
+    evaluator.exit();
+  }
 
   @Test
   public void shouldReadJavaScriptCommand() throws Exception {
@@ -30,14 +51,13 @@ public class CodeTest {
             "      d3: '//cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min'\n" +
             "  }});";
     //when
-    Code result = new Code(MagicCommand.JAVASCRIPT + "\n" + jsCode);
-    
-    String toCompare = result.takeCodeWithoutCommand().get().asString().replaceAll("\\s+","");
-    jsCode = jsCode.replaceAll("\\s+","");
+    Code code = CodeFactory.create(JAVASCRIPT + "\n" + jsCode, new Message(), 1, kernel);
+    String toCompare = code.getCodeBlock().get().replaceAll("\\s+", "");
+    jsCode = jsCode.replaceAll("\\s+", "");
 
     //then
-    assertThat(result.getCommands().size()).isEqualTo(1);
-    assertThat(result.getCommands().get(0)).isEqualTo(MagicCommand.JAVASCRIPT);
+    assertThat(code.getMagicCommands().size()).isEqualTo(1);
+    assertThat(code.getMagicCommands().get(0).getCommand()).isEqualTo(JAVASCRIPT);
     assertThat(toCompare).isEqualTo(jsCode);
     //assertThat(result.takeCodeWithoutCommand()).isEqualTo(new Code(jsCode));
   }
@@ -45,19 +65,19 @@ public class CodeTest {
   @Test
   public void shouldReadAllMagicCommands() throws Exception {
     //give
-    String code = "" +
-            MagicCommand.CLASSPATH_ADD_JAR + " lib1.jar\n" +
-            MagicCommand.CLASSPATH_ADD_JAR + " lib2.jar\n" +
-            MagicCommand.CLASSPATH_ADD_JAR + " lib3.jar\n" +
+    String allCode = "" +
+            CLASSPATH_ADD_JAR + " lib1.jar\n" +
+            CLASSPATH_ADD_JAR + " lib2.jar\n" +
+            CLASSPATH_ADD_JAR + " lib3.jar\n" +
             "code code code";
     //when
-    Code result = new Code(code);
+    Code code = CodeFactory.create(allCode, new Message(), 1, kernel);
     //then
-    assertThat(result.getCommands().size()).isEqualTo(3);
-    assertThat(result.getCommands().get(0)).isEqualTo("%classpath add jar lib1.jar");
-    assertThat(result.getCommands().get(1)).isEqualTo("%classpath add jar lib2.jar");
-    assertThat(result.getCommands().get(2)).isEqualTo("%classpath add jar lib3.jar");
-    assertThat(result.takeCodeWithoutCommand().get()).isEqualTo(new CodeWithoutCommand("code code code"));
+    assertThat(code.getMagicCommands().size()).isEqualTo(3);
+    assertThat(code.getMagicCommands().get(0).getCommand()).isEqualTo("%classpath add jar lib1.jar");
+    assertThat(code.getMagicCommands().get(1).getCommand()).isEqualTo("%classpath add jar lib2.jar");
+    assertThat(code.getMagicCommands().get(2).getCommand()).isEqualTo("%classpath add jar lib3.jar");
+    assertThat(code.getCodeBlock().get()).isEqualTo("code code code");
   }
 
 }

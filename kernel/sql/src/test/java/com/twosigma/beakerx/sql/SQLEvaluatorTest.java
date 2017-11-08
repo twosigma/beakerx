@@ -34,8 +34,8 @@ import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForR
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SQLEvaluatorTest {

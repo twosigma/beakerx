@@ -89,7 +89,7 @@ public class ClojureEvaluator extends BaseEvaluator {
           loader.loadClass(ss);
           clojureLoadString.invoke(String.format("(import '%s)", ss));
         } catch (ClassNotFoundException e) {
-          logger.error("Could not find class while loading notebook: " + ss);
+          logger.error("Could not create class while loading notebook: " + ss);
         }
       }
     }

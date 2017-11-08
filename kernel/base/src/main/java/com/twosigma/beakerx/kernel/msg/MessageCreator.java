@@ -64,13 +64,11 @@ public class MessageCreator {
   public static final String STDOUT = "stdout";
 
   public static Logger logger = LoggerFactory.getLogger(MessageCreator.class);
-  protected KernelFunctionality kernel;
 
-  public MessageCreator(KernelFunctionality kernel) {
-    this.kernel = kernel;
+  private MessageCreator() {
   }
 
-  private Message initMessage(JupyterMessages type, Message message) {
+  private static Message initMessage(JupyterMessages type, Message message) {
     Message reply = new Message();
     reply.setParentHeader(message.getHeader());
     reply.setIdentities(message.getIdentities());
@@ -78,7 +76,7 @@ public class MessageCreator {
     return reply;
   }
 
-  public Message buildMessage(Message message, List<MIMEContainer> mimes, int executionCount) {
+  public static Message buildMessage(Message message, List<MIMEContainer> mimes, int executionCount) {
     Message reply = initMessage(EXECUTE_RESULT, message);
     reply.setContent(new HashMap<>());
     reply.getContent().put("execution_count", executionCount);
@@ -89,7 +87,7 @@ public class MessageCreator {
     return reply;
   }
 
-  private Message buildMessage(Message message, List<MIMEContainer> mimes, String outputdataResult, int executionCount) {
+  private static Message buildMessage(Message message, List<MIMEContainer> mimes, String outputdataResult, int executionCount) {
     if (!outputdataResult.isEmpty()) {
       List<MIMEContainer> collect = mimes.stream().map(x -> new MIMEContainer(x.getMime().asString(), x.getData() + outputdataResult)).collect(Collectors.toList());
       return buildMessage(message, collect, executionCount);
@@ -97,15 +95,15 @@ public class MessageCreator {
     return buildMessage(message, mimes, executionCount);
   }
 
-  public Message buildClearOutput(Message message, boolean wait) {
+  public static Message buildClearOutput(Message message, boolean wait) {
     Message reply = initMessage(CLEAR_OUTPUT, message);
-    reply.setContent(new HashMap<String, Serializable>());
+    reply.setContent(new HashMap<>());
     reply.getContent().put("wait", wait);
     reply.getContent().put("metadata", new HashMap<>());
     return reply;
   }
 
-  public Message buildDisplayData(Message message, List<MIMEContainer> mimes) {
+  public static Message buildDisplayData(Message message, List<MIMEContainer> mimes) {
     Message reply = initMessage(DISPLAY_DATA, message);
     reply.setContent(new HashMap<>());
     reply.getContent().put("metadata", new HashMap<>());
@@ -115,11 +113,11 @@ public class MessageCreator {
     return reply;
   }
 
-  private Message buildReply(Message message, SimpleEvaluationObject seo) {
+  private static Message buildReply(Message message, SimpleEvaluationObject seo, KernelFunctionality kernel) {
     // Send the REPLY to the original message. This is NOT the result of
     // executing the cell. This is the equivalent of 'exit 0' or 'exit 1'
     // at the end of a shell script.
-    Message reply = buildReplyWithoutStatus(message, seo.getExecutionCount());
+    Message reply = buildReplyWithoutStatus(message, seo.getExecutionCount(), kernel);
     if (EvaluationStatus.FINISHED == seo.getStatus()) {
       reply.getMetadata().put("status", "ok");
       reply.getContent().put("status", "ok");
@@ -131,7 +129,7 @@ public class MessageCreator {
     return reply;
   }
 
-  public Message buildReplyWithoutStatus(Message message, int executionCount) {
+  public static Message buildReplyWithoutStatus(Message message, int executionCount, KernelFunctionality kernel) {
     Message reply = initMessage(EXECUTE_REPLY, message);
     Hashtable<String, Serializable> map6 = new Hashtable<String, Serializable>(3);
     map6.put("dependencies_met", true);
@@ -144,44 +142,44 @@ public class MessageCreator {
     return reply;
   }
 
-  public Message buildReplyWithOkStatus(Message message, int executionCount) {
-    Message messageWithStatus = buildReplyWithoutStatus(message, executionCount);
+  public static Message buildReplyWithOkStatus(Message message, int executionCount, KernelFunctionality kernel) {
+    Message messageWithStatus = buildReplyWithoutStatus(message, executionCount, kernel);
     messageWithStatus.getContent().put("status", "ok");
 
     return messageWithStatus;
   }
 
-  public Message buildReplyWithErrorStatus(Message message, int executionCount) {
-    Message messageWithStatus = buildReplyWithoutStatus(message, executionCount);
+  public static Message buildReplyWithErrorStatus(Message message, int executionCount, KernelFunctionality kernel) {
+    Message messageWithStatus = buildReplyWithoutStatus(message, executionCount, kernel);
     messageWithStatus.getContent().put("status", "error");
 
     return messageWithStatus;
   }
 
-  public Message buildOutputMessage(Message message, String text, boolean hasError) {
+  public static Message buildOutputMessage(Message message, String text, boolean hasError) {
     Message reply = initMessage(STREAM, message);
-    reply.setContent(new HashMap<String, Serializable>());
+    reply.setContent(new HashMap<>());
     reply.getContent().put(NAME, hasError ? STDERR : STDOUT);
     reply.getContent().put(TEXT, text);
     logger.debug("Console output:", "Error: " + hasError, text);
     return reply;
   }
 
-  public synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo) {
+  public static synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo, KernelFunctionality kernel) {
     logger.debug("Creating message response message from: " + seo);
     Message message = seo.getJupyterMessage();
     List<MessageHolder> ret = new ArrayList<>();
     if (isConsoleOutputMessage(seo)) {
       ret.addAll(createConsoleResult(seo, message));
     } else if (isSupportedStatus(seo.getStatus())) {
-      ret.addAll(createResultForSupportedStatus(seo, message));
+      ret.addAll(createResultForSupportedStatus(seo, message, kernel));
     } else {
       logger.debug("Unhandled status of SimpleEvaluationObject : " + seo.getStatus());
     }
     return ret;
   }
 
-  private List<MessageHolder> createResultForSupportedStatus(SimpleEvaluationObject seo, Message message) {
+  private static List<MessageHolder> createResultForSupportedStatus(SimpleEvaluationObject seo, Message message, KernelFunctionality kernel) {
     List<MessageHolder> ret = new ArrayList<>();
     if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
       MessageHolder mh = createFinishResult(seo, message);
@@ -191,19 +189,19 @@ public class MessageCreator {
     } else if (EvaluationStatus.ERROR == seo.getStatus()) {
       ret.add(createErrorResult(seo, message));
     }
-    ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
+    ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo, kernel)));
     return ret;
   }
 
-  private boolean isSupportedStatus(EvaluationStatus status) {
+  private static boolean isSupportedStatus(EvaluationStatus status) {
     return EvaluationStatus.FINISHED == status || EvaluationStatus.ERROR == status;
   }
 
-  private boolean isConsoleOutputMessage(SimpleEvaluationObject seo) {
+  private static boolean isConsoleOutputMessage(SimpleEvaluationObject seo) {
     return seo.getConsoleOutput() != null && !seo.getConsoleOutput().isEmpty();
   }
 
-  private List<MessageHolder> createConsoleResult(SimpleEvaluationObject seo, Message message) {
+  private static List<MessageHolder> createConsoleResult(SimpleEvaluationObject seo, Message message) {
     List<MessageHolder> result = new ArrayList<>();
     while (!seo.getConsoleOutput().isEmpty()) {
       ConsoleOutput co = seo.getConsoleOutput().poll(); //FIFO : peek to see, poll -- removes the data
@@ -212,7 +210,7 @@ public class MessageCreator {
     return result;
   }
 
-  private MessageHolder createErrorResult(SimpleEvaluationObject seo, Message message) {
+  private static MessageHolder createErrorResult(SimpleEvaluationObject seo, Message message) {
     String[] errorMessage = seo.getPayload().toString().split("\n");
     errorMessage = clearText(errorMessage);
     if (errorMessage != null && errorMessage.length > 0) {
@@ -242,7 +240,7 @@ public class MessageCreator {
     return new MessageHolder(SocketEnum.IOPUB_SOCKET, reply);
   }
 
-  private String[] clearText(String[] input) {
+  private static String[] clearText(String[] input) {
     List<String> ret = new ArrayList<>();
     if (input != null) {
       for (String line : input) {
@@ -258,7 +256,7 @@ public class MessageCreator {
     return ret.stream().toArray(String[]::new);
   }
 
-  private String[] markRed(String[] input) {
+  private static String[] markRed(String[] input) {
     List<String> ret = new ArrayList<>();
     if (input != null) {
       for (String line : input) {
@@ -270,7 +268,7 @@ public class MessageCreator {
     return ret.stream().toArray(String[]::new);
   }
 
-  private MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
+  private static MessageHolder createFinishResult(SimpleEvaluationObject seo, Message message) {
     MessageHolder ret = null;
     List<MIMEContainer> mimes = SerializeToString.doit(seo.getPayload());
     if (!mimes.contains(MIMEContainer.HIDDEN)) {
@@ -280,7 +278,7 @@ public class MessageCreator {
     return ret;
   }
 
-  private String outputdataResult(List<Object> outputdata) {
+  private static String outputdataResult(List<Object> outputdata) {
     String result = "";
     for (Object o : outputdata) {
       if (o instanceof SimpleEvaluationObject.EvaluationStdOutput) {
@@ -292,7 +290,7 @@ public class MessageCreator {
     return result;
   }
 
-  private boolean showResult(SimpleEvaluationObject seo) {
+  private static boolean showResult(SimpleEvaluationObject seo) {
     boolean ret = true;
     if (seo != null && seo.getPayload() != null && seo.getPayload() instanceof MIMEContainer) {
       MIMEContainer input = (MIMEContainer) seo.getPayload();
@@ -303,15 +301,15 @@ public class MessageCreator {
     return ret;
   }
 
-  public Message createBusyMessage(Message parentMessage) {
+  public static Message createBusyMessage(Message parentMessage) {
     return getExecutionStateMessage(parentMessage, BUSY);
   }
 
-  public Message createIdleMessage(Message parentMessage) {
+  public static Message createIdleMessage(Message parentMessage) {
     return getExecutionStateMessage(parentMessage, IDLE);
   }
 
-  private Message getExecutionStateMessage(Message parentMessage, String state) {
+  private static Message getExecutionStateMessage(Message parentMessage, String state) {
     Map<String, Serializable> map1 = new HashMap<String, Serializable>(1);
     map1.put(EXECUTION_STATE, state);
     Message reply = initMessage(STATUS, parentMessage);

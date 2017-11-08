@@ -21,13 +21,14 @@ import pkg_resources
 import shutil
 import subprocess
 import sys
-import tempfile
 from string import Template
+import uuid
+from tempfile import gettempdir
 
 from jupyter_client.kernelspecapp import KernelSpecManager
 from traitlets.config.manager import BaseJSONConfigManager
 from distutils import log
-from pathlib import Path
+
 
 def _all_kernels():
     kernels = pkg_resources.resource_listdir(
@@ -96,15 +97,18 @@ def _install_kernels():
             'beakerx', os.path.join('kernel', kernel, 'kernel.json'))
         contents = Template(template.decode()).substitute(PATH=classpath)
 
-        with tempfile.TemporaryDirectory() as tmpdir:
-            with open(os.path.join(tmpdir, 'kernel.json'), 'w') as f:
-                f.write(contents)
-            install_cmd = [
-                'jupyter', 'kernelspec', 'install',
-                '--sys-prefix', '--replace',
-                '--name', kernel, tmpdir
-            ]
-            subprocess.check_call(install_cmd)
+        tmpdir = os.path.join(gettempdir(), str(uuid.uuid4()))
+        os.mkdir(tmpdir, 0o755)
+        with open(os.path.join(tmpdir, 'kernel.json'), 'w') as f:
+            f.write(contents)
+        install_cmd = [
+            'jupyter', 'kernelspec', 'install',
+            '--sys-prefix', '--replace',
+            '--name', kernel, tmpdir
+        ]
+        subprocess.check_call(install_cmd)
+
+        shutil.rmtree(tmpdir, ignore_errors=True)
 
 
 def _uninstall_kernels():
@@ -151,29 +155,6 @@ def _install_kernelspec_manager(prefix, disable=False):
     log.info("{}abled BeakerX server config".format(action_prefix))
 
 
-def _apply_permissions():
-    log.info("applying permissions...")
-    if sys.platform == 'win32':
-        return
-
-    kernels = KernelSpecManager().find_kernel_specs()
-
-    kernel_path = ""
-    for kernel in _all_kernels():
-        kernel_path = kernels.get(kernel)
-
-        chmod_cmd_add_x = [
-            'chmod', 'a+x', kernel_path
-        ]
-        subprocess.check_call(chmod_cmd_add_x)
-
-    if kernel_path:
-        jupyter_path = Path(kernel_path).parent
-        chmod_cmd_add_r = [
-           'chmod', '-R', 'a+r', jupyter_path
-        ]
-        subprocess.check_call(chmod_cmd_add_r)
-
 def make_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prefix",
@@ -195,7 +176,6 @@ def _install_beakerx(args):
     _install_kernels()
     _install_css()
     _copy_icons()
-    _apply_permissions()
     _install_kernelspec_manager(args.prefix)
 
 

@@ -90,7 +90,8 @@ setup_args = dict(
     install_requires    = [
         'notebook >=4.4.0',
         'ipywidgets >=7.0.0',
-        'pandas'
+        'pandas',
+        'python >=3.0.0'
     ],
     zip_safe            = False,
     include_package_data= True,

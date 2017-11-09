@@ -39,6 +39,9 @@ sourceSets {
 
 repositories {
   mavenCentral()
+  maven {
+    url 'http://redshift-maven-repository.s3-website-us-east-1.amazonaws.com/release'
+  }
 }
 
 dependencies {
@@ -48,6 +51,7 @@ dependencies {
   compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
   //jdbc drivers
   compile group: 'com.h2database', name: 'h2', version: '1.4.193'
+  compile group: 'com.amazon.redshift', name: 'redshift-jdbc42', version: '1.2.10.1009'
 
   testCompile project(':base').sourceSets.test.output
   testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'

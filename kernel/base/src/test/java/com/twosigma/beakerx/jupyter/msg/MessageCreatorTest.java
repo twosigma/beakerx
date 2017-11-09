@@ -53,7 +53,7 @@ public class MessageCreatorTest {
     //when
     List<MessageHolder> message = messageCreator.createMessage(seo);
     //then
-    Map data = TestWidgetUtils.getData(message.get(1).getMessage());
+    Map data = TestWidgetUtils.getData(message.get(0).getMessage());
     assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo(NULL_RESULT);
   }
 
@@ -64,7 +64,7 @@ public class MessageCreatorTest {
     //when
     List<MessageHolder> message = messageCreator.createMessage(seo);
     //then
-    Map data = TestWidgetUtils.getData(message.get(1).getMessage());
+    Map data = TestWidgetUtils.getData(message.get(0).getMessage());
     assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo("NotNullResult");
   }
 
@@ -98,8 +98,8 @@ public class MessageCreatorTest {
     List<MessageHolder> messages = messageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
-    assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.IOPUB_SOCKET);
-    assertThat(messages.get(1).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_RESULT);
+    assertThat(messages.get(0).getSocketType()).isEqualTo(SocketEnum.IOPUB_SOCKET);
+    assertThat(messages.get(0).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_RESULT);
   }
 
   @Test
@@ -110,8 +110,8 @@ public class MessageCreatorTest {
     List<MessageHolder> messages = messageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
-    assertThat(messages.get(0).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
-    assertThat(messages.get(0).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
+    assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
+    assertThat(messages.get(1).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
   }
 
   @Test
@@ -167,8 +167,8 @@ public class MessageCreatorTest {
     List<MessageHolder> messages = messageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
-    assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.IOPUB_SOCKET);
-    assertThat(messages.get(1).getMessage().type()).isEqualTo(JupyterMessages.ERROR);
+    assertThat(messages.get(0).getSocketType()).isEqualTo(SocketEnum.IOPUB_SOCKET);
+    assertThat(messages.get(0).getMessage().type()).isEqualTo(JupyterMessages.ERROR);
   }
 
   @Test
@@ -179,8 +179,8 @@ public class MessageCreatorTest {
     List<MessageHolder> messages = messageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
-    assertThat(messages.get(0).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
-    assertThat(messages.get(0).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
+    assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
+    assertThat(messages.get(1).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
   }
 
   @Test
@@ -191,7 +191,7 @@ public class MessageCreatorTest {
     List<MessageHolder> messages = messageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
-    assertThat(messages.get(0).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
-    assertThat(messages.get(0).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
+    assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
+    assertThat(messages.get(1).getMessage().type()).isEqualTo(JupyterMessages.EXECUTE_REPLY);
   }
 }

@@ -27,7 +27,7 @@ import com.twosigma.beakerx.message.Message;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Semaphore;
 
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
 
@@ -40,7 +40,7 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
 
   private MagicCommand magicCommand;
   private int executionCount;
-  private CompletableFuture<Boolean> syncObject;
+  private final Semaphore syncObject = new Semaphore(1, true);
 
   public ExecuteRequestHandler(KernelFunctionality kernel) {
     super(kernel);
@@ -52,13 +52,13 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
   public void handle(Message message) {
     try {
       handleMsg(message);
-    } catch (Exception e) {
+    } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private void handleMsg(Message message) throws Exception {
-    syncObject = new CompletableFuture<>();
+  private void handleMsg(Message message) throws InterruptedException {
+    syncObject.acquire();
     kernel.sendBusyMessage(message);
     executionCount += 1;
     Code code = takeCodeFrom(message);
@@ -68,15 +68,14 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     } else {
       runCode(code.asString(), message);
     }
-    syncObject.get();
   }
 
   private void handleMagicCommand(Message message, Code code) {
     MagicCommandResult magicCommandResult = magicCommand.process(code, message, executionCount);
 
-    magicCommandResult.getItems().forEach(item -> {
-      if (item.hasCodeToExecute()) {
-        if (item.hasResult()) {
+    magicCommandResult.getItems().forEach( item -> {
+      if(item.hasCodeToExecute()){
+        if(item.hasResult()){
           kernel.publish(item.getResult().get());
         }
       } else if (item.hasResult()) {
@@ -84,7 +83,7 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
       } else {
         sendMagicCommandReply(message, item.getReply().get());
       }
-    });
+    } );
 
     if (!magicCommandResult.getItems().isEmpty()) {
       magicCommandResult.getItems().get(0).getCode().ifPresent(codeToExecute -> runCode(codeToExecute.asString(), message));
@@ -103,7 +102,7 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
   private void sendMagicCommandReply(Message message, Message replyMessage) {
     kernel.send(replyMessage);
     kernel.sendIdleMessage(message);
-    syncObject.complete(true);
+    syncObject.release();
   }
 
   private void sendMagicCommandReplyAndResult(Message message, Message replyMessage, Message resultMessage) {
@@ -114,7 +113,7 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
   private void runCode(String code, Message message) {
     kernel.executeCode(code, message, executionCount, (seo) -> {
       kernel.sendIdleMessage(seo.getJupyterMessage());
-      syncObject.complete(true);
+      syncObject.release();
     });
   }
 

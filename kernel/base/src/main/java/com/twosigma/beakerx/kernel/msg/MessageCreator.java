@@ -183,7 +183,6 @@ public class MessageCreator {
 
   private List<MessageHolder> createResultForSupportedStatus(SimpleEvaluationObject seo, Message message) {
     List<MessageHolder> ret = new ArrayList<>();
-    ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
     if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
       MessageHolder mh = createFinishResult(seo, message);
       if (mh != null) {
@@ -192,6 +191,7 @@ public class MessageCreator {
     } else if (EvaluationStatus.ERROR == seo.getStatus()) {
       ret.add(createErrorResult(seo, message));
     }
+    ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
     return ret;
   }
 

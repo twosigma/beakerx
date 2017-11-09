@@ -27,7 +27,6 @@ public class Line extends XYGraphics {
                                                                          Filter.BOX,
                                                                          Filter.RIVER);
 
-
   private Float width = 1.5f;
   private StrokeType style;
   private Integer interpolation;

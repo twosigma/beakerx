@@ -138,7 +138,7 @@ var PlotView = widgets.DOMWidgetView.extend({
   },
 
   initStandardPlot: function (model) {
-    this._currentScope = new PlotScope('wrap_'+this.id);
+    this._currentScope = new PlotScope('wrap_'+this.model.model_id);
     var tmpl = this._currentScope.buildTemplate();
     var tmplElement = $(tmpl);
 

@@ -2283,6 +2283,7 @@ define([
     self.fillCellModelWithPlotMethods();
     self.adjustModelWidth();
     self.emitSizeChange(true);
+    self.initPointsLimitModal();
   };
 
   PlotScope.prototype.adjustModelWidth = function() {
@@ -2820,6 +2821,8 @@ define([
       line.showItem = dat.showItem
     }
   }
+
+  require('./plotModal/pointsLimitModal.ts').default(PlotScope);
 
   // --------
 

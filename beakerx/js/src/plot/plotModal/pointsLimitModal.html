@@ -16,15 +16,12 @@
 
 <!-- Modal -->
 <div id="<%=scopeId%>_modal_dialog" style="display: none">
-    <div class="bko-modal column-limit-modal">
+    <div class="bko-modal points-limit-modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-body">
-                    Too many columns, hiding those numbered <%=outputColumnLimit%> to <%=columnNames.length%>. Open list of all columns to show selectively?
-                </div>
+                <div class="modal-body">Note: plot has too much data to display. The limit is <%=outputPointsLimit%> items, but this table has <%=numberOfPonts%> items. The first <%=outputPointsPreviewNumber%> items are displayed as a preview.</div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary">OK</button>
-                    <button type="button" class="btn btn-secondary">Cancel</button>
                 </div>
             </div>
         </div>

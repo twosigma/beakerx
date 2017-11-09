@@ -315,6 +315,9 @@ define([
     this.legendResetPosition = true;
 
     this.jqcontainer.on('resize', function(e, ui) {
+      e.stopPropagation();
+      e.preventDefault();
+
       self.updateModelWidth();
     });
 

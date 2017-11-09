@@ -22,8 +22,7 @@ import shutil
 import subprocess
 import sys
 from string import Template
-import uuid
-from tempfile import gettempdir
+import tempfile
 
 from jupyter_client.kernelspecapp import KernelSpecManager
 from traitlets.config.manager import BaseJSONConfigManager
@@ -97,18 +96,17 @@ def _install_kernels():
             'beakerx', os.path.join('kernel', kernel, 'kernel.json'))
         contents = Template(template.decode()).substitute(PATH=classpath)
 
-        tmpdir = os.path.join(gettempdir(), str(uuid.uuid4()))
-        os.mkdir(tmpdir, 0o755)
-        with open(os.path.join(tmpdir, 'kernel.json'), 'w') as f:
-            f.write(contents)
-        install_cmd = [
-            'jupyter', 'kernelspec', 'install',
-            '--sys-prefix', '--replace',
-            '--name', kernel, tmpdir
-        ]
-        subprocess.check_call(install_cmd)
-
-        shutil.rmtree(tmpdir, ignore_errors=True)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            kernel_dir = os.path.join(tmpdir, kernel)
+            os.mkdir(kernel_dir)
+            with open(os.path.join(kernel_dir, 'kernel.json'), 'w') as f:
+                f.write(contents)
+            install_cmd = [
+                'jupyter', 'kernelspec', 'install',
+                '--sys-prefix', '--replace',
+                '--name', kernel, kernel_dir
+            ]
+            subprocess.check_call(install_cmd)
 
 
 def _uninstall_kernels():

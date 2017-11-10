@@ -111,18 +111,18 @@ public class MagicCommandTypesFactory {
   }
 
   private static MagicCommandType lsmagic(KernelFunctionality kernel, List<MagicCommandType> magicCommandTypes) {
-    return new MagicCommandType(LsMagicCommand.LSMAGIC, "", new LsMagicCommand(magicCommandTypes, kernel));
+    return new MagicCommandType(LsMagicCommand.LSMAGIC, "", new LsMagicCommand(magicCommandTypes));
   }
 
   private static MagicCommandType bash(KernelFunctionality kernel) {
-    return new MagicCommandType(BashMagicCommand.BASH, "", new BashMagicCommand(kernel));
+    return new MagicCommandType(BashMagicCommand.BASH, "", new BashMagicCommand());
   }
 
   private static MagicCommandType html(KernelFunctionality kernel) {
-    return new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand(kernel));
+    return new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand());
   }
 
   private static MagicCommandType javascript(KernelFunctionality kernel) {
-    return new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand(kernel));
+    return new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand());
   }
 }

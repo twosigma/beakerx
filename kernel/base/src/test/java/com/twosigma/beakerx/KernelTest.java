@@ -105,10 +105,10 @@ public class KernelTest implements KernelFunctionality {
   private void initMagicCommands() {
     this.magicCommandTypes = new ArrayList<>();
     this.magicCommandTypes.addAll(Lists.newArrayList(
-            new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand(this)),
-            new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand(this)),
-            new MagicCommandType(BashMagicCommand.BASH, "", new BashMagicCommand(this)),
-            new MagicCommandType(LsMagicCommand.LSMAGIC, "", new LsMagicCommand(this.magicCommandTypes, this)),
+            new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand()),
+            new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand()),
+            new MagicCommandType(BashMagicCommand.BASH, "", new BashMagicCommand()),
+            new MagicCommandType(LsMagicCommand.LSMAGIC, "", new LsMagicCommand(this.magicCommandTypes)),
             new MagicCommandType(ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR, "<jar path>", new ClasspathAddJarMagicCommand(this)),
             new MagicCommandType(ClasspathAddMvnMagicCommand.CLASSPATH_ADD_MVN, "<group name version>",
                     new ClasspathAddMvnMagicCommand(mavenResolverParam, this)),

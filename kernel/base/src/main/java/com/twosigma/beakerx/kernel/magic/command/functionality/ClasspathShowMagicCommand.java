@@ -33,10 +33,10 @@ public class ClasspathShowMagicCommand extends ClasspathMagicCommand {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {;
+  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
     Message message = param.getMessage();
     int executionCount = param.getExecutionCount();
     MIMEContainer result = Text(kernel.getClasspath());
-    return resultWithCustomMessage(result.getData().toString(), message, executionCount, kernel);
+    return resultWithCustomMessage(result.getData().toString(), message, executionCount);
   }
 }

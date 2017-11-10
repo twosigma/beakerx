@@ -38,7 +38,7 @@ public class TimeItLineModeMagicCommand extends TimeMagicCommand {
     try {
       return timeIt(buildTimeItOption(code), codeToExecute, message, executionCount);
     } catch (IllegalArgumentException e) {
-      return MagicCommandUtils.errorResult(message, e.getMessage(), executionCount, kernel);
+      return MagicCommandUtils.errorResult(message, e.getMessage(), executionCount);
     }
   }
 }

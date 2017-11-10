@@ -44,19 +44,19 @@ public class AddImportMagicCommand implements MagicCommandFunctionality {
     int executionCount = param.getExecutionCount();
     String[] parts = command.split(" ");
     if (parts.length != 2) {
-      return MagicCommandUtils.resultWithCustomMessage(kernel.getImports().toString(), message, executionCount, kernel);
+      return MagicCommandUtils.resultWithCustomMessage(kernel.getImports().toString(), message, executionCount);
     }
 
     this.kernel.addImport(new ImportPath(parts[1]));
 
     if (isValidImport(executionCount)) {
-      return MagicCommandUtils.noResult(code, message, executionCount, kernel);
+      return MagicCommandUtils.noResult(code, message, executionCount);
     }
 
     this.kernel.removeImport(new ImportPath(parts[1]));
 
     return MagicCommandUtils.errorResult(message, "Could not import " + parts[1] + ", class not found.",
-            executionCount, kernel);
+            executionCount);
   }
 
   private boolean isValidImport(int executionCount) {

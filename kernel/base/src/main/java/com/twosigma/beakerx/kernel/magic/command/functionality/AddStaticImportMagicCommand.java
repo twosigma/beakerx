@@ -44,9 +44,9 @@ public class AddStaticImportMagicCommand implements MagicCommandFunctionality {
     int executionCount = param.getExecutionCount();
     String[] parts = command.split(" ");
     if (parts.length != 3) {
-      return errorResult(message, WRONG_FORMAT_MSG, executionCount, kernel);
+      return errorResult(message, WRONG_FORMAT_MSG, executionCount);
     }
     this.kernel.addImport(new ImportPath(parts[1] + " " + parts[2]));
-    return noResult(code, message, executionCount, kernel);
+    return noResult(code, message, executionCount);
   }
 }

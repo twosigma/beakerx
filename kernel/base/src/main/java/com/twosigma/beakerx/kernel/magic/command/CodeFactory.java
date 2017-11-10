@@ -43,7 +43,7 @@ public class CodeFactory {
   public static Code create(String allCode, Message message, int executionCount, KernelFunctionality kernel) {
     Scanner scanner = new Scanner(allCode);
     List<String> commandsList = takeCommands(scanner);
-    Optional<String> codeWithoutCommands = restOfTheCode(scanner);
+    Optional<String> codeWithoutCommands = codeWithoutCommands(scanner);
     if (!commandsList.isEmpty()) {
       return createCodeWithCommands(allCode, message, executionCount, kernel, commandsList, codeWithoutCommands);
     } else {
@@ -75,7 +75,7 @@ public class CodeFactory {
       if (mcOption.isPresent()) {
         magicCommands.add(new MagicCommand(mcOption.get(), command));
       } else {
-        errors.add(processIllegalCommand("Cell magic " + command + " not found", message, executionCount, kernel));
+        errors.add(processIllegalCommand("Cell magic " + command + " not found", message, executionCount));
       }
     });
     if (codeWithoutCommands.isPresent()) {
@@ -96,7 +96,7 @@ public class CodeFactory {
     if (mcOption.isPresent()) {
       magicCommands.add(new MagicCommand(mcOption.get(), firstCommand, restOfTheCode.toString()));
     } else {
-      errors.add(processIllegalCommand("Cell magic " + firstCommand + " not found", message, executionCount, kernel));
+      errors.add(processIllegalCommand("Cell magic " + firstCommand + " not found", message, executionCount));
     }
     return Code.createCodeWithoutCodeBlock(allCode, magicCommands, errors, message);
   }
@@ -105,7 +105,7 @@ public class CodeFactory {
     return command.startsWith(CELL_COMMAND_MAGIC);
   }
 
-  private static Optional<String> restOfTheCode(Scanner scanner) {
+  private static Optional<String> codeWithoutCommands(Scanner scanner) {
     List<String> codeWithoutCommands = new ArrayList<>();
     while (scanner.hasNext()) {
       codeWithoutCommands.add(scanner.nextLine());
@@ -136,10 +136,10 @@ public class CodeFactory {
             .findFirst();
   }
 
-  private static MagicCommandItemWithResult processIllegalCommand(String errorMessage, Message message, int executionCount, KernelFunctionality kernel) {
+  private static MagicCommandItemWithResult processIllegalCommand(String errorMessage, Message message, int executionCount) {
     return new MagicCommandItemWithResult(
             MessageCreator.buildOutputMessage(message, errorMessage, true),
-            MessageCreator.buildReplyWithErrorStatus(message, executionCount, kernel)
+            MessageCreator.buildReplyWithErrorStatus(message, executionCount)
     );
   }
 

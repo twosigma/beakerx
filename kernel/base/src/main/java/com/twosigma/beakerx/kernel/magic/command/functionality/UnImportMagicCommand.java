@@ -43,9 +43,9 @@ public class UnImportMagicCommand implements MagicCommandFunctionality {
     int executionCount = param.getExecutionCount();
     String[] parts = command.split(" ");
     if (parts.length != 2) {
-      return errorResult(message, WRONG_FORMAT_MSG, executionCount, kernel);
+      return errorResult(message, WRONG_FORMAT_MSG, executionCount);
     }
     this.kernel.removeImport(new ImportPath(parts[1]));
-    return MagicCommandUtils.noResult(code, message, executionCount, kernel);
+    return MagicCommandUtils.noResult(code, message, executionCount);
   }
 }

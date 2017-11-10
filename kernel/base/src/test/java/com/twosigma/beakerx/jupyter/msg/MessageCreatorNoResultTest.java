@@ -46,7 +46,7 @@ public class MessageCreatorNoResultTest {
     seo.setJupyterMessage(new Message());
     seo.finished(OutputCell.HIDDEN);
     //when
-    List<MessageHolder> messages = MessageCreator.createMessage(seo, kernel);
+    List<MessageHolder> messages = MessageCreator.createMessage(seo);
     //then
     messages.forEach(m -> assertThat(JupyterMessages.EXECUTE_RESULT).isNotEqualTo(m.getMessage().type()));
   }

@@ -45,14 +45,14 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
     int executionCount = param.getExecutionCount();
     String[] split = splitPath(command);
     if (split.length != 6) {
-      return errorResult(message, ADD_MVN_FORMAT_ERROR_MESSAGE, executionCount, kernel);
+      return errorResult(message, ADD_MVN_FORMAT_ERROR_MESSAGE, executionCount);
     }
     MavenJarResolver classpathAddMvnCommand = new MavenJarResolver(commandParams);
     MavenJarResolver.AddMvnCommandResult result = classpathAddMvnCommand.retrieve(split[3], split[4], split[5]);
     if (result.isJarRetrieved()) {
-      return noResult(addJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*"), code, message, executionCount, kernel);
+      return noResult(addJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*"), code, message, executionCount);
     }
-    return errorResult(message, result.getErrorMessage(), executionCount, kernel);
+    return errorResult(message, result.getErrorMessage(), executionCount);
   }
 
 }

@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
@@ -31,11 +30,9 @@ public class LsMagicCommand implements MagicCommandFunctionality {
 
   public static final String LSMAGIC = "%lsmagic";
   private List<MagicCommandType> magicCommandTypes;
-  private KernelFunctionality kernel;
 
-  public LsMagicCommand(List<MagicCommandType> magicCommandTypes, KernelFunctionality kernel) {
+  public LsMagicCommand(List<MagicCommandType> magicCommandTypes) {
     this.magicCommandTypes = magicCommandTypes;
-    this.kernel = kernel;
   }
 
   @Override
@@ -50,7 +47,7 @@ public class LsMagicCommand implements MagicCommandFunctionality {
 
     return new MagicCommandItemWithResult(
             MessageCreator.buildOutputMessage(message, result, false),
-            MessageCreator.buildReplyWithOkStatus(message, executionCount, kernel)
+            MessageCreator.buildReplyWithOkStatus(message, executionCount)
     );
   }
 }

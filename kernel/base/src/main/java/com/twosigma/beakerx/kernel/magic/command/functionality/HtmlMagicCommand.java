@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
@@ -31,10 +30,9 @@ import static java.util.Collections.singletonList;
 public class HtmlMagicCommand implements MagicCommandFunctionality {
 
   public static final String HTML = "%%html";
-  private KernelFunctionality kernel;
 
-  public HtmlMagicCommand(KernelFunctionality kernel) {
-    this.kernel = kernel;
+  public HtmlMagicCommand() {
+
   }
 
   @Override
@@ -43,12 +41,12 @@ public class HtmlMagicCommand implements MagicCommandFunctionality {
     int executionCount = param.getExecutionCount();
     String commandCodeBlock = param.getCommandCodeBlock();
     if (commandCodeBlock==null){
-      return errorResult(message, String.format(USAGE_ERROR_MSG, HTML), executionCount, kernel);
+      return errorResult(message, String.format(USAGE_ERROR_MSG, HTML), executionCount);
     }
     MIMEContainer html = HTML("<html>" + commandCodeBlock + "</html>");
     return new MagicCommandItemWithResult(
             MessageCreator.buildMessage(message, singletonList(html), executionCount),
-            MessageCreator.buildReplyWithOkStatus(message, executionCount, kernel)
+            MessageCreator.buildReplyWithOkStatus(message, executionCount)
     );
   }
 }

@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 import com.twosigma.beakerx.jvm.object.ConsoleOutput;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
@@ -113,11 +112,11 @@ public class MessageCreator {
     return reply;
   }
 
-  private static Message buildReply(Message message, SimpleEvaluationObject seo, KernelFunctionality kernel) {
+  private static Message buildReply(Message message, SimpleEvaluationObject seo) {
     // Send the REPLY to the original message. This is NOT the result of
     // executing the cell. This is the equivalent of 'exit 0' or 'exit 1'
     // at the end of a shell script.
-    Message reply = buildReplyWithoutStatus(message, seo.getExecutionCount(), kernel);
+    Message reply = buildReplyWithoutStatus(message, seo.getExecutionCount());
     if (EvaluationStatus.FINISHED == seo.getStatus()) {
       reply.getMetadata().put("status", "ok");
       reply.getContent().put("status", "ok");
@@ -129,11 +128,10 @@ public class MessageCreator {
     return reply;
   }
 
-  public static Message buildReplyWithoutStatus(Message message, int executionCount, KernelFunctionality kernel) {
+  public static Message buildReplyWithoutStatus(Message message, int executionCount) {
     Message reply = initMessage(EXECUTE_REPLY, message);
     Hashtable<String, Serializable> map6 = new Hashtable<String, Serializable>(3);
     map6.put("dependencies_met", true);
-    map6.put("engine", kernel.getSessionId());
     map6.put("started", timestamp());
     reply.setMetadata(map6);
     Hashtable<String, Serializable> map7 = new Hashtable<String, Serializable>(1);
@@ -142,15 +140,15 @@ public class MessageCreator {
     return reply;
   }
 
-  public static Message buildReplyWithOkStatus(Message message, int executionCount, KernelFunctionality kernel) {
-    Message messageWithStatus = buildReplyWithoutStatus(message, executionCount, kernel);
+  public static Message buildReplyWithOkStatus(Message message, int executionCount) {
+    Message messageWithStatus = buildReplyWithoutStatus(message, executionCount);
     messageWithStatus.getContent().put("status", "ok");
 
     return messageWithStatus;
   }
 
-  public static Message buildReplyWithErrorStatus(Message message, int executionCount, KernelFunctionality kernel) {
-    Message messageWithStatus = buildReplyWithoutStatus(message, executionCount, kernel);
+  public static Message buildReplyWithErrorStatus(Message message, int executionCount) {
+    Message messageWithStatus = buildReplyWithoutStatus(message, executionCount);
     messageWithStatus.getContent().put("status", "error");
 
     return messageWithStatus;
@@ -165,21 +163,21 @@ public class MessageCreator {
     return reply;
   }
 
-  public static synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo, KernelFunctionality kernel) {
+  public static synchronized List<MessageHolder> createMessage(SimpleEvaluationObject seo) {
     logger.debug("Creating message response message from: " + seo);
     Message message = seo.getJupyterMessage();
     List<MessageHolder> ret = new ArrayList<>();
     if (isConsoleOutputMessage(seo)) {
       ret.addAll(createConsoleResult(seo, message));
     } else if (isSupportedStatus(seo.getStatus())) {
-      ret.addAll(createResultForSupportedStatus(seo, message, kernel));
+      ret.addAll(createResultForSupportedStatus(seo, message));
     } else {
       logger.debug("Unhandled status of SimpleEvaluationObject : " + seo.getStatus());
     }
     return ret;
   }
 
-  private static List<MessageHolder> createResultForSupportedStatus(SimpleEvaluationObject seo, Message message, KernelFunctionality kernel) {
+  private static List<MessageHolder> createResultForSupportedStatus(SimpleEvaluationObject seo, Message message) {
     List<MessageHolder> ret = new ArrayList<>();
     if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
       MessageHolder mh = createFinishResult(seo, message);
@@ -189,7 +187,7 @@ public class MessageCreator {
     } else if (EvaluationStatus.ERROR == seo.getStatus()) {
       ret.add(createErrorResult(seo, message));
     }
-    ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo, kernel)));
+    ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
     return ret;
   }
 

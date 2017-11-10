@@ -16,7 +16,6 @@
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
 import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
@@ -33,11 +32,8 @@ import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicComma
 public class BashMagicCommand implements MagicCommandFunctionality {
 
   public static final String BASH = "%%bash";
-  private KernelFunctionality kernel;
 
-
-  public BashMagicCommand(KernelFunctionality kernel) {
-    this.kernel = kernel;
+  public BashMagicCommand() {
   }
 
   @Override
@@ -50,14 +46,14 @@ public class BashMagicCommand implements MagicCommandFunctionality {
       ErrorData errorData = executeBashCode(codeWithoutCommand);
 
       if (errorData.hasError()) {
-        return errorResult(message, errorData.getMessage(), executionCount, kernel);
+        return errorResult(message, errorData.getMessage(), executionCount);
       }
 
       return new MagicCommandItemWithResult(
               MessageCreator.buildOutputMessage(message, errorData.getMessage(), false),
-              MessageCreator.buildReplyWithOkStatus(message, executionCount, kernel)
+              MessageCreator.buildReplyWithOkStatus(message, executionCount)
       );
-    }).orElse(errorResult(message, String.format(USAGE_ERROR_MSG, BASH), executionCount, kernel));
+    }).orElse(errorResult(message, String.format(USAGE_ERROR_MSG, BASH), executionCount));
   }
 
   private ErrorData executeBashCode(String code) {

@@ -46,7 +46,6 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
 
   public TimeMagicCommand(KernelFunctionality kernel) {
     this.kernel = kernel;
-    ;
   }
 
   public MagicCommandItemWithResult time(String codeToExecute, Message message, int executionCount) {
@@ -80,10 +79,10 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
                       format(timeMeasuredData.getCpuTotalTime() - timeMeasuredData.getCpuUserTime()),
                       format(timeMeasuredData.getCpuTotalTime()),
                       format(timeMeasuredData.getWallTime())), false),
-              MessageCreator.buildReplyWithOkStatus(message, executionCount, kernel));
+              MessageCreator.buildReplyWithOkStatus(message, executionCount));
 
     } catch (InterruptedException | ExecutionException e) {
-      return errorResult(message, "There occurs problem during measuring time for your statement.", executionCount, kernel);
+      return errorResult(message, "There occurs problem during measuring time for your statement.", executionCount);
     }
   }
 
@@ -107,12 +106,12 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     String output = "%s ± %s per loop (mean ± std. dev. of %d run, %d loop each)";
 
     if (timeItOption.getNumber() < 0) {
-      return errorResult(message, "Number of execution must be bigger then 0", executionCount, kernel);
+      return errorResult(message, "Number of execution must be bigger then 0", executionCount);
     }
     int number = timeItOption.getNumber() == 0 ? getBestNumber(codeToExecute) : timeItOption.getNumber();
 
     if (timeItOption.getRepeat() == 0) {
-      return errorResult(message, "Repeat value must be bigger then 0", executionCount, kernel);
+      return errorResult(message, "Repeat value must be bigger then 0", executionCount);
     }
 
     CompletableFuture<Boolean> isStatementsCorrect = new CompletableFuture<>();
@@ -127,7 +126,7 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     try {
 
       if (!isStatementsCorrect.get()) {
-        return errorResult(message, "Please correct your statement", executionCount, kernel);
+        return errorResult(message, "Please correct your statement", executionCount);
       }
 
       List<Long> allRuns = new ArrayList<>();
@@ -166,13 +165,13 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
 
         return new MagicCommandItemWithResult(
                 MessageCreator.buildOutputMessage(message, output, false),
-                MessageCreator.buildReplyWithoutStatus(message, executionCount, kernel));
+                MessageCreator.buildReplyWithoutStatus(message, executionCount));
       }
     } catch (InterruptedException | ExecutionException e) {
-      return errorResult(message, "There occurs problem with " + e.getMessage(), executionCount, kernel);
+      return errorResult(message, "There occurs problem with " + e.getMessage(), executionCount);
     }
 
-    return errorResult(message, "There occurs problem with timeIt operations", executionCount, kernel);
+    return errorResult(message, "There occurs problem with timeIt operations", executionCount);
 
   }
 

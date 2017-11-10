@@ -34,32 +34,32 @@ public class MagicCommandUtils {
     return tokenizer.getTokenArray();
   }
 
-  public static MagicCommandItemWithResult errorResult(Message message, String messageText, int executionCount, KernelFunctionality kernel) {
+  public static MagicCommandItemWithResult errorResult(Message message, String messageText, int executionCount) {
     return new MagicCommandItemWithResult(
             MessageCreator.buildOutputMessage(message, messageText, true),
-            MessageCreator.buildReplyWithErrorStatus(message, executionCount, kernel)
+            MessageCreator.buildReplyWithErrorStatus(message, executionCount)
     );
   }
 
-  public static MagicCommandResultItem resultWithCustomMessage(String customMessage, Message message, int executionCount, KernelFunctionality kernel) {
+  public static MagicCommandResultItem resultWithCustomMessage(String customMessage, Message message, int executionCount) {
     return new MagicCommandItemWithResult(
             MessageCreator.buildOutputMessage(message, customMessage, false),
-            MessageCreator.buildReplyWithOkStatus(message, executionCount, kernel));
+            MessageCreator.buildReplyWithOkStatus(message, executionCount));
   }
 
-  public static MagicCommandResultItem noResult(Collection<String> newAddedJars, Code code, Message message, int executionCount, KernelFunctionality kernel) {
+  public static MagicCommandResultItem noResult(Collection<String> newAddedJars, Code code, Message message, int executionCount) {
     if (newAddedJars.isEmpty()) {
-      return noResult(code, message, executionCount, kernel);
+      return noResult(code, message, executionCount);
     }
     String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars + "\n";
     return new MagicCommandItemWithResult(
             MessageCreator
                     .buildOutputMessage(message, textMessage, false),
-            MessageCreator.buildReplyWithOkStatus(message, executionCount, kernel));
+            MessageCreator.buildReplyWithOkStatus(message, executionCount));
   }
 
-  public static MagicCommandResultItem noResult(Code code, Message message, int executionCount, KernelFunctionality kernel) {
-    return new MagicCommandItemWithoutResult(MessageCreator.buildReplyWithOkStatus(message, executionCount, kernel));
+  public static MagicCommandResultItem noResult(Code code, Message message, int executionCount) {
+    return new MagicCommandItemWithoutResult(MessageCreator.buildReplyWithOkStatus(message, executionCount));
   }
 
 

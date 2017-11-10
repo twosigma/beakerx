@@ -41,16 +41,16 @@ public class ClasspathAddJarMagicCommand extends ClasspathMagicCommand {
     int executionCount = param.getExecutionCount();
     String[] split = splitPath(command);
     if (split.length != 4) {
-      return errorResult(message, WRONG_FORMAT_MSG + CLASSPATH_ADD_JAR, executionCount, kernel);
+      return errorResult(message, WRONG_FORMAT_MSG + CLASSPATH_ADD_JAR, executionCount);
     }
 
     String path = split[3];
     ErrorData errorData = isValidPath(path);
 
     if (errorData.hasError()) {
-      return errorResult(message, errorData.getMessage(), executionCount, kernel);
+      return errorResult(message, errorData.getMessage(), executionCount);
     } else {
-      return noResult(addJars(path), code, message, executionCount, kernel);
+      return noResult(addJars(path), code, message, executionCount);
     }
   }
 

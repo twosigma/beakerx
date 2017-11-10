@@ -46,15 +46,15 @@ public class DataSourcesMagicCommand implements MagicCommandFunctionality {
   protected MagicCommandResultItem dataSource(String source, Code code, String command, Message message, int executionCount) {
     String[] parts = command.split(" ");
     if (parts.length != 2) {
-      return errorResult(message, WRONG_FORMAT_MSG, executionCount, kernel);
+      return errorResult(message, WRONG_FORMAT_MSG, executionCount);
     } else if (!parts[1].contains("jdbc:")) {
-      return errorResult(message, "Incorrect jdbc url.", executionCount, kernel);
+      return errorResult(message, "Incorrect jdbc url.", executionCount);
     }
 
     HashMap<String, Object> params = new HashMap<>();
     params.put(source, parts[1]);
     this.kernel.setShellOptions(new KernelParameters(params));
-    return MagicCommandUtils.noResult(code, message, executionCount, kernel);
+    return MagicCommandUtils.noResult(code, message, executionCount);
 
   }
 }

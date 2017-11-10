@@ -15,8 +15,6 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-
-import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
@@ -31,10 +29,8 @@ import static java.util.Collections.singletonList;
 public class JavaScriptMagicCommand implements MagicCommandFunctionality {
 
   public static final String JAVASCRIPT = "%%javascript";
-  private KernelFunctionality kernel;
 
-  public JavaScriptMagicCommand(KernelFunctionality kernel) {
-    this.kernel = kernel;
+  public JavaScriptMagicCommand(){
   }
 
   @Override
@@ -45,7 +41,7 @@ public class JavaScriptMagicCommand implements MagicCommandFunctionality {
     MIMEContainer result = JavaScript(commandCodeBlock);
     return new MagicCommandItemWithResult(
             MessageCreator.buildMessage(message, singletonList(result), executionCount),
-            MessageCreator.buildReplyWithOkStatus(message, executionCount, kernel)
+            MessageCreator.buildReplyWithOkStatus(message, executionCount)
     );
   }
 

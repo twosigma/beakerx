@@ -15,24 +15,18 @@
  */
 package com.twosigma.beakerx.groovy.widgets;
 
-import com.google.common.collect.Lists;
-import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.widgets.box.HBox;
-import com.twosigma.beakerx.widgets.box.VBox;
-import com.twosigma.beakerx.widgets.strings.Label;
-import java.util.Arrays;
-import org.codehaus.groovy.runtime.MethodClosure;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCompiledCodeAndPublish;
 
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widgets.InteractiveBase;
 import com.twosigma.beakerx.widgets.ValueWidget;
-
+import com.twosigma.beakerx.widgets.Widget;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCompiledCodeAndPublish;
+import org.codehaus.groovy.runtime.MethodClosure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Interactive extends InteractiveBase {
 
@@ -41,25 +35,25 @@ public class Interactive extends InteractiveBase {
   @SuppressWarnings("unchecked")
   public static synchronized void interact(MethodClosure function, Object... parameters) {
 
-    final List<ValueWidget<?>> witgets = widgetsFromAbbreviations(parameters);
+    final List<ValueWidget<?>> widgets = widgetsFromAbbreviations(parameters);
 
-    for (ValueWidget<?> widget : witgets) {
+    for (ValueWidget<?> widget : widgets) {
       widget.getComm().addMsgCallbackList(widget.new ValueChangeMsgCallbackHandler() {
 
         private Object processCode(Object... params) throws Exception {
-          witgets.forEach(Widget::display);
+          widgets.forEach(Widget::display);
 
           return function.call(getWidgetValues());
         }
 
         @Override
         public void updateValue(Object value, Message message) {
-          runCompiledCodeAndPublish(message, this::processCode, null);
+          runCompiledCodeAndPublish(message, this::processCode, Collections.emptyList());
         }
 
         private Object[] getWidgetValues() {
-          List<Object> ret = new ArrayList<>(witgets.size());
-          for (ValueWidget<?> wid : witgets) {
+          List<Object> ret = new ArrayList<>(widgets.size());
+          for (ValueWidget<?> wid : widgets) {
             ret.add(wid.getValue());
           }
           return ret.toArray(new Object[ret.size()]);
@@ -67,7 +61,12 @@ public class Interactive extends InteractiveBase {
 
       });
       logger.info("interact Widget: " + widget.getClass().getName());
-      widget.display();
+    }
+
+    widgets.forEach(Widget::display);
+    Object response = function.call(widgets.stream().map(ValueWidget::getValue).toArray());
+    if (response instanceof Widget) {
+      ((Widget) response).display();
     }
   }
 

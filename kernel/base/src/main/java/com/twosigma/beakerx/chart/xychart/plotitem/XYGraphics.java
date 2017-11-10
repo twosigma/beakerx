@@ -22,7 +22,12 @@ import com.twosigma.beakerx.chart.Graphics;
 import com.twosigma.beakerx.chart.ListColorConverter;
 import com.twosigma.beakerx.widgets.RunWidgetClosure;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
@@ -69,6 +74,10 @@ abstract public class XYGraphics extends Graphics {
     this.toolTips = toolTips;
   }
 
+  public void setX(Object[] xs) {
+    setX(Arrays.asList(xs));
+  }
+
   public void setX(List<Object> xs) {
     this.xs = new ArrayList<>();
     if (xs != null) {
@@ -78,15 +87,18 @@ abstract public class XYGraphics extends Graphics {
         } else if (x instanceof Date) {
           Date date = (Date) x;
           this.xs.add(date.getTime());
+        } else if (x instanceof Instant) {
+          Instant instant = (Instant) x;
+          this.xs.add(instant.toEpochMilli());
+        } else if (x instanceof LocalDateTime) {
+          LocalDateTime date = (LocalDateTime) x;
+          this.xs.add(date.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli());
+        } else if (x instanceof LocalDate) {
+          LocalDate date = (LocalDate) x;
+          this.xs.add(date.atStartOfDay(ZoneId.of("UTC")).toInstant().toEpochMilli());
         } else {
           throw new IllegalArgumentException("x coordinates should be the list of numbers or java.util.Date objects");
         }
-//        remove Java8 feature LocalDateTime, that has to wait
-//        else if (x instanceof LocalDateTime) {
-//          LocalDateTime date = (LocalDateTime)x;
-//          ZonedDateTime zdate = date.atZone(ZoneId.of("UTC"));
-//          this.xs.add(zdate.toEpochSecond() * 1000 + date.get(ChronoField.MILLI_OF_SECOND));
-//        }
       }
     }
     reinit();
@@ -97,6 +109,10 @@ abstract public class XYGraphics extends Graphics {
       generateXs();
     }
     return this.xs;
+  }
+
+  public void setY(Number[] ys) {
+    setY(Arrays.asList(ys));
   }
 
   public void setY(List<Number> ys) {

@@ -36,13 +36,12 @@ import com.twosigma.beakerx.widgets.Widget;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static java.util.Collections.singletonList;
 
 @SuppressWarnings("unchecked")
 public class EasyForm extends ObservableMap<String, Object> implements DisplayableWidget {
@@ -79,7 +78,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
 
   public EasyFormComponent addTextField(final String label, final Integer size) throws Exception {
     TextFieldWidget textField = new TextFieldWidget();
-
+    textField.registerUpdateValueCallback(textField::fireChanged);
     textField.setLabel(label);
     textField.setSize(size);
     return addComponentOrThrow(label, textField);
@@ -177,11 +176,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     list.setSize(size);
     list.setMultipleSelection(multipleSelection);
     list.setValues(values);
-    if (values != null && values.size() > 0 && multipleSelection) {
-      list.setValue(singletonList(values.iterator().next()));
-    } else {
-      list.setValue(values.iterator().next());
-    }
+    list.setValue(Collections.EMPTY_LIST);
     return addComponentOrThrow(label, list);
   }
 

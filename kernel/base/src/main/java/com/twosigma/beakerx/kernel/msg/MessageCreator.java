@@ -144,6 +144,20 @@ public class MessageCreator {
     return reply;
   }
 
+  public Message buildReplyWithOkStatus(Message message, int executionCount) {
+    Message messageWithStatus = buildReplyWithoutStatus(message, executionCount);
+    messageWithStatus.getContent().put("status", "ok");
+
+    return messageWithStatus;
+  }
+
+  public Message buildReplyWithErrorStatus(Message message, int executionCount) {
+    Message messageWithStatus = buildReplyWithoutStatus(message, executionCount);
+    messageWithStatus.getContent().put("status", "error");
+
+    return messageWithStatus;
+  }
+
   public Message buildOutputMessage(Message message, String text, boolean hasError) {
     Message reply = initMessage(STREAM, message);
     reply.setContent(new HashMap<String, Serializable>());
@@ -169,7 +183,6 @@ public class MessageCreator {
 
   private List<MessageHolder> createResultForSupportedStatus(SimpleEvaluationObject seo, Message message) {
     List<MessageHolder> ret = new ArrayList<>();
-    ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
     if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
       MessageHolder mh = createFinishResult(seo, message);
       if (mh != null) {
@@ -178,6 +191,7 @@ public class MessageCreator {
     } else if (EvaluationStatus.ERROR == seo.getStatus()) {
       ret.add(createErrorResult(seo, message));
     }
+    ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
     return ret;
   }
 
@@ -304,5 +318,4 @@ public class MessageCreator {
     reply.setContent(map1);
     return reply;
   }
-
 }

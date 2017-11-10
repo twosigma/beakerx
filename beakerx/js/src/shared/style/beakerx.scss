@@ -34,3 +34,26 @@ $focusColor: #66bb6a;
     background: $focusColor;
   }
 }
+
+.bko-modal {
+  position: absolute;
+  left: 50%;
+  margin-left: -150px;
+  z-index: 9999;
+  width: auto;
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+  overflow: visible;
+  animation: 1s fadeIn;
+  animation-fill-mode: forwards;
+  .modal-dialog{
+    width: 300px;
+  }
+  .modal-content{
+    border: none;
+  }
+  .modal-body{
+    padding-top: 25px;
+  }
+
+}

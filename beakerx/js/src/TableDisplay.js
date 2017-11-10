@@ -88,7 +88,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   },
 
   initTableDisplay: function(data) {
-    this._currentScope = new TableScope('wrap_'+this.id);
+    this._currentScope = new TableScope('wrap_'+this.model.model_id);
     var tmpl = this._currentScope.buildTemplate();
     var tmplElement = $(tmpl);
 

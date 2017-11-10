@@ -2306,19 +2306,17 @@ define([
 
     var executeCopy = function(text) {
       var input = document.createElement('textarea');
-      var currentNotebookMode = Jupyter && Jupyter.notebook.mode;
-      var notInNotebook = !Jupyter || !Jupyter.NotebookList;
 
       document.body.appendChild(input);
       input.value = text;
       input.select();
 
-      if (notInNotebook || currentNotebookMode === 'edit') {
-        document.execCommand('Copy', false, null);
+      if (!Jupyter || !Jupyter.keyboard_manager) {
+        document.execCommand('Copy');
       } else {
-        Jupyter.notebook.mode = 'edit';
-        document.execCommand('Copy', false, null);
-        Jupyter.notebook.mode = currentNotebookMode;
+        Jupyter.keyboard_manager.enabled = false;
+        document.execCommand('Copy');
+        Jupyter.keyboard_manager.enabled = true;
       }
 
       input.remove();

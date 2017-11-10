@@ -1,4 +1,3 @@
-import groovy.time.TimeCategory
 /*
  *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -14,6 +13,7 @@ import groovy.time.TimeCategory
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+import groovy.time.TimeCategory
 
 task wrapper(type: Wrapper) {
   gradleVersion = '3.5'
@@ -52,6 +52,7 @@ subprojects {
       }
     }
   }
+  ext.pathToStaticContent = '../../beakerx/beakerx/kernel/'
 
   test {
     testLogging {
@@ -62,8 +63,6 @@ subprojects {
       }
     }
   }
-
-  ext.pathToStaticContent = '../../beakerx/beakerx/static/kernel/'
 
   task staticContent {
     doLast {

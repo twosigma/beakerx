@@ -31,7 +31,7 @@ import org.junit.Test;
 
 public class MagicCommandResultOrderTest {
 
-  public static final String DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/contents/demoResources/demo.jar";
+  public static final String DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/contents/resources/jar/demo.jar";
   private MagicCommand sut;
   private KernelTest kernel;
 

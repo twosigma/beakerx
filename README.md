@@ -48,7 +48,7 @@ how to install and run BeakerX.
 ### Build and Install
 
 ```
-conda create -y -n beakerx 'python>=3' nodejs pandas openjdk
+conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven
 source activate beakerx
 conda install -y -c conda-forge ipywidgets
 (cd beakerx; pip install -e . --verbose)
@@ -130,3 +130,4 @@ database engine (http://www.h2database.com/), which is dual licensed
 and available under the MPL 2.0 (Mozilla Public License) or under the
 EPL 1.0 (Eclipse Public License).  An original copy of the license
 agreement can be found at: http://www.h2database.com/html/license.html
+

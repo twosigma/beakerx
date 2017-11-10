@@ -48,6 +48,7 @@ import com.twosigma.beakerx.widgets.strings.Textarea;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,6 +82,20 @@ public class EasyFormTest {
     easyForm.display();
     //then
     verifyOnInit(kernel.getPublishedMessages().get(0), newValueForTf1);
+  }
+
+  @Test
+  public void textFieldOnChangeMethod() throws Exception {
+    //given
+    final StringBuilder result = new StringBuilder();
+    EasyForm easyForm = new EasyForm("EasyForm with text field");
+    easyForm.addTextField("tf2").onChange(value -> result.append(value));
+    easyForm.display();
+    kernel.clearPublishedMessages();
+    //when
+    easyForm.put("tf2","OK");
+    //then
+    assertThat(result.toString()).isEqualTo("OK");
   }
 
   private void verifyOnInit(Message message, String expected) {
@@ -153,14 +168,15 @@ public class EasyFormTest {
     easyForm.addList(label, asList("1", "2", "3"));
     easyForm.display();
     //then
-    verifyMultipleSelection(kernel.getPublishedMessages());
+    Object multipleSelectionValue = easyForm.get(label);
+    verifyMultipleSelection(kernel.getPublishedMessages(), (List) multipleSelectionValue);
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
     verifyDisplayMsg(kernel.getPublishedMessages());
   }
 
-  private void verifyMultipleSelection(List<Message> messages) {
-    verifyInternalOpenCommMsgWitLayout(messages, SelectMultiple.MODEL_NAME_VALUE,
-            SelectMultiple.VIEW_NAME_VALUE);
+  private void verifyMultipleSelection(List<Message> messages, List multipleSelectionValue) {
+    verifyInternalOpenCommMsgWitLayout(messages, SelectMultiple.MODEL_NAME_VALUE, SelectMultiple.VIEW_NAME_VALUE);
+    assertThat(multipleSelectionValue).isEmpty();
   }
 
   @Test
@@ -172,13 +188,16 @@ public class EasyFormTest {
     easyForm.addList(label, asList("1", "2", "3"), Boolean.FALSE);
     easyForm.display();
     //then
-    verifySelectMultipleSingle(kernel.getPublishedMessages());
+    Object multipleSelectionSingleValue = easyForm.get(label);
+    verifySelectMultipleSingle(kernel.getPublishedMessages(), (List) multipleSelectionSingleValue);
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
     verifyDisplayMsg(kernel.getPublishedMessages());
   }
-  private void verifySelectMultipleSingle(List<Message> messages) {
+
+  private void verifySelectMultipleSingle(List<Message> messages, List multipleSelectionSingleValue) {
     verifyInternalOpenCommMsgWitLayout(messages, SelectMultipleSingle.MODEL_NAME_VALUE,
             SelectMultipleSingle.VIEW_NAME_VALUE);
+    assertThat(multipleSelectionSingleValue).isEmpty();
   }
 
   @Test

@@ -21,6 +21,8 @@ var d3 = require('d3');
 var PlotScope = require('./plot/plotScope');
 var CombinedPlotScope = require('./plot/combinedPlotScope');
 var plotApi = require('./plot/plotApi');
+var OUTUPT_POINTS_LIMIT = 1000000;
+var OUTUPT_POINTS_PREVIEW_NUMBER = 10000;
 
 window.d3 = d3;
 
@@ -48,6 +50,8 @@ var PlotView = widgets.DOMWidgetView.extend({
       var plotModel = that.model.get('model');
 
       var type = plotModel.type || 'Text';
+
+      that.limitPoints(plotModel);
 
       switch (type) {
         case 'CombinedPlot':
@@ -79,6 +83,46 @@ var PlotView = widgets.DOMWidgetView.extend({
     });
   },
 
+  getNumberOfPointsForStandardPlot: function(plotModel) {
+    return Math.max.apply(null, plotModel.graphics_list.map(function(graphic) {
+      return graphic.x.length;
+    }));
+  },
+
+  truncatePointsForStandardPlot: function(plotModel) {
+    plotModel.graphics_list.forEach(function(graphic) {
+      if (graphic.x && graphic.y) {
+        graphic.x = graphic.x.slice(0, OUTUPT_POINTS_PREVIEW_NUMBER);
+        graphic.y = graphic.y.slice(0, OUTUPT_POINTS_PREVIEW_NUMBER);
+      }
+    });
+  },
+
+  limitPoints: function(plotModel) {
+    var numberOfPoints;
+    var self = this;
+
+    if (!plotModel.plots) {
+      numberOfPoints = this.getNumberOfPointsForStandardPlot(plotModel);
+      this.limitPointsForStandardPlot(plotModel, numberOfPoints);
+
+      return;
+    }
+
+    numberOfPoints = Math.max.apply(plotModel.plots.map(this.getNumberOfPointsForStandardPlot));
+    plotModel.plots.forEach(function(standardPlotModel) {
+      self.limitPointsForStandardPlot(standardPlotModel, numberOfPoints);
+    });
+  },
+
+  limitPointsForStandardPlot: function(plotModel, numberOfPoints) {
+    this.truncatePointsForStandardPlot(plotModel);
+
+    plotModel.numberOfPoints = numberOfPoints;
+    plotModel.outputPointsLimit = OUTUPT_POINTS_LIMIT;
+    plotModel.outputPointsPreviewNumber = OUTUPT_POINTS_PREVIEW_NUMBER;
+  },
+
   handleModellUpdate: function() {
     var newModel = this.model.get('model');
     this._currentScope.updateModelData(newModel);
@@ -94,7 +138,7 @@ var PlotView = widgets.DOMWidgetView.extend({
   },
 
   initStandardPlot: function (model) {
-    this._currentScope = new PlotScope('wrap_'+this.id);
+    this._currentScope = new PlotScope('wrap_'+this.model.model_id);
     var tmpl = this._currentScope.buildTemplate();
     var tmplElement = $(tmpl);
 

@@ -49,11 +49,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.ivy.plugins.resolver.FileSystemResolver;
-import org.apache.ivy.plugins.resolver.RepositoryResolver;
 import org.assertj.core.util.Lists;
 
-import static com.twosigma.beakerx.kernel.commands.ClasspathAddMvnDepsMagicCommandTest.TEST_IVY_CACHE;
+import static com.twosigma.beakerx.kernel.commands.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
 import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
 
 public class KernelTest implements KernelFunctionality {
@@ -182,8 +180,9 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
             new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<group name version>", magicCommand.classpathAddMvn(
                     new MavenJarResolver.ResolverParams(
-                            new File(TEST_IVY_CACHE).getAbsolutePath(),
-                            getTempFolder().toString() + MVN_DIR
+                            new File(TEST_MVN_CACHE).getAbsolutePath(),
+                            getTempFolder().toString() + MVN_DIR,
+                            true
                     )
             )),
             new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
@@ -192,12 +191,6 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
             new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport())
     );
-  }
-
-  private RepositoryResolver createRepositoryResolver() {
-    FileSystemResolver br = new FileSystemResolver();
-    br.setName("central");
-    return br;
   }
 
   @Override
@@ -273,7 +266,7 @@ public class KernelTest implements KernelFunctionality {
 
   @Override
   public SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message,
-      int executionCount, ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
+                                                                       int executionCount, ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
     this.code = code;
     SimpleEvaluationObjectWithTime seowt = new SimpleEvaluationObjectWithTime(code, executeCodeCallbackWithTime);
     seowt.setJupyterMessage(message);

@@ -120,12 +120,12 @@ public class CodeFactory {
     List<String> result = new ArrayList<>();
     Pattern p = Pattern.compile("^%.*", Pattern.MULTILINE);
     while (scanner.hasNext(p)) {
-      result.add(normalizeCommand(scanner.nextLine()));
+      result.add(removeExtraWhitespaces(scanner.nextLine()));
     }
     return result;
   }
 
-  private static String normalizeCommand(String command) {
+  private static String removeExtraWhitespaces(String command) {
     return command.replaceAll("\\s+", " ");
   }
 

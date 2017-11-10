@@ -37,7 +37,7 @@ public class TimeItCellModeMagicCommand extends TimeMagicCommand {
     Message message = param.getMessage();
     int executionCount = param.getExecutionCount();
     try {
-      return timeIt(buildTimeItOption(code), code.getCodeBlock().get(), message, executionCount);
+      return timeIt(buildTimeItOption(code), param.getCommandCodeBlock(), message, executionCount);
     } catch (IllegalArgumentException e) {
       return MagicCommandUtils.errorResult(message, e.getMessage(), executionCount, kernel);
     }

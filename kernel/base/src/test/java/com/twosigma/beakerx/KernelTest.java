@@ -285,6 +285,8 @@ public class KernelTest implements KernelFunctionality {
     this.code = code;
     SimpleEvaluationObjectWithTime seowt = new SimpleEvaluationObjectWithTime(code, executeCodeCallbackWithTime);
     seowt.setJupyterMessage(message);
+    seowt.started();
+    seowt.finished(1L);
     executeCodeCallbackWithTime.execute(seowt);
     return seowt;
   }

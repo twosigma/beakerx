@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kernel.handler;
 
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandResult;
 import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
 import com.twosigma.beakerx.message.Message;
@@ -30,8 +31,14 @@ public class MagicCommandExecutor {
     } else {
       code.getMagicCommands().
               forEach(magicCommand -> {
-                MagicCommandResultItem magicCommandResultItem = magicCommand.execute(code, magicCommand.getCommand(), code.getMessage(), executionCount);
-                result.addItem(magicCommandResultItem);
+                MagicCommandExecutionParam param = new MagicCommandExecutionParam(
+                        code,
+                        magicCommand.getCommand(),
+                        magicCommand.getCommandCodeBlock(),
+                        code.getMessage(),
+                        executionCount);
+                MagicCommandResultItem item = magicCommand.execute(param);
+                result.addItem(item);
               });
 
     }

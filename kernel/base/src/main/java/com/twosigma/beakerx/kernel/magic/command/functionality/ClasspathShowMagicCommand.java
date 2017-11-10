@@ -15,8 +15,8 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
@@ -33,7 +33,9 @@ public class ClasspathShowMagicCommand extends ClasspathMagicCommand {
   }
 
   @Override
-  public MagicCommandResultItem execute(Code code, String command, Message message, int executionCount) {
+  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {;
+    Message message = param.getMessage();
+    int executionCount = param.getExecutionCount();
     MIMEContainer result = Text(kernel.getClasspath());
     return resultWithCustomMessage(result.getData().toString(), message, executionCount, kernel);
   }

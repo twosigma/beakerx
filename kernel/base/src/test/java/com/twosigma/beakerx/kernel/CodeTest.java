@@ -52,7 +52,7 @@ public class CodeTest {
             "  }});";
     //when
     Code code = CodeFactory.create(JAVASCRIPT + "\n" + jsCode, new Message(), 1, kernel);
-    String toCompare = code.getCodeBlock().get().replaceAll("\\s+", "");
+    String toCompare = code.getMagicCommands().get(0).getCommandCodeBlock().replaceAll("\\s+", "");
     jsCode = jsCode.replaceAll("\\s+", "");
 
     //then

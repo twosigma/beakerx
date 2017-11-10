@@ -19,6 +19,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
 import com.twosigma.beakerx.message.Message;
@@ -36,7 +37,11 @@ public class AddImportMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public MagicCommandResultItem execute(Code code, String command, Message message, int executionCount) {
+  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
+    Code code = param.getCode();
+    String command = param.getCommand();
+    Message message = param.getMessage();
+    int executionCount = param.getExecutionCount();
     String[] parts = command.split(" ");
     if (parts.length != 2) {
       return MagicCommandUtils.resultWithCustomMessage(kernel.getImports().toString(), message, executionCount, kernel);

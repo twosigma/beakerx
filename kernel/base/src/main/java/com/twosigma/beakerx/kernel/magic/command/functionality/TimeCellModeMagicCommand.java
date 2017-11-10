@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
 import com.twosigma.beakerx.message.Message;
 
@@ -29,7 +30,10 @@ public class TimeCellModeMagicCommand extends TimeMagicCommand {
   }
 
   @Override
-  public MagicCommandResultItem execute(Code code, String command, Message message, int executionCount) {
+  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
+    Code code = param.getCode();
+    Message message = param.getMessage();
+    int executionCount = param.getExecutionCount();
     return time(code.getCodeBlock().get(), message, executionCount);
   }
 

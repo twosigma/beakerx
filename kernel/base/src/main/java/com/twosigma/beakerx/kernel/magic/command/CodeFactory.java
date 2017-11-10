@@ -28,39 +28,49 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import org.apache.commons.text.StrTokenizer;
-
 import static java.lang.System.lineSeparator;
 import static org.apache.commons.lang3.StringUtils.join;
 
 public class CodeFactory {
 
+  public static final String CELL_COMMAND_MAGIC = "%%";
+  public static final ArrayList<MagicCommand> NO_MAGIC_COMMANDS = new ArrayList<>();
+  private static List<MagicCommandItemWithResult> NO_ERRORS = new ArrayList<>();
+
   private CodeFactory() {
   }
 
   public static Code create(String allCode, Message message, int executionCount, KernelFunctionality kernel) {
-
     Scanner scanner = new Scanner(allCode);
     List<String> commandsList = takeCommands(scanner);
-    String codeWithoutCommands = join(restOfTheCode(scanner), lineSeparator());
+    Optional<String> codeWithoutCommands = restOfTheCode(scanner);
+    if (!commandsList.isEmpty()) {
+      return createCodeWithCommands(allCode, message, executionCount, kernel, commandsList, codeWithoutCommands);
+    } else {
+      return createCodeWithoutCommands(allCode, message, codeWithoutCommands);
+    }
+  }
 
-    List<MagicCommandItemWithResult> errors = new ArrayList<>();
+  private static Code createCodeWithCommands(String allCode, Message message, int executionCount, KernelFunctionality kernel, List<String> commandsList, Optional<String> codeWithoutCommands) {
+    String firstCommand = commandsList.get(0);
+    if (isCellCommand(firstCommand)) {
+      return createCodeWithCellCommand(allCode, message, executionCount, kernel, commandsList, codeWithoutCommands, firstCommand);
+    } else {
+      return createCodeWithLineMagicCommands(allCode, message, executionCount, kernel, commandsList, codeWithoutCommands);
+    }
+  }
+
+  private static Code createCodeWithoutCommands(String allCode, Message message, Optional<String> codeWithoutCommands) {
+    if (!codeWithoutCommands.isPresent()) {
+      throw new RuntimeException("No code");
+    }
+    return Code.createCode(allCode, codeWithoutCommands.get(), NO_MAGIC_COMMANDS, NO_ERRORS, message);
+  }
+
+  private static Code createCodeWithLineMagicCommands(String allCode, Message message, int executionCount, KernelFunctionality kernel, List<String> commandsList, Optional<String> codeWithoutCommands) {
     List<MagicCommand> magicCommands = new ArrayList<>();
+    List<MagicCommandItemWithResult> errors = new ArrayList<>();
     commandsList.forEach(command -> {
-      if (command.startsWith("%%") && isCellmagicHeadNonEmpty(command)) {
-        errors.add(processIllegalCommand("Cell magic head contains data, move it to body.", message, executionCount, kernel));
-        return;
-      }
-
-      if (command.contains("\"")) {
-        int indexOfFirstQuote = command.indexOf("\"");
-        command = command.substring(0, indexOfFirstQuote)
-                .replaceAll("\\s+", " ")
-                .concat(command.substring(indexOfFirstQuote, command.length()));
-      } else {
-        command = command.replaceAll("\\s+", " ");
-      }
-
       Optional<MagicCommandFunctionality> mcOption = findMagicCommandFunctionality(kernel.getMagicCommandTypes(), command);
       if (mcOption.isPresent()) {
         magicCommands.add(new MagicCommand(mcOption.get(), command));
@@ -68,47 +78,55 @@ public class CodeFactory {
         errors.add(processIllegalCommand("Cell magic " + command + " not found", message, executionCount, kernel));
       }
     });
-    if (codeWithoutCommands.isEmpty()) {
+    if (codeWithoutCommands.isPresent()) {
+      return Code.createCode(allCode, codeWithoutCommands.get(), magicCommands, errors, message);
+    } else {
       return Code.createCodeWithoutCodeBlock(allCode, magicCommands, errors, message);
     }
-    return Code.createCode(allCode, codeWithoutCommands, magicCommands, errors, message);
   }
 
-  private static List<String> restOfTheCode(Scanner scanner) {
+  private static Code createCodeWithCellCommand(String allCode, Message message, int executionCount, KernelFunctionality kernel, List<String> commandsList, Optional<String> codeWithoutCommands, String firstCommand) {
+    List<MagicCommandItemWithResult> errors = new ArrayList<>();
+    List<MagicCommand> magicCommands = new ArrayList<>();
+
+    StringBuilder restOfTheCode = new StringBuilder();
+    restOfTheCode.append(String.join(lineSeparator(), commandsList.subList(1, commandsList.size())));
+    codeWithoutCommands.ifPresent(code -> restOfTheCode.append(code));
+    Optional<MagicCommandFunctionality> mcOption = findMagicCommandFunctionality(kernel.getMagicCommandTypes(), firstCommand);
+    if (mcOption.isPresent()) {
+      magicCommands.add(new MagicCommand(mcOption.get(), firstCommand, restOfTheCode.toString()));
+    } else {
+      errors.add(processIllegalCommand("Cell magic " + firstCommand + " not found", message, executionCount, kernel));
+    }
+    return Code.createCodeWithoutCodeBlock(allCode, magicCommands, errors, message);
+  }
+
+  private static boolean isCellCommand(String command) {
+    return command.startsWith(CELL_COMMAND_MAGIC);
+  }
+
+  private static Optional<String> restOfTheCode(Scanner scanner) {
     List<String> codeWithoutCommands = new ArrayList<>();
     while (scanner.hasNext()) {
       codeWithoutCommands.add(scanner.nextLine());
     }
-    return codeWithoutCommands;
+    if (codeWithoutCommands.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(join(codeWithoutCommands, lineSeparator()));
   }
 
   private static List<String> takeCommands(Scanner scanner) {
     List<String> result = new ArrayList<>();
     Pattern p = Pattern.compile("^%.*", Pattern.MULTILINE);
     while (scanner.hasNext(p)) {
-      result.add(scanner.nextLine());
+      result.add(normalizeCommand(scanner.nextLine()));
     }
     return result;
   }
 
-  private static boolean isCellmagicHeadNonEmpty(String command) {
-    List<String> commands = new StrTokenizer(command).getTokenList();
-
-    String commandWithoutOptions = removeOptionsFromHead(commands);
-
-    return !(commandWithoutOptions.replace(commands.get(0), "")
-            .replace(" ", "").length() < 1);
-  }
-
-  private static String removeOptionsFromHead(List<String> commands) {
-    StringBuilder stringBuilder = new StringBuilder();
-    for (String command : commands) {
-      if (!(command.startsWith("-r") || command.startsWith("-n") || command.startsWith("-q"))) {
-        stringBuilder.append(command);
-      }
-    }
-
-    return stringBuilder.toString();
+  private static String normalizeCommand(String command) {
+    return command.replaceAll("\\s+", " ");
   }
 
   private static Optional<MagicCommandFunctionality> findMagicCommandFunctionality(final List<MagicCommandType> commands, final String command) {

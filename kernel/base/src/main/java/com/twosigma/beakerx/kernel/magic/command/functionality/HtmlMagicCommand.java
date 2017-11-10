@@ -15,8 +15,8 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
 import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
@@ -38,14 +38,17 @@ public class HtmlMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public MagicCommandResultItem execute(Code code, String command, Message message, int executionCount) {
-    return code.getCodeBlock()
-            .map(codeWithoutCommand -> {
-              MIMEContainer html = HTML("<html>" + codeWithoutCommand + "</html>");
-              return new MagicCommandItemWithResult(
-                      MessageCreator.buildMessage(message, singletonList(html), executionCount),
-                      MessageCreator.buildReplyWithOkStatus(message, executionCount, kernel)
-              );
-            }).orElse(errorResult(message, String.format(USAGE_ERROR_MSG, HTML), executionCount, kernel));
+  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
+    Message message = param.getMessage();
+    int executionCount = param.getExecutionCount();
+    String commandCodeBlock = param.getCommandCodeBlock();
+    if (commandCodeBlock==null){
+      return errorResult(message, String.format(USAGE_ERROR_MSG, HTML), executionCount, kernel);
+    }
+    MIMEContainer html = HTML("<html>" + commandCodeBlock + "</html>");
+    return new MagicCommandItemWithResult(
+            MessageCreator.buildMessage(message, singletonList(html), executionCount),
+            MessageCreator.buildReplyWithOkStatus(message, executionCount, kernel)
+    );
   }
 }

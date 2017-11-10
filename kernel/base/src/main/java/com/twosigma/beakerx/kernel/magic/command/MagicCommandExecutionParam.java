@@ -13,30 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beakerx.kernel.magic.command;
 
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
+import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.message.Message;
 
-public class MagicCommand {
+public class MagicCommandExecutionParam {
 
-  private MagicCommandFunctionality magicCommandFunctionality;
+  private Code code;
   private String command;
   private String commandCodeBlock;
+  private Message message;
+  private int executionCount;
 
-  public MagicCommand(MagicCommandFunctionality magicCommandFunctionality, String command, String commandCodeBlock) {
-    this.magicCommandFunctionality = magicCommandFunctionality;
+  public MagicCommandExecutionParam(Code code, String command, String commandCodeBlock, Message message, int executionCount) {
+    this.code = code;
     this.command = command;
     this.commandCodeBlock = commandCodeBlock;
+    this.message = message;
+    this.executionCount = executionCount;
   }
 
-  public MagicCommand(MagicCommandFunctionality magicCommandFunctionality, String command) {
-    this.magicCommandFunctionality = magicCommandFunctionality;
-    this.command = command;
-  }
-
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
-    return this.magicCommandFunctionality.execute(param);
+  public Code getCode() {
+    return code;
   }
 
   public String getCommand() {
@@ -47,4 +46,11 @@ public class MagicCommand {
     return commandCodeBlock;
   }
 
+  public Message getMessage() {
+    return message;
+  }
+
+  public int getExecutionCount() {
+    return executionCount;
+  }
 }

@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
 import com.twosigma.beakerx.message.Message;
 
@@ -33,7 +34,11 @@ public class ClasspathAddJarMagicCommand extends ClasspathMagicCommand {
   }
 
   @Override
-  public MagicCommandResultItem execute(Code code, String command, Message message, int executionCount) {
+  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
+    Code code = param.getCode();
+    String command = param.getCommand();
+    Message message = param.getMessage();
+    int executionCount = param.getExecutionCount();
     String[] split = splitPath(command);
     if (split.length != 4) {
       return errorResult(message, WRONG_FORMAT_MSG + CLASSPATH_ADD_JAR, executionCount, kernel);

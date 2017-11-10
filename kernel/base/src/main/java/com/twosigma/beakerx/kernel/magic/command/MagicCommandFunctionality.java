@@ -15,16 +15,13 @@
  */
 package com.twosigma.beakerx.kernel.magic.command;
 
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.message.Message;
-
 
 public interface MagicCommandFunctionality {
 
   String USAGE_ERROR_MSG = "UsageError: %s is a cell magic, but the cell body is empty.";
   String WRONG_FORMAT_MSG = "Wrong format. ";
 
-  MagicCommandResultItem execute(Code code, String command, Message message, int executionCount);
+  MagicCommandResultItem execute(MagicCommandExecutionParam param);
 
 }

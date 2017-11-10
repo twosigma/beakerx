@@ -1,3 +1,2 @@
 include LICENSE
 include NOTICE
-include ../beakerx/beakerx/_version.py

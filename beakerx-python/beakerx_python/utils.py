@@ -12,53 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import inspect
-import time
-from datetime import datetime
-from dateutil import parser
-from enum import Enum
-import pytz
-from pandas._libs.tslib import Timestamp
-
-current_milli_time = lambda: int(round(time.time() * 1000))
-
-def is_date(string):
-    try:
-        parser.parse(string)
-        return True
-    except Exception:
-        return False
-
-
-def unix_time(dt):
-    if isinstance(dt, Timestamp):
-        date = dt.to_pydatetime()
-    else:
-        date = parser.parse(dt)
-
-    epoch = parser.parse("1970-01-01 00:00:00+00:00")
-    delta = date.replace(tzinfo=pytz.utc) - epoch
-
-    return delta.total_seconds()
-
-
-def date_time_2_millis(dt):
-    return int(unix_time(dt) * 1000.0)
-
-
-class BaseObject:
-    def __init__(self, **kwargs):
-        self.type = self.__class__.__name__
-    
-    def transform(self):
-        model = json.dumps(self, cls=ObjectEncoder)
-        return json.loads(model)
-    
-    def transformBack(self, dict):
-        self.__dict__ = dict
-
-
 class Color:
     def __init__(self, r, g, b, a=255):
         self.R = r
@@ -69,12 +22,13 @@ class Color:
             (g & 0xFF) << 8) | (b & 0xFF)
         if self.value < 0:
             self.value = 0xFFFFFFFF + self.value + 1
-    
+
     def hex(self):
         return '#%02x' % self.value
-    
+
     def shorthex(self):
         return '#%06x' % (self.value & 0x00FFFFFF)
+
 
 Color.white = Color(255, 255, 255)
 Color.WHITE = Color.white
@@ -133,57 +87,27 @@ def padYs(g, gMax):
         g.x = g.x + gMax.x[currentSize:]
 
 
-class ObjectEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, datetime):
-            return self.default(date_time_2_millis(obj))
-        elif isinstance(obj, Enum):
-            return self.default(obj.name)
-        elif isinstance(obj, Color):
-            return self.default(obj.hex())
-        elif hasattr(obj, "__dict__"):
-            d = dict(
-                    (key, value)
-                    for key, value in inspect.getmembers(obj)
-                    if value is not None
-                    and not key == "Position"
-                    and not key == "colorProvider"
-                    and not key == "toolTipBuilder"
-                    and not key == "parent"
-                    and not key.startswith("__")
-                    and not inspect.isabstract(value)
-                    and not inspect.isbuiltin(value)
-                    and not inspect.isfunction(value)
-                    and not inspect.isgenerator(value)
-                    and not inspect.isgeneratorfunction(value)
-                    and not inspect.ismethod(value)
-                    and not inspect.ismethoddescriptor(value)
-                    and not inspect.isroutine(value)
-            )
-            return self.default(d)
-        return obj
-
 class ColorUtils:
     @staticmethod
     def interpolateColor(color1, color2, fraction):
         fraction = min(fraction, 1.0)
         fraction = max(fraction, 0.0)
-        
+
         red1 = color1.R
         green1 = color1.G
         blue1 = color1.B
         alpha1 = color1.A
-        
+
         red2 = color2.R
         green2 = color2.G
         blue2 = color2.B
         alpha2 = color2.A
-        
+
         delta_red = red2 - red1
         delta_green = green2 - green1
         delta_blue = blue2 - blue1
         delta_alpha = alpha2 - alpha1
-        
+
         red = red1 + (delta_red * fraction)
         green = green1 + (delta_green * fraction)
         blue = blue1 + (delta_blue * fraction)

@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-
-import os, json, pandas, numpy
+import json, pandas, numpy
 import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, IPython, datetime, calendar, math, traceback, time
 from traitlets import Unicode
 
 from ipykernel.comm import Comm
 from IPython.display import display_html
+from .utils import BaseObject
+import importlib
 
+beakerx_python_loader = importlib.find_loader('beakerx_python')
 
 class OutputContainer:
     def __init__(self):
@@ -417,6 +418,7 @@ class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
 class TableDisplayWrapper(object):
     def __get__(self, model_instance, model_class):
         def f():
+            from beakerx_python import TableDisplay
             display_html(TableDisplay(model_instance))
         return f
     
@@ -433,7 +435,8 @@ class BeakerX:
 
     @staticmethod
     def pandas_display_table():
-        pandas.DataFrame._ipython_display_ = TableDisplayWrapper()
+        if beakerx_python_loader:
+            pandas.DataFrame._ipython_display_ = TableDisplayWrapper()
         
     def set4(self, var, val, unset, sync):
         args = {'name': var, 'sync':sync}

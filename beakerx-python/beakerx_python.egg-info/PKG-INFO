@@ -1,0 +1,23 @@
+Metadata-Version: 1.1
+Name: beakerx-python
+Version: 0.7.1
+Summary: BeakerX: Python Beaker Extensions for Jupyter Notebook
+Home-page: http://beakerx.com
+Author: Two Sigma Open Source, LLC
+Author-email: beakerx-feedback@twosigma.com
+License: UNKNOWN
+Description-Content-Type: UNKNOWN
+Description: BeakerX: Python Beaker Extensions for Jupyter Notebook
+Keywords: ipython,jupyter,widgets,python
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Framework :: IPython
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5

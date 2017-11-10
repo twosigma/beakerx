@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from beakerx.beakerx_widgets import *
-from beakerx.tabledisplay import *
-from beakerx.plot.chart import *
-from ipywidgets import Widget
 from abc import *
-from pandas import *
+from beakerx_python.beakerx_widgets import *
+from beakerx_python.plot.chart import *
+from beakerx_python.tabledisplay import *
+from ipywidgets import Widget
 
 
 class OutputContainerLayoutManager:

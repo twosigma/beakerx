@@ -12,29 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .runtime import BeakerX
-from ._version import version_info, __version__
-from .handlers import load_jupyter_server_extension
-from .environment import *
-import json
-
-def _jupyter_nbextension_paths():
-    return [{
-        'section': 'tree',
-        'src': 'static',
-        'dest': 'beakerx',
-        'require': 'beakerx/tree'
-    }, {
-        'section': 'notebook',
-        'src': 'static',
-        'dest': 'beakerx',
-        'require': 'beakerx/extension'
-    }
-    ]
-
-
-def _jupyter_server_extension_paths():
-    return [dict(module="beakerx")]
-
-
-beakerx = BeakerX()
+from .easyform import *
+from .output_container import *
+from .plot import *
+from .tabledisplay import *

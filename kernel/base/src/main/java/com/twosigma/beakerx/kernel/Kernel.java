@@ -19,6 +19,7 @@ import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
 import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
 
 import com.google.common.collect.Lists;
+import com.twosigma.beakerx.BeakerxToStringDisplayer;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -42,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
+import jupyter.Displayers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +71,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   protected Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory,
-                CloseKernelAction closeKernelAction) {
+                   CloseKernelAction closeKernelAction) {
     this.messageCreator = new MessageCreator(this);
     this.sessionId = sessionId;
     this.kernelSocketsFactory = kernelSocketsFactory;
@@ -83,7 +84,7 @@ public abstract class Kernel implements KernelFunctionality {
     DisplayerDataMapper.init();
     configureSignalHandler();
     initKernel(getKernelParameters());
-    configureJvmRepr();
+    intJvmRepr();
   }
 
   public abstract KernelParameters getKernelParameters();
@@ -91,9 +92,6 @@ public abstract class Kernel implements KernelFunctionality {
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 
   public abstract KernelHandler<Message> getKernelInfoHandler(Kernel kernel);
-
-  protected void configureJvmRepr() {
-  }
 
   @Override
   public void run() {
@@ -275,6 +273,13 @@ public abstract class Kernel implements KernelFunctionality {
     );
   }
 
+  private void intJvmRepr() {
+    Displayers.registration().setDefault(BeakerxToStringDisplayer.get());
+    configureJvmRepr();
+  }
+
+  protected void configureJvmRepr() {
+  }
 
   @Override
   public Path getTempFolder() {

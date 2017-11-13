@@ -16,47 +16,37 @@
 # limitations under the License.
 
 from setuptools import setup, find_packages
+import os
 from setupbase import (
     create_cmdclass,
-    install_node_modules,
+    run_gradle,
     get_version,
-    get_data_files,
-    here
 )
-import os
 
+required_beakerx_version = '0.7.0'
 
 cmdclass = create_cmdclass(develop_wrappers=[
-    'js',
+    'java',
 ], distribute_wrappers=[
-    'js',
+    'java',
 ])
-cmdclass['js'] = install_node_modules(
-    path='js',
-    build_dir=os.path.join(here, 'js', 'dist'),
-    source_dir=os.path.join(here, 'js', 'src')
-)
+cmdclass['java'] = run_gradle(kernel_name='clojure', cmd='build')
 
 setup_args = dict(
-    name                = 'beakerx',
-    description         = 'BeakerX: Beaker Extensions for Jupyter Notebook',
-    long_description    = 'BeakerX: Beaker Extensions for Jupyter Notebook',
-    version             = get_version(os.path.join('beakerx', '_version.py')),
-    author              = 'Two Sigma Open Source, LLC',
-    author_email        = 'beakerx-feedback@twosigma.com',
-    url                 = 'http://beakerx.com',
-    keywords            = [
-        'ipython',
+    name='beakerx-clojure',
+    description='BeakerX: Python Beaker Extensions for Jupyter Notebook',
+    long_description='BeakerX: Python Beaker Extensions for Jupyter Notebook',
+    version=required_beakerx_version,
+    author='Two Sigma Open Source, LLC',
+    author_email='beakerx-feedback@twosigma.com',
+    url='http://beakerx.com',
+    keywords=[
         'jupyter',
         'widgets',
-        'java',
+        'kernel',
         'clojure',
-        'groovy',
-        'scala',
-        'kotlin',
-        'sql',
     ],
-    classifiers         = [
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: IPython',
         'Intended Audience :: Developers',
@@ -69,30 +59,14 @@ setup_args = dict(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
-    entry_points={
-        'console_scripts': [
-            'beakerx-install = beakerx.install:install',
-            'bkr2ipynb = beakerx.bkr2ipynb:main',
-        ]
-    },
-    package_data={
-        'beakerx': [
-            'kernel/*/kernel.json'
-        ]
-    },
-    data_files          = [(
-        'share/jupyter/nbextensions/beakerx',
-        get_data_files(os.path.join('beaker'))
-    )],
-    install_requires    = [
-        'notebook >=4.4.0',
-        'ipywidgets >=7.0.0',
-        'pandas'
+    install_requires=[
+        'beakerx_base >=' + required_beakerx_version,
+        'beakerx >=' + required_beakerx_version,
     ],
-    zip_safe            = False,
-    include_package_data= True,
-    packages            = find_packages(),
-    cmdclass            = cmdclass
+    zip_safe=False,
+    include_package_data=True,
+    packages=find_packages(),
+    cmdclass=cmdclass
 )
 
 if __name__ == '__main__':

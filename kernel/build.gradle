@@ -24,6 +24,15 @@ allprojects {
     maven { url 'https://jitpack.io' }
   }
 }
+ext.kernelIdName = ''
+
+def getPathToStaticContent(kernel) {
+  def path = "../../beakerx-${kernel}/beakerx_${kernel}"
+  if (kernel == 'base'){
+    return path + '/lib'
+  }
+  return path
+}
 
 subprojects {
   apply plugin: 'jacoco'
@@ -52,7 +61,7 @@ subprojects {
       }
     }
   }
-  ext.pathToStaticContent = '../../beakerx/beakerx/kernel/'
+
 
   test {
     testLogging {
@@ -68,7 +77,7 @@ subprojects {
     doLast {
       copy {
         from '.'
-        into pathToStaticContent + kernelIdName
+        into getPathToStaticContent(kernelIdName)
         include '*.png'
         include 'kernel.json'
       }
@@ -78,8 +87,11 @@ subprojects {
 
   task cleanStaticContent {
     doLast {
-      delete pathToStaticContent + kernelIdName
+      delete getPathToStaticContent(kernelIdName)
     }
   }
   clean.dependsOn cleanStaticContent
+  test {
+    exclude '**'
+  }
 }

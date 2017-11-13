@@ -84,5 +84,5 @@ publishing {
   }
 }
 
-installDist.into new File(pathToStaticContent, kernelIdName)
+installDist.into new File(getPathToStaticContent(kernelIdName))
 distZip.dependsOn installDist

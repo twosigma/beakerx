@@ -158,9 +158,9 @@ def _disable_beakerx():
 
 def _install_beakerx(args):
     _install_nbextension()
-    _install_kernels()
+    #_install_kernels()
     _install_css()
-    _copy_icons()
+    #_copy_icons()
     _install_kernelspec_manager(args.prefix)
 
 def install():

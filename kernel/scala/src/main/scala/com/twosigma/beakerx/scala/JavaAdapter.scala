@@ -47,4 +47,11 @@ object JavaAdapter {
     implicit object localDateTime extends BeakerXAxis[java.time.LocalDateTime]
     implicit object instant extends BeakerXAxis[java.time.Instant]
   }
+
+  def getNullableList[T](getter: () => java.util.List[T]) = {
+    import scala.collection.JavaConverters._
+
+    Option(getter()).toSeq.flatMap(_.asScala)
+  }
+
 }

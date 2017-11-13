@@ -23,9 +23,11 @@ import com.twosigma.beakerx.scala.chart.GraphicsProperties
 
 import scala.collection.JavaConverters._
 
-trait XYGraphicsProperties extends GraphicsProperties { this: XYGraphics =>
+trait XYGraphicsProperties extends GraphicsProperties {
+  this: XYGraphics =>
+
   def color: Option[Color] = Option(getColor)
-  def colors: Option[Iterable[Color]] = Option(getColors).map(_.asScala)
+  def colors: Seq[Color] = getNullableList(getColors)
   def color_=(c: Color): Unit = setColor(c)
   def color_=(c: java.awt.Color): Unit = setColor(c)
   // TODO: use type constraint (Color, java.awt.Color)
@@ -36,15 +38,15 @@ trait XYGraphicsProperties extends GraphicsProperties { this: XYGraphics =>
   def displayName_=(s: String): Unit = setDisplayName(s)
 
   def setToolTip(t: Seq[String]): Unit = setToolTip(t.asJava)
-  def toolTip = getToolTips.asScala
+  def toolTip = getNullableList(getToolTips)
   def toolTip_=(t: Seq[String]) = setToolTip(t)
 
   // TODO: use type constraint (Number, Date, LocalDate, LocalDateTime, Instant)
   def setX[T](xs: Seq[T]): Unit = setX(xs.map(_.asInstanceOf[Object]).asJava)
-  def x: Iterable[Number] = getX.asScala
+  def x: Seq[Number] = getX.asScala
   def x_=[T](xs: Seq[T]) = setX(xs)
 
   def setY[T](ys: Seq[T])(implicit conv: T => Number): Unit = setY(ys.map(x => x: Number).asJava)
-  def y: Iterable[Number] = getY.asScala
+  def y: Seq[Number] = getY.asScala
   def y_=[T](ys: Seq[T])(implicit conv: T => Number) = setY(ys)
 }

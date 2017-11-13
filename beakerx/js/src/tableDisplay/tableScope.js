@@ -363,10 +363,10 @@ define([
     }
 
     if (all) {
+      self.actualtype = [];
       self.timeStrings = undefined;
       self.tz = undefined;
       self.types = undefined;
-      self.actualtype = undefined;
       self.actualalign = undefined;
       self.data = undefined;
       self.update = undefined;
@@ -1561,14 +1561,16 @@ define([
     var createColumnMenus = require('./tableHeaderMenu/createColumnMenus').default;
     self.columnMenus = createColumnMenus(self);
 
-    self.createTableMenuElements();
     // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
     self.fixcols.fnRedrawLayout();
     self.updateFixedColumnsSeparator();
 
     setTimeout(function(){
       if (!self.table) { return; }
+
+      self.createTableMenuElements();
       self.applyFilters();
+
       if (self.columnFilter) {
         self.table.columns().every(function(i) {
           var column = this;

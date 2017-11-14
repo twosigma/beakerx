@@ -50,6 +50,7 @@ def build_kernel(kernel_name):
 
 def build_all():
     build_beakerx()
+    build_kernel('python')
     build_kernel('base')
     for kernel in kernels:
         build_kernel(kernel)

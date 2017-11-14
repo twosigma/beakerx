@@ -1,3 +1,18 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.twosigma.beakerx.sql;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
@@ -19,7 +34,6 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.commands.MagicCommand;
-import com.twosigma.beakerx.kernel.commands.MagicCommandResult;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import com.twosigma.beakerx.table.TableDisplay;
@@ -38,7 +52,6 @@ public class SQLMySQLEvaluatorTest {
   private static final String CLASSPATH_TO_MYSQL_DRIVER_JAR = SRC_TEST_RESOURCES + "jdbc_drivers/mysql-connector-java-6.0.6.jar";
   private static final String TEST_DB_USER = "minty";
   private static final String TEST_DB_PASSWORD = "anotherPassword";
-  private static final Integer TEST_DB_PORT = 2215;
 
   private EmbeddedMysql embeddedMysql;
   private SQLEvaluator sqlEvaluator;
@@ -51,7 +64,6 @@ public class SQLMySQLEvaluatorTest {
 
     MysqldConfig config = aMysqldConfig(v5_7_latest)
         .withCharset(UTF8)
-        .withPort(TEST_DB_PORT)
         .withUser(TEST_DB_USER, TEST_DB_PASSWORD)
         .withTimeZone("Europe/Vilnius")
         .withTimeout(2, TimeUnit.MINUTES)
@@ -97,7 +109,7 @@ public class SQLMySQLEvaluatorTest {
 
   private KernelParameters kernelParameters() {
     Map<String, Object> params = new HashMap<>();
-    params.put(DEFAULT_DATASOURCE, "jdbc:mysql://localhost:" + TEST_DB_PORT + "/test?user=" + TEST_DB_USER + "&password=" + TEST_DB_PASSWORD);
+    params.put(DEFAULT_DATASOURCE, "jdbc:mysql://localhost:" + "3310" + "/test?user=" + TEST_DB_USER + "&password=" + TEST_DB_PASSWORD);
     return new KernelParameters(params);
   }
 

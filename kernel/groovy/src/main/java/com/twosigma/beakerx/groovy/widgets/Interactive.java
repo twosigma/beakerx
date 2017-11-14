@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 public class Interactive extends InteractiveBase {
 
+  private static Widget resultWidget;
+
   private static final Logger logger = LoggerFactory.getLogger(Interactive.class);
 
   @SuppressWarnings("unchecked")
@@ -40,15 +42,17 @@ public class Interactive extends InteractiveBase {
     for (ValueWidget<?> widget : widgets) {
       widget.getComm().addMsgCallbackList(widget.new ValueChangeMsgCallbackHandler() {
 
-        private Object processCode(Object... params) throws Exception {
-          widgets.forEach(Widget::display);
-
-          return function.call(getWidgetValues());
+        private void processCode(Object... params) throws Exception {
+          function.call(getWidgetValues());
         }
 
         @Override
         public void updateValue(Object value, Message message) {
-          runCompiledCodeAndPublish(message, this::processCode, Collections.emptyList());
+          try {
+            processCode();
+          } catch (Exception e) {
+            throw new IllegalStateException(e);
+          }
         }
 
         private Object[] getWidgetValues() {
@@ -66,7 +70,8 @@ public class Interactive extends InteractiveBase {
     widgets.forEach(Widget::display);
     Object response = function.call(widgets.stream().map(ValueWidget::getValue).toArray());
     if (response instanceof Widget) {
-      ((Widget) response).display();
+      resultWidget = (Widget) response;
+      resultWidget.display();
     }
   }
 

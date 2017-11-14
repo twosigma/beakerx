@@ -100,7 +100,6 @@ public class InteractiveBase {
         if(isFloat){
           Double[] minMaxValue = getDoubleArray(getMinMaxValue((Double)input[0], (Double)input[1], null));
           FloatSlider witget = new FloatSlider();
-          witget.setContinuous_update(false);
           witget.setMin(minMaxValue[0]);
           witget.setMax(minMaxValue[1]);
           witget.setValue(minMaxValue[2]);
@@ -108,7 +107,6 @@ public class InteractiveBase {
         }else if(isInt){
           Integer[] minMaxValue = getIntArray(getMinMaxValue((Integer)input[0], (Integer)input[1], null));
           IntSlider witget = new IntSlider();
-          witget.setContinuous_update(false);
           witget.setMin(minMaxValue[0]);
           witget.setMax(minMaxValue[1]);
           witget.setValue(minMaxValue[2]);
@@ -122,7 +120,6 @@ public class InteractiveBase {
           }
           Double[] minMaxValue = getDoubleArray(getMinMaxValue((Double)input[0], (Double)input[1], null));
           FloatSlider witget = new FloatSlider();
-          witget.setContinuous_update(false);
           witget.setMin(minMaxValue[0]);
           witget.setMax(minMaxValue[1]);
           witget.setValue(minMaxValue[2]);
@@ -135,7 +132,6 @@ public class InteractiveBase {
           }
           Integer[] minMaxValue = getIntArray(getMinMaxValue((Integer)input[0], (Integer)input[1], null));
           IntSlider witget = new IntSlider();
-          witget.setContinuous_update(false);
           witget.setMin(minMaxValue[0]);
           witget.setMax(minMaxValue[1]);
           witget.setValue(minMaxValue[2]);
@@ -168,7 +164,6 @@ public class InteractiveBase {
       Integer value = (Integer)o;
       Integer[] result = getIntArray(getMinMaxValue(null, null, value));
       IntSlider witget = new IntSlider();
-      witget.setContinuous_update(false);
       witget.setMin(result[0]);
       witget.setMax(result[1]);
       witget.setValue(value);
@@ -177,7 +172,6 @@ public class InteractiveBase {
       Double value = (Double)o;
       Double[] result = getDoubleArray(getMinMaxValue(null, null, value));
       FloatSlider witget = new FloatSlider();
-      witget.setContinuous_update(false);
       witget.setMin(result[0]);
       witget.setMax(result[1]);
       witget.setValue(value);

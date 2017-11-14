@@ -45,10 +45,10 @@ public class MagicCommandTypesFactory {
     List<MagicCommandType> magicCommandTypes = new ArrayList<>();
     magicCommandTypes.addAll(
             newArrayList(
-                    javascript(kernel),
-                    html(kernel),
-                    bash(kernel),
-                    lsmagic(kernel, magicCommandTypes),
+                    javascript(),
+                    html(),
+                    bash(),
+                    lsmagic(magicCommandTypes),
                     addJar(kernel),
                     addJarByMvn(kernel),
                     removeJar(kernel),
@@ -102,7 +102,7 @@ public class MagicCommandTypesFactory {
   private static MagicCommandType addJarByMvn(KernelFunctionality kernel) {
     return new MagicCommandType(ClasspathAddMvnMagicCommand.CLASSPATH_ADD_MVN, "<group name version>",
             new ClasspathAddMvnMagicCommand(new MavenJarResolver.ResolverParams(
-                    kernel.getTempFolder().toString() + "/../beakerIvyCache",
+                    kernel.getTempFolder().toString() + "/../beakerxMvnCache",
                     kernel.getTempFolder().toString() + MVN_DIR), kernel));
   }
 
@@ -110,19 +110,19 @@ public class MagicCommandTypesFactory {
     return new MagicCommandType(ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR, "<jar path>", new ClasspathAddJarMagicCommand(kernel));
   }
 
-  private static MagicCommandType lsmagic(KernelFunctionality kernel, List<MagicCommandType> magicCommandTypes) {
+  private static MagicCommandType lsmagic(List<MagicCommandType> magicCommandTypes) {
     return new MagicCommandType(LsMagicCommand.LSMAGIC, "", new LsMagicCommand(magicCommandTypes));
   }
 
-  private static MagicCommandType bash(KernelFunctionality kernel) {
+  private static MagicCommandType bash() {
     return new MagicCommandType(BashMagicCommand.BASH, "", new BashMagicCommand());
   }
 
-  private static MagicCommandType html(KernelFunctionality kernel) {
+  private static MagicCommandType html() {
     return new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand());
   }
 
-  private static MagicCommandType javascript(KernelFunctionality kernel) {
+  private static MagicCommandType javascript() {
     return new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand());
   }
 }

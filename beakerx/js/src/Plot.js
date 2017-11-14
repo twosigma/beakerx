@@ -85,7 +85,9 @@ var PlotView = widgets.DOMWidgetView.extend({
 
   getNumberOfPointsForStandardPlot: function(plotModel) {
     return Math.max.apply(null, plotModel.graphics_list.map(function(graphic) {
-      return graphic.x.length;
+      var points = graphic.x ? graphic.x : graphic.y;
+
+      return points ? points.length : 0;
     }));
   },
 

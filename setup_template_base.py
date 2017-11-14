@@ -16,27 +16,23 @@
 # limitations under the License.
 
 from setuptools import setup, find_packages
-import os
 from setupbase import (
     create_cmdclass,
     run_gradle,
-    get_version,
 )
-
-required_beakerx_version = '0.7.0'
 
 cmdclass = create_cmdclass(develop_wrappers=[
     'java',
 ], distribute_wrappers=[
     'java',
 ])
-cmdclass['java'] = run_gradle(kernel_name='clojure', cmd='build')
+cmdclass['java'] = run_gradle(kernel_name='${KERNEL}', cmd='build')
 
 setup_args = dict(
-    name='beakerx-clojure',
-    description='BeakerX: Python Beaker Extensions for Jupyter Notebook',
-    long_description='BeakerX: Python Beaker Extensions for Jupyter Notebook',
-    version=required_beakerx_version,
+    name='beakerx-${KERNEL}',
+    description='BeakerX: ${KERNEL} Beaker Extensions for Jupyter Notebook',
+    long_description='BeakerX: ${KERNEL} Beaker Extensions for Jupyter Notebook',
+    version='${REQUIRED_VERSION}',
     author='Two Sigma Open Source, LLC',
     author_email='beakerx-feedback@twosigma.com',
     url='http://beakerx.com',
@@ -44,7 +40,7 @@ setup_args = dict(
         'jupyter',
         'widgets',
         'kernel',
-        'clojure',
+        '${KERNEL}',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -60,9 +56,8 @@ setup_args = dict(
         'Programming Language :: Python :: 3.5',
     ],
     install_requires=[
-        'beakerx_base >=' + required_beakerx_version,
-        'beakerx >=' + required_beakerx_version,
-    ],
+        'beakerx >=${REQUIRED_VERSION}',
+        ],
     zip_safe=False,
     include_package_data=True,
     packages=find_packages(),

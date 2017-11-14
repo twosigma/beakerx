@@ -291,7 +291,8 @@ def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='
 
     return Yarn
 
-def run_gradle(path=kernel_path, cmd='build'):
+
+def run_gradle(path=kernel_path, kernel_name='base', cmd='build'):
     """Return a Command for running gradle scripts.
 
     Parameters
@@ -306,7 +307,8 @@ def run_gradle(path=kernel_path, cmd='build'):
         description = 'Run gradle script'
 
         def run(self):
-            run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', cmd], cwd=path)
+            run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', ':' + kernel_name + ':' + cmd],
+                cwd=path)
 
     return Gradle
 

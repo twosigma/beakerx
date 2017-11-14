@@ -14,10 +14,52 @@
 
 import subprocess
 import argparse
-from distutils import log
 import os
+import sys
+import shutil
+from string import Template
+from distutils import log
 
 kernels = ['java', 'groovy', 'scala', 'kotlin', 'clojure', 'sql']
+
+here = os.path.abspath(os.path.dirname(sys.argv[0]))
+
+
+def get_version():
+    version = {}
+
+    with open(os.path.join(here, 'beakerx', 'beakerx', '_version.py')) as f:
+        exec (f.read(), {}, version)
+    return version['__version__']
+
+
+def prepare_setup(kernel_name):
+    log.info("prepare setup...")
+
+    if kernel_name == 'python':
+        return
+
+    params = {'KERNEL': kernel_name,
+              'REQUIRED_VERSION': (get_version())
+              }
+
+    if kernel_name == 'base':
+        params['BASE'] = ""
+        template_file = 'setup_template_base.py'
+    else:
+        params['BASE'] = 'beakerx_base >=' + get_version() + ','
+        template_file = 'setup_template_kernel.py'
+
+    with open(template_file, 'r') as f:
+        template = f.read()
+
+    contents = Template(template).substitute(params)
+
+    with open(os.path.join('beakerx-' + kernel_name, 'setup.py'), 'w') as f:
+        f.write(contents)
+
+    shutil.copyfile(os.path.join(here, 'beakerx', 'setupbase.py'),
+                    os.path.join(here, 'beakerx-' + kernel_name, 'setupbase.py'))
 
 
 def build_beakerx():
@@ -36,6 +78,7 @@ def build_beakerx():
 
 def build_kernel(kernel_name):
     log.info("installing Beakerx kernel: " + kernel_name + " ...")
+    prepare_setup(kernel_name)
 
     home_dir = os.getcwd()
     os.chdir(os.path.join(home_dir, 'beakerx-' + kernel_name))

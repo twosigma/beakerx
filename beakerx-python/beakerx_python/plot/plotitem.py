@@ -18,6 +18,7 @@ import datetime as dt
 import numpy as np
 import pandas as pd
 from beakerx_python.utils import *
+from beakerx.utils import *
 from dateutil.parser import parse
 from enum import Enum
 

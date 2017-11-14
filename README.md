@@ -47,12 +47,26 @@ how to install and run BeakerX.
 
 ### Build and Install
 
+#### Create environment
 ```
 conda create -y -n beakerx 'python>=3' nodejs pandas openjdk
 source activate beakerx
 conda install -y -c conda-forge ipywidgets
-(cd beakerx; pip install -e . --verbose)
-beakerx-install
+python -m build --all
+```
+#### Build and install beakerx and all kernels
+```
+python -m build --all
+```
+
+#### Build and install only Beakerx
+```
+python -m build --base
+```
+
+#### Build and install kernel
+```
+python -m build --kernel=<kernel_name>
 ```
 
 ### Update after Java change

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from beakerx_python.utils import *
+from beakerx.utils import *
 from enum import Enum
 
 class TreeMapNode:

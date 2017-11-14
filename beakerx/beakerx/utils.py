@@ -48,6 +48,52 @@ def date_time_2_millis(dt):
     return int(unix_time(dt) * 1000.0)
 
 
+class Color:
+    def __init__(self, r, g, b, a=255):
+        self.R = r
+        self.B = b
+        self.G = g
+        self.A = a
+        self.value = ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | (
+            (g & 0xFF) << 8) | (b & 0xFF)
+        if self.value < 0:
+            self.value = 0xFFFFFFFF + self.value + 1
+
+    def hex(self):
+        return '#%02x' % self.value
+
+    def shorthex(self):
+        return '#%06x' % (self.value & 0x00FFFFFF)
+
+
+Color.white = Color(255, 255, 255)
+Color.WHITE = Color.white
+Color.lightGray = Color(192, 192, 192)
+Color.LIGHT_GRAY = Color.lightGray
+Color.gray = Color(128, 128, 128)
+Color.GRAY = Color.gray
+Color.darkGray = Color(64, 64, 64)
+Color.DARK_GRAY = Color.darkGray
+Color.black = Color(0, 0, 0)
+Color.BLACK = Color.black
+Color.red = Color(255, 0, 0)
+Color.RED = Color.red
+Color.pink = Color(255, 175, 175)
+Color.PINK = Color.pink
+Color.orange = Color(255, 200, 0)
+Color.ORANGE = Color.orange
+Color.yellow = Color(255, 255, 0)
+Color.YELLOW = Color.yellow
+Color.green = Color(0, 255, 0)
+Color.GREEN = Color.green
+Color.magenta = Color(255, 0, 255)
+Color.MAGENTA = Color.magenta
+Color.cyan = Color(0, 255, 255)
+Color.CYAN = Color.cyan
+Color.blue = Color(0, 0, 255)
+Color.BLUE = Color.blue
+
+
 class ObjectEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):

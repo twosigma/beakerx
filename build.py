@@ -42,10 +42,11 @@ def build_kernel(kernel_name):
 
     install_cmd = ['pip', 'install', '-e', '.', '--verbose']
     subprocess.check_call(install_cmd)
-    if not kernel_name == "base":
+    if not (kernel_name == "base" or kernel_name == "python"):
         subprocess.check_call(['beakerx-install', "--kernel=" + kernel_name])
 
     os.chdir(home_dir)
+
 
 def build_all():
     build_beakerx()
@@ -61,12 +62,12 @@ def make_parser():
                         help="Build and install all Beakerx kernels",
                         action='store_true')
 
-    parser.add_argument("--kernel",
-                        help="Install Beakerx kernel",
-                        default='')
     parser.add_argument("--base",
-                        help="Install Beakerx kernel",
+                        help="Install only Beakerx",
                         action='store_true')
+    parser.add_argument("--kernel",
+                        help="Install Beakerx kernel. Available kernels: " + ", ".join(kernels),
+                        default='')
     return parser
 
 
@@ -80,6 +81,8 @@ def build():
             build_beakerx()
         else:
             if args.kernel:
+                if not args.kernel == 'python':
+                    build_kernel('base')
                 build_kernel(args.kernel)
     except KeyboardInterrupt:
         return 130

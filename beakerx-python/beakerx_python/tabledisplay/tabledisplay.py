@@ -19,6 +19,7 @@ import numpy
 from beakerx_python.beakerx_widgets import *
 from beakerx_python.tabledisplay.tableitems import *
 from beakerx_python.utils import *
+from beakerx.utils import *
 from traitlets import Unicode, Dict
 
 

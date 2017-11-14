@@ -126,7 +126,7 @@ define([
     },
     useYAxisR: function(model, data) {
       var yAxisR = model.yAxisR;
-      return yAxisR && yAxisR.label === data.yAxis;
+      return yAxisR && (yAxisR.label === data.yAxis || data.yAxis === null);
     },
     createColor : function(hexstr, opacity) {
       if (hexstr == null) {

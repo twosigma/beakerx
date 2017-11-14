@@ -16,36 +16,33 @@
 
 package com.twosigma.beakerx.groovy.widgets;
 
-import com.twosigma.ExecuteCodeCallbackTest;
-import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
-import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
-import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.jupyter.SearchMessages;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
-import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.widgets.DOMWidget;
-import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.widgets.strings.Text;
-import com.twosigma.beakerx.message.Message;
-import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
 import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
 import static com.twosigma.beakerx.widgets.strings.TextTest.verifyTextField;
+
+import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.BaseEvaluator;
+import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
+import com.twosigma.beakerx.jupyter.SearchMessages;
+import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widgets.DOMWidget;
+import com.twosigma.beakerx.widgets.Widget;
+import com.twosigma.beakerx.widgets.strings.Text;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.assertj.core.api.Assertions;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class InteractiveTest {
   private BaseEvaluator groovyEvaluator;

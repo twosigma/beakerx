@@ -33,12 +33,12 @@ import com.twosigma.beakerx.widgets.strings.Text;
 public class InteractiveBase {
 
   private static final Logger logger = LoggerFactory.getLogger(InteractiveBase.class);
-
-
+  
+  
   /**
    * Build a ValueWidget instance given an abbreviation or Widget.
    * Similar but not equivalent of {@code ipywidgets/widgets/interaction.py#widgets_from_abbreviations}
-   *
+   * 
    * @param input
    * @return
    */
@@ -62,11 +62,11 @@ public class InteractiveBase {
     logger.info("total " + ret.size() + " widgets was created");
     return ret;
   }
-
+  
   /**
    * Build a ValueWidget instance given an abbreviation or Widget.
    * Similar but not equivalent of {@code ipywidgets/widgets/interaction.py#widget_from_abbrev}
-   *
+   * 
    * @param input
    * @return
    */
@@ -83,11 +83,11 @@ public class InteractiveBase {
     }
     return ret;
   }
-
+  
   /**
    * Make widgets from a tuple abbreviation.
    * Equivalent of {@code ipywidgets/widgets/interaction.py#widget_from_tuple}
-   *
+   * 
    * @param input
    * @return
    */
@@ -142,11 +142,11 @@ public class InteractiveBase {
     }
     return ret;
   }
-
+  
   /**
    * Make widgets from single values, which can be used as parameter defaults.
    * Equivalent of {@code ipywidgets/widgets/interaction.py#widget_from_tuple}
-   *
+   * 
    * @param o
    * @return
    */
@@ -179,11 +179,11 @@ public class InteractiveBase {
     }
     return ret;
   }
-
+  
   /**
    * Make widgets from an iterable. This should not be done for a string or tuple.
    * Equivalent of {@code ipywidgets/widgets/interaction.py#widget_from_iterable}
-   *
+   * 
    * @param o
    * @return
    */
@@ -209,12 +209,12 @@ public class InteractiveBase {
     }
     return ret;
   }
-
-
+  
+  
   /**
    * Return min, max, value given input values with possible None.
    * Equivalent of {@code ipywidgets/widgets/interaction.py#get_min_max_value}
-   *
+   * 
    * @param min
    * @param max
    * @param value
@@ -277,30 +277,30 @@ public class InteractiveBase {
     }
     return ret;
   }
-
+  
   /**
    * No equivalent in python. Help method.
-   *
+   * 
    * @param input
    * @return
    */
   protected static Integer[] getIntArray(Number[] input){
     return Arrays.copyOf(input, input.length, Integer[].class);
   }
-
+  
   /**
    * No equivalent in python. Help method.
-   *
+   * 
    * @param input
    * @return
    */
   protected static Double[] getDoubleArray(Number[] input){
     return Arrays.copyOf(input, input.length, Double[].class);
   }
-
+  
   /**
    * No equivalent in python. Help method.
-   *
+   * 
    * @param o
    * @return
    */
@@ -316,25 +316,25 @@ public class InteractiveBase {
     }
     return ret;
   }
-
+  
   /**
    * No equivalent in python. Help method.
-   *
+   * 
    * @param o
    * @return {@code (o instanceof Integer || o instanceof Short || o instanceof Byte)}
    */
   protected static boolean isInt(Object o){
     return (o instanceof Integer || o instanceof Short || o instanceof Byte);
   }
-
+  
   /**
    * No equivalent in python. Help method.
-   *
+   * 
    * @param o
    * @return {@code (o instanceof Double || o instanceof Float)}
    */
   protected static boolean isFloat(Object o){
     return (o instanceof Double || o instanceof Float);
   }
-
+  
 }

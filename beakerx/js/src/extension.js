@@ -140,11 +140,12 @@ define([
     }
 
     var cm = cell.code_mirror;
-    var docMode = cm.doc && cm.doc.getMode();
-    !cm.options.lineComment && cm.setOption('lineComment', LINE_COMMENT_CHAR);
+    var doc = cm.getDoc();
+    var mode = cm.getMode();
 
-    if (!docMode.lineComment) {
-      docMode.lineComment = LINE_COMMENT_CHAR;
+    if (!mode.lineComment) {
+      mode.lineComment = LINE_COMMENT_CHAR;
+      doc.mode = mode;
     }
   }
 
@@ -325,14 +326,12 @@ define([
             callback_notebook_loaded();
           }
           events.on('notebook_loaded.Notebook', callback_notebook_loaded);
-          events.on('create.Cell', function(data, cell) {
-            cell.cell && setCodeMirrorLineComment(cell.cell);
-          });
         }).catch(function (reason) {
           console.error(log_prefix, 'unhandled error:', reason);
         });
       // ________ init cell extension code - end
 
+      CodeMirror.extendMode('groovy', { lineComment: LINE_COMMENT_CHAR });
       Jupyter.notebook.get_cells().map(function(cell, i) {
         setCodeMirrorLineComment(cell);
       });

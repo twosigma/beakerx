@@ -20,7 +20,6 @@ import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.Graphics;
 import com.twosigma.beakerx.chart.Filter;
 
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -34,31 +33,6 @@ public class Rasters extends XYGraphics {
   private byte[] dataString;
   private Color  baseColor;
   private String position = "zoomable";
-
-  // getter and setters
-  /*
-  public Number getX() {
-    return x;
-  }
-
-  public void setX(Object x) {
-    if (x instanceof Number) {
-      this.x = (Number)x;
-    } else if (x instanceof Date) {
-      this.x = ((Date)x).getTime();
-    } else {
-      throw new IllegalArgumentException("x takes Number or Date");
-    }
-  }
-
-  public Number getY() {
-    return y;
-  }
-
-  public void setY(Number y) {
-    this.y = y;
-  }
-  */
 
   public List<Number> getOpacity() {
     // generate a list of opacity 1, if not given

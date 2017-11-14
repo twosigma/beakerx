@@ -20,6 +20,7 @@ import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.Filter;
 import com.twosigma.beakerx.chart.Graphics;
 import com.twosigma.beakerx.chart.ListColorConverter;
+import com.twosigma.beakerx.util.DateUtil;
 import com.twosigma.beakerx.widgets.RunWidgetClosure;
 
 import java.time.Instant;
@@ -74,30 +75,14 @@ abstract public class XYGraphics extends Graphics {
     this.toolTips = toolTips;
   }
 
-  public void setX(Object[] xs) {
-    setX(Arrays.asList(xs));
-  }
-
   public void setX(List<Object> xs) {
     this.xs = new ArrayList<>();
     if (xs != null) {
       for (Object x : xs) {
         if (x instanceof Number) {
           this.xs.add((Number) x);
-        } else if (x instanceof Date) {
-          Date date = (Date) x;
-          this.xs.add(date.getTime());
-        } else if (x instanceof Instant) {
-          Instant instant = (Instant) x;
-          this.xs.add(instant.toEpochMilli());
-        } else if (x instanceof LocalDateTime) {
-          LocalDateTime date = (LocalDateTime) x;
-          this.xs.add(date.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli());
-        } else if (x instanceof LocalDate) {
-          LocalDate date = (LocalDate) x;
-          this.xs.add(date.atStartOfDay(ZoneId.of("UTC")).toInstant().toEpochMilli());
         } else {
-          throw new IllegalArgumentException("x coordinates should be the list of numbers or java.util.Date objects");
+          this.xs.add(DateUtil.dateToLong(x));
         }
       }
     }
@@ -109,10 +94,6 @@ abstract public class XYGraphics extends Graphics {
       generateXs();
     }
     return this.xs;
-  }
-
-  public void setY(Number[] ys) {
-    setY(Arrays.asList(ys));
   }
 
   public void setY(List<Number> ys) {

@@ -15,22 +15,17 @@
  */
 package com.twosigma.beakerx.groovy.widgets;
 
-import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCompiledCodeAndPublish;
-
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widgets.InteractiveBase;
 import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.Widget;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Interactive extends InteractiveBase {
-
-  private static Widget resultWidget;
 
   private static final Logger logger = LoggerFactory.getLogger(Interactive.class);
 
@@ -51,7 +46,7 @@ public class Interactive extends InteractiveBase {
           try {
             processCode();
           } catch (Exception e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("Error occurred during updating interactive widget.", e);
           }
         }
 
@@ -70,8 +65,7 @@ public class Interactive extends InteractiveBase {
     widgets.forEach(Widget::display);
     Object response = function.call(widgets.stream().map(ValueWidget::getValue).toArray());
     if (response instanceof Widget) {
-      resultWidget = (Widget) response;
-      resultWidget.display();
+      ((Widget) response).display();
     }
   }
 

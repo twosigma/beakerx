@@ -19,9 +19,15 @@ jupyter-groovy-kernel.log
 
 beakerx/static/
 beakerx/beakerx/static/
-beakerx/beakerx/kernel/
+beakerx-clojure/beakerx_clojure
+beakerx-groovy/beakerx_groovy
+beakerx-java/beakerx_java
+beakerx-kotlin/beakerx_kotlin
+beakerx-scala/beakerx_scala/
+beakerx-sql/beakerx_sql
 dist/
 build/
+
 
 kernel/build/
 kernel/*/build/

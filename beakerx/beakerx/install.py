@@ -27,7 +27,7 @@ from string import Template
 from jupyter_client.kernelspecapp import KernelSpecManager
 from traitlets.config.manager import BaseJSONConfigManager
 from distutils import log
-
+import importlib
 
 def _classpath_for(kernel):
     return pkg_resources.resource_filename('beakerx_' + kernel, os.path.join('lib', '*'))
@@ -75,16 +75,10 @@ def _install_css():
 
 
 def install_kernel(kernel_name):
-    print('---------------------------------')
+
     base_classpath = _classpath_for('base')
     kernel_classpath = _classpath_for(kernel_name)
 
-    print('base_classpath: ', base_classpath)
-    print('kernel_classpath: ', kernel_classpath)
-
-    print("test: ", _classpath_for("java"))
-
-    print('---------------------------------')
     classpath = json.dumps(os.pathsep.join([base_classpath, kernel_classpath]))
     template = pkg_resources.resource_string(
         'beakerx_' + kernel_name, 'kernel.json')
@@ -170,13 +164,13 @@ def _install_beakerx(args):
 
 
 def _install_beakerx_kernel(kernel_name):
-    kernels = KernelSpecManager().find_kernel_specs()
-    dst_base = kernels.get(kernel_name)
-    if dst_base:
+    beakerx_kernel_loader = importlib.find_loader('beakerx_' + kernel_name)
+    if beakerx_kernel_loader:
         install_kernel(kernel_name)
         copy_icons(kernel_name)
     else:
-        print("Could not find kernel ", kernel_name)
+        msg = "Could not find kernel " + kernel_name
+        raise Exception(msg)
 
 
 def install():

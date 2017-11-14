@@ -28,12 +28,13 @@ ext.kernelIdName = ''
 
 def getPathToStaticContent(kernel) {
   def path = "../../beakerx-${kernel}/beakerx_${kernel}"
-  if (kernel == 'base'){
-    return path + '/lib'
-  }
+
   return path
 }
 
+def getPathToLib(kernel){
+  return getPathToStaticContent(kernel) + '/lib'
+}
 subprojects {
   apply plugin: 'jacoco'
   apply plugin: 'java'
@@ -91,7 +92,4 @@ subprojects {
     }
   }
   clean.dependsOn cleanStaticContent
-  test {
-    exclude '**'
-  }
 }

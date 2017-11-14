@@ -16,11 +16,9 @@
 # limitations under the License.
 
 from setuptools import setup, find_packages
-import os
 from setupbase import (
     create_cmdclass,
     run_gradle,
-    get_version,
 )
 
 required_beakerx_version = '0.7.0'

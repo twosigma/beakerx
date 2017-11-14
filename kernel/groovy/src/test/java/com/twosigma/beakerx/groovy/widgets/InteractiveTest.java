@@ -87,10 +87,11 @@ public class InteractiveTest {
     comm.handleMsg(initSyncDataMessage(comm.getCommId(), "TEST"));
     //then
     Message display = SearchMessages.getListMessagesByType(
-            groovyKernel.getPublishedMessages(), JupyterMessages.DISPLAY_DATA).get(2);
-    Map data = (Map) display.getContent().get(Comm.DATA);
-    Assertions.assertThat(data).isNotEmpty();
-    Assertions.assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo("TEST");
+            groovyKernel.getPublishedMessages(), JupyterMessages.COMM_MSG).get(2);
+    Map date = (Map) display.getContent().get(Comm.DATA);
+    Map state = (Map) date.get(Comm.STATE);
+    Assertions.assertThat(state).isNotEmpty();
+    Assertions.assertThat(state.get("value")).isEqualTo("TEST");
   }
 
   private void callInteractWithStringParam(String param) throws Exception {

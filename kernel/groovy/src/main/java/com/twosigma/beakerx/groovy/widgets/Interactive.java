@@ -19,6 +19,8 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widgets.InteractiveBase;
 import com.twosigma.beakerx.widgets.ValueWidget;
 import com.twosigma.beakerx.widgets.Widget;
+import com.twosigma.beakerx.widgets.strings.Label;
+import com.twosigma.beakerx.widgets.strings.Text;
 import java.util.ArrayList;
 import java.util.List;
 import org.codehaus.groovy.runtime.MethodClosure;
@@ -26,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Interactive extends InteractiveBase {
+
+  private static Label label;
 
   private static final Logger logger = LoggerFactory.getLogger(Interactive.class);
 
@@ -38,7 +42,10 @@ public class Interactive extends InteractiveBase {
       widget.getComm().addMsgCallbackList(widget.new ValueChangeMsgCallbackHandler() {
 
         private void processCode(Object... params) throws Exception {
-          function.call(getWidgetValues());
+          Object call = function.call(getWidgetValues());
+          if (call instanceof String || call instanceof Number) {
+            label.setValue(call);
+          }
         }
 
         @Override
@@ -66,6 +73,10 @@ public class Interactive extends InteractiveBase {
     Object response = function.call(widgets.stream().map(ValueWidget::getValue).toArray());
     if (response instanceof Widget) {
       ((Widget) response).display();
+    } else {
+      label = new Label();
+      label.setValue(response);
+      label.display();
     }
   }
 

@@ -35,7 +35,7 @@ Publish on conda-forge
 
 Update the feedstock repo:
 
-- Make a branch or fork of https://github.com/conda-forge/beakerx-feedstock.
+- Make a branch or fork of https://github.com/twosigma/beakerx-feedstock.
 - Update the `version` and `sha256` variable values in `recipe/meta.yaml`.
   Return  build number to 0.
 
@@ -52,7 +52,9 @@ conda build --python 3.5 PATH_TO_RECIPE
 conda install --use-local beakerx
 ```
 
-- Then commit changes and submit a PR for the new version.
+- Then commit changes and submit a PR upstream to
+  https://github.com/conda-forge/beakerx-feedstock for the new
+  version.
 - After CI passes, merge the PR.
 
 

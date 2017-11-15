@@ -15,43 +15,51 @@
  */
 package com.twosigma.beakerx.groovy.widgets;
 
+import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widgets.InteractiveBase;
+import com.twosigma.beakerx.widgets.ValueWidget;
+import com.twosigma.beakerx.widgets.Widget;
+import com.twosigma.beakerx.widgets.strings.Label;
+import com.twosigma.beakerx.widgets.strings.Text;
+import java.util.ArrayList;
+import java.util.List;
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.InteractiveBase;
-import com.twosigma.beakerx.widgets.ValueWidget;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCompiledCodeAndPublish;
-
 public class Interactive extends InteractiveBase {
+
+  private static Label label;
 
   private static final Logger logger = LoggerFactory.getLogger(Interactive.class);
 
   @SuppressWarnings("unchecked")
   public static synchronized void interact(MethodClosure function, Object... parameters) {
 
-    final List<ValueWidget<?>> witgets = widgetsFromAbbreviations(parameters);
+    final List<ValueWidget<?>> widgets = widgetsFromAbbreviations(parameters);
 
-    for (ValueWidget<?> widget : witgets) {
+    for (ValueWidget<?> widget : widgets) {
       widget.getComm().addMsgCallbackList(widget.new ValueChangeMsgCallbackHandler() {
 
-        private Object processCode(Object... params) throws Exception {
-          return function.call(getWidgetValues());
+        private void processCode(Object... params) throws Exception {
+          Object call = function.call(getWidgetValues());
+          if (call instanceof String || call instanceof Number) {
+            label.setValue(call);
+          }
         }
 
         @Override
         public void updateValue(Object value, Message message) {
-          runCompiledCodeAndPublish(message, this::processCode, null);
+          try {
+            processCode();
+          } catch (Exception e) {
+            throw new IllegalStateException("Error occurred during updating interactive widget.", e);
+          }
         }
 
         private Object[] getWidgetValues() {
-          List<Object> ret = new ArrayList<>(witgets.size());
-          for (ValueWidget<?> wid : witgets) {
+          List<Object> ret = new ArrayList<>(widgets.size());
+          for (ValueWidget<?> wid : widgets) {
             ret.add(wid.getValue());
           }
           return ret.toArray(new Object[ret.size()]);
@@ -59,7 +67,16 @@ public class Interactive extends InteractiveBase {
 
       });
       logger.info("interact Widget: " + widget.getClass().getName());
-      widget.display();
+    }
+
+    widgets.forEach(Widget::display);
+    Object response = function.call(widgets.stream().map(ValueWidget::getValue).toArray());
+    if (response instanceof Widget) {
+      ((Widget) response).display();
+    } else {
+      label = new Label();
+      label.setValue(response);
+      label.display();
     }
   }
 

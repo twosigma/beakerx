@@ -116,7 +116,7 @@ define(function (require) {
       function handle_response(data, status, xhr) {
         var version_element = $('#' + that.versionBox);
 
-        var beakerx_logo_url = urls.base_url + 'nbextensions/beakerx/beakerx-logo-black-small.svg';
+        var beakerx_logo_url = urls.base_url + 'nbextensions/beakerx/img/beakerx-logo-black-small.svg';
         var github_version_url = 'https://github.com/twosigma/beakerx/releases/tag/' + data.version;
 
         $(version_element).append(

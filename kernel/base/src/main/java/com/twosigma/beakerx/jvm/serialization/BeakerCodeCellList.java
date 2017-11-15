@@ -15,13 +15,12 @@
  */
 package com.twosigma.beakerx.jvm.serialization;
 
+import com.twosigma.beakerx.CodeCell;
 import java.util.List;
-
-import com.twosigma.beakerx.BeakerCodeCell;
 
 /*
  * This class is used as fake root object when accessing the notebook code cells
  */
 public class BeakerCodeCellList {
-  public List<BeakerCodeCell> theList;
+  public List<CodeCell> theList;
 }

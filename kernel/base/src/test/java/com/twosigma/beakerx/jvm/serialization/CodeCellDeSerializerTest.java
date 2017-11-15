@@ -18,11 +18,11 @@ package com.twosigma.beakerx.jvm.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beakerx.BeakerCodeCell;
+import com.twosigma.beakerx.CodeCell;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-public class BeakerCodeCellDeSerializerTest {
+public class CodeCellDeSerializerTest {
 
   @Test
   public void deserialize_resultObjectHasExecutionCount() throws Exception {
@@ -30,11 +30,11 @@ public class BeakerCodeCellDeSerializerTest {
     //given
     ObjectMapper mapper = new ObjectMapper();
     JsonNode actualObj = mapper.readTree(
-        "{\"type\":\"BeakerCodeCell\",\"execution_count\":" + execCount + ",\"cell_type\":null," +
+        "{\"type\":\"CodeCell\",\"execution_count\":" + execCount + ",\"cell_type\":null," +
             "\"outputs\":null,\"metadata\":null,\"source\":null}");
-    BeakerCodeCell.DeSerializer deserializer = new BeakerCodeCell.DeSerializer(new BasicObjectSerializer());
+    CodeCell.DeSerializer deserializer = new CodeCell.DeSerializer(new BasicObjectSerializer());
     //when
-    BeakerCodeCell bkCell = (BeakerCodeCell) deserializer.deserialize(actualObj, mapper);
+    CodeCell bkCell = (CodeCell) deserializer.deserialize(actualObj, mapper);
     //then
     Assertions.assertThat(bkCell).isNotNull();
     Assertions.assertThat(bkCell.getExecutionCount()).isEqualTo(execCount);

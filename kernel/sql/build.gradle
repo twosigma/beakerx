@@ -55,6 +55,7 @@ dependencies {
   compile group: 'postgresql', name: 'postgresql', version: '9.1-901-1.jdbc4'
   compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
   compile group: 'org.apache.derby', name: 'derby', version: '10.14.1.0'
+  compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'
   compile group: 'com.amazon.redshift', name: 'redshift-jdbc42', version: '1.2.10.1009'
 
   testCompile project(':base').sourceSets.test.output

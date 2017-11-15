@@ -59,7 +59,6 @@ dependencies {
   testCompile project(':base').sourceSets.test.output
   testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
   testCompile group: 'junit', name: 'junit', version: '4.12'
-  testCompile group: 'ru.yandex.qatools.embed', name: 'postgresql-embedded', version: '2.5'
 }
 
 jar {

@@ -99,10 +99,10 @@ public class JupyterHandlerTest {
     return message;
   }
 
-  public static Message createExecuteRequestMessage(Code code) {
+  public static Message createExecuteRequestMessage(String code) {
     Message message = executeRequestMessage();
     Map<String, Serializable> content = new LinkedHashMap<>();
-    content.put("code", code.asString());
+    content.put("code", code);
     message.setContent(content);
     return message;
   }

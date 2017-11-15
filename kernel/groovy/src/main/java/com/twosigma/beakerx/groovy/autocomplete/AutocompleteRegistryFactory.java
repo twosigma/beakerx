@@ -101,7 +101,7 @@ public class AutocompleteRegistryFactory {
     r.addCandidate(c);
     c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, "every");
     r.addCandidate(c);
-    c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, "find");
+    c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, "create");
     r.addCandidate(c);
     c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, "findAll");
     r.addCandidate(c);

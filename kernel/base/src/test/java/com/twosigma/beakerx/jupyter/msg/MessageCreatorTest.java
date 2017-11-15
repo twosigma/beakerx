@@ -36,12 +36,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MessageCreatorTest {
 
-  private MessageCreator messageCreator;
   private SimpleEvaluationObject seo;
+  KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
-    messageCreator = new MessageCreator(new KernelTest("id1"));
+    kernel = new KernelTest("id1");
     seo = new SimpleEvaluationObject("code", new ExecuteCodeCallbackTest());
     seo.setJupyterMessage(new Message());
   }
@@ -51,7 +51,7 @@ public class MessageCreatorTest {
     //given
     seo.finished(null);
     //when
-    List<MessageHolder> message = messageCreator.createMessage(seo);
+    List<MessageHolder> message = MessageCreator.createMessage(seo);
     //then
     Map data = TestWidgetUtils.getData(message.get(0).getMessage());
     assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo(NULL_RESULT);
@@ -62,7 +62,7 @@ public class MessageCreatorTest {
     //given
     seo.finished("NotNullResult");
     //when
-    List<MessageHolder> message = messageCreator.createMessage(seo);
+    List<MessageHolder> message = MessageCreator.createMessage(seo);
     //then
     Map data = TestWidgetUtils.getData(message.get(0).getMessage());
     assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo("NotNullResult");
@@ -73,7 +73,7 @@ public class MessageCreatorTest {
     //given
     seo.finished(asList("1", "2"));
     //when
-    List<MessageHolder> message = messageCreator.createMessage(seo);
+    List<MessageHolder> message = MessageCreator.createMessage(seo);
     //then
     Map data = TestWidgetUtils.getData(message.get(0).getMessage());
     assertThat(data.get(MessageCreator.TEXT_PLAIN)).isEqualTo("[\"1\",\"2\"]");
@@ -84,7 +84,7 @@ public class MessageCreatorTest {
     //given
     seo.finished("result");
     //when
-    List<MessageHolder> messages = messageCreator.createMessage(seo);
+    List<MessageHolder> messages = MessageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
     assertThat(messages.size()).isEqualTo(2);
@@ -95,7 +95,7 @@ public class MessageCreatorTest {
     //given
     seo.finished("result");
     //when
-    List<MessageHolder> messages = messageCreator.createMessage(seo);
+    List<MessageHolder> messages = MessageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
     assertThat(messages.get(0).getSocketType()).isEqualTo(SocketEnum.IOPUB_SOCKET);
@@ -107,7 +107,7 @@ public class MessageCreatorTest {
     //given
     seo.finished("result");
     //when
-    List<MessageHolder> messages = messageCreator.createMessage(seo);
+    List<MessageHolder> messages = MessageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
     assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
@@ -117,7 +117,7 @@ public class MessageCreatorTest {
   @Test
   public void createIdleMessage_messageHasTypeIsStatus() {
     //when
-    Message message = messageCreator.createIdleMessage(new Message());
+    Message message = MessageCreator.createIdleMessage(new Message());
     //then
     assertThat(message.type()).isEqualTo(JupyterMessages.STATUS);
   }
@@ -125,7 +125,7 @@ public class MessageCreatorTest {
   @Test
   public void createIdleMessage_messageHasExecutionStateIsIdle() {
     //when
-    Message message = messageCreator.createIdleMessage(new Message());
+    Message message = MessageCreator.createIdleMessage(new Message());
     //then
     Map data = message.getContent();
     assertThat(data.get(MessageCreator.EXECUTION_STATE)).isEqualTo(MessageCreator.IDLE);
@@ -134,7 +134,7 @@ public class MessageCreatorTest {
   @Test
   public void createBusyMessage_messageHasTypeIsStatus() {
     //when
-    Message message = messageCreator.createBusyMessage(new Message());
+    Message message = MessageCreator.createBusyMessage(new Message());
     //then
     assertThat(message.type()).isEqualTo(JupyterMessages.STATUS);
   }
@@ -142,7 +142,7 @@ public class MessageCreatorTest {
   @Test
   public void createBusyMessage_messageHasExecutionStateIsBusy() {
     //when
-    Message message = messageCreator.createBusyMessage(new Message());
+    Message message = MessageCreator.createBusyMessage(new Message());
     //then
     Map data = message.getContent();
     assertThat(data.get(MessageCreator.EXECUTION_STATE)).isEqualTo(MessageCreator.BUSY);
@@ -153,7 +153,7 @@ public class MessageCreatorTest {
     //given
     seo.error("some error");
     //when
-    List<MessageHolder> messages = messageCreator.createMessage(seo);
+    List<MessageHolder> messages = MessageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
     assertThat(messages.size()).isEqualTo(2);
@@ -164,7 +164,7 @@ public class MessageCreatorTest {
     //given
     seo.error("some error");
     //when
-    List<MessageHolder> messages = messageCreator.createMessage(seo);
+    List<MessageHolder> messages = MessageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
     assertThat(messages.get(0).getSocketType()).isEqualTo(SocketEnum.IOPUB_SOCKET);
@@ -176,7 +176,7 @@ public class MessageCreatorTest {
     //given
     seo.error("some error");
     //when
-    List<MessageHolder> messages = messageCreator.createMessage(seo);
+    List<MessageHolder> messages = MessageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
     assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);
@@ -188,7 +188,7 @@ public class MessageCreatorTest {
     //given
     seo.error(new RuntimeException("oops"));
     //when
-    List<MessageHolder> messages = messageCreator.createMessage(seo);
+    List<MessageHolder> messages = MessageCreator.createMessage(seo);
     //then
     assertThat(messages).isNotEmpty();
     assertThat(messages.get(1).getSocketType()).isEqualTo(SocketEnum.SHELL_SOCKET);

@@ -22,7 +22,6 @@ import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
@@ -40,6 +39,8 @@ import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForS
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.sql.SQLForColorTable.CREATE_AND_SELECT_ALL;
+import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SQLKernelTest extends KernelSetUpFixtureTest {
@@ -95,8 +96,8 @@ public class SQLKernelTest extends KernelSetUpFixtureTest {
 
   private KernelParameters kernelParameters() {
     Map<String, Object> params = new HashMap<>();
-    params.put(MagicCommand.DATASOURCES, "chemistry=jdbc:h2:mem:chemistry");
-    params.put(MagicCommand.DEFAULT_DATASOURCE, "jdbc:h2:mem:db1");
+    params.put(DATASOURCES, "chemistry=jdbc:h2:mem:chemistry");
+    params.put(DEFAULT_DATASOURCE, "jdbc:h2:mem:db1");
     return new KernelParameters(params);
   }
 }

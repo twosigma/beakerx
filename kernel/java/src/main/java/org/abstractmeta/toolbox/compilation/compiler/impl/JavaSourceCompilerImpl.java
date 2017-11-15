@@ -81,7 +81,7 @@ public class JavaSourceCompilerImpl implements JavaSourceCompiler {
 
     protected ClassLoader compile(JavaCompiler compiler, ClassLoader parentClassLoader, CompilationUnit compilationUnit, String... options) {
         if (compiler == null) {
-            throw new IllegalStateException("Failed to find the system Java compiler. Check that your class path includes tools.jar");
+            throw new IllegalStateException("Failed to create the system Java compiler. Check that your class path includes tools.jar");
         }
         JavaFileObjectRegistry registry = compilationUnit.getRegistry();
         SimpleClassLoader result = new SimpleClassLoader(parentClassLoader, registry, compilationUnit.getOutputClassDirectory());

@@ -24,6 +24,7 @@
 [![NPM version](https://badge.fury.io/js/beakerx.svg)](http://badge.fury.io/js/beakerx)
 [![PyPI Version](https://badge.fury.io/py/beakerx.svg)](http://badge.fury.io/py/beakerx)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/beakerx/badges/version.svg)](https://anaconda.org/conda-forge/beakerx)
+[![Binder](http://mybinder.org/badge.svg)](http://mybinder.org/repo/twosigma/beakerx)
 
 BeakerX is a collection of JVM kernels and interactive widgets for
 plotting, tables, autotranslation, and other extensions to Jupyter

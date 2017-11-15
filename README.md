@@ -97,7 +97,9 @@ BeakerX uses [Google Java
 style](https://google.github.io/styleguide/javaguide.html), and all
 Java code needs unit tests.  For JavaScript we use [Google JS
 style](https://google.github.io/styleguide/jsguide.html) with
-[require](http://requirejs.org/) instead of goog.
+[require](http://requirejs.org/) instead of goog.  All files should
+end with newline and have a copyright and license banner.
+
 
 ## Attribution
 

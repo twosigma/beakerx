@@ -1,3 +1,5 @@
 /build/
 /.classpath
 /.project
+!/beakerx/static/tree.js
+!/beakerx/static/img/

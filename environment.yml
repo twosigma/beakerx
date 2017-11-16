@@ -6,6 +6,7 @@ dependencies:
   - nodejs
   - pandas
   - openjdk
+  - yarn
   - maven
   - ipywidgets
   - pip

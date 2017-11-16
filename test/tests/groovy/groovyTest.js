@@ -108,4 +108,22 @@ describe('Groovy tests', function () {
     });
   }, 2);
 
+  describe('getCodeCells(tag) method', function () {
+
+    it('Tag cell output contains "5"', function(){
+      var codeCell = beakerxPO.runCodeCellByIndex(8);
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCallAndCheckOutputText(8, '5');
+    });
+
+    it('Output contains table', function () {
+      var codeCell = beakerxPO.runCodeCellByIndex(9);
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      var bkoTable = codeCell.$('div.bko-table');
+      bkoTable.waitForEnabled();
+      expect(bkoTable.isVisible()).toBeTruthy();
+      expect(bkoTable.$('tbody > tr').getText()).toMatch('"text/plain":"5"');
+    });
+  }, 2);
+
 });

@@ -24,15 +24,20 @@
 [![NPM version](https://badge.fury.io/js/beakerx.svg)](http://badge.fury.io/js/beakerx)
 [![PyPI Version](https://badge.fury.io/py/beakerx.svg)](http://badge.fury.io/py/beakerx)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/beakerx/badges/version.svg)](https://anaconda.org/conda-forge/beakerx)
+[![Binder](http://mybinder.org/badge.svg)](http://mybinder.org/repo/twosigma/beakerx)
 
 BeakerX is a collection of JVM kernels and interactive widgets for
 plotting, tables, autotranslation, and other extensions to Jupyter
 Notebook.  BeakerX is in beta and under active development.
 
 The [documentation](https://github.com/twosigma/beakerx/blob/master/doc/StartHere.ipynb) consists of tutorial notebooks on GitHub.
+You can try it in the cloud for free with [Binder](http://mybinder.org/repo/twosigma/beakerx).
 
-BeakerX is the successor to the [Beaker
-Notebook (source code archive)](https://github.com/twosigma/beaker-notebook-archive).  It comes from [Two Sigma Open Source](http://opensource.twosigma.com/). Yes we are [hiring](https://www.twosigma.com/careers).
+BeakerX is the successor to the [Beaker Notebook (source code
+archive)](https://github.com/twosigma/beaker-notebook-archive).  It
+comes from [Two Sigma Open
+Source](http://opensource.twosigma.com/). Yes we are
+[hiring](https://www.twosigma.com/careers).
 
 This README is for developers.  Users should see the
 [documentation](http://beakerx.com/documentation) on the homepage for
@@ -97,7 +102,9 @@ BeakerX uses [Google Java
 style](https://google.github.io/styleguide/javaguide.html), and all
 Java code needs unit tests.  For JavaScript we use [Google JS
 style](https://google.github.io/styleguide/jsguide.html) with
-[require](http://requirejs.org/) instead of goog.
+[require](http://requirejs.org/) instead of goog.  All files should
+end with newline and have a copyright and license banner.
+
 
 ## Attribution
 

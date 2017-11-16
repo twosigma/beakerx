@@ -2,13 +2,5 @@ name: beakerx
 channels:
   - conda-forge
 dependencies:
-  - python
-  - nodejs
-  - pandas
-  - openjdk
-  - yarn
-  - maven
   - ipywidgets
-  - pip
-  - pip:
-    - ipykernel
+  - beakerx

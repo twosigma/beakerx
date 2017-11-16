@@ -1,3 +1,2 @@
 #!/bin/bash
-(cd beakerx; pip install -e . --verbose)
-beakerx-install
+mkdir ~/.jupyter

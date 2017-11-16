@@ -210,11 +210,9 @@ class Plot(BeakerxDOMWidget):
     def __init__(self, **kwargs):
         super(Plot, self).__init__(**kwargs)
         self.chart = XYChart(**kwargs)
-        self.model = self.chart.transform()
-    
+
     def add(self, item):
         self.chart.add(item)
-        self.model = self.chart.transform()
         return self
     
     def getYAxes(self):
@@ -222,7 +220,6 @@ class Plot(BeakerxDOMWidget):
 
     def setShowLegend(self, show):
         self.chart.show_legend = show
-        self.model = self.chart.transform()
         return self
 
     def setXBound(self, *args):
@@ -234,9 +231,7 @@ class Plot(BeakerxDOMWidget):
                 raise ValueError('to set the x bound, the list needs to be of size=2.')
         else:
             self.chart.setXBound(args[0], args[1])
-        self.model = self.chart.transform()
         return self
-
 
     def setYBound(self, *args):
         if len(args) == 1 and isinstance(args[0], list):
@@ -247,8 +242,11 @@ class Plot(BeakerxDOMWidget):
                 raise ValueError('to set the y bound, the list needs to be of size=2.')
         else:
             self.chart.setYBound(args[0], args[1])
-        self.model = self.chart.transform()
         return self
+
+    def _ipython_display_(self, **kwargs):
+        self.model = self.chart.transform()
+        super(Plot, self)._ipython_display_(**kwargs)
 
 
 class CategoryPlot(BeakerxDOMWidget):
@@ -262,7 +260,7 @@ class CategoryPlot(BeakerxDOMWidget):
         super(CategoryPlot, self).__init__(**kwargs)
         self.chart = CategoryChart(**kwargs)
         self.model = self.chart.transform()
-    
+
     def add(self, item):
         self.chart.add(item)
         self.model = self.chart.transform()
@@ -303,7 +301,7 @@ class HeatMap(BeakerxDOMWidget):
             self.chart.color = color
         
         self.chart.type = 'HeatMap'
-        
+
         self.model = self.chart.transform()
 
 
@@ -342,7 +340,7 @@ class TreeMap(BeakerxDOMWidget):
         super(TreeMap, self).__init__()
         self.chart = TreeMapChart(**kwargs)
         self.model = self.chart.transform()
-    
+
     def setColorProvider(self, provider):
         self.chart.colorProvider = provider
         self.model = self.chart.transform()
@@ -482,7 +480,7 @@ class CombinedPlot(BeakerxDOMWidget):
         super(CombinedPlot, self).__init__(**kwargs)
         self.chart = CombinedChart(**kwargs)
         self.model = self.chart.transform()
-    
+
     def add(self, item, weight):
         if isinstance(item.chart, XYChart):
             self.chart.plots.append(item.chart)

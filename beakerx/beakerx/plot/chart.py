@@ -92,6 +92,18 @@ class XYChart(AbstractChart):
                 self.add(elem)
         return self
 
+    def setYBound(self, lower, upper):
+        self.y_lower_bound = lower
+        self.y_upper_bound = upper
+        self.rangeAxes[0].setBound(lower, upper)
+        return self
+
+    def setXBound(self, lower, upper):
+        self.x_auto_range = False
+        self.x_lower_bound = lower
+        self.x_upper_bound = upper
+        return self
+
 
 class HistogramChart(XYChart):
     def __init__(self, **kwargs):
@@ -212,6 +224,32 @@ class Plot(BeakerxDOMWidget):
         self.chart.show_legend = show
         self.model = self.chart.transform()
         return self
+
+    def setXBound(self, *args):
+        if len(args) == 1 and isinstance(args[0], list):
+            arg_list = args[0]
+            if len(arg_list) == 2:
+                self.chart.setXBound(arg_list[0], arg_list[1])
+            else:
+                raise ValueError('to set the x bound, the list needs to be of size=2.')
+        else:
+            self.chart.setXBound(args[0], args[1])
+        self.model = self.chart.transform()
+        return self
+
+
+    def setYBound(self, *args):
+        if len(args) == 1 and isinstance(args[0], list):
+            arg_list = args[0]
+            if len(arg_list) == 2:
+                self.chart.setYBound(arg_list[0], arg_list[1])
+            else:
+                raise ValueError('to set the y bound, the list needs to be of size=2.')
+        else:
+            self.chart.setYBound(args[0], args[1])
+        self.model = self.chart.transform()
+        return self
+
 
 class CategoryPlot(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)

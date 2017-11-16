@@ -297,6 +297,7 @@ class YAxis(BaseObject):
         self.type = 'YAxis'
 
     def setBound(self, min, max):
+        self.auto_range = False
         self.lower_bound = min
         self.upper_bound = max
         return self.transform()

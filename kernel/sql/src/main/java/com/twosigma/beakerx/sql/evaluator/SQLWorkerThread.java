@@ -71,4 +71,5 @@ class SQLWorkerThread extends WorkerThread {
   public void doExit() {
     this.exit = true;
   }
+
 }

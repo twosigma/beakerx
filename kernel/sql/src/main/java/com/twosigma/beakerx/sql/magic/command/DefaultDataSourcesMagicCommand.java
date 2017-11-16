@@ -28,6 +28,11 @@ public class DefaultDataSourcesMagicCommand extends DataSourcesMagicCommand {
   }
 
   @Override
+  public String getMagicCommandName() {
+    return DEFAULT_DATASOURCE;
+  }
+
+  @Override
   public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
     return dataSource(
             DEFAULT_DATASOURCE,

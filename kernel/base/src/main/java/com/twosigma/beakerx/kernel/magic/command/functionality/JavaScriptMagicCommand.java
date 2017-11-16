@@ -34,6 +34,11 @@ public class JavaScriptMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
+  public String getMagicCommandName() {
+    return JAVASCRIPT;
+  }
+
+  @Override
   public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
     String commandCodeBlock = param.getCommandCodeBlock();
     Message message = param.getMessage();

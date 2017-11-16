@@ -23,7 +23,7 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.widgets.chart.BeakerxPlot;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class GroovyOutputContainerTest {
     BaseEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
     groovyKernel = new KernelTest("GroovyOutputContainerTest", evaluator);
     groovyEvaluatorManager = new EvaluatorManager(groovyKernel, evaluator);
-    groovyEvaluatorManager.setShellOptions(new KernelParameters(new HashMap()));
+    groovyEvaluatorManager.setShellOptions(new EvaluatorParameters(new HashMap()));
     KernelManager.register(groovyKernel);
   }
 

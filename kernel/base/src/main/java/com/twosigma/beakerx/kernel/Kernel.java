@@ -80,11 +80,8 @@ public abstract class Kernel implements KernelFunctionality {
     configureMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
-    initKernel(getKernelParameters());
     intJvmRepr();
   }
-
-  public abstract KernelParameters getKernelParameters();
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 
@@ -121,12 +118,8 @@ public abstract class Kernel implements KernelFunctionality {
     return (OS.indexOf("win") >= 0);
   }
 
-  public synchronized void setShellOptions(final KernelParameters kernelParameters) {
+  public synchronized void setShellOptions(final EvaluatorParameters kernelParameters) {
     evaluatorManager.setShellOptions(kernelParameters);
-  }
-
-  public void initKernel(final KernelParameters kernelParameters) {
-    evaluatorManager.initKernel(kernelParameters);
   }
 
   @Override
@@ -266,5 +259,10 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   protected void configureJvmRepr() {
+  }
+
+  @Override
+  public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
+    return evaluatorManager.loadClass(clazzName);
   }
 }

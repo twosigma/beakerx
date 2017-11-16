@@ -24,4 +24,5 @@ public interface MagicCommandFunctionality {
 
   MagicCommandResultItem execute(MagicCommandExecutionParam param);
 
+  String getMagicCommandName();
 }

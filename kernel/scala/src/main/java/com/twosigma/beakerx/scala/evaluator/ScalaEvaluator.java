@@ -28,6 +28,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.scala.serializers.ScalaCollectionDeserializer;
 import com.twosigma.beakerx.scala.serializers.ScalaCollectionSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaListOfPrimitiveTypeMapsSerializer;
@@ -49,15 +50,17 @@ public class ScalaEvaluator extends BaseEvaluator {
   private ScalaWorkerThread workerThread;
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
   private static boolean autoTranslationSetup = false;
+  private ClassLoader classLoader;
 
-  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp) {
-    this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl(), new TempFolderFactoryImpl());
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters) {
+    this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl(), new TempFolderFactoryImpl(), evaluatorParameters);
   }
 
-  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory) {
-    super(id, sId, cellExecutor,tempFolderFactory);
+  public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
     objectSerializerProvider = osp;
     this.beakerxObjectFactory = beakerxObjectFactory;
+    newEvaluator();
     workerThread = new ScalaWorkerThread(this);
     workerThread.start();
     try {
@@ -67,8 +70,14 @@ public class ScalaEvaluator extends BaseEvaluator {
   }
 
   @Override
+  public ClassLoader getClassLoader() {
+    return classLoader;
+  }
+
+  @Override
   protected void doResetEnvironment() {
-    workerThread.updateLoader();
+    clearShell();
+    newEvaluator();
     try {
       newAutoCompleteEvaluator();
     } catch (MalformedURLException e) {
@@ -182,9 +191,10 @@ public class ScalaEvaluator extends BaseEvaluator {
     }
   }
 
-  void newEvaluator() throws MalformedURLException {
+  void newEvaluator() {
     logger.debug("creating new evaluator");
-    shell = new ScalaEvaluatorGlue(newClassLoader(),
+    this.classLoader = newClassLoader();
+    shell = new ScalaEvaluatorGlue(classLoader,
             loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), getOutDir());
 
     if (!getImports().isEmpty()) {
@@ -214,7 +224,7 @@ public class ScalaEvaluator extends BaseEvaluator {
  * Scala uses multiple classloaders and (unfortunately) cannot fallback to the java one while compiling scala code so we
  * have to build our DynamicClassLoader and also build a proper classpath for the compiler classloader.
  */
-  private ClassLoader newClassLoader() throws MalformedURLException {
+  private ClassLoader newClassLoader() {
     logger.debug("creating new loader");
 
     loader_cp = "";

@@ -25,6 +25,7 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathRemoveMa
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathShowMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMagicCommand;
@@ -59,8 +60,13 @@ public class MagicCommandTypesFactory {
                     timeLine(kernel),
                     timeCell(kernel),
                     timeItLine(kernel),
-                    timeItCell(kernel)));
+                    timeItCell(kernel),
+                    loadMagic(kernel)));
     return magicCommandTypes;
+  }
+
+  private static MagicCommandType loadMagic(KernelFunctionality kernel) {
+    return new MagicCommandType(LoadMagicMagicCommand.LOAD_MAGIC, "", new LoadMagicMagicCommand(kernel));
   }
 
   private static MagicCommandType timeItCell(KernelFunctionality kernel) {

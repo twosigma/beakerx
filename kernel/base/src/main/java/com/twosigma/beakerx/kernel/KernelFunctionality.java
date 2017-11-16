@@ -22,7 +22,6 @@ import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.handler.Handler;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 
 import java.nio.file.Path;
@@ -50,7 +49,7 @@ public interface KernelFunctionality {
 
   Set<String> getCommHashSet();
 
-  void setShellOptions(KernelParameters kernelParameters);
+  void setShellOptions(EvaluatorParameters kernelParameters);
 
   void cancelExecution();
 
@@ -83,6 +82,8 @@ public interface KernelFunctionality {
   List<MagicCommandType> getMagicCommandTypes();
 
   Path getTempFolder();
+
+  Class<?> loadClass(String clazzName) throws ClassNotFoundException;
 
   interface ExecuteCodeCallback {
     void execute(SimpleEvaluationObject seo);

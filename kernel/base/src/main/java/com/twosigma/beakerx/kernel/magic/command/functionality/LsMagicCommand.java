@@ -36,6 +36,11 @@ public class LsMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
+  public String getMagicCommandName() {
+    return LSMAGIC;
+  }
+
+  @Override
   public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
     Message message = param.getMessage();
     int executionCount = param.getExecutionCount();

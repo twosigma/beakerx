@@ -29,6 +29,11 @@ public class TimeLineModeMagicCommand extends TimeMagicCommand {
   }
 
   @Override
+  public String getMagicCommandName() {
+    return TIME_LINE;
+  }
+
+  @Override
   public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
     Code code = param.getCode();
     Message message = param.getMessage();
@@ -36,6 +41,4 @@ public class TimeLineModeMagicCommand extends TimeMagicCommand {
     String codeToExecute = code.asString().replace(TIME_LINE, "");
     return time(codeToExecute, message, executionCount);
   }
-
-
 }

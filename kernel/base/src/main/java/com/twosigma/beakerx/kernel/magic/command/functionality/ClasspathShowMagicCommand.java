@@ -33,6 +33,11 @@ public class ClasspathShowMagicCommand extends ClasspathMagicCommand {
   }
 
   @Override
+  public String getMagicCommandName() {
+    return CLASSPATH_SHOW;
+  }
+
+  @Override
   public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
     Message message = param.getMessage();
     int executionCount = param.getExecutionCount();

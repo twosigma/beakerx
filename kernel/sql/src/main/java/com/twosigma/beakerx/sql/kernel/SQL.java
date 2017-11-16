@@ -26,7 +26,7 @@ import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
@@ -68,15 +68,15 @@ public class SQL extends Kernel {
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               new KernelConfigurationFile(args));
-      return new SQL(id, new SQLEvaluator(id, id), kernelSocketsFactory);
+      SQLEvaluator evaluator = new SQLEvaluator(id, id,getKernelParameters());
+      return new SQL(id, evaluator, kernelSocketsFactory);
     });
   }
 
-  @Override
-  public KernelParameters getKernelParameters() {
+  public static EvaluatorParameters getKernelParameters() {
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new DefaultJVMVariables().getImports());
-    return new KernelParameters(kernelParameters);
+    return new EvaluatorParameters(kernelParameters);
   }
   @Override
   public List<MagicCommandType> registerCustomMagicCommands(){

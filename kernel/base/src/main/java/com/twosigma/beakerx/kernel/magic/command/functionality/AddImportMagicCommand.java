@@ -37,6 +37,11 @@ public class AddImportMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
+  public String getMagicCommandName() {
+    return IMPORT;
+  }
+
+  @Override
   public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
     Code code = param.getCode();
     String command = param.getCommand();

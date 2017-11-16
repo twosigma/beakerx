@@ -38,6 +38,11 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
   }
 
   @Override
+  public String getMagicCommandName() {
+    return CLASSPATH_ADD_MVN;
+  }
+
+  @Override
   public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
     Code code = param.getCode();
     String command = param.getCommand();

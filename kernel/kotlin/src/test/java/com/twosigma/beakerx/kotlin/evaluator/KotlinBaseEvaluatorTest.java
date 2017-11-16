@@ -20,6 +20,7 @@ import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 
@@ -29,7 +30,7 @@ public class KotlinBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    evaluator = new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory());
+    evaluator = new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
   }
 
   @AfterClass
@@ -39,7 +40,7 @@ public class KotlinBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @Override
   protected BaseEvaluator createNewEvaluator() {
-    return new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory());
+    return new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
   }
 
   @Override

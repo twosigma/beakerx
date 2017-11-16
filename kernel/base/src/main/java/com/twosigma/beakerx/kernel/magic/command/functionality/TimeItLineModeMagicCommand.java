@@ -29,6 +29,11 @@ public class TimeItLineModeMagicCommand extends TimeMagicCommand {
   }
 
   @Override
+  public String getMagicCommandName() {
+    return TIMEIT_LINE;
+  }
+
+  @Override
   public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
     Code code = param.getCode();
     Message message = param.getMessage();

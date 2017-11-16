@@ -36,6 +36,11 @@ public class HtmlMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
+  public String getMagicCommandName() {
+    return HTML;
+  }
+
+  @Override
   public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
     Message message = param.getMessage();
     int executionCount = param.getExecutionCount();

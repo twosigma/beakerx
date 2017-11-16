@@ -37,6 +37,11 @@ public class BashMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
+  public String getMagicCommandName() {
+    return BASH;
+  }
+
+  @Override
   public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
     Code code = param.getCode();
     Message message = param.getMessage();

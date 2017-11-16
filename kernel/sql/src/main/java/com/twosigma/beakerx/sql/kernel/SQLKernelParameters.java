@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.sql.kernel;
 
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -28,9 +28,9 @@ import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicComm
 
 public class SQLKernelParameters {
 
-  private KernelParameters kernelParameters;
+  private EvaluatorParameters kernelParameters;
 
-  public SQLKernelParameters(KernelParameters kernelParameters) {
+  public SQLKernelParameters(EvaluatorParameters kernelParameters) {
     this.kernelParameters = checkNotNull(kernelParameters);
   }
 

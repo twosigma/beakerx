@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 include 'base'
 include 'groovy'
 include 'kotlin'
@@ -23,5 +22,11 @@ include 'clojure'
 include 'sql'
 
 if (System.getProperty('includeCpp', 'false') == 'true') {
-    include 'cpp'
+  include 'cpp'
 }
+
+// uncomment when demo projects have to be rebuild
+//include 'demoProjects'
+//include 'demoProjects:loadMagicJarDemo'
+
+

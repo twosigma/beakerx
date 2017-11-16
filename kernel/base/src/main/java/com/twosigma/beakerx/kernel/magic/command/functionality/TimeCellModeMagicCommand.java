@@ -29,6 +29,11 @@ public class TimeCellModeMagicCommand extends TimeMagicCommand {
   }
 
   @Override
+  public String getMagicCommandName() {
+    return TIME_CELL;
+  }
+
+  @Override
   public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
     Message message = param.getMessage();
     int executionCount = param.getExecutionCount();

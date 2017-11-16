@@ -24,3 +24,5 @@ rm -r /home/beakerx/beakerx/js/dist
 beakerx-install
 
 rm -rf docker .DS_Store .git .gradle .idea jitpack.yml kernel RELEASE.md test
+
+mkdir ~/.jupyter

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import MenuItem from './MenuItemInterface';
+import MenuItem from '../../shared/interfaces/menuItemInterface';
 import createFormatSubitems from './createFormatMenuItems';
 
 export default function createIndexMenuItems(scope: any): MenuItem[] {

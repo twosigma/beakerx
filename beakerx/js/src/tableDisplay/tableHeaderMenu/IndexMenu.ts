@@ -15,7 +15,7 @@
  */
 
 import createIndexMenuItems from './createIndexMenuItems';
-import MenuItem from './MenuItemInterface';
+import MenuItem from '../../shared/interfaces/menuItemInterface';
 import HeaderMenu from './HeaderMenu';
 
 export default class IndexMenu extends HeaderMenu {

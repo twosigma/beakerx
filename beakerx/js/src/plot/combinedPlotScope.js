@@ -23,7 +23,6 @@ define([
   './combinedPlotFormatter',
   './../shared/bkUtils',
   './chartExtender',
-  'jquery-contextmenu',
   './plotScope'
 ], function(
   _,
@@ -34,7 +33,6 @@ define([
   combinedPlotFormatter,
   bkUtils,
   bkoChartExtender,
-  contextMenu,
   PlotScope
 ) {
   
@@ -256,6 +254,10 @@ define([
     );
   };
 
+  CombinedPlotScope.prototype.doDestroy = function() {
+    this.contextMenu && this.contextMenu.destroy();
+  };
+
   CombinedPlotScope.prototype.init = function() {
     var self = this;
     self.canvas = self.element.find("canvas")[0];
@@ -264,12 +266,8 @@ define([
     self.id = 'bko-plot-' + bkUtils.generateId(6);
     self.element.find('.combplot-plotcontainer').attr('id', self.id);
     self.saveAsMenuContainer = $('#' + self.id);
-    $.contextMenu({
-      selector: '#' + self.id,
-      zIndex: 3,
-      items: plotUtils.getSavePlotAsContextMenuItems(self),
-      trigger: 'none'
-    });
+    var ContextMenu = require('./contextMenu/plotContextMenu').default;
+    self.contextMenu = new ContextMenu(self);
 
     self.standardizeData();
     self.preparePlotModels();

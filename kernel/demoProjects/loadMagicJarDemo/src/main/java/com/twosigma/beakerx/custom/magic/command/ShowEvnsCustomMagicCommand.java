@@ -17,22 +17,32 @@ package com.twosigma.beakerx.custom.magic.command;
 
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
+
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 
 public class ShowEvnsCustomMagicCommand implements MagicCommandFunctionality {
 
+  private static final String SHOW_ENVS = "%showEnvs";
+
   @Override
   public String getMagicCommandName() {
-    return "%showEnvs";
+    return SHOW_ENVS;
+  }
+
+  @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length > 0 && commandParts[0].equals(SHOW_ENVS);
   }
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     MIMEContainer result = Text(System.getenv());
-    return new MagicCommandOutput(MagicCommandOutcomeItem.Status.OK,result.getData().toString());
+    return new MagicCommandOutput(MagicCommandOutcomeItem.Status.OK, result.getData().toString());
   }
 
 }

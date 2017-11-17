@@ -25,4 +25,6 @@ public interface MagicCommandFunctionality {
   MagicCommandOutcomeItem execute(MagicCommandExecutionParam param);
 
   String getMagicCommandName();
+
+  boolean matchCommand(String command);
 }

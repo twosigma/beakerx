@@ -26,7 +26,8 @@ import static com.twosigma.beakerx.kernel.magic.command.functionality.AddImportM
 
 public class AddStaticImportMagicCommand implements MagicCommandFunctionality {
 
-  public static final String ADD_STATIC_IMPORT = IMPORT + " static";
+  private static final String STATIC = "static";
+  public static final String ADD_STATIC_IMPORT = IMPORT + " " + STATIC;
   private KernelFunctionality kernel;
 
   public AddStaticImportMagicCommand(KernelFunctionality kernel) {
@@ -36,6 +37,12 @@ public class AddStaticImportMagicCommand implements MagicCommandFunctionality {
   @Override
   public String getMagicCommandName() {
     return ADD_STATIC_IMPORT;
+  }
+
+  @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length > 2 && commandParts[0].equals(IMPORT) && commandParts[1].equals(STATIC);
   }
 
   @Override

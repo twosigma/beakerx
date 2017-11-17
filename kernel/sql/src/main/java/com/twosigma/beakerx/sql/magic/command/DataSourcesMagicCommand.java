@@ -19,6 +19,7 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
@@ -37,6 +38,12 @@ public class DataSourcesMagicCommand implements MagicCommandFunctionality {
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     return dataSource(DATASOURCES, param.getCommand());
+  }
+
+  @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length > 0 && commandParts[0].equals(DATASOURCES);
   }
 
   @Override

@@ -36,6 +36,12 @@ public class JavaScriptMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length > 0 && commandParts[0].equals(JAVASCRIPT);
+  }
+
+  @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String commandCodeBlock = param.getCommandCodeBlock();
     MIMEContainer result = JavaScript(commandCodeBlock);

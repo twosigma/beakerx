@@ -15,6 +15,7 @@
 from os import environ, path
 from jupyter_core import paths
 import json
+import pathlib
 
 default_config = """
 {
@@ -37,6 +38,7 @@ class EnvironmentSettings:
 
     @staticmethod
     def save_setting_to_file(content):
+        pathlib.Path(paths.jupyter_config_dir()).mkdir(parents=True, exist_ok=True)
         file = open(EnvironmentSettings.config_path, 'w+')
         file.write(json.dumps(json.loads(content), indent=4, sort_keys=True))
         file.close()

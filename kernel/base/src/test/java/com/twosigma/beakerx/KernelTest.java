@@ -40,7 +40,7 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMag
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItLineModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeLineModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
@@ -225,6 +225,11 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
     return null;
+  }
+
+  @Override
+  public void registerMagicCommandType(MagicCommandType magicCommandType) {
+    magicCommandTypes.add(magicCommandType);
   }
 
   private Path tempFolder() {

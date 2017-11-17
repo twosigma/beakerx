@@ -32,7 +32,6 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMag
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItLineModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeLineModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
 
 import java.util.ArrayList;
 import java.util.List;

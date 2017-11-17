@@ -18,8 +18,9 @@ package com.twosigma.beakerx;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandResult;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 import org.junit.Test;
 
 import java.util.Map;
@@ -33,7 +34,6 @@ import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForS
 import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.executeMagicCommands;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand.LOAD_MAGIC;
-import static com.twosigma.beakerx.kernel.msg.MessageCreator.TEXT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
@@ -88,29 +88,29 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   private void verifyLoadedMagicCommand() {
     String allCode = "%showEnvs";
-    Code code = CodeFactory.create(allCode, new Message(), 3, kernel);
-    MagicCommandResult result = executeMagicCommands(code, 3, kernel);
-    Optional<Message> message = result.getItems().get(0).getResult();
-    assertThat(getText(message.get())).startsWith("{PATH");
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 3, kernel);
+    MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
+    assertThat(getText(message)).startsWith("{PATH");
   }
 
-  private String getText(Message message) {
-    return (String) message.getContent().get(TEXT);
+  private String getText(MIMEContainer message) {
+    return (String) message.getData();
   }
 
   private void loadMagicCommandByClass() {
     String allCode = LOAD_MAGIC + "   com.twosigma.beakerx.custom.magic.command.ShowEvnsCustomMagicCommand";
-    Code code = CodeFactory.create(allCode, new Message(), 2, kernel);
-    MagicCommandResult result = executeMagicCommands(code, 2, kernel);
-    Optional<Message> message = result.getItems().get(0).getResult();
-    assertThat(getText(message.get())).contains("Magic command %showEnvs was successfully added.");
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 2, kernel);
+    MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
+    assertThat(getText(message)).contains("Magic command %showEnvs was successfully added.");
   }
 
   private void addJarWithCustomMagicCommand() throws InterruptedException {
     String allCode = CLASSPATH_ADD_JAR + " " + "../../doc/contents/resources/jar/loadMagicJarDemo.jar";
-    Code code = CodeFactory.create(allCode, new Message(), 1, kernel);
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
-    Optional<Message> message = result.getItems().get(0).getResult();
-    assertThat(getText(message.get())).contains("Added jar: [loadMagicJarDemo.jar]");
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
+    assertThat(getText(message)).contains("Added jar: [loadMagicJarDemo.jar]");
   }
 }

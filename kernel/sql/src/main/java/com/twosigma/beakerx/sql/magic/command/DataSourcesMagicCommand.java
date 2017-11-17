@@ -15,18 +15,14 @@
  */
 package com.twosigma.beakerx.sql.magic.command;
 
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
 import java.util.HashMap;
-
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.errorResult;
 
 public class DataSourcesMagicCommand implements MagicCommandFunctionality {
 
@@ -39,8 +35,8 @@ public class DataSourcesMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
-    return dataSource(DATASOURCES, param.getCode(), param.getCommand(), param.getMessage(), param.getExecutionCount());
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
+    return dataSource(DATASOURCES, param.getCommand());
   }
 
   @Override
@@ -48,18 +44,18 @@ public class DataSourcesMagicCommand implements MagicCommandFunctionality {
     return DATASOURCES;
   }
 
-  protected MagicCommandResultItem dataSource(String source, Code code, String command, Message message, int executionCount) {
+  protected MagicCommandOutcomeItem dataSource(String source, String command) {
     String[] parts = command.split(" ");
     if (parts.length != 2) {
-      return errorResult(message, WRONG_FORMAT_MSG, executionCount);
+      return new MagicCommandOutput(MagicCommandOutcomeItem.Status.ERROR, WRONG_FORMAT_MSG);
     } else if (!parts[1].contains("jdbc:")) {
-      return errorResult(message, "Incorrect jdbc url.", executionCount);
+      return new MagicCommandOutput(MagicCommandOutcomeItem.Status.ERROR, "Incorrect jdbc url.");
     }
 
     HashMap<String, Object> params = new HashMap<>();
     params.put(source, parts[1]);
     this.kernel.setShellOptions(new EvaluatorParameters(params));
-    return MagicCommandUtils.noResult(code, message, executionCount);
+    return new MagicCommandOutput(MagicCommandOutcomeItem.Status.OK);
 
   }
 }

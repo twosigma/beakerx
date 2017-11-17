@@ -18,13 +18,13 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.errorResult;
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.resultWithCustomMessage;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
+import static com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem.Status.ERROR;
+import static com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem.Status.OK;
 
 public class LoadMagicMagicCommand implements MagicCommandFunctionality {
 
@@ -41,34 +41,27 @@ public class LoadMagicMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
-    Message message = param.getMessage();
-    int executionCount = param.getExecutionCount();
 
     String[] split = splitPath(command);
     if (split.length != 2) {
-      return errorResult(message, WRONG_FORMAT_MSG + LOAD_MAGIC, executionCount);
+      return new MagicCommandOutput(ERROR, WRONG_FORMAT_MSG + LOAD_MAGIC);
     }
 
     String clazzName = split[1];
-    MagicCommandFunctionality commandFunctionality = null;
     try {
       Class<?> aClass = this.kernel.loadClass(clazzName);
       Object instance = aClass.newInstance();
       if (instance instanceof MagicCommandFunctionality) {
-        commandFunctionality = (MagicCommandFunctionality) instance;
-        kernel.getMagicCommandTypes().add(new MagicCommandType(commandFunctionality.getMagicCommandName(), "", commandFunctionality));
+        MagicCommandFunctionality commandFunctionality = (MagicCommandFunctionality) instance;
+        kernel.registerMagicCommandType(new MagicCommandType(commandFunctionality.getMagicCommandName(), "", commandFunctionality));
+        return new MagicCommandOutput(OK, "Magic command " + commandFunctionality.getMagicCommandName() + " was successfully added.");
       } else {
-        throw new RuntimeException("Magic command have to implement " + MagicCommandFunctionality.class + " interface.");
+        return new MagicCommandOutput(ERROR, "Magic command have to implement " + MagicCommandFunctionality.class + " interface.");
       }
     } catch (Exception e) {
-      return errorResult(message, e.toString(), executionCount);
+      return new MagicCommandOutput(ERROR, e.toString());
     }
-
-    return resultWithCustomMessage(
-            "Magic command " + commandFunctionality.getMagicCommandName() + " was successfully added.",
-            message,
-            executionCount);
   }
 }

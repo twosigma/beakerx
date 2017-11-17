@@ -51,7 +51,7 @@ public class CodeTest {
             "      d3: '//cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min'\n" +
             "  }});";
     //when
-    Code code = CodeFactory.create(JAVASCRIPT + "\n" + jsCode, new Message(), 1, kernel);
+    Code code = CodeFactory.create(JAVASCRIPT + "\n" + jsCode, new Message(), kernel);
     String toCompare = code.getMagicCommands().get(0).getCommandCodeBlock().replaceAll("\\s+", "");
     jsCode = jsCode.replaceAll("\\s+", "");
 
@@ -71,7 +71,7 @@ public class CodeTest {
             CLASSPATH_ADD_JAR + " lib3.jar\n" +
             "code code code";
     //when
-    Code code = CodeFactory.create(allCode, new Message(), 1, kernel);
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
     //then
     assertThat(code.getMagicCommands().size()).isEqualTo(3);
     assertThat(code.getMagicCommands().get(0).getCommand()).isEqualTo("%classpath add jar lib1.jar");

@@ -29,7 +29,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
@@ -239,20 +239,6 @@ public abstract class Kernel implements KernelFunctionality {
     return evaluatorManager.getTempFolder();
   }
 
-  @Override
-  public List<MagicCommandType> getMagicCommandTypes() {
-    return magicCommandTypes;
-  }
-
-  private void configureMagicCommands() {
-    this.magicCommandTypes = MagicCommandTypesFactory.createDefaults(this);
-    this.magicCommandTypes.addAll(registerCustomMagicCommands());
-  }
-
-  protected List<MagicCommandType> registerCustomMagicCommands() {
-    return new ArrayList<>();
-  }
-
   private void intJvmRepr() {
     Displayers.registration().setDefault(BeakerxToStringDisplayer.get());
     configureJvmRepr();
@@ -264,5 +250,19 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
     return evaluatorManager.loadClass(clazzName);
+  }
+
+  @Override
+  public List<MagicCommandType> getMagicCommandTypes() {
+    return magicCommandTypes;
+  }
+
+  private void configureMagicCommands() {
+    this.magicCommandTypes = MagicCommandTypesFactory.createDefaults(this);
+  }
+
+  @Override
+  public void registerMagicCommandType(MagicCommandType magicCommandType) {
+    this.magicCommandTypes.add(magicCommandType);
   }
 }

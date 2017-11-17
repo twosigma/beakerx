@@ -13,18 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel.magic.command.item;
+package com.twosigma.beakerx.kernel.magic.command.outcome;
 
-import com.twosigma.beakerx.message.Message;
+import java.util.LinkedList;
+import java.util.List;
 
-import java.util.Optional;
+public class MagicCommandOutcome {
 
-public interface MagicCommandResultItem {
+  private LinkedList<MagicCommandOutcomeItem> items = new LinkedList<>();
 
-  boolean hasResult();
+  public void addItem(MagicCommandOutcomeItem magicCommandResultItem) {
+    this.items.add(magicCommandResultItem);
+  }
 
-  Optional<Message> getResult();
-
-  Optional<Message> getReply();
-
+  public List<MagicCommandOutcomeItem> getItems() {
+    return items;
+  }
 }

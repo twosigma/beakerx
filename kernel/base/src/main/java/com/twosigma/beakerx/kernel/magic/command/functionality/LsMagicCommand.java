@@ -17,11 +17,9 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,18 +39,13 @@ public class LsMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
-    Message message = param.getMessage();
-    int executionCount = param.getExecutionCount();
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String result = "Available magic commands:\n";
 
     result += magicCommandTypes.stream()
             .map(commandType -> commandType.getCommand() + " " + commandType.getParameters())
             .collect(Collectors.joining("\n"));
 
-    return new MagicCommandItemWithResult(
-            MessageCreator.buildOutputMessage(message, result, false),
-            MessageCreator.buildReplyWithOkStatus(message, executionCount)
-    );
+    return new MagicCommandOutput(MagicCommandOutput.Status.OK, result);
   }
 }

@@ -17,20 +17,17 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandResult;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
-import static java.util.Collections.singletonList;
 
 public class JavaScriptMagicCommand implements MagicCommandFunctionality {
 
   public static final String JAVASCRIPT = "%%javascript";
 
-  public JavaScriptMagicCommand(){
+  public JavaScriptMagicCommand() {
   }
 
   @Override
@@ -39,16 +36,10 @@ public class JavaScriptMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String commandCodeBlock = param.getCommandCodeBlock();
-    Message message = param.getMessage();
-    int executionCount = param.getExecutionCount();
     MIMEContainer result = JavaScript(commandCodeBlock);
-    return new MagicCommandItemWithResult(
-            MessageCreator.buildMessage(message, singletonList(result), executionCount),
-            MessageCreator.buildReplyWithOkStatus(message, executionCount)
-    );
+    return new MagicCommandResult(MagicCommandOutcomeItem.Status.OK, result);
   }
-
 
 }

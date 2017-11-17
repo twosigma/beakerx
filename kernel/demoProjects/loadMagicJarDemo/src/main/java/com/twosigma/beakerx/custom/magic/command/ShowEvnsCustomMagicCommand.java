@@ -17,11 +17,9 @@ package com.twosigma.beakerx.custom.magic.command;
 
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.resultWithCustomMessage;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 
 public class ShowEvnsCustomMagicCommand implements MagicCommandFunctionality {
@@ -32,11 +30,9 @@ public class ShowEvnsCustomMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
-    Message message = param.getMessage();
-    int executionCount = param.getExecutionCount();
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     MIMEContainer result = Text(System.getenv());
-    return resultWithCustomMessage(result.getData().toString(), message, executionCount);
+    return new MagicCommandOutput(MagicCommandOutcomeItem.Status.OK,result.getData().toString());
   }
 
 }

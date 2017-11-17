@@ -18,7 +18,7 @@ package com.twosigma.beakerx.kernel;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.handler.Handler;
@@ -84,6 +84,8 @@ public interface KernelFunctionality {
   Path getTempFolder();
 
   Class<?> loadClass(String clazzName) throws ClassNotFoundException;
+
+  void registerMagicCommandType(MagicCommandType magicCommandType);
 
   interface ExecuteCodeCallback {
     void execute(SimpleEvaluationObject seo);

@@ -15,15 +15,14 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.errorResult;
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.noResult;
+import java.util.Collection;
+
 import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
 
 public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
@@ -43,21 +42,23 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
-    Code code = param.getCode();
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
-    Message message = param.getMessage();
-    int executionCount = param.getExecutionCount();
     String[] split = splitPath(command);
     if (split.length != 6) {
-      return errorResult(message, ADD_MVN_FORMAT_ERROR_MESSAGE, executionCount);
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, ADD_MVN_FORMAT_ERROR_MESSAGE);
     }
     MavenJarResolver classpathAddMvnCommand = new MavenJarResolver(commandParams);
     MavenJarResolver.AddMvnCommandResult result = classpathAddMvnCommand.retrieve(split[3], split[4], split[5]);
     if (result.isJarRetrieved()) {
-      return noResult(addJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*"), code, message, executionCount);
+      Collection<String> newAddedJars = addJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*");
+      if (newAddedJars.isEmpty()) {
+        return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+      }
+      String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars + "\n";
+      return new MagicCommandOutput(MagicCommandOutput.Status.OK, textMessage);
     }
-    return errorResult(message, result.getErrorMessage(), executionCount);
+    return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, result.getErrorMessage());
   }
 
 }

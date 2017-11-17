@@ -104,6 +104,10 @@ var PlotView = widgets.DOMWidgetView.extend({
     var numberOfPoints;
     var self = this;
 
+    if (!_.isArray(plotModel.graphics_list)) {
+      return;
+    }
+
     if (!plotModel.plots) {
       numberOfPoints = this.getNumberOfPointsForStandardPlot(plotModel);
       this.limitPointsForStandardPlot(plotModel, numberOfPoints);

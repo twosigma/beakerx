@@ -210,9 +210,11 @@ class Plot(BeakerxDOMWidget):
     def __init__(self, **kwargs):
         super(Plot, self).__init__(**kwargs)
         self.chart = XYChart(**kwargs)
+        self.model = self.chart.transform()
 
     def add(self, item):
         self.chart.add(item)
+        self.model = self.chart.transform()
         return self
     
     def getYAxes(self):
@@ -220,6 +222,7 @@ class Plot(BeakerxDOMWidget):
 
     def setShowLegend(self, show):
         self.chart.show_legend = show
+        self.model = self.chart.transform()
         return self
 
     def setXBound(self, *args):
@@ -231,6 +234,7 @@ class Plot(BeakerxDOMWidget):
                 raise ValueError('to set the x bound, the list needs to be of size=2.')
         else:
             self.chart.setXBound(args[0], args[1])
+        self.model = self.chart.transform()
         return self
 
     def setYBound(self, *args):
@@ -242,6 +246,7 @@ class Plot(BeakerxDOMWidget):
                 raise ValueError('to set the y bound, the list needs to be of size=2.')
         else:
             self.chart.setYBound(args[0], args[1])
+        self.model = self.chart.transform()
         return self
 
     def _ipython_display_(self, **kwargs):
@@ -266,6 +271,9 @@ class CategoryPlot(BeakerxDOMWidget):
         self.model = self.chart.transform()
         return self
 
+    def _ipython_display_(self, **kwargs):
+        self.model = self.chart.transform()
+        super(CategoryPlot, self)._ipython_display_(**kwargs)
 
 class HeatMap(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)

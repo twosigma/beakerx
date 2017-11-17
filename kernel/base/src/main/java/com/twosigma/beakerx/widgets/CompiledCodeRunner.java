@@ -72,15 +72,14 @@ public class CompiledCodeRunner {
   }
 
   public static void runCompiledCodeAndPublish(Message message, ExecuteCompiledCode handler, Object... params) {
-    final MessageCreator mc = new MessageCreator(KernelManager.get());
     final SimpleEvaluationObject seo = initOutput(message);
     InternalVariable.setValue(seo);
-    KernelManager.get().publish(mc.buildClearOutput(message, true));
+    KernelManager.get().publish(MessageCreator.buildClearOutput(message, true));
     try {
       Object result = handler.executeCode(params);
       if (result != null) {
         List<MIMEContainer> resultString = SerializeToString.doit(result);
-        KernelManager.get().publish(mc.buildDisplayData(message, resultString));
+        KernelManager.get().publish(MessageCreator.buildDisplayData(message, resultString));
       }
     } catch (Exception e) {
       printError(message, seo, e);

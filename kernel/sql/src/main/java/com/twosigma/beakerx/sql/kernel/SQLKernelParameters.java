@@ -23,8 +23,8 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
 import static com.twosigma.beakerx.kernel.Utils.getAsString;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 
 public class SQLKernelParameters {
 

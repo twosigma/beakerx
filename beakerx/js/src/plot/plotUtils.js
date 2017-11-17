@@ -342,7 +342,7 @@ define([
       }
 
       if (focus.yl_r == null) {
-        if (model.yIncludeZero === true) {
+        if (model.yIncludeZero === true && model.vrangeR) {
           var yl_r = model.vrangeR.yspan * rangeR.yl + model.vrangeR.yl;
           if(yl_r > 0){
             rangeR.yl = (0 - model.vrangeR.yl) / model.vrangeR.yspan;

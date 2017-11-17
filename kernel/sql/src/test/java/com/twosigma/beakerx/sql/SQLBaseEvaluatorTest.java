@@ -28,8 +28,8 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 
 public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
 

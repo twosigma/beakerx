@@ -16,9 +16,8 @@
 package com.twosigma.beakerx.kernel;
 
 import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
-import static com.twosigma.beakerx.kernel.commands.MavenJarResolver.MVN_DIR;
 
-import com.google.common.collect.Lists;
+import com.twosigma.beakerx.BeakerxToStringDisplayer;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -28,21 +27,22 @@ import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.commands.MavenJarResolver;
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
+import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import jupyter.Displayers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,8 +61,7 @@ public abstract class Kernel implements KernelFunctionality {
   private ExecutionResultSender executionResultSender;
   private EvaluatorManager evaluatorManager;
   private KernelSockets kernelSockets;
-  private MessageCreator messageCreator;
-  private MagicCommand magicCommand;
+  private List<MagicCommandType> magicCommandTypes;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
                 final KernelSocketsFactory kernelSocketsFactory) {
@@ -70,8 +69,7 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   protected Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory,
-                CloseKernelAction closeKernelAction) {
-    this.messageCreator = new MessageCreator(this);
+                   CloseKernelAction closeKernelAction) {
     this.sessionId = sessionId;
     this.kernelSocketsFactory = kernelSocketsFactory;
     this.closeKernelAction = closeKernelAction;
@@ -79,11 +77,11 @@ public abstract class Kernel implements KernelFunctionality {
     this.executionResultSender = new ExecutionResultSender(this);
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     this.handlers = new KernelHandlers(this, getCommOpenHandler(this), getKernelInfoHandler(this));
-    this.magicCommand = handlers.getExecuteRequestHandler().getMagicCommand();
+    configureMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
     initKernel(getKernelParameters());
-    configureJvmRepr();
+    intJvmRepr();
   }
 
   public abstract KernelParameters getKernelParameters();
@@ -91,9 +89,6 @@ public abstract class Kernel implements KernelFunctionality {
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 
   public abstract KernelHandler<Message> getKernelInfoHandler(Kernel kernel);
-
-  protected void configureJvmRepr() {
-  }
 
   @Override
   public void run() {
@@ -218,12 +213,12 @@ public abstract class Kernel implements KernelFunctionality {
 
   @Override
   public void sendBusyMessage(Message message) {
-    publish(this.messageCreator.createBusyMessage(message));
+    publish(MessageCreator.createBusyMessage(message));
   }
 
   @Override
   public void sendIdleMessage(Message message) {
-    publish(this.messageCreator.createIdleMessage(message));
+    publish(MessageCreator.createIdleMessage(message));
   }
 
   @Override
@@ -246,38 +241,30 @@ public abstract class Kernel implements KernelFunctionality {
     this.evaluatorManager.removeImport(anImport);
   }
 
-  public MagicCommand getMagicCommand() {
-    return magicCommand;
-  }
-
-  @Override
-  public List<MagicCommandType> getMagicCommands() {
-    return Lists.newArrayList(
-            new MagicCommandType(MagicCommand.JAVASCRIPT, "", magicCommand.javascript()),
-            new MagicCommandType(MagicCommand.HTML, "", magicCommand.html()),
-            new MagicCommandType(MagicCommand.BASH, "", magicCommand.bash()),
-            new MagicCommandType(MagicCommand.LSMAGIC, "", magicCommand.lsmagic()),
-            new MagicCommandType(MagicCommand.CLASSPATH_ADD_JAR, "<jar path>", magicCommand.classpathAddJar()),
-            new MagicCommandType(MagicCommand.CLASSPATH_ADD_MVN, "<group name version>",
-                    magicCommand.classpathAddMvn(new MavenJarResolver.ResolverParams(
-                            getTempFolder().toString() + "/../beakerMvnCache",
-                            getTempFolder().toString() + MVN_DIR
-                    ))),
-            new MagicCommandType(MagicCommand.CLASSPATH_REMOVE, "<jar path>", magicCommand.classpathRemove()),
-            new MagicCommandType(MagicCommand.CLASSPATH_SHOW, "", magicCommand.classpathShow()),
-            new MagicCommandType(MagicCommand.ADD_STATIC_IMPORT, "<classpath>", magicCommand.addStaticImport()),
-            new MagicCommandType(MagicCommand.IMPORT, "<classpath>", magicCommand.addImport()),
-            new MagicCommandType(MagicCommand.UNIMPORT, "<classpath>", magicCommand.unimport()),
-            new MagicCommandType(MagicCommand.TIME_LINE, "", magicCommand.timeLineMode()),
-            new MagicCommandType(MagicCommand.TIME_CELL, "", magicCommand.timeCellMode()),
-            new MagicCommandType(MagicCommand.TIMEIT_LINE, "", magicCommand.timeItLineMode()),
-            new MagicCommandType(MagicCommand.TIMEIT_CELL, "", magicCommand.timeItCellMode())
-    );
-  }
-
-
   @Override
   public Path getTempFolder() {
     return evaluatorManager.getTempFolder();
+  }
+
+  @Override
+  public List<MagicCommandType> getMagicCommandTypes() {
+    return magicCommandTypes;
+  }
+
+  private void configureMagicCommands() {
+    this.magicCommandTypes = MagicCommandTypesFactory.createDefaults(this);
+    this.magicCommandTypes.addAll(registerCustomMagicCommands());
+  }
+
+  protected List<MagicCommandType> registerCustomMagicCommands() {
+    return new ArrayList<>();
+  }
+
+  private void intJvmRepr() {
+    Displayers.registration().setDefault(BeakerxToStringDisplayer.get());
+    configureJvmRepr();
+  }
+
+  protected void configureJvmRepr() {
   }
 }

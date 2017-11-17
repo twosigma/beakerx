@@ -17,6 +17,7 @@ package com.twosigma.beakerx.sql.magic.command;
 
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
+import com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 
 public class DefaultDataSourcesMagicCommand extends DataSourcesMagicCommand {
@@ -30,6 +31,12 @@ public class DefaultDataSourcesMagicCommand extends DataSourcesMagicCommand {
   @Override
   public String getMagicCommandName() {
     return DEFAULT_DATASOURCE;
+  }
+
+  @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length > 0 && commandParts[0].equals(DEFAULT_DATASOURCE);
   }
 
   @Override

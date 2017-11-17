@@ -27,7 +27,9 @@ import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicComma
 
 public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
 
-  public static final String CLASSPATH_ADD_MVN = CLASSPATH + " add mvn";
+  public static final String ADD = "add";
+  public static final String MVN = "mvn";
+  public static final String CLASSPATH_ADD_MVN = CLASSPATH + " " + ADD + " " + MVN;
   public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be " + CLASSPATH_ADD_MVN + " group name version";
   private MavenJarResolver.ResolverParams commandParams;
 
@@ -39,6 +41,12 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
   @Override
   public String getMagicCommandName() {
     return CLASSPATH_ADD_MVN;
+  }
+
+  @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length > 3 && commandParts[0].equals(CLASSPATH) && commandParts[1].equals(ADD) && commandParts[2].equals(MVN);
   }
 
   @Override

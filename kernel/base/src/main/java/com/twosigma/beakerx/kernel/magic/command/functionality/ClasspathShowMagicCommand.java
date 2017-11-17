@@ -36,6 +36,12 @@ public class ClasspathShowMagicCommand extends ClasspathMagicCommand {
   }
 
   @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length == 1 && commandParts[0].equals(CLASSPATH_SHOW);
+  }
+
+  @Override
   public MagicCommandOutput execute(MagicCommandExecutionParam param) {
     MIMEContainer result = Text(kernel.getClasspath());
     return new MagicCommandOutput(MagicCommandOutput.Status.OK, result.getData().toString());

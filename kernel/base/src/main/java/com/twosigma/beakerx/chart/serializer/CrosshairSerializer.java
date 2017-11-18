@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.chart.serializer;
 
+import com.twosigma.beakerx.SerializerUtils;
 import com.twosigma.beakerx.chart.xychart.plotitem.Crosshair;
 import com.twosigma.beakerx.chart.Color;
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class CrosshairSerializer extends JsonSerializer<Crosshair>{
       throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
-    jgen.writeObjectField(TYPE, crosshair.getClass().getSimpleName());
+    jgen.writeObjectField(TYPE, SerializerUtils.getTypeName(crosshair));
     if (crosshair.getColor() instanceof Color) {
       jgen.writeObjectField("color", crosshair.getColor());
     }

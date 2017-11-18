@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.jvm.serialization;
 
 import com.google.inject.Provider;
+import com.twosigma.beakerx.SerializerUtils;
 import com.twosigma.beakerx.jvm.object.OutputContainerLayoutManager;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -45,7 +46,7 @@ public abstract class OutputContainerLayoutManagerSerializer<T extends OutputCon
 
     synchronized (value) {
       jgen.writeStartObject();
-      jgen.writeObjectField("type", value.getClass().getSimpleName());
+      jgen.writeObjectField("type", SerializerUtils.getTypeName(value));
       jgen.writeObjectField("borderDisplayed", value.isBorderDisplayed());
       serialize(value, jgen);
       jgen.writeEndObject();

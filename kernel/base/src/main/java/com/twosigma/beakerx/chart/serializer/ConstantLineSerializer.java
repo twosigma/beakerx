@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.chart.serializer;
 
+import com.twosigma.beakerx.SerializerUtils;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.xychart.NanoPlot;
 import com.twosigma.beakerx.chart.xychart.plotitem.ConstantLine;
@@ -37,7 +38,7 @@ public class ConstantLineSerializer extends JsonSerializer<ConstantLine> {
     jgen.writeStartObject();
 
     boolean isNanoPlot = NanoPlot.isNanoPlotClass(constantLine.getPlotType());
-    jgen.writeObjectField(TYPE, constantLine.getClass().getSimpleName());
+    jgen.writeObjectField(TYPE, SerializerUtils.getTypeName(constantLine));
     jgen.writeObjectField("x", isNanoPlot ? processLargeNumber(constantLine.getX()) : constantLine.getX());
     jgen.writeObjectField("y", constantLine.getY());
     jgen.writeObjectField("visible", constantLine.getVisible());

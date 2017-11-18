@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.chart.serializer;
 
+import com.twosigma.beakerx.SerializerUtils;
 import com.twosigma.beakerx.chart.xychart.CombinedPlot;
 import com.twosigma.beakerx.chart.xychart.XYChart;
 import java.io.IOException;
@@ -38,7 +39,7 @@ public class CombinedPlotSerializer extends ObservableChartSerializer<CombinedPl
   {
     jgen.writeStartObject();
     super.serialize(plot, jgen);
-    jgen.writeObjectField("type", plot.getClass().getSimpleName());
+    jgen.writeObjectField("type", SerializerUtils.getTypeName(plot));
     jgen.writeObjectField("init_width", plot.getInitWidth());
     jgen.writeObjectField("init_height", plot.getInitHeight());
     jgen.writeObjectField("title", plot.getTitle());

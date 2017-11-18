@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.table.serializer;
 
+import com.twosigma.beakerx.SerializerUtils;
 import com.twosigma.beakerx.table.highlight.ValueHighlighter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,7 +38,7 @@ public class ValueHighlighterSerializer extends JsonSerializer<ValueHighlighter>
 
     synchronized (value) {
       jgen.writeStartObject();
-      jgen.writeObjectField(TYPE, value.getClass().getSimpleName());
+      jgen.writeObjectField(TYPE, SerializerUtils.getTypeName(value));
       jgen.writeObjectField(COL_NAME, value.getColName());
       jgen.writeObjectField(COLORS, value.getColors());
       jgen.writeEndObject();

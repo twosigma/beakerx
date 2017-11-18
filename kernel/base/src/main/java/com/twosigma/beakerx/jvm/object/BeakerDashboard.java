@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerationException;
+import com.twosigma.beakerx.SerializerUtils;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 
 public class BeakerDashboard extends Observable {
@@ -163,7 +164,7 @@ public class BeakerDashboard extends Observable {
       synchronized(value) {
         jgen.writeStartObject();
         jgen.writeObjectField("update_time", System.currentTimeMillis());
-        jgen.writeObjectField("type", value.getClass().getSimpleName());
+        jgen.writeObjectField("type", SerializerUtils.getTypeName(value));
 
         if (value.getTheStyle()!=null) jgen.writeStringField("thestyle", value.getTheStyle());
         if (value.getTheClass()!=null) jgen.writeStringField("theclass", value.getTheClass());

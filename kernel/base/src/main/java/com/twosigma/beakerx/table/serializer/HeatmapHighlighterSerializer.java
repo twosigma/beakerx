@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.table.serializer;
 
+import com.twosigma.beakerx.SerializerUtils;
 import com.twosigma.beakerx.table.highlight.HeatmapHighlighter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -46,7 +47,7 @@ public class HeatmapHighlighterSerializer<H extends HeatmapHighlighter> extends 
                               SerializerProvider provider)
     throws IOException, JsonProcessingException {
 
-    jgen.writeObjectField(TYPE, value.getClass().getSimpleName());
+    jgen.writeObjectField(TYPE, SerializerUtils.getTypeName(value));
     jgen.writeObjectField("colName", value.getColName());
     jgen.writeObjectField(STYLE, value.getStyle());
     jgen.writeObjectField("minVal", value.getMinVal());

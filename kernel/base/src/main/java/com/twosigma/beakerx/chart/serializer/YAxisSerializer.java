@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.chart.serializer;
 
-import com.twosigma.beakerx.SerializerUtils;
+import com.twosigma.beakerx.util.SerializerUtil;
 import com.twosigma.beakerx.chart.xychart.plotitem.YAxis;
 import java.io.IOException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -34,7 +34,7 @@ public class YAxisSerializer extends JsonSerializer<YAxis> {
       throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
-    jgen.writeObjectField(TYPE, SerializerUtils.getTypeName(yAxis));
+    jgen.writeObjectField(TYPE, SerializerUtil.getTypeName(yAxis));
     jgen.writeObjectField("label", yAxis.getLabel());
     jgen.writeObjectField("auto_range", yAxis.getAutoRange());
     jgen.writeObjectField(AUTO_RANGE_INCLUDES_ZERO, yAxis.getAutoRangeIncludesZero());

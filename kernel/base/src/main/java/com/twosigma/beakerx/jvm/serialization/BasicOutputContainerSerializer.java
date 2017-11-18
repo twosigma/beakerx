@@ -17,7 +17,7 @@ package com.twosigma.beakerx.jvm.serialization;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.twosigma.beakerx.SerializerUtils;
+import com.twosigma.beakerx.util.SerializerUtil;
 import com.twosigma.beakerx.jvm.object.OutputContainer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -48,7 +48,7 @@ public abstract class BasicOutputContainerSerializer<T extends OutputContainer> 
     synchronized (value) {
       jgen.writeStartObject();
 
-      jgen.writeObjectField("type", SerializerUtils.getTypeName(value));
+      jgen.writeObjectField("type", SerializerUtil.getTypeName(value));
 
       serialize(value, jgen);
 

@@ -19,7 +19,7 @@ package com.twosigma.beakerx.chart.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.twosigma.beakerx.SerializerUtils;
+import com.twosigma.beakerx.util.SerializerUtil;
 import com.twosigma.beakerx.chart.xychart.plotitem.Rasters;
 
 import java.io.File;
@@ -40,7 +40,7 @@ public class RastersSerializer extends JsonSerializer<Rasters> {
 
     jgen.writeStartObject();
 
-    jgen.writeObjectField(TYPE, SerializerUtils.getTypeName(rasters));
+    jgen.writeObjectField(TYPE, SerializerUtil.getTypeName(rasters));
     jgen.writeObjectField("x", rasters.getX());
     jgen.writeObjectField("y", rasters.getY());
     jgen.writeObjectField("opacity", rasters.getOpacity());

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.twosigma.beakerx;
+package com.twosigma.beakerx.util;
 
-public class SerializerUtils {
+public class SerializerUtil {
   /**
    * Get the serialization type-name for the object.  This is usually the class name.
    * If the class is anonymous or inner, walk up the hierarchy to find the ordinary class and use its name.
@@ -24,7 +24,7 @@ public class SerializerUtils {
    */
   static public String getTypeName(Object object) {
     Class<?> currentClass = object.getClass();
-    while (currentClass.getSimpleName().isEmpty() || currentClass.getSimpleName().contains("$")) {
+    while (currentClass.getCanonicalName() == null) {
       currentClass = currentClass.getSuperclass();
     }
     return currentClass.getSimpleName();

@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.chart.serializer;
 
-import com.twosigma.beakerx.SerializerUtils;
+import com.twosigma.beakerx.util.SerializerUtil;
 import com.twosigma.beakerx.chart.Graphics;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +37,7 @@ public class GraphicsSerializer <T extends Graphics> extends JsonSerializer<T> {
     @Override
     public void serialize(T graphics, JsonGenerator jgen, SerializerProvider sp)
             throws IOException, JsonProcessingException {
-        jgen.writeObjectField(TYPE, SerializerUtils.getTypeName(graphics));
+        jgen.writeObjectField(TYPE, SerializerUtil.getTypeName(graphics));
         jgen.writeObjectField("uid", graphics.getUid());
         jgen.writeObjectField("visible", graphics.getVisible());
         jgen.writeObjectField("yAxis", graphics.getYAxis());

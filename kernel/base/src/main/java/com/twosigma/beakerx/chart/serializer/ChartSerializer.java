@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.chart.serializer;
 
 
-import com.twosigma.beakerx.SerializerUtils;
+import com.twosigma.beakerx.util.SerializerUtil;
 import com.twosigma.beakerx.chart.Chart;
 import com.fasterxml.jackson.core.JsonGenerator;
 
@@ -38,7 +38,7 @@ public abstract class ChartSerializer<T extends Chart> extends ObservableChartSe
 
     super.serialize(chart, jgen);
 
-    String type = SerializerUtils.getTypeName(chart);
+    String type = SerializerUtil.getTypeName(chart);
     if ("SimpleTimePlot".equals(type)){
       jgen.writeObjectField("type", "TimePlot");
     }else {

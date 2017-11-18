@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.table.serializer;
 
-import com.twosigma.beakerx.SerializerUtils;
+import com.twosigma.beakerx.util.SerializerUtil;
 import com.twosigma.beakerx.table.highlight.UniqueEntriesHighlighter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,7 +38,7 @@ public class UniqueEntriesHighlighterSerializer extends JsonSerializer<UniqueEnt
 
     synchronized (value) {
       jgen.writeStartObject();
-      jgen.writeObjectField(TYPE, SerializerUtils.getTypeName(value));
+      jgen.writeObjectField(TYPE, SerializerUtil.getTypeName(value));
       jgen.writeObjectField(COL_NAME, value.getColName());
       jgen.writeObjectField(STYLE, value.getStyle());
       jgen.writeEndObject();

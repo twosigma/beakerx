@@ -50,7 +50,7 @@ public class GraphicsSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
-    line = new Line();
+    line = new Line() {};
     line.setX(Arrays.asList(1, 2, 3));
     line.setY(Arrays.asList(1, 2, 3));
   }

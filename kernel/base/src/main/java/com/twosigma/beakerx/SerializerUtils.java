@@ -17,7 +17,16 @@
 package com.twosigma.beakerx;
 
 public class SerializerUtils {
+  /**
+   * Get the serialization type-name for the object.  This is usually the class name.
+   * If the class is anonymous or inner, walk up the hierarchy to find the ordinary class and use its name.
+   * Note: anonymous classes in Scala don't follow the same rules as Java.
+   */
   static public String getTypeName(Object object) {
-    return object.getClass().getSimpleName();
+    Class<?> currentClass = object.getClass();
+    while (currentClass.getSimpleName().isEmpty() || currentClass.getSimpleName().contains("$")) {
+      currentClass = currentClass.getSuperclass();
+    }
+    return currentClass.getSimpleName();
   }
 }

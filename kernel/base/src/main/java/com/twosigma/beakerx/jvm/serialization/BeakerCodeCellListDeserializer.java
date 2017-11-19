@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.jvm.serialization;
 
+import com.twosigma.beakerx.CodeCell;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,6 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.twosigma.beakerx.BeakerCodeCell;
 
 /*
  * This class is used to deserialize the above fake root object when reading the notebook code cells
@@ -47,12 +47,12 @@ public class BeakerCodeCellListDeserializer extends JsonDeserializer<BeakerCodeC
     ObjectMapper mapper = (ObjectMapper)jp.getCodec();
     JsonNode node = mapper.readTree(jp);
     
-    List<BeakerCodeCell> l = new ArrayList<BeakerCodeCell>();
+    List<CodeCell> l = new ArrayList<CodeCell>();
     if (node.isArray()) {
       for (JsonNode o : node) {
         Object obj = objectSerializerProvider.get().deserialize(o, mapper);
-        if (obj instanceof BeakerCodeCell)
-          l.add((BeakerCodeCell) obj);
+        if (obj instanceof CodeCell)
+          l.add((CodeCell) obj);
       }
     }
     

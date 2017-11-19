@@ -33,8 +33,8 @@ import com.twosigma.beakerx.jvm.serialization.ObjectDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BeakerCodeCell {
-  private final static Logger logger = LoggerFactory.getLogger(BeakerCodeCell.class.getName());
+public class CodeCell {
+  private final static Logger logger = LoggerFactory.getLogger(CodeCell.class.getName());
   @JsonProperty("execution_count")
   private String executionCount;
   @JsonProperty("cell_type")
@@ -43,7 +43,7 @@ public class BeakerCodeCell {
   private Object metadata;
   private String source;
 
-  public BeakerCodeCell() { }
+  public CodeCell() { }
 
   public String getExecutionCount() {
     return executionCount;
@@ -85,7 +85,7 @@ public class BeakerCodeCell {
     this.source = source;
   }
 
-  public static class Serializer extends JsonSerializer<BeakerCodeCell> {
+  public static class Serializer extends JsonSerializer<CodeCell> {
 
     private final Provider<BeakerObjectConverter> objectSerializerProvider;
 
@@ -99,14 +99,14 @@ public class BeakerCodeCell {
     }
 
     @Override
-    public void serialize(BeakerCodeCell value,
+    public void serialize(CodeCell value,
         JsonGenerator jgen,
         SerializerProvider provider)
         throws IOException, JsonProcessingException {
 
       synchronized (value) {
         jgen.writeStartObject();
-        jgen.writeStringField("type", "BeakerCodeCell");
+        jgen.writeStringField("type", "CodeCell");
         jgen.writeStringField("execution_count", value.executionCount);
         jgen.writeStringField("cell_type", value.cellType);
         jgen.writeFieldName("outputs");
@@ -127,12 +127,12 @@ public class BeakerCodeCell {
 
     public DeSerializer(BeakerObjectConverter p) {
       parent = p;
-      parent.addKnownBeakerType("BeakerCodeCell");
+      parent.addKnownBeakerType("CodeCell");
     }
 
     @Override
     public Object deserialize(JsonNode n, ObjectMapper mapper) {
-      BeakerCodeCell o = null;
+      CodeCell o = null;
       try {
         String executionCount=null, cellType=null, source=null;
         Object outputs=null;
@@ -148,14 +148,14 @@ public class BeakerCodeCell {
         if (n.has("metadata"))
           metadata = parent.deserialize(n.get("metadata"), mapper);
 
-        o = new BeakerCodeCell();
+        o = new CodeCell();
         o.setExecutionCount(executionCount);
         o.setCellType(cellType);
         o.setSource(source);
         o.setOutputs(outputs);
         o.setMetadata(metadata);
       } catch (Exception e) {
-        logger.error("exception deserializing BeakerCodeCell ", e);
+        logger.error("exception deserializing CodeCell ", e);
         e.printStackTrace();
       }
       return o;
@@ -163,7 +163,7 @@ public class BeakerCodeCell {
 
     @Override
     public boolean canBeUsed(JsonNode n) {
-      return n.has("type") && n.get("type").asText().equals("BeakerCodeCell");
+      return n.has("type") && n.get("type").asText().equals("CodeCell");
     }
   }
 

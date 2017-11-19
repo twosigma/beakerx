@@ -17,24 +17,24 @@
 package com.twosigma.beakerx.jvm.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beakerx.BeakerCodeCell;
+import com.twosigma.beakerx.CodeCell;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-public class BeakerCodeCellListDeserializerTest {
+public class CodeCellListDeserializerTest {
 
   @Test
   public void deserialize_resultObjectHasBeakerCodeCellList() throws Exception {
     //given
     ObjectMapper mapper = new ObjectMapper();
     String str =
-        "[{\"type\":\"BeakerCodeCell\",\"execution_count\":null," +
+        "[{\"type\":\"CodeCell\",\"execution_count\":null," +
         "\"cell_type\":null,\"outputs\":null,\"metadata\":null,\"source\":null}," +
-        "{\"type\":\"BeakerCodeCell\",\"execution_count\":null,\"" +
+        "{\"type\":\"CodeCell\",\"execution_count\":null,\"" +
         "cell_type\":null,\"outputs\":null,\"metadata\":null,\"source\":null}]";
     BeakerCodeCellListDeserializer deserializer =  new BeakerCodeCellListDeserializer(() -> {
       BasicObjectSerializer boSerializer = new BasicObjectSerializer();
-      boSerializer.addTypeDeserializer(new BeakerCodeCell.DeSerializer(boSerializer));
+      boSerializer.addTypeDeserializer(new CodeCell.DeSerializer(boSerializer));
       return boSerializer;
     });
     //when

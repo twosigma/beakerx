@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package com.twosigma.beakerx.scala.chart
+package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
-import com.twosigma.beakerx.chart.Graphics
+import com.twosigma.beakerx.scala.JavaAdapter.getNullableList
 
 import scala.collection.JavaConverters._
 
-trait GraphicsProperties { this: Graphics =>
-  def visible: Boolean = getVisible
-  def visible_=(v: Boolean): Unit = setVisible(v)
+trait BasedXYGraphicsProperties extends XYGraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.BasedXYGraphics =>
 
-  def yAxis: Option[String] = Option(getYAxis)
-  def yAxis_=(s: String): Unit = setYAxis(s)
-
-  def keyTags: Map[String, String] = getKeyTags.asScala.toMap
+  def base: Number = getBase
+  def bases: Seq[Number] = getNullableList(getBases)
+  // TODO: use type constraint
+  def setBase[T](bs: Seq[T])(implicit conv: T => Number): Unit = setBase(bs.map(conv).asJava)
+  def base_=(base: Number): Unit = setBase(base)
+  // TODO: use type constraint
+  def base_=[T](bases: Seq[T])(implicit conv: T => Number): Unit = setBase(bases)
 }

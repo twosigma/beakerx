@@ -15,10 +15,14 @@
  */
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
+import java.time.{Instant, LocalDate, LocalDateTime}
+import java.util.Date
+
 import com.twosigma.beakerx.chart.Color
 import com.twosigma.beakerx.chart.xychart.plotitem.StrokeType
+import com.twosigma.beakerx.scala.chart.GraphicsProperties
 
-class ConstantLine extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantLine {
+class ConstantLine extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantLine with ConstantLineProperties {
 
   def this(x: Any) {
     this()
@@ -42,4 +46,31 @@ class ConstantLine extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantL
     super.setWidth(width)
     super.setShowLabel(showLabel)
   }
+}
+
+trait ConstantLineProperties extends GraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.ConstantLine =>
+
+  def color: Option[Color] = Option(getColor)
+  def color_=(c: Color): Unit = setColor(c)
+  def color_=(c: java.awt.Color): Unit = setColor(c)
+
+  def showLabel: Boolean = getShowLabel
+  def showLabel_=(showLabel: Boolean): Unit = setShowLabel(showLabel)
+
+  def style: Option[StrokeType] = Option(getStyle)
+  def style_=(style: StrokeType): Unit = setStyle(style)
+
+  def width: Float = getWidth
+  def width_=(width: Float): Unit = setWidth(width)
+
+  def x: Option[Number] = Option(getX)
+  def x_=(x: Number): Unit = setX(x)
+  def x_=(x: Date): Unit = setX(x)
+  def x_=(x: LocalDate): Unit = setX(x)
+  def x_=(x: LocalDateTime): Unit = setX(x)
+  def x_=(x: Instant): Unit = setX(x)
+
+  def y: Option[Number] = Option(getY)
+  def y_=(y: Number): Unit = setY(y)
 }

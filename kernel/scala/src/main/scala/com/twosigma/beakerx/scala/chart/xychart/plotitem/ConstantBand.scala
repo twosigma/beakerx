@@ -17,9 +17,13 @@
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 import com.twosigma.beakerx.chart.Color
+import com.twosigma.beakerx.scala.JavaAdapter
+import com.twosigma.beakerx.scala.JavaAdapter.getNullableList
+import com.twosigma.beakerx.scala.chart.GraphicsProperties
+
 import scala.collection.JavaConverters._
 
-class ConstantBand extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantBand {
+class ConstantBand extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantBand with ConstantBandProperties {
 
   def this(x: Seq[_]) {
     this()
@@ -36,4 +40,21 @@ class ConstantBand extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantB
     super.setColor(color)
   }
 
+}
+
+trait ConstantBandProperties extends GraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.ConstantBand =>
+
+  def color: Option[Color] = Option(getColor)
+  def color_=(color: Color): Unit = setColor(color)
+  def color_=(color: java.awt.Color): Unit = setColor(color)
+
+  // TODO: use type constraint (Number, Date, LocalDate, LocalDateTime, Instant)
+  def setX[T](xs: Seq[T]): Unit = setX(xs.map(_.asInstanceOf[Object]).asJava)
+  def x: Seq[Number] = getNullableList(getX)
+  def x_=[T](xs: Seq[T]): Unit = setX(xs)
+
+  def setY[T](ys: Seq[T])(implicit conv: T => Number): Unit = setY((ys map (y => y: Number)).asJava)
+  def y: Seq[Number] = getNullableList(getY)
+  def y_=[T](ys: Seq[T])(implicit conv: T => Number): Unit = setY(ys)
 }

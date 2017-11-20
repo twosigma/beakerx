@@ -32,11 +32,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MessageCreatorNoResultTest {
 
-  private MessageCreator messageCreator;
+  KernelTest kernel;
 
   @Before
   public void setUp() throws Exception {
-    messageCreator = new MessageCreator(new KernelTest("id1"));
+    kernel = new KernelTest("id1");
   }
 
   @Test
@@ -46,7 +46,7 @@ public class MessageCreatorNoResultTest {
     seo.setJupyterMessage(new Message());
     seo.finished(OutputCell.HIDDEN);
     //when
-    List<MessageHolder> messages = messageCreator.createMessage(seo);
+    List<MessageHolder> messages = MessageCreator.createMessage(seo);
     //then
     messages.forEach(m -> assertThat(JupyterMessages.EXECUTE_RESULT).isNotEqualTo(m.getMessage().type()));
   }

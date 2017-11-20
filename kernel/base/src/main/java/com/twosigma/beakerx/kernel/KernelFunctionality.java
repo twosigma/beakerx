@@ -18,10 +18,11 @@ package com.twosigma.beakerx.kernel;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
+import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 
 import java.nio.file.Path;
@@ -79,7 +80,7 @@ public interface KernelFunctionality {
 
   void removeImport(ImportPath anImport);
 
-  List<MagicCommandType> getMagicCommands();
+  List<MagicCommandType> getMagicCommandTypes();
 
   Path getTempFolder();
 

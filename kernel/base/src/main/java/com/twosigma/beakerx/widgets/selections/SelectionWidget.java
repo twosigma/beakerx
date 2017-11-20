@@ -48,7 +48,7 @@ public abstract class SelectionWidget<T extends Serializable> extends ValueWidge
   }
 
   public Integer getSelectedOptionIndex(String option) {
-    for (int i = 0; options.length > 0 && i < options.length + 1; i++) {
+    for (int i = 0; options.length > 0 && i < options.length; i++) {
       if (options[i].equals(option)) {
         return i;
       }

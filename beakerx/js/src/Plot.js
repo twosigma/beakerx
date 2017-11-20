@@ -85,7 +85,9 @@ var PlotView = widgets.DOMWidgetView.extend({
 
   getNumberOfPointsForStandardPlot: function(plotModel) {
     return Math.max.apply(null, plotModel.graphics_list.map(function(graphic) {
-      return graphic.x.length;
+      var points = graphic.x ? graphic.x : graphic.y;
+
+      return points ? points.length : 0;
     }));
   },
 
@@ -101,6 +103,10 @@ var PlotView = widgets.DOMWidgetView.extend({
   limitPoints: function(plotModel) {
     var numberOfPoints;
     var self = this;
+
+    if (!_.isArray(plotModel.graphics_list)) {
+      return;
+    }
 
     if (!plotModel.plots) {
       numberOfPoints = this.getNumberOfPointsForStandardPlot(plotModel);

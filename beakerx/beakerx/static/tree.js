@@ -115,10 +115,51 @@ define(function (require) {
 
       function handle_response(data, status, xhr) {
         var version_element = $('#' + that.versionBox);
-        $(version_element).html("<a target=\"_blank\" href=\"http://BeakerX.com\">BeakerX</a>" +
-          " from <a target=\"_blank\" href=\"http://opensource.twosigma.com/\">\n" +
-          " Two Sigma Open Source\n </a>\n" +
-          " version " + data.version)
+
+        var beakerx_logo_url = urls.base_url + 'nbextensions/beakerx/img/beakerx-logo-black-small.svg';
+        var github_version_url = 'https://github.com/twosigma/beakerx/releases/tag/' + data.version;
+
+        $(version_element)
+          .empty()
+          .append(
+            $('<div>', {
+              class: 'row',
+            }).append(
+              $('<a>', {
+                class: 'beakerx_site_link',
+                target: '_blank',
+                href: 'http://BeakerX.com',
+              }).append(
+                $('<img>', {
+                  src:  beakerx_logo_url,
+                  title:  'BeakerX',
+                  alt: 'BeakerX',
+                })
+              )
+            ),
+
+            $('<div>', {
+              class: 'row',
+              text: 'version '
+            }).append(
+              $('<a>', {
+                target: '_blank',
+                href: github_version_url,
+                text: data.version
+              })
+            ),
+
+            $('<div>', {
+              class: 'row',
+              text: 'from '
+            }).append(
+              $('<a>', {
+                target: '_blank',
+                href: 'http://opensource.twosigma.com/',
+                text: 'Two Sigma Open Source',
+              })
+            )
+          );
       }
 
       var settings = AjaxSettings({

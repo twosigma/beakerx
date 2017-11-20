@@ -1,4 +1,4 @@
-# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+﻿# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ import os
 import sys
 import subprocess
 import signal
+import test_console
 
 here = os.path.abspath(os.path.dirname(__file__))
 beakerx_dir = os.path.abspath(os.path.join(here, ".."))
@@ -56,6 +57,9 @@ result=subprocess.call("yarn run test", shell=True)
 # Send the signal to all the process groups
 os.killpg(os.getpgid(beakerx.pid), signal.SIGKILL)
 os.killpg(os.getpgid(webcontrol.pid), signal.SIGKILL)
+
+if not result:
+    result = test_console.test_lsmagic()
 
 if result:
     sys.exit(20)

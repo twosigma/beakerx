@@ -17,8 +17,8 @@ package com.twosigma.beakerx.sql.kernel;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.kernel.Utils.uuid;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -30,12 +30,14 @@ import com.twosigma.beakerx.kernel.KernelParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
-import com.twosigma.beakerx.kernel.commands.item.MagicCommandType;
+import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import com.twosigma.beakerx.sql.handlers.SQLCommOpenHandler;
 import com.twosigma.beakerx.sql.handlers.SQLKernelInfoHandler;
+import com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand;
+import com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -76,13 +78,12 @@ public class SQL extends Kernel {
     kernelParameters.put(IMPORTS, new DefaultJVMVariables().getImports());
     return new KernelParameters(kernelParameters);
   }
-
   @Override
-  public List<MagicCommandType> getMagicCommands() {
-    List<MagicCommandType> magicCommands = super.getMagicCommands();
-    magicCommands.add(new MagicCommandType(DATASOURCES, "<jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", getMagicCommand().dataSources()));
-    magicCommands.add(new MagicCommandType(DEFAULT_DATASOURCE, "<sourceName=jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", getMagicCommand().defaultDataSources()));
-
+  public List<MagicCommandType> registerCustomMagicCommands(){
+    List<MagicCommandType> magicCommands = getMagicCommandTypes();
+    magicCommands.add(new MagicCommandType(DATASOURCES, "<jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", new DataSourcesMagicCommand(this)));
+    magicCommands.add(new MagicCommandType(DEFAULT_DATASOURCE, "<sourceName=jdbc:[dbEngine]:[subsubprotocol:][databaseName]>", new DefaultDataSourcesMagicCommand(this)));
     return magicCommands;
   }
+
 }

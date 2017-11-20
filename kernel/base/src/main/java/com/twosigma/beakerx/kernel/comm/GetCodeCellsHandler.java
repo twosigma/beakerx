@@ -17,7 +17,7 @@ package com.twosigma.beakerx.kernel.comm;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beakerx.BeakerCodeCell;
+import com.twosigma.beakerx.CodeCell;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
@@ -53,15 +53,15 @@ public class GetCodeCellsHandler extends BaseHandler<Object> {
 
   private void handleMsg(Message message) {
     try {
-      List<BeakerCodeCell> cells = getBeakerCodeCells(getValueFromData(message, getHandlerCommand()));
+      List<CodeCell> cells = getBeakerCodeCells(getValueFromData(message, getHandlerCommand()));
       NamespaceClient.getMessageQueue("CodeCells").put(cells);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
   }
 
-  private List<BeakerCodeCell> getBeakerCodeCells(Object value) {
-    List<BeakerCodeCell> beakerCodeCellList = null;
+  private List<CodeCell> getBeakerCodeCells(Object value) {
+    List<CodeCell> codeCellList = null;
     StringWriter sw = new StringWriter();
     JsonGenerator jgen = null;
     try {
@@ -69,12 +69,12 @@ public class GetCodeCellsHandler extends BaseHandler<Object> {
       objectSerializer.writeObject(value, jgen, true);
       jgen.flush();
       sw.flush();
-      beakerCodeCellList = Arrays.asList(objectMapper.readValue(sw.toString(), BeakerCodeCell[].class));
+      codeCellList = Arrays.asList(objectMapper.readValue(sw.toString(), CodeCell[].class));
     } catch (IOException e) {
       e.printStackTrace();
     }
 
-    return beakerCodeCellList;
+    return codeCellList;
   }
 
   @Override

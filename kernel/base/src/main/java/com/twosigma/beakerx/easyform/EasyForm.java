@@ -220,11 +220,13 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     return addComponentOrThrow(label, checkBoxGroup);
   }
 
-  public EasyFormComponent addDatePicker(final String label) throws Exception {
+  public DatePickerComponentWidget addDatePicker(final String label) throws Exception {
     DatePickerComponentWidget datePickerComponent = new DatePickerComponentWidget();
     datePickerComponent.registerUpdateValueCallback(datePickerComponent::fireChanged);
     datePickerComponent.setLabel(label);
-    return addComponentOrThrow(label, datePickerComponent);
+    addComponentOrThrow(label, datePickerComponent);
+
+    return datePickerComponent;
   }
 
   public ButtonComponentWidget addButton(final String label) throws Exception {

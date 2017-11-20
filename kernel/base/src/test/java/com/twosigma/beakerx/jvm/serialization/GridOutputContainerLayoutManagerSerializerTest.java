@@ -43,7 +43,7 @@ public class GridOutputContainerLayoutManagerSerializerTest {
   @Before
   public void setUp() throws Exception {
     KernelManager.register(new KernelTest());
-    layoutManager = new GridOutputContainerLayoutManager(5);
+    layoutManager = new GridOutputContainerLayoutManager(5) {};
   }
 
   @After

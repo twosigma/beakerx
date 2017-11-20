@@ -55,7 +55,7 @@ public class ConstantLineSerializerTest {
   @Test
   public void serializeConstantLine_resultJsonHasType() throws IOException {
     //when
-    ConstantLine constantLine = new ConstantLine();
+    ConstantLine constantLine = new ConstantLine() {};
     constantLineSerializer.serialize(constantLine, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
     //then

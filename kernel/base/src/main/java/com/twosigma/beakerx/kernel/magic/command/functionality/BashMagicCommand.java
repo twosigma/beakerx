@@ -18,16 +18,12 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.errorResult;
 
 public class BashMagicCommand implements MagicCommandFunctionality {
 
@@ -37,23 +33,20 @@ public class BashMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
+  public String getMagicCommandName() {
+    return BASH;
+  }
+
+  @Override
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     Code code = param.getCode();
-    Message message = param.getMessage();
-    int executionCount = param.getExecutionCount();
     return code.getCodeBlock().map(codeWithoutCommand -> {
-
       ErrorData errorData = executeBashCode(codeWithoutCommand);
-
       if (errorData.hasError()) {
-        return errorResult(message, errorData.getMessage(), executionCount);
+        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, errorData.getMessage());
       }
-
-      return new MagicCommandItemWithResult(
-              MessageCreator.buildOutputMessage(message, errorData.getMessage(), false),
-              MessageCreator.buildReplyWithOkStatus(message, executionCount)
-      );
-    }).orElse(errorResult(message, String.format(USAGE_ERROR_MSG, BASH), executionCount));
+      return new MagicCommandOutput(MagicCommandOutput.Status.OK, errorData.getMessage());
+    }).orElse(new MagicCommandOutput(MagicCommandOutput.Status.ERROR, String.format(USAGE_ERROR_MSG, BASH)));
   }
 
   private ErrorData executeBashCode(String code) {

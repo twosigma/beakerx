@@ -31,18 +31,13 @@ import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.new
 class GroovyWorkerThread extends WorkerThread {
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyWorkerThread.class.getName());
-
   protected GroovyEvaluator groovyEvaluator;
-  private GroovyClassLoader groovyClassLoader;
-  private Binding scriptBinding = null;
   private boolean exit;
-  private boolean updateLoader;
 
   GroovyWorkerThread(GroovyEvaluator groovyEvaluator) {
     super("groovy worker");
     this.groovyEvaluator = groovyEvaluator;
     this.exit = false;
-    this.updateLoader = true;
   }
 
   /*
@@ -56,18 +51,6 @@ class GroovyWorkerThread extends WorkerThread {
       try {
         // wait for work
         syncObject.acquire();
-
-        // check if we must create or update class loader
-        if (updateLoader) {
-          if (groovyClassLoader != null) {
-            try {
-              groovyClassLoader.close();
-            } catch (Exception ex) {
-            }
-          }
-          reloadClassloader();
-          updateLoader = false;
-        }
 
         // get next job descriptor
         j = jobQueue.poll();
@@ -83,7 +66,7 @@ class GroovyWorkerThread extends WorkerThread {
 
         String code = j.codeToBeExecuted;
 
-        if (!groovyEvaluator.executeTask(new GroovyCodeRunner(this, code, j.outputObject))) {
+        if (!groovyEvaluator.executeTask(new GroovyCodeRunner(groovyEvaluator, code, j.outputObject))) {
           j.outputObject.error(INTERUPTED_MSG);
         }
 
@@ -113,35 +96,8 @@ class GroovyWorkerThread extends WorkerThread {
     NamespaceClient.delBeaker(groovyEvaluator.getSessionId());
   }
 
-  private void reloadClassloader() throws MalformedURLException {
-    this.groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir());
-    this.scriptBinding = new Binding();
-  }
-
-  void updateLoader() {
-    this.updateLoader = true;
-  }
-
   void doExit() {
     this.exit = true;
   }
 
-  GroovyClassLoader getGroovyClassLoader() {
-    return groovyClassLoader;
-  }
-
-  GroovyClassLoader getGroovyClassLoaderInstance() {
-    if (groovyClassLoader == null) {
-      try {
-        reloadClassloader();
-      } catch (MalformedURLException e) {
-        throw new RuntimeException(e);
-      }
-    }
-    return groovyClassLoader;
-  }
-
-  Binding getScriptBinding() {
-    return scriptBinding;
-  }
 }

@@ -15,17 +15,14 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
 import static com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand.IMPORT;
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.errorResult;
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.noResult;
 
 public class AddStaticImportMagicCommand implements MagicCommandFunctionality {
 
@@ -37,16 +34,18 @@ public class AddStaticImportMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
-    Code code = param.getCode();
+  public String getMagicCommandName() {
+    return ADD_STATIC_IMPORT;
+  }
+
+  @Override
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
-    Message message = param.getMessage();
-    int executionCount = param.getExecutionCount();
     String[] parts = command.split(" ");
     if (parts.length != 3) {
-      return errorResult(message, WRONG_FORMAT_MSG, executionCount);
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, WRONG_FORMAT_MSG);
     }
     this.kernel.addImport(new ImportPath(parts[1] + " " + parts[2]));
-    return noResult(code, message, executionCount);
+    return new MagicCommandOutput(MagicCommandOutput.Status.OK);
   }
 }

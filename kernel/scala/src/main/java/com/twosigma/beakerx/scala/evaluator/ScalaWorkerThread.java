@@ -29,13 +29,11 @@ class ScalaWorkerThread extends WorkerThread {
 
   private ScalaEvaluator scalaEvaluator;
   private boolean exit;
-  private boolean updateLoader;
 
   public ScalaWorkerThread(ScalaEvaluator scalaEvaluator) {
     super("scala worker");
     this.scalaEvaluator = scalaEvaluator;
     exit = false;
-    updateLoader = false;
   }
 
   /*
@@ -51,20 +49,10 @@ class ScalaWorkerThread extends WorkerThread {
         // wait for work
         syncObject.acquire();
 
-        // check if we must create or update class loader
-        if (updateLoader) {
-          scalaEvaluator.clearShell();
-        }
-
         // get next job descriptor
         j = jobQueue.poll();
         if (j == null)
           continue;
-
-        if (scalaEvaluator.getShell() == null) {
-          scalaEvaluator.newEvaluator();
-          updateLoader = false;
-        }
 
         j.outputObject.started();
 
@@ -90,10 +78,6 @@ class ScalaWorkerThread extends WorkerThread {
       }
     }
     NamespaceClient.delBeaker(scalaEvaluator.getSessionId());
-  }
-
-  public void updateLoader() {
-    this.updateLoader = true;
   }
 
   public void doExit() {

@@ -23,14 +23,12 @@ public class MagicCommandExecutionParam {
   private Code code;
   private String command;
   private String commandCodeBlock;
-  private Message message;
   private int executionCount;
 
-  public MagicCommandExecutionParam(Code code, String command, String commandCodeBlock, Message message, int executionCount) {
+  public MagicCommandExecutionParam(Code code, String command, String commandCodeBlock, int executionCount) {
     this.code = code;
     this.command = command;
     this.commandCodeBlock = commandCodeBlock;
-    this.message = message;
     this.executionCount = executionCount;
   }
 
@@ -44,10 +42,6 @@ public class MagicCommandExecutionParam {
 
   public String getCommandCodeBlock() {
     return commandCodeBlock;
-  }
-
-  public Message getMessage() {
-    return message;
   }
 
   public int getExecutionCount() {

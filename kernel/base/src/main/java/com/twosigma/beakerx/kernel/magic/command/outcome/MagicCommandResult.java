@@ -13,37 +13,36 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel.magic.command.item;
+package com.twosigma.beakerx.kernel.magic.command.outcome;
 
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Optional.ofNullable;
 
-public class MagicCommandItemWithResult implements MagicCommandResultItem {
+public class MagicCommandResult implements MagicCommandOutcomeItem {
 
-  private Message resultMessage;
-  private Message replyWithoutStatus;
+  private Status status;
+  private Optional<MIMEContainer> mimeContainer;
 
-  public MagicCommandItemWithResult(Message resultMessage, Message replyWithoutStatus) {
-    this.resultMessage = checkNotNull(resultMessage);
-    this.replyWithoutStatus = checkNotNull(replyWithoutStatus);
-  }
-
-  public boolean hasResult() {
-    return getResult().isPresent();
+  public MagicCommandResult(Status status, MIMEContainer mimeContainer) {
+    this.status = status;
+    this.mimeContainer = Optional.of(checkNotNull(mimeContainer));
   }
 
   @Override
-  public Optional<Message> getResult() {
-    return ofNullable(resultMessage);
+  public Optional<MIMEContainer> getMIMEContainer() {
+    return mimeContainer;
   }
 
   @Override
-  public Optional<Message> getReply() {
-    return ofNullable(replyWithoutStatus);
+  public Status getStatus() {
+    return status;
   }
 
+  @Override
+  public Outcome getOutcome() {
+    return Outcome.RESULT;
+  }
 }

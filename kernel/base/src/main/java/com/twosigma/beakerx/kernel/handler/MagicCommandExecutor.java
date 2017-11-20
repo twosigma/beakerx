@@ -18,14 +18,18 @@ package com.twosigma.beakerx.kernel.handler;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandResult;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
+
+import static java.util.Collections.singletonList;
 
 public class MagicCommandExecutor {
 
-  public static MagicCommandResult executeMagicCommands(Code code, int executionCount, KernelFunctionality kernel) {
-    MagicCommandResult result = new MagicCommandResult();
+  public static MagicCommandOutcome executeMagicCommands(Code code, int executionCount, KernelFunctionality kernel) {
+    MagicCommandOutcome result = new MagicCommandOutcome();
     if (code.hasErrors()) {
       code.getErrors().forEach(result::addItem);
     } else {
@@ -35,33 +39,44 @@ public class MagicCommandExecutor {
                         code,
                         magicCommand.getCommand(),
                         magicCommand.getCommandCodeBlock(),
-                        code.getMessage(),
                         executionCount);
-                MagicCommandResultItem item = magicCommand.execute(param);
+                MagicCommandOutcomeItem item = magicCommand.execute(param);
                 result.addItem(item);
               });
 
     }
-    sendMagicCommandsResult(result, kernel);
+    sendMagicCommandsResult(result, kernel, code.getMessage(), executionCount);
     return result;
   }
 
-  private static void sendMagicCommandsResult(MagicCommandResult magicCommandResult, KernelFunctionality kernel) {
+  private static void sendMagicCommandsResult(MagicCommandOutcome magicCommandResult, KernelFunctionality kernel, Message message, int executionCount) {
     magicCommandResult.getItems().forEach(item -> {
-      if (item.hasResult()) {
-        sendMagicCommandReplyAndResult(item.getReply().get(), item.getResult().get(), kernel);
+      if (item.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
+        handleOkStatus(kernel, message, executionCount, item);
       } else {
-        sendMagicCommandReply(item.getReply().get(), kernel);
+        handleErrorStatus(kernel, message, executionCount, item);
       }
     });
   }
 
-  private static void sendMagicCommandReply(Message replyMessage, KernelFunctionality kernel) {
-    kernel.send(replyMessage);
+  private static void handleErrorStatus(KernelFunctionality kernel, Message message, int executionCount, MagicCommandOutcomeItem item) {
+    publishOutcome(kernel, message, executionCount, item, true);
+    kernel.send(MessageCreator.buildReplyWithErrorStatus(message, executionCount));
   }
 
-  private static void sendMagicCommandReplyAndResult(Message replyMessage, Message resultMessage, KernelFunctionality kernel) {
-    kernel.publish(resultMessage);
-    sendMagicCommandReply(replyMessage, kernel);
+  private static void handleOkStatus(KernelFunctionality kernel, Message message, int executionCount, MagicCommandOutcomeItem item) {
+    publishOutcome(kernel, message, executionCount, item, false);
+    kernel.send(MessageCreator.buildReplyWithOkStatus(message, executionCount));
+  }
+
+  private static void publishOutcome(KernelFunctionality kernel, Message message, int executionCount, MagicCommandOutcomeItem item, boolean hasError) {
+    if (item.getMIMEContainer().isPresent()) {
+      if (item.getOutcome().equals(MagicCommandOutcomeItem.Outcome.OUTPUT)) {
+        kernel.publish(MessageCreator.buildOutputMessage(message, (String) item.getMIMEContainer().get().getData(), hasError));
+      } else {
+        MIMEContainer mimeContainer = item.getMIMEContainer().get();
+        kernel.publish(MessageCreator.buildMessage(message, singletonList(mimeContainer), executionCount));
+      }
+    }
   }
 }

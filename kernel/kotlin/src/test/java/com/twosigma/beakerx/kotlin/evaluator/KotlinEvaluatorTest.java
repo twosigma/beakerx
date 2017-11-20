@@ -19,13 +19,14 @@ import com.twosigma.ExecuteCodeCallbackTest;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kotlin.kernel.KotlinKernelMock;
 
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class KotlinEvaluatorTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    evaluator = new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory());
+    evaluator = new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
     KotlinKernelMock kernel = new KotlinKernelMock("id", evaluator);
     KernelManager.register(kernel);
   }
@@ -65,7 +66,7 @@ public class KotlinEvaluatorTest {
     List<String> imports = asList(
             "import static com.twosigma.beakerx.kotlin.evaluator.object.ImportTestHelper.staticMethod");
     paramMap.put(IMPORTS, imports);
-    KernelParameters kernelParameters = new KernelParameters(paramMap);
+    EvaluatorParameters kernelParameters = new EvaluatorParameters(paramMap);
     //when
     evaluator.setShellOptions(kernelParameters);
     String code = "val x = staticMethod()";
@@ -81,7 +82,7 @@ public class KotlinEvaluatorTest {
     //given
     Map<String, Object> paramMap = new HashMap<>();
     paramMap.put(IMPORTS, asList("import com.twosigma.beakerx.chart.xychart.*"));
-    evaluator.setShellOptions(new KernelParameters(paramMap));
+    evaluator.setShellOptions(new EvaluatorParameters(paramMap));
     String code = "val plot = Plot()\n" +
             "plot.setTitle(\"test title\");\n" +
             "plot.display();";
@@ -118,7 +119,7 @@ public class KotlinEvaluatorTest {
     waitForResult(seo);
     //then
     assertThat(seo.getStatus()).isEqualTo(ERROR);
-    assertThat((String)seo.getPayload()).contains("unresolved reference: UndefinedPlot");
+    assertThat((String) seo.getPayload()).contains("unresolved reference: UndefinedPlot");
   }
 
   @Test

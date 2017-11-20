@@ -17,36 +17,32 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandResult;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.errorResult;
 import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
-import static java.util.Collections.singletonList;
 
 public class HtmlMagicCommand implements MagicCommandFunctionality {
 
   public static final String HTML = "%%html";
 
   public HtmlMagicCommand() {
-
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
-    Message message = param.getMessage();
-    int executionCount = param.getExecutionCount();
+  public String getMagicCommandName() {
+    return HTML;
+  }
+
+  @Override
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String commandCodeBlock = param.getCommandCodeBlock();
-    if (commandCodeBlock==null){
-      return errorResult(message, String.format(USAGE_ERROR_MSG, HTML), executionCount);
+    if (commandCodeBlock == null) {
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, String.format(USAGE_ERROR_MSG, HTML));
     }
     MIMEContainer html = HTML("<html>" + commandCodeBlock + "</html>");
-    return new MagicCommandItemWithResult(
-            MessageCreator.buildMessage(message, singletonList(html), executionCount),
-            MessageCreator.buildReplyWithOkStatus(message, executionCount)
-    );
+    return new MagicCommandResult(MagicCommandOutcomeItem.Status.OK, html);
   }
 }

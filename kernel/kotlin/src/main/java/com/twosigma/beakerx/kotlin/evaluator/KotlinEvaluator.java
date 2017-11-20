@@ -25,26 +25,37 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
-import org.jetbrains.annotations.NotNull;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import org.jetbrains.kotlin.cli.common.repl.ReplClassLoader;
+import org.jetbrains.kotlin.cli.jvm.repl.ReplInterpreter;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createReplWithClassLoader;
 
 public class KotlinEvaluator extends BaseEvaluator {
 
   private final String packageId;
   private ClasspathScanner cps;
   private KotlinWorkerThread workerThread;
+  private ReplInterpreter repl;
+  private ReplClassLoader loader = null;
 
-  public KotlinEvaluator(String id, String sId) {
-    this(id, sId, new BeakerCellExecutor("kotlin"), new TempFolderFactoryImpl());
+  public KotlinEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
+    this(id, sId, new BeakerCellExecutor("kotlin"), new TempFolderFactoryImpl(), evaluatorParameters);
   }
 
-  public KotlinEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory) {
-    super(id, sId, cellExecutor,tempFolderFactory);
+  public KotlinEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
     packageId = "com.twosigma.beaker.kotlin.bkr" + shellId.split("-")[0];
     cps = new ClasspathScanner();
+
+    ReplWithClassLoaderFactory.ReplWithClassLoader replWithClassLoader = createReplWithClassLoader(this);
+    repl = replWithClassLoader.getRepl();
+    loader = replWithClassLoader.getLoader();
+
     workerThread = new KotlinWorkerThread(this);
     workerThread.start();
   }
@@ -53,8 +64,17 @@ public class KotlinEvaluator extends BaseEvaluator {
   protected void doResetEnvironment() {
     String cpp = createClasspath(classPath, outDir);
     cps = new ClasspathScanner(cpp);
-    workerThread.updateLoader();
+
+    ReplWithClassLoaderFactory.ReplWithClassLoader replWithClassLoader = createReplWithClassLoader(this);
+    repl = replWithClassLoader.getRepl();
+    loader = replWithClassLoader.getLoader();
+
     workerThread.halt();
+  }
+
+  @Override
+  public ClassLoader getClassLoader() {
+    return loader.getParent();
   }
 
   @Override
@@ -76,6 +96,7 @@ public class KotlinEvaluator extends BaseEvaluator {
     //TODO
     return new AutocompleteResult(ret, -1);
   }
+
   private String createClasspath(Classpath classPath, String outDir) {
     String cpp = "";
     for (String pt : classPath.getPathsAsStrings()) {
@@ -91,5 +112,9 @@ public class KotlinEvaluator extends BaseEvaluator {
 
   public String getPackageId() {
     return packageId;
+  }
+
+  public ReplInterpreter getRepl() {
+    return repl;
   }
 }

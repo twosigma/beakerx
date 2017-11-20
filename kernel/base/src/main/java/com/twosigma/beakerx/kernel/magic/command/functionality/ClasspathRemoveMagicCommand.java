@@ -15,12 +15,9 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.message.Message;
-
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 public class ClasspathRemoveMagicCommand extends ClasspathMagicCommand {
 
   public static final String CLASSPATH_REMOVE = CLASSPATH + " remove";
@@ -30,11 +27,12 @@ public class ClasspathRemoveMagicCommand extends ClasspathMagicCommand {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
-    Code code = param.getCode();
-    String command = param.getCommand();
-    Message message = param.getMessage();
-    int executionCount = param.getExecutionCount();
+  public String getMagicCommandName() {
+    return CLASSPATH_REMOVE;
+  }
+
+  @Override
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     return null;
   }
 }

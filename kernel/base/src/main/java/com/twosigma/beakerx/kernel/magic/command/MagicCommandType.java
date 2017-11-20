@@ -14,9 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.kernel.magic.command.item;
-
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
+package com.twosigma.beakerx.kernel.magic.command;
 
 public final class MagicCommandType {
 

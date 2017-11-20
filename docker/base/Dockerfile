@@ -30,11 +30,13 @@ RUN add-apt-repository ppa:cwchien/gradle
 RUN apt-get update
 RUN locale-gen en_US.UTF-8
 
-##########
-#  Node  #
-##########
-RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-RUN apt-get install -y nodejs
+##################
+#    MiniConda   #
+##################
+RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
+    wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+    /bin/bash ~/miniconda.sh -b -p /opt/conda && \
+    rm ~/miniconda.sh
 
 ##################
 #      Yarn      #
@@ -44,13 +46,10 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.lis
 apt-get update && apt-get install yarn -y && \
 apt-get clean
 
-##################
-#    MiniConda   #
-##################
-RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
-    wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
-    /bin/bash ~/miniconda.sh -b -p /opt/conda && \
-    rm ~/miniconda.sh
+##########
+#  Node  #
+##########
+RUN conda install -y -c conda-forge nodejs
 
 ##########
 #  Java  #

@@ -26,7 +26,9 @@ import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicComma
 
 public class ClasspathAddJarMagicCommand extends ClasspathMagicCommand {
 
-  public static final String CLASSPATH_ADD_JAR = CLASSPATH + " add jar";
+  private static final String ADD = "add";
+  private static final String JAR = "jar";
+  public static final String CLASSPATH_ADD_JAR = CLASSPATH + " " + ADD + " " + JAR;
 
   public ClasspathAddJarMagicCommand(KernelFunctionality kernel) {
     super(kernel);
@@ -35,6 +37,12 @@ public class ClasspathAddJarMagicCommand extends ClasspathMagicCommand {
   @Override
   public String getMagicCommandName() {
     return CLASSPATH_ADD_JAR;
+  }
+
+  @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length > 2 && commandParts[0].equals(CLASSPATH) && commandParts[1].equals(ADD) && commandParts[2].equals(JAR);
   }
 
   @Override
@@ -55,7 +63,7 @@ public class ClasspathAddJarMagicCommand extends ClasspathMagicCommand {
       if (newAddedJars.isEmpty()) {
         return new MagicCommandOutput(MagicCommandOutput.Status.OK);
       }
-      String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars + "\n";
+      String textMessage = "Added " + JAR + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars + "\n";
       return new MagicCommandOutput(MagicCommandOutput.Status.OK, textMessage);
     }
   }

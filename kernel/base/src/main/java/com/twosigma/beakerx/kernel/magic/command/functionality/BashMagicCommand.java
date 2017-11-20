@@ -25,6 +25,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import static com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand.IMPORT;
+
 public class BashMagicCommand implements MagicCommandFunctionality {
 
   public static final String BASH = "%%bash";
@@ -35,6 +37,12 @@ public class BashMagicCommand implements MagicCommandFunctionality {
   @Override
   public String getMagicCommandName() {
     return BASH;
+  }
+
+  @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length > 0 && commandParts[0].equals(BASH);
   }
 
   @Override

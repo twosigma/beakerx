@@ -37,6 +37,12 @@ public class HtmlMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length > 0 && commandParts[0].equals(HTML);
+  }
+
+  @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String commandCodeBlock = param.getCommandCodeBlock();
     if (commandCodeBlock == null) {

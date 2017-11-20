@@ -130,7 +130,7 @@ public class CodeFactory {
 
   private static Optional<MagicCommandFunctionality> findMagicCommandFunctionality(final List<MagicCommandType> commands, final String command) {
     return commands.stream()
-            .filter(c -> command.matches(c.getCommand() + " .*?") || command.matches(c.getCommand()))
+            .filter(c -> c.getMagicCommandFunctionality().matchCommand(command))
             .map(MagicCommandType::getMagicCommandFunctionality)
             .findFirst();
   }

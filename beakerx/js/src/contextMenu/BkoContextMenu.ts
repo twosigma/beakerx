@@ -98,7 +98,7 @@ export default abstract class BkoContextMenu implements MenuInterface {
     this.addCommand(menuItem);
     this.addKeyBinding(menuItem);
 
-    return menu.addItem({ command: menuItem.id, selector: menuItem.selector });
+    return menu.addItem({ command: menuItem.id, selector: menuItem.selector, isVisible: !menuItem.isHidden });
   }
 
   protected addSeparatorItem(menuItem: MenuItem, menu: addItem): Menu.IItem {

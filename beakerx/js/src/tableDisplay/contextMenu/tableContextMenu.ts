@@ -14,22 +14,19 @@
  *  limitations under the License.
  */
 
-export default interface MenuItem {
-  title: string,
-  action?: Function,
-  enableItemsFiltering?: boolean,
-  icon?: string,
-  inputPlaceholder?: string,
-  inputAction?: Function,
-  isChecked?: Function|boolean,
-  items?: MenuItem[]|Function,
-  keepOpen?: boolean,
-  separator?: boolean,
-  shortcut?: string
-  submenuClass?: string,
-  type?: string,
-  tooltip?: string,
-  updateLayout?: boolean,
-  isHidden?: boolean,
-  args?: object
+import createTableContextMenuItems from './createTableMenuItems';
+import BkoContextMenu from '../../contextMenu/BkoContextMenu';
+
+export default class TableContextMenu extends BkoContextMenu {
+  constructor(scope: any) {
+    super(scope);
+  }
+
+  protected buildMenu(): void {
+    this.inLab ? this.buildLabMenu() : this.buildBkoMenu();
+
+    const menuItems = createTableContextMenuItems(this.scope);
+    this.createItems(menuItems, this.contextMenu);
+    this.bindEvents();
+  }
 }

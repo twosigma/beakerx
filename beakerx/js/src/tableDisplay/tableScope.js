@@ -1469,31 +1469,8 @@ define([
       });
     }
 
-    var rotateMenuItem = {
-      callback: function(itemKey, options) {
-        self.headersVertical = !!!self.headersVertical;
-        self.rotateHeader();
-        self.table.draw();
-      }
-    };
-    $.contextMenu({
-      selector: id +'_wrapper thead',
-      zIndex: 3, //to be over fixed headers
-      items: {
-        verticalHeaders: _.extend({}, rotateMenuItem, {
-          name: 'vertical headers',
-          visible: function(key, opt){
-            return !!!self.headersVertical;
-          }
-        }),
-        horizontalHeaders: _.extend({}, rotateMenuItem, {
-          name: 'horizontal headers',
-          visible: function(key, opt){
-            return !!self.headersVertical;
-          }
-        })
-      }
-    });
+    var ContextMenu = require('./contextMenu/tableContextMenu').default;
+    self.contextMenu = new ContextMenu(self);
 
     $(document).on('contextmenu.bko-dt-header', id +'_wrapper thead th', function(){
       $(this).blur();

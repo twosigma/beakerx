@@ -26,23 +26,7 @@ ENV LANGUAGE en_US.UTF-8
 
 RUN apt-get update && apt-get dist-upgrade -y
 RUN apt-get install -y sudo curl unzip software-properties-common apt-transport-https git bzip2 wget locales
-RUN add-apt-repository ppa:cwchien/gradle
-RUN apt-get update
 RUN locale-gen en_US.UTF-8
-
-##########
-#  Node  #
-##########
-RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-RUN apt-get install -y nodejs
-
-##################
-#      Yarn      #
-##################
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-apt-get update && apt-get install yarn -y && \
-apt-get clean
 
 ##################
 #    MiniConda   #
@@ -52,12 +36,15 @@ RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
     rm ~/miniconda.sh
 
-##########
-#  Java  #
-##########
-RUN conda install -y -c conda-forge openjdk
+##################
+#      Yarn      #
+##################
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+apt-get update && apt-get install yarn -y && \
+apt-get clean
 
-############
-#  Gradle  #
-############
-RUN apt-get install -y gradle
+#####################
+#  Node Java Gradle #
+#####################
+RUN conda install -y -c conda-forge nodejs openjdk gradle

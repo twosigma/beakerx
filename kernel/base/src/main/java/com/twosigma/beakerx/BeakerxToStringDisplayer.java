@@ -15,12 +15,11 @@
  */
 package com.twosigma.beakerx;
 
-import jupyter.Displayer;
-import jupyter.Displayers;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import jupyter.Displayer;
+import jupyter.Displayers;
 
 public class BeakerxToStringDisplayer  extends Displayer<Object> {
 
@@ -34,8 +33,14 @@ public class BeakerxToStringDisplayer  extends Displayer<Object> {
   }
   public Map<String, String> display(Object obj) {
     Map<String, String> result = new HashMap();
-    if(obj.getClass().isArray()) {
+    if (obj.getClass().isArray()) {
       result.put("text/plain", this.displayArray(obj));
+    } else if (obj instanceof CodeCell) {
+      StringBuilder sb = new StringBuilder("Cell Type:" + ((CodeCell) obj).getCellType()).append(System.getProperty("line.separator"));
+      sb.append("Execution Count:").append(((CodeCell) obj).getExecutionCount()).append(System.getProperty("line.separator"));
+      sb.append("Metadata:").append(((CodeCell) obj).getMetadata()).append(System.getProperty("line.separator"));
+      sb.append("Source:").append(((CodeCell) obj).getSource());
+      result.put("text/plain", sb.toString());
     } else {
       result.put("text/plain", obj.toString());
     }

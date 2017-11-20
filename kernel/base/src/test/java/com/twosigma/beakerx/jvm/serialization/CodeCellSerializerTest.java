@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.jvm.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.twosigma.beakerx.BeakerCodeCell;
+import com.twosigma.beakerx.CodeCell;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
 import org.assertj.core.api.Assertions;
@@ -28,21 +28,21 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class BeakerCodeCellSerializerTest {
-  private BeakerCodeCell beakerCodeCell;
-  private static BeakerCodeCell.Serializer serializer;
-  private static SerializationTestHelper<BeakerCodeCell.Serializer, BeakerCodeCell> helper;
+public class CodeCellSerializerTest {
+  private CodeCell codeCell;
+  private static CodeCell.Serializer serializer;
+  private static SerializationTestHelper<CodeCell.Serializer, CodeCell> helper;
 
   @BeforeClass
   public static void setUpClass() throws IOException {
-    serializer = new BeakerCodeCell.Serializer(() -> { return new BasicObjectSerializer(); } );
+    serializer = new CodeCell.Serializer(() -> { return new BasicObjectSerializer(); } );
     helper = new SerializationTestHelper<>(serializer);
   }
 
   @Before
   public void setUp() throws Exception {
     KernelManager.register(new KernelTest());
-    beakerCodeCell = new BeakerCodeCell();
+    codeCell = new CodeCell();
   }
 
   @After
@@ -53,18 +53,18 @@ public class BeakerCodeCellSerializerTest {
   @Test
   public void serializeOutputContainer_resultJsonHasType() throws IOException {
     //when
-    JsonNode actualObj = helper.serializeObject(beakerCodeCell);
+    JsonNode actualObj = helper.serializeObject(codeCell);
     //then
     Assertions.assertThat(actualObj.has("type")).isTrue();
-    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("BeakerCodeCell");
+    Assertions.assertThat(actualObj.get("type").asText()).isEqualTo("CodeCell");
   }
 
   @Test
   public void serializeCellTyped_resultJsonHasCellType() throws IOException {
     //given
-    beakerCodeCell.setCellType("code");
+    codeCell.setCellType("code");
     //when
-    JsonNode actualObj = helper.serializeObject(beakerCodeCell);
+    JsonNode actualObj = helper.serializeObject(codeCell);
     //then
     Assertions.assertThat(actualObj.has("cell_type")).isTrue();
     Assertions.assertThat(actualObj.get("cell_type").asText()).isEqualTo("code");
@@ -73,9 +73,9 @@ public class BeakerCodeCellSerializerTest {
   @Test
   public void serializeExecutionCount_resultJsonHasExecutionCount() throws IOException {
     //given
-    beakerCodeCell.setExecutionCount("1");
+    codeCell.setExecutionCount("1");
     //when
-    JsonNode actualObj = helper.serializeObject(beakerCodeCell);
+    JsonNode actualObj = helper.serializeObject(codeCell);
     //then
     Assertions.assertThat(actualObj.has("execution_count")).isTrue();
     Assertions.assertThat(actualObj.get("execution_count").asText()).isEqualTo("1");
@@ -84,9 +84,9 @@ public class BeakerCodeCellSerializerTest {
   @Test
   public void serializeSource_resultJsonHasSource() throws IOException {
     //given
-    beakerCodeCell.setSource("test source");
+    codeCell.setSource("test source");
     //when
-    JsonNode actualObj = helper.serializeObject(beakerCodeCell);
+    JsonNode actualObj = helper.serializeObject(codeCell);
     //then
     Assertions.assertThat(actualObj.has("source")).isTrue();
     Assertions.assertThat(actualObj.get("source").asText()).isEqualTo("test source");
@@ -95,9 +95,9 @@ public class BeakerCodeCellSerializerTest {
   @Test
   public void serializeMetadata_resultJsonHasMetadatas() throws IOException {
     //given
-    beakerCodeCell.setMetadata("test metadata");
+    codeCell.setMetadata("test metadata");
     //when
-    JsonNode actualObj = helper.serializeObject(beakerCodeCell);
+    JsonNode actualObj = helper.serializeObject(codeCell);
     //then
     Assertions.assertThat(actualObj.has("metadata")).isTrue();
     Assertions.assertThat(actualObj.get("metadata").asText()).isEqualTo("test metadata");
@@ -106,9 +106,9 @@ public class BeakerCodeCellSerializerTest {
   @Test
   public void serializeTags_resultJsonHasTags() throws IOException {
     //given
-    beakerCodeCell.setOutputs("test output");
+    codeCell.setOutputs("test output");
     //when
-    JsonNode actualObj = helper.serializeObject(beakerCodeCell);
+    JsonNode actualObj = helper.serializeObject(codeCell);
     //then
     Assertions.assertThat(actualObj.has("outputs")).isTrue();
     Assertions.assertThat(actualObj.get("outputs").asText()).isEqualTo("test output");

@@ -157,7 +157,7 @@ public class NamespaceClient {
   }
   
 
-  public List<BeakerCodeCell> getCodeCells(String tagFilter) throws IOException, InterruptedException {
+  public List<CodeCell> getCodeCells(String tagFilter) throws IOException, InterruptedException {
     // first send message to get cells
     Comm c = getCodeCellsComm();
     HashMap<String, Serializable> data = new HashMap<>();
@@ -167,7 +167,7 @@ public class NamespaceClient {
     c.send();
     // block
     Object cells = getMessageQueue("CodeCells").take();
-    return (List<BeakerCodeCell>)cells;
+    return (List<CodeCell>)cells;
   }
 
   public synchronized void runByTag(String tag) {

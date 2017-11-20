@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.jvm.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twosigma.beakerx.BeakerCodeCell;
+import com.twosigma.beakerx.CodeCell;
 import com.twosigma.beakerx.shared.NamespaceBinding;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class NamespaceBindingDeserializerTest {
             "\"session\":\"test\",\"value\":1,\"defined\":true}";
     NamespaceBindingDeserializer deserializer =  new NamespaceBindingDeserializer(() -> {
       BasicObjectSerializer boSerializer = new BasicObjectSerializer();
-      boSerializer.addTypeDeserializer(new BeakerCodeCell.DeSerializer(boSerializer));
+      boSerializer.addTypeDeserializer(new CodeCell.DeSerializer(boSerializer));
       return boSerializer;
     });
     //when

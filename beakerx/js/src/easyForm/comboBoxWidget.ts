@@ -27,7 +27,9 @@ class ComboBoxModel extends widgets.SelectModel {
       _view_name: "ComboBoxView",
       _model_name: "ComboBoxModel",
       _model_module: 'beakerx',
-      _view_module: 'beakerx'
+      _view_module: 'beakerx',
+      _model_module_version: BEAKERX_MODULE_VERSION,
+      _view_module_version: BEAKERX_MODULE_VERSION
     };
   }
 }

@@ -23,7 +23,9 @@ var SelectMultipleModel = widgets.SelectMultipleModel.extend({
       _view_name: "SelectMultipleView",
       _model_name: "SelectMultipleModel",
       _model_module: 'beakerx',
-      _view_module: 'beakerx'
+      _view_module: 'beakerx',
+      _model_module_version: BEAKERX_MODULE_VERSION,
+      _view_module_version: BEAKERX_MODULE_VERSION
     });
   }
 });

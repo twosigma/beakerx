@@ -52,7 +52,7 @@ else:
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 root = os.path.abspath(os.path.join(here, os.pardir))
-kernel_path = os.path.join(root, 'kernel')
+kernel_path = os.path.join(root, '..', 'kernel')
 site_packages = site.getsitepackages()[0]
 is_repo = os.path.exists(os.path.join(root, '.git'))
 node_modules = os.path.join(here, 'js', 'node_modules')

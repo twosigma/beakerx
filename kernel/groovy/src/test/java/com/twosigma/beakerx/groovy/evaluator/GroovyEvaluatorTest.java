@@ -17,11 +17,10 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
-import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.groovy.kernel.GroovyDefaultVariables;
 import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
@@ -46,14 +45,13 @@ public class GroovyEvaluatorTest {
 
   @BeforeClass
   public static void initClassStubData() throws IOException {
-    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345", cellExecutor(), getTestTempFolderFactory());
-
     GroovyDefaultVariables var = new GroovyDefaultVariables();
     HashMap<String, Object> params = new HashMap<>();
     params.put(IMPORTS, var.getImports());
     params.put(CLASSPATH, var.getClassPath());
-    KernelParameters kernelParameters = new KernelParameters(params);
+    EvaluatorParameters kernelParameters = new EvaluatorParameters(params);
 
+    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345", cellExecutor(), getTestTempFolderFactory(),kernelParameters);
     groovyEvaluator.setShellOptions(kernelParameters);
     groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir());
     scriptBinding = new Binding();

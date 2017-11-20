@@ -16,14 +16,13 @@
 package com.twosigma.beakerx.evaluator;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 
 import java.util.List;
 
@@ -39,9 +38,7 @@ public interface Evaluator {
 
   Logger logger = LoggerFactory.getLogger(Evaluator.class.getName());
 
-  void initKernel(KernelParameters kernelParameters);
-
-  void setShellOptions(final KernelParameters kernelParameters) throws IOException;
+  void setShellOptions(final EvaluatorParameters kernelParameters) throws IOException;
 
   AutocompleteResult autocomplete(String code, int caretPosition);
 
@@ -68,4 +65,6 @@ public interface Evaluator {
   void removeImport(ImportPath anImport);
 
   Path getTempFolder();
+
+  Class<?> loadClass(String clazzName) throws ClassNotFoundException;
 }

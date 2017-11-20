@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.kernel.magic.command;
 
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 
 public class MagicCommand {
 
@@ -35,7 +35,7 @@ public class MagicCommand {
     this.command = command;
   }
 
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     return this.magicCommandFunctionality.execute(param);
   }
 

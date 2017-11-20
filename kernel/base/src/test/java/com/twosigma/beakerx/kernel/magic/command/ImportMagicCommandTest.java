@@ -22,12 +22,12 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
 import com.twosigma.beakerx.message.Message;
 
-import java.io.Serializable;
-import java.util.Map;
 import java.util.Optional;
 
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,9 +51,9 @@ public class ImportMagicCommandTest {
     //given
     String allCode = "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
             "w = new IntSlider()";
-    Code code = CodeFactory.create(allCode, new Message(), 1, kernel);
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
     assertThat(code.getCodeBlock().get()).isEqualTo("w = new IntSlider()");
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
@@ -63,13 +63,13 @@ public class ImportMagicCommandTest {
   public void removeImport() throws Exception {
     //given
     String allCode = "%import com.twosigma.beakerx.widgets.integers.IntSlider\n";
-    Code code = CodeFactory.create(allCode, new Message(), 1, kernel);
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
     //when
     String allRemoveCode = "%unimport com.twosigma.beakerx.widgets.integers.IntSlider\n";
-    Code codeToRemove = CodeFactory.create(allRemoveCode, new Message(), 1, kernel);
-    MagicCommandResult resultCodeToRemove = executeMagicCommands(codeToRemove, 1, kernel);
+    Code codeToRemove = CodeFactory.create(allRemoveCode, new Message(), kernel);
+    MagicCommandOutcome resultCodeToRemove = executeMagicCommands(codeToRemove, 1, kernel);
     //then
     assertThat(kernel.getImports().getImportPaths()).doesNotContain(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
   }
@@ -77,21 +77,21 @@ public class ImportMagicCommandTest {
   @Test
   public void allowExtraWhitespaces() {
     String allCode = "%import       com.twosigma.beakerx.widgets.integers.IntSlider";
-    Code code = CodeFactory.create(allCode, new Message(), 1, kernel);
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
   }
 
   @Test
   public void wrongImportFormat() {
     String allCode = "%import ";
-    Code wrongFormatImport = CodeFactory.create(allCode, new Message(), 1, kernel);
-    MagicCommandResult process = executeMagicCommands(wrongFormatImport, 1, kernel);
-    Optional<Message> result = process.getItems().get(0).getResult();
+    Code wrongFormatImport = CodeFactory.create(allCode, new Message(), kernel);
+    MagicCommandOutcome process = executeMagicCommands(wrongFormatImport, 1, kernel);
+    Optional<MIMEContainer> result = process.getItems().get(0).getMIMEContainer();
     assertThat(result.isPresent()).isTrue();
     result.ifPresent(r -> {
-      Map<String, Serializable> content = r.getContent();
-      assertThat(content.get("text").equals("Wrong import format."));
+      String content = (String)r.getData();
+      assertThat(content.equals("Wrong import format."));
     });
   }
 

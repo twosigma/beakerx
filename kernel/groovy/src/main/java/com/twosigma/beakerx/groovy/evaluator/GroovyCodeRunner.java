@@ -34,12 +34,12 @@ import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 class GroovyCodeRunner implements Runnable {
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyCodeRunner.class.getName());
-  private GroovyWorkerThread groovyWorkerThread;
+  private GroovyEvaluator groovyEvaluator;
   private final String theCode;
   private final SimpleEvaluationObject theOutput;
 
-  public GroovyCodeRunner(GroovyWorkerThread groovyWorkerThread, String code, SimpleEvaluationObject out) {
-    this.groovyWorkerThread = groovyWorkerThread;
+  public GroovyCodeRunner(GroovyEvaluator groovyEvaluator, String code, SimpleEvaluationObject out) {
+    this.groovyEvaluator = groovyEvaluator;
     theCode = code;
     theOutput = out;
   }
@@ -52,19 +52,19 @@ class GroovyCodeRunner implements Runnable {
 
     try {
 
-      Thread.currentThread().setContextClassLoader(groovyWorkerThread.getGroovyClassLoader());
+      Thread.currentThread().setContextClassLoader(groovyEvaluator.getGroovyClassLoader());
 
-      Class<?> parsedClass = groovyWorkerThread.getGroovyClassLoader().parseClass(theCode);
+      Class<?> parsedClass = groovyEvaluator.getGroovyClassLoader().parseClass(theCode);
 
       Script instance = (Script) parsedClass.newInstance();
 
       if (GroovyEvaluator.LOCAL_DEV) {
-        groovyWorkerThread.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, new HashMap<String, Object>());
+        groovyEvaluator.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, new HashMap<String, Object>());
       } else {
-        groovyWorkerThread.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, NamespaceClient.getBeaker(groovyWorkerThread.groovyEvaluator.getSessionId()));
+        groovyEvaluator.getScriptBinding().setVariable(Evaluator.BEAKER_VARIABLE_NAME, NamespaceClient.getBeaker(groovyEvaluator.getSessionId()));
       }
 
-      instance.setBinding(groovyWorkerThread.getScriptBinding());
+      instance.setBinding(groovyEvaluator.getScriptBinding());
 
       InternalVariable.setValue(theOutput);
 
@@ -72,7 +72,7 @@ class GroovyCodeRunner implements Runnable {
 
       if (GroovyEvaluator.LOCAL_DEV) {
         logger.info("Result: {}", result);
-        logger.info("Variables: {}", groovyWorkerThread.getScriptBinding().getVariables());
+        logger.info("Variables: {}", groovyEvaluator.getScriptBinding().getVariables());
       }
 
       theOutput.finished(result);

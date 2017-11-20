@@ -34,20 +34,17 @@ class KotlinWorkerThread extends WorkerThread {
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
   private KotlinEvaluator kotlinEvaluator;
   protected boolean exit;
-  protected boolean updateLoader;
-  private ReplInterpreter repl;
 
 
   public KotlinWorkerThread(KotlinEvaluator kotlinEvaluator) {
     super("kotlin worker");
     this.kotlinEvaluator = kotlinEvaluator;
     exit = false;
-    updateLoader = true;
   }
 
   @Override
   public void run() {
-    ReplClassLoader loader = null;
+
     JobDescriptor j = null;
 
     NamespaceClient nc = null;
@@ -55,13 +52,6 @@ class KotlinWorkerThread extends WorkerThread {
     while (!exit) {
       try {
         syncObject.acquire();
-
-        if (loader == null || updateLoader) {
-          ReplWithClassLoader replWithClassLoader = createReplWithClassLoader(this.kotlinEvaluator);
-          repl = replWithClassLoader.getRepl();
-          loader = replWithClassLoader.getLoader();
-          this.updateLoader = false;
-        }
 
         j = jobQueue.poll();
         if (j == null)
@@ -73,7 +63,7 @@ class KotlinWorkerThread extends WorkerThread {
         j.outputObject.started();
 
         try {
-          if (!kotlinEvaluator.executeTask(new KotlinCodeRunner(j.outputObject, loader, repl, j.codeToBeExecuted))) {
+          if (!kotlinEvaluator.executeTask(new KotlinCodeRunner(j.outputObject, kotlinEvaluator.getClassLoader(), kotlinEvaluator.getRepl(), j.codeToBeExecuted))) {
             j.outputObject.error(INTERUPTED_MSG);
           }
           if (nc != null) {
@@ -97,10 +87,6 @@ class KotlinWorkerThread extends WorkerThread {
     NamespaceClient.delBeaker(kotlinEvaluator.getSessionId());
   }
 
-  public void updateLoader() {
-    this.updateLoader = true;
-  }
-
   public void doExit() {
     this.exit = true;
     removeKtFile();
@@ -113,5 +99,4 @@ class KotlinWorkerThread extends WorkerThread {
       throw new RuntimeException(e);
     }
   }
-
 }

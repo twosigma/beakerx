@@ -39,21 +39,18 @@ class JavaWorkerThread extends WorkerThread {
 
   private JavaEvaluator javaEvaluator;
   private boolean exit;
-  private boolean updateLoader;
 
   public JavaWorkerThread(JavaEvaluator javaEvaluator) {
     super("javash worker");
     this.javaEvaluator = javaEvaluator;
     exit = false;
-    updateLoader = true;
   }
 
   /*
    * This thread performs all the evaluation
    */
-
   public void run() {
-    DynamicClassLoaderSimple loader = null;
+
     JobDescriptor j;
     org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler;
 
@@ -63,17 +60,13 @@ class JavaWorkerThread extends WorkerThread {
     while (!exit) {
       try {
         syncObject.acquire();
-        if (loader == null || updateLoader) {
-          loader = newClassLoader();
-          this.updateLoader = false;
-        }
         j = jobQueue.poll();
         if (j == null) {
           continue;
         }
         nc = NamespaceClient.getBeaker(javaEvaluator.getSessionId());
         nc.setOutputObj(j.outputObject);
-        runCode(loader, j, javaSourceCompiler);
+        runCode(javaEvaluator.getJavaClassLoader(), j, javaSourceCompiler);
       } catch (Throwable e) {
         e.printStackTrace();
       } finally {
@@ -221,14 +214,6 @@ class JavaWorkerThread extends WorkerThread {
     }
   }
 
-  private DynamicClassLoaderSimple newClassLoader() {
-    DynamicClassLoaderSimple loader;
-    loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-    loader.addJars(javaEvaluator.getClasspath().getPathsAsStrings());
-    loader.addDynamicDir(javaEvaluator.getOutDir());
-    return loader;
-  }
-
   private void buildClasspath(org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit) {
     String classpath = System.getProperty("java.class.path");
     String[] classpathEntries = classpath.split(File.pathSeparator);
@@ -273,10 +258,6 @@ class JavaWorkerThread extends WorkerThread {
       codev.moveToNextLine();
     }
 
-  }
-
-  public void updateLoader() {
-    this.updateLoader = true;
   }
 
   public void doExit() {

@@ -19,8 +19,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -38,8 +37,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.errorResult;
-
 public abstract class TimeMagicCommand implements MagicCommandFunctionality {
 
   protected KernelFunctionality kernel;
@@ -48,7 +45,7 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     this.kernel = kernel;
   }
 
-  public MagicCommandItemWithResult time(String codeToExecute, Message message, int executionCount) {
+  public MagicCommandOutput time(String codeToExecute, Message message, int executionCount) {
     CompletableFuture<TimeMeasureData> compileTime = new CompletableFuture<>();
 
     ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
@@ -73,16 +70,15 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     try {
       TimeMeasureData timeMeasuredData = compileTime.get();
 
-      return new MagicCommandItemWithResult(
-              MessageCreator.buildOutputMessage(message, String.format(messageInfo,
+      return new MagicCommandOutput(MagicCommandOutput.Status.OK,
+              String.format(messageInfo,
                       format(timeMeasuredData.getCpuUserTime()),
                       format(timeMeasuredData.getCpuTotalTime() - timeMeasuredData.getCpuUserTime()),
                       format(timeMeasuredData.getCpuTotalTime()),
-                      format(timeMeasuredData.getWallTime())), false),
-              MessageCreator.buildReplyWithOkStatus(message, executionCount));
+                      format(timeMeasuredData.getWallTime())));
 
     } catch (InterruptedException | ExecutionException e) {
-      return errorResult(message, "There occurs problem during measuring time for your statement.", executionCount);
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem during measuring time for your statement.");
     }
   }
 
@@ -102,16 +98,16 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     }
   }
 
-  protected MagicCommandItemWithResult timeIt(TimeItOption timeItOption, String codeToExecute, Message message, int executionCount) {
+  protected MagicCommandOutput timeIt(TimeItOption timeItOption, String codeToExecute, Message message, int executionCount) {
     String output = "%s ± %s per loop (mean ± std. dev. of %d run, %d loop each)";
 
     if (timeItOption.getNumber() < 0) {
-      return errorResult(message, "Number of execution must be bigger then 0", executionCount);
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Number of execution must be bigger then 0");
     }
     int number = timeItOption.getNumber() == 0 ? getBestNumber(codeToExecute) : timeItOption.getNumber();
 
     if (timeItOption.getRepeat() == 0) {
-      return errorResult(message, "Repeat value must be bigger then 0", executionCount);
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Repeat value must be bigger then 0");
     }
 
     CompletableFuture<Boolean> isStatementsCorrect = new CompletableFuture<>();
@@ -126,7 +122,7 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     try {
 
       if (!isStatementsCorrect.get()) {
-        return errorResult(message, "Please correct your statement", executionCount);
+        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Please correct your statement");
       }
 
       List<Long> allRuns = new ArrayList<>();
@@ -163,16 +159,12 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
           output = String.format(output, format(average), format((long) stdev), timeItOption.getRepeat(), number);
         }
 
-        return new MagicCommandItemWithResult(
-                MessageCreator.buildOutputMessage(message, output, false),
-                MessageCreator.buildReplyWithoutStatus(message, executionCount));
+        return new MagicCommandOutput(MagicCommandOutput.Status.OK, output);
       }
     } catch (InterruptedException | ExecutionException e) {
-      return errorResult(message, "There occurs problem with " + e.getMessage(), executionCount);
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem with " + e.getMessage());
     }
-
-    return errorResult(message, "There occurs problem with timeIt operations", executionCount);
-
+    return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem with timeIt operations");
   }
 
   protected TimeItOption buildTimeItOption(Code code) {

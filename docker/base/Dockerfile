@@ -26,8 +26,6 @@ ENV LANGUAGE en_US.UTF-8
 
 RUN apt-get update && apt-get dist-upgrade -y
 RUN apt-get install -y sudo curl unzip software-properties-common apt-transport-https git bzip2 wget locales
-RUN add-apt-repository ppa:cwchien/gradle
-RUN apt-get update
 RUN locale-gen en_US.UTF-8
 
 ##################
@@ -46,17 +44,7 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.lis
 apt-get update && apt-get install yarn -y && \
 apt-get clean
 
-##########
-#  Node  #
-##########
-RUN conda install -y -c conda-forge nodejs
-
-##########
-#  Java  #
-##########
-RUN conda install -y -c conda-forge openjdk
-
-############
-#  Gradle  #
-############
-RUN apt-get install -y gradle
+#####################
+#  Node Java Gradle #
+#####################
+RUN conda install -y -c conda-forge nodejs openjdk gradle

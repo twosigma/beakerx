@@ -13,20 +13,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-version 'unspecified'
-
 apply plugin: 'java'
 
 sourceCompatibility = 1.8
-
-
-ext.kernelIdName = 'demoProjects'
+ext.kernelIdName = 'Tablesaw'
 
 repositories {
     mavenCentral()
 }
 
+configurations {
+    provided
+    antlr
+}
+
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+    }
+    test {
+        compileClasspath += configurations.provided
+        runtimeClasspath += configurations.provided
+    }
+}
+
 dependencies {
+    provided project(':base')
+    compile group: 'com.github.jupyter', name: 'jvm-repr', version: '0.1.0'
+    compile group: 'tech.tablesaw', name: 'tablesaw-plot', version: '0.10.0'
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 

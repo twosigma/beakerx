@@ -14,6 +14,11 @@
 
 FROM beakerx-base:latest
 
+ARG VCS_REF
+
+LABEL org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/twosigma/beakerx"
+
 MAINTAINER BeakerX Feedback <beakerx-feedback@twosigma.com>
 
 ENV SHELL /bin/bash

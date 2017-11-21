@@ -24,17 +24,12 @@ from traitlets import Unicode, Dict
 from beakerx.beakerx_widgets import BeakerxDOMWidget
 
 
-class Chart(BaseObject):
+class ChartDetails(BaseObject):
     def __init__(self, **kwargs):
-        super(Chart, self).__init__(**kwargs)
-
+        super(ChartDetails, self).__init__(**kwargs)
         self.type = "Plot"
         self.init_width = 640
         self.init_height = 480
-        self.chart_title = ''
-        self.use_tool_tip = True
-        self.legend_position = LegendPosition()
-        self.legend_layout = LegendLayout.VERTICAL
 
         method_names = self.get_methods()
 
@@ -46,14 +41,26 @@ class Chart(BaseObject):
             else:
                 raise SyntaxError(x + ': property not found')
 
-    def setTitle(self, value):
-        self.chart_title = value
-
     def setInitWidth(self, value):
         self.init_width = value
 
     def setInitHeight(self, value):
         self.init_height = value
+
+
+class Chart(ChartDetails):
+    def __init__(self, **kwargs):
+        self.chart_title = ''
+        self.use_tool_tip = True
+        self.legend_position = LegendPosition()
+        self.legend_layout = LegendLayout.VERTICAL
+        self.custom_styles = []
+        self.element_styles = {}
+
+        super(Chart, self).__init__(**kwargs)
+
+    def setTitle(self, value):
+        self.chart_title = value
 
     def setUseToolTip(self, value):
         self.use_tool_tip = value
@@ -135,6 +142,7 @@ class XYChart(AbstractChart):
         self.x_upper_bound = 0
         self.log_x = False
         self.x_log_base = 10
+
         super(XYChart, self).__init__(**kwargs)
 
     def setGraphics(self, value):
@@ -191,6 +199,7 @@ class HistogramChart(XYChart):
         self.normed = False
 
         super(HistogramChart, self).__init__(**kwargs)
+
         self.type = 'Histogram'
 
     def setLog(self, value):
@@ -234,7 +243,9 @@ class CategoryChart(XYChart):
         self.categoryNames = []
         self.orientation = PlotOrientationType.VERTICAL
         self.category_margin = 0.2
+
         super(CategoryChart, self).__init__(**kwargs)
+
         self.type = 'CategoryPlot'
 
     def setCategoryNamesLabelAngle(self, value):
@@ -252,23 +263,42 @@ class CategoryChart(XYChart):
 
 class TreeMapChart(XYChart):
     def __init__(self, **kwargs):
+        self.title = ''
+        self.colorProvider = RandomColorProvider()
+        self.mode = Mode.SQUARIFY.value
+
         super(TreeMapChart, self).__init__(**kwargs)
+
         self.type = 'TreeMap'
-        self.showLegend = getValue(kwargs, 'showLegend', True)
-        self.title = getValue(kwargs, 'title', "")
-        self.colorProvider = getValue(kwargs, 'colorProvider',
-                                      RandomColorProvider())
-        self.toolTipBuilder = getValue(kwargs, 'toolTipBuilder')
-        self.mode = getValue(kwargs, 'mode', Mode.SQUARIFY).value
-        self.ratio = getValue(kwargs, 'ratio')
+        self.setShowLegend(False)
+
         self.valueAccessor = getValue(kwargs, 'valueAccessor',
                                       ValueAccessor.VALUE)
-        self.custom_styles = []
-        self.element_styles = {}
+
         self.graphics_list = getValue(kwargs, 'root')
 
-    def transform(self):
+    def setRoot(self, value):
+        self.graphics_list = value
 
+    def setToolTipBuilder(self, value):
+        self.toolTipBuilder = value
+
+    def setRatio(self, value):
+        self.ratio = value
+
+    def setMode(self, value):
+        self.mode = value.value
+
+    def setTitle(self, value):
+        self.title = value
+
+    def setColorProvider(self, value):
+        self.colorProvider = value
+
+    def setValueAccessor(self, value):
+        self.valueAccessor = value
+
+    def transform(self):
         self.process(self.graphics_list)
         return super(TreeMapChart, self).transform()
 
@@ -286,20 +316,37 @@ class TreeMapChart(XYChart):
                 node.tooltip = toolTipBuilder.getToolTip(node)
 
 
-class CombinedChart(BaseObject):
+class CombinedChart(ChartDetails):
     def __init__(self, **kwargs):
-        super(CombinedChart, self).__init__(**kwargs)
-        self.init_width = getValue(kwargs, 'initWidth', 640)
-        self.init_height = getValue(kwargs, 'initHeight', 480)
-        self.title = getValue(kwargs, 'title')
-        self.x_label = getValue(kwargs, 'xLabel', 'Linear')
-        self.plots = getValue(kwargs, 'plots', [])
-        self.weights = getValue(kwargs, 'weights', [])
-        self.version = 'groovy'
-        self.type = 'CombinedPlot'
         self.y_tickLabels_visible = True
         self.x_tickLabels_visible = True
+        self.plots = []
+        self.weights = []
+        self.x_label = 'Linear'
+
+        super(CombinedChart, self).__init__(**kwargs)
+
+        self.version = 'groovy'
+        self.type = 'CombinedPlot'
         self.plot_type = 'Plot'
+
+    def setTitle(self, value):
+        self.title = value
+
+    def setPlots(self, value):
+        self.plots = value
+
+    def setWeights(self, value):
+        self.weights = value
+
+    def setXLabel(self, value):
+        self.x_label = value
+
+    def setXTickLabelsVisible(self, value):
+        self.x_tickLabels_visible = value
+
+    def setYTickLabelsVisible(self, value):
+        self.y_tickLabels_visible = value
 
 
 class Plot(BeakerxDOMWidget):

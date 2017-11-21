@@ -67,14 +67,14 @@ class ChartSetTest(unittest.TestCase):
         object_under_test = Chart(**{'showLegend': True})
         self.assertEqual(object_under_test.show_legend, True)
 
-    def test_default_legendPosition(self):
+    def test_set_legendPosition(self):
         legend_position = LegendPosition(position=LegendPosition.Position.BOTTOM)
         object_under_test = Chart(**{'legendPosition': legend_position})
         self.assertEqual(object_under_test.legend_position.position, LegendPosition.Position.BOTTOM)
 
-    def test_default_legendLayout(self):
+    def test_set_legendLayout(self):
         object_under_test = Chart(**{'legendLayout': LegendLayout.HORIZONTAL})
         self.assertEqual(object_under_test.legend_layout, LegendLayout.HORIZONTAL)
 
     def test_exception_set_unknown_property(self):
-        self.assertRaises(SyntaxError, XYChart, **{'unknown': 'something'})
+        self.assertRaises(SyntaxError, Chart, **{'unknown': 'something'})

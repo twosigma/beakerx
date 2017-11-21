@@ -107,3 +107,6 @@ class XYChartSetTest(unittest.TestCase):
     def test_set_lodThreshold(self):
         object_under_test = XYChart(**{'lodThreshold': 5})
         self.assertEqual(object_under_test.lodThreshold, 5)
+
+    def test_exception_set_unknown_property(self):
+        self.assertRaises(SyntaxError, XYChart, **{'unknown': 'something'})

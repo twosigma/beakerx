@@ -15,13 +15,26 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
-
+import com.twosigma.beakerx.widgets.strings.Label;
 import org.apache.maven.shared.invoker.InvocationOutputHandler;
 
 public class MavenInvocationSilentOutputHandler implements InvocationOutputHandler {
 
+  private Label intProgress;
+
+  public MavenInvocationSilentOutputHandler(Label intProgress) {
+    this.intProgress = intProgress;
+  }
+
   @Override
   public void consumeLine(String line) {
+    if (line != null && !line.trim().isEmpty() && (line.matches("Downlo.+") || acceptLineWhichShowDownloadingProgress(line))) {
+      intProgress.setValue(line);
+    }
+  }
 
+  private boolean acceptLineWhichShowDownloadingProgress(String line) {
+    // line example 3/119 KB
+    return line.matches("\\d+/\\d+.+");
   }
 }

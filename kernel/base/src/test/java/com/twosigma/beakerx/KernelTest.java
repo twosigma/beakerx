@@ -22,6 +22,7 @@ import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
+import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand;
@@ -94,12 +95,14 @@ public class KernelTest implements KernelFunctionality {
   public KernelTest(String id) {
     this.id = id;
     initMagicCommands();
+    KernelManager.register(this);
   }
 
   public KernelTest(String id, Evaluator evaluator) {
     this.id = id;
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
     initMagicCommands();
+    KernelManager.register(this);
   }
 
 

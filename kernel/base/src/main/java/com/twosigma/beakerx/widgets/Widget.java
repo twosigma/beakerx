@@ -65,6 +65,12 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     comm.open();
   }
 
+  protected void openComm(Message parentMessage) {
+    comm.setData(createContent());
+    addValueChangeMsgCallback();
+    comm.open(parentMessage);
+  }
+
   public void close() {
     if (this.comm != null) {
       this.comm.close();

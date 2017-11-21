@@ -20,6 +20,7 @@ import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
+import com.twosigma.beakerx.widgets.strings.Label;
 
 import java.util.Collection;
 
@@ -57,7 +58,8 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, ADD_MVN_FORMAT_ERROR_MESSAGE);
     }
     MavenJarResolver classpathAddMvnCommand = new MavenJarResolver(commandParams);
-    MavenJarResolver.AddMvnCommandResult result = classpathAddMvnCommand.retrieve(split[3], split[4], split[5]);
+    Label intProgress = new Label(param.getCode().getMessage());
+    MavenJarResolver.AddMvnCommandResult result = classpathAddMvnCommand.retrieve(split[3], split[4], split[5], intProgress);
     if (result.isJarRetrieved()) {
       Collection<String> newAddedJars = addJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*");
       if (newAddedJars.isEmpty()) {

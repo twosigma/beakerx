@@ -62,6 +62,7 @@ public class Comm {
   private KernelFunctionality kernel;
   private List<Handler<Message>> msgCallbackList = new ArrayList<>();
   private List<Handler<Message>> closeCallbackList = new ArrayList<>();
+  private Message parentMessage;
 
   public Comm(String commId, String targetName) {
     super();
@@ -134,10 +135,19 @@ public class Comm {
 
   public void open() {
     Message parentMessage = getParentMessage();// can be null
+    doOpen(parentMessage);
+  }
+
+  public void open(Message parentMessage) {
+    this.parentMessage = parentMessage;
+    doOpen(parentMessage);
+  }
+
+  private void doOpen(Message parentMessage) {
     Message message = new Message();
     message.setHeader(new Header(COMM_OPEN, parentMessage != null ? parentMessage.getHeader().getSession() : null));
     if (parentMessage != null) {
-      message.setParentHeader(getParentMessage().getHeader());
+      message.setParentHeader(parentMessage.getHeader());
     }
     HashMap<String, Serializable> map = new HashMap<>();
     map.put(COMM_ID, getCommId());
@@ -212,6 +222,9 @@ public class Comm {
   }
 
   private Message getParentMessage() {
+    if (this.parentMessage != null) {
+      return this.parentMessage;
+    }
     return InternalVariable.getParentHeader();
   }
 

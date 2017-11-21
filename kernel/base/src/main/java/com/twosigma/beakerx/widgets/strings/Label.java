@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.widgets.strings;
 
+import com.twosigma.beakerx.message.Message;
+
 public class Label extends StringWidget {
 
   public static final String VIEW_NAME_VALUE = "LabelView";
@@ -23,6 +25,11 @@ public class Label extends StringWidget {
   public Label() {
     super();
     openComm();
+  }
+
+  public Label(Message parentMessage) {
+    super();
+    openComm(parentMessage);
   }
 
   @Override

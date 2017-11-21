@@ -58,6 +58,9 @@ class BaseObject:
     def transformBack(self, dict):
         self.__dict__ = dict
 
+    def get_methods(self):
+        return [attr for attr in dir(self) if inspect.ismethod(getattr(self, attr))]
+
 
 class Color:
     def __init__(self, r, g, b, a=255):

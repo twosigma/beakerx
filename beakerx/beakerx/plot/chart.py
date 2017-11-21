@@ -27,39 +27,100 @@ from beakerx.beakerx_widgets import BeakerxDOMWidget
 class Chart(BaseObject):
     def __init__(self, **kwargs):
         super(Chart, self).__init__(**kwargs)
-        self.init_width = getValue(kwargs, 'initWidth', 640)
-        self.init_height = getValue(kwargs, 'initHeight', 480)
-        self.chart_title = getValue(kwargs, 'title')
-        self.show_legend = getValue(kwargs, 'showLegend')
-        self.use_tool_tip = getValue(kwargs, 'useToolTip', True)
-        self.legend_position = getValue(kwargs, 'legendPosition',
-                                        LegendPosition())
-        self.legend_layout = getValue(kwargs, 'legendLayout',
-                                      LegendLayout.VERTICAL)
+
         self.type = "Plot"
+        self.init_width = 640
+        self.init_height = 480
+        self.chart_title = ''
+        self.use_tool_tip = True
+        self.legend_position = LegendPosition()
+        self.legend_layout = LegendLayout.VERTICAL
+
+        method_names = self.get_methods()
+
+        for x in kwargs:
+            key = x[:1].upper() + x[1:]
+            if "set" + key in method_names:
+                func = getattr(self, 'set' + key)
+                func(getValue(kwargs, x))
+            else:
+                raise SyntaxError(x + ': property not found')
+
+    def setTitle(self, value):
+        self.chart_title = value
+
+    def setInitWidth(self, value):
+        self.init_width = value
+
+    def setInitHeight(self, value):
+        self.init_height = value
+
+    def setUseToolTip(self, value):
+        self.use_tool_tip = value
+
+    def setShowLegend(self, value):
+        self.show_legend = value
+
+    def setLegendPosition(self, value):
+        self.legend_position = value
+
+    def setLegendLayout(self, value):
+        self.legend_layout = value
 
 
 class AbstractChart(Chart):
     def __init__(self, **kwargs):
+        self.x_lower_margin = 0.05
+        self.x_upper_margin = 0.05
+        self.log_y = False
+        self.omit_checkboxes = False
+        self.rangeAxes = [YAxis(**{})]
         super(AbstractChart, self).__init__(**kwargs)
-        self.rangeAxes = getValue(kwargs, 'yAxes', [])
-        if len(self.rangeAxes) == 0:
-            self.rangeAxes.append(YAxis(**kwargs))
-        self.domain_axis_label = getValue(kwargs, 'xLabel')
-        self.y_label = getValue(kwargs, 'yLabel')
-        self.x_lower_margin = getValue(kwargs, 'xLowerMargin', 0.05)
-        self.x_upper_margin = getValue(kwargs, 'xUpperMargin', 0.05)
-        self.y_auto_range = getValue(kwargs, 'yAutoRange')
-        self.y_auto_range_includes_zero = getValue(kwargs,
-                                                   'yAutoRangeIncludesZero')
-        self.y_lower_margin = getValue(kwargs, 'yLowerMargin')
-        self.y_upper_margin = getValue(kwargs, 'yUpperMargin')
-        self.y_lower_bound = getValue(kwargs, 'yLowerBound')
-        self.y_upper_bound = getValue(kwargs, 'yUpperBound')
-        self.log_y = getValue(kwargs, 'logY', False)
-        self.omit_checkboxes = getValue(kwargs, 'omitCheckboxes', False)
-        self.crosshair = getValue(kwargs, 'crosshair')
-        self.timezone = getValue(kwargs, 'timeZone')
+
+    def setXLabel(self, value):
+        self.domain_axis_label = value
+
+    def setYLabel(self, value):
+        self.y_label = value
+
+    def setTimeZone(self, value):
+        self.timezone = value
+
+    def setXLowerMargin(self, value):
+        self.x_lower_margin = value
+
+    def setXUpperMargin(self, value):
+        self.x_upper_margin = value
+
+    def setYLowerMargin(self, value):
+        self.y_lower_margin = value
+
+    def setYUpperMargin(self, value):
+        self.y_upper_margin = value
+
+    def setYLowerBound(self, value):
+        self.y_lower_bound = value
+
+    def setYUpperBound(self, value):
+        self.y_upper_bound = value
+
+    def setCrosshair(self, value):
+        self.crosshair = value
+
+    def setLogY(self, value):
+        self.log_y = value
+
+    def setOmitCheckboxes(self, value):
+        self.omit_checkboxes = value
+
+    def setYAutoRange(self, value):
+        self.y_auto_range = value
+
+    def setYAutoRangeIncludesZero(self, value):
+        self.y_auto_range_includes_zero = value
+
+    def setYAxes(self, value):
+        self.rangeAxes = value
 
 
 class XYChart(AbstractChart):
@@ -212,6 +273,7 @@ class Plot(BeakerxDOMWidget):
         self.chart.show_legend = show
         self.model = self.chart.transform()
         return self
+
 
 class CategoryPlot(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)

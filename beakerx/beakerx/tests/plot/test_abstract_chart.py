@@ -16,7 +16,7 @@ import unittest
 from beakerx.plot import *
 
 
-class AbstractDefaultTest(unittest.TestCase):
+class AbstractChartDefaultTest(unittest.TestCase):
     def test_default_xLowerMargin(self):
         object_under_test = AbstractChart(**{})
         self.assertEqual(object_under_test.x_lower_margin, 0.05)
@@ -37,6 +37,10 @@ class AbstractDefaultTest(unittest.TestCase):
         object_under_test = AbstractChart(**{})
         self.assertEqual(len(object_under_test.rangeAxes), 1)
         self.assertIsInstance(object_under_test.rangeAxes[0], YAxis)
+
+    def test_set_yAutoRangeIncludesZeroe_False(self):
+        object_under_test = AbstractChart(**{})
+        self.assertEqual(object_under_test.y_auto_range_includes_zero, False)
 
 
 class AbstractChartTest(unittest.TestCase):
@@ -102,8 +106,8 @@ class AbstractChartTest(unittest.TestCase):
         self.assertEqual(object_under_test.y_auto_range_includes_zero, True)
 
     def test_set_yAutoRangeIncludesZeroe_False(self):
-        object_under_test = AbstractChart(**{'yAutoRangeIncludesZero': False})
-        self.assertEqual(object_under_test.y_auto_range_includes_zero, False)
+        object_under_test = AbstractChart(**{'yAutoRangeIncludesZero': True})
+        self.assertEqual(object_under_test.y_auto_range_includes_zero, True)
 
     def test_set_yAxes(self):
         y_axis = [YAxis(), YAxis()]

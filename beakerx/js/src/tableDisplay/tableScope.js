@@ -2311,12 +2311,12 @@ define([
       input.value = text;
       input.select();
 
-      if (!Jupyter || !Jupyter.keyboard_manager) {
-        document.execCommand('Copy');
-      } else {
+      try {
         Jupyter.keyboard_manager.enabled = false;
         document.execCommand('Copy');
         Jupyter.keyboard_manager.enabled = true;
+      } catch(error) {
+        document.execCommand('Copy');
       }
 
       input.remove();

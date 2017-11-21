@@ -15,7 +15,7 @@
  */
 
 declare function require(moduleName: string): any;
-const widgets = require('@jupyter-widgets/controls');
+const widgets = require('../widgets');
 
 class CheckboxModel extends widgets.CheckboxModel {
   defaults() {

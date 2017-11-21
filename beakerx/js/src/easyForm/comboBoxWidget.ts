@@ -15,7 +15,7 @@
  */
 
 declare function require(moduleName: string): any;
-const widgets = require('@jupyter-widgets/controls');
+const widgets = require('../widgets');
 const comboBox = require('../comboBox/jQueryComboBox');
 
 import $ from 'jquery';

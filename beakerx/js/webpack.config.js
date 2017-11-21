@@ -56,7 +56,7 @@ var plugins = [
     workers: ForkTsCheckerWebpackPlugin.TWO_CPUS_FREE
   }),
   new webpack.DefinePlugin({
-    BEAKERX_MODULE_VERSION: JSON.stringify(package.version)
+    BEAKERX_MODULE_VERSION: JSON.stringify("*") // The latest version
   })
 ];
 

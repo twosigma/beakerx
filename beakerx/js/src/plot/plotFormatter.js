@@ -212,7 +212,7 @@ define([
         newmodel.showLegend = newmodel.showLegend != null ? newmodel.showLegend : false;
 
         var range = plotUtils.getDataRange(yAxisData).datarange;
-        var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;
+        var rangeR = newmodel.yAxisR ? plotUtils.getDataRange(yAxisRData).datarange : null;
 
         var applyMargins = function (range, axis) {
           axis.lowerMargin = axis.lowerMargin || 0;

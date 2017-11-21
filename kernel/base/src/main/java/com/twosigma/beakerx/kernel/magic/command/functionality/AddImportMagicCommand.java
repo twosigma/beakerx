@@ -16,16 +16,19 @@
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import static com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem.Status.ERROR;
+import static com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem.Status.OK;
 
 public class AddImportMagicCommand implements MagicCommandFunctionality {
 
@@ -37,26 +40,34 @@ public class AddImportMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
-    Code code = param.getCode();
+  public String getMagicCommandName() {
+    return IMPORT;
+  }
+
+  @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length > 0 && commandParts[0].equals(IMPORT);
+  }
+
+  @Override
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
-    Message message = param.getMessage();
     int executionCount = param.getExecutionCount();
     String[] parts = command.split(" ");
     if (parts.length != 2) {
-      return MagicCommandUtils.resultWithCustomMessage(kernel.getImports().toString(), message, executionCount);
+      return new MagicCommandOutput(OK, kernel.getImports().toString());
     }
 
     this.kernel.addImport(new ImportPath(parts[1]));
 
     if (isValidImport(executionCount)) {
-      return MagicCommandUtils.noResult(code, message, executionCount);
+      return new MagicCommandOutput(OK);
     }
 
     this.kernel.removeImport(new ImportPath(parts[1]));
 
-    return MagicCommandUtils.errorResult(message, "Could not import " + parts[1] + ", class not found.",
-            executionCount);
+    return new MagicCommandOutput(ERROR, "Could not import " + parts[1] + ", class not found.");
   }
 
   private boolean isValidImport(int executionCount) {

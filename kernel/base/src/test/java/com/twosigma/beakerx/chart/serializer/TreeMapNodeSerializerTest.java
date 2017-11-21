@@ -66,7 +66,7 @@ public class TreeMapNodeSerializerTest {
   @Test
   public void serializeTreeMapNode_resultJsonHasType() throws IOException {
     //when
-    TreeMapNode treeMapNode = new TreeMapNode("label");
+    TreeMapNode treeMapNode = new TreeMapNode("label") {};
     treeMapNodeSerializer.serialize(treeMapNode, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
     //then

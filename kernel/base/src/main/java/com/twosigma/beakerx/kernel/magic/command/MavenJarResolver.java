@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.kernel.commands.MavenInvocationSilentOutputHandler;
 import com.twosigma.beakerx.kernel.commands.MavenJarResolverSilentLogger;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
@@ -50,15 +51,17 @@ public class MavenJarResolver {
     this.pathToMavenRepo = getOrCreateFile(commandParams.getPathToNotebookJars()).getAbsolutePath();
   }
 
-  public AddMvnCommandResult retrieve(String groupId, String artifactId, String version) {
+  public AddMvnCommandResult retrieve(String groupId, String artifactId, String version, ClasspathAddMvnMagicCommand.MvnLoggerWidget progress) {
     File finalPom = null;
     try {
       finalPom = getPom(groupId, artifactId, version);
       InvocationRequest request = createInvocationRequest();
       request.setOffline(commandParams.getOffline());
       request.setPomFile(finalPom);
-      Invoker invoker = getInvoker();
+      Invoker invoker = getInvoker(progress);
+      progress.display();
       InvocationResult invocationResult = invoker.execute(request);
+      progress.close();
       return getResult(invocationResult, groupId, artifactId, version);
     } catch (Exception e) {
       return AddMvnCommandResult.error(e.getMessage());
@@ -67,12 +70,12 @@ public class MavenJarResolver {
     }
   }
 
-  private Invoker getInvoker() {
+  private Invoker getInvoker(ClasspathAddMvnMagicCommand.MvnLoggerWidget progress) {
     Invoker invoker = new DefaultInvoker();
     String mvn = findMvn();
     System.setProperty("maven.home", mvn);
     invoker.setLogger(new MavenJarResolverSilentLogger());
-    invoker.setOutputHandler(new MavenInvocationSilentOutputHandler());
+    invoker.setOutputHandler(new MavenInvocationSilentOutputHandler(progress));
     invoker.setLocalRepositoryDirectory(getOrCreateFile(this.commandParams.getPathToCache()));
     return invoker;
   }

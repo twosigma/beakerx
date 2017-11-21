@@ -20,7 +20,7 @@ import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.scala.TestScalaEvaluator;
 import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
 
@@ -90,7 +90,7 @@ public class ScalaEvaluatorTest {
     List<String> imports = Arrays.asList(
             "import static com.twosigma.beakerx.scala.evaluator.object.ImportTestHelper.staticMethod");
     paramMap.put(IMPORTS, imports);
-    KernelParameters kernelParameters = new KernelParameters(paramMap);
+    EvaluatorParameters kernelParameters = new EvaluatorParameters(paramMap);
     //when
     scalaEvaluator.setShellOptions(kernelParameters);
     String code = "val x = staticMethod()";

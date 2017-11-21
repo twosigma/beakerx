@@ -29,8 +29,8 @@ import org.junit.Test;
 
 public class ExecuteRequestHandlerMagicCommandTest {
 
-  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR = "../../doc/contents/resources/jar/BeakerXClasspathTest.jar";
-  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/contents/resources/jar/demo.jar";
+  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKER_XCLASSPATH_TEST_JAR = "../../doc/resources/jar/BeakerXClasspathTest.jar";
+  public static final String DEMO_FILES_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/resources/jar/demo.jar";
 
   private KernelTest kernel;
   private EvaluatorTest evaluator;

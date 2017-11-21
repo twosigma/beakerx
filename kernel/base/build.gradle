@@ -75,11 +75,23 @@ def gitGetHash() {
 
 def resourceDir = file("./src/main/resources")
 
+def gitGetCommitHash() {
+  return "git rev-list --tags --max-count=1".execute().text.trim()
+}
+
+def gitGetLatestTagVersion() {
+  def gitLatestTag = "git describe --tags " + gitGetCommitHash() + ""
+  return gitLatestTag.execute().text.trim()
+}
+
+def mainDir = file("../../")
+
 task prepareBuildVerion() {
   doLast {
     new File(resourceDir, 'version').write(gitDescribe())
     new File(resourceDir, 'hash').write(gitGetHash())
     new File(resourceDir, 'build_time').write(new Date().format("yyyy-MM-dd HH:mm z"))
+    new File(mainDir, 'VERSION').write(gitGetLatestTagVersion())
   }
 }
 

@@ -47,7 +47,7 @@ public class BeakerDashboardTest {
 
   @Before
   public void setUp() throws Exception {
-    dashboard = new BeakerDashboard();
+    dashboard = new BeakerDashboard() {};
     row = dashboard.newRow();
     column = dashboard.newColumn(10);
   }

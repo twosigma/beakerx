@@ -44,7 +44,7 @@ public class RastersSerializerTest {
 
   @Before
   public void setUp() throws Exception {
-    rasters = new Rasters();
+    rasters = new Rasters() {};
     List<Number> value = Collections.singletonList(1);
     rasters.setY(value);
     rasters.setWidth(value);

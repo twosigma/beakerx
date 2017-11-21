@@ -15,17 +15,8 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithoutResult;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
-import com.twosigma.beakerx.message.Message;
 import org.apache.commons.text.StrMatcher;
 import org.apache.commons.text.StrTokenizer;
-
-import java.util.Collection;
 
 public class MagicCommandUtils {
 
@@ -33,34 +24,4 @@ public class MagicCommandUtils {
     StrTokenizer tokenizer = new StrTokenizer(command, StrMatcher.spaceMatcher(), StrMatcher.quoteMatcher());
     return tokenizer.getTokenArray();
   }
-
-  public static MagicCommandItemWithResult errorResult(Message message, String messageText, int executionCount) {
-    return new MagicCommandItemWithResult(
-            MessageCreator.buildOutputMessage(message, messageText, true),
-            MessageCreator.buildReplyWithErrorStatus(message, executionCount)
-    );
-  }
-
-  public static MagicCommandResultItem resultWithCustomMessage(String customMessage, Message message, int executionCount) {
-    return new MagicCommandItemWithResult(
-            MessageCreator.buildOutputMessage(message, customMessage, false),
-            MessageCreator.buildReplyWithOkStatus(message, executionCount));
-  }
-
-  public static MagicCommandResultItem noResult(Collection<String> newAddedJars, Code code, Message message, int executionCount) {
-    if (newAddedJars.isEmpty()) {
-      return noResult(code, message, executionCount);
-    }
-    String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars + "\n";
-    return new MagicCommandItemWithResult(
-            MessageCreator
-                    .buildOutputMessage(message, textMessage, false),
-            MessageCreator.buildReplyWithOkStatus(message, executionCount));
-  }
-
-  public static MagicCommandResultItem noResult(Code code, Message message, int executionCount) {
-    return new MagicCommandItemWithoutResult(MessageCreator.buildReplyWithOkStatus(message, executionCount));
-  }
-
-
 }

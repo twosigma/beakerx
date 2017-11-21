@@ -40,14 +40,14 @@ public class LegendPositionSerializerTest {
   @BeforeClass
   public static void initClassStubData() {
     mapper = new ObjectMapper();
-    legendPositionSerializer = new LegendPositionSerializer();
+    legendPositionSerializer = new LegendPositionSerializer() {};
   }
 
   @Before
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
-    legendPosition = new LegendPosition();
+    legendPosition = new LegendPosition() {};
   }
 
   @Test

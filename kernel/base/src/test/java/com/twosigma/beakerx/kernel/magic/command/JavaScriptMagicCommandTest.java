@@ -16,14 +16,11 @@
 package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.kernel.comm.Comm;
-import com.twosigma.beakerx.mimetype.MIMEContainer;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.message.Message;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Map;
 
 import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.executeMagicCommands;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand.JAVASCRIPT;
@@ -47,12 +44,11 @@ public class JavaScriptMagicCommandTest {
                     "      d3: '//cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min'\n" +
                     "  }});";
 
-    Code code = CodeFactory.create(JAVASCRIPT + System.lineSeparator() + jsCode, new Message(), 1, kernel);
+    Code code = CodeFactory.create(JAVASCRIPT + System.lineSeparator() + jsCode, new Message(), kernel);
     //when
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
-    Map data = (Map) result.getItems().get(0).getResult().get().getContent().get(Comm.DATA);
-    String toCompare = (String) data.get(MIMEContainer.MIME.APPLICATION_JAVASCRIPT);
+    String toCompare = (String) result.getItems().get(0).getMIMEContainer().get().getData();
 
     toCompare = toCompare.replaceAll("\\s+", "");
     jsCode = jsCode.replaceAll("\\s+", "");
@@ -60,16 +56,15 @@ public class JavaScriptMagicCommandTest {
     assertThat(toCompare.trim()).isEqualTo(jsCode);
   }
 
-
   @Test
   public void shouldCreateMsgWithWrongMagic() throws Exception {
     //given
     String jsCode = System.lineSeparator() + "alert()";
-    Code code = CodeFactory.create(JAVASCRIPT + "wrong" + jsCode, new Message(), 1, kernel);
+    Code code = CodeFactory.create(JAVASCRIPT + "wrong" + jsCode, new Message(), kernel);
     //when
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
-    assertThat(result.getItems().get(0).getResult().get().getContent().get("text")).isEqualTo("Cell magic " + JAVASCRIPT + "wrong" + " not found");
+    assertThat(result.getItems().get(0).getMIMEContainer().get().getData()).isEqualTo("Cell magic " + JAVASCRIPT + "wrong" + " not found");
   }
 
 }

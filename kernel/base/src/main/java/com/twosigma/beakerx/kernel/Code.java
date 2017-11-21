@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.kernel.magic.command.MagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,10 +32,10 @@ public class Code {
   private final String allCode;
   private final List<MagicCommand> magicCommands;
   private Optional<String> codeBlock;
-  private final List<MagicCommandItemWithResult> errors;
+  private final List<MagicCommandOutcomeItem> errors;
   private final Message message;
 
-  private Code(String allCode, Optional<String> codeBlock, List<MagicCommand> magicCommands, List<MagicCommandItemWithResult> errors, Message message) {
+  private Code(String allCode, Optional<String> codeBlock, List<MagicCommand> magicCommands, List<MagicCommandOutcomeItem> errors, Message message) {
     this.allCode = allCode;
     this.magicCommands = checkNotNull(magicCommands);
     this.errors = checkNotNull(errors);
@@ -43,11 +43,11 @@ public class Code {
     this.codeBlock = codeBlock;
   }
 
-  public static Code createCode(String allCode, String codeBlock, List<MagicCommand> magicCommands, List<MagicCommandItemWithResult> errors, Message message) {
+  public static Code createCode(String allCode, String codeBlock, List<MagicCommand> magicCommands, List<MagicCommandOutcomeItem> errors, Message message) {
     return new Code(allCode, Optional.of(codeBlock), magicCommands, errors, message);
   }
 
-  public static Code createCodeWithoutCodeBlock(String allCode, List<MagicCommand> magicCommands, List<MagicCommandItemWithResult> errors, Message message) {
+  public static Code createCodeWithoutCodeBlock(String allCode, List<MagicCommand> magicCommands, List<MagicCommandOutcomeItem> errors, Message message) {
     return new Code(allCode, Optional.empty(), magicCommands, errors, message);
   }
 
@@ -67,7 +67,7 @@ public class Code {
     return !errors.isEmpty();
   }
 
-  public List<MagicCommandItemWithResult> getErrors() {
+  public List<MagicCommandOutcomeItem> getErrors() {
     return errors;
   }
 

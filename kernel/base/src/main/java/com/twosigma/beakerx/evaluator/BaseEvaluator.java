@@ -21,7 +21,7 @@ import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import org.apache.commons.io.FileUtils;
 
@@ -46,7 +46,7 @@ public abstract class BaseEvaluator implements Evaluator {
   private final CellExecutor executor;
   protected Path tempFolder;
 
-  public BaseEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory) {
+  public BaseEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
     shellId = id;
     sessionId = sId;
     executor = cellExecutor;
@@ -54,6 +54,7 @@ public abstract class BaseEvaluator implements Evaluator {
     outDir = tempFolder.toString();
     classPath = new Classpath();
     imports = new Imports();
+    configure(evaluatorParameters);
   }
 
   @Override
@@ -117,7 +118,7 @@ public abstract class BaseEvaluator implements Evaluator {
     return imports.remove(anImport);
   }
 
-  protected void configure(KernelParameters kernelParameters) {
+  protected void configure(EvaluatorParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(DefaultJVMVariables.CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
@@ -144,14 +145,9 @@ public abstract class BaseEvaluator implements Evaluator {
   }
 
   @Override
-  public void setShellOptions(final KernelParameters kernelParameters) throws IOException {
+  public void setShellOptions(final EvaluatorParameters kernelParameters) {
     configure(kernelParameters);
     resetEnvironment();
-  }
-
-  @Override
-  public void initKernel(KernelParameters kernelParameters) {
-    configure(kernelParameters);
   }
 
   public boolean executeTask(Runnable codeRunner) {
@@ -200,5 +196,12 @@ public abstract class BaseEvaluator implements Evaluator {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public abstract ClassLoader getClassLoader();
+
+  @Override
+  public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
+    return getClassLoader().loadClass(clazzName);
   }
 }

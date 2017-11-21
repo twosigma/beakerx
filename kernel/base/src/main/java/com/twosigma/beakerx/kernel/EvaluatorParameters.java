@@ -23,11 +23,11 @@ import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
-public class KernelParameters {
+public class EvaluatorParameters {
 
   private Map<String, Object> params;
 
-  public KernelParameters(Map<String, Object> params) {
+  public EvaluatorParameters(Map<String, Object> params) {
     this.params = checkNotNull(params);
   }
 

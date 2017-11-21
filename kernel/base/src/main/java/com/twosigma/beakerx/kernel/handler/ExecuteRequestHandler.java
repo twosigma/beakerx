@@ -61,7 +61,7 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     executionCount += 1;
     String codeString = takeCodeFrom(message);
     announceTheCode(message, codeString);
-    Code code = CodeFactory.create(codeString, message, executionCount, kernel);
+    Code code = CodeFactory.create(codeString, message, kernel);
     executeMagicCommands(code, executionCount, kernel);
     executeCodeBlock(code);
   }

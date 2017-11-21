@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.*;
 
 public class ClojureAutocompleteTest {
@@ -33,7 +34,13 @@ public class ClojureAutocompleteTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    clojureEvaluator = new ClojureEvaluator("id", "sid", cellExecutor(), EvaluatorTest.getTestTempFolderFactory());
+    clojureEvaluator = new ClojureEvaluator(
+            "id",
+            "sid",
+            cellExecutor(),
+            EvaluatorTest.getTestTempFolderFactory(),
+            KERNEL_PARAMETERS
+    );
   }
 
   @Before

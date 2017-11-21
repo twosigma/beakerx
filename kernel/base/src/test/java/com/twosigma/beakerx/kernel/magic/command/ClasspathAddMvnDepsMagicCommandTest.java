@@ -20,8 +20,8 @@ import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.handler.MagicCommandExecutor;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
@@ -44,7 +44,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand.ADD_MVN_FORMAT_ERROR_MESSAGE;
-import static com.twosigma.beakerx.kernel.msg.MessageCreator.TEXT;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,7 +52,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   private static final String SRC_TEST_RESOURCES_TEST_IVY_CACHE = "src/test/resources/testMvnCache";
   public static final String BUILD_PATH = "build";
   public static final String TEST_MVN_CACHE = BUILD_PATH + "/testMvnCache";
-  public static final ArrayList<MagicCommandItemWithResult> NO_ERRORS = new ArrayList<>();
+  public static final ArrayList<MagicCommandOutcomeItem> NO_ERRORS = new ArrayList<>();
 
   private static KernelTest kernel;
   private static EvaluatorTest evaluator;
@@ -77,7 +76,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
     Code code = Code.createCodeWithoutCodeBlock(allCode, singletonList(command), NO_ERRORS, new Message());
     //when
-    MagicCommandResult process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
     //then
     Assertions.assertThat(getText(process)).contains("Added jar");
     String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;
@@ -95,7 +94,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
     Code code = Code.createCodeWithoutCodeBlock(allCode, singletonList(command), NO_ERRORS, new Message());
     //when
-    MagicCommandResult process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
     //then
     String text = getText(process);
     assertThat(text).contains("Could not resolve dependencies for: com.google.code.XXXX : gson : 2.6.2");
@@ -108,16 +107,15 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
     Code code = Code.createCodeWithoutCodeBlock(allCode, singletonList(command), NO_ERRORS, new Message());
     //when
-    MagicCommandResult process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
     //then
     String text = getText(process);
     assertThat(text).isEqualTo(ADD_MVN_FORMAT_ERROR_MESSAGE);
   }
 
-  private String getText(MagicCommandResult process) {
-    MagicCommandResultItem magicCommandItem = process.getItems().get(0);
-    Message message = magicCommandItem.getResult().get();
-    return (String) message.getContent().get(TEXT);
+  private String getText(MagicCommandOutcome process) {
+    MagicCommandOutcomeItem magicCommandItem = process.getItems().get(0);
+    return (String) magicCommandItem.getMIMEContainer().get().getData();
   }
 
   private static void prepareLocalMavenRepository() throws IOException {

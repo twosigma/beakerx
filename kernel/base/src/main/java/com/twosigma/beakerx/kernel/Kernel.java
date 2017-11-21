@@ -29,7 +29,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
@@ -80,11 +80,8 @@ public abstract class Kernel implements KernelFunctionality {
     configureMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
-    initKernel(getKernelParameters());
     intJvmRepr();
   }
-
-  public abstract KernelParameters getKernelParameters();
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
 
@@ -121,12 +118,8 @@ public abstract class Kernel implements KernelFunctionality {
     return (OS.indexOf("win") >= 0);
   }
 
-  public synchronized void setShellOptions(final KernelParameters kernelParameters) {
+  public synchronized void setShellOptions(final EvaluatorParameters kernelParameters) {
     evaluatorManager.setShellOptions(kernelParameters);
-  }
-
-  public void initKernel(final KernelParameters kernelParameters) {
-    evaluatorManager.initKernel(kernelParameters);
   }
 
   @Override
@@ -246,6 +239,19 @@ public abstract class Kernel implements KernelFunctionality {
     return evaluatorManager.getTempFolder();
   }
 
+  private void intJvmRepr() {
+    Displayers.registration().setDefault(BeakerxToStringDisplayer.get());
+    configureJvmRepr();
+  }
+
+  protected void configureJvmRepr() {
+  }
+
+  @Override
+  public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
+    return evaluatorManager.loadClass(clazzName);
+  }
+
   @Override
   public List<MagicCommandType> getMagicCommandTypes() {
     return magicCommandTypes;
@@ -253,18 +259,10 @@ public abstract class Kernel implements KernelFunctionality {
 
   private void configureMagicCommands() {
     this.magicCommandTypes = MagicCommandTypesFactory.createDefaults(this);
-    this.magicCommandTypes.addAll(registerCustomMagicCommands());
   }
 
-  protected List<MagicCommandType> registerCustomMagicCommands() {
-    return new ArrayList<>();
-  }
-
-  private void intJvmRepr() {
-    Displayers.registration().setDefault(BeakerxToStringDisplayer.get());
-    configureJvmRepr();
-  }
-
-  protected void configureJvmRepr() {
+  @Override
+  public void registerMagicCommandType(MagicCommandType magicCommandType) {
+    this.magicCommandTypes.add(magicCommandType);
   }
 }

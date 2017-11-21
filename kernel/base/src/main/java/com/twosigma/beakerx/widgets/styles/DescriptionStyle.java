@@ -18,10 +18,15 @@ package com.twosigma.beakerx.widgets.styles;
 public abstract class DescriptionStyle extends Style {
 
   public static final String MODEL_NAME_VALUE = "DescriptionStyleModel";
+  public static final String MODEL_MODULE_VALUE = "@jupyter-widgets/controls";
 
   @Override
   public String getModelNameValue() {
     return MODEL_NAME_VALUE;
+  }
+  @Override
+  public String getModelModuleValue(){
+    return MODEL_MODULE_VALUE;
   }
 
 }

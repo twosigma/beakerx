@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-var widgets = require('jupyter-js-widgets');
+var widgets = require('../widgets');
 var _ = require('underscore');
 var moment = require('moment');
 
@@ -26,7 +26,9 @@ var DatePickerModel = widgets.StringModel.extend({
       _view_name: "DatePickerView",
       _model_name: "DatePickerModel",
       _model_module: 'beakerx',
-      _view_module: 'beakerx'
+      _view_module: 'beakerx',
+      _model_module_version: BEAKERX_MODULE_VERSION,
+      _view_module_version: BEAKERX_MODULE_VERSION
     });
   }
 });

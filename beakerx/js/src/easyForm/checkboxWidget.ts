@@ -15,7 +15,7 @@
  */
 
 declare function require(moduleName: string): any;
-const widgets = require('jupyter-js-widgets');
+const widgets = require('../widgets');
 
 class CheckboxModel extends widgets.CheckboxModel {
   defaults() {
@@ -24,7 +24,9 @@ class CheckboxModel extends widgets.CheckboxModel {
       _view_name: "CheckboxView",
       _model_name: "CheckboxModel",
       _model_module: 'beakerx',
-      _view_module: 'beakerx'
+      _view_module: 'beakerx',
+      _model_module_version: BEAKERX_MODULE_VERSION,
+      _view_module_version: BEAKERX_MODULE_VERSION
     };
   }
 }

@@ -15,7 +15,7 @@
  */
 
 declare function require(moduleName: string): any;
-const widgets = require('jupyter-js-widgets');
+const widgets = require('../widgets');
 
 export const TEXT_INPUT_WIDTH_UNIT = 'px';
 
@@ -25,14 +25,23 @@ class TextModel extends widgets.TextModel {
       ...super.defaults(),
       _view_name: "TextView",
       _model_name: "TextModel",
-      _model_module: 'beakerx',
-      _view_module: 'beakerx'
+      _model_module: "beakerx",
+      _view_module: "beakerx",
+      _model_module_version: BEAKERX_MODULE_VERSION,
+      _view_module_version: BEAKERX_MODULE_VERSION
     };
   }
 }
 
 class TextView extends widgets.TextView {
   handleKeypress(e) {
+    if (e.keyCode == 13) {
+      this.send({ event: 'submit' });
+      e.preventDefault();
+    }
+  }
+
+  handleEnterKeyPress(e) {
     if (e.keyCode == 13) {
       this.send({ event: 'submit' });
       e.preventDefault();

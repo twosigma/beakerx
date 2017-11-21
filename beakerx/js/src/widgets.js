@@ -14,28 +14,7 @@
  *  limitations under the License.
  */
 
-var widgets = require('./widgets');
-var _ = require('underscore');
+var baseWidgets = require('@jupyter-widgets/base');
+var controlWidgets = require('@jupyter-widgets/controls');
 
-require('./gridView/grid-view.scss');
-
-var GridViewModel = widgets.VBoxModel.extend({
-  _model_name : 'GridViewModel',
-  _view_name : 'GridView',
-  _model_module : 'beakerx',
-  _view_module : 'beakerx',
-  _model_module_version: BEAKERX_MODULE_VERSION,
-  _view_module_version: BEAKERX_MODULE_VERSION
-});
-
-var GridView = widgets.VBoxView.extend({
-  render: function() {
-    GridView.__super__.render.apply(this);
-    this.$el.addClass('beaker-grid-view');
-  }
-});
-
-module.exports = {
-  GridViewModel: GridViewModel,
-  GridView: GridView
-};
+module.exports = Object.assign({}, baseWidgets, controlWidgets);

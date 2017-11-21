@@ -53,6 +53,7 @@ define([
 ) {
 
   var jQuery = $;
+  var updateTableEventListener;
 
   tableUtils.setJqExtentions();
 
@@ -76,7 +77,7 @@ define([
     this.tableDisplayModel = null;
     this.tableDisplayView = null;
     this.cellHighlighters = {};
-    
+
     this.model = {
         model: {},
         getCellModel: function() {
@@ -329,6 +330,7 @@ define([
       self.removeFilterListeners();
       self.destroyTableSelect();
       self.doDestroyMenus();
+      self.element[0].removeEventListener('update.bko-table', updateTableEventListener);
       self.element.find(".bko-table-use-pagination").remove();
       $body.tooltip('instance') && $body.tooltip('destroy');
 
@@ -343,10 +345,12 @@ define([
         .off("mouseleave.bko-dt-interaction")
         .off('click');
 
-      self.columnLimitModal.off('click');
+      self.columnLimitModal && self.columnLimitModal.remove();
       self.clipclient && self.clipclient.destroy();
       self.clipclient = undefined;
       self.table.off('');
+      self.table.clear();
+
 
       if (all) {
         self.table.state.clear();
@@ -371,6 +375,7 @@ define([
       self.fixcreated = false;
       self.renderMenu = false;
       self.element = undefined;
+      updateTableEventListener = undefined;
     }
 
     // self.$on(GLOBALS.EVENTS.CELL_OUTPUT_LM_SHOWED, function() {
@@ -654,6 +659,11 @@ define([
       show: { delay: 300, duration: 300 },
       position: { my: 'left bottom', at: 'center top' }
     });
+
+    updateTableEventListener = self.applyChanges.bind(self);
+
+    self.element[0].removeEventListener('update.bko-table', updateTableEventListener);
+    self.element[0].addEventListener('update.bko-table', updateTableEventListener);
   };
 
   TableScope.prototype.getColumnTypeAndAlignment = function(colIdx) {
@@ -1718,21 +1728,22 @@ define([
     $(window).bind('resize.' + self.id, function() {
       updateSize();
     });
-
-    self.element[0].addEventListener('update.bko-table', function() {
-      self.applyChanges();
-    });
   };
 
   TableScope.prototype.doDestroyMenus = function() {
+    var self = this;
+
     this.element.off('click.headermenu');
     this.columnMenus && this.columnMenus.forEach(function(menu) {
       menu.destroy();
+      setTimeout(function() { menu = undefined; });
     });
 
     this.indexMenu && this.indexMenu.destroy();
-    this.indexMenu = undefined;
-    this.columnMenus = undefined;
+    setTimeout(function() {
+      self.columnMenus = undefined;
+      self.indexMenu = undefined;
+    });
   };
 
   TableScope.prototype.enableJupyterKeyHandler = function() {
@@ -2300,12 +2311,12 @@ define([
       input.value = text;
       input.select();
 
-      if (!Jupyter || !Jupyter.keyboard_manager) {
-        document.execCommand('Copy');
-      } else {
+      try {
         Jupyter.keyboard_manager.enabled = false;
         document.execCommand('Copy');
         Jupyter.keyboard_manager.enabled = true;
+      } catch(error) {
+        document.execCommand('Copy');
       }
 
       input.remove();

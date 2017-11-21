@@ -22,12 +22,10 @@ import com.twosigma.beakerx.chart.xychart.plotitem.LabelPositionType;
 
 import java.util.List;
 
-public class CategoryBars extends CategoryGraphics {
+public class CategoryBars extends BasedCategoryGraphics {
 
   private Number       baseWidth;
   private List<Number> widths;
-  private Number baseBase = 0.0d;
-  private List<Number>  bases;
   private Color         baseOutlineColor;
   private List<Object>   outlineColors;
   private Boolean       baseFill;
@@ -36,26 +34,6 @@ public class CategoryBars extends CategoryGraphics {
   private List<Boolean> outlines;
 
   private LabelPositionType labelPosition = LabelPositionType.CENTER;
-
-  public void setBase(Number base) {
-    this.baseBase = base.floatValue();
-  }
-
-  public void setBase(List<Number> base) {
-    setBases(base);
-  }
-
-  private void setBases(List<Number> bases) {
-    this.bases = bases;
-  }
-
-  public Number getBase() {
-    return this.baseBase;
-  }
-
-  public List<Number> getBases() {
-    return this.bases;
-  }
 
   public void setWidth(Number width) {
     this.baseWidth = width.floatValue();

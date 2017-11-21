@@ -22,32 +22,10 @@ import com.twosigma.beakerx.chart.xychart.plotitem.StrokeType;
 
 import java.util.List;
 
-public class CategoryStems extends CategoryGraphics {
-  private Number       baseBase;
-  private List<Number> bases;
+public class CategoryStems extends BasedCategoryGraphics {
   private Float      width     = 1.5f;
   private StrokeType baseStyle = StrokeType.SOLID;
   private List<StrokeType> styles;
-
-  public void setBase(Number base) {
-    this.baseBase = base.floatValue();
-  }
-
-  public void setBase(List<Number> base) {
-    setBases(base);
-  }
-
-  private void setBases(List<Number> bases) {
-    this.bases = bases;
-  }
-
-  public Number getBase() {
-    return this.baseBase;
-  }
-
-  public List<Number> getBases() {
-    return this.bases;
-  }
 
   public void setWidth(Float width) {
     this.width = width;

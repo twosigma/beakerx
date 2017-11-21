@@ -134,7 +134,7 @@ public class Comm {
   }
 
   public void open() {
-    Message parentMessage = getParentMessage();// can be null
+    this.parentMessage = InternalVariable.getParentHeader();
     doOpen(parentMessage);
   }
 
@@ -222,10 +222,7 @@ public class Comm {
   }
 
   private Message getParentMessage() {
-    if (this.parentMessage != null) {
-      return this.parentMessage;
-    }
-    return InternalVariable.getParentHeader();
+    return this.parentMessage;
   }
 
   public void handleMsg(Message parentMessage) {

@@ -107,7 +107,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
   }
 
   private void addJarWithCustomMagicCommand() throws InterruptedException {
-    String allCode = CLASSPATH_ADD_JAR + " " + "../../doc/contents/resources/jar/loadMagicJarDemo.jar";
+    String allCode = CLASSPATH_ADD_JAR + " " + "../../doc/resources/jar/loadMagicJarDemo.jar";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();

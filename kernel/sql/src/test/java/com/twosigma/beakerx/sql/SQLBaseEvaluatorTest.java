@@ -17,7 +17,8 @@ package com.twosigma.beakerx.sql;
 
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,7 +38,7 @@ public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
-    evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory());
+    evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters());
     evaluator.setShellOptions(kernelParameters());
   }
 
@@ -48,12 +49,7 @@ public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
 
   @Override
   protected BaseEvaluator createNewEvaluator() {
-    SQLEvaluator evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory());
-    try {
-      evaluator.setShellOptions(kernelParameters());
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    SQLEvaluator evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(),kernelParameters());
     return evaluator;
   }
 
@@ -92,10 +88,10 @@ public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
     // exclude test
   }
 
-  private static KernelParameters kernelParameters() {
+  private static EvaluatorParameters kernelParameters() {
     Map<String, Object> params = new HashMap<>();
     params.put(DATASOURCES, "chemistry=jdbc:h2:mem:chemistry");
     params.put(DEFAULT_DATASOURCE, "jdbc:h2:mem:db1");
-    return new KernelParameters(params);
+    return new EvaluatorParameters(params);
   }
 }

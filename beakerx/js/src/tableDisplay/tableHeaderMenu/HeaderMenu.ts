@@ -50,6 +50,7 @@ export default abstract class HeaderMenu {
     $(document.body).off('click.table-headermenu');
     $(document).off('keydown.keyTable', this.handleKeydownEvent);
     $(this.menu.node).off('keydown.HeaderMenu', '.dropdown-menu-search input', this.handleKeydownEvent)
+    this.menu.dispose();
   }
 
   protected getMenuPosition($trigger: any) {

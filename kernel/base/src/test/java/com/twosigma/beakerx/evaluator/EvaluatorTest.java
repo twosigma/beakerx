@@ -17,13 +17,15 @@
 package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -34,7 +36,7 @@ import java.util.ArrayList;
 
 public class EvaluatorTest extends BaseEvaluator {
 
-  private KernelParameters kernelParameters;
+  public static final EvaluatorParameters KERNEL_PARAMETERS = new EvaluatorParameters(new HashedMap());
   private SimpleEvaluationObject seo;
   private String code;
   private boolean killAllThreads;
@@ -43,14 +45,20 @@ public class EvaluatorTest extends BaseEvaluator {
   private Classpath classpath = new Classpath();
   private Imports imports = new Imports();
   private int resetEnvironmentCounter = 0;
+  private ClassLoader loader = new DynamicClassLoaderSimple(Thread.currentThread().getContextClassLoader());
 
 
   public EvaluatorTest() {
-    this("idEvaluatorTest", "sIdEvaluatorTest", TestBeakerCellExecutor.cellExecutor());
+    this("idEvaluatorTest", "sIdEvaluatorTest", TestBeakerCellExecutor.cellExecutor(), KERNEL_PARAMETERS);
   }
 
-  public EvaluatorTest(String id, String sId, CellExecutor cellExecutor) {
-    super(id, sId, cellExecutor, getTestTempFolderFactory());
+  public EvaluatorTest(String id, String sId, CellExecutor cellExecutor,EvaluatorParameters kernelParameters) {
+    super(id, sId, cellExecutor, getTestTempFolderFactory(),kernelParameters);
+  }
+
+  @Override
+  public ClassLoader getClassLoader() {
+    return loader;
   }
 
   public static TempFolderFactory getTestTempFolderFactory() {
@@ -66,11 +74,6 @@ public class EvaluatorTest extends BaseEvaluator {
         return path;
       }
     };
-  }
-
-  @Override
-  public void setShellOptions(KernelParameters kernelParameters) throws IOException {
-    this.kernelParameters = kernelParameters;
   }
 
   @Override
@@ -120,10 +123,6 @@ public class EvaluatorTest extends BaseEvaluator {
 
   @Override
   protected void doResetEnvironment() {
-  }
-
-  @Override
-  public void initKernel(KernelParameters kernelParameters) {
   }
 
   public SimpleEvaluationObject getSeo() {

@@ -44,7 +44,7 @@ public class OutputContainerCellSerializerTest {
   @Before
   public void setUp() throws Exception {
     KernelManager.register(new KernelTest());
-    outputContainerCell = new OutputContainerCell();
+    outputContainerCell = new OutputContainerCell() {};
   }
 
   @After

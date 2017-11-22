@@ -20,7 +20,9 @@ import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.GroovyKernelMock;
 import com.twosigma.beakerx.handler.CompleteHandler;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.message.Message;
+import org.apache.commons.collections.map.HashedMap;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,8 +42,15 @@ public class GroovyCompleteHandlerTest {
   private static GroovyKernelMock groovyKernel;
 
   @BeforeClass
-  public static void setUpClass(){
-    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("id", "sid", cellExecutor(), EvaluatorTest.getTestTempFolderFactory());
+  public static void setUpClass() {
+    GroovyEvaluator groovyEvaluator = new GroovyEvaluator(
+            "id",
+            "sid",
+            cellExecutor(),
+            EvaluatorTest.getTestTempFolderFactory(),
+            new EvaluatorParameters(new HashedMap())
+
+    );
     groovyKernel = new GroovyKernelMock("sid", groovyEvaluator);
   }
 
@@ -64,26 +73,26 @@ public class GroovyCompleteHandlerTest {
   public void shouldSendCompleteReplyMsgForPrintln() throws Exception {
     //given
     Message message = autocompleteMsgFor(
-        "//parentheses are optional\n" +
-            "System.out.printl \"hey!\"\n" +
-            "println \"no System.out either!\"",44);
+            "//parentheses are optional\n" +
+                    "System.out.printl \"hey!\"\n" +
+                    "println \"no System.out either!\"", 44);
     //when
     completeHandler.handle(message);
     //then
     assertThat(groovyKernel.getSentMessages().size()).isEqualTo(1);
-    verifyAutocompleteMsg(groovyKernel.getSentMessages().get(0),38,44);
+    verifyAutocompleteMsg(groovyKernel.getSentMessages().get(0), 38, 44);
   }
 
   @Test
   public void shouldSendCompleteReplyMsgForDef() throws Exception {
     //given
     String comment = "//parentheses are optional\n";
-    Message message = autocompleteMsgFor(comment + "de", comment.length()+2);
+    Message message = autocompleteMsgFor(comment + "de", comment.length() + 2);
     //when
     completeHandler.handle(message);
     //then
     assertThat(groovyKernel.getSentMessages().size()).isEqualTo(1);
-    verifyAutocompleteMsg(groovyKernel.getSentMessages().get(0),27,comment.length()+2);
+    verifyAutocompleteMsg(groovyKernel.getSentMessages().get(0), 27, comment.length() + 2);
   }
 
   private void verifyAutocompleteMsg(Message reply, int expectedCursorStart, int expectedCursorEnd) {

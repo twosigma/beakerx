@@ -19,14 +19,14 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandResult;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.executeMagicCommands;
-import static com.twosigma.beakerx.kernel.msg.MessageCreator.TEXT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TimeItLineModeMagicCommandTest {
@@ -48,15 +48,15 @@ public class TimeItLineModeMagicCommandTest {
   public void timeitLineMode() throws Exception {
     //given
     String allCode = "%timeit -r3 -n1 sleep(1)";
-    Code code = CodeFactory.create(allCode, new Message(), 1, kernel);
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
-    Message actual = result.getItems().get(0).getResult().get();
+    MIMEContainer actual = result.getItems().get(0).getMIMEContainer().get();
     assertThat(getText(actual)).contains("loop");
   }
 
-  private String getText(Message message) {
-    return (String) message.getContent().get(TEXT);
+  private String getText(MIMEContainer message) {
+    return (String) message.getData();
   }
 }

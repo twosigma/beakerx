@@ -22,7 +22,7 @@ import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.message.Message;
 
@@ -46,11 +46,7 @@ public class EvaluatorManager {
     this.evaluator = evaluator;
   }
 
-  public void initKernel(KernelParameters kernelParameters) {
-    evaluator.initKernel(kernelParameters);
-  }
-
-  public synchronized void setShellOptions(final KernelParameters kernelParameters) {
+  public synchronized void setShellOptions(final EvaluatorParameters kernelParameters) {
     try {
       evaluator.setShellOptions(kernelParameters);
     } catch (IOException e) {
@@ -76,7 +72,7 @@ public class EvaluatorManager {
   }
 
   public synchronized SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message,
-      int executionCount, KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
+                                                                                    int executionCount, KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
     return executeWithTimeMeasurement(code, message, executionCount, executeCodeCallbackWithTime);
   }
 
@@ -93,9 +89,9 @@ public class EvaluatorManager {
   }
 
   private SimpleEvaluationObjectWithTime executeWithTimeMeasurement(String code, Message message, int executionCount,
-      KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
+                                                                    KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
     SimpleEvaluationObjectWithTime seowt = createSimpleEvaluationObjectWithTime(code, message, executionCount,
-        executeCodeCallbackWithTime);
+            executeCodeCallbackWithTime);
     evaluator.evaluate(seowt, code);
     return seowt;
   }
@@ -110,7 +106,7 @@ public class EvaluatorManager {
   }
 
   private SimpleEvaluationObjectWithTime createSimpleEvaluationObjectWithTime(String code, Message message,
-      int executionCount, KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
+                                                                              int executionCount, KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
     SimpleEvaluationObjectWithTime seowt = new SimpleEvaluationObjectWithTime(code, executeCodeCallbackWithTime);
     seowt.setJupyterMessage(message);
     seowt.setExecutionCount(executionCount);
@@ -143,5 +139,9 @@ public class EvaluatorManager {
 
   public Path getTempFolder() {
     return evaluator.getTempFolder();
+  }
+
+  public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
+    return evaluator.loadClass(clazzName);
   }
 }

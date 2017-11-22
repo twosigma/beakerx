@@ -19,6 +19,7 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
 import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -52,9 +53,9 @@ public class ClasspathMagicCommandTest {
     String allCode = "" +
             "%classpath add jar" + " " + CLASSPATH_TO_JAR + "\n" +
             "code code code";
-    Code code = CodeFactory.create(allCode, new Message(), 1, kernel);
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
     Assertions.assertThat(code.getCodeBlock().get()).isEqualTo("code code code");
     assertThat(kernel.getClasspath().get(0)).isEqualTo(CLASSPATH_TO_JAR);
@@ -65,9 +66,9 @@ public class ClasspathMagicCommandTest {
     //given
     String allCode = "" +
             "%classpath add jar " + SRC_TEST_RESOURCES + "dirWithTwoJars/*";
-    Code code = CodeFactory.create(allCode, new Message(), 1, kernel);
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
     assertThat(classpath(result)).contains("foo.jar", "bar.jar");
     assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(1);
@@ -77,11 +78,11 @@ public class ClasspathMagicCommandTest {
   public void shouldCreateMsgWithWrongMagic() throws Exception {
     //given
     String jar = SRC_TEST_RESOURCES + "BeakerXClasspathTest.jar";
-    Code code = CodeFactory.create("%classpath2 add jar" + " " + jar, new Message(), 1, kernel);
+    Code code = CodeFactory.create("%classpath2 add jar" + " " + jar, new Message(), kernel);
     //when
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
-    Assertions.assertThat(result.getItems().get(0).getResult().get().getContent().get("text")).isEqualTo(
+    Assertions.assertThat(result.getItems().get(0).getMIMEContainer().get().getData()).isEqualTo(
             "Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found");
     assertThat(kernel.getClasspath().size()).isEqualTo(0);
   }
@@ -90,9 +91,9 @@ public class ClasspathMagicCommandTest {
   public void showClasspath() throws Exception {
     //given
     kernel.addJarToClasspath(new PathToJar(CLASSPATH_TO_JAR));
-    Code code = CodeFactory.create("%classpath", new Message(), 1, kernel);
+    Code code = CodeFactory.create("%classpath", new Message(), kernel);
     //when
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
     assertThat(classpath(result)).isEqualTo(CLASSPATH_TO_JAR);
   }
@@ -103,21 +104,21 @@ public class ClasspathMagicCommandTest {
     kernel.addJarToClasspath(new PathToJar(CLASSPATH_TO_JAR));
     //when
     kernel.addJarToClasspath(new PathToJar(CLASSPATH_TO_JAR));
-    Code code = CodeFactory.create("%classpath", new Message(), 1, kernel);
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    Code code = CodeFactory.create("%classpath", new Message(), kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
     assertThat(classpath(result)).isEqualTo(CLASSPATH_TO_JAR);
   }
 
   @Test
   public void allowExtraWhitespaces() {
-    Code code = CodeFactory.create("%classpath  add  jar          " + CLASSPATH_TO_JAR, new Message(), 1, kernel);
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    Code code = CodeFactory.create("%classpath  add  jar          " + CLASSPATH_TO_JAR, new Message(), kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     assertThat(classpath(result)).isEqualTo("Added jar: [foo.jar]\n");
   }
 
-  private String classpath(MagicCommandResult result) {
-    return result.getItems().get(0).getResult().get().getContent().get("text").toString();
+  private String classpath(MagicCommandOutcome result) {
+    return result.getItems().get(0).getMIMEContainer().get().getData().toString();
   }
 
 }

@@ -18,7 +18,8 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.message.Message;
 
 public class TimeItLineModeMagicCommand extends TimeMagicCommand {
@@ -29,16 +30,27 @@ public class TimeItLineModeMagicCommand extends TimeMagicCommand {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
+  public String getMagicCommandName() {
+    return TIMEIT_LINE;
+  }
+
+  @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length > 0 && commandParts[0].equals(TIMEIT_LINE);
+  }
+
+  @Override
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     Code code = param.getCode();
-    Message message = param.getMessage();
+    Message message = param.getCode().getMessage();
     int executionCount = param.getExecutionCount();
     String codeToExecute = code.asString().replace(TIMEIT_LINE, "");
     codeToExecute = codeToExecute.replaceAll("(-.)(\\d*\\s)", "");
     try {
       return timeIt(buildTimeItOption(code), codeToExecute, message, executionCount);
     } catch (IllegalArgumentException e) {
-      return MagicCommandUtils.errorResult(message, e.getMessage(), executionCount);
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, e.getMessage());
     }
   }
 }

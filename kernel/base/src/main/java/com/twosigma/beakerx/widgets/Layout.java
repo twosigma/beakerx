@@ -31,6 +31,8 @@ public class Layout extends Widget {
   public static final String VIEW_NAME_VALUE = "LayoutView";
   public static final String MODEL_NAME_VALUE = "LayoutModel";
   public static final String VISIBILITY = "visibility";
+  public static final String MODEL_MODULE_VALUE = "@jupyter-widgets/base";
+  public static final String VIEW_MODULE_VALUE = "@jupyter-widgets/base";
 
   private String display;
   private String align_items;
@@ -141,5 +143,15 @@ public class Layout extends Widget {
   public void setVisibility(String visibility) {
     this.visibility = visibility;
     sendUpdate(VISIBILITY, visibility);
+  }
+
+  @Override
+  public String getModelModuleValue(){
+    return MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  public String getViewModuleValue(){
+    return VIEW_MODULE_VALUE;
   }
 }

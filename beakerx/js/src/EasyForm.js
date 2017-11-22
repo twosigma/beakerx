@@ -15,7 +15,7 @@
  */
 
 var ENTER_KEY_CODE = 13;
-var widgets = require('jupyter-js-widgets');
+var widgets = require('./widgets');
 var _ = require('underscore');
 
 var selectMultipleWidget = require('./easyForm/selectMultipleWidget');
@@ -25,13 +25,6 @@ var comboBoxWidget = require('./easyForm/comboBoxWidget').default;
 var textWidget = require('./easyForm/textWidget').default;
 var TextareaWidget = require('./easyForm/TextareaWidget').default;
 var checkboxWidget = require('./easyForm/checkboxWidget').default;
-
-widgets.TextView.prototype.handleEnterKeyPress = function() {
-  if (e.keyCode == 13) {
-    this.send({ event: 'submit' });
-    e.preventDefault();
-  }
-};
 
 require('./easyForm/css/jupyter-easyform.scss');
 require('flatpickr/dist/flatpickr.css');
@@ -46,8 +39,8 @@ var EasyFormModel = widgets.DOMWidgetModel.extend({
       _view_name: 'EasyFormView',
       _model_module: 'beakerx',
       _view_module: 'beakerx',
-      _model_module_version: '*',
-      _view_module_version: '*',
+      _model_module_version: BEAKERX_MODULE_VERSION,
+      _view_module_version: BEAKERX_MODULE_VERSION,
       children: []
     });
   }

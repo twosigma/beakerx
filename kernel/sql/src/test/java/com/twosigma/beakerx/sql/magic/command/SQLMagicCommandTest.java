@@ -24,7 +24,7 @@ import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.handler.MagicCommandExecutor;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
@@ -35,7 +35,7 @@ import java.util.Optional;
 
 public class SQLMagicCommandTest {
 
-  public static final ArrayList<MagicCommandItemWithResult> NO_ERRORS = new ArrayList<>();
+  public static final ArrayList<MagicCommandOutcomeItem> NO_ERRORS = new ArrayList<>();
   private SQLKernelTest kernel;
 
   @Before

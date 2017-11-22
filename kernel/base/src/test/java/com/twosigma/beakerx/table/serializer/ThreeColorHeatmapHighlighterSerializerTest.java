@@ -62,7 +62,7 @@ public class ThreeColorHeatmapHighlighterSerializerTest {
   public void serializeThreeColorHeatmapHighlighter_resultJsonHasType() throws IOException {
     //given
     ThreeColorHeatmapHighlighter heatmapHighlighter =
-        new ThreeColorHeatmapHighlighter("a", HighlightStyle.FULL_ROW);
+        new ThreeColorHeatmapHighlighter("a", HighlightStyle.FULL_ROW) {};
     //when
     JsonNode actualObj = serializeHighlighter(heatmapHighlighter);
     //then

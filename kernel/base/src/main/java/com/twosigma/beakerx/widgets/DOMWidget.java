@@ -29,6 +29,8 @@ public abstract class DOMWidget extends Widget {
 
   public static final String DATA = "data";
   public static final String SYNC_DATA = "state";
+  public static final String MODEL_MODULE_VALUE = "@jupyter-widgets/controls";
+  public static final String VIEW_MODULE_VALUE = "@jupyter-widgets/controls";
 
   private Layout layout;
   protected Style style;
@@ -92,6 +94,16 @@ public abstract class DOMWidget extends Widget {
   public void doUpdateValueWithCallback(Object value) {
     updateValue(value);
     this.updateValueCallback.execute();
+  }
+
+  @Override
+  public String getModelModuleValue(){
+    return MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  public String getViewModuleValue(){
+    return VIEW_MODULE_VALUE;
   }
 
   @Override

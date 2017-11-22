@@ -26,12 +26,16 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
+import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
 
 import java.io.File;
 
 import static com.twosigma.beakerx.groovy.evaluator.EnvVariablesFilter.envVariablesFilter;
+import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newEvaluator;
 
 
 public class GroovyEvaluator extends BaseEvaluator {
@@ -41,16 +45,20 @@ public class GroovyEvaluator extends BaseEvaluator {
   private GroovyClasspathScanner cps;
   private GroovyAutocomplete gac;
   private GroovyWorkerThread worker = null;
+  private GroovyClassLoader groovyClassLoader;
+  private Binding scriptBinding = null;
 
-  public GroovyEvaluator(String id, String sId) {
-    this(id, sId, new BeakerCellExecutor("groovy"), new TempFolderFactoryImpl());
+
+  public GroovyEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
+    this(id, sId, new BeakerCellExecutor("groovy"), new TempFolderFactoryImpl(), evaluatorParameters);
   }
 
-  public GroovyEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory) {
-    super(id, sId, cellExecutor, tempFolderFactory);
+  public GroovyEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
     cps = new GroovyClasspathScanner();
     gac = createGroovyAutocomplete(cps);
     outDir = envVariablesFilter(outDir, System.getenv());
+    reloadClassloader();
     worker = new GroovyWorkerThread(this);
     worker.start();
   }
@@ -62,7 +70,7 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    return gac.doAutocomplete(code, caretPosition, worker.getGroovyClassLoaderInstance(), imports);
+    return gac.doAutocomplete(code, caretPosition, groovyClassLoader, imports);
   }
 
   @Override
@@ -70,7 +78,7 @@ public class GroovyEvaluator extends BaseEvaluator {
     String cpp = createClasspath(classPath);
     cps = new GroovyClasspathScanner(cpp);
     gac = createGroovyAutocomplete(cps);
-    worker.updateLoader();
+    reloadClassloader();
     worker.halt();
   }
 
@@ -103,5 +111,21 @@ public class GroovyEvaluator extends BaseEvaluator {
     return cpp;
   }
 
+  @Override
+  public ClassLoader getClassLoader() {
+    return groovyClassLoader;
+  }
 
+  private void reloadClassloader() {
+    this.groovyClassLoader = newEvaluator(getImports(), getClasspath(), getOutDir());
+    this.scriptBinding = new Binding();
+  }
+
+  public GroovyClassLoader getGroovyClassLoader() {
+    return groovyClassLoader;
+  }
+
+  public Binding getScriptBinding() {
+    return scriptBinding;
+  }
 }

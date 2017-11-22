@@ -23,7 +23,6 @@ class HistogramChartDefaultTest(unittest.TestCase):
 
     def test_default_log(self):
         object_under_test = HistogramChart(**{})
-        self.assertEqual(object_under_test.log, False)
         self.assertEqual(object_under_test.log_y, False)
 
     def test_default_cumulative(self):
@@ -34,12 +33,16 @@ class HistogramChartDefaultTest(unittest.TestCase):
         object_under_test = HistogramChart(**{})
         self.assertEqual(object_under_test.normed, False)
 
+    def test_default_data(self):
+        object_under_test = HistogramChart(**{})
+        self.assertIsInstance(object_under_test.data, list)
+        self.assertEqual(len(object_under_test.data), 0)
+
 
 class HistogramChartSetTest(unittest.TestCase):
     def test_set_log(self):
         object_under_test = HistogramChart(**{'log': True})
-        self.assertEqual(object_under_test.log, True)
-        self.assertEqual(object_under_test.log_y, True)
+        self.assertEqual(object_under_test.rangeAxes[0].use_log, True)
 
     def test_set_binCount(self):
         object_under_test = HistogramChart(**{'binCount': 10})
@@ -78,3 +81,8 @@ class HistogramChartSetTest(unittest.TestCase):
         self.assertEqual(object_under_test.colors[0].R, 128)
         self.assertEqual(object_under_test.colors[0].G, 128)
         self.assertEqual(object_under_test.colors[0].B, 128)
+
+    def test_set_data(self):
+        object_under_test = HistogramChart(**{})
+        self.assertIsInstance(object_under_test.data, list)
+        self.assertEqual(len(object_under_test.data), 0)

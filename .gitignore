@@ -5,6 +5,7 @@
 .recommenders/
 .gradle/
 .settings/
+.eggs/
 RemoteSystemsTempFiles/
 jupyter_contrib_nbextensions/
 Groovier-1.0.0.jar

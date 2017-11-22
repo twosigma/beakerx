@@ -116,7 +116,7 @@ class AbstractChart(Chart):
         self.crosshair = value
 
     def setLogY(self, value):
-        self.log_y = value
+        self.rangeAxes[0].use_log = value
 
     def setOmitCheckboxes(self, value):
         self.omit_checkboxes = value
@@ -130,6 +130,8 @@ class AbstractChart(Chart):
     def setYAxes(self, value):
         self.rangeAxes = value
 
+    def setYLogBase(self, value):
+        self.rangeAxes[0].log_base = value
 
 class XYChart(AbstractChart):
     def __init__(self, **kwargs):
@@ -194,18 +196,16 @@ class XYChart(AbstractChart):
 
 class HistogramChart(XYChart):
     def __init__(self, **kwargs):
-        self.log = False
         self.cumulative = False
         self.normed = False
+        self.data = []
 
         super(HistogramChart, self).__init__(**kwargs)
 
         self.type = 'Histogram'
 
     def setLog(self, value):
-        self.log = value
-        if self.log:
-            self.setLogY(True)
+        self.setLogY(True)
 
     def setBinCount(self, value):
         self.bin_count = value
@@ -235,6 +235,13 @@ class HistogramChart(XYChart):
                 self.colors.append(value)
             else:
                 self.colors = value
+
+    def setData(self, value):
+        if len(value) > 1 and isinstance(value[0], list):
+            for x in value:
+                self.graphics_list.append(x)
+        else:
+            self.graphics_list.append(value)
 
 
 class CategoryChart(XYChart):
@@ -266,16 +273,13 @@ class TreeMapChart(XYChart):
         self.title = ''
         self.colorProvider = RandomColorProvider()
         self.mode = Mode.SQUARIFY.value
+        self.valueAccessor = ValueAccessor.VALUE
+        self.toolTipBuilder = None
 
         super(TreeMapChart, self).__init__(**kwargs)
 
         self.type = 'TreeMap'
         self.setShowLegend(False)
-
-        self.valueAccessor = getValue(kwargs, 'valueAccessor',
-                                      ValueAccessor.VALUE)
-
-        self.graphics_list = getValue(kwargs, 'root')
 
     def setRoot(self, value):
         self.graphics_list = value
@@ -349,6 +353,26 @@ class CombinedChart(ChartDetails):
         self.y_tickLabels_visible = value
 
 
+class HeatChart(AbstractChart):
+    def __init__(self, **kwargs):
+        self.graphics_list = []
+        self.color = ["#FF780004", "#FFF15806", "#FFFFCE1F"]
+        super(HeatChart, self).__init__(**kwargs)
+        self.type = 'HeatMap'
+        self.setXLowerMargin(0)
+        self.setXUpperMargin(0)
+        self.setYLowerMargin(0)
+        self.setYUpperMargin(0)
+        self.setLegendLayout(LegendLayout.HORIZONTAL)
+        self.setLegendPosition(LegendPosition(position=LegendPosition.Position.BOTTOM_RIGHT))
+
+    def setColor(self, value):
+        if isinstance(value, GradientColor):
+            self.color = value.color
+
+    def setData(self, value):
+        self.graphics_list = value
+
 class Plot(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)
     _model_name = Unicode('PlotModel').tag(sync=True)
@@ -400,31 +424,8 @@ class HeatMap(BeakerxDOMWidget):
 
     def __init__(self, **kwargs):
         super(HeatMap, self).__init__(**kwargs)
-        if 'data' in kwargs:
-            kwargs['graphics'] = kwargs['data']
-        if not 'xLowerMargin' in kwargs:
-            kwargs['xLowerMargin'] = 0.0
-        if not 'yLowerMargin' in kwargs:
-            kwargs['yLowerMargin'] = 0.0
-        if not 'yUpperMargin' in kwargs:
-            kwargs['yUpperMargin'] = 0.0
-        if not 'xUpperMargin' in kwargs:
-            kwargs['xUpperMargin'] = 0.0
-        if not 'legendLayout' in kwargs:
-            kwargs['legendLayout'] = LegendLayout.HORIZONTAL
-        if not 'legendPosition' in kwargs:
-            kwargs['legendPosition'] = LegendPosition(
-                position=LegendPosition.Position.BOTTOM_RIGHT)
-        self.chart = XYChart(**kwargs)
-        color = getValue(kwargs, 'color',
-                         ["#FF780004", "#FFF15806", "#FFFFCE1F"])
 
-        if isinstance(color, GradientColor):
-            self.chart.color = color.color
-        else:
-            self.chart.color = color
-
-        self.chart.type = 'HeatMap'
+        self.chart = HeatChart(**kwargs)
 
         self.model = self.chart.transform()
 
@@ -444,12 +445,7 @@ class Histogram(BeakerxDOMWidget):
     def __init__(self, **kwargs):
         super(Histogram, self).__init__()
         self.chart = HistogramChart(**kwargs)
-        data = getValue(kwargs, 'data', [])
-        if len(data) > 1 and isinstance(data[0], list):
-            for x in data:
-                self.chart.graphics_list.append(x)
-        else:
-            self.chart.graphics_list.append(data)
+
         self.model = self.chart.transform()
 
 

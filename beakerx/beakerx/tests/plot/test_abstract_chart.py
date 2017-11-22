@@ -87,7 +87,7 @@ class AbstractChartTest(unittest.TestCase):
 
     def test_set_logY(self):
         object_under_test = AbstractChart(**{'logY': True})
-        self.assertEqual(object_under_test.log_y, True)
+        self.assertEqual(object_under_test.rangeAxes[0].use_log, True)
 
     def test_set_omitCheckboxes(self):
         object_under_test = AbstractChart(**{'omitCheckboxes': True})

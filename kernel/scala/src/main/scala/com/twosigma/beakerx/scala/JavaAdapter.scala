@@ -54,4 +54,8 @@ object JavaAdapter {
     Option(getter()).toSeq.flatMap(_.asScala)
   }
 
+  // In Scala 2.11, the implicit conversions from boxed Java types to Scala types are not null-safe.
+  // This helper can be used to safely convert (for example) a nullable Integer to an Option[Int].
+  // See https://github.com/scala/scala/commit/37eacec819e38cc29357a31ee99b592f31e0702f
+  def safeOption[T <: AnyRef, U <: AnyVal](value: T)(implicit ev: T => U): Option[U] = Option(value).map(ev)
 }

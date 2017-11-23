@@ -18,6 +18,12 @@ from .handlers import load_jupyter_server_extension
 from .environment import *
 import json
 
+import importlib
+beakerx_python_loader = importlib.util.find_spec('beakerx_python')
+
+if beakerx_python_loader:
+    from beakerx_python import *
+
 def _jupyter_nbextension_paths():
     return [{
         'section': 'tree',

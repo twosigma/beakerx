@@ -21,7 +21,7 @@ from IPython.display import display_html
 from .utils import BaseObject
 import importlib
 
-beakerx_python_loader = importlib.find_loader('beakerx_python')
+beakerx_python_loader = importlib.util.find_spec('beakerx_python')
 
 class OutputContainer:
     def __init__(self):

@@ -55,11 +55,11 @@ def prepare_setup(kernel_name):
 
     contents = Template(template).substitute(params)
 
-    with open(os.path.join('packages', kernel_name, 'setup.py'), 'w') as f:
+    with open(os.path.join('package', kernel_name, 'setup.py'), 'w') as f:
         f.write(contents)
 
     shutil.copyfile(os.path.join(here, 'beakerx', 'setupbase.py'),
-                    os.path.join(here, 'packages', kernel_name, 'setupbase.py'))
+                    os.path.join(here, 'package', kernel_name, 'setupbase.py'))
 
 
 def build_beakerx():
@@ -81,7 +81,7 @@ def build_kernel(kernel_name):
     prepare_setup(kernel_name)
 
     home_dir = os.getcwd()
-    os.chdir(os.path.join(home_dir, 'packages', kernel_name))
+    os.chdir(os.path.join(home_dir, 'package', kernel_name))
 
     install_cmd = ['pip', 'install', '-e', '.', '--verbose']
     subprocess.check_call(install_cmd)

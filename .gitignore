@@ -19,21 +19,21 @@ jupyter-groovy-kernel.log
 
 beakerx/static/
 beakerx/beakerx/static/
-packages/base/beakerx_base
-packages/clojure/beakerx_clojure
-packages/groovy/beakerx_groovy
-packages/java/beakerx_java
-packages/kotlin/beakerx_kotlin
-packages/scala/beakerx_scala
-packages/sql/beakerx_sql
+package/base/beakerx_base
+package/clojure/beakerx_clojure
+package/groovy/beakerx_groovy
+package/java/beakerx_java
+package/kotlin/beakerx_kotlin
+package/scala/beakerx_scala
+package/sql/beakerx_sql
 
-packages/base/setup*
-packages/clojure/setup*
-packages/groovy/setup*
-packages/java/setup*
-packages/kotlin/setup*
-packages/scala/setup*
-packages/sql/setup*
+package/base/setup*
+package/clojure/setup*
+package/groovy/setup*
+package/java/setup*
+package/kotlin/setup*
+package/scala/setup*
+package/sql/setup*
 dist/
 build/
 

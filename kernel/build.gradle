@@ -27,7 +27,7 @@ allprojects {
 ext.kernelIdName = ''
 
 def getPathToStaticContent(kernel) {
-  def path = "../../packages/${kernel}/beakerx_${kernel}"
+  def path = "../../package/${kernel}/beakerx_${kernel}"
 
   return path
 }

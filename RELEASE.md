@@ -18,6 +18,7 @@ Update the version in `beakerx/beakerx/_version.py` and
 ```bash
 git clean -xfd
 cd beakerx
+python setup.py test
 python setup.py sdist
 python setup.py bdist_wheel --universal
 ```

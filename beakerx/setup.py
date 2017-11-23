@@ -98,7 +98,8 @@ setup_args = dict(
     zip_safe            = False,
     include_package_data= True,
     packages            = find_packages(),
-    cmdclass            = cmdclass
+    cmdclass            = cmdclass,
+    test_suite          = 'beakerx.tests'
 )
 
 if __name__ == '__main__':

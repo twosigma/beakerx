@@ -57,6 +57,7 @@ conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven
 source activate beakerx
 conda install -y -c conda-forge ipywidgets
 (cd beakerx; pip install -e . --verbose)
+(cd beakerx; python setup.py test)
 beakerx-install
 ```
 

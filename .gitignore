@@ -14,6 +14,7 @@ jupyter-groovy-kernel-1.0.0.jar
 jupyter-groovy-kernel.log
 .ipynb_checkpoints/
 /*.ipynb
+!StartHere.ipynb
 #.gitignore
 /gradle*
 beaker.egg-info/

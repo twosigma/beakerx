@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-var widgets = require('jupyter-js-widgets');
+var widgets = require('./widgets');
 var _ = require('underscore');
 
 var TabModel = widgets.TabModel.extend({
@@ -22,8 +22,8 @@ var TabModel = widgets.TabModel.extend({
   _view_name : 'TabView',
   _model_module : 'beakerx',
   _view_module : 'beakerx',
-  _model_module_version: '*',
-  _view_module_version: '*'
+  _model_module_version: BEAKERX_MODULE_VERSION,
+  _view_module_version: BEAKERX_MODULE_VERSION
 });
 
 var TabView = widgets.TabView.extend({

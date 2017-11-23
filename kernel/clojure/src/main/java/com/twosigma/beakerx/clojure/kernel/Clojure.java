@@ -30,7 +30,7 @@ import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
@@ -73,7 +73,8 @@ public class Clojure extends Kernel {
       String id = uuid();
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               new KernelConfigurationFile(args));
-      return new Clojure(id, new ClojureEvaluator(id, id), kernelSocketsFactory);
+      ClojureEvaluator evaluator = new ClojureEvaluator(id, id, getKernelParameters());
+      return new Clojure(id, evaluator, kernelSocketsFactory);
     });
   }
 
@@ -101,10 +102,9 @@ public class Clojure extends Kernel {
     return data;
   };
 
-  @Override
-  public KernelParameters getKernelParameters() {
+  private static EvaluatorParameters getKernelParameters() {
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new ClojureDefaultVariables().getImports());
-    return new KernelParameters(kernelParameters);
+    return new EvaluatorParameters(kernelParameters);
   }
 }

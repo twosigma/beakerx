@@ -15,8 +15,7 @@
  */
 package com.twosigma.beakerx.jvm.serialization;
 
-import com.twosigma.beakerx.BeakerCodeCell;
-import com.twosigma.beakerx.jvm.object.OutputCell;
+import com.twosigma.beakerx.CodeCell;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.easyform.EasyForm;
 import com.twosigma.beakerx.jvm.object.BeakerDashboard;
@@ -181,7 +180,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
       } else if ((obj instanceof TableDisplay) ||
         (obj instanceof EvaluationResult) ||
         (obj instanceof UpdatableEvaluationResult) ||
-        (obj instanceof BeakerCodeCell) ||
+        (obj instanceof CodeCell) ||
         (obj instanceof ImageIcon) ||
         (obj instanceof Date) ||
         (obj instanceof BeakerDashboard) ||

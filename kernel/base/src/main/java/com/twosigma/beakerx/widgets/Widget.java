@@ -20,6 +20,8 @@ import java.util.HashMap;
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCommEvent;
+
+import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
@@ -37,8 +39,8 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   public static final String VIEW_MODULE_VERSION = "_view_module_version";
   public static final String MODEL_MODULE_VERSION = "_model_module_version";
 
-  public static final String MODEL_MODULE_VALUE = "jupyter-js-widgets";
-  public static final String VIEW_MODULE_VALUE = "jupyter-js-widgets";
+  public static final String MODEL_MODULE_VALUE = "@jupyter-widgets/controls";
+  public static final String VIEW_MODULE_VALUE = "@jupyter-widgets/controls";
   public static final String MODEL_MODULE_VERSION_VALUE = "*";
   public static final String VIEW_MODULE_VERSION_VALUE = "*";
 
@@ -60,9 +62,13 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   }
 
   protected void openComm() {
+    openComm(InternalVariable.getParentHeader());
+  }
+
+  protected void openComm(Message parentMessage) {
     comm.setData(createContent());
     addValueChangeMsgCallback();
-    comm.open();
+    comm.open(parentMessage);
   }
 
   public void close() {

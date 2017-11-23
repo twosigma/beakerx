@@ -17,7 +17,7 @@ package com.twosigma.beakerx.sql.magic.command;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.Evaluator;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 
 import java.util.List;
 

@@ -17,9 +17,8 @@ package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandItemWithResult;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandType;
-import com.twosigma.beakerx.kernel.msg.MessageCreator;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.message.Message;
 
 import java.util.ArrayList;
@@ -35,28 +34,28 @@ public class CodeFactory {
 
   public static final String CELL_COMMAND_MAGIC = "%%";
   public static final ArrayList<MagicCommand> NO_MAGIC_COMMANDS = new ArrayList<>();
-  private static List<MagicCommandItemWithResult> NO_ERRORS = new ArrayList<>();
+  private static List<MagicCommandOutcomeItem> NO_ERRORS = new ArrayList<>();
 
   private CodeFactory() {
   }
 
-  public static Code create(String allCode, Message message, int executionCount, KernelFunctionality kernel) {
+  public static Code create(String allCode, Message message, KernelFunctionality kernel) {
     Scanner scanner = new Scanner(allCode);
     List<String> commandsList = takeCommands(scanner);
     Optional<String> codeWithoutCommands = codeWithoutCommands(scanner);
     if (!commandsList.isEmpty()) {
-      return createCodeWithCommands(allCode, message, executionCount, kernel, commandsList, codeWithoutCommands);
+      return createCodeWithCommands(allCode, message, kernel, commandsList, codeWithoutCommands);
     } else {
       return createCodeWithoutCommands(allCode, message, codeWithoutCommands);
     }
   }
 
-  private static Code createCodeWithCommands(String allCode, Message message, int executionCount, KernelFunctionality kernel, List<String> commandsList, Optional<String> codeWithoutCommands) {
+  private static Code createCodeWithCommands(String allCode, Message message, KernelFunctionality kernel, List<String> commandsList, Optional<String> codeWithoutCommands) {
     String firstCommand = commandsList.get(0);
     if (isCellCommand(firstCommand)) {
-      return createCodeWithCellCommand(allCode, message, executionCount, kernel, commandsList, codeWithoutCommands, firstCommand);
+      return createCodeWithCellCommand(allCode, message, kernel, commandsList, codeWithoutCommands, firstCommand);
     } else {
-      return createCodeWithLineMagicCommands(allCode, message, executionCount, kernel, commandsList, codeWithoutCommands);
+      return createCodeWithLineMagicCommands(allCode, message, kernel, commandsList, codeWithoutCommands);
     }
   }
 
@@ -67,15 +66,15 @@ public class CodeFactory {
     return Code.createCode(allCode, codeWithoutCommands.get(), NO_MAGIC_COMMANDS, NO_ERRORS, message);
   }
 
-  private static Code createCodeWithLineMagicCommands(String allCode, Message message, int executionCount, KernelFunctionality kernel, List<String> commandsList, Optional<String> codeWithoutCommands) {
+  private static Code createCodeWithLineMagicCommands(String allCode, Message message, KernelFunctionality kernel, List<String> commandsList, Optional<String> codeWithoutCommands) {
     List<MagicCommand> magicCommands = new ArrayList<>();
-    List<MagicCommandItemWithResult> errors = new ArrayList<>();
+    List<MagicCommandOutcomeItem> errors = new ArrayList<>();
     commandsList.forEach(command -> {
       Optional<MagicCommandFunctionality> mcOption = findMagicCommandFunctionality(kernel.getMagicCommandTypes(), command);
       if (mcOption.isPresent()) {
         magicCommands.add(new MagicCommand(mcOption.get(), command));
       } else {
-        errors.add(processIllegalCommand("Cell magic " + command + " not found", message, executionCount));
+        errors.add(processIllegalCommand("Cell magic " + command + " not found"));
       }
     });
     if (codeWithoutCommands.isPresent()) {
@@ -85,8 +84,8 @@ public class CodeFactory {
     }
   }
 
-  private static Code createCodeWithCellCommand(String allCode, Message message, int executionCount, KernelFunctionality kernel, List<String> commandsList, Optional<String> codeWithoutCommands, String firstCommand) {
-    List<MagicCommandItemWithResult> errors = new ArrayList<>();
+  private static Code createCodeWithCellCommand(String allCode, Message message, KernelFunctionality kernel, List<String> commandsList, Optional<String> codeWithoutCommands, String firstCommand) {
+    List<MagicCommandOutcomeItem> errors = new ArrayList<>();
     List<MagicCommand> magicCommands = new ArrayList<>();
 
     StringBuilder restOfTheCode = new StringBuilder();
@@ -96,7 +95,7 @@ public class CodeFactory {
     if (mcOption.isPresent()) {
       magicCommands.add(new MagicCommand(mcOption.get(), firstCommand, restOfTheCode.toString()));
     } else {
-      errors.add(processIllegalCommand("Cell magic " + firstCommand + " not found", message, executionCount));
+      errors.add(processIllegalCommand("Cell magic " + firstCommand + " not found"));
     }
     return Code.createCodeWithoutCodeBlock(allCode, magicCommands, errors, message);
   }
@@ -131,16 +130,13 @@ public class CodeFactory {
 
   private static Optional<MagicCommandFunctionality> findMagicCommandFunctionality(final List<MagicCommandType> commands, final String command) {
     return commands.stream()
-            .filter(c -> command.matches(c.getCommand() + " .*?") || command.matches(c.getCommand()))
+            .filter(c -> c.getMagicCommandFunctionality().matchCommand(command))
             .map(MagicCommandType::getMagicCommandFunctionality)
             .findFirst();
   }
 
-  private static MagicCommandItemWithResult processIllegalCommand(String errorMessage, Message message, int executionCount) {
-    return new MagicCommandItemWithResult(
-            MessageCreator.buildOutputMessage(message, errorMessage, true),
-            MessageCreator.buildReplyWithErrorStatus(message, executionCount)
-    );
+  private static MagicCommandOutcomeItem processIllegalCommand(String errorMessage) {
+    return new MagicCommandOutput(MagicCommandOutcomeItem.Status.ERROR, errorMessage);
   }
 
 }

@@ -26,7 +26,7 @@ import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.KernelSocketsFactoryImpl;
@@ -68,7 +68,8 @@ public class Scala extends Kernel {
     KernelRunner.run(() -> {
       String id = uuid();
       ScalaEvaluator se = new ScalaEvaluator(id, id,
-              null);//TODO check what to put, need for autotranslation
+              null,
+              getKernelParameters());//TODO check what to put, need for autotranslation
 
       //js.setupAutoTranslation(); -- uncomment
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
@@ -97,11 +98,10 @@ public class Scala extends Kernel {
     return scalaObject;
   }
 
-  @Override
-  public KernelParameters getKernelParameters() {
+  public static EvaluatorParameters getKernelParameters() {
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new ScalaDefaultVariables().getImports());
-    return new KernelParameters(kernelParameters);
+    return new EvaluatorParameters(kernelParameters);
   }
 
 }

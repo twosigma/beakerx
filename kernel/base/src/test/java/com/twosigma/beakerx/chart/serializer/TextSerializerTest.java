@@ -50,7 +50,7 @@ public class TextSerializerTest {
   public void initTestStubData() throws IOException {
     sw = new StringWriter();
     jgen = mapper.getJsonFactory().createJsonGenerator(sw);
-    text = new Text();
+    text = new Text() {};
   }
 
   @Test

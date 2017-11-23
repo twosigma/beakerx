@@ -25,7 +25,6 @@ import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 import java.io.File;
-import java.net.MalformedURLException;
 
 public class GroovyClassLoaderFactory {
 
@@ -33,7 +32,7 @@ public class GroovyClassLoaderFactory {
   private static final String STATIC_WORD_WITH_SPACE = "static ";
   private static final String DOT_STAR_POSTFIX = ".*";
 
-  public static GroovyClassLoader newEvaluator(Imports imports, Classpath classpath, String outDir) throws MalformedURLException {
+  public static GroovyClassLoader newEvaluator(Imports imports, Classpath classpath, String outDir) {
 
     try {
       Class.forName("org.codehaus.groovy.control.customizers.ImportCustomizer");
@@ -92,7 +91,7 @@ public class GroovyClassLoaderFactory {
     return new GroovyClassLoader(newClassLoader(classpath, outDir), config);
   }
 
-  protected static ClassLoader newClassLoader(Classpath classpath, String outDir) throws MalformedURLException {
+  protected static ClassLoader newClassLoader(Classpath classpath, String outDir) {
     DynamicClassLoaderSimple loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
     loader.addJars(classpath.getPathsAsStrings());
     loader.addDynamicDir(outDir);

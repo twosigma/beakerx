@@ -15,21 +15,19 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.item.MagicCommandResultItem;
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
 import static com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand.IMPORT;
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.errorResult;
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.noResult;
 
 public class AddStaticImportMagicCommand implements MagicCommandFunctionality {
 
-  public static final String ADD_STATIC_IMPORT = IMPORT + " static";
+  private static final String STATIC = "static";
+  public static final String ADD_STATIC_IMPORT = IMPORT + " " + STATIC;
   private KernelFunctionality kernel;
 
   public AddStaticImportMagicCommand(KernelFunctionality kernel) {
@@ -37,16 +35,24 @@ public class AddStaticImportMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public MagicCommandResultItem execute(MagicCommandExecutionParam param) {
-    Code code = param.getCode();
+  public String getMagicCommandName() {
+    return ADD_STATIC_IMPORT;
+  }
+
+  @Override
+  public boolean matchCommand(String command) {
+    String[] commandParts = MagicCommandUtils.splitPath(command);
+    return commandParts.length > 2 && commandParts[0].equals(IMPORT) && commandParts[1].equals(STATIC);
+  }
+
+  @Override
+  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
-    Message message = param.getMessage();
-    int executionCount = param.getExecutionCount();
     String[] parts = command.split(" ");
     if (parts.length != 3) {
-      return errorResult(message, WRONG_FORMAT_MSG, executionCount);
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, WRONG_FORMAT_MSG);
     }
     this.kernel.addImport(new ImportPath(parts[1] + " " + parts[2]));
-    return noResult(code, message, executionCount);
+    return new MagicCommandOutput(MagicCommandOutput.Status.OK);
   }
 }

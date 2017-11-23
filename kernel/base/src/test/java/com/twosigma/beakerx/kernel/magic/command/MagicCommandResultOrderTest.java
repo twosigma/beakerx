@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
 import com.twosigma.beakerx.message.Message;
 
 import org.junit.After;
@@ -29,7 +30,7 @@ import org.junit.Test;
 
 public class MagicCommandResultOrderTest {
 
-  public static final String DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/contents/resources/jar/demo.jar";
+  public static final String DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR = "../../doc/resources/jar/demo.jar";
   private KernelTest kernel;
 
   @Before
@@ -50,7 +51,7 @@ public class MagicCommandResultOrderTest {
             "%classpath\n" +
             "code code code";
     //when
-    Code code = CodeFactory.create(allCode, new Message(), 1, kernel);
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
     //then
     assertThat(code.getCodeBlock().get()).isEqualTo("code code code");
   }
@@ -61,11 +62,11 @@ public class MagicCommandResultOrderTest {
     String allCode = "" +
             "%classpath\n" +
             "%classpath add jar " + DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n";
-    Code code = CodeFactory.create(allCode, new Message(), 1, kernel);
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
-    assertThat(result.getItems().get(0).getResult().isPresent()).isTrue();
+    assertThat(result.getItems().get(0).getMIMEContainer().isPresent()).isTrue();
   }
 
   @Test
@@ -74,15 +75,15 @@ public class MagicCommandResultOrderTest {
     String allCode = "" +
             "%classpath add jar " + DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
             "%classpath";
-    Code code = CodeFactory.create(allCode, new Message(), 1, kernel);
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    MagicCommandResult result = executeMagicCommands(code, 1, kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
     assertThat(classpath(result)).isEqualTo(DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR);
   }
 
-  private String classpath(MagicCommandResult result) {
-    return result.getItems().get(1).getResult().get().getContent().get("text").toString();
+  private String classpath(MagicCommandOutcome result) {
+    return (String) result.getItems().get(1).getMIMEContainer().get().getData();
   }
 
 }

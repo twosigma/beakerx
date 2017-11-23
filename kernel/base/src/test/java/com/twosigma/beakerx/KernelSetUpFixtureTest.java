@@ -25,7 +25,7 @@ import org.junit.Before;
 public abstract class KernelSetUpFixtureTest {
 
   protected KernelSocketsServiceTest kernelSocketsService;
-  private Kernel kernel;
+  protected Kernel kernel;
   private Thread kernelThread;
 
   @Before

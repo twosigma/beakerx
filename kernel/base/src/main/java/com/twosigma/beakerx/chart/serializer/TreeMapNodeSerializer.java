@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.chart.serializer;
 
+import com.twosigma.beakerx.util.SerializerUtil;
 import net.sf.jtreemap.swing.TreeMapNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -35,7 +36,7 @@ public class TreeMapNodeSerializer extends JsonSerializer<TreeMapNode> {
                                                      JsonProcessingException {
     jgen.writeStartObject();
 
-    jgen.writeObjectField("type", treeMapNode.getClass().getSimpleName());
+    jgen.writeObjectField("type", SerializerUtil.getTypeName(treeMapNode));
     jgen.writeObjectField("weight", treeMapNode.getWeight());
 
     if (treeMapNode.getValue() != null) {

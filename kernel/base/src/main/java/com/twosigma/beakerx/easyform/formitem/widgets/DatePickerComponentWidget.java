@@ -44,4 +44,16 @@ public class DatePickerComponentWidget extends EasyFormComponent<DatePicker> {
     }
   }
 
+  public void setDate(String date) {
+    if (checkValue(date)) {
+      widget.setValue(formatValue(date));
+    }
+  }
+
+  public void setDate(Date date) {
+    if (checkValue(date)) {
+      widget.setValue(formatValue(date));
+    }
+  }
+
 }

@@ -15,7 +15,7 @@
  */
 
 declare function require(moduleName: string): any;
-const widgets = require('jupyter-js-widgets');
+const widgets = require('../widgets');
 
 import { TEXT_INPUT_WIDTH_UNIT } from './textWidget';
 
@@ -28,7 +28,9 @@ class TextareaModel extends widgets.TextareaModel {
       _view_name: "TextareaView",
       _model_name: "TextareaModel",
       _model_module: 'beakerx',
-      _view_module: 'beakerx'
+      _view_module: 'beakerx',
+      _model_module_version: BEAKERX_MODULE_VERSION,
+      _view_module_version: BEAKERX_MODULE_VERSION
     };
   }
 }

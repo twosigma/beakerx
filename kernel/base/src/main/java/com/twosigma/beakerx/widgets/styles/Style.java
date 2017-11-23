@@ -24,6 +24,8 @@ public abstract class Style extends Widget {
   public static final String VIEW_NAME_VALUE = "StyleView";
   public static final String MODEL_NAME_VALUE = "StyleModel";
   public static final String STYLE = "style";
+  public static final String MODEL_MODULE_VALUE = "@jupyter-widgets/base";
+  public static final String VIEW_MODULE_VALUE = "@jupyter-widgets/base";
 
   public Style() {
     super();
@@ -37,6 +39,16 @@ public abstract class Style extends Widget {
   @Override
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
+  }
+
+  @Override
+  public String getModelModuleValue(){
+    return MODEL_MODULE_VALUE;
+  }
+
+  @Override
+  public String getViewModuleValue(){
+    return VIEW_MODULE_VALUE;
   }
 
 }

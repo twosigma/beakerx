@@ -17,12 +17,13 @@ package com.twosigma.beakerx.sql;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.OutputCell;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import com.twosigma.beakerx.table.TableDisplay;
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +35,8 @@ import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForR
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SQLEvaluatorTest {
@@ -45,7 +46,7 @@ public class SQLEvaluatorTest {
 
   @Before
   public void setUp() throws Exception {
-    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory());
+    sqlEvaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(), kernelParameters());
     sqlEvaluator.setShellOptions(kernelParameters());
     kernelTest = new KernelTest("1", sqlEvaluator);
     KernelManager.register(kernelTest);
@@ -91,10 +92,10 @@ public class SQLEvaluatorTest {
     assertThat(seo.getPayload()).isEqualTo(OutputCell.HIDDEN);
   }
 
-  private KernelParameters kernelParameters() {
+  private EvaluatorParameters kernelParameters() {
     Map<String, Object> params = new HashMap<>();
     params.put(DATASOURCES, "chemistry=jdbc:h2:mem:chemistry");
     params.put(DEFAULT_DATASOURCE, "jdbc:h2:mem:db1");
-    return new KernelParameters(params);
+    return new EvaluatorParameters(params);
   }
 }

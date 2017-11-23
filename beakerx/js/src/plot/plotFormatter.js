@@ -212,7 +212,7 @@ define([
         newmodel.showLegend = newmodel.showLegend != null ? newmodel.showLegend : false;
 
         var range = plotUtils.getDataRange(yAxisData).datarange;
-        var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;
+        var rangeR = newmodel.yAxisR ? plotUtils.getDataRange(yAxisRData).datarange : null;
 
         var applyMargins = function (range, axis) {
           axis.lowerMargin = axis.lowerMargin || 0;
@@ -261,6 +261,7 @@ define([
             }
             return result;
           };
+
           newmodel.vrange = getModelRange(range, newmodel.xAxis.type === "log", newmodel.yAxis.type === "log");
           if(newmodel.yAxisR){
             newmodel.vrangeR = getModelRange(rangeR, newmodel.xAxis.type === "log", newmodel.yAxisR.type === "log");
@@ -278,8 +279,8 @@ define([
           if (focus.xr != null) { vrange.xr = Math.max(focus.xr, vrange.xr); }
           if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
           if (focus.yr != null) { vrange.yr = Math.max(focus.yr, vrange.yr); }
-          if (focus.yl_r != null) { vrangeR.yl = Math.min(focus.yl_r, vrangeR.yl); }
-          if (focus.yr_r != null) { vrangeR.yr = Math.max(focus.yr_r, vrangeR.yr); }
+          if (vrangeR && focus.yl_r != null) { vrangeR.yl = Math.min(focus.yl_r, vrangeR.yl); }
+          if (vrangeR && focus.yr_r != null) { vrangeR.yr = Math.max(focus.yr_r, vrangeR.yr); }
 
           var updateRangeSpan = function(r) {
             if (r) {

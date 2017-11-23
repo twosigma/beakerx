@@ -56,7 +56,7 @@ public class ConstantBandSerializerTest {
   @Test
   public void serializeConstantBand_resultJsonHasType() throws IOException {
     //when
-    ConstantBand constantBand = new ConstantBand();
+    ConstantBand constantBand = new ConstantBand() {};
     constantBandSerializer.serialize(constantBand, jgen, new DefaultSerializerProvider.Impl());
     jgen.flush();
     //then

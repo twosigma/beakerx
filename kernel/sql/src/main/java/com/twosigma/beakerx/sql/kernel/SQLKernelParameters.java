@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.sql.kernel;
 
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -23,14 +23,14 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.twosigma.beakerx.DefaultJVMVariables.CLASSPATH;
 import static com.twosigma.beakerx.kernel.Utils.getAsString;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DATASOURCES;
-import static com.twosigma.beakerx.kernel.commands.MagicCommand.DEFAULT_DATASOURCE;
+import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
+import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 
 public class SQLKernelParameters {
 
-  private KernelParameters kernelParameters;
+  private EvaluatorParameters kernelParameters;
 
-  public SQLKernelParameters(KernelParameters kernelParameters) {
+  public SQLKernelParameters(EvaluatorParameters kernelParameters) {
     this.kernelParameters = checkNotNull(kernelParameters);
   }
 

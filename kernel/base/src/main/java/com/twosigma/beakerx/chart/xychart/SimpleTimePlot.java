@@ -20,6 +20,7 @@ import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.xychart.plotitem.Line;
 import com.twosigma.beakerx.chart.xychart.plotitem.Points;
 import com.twosigma.beakerx.chart.xychart.plotitem.XYGraphics;
+import com.twosigma.beakerx.util.DateUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -128,7 +129,7 @@ public class SimpleTimePlot extends TimePlot{
       for (Map<String, Object> row : data) {
         dataColumnsNames.addAll(row.keySet());
 
-        xs.add(getNumberforTimeColumn(row.get(timeColumn)));
+        xs.add(getNumberForTimeColumn(row.get(timeColumn)));
 
         for (int i = 0; i < columns.size(); i++) {
           String column = columns.get(i);
@@ -136,7 +137,7 @@ public class SimpleTimePlot extends TimePlot{
           if (i >= yss.size()) {
             yss.add(new ArrayList<Number>());
           }
-          yss.get(i).add(getNumberforTimeColumn(row.get(column)));
+          yss.get(i).add(getNumberForTimeColumn(row.get(column)));
         }
       }
 
@@ -187,15 +188,11 @@ public class SimpleTimePlot extends TimePlot{
     }
   }
 
-  private Number getNumberforTimeColumn(Object o){
-    if(o instanceof Number){
+  private Number getNumberForTimeColumn(Object o) {
+    if(o instanceof Number) {
       return (Number) o;
-    } else if (o instanceof Date) {
-      Date date = (Date)o;
-      return date.getTime();
-    } else {
-      throw new IllegalArgumentException("time column accepts numbers or java.util.Date objects");
     }
+    return DateUtil.dateToLong(o);
   }
 
   public List<Map<String, Object>> getData() {

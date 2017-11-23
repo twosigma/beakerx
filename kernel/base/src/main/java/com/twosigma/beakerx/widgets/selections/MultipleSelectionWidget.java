@@ -62,5 +62,4 @@ public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> 
     }
     return Lists.newArrayList(0);
   }
-
 }

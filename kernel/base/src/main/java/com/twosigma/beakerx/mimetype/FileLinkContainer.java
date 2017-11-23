@@ -31,7 +31,7 @@ public class FileLinkContainer extends MIMEContainer {
     }
     if (!f.exists()) {
       return addMimeType(MIME.TEXT_HTML, "Path (<tt>" + f.getAbsolutePath() + "</tt>) doesn't exist. " +
-          "It may still be in the process of " +
+          "It may still be in the runMagicCommands of " +
           "being generated, or you may have the " +
           "incorrect path.");
     }

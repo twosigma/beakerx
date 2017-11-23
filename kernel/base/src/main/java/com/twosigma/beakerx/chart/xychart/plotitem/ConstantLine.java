@@ -18,7 +18,12 @@ package com.twosigma.beakerx.chart.xychart.plotitem;
 
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.Graphics;
+import com.twosigma.beakerx.util.DateUtil;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -42,7 +47,23 @@ public class ConstantLine extends Graphics {
   }
 
   public void setX(Date x) {
-    this.x = x.getTime();
+    this.x = DateUtil.dateToLong(x);
+  }
+
+  public void setX(Calendar x) {
+    this.x = DateUtil.dateToLong(x);
+  }
+
+  public void setX(Instant x) {
+    this.x = DateUtil.dateToLong(x);
+  }
+
+  public void setX(LocalDateTime x) {
+    this.x = DateUtil.dateToLong(x);
+  }
+
+  public void setX(LocalDate x) {
+    this.x = DateUtil.dateToLong(x);
   }
 
   public Number getY() {

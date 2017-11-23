@@ -15,13 +15,26 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
-
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 import org.apache.maven.shared.invoker.InvocationOutputHandler;
 
 public class MavenInvocationSilentOutputHandler implements InvocationOutputHandler {
 
+  private ClasspathAddMvnMagicCommand.MvnLoggerWidget intProgress;
+
+  public MavenInvocationSilentOutputHandler(ClasspathAddMvnMagicCommand.MvnLoggerWidget intProgress) {
+    this.intProgress = intProgress;
+  }
+
   @Override
   public void consumeLine(String line) {
+    if (line != null && !line.trim().isEmpty() && (line.matches("Downlo.+") || acceptLineWhichShowDownloadingProgress(line))) {
+      intProgress.sendLog(line);
+    }
+  }
 
+  private boolean acceptLineWhichShowDownloadingProgress(String line) {
+    // line example 3/119 KB
+    return line.matches("\\d+/\\d+.+");
   }
 }

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-var widgets = require('jupyter-js-widgets');
+var widgets = require('./widgets');
 var _ = require('underscore');
 var $ = require('jquery');
 
@@ -34,8 +34,8 @@ var TableDisplayModel = widgets.DOMWidgetModel.extend({
       _view_name: 'TableDisplayView',
       _model_module: 'beakerx',
       _view_module: 'beakerx',
-      _model_module_version: '*',
-      _view_module_version: '*'
+      _model_module_version: BEAKERX_MODULE_VERSION,
+      _view_module_version: BEAKERX_MODULE_VERSION
     });
   }
 });
@@ -88,7 +88,7 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
   },
 
   initTableDisplay: function(data) {
-    this._currentScope = new TableScope('wrap_'+this.id);
+    this._currentScope = new TableScope('wrap_'+this.model.model_id);
     var tmpl = this._currentScope.buildTemplate();
     var tmplElement = $(tmpl);
 

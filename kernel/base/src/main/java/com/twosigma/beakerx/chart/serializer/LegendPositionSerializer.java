@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.chart.serializer;
 
+import com.twosigma.beakerx.util.SerializerUtil;
 import com.twosigma.beakerx.chart.legend.LegendPosition;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -37,7 +38,7 @@ public class LegendPositionSerializer extends JsonSerializer<LegendPosition> {
     throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
-    jgen.writeObjectField(TYPE, legendPosition.getClass().getSimpleName());
+    jgen.writeObjectField(TYPE, SerializerUtil.getTypeName(legendPosition));
     if (legendPosition.getPosition() != null) {
       jgen.writeObjectField(POSITION, legendPosition.getPosition().name());
     }else{

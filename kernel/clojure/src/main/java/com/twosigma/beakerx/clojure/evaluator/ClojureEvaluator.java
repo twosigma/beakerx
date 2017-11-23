@@ -30,6 +30,7 @@ import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ImportPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,16 +51,16 @@ public class ClojureEvaluator extends BaseEvaluator {
   private DynamicClassLoader loader;
   private Var clojureLoadString = null;
 
-  public ClojureEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory) {
-    super(id, sId, cellExecutor, tempFolderFactory);
+  public ClojureEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
+    super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
     requirements = new ArrayList<>();
     init();
     workerThread = new ClojureWorkerThread(this);
     workerThread.start();
   }
 
-  public ClojureEvaluator(String id, String sId) {
-    this(id, sId, new BeakerCellExecutor("clojure"), new TempFolderFactoryImpl());
+  public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
+    this(id, sId, new BeakerCellExecutor("clojure"), new TempFolderFactoryImpl(), evaluatorParameters);
   }
 
   @Override
@@ -89,7 +90,7 @@ public class ClojureEvaluator extends BaseEvaluator {
           loader.loadClass(ss);
           clojureLoadString.invoke(String.format("(import '%s)", ss));
         } catch (ClassNotFoundException e) {
-          logger.error("Could not find class while loading notebook: " + ss);
+          logger.error("Could not create class while loading notebook: " + ss);
         }
       }
     }
@@ -113,6 +114,11 @@ public class ClojureEvaluator extends BaseEvaluator {
     workerThread.doExit();
     cancelExecution();
     workerThread.halt();
+  }
+
+  @Override
+  public ClassLoader getClassLoader() {
+    return loader;
   }
 
   @Override
@@ -148,7 +154,4 @@ public class ClojureEvaluator extends BaseEvaluator {
     return Resources.toString(url, Charsets.UTF_8);
   }
 
-  DynamicClassLoader getLoader() {
-    return loader;
-  }
 }

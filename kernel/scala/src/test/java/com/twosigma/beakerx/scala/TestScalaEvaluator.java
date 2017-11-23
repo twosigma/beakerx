@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.scala;
 
-import com.twosigma.beakerx.kernel.KernelParameters;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.scala.evaluator.NoBeakerxObjectTestFactory;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.kernel.ScalaDefaultVariables;
@@ -29,14 +29,13 @@ import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor
 public class TestScalaEvaluator {
 
   public static ScalaEvaluator evaluator() {
-    ScalaEvaluator evaluator = new ScalaEvaluator("id", "sid", null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory());
-    evaluator.initKernel(getKernelParameters());
+    ScalaEvaluator evaluator = new ScalaEvaluator("id", "sid", null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(),getKernelParameters());
     return evaluator;
   }
 
-  public static KernelParameters getKernelParameters() {
+  public static EvaluatorParameters getKernelParameters() {
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new ScalaDefaultVariables().getImports());
-    return new KernelParameters(kernelParameters);
+    return new EvaluatorParameters(kernelParameters);
   }
 }

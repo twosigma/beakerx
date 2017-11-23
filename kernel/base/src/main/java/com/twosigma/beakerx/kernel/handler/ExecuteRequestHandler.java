@@ -16,8 +16,7 @@
 package com.twosigma.beakerx.kernel.handler;
 
 
-import com.twosigma.beakerx.kernel.commands.MagicCommand;
-import com.twosigma.beakerx.kernel.commands.MagicCommandResult;
+import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.KernelHandler;
@@ -27,8 +26,9 @@ import com.twosigma.beakerx.message.Message;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Semaphore;
 
+import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.executeMagicCommands;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
 
 /**
@@ -38,14 +38,12 @@ import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
  */
 public class ExecuteRequestHandler extends KernelHandler<Message> {
 
-  private MagicCommand magicCommand;
   private int executionCount;
-  private CompletableFuture<Boolean> syncObject;
+  private final Semaphore syncObject = new Semaphore(1, true);
 
   public ExecuteRequestHandler(KernelFunctionality kernel) {
     super(kernel);
     this.executionCount = 0;
-    magicCommand = new MagicCommand(kernel);
   }
 
   @Override
@@ -58,74 +56,47 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
   }
 
   private void handleMsg(Message message) throws Exception {
-    syncObject = new CompletableFuture<>();
+    syncObject.acquire();
     kernel.sendBusyMessage(message);
     executionCount += 1;
-    Code code = takeCodeFrom(message);
-    announceThatWeHaveTheCode(message, code);
-    if (code.isaMagicCommand()) {
-      handleMagicCommand(message, code);
+    String codeString = takeCodeFrom(message);
+    announceTheCode(message, codeString);
+    Code code = CodeFactory.create(codeString, message, kernel);
+    executeMagicCommands(code, executionCount, kernel);
+    executeCodeBlock(code);
+  }
+
+  private void finishExecution(Message message) {
+    kernel.sendIdleMessage(message);
+    syncObject.release();
+  }
+
+  private void executeCodeBlock(Code code) {
+    if (code.getCodeBlock().isPresent()) {
+      kernel.executeCode(code.getCodeBlock().get(), code.getMessage(), executionCount, (seo) -> {
+        finishExecution(seo.getJupyterMessage());
+      });
     } else {
-      runCode(code.asString(), message);
+      finishExecution(code.getMessage());
     }
-    syncObject.get();
   }
 
-  private void handleMagicCommand(Message message, Code code) {
-    MagicCommandResult magicCommandResult = magicCommand.process(code, message, executionCount);
-
-    magicCommandResult.getItems().forEach(item -> {
-      if (item.hasCodeToExecute()) {
-        if (item.hasResult()) {
-          kernel.publish(item.getResult().get());
-        }
-      } else if (item.hasResult()) {
-        sendMagicCommandReplyAndResult(message, item.getReply().get(), item.getResult().get());
-      } else {
-        sendMagicCommandReply(message, item.getReply().get());
-      }
-    });
-
-    if (!magicCommandResult.getItems().isEmpty()) {
-      magicCommandResult.getItems().get(0).getCode().ifPresent(codeToExecute -> runCode(codeToExecute.asString(), message));
-    }
-
-  }
-
-  private Code takeCodeFrom(Message message) {
+  private String takeCodeFrom(Message message) {
     String code = "";
     if (message.getContent() != null && message.getContent().containsKey("code")) {
       code = ((String) message.getContent().get("code")).trim();
     }
-    return new Code(code);
+    return code;
   }
 
-  private void sendMagicCommandReply(Message message, Message replyMessage) {
-    kernel.send(replyMessage);
-    kernel.sendIdleMessage(message);
-    syncObject.complete(true);
-  }
-
-  private void sendMagicCommandReplyAndResult(Message message, Message replyMessage, Message resultMessage) {
-    kernel.publish(resultMessage);
-    sendMagicCommandReply(message, replyMessage);
-  }
-
-  private void runCode(String code, Message message) {
-    kernel.executeCode(code, message, executionCount, (seo) -> {
-      kernel.sendIdleMessage(seo.getJupyterMessage());
-      syncObject.complete(true);
-    });
-  }
-
-  private void announceThatWeHaveTheCode(Message message, Code code) {
+  private void announceTheCode(Message message, String code) {
     Message reply = new Message();
     reply.setParentHeader(message.getHeader());
     reply.setIdentities(message.getIdentities());
     reply.setHeader(new Header(EXECUTE_INPUT, message.getHeader().getSession()));
     Map<String, Serializable> map1 = new HashMap<>(2);
     map1.put("execution_count", executionCount);
-    map1.put("code", code.asString());
+    map1.put("code", code);
     reply.setContent(map1);
     kernel.publish(reply);
   }
@@ -134,7 +105,4 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
   public void exit() {
   }
 
-  public MagicCommand getMagicCommand() {
-    return magicCommand;
-  }
 }

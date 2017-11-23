@@ -15,9 +15,9 @@
  */
 package com.twosigma.beakerx.kernel.threads;
 
-import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
@@ -32,23 +32,38 @@ public class ExecutionResultSender implements Observer {
 
   public static Logger logger = LoggerFactory.getLogger(ExecutionResultSender.class);
 
-  private MessageCreator handler;
-  private volatile boolean work = true;
+  private final ConcurrentLinkedQueue<MessageHolder> messageQueue = new ConcurrentLinkedQueue<>();
+  private AbstractThread workingThread;
   private KernelFunctionality kernel;
 
   public ExecutionResultSender(KernelFunctionality kernel) {
     this.kernel = kernel;
-    handler = new MessageCreator(kernel);
   }
 
   @Override
   public synchronized void update(Observable o, Object arg) {
     SimpleEvaluationObject seo = (SimpleEvaluationObject) o;
     if (seo != null) {
-      Iterator<MessageHolder> iterator = handler.createMessage(seo).iterator();
-      while (this.work && iterator.hasNext()) {
-        MessageHolder job = iterator.next();
-        if (handler != null && job != null) {
+      messageQueue.addAll(MessageCreator.createMessage(seo));
+      if (workingThread == null || !workingThread.isAlive()) {
+        workingThread = new MessageRunnable();
+        workingThread.start();
+      }
+    }
+  }
+
+  protected class MessageRunnable extends AbstractThread {
+
+    @Override
+    public boolean getRunning() {
+      return running && !messageQueue.isEmpty();
+    }
+
+    @Override
+    public void run() {
+      while (getRunning()) {
+        MessageHolder job = messageQueue.poll();
+        if (job != null) {
           if (SocketEnum.IOPUB_SOCKET.equals(job.getSocketType())) {
             kernel.publish(job.getMessage());
           } else if (SocketEnum.SHELL_SOCKET.equals(job.getSocketType())) {
@@ -56,11 +71,14 @@ public class ExecutionResultSender implements Observer {
           }
         }
       }
+      logger.debug("MessageRunnable shutdown.");
     }
   }
 
   public void exit() {
-    this.work = false;
+    if (workingThread != null) {
+      workingThread.halt();
+    }
   }
 
 }

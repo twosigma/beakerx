@@ -29,6 +29,7 @@ from traitlets.config.manager import BaseJSONConfigManager
 from distutils import log
 import importlib
 
+
 def _classpath_for(kernel):
     return pkg_resources.resource_filename('beakerx_' + kernel, os.path.join('lib', '*'))
 
@@ -85,12 +86,14 @@ def install_kernel(kernel_name):
     contents = Template(template.decode()).substitute(PATH=classpath)
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        with open(os.path.join(tmpdir, 'kernel.json'), 'w') as f:
+        kernel_dir = os.path.join(tmpdir, kernel_name)
+        os.mkdir(kernel_dir)
+        with open(os.path.join(kernel_dir, 'kernel.json'), 'w') as f:
             f.write(contents)
         install_cmd = [
             'jupyter', 'kernelspec', 'install',
             '--sys-prefix', '--replace',
-            '--name', kernel_name, tmpdir
+            '--name', kernel_name, kernel_dir
         ]
         subprocess.check_call(install_cmd)
 

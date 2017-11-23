@@ -39,7 +39,7 @@ public abstract class CategoryGraphics extends Graphics {
   private boolean centerSeries = false;
   private boolean useToolTip = true;
 
-  protected List<Number> getBases() {
+  protected List<Object> getBases() {
     return null;
   }
 

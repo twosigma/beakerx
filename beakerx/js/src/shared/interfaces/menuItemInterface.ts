@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import { CommandRegistry } from '@phosphor/commands';
+
 export default interface MenuItem {
   title: string,
   action?: Function,
@@ -30,6 +32,6 @@ export default interface MenuItem {
   type?: string,
   tooltip?: string,
   updateLayout?: boolean,
-  isHidden?: boolean,
+  isVisible?: CommandRegistry.CommandFunc<boolean>,
   args?: object
 }

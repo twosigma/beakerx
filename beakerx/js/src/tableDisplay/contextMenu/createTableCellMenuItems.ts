@@ -17,42 +17,88 @@
 import MenuItem from '../../shared/interfaces/contextMenuItemInterface';
 import _ from 'underscore';
 
-export default function createTableCellMenuItems(scope: any, model: any): MenuItem[] {
-  const selector = `#${scope.id}_wrapper thead`;
-  const contextMenuItems = {};
+interface cellIndex { row: number, column: number }
 
-  if (!_.isEmpty(model.contextMenuItems)) {
-    _.forEach(model.contextMenuItems, function(item) {
-      contextMenuItems[item] = {
-        title: item,
-        action: function(itemKey, options) {
-          var index = scope.table.cell(options.$trigger.get(0)).index();
-          scope.tableDisplayModel.send({ event: 'CONTEXT_MENU_CLICK', itemKey : itemKey, row : index.row, column : index.column - 1}, scope.tableDisplayView.callbacks());
-        }
-      }
-    });
+export default function createTableCellMenuItems(scope: any, model: any): MenuItem[] {
+  const selector = `#${scope.id} tbody td`;
+
+  function getTableCellIndex(node: HTMLElement|null): cellIndex|null {
+    if (!node) {
+      return null;
+    }
+
+    if (node instanceof HTMLTableCellElement) {
+      return scope.table.cell(node).index();
+    }
+
+    return getTableCellIndex(node.parentElement);
   }
 
-  if (!_.isEmpty(model.contextMenuTags)) {
-    _.forEach(model.contextMenuTags, function(tag, name) {
-      if (model.contextMenuTags.hasOwnProperty(name)) {
-        scope.contextMenuItems[name] = {
-          name: name,
-          callback: function(itemKey, options) {
-            var index = scope.table.cell(options.$trigger.get(0)).index();
-            var params = {
-              actionType: 'CONTEXT_MENU_CLICK',
-              contextMenuItem: itemKey,
-              row: index.row,
-              col: index.column - 1
-            };
-            scope.tableDisplayModel.send({event: 'actiondetails', params: params}, scope.tableDisplayView.callbacks());
-          }
+  function createFromModelContextMenuItems(): MenuItem[] {
+    if (_.isEmpty(model.contextMenuItems)) {
+      return [];
+    }
+
+    return model.contextMenuItems.map(item => ({
+      id: `${item}_${scope.id}`,
+      title: item,
+      selector: selector,
+      action: (event) => {
+        const index = getTableCellIndex(<HTMLElement>event.target);
+
+        if (!index) {
+          return;
         }
+
+        scope.tableDisplayModel.send({
+          event: 'CONTEXT_MENU_CLICK',
+          itemKey : item,
+          row : index.row,
+          column : index.column - 1
+        }, scope.tableDisplayView.callbacks());
       }
+    }));
+  }
+
+  function createFromModelContextMenuTags(): MenuItem[] {
+    const items: MenuItem[] = [];
+
+    _.forEach(model.contextMenuTags, function(tag, name) {
+      if (!model.contextMenuTags.hasOwnProperty(name)) {
+        return;
+      }
+
+      items.push({
+        id: `${tag}_${scope.id}`,
+        title: name,
+        selector: selector,
+        action: function(event) {
+          const index = getTableCellIndex(<HTMLElement>event.target);
+
+          if (!index) {
+            return;
+          }
+
+          const params = {
+            actionType: 'CONTEXT_MENU_CLICK',
+            contextMenuItem: name,
+            row: index.row,
+            col: index.column - 1
+          };
+
+          scope.tableDisplayModel.send({
+            event: 'actiondetails',
+            params
+          }, scope.tableDisplayView.callbacks());
+        }
+      });
     });
+
+    return items;
   }
 
   return [
+    ...createFromModelContextMenuItems(),
+    ...createFromModelContextMenuTags()
   ]
 }

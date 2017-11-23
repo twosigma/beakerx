@@ -29,14 +29,14 @@ export default function createTableMenuItems(scope: any): MenuItem[] {
       id: 'verticalHeaders',
       title: 'vertical headers',
       action: rotateMenuItemCallback,
-      isHidden: !!scope.headersVertical,
+      isVisible: () => !scope.headersVertical,
       selector
     },
     {
       id: 'horizontalHeaders',
       title: 'horizontal headers',
       action: rotateMenuItemCallback,
-      isHidden: !scope.headersVertical,
+      isVisible: () => !!scope.headersVertical,
       selector
     }
   ]

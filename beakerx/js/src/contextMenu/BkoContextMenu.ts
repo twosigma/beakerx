@@ -33,6 +33,7 @@ export default abstract class BkoContextMenu implements MenuInterface {
   protected menuItems: Menu.IItem[] = [];
   protected inLab: boolean;
   protected disposables: IDisposable[] = [];
+  protected event: MouseEvent;
 
   public contextMenu: ContextMenu;
 
@@ -57,6 +58,12 @@ export default abstract class BkoContextMenu implements MenuInterface {
   }
 
   protected handleContextMenu(event: MouseEvent): void {
+    this.event = event;
+
+    if (this.inLab) {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
 
@@ -98,7 +105,7 @@ export default abstract class BkoContextMenu implements MenuInterface {
     this.addCommand(menuItem);
     this.addKeyBinding(menuItem);
 
-    return menu.addItem({ command: menuItem.id, selector: menuItem.selector, isVisible: !menuItem.isHidden });
+    return menu.addItem({ command: menuItem.id, selector: menuItem.selector });
   }
 
   protected addSeparatorItem(menuItem: MenuItem, menu: addItem): Menu.IItem {
@@ -118,13 +125,15 @@ export default abstract class BkoContextMenu implements MenuInterface {
       return;
     }
 
+    const self = this;
     this.disposables.push(this.commands.addCommand(menuItem.id, {
       label: menuItem.title,
       usage: menuItem.tooltip || '',
       iconClass: () => menuItem.icon ? menuItem.icon : '',
+      isVisible: menuItem.isVisible,
       execute: (): void => {
         if (menuItem.action && typeof menuItem.action == 'function') {
-          menuItem.action();
+          menuItem.action(self.event);
         }
       }
     }));
@@ -155,7 +164,7 @@ export default abstract class BkoContextMenu implements MenuInterface {
   }
 
   protected bindEvents(): void {
-    !this.inLab && this.scope.element[0].addEventListener('contextmenu', this.handleContextMenu);
+    this.scope.element[0].addEventListener('contextmenu', this.handleContextMenu);
   }
 
   destroy(): void {

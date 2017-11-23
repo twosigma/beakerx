@@ -24,7 +24,6 @@ require('datatables.net-dt/css/jquery.dataTables.css');
 require('datatables.net-colreorder-dt/css/colReorder.dataTables.css');
 require('datatables.net-fixedcolumns-dt/css/fixedColumns.dataTables.css');
 require('datatables.net-keytable-dt/css/keyTable.dataTables.css');
-require('jquery-contextmenu/dist/jquery.contextMenu.css');
 require('./tableDisplay/css/datatables.scss');
 
 var TableDisplayModel = widgets.DOMWidgetModel.extend({

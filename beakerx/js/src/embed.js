@@ -10,7 +10,6 @@ module.exports = {};
 require('./../src/shared/style/beakerx.scss');
 require('./../src/plot/bko-combinedplot.css');
 require('./../src/plot/bko-plot.css');
-require('jquery-contextmenu/dist/jquery.contextMenu.min.css');
 
 var loadedModules = [
   require("./Plot"),

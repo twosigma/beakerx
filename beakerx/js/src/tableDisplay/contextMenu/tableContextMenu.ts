@@ -15,6 +15,7 @@
  */
 
 import createTableContextMenuItems from './createTableMenuItems';
+import createTableCellMenuItems from './createTableCellMenuItems';
 import BkoContextMenu from '../../contextMenu/BkoContextMenu';
 
 export default class TableContextMenu extends BkoContextMenu {
@@ -26,7 +27,8 @@ export default class TableContextMenu extends BkoContextMenu {
     this.inLab ? this.buildLabMenu() : this.buildBkoMenu();
 
     const menuItems = createTableContextMenuItems(this.scope);
-    this.createItems(menuItems, this.contextMenu);
+    const cellMenuItems = createTableCellMenuItems(this.scope, this.scope.model.getCellModel());
+    this.createItems([ ...menuItems, ...cellMenuItems ], this.contextMenu);
     this.bindEvents();
   }
 }

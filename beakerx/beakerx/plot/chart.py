@@ -24,22 +24,13 @@ from traitlets import Unicode, Dict
 from beakerx.beakerx_widgets import BeakerxDOMWidget
 
 
-class ChartDetails(BaseObject):
+class ChartDetails(ChartBaseObject):
     def __init__(self, **kwargs):
-        super(ChartDetails, self).__init__(**kwargs)
-        self.type = "Plot"
         self.init_width = 640
         self.init_height = 480
 
-        method_names = self.get_methods()
-
-        for x in kwargs:
-            key = x[:1].upper() + x[1:]
-            if "set" + key in method_names:
-                func = getattr(self, 'set' + key)
-                func(getValue(kwargs, x))
-            else:
-                raise SyntaxError(x + ': property not found')
+        super(ChartDetails, self).__init__(**kwargs)
+        self.type = "Plot"
 
     def setInitWidth(self, value):
         self.init_width = value
@@ -132,6 +123,7 @@ class AbstractChart(Chart):
 
     def setYLogBase(self, value):
         self.rangeAxes[0].log_base = value
+
 
 class XYChart(AbstractChart):
     def __init__(self, **kwargs):
@@ -373,6 +365,7 @@ class HeatChart(AbstractChart):
     def setData(self, value):
         self.graphics_list = value
 
+
 class Plot(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)
     _model_name = Unicode('PlotModel').tag(sync=True)
@@ -380,8 +373,22 @@ class Plot(BeakerxDOMWidget):
 
     def __init__(self, **kwargs):
         super(Plot, self).__init__(**kwargs)
-        self.chart = XYChart(**kwargs)
+        self.remove_extra_args(**kwargs)
+        self.chart = XYChart(**self.remove_extra_args(**kwargs))
         self.model = self.chart.transform()
+
+    def remove_extra_args(self, **kwargs):
+        if 'displayNames' in kwargs:
+            kwargs.pop('displayNames')
+        if 'displayLines' in kwargs:
+            kwargs.pop('displayLines')
+        if 'displayPoints' in kwargs:
+            kwargs.pop('displayPoints')
+        if 'colors' in kwargs:
+            kwargs.pop('colors')
+        if 'timeColumn' in kwargs:
+            kwargs.pop('timeColumn')
+        return kwargs
 
     def add(self, item):
         self.chart.add(item)

@@ -74,7 +74,7 @@ public class KotlinEvaluator extends BaseEvaluator {
 
   @Override
   public ClassLoader getClassLoader() {
-    return loader.getParent();
+    return loader;
   }
 
   @Override

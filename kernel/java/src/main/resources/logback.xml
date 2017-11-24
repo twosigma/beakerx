@@ -7,7 +7,7 @@
     </encoder>
   </appender>
 
-  <appender name="FILE_GROOVY" class="ch.qos.logback.core.FileAppender">
+  <appender name="FILE_JAVA" class="ch.qos.logback.core.FileAppender">
     <encoder>
       <pattern>%date %-5level [%class{0}.%M:%line] %msg%n</pattern>
     </encoder>
@@ -16,7 +16,7 @@
   </appender>
 
   <logger name="com.twosigma.beakerx" level="debug">
-    <appender-ref ref="FILE_GROOVY" />
+    <appender-ref ref="FILE_JAVA" />
     <appender-ref ref="STDOUT" />
   </logger>
 

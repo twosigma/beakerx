@@ -16,7 +16,7 @@
   </appender>
 
   <logger name="com.twosigma.beakerx" level="debug">
-    <appender-ref ref="FILE_KOTLIN" />
+    <appender-ref ref="FILE_SCALA" />
     <appender-ref ref="STDOUT" />
   </logger>
 

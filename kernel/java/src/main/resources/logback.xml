@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="true">
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%date %-5level [%class{0}.%M:%line] %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE_GROOVY" class="ch.qos.logback.core.FileAppender">
+    <encoder>
+      <pattern>%date %-5level [%class{0}.%M:%line] %msg%n</pattern>
+    </encoder>
+    <append>true</append>
+    <file>../../logs/jupyter-java-kernel.log</file>
+  </appender>
+
+  <logger name="com.twosigma.beakerx" level="debug">
+    <appender-ref ref="FILE_GROOVY" />
+    <appender-ref ref="STDOUT" />
+  </logger>
+
+  <root level="info">
+    <appender-ref ref="STDOUT" />
+  </root>
+
+</configuration>

@@ -14,6 +14,18 @@
 
 FROM beakerx-base:latest
 
+ARG VCS_REF
+ARG VERSION
+
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="BeakerX" \
+      org.label-schema.description="BeakerX is a collection of kernels and extensions to the Jupyter interactive computing environment. It provides JVM support, interactive plots, tables, forms, publishing, and more." \
+      org.label-schema.url="http://beakerx.com/" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/twosigma/beakerx" \
+      org.label-schema.version=$VERSION \
+      org.label-schema.schema-version="1.0"
+
 MAINTAINER BeakerX Feedback <beakerx-feedback@twosigma.com>
 
 ENV SHELL /bin/bash

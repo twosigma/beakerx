@@ -12,7 +12,7 @@
       <pattern>%date %-5level [%class{0}.%M:%line] %msg%n</pattern>
     </encoder>
     <append>true</append>
-    <file>../../logs/jupyter-java-kernel.log</file>
+    <file>${user.home}/.jupyter/logs/jupyter-java-kernel.log</file>
   </appender>
 
   <logger name="com.twosigma.beakerx" level="debug">

@@ -2302,7 +2302,9 @@ define([
     var isLegendPlacedHorizontaly = (["LEFT", "RIGTH"].indexOf(legendPosition) !== -1) ||
       (["TOP", "BOTTOM"].indexOf(legendPosition) === -1 && this.stdmodel.legendLayout === "VERTICAL");
 
-    return isLegendPlacedHorizontaly ? plotWidth - (legendWidth + this.layout.legendMargin + 2) : plotWidth;
+    legendWidth = legendWidth ? legendWidth + this.layout.legendMargin + 2 : 0;
+
+    return isLegendPlacedHorizontaly ? plotWidth - legendWidth : plotWidth;
   };
 
   PlotScope.prototype.updatePlot = function() {

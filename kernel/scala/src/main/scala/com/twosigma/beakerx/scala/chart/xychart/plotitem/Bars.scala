@@ -17,9 +17,11 @@
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 import com.twosigma.beakerx.chart.Color
+import com.twosigma.beakerx.scala.JavaAdapter._
+
 import scala.collection.JavaConverters._
 
-class Bars extends com.twosigma.beakerx.chart.xychart.plotitem.Bars {
+class Bars extends com.twosigma.beakerx.chart.xychart.plotitem.Bars with BarsProperties {
 
   def this(x: Seq[Int], y: Seq[Int]) {
     this()
@@ -46,4 +48,20 @@ class Bars extends com.twosigma.beakerx.chart.xychart.plotitem.Bars {
     super.setDisplayName(displayName)
     super.setWidth(width)
   }
+}
+
+trait BarsProperties extends BasedXYGraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.Bars =>
+
+  def outlineColor = Option(getOutlineColor)
+  def outlineColor_=(color: Color) = setOutlineColor(color)
+  def outlineColor_=(color: java.awt.Color) = setOutlineColor(color)
+  // TODO: Use type constraint
+  def outlineColor_=[T <: AnyRef](colors: Seq[T]) = setOutlineColor(colors.map(identity[Object]).asJava)
+  def outlineColors = getNullableList(getOutlineColors)
+
+  def width = Option(getWidth)
+  def width_=(width: Number) = setWidth(width)
+  def width_=[T](widths: Seq[T])(implicit ev: T => Number) = setWidth(widths.map(ev).asJava)
+  def widths = getNullableList(getWidths)
 }

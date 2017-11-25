@@ -16,13 +16,18 @@
 
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
+import com.twosigma.beakerx.scala.JavaAdapter._
+
 import scala.collection.JavaConverters._
 
-class Rasters(y: Seq[Any], height: Seq[Any], width: Seq[Any]) extends com.twosigma.beakerx.chart.xychart.plotitem.Rasters {
+class Rasters extends com.twosigma.beakerx.chart.xychart.plotitem.Rasters with RastersProperties {
 
-  super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
-  super.setHeight(height.map(x => x.asInstanceOf[Number]).asJava)
-  super.setWidth(width.map(x => x.asInstanceOf[Number]).asJava)
+  def this(y: Seq[Any], height: Seq[Any], width: Seq[Any]) {
+    this()
+    super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
+    super.setHeight(height.map(x => x.asInstanceOf[Number]).asJava)
+    super.setWidth(width.map(x => x.asInstanceOf[Number]).asJava)
+  }
 
   def this(x: Seq[Any], y: Seq[Any], height: Seq[Any], width: Seq[Any], opacity: Seq[Any]) {
     this(y, height, width)
@@ -39,4 +44,32 @@ class Rasters(y: Seq[Any], height: Seq[Any], width: Seq[Any]) extends com.twosig
     this(x, y, height, width, opacity)
     super.setFileUrl(fileUrl)
   }
+}
+
+trait RastersProperties extends XYGraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.Rasters =>
+
+  def dataString: Array[Byte] = getDataString
+  def dataString_=(data: Seq[Byte]): Unit = setDataString(data.toArray)
+
+  def filePath: String = getFilePath
+  def filePath_=(path: String): Unit = setFilePath(path)
+
+  def fileUrl: String = getFileUrl
+  def fileUrl_=(url: String): Unit = setFileUrl(url)
+
+  def height: Seq[Number] = getNullableList(getHeight)
+  // TODO: use type constraint
+  def height_=[T](heights: Seq[T])(implicit conv: T => Number): Unit = setHeight(heights.map(conv).asJava)
+
+  def opacity: Seq[Number] = getOpacity.asScala
+  // TODO: use type constraint
+  def opacity_=[T](opacities: Seq[T])(implicit conv: T => Number): Unit = setOpacity(opacities.map(conv).asJava)
+
+  def position: String = getPosition
+  def postion_=(position: String): Unit = setPosition(position)
+
+  def width: Seq[Number] = getNullableList(getWidth)
+  // TODO: use type constraint
+  def width_=[T](widths: Seq[T])(implicit conv: T => Number): Unit = setWidth(widths.map(conv).asJava)
 }

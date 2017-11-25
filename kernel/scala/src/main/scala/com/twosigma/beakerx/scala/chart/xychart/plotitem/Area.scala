@@ -17,10 +17,11 @@
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 import com.twosigma.beakerx.chart.Color
+import com.twosigma.beakerx.scala.JavaAdapter._
 
 import scala.collection.JavaConverters._
 
-class Area extends com.twosigma.beakerx.chart.xychart.plotitem.Area {
+class Area extends com.twosigma.beakerx.chart.xychart.plotitem.Area with AreaProperties {
 
   def this(x: Seq[Int], y: Seq[Int]) {
     this()
@@ -50,4 +51,11 @@ class Area extends com.twosigma.beakerx.chart.xychart.plotitem.Area {
 
 
 
+}
+
+trait AreaProperties extends BasedXYGraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.Area =>
+
+  def interpolation = safeOption(getInterpolation)
+  def interpolation_=(i: Int) = setInterpolation(i)
 }

@@ -56,6 +56,13 @@ public class ClojureKernelTest extends KernelExecutionTest {
     return "(/ 16 2)";
   }
 
+  @Override
+  protected String codeForVerifyingAddedDemoJar() {
+    return "(import com.example.Demo)\n" +
+            "(def demo (new Demo))"+
+            "(. demo getObjectTest)";
+  }
+
   @Test
   public void evaluateFibSeq() throws Exception {
     //given

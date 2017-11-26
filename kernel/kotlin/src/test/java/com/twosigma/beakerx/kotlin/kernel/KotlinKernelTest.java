@@ -33,4 +33,10 @@ public class KotlinKernelTest extends KernelExecutionTest {
     return new Kotlin(sessionId, evaluator, kernelSocketsFactory, closeKernelAction);
   }
 
+  @Override
+  protected String codeForVerifyingAddedDemoJar() {
+    return "import com.example.Demo\n" +
+            "Demo().getObjectTest()";
+  }
+
 }

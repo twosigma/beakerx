@@ -113,4 +113,46 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
     assertThat(getText(message)).contains("Added jar: [loadMagicJarDemo.jar]");
   }
+
+  @Test
+  public void addImportFromDemoJar() throws Exception {
+    //given
+    //when
+    addDemoJar();
+    //then
+    verifyAddedDemoJar();
+  }
+
+  private void verifyAddedDemoJar() throws InterruptedException {
+    String code = codeForVerifyingAddedDemoJar();
+    Message message = getExecuteRequestMessage(code);
+    //when
+    kernelSocketsService.handleMsg(message);
+    //then
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    waitForResult(kernelSocketsService.getKernelSockets());
+    verifyResultOfAddedJar(kernelSocketsService.getExecuteResultMessage().get());
+  }
+
+  protected String codeForVerifyingAddedDemoJar() {
+    return "import com.example.Demo\n" +
+            "new Demo().getObjectTest()";
+  }
+
+  private void verifyResultOfAddedJar(Message message) {
+    Map actual = ((Map) message.getContent().get(Comm.DATA));
+    String value = (String) actual.get("text/plain");
+    assertThat(value).contains("Demo_test_123");
+  }
+
+  private void addDemoJar() {
+    String allCode = CLASSPATH_ADD_JAR + " " + "../../doc/resources/jar/demo.jar";
+    Code code = CodeFactory.create(allCode, new Message(), kernel);
+    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
+    assertThat(getText(message)).contains("Added jar: [demo.jar]");
+  }
+
+
 }

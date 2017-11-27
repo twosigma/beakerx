@@ -6,15 +6,19 @@ See http://BeakerX.com
 
 Install
 -------
-To install the experimental beakerx JupyterLab extension, install the Python package, make sure the Jupyter widgets extension is installed, and install the beakerx extension:
+
+To install the experimental beakerx JupyterLab extension, install the
+Python package, make sure the Jupyter widgets extension is installed,
+and install the beakerx extension:
 
 ```
-$ git clone https://github.com/twosigma/beakerx.git
-$ conda create -y -n beakerx 'python>=3' nodejs pandas openjdk
-$ source activate beakerx
-$ (cd beakerx; pip install -e . --verbose)
-$ beakerx-install
-$ cd beakerx/beakerx/jslab
-$ jupyter labextension install @jupyter-widgets/jupyterlab-manager # install the Jupyter widgets extension
-$ jupyter labextension install .
+git clone https://github.com/twosigma/beakerx.git
+conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven
+source activate beakerx
+conda install -c conda-forge jupyterlab
+(cd beakerx; pip install -e . --verbose)
+beakerx-install
+cd beakerx/jslab
+jupyter labextension install @jupyter-widgets/jupyterlab-manager
+jupyter labextension install .
 ```

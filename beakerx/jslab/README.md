@@ -14,7 +14,7 @@ $ conda create -y -n beakerx 'python>=3' nodejs pandas openjdk
 $ source activate beakerx
 $ (cd beakerx; pip install -e . --verbose)
 $ beakerx-install
-$ cd beakerx/beakerx/js/jslab
+$ cd beakerx/beakerx/jslab
 $ jupyter labextension install @jupyter-widgets/jupyterlab-manager # install the Jupyter widgets extension
 $ jupyter labextension install .
 ```

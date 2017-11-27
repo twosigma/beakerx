@@ -18,6 +18,7 @@ import MenuItem from '../../shared/interfaces/contextMenuItemInterface';
 
 export default function createTableMenuItems(scope: any): MenuItem[] {
   const selector = `#${scope.id}_wrapper thead`;
+
   const rotateMenuItemCallback = () => {
     scope.headersVertical = !scope.headersVertical;
     scope.rotateHeader();
@@ -26,14 +27,13 @@ export default function createTableMenuItems(scope: any): MenuItem[] {
 
   return [
     {
-      id: 'verticalHeaders',
+      id: `${scope.id}_verticalHeaders`,
       title: 'vertical headers',
       action: rotateMenuItemCallback,
       isVisible: () => !scope.headersVertical,
       selector
-    },
-    {
-      id: 'horizontalHeaders',
+    }, {
+      id: `${scope.id}_horizontalHeaders`,
       title: 'horizontal headers',
       action: rotateMenuItemCallback,
       isVisible: () => !!scope.headersVertical,

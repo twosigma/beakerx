@@ -74,7 +74,6 @@ export default abstract class BkoContextMenu implements MenuInterface {
     this.contextMenu.open(e);
   }
 
-
   protected buildLabMenu(): void {
     this.commands = lab.contextMenu.menu.commands;
     this.contextMenu = lab.contextMenu;

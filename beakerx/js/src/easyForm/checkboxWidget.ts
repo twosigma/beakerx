@@ -36,9 +36,11 @@ class CheckboxView extends widgets.CheckboxView {
     super.render();
 
     // Override rendering for standalone checkbox
-    if (this.options.parent.model.name === 'EasyFormModel') {
-      this.renderSingle();
-    }
+    try {
+      if (this.options.parent.model.name === 'EasyFormModel') {
+        this.renderSingle();
+      }
+    } catch (e) {}
   }
 
   renderSingle() {

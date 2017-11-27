@@ -202,7 +202,11 @@ public class Comm {
       message.setParentHeader(getParentMessage().getHeader());
     }
     HashMap<String, Serializable> map = new HashMap<>(6);
-    map.put(COMM_ID, getCommId());
+
+    if (type != JupyterMessages.DISPLAY_DATA) {
+      map.put(COMM_ID, getCommId());
+    }
+
     map.put(DATA, data);
     map.put(METADATA, metadata);
     message.setContent(map);

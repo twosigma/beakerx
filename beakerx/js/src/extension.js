@@ -36,7 +36,6 @@ __webpack_public_path__ = document.querySelector('body').getAttribute('data-base
 require('./../src/shared/style/beakerx.scss');
 require('./../src/plot/bko-combinedplot.css');
 require('./../src/plot/bko-plot.css');
-require('jquery-contextmenu/dist/jquery.contextMenu.min.css');
 
 define([
   'services/config',

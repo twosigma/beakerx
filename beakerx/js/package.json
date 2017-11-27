@@ -56,7 +56,6 @@
     "datatables.net-keytable-dt": "^2.3.2",
     "datatables.net-select": "^1.2.2",
     "flatpickr": "^2.6.3",
-    "jquery-contextmenu": "^2.4.5",
     "jquery-ui": "^1.12.1",
     "moment": "^2.17.1",
     "moment-timezone": "^0.5.13",

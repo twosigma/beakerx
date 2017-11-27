@@ -28,8 +28,7 @@ define([
   './../shared/bkUtils',
   './../shared/bkHelper',
   './gradientlegend',
-  './chartExtender',
-  'jquery-contextmenu'
+  './chartExtender'
 ], function(
   _,
   $,
@@ -44,8 +43,7 @@ define([
   bkUtils,
   bkHelper,
   GradientLegend,
-  bkoChartExtender,
-  contextMenu
+  bkoChartExtender
 ) {
 
   function PlotScope(wrapperId) {
@@ -2201,12 +2199,8 @@ define([
     if (!self.model.disableContextMenu) {
       self.saveAsMenuContainer = $('div#'+self.wrapperId+' #' + self.id);
       // init context menu for 'save as...'
-      $.contextMenu({
-        selector: 'div#'+self.wrapperId+' #' + self.id,
-        zIndex: 3,
-        items: plotUtils.getSavePlotAsContextMenuItems(self),
-        trigger: 'none'
-      });
+      var ContextMenu = require('./contextMenu/plotContextMenu.ts').default;
+      self.contextMenu = new ContextMenu(self);
     } else if (self.model && self.model.getSaveAsMenuContainer) {
       self.saveAsMenuContainer = self.model.getSaveAsMenuContainer();
     }
@@ -2436,7 +2430,7 @@ define([
 
     setTimeout(this.initProperties.bind(this));
 
-    $.contextMenu('destroy', { selector: '#' + this.id});
+    this.contextMenu && this.contextMenu.destroy();
   };
 
   PlotScope.prototype.getSvgToSave = function() {

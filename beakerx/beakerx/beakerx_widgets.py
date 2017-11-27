@@ -47,8 +47,8 @@ class EasyFormComponent:
 
 
 class BeakerxLayout(Layout):
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('@jupyter-widgets/base').tag(sync=True)
+    _model_module = Unicode('@jupyter-widgets/base').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
 
@@ -62,10 +62,10 @@ class BeakerxWidget(Widget):
 
 
 class BeakerxDOMWidget(DOMWidget):
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
+    _view_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
+    _model_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
 
     def __init__(self, **kwargs):
         super(BeakerxDOMWidget, self).__init__(**kwargs)
@@ -90,8 +90,8 @@ class BeakerxBox(Box):
         super(BeakerxBox, self).__init__(**kwargs)
         self.components = dict()
 
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
+    _view_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
+    _model_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
 
@@ -153,6 +153,8 @@ class BeakerxHTML(HTML, EasyFormComponent):
         if len(args) > 0:
             self.value = args[0]
 
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
 
@@ -166,8 +168,6 @@ class BeakerxHTMLPre(HTML, EasyFormComponent):
 
     _view_name = Unicode('HTMLPreView').tag(sync=True)
     _model_name = Unicode('HTMLPreModel').tag(sync=True)
-    _view_module = Unicode('beakerx').tag(sync=True)
-    _model_module = Unicode('beakerx').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
 
@@ -179,8 +179,8 @@ class BeakerxButton(Button, EasyFormComponent):
     def __init__(self, **kwargs):
         super(BeakerxButton, self).__init__(**kwargs)
 
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
+    _model_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
     align_self = Unicode('*').tag(sync=True)
@@ -200,8 +200,11 @@ class BeakerxComboBox(Dropdown, EasyFormComponent):
     _model_name = Unicode('ComboBoxModel').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
     editable = Bool(default_value=False).tag(sync=True)
     original_options = Union([List(), Dict()])
+    style = None
 
     def _handle_msg(self, msg):
         if 'value' in msg['content']['data']['state']:
@@ -241,8 +244,8 @@ class BeakerxLabel(Label, EasyFormComponent):
     def __init__(self, **kwargs):
         super(BeakerxLabel, self).__init__(**kwargs)
 
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
+    _model_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
 
@@ -256,8 +259,8 @@ class BeakerxHBox(HBox):
         if children is not None:
             self.children += tuple(children)
 
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
+    _model_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
 
@@ -269,8 +272,8 @@ class BeakerxVBox(VBox):
     def __init__(self, **kwargs):
         super(BeakerxVBox, self).__init__(**kwargs)
 
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
+    _model_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
 
@@ -328,6 +331,8 @@ class SelectMultipleWithRows(SelectMultiple, EasyFormComponent):
 
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
     size = Int(5, help="The number of rows to display.").tag(sync=True)
 
 
@@ -339,6 +344,8 @@ class SelectMultipleSingle(Select, EasyFormComponent):
     _model_name = Unicode('SelectMultipleSingleModel').tag(sync=True)
     _view_module = Unicode('beakerx').tag(sync=True)
     _model_module = Unicode('beakerx').tag(sync=True)
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
     size = Int(5, help="The number of rows to display.").tag(sync=True)
 
 

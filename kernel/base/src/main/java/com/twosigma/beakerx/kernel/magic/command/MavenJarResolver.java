@@ -43,17 +43,20 @@ public class MavenJarResolver {
   private final String pathToMavenRepo;
   private ResolverParams commandParams;
   private String mavenLocation;
+  private PomFactory pomFactory;
 
-  public MavenJarResolver(final ResolverParams commandParams) {
+  public MavenJarResolver(final ResolverParams commandParams,
+      PomFactory pomFactory) {
     this.commandParams = checkNotNull(commandParams);
     this.pathToMavenRepo = getOrCreateFile(commandParams.getPathToNotebookJars()).getAbsolutePath();
+    this.pomFactory = pomFactory;
   }
 
   public AddMvnCommandResult retrieve(String groupId, String artifactId, String version, ClasspathAddMvnMagicCommand.MvnLoggerWidget progress) {
     File finalPom = null;
     try {
       Dependency dependency = new Dependency(groupId, artifactId, version);
-      String pomAsString = new PomFactory().createPom(pathToMavenRepo, commandParams.getPathToNotebookJars(), dependency, commandParams.getRepos());
+      String pomAsString = pomFactory.createPom(pathToMavenRepo, commandParams.getPathToNotebookJars(), dependency, commandParams.getRepos());
       finalPom = saveToFile(commandParams.getPathToNotebookJars(), dependency, pomAsString);
       InvocationRequest request = createInvocationRequest();
       request.setOffline(commandParams.getOffline());

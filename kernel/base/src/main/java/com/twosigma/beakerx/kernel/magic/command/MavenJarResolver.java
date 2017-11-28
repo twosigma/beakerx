@@ -107,6 +107,7 @@ public class MavenJarResolver {
       }
       return AddMvnCommandResult.error("Could not resolve dependencies for: " + groupId + " : " + artifactId + " : " + version);
     }
+
     return AddMvnCommandResult.SUCCESS;
   }
 

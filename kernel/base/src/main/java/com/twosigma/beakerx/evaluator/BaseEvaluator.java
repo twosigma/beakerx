@@ -26,7 +26,6 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -51,41 +50,38 @@ public abstract class BaseEvaluator implements Evaluator {
     sessionId = sId;
     executor = cellExecutor;
     tempFolder = tempFolderFactory.createTempFolder();
-    outDir = tempFolder.toString();
+    outDir = getOrCreateFile(tempFolder.toString() + File.separator + "outDir").getPath();
     classPath = new Classpath();
+    classPath.add(new PathToJar(outDir));
     imports = new Imports();
     configure(evaluatorParameters);
   }
 
   @Override
   public boolean addJarToClasspath(PathToJar path) {
-    boolean added = addJar(path);
-    if (added) {
-      resetEnvironment();
+    boolean add = classPath.add(path);
+    if (add) {
+      addJarToClassLoader(path);
     }
-
-    return added;
+    return add;
   }
 
   @Override
   public List<Path> addJarsToClasspath(List<PathToJar> paths) {
     LinkedList<Path> addedPaths = Lists.newLinkedList();
     paths.forEach(path -> {
-      if (addJar(path)) {
+      if (addJarToClasspath(path)) {
         addedPaths.add(Paths.get(path.getPath()));
       }
     });
-
-    if (!addedPaths.isEmpty()) {
-      resetEnvironment();
-    }
     return addedPaths;
   }
 
   @Override
   public void addImport(ImportPath anImport) {
-    if (addImportPath(anImport)) {
-      resetEnvironment();
+    boolean add = imports.add(anImport);
+    if (add) {
+      addImportToClassLoader(anImport);
     }
   }
 
@@ -106,13 +102,9 @@ public abstract class BaseEvaluator implements Evaluator {
     return imports;
   }
 
-  protected boolean addJar(PathToJar path) {
-    return classPath.add(path);
-  }
+  protected abstract void addJarToClassLoader(PathToJar pathToJar);
 
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
-  }
+  protected abstract void addImportToClassLoader(ImportPath anImport);
 
   protected boolean removeImportPath(ImportPath anImport) {
     return imports.remove(anImport);
@@ -122,23 +114,17 @@ public abstract class BaseEvaluator implements Evaluator {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(DefaultJVMVariables.CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
-
-    if (listOfClassPath == null || listOfClassPath.isEmpty()) {
-      classPath = new Classpath();
-    } else {
+    if (listOfClassPath != null) {
       for (String line : listOfClassPath) {
         if (!line.trim().isEmpty()) {
-          addJar(new PathToJar(line));
+          classPath.add(new PathToJar(line));
         }
       }
     }
-
-    if (listOfImports == null || listOfImports.isEmpty()) {
-      imports = new Imports();
-    } else {
+    if (listOfImports != null) {
       for (String line : listOfImports) {
         if (!line.trim().isEmpty()) {
-          addImportPath(new ImportPath(line));
+          imports.add(new ImportPath(line));
         }
       }
     }
@@ -204,4 +190,17 @@ public abstract class BaseEvaluator implements Evaluator {
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
     return getClassLoader().loadClass(clazzName);
   }
+
+  private File getOrCreateFile(String pathToMavenRepo) {
+    File theDir = new File(pathToMavenRepo);
+    if (!theDir.exists()) {
+      try {
+        theDir.mkdirs();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return theDir;
+  }
+
 }

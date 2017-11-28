@@ -18,7 +18,7 @@ package com.twosigma.beakerx.javash.evaluator;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.WorkerThread;
-import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
+import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.kernel.ImportPath;
 import org.apache.commons.lang3.StringUtils;
 
@@ -79,7 +79,7 @@ class JavaWorkerThread extends WorkerThread {
     NamespaceClient.delBeaker(javaEvaluator.getSessionId());
   }
 
-  private void runCode(DynamicClassLoaderSimple loader, JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler) {
+  private void runCode(BeakerxUrlClassLoader loader, JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler) {
     j.outputObject.started();
     CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(javaEvaluator.getOutDir()));
     buildClasspath(compilationUnit);
@@ -92,7 +92,7 @@ class JavaWorkerThread extends WorkerThread {
     compileCode(loader, j, javaSourceCompiler, pname, compilationUnit, codev, lineNumbersMapping, javaSourceCode);
   }
 
-  private void compileCode(DynamicClassLoaderSimple loader, JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler, String pname, CompilationUnit compilationUnit, Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
+  private void compileCode(BeakerxUrlClassLoader loader, JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler, String pname, CompilationUnit compilationUnit, Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
     if (codev.hasLineToProcess()) {
       Codev.CodeLine codeLine = codev.getNotBlankLine();
       Pattern p = Pattern.compile("(?:^|.*\\s+)(?:(?:class)|(?:interface))\\s+([a-zA-Z]\\w*).*");
@@ -156,7 +156,7 @@ class JavaWorkerThread extends WorkerThread {
     return pname;
   }
 
-  private void compileAndRunCode(DynamicClassLoaderSimple loader, JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler, String pname, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit, Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
+  private void compileAndRunCode(BeakerxUrlClassLoader loader, JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler, String pname, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit, Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
     String classId = generateClassId();
     String ret = "void";
     if (codev.getLastLine().matches("(^|.*\\s+)return\\s+.*"))

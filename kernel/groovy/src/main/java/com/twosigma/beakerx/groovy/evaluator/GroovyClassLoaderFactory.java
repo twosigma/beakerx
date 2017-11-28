@@ -32,7 +32,7 @@ public class GroovyClassLoaderFactory {
   private static final String STATIC_WORD_WITH_SPACE = "static ";
   private static final String DOT_STAR_POSTFIX = ".*";
 
-  public static GroovyClassLoader newEvaluator(Imports imports, Classpath classpath, String outDir) {
+  public static GroovyClassLoader newEvaluator(Imports imports, Classpath classpath, String outDir,ImportCustomizer icz) {
 
     try {
       Class.forName("org.codehaus.groovy.control.customizers.ImportCustomizer");
@@ -47,37 +47,7 @@ public class GroovyClassLoaderFactory {
       throw new GroovyNotFoundException(errorMsg);
     }
 
-    ImportCustomizer icz = new ImportCustomizer();
-
-    if (!imports.isEmpty()) {
-      for (ImportPath importLine : imports.getImportPaths()) {
-        if (importLine.asString().startsWith(STATIC_WORD_WITH_SPACE)) {
-
-          String pureImport = importLine.asString()
-                  .replace(STATIC_WORD_WITH_SPACE, StringUtils.EMPTY)
-                  .replace(DOT_STAR_POSTFIX, StringUtils.EMPTY);
-
-          if (importLine.asString().endsWith(DOT_STAR_POSTFIX)) {
-            icz.addStaticStars(pureImport);
-          } else {
-            int index = pureImport.lastIndexOf('.');
-            if (index == -1) {
-              continue;
-            }
-            icz.addStaticImport(pureImport.substring(0, index), pureImport.substring(index + 1));
-          }
-
-        } else {
-
-          if (importLine.asString().endsWith(DOT_STAR_POSTFIX)) {
-            icz.addStarImports(importLine.asString().replace(DOT_STAR_POSTFIX, StringUtils.EMPTY));
-          } else {
-            icz.addImports(importLine.asString());
-          }
-
-        }
-      }
-    }
+    icz = addImportsCustomizer(icz, imports);
     CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
 
     String acloader_cp = "";
@@ -89,6 +59,44 @@ public class GroovyClassLoaderFactory {
 
     config.setClasspath(acloader_cp);
     return new GroovyClassLoader(newClassLoader(classpath, outDir), config);
+  }
+
+  private static ImportCustomizer addImportsCustomizer(ImportCustomizer icz, Imports imports) {
+
+    if (!imports.isEmpty()) {
+      for (ImportPath importLine : imports.getImportPaths()) {
+        addImportPathToImportCustomizer(icz, importLine);
+      }
+    }
+    return icz;
+  }
+
+  public static void addImportPathToImportCustomizer(ImportCustomizer icz, ImportPath importLine) {
+    if (importLine.asString().startsWith(STATIC_WORD_WITH_SPACE)) {
+
+      String pureImport = importLine.asString()
+              .replace(STATIC_WORD_WITH_SPACE, StringUtils.EMPTY)
+              .replace(DOT_STAR_POSTFIX, StringUtils.EMPTY);
+
+      if (importLine.asString().endsWith(DOT_STAR_POSTFIX)) {
+        icz.addStaticStars(pureImport);
+      } else {
+        int index = pureImport.lastIndexOf('.');
+        if (index == -1) {
+          return;
+        }
+        icz.addStaticImport(pureImport.substring(0, index), pureImport.substring(index + 1));
+      }
+
+    } else {
+
+      if (importLine.asString().endsWith(DOT_STAR_POSTFIX)) {
+        icz.addStarImports(importLine.asString().replace(DOT_STAR_POSTFIX, StringUtils.EMPTY));
+      } else {
+        icz.addImports(importLine.asString());
+      }
+
+    }
   }
 
   protected static ClassLoader newClassLoader(Classpath classpath, String outDir) {

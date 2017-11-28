@@ -71,7 +71,7 @@ public class ClasspathMagicCommandTest {
     MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
     assertThat(classpath(result)).contains("foo.jar", "bar.jar");
-    assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(1);
+    assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(0);
   }
 
   @Test

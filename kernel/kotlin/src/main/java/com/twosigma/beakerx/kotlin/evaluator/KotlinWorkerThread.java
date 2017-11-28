@@ -18,16 +18,12 @@ package com.twosigma.beakerx.kotlin.evaluator;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.WorkerThread;
-import com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.ReplWithClassLoader;
-import org.jetbrains.kotlin.cli.common.repl.ReplClassLoader;
-import org.jetbrains.kotlin.cli.jvm.repl.ReplInterpreter;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
-import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createReplWithClassLoader;
 
 class KotlinWorkerThread extends WorkerThread {
 

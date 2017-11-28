@@ -22,7 +22,7 @@ import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.javash.autocomplete.JavaAutocomplete;
-import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
+import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
@@ -30,6 +30,7 @@ import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
+import com.twosigma.beakerx.kernel.PathToJar;
 
 import java.io.File;
 
@@ -40,7 +41,7 @@ public class JavaEvaluator extends BaseEvaluator {
   private ClasspathScanner cps;
   private JavaAutocomplete jac;
   private JavaWorkerThread workerThread;
-  private DynamicClassLoaderSimple loader = null;
+  private BeakerxUrlClassLoader loader = null;
 
   public JavaEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
     this(id, sId, new BeakerCellExecutor("javash"), new TempFolderFactoryImpl(), evaluatorParameters);
@@ -51,8 +52,6 @@ public class JavaEvaluator extends BaseEvaluator {
     packageId = "com.twosigma.beaker.javash.bkr" + shellId.split("-")[0];
     cps = new ClasspathScanner();
     jac = createJavaAutocomplete(cps);
-    classPath = new Classpath();
-    imports = new Imports();
     loader = newClassLoader();
     workerThread = new JavaWorkerThread(this);
     workerThread.start();
@@ -65,6 +64,16 @@ public class JavaEvaluator extends BaseEvaluator {
     jac = createAutocomplete(imports, cps);
     loader = newClassLoader();
     workerThread.halt();
+  }
+
+  @Override
+  protected void addJarToClassLoader(PathToJar pathToJar) {
+    loader.addJar(pathToJar);
+  }
+
+  @Override
+  protected void addImportToClassLoader(ImportPath anImport) {
+
   }
 
   @Override
@@ -118,15 +127,13 @@ public class JavaEvaluator extends BaseEvaluator {
     return packageId;
   }
 
-  private DynamicClassLoaderSimple newClassLoader() {
-    DynamicClassLoaderSimple loader;
-    loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+  private BeakerxUrlClassLoader newClassLoader() {
+    BeakerxUrlClassLoader loader = new BeakerxUrlClassLoader(ClassLoader.getSystemClassLoader());
     loader.addJars(getClasspath().getPathsAsStrings());
-    loader.addDynamicDir(getOutDir());
     return loader;
   }
 
-  public DynamicClassLoaderSimple getJavaClassLoader() {
+  public BeakerxUrlClassLoader getJavaClassLoader() {
     return loader;
   }
 }

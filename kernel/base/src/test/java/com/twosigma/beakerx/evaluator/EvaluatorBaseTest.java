@@ -97,20 +97,11 @@ public abstract class EvaluatorBaseTest {
   protected abstract String codeForPrintln();
 
   @Test
-  public void shouldCreateTempFolder() throws Exception {
+  public void shouldCreateAndRemoveTempFolder() throws Exception {
     //given
-    //when
     BaseEvaluator groovyEvaluator = createNewEvaluator();
-    //then
+    //when
     assertThat(Files.exists(groovyEvaluator.getTempFolder())).isTrue();
-    groovyEvaluator.exit();
-  }
-
-  @Test
-  public void shouldRemoveTempFolder() throws Exception {
-    //given
-    BaseEvaluator groovyEvaluator = createNewEvaluator();
-    //when
     groovyEvaluator.exit();
     //then
     assertThat(Files.exists(groovyEvaluator.getTempFolder())).isFalse();

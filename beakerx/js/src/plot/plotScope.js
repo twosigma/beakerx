@@ -2700,7 +2700,7 @@ define([
 
     if (axis && axis.axisType === 'linear') {
       var l = axis.axisValL.toFixed(axis.axisFixed) + '';
-      var r = axis.axisValL.toFixed(axis.axisFixed) + '';
+      var r = axis.axisValR.toFixed(axis.axisFixed) + '';
 
       var m = l.length > r.length ? l : r;
       var size = measureText(m, 13, pStyle);

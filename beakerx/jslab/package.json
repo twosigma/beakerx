@@ -17,9 +17,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "@jupyter-widgets/jupyterlab-manager": "^0.28.0"
-  },
   "jupyterlab": {
     "extension": true
   }

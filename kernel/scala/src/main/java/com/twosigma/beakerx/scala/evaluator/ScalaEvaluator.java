@@ -53,6 +53,7 @@ import java.nio.file.Paths;
 
 import static java.util.Collections.singletonList;
 
+
 public class ScalaEvaluator extends BaseEvaluator {
 
   private final static Logger logger = LoggerFactory.getLogger(ScalaEvaluator.class.getName());
@@ -60,7 +61,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   private ScalaWorkerThread workerThread;
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
   private static boolean autoTranslationSetup = false;
-  private BeakerxUrlClassLoader classLoader;
+  //private BeakerxUrlClassLoader classLoader;
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters) {
     this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl(), new TempFolderFactoryImpl(), evaluatorParameters);
@@ -81,16 +82,16 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   public ClassLoader getClassLoader() {
-    return classLoader;
+    return shell.interpreter().classLoader();
   }
 
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
     try {
       Path path = Paths.get(pathToJar.getPath()).toAbsolutePath();
-      logger.info("addJarToClassLoader ----> " + path + ", exists: " + path.toFile().exists());
       URL url = path.toUri().toURL();
-      classLoader.addJar(url);
+      //classLoader.addJar(url);
+      //shell.settings().classpath().append(path.toString());
       Seq<URL> urls = JavaConversions.asScalaBuffer(singletonList(url)).toSeq();
       shell.interpreter().addUrlsToClassPath(urls);
     } catch (Exception e) {
@@ -222,8 +223,9 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   void newEvaluator() {
     logger.debug("creating new evaluator");
-    this.classLoader = newClassLoader();
-    shell = new ScalaEvaluatorGlue(classLoader,
+    //this.classLoader = newClassLoader();
+    loader_cp =createLoaderCp();
+    shell = new ScalaEvaluatorGlue(null ,
             loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), getOutDir());
 
     if (!getImports().isEmpty()) {
@@ -257,18 +259,21 @@ public class ScalaEvaluator extends BaseEvaluator {
  * Scala uses multiple classloaders and (unfortunately) cannot fallback to the java one while compiling scala code so we
  * have to build our DynamicClassLoader and also build a proper classpath for the compiler classloader.
  */
-  private BeakerxUrlClassLoader newClassLoader() {
-    logger.debug("creating new loader");
+//  private BeakerxUrlClassLoader newClassLoader() {
+//    logger.debug("creating new loader");
+//    BeakerxUrlClassLoader cl = new BeakerxUrlClassLoader(ClassLoader.getSystemClassLoader());
+//    cl.addJars(getClasspath().getPathsAsStrings());
+//    return cl;
+//  }
 
-    loader_cp = "";
+  private String createLoaderCp() {
+    String loader_cp = "";
     for (int i = 0; i < getClasspath().size(); i++) {
       loader_cp += getClasspath().get(i);
       loader_cp += File.pathSeparatorChar;
     }
     loader_cp += getOutDir();
-    BeakerxUrlClassLoader cl = new BeakerxUrlClassLoader(ClassLoader.getSystemClassLoader());
-    cl.addJars(getClasspath().getPathsAsStrings());
-    return cl;
+    return loader_cp;
   }
 
 

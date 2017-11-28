@@ -89,6 +89,7 @@ public class ScalaEvaluator extends BaseEvaluator {
       URL path = Paths.get(pathToJar.getPath()).toUri().toURL();
       classLoader.addJar(path);
       Seq<URL> urls = JavaConversions.asScalaBuffer(singletonList(path)).toSeq();
+      logger.info("addJarToClassLoader ----> " + urls);
       shell.interpreter().addUrlsToClassPath(urls);
     } catch (Exception e) {
       throw new RuntimeException(e);

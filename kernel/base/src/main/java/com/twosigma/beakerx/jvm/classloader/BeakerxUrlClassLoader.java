@@ -24,6 +24,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class BeakerxUrlClassLoader extends URLClassLoader {
 
   public BeakerxUrlClassLoader(URL[] urls, ClassLoader parent) {
@@ -35,12 +37,13 @@ public class BeakerxUrlClassLoader extends URLClassLoader {
   }
 
   public void addJar(URL url) {
-    super.addURL(url);
+    super.addURL(checkNotNull(url));
   }
 
   public void addJar(PathToJar pathToJar) {
     try {
-      super.addURL(Paths.get(pathToJar.getPath()).toUri().toURL());
+      URL url = Paths.get(pathToJar.getPath()).toUri().toURL();
+      super.addURL(checkNotNull(url));
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
     }
@@ -49,7 +52,8 @@ public class BeakerxUrlClassLoader extends URLClassLoader {
   public void addJars(List<String> paths) {
     for (String dir : paths) {
       try {
-        super.addURL(Paths.get(dir).toUri().toURL());
+        URL url = Paths.get(dir).toUri().toURL();
+        super.addURL(checkNotNull(url));
       } catch (MalformedURLException e) {
       }
     }

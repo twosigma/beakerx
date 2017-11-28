@@ -43,12 +43,12 @@ import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.collection.JavaConversions;
+import scala.collection.Seq;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.List;
 
 import static java.util.Collections.singletonList;
 
@@ -88,8 +88,8 @@ public class ScalaEvaluator extends BaseEvaluator {
     try {
       URL path = Paths.get(pathToJar.getPath()).toUri().toURL();
       classLoader.addJar(path);
-      List<URL> urls = singletonList(Paths.get(pathToJar.getPath()).toUri().toURL());
-      shell.interpreter().addUrlsToClassPath(JavaConversions.asScalaBuffer(urls).toSeq());
+      Seq<URL> urls = JavaConversions.asScalaBuffer(singletonList(path)).toSeq();
+      shell.interpreter().addUrlsToClassPath(urls);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

@@ -21,6 +21,7 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.AddStaticImportMa
 import com.twosigma.beakerx.kernel.magic.command.functionality.BashMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathRemoveMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathShowMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
@@ -51,6 +52,7 @@ public class MagicCommandTypesFactory {
                     lsmagic(magicCommandTypes),
                     addJar(kernel),
                     addJarByMvn(kernel),
+                    addRepo(kernel),
                     removeJar(kernel),
                     showClasspath(kernel),
                     addStaticImport(kernel),
@@ -113,6 +115,10 @@ public class MagicCommandTypesFactory {
 
   private static MagicCommandType addJar(KernelFunctionality kernel) {
     return new MagicCommandType(ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR, "<jar path>", new ClasspathAddJarMagicCommand(kernel));
+  }
+
+  private static MagicCommandType addRepo(KernelFunctionality kernel) {
+    return new MagicCommandType(ClasspathAddRepoMagicCommand.CLASSPATH_CONFIG_RESOLVER, "<repoName repoUrl>", new ClasspathAddRepoMagicCommand(kernel));
   }
 
   private static MagicCommandType lsmagic(List<MagicCommandType> magicCommandTypes) {

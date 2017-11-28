@@ -15,32 +15,30 @@
  */
 package com.twosigma.beakerx.kernel.magic.command;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.twosigma.beakerx.kernel.commands.MavenInvocationSilentOutputHandler;
 import com.twosigma.beakerx.kernel.commands.MavenJarResolverSilentLogger;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class MavenJarResolver {
 
   public static final String MVN_DIR = File.separator + "mvnJars";
   public static final String POM_XML = "PomTemplateMagicCommand.xml";
-  public static final List<String> GOALS = Arrays.asList("validate");
+  public static final List<String> GOALS = Collections.singletonList("validate");
 
   private final String pathToMavenRepo;
   private ResolverParams commandParams;
@@ -54,7 +52,9 @@ public class MavenJarResolver {
   public AddMvnCommandResult retrieve(String groupId, String artifactId, String version, ClasspathAddMvnMagicCommand.MvnLoggerWidget progress) {
     File finalPom = null;
     try {
-      finalPom = getPom(groupId, artifactId, version);
+      Dependency dependency = new Dependency(groupId, artifactId, version);
+      String pomAsString = new PomFactory().createPom(pathToMavenRepo, commandParams.getPathToNotebookJars(), dependency, commandParams.getRepos());
+      finalPom = saveToFile(commandParams.getPathToNotebookJars(), dependency, pomAsString);
       InvocationRequest request = createInvocationRequest();
       request.setOffline(commandParams.getOffline());
       request.setPomFile(finalPom);
@@ -68,6 +68,15 @@ public class MavenJarResolver {
     } finally {
       deletePomFolder(finalPom);
     }
+  }
+
+  private File saveToFile(String pathToNotebookJars, Dependency dependency, String pomAsString)
+      throws IOException {
+    File finalPom = new File(pathToNotebookJars + "/poms/pom-" + UUID.randomUUID() + "-" +
+        dependency.getGroupId() + dependency.getArtifactId() + dependency.getVersion() + "xml");
+
+    FileUtils.writeStringToFile(finalPom, pomAsString, StandardCharsets.UTF_8);
+    return finalPom;
   }
 
   private Invoker getInvoker(ClasspathAddMvnMagicCommand.MvnLoggerWidget progress) {
@@ -126,38 +135,32 @@ public class MavenJarResolver {
     }
   }
 
-  private File getPom(String groupId, String artifactId, String version) throws IOException {
-    InputStream pom = getClass().getClassLoader().getResourceAsStream(POM_XML);
-    String pomAsString = IOUtils.toString(pom, StandardCharsets.UTF_8);
-    pomAsString = configureOutputDir(pomAsString);
-    pomAsString = configureDependencies(groupId, artifactId, version, pomAsString);
-
-    File finalPom = new File(this.commandParams.getPathToNotebookJars() + "/poms/pom-" + UUID.randomUUID() + "-" + groupId + artifactId + version + "xml");
-    FileUtils.writeStringToFile(finalPom, pomAsString, StandardCharsets.UTF_8);
-    return finalPom;
-  }
-
-  private String configureDependencies(String groupId, String artifactId, String version, String pomAsString) {
-    return pomAsString.replace(
-            "<dependencies></dependencies>",
-            "<dependencies>\n" +
-                    "  <dependency>\n" +
-                    "    <groupId>" + groupId + "</groupId>\n" +
-                    "    <artifactId>" + artifactId + "</artifactId>\n" +
-                    "    <version>" + version + "</version>\n" +
-                    "  </dependency>\n" +
-                    "</dependencies>");
-  }
-
-  private String configureOutputDir(String pomAsString) {
-    String absolutePath = new File(this.getPathToMavenRepo()).getAbsolutePath();
-    return pomAsString.replace(
-            "<outputDirectory>pathToNotebookJars</outputDirectory>",
-            "<outputDirectory>" + absolutePath + "</outputDirectory>");
-  }
-
   public String getPathToMavenRepo() {
     return pathToMavenRepo;
+  }
+
+  public static class Dependency {
+    String groupId;
+    String artifactId;
+    String version;
+
+    public Dependency(String groupId, String artifactId, String version) {
+      this.groupId = groupId;
+      this.artifactId = artifactId;
+      this.version = version;
+    }
+
+    public String getGroupId() {
+      return groupId;
+    }
+
+    public String getArtifactId() {
+      return artifactId;
+    }
+
+    public String getVersion() {
+      return version;
+    }
   }
 
   public static class AddMvnCommandResult {
@@ -194,11 +197,18 @@ public class MavenJarResolver {
     private String pathToCache;
     private String pathToNotebookJars;
     private boolean offline = false;
+    private Map<String, String> repos = Collections.emptyMap();
 
     public ResolverParams(String pathToCache, String pathToNotebookJars, boolean offline) {
       this.pathToCache = checkNotNull(pathToCache);
       this.pathToNotebookJars = checkNotNull(pathToNotebookJars);
       this.offline = offline;
+    }
+
+    public ResolverParams(String pathToCache, String pathToNotebookJars, boolean offline,
+        Map<String, String> repos) {
+      this(pathToCache, pathToNotebookJars, offline);
+      this.repos = repos;
     }
 
     public ResolverParams(String pathToCache, String pathToNotebookJars) {
@@ -215,6 +225,14 @@ public class MavenJarResolver {
 
     public boolean getOffline() {
       return offline;
+    }
+
+    public Map<String, String> getRepos() {
+      return repos;
+    }
+
+    public void setRepos(Map<String, String> repos) {
+      this.repos = repos;
     }
   }
 

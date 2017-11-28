@@ -60,6 +60,7 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, ADD_MVN_FORMAT_ERROR_MESSAGE);
     }
 
+    commandParams.setRepos(kernel.getRepos().get());
     MavenJarResolver classpathAddMvnCommand = new MavenJarResolver(commandParams);
     MvnLoggerWidget progress = new MvnLoggerWidget(param.getCode().getMessage());
     AddMvnCommandResult result;

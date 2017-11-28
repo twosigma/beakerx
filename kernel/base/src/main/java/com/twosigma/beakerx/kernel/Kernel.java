@@ -36,7 +36,6 @@ import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -217,6 +216,16 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public Classpath getClasspath() {
     return this.evaluatorManager.getClasspath();
+  }
+
+  @Override
+  public Repos getRepos() {
+    return this.evaluatorManager.getRepos();
+  }
+
+  @Override
+  public String addRepo(String name, String url) {
+    return this.evaluatorManager.addRepo(name, url);
   }
 
   @Override

@@ -1,6 +1,6 @@
 {
   "name": "beakerx-jupyterlab",
-  "version": "0.1.0",
+  "version": "0.9.0",
   "description": "BeakerX: Beaker Extensions for JupyterLab",
   "author": "Two Sigma Open Source, LLC",
   "main": "index.js",

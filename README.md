@@ -52,14 +52,39 @@ how to install and run BeakerX.
 * [yarn](https://yarnpkg.com/lang/en/docs/install/)
 
 ### Build and Install
-
-```
-conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven
+#### Installation with Conda
+We recommend [conda](https://www.anaconda.com/download/) to install Jupyter and BeakerX, and to manage your Python environments. BeakerX works with Python 3.5 and above. Conda forge hosts the [lastest version](https://anaconda.org/conda-forge/beakerx).
+```%bash
+conda create -y -n beakerx 'python>=3'
 source activate beakerx
 conda install -y -c conda-forge ipywidgets
-(cd beakerx; pip install -e . --verbose)
+conda install -y -c conda-forge beakerx
+```
+#### Running BeakerX with Conda
+Start Jupyter with
+```%bash
+jupyter notebook
+```
+and then use the “New” menu to create a notebook in the language of your choice.
+
+Note: Make sure that you switch to `source activate beakerx` before running `jupyter notebook` command each time.
+##### Upgrading
+If you have an environment with a previous version of BeakerX, to upgrade to the latest version use:
+```%bash
+conda update -c conda-forge beakerx
+```
+#### Installation with Pip
+You can also install BeakerX with [pip](https://pypi.python.org/pypi/pip).
+```%bash
+pip install beakerx
 beakerx-install
 ```
+#### Running BeakerX
+Start Jupyter with
+```%bash
+jupyter notebook
+```
+and then use the “New” menu to create a notebook in the language of your choice.
 
 ### Update after Java change
 

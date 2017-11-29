@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
+import com.google.common.base.Joiner;
 import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
@@ -49,14 +50,7 @@ public class GroovyClassLoaderFactory {
 
     icz = addImportsCustomizer(icz, imports);
     CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
-
-    String acloader_cp = "";
-    for (int i = 0; i < classpath.size(); i++) {
-      acloader_cp += classpath.get(i);
-      acloader_cp += File.pathSeparatorChar;
-    }
-    acloader_cp += outDir;
-
+    String acloader_cp = Joiner.on(File.pathSeparatorChar).join(classpath.getPathsAsStrings());
     config.setClasspath(acloader_cp);
     return new GroovyClassLoader(newClassLoader(classpath), config);
   }

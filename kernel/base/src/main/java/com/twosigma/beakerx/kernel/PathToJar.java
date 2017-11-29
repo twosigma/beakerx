@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
 
@@ -29,8 +28,9 @@ public class PathToJar {
 
   public PathToJar(final String path) {
     try {
-      this.url = Paths.get(path).toUri().toURL();
-    } catch (MalformedURLException e) {
+      String canonicalPath = Paths.get(path).toFile().getCanonicalPath();
+      this.url = Paths.get(canonicalPath).toUri().toURL();
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }

@@ -98,7 +98,6 @@ class JavaCodeRunner implements Runnable {
   }
 
   private void compileCode(JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler, String pname, JavaSourceCompiler.CompilationUnit compilationUnit, Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) throws InvocationTargetException, IllegalAccessException {
-    logger.info("JavaCodeRunner compileCode");
     if (codev.hasLineToProcess()) {
       Codev.CodeLine codeLine = codev.getNotBlankLine();
       Pattern p = Pattern.compile("(?:^|.*\\s+)(?:(?:class)|(?:interface))\\s+([a-zA-Z]\\w*).*");
@@ -115,7 +114,6 @@ class JavaCodeRunner implements Runnable {
   }
 
   private void configureImports(Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
-    logger.info("JavaCodeRunner configureImports");
     if (codev.hasLineToProcess()) {
       Pattern p = Pattern.compile("\\s*import(\\s+static)?\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*(?:\\.\\*)?);.*");
       Codev.CodeLine codeLine = codev.getNotBlankLine();
@@ -165,7 +163,6 @@ class JavaCodeRunner implements Runnable {
   }
 
   private Method compileAndRunCode(JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler, String pname, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit, Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
-    logger.info("JavaCodeRunner compileAndRunCode");
     String classId = generateClassId();
     String ret = "void";
     if (codev.getLastLine().matches("(^|.*\\s+)return\\s+.*"))
@@ -180,12 +177,8 @@ class JavaCodeRunner implements Runnable {
     javaSourceCode.append("}\n");
 
     compilationUnit.addJavaSource(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId, javaSourceCode.toString());
-    logger.info("JavaCodeRunner compileAndRunCode->compilationUnit.addJavaSource");
     try {
-      logger.info("JavaWorkerThread javaSourceCode ---> " + javaSourceCode);
-      logger.info("JavaWorkerThread compilationUnit ---> " + compilationUnit.getClassPathsEntries().toString());
       javaSourceCompiler.compile(compilationUnit);
-      logger.info("JavaCodeRunner compileAndRunCode->javaSourceCompiler.compile(compilationUnit)");
       javaSourceCompiler.persistCompiledClasses(compilationUnit);
       Class<?> fooClass = javaEvaluator.getJavaClassLoader().loadClass(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId);
       Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
@@ -234,7 +227,6 @@ class JavaCodeRunner implements Runnable {
     if (classpathEntries != null && classpathEntries.length > 0)
       compilationUnit.addClassPathEntries(Arrays.asList(classpathEntries));
     if (!javaEvaluator.getClasspath().isEmpty()) {
-      logger.info("JavaCodeRunner -> javaEvaluator.getClasspath().getPathsAsStrings(): " + javaEvaluator.getClasspath().getPathsAsStrings());
       compilationUnit.addClassPathEntries(javaEvaluator.getClasspath().getPathsAsStrings());
     }
   }

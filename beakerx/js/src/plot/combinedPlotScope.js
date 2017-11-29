@@ -20,6 +20,7 @@ define([
   'jquery-ui/ui/widgets/resizable',
   'd3',
   './plotUtils',
+  './combinedPlotScopeUtils',
   './combinedPlotFormatter',
   './../shared/bkUtils',
   './chartExtender',
@@ -30,11 +31,13 @@ define([
   resizable,
   d3,
   plotUtils,
+  CombinedPlotScopeUtilsModule,
   combinedPlotFormatter,
   bkUtils,
   bkoChartExtender,
   PlotScope
 ) {
+  var CombinedPlotScopeUtils = CombinedPlotScopeUtilsModule.default;
   
   function CombinedPlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -133,51 +136,21 @@ define([
           self.element.find("#combplotTitle").css("width", width);
 
           self.updateModels('width');
-
-          var maxX = null;
-          var minWidth = null;
-          var bboxes = [];
-
-          for (var i = 0; i < self.scopes.length; i++) {
-            var scope = self.scopes[i],
-              bbox = scope.jqgridg.get(0).getBBox();
-            bboxes[i] = bbox;
-
-            maxX = (maxX === null) ? bboxes[i].x : Math.max(maxX, bboxes[i].x);
-            minWidth = (minWidth === null) ? bboxes[i].width : Math.min(minWidth, bboxes[i].width);
-          }
-
-          var maxMarginLeft = 0;
-          var plots = self.element.find(".plot-plotcontainer");
-
-          for (var i = 0; i < plots.length; i++) {
-            var $plot = $(plots[i]);
-            var marginLeft = maxX - bboxes[i].x;
-            maxMarginLeft = Math.max(maxMarginLeft, marginLeft);
-            $plot.css({
-              'margin-left': marginLeft,
-              'width': width + minWidth - bboxes[i].width
-            });
-          }
-
         },
         updateMargin : function() {
-          // TODO
-          // following code was temporary commented to prevent overwriting changes from updateWidth
-
           // if any of plots has left-positioned legend we should update left margin (with max value)
           // for all plots (to adjust vertical position)
-          // var plots = self.element.find(".plot-plotcontainer");
-          // var maxMargin = 0;
-          //
-          // plots.each(function() {
-          //   var value = parseFloat($(this).css('margin-left'));
-          //   maxMargin = _.max([value, maxMargin]);
-          // });
-          // plots.css("margin-left", maxMargin);
-          // for (var i = 0; i < self.stdmodel.plots.length; i++) {
-          //   self.stdmodel.plots[i].updateLegendPosition();
-          // }
+          var plots = self.element.find(".plot-plotcontainer");
+          var maxMargin = 0;
+
+          plots.each(function() {
+            var value = parseFloat($(this).css('margin-left'));
+            maxMargin = _.max([value, maxMargin]);
+          });
+          plots.css("margin-left", maxMargin);
+          for (var i = 0; i < self.stdmodel.plots.length; i++) {
+            self.stdmodel.plots[i].updateLegendPosition();
+          }
         },
         getWidth : function() {
           return self.width;
@@ -454,6 +427,7 @@ define([
   CombinedPlotScope.prototype.runChildCharts = function() {
     var self = this;
     self.models.forEach(self.runChildChart.bind(this));
+    CombinedPlotScopeUtils.adjustLayoutMargin(this.scopes)
   };
 
   CombinedPlotScope.prototype.runChildChart = function(model) {

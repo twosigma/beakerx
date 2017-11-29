@@ -42,11 +42,9 @@ import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class ScalaEvaluator extends BaseEvaluator {
 
@@ -81,14 +79,8 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
-    try {
-      Path path = Paths.get(pathToJar.getPath()).toAbsolutePath();
-      URL url = path.toUri().toURL();
-      classLoader.addJar(url);
-      shell.addUrlsToClassPath(url);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    classLoader.addJar(pathToJar);
+    shell.addUrlsToClassPath(pathToJar.getUrl());
   }
 
   @Override
@@ -216,8 +208,8 @@ public class ScalaEvaluator extends BaseEvaluator {
   void newEvaluator() {
     logger.debug("creating new evaluator");
     this.classLoader = newClassLoader();
-    this.loader_cp =createLoaderCp();
-    shell = new ScalaEvaluatorGlue(this.classLoader ,
+    this.loader_cp = createLoaderCp();
+    shell = new ScalaEvaluatorGlue(this.classLoader,
             loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), getOutDir());
 
     if (!getImports().isEmpty()) {

@@ -17,10 +17,8 @@ package com.twosigma.beakerx.jvm.classloader;
 
 import com.twosigma.beakerx.kernel.PathToJar;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,31 +39,19 @@ public class BeakerxUrlClassLoader extends URLClassLoader {
   }
 
   public void addJar(PathToJar pathToJar) {
-    try {
-      URL url = Paths.get(pathToJar.getPath()).toUri().toURL();
-      super.addURL(checkNotNull(url));
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
-    }
+    super.addURL(checkNotNull(pathToJar.getUrl()));
   }
 
   public void addJars(List<String> paths) {
     for (String dir : paths) {
-      try {
-        URL url = Paths.get(dir).toUri().toURL();
-        super.addURL(checkNotNull(url));
-      } catch (MalformedURLException e) {
-      }
+      super.addURL(new PathToJar(dir).getUrl());
     }
   }
 
   public static List<URL> createUrls(List<String> dirs) {
     List<URL> urlList = new ArrayList<>();
     for (String dir : dirs) {
-      try {
-        urlList.add(Paths.get(dir).toUri().toURL());
-      } catch (MalformedURLException e) {
-      }
+      urlList.add(new PathToJar(dir).getUrl());
     }
     return urlList;
   }

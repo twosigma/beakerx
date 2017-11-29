@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit;
 
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+import static com.twosigma.beakerx.evaluator.Evaluator.logger;
 
 class JavaWorkerThread extends WorkerThread {
 
@@ -176,6 +177,8 @@ class JavaWorkerThread extends WorkerThread {
       javaSourceCompiler.compile(compilationUnit);
 
       javaSourceCompiler.persistCompiledClasses(compilationUnit);
+      logger.info("JavaWorkerThread javaSourceCode ---> " + javaSourceCode);
+      logger.info("JavaWorkerThread compilationUnit ---> " + compilationUnit.getClassPathsEntries().toString());
       Class<?> fooClass = loader.loadClass(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId);
       Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
 
@@ -221,7 +224,6 @@ class JavaWorkerThread extends WorkerThread {
       compilationUnit.addClassPathEntries(Arrays.asList(classpathEntries));
     if (!javaEvaluator.getClasspath().isEmpty())
       compilationUnit.addClassPathEntries(javaEvaluator.getClasspath().getPathsAsStrings());
-    compilationUnit.addClassPathEntry(javaEvaluator.getOutDir());
   }
 
   private String generateClassId() {

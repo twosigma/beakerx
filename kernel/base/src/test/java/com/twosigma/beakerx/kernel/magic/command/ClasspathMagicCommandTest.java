@@ -58,7 +58,7 @@ public class ClasspathMagicCommandTest {
     MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
     Assertions.assertThat(code.getCodeBlock().get()).isEqualTo("code code code");
-    assertThat(kernel.getClasspath().get(0)).isEqualTo(CLASSPATH_TO_JAR);
+    assertThat(kernel.getClasspath().get(0)).contains(CLASSPATH_TO_JAR);
   }
 
   @Test
@@ -95,7 +95,7 @@ public class ClasspathMagicCommandTest {
     //when
     MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
-    assertThat(classpath(result)).isEqualTo(CLASSPATH_TO_JAR);
+    assertThat(classpath(result)).contains(CLASSPATH_TO_JAR);
   }
 
   @Test
@@ -107,7 +107,7 @@ public class ClasspathMagicCommandTest {
     Code code = CodeFactory.create("%classpath", new Message(), kernel);
     MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
-    assertThat(classpath(result)).isEqualTo(CLASSPATH_TO_JAR);
+    assertThat(classpath(result)).contains(CLASSPATH_TO_JAR);
   }
 
   @Test

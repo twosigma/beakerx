@@ -15,6 +15,10 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Paths;
+
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -24,7 +28,12 @@ public class PathToJar {
   private String path;
 
   public PathToJar(final String path) {
-    this.path = path;
+    try {
+      URL url = Paths.get(path).toUri().toURL();
+      this.path = url.getPath();
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public String getPath() {

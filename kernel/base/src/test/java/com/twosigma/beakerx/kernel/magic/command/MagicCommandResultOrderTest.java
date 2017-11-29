@@ -79,7 +79,7 @@ public class MagicCommandResultOrderTest {
     //when
     MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
-    assertThat(classpath(result)).isEqualTo(DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR);
+    assertThat(classpath(result)).contains(DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR);
   }
 
   private String classpath(MagicCommandOutcome result) {

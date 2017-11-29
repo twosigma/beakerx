@@ -117,8 +117,6 @@ public class JavaEvaluator extends BaseEvaluator {
       cpp += File.pathSeparator;
     }
     cpp += File.pathSeparator;
-    cpp += outDir;
-    cpp += File.pathSeparator;
     cpp += System.getProperty("java.class.path");
     return cpp;
   }

@@ -69,6 +69,7 @@ public class JavaEvaluator extends BaseEvaluator {
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
     loader.addJar(pathToJar);
+    logger.info("JavaEvaluator-> addJarToClassLoader " + pathToJar.getPath() + " added.");
   }
 
   @Override

@@ -23,12 +23,15 @@ import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
+import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.scala.serializers.ScalaCollectionDeserializer;
 import com.twosigma.beakerx.scala.serializers.ScalaCollectionSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaListOfPrimitiveTypeMapsSerializer;
@@ -39,9 +42,11 @@ import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ScalaEvaluator extends BaseEvaluator {
 
@@ -50,7 +55,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   private ScalaWorkerThread workerThread;
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
   private static boolean autoTranslationSetup = false;
-  private ClassLoader classLoader;
+  private BeakerxUrlClassLoader classLoader;
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters) {
     this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl(), new TempFolderFactoryImpl(), evaluatorParameters);
@@ -71,7 +76,24 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   public ClassLoader getClassLoader() {
-    return classLoader;
+    return this.classLoader;
+  }
+
+  @Override
+  protected void addJarToClassLoader(PathToJar pathToJar) {
+    try {
+      Path path = Paths.get(pathToJar.getPath()).toAbsolutePath();
+      URL url = path.toUri().toURL();
+      classLoader.addJar(url);
+      shell.addUrlsToClassPath(url);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  protected void addImportToClassLoader(ImportPath anImport) {
+    addImportToShell(anImport);
   }
 
   @Override
@@ -194,18 +216,13 @@ public class ScalaEvaluator extends BaseEvaluator {
   void newEvaluator() {
     logger.debug("creating new evaluator");
     this.classLoader = newClassLoader();
-    shell = new ScalaEvaluatorGlue(classLoader,
+    this.loader_cp =createLoaderCp();
+    shell = new ScalaEvaluatorGlue(this.classLoader ,
             loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), getOutDir());
 
     if (!getImports().isEmpty()) {
-      for (int i = 0; i < getImports().getImportPaths().size(); i++) {
-        String imp = getImports().getImportPaths().get(i).asString().trim();
-        imp = adjustImport(imp);
-        if (!imp.isEmpty()) {
-          logger.debug("importing : {}", imp);
-          if (!shell.addImport(imp))
-            logger.warn("ERROR: cannot add import '{}'", imp);
-        }
+      for (ImportPath importPath : getImports().getImportPaths()) {
+        addImportToShell(importPath);
       }
     }
 
@@ -220,23 +237,34 @@ public class ScalaEvaluator extends BaseEvaluator {
     }
   }
 
+  private void addImportToShell(ImportPath importPath) {
+    String imp = importPath.asString().trim();
+    imp = adjustImport(imp);
+    if (!imp.isEmpty()) {
+      logger.debug("importing : {}", imp);
+      if (!shell.addImport(imp))
+        logger.warn("ERROR: cannot add import '{}'", imp);
+    }
+  }
+
   /*
  * Scala uses multiple classloaders and (unfortunately) cannot fallback to the java one while compiling scala code so we
  * have to build our DynamicClassLoader and also build a proper classpath for the compiler classloader.
  */
-  private ClassLoader newClassLoader() {
+  private BeakerxUrlClassLoader newClassLoader() {
     logger.debug("creating new loader");
+    BeakerxUrlClassLoader cl = new BeakerxUrlClassLoader(ClassLoader.getSystemClassLoader());
+    cl.addJars(getClasspath().getPathsAsStrings());
+    return cl;
+  }
 
-    loader_cp = "";
+  private String createLoaderCp() {
+    String loader_cp = "";
     for (int i = 0; i < getClasspath().size(); i++) {
       loader_cp += getClasspath().get(i);
       loader_cp += File.pathSeparatorChar;
     }
-    loader_cp += getOutDir();
-    DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-    cl.addJars(getClasspath().getPathsAsStrings());
-    cl.addDynamicDir(getOutDir());
-    return cl;
+    return loader_cp;
   }
 
 

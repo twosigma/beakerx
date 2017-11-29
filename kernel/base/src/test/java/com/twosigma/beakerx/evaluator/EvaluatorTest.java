@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class EvaluatorTest extends BaseEvaluator {
 
@@ -45,15 +46,15 @@ public class EvaluatorTest extends BaseEvaluator {
   private Classpath classpath = new Classpath();
   private Imports imports = new Imports();
   private int resetEnvironmentCounter = 0;
-  private ClassLoader loader = new DynamicClassLoaderSimple(Thread.currentThread().getContextClassLoader());
+  private DynamicClassLoaderSimple loader = new DynamicClassLoaderSimple(Thread.currentThread().getContextClassLoader());
 
 
   public EvaluatorTest() {
     this("idEvaluatorTest", "sIdEvaluatorTest", TestBeakerCellExecutor.cellExecutor(), KERNEL_PARAMETERS);
   }
 
-  public EvaluatorTest(String id, String sId, CellExecutor cellExecutor,EvaluatorParameters kernelParameters) {
-    super(id, sId, cellExecutor, getTestTempFolderFactory(),kernelParameters);
+  public EvaluatorTest(String id, String sId, CellExecutor cellExecutor, EvaluatorParameters kernelParameters) {
+    super(id, sId, cellExecutor, getTestTempFolderFactory(), kernelParameters);
   }
 
   @Override
@@ -146,13 +147,14 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
   @Override
-  protected boolean addJar(PathToJar path) {
-    return classpath.add(path);
+  protected void addJarToClassLoader(PathToJar pathToJar) {
+    classpath.add(pathToJar);
+    this.loader.addJars(Arrays.asList(pathToJar.getPath()));
   }
 
   @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
+  protected void addImportToClassLoader(ImportPath anImport) {
+    imports.add(anImport);
   }
 
   @Override

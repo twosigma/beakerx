@@ -32,12 +32,15 @@ import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.PathToJar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +80,20 @@ public class ClojureEvaluator extends BaseEvaluator {
   }
 
   @Override
+  protected void addJarToClassLoader(PathToJar pathToJar) {
+    try {
+      loader.addURL(Paths.get(pathToJar.getPath()).toUri().toURL());
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  protected void addImportToClassLoader(ImportPath anImport) {
+    addImportPathToShell(anImport);
+  }
+
+  @Override
   protected void doResetEnvironment() {
     loader = ClojureClassLoaderFactory.newInstance(classPath, outDir);
 
@@ -84,15 +101,7 @@ public class ClojureEvaluator extends BaseEvaluator {
     Thread.currentThread().setContextClassLoader(loader);
 
     for (ImportPath s : imports.getImportPaths()) {
-      String ss = s.asString();
-      if (!ss.isEmpty()) {
-        try {
-          loader.loadClass(ss);
-          clojureLoadString.invoke(String.format("(import '%s)", ss));
-        } catch (ClassNotFoundException e) {
-          logger.error("Could not create class while loading notebook: " + ss);
-        }
-      }
+      addImportPathToShell(s);
     }
 
     for (String s : requirements) {
@@ -106,6 +115,18 @@ public class ClojureEvaluator extends BaseEvaluator {
 
     Thread.currentThread().setContextClassLoader(oldLoader);
     workerThread.halt();
+  }
+
+  private void addImportPathToShell(ImportPath s) {
+    String ss = s.asString();
+    if (!ss.isEmpty()) {
+      try {
+        loader.loadClass(ss);
+        clojureLoadString.invoke(String.format("(import '%s)", ss));
+      } catch (ClassNotFoundException e) {
+        logger.error("Could not create class while loading notebook: " + ss);
+      }
+    }
   }
 
   @Override

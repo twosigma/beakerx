@@ -21,6 +21,7 @@ import org.apache.maven.shared.invoker.InvocationOutputHandler;
 public class MavenInvocationSilentOutputHandler implements InvocationOutputHandler {
 
   private ClasspathAddMvnMagicCommand.MvnLoggerWidget intProgress;
+  private int counter = 1;
 
   public MavenInvocationSilentOutputHandler(ClasspathAddMvnMagicCommand.MvnLoggerWidget intProgress) {
     this.intProgress = intProgress;
@@ -29,7 +30,11 @@ public class MavenInvocationSilentOutputHandler implements InvocationOutputHandl
   @Override
   public void consumeLine(String line) {
     if (line != null && !line.trim().isEmpty() && (line.matches("Downlo.+") || acceptLineWhichShowDownloadingProgress(line))) {
-      intProgress.sendLog(line);
+      if (counter % 10 == 1) {
+        intProgress.sendLog(line);
+        counter = 1;
+      }
+      counter++;
     }
   }
 

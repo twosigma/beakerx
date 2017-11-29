@@ -27,14 +27,16 @@ import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
-import com.twosigma.beakerx.kernel.Imports;
+import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 import java.io.File;
 
 import static com.twosigma.beakerx.groovy.evaluator.EnvVariablesFilter.envVariablesFilter;
+import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.addImportPathToImportCustomizer;
 import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newEvaluator;
 
 
@@ -47,7 +49,7 @@ public class GroovyEvaluator extends BaseEvaluator {
   private GroovyWorkerThread worker = null;
   private GroovyClassLoader groovyClassLoader;
   private Binding scriptBinding = null;
-
+  private ImportCustomizer icz = new ImportCustomizer();
 
   public GroovyEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
     this(id, sId, new BeakerCellExecutor("groovy"), new TempFolderFactoryImpl(), evaluatorParameters);
@@ -91,8 +93,18 @@ public class GroovyEvaluator extends BaseEvaluator {
   }
 
   @Override
-  protected boolean addJar(PathToJar path) {
-    return classPath.add(new PathToJar(envVariablesFilter(path.getPath(), System.getenv())));
+  public boolean addJarToClasspath(PathToJar path) {
+    return super.addJarToClasspath(new PathToJar(envVariablesFilter(path.getPath(), System.getenv())));
+  }
+
+  @Override
+  protected void addJarToClassLoader(PathToJar pathToJar) {
+    this.groovyClassLoader.addClasspath(pathToJar.getPath());
+  }
+
+  @Override
+  protected void addImportToClassLoader(ImportPath anImport) {
+    addImportPathToImportCustomizer(icz, anImport);
   }
 
   private GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c) {
@@ -117,7 +129,7 @@ public class GroovyEvaluator extends BaseEvaluator {
   }
 
   private void reloadClassloader() {
-    this.groovyClassLoader = newEvaluator(getImports(), getClasspath(), getOutDir());
+    this.groovyClassLoader = newEvaluator(getImports(), getClasspath(), getOutDir(), icz);
     this.scriptBinding = new Binding();
   }
 

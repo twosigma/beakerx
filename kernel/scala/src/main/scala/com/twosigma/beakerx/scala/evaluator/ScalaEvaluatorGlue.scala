@@ -43,6 +43,12 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
   }
 
   def addUrlsToClassPath(url: URL): Unit = {
+    if (url == null) {
+      throw new RuntimeException("Wrong url: " + url);
+    }
+    if (url.getPath == null) {
+      throw new RuntimeException("Wrong url.getPath: " + url.getPath);
+    }
     interpreter.addUrlsToClassPath(url)
   }
 

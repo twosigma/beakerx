@@ -15,11 +15,11 @@
  */
 
 var beakerx = require('./lib/index.js');
-var jupyterlab_widgets = require('@jupyter-widgets/jupyterlab-manager');
+var base = require('@jupyter-widgets/base');
 
 module.exports = {
   id: 'beakerx',
-  requires: [jupyterlab_widgets.INBWidgetExtension],
+  requires: [base.IJupyterWidgetRegistry],
   activate: function(app, widgets) {
     widgets.registerWidget({
       name: 'beakerx',

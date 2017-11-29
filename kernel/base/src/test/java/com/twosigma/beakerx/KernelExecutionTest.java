@@ -91,7 +91,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     MagicCommandOutcome result = executeMagicCommands(code, 3, kernel);
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
-    assertThat(getText(message)).startsWith("{PATH");
+    assertThat(getText(message)).contains("PATH");
   }
 
   private String getText(MIMEContainer message) {

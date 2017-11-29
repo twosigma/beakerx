@@ -13,7 +13,8 @@ Create the release
 ------------------
 
 Update the version in `beakerx/beakerx/_version.py` and
-`beakerx/js/package.json`.  Commit the change and push the git tag.
+`beakerx/js/package.json` and `beakerx/jslab/package.json`.  Commit
+the change and push the git tag.
 
 ```bash
 git clean -xfd
@@ -65,6 +66,7 @@ To update the embedded version of our widget library:
 
 - Do a full build.
 - Run `(cd beakerx/js; npm publish)`
+- Run `(cd beakerx/jslab; npm publish)`
 
 Release to Docker Hub
 ---------------------

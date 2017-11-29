@@ -38,9 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,11 +79,7 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
-    try {
-      loader.addURL(Paths.get(pathToJar.getPath()).toUri().toURL());
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
-    }
+    loader.addURL(pathToJar.getUrl());
   }
 
   @Override

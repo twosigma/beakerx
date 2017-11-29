@@ -25,19 +25,22 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 
 public class PathToJar {
 
-  private String path;
+  private URL url;
 
   public PathToJar(final String path) {
     try {
-      URL url = Paths.get(path).toUri().toURL();
-      this.path = url.getPath();
+      this.url = Paths.get(path).toUri().toURL();
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
     }
   }
 
   public String getPath() {
-    return path;
+    return url.getPath();
+  }
+
+  public URL getUrl() {
+    return url;
   }
 
   @Override

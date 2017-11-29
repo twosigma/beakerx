@@ -229,8 +229,10 @@ class JavaCodeRunner implements Runnable {
     String[] classpathEntries = classpath.split(File.pathSeparator);
     if (classpathEntries != null && classpathEntries.length > 0)
       compilationUnit.addClassPathEntries(Arrays.asList(classpathEntries));
-    if (!javaEvaluator.getClasspath().isEmpty())
+    if (!javaEvaluator.getClasspath().isEmpty()) {
+      logger.info("JavaCodeRunner -> javaEvaluator.getClasspath().getPathsAsStrings(): " + javaEvaluator.getClasspath().getPathsAsStrings());
       compilationUnit.addClassPathEntries(javaEvaluator.getClasspath().getPathsAsStrings());
+    }
   }
 
   private String generateClassId() {

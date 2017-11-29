@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
-import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
+import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -32,7 +32,7 @@ public class GroovyClassLoaderFactory {
   private static final String STATIC_WORD_WITH_SPACE = "static ";
   private static final String DOT_STAR_POSTFIX = ".*";
 
-  public static GroovyClassLoader newEvaluator(Imports imports, Classpath classpath, String outDir,ImportCustomizer icz) {
+  public static GroovyClassLoader newEvaluator(Imports imports, Classpath classpath, String outDir, ImportCustomizer icz) {
 
     try {
       Class.forName("org.codehaus.groovy.control.customizers.ImportCustomizer");
@@ -58,7 +58,7 @@ public class GroovyClassLoaderFactory {
     acloader_cp += outDir;
 
     config.setClasspath(acloader_cp);
-    return new GroovyClassLoader(newClassLoader(classpath, outDir), config);
+    return new GroovyClassLoader(newClassLoader(classpath), config);
   }
 
   private static ImportCustomizer addImportsCustomizer(ImportCustomizer icz, Imports imports) {
@@ -99,10 +99,9 @@ public class GroovyClassLoaderFactory {
     }
   }
 
-  protected static ClassLoader newClassLoader(Classpath classpath, String outDir) {
-    DynamicClassLoaderSimple loader = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-    loader.addJars(classpath.getPathsAsStrings());
-    loader.addDynamicDir(outDir);
+  protected static ClassLoader newClassLoader(Classpath classpath) {
+    BeakerxUrlClassLoader loader = new BeakerxUrlClassLoader(ClassLoader.getSystemClassLoader());
+    loader.addPathToJars(classpath.getPaths());
     return loader;
   }
 

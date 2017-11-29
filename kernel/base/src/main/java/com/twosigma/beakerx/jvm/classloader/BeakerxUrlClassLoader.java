@@ -42,16 +42,16 @@ public class BeakerxUrlClassLoader extends URLClassLoader {
     super.addURL(checkNotNull(pathToJar.getUrl()));
   }
 
-  public void addJars(List<String> paths) {
-    for (String dir : paths) {
-      super.addURL(new PathToJar(dir).getUrl());
+  public void addPathToJars(List<PathToJar> paths) {
+    for (PathToJar dir : paths) {
+      addJar(dir);
     }
   }
 
-  public static List<URL> createUrls(List<String> dirs) {
+  public static List<URL> createUrls(List<PathToJar> dirs) {
     List<URL> urlList = new ArrayList<>();
-    for (String dir : dirs) {
-      urlList.add(new PathToJar(dir).getUrl());
+    for (PathToJar dir : dirs) {
+      urlList.add(dir.getUrl());
     }
     return urlList;
   }

@@ -246,7 +246,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   private BeakerxUrlClassLoader newClassLoader() {
     logger.debug("creating new loader");
     BeakerxUrlClassLoader cl = new BeakerxUrlClassLoader(ClassLoader.getSystemClassLoader());
-    cl.addJars(getClasspath().getPathsAsStrings());
+    cl.addPathToJars(getClasspath().getPaths());
     return cl;
   }
 

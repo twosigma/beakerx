@@ -127,7 +127,7 @@ public class JavaEvaluator extends BaseEvaluator {
 
   private BeakerxUrlClassLoader newClassLoader() {
     BeakerxUrlClassLoader loader = new BeakerxUrlClassLoader(ClassLoader.getSystemClassLoader());
-    loader.addJars(getClasspath().getPathsAsStrings());
+    loader.addPathToJars(getClasspath().getPaths());
     return loader;
   }
 

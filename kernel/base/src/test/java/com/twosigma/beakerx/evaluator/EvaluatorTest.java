@@ -148,7 +148,7 @@ public class EvaluatorTest extends BaseEvaluator {
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
     classpath.add(pathToJar);
-    this.loader.addJars(Arrays.asList(pathToJar.getPath()));
+    this.loader.addJar(pathToJar);
   }
 
   @Override

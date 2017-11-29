@@ -182,11 +182,11 @@ class JavaCodeRunner implements Runnable {
     compilationUnit.addJavaSource(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId, javaSourceCode.toString());
     logger.info("JavaCodeRunner compileAndRunCode->compilationUnit.addJavaSource");
     try {
+      logger.info("JavaWorkerThread javaSourceCode ---> " + javaSourceCode);
+      logger.info("JavaWorkerThread compilationUnit ---> " + compilationUnit.getClassPathsEntries().toString());
       javaSourceCompiler.compile(compilationUnit);
       logger.info("JavaCodeRunner compileAndRunCode->javaSourceCompiler.compile(compilationUnit)");
       javaSourceCompiler.persistCompiledClasses(compilationUnit);
-      logger.info("JavaWorkerThread javaSourceCode ---> " + javaSourceCode);
-      logger.info("JavaWorkerThread compilationUnit ---> " + compilationUnit.getClassPathsEntries().toString());
       Class<?> fooClass = javaEvaluator.getJavaClassLoader().loadClass(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId);
       Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
       Object o = mth.invoke(null, (Object[]) null);

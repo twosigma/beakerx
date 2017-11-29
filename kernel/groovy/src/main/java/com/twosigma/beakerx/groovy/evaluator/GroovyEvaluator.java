@@ -95,15 +95,14 @@ public class GroovyEvaluator extends BaseEvaluator {
     worker.halt();
   }
 
-  @Override
-  public boolean addJarToClasspath(PathToJar path) {
-    return super.addJarToClasspath(new PathToJar(envVariablesFilter(path.getPath(), System.getenv())));
-  }
+//  @Override
+//  public boolean addJarToClasspath(PathToJar path) {
+//    return super.addJarToClasspath(new PathToJar(envVariablesFilter(path.getPath(), System.getenv())));
+//  }
 
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
     this.beakerxUrlClassLoader.addJar(pathToJar);
-    //this.groovyClassLoader.addClasspath(pathToJar.getPath());
   }
 
   @Override

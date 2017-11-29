@@ -11,7 +11,7 @@
     <repositories>
         <repository>
             <id>clojureRepo</id>
-            <url>http://clojars.org/repo</url>
+            <url>https://clojars.org/repo</url>
         </repository>
     </repositories>
 

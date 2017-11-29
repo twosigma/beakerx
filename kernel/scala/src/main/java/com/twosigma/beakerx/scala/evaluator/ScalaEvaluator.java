@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 
 public class ScalaEvaluator extends BaseEvaluator {
 
@@ -80,7 +81,10 @@ public class ScalaEvaluator extends BaseEvaluator {
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
     classLoader.addJar(pathToJar);
-    shell.addUrlsToClassPath(pathToJar.getUrl());
+    URL url = pathToJar.getUrl();
+    logger.info("ScalaEvaluator addJarToClassLoader url : " + url);
+    logger.info("ScalaEvaluator addJarToClassLoader url.path: " + url.getPath());
+    shell.addUrlsToClassPath(url);
   }
 
   @Override

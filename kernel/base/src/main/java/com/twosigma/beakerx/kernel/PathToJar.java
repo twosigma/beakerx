@@ -31,11 +31,12 @@ public class PathToJar {
   private static final Logger logger = LoggerFactory.getLogger(PathToJar.class.getName());
 
   private URL url;
+  private String canonicalPath;
 
   public PathToJar(final String path) {
     try {
       File file = Paths.get(path).toFile();
-      String canonicalPath = file.getCanonicalPath();
+      canonicalPath = file.getCanonicalPath();
       logger.info("PathToJar --> path: " + canonicalPath + " exists: " + file.exists());
       this.url = Paths.get(canonicalPath).toUri().toURL();
     } catch (Exception e) {
@@ -44,7 +45,7 @@ public class PathToJar {
   }
 
   public String getPath() {
-    return url.getPath();
+    return canonicalPath;
   }
 
   public URL getUrl() {

@@ -75,6 +75,10 @@ public interface KernelFunctionality {
 
   Imports getImports();
 
+  Repos getRepos();
+
+  String addRepo(String name, String url);
+
   void addImport(ImportPath anImport);
 
   void removeImport(ImportPath anImport);

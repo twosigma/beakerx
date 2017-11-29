@@ -24,6 +24,7 @@ import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.kernel.Repos;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.IOException;
@@ -129,6 +130,8 @@ public class EvaluatorManager {
     return this.evaluator.getImports();
   }
 
+  public Repos getRepos() { return this.evaluator.getRepos(); }
+
   public void addImport(ImportPath anImport) {
     this.evaluator.addImport(anImport);
   }
@@ -143,5 +146,9 @@ public class EvaluatorManager {
 
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
     return evaluator.loadClass(clazzName);
+  }
+
+  public String addRepo(String name, String url) {
+    return evaluator.addRepo(name, url);
   }
 }

@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
+import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
@@ -29,7 +29,6 @@ import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class EvaluatorTest extends BaseEvaluator {
   private Classpath classpath = new Classpath();
   private Imports imports = new Imports();
   private int resetEnvironmentCounter = 0;
-  private DynamicClassLoaderSimple loader = new DynamicClassLoaderSimple(Thread.currentThread().getContextClassLoader());
+  private BeakerxUrlClassLoader loader = new BeakerxUrlClassLoader(Thread.currentThread().getContextClassLoader());
 
 
   public EvaluatorTest() {

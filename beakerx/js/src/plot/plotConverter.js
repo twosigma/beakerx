@@ -339,32 +339,17 @@ define([
           if (axis.upper_bound != null) {
             newmodel.userFocus.yr = axis.upper_bound;
           }
-        } else {
-          if (axis.lower_margin != null) {
-            newmodel.margin.bottom = axis.lower_margin;
-          }
-          if (axis.upper_margin != null) {
-            newmodel.margin.top = axis.upper_margin;
-          }
         }
         var axisR = model.rangeAxes[1];
-        if (axisR) {
-          if (axisR.auto_range === false) {
-            if (axisR.lower_bound != null) {
-              newmodel.userFocus.yl_r = axisR.lower_bound;
-            }
-            if (axisR.upper_bound != null) {
-              newmodel.userFocus.yr_r = axisR.upper_bound;
-            }
-          } else {
-            if (axisR.lower_margin != null) {
-              newmodel.margin.bottom = axisR.lower_margin;
-            }
-            if (axisR.upper_margin != null) {
-              newmodel.margin.top = axisR.upper_margin;
-            }
+        if (axisR && axisR.auto_range === false) {
+          if (axisR.lower_bound != null) {
+            newmodel.userFocus.yl_r = axisR.lower_bound;
+          }
+          if (axis.upper_bound != null) {
+            newmodel.userFocus.yr_r = axisR.upper_bound;
           }
         }
+
       }
 
       if (model.crosshair != null) {

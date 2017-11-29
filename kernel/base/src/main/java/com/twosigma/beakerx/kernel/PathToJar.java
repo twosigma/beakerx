@@ -36,8 +36,10 @@ public class PathToJar {
   public PathToJar(final String path) {
     try {
       File file = Paths.get(path).toFile();
+      if (!file.exists()) {
+        throw new RuntimeException("Path does not exist: " + path);
+      }
       canonicalPath = file.getCanonicalPath();
-      logger.info("PathToJar --> path: " + canonicalPath + " exists: " + file.exists());
       this.url = Paths.get(canonicalPath).toUri().toURL();
     } catch (Exception e) {
       throw new RuntimeException(e);

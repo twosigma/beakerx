@@ -22,6 +22,7 @@ import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyClasspathScanner;
+import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
@@ -38,6 +39,7 @@ import java.io.File;
 import static com.twosigma.beakerx.groovy.evaluator.EnvVariablesFilter.envVariablesFilter;
 import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.addImportPathToImportCustomizer;
 import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newEvaluator;
+import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newParentClassLoader;
 
 
 public class GroovyEvaluator extends BaseEvaluator {
@@ -50,6 +52,7 @@ public class GroovyEvaluator extends BaseEvaluator {
   private GroovyClassLoader groovyClassLoader;
   private Binding scriptBinding = null;
   private ImportCustomizer icz = new ImportCustomizer();
+  private BeakerxUrlClassLoader beakerxUrlClassLoader;
 
   public GroovyEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
     this(id, sId, new BeakerCellExecutor("groovy"), new TempFolderFactoryImpl(), evaluatorParameters);
@@ -99,7 +102,8 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
-    this.groovyClassLoader.addClasspath(pathToJar.getPath());
+    this.beakerxUrlClassLoader.addJar(pathToJar);
+    //this.groovyClassLoader.addClasspath(pathToJar.getPath());
   }
 
   @Override
@@ -129,7 +133,8 @@ public class GroovyEvaluator extends BaseEvaluator {
   }
 
   private void reloadClassloader() {
-    this.groovyClassLoader = newEvaluator(getImports(), getClasspath(), getOutDir(), icz);
+    beakerxUrlClassLoader = newParentClassLoader(getClasspath());
+    this.groovyClassLoader = newEvaluator(getImports(), getClasspath(), getOutDir(), icz, beakerxUrlClassLoader);
     this.scriptBinding = new Binding();
   }
 

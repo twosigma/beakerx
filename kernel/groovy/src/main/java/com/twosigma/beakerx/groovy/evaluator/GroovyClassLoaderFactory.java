@@ -33,7 +33,7 @@ public class GroovyClassLoaderFactory {
   private static final String STATIC_WORD_WITH_SPACE = "static ";
   private static final String DOT_STAR_POSTFIX = ".*";
 
-  public static GroovyClassLoader newEvaluator(Imports imports, Classpath classpath, String outDir, ImportCustomizer icz) {
+  public static GroovyClassLoader newEvaluator(Imports imports, Classpath classpath, String outDir, ImportCustomizer icz,ClassLoader parent) {
 
     try {
       Class.forName("org.codehaus.groovy.control.customizers.ImportCustomizer");
@@ -52,7 +52,7 @@ public class GroovyClassLoaderFactory {
     CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
     String acloader_cp = Joiner.on(File.pathSeparatorChar).join(classpath.getPathsAsStrings());
     config.setClasspath(acloader_cp);
-    return new GroovyClassLoader(newClassLoader(classpath), config);
+    return new GroovyClassLoader(parent, config);
   }
 
   private static ImportCustomizer addImportsCustomizer(ImportCustomizer icz, Imports imports) {
@@ -93,7 +93,7 @@ public class GroovyClassLoaderFactory {
     }
   }
 
-  protected static ClassLoader newClassLoader(Classpath classpath) {
+  protected static BeakerxUrlClassLoader newParentClassLoader(Classpath classpath) {
     BeakerxUrlClassLoader loader = new BeakerxUrlClassLoader(ClassLoader.getSystemClassLoader());
     loader.addPathToJars(classpath.getPaths());
     return loader;

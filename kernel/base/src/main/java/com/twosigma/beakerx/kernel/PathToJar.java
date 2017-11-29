@@ -15,6 +15,10 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
 
@@ -24,11 +28,15 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 
 public class PathToJar {
 
+  private static final Logger logger = LoggerFactory.getLogger(PathToJar.class.getName());
+
   private URL url;
 
   public PathToJar(final String path) {
     try {
-      String canonicalPath = Paths.get(path).toFile().getCanonicalPath();
+      File file = Paths.get(path).toFile();
+      String canonicalPath = file.getCanonicalPath();
+      logger.info("PathToJar --> path: " + canonicalPath + " exists: " + file.exists());
       this.url = Paths.get(canonicalPath).toUri().toURL();
     } catch (Exception e) {
       throw new RuntimeException(e);

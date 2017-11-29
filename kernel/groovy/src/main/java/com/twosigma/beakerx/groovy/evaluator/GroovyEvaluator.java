@@ -27,7 +27,6 @@ import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
-import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;

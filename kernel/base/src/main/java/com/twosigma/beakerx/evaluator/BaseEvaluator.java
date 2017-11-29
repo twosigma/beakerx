@@ -27,7 +27,6 @@ import com.twosigma.beakerx.kernel.Repos;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;

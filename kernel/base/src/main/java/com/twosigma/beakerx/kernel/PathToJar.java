@@ -15,9 +15,6 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -27,9 +24,6 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 public class PathToJar {
-
-  private static final Logger logger = LoggerFactory.getLogger(PathToJar.class.getName());
-
   private URL url;
   private String canonicalPath;
 

@@ -1,6 +1,7 @@
 var $ = require('jquery');
 var jQuery = require('jquery');
 var _ = require('underscore');
+var moment = require('moment-timezone/builds/moment-timezone-with-data.min');
 
 module.exports = {
   setJqExtentions: setJqExtentions,

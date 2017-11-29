@@ -29,7 +29,6 @@ define([
   './cellHighlighters',
   './../shared/bkHelper',
   './consts',
-  'jquery-contextmenu',
   'jquery-ui/ui/widgets/tooltip',
   './tableUtils'
 ], function(
@@ -47,7 +46,6 @@ define([
   cellHighlighters,
   bkHelper,
   tableConsts,
-  contextMenu,
   tooltip,
   tableUtils
 ) {
@@ -334,8 +332,7 @@ define([
       self.element.find(".bko-table-use-pagination").remove();
       $body.tooltip('instance') && $body.tooltip('destroy');
 
-      $.contextMenu('destroy', '#' + self.id + ' tbody td');
-      $.contextMenu('destroy', '#' + self.id +'_wrapper thead');
+      self.contextMenu &&  self.contextMenu.destroy();
       $body.off('click.bko-dt-container');
       $document.off('contextmenu.bko-dt-header');
       $tableContainer.find('.dataTables_scrollHead').off('scroll');
@@ -363,10 +360,10 @@ define([
     }
 
     if (all) {
+      self.actualtype = [];
       self.timeStrings = undefined;
       self.tz = undefined;
       self.types = undefined;
-      self.actualtype = undefined;
       self.actualalign = undefined;
       self.data = undefined;
       self.update = undefined;
@@ -614,40 +611,6 @@ define([
     }
 
     self.setCellHighlighters();
-
-    self.contextMenuItems = {};
-    if (!_.isEmpty(model.contextMenuItems)) {
-      _.forEach(model.contextMenuItems, function(item) {
-        self.contextMenuItems[item] = {
-          name: item,
-          callback: function(itemKey, options) {
-            var index = self.table.cell(options.$trigger.get(0)).index();
-            self.tableDisplayModel.send({event: 'CONTEXT_MENU_CLICK', itemKey : itemKey, row : index.row, column : index.column - 1}, self.tableDisplayView.callbacks());
-          }
-        }
-      });
-    }
-
-    if (!_.isEmpty(model.contextMenuTags)) {
-      _.forEach(model.contextMenuTags, function(tag, name) {
-        if (model.contextMenuTags.hasOwnProperty(name)) {
-          self.contextMenuItems[name] = {
-            name: name,
-            callback: function(itemKey, options) {
-              var index = self.table.cell(options.$trigger.get(0)).index();
-              var params = {
-                actionType: 'CONTEXT_MENU_CLICK',
-                contextMenuItem: itemKey,
-                row: index.row,
-                col: index.column - 1
-              };
-              self.tableDisplayModel.send({event: 'actiondetails', params: params}, self.tableDisplayView.callbacks());
-            }
-          }
-        }
-      });
-    }
-
     self.doCreateData(model);
     self.doCreateTable(model);
     var $body = $(document.body);
@@ -1461,39 +1424,11 @@ define([
         init.scrollCollapse = true;
       }
     }
-    self.fixcreated = false;
-    if (!_.isEmpty(self.contextMenuItems)) {
-      $.contextMenu({
-        selector: id +' tbody td',
-        items: self.contextMenuItems
-      });
-    }
 
-    var rotateMenuItem = {
-      callback: function(itemKey, options) {
-        self.headersVertical = !!!self.headersVertical;
-        self.rotateHeader();
-        self.table.draw();
-      }
-    };
-    $.contextMenu({
-      selector: id +'_wrapper thead',
-      zIndex: 3, //to be over fixed headers
-      items: {
-        verticalHeaders: _.extend({}, rotateMenuItem, {
-          name: 'vertical headers',
-          visible: function(key, opt){
-            return !!!self.headersVertical;
-          }
-        }),
-        horizontalHeaders: _.extend({}, rotateMenuItem, {
-          name: 'horizontal headers',
-          visible: function(key, opt){
-            return !!self.headersVertical;
-          }
-        })
-      }
-    });
+    self.fixcreated = false;
+
+    var ContextMenu = require('./contextMenu/tableContextMenu').default;
+    self.contextMenu = new ContextMenu(self);
 
     $(document).on('contextmenu.bko-dt-header', id +'_wrapper thead th', function(){
       $(this).blur();
@@ -1561,14 +1496,16 @@ define([
     var createColumnMenus = require('./tableHeaderMenu/createColumnMenus').default;
     self.columnMenus = createColumnMenus(self);
 
-    self.createTableMenuElements();
     // $rootScope.$emit('beaker.resize'); //TODO check - handle resize?
     self.fixcols.fnRedrawLayout();
     self.updateFixedColumnsSeparator();
 
     setTimeout(function(){
       if (!self.table) { return; }
+
+      self.createTableMenuElements();
       self.applyFilters();
+
       if (self.columnFilter) {
         self.table.columns().every(function(i) {
           var column = this;

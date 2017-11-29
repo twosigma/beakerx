@@ -1,6 +1,6 @@
 {
   "name": "beakerx",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "description": "BeakerX: Beaker Extensions for Jupyter",
   "author": "Two Sigma Open Source, LLC",
   "main": "src/index.js",
@@ -56,7 +56,6 @@
     "datatables.net-keytable-dt": "^2.3.2",
     "datatables.net-select": "^1.2.2",
     "flatpickr": "^2.6.3",
-    "jquery-contextmenu": "^2.4.5",
     "jquery-ui": "^1.12.1",
     "moment": "^2.17.1",
     "moment-timezone": "^0.5.13",

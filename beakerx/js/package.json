@@ -16,7 +16,7 @@
     "ipywidgets"
   ],
   "scripts": {
-    "build": "webpack --config webpack.dev.js --progress",
+    "build": "webpack --config webpack.prod.js --progress",
     "build:prod": "webpack --config webpack.prod.js --progress",
     "build:dev": "webpack --config webpack.dev.js --progress",
     "prepublish": "npm run build",

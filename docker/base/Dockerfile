@@ -24,16 +24,8 @@ ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
-##################
-#    MiniConda   #
-##################
-##################
-#  Yarn  Gradle  #
-##################
-
 RUN apt-get update && apt-get dist-upgrade -y && \
 	apt-get install -y sudo curl unzip software-properties-common apt-transport-https git bzip2 wget locales && \
-	add-apt-repository ppa:cwchien/gradle && \
     locale-gen en_US.UTF-8 && \
     echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \

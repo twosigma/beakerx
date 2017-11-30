@@ -19,6 +19,7 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.AddMvnCommandResult;
+import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.message.Message;
@@ -35,10 +36,12 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
   public static final String CLASSPATH_ADD_MVN = CLASSPATH + " " + ADD + " " + MVN;
   public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be " + CLASSPATH_ADD_MVN + " group name version or " + CLASSPATH_ADD_MVN + " group:name:version";;
   private MavenJarResolver.ResolverParams commandParams;
+  private PomFactory pomFactory;
 
   public ClasspathAddMvnMagicCommand(MavenJarResolver.ResolverParams commandParams, KernelFunctionality kernel) {
     super(kernel);
     this.commandParams = commandParams;
+    this.pomFactory = new PomFactory();
   }
 
   @Override
@@ -60,7 +63,8 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, ADD_MVN_FORMAT_ERROR_MESSAGE);
     }
 
-    MavenJarResolver classpathAddMvnCommand = new MavenJarResolver(commandParams);
+    commandParams.setRepos(kernel.getRepos().get());
+    MavenJarResolver classpathAddMvnCommand = new MavenJarResolver(commandParams, pomFactory);
     MvnLoggerWidget progress = new MvnLoggerWidget(param.getCode().getMessage());
     AddMvnCommandResult result;
     if (split.length == 4) {

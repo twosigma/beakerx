@@ -23,6 +23,7 @@ import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.kernel.Repos;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -44,6 +45,7 @@ public abstract class BaseEvaluator implements Evaluator {
   protected Imports imports;
   private final CellExecutor executor;
   protected Path tempFolder;
+  protected Repos repos;
 
   public BaseEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
     shellId = id;
@@ -54,6 +56,7 @@ public abstract class BaseEvaluator implements Evaluator {
     classPath = new Classpath();
     classPath.add(new PathToJar(outDir));
     imports = new Imports();
+    repos = new Repos();
     configure(evaluatorParameters);
   }
 
@@ -100,6 +103,16 @@ public abstract class BaseEvaluator implements Evaluator {
   @Override
   public Imports getImports() {
     return imports;
+  }
+
+  @Override
+  public Repos getRepos() {
+    return repos;
+  }
+
+  @Override
+  public String addRepo(String name, String url) {
+    return repos.add(name, url);
   }
 
   protected abstract void addJarToClassLoader(PathToJar pathToJar);

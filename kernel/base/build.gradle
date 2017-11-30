@@ -39,7 +39,8 @@ dependencies {
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
   compile group: 'org.apache.commons', name: 'commons-text', version: '1.1'
   compile group: 'org.apache.maven.shared', name: 'maven-invoker', version: '3.0.0'
-  compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.22'
+  compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+
   compile group: "org.zeromq", name: "jeromq", version: "0.3.5"
   compile group: 'org.apache.ivy', name: 'ivy', version: '2.4.0'
 

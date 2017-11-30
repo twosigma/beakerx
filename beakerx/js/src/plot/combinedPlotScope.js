@@ -20,6 +20,7 @@ define([
   'jquery-ui/ui/widgets/resizable',
   'd3',
   './plotUtils',
+  './combinedPlotScopeUtils',
   './combinedPlotFormatter',
   './../shared/bkUtils',
   './chartExtender',
@@ -30,11 +31,13 @@ define([
   resizable,
   d3,
   plotUtils,
+  CombinedPlotScopeUtilsModule,
   combinedPlotFormatter,
   bkUtils,
   bkoChartExtender,
   PlotScope
 ) {
+  var CombinedPlotScopeUtils = CombinedPlotScopeUtilsModule.default;
   
   function CombinedPlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -424,6 +427,7 @@ define([
   CombinedPlotScope.prototype.runChildCharts = function() {
     var self = this;
     self.models.forEach(self.runChildChart.bind(this));
+    CombinedPlotScopeUtils.adjustLayoutMargin(this.scopes)
   };
 
   CombinedPlotScope.prototype.runChildChart = function(model) {

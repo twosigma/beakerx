@@ -358,10 +358,10 @@ define([
             }
           } else {
             if (axisR.lower_margin != null) {
-              newmodel.margin.bottom = axisR.lower_margin;
+              newmodel.margin.bottom_r = axisR.lower_margin;
             }
             if (axisR.upper_margin != null) {
-              newmodel.margin.top = axisR.upper_margin;
+              newmodel.margin.top_r = axisR.upper_margin;
             }
           }
         }

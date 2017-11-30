@@ -126,6 +126,9 @@ define([
     },
     useYAxisR: function(model, data) {
       var yAxisR = model.yAxisR;
+      if (data.yAxis && data.yAxis.hasOwnProperty('label')) {
+        return yAxisR && yAxisR.label === data.yAxis.label;
+      }
       return yAxisR && yAxisR.label === data.yAxis;
     },
     createColor : function(hexstr, opacity) {
@@ -284,7 +287,7 @@ define([
         var item = model.data[i];
         if(plotUtils.useYAxisR(model, item)){
           yAxisRData.push(item);
-        }else{
+        } else {
           yAxisData.push(item);
         }
       }
@@ -292,7 +295,7 @@ define([
       var ret = this.getDataRange(yAxisData);
       var retR = this.getDataRange(yAxisRData);
       var range = ret.datarange;
-      var rangeR = ret.datarange;
+      var rangeR = retR.datarange;
       var margin = model.margin;
 
       if(ret.visibleItem === 0) { // for empty plot, focus needs to be adjusted
@@ -349,10 +352,10 @@ define([
             rangeR.yspan = rangeR.yr - rangeR.yl;
           }
         }
-        focus.yl_r = rangeR.yl - rangeR.yspan * margin.bottom;
+        focus.yl_r = rangeR.yl - rangeR.yspan * margin.bottom_r;
       }
       if (focus.yr_r == null) {
-        focus.yr_r = rangeR.yr + rangeR.yspan * margin.top;
+        focus.yr_r = rangeR.yr + rangeR.yspan * margin.top_r;
       }
 
       focus.xspan = focus.xr - focus.xl;

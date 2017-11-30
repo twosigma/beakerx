@@ -85,7 +85,7 @@ class JavaWorkerThread extends WorkerThread {
     buildClasspath(compilationUnit);
     Map<Integer, Integer> lineNumbersMapping = new HashMap<>();
     LineBrakingStringBuilderWrapper javaSourceCode = new LineBrakingStringBuilderWrapper();
-    String code = ParserUtil.normalizeCode(j.codeToBeExecuted).replace("\r", "\n");
+    String code = ParserUtil.normalizeCode(j.codeToBeExecuted).replaceAll("\r\n", "\n");
     Codev codev = new Codev(code);
     String pname = configurePackage(codev, lineNumbersMapping, javaSourceCode);
     configureImports(codev, lineNumbersMapping, javaSourceCode);

@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.twosigma.beakerx.kernel.commands.MavenInvocationSilentOutputHandler;
 import com.twosigma.beakerx.kernel.commands.MavenJarResolverSilentLogger;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
@@ -46,7 +48,7 @@ public class MavenJarResolver {
   private PomFactory pomFactory;
 
   public MavenJarResolver(final ResolverParams commandParams,
-      PomFactory pomFactory) {
+                          PomFactory pomFactory) {
     this.commandParams = checkNotNull(commandParams);
     this.pathToMavenRepo = getOrCreateFile(commandParams.getPathToNotebookJars()).getAbsolutePath();
     this.pomFactory = pomFactory;
@@ -56,7 +58,7 @@ public class MavenJarResolver {
     File finalPom = null;
     try {
       Dependency dependency = new Dependency(groupId, artifactId, version);
-      String pomAsString = pomFactory.createPom(pathToMavenRepo, commandParams.getPathToNotebookJars(), dependency, commandParams.getRepos());
+      String pomAsString = pomFactory.createPom(pathToMavenRepo, dependency, commandParams.getRepos());
       finalPom = saveToFile(commandParams.getPathToNotebookJars(), dependency, pomAsString);
       InvocationRequest request = createInvocationRequest();
       request.setOffline(commandParams.getOffline());
@@ -74,9 +76,9 @@ public class MavenJarResolver {
   }
 
   private File saveToFile(String pathToNotebookJars, Dependency dependency, String pomAsString)
-      throws IOException {
+          throws IOException {
     File finalPom = new File(pathToNotebookJars + "/poms/pom-" + UUID.randomUUID() + "-" +
-        dependency.getGroupId() + dependency.getArtifactId() + dependency.getVersion() + "xml");
+            dependency.getGroupId() + dependency.getArtifactId() + dependency.getVersion() + "xml");
 
     FileUtils.writeStringToFile(finalPom, pomAsString, StandardCharsets.UTF_8);
     return finalPom;
@@ -210,7 +212,7 @@ public class MavenJarResolver {
     }
 
     public ResolverParams(String pathToCache, String pathToNotebookJars, boolean offline,
-        Map<String, String> repos) {
+                          Map<String, String> repos) {
       this(pathToCache, pathToNotebookJars, offline);
       this.repos = repos;
     }

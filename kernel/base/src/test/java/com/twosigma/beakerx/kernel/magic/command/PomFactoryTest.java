@@ -15,38 +15,58 @@
  */
 package com.twosigma.beakerx.kernel.magic.command;
 
+import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.StringUtils.normalizeSpace;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.common.collect.Maps;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.Dependency;
 
-import java.util.Collections;
 import java.util.Map;
+
+import org.junit.Before;
 import org.junit.Test;
 
 public class PomFactoryTest {
 
   protected static final String EXPECTED_RESULT_BLOCK = "" +
-          "<repositories>\n" +
-          "  <repository>\n" +
-          "    <id>project-repo</id>\n" +
-          "       <url>file://${project.basedir}/build/testMvnCache</url>\n" +
-          "    </repository>\n" +
-          "  <repository>\n" +
-          "    <id>repository.spring.snapshot</id>\n" +
-          "    <url>http://repo.spring.io/snapshot</url>\n" +
-          "  </repository>\n" +
+          "<repositories>" +
+          "  <repository>" +
+          "    <id>project-repo</id>" +
+          "       <url>file://${project.basedir}/build/testMvnCache</url>" +
+          "    </repository>" +
+          "  <repository>" +
+          "    <id>repo2</id>" +
+          "    <url>urlToRepo2</url>" +
+          "  </repository>" +
+          "  <repository>" +
+          "    <id>repository.spring.snapshot</id>" +
+          "    <url>http://repo.spring.io/snapshot</url>" +
+          "  </repository>" +
           "</repositories>";
+
+  private PomFactory pomFactory;
+
+  @Before
+  public void setUp() throws Exception {
+    pomFactory = new PomFactory();
+  }
 
   @Test
   public void createPomWithRepos() throws Exception {
     //given
-    Map<String, String> repos = Collections.singletonMap("repository.spring.snapshot", "http://repo.spring.io/snapshot");
-    PomFactory pomFactory = new PomFactory();
+    Map<String, String> repos = Maps.newHashMap();
+    repos.put("repo2", "urlToRepo2");
+    repos.put("repository.spring.snapshot", "http://repo.spring.io/snapshot");
     Dependency dependency = new Dependency("", "", "");
     //when
-    String pomAsString = pomFactory.createPom("/", "/", dependency, repos);
+    String pomAsString = pomFactory.createPom("/", dependency, repos);
     //then
-    assertThat(normalizeSpace(pomAsString)).contains(normalizeSpace(EXPECTED_RESULT_BLOCK));
+    assertThat(removeWhitespaces(pomAsString)).contains(removeWhitespaces(EXPECTED_RESULT_BLOCK));
+  }
+
+  private String removeWhitespaces(String pomAsString) {
+    return normalizeSpace(deleteWhitespace(pomAsString));
   }
 
 }

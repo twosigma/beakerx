@@ -13,20 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-include 'base'
-include 'groovy'
-include 'kotlin'
-include 'scala'
-include 'java'
-include 'clojure'
-include 'sql'
+package com.example;
 
-if (System.getProperty('includeCpp', 'false') == 'true') {
-  include 'cpp'
+public class Demo {
+  public static final String OBJECT_TEST_123 = "Demo_test_123";
+  public static final String STATIC_TEST_123 = "Demo_static_test_123";
+
+  public Demo() {
+  }
+
+  public static String staticTest() {
+    return "Demo_static_test_123";
+  }
+
+  public String getObjectTest() {
+    return "Demo_test_123";
+  }
 }
-
-// uncomment when demo projects have to be rebuild
-//include 'demoProjects'
-//include 'demoProjects:loadMagicJarDemo'
-//include 'demoProjects:demo'
-

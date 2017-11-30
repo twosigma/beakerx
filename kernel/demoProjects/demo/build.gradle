@@ -13,20 +13,38 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-include 'base'
-include 'groovy'
-include 'kotlin'
-include 'scala'
-include 'java'
-include 'clojure'
-include 'sql'
+version 'unspecified'
 
-if (System.getProperty('includeCpp', 'false') == 'true') {
-  include 'cpp'
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+ext.kernelIdName = 'demo'
+
+configurations {
+    provided
+    antlr
 }
 
-// uncomment when demo projects have to be rebuild
-//include 'demoProjects'
-//include 'demoProjects:loadMagicJarDemo'
-//include 'demoProjects:demo'
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+    }
+    test {
+        compileClasspath += configurations.provided
+        runtimeClasspath += configurations.provided
+    }
+}
 
+repositories {
+    mavenCentral()
+}
+dependencies {
+    provided project(':base')
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+staticContent {
+    ext.executeStaticContent = false
+}

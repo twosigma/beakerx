@@ -18,9 +18,10 @@ import $ from 'jquery';
 import _ from 'underscore';
 import { CommandRegistry } from '@phosphor/commands';
 import Menu from './BkoMenu';
-import MenuItem from './MenuItemInterface';
+import MenuItem from '../../shared/interfaces/menuItemInterface';
+import MenuInterface from '../../shared/interfaces/menuInterface';
 
-export default abstract class HeaderMenu {
+export default abstract class HeaderMenu implements MenuInterface {
   columnIndex: number;
 
   protected commands: CommandRegistry;
@@ -43,15 +44,6 @@ export default abstract class HeaderMenu {
   }
 
   protected abstract buildMenu($trigger?: any): void
-
-  protected destroy(): void {
-    this.scopeElement.off('mousedown.headermenu, keydown.HeaderMenu');
-    $(this.menu.node).off('keyup.keyTable, change');
-    $(document.body).off('click.table-headermenu');
-    $(document).off('keydown.keyTable', this.handleKeydownEvent);
-    $(this.menu.node).off('keydown.HeaderMenu', '.dropdown-menu-search input', this.handleKeydownEvent)
-    this.menu.dispose();
-  }
 
   protected getMenuPosition($trigger: any) {
     const triggerHeight = $trigger.height() || 20;
@@ -89,6 +81,15 @@ export default abstract class HeaderMenu {
         this.menu.triggerActiveItem();
       }
     }
+  }
+
+  destroy(): void {
+    this.scopeElement.off('mousedown.headermenu, keydown.HeaderMenu');
+    $(this.menu.node).off('keyup.keyTable, change');
+    $(document.body).off('click.table-headermenu');
+    $(document).off('keydown.keyTable', this.handleKeydownEvent);
+    $(this.menu.node).off('keydown.HeaderMenu', '.dropdown-menu-search input', this.handleKeydownEvent)
+    this.menu.dispose();
   }
 
   toggleMenu($trigger: any, submenuIndex?: number): void {
@@ -153,6 +154,7 @@ export default abstract class HeaderMenu {
     const submenu = new Menu({ commands: this.commands });
 
     submenu.addClass('dropdown-submenu');
+    submenu.addClass('bko-table-menu');
     submenu.title.label = menuItem.title;
 
     menuItem.enableItemsFiltering && this.addItemsFiltering(submenu);

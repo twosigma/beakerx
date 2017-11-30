@@ -49,7 +49,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClasspathAddMvnDepsMagicCommandTest {
 
-  private static final String SRC_TEST_RESOURCES_TEST_IVY_CACHE = "src/test/resources/testMvnCache";
+  private static final String SRC_TEST_RESOURCES_TEST_MVN_CACHE = "src/test/resources/testMvnCache";
   public static final String BUILD_PATH = "build";
   public static final String TEST_MVN_CACHE = BUILD_PATH + "/testMvnCache";
   public static final ArrayList<MagicCommandOutcomeItem> NO_ERRORS = new ArrayList<>();
@@ -72,19 +72,15 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   @Test
   public void handleClasspathAddMvnDep() throws Exception {
     //given
-    String allCode = "%classpath add mvn com.google.code.gson gson 2.6.2";
-    MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
-    Code code = Code.createCodeWithoutCodeBlock(allCode, singletonList(command), NO_ERRORS, new Message());
-    //when
-    MagicCommandOutcome process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
-    //then
-    Assertions.assertThat(getText(process)).contains("Added jar");
-    String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;
-    Stream<Path> paths = Files.walk(Paths.get(mvnDir));
-    Optional<Path> dep = paths.filter(file -> file.getFileName().toFile().getName().contains("gson")).findFirst();
-    assertThat(dep).isPresent();
-    assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
-    assertThat(getText(process)).contains("gson-2.6.2.jar");
+    String allCode = "%classpath add mvn org.slf4j slf4j-api 1.7.5";
+    handleClasspathAddMvnDep(allCode, "slf4j-api-1.7.5.jar");
+  }
+
+  @Test
+  public void handleClasspathAddMvnDepUsingGradleSyntax() throws Exception {
+    //given
+    String allCode = "%classpath add mvn com.google.code.gson:gson:2.6.2";
+    handleClasspathAddMvnDep(allCode, "gson-2.6.2.jar");
   }
 
   @Test
@@ -113,13 +109,36 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     assertThat(text).isEqualTo(ADD_MVN_FORMAT_ERROR_MESSAGE);
   }
 
+  private void handleClasspathAddMvnDep(String allCode, String expected) throws IOException {
+    MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
+    Code code = Code.createCodeWithoutCodeBlock(allCode, singletonList(command), NO_ERRORS, new Message());
+    //when
+    MagicCommandOutcome process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
+    //then
+    Assertions.assertThat(getText(process)).contains("Added jar");
+    String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;
+    Stream<Path> paths = Files.walk(Paths.get(mvnDir));
+    Optional<Path> dep = paths.filter(file -> (file.getFileName().toFile().getName().contains("gson") ||
+        file.getFileName().toFile().getName().contains("slf4j"))).findFirst();
+    assertThat(dep).isPresent();
+    assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
+    assertThat(getText(process)).contains(expected);
+    dep.ifPresent(path -> {
+      try {
+        FileUtils.forceDelete(path.toFile());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    });
+  }
+
   private String getText(MagicCommandOutcome process) {
     MagicCommandOutcomeItem magicCommandItem = process.getItems().get(0);
     return (String) magicCommandItem.getMIMEContainer().get().getData();
   }
 
   private static void prepareLocalMavenRepository() throws IOException {
-    FileUtils.copyDirectory(new File(SRC_TEST_RESOURCES_TEST_IVY_CACHE), new File(BUILD_PATH));
+    FileUtils.copyDirectory(new File(SRC_TEST_RESOURCES_TEST_MVN_CACHE), new File(BUILD_PATH));
     unzipRepo();
   }
 

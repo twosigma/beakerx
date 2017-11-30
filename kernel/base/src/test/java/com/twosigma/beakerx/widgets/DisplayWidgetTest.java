@@ -63,6 +63,6 @@ public class DisplayWidgetTest {
     Message message = groovyKernel.getPublishedMessages().get(0);
     assertThat(getData(message).get(METHOD)).isEqualTo(DISPLAY_DATA.getName());
     verifyDisplayMsg(message);
-    assertThat(getContent(message).get(COMM_ID)).isEqualTo(widget.getComm().getCommId());
+    assertThat(getContent(message).get(COMM_ID)).isNull();
   }
 }

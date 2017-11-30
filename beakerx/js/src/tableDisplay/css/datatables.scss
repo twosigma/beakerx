@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-@import '~@phosphor/widgets/style/index.css';
+@import '~@phosphor/widgets/style/menu.css';
 
 $border-color: #D4D0D0;
 $highlight-blue: #39a9ed;
@@ -570,77 +570,81 @@ $fix-col-separator-width: 3px;
   overflow: visible;
 }
 
-.p-Menu {
+.bko-table-menu {
   background-color: #fff;
   border-radius: 2px;
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   background-clip: padding-box;
-}
 
-.p-Menu-content {
-  border-collapse: collapse;
-  display: block;
-  position: relative;
-  top: 0;
-  left: 0;
-  overflow: visible;
-  width: 100%;
-
-  .p-Menu-item {
+  .p-Menu-content {
+    border-collapse: collapse;
     display: block;
-    font-weight: normal;
-    line-height: 1.42857143;
-    color: #333333;
-    cursor: pointer;
+    position: relative;
+    top: 0;
+    left: 0;
+    overflow: visible;
+    width: 100%;
 
-    &:hover {
-      color: #262626;
-      background-color: #f5f5f5;
-    }
-  }
-
-  .p-Menu-itemLabel {
-    padding: 3px;
-    white-space: nowrap;
-    display: inline-block;
-  }
-
-  .p-Menu-itemIcon,
-  .p-Menu-itemShortcut {
-    min-width: 22px;
-    position: static;
-    padding: 4px;
-    display: inline-block;
-  }
-
-  .p-Menu-itemSubmenuIcon {
-    display: inline-block;
-    position: absolute;
-    right: 0px;
-    padding-right: 10px;
-    margin-top: 3px;
-  }
-
-  [data-type="submenu"] .p-Menu-itemSubmenuIcon {
-    &:after {
-      display: inline-block;
-      font: normal normal normal 14px/1 FontAwesome;
-      font-size: inherit;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+    .p-Menu-item {
       display: block;
-      content: "\f0da";
-      float: right;
+      font-weight: normal;
+      line-height: 1.42857143;
       color: #333333;
-      margin-top: 2px;
-    }
-  }
+      cursor: pointer;
 
-  [data-type="separator"] {
-    border-bottom: 1px solid #ccc;
-    height: 5px;
+      &:hover {
+        color: #262626;
+        background-color: #f5f5f5;
+      }
+    }
+
+    .p-Menu-itemLabel {
+      padding: 3px;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    .p-Menu-itemIcon,
+    .p-Menu-itemShortcut {
+      min-width: 22px;
+      position: static;
+      padding: 4px;
+      display: inline-block;
+    }
+
+    .p-Menu-itemSubmenuIcon {
+      display: inline-block;
+      position: absolute;
+      right: 0px;
+      padding-right: 10px;
+      margin-top: 3px;
+    }
+
+    [data-type="submenu"] > .p-Menu-itemSubmenuIcon {
+      background: none;
+
+      &:after {
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        display: block;
+        content: "\f0da";
+        float: right;
+        color: #333333;
+        margin-top: 2px;
+      }
+    }
+
+    [data-type="separator"] {
+      border-bottom: 1px solid #ccc;
+      height: 5px;
+      min-height: 0;
+      overflow: hidden;
+    }
   }
 }
 

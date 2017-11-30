@@ -57,7 +57,7 @@ public class ReplWithClassLoaderFactory {
   }
 
   private static ReplWithClassLoader createReplInterpreter(String[] classpathEntries, ClassLoader parent, KotlinEvaluator kotlinEvaluator) {
-    CompilerConfiguration compilerConfiguration = getCompilerConfiguration(classpathEntries);
+    CompilerConfiguration compilerConfiguration = getCompilerConfiguration(classpathEntries, kotlinEvaluator);
     ReplInterpreter replInterpreter = new ReplInterpreter(newDisposable(), compilerConfiguration, new ConsoleReplConfiguration());
     ReplClassLoader loader = getReplClassLoader(parent, replInterpreter);
     replInterpreter.eval(getImports(kotlinEvaluator));
@@ -77,25 +77,31 @@ public class ReplWithClassLoaderFactory {
 
   @NotNull
   private static ReplClassLoader getReplClassLoader(ClassLoader parent, ReplInterpreter replInterpreter) {
-    ReplClassLoader loader = null;
+    ReplClassLoader classLoader = null;
     try {
-      loader = new ReplClassLoader(parent);
-      Field classLoader = replInterpreter.getClass().getDeclaredField("classLoader");
-      classLoader.setAccessible(true);
-      classLoader.set(replInterpreter, loader);
+      Field classLoaderField = replInterpreter.getClass().getDeclaredField("classLoader");
+      classLoaderField.setAccessible(true);
+      classLoader = (ReplClassLoader) classLoaderField.get(replInterpreter);
+
+      Field urlClassLoaderField = classLoader.getClass().getSuperclass().getDeclaredField("parent");
+      urlClassLoaderField.setAccessible(true);
+      Object urlClassLoader = urlClassLoaderField.get(classLoader);
+      urlClassLoaderField.set(urlClassLoader, parent);
+
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    return loader;
+    return classLoader;
   }
 
   @NotNull
-  private static CompilerConfiguration getCompilerConfiguration(String[] classpathEntries) {
+  private static CompilerConfiguration getCompilerConfiguration(String[] classpathEntries, KotlinEvaluator kotlinEvaluator) {
     CompilerConfiguration compilerConfiguration = new CompilerConfiguration();
     compilerConfiguration.put(CommonConfigurationKeys.MODULE_NAME, "kotlinModule" + System.currentTimeMillis());
     compilerConfiguration.put(JVMConfigurationKeys.RETAIN_OUTPUT_IN_MEMORY, true);
     addJvmClasspathRoots(compilerConfiguration, PathUtil.getJdkClassesRootsFromCurrentJre());
     Arrays.stream(classpathEntries).forEach(x -> addJvmClasspathRoot(compilerConfiguration, new File(x)));
+    kotlinEvaluator.getClasspath().getPathsAsStrings().forEach(x -> addJvmClasspathRoot(compilerConfiguration, new File(x)));
     return compilerConfiguration;
   }
 

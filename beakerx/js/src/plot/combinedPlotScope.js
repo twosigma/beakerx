@@ -20,10 +20,10 @@ define([
   'jquery-ui/ui/widgets/resizable',
   'd3',
   './plotUtils',
+  './combinedPlotScopeUtils',
   './combinedPlotFormatter',
   './../shared/bkUtils',
   './chartExtender',
-  'jquery-contextmenu',
   './plotScope'
 ], function(
   _,
@@ -31,12 +31,13 @@ define([
   resizable,
   d3,
   plotUtils,
+  CombinedPlotScopeUtilsModule,
   combinedPlotFormatter,
   bkUtils,
   bkoChartExtender,
-  contextMenu,
   PlotScope
 ) {
+  var CombinedPlotScopeUtils = CombinedPlotScopeUtilsModule.default;
   
   function CombinedPlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -256,6 +257,10 @@ define([
     );
   };
 
+  CombinedPlotScope.prototype.doDestroy = function() {
+    this.contextMenu && this.contextMenu.destroy();
+  };
+
   CombinedPlotScope.prototype.init = function() {
     var self = this;
     self.canvas = self.element.find("canvas")[0];
@@ -264,12 +269,8 @@ define([
     self.id = 'bko-plot-' + bkUtils.generateId(6);
     self.element.find('.combplot-plotcontainer').attr('id', self.id);
     self.saveAsMenuContainer = $('#' + self.id);
-    $.contextMenu({
-      selector: '#' + self.id,
-      zIndex: 3,
-      items: plotUtils.getSavePlotAsContextMenuItems(self),
-      trigger: 'none'
-    });
+    var ContextMenu = require('./contextMenu/plotContextMenu').default;
+    self.contextMenu = new ContextMenu(self);
 
     self.standardizeData();
     self.preparePlotModels();
@@ -426,6 +427,7 @@ define([
   CombinedPlotScope.prototype.runChildCharts = function() {
     var self = this;
     self.models.forEach(self.runChildChart.bind(this));
+    CombinedPlotScopeUtils.adjustLayoutMargin(this.scopes)
   };
 
   CombinedPlotScope.prototype.runChildChart = function(model) {

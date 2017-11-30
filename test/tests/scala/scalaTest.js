@@ -42,12 +42,4 @@ describe('Scala notebook', function () {
     });
   });
 
-  describe('Run 3rd cell. ', function () {
-    it('PlotLegendContainer is enabled', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
-      var dtContainer = beakerxPO.runCellToGetDtContainer(2);
-      beakerxPO.plotLegendContainerIsEnabled(dtContainer);
-    });
-  });
-
 });

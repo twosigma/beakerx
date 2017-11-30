@@ -15,7 +15,7 @@
  */
 
 import createIndexMenuItems from './createIndexMenuItems';
-import MenuItem from './MenuItemInterface';
+import MenuItem from '../../shared/interfaces/menuItemInterface';
 import HeaderMenu from './HeaderMenu';
 
 export default class IndexMenu extends HeaderMenu {
@@ -31,11 +31,13 @@ export default class IndexMenu extends HeaderMenu {
 
   protected buildMenu($trigger: any): void {
     this.menu.addClass('bko-header-menu');
+    this.menu.addClass('bko-table-menu');
     this.menu.addClass('dropdown');
 
     const self = this;
 
     this.menu.contentNode.classList.add('dropdown-menu');
+    this.menu.contentNode.classList.add('bko-table-menu-content');
     this.scopeElement.off('mousedown.headermenu', `#${$trigger.attr('id')}`);
     this.scopeElement.on('mousedown.headermenu', `#${$trigger.attr('id')}`, function(event) {
       event.preventDefault();

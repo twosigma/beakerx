@@ -37,4 +37,13 @@ public class JavaKernelTest extends KernelExecutionTest {
   protected String codeFor16Divide2() {
     return "return 16/2;";
   }
+
+
+  @Override
+  protected String codeForVerifyingAddedDemoJar() {
+    return "import com.example.Demo;\n" +
+            "return new Demo().getObjectTest();";
+  }
+
+
 }

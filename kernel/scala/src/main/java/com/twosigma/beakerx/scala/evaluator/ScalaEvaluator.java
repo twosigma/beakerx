@@ -81,10 +81,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
     classLoader.addJar(pathToJar);
-    URL url = pathToJar.getUrl();
-    logger.info("ScalaEvaluator addJarToClassLoader url : " + url);
-    logger.info("ScalaEvaluator addJarToClassLoader url.path: " + url.getPath());
-    shell.addUrlsToClassPath(url);
+    shell.addUrlsToClassPath(pathToJar.getUrl());
   }
 
   @Override

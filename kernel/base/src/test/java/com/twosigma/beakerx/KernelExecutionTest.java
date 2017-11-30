@@ -38,6 +38,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
+  public static final String DEMO_RESOURCES_JAR = "../../doc/resources/jar";
+  public static final String DEMO_JAR_NAME = "demo.jar";
+  public static final String DEMO_JAR = DEMO_RESOURCES_JAR + "/" + DEMO_JAR_NAME;
+
   @Test
   public void evaluate16Divide2() throws Exception {
     //given
@@ -107,7 +111,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
   }
 
   private void addJarWithCustomMagicCommand() throws InterruptedException {
-    String allCode = CLASSPATH_ADD_JAR + " " + "../../doc/resources/jar/loadMagicJarDemo.jar";
+    String allCode = CLASSPATH_ADD_JAR + " " + DEMO_RESOURCES_JAR + "/loadMagicJarDemo.jar";
     Code code = CodeFactory.create(allCode, new Message(), getKernel());
     MagicCommandOutcome result = executeMagicCommands(code, 1, getKernel());
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
@@ -147,11 +151,11 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
   }
 
   private void addDemoJar() {
-    String allCode = CLASSPATH_ADD_JAR + " " + "../../doc/resources/jar/demo.jar";
+    String allCode = CLASSPATH_ADD_JAR + " " + DEMO_JAR;
     Code code = CodeFactory.create(allCode, new Message(), getKernel());
     MagicCommandOutcome result = executeMagicCommands(code, 1, getKernel());
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
-    assertThat(getText(message)).contains("Added jar: [demo.jar]");
+    assertThat(getText(message)).contains("Added jar: [" + DEMO_JAR_NAME + "]");
   }
 
 

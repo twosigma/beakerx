@@ -13,21 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-include 'base'
-include 'groovy'
-include 'kotlin'
-include 'scala'
-include 'java'
-include 'clojure'
-include 'sql'
+package com.beaker;
 
-if (System.getProperty('includeCpp', 'false') == 'true') {
-  include 'cpp'
+public class BeakerXClasspathTest {
+
+  public static final String staticTest = "static_123";
+  public String objectTest = "object_123";
+
+  public BeakerXClasspathTest() {
+  }
+
+  public static void main(String[] args) {
+    BeakerXClasspathTest t = new BeakerXClasspathTest();
+    System.out.println(t.getObjectTest());
+  }
+
+  public String getObjectTest() {
+    return this.objectTest;
+  }
+
+  public void setObjectTest(String objectTest) {
+    this.objectTest = objectTest;
+  }
 }
-
-// uncomment when demo projects have to be rebuild
-//include 'demoProjects'
-//include 'demoProjects:loadMagicJarDemo'
-//include 'demoProjects:demo'
-//include 'demoProjects:BeakerXClasspathTest'
-

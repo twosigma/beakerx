@@ -336,8 +336,8 @@ define([
       model.yAxisR.setGridlines(focus.yl_r,
         focus.yr_r,
         this.numIntervals.y,
-        model.margin.bottom,
-        model.margin.top)
+        model.margin.bottom_r,
+        model.margin.top_r)
     }
   };
 

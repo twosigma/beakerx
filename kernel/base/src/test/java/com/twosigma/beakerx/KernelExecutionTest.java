@@ -99,7 +99,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
   }
 
   private void loadMagicCommandByClass() {
-    String allCode = LOAD_MAGIC + "   com.twosigma.beakerx.custom.magic.command.ShowEvnsCustomMagicCommand";
+    String allCode = LOAD_MAGIC + "   com.twosigma.beakerx.custom.magic.command.ShowEnvsCustomMagicCommand";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     MagicCommandOutcome result = executeMagicCommands(code, 2, kernel);
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();

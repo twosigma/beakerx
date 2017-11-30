@@ -24,7 +24,7 @@ import com.twosigma.beakerx.mimetype.MIMEContainer;
 
 import static com.twosigma.beakerx.mimetype.MIMEContainer.Text;
 
-public class ShowEvnsCustomMagicCommand implements MagicCommandFunctionality {
+public class ShowEnvsCustomMagicCommand implements MagicCommandFunctionality {
 
   private static final String SHOW_ENVS = "%showEnvs";
 

@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kotlin.evaluator;
 
-import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
+import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.kernel.ImportPath;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.kotlin.cli.common.repl.ReplClassLoader;
@@ -28,7 +28,9 @@ import org.jetbrains.kotlin.utils.PathUtil;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.intellij.openapi.util.Disposer.newDisposable;
 import static org.jetbrains.kotlin.cli.jvm.config.JvmContentRootsKt.addJvmClasspathRoot;
@@ -37,9 +39,29 @@ import static org.jetbrains.kotlin.cli.jvm.config.JvmContentRootsKt.addJvmClassp
 public class ReplWithClassLoaderFactory {
 
   @NotNull
-  public static ReplWithClassLoader createReplWithClassLoader(KotlinEvaluator kotlinEvaluator) {
-    DynamicClassLoaderSimple parent = getParentClassLoader(kotlinEvaluator);
+  public static ReplWithClassLoader createReplWithKotlinParentClassLoader(KotlinEvaluator kotlinEvaluator, BeakerxUrlClassLoader parent) {
     return createReplInterpreter(getClasspath(), parent, kotlinEvaluator);
+  }
+
+  public static ReplInterpreter createReplWithReplClassLoader(KotlinEvaluator kotlinEvaluator, ReplClassLoader classLoader) {
+    CompilerConfiguration compilerConfiguration = getCompilerConfiguration(getClasspath(), kotlinEvaluator);
+    ReplInterpreter replInterpreter = new ReplInterpreter(newDisposable(), compilerConfiguration, new ConsoleReplConfiguration());
+    setupReplClassLoader(classLoader, replInterpreter);
+    replInterpreter.eval(getImportString(kotlinEvaluator.getImports().getImportPaths()));
+    return replInterpreter;
+  }
+
+  @NotNull
+  private static ReplClassLoader setupReplClassLoader(ReplClassLoader classLoader, ReplInterpreter replInterpreter) {
+
+    try {
+      Field classLoaderField = replInterpreter.getClass().getDeclaredField("classLoader");
+      classLoaderField.setAccessible(true);
+      classLoaderField.set(replInterpreter, classLoader);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    return classLoader;
   }
 
   @NotNull
@@ -49,10 +71,9 @@ public class ReplWithClassLoaderFactory {
   }
 
   @NotNull
-  private static DynamicClassLoaderSimple getParentClassLoader(KotlinEvaluator kotlinEvaluator) {
-    DynamicClassLoaderSimple parent = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-    parent.addJars(kotlinEvaluator.getClasspath().getPathsAsStrings());
-    parent.addDynamicDir(kotlinEvaluator.getOutDir());
+  public static BeakerxUrlClassLoader createParentClassLoader(KotlinEvaluator kotlinEvaluator) {
+    List<URL> urls = BeakerxUrlClassLoader.createUrls(kotlinEvaluator.getClasspath().getPaths());
+    BeakerxUrlClassLoader parent = new BeakerxUrlClassLoader(urls.toArray(new URL[urls.size()]), ClassLoader.getSystemClassLoader());
     return parent;
   }
 
@@ -60,14 +81,14 @@ public class ReplWithClassLoaderFactory {
     CompilerConfiguration compilerConfiguration = getCompilerConfiguration(classpathEntries, kotlinEvaluator);
     ReplInterpreter replInterpreter = new ReplInterpreter(newDisposable(), compilerConfiguration, new ConsoleReplConfiguration());
     ReplClassLoader loader = getReplClassLoader(parent, replInterpreter);
-    replInterpreter.eval(getImports(kotlinEvaluator));
+    replInterpreter.eval(getImportString(kotlinEvaluator.getImports().getImportPaths()));
     return new ReplWithClassLoader(replInterpreter, loader);
   }
 
   @NotNull
-  private static String getImports(KotlinEvaluator kotlinEvaluator) {
+  public static String getImportString(List<ImportPath> importPaths) {
     StringBuilder javaSourceCode = new StringBuilder();
-    for (ImportPath i : kotlinEvaluator.getImports().getImportPaths()) {
+    for (ImportPath i : importPaths) {
       javaSourceCode.append("import ");
       javaSourceCode.append(adjustImport(i));
       javaSourceCode.append("\n");

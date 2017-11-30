@@ -16,6 +16,8 @@
 
 package com.twosigma.beakerx.scala.evaluator
 
+import java.net.URL
+
 import com.twosigma.beakerx.autocomplete.AutocompleteResult
 import com.twosigma.beakerx.jvm.`object`.SimpleEvaluationObject
 
@@ -38,6 +40,10 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     s.termConflict.value = "package"
     s.embeddedDefaults(cl)
     s
+  }
+
+  def addUrlsToClassPath(url: URL): Unit = {
+    interpreter.addUrlsToClassPath(url)
   }
 
   private val baos = new java.io.ByteArrayOutputStream()

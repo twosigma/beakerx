@@ -22,19 +22,24 @@ import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyClasspathScanner;
+import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.PathToJar;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 import java.io.File;
 
 import static com.twosigma.beakerx.groovy.evaluator.EnvVariablesFilter.envVariablesFilter;
+import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.addImportPathToImportCustomizer;
 import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newEvaluator;
+import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newParentClassLoader;
 
 
 public class GroovyEvaluator extends BaseEvaluator {
@@ -46,7 +51,8 @@ public class GroovyEvaluator extends BaseEvaluator {
   private GroovyWorkerThread worker = null;
   private GroovyClassLoader groovyClassLoader;
   private Binding scriptBinding = null;
-
+  private ImportCustomizer icz;
+  private BeakerxUrlClassLoader beakerxUrlClassLoader;
 
   public GroovyEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
     this(id, sId, new BeakerCellExecutor("groovy"), new TempFolderFactoryImpl(), evaluatorParameters);
@@ -90,8 +96,13 @@ public class GroovyEvaluator extends BaseEvaluator {
   }
 
   @Override
-  protected boolean addJar(PathToJar path) {
-    return classPath.add(new PathToJar(envVariablesFilter(path.getPath(), System.getenv())));
+  protected void addJarToClassLoader(PathToJar pathToJar) {
+    this.beakerxUrlClassLoader.addJar(pathToJar);
+  }
+
+  @Override
+  protected void addImportToClassLoader(ImportPath anImport) {
+    addImportPathToImportCustomizer(icz, anImport);
   }
 
   private GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c) {
@@ -116,7 +127,9 @@ public class GroovyEvaluator extends BaseEvaluator {
   }
 
   private void reloadClassloader() {
-    this.groovyClassLoader = newEvaluator(getImports(), getClasspath(), getOutDir());
+    this.beakerxUrlClassLoader = newParentClassLoader(getClasspath());
+    this.icz = new ImportCustomizer();
+    this.groovyClassLoader = newEvaluator(getImports(), getClasspath(), getOutDir(), icz, beakerxUrlClassLoader);
     this.scriptBinding = new Binding();
   }
 

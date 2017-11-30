@@ -99,7 +99,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(1);
+    assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(0);
   }
 
   @Test
@@ -136,7 +136,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(1);
+    assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(0);
   }
 
   @Test

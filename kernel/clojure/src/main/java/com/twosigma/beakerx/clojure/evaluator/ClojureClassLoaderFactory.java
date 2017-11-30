@@ -17,24 +17,12 @@ package com.twosigma.beakerx.clojure.evaluator;
 
 import clojure.lang.DynamicClassLoader;
 import com.twosigma.beakerx.kernel.Classpath;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Paths;
 
 class ClojureClassLoaderFactory {
 
   static DynamicClassLoader newInstance(Classpath classPath, String outDir) {
     DynamicClassLoader dynamicClassLoader = new DynamicClassLoader();
-
-    classPath.getPathsAsStrings().forEach(path -> {
-      try {
-        URL url = Paths.get(path).toFile().toURI().toURL();
-        dynamicClassLoader.addURL(url);
-      } catch (MalformedURLException e) {
-        throw new IllegalStateException("New instance of dynamic class loader for clojure cannot be instanced.");
-      }
-    });
-
+    classPath.getPaths().forEach(path -> dynamicClassLoader.addURL(path.getUrl()));
     return dynamicClassLoader;
   }
 }

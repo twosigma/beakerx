@@ -51,7 +51,7 @@ public class GroovyEvaluator extends BaseEvaluator {
   private GroovyWorkerThread worker = null;
   private GroovyClassLoader groovyClassLoader;
   private Binding scriptBinding = null;
-  private ImportCustomizer icz = new ImportCustomizer();
+  private ImportCustomizer icz;
   private BeakerxUrlClassLoader beakerxUrlClassLoader;
 
   public GroovyEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
@@ -127,7 +127,8 @@ public class GroovyEvaluator extends BaseEvaluator {
   }
 
   private void reloadClassloader() {
-    beakerxUrlClassLoader = newParentClassLoader(getClasspath());
+    this.beakerxUrlClassLoader = newParentClassLoader(getClasspath());
+    this.icz = new ImportCustomizer();
     this.groovyClassLoader = newEvaluator(getImports(), getClasspath(), getOutDir(), icz, beakerxUrlClassLoader);
     this.scriptBinding = new Binding();
   }

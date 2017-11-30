@@ -15,16 +15,12 @@
  */
 package com.twosigma.beakerx.kernel.magic.command;
 
-import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertThat;
-
+import static org.apache.commons.lang3.StringUtils.normalizeSpace;
+import static org.assertj.core.api.Assertions.assertThat;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.Dependency;
 
 import java.util.Collections;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 public class PomFactoryTest {
@@ -50,7 +46,7 @@ public class PomFactoryTest {
     //when
     String pomAsString = pomFactory.createPom("/", "/", dependency, repos);
     //then
-    assertThat(deleteWhitespace(pomAsString), containsString(deleteWhitespace(EXPECTED_RESULT_BLOCK)));
+    assertThat(normalizeSpace(pomAsString)).contains(normalizeSpace(EXPECTED_RESULT_BLOCK));
   }
 
 }

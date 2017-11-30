@@ -23,4 +23,4 @@ rm -r /home/beakerx/beakerx/js/dist
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 
-rm -rf docker .DS_Store .git .gradle .idea jitpack.yml kernel RELEASE.md test
+rm -rf docker .DS_Store .git .gradle .idea jitpack.yml kernel RELEASE.md test .cache .yarn .local logs .ipynb_checkpoints

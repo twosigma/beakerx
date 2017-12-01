@@ -81,5 +81,15 @@ subprojects {
       delete pathToStaticContent + kernelIdName
     }
   }
+
+  task myJavadocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+  }
+
+  afterEvaluate {
+    javadoc.classpath += files(project(':base').sourceSets.main.output)
+  }
+
   clean.dependsOn cleanStaticContent
 }

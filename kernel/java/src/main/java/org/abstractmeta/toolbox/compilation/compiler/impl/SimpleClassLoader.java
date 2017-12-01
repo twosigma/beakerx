@@ -33,7 +33,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * <p>This implementation uses the following mechanism to lookup requested class.
+ * {@code  <p>This implementation uses the following mechanism to lookup requested class.
  * <ul>
  * <li>java object registry: {@link org.abstractmeta.toolbox.compilation.compiler.registry.JavaFileObjectRegistry}</li>
  * <li>jar files class path entries</li>
@@ -42,7 +42,7 @@ import java.util.jar.JarFile;
  * Note that to be able find use  {@link SimpleClassLoader#findResource(String)} or  {@link SimpleClassLoader#findResources(String)} for registry resources (classes compiled in memory),
  * please use {@link JavaSourceCompilerImpl#persistCompiledClasses(org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit)}
  * to persist compiled classes.
- * </p>
+ * </p> }
  *
  * @author Adrian Witas
  */

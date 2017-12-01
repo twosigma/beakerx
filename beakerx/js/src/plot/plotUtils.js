@@ -313,8 +313,8 @@ define([
         xr : model.userFocus.xr,
         yl : model.userFocus.yl,
         yr : model.userFocus.yr,
-        yl_r : model.userFocus.yl_r,
-        yr_r : model.userFocus.yr_r
+        yl_r : model.yAxisR !== null ? model.userFocus.yl_r : model.userFocus.yl,
+        yr_r : model.yAxisR !== null ? model.userFocus.yr_r : model.userFocus.yr
       };
 
       if (focus.xl == null) {

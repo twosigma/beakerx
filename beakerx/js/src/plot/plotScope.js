@@ -193,9 +193,9 @@ define([
     this.renderFixed = 1;
     this.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
       bottomLayoutMargin : 30,
-      topLayoutMargin : 0,
+      topLayoutMargin : 30,
       leftLayoutMargin : calcVertLayoutMargin.call(this, this.stdmodel.yAxis),
-      rightLayoutMargin : this.stdmodel.yAxisR ? calcVertLayoutMargin(this.stdmodel.yAxisR) : 0,
+      rightLayoutMargin : this.stdmodel.yAxisR ? calcVertLayoutMargin(this.stdmodel.yAxisR) : 30,
       legendMargin : 10,
       legendBoxSize : 10
     };

@@ -61,6 +61,18 @@ conda install -y -c conda-forge ipywidgets
 beakerx-install
 ```
 
+### Build and Install for Lab
+
+```
+conda create -y -n labx 'python>=3' nodejs pandas openjdk maven
+source activate labx
+conda install -y -c conda-forge jupyterlab
+(cd beakerx; pip install -e . --verbose)
+beakerx-install
+jupyter labextension install @jupyter-widgets/jupyterlab-manager
+(cd beakerx/jslab; jupyter labextension install .)
+```
+
 ### Update after Java change
 
 The kernels are installed to run out of the repo, so just a local

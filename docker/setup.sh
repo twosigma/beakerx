@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven
+conda create -y -n beakerx 'python>=3' pandas openjdk maven
 source activate beakerx
 conda install -y -c conda-forge ipywidgets
 

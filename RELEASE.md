@@ -78,11 +78,11 @@ docker build -t beakerx -f docker/Dockerfile .
 docker run -p 8888:8888 beakerx
 ```
 
-Test it, then
+Test it, then (substituting the version):
 
 ```
-docker tag beakerx beakerx/beakerx
-docker push beakerx/beakerx
+docker tag beakerx beakerx/beakerx:$version
+docker push beakerx/beakerx:$version
 ```
 
 Update description/version on [Docker

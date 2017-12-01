@@ -15,20 +15,53 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.net.URL;
+import java.nio.file.Paths;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 public class PathToJar {
-
-  private String path;
+  private URL url;
+  private String canonicalPath;
 
   public PathToJar(final String path) {
-    this.path = path;
+    checkNotNull(path);
+    checkNotWhitespaces(path);
+    File file = getFile(path);
+    try {
+      canonicalPath = file.getCanonicalPath();
+      this.url = Paths.get(canonicalPath).toUri().toURL();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public String getPath() {
-    return path;
+    return canonicalPath;
+  }
+
+  public URL getUrl() {
+    return url;
+  }
+
+  private File getFile(String path) {
+    File file = Paths.get(path).toFile();
+    if (!file.exists()) {
+      throw new RuntimeException("Path does not exist: " + path);
+    }
+    return file;
+  }
+
+  private void checkNotWhitespaces(String path) {
+    if (StringUtils.containsWhitespace(path)) {
+      throw new RuntimeException("Can not create path with whitespace.");
+    }
   }
 
   @Override

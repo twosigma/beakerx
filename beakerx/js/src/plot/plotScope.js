@@ -28,8 +28,7 @@ define([
   './../shared/bkUtils',
   './../shared/bkHelper',
   './gradientlegend',
-  './chartExtender',
-  'jquery-contextmenu'
+  './chartExtender'
 ], function(
   _,
   $,
@@ -44,8 +43,7 @@ define([
   bkUtils,
   bkHelper,
   GradientLegend,
-  bkoChartExtender,
-  contextMenu
+  bkoChartExtender
 ) {
 
   function PlotScope(wrapperId) {
@@ -151,72 +149,7 @@ define([
 
     $(window).resize(this.resizeFunction);
 
-    var noop = function (x) {
-      return x;
-    };
-    var deepcopy = function(original){
-      return JSON.parse(JSON.stringify(original));
-    };
-
-    var sanitize = null;
-    try {
-      var caja = IPython.security.caja;
-      window.cssSchemaFixed = false;
-      sanitize = function(styleString){
-        if (!window.cssSchemaFixed){
-          // fix caja to support svg color/painting attributes before using it.
-          // some of the attributes can be directly copied. some of them needs modification
-          // for details, see https://github.com/google/caja/blob/1056be89dad487f9178d89f462fe5cb207c7e604/src/com/google/caja/lang/css/css3-defs.json
-          var ATTRIBS = window.cssSchema;
-          ATTRIBS['color-rendering'] = deepcopy(ATTRIBS['speak']);
-          ATTRIBS['color-rendering'].cssLitGroup[0][0] = "auto";
-          ATTRIBS['color-rendering'].cssLitGroup[1][0] = "optimizeSpeed";
-          ATTRIBS['color-rendering'].cssLitGroup[2][0] = "optimizeQuality";
-          ATTRIBS['fill'] = ATTRIBS['color'];
-          ATTRIBS['fill-opacity'] = ATTRIBS['opacity'];
-          ATTRIBS['fill-rule'] = deepcopy(ATTRIBS['speak-header']);
-          ATTRIBS['fill-rule'].cssLitGroup[0][0] = "nonzero";
-          ATTRIBS['fill-rule'].cssLitGroup[1][0] = "evenodd";
-          ATTRIBS['image-rendering'] = ATTRIBS['color-rendering'];
-          ATTRIBS['marker-start'] = ATTRIBS['cue-before'];
-          ATTRIBS['marker-mid'] = ATTRIBS['cue-before'];
-          ATTRIBS['marker-end'] = ATTRIBS['cue-before'];
-          ATTRIBS['shape-rendering'] = deepcopy(ATTRIBS['text-transform']);
-          ATTRIBS['shape-rendering'].cssLitGroup[0][0] = "optimizeSpeed";
-          ATTRIBS['shape-rendering'].cssLitGroup[0][1] = "crispEdges";
-          ATTRIBS['shape-rendering'].cssLitGroup[0][2] = "geometricPrecision";
-          ATTRIBS['shape-rendering'].cssLitGroup[1][0] = "auto";
-          ATTRIBS['stroke'] = ATTRIBS['color'];
-          ATTRIBS['stroke-linecap'] = deepcopy(ATTRIBS['speak']);
-          ATTRIBS['stroke-linecap'].cssLitGroup[0][0] = "butt";
-          ATTRIBS['stroke-linecap'].cssLitGroup[1][0] = "round";
-          ATTRIBS['stroke-linecap'].cssLitGroup[2][0] = "square";
-          ATTRIBS['stroke-linejoin'] = deepcopy(ATTRIBS['speak']);
-          ATTRIBS['stroke-linejoin'].cssLitGroup[0][0] = "miter";
-          ATTRIBS['stroke-linejoin'].cssLitGroup[1][0] = "round";
-          ATTRIBS['stroke-linejoin'].cssLitGroup[2][0] = "bevel";
-          ATTRIBS['stroke-miterlimit'] = ATTRIBS['stress'];
-          ATTRIBS['stroke-opacity'] = ATTRIBS['opacity'];
-          ATTRIBS['stroke-width'] = ATTRIBS['max-width'];
-          ATTRIBS['text-rendering'] = deepcopy(ATTRIBS['shape-rendering']);
-          ATTRIBS['text-rendering'].cssLitGroup[0][1] = "optimizeLegibility";
-          window.cssSchemaFixed = true;
-        }
-
-        return caja.sanitizeStylesheet(
-          window.location.pathname,
-          styleString,
-          {
-            containerClass: null,
-            idSuffix: '',
-            virtualizeAttrName: noop
-          },
-          noop
-        );
-      }
-    } catch (e) {
-      sanitize = function (r) {return r;}
-    }
+    var sanitize = require('./plotSanitize').default;
 
     // Apply advanced custom styles set directly by user
     if(model.customStyles) {
@@ -403,8 +336,8 @@ define([
       model.yAxisR.setGridlines(focus.yl_r,
         focus.yr_r,
         this.numIntervals.y,
-        model.margin.bottom,
-        model.margin.top)
+        model.margin.bottom_r,
+        model.margin.top_r)
     }
   };
 
@@ -2201,12 +2134,8 @@ define([
     if (!self.model.disableContextMenu) {
       self.saveAsMenuContainer = $('div#'+self.wrapperId+' #' + self.id);
       // init context menu for 'save as...'
-      $.contextMenu({
-        selector: 'div#'+self.wrapperId+' #' + self.id,
-        zIndex: 3,
-        items: plotUtils.getSavePlotAsContextMenuItems(self),
-        trigger: 'none'
-      });
+      var ContextMenu = require('./contextMenu/plotContextMenu.ts').default;
+      self.contextMenu = new ContextMenu(self);
     } else if (self.model && self.model.getSaveAsMenuContainer) {
       self.saveAsMenuContainer = self.model.getSaveAsMenuContainer();
     }
@@ -2436,7 +2365,7 @@ define([
 
     setTimeout(this.initProperties.bind(this));
 
-    $.contextMenu('destroy', { selector: '#' + this.id});
+    this.contextMenu && this.contextMenu.destroy();
   };
 
   PlotScope.prototype.getSvgToSave = function() {
@@ -2771,7 +2700,7 @@ define([
 
     if (axis && axis.axisType === 'linear') {
       var l = axis.axisValL.toFixed(axis.axisFixed) + '';
-      var r = axis.axisValL.toFixed(axis.axisFixed) + '';
+      var r = axis.axisValR.toFixed(axis.axisFixed) + '';
 
       var m = l.length > r.length ? l : r;
       var size = measureText(m, 13, pStyle);

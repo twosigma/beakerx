@@ -22,8 +22,8 @@ import com.twosigma.beakerx.javash.kernel.JavaKernelMock;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
@@ -35,17 +35,17 @@ import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationS
 
 public class JavaEvaluatorTest {
 
-  private JavaEvaluator javaEvaluator;
+  private static JavaEvaluator javaEvaluator;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeClass
+  public static void setUp() throws Exception {
     javaEvaluator = new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
     JavaKernelMock kernel = new JavaKernelMock("id", javaEvaluator);
     KernelManager.register(kernel);
   }
 
-  @After
-  public void tearDown() throws Exception {
+  @AfterClass
+  public static void tearDown() throws Exception {
     KernelManager.register(null);
     javaEvaluator.exit();
   }

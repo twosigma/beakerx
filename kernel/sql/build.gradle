@@ -60,8 +60,6 @@ dependencies {
   compile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.0'
 
   testCompile project(':base').sourceSets.test.output
-  testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
-  testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 jar {

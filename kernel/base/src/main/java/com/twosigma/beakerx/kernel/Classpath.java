@@ -36,6 +36,10 @@ public class Classpath {
     return false;
   }
 
+  public List<PathToJar> getPaths() {
+    return paths;
+  }
+
   public List<String> getPathsAsStrings() {
     return paths.stream().map(PathToJar::getPath).collect(toList());
   }

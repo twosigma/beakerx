@@ -165,6 +165,11 @@ class Table(BaseObject):
 class TableDisplay(BeakerxDOMWidget):
     _view_name = Unicode('TableDisplayView').tag(sync=True)
     _model_name = Unicode('TableDisplayModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
+
     model = Dict().tag(sync=True)
 
     def __init__(self, *args, **kwargs):

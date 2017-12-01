@@ -26,26 +26,12 @@ ENV LANGUAGE en_US.UTF-8
 
 RUN apt-get update && apt-get dist-upgrade -y && \
 	apt-get install -y sudo curl unzip software-properties-common apt-transport-https git bzip2 wget locales && \
-	add-apt-repository ppa:cwchien/gradle && \
     locale-gen en_US.UTF-8 && \
-
-##################
-#    MiniConda   #
-##################
     echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
-    rm ~/miniconda.sh
-
-##############
-#  Node Java #
-##############
-RUN conda install -y -c conda-forge nodejs openjdk
-
-##################
-#  Yarn  Gradle  #
-##################
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    rm ~/miniconda.sh && \
+	curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
 	echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
 	apt-get update && apt-get install yarn -y && \
 	apt-get clean

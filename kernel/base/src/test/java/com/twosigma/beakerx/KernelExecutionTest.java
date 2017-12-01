@@ -38,21 +38,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
+  public static final String DEMO_RESOURCES_JAR = "../../doc/resources/jar";
+  public static final String DEMO_JAR_NAME = "demo.jar";
+  public static final String DEMO_JAR = DEMO_RESOURCES_JAR + "/" + DEMO_JAR_NAME;
+
   @Test
   public void evaluate16Divide2() throws Exception {
     //given
     String code = codeFor16Divide2();
     Message message = getExecuteRequestMessage(code);
     //when
-    kernelSocketsService.handleMsg(message);
+    getKernelSocketsService().handleMsg(message);
     //then
-    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
-    waitForResult(kernelSocketsService.getKernelSockets());
-    verifyPublishedMsgs(kernelSocketsService);
-    verifyResult(kernelSocketsService.getExecuteResultMessage().get());
-    waitForSentMessage(kernelSocketsService.getKernelSockets());
-    verifySentMsgs(kernelSocketsService);
+    waitForResult(getKernelSocketsService().getKernelSockets());
+    verifyPublishedMsgs(getKernelSocketsService());
+    verifyResult(getKernelSocketsService().getExecuteResultMessage().get());
+    waitForSentMessage(getKernelSocketsService().getKernelSockets());
+    verifySentMsgs(getKernelSocketsService());
   }
 
   protected String codeFor16Divide2() {
@@ -88,10 +92,10 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   private void verifyLoadedMagicCommand() {
     String allCode = "%showEnvs";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
-    MagicCommandOutcome result = executeMagicCommands(code, 3, kernel);
+    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    MagicCommandOutcome result = executeMagicCommands(code, 3, getKernel());
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
-    assertThat(getText(message)).startsWith("{PATH");
+    assertThat(getText(message)).contains("PATH");
   }
 
   private String getText(MIMEContainer message) {
@@ -99,17 +103,17 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
   }
 
   private void loadMagicCommandByClass() {
-    String allCode = LOAD_MAGIC + "   com.twosigma.beakerx.custom.magic.command.ShowEvnsCustomMagicCommand";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
-    MagicCommandOutcome result = executeMagicCommands(code, 2, kernel);
+    String allCode = LOAD_MAGIC + "   com.twosigma.beakerx.custom.magic.command.ShowEnvsCustomMagicCommand";
+    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    MagicCommandOutcome result = executeMagicCommands(code, 2, getKernel());
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
     assertThat(getText(message)).contains("Magic command %showEnvs was successfully added.");
   }
 
   private void addJarWithCustomMagicCommand() throws InterruptedException {
-    String allCode = CLASSPATH_ADD_JAR + " " + "../../doc/resources/jar/loadMagicJarDemo.jar";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    String allCode = CLASSPATH_ADD_JAR + " " + DEMO_RESOURCES_JAR + "/loadMagicJarDemo.jar";
+    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    MagicCommandOutcome result = executeMagicCommands(code, 1, getKernel());
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
     assertThat(getText(message)).contains("Added jar: [loadMagicJarDemo.jar]");
   }
@@ -127,12 +131,12 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     String code = codeForVerifyingAddedDemoJar();
     Message message = getExecuteRequestMessage(code);
     //when
-    kernelSocketsService.handleMsg(message);
+    getKernelSocketsService().handleMsg(message);
     //then
-    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
-    waitForResult(kernelSocketsService.getKernelSockets());
-    verifyResultOfAddedJar(kernelSocketsService.getExecuteResultMessage().get());
+    waitForResult(getKernelSocketsService().getKernelSockets());
+    verifyResultOfAddedJar(getKernelSocketsService().getExecuteResultMessage().get());
   }
 
   protected String codeForVerifyingAddedDemoJar() {
@@ -147,11 +151,11 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
   }
 
   private void addDemoJar() {
-    String allCode = CLASSPATH_ADD_JAR + " " + "../../doc/resources/jar/demo.jar";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    String allCode = CLASSPATH_ADD_JAR + " " + DEMO_JAR;
+    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    MagicCommandOutcome result = executeMagicCommands(code, 1, getKernel());
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
-    assertThat(getText(message)).contains("Added jar: [demo.jar]");
+    assertThat(getText(message)).contains("Added jar: [" + DEMO_JAR_NAME + "]");
   }
 
 

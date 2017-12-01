@@ -24,6 +24,7 @@ import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -35,6 +36,7 @@ import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newEvaluator;
+import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newParentClassLoader;
 
 public class GroovyEvaluatorTest {
 
@@ -42,6 +44,7 @@ public class GroovyEvaluatorTest {
   static GroovyKernelMock groovyKernel;
   static Binding scriptBinding;
   static GroovyEvaluator groovyEvaluator;
+  static ImportCustomizer icz = new ImportCustomizer();
 
   @BeforeClass
   public static void initClassStubData() throws IOException {
@@ -51,9 +54,9 @@ public class GroovyEvaluatorTest {
     params.put(CLASSPATH, var.getClassPath());
     EvaluatorParameters kernelParameters = new EvaluatorParameters(params);
 
-    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345", cellExecutor(), getTestTempFolderFactory(),kernelParameters);
+    GroovyEvaluator groovyEvaluator = new GroovyEvaluator("123", "345", cellExecutor(), getTestTempFolderFactory(), kernelParameters);
     groovyEvaluator.setShellOptions(kernelParameters);
-    groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir());
+    groovyClassLoader = newEvaluator(groovyEvaluator.getImports(), groovyEvaluator.getClasspath(), groovyEvaluator.getOutDir(), icz, newParentClassLoader(groovyEvaluator.getClasspath()));
     scriptBinding = new Binding();
     scriptBinding.setVariable("beaker", NamespaceClient.getBeaker("345"));
     groovyKernel = new GroovyKernelMock("groovyEvaluatorTest", groovyEvaluator);

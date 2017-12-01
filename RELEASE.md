@@ -85,9 +85,6 @@ docker tag beakerx beakerx/beakerx:$version
 docker push beakerx/beakerx:$version
 ```
 
-Update description/version on [Docker
-Hub](https://hub.docker.com/r/beakerx/beakerx/)
-
 Update Binder Link
 ------------------
 

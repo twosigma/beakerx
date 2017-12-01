@@ -87,3 +87,8 @@ docker push beakerx/beakerx:$version
 
 Update description/version on [Docker
 Hub](https://hub.docker.com/r/beakerx/beakerx/)
+
+Update Binder Link
+------------------
+
+Update the version of the mybinder link in the README, and push to master.

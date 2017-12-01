@@ -728,7 +728,7 @@ define([
 
   PlotScope.prototype.renderGridlineTicks = function() {
     var tickLength = this.gridlineTickLength;
-    var mapX = this.data2scrX, mapY = this.data2scrY;
+    var mapX = this.data2scrX, mapY = this.data2scrY, mapY_r = this.data2scrY_r;
     var focus = this.focus;
     var model = this.stdmodel;
     if (model.xAxis.showGridlineLabels !== false) {
@@ -770,9 +770,9 @@ define([
           "id" : "tick_yr_" + i,
           "class" : "plot-tick",
           "x1" : mapX(focus.xr),
-          "y1" : mapY(y),
+          "y1" : mapY_r(y),
           "x2" : mapX(focus.xr) + tickLength,
-          "y2" : mapY(y)
+          "y2" : mapY_r(y)
         });
       }
     }

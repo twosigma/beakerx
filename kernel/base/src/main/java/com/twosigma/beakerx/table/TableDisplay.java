@@ -60,7 +60,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -145,18 +147,57 @@ public class TableDisplay extends BeakerxWidget {
     subtype = LIST_OF_MAPS_SUBTYPE;
 
     // create columns
-    for (Map<String, Object> m : v) {
-      Set<Entry<String, Object>> w = m.entrySet();
-      for (Entry<String, Object> s : w) {
-        Entry<String, Object> e = s;
-        String c = e.getKey();
-        if (!columns.contains(c)) {
-          columns.add(c);
-          String n = e.getValue() != null ? e.getValue().getClass().getName() : "string";
-          classes.add(serializer.convertType(n));
+    if(v.size() > 0) {
+      // Every column gets inspected at least once, so put every column in
+      // a list with null for the initial type
+      ArrayList<String> columnOrder = new ArrayList<String>();
+      ArrayList<String> columnsToCheck = new ArrayList<String>();
+      Map<String, String> typeTracker = new LinkedHashMap<String, String>();
+
+      Map<String, Object> firstRow = v.iterator().next();
+      for (String columnName : firstRow.keySet()) {
+        columnOrder.add(columnName);
+        columnsToCheck.add(columnName);
+        typeTracker.put(columnName, null);
+      }
+  
+      // Visit each row and track the row's type. If some value is found to
+      // contain a string, the column is marked as string based and is no
+      // longer typechecked
+      List<String> columnsToRemove = new ArrayList<String>();
+      for (Map<String, Object> row : v) {
+        // Remove any columns requested from prior iteration
+        for (String columnToRemove: columnsToRemove) {
+          columnsToCheck.remove(columnToRemove);
+        }
+        columnsToRemove = new ArrayList<String>();
+
+        ListIterator<String> columnCheckIterator = columnsToCheck.listIterator();
+        while (columnCheckIterator.hasNext()) {
+          String columnToCheck = columnCheckIterator.next();
+          String currentType = typeTracker.get(columnToCheck);
+
+          if (currentType == null || !currentType.equals("string")) {
+            Object rowItem = row.get(columnToCheck);
+            String colType = rowItem.getClass().getName();
+            String beakerColType = serializer.convertType(colType);
+            typeTracker.put(columnToCheck, beakerColType);
+
+            if (beakerColType.equals("string")) {
+              columnsToRemove.add(columnToCheck);
+            }
+          }
         }
       }
+  
+      // Put results of type checking into `columns` and `classes`
+      for (String columnName : columnOrder) {
+        String columnType = typeTracker.get(columnName);
+        columns.add(columnName);
+        classes.add(columnType);
+      }
     }
+
     openComm();
     addToValues(buildValues(v, serializer));
   }

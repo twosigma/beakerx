@@ -755,7 +755,7 @@ public class TableDisplayTest {
     List<Map<String, Object>> list = new ArrayList<>();
     List<String> cols = getStringList();
     list.add(
-            new HashMap<String, Object>() {
+            new LinkedHashMap<String, Object>() {
               {
                 put(cols.get(0), 1.82);
                 put(cols.get(1), "string 2");
@@ -763,7 +763,7 @@ public class TableDisplayTest {
               }
             });
     list.add(
-            new HashMap<String, Object>() {
+            new LinkedHashMap<String, Object>() {
               {
                 put(cols.get(0), "a string");
                 put(cols.get(1), 10.4);
@@ -778,7 +778,7 @@ public class TableDisplayTest {
     List<Map<String, Object>> list = new ArrayList<>();
     List<String> cols = getStringList();
     list.add(
-            new HashMap<String, Object>() {
+            new LinkedHashMap<String, Object>() {
               {
                 put(cols.get(0), 10);
                 put(cols.get(1), "string 1");
@@ -786,7 +786,7 @@ public class TableDisplayTest {
               }
             });
     list.add(
-            new HashMap<String, Object>() {
+            new LinkedHashMap<String, Object>() {
               {
                 put(cols.get(0), "a string");
                 put(cols.get(1), 10.4);

@@ -150,12 +150,13 @@ public class TableDisplay extends BeakerxWidget {
     if(v.size() > 0) {
       // Every column gets inspected at least once, so put every column in
       // a list with null for the initial type
+      ArrayList<String> columnOrder = new ArrayList<String>();
       ArrayList<String> columnsToCheck = new ArrayList<String>();
       Map<String, String> typeTracker = new LinkedHashMap<String, String>();
 
       Map<String, Object> firstRow = v.iterator().next();
-      //Set<String> columnNames = firstRow.keySet();
       for (String columnName : firstRow.keySet()) {
+        columnOrder.add(columnName);
         columnsToCheck.add(columnName);
         typeTracker.put(columnName, null);
       }
@@ -190,9 +191,10 @@ public class TableDisplay extends BeakerxWidget {
       }
   
       // Put results of type checking into `columns` and `classes`
-      for (Entry<String, String> colTracker : typeTracker.entrySet()) {
-        columns.add(colTracker.getKey());
-        classes.add(colTracker.getValue());
+      for (String columnName : columnOrder) {
+        String columnType = typeTracker.get(columnName);
+        columns.add(columnName);
+        classes.add(columnType);
       }
     }
 

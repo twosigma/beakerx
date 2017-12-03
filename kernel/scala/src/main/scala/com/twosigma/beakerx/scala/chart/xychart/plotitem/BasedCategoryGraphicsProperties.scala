@@ -33,7 +33,7 @@ trait BasedCategoryGraphicsProperties extends CategoryGraphicsProperties {
   def base: Number = getBase
   def bases: Seq[Any] = getNullableList(getBases)
   def base_=(base: Number): Unit = setBase(base)
-  def base_=[T, Coll[_] <: Iterable[_]](s: Coll[T])(implicit collToSeq: Coll[T] => Seq[T], basesEv: T => CategoryBasesType): Unit = {
+  def base_=[T, Coll[X] <: Iterable[X]](s: Coll[T])(implicit collToSeq: Coll[T] => Seq[T], basesEv: T => CategoryBasesType): Unit = {
     setBase(collToSeq(s).map(_.asObject).asJava)
 }
 

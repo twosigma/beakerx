@@ -56,8 +56,8 @@ class VersionHandler(APIHandler):
 
 class JavaDoc(web.StaticFileHandler, IPythonHandler):
     def initialize(self):
-        path = os.path.dirname(beakerx.__file__)
-        web.StaticFileHandler.initialize(self, path='/home/robot/proj/beakerx/kernel/base/build/docs/javadoc/')
+        beakerx_path = os.path.dirname(beakerx.__file__)
+        web.StaticFileHandler.initialize(self, path=os.path.join(beakerx_path, 'javadoc'))
 
     @web.authenticated
     def get(self, path):

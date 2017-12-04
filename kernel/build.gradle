@@ -85,6 +85,7 @@ subprojects {
   task myJavadocs(type: Javadoc) {
     source = sourceSets.main.allJava
     classpath = configurations.compile
+    javadoc.destinationDir = file("$rootDir/../beakerx/beakerx/javadoc")
   }
 
   afterEvaluate {

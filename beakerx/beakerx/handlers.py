@@ -20,6 +20,7 @@ from tornado import web
 from .environment import *
 import beakerx
 import tornado
+import os
 
 
 class SettingsHandler(APIHandler):
@@ -53,21 +54,15 @@ class VersionHandler(APIHandler):
         self.finish(json.dumps(data))
 
 
-class JavaDoc(IPythonHandler):
+class JavaDoc(web.StaticFileHandler, IPythonHandler):
+    def initialize(self):
+        path = os.path.dirname(beakerx.__file__)
+        web.StaticFileHandler.initialize(self, path='/home/robot/proj/beakerx/kernel/base/build/docs/javadoc/')
 
     @web.authenticated
     def get(self, path):
-        print ("---------------------path: ", path)
-        try:
-            file = open('/home/robot/proj/beakerx/kernel/groovy/build/docs/javadoc/' + path, 'r')
-            content = file.read()
-        except IOError:
-            content = "nie działa"
-
-        else:
-            file.close()
         self.set_header('Content-Type', 'text/html')
-        self.finish(content)
+        return web.StaticFileHandler.get(self, path)
 
 
 def load_jupyter_server_extension(nbapp):
@@ -79,5 +74,5 @@ def load_jupyter_server_extension(nbapp):
     web_app.add_handlers(host_pattern, [(settings_route_pattern, SettingsHandler)])
     web_app.add_handlers(host_pattern, [(version_route_pattern, VersionHandler)])
     web_app.add_handlers(host_pattern, [(javadoc_route_pattern, JavaDoc)])
-    #web_app.add_handlers(javadoc_route_pattern, tornado.web.StaticFileHandler, {"path": '/home/robot/proj/beakerx/kernel/groovy/build/docs/javadoc/', "default_filename": "index.html"})
+
     nbapp.log.info("[beakerx] enabled")

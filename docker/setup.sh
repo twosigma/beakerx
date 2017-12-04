@@ -15,12 +15,13 @@
 
 conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven
 source activate beakerx
-conda install -y -c conda-forge ipywidgets
+conda install -y -c conda-forge ipywidgets jupyterhub jupyterlab
 
 rm -r /home/beakerx/beakerx/js/node_modules
 rm -r /home/beakerx/beakerx/js/dist
 
 (cd beakerx; pip install -e . --verbose)
+jupyter labextension install @jupyter-widgets/jupyterlab-manager
 beakerx-install
 
 rm -rf docker .DS_Store .git .gradle .idea jitpack.yml kernel RELEASE.md test .cache .yarn .local logs .ipynb_checkpoints

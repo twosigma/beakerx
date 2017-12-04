@@ -18,7 +18,7 @@ source activate beakerx
 conda install -c conda-forge jupyterlab
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
-cd beakerx/jslab
+cd js/lab
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
 jupyter labextension install .
 ```

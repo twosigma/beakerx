@@ -56,7 +56,7 @@ how to install and run BeakerX.
 ```
 conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven
 source activate beakerx
-conda install -y -c conda-forge ipywidgets
+conda install -y -c conda-forge ipywidgets jupyterlab
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 ```
@@ -76,7 +76,7 @@ The notebook extensions are installed to run out of the repo, so just
 a local build should suffice:
 
 ```
-(cd beakerx/js; yarn install)
+(cd js/notebook; yarn install)
 ```
 
 ## Groovy with Interactive Plotting and Tables:

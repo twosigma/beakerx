@@ -17,9 +17,9 @@
 package com.twosigma.beakerx.scala.evaluator;
 
 import com.google.inject.Provider;
+import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
-import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
@@ -40,12 +40,11 @@ import com.twosigma.beakerx.scala.serializers.ScalaMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeListOfListSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ScalaEvaluator extends BaseEvaluator {
 
@@ -187,14 +186,19 @@ public class ScalaEvaluator extends BaseEvaluator {
             acloader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), outDir);
 
     if (!imports.isEmpty()) {
-      for (int i = 0; i < imports.getImportPaths().size(); i++) {
+      String[] strings = imports.getImportPaths().stream().map(importPath -> {
+        String trim = importPath.asString().trim();
+        return adjustImport(trim);
+      }).toArray(String[]::new);
+      acshell.addImports(strings);
+      /*for (int i = 0; i < imports.getImportPaths().size(); i++) {
         String imp = imports.getImportPaths().get(i).asString().trim();
         imp = adjustImport(imp);
         if (!imp.isEmpty()) {
           if (!acshell.addImport(imp))
             logger.warn("ERROR: cannot add import '{}'", imp);
         }
-      }
+      }*/
     }
 
     // ensure object is created
@@ -214,9 +218,10 @@ public class ScalaEvaluator extends BaseEvaluator {
             loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), getOutDir());
 
     if (!getImports().isEmpty()) {
-      for (ImportPath importPath : getImports().getImportPaths()) {
-        addImportToShell(importPath);
-      }
+      addImportsToShell(getImports().getImportPaths());
+      //for (ImportPath importPath : getImports().getImportPaths()) {
+        //addImportToShell(importPath);
+      //}
     }
 
     logger.debug("creating beaker object");
@@ -227,6 +232,16 @@ public class ScalaEvaluator extends BaseEvaluator {
     String r = shell.evaluate2(this.beakerxObjectFactory.create(getSessionId()));
     if (r != null && !r.isEmpty()) {
       logger.warn("ERROR creating beaker object: {}", r);
+    }
+  }
+
+  private void addImportsToShell(List<ImportPath> importsPaths) {
+    if (!importsPaths.isEmpty()) {
+      String[] imp = importsPaths.stream().map(importPath -> adjustImport(importPath.asString())).toArray(String[]::new);
+      logger.debug("importing : {}", importsPaths);
+      if (!shell.addImports(imp)) {
+        logger.warn("ERROR: cannot add import '{}'", imp);
+      }
     }
   }
 

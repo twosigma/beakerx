@@ -112,13 +112,17 @@ public class ClojureEvaluator extends BaseEvaluator {
   }
 
   private void addImportPathToShell(ImportPath s) {
+    ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader(loader);
     String ss = s.asString();
     if (!ss.isEmpty()) {
       try {
         loader.loadClass(ss);
         clojureLoadString.invoke(String.format("(import '%s)", ss));
       } catch (ClassNotFoundException e) {
-        logger.error("Could not create class while loading notebook: " + ss);
+        throw new RuntimeException("Could not create class while loading notebook: " + ss);
+      } finally {
+        Thread.currentThread().setContextClassLoader(oldLoader);
       }
     }
   }

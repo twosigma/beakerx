@@ -77,5 +77,9 @@ public class JavaKernelTest extends KernelExecutionTest {
             "return new Demo().getObjectTest();";
   }
 
+  @Override
+  protected String getObjectTestMethodFromAddedDemoJar() {
+    return "return new Demo().getObjectTest();";
+  }
 
 }

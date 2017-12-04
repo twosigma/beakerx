@@ -71,4 +71,9 @@ public class KotlinKernelTest extends KernelExecutionTest {
             "Demo().getObjectTest()";
   }
 
+  @Override
+  protected String getObjectTestMethodFromAddedDemoJar() {
+    return "Demo().getObjectTest()";
+  }
+
 }

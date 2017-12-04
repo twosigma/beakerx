@@ -94,6 +94,17 @@ public class ClojureKernelTest extends KernelExecutionTest {
             "(. demo getObjectTest)";
   }
 
+  @Override
+  protected String pathToDemoClassFromAddedDemoJar() {
+    return "com.example.Demo";
+  }
+
+  @Override
+  protected String getObjectTestMethodFromAddedDemoJar() {
+    return "(def demo (new Demo))\n" +
+            "(. demo getObjectTest)";
+  }
+
   @Test
   public void evaluateFibSeq() throws Exception {
     //given
@@ -183,6 +194,11 @@ public class ClojureKernelTest extends KernelExecutionTest {
     List<List> values = (List<List>) model.get("values");
     assertThat(values.get(0).get(0)).isEqualTo(1);
     assertThat(values.get(1).get(0)).isEqualTo(2);
+  }
+
+  @Test
+  public void shouldImportDemoClassWithWildcardByMagicCommand() throws Exception {
+    // clojure doesn't support wildcard
   }
 
 }

@@ -574,6 +574,23 @@ public class TableDisplayTest {
   }
 
   @Test
+  public void createWithMultipleTypesPerColumnParam_hasSafeTypes() throws Exception {
+    TableDisplay tableDisplay = new TableDisplay(getListOfMapsWithInconsistentTypes());
+    assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.LIST_OF_MAPS_SUBTYPE);
+    List<String> expectedValues = Arrays.asList("string", "string", "string");
+    assertThat(tableDisplay.getTypes()).isEqualTo(expectedValues);
+  }
+
+  @Test
+  public void createWithMultipleTypesPerColumnParam_hasSafeTypesInOrder() throws Exception {
+    TableDisplay tableDisplay = new TableDisplay(getListOfMapsWithMostlyInconsistentTypes());
+    assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.LIST_OF_MAPS_SUBTYPE);
+    System.out.println(tableDisplay.getTypes());
+    List<String> expectedValues = Arrays.asList("string", "string", "double");
+    assertThat(tableDisplay.getTypes()).isEqualTo(expectedValues);
+  }
+
+  @Test
   public void createWithListOfMapsParam_hasListOfMapsSubtype() throws Exception {
     //when
     TableDisplay tableDisplay = new TableDisplay(getListOfMapsData());
@@ -729,6 +746,51 @@ public class TableDisplayTest {
                 put(cols.get(0), row.get(0));
                 put(cols.get(1), row.get(1));
                 put(cols.get(2), row.get(2));
+              }
+            });
+    return list;
+  }
+
+  public static List<Map<String, Object>> getListOfMapsWithInconsistentTypes() {
+    List<Map<String, Object>> list = new ArrayList<>();
+    List<String> cols = getStringList();
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), 1.82);
+                put(cols.get(1), "string 2");
+                put(cols.get(2), "string 3");
+              }
+            });
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), "a string");
+                put(cols.get(1), 10.4);
+                put(cols.get(2), 3.14159);
+              }
+            });
+    return list;
+  }
+
+
+  public static List<Map<String, Object>> getListOfMapsWithMostlyInconsistentTypes() {
+    List<Map<String, Object>> list = new ArrayList<>();
+    List<String> cols = getStringList();
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), 10);
+                put(cols.get(1), "string 1");
+                put(cols.get(2), 2.7);
+              }
+            });
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), "a string");
+                put(cols.get(1), 10.4);
+                put(cols.get(2), 3.14159);
               }
             });
     return list;

@@ -17,6 +17,7 @@ package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
+import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,6 +39,11 @@ public class GroovyBaseEvaluatorTest extends EvaluatorBaseTest {
   @Override
   protected BaseEvaluator createNewEvaluator(){
     return TestGroovyEvaluator.groovyEvaluator();
+  }
+
+  @Override
+  protected BaseEvaluator createNewEvaluator(TempFolderFactory tempFolderFactory) {
+    return TestGroovyEvaluator.groovyEvaluator(tempFolderFactory);
   }
 
   @Override

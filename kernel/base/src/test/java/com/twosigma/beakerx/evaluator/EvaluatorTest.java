@@ -36,6 +36,7 @@ import java.util.Arrays;
 
 public class EvaluatorTest extends BaseEvaluator {
 
+
   public static final EvaluatorParameters KERNEL_PARAMETERS = new EvaluatorParameters(new HashedMap());
   private SimpleEvaluationObject seo;
   private String code;
@@ -67,7 +68,7 @@ public class EvaluatorTest extends BaseEvaluator {
       public Path createTempFolder() {
         Path path;
         try {
-          path = Files.createTempDirectory("beakerxTest");
+          path = Files.createTempDirectory(EvaluatorBaseTest.TEMP_DIR_NAME);
           path.toFile().deleteOnExit();
         } catch (Exception e) {
           throw new RuntimeException(e);

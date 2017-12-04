@@ -1515,7 +1515,7 @@ define([
       "class" : "plot-coverbox",
       "x" : W - self.layout.rightLayoutMargin,
       "y" : 0,
-      "width" : self.stdmodel.yAxisR ? self.layout.rightLayoutMargin : 10,
+      "width" : self.layout.rightLayoutMargin,
       "height" : H
     });
 

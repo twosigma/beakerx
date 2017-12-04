@@ -34,8 +34,8 @@ public class ImportsTest {
     //given
     ImportPath anImport = new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider");
     //when
-    assertThat(imports.add(anImport)).isTrue();
-    assertThat(imports.add(anImport)).isFalse();
+    assertThat(imports.add(anImport)).isEqualTo(AddImportStatus.ADDED);
+    assertThat(imports.add(anImport)).isEqualTo(AddImportStatus.EXISTS);
     //then
     assertThat(imports.getImportPaths()).containsExactly(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
   }

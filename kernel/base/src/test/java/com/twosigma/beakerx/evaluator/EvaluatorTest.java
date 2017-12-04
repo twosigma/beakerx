@@ -47,7 +47,6 @@ public class EvaluatorTest extends BaseEvaluator {
   private int resetEnvironmentCounter = 0;
   private BeakerxUrlClassLoader loader = new BeakerxUrlClassLoader(Thread.currentThread().getContextClassLoader());
 
-
   public EvaluatorTest() {
     this("idEvaluatorTest", "sIdEvaluatorTest", TestBeakerCellExecutor.cellExecutor(), KERNEL_PARAMETERS);
   }

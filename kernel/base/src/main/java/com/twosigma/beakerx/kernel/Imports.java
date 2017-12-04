@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.kernel.AddImportStatus.ADDED;
+import static com.twosigma.beakerx.kernel.AddImportStatus.EXISTS;
 
 public class Imports {
 
@@ -30,13 +32,14 @@ public class Imports {
     return imports;
   }
 
-  public boolean add(ImportPath anImport) {
+  public AddImportStatus add(ImportPath anImport) {
     checkNotNull(anImport);
-    if (!this.imports.contains(anImport)) {
-      clear();
-      return this.imports.add(anImport);
+    if (this.imports.contains(anImport)) {
+      return EXISTS;
     }
-    return false;
+    clear();
+    this.imports.add(anImport);
+    return ADDED;
   }
 
   public boolean remove(ImportPath anImport) {

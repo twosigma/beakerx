@@ -32,9 +32,9 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.intellij.openapi.util.Disposer.newDisposable;
 import static org.jetbrains.kotlin.cli.jvm.config.JvmContentRootsKt.addJvmClasspathRoot;
 import static org.jetbrains.kotlin.cli.jvm.config.JvmContentRootsKt.addJvmClasspathRoots;
+import static org.jetbrains.kotlin.com.intellij.openapi.util.Disposer.newDisposable;
 
 public class ReplWithClassLoaderFactory {
 

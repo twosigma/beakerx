@@ -41,16 +41,7 @@ subprojects {
     }
   }
 
-  task deleteTestTmpDir << {
-    FileCollection fc = files(new File(System.getProperty('java.io.tmpdir')).listFiles())
-    fc.each{
-      if(it.directory && it.name.toLowerCase().contains('beakerxtest')){
-        delete it
-      }
-    }
-  }
-
-  test.finalizedBy jacocoTestReport, deleteTestTmpDir
+  test.finalizedBy jacocoTestReport
 
   test {
     systemProperties 'java.awt.headless': "true"

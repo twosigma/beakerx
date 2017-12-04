@@ -68,6 +68,7 @@ public class EvaluatorTest extends BaseEvaluator {
         Path path;
         try {
           path = Files.createTempDirectory("beakerxTest");
+          path.toFile().deleteOnExit();
         } catch (Exception e) {
           throw new RuntimeException(e);
         }

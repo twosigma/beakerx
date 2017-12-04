@@ -80,10 +80,7 @@ public class KernelTest implements KernelFunctionality {
   private String code;
   private Path tempFolder;
 
-  public MavenJarResolver.ResolverParams mavenResolverParam = new MavenJarResolver.ResolverParams(
-          new File(TEST_MVN_CACHE).getAbsolutePath(),
-          getTempFolder().toString() + MavenJarResolver.MVN_DIR,
-          true);
+  public MavenJarResolver.ResolverParams mavenResolverParam = null;
 
   private List<MagicCommandType> magicCommandTypes = null;
 
@@ -94,6 +91,7 @@ public class KernelTest implements KernelFunctionality {
 
   public KernelTest(String id) {
     this.id = id;
+    initMavenResolverParam();
     initMagicCommands();
     KernelManager.register(this);
   }
@@ -101,10 +99,17 @@ public class KernelTest implements KernelFunctionality {
   public KernelTest(String id, Evaluator evaluator) {
     this.id = id;
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
+    initMavenResolverParam();
     initMagicCommands();
     KernelManager.register(this);
   }
 
+  private void initMavenResolverParam(){
+    this.mavenResolverParam = new MavenJarResolver.ResolverParams(
+        new File(TEST_MVN_CACHE).getAbsolutePath(),
+        getTempFolder().toString() + MavenJarResolver.MVN_DIR,
+        true);
+  }
 
   private void initMagicCommands() {
     this.magicCommandTypes = new ArrayList<>();

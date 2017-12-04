@@ -282,7 +282,7 @@ define([
         }
       }
     } else {
-      while (plotUtils.lte(val, valr)) {
+      while (plotUtils.lte(val, valr) || plotUtils.lte(val, valr+1e-12)) {
         var pct = this.getPercent(val);
         lines.push(pct);
         val = normalize(plotUtils.plus(val, w));

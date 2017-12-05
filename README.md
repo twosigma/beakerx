@@ -66,7 +66,7 @@ beakerx-install
 ```
 conda create -y -n labx 'python>=3' nodejs pandas openjdk maven
 source activate labx
-conda install -y -c conda-forge jupyterlab
+conda install -y -c conda-forge jupyterlab=0.29.2
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager

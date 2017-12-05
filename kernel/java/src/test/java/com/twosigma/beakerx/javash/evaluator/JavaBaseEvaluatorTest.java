@@ -17,6 +17,7 @@ package com.twosigma.beakerx.javash.evaluator;
 
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
+import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -41,6 +42,11 @@ public class JavaBaseEvaluatorTest extends EvaluatorBaseTest {
   @Override
   protected BaseEvaluator createNewEvaluator() {
     return new JavaEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
+  }
+
+  @Override
+  protected BaseEvaluator createNewEvaluator(TempFolderFactory tempFolderFactory) {
+    return new JavaEvaluator("id", "sid", cellExecutor(), tempFolderFactory, KERNEL_PARAMETERS);
   }
 
   @Override

@@ -234,8 +234,8 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public void addImport(ImportPath anImport) {
-    this.evaluatorManager.addImport(anImport);
+  public AddImportStatus addImport(ImportPath anImport) {
+    return this.evaluatorManager.addImport(anImport);
   }
 
   @Override

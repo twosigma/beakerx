@@ -193,9 +193,9 @@ define([
     this.renderFixed = 1;
     this.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
       bottomLayoutMargin : 30,
-      topLayoutMargin : 0,
+      topLayoutMargin : 30,
       leftLayoutMargin : calcVertLayoutMargin.call(this, this.stdmodel.yAxis),
-      rightLayoutMargin : this.stdmodel.yAxisR ? calcVertLayoutMargin(this.stdmodel.yAxisR) : 0,
+      rightLayoutMargin : this.stdmodel.yAxisR ? calcVertLayoutMargin(this.stdmodel.yAxisR) : 30,
       legendMargin : 10,
       legendBoxSize : 10
     };
@@ -728,7 +728,7 @@ define([
 
   PlotScope.prototype.renderGridlineTicks = function() {
     var tickLength = this.gridlineTickLength;
-    var mapX = this.data2scrX, mapY = this.data2scrY;
+    var mapX = this.data2scrX, mapY = this.data2scrY, mapY_r = this.data2scrY_r;
     var focus = this.focus;
     var model = this.stdmodel;
     if (model.xAxis.showGridlineLabels !== false) {
@@ -770,9 +770,9 @@ define([
           "id" : "tick_yr_" + i,
           "class" : "plot-tick",
           "x1" : mapX(focus.xr),
-          "y1" : mapY(y),
+          "y1" : mapY_r(y),
           "x2" : mapX(focus.xr) + tickLength,
-          "y2" : mapY(y)
+          "y2" : mapY_r(y)
         });
       }
     }
@@ -1515,7 +1515,7 @@ define([
       "class" : "plot-coverbox",
       "x" : W - self.layout.rightLayoutMargin,
       "y" : 0,
-      "width" : self.stdmodel.yAxisR ? self.layout.rightLayoutMargin : 10,
+      "width" : self.layout.rightLayoutMargin,
       "height" : H
     });
 

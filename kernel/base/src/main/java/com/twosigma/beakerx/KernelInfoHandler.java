@@ -74,8 +74,9 @@ public abstract class KernelInfoHandler extends KernelHandler<Message> {
     HelpLink beakerXHome = new HelpLink("BeakerX Home", "http://BeakerX.com");
     HelpLink fileAnIssue = new HelpLink("File an Issue", "https://github.com/twosigma/beakerx/issues/new");
     HelpLink twoSigmaOpenSource = new HelpLink("Two Sigma Open Source", "http://opensource.twosigma.com/");
+    HelpLink javadoc = new HelpLink("BeakerX JavaDoc", "/beakerx/javadoc/index.html");
 
-    return Lists.newArrayList(beakerXHome, fileAnIssue, twoSigmaOpenSource);
+    return Lists.newArrayList(beakerXHome, fileAnIssue, twoSigmaOpenSource, javadoc);
   }
 
   protected abstract HashMap<String, Serializable> doLanguageInfo(HashMap<String, Serializable> languageInfo);

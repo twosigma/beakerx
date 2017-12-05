@@ -65,4 +65,9 @@ public class ScalaKernelTest extends KernelExecutionTest {
     ScalaEvaluator evaluator = new ScalaEvaluator(sessionId, sessionId, null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(), EvaluatorTest.KERNEL_PARAMETERS);
     return new Scala(sessionId, evaluator, kernelSocketsFactory, closeKernelAction);
   }
+
+  @Override
+  protected String unimportErrorMessage() {
+    return "not found: type";
+  }
 }

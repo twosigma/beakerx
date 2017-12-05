@@ -258,7 +258,11 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Optional<Message> errorMessage = waitForErrorMessage(getKernelSocketsService().getKernelSockets());
     Object actual = ((Map) errorMessage.get().getContent()).get("text");
     String value = (String) actual;
-    assertThat(value.toLowerCase()).contains("unable");
+    assertThat(value).contains(unimportErrorMessage());
+  }
+
+  protected String unimportErrorMessage() {
+    return "unable";
   }
 
 }

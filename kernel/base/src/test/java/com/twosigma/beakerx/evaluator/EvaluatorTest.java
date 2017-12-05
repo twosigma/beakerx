@@ -44,7 +44,7 @@ public class EvaluatorTest extends BaseEvaluator {
   private boolean cancelExecution;
   private boolean exit;
   private Classpath classpath = new Classpath();
-  private Imports imports = new Imports();
+  private Imports imports = new Imports(new ArrayList<>());
   private int resetEnvironmentCounter = 0;
   private BeakerxUrlClassLoader loader = new BeakerxUrlClassLoader(Thread.currentThread().getContextClassLoader());
 
@@ -154,7 +154,7 @@ public class EvaluatorTest extends BaseEvaluator {
 
   @Override
   protected void addImportToClassLoader(ImportPath anImport) {
-    imports.add(anImport);
+    imports.add(anImport, loader);
   }
 
   @Override

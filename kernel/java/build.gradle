@@ -25,6 +25,10 @@ configurations {
   antlr
 }
 
+compileJava {
+  options.encoding = "UTF-8"
+}
+
 sourceSets {
   main {
     compileClasspath += configurations.provided

@@ -162,7 +162,7 @@ module.exports = [
     entry: './src/embed.js',
     output: {
       filename: 'index.js',
-      path: path.resolve(__dirname, '../js/lab/lib/'),
+      path: path.resolve(__dirname, '../lab/lib/'),
       libraryTarget: 'amd'
     },
     module: {

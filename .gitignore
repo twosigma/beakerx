@@ -22,6 +22,7 @@ beakerx/static/
 beakerx.egg-info/
 beakerx/beakerx/static/
 beakerx/beakerx/kernel/
+beakerx/beakerx/javadoc/
 beakerx/dist
 
 kernel/build/

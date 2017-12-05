@@ -56,7 +56,7 @@ how to install and run BeakerX.
 ```
 conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven
 source activate beakerx
-conda install -y -c conda-forge ipywidgets jupyterlab
+conda install -y -c conda-forge ipywidgets
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 ```
@@ -70,7 +70,7 @@ conda install -y -c conda-forge jupyterlab
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
-(cd beakerx/jslab; jupyter labextension install .)
+(cd js/lab; jupyter labextension install .)
 ```
 
 ### Update after Java change

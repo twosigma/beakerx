@@ -25,6 +25,7 @@ repositories {
 compileJava {
   options.compilerArgs << '-Xlint:sunapi'
   options.compilerArgs << '-XDenableSunApiLintControl'
+  options.encoding = "UTF-8"
 }
 
 dependencies {

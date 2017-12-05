@@ -80,5 +80,16 @@ subprojects {
       delete pathToStaticContent + kernelIdName
     }
   }
+
+  task myJavadocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+    javadoc.destinationDir = file("$rootDir/../beakerx/beakerx/javadoc")
+  }
+
+  afterEvaluate {
+    javadoc.classpath += files(project(':base').sourceSets.main.output)
+  }
+
   clean.dependsOn cleanStaticContent
 }

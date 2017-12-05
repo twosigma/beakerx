@@ -1,5 +1,6 @@
 recursive-include beakerx/static *
 recursive-include beakerx/kernel *
+recursive-include beakerx/javadoc *
 
 include LICENSE
 include NOTICE

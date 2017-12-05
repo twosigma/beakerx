@@ -19,7 +19,7 @@ package com.twosigma.beakerx.socket;
  * http://jupyter-client.readthedocs.org/en/latest/messaging.html#the-wire-protocol
  * <p>
  * b'u-u-i-d',         # zmq identity(ies)
- * b'<IDS|MSG>',       # delimiter
+ * b'{@code <IDS|MSG>}',# delimiter
  * b'baddad42',        # HMAC signature
  * b'{header}',        # serialized header dict
  * b'{parent_header}', # serialized parent header dict

@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from beakerx.beakerx_widgets import *
-from traitlets import Unicode, Dict
-from beakerx.utils import *
-from beakerx.tabledisplay.tableitems import *
 import math
-import numpy
 from pandas import DataFrame, RangeIndex, MultiIndex
+
+import numpy
+from beakerx_python.beakerx_widgets import *
+from beakerx_python.tabledisplay.tableitems import *
+from beakerx_python.utils import *
+from beakerx.utils import *
+from traitlets import Unicode, Dict
 
 
 class Table(BaseObject):

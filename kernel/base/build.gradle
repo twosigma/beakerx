@@ -102,7 +102,7 @@ compileJava.dependsOn prepareBuildVerion
 task copyDependencies(type: Copy) {
   from configurations.runtime
   from jar
-  into new File(pathToStaticContent, 'base/lib')
+  into new File(getPathToLib('base'))
 }
 
 jar.finalizedBy copyDependencies

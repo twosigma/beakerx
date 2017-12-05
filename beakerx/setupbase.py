@@ -52,7 +52,7 @@ else:
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 root = os.path.abspath(os.path.join(here, os.pardir))
-kernel_path = os.path.join(root, 'kernel')
+kernel_path = os.path.join(root, '..', 'kernel')
 site_packages = site.getsitepackages()[0]
 is_repo = os.path.exists(os.path.join(root, '.git'))
 node_modules = os.path.join(here, 'js', 'node_modules')
@@ -291,7 +291,8 @@ def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='
 
     return Yarn
 
-def run_gradle(path=kernel_path, cmd='build'):
+
+def run_gradle(path=kernel_path, kernel_name='base', cmd='build'):
     """Return a Command for running gradle scripts.
 
     Parameters
@@ -306,7 +307,8 @@ def run_gradle(path=kernel_path, cmd='build'):
         description = 'Run gradle script'
 
         def run(self):
-            run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', cmd], cwd=path)
+            run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', ':' + kernel_name + ':' + cmd],
+                cwd=path)
 
     return Gradle
 

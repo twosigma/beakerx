@@ -19,7 +19,6 @@ from setuptools import setup, find_packages
 from setupbase import (
     create_cmdclass,
     install_node_modules,
-    run_gradle,
     get_version,
     get_data_files,
     here
@@ -29,17 +28,14 @@ import os
 
 cmdclass = create_cmdclass(develop_wrappers=[
     'js',
-    'java',
 ], distribute_wrappers=[
     'js',
-    'java'
 ])
 cmdclass['js'] = install_node_modules(
     path='js',
     build_dir=os.path.join(here, 'js', 'dist'),
     source_dir=os.path.join(here, 'js', 'src')
 )
-cmdclass['java'] = run_gradle(cmd='build')
 
 setup_args = dict(
     name                = 'beakerx',

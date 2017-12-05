@@ -16,13 +16,28 @@ jupyter-groovy-kernel.log
 !StartHere.ipynb
 #.gitignore
 /gradle*
-beaker.egg-info/
+*.egg-info/
 
 beakerx/static/
-beakerx.egg-info/
 beakerx/beakerx/static/
-beakerx/beakerx/kernel/
-beakerx/dist
+package/base/beakerx_base
+package/clojure/beakerx_clojure
+package/groovy/beakerx_groovy
+package/java/beakerx_java
+package/kotlin/beakerx_kotlin
+package/scala/beakerx_scala
+package/sql/beakerx_sql
+
+package/base/setup*
+package/clojure/setup*
+package/groovy/setup*
+package/java/setup*
+package/kotlin/setup*
+package/scala/setup*
+package/sql/setup*
+dist/
+build/
+
 
 kernel/build/
 kernel/*/build/

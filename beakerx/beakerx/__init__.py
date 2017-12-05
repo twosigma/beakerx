@@ -13,14 +13,16 @@
 # limitations under the License.
 
 from .runtime import BeakerX
-from .plot import *
-from .easyform import *
-from .tabledisplay import *
-from .output_container import *
 from ._version import version_info, __version__
 from .handlers import load_jupyter_server_extension
 from .environment import *
 import json
+
+import importlib
+beakerx_python_loader = importlib.util.find_spec('beakerx_python')
+
+if beakerx_python_loader:
+    from beakerx_python import *
 
 def _jupyter_nbextension_paths():
     return [{

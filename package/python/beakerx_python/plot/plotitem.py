@@ -12,14 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from enum import Enum
 import math
-import pandas as pd
-from beakerx.utils import *
 
-from dateutil.parser import parse
-import numpy as np
 import datetime as dt
+import numpy as np
+import pandas as pd
+from beakerx_python.utils import *
+from beakerx.utils import *
+from dateutil.parser import parse
+from enum import Enum
 
 
 class ShapeType(Enum):

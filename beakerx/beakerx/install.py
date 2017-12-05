@@ -21,28 +21,17 @@ import pkg_resources
 import shutil
 import subprocess
 import sys
-from string import Template
 import tempfile
+from string import Template
 
 from jupyter_client.kernelspecapp import KernelSpecManager
 from traitlets.config.manager import BaseJSONConfigManager
 from distutils import log
-
-
-def _all_kernels():
-    kernels = pkg_resources.resource_listdir(
-        'beakerx', 'kernel')
-    return [kernel for kernel in kernels if kernel != 'base']
-
-
-def _base_classpath_for(kernel):
-    return pkg_resources.resource_filename(
-        'beakerx', os.path.join('kernel', kernel))
+import importlib
 
 
 def _classpath_for(kernel):
-    return pkg_resources.resource_filename(
-        'beakerx', os.path.join('kernel', kernel, 'lib', '*'))
+    return pkg_resources.resource_filename('beakerx_' + kernel, os.path.join('lib', '*'))
 
 
 def _uninstall_nbextension():
@@ -67,14 +56,14 @@ def _copy_tree(src, dst):
     shutil.copytree(src, dst)
 
 
-def _copy_icons():
+def copy_icons(kernel_name):
     log.info("installing icons...")
     kernels = KernelSpecManager().find_kernel_specs()
-    for kernel in _all_kernels():
-        dst_base = kernels.get(kernel)
-        src_base = _base_classpath_for(kernel)
-        shutil.copyfile(os.path.join(src_base, 'logo-32x32.png'), os.path.join(dst_base, 'logo-32x32.png'))
-        shutil.copyfile(os.path.join(src_base, 'logo-64x64.png'), os.path.join(dst_base, 'logo-64x64.png'))
+    dst_base = kernels.get(kernel_name)
+    shutil.copyfile(pkg_resources.resource_filename('beakerx_' + kernel_name, 'logo-32x32.png')
+                    , os.path.join(dst_base, 'logo-32x32.png'))
+    shutil.copyfile(pkg_resources.resource_filename('beakerx_' + kernel_name, 'logo-64x64.png')
+                    , os.path.join(dst_base, 'logo-64x64.png'))
 
 
 def _install_css():
@@ -86,35 +75,34 @@ def _install_css():
     shutil.copyfile(os.path.join(src_base, 'custom.css'), os.path.join(dst_base, 'custom.css'))
 
 
-def _install_kernels():
+def install_kernel(kernel_name):
+
     base_classpath = _classpath_for('base')
+    kernel_classpath = _classpath_for(kernel_name)
 
-    for kernel in _all_kernels():
-        kernel_classpath = _classpath_for(kernel)
-        classpath = json.dumps(os.pathsep.join([base_classpath, kernel_classpath]))
-        template = pkg_resources.resource_string(
-            'beakerx', os.path.join('kernel', kernel, 'kernel.json'))
-        contents = Template(template.decode()).substitute(PATH=classpath)
+    classpath = json.dumps(os.pathsep.join([base_classpath, kernel_classpath]))
+    template = pkg_resources.resource_string(
+        'beakerx_' + kernel_name, 'kernel.json')
+    contents = Template(template.decode()).substitute(PATH=classpath)
 
-        with tempfile.TemporaryDirectory() as tmpdir:
-            kernel_dir = os.path.join(tmpdir, kernel)
-            os.mkdir(kernel_dir)
-            with open(os.path.join(kernel_dir, 'kernel.json'), 'w') as f:
-                f.write(contents)
-            install_cmd = [
-                'jupyter', 'kernelspec', 'install',
-                '--sys-prefix', '--replace',
-                '--name', kernel, kernel_dir
-            ]
-            subprocess.check_call(install_cmd)
-
-
-def _uninstall_kernels():
-    for kernel in _all_kernels():
-        uninstall_cmd = [
-            'jupyter', 'kernelspec', 'remove', kernel, '-y', '-f'
+    with tempfile.TemporaryDirectory() as tmpdir:
+        kernel_dir = os.path.join(tmpdir, kernel_name)
+        os.mkdir(kernel_dir)
+        with open(os.path.join(kernel_dir, 'kernel.json'), 'w') as f:
+            f.write(contents)
+        install_cmd = [
+            'jupyter', 'kernelspec', 'install',
+            '--sys-prefix', '--replace',
+            '--name', kernel_name, kernel_dir
         ]
-        subprocess.check_call(uninstall_cmd)
+        subprocess.check_call(install_cmd)
+
+
+def uninstall_kernel(kernel_name):
+    uninstall_cmd = [
+        'jupyter', 'kernelspec', 'remove', kernel_name, '-y', '-f'
+    ]
+    subprocess.check_call(uninstall_cmd)
 
 
 def _pretty(it):
@@ -161,20 +149,31 @@ def make_parser():
     parser.add_argument("--disable",
                         help="Remove Beakerx extension",
                         action='store_true')
+
+    parser.add_argument("--kernel",
+                        help="Install Beakerx kernel",
+                        default='')
     return parser
 
 
 def _disable_beakerx():
     _uninstall_nbextension()
-    _uninstall_kernels()
 
 
 def _install_beakerx(args):
     _install_nbextension()
-    _install_kernels()
     _install_css()
-    _copy_icons()
     _install_kernelspec_manager(args.prefix)
+
+
+def _install_beakerx_kernel(kernel_name):
+    beakerx_kernel_loader = importlib.find_loader('beakerx_' + kernel_name)
+    if beakerx_kernel_loader:
+        install_kernel(kernel_name)
+        copy_icons(kernel_name)
+    else:
+        msg = "Could not find kernel " + kernel_name
+        raise Exception(msg)
 
 
 def install():
@@ -184,7 +183,10 @@ def install():
         if args.disable:
             _disable_beakerx()
         else:
-            _install_beakerx(args)
+            if args.kernel:
+                _install_beakerx_kernel(args.kernel)
+            else:
+                _install_beakerx(args)
     except KeyboardInterrupt:
         return 130
     return 0

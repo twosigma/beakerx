@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-
 from pandas import DataFrame
-from beakerx.plot.legend import LegendPosition, LegendLayout
-from beakerx.utils import *
-from beakerx.plot.plotitem import *
-from beakerx.plot.plotitem_treemap import *
+
+import json
+from beakerx_python.beakerx_widgets import BeakerxDOMWidget
+from beakerx_python.plot.legend import LegendPosition, LegendLayout
+from beakerx_python.plot.plotitem import *
+from beakerx_python.plot.plotitem_treemap import *
+from beakerx_python.utils import *
 from enum import Enum
 from traitlets import Unicode, Dict
-from beakerx.beakerx_widgets import BeakerxDOMWidget
 
 
 class Chart(BaseObject):

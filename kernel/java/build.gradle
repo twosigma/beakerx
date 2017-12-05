@@ -63,5 +63,10 @@ publishing {
   }
 }
 
-installDist.into new File(pathToStaticContent, kernelIdName)
-distZip.dependsOn installDist
+task copyDependencies(type: Copy) {
+  from configurations.runtime
+  from jar
+  into new File(getPathToLib(kernelIdName))
+}
+
+jar.finalizedBy copyDependencies

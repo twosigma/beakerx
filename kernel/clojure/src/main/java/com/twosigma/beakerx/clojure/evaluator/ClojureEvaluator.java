@@ -17,7 +17,9 @@
 package com.twosigma.beakerx.clojure.evaluator;
 
 import clojure.lang.DynamicClassLoader;
+import clojure.lang.Namespace;
 import clojure.lang.RT;
+import clojure.lang.Symbol;
 import clojure.lang.Var;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
@@ -89,11 +91,9 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   @Override
   protected void doResetEnvironment() {
-    loader = ClojureClassLoaderFactory.newInstance(classPath, outDir);
-
+    init();
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(loader);
-
     for (ImportPath s : imports.getImportPaths()) {
       addImportPathToShell(s);
     }
@@ -158,14 +158,18 @@ public class ClojureEvaluator extends BaseEvaluator {
     loader = ClojureClassLoaderFactory.newInstance(classPath, outDir);
     String loadFunctionPrefix = "run_str";
     try {
-      String clojureInitScript = String.format(initScriptSource(), beaker_clojure_ns, shellId,
-              loadFunctionPrefix);
-      clojureLoadString = RT.var(String.format("%1$s_%2$s", beaker_clojure_ns, shellId),
-              String.format("%1$s_%2$s", loadFunctionPrefix, shellId));
+      String clojureInitScript = String.format(initScriptSource(), beaker_clojure_ns, shellId, loadFunctionPrefix);
+      String ns = String.format("%1$s_%2$s", beaker_clojure_ns, shellId);
+      clearClojureNamespace(ns);
+      clojureLoadString = RT.var(ns, String.format("%1$s_%2$s", loadFunctionPrefix, shellId));
       clojure.lang.Compiler.load(new StringReader(clojureInitScript));
     } catch (IOException e) {
       logger.error(e.getMessage());
     }
+  }
+
+  private void clearClojureNamespace(String ns) {
+    Namespace.remove(Symbol.intern(null, ns));
   }
 
   private String initScriptSource() throws IOException {

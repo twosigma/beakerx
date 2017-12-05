@@ -101,7 +101,7 @@ trait PointsProperties extends XYGraphicsProperties {
   this: com.twosigma.beakerx.chart.xychart.plotitem.Points =>
 
   def setFill(fills: Seq[Boolean]): Unit = setFill(fills.map(Boolean.box).asJava)
-  def fill = safeOption(getFill)
+  def fill: Option[Boolean] = safeOption(getFill)
   def fills = getNullableList(getFills)
   def fill_=(fill: Boolean) = setFill(fill)
   def fill_=(fills: Seq[Boolean]) = setFill(fills)

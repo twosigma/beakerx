@@ -18,12 +18,14 @@ package com.twosigma.beakerx.evaluator;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
+import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.kernel.Repos;
 import com.twosigma.beakerx.message.Message;
 
 import java.io.IOException;
@@ -129,8 +131,12 @@ public class EvaluatorManager {
     return this.evaluator.getImports();
   }
 
-  public void addImport(ImportPath anImport) {
-    this.evaluator.addImport(anImport);
+  public Repos getRepos() {
+    return this.evaluator.getRepos();
+  }
+
+  public AddImportStatus addImport(ImportPath anImport) {
+    return this.evaluator.addImport(anImport);
   }
 
   public void removeImport(ImportPath anImport) {
@@ -143,5 +149,9 @@ public class EvaluatorManager {
 
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
     return evaluator.loadClass(clazzName);
+  }
+
+  public String addRepo(String name, String url) {
+    return evaluator.addRepo(name, url);
   }
 }

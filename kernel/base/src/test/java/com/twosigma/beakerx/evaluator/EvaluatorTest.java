@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
-import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
+import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
@@ -29,12 +29,13 @@ import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class EvaluatorTest extends BaseEvaluator {
+
 
   public static final EvaluatorParameters KERNEL_PARAMETERS = new EvaluatorParameters(new HashedMap());
   private SimpleEvaluationObject seo;
@@ -45,15 +46,14 @@ public class EvaluatorTest extends BaseEvaluator {
   private Classpath classpath = new Classpath();
   private Imports imports = new Imports();
   private int resetEnvironmentCounter = 0;
-  private ClassLoader loader = new DynamicClassLoaderSimple(Thread.currentThread().getContextClassLoader());
-
+  private BeakerxUrlClassLoader loader = new BeakerxUrlClassLoader(Thread.currentThread().getContextClassLoader());
 
   public EvaluatorTest() {
     this("idEvaluatorTest", "sIdEvaluatorTest", TestBeakerCellExecutor.cellExecutor(), KERNEL_PARAMETERS);
   }
 
-  public EvaluatorTest(String id, String sId, CellExecutor cellExecutor,EvaluatorParameters kernelParameters) {
-    super(id, sId, cellExecutor, getTestTempFolderFactory(),kernelParameters);
+  public EvaluatorTest(String id, String sId, CellExecutor cellExecutor, EvaluatorParameters kernelParameters) {
+    super(id, sId, cellExecutor, getTestTempFolderFactory(), kernelParameters);
   }
 
   @Override
@@ -67,7 +67,8 @@ public class EvaluatorTest extends BaseEvaluator {
       public Path createTempFolder() {
         Path path;
         try {
-          path = Files.createTempDirectory("beakerxTest");
+          path = Files.createTempDirectory(EvaluatorBaseTest.TEMP_DIR_NAME);
+          path.toFile().deleteOnExit();
         } catch (Exception e) {
           throw new RuntimeException(e);
         }
@@ -146,13 +147,14 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
   @Override
-  protected boolean addJar(PathToJar path) {
-    return classpath.add(path);
+  protected void addJarToClassLoader(PathToJar pathToJar) {
+    classpath.add(pathToJar);
+    this.loader.addJar(pathToJar);
   }
 
   @Override
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
+  protected void addImportToClassLoader(ImportPath anImport) {
+    imports.add(anImport);
   }
 
   @Override

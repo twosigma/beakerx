@@ -27,6 +27,7 @@ import com.twosigma.beakerx.jvm.classloader.DynamicClassLoaderSimple;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
+import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.sql.ConnectionStringBean;
 import com.twosigma.beakerx.sql.ConnectionStringHolder;
 import com.twosigma.beakerx.sql.JDBCClient;
@@ -43,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -120,6 +122,16 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   @Override
+  protected void addJarToClassLoader(PathToJar pathToJar) {
+    loader.addJars(Arrays.asList(pathToJar.getPath()));
+  }
+
+  @Override
+  protected void addImportToClassLoader(ImportPath anImport) {
+
+  }
+
+  @Override
   protected void doResetEnvironment() {
 
   }
@@ -154,7 +166,7 @@ public class SQLEvaluator extends BaseEvaluator {
       } else {
         for (String line : cp.get()) {
           if (!line.trim().isEmpty()) {
-            addJar(new PathToJar(line));
+            classPath.add(new PathToJar(line));
           }
         }
       }

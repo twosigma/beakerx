@@ -43,15 +43,15 @@ class ColumnType(Enum):
 
 class DateType:
     type = "Date"
-    
+
     def __init__(self, value):
-        self.timestamp = parse(value).timestamp() * 1000
+        self.timestamp = parse(str(value)).timestamp() * 1000
 
 
 class DataBarsRenderer:
     type = "DataBars"
     includeText = True
-    
+
     def __init__(self, x):
         self.includeText = x
 
@@ -60,7 +60,7 @@ class DecimalStringFormat:
     type = "decimal"
     minDecimals = 4
     maxDecimals = 4
-    
+
     def __init__(self, min=4, max=4):
         self.minDecimals = min
         self.maxDecimals = max
@@ -96,8 +96,8 @@ class TableDisplayCellHighlighter:
     FULL_ROW = HighlightStyle.FULL_ROW
     SINGLE_COLUMN = HighlightStyle.SINGLE_COLUMN
     defaultStyle = HighlightStyle.FULL_ROW
-    
+
     @staticmethod
     def getHeatmapHighlighter(colName, style=defaultStyle, minVal=None, maxVal=None, minColor=None, maxColor=None):
         return HeatmapHighlighter (colName, style, minVal, maxVal, minColor, maxColor)
-        
+

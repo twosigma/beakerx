@@ -20,6 +20,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.junit.Test;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
@@ -28,9 +29,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class EvaluatorBaseTest {
 
+  public static final String TEMP_DIR_NAME = "beakerxTest";
+
   public abstract BaseEvaluator evaluator();
 
   protected abstract BaseEvaluator createNewEvaluator();
+
+  protected abstract BaseEvaluator createNewEvaluator(TempFolderFactory tempFolderFactory);
+
+  public static TempFolderFactory getTestTempFolderFactoryWithoutDeleteOnExit() {
+    return new TempFolderFactory() {
+      @Override
+      public Path createTempFolder() {
+        Path path;
+        try {
+          path = Files.createTempDirectory(TEMP_DIR_NAME);
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+        return path;
+      }
+    };
+  }
 
   @Test
   public void shouldDivide16By2() throws Exception {
@@ -97,20 +117,11 @@ public abstract class EvaluatorBaseTest {
   protected abstract String codeForPrintln();
 
   @Test
-  public void shouldCreateTempFolder() throws Exception {
+  public void shouldCreateAndRemoveTempFolder() throws Exception {
     //given
+    BaseEvaluator groovyEvaluator = createNewEvaluator(getTestTempFolderFactoryWithoutDeleteOnExit());
     //when
-    BaseEvaluator groovyEvaluator = createNewEvaluator();
-    //then
     assertThat(Files.exists(groovyEvaluator.getTempFolder())).isTrue();
-    groovyEvaluator.exit();
-  }
-
-  @Test
-  public void shouldRemoveTempFolder() throws Exception {
-    //given
-    BaseEvaluator groovyEvaluator = createNewEvaluator();
-    //when
     groovyEvaluator.exit();
     //then
     assertThat(Files.exists(groovyEvaluator.getTempFolder())).isFalse();

@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -39,33 +37,31 @@ public class DynamicClassLoaderSimple extends ClassLoader {
 
   private final static Logger logger = LoggerFactory.getLogger(DynamicClassLoaderSimple.class.getName());
 
-  private URLClassLoader myloader;
+  private BeakerxUrlClassLoader myloader = new BeakerxUrlClassLoader(new URL[0], null);
   private String outDir;
   protected final Map<String, Class<?>> classes;
 
   public DynamicClassLoaderSimple(ClassLoader classLoader) {
     super(classLoader);
-    classes = Collections.synchronizedMap( new HashMap<String, Class<?>>() );
+    classes = Collections.synchronizedMap(new HashMap<String, Class<?>>());
   }
-  
+
   public void addJars(List<String> dirs) {
-    List<URL> urlList = new ArrayList<>();
     for (String dir : dirs) {
       try {
-        urlList.add(Paths.get(dir).toUri().toURL());
+        myloader.addJar(Paths.get(dir).toUri().toURL());
       } catch (MalformedURLException e) {
         logger.error(e.getMessage());
       }
     }
-    myloader = new URLClassLoader(urlList.toArray(new URL[urlList.size()]), null);
   }
 
   public void addDynamicDir(String o) {
     outDir = o + File.separator;
   }
-  
+
   private Class<?> getClass(String cname, byte[] bytes, boolean resolveIt) {
-    Class<?> result = defineClass( cname, bytes, 0, bytes.length );
+    Class<?> result = defineClass(cname, bytes, 0, bytes.length);
 
     if (result == null) {
       return null;
@@ -75,27 +71,27 @@ public class DynamicClassLoaderSimple extends ClassLoader {
      * Preserve package name.
      */
     if (result.getPackage() == null) {
-      int lastDotIndex = cname.lastIndexOf( '.' );
-      String packageName = (lastDotIndex >= 0) ? cname.substring( 0, lastDotIndex) : "";
-      if(!packageName.isEmpty())
-        definePackage( packageName, null, null, null, null, null, null, null );
+      int lastDotIndex = cname.lastIndexOf('.');
+      String packageName = (lastDotIndex >= 0) ? cname.substring(0, lastDotIndex) : "";
+      if (!packageName.isEmpty())
+        definePackage(packageName, null, null, null, null, null, null, null);
     }
 
     if (resolveIt)
-      resolveClass( result );
+      resolveClass(result);
     return result;
   }
-  
-  public Class<?>  loadClass(String name)  throws ClassNotFoundException {
+
+  public Class<?> loadClass(String name) throws ClassNotFoundException {
     // try parent first
     try {
       return getParent().loadClass(name);
-    } catch (ClassNotFoundException cnfe) {      
+    } catch (ClassNotFoundException cnfe) {
     }
     // try java file
-    if(!name.startsWith("java")) {
+    if (!name.startsWith("java")) {
       String cname = formatClassName(name);
-      String fname = outDir + cname;     
+      String fname = outDir + cname;
       File f = new File(fname);
       if (f.exists() && f.isFile()) {
         FileInputStream fis;
@@ -104,17 +100,17 @@ public class DynamicClassLoaderSimple extends ClassLoader {
           fis = new FileInputStream(f);
           byte[] bytes = ByteStreams.toByteArray(fis);
           Class<?> result = getClass(name, bytes, true);
-          
+
           if (result != null) {
             return result;
           }
         } catch (Exception e) {
           e.printStackTrace();
-        }          
+        }
       }
       // try our custom classpath
       if (myloader != null) {
-        Class<?> result = classes.get( name );
+        Class<?> result = classes.get(name);
         if (result != null) {
           return result;
         }
@@ -123,14 +119,14 @@ public class DynamicClassLoaderSimple extends ClassLoader {
           try {
             byte[] bytes = ByteStreams.toByteArray(is);
             result = getClass(name, bytes, true);
-            
+
             if (result != null) {
-              classes.put( name, result );
+              classes.put(name, result);
               return result;
             }
           } catch (Exception e) {
             e.printStackTrace();
-          }          
+          }
         }
       }
     }
@@ -139,14 +135,14 @@ public class DynamicClassLoaderSimple extends ClassLoader {
 
   public URL getResource(String name) {
     URL c;
-    
+
     c = getParent().getResource(name);
     if (c == null && myloader != null) {
-       c = myloader.getResource(name);
+      c = myloader.getResource(name);
     }
     return c;
   }
-  
+
   public InputStream getResourceAsStream(String name) {
     InputStream c;
     c = getParent().getResourceAsStream(name);
@@ -155,28 +151,27 @@ public class DynamicClassLoaderSimple extends ClassLoader {
     }
     return c;
   }
-    
 
-  public Enumeration<URL> getResources(String name) throws IOException
-  {
+
+  public Enumeration<URL> getResources(String name) throws IOException {
     Enumeration<URL> c;
     c = getParent().getResources(name);
     //System.out.println("get resources "+name);
     if ((c == null || !c.hasMoreElements()) && myloader != null) {
       try {
         c = myloader.getResources(name);
-      } catch(IOException e) {        
+      } catch (IOException e) {
       }
     }
     return c;
   }
 
-  
+
   protected String formatClassName(String className) {
-    className = className.replace( '/', '~' );
+    className = className.replace('/', '~');
     // '/' is used to map the package to the path
-    className = className.replace( '.', '/' ) + ".class";
-    className = className.replace( '~', '/' );
+    className = className.replace('.', '/') + ".class";
+    className = className.replace('~', '/');
     return className;
-  }  
+  }
 }

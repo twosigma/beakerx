@@ -21,6 +21,8 @@ from traitlets import Unicode
 class EasyForm(BeakerxBox):
     _view_name = Unicode('EasyFormView').tag(sync=True)
     _model_name = Unicode('EasyFormModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
     easyFormName = Unicode(default_value='Form default').tag(sync=True)
     test = ""
     HORIZONTAL = 1

@@ -15,21 +15,33 @@
  */
 package com.twosigma.beakerx;
 
+import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
+
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.handler.Handler;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
+import com.twosigma.beakerx.kernel.AddImportStatus;
+import com.twosigma.beakerx.kernel.Classpath;
+import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.kernel.Repos;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddStaticImportMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.BashMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathRemoveMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathShowMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
@@ -41,18 +53,10 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMag
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItLineModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeLineModeMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.kernel.Classpath;
-import com.twosigma.beakerx.kernel.EvaluatorParameters;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.PathToJar;
-import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -62,11 +66,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observer;
 import java.util.Set;
-
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.util.Lists;
-
-import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
 
 public class KernelTest implements KernelFunctionality {
 
@@ -80,10 +81,7 @@ public class KernelTest implements KernelFunctionality {
   private String code;
   private Path tempFolder;
 
-  public MavenJarResolver.ResolverParams mavenResolverParam = new MavenJarResolver.ResolverParams(
-          new File(TEST_MVN_CACHE).getAbsolutePath(),
-          getTempFolder().toString() + MavenJarResolver.MVN_DIR,
-          true);
+  public MavenJarResolver.ResolverParams mavenResolverParam = null;
 
   private List<MagicCommandType> magicCommandTypes = null;
 
@@ -94,6 +92,7 @@ public class KernelTest implements KernelFunctionality {
 
   public KernelTest(String id) {
     this.id = id;
+    initMavenResolverParam();
     initMagicCommands();
     KernelManager.register(this);
   }
@@ -101,10 +100,17 @@ public class KernelTest implements KernelFunctionality {
   public KernelTest(String id, Evaluator evaluator) {
     this.id = id;
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
+    initMavenResolverParam();
     initMagicCommands();
     KernelManager.register(this);
   }
 
+  private void initMavenResolverParam(){
+    this.mavenResolverParam = new MavenJarResolver.ResolverParams(
+        new File(TEST_MVN_CACHE).getAbsolutePath(),
+        getTempFolder().toString() + MavenJarResolver.MVN_DIR,
+        true);
+  }
 
   private void initMagicCommands() {
     this.magicCommandTypes = new ArrayList<>();
@@ -113,6 +119,7 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand()),
             new MagicCommandType(BashMagicCommand.BASH, "", new BashMagicCommand()),
             new MagicCommandType(LsMagicCommand.LSMAGIC, "", new LsMagicCommand(this.magicCommandTypes)),
+            new MagicCommandType(ClasspathAddRepoMagicCommand.CLASSPATH_CONFIG_RESOLVER, "repoName repoURL", new ClasspathAddRepoMagicCommand(this)),
             new MagicCommandType(ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR, "<jar path>", new ClasspathAddJarMagicCommand(this)),
             new MagicCommandType(ClasspathAddMvnMagicCommand.CLASSPATH_ADD_MVN, "<group name version>",
                     new ClasspathAddMvnMagicCommand(mavenResolverParam, this)),
@@ -203,8 +210,18 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public void addImport(ImportPath anImport) {
-    this.evaluatorManager.addImport(anImport);
+  public Repos getRepos() {
+    return evaluatorManager.getRepos();
+  }
+
+  @Override
+  public String addRepo(String name, String url) {
+    return evaluatorManager.addRepo(name, url);
+  }
+
+  @Override
+  public AddImportStatus addImport(ImportPath anImport) {
+    return this.evaluatorManager.addImport(anImport);
   }
 
   @Override

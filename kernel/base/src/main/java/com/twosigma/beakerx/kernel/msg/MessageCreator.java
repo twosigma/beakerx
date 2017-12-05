@@ -212,7 +212,7 @@ public class MessageCreator {
     String[] errorMessage = seo.getPayload().toString().split("\n");
     errorMessage = clearText(errorMessage);
     if (errorMessage != null && errorMessage.length > 0) {
-      logger.info("Execution result ERROR: " + errorMessage[0]);
+      logger.info("Execution result ERROR: " + seo.getPayload().toString());
     }
     Message reply = initMessage(ERROR, message);
     Hashtable<String, Serializable> map4 = new Hashtable<String, Serializable>(2);

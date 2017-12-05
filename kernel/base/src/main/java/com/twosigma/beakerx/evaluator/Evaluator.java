@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.evaluator;
 
+import com.twosigma.beakerx.kernel.AddImportStatus;
+import com.twosigma.beakerx.kernel.Repos;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -60,7 +62,11 @@ public interface Evaluator {
 
   Imports getImports();
 
-  void addImport(ImportPath anImport);
+  Repos getRepos();
+
+  String addRepo(String name, String url);
+
+  AddImportStatus addImport(ImportPath anImport);
 
   void removeImport(ImportPath anImport);
 

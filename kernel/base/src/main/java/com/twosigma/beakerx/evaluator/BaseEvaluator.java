@@ -15,14 +15,18 @@
  */
 package com.twosigma.beakerx.evaluator;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.reflect.ClassPath;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
+import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.PathToJar;
+import com.twosigma.beakerx.kernel.Repos;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -45,48 +49,51 @@ public abstract class BaseEvaluator implements Evaluator {
   protected Imports imports;
   private final CellExecutor executor;
   protected Path tempFolder;
+  protected Repos repos;
 
   public BaseEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
     shellId = id;
     sessionId = sId;
     executor = cellExecutor;
     tempFolder = tempFolderFactory.createTempFolder();
-    outDir = tempFolder.toString();
+    outDir = getOrCreateFile(tempFolder.toString() + File.separator + "outDir").getPath();
     classPath = new Classpath();
+    classPath.add(new PathToJar(outDir));
     imports = new Imports();
+    repos = new Repos();
     configure(evaluatorParameters);
   }
 
   @Override
   public boolean addJarToClasspath(PathToJar path) {
-    boolean added = addJar(path);
-    if (added) {
-      resetEnvironment();
+    boolean add = classPath.add(path);
+    if (add) {
+      addJarToClassLoader(path);
     }
-
-    return added;
+    return add;
   }
 
   @Override
   public List<Path> addJarsToClasspath(List<PathToJar> paths) {
     LinkedList<Path> addedPaths = Lists.newLinkedList();
     paths.forEach(path -> {
-      if (addJar(path)) {
+      if (addJarToClasspath(path)) {
         addedPaths.add(Paths.get(path.getPath()));
       }
     });
-
-    if (!addedPaths.isEmpty()) {
-      resetEnvironment();
-    }
     return addedPaths;
   }
 
   @Override
-  public void addImport(ImportPath anImport) {
-    if (addImportPath(anImport)) {
-      resetEnvironment();
+  public AddImportStatus addImport(ImportPath anImport) {
+    if (!isImportPathValid(anImport)) {
+      return AddImportStatus.ERROR;
     }
+    AddImportStatus add = imports.add(anImport);
+    if (AddImportStatus.ADDED.equals(add)) {
+      addImportToClassLoader(anImport);
+    }
+    return add;
   }
 
   @Override
@@ -106,13 +113,19 @@ public abstract class BaseEvaluator implements Evaluator {
     return imports;
   }
 
-  protected boolean addJar(PathToJar path) {
-    return classPath.add(path);
+  @Override
+  public Repos getRepos() {
+    return repos;
   }
 
-  protected boolean addImportPath(ImportPath anImport) {
-    return imports.add(anImport);
+  @Override
+  public String addRepo(String name, String url) {
+    return repos.add(name, url);
   }
+
+  protected abstract void addJarToClassLoader(PathToJar pathToJar);
+
+  protected abstract void addImportToClassLoader(ImportPath anImport);
 
   protected boolean removeImportPath(ImportPath anImport) {
     return imports.remove(anImport);
@@ -122,23 +135,17 @@ public abstract class BaseEvaluator implements Evaluator {
     Map<String, Object> params = kernelParameters.getParams();
     Collection<String> listOfClassPath = (Collection<String>) params.get(DefaultJVMVariables.CLASSPATH);
     Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
-
-    if (listOfClassPath == null || listOfClassPath.isEmpty()) {
-      classPath = new Classpath();
-    } else {
+    if (listOfClassPath != null) {
       for (String line : listOfClassPath) {
         if (!line.trim().isEmpty()) {
-          addJar(new PathToJar(line));
+          classPath.add(new PathToJar(line));
         }
       }
     }
-
-    if (listOfImports == null || listOfImports.isEmpty()) {
-      imports = new Imports();
-    } else {
+    if (listOfImports != null) {
       for (String line : listOfImports) {
         if (!line.trim().isEmpty()) {
-          addImportPath(new ImportPath(line));
+          imports.add(new ImportPath(line));
         }
       }
     }
@@ -204,4 +211,45 @@ public abstract class BaseEvaluator implements Evaluator {
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
     return getClassLoader().loadClass(clazzName);
   }
+
+  private File getOrCreateFile(String pathToMavenRepo) {
+    File theDir = new File(pathToMavenRepo);
+    if (!theDir.exists()) {
+      try {
+        theDir.mkdirs();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return theDir;
+  }
+
+  private boolean isImportPathValid(ImportPath anImport) {
+    String importToCheck = anImport.asString();
+    if (importToCheck.endsWith(".*")) {
+      return isValidImportWithWildcard(importToCheck);
+    } else {
+      return isValidClassImport(importToCheck);
+    }
+  }
+
+  private boolean isValidClassImport(String importToCheck) {
+    try {
+      getClassLoader().loadClass(importToCheck);
+      return true;
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+
+  private boolean isValidImportWithWildcard(String importToCheck) {
+    try {
+      String packageWithoutWildcard = importToCheck.substring(0, importToCheck.lastIndexOf("."));
+      ImmutableSet<ClassPath.ClassInfo> topLevelClasses = ClassPath.from(getClassLoader()).getTopLevelClasses(packageWithoutWildcard);
+      return !topLevelClasses.isEmpty();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 }

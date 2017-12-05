@@ -41,13 +41,8 @@ repositories {
 
 dependencies {
   provided project(':base')
-  antlr group: 'org.antlr', name: 'antlr4', version: '4.5'
-  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
 
   testCompile project(':base').sourceSets.test.output
-  testCompile group: 'junit', name: 'junit', version: '4.11'
-  testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
-  testCompile group: 'org.reflections', name: 'reflections', version: '0.9.10'
 }
 
 jar {

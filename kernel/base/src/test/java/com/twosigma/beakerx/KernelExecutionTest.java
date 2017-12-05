@@ -19,6 +19,7 @@ import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import org.junit.Test;
@@ -32,11 +33,16 @@ import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForI
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
 import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.executeMagicCommands;
+import static com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand.IMPORT;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand.LOAD_MAGIC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
+
+  public static final String DEMO_RESOURCES_JAR = "../../doc/resources/jar";
+  public static final String DEMO_JAR_NAME = "demo.jar";
+  public static final String DEMO_JAR = DEMO_RESOURCES_JAR + "/" + DEMO_JAR_NAME;
 
   @Test
   public void evaluate16Divide2() throws Exception {
@@ -44,15 +50,15 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     String code = codeFor16Divide2();
     Message message = getExecuteRequestMessage(code);
     //when
-    kernelSocketsService.handleMsg(message);
+    getKernelSocketsService().handleMsg(message);
     //then
-    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
-    waitForResult(kernelSocketsService.getKernelSockets());
-    verifyPublishedMsgs(kernelSocketsService);
-    verifyResult(kernelSocketsService.getExecuteResultMessage().get());
-    waitForSentMessage(kernelSocketsService.getKernelSockets());
-    verifySentMsgs(kernelSocketsService);
+    waitForResult(getKernelSocketsService().getKernelSockets());
+    verifyPublishedMsgs(getKernelSocketsService());
+    verifyResult(getKernelSocketsService().getExecuteResultMessage().get());
+    waitForSentMessage(getKernelSocketsService().getKernelSockets());
+    verifySentMsgs(getKernelSocketsService());
   }
 
   protected String codeFor16Divide2() {
@@ -88,10 +94,10 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   private void verifyLoadedMagicCommand() {
     String allCode = "%showEnvs";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
-    MagicCommandOutcome result = executeMagicCommands(code, 3, kernel);
+    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    MagicCommandOutcome result = executeMagicCommands(code, 3, getKernel());
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
-    assertThat(getText(message)).startsWith("{PATH");
+    assertThat(getText(message)).contains("PATH");
   }
 
   private String getText(MIMEContainer message) {
@@ -99,18 +105,132 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
   }
 
   private void loadMagicCommandByClass() {
-    String allCode = LOAD_MAGIC + "   com.twosigma.beakerx.custom.magic.command.ShowEvnsCustomMagicCommand";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
-    MagicCommandOutcome result = executeMagicCommands(code, 2, kernel);
+    String allCode = LOAD_MAGIC + "   com.twosigma.beakerx.custom.magic.command.ShowEnvsCustomMagicCommand";
+    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    MagicCommandOutcome result = executeMagicCommands(code, 2, getKernel());
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
     assertThat(getText(message)).contains("Magic command %showEnvs was successfully added.");
   }
 
   private void addJarWithCustomMagicCommand() throws InterruptedException {
-    String allCode = CLASSPATH_ADD_JAR + " " + "../../doc/contents/resources/jar/loadMagicJarDemo.jar";
-    Code code = CodeFactory.create(allCode, new Message(), kernel);
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    String allCode = CLASSPATH_ADD_JAR + " " + DEMO_RESOURCES_JAR + "/loadMagicJarDemo.jar";
+    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    MagicCommandOutcome result = executeMagicCommands(code, 1, getKernel());
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
     assertThat(getText(message)).contains("Added jar: [loadMagicJarDemo.jar]");
+  }
+
+  @Test
+  public void shouldImportFromAddedDemoJar() throws Exception {
+    //given
+    //when
+    addDemoJar();
+    //then
+    verifyAddedDemoJar();
+  }
+
+  private void verifyAddedDemoJar() throws InterruptedException {
+    String code = codeForVerifyingAddedDemoJar();
+    Message message = getExecuteRequestMessage(code);
+    //when
+    getKernelSocketsService().handleMsg(message);
+    //then
+    Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    waitForResult(getKernelSocketsService().getKernelSockets());
+    verifyResultOfAddedJar(getKernelSocketsService().getExecuteResultMessage().get());
+  }
+
+  protected String codeForVerifyingAddedDemoJar() {
+    return "import com.example.Demo\n" +
+            "new Demo().getObjectTest()";
+  }
+
+  private void verifyResultOfAddedJar(Message message) {
+    Map actual = ((Map) message.getContent().get(Comm.DATA));
+    String value = (String) actual.get("text/plain");
+    assertThat(value).contains("Demo_test_123");
+  }
+
+  private void addDemoJar() {
+    String allCode = CLASSPATH_ADD_JAR + " " + DEMO_JAR;
+    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    MagicCommandOutcome result = executeMagicCommands(code, 1, getKernel());
+    MagicCommandOutcomeItem.Status status = result.getItems().get(0).getStatus();
+    assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.OK);
+  }
+
+  @Test
+  public void shouldImportDemoClassByMagicCommand() throws Exception {
+    //given
+    addDemoJar();
+    String path = pathToDemoClassFromAddedDemoJar();
+    //when
+    MagicCommandOutcomeItem.Status status = importDemoClassByMagicCommand(IMPORT + " " + path).getStatus();
+    //then
+    assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.OK);
+    verifyImportedDemoClassByMagicCommand();
+  }
+
+  private MagicCommandOutcomeItem importDemoClassByMagicCommand(String allCode) {
+    Code code = CodeFactory.create(allCode, new Message(), getKernel());
+    MagicCommandOutcome result = executeMagicCommands(code, 2, getKernel());
+    return result.getItems().get(0);
+  }
+
+  protected void verifyImportedDemoClassByMagicCommand() throws InterruptedException {
+    String allCode = getObjectTestMethodFromAddedDemoJar();
+    Message message = getExecuteRequestMessage(allCode);
+    getKernelSocketsService().handleMsg(message);
+    Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    waitForResult(getKernelSocketsService().getKernelSockets());
+    Map actual = ((Map) getKernelSocketsService().getExecuteResultMessage().get().getContent().get(Comm.DATA));
+    String value = (String) actual.get("text/plain");
+    assertThat(value).isEqualTo("Demo_test_123");
+  }
+
+  protected String pathToDemoClassFromAddedDemoJar() {
+    return "com.example.Demo";
+  }
+
+  protected String getObjectTestMethodFromAddedDemoJar() {
+    return "new Demo().getObjectTest()";
+  }
+
+  @Test
+  public void shouldImportDemoClassWithWildcardByMagicCommand() throws Exception {
+    //given
+    addDemoJar();
+    String path = pathToDemoClassFromAddedDemoJar();
+    String allCode = IMPORT + " " + path.substring(0, path.lastIndexOf(".")) + ".*";
+    //when
+    MagicCommandOutcomeItem.Status status = importDemoClassByMagicCommand(allCode).getStatus();
+    //then
+    assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.OK);
+    verifyImportedDemoClassByMagicCommand();
+  }
+
+  @Test
+  public void shouldNotImportClassesFromUnknownPackageWithWildcardByMagicCommand() throws Exception {
+    //given
+    String path = pathToDemoClassFromAddedDemoJar();
+    String allCode = IMPORT + " " + (path.substring(0, path.lastIndexOf(".")) + "Unknown.*");
+    addDemoJar();
+    //when
+    MagicCommandOutcomeItem result = importDemoClassByMagicCommand(allCode);
+    //then
+    assertThat(result.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
+    assertThat((String)result.getMIMEContainer().get().getData()).contains("Could not import");
+  }
+
+  @Test
+  public void shouldNotImportUnknownClassByMagicCommand() throws Exception {
+    //given
+    String allCode = IMPORT + " " + pathToDemoClassFromAddedDemoJar() + "UnknownClass";
+    //when
+    MagicCommandOutcomeItem.Status status = importDemoClassByMagicCommand(allCode).getStatus();
+    //then
+    assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
   }
 }

@@ -205,6 +205,8 @@ class CombinedChart(BaseObject):
 class Plot(BeakerxDOMWidget):
     _view_name = Unicode('PlotView').tag(sync=True)
     _model_name = Unicode('PlotModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
     model = Dict().tag(sync=True)
     
     def __init__(self, **kwargs):

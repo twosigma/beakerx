@@ -21,11 +21,14 @@ import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
+import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.ImportPath;
+import com.twosigma.beakerx.kernel.PathToJar;
 import org.jetbrains.kotlin.cli.common.repl.ReplClassLoader;
 import org.jetbrains.kotlin.cli.jvm.repl.ReplInterpreter;
 
@@ -33,15 +36,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createReplWithClassLoader;
+import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createReplWithKotlinParentClassLoader;
+import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createReplWithReplClassLoader;
+import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.getImportString;
+import static com.twosigma.beakerx.kotlin.evaluator.ReplWithClassLoaderFactory.createParentClassLoader;
+import static java.util.Collections.singletonList;
 
 public class KotlinEvaluator extends BaseEvaluator {
 
-  private final String packageId;
   private ClasspathScanner cps;
   private KotlinWorkerThread workerThread;
   private ReplInterpreter repl;
   private ReplClassLoader loader = null;
+  private BeakerxUrlClassLoader kotlinClassLoader;
 
   public KotlinEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
     this(id, sId, new BeakerCellExecutor("kotlin"), new TempFolderFactoryImpl(), evaluatorParameters);
@@ -49,13 +56,8 @@ public class KotlinEvaluator extends BaseEvaluator {
 
   public KotlinEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
-    packageId = "com.twosigma.beaker.kotlin.bkr" + shellId.split("-")[0];
     cps = new ClasspathScanner();
-
-    ReplWithClassLoaderFactory.ReplWithClassLoader replWithClassLoader = createReplWithClassLoader(this);
-    repl = replWithClassLoader.getRepl();
-    loader = replWithClassLoader.getLoader();
-
+    createRepl();
     workerThread = new KotlinWorkerThread(this);
     workerThread.start();
   }
@@ -64,17 +66,31 @@ public class KotlinEvaluator extends BaseEvaluator {
   protected void doResetEnvironment() {
     String cpp = createClasspath(classPath, outDir);
     cps = new ClasspathScanner(cpp);
+    createRepl();
+    workerThread.halt();
+  }
 
-    ReplWithClassLoaderFactory.ReplWithClassLoader replWithClassLoader = createReplWithClassLoader(this);
+  private void createRepl() {
+    kotlinClassLoader = createParentClassLoader(this);
+    ReplWithClassLoaderFactory.ReplWithClassLoader replWithClassLoader = createReplWithKotlinParentClassLoader(this, kotlinClassLoader);
     repl = replWithClassLoader.getRepl();
     loader = replWithClassLoader.getLoader();
+  }
 
-    workerThread.halt();
+  @Override
+  protected void addJarToClassLoader(PathToJar pathToJar) {
+    kotlinClassLoader.addJar(pathToJar);
+    repl = createReplWithReplClassLoader(this, loader);
+  }
+
+  @Override
+  protected void addImportToClassLoader(ImportPath anImport) {
+    repl.eval(getImportString(singletonList(anImport)));
   }
 
   @Override
   public ClassLoader getClassLoader() {
-    return loader.getParent();
+    return loader;
   }
 
   @Override
@@ -108,10 +124,6 @@ public class KotlinEvaluator extends BaseEvaluator {
     cpp += File.pathSeparator;
     cpp += System.getProperty("java.class.path");
     return cpp;
-  }
-
-  public String getPackageId() {
-    return packageId;
   }
 
   public ReplInterpreter getRepl() {

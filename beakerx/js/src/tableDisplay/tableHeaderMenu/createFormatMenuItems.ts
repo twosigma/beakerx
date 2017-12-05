@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import MenuItem from "./MenuItemInterface";
+import MenuItem from "../../shared/interfaces/menuItemInterface";
 import _ from 'underscore';
 
 declare function require(moduleName: string): any;

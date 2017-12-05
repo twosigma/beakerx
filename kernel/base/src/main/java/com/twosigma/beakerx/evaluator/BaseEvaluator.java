@@ -18,6 +18,7 @@ package com.twosigma.beakerx.evaluator;
 import com.google.common.collect.Lists;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
+import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -29,6 +30,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,9 +57,8 @@ public abstract class BaseEvaluator implements Evaluator {
     outDir = getOrCreateFile(tempFolder.toString() + File.separator + "outDir").getPath();
     classPath = new Classpath();
     classPath.add(new PathToJar(outDir));
-    imports = new Imports();
     repos = new Repos();
-    configure(evaluatorParameters);
+    init(evaluatorParameters);
   }
 
   @Override
@@ -81,11 +82,12 @@ public abstract class BaseEvaluator implements Evaluator {
   }
 
   @Override
-  public void addImport(ImportPath anImport) {
-    boolean add = imports.add(anImport);
-    if (add) {
+  public AddImportStatus addImport(ImportPath anImport) {
+    AddImportStatus add = imports.add(anImport, getClassLoader());
+    if (AddImportStatus.ADDED.equals(add)) {
       addImportToClassLoader(anImport);
     }
+    return add;
   }
 
   @Override
@@ -123,10 +125,14 @@ public abstract class BaseEvaluator implements Evaluator {
     return imports.remove(anImport);
   }
 
-  protected void configure(EvaluatorParameters kernelParameters) {
+  protected void init(EvaluatorParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
+    initClasspath(params);
+    initImports(params);
+  }
+
+  private void initClasspath(Map<String, Object> params) {
     Collection<String> listOfClassPath = (Collection<String>) params.get(DefaultJVMVariables.CLASSPATH);
-    Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
     if (listOfClassPath != null) {
       for (String line : listOfClassPath) {
         if (!line.trim().isEmpty()) {
@@ -134,18 +140,27 @@ public abstract class BaseEvaluator implements Evaluator {
         }
       }
     }
+  }
+
+  private void initImports(Map<String, Object> params) {
+    Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
+    List<ImportPath> importPaths = new ArrayList<>();
     if (listOfImports != null) {
       for (String line : listOfImports) {
         if (!line.trim().isEmpty()) {
-          imports.add(new ImportPath(line));
+          importPaths.add(new ImportPath(line));
         }
       }
+      if (this.imports != null) {
+        importPaths.addAll(this.imports.getImportPaths());
+      }
     }
+    this.imports = new Imports(importPaths);
   }
 
   @Override
   public void setShellOptions(final EvaluatorParameters kernelParameters) {
-    configure(kernelParameters);
+    init(kernelParameters);
     resetEnvironment();
   }
 
@@ -215,5 +230,4 @@ public abstract class BaseEvaluator implements Evaluator {
     }
     return theDir;
   }
-
 }

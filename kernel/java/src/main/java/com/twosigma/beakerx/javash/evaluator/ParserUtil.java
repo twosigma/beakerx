@@ -23,9 +23,9 @@ package com.twosigma.beakerx.javash.evaluator;
 
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.translate.AggregateTranslator;
-import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
-import org.apache.commons.lang3.text.translate.UnicodeUnescaper;
+import org.apache.commons.text.translate.AggregateTranslator;
+import org.apache.commons.text.translate.CharSequenceTranslator;
+import org.apache.commons.text.translate.UnicodeUnescaper;
 
 import java.util.Deque;
 import java.util.LinkedList;

@@ -15,17 +15,13 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
-import com.twosigma.beakerx.message.Message;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem.Status.ERROR;
 import static com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem.Status.OK;
@@ -53,33 +49,15 @@ public class AddImportMagicCommand implements MagicCommandFunctionality {
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
-    int executionCount = param.getExecutionCount();
     String[] parts = command.split(" ");
     if (parts.length != 2) {
       return new MagicCommandOutput(OK, kernel.getImports().toString());
     }
-
-    this.kernel.addImport(new ImportPath(parts[1]));
-
-    if (isValidImport(executionCount)) {
-      return new MagicCommandOutput(OK);
+    ImportPath anImport = new ImportPath(parts[1]);
+    AddImportStatus status = this.kernel.addImport(anImport);
+    if (AddImportStatus.ERROR.equals(status)) {
+      return new MagicCommandOutput(ERROR, "Could not import " + parts[1]);
     }
-
-    this.kernel.removeImport(new ImportPath(parts[1]));
-
-    return new MagicCommandOutput(ERROR, "Could not import " + parts[1] + ", class not found.");
+    return new MagicCommandOutput(OK);
   }
-
-  private boolean isValidImport(int executionCount) {
-    try {
-      CompletableFuture<Boolean> validImportFuture = new CompletableFuture<>();
-      kernel.executeCode("", new Message(), executionCount,
-              seo -> validImportFuture.complete(!seo.getStatus().equals(SimpleEvaluationObject.EvaluationStatus.ERROR)));
-
-      return validImportFuture.get();
-    } catch (InterruptedException | ExecutionException e) {
-      return Boolean.FALSE;
-    }
-  }
-
 }

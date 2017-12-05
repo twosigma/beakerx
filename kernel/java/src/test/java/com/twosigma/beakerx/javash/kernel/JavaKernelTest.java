@@ -82,4 +82,8 @@ public class JavaKernelTest extends KernelExecutionTest {
     return "return new Demo().getObjectTest();";
   }
 
+  @Override
+  protected String unimportErrorMessage() {
+    return "cannot find symbol";
+  }
 }

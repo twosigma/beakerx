@@ -15,6 +15,11 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,14 +33,21 @@ public class Imports {
   private List<ImportPath> imports = new ArrayList<>();
   private List<String> importsAsStrings = null;
 
+  public Imports(List<ImportPath> importPaths) {
+    this.imports = Preconditions.checkNotNull(importPaths);
+  }
+
   public List<ImportPath> getImportPaths() {
     return imports;
   }
 
-  public AddImportStatus add(ImportPath anImport) {
+  public AddImportStatus add(ImportPath anImport, ClassLoader classLoader) {
     checkNotNull(anImport);
     if (this.imports.contains(anImport)) {
       return EXISTS;
+    }
+    if (!isImportPathValid(anImport, classLoader)) {
+      return AddImportStatus.ERROR;
     }
     clear();
     this.imports.add(anImport);
@@ -77,5 +89,33 @@ public class Imports {
   @Override
   public String toString() {
     return imports.stream().map(ImportPath::asString).collect(Collectors.joining("\n"));
+  }
+
+  private boolean isImportPathValid(ImportPath anImport, ClassLoader classLoader) {
+    String importToCheck = anImport.asString();
+    if (importToCheck.endsWith(".*")) {
+      return isValidImportWithWildcard(importToCheck, classLoader);
+    } else {
+      return isValidClassImport(importToCheck, classLoader);
+    }
+  }
+
+  private boolean isValidClassImport(String importToCheck, ClassLoader classLoader) {
+    try {
+      classLoader.loadClass(importToCheck);
+      return true;
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+
+  private boolean isValidImportWithWildcard(String importToCheck, ClassLoader classLoader) {
+    try {
+      String packageWithoutWildcard = importToCheck.substring(0, importToCheck.lastIndexOf("."));
+      ImmutableSet<ClassPath.ClassInfo> topLevelClasses = ClassPath.from(classLoader).getTopLevelClasses(packageWithoutWildcard);
+      return !topLevelClasses.isEmpty();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

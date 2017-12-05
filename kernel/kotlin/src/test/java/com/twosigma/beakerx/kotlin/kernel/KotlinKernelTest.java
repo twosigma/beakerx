@@ -76,4 +76,8 @@ public class KotlinKernelTest extends KernelExecutionTest {
     return "Demo().getObjectTest()";
   }
 
+  @Override
+  protected String unimportErrorMessage() {
+    return "unresolved reference";
+  }
 }

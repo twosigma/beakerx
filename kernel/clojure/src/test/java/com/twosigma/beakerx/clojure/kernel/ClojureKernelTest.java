@@ -201,4 +201,8 @@ public class ClojureKernelTest extends KernelExecutionTest {
     // clojure doesn't support wildcard
   }
 
+  @Override
+  protected String unimportErrorMessage() {
+    return "Unable";
+  }
 }

@@ -15,9 +15,7 @@
  */
 package com.twosigma.beakerx.evaluator;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.google.common.reflect.ClassPath;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.AddImportStatus;
@@ -30,9 +28,9 @@ import com.twosigma.beakerx.kernel.Repos;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,9 +57,8 @@ public abstract class BaseEvaluator implements Evaluator {
     outDir = getOrCreateFile(tempFolder.toString() + File.separator + "outDir").getPath();
     classPath = new Classpath();
     classPath.add(new PathToJar(outDir));
-    imports = new Imports();
     repos = new Repos();
-    configure(evaluatorParameters);
+    init(evaluatorParameters);
   }
 
   @Override
@@ -86,10 +83,7 @@ public abstract class BaseEvaluator implements Evaluator {
 
   @Override
   public AddImportStatus addImport(ImportPath anImport) {
-    if (!isImportPathValid(anImport)) {
-      return AddImportStatus.ERROR;
-    }
-    AddImportStatus add = imports.add(anImport);
+    AddImportStatus add = imports.add(anImport, getClassLoader());
     if (AddImportStatus.ADDED.equals(add)) {
       addImportToClassLoader(anImport);
     }
@@ -131,10 +125,14 @@ public abstract class BaseEvaluator implements Evaluator {
     return imports.remove(anImport);
   }
 
-  protected void configure(EvaluatorParameters kernelParameters) {
+  protected void init(EvaluatorParameters kernelParameters) {
     Map<String, Object> params = kernelParameters.getParams();
+    initClasspath(params);
+    initImports(params);
+  }
+
+  private void initClasspath(Map<String, Object> params) {
     Collection<String> listOfClassPath = (Collection<String>) params.get(DefaultJVMVariables.CLASSPATH);
-    Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
     if (listOfClassPath != null) {
       for (String line : listOfClassPath) {
         if (!line.trim().isEmpty()) {
@@ -142,18 +140,27 @@ public abstract class BaseEvaluator implements Evaluator {
         }
       }
     }
+  }
+
+  private void initImports(Map<String, Object> params) {
+    Collection<String> listOfImports = (Collection<String>) params.get(DefaultJVMVariables.IMPORTS);
+    List<ImportPath> importPaths = new ArrayList<>();
     if (listOfImports != null) {
       for (String line : listOfImports) {
         if (!line.trim().isEmpty()) {
-          imports.add(new ImportPath(line));
+          importPaths.add(new ImportPath(line));
         }
       }
+      if (this.imports != null) {
+        importPaths.addAll(this.imports.getImportPaths());
+      }
     }
+    this.imports = new Imports(importPaths);
   }
 
   @Override
   public void setShellOptions(final EvaluatorParameters kernelParameters) {
-    configure(kernelParameters);
+    init(kernelParameters);
     resetEnvironment();
   }
 
@@ -223,33 +230,4 @@ public abstract class BaseEvaluator implements Evaluator {
     }
     return theDir;
   }
-
-  private boolean isImportPathValid(ImportPath anImport) {
-    String importToCheck = anImport.asString();
-    if (importToCheck.endsWith(".*")) {
-      return isValidImportWithWildcard(importToCheck);
-    } else {
-      return isValidClassImport(importToCheck);
-    }
-  }
-
-  private boolean isValidClassImport(String importToCheck) {
-    try {
-      getClassLoader().loadClass(importToCheck);
-      return true;
-    } catch (ClassNotFoundException e) {
-      return false;
-    }
-  }
-
-  private boolean isValidImportWithWildcard(String importToCheck) {
-    try {
-      String packageWithoutWildcard = importToCheck.substring(0, importToCheck.lastIndexOf("."));
-      ImmutableSet<ClassPath.ClassInfo> topLevelClasses = ClassPath.from(getClassLoader()).getTopLevelClasses(packageWithoutWildcard);
-      return !topLevelClasses.isEmpty();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
 }

@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForErrorMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
@@ -36,6 +37,7 @@ import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.executeMa
 import static com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand.IMPORT;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand.LOAD_MAGIC;
+import static com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand.UNIMPORT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
@@ -166,13 +168,13 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     addDemoJar();
     String path = pathToDemoClassFromAddedDemoJar();
     //when
-    MagicCommandOutcomeItem.Status status = importDemoClassByMagicCommand(IMPORT + " " + path).getStatus();
+    MagicCommandOutcomeItem.Status status = runMagicCommand(IMPORT + " " + path).getStatus();
     //then
     assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.OK);
     verifyImportedDemoClassByMagicCommand();
   }
 
-  private MagicCommandOutcomeItem importDemoClassByMagicCommand(String allCode) {
+  private MagicCommandOutcomeItem runMagicCommand(String allCode) {
     Code code = CodeFactory.create(allCode, new Message(), getKernel());
     MagicCommandOutcome result = executeMagicCommands(code, 2, getKernel());
     return result.getItems().get(0);
@@ -205,7 +207,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     String path = pathToDemoClassFromAddedDemoJar();
     String allCode = IMPORT + " " + path.substring(0, path.lastIndexOf(".")) + ".*";
     //when
-    MagicCommandOutcomeItem.Status status = importDemoClassByMagicCommand(allCode).getStatus();
+    MagicCommandOutcomeItem.Status status = runMagicCommand(allCode).getStatus();
     //then
     assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.OK);
     verifyImportedDemoClassByMagicCommand();
@@ -218,10 +220,10 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     String allCode = IMPORT + " " + (path.substring(0, path.lastIndexOf(".")) + "Unknown.*");
     addDemoJar();
     //when
-    MagicCommandOutcomeItem result = importDemoClassByMagicCommand(allCode);
+    MagicCommandOutcomeItem result = runMagicCommand(allCode);
     //then
     assertThat(result.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
-    assertThat((String)result.getMIMEContainer().get().getData()).contains("Could not import");
+    assertThat((String) result.getMIMEContainer().get().getData()).contains("Could not import");
   }
 
   @Test
@@ -229,8 +231,38 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     //given
     String allCode = IMPORT + " " + pathToDemoClassFromAddedDemoJar() + "UnknownClass";
     //when
-    MagicCommandOutcomeItem.Status status = importDemoClassByMagicCommand(allCode).getStatus();
+    MagicCommandOutcomeItem.Status status = runMagicCommand(allCode).getStatus();
     //then
     assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
   }
+
+  @Test
+  public void shouldUnimportDemoClassByMagicCommand() throws Exception {
+    //given
+    addDemoJar();
+    String path = pathToDemoClassFromAddedDemoJar();
+    runMagicCommand(IMPORT + " " + path).getStatus();
+    //when
+    MagicCommandOutcomeItem.Status status = runMagicCommand(UNIMPORT + " " + path).getStatus();
+    //then
+    assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.OK);
+    verifyUnImportedDemoClassByMagicCommand();
+  }
+
+  protected void verifyUnImportedDemoClassByMagicCommand() throws InterruptedException {
+    String allCode = getObjectTestMethodFromAddedDemoJar();
+    Message message = getExecuteRequestMessage(allCode);
+    getKernelSocketsService().handleMsg(message);
+    Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    Optional<Message> errorMessage = waitForErrorMessage(getKernelSocketsService().getKernelSockets());
+    Object actual = ((Map) errorMessage.get().getContent()).get("text");
+    String value = (String) actual;
+    assertThat(value).contains(unimportErrorMessage());
+  }
+
+  protected String unimportErrorMessage() {
+    return "unable";
+  }
+
 }

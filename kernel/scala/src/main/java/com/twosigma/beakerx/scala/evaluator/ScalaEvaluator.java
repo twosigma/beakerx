@@ -191,14 +191,6 @@ public class ScalaEvaluator extends BaseEvaluator {
         return adjustImport(trim);
       }).toArray(String[]::new);
       acshell.addImports(strings);
-      /*for (int i = 0; i < imports.getImportPaths().size(); i++) {
-        String imp = imports.getImportPaths().get(i).asString().trim();
-        imp = adjustImport(imp);
-        if (!imp.isEmpty()) {
-          if (!acshell.addImport(imp))
-            logger.warn("ERROR: cannot add import '{}'", imp);
-        }
-      }*/
     }
 
     // ensure object is created
@@ -219,9 +211,6 @@ public class ScalaEvaluator extends BaseEvaluator {
 
     if (!getImports().isEmpty()) {
       addImportsToShell(getImports().getImportPaths());
-      //for (ImportPath importPath : getImports().getImportPaths()) {
-        //addImportToShell(importPath);
-      //}
     }
 
     logger.debug("creating beaker object");

@@ -180,7 +180,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     return result.getItems().get(0);
   }
 
-  protected void verifyImportedDemoClassByMagicCommand() throws InterruptedException {
+  private void verifyImportedDemoClassByMagicCommand() throws InterruptedException {
     String allCode = getObjectTestMethodFromAddedDemoJar();
     Message message = getExecuteRequestMessage(allCode);
     getKernelSocketsService().handleMsg(message);

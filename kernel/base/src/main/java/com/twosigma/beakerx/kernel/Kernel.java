@@ -16,7 +16,8 @@
 package com.twosigma.beakerx.kernel;
 
 import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
-import com.twosigma.beakerx.CodeCell;
+
+import com.twosigma.beakerx.BeakerxDefaultDisplayers;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -35,15 +36,11 @@ import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
 
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.twosigma.beakerx.mimetype.MIMEContainer;
-import jupyter.Displayer;
-import jupyter.Displayers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +78,7 @@ public abstract class Kernel implements KernelFunctionality {
     configureMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
-    intJvmRepr();
+    initJvmRepr();
   }
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
@@ -250,10 +247,6 @@ public abstract class Kernel implements KernelFunctionality {
     return evaluatorManager.getTempFolder();
   }
 
-  private void intJvmRepr() {
-    configureJvmRepr();
-  }
-
   @Override
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
     return evaluatorManager.loadClass(clazzName);
@@ -273,22 +266,10 @@ public abstract class Kernel implements KernelFunctionality {
     this.magicCommandTypes.add(magicCommandType);
   }
 
-  protected void configureJvmRepr() {
-    registerCodeCellDisplayer();
+  private void initJvmRepr() {
+    BeakerxDefaultDisplayers.registerDefaults();
+    configureJvmRepr();
   }
-
-  private void registerCodeCellDisplayer() {
-    Displayers.register(CodeCell.class, new Displayer<CodeCell>() {
-      @Override
-      public Map<String, String> display(CodeCell value) {
-        return new HashMap<String, String>() {{
-          StringBuilder sb = new StringBuilder("Cell Type:" + (value).getCellType()).append(System.getProperty("line.separator"));
-          sb.append("Execution Count:").append((value).getExecutionCount()).append(System.getProperty("line.separator"));
-          sb.append("Metadata:").append((value).getMetadata()).append(System.getProperty("line.separator"));
-          sb.append("Source:").append((value).getSource());
-          put(MIMEContainer.MIME.TEXT_PLAIN, sb.toString());
-        }};
-      }
-    });
+  protected void configureJvmRepr() {
   }
 }

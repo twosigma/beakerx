@@ -15,21 +15,17 @@
  */
 package com.twosigma.beakerx.clojure.kernel;
 
-import com.twosigma.beakerx.KernelCloseKernelAction;
 import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.clojure.evaluator.ClojureEvaluator;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
-import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widgets.TestWidgetUtils;
 import com.twosigma.beakerx.widgets.chart.BeakerxPlot;
 import org.assertj.core.api.Assertions;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
@@ -49,35 +45,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClojureKernelTest extends KernelExecutionTest {
 
-  protected static KernelSocketsServiceTest kernelSocketsService;
-  protected static Kernel kernel;
-  private static Thread kernelThread;
-
-  @BeforeClass
-  public static void setUp() throws Exception {
-    String sessionId = "sessionId2";
-    kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = createKernel(sessionId, kernelSocketsService, KernelCloseKernelAction.NO_ACTION);
-    kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
-    kernelThread.start();
-    kernelSocketsService.waitForSockets();
-  }
-
-  @AfterClass
-  public static void tearDown() throws Exception {
-    kernelSocketsService.shutdown();
-    kernelThread.join();
-  }
-
-  public KernelSocketsServiceTest getKernelSocketsService() {
-    return kernelSocketsService;
-  }
-
-  public Kernel getKernel() {
-    return kernel;
-  }
-
-  static Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+  @Override
+  protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     ClojureEvaluator evaluator = new ClojureEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
     return new Clojure(sessionId, evaluator, kernelSocketsFactory, closeKernelAction);
   }

@@ -155,7 +155,7 @@ class Table(BaseObject):
                 return "integer"
         if object_type == "uint64":
             return "int64"
-        if is_date(value):
+        if object_type.startswith("datetime64"):
             return "time"
         if isinstance(value, str):
             return "string"

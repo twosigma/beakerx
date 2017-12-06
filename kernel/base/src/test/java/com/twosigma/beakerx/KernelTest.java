@@ -24,6 +24,7 @@ import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
+import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.ImportPath;
@@ -80,10 +81,7 @@ public class KernelTest implements KernelFunctionality {
   private String code;
   private Path tempFolder;
 
-  public MavenJarResolver.ResolverParams mavenResolverParam = new MavenJarResolver.ResolverParams(
-          new File(TEST_MVN_CACHE).getAbsolutePath(),
-          getTempFolder().toString() + MavenJarResolver.MVN_DIR,
-          true);
+  public MavenJarResolver.ResolverParams mavenResolverParam = null;
 
   private List<MagicCommandType> magicCommandTypes = null;
 
@@ -94,6 +92,7 @@ public class KernelTest implements KernelFunctionality {
 
   public KernelTest(String id) {
     this.id = id;
+    initMavenResolverParam();
     initMagicCommands();
     KernelManager.register(this);
   }
@@ -101,10 +100,17 @@ public class KernelTest implements KernelFunctionality {
   public KernelTest(String id, Evaluator evaluator) {
     this.id = id;
     this.evaluatorManager = new EvaluatorManager(this, evaluator);
+    initMavenResolverParam();
     initMagicCommands();
     KernelManager.register(this);
   }
 
+  private void initMavenResolverParam(){
+    this.mavenResolverParam = new MavenJarResolver.ResolverParams(
+        new File(TEST_MVN_CACHE).getAbsolutePath(),
+        getTempFolder().toString() + MavenJarResolver.MVN_DIR,
+        true);
+  }
 
   private void initMagicCommands() {
     this.magicCommandTypes = new ArrayList<>();
@@ -214,8 +220,8 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public void addImport(ImportPath anImport) {
-    this.evaluatorManager.addImport(anImport);
+  public AddImportStatus addImport(ImportPath anImport) {
+    return this.evaluatorManager.addImport(anImport);
   }
 
   @Override

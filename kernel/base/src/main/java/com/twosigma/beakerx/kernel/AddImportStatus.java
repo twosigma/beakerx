@@ -13,13 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.cpp.kernel;
+package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.DefaultJVMVariables;
-
-public class CppDefaultVariables extends DefaultJVMVariables {
-
-  public CppDefaultVariables() {
-  }
-
+public enum AddImportStatus {
+  ADDED,
+  EXISTS,
+  ERROR
 }

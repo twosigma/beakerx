@@ -66,11 +66,11 @@ beakerx-install
 ```
 conda create -y -n labx 'python>=3' nodejs pandas openjdk maven
 source activate labx
-conda install -y -c conda-forge jupyterlab
+conda install -y -c conda-forge jupyterlab=0.29.2
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
-(cd beakerx/jslab; jupyter labextension install .)
+(cd js/lab; jupyter labextension install .)
 ```
 
 ### Update after Java change
@@ -88,7 +88,7 @@ The notebook extensions are installed to run out of the repo, so just
 a local build should suffice:
 
 ```
-(cd beakerx/js; yarn install)
+(cd js/notebook; yarn install)
 ```
 
 ## Groovy with Interactive Plotting and Tables:

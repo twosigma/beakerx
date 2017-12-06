@@ -79,7 +79,7 @@ public interface KernelFunctionality {
 
   String addRepo(String name, String url);
 
-  void addImport(ImportPath anImport);
+  AddImportStatus addImport(ImportPath anImport);
 
   void removeImport(ImportPath anImport);
 

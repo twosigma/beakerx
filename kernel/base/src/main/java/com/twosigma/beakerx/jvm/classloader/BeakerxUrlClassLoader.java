@@ -31,7 +31,11 @@ public class BeakerxUrlClassLoader extends URLClassLoader {
   }
 
   public BeakerxUrlClassLoader(ClassLoader parent) {
-    super(new URL[0], parent);
+    this(new URL[0], parent);
+  }
+
+  public BeakerxUrlClassLoader() {
+    this(ClassLoader.getSystemClassLoader());
   }
 
   public void addJar(URL url) {

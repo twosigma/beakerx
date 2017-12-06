@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kotlin.evaluator;
 
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
+import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -41,6 +42,11 @@ public class KotlinBaseEvaluatorTest extends EvaluatorBaseTest {
   @Override
   protected BaseEvaluator createNewEvaluator() {
     return new KotlinEvaluator("id", "sid", cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
+  }
+
+  @Override
+  protected BaseEvaluator createNewEvaluator(TempFolderFactory tempFolderFactory) {
+    return new KotlinEvaluator("id", "sid", cellExecutor(), tempFolderFactory, KERNEL_PARAMETERS);
   }
 
   @Override

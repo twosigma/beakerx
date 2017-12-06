@@ -34,7 +34,7 @@ import java.util.*;
 /**
  * Provides implementation of JavaSourceCompiler interface.
  * This implementation uses {@link javax.tools.JavaCompiler}.
- * <p><b>Usage:</b>
+ * {@code <p><b>Usage:</b>
  * <code><pre>
  * JavaSourceCompiler javaSourceCompiler = new JavaSourceCompilerImpl();
  * JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit();
@@ -55,7 +55,7 @@ import java.util.*;
  * <p/>
  * <p/>
  * <p><i>Note</i> that to be able to use java compiler you will have to add tools.jar to your class path.
- * </p>
+ * </p> }
  *
  * @author Adrian Witas
  */

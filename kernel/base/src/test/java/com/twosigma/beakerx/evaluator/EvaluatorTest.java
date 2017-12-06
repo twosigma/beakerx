@@ -36,6 +36,7 @@ import java.util.Arrays;
 
 public class EvaluatorTest extends BaseEvaluator {
 
+
   public static final EvaluatorParameters KERNEL_PARAMETERS = new EvaluatorParameters(new HashedMap());
   private SimpleEvaluationObject seo;
   private String code;
@@ -43,10 +44,9 @@ public class EvaluatorTest extends BaseEvaluator {
   private boolean cancelExecution;
   private boolean exit;
   private Classpath classpath = new Classpath();
-  private Imports imports = new Imports();
+  private Imports imports = new Imports(new ArrayList<>());
   private int resetEnvironmentCounter = 0;
   private BeakerxUrlClassLoader loader = new BeakerxUrlClassLoader(Thread.currentThread().getContextClassLoader());
-
 
   public EvaluatorTest() {
     this("idEvaluatorTest", "sIdEvaluatorTest", TestBeakerCellExecutor.cellExecutor(), KERNEL_PARAMETERS);
@@ -67,7 +67,8 @@ public class EvaluatorTest extends BaseEvaluator {
       public Path createTempFolder() {
         Path path;
         try {
-          path = Files.createTempDirectory("beakerxTest");
+          path = Files.createTempDirectory(EvaluatorBaseTest.TEMP_DIR_NAME);
+          path.toFile().deleteOnExit();
         } catch (Exception e) {
           throw new RuntimeException(e);
         }
@@ -153,7 +154,7 @@ public class EvaluatorTest extends BaseEvaluator {
 
   @Override
   protected void addImportToClassLoader(ImportPath anImport) {
-    imports.add(anImport);
+    imports.add(anImport, loader);
   }
 
   @Override

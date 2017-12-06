@@ -146,7 +146,7 @@ public class SQLEvaluator extends BaseEvaluator {
   }
 
   @Override
-  protected void configure(EvaluatorParameters evaluatorParameters) {
+  protected void init(EvaluatorParameters evaluatorParameters) {
     // no configuration, we have to call setShellOptions witt evaluatorParameters
   }
 

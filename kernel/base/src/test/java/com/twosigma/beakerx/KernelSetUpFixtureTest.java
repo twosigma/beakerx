@@ -17,8 +17,12 @@ package com.twosigma.beakerx;
 
 import com.twosigma.beakerx.kernel.Kernel;
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class KernelSetUpFixtureTest {
+
+  protected final Logger logger = LoggerFactory.getLogger(KernelSetUpFixtureTest.class.getName());
 
   public abstract KernelSocketsServiceTest getKernelSocketsService();
 
@@ -26,6 +30,7 @@ public abstract class KernelSetUpFixtureTest {
 
   @Before
   public void setUpBeforeTest() throws Exception {
+    logger.info("setUpBeforeTest-> clear");
     getKernelSocketsService().clear();
   }
 }

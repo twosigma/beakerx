@@ -49,6 +49,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   @Test
   public void evaluate16Divide2() throws Exception {
+    logger.info("evaluate16Divide2-> start");
     //given
     String code = codeFor16Divide2();
     Message message = getExecuteRequestMessage(code);
@@ -63,6 +64,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     verifyPublishedMsgs(getKernelSocketsService());
     waitForSentMessage(getKernelSocketsService().getKernelSockets());
     verifySentMsgs(getKernelSocketsService());
+    logger.info("evaluate16Divide2-> end");
   }
 
   protected String codeFor16Divide2() {
@@ -88,12 +90,14 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   @Test
   public void loadMagicCommand() throws Exception {
+    logger.info("loadMagicCommand-> start");
     //given
     addJarWithCustomMagicCommand();
     //when
     loadMagicCommandByClass();
     //then
     verifyLoadedMagicCommand();
+    logger.info("evaluate16Divide2-> end");
   }
 
   private void verifyLoadedMagicCommand() {
@@ -126,11 +130,13 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   @Test
   public void shouldImportFromAddedDemoJar() throws Exception {
+    logger.info("shouldImportFromAddedDemoJar-> start");
     //given
     //when
     addDemoJar();
     //then
     verifyAddedDemoJar();
+    logger.info("shouldImportFromAddedDemoJar-> end");
   }
 
   private void verifyAddedDemoJar() throws InterruptedException {
@@ -167,6 +173,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   @Test
   public void shouldImportDemoClassByMagicCommand() throws Exception {
+    logger.info("shouldImportDemoClassByMagicCommand-> start");
     //given
     addDemoJar();
     String path = pathToDemoClassFromAddedDemoJar();
@@ -175,6 +182,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     //then
     assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.OK);
     verifyImportedDemoClassByMagicCommand();
+    logger.info("shouldImportDemoClassByMagicCommand-> end");
   }
 
   private MagicCommandOutcomeItem runMagicCommand(String allCode) {
@@ -206,6 +214,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
 
   @Test
   public void shouldImportDemoClassWithWildcardByMagicCommand() throws Exception {
+    logger.info("shouldImportDemoClassWithWildcardByMagicCommand-> start");
     //given
     addDemoJar();
     String path = pathToDemoClassFromAddedDemoJar();
@@ -215,10 +224,12 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     //then
     assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.OK);
     verifyImportedDemoClassByMagicCommand();
+    logger.info("shouldImportDemoClassWithWildcardByMagicCommand-> end");
   }
 
   @Test
   public void shouldNotImportClassesFromUnknownPackageWithWildcardByMagicCommand() throws Exception {
+    logger.info("shouldNotImportClassesFromUnknownPackageWithWildcardByMagicCommand-> start");
     //given
     String path = pathToDemoClassFromAddedDemoJar();
     String allCode = IMPORT + " " + (path.substring(0, path.lastIndexOf(".")) + "Unknown.*");
@@ -228,20 +239,24 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     //then
     assertThat(result.getStatus()).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
     assertThat((String) result.getMIMEContainer().get().getData()).contains("Could not import");
+    logger.info("shouldNotImportClassesFromUnknownPackageWithWildcardByMagicCommand-> end");
   }
 
   @Test
   public void shouldNotImportUnknownClassByMagicCommand() throws Exception {
+    logger.info("shouldNotImportUnknownClassByMagicCommand-> start");
     //given
     String allCode = IMPORT + " " + pathToDemoClassFromAddedDemoJar() + "UnknownClass";
     //when
     MagicCommandOutcomeItem.Status status = runMagicCommand(allCode).getStatus();
     //then
     assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
+    logger.info("shouldNotImportUnknownClassByMagicCommand-> end");
   }
 
   @Test
   public void shouldUnimportDemoClassByMagicCommand() throws Exception {
+    logger.info("shouldUnimportDemoClassByMagicCommand-> start");
     //given
     addDemoJar();
     String path = pathToDemoClassFromAddedDemoJar();
@@ -251,6 +266,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     //then
     assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.OK);
     verifyUnImportedDemoClassByMagicCommand();
+    logger.info("shouldUnimportDemoClassByMagicCommand-> end");
   }
 
   protected void verifyUnImportedDemoClassByMagicCommand() throws InterruptedException {

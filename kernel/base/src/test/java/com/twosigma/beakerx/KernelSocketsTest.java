@@ -17,12 +17,14 @@ package com.twosigma.beakerx;
 
 import com.twosigma.beakerx.kernel.KernelSockets;
 import com.twosigma.beakerx.message.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class KernelSocketsTest extends KernelSockets {
-
+  protected final Logger logger = LoggerFactory.getLogger(KernelSocketsTest.class.getName());
   private volatile List<Message> publishedMessages = new ArrayList<>();
   private volatile List<Message> sentMessages = new ArrayList<>();
 
@@ -45,6 +47,7 @@ public class KernelSocketsTest extends KernelSockets {
   }
 
   public synchronized void clear() {
+    logger.info("KernelSocketsTest-> clear");
     publishedMessages = new ArrayList<>();
     sentMessages = new ArrayList<>();
   }

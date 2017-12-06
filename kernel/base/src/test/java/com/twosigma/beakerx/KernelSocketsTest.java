@@ -30,13 +30,13 @@ public class KernelSocketsTest extends KernelSockets {
 
   @Override
   public synchronized void publish(Message message) {
-    logger.info("KernelSocketsTest-> publish: " + message.getContent());
+    logger.info("KernelSocketsTest-> publish type: " + message.type() + " --> " + message.getContent());
     publishedMessages.add(message);
   }
 
   @Override
   public synchronized void send(Message message) {
-    logger.info("KernelSocketsTest-> send" + message.getContent());
+    logger.info("KernelSocketsTest-> send type: " + message.type() + " --> " + message.getContent());
     sentMessages.add(message);
   }
 

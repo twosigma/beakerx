@@ -22,6 +22,7 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.util.Map;
@@ -56,9 +57,10 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     //then
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
-    waitForResult(getKernelSocketsService().getKernelSockets());
+    Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
+    assertThat(result).isPresent();
+    verifyResult(result.get());
     verifyPublishedMsgs(getKernelSocketsService());
-    verifyResult(getKernelSocketsService().getExecuteResultMessage().get());
     waitForSentMessage(getKernelSocketsService().getKernelSockets());
     verifySentMsgs(getKernelSocketsService());
   }
@@ -139,8 +141,9 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     //then
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
-    waitForResult(getKernelSocketsService().getKernelSockets());
-    verifyResultOfAddedJar(getKernelSocketsService().getExecuteResultMessage().get());
+    Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
+    assertThat(result).isPresent();
+    verifyResultOfAddedJar(result.get());
   }
 
   protected String codeForVerifyingAddedDemoJar() {
@@ -186,8 +189,9 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     getKernelSocketsService().handleMsg(message);
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
-    waitForResult(getKernelSocketsService().getKernelSockets());
-    Map actual = ((Map) getKernelSocketsService().getExecuteResultMessage().get().getContent().get(Comm.DATA));
+    Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
+    assertThat(result).isPresent();
+    Map actual = (Map) result.get().getContent().get(Comm.DATA);
     String value = (String) actual.get("text/plain");
     assertThat(value).isEqualTo("Demo_test_123");
   }
@@ -256,6 +260,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
     Optional<Message> errorMessage = waitForErrorMessage(getKernelSocketsService().getKernelSockets());
+    Assertions.assertThat(errorMessage).isPresent();
     Object actual = ((Map) errorMessage.get().getContent()).get("text");
     String value = (String) actual;
     assertThat(value).contains(unimportErrorMessage());

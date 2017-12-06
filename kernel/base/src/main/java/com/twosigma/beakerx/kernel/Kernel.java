@@ -17,7 +17,7 @@ package com.twosigma.beakerx.kernel;
 
 import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
 
-import com.twosigma.beakerx.BeakerxToStringDisplayer;
+import com.twosigma.beakerx.BeakerxDefaultDisplayers;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -41,7 +41,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import jupyter.Displayers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +78,7 @@ public abstract class Kernel implements KernelFunctionality {
     configureMagicCommands();
     DisplayerDataMapper.init();
     configureSignalHandler();
-    intJvmRepr();
+    initJvmRepr();
   }
 
   public abstract CommOpenHandler getCommOpenHandler(Kernel kernel);
@@ -248,14 +247,6 @@ public abstract class Kernel implements KernelFunctionality {
     return evaluatorManager.getTempFolder();
   }
 
-  private void intJvmRepr() {
-    Displayers.registration().setDefault(BeakerxToStringDisplayer.get());
-    configureJvmRepr();
-  }
-
-  protected void configureJvmRepr() {
-  }
-
   @Override
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
     return evaluatorManager.loadClass(clazzName);
@@ -273,5 +264,12 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public void registerMagicCommandType(MagicCommandType magicCommandType) {
     this.magicCommandTypes.add(magicCommandType);
+  }
+
+  private void initJvmRepr() {
+    BeakerxDefaultDisplayers.registerDefaults();
+    configureJvmRepr();
+  }
+  protected void configureJvmRepr() {
   }
 }

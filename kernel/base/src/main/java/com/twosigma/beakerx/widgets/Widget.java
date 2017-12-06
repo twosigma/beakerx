@@ -21,7 +21,6 @@ import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCommEvent;
 
-import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.comm.TargetNamesEnum;
@@ -62,7 +61,9 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   }
 
   protected void openComm() {
-    openComm(InternalVariable.getParentHeader());
+    comm.setData(createContent());
+    addValueChangeMsgCallback();
+    comm.open();
   }
 
   protected void openComm(Message parentMessage) {

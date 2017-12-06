@@ -23,8 +23,6 @@ import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,10 +34,7 @@ import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
 
-
 public class Comm {
-
-  private static final Logger logger = LoggerFactory.getLogger(Comm.class);
 
   public static final String METHOD = "method";
   public static final String UPDATE = "update";
@@ -62,7 +57,6 @@ public class Comm {
   private KernelFunctionality kernel;
   private List<Handler<Message>> msgCallbackList = new ArrayList<>();
   private List<Handler<Message>> closeCallbackList = new ArrayList<>();
-  private Message parentMessage;
 
   public Comm(String commId, String targetName) {
     super();
@@ -134,13 +128,12 @@ public class Comm {
   }
 
   public void open() {
-    this.parentMessage = InternalVariable.getParentHeader();
-    doOpen(parentMessage);
+    doOpen(getParentMessage());
   }
 
   public void open(Message parentMessage) {
-    this.parentMessage = parentMessage;
-    doOpen(parentMessage);
+    getParentMessageStrategy = () -> parentMessage;
+    open();
   }
 
   private void doOpen(Message parentMessage) {
@@ -167,7 +160,7 @@ public class Comm {
   }
 
   public void close() {
-    Message parentMessage = getParentMessage();// can be null
+    Message parentMessage = getParentMessage();
 
     if (this.getCloseCallbackList() != null && !this.getCloseCallbackList().isEmpty()) {
       for (Handler<Message> handler : getCloseCallbackList()) {
@@ -225,9 +218,6 @@ public class Comm {
     this.send();
   }
 
-  private Message getParentMessage() {
-    return this.parentMessage;
-  }
 
   public void handleMsg(Message parentMessage) {
     for (Handler<Message> handler : this.msgCallbackList) {
@@ -247,4 +237,13 @@ public class Comm {
     return commId + "/" + targetName + "/" + (targetModule != null && !targetModule.isEmpty() ? targetModule : "");
   }
 
+  public Message getParentMessage() {
+    return getParentMessageStrategy.getParentMessage();
+  }
+
+  private GetParentMessageStrategy getParentMessageStrategy = InternalVariable::getParentHeader;
+
+  interface GetParentMessageStrategy {
+    Message getParentMessage();
+  }
 }

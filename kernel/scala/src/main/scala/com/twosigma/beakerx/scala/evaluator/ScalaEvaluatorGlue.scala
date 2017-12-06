@@ -91,6 +91,10 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String, val replClassdir: 
     }
   }
 
+  def addImports(names: Array[String]) : Boolean = {
+    addImport(names.mkString(", "))
+  }
+
   def evaluate2(code: String): String = {
     baos.reset()
     try {

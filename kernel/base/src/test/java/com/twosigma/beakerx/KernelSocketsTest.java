@@ -23,16 +23,16 @@ import java.util.List;
 
 public class KernelSocketsTest extends KernelSockets {
 
-  private List<Message> publishedMessages = new ArrayList<>();
-  private List<Message> sentMessages = new ArrayList<>();
+  private volatile List<Message> publishedMessages = new ArrayList<>();
+  private volatile List<Message> sentMessages = new ArrayList<>();
 
   @Override
-  public void publish(Message message) {
+  public synchronized void publish(Message message) {
     publishedMessages.add(message);
   }
 
   @Override
-  public void send(Message message) {
+  public synchronized void send(Message message) {
     sentMessages.add(message);
   }
 
@@ -44,7 +44,7 @@ public class KernelSocketsTest extends KernelSockets {
     return new ArrayList<>(sentMessages);
   }
 
-  public void clear() {
+  public synchronized void clear() {
     publishedMessages = new ArrayList<>();
     sentMessages = new ArrayList<>();
   }

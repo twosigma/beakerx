@@ -51,7 +51,7 @@ public class KernelSocketsServiceTest implements KernelSocketsFactory {
     }
   }
 
-  public void handleMsg(final Message message) {
+  public synchronized void handleMsg(final Message message) {
     Handler<Message> handler = kernel.getHandler(message.type());
     handler.handle(message);
   }
@@ -119,7 +119,7 @@ public class KernelSocketsServiceTest implements KernelSocketsFactory {
     return getSentMessages().get(0);
   }
 
-  public void clear() {
+  public synchronized void clear() {
     getKernelSockets().clear();
   }
 }

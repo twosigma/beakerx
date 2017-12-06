@@ -85,6 +85,10 @@ subprojects {
     source = sourceSets.main.allJava
     classpath = configurations.compile
     javadoc.destinationDir = file("$rootDir/../beakerx/beakerx/javadoc")
+    javadoc.include 'com/twosigma/beakerx/chart/**'
+    javadoc.include 'com/twosigma/beakerx/easyform/**'
+    javadoc.include 'com/twosigma/beakerx/table/**'
+    javadoc.exclude '**/serializer/**'
   }
 
   afterEvaluate {

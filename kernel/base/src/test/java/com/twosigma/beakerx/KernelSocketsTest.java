@@ -17,22 +17,26 @@ package com.twosigma.beakerx;
 
 import com.twosigma.beakerx.kernel.KernelSockets;
 import com.twosigma.beakerx.message.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class KernelSocketsTest extends KernelSockets {
-
-  private List<Message> publishedMessages = new ArrayList<>();
-  private List<Message> sentMessages = new ArrayList<>();
+  protected final Logger logger = LoggerFactory.getLogger(KernelSocketsTest.class.getName());
+  private volatile List<Message> publishedMessages = new ArrayList<>();
+  private volatile List<Message> sentMessages = new ArrayList<>();
 
   @Override
-  public void publish(Message message) {
+  public synchronized void publish(Message message) {
+    logger.info("KernelSocketsTest-> publish type:  " + message.type() + " --> " + message.getContent());
     publishedMessages.add(message);
   }
 
   @Override
-  public void send(Message message) {
+  public synchronized void send(Message message) {
+    logger.info("KernelSocketsTest-> send type: " + message.type() + " --> " + message.getContent());
     sentMessages.add(message);
   }
 
@@ -44,7 +48,8 @@ public class KernelSocketsTest extends KernelSockets {
     return new ArrayList<>(sentMessages);
   }
 
-  public void clear() {
+  public synchronized void clear() {
+    logger.info("KernelSocketsTest-> clear");
     publishedMessages = new ArrayList<>();
     sentMessages = new ArrayList<>();
   }

@@ -200,6 +200,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     return "new Demo().getObjectTest()";
   }
 
+  @Test
   public void shouldImportDemoClassWithWildcardByMagicCommand() throws Exception {
     //given
     addDemoJar();
@@ -235,6 +236,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     assertThat(status).isEqualTo(MagicCommandOutcomeItem.Status.ERROR);
   }
 
+  @Test
   public void shouldUnimportDemoClassByMagicCommand() throws Exception {
     //given
     addDemoJar();

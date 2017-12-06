@@ -30,7 +30,7 @@ public class KernelSocketsTest extends KernelSockets {
 
   @Override
   public synchronized void publish(Message message) {
-    logger.info("KernelSocketsTest-> publish type: " + message.type() + " --> " + message.getContent());
+    logger.info("KernelSocketsTest-> publish type:  " + message.type() + " --> " + message.getContent());
     publishedMessages.add(message);
   }
 

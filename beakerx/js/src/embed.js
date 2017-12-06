@@ -7,6 +7,7 @@
 // Export widget models and views, and the npm package version number.
 module.exports = {};
 
+require('./../src/bootstrap.less');
 require('./../src/shared/style/beakerx.scss');
 require('./../src/plot/bko-combinedplot.css');
 require('./../src/plot/bko-plot.css');

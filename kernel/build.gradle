@@ -88,6 +88,8 @@ subprojects {
     javadoc.include 'com/twosigma/beakerx/chart/**'
     javadoc.include 'com/twosigma/beakerx/easyform/**'
     javadoc.include 'com/twosigma/beakerx/table/**'
+    javadoc.include 'com/twosigma/beakerx/mimetype/**'
+    javadoc.include 'com/twosigma/beakerx/jvm/object/**'
     javadoc.exclude '**/serializer/**'
   }
 

@@ -35,11 +35,6 @@ var rules = [
     "css-loader",
     "sass-loader"
   ] },
-  { test: /\.less$/, use: [
-    "style-loader",
-    "css-loader",
-    "less-loader"
-  ] },
   { test: /\.(jpg|png|gif)$/, loader: "file-loader" },
   { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" },
   { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" },

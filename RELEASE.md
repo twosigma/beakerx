@@ -20,7 +20,6 @@ the change and push the git tag.
 git clean -xfd
 cd beakerx
 python setup.py sdist
-python setup.py bdist_wheel --universal
 ```
 
 Make a test installation with pip into a fresh environment, if it works then continue with:

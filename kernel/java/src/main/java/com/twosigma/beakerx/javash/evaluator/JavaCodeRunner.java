@@ -58,8 +58,7 @@ class JavaCodeRunner implements Runnable {
     InternalVariable.setValue(theOutput);
     try {
       InternalVariable.setValue(theOutput);
-      org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler = new com.twosigma.beakerx.javash.evaluator.JavaSourceCompiler();
-      runCode(j, javaSourceCompiler);
+      runCode(j);
     } catch (Throwable e) {
       if (e instanceof InvocationTargetException)
         e = ((InvocationTargetException) e).getTargetException();
@@ -80,116 +79,55 @@ class JavaCodeRunner implements Runnable {
   }
 
 
-  private void runCode(JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler) {
+  private void runCode(JobDescriptor j) {
     j.outputObject.started();
-    JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(javaEvaluator.getOutDir()));
-    buildClasspath(compilationUnit);
-    Map<Integer, Integer> lineNumbersMapping = new HashMap<>();
-    LineBrakingStringBuilderWrapper javaSourceCode = new LineBrakingStringBuilderWrapper();
+
     String code = ParserUtil.normalizeCode(j.codeToBeExecuted).replaceAll("\r\n", "\n");
-    Codev codev = new Codev(code);
-    String pname = configurePackage(codev, lineNumbersMapping, javaSourceCode);
-    configureImports(codev, lineNumbersMapping, javaSourceCode);
+    Codev codev = new Codev(code, javaEvaluator);
     try {
-      compileCode(j, javaSourceCompiler, pname, compilationUnit, codev, lineNumbersMapping, javaSourceCode);
+      compileCode(j, codev);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  private void compileCode(JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler, String pname, JavaSourceCompiler.CompilationUnit compilationUnit, Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) throws InvocationTargetException, IllegalAccessException {
+  private void compileCode(JobDescriptor j, Codev codev) throws InvocationTargetException, IllegalAccessException {
     if (codev.hasLineToProcess()) {
       Codev.CodeLine codeLine = codev.getNotBlankLine();
       Pattern p = Pattern.compile("(?:^|.*\\s+)(?:(?:class)|(?:interface))\\s+([a-zA-Z]\\w*).*");
       Matcher m = p.matcher(codeLine.getLine());
       if (m.matches()) {
-        compileNewDefinitionClass(j, javaSourceCompiler, m, pname, compilationUnit, codev, lineNumbersMapping, javaSourceCode);
+        compileNewDefinitionClass(j, m, codev);
       } else {
-        compileAndRunCode(j, javaSourceCompiler, pname, compilationUnit, codev, lineNumbersMapping, javaSourceCode);
-
+        compileAndRunCode(j, codev);
       }
     } else {
-      compileAndRunCode(j, javaSourceCompiler, pname, compilationUnit, codev, lineNumbersMapping, javaSourceCode);
+      compileAndRunCode(j, codev);
     }
   }
 
-  private void configureImports(Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
-    if (codev.hasLineToProcess()) {
-      Pattern p = Pattern.compile("\\s*import(\\s+static)?\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*(?:\\.\\*)?);.*");
-      Codev.CodeLine codeLine = codev.getNotBlankLine();
-      Matcher m = p.matcher(codeLine.getLine());
-      while (m.matches()) {
-        String impstr = m.group(2);
-        String staticModifier = m.group(1);
-        javaSourceCode.append("import ");
-        if (staticModifier != null) {
-          javaSourceCode.append("static ");
-        }
-        javaSourceCode.append(impstr);
-        javaSourceCode.append(";\n");
-        lineNumbersMapping.put(javaSourceCode.getLinesCount(), codeLine.getIndex());
-
-        codev.moveToNextLine();
-        if (!codev.hasLineToProcess()) {
-          break;
-        }
-        codeLine = codev.getNotBlankLine();
-        m = p.matcher(codeLine.getLine());
-      }
-    }
-  }
-
-  private String configurePackage(Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
-    String pname = javaEvaluator.getPackageId();
-    Codev.CodeLine codeLine = codev.getNotBlankLine();
-    Pattern p = Pattern.compile("\\s*package\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*);.*");
-    Matcher m = p.matcher(codeLine.getLine());
-
-    if (m.matches()) {
-      pname = m.group(1);
-      lineNumbersMapping.put(1, codeLine.getIndex());
-      codev.moveToNextLine();
-    }
-    javaSourceCode.append("package ");
-    javaSourceCode.append(pname);
-    javaSourceCode.append(";\n");
-
-    for (ImportPath i : javaEvaluator.getImports().getImportPaths()) {
-      javaSourceCode.append("import ");
-      javaSourceCode.append(i.asString());
-      javaSourceCode.append(";\n");
-    }
-    return pname;
-  }
-
-  private Method compileAndRunCode(JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler, String pname, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit, Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
+  private Method compileAndRunCode(JobDescriptor j, Codev codev) {
     String classId = generateClassId();
-    String ret = "void";
-    if (codev.getLastLine().matches("(^|.*\\s+)return\\s+.*"))
-      ret = "Object";
-    // this is an expression evaluation
-    javaSourceCode.append("public class " + JavaEvaluator.WRAPPER_CLASS_NAME + classId + " {\n");
-    javaSourceCode.append("public static ");
-    javaSourceCode.append(ret);
-    javaSourceCode.append(" beakerRun() throws Exception {\n");
-    addTheRestOfCode(codev, javaSourceCode, lineNumbersMapping);
-    javaSourceCode.append("}\n");
-    javaSourceCode.append("}\n");
-
-    compilationUnit.addJavaSource(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId, javaSourceCode.toString());
+    String returnType = "Object";
+    Codev copyCodev = new Codev(codev.getCode(), javaEvaluator);
+    boolean compile = compile(codev, classId, returnType);
+    if (!compile)  {
+      classId = generateClassId();
+      returnType = "void";
+      copyCodev = new Codev(codev.getCode(), javaEvaluator);
+      compile(copyCodev, classId, returnType);
+    }
     try {
-      javaSourceCompiler.compile(compilationUnit);
-      javaSourceCompiler.persistCompiledClasses(compilationUnit);
-      Class<?> fooClass = javaEvaluator.getJavaClassLoader().loadClass(pname + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId);
+      Class<?> fooClass = javaEvaluator.getJavaClassLoader().loadClass(copyCodev.getPname() + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId);
       Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
       Object o = mth.invoke(null, (Object[]) null);
-      if (ret.equals("Object")) {
+      if (returnType.equals("Object")) {
         theOutput.finished(o);
       } else {
         theOutput.finished(null);
       }
     } catch (CompilationException e) {
-      j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
+      j.outputObject.error(buildErrorMessage(e, copyCodev.lineNumbersMapping));
     } catch (Exception e) {
       j.outputObject.error("ERROR: " + e.getCause());
     } finally {
@@ -200,18 +138,43 @@ class JavaCodeRunner implements Runnable {
     return null;
   }
 
-  private void compileNewDefinitionClass(JobDescriptor j, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler, Matcher m, String pname, org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit, Codev codev, Map<Integer, Integer> lineNumbersMapping, LineBrakingStringBuilderWrapper javaSourceCode) {
+  private boolean compile(Codev codev, String classId, String ret) {
+    org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler = new com.twosigma.beakerx.javash.evaluator.JavaSourceCompiler();
+    JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(javaEvaluator.getOutDir()));
+    buildClasspath(compilationUnit);
+
+    codev.javaSourceCode.append("public class " + JavaEvaluator.WRAPPER_CLASS_NAME + classId + " {\n");
+    codev.javaSourceCode.append("public static ");
+    codev.javaSourceCode.append(ret);
+    codev.javaSourceCode.append(" beakerRun() throws Exception {\n");
+    addTheRestOfCode(codev);
+    codev.javaSourceCode.append("}\n");
+    codev.javaSourceCode.append("}\n");
+
+    compilationUnit.addJavaSource(codev.getPname() + "." + JavaEvaluator.WRAPPER_CLASS_NAME + classId, codev.javaSourceCode.toString());
+    boolean compile = javaSourceCompiler.compile(compilationUnit);
+    if (compile) {
+      javaSourceCompiler.persistCompiledClasses(compilationUnit);
+      return true;
+    }
+    return false;
+  }
+
+  private void compileNewDefinitionClass(JobDescriptor j, Matcher m, Codev codev) {
     String cname = m.group(1);
 
-    addTheRestOfCode(codev, javaSourceCode, lineNumbersMapping);
+    addTheRestOfCode(codev);
+    org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler = new com.twosigma.beakerx.javash.evaluator.JavaSourceCompiler();
+    JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(javaEvaluator.getOutDir()));
+    buildClasspath(compilationUnit);
 
-    compilationUnit.addJavaSource(pname + "." + cname, javaSourceCode.toString());
+    compilationUnit.addJavaSource(codev.getPname() + "." + cname, codev.javaSourceCode.toString());
     try {
       javaSourceCompiler.compile(compilationUnit);
       javaSourceCompiler.persistCompiledClasses(compilationUnit);
-      j.outputObject.finished(pname + "." + cname);
+      j.outputObject.finished(codev.getPname() + "." + cname);
     } catch (CompilationException e) {
-      j.outputObject.error(buildErrorMessage(e, lineNumbersMapping));
+      j.outputObject.error(buildErrorMessage(e, codev.lineNumbersMapping));
     } catch (Exception e) {
       j.outputObject.error("ERROR: " + e.toString());
     } finally {
@@ -257,40 +220,14 @@ class JavaCodeRunner implements Runnable {
     return usersNumber == null ? ourNumber : usersNumber + 1;
   }
 
-  private void addTheRestOfCode(Codev codev, LineBrakingStringBuilderWrapper javaSourceCode, Map<Integer, Integer> lineNumbersMapping) {
+  private void addTheRestOfCode(Codev codev) {
     while (codev.hasLineToProcess()) {
-      javaSourceCode.append(codev.getNotBlankLine().getLine());
-      javaSourceCode.append("\n");
-      lineNumbersMapping.put(javaSourceCode.getLinesCount(), codev.getNotBlankLine().getIndex());
+      codev.javaSourceCode.append(codev.getNotBlankLine().getLine());
+      codev.javaSourceCode.append("\n");
+      codev.lineNumbersMapping.put(codev.javaSourceCode.getLinesCount(), codev.getNotBlankLine().getIndex());
       codev.moveToNextLine();
     }
 
   }
-
-  private static class LineBrakingStringBuilderWrapper {
-    private static final String LINE_BREAK = "\n";
-    private StringBuilder delegate;
-    private int linesCount;
-
-    public LineBrakingStringBuilderWrapper() {
-      this.delegate = new StringBuilder();
-      this.linesCount = 0;
-    }
-
-    public void append(String string) {
-      this.delegate.append(string);
-      this.linesCount += StringUtils.countMatches(string, LINE_BREAK);
-    }
-
-    public int getLinesCount() {
-      return linesCount;
-    }
-
-    @Override
-    public String toString() {
-      return delegate.toString();
-    }
-  }
-
 
 }

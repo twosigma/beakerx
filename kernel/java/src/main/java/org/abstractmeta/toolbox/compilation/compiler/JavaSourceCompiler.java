@@ -109,7 +109,7 @@ public interface JavaSourceCompiler {
      * @param compilerOptions compiler options
      * @return class loader for the compiled classes
      */
-    ClassLoader compile(CompilationUnit compilationUnit, String... compilerOptions);
+    boolean compile(CompilationUnit compilationUnit, String... compilerOptions);
 
     /**
         * Compiles given compilation unit with the supplier compiler options and returns class loader for the compiled sources.
@@ -118,7 +118,7 @@ public interface JavaSourceCompiler {
         * @param compilerOptions compiler options
         * @return class loader for the compiled classes
     */
-    ClassLoader compile(ClassLoader parentClassLoader, CompilationUnit compilationUnit, String... compilerOptions);
+    boolean compile(ClassLoader parentClassLoader, CompilationUnit compilationUnit, String... compilerOptions);
 
     /**
      * By default source code and compiled classes are stored in memory, this however could be a limitation

@@ -15,16 +15,11 @@
  */
 package com.twosigma.beakerx.javash.kernel;
 
-import com.twosigma.beakerx.KernelCloseKernelAction;
 import com.twosigma.beakerx.KernelExecutionTest;
-import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
-import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
@@ -32,35 +27,8 @@ import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor
 
 public class JavaKernelTest extends KernelExecutionTest {
 
-  protected static KernelSocketsServiceTest kernelSocketsService;
-  protected static Kernel kernel;
-  private static Thread kernelThread;
-
-  @BeforeClass
-  public static void setUp() throws Exception {
-    String sessionId = "sessionId2";
-    kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = createKernel(sessionId, kernelSocketsService, KernelCloseKernelAction.NO_ACTION);
-    kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
-    kernelThread.start();
-    kernelSocketsService.waitForSockets();
-  }
-
-  @AfterClass
-  public static void tearDown() throws Exception {
-    kernelSocketsService.shutdown();
-    kernelThread.join();
-  }
-
-  public KernelSocketsServiceTest getKernelSocketsService() {
-    return kernelSocketsService;
-  }
-
-  public Kernel getKernel() {
-    return kernel;
-  }
-
-  static Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
+  @Override
+  protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     JavaEvaluator evaluator = new JavaEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
     return new Java(sessionId, evaluator, kernelSocketsFactory, closeKernelAction);
   }

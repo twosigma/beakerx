@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-declare function require(moduleName: string): any;
 const widgets: {
   StringModel: new() => { defaults(): any },
   DescriptionView: new() => { el: any, model: any },

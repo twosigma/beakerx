@@ -15,34 +15,24 @@
  */
 
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
-import { RenderedJavaScript, renderHTML, renderText } from '@jupyterlab/rendermime'
+import { RenderedJavaScript } from '@jupyterlab/rendermime'
 
 export const TEXT_JAVASCRIPT_MIMETYPE = 'text/javascript';
 export const APPLICATION_JAVASCRIPT_MIMETYPE = 'application/javascript';
 
 export class BeakerxRenderedJavascript extends RenderedJavaScript {
   render(model: IRenderMime.IMimeModel): Promise<void> {
-    const scriptTag = document.createElement('script');
-
-    this.node.appendChild(scriptTag);
+    const evalInContext = function(code: string) {
+      return eval(code);
+    }.bind(this);
 
     try {
-      return renderHTML({
-        host: scriptTag,
-        source: String(model.data[this.mimeType]),
-        trusted: model.trusted,
-        resolver: this.resolver,
-        sanitizer: this.sanitizer,
-        linkHandler: this.linkHandler,
-        shouldTypeset: this.isAttached,
-        latexTypesetter: this.latexTypesetter
-      });
+      evalInContext(String(model.data[this.mimeType]));
     } catch (e) {
-      return renderText({
-        host: this.node,
-        source: String(e.message)
-      });
+      this.node.innerHTML = `<pre>${String(e.message)} - please check console</pre>`;
     }
+
+    return Promise.resolve(undefined);
   }
 }
 

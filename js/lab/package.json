@@ -42,8 +42,5 @@
     "dist/*.js",
     "lib/*.js",
     "node_modules/requirejs/require.js"
-  ],
-  "dependencies": {
-    "requirejs": "^2.3.5"
-  }
+  ]
 }

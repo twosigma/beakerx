@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-declare function require(moduleName: string): any;
 const widgets = require('../widgets');
 
 export const TEXT_INPUT_WIDTH_UNIT = 'px';

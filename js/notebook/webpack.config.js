@@ -159,7 +159,7 @@ module.exports = [
     //
     // This bundle is generally almost identical to the embeddable bundle
     //
-    entry: './src/lab.js',
+    entry: './src/embed',
     output: {
       filename: 'index.js',
       path: path.resolve(__dirname, '../lab/lib/'),
@@ -170,9 +170,12 @@ module.exports = [
     },
     resolve: resolve,
     externals: externals.concat([
+      '@phosphor/widgets',
+      '@phosphor/commands',
+      '@phosphor/disposable',
+      '@phosphor/messaging',
       '@jupyter-widgets/jupyterlab-manager',
-      '@phosphor/*',
-      '@jupyterlab/*'
+      '@jupyterlab'
     ]),
     plugins: plugins
   }

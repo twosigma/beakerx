@@ -22,7 +22,6 @@ import { INotebookModel, NotebookPanel, Notebook } from '@jupyterlab/notebook';
 import { Cell, CodeCell, CodeCellModel } from '@jupyterlab/cells';
 import { showDialog, Dialog } from '@jupyterlab/apputils';
 import { Kernel } from '@jupyterlab/services';
-import * as requirejs from 'requirejs';
 
 interface msgData {
   name?: string,
@@ -36,24 +35,21 @@ declare global {
   }
 }
 
-function displayHTML(widget: Widget, html: string) {
+function displayHTML(widget: Widget, html: string): void {
   if (!widget.node || !html) {
     return;
   }
 
-  const childElement = document.createElement('div');
+  const childElement = document.createElement('pre');
 
+  childElement.classList.add('jp-RenderedHTML');
   childElement.innerHTML = html;
   widget.node.appendChild(childElement);
 }
 
-function registerGlobal() {
+function registerGlobal(): void {
   window.beakerx = window.beakerx || {};
   window.beakerx.displayHTML = displayHTML;
-
-  if (!window.require) {
-    window.require = requirejs;
-  }
 }
 
 function sendJupyterCodeCells(
@@ -61,7 +57,7 @@ function sendJupyterCodeCells(
   notebook: Notebook,
   comm: Kernel.IComm,
   filter: string
-) {
+): void {
   const codeCells = <JSONArray>getCodeCellsByTag(notebook, filter).map(
     (cell: CodeCell): object => cell.model.toJSON()
   );

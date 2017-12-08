@@ -24,8 +24,14 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widgets.strings.Label;
+import com.twosigma.beakerx.widgets.strings.StringWidget;
 
+import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
 
@@ -34,7 +40,8 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
   public static final String ADD = "add";
   public static final String MVN = "mvn";
   public static final String CLASSPATH_ADD_MVN = CLASSPATH + " " + ADD + " " + MVN;
-  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be " + CLASSPATH_ADD_MVN + " group name version or " + CLASSPATH_ADD_MVN + " group:name:version";;
+  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be " + CLASSPATH_ADD_MVN + " group name version or " + CLASSPATH_ADD_MVN + " group:name:version";
+
   private MavenJarResolver.ResolverParams commandParams;
   private PomFactory pomFactory;
 
@@ -92,17 +99,71 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
     return classpathAddMvnCommand.retrieve(groupId, artifactId, version, progress);
   }
 
-
   public class MvnLoggerWidget {
 
-    private Label widget;
+    //20 jars, 100MB downloaded at 100MB/s
+
+    private StringWidget widget;
+    private Timer timer;
+    private volatile int jarNumbers = 0;
+    private volatile int size;
+    private volatile String speed;
+    private volatile String currentLine;
 
     public MvnLoggerWidget(Message parentMessage) {
       this.widget = new Label(parentMessage);
+      this.timer = new Timer();
+      this.timer.scheduleAtFixedRate(new TimerTask() {
+        @Override
+        public void run() {
+          if (jarNumbers > 0) {
+            String status = String.format("%d jars, %dKB downloaded at %s", jarNumbers, size, speed);
+            widget.setValue(status);
+          }
+        }
+      }, 0, 250);
     }
 
-    public void sendLog(String text) {
-      widget.setValue(text);
+    public void sendLog(String line) {
+      if (line != null && !line.trim().isEmpty() && line.matches("Downloaded.+")) {
+        this.currentLine = line;
+        if (line.matches(".+jar.+")) {
+          this.jarNumbers++;
+          String[] info = split(line);
+          if (info.length == 5) {
+            this.size += calculateJarSize(info);
+            this.speed = calculateSpeed(info);
+          }
+        }
+      }
+    }
+
+    private String calculateSpeed(String[] info) {
+      return info[3] + info[4];
+    }
+
+    private String[] split(String line) {
+      Pattern pattern = Pattern.compile("\\((.*?)\\)");
+      Matcher matcher = pattern.matcher(line);
+      if (matcher.find()) {
+        String infoWithBrackets = matcher.group();
+        return infoWithBrackets.replace("(", "").
+                replace(")", "").
+                split(" ");
+
+      }
+      return new String[0];
+    }
+
+    private int calculateJarSize(String[] info) {
+      String unit = info[1];
+      if (unit.toLowerCase().equals("kb")) {
+        return Integer.parseInt(info[0]);
+      } else if (unit.toLowerCase().equals("mb")) {
+        return new BigDecimal(info[0]).multiply(new BigDecimal("1000")).intValue();
+      } else {
+        return 0;
+      }
     }
 
     public void display() {
@@ -110,6 +171,7 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
     }
 
     public void close() {
+      this.timer.cancel();
       this.widget.close();
     }
   }

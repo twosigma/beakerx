@@ -36,10 +36,14 @@
   },
   "jupyterlab": {
     "extension": "dist/index.js",
-    "mimeExtension": "dist/mimeRendererExtension.js"
+    "mimeExtension": "dist/javascriptRendererExtension.js"
   },
   "files": [
     "dist/*.js",
-    "lib/*.js"
-  ]
+    "lib/*.js",
+    "node_modules/requirejs/require.js"
+  ],
+  "dependencies": {
+    "requirejs": "^2.3.5"
+  }
 }

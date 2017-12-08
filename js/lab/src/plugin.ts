@@ -15,12 +15,14 @@
  */
 
 import { JSONArray } from '@phosphor/coreutils';
+import { Widget } from '@phosphor/widgets';
 import { DisposableDelegate } from '@phosphor/disposable';
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { INotebookModel, NotebookPanel, Notebook } from '@jupyterlab/notebook';
 import { Cell, CodeCell, CodeCellModel } from '@jupyterlab/cells';
 import { showDialog, Dialog } from '@jupyterlab/apputils';
 import { Kernel } from '@jupyterlab/services';
+import * as requirejs from 'requirejs';
 
 interface msgData {
   name?: string,
@@ -29,12 +31,29 @@ interface msgData {
 
 declare global {
   interface Window {
-    beakerx: any
+    beakerx: any,
+    require: Function
   }
+}
+
+function displayHTML(widget: Widget, html: string) {
+  if (!widget.node || !html) {
+    return;
+  }
+
+  const childElement = document.createElement('div');
+
+  childElement.innerHTML = html;
+  widget.node.appendChild(childElement);
 }
 
 function registerGlobal() {
   window.beakerx = window.beakerx || {};
+  window.beakerx.displayHTML = displayHTML;
+
+  if (!window.require) {
+    window.require = requirejs;
+  }
 }
 
 function sendJupyterCodeCells(

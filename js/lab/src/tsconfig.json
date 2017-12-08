@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "noEmitOnError": true,
     "noUnusedLocals": true,
     "lib": ["dom", "es5", "es2015.promise"],
@@ -10,8 +10,5 @@
     "moduleResolution": "node",
     "target": "ES5",
     "outDir": "../dist"
-  },
-  "include": [
-    "../src"
-  ]
+  }
 }

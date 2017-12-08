@@ -40,7 +40,6 @@
   },
   "files": [
     "dist/*.js",
-    "lib/*.js",
-    "node_modules/requirejs/require.js"
+    "lib/*.js"
   ]
 }

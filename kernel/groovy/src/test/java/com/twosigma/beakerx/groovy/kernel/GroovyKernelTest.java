@@ -49,8 +49,8 @@ public class GroovyKernelTest extends KernelExecutionTest {
     //then
     Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     assertThat(idleMessage).isPresent();
-    waitForResult(kernelSocketsService.getKernelSockets());
-    verifyResult(kernelSocketsService.getExecuteResultMessage().get());
+    Optional<Message> result = waitForResult(kernelSocketsService.getKernelSockets());
+    verifyResult(result.get());
   }
 
   private void verifyResult(Message result) {

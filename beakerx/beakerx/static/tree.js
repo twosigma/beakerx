@@ -47,19 +47,37 @@ define(function (require) {
     }
   }
 
-  function InpuChanged(e) {
+  var inputLastChangedTs = Date.now();
+
+  function InputChanged(e, changeTs) {
+    if (e && e.hasOwnProperty('key')) {
+      switch (e.key) {
+        case "ArrowUp":
+        case "ArrowDown":
+        case "ArrowLeft":
+        case "ArrowRight":
+        case "Tab":
+          return;
+      }
+    }
+    if (false !== changeTs) {
+      inputLastChangedTs = Date.now();
+    }
     var result = "";
-    var enable_button = true;
+    var errors = [];
 
     var val = $("#heap_GB").val().trim();
+    var parsedVal = parseFloat(val);
 
-    if (val.length > 0) {
-      if (!isNaN(val)) {
+    if (val !== '') {
+      if (false === isNaN(parsedVal) && parsedVal > 0) {
         if (val % 1 === 0) {
-          result += '-Xmx' + val + 'g '
+          result += '-Xmx' + parsedVal + 'g '
         } else {
-          result += '-Xmx' + parseInt(val * 1024) + 'm '
+          result += '-Xmx' + parseInt(parsedVal * 1024) + 'm '
         }
+      } else {
+        errors.push("Heap Size must be a positive decimal number.")
       }
     }
 
@@ -68,10 +86,6 @@ define(function (require) {
     other_property.each(function () {
       var value = $(this).val().trim();
       result += value + " ";
-
-      if (value.length < 1) {
-        enable_button = false
-      }
     });
 
     var java_property = $('#properties_property div');
@@ -86,24 +100,14 @@ define(function (require) {
       if (name.length > 0) {
         result += value_combined + " ";
       }
-
-      if (value_combined.length < 1) {
-        enable_button = false
-      }
     });
 
     $('#result').text(result);
-    $('#errors').empty();
+    var errorsEl = $('#errors');
+    errorsEl.empty();
 
-    if (val.length > 0 && isNaN(val)) {
-      $('#errors').append($('<span>').text("Heap Size must be a decimal number."));
-      enable_button = false;
-    }
-
-    if (enable_button) {
-      $('#jvm_settings_submit').removeAttr('disabled');
-    } else {
-      $('#jvm_settings_submit').prop('disabled', true);
+    if (errors.length > 0) {
+      errorsEl.append($('<span>').text(errors.join("\n")));
     }
   }
 
@@ -171,75 +175,85 @@ define(function (require) {
     }
   };
   var settings = {
+    tabindex: 0,
     formId: 'beakerx_jvm_settings_form',
     randId: function () {
       return Math.random().toString(36).substr(2, 10);
     },
     appendField: function (opts) {
       var id = this.randId();
-      var input = $('<input>', {class: 'form-control'});
-      var wrapper = $('<div>', {class: 'form-group form-inline bko-spacing'});
-      wrapper.attr('id', id);
-      var remove_button = $('<button>');
-      remove_button.attr('type', 'button');
-      remove_button.attr('class', 'btn btn-default btn-sm');
-      remove_button.attr('data-original-title', 'remove row');
-      remove_button.append($('<i>').attr('class', 'fa fa-times'));
-      remove_button.click(function (event) {
-        $('#' + id).remove();
-        InpuChanged();
+      var wrapper = $('<div>', {
+        class: 'form-group form-inline bko-spacing',
+        id: id
       });
-
-      input.attr('id', this.randId());
-      input.val(opts.value);
-      input.attr('placeholder', 'value');
-      input.keyup(InpuChanged);
       if (opts.add_label) {
-        var label = $('<input>', {class: 'form-control'});
-        label.val(opts.name);
-        label.attr('id', this.randId());
-        label.attr('placeholder', 'name');
-        label.keyup(InpuChanged);
-        wrapper.append(label);
+        wrapper.append(this._createInput('name', opts.name));
       }
-      wrapper.append(input);
-      wrapper.append(remove_button);
+      wrapper
+        .append(this._createInput('value', opts.value))
+        .append(this._createRemoveButton(id));
       $(opts.parent).append(wrapper);
-      InpuChanged({});
+      InputChanged({}, false);
+    },
+
+    _createRemoveButton: function(id) {
+      return $('<button>', {
+        'type': 'button',
+        'class': 'btn btn-default btn-sm',
+        'data-original-title': 'remove row',
+        'tabindex': this.tabindex++,
+      }).append(
+        $('<i>', {'class': 'fa fa-times'}
+      )).click(function (event) {
+        $('#' + id).remove();
+        InputChanged();
+      });
+    },
+    _createInput: function(placeholder, value) {
+      return $('<input>', {
+        class: 'form-control',
+        id: this.randId(),
+        placeholder: placeholder,
+        tabindex: this.tabindex++
+      }).val(value).keyup(InputChanged);
     },
 
     load: function () {
       var that = this;
-
+      this.tabindex = 0;
       function handle_response(response, status, xhr) {
         var data = response.beakerx.jvm_options;
-        $('#other_property').empty();
-        $('#properties_property').empty();
-
         var other_fieldset = $('#other_property');
-        for (var i = 0; i < data.other.length; i++) {
-          var opts = {
-            value: data.other[i],
-            parent: other_fieldset,
-            add_label: false
-          };
-          that.appendField(opts);
-        }
         var properties_fieldset = $('#properties_property');
+        other_fieldset.empty();
+        properties_fieldset.empty();
+
         for (var key in data.properties) {
-          if (key == "-Xmx")
-            continue;
-          var opts = {
-            name: key,
-            value: data.properties[key],
-            parent: properties_fieldset,
-            add_label: true
-          };
-          that.appendField(opts);
+          if (data.hasOwnProperty(key)) {
+            if (key === "-Xmx") {
+              continue;
+            }
+            that.appendField({
+              name: key,
+              value: data.properties[key],
+              parent: properties_fieldset,
+              add_label: true
+            });
+          }
+        }
+
+        for (var i = 0; i < data.other.length; i++) {
+          if (data.hasOwnProperty(key)) {
+            that.appendField({
+              value: data.other[i],
+              parent: other_fieldset,
+              add_label: false
+            });
+          }
         }
 
         $('#heap_GB').val(data['heap_GB']);
-        InpuChanged({});
+        InputChanged({}, false);
       }
 
       var settings = AjaxSettings({
@@ -264,107 +278,125 @@ define(function (require) {
 
       return utils.ajax(urls.api_url + 'settings', settings);
     },
+
     createField: function (parent) {
-      var that = this;
-      var opts = {
+      this.appendField({
         name: "",
         value: "",
         parent: parent,
         add_label: false
-      };
-      that.appendField(opts);
+      });
     }
   };
 
   function load() {
-    if (!Jupyter.notebook_list)
+    if (!Jupyter.notebook_list) {
       return;
+    }
     utils.ajax(urls.static_url + 'settings_tab.html', {
       dataType: 'html',
       success: function (env_html, status, xhr) {
-        $(".tab-content").append($(env_html));
-        $("#tabs").append(
-          $('<li>')
-            .append(
-              $('<a>')
-                .attr('id', 'beakerx_tab')
-                .attr('href', '#beakerx')
-                .attr('data-toggle', 'tab')
-                .text('BeakerX')
-                .click(function (e) {
-                  window.history.pushState(null, null, '#beakerx');
-                  version.load();
-                  settings.load();
-
-                })
-            )
-        );
-
-        $("#jvm_settings_submit").click(function (event) {
-          event.preventDefault();
-
-          var payload = {};
-          payload['jvm_options'] = {};
-          var values = [];
-          var other_property = $('#other_property input');
-          other_property.each(function () {
-            var value = $(this).val().trim();
-            if (value.length > 0) {
-              values.push(value);
-            }
-          });
-          payload['jvm_options']['other'] = values;
-          var java_values = {};
-          var java_property = $('#properties_property div');
-          java_property.each(function () {
-            var children = $($(this).children());
-            var value = $(children.get(1)).val().trim();
-            var name = $(children.get(0)).val().trim();
-
-            if (name.length > 0) {
-              java_values[name] = value
-            }
-
-          });
-          var default_property = $('#default_options input');
-          default_property.each(function () {
-            var value = $(this).val().trim();
-            if (value.length > 0) {
-              payload['jvm_options']['heap_GB'] = value
-            }
-          });
-          payload['jvm_options']['properties'] = java_values;
-          settings.setVariables(JSON.stringify({'beakerx': payload}));
-          settings.load();
-        });
-
-        $("#add_property_jvm_sett").click(function (event) {
-          event.preventDefault();
-          var parent = $('#properties_property');
-
-          var opts = {
-            name: "",
-            value: "",
-            parent: parent,
-            add_label: true
-          };
-
-          settings.appendField(opts);
-        });
-
-        $("#add_option_jvm_sett").click(function (event) {
-          event.preventDefault();
-          var fieldset = $('#other_property');
-          settings.createField(fieldset);
-        });
-        $('#heap_GB').keyup(InpuChanged);
-        $(".tab-content").submit();
+        _createBeakerxTab(env_html);
+        _setupFormEvents();
+        _setupContinuousSync();
 
         if (window.location.hash === '#beakerx') {
-          $('#beakerx_tab').click();
+          $('#beakerx_tab').tab('show');
+          version.load();
         }
       }
     });
+  }
+
+  function _createBeakerxTab(tab_html) {
+    $(".tab-content").append($(tab_html));
+    $("#tabs").append(
+      $('<li>').append(
+        $('<a>', {
+          id: 'beakerx_tab',
+          href: '#beakerx',
+          'data-toggle': 'tab',
+          text: 'BeakerX'
+        }).click(function (e) {
+          if (window.location.hash === '#beakerx') {
+            return;
+          }
+
+          window.history.pushState(null, null, '#beakerx');
+          version.load();
+          settings.load();
+        })
+      )
+    );
+  }
+  function _setupFormEvents() {
+    $("#add_property_jvm_sett").click(_onJvmPropertyAddClickedHandler);
+    $("#add_option_jvm_sett").click(_onJvmOptionAddClickedHandler);
+    $('#heap_GB').keyup(InputChanged);
+  }
+  function _setupContinuousSync() {
+    var lastSyncedTs = null;
+    function synchronizeTick() {
+      setTimeout(function() {
+        if (lastSyncedTs === null || inputLastChangedTs - lastSyncedTs >= 3000) {
+          lastSyncedTs = Date.now();
+          _submitOptions();
+        }
+        synchronizeTick();
+      }, 1000);
+    }
+    synchronizeTick();
+  }
+  function _submitOptions() {
+    var payload = {};
+    payload['jvm_options'] = {};
+    var values = [];
+    var other_property = $('#other_property input');
+    other_property.each(function () {
+      var value = $(this).val().trim();
+      if (value.length > 0) {
+        values.push(value);
+      }
+    });
+    payload['jvm_options']['other'] = values;
+    var java_values = {};
+    var java_property = $('#properties_property div');
+    java_property.each(function () {
+      var children = $($(this).children());
+      var value = $(children.get(1)).val().trim();
+      var name = $(children.get(0)).val().trim();
+
+      if (name.length > 0) {
+        java_values[name] = value
+      }
+
+    });
+    var default_property = $('#default_options input');
+    default_property.each(function () {
+      var value = $(this).val().trim();
+      if (value.length > 0) {
+        payload['jvm_options']['heap_GB'] = value
+      }
+    });
+    payload['jvm_options']['properties'] = java_values;
+    settings.setVariables(JSON.stringify({ 'beakerx': payload }));
+    settings.load();
+  }
+
+  function _onJvmPropertyAddClickedHandler(event) {
+    event.preventDefault();
+
+    settings.appendField({
+      name: "",
+      value: "",
+      parent: $('#properties_property'),
+      add_label: true
+    });
+  }
+
+  function _onJvmOptionAddClickedHandler(event) {
+    event.preventDefault();
+    settings.createField($('#other_property'));
   }
 
   return {

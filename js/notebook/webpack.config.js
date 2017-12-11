@@ -159,7 +159,7 @@ module.exports = [
     //
     // This bundle is generally almost identical to the embeddable bundle
     //
-    entry: './src/embed',
+    entry: './src/embed.js',
     output: {
       filename: 'index.js',
       path: path.resolve(__dirname, '../lab/lib/'),

@@ -15,8 +15,9 @@
     "jupyterlab extension"
   ],
   "scripts": {
-    "build:src": "tsc --project src",
     "build": "npm run build:src",
+    "build:src": "tsc --project src",
+    "prepublish": "npm run build:src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -41,5 +42,8 @@
   "files": [
     "dist/*.js",
     "lib/*.js"
-  ]
+  ],
+  "dependencies": {
+    "beakerx": "^0.9.1"
+  }
 }

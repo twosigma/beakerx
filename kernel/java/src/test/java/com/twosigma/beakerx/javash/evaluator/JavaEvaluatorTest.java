@@ -115,4 +115,63 @@ public class JavaEvaluatorTest {
     Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
   }
 
+  @Test
+  public void evaluateStreamInMultipleLines() throws Exception {
+    //given
+    String code = "import java.util.stream.Stream;\n" +
+            "return Stream.of(1, 2, 3, 4).map(i -> { \n" +
+            "    return i * 10;\n" +
+            "});";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    javaEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+  }
+
+  @Test
+  public void evaluateStreamInOneLine() throws Exception {
+    //given
+    String code = "import java.util.stream.Stream;\n" +
+            "return Stream.of(1, 2, 3, 4).map(i -> { return i * 10;});";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    javaEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+  }
+
+  @Test
+  public void evaluateVoid() throws Exception {
+    //given
+    String code = "System.out.println(\"Hello\");";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    javaEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+  }
+
+  @Test
+  public void evaluateIfStatement() throws Exception {
+    //given
+    String code = "" +
+            "if (true){\n" +
+            "    return \"AAA\";\n" +
+            "}else {\n" +
+            "    return \"BBB\";\n" +
+            "}";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    //when
+    javaEvaluator.evaluate(seo, code);
+    waitForResult(seo);
+    //then
+    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    Assertions.assertThat((String) seo.getPayload()).isEqualTo("AAA");
+  }
+
+
 }

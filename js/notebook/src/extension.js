@@ -33,9 +33,9 @@ if (window.require) {
 }
 __webpack_public_path__ = document.querySelector('body').getAttribute('data-base-url') + 'nbextensions/beakerx/';
 
-require('./../src/shared/style/beakerx.scss');
-require('./../src/plot/bko-combinedplot.css');
-require('./../src/plot/bko-plot.css');
+require('./shared/style/beakerx.scss');
+require('./plot/bko-combinedplot.css');
+require('./plot/bko-plot.css');
 
 define([
   'services/config',

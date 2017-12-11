@@ -7,9 +7,10 @@
 // Export widget models and views, and the npm package version number.
 module.exports = {};
 
-require('./../src/shared/style/beakerx.scss');
-require('./../src/plot/bko-combinedplot.css');
-require('./../src/plot/bko-plot.css');
+require('./shared/style/bootstrap.scss');
+require('./shared/style/beakerx.scss');
+require('./plot/bko-combinedplot.css');
+require('./plot/bko-plot.css');
 
 var loadedModules = [
   require("./Plot"),

@@ -15,14 +15,31 @@
  */
 package com.twosigma.beakerx.javash.evaluator;
 
+import com.twosigma.beakerx.kernel.ImportPath;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Codev {
+
+  private final String pname;
+  Map<Integer, Integer> lineNumbersMapping = new HashMap<>();
+  LineBrakingStringBuilderWrapper javaSourceCode = new LineBrakingStringBuilderWrapper();
+
   private String[] lines;
+  private String code;
+  private JavaEvaluator javaEvaluator;
   private int index = 0;
 
-  public Codev(String code) {
+  public Codev(String code, JavaEvaluator javaEvaluator) {
+    this.code = code;
     this.lines = code.split("\n");
+    this.javaEvaluator = javaEvaluator;
+    this.pname = configurePackage();
+    configureImports();
   }
 
   public CodeLine getNotBlankLine() {
@@ -45,11 +62,19 @@ public class Codev {
   }
 
   public void moveToNextLine() {
-    if ((index != -1) && index < (lines.length -1 )) {
+    if ((index != -1) && index < (lines.length - 1)) {
       index++;
     } else {
       index = -1;
     }
+  }
+
+  public String getPname() {
+    return pname;
+  }
+
+  public String getCode() {
+    return code;
   }
 
   public boolean hasLineToProcess() {
@@ -73,5 +98,80 @@ public class Codev {
       return line;
     }
   }
+
+  private void configureImports() {
+    if (hasLineToProcess()) {
+      Pattern p = Pattern.compile("\\s*import(\\s+static)?\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*(?:\\.\\*)?);.*");
+      Codev.CodeLine codeLine = getNotBlankLine();
+      Matcher m = p.matcher(codeLine.getLine());
+      while (m.matches()) {
+        String impstr = m.group(2);
+        String staticModifier = m.group(1);
+        javaSourceCode.append("import ");
+        if (staticModifier != null) {
+          javaSourceCode.append("static ");
+        }
+        javaSourceCode.append(impstr);
+        javaSourceCode.append(";\n");
+        lineNumbersMapping.put(javaSourceCode.getLinesCount(), codeLine.getIndex());
+
+        moveToNextLine();
+        if (!hasLineToProcess()) {
+          break;
+        }
+        codeLine = getNotBlankLine();
+        m = p.matcher(codeLine.getLine());
+      }
+    }
+  }
+
+  private String configurePackage() {
+    String pname = javaEvaluator.getPackageId();
+    Codev.CodeLine codeLine = getNotBlankLine();
+    Pattern p = Pattern.compile("\\s*package\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*);.*");
+    Matcher m = p.matcher(codeLine.getLine());
+
+    if (m.matches()) {
+      pname = m.group(1);
+      lineNumbersMapping.put(1, codeLine.getIndex());
+      moveToNextLine();
+    }
+    javaSourceCode.append("package ");
+    javaSourceCode.append(pname);
+    javaSourceCode.append(";\n");
+
+    for (ImportPath i : javaEvaluator.getImports().getImportPaths()) {
+      javaSourceCode.append("import ");
+      javaSourceCode.append(i.asString());
+      javaSourceCode.append(";\n");
+    }
+    return pname;
+  }
+
+  public static class LineBrakingStringBuilderWrapper {
+    private static final String LINE_BREAK = "\n";
+    private StringBuilder delegate;
+    private int linesCount;
+
+    public LineBrakingStringBuilderWrapper() {
+      this.delegate = new StringBuilder();
+      this.linesCount = 0;
+    }
+
+    public void append(String string) {
+      this.delegate.append(string);
+      this.linesCount += StringUtils.countMatches(string, LINE_BREAK);
+    }
+
+    public int getLinesCount() {
+      return linesCount;
+    }
+
+    @Override
+    public String toString() {
+      return delegate.toString();
+    }
+  }
+
 
 }

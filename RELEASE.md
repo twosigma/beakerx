@@ -1,3 +1,19 @@
+<!--
+    Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
 Making a BeakerX release
 ===========================
 
@@ -13,14 +29,13 @@ Create the release
 ------------------
 
 Update the version in `beakerx/beakerx/_version.py` and
-`beakerx/js/package.json` and `beakerx/jslab/package.json`.  Commit
+`beakerx/js/package.json` and `js/lab/package.json`.  Commit
 the change and push the git tag.
 
 ```bash
 git clean -xfd
 cd beakerx
 python setup.py sdist
-python setup.py bdist_wheel --universal
 ```
 
 Make a test installation with pip into a fresh environment, if it works then continue with:
@@ -65,8 +80,8 @@ Publish on npmjs
 To update the embedded version of our widget library:
 
 - Do a full build.
-- Run `(cd beakerx/js; npm publish)`
-- Run `(cd beakerx/jslab; npm publish)`
+- Run `(cd js/notebook; npm publish)`
+- Run `(cd js/lab; npm publish)`
 
 Release to Docker Hub
 ---------------------

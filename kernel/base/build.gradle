@@ -25,12 +25,13 @@ repositories {
 compileJava {
   options.compilerArgs << '-Xlint:sunapi'
   options.compilerArgs << '-XDenableSunApiLintControl'
+  options.encoding = "UTF-8"
 }
 
 dependencies {
   compile group: 'com.opencsv', name: 'opencsv', version: '3.10'
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.6.5'
-  compile group: 'com.github.jupyter', name: 'jvm-repr', version: '0.2.1'
+  compile group: 'com.github.jupyter', name: 'jvm-repr', version: '0.3.1'
   compile group: 'com.google.guava', name: 'guava', version: '22.0'
   compile group: 'com.google.inject', name: 'guice', version: '3.0'
   compile group: "commons-codec", name: "commons-codec", version: "1.9"
@@ -62,14 +63,6 @@ publishing {
   }
 }
 
-def gitDescribe() {
-  def name = "git describe --all".execute().text.trim()
-  if (name.startsWith('heads/')) {
-    name = name.substring(6)
-  }
-  return name
-}
-
 def gitGetHash() {
   def name = "git log --pretty=format:%h -n 1".execute().text.trim()
   return name
@@ -90,7 +83,7 @@ def mainDir = file("../../")
 
 task prepareBuildVerion() {
   doLast {
-    new File(resourceDir, 'version').write(gitDescribe())
+    new File(resourceDir, 'version').write(gitGetLatestTagVersion())
     new File(resourceDir, 'hash').write(gitGetHash())
     new File(resourceDir, 'build_time').write(new Date().format("yyyy-MM-dd HH:mm z"))
     new File(mainDir, 'VERSION').write(gitGetLatestTagVersion())

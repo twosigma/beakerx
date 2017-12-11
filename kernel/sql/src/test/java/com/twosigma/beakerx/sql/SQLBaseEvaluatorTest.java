@@ -18,6 +18,7 @@ package com.twosigma.beakerx.sql;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
+import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.sql.evaluator.SQLEvaluator;
 import org.junit.AfterClass;
@@ -50,6 +51,12 @@ public class SQLBaseEvaluatorTest extends EvaluatorBaseTest {
   @Override
   protected BaseEvaluator createNewEvaluator() {
     SQLEvaluator evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), getTestTempFolderFactory(),kernelParameters());
+    return evaluator;
+  }
+
+  @Override
+  protected BaseEvaluator createNewEvaluator(TempFolderFactory tempFolderFactory) {
+    SQLEvaluator evaluator = new SQLEvaluator("shellId1", "sessionId1", cellExecutor(), tempFolderFactory, kernelParameters());
     return evaluator;
   }
 

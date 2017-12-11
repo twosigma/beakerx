@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Java source code compiler. It compiles given java class sources in memory and loads them into memory.
  * It utilises Java Compiler API.
- * <p><b>Usage:</b>
+ * {@code <p><b>Usage:</b>
  * <ul>
  *  <li>Simple source compilation</li>
  *  <code><pre>
@@ -84,7 +84,7 @@ import java.util.List;
  *
  *
  *  </ul>
- *  </p>
+ *  </p>}
  * @author Adrian Witas
  */
 
@@ -109,7 +109,7 @@ public interface JavaSourceCompiler {
      * @param compilerOptions compiler options
      * @return class loader for the compiled classes
      */
-    ClassLoader compile(CompilationUnit compilationUnit, String... compilerOptions);
+    boolean compile(CompilationUnit compilationUnit, String... compilerOptions);
 
     /**
         * Compiles given compilation unit with the supplier compiler options and returns class loader for the compiled sources.
@@ -118,7 +118,7 @@ public interface JavaSourceCompiler {
         * @param compilerOptions compiler options
         * @return class loader for the compiled classes
     */
-    ClassLoader compile(ClassLoader parentClassLoader, CompilationUnit compilationUnit, String... compilerOptions);
+    boolean compile(ClassLoader parentClassLoader, CompilationUnit compilationUnit, String... compilerOptions);
 
     /**
      * By default source code and compiled classes are stored in memory, this however could be a limitation
@@ -137,7 +137,7 @@ public interface JavaSourceCompiler {
         /**
          * Adds class path entry to java compiler
          * <p><b>Note</b> that if at least one entry is added,  the current jvm class path entries are not included.
-         * You can retrieve current jvm class path entries from {@link org.abstractmeta.toolbox.compilation.compiler.util.ClassPathUtil.getClassPathEntries}
+         * You can retrieve current jvm class path entries from {@link org.abstractmeta.toolbox.compilation.compiler.util.ClassPathUtil#getClassPathEntries()}
          *
          * </p>
          * @param classPathEntry class path entires

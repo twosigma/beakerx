@@ -17,6 +17,7 @@ package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorBaseTest;
+import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.scala.TestScalaEvaluator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,6 +39,11 @@ public class ScalaBaseEvaluatorTest extends EvaluatorBaseTest {
   @Override
   protected BaseEvaluator createNewEvaluator(){
     return TestScalaEvaluator.evaluator();
+  }
+
+  @Override
+  protected BaseEvaluator createNewEvaluator(TempFolderFactory tempFolderFactory) {
+    return TestScalaEvaluator.evaluator(tempFolderFactory);
   }
 
   @Override

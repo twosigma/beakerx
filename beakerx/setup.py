@@ -30,17 +30,19 @@ import os
 cmdclass = create_cmdclass(develop_wrappers=[
     'js',
     'java',
+    'javadoc',
 ], distribute_wrappers=[
     'js',
-    'java'
+    'java',
+    'javadoc',
 ])
 cmdclass['js'] = install_node_modules(
-    path='js',
-    build_dir=os.path.join(here, 'js', 'dist'),
-    source_dir=os.path.join(here, 'js', 'src')
+    path='../js/notebook',
+    build_dir=os.path.join(here, '../js/notebook', 'dist'),
+    source_dir=os.path.join(here, '../js/notebook', 'src')
 )
 cmdclass['java'] = run_gradle(cmd='build')
-
+cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')
 setup_args = dict(
     name                = 'beakerx',
     description         = 'BeakerX: Beaker Extensions for Jupyter Notebook',
@@ -66,12 +68,11 @@ setup_args = dict(
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
         'Topic :: Multimedia :: Graphics',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     entry_points={
         'console_scripts': [

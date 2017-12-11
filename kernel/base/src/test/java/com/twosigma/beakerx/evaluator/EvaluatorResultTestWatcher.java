@@ -89,6 +89,17 @@ public class EvaluatorResultTestWatcher {
     return sentMessage;
   }
 
+  public static Optional<Message> waitForErrorMessage(KernelSocketsTest socketsTest) throws InterruptedException {
+    int count = 0;
+    Optional<Message> idleMessage = getError(socketsTest);
+    while (!idleMessage.isPresent() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      idleMessage = getError(socketsTest);
+      count++;
+    }
+    return idleMessage;
+  }
+
   private static Optional<Message> getStreamMessage(KernelTest kernelTest) {
     List<Message> listMessagesByType = SearchMessages.getListMessagesByType(kernelTest.getPublishedMessages(), JupyterMessages.STREAM);
     return listMessagesByType.stream().findFirst();

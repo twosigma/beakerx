@@ -1,6 +1,0 @@
-{
-  "argv": [ "java", "-jar", ${PATH}, "{connection_file}" ],
-  "display_name": "C++",
-  "language": "cpp",
-  "env": { "PS1":"cpp>"}
-}

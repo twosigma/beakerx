@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
+import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 
 public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
 
@@ -101,12 +102,10 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
 
   public class MvnLoggerWidget {
 
-    //20 jars, 100MB downloaded at 100MB/s
-
     private StringWidget widget;
     private Timer timer;
     private volatile int jarNumbers = 0;
-    private volatile int size;
+    private volatile double sizeInKb;
     private volatile String speed;
     private volatile String currentLine;
 
@@ -117,7 +116,8 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
         @Override
         public void run() {
           if (jarNumbers > 0) {
-            String status = String.format("%d jars, %dKB downloaded at %s", jarNumbers, size, speed);
+            String sizeWithUnit = byteCountToDisplaySize(new Double(sizeInKb * 1000).longValue());
+            String status = String.format("%d jars, %s downloaded at %s", jarNumbers, sizeWithUnit, speed);
             widget.setValue(status + "</br>" + currentLine);
           }
         }
@@ -131,7 +131,7 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
           this.jarNumbers++;
           String[] info = split(line);
           if (info.length == 5) {
-            this.size += calculateJarSize(info);
+            this.sizeInKb += calculateJarSizeInKb(info);
             this.speed = calculateSpeed(info);
           }
         }
@@ -155,12 +155,12 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
       return new String[0];
     }
 
-    private int calculateJarSize(String[] info) {
+    private double calculateJarSizeInKb(String[] info) {
       String unit = info[1];
       if (unit.toLowerCase().equals("kb")) {
-        return Integer.parseInt(info[0]);
+        return new BigDecimal(info[0]).doubleValue();
       } else if (unit.toLowerCase().equals("mb")) {
-        return new BigDecimal(info[0]).multiply(new BigDecimal("1000")).intValue();
+        return new BigDecimal(info[0]).multiply(new BigDecimal("1000")).doubleValue();
       } else {
         return 0;
       }

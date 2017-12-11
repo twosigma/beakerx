@@ -56,9 +56,10 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     //then
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
-    waitForResult(getKernelSocketsService().getKernelSockets());
+    Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
+    assertThat(result).isPresent();
+    verifyResult(result.get());
     verifyPublishedMsgs(getKernelSocketsService());
-    verifyResult(getKernelSocketsService().getExecuteResultMessage().get());
     waitForSentMessage(getKernelSocketsService().getKernelSockets());
     verifySentMsgs(getKernelSocketsService());
   }
@@ -139,8 +140,8 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     //then
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
-    waitForResult(getKernelSocketsService().getKernelSockets());
-    verifyResultOfAddedJar(getKernelSocketsService().getExecuteResultMessage().get());
+    Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
+    verifyResultOfAddedJar(result.get());
   }
 
   protected String codeForVerifyingAddedDemoJar() {
@@ -186,8 +187,9 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     getKernelSocketsService().handleMsg(message);
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
-    waitForResult(getKernelSocketsService().getKernelSockets());
-    Map actual = ((Map) getKernelSocketsService().getExecuteResultMessage().get().getContent().get(Comm.DATA));
+    Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
+    assertThat(result).isPresent();
+    Map actual = ((Map) result.get().getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
     assertThat(value).isEqualTo("Demo_test_123");
   }

@@ -23,7 +23,7 @@ import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.strings.Label;
+import com.twosigma.beakerx.widgets.strings.HTML;
 import com.twosigma.beakerx.widgets.strings.StringWidget;
 
 import java.math.BigDecimal;
@@ -111,14 +111,14 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
     private volatile String currentLine;
 
     public MvnLoggerWidget(Message parentMessage) {
-      this.widget = new Label(parentMessage);
+      this.widget = new HTML(parentMessage);
       this.timer = new Timer();
       this.timer.scheduleAtFixedRate(new TimerTask() {
         @Override
         public void run() {
           if (jarNumbers > 0) {
             String status = String.format("%d jars, %dKB downloaded at %s", jarNumbers, size, speed);
-            widget.setValue(status);
+            widget.setValue(status + "</br>" + currentLine);
           }
         }
       }, 0, 250);

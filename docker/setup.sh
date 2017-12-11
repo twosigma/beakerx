@@ -21,8 +21,8 @@ rm -r /home/beakerx/beakerx/js/node_modules
 rm -r /home/beakerx/beakerx/js/dist
 
 (cd beakerx; pip install -e . --verbose)
-jupyter labextension install @jupyter-widgets/jupyterlab-manager
-jupyter labextension install beakerx-jupyterlab
 beakerx-install
+jupyter labextension install @jupyter-widgets/jupyterlab-manager
+(cd js/lab; jupyter labextension install .)
 
 rm -rf docker .DS_Store .git .gradle .idea jitpack.yml kernel RELEASE.md test .cache .yarn .local logs .ipynb_checkpoints

@@ -23,24 +23,7 @@ import com.twosigma.beakerx.scala.chart.GraphicsProperties
 
 import scala.collection.JavaConverters._
 
-class ConstantBand extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantBand with ConstantBandProperties {
-
-  def this(x: Seq[_]) {
-    this()
-    super.setX(x.map(x => x.asInstanceOf[AnyRef]).asJava)
-  }
-
-  def this(x: Seq[_], y: Seq[_]) {
-    this(x)
-    super.setY(x.map(x => x.asInstanceOf[Number]).asJava)
-  }
-
-  def this(x: Seq[_], color: Color) {
-    this(x)
-    super.setColor(color)
-  }
-
-}
+class ConstantBand extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantBand with ConstantBandProperties
 
 trait ConstantBandProperties extends GraphicsProperties {
   this: com.twosigma.beakerx.chart.xychart.plotitem.ConstantBand =>

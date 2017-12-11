@@ -20,16 +20,7 @@ import com.twosigma.beakerx.chart.Color
 import com.twosigma.beakerx.chart.xychart.plotitem.StrokeType
 import com.twosigma.beakerx.scala.JavaAdapter._
 
-class Crosshair extends com.twosigma.beakerx.chart.xychart.plotitem.Crosshair with CrosshairProperties {
-
-  def this(color: Color, width: Float, style: StrokeType) {
-    this()
-    this.setColor(color)
-    this.setWidth(width)
-    this.setStyle(style)
-  }
-
-}
+class Crosshair extends com.twosigma.beakerx.chart.xychart.plotitem.Crosshair with CrosshairProperties
 
 trait CrosshairProperties {
   this: com.twosigma.beakerx.chart.xychart.plotitem.Crosshair with CrosshairProperties =>

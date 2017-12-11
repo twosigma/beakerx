@@ -20,31 +20,7 @@ import com.twosigma.beakerx.scala.JavaAdapter._
 
 import scala.collection.JavaConverters._
 
-class Rasters extends com.twosigma.beakerx.chart.xychart.plotitem.Rasters with RastersProperties {
-
-  def this(y: Seq[Any], height: Seq[Any], width: Seq[Any]) {
-    this()
-    super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
-    super.setHeight(height.map(x => x.asInstanceOf[Number]).asJava)
-    super.setWidth(width.map(x => x.asInstanceOf[Number]).asJava)
-  }
-
-  def this(x: Seq[Any], y: Seq[Any], height: Seq[Any], width: Seq[Any], opacity: Seq[Any]) {
-    this(y, height, width)
-    super.setX(x.map(x => x.asInstanceOf[AnyRef]).asJava)
-    super.setOpacity(opacity.map(x => x.asInstanceOf[Number]).asJava)
-  }
-
-  def this(x: Seq[Any], y: Seq[Any], height: Seq[Any], width: Seq[Any], opacity: Seq[Any], dataString: Array[Byte]) {
-    this(x, y, height, width, opacity)
-    super.setDataString(dataString)
-  }
-
-  def this(x: Seq[Any], y: Seq[Any], height: Seq[Any], width: Seq[Any], opacity: Seq[Any], fileUrl: String) {
-    this(x, y, height, width, opacity)
-    super.setFileUrl(fileUrl)
-  }
-}
+class Rasters extends com.twosigma.beakerx.chart.xychart.plotitem.Rasters with RastersProperties
 
 trait RastersProperties extends XYGraphicsProperties {
   this: com.twosigma.beakerx.chart.xychart.plotitem.Rasters =>

@@ -57,7 +57,7 @@ class CategoryPointsPropertiesTest {
     catPoints.shape = ShapeType.CIRCLE
     Assertions.assertThat(catPoints.shape).isEqualTo(ShapeType.CIRCLE)
 
-    Assertions.assertThat[ShapeType](catPoints.shapes.asJava).isEmpty
+    Assertions.assertThat[ShapeType](catPoints.shapes.asJava).isEmpty()
     catPoints.shape = Array(ShapeType.DIAMOND, ShapeType.SQUARE, ShapeType.TRIANGLE)
     Assertions.assertThat[ShapeType](catPoints.shapes.asJava).containsExactly(ShapeType.DIAMOND, ShapeType.SQUARE, ShapeType.TRIANGLE)
   }

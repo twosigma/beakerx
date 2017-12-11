@@ -21,16 +21,7 @@ import java.util.Date
 
 import com.twosigma.beakerx.chart.Color
 
-class Text extends com.twosigma.beakerx.chart.xychart.plotitem.Text with TextProperties {
-
-  def this(x: Any, y: Any, text: String, pointerAngle: Double) {
-    this()
-    super.setX(x.asInstanceOf[Number])
-    super.setY(y.asInstanceOf[Number])
-    super.setText(text)
-    super.setPointerAngle(pointerAngle)
-  }
-}
+class Text extends com.twosigma.beakerx.chart.xychart.plotitem.Text with TextProperties
 
 trait TextProperties {
   this: com.twosigma.beakerx.chart.xychart.plotitem.Text =>

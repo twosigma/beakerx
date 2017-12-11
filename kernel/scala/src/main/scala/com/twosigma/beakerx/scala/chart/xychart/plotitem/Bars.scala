@@ -21,34 +21,7 @@ import com.twosigma.beakerx.scala.JavaAdapter._
 
 import scala.collection.JavaConverters._
 
-class Bars extends com.twosigma.beakerx.chart.xychart.plotitem.Bars with BarsProperties {
-
-  def this(x: Seq[Int], y: Seq[Int]) {
-    this()
-    super.setX(x.map(x => x.asInstanceOf[AnyRef]).asJava)
-    super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
-  }
-
-  def this(x: Seq[Int], y: Seq[Int], colors: Seq[Color], outLineColor: Color, width: Number) {
-    this(x, y)
-    super.setColor(colors.map(x => x.asInstanceOf[AnyRef]).asJava)
-    super.setOutlineColor(outLineColor)
-    super.setWidth(width)
-  }
-
-  def this(x: Seq[Int], y: Seq[Int], color: Color, outLineColor: Color, width: Number) {
-    this(x, y)
-    super.setColor(color)
-    super.setOutlineColor(outLineColor)
-    super.setWidth(width)
-  }
-
-  def this(displayName: String, x: Seq[Int], y: Seq[Int], width: Number) {
-    this(x, y)
-    super.setDisplayName(displayName)
-    super.setWidth(width)
-  }
-}
+class Bars extends com.twosigma.beakerx.chart.xychart.plotitem.Bars with BarsProperties
 
 trait BarsProperties extends BasedXYGraphicsProperties {
   this: com.twosigma.beakerx.chart.xychart.plotitem.Bars =>

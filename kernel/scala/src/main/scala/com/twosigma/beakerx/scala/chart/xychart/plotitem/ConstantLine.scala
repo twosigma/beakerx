@@ -22,31 +22,7 @@ import com.twosigma.beakerx.chart.Color
 import com.twosigma.beakerx.chart.xychart.plotitem.StrokeType
 import com.twosigma.beakerx.scala.chart.GraphicsProperties
 
-class ConstantLine extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantLine with ConstantLineProperties {
-
-  def this(x: Any) {
-    this()
-    super.setX(x.asInstanceOf[Number])
-  }
-
-  def this(x: Any, y: Any) {
-    this(x)
-    super.setY(y.asInstanceOf[Number])
-  }
-
-  def this(x: Any, y: Any, style: StrokeType, color: Color) {
-    this(x, y)
-    super.setStyle(style)
-    super.setColor(color)
-  }
-
-  def this(x: Any, y: Any, color: Color, width: Float, showLabel: Boolean) {
-    this(x, y)
-    super.setColor(color)
-    super.setWidth(width)
-    super.setShowLabel(showLabel)
-  }
-}
+class ConstantLine extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantLine with ConstantLineProperties
 
 trait ConstantLineProperties extends GraphicsProperties {
   this: com.twosigma.beakerx.chart.xychart.plotitem.ConstantLine =>

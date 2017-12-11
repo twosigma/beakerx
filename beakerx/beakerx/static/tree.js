@@ -243,13 +243,11 @@ define(function (require) {
         }
 
         for (var i = 0; i < data.other.length; i++) {
-          if (data.hasOwnProperty(key)) {
-            that.appendField({
-              value: data.other[i],
-              parent: other_fieldset,
-              add_label: false
-            });
-          }
+          that.appendField({
+            value: data.other[i],
+            parent: other_fieldset,
+            add_label: false
+          });
         }
 
         $('#heap_GB').val(data['heap_GB']);

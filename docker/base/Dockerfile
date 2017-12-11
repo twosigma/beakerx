@@ -32,4 +32,6 @@ RUN apt-get update && \
 	curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
 	echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
 	apt-get update && apt-get install yarn -y && \
-	apt-get clean
+	apt-get clean && \
+	conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven && \
+	conda install -y -n beakerx -c conda-forge ipywidgets

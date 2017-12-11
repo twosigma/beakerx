@@ -91,6 +91,10 @@ a local build should suffice:
 (cd js/notebook; yarn install)
 ```
 
+### Run Tests
+
+The Java unit tests are run with every build. See [test/README.md] for how to run the e2e tests.
+
 ## Groovy with Interactive Plotting and Tables:
 <img width="900" alt="screen shot" src="https://user-images.githubusercontent.com/963093/28300136-585f9f7c-6b4b-11e7-8827-b5807d3fc9a8.png">
 
@@ -106,18 +110,11 @@ docker run -p 8888:8888 beakerx/beakerx
 
 ## Contributing
 
-We welcome developers to extend and improve BeakerX in ways that can
-benefit everyone. In order for us to accept your code or pull request,
-we need for you to fill out and email back to us a scan of a signed copy of the
-[Contributor License Agreement](http://beakernotebook.com/cla.zip).
+See [CONTRIBUTING](CONTRIBUTING.md).
 
-BeakerX uses [Google Java
-style](https://google.github.io/styleguide/javaguide.html), and all
-Java code needs unit tests.  For JavaScript we use [Google JS
-style](https://google.github.io/styleguide/jsguide.html) with
-[require](http://requirejs.org/) instead of goog.  All files should
-end with newline and have a copyright and license banner.
+## Releasing
 
+See [RELEASE.md](RELEASE.md).
 
 ## Attribution
 

@@ -84,56 +84,53 @@ define([
   var LINE_COMMENT_CHAR = '//';
   
   function installKernelHandler() {
-    Jupyter.notebook.events.on('kernel_ready.Kernel', function() {
-      var kernel = Jupyter.notebook.kernel;
-      if (!window.beakerx) {
-        window.beakerx = {};
-      }
-      kernel.comm_manager.register_target('beaker.getcodecells', function(comm, msg) {
-        comm.on_msg(function(msg) {
-          if(msg.content.data.name == "CodeCells"){
-            sendJupyterCodeCells(JSON.parse(msg.content.data.value));
-          }
-          window.beakerx[msg.content.data.name] = JSON.parse(msg.content.data.value);
-        });
-      });
-      kernel.comm_manager.register_target('beaker.autotranslation', function(comm, msg) {
-        comm.on_msg(function(msg) {
-          window.beakerx[msg.content.data.name] = JSON.parse(msg.content.data.value);
-        });
-      });
-      kernel.comm_manager.register_target('beaker.tag.run', function(comm, msg) {
-        comm.on_msg(function(msg) {
-          if(msg.content.data.state && msg.content.data.state.runByTag){
-            var notebook = Jupyter.notebook;
-            var cells = Jupyter.notebook.get_cells();
-            var indexList = cells.reduce(function(acc, cell, index) {
-              if (cell._metadata.tags && cell._metadata.tags.includes(msg.content.data.state.runByTag)) {
-                acc.push(index);
-              }
-              return acc;
-            }, []);
-            if (indexList.length === 0) {
-              dialog.modal({
-                title: 'No cell with the tag !',
-                body: 'Tag: ' + msg.content.data.state.runByTag,
-                buttons: {'OK': {'class': 'btn-primary'}},
-                notebook: Jupyter.notebook,
-                keyboard_manager: Jupyter.keyboard_manager,
-              });
-            } else {
-              notebook.execute_cells(indexList);
-            }
-          }
-        });
+    var kernel = Jupyter.notebook.kernel;
+    if (!window.beakerx) {
+      window.beakerx = {};
+    }
+    kernel.comm_manager.register_target('beaker.getcodecells', function(comm, msg) {
+      comm.on_msg(function(msg) {
+        if(msg.content.data.name == "CodeCells"){
+          sendJupyterCodeCells(JSON.parse(msg.content.data.value));
+        }
+        window.beakerx[msg.content.data.name] = JSON.parse(msg.content.data.value);
       });
     });
+    kernel.comm_manager.register_target('beaker.autotranslation', function(comm, msg) {
+      comm.on_msg(function(msg) {
+        window.beakerx[msg.content.data.name] = JSON.parse(msg.content.data.value);
+      });
+    });
+    kernel.comm_manager.register_target('beaker.tag.run', function(comm, msg) {
+      comm.on_msg(function(msg) {
+        if(msg.content.data.state && msg.content.data.state.runByTag){
+          var notebook = Jupyter.notebook;
+          var cells = Jupyter.notebook.get_cells();
+          var indexList = cells.reduce(function(acc, cell, index) {
+            if (cell._metadata.tags && cell._metadata.tags.includes(msg.content.data.state.runByTag)) {
+              acc.push(index);
+            }
+            return acc;
+          }, []);
+          if (indexList.length === 0) {
+            dialog.modal({
+              title: 'No cell with the tag !',
+              body: 'Tag: ' + msg.content.data.state.runByTag,
+              buttons: {'OK': {'class': 'btn-primary'}},
+              notebook: Jupyter.notebook,
+              keyboard_manager: Jupyter.keyboard_manager,
+            });
+          } else {
+            notebook.execute_cells(indexList);
+          }
+        }
+      });
+    });
+
     Jupyter.notebook.events.on('kernel_interrupting.Kernel', function() {
       interrupt();
     });
   }
-
-  installKernelHandler();
 
   function setCodeMirrorLineComment(cell) {
     if (cell.cell_type !== 'code') {
@@ -188,7 +185,7 @@ define([
   function interruptToKernel() {
     var kernel = Jupyter.notebook.kernel;
     var kernel_control_target_name = "kernel.control.channel";
-    var comm = Jupyter.notebook.kernel.comm_manager.new_comm(kernel_control_target_name, 
+    var comm = kernel.comm_manager.new_comm(kernel_control_target_name,
                                                              null, null, null, utils.uuid());
     var data = {};
     data.kernel_interrupt = true;
@@ -279,6 +276,8 @@ define([
       // whenever a (new) kernel  becomes ready, run all initialization cells
       events.on('kernel_ready.Kernel', run_init_cells);
     }
+
+    installKernelHandler();
   }
   // ________ init cell extension code - end
 
@@ -337,13 +336,9 @@ define([
         setCodeMirrorLineComment(cell);
       });
     }
-
   };
-
 
   return {
     load_ipython_extension : load_ipython_extension
   };
 });
-
-

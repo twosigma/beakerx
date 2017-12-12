@@ -15,14 +15,14 @@
  */
 package com.twosigma.beakerx.kernel.commands;
 
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLoggerWidget;
 import org.apache.maven.shared.invoker.InvocationOutputHandler;
 
 public class MavenInvocationSilentOutputHandler implements InvocationOutputHandler {
 
-  private ClasspathAddMvnMagicCommand.MvnLoggerWidget intProgress;
+  private MvnLoggerWidget intProgress;
 
-  public MavenInvocationSilentOutputHandler(ClasspathAddMvnMagicCommand.MvnLoggerWidget intProgress) {
+  public MavenInvocationSilentOutputHandler(MvnLoggerWidget intProgress) {
     this.intProgress = intProgress;
   }
 

@@ -22,19 +22,10 @@ import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.AddMvnCommandR
 import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
-import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.strings.HTML;
-import com.twosigma.beakerx.widgets.strings.StringWidget;
 
-import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
-import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 
 public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
 
@@ -98,82 +89,6 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
 
   private AddMvnCommandResult retrieve(String groupId, String artifactId, String version, MavenJarResolver classpathAddMvnCommand, MvnLoggerWidget progress) {
     return classpathAddMvnCommand.retrieve(groupId, artifactId, version, progress);
-  }
-
-  public class MvnLoggerWidget {
-
-    private StringWidget widget;
-    private Timer timer;
-    private volatile int jarNumbers = 0;
-    private volatile double sizeInKb;
-    private volatile String speed;
-    private volatile String currentLine;
-
-    public MvnLoggerWidget(Message parentMessage) {
-      this.widget = new HTML(parentMessage);
-      this.timer = new Timer();
-      this.timer.scheduleAtFixedRate(new TimerTask() {
-        @Override
-        public void run() {
-          if (jarNumbers > 0) {
-            String sizeWithUnit = byteCountToDisplaySize(new Double(sizeInKb * 1000).longValue());
-            String status = String.format("%d jars, %s downloaded at %s", jarNumbers, sizeWithUnit, speed);
-            widget.setValue(status + "</br>" + currentLine);
-          }
-        }
-      }, 0, 250);
-    }
-
-    public void sendLog(String line) {
-      if (line != null && !line.trim().isEmpty() && line.matches("Downloaded.+")) {
-        this.currentLine = line;
-        if (line.matches(".+jar.+")) {
-          this.jarNumbers++;
-          String[] info = split(line);
-          if (info.length == 5) {
-            this.sizeInKb += calculateJarSizeInKb(info);
-            this.speed = calculateSpeed(info);
-          }
-        }
-      }
-    }
-
-    private String calculateSpeed(String[] info) {
-      return info[3] + info[4];
-    }
-
-    private String[] split(String line) {
-      Pattern pattern = Pattern.compile("\\((.*?)\\)");
-      Matcher matcher = pattern.matcher(line);
-      if (matcher.find()) {
-        String infoWithBrackets = matcher.group();
-        return infoWithBrackets.replace("(", "").
-                replace(")", "").
-                split(" ");
-
-      }
-      return new String[0];
-    }
-
-    private double calculateJarSizeInKb(String[] info) {
-      String unit = info[1];
-      if (unit.toLowerCase().equals("kb")) {
-        return new BigDecimal(info[0]).doubleValue();
-      } else if (unit.toLowerCase().equals("mb")) {
-        return new BigDecimal(info[0]).multiply(new BigDecimal("1000")).doubleValue();
-      } else {
-        return 0;
-      }
-    }
-
-    public void display() {
-      this.widget.display();
-    }
-
-    public void close() {
-      this.timer.cancel();
-      this.widget.close();
-    }
   }
 
 }

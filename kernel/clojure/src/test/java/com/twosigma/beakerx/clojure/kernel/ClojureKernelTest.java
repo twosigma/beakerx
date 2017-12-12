@@ -89,9 +89,9 @@ public class ClojureKernelTest extends KernelExecutionTest {
     //then
     Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     assertThat(idleMessage).isPresent();
-    waitForResult(kernelSocketsService.getKernelSockets());
+    Optional<Message> result = waitForResult(kernelSocketsService.getKernelSockets());
+    verifyResult(result.get());
     verifyPublishedMsgs(kernelSocketsService);
-    verifyResult(kernelSocketsService.getExecuteResultMessage().get());
     waitForSentMessage(kernelSocketsService.getKernelSockets());
     verifySentMsgs(kernelSocketsService);
   }

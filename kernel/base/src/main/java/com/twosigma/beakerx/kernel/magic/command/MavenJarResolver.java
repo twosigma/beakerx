@@ -19,7 +19,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.twosigma.beakerx.kernel.commands.MavenInvocationSilentOutputHandler;
 import com.twosigma.beakerx.kernel.commands.MavenJarResolverSilentLogger;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLoggerWidget;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
@@ -54,7 +54,7 @@ public class MavenJarResolver {
     this.pomFactory = pomFactory;
   }
 
-  public AddMvnCommandResult retrieve(String groupId, String artifactId, String version, ClasspathAddMvnMagicCommand.MvnLoggerWidget progress) {
+  public AddMvnCommandResult retrieve(String groupId, String artifactId, String version, MvnLoggerWidget progress) {
     File finalPom = null;
     try {
       Dependency dependency = new Dependency(groupId, artifactId, version);
@@ -84,7 +84,7 @@ public class MavenJarResolver {
     return finalPom;
   }
 
-  private Invoker getInvoker(ClasspathAddMvnMagicCommand.MvnLoggerWidget progress) {
+  private Invoker getInvoker(MvnLoggerWidget progress) {
     Invoker invoker = new DefaultInvoker();
     String mvn = findMvn();
     System.setProperty("maven.home", mvn);

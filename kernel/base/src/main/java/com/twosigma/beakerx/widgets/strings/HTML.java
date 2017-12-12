@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.widgets.strings;
 
+import com.twosigma.beakerx.message.Message;
+
 public class HTML extends StringWidget {
 
   public static final String VIEW_NAME_VALUE = "HTMLView";
@@ -23,6 +25,11 @@ public class HTML extends StringWidget {
   public HTML() {
     super();
     openComm();
+  }
+
+  public HTML(Message parent) {
+    super();
+    openComm(parent);
   }
 
   @Override

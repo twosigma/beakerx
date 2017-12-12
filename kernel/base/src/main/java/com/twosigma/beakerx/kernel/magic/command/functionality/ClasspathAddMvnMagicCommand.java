@@ -22,8 +22,6 @@ import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.AddMvnCommandR
 import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
-import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.strings.Label;
 
 import java.util.Collection;
 
@@ -34,7 +32,8 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
   public static final String ADD = "add";
   public static final String MVN = "mvn";
   public static final String CLASSPATH_ADD_MVN = CLASSPATH + " " + ADD + " " + MVN;
-  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be " + CLASSPATH_ADD_MVN + " group name version or " + CLASSPATH_ADD_MVN + " group:name:version";;
+  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be " + CLASSPATH_ADD_MVN + " group name version or " + CLASSPATH_ADD_MVN + " group:name:version";
+
   private MavenJarResolver.ResolverParams commandParams;
   private PomFactory pomFactory;
 
@@ -90,28 +89,6 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
 
   private AddMvnCommandResult retrieve(String groupId, String artifactId, String version, MavenJarResolver classpathAddMvnCommand, MvnLoggerWidget progress) {
     return classpathAddMvnCommand.retrieve(groupId, artifactId, version, progress);
-  }
-
-
-  public class MvnLoggerWidget {
-
-    private Label widget;
-
-    public MvnLoggerWidget(Message parentMessage) {
-      this.widget = new Label(parentMessage);
-    }
-
-    public void sendLog(String text) {
-      widget.setValue(text);
-    }
-
-    public void display() {
-      this.widget.display();
-    }
-
-    public void close() {
-      this.widget.close();
-    }
   }
 
 }

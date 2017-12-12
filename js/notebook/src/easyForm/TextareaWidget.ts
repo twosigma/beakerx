@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-declare function require(moduleName: string): any;
 const widgets = require('../widgets');
 
 import { TEXT_INPUT_WIDTH_UNIT } from './textWidget';

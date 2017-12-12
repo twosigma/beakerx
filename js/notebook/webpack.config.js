@@ -170,10 +170,12 @@ module.exports = [
     },
     resolve: resolve,
     externals: externals.concat([
-      '@jupyter-widgets/jupyterlab-manager',
       '@phosphor/widgets',
       '@phosphor/commands',
-      '@phosphor/messaging'
+      '@phosphor/disposable',
+      '@phosphor/messaging',
+      '@jupyter-widgets/jupyterlab-manager',
+      '@jupyterlab'
     ]),
     plugins: plugins
   }

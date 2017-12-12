@@ -131,12 +131,15 @@ var BeakerXPageObject = function () {
     return codeCell.$('div.dataTables_scrollBody');
   }
 
-  this.checkCellOutput = function(index, text){
+  this.checkCellOutputText = function(index, expectedText){
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();
-    var outputText = codeCell.$('.output_subarea.output_text');
-    outputText.waitForEnabled();
-    expect(outputText.getText()).toMatch(text);
+    var outputText = codeCell.$('div.output_subarea.output_text');
+    outputText.waitForVisible();
+    if(Array.isArray(outputText.isVisible())){
+      outputText = this.runCallToGetOutputText(index);
+    }
+    expect(outputText.getText()).toMatch(expectedText);
   }
 
 };

@@ -13,16 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven
 source activate beakerx
-conda install -y -c conda-forge ipywidgets jupyterhub jupyterlab
-
-rm -r /home/beakerx/beakerx/js/node_modules
-rm -r /home/beakerx/beakerx/js/dist
-
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (cd js/lab; jupyter labextension install .)
 
+rm -r /home/beakerx/beakerx/js/node_modules
+rm -r /home/beakerx/beakerx/js/dist
 rm -rf docker .DS_Store .git .gradle .idea jitpack.yml kernel RELEASE.md test .cache .yarn .local logs .ipynb_checkpoints

@@ -21,11 +21,15 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandResult;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.twosigma.beakerx.mimetype.MIMEContainer.JavaScript;
 
 public class JavaScriptMagicCommand implements MagicCommandFunctionality {
 
   public static final String JAVASCRIPT = "%%javascript";
+  public static final String JAVASCRIPT_ALIAS = "%%js";
 
   public JavaScriptMagicCommand() {
   }
@@ -36,16 +40,15 @@ public class JavaScriptMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public boolean matchCommand(String command) {
-    String[] commandParts = MagicCommandUtils.splitPath(command);
-    return commandParts.length > 0 && commandParts[0].equals(JAVASCRIPT);
-  }
-
-  @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String commandCodeBlock = param.getCommandCodeBlock();
     MIMEContainer result = JavaScript(commandCodeBlock);
     return new MagicCommandResult(MagicCommandOutcomeItem.Status.OK, result);
+  }
+
+  @Override
+  public List<String> getMagicCommandAliases(){
+    return Arrays.asList(JAVASCRIPT, JAVASCRIPT_ALIAS);
   }
 
 }

@@ -41,12 +41,6 @@ public class AddImportMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public boolean matchCommand(String command) {
-    String[] commandParts = MagicCommandUtils.splitPath(command);
-    return commandParts.length > 0 && commandParts[0].equals(IMPORT);
-  }
-
-  @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
     String[] parts = command.split(" ");

@@ -19,6 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.twosigma.beakerx.kernel.commands.MavenInvocationSilentOutputHandler;
 import com.twosigma.beakerx.kernel.commands.MavenJarResolverSilentLogger;
+import com.twosigma.beakerx.kernel.handler.MavenCacheLocker;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 
 import java.io.File;
@@ -47,31 +48,46 @@ public class MavenJarResolver {
   private String mavenLocation;
   private PomFactory pomFactory;
 
-  public MavenJarResolver(final ResolverParams commandParams,
-                          PomFactory pomFactory) {
+  public MavenJarResolver(final ResolverParams commandParams, PomFactory pomFactory) {
     this.commandParams = checkNotNull(commandParams);
     this.pathToMavenRepo = getOrCreateFile(commandParams.getPathToNotebookJars()).getAbsolutePath();
     this.pomFactory = pomFactory;
   }
 
   public AddMvnCommandResult retrieve(String groupId, String artifactId, String version, ClasspathAddMvnMagicCommand.MvnLoggerWidget progress) {
+    File cache = getOrCreateFile(this.commandParams.getPathToCache());
+    MavenCacheLocker mavenCacheLocker = new MavenCacheLocker(cache);
+    boolean lockFileAdded = mavenCacheLocker.addCacheLock();
+    if (!lockFileAdded) {
+      return AddMvnCommandResult.error("Maven is used by another process. Please try in a few seconds");
+    }
+    Dependency dependency = new Dependency(groupId, artifactId, version);
+    try {
+      return retrieveDependency(dependency, progress, cache);
+    } catch (Exception e) {
+      return AddMvnCommandResult.error(e.getMessage());
+    } finally {
+      mavenCacheLocker.removeMavenCacheLock();
+    }
+  }
+
+  private AddMvnCommandResult retrieveDependency(Dependency dependency, ClasspathAddMvnMagicCommand.MvnLoggerWidget progress, File cache) {
     File finalPom = null;
     try {
-      Dependency dependency = new Dependency(groupId, artifactId, version);
       String pomAsString = pomFactory.createPom(pathToMavenRepo, dependency, commandParams.getRepos());
       finalPom = saveToFile(commandParams.getPathToNotebookJars(), dependency, pomAsString);
       InvocationRequest request = createInvocationRequest();
       request.setOffline(commandParams.getOffline());
       request.setPomFile(finalPom);
-      Invoker invoker = getInvoker(progress);
+      Invoker invoker = getInvoker(progress, cache);
       progress.display();
       InvocationResult invocationResult = invoker.execute(request);
-      progress.close();
-      return getResult(invocationResult, groupId, artifactId, version);
+      return getResult(invocationResult, dependency);
     } catch (Exception e) {
       return AddMvnCommandResult.error(e.getMessage());
     } finally {
       deletePomFolder(finalPom);
+      progress.close();
     }
   }
 
@@ -79,18 +95,17 @@ public class MavenJarResolver {
           throws IOException {
     File finalPom = new File(pathToNotebookJars + "/poms/pom-" + UUID.randomUUID() + "-" +
             dependency.getGroupId() + dependency.getArtifactId() + dependency.getVersion() + "xml");
-
     FileUtils.writeStringToFile(finalPom, pomAsString, StandardCharsets.UTF_8);
     return finalPom;
   }
 
-  private Invoker getInvoker(ClasspathAddMvnMagicCommand.MvnLoggerWidget progress) {
+  private Invoker getInvoker(ClasspathAddMvnMagicCommand.MvnLoggerWidget progress, File cache) {
     Invoker invoker = new DefaultInvoker();
     String mvn = findMvn();
     System.setProperty("maven.home", mvn);
     invoker.setLogger(new MavenJarResolverSilentLogger());
     invoker.setOutputHandler(new MavenInvocationSilentOutputHandler(progress));
-    invoker.setLocalRepositoryDirectory(getOrCreateFile(this.commandParams.getPathToCache()));
+    invoker.setLocalRepositoryDirectory(cache);
     return invoker;
   }
 
@@ -114,12 +129,12 @@ public class MavenJarResolver {
     return mavenLocation;
   }
 
-  private AddMvnCommandResult getResult(InvocationResult invocationResult, String groupId, String artifactId, String version) {
+  private AddMvnCommandResult getResult(InvocationResult invocationResult, Dependency dependency) {
     if (invocationResult.getExitCode() != 0) {
       if (invocationResult.getExecutionException() != null) {
         return AddMvnCommandResult.error(invocationResult.getExecutionException().getMessage());
       }
-      return AddMvnCommandResult.error("Could not resolve dependencies for: " + groupId + " : " + artifactId + " : " + version);
+      return AddMvnCommandResult.error("Could not resolve dependencies for: " + dependency.getGroupId() + " : " + dependency.getArtifactId() + " : " + dependency.getVersion());
     }
 
     return AddMvnCommandResult.SUCCESS;

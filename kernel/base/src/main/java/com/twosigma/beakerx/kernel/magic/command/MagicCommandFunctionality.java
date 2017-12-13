@@ -18,9 +18,6 @@ package com.twosigma.beakerx.kernel.magic.command;
 import com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 
-import java.util.Arrays;
-import java.util.List;
-
 public interface MagicCommandFunctionality {
 
   String USAGE_ERROR_MSG = "UsageError: %s is a cell magic, but the cell body is empty.";
@@ -33,10 +30,6 @@ public interface MagicCommandFunctionality {
   default boolean matchCommand(String command){
     String[] commandParts = MagicCommandUtils.splitPath(command);
     return commandParts.length > 0 &&
-            getMagicCommandAliases().contains(commandParts[0]);
-  }
-
-  default List<String> getMagicCommandAliases(){
-    return Arrays.asList(getMagicCommandName());
+            getMagicCommandName().equals(commandParts[0]);
   }
 }

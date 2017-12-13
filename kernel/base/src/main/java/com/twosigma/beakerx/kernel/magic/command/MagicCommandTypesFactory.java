@@ -16,23 +16,7 @@
 package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.AddStaticImportMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.BashMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathRemoveMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathShowMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItLineModeMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.TimeLineModeMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +31,9 @@ public class MagicCommandTypesFactory {
     magicCommandTypes.addAll(
             newArrayList(
                     javascript(),
+                    js(),
                     html(),
+                    HTML(),
                     bash(),
                     lsmagic(magicCommandTypes),
                     addJar(kernel),
@@ -133,7 +119,15 @@ public class MagicCommandTypesFactory {
     return new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand());
   }
 
+  private static MagicCommandType HTML() {
+    return new MagicCommandType(HTMLMagicCommand.HTML, "", new HTMLMagicCommand());
+  }
+
   private static MagicCommandType javascript() {
     return new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand());
+  }
+
+  private static MagicCommandType js(){
+    return new MagicCommandType(JSMagicCommand.JAVASCRIPT, "", new JSMagicCommand());
   }
 }

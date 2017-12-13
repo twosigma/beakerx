@@ -22,15 +22,11 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandResult;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static com.twosigma.beakerx.mimetype.MIMEContainer.HTML;
 
 public class HtmlMagicCommand implements MagicCommandFunctionality {
 
   public static final String HTML = "%%html";
-  public static final String HTML_ALIAS = "%%HTML";
 
   public HtmlMagicCommand() {
   }
@@ -48,10 +44,5 @@ public class HtmlMagicCommand implements MagicCommandFunctionality {
     }
     MIMEContainer html = HTML("<html>" + commandCodeBlock + "</html>");
     return new MagicCommandResult(MagicCommandOutcomeItem.Status.OK, html);
-  }
-
-  @Override
-  public List<String> getMagicCommandAliases(){
-    return Arrays.asList(HTML, HTML_ALIAS);
   }
 }

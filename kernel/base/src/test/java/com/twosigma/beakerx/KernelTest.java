@@ -36,23 +36,7 @@ import com.twosigma.beakerx.kernel.Repos;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
-import com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.AddStaticImportMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.BashMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathRemoveMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathShowMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItLineModeMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.TimeLineModeMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.*;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
@@ -116,7 +100,9 @@ public class KernelTest implements KernelFunctionality {
     this.magicCommandTypes = new ArrayList<>();
     this.magicCommandTypes.addAll(Lists.newArrayList(
             new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand()),
+            new MagicCommandType(JSMagicCommand.JAVASCRIPT,"", new JSMagicCommand()),
             new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand()),
+            new MagicCommandType(HTMLMagicCommand.HTML, "", new HTMLMagicCommand()),
             new MagicCommandType(BashMagicCommand.BASH, "", new BashMagicCommand()),
             new MagicCommandType(LsMagicCommand.LSMAGIC, "", new LsMagicCommand(this.magicCommandTypes)),
             new MagicCommandType(ClasspathAddRepoMagicCommand.CLASSPATH_CONFIG_RESOLVER, "repoName repoURL", new ClasspathAddRepoMagicCommand(this)),

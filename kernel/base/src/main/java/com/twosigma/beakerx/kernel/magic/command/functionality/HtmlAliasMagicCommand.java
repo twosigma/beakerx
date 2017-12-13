@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-public class HTMLMagicCommand extends HtmlMagicCommand {
+public class HtmlAliasMagicCommand extends HtmlMagicCommand {
 
     public static final String HTML = "%%HTML";
 

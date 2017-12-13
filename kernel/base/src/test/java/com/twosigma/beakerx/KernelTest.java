@@ -102,7 +102,7 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand()),
             new MagicCommandType(JSMagicCommand.JAVASCRIPT,"", new JSMagicCommand()),
             new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand()),
-            new MagicCommandType(HTMLMagicCommand.HTML, "", new HTMLMagicCommand()),
+            new MagicCommandType(HtmlAliasMagicCommand.HTML, "", new HtmlAliasMagicCommand()),
             new MagicCommandType(BashMagicCommand.BASH, "", new BashMagicCommand()),
             new MagicCommandType(LsMagicCommand.LSMAGIC, "", new LsMagicCommand(this.magicCommandTypes)),
             new MagicCommandType(ClasspathAddRepoMagicCommand.CLASSPATH_CONFIG_RESOLVER, "repoName repoURL", new ClasspathAddRepoMagicCommand(this)),

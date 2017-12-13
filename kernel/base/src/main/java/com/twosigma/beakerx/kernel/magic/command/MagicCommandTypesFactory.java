@@ -120,7 +120,7 @@ public class MagicCommandTypesFactory {
   }
 
   private static MagicCommandType HTML() {
-    return new MagicCommandType(HTMLMagicCommand.HTML, "", new HTMLMagicCommand());
+    return new MagicCommandType(HtmlAliasMagicCommand.HTML, "", new HtmlAliasMagicCommand());
   }
 
   private static MagicCommandType javascript() {

@@ -27,6 +27,14 @@
         #beakerx_info .beakerx_site_link img {
             height: 35px;
         }
+
+        #sync_indicator .saving {
+            color: #f0ad4e;
+        }
+
+        #sync_indicator .saved {
+            color: #5cb85c;
+        }
     </style>
     <div id="beakerx_env_toolbar" class="list_toolbar row">
         <div class="col-xs-12 no-padding">
@@ -38,7 +46,11 @@
     <div class="beakerx_container">
         <form id="beakerx_jvm_settings_form" class="form-horizontal">
             <fieldset id="default_options">
-                <legend>JVM Options:</legend>
+                <legend>JVM Options: <span id="sync_indicator">
+                    <span class="saving hidden"><i class="fa fa-spinner"></i></span>
+                    <span class="saved hidden"><i class="fa fa-check"></i></span>
+                </span>
+                </legend>
                 <div class="form-inline form-group">
                     <label class="mr-sm-2 control-label" for="heap_GB">Heap Size</label>
                     <div class="input-group">

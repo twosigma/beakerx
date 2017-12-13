@@ -15,10 +15,18 @@
  */
 
 define(function (require) {
+  var _ = require('underscore');
   var $ = require('jquery');
   var Jupyter = require('base/js/namespace');
   var utils = require('base/js/utils');
   var urls = require('./urls');
+
+  var $beakerxEl;
+  var BeakerXTreeEvents = {
+    INPUT_CHANGED: 'beakerx:tree:input_changed',
+    SUBMIT_OPTIONS_START: 'beakerx:tree:submit_options_start',
+    SUBMIT_OPTIONS_STOP: 'beakerx:tree:submit_options_stop',
+  };
 
   function AjaxSettings(settings) {
     settings.cache = false;
@@ -47,8 +55,6 @@ define(function (require) {
     }
   }
 
-  var inputLastChangedTs = Date.now();
-
   function InputChanged(e, changeTs) {
     if (e && e.hasOwnProperty('key')) {
       switch (e.key) {
@@ -61,7 +67,7 @@ define(function (require) {
       }
     }
     if (false !== changeTs) {
-      inputLastChangedTs = Date.now();
+      $beakerxEl.trigger(BeakerXTreeEvents.INPUT_CHANGED, e);
     }
     var result = "";
     var errors = [];
@@ -221,7 +227,9 @@ define(function (require) {
     load: function () {
       var that = this;
       this.tabindex = 0;
+      $beakerxEl.trigger(BeakerXTreeEvents.SUBMIT_OPTIONS_START);
       function handle_response(response, status, xhr) {
+        $beakerxEl.trigger(BeakerXTreeEvents.SUBMIT_OPTIONS_STOP);
         var data = response.beakerx.jvm_options;
         var other_fieldset = $('#other_property');
         var properties_fieldset = $('#properties_property');
@@ -229,7 +237,7 @@ define(function (require) {
         properties_fieldset.empty();
 
         for (var key in data.properties) {
-          if (data.hasOwnProperty(key)) {
+          if (data.properties.hasOwnProperty(key)) {
             if (key === "-Xmx") {
               continue;
             }
@@ -295,6 +303,7 @@ define(function (require) {
       dataType: 'html',
       success: function (env_html, status, xhr) {
         _createBeakerxTab(env_html);
+        $beakerxEl = $('#beakerx')
         _setupFormEvents();
         _setupContinuousSync();
 
@@ -333,27 +342,32 @@ define(function (require) {
     $('#heap_GB').keyup(InputChanged);
   }
   function _setupContinuousSync() {
-    var lastSyncedTs = null;
-    function synchronizeTick() {
-      setTimeout(function() {
-        if (lastSyncedTs === null || inputLastChangedTs - lastSyncedTs >= 3000) {
-          lastSyncedTs = Date.now();
-          _submitOptions();
-        }
-        synchronizeTick();
+    $beakerxEl.on(BeakerXTreeEvents.INPUT_CHANGED, _.debounce(function(e) {
+      _submitOptions();
+    }, 1000));
+    var $syncIndicator = $('#sync_indicator');
+    $beakerxEl.on(BeakerXTreeEvents.SUBMIT_OPTIONS_START, function() {
+      $syncIndicator.empty().append($('<i>', { class: 'saving fa fa-spinner'}))
+    });
+    $beakerxEl.on(BeakerXTreeEvents.SUBMIT_OPTIONS_STOP, function() {
+      setTimeout(function(){
+        $syncIndicator.empty().append($('<i>', { class: 'saved fa fa-check'}))
       }, 1000);
-    }
-    synchronizeTick();
+    });
   }
   function _submitOptions() {
     var payload = {};
     payload['jvm_options'] = {};
     var values = [];
     var other_property = $('#other_property input');
+    var hasEmpty = false;
+
     other_property.each(function () {
       var value = $(this).val().trim();
       if (value.length > 0) {
         values.push(value);
+      } else {
+        hasEmpty = true;
       }
     });
     payload['jvm_options']['other'] = values;
@@ -366,6 +380,12 @@ define(function (require) {
 
       if (name.length > 0) {
         java_values[name] = value
+      } else {
+        hasEmpty = true;
+      }
+
+      if (value.length === 0) {
+        hasEmpty = true;
       }
 
     });
@@ -377,8 +397,10 @@ define(function (require) {
       }
     });
     payload['jvm_options']['properties'] = java_values;
-    settings.setVariables(JSON.stringify({ 'beakerx': payload }));
-    settings.load();
+    if (!hasEmpty) {
+      settings.setVariables(JSON.stringify({ 'beakerx': payload }));
+      settings.load();
+    }
   }
 
   function _onJvmPropertyAddClickedHandler(event) {

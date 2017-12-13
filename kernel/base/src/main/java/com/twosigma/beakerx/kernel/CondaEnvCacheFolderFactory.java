@@ -19,16 +19,34 @@ import java.io.File;
 import java.nio.file.Path;
 
 public class CondaEnvCacheFolderFactory implements CacheFolderFactory {
-  // "$CONDA_PREFIX/share/beakerx/maven"
 
+  private static final String CONDA_PREFIX = "CONDA_PREFIX";
+
+  // "$CONDA_PREFIX/share/beakerx/maven"
   private Path cache = null;
+  private CondaPrefix condaPrefix;
+
+  public CondaEnvCacheFolderFactory() {
+    this(new CondaPrefixSystem());
+  }
+
+  CondaEnvCacheFolderFactory(CondaPrefix condaPrefix) {
+    this.condaPrefix = condaPrefix;
+  }
 
   public Path getCache() {
     if (cache == null) {
-      String condaPrefix = System.getenv("CONDA_PREFIX");
-      cache = getOrCreateFile(condaPrefix + "/share/beakerx").toPath();
+      cache = getOrCreateFile(getCondaPrefix() + "/share/beakerx").toPath();
     }
     return cache;
+  }
+
+  private String getCondaPrefix() {
+    String conda_prefix = condaPrefix.get();
+    if (conda_prefix == null || conda_prefix.isEmpty()) {
+      throw new RuntimeException("Your CONDA_PREFIX is empty, please switch to conda env.");
+    }
+    return conda_prefix;
   }
 
   private File getOrCreateFile(String pathToMavenRepo) {
@@ -42,4 +60,17 @@ public class CondaEnvCacheFolderFactory implements CacheFolderFactory {
     }
     return theDir;
   }
+
+
+  public interface CondaPrefix {
+    String get();
+  }
+
+  public static class CondaPrefixSystem implements CondaPrefix {
+    @Override
+    public String get() {
+      return System.getenv(CONDA_PREFIX);
+    }
+  }
+
 }

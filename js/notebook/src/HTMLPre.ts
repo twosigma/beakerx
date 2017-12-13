@@ -14,8 +14,10 @@
  *  limitations under the License.
  */
 
-declare function require(moduleName: string): any;
-const widgets = require('./widgets');
+const widgets: {
+  StringModel: new() => { defaults(): any },
+  DescriptionView: new() => { el: any, model: any },
+} = require('./widgets');
 
 class HTMLPreModel extends widgets.StringModel {
   defaults() {

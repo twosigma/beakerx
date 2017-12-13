@@ -17,8 +17,6 @@
 import _ from 'underscore';
 import $ from 'jquery';
 
-declare function require(moduleName: string): any;
-
 export default function plotModal(PlotScope: any) {
 
   PlotScope.prototype.initPointsLimitModal = function() {

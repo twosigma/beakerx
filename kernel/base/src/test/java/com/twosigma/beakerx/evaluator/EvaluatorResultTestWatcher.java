@@ -22,6 +22,7 @@ import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.widgets.TestWidgetUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -100,6 +101,17 @@ public class EvaluatorResultTestWatcher {
     return idleMessage;
   }
 
+  public static Optional<Message> waitForUpdateMessage(KernelTest socketsTest) throws InterruptedException {
+    int count = 0;
+    Optional<Message> idleMessage = getUpdate(socketsTest);
+    while (!idleMessage.isPresent() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      idleMessage = getUpdate(socketsTest);
+      count++;
+    }
+    return idleMessage;
+  }
+
   private static Optional<Message> getStreamMessage(KernelTest kernelTest) {
     List<Message> listMessagesByType = SearchMessages.getListMessagesByType(kernelTest.getPublishedMessages(), JupyterMessages.STREAM);
     return listMessagesByType.stream().findFirst();
@@ -123,6 +135,14 @@ public class EvaluatorResultTestWatcher {
   private static Optional<Message> getError(KernelSocketsTest socketsTest) {
     return socketsTest.getPublishedMessages().stream().
             filter(x -> x.type().equals(JupyterMessages.ERROR)).findFirst();
+  }
+
+
+  private static Optional<Message> getUpdate(KernelTest kernel) {
+    return kernel.getPublishedMessages().stream().
+            filter(x -> x.type().equals(JupyterMessages.COMM_MSG)).
+            filter(x -> TestWidgetUtils.getData(x).get("method").equals("update")).
+            findFirst();
   }
 
 }

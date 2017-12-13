@@ -14,18 +14,25 @@
  *  limitations under the License.
  */
 
-var beakerx = require('./lib/index.js');
-var base = require('@jupyter-widgets/base');
+declare function require(moduleName: string): any;
 
-module.exports = {
+import { IJupyterWidgetRegistry } from '@jupyter-widgets/base';
+import BeakerxExtension from './plugin';
+import { JupyterLab } from '@jupyterlab/application';
+
+const beakerx = require('../lib/index.js');
+
+export default {
   id: 'beakerx',
-  requires: [base.IJupyterWidgetRegistry],
-  activate: function(app, widgets) {
+  requires: [IJupyterWidgetRegistry],
+  activate: (app: JupyterLab, widgets: IJupyterWidgetRegistry ) => {
     widgets.registerWidget({
       name: 'beakerx',
       version: beakerx.version,
       exports: beakerx
     });
+
+    app.docRegistry.addWidgetExtension('Notebook', new BeakerxExtension());
   },
   autoStart: true
 };

@@ -38,13 +38,14 @@ COPY docker/jupyter_notebook_config.py /etc/jupyter/
 
 RUN chown -R beakerx:beakerx /home/beakerx
 
-USER $NB_USER
 WORKDIR $HOME
 
 ###################
 #      Build      #
 ###################
 RUN /home/beakerx/setup.sh
+
+USER $NB_USER
 
 EXPOSE 8888
 

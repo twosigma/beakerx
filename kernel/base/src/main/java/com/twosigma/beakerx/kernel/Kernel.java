@@ -60,6 +60,7 @@ public abstract class Kernel implements KernelFunctionality {
   private EvaluatorManager evaluatorManager;
   private KernelSockets kernelSockets;
   private List<MagicCommandType> magicCommandTypes;
+  private CacheFolderFactory cacheFolderFactory = new CacheFolderFactory();
 
   public Kernel(final String sessionId, final Evaluator evaluator,
                 final KernelSocketsFactory kernelSocketsFactory) {
@@ -248,6 +249,11 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
+  public Path getCacheFolder() {
+    return cacheFolderFactory.getCache();
+  }
+
+  @Override
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
     return evaluatorManager.loadClass(clazzName);
   }
@@ -270,6 +276,7 @@ public abstract class Kernel implements KernelFunctionality {
     BeakerxDefaultDisplayers.registerDefaults();
     configureJvmRepr();
   }
+
   protected void configureJvmRepr() {
   }
 }

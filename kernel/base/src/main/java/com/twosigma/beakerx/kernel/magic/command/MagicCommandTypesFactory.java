@@ -109,7 +109,7 @@ public class MagicCommandTypesFactory {
   private static MagicCommandType addJarByMvn(KernelFunctionality kernel) {
     return new MagicCommandType(ClasspathAddMvnMagicCommand.CLASSPATH_ADD_MVN, "<group name version>",
             new ClasspathAddMvnMagicCommand(new MavenJarResolver.ResolverParams(
-                    kernel.getTempFolder().toString() + "/../beakerxMvnCache",
+                    kernel.getCacheFolder().toString() + "/maven/cache",
                     kernel.getTempFolder().toString() + MVN_DIR), kernel));
   }
 

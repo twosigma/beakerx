@@ -22,7 +22,8 @@ public class CondaEnvCacheFolderFactory implements CacheFolderFactory {
 
   private static final String CONDA_PREFIX = "CONDA_PREFIX";
 
-  // "$CONDA_PREFIX/share/beakerx/maven"
+  // "$CONDA_PREFIX/share/beakerx/maven/cache"
+
   private Path cache = null;
   private CondaPrefix condaPrefix;
 

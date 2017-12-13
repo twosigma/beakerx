@@ -132,4 +132,14 @@ describe('Charting groovy tests', function () {
     });
   });
 
+  describe('Levels Of Detail', function () {
+    it('Plot has two polygon elements', function () {
+      beakerxPO.runCodeCellByIndex(15);
+      var svgElement = beakerxPO.runCellToGetSvgElement(16);
+      svgElement.waitForEnabled();
+      expect(svgElement.$('#i0 polygon').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i1 polygon').isVisible()).toBeTruthy();
+    });
+  });
+
 });

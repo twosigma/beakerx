@@ -23,6 +23,7 @@ import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicComm
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
@@ -49,8 +50,8 @@ public class SQL extends Kernel {
     registerCustomMagicCommands();
   }
 
-  public SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction);
+  public SQL(String sessionId, Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
+    super(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory);
     registerCustomMagicCommands();
   }
 

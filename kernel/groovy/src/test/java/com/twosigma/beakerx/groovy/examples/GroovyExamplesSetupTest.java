@@ -18,7 +18,6 @@ package com.twosigma.beakerx.groovy.examples;
 import com.twosigma.beakerx.KernelSocketsServiceTest;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
-import com.twosigma.beakerx.groovy.evaluator.GroovyEvaluator;
 import com.twosigma.beakerx.groovy.kernel.Groovy;
 import com.twosigma.beakerx.widgets.Widget;
 import com.twosigma.beakerx.kernel.KernelRunner;
@@ -31,6 +30,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import static com.twosigma.beakerx.KernelCloseKernelAction.NO_ACTION;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getCacheFolderFactory;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getState;
 import static org.junit.Assert.assertTrue;
 
@@ -45,7 +45,7 @@ public abstract class GroovyExamplesSetupTest {
     String sessionId = "sessionIdWidget";
     BaseEvaluator evaluator = TestGroovyEvaluator.groovyEvaluator();
     kernelSocketsService = new KernelSocketsServiceTest();
-    kernel = new Groovy(sessionId, evaluator, kernelSocketsService,NO_ACTION);
+    kernel = new Groovy(sessionId, evaluator, kernelSocketsService, NO_ACTION, getCacheFolderFactory());
     kernelThread = new Thread(() -> KernelRunner.run(() -> kernel));
     kernelThread.start();
     kernelSocketsService.waitForSockets();

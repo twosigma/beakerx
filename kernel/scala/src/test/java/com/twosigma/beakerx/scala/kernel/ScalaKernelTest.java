@@ -23,6 +23,7 @@ import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import com.twosigma.beakerx.scala.evaluator.NoBeakerxObjectTestFactory;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getCacheFolderFactory;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 
@@ -31,7 +32,7 @@ public class ScalaKernelTest extends KernelExecutionTest {
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     ScalaEvaluator evaluator = new ScalaEvaluator(sessionId, sessionId, null, cellExecutor(), new NoBeakerxObjectTestFactory(), getTestTempFolderFactory(), EvaluatorTest.KERNEL_PARAMETERS);
-    return new Scala(sessionId, evaluator, kernelSocketsFactory, closeKernelAction);
+    return new Scala(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory());
   }
 
   @Override

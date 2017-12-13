@@ -15,8 +15,31 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import java.io.File;
 import java.nio.file.Path;
 
-public interface CacheFolderFactory {
-  Path getCache();
+public class CondaEnvCacheFolderFactory implements CacheFolderFactory {
+  // "$CONDA_PREFIX/share/beakerx/maven"
+
+  private Path cache = null;
+
+  public Path getCache() {
+    if (cache == null) {
+      String condaPrefix = System.getenv("CONDA_PREFIX");
+      cache = getOrCreateFile(condaPrefix + "/share/beakerx").toPath();
+    }
+    return cache;
+  }
+
+  private File getOrCreateFile(String pathToMavenRepo) {
+    File theDir = new File(pathToMavenRepo);
+    if (!theDir.exists()) {
+      try {
+        theDir.mkdirs();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return theDir;
+  }
 }

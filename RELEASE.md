@@ -87,7 +87,6 @@ Release to Docker Hub
 ---------------------
 
 ```
-(cd kernel; gradle clean)
 docker build -t beakerx-base -f docker/base/Dockerfile .
 docker build -t beakerx -f docker/Dockerfile .
 docker run -p 8888:8888 beakerx

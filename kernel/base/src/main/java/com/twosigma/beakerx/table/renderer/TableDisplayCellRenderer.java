@@ -22,6 +22,8 @@ public class TableDisplayCellRenderer {
 
   /**
    * shows data bars in the background if the values in the column are all Number.
+   *
+   * @return returns new DataBarsRenderer
    */
   public static TableDisplayCellRenderer getDataBarsRenderer() {
     return new DataBarsRenderer();
@@ -31,7 +33,7 @@ public class TableDisplayCellRenderer {
    * shows data bars in the background if the values in the column are all Number.
    *
    * @param includeText show text value in a cell
-   * @return
+   * @return returns new DataBarsRenderer
    */
   public static TableDisplayCellRenderer getDataBarsRenderer(boolean includeText) {
     return new DataBarsRenderer(includeText);

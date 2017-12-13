@@ -133,6 +133,10 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
 
   /**
    * Throw IllegalArgumentException if such value can't be set to this component
+   *
+   * @param value
+   *         object with data to be set
+   * @return true if value can be set to given component
    */
   protected boolean checkValue(Object value) {
     return true;

@@ -22,6 +22,7 @@ import { INotebookModel, NotebookPanel, Notebook } from '@jupyterlab/notebook';
 import { Cell, CodeCell, CodeCellModel } from '@jupyterlab/cells';
 import { showDialog, Dialog } from '@jupyterlab/apputils';
 import { Kernel } from '@jupyterlab/services';
+import { CodeMirrorEditor } from '@jupyterlab/codemirror';
 
 interface msgData {
   name?: string,
@@ -34,6 +35,8 @@ declare global {
     require: Function
   }
 }
+
+const LINE_COMMENT_CHAR = '//';
 
 function displayHTML(widget: Widget, html: string): void {
   if (!widget.node || !html) {
@@ -73,7 +76,7 @@ function sendJupyterCodeCells(
 function getCodeCellsByTag(notebook: Notebook, tag: string): Cell[] {
   let cells = notebook.widgets || [];
 
-  return cells.filter(function(cell) {
+  return cells.filter((cell) => {
     const tags: any = cell.model.metadata.get('tags');
 
     return (
@@ -81,6 +84,27 @@ function getCodeCellsByTag(notebook: Notebook, tag: string): Cell[] {
       tags && tags.length && tags.includes(tag)
     );
   });
+}
+
+function registerCommentOutCmd(panel) {
+  const cells = panel.notebook.widgets || [];
+
+  cells
+    .filter((cell) => (cell.editor instanceof CodeMirrorEditor))
+    .forEach(setCodeMirrorLineComment);
+}
+
+function setCodeMirrorLineComment(cell: Cell) {
+  if (!(cell instanceof CodeCell)) {
+    return;
+  }
+
+  const cm = <CodeMirrorEditor>cell.editor;
+  const doc = cm.doc;
+
+  if (!doc.mode.lineComment) {
+    doc.mode.lineComment = LINE_COMMENT_CHAR;
+  }
 }
 
 function registerCommTargets(panel: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>) {
@@ -142,6 +166,7 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
     registerGlobal();
 
     Promise.all([panel.ready, context.ready]).then(function() {
+      registerCommentOutCmd(panel);
       registerCommTargets(panel, context);
     });
 

@@ -21,9 +21,10 @@ import pkg_resources
 import shutil
 import subprocess
 import sys
-from string import Template
+import pathlib
 import tempfile
 
+from string import Template
 from jupyter_client.kernelspecapp import KernelSpecManager
 from traitlets.config.manager import BaseJSONConfigManager
 from distutils import log
@@ -117,6 +118,16 @@ def _uninstall_kernels():
         subprocess.check_call(uninstall_cmd)
 
 
+def _install_magics():
+    log.info("installing groovy magic for python...")
+    dir_path = os.path.join(sys.prefix, 'etc', 'ipython')
+    pathlib.Path(dir_path).mkdir(parents=True, exist_ok=True)
+    file = open(os.path.join(dir_path, 'ipython_config.py'), 'w+')
+    file.write("c = get_config()\n")
+    file.write("c.InteractiveShellApp.extensions = ['beakerx.groovy_magic']")
+    file.close()
+
+
 def _pretty(it):
     return json.dumps(it, indent=2)
 
@@ -175,6 +186,7 @@ def _install_beakerx(args):
     _install_css()
     _copy_icons()
     _install_kernelspec_manager(args.prefix)
+    _install_magics()
 
 
 def install():

@@ -46,11 +46,7 @@
     <div class="beakerx_container">
         <form id="beakerx_jvm_settings_form" class="form-horizontal">
             <fieldset id="default_options">
-                <legend>JVM Options: <span id="sync_indicator">
-                    <span class="saving hidden"><i class="fa fa-spinner"></i></span>
-                    <span class="saved hidden"><i class="fa fa-check"></i></span>
-                </span>
-                </legend>
+                <legend>JVM Options:</legend>
                 <div class="form-inline form-group">
                     <label class="mr-sm-2 control-label" for="heap_GB">Heap Size</label>
                     <div class="input-group">
@@ -85,8 +81,11 @@
                         <div class="col-xs-8">
                             <div class="pull-right">
                                 <label for="add_option_jvm_sett">add option: </label>
-                                <button type="button" id="add_option_jvm_sett" title="" class="btn btn-default btn-xs"
-                                        data-original-title="add new"><i class="fa fa-plus"></i></button>
+                                <button type="button"
+                                        id="add_option_jvm_sett"
+                                        class="btn btn-default btn-xs"
+                                        data-original-title="add new">
+                                    <i class="fa fa-plus"></i>
                                 </button>
                             </div>
                         </div>
@@ -95,7 +94,10 @@
                 </div>
             </fieldset>
             <div class="form-group text-primary">
-                <span>Result: java </span><span id="result"></span>
+                <span id="sync_indicator">
+                    <span class="saving hidden"><i class="fa fa-spinner"></i></span>
+                    <span class="saved hidden"><i class="fa fa-check"></i></span>
+                </span><span>Result: java </span><span id="result"></span>
             </div>
             <div id="errors" style="color: red"></div>
         </form>

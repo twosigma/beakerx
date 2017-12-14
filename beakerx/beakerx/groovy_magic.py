@@ -63,6 +63,8 @@ class GroovyMagics(Magics):
     def groovy(self, line, cell):
         return self.run_cell(line, cell)
 
+def load_ipython_extension(ipython):
+    ipython.register_magics(GroovyMagics)
 
 if __name__ == '__main__':
     ip = get_ipython()

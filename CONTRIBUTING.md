@@ -16,8 +16,25 @@
 
 # Contributing
 
-We welcome developers to extend and improve BeakerX in ways that can
-benefit everyone. In order for us to accept your code or pull request,
+We welcome users and developers to help us extend and improve BeakerX
+for the benefit of all.  The two main ways of doing that are by filing
+issues and submitting pull requests.
+
+## Issues
+
+First search and see if an appropriate issue already exists.  You can
+add your comments or reaction there.
+
+If you are reporting a bug:
+
+* Make sure you have the latest released version of BeakerX.
+
+* Include precise instructions for reproducing the problem.  Linking
+  to a published notebook is often a good way.
+
+## Pull Requests
+
+In order for us to accept your code or pull request,
 we need for you to fill out and email back to us a scan of a signed copy of the
 [Contributor License Agreement](http://beakernotebook.com/cla.zip).
 
@@ -28,7 +45,7 @@ style](https://google.github.io/styleguide/jsguide.html) with
 [require](http://requirejs.org/) instead of goog.  All files should
 end with newline and have a copyright and license banner.
 
-# Core Team Process
+## Core Team Process
 
 For those with write access to the github repository, please use the
 following system for naming your branches and submitting your work.

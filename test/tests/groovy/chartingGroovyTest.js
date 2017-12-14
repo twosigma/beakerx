@@ -142,4 +142,57 @@ describe('Charting groovy tests', function () {
     });
   });
 
+  function calculateSquare(rectElement){
+    return Math.round(rectElement.getAttribute('height')) * Math.round(rectElement.getAttribute('width'));
+  }
+
+  describe('TreeMap', function () {
+    it('Plot has TreeMap', function () {
+      beakerxPO.runCodeCellByIndex(17);
+      var svgElement = beakerxPO.runCellToGetSvgElement(18);
+      svgElement.waitForEnabled();
+      expect(svgElement.$$('g.cell').length).toBe(13);
+    });
+
+    var svgElement1;
+    it('(Mode.SQUARIFY) 1st and 2nd elements have the same colors and squares', function () {
+      svgElement1 = beakerxPO.runCellToGetSvgElement(19);
+      svgElement1.waitForEnabled();
+      var rect2 = svgElement1.$('g#i2.cell > rect');
+      var rect3 = svgElement1.$('g#i3.cell > rect');
+      expect(rect2.getCssProperty('fill').value).toEqual(rect3.getCssProperty('fill').value);
+      expect(calculateSquare(rect2)).toEqual(calculateSquare(rect3));
+    });
+
+    it('(Mode.SQUARIFY) 1st and 13th elements have the differents colors and squares', function () {
+      var rect2 = svgElement1.$('g#i2.cell > rect');
+      var rect16 = svgElement1.$('g#i16.cell > rect');
+      expect(rect2.getCssProperty('fill').value).not.toEqual(rect16.getCssProperty('fill').value);
+      expect(calculateSquare(rect2)).not.toEqual(calculateSquare(rect16));
+    });
+
+    it('(Mode.SLICE) 1st and 13th elements have the same widths', function () {
+      var svgElement = beakerxPO.runCellToGetSvgElement(20);
+      var rect2 = svgElement.$('g#i2.cell > rect');
+      var rect16 = svgElement.$('g#i16.cell > rect');
+      expect(Math.round(rect2.getAttribute('width'))).toEqual(Math.round(rect16.getAttribute('width')));
+    });
+
+    it('(Mode.DICE) 1st and 13th elements have the same heights', function () {
+      var svgElement = beakerxPO.runCellToGetSvgElement(21);
+      var rect2 = svgElement.$('g#i2.cell > rect');
+      var rect16 = svgElement.$('g#i16.cell > rect');
+      expect(Math.round(rect2.getAttribute('height'))).toEqual(Math.round(rect16.getAttribute('height')));
+    });
+
+    it('(Mode.SLICE_DIC) 1st and 13th elements have the differents heights', function () {
+      var svgElement = beakerxPO.runCellToGetSvgElement(22);
+      var rect2 = svgElement.$('g#i2.cell > rect');
+      var rect16 = svgElement.$('g#i16.cell > rect');
+      var maing = svgElement.$('g#maing');
+      expect(Math.round(maing.getElementSize('height'))).toEqual(Math.round(rect16.getElementSize('height')));
+      expect(Math.round(rect2.getAttribute('height'))).not.toEqual(Math.round(rect16.getAttribute('height')));
+    });
+  });
+
 });

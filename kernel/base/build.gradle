@@ -81,7 +81,7 @@ def gitGetLatestTagVersion() {
 
 def mainDir = file("../../")
 
-task prepareBuildVerion() {
+task prepareBuildVersion() {
   doLast {
     new File(resourceDir, 'version').write(gitGetLatestTagVersion())
     new File(resourceDir, 'hash').write(gitGetHash())
@@ -90,7 +90,7 @@ task prepareBuildVerion() {
   }
 }
 
-compileJava.dependsOn prepareBuildVerion
+compileJava.dependsOn prepareBuildVersion
 
 task copyDependencies(type: Copy) {
   from configurations.runtime

@@ -61,8 +61,7 @@ public abstract class BaseEvaluator implements Evaluator {
     init(evaluatorParameters);
   }
 
-  @Override
-  public boolean addJarToClasspath(PathToJar path) {
+  private boolean addJarToClasspath(PathToJar path) {
     boolean add = classPath.add(path);
     if (add) {
       addJarToClassLoader(path);

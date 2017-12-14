@@ -193,11 +193,6 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public boolean addJarToClasspath(PathToJar path) {
-    return this.evaluatorManager.addJarToClasspath(path);
-  }
-
-  @Override
   public List<Path> addJarsToClasspath(List<PathToJar> paths) {
     return this.evaluatorManager.addJarsToClasspath(paths);
   }

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,8 @@ public abstract class ClasspathMagicCommand implements MagicCommandFunctionality
 
     } else {
       Path currentPath = Paths.get(path);
-      if (this.kernel.addJarToClasspath(new PathToJar(path))) {
+      List<Path> paths = this.kernel.addJarsToClasspath(Arrays.asList(new PathToJar(path)));
+      if (!paths.isEmpty()) {
         addedJarsName.add(currentPath.getFileName().toString());
       }
     }

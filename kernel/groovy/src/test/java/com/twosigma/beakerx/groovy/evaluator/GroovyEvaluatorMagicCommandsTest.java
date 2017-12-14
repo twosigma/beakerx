@@ -25,9 +25,13 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyEvaluatorMagicCommandsTest {
@@ -57,7 +61,7 @@ public class GroovyEvaluatorMagicCommandsTest {
     assertThat(seo.getStatus()).isEqualTo(ERROR);
     //when
     PathToJar path = new PathToJar(SRC_TEST_RESOURCES + "demo.jar");
-    groovyEvaluator.addJarToClasspath(path);
+    groovyEvaluator.addJarsToClasspath(singletonList(path));
     //then
     SimpleEvaluationObject seo2 = runCode(code);
     assertThat(seo2.getStatus()).isEqualTo(FINISHED);

@@ -67,8 +67,6 @@ public interface KernelFunctionality {
 
   void sendIdleMessage(Message message);
 
-  boolean addJarToClasspath(PathToJar path);
-
   List<Path> addJarsToClasspath(List<PathToJar> paths);
 
   Classpath getClasspath();

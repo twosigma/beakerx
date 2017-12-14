@@ -115,10 +115,6 @@ public class EvaluatorManager {
     return seowt;
   }
 
-  public boolean addJarToClasspath(PathToJar path) {
-    return this.evaluator.addJarToClasspath(path);
-  }
-
   public List<Path> addJarsToClasspath(List<PathToJar> paths) {
     return this.evaluator.addJarsToClasspath(paths);
   }

@@ -26,7 +26,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.executeMagicCommands;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClasspathMagicCommandTest {
@@ -91,7 +94,7 @@ public class ClasspathMagicCommandTest {
   @Test
   public void showClasspath() throws Exception {
     //given
-    kernel.addJarToClasspath(new PathToJar(CLASSPATH_TO_JAR));
+    kernel.addJarsToClasspath(asList(new PathToJar(CLASSPATH_TO_JAR)));
     Code code = CodeFactory.create("%classpath", new Message(), kernel);
     //when
     MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
@@ -102,9 +105,9 @@ public class ClasspathMagicCommandTest {
   @Test
   public void showClasspathShouldNotContainDuplication() throws Exception {
     //given
-    kernel.addJarToClasspath(new PathToJar(CLASSPATH_TO_JAR));
+    kernel.addJarsToClasspath(asList(new PathToJar(CLASSPATH_TO_JAR)));
     //when
-    kernel.addJarToClasspath(new PathToJar(CLASSPATH_TO_JAR));
+    kernel.addJarsToClasspath(asList(new PathToJar(CLASSPATH_TO_JAR)));
     Code code = CodeFactory.create("%classpath", new Message(), kernel);
     MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then

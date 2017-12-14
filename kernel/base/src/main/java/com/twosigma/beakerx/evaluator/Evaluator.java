@@ -54,8 +54,6 @@ public interface Evaluator {
 
   void resetEnvironment();
 
-  boolean addJarToClasspath(PathToJar path);
-
   List<Path> addJarsToClasspath(List<PathToJar> paths);
 
   Classpath getClasspath();

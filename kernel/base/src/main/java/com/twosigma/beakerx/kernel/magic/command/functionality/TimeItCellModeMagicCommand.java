@@ -38,12 +38,6 @@ public class TimeItCellModeMagicCommand extends TimeMagicCommand {
   }
 
   @Override
-  public boolean matchCommand(String command) {
-    String[] commandParts = MagicCommandUtils.splitPath(command);
-    return commandParts.length > 0 && commandParts[0].equals(TIMEIT_CELL);
-  }
-
-  @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     Code code = param.getCode();
     Message message = param.getCode().getMessage();

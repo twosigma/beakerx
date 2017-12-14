@@ -39,12 +39,6 @@ public class LsMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public boolean matchCommand(String command) {
-    String[] commandParts = MagicCommandUtils.splitPath(command);
-    return commandParts.length > 0 && commandParts[0].equals(LSMAGIC);
-  }
-
-  @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String result = "Available magic commands:\n";
 

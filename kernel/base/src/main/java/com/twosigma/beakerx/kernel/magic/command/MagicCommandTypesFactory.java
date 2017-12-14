@@ -24,8 +24,10 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMa
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathRemoveMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathShowMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlAliasMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.JSMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
@@ -47,7 +49,9 @@ public class MagicCommandTypesFactory {
     magicCommandTypes.addAll(
             newArrayList(
                     javascript(),
+                    js(),
                     html(),
+                    HTML(),
                     bash(),
                     lsmagic(magicCommandTypes),
                     addJar(kernel),
@@ -133,7 +137,15 @@ public class MagicCommandTypesFactory {
     return new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand());
   }
 
+  private static MagicCommandType HTML() {
+    return new MagicCommandType(HtmlAliasMagicCommand.HTML, "", new HtmlAliasMagicCommand());
+  }
+
   private static MagicCommandType javascript() {
     return new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand());
+  }
+
+  private static MagicCommandType js(){
+    return new MagicCommandType(JSMagicCommand.JAVASCRIPT, "", new JSMagicCommand());
   }
 }

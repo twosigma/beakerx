@@ -46,7 +46,7 @@ public abstract class BaseEvaluator implements Evaluator {
   protected Classpath classPath;
   protected Imports imports;
   private final CellExecutor executor;
-  protected Path tempFolder;
+  private Path tempFolder;
   protected Repos repos;
 
   public BaseEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
@@ -61,13 +61,16 @@ public abstract class BaseEvaluator implements Evaluator {
     init(evaluatorParameters);
   }
 
-  private boolean addJarToClasspath(PathToJar path) {
-    boolean add = classPath.add(path);
-    if (add) {
-      addJarToClassLoader(path);
-    }
-    return add;
+  protected abstract void addJarToClassLoader(PathToJar pathToJar);
+
+  protected abstract void addImportToClassLoader(ImportPath anImport);
+
+  protected abstract void doResetEnvironment();
+
+  protected void doReloadEvaluator() {
   }
+
+  public abstract ClassLoader getClassLoader();
 
   @Override
   public List<Path> addJarsToClasspath(List<PathToJar> paths) {
@@ -77,7 +80,16 @@ public abstract class BaseEvaluator implements Evaluator {
         addedPaths.add(Paths.get(path.getPath()));
       }
     });
+    doReloadEvaluator();
     return addedPaths;
+  }
+
+  private boolean addJarToClasspath(PathToJar path) {
+    boolean add = classPath.add(path);
+    if (add) {
+      addJarToClassLoader(path);
+    }
+    return add;
   }
 
   @Override
@@ -94,6 +106,10 @@ public abstract class BaseEvaluator implements Evaluator {
     if (removeImportPath(anImport)) {
       resetEnvironment();
     }
+  }
+
+  protected boolean removeImportPath(ImportPath anImport) {
+    return imports.remove(anImport);
   }
 
   @Override
@@ -114,14 +130,6 @@ public abstract class BaseEvaluator implements Evaluator {
   @Override
   public String addRepo(String name, String url) {
     return repos.add(name, url);
-  }
-
-  protected abstract void addJarToClassLoader(PathToJar pathToJar);
-
-  protected abstract void addImportToClassLoader(ImportPath anImport);
-
-  protected boolean removeImportPath(ImportPath anImport) {
-    return imports.remove(anImport);
   }
 
   protected void init(EvaluatorParameters kernelParameters) {
@@ -183,8 +191,6 @@ public abstract class BaseEvaluator implements Evaluator {
     doResetEnvironment();
   }
 
-  protected abstract void doResetEnvironment();
-
   public String getSessionId() {
     return sessionId;
   }
@@ -210,8 +216,6 @@ public abstract class BaseEvaluator implements Evaluator {
       throw new RuntimeException(e);
     }
   }
-
-  public abstract ClassLoader getClassLoader();
 
   @Override
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {

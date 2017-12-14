@@ -181,7 +181,6 @@ define(function (require) {
     }
   };
   var settings = {
-    tabindex: 0,
     formId: 'beakerx_jvm_settings_form',
     randId: function () {
       return Math.random().toString(36).substr(2, 10);
@@ -207,7 +206,6 @@ define(function (require) {
         'type': 'button',
         'class': 'btn btn-default btn-sm',
         'data-original-title': 'remove row',
-        'tabindex': this.tabindex++,
       }).append(
         $('<i>', {'class': 'fa fa-times'}
       )).click(function (event) {
@@ -215,18 +213,17 @@ define(function (require) {
         InputChanged();
       });
     },
+
     _createInput: function(placeholder, value) {
       return $('<input>', {
         class: 'form-control',
         id: this.randId(),
         placeholder: placeholder,
-        tabindex: this.tabindex++
       }).val(value).keyup(InputChanged);
     },
 
     load: function () {
       var that = this;
-      this.tabindex = 0;
       $beakerxEl.trigger(BeakerXTreeEvents.SUBMIT_OPTIONS_START);
       function handle_response(response, status, xhr) {
         $beakerxEl.trigger(BeakerXTreeEvents.SUBMIT_OPTIONS_STOP);
@@ -345,16 +342,40 @@ define(function (require) {
     $beakerxEl.on(BeakerXTreeEvents.INPUT_CHANGED, _.debounce(function(e) {
       _submitOptions();
     }, 1000));
+
+    $beakerxEl.on(BeakerXTreeEvents.INPUT_CHANGED, function(e, inputEvt) {
+      _saveLastChanged($(inputEvt.currentTarget))
+    });
+
     var $syncIndicator = $('#sync_indicator');
     $beakerxEl.on(BeakerXTreeEvents.SUBMIT_OPTIONS_START, function() {
-      $syncIndicator.empty().append($('<i>', { class: 'saving fa fa-spinner'}))
+      $syncIndicator.empty().append($('<i>', { class: 'saving fa fa-spinner'}));
     });
     $beakerxEl.on(BeakerXTreeEvents.SUBMIT_OPTIONS_STOP, function() {
       setTimeout(function(){
-        $syncIndicator.empty().append($('<i>', { class: 'saved fa fa-check'}))
-      }, 1000);
+        $syncIndicator.empty().append($('<i>', { class: 'saved fa fa-check'}));
+        _restoreLastChanged();
+      }, 500);
     });
   }
+
+  var lastChanged;
+  function _saveLastChanged($el) {
+    lastChanged = {
+      pid: $el.parents('#other_property,#properties_property,#default_options').attr('id'),
+      value: $el.val(),
+      placeholder: $el.attr('placeholder'),
+    };
+  }
+
+  function _restoreLastChanged() {
+    $('#' + lastChanged.pid)
+      .find('[placeholder='+ lastChanged.placeholder + ']')
+      .filter(function() { return this.value === lastChanged.value })
+      .eq(0)
+      .focus();
+  }
+
   function _submitOptions() {
     var payload = {};
     payload['jvm_options'] = {};

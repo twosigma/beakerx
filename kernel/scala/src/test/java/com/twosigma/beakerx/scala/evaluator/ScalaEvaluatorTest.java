@@ -21,11 +21,11 @@ import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.scala.TestScalaEvaluator;
 import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
 
 import com.twosigma.beakerx.widgets.DisplayableWidget;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,11 +38,15 @@ import java.util.List;
 import java.util.Map;
 
 import static com.twosigma.beakerx.DefaultJVMVariables.IMPORTS;
+import static com.twosigma.beakerx.KernelExecutionTest.DEMO_JAR;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScalaEvaluatorTest {
+
   private static ScalaEvaluator scalaEvaluator;
 
   @BeforeClass
@@ -77,9 +81,9 @@ public class ScalaEvaluatorTest {
     scalaEvaluator.evaluate(seo, code);
     waitForResult(seo);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    Assertions.assertThat(seo.getPayload() instanceof Plot).isTrue();
-    Assertions.assertThat(((Plot) seo.getPayload()).getTitle()).isEqualTo("test title");
+    assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(seo.getPayload() instanceof Plot).isTrue();
+    assertThat(((Plot) seo.getPayload()).getTitle()).isEqualTo("test title");
   }
 
   @Test
@@ -98,7 +102,7 @@ public class ScalaEvaluatorTest {
     scalaEvaluator.evaluate(seo, code);
     waitForResult(seo);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(seo.getStatus()).isEqualTo(FINISHED);
   }
 
   @Test
@@ -110,8 +114,8 @@ public class ScalaEvaluatorTest {
     scalaEvaluator.evaluate(seo, code);
     waitForResult(seo);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
-    Assertions.assertThat((String) seo.getPayload()).contains("incomplete");
+    assertThat(seo.getStatus()).isEqualTo(ERROR);
+    assertThat((String) seo.getPayload()).contains("incomplete");
   }
 
   @Test
@@ -124,8 +128,19 @@ public class ScalaEvaluatorTest {
     scalaEvaluator.evaluate(seo, code);
     waitForResult(seo);
     //then
-    Assertions.assertThat(seo.getPayload() instanceof DisplayableWidget).isTrue();
+    assertThat(seo.getPayload() instanceof DisplayableWidget).isTrue();
   }
 
+  @Test
+  public void newShellAndTheSameClassLoaderWhenAddJars() throws Exception {
+    //given
+    ScalaEvaluatorGlue shell = scalaEvaluator.getShell();
+    ClassLoader classLoader = scalaEvaluator.getClassLoader();
+    //when
+    scalaEvaluator.addJarsToClasspath(singletonList(new PathToJar(DEMO_JAR)));
+    //then
+    assertThat(scalaEvaluator.getShell()).isNotEqualTo(shell);
+    assertThat(scalaEvaluator.getClassLoader()).isEqualTo(classLoader);
+  }
 }
 

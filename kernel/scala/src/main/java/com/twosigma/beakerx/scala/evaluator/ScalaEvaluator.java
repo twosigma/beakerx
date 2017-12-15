@@ -90,6 +90,7 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   @Override
   protected void doReloadEvaluator() {
+    this.classLoader = newClassLoader();
     this.shell = createNewEvaluator();
   }
 

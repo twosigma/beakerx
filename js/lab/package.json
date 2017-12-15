@@ -25,6 +25,7 @@
     "@jupyter-widgets/controls": "^1.1.2",
     "@jupyter-widgets/output": "^1.0.10",
     "@jupyterlab/application": "^0.13.0",
+    "@jupyterlab/codemirror": "^0.13.0",
     "@jupyterlab/coreutils": "^0.13.0",
     "@jupyterlab/docregistry": "^0.13.0",
     "@jupyterlab/notebook": "^0.13.0",

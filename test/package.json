@@ -1,6 +1,8 @@
 {
-  "name": "beakerxtests",
+  "name": "beakerx-tests",
   "version": "1.0.0",
+  "author": "Two Sigma Open Source, LLC",
+  "license": "Apache-2.0",
   "dependencies": {
     "webdriverio": "4.9.11",
     "selenium-standalone": "6.4.1",

@@ -42,7 +42,7 @@ with open(os.devnull, "w") as fnull:
             break
 
 # start jupyter notebook
-nb_command = 'jupyter notebook --no-browser --notebook-dir="%s"' % beakerx_dir
+nb_command = 'jupyter notebook --no-browser --notebook-dir="%s" --NotebookApp.token=""' % beakerx_dir
 beakerx = subprocess.Popen(nb_command, shell=True, executable="/bin/bash", preexec_fn=os.setsid, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
 # wait for notebook server to start up
 while 1:

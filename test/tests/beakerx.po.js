@@ -38,7 +38,6 @@ var BeakerXPageObject = function () {
 
   this.runNotebookByUrl = function(url){
     browser.url('http://127.0.0.1:8888' + url);
-    this.loginJupyter();
     this.kernelIdleIcon.waitForEnabled();
   }
 

@@ -53,6 +53,15 @@ while 1:
     if 'The Jupyter Notebook is running' in line:
         break
 
+# create handler for Ctrl+C
+def signal_handler(sgnl, frame):
+    os.killpg(os.getpgid(webcontrol.pid), signal.SIGKILL)
+    os.killpg(os.getpgid(beakerx.pid), signal.SIGKILL)
+    os.system("kill -9 `pgrep -f jupyter`")
+    os.system("kill -9 `pgrep -f webdriver`")
+    sys.exit(20)
+signal.signal(signal.SIGINT, signal_handler)
+
 #start webdriverio
 result=subprocess.call("yarn run test", shell=True)
 

@@ -18,24 +18,10 @@
 
 Running the e2e tests from its GitHub source code requires Chrome browser version 62+.
 
-## Setting Up a Test Environment
-
-Create a [notebook configuration file](http://jupyter-notebook.readthedocs.io/en/latest/public_server.html#prerequisite-a-notebook-configuration-file):
-```
-$ jupyter notebook --generate-config
-```
-
-[Prepare a hashed password:](http://jupyter-notebook.readthedocs.io/en/latest/public_server.html#preparing-a-hashed-password)
-Set up password as 'beakerx'.
-``` 
-$ jupyter notebook password
-Enter password: beakerx 
-Verify password: beakerx
-[NotebookPasswordApp] Wrote hashed password to /Users/you/.jupyter/jupyter_notebook_config.json
-```
-
 ## Run the tests
 
 ```
 ./run_tests.py
 ```
+
+By default, a notebook server runs locally at 127.0.0.1:8888 and is accessible only from localhost. 

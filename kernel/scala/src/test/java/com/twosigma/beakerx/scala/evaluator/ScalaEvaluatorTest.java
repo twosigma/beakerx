@@ -139,10 +139,8 @@ public class ScalaEvaluatorTest {
     //when
     scalaEvaluator.addJarsToClasspath(singletonList(new PathToJar(DEMO_JAR)));
     //then
-    assertThat(scalaEvaluator.getShell()).isNotEqualTo(shell);
-    //assertThat(scalaEvaluator.getClassLoader()).isEqualTo(classLoader);
-    //have to introduce native lib problem to solve input output problem
-    assertThat(scalaEvaluator.getClassLoader()).isNotEqualTo(classLoader);
+    assertThat(scalaEvaluator.getShell()).isEqualTo(shell);
+    assertThat(scalaEvaluator.getClassLoader()).isEqualTo(classLoader);
   }
 }
 

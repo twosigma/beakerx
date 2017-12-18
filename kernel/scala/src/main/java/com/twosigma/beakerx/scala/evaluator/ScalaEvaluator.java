@@ -81,6 +81,7 @@ public class ScalaEvaluator extends BaseEvaluator {
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
     classLoader.addJar(pathToJar);
+    this.shell.addUrlsToClassPath(pathToJar.getUrl());
   }
 
   @Override
@@ -88,11 +89,11 @@ public class ScalaEvaluator extends BaseEvaluator {
     addImportToShell(this.shell, anImport);
   }
 
-  @Override
-  protected void doReloadEvaluator() {
-    this.classLoader = newClassLoader();
-    this.shell = createNewEvaluator();
-  }
+//  @Override
+//  protected void doReloadEvaluator() {
+//    this.classLoader = newClassLoader();
+//    this.shell = createNewEvaluator();
+//  }
 
   @Override
   protected void doResetEnvironment() {

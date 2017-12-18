@@ -20,17 +20,10 @@ var BeakerXPageObject = function () {
   this.baseTestURL = 'http://127.0.0.1:8888/tree/test/notebooks';
   this.kernelIdleIcon = $('i.kernel_idle_icon');
 
-  this.loginJupyter = function () {
-    browser.waitForEnabled('#password_input');
-    browser.setValue('#password_input', 'beakerx');
-    browser.click('#login_submit');
-  }
-
   this.runNotebookByName = function(name, done, subDir){
     browser
       .url(subDir === undefined ? this.baseDocURL : this.baseDocURL + '/' + subDir)
       .call(done);
-    this.loginJupyter();
     browser.waitForEnabled('=' + name);
     browser.click('=' + name);
     browser.window(browser.windowHandles().value[1]);
@@ -38,7 +31,6 @@ var BeakerXPageObject = function () {
 
   this.runNotebookByUrl = function(url){
     browser.url('http://127.0.0.1:8888' + url);
-    this.loginJupyter();
     this.kernelIdleIcon.waitForEnabled();
   }
 

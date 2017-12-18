@@ -40,12 +40,6 @@ public class BashMagicCommand implements MagicCommandFunctionality {
   }
 
   @Override
-  public boolean matchCommand(String command) {
-    String[] commandParts = MagicCommandUtils.splitPath(command);
-    return commandParts.length > 0 && commandParts[0].equals(BASH);
-  }
-
-  @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     Code code = param.getCode();
     return code.getCodeBlock().map(codeWithoutCommand -> {

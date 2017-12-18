@@ -45,14 +45,14 @@ describe('Testing of plot Actions', function () {
       svgElement1.$('rect#i0_0').click();
       browser.keys("t");
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutput(1, '1:6');
+      beakerxPO.checkCellOutputText(1, '1:6');
     });
 
     it('onKey "K" should run the tag (by closure)', function () {
       svgElement1.$('rect#i0_2').click();
       browser.keys("k");
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutput(1, '3:3');
+      beakerxPO.checkCellOutputText(1, '3:3');
     });
   });
 
@@ -71,14 +71,14 @@ describe('Testing of plot Actions', function () {
     it('Click on the bar should run the tag (by closure)', function () {
       svgElement2.$('rect#i0_1').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutput(3, '2:3');
+      beakerxPO.checkCellOutputText(3, '2:3');
     });
 
     it('Click on the bar should run the tag (by string name)', function () {
       var svgElement3 = beakerxPO.runCellToGetSvgElement(4);
       svgElement3.$('rect#i0_0').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutput(5, '1:5');
+      beakerxPO.checkCellOutputText(5, '1:5');
     });
   });
 

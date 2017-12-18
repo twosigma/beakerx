@@ -173,8 +173,10 @@ public abstract class ChartDetails extends BeakerxWidget {
    * Taken from code{@code com.twosigma.beaker.groovy.rest.ChartRest#getGraphics}
    * 
    * @param info
+   *         GraphicsActionObject
    * @param chart
-   * @return
+   *         ChartDetails
+   * @return list of Graphics for given plot data
    */
   protected List<? extends Graphics> getGraphics(GraphicsActionObject info, ChartDetails chart) {
     List<? extends Graphics> graphics = null;
@@ -193,8 +195,10 @@ public abstract class ChartDetails extends BeakerxWidget {
    * code{@code com.twosigma.beaker.groovy.rest.ChartRest#getGraphicsById}
    * 
    * @param graphicsList
+   *         list of Graphics objects
    * @param graphicsId
-   * @return
+   *         string with id of Graphics object
+   * @return Graphics with given id or null if it wasn't found
    */
   protected Graphics getGraphicsById(List<? extends Graphics> graphicsList, String graphicsId) {
     if (graphicsList != null) {

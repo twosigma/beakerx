@@ -111,8 +111,6 @@ describe('Groovy tests', function () {
   describe('getCodeCells(tag) method', function () {
 
     it('Tag cell output contains "5"', function(){
-      var codeCell = beakerxPO.runCodeCellByIndex(8);
-      beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(8, '5');
     });
 

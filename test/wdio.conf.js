@@ -84,7 +84,7 @@ exports.config = {
   bail: 0,
   //
   // Saves a screenshot to a given path if a command fails.
-  screenshotPath: './errorShots/',
+  // screenshotPath: './errorShots/',
   //
   // Set a base URL in order to shorten url command calls. If your url parameter starts
   // with "/", then the base url gets prepended.
@@ -99,6 +99,8 @@ exports.config = {
   //
   // Default request retries count
   connectionRetryCount: 3,
+  //
+  deprecationWarnings: false,
   //
   // Initialize the browser instance with a WebdriverIO plugin. The object should have the
   // plugin name as key and the desired plugin options as properties. Make sure you have

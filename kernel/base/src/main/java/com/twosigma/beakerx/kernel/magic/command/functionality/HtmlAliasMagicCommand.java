@@ -13,32 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widgets.strings;
+package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.message.Message;
+public class HtmlAliasMagicCommand extends HtmlMagicCommand {
 
-public class HTML extends StringWidget {
+    public static final String HTML = "%%HTML";
 
-  public static final String VIEW_NAME_VALUE = "HTMLView";
-  public static final String MODEL_NAME_VALUE = "HTMLModel";
+    @Override
+    public String getMagicCommandName(){
+        return HTML;
+    }
 
-  public HTML() {
-    super();
-    openComm();
-  }
-
-  public HTML(Message parent) {
-    super();
-    openComm(parent);
-  }
-
-  @Override
-  public String getModelNameValue() {
-    return MODEL_NAME_VALUE;
-  }
-
-  @Override
-  public String getViewNameValue() {
-    return VIEW_NAME_VALUE;
-  }
 }

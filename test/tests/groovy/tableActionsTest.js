@@ -40,7 +40,7 @@ describe('Testing of table Actions', function () {
       var cell_0 = tblElement.$$('td.ui-selectee')[tblcell_index];
       var value1 = parseInt(cell_0.getText());
       cell_0.rightClick();
-      browser.click('span=plusOne');
+      browser.click('div.p-Menu-itemLabel=plusOne');
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var value2 = parseInt(getTableElement(0).$$('td.ui-selectee')[tblcell_index].getText());
       expect(value2).toBeGreaterThan(value1);
@@ -49,17 +49,17 @@ describe('Testing of table Actions', function () {
     it('ContextMenuItem should run tag (by string)', function () {
       var cell_1 = getTableElement(0).$$('td.ui-selectee')[2];
       cell_1.rightClick();
-      browser.click('span=tag1ByStr');
+      browser.click('div.p-Menu-itemLabel=tag1ByStr');
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutput(1, '0:1=2');
+      beakerxPO.checkCellOutputText(1, '0:1=2');
     });
 
     it('ContextMenuItem should run tag (by closure)', function () {
       var cell_2 = getTableElement(0).$$('td.ui-selectee')[3];
       cell_2.rightClick();
-      browser.click('span=tag1ByClosure');
+      browser.click('div.p-Menu-itemLabel=tag1ByClosure');
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutput(1, '0:2=3');
+      beakerxPO.checkCellOutputText(1, '0:2=3');
     });
 
   });
@@ -81,7 +81,7 @@ describe('Testing of table Actions', function () {
       var cell_1 = tblElement.$$('td.ui-selectee')[2];
       cell_1.doubleClick();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutput(4, '0:1=2');
+      beakerxPO.checkCellOutputText(4, '0:1=2');
     });
 
     it('DoubleClickAction should run tag (by closure)', function () {
@@ -89,7 +89,7 @@ describe('Testing of table Actions', function () {
       var cell_1 = tblElement.$$('td.ui-selectee')[3];
       cell_1.doubleClick();
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.checkCellOutput(6, '0:2=3');
+      beakerxPO.checkCellOutputText(6, '0:2=3');
     });
   });
 

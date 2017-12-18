@@ -77,24 +77,30 @@ var BeakerXPageObject = function () {
   this.runCellToGetDtContainer = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
-    codeCell.waitForEnabled();
     return codeCell.$('div.dtcontainer');
   }
 
   this.runCellToGetSvgElement = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
-    codeCell.waitForEnabled();
     return codeCell.$('#svgg');
   }
 
   this.runCallAndCheckOutputText = function(index, expectedText){
-    var codeCell = this.runCodeCellByIndex(index);
-    this.kernelIdleIcon.waitForEnabled();
-    var outputText = codeCell.$('.output_subarea.output_text');
-    outputText.waitForExist();
-    outputText.waitForEnabled();
+    var attempt = 3;
+    var outputText = this.runCallToGetOutputText(index);
+    while(Array.isArray(outputText.isVisible()) && attempt > 0){
+      outputText = this.runCallToGetOutputText(index);
+      attempt--;
+    }
     expect(outputText.getText()).toMatch(expectedText);
+  }
+
+  this.runCallToGetOutputText = function(index){
+    var codeCell = this.runCodeCellByIndex(index);
+    var outputText = codeCell.$('div.output_subarea.output_text');
+    outputText.waitForVisible();
+    return outputText;
   }
 
   this.plotLegendContainerIsEnabled = function(dtcontainer){
@@ -125,12 +131,15 @@ var BeakerXPageObject = function () {
     return codeCell.$('div.dataTables_scrollBody');
   }
 
-  this.checkCellOutput = function(index, text){
+  this.checkCellOutputText = function(index, expectedText){
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();
-    var outputText = codeCell.$('.output_subarea.output_text');
-    outputText.waitForEnabled();
-    expect(outputText.getText()).toMatch(text);
+    var outputText = codeCell.$('div.output_subarea.output_text');
+    outputText.waitForVisible();
+    if(Array.isArray(outputText.isVisible())){
+      outputText = this.runCallToGetOutputText(index);
+    }
+    expect(outputText.getText()).toMatch(expectedText);
   }
 
 };

@@ -19,6 +19,7 @@ declare function require(moduleName: string): any;
 import { IJupyterWidgetRegistry } from '@jupyter-widgets/base';
 import BeakerxExtension from './plugin';
 import { JupyterLab } from '@jupyterlab/application';
+import '../lib/index.css';
 
 const beakerx = require('../lib/index.js');
 

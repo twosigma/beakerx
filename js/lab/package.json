@@ -41,7 +41,9 @@
   },
   "files": [
     "dist/*.js",
-    "lib/*.js"
+    "lib/*.js",
+    "lib/*.css",
+    "lib/*.png"
   ],
   "dependencies": {
     "beakerx": "^0.9.1"

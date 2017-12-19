@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.synchronizedList;
-import static java.util.Collections.unmodifiableList;
 
 public class KernelSocketsTest extends KernelSockets {
 

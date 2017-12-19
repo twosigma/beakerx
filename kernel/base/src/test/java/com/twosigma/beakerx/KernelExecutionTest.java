@@ -155,7 +155,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     assertThat(value).contains("Demo_test_123");
   }
 
-  private void addDemoJar() {
+  protected void addDemoJar() {
     String allCode = CLASSPATH_ADD_JAR + " " + DEMO_JAR;
     Code code = CodeFactory.create(allCode, new Message(), getKernel());
     MagicCommandOutcome result = executeMagicCommands(code, 1, getKernel());

@@ -1,0 +1,53 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+:root {
+    --jp-beakerx-jqui-bg1: url('./lib/a4c733ec4baef9ad3896d4e34a8a5448.png');
+    --jp-beakerx-jqui-bg2: url('./lib/971364734f3b603e5d363a2634898b42.png');
+    --jp-beakerx-jqui-bg3: url('./lib/bf27228a7d3957983584fa7698121ea1.png');
+    --jp-beakerx-jqui-bg4: url('./lib/208a290102a4ada58a04de354a1354d7.png');
+    --jp-beakerx-jqui-bg5: url('./lib/0de3b51742ed3ac61435875bccd8973b.png');
+    --jp-beakerx-jqui-bg6: url('./lib/73a1fd052c9d84c0ee0bea3ee85892ed.png');
+}
+
+/* states and images */
+.p-Widget .ui-icon,
+.p-Widget .ui-widget-content .ui-icon {
+    background-image: var(--jp-beakerx-jqui-bg1);
+}
+.p-Widget .ui-widget-header .ui-icon {
+    background-image: var(--jp-beakerx-jqui-bg1);
+}
+.p-Widget .ui-state-hover .ui-icon,
+.p-Widget .ui-state-focus .ui-icon,
+.p-Widget .ui-button:hover .ui-icon,
+.p-Widget .ui-button:focus .ui-icon {
+    background-image: var(--jp-beakerx-jqui-bg2);
+}
+.p-Widget .ui-state-active .ui-icon,
+.p-Widget .ui-button:active .ui-icon {
+    background-image: var(--jp-beakerx-jqui-bg3);
+}
+.p-Widget .ui-state-highlight .ui-icon,
+.p-Widget .ui-button .ui-state-highlight.ui-icon {
+    background-image: var(--jp-beakerx-jqui-bg4);
+}
+.p-Widget .ui-state-error .ui-icon,
+.p-Widget .ui-state-error-text .ui-icon {
+    background-image: var(--jp-beakerx-jqui-bg5);
+}
+.p-Widget .ui-button .ui-icon {
+    background-image: var(--jp-beakerx-jqui-bg6);
+}

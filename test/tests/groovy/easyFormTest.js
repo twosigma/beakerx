@@ -89,7 +89,7 @@ describe('Testing of EasyForm (groovy)', function () {
 
     it('EasyForm has DatePicker field', function () {
       var easyForm = beakerxPO.runCellToGetEasyForm(8);
-      expect(easyForm.$('div.datepicker-container').isEnabled()).toBeTruthy();
+      easyForm.$('div.datepicker-container').waitForEnabled();
       expect(easyForm.$('label.widget-label').getText()).toBe('field name9');
       easyForm.$('a.date-picker-button').click();
       browser.$('span.flatpickr-day=25').click();

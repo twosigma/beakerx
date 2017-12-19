@@ -19,6 +19,8 @@ import org.junit.Test;
 
 import java.nio.file.Path;
 
+import static com.twosigma.beakerx.kernel.EnvCacheFolderFactory.PLEASE_SWITCH_TO_CONDA_ENV_OR_VIRTUAL_ENV;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -36,16 +38,16 @@ public class CondaEnvCacheFolderFactoryTest {
     shouldThrowError(() -> "");
   }
 
-  private void shouldThrowError(CondaEnvCacheFolderFactory.CondaPrefix condaPrefix) {
+  private void shouldThrowError(EnvCacheFolderFactory.EnvPrefix condaPrefix) {
     //given
-    CondaEnvCacheFolderFactory factory = new CondaEnvCacheFolderFactory(condaPrefix);
+    EnvCacheFolderFactory factory = new EnvCacheFolderFactory(singletonList(condaPrefix));
     //when
     try {
       factory.getCache();
       fail("Should throw an error when CONDA_PREFIX is not set");
     } catch (Exception e) {
       //then
-      assertThat(e.getMessage()).contains("Your CONDA_PREFIX is empty, please switch to conda env.");
+      assertThat(e.getMessage()).isEqualTo(PLEASE_SWITCH_TO_CONDA_ENV_OR_VIRTUAL_ENV);
     }
   }
 
@@ -53,7 +55,7 @@ public class CondaEnvCacheFolderFactoryTest {
   public void shouldReturnPathToCache() throws Exception {
     //given
     final String condaPrefixPath = "condaPrefixPath";
-    CondaEnvCacheFolderFactory factory = new CondaEnvCacheFolderFactory(() -> condaPrefixPath);
+    EnvCacheFolderFactory factory = new EnvCacheFolderFactory(singletonList(() -> condaPrefixPath));
     //when
     Path cache = factory.getCache();
     //then

@@ -64,7 +64,7 @@ public abstract class Kernel implements KernelFunctionality {
 
   public Kernel(final String sessionId, final Evaluator evaluator,
                 final KernelSocketsFactory kernelSocketsFactory) {
-    this(sessionId, evaluator, kernelSocketsFactory, () -> System.exit(0), new CondaEnvCacheFolderFactory());
+    this(sessionId, evaluator, kernelSocketsFactory, () -> System.exit(0), new EnvCacheFolderFactory());
   }
 
   protected Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory,

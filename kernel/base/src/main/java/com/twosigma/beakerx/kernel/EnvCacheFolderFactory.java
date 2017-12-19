@@ -17,21 +17,27 @@ package com.twosigma.beakerx.kernel;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
-public class CondaEnvCacheFolderFactory implements CacheFolderFactory {
+import static java.util.Arrays.asList;
 
-  private static final String CONDA_PREFIX = "CONDA_PREFIX";
+public class EnvCacheFolderFactory implements CacheFolderFactory {
+
+  public static final String PLEASE_SWITCH_TO_CONDA_ENV_OR_VIRTUAL_ENV = "Please switch to conda env or virtual env.";
+
+  public static final CondaPrefixSystem CONDA_PREFIX_SYSTEM = new CondaPrefixSystem();
+  public static final VirtualEnvPrefixSystem VIRTUAL_ENV_PREFIX_SYSTEM = new VirtualEnvPrefixSystem();
 
   // "$CONDA_PREFIX/share/beakerx/maven/cache"
 
   private Path cache = null;
-  private CondaPrefix condaPrefix;
+  private List<EnvPrefix> condaPrefix;
 
-  public CondaEnvCacheFolderFactory() {
-    this(new CondaPrefixSystem());
+  public EnvCacheFolderFactory() {
+    this(asList(CONDA_PREFIX_SYSTEM, VIRTUAL_ENV_PREFIX_SYSTEM));
   }
 
-  CondaEnvCacheFolderFactory(CondaPrefix condaPrefix) {
+  EnvCacheFolderFactory(List<EnvPrefix> condaPrefix) {
     this.condaPrefix = condaPrefix;
   }
 
@@ -43,11 +49,18 @@ public class CondaEnvCacheFolderFactory implements CacheFolderFactory {
   }
 
   private String getCondaPrefix() {
-    String conda_prefix = condaPrefix.get();
-    if (conda_prefix == null || conda_prefix.isEmpty()) {
-      throw new RuntimeException("Your CONDA_PREFIX is empty, please switch to conda env.");
+    String envPrefix = null;
+    for (EnvPrefix cp : condaPrefix) {
+      String prefixResult = cp.get();
+      if (prefixResult != null && !prefixResult.isEmpty()) {
+        envPrefix = prefixResult;
+        break;
+      }
     }
-    return conda_prefix;
+    if (envPrefix == null || envPrefix.isEmpty()) {
+      throw new RuntimeException(PLEASE_SWITCH_TO_CONDA_ENV_OR_VIRTUAL_ENV);
+    }
+    return envPrefix;
   }
 
   private File getOrCreateFile(String pathToMavenRepo) {
@@ -62,15 +75,25 @@ public class CondaEnvCacheFolderFactory implements CacheFolderFactory {
     return theDir;
   }
 
-
-  public interface CondaPrefix {
+  public interface EnvPrefix {
     String get();
   }
 
-  public static class CondaPrefixSystem implements CondaPrefix {
+  public static class CondaPrefixSystem implements EnvPrefix {
+    private static final String CONDA_PREFIX = "CONDA_PREFIX";
+
     @Override
     public String get() {
       return System.getenv(CONDA_PREFIX);
+    }
+  }
+
+  public static class VirtualEnvPrefixSystem implements EnvPrefix {
+    private static final String VIRTUAL_ENV = "VIRTUAL_ENV";
+
+    @Override
+    public String get() {
+      return System.getenv(VIRTUAL_ENV);
     }
   }
 

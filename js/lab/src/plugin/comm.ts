@@ -74,7 +74,7 @@ const getMsgHandlers = (
   }
 });
 
-export const registerCommTargets = (panel: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>) => {
+export const registerCommTargets = (panel: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): void => {
   const session = context.session;
   const kernelInstance = session.kernel;
   const notebook = panel.notebook;
@@ -93,21 +93,24 @@ export const registerCommTargets = (panel: NotebookPanel, context: DocumentRegis
   });
 
   kernelInstance.requestCommInfo({}).then((msg): void => {
-    debugger;
     assignMsgHandlersToExistingComms(msg.content.comms, kernelInstance, msgHandlers);
   });
 };
 
-const assignMsgHandlersToExistingComms = (comms, kernel, msgHandlers): void => {
+const assignMsgHandlersToExistingComms = (
+  comms: Object,
+  kernelInstance: Kernel.IKernelConnection,
+  msgHandlers: Object
+): void => {
   for (let commId in comms) {
-    let comm = kernel.comm_manager.new_comm(comms[commId].target_name, null, null, null, commId);
+    let comm = kernelInstance.connectToComm(comms[commId].target_name, commId);
 
-    assignMsgHandlerToComm(comm, msgHandlers[comm.target_name]);
+    assignMsgHandlerToComm(comm, msgHandlers[comm.targetName]);
   }
 };
 
 const assignMsgHandlerToComm = (comm, handler): void => {
   if (handler) {
-    comm.on_msg(handler);
+    comm.onMsg = handler;
   }
 };

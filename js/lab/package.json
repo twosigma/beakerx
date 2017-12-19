@@ -1,6 +1,6 @@
 {
   "name": "beakerx-jupyterlab",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "BeakerX: Beaker Extensions for JupyterLab",
   "author": "Two Sigma Open Source, LLC",
   "main": "dist/index.js",
@@ -41,7 +41,7 @@
     "mimeExtension": "dist/javascriptRendererExtension.js"
   },
   "files": [
-    "dist/*.js",
-    "lib/*.js"
+    "dist/**/*.js",
+    "lib/**/*.js"
   ]
 }

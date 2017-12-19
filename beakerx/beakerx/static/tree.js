@@ -328,7 +328,7 @@ define(function (require) {
               payload['jvm_options']['heap_GB'] = value
           });
           payload['jvm_options']['properties'] = java_values;
-          payload['version'] = '1.1';
+          payload['version'] = 2;
           settings.setVariables(JSON.stringify({'beakerx': payload}));
           settings.load();
         });

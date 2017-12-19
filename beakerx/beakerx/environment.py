@@ -20,7 +20,7 @@ import pathlib
 default_config = """
 {
     "beakerx": {
-        "version": 1.1
+        "version": 2
         "jvm_options": {
             "heap_GB": "",
             "other": [],
@@ -51,7 +51,7 @@ class EnvironmentSettings:
             content = file.read()
             beakerx_settings = json.loads(content)
             if beakerx_settings['beakerx'].get('version') is None:
-                content = EnvironmentSettings._convert_to_version_1_1(beakerx_settings)
+                content = EnvironmentSettings._convert_to_version_2(beakerx_settings)
         except IOError:
             content = default_config
             EnvironmentSettings.save_setting_to_file(default_config)
@@ -61,7 +61,7 @@ class EnvironmentSettings:
         return content
 
     @staticmethod
-    def _convert_to_version_1_1(beakerx_settings):
+    def _convert_to_version_2(beakerx_settings):
         settings = beakerx_settings['beakerx']['jvm_options']
         new_prop = []
         for x in settings['properties']:

@@ -16,7 +16,7 @@
 package com.twosigma.beakerx;
 
 import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
-import static java.util.Collections.synchronizedList;
+import static java.util.Collections.unmodifiableList;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -60,6 +60,7 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -69,13 +70,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observer;
 import java.util.Set;
+
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.util.Lists;
 
 public class KernelTest implements KernelFunctionality {
 
-  private List<Message> publishedMessages = synchronizedList(new ArrayList<>());
-  private List<Message> sentMessages = synchronizedList(new ArrayList<>());
+  private List<Message> publishedMessages = new ArrayList<>();
+  private List<Message> sentMessages = new ArrayList<>();
   private String id;
   private Map<String, Comm> commMap = new HashMap<>();
   private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
@@ -108,18 +110,18 @@ public class KernelTest implements KernelFunctionality {
     KernelManager.register(this);
   }
 
-  private void initMavenResolverParam(){
+  private void initMavenResolverParam() {
     this.mavenResolverParam = new MavenJarResolver.ResolverParams(
-        new File(TEST_MVN_CACHE).getAbsolutePath(),
-        getTempFolder().toString() + MavenJarResolver.MVN_DIR,
-        true);
+            new File(TEST_MVN_CACHE).getAbsolutePath(),
+            getTempFolder().toString() + MavenJarResolver.MVN_DIR,
+            true);
   }
 
   private void initMagicCommands() {
     this.magicCommandTypes = new ArrayList<>();
     this.magicCommandTypes.addAll(Lists.newArrayList(
             new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand()),
-            new MagicCommandType(JSMagicCommand.JAVASCRIPT,"", new JSMagicCommand()),
+            new MagicCommandType(JSMagicCommand.JAVASCRIPT, "", new JSMagicCommand()),
             new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand()),
             new MagicCommandType(HtmlAliasMagicCommand.HTML, "", new HtmlAliasMagicCommand()),
             new MagicCommandType(BashMagicCommand.BASH, "", new BashMagicCommand()),
@@ -269,19 +271,19 @@ public class KernelTest implements KernelFunctionality {
   }
 
   public List<Message> getPublishedMessages() {
-    return publishedMessages;
+    return unmodifiableList(publishedMessages);
   }
 
   public List<Message> getSentMessages() {
-    return sentMessages;
+    return unmodifiableList(sentMessages);
   }
 
   public void clearPublishedMessages() {
-    this.publishedMessages = synchronizedList(new ArrayList<>());
+    this.publishedMessages = new ArrayList<>(new ArrayList<>());
   }
 
   public void clearSentMessages() {
-    this.sentMessages = synchronizedList(new ArrayList<>());
+    this.sentMessages = new ArrayList<>(new ArrayList<>());
   }
 
   public void clearMessages() {

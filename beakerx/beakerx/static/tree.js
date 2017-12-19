@@ -230,8 +230,8 @@ define(function (require) {
           if (key == "-Xmx")
             continue;
           var opts = {
-            name: key,
-            value: data.properties[key],
+            name: data.properties[key].name,
+            value: data.properties[key].value,
             parent: properties_fieldset,
             add_label: true
           };
@@ -314,26 +314,21 @@ define(function (require) {
             }
           });
           payload['jvm_options']['other'] = values;
-          var java_values = {};
+          var java_values = [];
           var java_property = $('#properties_property div');
           java_property.each(function () {
             var children = $($(this).children());
             var value = $(children.get(1)).val().trim();
             var name = $(children.get(0)).val().trim();
-
-            if (name.length > 0) {
-              java_values[name] = value
-            }
-
+            java_values.push({'name' : name,  'value': value})
           });
           var default_property = $('#default_options input');
           default_property.each(function () {
             var value = $(this).val().trim();
-            if (value.length > 0) {
               payload['jvm_options']['heap_GB'] = value
-            }
           });
           payload['jvm_options']['properties'] = java_values;
+          payload['version'] = 2;
           settings.setVariables(JSON.stringify({'beakerx': payload}));
           settings.load();
         });

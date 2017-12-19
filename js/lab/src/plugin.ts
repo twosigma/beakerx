@@ -55,14 +55,19 @@ function registerGlobal(): void {
 function sendJupyterCodeCells(
   kernelInstance: Kernel.IKernelConnection,
   notebook: Notebook,
-  comm: Kernel.IComm,
   filter: string
 ): void {
-  const codeCells = <JSONArray>getCodeCellsByTag(notebook, filter).map(
-    (cell: CodeCell): object => cell.model.toJSON()
+  const comm = kernelInstance.connectToComm('beaker.getcodecells');
+  const codeCells = <JSONArray>getCodeCellsByTag(notebook, filter)
+    .map((cell: CodeCell): object => ({
+      cell_type: cell.model.type,
+      ...cell.model.toJSON()
+    })
   );
 
+  comm.open();
   comm.send({ code_cells: codeCells });
+  comm.dispose();
 }
 
 function getCodeCellsByTag(notebook: Notebook, tag: string): Cell[] {
@@ -84,11 +89,15 @@ function registerCommTargets(panel: NotebookPanel, context: DocumentRegistry.ICo
   const notebook = panel.notebook;
 
   kernelInstance.registerCommTarget('beaker.getcodecells', function(comm, msg) {
-    const data: msgData = <object>msg.content.data;
-
     comm.onMsg = function(msg) {
+      const data: msgData = <object>msg.content.data;
+
+      if (!data.name) {
+        return;
+      }
+
       if(data.name == "CodeCells") {
-        sendJupyterCodeCells(kernelInstance, notebook, comm, JSON.parse(data.value));
+        sendJupyterCodeCells(kernelInstance, notebook, JSON.parse(data.value));
       }
 
       window.beakerx[data.name] = JSON.parse(data.value);

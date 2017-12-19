@@ -40,9 +40,10 @@ import com.twosigma.beakerx.scala.serializers.ScalaMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeListOfListSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaPrimitiveTypeMapSerializer;
 import com.twosigma.beakerx.scala.serializers.ScalaTableDeSerializer;
+
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,8 @@ public class ScalaEvaluator extends BaseEvaluator {
   private final Provider<BeakerObjectConverter> objectSerializerProvider;
   private static boolean autoTranslationSetup = false;
   private BeakerxUrlClassLoader classLoader;
+  private ScalaEvaluatorGlue shell;
+  private ScalaEvaluatorGlue acshell;
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, EvaluatorParameters evaluatorParameters) {
     this(id, sId, osp, new BeakerCellExecutor("scala"), new BeakerxObjectFactoryImpl(), new TempFolderFactoryImpl(), evaluatorParameters);
@@ -61,42 +64,42 @@ public class ScalaEvaluator extends BaseEvaluator {
 
   public ScalaEvaluator(String id, String sId, Provider<BeakerObjectConverter> osp, CellExecutor cellExecutor, BeakerxObjectFactory beakerxObjectFactory, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
-    objectSerializerProvider = osp;
+    this.objectSerializerProvider = osp;
     this.beakerxObjectFactory = beakerxObjectFactory;
-    newEvaluator();
-    workerThread = new ScalaWorkerThread(this);
-    workerThread.start();
-    try {
-      newAutoCompleteEvaluator();
-    } catch (MalformedURLException e) {
-    }
+    this.classLoader = newClassLoader();
+    this.shell = createNewEvaluator();
+    this.acshell = newAutoCompleteEvaluator();
+    this.workerThread = new ScalaWorkerThread(this);
+    this.workerThread.start();
   }
 
   @Override
-  public ClassLoader getClassLoader() {
-    return this.classLoader;
+  public void evaluate(SimpleEvaluationObject seo, String code) {
+    workerThread.add(new JobDescriptor(code, seo));
   }
 
   @Override
   protected void addJarToClassLoader(PathToJar pathToJar) {
     classLoader.addJar(pathToJar);
-    shell.addUrlsToClassPath(pathToJar.getUrl());
   }
 
   @Override
   protected void addImportToClassLoader(ImportPath anImport) {
-    addImportToShell(anImport);
+    addImportToShell(this.shell, anImport);
+  }
+
+  @Override
+  protected void doReloadEvaluator() {
+    this.classLoader = newClassLoader();
+    this.shell = createNewEvaluator();
   }
 
   @Override
   protected void doResetEnvironment() {
-    clearShell();
-    newEvaluator();
-    try {
-      newAutoCompleteEvaluator();
-    } catch (MalformedURLException e) {
-    }
-    workerThread.halt();
+    this.classLoader = newClassLoader();
+    this.shell = createNewEvaluator();
+    this.acshell = newAutoCompleteEvaluator();
+    this.workerThread.halt();
   }
 
   @Override
@@ -108,49 +111,28 @@ public class ScalaEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public void evaluate(SimpleEvaluationObject seo, String code) {
-    workerThread.add(new JobDescriptor(code, seo));
+  public ClassLoader getClassLoader() {
+    return this.classLoader;
+  }
+
+  ScalaEvaluatorGlue getShell() {
+    return shell;
   }
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
-    if (acshell != null) {
-      int lineStart = 0;
-      String[] sv = code.substring(0, caretPosition).split("\n");
-      for (int i = 0; i < sv.length - 1; i++) {
-        acshell.evaluate2(sv[i]);
-        caretPosition -= sv[i].length() + 1;
-        lineStart += sv[i].length() + 1;
-      }
-      AutocompleteResult lineCompletion = acshell.autocomplete(sv[sv.length - 1], caretPosition);
-      return new AutocompleteResult(lineCompletion.getMatches(), lineCompletion.getStartIndex() + lineStart);
+    int lineStart = 0;
+    String[] sv = code.substring(0, caretPosition).split("\n");
+    for (int i = 0; i < sv.length - 1; i++) {
+      acshell.evaluate2(sv[i]);
+      caretPosition -= sv[i].length() + 1;
+      lineStart += sv[i].length() + 1;
     }
-    return null;
+    AutocompleteResult lineCompletion = acshell.autocomplete(sv[sv.length - 1], caretPosition);
+    return new AutocompleteResult(lineCompletion.getMatches(), lineCompletion.getStartIndex() + lineStart);
   }
 
-  public void setupAutoTranslation() {
-    if (autoTranslationSetup)
-      return;
-
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaCollectionSerializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaMapSerializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaPrimitiveTypeListOfListSerializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaListOfPrimitiveTypeMapsSerializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeSerializer(new ScalaPrimitiveTypeMapSerializer(objectSerializerProvider.get()));
-
-    objectSerializerProvider.get().addfTypeDeserializer(new ScalaCollectionDeserializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeDeserializer(new ScalaMapDeserializer(objectSerializerProvider.get()));
-    objectSerializerProvider.get().addfTypeDeserializer(new ScalaTableDeSerializer(objectSerializerProvider.get()));
-
-    autoTranslationSetup = true;
-  }
-
-  private ScalaEvaluatorGlue shell;
-  private String loader_cp = "";
-  private ScalaEvaluatorGlue acshell;
-  private String acloader_cp = "";
-
-  String adjustImport(String imp) {
+  private String adjustImport(String imp) {
     if (imp.startsWith("import"))
       imp = imp.substring(6).trim();
     // Scala doesn't need "static"
@@ -165,26 +147,10 @@ public class ScalaEvaluator extends BaseEvaluator {
     return imp;
   }
 
-  private ClassLoader newAutoCompleteClassLoader() throws MalformedURLException {
-    logger.debug("creating new autocomplete loader");
-    acloader_cp = "";
-    for (int i = 0; i < classPath.size(); i++) {
-      acloader_cp += classPath.get(i);
-      acloader_cp += File.pathSeparatorChar;
-    }
-    acloader_cp += outDir;
-
-    DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
-    cl.addJars(classPath.getPathsAsStrings());
-    cl.addDynamicDir(outDir);
-    return cl;
-  }
-
-  private void newAutoCompleteEvaluator() throws MalformedURLException {
+  private ScalaEvaluatorGlue newAutoCompleteEvaluator() {
     logger.debug("creating new autocomplete evaluator");
-    acshell = new ScalaEvaluatorGlue(newAutoCompleteClassLoader(),
-            acloader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), outDir);
-
+    String acloader_cp = createAutoCompleteClassLoader();
+    ScalaEvaluatorGlue acshell = new ScalaEvaluatorGlue(newAutoCompleteClassLoader(), acloader_cp, outDir);
     if (!imports.isEmpty()) {
       String[] strings = imports.getImportPaths().stream().map(importPath -> {
         String trim = importPath.asString().trim();
@@ -192,7 +158,6 @@ public class ScalaEvaluator extends BaseEvaluator {
       }).toArray(String[]::new);
       acshell.addImports(strings);
     }
-
     // ensure object is created
     NamespaceClient.getBeaker(sessionId);
 
@@ -200,31 +165,45 @@ public class ScalaEvaluator extends BaseEvaluator {
     if (r != null && !r.isEmpty()) {
       logger.warn("ERROR creating beaker beaker: {}", r);
     }
+    return acshell;
   }
 
-  void newEvaluator() {
-    logger.debug("creating new evaluator");
-    this.classLoader = newClassLoader();
-    this.loader_cp = createLoaderCp();
-    shell = new ScalaEvaluatorGlue(this.classLoader,
-            loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path"), getOutDir());
+  private ClassLoader newAutoCompleteClassLoader() {
+    logger.debug("creating new autocomplete loader");
+    DynamicClassLoaderSimple cl = new DynamicClassLoaderSimple(ClassLoader.getSystemClassLoader());
+    cl.addJars(classPath.getPathsAsStrings());
+    cl.addDynamicDir(outDir);
+    return cl;
+  }
 
-    if (!getImports().isEmpty()) {
-      addImportsToShell(getImports().getImportPaths());
+  private String createAutoCompleteClassLoader() {
+    String acloader_cp = "";
+    for (int i = 0; i < classPath.size(); i++) {
+      acloader_cp += classPath.get(i);
+      acloader_cp += File.pathSeparatorChar;
     }
+    acloader_cp += outDir;
+    return acloader_cp + File.pathSeparatorChar + System.getProperty("java.class.path");
+  }
 
+  private ScalaEvaluatorGlue createNewEvaluator() {
+    logger.debug("creating new evaluator");
+    String loader_cp = createLoaderCp();
+    ScalaEvaluatorGlue shell = new ScalaEvaluatorGlue(this.classLoader, loader_cp, getOutDir());
+    if (!getImports().isEmpty()) {
+      addImportsToShell(shell, getImports().getImportPaths());
+    }
     logger.debug("creating beaker object");
-
     // ensure object is created
     NamespaceClient.getBeaker(getSessionId());
-
     String r = shell.evaluate2(this.beakerxObjectFactory.create(getSessionId()));
     if (r != null && !r.isEmpty()) {
       logger.warn("ERROR creating beaker object: {}", r);
     }
+    return shell;
   }
 
-  private void addImportsToShell(List<ImportPath> importsPaths) {
+  private void addImportsToShell(ScalaEvaluatorGlue shell, List<ImportPath> importsPaths) {
     if (!importsPaths.isEmpty()) {
       String[] imp = importsPaths.stream().map(importPath -> adjustImport(importPath.asString())).toArray(String[]::new);
       logger.debug("importing : {}", importsPaths);
@@ -234,7 +213,7 @@ public class ScalaEvaluator extends BaseEvaluator {
     }
   }
 
-  private void addImportToShell(ImportPath importPath) {
+  private void addImportToShell(ScalaEvaluatorGlue shell, ImportPath importPath) {
     String imp = importPath.asString().trim();
     imp = adjustImport(imp);
     if (!imp.isEmpty()) {
@@ -261,15 +240,24 @@ public class ScalaEvaluator extends BaseEvaluator {
       loader_cp += getClasspath().get(i);
       loader_cp += File.pathSeparatorChar;
     }
-    return loader_cp;
+    return loader_cp + File.pathSeparatorChar + System.getProperty("java.class.path");
   }
 
+  public void setupAutoTranslation() {
+    if (autoTranslationSetup)
+      return;
 
-  public ScalaEvaluatorGlue getShell() {
-    return shell;
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaCollectionSerializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaMapSerializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaPrimitiveTypeListOfListSerializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaListOfPrimitiveTypeMapsSerializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaPrimitiveTypeMapSerializer(objectSerializerProvider.get()));
+
+    objectSerializerProvider.get().addfTypeDeserializer(new ScalaCollectionDeserializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeDeserializer(new ScalaMapDeserializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeDeserializer(new ScalaTableDeSerializer(objectSerializerProvider.get()));
+
+    autoTranslationSetup = true;
   }
 
-  public void clearShell() {
-    this.shell = null;
-  }
 }

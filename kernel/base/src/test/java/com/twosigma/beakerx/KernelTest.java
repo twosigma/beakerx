@@ -44,8 +44,10 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMa
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathRemoveMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathShowMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlAliasMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.JSMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
@@ -116,7 +118,9 @@ public class KernelTest implements KernelFunctionality {
     this.magicCommandTypes = new ArrayList<>();
     this.magicCommandTypes.addAll(Lists.newArrayList(
             new MagicCommandType(JavaScriptMagicCommand.JAVASCRIPT, "", new JavaScriptMagicCommand()),
+            new MagicCommandType(JSMagicCommand.JAVASCRIPT,"", new JSMagicCommand()),
             new MagicCommandType(HtmlMagicCommand.HTML, "", new HtmlMagicCommand()),
+            new MagicCommandType(HtmlAliasMagicCommand.HTML, "", new HtmlAliasMagicCommand()),
             new MagicCommandType(BashMagicCommand.BASH, "", new BashMagicCommand()),
             new MagicCommandType(LsMagicCommand.LSMAGIC, "", new LsMagicCommand(this.magicCommandTypes)),
             new MagicCommandType(ClasspathAddRepoMagicCommand.CLASSPATH_CONFIG_RESOLVER, "repoName repoURL", new ClasspathAddRepoMagicCommand(this)),
@@ -187,11 +191,6 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public void setShellOptions(EvaluatorParameters kernelParameters) {
     this.setShellOptions = kernelParameters;
-  }
-
-  @Override
-  public boolean addJarToClasspath(PathToJar path) {
-    return this.evaluatorManager.addJarToClasspath(path);
   }
 
   @Override

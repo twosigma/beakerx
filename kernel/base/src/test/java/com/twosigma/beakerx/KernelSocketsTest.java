@@ -40,11 +40,11 @@ public class KernelSocketsTest extends KernelSockets {
   }
 
   public List<Message> getPublishedMessages() {
-    return unmodifiableList(publishedMessages);
+    return new ArrayList<>(publishedMessages);
   }
 
   public List<Message> getSentMessages() {
-    return unmodifiableList(sentMessages);
+    return new ArrayList<>(sentMessages);
   }
 
   public void clear() {

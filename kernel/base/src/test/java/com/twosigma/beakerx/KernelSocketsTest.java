@@ -51,7 +51,7 @@ public class KernelSocketsTest extends KernelSockets {
     return asList(list.toArray(new Message[0]));
   }
 
-  public void clear() {
+  public synchronized void clear() {
     publishedMessages = synchronizedList(new ArrayList<>());
     sentMessages = synchronizedList(new ArrayList<>());
   }

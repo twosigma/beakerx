@@ -22,8 +22,6 @@ declare global {
   }
 }
 
-declare var Jupyter: any;
-
 let sanitize;
 
 try {

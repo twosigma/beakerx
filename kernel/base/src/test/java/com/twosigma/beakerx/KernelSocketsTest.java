@@ -23,8 +23,8 @@ import java.util.List;
 
 public class KernelSocketsTest extends KernelSockets {
 
-  private List<Message> publishedMessages = new ArrayList<>();
-  private List<Message> sentMessages = new ArrayList<>();
+  private volatile List<Message> publishedMessages = new ArrayList<>();
+  private volatile List<Message> sentMessages = new ArrayList<>();
 
   @Override
   public void publish(Message message) {

@@ -41,9 +41,9 @@ describe('Testing of plot Actions', function () {
       expect(height2).toBeGreaterThan(height1);
     });
 
-    it('onKey "T" should run the tag (by string name)', function () {
+    it('onKey "7" should run the tag (by string name)', function () {
       svgElement1.$('rect#i0_0').click();
-      browser.keys("t");
+      browser.keys("7");
       beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.checkCellOutputText(1, '1:6');
     });

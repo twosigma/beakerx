@@ -21,11 +21,9 @@ declare global {
   }
 }
 
-import {
-  BEAKER_GETCODECELLS,
-  BEAKER_AUTOTRANSLATION,
-  BEAKER_TAG_RUN
-} from '../../../shared/constants';
+const BEAKER_GETCODECELLS = 'beaker.getcodecells';
+const BEAKER_AUTOTRANSLATION = 'beaker.autotranslation';
+const BEAKER_TAG_RUN = 'beaker.tag.run';
 
 const utils = require('base/js/utils');
 const dialog = require('base/js/dialog');

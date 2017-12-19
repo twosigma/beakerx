@@ -21,6 +21,7 @@ import com.twosigma.beakerx.message.Message;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.synchronizedList;
 
 public class KernelSocketsTest extends KernelSockets {
@@ -39,11 +40,15 @@ public class KernelSocketsTest extends KernelSockets {
   }
 
   public List<Message> getPublishedMessages() {
-    return new ArrayList<>(publishedMessages);
+    return copy(this.publishedMessages);
   }
 
   public List<Message> getSentMessages() {
-    return new ArrayList<>(sentMessages);
+    return copy(this.sentMessages);
+  }
+
+  private List<Message> copy(List<Message> list) {
+    return asList(list.toArray(new Message[0]));
   }
 
   public void clear() {

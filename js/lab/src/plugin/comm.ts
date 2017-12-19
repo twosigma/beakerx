@@ -15,62 +15,99 @@
  */
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
-import { INotebookModel, NotebookPanel } from '@jupyterlab/notebook';
-import { CodeCell } from '@jupyterlab/cells';
-import { showDialog, Dialog } from '@jupyterlab/apputils';
-import { messageData } from '../interface/messageData';
+import { INotebookModel, Notebook, NotebookPanel } from '@jupyterlab/notebook';
+import { showDialog, Dialog, IClientSession } from '@jupyterlab/apputils';
 import { sendJupyterCodeCells, getCodeCellsByTag } from './codeCells';
+import { messageData } from '../interface/messageData';
+import { Kernel } from "@jupyterlab/services";
+import { CodeCell } from '@jupyterlab/cells';
+
+const BEAKER_GETCODECELLS = 'beaker.getcodecells';
+const BEAKER_AUTOTRANSLATION = 'beaker.autotranslation';
+const BEAKER_TAG_RUN = 'beaker.tag.run';
+
+const getMsgHandlers = (
+  session: IClientSession,
+  kernelInstance: Kernel.IKernelConnection,
+  notebook: Notebook
+) => ({
+  [BEAKER_GETCODECELLS]: (msg) => {
+    const data: messageData = <object>msg.content.data;
+
+    if (!data.name) {
+      return;
+    }
+
+    if(data.name == "CodeCells") {
+      sendJupyterCodeCells(kernelInstance, notebook, JSON.parse(data.value));
+    }
+
+    window.beakerx[data.name] = JSON.parse(data.value);
+  },
+
+  [BEAKER_AUTOTRANSLATION]: (msg) => {
+    const data: messageData = <object>msg.content.data;
+
+    window.beakerx[data.name] = JSON.parse(data.value);
+  },
+
+  [BEAKER_TAG_RUN]: (msg) => {
+    const data: { state?: any } = <object>msg.content.data;
+
+    if(!data.state || !data.state.runByTag) {
+      return;
+    }
+
+    const matchedCells = getCodeCellsByTag(notebook, data.state.runByTag);
+
+    if (matchedCells.length === 0) {
+      showDialog({
+        title: 'No cell with the tag !',
+        body: 'Tag: ' + data.state.runByTag,
+        buttons: [ Dialog.okButton({ label: 'OK' }) ]
+      });
+    } else {
+      matchedCells.forEach((cell) => {
+        cell instanceof CodeCell && CodeCell.execute(cell, session);
+      });
+    }
+  }
+});
 
 export const registerCommTargets = (panel: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>) => {
   const session = context.session;
   const kernelInstance = session.kernel;
   const notebook = panel.notebook;
+  const msgHandlers = getMsgHandlers(session, kernelInstance, notebook);
 
-  kernelInstance.registerCommTarget('beaker.getcodecells', function(comm, msg) {
-    comm.onMsg = function(msg) {
-      const data: messageData = <object>msg.content.data;
-
-      if (!data.name) {
-        return;
-      }
-
-      if(data.name == "CodeCells") {
-        sendJupyterCodeCells(kernelInstance, notebook, JSON.parse(data.value));
-      }
-
-      window.beakerx[data.name] = JSON.parse(data.value);
-    };
+  kernelInstance.registerCommTarget(BEAKER_GETCODECELLS, (comm) => {
+    comm.onMsg = msgHandlers[BEAKER_GETCODECELLS];
   });
 
-  kernelInstance.registerCommTarget('beaker.autotranslation', function(comm, msg) {
-    comm.onMsg = function(msg) {
-      const data: messageData = <object>msg.content.data;
-
-      window.beakerx[data.name] = JSON.parse(data.value);
-    };
+  kernelInstance.registerCommTarget(BEAKER_AUTOTRANSLATION, (comm) => {
+    comm.onMsg = msgHandlers[BEAKER_AUTOTRANSLATION]
   });
 
-  kernelInstance.registerCommTarget('beaker.tag.run', function(comm, msg) {
-    comm.onMsg = function(msg) {
-      const data: { state?: any } = <object>msg.content.data;
-
-      if(!data.state || !data.state.runByTag) {
-        return;
-      }
-
-      const matchedCells = getCodeCellsByTag(notebook, data.state.runByTag);
-
-      if (matchedCells.length === 0) {
-        showDialog({
-          title: 'No cell with the tag !',
-          body: 'Tag: ' + data.state.runByTag,
-          buttons: [ Dialog.okButton({ label: 'OK' }) ]
-        });
-      } else {
-        matchedCells.forEach((cell) => {
-          cell instanceof CodeCell && CodeCell.execute(cell, session);
-        });
-      }
-    };
+  kernelInstance.registerCommTarget(BEAKER_TAG_RUN, (comm) => {
+    comm.onMsg = msgHandlers[BEAKER_TAG_RUN]
   });
+
+  kernelInstance.requestCommInfo({}).then((msg): void => {
+    debugger;
+    assignMsgHandlersToExistingComms(msg.content.comms, kernelInstance, msgHandlers);
+  });
+};
+
+const assignMsgHandlersToExistingComms = (comms, kernel, msgHandlers): void => {
+  for (let commId in comms) {
+    let comm = kernel.comm_manager.new_comm(comms[commId].target_name, null, null, null, commId);
+
+    assignMsgHandlerToComm(comm, msgHandlers[comm.target_name]);
+  }
+};
+
+const assignMsgHandlerToComm = (comm, handler): void => {
+  if (handler) {
+    comm.on_msg(handler);
+  }
 };

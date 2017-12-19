@@ -16,6 +16,7 @@
 package com.twosigma.beakerx;
 
 import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
+import static java.util.Collections.synchronizedList;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -73,8 +74,8 @@ import org.assertj.core.util.Lists;
 
 public class KernelTest implements KernelFunctionality {
 
-  private List<Message> publishedMessages = new ArrayList<>();
-  private List<Message> sentMessages = new ArrayList<>();
+  private List<Message> publishedMessages = synchronizedList(new ArrayList<>());
+  private List<Message> sentMessages = synchronizedList(new ArrayList<>());
   private String id;
   private Map<String, Comm> commMap = new HashMap<>();
   private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
@@ -276,11 +277,11 @@ public class KernelTest implements KernelFunctionality {
   }
 
   public void clearPublishedMessages() {
-    this.publishedMessages = new ArrayList<>();
+    this.publishedMessages = synchronizedList(new ArrayList<>());
   }
 
   public void clearSentMessages() {
-    this.sentMessages = new ArrayList<>();
+    this.sentMessages = synchronizedList(new ArrayList<>());
   }
 
   public void clearMessages() {

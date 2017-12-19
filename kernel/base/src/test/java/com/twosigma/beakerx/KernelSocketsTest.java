@@ -21,10 +21,12 @@ import com.twosigma.beakerx.message.Message;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.synchronizedList;
+
 public class KernelSocketsTest extends KernelSockets {
 
-  private volatile List<Message> publishedMessages = new ArrayList<>();
-  private volatile List<Message> sentMessages = new ArrayList<>();
+  private volatile List<Message> publishedMessages = synchronizedList(new ArrayList<>());
+  private volatile List<Message> sentMessages = synchronizedList(new ArrayList<>());
 
   @Override
   public void publish(Message message) {
@@ -37,11 +39,11 @@ public class KernelSocketsTest extends KernelSockets {
   }
 
   public List<Message> getPublishedMessages() {
-    return new ArrayList<>(publishedMessages);
+    return synchronizedList(publishedMessages);
   }
 
   public List<Message> getSentMessages() {
-    return new ArrayList<>(sentMessages);
+    return synchronizedList(sentMessages);
   }
 
   public void clear() {

@@ -352,10 +352,10 @@ define([
             rangeR.yspan = rangeR.yr - rangeR.yl;
           }
         }
-        focus.yl_r = rangeR.yl - rangeR.yspan * margin.bottom_r;
+        focus.yl_r = rangeR.yl - rangeR.yspan * (_.isNumber(margin.bottom_r) ? margin.bottom_r : 0);
       }
       if (focus.yr_r == null) {
-        focus.yr_r = rangeR.yr + rangeR.yspan * margin.top_r;
+        focus.yr_r = rangeR.yr + rangeR.yspan * (_.isNumber(margin.top_r) ? margin.top_r : 0);
       }
 
       focus.xspan = focus.xr - focus.xl;

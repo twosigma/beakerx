@@ -18,49 +18,38 @@ package com.twosigma.beakerx.kernel;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 
 public class EnvCacheFolderFactory implements CacheFolderFactory {
 
-  public static final String PLEASE_SWITCH_TO_CONDA_ENV_OR_VIRTUAL_ENV = "Please switch to conda env or virtual env.";
-
-  public static final CondaPrefixSystem CONDA_PREFIX_SYSTEM = new CondaPrefixSystem();
-  public static final VirtualEnvPrefixSystem VIRTUAL_ENV_PREFIX_SYSTEM = new VirtualEnvPrefixSystem();
-
-  // "$CONDA_PREFIX/share/beakerx/maven/cache"
+  public static final CondaPrefix CONDA_PREFIX = new CondaPrefix();
+  public static final VirtualEnvPrefix VIRTUAL_ENV_PREFIX = new VirtualEnvPrefix();
 
   private Path cache = null;
-  private List<EnvPrefix> condaPrefix;
+  private List<EnvPrefix> prefix;
 
   public EnvCacheFolderFactory() {
-    this(asList(CONDA_PREFIX_SYSTEM, VIRTUAL_ENV_PREFIX_SYSTEM));
+    this.prefix = asList(CONDA_PREFIX, VIRTUAL_ENV_PREFIX);
   }
 
-  EnvCacheFolderFactory(List<EnvPrefix> condaPrefix) {
-    this.condaPrefix = condaPrefix;
+  EnvCacheFolderFactory(List<EnvPrefix> prefix) {
+    this.prefix = prefix;
   }
 
   public Path getCache() {
     if (cache == null) {
-      cache = getOrCreateFile(getCondaPrefix() + "/share/beakerx").toPath();
+      cache = getOrCreateFile(getPrefix() + "/share/beakerx").toPath();
     }
     return cache;
   }
 
-  private String getCondaPrefix() {
-    String envPrefix = null;
-    for (EnvPrefix cp : condaPrefix) {
-      String prefixResult = cp.get();
-      if (prefixResult != null && !prefixResult.isEmpty()) {
-        envPrefix = prefixResult;
-        break;
-      }
-    }
-    if (envPrefix == null || envPrefix.isEmpty()) {
-      throw new RuntimeException(PLEASE_SWITCH_TO_CONDA_ENV_OR_VIRTUAL_ENV);
-    }
-    return envPrefix;
+  private String getPrefix() {
+    Optional<EnvPrefix> envPrefix = prefix.stream().
+            filter(prefix -> prefix.get() != null && !prefix.get().isEmpty()).
+            findFirst();
+    return envPrefix.map(EnvPrefix::get).orElseGet(EnvCacheFolderFactory::getTmpDir);
   }
 
   private File getOrCreateFile(String pathToMavenRepo) {
@@ -75,11 +64,15 @@ public class EnvCacheFolderFactory implements CacheFolderFactory {
     return theDir;
   }
 
+  static String getTmpDir() {
+    return System.getProperty("java.io.tmpdir");
+  }
+
   public interface EnvPrefix {
     String get();
   }
 
-  public static class CondaPrefixSystem implements EnvPrefix {
+  public static class CondaPrefix implements EnvPrefix {
     private static final String CONDA_PREFIX = "CONDA_PREFIX";
 
     @Override
@@ -88,7 +81,7 @@ public class EnvCacheFolderFactory implements CacheFolderFactory {
     }
   }
 
-  public static class VirtualEnvPrefixSystem implements EnvPrefix {
+  public static class VirtualEnvPrefix implements EnvPrefix {
     private static final String VIRTUAL_ENV = "VIRTUAL_ENV";
 
     @Override

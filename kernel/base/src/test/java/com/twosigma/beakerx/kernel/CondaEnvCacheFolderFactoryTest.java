@@ -19,36 +19,30 @@ import org.junit.Test;
 
 import java.nio.file.Path;
 
-import static com.twosigma.beakerx.kernel.EnvCacheFolderFactory.PLEASE_SWITCH_TO_CONDA_ENV_OR_VIRTUAL_ENV;
+import static com.twosigma.beakerx.kernel.EnvCacheFolderFactory.getTmpDir;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 public class CondaEnvCacheFolderFactoryTest {
 
   @Test
-  public void shouldThrowErrorWhenCONDA_PREFIXisNull() throws Exception {
-    shouldThrowError(() -> null);
-
+  public void shouldReturnTmpFolderWhenCONDA_PREFIXisNull() throws Exception {
+    shouldReturnTmpFolder(() -> null);
   }
 
   @Test
-  public void shouldThrowErrorWhenCONDA_PREFIXisEmpty() throws Exception {
+  public void shouldReturnTmpFolderWhenCONDA_PREFIXisEmpty() throws Exception {
     //given
-    shouldThrowError(() -> "");
+    shouldReturnTmpFolder(() -> "");
   }
 
-  private void shouldThrowError(EnvCacheFolderFactory.EnvPrefix condaPrefix) {
+  private void shouldReturnTmpFolder(EnvCacheFolderFactory.EnvPrefix prefix) {
     //given
-    EnvCacheFolderFactory factory = new EnvCacheFolderFactory(singletonList(condaPrefix));
+    EnvCacheFolderFactory factory = new EnvCacheFolderFactory(singletonList(prefix));
     //when
-    try {
-      factory.getCache();
-      fail("Should throw an error when CONDA_PREFIX is not set");
-    } catch (Exception e) {
-      //then
-      assertThat(e.getMessage()).isEqualTo(PLEASE_SWITCH_TO_CONDA_ENV_OR_VIRTUAL_ENV);
-    }
+    Path cache = factory.getCache();
+    //then
+    assertThat(cache.toString()).contains(getTmpDir());
   }
 
   @Test

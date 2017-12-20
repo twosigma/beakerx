@@ -31,22 +31,18 @@ trait XYGraphicsProperties extends GraphicsProperties {
   def color_=(c: Color): Unit = setColor(c)
   def color_=(c: java.awt.Color): Unit = setColor(c)
   // TODO: use type constraint (Color, java.awt.Color)
-  def setColor(cs: Seq[Object]): Unit = setColor(cs.asJava)
-  def color_=(cs: Seq[Object]): Unit = setColor(cs)
+  def color_=(cs: Seq[Object]): Unit = setColor(cs.asJava)
 
   def displayName: String = getDisplayName
   def displayName_=(s: String): Unit = setDisplayName(s)
 
-  def setToolTip(t: Seq[String]): Unit = setToolTip(t.asJava)
   def toolTip = getNullableList(getToolTips)
-  def toolTip_=(t: Seq[String]) = setToolTip(t)
+  def toolTip_=(t: Seq[String]): Unit = setToolTip(t.asJava)
 
   // TODO: use type constraint (Number, Date, LocalDate, LocalDateTime, Instant)
-  def setX[T](xs: Seq[T]): Unit = setX(xs.map(_.asInstanceOf[Object]).asJava)
   def x: Seq[Number] = getX.asScala
-  def x_=[T](xs: Seq[T]) = setX(xs)
+  def x_=[T](xs: Seq[T]): Unit = setX(xs.map(_.asInstanceOf[Object]).asJava)
 
-  def setY[T](ys: Seq[T])(implicit conv: T => Number): Unit = setY(ys.map(x => x: Number).asJava)
   def y: Seq[Number] = getY.asScala
-  def y_=[T](ys: Seq[T])(implicit conv: T => Number) = setY(ys)
+  def y_=[T](ys: Seq[T])(implicit conv: T => Number) = setY(ys.map(x => x: Number).asJava)
 }

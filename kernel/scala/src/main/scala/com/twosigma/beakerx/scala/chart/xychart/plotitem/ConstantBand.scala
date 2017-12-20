@@ -33,11 +33,9 @@ trait ConstantBandProperties extends GraphicsProperties {
   def color_=(color: java.awt.Color): Unit = setColor(color)
 
   // TODO: use type constraint (Number, Date, LocalDate, LocalDateTime, Instant)
-  def setX[T](xs: Seq[T]): Unit = setX(xs.map(_.asInstanceOf[Object]).asJava)
   def x: Seq[Number] = getNullableList(getX)
-  def x_=[T](xs: Seq[T]): Unit = setX(xs)
+  def x_=[T](xs: Seq[T]): Unit = setX(xs.map(_.asInstanceOf[Object]).asJava)
 
-  def setY[T](ys: Seq[T])(implicit conv: T => Number): Unit = setY((ys map (y => y: Number)).asJava)
   def y: Seq[Number] = getNullableList(getY)
-  def y_=[T](ys: Seq[T])(implicit conv: T => Number): Unit = setY(ys)
+  def y_=[T](ys: Seq[T])(implicit conv: T => Number): Unit = setY((ys map (y => y: Number)).asJava)
 }

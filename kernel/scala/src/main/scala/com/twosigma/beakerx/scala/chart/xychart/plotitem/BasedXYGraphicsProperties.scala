@@ -25,9 +25,7 @@ trait BasedXYGraphicsProperties extends XYGraphicsProperties {
 
   def base: Number = getBase
   def bases: Seq[Number] = getNullableList(getBases)
-  // TODO: use type constraint
-  def setBase[T](bs: Seq[T])(implicit conv: T => Number): Unit = setBase(bs.map(conv).asJava)
   def base_=(base: Number): Unit = setBase(base)
   // TODO: use type constraint
-  def base_=[T](bases: Seq[T])(implicit conv: T => Number): Unit = setBase(bases)
+  def base_=[T](bases: Seq[T])(implicit conv: T => Number): Unit = setBase(bases.map(conv).asJava)
 }

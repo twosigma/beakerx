@@ -17,12 +17,19 @@
 package com.twosigma.beakerx.scala
 
 import scala.annotation.implicitNotFound
+import scala.language.higherKinds
 
 /**
   * Typeclasses and support for matching Scala types to Java types used by Beakerx
   */
 
 object JavaAdapter {
+  // Substitute for kind-projector (type lambdas)
+  // Has[To]#Conversion is like ? => To, suitable for making context bounds that are like (deprecated) view bounds
+  // See https://groups.google.com/d/msg/scala-internals/hNow9MvAi6Q/qqkQfsqapIcJ
+  type Has[To] = {type Conversion[From] = From => To}
+  type HasSeq[Element] = {type Conversion[From[_]] = From[Element] => Seq[Element]}
+
   @implicitNotFound("Couldn't find a conversion from ${T} to Number")
   sealed trait NumberView[T] extends (T => Number)
   object NumberView {

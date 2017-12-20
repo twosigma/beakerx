@@ -23,6 +23,7 @@ import com.google.common.collect.Maps;
 import com.twosigma.beakerx.DisplayerDataMapper;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
@@ -35,11 +36,13 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.comm.ScalaCommOpenHandler;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
 import com.twosigma.beakerx.scala.handler.ScalaKernelInfoHandler;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import scala.collection.JavaConverters;
 import scala.collection.Seq;
 
@@ -50,8 +53,8 @@ public class Scala extends Kernel {
     DisplayerDataMapper.register(converter);
   }
 
-  public Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    super(id, evaluator, kernelSocketsFactory, closeKernelAction);
+  public Scala(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
+    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory);
   }
 
   @Override
@@ -83,7 +86,7 @@ public class Scala extends Kernel {
   private static Object asJava(Object scalaObject) {
     if (scalaObject instanceof scala.collection.Seq) {
       List objects = Lists.newArrayList(
-          JavaConverters.asJavaCollectionConverter((Seq<?>) scalaObject).asJavaCollection());
+              JavaConverters.asJavaCollectionConverter((Seq<?>) scalaObject).asJavaCollection());
 
       return objects.stream().map(Scala::asJava).collect(Collectors.toList());
     } else if (scalaObject instanceof scala.collection.immutable.Map) {
@@ -92,7 +95,7 @@ public class Scala extends Kernel {
       Map<Object, Object> objects = Maps.newHashMap(JavaConverters.mapAsJavaMapConverter(map).asJava());
 
       return objects.entrySet().stream()
-                               .collect(Collectors.toMap(incomingMap -> asJava(incomingMap.getKey()), incomingMap -> asJava(incomingMap.getValue())));
+              .collect(Collectors.toMap(incomingMap -> asJava(incomingMap.getKey()), incomingMap -> asJava(incomingMap.getValue())));
     }
 
     return scalaObject;

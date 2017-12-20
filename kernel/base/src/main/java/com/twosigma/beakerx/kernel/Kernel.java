@@ -60,15 +60,17 @@ public abstract class Kernel implements KernelFunctionality {
   private EvaluatorManager evaluatorManager;
   private KernelSockets kernelSockets;
   private List<MagicCommandType> magicCommandTypes;
+  private CacheFolderFactory cacheFolderFactory;
 
   public Kernel(final String sessionId, final Evaluator evaluator,
                 final KernelSocketsFactory kernelSocketsFactory) {
-    this(sessionId, evaluator, kernelSocketsFactory, () -> System.exit(0));
+    this(sessionId, evaluator, kernelSocketsFactory, () -> System.exit(0), new EnvCacheFolderFactory());
   }
 
   protected Kernel(final String sessionId, final Evaluator evaluator, final KernelSocketsFactory kernelSocketsFactory,
-                   CloseKernelAction closeKernelAction) {
+                   CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
     this.sessionId = sessionId;
+    this.cacheFolderFactory = cacheFolderFactory;
     this.kernelSocketsFactory = kernelSocketsFactory;
     this.closeKernelAction = closeKernelAction;
     this.commMap = new ConcurrentHashMap<>();
@@ -243,6 +245,11 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
+  public Path getCacheFolder() {
+    return cacheFolderFactory.getCache();
+  }
+
+  @Override
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
     return evaluatorManager.loadClass(clazzName);
   }
@@ -265,6 +272,7 @@ public abstract class Kernel implements KernelFunctionality {
     BeakerxDefaultDisplayers.registerDefaults();
     configureJvmRepr();
   }
+
   protected void configureJvmRepr() {
   }
 }

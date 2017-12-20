@@ -20,6 +20,7 @@ import pathlib
 default_config = """
 {
     "beakerx": {
+        "version": 2
         "jvm_options": {
             "heap_GB": "",
             "other": [],
@@ -48,12 +49,29 @@ class EnvironmentSettings:
         try:
             file = open(EnvironmentSettings.config_path, 'r')
             content = file.read()
+            beakerx_settings = json.loads(content)
+            if beakerx_settings['beakerx'].get('version') is None:
+                content = EnvironmentSettings._convert_to_version_2(beakerx_settings)
         except IOError:
             content = default_config
             EnvironmentSettings.save_setting_to_file(default_config)
         else:
             file.close()
 
+        return content
+
+    @staticmethod
+    def _convert_to_version_2(beakerx_settings):
+        settings = beakerx_settings['beakerx']['jvm_options']
+        new_prop = []
+        for x in settings['properties']:
+            prop = {
+                'name': x,
+                'value': settings['properties'][x]
+            }
+            new_prop.append(prop)
+        settings['properties'] = new_prop
+        content = json.dumps(beakerx_settings)
         return content
 
     @staticmethod
@@ -68,7 +86,9 @@ class EnvironmentSettings:
                 args.append(x)
 
             for x in jvm_settings['properties']:
-                value = '-D' + x + '=' + jvm_settings['properties'][x]
+                name = x.get('name')
+                value = x.get('value')
+                value = '-D' + name + '=' + value
                 args.append(value)
 
             if 'heap_GB' in jvm_settings and jvm_settings['heap_GB']:

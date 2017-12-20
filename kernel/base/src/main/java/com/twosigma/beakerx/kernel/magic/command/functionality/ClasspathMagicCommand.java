@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.singletonList;
 
 public abstract class ClasspathMagicCommand implements MagicCommandFunctionality {
 
@@ -42,24 +43,32 @@ public abstract class ClasspathMagicCommand implements MagicCommandFunctionality
   }
 
   public Collection<String> addJars(String path) {
-    List<String> addedJarsName = Lists.newLinkedList();
-
     if (doesPathContainsWildCards(path)) {
-      Map<Path, String> paths = getPaths(path);
-      List<PathToJar> pathsToJars = paths.keySet().stream()
-              .map(currentPath -> new PathToJar(currentPath.toString()))
-              .collect(Collectors.toList());
-
-      List<Path> addedPaths = kernel.addJarsToClasspath(pathsToJars);
-      addedJarsName.addAll(addedPaths.stream().map(x -> x.getFileName().toString()).collect(Collectors.toList()));
-
+      return handleWildCards(path);
     } else {
-      Path currentPath = Paths.get(path);
-      if (this.kernel.addJarToClasspath(new PathToJar(path))) {
-        addedJarsName.add(currentPath.getFileName().toString());
-      }
+      return handlePath(path);
     }
+  }
 
+  private Collection<String> handlePath(String path) {
+    List<String> addedJarsName = Lists.newLinkedList();
+    Path currentPath = Paths.get(path);
+    List<Path> paths = this.kernel.addJarsToClasspath(singletonList(new PathToJar(path)));
+    if (!paths.isEmpty()) {
+      addedJarsName.add(currentPath.getFileName().toString());
+    }
+    return addedJarsName;
+  }
+
+  private List<String> handleWildCards(String path) {
+    List<String> addedJarsName = Lists.newLinkedList();
+    Map<Path, String> paths = getPaths(path);
+    List<PathToJar> pathsToJars = paths.keySet().stream()
+            .map(currentPath -> new PathToJar(currentPath.toString()))
+            .collect(Collectors.toList());
+
+    List<Path> addedPaths = kernel.addJarsToClasspath(pathsToJars);
+    addedJarsName.addAll(addedPaths.stream().map(x -> x.getFileName().toString()).collect(Collectors.toList()));
     return addedJarsName;
   }
 

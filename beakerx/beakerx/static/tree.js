@@ -239,8 +239,8 @@ define(function (require) {
               continue;
             }
             that.appendField({
-              name: key,
-              value: data.properties[key],
+              name: data.properties[key].name,
+              value: data.properties[key].value,
               parent: properties_fieldset,
               add_label: true
             });
@@ -392,7 +392,7 @@ define(function (require) {
       }
     });
     payload['jvm_options']['other'] = values;
-    var java_values = {};
+    var java_values = [];
     var java_property = $('#properties_property div');
     java_property.each(function () {
       var children = $($(this).children());
@@ -400,7 +400,7 @@ define(function (require) {
       var name = $(children.get(0)).val().trim();
 
       if (name.length > 0) {
-        java_values[name] = value
+        java_values.push({ 'name': name, 'value': value });
       } else {
         hasEmpty = true;
       }
@@ -418,6 +418,7 @@ define(function (require) {
       }
     });
     payload['jvm_options']['properties'] = java_values;
+    payload['version'] = 2;
     if (!hasEmpty) {
       settings.setVariables(JSON.stringify({ 'beakerx': payload }));
       settings.load();

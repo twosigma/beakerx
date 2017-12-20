@@ -20,11 +20,21 @@ import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.scala.evaluator.NoBeakerxObjectTestFactory;
 import com.twosigma.beakerx.scala.evaluator.ScalaEvaluator;
+import org.junit.Test;
 
+import java.util.Map;
+import java.util.Optional;
+
+import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScalaKernelTest extends KernelExecutionTest {
 
@@ -37,5 +47,34 @@ public class ScalaKernelTest extends KernelExecutionTest {
   @Override
   protected String unimportErrorMessage() {
     return "not found: type";
+  }
+
+  @Test
+  public void inputOutputProblem() throws Exception {
+    //given
+    //when
+    runInputOutputStatement("line 1", "first input");
+    addDemoJar();
+    runInputOutputStatement("line 3", "third input");
+    runInputOutputStatement("line 4", "fourth input");
+    //then
+  }
+
+  private void runInputOutputStatement(String line, String input) throws InterruptedException {
+    getKernelSocketsService().clear();
+    String code = "println(\"" + line + "\"); \"" + input + "\"";
+    Message message = getExecuteRequestMessage(code);
+    getKernelSocketsService().handleMsg(message);
+    Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
+    assertThat(result).isPresent();
+    verifyFirstInput(result.get(), input);
+  }
+
+  private void verifyFirstInput(Message message, String result) {
+    Map actual = ((Map) message.getContent().get(Comm.DATA));
+    String value = (String) actual.get("text/plain");
+    assertThat(result).contains(value);
   }
 }

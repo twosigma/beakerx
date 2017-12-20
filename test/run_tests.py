@@ -1,4 +1,6 @@
-﻿# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+#!/usr/bin/env python
+#
+# Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,7 +42,7 @@ with open(os.devnull, "w") as fnull:
             break
 
 # start jupyter notebook
-nb_command = 'jupyter notebook --no-browser --notebook-dir="%s"' % beakerx_dir
+nb_command = 'jupyter notebook --no-browser --notebook-dir="%s" --NotebookApp.token=""' % beakerx_dir
 beakerx = subprocess.Popen(nb_command, shell=True, executable="/bin/bash", preexec_fn=os.setsid, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
 # wait for notebook server to start up
 while 1:
@@ -50,6 +52,15 @@ while 1:
     print(line)
     if 'The Jupyter Notebook is running' in line:
         break
+
+# create handler for Ctrl+C
+def signal_handler(sgnl, frame):
+    os.killpg(os.getpgid(webcontrol.pid), signal.SIGKILL)
+    os.killpg(os.getpgid(beakerx.pid), signal.SIGKILL)
+    os.system("kill -9 `pgrep -f jupyter`")
+    os.system("kill -9 `pgrep -f webdriver`")
+    sys.exit(20)
+signal.signal(signal.SIGINT, signal_handler)
 
 #start webdriverio
 result=subprocess.call("yarn run test", shell=True)

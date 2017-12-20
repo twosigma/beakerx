@@ -55,7 +55,7 @@ define(function (require) {
     }
   }
 
-  function InputChanged(e, changeTs) {
+  function InputChanged(e, triggerBeakerXEvent) {
     if (e && e.hasOwnProperty('key')) {
       switch (e.key) {
         case "ArrowUp":
@@ -66,7 +66,7 @@ define(function (require) {
           return;
       }
     }
-    if (false !== changeTs) {
+    if (false !== triggerBeakerXEvent) {
       $beakerxEl.trigger(BeakerXTreeEvents.INPUT_CHANGED, e);
     }
     var result = "";
@@ -88,13 +88,13 @@ define(function (require) {
     }
 
 
-    var other_property = $('#other_property input');
+    var other_property = $('#other_property').find('input');
     other_property.each(function () {
       var value = $(this).val().trim();
       result += value + " ";
     });
 
-    var java_property = $('#properties_property div');
+    var java_property = $('#properties_property').find('div');
 
     java_property.each(function () {
       var children = $($(this).children());
@@ -222,40 +222,53 @@ define(function (require) {
       }).val(value).keyup(InputChanged);
     },
 
-    load: function () {
+    load: function (payload) {
+      if (payload === undefined) {
+        payload = {
+          properties: [],
+          other: [],
+        };
+      }
+
       var that = this;
-      $beakerxEl.trigger(BeakerXTreeEvents.SUBMIT_OPTIONS_START);
+
       function handle_response(response, status, xhr) {
-        $beakerxEl.trigger(BeakerXTreeEvents.SUBMIT_OPTIONS_STOP);
         var data = response.beakerx.jvm_options;
         var other_fieldset = $('#other_property');
         var properties_fieldset = $('#properties_property');
-        other_fieldset.empty();
-        properties_fieldset.empty();
+
+        if(data.heap_GB !== payload.heap_GB) {
+          $('#heap_GB').val(data.heap_GB);
+        }
 
         for (var key in data.properties) {
-          if (data.properties.hasOwnProperty(key)) {
-            if (key === "-Xmx") {
-              continue;
-            }
+          if (false === data.properties.hasOwnProperty(key)) {
+            continue;
+          }
+          if (key === "-Xmx") {
+            continue;
+          }
+          if (payload.properties.hasOwnProperty(key)) {
+            continue;
+          }
+          that.appendField({
+            name: data.properties[key].name,
+            value: data.properties[key].value,
+            parent: properties_fieldset,
+            add_label: true
+          });
+        }
+
+        for (var i = 0; i < data.other.length; i++) {
+          if (-1 === payload.other.indexOf(data.other[i])) {
             that.appendField({
-              name: data.properties[key].name,
-              value: data.properties[key].value,
-              parent: properties_fieldset,
-              add_label: true
+              value: data.other[i],
+              parent: other_fieldset,
+              add_label: false
             });
           }
         }
 
-        for (var i = 0; i < data.other.length; i++) {
-          that.appendField({
-            value: data.other[i],
-            parent: other_fieldset,
-            add_label: false
-          });
-        }
-
-        $('#heap_GB').val(data['heap_GB']);
         InputChanged({}, false);
       }
 
@@ -268,8 +281,9 @@ define(function (require) {
     },
 
     setVariables: function (data) {
+      $beakerxEl.trigger(BeakerXTreeEvents.SUBMIT_OPTIONS_START);
       function handle_response(data, status, xhr) {
-
+        $beakerxEl.trigger(BeakerXTreeEvents.SUBMIT_OPTIONS_STOP);
       }
 
       var settings = AjaxSettings({
@@ -307,6 +321,7 @@ define(function (require) {
         if (window.location.hash === '#beakerx') {
           $('#beakerx_tab').tab('show');
           version.load();
+          settings.load();
         }
       }
     });
@@ -343,10 +358,6 @@ define(function (require) {
       _submitOptions();
     }, 1000));
 
-    $beakerxEl.on(BeakerXTreeEvents.INPUT_CHANGED, function(e, inputEvt) {
-      _saveLastChanged($(inputEvt.currentTarget))
-    });
-
     var $syncIndicator = $('#sync_indicator');
     $beakerxEl.on(BeakerXTreeEvents.SUBMIT_OPTIONS_START, function() {
       $syncIndicator.empty().append($('<i>', { class: 'saving fa fa-spinner'}));
@@ -354,26 +365,8 @@ define(function (require) {
     $beakerxEl.on(BeakerXTreeEvents.SUBMIT_OPTIONS_STOP, function() {
       setTimeout(function(){
         $syncIndicator.empty().append($('<i>', { class: 'saved fa fa-check'}));
-        _restoreLastChanged();
       }, 500);
     });
-  }
-
-  var lastChanged;
-  function _saveLastChanged($el) {
-    lastChanged = {
-      pid: $el.parents('#other_property,#properties_property,#default_options').attr('id'),
-      value: $el.val(),
-      placeholder: $el.attr('placeholder'),
-    };
-  }
-
-  function _restoreLastChanged() {
-    $('#' + lastChanged.pid)
-      .find('[placeholder='+ lastChanged.placeholder + ']')
-      .filter(function() { return this.value === lastChanged.value })
-      .eq(0)
-      .focus();
   }
 
   function _submitOptions() {
@@ -381,14 +374,11 @@ define(function (require) {
     payload['jvm_options'] = {};
     var values = [];
     var other_property = $('#other_property input');
-    var hasEmpty = false;
 
     other_property.each(function () {
       var value = $(this).val().trim();
       if (value.length > 0) {
         values.push(value);
-      } else {
-        hasEmpty = true;
       }
     });
     payload['jvm_options']['other'] = values;
@@ -401,12 +391,6 @@ define(function (require) {
 
       if (name.length > 0) {
         java_values.push({ 'name': name, 'value': value });
-      } else {
-        hasEmpty = true;
-      }
-
-      if (value.length === 0) {
-        hasEmpty = true;
       }
 
     });
@@ -419,10 +403,8 @@ define(function (require) {
     });
     payload['jvm_options']['properties'] = java_values;
     payload['version'] = 2;
-    if (!hasEmpty) {
-      settings.setVariables(JSON.stringify({ 'beakerx': payload }));
-      settings.load();
-    }
+    settings.setVariables(JSON.stringify({ 'beakerx': payload }));
+    settings.load(payload.jvm_options);
   }
 
   function _onJvmPropertyAddClickedHandler(event) {

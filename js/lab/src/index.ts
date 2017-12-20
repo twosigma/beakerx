@@ -32,7 +32,6 @@ export default {
       exports: beakerx
     });
 
-
     app.docRegistry.addWidgetExtension('Notebook', new BeakerxExtension());
   },
   autoStart: true

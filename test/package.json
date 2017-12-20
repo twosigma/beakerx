@@ -12,8 +12,8 @@
   },
   "scripts": {
     "wdio-config": "copyfiles wdio.conf.js ./node_modules/.bin",
-    "setup-server": "./node_modules/.bin/selenium-standalone install",
-    "start-server": "./node_modules/.bin/selenium-standalone start",
+    "setup-server": "./node_modules/.bin/selenium-standalone install --drivers.chrome.version=2.34 --drivers.chrome.baseURL=https://chromedriver.storage.googleapis.com",
+    "start-server": "./node_modules/.bin/selenium-standalone start --drivers.chrome.version=2.34 --drivers.chrome.baseURL=https://chromedriver.storage.googleapis.com",
     "test": "./node_modules/.bin/wdio ./node_modules/.bin/wdio.conf.js"
   }
 

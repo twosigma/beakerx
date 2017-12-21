@@ -14,7 +14,9 @@
  *  limitations under the License.
  */
 
-define(function (require) {
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+
+define(function(require) {
   var _ = require('underscore');
   var $ = require('jquery');
   var Jupyter = require('base/js/namespace');
@@ -39,64 +41,61 @@ define(function (require) {
   }
 
   function SuccessWrapper(success_callback, error_callback) {
-    return function (data, status, xhr) {
+    return function(data, status, xhr) {
       if (data.error || data.message) {
         error_callback(xhr, status, data.error || data.message);
-      }
-      else {
+      } else {
         success_callback(data, status, xhr);
       }
-    }
+    };
   }
 
   function MakeErrorCallback(title, msg) {
-    return function (xhr, status, e) {
+    return function(xhr, status, e) {
       console.warn(msg + ' ' + e);
-    }
+    };
   }
 
   function InputChanged(e, triggerBeakerXEvent) {
     if (e && e.hasOwnProperty('key')) {
       switch (e.key) {
-        case "ArrowUp":
-        case "ArrowDown":
-        case "ArrowLeft":
-        case "ArrowRight":
-        case "Tab":
+        case 'ArrowUp':
+        case 'ArrowDown':
+        case 'ArrowLeft':
+        case 'ArrowRight':
+        case 'Tab':
           return;
       }
     }
     if (false !== triggerBeakerXEvent) {
       $beakerxEl.trigger(BeakerXTreeEvents.INPUT_CHANGED, e);
     }
-    var result = "";
+    var result = '';
     var errors = [];
 
-    var val = $("#heap_GB").val().trim();
+    var val = $('#heap_GB').val().trim();
     var parsedVal = parseFloat(val);
 
     if (val !== '') {
       if (false === isNaN(parsedVal) && parsedVal > 0) {
         if (val % 1 === 0) {
-          result += '-Xmx' + parsedVal + 'g '
+          result += '-Xmx' + parsedVal + 'g ';
         } else {
-          result += '-Xmx' + parseInt(parsedVal * 1024) + 'm '
+          result += '-Xmx' + parseInt(parsedVal * 1024) + 'm ';
         }
       } else {
-        errors.push("Heap Size must be a positive decimal number.")
+        errors.push('Heap Size must be a positive decimal number.');
       }
     }
 
-
     var other_property = $('#other_property').find('input');
-    other_property.each(function () {
+    other_property.each(function() {
       var value = $(this).val().trim();
-      result += value + " ";
+      result += value + ' ';
     });
 
     var java_property = $('#properties_property').find('div');
-
-    java_property.each(function () {
+    java_property.each(function() {
       var children = $($(this).children());
       var value = $(children.get(1)).val().trim();
       var name = $(children.get(0)).val().trim();
@@ -104,7 +103,7 @@ define(function (require) {
       var value_combined = '-D' + name + '=' + value;
 
       if (name.length > 0) {
-        result += value_combined + " ";
+        result += value_combined + ' ';
       }
     });
 
@@ -113,14 +112,14 @@ define(function (require) {
     errorsEl.empty();
 
     if (errors.length > 0) {
-      errorsEl.append($('<span>').text(errors.join("\n")));
+      errorsEl.append($('<span>').text(errors.join('\n')));
     }
   }
 
   var error_callback = MakeErrorCallback('Error', 'An error occurred while load Beakerx setings');
   var version = {
-    versionBox: "beakerx_info",
-    load: function () {
+    versionBox: 'beakerx_info',
+    load: function() {
       var that = this;
 
       function handle_response(data, status, xhr) {
@@ -182,10 +181,10 @@ define(function (require) {
   };
   var settings = {
     formId: 'beakerx_jvm_settings_form',
-    randId: function () {
+    randId: function() {
       return Math.random().toString(36).substr(2, 10);
     },
-    appendField: function (opts) {
+    appendField: function(opts) {
       var id = this.randId();
       var wrapper = $('<div>', {
         class: 'form-group form-inline bko-spacing',
@@ -208,7 +207,7 @@ define(function (require) {
         'data-original-title': 'remove row',
       }).append(
         $('<i>', {'class': 'fa fa-times'}
-      )).click(function (event) {
+      )).click(function(event) {
         $('#' + id).remove();
         InputChanged();
       });
@@ -222,7 +221,7 @@ define(function (require) {
       }).val(value).keyup(InputChanged);
     },
 
-    load: function (payload) {
+    load: function(payload) {
       if (payload === undefined) {
         payload = {
           properties: [],
@@ -237,7 +236,7 @@ define(function (require) {
         var other_fieldset = $('#other_property');
         var properties_fieldset = $('#properties_property');
 
-        if(data.heap_GB !== payload.heap_GB) {
+        if (data.heap_GB !== payload.heap_GB) {
           $('#heap_GB').val(data.heap_GB);
         }
 
@@ -245,7 +244,7 @@ define(function (require) {
           if (false === data.properties.hasOwnProperty(key)) {
             continue;
           }
-          if (key === "-Xmx") {
+          if (key === '-Xmx') {
             continue;
           }
           if (payload.properties.hasOwnProperty(key)) {
@@ -280,7 +279,7 @@ define(function (require) {
       return utils.ajax(urls.api_url + 'settings', settings);
     },
 
-    setVariables: function (data) {
+    setVariables: function(data) {
       $beakerxEl.trigger(BeakerXTreeEvents.SUBMIT_OPTIONS_START);
       function handle_response(data, status, xhr) {
         $beakerxEl.trigger(BeakerXTreeEvents.SUBMIT_OPTIONS_STOP);
@@ -296,10 +295,10 @@ define(function (require) {
       return utils.ajax(urls.api_url + 'settings', settings);
     },
 
-    createField: function (parent) {
+    createField: function(parent) {
       this.appendField({
-        name: "",
-        value: "",
+        name: '',
+        value: '',
         parent: parent,
         add_label: false
       });
@@ -312,9 +311,9 @@ define(function (require) {
     }
     utils.ajax(urls.static_url + 'settings_tab.html', {
       dataType: 'html',
-      success: function (env_html, status, xhr) {
+      success: function(env_html, status, xhr) {
         _createBeakerxTab(env_html);
-        $beakerxEl = $('#beakerx')
+        $beakerxEl = $('#beakerx');
         _setupFormEvents();
         _setupContinuousSync();
 
@@ -328,15 +327,15 @@ define(function (require) {
   }
 
   function _createBeakerxTab(tab_html) {
-    $(".tab-content").append($(tab_html));
-    $("#tabs").append(
+    $('.tab-content').append($(tab_html));
+    $('#tabs').append(
       $('<li>').append(
         $('<a>', {
           id: 'beakerx_tab',
           href: '#beakerx',
           'data-toggle': 'tab',
           text: 'BeakerX'
-        }).click(function (e) {
+        }).click(function(e) {
           if (window.location.hash === '#beakerx') {
             return;
           }
@@ -349,8 +348,8 @@ define(function (require) {
     );
   }
   function _setupFormEvents() {
-    $("#add_property_jvm_sett").click(_onJvmPropertyAddClickedHandler);
-    $("#add_option_jvm_sett").click(_onJvmOptionAddClickedHandler);
+    $('#add_property_jvm_sett').click(_onJvmPropertyAddClickedHandler);
+    $('#add_option_jvm_sett').click(_onJvmOptionAddClickedHandler);
     $('#heap_GB').keyup(InputChanged);
   }
   function _setupContinuousSync() {
@@ -360,50 +359,60 @@ define(function (require) {
 
     var $syncIndicator = $('#sync_indicator');
     $beakerxEl.on(BeakerXTreeEvents.SUBMIT_OPTIONS_START, function() {
-      $syncIndicator.empty().append($('<i>', { class: 'saving fa fa-spinner'}));
+      $syncIndicator.empty().append($('<i>', {
+        class: 'saving fa fa-spinner'
+      }));
     });
     $beakerxEl.on(BeakerXTreeEvents.SUBMIT_OPTIONS_STOP, function() {
-      setTimeout(function(){
-        $syncIndicator.empty().append($('<i>', { class: 'saved fa fa-check'}));
+      setTimeout(function() {
+        $syncIndicator.empty().append($('<i>', {
+          class: 'saved fa fa-check'
+        }));
       }, 500);
     });
   }
 
   function _submitOptions() {
-    var payload = {};
-    payload['jvm_options'] = {};
-    var values = [];
-    var other_property = $('#other_property input');
+    var payload = {
+      version: 2,
+      jvm_options: {
+        other: [],
+        properties: [],
+      },
+    };
+    var other_property = $('#other_property').find('input');
 
-    other_property.each(function () {
+    other_property.each(function() {
       var value = $(this).val().trim();
       if (value.length > 0) {
-        values.push(value);
+        payload.jvm_options.other.push(value);
       }
     });
-    payload['jvm_options']['other'] = values;
-    var java_values = [];
-    var java_property = $('#properties_property div');
-    java_property.each(function () {
+
+    var java_property = $('#properties_property').find('div');
+    java_property.each(function() {
       var children = $($(this).children());
       var value = $(children.get(1)).val().trim();
       var name = $(children.get(0)).val().trim();
 
       if (name.length > 0) {
-        java_values.push({ 'name': name, 'value': value });
+        payload.jvm_options.properties.push({
+          'name': name,
+          'value': value,
+        });
       }
 
     });
-    var default_property = $('#default_options input');
-    default_property.each(function () {
+    var default_property = $('#default_options').find('input');
+    default_property.each(function() {
       var value = $(this).val().trim();
       if (value.length > 0) {
-        payload['jvm_options']['heap_GB'] = value
+        payload.jvm_options.heap_GB = value;
       }
     });
-    payload['jvm_options']['properties'] = java_values;
-    payload['version'] = 2;
-    settings.setVariables(JSON.stringify({ 'beakerx': payload }));
+    settings.setVariables(JSON.stringify({
+      'beakerx': payload
+    }));
     settings.load(payload.jvm_options);
   }
 
@@ -411,8 +420,8 @@ define(function (require) {
     event.preventDefault();
 
     settings.appendField({
-      name: "",
-      value: "",
+      name: '',
+      value: '',
       parent: $('#properties_property'),
       add_label: true
     });

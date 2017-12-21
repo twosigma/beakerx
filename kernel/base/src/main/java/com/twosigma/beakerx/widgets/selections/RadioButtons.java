@@ -40,4 +40,11 @@ public class RadioButtons extends SingleSelectionWidget {
     return VIEW_NAME_VALUE;
   }
 
+  @Override
+  public void setValue(Object value) {
+    this.value = getValueFromObject(value);
+    sendUpdate(VALUE, getOptions()[(Integer) value]);
+    sendUpdate(INDEX, value);
+  }
+
 }

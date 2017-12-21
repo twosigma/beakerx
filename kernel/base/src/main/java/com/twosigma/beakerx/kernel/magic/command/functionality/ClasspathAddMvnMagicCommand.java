@@ -81,7 +81,7 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
       if (newAddedJars.isEmpty()) {
         return new MagicCommandOutput(MagicCommandOutput.Status.OK);
       }
-      String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars + "\n";
+      String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
       return new MagicCommandOutput(MagicCommandOutput.Status.OK, textMessage);
     }
     return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, result.getErrorMessage());

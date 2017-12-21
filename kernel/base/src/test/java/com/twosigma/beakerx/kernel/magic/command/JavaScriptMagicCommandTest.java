@@ -64,7 +64,7 @@ public class JavaScriptMagicCommandTest {
     //when
     MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
-    assertThat(result.getItems().get(0).getMIMEContainer().get().getData()).isEqualTo("Cell magic " + JAVASCRIPT + "wrong" + " not found");
+    assertThat(result.getItems().get(0).getMIMEContainer().get().getData()).isEqualTo("Cell magic " + JAVASCRIPT + "wrong" + " not found\n");
   }
 
 }

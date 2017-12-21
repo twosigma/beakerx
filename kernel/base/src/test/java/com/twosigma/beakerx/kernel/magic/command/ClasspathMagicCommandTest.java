@@ -87,7 +87,7 @@ public class ClasspathMagicCommandTest {
     MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
     Assertions.assertThat(result.getItems().get(0).getMIMEContainer().get().getData()).isEqualTo(
-            "Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found");
+            "Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found\n");
     assertThat(kernel.getClasspath().size()).isEqualTo(0);
   }
 

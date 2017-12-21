@@ -32,6 +32,7 @@ public class MagicCommandExecutor {
     MagicCommandOutcome result = new MagicCommandOutcome();
     if (code.hasErrors()) {
       code.getErrors().forEach(result::addItem);
+      sendMagicCommandsResult(result, kernel, code.getMessage(), executionCount);
     } else {
       code.getMagicCommands().
               forEach(magicCommand -> {
@@ -42,10 +43,9 @@ public class MagicCommandExecutor {
                         executionCount);
                 MagicCommandOutcomeItem item = magicCommand.execute(param);
                 result.addItem(item);
+                sendMagicCommandResult(item, kernel, code.getMessage(), executionCount);
               });
-
     }
-    sendMagicCommandsResult(result, kernel, code.getMessage(), executionCount);
     return result;
   }
 
@@ -57,6 +57,14 @@ public class MagicCommandExecutor {
         handleErrorStatus(kernel, message, executionCount, item);
       }
     });
+  }
+
+  private static void sendMagicCommandResult(MagicCommandOutcomeItem item, KernelFunctionality kernel, Message message, int executionCount) {
+      if (item.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
+        handleOkStatus(kernel, message, executionCount, item);
+      } else {
+        handleErrorStatus(kernel, message, executionCount, item);
+      }
   }
 
   private static void handleErrorStatus(KernelFunctionality kernel, Message message, int executionCount, MagicCommandOutcomeItem item) {

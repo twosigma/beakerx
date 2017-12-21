@@ -36,6 +36,7 @@ import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForSentMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getCacheFolderFactory;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 import static com.twosigma.beakerx.sql.SQLForColorTable.CREATE_AND_SELECT_ALL;
@@ -49,7 +50,7 @@ public class SQLKernelTest extends KernelSetUpFixtureTest {
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     SQLEvaluator sqlEvaluator = new SQLEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), kernelParameters());
     sqlEvaluator.setShellOptions(kernelParameters());
-    Kernel sqlKernel = new SQL(sessionId, sqlEvaluator, kernelSocketsFactory, closeKernelAction);
+    Kernel sqlKernel = new SQL(sessionId, sqlEvaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory());
     return sqlKernel;
   }
 

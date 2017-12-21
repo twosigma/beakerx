@@ -20,6 +20,7 @@ import static com.twosigma.beakerx.kernel.Utils.uuid;
 
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
@@ -43,8 +44,8 @@ public class Kotlin extends Kernel {
     super(id, evaluator, kernelSocketsFactory);
   }
 
-  public Kotlin(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    super(id, evaluator, kernelSocketsFactory, closeKernelAction);
+  public Kotlin(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
+    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory);
   }
 
   @Override
@@ -66,7 +67,7 @@ public class Kotlin extends Kernel {
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
-      KotlinEvaluator e = new KotlinEvaluator(id, id,getKernelParameters());
+      KotlinEvaluator e = new KotlinEvaluator(id, id, getKernelParameters());
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               new KernelConfigurationFile(args));
       return new Kotlin(id, e, kernelSocketsFactory);

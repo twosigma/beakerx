@@ -22,6 +22,7 @@ import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getCacheFolderFactory;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
 
@@ -30,7 +31,7 @@ public class JavaKernelTest extends KernelExecutionTest {
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
     JavaEvaluator evaluator = new JavaEvaluator(sessionId, sessionId, cellExecutor(), getTestTempFolderFactory(), KERNEL_PARAMETERS);
-    return new Java(sessionId, evaluator, kernelSocketsFactory, closeKernelAction);
+    return new Java(sessionId, evaluator, kernelSocketsFactory, closeKernelAction, getCacheFolderFactory());
   }
 
   @Override

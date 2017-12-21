@@ -23,6 +23,7 @@ import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.javash.comm.JavaCommOpenHandler;
 import com.twosigma.beakerx.javash.evaluator.JavaEvaluator;
 import com.twosigma.beakerx.javash.handler.JavaKernelInfoHandler;
+import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelConfigurationFile;
@@ -43,8 +44,8 @@ public class Java extends Kernel {
     super(id, evaluator, kernelSocketsFactory);
   }
 
-  public Java(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    super(id, evaluator, kernelSocketsFactory, closeKernelAction);
+  public Java(final String id, final Evaluator evaluator, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction, CacheFolderFactory cacheFolderFactory) {
+    super(id, evaluator, kernelSocketsFactory, closeKernelAction, cacheFolderFactory);
   }
 
   @Override
@@ -60,14 +61,14 @@ public class Java extends Kernel {
   public static void main(final String[] args) throws InterruptedException, IOException {
     KernelRunner.run(() -> {
       String id = uuid();
-      JavaEvaluator e = new JavaEvaluator(id, id,getKernelParameters());
+      JavaEvaluator e = new JavaEvaluator(id, id, getKernelParameters());
       KernelSocketsFactoryImpl kernelSocketsFactory = new KernelSocketsFactoryImpl(
               new KernelConfigurationFile(args));
       return new Java(id, e, kernelSocketsFactory);
     });
   }
 
-  public static  EvaluatorParameters getKernelParameters() {
+  public static EvaluatorParameters getKernelParameters() {
     HashMap<String, Object> kernelParameters = new HashMap<>();
     kernelParameters.put(IMPORTS, new JavaDefaultVariables().getImports());
     return new EvaluatorParameters(kernelParameters);

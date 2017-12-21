@@ -20,6 +20,7 @@ import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
+import com.twosigma.beakerx.kernel.CacheFolderFactory;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.ImportPath;
 import com.twosigma.beakerx.kernel.Imports;
@@ -32,7 +33,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class EvaluatorTest extends BaseEvaluator {
 
@@ -76,6 +76,16 @@ public class EvaluatorTest extends BaseEvaluator {
       }
     };
   }
+
+  public static CacheFolderFactory getCacheFolderFactory() {
+    return new CacheFolderFactory() {
+      @Override
+      public Path getCache() {
+        return getTestTempFolderFactory().createTempFolder();
+      }
+    };
+  }
+
 
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {

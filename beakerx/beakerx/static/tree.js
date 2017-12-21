@@ -74,28 +74,21 @@ define(function(require) {
     var errors = [];
 
     var val = $('#heap_GB').val().trim();
-    var parsedVal = parseFloat(val);
-
-    if (val !== '') {
-      if (false === isNaN(parsedVal) && parsedVal > 0) {
-        if (val % 1 === 0) {
-          result += '-Xmx' + parsedVal + 'g ';
-        } else {
-          result += '-Xmx' + parseInt(parsedVal * 1024) + 'm ';
-        }
-      } else {
-        errors.push('Heap Size must be a positive decimal number.');
+    try {
+      if (val !== '') {
+        var parsedVal = settings.normaliseHeapSize(val);
+        result += '-Xmx' + parsedVal + ' ';
       }
+    } catch (e) {
+      errors.push(e.message);
     }
 
-    var other_property = $('#other_property').find('input');
-    other_property.each(function() {
+    $('#other_property').find('input').each(function() {
       var value = $(this).val().trim();
       result += value + ' ';
     });
 
-    var java_property = $('#properties_property').find('div');
-    java_property.each(function() {
+    $('#properties_property').find('div').each(function() {
       var children = $($(this).children());
       var value = $(children.get(1)).val().trim();
       var name = $(children.get(0)).val().trim();
@@ -219,6 +212,22 @@ define(function(require) {
         id: this.randId(),
         placeholder: placeholder,
       }).val(value).keyup(InputChanged);
+    },
+
+    normaliseHeapSize: function(val) {
+      if (val === '') {
+        return '';
+      }
+
+      var parsedVal = parseFloat(val);
+
+      if (isNaN(parsedVal) || parsedVal <= 0) {
+        throw new Error('Heap Size must be a positive decimal number.');
+      }
+
+      return (val % 1 === 0) ?
+        parsedVal + 'g' :
+        parseInt(parsedVal * 1024) + 'm';
     },
 
     load: function(payload) {
@@ -375,6 +384,7 @@ define(function(require) {
   function _submitOptions() {
     var payload = {
       version: 2,
+      heap_GB: '',
       jvm_options: {
         other: [],
         properties: [],
@@ -403,13 +413,14 @@ define(function(require) {
       }
 
     });
-    var default_property = $('#default_options').find('input');
-    default_property.each(function() {
-      var value = $(this).val().trim();
-      if (value.length > 0) {
-        payload.jvm_options.heap_GB = value;
-      }
-    });
+
+    try {
+      var val = $('#heap_GB').val().trim();
+      settings.normaliseHeapSize(val);
+      payload.jvm_options.heap_GB = val;
+    } catch (e) {
+    }
+
     settings.setVariables(JSON.stringify({
       'beakerx': payload
     }));

@@ -48,7 +48,7 @@ var BeakerXPageObject = function () {
   this.closeAndHaltNotebook = function () {
     this.clickSaveNotebook();
     browser.click('=File');
-    browser.waitForVisible('=Close and Halt');
+    browser.waitForEnabled('=Close and Halt');
     browser.click('=Close and Halt');
     browser.endAll();
   }
@@ -63,7 +63,7 @@ var BeakerXPageObject = function () {
     codeCell.click();
     this.clickRunCell();
     this.kernelIdleIcon.waitForEnabled();
-    return this.getCodeCellByIndex(index);
+    return codeCell;
   }
 
   this.runCellToGetDtContainer = function(index){
@@ -79,20 +79,19 @@ var BeakerXPageObject = function () {
   }
 
   this.runCallAndCheckOutputText = function(index, expectedText){
-    var attempt = 3;
-    var outputText = this.runCallToGetOutputText(index);
-    while(Array.isArray(outputText.isVisible()) && attempt > 0){
-      outputText = this.runCallToGetOutputText(index);
-      attempt--;
+    var resultTest;
+    try{
+      resultTest = this.runCallToGetOutputText(index).getText();
+    }catch(e){
+      console.log(expectedText + ' --- ' + e.toString());
+      resultTest = this.runCallToGetOutputText(index).getText();
     }
-    expect(outputText.getText()).toMatch(expectedText);
+    expect(resultTest).toMatch(expectedText);
   }
 
   this.runCallToGetOutputText = function(index){
     var codeCell = this.runCodeCellByIndex(index);
-    var outputText = codeCell.$('div.output_subarea.output_text');
-    outputText.waitForVisible();
-    return outputText;
+    return codeCell.$('div.output_subarea.output_text');
   }
 
   this.plotLegendContainerIsEnabled = function(dtcontainer){
@@ -126,12 +125,14 @@ var BeakerXPageObject = function () {
   this.checkCellOutputText = function(index, expectedText){
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();
-    var outputText = codeCell.$('div.output_subarea.output_text');
-    outputText.waitForVisible();
-    if(Array.isArray(outputText.isVisible())){
-      outputText = this.runCallToGetOutputText(index);
+    var resultTest;
+    try{
+      resultTest = codeCell.$('div.output_subarea.output_text').getText();
+    }catch(e){
+      console.log(expectedText + ' --- ' + e.toString());
+      resultTest = this.runCallToGetOutputText(index).getText();
     }
-    expect(outputText.getText()).toMatch(expectedText);
+    expect(resultTest).toMatch(expectedText);
   }
 
 };

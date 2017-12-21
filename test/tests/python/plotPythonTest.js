@@ -31,7 +31,6 @@ describe('Testing of Plot (python)', function () {
   describe('Plot (python)', function () {
     it('Plot has Title and Axes Labels', function () {
       var dtContainer = beakerxPO.runCellToGetDtContainer(0);
-      dtContainer.waitForEnabled();
       expect(dtContainer.$('#plotTitle').getText()).toEqual('test title');
       expect(dtContainer.$('#xlabel').getText()).toEqual('x label');
       expect(dtContainer.$('#ylabel').getText()).toEqual('y label');
@@ -39,69 +38,58 @@ describe('Testing of Plot (python)', function () {
 
     it('Plot has 3 Bars', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(1);
-      svgElement.waitForEnabled();
       expect(svgElement.$('g.plot-bar').isVisible()).toBeTruthy();
       expect(svgElement.$$('rect.plot-resp').length).toEqual(3);
     });
 
     it('Plot has Line', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(2);
-      svgElement.waitForEnabled();
       expect(svgElement.$$('circle.plot-resp').length).toEqual(3);
       expect(svgElement.$('path.plot-line').isVisible()).toBeTruthy();
     });
 
     it('Plot has 5 Points', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(3);
-      svgElement.waitForEnabled();
       expect(svgElement.$('g.plot-point').isVisible()).toBeTruthy();
       expect(svgElement.$$('polygon.plot-resp').length).toEqual(5);
     });
 
     it('Plot has 4 Stems', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(4);
-      svgElement.waitForEnabled();
       expect(svgElement.$('g.plot-stem').isVisible()).toBeTruthy();
       expect(svgElement.$$('line.plot-resp.normal').length).toEqual(4);
     });
 
     it('Plot has Area', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(5);
-      svgElement.waitForEnabled();
       expect(svgElement.$('polygon.plot-area').isVisible()).toBeTruthy();
     });
 
     it('Plot has Crosshair', function(){
       var svgElement = beakerxPO.getCodeCellByIndex(5).$('#svgg');
-      svgElement.waitForEnabled();
       var rectElement = svgElement.$('rect#i0_0');
-      rectElement.waitForEnabled();
       rectElement.scroll();
       rectElement.click();
       svgElement.moveToObject('rect#i2_1');
       var divPlot = beakerxPO.getCodeCellByIndex(5).$('#svgg');
-      divPlot.$('line#cursor_x').waitForEnabled();
       expect(divPlot.$('#cursor_xlabel').isVisible()).toBeTruthy();
       expect(divPlot.$('#cursor_ylabel').isVisible()).toBeTruthy();
     });
 
     it('Plot has 3 ConstantLines', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(6);
-      svgElement.waitForEnabled();
       expect(svgElement.$$('g.plot-constline').length).toEqual(2);
       expect(svgElement.$$('g.plot-constline > line').length).toEqual(3)
     });
 
     it('Plot has 2 ConstantBands', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(7);
-      svgElement.waitForEnabled();
       expect(svgElement.$('g.plot-constband').isVisible()).toBeTruthy();
       expect(svgElement.$$('g.plot-constband > rect').length).toEqual(2);
     });
 
     it('Plot has 4 text elements', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(8);
-      svgElement.waitForEnabled();
       expect(svgElement.$$('g.plot-text').length).toEqual(4);
       expect(svgElement.$$('g.plot-text > line').length).toEqual(4);
       expect(svgElement.$('text#i1_0').getText()).toEqual('test');
@@ -111,14 +99,12 @@ describe('Testing of Plot (python)', function () {
   describe('Pandas library', function () {
     it('Plot has Bars', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(9);
-      svgElement.waitForEnabled();
       expect(svgElement.$('g.plot-bar').isVisible()).toBeTruthy();
       expect(svgElement.$$('rect.plot-resp').length).toBeGreaterThan(0);
     });
 
     it('Plot has Line', function () {
       var svgElement = beakerxPO.runCellToGetSvgElement(10);
-      svgElement.waitForEnabled();
       expect(svgElement.$$('circle.plot-resp').length).toEqual(7);
       expect(svgElement.$('path.plot-line').isVisible()).toBeTruthy();
     });
@@ -127,7 +113,6 @@ describe('Testing of Plot (python)', function () {
   describe('Plot Stacking', function(){
     it('Plot has 2 Areas', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(11);
-      svgElement.waitForEnabled();
       expect(svgElement.$$('g > polygon.plot-area').length).toEqual(2);
       expect(svgElement.getLocation('rect#i0_0', 'y')).toBeGreaterThan(svgElement.getLocation('rect#i1_0', 'y'));
       expect(svgElement.getLocation('rect#i0_0', 'x')).toBe(svgElement.getLocation('rect#i1_0', 'x'));
@@ -138,7 +123,6 @@ describe('Testing of Plot (python)', function () {
     it('Time Plot has 2 lines and time axis', function(){
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var svgElement = beakerxPO.runCellToGetSvgElement(12);
-      svgElement.waitForEnabled();
       expect(svgElement.$$('g#i0 > circle').length).toBeGreaterThan(0);
       expect(svgElement.$$('g#i1 > circle').length).toBeGreaterThan(0);
       expect(svgElement.$('g#i0 > path.plot-line').isVisible()).toBeTruthy();
@@ -150,10 +134,8 @@ describe('Testing of Plot (python)', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var dtContainer = beakerxPO.runCellToGetDtContainer(13);
       var svgElement = dtContainer.$('#svgg');
-      svgElement.waitForEnabled();
       svgElement.$('rect#i0_0').click();
       var tipElement = dtContainer.$('div#tip_i0_0');
-      tipElement.waitForEnabled();
       expect(tipElement.getText()).toMatch('x: 2017 Oct 09 Mon, 05:26:41 .624');
     });
 
@@ -161,10 +143,8 @@ describe('Testing of Plot (python)', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var dtContainer = beakerxPO.runCellToGetDtContainer(14);
       var svgElement = dtContainer.$('#svgg');
-      svgElement.waitForEnabled();
       svgElement.$('rect#i0_1').click();
       var tipElement = dtContainer.$('div#tip_i0_1');
-      tipElement.waitForEnabled();
       expect(tipElement.getText()).toMatch('x: 2017 Oct 09 Mon, 09:26:41.624000007');
     });
   });
@@ -172,7 +152,6 @@ describe('Testing of Plot (python)', function () {
   describe('Second Y Axis', function(){
     it('Plot has second Y Axis', function(){
       var svgElement = beakerxPO.runCellToGetSvgElement(15);
-      svgElement.waitForEnabled();
       expect(svgElement.$('text#yrlabel').getText()).toEqual('Test y axis');
       expect(svgElement.$('text#label_yr_0').getText()).toEqual('10');
       expect(svgElement.$('line#tick_yr_0').isEnabled()).toBeTruthy();
@@ -192,7 +171,6 @@ describe('Testing of Plot (python)', function () {
 
     it('Combined plot has 3 plots', function(){
       combPlot = beakerxPO.runCodeCellByIndex(16).$('div.combplot-plotcontainer');
-      combPlot.waitForEnabled();
       expect(combPlot.isVisible()).toBeTruthy();
       expect(combPlot.$$('div.dtcontainer').length).toEqual(3);
     });

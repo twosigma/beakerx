@@ -17,8 +17,7 @@
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 import com.twosigma.beakerx.chart.Color
-import com.twosigma.beakerx.scala.JavaAdapter
-import com.twosigma.beakerx.scala.JavaAdapter.getNullableList
+import com.twosigma.beakerx.scala.JavaAdapter._
 import com.twosigma.beakerx.scala.chart.GraphicsProperties
 
 import scala.collection.JavaConverters._
@@ -37,5 +36,5 @@ trait ConstantBandProperties extends GraphicsProperties {
   def x_=[T](xs: Seq[T]): Unit = setX(xs.map(_.asInstanceOf[Object]).asJava)
 
   def y: Seq[Number] = getNullableList(getY)
-  def y_=[T](ys: Seq[T])(implicit conv: T => Number): Unit = setY((ys map (y => y: Number)).asJava)
+  def y_=[T : NumberView](ys: Seq[T]): Unit = setY((ys map (y => y: Number)).asJava)
 }

@@ -30,13 +30,8 @@ object JavaAdapter {
   type Has[To] = {type Conversion[From] = From => To}
   type HasSeq[Element] = {type Conversion[From[_]] = From[Element] => Seq[Element]}
 
-  @implicitNotFound("Couldn't find a conversion from ${T} to Number")
-  sealed trait NumberView[T] extends (T => Number)
-  object NumberView {
-    implicit def numberView[T](implicit conv: T => Number): NumberView[T] = new NumberView[T] {
-      override def apply(v: T) = conv(v)
-    }
-  }
+  // Types that have an implicit conversion to Number (that is, Scala numeric types)
+  type NumberView[T] = T => Number
 
   @implicitNotFound("Type ${T} must be either com.twosigma.beakerx.chart.Color or java.awt.Color")
   sealed trait BeakerColor[T]

@@ -44,5 +44,5 @@ trait XYGraphicsProperties extends GraphicsProperties {
   def x_=[T](xs: Seq[T]): Unit = setX(xs.map(_.asInstanceOf[Object]).asJava)
 
   def y: Seq[Number] = getY.asScala
-  def y_=[T](ys: Seq[T])(implicit conv: T => Number) = setY(ys.map(x => x: Number).asJava)
+  def y_=[T : NumberView](ys: Seq[T]) = setY(ys.map(x => x: Number).asJava)
 }

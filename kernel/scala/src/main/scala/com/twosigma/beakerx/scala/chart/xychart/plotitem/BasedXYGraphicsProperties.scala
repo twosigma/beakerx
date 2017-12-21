@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
-import com.twosigma.beakerx.scala.JavaAdapter.getNullableList
+import com.twosigma.beakerx.scala.JavaAdapter._
 
 import scala.collection.JavaConverters._
 
@@ -26,6 +26,5 @@ trait BasedXYGraphicsProperties extends XYGraphicsProperties {
   def base: Number = getBase
   def bases: Seq[Number] = getNullableList(getBases)
   def base_=(base: Number): Unit = setBase(base)
-  // TODO: use type constraint
-  def base_=[T](bases: Seq[T])(implicit conv: T => Number): Unit = setBase(bases.map(conv).asJava)
+  def base_=[T : NumberView](bases: Seq[T]): Unit = setBase(bases.map(b => b: Number).asJava)
 }

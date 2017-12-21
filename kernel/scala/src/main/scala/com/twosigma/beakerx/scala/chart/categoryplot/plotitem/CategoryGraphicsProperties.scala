@@ -17,7 +17,7 @@
 package com.twosigma.beakerx.scala.chart.categoryplot.plotitem
 
 import com.twosigma.beakerx.chart.Color
-import com.twosigma.beakerx.scala.JavaAdapter.getNullableList
+import com.twosigma.beakerx.scala.JavaAdapter._
 import com.twosigma.beakerx.scala.chart.GraphicsProperties
 
 import scala.collection.JavaConverters._
@@ -51,17 +51,14 @@ trait CategoryGraphicsProperties extends GraphicsProperties {
   def useToolTip_=(useToolTip: Boolean): Unit = setUseToolTip(useToolTip)
 
   def value: Array[Array[Number]] = getValue
-  // TODO: Generalize, use type constraint
-  def value_=[T](value: Seq[T])(implicit ev: T => Number): Unit = {
-    val numbers: Array[Number] = value.map(ev).toArray
+  def value_=[T : NumberView](value: Seq[T]): Unit = {
+    val numbers: Array[Number] = value.map(x => x: Number).toArray
     setValue(numbers.toArray[Object])
   }
-  def value_=[T : ClassTag, Inner[_]](value: Seq[Inner[T]])(implicit ev: T => Number, innerEv: Inner[T] => Seq[T]): Unit = {
-    val arrays: Array[java.util.List[Number]] = (for {
-      inner <- value
-    } yield (for {
-      item <- inner
-    } yield ev(item)).toList.asJava).toArray
+  def value_=[T : ClassTag : NumberView, Inner[_] : HasSeq[T]#Conversion](value: Seq[Inner[T]]): Unit = {
+    val arrays: Array[java.util.List[Number]] = value.map(inner =>
+      inner.map(item => item: Number).toList.asJava
+    ).toArray
     setValue(arrays.toArray[Object])
   }
 }

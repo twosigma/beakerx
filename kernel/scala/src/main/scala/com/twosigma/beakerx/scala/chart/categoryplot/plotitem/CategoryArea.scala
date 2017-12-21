@@ -51,10 +51,9 @@ trait CategoryAreaProperties extends BasedCategoryGraphicsProperties {
 
   def width: Option[Number] = Option(getWidth)
   def widths: Seq[Number] = getNullableList(getWidths)
-  def width_=[T](width: T)(implicit ev: T => Number): Unit = setWidth(width)
-  // TODO: use type constraint
-  def width_=[T, Coll[_]](widths: Coll[T])(implicit ev: T => Number, collEv: Coll[T] => Seq[T]): Unit = {
-    val numbers = widths.map(ev)
+  def width_=(width: Number): Unit = setWidth(width)
+  def width_=[T : NumberView](widths: Seq[T]): Unit = {
+    val numbers = widths.map(w => w: Number)
     setWidth(numbers.asJava)
   }
 }

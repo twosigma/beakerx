@@ -35,6 +35,6 @@ trait BarsProperties extends BasedXYGraphicsProperties {
 
   def width = Option(getWidth)
   def width_=(width: Number) = setWidth(width)
-  def width_=[T](widths: Seq[T])(implicit ev: T => Number) = setWidth(widths.map(ev).asJava)
+  def width_=[T : NumberView](widths: Seq[T]) = setWidth(widths.map(w => w: Number).asJava)
   def widths = getNullableList(getWidths)
 }

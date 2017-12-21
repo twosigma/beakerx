@@ -18,7 +18,7 @@ package com.twosigma.beakerx.scala.chart.categoryplot.plotitem
 
 import com.twosigma.beakerx.chart.Color
 import com.twosigma.beakerx.chart.xychart.plotitem.LabelPositionType
-import com.twosigma.beakerx.scala.JavaAdapter.{getNullableList, safeOption}
+import com.twosigma.beakerx.scala.JavaAdapter._
 import com.twosigma.beakerx.scala.chart.xychart.plotitem.BasedCategoryGraphicsProperties
 
 import scala.collection.JavaConverters._
@@ -50,10 +50,9 @@ trait CategoryBarsProperties extends BasedCategoryGraphicsProperties {
 
   def width: Option[Number] = Option(getWidth)
   def widths: Seq[Number] = getNullableList(getWidths)
-  def width_=[T](width: T)(implicit ev: T => Number): Unit = setWidth(width)
-  // TODO: use type constraint
-  def width_=[T, Coll[_]](widths: Coll[T])(implicit ev: T => Number, collEv: Coll[T] => Seq[T]): Unit = {
-    val numbers = widths.map(ev)
+  def width_=(width: Number): Unit = setWidth(width)
+  def width_=[T : NumberView](widths: Seq[T]): Unit = {
+    val numbers = widths.map(w => w: Number)
     setWidth(numbers.asJava)
   }
 }

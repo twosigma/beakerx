@@ -35,17 +35,14 @@ trait RastersProperties extends XYGraphicsProperties {
   def fileUrl_=(url: String): Unit = setFileUrl(url)
 
   def height: Seq[Number] = getNullableList(getHeight)
-  // TODO: use type constraint
-  def height_=[T](heights: Seq[T])(implicit conv: T => Number): Unit = setHeight(heights.map(conv).asJava)
+  def height_=[T : NumberView](heights: Seq[T]): Unit = setHeight(heights.map(h => h: Number).asJava)
 
   def opacity: Seq[Number] = getOpacity.asScala
-  // TODO: use type constraint
-  def opacity_=[T](opacities: Seq[T])(implicit conv: T => Number): Unit = setOpacity(opacities.map(conv).asJava)
+  def opacity_=[T : NumberView](opacities: Seq[T]): Unit = setOpacity(opacities.map(o => o: Number).asJava)
 
   def position: String = getPosition
   def postion_=(position: String): Unit = setPosition(position)
 
   def width: Seq[Number] = getNullableList(getWidth)
-  // TODO: use type constraint
-  def width_=[T](widths: Seq[T])(implicit conv: T => Number): Unit = setWidth(widths.map(conv).asJava)
+  def width_=[T : NumberView](widths: Seq[T]): Unit = setWidth(widths.map(w => w: Number).asJava)
 }

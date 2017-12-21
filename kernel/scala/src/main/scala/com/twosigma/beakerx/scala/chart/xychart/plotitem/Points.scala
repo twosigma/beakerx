@@ -45,9 +45,8 @@ trait PointsProperties extends XYGraphicsProperties {
   def shape_=(s: ShapeType) = setShape(s)
   def shape_=(ss: Seq[ShapeType]) = setShape(ss.asJava)
 
-  // TODO: use type constraint
   def size = getSize
   def sizes: Seq[Number] = getNullableList(getSizes)
   def size_=(s: Number) = setSize(s)
-  def size_=[T](ss: Seq[T])(implicit conv: T => Number): Unit = setSize(ss.map(x => x: Number).asJava)
+  def size_=[T : NumberView](ss: Seq[T]): Unit = setSize(ss.map(x => x: Number).asJava)
 }

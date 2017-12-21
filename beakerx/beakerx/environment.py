@@ -20,7 +20,7 @@ import pathlib
 default_config = """
 {
     "beakerx": {
-        "version": 2
+        "version": 2,
         "jvm_options": {
             "heap_GB": "",
             "other": [],

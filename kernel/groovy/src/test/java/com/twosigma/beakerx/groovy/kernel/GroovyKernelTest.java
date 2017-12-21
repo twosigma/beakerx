@@ -29,6 +29,7 @@ import java.util.Optional;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.evaluator.EvaluatorTest.getCacheFolderFactory;
 import static com.twosigma.beakerx.groovy.TestGroovyEvaluator.groovyEvaluator;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,7 +37,7 @@ public class GroovyKernelTest extends KernelExecutionTest {
 
   @Override
   protected Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction) {
-    return new Groovy(sessionId, groovyEvaluator(), kernelSocketsFactory, closeKernelAction);
+    return new Groovy(sessionId, groovyEvaluator(), kernelSocketsFactory, closeKernelAction, getCacheFolderFactory());
   }
 
   @Test

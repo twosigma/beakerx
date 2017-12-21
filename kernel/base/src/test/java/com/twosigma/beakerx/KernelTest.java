@@ -245,6 +245,11 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
+  public Path getCacheFolder() {
+    return getTempFolder();
+  }
+
+  @Override
   public Class<?> loadClass(String clazzName) throws ClassNotFoundException {
     return null;
   }

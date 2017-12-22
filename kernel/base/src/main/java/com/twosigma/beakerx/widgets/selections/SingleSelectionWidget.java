@@ -40,10 +40,10 @@ public abstract class SingleSelectionWidget extends SelectionWidget<String> {
     return this.value;
   }
 
-  public void setValue(Object value) {
-    this.value = getValueFromObject(value);
+  public void setValue(Object newValue) {
+    this.value = getValueFromObject(newValue);
     sendUpdate(VALUE, value);
-    sendUpdate(INDEX, getSelectedOptionIndex((String) value));
+    sendUpdate(INDEX, getSelectedOptionIndex(value));
   }
 
 }

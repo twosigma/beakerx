@@ -325,7 +325,7 @@ define(function (require) {
           var default_property = $('#default_options input');
           default_property.each(function () {
             var value = $(this).val().trim();
-              payload['jvm_options']['heap_GB'] = value
+              payload['jvm_options']['heap_GB'] = parseFloat(value)
           });
           payload['jvm_options']['properties'] = java_values;
           payload['version'] = 2;

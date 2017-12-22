@@ -22,7 +22,7 @@ default_config = """
     "beakerx": {
         "version": 2,
         "jvm_options": {
-            "heap_GB": "",
+            "heap_GB": null,
             "other": [],
             "properties": {}
         }
@@ -55,6 +55,9 @@ class EnvironmentSettings:
         except IOError:
             content = default_config
             EnvironmentSettings.save_setting_to_file(default_config)
+        except ValueError as ex:
+            print ('Error while parsing beakerx.json: ', ex)
+            content = default_config
         else:
             file.close()
 
@@ -94,7 +97,7 @@ class EnvironmentSettings:
             if 'heap_GB' in jvm_settings and jvm_settings['heap_GB']:
                 val = float(jvm_settings['heap_GB'])
                 if val.is_integer():
-                    value = '-Xmx' + jvm_settings['heap_GB'] + 'g'
+                    value = '-Xmx' + str(jvm_settings['heap_GB']) + 'g'
                 else:
                     value = '-Xmx' + str(int(val * 1024)) + 'm'
                 args.append(value)

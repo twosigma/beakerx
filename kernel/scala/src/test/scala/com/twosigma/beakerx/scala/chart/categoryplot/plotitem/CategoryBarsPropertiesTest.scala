@@ -16,10 +16,8 @@
 package com.twosigma.beakerx.scala.chart.categoryplot.plotitem
 
 import com.twosigma.beakerx.chart.Color
-import org.assertj.core.api.Assertions
 import org.junit.Test
-
-import scala.collection.JavaConverters._
+import org.scalatest.Matchers._
 
 class CategoryBarsPropertiesTest {
 
@@ -27,55 +25,55 @@ class CategoryBarsPropertiesTest {
   def drawOutline(): Unit = {
     val categoryBars = new CategoryBars
 
-    Assertions.assertThat(categoryBars.drawOutline).isFalse
+    categoryBars.drawOutline shouldBe false
     categoryBars.drawOutline = true
-    Assertions.assertThat(categoryBars.drawOutline).isTrue
+    categoryBars.drawOutline shouldBe true
 
-    Assertions.assertThat(categoryBars.drawOutlines.isEmpty).isTrue
+    categoryBars.drawOutlines shouldBe empty
 
     categoryBars.drawOutline = Seq(true, false, true)
-    Assertions.assertThat[Boolean](categoryBars.drawOutlines.asJava).containsExactly(true, false, true)
+    categoryBars.drawOutlines shouldBe Seq(true, false, true)
   }
 
   @Test
   def fill(): Unit = {
     val categoryBars = new CategoryBars
 
-    Assertions.assertThat(categoryBars.fill.isDefined).isFalse
+    categoryBars.fill shouldBe empty
     categoryBars.fill = false
-    Assertions.assertThat(categoryBars.fill.get).isFalse
+    categoryBars.fill should contain(false)
 
-    Assertions.assertThat(categoryBars.fills.isEmpty).isTrue
+    categoryBars.fills shouldBe empty
     categoryBars.fill = Seq(true, false, true)
-    Assertions.assertThat[Boolean](categoryBars.fills.asJava).containsExactly(true, false, true)
+    categoryBars.fills shouldBe Seq(true, false, true)
   }
 
   @Test
   def outlineColor(): Unit = {
     val categoryBars = new CategoryBars
 
-    Assertions.assertThat(categoryBars.outlineColor.isDefined).isFalse
+    categoryBars.outlineColor shouldBe empty
     categoryBars.outlineColor = Color.blue
-    Assertions.assertThat(categoryBars.outlineColor.get).isEqualTo(Color.blue)
+    categoryBars.outlineColor should contain(Color.blue)
 
-    Assertions.assertThat(categoryBars.outlineColors.isEmpty).isTrue
+    categoryBars.outlineColors shouldBe empty
     categoryBars.outlineColor = Array(Color.red, Color.green, Color.blue)
-    Assertions.assertThat[Object](categoryBars.outlineColors.asJava).containsExactly(Color.red, Color.green, Color.blue)
+    categoryBars.outlineColors shouldBe Seq(Color.red, Color.green, Color.blue)
   }
 
   @Test
   def width(): Unit = {
     val categoryBars = new CategoryBars
 
-    Assertions.assertThat(categoryBars.width.isDefined).isFalse
+    categoryBars.width shouldBe empty
     categoryBars.width = 22
-    Assertions.assertThat(categoryBars.width.get).isEqualTo(22.0f)
+    categoryBars.width should contain(22)
 
-    Assertions.assertThat(categoryBars.widths.isEmpty).isTrue
+    categoryBars.widths shouldBe empty
     categoryBars.width = Array(2, 4, 6)
-    Assertions.assertThat[Number](categoryBars.widths.asJava).containsExactly(2, 4, 6)
+    categoryBars.widths shouldBe Seq(2, 4, 6)
 
     categoryBars.width = 1 to 3
-    Assertions.assertThat[Number](categoryBars.widths.asJava).containsExactly(1, 2, 3)
+    categoryBars.widths shouldBe Seq(1, 2, 3)
   }
 }

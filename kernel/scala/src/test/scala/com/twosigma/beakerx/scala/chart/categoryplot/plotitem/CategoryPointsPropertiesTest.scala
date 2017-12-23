@@ -17,65 +17,63 @@ package com.twosigma.beakerx.scala.chart.categoryplot.plotitem
 
 import com.twosigma.beakerx.chart.Color
 import com.twosigma.beakerx.chart.xychart.plotitem.ShapeType
-import org.assertj.core.api.Assertions
 import org.junit.Test
-
-import scala.collection.JavaConverters._
+import org.scalatest.Matchers._
 
 class CategoryPointsPropertiesTest {
   @Test
   def fill(): Unit = {
     val catPoints = new CategoryPoints
 
-    Assertions.assertThat(catPoints.fill.isEmpty).isTrue
+    catPoints.fill shouldBe empty
     catPoints.fill = true
-    Assertions.assertThat(catPoints.fill).isEqualTo(Some(true))
+    catPoints.fill should contain(true)
 
-    Assertions.assertThat(catPoints.fills.isEmpty).isTrue
+    catPoints.fills shouldBe empty
     catPoints.fill = Array(true, false, true)
-    Assertions.assertThat[Boolean](catPoints.fills.asJava).containsExactly(true, false, true)
+    catPoints.fills shouldEqual Seq(true, false, true)
   }
 
   @Test
   def outlineColor(): Unit = {
     val catPoints = new CategoryPoints
 
-    Assertions.assertThat(catPoints.outlineColor.isDefined).isFalse
+    catPoints.outlineColor shouldBe empty
     catPoints.outlineColor = Color.blue
-    Assertions.assertThat(catPoints.outlineColor.get).isEqualTo(Color.blue)
+    catPoints.outlineColor should contain(Color.blue)
 
-    Assertions.assertThat(catPoints.outlineColors.isEmpty).isTrue
+    catPoints.outlineColors shouldBe empty
     catPoints.outlineColor = Array(Color.red, Color.green, Color.blue)
-    Assertions.assertThat[Object](catPoints.outlineColors.asJava).containsExactly(Color.red, Color.green, Color.blue)
+    catPoints.outlineColors shouldEqual Seq(Color.red, Color.green, Color.blue)
   }
 
   @Test
   def shape(): Unit = {
     val catPoints = new CategoryPoints
 
-    Assertions.assertThat(catPoints.shape).isEqualTo(catPoints.getShape)
+    catPoints.shape shouldBe catPoints.getShape
     catPoints.shape = ShapeType.CIRCLE
-    Assertions.assertThat(catPoints.shape).isEqualTo(ShapeType.CIRCLE)
+    catPoints.shape shouldBe ShapeType.CIRCLE
 
-    Assertions.assertThat[ShapeType](catPoints.shapes.asJava).isEmpty()
+    catPoints.shapes shouldBe empty
     catPoints.shape = Array(ShapeType.DIAMOND, ShapeType.SQUARE, ShapeType.TRIANGLE)
-    Assertions.assertThat[ShapeType](catPoints.shapes.asJava).containsExactly(ShapeType.DIAMOND, ShapeType.SQUARE, ShapeType.TRIANGLE)
+    catPoints.shapes shouldEqual Seq(ShapeType.DIAMOND, ShapeType.SQUARE, ShapeType.TRIANGLE)
   }
 
   @Test
   def sizes(): Unit = {
     val catPoints = new CategoryPoints
 
-    Assertions.assertThat(catPoints.size).isEqualTo(catPoints.getSize)
+    catPoints.size shouldBe catPoints.getSize
     catPoints.size = 22
-    Assertions.assertThat(catPoints.size).isEqualTo(22.0f)
+    catPoints.size shouldEqual  22
 
-    Assertions.assertThat(catPoints.sizes.isEmpty).isTrue
+    catPoints.sizes shouldBe empty
     catPoints.size = Array(2, 4, 6)
-    Assertions.assertThat[Number](catPoints.sizes.asJava).containsExactly(2, 4, 6)
+    catPoints.sizes shouldBe Seq(2, 4, 6)
 
     catPoints.size = 1 to 3
-    Assertions.assertThat[Number](catPoints.sizes.asJava).containsExactly(1, 2, 3)
+    catPoints.sizes shouldBe Seq(1, 2, 3)
   }
 
 }

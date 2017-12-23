@@ -16,8 +16,8 @@
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 import com.twosigma.beakerx.chart.Color
-import org.assertj.core.api.Assertions._
 import org.junit.Test
+import org.scalatest.Matchers._
 
 class TextPropertiesTest {
 
@@ -25,63 +25,63 @@ class TextPropertiesTest {
   def color(): Unit = {
     val text = new Text()
 
-    assertThat(text.color.isEmpty).isTrue
+    text.color shouldBe empty
 
     text.color = Color.blue
-    assertThat(text.color.get).isEqualTo(Color.blue)
+    text.color should contain(Color.blue)
   }
 
   @Test
   def pointerAngle(): Unit = {
     val text = new Text()
 
-    assertThat(text.pointerAngle).isEqualTo(text.getPointerAngle)
+    text.pointerAngle shouldBe text.getPointerAngle
     text.pointerAngle = 4.2
-    assertThat(text.pointerAngle).isEqualTo(4.2)
+    text.pointerAngle shouldBe 4.2
   }
 
   @Test
   def showPointer(): Unit = {
     val text = new Text()
 
-    assertThat(text.showPointer).isTrue
+    text.showPointer shouldBe true
     text.showPointer = false
-    assertThat(text.showPointer).isFalse
+    text.showPointer shouldBe false
   }
 
   @Test
   def size(): Unit = {
     val text = new Text()
 
-    assertThat(text.size).isEqualTo(text.getSize)
+    text.size shouldBe text.getSize
     text.size = 22
-    assertThat(text.size).isEqualTo(22)
+    text.size shouldBe 22
   }
 
   @Test
   def text(): Unit = {
     val text = new Text()
 
-    assertThat(text.text).isEmpty()
+    text.text shouldBe empty
     text.text = "Hello, world!"
-    assertThat(text.text).isEqualTo("Hello, world!")
+    text.text shouldBe "Hello, world!"
   }
 
   @Test
   def x(): Unit = {
     val text = new Text()
 
-    assertThat(text.x).isEqualTo(text.getX)
+    text.x shouldBe text.getX
     text.x = 33
-    assertThat(text.x).isEqualTo(33)
+    text.x shouldBe 33
   }
 
   @Test
   def y() : Unit = {
     val text = new Text()
 
-    assertThat(text.y).isEqualTo(text.getY)
+    text.y shouldBe text.getY
     text.y = 11
-    assertThat(text.y).isEqualTo(11)
+    text.y shouldBe 11
   }
 }

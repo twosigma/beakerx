@@ -18,12 +18,10 @@ package com.twosigma.beakerx.scala.chart.xychart.plotitem
 import java.time.Instant
 import java.util
 
-import com.twosigma.beakerx.chart.{Color, Filter}
 import com.twosigma.beakerx.chart.xychart.plotitem.XYGraphics
-import org.assertj.core.api.Assertions._
+import com.twosigma.beakerx.chart.{Color, Filter}
 import org.junit.Test
-
-import scala.collection.JavaConverters._
+import org.scalatest.Matchers._
 
 class XYGraphicsPropertiesTest {
   class XYGTest extends XYGraphics with XYGraphicsProperties {
@@ -34,12 +32,12 @@ class XYGraphicsPropertiesTest {
   def color(): Unit = {
     val xyg = new XYGTest
 
-    assertThat(xyg.color.isEmpty).isTrue
+    xyg.color shouldBe empty
     xyg.color = Color.RED
-    assertThat(xyg.color.get).isEqualTo(Color.RED)
-    assertThat(xyg.colors.isEmpty).isTrue
+    xyg.color should contain(Color.RED)
+    xyg.colors shouldBe empty
     xyg.color = Array(Color.RED, Color.GREEN, Color.BLUE)
-    assertThat[Color](xyg.colors.asJava).containsExactly(Color.RED, Color.GREEN, Color.BLUE)
+    xyg.colors shouldBe Seq(Color.RED, Color.GREEN, Color.BLUE)
   }
 
   @Test
@@ -47,44 +45,44 @@ class XYGraphicsPropertiesTest {
     val xyg = new XYGTest
 
     xyg.displayName = "name"
-    assertThat(xyg.displayName).isEqualTo("name")
+    xyg.displayName shouldBe "name"
   }
 
   @Test
   def toolTip(): Unit = {
     val xyg = new XYGTest
 
-    assertThat[String](xyg.toolTip.asJava).isEmpty()
+    xyg.toolTip shouldBe empty
     xyg.toolTip = Array("good", "bad", "ugly")
-    assertThat[String](xyg.toolTip.asJava).containsExactly("good", "bad", "ugly")
+    xyg.toolTip shouldBe Seq("good", "bad", "ugly")
   }
 
   @Test
   def x(): Unit = {
     val xyg = new XYGTest
 
-    assertThat[Number](xyg.x.asJava).isEmpty()
+    xyg.x shouldBe empty
     xyg.x = 1 to 3
-    assertThat[Number](xyg.x.asJava).containsExactly(1, 2, 3)
+    xyg.x shouldBe Seq(1, 2, 3)
     xyg.x = Seq(1, 2, 3)
-    assertThat[Number](xyg.x.asJava).containsExactly(1, 2, 3)
+    xyg.x shouldBe Seq(1, 2, 3)
     xyg.x = Array(1, 2, 3)
-    assertThat[Number](xyg.x.asJava).containsExactly(1, 2, 3)
+    xyg.x shouldBe Seq(1, 2, 3)
     val instant = Instant.now()
     xyg.x = Array(instant)
-    assertThat[Number](xyg.x.asJava).containsExactly(instant.toEpochMilli)
+    xyg.x shouldBe Seq(instant.toEpochMilli)
   }
 
   @Test
   def y(): Unit = {
     val xyg = new XYGTest
 
-    assertThat(xyg.y.isEmpty).isTrue
+    xyg.y shouldBe empty
     xyg.y = Array(1, 2, 3)
-    assertThat[Number](xyg.y.asJava).containsExactly(1, 2, 3)
+    xyg.y shouldBe Seq(1, 2, 3)
     xyg.y = Seq(1.0, 2.0, 3.0)
-    assertThat[Number](xyg.y.asJava).containsExactly(1.0, 2.0, 3.0)
+    xyg.y shouldBe Seq(1, 2, 3)
     xyg.y = 1 to 3
-    assertThat[Number](xyg.y.asJava).containsExactly(1, 2, 3)
+    xyg.y shouldBe Seq(1, 2, 3)
   }
 }

@@ -17,31 +17,31 @@ package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 import com.twosigma.beakerx.chart.Color
 import com.twosigma.beakerx.chart.xychart.plotitem.StrokeType
-import org.assertj.core.api.Assertions._
 import org.junit.Test
+import org.scalatest.Matchers._
 
 class CrosshairPropertiesTest {
   @Test def color(): Unit = {
     val crosshair = new Crosshair()
 
-    assertThat(crosshair.color.isDefined).isFalse
+    crosshair.color shouldBe empty
     crosshair.color = Color.green
-    assertThat(crosshair.color.get).isEqualTo(Color.green)
+    crosshair.color should contain(Color.green)
   }
 
   @Test def width(): Unit = {
     val crosshair = new Crosshair()
 
-    assertThat(crosshair.width.isDefined).isFalse
+    crosshair.width shouldBe empty
     crosshair.width = 4.2f
-    assertThat(crosshair.width.get).isEqualTo(4.2f)
+    crosshair.width should contain(4.2f)
   }
 
   @Test def style(): Unit = {
     val crosshair = new Crosshair()
 
-    assertThat(crosshair.style.isDefined).isFalse
+    crosshair.style shouldBe empty
     crosshair.style = StrokeType.DASH
-    assertThat(crosshair.style.get).isEqualTo(StrokeType.DASH)
+    crosshair.style should contain(StrokeType.DASH)
   }
 }

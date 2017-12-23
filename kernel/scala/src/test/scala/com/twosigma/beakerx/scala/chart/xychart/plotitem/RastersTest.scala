@@ -15,9 +15,8 @@
  */
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
-import org.assertj.core.api.Assertions
 import org.junit.Test
-import org.junit.Assert._
+import org.scalatest.Matchers._
 
 class RastersTest {
   @Test
@@ -25,9 +24,9 @@ class RastersTest {
   def height(): Unit = {
     val rasters = new Rasters()
 
-    Assertions.assertThat(rasters.height.isEmpty).isTrue
+    rasters.height shouldBe empty
     rasters.height = 1 to 3
-    Assertions.assertThat(rasters.height.toArray).containsExactly(1, 2, 3)
+    rasters.height shouldBe Seq(1, 2, 3)
   }
 
   @Test
@@ -35,9 +34,9 @@ class RastersTest {
   def width(): Unit = {
     val rasters = new Rasters()
 
-    Assertions.assertThat(rasters.width.isEmpty).isTrue
+    rasters.width shouldBe empty
     rasters.width = 1 to 3
-    Assertions.assertThat(rasters.width.toArray).containsExactly(1, 2, 3)
+    rasters.width shouldBe Seq(1, 2, 3)
   }
 
   @Test
@@ -48,9 +47,9 @@ class RastersTest {
     // opacity requires width to be set
     rasters.width = Array.fill(3)(100)
     assume(rasters.width.nonEmpty)
-    Assertions.assertThat(rasters.opacity.length).isEqualTo(3)
+    rasters.opacity should have length 3
     rasters.opacity = 1 to 3
-    Assertions.assertThat(rasters.opacity.toArray).containsExactly(1, 2, 3)
+    rasters.opacity shouldBe Seq(1, 2, 3)
   }
 
   @Test
@@ -62,7 +61,7 @@ class RastersTest {
     val rasters = new Rasters()
     rasters.dataString = data
 
-    Assertions.assertThat(rasters.dataString).isEqualTo(data)
+    rasters.dataString shouldBe data
   }
 
 }

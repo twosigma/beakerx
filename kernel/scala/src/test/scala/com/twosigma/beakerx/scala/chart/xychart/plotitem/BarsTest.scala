@@ -16,8 +16,8 @@
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 import com.twosigma.beakerx.chart.Color
-import org.assertj.core.api.Assertions
 import org.junit.Test
+import org.scalatest.Matchers._
 
 class BarsTest {
   @Test
@@ -25,7 +25,7 @@ class BarsTest {
   def widthsEmpty(): Unit = {
     val bars = new Bars()
 
-    Assertions.assertThat(bars.widths.isEmpty).isTrue
+    bars.widths shouldBe empty
   }
 
   @Test
@@ -34,9 +34,9 @@ class BarsTest {
     val bars = new Bars()
 
     bars.width = List(1, 2, 3)
-    Assertions.assertThat[Number](bars.getWidths).containsExactly(1, 2, 3)
+    bars.widths should equal (Seq(1, 2, 3))
     bars.width = Array(1.0, 3.0)
-    Assertions.assertThat[Number](bars.getWidths).containsExactly(1.0, 3.0)
+    bars.widths should equal (Seq(1, 3))
   }
 
   @Test
@@ -44,7 +44,7 @@ class BarsTest {
   def widthEmpty(): Unit = {
     val bars = new Bars()
 
-    Assertions.assertThat(bars.width.isDefined).isFalse
+    bars.width shouldBe empty
   }
 
   @Test
@@ -53,7 +53,7 @@ class BarsTest {
     val bars = new Bars()
 
     bars.width = 2.5
-    Assertions.assertThat(bars.width.get).isEqualTo(2.5f)
+    bars.width should contain(2.5)
   }
 
   @Test
@@ -61,9 +61,9 @@ class BarsTest {
   def outlineColor(): Unit = {
     val bars = new Bars()
 
-    Assertions.assertThat(bars.outlineColor.isDefined).isFalse
+    bars.outlineColor shouldBe empty
     bars.outlineColor = Color.RED
-    Assertions.assertThat(bars.outlineColor.get).isEqualTo(Color.RED)
+    bars.outlineColor should contain(Color.RED)
   }
 
   @Test
@@ -71,8 +71,8 @@ class BarsTest {
   def outlineColors(): Unit = {
     val bars = new Bars()
 
-    Assertions.assertThat(bars.outlineColors.isEmpty).isTrue
+    bars.outlineColors shouldBe empty
     bars.outlineColor = Seq(Color.RED, Color.GREEN)
-    Assertions.assertThat(bars.outlineColors.toArray).containsExactly(Color.RED, Color.GREEN)
+    bars.outlineColors shouldBe Seq(Color.RED, Color.GREEN)
   }
 }

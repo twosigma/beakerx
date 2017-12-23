@@ -16,8 +16,8 @@
 package com.twosigma.beakerx.scala.chart.categoryplot.plotitem
 
 import com.twosigma.beakerx.chart.categoryplot.plotitem.CategoryGraphics
-import org.assertj.core.api.Assertions
 import org.junit.Test
+import org.scalatest.Matchers._
 
 class CategoryGraphicsPropertiesTest {
   @Test
@@ -26,16 +26,16 @@ class CategoryGraphicsPropertiesTest {
     val cg = new CategoryGraphics with CategoryGraphicsProperties {}
 
     cg.value = Array(1, 2, 3)
-    Assertions.assertThat(cg.value).containsExactly(Array(1, 2, 3))
+    cg.value shouldBe Seq(Seq(1, 2, 3))
     cg.value = Seq(1, 3, 6, 7)
-    Assertions.assertThat(cg.value).containsExactly(Array(1, 3, 6, 7))
+    cg.value shouldBe Seq(Seq(1, 3, 6, 7))
     cg.value = 1 to 3
-    Assertions.assertThat(cg.value).containsExactly(Array(1, 2, 3))
+    cg.value shouldBe Seq(Seq(1, 2, 3))
     cg.value = Seq(1 to 3, 2 to 4, 3 to 5)
-    Assertions.assertThat(cg.value).containsExactly(Array(1, 2, 3), Array(2, 3, 4), Array(3, 4, 5))
+    cg.value shouldBe Seq(Seq(1, 2, 3), Seq(2, 3, 4), Seq(3, 4, 5))
     cg.value = Seq(Array(1.0), Array(2.0), Array(3.0))
-    Assertions.assertThat(cg.value).containsExactly(Array(1.0), Array(2.0), Array(3.0))
+    cg.value shouldBe Seq(Seq(1), Seq(2), Seq(3))
     cg.value = Array(1 to 3, 2 to 4, 3 to 5)
-    Assertions.assertThat(cg.value).containsExactly(Array(1, 2, 3), Array(2, 3, 4), Array(3, 4, 5))
+    cg.value shouldBe Seq(Seq(1, 2, 3), Seq(2, 3, 4), Seq(3, 4, 5))
   }
 }

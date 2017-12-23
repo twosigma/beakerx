@@ -15,17 +15,16 @@
  */
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
-import org.assertj.core.api.Assertions._
 import org.junit.Test
+import org.scalatest.Matchers._
 
 class AreaPropertiesTest {
   @Test
   def interpolation(): Unit = {
     val area = new Area()
 
-    assertThat(area.interpolation.isEmpty).isTrue
+    area.interpolation shouldBe empty
     area.interpolation = 1
-    assertThat(area.interpolation.isDefined).isTrue
-    assertThat(area.interpolation.get).isEqualTo(1)
+    area.interpolation should contain(1)
   }
 }

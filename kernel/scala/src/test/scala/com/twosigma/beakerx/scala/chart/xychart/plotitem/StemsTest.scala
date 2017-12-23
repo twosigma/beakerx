@@ -16,8 +16,8 @@
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 import com.twosigma.beakerx.chart.xychart.plotitem.StrokeType
-import org.assertj.core.api.Assertions
 import org.junit.Test
+import org.scalatest.Matchers._
 
 class StemsTest {
   @Test
@@ -25,9 +25,9 @@ class StemsTest {
   def style(): Unit = {
     val stems = new Stems()
 
-    Assertions.assertThat(stems.style).isNotNull
+    stems.style should (not be null and be(stems.getStyle))
     stems.style = StrokeType.DOT
-    Assertions.assertThat(stems.style).isEqualTo(StrokeType.DOT)
+    stems.style shouldBe StrokeType.DOT
   }
 
   @Test
@@ -35,9 +35,9 @@ class StemsTest {
   def styles(): Unit = {
     val stems = new Stems()
 
-    Assertions.assertThat(stems.styles.isEmpty).isTrue
+    stems.styles shouldBe empty
     stems.style = Array(StrokeType.DOT, StrokeType.DASH)
-    Assertions.assertThat(stems.styles.toArray).containsExactly(StrokeType.DOT, StrokeType.DASH)
+    stems.styles shouldBe Seq(StrokeType.DOT, StrokeType.DASH)
   }
 
   @Test
@@ -45,8 +45,8 @@ class StemsTest {
   def width(): Unit = {
     val stems = new Stems()
 
-    Assertions.assertThat(stems.width).isNotNull
+    stems.width should (not be null and be(stems.getWidth))
     stems.width = 42
-    Assertions.assertThat(stems.width).isEqualTo(42)
+    stems.width shouldBe 42
   }
 }

@@ -16,10 +16,8 @@
 
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
-import org.assertj.core.api.Assertions
 import org.junit.Test
-
-import scala.collection.JavaConverters._
+import org.scalatest.Matchers._
 
 class LineTest {
   @Test
@@ -28,8 +26,8 @@ class LineTest {
       y = Seq(10, 20)
     }
     //then
-    Assertions.assertThat[Number](line.getX).isNotEmpty
-    Assertions.assertThat[Number](line.getY).isNotEmpty
+    line.getX shouldNot be ('empty)
+    line.getY shouldNot be ('empty)
   }
 
   @Test
@@ -39,9 +37,9 @@ class LineTest {
       y = Seq(10, 20)
       displayName = testString
     }
-    Assertions.assertThat[Number](line.getX).isNotEmpty
-    Assertions.assertThat[Number](line.getY).isNotEmpty
-    Assertions.assertThat(line.getDisplayName).isEqualTo(testString)
+    line.getX shouldNot be('empty)
+    line.getY shouldNot be('empty)
+    line.getDisplayName shouldBe testString
   }
 
   @Test
@@ -54,21 +52,21 @@ class LineTest {
       y = Seq(30, 40)
       width = testWidth
     }
-    Assertions.assertThat[Number](line.x.asJavaCollection).isNotEmpty
-    Assertions.assertThat[Number](line.y.asJavaCollection).isNotEmpty
-    Assertions.assertThat(line.getDisplayName).isEqualTo(testString)
-    Assertions.assertThat(line.getWidth).isEqualTo(testWidth)
+    line.getX shouldNot be('empty)
+    line.getY shouldNot be('empty)
+    line.getDisplayName shouldBe testString
+    line.getWidth shouldBe testWidth
   }
 
   @Test
   def unsetOptions(): Unit = {
     val line = new Line
 
-    Assertions.assertThat(line.getInterpolation).isNull()
-    Assertions.assertThat(line.interpolation).isEqualTo(None)
+    line.getInterpolation shouldBe null
+    line.interpolation shouldBe None
 
-    Assertions.assertThat(line.getStyle).isNull()
-    Assertions.assertThat(line.style).isEqualTo(None)
+    line.getStyle shouldBe null
+    line.style shouldBe None
   }
 
 }

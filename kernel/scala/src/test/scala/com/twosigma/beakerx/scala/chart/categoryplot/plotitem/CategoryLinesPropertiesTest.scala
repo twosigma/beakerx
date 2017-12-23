@@ -16,10 +16,8 @@
 package com.twosigma.beakerx.scala.chart.categoryplot.plotitem
 
 import com.twosigma.beakerx.chart.xychart.plotitem.StrokeType
-import org.assertj.core.api.Assertions
 import org.junit.Test
-
-import scala.collection.JavaConverters._
+import org.scalatest.Matchers._
 
 class CategoryLinesPropertiesTest {
   @Test
@@ -28,23 +26,22 @@ class CategoryLinesPropertiesTest {
 
     val lines = new CategoryLines
 
-    Assertions.assertThat(lines.style).isEqualTo(lines.getStyle)
-
-    Assertions.assertThat(lines.styles.isEmpty).isTrue
+    lines.style shouldBe lines.getStyle
+    lines.styles shouldBe empty
 
     lines.style = LONGDASH
-    Assertions.assertThat(lines.style).isEqualTo(LONGDASH)
+    lines.style shouldBe LONGDASH
 
     lines.style = Array(DASH, DOT, SOLID)
-    Assertions.assertThat[StrokeType](lines.styles.asJava).containsExactly(DASH, DOT, SOLID)
+    lines.styles shouldBe Seq(DASH, DOT, SOLID)
   }
 
   @Test
   def width(): Unit = {
     val lines = new CategoryLines
 
-    Assertions.assertThat(lines.width).isEqualTo(lines.getWidth)
+    lines.width shouldBe lines.getWidth
     lines.width = 21
-    Assertions.assertThat(lines.width).isEqualTo(21.0f)
+    lines.width shouldBe 21
   }
 }

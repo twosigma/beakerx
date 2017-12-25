@@ -48,7 +48,7 @@ object BasedCategoryGraphicsProperties {
   }
   implicit class SeqOfNumberViewable[T : NumberView, Coll[_] : HasSeq[T]#Conversion](value: Coll[T]) extends CategoryBasesType {
     override def toObject: Object = {
-      val normalized: Seq[Number] = (value: Seq[T]).map(x => x: Number)
+      val normalized: Seq[Number] = (value: Seq[T]).toNumbers
       normalized.asJava
     }
   }

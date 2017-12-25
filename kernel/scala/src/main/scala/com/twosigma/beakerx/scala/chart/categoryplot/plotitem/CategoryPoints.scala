@@ -46,5 +46,5 @@ trait CategoryPointsProperties extends CategoryGraphicsProperties {
   def size: Float = getSize
   def sizes: Seq[Number] = getNullableList(getSizes)
   def size_=(s: Number): Unit = setSize(s)
-  def size_=[T : NumberView](ss: Seq[T]): Unit = setSize(ss.map(s => s: Number).asJava)
+  def size_=[T : NumberView](ss: Seq[T]): Unit = setSize(ss.toNumbers.asJava)
 }

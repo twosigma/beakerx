@@ -47,5 +47,5 @@ trait PointsProperties extends XYGraphicsProperties {
   def size = getSize
   def sizes: Seq[Number] = getNullableList(getSizes)
   def size_=(s: Number) = setSize(s)
-  def size_=[T : NumberView](ss: Seq[T]): Unit = setSize(ss.map(x => x: Number).asJava)
+  def size_=[T : NumberView](ss: Seq[T]): Unit = setSize(ss.toNumbers.asJava)
 }

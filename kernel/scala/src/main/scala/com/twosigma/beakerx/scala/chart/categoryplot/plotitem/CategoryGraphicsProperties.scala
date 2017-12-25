@@ -51,12 +51,12 @@ trait CategoryGraphicsProperties extends GraphicsProperties {
 
   def value: Array[Array[Number]] = getValue
   def value_=[T : NumberView](value: Seq[T]): Unit = {
-    val numbers: Array[Number] = value.map(x => x: Number).toArray
+    val numbers: Array[Number] = value.toNumbers.toArray
     setValue(numbers.toArray[Object])
   }
   def value_=[T : ClassTag : NumberView, Inner[_] : HasSeq[T]#Conversion](value: Seq[Inner[T]]): Unit = {
     val arrays: Array[java.util.List[Number]] = value.map(inner =>
-      inner.map(item => item: Number).toList.asJava
+      (inner: Seq[T]).toNumbers.asJava
     ).toArray
     setValue(arrays.toArray[Object])
   }

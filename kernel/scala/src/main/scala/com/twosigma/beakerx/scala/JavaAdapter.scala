@@ -71,6 +71,10 @@ object JavaAdapter {
     def toObjects: Seq[Object] = s.map(implicitly[T => Object])
   }
 
+  implicit class numberSeq[T : NumberView](s: Seq[T]) {
+    def toNumbers: Seq[Number] = s.map(implicitly[T => Number])
+  }
+
   def getNullableList[T](getter: () => java.util.List[T]) = {
     import scala.collection.JavaConverters._
 

@@ -26,5 +26,5 @@ trait BasedXYGraphicsProperties extends XYGraphicsProperties {
   def base: Number = getBase
   def bases: Seq[Number] = getNullableList(getBases)
   def base_=(base: Number): Unit = setBase(base)
-  def base_=[T : NumberView](bases: Seq[T]): Unit = setBase(bases.map(b => b: Number).asJava)
+  def base_=[T : NumberView](bases: Seq[T]): Unit = setBase(bases.toNumbers.asJava)
 }

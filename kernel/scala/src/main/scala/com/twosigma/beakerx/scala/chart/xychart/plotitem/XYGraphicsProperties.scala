@@ -42,5 +42,5 @@ trait XYGraphicsProperties extends GraphicsProperties {
   def x_=[T : BeakerXAxis](xs: Seq[T]): Unit = setX(xs.map(BeakerXAxis[T].toObject).asJava)
 
   def y: Seq[Number] = getY.asScala
-  def y_=[T : NumberView](ys: Seq[T]) = setY(ys.map(x => x: Number).asJava)
+  def y_=[T : NumberView](ys: Seq[T]) = setY(ys.toNumbers.asJava)
 }

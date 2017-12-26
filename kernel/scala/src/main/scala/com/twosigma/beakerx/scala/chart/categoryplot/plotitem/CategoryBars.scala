@@ -45,8 +45,7 @@ trait CategoryBarsProperties extends BasedCategoryGraphicsProperties {
   def outlineColors: Seq[Object] = getNullableList(getOutlineColors)
   def outlineColor_=(outlineColor: Color): Unit = setOutlineColor(outlineColor)
   def outlineColor_=(outlineColor: java.awt.Color): Unit = setOutlineColor(outlineColor)
-  // TODO: use type constraint
-  def outlineColor_=[T <: AnyRef](outlineColors: Seq[T]): Unit = setOutlineColor(outlineColors.map(identity[Object]).asJava)
+  def outlineColor_=[T <: AnyRef : BeakerColor](outlineColors: Seq[T]): Unit = setOutlineColor(outlineColors.toObjects.asJava)
 
   def width: Option[Number] = Option(getWidth)
   def widths: Seq[Number] = getNullableList(getWidths)

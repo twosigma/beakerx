@@ -29,8 +29,7 @@ trait BarsProperties extends BasedXYGraphicsProperties {
   def outlineColor = Option(getOutlineColor)
   def outlineColor_=(color: Color) = setOutlineColor(color)
   def outlineColor_=(color: java.awt.Color) = setOutlineColor(color)
-  // TODO: Use type constraint
-  def outlineColor_=[T <: AnyRef](colors: Seq[T]) = setOutlineColor(colors.map(identity[Object]).asJava)
+  def outlineColor_=[T <: AnyRef : BeakerColor](colors: Seq[T]) = setOutlineColor(colors.toObjects.asJava)
   def outlineColors = getNullableList(getOutlineColors)
 
   def width = Option(getWidth)

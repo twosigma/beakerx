@@ -38,6 +38,8 @@ class XYGraphicsPropertiesTest {
     xyg.colors shouldBe empty
     xyg.color = Array(Color.RED, Color.GREEN, Color.BLUE)
     xyg.colors shouldBe Seq(Color.RED, Color.GREEN, Color.BLUE)
+
+    assertTypeError("xyg.color = Array(xyg)")
   }
 
   @Test
@@ -71,6 +73,8 @@ class XYGraphicsPropertiesTest {
     val instant = Instant.now()
     xyg.x = Array(instant)
     xyg.x shouldBe Seq(instant.toEpochMilli)
+
+    assertTypeError("xyg.x = Array(xyg)")
   }
 
   @Test

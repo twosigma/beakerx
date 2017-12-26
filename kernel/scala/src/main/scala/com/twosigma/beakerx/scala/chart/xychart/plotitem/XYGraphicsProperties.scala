@@ -30,8 +30,7 @@ trait XYGraphicsProperties extends GraphicsProperties {
   def colors: Seq[Color] = getNullableList(getColors)
   def color_=(c: Color): Unit = setColor(c)
   def color_=(c: java.awt.Color): Unit = setColor(c)
-  // TODO: use type constraint (Color, java.awt.Color)
-  def color_=(cs: Seq[Object]): Unit = setColor(cs.asJava)
+  def color_=[T <: AnyRef : BeakerColor](cs: Seq[T]): Unit = setColor(cs.toObjects.asJava)
 
   def displayName: String = getDisplayName
   def displayName_=(s: String): Unit = setDisplayName(s)
@@ -39,9 +38,8 @@ trait XYGraphicsProperties extends GraphicsProperties {
   def toolTip = getNullableList(getToolTips)
   def toolTip_=(t: Seq[String]): Unit = setToolTip(t.asJava)
 
-  // TODO: use type constraint (Number, Date, LocalDate, LocalDateTime, Instant)
   def x: Seq[Number] = getX.asScala
-  def x_=[T](xs: Seq[T]): Unit = setX(xs.map(_.asInstanceOf[Object]).asJava)
+  def x_=[T : BeakerXAxis](xs: Seq[T]): Unit = setX(xs.map(BeakerXAxis[T].toObject).asJava)
 
   def y: Seq[Number] = getY.asScala
   def y_=[T : NumberView](ys: Seq[T]) = setY(ys.map(x => x: Number).asJava)

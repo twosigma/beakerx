@@ -16,6 +16,9 @@
 
 package com.twosigma.beakerx.scala
 
+import java.time.{Instant, LocalDate, LocalDateTime}
+import java.util.Date
+
 import scala.annotation.implicitNotFound
 import scala.language.higherKinds
 
@@ -41,13 +44,31 @@ object JavaAdapter {
   }
 
   @implicitNotFound("X values must be of numeric type or one of Date, LocalDate, LocalDateTime, or Instant (found ${T})")
-  sealed trait BeakerXAxis[T]
+  sealed trait BeakerXAxis[T] {
+    def toObject(value: T): Object
+  }
   object BeakerXAxis {
-    implicit def numberView[T : NumberView]: BeakerXAxis[T] = new BeakerXAxis[T] {}
-    implicit object date extends BeakerXAxis[java.util.Date]
-    implicit object localDate extends BeakerXAxis[java.time.LocalDate]
-    implicit object localDateTime extends BeakerXAxis[java.time.LocalDateTime]
-    implicit object instant extends BeakerXAxis[java.time.Instant]
+    implicit def numberView[T : NumberView]: BeakerXAxis[T] = new BeakerXAxis[T] {
+      override def toObject(value: T): Number = value
+    }
+    implicit object date extends BeakerXAxis[java.util.Date] {
+      override def toObject(value: Date): AnyRef = value
+    }
+    implicit object localDate extends BeakerXAxis[java.time.LocalDate] {
+      override def toObject(value: LocalDate): AnyRef = value
+    }
+    implicit object localDateTime extends BeakerXAxis[java.time.LocalDateTime] {
+      override def toObject(value: LocalDateTime): AnyRef = value
+    }
+    implicit object instant extends BeakerXAxis[java.time.Instant] {
+      override def toObject(value: Instant): AnyRef = value
+    }
+
+    def apply[T : BeakerXAxis]: BeakerXAxis[T] = implicitly[BeakerXAxis[T]]
+  }
+
+  implicit class objectSeq[T : Has[Object]#Conversion](s: Seq[T]) {
+    def toObjects: Seq[Object] = s.map(implicitly[T => Object])
   }
 
   def getNullableList[T](getter: () => java.util.List[T]) = {

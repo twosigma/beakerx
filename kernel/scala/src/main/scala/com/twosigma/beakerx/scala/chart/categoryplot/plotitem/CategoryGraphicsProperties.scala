@@ -30,11 +30,10 @@ trait CategoryGraphicsProperties extends GraphicsProperties {
   def centerSeries: Boolean = getCenterSeries
   def centerSeries_=(center: Boolean): Unit = setCenterSeries(center)
 
-  def color: Color = getColor
+  def color: Option[Color] = Option(getColor)
   def color_=(color: Color): Unit = setColor(color)
   def color_=(color: java.awt.Color): Unit = setColor(color)
-  // TODO: use Color type constraint
-  def color_=(colors: Seq[Object]): Unit = setColor(colors.asJava)
+  def color_=[T <: AnyRef : BeakerColor](colors: Seq[T]): Unit = setColor(colors.toObjects.asJava)
   def colors: Seq[Color] = getNullableList(getColors) map {
     case color: Color => color
   }

@@ -59,6 +59,8 @@ class CategoryBarsPropertiesTest {
     categoryBars.outlineColors shouldBe empty
     categoryBars.outlineColor = Array(Color.red, Color.green, Color.blue)
     categoryBars.outlineColors shouldBe Seq(Color.red, Color.green, Color.blue)
+
+    assertTypeError("categoryBars.outlineColor = Array.empty[CategoryBars]")
   }
 
   @Test

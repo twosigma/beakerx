@@ -34,20 +34,20 @@ trait BasedCategoryGraphicsProperties extends CategoryGraphicsProperties {
   def bases: Seq[Any] = getNullableList(getBases)
   def base_=(base: Number): Unit = setBase(base)
   def base_=[T](s: Seq[T])(implicit basesEv: T => CategoryBasesType): Unit = {
-    setBase(s.map(_.asObject).asJava)
+    setBase(s.map(_.toObject).asJava)
 }
 
 }
 
 object BasedCategoryGraphicsProperties {
   sealed trait CategoryBasesType {
-    def asObject: Object
+    def toObject: Object
   }
   implicit class NumberViewable[T : NumberView](value: T) extends CategoryBasesType {
-    def asObject: Object = value: Number
+    override def toObject: Object = value: Number
   }
   implicit class SeqOfNumberViewable[T : NumberView, Coll[_] : HasSeq[T]#Conversion](value: Coll[T]) extends CategoryBasesType {
-    def asObject: Object = {
+    override def toObject: Object = {
       val normalized: Seq[Number] = (value: Seq[T]).map(x => x: Number)
       normalized.asJava
     }

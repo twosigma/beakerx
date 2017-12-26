@@ -33,14 +33,13 @@ trait PointsProperties extends XYGraphicsProperties {
   def fill_=(fill: Boolean) = setFill(fill)
   def fill_=(fills: Seq[Boolean]) = setFill(fills.map(Boolean.box).asJava)
 
-  // TODO: use type constraint
   def outlineColor = Option(getOutlineColor)
   def outlineColors = getNullableList(getOutlineColors)
   def outlineColor_=(c: Color) = setOutlineColor(c)
   def outlineColor_=(c: java.awt.Color) = setOutlineColor(c)
-  def outlineColor_=(cs: Seq[Object]) = setOutlineColor(cs.asJava)
+  def outlineColor_=[T <: AnyRef : BeakerColor](cs: Seq[T]) = setOutlineColor(cs.toObjects.asJava)
 
-  def shape = Option(getShape)
+  def shape = getShape
   def shapes: Seq[ShapeType] = getNullableList(getShapes)
   def shape_=(s: ShapeType) = setShape(s)
   def shape_=(ss: Seq[ShapeType]) = setShape(ss.asJava)

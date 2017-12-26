@@ -45,6 +45,8 @@ class CategoryPointsPropertiesTest {
     catPoints.outlineColors shouldBe empty
     catPoints.outlineColor = Array(Color.red, Color.green, Color.blue)
     catPoints.outlineColors shouldEqual Seq(Color.red, Color.green, Color.blue)
+
+    assertTypeError("catPoints.outlineColor = Array(catPoints)")
   }
 
   @Test

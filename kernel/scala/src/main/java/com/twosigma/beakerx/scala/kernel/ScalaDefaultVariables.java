@@ -27,11 +27,13 @@ public class ScalaDefaultVariables extends DefaultJVMVariables {
         "com.twosigma.beakerx.fileloader.CSV",
         "com.twosigma.beakerx.chart.xychart.*",
         "com.twosigma.beakerx.chart.xychart.plotitem.*",
+        "com.twosigma.beakerx.chart.categoryplot.plotitem.*",
         "com.twosigma.beakerx.table.*"
     );
 
     addImports("com.twosigma.beakerx.scala.chart.xychart._",
         "com.twosigma.beakerx.scala.chart.xychart.plotitem._",
+        "com.twosigma.beakerx.scala.chart.categoryplot.plotitem._",
         "com.twosigma.beakerx.scala.easyform.EasyForm",
         "com.twosigma.beakerx.easyform.formitem._",
         "com.twosigma.beakerx.scala.table._",

@@ -74,6 +74,7 @@ class EnvironmentSettings:
             }
             new_prop.append(prop)
         settings['properties'] = new_prop
+        settings['heap_GB'] = float(settings['heap_GB']) if settings['heap_GB'] else None
         content = json.dumps(beakerx_settings)
         return content
 

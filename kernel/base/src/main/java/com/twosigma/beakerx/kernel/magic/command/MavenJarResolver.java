@@ -246,7 +246,7 @@ public class MavenJarResolver {
     File theDir = new File(pathToMavenRepo);
     if (!theDir.exists()) {
       try {
-        theDir.mkdir();
+        theDir.mkdirs();
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

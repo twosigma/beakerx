@@ -75,7 +75,7 @@ describe('JavaTutorial notebook', function () {
   describe('Run 8th cell. ', function () {
     it('Output contains "static_123 object_123"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(7, '((static_123)\.*\n*(object_123))');
+      beakerxPO.runCallAndCheckOutputText(7, '\.*static_123\.*\n*\.*object_123');
     }, 2);
   });
 

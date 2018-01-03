@@ -16,7 +16,7 @@
 
 ## Dependencies
 
-Running the e2e tests from its GitHub source code requires Chrome browser version 62+.
+Running the e2e tests from its GitHub source code requires Chrome browser version v61-63.
 
 ## Run the tests
 

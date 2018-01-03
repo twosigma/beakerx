@@ -87,13 +87,10 @@ describe('Testing of EasyForm (python)', function () {
       expect(easyForm.$('label.widget-label').getText()).toBe('field name8');
     });
 
-    it('EasyForm has DatePicker field', function () {
+    it('EasyForm has Date field', function () {
       var easyForm = beakerxPO.runCellToGetEasyForm(8);
-      expect(easyForm.$('div.datepicker-container').isEnabled()).toBeTruthy();
+      expect(easyForm.$('input[type="date"]').isEnabled()).toBeTruthy();
       expect(easyForm.$('label.widget-label').getText()).toBe('field name9');
-      easyForm.$('a.date-picker-button').click();
-      browser.$('span.flatpickr-day=25').click();
-      expect(easyForm.$('input[type="text"]').getValue()).toMatch('25');
     });
   });
 

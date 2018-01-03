@@ -18,12 +18,14 @@ define([
   'underscore',
   'big.js',
   './../plotUtils',
-  './../../shared/bkUtils'
+  './../../shared/bkUtils',
+  'moment-timezone/builds/moment-timezone-with-data.min'
 ], function(
   _,
   Big,
   plotUtils,
-  bkUtils
+  bkUtils,
+  moment
 ) {
   var PlotAxis = function(type) {
     this.type = "axis";

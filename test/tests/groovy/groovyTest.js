@@ -30,49 +30,42 @@ describe('Groovy tests', function () {
 
   describe('Run first cell. ', function () {
     it('Output contains "2"', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(0, '2');
     });
   });
 
   describe('Run 2nd cell. ', function () {
     it('Output contains "groovy.lang.MissingPropertyException"', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(1, 'groovy.lang.MissingPropertyException');
     });
   }, 2);
 
   describe('Run 3rd cell. ', function () {
     it('Output contains "2"', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(2, '2');
     });
   }, 2);
 
   describe('Run 4th cell. ', function () {
     it('Output contains "run_closure"', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(3, 'run_closure');
     });
   }, 2);
 
   describe('Run 5th cell. ', function () {
     it('Output contains "8"', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(4, '8');
     });
   }, 2);
 
   describe('Run 6th cell. ', function () {
     it('Output contains "Multiplying Strings!Multiplying Strings!"', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(5, 'Multiplying Strings!Multiplying Strings!');
     });
   }, 2);
 
   describe('Run 7th cell. ', function () {
     it('Output contains "9.265"', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
       beakerxPO.runCallAndCheckOutputText(6, '9.265');
     });
   }, 2);
@@ -88,12 +81,10 @@ describe('Groovy tests', function () {
 
     it('Output contains UTF-8 hex string', function () {
       codeCell = beakerxPO.runCodeCellByIndex(7);
-      beakerxPO.kernelIdleIcon.waitForEnabled();
       expect(codeCell.$('.output_subarea.output_text').getText()).toMatch('d18dd18ed18f');
     });
 
     it('Plot title is cyrillic (cp1521)', function () {
-      beakerxPO.kernelIdleIcon.waitForEnabled();
       checkCyrilicString(codeCell.$('div#plotTitle').getText());
     });
 
@@ -116,10 +107,8 @@ describe('Groovy tests', function () {
 
     it('Output contains table', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(9);
-      beakerxPO.kernelIdleIcon.waitForEnabled();
       var bkoTable = codeCell.$('div.bko-table');
-      bkoTable.waitForEnabled();
-      expect(bkoTable.isVisible()).toBeTruthy();
+      expect(bkoTable.isEnabled()).toBeTruthy();
       expect(bkoTable.$('tbody > tr').getText()).toMatch('"text/plain":"5"');
     });
   }, 2);

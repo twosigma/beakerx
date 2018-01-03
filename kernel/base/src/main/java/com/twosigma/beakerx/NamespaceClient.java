@@ -46,6 +46,7 @@ public class NamespaceClient {
   private SimpleEvaluationObject currentCeo = null;
   private Comm autotranslationComm = null;
   private Comm codeCellsComm = null;
+  private Comm tagRunComm = null;
 
   public NamespaceClient() {
     SimpleModule module = TableDisplayToJson.tableDisplayModule();
@@ -149,11 +150,11 @@ public class NamespaceClient {
   }
   
   protected Comm getTagRunComm() {
-    if(codeCellsComm == null){
-      codeCellsComm = new Comm(TargetNamesEnum.BEAKER_TAG_RUN);
-      codeCellsComm.open();
+    if(tagRunComm == null){
+      tagRunComm = new Comm(TargetNamesEnum.BEAKER_TAG_RUN);
+      tagRunComm.open();
     }
-    return codeCellsComm;
+    return tagRunComm;
   }
   
 

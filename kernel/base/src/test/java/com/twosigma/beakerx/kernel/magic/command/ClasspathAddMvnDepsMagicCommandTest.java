@@ -106,7 +106,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     MagicCommandOutcome process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
     //then
     String text = getText(process);
-    assertThat(text).isEqualTo(ADD_MVN_FORMAT_ERROR_MESSAGE);
+    assertThat(text).isEqualTo(ADD_MVN_FORMAT_ERROR_MESSAGE + "\n");
   }
 
   private void handleClasspathAddMvnDep(String allCode, String expected) throws IOException {

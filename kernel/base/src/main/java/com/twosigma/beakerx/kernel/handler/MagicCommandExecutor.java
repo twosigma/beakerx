@@ -32,6 +32,7 @@ public class MagicCommandExecutor {
     MagicCommandOutcome result = new MagicCommandOutcome();
     if (code.hasErrors()) {
       code.getErrors().forEach(result::addItem);
+      sendMagicCommandsResult(result, kernel, code.getMessage(), executionCount);
     } else {
       code.getMagicCommands().
               forEach(magicCommand -> {
@@ -42,10 +43,10 @@ public class MagicCommandExecutor {
                         executionCount);
                 MagicCommandOutcomeItem item = magicCommand.execute(param);
                 result.addItem(item);
+                sendMagicCommandOutcome(item, kernel, code.getMessage(), executionCount);
               });
-
+      sendRepliesWithStatus(result, kernel, code.getMessage(), executionCount);
     }
-    sendMagicCommandsResult(result, kernel, code.getMessage(), executionCount);
     return result;
   }
 
@@ -55,6 +56,21 @@ public class MagicCommandExecutor {
         handleOkStatus(kernel, message, executionCount, item);
       } else {
         handleErrorStatus(kernel, message, executionCount, item);
+      }
+    });
+  }
+
+  private static void sendMagicCommandOutcome(MagicCommandOutcomeItem item, KernelFunctionality kernel, Message message, int executionCount) {
+        boolean hasError =   item.getStatus().equals(MagicCommandOutcomeItem.Status.ERROR);
+        publishOutcome(kernel, message, executionCount, item, hasError);
+  }
+
+  private static void sendRepliesWithStatus(MagicCommandOutcome magicCommandResult, KernelFunctionality kernel, Message message, int executionCount) {
+    magicCommandResult.getItems().forEach(item -> {
+      if (item.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
+        kernel.send(MessageCreator.buildReplyWithOkStatus(message, executionCount));
+      } else {
+        kernel.send(MessageCreator.buildReplyWithErrorStatus(message, executionCount));
       }
     });
   }

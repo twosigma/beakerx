@@ -17,32 +17,13 @@
 
 from setuptools import setup, find_packages
 from setupbase_bx import (
-    create_cmdclass,
-    install_node_modules,
-    run_gradle,
     get_version,
     get_data_files,
-    here
+    get_cmdclass,
 )
 import os
 
 
-cmdclass = create_cmdclass(develop_wrappers=[
-    'js',
-    'java',
-    'javadoc',
-], distribute_wrappers=[
-    'js',
-    'java',
-    'javadoc',
-])
-cmdclass['js'] = install_node_modules(
-    path='../js/notebook',
-    build_dir=os.path.join(here, '../js/notebook', 'dist'),
-    source_dir=os.path.join(here, '../js/notebook', 'src')
-)
-cmdclass['java'] = run_gradle(cmd='build')
-cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')
 setup_args = dict(
     name                = 'beakerx',
     description         = 'BeakerX: Beaker Extensions for Jupyter Notebook',
@@ -99,7 +80,7 @@ setup_args = dict(
     zip_safe            = False,
     include_package_data= True,
     packages            = find_packages(),
-    cmdclass            = cmdclass
+    cmdclass            = get_cmdclass(),
 )
 
 if __name__ == '__main__':

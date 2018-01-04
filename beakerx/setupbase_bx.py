@@ -26,3 +26,26 @@ from setupbase_jp import (
     get_data_files,
     here
 )
+
+
+def get_cmdclass():
+    cmdclass = create_cmdclass(develop_wrappers=[
+        'js',
+        'java',
+        'javadoc',
+    ], distribute_wrappers=[
+        'js',
+        'java',
+        'javadoc',
+    ])
+
+    cmdclass['js'] = install_node_modules(
+        path='../js/notebook',
+        build_dir=os.path.join(here, '../js/notebook', 'dist'),
+        source_dir=os.path.join(here, '../js/notebook', 'src')
+    )
+    cmdclass['java'] = run_gradle(cmd='build')
+    cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')
+
+    return cmdclass
+

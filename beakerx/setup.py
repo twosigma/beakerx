@@ -16,7 +16,7 @@
 # limitations under the License.
 
 from setuptools import setup, find_packages
-from setupbase_jp import (
+from setupbase_bx import (
     create_cmdclass,
     install_node_modules,
     run_gradle,

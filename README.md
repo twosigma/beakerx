@@ -64,12 +64,12 @@ beakerx-install
 ### Build and Install for Lab
 
 ```
-conda create -y -n labx 'python>=3' nodejs pandas openjdk maven
+conda create -y -n labx 'python>=3' nodejs pandas openjdk maven pytest
 source activate labx
 conda install -y -c conda-forge jupyterlab
 (cd beakerx; pip install -e . --verbose)
 beakerx-install
-jupyter labextension install @jupyter-widgets/jupyterlab-manager
+jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.31
 (cd js/lab; jupyter labextension install .)
 ```
 

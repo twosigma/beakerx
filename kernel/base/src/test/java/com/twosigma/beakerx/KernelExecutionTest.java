@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.twosigma.MessageAssertions.verifyExecuteReplyMessage;
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
@@ -57,11 +58,30 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
     Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
+    checkResultForErrors(result);
     assertThat(result).isPresent();
     verifyResult(result.get());
     verifyPublishedMsgs(getKernelSocketsService());
     waitForSentMessage(getKernelSocketsService().getKernelSockets());
     verifySentMsgs(getKernelSocketsService());
+  }
+
+  private void checkResultForErrors(Optional<Message> result) throws InterruptedException {
+      if (!result.isPresent()){
+          Optional<Message> error = waitForErrorMessage(getKernelSocketsService().getKernelSockets());
+          String errorMsg;
+          if (error.isPresent()){
+              errorMsg = "Error message received instead of result:\n"
+                      + error.get().getContent().toString() + "\n";
+          } else {
+              errorMsg = "Result nor error messages found:\n" +
+                      String.join(",",
+                      getKernelSocketsService().getPublishedMessages().stream()
+                              .map(m -> m.getHeader().getType())
+                              .collect(Collectors.toList())) + "\n";
+          }
+          throw new AssertionError(errorMsg);
+      }
   }
 
   protected String codeFor16Divide2() {

@@ -92,9 +92,12 @@ public class NamespaceClient {
   public synchronized Object set(String name, Object value) throws IOException {
     Comm c = getAutotranslationComm();
     HashMap<String, Serializable> data = new HashMap<>();
-    data.put("name", name);
-    data.put("value", getJson(value));
-    data.put("sync", true);
+    HashMap<String, Serializable> state = new HashMap<>();
+    state.put("name", name);
+    state.put("value", getJson(value));
+    state.put("sync", true);
+    data.put("state", state);
+    data.put("buffer_paths", new HashMap<>());
     c.setData(data);
     c.send();
     return value;
@@ -162,8 +165,11 @@ public class NamespaceClient {
     // first send message to get cells
     Comm c = getCodeCellsComm();
     HashMap<String, Serializable> data = new HashMap<>();
-    data.put("name", "CodeCells");
-    data.put("value", getJson(tagFilter));
+    HashMap<String, Serializable> state = new HashMap<>();
+    state.put("name", "CodeCells");
+    state.put("value", getJson(tagFilter));
+    data.put("state", state);
+    data.put("buffer_paths", new HashMap<>());
     c.setData(data);
     c.send();
     // block

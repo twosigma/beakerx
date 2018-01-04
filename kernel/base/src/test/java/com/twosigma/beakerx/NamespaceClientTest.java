@@ -97,9 +97,10 @@ public class NamespaceClientTest {
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Map data = (Map) kernel.getPublishedMessages().get(1).getContent().get("data");
-    assertThat(data.get("name")).isEqualTo("x");
-    assertThat(data.get("value")).isEqualTo("10");
-    assertThat(data.get("sync")).isEqualTo(Boolean.TRUE);
+    Map state = (Map) data.get("state");
+    assertThat(state.get("name")).isEqualTo("x");
+    assertThat(state.get("value")).isEqualTo("10");
+    assertThat(state.get("sync")).isEqualTo(Boolean.TRUE);
   }
 
   @Test
@@ -132,8 +133,9 @@ public class NamespaceClientTest {
     //then
     assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Map data = (Map) kernel.getPublishedMessages().get(2).getContent().get("data");
-    assertThat(data.get("name")).isEqualTo("table_with_longs");
-    assertThat(isJSONValid(data.get("value"))).isTrue();
+    Map state = (Map) data.get("state");
+    assertThat(state.get("name")).isEqualTo("table_with_longs");
+    assertThat(isJSONValid(state.get("value"))).isTrue();
   }
 
   @Test

@@ -1808,9 +1808,9 @@ define([
       self.enableZoomWheel();
     }
 
-    var zoomInterval = moment() - self.zoomStarted;
+    var zoomingTime = moment() - self.zoomStarted;
 
-    if(self.contexteMenuEvent && zoomInterval < CONTEXT_MENU_DEBOUNCE_TIME) {
+    if(self.contexteMenuEvent && zoomingTime < CONTEXT_MENU_DEBOUNCE_TIME) {
       self.jqcontainer[0] && self.jqcontainer[0].dispatchEvent(self.contexteMenuEvent);
     }
 
@@ -1936,7 +1936,6 @@ define([
 
     function handleContextMenuEvent(event) {
       self.contexteMenuEvent = event;
-
 
       event.stopPropagation();
       event.preventDefault();

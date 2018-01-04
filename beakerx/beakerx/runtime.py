@@ -443,7 +443,8 @@ class BeakerX:
         if not unset:
             val = transform(val)
             args['value'] = json.dumps(val, cls=DataFrameEncoder)
-        self._comm.send(data=args)
+            state = {'state': args}
+        self._comm.send(data=state)
 
     def get(self, var):
         result = self._getRaw(var)
@@ -453,7 +454,8 @@ class BeakerX:
 
     def _getRaw(self, var):
         args = {'name': var}
-        self._comm.send(data=args)
+        state = {'state': args}
+        self._comm.send(data=state)
         # need to block until we get a callback but the server is single threaded?
         # result = self._comm.read()
         return result

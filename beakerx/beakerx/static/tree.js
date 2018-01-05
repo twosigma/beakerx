@@ -418,13 +418,14 @@ define(function(require) {
       var val = $('#heap_GB').val().trim();
       settings.normaliseHeapSize(val);
       payload.jvm_options.heap_GB = val;
+
+      settings.setVariables(JSON.stringify({
+        'beakerx': payload
+      }));
+      settings.load(payload.jvm_options);
     } catch (e) {
     }
 
-    settings.setVariables(JSON.stringify({
-      'beakerx': payload
-    }));
-    settings.load(payload.jvm_options);
   }
 
   function _onJvmPropertyAddClickedHandler(event) {

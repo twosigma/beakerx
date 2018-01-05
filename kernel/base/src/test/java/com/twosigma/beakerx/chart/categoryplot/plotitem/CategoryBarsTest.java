@@ -61,7 +61,7 @@ public class CategoryBarsTest {
   @Test
   public void setBaseWithIntegerListParam_hasBasesIsNotEmpty() {
     //when
-    categoryBars.setBase(Arrays.asList(array1));
+    categoryBars.setBase(Arrays.asList((Object[]) array1));
     //then
     Assertions.assertThat(categoryBars.getBases()).isNotEmpty();
   }

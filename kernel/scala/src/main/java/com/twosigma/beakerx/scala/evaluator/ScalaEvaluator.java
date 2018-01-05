@@ -208,7 +208,7 @@ public class ScalaEvaluator extends BaseEvaluator {
       String[] imp = importsPaths.stream().map(importPath -> adjustImport(importPath.asString())).toArray(String[]::new);
       logger.debug("importing : {}", importsPaths);
       if (!shell.addImports(imp)) {
-        logger.warn("ERROR: cannot add import '{}'", imp);
+        logger.warn("ERROR: cannot add import '{}'", (Object[]) imp);
       }
     }
   }

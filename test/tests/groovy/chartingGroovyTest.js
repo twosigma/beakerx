@@ -32,13 +32,11 @@ describe('Charting groovy tests', function () {
     it('Widget area has dtcontainer', function () {
       beakerxPO.runCodeCellByIndex(0);
       var dtContainer = beakerxPO.runCellToGetDtContainer(1);
-      dtContainer.$('#maing > g.plot-bar').waitForEnabled();
       expect(dtContainer.$('#maing > g.plot-bar').isEnabled()).toBeTruthy();
     });
 
     it('Histogram has Title and Axes Labels', function () {
       var dtContainer = beakerxPO.runCellToGetDtContainer(2);
-      dtContainer.$('#plotTitle').waitForEnabled();
       expect(dtContainer.$('#plotTitle').getText()).toEqual('Wide Histogram with Manual Parameters');
       expect(dtContainer.$('#xlabel').getText()).toEqual('Size');
       expect(dtContainer.$('#ylabel').getText()).toEqual('Count');
@@ -51,7 +49,7 @@ describe('Charting groovy tests', function () {
       expect(g0.getCssProperty('fill').value).toEqual('rgb(0,154,166)');
       expect(g0.getCssProperty('fill-opacity').value).toEqual(1);
       expect(g1.getCssProperty('fill').value).toEqual('rgb(230,50,50)');
-      expect(g1.getCssProperty('fill-opacity').value.toFixed(1)).toEqual('0.5');
+      expect(g1.getCssProperty('fill-opacity').value).toBeLessThan(1);
       expect(g0.$$('rect').length).toEqual(25);
       expect(g1.$$('rect').length).toEqual(25);
     });
@@ -94,7 +92,6 @@ describe('Charting groovy tests', function () {
   describe('Heatmap', function () {
     it('Widget area has dtcontainer', function () {
       beakerxPO.runCodeCellByIndex(9);
-      beakerxPO.kernelIdleIcon.waitForEnabled();
       var dtContainer = beakerxPO.runCellToGetDtContainer(10);
       expect(dtContainer.$('#maing > g.heatmap').isEnabled()).toBeTruthy();
     });
@@ -126,7 +123,6 @@ describe('Charting groovy tests', function () {
 
     it('Heatmap without legend', function () {
       var dtContainer = beakerxPO.runCellToGetDtContainer(14);
-      dtContainer.$('#maing > g.heatmap').waitForEnabled();
       expect(dtContainer.$('#maing > g.heatmap').isEnabled()).toBeTruthy();
       expect(dtContainer.$$('svg').length).toBe(1);
     });
@@ -136,7 +132,6 @@ describe('Charting groovy tests', function () {
     it('Plot has two polygon elements', function () {
       beakerxPO.runCodeCellByIndex(15);
       var svgElement = beakerxPO.runCellToGetSvgElement(16);
-      svgElement.waitForEnabled();
       expect(svgElement.$('#i0 polygon').isVisible()).toBeTruthy();
       expect(svgElement.$('#i1 polygon').isVisible()).toBeTruthy();
     });
@@ -150,14 +145,12 @@ describe('Charting groovy tests', function () {
     it('Plot has TreeMap', function () {
       beakerxPO.runCodeCellByIndex(17);
       var svgElement = beakerxPO.runCellToGetSvgElement(18);
-      svgElement.waitForEnabled();
       expect(svgElement.$$('g.cell').length).toBe(13);
     });
 
     var svgElement1;
     it('(Mode.SQUARIFY) 1st and 2nd elements have the same colors and squares', function () {
       svgElement1 = beakerxPO.runCellToGetSvgElement(19);
-      svgElement1.waitForEnabled();
       var rect2 = svgElement1.$('g#i2.cell > rect');
       var rect3 = svgElement1.$('g#i3.cell > rect');
       expect(rect2.getCssProperty('fill').value).toEqual(rect3.getCssProperty('fill').value);

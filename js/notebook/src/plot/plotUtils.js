@@ -944,10 +944,10 @@ define([
       var elementStyles = "";
       var styleSheets = document.styleSheets;
       for (var i = 0; i < styleSheets.length; i++) {
-        var cssRules = styleSheets[i].cssRules;
+        var cssRules = styleSheets[i].cssRules || [];
         for (var j = 0; j < cssRules.length; j++) {
           var cssRule = cssRules[j];
-          if (cssRule.style) {
+          if (cssRule && cssRule.style) {
             try {
               var childElements = element.querySelectorAll(cssRule.selectorText);
               if (childElements.length > 0 || element.matches(cssRule.selectorText)) {

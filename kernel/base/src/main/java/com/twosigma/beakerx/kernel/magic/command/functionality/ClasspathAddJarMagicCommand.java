@@ -63,7 +63,7 @@ public class ClasspathAddJarMagicCommand extends ClasspathMagicCommand {
       if (newAddedJars.isEmpty()) {
         return new MagicCommandOutput(MagicCommandOutput.Status.OK);
       }
-      String textMessage = "Added " + JAR + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars + "\n";
+      String textMessage = "Added " + JAR + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
       return new MagicCommandOutput(MagicCommandOutput.Status.OK, textMessage);
     }
   }

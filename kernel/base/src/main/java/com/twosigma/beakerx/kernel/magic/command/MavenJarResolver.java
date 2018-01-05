@@ -63,6 +63,7 @@ public class MavenJarResolver {
       InvocationRequest request = createInvocationRequest();
       request.setOffline(commandParams.getOffline());
       request.setPomFile(finalPom);
+      request.setUpdateSnapshots(true);
       Invoker invoker = getInvoker(progress);
       progress.display();
       InvocationResult invocationResult = invoker.execute(request);

@@ -26,7 +26,7 @@ public class TableDisplayConverter {
   public static List<Map<String, Object>> convert(int rowCount, int columnCount, List<String> columnNames, TableDisplay.Element tableElement) {
     List<Map<String, Object>> result = new ArrayList<>();
     for (int r = 0; r < rowCount; r++) {
-      Map<String, Object> entry = new HashMap<>();
+      Map<String, Object> entry = new LinkedHashMap<>();
       for (int c = 0; c < columnCount; c++) {
         Object value = tableElement.get(c, r);
         String headerName = columnNames.get(c);

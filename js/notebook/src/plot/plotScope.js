@@ -28,7 +28,8 @@ define([
   './../shared/bkUtils',
   './../shared/bkHelper',
   './gradientlegend',
-  './chartExtender'
+  './chartExtender',
+  'moment-timezone/builds/moment-timezone-with-data.min'
 ], function(
   _,
   $,
@@ -43,8 +44,11 @@ define([
   bkUtils,
   bkHelper,
   GradientLegend,
-  bkoChartExtender
+  bkoChartExtender,
+  moment
 ) {
+
+  var CONTEXT_MENU_DEBOUNCE_TIME = 250;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -104,6 +108,8 @@ define([
     this.data2scrY = null;
     this.plotDisplayModel = null;
     this.plotDisplayView = null;
+    this.contexteMenuEvent = null;
+    this.zoomStarted = null;
   };
   
   PlotScope.prototype.setWidgetModel = function(plotDisplayModel) {
@@ -1605,6 +1611,7 @@ define([
 
     self.zoom = true;
     self.zoomed = false;
+    self.zoomStarted = moment();
 
     var d3trans = d3.event.transform || d3.event;
     self.lastx = d3trans.x;
@@ -1801,6 +1808,13 @@ define([
       self.enableZoomWheel();
     }
 
+    var zoomingTime = moment() - self.zoomStarted;
+
+    if(self.contexteMenuEvent && zoomingTime < CONTEXT_MENU_DEBOUNCE_TIME) {
+      self.jqcontainer[0] && self.jqcontainer[0].dispatchEvent(self.contexteMenuEvent);
+    }
+
+    self.contexteMenuEvent = null;
     self.jqsvg.css("cursor", "auto");
   };
 
@@ -1919,6 +1933,18 @@ define([
     self.svg.on("dblclick", function() {
       return self.resetFocus();
     });
+
+    function handleContextMenuEvent(event) {
+      self.contexteMenuEvent = event;
+
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    var svgElement = self.svg.node();
+
+    svgElement.removeEventListener('contextmenu', handleContextMenuEvent);
+    svgElement.addEventListener('contextmenu', handleContextMenuEvent);
 
     // enable zoom events for mouse right click
     var filterFn = function() {

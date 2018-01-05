@@ -362,6 +362,11 @@ class DatePicker(BeakerxDOMWidget, EasyFormComponent):
 
     _view_name = Unicode('DatePickerView').tag(sync=True)
     _model_name = Unicode('DatePickerModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
+
     showTime = Bool(default_value=False,
                     help="Enable or disable user changes.").tag(sync=True)
     value = Unicode(default_value="").tag(sync=True)

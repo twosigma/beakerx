@@ -221,7 +221,7 @@ define(function(require) {
 
       var parsedVal = parseFloat(val);
 
-      if (isNaN(parsedVal) || parsedVal <= 0) {
+      if (isNaN(parsedVal) || !isFinite(val) || parsedVal <= 0) {
         throw new Error('Heap Size must be a positive decimal number.');
       }
 

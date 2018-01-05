@@ -27,14 +27,6 @@
         #beakerx_info .beakerx_site_link img {
             height: 35px;
         }
-
-        #sync_indicator .saving {
-            color: #f0ad4e;
-        }
-
-        #sync_indicator .saved {
-            color: #5cb85c;
-        }
     </style>
     <div id="beakerx_env_toolbar" class="list_toolbar row">
         <div class="col-xs-12 no-padding">
@@ -81,11 +73,8 @@
                         <div class="col-xs-8">
                             <div class="pull-right">
                                 <label for="add_option_jvm_sett">add option: </label>
-                                <button type="button"
-                                        id="add_option_jvm_sett"
-                                        class="btn btn-default btn-xs"
-                                        data-original-title="add new">
-                                    <i class="fa fa-plus"></i>
+                                <button type="button" id="add_option_jvm_sett" title="" class="btn btn-default btn-xs"
+                                        data-original-title="add new"><i class="fa fa-plus"></i></button>
                                 </button>
                             </div>
                         </div>
@@ -94,12 +83,10 @@
                 </div>
             </fieldset>
             <div class="form-group text-primary">
-                <span id="sync_indicator">
-                    <span class="saving hidden"><i class="fa fa-spinner"></i></span>
-                    <span class="saved hidden"><i class="fa fa-check"></i></span>
-                </span><span>Result: java </span><span id="result"></span>
+                <span>Result: java </span><span id="result"></span>
             </div>
             <div id="errors" style="color: red"></div>
+            <button type="button" id="jvm_settings_submit" class="btn btn-primary">OK</button>
         </form>
     </div>
 </div>

@@ -82,4 +82,28 @@ describe('Testing of plot Actions', function () {
     });
   });
 
+  describe("RightClick action", function(){
+
+    it('RightClickAndDrag action should zoom the plot', function () {
+      var svgElement = beakerxPO.runCellToGetSvgElement(6);
+      var height1 = Math.round(svgElement.$('rect#i0_0').getAttribute('height'));
+      var width1 = Math.round(svgElement.$('rect#i0_0').getAttribute('width'));
+      svgElement.$('rect#i0_0').moveToObject(0, 0);
+      browser.buttonDown(2);
+      svgElement.$('rect#i0_2').moveToObject(0, 0);
+      browser.buttonUp(2);
+      var height2 = Math.round(svgElement.$('rect#i0_0').getAttribute('height'));
+      var width2 = Math.round(svgElement.$('rect#i0_0').getAttribute('width'));
+      expect(height2).toBeGreaterThan(height1);
+      expect(width2).toBeGreaterThan(width1);
+    });
+
+    it('RightClick should display the menu', function () {
+      var svgElement = beakerxPO.runCellToGetSvgElement(6);
+      svgElement.$('g#maing').rightClick();
+      expect(browser.$('div.p-Menu-itemLabel=Save as SVG').isVisible()).toBeTruthy();
+      expect(browser.$('div.p-Menu-itemLabel=Save as PNG').isVisible()).toBeTruthy();
+    });
+  });
+
 });

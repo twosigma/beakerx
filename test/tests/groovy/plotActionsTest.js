@@ -82,25 +82,42 @@ describe('Testing of plot Actions', function () {
     });
   });
 
-  describe("RightClick action", function(){
+  describe("RightClickAndDrag action", function(){
 
     it('RightClickAndDrag action should zoom the plot', function () {
-      var svgElement = beakerxPO.runCellToGetSvgElement(6);
-      var height1 = Math.round(svgElement.$('rect#i0_0').getAttribute('height'));
-      var width1 = Math.round(svgElement.$('rect#i0_0').getAttribute('width'));
-      svgElement.$('rect#i0_0').moveToObject(0, 0);
+      var svgElement4 = beakerxPO.runCellToGetSvgElement(6);
+      var height1 = Math.round(svgElement4.$('rect#i0_0').getAttribute('height'));
+      var width1 = Math.round(svgElement4.$('rect#i0_0').getAttribute('width'));
+      svgElement4.$('rect#i0_0').moveToObject(0, 0);
       browser.buttonDown(2);
-      svgElement.$('rect#i0_2').moveToObject(0, 0);
+      svgElement4.$('rect#i0_2').moveToObject(0, 0);
       browser.buttonUp(2);
-      var height2 = Math.round(svgElement.$('rect#i0_0').getAttribute('height'));
-      var width2 = Math.round(svgElement.$('rect#i0_0').getAttribute('width'));
+      var height2 = Math.round(svgElement4.$('rect#i0_0').getAttribute('height'));
+      var width2 = Math.round(svgElement4.$('rect#i0_0').getAttribute('width'));
       expect(height2).toBeGreaterThan(height1);
       expect(width2).toBeGreaterThan(width1);
     });
 
-    it('RightClick should display the menu', function () {
-      var svgElement = beakerxPO.runCellToGetSvgElement(6);
-      svgElement.$('g#maing').rightClick();
+    it('RightClickAndDrag should not display the menu', function () {
+      expect(browser.$('div.p-Menu-itemLabel=Save as SVG').isVisible()).toBeFalsy();
+      expect(browser.$('div.p-Menu-itemLabel=Save as PNG').isVisible()).toBeFalsy();
+    });
+  });
+
+  describe("RightClick action", function(){
+
+    it('RightClick action should not zoom the plot', function () {
+      var svgElement5 = beakerxPO.runCellToGetSvgElement(6);
+      var height1 = Math.round(svgElement5.$('rect#i0_0').getAttribute('height'));
+      var width1 = Math.round(svgElement5.$('rect#i0_0').getAttribute('width'));
+      svgElement5.$('g#maing').rightClick();
+      var height2 = Math.round(svgElement5.$('rect#i0_0').getAttribute('height'));
+      var width2 = Math.round(svgElement5.$('rect#i0_0').getAttribute('width'));
+      expect(height2).toEqual(height1);
+      expect(width2).toEqual(width1);
+    });
+
+    it('RightClick action should display the menu', function () {
       expect(browser.$('div.p-Menu-itemLabel=Save as SVG').isVisible()).toBeTruthy();
       expect(browser.$('div.p-Menu-itemLabel=Save as PNG').isVisible()).toBeTruthy();
     });

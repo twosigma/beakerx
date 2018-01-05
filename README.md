@@ -24,7 +24,7 @@
 [![NPM version](https://badge.fury.io/js/beakerx.svg)](http://badge.fury.io/js/beakerx)
 [![PyPI Version](https://badge.fury.io/py/beakerx.svg)](http://badge.fury.io/py/beakerx)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/beakerx/badges/version.svg)](https://anaconda.org/conda-forge/beakerx)
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.10.0?filepath=StartHere.ipynb)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/65c07bd?filepath=StartHere.ipynb)
 [![Docker Hub](https://images.microbadger.com/badges/version/beakerx/beakerx.svg)](https://hub.docker.com/r/beakerx/beakerx/)
 
 BeakerX is a collection of JVM kernels and interactive widgets for
@@ -32,7 +32,7 @@ plotting, tables, autotranslation, and other extensions to Jupyter
 Notebook.  BeakerX is in beta and under active development.
 
 The [documentation](https://github.com/twosigma/beakerx/blob/master/StartHere.ipynb) consists of tutorial notebooks on GitHub.
-You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.10.0?filepath=StartHere.ipynb).
+You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/65c07bd?filepath=StartHere.ipynb).
 
 BeakerX is the successor to the [Beaker Notebook (source code
 archive)](https://github.com/twosigma/beaker-notebook-archive).  It

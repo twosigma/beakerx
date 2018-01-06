@@ -1714,7 +1714,23 @@ define([
       }else{
         // scale only
         var level = self.zoomLevel;
-        if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin) {
+        if(my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin
+          && mx >= self.layout.leftLayoutMargin) {
+            // Scrolling in the middle of the chart, autoscale Y
+            var data = this.stdmodel.data;
+            var all_y_vals = [].concat(
+              ...data.map(
+                d => d.elements.filter(el => el.x >= focus.xl && el.x <= focus.xr).map(el => el.y)
+              )
+            );
+            var min_y_value = Math.min(...all_y_vals);
+            var max_y_value = Math.max(...all_y_vals);
+            focus.yl = min_y_value;// - self.stdmodel.margin.bottom;
+            focus.yr = max_y_value;// + self.stdmodel.margin.top;
+            focus.yspan = focus.yr - focus.yl;
+        }
+        else if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin) {
+          // Scrolling on the Y Axis area
           // scale y
           var ym = focus.yl + self.scr2dataYp(my) * focus.yspan;
           var nyl = ym - zoomRate * (ym - focus.yl),

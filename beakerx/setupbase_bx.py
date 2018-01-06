@@ -20,6 +20,12 @@ import os
 import sys
 
 
+# before importing from setupbase_jp
+if "--skip-yarn" in sys.argv:
+    sys.argv.remove("--skip-yarn")
+    sys.argv.append("--skip-npm")
+
+
 from setupbase_jp import (
     create_cmdclass, BaseCommand,
     combine_commands,

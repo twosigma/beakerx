@@ -19,13 +19,34 @@ import os
 import sys
 
 from setupbase_jp import (
-    create_cmdclass,
+    create_cmdclass, BaseCommand,
     install_node_modules,
-    run_gradle,
+    run,
     get_version,
     get_data_files,
-    here
+    here,
+    kernel_path
 )
+
+
+def run_gradle(path=kernel_path, cmd='build'):
+    """Return a Command for running gradle scripts.
+
+    Parameters
+    ----------
+    path: str, optional
+        The base path of the node package.  Defaults to the repo root.
+    cmd: str, optional
+        The command to run with gradlew.
+    """
+
+    class Gradle(BaseCommand):
+        description = 'Run gradle script'
+
+        def run(self):
+            run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', cmd], cwd=path)
+
+    return Gradle
 
 
 def get_cmdclass():

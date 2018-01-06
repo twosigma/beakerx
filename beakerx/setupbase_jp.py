@@ -290,25 +290,6 @@ def install_node_modules(path=None, build_dir=None, source_dir=None, build_cmd='
 
     return Yarn
 
-def run_gradle(path=kernel_path, cmd='build'):
-    """Return a Command for running gradle scripts.
-
-    Parameters
-    ----------
-    path: str, optional
-        The base path of the node package.  Defaults to the repo root.
-    cmd: str, optional
-        The command to run with gradlew.
-    """
-
-    class Gradle(BaseCommand):
-        description = 'Run gradle script'
-
-        def run(self):
-            run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', cmd], cwd=path)
-
-    return Gradle
-
 
 def ensure_targets(targets):
     """Return a Command that checks that certain files exist.

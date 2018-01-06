@@ -21,7 +21,6 @@ from setuptools import setup, find_packages
 
 from setupbase_bx import (
     get_version,
-    get_data_files,
     get_cmdclass,
 )
 
@@ -68,10 +67,11 @@ setup(
             'kernel/*/kernel.json'
         ]
     },
-    data_files=[(
-        'share/jupyter/nbextensions/beakerx',
-        get_data_files(os.path.join('beaker'))
-    )],
+    # get_data_files no longer exists. solution coming in a future commit
+    #data_files=[(
+    #    'share/jupyter/nbextensions/beakerx',
+    #    get_data_files(os.path.join('beaker'))
+    #)],
     install_requires=[
         'notebook >= 4.4.0',
         'ipywidgets >= 7.0.0',

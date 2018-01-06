@@ -22,13 +22,15 @@ import sys
 
 from setupbase_jp import (
     create_cmdclass, BaseCommand,
-    install_node_modules,
+    install_npm,
     run,
     get_version,
-    get_data_files,
-    here,
-    kernel_path
+    HERE,
 )
+
+
+root = os.path.abspath(os.path.join(HERE, os.pardir))
+kernel_path = os.path.join(root, 'kernel')
 
 
 def run_gradle(path=kernel_path, cmd='build'):

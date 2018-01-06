@@ -31,6 +31,11 @@ from setupbase_jp import (
 
 root = os.path.abspath(os.path.join(HERE, os.pardir))
 kernel_path = os.path.join(root, 'kernel')
+node_modules = os.path.join(HERE, 'js', 'node_modules')
+node_modules_path = ':'.join([
+    os.path.join(node_modules, '.bin'),
+    os.environ.get('PATH', os.defpath),
+])  
 
 
 def run_gradle(path=kernel_path, cmd='build'):
@@ -54,20 +59,12 @@ def run_gradle(path=kernel_path, cmd='build'):
 
 
 def get_cmdclass():
-    cmdclass = create_cmdclass(develop_wrappers=[
-        'js',
-        'java',
-        'javadoc',
-    ], distribute_wrappers=[
-        'js',
-        'java',
-        'javadoc',
-    ])
+    cmdclass = create_cmdclass()
 
-    cmdclass['js'] = install_node_modules(
+    cmdclass['js'] = install_npm(
         path='../js/notebook',
-        build_dir=os.path.join(here, '../js/notebook', 'dist'),
-        source_dir=os.path.join(here, '../js/notebook', 'src')
+        build_dir=os.path.join(HERE, '../js/notebook', 'dist'),
+        source_dir=os.path.join(HERE, '../js/notebook', 'src')
     )
     cmdclass['java'] = run_gradle(cmd='build')
     cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')

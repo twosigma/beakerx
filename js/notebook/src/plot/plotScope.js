@@ -1732,7 +1732,6 @@ define([
             focus.yspan = focus.yr - focus.yl;
         }
         else if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin) {
-          // Scrolling on the Y Axis area
           // scale y
           var ym = focus.yl + self.scr2dataYp(my) * focus.yspan;
           var nyl = ym - zoomRate * (ym - focus.yl),

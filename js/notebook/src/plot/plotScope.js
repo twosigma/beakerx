@@ -1720,15 +1720,15 @@ define([
           && mx >= self.layout.leftLayoutMargin && isAllPointPlots) {
             // Scrolling in the middle of the chart, autoscale Y
             var data = this.stdmodel.data;
-            var all_y_vals = [].concat(
+            var AllYValsInRange = [].concat(
               ...data.map(
                 d => d.elements.filter(el => el.x >= focus.xl && el.x <= focus.xr).map(el => el.y)
               )
             );
-            var min_y_value = Math.min(...all_y_vals);
-            var max_y_value = Math.max(...all_y_vals);
-            focus.yl = min_y_value;// - self.stdmodel.margin.bottom;
-            focus.yr = max_y_value;// + self.stdmodel.margin.top;
+            var minYValue = Math.min(...AllYValsInRange);
+            var maxYValue = Math.max(...AllYValsInRange);
+            focus.yl = minYValue;// - self.stdmodel.margin.bottom;
+            focus.yr = maxYValue;// + self.stdmodel.margin.top;
             focus.yspan = focus.yr - focus.yl;
         }
         else if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin) {

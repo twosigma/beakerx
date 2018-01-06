@@ -22,6 +22,7 @@ import sys
 
 from setupbase_jp import (
     create_cmdclass, BaseCommand,
+    combine_commands,
     install_npm,
     run,
     get_version,
@@ -59,15 +60,31 @@ def run_gradle(path=kernel_path, cmd='build'):
 
 
 def get_cmdclass():
-    cmdclass = create_cmdclass()
+    data_files_spec = [
+        ('share/jupyter/nbextensions/beakerx', 'beakerx', '**')
+    ]
+    
+    package_data_spec = {
+        'beakerx': [
+            'kernel/*/kernel.json',
+        ]
+    }
+    
+    cmdclass = create_cmdclass('bxdeps', data_files_spec=data_files_spec,
+        package_data_spec=package_data_spec)
 
-    cmdclass['js'] = install_npm(
+    cmd_js = install_npm(
         path='../js/notebook',
         build_dir=os.path.join(HERE, '../js/notebook', 'dist'),
         source_dir=os.path.join(HERE, '../js/notebook', 'src')
     )
-    cmdclass['java'] = run_gradle(cmd='build')
-    cmdclass['javadoc'] = run_gradle(cmd='base:javadoc')
+
+    cmd_java = run_gradle(cmd='build')
+    cmd_javadoc = run_gradle(cmd='base:javadoc')
+
+    cmdclass['bxdeps'] = combine_commands(
+        cmd_js, cmd_java, cmd_javadoc
+    )
 
     return cmdclass
 

@@ -62,16 +62,6 @@ setup(
             'bkr2ipynb=beakerx.bkr2ipynb:main',
         ]
     },
-    package_data={
-        'beakerx': [
-            'kernel/*/kernel.json'
-        ]
-    },
-    # get_data_files no longer exists. solution coming in a future commit
-    #data_files=[(
-    #    'share/jupyter/nbextensions/beakerx',
-    #    get_data_files(os.path.join('beaker'))
-    #)],
     install_requires=[
         'notebook >= 4.4.0',
         'ipywidgets >= 7.0.0',

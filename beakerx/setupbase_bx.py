@@ -20,8 +20,9 @@ import os
 import sys
 
 
-# before importing from setupbase_jp
+# Must happen before imports from setupbase_jp
 if "--skip-yarn" in sys.argv:
+    print("Skipping yarn install as requested.")
     sys.argv.remove("--skip-yarn")
     sys.argv.append("--skip-npm")
 
@@ -36,6 +37,10 @@ from setupbase_jp import (
 )
 
 
+# ---------------------------------------------------------------------------
+# Top Level Variables
+# ---------------------------------------------------------------------------
+
 root = os.path.abspath(os.path.join(HERE, os.pardir))
 kernel_path = os.path.join(root, 'kernel')
 node_modules = os.path.join(HERE, 'js', 'node_modules')
@@ -44,6 +49,10 @@ node_modules_path = ':'.join([
     os.environ.get('PATH', os.defpath),
 ])  
 
+
+# ---------------------------------------------------------------------------
+# Public Functions
+# ---------------------------------------------------------------------------
 
 def install_gradle(path=kernel_path, cmd='build'):
     """Return a Command for running gradle scripts.

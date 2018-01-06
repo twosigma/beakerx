@@ -39,7 +39,7 @@ node_modules_path = ':'.join([
 ])  
 
 
-def run_gradle(path=kernel_path, cmd='build'):
+def install_gradle(path=kernel_path, cmd='build'):
     """Return a Command for running gradle scripts.
 
     Parameters
@@ -54,7 +54,8 @@ def run_gradle(path=kernel_path, cmd='build'):
         description = 'Run gradle script'
 
         def run(self):
-            run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', cmd], cwd=path)
+            gw_path = os.path.join(path, 'gradlew')
+            run([gw_path, '--no-daemon', cmd], cwd=path)
 
     return Gradle
 
@@ -79,8 +80,8 @@ def get_cmdclass():
         source_dir=os.path.join(HERE, '../js/notebook', 'src')
     )
 
-    cmd_java = run_gradle(cmd='build')
-    cmd_javadoc = run_gradle(cmd='base:javadoc')
+    cmd_java = install_gradle(cmd='build')
+    cmd_javadoc = install_gradle(cmd='base:javadoc')
 
     cmdclass['bxdeps'] = combine_commands(
         cmd_js, cmd_java, cmd_javadoc

@@ -1714,8 +1714,10 @@ define([
       }else{
         // scale only
         var level = self.zoomLevel;
+        var isAllPointPlots = this.stdmodel.data.length &&
+          this.stdmodel.data.every(plot => plot.type == "point");
         if(my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin
-          && mx >= self.layout.leftLayoutMargin) {
+          && mx >= self.layout.leftLayoutMargin && isAllPointPlots) {
             // Scrolling in the middle of the chart, autoscale Y
             var data = this.stdmodel.data;
             var all_y_vals = [].concat(

@@ -15,24 +15,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+import os
 from setuptools import setup, find_packages
+
 from setupbase_bx import (
     get_version,
     get_data_files,
     get_cmdclass,
 )
-import os
 
 
-setup_args = dict(
-    name                = 'beakerx',
-    description         = 'BeakerX: Beaker Extensions for Jupyter Notebook',
-    long_description    = 'BeakerX: Beaker Extensions for Jupyter Notebook',
-    version             = get_version(os.path.join('beakerx', '_version.py')),
-    author              = 'Two Sigma Open Source, LLC',
-    author_email        = 'beakerx-feedback@twosigma.com',
-    url                 = 'http://beakerx.com',
-    keywords            = [
+setup(
+    name='beakerx',
+    description='BeakerX: Beaker Extensions for Jupyter Notebook',
+    long_description='BeakerX: Beaker Extensions for Jupyter Notebook',
+    version=get_version(os.path.join('beakerx', '_version.py')),
+    author='Two Sigma Open Source, LLC',
+    author_email='beakerx-feedback@twosigma.com',
+    url='http://beakerx.com',
+    keywords=[
         'ipython',
         'jupyter',
         'widgets',
@@ -43,7 +45,7 @@ setup_args = dict(
         'kotlin',
         'sql',
     ],
-    classifiers         = [
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: IPython',
         'Intended Audience :: Developers',
@@ -57,8 +59,8 @@ setup_args = dict(
     ],
     entry_points={
         'console_scripts': [
-            'beakerx-install = beakerx.install:install',
-            'bkr2ipynb = beakerx.bkr2ipynb:main',
+            'beakerx-install=beakerx.install:install',
+            'bkr2ipynb=beakerx.bkr2ipynb:main',
         ]
     },
     package_data={
@@ -66,22 +68,18 @@ setup_args = dict(
             'kernel/*/kernel.json'
         ]
     },
-    data_files          = [(
+    data_files=[(
         'share/jupyter/nbextensions/beakerx',
         get_data_files(os.path.join('beaker'))
     )],
-    install_requires    = [
-        'notebook >=4.4.0',
-        'ipywidgets >=7.0.0',
+    install_requires=[
+        'notebook >= 4.4.0',
+        'ipywidgets >= 7.0.0',
         'pandas'
-
     ],
     python_requires='>=3',
-    zip_safe            = False,
-    include_package_data= True,
-    packages            = find_packages(),
-    cmdclass            = get_cmdclass(),
+    zip_safe=False,
+    include_package_data=True,
+    packages=find_packages(),
+    cmdclass=get_cmdclass()
 )
-
-if __name__ == '__main__':
-    setup(**setup_args)

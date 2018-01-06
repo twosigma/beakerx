@@ -71,7 +71,7 @@ def get_cmdclass():
         ]
     }
     
-    cmdclass = create_cmdclass('bxdeps', data_files_spec=data_files_spec,
+    cmdclass = create_cmdclass('beakerxdeps', data_files_spec=data_files_spec,
         package_data_spec=package_data_spec)
 
     cmd_js = install_npm(
@@ -83,7 +83,7 @@ def get_cmdclass():
     cmd_java = install_gradle(cmd='build')
     cmd_javadoc = install_gradle(cmd='base:javadoc')
 
-    cmdclass['bxdeps'] = combine_commands(
+    cmdclass['beakerxdeps'] = combine_commands(
         cmd_js, cmd_java, cmd_javadoc
     )
 

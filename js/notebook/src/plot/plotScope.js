@@ -1714,23 +1714,26 @@ define([
       }else{
         // scale only
         var level = self.zoomLevel;
-        var isAllPointPlots = this.stdmodel.data.length &&
-          this.stdmodel.data.every(plot => plot.type == "point");
+        var autoZoomSuccess = false;
         if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin
-          && mx >= self.layout.leftLayoutMargin && isAllPointPlots) {
+          && mx >= self.layout.leftLayoutMargin) {
             // Scrolling in the middle of the chart, autoscale Y
             var data = this.stdmodel.data;
-            var AllYValsInRange = [].concat(
-              ...data.map(
-                d => d.elements.filter(el => el.x >= focus.xl && el.x <= focus.xr).map(el => el.y)
-              )
+            var ranges = data.map(d =>
+              d.getRange(d.elements.filter(el =>
+                el.x >= focus.xl && el.x <= focus.xr
+              ))
             );
-            var minYValue = Math.min(...AllYValsInRange);
-            var maxYValue = Math.max(...AllYValsInRange);
-            focus.yl = minYValue;// - self.stdmodel.margin.bottom;
-            focus.yr = maxYValue;// + self.stdmodel.margin.top;
-            focus.yspan = focus.yr - focus.yl;
-        } else if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin) {
+            var minYValue = Math.min(...ranges.map(r => r.yl).filter(y => !isNaN(y) && isFinite(y)));
+            var maxYValue = Math.max(...ranges.map(r => r.yr).filter(y => !isNaN(y) && isFinite(y)));
+            if(!isNaN(minYValue) && isFinite(minYValue) && !isNaN(maxYValue) && isFinite(maxYValue)) {
+              autoZoomSuccess = true;
+              focus.yl = minYValue;
+              focus.yr = maxYValue;
+              focus.yspan = focus.yr - focus.yl;
+            }
+        }
+        if (!autoZoomSuccess && (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin)) {
           // scale y
           var ym = focus.yl + self.scr2dataYp(my) * focus.yspan;
           var nyl = ym - zoomRate * (ym - focus.yl),

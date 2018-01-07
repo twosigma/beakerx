@@ -1716,7 +1716,7 @@ define([
         var level = self.zoomLevel;
         var isAllPointPlots = this.stdmodel.data.length &&
           this.stdmodel.data.every(plot => plot.type == "point");
-        if(my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin
+        if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin
           && mx >= self.layout.leftLayoutMargin && isAllPointPlots) {
             // Scrolling in the middle of the chart, autoscale Y
             var data = this.stdmodel.data;
@@ -1730,8 +1730,7 @@ define([
             focus.yl = minYValue;// - self.stdmodel.margin.bottom;
             focus.yr = maxYValue;// + self.stdmodel.margin.top;
             focus.yspan = focus.yr - focus.yl;
-        }
-        else if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin) {
+        } else if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin) {
           // scale y
           var ym = focus.yl + self.scr2dataYp(my) * focus.yspan;
           var nyl = ym - zoomRate * (ym - focus.yl),

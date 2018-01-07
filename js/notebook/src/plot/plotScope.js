@@ -1717,20 +1717,23 @@ define([
         var autoZoomSuccess = false;
         if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin
           && mx >= self.layout.leftLayoutMargin) {
-            // Scrolling in the middle of the chart, autoscale Y
+            // Zooming in the middle of the chart, autoscale Y
             var data = this.stdmodel.data;
-            var ranges = data.map(d =>
-              d.getRange(d.elements.filter(el =>
-                el.x >= focus.xl && el.x <= focus.xr
-              ))
-            );
-            var minYValue = Math.min(...ranges.map(r => r.yl).filter(y => !isNaN(y) && isFinite(y)));
-            var maxYValue = Math.max(...ranges.map(r => r.yr).filter(y => !isNaN(y) && isFinite(y)));
-            if(!isNaN(minYValue) && isFinite(minYValue) && !isNaN(maxYValue) && isFinite(maxYValue)) {
-              autoZoomSuccess = true;
-              focus.yl = minYValue;
-              focus.yr = maxYValue;
-              focus.yspan = focus.yr - focus.yl;
+            if (data.map(d => d.getRange ? true : false).every(b => b))
+            {
+              var ranges = data.map(d =>
+                d.getRange(d.elements.filter(el =>
+                  el.x >= focus.xl && el.x <= focus.xr
+                ))
+              );
+              var minYValue = Math.min(...ranges.map(r => r.yl).filter(y => !isNaN(y) && isFinite(y)));
+              var maxYValue = Math.max(...ranges.map(r => r.yr).filter(y => !isNaN(y) && isFinite(y)));
+              if(!isNaN(minYValue) && isFinite(minYValue) && !isNaN(maxYValue) && isFinite(maxYValue)) {
+                autoZoomSuccess = true;
+                focus.yl = minYValue;
+                focus.yr = maxYValue;
+                focus.yspan = focus.yr - focus.yl;
+              }
             }
         }
         if (!autoZoomSuccess && (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin)) {

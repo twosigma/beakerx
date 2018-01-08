@@ -20,6 +20,7 @@ import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { INotebookModel, NotebookPanel } from '@jupyterlab/notebook';
 import { registerCommTargets } from './comm';
 import { registerCommentOutCmd } from './codeEditor';
+import { enableInitializationCellsFeature } from './initializationCells';
 
 declare global {
   interface Window {
@@ -50,6 +51,7 @@ class BeakerxExtension implements DocumentRegistry.WidgetExtension {
     registerGlobal();
 
     Promise.all([panel.ready, context.ready]).then(function() {
+      enableInitializationCellsFeature(panel);
       registerCommentOutCmd(panel);
       registerCommTargets(panel, context);
     });

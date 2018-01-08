@@ -99,16 +99,8 @@ class AbstractChartPropertiesTest {
     ac.add(newAxis)
     ac.yAxes should (have length 2)
 
-    assertCompiles("ac.add(Seq(newAxis))")
-    assertTypeError("ac.add(Seq(ac))")
-    assertTypeError("ac.add(ac)")
-
     val newAxis2 = new YAxis()
     ac += newAxis2
     ac.yAxes should (have length 3)
-
-    val newAxis3 = new YAxis()
-    ac ++= Seq(newAxis3)
-    ac.yAxes should (have length 4)
   }
 }

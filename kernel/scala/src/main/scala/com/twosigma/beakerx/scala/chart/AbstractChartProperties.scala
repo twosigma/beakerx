@@ -66,7 +66,5 @@ trait AbstractChartProperties extends ChartProperties {
 
   def yAxes: Seq[YAxis] = getYAxes.asScala
 
-  def add(axes: Seq[YAxis]): Unit = add(axes.asJava)
   def +=(axis: YAxis): Unit = add(axis)
-  def ++=(axes: Seq[YAxis]): Unit = add(axes.asJava)
 }

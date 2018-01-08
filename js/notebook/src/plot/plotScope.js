@@ -1719,8 +1719,7 @@ define([
           && mx >= self.layout.leftLayoutMargin) {
             // Zooming in the middle of the chart, autoscale Y
             var data = this.stdmodel.data;
-            if (data.map(d => d.getRange ? true : false).every(b => b))
-            {
+            if (data.map(d => d.getRange ? true : false).every(b => b)) {
               var ranges = data.map(d =>
                 d.getRange(d.elements.filter(el =>
                   el.x >= focus.xl && el.x <= focus.xr

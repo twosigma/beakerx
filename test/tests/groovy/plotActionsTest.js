@@ -91,6 +91,7 @@ describe('Testing of plot Actions', function () {
       svgElement4.$('rect#i0_0').moveToObject(0, 0);
       browser.buttonDown(2);
       svgElement4.$('rect#i0_2').moveToObject(0, 0);
+      browser.pause(1000);
       browser.buttonUp(2);
       var height2 = Math.round(svgElement4.$('rect#i0_0').getAttribute('height'));
       var width2 = Math.round(svgElement4.$('rect#i0_0').getAttribute('width'));

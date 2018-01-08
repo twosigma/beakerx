@@ -84,7 +84,7 @@ export const registerCommTargets = (kernel: any): void => {
   });
 
   kernel.comm_info(
-    'beaker.getcodecells', (msg) => { assignMsgHandlersToExistingComms(msg.content.comms, kernel); }
+    null, (msg) => { assignMsgHandlersToExistingComms(msg.content.comms, kernel); }
   );
 };
 
@@ -108,15 +108,10 @@ const sendJupyterCodeCells = (filter: string) => {
 
 const assignMsgHandlersToExistingComms = (comms, kernel) => {
   for (let commId in comms) {
-    if (kernel.comm_manager.comms[commId]) {
-      continue;
-    }
-
     let comm = new Comm(comms[commId].target_name, commId);
+    kernel.comm_manager.register_comm(comm);
 
     assignMsgHandlerToComm(comm);
-
-    kernel.comm_manager.register_comm(comm);
   }
 };
 

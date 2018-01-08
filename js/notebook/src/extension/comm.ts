@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-
 declare global {
   interface Window {
     beakerx: any
@@ -27,18 +26,19 @@ const BEAKER_TAG_RUN = 'beaker.tag.run';
 
 const utils = require('base/js/utils');
 const dialog = require('base/js/dialog');
+const { Comm } = require('services/kernels/comm');
 
 const msgHandlers = {
   [BEAKER_GETCODECELLS]: (msg) => {
     if(msg.content.data.name == "CodeCells"){
-      sendJupyterCodeCells(JSON.parse(msg.content.data.value));
+      sendJupyterCodeCells(JSON.parse(msg.content.data.state.value));
     }
 
     msgHandlers[BEAKER_AUTOTRANSLATION](msg);
   },
 
   [BEAKER_AUTOTRANSLATION]: (msg) => {
-    window.beakerx[msg.content.data.name] = JSON.parse(msg.content.data.value);
+    window.beakerx[msg.content.data.state.name] = JSON.parse(msg.content.data.state.value);
   },
 
   [BEAKER_TAG_RUN]: (msg) => {
@@ -112,7 +112,9 @@ const sendJupyterCodeCells = (filter: string) => {
 
 const assignMsgHandlersToExistingComms = (comms, kernel) => {
   for (let commId in comms) {
-    let comm = kernel.comm_manager.new_comm(comms[commId].target_name, null, null, null, commId);
+    let comm = new Comm(comms[commId].target_name, commId);
+
+    kernel.comm_manager.register_comm(comm);
 
     assignMsgHandlerToComm(comm);
   }

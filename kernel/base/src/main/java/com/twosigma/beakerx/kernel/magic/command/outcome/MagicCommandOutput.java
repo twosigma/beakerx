@@ -36,7 +36,7 @@ public class MagicCommandOutput implements MagicCommandOutcomeItem {
   }
 
   public MagicCommandOutput(MagicCommandOutput.Status status, String text) {
-    this(status, Optional.of(MIMEContainer.Text(checkNotNull(text))));
+    this(status, Optional.of(MIMEContainer.Text(checkNotNull(text).concat("\n"))));
   }
 
   @Override

@@ -16,9 +16,11 @@ from beakerx.beakerx_widgets import *
 from traitlets import Unicode, Dict
 from beakerx.utils import *
 from beakerx.tabledisplay.tableitems import *
+from pandas import DataFrame, RangeIndex, MultiIndex
+from ipykernel.comm import Comm
 import math
 import numpy
-from pandas import DataFrame, RangeIndex, MultiIndex
+import types
 
 
 class Table(BaseObject):
@@ -105,7 +107,8 @@ class Table(BaseObject):
 
                 row.append(self.convert_value(value, value_type))
             if not isinstance(args[0].index, RangeIndex):
-                row[:0] = [self.convert_value(args[0].index.get_values()[index], type(args[0].index.get_values()[index]))]
+                row[:0] = [
+                    self.convert_value(args[0].index.get_values()[index], type(args[0].index.get_values()[index]))]
             self.values.append(row)
 
         if not isinstance(args[0].index, RangeIndex):
@@ -123,7 +126,10 @@ class Table(BaseObject):
         elif value_type == "double":
             converted_value = value.astype('str')
         elif value_type == "integer":
-            converted_value = value.item()
+            if isinstance(value, int):
+                converted_value = value
+            else:
+                converted_value = value.item()
         elif value_type == "int64":
             converted_value = value.astype('str')
         elif value_type == "string":
@@ -155,6 +161,8 @@ class Table(BaseObject):
                 return "integer"
         if object_type == "uint64":
             return "int64"
+        if isinstance(value, int):
+            return "integer"
         if object_type.startswith("datetime64"):
             return "time"
         if isinstance(value, str):
@@ -171,11 +179,13 @@ class TableDisplay(BeakerxDOMWidget):
     _view_module_version = Unicode('*').tag(sync=True)
 
     model = Dict().tag(sync=True)
+    contextMenuListeners = dict()
 
     def __init__(self, *args, **kwargs):
         super(TableDisplay, self).__init__(**kwargs)
         self.chart = Table(*args, **kwargs)
         self.model = self.chart.transform()
+        self.on_msg(self.handle_msg)
 
     def setAlignmentProviderForColumn(self, column_name, display_alignment):
         if isinstance(display_alignment, TableDisplayAlignmentProvider):
@@ -240,3 +250,44 @@ class TableDisplay(BeakerxDOMWidget):
             self.chart.cellHighlighters.append(highlighter)
             self.model = self.chart.transform()
         return self
+
+    def setDoubleClickAction(self, listener):
+        if listener is not None:
+            if isinstance(listener, str):
+                self.doubleClickListener = None
+                self.chart.doubleClickTag = listener
+            elif isinstance(listener, types.FunctionType):
+                self.doubleClickListener = listener
+                self.chart.doubleClickTag = None
+                self.chart.hasDoubleClickAction = True
+
+            self.model = self.chart.transform()
+
+    def addContextMenuItem(self, name, func):
+        self.contextMenuListeners[name] = func
+        self.chart.contextMenuItems.append(name)
+        self.model = self.chart.transform()
+
+    def doubleClickListener(self, row, column, tabledisplay):
+        pass
+
+    def handle_msg(self, tabledisplay, params, list):
+        if params['event'] == 'DOUBLE_CLICK':
+            self.doubleClickListener(params['row'], params['column'], tabledisplay)
+            self.model = self.chart.transform()
+        if params['event'] == 'CONTEXT_MENU_CLICK':
+            func = self.contextMenuListeners.get(params['itemKey'])
+            if func is not None:
+                func(params['row'], params['column'], tabledisplay)
+                self.model = self.chart.transform()
+        if params['event'] == 'actiondetails':
+            if params['params']['actionType'] == 'DOUBLE_CLICK':
+                arguments = dict(target_name='beaker.tag.run')
+                comm = Comm(**arguments)
+                msg = {'runByTag': self.chart.doubleClickTag}
+                state = {'state': msg}
+                comm.send(data=state, buffers=[])
+
+    @property
+    def values(self):
+        return self.chart.values

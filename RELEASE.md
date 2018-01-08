@@ -99,6 +99,13 @@ docker tag beakerx beakerx/beakerx:$version
 docker push beakerx/beakerx:$version
 ```
 
+Do the same without a version to set the release to "latest":
+
+```
+docker tag beakerx beakerx/beakerx
+docker push beakerx/beakerx
+```
+
 Update Binder Link
 ------------------
 

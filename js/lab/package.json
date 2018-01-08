@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "build": "npm run build:src",
-    "build:src": "tsc --project src",
+    "build:src": "rimraf dist && tsc --project src",
     "prepublish": "npm run build:src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,6 +25,7 @@
     "@jupyter-widgets/controls": "^1.1.2",
     "@jupyter-widgets/output": "^1.0.10",
     "@jupyterlab/application": "^0.13.0",
+    "@jupyterlab/codemirror": "^0.13.0",
     "@jupyterlab/coreutils": "^0.13.0",
     "@jupyterlab/docregistry": "^0.13.0",
     "@jupyterlab/notebook": "^0.13.0",
@@ -33,6 +34,7 @@
     "@jupyterlab/rendermime-interfaces": "^0.4.2",
     "@jupyterlab/services": "^0.52.0",
     "@types/node": "^8.0.56",
+    "rimraf": "^2.6.2",
     "typescript": "~2.6.2"
   },
   "jupyterlab": {
@@ -40,10 +42,7 @@
     "mimeExtension": "dist/javascriptRendererExtension.js"
   },
   "files": [
-    "dist/*.js",
-    "lib/*.js"
-  ],
-  "dependencies": {
-    "beakerx": "^0.9.1"
-  }
+    "dist/**/*.js",
+    "lib/*"
+  ]
 }

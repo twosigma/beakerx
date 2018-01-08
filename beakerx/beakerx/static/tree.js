@@ -417,7 +417,7 @@ define(function(require) {
     try {
       var val = $('#heap_GB').val().trim();
       settings.normaliseHeapSize(val);
-      payload.jvm_options.heap_GB = val;
+      payload.jvm_options.heap_GB = parseFloat(val);
 
       settings.setVariables(JSON.stringify({
         'beakerx': payload

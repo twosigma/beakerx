@@ -66,8 +66,6 @@ def install_gradle(path=kernel_path, cmd='build'):
     """
 
     class Gradle(BaseCommand):
-        description = 'Run gradle script'
-
         def run(self):
             gw_path = os.path.join(path, 'gradlew')
             run([gw_path, '--no-daemon', cmd], cwd=path)
@@ -98,9 +96,12 @@ def get_cmdclass():
     cmd_java = install_gradle(cmd='build')
     cmd_javadoc = install_gradle(cmd='base:javadoc')
 
-    cmdclass['beakerxdeps'] = combine_commands(
+    cmd_beakerxdeps = combine_commands(
         cmd_js, cmd_java, cmd_javadoc
     )
+    cmd_beakerxdeps.description = 'Install BeakerX dependencies'
+
+    cmdclass['beakerxdeps'] = cmd_beakerxdeps
 
     return cmdclass
 

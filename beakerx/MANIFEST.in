@@ -4,6 +4,4 @@ recursive-include beakerx/javadoc *
 
 include LICENSE
 include NOTICE
-include CONTRIBUTING.md
-include README.md
 include setupbase.py

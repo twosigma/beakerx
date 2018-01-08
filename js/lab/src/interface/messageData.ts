@@ -1,4 +1,9 @@
 export interface messageData {
+  state?: messageState
+}
+
+export interface messageState {
   name?: string,
-  value?: any
+  value?: any,
+  runByTag?: string
 }

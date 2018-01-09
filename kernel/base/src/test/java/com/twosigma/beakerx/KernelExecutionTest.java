@@ -58,7 +58,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
     Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
-    checkResultForErrors(result);
+    checkResultForErrors(result, code);
     assertThat(result).isPresent();
     verifyResult(result.get());
     verifyPublishedMsgs(getKernelSocketsService());
@@ -66,12 +66,13 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     verifySentMsgs(getKernelSocketsService());
   }
 
-  private void checkResultForErrors(Optional<Message> result) throws InterruptedException {
+  protected void checkResultForErrors(Optional<Message> result, String code) throws InterruptedException {
       if (!result.isPresent()){
           Optional<Message> error = waitForErrorMessage(getKernelSocketsService().getKernelSockets());
           String errorMsg;
           if (error.isPresent()){
               errorMsg = "Error message received instead of result:\n"
+                      + "Code: " + code + "\n"
                       + error.get().getContent().toString() + "\n";
           } else {
               errorMsg = "Result nor error messages found:\n" +
@@ -161,6 +162,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
     Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
+    checkResultForErrors(result, code);
     verifyResultOfAddedJar(result.get());
   }
 
@@ -208,6 +210,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
     Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
+    checkResultForErrors(result, allCode);
     assertThat(result).isPresent();
     Map actual = ((Map) result.get().getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");

@@ -23,6 +23,7 @@ import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.handler.KernelHandler;
@@ -58,17 +59,23 @@ public class CommInfoHandler extends KernelHandler<Message> {
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(COMMS, new HashMap<String, Serializable>());
 
-    for (String commHash : kernel.getCommHashSet()) {
-      HashMap<String, Serializable> commRepDetails = new HashMap<>();
-      Comm comm = kernel.getComm(commHash);
-      commRepDetails.put(TARGET_NAME, comm.getTargetName());
-      ((HashMap<String, Serializable>) content.get(COMMS)).put(comm.getCommId(), commRepDetails);
-    }
-
+    String target = getMessageTarget(message);
+    kernel.getCommHashSet().stream()
+            .map(hash -> kernel.getComm(hash))
+            .filter(comm -> target == null || target.isEmpty() || comm.getTargetName().equals(target))
+            .forEach(comm -> {
+              HashMap<String, Serializable> commRepDetails = new HashMap<>();
+              commRepDetails.put(TARGET_NAME, comm.getTargetName());
+              ((HashMap<String, Serializable>) content.get(COMMS)).put(comm.getCommId(), commRepDetails);
+            });
     reply.setContent(content);
     reply.setParentHeader(message.getHeader());
     reply.setIdentities(message.getIdentities());
     send(reply);
   }
 
+  private String getMessageTarget(Message message){
+    Map content = message.getContent();
+    return content == null ? null : (String) message.getContent().get(TARGET_NAME);
+  }
 }

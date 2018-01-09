@@ -30,15 +30,17 @@ const logPrefix = `[${modName}]`;
 export function enableInitializationCellsFeature(panel: NotebookPanel): void {
   const modOptions = panel.model.metadata[modName];
   const options = { run_on_kernel_ready: true, ...modOptions };
-  const cells = getInitCells(panel);
 
-  handleUntrustedKernelInitCells(cells);
-  registerNotebookInitCellsAction(panel, options, cells);
+  registerNotebookInitCellsAction(panel, options);
 
-  panel.session.kernel.ready.then(() => runInitCells(panel, options, cells));
+  panel.session.kernel.ready.then(() => runInitCells(panel, options));
 }
 
-export function runInitCells(panel: NotebookPanel, options: IInitCellsOptions, cells: CodeCell[]): void {
+export function runInitCells(panel: NotebookPanel, options: IInitCellsOptions): void {
+  const cells: CodeCell[] = getInitCells(panel);
+
+  handleUntrustedKernelInitCells(cells, options);
+
   if (!canExecuteInitCells(panel, options, cells)) {
     return;
   }
@@ -67,12 +69,8 @@ function canExecuteInitCells (panel: NotebookPanel, options: IInitCellsOptions, 
   );
 }
 
-function handleUntrustedKernelInitCells(cells: CodeCell[]) {
-  if (!cells.length) {
-    return;
-  }
-
-  if (!cells[0].model.trusted) {
+function handleUntrustedKernelInitCells(cells: CodeCell[], options: IInitCellsOptions) {
+  if (cells.length && !cells[0].model.trusted && !options.run_untrusted) {
     showDialog({
       title: 'Initialization cells in untrusted notebook',
       body : 'This notebook is not trusted, so initialization cells will not be automatically run on kernel load. You can still run them manually, though.',
@@ -83,13 +81,12 @@ function handleUntrustedKernelInitCells(cells: CodeCell[]) {
 
 export function registerNotebookInitCellsAction(
   panel: NotebookPanel,
-  options: IInitCellsOptions,
-  cells: CodeCell[]
+  options: IInitCellsOptions
 ): void {
   const action = {
     className: 'fa fa-calculator',
     tooltip: 'Run all initialization cells',
-    onClick: () => runInitCells(panel,{ ...options, run_untrusted: true }, cells)
+    onClick: () => runInitCells(panel,{ ...options, run_untrusted: true })
   };
 
   panel.toolbar.insertItem(9,'run-initialization-cells', new ToolbarButton(action));

@@ -60,7 +60,6 @@ export function enableInitializationCellsFeature(options: IInitCellsOptions) {
   }
 
   registerCelltoolbarPreset();
-  handleUntrustedKernelInitCells();
   registerNotebookInitCellsAction(options);
   runInitCells(options);
 
@@ -68,13 +67,16 @@ export function enableInitializationCellsFeature(options: IInitCellsOptions) {
 }
 
 export function runInitCells(options: IInitCellsOptions): void {
+  let cells = getInitCells();
+
+  handleUntrustedKernelInitCells(cells, options);
+
   if (!canExecuteInitCells(options)) {
     return;
   }
 
   console.log(logPrefix, 'running all initialization cells');
 
-  let cells = getInitCells();
   let num = 0;
 
   for (let i = 0; i < cells.length; i++) {
@@ -101,8 +103,8 @@ function canExecuteInitCells (options: IInitCellsOptions) {
   );
 }
 
-function handleUntrustedKernelInitCells() {
-  if (!Jupyter.notebook.trusted) {
+function handleUntrustedKernelInitCells(cells, options) {
+  if (!Jupyter.notebook.trusted && !options.run_untrusted && cells.length) {
     dialog.modal({
       title : 'Initialization cells in untrusted notebook',
       body : 'This notebook is not trusted, so initialization cells will not be automatically run on kernel load. You can still run them manually, though.',

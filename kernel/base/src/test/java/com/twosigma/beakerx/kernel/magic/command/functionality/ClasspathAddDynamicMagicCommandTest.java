@@ -32,7 +32,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class ClasspathAddDynamicMagicCommandTest extends KernelSetUpFixtureTest {
 
-    @Test
   public void handleDynamicMagics() throws InterruptedException {
     //given
     String code = "" +

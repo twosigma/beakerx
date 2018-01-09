@@ -384,8 +384,8 @@ define(function(require) {
   function _submitOptions() {
     var payload = {
       version: 2,
-      heap_GB: '',
       jvm_options: {
+        heap_GB: null,
         other: [],
         properties: [],
       },

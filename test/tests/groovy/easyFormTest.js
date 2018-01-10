@@ -28,69 +28,102 @@ describe('Testing of EasyForm (groovy)', function () {
     beakerxPO.closeAndHaltNotebook();
   });
 
+  var cellIndex;
+
   describe('EasyForm widget', function () {
     it('Cell has EasyForm widget', function () {
-      var codeCell = beakerxPO.runCodeCellByIndex(0);
+      cellIndex = 0;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       expect(codeCell.$('fieldset').isEnabled()).toBeTruthy();
       expect(codeCell.$('legend').getText()).toBe('Legend name');
       expect(codeCell.$('div.beaker-easyform-container').isEnabled()).toBeTruthy();
-    }, 2);
+    });
+  });
 
+  describe('EasyForm Text field', function () {
     it('EasyForm has Text field', function () {
-      var easyForm = beakerxPO.runCellToGetEasyForm(1);
+      cellIndex += 1;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-text').isEnabled()).toBeTruthy();
       expect(easyForm.$('label').getText()).toBe('field name2');
       expect(easyForm.$('input[type="text"]').isEnabled()).toBeTruthy();
     });
+  });
 
+  describe('EasyForm Textarea field', function () {
     it('EasyForm has Textarea field', function () {
-      var easyForm = beakerxPO.runCellToGetEasyForm(2);
+      cellIndex = 4;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
       expect(easyForm.$('label').getText()).toBe('field name3');
       expect(easyForm.$('textarea').isEnabled()).toBeTruthy();
     });
+  });
 
+  describe('EasyForm Checkbox field', function () {
     it('EasyForm has Checkbox field', function () {
-      var easyForm = beakerxPO.runCellToGetEasyForm(3);
+      cellIndex = 7;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-checkbox').isEnabled()).toBeTruthy();
       expect(easyForm.$('span').getText()).toBe('field name4');
       expect(easyForm.$('input[type="checkbox"]').isEnabled()).toBeTruthy();
     });
+  });
 
+  describe('EasyForm Combobox field', function () {
     it('EasyForm has Combobox field', function () {
-      var easyForm = beakerxPO.runCellToGetEasyForm(4);
+      cellIndex += 1;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-combobox').isEnabled()).toBeTruthy();
       expect(easyForm.$('label').getText()).toBe('field name5');
       expect(easyForm.$('select').getValue()).toBe('one');
       expect(easyForm.$('span.easyform-combobox').isEnabled()).toBeTruthy();
     });
+  });
 
+  describe('EasyForm List field', function () {
+    var easyForm;
     it('EasyForm has List field', function () {
-      var easyForm = beakerxPO.runCellToGetEasyForm(5);
+      cellIndex += 1;
+      easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-select').isEnabled()).toBeTruthy();
       expect(easyForm.$('label').getText()).toBe('field name6');
+    });
+    it('Should select "one" value', function () {
       easyForm.$('select').selectByVisibleText('one');
       expect(easyForm.$('select').getValue()).toBe('one');
     });
+  });
 
+  describe('EasyForm CheckBoxes field', function () {
     it('EasyForm has CheckBoxes field', function () {
-      var easyForm = beakerxPO.runCellToGetEasyForm(6);
+      cellIndex += 1;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$$('div.widget-checkbox').length).toBe(3);
       expect(easyForm.$$('input[type="checkbox"]').length).toBe(3);
       expect(easyForm.$('div.widget-label').getText()).toBe('field name7');
     });
+  });
 
+  describe('EasyForm RadioButtons field', function () {
     it('EasyForm has RadioButtons field', function () {
-      var easyForm = beakerxPO.runCellToGetEasyForm(7);
+      cellIndex += 1;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-radio-box').isEnabled()).toBeTruthy();
       expect(easyForm.$$('input[type="radio"]').length).toBe(3);
       expect(easyForm.$('label.widget-label').getText()).toBe('field name8');
     });
+  });
 
+  describe('EasyForm DatePicker field', function () {
+    var easyForm;
     it('EasyForm has DatePicker field', function () {
-      var easyForm = beakerxPO.runCellToGetEasyForm(8);
+      cellIndex += 1;
+      easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.datepicker-container').isEnabled()).toBeTruthy();
       expect(easyForm.$('label.widget-label').getText()).toBe('field name9');
+    });
+    it('Should select 25th day', function () {
       easyForm.$('a.date-picker-button').click();
       browser.$('span.flatpickr-day=25').click();
       expect(easyForm.$('input[type="text"]').getValue()).toMatch('25');
@@ -101,22 +134,25 @@ describe('Testing of EasyForm (groovy)', function () {
     var inputs;
 
     it('EasyForm has two buttons', function () {
-      var easyForm = beakerxPO.runCellToGetEasyForm(9);
+      cellIndex += 1;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       easyForm.$('button=run tag').click();
       beakerxPO.kernelIdleIcon.waitForEnabled();
       easyForm.$('button=actionPerformed').click();
     });
 
     it('tag should create EasyForm', function () {
+      cellIndex += 2;
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      var codeCell_11 = beakerxPO.getCodeCellByIndex(11);
+      var codeCell_11 = beakerxPO.getCodeCellByIndex(cellIndex);
       var easyForm = codeCell_11.$('div.beaker-easyform-container');
       expect(easyForm.isEnabled()).toBeTruthy();
       inputs = easyForm.$$('input[type="text"]');
     });
 
     it('onChange action should change text value', function () {
-      beakerxPO.runCallAndCheckOutputText(10, 'test text');
+      cellIndex -= 1;
+      beakerxPO.runCallAndCheckOutputText(cellIndex, 'test text');
       expect(inputs[1].getValue()).toBe('test text');
       expect(inputs[2].getValue()).toBe('test text from onChange');
     });
@@ -132,12 +168,14 @@ describe('Testing of EasyForm (groovy)', function () {
 
   describe('IntSlider widget in EasyForm', function(){
     it('EasyForm has IntSlider widget', function(){
-      var easyForm = beakerxPO.runCellToGetEasyForm(12);
+      cellIndex += 2;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.slider-container')).toBeTruthy();
     });
 
     it('IntSlider has value 50', function(){
-      beakerxPO.runCallAndCheckOutputText(13, '50');
+      cellIndex +=1;
+      beakerxPO.runCallAndCheckOutputText(cellIndex, '50');
     });
   });
 

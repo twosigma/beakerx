@@ -49,7 +49,7 @@ define([
   './plot/plotApi',
   './shared/bkCoreManager',
   'big.js',
-  './GistPublish'
+  './extension/GistPublish'
 ], function(
   configmod,
   comm,

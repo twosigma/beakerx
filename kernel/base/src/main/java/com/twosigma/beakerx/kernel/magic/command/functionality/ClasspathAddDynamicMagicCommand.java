@@ -63,16 +63,26 @@ public class ClasspathAddDynamicMagicCommand extends ClasspathMagicCommand {
 
     try {
       Object path = completableFuture.get();
-      Collection<String> newAddedJars = addJars((String) path);
+      Collection<String> newAddedJars = addJars(path);
       if (newAddedJars.isEmpty()) {
         return new MagicCommandOutput(MagicCommandOutput.Status.OK);
       }
-      String textMessage = "Added jar"  + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
+      String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
       return new MagicCommandOutput(MagicCommandOutput.Status.OK, textMessage);
     } catch (Exception e) {
-      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem during execution of " + CLASSPATH_ADD_DYNAMIC);
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem during execution of " + CLASSPATH_ADD_DYNAMIC + " : " + e.getMessage());
     }
   }
 
+  @SuppressWarnings("unchecked")
+  private Collection<String> addJars(Object path) {
+    if (path instanceof String) {
+      return addJars((String) path);
+    } else if (path instanceof Collection) {
+      return addJars((Collection<String>) path);
+    } else {
+      throw new RuntimeException("Classpath dynamic handles String or Collection.");
+    }
+  }
 
 }

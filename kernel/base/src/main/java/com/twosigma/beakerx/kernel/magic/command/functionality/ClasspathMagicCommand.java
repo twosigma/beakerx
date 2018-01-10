@@ -42,6 +42,10 @@ public abstract class ClasspathMagicCommand implements MagicCommandFunctionality
     this.kernel = kernel;
   }
 
+  public Collection<String> addJars(Collection<String> path) {
+    return path.stream().map(this::addJars).flatMap(Collection::stream).collect(Collectors.toList());
+  }
+
   public Collection<String> addJars(String path) {
     if (doesPathContainsWildCards(path)) {
       return handleWildCards(path);

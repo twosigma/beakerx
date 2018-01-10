@@ -16,25 +16,7 @@
 package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.AddStaticImportMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.BashMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathRemoveMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathShowMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlAliasMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.JSMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItLineModeMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.TimeLineModeMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +38,7 @@ public class MagicCommandTypesFactory {
                     lsmagic(magicCommandTypes),
                     addJar(kernel),
                     addJarByMvn(kernel),
+                    addJarByMvnCell(kernel),
                     addRepo(kernel),
                     removeJar(kernel),
                     showClasspath(kernel),
@@ -113,6 +96,13 @@ public class MagicCommandTypesFactory {
   private static MagicCommandType addJarByMvn(KernelFunctionality kernel) {
     return new MagicCommandType(ClasspathAddMvnMagicCommand.CLASSPATH_ADD_MVN, "<group name version>",
             new ClasspathAddMvnMagicCommand(new MavenJarResolver.ResolverParams(
+                    kernel.getCacheFolder().toString() + "/maven/cache",
+                    kernel.getTempFolder().toString() + MVN_DIR), kernel));
+  }
+
+  private static MagicCommandType addJarByMvnCell(KernelFunctionality kernel) {
+    return new MagicCommandType(ClassPathAddMvnCellMagicCommand.CLASSPATH_ADD_MVN_CELL, "<group name version>",
+            new ClassPathAddMvnCellMagicCommand(new MavenJarResolver.ResolverParams(
                     kernel.getCacheFolder().toString() + "/maven/cache",
                     kernel.getTempFolder().toString() + MVN_DIR), kernel));
   }

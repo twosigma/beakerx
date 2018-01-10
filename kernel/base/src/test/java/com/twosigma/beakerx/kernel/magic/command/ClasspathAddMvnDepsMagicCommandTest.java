@@ -20,8 +20,8 @@ import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.handler.MagicCommandExecutor;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
@@ -93,7 +93,8 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     MagicCommandOutcome process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
     //then
     String text = getText(process);
-    assertThat(text).contains("Could not resolve dependencies for: com.google.code.XXXX : gson : 2.6.2");
+    assertThat(text).contains("Could not resolve dependencies for:");
+    assertThat(text).contains("com.google.code.XXXX : gson : 2.6.2");
   }
 
   @Test

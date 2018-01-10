@@ -29,7 +29,7 @@ Create the release
 ------------------
 
 Update the version in `beakerx/beakerx/_version.py` and
-`beakerx/js/package.json` and `js/lab/package.json`.  Commit
+`js/notebook/package.json` and `js/lab/package.json`.  Commit
 the change and push the git tag.
 
 ```bash

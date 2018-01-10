@@ -26,6 +26,7 @@ import com.twosigma.beakerx.widgets.TestWidgetUtils;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.QUEUED;
 import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.RUNNING;
@@ -143,6 +144,12 @@ public class EvaluatorResultTestWatcher {
             filter(x -> x.type().equals(JupyterMessages.COMM_MSG)).
             filter(x -> TestWidgetUtils.getData(x).get("method").equals("update")).
             findFirst();
+  }
+
+  public static List<Message> getStdouts(KernelSocketsTest kernel) {
+    return kernel.getPublishedMessages().stream().
+            filter(x -> x.type().equals(JupyterMessages.STREAM)).
+            filter(x -> TestWidgetUtils.getContent(x).get("name").equals("stdout")).collect(Collectors.toList());
   }
 
 }

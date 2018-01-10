@@ -46,6 +46,8 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
   public static final String DEMO_RESOURCES_JAR = "../../doc/resources/jar";
   public static final String DEMO_JAR_NAME = "demo.jar";
   public static final String DEMO_JAR = DEMO_RESOURCES_JAR + "/" + DEMO_JAR_NAME;
+  public static final String LOAD_MAGIC_JAR_DEMO_JAR_NAME = "loadMagicJarDemo.jar";
+  public static final String LOAD_MAGIC_DEMO_JAR = DEMO_RESOURCES_JAR + "/" + LOAD_MAGIC_JAR_DEMO_JAR_NAME;
 
   @Test
   public void evaluate16Divide2() throws Exception {
@@ -137,7 +139,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
   }
 
   private void addJarWithCustomMagicCommand() throws InterruptedException {
-    String allCode = CLASSPATH_ADD_JAR + " " + DEMO_RESOURCES_JAR + "/loadMagicJarDemo.jar";
+    String allCode = CLASSPATH_ADD_JAR + " " + LOAD_MAGIC_DEMO_JAR;
     Code code = CodeFactory.create(allCode, new Message(), getKernel());
     MagicCommandOutcome result = executeMagicCommands(code, 1, getKernel());
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();

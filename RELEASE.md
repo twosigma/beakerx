@@ -122,6 +122,11 @@ https://github.com/twosigma/beakerx/releases/tag/$version
 
 And write the release notes.
 
+Update Jitpack
+--------------
+
+https://jitpack.io/#twosigma/beakerx
+
 Update Binder Link
 ------------------
 

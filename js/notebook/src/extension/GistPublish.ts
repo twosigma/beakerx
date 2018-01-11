@@ -104,8 +104,10 @@ function doPublish(): void {
       window.open(CONFIG.nbviewerBaseUrl + data.id);
     },
     error : (jqXHR, status, err) => {
-      console.log(err);
-      showErrorDialog(err);
+      const errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
+
+      console.log(errorMsg);
+      showErrorDialog(errorMsg);
     }
   };
 

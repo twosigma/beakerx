@@ -15,6 +15,7 @@
  */
 
 import $ from 'jquery';
+import { createModalContent } from './gistPublishModal';
 
 const dialog = require('base/js/dialog');
 const CONFIG = {
@@ -44,14 +45,21 @@ export function registerFeature(): void {
 }
 
 function beforePublish(): void {
+  const modalContent = createModalContent();
+  const personalAccessTokenInput = modalContent.querySelector('input');
+
   dialog.modal({
-    title : 'Publish',
-    body : 'Publish to an anonymous Github Gist, and open in nbviewer?',
+    title : 'Publish to a Github Gist',
+    body : modalContent,
     buttons: {
-      'OK': {
+      'Publish': {
         'class' : 'btn-primary',
-        'click': function() {
-          saveWidgetsState().then(doPublish);
+        'click': () => {
+          saveWidgetsState().then(
+            () => doPublish(
+              personalAccessTokenInput ? personalAccessTokenInput.value : null
+            )
+          );
         }
       },
       'Cancel': {}
@@ -84,13 +92,18 @@ function saveWidgetsState(): Promise<any> {
   });
 }
 
-function doPublish(): void {
+function doPublish(personalAccessToken): void {
   const nbjson = Jupyter.notebook.toJSON();
   const filedata = {};
 
   filedata[Jupyter.notebook.notebook_name] = {
     content : JSON.stringify(nbjson, undefined, 1)
   };
+
+  let gistsUrl = CONFIG.gistsUrl;
+  if (personalAccessToken) {
+    gistsUrl = `${gistsUrl}?oauth_token=${personalAccessToken}`;
+  }
 
   const settings = {
     type : 'POST',
@@ -111,5 +124,5 @@ function doPublish(): void {
     }
   };
 
-  $.ajax(CONFIG.gistsUrl, settings);
+  $.ajax(gistsUrl, settings);
 }

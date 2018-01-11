@@ -30,8 +30,16 @@ Create the release
 
 Update the version in `beakerx/beakerx/_version.py` and
 `js/notebook/package.json` and `js/lab/package.json`.  Commit
-the change and push the git tag.
+the change and push the git tag:
 
+```bash
+git commit -a -m 'version $version'
+git push
+git tag $version
+git push origin $version
+```
+
+Make a source archive of the package:
 ```bash
 git clean -xfd
 cd beakerx
@@ -106,7 +114,18 @@ docker tag beakerx beakerx/beakerx
 docker push beakerx/beakerx
 ```
 
+Write Release Notes
+------------------
+
+Open the release on github at
+https://github.com/twosigma/beakerx/releases/tag/$version
+
+And write the release notes.
+
 Update Binder Link
 ------------------
 
-Update the version of the mybinder link in the README, and push to master.
+Wait for the conda packages to become available.  Then update the
+version of the mybinder link in the README, and push to master.  If
+the conda package isn't ready then mybinder will cache the old
+version forever.

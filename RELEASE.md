@@ -125,7 +125,7 @@ And write the release notes.
 Update Jitpack
 --------------
 
-https://jitpack.io/#twosigma/beakerx
+Go to https://jitpack.io/#twosigma/beakerx and click "Get it".
 
 Update Binder Link
 ------------------

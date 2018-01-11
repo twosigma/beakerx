@@ -60,6 +60,7 @@ Publish on conda-forge
 Update the feedstock repo:
 
 - Make a branch or fork of https://github.com/twosigma/beakerx-feedstock.
+- Force push upstream to the fork.
 - Update the `version` and `sha256` variable values in `recipe/meta.yaml`.
   Return  build number to 0.
 
@@ -79,6 +80,8 @@ conda install --use-local beakerx
 - Then commit changes and submit a PR upstream to
   https://github.com/conda-forge/beakerx-feedstock for the new
   version.
+- Have the CI configs [automatically
+  rerendered](https://conda-forge.org/docs/webservice.html#conda-forge-admin-please-rerender).
 - After CI passes, merge the PR.
 
 

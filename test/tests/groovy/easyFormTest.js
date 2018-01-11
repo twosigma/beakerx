@@ -41,32 +41,112 @@ describe('Testing of EasyForm (groovy)', function () {
   });
 
   describe('EasyForm Text field', function () {
+    var easyForm;
+
     it('EasyForm has Text field', function () {
       cellIndex += 1;
-      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-text').isEnabled()).toBeTruthy();
       expect(easyForm.$('label').getText()).toBe('field name2');
       expect(easyForm.$('input[type="text"]').isEnabled()).toBeTruthy();
     });
+
+    it('Should input text', function () {
+      var tstText = 'text from user input';
+      cellIndex += 1;
+      easyForm.$('input[type="text"]').setValue(tstText);
+      expect(easyForm.$('input[type="text"]').getValue()).toBe(tstText);
+      beakerxPO.runCellAndCheckOutputText(cellIndex, tstText);
+    });
+
+    it('Should setup text value by code', function () {
+      cellIndex += 1;
+      var tstText = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(easyForm.$('input[type="text"]').getValue()).toBe(tstText);
+    });
+
+    it('Text field size equal 10', function () {
+      cellIndex += 1;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      expect(easyForm.$('div.widget-text').isEnabled()).toBeTruthy();
+      expect(easyForm.$('label').getText()).toBe('field name2');
+      expect(Math.round(easyForm.$('input[type="text"]').getAttribute('size'))).toBe(10);
+    });
   });
 
   describe('EasyForm Textarea field', function () {
+    var easyForm;
+
     it('EasyForm has Textarea field', function () {
-      cellIndex = 4;
-      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      cellIndex += 1;
+      easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
       expect(easyForm.$('label').getText()).toBe('field name3');
       expect(easyForm.$('textarea').isEnabled()).toBeTruthy();
     });
+
+    it('Should input text', function () {
+      var tstText = 'text from user input';
+      cellIndex += 1;
+      easyForm.$('textarea').setValue(tstText);
+      expect(easyForm.$('textarea').getValue()).toBe(tstText);
+      beakerxPO.runCellAndCheckOutputText(cellIndex, tstText);
+    });
+
+    it('Should setup text value by code', function () {
+      cellIndex += 1;
+      var tstText = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(easyForm.$('textarea').getValue()).toBe(tstText);
+    });
+
+    it('Textarea has 5 rows and 20 cols', function () {
+      cellIndex += 1;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
+      expect(easyForm.$('label').getText()).toBe('field name3');
+      expect(Math.round(easyForm.$('textarea').getAttribute('rows'))).toBe(5);
+      expect(Math.round(easyForm.$('textarea').getAttribute('cols'))).toBe(20);
+    });
+
+    it('Textarea has initial value', function () {
+      cellIndex += 1;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      expect(easyForm.$('div.widget-textarea').isEnabled()).toBeTruthy();
+      expect(easyForm.$('label').getText()).toBe('field name3');
+      expect(easyForm.$('textarea').getValue()).toBe('3c initial value 3c');
+    });
   });
 
   describe('EasyForm Checkbox field', function () {
+    var easyForm;
+
     it('EasyForm has Checkbox field', function () {
-      cellIndex = 7;
-      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      cellIndex += 1;
+      easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-checkbox').isEnabled()).toBeTruthy();
       expect(easyForm.$('span').getText()).toBe('field name4');
       expect(easyForm.$('input[type="checkbox"]').isEnabled()).toBeTruthy();
+    });
+    it('Checkbox should be checked', function () {
+      cellIndex += 1;
+      easyForm.$('input[type="checkbox"]').click();
+      expect(easyForm.$('input[type="checkbox"]').isSelected()).toBeTruthy();
+      beakerxPO.runCellAndCheckOutputText(cellIndex, 'true');
+    });
+
+    it('Should be unchecked by code', function () {
+      cellIndex += 1;
+      var tstText = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(tstText).toBe('false')
+      expect(easyForm.$('input[type="checkbox"]').isSelected()).toBeFalsy();
+    });
+
+    it('Checkbox has initial value', function () {
+      cellIndex += 1;
+      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      expect(easyForm.$('div.widget-checkbox').isEnabled()).toBeTruthy();
+      expect(easyForm.$('label').getText()).toBe('field name4');
+      expect(easyForm.$('input[type="checkbox"]').isSelected()).toBeTruthy();
     });
   });
 
@@ -117,12 +197,14 @@ describe('Testing of EasyForm (groovy)', function () {
 
   describe('EasyForm DatePicker field', function () {
     var easyForm;
+
     it('EasyForm has DatePicker field', function () {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.datepicker-container').isEnabled()).toBeTruthy();
       expect(easyForm.$('label.widget-label').getText()).toBe('field name9');
     });
+
     it('Should select 25th day', function () {
       easyForm.$('a.date-picker-button').click();
       browser.$('span.flatpickr-day=25').click();
@@ -152,7 +234,7 @@ describe('Testing of EasyForm (groovy)', function () {
 
     it('onChange action should change text value', function () {
       cellIndex -= 1;
-      beakerxPO.runCallAndCheckOutputText(cellIndex, 'test text');
+      beakerxPO.runCellAndCheckOutputText(cellIndex, 'test text');
       expect(inputs[1].getValue()).toBe('test text');
       expect(inputs[2].getValue()).toBe('test text from onChange');
     });
@@ -175,7 +257,7 @@ describe('Testing of EasyForm (groovy)', function () {
 
     it('IntSlider has value 50', function(){
       cellIndex +=1;
-      beakerxPO.runCallAndCheckOutputText(cellIndex, '50');
+      beakerxPO.runCellAndCheckOutputText(cellIndex, '50');
     });
   });
 

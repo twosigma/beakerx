@@ -163,7 +163,7 @@ class Table(BaseObject):
             return "int64"
         if isinstance(value, int):
             return "integer"
-        if object_type.startswith("datetime64"):
+        if object_type.startswith("datetime64")  or is_date(value):
             return "time"
         if isinstance(value, str):
             return "string"

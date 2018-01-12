@@ -127,6 +127,7 @@ describe('Testing of EasyForm (groovy)', function () {
       expect(easyForm.$('span').getText()).toBe('field name4');
       expect(easyForm.$('input[type="checkbox"]').isEnabled()).toBeTruthy();
     });
+
     it('Checkbox should be checked', function () {
       cellIndex += 1;
       easyForm.$('input[type="checkbox"]').click();
@@ -151,27 +152,58 @@ describe('Testing of EasyForm (groovy)', function () {
   });
 
   describe('EasyForm Combobox field', function () {
+    var easyForm;
+
     it('EasyForm has Combobox field', function () {
       cellIndex += 1;
-      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-combobox').isEnabled()).toBeTruthy();
       expect(easyForm.$('label').getText()).toBe('field name5');
-      expect(easyForm.$('select').getValue()).toBe('one');
+      expect(easyForm.$('input.easyform-combobox-input').getValue()).toBe('onef5');
       expect(easyForm.$('span.easyform-combobox').isEnabled()).toBeTruthy();
+    });
+
+    it('Should select Combobox value ', function () {
+      var testValue = 'twof5';
+      cellIndex += 1;
+      easyForm.$('span.easyform-combobox > a').click();
+      browser.$('div.ui-menu-item-wrapper=' + testValue).click();
+      expect(easyForm.$('input.easyform-combobox-input').getValue()).toBe(testValue);
+      beakerxPO.runCellAndCheckOutputText(cellIndex, testValue);
+    });
+
+    it('Should select Combobox value by code', function () {
+      cellIndex += 1;
+      var testValue = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(easyForm.$('input.easyform-combobox-input').getValue()).toBe(testValue);
     });
   });
 
   describe('EasyForm List field', function () {
     var easyForm;
+
     it('EasyForm has List field', function () {
       cellIndex += 1;
       easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-select').isEnabled()).toBeTruthy();
       expect(easyForm.$('label').getText()).toBe('field name6');
+      expect(easyForm.$('select').getText()).toMatch('onef6');
+      expect(easyForm.$('select').getText()).toMatch('twof6');
     });
-    it('Should select "one" value', function () {
-      easyForm.$('select').selectByVisibleText('one');
-      expect(easyForm.$('select').getValue()).toBe('one');
+
+    it('Should select "twof6" value', function () {
+      var testValue = 'twof6';
+      cellIndex += 1;
+      easyForm.$('select').selectByVisibleText(testValue);
+      expect(easyForm.$('select').getValue()).toBe(testValue);
+      expect(easyForm.$('option=' + testValue).isSelected()).toBeTruthy();
+      beakerxPO.runCellAndCheckOutputText(cellIndex, testValue);
+    });
+
+    it('Should select List value by code', function () {
+      cellIndex += 1;
+      var testValue = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(easyForm.$('select').getValue()).toBe(testValue);
     });
   });
 

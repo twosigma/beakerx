@@ -49,7 +49,7 @@ define([
   './plot/plotApi',
   './shared/bkCoreManager',
   'big.js',
-  './GistPublish.js'
+  './extension/GistPublish'
 ], function(
   configmod,
   comm,
@@ -74,6 +74,8 @@ define([
   var LINE_COMMENT_CHAR = '//';
   var commUtils = require('./extension/comm');
   var initCellUtils = require('./extension/initializationCells');
+
+  GistPublish.registerFeature();
 
   function installKernelHandler() {
     var kernel = Jupyter.notebook.kernel;

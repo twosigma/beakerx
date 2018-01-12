@@ -48,7 +48,7 @@ define([
   moment
 ) {
 
-  var CONTEXT_MENU_DEBOUNCE_TIME = 250;
+  var CONTEXT_MENU_DEBOUNCE_TIME = 350;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;

@@ -17,9 +17,44 @@
 import * as _ from 'underscore';
 
 const dialog = require('base/js/dialog');
+const utils = require('base/js/utils');
 
 export default class GistPublishModal {
   static template = _.template(require('./modalTemplate.html'))();
+  static settingsUrl = `${(Jupyter.notebook_list || Jupyter.notebook).base_url}beakerx/settings`;
+
+  static show(submitCallback: Function): void {
+    GistPublishModal.getGithubPersonalAccessToken()
+      .then(personalAccessToken => {
+        GistPublishModal.create(submitCallback, personalAccessToken);
+      });
+  }
+
+  static create(submitCallback, personalAccessToken = '') {
+    const modalContent = GistPublishModal.createModalContent();
+    const personalAccessTokenInput = modalContent.querySelector('input');
+
+    if (personalAccessTokenInput) {
+      personalAccessTokenInput.value = personalAccessToken;
+    }
+
+    dialog.modal({
+      title : 'Publish to a Github Gist',
+      body : modalContent,
+      buttons: {
+        'Publish': {
+          'class' : 'btn-primary',
+          'click': () => {
+            const personalAccessToken = personalAccessTokenInput ? personalAccessTokenInput.value : '';
+
+            submitCallback(personalAccessToken);
+            GistPublishModal.storePersonalAccessToken(personalAccessToken);
+          }
+        },
+        'Cancel': {}
+      }
+    });
+  }
 
   static createModalContent(): HTMLElement {
     const modalContent = document.createElement('div');
@@ -37,22 +72,27 @@ export default class GistPublishModal {
     return modalContent;
   }
 
-  static show(submitCallback: Function): void {
-    const modalContent = GistPublishModal.createModalContent();
-    const personalAccessTokenInput = modalContent.querySelector('input');
+  static storePersonalAccessToken(githubPersonalAccessToken = ''): Promise<any> {
+    return GistPublishModal.getStoredSettings()
+      .then(storedSettings =>
+        utils.ajax(GistPublishModal.settingsUrl, {
+          type: 'POST',
+          data: JSON.stringify({
+            ...storedSettings,
+            githubPersonalAccessToken
+          })
+        })
+      );
+  }
 
-    dialog.modal({
-      title : 'Publish to a Github Gist',
-      body : modalContent,
-      buttons: {
-        'Publish': {
-          'class' : 'btn-primary',
-          'click': () => {
-            submitCallback(personalAccessTokenInput ? personalAccessTokenInput.value : null);
-          }
-        },
-        'Cancel': {}
-      }
+  static getGithubPersonalAccessToken(): Promise<any> {
+    return GistPublishModal.getStoredSettings()
+      .then(settings => settings.githubPersonalAccessToken || '');
+  }
+
+  static getStoredSettings(): Promise<any> {
+    return utils.ajax(GistPublishModal.settingsUrl, {
+      method: 'GET'
     });
   }
 }

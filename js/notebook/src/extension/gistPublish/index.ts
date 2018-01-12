@@ -107,5 +107,5 @@ function doPublish(personalAccessToken): void {
     }
   };
 
-  $.ajax(gistsUrl, settings);
+  return $.ajax(gistsUrl, settings);
 }

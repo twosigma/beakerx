@@ -4,7 +4,7 @@
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *
+ *import static org.assertj.core.api.Assertions.assertThat;
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
@@ -25,8 +25,8 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -57,15 +57,15 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   private static KernelTest kernel;
   private static EvaluatorTest evaluator;
 
-  @BeforeClass
-  public static void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     evaluator = new EvaluatorTest();
     kernel = new KernelTest("id2", evaluator);
     prepareLocalMavenRepository();
   }
 
-  @AfterClass
-  public static void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     evaluator.exit();
   }
 
@@ -108,6 +108,30 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     //then
     String text = getText(process);
     assertThat(text).isEqualTo(ADD_MVN_FORMAT_ERROR_MESSAGE + "\n");
+  }
+
+  @Test
+  public void handleDepVersionConflict() throws IOException {
+    String codeString1 = "%classpath add mvn com.google.code.gson gson 2.6.2";
+    MagicCommand command1 = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), codeString1);
+    Code code1 = Code.createCodeWithoutCodeBlock(codeString1, singletonList(command1), NO_ERRORS, new Message());
+    MagicCommandOutcome process1 = MagicCommandExecutor.executeMagicCommands(code1, 1, kernel);
+    assertThat(getText(process1)).contains("Added jar");
+
+    String codeString2 = "%classpath add mvn com.google.code.gson gson 2.2.3";
+    MagicCommand command2 = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), codeString2);
+    Code code2 = Code.createCodeWithoutCodeBlock(codeString1, singletonList(command2), NO_ERRORS, new Message());
+    MagicCommandOutcome process2 = MagicCommandExecutor.executeMagicCommands(code2, 2, kernel);
+    assertThat(getText(process2)).contains("Dependency conflict");
+
+    String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;
+    Files.walk(Paths.get(mvnDir)).forEach(path -> {
+      try{
+        FileUtils.forceDelete(path.toFile());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    });
   }
 
   private void handleClasspathAddMvnDep(String allCode, String expected) throws IOException {

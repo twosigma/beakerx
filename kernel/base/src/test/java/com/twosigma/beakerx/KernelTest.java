@@ -15,9 +15,6 @@
  */
 package com.twosigma.beakerx;
 
-import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
-import static java.util.Collections.unmodifiableList;
-
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
@@ -37,11 +34,32 @@ import com.twosigma.beakerx.kernel.Repos;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
 import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
-import com.twosigma.beakerx.kernel.magic.command.functionality.*;
+import com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.AddStaticImportMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.BashMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathRemoveMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathShowMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlAliasMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.JSMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItCellModeMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.TimeItLineModeMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.TimeLineModeMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.UnImportMagicCommand;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
+import org.apache.commons.io.FileUtils;
+import org.assertj.core.util.Lists;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,8 +71,8 @@ import java.util.Map;
 import java.util.Observer;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.assertj.core.util.Lists;
+import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
+import static java.util.Collections.unmodifiableList;
 
 public class KernelTest implements KernelFunctionality {
 

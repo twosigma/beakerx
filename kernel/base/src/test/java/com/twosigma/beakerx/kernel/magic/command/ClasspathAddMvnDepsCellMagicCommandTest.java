@@ -5,6 +5,7 @@ import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.handler.MagicCommandExecutor;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
@@ -99,6 +100,30 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
                 .equals(ClassPathAddMvnCellMagicCommand.MVN_CELL_FORMAT_ERROR_MESSAGE));
     }
 
+    @Test
+    public void handleDepVersionConflict() throws Exception {
+        String codeString1 = "%classpath add mvn com.google.code.gson gson 2.6.2";
+        MagicCommand command1 = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), codeString1);
+        Code code1 = Code.createCodeWithoutCodeBlock(codeString1, Collections.singletonList(command1), NO_ERRORS, new Message());
+        MagicCommandOutcome process1 = MagicCommandExecutor.executeMagicCommands(code1, 1, kernel);
+        Assertions.assertThat(getText(process1)).contains("Added jar");
+
+        String codeString2 = "%%classpath add mvn\ncom.google.code.gson gson 2.2.3";
+        MagicCommand command2 = new MagicCommand(new ClassPathAddMvnCellMagicCommand(kernel.mavenResolverParam, kernel), codeString2);
+        Code code2 = Code.createCodeWithoutCodeBlock(codeString1, Collections.singletonList(command2), NO_ERRORS, new Message());
+        MagicCommandOutcome process2 = MagicCommandExecutor.executeMagicCommands(code2, 2, kernel);
+        Assertions.assertThat(getText(process2)).contains("Dependency conflict");
+
+        String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;
+        Files.walk(Paths.get(mvnDir)).forEach(path -> {
+            try{
+                FileUtils.forceDelete(path.toFile());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     private MagicCommandOutcome processMagicCommand(String allCode){
         MagicCommand command = new MagicCommand(new ClassPathAddMvnCellMagicCommand(kernel.mavenResolverParam, kernel), allCode);
         Code code = Code.createCodeWithoutCodeBlock(allCode, Collections.singletonList(command), NO_ERRORS, new Message());
@@ -116,28 +141,6 @@ public class ClasspathAddMvnDepsCellMagicCommandTest {
                 .allMatch(depNames::contains));
         Assertions.assertThat(expected.stream()
                 .allMatch(getText(process)::contains));
-
-        Files.walk(Paths.get(mvnDir)).forEach(path -> {
-            try{
-                FileUtils.forceDelete(path.toFile());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    private void handleCellClasspathAddMvnDepWithUnresolved(String allCode, String expected, String unresolved) throws IOException {
-        MagicCommandOutcome process = processMagicCommand(allCode);
-        String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;
-        List<String> depNames = Files.walk(Paths.get(mvnDir)).map(p -> p.getFileName().toString()).collect(Collectors.toList());
-
-        Assertions.assertThat(getText(process)).contains("Added jars");
-        Assertions.assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
-        Assertions.assertThat(depNames.contains(expected));
-        Assertions.assertThat(getText(process).contains(expected));
-
-        Assertions.assertThat(getText(process))
-                .contains("Could not resolve dependencies for: com.google.code.XXXX : gson : 2.6.2");
 
         Files.walk(Paths.get(mvnDir)).forEach(path -> {
             try{

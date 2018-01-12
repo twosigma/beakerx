@@ -9,7 +9,6 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand{
@@ -65,12 +64,7 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand{
         MavenJarResolver.AddMvnCommandResult result = mavenJarResolver.retrieve(dependencies, mvnLoggerWidget);
 
         if (result.isJarRetrieved()) {
-            Collection<String> newAddedJars = addJars(mavenJarResolver.getPathToMavenRepo() + "/*");
-            if (newAddedJars.isEmpty()) {
-                return new MagicCommandOutput(MagicCommandOutput.Status.OK);
-            }
-            String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
-            return new MagicCommandOutput(MagicCommandOutput.Status.OK, textMessage);
+            return handleAddedJars(mavenJarResolver.getPathToMavenRepo() + "/*");
         }
         return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, result.getErrorMessage());
     }

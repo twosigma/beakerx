@@ -19,6 +19,8 @@ import com.google.common.collect.Lists;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,6 +29,9 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -48,6 +53,52 @@ public abstract class ClasspathMagicCommand implements MagicCommandFunctionality
     } else {
       return handlePath(path);
     }
+  }
+
+  public MagicCommandOutput handleAddedJars(String path){
+    Collection<String> newAddedJars = addJars(path);
+    Collection<String> conflicts = searchForConflicts(newAddedJars);
+    if (newAddedJars.isEmpty()) {
+      return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+    }
+    String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
+    MagicCommandOutput.Status status = MagicCommandOutcomeItem.Status.OK;
+    if (!conflicts.isEmpty()){
+      textMessage += "\n\n" + "Dependency conflict"  + (conflicts.size() > 1 ? "s: " : ": ") + conflicts;
+      status = MagicCommandOutcomeItem.Status.ERROR;
+    }
+    return new MagicCommandOutput(status, textMessage);
+  }
+
+  public List<String> searchForConflicts(Collection<String> newAddedJars){
+    return kernel.getClasspath().getPathsAsStrings().stream()
+            .map(this::getFilenameFromPath)
+            .map(d -> checkIfDepExist(d, newAddedJars))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList());
+  }
+
+  public String getFilenameFromPath(String path){
+    String[] parts = path.split("/");
+    return parts[parts.length-1];
+  }
+
+  public Optional<String> checkIfDepExist(String dependency, Collection<String> addedJars){
+    Pattern pattern = Pattern.compile("(.*)\\-(\\d[\\.\\d]*[\\.\\-[\\S]*]+)");
+    Matcher depMatcher = pattern.matcher(dependency);
+    if (!depMatcher.find()){
+      return Optional.empty();
+    }
+    String depName = depMatcher.group(1);
+    String depVersion = depMatcher.group(2);
+    return addedJars.stream()
+            .map(pattern::matcher)
+            .filter(m -> m.find()
+                    && m.group(1).equals(depName)
+                    && !m.group(2).equals(depVersion))
+            .map(m -> m.group(0))
+            .findFirst();
   }
 
   private Collection<String> handlePath(String path) {

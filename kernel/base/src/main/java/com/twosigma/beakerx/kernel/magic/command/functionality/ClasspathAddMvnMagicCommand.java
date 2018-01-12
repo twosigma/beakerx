@@ -23,14 +23,12 @@ import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
-import java.util.Collection;
-
 public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
 
   public static final String ADD = "add";
   public static final String MVN = "mvn";
   public static final String CLASSPATH_ADD_MVN = CLASSPATH + " " + ADD + " " + MVN;
-  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be %" + CLASSPATH_ADD_MVN + " group name version or " + CLASSPATH_ADD_MVN + " group:name:version";
+  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be" + CLASSPATH_ADD_MVN + " group name version or " + CLASSPATH_ADD_MVN + " group:name:version";
 
   private MavenJarResolver.ResolverParams commandParams;
   private PomFactory pomFactory;
@@ -75,12 +73,7 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
     }
 
     if (result.isJarRetrieved()) {
-      Collection<String> newAddedJars = addJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*");
-      if (newAddedJars.isEmpty()) {
-        return new MagicCommandOutput(MagicCommandOutput.Status.OK);
-      }
-      String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
-      return new MagicCommandOutput(MagicCommandOutput.Status.OK, textMessage);
+      return handleAddedJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*");
     }
     return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, result.getErrorMessage());
   }

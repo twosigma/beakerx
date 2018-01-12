@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import $ from 'jquery';
-import { createModalContent } from './gistPublishModal';
+import * as $ from 'jquery';
+import GistPublishModal from './gistPublishModal';
 
 const dialog = require('base/js/dialog');
 const CONFIG = {
@@ -45,26 +45,9 @@ export function registerFeature(): void {
 }
 
 function beforePublish(): void {
-  const modalContent = createModalContent();
-  const personalAccessTokenInput = modalContent.querySelector('input');
-
-  dialog.modal({
-    title : 'Publish to a Github Gist',
-    body : modalContent,
-    buttons: {
-      'Publish': {
-        'class' : 'btn-primary',
-        'click': () => {
-          saveWidgetsState().then(
-            () => doPublish(
-              personalAccessTokenInput ? personalAccessTokenInput.value : null
-            )
-          );
-        }
-      },
-      'Cancel': {}
-    }
-  });
+  GistPublishModal.show(personalAccessToken => saveWidgetsState().then(
+    () => doPublish(personalAccessToken)
+  ));
 }
 
 function showErrorDialog(errorMsg) {

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from os import environ, path
+from os import environ, path, chmod
 from jupyter_core import paths
 import json
 import pathlib
@@ -43,6 +43,7 @@ class EnvironmentSettings:
         file = open(EnvironmentSettings.config_path, 'w+')
         file.write(json.dumps(json.loads(content), indent=4, sort_keys=True))
         file.close()
+        chmod(EnvironmentSettings.config_path, 0o600)
 
     @staticmethod
     def read_setting_from_file():

@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.inspect.InspectHandler;
+import com.twosigma.beakerx.handler.InspectHandler;
 import com.twosigma.beakerx.kernel.handler.CommCloseHandler;
 import com.twosigma.beakerx.kernel.handler.CommInfoHandler;
 import com.twosigma.beakerx.kernel.handler.CommMsgHandler;

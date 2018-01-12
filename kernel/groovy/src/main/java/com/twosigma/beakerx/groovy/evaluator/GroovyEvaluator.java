@@ -22,6 +22,8 @@ import com.twosigma.beakerx.evaluator.TempFolderFactory;
 import com.twosigma.beakerx.evaluator.TempFolderFactoryImpl;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beakerx.groovy.autocomplete.GroovyClasspathScanner;
+import com.twosigma.beakerx.groovy.inspect.GroovyInspect;
+import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.BeakerCellExecutor;
@@ -48,6 +50,7 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   private GroovyClasspathScanner cps;
   private GroovyAutocomplete gac;
+  private GroovyInspect gi;
   private GroovyWorkerThread worker = null;
   private GroovyClassLoader groovyClassLoader;
   private Binding scriptBinding = null;
@@ -62,6 +65,7 @@ public class GroovyEvaluator extends BaseEvaluator {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
     cps = new GroovyClasspathScanner();
     gac = createGroovyAutocomplete(cps);
+    gi = new GroovyInspect();
     outDir = envVariablesFilter(outDir, System.getenv());
     reloadClassloader();
     worker = new GroovyWorkerThread(this);
@@ -76,6 +80,11 @@ public class GroovyEvaluator extends BaseEvaluator {
   @Override
   public AutocompleteResult autocomplete(String code, int caretPosition) {
     return gac.doAutocomplete(code, caretPosition, groovyClassLoader, imports);
+  }
+
+  @Override
+  public InspectResult inspect(String code, int caretPosition) {
+    return gi.DoInspect(code, caretPosition, groovyClassLoader, imports);
   }
 
   @Override

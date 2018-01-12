@@ -24,6 +24,7 @@ import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.comm.Comm;
@@ -192,6 +193,11 @@ public abstract class Kernel implements KernelFunctionality {
   @Override
   public AutocompleteResult autocomplete(String code, int cursorPos) {
     return this.evaluatorManager.autocomplete(code, cursorPos);
+  }
+
+  @Override
+  public InspectResult inspect(String code, int cursorPos) {
+    return this.evaluatorManager.inspect(code, cursorPos);
   }
 
   @Override

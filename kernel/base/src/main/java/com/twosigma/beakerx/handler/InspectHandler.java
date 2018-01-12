@@ -14,9 +14,10 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.inspect;
+package com.twosigma.beakerx.handler;
 
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
@@ -50,8 +51,8 @@ public class InspectHandler extends KernelHandler<Message> {
     private void handleMsg(Message message) {
         String code = ((String) message.getContent().get(CODE));
         int cursorPos = ((int) message.getContent().get(CURSOR_POS));
-        InspectResult inspectResult = new InspectResult("works", cursorPos);
-        //InspectResult inspectResult = kernel.inspectResult(code, cursorPos);
+        //InspectResult inspectResult = new InspectResult(code, cursorPos);
+        InspectResult inspectResult = kernel.inspect(code, cursorPos);
         Message reply = createMsg(message, inspectResult);
         send(reply);
     }
@@ -65,7 +66,7 @@ public class InspectHandler extends KernelHandler<Message> {
         content.put(STATUS, "ok");
         content.put(DATA, inspectResult.getData());
         //content.put(METADATA, {});
-        content.put(FOUND, true);
+        content.put(FOUND, inspectResult.getFound());
 
         reply.setContent(content);
         return reply;

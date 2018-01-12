@@ -18,12 +18,18 @@ package com.twosigma.beakerx.inspect;
 public class InspectResult {
     private InspectData data;
     private int startIndex;
+    private Boolean found;
 
+    public InspectResult(){
+        this("", 0);
+        this.setFound(false);
+    }
     public InspectResult(String data, int startIndex) {
         this.data = new InspectData(data);
         this.startIndex = startIndex;
-    }
+        this.found = true;
 
+    }
 
     public int getStartIndex() {
         return startIndex;
@@ -31,5 +37,13 @@ public class InspectResult {
 
     public InspectData getData() {
         return data;
+    }
+
+    public Boolean getFound() {
+        return found;
+    }
+
+    public void setFound(Boolean found) {
+        this.found = found;
     }
 }

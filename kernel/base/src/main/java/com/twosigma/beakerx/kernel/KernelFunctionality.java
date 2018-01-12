@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.kernel;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
+import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandType;
@@ -63,6 +64,8 @@ public interface KernelFunctionality {
 
   AutocompleteResult autocomplete(String code, int cursorPos);
 
+  InspectResult inspect(String code, int cursorPos);
+
   void sendBusyMessage(Message message);
 
   void sendIdleMessage(Message message);
@@ -90,7 +93,7 @@ public interface KernelFunctionality {
   Class<?> loadClass(String clazzName) throws ClassNotFoundException;
 
   void registerMagicCommandType(MagicCommandType magicCommandType);
-
+;
   interface ExecuteCodeCallback {
     void execute(SimpleEvaluationObject seo);
   }

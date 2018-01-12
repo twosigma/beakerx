@@ -17,6 +17,7 @@ package com.twosigma.beakerx.evaluator;
 
 import com.google.common.collect.Lists;
 import com.twosigma.beakerx.DefaultJVMVariables;
+import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
@@ -232,5 +233,10 @@ public abstract class BaseEvaluator implements Evaluator {
       }
     }
     return theDir;
+  }
+
+  @Override
+  public InspectResult inspect(String code, int caretPosition) {
+    return new InspectResult("", caretPosition);
   }
 }

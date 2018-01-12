@@ -12,4 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .easyform import *
+import unittest
+from beakerx.plot import *
+
+
+class CrosshairSetTest(unittest.TestCase):
+    def test_set_width(self):
+        object_under_test = Crosshair(**{'width': 10})
+        self.assertEqual(object_under_test.width, 10)
+
+    def test_set_style(self):
+        object_under_test = Crosshair(**{'style': ""})
+        self.assertEqual(object_under_test.style, "")
+
+    def test_set_color(self):
+        object_under_test = Crosshair(**{'color': Color.WHITE})
+        self.assertEqual(object_under_test.color, '#ffffffff')

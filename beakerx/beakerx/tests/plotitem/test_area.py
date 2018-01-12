@@ -12,4 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .easyform import *
+import unittest
+from beakerx.plot import *
+
+
+class LineSetTest(unittest.TestCase):
+    def test_set_interpolation(self):
+        object_under_test = Area(**{'interpolation': "interpolation"})
+        self.assertEqual(object_under_test.interpolation, "interpolation")
+
+    def test_set_color(self):
+        object_under_test = Area(**{'color': Color.WHITE})
+        self.assertEqual(object_under_test.color, '#ffffffff')

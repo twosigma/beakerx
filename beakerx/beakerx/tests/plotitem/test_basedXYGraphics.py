@@ -12,4 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .easyform import *
+import unittest
+from beakerx.plot import *
+
+
+class BasedXYGraphicsSetTest(unittest.TestCase):
+    def test_set_base(self):
+        object_under_test = BasedXYGraphics(**{'base': 5})
+        self.assertIsNotNone(object_under_test.base)
+
+    def test_set_base_array(self):
+        object_under_test = BasedXYGraphics(**{'base': [5, 3]})
+        self.assertIsNotNone(object_under_test.bases)

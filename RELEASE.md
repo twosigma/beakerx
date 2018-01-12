@@ -43,6 +43,7 @@ Make a source archive of the package:
 ```bash
 git clean -xfd
 cd beakerx
+python setup.py test
 python setup.py sdist
 ```
 

@@ -83,33 +83,62 @@ GradientColor.WHITE_BLUE = GradientColor([Color(255, 255, 217),
                                           Color(8, 29, 88)])
 
 
-class Graphics(BaseObject):
+class Graphics(ChartBaseObject):
     def __init__(self, **kwargs):
+        self.visible = True
+        self.hasClickAction = False
+
         super(Graphics, self).__init__(**kwargs)
         self.type = self.__class__.__name__
-        self.visible = getValue(kwargs, 'visible', True)
-        self.yAxis = getValue(kwargs, 'yAxis')
-        self.hasClickAction = getValue(kwargs, 'hasClickAction', False)
+
+    def setVisible(self, value):
+        self.visible = value
+
+    def setYAxis(self, value):
+        self.yAxis = value
+
+    def setHasClickAction(self, value):
+        self.hasClickAction = value
 
 
 class ConstantLine(Graphics):
     def __init__(self, **kwargs):
+        self.width = 1.5
         super(ConstantLine, self).__init__(**kwargs)
-        self.x = getValue(kwargs, 'x')
-        self.y = getValue(kwargs, 'y')
-        self.color = getColor(getValue(kwargs, 'color'))
-        self.width = getValue(kwargs, 'width', 1.5)
-        self.style = getValue(kwargs, 'style')
-        self.showLabel = getValue(kwargs, 'showLabel')
+
+    def setY(self, value):
+        self.y = value
+
+    def setX(self, value):
+        self.x = value
+
+    def setWidth(self, value):
+        self.width = value
+
+    def setStyle(self, value):
+        self.style = value
+
+    def setShowLabel(self, value):
+        self.showLabel = value
+
+    def setColor(self, value):
+        self.color = getColor(value)
 
 
 class ConstantBand(Graphics):
     def __init__(self, **kwargs):
+        self.color = getColor(Color(0, 127, 255, 127))
+
         super(ConstantBand, self).__init__(**kwargs)
-        self.x = getValue(kwargs, 'x')
-        self.y = getValue(kwargs, 'y')
-        self.color = getColor(
-            getValue(kwargs, 'color', Color(0, 127, 255, 127)))
+
+    def setY(self, value):
+        self.y = value
+
+    def setX(self, value):
+        self.x = value
+
+    def setColor(self, value):
+        self.color = getColor(value)
 
 
 def is_date(string):
@@ -162,47 +191,73 @@ class XYGraphics(Graphics):
                 if isinstance(y, float) and math.isnan(y):
                     self.y[idx] = "NaN"
 
-        self.display_name = getValue(kwargs, 'displayName')
-        self.lod_filter = getValue(kwargs, 'lodFilter')
-        self.tooltips = getValue(kwargs, 'tooltips')
+    def setX(self, value):
+        pass
+
+    def setY(self, value):
+        pass
+
+    def setDisplayName(self, value):
+        self.display_name = value
+
+    def setLodFilter(self, value):
+        self.lod_filter = value
+
+    def setTooltipse(self, value):
+        self.tooltips = value
 
 
 class Line(XYGraphics):
     def __init__(self, *args, **kwargs):
+        self.width = 1.5
         super(Line, self).__init__(*args, **kwargs)
-        self.width = getValue(kwargs, 'width', 1.5)
-        self.style = getValue(kwargs, 'style')
-        self.interpolation = getValue(kwargs, 'interpolation')
-        self.color = getColor(getValue(kwargs, 'color'))
+
+    def setWidth(self, value):
+        self.width = value
+
+    def setStyle(self, value):
+        self.style = value
+
+    def setInterpolation(self, value):
+        self.interpolation = value
+
+    def setColor(self, value):
+        self.color = getColor(value)
 
 
 class BasedXYGraphics(XYGraphics):
     def __init__(self, *args, **kwargs):
         super(BasedXYGraphics, self).__init__(*args, **kwargs)
-        base = getValue(kwargs, 'base')
-        if isinstance(base, list):
-            self.bases = base
+
+    def setBase(self, value):
+        if isinstance(value, list):
+            self.bases = value
         else:
-            self.base = getValue(kwargs, 'base', 0)
+            if value is not None:
+                self.base = value
+            else:
+                self.base = 0
 
 
 class Bars(BasedXYGraphics):
     def __init__(self, *args, **kwargs):
         super(Bars, self).__init__(*args, **kwargs)
 
-        width = getValue(kwargs, 'width')
-        if isinstance(width, list):
-            self.widths = width
+    def setWidth(self, value):
+        if isinstance(value, list):
+            self.widths = value
         else:
-            self.width = width
+            self.width = value
 
-        color = getColor(getValue(kwargs, 'color'))
+    def setColor(self, value):
+        color = getColor(value)
         if isinstance(color, list):
             self.colors = color
         else:
             self.color = color
 
-        outlineColor = getColor(getValue(kwargs, 'outlineColor'))
+    def setOutlineColor(self, value):
+        outlineColor = getColor(value)
         if isinstance(outlineColor, list):
             self.outline_colors = outlineColor
         else:
@@ -213,31 +268,39 @@ class Points(XYGraphics):
     def __init__(self, *args, **kwargs):
         super(Points, self).__init__(*args, **kwargs)
 
-        shape = getColor(getValue(kwargs, 'shape'))
-        if isinstance(shape, list):
-            self.shapes = shape
+    def setSize(self, value):
+        if isinstance(value, list):
+            self.sizes = value
         else:
-            self.shape = getValue(kwargs, 'shape', ShapeType.DEFAULT)
+            if value is not None:
+                self.size = value
+            else:
+                self.size = 6
 
-        size = getColor(getValue(kwargs, 'size'))
-        if isinstance(size, list):
-            self.sizes = size
+    def setShape(self, value):
+        if isinstance(value, list):
+            self.shapes = value
         else:
-            self.size = getValue(kwargs, 'size', 6)
+            if value is not None:
+                self.shape = value
+            else:
+                self.shape = ShapeType.DEFAULT
 
-        fill = getColor(getValue(kwargs, 'fill'))
-        if isinstance(fill, list):
-            self.fills = fill
+    def setFill(self, value):
+        if isinstance(value, list):
+            self.fills = value
         else:
-            self.fill = fill
+            self.fill = value
 
-        color = getColor(getValue(kwargs, 'color'))
+    def setColor(self, value):
+        color = getColor(value)
         if isinstance(color, list):
             self.colors = color
         else:
             self.color = color
 
-        outlineColor = getColor(getValue(kwargs, 'outlineColor'))
+    def setOutlineColor(self, value):
+        outlineColor = getColor(value)
         if isinstance(outlineColor, list):
             self.outline_colors = outlineColor
         else:
@@ -246,55 +309,114 @@ class Points(XYGraphics):
 
 class Stems(BasedXYGraphics):
     def __init__(self, *args, **kwargs):
+        self.width = 1.5
         super(Stems, self).__init__(*args, **kwargs)
-        self.width = getValue(kwargs, 'width', 1.5)
-        color = getColor(getValue(kwargs, 'color'))
+
+    def setWidth(self, value):
+        self.width = value
+
+    def setColor(self, value):
+        color = getColor(value)
         if isinstance(color, list):
             self.colors = color
         else:
             self.color = color
 
-        style = getValue(kwargs, 'style')
-        if isinstance(style, list):
-            self.styles = style
+    def setStyle(self, value):
+        if isinstance(value, list):
+            self.styles = value
         else:
-            self.style = getValue(kwargs, 'style', StrokeType.SOLID)
+            if value is not None:
+                self.style = value
+            else:
+                self.style = StrokeType.SOLID
 
 
 class Area(BasedXYGraphics):
     def __init__(self, *args, **kwargs):
         super(Area, self).__init__(*args, **kwargs)
-        self.color = getColor(getValue(kwargs, 'color'))
-        self.interpolation = getValue(kwargs, 'interpolation')
+
+    def setInterpolation(self, value):
+        self.interpolation = value
+
+    def setColor(self, value):
+        self.color = getColor(value)
 
 
-class Text(BaseObject):
+class Text(ChartBaseObject):
     def __init__(self, **kwargs):
+        self.x = 0
+        self.y = 0
+        self.size = 13
+        self.text = ''
+        self.show_pointer = True
+        self.pointer_angle = (-0.25) * math.pi
+
         super(Text, self).__init__(**kwargs)
-        self.x = getValue(kwargs, 'x', 0)
-        self.y = getValue(kwargs, 'y', 0)
-        self.color = getColor(getValue(kwargs, 'color'))
-        self.size = getValue(kwargs, 'size', 13)
-        self.text = getValue(kwargs, 'text', '')
-        self.show_pointer = getValue(kwargs, 'show_pointer', True)
-        self.pointer_angle = getValue(kwargs, 'pointerAngle',
-                                      (-0.25) * math.pi)
+
+    def setY(self, value):
+        self.y = value
+
+    def setX(self, value):
+        self.x = value
+
+    def setText(self, value):
+        self.text = value
+
+    def setPointerAngle(self, value):
+        self.pointer_angle = value
+
+    def setShow_pointer(self, value):
+        self.show_pointer = value
+
+    def setSize(self, value):
+        self.size = value
+
+    def setColor(self, value):
+        self.color = getColor(value)
 
 
-class YAxis(BaseObject):
+class YAxis(ChartBaseObject):
     def __init__(self, **kwargs):
+        self.label = ''
+        self.auto_range = True
+        self.auto_range_includes_zero = False
+        self.lower_margin = 0.05
+        self.upper_margin = 0.05
+        self.lower_bound = 0.0
+        self.upper_bound = 0.0
+        self.use_log = False
+        self.log_base = 10.0
+
         super(YAxis, self).__init__(**kwargs)
-        self.label = getValue(kwargs, 'label', '')
-        self.auto_range = getValue(kwargs, 'autoRange', True)
-        self.auto_range_includes_zero = getValue(kwargs,
-                                                 'autoRangeIncludesZero', False)
-        self.lower_margin = getValue(kwargs, 'lowerMargin', 0.05)
-        self.upper_margin = getValue(kwargs, 'upperMargin', 0.05)
-        self.lower_bound = getValue(kwargs, 'lowerBound', 0.0)
-        self.upper_bound = getValue(kwargs, 'upperBound', 0.0)
-        self.use_log = getValue(kwargs, 'logY', False)
-        self.log_base = getValue(kwargs, 'logBase', 10.0)
         self.type = 'YAxis'
+
+    def setLabel(self, value):
+        self.label = value
+
+    def setAutoRange(self, value):
+        self.auto_range = value
+
+    def setAutoRangeIncludesZero(self, value):
+        self.auto_range_includes_zero = value
+
+    def setLowerMargin(self, value):
+        self.lower_margin = value
+
+    def setUpperMargin(self, value):
+        self.upper_margin = value
+
+    def setLowerBound(self, value):
+        self.lower_bound = value
+
+    def setUpperBound(self, value):
+        self.upper_bound = value
+
+    def setLogY(self, value):
+        self.use_log = value
+
+    def setLogBase(self, value):
+        self.log_base = value
 
     def setBound(self, min, max):
         self.auto_range = False
@@ -303,7 +425,7 @@ class YAxis(BaseObject):
         return self.transform()
 
 
-class XYStacker(BaseObject):
+class XYStacker(ChartBaseObject):
     def __init__(self, **kwargs):
         super(XYStacker, self).__init__(**kwargs)
 
@@ -336,58 +458,97 @@ class XYStacker(BaseObject):
 class Crosshair(BasedXYGraphics):
     def __init__(self, *args, **kwargs):
         super(Crosshair, self).__init__(*args, **kwargs)
-        self.width = getValue(kwargs, 'width')
-        self.style = getValue(kwargs, 'style')
-        self.color = getColor(getValue(kwargs, 'color'))
+
+    def setWidth(self, value):
+        self.width = value
+
+    def setStyle(self, value):
+        self.style = value
+
+    def setColor(self, value):
+        self.color = getColor(value)
 
 
 class CategoryGraphics(Graphics):
     def __init__(self, **kwargs):
+        self.value = []
+        self.center_series = False
+        self.use_tool_tip = True
+        self.showItemLabel = False
+        self.outline = False
+        self.labelPosition = "CENTER"
+
         super(CategoryGraphics, self).__init__(**kwargs)
-        self.center_series = getValue(kwargs, 'centerSeries', False)
-        self.use_tool_tip = getValue(kwargs, 'useToolTip', True)
-        self.showItemLabel = getValue(kwargs, 'showItemLabel', False)
-        self.outline = getValue(kwargs, 'outline', False)
-        self.labelPosition = getValue(kwargs, 'labelPosition', "CENTER")
-        self.fills = getValue(kwargs, 'fill')
-        self.itemLabels = getValue(kwargs, 'itemLabel')
-        self.seriesNames = getValue(kwargs, 'seriesNames')
-        self.style = getValue(kwargs, 'style')
-        self.size = getValue(kwargs, 'size')
 
-        outline = getValue(kwargs, 'outlineColor')
-        if isinstance(outline, list):
-            self.outline_colors = outline
+        base = getValue(kwargs, 'base')
+        if base is None:
+            self.base = 0.0
+
+    def setLabelPosition(self, value):
+        self.labelPosition = value
+
+    def setOutline(self, value):
+        self.outline = value
+
+    def setShowItemLabel(self, value):
+        self.showItemLabel = value
+
+    def setCenterSeries(self, value):
+        self.center_series = value
+
+    def setUseToolTip(self, value):
+        self.use_tool_tip = value
+
+    def setFill(self, value):
+        self.fills = value
+
+    def setItemLabel(self, value):
+        self.itemLabels = value
+
+    def setSeriesNames(self, value):
+        self.seriesNames = value
+
+    def setStyle(self, value):
+        self.style = value
+
+    def setSize(self, value):
+        self.size = value
+
+    def setOutlineColor(self, value):
+        if isinstance(value, list):
+            self.outline_colors = value
         else:
-            self.outline_color = outline
+            self.outline_color = value
 
-        drawOutline = getValue(kwargs, 'drawOutline')
-        if isinstance(drawOutline, list):
-            self.outlines = drawOutline
+    def setDrawOutline(self, value):
+        if isinstance(value, list):
+            self.outlines = value
         else:
-            self.outline = drawOutline
+            self.outline = value
 
-        base = getValue(kwargs, 'base', 0.0)
-        if isinstance(base, list):
-            self.bases = base
+    def setValue(self, value):
+        self.value = value
+
+    def setBase(self, value):
+        if isinstance(value, list):
+            self.bases = value
         else:
-            self.base = base
+            self.base = value
 
-        width = getValue(kwargs, 'width')
-        if isinstance(width, list):
-            self.widths = width
+    def setWidth(self, value):
+        if isinstance(value, list):
+            self.widths = value
         else:
-            self.width = width
+            self.width = value
 
-        style = getValue(kwargs, 'style')
-        if isinstance(style, list):
-            self.styles = style
+    def setStyle(self, value):
+        if isinstance(value, list):
+            self.styles = value
         else:
-            self.style = style
+            self.style = value
 
-        self.value = getValue(kwargs, 'value', [])
-
-        color = getColor(getValue(kwargs, 'color'))
+    def setColor(self, value):
+        color = getColor(value)
         if isinstance(color, list):
             self.colors = color
         else:

@@ -21,18 +21,18 @@ class LegendLayout(Enum):
     VERTICAL = 2
 
 
-class LegendPosition():
+class LegendPosition:
     def __init__(self, **kwargs):
         self.position = getValue(kwargs, 'position')
         self.x = getValue(kwargs, 'x')
         self.y = getValue(kwargs, 'y')
-        
+
         if self.x is None and self.y is None and self.position is None:
             self.position = LegendPosition.Position.TOP_RIGHT
         elif self.position is not None:
             self.x = None
             self.y = None
-    
+
     class Position(Enum):
         TOP = 1
         LEFT = 2

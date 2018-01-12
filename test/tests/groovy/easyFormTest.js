@@ -179,6 +179,14 @@ describe('Testing of EasyForm (groovy)', function () {
     });
   });
 
+  function selectTwoValuesOnList(listElement, fValue, sValue){
+    listElement.selectByVisibleText(fValue);
+    browser.keys("Shift");
+    listElement.selectByVisibleText(fValue);
+    listElement.selectByVisibleText(sValue);
+    browser.keys('\uE000');
+  }
+
   describe('EasyForm List field', function () {
     var easyForm;
 
@@ -191,19 +199,53 @@ describe('Testing of EasyForm (groovy)', function () {
       expect(easyForm.$('select').getText()).toMatch('twof6');
     });
 
+    it('List has size equal 3', function () {
+      expect(Math.round(easyForm.$('select').getAttribute('size'))).toBe(3);
+    });
+
     it('Should select "twof6" value', function () {
       var testValue = 'twof6';
       cellIndex += 1;
       easyForm.$('select').selectByVisibleText(testValue);
       expect(easyForm.$('select').getValue()).toBe(testValue);
       expect(easyForm.$('option=' + testValue).isSelected()).toBeTruthy();
+      expect(easyForm.$('option=threef6').isSelected()).toBeFalsy();
       beakerxPO.runCellAndCheckOutputText(cellIndex, testValue);
+    });
+
+    it('Should select "twof6" and "threef6" values', function () {
+      selectTwoValuesOnList(easyForm.$('select'), 'twof6', 'threef6');
+      expect(easyForm.$('option=twof6').isSelected()).toBeTruthy();
+      expect(easyForm.$('option=threef6').isSelected()).toBeTruthy();
+      var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(result).toMatch('twof6');
+      expect(result).toMatch('threef6');
     });
 
     it('Should select List value by code', function () {
       cellIndex += 1;
       var testValue = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(easyForm.$('option=' + testValue).isSelected()).toBeTruthy();
       expect(easyForm.$('select').getValue()).toBe(testValue);
+    });
+
+    it('SingleSelected List should select single value ', function () {
+      cellIndex += 1;
+      var easyForm6b = beakerxPO.runCellToGetEasyForm(cellIndex);
+      selectTwoValuesOnList(easyForm6b.$('select'), 'twof6b', 'threef6b');
+      expect(easyForm6b.$('option=twof6b').isSelected()).toBeFalsy();
+      expect(easyForm6b.$('option=threef6b').isSelected()).toBeTruthy();
+      cellIndex += 1;
+      var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(result).not.toMatch('twof6b');
+      expect(result).toMatch('threef6b');
+    });
+
+    it('List has size equal 2', function () {
+      cellIndex += 1;
+      var easyForm6c = beakerxPO.runCellToGetEasyForm(cellIndex);
+      expect(easyForm6c.$('div.widget-select').isEnabled()).toBeTruthy();
+      expect(Math.round(easyForm6c.$('select').getAttribute('size'))).toBe(2);
     });
   });
 

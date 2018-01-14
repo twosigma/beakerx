@@ -22,7 +22,7 @@ import com.twosigma.beakerx.scala.chart.xychart.plotitem.Crosshair
 
 import scala.collection.JavaConverters._
 
-class Plot extends com.twosigma.beakerx.chart.xychart.Plot {
+class Plot extends com.twosigma.beakerx.chart.xychart.Plot with PlotProperties {
 
   def this(title: String) {
     this()
@@ -62,4 +62,10 @@ class Plot extends com.twosigma.beakerx.chart.xychart.Plot {
   def add(items: Seq[Object]): XYChart = {
     add(items.asJava)
   }
+}
+
+trait PlotProperties extends XYChartProperties {
+  this: com.twosigma.beakerx.chart.xychart.Plot =>
+
+  // No additional properties
 }

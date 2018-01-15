@@ -168,6 +168,8 @@ class BeakerxHTMLPre(HTML, EasyFormComponent):
 
     _view_name = Unicode('HTMLPreView').tag(sync=True)
     _model_name = Unicode('HTMLPreModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
     _model_module_version = Unicode('*').tag(sync=True)
     _view_module_version = Unicode('*').tag(sync=True)
 
@@ -284,6 +286,9 @@ class BeakerxVBox(VBox):
 class CyclingDisplayBox(BeakerxBox):
     _view_name = Unicode('CyclingDisplayBoxView').tag(sync=True)
     _model_name = Unicode('CyclingDisplayBoxModel').tag(sync=True)
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+
     period = Int(5000).tag(sync=True)
 
     def __init__(self, children):

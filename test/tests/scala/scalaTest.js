@@ -31,14 +31,14 @@ describe('Scala notebook', function () {
   describe('Run first cell. ', function () {
     it('Output contains "defined class Greeter"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(0, 'defined class Greeter');
+      beakerxPO.runCellAndCheckOutputText(0, 'defined class Greeter');
     }, 2);
   });
 
   describe('Run 2nd cell. ', function () {
     it('Output contains "Hello, Scala developer!"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(1, 'Hello, Scala developer!');
+      beakerxPO.runCellAndCheckOutputText(1, 'Hello, Scala developer!');
     });
   });
 

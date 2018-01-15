@@ -78,18 +78,18 @@ var BeakerXPageObject = function () {
     return codeCell.$('#svgg');
   }
 
-  this.runCallAndCheckOutputText = function(index, expectedText){
+  this.runCellAndCheckOutputText = function(index, expectedText){
     var resultTest;
     try{
-      resultTest = this.runCallToGetOutputText(index).getText();
+      resultTest = this.runCellToGetOutputTextElement(index).getText();
     }catch(e){
       console.log(expectedText + ' --- ' + e.toString());
-      resultTest = this.runCallToGetOutputText(index).getText();
+      resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
   }
 
-  this.runCallToGetOutputText = function(index){
+  this.runCellToGetOutputTextElement = function(index){
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.output_subarea.output_text');
   }
@@ -130,7 +130,7 @@ var BeakerXPageObject = function () {
       resultTest = codeCell.$('div.output_subarea.output_text').getText();
     }catch(e){
       console.log(expectedText + ' --- ' + e.toString());
-      resultTest = this.runCallToGetOutputText(index).getText();
+      resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
   }

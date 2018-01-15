@@ -36,6 +36,7 @@ describe('Testing of plot Actions', function () {
       var height1 = Math.round(svgElement1.$('rect#i0_0').getAttribute('height'));
       svgElement1.$('rect#i0_0').click();
       browser.keys("Shift");
+      browser.keys('\uE000');;
       beakerxPO.kernelIdleIcon.waitForEnabled();
       var height2 = Math.round(svgElement1.$('rect#i0_0').getAttribute('height'));
       expect(height2).toBeGreaterThan(height1);

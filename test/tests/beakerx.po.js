@@ -52,7 +52,6 @@ var BeakerXPageObject = function () {
     browser.moveToObject('=Toggle');
     browser.moveToObject('=Clear');
     browser.click('=Clear')
-    browser.pause(2000);
   }
 
   this.closeAndHaltNotebook = function () {

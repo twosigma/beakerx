@@ -39,6 +39,7 @@ public abstract class AbstractChartSerializer<T extends AbstractChart> extends C
   public static final String CROSSHAIR = "crosshair";
   public static final String TIMEZONE = "timezone";
   public static final String LOG_Y = "log_y";
+  public static final String AUTO_ZOOM = "auto_zoom";
 
   protected void serialize(T chart, JsonGenerator jgen) throws IOException {
 
@@ -59,5 +60,6 @@ public abstract class AbstractChartSerializer<T extends AbstractChart> extends C
     jgen.writeObjectField(TIMEZONE, chart.getTimeZone());
     jgen.writeObjectField(CROSSHAIR, chart.getCrosshair());
     jgen.writeObjectField(OMIT_CHECKBOXES, chart.getOmitCheckboxes());
+    jgen.writeObjectField(AUTO_ZOOM, chart.getAutoZoom());
   }
 }

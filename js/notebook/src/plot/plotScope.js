@@ -1808,21 +1808,22 @@ define([
       }
 
       self.enableZoomWheel();
-    }
 
-    var locateBox = self.getLocateBoxCoords();
-    var isDispatchedAsFirst = self.zoomEventsDispatchOrder.length === 0;
+      var locateBox = self.getLocateBoxCoords();
+      var isDispatchedAsSecond = self.zoomEventsDispatchOrder.indexOf('contextMenu') !== -1;
 
-    self.zoomEventsDispatchOrder.push('zoomEnd');
-    if (!isDispatchedAsFirst && self.contexteMenuEvent && locateBox.w <= 1 && locateBox.h <= 1) {
-      self.jqcontainer[0] && self.jqcontainer[0].dispatchEvent(self.contexteMenuEvent);
-    }
+      if (isDispatchedAsSecond && self.contexteMenuEvent && locateBox.w <= 1 && locateBox.h <= 1) {
+        self.jqcontainer[0] && self.jqcontainer[0].dispatchEvent(self.contexteMenuEvent);
+      }
 
-    if (!isDispatchedAsFirst) {
       self.zoomEventsDispatchOrder.length = 0;
+      if (!isDispatchedAsSecond) {
+        self.zoomEventsDispatchOrder.push('zoomEnd');
+      }
+
+      self.contexteMenuEvent = null;
     }
 
-    self.contexteMenuEvent = null;
     self.jqsvg.css("cursor", "auto");
   };
 
@@ -1944,17 +1945,16 @@ define([
 
     function handleContextMenuEvent(event) {
       var locateBox = self.getLocateBoxCoords();
-      var isDispatchedAsFirst = self.zoomEventsDispatchOrder.length === 0;
+      var isDispatchedAsSecond = self.zoomEventsDispatchOrder.indexOf('zoomEnd') !== -1;
 
-      self.zoomEventsDispatchOrder.push('contextMenu');
+      self.zoomEventsDispatchOrder.length = 0;
 
-      if (isDispatchedAsFirst) {
+      if (!isDispatchedAsSecond) {
         self.contexteMenuEvent = event;
-      } else {
-        self.zoomEventsDispatchOrder.length = 0;
+        self.zoomEventsDispatchOrder.push('contextMenu');
       }
 
-      if (isDispatchedAsFirst || !isDispatchedAsFirst && (locateBox.w > 1 || locateBox.h > 1)) {
+      if (!isDispatchedAsSecond || isDispatchedAsSecond && (locateBox.w > 1 || locateBox.h > 1)) {
         event.stopPropagation();
         event.preventDefault();
       }

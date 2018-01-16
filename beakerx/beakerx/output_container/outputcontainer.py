@@ -41,7 +41,7 @@ class OutputContainerLayoutManager:
 
     def toWidget(self, item):
         if item is None:
-            return self.createHTML("None")
+            return self.createHTMLPre("None")
 
         if isinstance(item, DataFrame):
             return TableDisplay(item)

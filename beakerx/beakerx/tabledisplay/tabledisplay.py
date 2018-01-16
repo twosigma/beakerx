@@ -121,7 +121,9 @@ class Table(BaseObject):
 
     @staticmethod
     def convert_value(value, value_type):
-        if value_type == "time":
+        if value == "":
+            converted_value = value
+        elif value_type == "time":
             converted_value = DateType(value)
         elif value_type == "double":
             converted_value = value.astype('str')
@@ -163,10 +165,10 @@ class Table(BaseObject):
             return "int64"
         if isinstance(value, int):
             return "integer"
-        if object_type.startswith("datetime64"):
-            return "time"
         if isinstance(value, str):
             return "string"
+        if "datetime" in str(object_type):
+            return "time"
         return "string"
 
 

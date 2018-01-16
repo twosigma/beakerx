@@ -18,20 +18,22 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.KernelSetUpFixtureTest;
 import com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest;
-import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.message.Message;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
+import static com.twosigma.beakerx.KernelExecutionTest.DEMO_JAR_NAME;
+import static com.twosigma.beakerx.KernelExecutionTest.LOAD_MAGIC_JAR_DEMO_JAR_NAME;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.getStdouts;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public abstract class ClasspathAddDynamicMagicCommandTest extends KernelSetUpFixtureTest {
 
+  @Test
   public void handleDynamicMagics() throws InterruptedException {
     //given
     String code = "" +
@@ -44,9 +46,40 @@ public abstract class ClasspathAddDynamicMagicCommandTest extends KernelSetUpFix
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(magicCode);
     kernelSocketsService.handleMsg(magicMessage);
     //then
-    Optional<Message> resultMagic = waitForResult(kernelSocketsService.getKernelSockets());
-    Assertions.assertThat(resultMagic).isPresent();
-    verifyResult(resultMagic.get());
+    verifyResult();
+  }
+
+  private void verifyResult() throws InterruptedException {
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    List<Message> stdouts = getStdouts(kernelSocketsService.getKernelSockets());
+    Optional<String> added_jar = getAddedJars(stdouts);
+    assertTrue("No jar added", added_jar.get().contains(DEMO_JAR_NAME));
+  }
+
+  @Test
+  public void shouldSupportList() throws InterruptedException {
+    //given
+    String code = "" +
+            "location1 = \"" + KernelExecutionTest.DEMO_JAR + "\"" + "\n" +
+            "location2 = \"" + KernelExecutionTest.LOAD_MAGIC_DEMO_JAR + "\"" + "\n";
+    runCode(code);
+    //when
+    String magicCode = "%classpath add dynamic [location1, location2]" + "\n";
+    Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(magicCode);
+    kernelSocketsService.handleMsg(magicMessage);
+    //then
+    verifyList();
+  }
+
+  private void verifyList() throws InterruptedException {
+    Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleMessage).isPresent();
+    List<Message> stdouts = getStdouts(kernelSocketsService.getKernelSockets());
+    Optional<String> added_jar = getAddedJars(stdouts);
+    assertThat(added_jar).isPresent();
+    String jars = added_jar.get();
+    assertTrue("Should be two added jars", jars.contains(DEMO_JAR_NAME) && jars.contains(LOAD_MAGIC_JAR_DEMO_JAR_NAME));
   }
 
   private void runCode(String code) throws InterruptedException {
@@ -57,9 +90,10 @@ public abstract class ClasspathAddDynamicMagicCommandTest extends KernelSetUpFix
     kernelSocketsService.clear();
   }
 
-  private void verifyResult(Message result) {
-    Map actual = ((Map) result.getContent().get(Comm.DATA));
-    String value = (String) actual.get("text/plain");
-    assertThat(value).contains("demo.jar");
+  private Optional<String> getAddedJars(List<Message> result) {
+    return result.stream()
+            .map(x -> ((String) x.getContent().get("text")))
+            .filter(y -> y.contains("Added jar"))
+            .findFirst();
   }
 }

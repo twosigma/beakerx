@@ -354,10 +354,14 @@ class SelectMultipleSingle(Select, EasyFormComponent):
     size = Int(5, help="The number of rows to display.").tag(sync=True)
 
 
-class RadioButtons(RadioButtons, EasyFormComponent):
+class BeakerxRadioButtons(RadioButtons, EasyFormComponent):
     def __init__(self, **kwargs):
-        super(RadioButtons, self).__init__(**kwargs)
+        super(BeakerxRadioButtons, self).__init__(**kwargs)
 
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
 
 class DatePicker(BeakerxDOMWidget, EasyFormComponent):
     def __init__(self, value=None, **kwargs):

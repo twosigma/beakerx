@@ -46,11 +46,12 @@ var BeakerXPageObject = function () {
   }
 
   this.clickCellAllOutputClear = function () {
-    browser.click('a=Cell');
-    browser.waitForEnabled('a=All Output');
-    browser.moveToObject('a=All Output');
-    browser.waitForEnabled('a=Clear');
-    browser.click('a=Clear');
+    browser.click('=Cell');
+    browser.waitForEnabled('=All Output');
+    browser.moveToObject('=All Output');
+    browser.moveToObject('=Toggle');
+    browser.moveToObject('=Clear');
+    browser.click('=Clear')
   }
 
   this.closeAndHaltNotebook = function () {

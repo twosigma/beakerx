@@ -250,22 +250,107 @@ describe('Testing of EasyForm (groovy)', function () {
   });
 
   describe('EasyForm CheckBoxes field', function () {
+    var easyForm;
+
     it('EasyForm has CheckBoxes field', function () {
       cellIndex += 1;
-      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
-      expect(easyForm.$$('div.widget-checkbox').length).toBe(3);
-      expect(easyForm.$$('input[type="checkbox"]').length).toBe(3);
+      easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      expect(easyForm.$$('div.widget-checkbox').length).toBe(4);
+      expect(easyForm.$$('input[type="checkbox"]').length).toBe(4);
       expect(easyForm.$('div.widget-label').getText()).toBe('field name7');
+    });
+
+    it('CheckBoxes has vertical orientation', function () {
+      expect(easyForm.$('div.widget-hbox > div.widget-vbox').isEnabled()).toBeTruthy();
+      expect(easyForm.$('div.widget-hbox > div.widget-vbox')
+        .getCssProperty('flex-direction').value).toBe('column');
+    });
+
+    it('Should select "twof7" value', function () {
+      cellIndex += 1;
+      easyForm.$$('input[type="checkbox"]')[1].click();
+      expect(easyForm.$$('input[type="checkbox"]')[1].isSelected()).toBeTruthy();
+      expect(easyForm.$$('input[type="checkbox"]')[2].isSelected()).toBeFalsy();
+      beakerxPO.runCellAndCheckOutputText(cellIndex, 'twof7');
+    });
+
+    it('Should select "fourf7" and "threef7" values', function () {
+      easyForm.$$('input[type="checkbox"]')[2].click();
+      easyForm.$$('input[type="checkbox"]')[3].click();
+      expect(easyForm.$$('input[type="checkbox"]')[2].isSelected()).toBeTruthy();
+      expect(easyForm.$$('input[type="checkbox"]')[3].isSelected()).toBeTruthy();
+      var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(result).toMatch('fourf7');
+      expect(result).toMatch('threef7');
+    });
+
+    it('Should select CheckBoxes value by code', function () {
+      cellIndex += 1;
+      var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(result).toMatch('onef7');
+      expect(easyForm.$$('input[type="checkbox"]')[0].isSelected()).toBeTruthy();
+    });
+
+    it('CheckBoxes has horizontal orientation', function () {
+      cellIndex += 1;
+      var easyForm7b = beakerxPO.runCellToGetEasyForm(cellIndex);
+      expect(easyForm7b.$$('div.widget-checkbox').length).toBe(3);
+      expect(easyForm7b.$$('input[type="checkbox"]').length).toBe(3);
+      expect(easyForm7b.$('div.widget-label').getText()).toBe('field name7');
+      expect(easyForm7b.$('div.widget-hbox > div.widget-hbox').isEnabled()).toBeTruthy();
+      expect(easyForm7b.$('div.widget-hbox > div.widget-hbox')
+        .getCssProperty('flex-direction').value).toBe('row');
     });
   });
 
   describe('EasyForm RadioButtons field', function () {
+    var easyForm;
+
     it('EasyForm has RadioButtons field', function () {
       cellIndex += 1;
-      var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
+      easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);
       expect(easyForm.$('div.widget-radio-box').isEnabled()).toBeTruthy();
       expect(easyForm.$$('input[type="radio"]').length).toBe(3);
       expect(easyForm.$('label.widget-label').getText()).toBe('field name8');
+    });
+
+    it('RadioButtons has vertical orientation', function () {
+      expect(easyForm.$('div.widget-radio-box').isEnabled()).toBeTruthy();
+      expect(easyForm.$('div.widget-radio-box')
+        .getCssProperty('flex-direction').value).toBe('column');
+    });
+
+    it('RadioButtons does not have default selected button', function () {
+      var buttonsf8 = easyForm.$$('input[type="radio"]');
+      expect(buttonsf8[0].isSelected()).toBeFalsy();
+      expect(buttonsf8[1].isSelected()).toBeFalsy();
+      expect(buttonsf8[2].isSelected()).toBeFalsy();
+    });
+
+    it('Should select "twof8" value', function () {
+      cellIndex += 1;
+      easyForm.$$('input[type="radio"]')[1].click();
+      expect(easyForm.$$('input[type="radio"]')[1].isSelected()).toBeTruthy();
+      expect(easyForm.$$('input[type="radio"]')[0].isSelected()).toBeFalsy();
+      beakerxPO.runCellAndCheckOutputText(cellIndex, 'twof8');
+    });
+
+    it('Should select CheckBoxes value by code', function () {
+      cellIndex += 1;
+      var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(result).toMatch('threef8');
+      expect(easyForm.$$('input[type="radio"]')[2].isSelected()).toBeTruthy();
+    });
+
+    it('RadioButtons has horizontal orientation', function () {
+      cellIndex += 1;
+      var easyForm8b = beakerxPO.runCellToGetEasyForm(cellIndex);
+      expect(easyForm8b.$('div.widget-radio-box').isEnabled()).toBeTruthy();
+      expect(easyForm8b.$$('input[type="radio"]').length).toBe(3);
+      expect(easyForm8b.$('label.widget-label').getText()).toBe('field name8');
+      expect(easyForm8b.$('div.widget-radio-box').isEnabled()).toBeTruthy();
+      expect(easyForm8b.$('div.widget-radio-box')
+        .getCssProperty('flex-direction').value).toBe('row');
     });
   });
 
@@ -280,9 +365,19 @@ describe('Testing of EasyForm (groovy)', function () {
     });
 
     it('Should select 25th day', function () {
+      cellIndex += 1;
       easyForm.$('a.date-picker-button').click();
       browser.$('span.flatpickr-day=25').click();
       expect(easyForm.$('input[type="text"]').getValue()).toMatch('25');
+      var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(result).toMatch('25');
+    });
+
+    it('Should select 27th day by code', function () {
+      cellIndex += 1;
+      var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      expect(result).toMatch('27');
+      expect(easyForm.$('input[type="text"]').getValue()).toMatch('27');
     });
   });
 

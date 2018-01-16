@@ -45,7 +45,16 @@ var BeakerXPageObject = function () {
     browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
   }
 
+  this.clickCellAllOutputClear = function () {
+    browser.click('a=Cell');
+    browser.waitForEnabled('a=All Output');
+    browser.moveToObject('a=All Output');
+    browser.waitForEnabled('a=Clear');
+    browser.click('a=Clear');
+  }
+
   this.closeAndHaltNotebook = function () {
+    this.clickCellAllOutputClear();
     this.clickSaveNotebook();
     browser.click('=File');
     browser.waitForEnabled('=Close and Halt');

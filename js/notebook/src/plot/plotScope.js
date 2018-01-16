@@ -1717,7 +1717,7 @@ define([
         var autoZoomSuccess = false;
         if (my <= plotUtils.safeHeight(self.jqsvg) - self.layout.bottomLayoutMargin
           && mx >= self.layout.leftLayoutMargin
-          && d3.event.sourceEvent && d3.event.sourceEvent.altKey) {
+          && this.model.model.auto_zoom) {
             // Zooming in the middle of the chart, autoscale Y
             var data = this.stdmodel.data;
             if (data.map(d => d.getRange ? true : false).every(b => b)) {

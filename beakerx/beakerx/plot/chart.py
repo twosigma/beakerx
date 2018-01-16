@@ -60,6 +60,7 @@ class AbstractChart(Chart):
         self.omit_checkboxes = getValue(kwargs, 'omitCheckboxes', False)
         self.crosshair = getValue(kwargs, 'crosshair')
         self.timezone = getValue(kwargs, 'timeZone')
+        self.auto_zoom = getValue(kwargs, 'autoZoom')
 
 
 class XYChart(AbstractChart):

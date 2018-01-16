@@ -56,7 +56,6 @@ var BeakerXPageObject = function () {
 
   this.closeAndHaltNotebook = function () {
     this.clickCellAllOutputClear();
-    this.clickSaveNotebook();
     browser.click('=File');
     browser.waitForEnabled('=Close and Halt');
     browser.click('=Close and Halt');

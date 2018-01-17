@@ -23,21 +23,7 @@ import com.twosigma.beakerx.scala.JavaAdapter.{BeakerColor, _}
 import scala.collection.JavaConverters._
 
 class SimpleTimePlot extends
-  com.twosigma.beakerx.chart.xychart.SimpleTimePlot(null, null) with SimpleTimePlotProperties {
-
-  def this(data: util.List[util.Map[String, AnyRef]], columns: util.List[String]) {
-    this()
-    this.setData(data)
-    this.setColumns(columns)
-  }
-
-  def this(data: util.List[util.Map[String, AnyRef]], columns: Seq[String], yLabel: String, displayNames: Seq[String]) {
-    this(data, columns.asJava)
-    super.setYLabel(yLabel)
-    super.setDisplayNames(displayNames.asJava)
-  }
-
-}
+  com.twosigma.beakerx.chart.xychart.SimpleTimePlot(null, null) with SimpleTimePlotProperties
 
 trait SimpleTimePlotProperties extends TimePlotProperties {
   this: com.twosigma.beakerx.chart.xychart.SimpleTimePlot =>

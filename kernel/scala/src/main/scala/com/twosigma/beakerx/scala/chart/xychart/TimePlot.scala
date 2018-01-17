@@ -5,13 +5,7 @@ import java.util.{Date, SimpleTimeZone}
 /**
   * Created by bb8 on 01/06/2017.
   */
-class TimePlot extends com.twosigma.beakerx.chart.xychart.TimePlot with TimePlotProperties {
-
-  def this(simpleTimeZone: SimpleTimeZone) {
-    this()
-    super.setTimeZone(simpleTimeZone)
-  }
-}
+class TimePlot extends com.twosigma.beakerx.chart.xychart.TimePlot with TimePlotProperties
 
 trait TimePlotProperties extends XYChartProperties {
   this: com.twosigma.beakerx.chart.xychart.TimePlot =>

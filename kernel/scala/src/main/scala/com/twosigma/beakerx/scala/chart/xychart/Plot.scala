@@ -23,42 +23,6 @@ import com.twosigma.beakerx.scala.chart.xychart.plotitem.Crosshair
 import scala.collection.JavaConverters._
 
 class Plot extends com.twosigma.beakerx.chart.xychart.Plot with PlotProperties {
-
-  def this(title: String) {
-    this()
-    super.setTitle(title)
-  }
-
-  def this(title: String, initHeight: Int) {
-    this(title)
-    super.setInitHeight(initHeight)
-  }
-
-  def this(crosshair: Crosshair, omitCheckboxes: Boolean, legendLayout: LegendLayout, legendPosition: LegendPosition) {
-    this()
-    super.setCrosshair(crosshair)
-    super.setOmitCheckboxes(omitCheckboxes)
-    super.setLegendLayout(legendLayout)
-    super.setLegendPosition(legendPosition)
-  }
-
-  def this(title: String, xLabel: String, yLabel: String, logX: Boolean, xLogBase: Double, logY: Boolean, yLogBase: Double) {
-    this(title)
-    super.setXLabel(xLabel)
-    super.setYLabel(yLabel)
-    super.setLogX(logX)
-    super.setXLogBase(xLogBase)
-    super.setLogY(logY)
-    super.setYLogBase(yLogBase)
-  }
-
-  def this(title: String, labelStyle: String, gridLineStyle: String, titleStyle: String) {
-    this(title)
-    super.setLabelStyle(labelStyle)
-    super.setGridLineStyle(gridLineStyle)
-    super.setTitleStyle(title)
-  }
-
   def add(items: Seq[Object]): XYChart = {
     add(items.asJava)
   }

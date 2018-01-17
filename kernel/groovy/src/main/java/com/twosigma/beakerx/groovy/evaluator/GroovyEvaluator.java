@@ -65,7 +65,7 @@ public class GroovyEvaluator extends BaseEvaluator {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
     cps = new GroovyClasspathScanner();
     gac = createGroovyAutocomplete(cps);
-    gi = new GroovyInspect();
+    gi = new GroovyInspect(cps);
     outDir = envVariablesFilter(outDir, System.getenv());
     reloadClassloader();
     worker = new GroovyWorkerThread(this);
@@ -84,7 +84,7 @@ public class GroovyEvaluator extends BaseEvaluator {
 
   @Override
   public InspectResult inspect(String code, int caretPosition) {
-    return gi.DoInspect(code, caretPosition, groovyClassLoader, imports);
+    return gi.doInspect(code, caretPosition, groovyClassLoader, imports);
   }
 
   @Override
@@ -92,6 +92,7 @@ public class GroovyEvaluator extends BaseEvaluator {
     String cpp = createClasspath(classPath);
     cps = new GroovyClasspathScanner(cpp);
     gac = createGroovyAutocomplete(cps);
+    gi = new GroovyInspect(cps);
     reloadClassloader();
     worker.halt();
   }

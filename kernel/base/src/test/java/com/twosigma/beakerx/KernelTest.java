@@ -16,8 +16,8 @@
 package com.twosigma.beakerx;
 
 import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
+import static java.util.Arrays.asList;
 import static java.util.Collections.synchronizedList;
-import static java.util.Collections.unmodifiableList;
 
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
@@ -277,11 +277,15 @@ public class KernelTest implements KernelFunctionality {
   }
 
   public List<Message> getPublishedMessages() {
-    return unmodifiableList(publishedMessages);
+    return copy(this.publishedMessages);
   }
 
   public List<Message> getSentMessages() {
-    return unmodifiableList(sentMessages);
+    return copy(this.sentMessages);
+  }
+
+  private List<Message> copy(List<Message> list) {
+    return asList(list.toArray(new Message[0]));
   }
 
   public void clearPublishedMessages() {

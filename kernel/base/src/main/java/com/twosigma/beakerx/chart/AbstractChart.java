@@ -127,8 +127,16 @@ public abstract class AbstractChart extends Chart {
     return this;
   }
 
-  public Boolean getYAutoRange() {
+  public AbstractChart setYAutoRange(boolean yAutoRange) {
+    return setyAutoRange(yAutoRange);
+  }
+
+  public Boolean getyAutoRange() {
     return this.yAxis.getAutoRange();
+  }
+
+  public Boolean getYAutoRange() {
+    return getyAutoRange();
   }
 
   public AbstractChart setYAutoRangeIncludesZero(boolean yAutoRangeIncludesZero) {

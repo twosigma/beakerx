@@ -180,15 +180,6 @@ abstract public class XYChart extends AbstractChart {
     return this.xUpperBound;
   }
 
-  public XYChart setYAutoRange(boolean yAutoRange) {
-    setXAutoRange(yAutoRange);
-    return this;
-  }
-
-  public XYChart setyAutoRange(boolean yAutoRange) {
-    return this.setYAutoRange(yAutoRange);
-  }
-
   public XYChart setLogX(boolean logX) {
     this.logX = logX;
     sendModelUpdate(ChartToJson.serializeLogX(this.logX));

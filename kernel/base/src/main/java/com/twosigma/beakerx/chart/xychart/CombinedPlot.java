@@ -96,6 +96,10 @@ public class CombinedPlot extends ChartDetails {
     return this.xLabel;
   }
 
+  public String getxLabel() {
+    return getXLabel();
+  }
+
   public CombinedPlot add(XYChart plot, int weight) {
     this.subplots.add(plot);
     this.weights.add(weight);
@@ -146,6 +150,10 @@ public class CombinedPlot extends ChartDetails {
 
   public void setxTickLabelsVisible(boolean xTickLabelsVisible) {
     this.xTickLabelsVisible = xTickLabelsVisible;
+  }
+
+  public void setXTickLabelsVisible(boolean xTickLabelsVisible) {
+    setxTickLabelsVisible(xTickLabelsVisible);
   }
 
   @Override

@@ -51,6 +51,10 @@ public abstract class AbstractChart extends Chart {
     return this.xLabel;
   }
 
+  public String getxLabel() {
+    return getXLabel();
+  }
+
   public AbstractChart setYLabel(String yLabel) {
     yAxis.setLabel(yLabel);
     sendModelUpdate(ChartToJson.serializeYLabel(this.yAxis.getLabel()));
@@ -107,6 +111,10 @@ public abstract class AbstractChart extends Chart {
     return this.xLowerMargin;
   }
 
+  public double getxLowerMargin() {
+    return getXLowerMargin();
+  }
+
   public AbstractChart setXUpperMargin(double margin) {
     this.xUpperMargin = margin;
     sendModelUpdate(ChartToJson.serializeXUpperMargin(this.xUpperMargin));
@@ -119,6 +127,10 @@ public abstract class AbstractChart extends Chart {
 
   public double getXUpperMargin() {
     return this.xUpperMargin;
+  }
+
+  public double getxUpperMargin() {
+    return getXUpperMargin();
   }
 
   public AbstractChart setyAutoRange(boolean yAutoRange) {

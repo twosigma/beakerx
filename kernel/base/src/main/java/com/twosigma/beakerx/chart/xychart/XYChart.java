@@ -254,4 +254,8 @@ abstract public class XYChart extends AbstractChart {
     this.yTickLabelsVisible = yTickLabelsVisible;
     sendModelUpdate(ChartToJson.serializeYTickLabelsVisible(this.yTickLabelsVisible));
   }
+
+  public void setYTickLabelsVisible(boolean yTickLabelsVisible) {
+    setyTickLabelsVisible(yTickLabelsVisible);
+  }
 }

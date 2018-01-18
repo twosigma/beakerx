@@ -144,6 +144,10 @@ public class CombinedPlot extends ChartDetails {
     this.yTickLabelsVisible = yTickLabelsVisible;
   }
 
+  public void setYTickLabelsVisible(boolean yTickLabelsVisible) {
+    setyTickLabelsVisible(yTickLabelsVisible);
+  }
+
   public boolean isxTickLabelsVisible() {
     return xTickLabelsVisible;
   }

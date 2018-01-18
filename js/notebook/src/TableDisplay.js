@@ -19,6 +19,7 @@ var _ = require('underscore');
 var $ = require('jquery');
 
 var TableScope = require('./tableDisplay/tableScope');
+var DataGridScope = require('./tableDisplay/dataGrid').DataGridScope;
 
 require('datatables.net-dt/css/jquery.dataTables.css');
 require('datatables.net-colreorder-dt/css/colReorder.dataTables.css');
@@ -100,6 +101,16 @@ var TableDisplayView = widgets.DOMWidgetView.extend({
     this._currentScope.run();
     this._currentScope.initColumLimitModal();
     this._currentScope.setWidgetView(this);
+
+    // For testing keep all tables rendered
+    var grid = new DataGridScope({
+      element: this.el,
+      data: data,
+      widgetModel: this.model,
+      widgetView: this
+    });
+
+    grid.render();
   },
 
   showWarning: function(data) {

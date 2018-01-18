@@ -237,6 +237,10 @@ abstract public class XYChart extends AbstractChart {
     return xTickLabelsVisible;
   }
 
+  public boolean isXTickLabelsVisible() {
+    return isxTickLabelsVisible();
+  }
+
   public void setxTickLabelsVisible(boolean xTickLabelsVisible) {
     this.xTickLabelsVisible = xTickLabelsVisible;
     sendModelUpdate(ChartToJson.serializeXTickLabelsVisible(this.xTickLabelsVisible));
@@ -248,6 +252,10 @@ abstract public class XYChart extends AbstractChart {
 
   public boolean isyTickLabelsVisible() {
     return yTickLabelsVisible;
+  }
+
+  public boolean isYTickLabelsVisible() {
+    return isyTickLabelsVisible();
   }
 
   public void setyTickLabelsVisible(boolean yTickLabelsVisible) {

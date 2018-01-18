@@ -127,7 +127,7 @@ public class EasyFormComponent<T extends ValueWidget<?>> implements CommFunction
     this.enabled = enabled;
   }
 
-  public String formatValue(final Object value) {
+  public Object formatValue(final Object value) {
     return String.class.cast(value);
   }
 

@@ -19,8 +19,6 @@ public class RadioButtons extends SingleSelectionWidget {
 
   public static String VIEW_NAME_VALUE = "RadioButtonsView";
   public static String MODEL_NAME_VALUE = "RadioButtonsModel";
-  public static final String MODEL_MODULE_VALUE = "beakerx";
-  public static final String VIEW_MODULE_VALUE = "beakerx";
 
   public RadioButtons() {
     super();
@@ -43,13 +41,4 @@ public class RadioButtons extends SingleSelectionWidget {
     return VIEW_NAME_VALUE;
   }
 
-  @Override
-  public String getModelModuleValue(){
-    return MODEL_MODULE_VALUE;
-  }
-
-  @Override
-  public String getViewModuleValue(){
-    return VIEW_MODULE_VALUE;
-  }
 }

@@ -437,6 +437,7 @@
        "timezone": data.timeZone,
        "crosshair": data.crosshair,
        "omit_checkboxes": data.omitCheckboxes || false,
+       "auto_zoom": data.autoZoom
      });
    };
    inheritsFrom(AbstractChart, Chart);

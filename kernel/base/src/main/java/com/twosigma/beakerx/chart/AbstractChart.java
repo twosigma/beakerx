@@ -32,6 +32,7 @@ public abstract class AbstractChart extends Chart {
   protected TimeZone timeZone;
   private Crosshair crosshair;
   private boolean omitCheckboxes = false;
+  private boolean autoZoom = false;
 
   protected AbstractChart() {
     yAxes.add(yAxis);
@@ -254,6 +255,16 @@ public abstract class AbstractChart extends Chart {
   public AbstractChart setOmitCheckboxes(boolean omitCheckboxes) {
     this.omitCheckboxes = omitCheckboxes;
     sendModelUpdate(ChartToJson.serializeOmitCheckboxes(this.omitCheckboxes));
+    return this;
+  }
+
+  public Boolean getAutoZoom() {
+    return autoZoom;
+  }
+
+  public AbstractChart setAutoZoom(boolean autoZoom) {
+    this.autoZoom = autoZoom;
+    sendModelUpdate(ChartToJson.serializeAutoZoom(this.autoZoom));
     return this;
   }
 

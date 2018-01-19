@@ -98,14 +98,17 @@ function doPublish(personalAccessToken): void {
     success : (data, status) => {
       console.log("gist successfully published: " + data.id);
       window.open(CONFIG.nbviewerBaseUrl + data.id);
-    },
-    error : (jqXHR, status, err) => {
-      const errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
-
-      console.log(errorMsg);
-      showErrorDialog(errorMsg);
     }
   };
 
-  return $.ajax(gistsUrl, settings);
+  return $.ajax(gistsUrl, settings).catch((jqXHR, status, err) => {
+    let errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
+
+    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+      errorMsg = jqXHR.responseJSON.message;
+    }
+
+    console.log(errorMsg);
+    showErrorDialog(errorMsg);
+  });
 }

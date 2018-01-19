@@ -33,41 +33,45 @@ export default class GistPublishModal {
   static create(submitCallback, personalAccessToken = '') {
     const modalContent = GistPublishModal.createModalContent();
     const personalAccessTokenInput = modalContent.querySelector('input');
+    const form = modalContent.querySelector('form');
 
-    if (personalAccessTokenInput) {
+    const submitHandler = (event) => {
+      const personalAccessToken = personalAccessTokenInput ? personalAccessTokenInput.value : '';
+
+      event.preventDefault();
+      submitCallback(personalAccessToken);
+      GistPublishModal.storePersonalAccessToken(personalAccessToken);
+    };
+
+    if (personalAccessTokenInput && form) {
       personalAccessTokenInput.value = personalAccessToken;
     }
 
-    dialog.modal({
-      title : 'Publish to a Github Gist',
+    const modal = dialog.modal({
+      keyboard_manager: Jupyter.notebook.keyboard_manager,
+      title : 'Publish to a GitHub Gist',
       body : modalContent,
       buttons: {
         'Publish': {
           'class' : 'btn-primary',
-          'click': () => {
-            const personalAccessToken = personalAccessTokenInput ? personalAccessTokenInput.value : '';
-
-            submitCallback(personalAccessToken);
-            GistPublishModal.storePersonalAccessToken(personalAccessToken);
-          }
+          'click': submitHandler
         },
         'Cancel': {}
       }
     });
+
+    if (form) {
+      form.onsubmit = (event) => {
+        modal.modal('hide');
+        submitHandler(event);
+      }
+    }
   }
 
   static createModalContent(): HTMLElement {
     const modalContent = document.createElement('div');
 
     modalContent.innerHTML = GistPublishModal.template;
-
-    const input = modalContent.querySelector('input');
-    const keyboardManagerEnabled = Jupyter.notebook.keyboard_manager.enabled;
-
-    if (input) {
-      input.onfocus = () => { Jupyter.notebook.keyboard_manager.enabled = false; };
-      input.onblur = () => { Jupyter.notebook.keyboard_manager.enabled = keyboardManagerEnabled; };
-    }
 
     return modalContent;
   }
@@ -81,7 +85,7 @@ export default class GistPublishModal {
             ...storedSettings,
             githubPersonalAccessToken
           })
-        })
+        }).fail(reason => { console.log(reason); })
       );
   }
 
@@ -93,6 +97,6 @@ export default class GistPublishModal {
   static getStoredSettings(): Promise<any> {
     return utils.ajax(GistPublishModal.settingsUrl, {
       method: 'GET'
-    });
+    }).fail(reason => { console.log(reason); });
   }
 }

@@ -33,13 +33,13 @@ class RadioButtonsModel extends widgets.RadioButtonsModel {
 class RadioButtonsView extends widgets.RadioButtonsView {
   render() {
     super.render();
-    this.displayed.then(() => {
-      this.$el.find(':checked')
-        .each((index, radioElement) => {
-          radioElement.checked = false;
-        });
-      this.model.set('index', null);
-    });
+    // this.displayed.then(() => {
+    //   this.$el.find(':checked')
+    //     .each((index, radioElement) => {
+    //       radioElement.checked = false;
+    //     });
+    //   this.model.set('index', null);
+    // });
   }
 }
 

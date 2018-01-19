@@ -26,6 +26,7 @@ import tempfile
 
 from string import Template
 from jupyter_client.kernelspecapp import KernelSpecManager
+from jupyter_core import paths
 from traitlets.config.manager import BaseJSONConfigManager
 from distutils import log
 
@@ -127,6 +128,14 @@ def _install_magics():
     file.write("c.InteractiveShellApp.extensions = ['beakerx.groovy_magic']")
     file.close()
 
+def _create_conf_backup():
+    config_path = os.path.join(paths.jupyter_config_dir(), 'beakerx.json')
+    backup_path = config_path + ".bak"
+    if pathlib.Path(config_path).exists():
+        if pathlib.Path(backup_path).exists():
+            os.remove(backup_path)
+        os.rename(config_path, backup_path)
+
 
 def _pretty(it):
     return json.dumps(it, indent=2)
@@ -187,6 +196,7 @@ def _install_beakerx(args):
     _copy_icons()
     _install_kernelspec_manager(args.prefix)
     _install_magics()
+    _create_conf_backup()
 
 
 def install():

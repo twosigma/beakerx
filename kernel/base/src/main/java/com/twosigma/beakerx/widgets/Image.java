@@ -15,8 +15,14 @@
  */
 package com.twosigma.beakerx.widgets;
 
+import com.twosigma.beakerx.kernel.comm.Comm;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class Image extends ValueWidget<byte[]> {
 
@@ -29,7 +35,7 @@ public class Image extends ValueWidget<byte[]> {
 
   private String format = "png";
   private String width = "";
-  private String height = "";;
+  private String height = "";
 
   public Image() {
     super();
@@ -39,21 +45,22 @@ public class Image extends ValueWidget<byte[]> {
   @Override
   protected HashMap<String, Serializable> content(HashMap<String, Serializable> content) {
     super.content(content);
-    content.put(VALUE, this.value);
     content.put(FORMAT, this.format);
     content.put(WIDTH, this.width);
     content.put(HEIGHT, this.height);
     return content;
   }
-  
+
   @Override
   public void setValue(Object value) {
     this.value = getValueFromObject(value);
-    sendUpdate("_b64value", value);
+    ArrayList<List<String>> bufferPaths = new ArrayList<>();
+    bufferPaths.add(Arrays.asList("value"));
+    sendUpdate(new Comm.Buffer(Collections.singletonList(this.value), bufferPaths));
   }
-  
+
   @Override
-  public byte[] getValueFromObject(Object input){
+  public byte[] getValueFromObject(Object input) {
     return (byte[]) input;
   }
 
@@ -93,5 +100,5 @@ public class Image extends ValueWidget<byte[]> {
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
-  
+
 }

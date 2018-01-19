@@ -165,10 +165,10 @@ class Table(BaseObject):
             return "int64"
         if isinstance(value, int):
             return "integer"
+        if "datetime" in str(object_type)  or is_date(value):
+            return "time"
         if isinstance(value, str):
             return "string"
-        if "datetime" in str(object_type):
-            return "time"
         return "string"
 
 

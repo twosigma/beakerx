@@ -107,6 +107,7 @@ public class KernelSocketsZMQ extends KernelSockets {
     newZmsg.add(parent.getBytes(StandardCharsets.UTF_8));
     newZmsg.add(meta.getBytes(StandardCharsets.UTF_8));
     newZmsg.add(content.getBytes(StandardCharsets.UTF_8));
+    message.getBuffers().forEach( x-> newZmsg.add(x));
     newZmsg.send(socket);
   }
 

@@ -17,7 +17,9 @@ package com.twosigma.beakerx.widgets.selections;
 
 import com.twosigma.beakerx.widgets.BeakerxWidget;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static java.util.Collections.singletonList;
 
@@ -58,6 +60,26 @@ public class SelectMultipleSingle extends MultipleSelectionWidget {
   @Override
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
+  }
+
+  @Override
+  public void setValue(Object newValue) {
+    this.value = getValueFromObject(newValue);
+    sendUpdate(VALUE, value);
+    sendUpdate(INDEX, getSelectedOptionsIndexes(value));
+  }
+
+  public Integer[] getSelectedOptionsIndexes(String[] values) {
+    List<Integer> indexes = new ArrayList<>();
+    String[] options = getOptions();
+    for (int i = 0; i < options.length; i++) {
+      for (String value : values){
+        if (options[i].equals(value)){
+          indexes.add(i);
+        }
+      }
+    }
+    return indexes.toArray(new Integer[indexes.size()]);
   }
 
 }

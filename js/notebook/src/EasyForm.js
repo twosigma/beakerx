@@ -25,7 +25,6 @@ var comboBoxWidget = require('./easyForm/comboBoxWidget').default;
 var textWidget = require('./easyForm/textWidget').default;
 var TextareaWidget = require('./easyForm/TextareaWidget').default;
 var checkboxWidget = require('./easyForm/checkboxWidget').default;
-var radioButtonsWidget = require('./easyForm/radioButtonsWidget').default;
 
 require('./easyForm/css/jupyter-easyform.scss');
 require('flatpickr/dist/flatpickr.css');
@@ -103,4 +102,3 @@ _.extend(module.exports, textWidget);
 _.extend(module.exports, TextareaWidget);
 _.extend(module.exports, comboBoxWidget);
 _.extend(module.exports, checkboxWidget);
-_.extend(module.exports, radioButtonsWidget);

@@ -126,7 +126,7 @@ class EasyForm(BeakerxBox):
 
     def addRadioButtons(self, *args, **kwargs):
         orientation = getValue(kwargs, 'orientation', EasyForm.VERTICAL)
-        radio_buttons = BeakerxRadioButtons(options=self.getOptions(args, kwargs),
+        radio_buttons = RadioButtons(options=self.getOptions(args, kwargs),
                                      description=self.getDescription(args,
                                                                      kwargs))
         radio_buttons.index = None

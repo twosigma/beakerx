@@ -315,7 +315,7 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
               String.format("\"%s\" is not a valid option for %s \"%s\".",
                       value, component.getClass().getSimpleName(), key));
     }
-    final String currentValue = component.formatValue(value);
+    final Object currentValue = component.formatValue(value);
     final String previousValue = (component.getValue() == null) ? "" : component.getValue().toString();
     component.setValue(currentValue);
     getValuesMap().put(key, currentValue);

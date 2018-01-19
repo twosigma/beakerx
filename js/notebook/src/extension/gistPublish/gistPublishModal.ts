@@ -51,6 +51,7 @@ export default class GistPublishModal {
       keyboard_manager: Jupyter.notebook.keyboard_manager,
       title : 'Publish to a GitHub Gist',
       body : modalContent,
+      default_button: 'Publish',
       buttons: {
         'Publish': {
           'class' : 'btn-primary',

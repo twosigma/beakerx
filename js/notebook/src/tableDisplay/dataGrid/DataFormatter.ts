@@ -18,9 +18,9 @@ import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import * as _ from 'underscore';
 import { isDoubleWithPrecision, getDoublePrecisionByType } from './dataTypes';
 import { DataGridHelpers } from './dataGridHelpers';
+import { TIME_UNIT_FORMATS } from '../consts';
 
 const bkUtils = require('../../shared/bkUtils');
-const tableConsts = require('../consts');
 
 interface IFormatterOptions {
   stringFormatForColumn?: any,
@@ -185,8 +185,8 @@ export class DataFormatter {
     }
 
     let format = _.isEmpty(this.formatForTimes) ?
-      tableConsts.TIME_UNIT_FORMATS.DATETIME.format :
-      tableConsts.TIME_UNIT_FORMATS[this.formatForTimes].format;
+      TIME_UNIT_FORMATS.DATETIME.format :
+      TIME_UNIT_FORMATS[this.formatForTimes].format;
 
     if (_.isObject(value) && value.type === 'Date') {
       return bkUtils.formatTimestamp(value.timestamp, this.timeZone, format);

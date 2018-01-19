@@ -50,7 +50,9 @@ export const getTypeByName = (typeName: string): number => {
   return ALL_TYPES[typeName] || 0;
 };
 
-export function getDisplayType(type: number, stringFormatForType: any, stringFormatForColumn: any) {
+export function getDisplayType(typeName: string, stringFormatForType: any, stringFormatForColumn: any) {
+  const type: number = getTypeByName(typeName);
+
   if (type === ALL_TYPES.datetime) {
     return ALL_TYPES.datetime;
   }
@@ -79,41 +81,3 @@ export function isDoubleWithPrecision(type: string|number) {
 export function getDoublePrecisionByType(type: string|number): string {
   return type.toString().split(".")[1];
 }
-
-// allStringTypes: [
-//   {type: 0, name: 'string'},
-//   {type: 10, name: 'html'}
-// ],
-//   allTimeTypes: [
-//   {type: 8, name: 'datetime'},
-//   {type: 0, name: 'string'}
-// ],
-//   allIntTypes: [
-//   {type: 0, name: 'string'},
-//   {type: 1, name: 'integer'},
-//   {type: 2, name: 'formatted integer'},
-//   {type: 8, name: 'datetime'}
-// ],
-//   allDoubleTypes: [
-//   {type: 0, name: 'string'},
-//   {type: 3, name: 'double'},
-//   {type: 4, name: 'double with precision'},
-//   {type: 6, name: 'exponential 5'},
-//   {type: 7, name: 'exponential 15'}
-// ],
-//   allBoolTypes: [
-//   {type: 0, name: 'string'},
-//   {type: 9, name: 'boolean'}
-// ],
-//   allTypes: [
-//   {type: 0, name: 'string'},
-//   {type: 1, name: 'integer'},
-//   {type: 2, name: 'formatted integer'},
-//   {type: 3, name: 'double'},
-//   {type: 4, name: 'double with precision'},
-//   {type: 6, name: 'exponential 5'},
-//   {type: 7, name: 'exponential 15'},
-//   {type: 8, name: 'datetime'},
-//   {type: 9, name: 'boolean'},
-//   {type: 10, name: 'html'}
-// ],

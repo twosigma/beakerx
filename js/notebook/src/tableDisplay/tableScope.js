@@ -28,7 +28,6 @@ define([
   './../shared/bkUtils',
   './cellHighlighters',
   './../shared/bkHelper',
-  './consts',
   'jquery-ui/ui/widgets/tooltip',
   './tableUtils'
 ], function(
@@ -45,13 +44,13 @@ define([
   bkUtils,
   cellHighlighters,
   bkHelper,
-  tableConsts,
   tooltip,
   tableUtils
 ) {
 
   var jQuery = $;
   var updateTableEventListener;
+  var tableConsts = require('./consts').default;
 
   tableUtils.setJqExtentions();
 

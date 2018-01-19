@@ -14,9 +14,13 @@
  *  limitations under the License.
  */
 
-import { DataGrid } from "@phosphor/datagrid";
+import { DataGrid } from '@phosphor/datagrid';
 
-export default interface IDataGridScopeOptions extends DataGrid.IOptions {
-  element: HTMLElement
-  data: any
-}
+import './dataGrid.scss';
+
+export const silverStripeStyle: DataGrid.IStyle = {
+  ...DataGrid.defaultStyle,
+  voidColor: '#ffffff',
+  headerBackgroundColor: '#E6E6E6',
+  rowBackgroundColor: i => i % 2 === 0 ? '#f9f9f9' : ''
+};

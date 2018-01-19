@@ -89,7 +89,7 @@ describe('Testing of EasyForm (python)', function () {
 
     it('EasyForm has Date field', function () {
       var easyForm = beakerxPO.runCellToGetEasyForm(8);
-      expect(easyForm.$('input[type="date"]').isEnabled()).toBeTruthy();
+      expect(easyForm.$('div.datepicker-container').isEnabled()).toBeTruthy();
       expect(easyForm.$('label.widget-label').getText()).toBe('field name9');
     });
   });

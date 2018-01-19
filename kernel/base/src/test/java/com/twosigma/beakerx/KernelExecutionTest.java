@@ -46,6 +46,8 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
   public static final String DEMO_RESOURCES_JAR = "../../doc/resources/jar";
   public static final String DEMO_JAR_NAME = "demo.jar";
   public static final String DEMO_JAR = DEMO_RESOURCES_JAR + "/" + DEMO_JAR_NAME;
+  public static final String LOAD_MAGIC_JAR_DEMO_JAR_NAME = "loadMagicJarDemo.jar";
+  public static final String LOAD_MAGIC_DEMO_JAR = DEMO_RESOURCES_JAR + "/" + LOAD_MAGIC_JAR_DEMO_JAR_NAME;
 
   @Test
   public void evaluate16Divide2() throws Exception {
@@ -58,7 +60,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
     Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
-    checkResultForErrors(result);
+    checkResultForErrors(result, code);
     assertThat(result).isPresent();
     verifyResult(result.get());
     verifyPublishedMsgs(getKernelSocketsService());
@@ -66,12 +68,13 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     verifySentMsgs(getKernelSocketsService());
   }
 
-  private void checkResultForErrors(Optional<Message> result) throws InterruptedException {
+  protected void checkResultForErrors(Optional<Message> result, String code) throws InterruptedException {
       if (!result.isPresent()){
           Optional<Message> error = waitForErrorMessage(getKernelSocketsService().getKernelSockets());
           String errorMsg;
           if (error.isPresent()){
               errorMsg = "Error message received instead of result:\n"
+                      + "Code: " + code + "\n"
                       + error.get().getContent().toString() + "\n";
           } else {
               errorMsg = "Result nor error messages found:\n" +
@@ -136,7 +139,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
   }
 
   private void addJarWithCustomMagicCommand() throws InterruptedException {
-    String allCode = CLASSPATH_ADD_JAR + " " + DEMO_RESOURCES_JAR + "/loadMagicJarDemo.jar";
+    String allCode = CLASSPATH_ADD_JAR + " " + LOAD_MAGIC_DEMO_JAR;
     Code code = CodeFactory.create(allCode, new Message(), getKernel());
     MagicCommandOutcome result = executeMagicCommands(code, 1, getKernel());
     MIMEContainer message = result.getItems().get(0).getMIMEContainer().get();
@@ -161,6 +164,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
     Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
+    checkResultForErrors(result, code);
     verifyResultOfAddedJar(result.get());
   }
 
@@ -208,6 +212,7 @@ public abstract class KernelExecutionTest extends KernelSetUpFixtureTest {
     Optional<Message> idleMessage = waitForIdleMessage(getKernelSocketsService().getKernelSockets());
     assertThat(idleMessage).isPresent();
     Optional<Message> result = waitForResult(getKernelSocketsService().getKernelSockets());
+    checkResultForErrors(result, allCode);
     assertThat(result).isPresent();
     Map actual = ((Map) result.get().getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");

@@ -45,6 +45,7 @@ describe('SQL Examples notebook', function () {
       codeCell.scroll();
       codeCell.click();
       browser.keys("Tab");
+      browser.keys('\uE000');
       var completeList = $$('#complete > select > option');
       expect(completeList.length).toBeGreaterThan(0);
     }, 2);

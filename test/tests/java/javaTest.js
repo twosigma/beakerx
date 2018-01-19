@@ -31,14 +31,14 @@ describe('JavaTutorial notebook', function () {
   describe('Run first cell. ', function () {
     it('Output contains "test.beaker.BeakerTest"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(0, 'test.beaker.BeakerTest');
+      beakerxPO.runCellAndCheckOutputText(0, 'test.beaker.BeakerTest');
     });
   });
 
   describe('Run 2nd cell. ', function () {
     it('Output contains "Today:"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(1, 'Today:');
+      beakerxPO.runCellAndCheckOutputText(1, 'Today:');
     });
   });
 
@@ -53,14 +53,14 @@ describe('JavaTutorial notebook', function () {
   describe('Run 4th cell. ', function () {
     it('Output contains "DateGetter"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(3, 'DateGetter');
+      beakerxPO.runCellAndCheckOutputText(3, 'DateGetter');
     });
   });
 
   describe('Run 5th cell. ', function () {
     it('Output contains "DG2"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(4, 'DG2');
+      beakerxPO.runCellAndCheckOutputText(4, 'DG2');
     }, 2);
   });
 
@@ -68,14 +68,14 @@ describe('JavaTutorial notebook', function () {
     it('Output contains "beakerx/test/notebooks"', function () {
       beakerxPO.runCodeCellByIndex(5);
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(6, 'beakerx\.test\.notebooks');
+      beakerxPO.runCellAndCheckOutputText(6, 'beakerx\.test\.notebooks');
     }, 2);
   });
 
   describe('Run 8th cell. ', function () {
     it('Output contains "static_123 object_123"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(7, '\.*static_123\.*\n*\.*object_123');
+      beakerxPO.runCellAndCheckOutputText(7, '\.*static_123\.*\n*\.*object_123');
     }, 2);
   });
 

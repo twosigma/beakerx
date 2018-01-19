@@ -19,6 +19,7 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddStaticImportMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.BashMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddDynamicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
@@ -58,6 +59,7 @@ public class MagicCommandTypesFactory {
                     addJar(kernel),
                     addJarByMvn(kernel),
                     addJarByMvnCell(kernel),
+                    addDynamic(kernel),
                     addRepo(kernel),
                     removeJar(kernel),
                     showClasspath(kernel),
@@ -70,6 +72,10 @@ public class MagicCommandTypesFactory {
                     timeItCell(kernel),
                     loadMagic(kernel)));
     return magicCommandTypes;
+  }
+
+  private static MagicCommandType addDynamic(KernelFunctionality kernel) {
+    return new MagicCommandType(ClasspathAddDynamicMagicCommand.CLASSPATH_ADD_DYNAMIC, "", new ClasspathAddDynamicMagicCommand(kernel));
   }
 
   private static MagicCommandType loadMagic(KernelFunctionality kernel) {

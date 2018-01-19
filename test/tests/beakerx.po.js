@@ -45,8 +45,17 @@ var BeakerXPageObject = function () {
     browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
   }
 
+  this.clickCellAllOutputClear = function () {
+    browser.click('=Cell');
+    browser.waitForEnabled('=All Output');
+    browser.moveToObject('=All Output');
+    browser.moveToObject('=Toggle');
+    browser.moveToObject('=Clear');
+    browser.click('=Clear')
+  }
+
   this.closeAndHaltNotebook = function () {
-    this.clickSaveNotebook();
+    this.clickCellAllOutputClear();
     browser.click('=File');
     browser.waitForEnabled('=Close and Halt');
     browser.click('=Close and Halt');
@@ -78,18 +87,18 @@ var BeakerXPageObject = function () {
     return codeCell.$('#svgg');
   }
 
-  this.runCallAndCheckOutputText = function(index, expectedText){
+  this.runCellAndCheckOutputText = function(index, expectedText){
     var resultTest;
     try{
-      resultTest = this.runCallToGetOutputText(index).getText();
+      resultTest = this.runCellToGetOutputTextElement(index).getText();
     }catch(e){
       console.log(expectedText + ' --- ' + e.toString());
-      resultTest = this.runCallToGetOutputText(index).getText();
+      resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
   }
 
-  this.runCallToGetOutputText = function(index){
+  this.runCellToGetOutputTextElement = function(index){
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.output_subarea.output_text');
   }
@@ -130,7 +139,7 @@ var BeakerXPageObject = function () {
       resultTest = codeCell.$('div.output_subarea.output_text').getText();
     }catch(e){
       console.log(expectedText + ' --- ' + e.toString());
-      resultTest = this.runCallToGetOutputText(index).getText();
+      resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
   }

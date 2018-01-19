@@ -101,7 +101,7 @@ public class SelectMultipleSingleTest {
     //when
     widget.setValue("2");
     //then
-    verifyMsgForProperty(kernel, SelectMultiple.VALUE, "2");
+    verifyMsgForProperty(kernel, SelectMultiple.VALUE, new String[]{"2"});
   }
 
   @Test

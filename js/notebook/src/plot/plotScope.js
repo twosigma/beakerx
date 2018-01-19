@@ -48,7 +48,7 @@ define([
   moment
 ) {
 
-  var CONTEXT_MENU_DEBOUNCE_TIME = 250;
+  var CONTEXT_MENU_DEBOUNCE_TIME = 350;
 
   function PlotScope(wrapperId) {
     this.wrapperId = wrapperId;
@@ -103,6 +103,7 @@ define([
     this.legendResetPosition = false;
     this.doNotLoadState = false;
     this.saveAsMenuContainer = null;
+    this.zoomEventsDispatchOrder = [];
 
     this.data2scrX = null;
     this.data2scrY = null;
@@ -1542,14 +1543,15 @@ define([
     }
   };
 
-  PlotScope.prototype.calcLocateBox = function() {
+  PlotScope.prototype.getLocateBoxCoords = function() {
     var self = this;
     var p1 = self.mousep1, p2 = self.mousep2;
     var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x),
       yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
     if (xr === xl) { xr = xl + 1; }
     if (yr === yl) { yr = yl + 1; }
-    self.locateBox = {
+
+    return {
       "x" : xl,
       "y" : yl,
       "w" : xr - xl,
@@ -1600,7 +1602,7 @@ define([
       "x" : d3.mouse(svgNode)[0],
       "y" : d3.mouse(svgNode)[1]
     };
-    self.calcLocateBox();
+    self.locateBox = self.getLocateBoxCoords();
     self.rpipeRects = [];
     self.renderLocateBox();
   };
@@ -1806,15 +1808,22 @@ define([
       }
 
       self.enableZoomWheel();
+
+      var locateBox = self.getLocateBoxCoords();
+      var isDispatchedAsSecond = self.zoomEventsDispatchOrder.indexOf('contextMenu') !== -1;
+
+      if (isDispatchedAsSecond && self.contexteMenuEvent && locateBox.w <= 1 && locateBox.h <= 1) {
+        self.jqcontainer[0] && self.jqcontainer[0].dispatchEvent(self.contexteMenuEvent);
+      }
+
+      self.zoomEventsDispatchOrder.length = 0;
+      if (!isDispatchedAsSecond) {
+        self.zoomEventsDispatchOrder.push('zoomEnd');
+      }
+
+      self.contexteMenuEvent = null;
     }
 
-    var zoomingTime = moment() - self.zoomStarted;
-
-    if(self.contexteMenuEvent && zoomingTime < CONTEXT_MENU_DEBOUNCE_TIME) {
-      self.jqcontainer[0] && self.jqcontainer[0].dispatchEvent(self.contexteMenuEvent);
-    }
-
-    self.contexteMenuEvent = null;
     self.jqsvg.css("cursor", "auto");
   };
 
@@ -1935,10 +1944,20 @@ define([
     });
 
     function handleContextMenuEvent(event) {
-      self.contexteMenuEvent = event;
+      var locateBox = self.getLocateBoxCoords();
+      var isDispatchedAsSecond = self.zoomEventsDispatchOrder.indexOf('zoomEnd') !== -1;
 
-      event.stopPropagation();
-      event.preventDefault();
+      self.zoomEventsDispatchOrder.length = 0;
+
+      if (!isDispatchedAsSecond) {
+        self.contexteMenuEvent = event;
+        self.zoomEventsDispatchOrder.push('contextMenu');
+      }
+
+      if (!isDispatchedAsSecond || isDispatchedAsSecond && (locateBox.w > 1 || locateBox.h > 1)) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
     }
 
     var svgElement = self.svg.node();

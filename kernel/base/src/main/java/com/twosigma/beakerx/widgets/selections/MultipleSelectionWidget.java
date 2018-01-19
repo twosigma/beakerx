@@ -43,6 +43,8 @@ public abstract class MultipleSelectionWidget extends SelectionWidget<String[]> 
       result = Arrays.stream((Object[]) input).map(i -> (String) i).collect(Collectors.toList());
     } else if (input instanceof List) {
       result = (List<String>) input;
+    } else if (input instanceof String){
+      result = Arrays.asList(input.toString());
     }
     return result.toArray(new String[result.size()]);
   }

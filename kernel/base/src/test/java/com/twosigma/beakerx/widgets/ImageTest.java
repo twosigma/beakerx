@@ -17,13 +17,18 @@ package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Map;
 
+import static com.twosigma.beakerx.widgets.TestWidgetUtils.getData;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
 
 public class ImageTest {
@@ -57,7 +62,10 @@ public class ImageTest {
     //when
     widget.setValue("picture".getBytes());
     //then
-    TestWidgetUtils.verifyMsgForProperty(groovyKernel, "_b64value", "picture".getBytes());
+    Message message = groovyKernel.getPublishedMessages().get(0);
+    Map data = getData(message);
+    List<List<String>> o = (List)data.get(Comm.BUFFER_PATHS);
+    Assertions.assertThat(o.get(0).get(0)).isEqualTo("value");
   }
 
   @Test

@@ -25,6 +25,7 @@ public class RadioButtons extends SingleSelectionWidget {
   public RadioButtons() {
     super();
     openComm();
+    this.defaultIndex = -1;
   }
 
   public RadioButtons(String description) {

@@ -16,7 +16,9 @@
 
 package com.twosigma.beakerx.scala.chart
 
+import com.twosigma.beakerx.chart.AbstractChart
 import com.twosigma.beakerx.chart.xychart.plotitem.{Crosshair, YAxis}
+import com.twosigma.beakerx.scala.chart.xychart.plotitem.{YAxisProperties, YAxisWrapper}
 
 import scala.collection.JavaConverters._
 
@@ -62,12 +64,12 @@ trait AbstractChartProperties extends ChartProperties {
   def yLogBase_=(base: Double): Unit = setYLogBase(base)
 
   def yLowerMargin: Double = getYLowerMargin
-  def yLowerMargin_=(margin: Double) = setYLowerMargin(margin)
+  def yLowerMargin_=(margin: Double): AbstractChart = setYLowerMargin(margin)
 
   def yUpperMargin: Double = getYUpperMargin
   def yUpperMargin_=(margin: Double): Unit = setYUpperMargin(margin)
 
-  def yAxes: Seq[YAxis] = getYAxes.asScala
+  def yAxes: Seq[YAxisProperties] = getYAxes.asScala.map(yAxis => new YAxisWrapper(yAxis))
 
   def +=(axis: YAxis): Unit = add(axis)
 }

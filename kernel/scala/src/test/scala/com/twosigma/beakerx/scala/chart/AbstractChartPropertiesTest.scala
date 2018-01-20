@@ -26,6 +26,11 @@ class AbstractChartPropertiesTest {
   def properties(): Unit = {
     val ac = new AbstractChart with AbstractChartProperties {}
 
+    assume(ac.getAutoZoom == false)
+    ac.autoZoom shouldBe false
+    ac.autoZoom = true
+    ac.autoZoom shouldBe true
+
     ac.crosshair shouldBe empty
     val testCrosshair = new Crosshair
     ac.crosshair = testCrosshair

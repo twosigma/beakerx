@@ -23,6 +23,9 @@ import scala.collection.JavaConverters._
 trait AbstractChartProperties extends ChartProperties {
   this: com.twosigma.beakerx.chart.AbstractChart =>
 
+  def autoZoom: Boolean = getAutoZoom
+  def autoZoom_=(b: Boolean): Unit = setAutoZoom(b)
+
   def crosshair: Option[Crosshair] = Option(getCrosshair)
   def crosshair_=(crosshair: Crosshair): Unit = setCrosshair(crosshair)
 

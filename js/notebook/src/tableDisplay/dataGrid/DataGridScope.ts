@@ -17,7 +17,7 @@
 import { Widget } from '@phosphor/widgets';
 import { DataGrid } from '@phosphor/datagrid';
 import { TableDataModel } from './TableDataModel';
-import { silverStripeStyle } from './DataGridStyle';
+import { silverStripeStyle } from './dataGridStyle';
 import IDataGridScopeOptions from "./IDataGridScopeOptions";
 import IDataModelOptions from "./IDataModelOptions";
 

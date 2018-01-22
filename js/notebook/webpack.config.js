@@ -18,6 +18,8 @@ var webpack = require('webpack');
 var package = require('./package.json');
 var path = require('path');
 var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+var TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+var tsConfigPath = path.resolve(__dirname, './src/tsconfig.json');
 
 // Custom webpack loaders are generally the same for all webpack bundles, hence
 // stored in a separate local variable.
@@ -51,7 +53,9 @@ var plugins = [
     "jQuery":"jquery",
     "window.jQuery":"jquery"
   }),
+  new TsconfigPathsPlugin({ configFile: tsConfigPath }),
   new ForkTsCheckerWebpackPlugin({
+    tsconfig: tsConfigPath,
     watch: 'src',
     workers: ForkTsCheckerWebpackPlugin.TWO_CPUS_FREE
   }),

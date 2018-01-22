@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-enum ALL_TYPES {
+export enum ALL_TYPES {
   'string',
   'integer',
   'formatted integer',
@@ -27,13 +27,13 @@ enum ALL_TYPES {
   'html'
 }
 
-enum TYPES_MAP {
+export enum TYPES_MAP {
   'int64' = ALL_TYPES.string,
   'time' = ALL_TYPES.datetime,
   'integer' = ALL_TYPES['formatted integer']
 }
 
-enum ALIGNMENTS_BY_TYPE {
+export enum ALIGNMENTS_BY_TYPE {
   'datetime' = 'C',
   'integer' = 'R',
   'double' = 'R'

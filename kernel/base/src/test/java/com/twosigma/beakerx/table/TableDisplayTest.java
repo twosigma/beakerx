@@ -38,6 +38,7 @@ import com.twosigma.beakerx.table.serializer.ThreeColorHeatmapHighlighterSeriali
 import com.twosigma.beakerx.table.serializer.TimeStringFormatSerializer;
 import com.twosigma.beakerx.table.serializer.UniqueEntriesHighlighterSerializer;
 import com.twosigma.beakerx.table.serializer.ValueHighlighterSerializer;
+import com.twosigma.beakerx.widgets.selectioncontainer.Tab;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -591,6 +592,15 @@ public class TableDisplayTest {
   }
 
   @Test
+  public void createWithUndefinedTypes() throws Exception {
+    TableDisplay tableDisplay = new TableDisplay(getListOfMapsWithEmptyTypes());
+    assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.LIST_OF_MAPS_SUBTYPE);
+    System.out.println(tableDisplay.getTypes());
+    List<String> expectedValues = Arrays.asList("string", "double", "integer");
+    assertThat(tableDisplay.getTypes()).isEqualTo(expectedValues);
+  }
+
+  @Test
   public void createWithListOfMapsParam_hasListOfMapsSubtype() throws Exception {
     //when
     TableDisplay tableDisplay = new TableDisplay(getListOfMapsData());
@@ -791,6 +801,36 @@ public class TableDisplayTest {
                 put(cols.get(0), "a string");
                 put(cols.get(1), 10.4);
                 put(cols.get(2), 3.14159);
+              }
+            });
+    return list;
+  }
+
+  public static List<Map<String, Object>> getListOfMapsWithEmptyTypes() {
+    List<Map<String, Object>> list = new ArrayList<>();
+    List<String> cols = getStringList();
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), "string 1");
+                put(cols.get(1), null);
+                put(cols.get(2), 1);
+              }
+            });
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), null);
+                put(cols.get(1), 2.2);
+                put(cols.get(2), 2);
+              }
+            });
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), "string 3");
+                put(cols.get(1), 2.3);
+                put(cols.get(2), null);
               }
             });
     return list;

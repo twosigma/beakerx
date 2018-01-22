@@ -66,6 +66,13 @@ var BeakerXPageObject = function () {
     return $$('div.code_cell')[index];
   }
 
+  this.getInputTextByCellIndex = function (index) {
+    var codeCell = this.getCodeCellByIndex(index);
+    inputText = codeCell.$('input[type="text"]').getValue();
+    console.log(inputText);
+    return inputText;
+  }
+
   this.runCodeCellByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();

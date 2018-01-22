@@ -128,13 +128,10 @@ def _install_magics():
     file.write("c.InteractiveShellApp.extensions = ['beakerx.groovy_magic']")
     file.close()
 
-def _create_conf_backup():
+def _set_conf_priviliges():
     config_path = os.path.join(paths.jupyter_config_dir(), 'beakerx.json')
-    backup_path = config_path + ".bak"
     if pathlib.Path(config_path).exists():
-        if pathlib.Path(backup_path).exists():
-            os.remove(backup_path)
-        os.rename(config_path, backup_path)
+        os.chmod(config_path, 0o600)
 
 
 def _pretty(it):
@@ -196,7 +193,7 @@ def _install_beakerx(args):
     _copy_icons()
     _install_kernelspec_manager(args.prefix)
     _install_magics()
-    _create_conf_backup()
+    _set_conf_priviliges()
 
 
 def install():

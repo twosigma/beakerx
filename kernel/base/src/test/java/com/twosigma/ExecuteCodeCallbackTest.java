@@ -20,6 +20,9 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 
 public class ExecuteCodeCallbackTest implements KernelFunctionality.ExecuteCodeCallback {
 
+  public static ExecuteCodeCallbackTest EXECUTION_TEST_CALLBACK = new ExecuteCodeCallbackTest();
+
+
   @Override
   public void execute(SimpleEvaluationObject message) {
     //nothing to do

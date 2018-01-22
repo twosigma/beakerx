@@ -15,52 +15,42 @@
  */
 package com.twosigma.beakerx.kernel;
 
-import com.twosigma.beakerx.kernel.magic.command.MagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.sendRepliesWithStatus;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class Code {
 
   private final String allCode;
-  private final List<MagicCommand> magicCommands;
-  private Optional<String> codeBlock;
   private final List<MagicCommandOutcomeItem> errors;
   private final Message message;
+  private List<CodeFrame> codeFrames;
 
-  private Code(String allCode, Optional<String> codeBlock, List<MagicCommand> magicCommands, List<MagicCommandOutcomeItem> errors, Message message) {
+  private Code(String allCode, List<CodeFrame> codeFrames, List<MagicCommandOutcomeItem> errors, Message message) {
     this.allCode = allCode;
-    this.magicCommands = checkNotNull(magicCommands);
+    this.codeFrames = checkNotNull(codeFrames);
     this.errors = checkNotNull(errors);
     this.message = message;
-    this.codeBlock = codeBlock;
   }
 
-  public static Code createCode(String allCode, String codeBlock, List<MagicCommand> magicCommands, List<MagicCommandOutcomeItem> errors, Message message) {
-    return new Code(allCode, Optional.of(codeBlock), magicCommands, errors, message);
+  public static Code createCode(String allCode, List<CodeFrame> codeFrames, List<MagicCommandOutcomeItem> errors, Message message) {
+    return new Code(allCode, codeFrames, errors, message);
   }
 
-  public static Code createCodeWithoutCodeBlock(String allCode, List<MagicCommand> magicCommands, List<MagicCommandOutcomeItem> errors, Message message) {
-    return new Code(allCode, Optional.empty(), magicCommands, errors, message);
-  }
-
-  public Optional<String> getCodeBlock() {
-    return codeBlock;
+  public List<CodeFrame> getCodeFrames() {
+    return codeFrames;
   }
 
   public String asString() {
     return this.allCode;
-  }
-
-  public List<MagicCommand> getMagicCommands() {
-    return magicCommands;
   }
 
   public boolean hasErrors() {
@@ -88,5 +78,32 @@ public class Code {
 
   public Message getMessage() {
     return message;
+  }
+
+  public void execute(KernelFunctionality kernel, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+    if (hasErrors()) {
+      sendRepliesWithStatus(getErrors(), kernel, getMessage(), executionCount);
+      executeCodeCallback.execute(null);
+    } else {
+      takeCodeFramesWithoutLast()
+              .forEach(frame -> {
+                CompletableFuture<Boolean> result = new CompletableFuture<>();
+                frame.executeFrame(this, kernel, message, executionCount, seo -> result.complete(true));
+                try {
+                  result.get();
+                } catch (Exception e) {
+                  throw new RuntimeException(e);
+                }
+              });
+      takeLastCodeFrame().executeLastFrame(this, kernel, message, executionCount, executeCodeCallback);
+    }
+  }
+
+  private CodeFrame takeLastCodeFrame() {
+    return getCodeFrames().get(getCodeFrames().size() - 1);
+  }
+
+  private List<CodeFrame> takeCodeFramesWithoutLast() {
+    return getCodeFrames().subList(0, getCodeFrames().size() - 1);
   }
 }

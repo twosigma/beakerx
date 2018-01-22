@@ -16,13 +16,17 @@
 package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
+import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.mimetype.MIMEContainer;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.executeMagicCommands;
+import java.util.List;
+import java.util.Map;
+
+import static com.twosigma.ExecuteCodeCallbackTest.EXECUTION_TEST_CALLBACK;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand.JAVASCRIPT;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,25 +50,27 @@ public class JavaScriptMagicCommandTest {
 
     Code code = CodeFactory.create(JAVASCRIPT + System.lineSeparator() + jsCode, new Message(), kernel);
     //when
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    code.execute(this.kernel, 1, EXECUTION_TEST_CALLBACK);
+    //MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
-    String toCompare = (String) result.getItems().get(0).getMIMEContainer().get().getData();
-
+    Map data = (Map) kernel.getPublishedMessages().get(0).getContent().get("data");
+    String toCompare = (String) data.get(MIMEContainer.MIME.APPLICATION_JAVASCRIPT);
     toCompare = toCompare.replaceAll("\\s+", "");
     jsCode = jsCode.replaceAll("\\s+", "");
-
     assertThat(toCompare.trim()).isEqualTo(jsCode);
   }
 
   @Test
-  public void shouldCreateMsgWithWrongMagic() throws Exception {
+  public void shouldCreateMsgWithWrongMagic() {
     //given
     String jsCode = System.lineSeparator() + "alert()";
     Code code = CodeFactory.create(JAVASCRIPT + "wrong" + jsCode, new Message(), kernel);
     //when
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
     //then
-    assertThat(result.getItems().get(0).getMIMEContainer().get().getData()).isEqualTo("Cell magic " + JAVASCRIPT + "wrong" + " not found\n");
+    List<Message> std = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
+    String text = (String) std.get(0).getContent().get("text");
+    assertThat(text).isEqualTo("Cell magic " + JAVASCRIPT + "wrong" + " not found\n");
   }
 
 }

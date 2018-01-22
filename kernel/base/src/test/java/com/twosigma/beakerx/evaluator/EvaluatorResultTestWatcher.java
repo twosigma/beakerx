@@ -146,10 +146,35 @@ public class EvaluatorResultTestWatcher {
             findFirst();
   }
 
-  public static List<Message> getStdouts(KernelSocketsTest kernel) {
-    return kernel.getPublishedMessages().stream().
+  public static List<Message> getStdouts(List<Message> messages) {
+    return messages.stream().
             filter(x -> x.type().equals(JupyterMessages.STREAM)).
             filter(x -> TestWidgetUtils.getContent(x).get("name").equals("stdout")).collect(Collectors.toList());
   }
+  public static List<Message> getStderr(List<Message> messages) {
+    return messages.stream().
+            filter(x -> x.type().equals(JupyterMessages.STREAM)).
+            filter(x -> TestWidgetUtils.getContent(x).get("name").equals("stderr")).collect(Collectors.toList());
+  }
+  public static List<Message> waitForStdouts(KernelSocketsTest socketsTest) throws InterruptedException {
+    int count = 0;
+    List<Message> result = getStdouts(socketsTest.getPublishedMessages());
+    while (result.isEmpty() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      result = getStdouts(socketsTest.getPublishedMessages());
+      count++;
+    }
+    return result;
+  }
 
+  public static List<Message> waitForStderr(KernelSocketsTest socketsTest) throws InterruptedException {
+    int count = 0;
+    List<Message> result = getStderr(socketsTest.getPublishedMessages());
+    while (result.isEmpty() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      result = getStderr(socketsTest.getPublishedMessages());
+      count++;
+    }
+    return result;
+  }
 }

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
@@ -23,6 +24,7 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
+import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
 
 public class ClasspathAddDynamicMagicCommand extends ClasspathMagicCommand {
@@ -57,9 +59,10 @@ public class ClasspathAddDynamicMagicCommand extends ClasspathMagicCommand {
     String codeToExecute = command.substring(command.indexOf(DYNAMIC) + DYNAMIC.length()).trim();
 
     CompletableFuture<Object> completableFuture = new CompletableFuture<>();
-    kernel.executeCode(codeToExecute, param.getCode().getMessage(), param.getExecutionCount(), seo -> {
-      completableFuture.complete(seo.getPayload());
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(codeToExecute, kernel, param.getCode().getMessage(), param.getExecutionCount(), (seoResult) -> {
+      completableFuture.complete(seoResult.getPayload());
     });
+    kernel.executeCode(codeToExecute, seo);
 
     try {
       Object path = completableFuture.get();

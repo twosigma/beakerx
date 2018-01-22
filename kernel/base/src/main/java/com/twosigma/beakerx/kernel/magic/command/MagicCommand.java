@@ -16,9 +16,19 @@
 
 package com.twosigma.beakerx.kernel.magic.command;
 
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.CodeFrame;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.KernelFunctionality.ExecuteCodeCallback;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
+import com.twosigma.beakerx.message.Message;
 
-public class MagicCommand {
+import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.sendMagicCommandOutcome;
+import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.sendRepliesWithStatus;
+import static java.util.Collections.singletonList;
+
+public class MagicCommand extends CodeFrame {
 
   private MagicCommandFunctionality magicCommandFunctionality;
   private String command;
@@ -35,7 +45,7 @@ public class MagicCommand {
     this.command = command;
   }
 
-  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
+  private MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     return this.magicCommandFunctionality.execute(param);
   }
 
@@ -47,4 +57,33 @@ public class MagicCommand {
     return commandCodeBlock;
   }
 
+  @Override
+  public void executeFrame(Code code, KernelFunctionality kernel, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback) {
+    MagicCommandOutcomeItem execute = execute(code, executionCount, false);
+    sendMagicCommandOutcome(execute, kernel, message, executionCount);
+    runCallback(message, executeCodeCallback);
+  }
+
+  @Override
+  public void executeLastFrame(Code code, KernelFunctionality kernel, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback) {
+    MagicCommandOutcomeItem execute = execute(code, executionCount, true);
+    sendRepliesWithStatus(singletonList(execute), kernel, message, executionCount);
+    runCallback(message, executeCodeCallback);
+  }
+
+  private MagicCommandOutcomeItem execute(Code code, int executionCount, boolean showResult) {
+    MagicCommandExecutionParam param = new MagicCommandExecutionParam(
+            getCommand(),
+            getCommandCodeBlock(),
+            executionCount,
+            code,
+            showResult);
+    return execute(param);
+  }
+
+  private void runCallback(Message message, ExecuteCodeCallback executeCodeCallback) {
+    SimpleEvaluationObject simpleEvaluationObject = new SimpleEvaluationObject("", executeCodeCallback);
+    simpleEvaluationObject.setJupyterMessage(message);
+    simpleEvaluationObject.executeCodeCallback();
+  }
 }

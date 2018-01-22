@@ -16,10 +16,10 @@
 package com.twosigma.beakerx.kernel.handler;
 
 
-import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
+import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
 import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 
@@ -27,8 +27,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
-
-import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.executeMagicCommands;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
 
 /**
@@ -62,23 +60,12 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     String codeString = takeCodeFrom(message);
     announceTheCode(message, codeString);
     Code code = CodeFactory.create(codeString, message, kernel);
-    executeMagicCommands(code, executionCount, kernel);
-    executeCodeBlock(code);
+    code.execute(kernel, executionCount, (seo) -> finishExecution(seo.getJupyterMessage()));
   }
 
   private void finishExecution(Message message) {
     kernel.sendIdleMessage(message);
     syncObject.release();
-  }
-
-  private void executeCodeBlock(Code code) {
-    if (code.getCodeBlock().isPresent()) {
-      kernel.executeCode(code.getCodeBlock().get(), code.getMessage(), executionCount, (seo) -> {
-        finishExecution(seo.getJupyterMessage());
-      });
-    } else {
-      finishExecution(code.getMessage());
-    }
   }
 
   private String takeCodeFrom(Message message) {

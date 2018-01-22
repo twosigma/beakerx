@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
@@ -24,8 +23,6 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import static com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand.IMPORT;
 
 public class BashMagicCommand implements MagicCommandFunctionality {
 
@@ -41,14 +38,12 @@ public class BashMagicCommand implements MagicCommandFunctionality {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-    Code code = param.getCode();
-    return code.getCodeBlock().map(codeWithoutCommand -> {
-      ErrorData errorData = executeBashCode(codeWithoutCommand);
-      if (errorData.hasError()) {
-        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, errorData.getMessage());
-      }
-      return new MagicCommandOutput(MagicCommandOutput.Status.OK, errorData.getMessage());
-    }).orElse(new MagicCommandOutput(MagicCommandOutput.Status.ERROR, String.format(USAGE_ERROR_MSG, BASH)));
+    String commandCodeBlock = param.getCommandCodeBlock();
+    ErrorData errorData = executeBashCode(commandCodeBlock);
+    if (errorData.hasError()) {
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, errorData.getMessage());
+    }
+    return new MagicCommandOutput(MagicCommandOutput.Status.OK, errorData.getMessage());
   }
 
   private ErrorData executeBashCode(String code) {

@@ -70,7 +70,7 @@ public class SelectMultipleWidget extends ListComponent<SelectMultiple> {
 
   @Override
   protected boolean checkValue(Object value) {
-    return !(value instanceof String);
+    return value instanceof Object[] || value instanceof List;
   }
 
 }

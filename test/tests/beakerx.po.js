@@ -66,6 +66,10 @@ var BeakerXPageObject = function () {
     return $$('div.code_cell')[index];
   }
 
+  this.getDtContainerByIndex = function (index) {
+    return this.getCodeCellByIndex(index).$('div.dtcontainer');
+  }
+
   this.runCodeCellByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();
@@ -106,11 +110,6 @@ var BeakerXPageObject = function () {
   this.plotLegendContainerIsEnabled = function(dtcontainer){
     var plotLegendContainer = dtcontainer.$('#plotLegendContainer');
     plotLegendContainer.waitForEnabled();
-  }
-
-  this.dataTablesIsEnabled = function(dtcontainer){
-    var dataTables = dtcontainer.$('.dataTables_scroll');
-    dataTables.waitForEnabled();
   }
 
   this.runCellToGetWidgetElement = function(index){

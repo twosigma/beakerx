@@ -66,6 +66,13 @@ var BeakerXPageObject = function () {
     return $$('div.code_cell')[index];
   }
 
+  this.getInputTextByCellIndex = function (index) {
+    var codeCell = this.getCodeCellByIndex(index);
+    inputText = codeCell.$('input[type="text"]').getValue();
+    console.log(inputText);
+    return inputText;
+  }
+
   this.runCodeCellByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();
@@ -142,6 +149,19 @@ var BeakerXPageObject = function () {
       resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
+  }
+
+  this.getTableColumnLabel = function(tableIndex, columnIndex){
+  var table = $$("div.dataTables_scrollHead") [tableIndex]
+  var tableColumnLabels = table.$$("span.header-text");
+  return tableColumnLabels[columnIndex];
+  }
+
+  this.getTableCell = function(tableIndex, rowIndex, columnIndex){
+  var table = $$("div.dataTables_scrollBody") [tableIndex]
+  var tableRows = table.$$("tbody tr");
+  var rowCells = tableRows[rowIndex].$$("td");
+  return rowCells[columnIndex];
   }
 
 };

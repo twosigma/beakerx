@@ -57,7 +57,7 @@ public interface KernelFunctionality {
 
   void run();
 
-  SimpleEvaluationObject executeCode(String code, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback);
+  SimpleEvaluationObject executeCode(String code, SimpleEvaluationObject seo);
 
   SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message, int executionCount, ExecuteCodeCallbackWithTime executeCodeCallbackWithTime);
 

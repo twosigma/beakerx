@@ -26,6 +26,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.twosigma.beakerx.KernelTest;
@@ -216,7 +217,7 @@ public class ExecuteRequestHandlerTest {
   }
 
   @Test
-  public void handleMagicMessage_replyIsSent() throws Exception {
+  public void handleMagicMessage_replyIsSent() {
     //when
     executeRequestHandler.handle(magicMessage);
     //then

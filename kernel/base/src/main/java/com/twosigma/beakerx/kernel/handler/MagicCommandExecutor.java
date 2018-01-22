@@ -15,43 +15,20 @@
  */
 package com.twosigma.beakerx.kernel.handler;
 
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
-import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
+import java.util.List;
+
 import static java.util.Collections.singletonList;
 
 public class MagicCommandExecutor {
 
-  public static MagicCommandOutcome executeMagicCommands(Code code, int executionCount, KernelFunctionality kernel) {
-    MagicCommandOutcome result = new MagicCommandOutcome();
-    if (code.hasErrors()) {
-      code.getErrors().forEach(result::addItem);
-      sendMagicCommandsResult(result, kernel, code.getMessage(), executionCount);
-    } else {
-      code.getMagicCommands().
-              forEach(magicCommand -> {
-                MagicCommandExecutionParam param = new MagicCommandExecutionParam(
-                        code,
-                        magicCommand.getCommand(),
-                        magicCommand.getCommandCodeBlock(),
-                        executionCount);
-                MagicCommandOutcomeItem item = magicCommand.execute(param);
-                result.addItem(item);
-                sendMagicCommandOutcome(item, kernel, code.getMessage(), executionCount);
-              });
-      sendRepliesWithStatus(result, kernel, code.getMessage(), executionCount);
-    }
-    return result;
-  }
-
-  private static void sendMagicCommandsResult(MagicCommandOutcome magicCommandResult, KernelFunctionality kernel, Message message, int executionCount) {
-    magicCommandResult.getItems().forEach(item -> {
+  public static void sendRepliesWithStatus(List<MagicCommandOutcomeItem> errors, KernelFunctionality kernel, Message message, int executionCount) {
+    errors.forEach(item -> {
       if (item.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
         handleOkStatus(kernel, message, executionCount, item);
       } else {
@@ -60,19 +37,9 @@ public class MagicCommandExecutor {
     });
   }
 
-  private static void sendMagicCommandOutcome(MagicCommandOutcomeItem item, KernelFunctionality kernel, Message message, int executionCount) {
-        boolean hasError =   item.getStatus().equals(MagicCommandOutcomeItem.Status.ERROR);
-        publishOutcome(kernel, message, executionCount, item, hasError);
-  }
-
-  private static void sendRepliesWithStatus(MagicCommandOutcome magicCommandResult, KernelFunctionality kernel, Message message, int executionCount) {
-    magicCommandResult.getItems().forEach(item -> {
-      if (item.getStatus().equals(MagicCommandOutcomeItem.Status.OK)) {
-        kernel.send(MessageCreator.buildReplyWithOkStatus(message, executionCount));
-      } else {
-        kernel.send(MessageCreator.buildReplyWithErrorStatus(message, executionCount));
-      }
-    });
+  public static void sendMagicCommandOutcome(MagicCommandOutcomeItem item, KernelFunctionality kernel, Message message, int executionCount) {
+    boolean hasError = item.getStatus().equals(MagicCommandOutcomeItem.Status.ERROR);
+    publishOutcome(kernel, message, executionCount, item, hasError);
   }
 
   private static void handleErrorStatus(KernelFunctionality kernel, Message message, int executionCount, MagicCommandOutcomeItem item) {

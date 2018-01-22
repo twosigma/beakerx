@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,31 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel.magic.command.functionality;
+package com.twosigma.beakerx.kernel.magic.command;
 
+import com.twosigma.beakerx.kernel.Code;
+import com.twosigma.beakerx.kernel.CodeFrame;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 
-public class TimeCellModeMagicCommand extends TimeMagicCommand {
+public class ErrorCodeFrame extends CodeFrame {
 
-  public static final String TIME_CELL = "%" + TimeLineModeMagicCommand.TIME_LINE;
-
-  public TimeCellModeMagicCommand(KernelFunctionality kernel) {
-    super(kernel);
+  public ErrorCodeFrame(MagicCommandOutcomeItem magicCommandOutcomeItem) {
+    super(magicCommandOutcomeItem);
   }
 
   @Override
-  public String getMagicCommandName() {
-    return TIME_CELL;
+  public void executeFrame(Code code, KernelFunctionality kernel, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
   }
 
   @Override
-  public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-    Message message = param.getCode().getMessage();
-    int executionCount = param.getExecutionCount();
-    return time(param.getCommandCodeBlock(), message, executionCount,param.isShowResult());
-  }
+  public void executeLastFrame(Code code, KernelFunctionality kernel, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
 
+  }
 }

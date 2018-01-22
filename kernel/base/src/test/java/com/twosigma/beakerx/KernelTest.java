@@ -318,11 +318,9 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public SimpleEvaluationObject executeCode(String code, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback) {
+  public SimpleEvaluationObject executeCode(String code, SimpleEvaluationObject seo) {
     this.code = code;
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
-    seo.setJupyterMessage(message);
-    executeCodeCallback.execute(seo);
+    seo.executeCodeCallback();
     return seo;
   }
 

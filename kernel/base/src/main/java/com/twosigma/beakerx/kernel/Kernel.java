@@ -178,9 +178,8 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public SimpleEvaluationObject executeCode(String code, Message message, int executionCount,
-                                            ExecuteCodeCallback executeCodeCallback) {
-    return this.evaluatorManager.executeCode(code, message, executionCount, executeCodeCallback);
+  public SimpleEvaluationObject executeCode(String code, SimpleEvaluationObject seo) {
+    return this.evaluatorManager.executeCode(code, seo);
   }
 
   @Override

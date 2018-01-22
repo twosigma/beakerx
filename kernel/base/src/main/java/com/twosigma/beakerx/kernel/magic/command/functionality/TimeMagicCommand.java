@@ -18,6 +18,7 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
+import com.twosigma.beakerx.kernel.PlainCode;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.message.Message;
@@ -45,7 +46,7 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     this.kernel = kernel;
   }
 
-  public MagicCommandOutput time(String codeToExecute, Message message, int executionCount) {
+  public MagicCommandOutput time(String codeToExecute, Message message, int executionCount, boolean showResult) {
     CompletableFuture<TimeMeasureData> compileTime = new CompletableFuture<>();
 
     ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
@@ -55,7 +56,7 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     Long startCpuTotalTime = threadMXBean.getCurrentThreadCpuTime();
     Long startUserTime = threadMXBean.getCurrentThreadUserTime();
 
-    kernel.executeCode(codeToExecute, message, executionCount, seo -> {
+    SimpleEvaluationObject simpleEvaluationObject = PlainCode.createSimpleEvaluationObject(codeToExecute, kernel, message, executionCount, seo -> {
       Long endWallTime = System.nanoTime();
       Long endCpuTotalTime = threadMXBean.getThreadCpuTime(currentThreadId);
       Long endUserTime = threadMXBean.getThreadUserTime(currentThreadId);
@@ -64,6 +65,11 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
               endUserTime - startUserTime,
               endWallTime - startWallTime));
     });
+    if (!showResult) {
+      simpleEvaluationObject.noResult();
+    }
+
+    kernel.executeCode(codeToExecute, simpleEvaluationObject);
 
     String messageInfo = "CPU times: user %s, sys: %s, total: %s \nWall Time: %s\n";
 
@@ -98,13 +104,13 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     }
   }
 
-  protected MagicCommandOutput timeIt(TimeItOption timeItOption, String codeToExecute, Message message, int executionCount) {
+  protected MagicCommandOutput timeIt(TimeItOption timeItOption, String codeToExecute, Message message, int executionCount, boolean showResult) {
     String output = "%s ± %s per loop (mean ± std. dev. of %d run, %d loop each)";
 
     if (timeItOption.getNumber() < 0) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Number of execution must be bigger then 0");
     }
-    int number = timeItOption.getNumber() == 0 ? getBestNumber(codeToExecute) : timeItOption.getNumber();
+    int number = timeItOption.getNumber() == 0 ? getBestNumber(codeToExecute, showResult) : timeItOption.getNumber();
 
     if (timeItOption.getRepeat() == 0) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Repeat value must be bigger then 0");
@@ -204,14 +210,15 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     return options;
   }
 
-  private int getBestNumber(String codeToExecute) {
+  private int getBestNumber(String codeToExecute, boolean showResult) {
     for (int value = 0; value < 10; ) {
       Double numberOfExecution = Math.pow(10, value);
       CompletableFuture<Boolean> keepLooking = new CompletableFuture<>();
 
       Long startTime = System.nanoTime();
       IntStream.range(0, numberOfExecution.intValue()).forEach(indexOfExecution -> {
-        kernel.executeCode(codeToExecute, new Message(), 0, seo -> {
+
+        SimpleEvaluationObject simpleEvaluationObject = PlainCode.createSimpleEvaluationObject(codeToExecute, kernel, new Message(), 0, seo -> {
           if (numberOfExecution.intValue() - 1 == indexOfExecution) {
             if (TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime) > 0.2) {
               keepLooking.complete(false);
@@ -220,6 +227,11 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
             }
           }
         });
+        if (!showResult) {
+          simpleEvaluationObject.noResult();
+        }
+
+        kernel.executeCode(codeToExecute, simpleEvaluationObject);
       });
 
       try {

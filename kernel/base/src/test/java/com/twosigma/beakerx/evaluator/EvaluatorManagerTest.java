@@ -18,7 +18,9 @@ package com.twosigma.beakerx.evaluator;
 
 import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
+import com.twosigma.beakerx.kernel.PlainCode;
 import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -78,8 +80,9 @@ public class EvaluatorManagerTest {
   @Test
   public void executeCode_callEvaluatorToEvaluate() {
     String code = "test code";
+    SimpleEvaluationObject seo = PlainCode.createSimpleEvaluationObject(code, kernel, new Message(), 5, new ExecuteCodeCallbackTest());
     //when
-    evaluatorManager.executeCode(code, new Message(), 5, new ExecuteCodeCallbackTest());
+    evaluatorManager.executeCode(code, seo);
     //then
     Assertions.assertThat(evaluator.getCode()).isEqualTo(code);
   }

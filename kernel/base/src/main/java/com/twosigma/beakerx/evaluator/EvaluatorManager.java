@@ -68,9 +68,8 @@ public class EvaluatorManager {
     evaluator.killAllThreads();
   }
 
-  public synchronized SimpleEvaluationObject executeCode(String code, Message message,
-                                                         int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    return execute(code, message, executionCount, executeCodeCallback);
+  public synchronized SimpleEvaluationObject executeCode(String code, SimpleEvaluationObject seo) {
+    return execute(code, seo);
   }
 
   public synchronized SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message,
@@ -82,10 +81,7 @@ public class EvaluatorManager {
     evaluator.exit();
   }
 
-  private SimpleEvaluationObject execute(String code, Message message, int executionCount,
-                                         KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(code, message, executionCount,
-            executeCodeCallback);
+  private SimpleEvaluationObject execute(String code, SimpleEvaluationObject seo) {
     evaluator.evaluate(seo, code);
     return seo;
   }
@@ -98,14 +94,6 @@ public class EvaluatorManager {
     return seowt;
   }
 
-  private SimpleEvaluationObject createSimpleEvaluationObject(String code, Message message,
-                                                              int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
-    seo.setJupyterMessage(message);
-    seo.setExecutionCount(executionCount);
-    seo.addObserver(kernel.getExecutionResultSender());
-    return seo;
-  }
 
   private SimpleEvaluationObjectWithTime createSimpleEvaluationObjectWithTime(String code, Message message,
                                                                               int executionCount, KernelFunctionality.ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {

@@ -15,12 +15,15 @@
  */
 
 var BeakerXPageObject = require('../beakerx.po.js');
+var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
+var tableHelper;
 
 describe('SQL Examples notebook', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
+    tableHelper = new TableHelperObject();
     beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/sql/SQLTest.ipynb');
   }, 2);
 
@@ -34,7 +37,7 @@ describe('SQL Examples notebook', function () {
       beakerxPO.runCodeCellByIndex(0);
       beakerxPO.runCodeCellByIndex(1);
       var dtContainer = beakerxPO.runCellToGetDtContainer(2);
-      beakerxPO.dataTablesIsEnabled(dtContainer);
+      tableHelper.dataTablesIsEnabled(dtContainer)
     }, 2);
   });
 

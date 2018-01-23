@@ -60,4 +60,11 @@ public class SelectMultipleSingle extends MultipleSelectionWidget {
     return VIEW_NAME_VALUE;
   }
 
+  @Override
+  public void setValue(Object newValue) {
+    this.value = getValueFromObject(newValue);
+    sendUpdate(VALUE, value);
+    sendUpdate(INDEX, getSelectedOptionIndex(newValue.toString()));
+  }
+
 }

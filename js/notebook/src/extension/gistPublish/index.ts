@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 
-import $ from 'jquery';
+import * as $ from 'jquery';
+import GistPublishModal from './gistPublishModal';
 
 const dialog = require('base/js/dialog');
 const CONFIG = {
@@ -44,19 +45,9 @@ export function registerFeature(): void {
 }
 
 function beforePublish(): void {
-  dialog.modal({
-    title : 'Publish',
-    body : 'Publish to an anonymous Github Gist, and open in nbviewer?',
-    buttons: {
-      'OK': {
-        'class' : 'btn-primary',
-        'click': function() {
-          saveWidgetsState().then(doPublish);
-        }
-      },
-      'Cancel': {}
-    }
-  });
+  GistPublishModal.show(personalAccessToken => saveWidgetsState().then(
+    () => doPublish(personalAccessToken)
+  ));
 }
 
 function showErrorDialog(errorMsg) {
@@ -84,13 +75,18 @@ function saveWidgetsState(): Promise<any> {
   });
 }
 
-function doPublish(): void {
+function doPublish(personalAccessToken): void {
   const nbjson = Jupyter.notebook.toJSON();
   const filedata = {};
 
   filedata[Jupyter.notebook.notebook_name] = {
     content : JSON.stringify(nbjson, undefined, 1)
   };
+
+  let gistsUrl = CONFIG.gistsUrl;
+  if (personalAccessToken) {
+    gistsUrl = `${gistsUrl}?oauth_token=${personalAccessToken}`;
+  }
 
   const settings = {
     type : 'POST',
@@ -102,14 +98,17 @@ function doPublish(): void {
     success : (data, status) => {
       console.log("gist successfully published: " + data.id);
       window.open(CONFIG.nbviewerBaseUrl + data.id);
-    },
-    error : (jqXHR, status, err) => {
-      const errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
-
-      console.log(errorMsg);
-      showErrorDialog(errorMsg);
     }
   };
 
-  $.ajax(CONFIG.gistsUrl, settings);
+  return $.ajax(gistsUrl, settings).catch((jqXHR, status, err) => {
+    let errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
+
+    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+      errorMsg = jqXHR.responseJSON.message;
+    }
+
+    console.log(errorMsg);
+    showErrorDialog(errorMsg);
+  });
 }

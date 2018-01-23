@@ -60,7 +60,7 @@ public class SelectMultipleTest {
     //when
     widget.setValue(Arrays.asList("1","2"));
     //then
-    verifyMsgForProperty(kernel, SelectMultiple.VALUE, Arrays.asList("1","2"));
+    verifyMsgForProperty(kernel, SelectMultiple.VALUE,new String[]{"1","2"});
   }
 
   @Test

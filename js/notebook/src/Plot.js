@@ -77,7 +77,6 @@ var PlotView = widgets.DOMWidgetView.extend({
         } else if (that._currentScope) {
           that._currentScope.destroy();
         }
-
         setTimeout(function() { that._currentScope = null; });
       });
     });

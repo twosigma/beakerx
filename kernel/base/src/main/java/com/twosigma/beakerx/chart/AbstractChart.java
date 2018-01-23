@@ -32,6 +32,7 @@ public abstract class AbstractChart extends Chart {
   protected TimeZone timeZone;
   private Crosshair crosshair;
   private boolean omitCheckboxes = false;
+  private boolean autoZoom = false;
 
   protected AbstractChart() {
     yAxes.add(yAxis);
@@ -51,6 +52,10 @@ public abstract class AbstractChart extends Chart {
     return this.xLabel;
   }
 
+  public String getxLabel() {
+    return getXLabel();
+  }
+
   public AbstractChart setYLabel(String yLabel) {
     yAxis.setLabel(yLabel);
     sendModelUpdate(ChartToJson.serializeYLabel(this.yAxis.getLabel()));
@@ -66,6 +71,10 @@ public abstract class AbstractChart extends Chart {
     return yAxis.getLabel();
   }
 
+  public String getyLabel() {
+    return getYLabel();
+  }
+
   public AbstractChart add(YAxis yAxis) {
     this.yAxes.add(yAxis);
     sendModelUpdate(ChartToJson.serializeYAxes(this.yAxes));
@@ -78,6 +87,10 @@ public abstract class AbstractChart extends Chart {
 
   public List<YAxis> getYAxes() {
     return this.yAxes;
+  }
+
+  public List<YAxis> getyAxes() {
+    return getYAxes();
   }
 
   public AbstractChart add(List items) {
@@ -107,6 +120,10 @@ public abstract class AbstractChart extends Chart {
     return this.xLowerMargin;
   }
 
+  public double getxLowerMargin() {
+    return getXLowerMargin();
+  }
+
   public AbstractChart setXUpperMargin(double margin) {
     this.xUpperMargin = margin;
     sendModelUpdate(ChartToJson.serializeXUpperMargin(this.xUpperMargin));
@@ -121,14 +138,26 @@ public abstract class AbstractChart extends Chart {
     return this.xUpperMargin;
   }
 
+  public double getxUpperMargin() {
+    return getXUpperMargin();
+  }
+
   public AbstractChart setyAutoRange(boolean yAutoRange) {
     this.yAxis.setAutoRange(yAutoRange);
     sendModelUpdate(ChartToJson.serializeAutoRange(this.yAxis.getAutoRange()));
     return this;
   }
 
-  public Boolean getYAutoRange() {
+  public AbstractChart setYAutoRange(boolean yAutoRange) {
+    return setyAutoRange(yAutoRange);
+  }
+
+  public Boolean getyAutoRange() {
     return this.yAxis.getAutoRange();
+  }
+
+  public Boolean getYAutoRange() {
+    return getyAutoRange();
   }
 
   public AbstractChart setYAutoRangeIncludesZero(boolean yAutoRangeIncludesZero) {
@@ -145,6 +174,10 @@ public abstract class AbstractChart extends Chart {
     return this.yAxis.getAutoRangeIncludesZero();
   }
 
+  public Boolean getyAutoRangeIncludesZero() {
+    return getYAutoRangeIncludesZero();
+  }
+
   public AbstractChart setYLowerMargin(double margin) {
     return setyLowerMargin(margin);
   }
@@ -159,6 +192,10 @@ public abstract class AbstractChart extends Chart {
     return this.yAxis.getLowerMargin();
   }
 
+  public double getyLowerMargin() {
+    return getYLowerMargin();
+  }
+
   public AbstractChart setYUpperMargin(double margin) {
     return setyUpperMargin(margin);
   }
@@ -171,6 +208,10 @@ public abstract class AbstractChart extends Chart {
 
   public double getYUpperMargin() {
     return this.yAxis.getUpperMargin();
+  }
+
+  public double getyUpperMargin() {
+    return getYUpperMargin();
   }
 
   public AbstractChart setYBound(double lower, double upper) {
@@ -199,8 +240,16 @@ public abstract class AbstractChart extends Chart {
     return this.yAxis.getLowerBound();
   }
 
+  public Double getyLowerBound() {
+    return getYLowerBound();
+  }
+
   public Double getYUpperBound() {
     return this.yAxis.getUpperBound();
+  }
+
+  public Double getyUpperBound() {
+    return getYUpperBound();
   }
 
   public AbstractChart setLogY(boolean logY) {
@@ -225,6 +274,10 @@ public abstract class AbstractChart extends Chart {
 
   public Double getYLogBase() {
     return this.yAxis.getLogBase();
+  }
+
+  public Double getyLogBase() {
+    return getYLogBase();
   }
 
   protected AbstractChart setTimeZone(TimeZone timeZone) {
@@ -254,6 +307,16 @@ public abstract class AbstractChart extends Chart {
   public AbstractChart setOmitCheckboxes(boolean omitCheckboxes) {
     this.omitCheckboxes = omitCheckboxes;
     sendModelUpdate(ChartToJson.serializeOmitCheckboxes(this.omitCheckboxes));
+    return this;
+  }
+
+  public Boolean getAutoZoom() {
+    return autoZoom;
+  }
+
+  public AbstractChart setAutoZoom(boolean autoZoom) {
+    this.autoZoom = autoZoom;
+    sendModelUpdate(ChartToJson.serializeAutoZoom(this.autoZoom));
     return this;
   }
 

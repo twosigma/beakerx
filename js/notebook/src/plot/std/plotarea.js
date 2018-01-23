@@ -76,8 +76,7 @@ define([
     }
   };
 
-  PlotArea.prototype.getRange = function(){
-    var eles = this.elements;
+  PlotArea.prototype.getRange = function(eles = this.elements){
     var range = {
       xl : Infinity,
       xr : -Infinity,

@@ -149,12 +149,20 @@ abstract public class XYChart extends AbstractChart {
     return this.xAutoRange;
   }
 
+  public Boolean getxAutoRange() {
+    return getXAutoRange();
+  }
+
   public XYChart setXBound(double lower, double upper) {
     this.xAutoRange = false;
     this.xLowerBound = lower;
     this.xUpperBound = upper;
     sendModelUpdate(ChartToJson.serializeXBound(this));
     return this;
+  }
+
+  public XYChart setxBound(double lower, double upper) {
+    return setXBound(lower, upper);
   }
 
   public XYChart setXBound(List<Number> bound) {
@@ -176,17 +184,16 @@ abstract public class XYChart extends AbstractChart {
     return this.xLowerBound;
   }
 
+  public Double getxLowerBound() {
+    return getXLowerBound();
+  }
+
   public Double getXUpperBound() {
     return this.xUpperBound;
   }
 
-  public XYChart setYAutoRange(boolean yAutoRange) {
-    setXAutoRange(yAutoRange);
-    return this;
-  }
-
-  public XYChart setyAutoRange(boolean yAutoRange) {
-    return this.setYAutoRange(yAutoRange);
+  public Double getxUpperBound() {
+    return getXUpperBound();
   }
 
   public XYChart setLogX(boolean logX) {
@@ -201,6 +208,10 @@ abstract public class XYChart extends AbstractChart {
 
   public Double getXLogBase() {
     return xLogBase;
+  }
+
+  public Double getxLogBase() {
+    return getXLogBase();
   }
 
   public XYChart setXLogBase(double xLogBase) {
@@ -226,17 +237,33 @@ abstract public class XYChart extends AbstractChart {
     return xTickLabelsVisible;
   }
 
+  public boolean isXTickLabelsVisible() {
+    return isxTickLabelsVisible();
+  }
+
   public void setxTickLabelsVisible(boolean xTickLabelsVisible) {
     this.xTickLabelsVisible = xTickLabelsVisible;
     sendModelUpdate(ChartToJson.serializeXTickLabelsVisible(this.xTickLabelsVisible));
+  }
+
+  public void setXTickLabelsVisible(boolean xTickLabelsVisible) {
+    setxTickLabelsVisible(xTickLabelsVisible);
   }
 
   public boolean isyTickLabelsVisible() {
     return yTickLabelsVisible;
   }
 
+  public boolean isYTickLabelsVisible() {
+    return isyTickLabelsVisible();
+  }
+
   public void setyTickLabelsVisible(boolean yTickLabelsVisible) {
     this.yTickLabelsVisible = yTickLabelsVisible;
     sendModelUpdate(ChartToJson.serializeYTickLabelsVisible(this.yTickLabelsVisible));
+  }
+
+  public void setYTickLabelsVisible(boolean yTickLabelsVisible) {
+    setyTickLabelsVisible(yTickLabelsVisible);
   }
 }

@@ -17,6 +17,7 @@ package com.twosigma.beakerx.widgets;
 
 import java.io.Serializable;
 import java.util.HashMap;
+
 import static com.twosigma.beakerx.handler.KernelHandlerWrapper.wrapBusyIdle;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCommEvent;
@@ -61,9 +62,13 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
   }
 
   protected void openComm() {
+    openComm(Comm.Buffer.EMPTY);
+  }
+
+  protected void openComm(Comm.Buffer buffer) {
     comm.setData(createContent());
     addValueChangeMsgCallback();
-    comm.open();
+    comm.open(buffer);
   }
 
   protected void openComm(Message parentMessage) {
@@ -146,6 +151,10 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
 
   public void sendUpdate(String propertyName, Object value) {
     this.comm.sendUpdate(propertyName, value);
+  }
+
+  public void sendUpdate(Comm.Buffer buffer) {
+    this.comm.sendUpdate(buffer);
   }
 
   public void handleCommEventSync(Message message, CommActions action, ActionPerformed handlerAction) {

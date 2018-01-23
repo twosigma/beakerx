@@ -67,6 +67,10 @@ public abstract class Graphics implements Serializable, Cloneable {
     return yAxisName;
   }
 
+  public String getyAxis() {
+    return getYAxis();
+  }
+
   public String getUid() {
     return uid;
   }

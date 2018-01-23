@@ -314,7 +314,7 @@ describe('DataFormatter', () => {
 
   });
 
-  describe.only('dataFormatter.html', () => {
+  describe('dataFormatter.html', () => {
     const booleanFormatFn = dataFormatter.getFormatFnByType(10);
     const testObject = { someProp: '' };
 

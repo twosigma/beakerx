@@ -50,7 +50,7 @@ export const getTypeByName = (typeName: string): number => {
   return ALL_TYPES[typeName] || 0;
 };
 
-export function getDisplayType(typeName: string, stringFormatForType: any, stringFormatForColumn: any) {
+export function getDisplayType(typeName: string, stringFormatForType?: any, stringFormatForColumn?: any) {
   const type: number = getTypeByName(typeName);
 
   if (type === ALL_TYPES.datetime) {

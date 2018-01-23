@@ -27,8 +27,8 @@ describe('dataTypes', () => {
       expect(getTypeByName('integer')).to.be.a('number');
     });
 
-    it('should return number', () => {
-      expect(getTypeByName()).to.equal(0);
+    it('should return 0 as default', () => {
+      expect(getTypeByName('some dummy value')).to.equal(0);
     });
 
     it('should return proper type number', () => {
@@ -56,11 +56,11 @@ describe('dataTypes', () => {
     });
 
     it('should return number', () => {
-      expect(getDisplayType()).to.be.a('number');
+      expect(getDisplayType('some dummy value')).to.be.a('number');
     });
 
     it('should return 0 by default', () => {
-      expect(getDisplayType()).to.equal(0);
+      expect(getDisplayType('some dummy value')).to.equal(0);
     });
 
     it('should return display type as number', () => {

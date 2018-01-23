@@ -14,9 +14,14 @@
  *  limitations under the License.
  */
 
-import { DataGrid } from "@phosphor/datagrid";
+var jsdom = require('jsdom');
 
-export default interface IDataGridScopeOptions extends DataGrid.IOptions {
-  element: HTMLElement
-  data: any
-}
+global.window = new jsdom.JSDOM().window;
+global.document = window.document;
+global.Element = window.Element;
+window.HTMLCanvasElement.prototype.getContext = function() {
+  return {};
+};
+
+global.navigator = window.navigator;
+global.define = function() {};

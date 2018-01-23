@@ -14,49 +14,30 @@
  *  limitations under the License.
  */
 
-import { StackedPanel, Widget } from '@phosphor/widgets';
+import { Widget } from '@phosphor/widgets';
 import { DataGrid } from '@phosphor/datagrid';
-import IDataGridScopeOptions from "./IDataGridScopeOptions";
 import { TableDataModel } from './TableDataModel';
-
-import './dataGrid.css';
+import { silverStripeStyle } from './dataGridStyle';
+import IDataGridScopeOptions from "./IDataGridScopeOptions";
+import IDataModelOptions from "./IDataModelOptions";
 
 export class DataGridScope {
-  dataGrid: DataGrid;
-
-  element: HTMLElement;
-
-  data: any;
-
-  greenStripeStyle: DataGrid.IStyle = {
-    ...DataGrid.defaultStyle,
-    voidColor: '#ffffff',
-    headerBackgroundColor: '#E6E6E6',
-    rowBackgroundColor: i => i % 2 === 0 ? '#f9f9f9' : ''
-  };
+  private dataGrid: DataGrid;
+  private element: HTMLElement;
+  private modelOptions: IDataModelOptions;
 
   constructor(options: IDataGridScopeOptions) {
     this.element = options.element;
-    this.data = options.data;
+    this.modelOptions = options.data;
     this.dataGrid = new DataGrid({
-      style: this.greenStripeStyle
+      style: silverStripeStyle
     });
 
-    this.dataGrid.model = new TableDataModel(this.data);
+    this.dataGrid.model = new TableDataModel(this.modelOptions);
   }
 
   render(): void {
-    let wrapper = this.createWrapper(this.dataGrid, 'example');
-    Widget.attach(wrapper, this.element);
-  }
-
-  createWrapper(content: Widget, title: string): Widget {
-    let wrapper = new StackedPanel();
-    wrapper.addClass('content-wrapper');
-    wrapper.addWidget(content);
-    wrapper.title.label = title;
-
-    return wrapper;
+    Widget.attach(this.dataGrid, this.element);
   }
 
   doDestroy() {

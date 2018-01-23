@@ -15,7 +15,7 @@
  */
 
 import { DataModel } from "@phosphor/datagrid";
-import {getDisplayType, getTypeByName} from './dataTypes';
+import { getDisplayType } from './dataTypes';
 import { DataFormatter } from './DataFormatter';
 import IDataModelOptions from './IDataModelOptions';
 
@@ -59,7 +59,7 @@ export class TableDataModel extends DataModel {
       return '';
     }
 
-    return this.convertData(
+    return this.formatData(
       this._data[row][column],
       this._options.types[column] || 'string',
       row,
@@ -67,10 +67,10 @@ export class TableDataModel extends DataModel {
     );
   }
 
-  convertData(data: any, typeName: string, row: number, column: number): any {
-    const type = getTypeByName(typeName);
+  formatData(data: any, typeName: string, row: number, column: number): any {
+    //@todo check if raw type no is required, keep only display type
     const displayType = getDisplayType(
-      type,
+      typeName,
       this._options.stringFormatForType,
       this._options.stringFormatForColumn[this._columnNames[column]]
     );

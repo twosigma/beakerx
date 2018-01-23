@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
+    "baseUrl": "./",
     "sourceMap": true,
     "strictNullChecks": true,
     "module": "ES2015",
@@ -8,12 +8,7 @@
     "allowJs": true,
     "moduleResolution": "Node",
     "noEmit": true,
-    "lib": ["dom", "es5", "es2015.promise"]
-  },
-  "include": [
-    "./src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "lib": ["dom", "es5", "es2015.promise"],
+    "types": []
+  }
 }

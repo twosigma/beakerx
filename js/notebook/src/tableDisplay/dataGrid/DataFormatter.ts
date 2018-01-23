@@ -18,9 +18,9 @@ import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import * as _ from 'underscore';
 import { isDoubleWithPrecision, getDoublePrecisionByType } from './dataTypes';
 import { DataGridHelpers } from './dataGridHelpers';
+import { TIME_UNIT_FORMATS } from '../consts';
 
 const bkUtils = require('../../shared/bkUtils');
-const tableConsts = require('../consts');
 
 interface IFormatterOptions {
   stringFormatForColumn?: any,
@@ -30,6 +30,8 @@ interface IFormatterOptions {
   timeZone?: any,
   columnNames?: string[]
 }
+
+export const DEFAULT_TIME_FORMAT = 'YYYYMMDD HH:mm:ss.SSS ZZ';
 
 export class DataFormatter {
   stringFormatForColumn: any;
@@ -68,15 +70,15 @@ export class DataFormatter {
 
     switch (displayType) {
       case 1:
-        return this.handleNull(this.integer);
+        return this.integer;
       case 2:
-        return this.handleNull(this.formattedInteger);
+        return this.formattedInteger;
       case 3:
-        return this.handleNull(this.double);
+        return this.double;
       case 6:
-        return this.handleNull(this.exponential_5);
+        return this.exponential_5;
       case 7:
-        return this.handleNull(this.exponential_15);
+        return this.exponential_15;
       case 8:
         return this.datetime;
       case 9:
@@ -120,7 +122,7 @@ export class DataFormatter {
 
     if (objectValue) {
       formattedValue = value.type === 'Date' ?
-        moment(value.timestamp).format('YYYYMMDD HH:mm:ss.SSS ZZ') :
+        moment(value.timestamp).format(DEFAULT_TIME_FORMAT) :
         JSON.stringify(value);
     } else if (_.isString(value)) {
       const escapedText = DataGridHelpers.escapeHTML(value);
@@ -128,15 +130,23 @@ export class DataFormatter {
 
       formattedValue = limitedText;
     }
-    
+
     return formattedValue;
   }
 
   private integer(value: any) {
+    if (this.isNull(value)) {
+      return value;
+    }
+
     return parseInt(value);
   }
 
   private formattedInteger(value: any) {
+    if (this.isNull(value)) {
+      return value;
+    }
+
     let x = parseInt(value);
 
     if (!isNaN(x)) {
@@ -147,6 +157,10 @@ export class DataFormatter {
   }
 
   private double(value: any, row: number, column: number) {
+    if (this.isNull(value)) {
+      return value;
+    }
+
     let doubleValue = parseFloat(value);
     let colFormat = this.stringFormatForColumn[this.columnNames[column]];
     let typeFormat = this.stringFormatForType.double;
@@ -172,10 +186,18 @@ export class DataFormatter {
   }
 
   private exponential_5(value: any) {
+    if (this.isNull(value)) {
+      return value;
+    }
+
     return parseFloat(value).toExponential(5);
   }
 
   private exponential_15(value: any) {
+    if (this.isNull(value)) {
+      return value;
+    }
+
     return parseFloat(value).toExponential(15);
   }
 
@@ -185,8 +207,8 @@ export class DataFormatter {
     }
 
     let format = _.isEmpty(this.formatForTimes) ?
-      tableConsts.TIME_UNIT_FORMATS.DATETIME.format :
-      tableConsts.TIME_UNIT_FORMATS[this.formatForTimes].format;
+      TIME_UNIT_FORMATS.DATETIME.format :
+      TIME_UNIT_FORMATS[this.formatForTimes].format;
 
     if (_.isObject(value) && value.type === 'Date') {
       return bkUtils.formatTimestamp(value.timestamp, this.timeZone, format);
@@ -198,7 +220,13 @@ export class DataFormatter {
   }
 
   private boolean(value: any) {
-    return this.isNull(value) ? 'false' : 'true';
+    return (
+      this.isNull(value) ||
+      value === false ||
+      (typeof value === 'number' && isNaN(value))
+    ) ?
+      'false':
+      'true';
   }
 
   private html(value: any) {

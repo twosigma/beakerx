@@ -1,0 +1,109 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+//Colors
+$alto: #DADADA;
+$gallery: #F0F0F0;
+$silver: #CDCDCD;
+$silverChalice: #A0A0A0;
+
+$gridBackgroundColor: $gallery;
+$borderColor: $silverChalice;
+$buttonActive: $silver;
+$gridBorder: 1px solid $borderColor;
+
+.p-DataGrid {
+  min-width: 64px;
+  min-height: 330px;
+  border: $gridBorder;
+}
+
+.p-DataGrid-scrollCorner {
+  background-color: $gridBackgroundColor;
+}
+
+.p-DataGrid-scrollCorner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  background-color: $borderColor;
+}
+
+.p-ScrollBar {
+  &[data-orientation='horizontal'] {
+    min-height: 16px;
+    max-height: 16px;
+    min-width: 45px;
+    border-top: $gridBorder;
+
+    .p-ScrollBar-thumb {
+      height: 100%;
+      min-width: 15px;
+      border-left: $gridBorder;
+      border-right: $gridBorder;
+    }
+  }
+
+  &[data-orientation='vertical'] {
+    min-width: 16px;
+    max-width: 16px;
+    min-height: 45px;
+    border-left: $gridBorder;
+
+    .p-ScrollBar-thumb {
+      width: 100%;
+      min-height: 15px;
+      border-top: $gridBorder;
+      border-bottom: $gridBorder;
+    }
+  }
+}
+
+.p-ScrollBar-button {
+  background-color: $gridBackgroundColor;
+  background-position: center center;
+  min-height: 15px;
+  max-height: 15px;
+  min-width: 15px;
+  max-width: 15px;
+
+  &:hover {
+    background-color: $alto;
+  }
+
+  &.p-mod-active {
+    background-color: $buttonActive;
+  }
+}
+
+.p-ScrollBar-track {
+  background: $gridBackgroundColor;
+}
+
+.p-ScrollBar-thumb {
+  background: $silver;
+
+  &:hover {
+    background: $silver;
+  }
+
+  &.p-mod-active {
+    background: $silverChalice;
+  }
+}

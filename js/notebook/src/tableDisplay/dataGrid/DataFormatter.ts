@@ -31,6 +31,8 @@ interface IFormatterOptions {
   columnNames?: string[]
 }
 
+export const DEFAULT_TIME_FORMAT = 'YYYYMMDD HH:mm:ss.SSS ZZ';
+
 export class DataFormatter {
   stringFormatForColumn: any;
   stringFormatForType: any;
@@ -120,7 +122,7 @@ export class DataFormatter {
 
     if (objectValue) {
       formattedValue = value.type === 'Date' ?
-        moment(value.timestamp).format('YYYYMMDD HH:mm:ss.SSS ZZ') :
+        moment(value.timestamp).format(DEFAULT_TIME_FORMAT) :
         JSON.stringify(value);
     } else if (_.isString(value)) {
       const escapedText = DataGridHelpers.escapeHTML(value);
@@ -218,7 +220,13 @@ export class DataFormatter {
   }
 
   private boolean(value: any) {
-    return this.isNull(value) ? 'false' : 'true';
+    return (
+      this.isNull(value) ||
+      value === false ||
+      (typeof value === 'number' && isNaN(value))
+    ) ?
+      'false':
+      'true';
   }
 
   private html(value: any) {

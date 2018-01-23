@@ -21,10 +21,7 @@ import * as sinon from 'sinon';
 import { Widget } from "@phosphor/widgets";
 import { DataGridScope } from '@beakerx/tableDisplay/dataGrid/DataGridScope';
 
-const bkUtils = require('@beakerx/shared/bkUtils');
 const element = document.createElement('div');
-
-sinon.stub(bkUtils);
 
 describe('dataGridScope', () => {
   const dataGridScope = new DataGridScope({

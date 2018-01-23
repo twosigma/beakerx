@@ -54,11 +54,11 @@ describe('big ints tests', function () {
       var cellText;
       tableCell = beakerxPO.getTableCell(0, 0, 1);
       cellText = tableCell.getText();
-      expect(cellText).toMatch('1912276048007');
+      expect(cellText).toMatch('123456789000007');
 
       tableCell = beakerxPO.getTableCell(0, 0, 2);
       cellText = tableCell.getText();
-      expect(cellText).toMatch('1912276048077');
+      expect(cellText).toMatch('123456789000077');
 
       tableCell = beakerxPO.getTableCell(0, 0, 3);
       cellText = tableCell.getText();
@@ -66,11 +66,11 @@ describe('big ints tests', function () {
 
       tableCell = beakerxPO.getTableCell(0, 1, 1);
       cellText = tableCell.getText();
-      expect(cellText).toMatch('1912276048014');
+      expect(cellText).toMatch('123456789000014');
 
       tableCell = beakerxPO.getTableCell(0, 1, 2);
       cellText = tableCell.getText();
-      expect(cellText).toMatch('3824552096176');
+      expect(cellText).toMatch('246913578000176');
 
       tableCell = beakerxPO.getTableCell(0, 1, 3);
       cellText = tableCell.getText();
@@ -78,11 +78,11 @@ describe('big ints tests', function () {
 
       tableCell = beakerxPO.getTableCell(0, 2, 1);
       cellText = tableCell.getText();
-      expect(cellText).toMatch('1912276048021');
+      expect(cellText).toMatch('123456789000021');
 
       tableCell = beakerxPO.getTableCell(0, 2, 2);
       cellText = tableCell.getText();
-      expect(cellText).toMatch('5736828144297');
+      expect(cellText).toMatch('370370367000297');
 
       tableCell = beakerxPO.getTableCell(0, 2, 3);
       cellText = tableCell.getText();
@@ -116,11 +116,11 @@ describe('big ints tests', function () {
       var cellText;
       tableCell = beakerxPO.getTableCell(1, 0, 1);
       cellText = tableCell.getText();
-      expect(cellText).toMatch('-915537047993');
+      expect(cellText).toMatch('1987654321000007');
 
       tableCell = beakerxPO.getTableCell(1, 0, 2);
       cellText = tableCell.getText();
-      expect(cellText).toMatch('-711372286236171');
+      expect(cellText).toMatch('1544407407417059829');
 
       tableCell = beakerxPO.getTableCell(1, 0, 3);
       cellText = tableCell.getText();
@@ -128,11 +128,11 @@ describe('big ints tests', function () {
 
       tableCell = beakerxPO.getTableCell(1, 1, 1);
       cellText = tableCell.getText();
-      expect(cellText).toMatch('-915537047986');
+      expect(cellText).toMatch('1987654321000014');
 
       tableCell = beakerxPO.getTableCell(1, 1, 2);
       cellText = tableCell.getText();
-      expect(cellText).toMatch('-812996898545856');
+      expect(cellText).toMatch('1765037037048078144');
 
       tableCell = beakerxPO.getTableCell(1, 1, 3);
       cellText = tableCell.getText();
@@ -140,11 +140,11 @@ describe('big ints tests', function () {
 
       tableCell = beakerxPO.getTableCell(1, 2, 1);
       cellText = tableCell.getText();
-      expect(cellText).toMatch('-915537047979');
+      expect(cellText).toMatch('1987654321000021');
 
       tableCell = beakerxPO.getTableCell(1, 2, 2);
       cellText = tableCell.getText();
-      expect(cellText).toMatch('-914621510853099');
+      expect(cellText).toMatch('1985666666679098901');
 
       tableCell = beakerxPO.getTableCell(1, 2, 3);
       cellText = tableCell.getText();

@@ -40,7 +40,7 @@ def stop_console(p, pexpect, t):
     p.expect([pexpect.EOF, pexpect.TIMEOUT], timeout=t)
     if p.isalive():
         p.terminate()
-    kill_jupyter()
+    kill_processes('jupyter')
 
 def test_lsmagic():
     result = 0
@@ -71,9 +71,9 @@ def test_lsmagic():
     print("test_lsmagic return code=", result)
     return result
 
-def kill_jupyter():
+def kill_processes(name):
     try:
-        pidlist = map(int, check_output(['pgrep', '-f', 'jupyter']).split())
+        pidlist = map(int, check_output(['pgrep', '-f', name]).split())
     except CalledProcessError:
         pidlist = []
     for pid in pidlist:

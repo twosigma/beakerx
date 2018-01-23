@@ -72,6 +72,7 @@ public class ClassPathAddMvnCellMagicCommand extends ClasspathMagicCommand{
         if (!validateCommandLines(commandLines)){
             return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, MVN_CELL_FORMAT_ERROR_MESSAGE);
         }
+        commandParams.setRepos(kernel.getRepos().get());
         List<MavenJarResolver.Dependency> dependencies =
                 getDepsFromCommand(Arrays.copyOfRange(commandLines, 1, commandLines.length));
         MavenJarResolver mavenJarResolver = new MavenJarResolver(commandParams, pomFactory);

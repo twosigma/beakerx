@@ -25,7 +25,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CsvPlotReaderTest {
+public class CSVTest {
 
   private static final boolean IS_WINDOWS = System.getProperty("os.name").contains("indow");
   public static final String TABLE_ROWS_TEST_CSV = "tableRowsTest.csv";
@@ -37,7 +37,7 @@ public class CsvPlotReaderTest {
   public void shouldReturnDataAsListForPlot() throws Exception {
     //when
     List<Map<String, Object>> values =
-            new CsvPlotReader().read(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
+            new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
     //then
     assertThat(values.get(2).get("m3")).isEqualTo(8);
     assertThat(values.get(2).get("time"))
@@ -55,7 +55,7 @@ public class CsvPlotReaderTest {
   public void shouldReturnInt() throws Exception {
     //when
     List<Map<String, Object>> values =
-            new CsvPlotReader().read(getOsAppropriatePath(getClass().getClassLoader(), INT_ROWS_TEST_CSV));
+            new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), INT_ROWS_TEST_CSV));
     //then
     assertThat(values.get(0).get("a")).isEqualTo(1);
   }
@@ -64,7 +64,7 @@ public class CsvPlotReaderTest {
   public void shouldReturnBigInt() throws Exception {
     //when
     List<Map<String, Object>> values =
-            new CsvPlotReader().read(getOsAppropriatePath(getClass().getClassLoader(), BIG_INT_ROWS_TEST_CSV));
+            new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), BIG_INT_ROWS_TEST_CSV));
     //then
     assertThat(values.get(0).get("a")).isEqualTo(new BigInteger("123456789123456789"));
   }
@@ -73,7 +73,7 @@ public class CsvPlotReaderTest {
   public void shouldReturnFloat() throws Exception {
     //when
     List<Map<String, Object>> values =
-            new CsvPlotReader().read(getOsAppropriatePath(getClass().getClassLoader(), FLOAT_ROWS_TEST_CSV));
+            new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), FLOAT_ROWS_TEST_CSV));
     //then
     assertThat(values.get(0).get("a")).isEqualTo(1.1f);
   }

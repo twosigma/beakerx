@@ -24,6 +24,7 @@ public class ScalaDefaultVariables extends DefaultJVMVariables {
 
   public ScalaDefaultVariables() {
     removeImports("com.twosigma.beakerx.easyform.EasyForm",
+        "com.twosigma.beakerx.fileloader.CSV",
         "com.twosigma.beakerx.chart.xychart.*",
         "com.twosigma.beakerx.chart.xychart.plotitem.*",
         "com.twosigma.beakerx.table.*"
@@ -48,7 +49,7 @@ public class ScalaDefaultVariables extends DefaultJVMVariables {
         "com.twosigma.beakerx.chart.xychart.plotitem.YAxis",
         "com.twosigma.beakerx.chart.xychart.plotitem.ShapeType",
         "com.twosigma.beakerx.chart.xychart.plotitem.StrokeType",
-        "com.twosigma.beakerx.scala.fileloader.CsvPlotReader"
+        "com.twosigma.beakerx.scala.fileloader.CSV"
     );
   }
 }

@@ -19,7 +19,7 @@ package com.twosigma.beakerx.table;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.xychart.XYChart;
-import com.twosigma.beakerx.fileloader.CsvPlotReader;
+import com.twosigma.beakerx.fileloader.CSV;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.serialization.DateSerializer;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
@@ -38,7 +38,6 @@ import com.twosigma.beakerx.table.serializer.ThreeColorHeatmapHighlighterSeriali
 import com.twosigma.beakerx.table.serializer.TimeStringFormatSerializer;
 import com.twosigma.beakerx.table.serializer.UniqueEntriesHighlighterSerializer;
 import com.twosigma.beakerx.table.serializer.ValueHighlighterSerializer;
-import com.twosigma.beakerx.widgets.selectioncontainer.Tab;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,8 +51,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static com.twosigma.beakerx.fileloader.CsvPlotReaderTest.TABLE_ROWS_TEST_CSV;
-import static com.twosigma.beakerx.fileloader.CsvPlotReaderTest.getOsAppropriatePath;
+import static com.twosigma.beakerx.fileloader.CSVTest.TABLE_ROWS_TEST_CSV;
+import static com.twosigma.beakerx.fileloader.CSVTest.getOsAppropriatePath;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MAX_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MIN_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.ObservableTableDisplaySerializer.DOUBLE_CLICK_TAG;
@@ -704,12 +703,12 @@ public class TableDisplayTest {
   @Test
   public void shouldContainTime() throws Exception {
     //given
-    List<Map<String, Object>> data = new CsvPlotReader().read(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
+    List<Map<String, Object>> data = new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
     TableDisplay tableDisplay = new TableDisplay(data);
     //when
     tableDisplay.display();
     //then
-    assertThat(tableDisplay.getTypes()).contains(CsvPlotReader.TIME_COLUMN);
+    assertThat(tableDisplay.getTypes()).contains(CSV.TIME_COLUMN);
     LinkedHashMap model = getModel();
     List values = (List) model.get(VALUES);
     List row0 = (List) values.get(0);

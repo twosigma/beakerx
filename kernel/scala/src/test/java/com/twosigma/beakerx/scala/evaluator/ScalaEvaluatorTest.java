@@ -121,7 +121,7 @@ public class ScalaEvaluatorTest {
   @Test
   public void displayTable() throws Exception {
     //given
-    String code = "val table = new TableDisplay(new CsvPlotReader().readFile(\"src/test/resources/tableRowsTest.csv\"))\n" +
+    String code = "val table = new TableDisplay(new CSV().readFile(\"src/test/resources/tableRowsTest.csv\"))\n" +
             "table";
     SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
     //when

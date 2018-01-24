@@ -20,7 +20,7 @@ import java.util
 import scala.collection.JavaConverters._
 
 
-class CsvPlotReader extends com.twosigma.beakerx.fileloader.CsvPlotReader {
+class CSV extends com.twosigma.beakerx.fileloader.CSV {
 
   def readFile(fileName: String): List[Map[String, AnyRef]] = {
     val javaOutput: util.List[util.Map[String, AnyRef]] = super.read(fileName)

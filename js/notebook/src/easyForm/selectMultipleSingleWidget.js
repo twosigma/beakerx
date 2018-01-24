@@ -33,13 +33,13 @@ var SelectMultipleSingleModel = widgets.SelectModel.extend({
 var SelectMultipleSingleView = widgets.SelectView.extend({
   update: function() {
     SelectMultipleSingleView.__super__.update.apply(this);
-    var items = this.model.get('_options_labels');
-    if (items && items.length !== undefined) {
-      $(this.listbox).attr('size', items.length);
-      $(this.el)
-        .removeClass('widget-select')
-        .addClass('widget-select-multiple');
+    var size = this.model.get('size');
+    if (size !== undefined) {
+      $(this.listbox).attr('size', size);
     }
+    $(this.el)
+    .removeClass('widget-select')
+    .addClass('widget-select-multiple');
   }
 });
 

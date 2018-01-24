@@ -196,6 +196,7 @@ class CombinedChart(BaseObject):
         self.x_label = getValue(kwargs, 'xLabel', 'Linear')
         self.plots = getValue(kwargs, 'plots', [])
         self.weights = getValue(kwargs, 'weights', [])
+        self.auto_zoom = getValue(kwargs, 'autoZoom')
         self.version = 'groovy'
         self.type = 'CombinedPlot'
         self.y_tickLabels_visible = True

@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx;
 
-import com.twosigma.beakerx.fileloader.CsvPlotReader;
+import com.twosigma.beakerx.fileloader.CSV;
 
 import java.net.URI;
 import java.util.List;
@@ -25,7 +25,7 @@ public class ResourceLoaderTest {
   private static final boolean IS_WINDOWS = System.getProperty("os.name").contains("indow");
 
   public static List readAsList(String fileName) throws Exception {
-    return new CsvPlotReader().read(ResourceLoaderTest.getOsAppropriatePath(fileName, ResourceLoaderTest.class));
+    return new CSV().read(ResourceLoaderTest.getOsAppropriatePath(fileName, ResourceLoaderTest.class));
   }
 
   public static String getOsAppropriatePath(String fileName, Class clazz) throws Exception {

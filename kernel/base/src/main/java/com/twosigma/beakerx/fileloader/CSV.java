@@ -26,7 +26,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class CsvPlotReader {
+public class CSV {
 
   public static String TIME_COLUMN = "time";
 

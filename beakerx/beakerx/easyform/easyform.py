@@ -80,7 +80,7 @@ class EasyForm(BeakerxBox):
             list = SelectMultipleSingle(
                 description=self.getDescription(args, kwargs))
         list.options = self.getOptions(args, kwargs)
-        list.size = getValue(kwargs, 'rows', 2)
+        list.size = getValue(kwargs, 'rows', len(list.options))
 
         self.children += (list,)
         self.components[list.description] = list

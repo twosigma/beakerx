@@ -143,5 +143,18 @@ var BeakerXPageObject = function () {
     expect(resultTest).toMatch(expectedText);
   }
 
+  this.getTableColumnLabel = function(tableIndex, columnIndex){
+    var table = $$("div.dataTables_scrollHead") [tableIndex];
+    var tableColumnLabels = table.$$("span.header-text");
+    return tableColumnLabels[columnIndex];
+  }
+
+  this.getTableCell = function(tableIndex, rowIndex, columnIndex){
+    var table = $$("div.dataTables_scrollBody") [tableIndex];
+    var tableRows = table.$$("tbody tr");
+    var rowCells = tableRows[rowIndex].$$("td");
+  return rowCells[columnIndex];
+  }
+
 };
 module.exports = BeakerXPageObject;

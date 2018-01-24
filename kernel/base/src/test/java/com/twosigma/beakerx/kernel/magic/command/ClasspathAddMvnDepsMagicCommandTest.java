@@ -110,30 +110,6 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     assertThat(text).isEqualTo(ADD_MVN_FORMAT_ERROR_MESSAGE + "\n");
   }
 
-  @Test
-  public void handleDepVersionConflict() throws IOException {
-    String codeString1 = "%classpath add mvn com.google.code.gson gson 2.6.2";
-    MagicCommand command1 = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), codeString1);
-    Code code1 = Code.createCodeWithoutCodeBlock(codeString1, singletonList(command1), NO_ERRORS, new Message());
-    MagicCommandOutcome process1 = MagicCommandExecutor.executeMagicCommands(code1, 1, kernel);
-    assertThat(getText(process1)).contains("Added jar");
-
-    String codeString2 = "%classpath add mvn com.google.code.gson gson 2.2.3";
-    MagicCommand command2 = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), codeString2);
-    Code code2 = Code.createCodeWithoutCodeBlock(codeString1, singletonList(command2), NO_ERRORS, new Message());
-    MagicCommandOutcome process2 = MagicCommandExecutor.executeMagicCommands(code2, 2, kernel);
-    assertThat(getText(process2)).contains("Dependency conflict");
-
-    String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;
-    Files.walk(Paths.get(mvnDir)).forEach(path -> {
-      try{
-        FileUtils.forceDelete(path.toFile());
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    });
-  }
-
   private void handleClasspathAddMvnDep(String allCode, String expected) throws IOException {
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
     Code code = Code.createCodeWithoutCodeBlock(allCode, singletonList(command), NO_ERRORS, new Message());

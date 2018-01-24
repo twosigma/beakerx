@@ -20,13 +20,13 @@ import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.handler.MagicCommandExecutor;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
+import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -57,15 +57,15 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   private static KernelTest kernel;
   private static EvaluatorTest evaluator;
 
-  @BeforeClass
-  public static void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     evaluator = new EvaluatorTest();
     kernel = new KernelTest("id2", evaluator);
     prepareLocalMavenRepository();
   }
 
-  @AfterClass
-  public static void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     evaluator.exit();
   }
 
@@ -93,7 +93,8 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     MagicCommandOutcome process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
     //then
     String text = getText(process);
-    assertThat(text).contains("Could not resolve dependencies for: com.google.code.XXXX : gson : 2.6.2");
+    assertThat(text).contains("Could not resolve dependencies for:");
+    assertThat(text).contains("com.google.code.XXXX : gson : 2.6.2");
   }
 
   @Test

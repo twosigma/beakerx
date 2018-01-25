@@ -19,7 +19,7 @@ package com.twosigma.beakerx.table;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.chart.xychart.XYChart;
-import com.twosigma.beakerx.fileloader.CsvPlotReader;
+import com.twosigma.beakerx.fileloader.CSV;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.serialization.DateSerializer;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
@@ -51,8 +51,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static com.twosigma.beakerx.fileloader.CsvPlotReaderTest.TABLE_ROWS_TEST_CSV;
-import static com.twosigma.beakerx.fileloader.CsvPlotReaderTest.getOsAppropriatePath;
+import static com.twosigma.beakerx.fileloader.CSVTest.TABLE_ROWS_TEST_CSV;
+import static com.twosigma.beakerx.fileloader.CSVTest.getOsAppropriatePath;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MAX_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.DecimalStringFormatSerializer.MIN_DECIMALS;
 import static com.twosigma.beakerx.table.serializer.ObservableTableDisplaySerializer.DOUBLE_CLICK_TAG;
@@ -591,6 +591,15 @@ public class TableDisplayTest {
   }
 
   @Test
+  public void createWithUndefinedTypes() throws Exception {
+    TableDisplay tableDisplay = new TableDisplay(getListOfMapsWithEmptyTypes());
+    assertThat(tableDisplay.getSubtype()).isEqualTo(TableDisplay.LIST_OF_MAPS_SUBTYPE);
+    System.out.println(tableDisplay.getTypes());
+    List<String> expectedValues = Arrays.asList("string", "double", "integer");
+    assertThat(tableDisplay.getTypes()).isEqualTo(expectedValues);
+  }
+
+  @Test
   public void createWithListOfMapsParam_hasListOfMapsSubtype() throws Exception {
     //when
     TableDisplay tableDisplay = new TableDisplay(getListOfMapsData());
@@ -694,12 +703,12 @@ public class TableDisplayTest {
   @Test
   public void shouldContainTime() throws Exception {
     //given
-    List<Map<String, Object>> data = new CsvPlotReader().read(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
+    List<Map<String, Object>> data = new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), TABLE_ROWS_TEST_CSV));
     TableDisplay tableDisplay = new TableDisplay(data);
     //when
     tableDisplay.display();
     //then
-    assertThat(tableDisplay.getTypes()).contains(CsvPlotReader.TIME_COLUMN);
+    assertThat(tableDisplay.getTypes()).contains(CSV.TIME_COLUMN);
     LinkedHashMap model = getModel();
     List values = (List) model.get(VALUES);
     List row0 = (List) values.get(0);
@@ -791,6 +800,36 @@ public class TableDisplayTest {
                 put(cols.get(0), "a string");
                 put(cols.get(1), 10.4);
                 put(cols.get(2), 3.14159);
+              }
+            });
+    return list;
+  }
+
+  public static List<Map<String, Object>> getListOfMapsWithEmptyTypes() {
+    List<Map<String, Object>> list = new ArrayList<>();
+    List<String> cols = getStringList();
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), "string 1");
+                put(cols.get(1), null);
+                put(cols.get(2), 1);
+              }
+            });
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), null);
+                put(cols.get(1), 2.2);
+                put(cols.get(2), 2);
+              }
+            });
+    list.add(
+            new LinkedHashMap<String, Object>() {
+              {
+                put(cols.get(0), "string 3");
+                put(cols.get(1), 2.3);
+                put(cols.get(2), null);
               }
             });
     return list;

@@ -179,12 +179,14 @@ public class TableDisplay extends BeakerxWidget {
 
           if (currentType == null || !currentType.equals("string")) {
             Object rowItem = row.get(columnToCheck);
-            String colType = rowItem.getClass().getName();
-            String beakerColType = serializer.convertType(colType);
-            typeTracker.put(columnToCheck, beakerColType);
+            if (rowItem != null) {
+              String colType = rowItem.getClass().getName();
+              String beakerColType = serializer.convertType(colType);
+              typeTracker.put(columnToCheck, beakerColType);
 
-            if (beakerColType.equals("string")) {
-              columnsToRemove.add(columnToCheck);
+              if (beakerColType.equals("string")) {
+                columnsToRemove.add(columnToCheck);
+              }
             }
           }
         }

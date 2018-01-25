@@ -66,6 +66,10 @@ var BeakerXPageObject = function () {
     return $$('div.code_cell')[index];
   }
 
+  this.getDtContainerByIndex = function (index) {
+    return this.getCodeCellByIndex(index).$('div.dtcontainer');
+  }
+
   this.runCodeCellByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();
@@ -108,11 +112,6 @@ var BeakerXPageObject = function () {
     plotLegendContainer.waitForEnabled();
   }
 
-  this.dataTablesIsEnabled = function(dtcontainer){
-    var dataTables = dtcontainer.$('.dataTables_scroll');
-    dataTables.waitForEnabled();
-  }
-
   this.runCellToGetWidgetElement = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
@@ -142,6 +141,19 @@ var BeakerXPageObject = function () {
       resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
+  }
+
+  this.getTableColumnLabel = function(tableIndex, columnIndex){
+    var table = $$("div.dataTables_scrollHead") [tableIndex];
+    var tableColumnLabels = table.$$("span.header-text");
+    return tableColumnLabels[columnIndex];
+  }
+
+  this.getTableCell = function(tableIndex, rowIndex, columnIndex){
+    var table = $$("div.dataTables_scrollBody") [tableIndex];
+    var tableRows = table.$$("tbody tr");
+    var rowCells = tableRows[rowIndex].$$("td");
+  return rowCells[columnIndex];
   }
 
 };

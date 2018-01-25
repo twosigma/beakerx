@@ -225,7 +225,7 @@ describe('Testing of EasyForm (groovy)', function () {
     it('Should select List value by code', function () {
       cellIndex += 1;
       var testValue = "onef6";
-      beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
+      beakerxPO.runCellToGetOutputTextElement(cellIndex);
       expect(easyForm.$('option=' + testValue).isSelected()).toBeTruthy();
       expect(easyForm.$('select').getValue()).toBe(testValue);
     });

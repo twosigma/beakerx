@@ -70,3 +70,14 @@ trait HistogramProperties extends AbstractChartProperties {
   def rightClose: Boolean = getRightClose
   def rightClose_=(close: Boolean): Unit = setRightClose(close)
 }
+
+object Histogram {
+  // Scala won't inherit nested Java enums
+  import com.twosigma.beakerx.chart.histogram.Histogram.{DisplayMode => DM}
+  type DisplayMode = DM
+  object DisplayMode {
+    val OVERLAP = DM.OVERLAP
+    val STACK = DM.STACK
+    val SIDE_BY_SIDE = DM.SIDE_BY_SIDE
+  }
+}

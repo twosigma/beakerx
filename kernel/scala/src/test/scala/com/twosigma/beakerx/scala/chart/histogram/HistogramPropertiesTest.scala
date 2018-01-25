@@ -17,7 +17,6 @@ package com.twosigma.beakerx.scala.chart.histogram
 
 import com.twosigma.beakerx.KernelTest
 import com.twosigma.beakerx.chart.Color
-import com.twosigma.beakerx.chart.histogram.Histogram.DisplayMode
 import com.twosigma.beakerx.kernel.KernelManager
 import org.junit.Test
 import org.scalatest.Matchers._
@@ -44,9 +43,9 @@ class HistogramPropertiesTest {
     histogram.cumulative = true
     histogram.cumulative shouldBe true
 
-    histogram.displayMode shouldBe DisplayMode.OVERLAP
-    histogram.displayMode = DisplayMode.SIDE_BY_SIDE
-    histogram.displayMode shouldBe DisplayMode.SIDE_BY_SIDE
+    histogram.displayMode shouldBe Histogram.DisplayMode.OVERLAP
+    histogram.displayMode = Histogram.DisplayMode.SIDE_BY_SIDE
+    histogram.displayMode shouldBe Histogram.DisplayMode.SIDE_BY_SIDE
 
     histogram.log shouldBe false
     histogram.log = true

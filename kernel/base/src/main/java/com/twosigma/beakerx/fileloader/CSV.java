@@ -61,7 +61,7 @@ public class CSV {
         return new BigInteger((String) value);
       } catch (Exception ignored) {
       }
-      return Float.parseFloat((String) value);
+      return Double.parseDouble((String) value);
     }
     return value;
   }

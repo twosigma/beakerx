@@ -31,7 +31,7 @@ public class CSVTest {
   public static final String TABLE_ROWS_TEST_CSV = "tableRowsTest.csv";
   public static final String INT_ROWS_TEST_CSV = "intTableTest.csv";
   public static final String BIG_INT_ROWS_TEST_CSV = "bigIntTableTest.csv";
-  public static final String FLOAT_ROWS_TEST_CSV = "floatTableTest.csv";
+  public static final String DOUBLE_ROWS_TEST_CSV = "doubleTableTest.csv";
 
   @Test
   public void shouldReturnDataAsListForPlot() throws Exception {
@@ -70,12 +70,12 @@ public class CSVTest {
   }
 
   @Test
-  public void shouldReturnFloat() throws Exception {
+  public void shouldReturnDouble() throws Exception {
     //when
     List<Map<String, Object>> values =
-            new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), FLOAT_ROWS_TEST_CSV));
+            new CSV().read(getOsAppropriatePath(getClass().getClassLoader(), DOUBLE_ROWS_TEST_CSV));
     //then
-    assertThat(values.get(0).get("a")).isEqualTo(1.1f);
+    assertThat(values.get(0).get("a")).isEqualTo(7.8981);
   }
 
 }

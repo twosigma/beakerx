@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 
@@ -22,21 +24,26 @@ import java.util.Optional;
 
 public abstract class CodeFrame {
 
-  private Optional<MagicCommandOutcomeItem> error;
+  public CodeFrame() {
+  }
 
   public abstract void executeFrame(Code code, KernelFunctionality kernel, Message message, int executionCount);
 
   public abstract void executeLastFrame(Code code, KernelFunctionality kernel, Message message, int executionCount);
 
-  public CodeFrame() {
-    this.error = Optional.empty();
-  }
+  public abstract Optional<MagicCommandOutcomeItem> getError();
 
-  public CodeFrame(MagicCommandOutcomeItem error) {
-    this.error = Optional.of(error);
-  }
-
-  public Optional<MagicCommandOutcomeItem> getError() {
-    return error;
+  protected void handleResult(SimpleEvaluationObject seo, TryResult either) {
+    if (either != null) {
+      try {
+        if (either.isResult()) {
+          seo.finished(either.result());
+        } else {
+          seo.error(either.error());
+        }
+      } catch (Exception e) {
+        seo.error(e.getLocalizedMessage());
+      }
+    }
   }
 }

@@ -21,10 +21,16 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 
+import java.util.Optional;
+
+import static org.assertj.core.util.Preconditions.checkNotNull;
+
 public class ErrorCodeFrame extends CodeFrame {
 
+  private MagicCommandOutcomeItem magicCommandOutcomeItem;
+
   public ErrorCodeFrame(MagicCommandOutcomeItem magicCommandOutcomeItem) {
-    super(magicCommandOutcomeItem);
+    this.magicCommandOutcomeItem = checkNotNull(magicCommandOutcomeItem);
   }
 
   @Override
@@ -33,6 +39,10 @@ public class ErrorCodeFrame extends CodeFrame {
 
   @Override
   public void executeLastFrame(Code code, KernelFunctionality kernel, Message message, int executionCount) {
+  }
 
+  @Override
+  public Optional<MagicCommandOutcomeItem> getError() {
+    return Optional.of(magicCommandOutcomeItem);
   }
 }

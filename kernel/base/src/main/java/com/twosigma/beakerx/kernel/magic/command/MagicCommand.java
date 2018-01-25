@@ -24,6 +24,8 @@ import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 
+import java.util.Optional;
+
 import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.sendMagicCommandOutcome;
 import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.sendRepliesWithStatus;
 import static java.util.Collections.singletonList;
@@ -75,18 +77,9 @@ public class MagicCommand extends CodeFrame {
     handleResult(seo, result);
   }
 
-  private void handleResult(SimpleEvaluationObject seo, TryResult either) {
-    if (either != null) {
-      try {
-        if (either.isResult()) {
-          seo.finished(either.result());
-        } else {
-          seo.error(either.error());
-        }
-      } catch (Exception e) {
-        seo.error(e.getLocalizedMessage());
-      }
-    }
+  @Override
+  public Optional<MagicCommandOutcomeItem> getError() {
+    return Optional.empty();
   }
 
   private MagicCommandOutcomeItem execute(Code code, int executionCount, boolean showResult) {

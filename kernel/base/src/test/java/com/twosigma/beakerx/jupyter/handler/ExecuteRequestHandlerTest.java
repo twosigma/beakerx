@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.jupyter.handler;
 
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_REPLY;
 import static com.twosigma.beakerx.message.MessageSerializer.parse;
 import static com.twosigma.beakerx.message.MessageSerializer.toJson;
@@ -26,7 +27,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.twosigma.beakerx.KernelTest;
@@ -79,6 +79,7 @@ public class ExecuteRequestHandlerTest {
   public void handleMessage_firstSentMessageHasExecutionStateIsBusy() throws Exception {
     //when
     executeRequestHandler.handle(message);
+    waitForIdleMessage(kernel);
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(0);
@@ -91,6 +92,7 @@ public class ExecuteRequestHandlerTest {
     String expectedSessionId = message.getHeader().getSession();
     //when
     executeRequestHandler.handle(message);
+    waitForIdleMessage(kernel);
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(0);
@@ -101,6 +103,7 @@ public class ExecuteRequestHandlerTest {
   public void handleMessage_firstSentMessageHasTypeIsStatus() throws Exception {
     //when
     executeRequestHandler.handle(message);
+    waitForIdleMessage(kernel);
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(0);
@@ -114,6 +117,7 @@ public class ExecuteRequestHandlerTest {
     String expectedHeader = message.getHeader().asJson();
     //when
     executeRequestHandler.handle(message);
+    waitForIdleMessage(kernel);
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(0);
@@ -126,6 +130,7 @@ public class ExecuteRequestHandlerTest {
     String expectedIdentities = new String(message.getIdentities().get(0));
     //when
     executeRequestHandler.handle(message);
+    waitForIdleMessage(kernel);
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(0);
@@ -139,6 +144,7 @@ public class ExecuteRequestHandlerTest {
     String expectedSessionId = message.getHeader().getSession();
     //when
     executeRequestHandler.handle(message);
+    waitForIdleMessage(kernel);
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
@@ -149,6 +155,7 @@ public class ExecuteRequestHandlerTest {
   public void handleMessage_secondSendMessageHasTypeIsExecutionInput() throws Exception {
     //when
     executeRequestHandler.handle(message);
+    waitForIdleMessage(kernel);
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
@@ -162,6 +169,7 @@ public class ExecuteRequestHandlerTest {
     String expectedCode = (String) message.getContent().get("code");
     //when
     executeRequestHandler.handle(message);
+    waitForIdleMessage(kernel);
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
@@ -172,6 +180,7 @@ public class ExecuteRequestHandlerTest {
   public void handleMessage_secondSentMessageHasContentExecutionCount() throws Exception {
     //when
     executeRequestHandler.handle(message);
+    waitForIdleMessage(kernel);
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
@@ -184,6 +193,7 @@ public class ExecuteRequestHandlerTest {
     String expectedHeader = message.getHeader().asJson();
     //when
     executeRequestHandler.handle(message);
+    waitForIdleMessage(kernel);
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
@@ -196,6 +206,7 @@ public class ExecuteRequestHandlerTest {
     String expectedIdentities = new String(message.getIdentities().get(0));
     //when
     executeRequestHandler.handle(message);
+    waitForIdleMessage(kernel);
     //then
     Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
@@ -207,6 +218,7 @@ public class ExecuteRequestHandlerTest {
   public void handleMagicMessage_executionStateStartsBusyEndsIdle() throws Exception {
     //when
     executeRequestHandler.handle(magicMessage);
+    waitForIdleMessage(kernel);
     //then
     final List<Message> publishedMessages = kernel.getPublishedMessages();
     Assertions.assertThat(publishedMessages).isNotEmpty();
@@ -217,9 +229,10 @@ public class ExecuteRequestHandlerTest {
   }
 
   @Test
-  public void handleMagicMessage_replyIsSent() {
+  public void handleMagicMessage_replyIsSent() throws InterruptedException {
     //when
     executeRequestHandler.handle(magicMessage);
+    waitForIdleMessage(kernel);
     //then
     final List<Message> sentMessages = kernel.getSentMessages();
     Assertions.assertThat(sentMessages).isNotEmpty();

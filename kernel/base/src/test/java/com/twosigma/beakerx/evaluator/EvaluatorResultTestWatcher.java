@@ -47,12 +47,23 @@ public class EvaluatorResultTestWatcher {
     return result;
   }
 
-  public static Optional<Message> waitForIdleMessage(KernelSocketsTest socketsTest) throws InterruptedException {
+  public static Optional<Message> waitForIdleMessage(KernelTest kernelTest) throws InterruptedException {
     int count = 0;
-    Optional<Message> idleMessage = getIdleMessage(socketsTest);
+    Optional<Message> idleMessage = getIdleMessage(kernelTest.getPublishedMessages());
     while (!idleMessage.isPresent() && count < ATTEMPT) {
       Thread.sleep(SLEEP_IN_MILLIS);
-      idleMessage = getIdleMessage(socketsTest);
+      idleMessage = getIdleMessage(kernelTest.getPublishedMessages());
+      count++;
+    }
+    return idleMessage;
+  }
+
+  public static Optional<Message> waitForIdleMessage(KernelSocketsTest socketsTest) throws InterruptedException {
+    int count = 0;
+    Optional<Message> idleMessage = getIdleMessage(socketsTest.getPublishedMessages());
+    while (!idleMessage.isPresent() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      idleMessage = getIdleMessage(socketsTest.getPublishedMessages());
       count++;
     }
     return idleMessage;
@@ -108,8 +119,8 @@ public class EvaluatorResultTestWatcher {
   }
 
 
-  private static Optional<Message> getIdleMessage(KernelSocketsTest socketsTest) {
-    return socketsTest.getPublishedMessages().stream().
+  private static Optional<Message> getIdleMessage(List<Message> messages) {
+    return messages.stream().
             filter(x -> (x.type().equals(JupyterMessages.STATUS)) && (x.getContent().get("execution_state").equals("idle"))).findFirst();
   }
 
@@ -140,11 +151,13 @@ public class EvaluatorResultTestWatcher {
             filter(x -> x.type().equals(JupyterMessages.STREAM)).
             filter(x -> TestWidgetUtils.getContent(x).get("name").equals("stdout")).collect(Collectors.toList());
   }
+
   public static List<Message> getStderr(List<Message> messages) {
     return messages.stream().
             filter(x -> x.type().equals(JupyterMessages.STREAM)).
             filter(x -> TestWidgetUtils.getContent(x).get("name").equals("stderr")).collect(Collectors.toList());
   }
+
   public static List<Message> waitForStdouts(KernelSocketsTest socketsTest) throws InterruptedException {
     int count = 0;
     List<Message> result = getStdouts(socketsTest.getPublishedMessages());

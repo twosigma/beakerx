@@ -62,12 +62,6 @@ class ScalaWorkerThread implements Callable<TryResult> {
         nc = null;
       }
     }
-
-    NamespaceClient.delBeaker(scalaEvaluator.getSessionId());
     return either;
-  }
-
-  public void doExit() {
-
   }
 }

@@ -51,12 +51,6 @@ class JavaWorkerThread implements Callable<TryResult> {
         nc = null;
       }
     }
-
-    NamespaceClient.delBeaker(javaEvaluator.getSessionId());
     return r;
   }
-
-  public void doExit() {
-  }
-
 }

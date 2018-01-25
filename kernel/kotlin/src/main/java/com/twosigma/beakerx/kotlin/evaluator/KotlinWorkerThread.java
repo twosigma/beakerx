@@ -69,7 +69,6 @@ class KotlinWorkerThread implements Callable<TryResult> {
         nc = null;
       }
     }
-    NamespaceClient.delBeaker(kotlinEvaluator.getSessionId());
     return either;
   }
 

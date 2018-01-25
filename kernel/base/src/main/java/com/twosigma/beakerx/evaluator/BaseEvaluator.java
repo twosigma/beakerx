@@ -17,6 +17,7 @@ package com.twosigma.beakerx.evaluator;
 
 import com.google.common.collect.Lists;
 import com.twosigma.beakerx.DefaultJVMVariables;
+import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.AddImportStatus;
@@ -208,6 +209,7 @@ public abstract class BaseEvaluator implements Evaluator {
 
   @Override
   public void exit() {
+    NamespaceClient.delBeaker(getSessionId());
     removeTempFolder();
   }
 

@@ -72,12 +72,6 @@ class GroovyWorkerThread implements Callable<TryResult> {
         nc = null;
       }
     }
-    NamespaceClient.delBeaker(groovyEvaluator.getSessionId());
     return r;
   }
-
-  void doExit() {
-    //  this.exit = true;
-  }
-
 }

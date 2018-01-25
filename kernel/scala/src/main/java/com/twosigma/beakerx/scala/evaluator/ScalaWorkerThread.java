@@ -46,9 +46,6 @@ class ScalaWorkerThread implements Callable<TryResult> {
       nc = NamespaceClient.getBeaker(scalaEvaluator.getSessionId());
       nc.setOutputObj(j.outputObject);
       either = scalaEvaluator.executeTask(new ScalaCodeRunner(scalaEvaluator, j.codeToBeExecuted, j.outputObject));
-//      if (!either.isLeft()) {
-//        j.outputObject.error(INTERUPTED_MSG);
-//      }
       if (nc != null) {
         nc.setOutputObj(null);
         nc = null;

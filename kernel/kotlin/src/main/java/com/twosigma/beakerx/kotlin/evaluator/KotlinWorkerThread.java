@@ -49,9 +49,6 @@ class KotlinWorkerThread implements Callable<TryResult> {
       try {
         KotlinCodeRunner kotlinCodeRunner = new KotlinCodeRunner(j.outputObject, kotlinEvaluator.getClassLoader(), kotlinEvaluator.getRepl(), j.codeToBeExecuted);
         either = kotlinEvaluator.executeTask(kotlinCodeRunner);
-//        if (!either.isLeft()) {
-//          j.outputObject.error(INTERUPTED_MSG);
-//        }
         if (nc != null) {
           nc.setOutputObj(null);
           nc = null;

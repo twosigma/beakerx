@@ -39,9 +39,6 @@ class JavaWorkerThread implements Callable<TryResult> {
       nc = NamespaceClient.getBeaker(javaEvaluator.getSessionId());
       nc.setOutputObj(j.outputObject);
       r = javaEvaluator.executeTask(new JavaCodeRunner(javaEvaluator, j.outputObject, j));
-//      if (!either.isLeft()) {
-//        j.outputObject.error(INTERUPTED_MSG);
-//      }
     } catch (Throwable e) {
       e.printStackTrace();
       r = TryResult.createError(e.getLocalizedMessage());

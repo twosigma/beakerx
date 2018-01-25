@@ -39,9 +39,6 @@ class ClojureWorkerThread implements Callable<TryResult> {
     try {
       j.outputObject.started();
       r = clojureEvaluator.executeTask(new ClojureCodeRunner(clojureEvaluator, j.codeToBeExecuted, j.outputObject));
-//      if (!r.isLeft()) {
-//        j.outputObject.error(INTERUPTED_MSG);
-//      }
     } catch (Throwable e) {
       logger.error(e.getMessage());
       r = TryResult.createError(e.getLocalizedMessage());

@@ -43,17 +43,9 @@ class GroovyWorkerThread implements Callable<TryResult> {
         nc = NamespaceClient.getBeaker(groovyEvaluator.getSessionId());
         nc.setOutputObj(j.outputObject);
       }
-
       j.outputObject.started();
-
       String code = j.codeToBeExecuted;
-
       r = groovyEvaluator.executeTask(new GroovyCodeRunner(groovyEvaluator, code, j.outputObject));
-//      if (!r.isLeft()) {
-//        j.outputObject.error(INTERUPTED_MSG);
-//        r = Either.right(INTERUPTED_MSG);
-//      }
-
       if (nc != null) {
         nc.setOutputObj(null);
         nc = null;

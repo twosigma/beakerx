@@ -52,7 +52,7 @@ describe('Autotranslation Python to JavaScript and D3 tests', function () {
       expect(svgElement.isEnabled()).toBeTruthy();
     });
 
-    it('svg has our attributes', function(){
+    it('Should set width, height and transform attributes to svg', function(){
       expect(Math.round(svgElement.getAttribute('width'))).toEqual(600);
       expect(Math.round(svgElement.getAttribute('height'))).toEqual(200);
       expect(svgElement.getAttribute('transform')).toMatch('translate');
@@ -62,6 +62,32 @@ describe('Autotranslation Python to JavaScript and D3 tests', function () {
       expect(svgElement.$$('circle').length).toEqual(10);
     });
 
+    it('First and last circles has "class"= "moon"', function(){
+      expect(svgElement.$$('circle')[0].getAttribute('class')).toEqual('moon');
+      expect(svgElement.$$('circle')[9].getAttribute('class')).toEqual('moon');
+    });
+
+    it('First circle has "r"=5, "cx"=5, "cy"=55', function(){
+      var fCircle = svgElement.$$('circle')[0];
+      expect(Math.round(fCircle.getAttribute('r'))).toEqual(5);
+      expect(Math.round(fCircle.getAttribute('cx'))).toEqual(5);
+      expect(Math.round(fCircle.getAttribute('cy'))).toEqual(55);
+    });
+
+    it('Last circle has "r"=50, "cx"=410, "cy"=100', function(){
+      var lCircle = svgElement.$$('circle')[9];
+      expect(Math.round(lCircle.getAttribute('r'))).toEqual(50);
+      expect(Math.round(lCircle.getAttribute('cx'))).toEqual(410);
+      expect(Math.round(lCircle.getAttribute('cy'))).toEqual(100);
+    });
+
+    it('First circle has color rgb(100,100,0)', function(){
+      expect(svgElement.$$('circle')[0].getCssProperty('fill').value).toEqual('rgb(100,100,0)');
+    });
+
+    it('Last circle has color rgb(100,100,180)', function(){
+      expect(svgElement.$$('circle')[9].getCssProperty('fill').value).toEqual('rgb(100,100,180)');
+    });
   });
 
 });

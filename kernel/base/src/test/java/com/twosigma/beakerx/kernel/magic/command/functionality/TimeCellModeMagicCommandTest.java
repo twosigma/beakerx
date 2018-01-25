@@ -27,7 +27,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.twosigma.ExecuteCodeCallbackTest.EXECUTION_TEST_CALLBACK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TimeCellModeMagicCommandTest {
@@ -55,7 +54,7 @@ public class TimeCellModeMagicCommandTest {
             "a*10;";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");

@@ -16,7 +16,6 @@
 
 package com.twosigma.beakerx.evaluator;
 
-import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
@@ -80,7 +79,7 @@ public class EvaluatorManagerTest {
   @Test
   public void executeCode_callEvaluatorToEvaluate() {
     String code = "test code";
-    SimpleEvaluationObject seo = PlainCode.createSimpleEvaluationObject(code, kernel, new Message(), 5, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = PlainCode.createSimpleEvaluationObject(code, kernel, new Message(), 5);
     //when
     evaluatorManager.executeCode(code, seo);
     //then

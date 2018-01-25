@@ -28,11 +28,11 @@ public class ErrorCodeFrame extends CodeFrame {
   }
 
   @Override
-  public void executeFrame(Code code, KernelFunctionality kernel, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+  public void executeFrame(Code code, KernelFunctionality kernel, Message message, int executionCount) {
   }
 
   @Override
-  public void executeLastFrame(Code code, KernelFunctionality kernel, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+  public void executeLastFrame(Code code, KernelFunctionality kernel, Message message, int executionCount) {
 
   }
 }

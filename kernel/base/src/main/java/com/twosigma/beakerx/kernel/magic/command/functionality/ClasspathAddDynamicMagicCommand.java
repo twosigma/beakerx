@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
@@ -22,7 +23,6 @@ import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
 
 import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
@@ -57,23 +57,21 @@ public class ClasspathAddDynamicMagicCommand extends ClasspathMagicCommand {
     }
 
     String codeToExecute = command.substring(command.indexOf(DYNAMIC) + DYNAMIC.length()).trim();
-
-    CompletableFuture<Object> completableFuture = new CompletableFuture<>();
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(codeToExecute, kernel, param.getCode().getMessage(), param.getExecutionCount(), (seoResult) -> {
-      completableFuture.complete(seoResult.getPayload());
-    });
-    kernel.executeCode(codeToExecute, seo);
-
-    try {
-      Object path = completableFuture.get();
-      Collection<String> newAddedJars = addJars(path);
-      if (newAddedJars.isEmpty()) {
-        return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(codeToExecute, kernel, param.getCode().getMessage(), param.getExecutionCount());
+    TryResult either = kernel.executeCode(codeToExecute, seo);
+    if (either.isResult()) {
+      try {
+        Collection<String> newAddedJars = addJars(either.result());
+        if (newAddedJars.isEmpty()) {
+          return new MagicCommandOutput(MagicCommandOutput.Status.OK);
+        }
+        String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
+        return new MagicCommandOutput(MagicCommandOutput.Status.OK, textMessage);
+      } catch (Exception e) {
+        return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem during execution of " + CLASSPATH_ADD_DYNAMIC + " : " + e.getMessage());
       }
-      String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars;
-      return new MagicCommandOutput(MagicCommandOutput.Status.OK, textMessage);
-    } catch (Exception e) {
-      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem during execution of " + CLASSPATH_ADD_DYNAMIC + " : " + e.getMessage());
+    } else {
+      return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem during execution of " + CLASSPATH_ADD_DYNAMIC + " : " + either.error());
     }
   }
 

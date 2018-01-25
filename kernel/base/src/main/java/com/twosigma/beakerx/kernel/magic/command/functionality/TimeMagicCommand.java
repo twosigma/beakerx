@@ -15,10 +15,10 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.PlainCode;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 import com.twosigma.beakerx.message.Message;
@@ -38,6 +38,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
+import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
+
 public abstract class TimeMagicCommand implements MagicCommandFunctionality {
 
   protected KernelFunctionality kernel;
@@ -56,21 +58,20 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
     Long startCpuTotalTime = threadMXBean.getCurrentThreadCpuTime();
     Long startUserTime = threadMXBean.getCurrentThreadUserTime();
 
-    SimpleEvaluationObject simpleEvaluationObject = PlainCode.createSimpleEvaluationObject(codeToExecute, kernel, message, executionCount, seo -> {
-      Long endWallTime = System.nanoTime();
-      Long endCpuTotalTime = threadMXBean.getThreadCpuTime(currentThreadId);
-      Long endUserTime = threadMXBean.getThreadUserTime(currentThreadId);
-
-      compileTime.complete(new TimeMeasureData(endCpuTotalTime - startCpuTotalTime,
-              endUserTime - startUserTime,
-              endWallTime - startWallTime));
-    });
+    SimpleEvaluationObject simpleEvaluationObject = createSimpleEvaluationObject(codeToExecute, kernel, message, executionCount);
     if (!showResult) {
       simpleEvaluationObject.noResult();
     }
 
-    kernel.executeCode(codeToExecute, simpleEvaluationObject);
+    TryResult either = kernel.executeCode(codeToExecute, simpleEvaluationObject);
 
+    Long endWallTime = System.nanoTime();
+    Long endCpuTotalTime = threadMXBean.getThreadCpuTime(currentThreadId);
+    Long endUserTime = threadMXBean.getThreadUserTime(currentThreadId);
+
+    compileTime.complete(new TimeMeasureData(endCpuTotalTime - startCpuTotalTime,
+            endUserTime - startUserTime,
+            endWallTime - startWallTime));
     String messageInfo = "CPU times: user %s, sys: %s, total: %s \nWall Time: %s\n";
 
     try {
@@ -81,7 +82,9 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
                       format(timeMeasuredData.getCpuUserTime()),
                       format(timeMeasuredData.getCpuTotalTime() - timeMeasuredData.getCpuUserTime()),
                       format(timeMeasuredData.getCpuTotalTime()),
-                      format(timeMeasuredData.getWallTime())));
+                      format(timeMeasuredData.getWallTime())),
+              either,
+              simpleEvaluationObject);
 
     } catch (InterruptedException | ExecutionException e) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "There occurs problem during measuring time for your statement.");
@@ -116,18 +119,14 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Repeat value must be bigger then 0");
     }
 
-    CompletableFuture<Boolean> isStatementsCorrect = new CompletableFuture<>();
-    kernel.executeCodeWithTimeMeasurement(codeToExecute, message, executionCount,
-            executeCodeCallbackWithTime -> {
-              if (executeCodeCallbackWithTime.getStatus().equals(SimpleEvaluationObject.EvaluationStatus.ERROR)) {
-                isStatementsCorrect.complete(false);
-              } else {
-                isStatementsCorrect.complete(true);
-              }
-            });
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(codeToExecute, kernel, message, executionCount);
+    seo.noResult();
+
+    TryResult either = kernel.executeCode(codeToExecute, seo);
+
     try {
 
-      if (!isStatementsCorrect.get()) {
+      if (either.isError()) {
         return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, "Please correct your statement");
       }
 
@@ -138,13 +137,15 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
 
       IntStream.range(0, timeItOption.getRepeat()).forEach(repeatIter -> {
         IntStream.range(0, number).forEach(numberIter -> {
-          kernel.executeCodeWithTimeMeasurement(codeToExecute, message, executionCount,
-                  executeCodeCallbackWithTime -> {
-                    allRuns.add(executeCodeCallbackWithTime.getPeriodOfEvaluationInNanoseconds());
-                    if (repeatIter == timeItOption.getRepeat() - 1 && numberIter == number - 1) {
-                      isReady.complete(true);
-                    }
-                  });
+          SimpleEvaluationObject seo2 = createSimpleEvaluationObject(codeToExecute, kernel, message, executionCount);
+          seo2.noResult();
+          Long startOfEvaluationInNanoseconds = System.nanoTime();
+          TryResult result = kernel.executeCode(codeToExecute, seo2);
+          Long endOfEvaluationInNanoseconds = System.nanoTime();
+          allRuns.add(endOfEvaluationInNanoseconds - startOfEvaluationInNanoseconds);
+          if (repeatIter == timeItOption.getRepeat() - 1 && numberIter == number - 1) {
+            isReady.complete(true);
+          }
         });
       });
 
@@ -218,20 +219,19 @@ public abstract class TimeMagicCommand implements MagicCommandFunctionality {
       Long startTime = System.nanoTime();
       IntStream.range(0, numberOfExecution.intValue()).forEach(indexOfExecution -> {
 
-        SimpleEvaluationObject simpleEvaluationObject = PlainCode.createSimpleEvaluationObject(codeToExecute, kernel, new Message(), 0, seo -> {
-          if (numberOfExecution.intValue() - 1 == indexOfExecution) {
-            if (TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime) > 0.2) {
-              keepLooking.complete(false);
-            } else {
-              keepLooking.complete(true);
-            }
-          }
-        });
+        SimpleEvaluationObject simpleEvaluationObject = createSimpleEvaluationObject(codeToExecute, kernel, new Message(), 0);
         if (!showResult) {
           simpleEvaluationObject.noResult();
         }
 
         kernel.executeCode(codeToExecute, simpleEvaluationObject);
+        if (numberOfExecution.intValue() - 1 == indexOfExecution) {
+          if (TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime) > 0.2) {
+            keepLooking.complete(false);
+          } else {
+            keepLooking.complete(true);
+          }
+        }
       });
 
       try {

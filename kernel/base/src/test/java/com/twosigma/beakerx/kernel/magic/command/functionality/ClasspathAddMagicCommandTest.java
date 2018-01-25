@@ -27,7 +27,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.twosigma.ExecuteCodeCallbackTest.EXECUTION_TEST_CALLBACK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClasspathAddMagicCommandTest {
@@ -52,7 +51,7 @@ public class ClasspathAddMagicCommandTest {
     String allCode = "%unknownClasspath params";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");
@@ -65,7 +64,7 @@ public class ClasspathAddMagicCommandTest {
     String allCode = ClasspathAddJarMagicCommand.CLASSPATH + " add garbage";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");

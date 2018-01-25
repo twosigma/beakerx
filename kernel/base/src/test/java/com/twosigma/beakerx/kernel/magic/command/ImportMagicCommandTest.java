@@ -28,7 +28,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.twosigma.ExecuteCodeCallbackTest.EXECUTION_TEST_CALLBACK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ImportMagicCommandTest {
@@ -52,7 +51,7 @@ public class ImportMagicCommandTest {
             "w = new IntSlider()";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     PlainCode actual = (PlainCode) code.getCodeFrames().get(1);
     assertThat(actual.getPlainCode()).isEqualTo("w = new IntSlider()");
@@ -64,12 +63,12 @@ public class ImportMagicCommandTest {
     //given
     String allCode = "%import com.twosigma.beakerx.widgets.integers.IntSlider\n";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
     //when
     String allRemoveCode = "%unimport com.twosigma.beakerx.widgets.integers.IntSlider\n";
     Code codeToRemove = CodeFactory.create(allRemoveCode, new Message(), kernel);
-    codeToRemove.execute(kernel, 2, EXECUTION_TEST_CALLBACK);
+    codeToRemove.execute(kernel, 2);
     //then
     assertThat(kernel.getImports().getImportPaths()).doesNotContain(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
   }
@@ -78,7 +77,7 @@ public class ImportMagicCommandTest {
   public void allowExtraWhitespaces() {
     String allCode = "%import       com.twosigma.beakerx.widgets.integers.IntSlider";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
   }
 
@@ -86,7 +85,7 @@ public class ImportMagicCommandTest {
   public void wrongImportFormat() {
     String allCode = "%import ";
     Code wrongFormatImport = CodeFactory.create(allCode, new Message(), kernel);
-    wrongFormatImport.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    wrongFormatImport.execute(kernel, 1);
     List<Message> std = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");
     assertThat(text).contains("Wrong format.");

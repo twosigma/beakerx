@@ -24,14 +24,13 @@ public abstract class CodeFrame {
 
   private Optional<MagicCommandOutcomeItem> error;
 
-  public abstract void executeFrame(Code code, KernelFunctionality kernel, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback);
+  public abstract void executeFrame(Code code, KernelFunctionality kernel, Message message, int executionCount);
 
-  public abstract void executeLastFrame(Code code, KernelFunctionality kernel, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback);
+  public abstract void executeLastFrame(Code code, KernelFunctionality kernel, Message message, int executionCount);
 
   public CodeFrame() {
     this.error = Optional.empty();
   }
-
 
   public CodeFrame(MagicCommandOutcomeItem error) {
     this.error = Optional.of(error);

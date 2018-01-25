@@ -42,7 +42,6 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static com.twosigma.ExecuteCodeCallbackTest.EXECUTION_TEST_CALLBACK;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand.ADD_MVN_FORMAT_ERROR_MESSAGE;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -90,7 +89,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
     Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message());
     //when
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     List<Message> stderr = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
     String text = (String) stderr.get(0).getContent().get("text");
@@ -106,7 +105,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
     Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message());
     //when
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     List<Message> stderr = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
     String text = (String) stderr.get(0).getContent().get("text");
@@ -117,7 +116,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
     Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message());
     //when
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     List<Message> stderr = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
     String text = (String) stderr.get(0).getContent().get("text");

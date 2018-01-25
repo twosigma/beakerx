@@ -16,11 +16,11 @@
 
 package com.twosigma.beakerx.kernel.magic.command;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.CodeFrame;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
-import com.twosigma.beakerx.kernel.KernelFunctionality.ExecuteCodeCallback;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 
@@ -58,17 +58,35 @@ public class MagicCommand extends CodeFrame {
   }
 
   @Override
-  public void executeFrame(Code code, KernelFunctionality kernel, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback) {
+  public void executeFrame(Code code, KernelFunctionality kernel, Message message, int executionCount) {
     MagicCommandOutcomeItem execute = execute(code, executionCount, false);
     sendMagicCommandOutcome(execute, kernel, message, executionCount);
-    runCallback(message, executeCodeCallback);
+    TryResult result = execute.getResult();
+    SimpleEvaluationObject seo = execute.getSimpleEvaluationObject();
+    handleResult(seo, result);
   }
 
   @Override
-  public void executeLastFrame(Code code, KernelFunctionality kernel, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback) {
+  public void executeLastFrame(Code code, KernelFunctionality kernel, Message message, int executionCount) {
     MagicCommandOutcomeItem execute = execute(code, executionCount, true);
     sendRepliesWithStatus(singletonList(execute), kernel, message, executionCount);
-    runCallback(message, executeCodeCallback);
+    TryResult result = execute.getResult();
+    SimpleEvaluationObject seo = execute.getSimpleEvaluationObject();
+    handleResult(seo, result);
+  }
+
+  private void handleResult(SimpleEvaluationObject seo, TryResult either) {
+    if (either != null) {
+      try {
+        if (either.isResult()) {
+          seo.finished(either.result());
+        } else {
+          seo.error(either.error());
+        }
+      } catch (Exception e) {
+        seo.error(e.getLocalizedMessage());
+      }
+    }
   }
 
   private MagicCommandOutcomeItem execute(Code code, int executionCount, boolean showResult) {
@@ -79,11 +97,5 @@ public class MagicCommand extends CodeFrame {
             code,
             showResult);
     return execute(param);
-  }
-
-  private void runCallback(Message message, ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject simpleEvaluationObject = new SimpleEvaluationObject("", executeCodeCallback);
-    simpleEvaluationObject.setJupyterMessage(message);
-    simpleEvaluationObject.executeCodeCallback();
   }
 }

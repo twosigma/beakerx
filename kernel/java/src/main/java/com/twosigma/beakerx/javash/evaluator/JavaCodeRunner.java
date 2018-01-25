@@ -15,12 +15,11 @@
  */
 package com.twosigma.beakerx.javash.evaluator;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.kernel.ImportPath;
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -28,17 +27,16 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
-import static com.twosigma.beakerx.evaluator.Evaluator.logger;
 
-class JavaCodeRunner implements Runnable {
+class JavaCodeRunner implements Callable<TryResult> {
 
   private final SimpleEvaluationObject theOutput;
   private JobDescriptor j;
@@ -51,67 +49,68 @@ class JavaCodeRunner implements Runnable {
   }
 
   @Override
-  public void run() {
+  public TryResult call() throws Exception {
     ClassLoader oldld = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(javaEvaluator.getJavaClassLoader());
     theOutput.setOutputHandler();
     InternalVariable.setValue(theOutput);
+    TryResult either;
     try {
       InternalVariable.setValue(theOutput);
-      runCode(j);
+      either = runCode(j);
     } catch (Throwable e) {
       if (e instanceof InvocationTargetException)
         e = ((InvocationTargetException) e).getTargetException();
       if ((e instanceof InterruptedException) || (e instanceof ThreadDeath)) {
-        theOutput.error(INTERUPTED_MSG);
+        either = TryResult.createError(INTERUPTED_MSG);
       } else {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
-        theOutput.error(sw.toString());
+        either = TryResult.createError(sw.toString());
       }
-    } finally {
-      theOutput.executeCodeCallback();
-
     }
     theOutput.clrOutputHandler();
     Thread.currentThread().setContextClassLoader(oldld);
+    return either;
   }
 
 
-  private void runCode(JobDescriptor j) {
+  private TryResult runCode(JobDescriptor j) {
+    TryResult either;
     j.outputObject.started();
-
     String code = ParserUtil.normalizeCode(j.codeToBeExecuted).replaceAll("\r\n", "\n");
     Codev codev = new Codev(code, javaEvaluator);
     try {
-      compileCode(j, codev);
+      either = compileCode(j, codev);
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      either = TryResult.createError(e.getMessage());
     }
+    return either;
   }
 
-  private void compileCode(JobDescriptor j, Codev codev) throws InvocationTargetException, IllegalAccessException {
+  private TryResult compileCode(JobDescriptor j, Codev codev) throws InvocationTargetException, IllegalAccessException {
     if (codev.hasLineToProcess()) {
       Codev.CodeLine codeLine = codev.getNotBlankLine();
       Pattern p = Pattern.compile("(?:^|.*\\s+)(?:(?:class)|(?:interface))\\s+([a-zA-Z]\\w*).*");
       Matcher m = p.matcher(codeLine.getLine());
       if (m.matches()) {
-        compileNewDefinitionClass(j, m, codev);
+        return compileNewDefinitionClass(j, m, codev);
       } else {
-        compileAndRunCode(j, codev);
+        return compileAndRunCode(j, codev);
       }
     } else {
-      compileAndRunCode(j, codev);
+      return compileAndRunCode(j, codev);
     }
   }
 
-  private Method compileAndRunCode(JobDescriptor j, Codev codev) {
+  private TryResult compileAndRunCode(JobDescriptor j, Codev codev) {
+    TryResult either;
     String classId = generateClassId();
     String returnType = "Object";
     Codev copyCodev = new Codev(codev.getCode(), javaEvaluator);
     boolean compile = compile(codev, classId, returnType);
-    if (!compile)  {
+    if (!compile) {
       classId = generateClassId();
       returnType = "void";
       copyCodev = new Codev(codev.getCode(), javaEvaluator);
@@ -122,20 +121,16 @@ class JavaCodeRunner implements Runnable {
       Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
       Object o = mth.invoke(null, (Object[]) null);
       if (returnType.equals("Object")) {
-        theOutput.finished(o);
+        either = TryResult.createResult(o);
       } else {
-        theOutput.finished(null);
+        either = TryResult.createResult(null);
       }
     } catch (CompilationException e) {
-      j.outputObject.error(buildErrorMessage(e, copyCodev.lineNumbersMapping));
+      either = TryResult.createError(buildErrorMessage(e, copyCodev.lineNumbersMapping));
     } catch (Exception e) {
-      j.outputObject.error("ERROR: " + e.getCause());
-    } finally {
-      if (j.outputObject != null) {
-        j.outputObject.executeCodeCallback();
-      }
+      either = TryResult.createError("ERROR: " + e.getCause());
     }
-    return null;
+    return either;
   }
 
   private boolean compile(Codev codev, String classId, String ret) {
@@ -160,9 +155,9 @@ class JavaCodeRunner implements Runnable {
     return false;
   }
 
-  private void compileNewDefinitionClass(JobDescriptor j, Matcher m, Codev codev) {
+  private TryResult compileNewDefinitionClass(JobDescriptor j, Matcher m, Codev codev) {
+    TryResult either;
     String cname = m.group(1);
-
     addTheRestOfCode(codev);
     org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler javaSourceCompiler = new com.twosigma.beakerx.javash.evaluator.JavaSourceCompiler();
     JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(javaEvaluator.getOutDir()));
@@ -172,16 +167,13 @@ class JavaCodeRunner implements Runnable {
     try {
       javaSourceCompiler.compile(compilationUnit);
       javaSourceCompiler.persistCompiledClasses(compilationUnit);
-      j.outputObject.finished(codev.getPname() + "." + cname);
+      either = TryResult.createResult(codev.getPname() + "." + cname);
     } catch (CompilationException e) {
-      j.outputObject.error(buildErrorMessage(e, codev.lineNumbersMapping));
+      either = TryResult.createError(buildErrorMessage(e, codev.lineNumbersMapping));
     } catch (Exception e) {
-      j.outputObject.error("ERROR: " + e.toString());
-    } finally {
-      if (j.outputObject != null) {
-        j.outputObject.executeCodeCallback();
-      }
+      either = TryResult.createError("ERROR: " + e.toString());
     }
+    return either;
   }
 
   private void buildClasspath(org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler.CompilationUnit compilationUnit) {

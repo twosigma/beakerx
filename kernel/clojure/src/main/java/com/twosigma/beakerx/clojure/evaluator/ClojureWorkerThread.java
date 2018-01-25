@@ -15,58 +15,40 @@
  */
 package com.twosigma.beakerx.clojure.evaluator;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
-import com.twosigma.beakerx.evaluator.WorkerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+import java.util.concurrent.Callable;
 
-class ClojureWorkerThread extends WorkerThread {
+class ClojureWorkerThread implements Callable<TryResult> {
 
   private final static Logger logger = LoggerFactory.getLogger(ClojureWorkerThread.class.getName());
   private ClojureEvaluator clojureEvaluator;
-  private boolean exit;
+  private final JobDescriptor j;
 
-  ClojureWorkerThread(ClojureEvaluator clojureEvaluator) {
-    super("clojure worker");
+  ClojureWorkerThread(ClojureEvaluator clojureEvaluator, JobDescriptor j) {
     this.clojureEvaluator = clojureEvaluator;
-    this.exit = false;
+    this.j = j;
   }
 
-  /*
-   * This thread performs all the evaluation
-   */
-
-  public void run() {
-    JobDescriptor j = null;
-
-    while (!exit) {
-      try {
-        // wait for work
-        syncObject.acquire();
-
-        // get next job descriptor
-        j = jobQueue.poll();
-        if (j == null)
-          continue;
-
-        j.outputObject.started();
-
-        if (!clojureEvaluator.executeTask(new ClojureCodeRunner(clojureEvaluator, j.codeToBeExecuted, j.outputObject))) {
-          j.outputObject.error(INTERUPTED_MSG);
-        }
-      } catch (Throwable e) {
-        logger.error(e.getMessage());
-      } finally {
-        if (j != null && j.outputObject != null) {
-          j.outputObject.executeCodeCallback();
-        }
-      }
+  @Override
+  public TryResult call() throws Exception {
+    TryResult r = null;
+    try {
+      j.outputObject.started();
+      r = clojureEvaluator.executeTask(new ClojureCodeRunner(clojureEvaluator, j.codeToBeExecuted, j.outputObject));
+//      if (!r.isLeft()) {
+//        j.outputObject.error(INTERUPTED_MSG);
+//      }
+    } catch (Throwable e) {
+      logger.error(e.getMessage());
+      r = TryResult.createError(e.getLocalizedMessage());
     }
+    return r;
   }
 
   void doExit() {
-    this.exit = true;
   }
 }

@@ -16,88 +16,68 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
-import com.twosigma.beakerx.evaluator.WorkerThread;
-import groovy.lang.Binding;
-import groovy.lang.GroovyClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
+import java.util.concurrent.Callable;
 
-import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
-import static com.twosigma.beakerx.groovy.evaluator.GroovyClassLoaderFactory.newEvaluator;
-
-class GroovyWorkerThread extends WorkerThread {
+class GroovyWorkerThread implements Callable<TryResult> {
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyWorkerThread.class.getName());
+  private final JobDescriptor j;
   protected GroovyEvaluator groovyEvaluator;
-  private boolean exit;
 
-  GroovyWorkerThread(GroovyEvaluator groovyEvaluator) {
-    super("groovy worker");
+  GroovyWorkerThread(GroovyEvaluator groovyEvaluator, JobDescriptor j) {
     this.groovyEvaluator = groovyEvaluator;
-    this.exit = false;
+    this.j = j;
   }
 
-  /*
-   * This thread performs all the evaluation
-   */
-  public void run() {
-    JobDescriptor j = null;
+  @Override
+  public TryResult call() throws Exception {
     NamespaceClient nc = null;
+    TryResult r;
+    try {
+      if (!GroovyEvaluator.LOCAL_DEV) {
+        nc = NamespaceClient.getBeaker(groovyEvaluator.getSessionId());
+        nc.setOutputObj(j.outputObject);
+      }
 
-    while (!exit) {
-      try {
-        // wait for work
-        syncObject.acquire();
+      j.outputObject.started();
 
-        // get next job descriptor
-        j = jobQueue.poll();
-        if (j == null)
-          continue;
+      String code = j.codeToBeExecuted;
 
-        if (!GroovyEvaluator.LOCAL_DEV) {
-          nc = NamespaceClient.getBeaker(groovyEvaluator.getSessionId());
-          nc.setOutputObj(j.outputObject);
-        }
+      r = groovyEvaluator.executeTask(new GroovyCodeRunner(groovyEvaluator, code, j.outputObject));
+//      if (!r.isLeft()) {
+//        j.outputObject.error(INTERUPTED_MSG);
+//        r = Either.right(INTERUPTED_MSG);
+//      }
 
-        j.outputObject.started();
-
-        String code = j.codeToBeExecuted;
-
-        if (!groovyEvaluator.executeTask(new GroovyCodeRunner(groovyEvaluator, code, j.outputObject))) {
-          j.outputObject.error(INTERUPTED_MSG);
-        }
-
-        if (nc != null) {
-          nc.setOutputObj(null);
-          nc = null;
-        }
-      } catch (Throwable e) {
-        if (e instanceof GroovyNotFoundException) {
-          logger.warn(e.getLocalizedMessage());
-          if (j != null) {
-            j.outputObject.error(e.getLocalizedMessage());
-          }
-        } else {
-          e.printStackTrace();
-        }
-      } finally {
-        if (nc != null) {
-          nc.setOutputObj(null);
-          nc = null;
-        }
-        if (j != null && j.outputObject != null) {
-          j.outputObject.executeCodeCallback();
-        }
+      if (nc != null) {
+        nc.setOutputObj(null);
+        nc = null;
+      }
+    } catch (Throwable e) {
+      if (e instanceof GroovyNotFoundException) {
+        logger.warn(e.getLocalizedMessage());
+        r = TryResult.createError(e.getLocalizedMessage());
+      } else {
+        e.printStackTrace();
+        r = TryResult.createError(e.getLocalizedMessage());
+      }
+    } finally {
+      if (nc != null) {
+        nc.setOutputObj(null);
+        nc = null;
       }
     }
     NamespaceClient.delBeaker(groovyEvaluator.getSessionId());
+    return r;
   }
 
   void doExit() {
-    this.exit = true;
+    //  this.exit = true;
   }
 
 }

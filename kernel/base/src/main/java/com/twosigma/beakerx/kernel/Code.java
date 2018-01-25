@@ -80,22 +80,12 @@ public class Code {
     return message;
   }
 
-  public void execute(KernelFunctionality kernel, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
+  public void execute(KernelFunctionality kernel, int executionCount) {
     if (hasErrors()) {
       sendRepliesWithStatus(getErrors(), kernel, getMessage(), executionCount);
-      executeCodeCallback.execute(null);
     } else {
-      takeCodeFramesWithoutLast()
-              .forEach(frame -> {
-                CompletableFuture<Boolean> result = new CompletableFuture<>();
-                frame.executeFrame(this, kernel, message, executionCount, seo -> result.complete(true));
-                try {
-                  result.get();
-                } catch (Exception e) {
-                  throw new RuntimeException(e);
-                }
-              });
-      takeLastCodeFrame().executeLastFrame(this, kernel, message, executionCount, executeCodeCallback);
+      takeCodeFramesWithoutLast().forEach(frame -> frame.executeFrame(this, kernel, message, executionCount));
+      takeLastCodeFrame().executeLastFrame(this, kernel, message, executionCount);
     }
   }
 

@@ -16,55 +16,47 @@
 package com.twosigma.beakerx.javash.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
-import com.twosigma.beakerx.evaluator.WorkerThread;
 
-import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+import java.util.concurrent.Callable;
 
-class JavaWorkerThread extends WorkerThread {
+class JavaWorkerThread implements Callable<TryResult> {
 
   private JavaEvaluator javaEvaluator;
-  private boolean exit;
+  private final JobDescriptor j;
 
-  public JavaWorkerThread(JavaEvaluator javaEvaluator) {
-    super("javash worker");
+  public JavaWorkerThread(JavaEvaluator javaEvaluator, JobDescriptor j) {
     this.javaEvaluator = javaEvaluator;
-    exit = false;
+    this.j = j;
   }
 
-  /*
-   * This thread performs all the evaluation
-   */
-  public void run() {
-
-    JobDescriptor j;
+  @Override
+  public TryResult call() throws Exception {
     NamespaceClient nc = null;
-    while (!exit) {
-      try {
-        syncObject.acquire();
-        j = jobQueue.poll();
-        if (j == null) {
-          continue;
-        }
-        nc = NamespaceClient.getBeaker(javaEvaluator.getSessionId());
-        nc.setOutputObj(j.outputObject);
-        if (!javaEvaluator.executeTask(new JavaCodeRunner(javaEvaluator, j.outputObject,j))) {
-          j.outputObject.error(INTERUPTED_MSG);
-        }
-      } catch (Throwable e) {
-        e.printStackTrace();
-      } finally {
-        if (nc != null) {
-          nc.setOutputObj(null);
-          nc = null;
-        }
+    TryResult r;
+    try {
+      nc = NamespaceClient.getBeaker(javaEvaluator.getSessionId());
+      nc.setOutputObj(j.outputObject);
+      r = javaEvaluator.executeTask(new JavaCodeRunner(javaEvaluator, j.outputObject, j));
+//      if (!either.isLeft()) {
+//        j.outputObject.error(INTERUPTED_MSG);
+//      }
+    } catch (Throwable e) {
+      e.printStackTrace();
+      r = TryResult.createError(e.getLocalizedMessage());
+    } finally {
+      if (nc != null) {
+        nc.setOutputObj(null);
+        nc = null;
       }
     }
+
     NamespaceClient.delBeaker(javaEvaluator.getSessionId());
+    return r;
   }
 
   public void doExit() {
-    this.exit = true;
   }
 
 }

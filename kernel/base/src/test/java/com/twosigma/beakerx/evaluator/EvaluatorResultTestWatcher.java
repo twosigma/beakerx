@@ -36,17 +36,6 @@ public class EvaluatorResultTestWatcher {
   public static final int ATTEMPT = 2000;
   public static final int SLEEP_IN_MILLIS = 20;
 
-  public static void waitForResult(SimpleEvaluationObject seo) throws InterruptedException {
-    int count = 0;
-    while ((seo.getStatus().equals(QUEUED) || seo.getStatus().equals(RUNNING)) && count < ATTEMPT) {
-      Thread.sleep(SLEEP_IN_MILLIS);
-      count++;
-    }
-    if (count == ATTEMPT) {
-      throw new RuntimeException("No result, code evaluation took too long.");
-    }
-  }
-
   public static Optional<Message> waitForResult(KernelSocketsTest socketsTest) throws InterruptedException {
     int count = 0;
     Optional<Message> result = getResult(socketsTest);

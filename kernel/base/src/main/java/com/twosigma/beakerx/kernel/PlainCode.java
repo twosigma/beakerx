@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.kernel;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.message.Message;
 
@@ -31,21 +32,34 @@ public class PlainCode extends CodeFrame {
   }
 
   @Override
-  public void executeFrame(Code code, KernelFunctionality kernel, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(this.plainCode, kernel, message, executionCount, executeCodeCallback);
+  public void executeFrame(Code code, KernelFunctionality kernel, Message message, int executionCount) {
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(this.plainCode, kernel, message, executionCount);
     seo.noResult();
-    kernel.executeCode(this.plainCode, seo);
+    TryResult either = kernel.executeCode(this.plainCode, seo);
+    handleResult(seo, either);
+  }
+
+  private void handleResult(SimpleEvaluationObject seo, TryResult either) {
+    try {
+      if (either.isResult()) {
+        seo.finished(either.result());
+      } else {
+        seo.error(either.error());
+      }
+    } catch (Exception e) {
+      seo.error(e.getLocalizedMessage());
+    }
   }
 
   @Override
-  public void executeLastFrame(Code code, KernelFunctionality kernel, Message message, int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject seo = createSimpleEvaluationObject(this.plainCode, kernel, message, executionCount, executeCodeCallback);
-    kernel.executeCode(this.plainCode, seo);
+  public void executeLastFrame(Code code, KernelFunctionality kernel, Message message, int executionCount) {
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(this.plainCode, kernel, message, executionCount);
+    TryResult either = kernel.executeCode(this.plainCode, seo);
+    handleResult(seo, either);
   }
 
-  public static SimpleEvaluationObject createSimpleEvaluationObject(String code, KernelFunctionality kernel, Message message,
-                                                              int executionCount, KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
+  public static SimpleEvaluationObject createSimpleEvaluationObject(String code, KernelFunctionality kernel, Message message, int executionCount) {
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     seo.setJupyterMessage(message);
     seo.setExecutionCount(executionCount);
     seo.addObserver(kernel.getExecutionResultSender());

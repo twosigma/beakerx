@@ -25,12 +25,9 @@ import java.util.Observable;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Abstraction around an evaluation, for communication of the state over REST to the plugin.
@@ -38,7 +35,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class SimpleEvaluationObject extends Observable {
 
   private final static Logger logger = LoggerFactory.getLogger(SimpleEvaluationObject.class.getName());
-  private final KernelFunctionality.ExecuteCodeCallback executeCodeCallback;
 
   private Message jupyterMessage;
   private int executionCount;
@@ -54,17 +50,6 @@ public class SimpleEvaluationObject extends Observable {
   public SimpleEvaluationObject(String e) {
     expression = e;
     status = EvaluationStatus.QUEUED;
-    this.executeCodeCallback = null;
-  }
-
-  public SimpleEvaluationObject(String e, final KernelFunctionality.ExecuteCodeCallback executeCodeCallback) {
-    expression = e;
-    status = EvaluationStatus.QUEUED;
-    this.executeCodeCallback = checkNotNull(executeCodeCallback);
-  }
-
-  public void executeCodeCallback() {
-    this.executeCodeCallback.execute(this);
   }
 
   public boolean isShowResult() {

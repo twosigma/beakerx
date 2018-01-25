@@ -26,7 +26,6 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.ExecuteCodeCallbackTest.EXECUTION_TEST_CALLBACK;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand.JAVASCRIPT;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,7 +49,7 @@ public class JavaScriptMagicCommandTest {
 
     Code code = CodeFactory.create(JAVASCRIPT + System.lineSeparator() + jsCode, new Message(), kernel);
     //when
-    code.execute(this.kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(this.kernel, 1);
     //MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
     //then
     Map data = (Map) kernel.getPublishedMessages().get(0).getContent().get("data");
@@ -66,7 +65,7 @@ public class JavaScriptMagicCommandTest {
     String jsCode = System.lineSeparator() + "alert()";
     Code code = CodeFactory.create(JAVASCRIPT + "wrong" + jsCode, new Message(), kernel);
     //when
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");

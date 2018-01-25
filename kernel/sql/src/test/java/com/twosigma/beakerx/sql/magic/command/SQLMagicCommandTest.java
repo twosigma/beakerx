@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.sql.magic.command;
 
-import static com.twosigma.ExecuteCodeCallbackTest.EXECUTION_TEST_CALLBACK;
 import static com.twosigma.beakerx.sql.magic.command.DataSourcesMagicCommand.DATASOURCES;
 import static com.twosigma.beakerx.sql.magic.command.DefaultDataSourcesMagicCommand.DEFAULT_DATASOURCE;
 import static java.util.Collections.singletonList;
@@ -55,7 +54,7 @@ public class SQLMagicCommandTest {
     MagicCommand command = new MagicCommand(new DefaultDataSourcesMagicCommand(kernel), codeAsString);
     Code code = Code.createCode(codeAsString, singletonList(command), NO_ERRORS, new Message());
     //when
-    code.execute(kernel,1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     assertThat(getDefaultDatasource().get()).isEqualTo("jdbc:h2:mem:db1");
   }
@@ -67,7 +66,7 @@ public class SQLMagicCommandTest {
     MagicCommand command = new MagicCommand(new DataSourcesMagicCommand(kernel), codeAsString);
     Code code = Code.createCode(codeAsString, singletonList(command), NO_ERRORS, new Message());
     //when
-    code.execute(kernel,1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     assertThat(getDatasource().get()).isEqualTo("jdbc:h2:mem:db2");
   }

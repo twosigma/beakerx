@@ -21,7 +21,6 @@ import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
@@ -318,22 +317,9 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public SimpleEvaluationObject executeCode(String code, SimpleEvaluationObject seo) {
+  public TryResult executeCode(String code, SimpleEvaluationObject seo) {
     this.code = code;
-    seo.executeCodeCallback();
-    return seo;
-  }
-
-  @Override
-  public SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message,
-                                                                       int executionCount, ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
-    this.code = code;
-    SimpleEvaluationObjectWithTime seowt = new SimpleEvaluationObjectWithTime(code, executeCodeCallbackWithTime);
-    seowt.setJupyterMessage(message);
-    seowt.started();
-    seowt.finished(1L);
-    executeCodeCallbackWithTime.execute(seowt);
-    return seowt;
+    return TryResult.createResult(seo.getPayload());
   }
 
   public String getCode() {

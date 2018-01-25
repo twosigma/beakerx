@@ -63,7 +63,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
 
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
   }
 
   @Test
@@ -86,7 +86,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
   }
 
   @Test
@@ -123,7 +123,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //when
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(3);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
   }
 
   @Test
@@ -175,7 +175,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //when
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(4);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
     assertThat(kernel.getCode()).isEqualTo("code code code");
   }
 
@@ -204,6 +204,6 @@ public class ExecuteRequestHandlerMagicCommandTest {
     //when
     executeRequestHandler.handle(magicMessage);
     //then
-    assertThat(kernel.getPublishedMessages().size()).isEqualTo(5);
+    assertThat(kernel.getPublishedMessages().size()).isEqualTo(6);
   }
 }

@@ -18,9 +18,7 @@ package com.twosigma.beakerx.kernel.magic.command.functionality;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
@@ -29,7 +27,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.twosigma.ExecuteCodeCallbackTest.EXECUTION_TEST_CALLBACK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TimeLineModeMagicCommandTest {
@@ -53,12 +50,8 @@ public class TimeLineModeMagicCommandTest {
     String allCode = "%time 2*128";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    code.getCodeFrames().get(code.getCodeFrames().size()-1).executeLastFrame(code, this.kernel, new Message(), 1, new KernelFunctionality.ExecuteCodeCallback() {
-      @Override
-      public void execute(SimpleEvaluationObject seo) {
-      }
-    });
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.getCodeFrames().get(code.getCodeFrames().size()-1).executeLastFrame(code, this.kernel, new Message(), 1);
+    code.execute(kernel, 1);
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");

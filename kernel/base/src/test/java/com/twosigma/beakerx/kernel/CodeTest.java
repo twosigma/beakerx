@@ -24,9 +24,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-
 import static com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR;
 import static com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand.JAVASCRIPT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,79 +74,10 @@ public class CodeTest {
     //when
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //then
-
     assertThat(code.getCodeFrames().size()).isEqualTo(4);
     assertThat(((MagicCommand) code.getCodeFrames().get(0)).getCommand()).isEqualTo("%classpath add jar lib1.jar");
     assertThat(((MagicCommand) code.getCodeFrames().get(1)).getCommand()).isEqualTo("%classpath add jar lib2.jar");
     assertThat(((MagicCommand) code.getCodeFrames().get(2)).getCommand()).isEqualTo("%classpath add jar lib3.jar");
     assertThat(((PlainCode) code.getCodeFrames().get(3)).getPlainCode()).isEqualTo("code code code");
   }
-
-  static String hello(String name) {
-    sleep(100);
-    System.out.println(System.currentTimeMillis() + " > hello " + name);
-    return "Hello " + name;
-  }
-
-  static String planet(String name) {
-    sleep(10);
-    System.out.println(System.currentTimeMillis() + " > planet " + name);
-    return "Planet: " + name;
-  }
-
-  static String echo(String name) {
-    System.out.println(System.currentTimeMillis() + " > echo " + name);
-    return name;
-  }
-
-  @Test
-  public void name() throws ExecutionException, InterruptedException {
-
-    System.out.println("main: " + Thread.currentThread().getName());
-
-//    CompletableFuture<Boolean> tasks = CompletableFuture
-//            .supplyAsync(() -> task("0000"))
-//            .thenApply(aBoolean -> task("1111"))
-//            .thenApply(aBoolean -> task("2222"))
-//            .thenApply(aBoolean -> task("3333"));
-//    tasks.get();
-
-    CompletableFuture<Boolean> tasks2 = CompletableFuture.supplyAsync(() -> true);
-    tasks2.thenApply(aBoolean -> task("0000"));
-    tasks2.thenApply(aBoolean -> task("1111"));
-    tasks2.thenApply(aBoolean -> task("2222"));
-    tasks2.thenApply(aBoolean -> task("3333"));
-    //tasks2.get();
-
-
-  }
-
-  private Boolean task(String param) {
-    System.out.println("Task: " + Thread.currentThread().getName());
-    CompletableFuture<Boolean> result = new CompletableFuture<>();
-    new Thread(() -> {
-      System.out.println("subtask: " + Thread.currentThread().getName());
-      sleep(1111);
-      result.complete(true);
-    }).start();
-    System.out.println(param);
-    Boolean aBoolean = null;
-    try {
-      aBoolean = result.get();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    } catch (ExecutionException e) {
-      e.printStackTrace();
-    }
-    return aBoolean;
-  }
-
-  private static void sleep(int i) {
-    try {
-      Thread.sleep(i);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
-
 }

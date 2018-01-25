@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
 
 /**
@@ -60,7 +61,8 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     String codeString = takeCodeFrom(message);
     announceTheCode(message, codeString);
     Code code = CodeFactory.create(codeString, message, kernel);
-    code.execute(kernel, executionCount, (seo) -> finishExecution(seo.getJupyterMessage()));
+    code.execute(kernel, executionCount);
+    finishExecution(message);
   }
 
   private void finishExecution(Message message) {

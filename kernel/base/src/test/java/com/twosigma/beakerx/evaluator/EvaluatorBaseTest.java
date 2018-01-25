@@ -15,16 +15,13 @@
  */
 package com.twosigma.beakerx.evaluator;
 
-import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.junit.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class EvaluatorBaseTest {
@@ -56,13 +53,11 @@ public abstract class EvaluatorBaseTest {
   public void shouldDivide16By2() throws Exception {
     //given
     String code = codeForDivide16By2();
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    evaluator().evaluate(seo, code);
-    waitForResult(seo);
+    TryResult result = evaluator().evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    assertThat(seo.getPayload().toString()).isEqualTo("8");
+    assertThat(result.result().toString()).isEqualTo("8");
   }
 
   protected abstract String codeForDivide16By2();
@@ -71,13 +66,11 @@ public abstract class EvaluatorBaseTest {
   public void shouldCreateErrorResultWithArithmeticExceptionWhenDivisionByZero() throws Exception {
     //given
     String code = codeForDivisionByZero();
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    evaluator().evaluate(seo, code);
-    waitForResult(seo);
+    TryResult either = evaluator().evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(ERROR);
-    assertThat((String) seo.getPayload()).contains(textAssertionForDivisionByZero());
+    assertThat(either.error()).contains(textAssertionForDivisionByZero());
   }
 
   protected String textAssertionForDivisionByZero() {
@@ -90,13 +83,11 @@ public abstract class EvaluatorBaseTest {
   public void returnHelloString() throws Exception {
     //given
     String code = codeForHello();
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    evaluator().evaluate(seo, code);
-    waitForResult(seo);
+    TryResult result = evaluator().evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    assertThat((String) seo.getPayload()).contains("Hello");
+    assertThat((String) result.result()).contains("Hello");
   }
 
   protected abstract String codeForHello();
@@ -105,13 +96,11 @@ public abstract class EvaluatorBaseTest {
   public void returnPrintln() throws Exception {
     //given
     String code = codeForPrintln();
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    evaluator().evaluate(seo, code);
-    waitForResult(seo);
+    TryResult result = evaluator().evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    assertThat((String) seo.getPayload()).isNull();
+    assertThat((String) result.result()).isNull();
   }
 
   protected abstract String codeForPrintln();

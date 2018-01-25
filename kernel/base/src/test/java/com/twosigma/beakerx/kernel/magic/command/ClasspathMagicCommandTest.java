@@ -29,7 +29,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.twosigma.ExecuteCodeCallbackTest.EXECUTION_TEST_CALLBACK;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -60,7 +59,7 @@ public class ClasspathMagicCommandTest {
             "code code code";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     PlainCode actual = (PlainCode) code.getCodeFrames().get(1);
     Assertions.assertThat(actual.getPlainCode()).isEqualTo("code code code");
@@ -74,7 +73,7 @@ public class ClasspathMagicCommandTest {
             "%classpath add jar " + SRC_TEST_RESOURCES + "dirWithTwoJars/*";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");
@@ -88,7 +87,7 @@ public class ClasspathMagicCommandTest {
     String jar = SRC_TEST_RESOURCES + "BeakerXClasspathTest.jar";
     Code code = CodeFactory.create("%classpath2 add jar" + " " + jar, new Message(), kernel);
     //when
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");
@@ -102,7 +101,7 @@ public class ClasspathMagicCommandTest {
     kernel.addJarsToClasspath(asList(new PathToJar(CLASSPATH_TO_JAR)));
     Code code = CodeFactory.create("%classpath", new Message(), kernel);
     //when
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");
@@ -117,7 +116,7 @@ public class ClasspathMagicCommandTest {
     //when
     kernel.addJarsToClasspath(asList(new PathToJar(CLASSPATH_TO_JAR)));
     Code code = CodeFactory.create("%classpath", new Message(), kernel);
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     //then
     List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");
@@ -127,7 +126,7 @@ public class ClasspathMagicCommandTest {
   @Test
   public void allowExtraWhitespaces() {
     Code code = CodeFactory.create("%classpath  add  jar          " + CLASSPATH_TO_JAR, new Message(), kernel);
-    code.execute(kernel, 1, EXECUTION_TEST_CALLBACK);
+    code.execute(kernel, 1);
     List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
     String text = (String) std.get(0).getContent().get("text");
     assertThat(text).contains("Added jar: [" + FOO_JAR + "]\n");

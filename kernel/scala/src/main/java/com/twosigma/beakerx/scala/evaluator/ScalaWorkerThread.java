@@ -16,71 +16,58 @@
 package com.twosigma.beakerx.scala.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
-import com.twosigma.beakerx.evaluator.WorkerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
+import java.util.concurrent.Callable;
 
-class ScalaWorkerThread extends WorkerThread {
+class ScalaWorkerThread implements Callable<TryResult> {
 
   private final static Logger logger = LoggerFactory.getLogger(ScalaWorkerThread.class.getName());
 
   private ScalaEvaluator scalaEvaluator;
-  private boolean exit;
+  private final JobDescriptor j;
 
-  public ScalaWorkerThread(ScalaEvaluator scalaEvaluator) {
-    super("scala worker");
+  public ScalaWorkerThread(ScalaEvaluator scalaEvaluator, JobDescriptor j) {
     this.scalaEvaluator = scalaEvaluator;
-    exit = false;
+    this.j = j;
   }
 
-  /*
-   * This thread performs all the evaluation
-   */
-  public void run() {
-    JobDescriptor j = null;
+  @Override
+  public TryResult call() throws Exception {
     NamespaceClient nc = null;
+    TryResult either;
 
-    while (!exit) {
-      logger.debug("looping");
-      try {
-        // wait for work
-        syncObject.acquire();
+    try {
+      j.outputObject.started();
 
-        // get next job descriptor
-        j = jobQueue.poll();
-        if (j == null)
-          continue;
-
-        j.outputObject.started();
-
-        nc = NamespaceClient.getBeaker(scalaEvaluator.getSessionId());
-        nc.setOutputObj(j.outputObject);
-        if (!scalaEvaluator.executeTask(new ScalaCodeRunner(scalaEvaluator, j.codeToBeExecuted, j.outputObject))) {
-          j.outputObject.error(INTERUPTED_MSG);
-        }
-        if (nc != null) {
-          nc.setOutputObj(null);
-          nc = null;
-        }
-      } catch (Throwable e) {
-        e.printStackTrace();
-      } finally {
-        if (nc != null) {
-          nc.setOutputObj(null);
-          nc = null;
-        }
-        if (j != null && j.outputObject != null) {
-          j.outputObject.executeCodeCallback();
-        }
+      nc = NamespaceClient.getBeaker(scalaEvaluator.getSessionId());
+      nc.setOutputObj(j.outputObject);
+      either = scalaEvaluator.executeTask(new ScalaCodeRunner(scalaEvaluator, j.codeToBeExecuted, j.outputObject));
+//      if (!either.isLeft()) {
+//        j.outputObject.error(INTERUPTED_MSG);
+//      }
+      if (nc != null) {
+        nc.setOutputObj(null);
+        nc = null;
+      }
+    } catch (Throwable e) {
+      e.printStackTrace();
+      either = TryResult.createError(e.getMessage());
+    } finally {
+      if (nc != null) {
+        nc.setOutputObj(null);
+        nc = null;
       }
     }
+
     NamespaceClient.delBeaker(scalaEvaluator.getSessionId());
+    return either;
   }
 
   public void doExit() {
-    this.exit = true;
+
   }
 }

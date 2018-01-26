@@ -20,12 +20,14 @@ import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.groovy.autocomplete.*;
 import com.twosigma.beakerx.inspect.InspectResult;
 import com.twosigma.beakerx.kernel.Imports;
+import com.twosigma.beakerx.widgets.BeakerxWidget;
 import groovy.lang.GroovyClassLoader;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -54,8 +56,14 @@ public class GroovyInspect extends GroovyAutocomplete {
                 String className = objectInit2.substring(objectInit2.lastIndexOf("new") + 3).trim();
 
                 ClassLoader classLoader = getClass().getClassLoader();
+                Path workingDirectory = null;
+                try {
+                    workingDirectory= Paths.get(BeakerxWidget.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent().getParent();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
 
-                try (InputStream inputStream = classLoader.getResourceAsStream("beakerx_inspect.json")) {
+                try (InputStream inputStream = new FileInputStream(new File(workingDirectory.toFile(), "beakerx_inspect.json"))) {
                     String everything = IOUtils.toString(inputStream);
                     SerializeInspect serializeInspect = new SerializeInspect();
 
@@ -88,7 +96,7 @@ public class GroovyInspect extends GroovyAutocomplete {
         }
         for (MethodInspect methodInspect : methodInspectsList) {
             if (methodInspect.getMethodName().equals(methodName)) {
-                return new InspectResult(methodInspect.getSignature(), caretPosition);
+                return new InspectResult(methodInspect.getSignature() + "\n" + methodInspect.getJavadoc(), caretPosition);
             }
         }
         return new InspectResult();

@@ -49,6 +49,7 @@ dependencies {
   compile group: 'junit', name: 'junit', version: '4.11'
   compile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
   compile group: 'org.reflections', name: 'reflections', version: '0.9.10'
+  compile group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
 }
 
 publishing {

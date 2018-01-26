@@ -18,7 +18,6 @@ package com.twosigma.beakerx.doclet;
 
 import com.sun.javadoc.*;
 import com.sun.tools.javadoc.ClassDocImpl;
-import com.twosigma.beakerx.groovy.inspect.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

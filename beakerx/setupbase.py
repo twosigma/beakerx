@@ -25,7 +25,7 @@ import os
 import functools
 import pipes
 import sys
-import site
+import shutil
 from subprocess import check_call
 from setuptools import Command
 from setuptools.command.develop import develop
@@ -53,6 +53,9 @@ else:
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 root = os.path.abspath(os.path.join(here, os.pardir))
 kernel_path = os.path.join(root, 'kernel')
+kernel_source = os.path.join(kernel_path, 'base','src', 'main', 'java')
+doclet_path = os.path.join(root, 'doclet')
+doclet_jar = os.path.join(doclet_path, 'build/libs/doclet-1.0-SNAPSHOT.jar')
 is_repo = os.path.exists(os.path.join(root, '.git'))
 node_modules = os.path.join(here, 'js', 'node_modules')
 node_modules_path = ':'.join([
@@ -309,6 +312,32 @@ def run_gradle(path=kernel_path, cmd='build'):
 
     return Gradle
 
+def run_doclet(path=doclet_path, cmd='build'):
+    """Return a Command for running gradle scripts.
+
+    Parameters
+    ----------
+    path: str, optional
+        The base path of the node package.  Defaults to the repo root.
+    cmd: str, optional
+        The command to run with gradlew.
+    """
+
+    class Gradle(BaseCommand):
+        description = 'Run gradle script'
+
+        def run(self):
+            run([('' if sys.platform == 'win32' else './') + 'gradlew', '--no-daemon', cmd], cwd=path)
+            run(['javadoc',
+                 '-doclet', 'com.twosigma.beakerx.doclet.BeakerxDoclet',
+                 '-docletpath', doclet_jar,
+                 '-subpackages', 'com.twosigma.beakerx',
+                 '-sourcepath', kernel_source
+            ])
+            shutil.copyfile('beakerx_inspect.json', os.path.join('..', 'beakerx', 'beakerx', 'kernel', 'base', 'beakerx_inspect.json'))
+
+
+    return Gradle
 
 def ensure_targets(targets):
     """Return a Command that checks that certain files exist.

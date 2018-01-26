@@ -17,9 +17,21 @@
 import { Panel, Widget } from "@phosphor/widgets";
 import BannerWidget from "./BannerWidget";
 import JVMOptionsWidget from "./JVMOptionsWidget";
+import * as $ from "jquery";
+import {Message} from "@phosphor/messaging";
 
 export default class BeakerXTreeWidget extends Panel {
 
+  public readonly HTML_ELEMENT_TEMPLATE = `
+<style>
+  #beakerx-tree { 
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    box-sizing: border-box;
+  }
+</style>
+`;
   constructor() {
     super();
 
@@ -37,6 +49,15 @@ export default class BeakerXTreeWidget extends Panel {
     this.addWidget(new BannerWidget());
     this.addWidget(new Widget({ node: document.createElement('br') }));
     this.addWidget(new JVMOptionsWidget());
+  }
+
+  onAfterAttach(msg: Message): void {
+    this.createWidgetStylesElement();
+  }
+
+  private createWidgetStylesElement(): void {
+    $(this.HTML_ELEMENT_TEMPLATE)
+      .insertBefore(this.node);
   }
 
 }

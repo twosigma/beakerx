@@ -13,20 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.inspect;
 
-import com.twosigma.beakerx.autocomplete.AutocompleteCandidate;
+package com.twosigma.beakerx.groovy.inspect;
 
-public class InspectCandidate extends AutocompleteCandidate{
-    public InspectCandidate(int t, String k) {
-        super(t, k);
+public class MethodInspect {
+    String methodName;
+    String javadoc;
+    String signature;
+
+    public MethodInspect(String methodName, String javadoc, String signature) {
+        this.methodName = methodName;
+        this.javadoc = javadoc;
+        this.signature = signature;
     }
 
-    public InspectCandidate(int t, String[] k) {
-        super(t, k);
+    public String getMethodName() {
+        return methodName;
     }
 
-    public InspectCandidate(int t, String[] k, int max) {
-        super(t, k, max);
+    public String getJavadoc() {
+        return javadoc;
+    }
+
+    public String getSignature() {
+        return signature;
     }
 }

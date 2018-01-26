@@ -1,0 +1,23 @@
+group 'com.twosigma.beakerx'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile files(org.gradle.internal.jvm.Jvm.current().toolsJar)
+    compile files('../beakerx/beakerx/kernel/groovy/lib/groovy.jar')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
+}
+
+task copyDependencies(type: Copy) {
+    from configurations.runtime
+    from jar
+    into new File(pathToStaticContent, 'base/lib')
+}

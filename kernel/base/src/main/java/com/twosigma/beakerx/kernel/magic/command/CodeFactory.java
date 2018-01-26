@@ -51,7 +51,7 @@ public class CodeFactory {
     Scanner scanner = new Scanner(allCode);
     List<CodeFrame> result = new ArrayList<>();
     while (scanner.hasNextLine()) {
-      String line = removeExtraWhitespaces(scanner.nextLine().trim());
+      String line = scanner.nextLine().trim();
       if (line.startsWith(CELL_COMMAND_MAGIC)) {
         result.add(createFrameForCellMagic(line, scanner, kernel));
       } else if (line.startsWith(LINE_COMMAND_MAGIC)) {
@@ -68,7 +68,7 @@ public class CodeFactory {
     result.add(line);
     Pattern p = Pattern.compile("\\s*%.*");
     while (scanner.hasNext() && !scanner.hasNext(p)) {
-      String str = removeExtraWhitespaces(scanner.nextLine().trim());
+      String str = scanner.nextLine().trim();
       result.add(str);
     }
     return new PlainCode(String.join(System.lineSeparator(), result));
@@ -91,13 +91,9 @@ public class CodeFactory {
   private static String takeRestOfTheCode(Scanner scanner) {
     List<String> result = new ArrayList<>();
     while (scanner.hasNextLine()) {
-      result.add(removeExtraWhitespaces(scanner.nextLine().trim()));
+      result.add(scanner.nextLine().trim());
     }
     return String.join(System.lineSeparator(), result);
-  }
-
-  private static String removeExtraWhitespaces(String command) {
-    return command.replaceAll("\\s+", " ");
   }
 
   private static Optional<MagicCommandFunctionality> findMagicCommandFunctionality(final List<MagicCommandType> commands, final String command) {

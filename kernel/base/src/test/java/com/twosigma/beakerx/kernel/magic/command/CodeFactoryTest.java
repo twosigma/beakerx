@@ -80,4 +80,13 @@ public class CodeFactoryTest {
     //then
     assertThat(code.getCodeFrames().size()).isEqualTo(4);
   }
+
+  @Test
+  public void shouldNotModifyCode() {
+    String codeAsString = "%time println(\"x  y\")";
+    //when
+    Code code = CodeFactory.create(codeAsString, new Message(), kernel);
+    //then
+    assertThat(((MagicCommand)code.getCodeFrames().get(0)).getCommand()).isEqualTo(codeAsString);
+  }
 }

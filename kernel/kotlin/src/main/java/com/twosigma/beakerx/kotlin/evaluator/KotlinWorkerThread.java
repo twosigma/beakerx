@@ -16,75 +16,60 @@
 package com.twosigma.beakerx.kotlin.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.JobDescriptor;
-import com.twosigma.beakerx.evaluator.WorkerThread;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.concurrent.Callable;
 
-import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
-
-class KotlinWorkerThread extends WorkerThread {
+class KotlinWorkerThread implements Callable<TryResult> {
 
   private static final String WRAPPER_CLASS_NAME = "BeakerWrapperClass1261714175";
   private KotlinEvaluator kotlinEvaluator;
-  protected boolean exit;
+  private final JobDescriptor j;
 
-
-  public KotlinWorkerThread(KotlinEvaluator kotlinEvaluator) {
-    super("kotlin worker");
+  public KotlinWorkerThread(KotlinEvaluator kotlinEvaluator, JobDescriptor j) {
     this.kotlinEvaluator = kotlinEvaluator;
-    exit = false;
+    this.j = j;
   }
 
   @Override
-  public void run() {
-
-    JobDescriptor j = null;
-
+  public TryResult call() throws Exception {
     NamespaceClient nc = null;
+    TryResult either;
+    try {
 
-    while (!exit) {
+      nc = NamespaceClient.getBeaker(kotlinEvaluator.getSessionId());
+      nc.setOutputObj(j.outputObject);
+
+      j.outputObject.started();
+
       try {
-        syncObject.acquire();
-
-        j = jobQueue.poll();
-        if (j == null)
-          continue;
-
-        nc = NamespaceClient.getBeaker(kotlinEvaluator.getSessionId());
-        nc.setOutputObj(j.outputObject);
-
-        j.outputObject.started();
-
-        try {
-          if (!kotlinEvaluator.executeTask(new KotlinCodeRunner(j.outputObject, kotlinEvaluator.getClassLoader(), kotlinEvaluator.getRepl(), j.codeToBeExecuted))) {
-            j.outputObject.error(INTERUPTED_MSG);
-          }
-          if (nc != null) {
-            nc.setOutputObj(null);
-            nc = null;
-          }
-
-        } catch (Exception e) {
-          j.outputObject.error(e);
-        }
-        j = null;
-      } catch (Throwable e) {
-        e.printStackTrace();
-      } finally {
+        KotlinCodeRunner kotlinCodeRunner = new KotlinCodeRunner(j.outputObject, kotlinEvaluator.getClassLoader(), kotlinEvaluator.getRepl(), j.codeToBeExecuted);
+        either = kotlinEvaluator.executeTask(kotlinCodeRunner);
         if (nc != null) {
           nc.setOutputObj(null);
           nc = null;
         }
+
+      } catch (Exception e) {
+        either = TryResult.createError(e.getMessage());
+      }
+    } catch (Throwable e) {
+      e.printStackTrace();
+      either = TryResult.createError(e.getMessage());
+    } finally {
+      if (nc != null) {
+        nc.setOutputObj(null);
+        nc = null;
       }
     }
-    NamespaceClient.delBeaker(kotlinEvaluator.getSessionId());
+    return either;
   }
 
   public void doExit() {
-    this.exit = true;
     removeKtFile();
   }
 

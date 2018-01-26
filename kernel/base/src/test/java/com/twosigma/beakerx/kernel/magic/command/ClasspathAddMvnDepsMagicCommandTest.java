@@ -16,15 +16,13 @@
 package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.kernel.handler.MagicCommandExecutor;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
 import org.apache.commons.io.FileUtils;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -65,7 +64,7 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     evaluator.exit();
   }
 
@@ -84,46 +83,51 @@ public class ClasspathAddMvnDepsMagicCommandTest {
   }
 
   @Test
-  public void unresolvedDependency() throws Exception {
+  public void unresolvedDependency() {
     //given
     String allCode = "%classpath add mvn com.google.code.XXXX gson 2.6.2";
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
-    Code code = Code.createCodeWithoutCodeBlock(allCode, singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message());
     //when
-    MagicCommandOutcome process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1);
     //then
-    String text = getText(process);
+    List<Message> stderr = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
+    String text = (String) stderr.get(0).getContent().get("text");
     assertThat(text).contains("Could not resolve dependencies for:");
     assertThat(text).contains("com.google.code.XXXX : gson : 2.6.2");
+
   }
 
   @Test
-  public void wrongCommandFormat() throws Exception {
+  public void wrongCommandFormat() {
     //given
     String allCode = "%classpath add mvn com.google.code.XXXX gson";
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
-    Code code = Code.createCodeWithoutCodeBlock(allCode, singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message());
     //when
-    MagicCommandOutcome process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1);
     //then
-    String text = getText(process);
-    assertThat(text).isEqualTo(ADD_MVN_FORMAT_ERROR_MESSAGE + "\n");
+    List<Message> stderr = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
+    String text = (String) stderr.get(0).getContent().get("text");
+    assertThat(text).contains(ADD_MVN_FORMAT_ERROR_MESSAGE + "\n");
   }
 
   private void handleClasspathAddMvnDep(String allCode, String expected) throws IOException {
     MagicCommand command = new MagicCommand(new ClasspathAddMvnMagicCommand(kernel.mavenResolverParam, kernel), allCode);
-    Code code = Code.createCodeWithoutCodeBlock(allCode, singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(allCode, singletonList(command), NO_ERRORS, new Message());
     //when
-    MagicCommandOutcome process = MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1);
     //then
-    Assertions.assertThat(getText(process)).contains("Added jar");
+    List<Message> stderr = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
+    String text = (String) stderr.get(0).getContent().get("text");
+    assertThat(text).contains("Added jar");
+    assertThat(text).contains(expected);
     String mvnDir = kernel.getTempFolder().toString() + MavenJarResolver.MVN_DIR;
     Stream<Path> paths = Files.walk(Paths.get(mvnDir));
     Optional<Path> dep = paths.filter(file -> (file.getFileName().toFile().getName().contains("gson") ||
-        file.getFileName().toFile().getName().contains("slf4j"))).findFirst();
+            file.getFileName().toFile().getName().contains("slf4j"))).findFirst();
     assertThat(dep).isPresent();
     assertThat(kernel.getClasspath().get(0)).contains(mvnDir);
-    assertThat(getText(process)).contains(expected);
     dep.ifPresent(path -> {
       try {
         FileUtils.forceDelete(path.toFile());
@@ -131,11 +135,6 @@ public class ClasspathAddMvnDepsMagicCommandTest {
         e.printStackTrace();
       }
     });
-  }
-
-  private String getText(MagicCommandOutcome process) {
-    MagicCommandOutcomeItem magicCommandItem = process.getItems().get(0);
-    return (String) magicCommandItem.getMIMEContainer().get().getData();
   }
 
   private static void prepareLocalMavenRepository() throws IOException {

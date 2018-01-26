@@ -15,7 +15,7 @@ package com.twosigma.beakerx.groovy.evaluator;
  *  limitations under the License.
  */
 
-import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -25,12 +25,6 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,23 +51,20 @@ public class GroovyEvaluatorMagicCommandsTest {
             "import com.example.Demo;\n" +
             "Demo demo = new Demo();\n" +
             "demo.getObjectTest()\n";
-    SimpleEvaluationObject seo = runCode(code);
-    assertThat(seo.getStatus()).isEqualTo(ERROR);
+    TryResult seo = runCode(code);
+    assertThat(seo.error()).contains("MultipleCompilationErrorsException:");
     //when
     PathToJar path = new PathToJar(SRC_TEST_RESOURCES + "demo.jar");
     groovyEvaluator.addJarsToClasspath(singletonList(path));
     //then
-    SimpleEvaluationObject seo2 = runCode(code);
-    assertThat(seo2.getStatus()).isEqualTo(FINISHED);
-    assertThat(seo2.getPayload()).isEqualTo("Demo_test_123");
+    TryResult seo2 = runCode(code);
+    assertThat(seo2.result()).isEqualTo("Demo_test_123");
   }
 
-  private SimpleEvaluationObject runCode(String code) throws InterruptedException {
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+  private TryResult runCode(String code) throws InterruptedException {
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     Message message = new Message();
     seo.setJupyterMessage(message);
-    groovyEvaluator.evaluate(seo, code);
-    waitForResult(seo);
-    return seo;
+    return groovyEvaluator.evaluate(seo, code);
   }
 }

@@ -43,9 +43,9 @@ public class AddImportMagicCommand implements MagicCommandFunctionality {
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
-    String[] parts = command.split(" ");
+    String[] parts = MagicCommandUtils.splitPath(command);
     if (parts.length != 2) {
-      return new MagicCommandOutput(OK, kernel.getImports().toString());
+      return new MagicCommandOutput(ERROR, WRONG_FORMAT_MSG + IMPORT);
     }
     ImportPath anImport = new ImportPath(parts[1]);
     AddImportStatus status = this.kernel.addImport(anImport);

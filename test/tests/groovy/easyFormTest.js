@@ -17,7 +17,7 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('Testing of EasyForm (groovy)', function () {
+describe('(Groovy) Testing of EasyForm', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
@@ -30,7 +30,7 @@ describe('Testing of EasyForm (groovy)', function () {
 
   var cellIndex;
 
-  describe('EasyForm widget', function () {
+  describe('(Groovy) EasyForm widget', function () {
     it('Cell has EasyForm widget', function () {
       cellIndex = 0;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
@@ -40,7 +40,7 @@ describe('Testing of EasyForm (groovy)', function () {
     });
   });
 
-  describe('EasyForm Text field', function () {
+  describe('(Groovy) EasyForm Text field', function () {
     var easyForm;
 
     it('EasyForm has Text field', function () {
@@ -74,7 +74,7 @@ describe('Testing of EasyForm (groovy)', function () {
     });
   });
 
-  describe('EasyForm Textarea field', function () {
+  describe('(Groovy) EasyForm Textarea field', function () {
     var easyForm;
 
     it('EasyForm has Textarea field', function () {
@@ -117,7 +117,7 @@ describe('Testing of EasyForm (groovy)', function () {
     });
   });
 
-  describe('EasyForm Checkbox field', function () {
+  describe('(Groovy) EasyForm Checkbox field', function () {
     var easyForm;
 
     it('EasyForm has Checkbox field', function () {
@@ -151,7 +151,7 @@ describe('Testing of EasyForm (groovy)', function () {
     });
   });
 
-  describe('EasyForm Combobox field', function () {
+  describe('(Groovy) EasyForm Combobox field', function () {
     var easyForm;
 
     it('EasyForm has Combobox field', function () {
@@ -187,7 +187,7 @@ describe('Testing of EasyForm (groovy)', function () {
     browser.keys('\uE000');
   }
 
-  describe('EasyForm List field', function () {
+  describe('(Groovy) EasyForm List field', function () {
     var easyForm;
 
     it('EasyForm has List field', function () {
@@ -250,7 +250,7 @@ describe('Testing of EasyForm (groovy)', function () {
     });
   });
 
-  describe('EasyForm CheckBoxes field', function () {
+  describe('(Groovy) EasyForm CheckBoxes field', function () {
     var easyForm;
 
     it('EasyForm has CheckBoxes field', function () {
@@ -304,7 +304,7 @@ describe('Testing of EasyForm (groovy)', function () {
     });
   });
 
-  describe('EasyForm RadioButtons field', function () {
+  describe('(Groovy) EasyForm RadioButtons field', function () {
     var easyForm;
 
     it('EasyForm has RadioButtons field', function () {
@@ -336,7 +336,7 @@ describe('Testing of EasyForm (groovy)', function () {
       beakerxPO.runCellAndCheckOutputText(cellIndex, 'twof8');
     });
 
-    it('Should select CheckBoxes value by code', function () {
+    it('Should select RadioButtons value by code', function () {
       cellIndex += 1;
       var result = beakerxPO.runCellToGetOutputTextElement(cellIndex).getText();
       expect(result).toMatch('threef8');
@@ -355,7 +355,7 @@ describe('Testing of EasyForm (groovy)', function () {
     });
   });
 
-  describe('EasyForm DatePicker field', function () {
+  describe('(Groovy) EasyForm DatePicker field', function () {
     var easyForm;
 
     it('EasyForm has DatePicker field', function () {
@@ -382,7 +382,7 @@ describe('Testing of EasyForm (groovy)', function () {
     });
   });
 
-  describe("EasyForm Actions", function(){
+  describe("(Groovy) EasyForm Actions", function(){
     var inputs;
 
     it('EasyForm has two buttons', function () {
@@ -418,7 +418,7 @@ describe('Testing of EasyForm (groovy)', function () {
     });
   });
 
-  describe('IntSlider widget in EasyForm', function(){
+  describe('(Groovy) IntSlider widget in EasyForm', function(){
     it('EasyForm has IntSlider widget', function(){
       cellIndex += 2;
       var easyForm = beakerxPO.runCellToGetEasyForm(cellIndex);

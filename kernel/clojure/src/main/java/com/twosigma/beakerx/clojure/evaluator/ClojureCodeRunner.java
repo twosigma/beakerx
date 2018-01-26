@@ -41,8 +41,8 @@ class ClojureCodeRunner implements Runnable {
     ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(clojureEvaluator.getClassLoader());
 
-    theOutput.setOutputHandler();
     try {
+      theOutput.setOutputHandler();
       InternalVariable.setValue(theOutput);
       Object o = clojureEvaluator.runCode(theCode);
       try {
@@ -64,9 +64,10 @@ class ClojureCodeRunner implements Runnable {
         }
         theOutput.error(sw.toString());
       }
+    } finally {
+      theOutput.setOutputHandler();
+      Thread.currentThread().setContextClassLoader(oldLoader);
     }
-    theOutput.setOutputHandler();
-    Thread.currentThread().setContextClassLoader(oldLoader);
   }
 
   private void checkingOfCorruptedClojureObjects(Object o) {

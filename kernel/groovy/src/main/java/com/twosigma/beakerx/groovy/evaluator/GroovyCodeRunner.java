@@ -48,9 +48,9 @@ class GroovyCodeRunner implements Runnable {
   public void run() {
     Object result;
     ClassLoader oldld = Thread.currentThread().getContextClassLoader();
-    theOutput.setOutputHandler();
 
     try {
+      theOutput.setOutputHandler();
 
       Thread.currentThread().setContextClassLoader(groovyEvaluator.getGroovyClassLoader());
 
@@ -97,8 +97,9 @@ class GroovyCodeRunner implements Runnable {
         StackTraceUtils.sanitize(e).printStackTrace(pw);
         theOutput.error(sw.toString());
       }
+    } finally {
+      theOutput.clrOutputHandler();
+      Thread.currentThread().setContextClassLoader(oldld);
     }
-    theOutput.clrOutputHandler();
-    Thread.currentThread().setContextClassLoader(oldld);
   }
 }

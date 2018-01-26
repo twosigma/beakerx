@@ -38,8 +38,8 @@ class ScalaCodeRunner implements Runnable {
 
   @Override
   public void run() {
-    theOutput.setOutputHandler();
     try {
+      theOutput.setOutputHandler();
       InternalVariable.setValue(theOutput);
       scalaEvaluator.getShell().evaluate(theOutput, theCode);
     } catch (Throwable e) {
@@ -51,8 +51,9 @@ class ScalaCodeRunner implements Runnable {
         e.printStackTrace(pw);
         theOutput.error(sw.toString());
       }
+    }finally {
+      theOutput.setOutputHandler();
     }
-    theOutput.setOutputHandler();
   }
 
 }

@@ -45,9 +45,9 @@ class KotlinCodeRunner implements Runnable {
   public void run() {
     ClassLoader oldld = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(loader);
-    theOutput.setOutputHandler();
     InternalVariable.setValue(theOutput);
     try {
+      theOutput.setOutputHandler();
       InternalVariable.setValue(theOutput);
       ReplEvalResult eval = repl.eval(this.codeToBeExecuted);
       interpretResult(eval);
@@ -64,9 +64,9 @@ class KotlinCodeRunner implements Runnable {
       }
     } finally {
       theOutput.executeCodeCallback();
+      theOutput.clrOutputHandler();
+      Thread.currentThread().setContextClassLoader(oldld);
     }
-    theOutput.clrOutputHandler();
-    Thread.currentThread().setContextClassLoader(oldld);
   }
 
   private void interpretResult(Object o) {

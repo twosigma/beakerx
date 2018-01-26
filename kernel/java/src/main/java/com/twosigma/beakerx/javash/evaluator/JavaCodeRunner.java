@@ -54,9 +54,9 @@ class JavaCodeRunner implements Runnable {
   public void run() {
     ClassLoader oldld = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(javaEvaluator.getJavaClassLoader());
-    theOutput.setOutputHandler();
     InternalVariable.setValue(theOutput);
     try {
+      theOutput.setOutputHandler();
       InternalVariable.setValue(theOutput);
       runCode(j);
     } catch (Throwable e) {
@@ -72,10 +72,9 @@ class JavaCodeRunner implements Runnable {
       }
     } finally {
       theOutput.executeCodeCallback();
-
+      theOutput.clrOutputHandler();
+      Thread.currentThread().setContextClassLoader(oldld);
     }
-    theOutput.clrOutputHandler();
-    Thread.currentThread().setContextClassLoader(oldld);
   }
 
 
@@ -111,7 +110,7 @@ class JavaCodeRunner implements Runnable {
     String returnType = "Object";
     Codev copyCodev = new Codev(codev.getCode(), javaEvaluator);
     boolean compile = compile(codev, classId, returnType);
-    if (!compile)  {
+    if (!compile) {
       classId = generateClassId();
       returnType = "void";
       copyCodev = new Codev(codev.getCode(), javaEvaluator);

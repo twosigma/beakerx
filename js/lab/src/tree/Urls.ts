@@ -20,7 +20,6 @@ const baseUrl = PageConfig.getBaseUrl();
 const apiUrl = `${baseUrl}beakerx/`;
 
 export default class Urls {
-  public static get BASE_URL(): string { return baseUrl; }
   public static get API_URL(): string { return apiUrl; }
 
   constructor() {

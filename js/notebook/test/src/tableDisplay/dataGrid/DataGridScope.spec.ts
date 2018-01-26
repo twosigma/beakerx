@@ -28,7 +28,8 @@ describe('dataGridScope', () => {
     element,
     data: {
       values: [],
-      columnNames: []
+      columnNames: [],
+      types: []
     }
   });
 

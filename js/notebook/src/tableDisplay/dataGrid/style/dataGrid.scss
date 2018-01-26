@@ -19,6 +19,7 @@ $alto: #DADADA;
 $gallery: #F0F0F0;
 $silver: #CDCDCD;
 $silverChalice: #A0A0A0;
+$highlightBlue: #39a9ed;
 
 $gridBackgroundColor: $gallery;
 $borderColor: $silverChalice;
@@ -29,6 +30,15 @@ $gridBorder: 1px solid $borderColor;
   min-width: 64px;
   min-height: 330px;
   border: $gridBorder;
+
+  .bko-menu {
+    opacity: 1;
+
+    &:hover {
+      background-color: $highlightBlue;
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAWCAYAAADjGu3TAAAAI0lEQVQoFWP8DwQMWAATFjGwED0kcNmNW5xx1B/ogUPFiAIAYSAMFvNwTdIAAAAASUVORK5CYII=');
+    }
+  }
 }
 
 .p-DataGrid-scrollCorner {

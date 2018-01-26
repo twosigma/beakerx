@@ -65,4 +65,19 @@ public class CodeFactoryTest {
     assertThat(code.getCodeFrames().size()).isEqualTo(5);
   }
 
+  @Test
+  public void shouldBuildCodeWithMagicCommandInsideIfStatement() {
+    //given
+    String codeAsString = "" +
+            "println(1)\n" +
+            "if(true){\n" +
+            "    %time println(221)\n" +
+            "}\n" +
+            "println(2)\n" +
+            "  %time 1+2";
+    //when
+    Code code = CodeFactory.create(codeAsString, new Message(), kernel);
+    //then
+    assertThat(code.getCodeFrames().size()).isEqualTo(4);
+  }
 }

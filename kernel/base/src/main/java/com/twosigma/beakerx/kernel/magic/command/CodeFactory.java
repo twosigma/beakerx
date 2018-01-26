@@ -66,7 +66,7 @@ public class CodeFactory {
   private static CodeFrame createFrameForPlainCode(String line, Scanner scanner) {
     List<String> result = new ArrayList<>();
     result.add(line);
-    Pattern p = Pattern.compile("^%.*", Pattern.MULTILINE);
+    Pattern p = Pattern.compile("\\s*%.*");
     while (scanner.hasNext() && !scanner.hasNext(p)) {
       String str = removeExtraWhitespaces(scanner.nextLine().trim());
       result.add(str);

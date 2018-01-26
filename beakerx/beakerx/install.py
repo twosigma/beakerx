@@ -196,17 +196,11 @@ def _install_beakerx(args):
     _set_conf_privileges()
 
 
-def install():
-    try:
-        parser = make_parser()
-        args = parser.parse_args()
-        if args.disable:
-            _disable_beakerx()
-        else:
-            _install_beakerx(args)
-    except KeyboardInterrupt:
-        return 130
-    return 0
+def install(args):
+    _install_beakerx(args)
+
+def uninstall():
+    _disable_beakerx()
 
 
 if __name__ == "__main__":

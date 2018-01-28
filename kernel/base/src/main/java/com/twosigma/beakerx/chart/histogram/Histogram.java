@@ -43,7 +43,7 @@ public class Histogram extends AbstractChart {
   private boolean normed;
   protected Color baseColor;
   private List<Color> colors;
-  protected List<Number> data;
+  private List<Number> data;
   private List<List<Number>> listData;
   private List<String> names;
 

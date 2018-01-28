@@ -16,27 +16,33 @@
 
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
+import com.twosigma.beakerx.scala.JavaAdapter._
+
 import scala.collection.JavaConverters._
 
-class Rasters(y: Seq[Any], height: Seq[Any], width: Seq[Any]) extends com.twosigma.beakerx.chart.xychart.plotitem.Rasters {
+class Rasters extends com.twosigma.beakerx.chart.xychart.plotitem.Rasters with RastersProperties
 
-  super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
-  super.setHeight(height.map(x => x.asInstanceOf[Number]).asJava)
-  super.setWidth(width.map(x => x.asInstanceOf[Number]).asJava)
+trait RastersProperties extends XYGraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.Rasters =>
 
-  def this(x: Seq[Any], y: Seq[Any], height: Seq[Any], width: Seq[Any], opacity: Seq[Any]) {
-    this(y, height, width)
-    super.setX(x.map(x => x.asInstanceOf[AnyRef]).asJava)
-    super.setOpacity(opacity.map(x => x.asInstanceOf[Number]).asJava)
-  }
+  def dataString: Array[Byte] = getDataString
+  def dataString_=(data: Seq[Byte]): Unit = setDataString(data.toArray)
 
-  def this(x: Seq[Any], y: Seq[Any], height: Seq[Any], width: Seq[Any], opacity: Seq[Any], dataString: Array[Byte]) {
-    this(x, y, height, width, opacity)
-    super.setDataString(dataString)
-  }
+  def filePath: String = getFilePath
+  def filePath_=(path: String): Unit = setFilePath(path)
 
-  def this(x: Seq[Any], y: Seq[Any], height: Seq[Any], width: Seq[Any], opacity: Seq[Any], fileUrl: String) {
-    this(x, y, height, width, opacity)
-    super.setFileUrl(fileUrl)
-  }
+  def fileUrl: String = getFileUrl
+  def fileUrl_=(url: String): Unit = setFileUrl(url)
+
+  def height: Seq[Number] = getNullableList(getHeight)
+  def height_=[T : NumberView](heights: Seq[T]): Unit = setHeight(heights.toNumbers.asJava)
+
+  def opacity: Seq[Number] = getOpacity.asScala
+  def opacity_=[T : NumberView](opacities: Seq[T]): Unit = setOpacity(opacities.toNumbers.asJava)
+
+  def position: String = getPosition
+  def postion_=(position: String): Unit = setPosition(position)
+
+  def width: Seq[Number] = getNullableList(getWidth)
+  def width_=[T : NumberView](widths: Seq[T]): Unit = setWidth(widths.toNumbers.asJava)
 }

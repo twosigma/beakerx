@@ -39,7 +39,6 @@ export abstract class HeaderMenu implements MenuInterface {
 
   private TRIGGER_CLASS_OPENED: string = 'opened';
 
-  static DEBOUNCE_DELAY: number = 250;
   static DEFAULT_TRIGGER_HEIGHT: number = 20;
 
   constructor(columnIndex: number, dataGrid: BeakerxDataGrid, triggerOptions: ITriggerOptions) {
@@ -57,24 +56,6 @@ export abstract class HeaderMenu implements MenuInterface {
 
   protected abstract buildMenu(): void
 
-  protected addTrigger({
-    x, y,
-    width = HeaderMenu.DEFAULT_TRIGGER_HEIGHT,
-    height = HeaderMenu.DEFAULT_TRIGGER_HEIGHT
-  }):void {
-    this.triggerNode = document.createElement('span');
-
-    this.triggerNode.style.height = `${height}px`;
-    this.triggerNode.style.width = `${width}px`;
-    this.triggerNode.style.position = 'absolute';
-    this.triggerNode.style.left = `${x}px`;
-    this.triggerNode.style.top = `${y}px`;
-    this.triggerNode.style.cursor = 'pointer';
-    this.triggerNode.classList.add('bko-column-header-menu');
-    this.triggerNode.classList.add('bko-menu');
-    this.triggerNode.addEventListener('mouseup', () => this.open());
-  }
-
   showTrigger(x: number) {
     if (!isNaN(x)) {
       this.triggerNode.style.left = `${x}px`;
@@ -86,25 +67,6 @@ export abstract class HeaderMenu implements MenuInterface {
 
   hideTrigger() {
     this.triggerNode.style.visibility = 'hidden';
-  }
-
-  protected getMenuPosition(trigger: any) {
-    const triggerHeight = trigger.height || 20;
-    const viewportRect = this.viewport.node.getBoundingClientRect();
-
-    return {
-      top: viewportRect.top + trigger.offsetTop + triggerHeight,
-      left: viewportRect.left + trigger.offsetLeft
-    };
-  }
-
-  protected correctPosition(trigger: any) {
-    const menuRectObject = this.menu.node.getBoundingClientRect();
-    const triggerRectObject = trigger.getBoundingClientRect();
-
-    if (menuRectObject.top < triggerRectObject.bottom && menuRectObject.left <= triggerRectObject.right) {
-      this.menu.node.style.left = triggerRectObject.right + 'px';
-    }
   }
 
   open(submenuIndex?: number): void {
@@ -129,7 +91,7 @@ export abstract class HeaderMenu implements MenuInterface {
     this.menu.dispose();
   }
 
-  toggleMenu($trigger: any, submenuIndex?: number): void {
+  toggleMenu(submenuIndex?: number): void {
     this.triggerNode.classList.contains(this.TRIGGER_CLASS_OPENED) ?
       this.triggerNode.classList.remove(this.TRIGGER_CLASS_OPENED) :
       this.open(submenuIndex);
@@ -204,11 +166,48 @@ export abstract class HeaderMenu implements MenuInterface {
     return submenu;
   }
 
-  private handleKeydownEvent(event: KeyboardEvent): void {
+  protected addTrigger({
+    x, y,
+    width = HeaderMenu.DEFAULT_TRIGGER_HEIGHT,
+    height = HeaderMenu.DEFAULT_TRIGGER_HEIGHT
+  }):void {
+    this.triggerNode = document.createElement('span');
+
+    this.triggerNode.style.height = `${height}px`;
+    this.triggerNode.style.width = `${width}px`;
+    this.triggerNode.style.position = 'absolute';
+    this.triggerNode.style.left = `${x}px`;
+    this.triggerNode.style.top = `${y}px`;
+    this.triggerNode.style.cursor = 'pointer';
+    this.triggerNode.classList.add('bko-column-header-menu');
+    this.triggerNode.classList.add('bko-menu');
+    this.triggerNode.addEventListener('mouseup', () => this.toggleMenu());
+  }
+
+  protected getMenuPosition(trigger: any) {
+    const triggerHeight = trigger.height || 20;
+    const viewportRect = this.viewport.node.getBoundingClientRect();
+
+    return {
+      top: viewportRect.top + trigger.offsetTop + triggerHeight,
+      left: viewportRect.left + trigger.offsetLeft
+    };
+  }
+
+  protected correctPosition(trigger: any) {
+    const menuRectObject = this.menu.node.getBoundingClientRect();
+    const triggerRectObject = trigger.getBoundingClientRect();
+
+    if (menuRectObject.top < triggerRectObject.bottom && menuRectObject.left <= triggerRectObject.right) {
+      this.menu.node.style.left = triggerRectObject.right + 'px';
+    }
+  }
+
+  protected handleKeydownEvent(event: KeyboardEvent): void {
     this.menu.isVisible && this.menu.handleEvent(event);
   }
 
-  private addItemsFiltering(menu: Menu): void {
+  protected addItemsFiltering(menu: Menu): void {
     const filterWrapper = document.createElement('div');
 
     filterWrapper.classList.add('dropdown-menu-search');
@@ -216,29 +215,48 @@ export abstract class HeaderMenu implements MenuInterface {
 
     menu.node.insertAdjacentElement('afterbegin', filterWrapper);
 
-    // $(menu.node)
-    //   .on('mouseup', '.dropdown-menu-search input', (e) => {
-    //     $(e.currentTarget).focus();
-    //     e.stopImmediatePropagation();
-    //   })
-    //   .on('keydown.keyTable', '.dropdown-menu-search input', function(event) { event.stopImmediatePropagation(); })
-    //   .on('keyup.HeaderMenu, change', '.dropdown-menu-search input', function(event) {
-    //     const searchExp = this.value ? new RegExp(this.value, 'i') : null;
-    //
-    //     if (event.keyCode === 27) {
-    //       menu.close();
-    //
-    //       return;
-    //     }
-    //
-    //     menu.items.forEach((item, index) => {
-    //       const node = $(menu.contentNode).find('.p-Menu-item').get(index);
-    //
-    //       $(node).toggleClass(
-    //         'hidden',
-    //         searchExp && _.isRegExp(searchExp) ? !searchExp.test(item.label) : false
-    //       );
-    //     });
-    //   });
+    const input = filterWrapper.querySelector('input');
+
+    if (!input) {
+      return;
+    }
+
+    menu.node.addEventListener('mouseup', (event: MouseEvent) => {
+      if (event.target !== input) {
+        return;
+      }
+
+      input.focus();
+      event.stopImmediatePropagation();
+    });
+
+    input.addEventListener('keydown', (event: KeyboardEvent) => {
+      event.stopImmediatePropagation();
+    });
+
+    input.addEventListener('keyup', (event: KeyboardEvent) => {
+      event.stopImmediatePropagation();
+
+      if (event.keyCode === 27) {
+        menu.close();
+
+        return;
+      }
+
+      this.hideMenuItems(menu, input.value);
+    });
+  }
+
+  protected hideMenuItems(menu: Menu, filterValue: string): void {
+    const searchExp = filterValue ? new RegExp(filterValue, 'i') : null;
+    const items = menu.contentNode.querySelectorAll('.p-Menu-item');
+
+    for (let i = 0; i < items.length; i++) {
+      let item = <HTMLElement>items.item(i);
+      let itemClassList = item.classList;
+      let shouldHide = searchExp && searchExp.test ? !searchExp.test(item.innerText) : false;
+
+      shouldHide ? itemClassList.add('hidden') : itemClassList.remove('hidden');
+    }
   }
 }

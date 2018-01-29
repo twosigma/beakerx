@@ -26,15 +26,11 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.twosigma.beakerx.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Abstraction around an evaluation, for communication of the state over REST to the plugin.
  */
 public class SimpleEvaluationObject extends Observable {
-
-  private final static Logger logger = LoggerFactory.getLogger(SimpleEvaluationObject.class.getName());
 
   private Message jupyterMessage;
   private int executionCount;
@@ -43,13 +39,22 @@ public class SimpleEvaluationObject extends Observable {
   private Object payload;
   private BeakerOutputHandler stdout;
   private BeakerOutputHandler stderr;
-  private Queue<ConsoleOutput> consoleOutput = new ConcurrentLinkedQueue<ConsoleOutput>();
+  private Queue<ConsoleOutput> consoleOutput = new ConcurrentLinkedQueue<>();
   private ProgressReporting progressReporting;
   private boolean showResult = true;
+
+  public SimpleEvaluationObject(String e, BeakerOutputHandler stdout, BeakerOutputHandler stderr) {
+    expression = e;
+    status = EvaluationStatus.QUEUED;
+    this.stdout = stdout;
+    this.stderr = stderr;
+  }
 
   public SimpleEvaluationObject(String e) {
     expression = e;
     status = EvaluationStatus.QUEUED;
+    this.stdout = new SimpleOutputHandler(false);
+    this.stderr = new SimpleOutputHandler(true);
   }
 
   public boolean isShowResult() {
@@ -57,7 +62,6 @@ public class SimpleEvaluationObject extends Observable {
   }
 
   public synchronized void started() {
-    setOutputHandler();
     this.status = EvaluationStatus.RUNNING;
     setChanged();
     notifyObservers();
@@ -148,14 +152,10 @@ public class SimpleEvaluationObject extends Observable {
   }
 
   public synchronized BeakerOutputHandler getStdOutputHandler() {
-    if (stdout == null)
-      stdout = new SimpleOutputHandler(false);
     return stdout;
   }
 
   public synchronized BeakerOutputHandler getStdErrorHandler() {
-    if (stderr == null)
-      stderr = new SimpleOutputHandler(true);
     return stderr;
   }
 

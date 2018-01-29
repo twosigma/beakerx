@@ -17,7 +17,7 @@
 import * as $ from "jquery";
 import { Widget } from "@phosphor/widgets";
 
-export default class SyncIndicatorWidget extends Widget {
+export class SyncIndicatorWidget extends Widget {
 
   public readonly HTML_ELEMENT_TEMPLATE = `
 <style>
@@ -34,13 +34,51 @@ export default class SyncIndicatorWidget extends Widget {
 <div id="errors" style="color: red"></div>
 `;
 
-  constructor() {
-    super();
-    this.createContent();
+  private $savingEl;
+  private $savedEl;
+  private $errorsEl;
+  private $resultEl;
+
+  public get $node() {
+    return $(this.node);
   }
 
-  private createContent() {
-    $(this.HTML_ELEMENT_TEMPLATE)
-      .appendTo(this.node);
+  constructor() {
+    super();
+
+    $(this.HTML_ELEMENT_TEMPLATE).appendTo(this.node);
+
+    this.$savingEl = this.$node.find('#sync_indicator .saving');
+    this.$savedEl = this.$node.find('#sync_indicator .saved');
+    this.$errorsEl = this.$node.find('#errors');
+    this.$resultEl = this.$node.find('#result');
+  }
+
+  public onSyncStart() {
+    this.$savingEl.removeClass('hidden');
+    this.$savedEl.addClass('hidden');
+  }
+
+  public onSyncEnd() {
+    this.$savingEl.addClass('hidden');
+    this.$savedEl.removeClass('hidden');
+  }
+
+  public onError(error: Error) {
+    this.$errorsEl
+      .empty()
+      .append($('<span>', {
+        text: error.message
+      }));
+  }
+
+  public clearErrors() {
+    this.$errorsEl.empty();
+  }
+
+  public showResult(result: string) {
+    this.$resultEl
+      .empty()
+      .text(result);
   }
 }

@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import consts from "../consts";
+
 export enum ALL_TYPES {
   'string',
   'integer',
@@ -80,4 +82,32 @@ export function isDoubleWithPrecision(type: string|number) {
 
 export function getDoublePrecisionByType(type: string|number): string {
   return type.toString().split(".")[1];
+}
+
+export function getAllowedTypesByType(type) {
+  if (!type) {
+    return consts.scopeData.allTypes;
+  }
+
+  if (type === 'string') {
+    return consts.scopeData.allStringTypes;
+  }
+
+  if (type === 'double') {
+    return consts.scopeData.allDoubleTypes;
+  }
+
+  if (type === 'integer' || type === 'int64') {
+    return consts.scopeData.allIntTypes;
+  }
+
+  if (type === 'time' || type === 'datetime') {
+    return consts.scopeData.allTimeTypes;
+  }
+
+  if (type === 'boolean') {
+    return consts.scopeData.allBoolTypes;
+  }
+
+  return consts.scopeData.allStringTypes;
 }

@@ -15,27 +15,32 @@
  */
 
 import { DataModel } from "@phosphor/datagrid";
-import { getDisplayType } from './dataTypes';
+import { getDisplayType, ALL_TYPES } from './dataTypes';
 import { DataFormatter } from './DataFormatter';
-import IDataModelOptions from './IDataModelOptions';
+import IDataModelOptions from './interface/IDataModelOptions';
 
 export class TableDataModel extends DataModel {
+  columnNames: string[];
+  dataFormatter: DataFormatter;
+
+  static DEFAULT_INDEX_COLUMN_TYPE = ALL_TYPES[1]; // integer
+  static DEFAULT_INDEX_REGION_NAME = 'row-header';
+
   private _data: any;
-  private _columnNames: string[];
   private _options: IDataModelOptions;
   private _columnCount: number;
   private _rowCount: number;
-  private _dataFormatter: DataFormatter;
 
   constructor(options: IDataModelOptions) {
     super();
 
+    this.columnNames = options.columnNames;
+    this.dataFormatter = new DataFormatter(options);
+
     this._options = options;
     this._data = options.values;
-    this._columnNames = options.columnNames;
-    this._columnCount = this._columnNames.length || 0;
+    this._columnCount = this.columnNames.length || 0;
     this._rowCount = this._data.length;
-    this._dataFormatter = new DataFormatter(options);
   }
 
   rowCount(region: DataModel.RowRegion): number {
@@ -47,12 +52,12 @@ export class TableDataModel extends DataModel {
   }
 
   data(region: DataModel.CellRegion, row: number, column: number): any {
-    if (region === 'row-header') {
+    if (region === TableDataModel.DEFAULT_INDEX_REGION_NAME) {
       return row;
     }
 
     if (region === 'column-header') {
-      return this._columnNames[column];
+      return this.columnNames[column];
     }
 
     if (region === 'corner-header') {
@@ -72,10 +77,18 @@ export class TableDataModel extends DataModel {
     const displayType = getDisplayType(
       typeName,
       this._options.stringFormatForType,
-      this._options.stringFormatForColumn[this._columnNames[column]]
+      this._options.stringFormatForColumn[this.columnNames[column]]
     );
 
-    return this._dataFormatter.getFormatFnByType(displayType)(data, row, column);
+    return this.dataFormatter.getFormatFnByType(displayType)(data, row, column);
+  }
+
+  getColumnTypeName({ index, region }) {
+    if (region === TableDataModel.DEFAULT_INDEX_REGION_NAME) {
+      return TableDataModel.DEFAULT_INDEX_COLUMN_TYPE;
+    }
+
+    return this._options.types[index];
   }
 
 }

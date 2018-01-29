@@ -91,6 +91,10 @@ export class DataFormatter {
     }
   }
 
+  getDoubleWithPrecissionFormatters(precissions: number[]) {
+    return precissions.map(precission => this.doubleWithPrecission(precission));
+  }
+
   private isNull(value: any) {
     return value === undefined || value === '' || value === 'null' || value === null;
   }

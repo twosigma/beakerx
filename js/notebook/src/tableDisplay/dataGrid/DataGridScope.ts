@@ -15,25 +15,23 @@
  */
 
 import { Widget } from '@phosphor/widgets';
-import { DataGrid } from '@phosphor/datagrid';
-import { TableDataModel } from './TableDataModel';
+import { BeakerxDataGrid } from './BeakerxDataGrid';
 import { silverStripeStyle } from './dataGridStyle';
-import IDataGridScopeOptions from "./IDataGridScopeOptions";
-import IDataModelOptions from "./IDataModelOptions";
+import IDataGridScopeOptions from "./interface/IDataGridScopeOptions";
 
 export class DataGridScope {
-  private dataGrid: DataGrid;
+  private dataGrid: BeakerxDataGrid;
   private element: HTMLElement;
-  private modelOptions: IDataModelOptions;
 
   constructor(options: IDataGridScopeOptions) {
     this.element = options.element;
-    this.modelOptions = options.data;
-    this.dataGrid = new DataGrid({
-      style: silverStripeStyle
-    });
-
-    this.dataGrid.model = new TableDataModel(this.modelOptions);
+    this.dataGrid = new BeakerxDataGrid(
+      {
+        style: silverStripeStyle,
+        height: 600
+      },
+      options.data
+    );
   }
 
   render(): void {
@@ -41,6 +39,6 @@ export class DataGridScope {
   }
 
   doDestroy() {
-    this.dataGrid.dispose();
+    this.dataGrid.destroy();
   }
 }

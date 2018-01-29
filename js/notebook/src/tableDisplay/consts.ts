@@ -55,7 +55,8 @@ export const scopeData = {
   rowsToDisplayMenu: [
     [10, 25, 50, 100, -1],
     [10, 25, 50, 100, 'All']
-  ]
+  ],
+  allPrecissions: [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
 };
 
 export const CELL_TYPE = 'bko-tabledisplay';

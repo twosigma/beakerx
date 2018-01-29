@@ -28,7 +28,7 @@ export interface ITriggerOptions {
   height: number
 }
 
-export abstract class HeaderMenu implements MenuInterface {
+export default abstract class HeaderMenu implements MenuInterface {
   columnIndex: number;
 
   protected commands: CommandRegistry;

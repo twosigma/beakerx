@@ -15,12 +15,13 @@
  */
 
 import MenuItem from "../../../shared/interfaces/menuItemInterface";
-import {default as consts, TIME_UNIT_FORMATS} from '../../consts';
+import { TIME_UNIT_FORMATS, scopeData } from '../../consts';
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { getAllowedTypesByType } from "../dataTypes";
+import IColumn from '../interface/IColumn';
 
-export function createFormatSubitems(colIdx: number, dataGrid: BeakerxDataGrid) {
-  const types = getAllowedTypesByType(dataGrid.model.getColumnType(colIdx));
+export function createFormatMenuItems(column: IColumn, dataGrid: BeakerxDataGrid) {
+  const types = getAllowedTypesByType(dataGrid.model.getColumnTypeName(column));
   let items: MenuItem[] = [];
 
   types.forEach((obj) => {
@@ -32,7 +33,7 @@ export function createFormatSubitems(colIdx: number, dataGrid: BeakerxDataGrid) 
 
     let item: MenuItem = {
       title: obj.name,
-      isChecked: function(colIdx) {
+      isChecked: function() {
         //@todo
       }
     };
@@ -53,16 +54,16 @@ export function createFormatSubitems(colIdx: number, dataGrid: BeakerxDataGrid) 
 export function createPrecisionSubitems(dataGrid: BeakerxDataGrid): MenuItem[] {
   const items: MenuItem[] = [];
   const formetters = dataGrid.model.dataFormatter.getDoubleWithPrecissionFormatters(
-    consts.scopeData.allPrecissions
+    scopeData.allPrecissions
   );
 
   formetters.forEach((formatter, precision) => {
     let item = {
       title: `${precision}`,
-      isChecked: (colIdx) => {
+      isChecked: () => {
         //@todo
       },
-      action: (colIdx) => {
+      action: () => {
         //@todo
       }
     };
@@ -80,10 +81,10 @@ export function createTimeSubitems(dataGrid: BeakerxDataGrid): MenuItem[] {
     if (TIME_UNIT_FORMATS.hasOwnProperty(key)) {
       let item = {
         title: TIME_UNIT_FORMATS[key].title,
-        isChecked: function(colIdx) {
+        isChecked: function() {
           //@todo
         },
-        action: function(colIdx) {
+        action: function() {
           //@todo
         }
       };

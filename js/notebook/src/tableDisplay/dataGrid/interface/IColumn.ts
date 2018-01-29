@@ -14,16 +14,7 @@
  *  limitations under the License.
  */
 
-var jsdom = require('jsdom');
-
-global.window = new jsdom.JSDOM().window;
-global.document = window.document;
-global.Element = window.Element;
-global.HTMLElement = window.HTMLElement;
-
-window.HTMLCanvasElement.prototype.getContext = function() {
-  return {};
-};
-
-global.navigator = window.navigator;
-global.define = function() {};
+export default interface IColumn {
+  index: number,
+  region: string
+}

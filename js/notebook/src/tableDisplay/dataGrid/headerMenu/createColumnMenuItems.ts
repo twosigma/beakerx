@@ -14,107 +14,108 @@
  *  limitations under the License.
  */
 
-import { createFormatSubitems } from './createFormatMenuItems';
+import { createFormatMenuItems } from './createFormatMenuItems';
 import MenuItem from "../../../shared/interfaces/menuItemInterface";
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import IColumn from '../interface/IColumn';
 
-export function createColumnMenuItems(columnIndex: number, dataGrid: BeakerxDataGrid): MenuItem[] {
+export function createColumnMenuItems(column: IColumn, dataGrid: BeakerxDataGrid): MenuItem[] {
   return [
     {
       title: 'Hide column',
-      action: (colIdx) => {}
+      action: (column) => {}
     },
     {
       title: 'Filter by Expression',
       icon: 'fa fa-filter',
       tooltip: 'filter with an expression with a variable defined for each column and $ means the current column.  eg "$ > 5"',
-      action: (colIdx) => {}
+      action: (column) => {}
     },
     {
       title: 'Search for Substring',
       icon: 'fa fa-search',
       tooltip: 'search this column for a substring',
-      action: (colIdx) => {}
+      action: (column) => {}
     },
     {
       title: 'Format',
       action: undefined,
-      items: createFormatSubitems(columnIndex, dataGrid)
+      items: createFormatMenuItems(column, dataGrid)
     },
     {
       title: 'Sort Ascending',
       separator: true,
-      isChecked: (colIdx) => {},
-      action: (colIdx) => {}
+      isChecked: (column) => {},
+      action: (column) => {}
     },
     {
       title: 'Sort Descending',
-      isChecked: (colIdx) => {},
-      action: (colIdx) => {}
+      isChecked: (column) => {},
+      action: (column) => {}
     },
     {
       title: 'No Sort',
-      isChecked: (colIdx) => {},
-      action: (colIdx) => {}
+      isChecked: (column) => {},
+      action: (column) => {}
     },
     {
       title: 'Align Left',
       separator: true,
-      isChecked: (colIdx) => {},
-      action: (colIdx) => {}
+      isChecked: (column) => {},
+      action: (column) => {}
     },
     {
       title: 'Align Center',
-      isChecked: (colIdx) => {},
-      action: (colIdx) => {}
+      isChecked: (column) => {},
+      action: (column) => {}
     },
     {
       title: 'Align Right',
-      isChecked: (colIdx) => {},
-      action: (colIdx) => {}
+      isChecked: (column) => {},
+      action: (column) => {}
     },
     {
       title: 'Heatmap',
       shortcut: 'H',
       separator: true,
-      isChecked: (colIdx) => {},
-      action: (colIdx) => {}
+      isChecked: (column) => {},
+      action: (column) => {}
     },
     {
       title: 'Data Bars',
       shortcut: 'B',
-      isChecked: (colIdx) => {},
-      action: (colIdx) => {}
+      isChecked: (column) => {},
+      action: (column) => {}
     },
     {
       title: 'Color by unique',
       shortcut: 'U',
-      isChecked: (colIdx) => {},
-      action: (colIdx) => {}
+      isChecked: (column) => {},
+      action: (column) => {}
     },
     {
       title: 'Fix Left',
-      isChecked: (colIdx) => {},
-      action: (colIdx) => {}
+      isChecked: (column) => {},
+      action: (column) => {}
     },
     {
       title: 'Fix Right',
-      isChecked: (colIdx) => {},
-      action: (colIdx) => {}
+      isChecked: (column) => {},
+      action: (column) => {}
     },
     {
       title: 'Move column to front',
       separator: true,
-      action: (colIdx) => {}
+      action: (column) => {}
     },
     {
       title: 'Move column to end',
-      action: (colIdx) => {}
+      action: (column) => {}
     },
     {
       title: 'Reset formatting',
       separator: true,
-      action: (colIdx) => {}
+      action: (column) => {}
     }
   ];
 }

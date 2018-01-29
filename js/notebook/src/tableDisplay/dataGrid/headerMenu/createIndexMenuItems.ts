@@ -15,10 +15,11 @@
  */
 
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
-import { createFormatSubitems } from './createFormatMenuItems';
+import { createFormatMenuItems } from './createFormatMenuItems';
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import IColumn from '../interface/IColumn';
 
-export function createIndexMenuItems(columnIndex, dataGrid: BeakerxDataGrid): MenuItem[] {
+export function createIndexMenuItems(column: IColumn, dataGrid: BeakerxDataGrid): MenuItem[] {
 
   const createShowColumnSubmenu = (): MenuItem[] => {
     const items: MenuItem[] = [];
@@ -61,7 +62,7 @@ export function createIndexMenuItems(columnIndex, dataGrid: BeakerxDataGrid): Me
     {
       title: 'Format',
       separator: true,
-      items: createFormatSubitems(columnIndex, dataGrid)
+      items: createFormatMenuItems(column, dataGrid)
     },
     {
       title: 'Clear selection',

@@ -15,14 +15,42 @@
  */
 
 import * as $ from "jquery";
-import Urls from "./Urls";
+import { PageConfig } from "@jupyterlab/coreutils";
+
+const baseUrl = PageConfig.getBaseUrl();
+const apiUrl = `${baseUrl}beakerx/`;
+
+export interface IDefaultJVMOptions {
+  heap_GB: number;
+}
+export interface IOtherJVMOptions extends Array<any> {}
+export interface IPropertiesJVMOptions extends Array<{ name: string; value: string; }> {}
+
+export interface IJVMOptions extends IDefaultJVMOptions {
+  other: IOtherJVMOptions;
+  properties: IPropertiesJVMOptions;
+}
+
+export interface IApiSettingsResponse {
+  jvm_options: IJVMOptions;
+  version: number;
+}
+
+function getCookie(name) {
+  // from tornado docs: http://www.tornadoweb.org/en/stable/guide/security.html
+  let r = document.cookie.match('\\b' + name + '=([^;]*)\\b');
+  return r ? r[1] : void 0;
+}
 
 export default class BeakerxApi {
 
+  public static getApiUrl(endpoint: string): string {
+    return `${apiUrl}${endpoint}`;
+  }
   public static getVersion(): Promise<string> {
 
     return new Promise((resolve, reject) => {
-      $.ajax(`${Urls.API_URL}version`, {
+      $.ajax(this.getApiUrl('version'), {
         success: (data, status) => {
           resolve(data.version);
         },
@@ -32,6 +60,44 @@ export default class BeakerxApi {
       });
 
     });
+  }
+
+  public static loadSettings(): Promise<IApiSettingsResponse> {
+    return new Promise((resolve, reject) => {
+      $.ajax(this.getApiUrl('settings'), {
+        success: (data, status) => {
+          resolve(data.beakerx);
+        },
+        error: (jqXHR, status, err) => {
+          reject();
+        }
+      });
+
+    });
+  }
+
+  public static saveSettings(data): Promise<any> {
+    return new Promise<IApiSettingsResponse>((resolve, reject) => {
+
+      $.ajax(this.getApiUrl('settings'), {
+        method: "POST",
+        cache: false,
+        contentType: "aplication/json; charset=utf-8",
+        dataType: "json",
+        processData: false,
+        data: JSON.stringify(data),
+        headers: {
+          'X-XSRFToken': getCookie('_xsrf')
+        },
+        success: (data, status) => {
+          resolve();
+        },
+        error: (jqXHR, status, err) => {
+          reject();
+        }
+      });
+
+    }) ;
   }
 
 }

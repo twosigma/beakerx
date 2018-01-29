@@ -14,11 +14,12 @@
  *  limitations under the License.
  */
 
-import { JupyterLabPlugin, JupyterLab } from "@jupyterlab/application";
-import { ICommandPalette } from "@jupyterlab/apputils";
+import { JupyterLabPlugin, JupyterLab, ILayoutRestorer } from "@jupyterlab/application";
+import { ICommandPalette, InstanceTracker } from "@jupyterlab/apputils";
+import { JSONExt } from "@phosphor/coreutils";
 import BeakerXTreeWidget from "./tree/TreeWidget";
 
-function activate(app: JupyterLab, palette: ICommandPalette) {
+function activate(app: JupyterLab, palette: ICommandPalette, restorer: ILayoutRestorer) {
   let widget: BeakerXTreeWidget;
 
   const command: string = 'beakerx:tree';
@@ -29,6 +30,9 @@ function activate(app: JupyterLab, palette: ICommandPalette) {
       if (!widget) {
         widget = new BeakerXTreeWidget();
         widget.update();
+      }
+      if (!tracker.has(widget)) {
+        tracker.add(widget);
       }
 
       if (!widget.isAttached) {
@@ -42,12 +46,18 @@ function activate(app: JupyterLab, palette: ICommandPalette) {
   });
 
   palette.addItem({ command, category: 'BeakerX' });
+  let tracker = new InstanceTracker<BeakerXTreeWidget>({ namespace: 'beakerx' });
+  restorer.restore(tracker, {
+    command,
+    args: () => JSONExt.emptyObject,
+    name: () => 'beakerx-tree'
+  });
 }
 
 const tree: JupyterLabPlugin<void> = {
   id: 'beakerx_tree',
   autoStart: true,
-  requires: [ICommandPalette],
+  requires: [ICommandPalette, ILayoutRestorer],
   activate: activate
 };
 

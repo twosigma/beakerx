@@ -15,9 +15,14 @@
  */
 
 import * as $ from "jquery";
+import * as _ from "underscore";
 import { Widget } from "@phosphor/widgets";
+import { MessageLoop } from "@phosphor/messaging";
+import { Messages } from "./Messages";
 
-export default class DefaultOptionsWidget extends Widget {
+export class DefaultOptionsWidget extends Widget {
+
+  public readonly HEAP_GB_SELECTOR = '#heap_GB';
 
   public readonly HTML_ELEMENT_TEMPLATE = `
 <fieldset id="default_options">
@@ -34,25 +39,84 @@ export default class DefaultOptionsWidget extends Widget {
 </fieldset>
 `;
 
-  public val: string = '';
+  public get $node(): JQuery<HTMLElement> {
+    return $(this.node);
+  }
 
   constructor() {
     super();
-    this.createContent();
+
+    $(this.HTML_ELEMENT_TEMPLATE).appendTo(this.node);
+
+    this.$node
+      .find(this.HEAP_GB_SELECTOR)
+      .on('keyup', _.debounce(
+        this.optionsChangedHandler.bind(this),
+        1000
+      ));
   }
 
-  private createContent() {
-    $(this.HTML_ELEMENT_TEMPLATE)
-      .appendTo(this.node);
-
-    const that = this;
-    $(this.node).find('#heap_GB')
-      .on('change', that.optionsChangedHandler);
+  public setHeapGB(value): void {
+    this.$node
+      .find(this.HEAP_GB_SELECTOR)
+      .val(value);
   }
 
-  private optionsChangedHandler(evt) {
-    this.val = `${$(evt.currentTarget).val()}`;
-    console.log(this.val);
+  private optionsChangedHandler(evt): void {
+    let heap_GB: string = `${$(evt.currentTarget).val()}`.trim();
+
+    try {
+      HeapGBValidator.validate(heap_GB);
+      let msg = new Messages.DefaultOptionsChangedMessage({
+        heap_GB: ('' === heap_GB) ? null : parseFloat(heap_GB)
+      });
+
+      MessageLoop.sendMessage(this.parent, msg);
+    } catch (e) {
+      MessageLoop.sendMessage(this.parent, new Messages.JVMOptionsErrorMessage(e));
+    }
+
+  }
+
+}
+
+export class DefaultOptionsModel {
+
+  constructor(private widget: DefaultOptionsWidget) {
+
+  }
+
+  public update(options: { heap_GB: number }) {
+    this.widget.setHeapGB(options.heap_GB);
+  }
+
+  public static normaliseHeapSize(heap_GB: number): string {
+    if (heap_GB % 1 === 0) {
+      return `${heap_GB}g`;
+    }
+    return parseInt(`${heap_GB * 1024}`) + 'm';
+  }
+}
+
+class HeapGBValidator {
+
+  /**
+   * @throws Error
+   * @param value
+   */
+  public static validate(value: any): void {
+    if ('' === value) {
+      return;
+    }
+    let parsedVal = parseFloat(value);
+    if (
+      isNaN(parsedVal)
+      || false === isFinite(value)
+      || parsedVal <= 0
+    ) {
+      throw new Error('Heap Size must be a positive decimal number.');
+    }
+    return;
   }
 
 }

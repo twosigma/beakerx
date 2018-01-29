@@ -133,7 +133,7 @@ export class OtherOptionsWidget extends Widget {
       .on('click', { el: el }, this.removeOptionButtonClickedHandler.bind(this));
     let input = el.find('input');
     input
-      .on('change', _.debounce(
+      .on('keyup', _.debounce(
         this.inputChangedHandler.bind(this), 1000
       ));
     this.addOption(input.val().toString());

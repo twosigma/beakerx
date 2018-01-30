@@ -178,5 +178,28 @@ module.exports = [
       '@jupyterlab'
     ]),
     plugins: plugins
+  },
+  {
+    // tree
+    entry: './src/tree.js',
+    output: {
+      filename: 'tree.js',
+      path: path.resolve(__dirname, '../../beakerx/beakerx/static'),
+      libraryTarget: 'amd'
+    },
+    module: {
+      rules: rules
+    },
+    resolve: resolve,
+    externals: [
+      'base/js/namespace',
+      'base/js/utils',
+      'require',
+      '@phosphor/widgets'
+    ],
+    watchOptions: {
+      ignored: /node_modules/
+    },
+    plugins: plugins
   }
 ];

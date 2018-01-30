@@ -29,7 +29,7 @@ describe('Tests for combination of code and magics', function () {
   });
 
   var cellIndex = 0;
-  var timeExp = /CPU times: user \d+ ns, sys: \d+ ns, total: \d+ ns.*\n+Wall Time: \d+ ms/;
+  var timeExp = /CPU times: user \d+.+, sys: \d+.+, total: \d+.+\n+Wall Time: \d+/;
   var errorExp = /org.codehaus.groovy.control.MultipleCompilationErrorsException:/;
 
   describe('Combination of code and magics', function () {
@@ -71,7 +71,7 @@ describe('Tests for combination of code and magics', function () {
 
     it('Using of the spaces in %time magic and println code', function () {
       cellIndex += 1;
-      beakerxPO.runCellAndCheckOutputText(cellIndex, new RegExp('x.*y\n' + timeExp.source));
+      beakerxPO.runCellAndCheckOutputText(cellIndex, new RegExp(/x\s{4}y\n/.source + timeExp.source));
     });
 
     it('%classpath for jar which contains spaces in name', function () {

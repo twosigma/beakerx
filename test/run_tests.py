@@ -57,8 +57,9 @@ while 1:
 def signal_handler(sgnl, frame):
     os.killpg(os.getpgid(webcontrol.pid), signal.SIGKILL)
     os.killpg(os.getpgid(beakerx.pid), signal.SIGKILL)
-    os.system("kill -9 `pgrep -f jupyter`")
-    os.system("kill -9 `pgrep -f webdriver`")
+    test_console.kill_processes('jupyter')
+    test_console.kill_processes('webdriver')
+    test_console.kill_processes('java')
     sys.exit(20)
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -68,6 +69,7 @@ result=subprocess.call("yarn run test", shell=True)
 # Send the signal to all the process groups
 os.killpg(os.getpgid(beakerx.pid), signal.SIGKILL)
 os.killpg(os.getpgid(webcontrol.pid), signal.SIGKILL)
+test_console.kill_processes('java')
 
 if not result:
     result = test_console.test_lsmagic()

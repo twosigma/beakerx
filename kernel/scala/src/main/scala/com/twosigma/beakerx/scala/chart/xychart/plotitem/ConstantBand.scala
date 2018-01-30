@@ -17,23 +17,23 @@
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
 import com.twosigma.beakerx.chart.Color
+import com.twosigma.beakerx.scala.JavaAdapter._
+import com.twosigma.beakerx.scala.chart.GraphicsProperties
+
 import scala.collection.JavaConverters._
 
-class ConstantBand extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantBand {
+class ConstantBand extends com.twosigma.beakerx.chart.xychart.plotitem.ConstantBand with ConstantBandProperties
 
-  def this(x: Seq[_]) {
-    this()
-    super.setX(x.map(x => x.asInstanceOf[AnyRef]).asJava)
-  }
+trait ConstantBandProperties extends GraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.ConstantBand =>
 
-  def this(x: Seq[_], y: Seq[_]) {
-    this(x)
-    super.setY(x.map(x => x.asInstanceOf[Number]).asJava)
-  }
+  def color: Option[Color] = Option(getColor)
+  def color_=(color: Color): Unit = setColor(color)
+  def color_=(color: java.awt.Color): Unit = setColor(color)
 
-  def this(x: Seq[_], color: Color) {
-    this(x)
-    super.setColor(color)
-  }
+  def x: Seq[Number] = getNullableList(getX)
+  def x_=[T : BeakerXAxis](xs: Seq[T]): Unit = setX(xs.map(BeakerXAxis[T].toObject).asJava)
 
+  def y: Seq[Number] = getNullableList(getY)
+  def y_=[T : NumberView](ys: Seq[T]): Unit = setY((ys map (y => y: Number)).asJava)
 }

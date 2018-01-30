@@ -660,7 +660,8 @@
        "title": data.title,
        "x_label": data.xLabel,
        "plots": getValue(data, 'plots', []),
-       "weights": getValue(data, 'weights', [])
+       "weights": getValue(data, 'weights', []),
+       "auto_zoom": data.autoZoom
      });
      this.version = 'groovy';
      setPlotType(this);

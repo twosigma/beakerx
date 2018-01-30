@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.jupyter.msg;
 
-import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.kernel.SocketEnum;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.KernelTest;
@@ -42,7 +41,7 @@ public class MessageCreatorTest {
   @Before
   public void setUp() throws Exception {
     kernel = new KernelTest("id1");
-    seo = new SimpleEvaluationObject("code", new ExecuteCodeCallbackTest());
+    seo = new SimpleEvaluationObject("code");
     seo.setJupyterMessage(new Message());
   }
 

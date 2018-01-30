@@ -16,6 +16,7 @@
 
 package com.twosigma.beakerx.evaluator;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.jvm.classloader.BeakerxUrlClassLoader;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -103,9 +104,10 @@ public class EvaluatorTest extends BaseEvaluator {
   }
 
   @Override
-  public void evaluate(SimpleEvaluationObject seo, String code) {
+  public TryResult evaluate(SimpleEvaluationObject seo, String code) {
     this.seo = seo;
     this.code = code;
+    return TryResult.createResult(seo.getPayload());
   }
 
   @Override

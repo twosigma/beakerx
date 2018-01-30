@@ -36,7 +36,7 @@ import java.util.List;
 
 public abstract class ChartDetails extends BeakerxWidget {
 
-  protected GraphicsActionObject details;
+  private GraphicsActionObject details;
 
   public GraphicsActionObject getDetails() {
     return details;

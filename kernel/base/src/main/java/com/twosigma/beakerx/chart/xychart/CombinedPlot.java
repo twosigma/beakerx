@@ -39,6 +39,7 @@ public class CombinedPlot extends ChartDetails {
   private List<Integer> weights = new ArrayList<>();
   private boolean xTickLabelsVisible = true;
   private boolean yTickLabelsVisible = true;
+  private boolean autoZoom = false;
 
   public CombinedPlot(){
     super();
@@ -166,6 +167,15 @@ public class CombinedPlot extends ChartDetails {
 
   public void setXTickLabelsVisible(boolean xTickLabelsVisible) {
     setxTickLabelsVisible(xTickLabelsVisible);
+  }
+
+  public boolean getAutoZoom() {
+    return this.autoZoom;
+  }
+
+  public CombinedPlot setAutoZoom(boolean autoZoom) {
+    this.autoZoom = autoZoom;
+    return this;
   }
 
   @Override

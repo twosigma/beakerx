@@ -1,5 +1,6 @@
 *~
 *.pyc
+*.iml
 .idea/
 .metadata/
 .recommenders/

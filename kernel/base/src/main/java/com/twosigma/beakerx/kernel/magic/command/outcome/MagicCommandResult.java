@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.outcome;
 
+import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
 import java.util.Optional;
@@ -44,5 +46,15 @@ public class MagicCommandResult implements MagicCommandOutcomeItem {
   @Override
   public Outcome getOutcome() {
     return Outcome.RESULT;
+  }
+
+  @Override
+  public TryResult getResult() {
+    return null;
+  }
+
+  @Override
+  public SimpleEvaluationObject getSimpleEvaluationObject() {
+    return null;
   }
 }

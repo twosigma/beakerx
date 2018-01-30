@@ -16,24 +16,21 @@
 package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.message.Message;
 
 public class MagicCommandExecutionParam {
 
-  private Code code;
+  private final boolean showResult;
   private String command;
   private String commandCodeBlock;
   private int executionCount;
+  private Code code;
 
-  public MagicCommandExecutionParam(Code code, String command, String commandCodeBlock, int executionCount) {
-    this.code = code;
+  public MagicCommandExecutionParam(String command, String commandCodeBlock, int executionCount, Code code, boolean showResult) {
     this.command = command;
     this.commandCodeBlock = commandCodeBlock;
     this.executionCount = executionCount;
-  }
-
-  public Code getCode() {
-    return code;
+    this.code = code;
+    this.showResult = showResult;
   }
 
   public String getCommand() {
@@ -46,5 +43,13 @@ public class MagicCommandExecutionParam {
 
   public int getExecutionCount() {
     return executionCount;
+  }
+
+  public Code getCode() {
+    return code;
+  }
+
+  public boolean isShowResult() {
+    return showResult;
   }
 }

@@ -16,6 +16,7 @@
 package com.twosigma.beakerx.groovy.evaluator;
 
 import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -28,10 +29,11 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
 
 import static com.twosigma.beakerx.evaluator.BaseEvaluator.INTERUPTED_MSG;
 
-class GroovyCodeRunner implements Runnable {
+class GroovyCodeRunner implements Callable<TryResult> {
 
   private static final Logger logger = LoggerFactory.getLogger(GroovyCodeRunner.class.getName());
   private GroovyEvaluator groovyEvaluator;
@@ -45,13 +47,12 @@ class GroovyCodeRunner implements Runnable {
   }
 
   @Override
-  public void run() {
-    Object result;
+  public TryResult call() throws Exception {
     ClassLoader oldld = Thread.currentThread().getContextClassLoader();
-    theOutput.setOutputHandler();
-
+    TryResult either;
     try {
-
+      Object result = null;
+      theOutput.setOutputHandler();
       Thread.currentThread().setContextClassLoader(groovyEvaluator.getGroovyClassLoader());
 
       Class<?> parsedClass = groovyEvaluator.getGroovyClassLoader().parseClass(theCode);
@@ -74,11 +75,8 @@ class GroovyCodeRunner implements Runnable {
         logger.info("Result: {}", result);
         logger.info("Variables: {}", groovyEvaluator.getScriptBinding().getVariables());
       }
-
-      theOutput.finished(result);
-
+      either = TryResult.createResult(result);
     } catch (Throwable e) {
-
       if (GroovyEvaluator.LOCAL_DEV) {
         logger.warn(e.getMessage());
         e.printStackTrace();
@@ -90,15 +88,18 @@ class GroovyCodeRunner implements Runnable {
       }
 
       if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
-        theOutput.error(INTERUPTED_MSG);
+        either = TryResult.createError(INTERUPTED_MSG);
       } else {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         StackTraceUtils.sanitize(e).printStackTrace(pw);
-        theOutput.error(sw.toString());
+        either = TryResult.createError(sw.toString());
       }
+    } finally {
+      theOutput.clrOutputHandler();
+      Thread.currentThread().setContextClassLoader(oldld);
     }
-    theOutput.clrOutputHandler();
-    Thread.currentThread().setContextClassLoader(oldld);
+    return either;
   }
+
 }

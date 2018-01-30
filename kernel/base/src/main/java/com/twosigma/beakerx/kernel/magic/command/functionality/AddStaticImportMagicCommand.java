@@ -48,7 +48,7 @@ public class AddStaticImportMagicCommand implements MagicCommandFunctionality {
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
-    String[] parts = command.split(" ");
+    String[] parts = MagicCommandUtils.splitPath(command);
     if (parts.length != 3) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, WRONG_FORMAT_MSG);
     }

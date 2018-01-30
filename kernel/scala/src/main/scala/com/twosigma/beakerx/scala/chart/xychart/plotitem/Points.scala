@@ -19,79 +19,33 @@ import java.util
 
 import com.twosigma.beakerx.chart.Color
 import com.twosigma.beakerx.chart.xychart.plotitem.ShapeType
+import com.twosigma.beakerx.scala.JavaAdapter._
 
 import scala.collection.JavaConverters._
 
-class Points extends com.twosigma.beakerx.chart.xychart.plotitem.Points {
+class Points extends com.twosigma.beakerx.chart.xychart.plotitem.Points with PointsProperties
 
-  def this(y: Seq[_]) {
-    this()
-    super.setY(y.map(x => x.asInstanceOf[Number]).asJava)
-  }
+trait PointsProperties extends XYGraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.Points =>
 
-  def this(y: Seq[_], shape: ShapeType) {
-    this(y)
-    super.setShape(shape)
-  }
+  def fill: Option[Boolean] = safeOption(getFill)
+  def fills = getNullableList(getFills)
+  def fill_=(fill: Boolean) = setFill(fill)
+  def fill_=(fills: Seq[Boolean]) = setFill(fills.map(Boolean.box).asJava)
 
-  def this(y: Seq[_], size: Number, color: Color) {
-    this(y)
-    super.setSize(size)
-    super.setColor(color)
-  }
+  def outlineColor = Option(getOutlineColor)
+  def outlineColors = getNullableList(getOutlineColors)
+  def outlineColor_=(c: Color) = setOutlineColor(c)
+  def outlineColor_=(c: java.awt.Color) = setOutlineColor(c)
+  def outlineColor_=[T <: AnyRef : BeakerColor](cs: Seq[T]) = setOutlineColor(cs.toObjects.asJava)
 
-  def this(y: Seq[_], size: Seq[_], color: Color) {
-    this(y)
-    super.setSize(size.map(x => x.asInstanceOf[Number]).asJava)
-    super.setColor(color)
-  }
+  def shape = getShape
+  def shapes: Seq[ShapeType] = getNullableList(getShapes)
+  def shape_=(s: ShapeType) = setShape(s)
+  def shape_=(ss: Seq[ShapeType]) = setShape(ss.asJava)
 
-  def this(y: Seq[_], size: Number, color: Seq[Color]) {
-    this(y)
-    val toList: util.List[Object] = color.map(x => x.asInstanceOf[Object]).asJava
-    super.setColor(toList)
-    super.setSize(size)
-  }
-
-  def this(y: Seq[_], size: Number, shape: ShapeType) {
-    this(y, shape)
-    super.setSize(size)
-  }
-
-  def this(y: Seq[_], size: Number, color: Color, outlineColor: Color) {
-    this(y)
-    super.setSize(size)
-    super.setColor(color)
-    super.setOutlineColor(outlineColor)
-  }
-
-  def this(y: Seq[_], size: Number, color: Color, outlineColors: Seq[Color]) {
-    this(y)
-    super.setSize(size)
-    super.setColor(color)
-    super.setOutlineColor(outlineColors.map(x => x.asInstanceOf[Object]).asJava)
-  }
-
-  def this(y: Seq[_], size: Number, color: Color, fill: Seq[Boolean], outlineColor: Color) {
-    this(y, size, color, outlineColor)
-    super.setFill(fill.map(x => x.asInstanceOf[java.lang.Boolean]).asJava)
-  }
-
-  def this(x: Seq[_], y: Seq[_]) {
-    this(y)
-    super.setX(x.map(x => x.asInstanceOf[AnyRef]).asJava)
-  }
-
-  def this(x: Seq[_], y: Seq[_], size: Number, tooltip: Seq[String]) {
-    this(x, y)
-    super.setSize(size)
-    super.setToolTip(tooltip.asJava)
-  }
-
-  def this(x: Seq[_], y: Seq[_], size: Number, displayName: String) {
-    this(x, y)
-    super.setSize(size)
-    super.setDisplayName(displayName)
-  }
-
+  def size = getSize
+  def sizes: Seq[Number] = getNullableList(getSizes)
+  def size_=(s: Number) = setSize(s)
+  def size_=[T : NumberView](ss: Seq[T]): Unit = setSize(ss.toNumbers.asJava)
 }

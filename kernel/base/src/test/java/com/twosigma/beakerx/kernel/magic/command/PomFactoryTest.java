@@ -15,17 +15,17 @@
  */
 package com.twosigma.beakerx.kernel.magic.command;
 
+import com.google.common.collect.Maps;
+import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.Dependency;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Map;
+
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.StringUtils.normalizeSpace;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import com.google.common.collect.Maps;
-import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver.Dependency;
-
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class PomFactoryTest {
 
@@ -45,6 +45,20 @@ public class PomFactoryTest {
           "  </repository>" +
           "</repositories>";
 
+  private static final String EXPECTED_MULTIPLE_DEP_POM = "" +
+          "<dependencies>" +
+          "  <dependency>" +
+          "    <groupId>group</groupId>" +
+          "    <artifactId>artifact</artifactId>" +
+          "    <version>1.1.1</version>" +
+          "  <dependency>" +
+          "  <dependency>" +
+          "    <groupId>other-group</groupId>" +
+          "    <artifactId>other-artifact</artifactId>" +
+          "    <version>1.1.1</version>" +
+          "  <dependency>" +
+          "</dependencies>";
+
   private PomFactory pomFactory;
 
   @Before
@@ -60,9 +74,18 @@ public class PomFactoryTest {
     repos.put("repository.spring.snapshot", "http://repo.spring.io/snapshot");
     Dependency dependency = new Dependency("", "", "");
     //when
-    String pomAsString = pomFactory.createPom("/", dependency, repos);
+    String pomAsString = pomFactory.createPom("/", Arrays.asList(dependency), repos);
     //then
     assertThat(removeWhitespaces(pomAsString)).contains(removeWhitespaces(EXPECTED_RESULT_BLOCK));
+  }
+
+  @Test
+  public void createPomWithMultipleDependencies() throws Exception{
+    Map<String, String> repos = Maps.newHashMap();
+    Dependency dependency1 = new Dependency("group", "artifact", "1.1.1");
+    Dependency dependency2 = new Dependency("other-group", "other-artifact", "1.1.1");
+    String pomAsString = pomFactory.createPom("/", Arrays.asList(dependency1, dependency2), repos);
+    assertThat(removeWhitespaces(pomAsString).contains(removeWhitespaces(EXPECTED_MULTIPLE_DEP_POM)));
   }
 
   private String removeWhitespaces(String pomAsString) {

@@ -15,10 +15,13 @@
  */
 package com.twosigma.beakerx.jvm.threads;
 
+import com.twosigma.beakerx.TryResult;
+
 import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -59,29 +62,29 @@ public class BeakerCellExecutor implements CellExecutor {
   }
 
   @Override
-  public boolean executeTask(Runnable tsk) {
-    Future<?> ret;
+  public TryResult executeTask(Callable<TryResult> tsk) {
+    Future<TryResult> ret;
 
     try {
       theLock.lock();
       ret = worker.submit(tsk);
     } catch (Throwable t) {
       t.printStackTrace();
-      return false;
+      return TryResult.createError(t.getMessage());
     } finally {
       theLock.unlock();
     }
-
+    TryResult o = null;
     try {
-      ret.get();
+      o = ret.get();
     } catch (Exception e) {
       e.printStackTrace();
-      return false;
+      return TryResult.createError(e.getMessage());
     }
 
     if (ret.isCancelled())
-      return false;
-    return true;
+      return TryResult.createError("Cancelled");
+    return o;
   }
 
   @Override

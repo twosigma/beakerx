@@ -15,6 +15,9 @@
  */
 package com.twosigma.beakerx.jvm.threads;
 
+import com.twosigma.beakerx.jvm.object.ConsoleOutput;
+import com.twosigma.beakerx.widgets.Output;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -29,6 +32,7 @@ public class BeakerStdOutErrHandler {
   private PrintStream orig_err;
   private BeakerOutputHandler out_handler;
   private BeakerOutputHandler err_handler;
+  private Output outputWidget;
 
   static synchronized public void init() {
     if (instance == null) {
@@ -45,13 +49,18 @@ public class BeakerStdOutErrHandler {
   }
 
   static synchronized public void setOutputHandler(BeakerOutputHandler out, BeakerOutputHandler err) {
-    if (instance != null)
+    if (instance != null) {
       instance.theSetOutputHandler(out, err);
+    }
   }
 
   static synchronized public void clrOutputHandler() {
     if (instance != null)
       instance.theClrOutputHandler();
+  }
+
+  public static void setOuputWidget(Output out) {
+    instance.outputWidget = out;
   }
 
   private void theinit() {
@@ -92,33 +101,53 @@ public class BeakerStdOutErrHandler {
   }
 
   private synchronized void write(boolean isout, int b) throws IOException {
-    BeakerOutputHandler hdl = getHandler(isout);
-    if (hdl != null) {
-      hdl.write(b);
-    } else if (isout) {
-      orig_out.write(b);
+    if (outputWidget != null) {
+      byte[] ba = new byte[1];
+      ba[0] = (byte) b;
+      outputWidget.sendOutput(new ConsoleOutput(!isout, new String(ba, StandardCharsets.UTF_8)));
     } else {
-      orig_err.write(b);
+      BeakerOutputHandler hdl = getHandler(isout);
+      if (hdl != null) {
+        hdl.write(b);
+      } else if (isout) {
+        orig_out.write(b);
+      } else {
+        orig_err.write(b);
+      }
     }
   }
 
   private synchronized void write(boolean isout, byte[] b) throws IOException {
-    BeakerOutputHandler hdl = getHandler(isout);
-    if (hdl != null) hdl.write(b);
-    else if (isout)
-      orig_out.write(b);
-    else
-      orig_err.write(b);
+    if (outputWidget != null) {
+      outputWidget.sendOutput(new ConsoleOutput(!isout, new String(b, StandardCharsets.UTF_8)));
+    } else {
+      BeakerOutputHandler hdl = getHandler(isout);
+      if (hdl != null) hdl.write(b);
+      else if (isout)
+        orig_out.write(b);
+      else
+        orig_err.write(b);
+    }
   }
 
   private synchronized void write(boolean isout, byte[] b, int off, int len) throws IOException {
-    BeakerOutputHandler hdl = getHandler(isout);
-    if (hdl != null) {
-      hdl.write(b, off, len);
-    } else if (isout) {
-      orig_out.write(b, off, len);
+    if (outputWidget != null) {
+      outputWidget.sendOutput(new ConsoleOutput(!isout, new String(b, off, len, StandardCharsets.UTF_8)));
     } else {
-      orig_err.write(b, off, len);
+      BeakerOutputHandler hdl = getHandler(isout);
+      if (hdl != null) {
+        hdl.write(b, off, len);
+      } else if (isout) {
+        orig_out.write(b, off, len);
+      } else {
+        orig_err.write(b, off, len);
+      }
+    }
+  }
+
+  public static void clearOutput() {
+    if (instance.outputWidget != null) {
+      instance.outputWidget.clearOutput();
     }
   }
 

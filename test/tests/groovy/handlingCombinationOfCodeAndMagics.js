@@ -29,39 +29,54 @@ describe('Tests for combination of code and magics', function () {
   });
 
   var cellIndex = 0;
+  var timeExp = /CPU times: user \d+ ns, sys: \d+ ns, total: \d+ ns.*\n+Wall Time: \d+ ms/;
+  var errorExp = /org.codehaus.groovy.control.MultipleCompilationErrorsException:/;
 
   describe('Combination of code and magics', function () {
     it('mixing of println code and %time magic', function () {
-      var outputs = beakerxPO.runCodeCellByIndex(cellIndex).$$('div.output_subarea.output_text')
+      var outputs = beakerxPO.runCodeCellByIndex(cellIndex).$$('div.output_subarea.output_text');
       browser.pause(2000);
-      expect(outputs[0].getText()).toMatch(
-        /test1\n221\nCPU times: user \d+ ns, sys: \d+ ns, total: \d+ ns.*\n+Wall Time: \d+ ms/);
-      expect(outputs[0].getText()).toMatch(
-        /test2\nCPU times: user \d+ ns, sys: \d+ ns, total: \d+ ns.*\n+Wall Time: \d+ ms/);
+      expect(outputs[0].getText()).toMatch(new RegExp('test1\n221\n' + timeExp.source));
+      expect(outputs[0].getText()).toMatch(new RegExp('test2\n' + timeExp.source));
       expect(outputs[1].getText()).toMatch(/3/);
     });
 
-    it('using of %import magic inside code', function () {
+    it('%import magic inside code', function () {
       cellIndex += 1;
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      //TODO check output
+      var outputs = beakerxPO.runCodeCellByIndex(cellIndex).$$('div.output_subarea.output_text');
+      browser.pause(2000);
+      expect(outputs[0].getText()).toMatch(errorExp);
+      expect(outputs[1].getText()).toMatch(new RegExp('221\n' + timeExp.source));
+      expect(outputs[2].getText()).toMatch(errorExp);
+      expect(outputs[3].getText()).toMatch(timeExp);
+      expect(outputs[4].getText()).toMatch(/3/);
     });
 
-    it('%classpath and %import magics', function () {
+    it('Using of the spaces in %classpath and %import magics', function () {
       cellIndex += 1;
       beakerxPO.runCellAndCheckOutputText(cellIndex, /Added jar:.+testdemo\.jar.+/);
     });
 
-    it('%time magic and println code', function () {
+    it('Cell has IntSlider widget', function () {
       cellIndex += 1;
-      beakerxPO.runCellAndCheckOutputText(cellIndex,
-        /x.*y\nCPU times: user \d+ ns, sys: \d+ ns, total: \d+ ns.*\n+Wall Time: \d+ ms/);
+      var widget = beakerxPO.runCellToGetWidgetElement(cellIndex);
+      expect(widget.$('div.slider-container').isEnabled()).toBeTruthy();
+    });
+
+    it('Output contains "Demo_test_123"', function () {
+      cellIndex += 1;
+      beakerxPO.kernelIdleIcon.waitForEnabled();
+      beakerxPO.runCellAndCheckOutputText(cellIndex, 'Demo_test_123');
+    });
+
+    it('Using of the spaces in %time magic and println code', function () {
+      cellIndex += 1;
+      beakerxPO.runCellAndCheckOutputText(cellIndex, new RegExp('x.*y\n' + timeExp.source));
     });
 
     it('%classpath for jar which contains spaces in name', function () {
       cellIndex += 1;
-      beakerxPO.runCodeCellByIndex(cellIndex);
-      //TODO check output
+      beakerxPO.runCellAndCheckOutputText(cellIndex, /Added jar:.+ with space\.jar.+/);
     });
   });
 

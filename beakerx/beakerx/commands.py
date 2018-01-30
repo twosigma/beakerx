@@ -19,7 +19,7 @@ from .install import install, uninstall
 from .bkr2ipynb import main
 
 def install_subparser(subparser):
-    install_parser = subparser.add_parser('install', help='installs beakerx extensions')
+    install_parser = subparser.add_parser('install', help='installs BeakerX extensions')
     install_parser.set_defaults(func = install)
     install_parser.add_argument("--prefix",
                                 help="location of the environment to install into",
@@ -27,15 +27,15 @@ def install_subparser(subparser):
     return subparser
 
 def uninstall_subparser(subparser):
-    uninstall_parser = subparser.add_parser('uninstall', help='uninstalls beakerx extensions')
+    uninstall_parser = subparser.add_parser('uninstall', help='uninstalls BeakerX extensions')
     uninstall_parser.set_defaults(func=lambda args : uninstall())
     return subparser
 
 def bkr2ipynb_subparser(subparser):
-    bkr2ipynb_parser = subparser.add_parser('bkr2ipynb', help='converts beaker notebooks to ipynb format')
+    bkr2ipynb_parser = subparser.add_parser('bkr2ipynb', help='converts Beaker notebooks to ipynb format')
     bkr2ipynb_parser.set_defaults(func=main)
     bkr2ipynb_parser.add_argument('notebooks', nargs='+',
-                                  help="beaker notebooks to be converted. Enter *.bkr in case you want to convert all notebooks at once.")
+                                  help="Beaker notebooks to be converted. Enter *.bkr in case you want to convert all notebooks at once.")
     return subparser
 
 def run_jupyter(jupyter_commands):

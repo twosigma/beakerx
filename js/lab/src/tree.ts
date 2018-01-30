@@ -25,7 +25,7 @@ function activate(app: JupyterLab, palette: ICommandPalette, restorer: ILayoutRe
   const command: string = 'beakerx:tree';
 
   app.commands.addCommand(command, {
-    label: 'BeakerX - Tree',
+    label: 'BeakerX Options',
     execute: () => {
       if (!widget) {
         widget = new BeakerXTreeWidget();

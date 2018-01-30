@@ -4,6 +4,7 @@
     "noImplicitAny": false,
     "noEmitOnError": true,
     "noUnusedLocals": true,
+    "jsx": "preserve",
     "lib": ["dom", "es5", "es2015.promise"],
     "types": ["node"],
     "module": "commonjs",

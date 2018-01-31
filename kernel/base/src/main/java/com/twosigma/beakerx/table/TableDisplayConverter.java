@@ -43,7 +43,7 @@ public class TableDisplayConverter {
 
   private static Object convertToNumber(Object value) {
     if (value instanceof String && NumberUtils.isNumber((String) value)) {
-      return Float.parseFloat((String) value);
+      return Double.parseDouble((String) value);
     } else {
       return value;
     }

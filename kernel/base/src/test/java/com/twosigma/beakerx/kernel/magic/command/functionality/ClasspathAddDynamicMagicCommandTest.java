@@ -52,7 +52,7 @@ public abstract class ClasspathAddDynamicMagicCommandTest extends KernelSetUpFix
   private void verifyResult() throws InterruptedException {
     Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     assertThat(idleMessage).isPresent();
-    List<Message> stdouts = getStdouts(kernelSocketsService.getKernelSockets());
+    List<Message> stdouts = getStdouts(kernelSocketsService.getKernelSockets().getPublishedMessages());
     Optional<String> added_jar = getAddedJars(stdouts);
     assertTrue("No jar added", added_jar.get().contains(DEMO_JAR_NAME));
   }
@@ -75,7 +75,7 @@ public abstract class ClasspathAddDynamicMagicCommandTest extends KernelSetUpFix
   private void verifyList() throws InterruptedException {
     Optional<Message> idleMessage = waitForIdleMessage(kernelSocketsService.getKernelSockets());
     assertThat(idleMessage).isPresent();
-    List<Message> stdouts = getStdouts(kernelSocketsService.getKernelSockets());
+    List<Message> stdouts = getStdouts(kernelSocketsService.getKernelSockets().getPublishedMessages());
     Optional<String> added_jar = getAddedJars(stdouts);
     assertThat(added_jar).isPresent();
     String jars = added_jar.get();

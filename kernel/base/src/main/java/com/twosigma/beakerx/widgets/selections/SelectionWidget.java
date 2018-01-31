@@ -54,7 +54,7 @@ public abstract class SelectionWidget<T extends Serializable> extends ValueWidge
       }
     }
 
-    return 0;
+    return null;
   }
 
   public Integer getSize() {

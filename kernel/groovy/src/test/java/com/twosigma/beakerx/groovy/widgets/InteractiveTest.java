@@ -16,12 +16,10 @@
 
 package com.twosigma.beakerx.groovy.widgets;
 
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
 import static com.twosigma.beakerx.kernel.comm.Comm.DATA;
 import static com.twosigma.beakerx.widgets.strings.TextTest.verifyTextField;
 
-import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
@@ -39,6 +37,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -93,10 +92,9 @@ public class InteractiveTest {
 
   private void callInteractWithStringParam(String param) throws Exception {
     String code = getInteractiveCode(param);
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
     groovyEvaluator.evaluate(seo, code);
-    waitForResult(seo);
   }
 
   private Comm getCommWidgetByViewName(String viewName) {

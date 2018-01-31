@@ -15,7 +15,7 @@
  */
 package com.twosigma.beakerx.groovy.evaluator;
 
-import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
 import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.kernel.KernelManager;
@@ -29,9 +29,7 @@ import com.twosigma.beakerx.message.Message;
 
 import java.util.List;
 
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyDisplayMsg;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
@@ -63,16 +61,14 @@ public class GroovyEvaluatorProgressReportingTest {
     //given
     String code =
             "for ( int i = 0 ; i<5; i++) {\n" +
-            "  "+ BEAKER_VARIABLE_NAME + ".showProgressUpdate(\"msg\"+i, i)\n" +
-            "}\n" +
-            "\"finished\"";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+                    "  " + BEAKER_VARIABLE_NAME + ".showProgressUpdate(\"msg\"+i, i)\n" +
+                    "}\n" +
+                    "\"finished\"";
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    groovyEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = groovyEvaluator.evaluate(seo, code);
     //then
-    assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    assertThat(seo.getPayload()).isEqualTo("finished");
+    assertThat(evaluate.result()).isEqualTo("finished");
     verifyProgressReporting(groovyKernel.getPublishedMessages());
   }
 
@@ -84,19 +80,19 @@ public class GroovyEvaluatorProgressReportingTest {
 
     verifyDisplayMsg(messages.get(2));
 
-    verifyUpdate(messages.get(3), messages.get(4),0);
-    verifyUpdate(messages.get(5), messages.get(6),1);
-    verifyUpdate(messages.get(7), messages.get(8),2);
-    verifyUpdate(messages.get(9), messages.get(10),3);
-    verifyUpdate(messages.get(11), messages.get(12),4);
+    verifyUpdate(messages.get(3), messages.get(4), 0);
+    verifyUpdate(messages.get(5), messages.get(6), 1);
+    verifyUpdate(messages.get(7), messages.get(8), 2);
+    verifyUpdate(messages.get(9), messages.get(10), 3);
+    verifyUpdate(messages.get(11), messages.get(12), 4);
 
     Message closeMessage = messages.get(13);
     verifyTypeMsg(closeMessage, COMM_CLOSE);
   }
 
-  private void verifyUpdate(Message value, Message description,int index) {
+  private void verifyUpdate(Message value, Message description, int index) {
     assertThat(getValueForProperty(value, IntProgress.VALUE, Integer.class)).isEqualTo(index);
-    assertThat(getValueForProperty(description, IntProgress.DESCRIPTION, String.class)).isEqualTo("msg"+index);
+    assertThat(getValueForProperty(description, IntProgress.DESCRIPTION, String.class)).isEqualTo("msg" + index);
   }
 
 

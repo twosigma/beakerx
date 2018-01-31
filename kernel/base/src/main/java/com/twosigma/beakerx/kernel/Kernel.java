@@ -19,13 +19,13 @@ import static com.twosigma.beakerx.kernel.KernelSignalHandler.addSigIntHandler;
 
 import com.twosigma.beakerx.BeakerxDefaultDisplayers;
 import com.twosigma.beakerx.DisplayerDataMapper;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.handler.KernelHandler;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.comm.Comm;
 import com.twosigma.beakerx.kernel.handler.CommOpenHandler;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandTypesFactory;
@@ -178,15 +178,8 @@ public abstract class Kernel implements KernelFunctionality {
   }
 
   @Override
-  public SimpleEvaluationObject executeCode(String code, Message message, int executionCount,
-                                            ExecuteCodeCallback executeCodeCallback) {
-    return this.evaluatorManager.executeCode(code, message, executionCount, executeCodeCallback);
-  }
-
-  @Override
-  public SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message,
-                                                                       int executionCount, ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
-    return this.evaluatorManager.executeCodeWithTimeMeasurement(code, message, executionCount, executeCodeCallbackWithTime);
+  public TryResult executeCode(String code, SimpleEvaluationObject seo) {
+    return this.evaluatorManager.executeCode(code, seo);
   }
 
   @Override

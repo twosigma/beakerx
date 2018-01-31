@@ -57,8 +57,7 @@ define([
     }
   };
 
-  PlotConstband.prototype.getRange = function() {
-    var eles = this.elements;
+  PlotConstband.prototype.getRange = function(eles = this.elements) {
     var range = {
       xl : Infinity,
       xr : -Infinity,

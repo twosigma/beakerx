@@ -39,6 +39,7 @@ public class CombinedPlot extends ChartDetails {
   private List<Integer> weights = new ArrayList<>();
   private boolean xTickLabelsVisible = true;
   private boolean yTickLabelsVisible = true;
+  private boolean autoZoom = false;
 
   public CombinedPlot(){
     super();
@@ -96,6 +97,10 @@ public class CombinedPlot extends ChartDetails {
     return this.xLabel;
   }
 
+  public String getxLabel() {
+    return getXLabel();
+  }
+
   public CombinedPlot add(XYChart plot, int weight) {
     this.subplots.add(plot);
     this.weights.add(weight);
@@ -136,16 +141,41 @@ public class CombinedPlot extends ChartDetails {
     return yTickLabelsVisible;
   }
 
+  public boolean isYTickLabelsVisible() {
+    return isyTickLabelsVisible();
+  }
+
   public void setyTickLabelsVisible(boolean yTickLabelsVisible) {
     this.yTickLabelsVisible = yTickLabelsVisible;
+  }
+
+  public void setYTickLabelsVisible(boolean yTickLabelsVisible) {
+    setyTickLabelsVisible(yTickLabelsVisible);
   }
 
   public boolean isxTickLabelsVisible() {
     return xTickLabelsVisible;
   }
 
+  public boolean isXTickLabelsVisible() {
+    return isxTickLabelsVisible();
+  }
+
   public void setxTickLabelsVisible(boolean xTickLabelsVisible) {
     this.xTickLabelsVisible = xTickLabelsVisible;
+  }
+
+  public void setXTickLabelsVisible(boolean xTickLabelsVisible) {
+    setxTickLabelsVisible(xTickLabelsVisible);
+  }
+
+  public boolean getAutoZoom() {
+    return this.autoZoom;
+  }
+
+  public CombinedPlot setAutoZoom(boolean autoZoom) {
+    this.autoZoom = autoZoom;
+    return this;
   }
 
   @Override

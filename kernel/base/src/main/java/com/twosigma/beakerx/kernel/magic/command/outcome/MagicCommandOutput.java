@@ -15,6 +15,8 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.outcome;
 
+import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
 import java.util.Optional;
@@ -26,17 +28,26 @@ public class MagicCommandOutput implements MagicCommandOutcomeItem {
   private Optional<MIMEContainer> mineContainer;
   private MagicCommandOutput.Status status;
 
-  private MagicCommandOutput(MagicCommandOutput.Status status, Optional<MIMEContainer> mineContainer) {
+  private TryResult result;
+  private SimpleEvaluationObject seo;
+
+  private MagicCommandOutput(MagicCommandOutput.Status status, Optional<MIMEContainer> mineContainer, TryResult result, SimpleEvaluationObject seo) {
     this.mineContainer = mineContainer;
     this.status = checkNotNull(status);
+    this.result = result;
+    this.seo = seo;
   }
 
   public MagicCommandOutput(Status status) {
-    this(status, Optional.empty());
+    this(status, Optional.empty(), null, null);
   }
 
   public MagicCommandOutput(MagicCommandOutput.Status status, String text) {
-    this(status, Optional.of(MIMEContainer.Text(checkNotNull(text).concat("\n"))));
+    this(status, Optional.of(MIMEContainer.Text(checkNotNull(text).concat("\n"))), null, null);
+  }
+
+  public MagicCommandOutput(Status status, String text, TryResult result, SimpleEvaluationObject seo) {
+    this(status, Optional.of(MIMEContainer.Text(checkNotNull(text).concat("\n"))), result, seo);
   }
 
   @Override
@@ -46,6 +57,16 @@ public class MagicCommandOutput implements MagicCommandOutcomeItem {
 
   public MagicCommandOutput.Status getStatus() {
     return status;
+  }
+
+  @Override
+  public TryResult getResult() {
+    return result;
+  }
+
+  @Override
+  public SimpleEvaluationObject getSimpleEvaluationObject() {
+    return seo;
   }
 
   @Override

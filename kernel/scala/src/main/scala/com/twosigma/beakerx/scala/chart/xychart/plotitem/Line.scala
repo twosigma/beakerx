@@ -16,25 +16,20 @@
 
 package com.twosigma.beakerx.scala.chart.xychart.plotitem
 
-import scala.collection.JavaConverters._
+import com.twosigma.beakerx.chart.xychart.plotitem.StrokeType
+import com.twosigma.beakerx.scala.JavaAdapter._
 
+class Line extends com.twosigma.beakerx.chart.xychart.plotitem.Line with LineProperties
 
-class Line(xs: Seq[Any], ys: Seq[Any]) extends com.twosigma.beakerx.chart.xychart.plotitem.Line(xs.map(x => x.asInstanceOf[AnyRef]).asJava, ys.map(x => x.asInstanceOf[Number]).asJava) {
+trait LineProperties extends XYGraphicsProperties {
+  this: com.twosigma.beakerx.chart.xychart.plotitem.Line =>
 
-  def this(ys: Seq[Any]) {
-    this(List(), ys)
-    super.setY(ys.map(x => x.asInstanceOf[Number]).asJava)
-  }
+  def interpolation: Option[Int] = safeOption(getInterpolation)
+  def interpolation_=(interpolation: Int): Unit = setInterpolation(interpolation)
 
-  def this(ys: Seq[Any], displayName: String) {
-    this(ys)
-    super.setDisplayName(displayName)
-  }
+  def style: Option[StrokeType] = Option(getStyle)
+  def style_=(stroke: StrokeType): Unit = setStyle(stroke)
 
-  def this(displayName: String, xs: Seq[Any], ys: Seq[Any], width: Float) {
-    this(xs, ys)
-    super.setDisplayName(displayName)
-    super.setWidth(width)
-  }
-
+  def width: Float = getWidth
+  def width_=(width: Float) = setWidth(width)
 }

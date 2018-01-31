@@ -20,7 +20,7 @@ from .output_container import *
 from ._version import version_info, __version__
 from .handlers import load_jupyter_server_extension
 from .environment import *
-import json
+from .commands import parse
 
 def _jupyter_nbextension_paths():
     return [{
@@ -40,5 +40,11 @@ def _jupyter_nbextension_paths():
 def _jupyter_server_extension_paths():
     return [dict(module="beakerx")]
 
-
 beakerx = BeakerX()
+
+def run():
+    try:
+        parse()
+    except KeyboardInterrupt:
+        return 130
+    return 0

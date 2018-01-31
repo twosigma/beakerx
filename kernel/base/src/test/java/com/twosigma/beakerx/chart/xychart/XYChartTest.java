@@ -219,17 +219,4 @@ public abstract class XYChartTest<T extends XYChart> extends AbstractChartTest<X
 
   @Override
   public abstract T createWidget();
-
-  @Test
-  public void setyAutoRangeByTrue_YAutoRangeIsTrue() {
-    //given
-    AbstractChart chart =createWidget();
-    //when
-    chart.setyAutoRange(true);
-    //then
-    assertThat(chart.getYAutoRange()).isTrue();
-    LinkedHashMap model = getModelUpdate();
-    assertThat(model.size()).isEqualTo(1);
-    assertThat(model.get(X_AUTO_RANGE)).isEqualTo(true);
-  }
 }

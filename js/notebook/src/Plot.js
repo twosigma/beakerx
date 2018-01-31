@@ -74,9 +74,9 @@ var PlotView = widgets.DOMWidgetView.extend({
           that._currentScope.scopes.forEach(function(scope) {
             scope.destroy();
           });
+        } else if (that._currentScope) {
+          that._currentScope.destroy();
         }
-        that._currentScope.destroy();
-
         setTimeout(function() { that._currentScope = null; });
       });
     });

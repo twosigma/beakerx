@@ -28,9 +28,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class CategoryGraphics extends Graphics {
-  protected Number[][] value;
-  protected List<String> seriesNames;
-  protected Color baseColor;
+  private Number[][] value;
+  private List<String> seriesNames;
+  private Color baseColor;
   private List<Object> colors;
   private Object itemLabelBuilder;
   private String[][] itemLabels;

@@ -79,7 +79,12 @@ class Table(BaseObject):
                     column_type = self.convert_type(type(element[key]), element[key])
                     self.types.append(column_type)
                     types_map[key] = column_type
-
+                elif types_map[key] != "string":
+                    type_for_key = types_map[key]
+                    column_type = self.convert_type(type(element[key]), element[key])
+                    if type_for_key != column_type:
+                        self.types[self.columnNames.index(key)] = "string"
+                        types_map[key] = "string"
         for element in args[0]:
             row = []
             for columnName in self.columnNames:

@@ -57,8 +57,7 @@ define([
     this.draw(scope);
   };
 
-  PlotRaster.prototype.getRange = function() {
-    var eles = this.elements;
+  PlotRaster.prototype.getRange = function(eles = this.elements) {
     var range = {
       xl : Infinity,
       xr : -Infinity,

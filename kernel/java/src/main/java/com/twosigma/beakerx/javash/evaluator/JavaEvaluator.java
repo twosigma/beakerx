@@ -15,6 +15,7 @@
  */
 package com.twosigma.beakerx.javash.evaluator;
 
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.autocomplete.ClasspathScanner;
 import com.twosigma.beakerx.evaluator.BaseEvaluator;
@@ -33,6 +34,9 @@ import com.twosigma.beakerx.kernel.Imports;
 import com.twosigma.beakerx.kernel.PathToJar;
 
 import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class JavaEvaluator extends BaseEvaluator {
 
@@ -40,7 +44,7 @@ public class JavaEvaluator extends BaseEvaluator {
   private final String packageId;
   private ClasspathScanner cps;
   private JavaAutocomplete jac;
-  private JavaWorkerThread workerThread;
+  private ExecutorService executorService;
   private BeakerxUrlClassLoader loader = null;
 
   public JavaEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
@@ -53,8 +57,7 @@ public class JavaEvaluator extends BaseEvaluator {
     cps = new ClasspathScanner();
     jac = createJavaAutocomplete(cps);
     loader = newClassLoader();
-    workerThread = new JavaWorkerThread(this);
-    workerThread.start();
+    executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override
@@ -63,7 +66,8 @@ public class JavaEvaluator extends BaseEvaluator {
     cps = new ClasspathScanner(cpp);
     jac = createAutocomplete(imports, cps);
     loader = newClassLoader();
-    workerThread.halt();
+    executorService.shutdown();
+    executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override
@@ -79,9 +83,9 @@ public class JavaEvaluator extends BaseEvaluator {
   @Override
   public void exit() {
     super.exit();
-    workerThread.doExit();
     cancelExecution();
-    workerThread.halt();
+    executorService.shutdown();
+    executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override
@@ -90,8 +94,15 @@ public class JavaEvaluator extends BaseEvaluator {
   }
 
   @Override
-  public void evaluate(SimpleEvaluationObject seo, String code) {
-    workerThread.add(new JobDescriptor(code, seo));
+  public TryResult evaluate(SimpleEvaluationObject seo, String code) {
+    Future<TryResult> submit = executorService.submit(new JavaWorkerThread(this, new JobDescriptor(code, seo)));
+    TryResult either = null;
+    try {
+      either = submit.get();
+    } catch (Exception e) {
+      either = TryResult.createError(e.getLocalizedMessage());
+    }
+    return either;
   }
 
   @Override

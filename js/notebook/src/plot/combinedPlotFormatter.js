@@ -106,6 +106,8 @@ define([
 
         newplotmodel.plotSize.height = (height - sumvmargins) * weights[i] / sumweights + vmargins[i];
 
+        newplotmodel.auto_zoom = model.auto_zoom;
+
         newmodel.plots.push(newplotmodel);
       }
       return newmodel;

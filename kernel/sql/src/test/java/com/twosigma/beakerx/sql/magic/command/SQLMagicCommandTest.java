@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.kernel.handler.MagicCommandExecutor;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.message.Message;
@@ -53,9 +52,9 @@ public class SQLMagicCommandTest {
     //given
     String codeAsString = DEFAULT_DATASOURCE + " jdbc:h2:mem:db1";
     MagicCommand command = new MagicCommand(new DefaultDataSourcesMagicCommand(kernel), codeAsString);
-    Code code = Code.createCodeWithoutCodeBlock(codeAsString, singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(codeAsString, singletonList(command), NO_ERRORS, new Message());
     //when
-    MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1);
     //then
     assertThat(getDefaultDatasource().get()).isEqualTo("jdbc:h2:mem:db1");
   }
@@ -65,9 +64,9 @@ public class SQLMagicCommandTest {
     //given
     String codeAsString = DATASOURCES + " jdbc:h2:mem:db2";
     MagicCommand command = new MagicCommand(new DataSourcesMagicCommand(kernel), codeAsString);
-    Code code = Code.createCodeWithoutCodeBlock(codeAsString, singletonList(command), NO_ERRORS, new Message());
+    Code code = Code.createCode(codeAsString, singletonList(command), NO_ERRORS, new Message());
     //when
-    MagicCommandExecutor.executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1);
     //then
     assertThat(getDatasource().get()).isEqualTo("jdbc:h2:mem:db2");
   }

@@ -68,8 +68,7 @@ define([
     }
   };
 
-  HeatMap.prototype.getRange = function() {
-    var eles = this.elements;
+  HeatMap.prototype.getRange = function(eles = this.elements) {
     var range = {
       xl: Infinity,
       xr: -Infinity,

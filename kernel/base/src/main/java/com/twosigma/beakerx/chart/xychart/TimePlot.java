@@ -44,6 +44,10 @@ public class TimePlot extends XYChart {
     return this;
   }
 
+  public XYChart setxBound(Date lower, Date upper) {
+    return setXBound(lower, upper);
+  }
+
   @Override
   public XYChart setXBound(List bound) {
     if (bound.size() != 2) {

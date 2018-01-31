@@ -14,16 +14,10 @@
  *  limitations under the License.
  */
 
-import { ITriggerOptions } from "../headerMenu/HeaderMenu";
 import { COLUMN_TYPES } from "../DataGridColumn";
 
-export interface IColumn {
-  index: number,
-  region: string
-}
-
-export interface IColumnOptions {
-  index: number,
+export interface ICellData {
   type: COLUMN_TYPES,
-  menuOptions: ITriggerOptions
+  index: number,
+  delta: number
 }

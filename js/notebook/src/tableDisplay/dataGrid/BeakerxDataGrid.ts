@@ -15,29 +15,29 @@
  */
 
 import { DataGrid } from "@phosphor/datagrid";
-import ColumnMenu from "./headerMenu/ColumnMenu";
 import { ITriggerOptions } from "./headerMenu/HeaderMenu";
 import { TableDataModel } from "./TableDataModel";
-import IDataModelOptions from "./interface/IDataModelOptions";
 import { Widget } from "@phosphor/widgets";
-import IndexMenu from "./headerMenu/IndexMenu";
+import { Signal } from '@phosphor/signaling';
+import { ICellData } from "./interface/ICell";
+import DataGridColumn, { COLUMN_TYPES } from "./DataGridColumn";
+import IDataModelOptions from "./interface/IDataModelOptions";
 
-interface ICellData {
-  type: string,
-  index: number,
-  delta: number
+interface IColumns {
+  index: DataGridColumn[],
+  body: DataGridColumn[]
 }
 
 export class BeakerxDataGrid extends DataGrid {
-  columnMenus: ColumnMenu[] = [];
-  indexMenu: IndexMenu;
   model: TableDataModel;
-  menuHoveredIndex: number|null;
   columnHeaderSections: any;
   rowHeaderSections: any;
   columnSections: any;
   rowSections: any;
   viewport: Widget;
+
+  columns: IColumns = { index: [], body: [] };
+  headerCellHovered = new Signal<this, ICellData|null>(this);
 
   constructor(options, modelOptions: IDataModelOptions) {
     super(options);
@@ -50,8 +50,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.columnSections = this['_columnSections'];
 
     this.addModel(modelOptions);
-    this.addColumnMenus();
-    this.addIndexMenu();
+    this.addColumns();
   }
 
   handleEvent(event: Event): void {
@@ -60,7 +59,7 @@ export class BeakerxDataGrid extends DataGrid {
         this.handleHeaderCellHover(event as MouseEvent);
         break;
       case 'mouseout':
-        this.hideAllTriggers();
+        this.headerCellHovered.emit(null);
         break;
     }
 
@@ -68,90 +67,70 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   destroy() {
-    this.destroyAllMenus();
+    this.destroyAllColumns();
     this.dispose();
   }
 
-  private addColumnMenus() {
+  private addColumns() {
+    this.addIndexColumns();
+    this.addBodyColumns();
+  }
+
+  private addBodyColumns() {
     this.model.columnNames.forEach((columnName, index) => {
-      let triggerOptions: ITriggerOptions = {
+      let menuOptions: ITriggerOptions = {
         x: this.getColumnOffset(index),
         y: 0,
         width: this.headerHeight,
         height: this.headerHeight
       };
 
-      this.columnMenus.push(new ColumnMenu(index, this, triggerOptions));
+      let column = new DataGridColumn({
+        index,
+        menuOptions,
+        type: COLUMN_TYPES.body
+      }, this);
+
+      this.columns.body.push(column);
+      this.headerCellHovered.connect(column.handleHeaderCellHovered);
     });
   }
 
-  private addIndexMenu(): void {
+  private addIndexColumns(): void {
     if (!this.rowHeaderSections.sectionCount) {
       return;
     }
 
-    let triggerOptions: ITriggerOptions = {
-      x: 0, y: 0,
-      width: this.headerHeight,
-      height: this.headerHeight
-    };
+    let column = new DataGridColumn({
+      index: 0,
+      menuOptions: { x: 0, y: 0, width: this.headerHeight, height: this.headerHeight },
+      type: COLUMN_TYPES.index
+    }, this);
 
-    this.indexMenu = new IndexMenu(0, this, triggerOptions);
+    this.columns.index.push(column);
+    this.headerCellHovered.connect(column.handleHeaderCellHovered);
   }
 
   private addModel(modelOptions: IDataModelOptions) {
     this.model = new TableDataModel(modelOptions);
   }
 
-  private destroyAllMenus() {
-    this.columnMenus.forEach(menu => menu.destroy());
-  }
+  private destroyAllColumns() {
+    this.columns.index.forEach(column => column.destroy());
+    this.columns.body.forEach(column => column.destroy());
 
-  private hideAllTriggers() {
-    this.columnMenus.forEach(menu => menu.hideTrigger());
-    this.indexMenu.hideTrigger();
+    Signal.disconnectAll(this);
   }
 
   private getColumnOffset(index: number) {
     return this.rowHeaderSections.totalSize + this.columnSections.sectionOffset(index);
   }
 
+  //@todo debounce it
   private handleHeaderCellHover(event: MouseEvent): void {
     const data = this.getHoveredCellData(event.clientX, event.clientY);
 
-    if (!data) {
-      this.hideAllTriggers();
-      this.menuHoveredIndex = null;
-
-      return;
-    }
-
-    switch (data.type) {
-      case 'body-column':
-        this.showColumnMenuTrigger(data);
-        break;
-      case 'header-column':
-      case 'header-row':
-        this.showIndexMenuTrigger();
-        break;
-    }
-  }
-
-  private showColumnMenuTrigger({ index }) {
-    let menu: ColumnMenu = this.columnMenus[index];
-
-    if (this.menuHoveredIndex === index) {
-      return;
-    }
-
-    this.hideAllTriggers();
-    menu.showTrigger(this.getColumnOffset(index));
-    this.menuHoveredIndex = index;
-  }
-
-  private showIndexMenuTrigger() {
-    this.hideAllTriggers();
-    this.indexMenu.showTrigger(0);
+    this.headerCellHovered.emit(data);
   }
 
   private getHoveredCellData(clientX: number, clientY: number): ICellData|null {
@@ -173,19 +152,19 @@ export class BeakerxDataGrid extends DataGrid {
       let data: { index: number, delta: number } | null = null;
 
       if (y <= this.headerHeight) {
-        data = this.findHoveredCellIndex(this.columnHeaderSections, x); //@todo this is hack
+        data = this.findHoveredCellIndex(this.columnHeaderSections, x);
       }
 
       if (data) {
-        return { type: 'header-column', index: data.index, delta: data.delta };
+        return { type: COLUMN_TYPES.index, index: data.index, delta: data.delta };
       }
 
       if (x <= this.headerWidth) {
-        data = this.findHoveredCellIndex(this.rowHeaderSections, y); //@todo this is hack
+        data = this.findHoveredCellIndex(this.rowHeaderSections, y);
       }
 
       if (data) {
-        return { type: 'header-row', index: data.index, delta: data.delta };
+        return { type: COLUMN_TYPES.index, index: data.index, delta: data.delta };
       }
 
       return null;
@@ -195,10 +174,10 @@ export class BeakerxDataGrid extends DataGrid {
     if (y <= this.headerHeight) {
       // Convert the position into unscrolled coordinates.
       let pos = x + this.scrollX - this.headerWidth;
-      let data = this.findHoveredCellIndex(this.columnSections, pos); //@todo this is hack
+      let data = this.findHoveredCellIndex(this.columnSections, pos);
 
       if (data) {
-        return { type: 'body-column', index: data.index, delta: data.delta };
+        return { type: COLUMN_TYPES.body, index: data.index, delta: data.delta };
       }
 
       return null;

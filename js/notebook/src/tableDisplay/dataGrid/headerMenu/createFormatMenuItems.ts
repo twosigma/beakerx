@@ -18,7 +18,7 @@ import MenuItem from "../../../shared/interfaces/menuItemInterface";
 import { TIME_UNIT_FORMATS, scopeData } from '../../consts';
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { getAllowedTypesByType } from "../dataTypes";
-import IColumn from '../interface/IColumn';
+import { IColumn } from '../interface/IColumn';
 
 export function createFormatMenuItems(column: IColumn, dataGrid: BeakerxDataGrid) {
   const types = getAllowedTypesByType(dataGrid.model.getColumnTypeName(column));

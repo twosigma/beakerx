@@ -54,12 +54,22 @@ var BeakerXPageObject = function () {
     browser.click('=Clear')
   }
 
+  this.clickPublish = function(){
+    browser.$('button[title="Publish..."]').click();
+  }
+
   this.closeAndHaltNotebook = function () {
     this.clickCellAllOutputClear();
     browser.click('=File');
     browser.waitForEnabled('=Close and Halt');
     browser.click('=Close and Halt');
     browser.endAll();
+  }
+
+  this.clickCellRunAll = function () {
+    browser.click('=Cell');
+    browser.waitForEnabled('=Run All');
+    browser.click('=Run All')
   }
 
   this.getCodeCellByIndex = function (index) {

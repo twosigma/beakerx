@@ -213,7 +213,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     filterWrapper.classList.add('dropdown-menu-search');
     filterWrapper.innerHTML = '<i class="fa fa-search"></i><input placeholder="search regexp...">';
 
-    menu.node.insertAdjacentElement('afterbegin', filterWrapper);
+    menu.node.insertBefore(filterWrapper, menu.node.children.item(0));
 
     const input = filterWrapper.querySelector('input');
 

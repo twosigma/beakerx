@@ -16,7 +16,7 @@
 
 import { Widget } from '@phosphor/widgets';
 import { BeakerxDataGrid } from './BeakerxDataGrid';
-import { silverStripeStyle } from './dataGridStyle';
+import { silverStripeStyle } from './style/dataGridStyle';
 import IDataGridScopeOptions from "./interface/IDataGridScopeOptions";
 
 export class DataGridScope {

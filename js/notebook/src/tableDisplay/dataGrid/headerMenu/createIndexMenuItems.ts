@@ -17,7 +17,7 @@
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import { createFormatMenuItems } from './createFormatMenuItems';
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
-import { IColumn } from '../interface/IColumn';
+import { IColumn } from "../interface/IColumn";
 
 export function createIndexMenuItems(column: IColumn, dataGrid: BeakerxDataGrid): MenuItem[] {
 

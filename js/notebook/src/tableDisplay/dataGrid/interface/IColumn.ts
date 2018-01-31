@@ -19,7 +19,7 @@ import { COLUMN_TYPES } from "../DataGridColumn";
 
 export interface IColumn {
   index: number,
-  region: string
+  type: COLUMN_TYPES
 }
 
 export interface IColumnOptions {

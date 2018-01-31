@@ -16,7 +16,7 @@
 
 import { expect } from 'chai';
 import { DataGrid } from '@phosphor/datagrid';
-import { silverStripeStyle } from '@beakerx/tableDisplay/dataGrid/dataGridStyle';
+import { silverStripeStyle } from '@beakerx/tableDisplay/dataGrid/style/dataGridStyle';
 
 describe('dataGridStyle', () => {
   it('should be an object', () => {

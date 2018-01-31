@@ -17,6 +17,7 @@
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { createColumnMenuItems } from './createColumnMenuItems';
 import HeaderMenu, { ITriggerOptions } from "./HeaderMenu";
+import { COLUMN_TYPES } from "../DataGridColumn";
 
 export default class ColumnMenu extends HeaderMenu {
 
@@ -32,7 +33,7 @@ export default class ColumnMenu extends HeaderMenu {
     this.menu.contentNode.classList.add('bko-table-menu-content');
 
     let items = createColumnMenuItems(
-      { index: this.columnIndex, region: 'body' },
+      { index: this.columnIndex, type: COLUMN_TYPES.body },
       this.dataGrid
     );
 

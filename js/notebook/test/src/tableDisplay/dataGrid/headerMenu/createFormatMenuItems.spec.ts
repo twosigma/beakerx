@@ -22,6 +22,7 @@ import {
 } from '@beakerx/tableDisplay/dataGrid/headerMenu/createFormatMenuItems';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import { scopeData, TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/consts';
+import { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/DataGridColumn";
 
 describe('createFormatMenuItems', () => {
   const dataGrid = new BeakerxDataGrid({}, {
@@ -34,7 +35,7 @@ describe('createFormatMenuItems', () => {
 
   it('should create format menu items', () => {
     let expectedLength = scopeData.allIntTypes.length + Object.keys(TIME_UNIT_FORMATS).length - 1; // datetime is not duplicated
-    let formatMenuItems = createFormatMenuItems({ index: 0, region: 'row-header'}, dataGrid);
+    let formatMenuItems = createFormatMenuItems({ index: 0, type: COLUMN_TYPES.index}, dataGrid);
 
     expect(formatMenuItems).to.be.an.instanceof(Array);
     expect(formatMenuItems).to.have.length(expectedLength);

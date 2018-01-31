@@ -17,6 +17,8 @@
 import { DataModel } from "@phosphor/datagrid";
 import { getDisplayType, ALL_TYPES } from './dataTypes';
 import { DataFormatter } from './DataFormatter';
+import { COLUMN_TYPES } from "./DataGridColumn";
+import {IColumn} from "./interface/IColumn";
 import IDataModelOptions from './interface/IDataModelOptions';
 
 export class TableDataModel extends DataModel {
@@ -24,7 +26,6 @@ export class TableDataModel extends DataModel {
   dataFormatter: DataFormatter;
 
   static DEFAULT_INDEX_COLUMN_TYPE = ALL_TYPES[1]; // integer
-  static DEFAULT_INDEX_REGION_NAME = 'row-header';
 
   private _data: any;
   private _options: IDataModelOptions;
@@ -52,7 +53,7 @@ export class TableDataModel extends DataModel {
   }
 
   data(region: DataModel.CellRegion, row: number, column: number): any {
-    if (region === TableDataModel.DEFAULT_INDEX_REGION_NAME) {
+    if (region === 'row-header') {
       return row;
     }
 
@@ -83,12 +84,12 @@ export class TableDataModel extends DataModel {
     return this.dataFormatter.getFormatFnByType(displayType)(data, row, column);
   }
 
-  getColumnTypeName({ index, region }) {
-    if (region === TableDataModel.DEFAULT_INDEX_REGION_NAME) {
+  getColumnTypeName(column: IColumn) {
+    if (column.type === COLUMN_TYPES.index) {
       return TableDataModel.DEFAULT_INDEX_COLUMN_TYPE;
     }
 
-    return this._options.types[index];
+    return this._options.types[column.index];
   }
 
 }

@@ -16,7 +16,7 @@
 
 import { DataGrid } from '@phosphor/datagrid';
 
-import './style/dataGrid.scss';
+import './dataGrid.scss';
 
 export const silverStripeStyle: DataGrid.IStyle = {
   ...DataGrid.defaultStyle,

@@ -15,9 +15,9 @@
  */
 
 import * as $ from "jquery";
-import { PageConfig } from "@jupyterlab/coreutils";
+// import { PageConfig } from "@jupyterlab/coreutils";
 
-const baseUrl = PageConfig.getBaseUrl();
+ const baseUrl = '/'; //PageConfig.getBaseUrl(); TODO
 const apiUrl = `${baseUrl}beakerx/`;
 
 export interface IDefaultJVMOptions {

@@ -181,9 +181,10 @@ def make_parser():
     return parser
 
 
-def _disable_beakerx():
+def _disable_beakerx(args):
     _uninstall_nbextension()
     _uninstall_kernels()
+    _install_kernelspec_manager(args.prefix, disable=True)
 
 
 def _install_beakerx(args):
@@ -199,8 +200,8 @@ def _install_beakerx(args):
 def install(args):
     _install_beakerx(args)
 
-def uninstall():
-    _disable_beakerx()
+def uninstall(args):
+    _disable_beakerx(args)
 
 
 if __name__ == "__main__":

@@ -27,23 +27,23 @@ var BeakerXPageObject = function () {
     browser.waitForEnabled('=' + name);
     browser.click('=' + name);
     browser.window(browser.windowHandles().value[1]);
-  }
+  };
 
   this.runNotebookByUrl = function(url){
     browser.url('http://127.0.0.1:8888' + url);
     this.kernelIdleIcon.waitForEnabled();
-  }
+  };
 
   this.clickRunCell = function () {
     var cssRunCell = 'button[data-jupyter-action="jupyter-notebook:run-cell-and-select-next"]';
     browser.waitForEnabled(cssRunCell);
     browser.click(cssRunCell);
     this.kernelIdleIcon.waitForEnabled();
-  }
+  };
 
   this.clickSaveNotebook = function () {
     browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
-  }
+  };
 
   this.clickCellAllOutputClear = function () {
     browser.click('=Cell');
@@ -52,11 +52,24 @@ var BeakerXPageObject = function () {
     browser.moveToObject('=Toggle');
     browser.moveToObject('=Clear');
     browser.click('=Clear')
-  }
+  };
 
   this.clickPublish = function(){
     browser.$('button[title="Publish..."]').click();
-  }
+  };
+
+  this.publishAndOpenNbviewerWindow = function() {
+    this.clickPublish();
+    browser.pause(1000);
+    browser.$('button.btn.btn-default.btn-sm.btn-primary').click();
+    browser.waitUntil(function () {
+      var windowHandles = browser.windowHandles();
+      return windowHandles.value.length === 2;
+    }, 60000, 'expected browser.windowHandles().length === 2');
+    browser.pause(1000);
+    browser.window(browser.windowHandles().value[1]);
+    console.log(browser.getUrl());
+  };
 
   this.closeAndHaltNotebook = function () {
     this.clickCellAllOutputClear();
@@ -64,21 +77,28 @@ var BeakerXPageObject = function () {
     browser.waitForEnabled('=Close and Halt');
     browser.click('=Close and Halt');
     browser.endAll();
-  }
+  };
 
   this.clickCellRunAll = function () {
     browser.click('=Cell');
     browser.waitForEnabled('=Run All');
     browser.click('=Run All')
-  }
+  };
 
   this.getCodeCellByIndex = function (index) {
     return $$('div.code_cell')[index];
-  }
+  };
 
   this.getDtContainerByIndex = function (index) {
     return this.getCodeCellByIndex(index).$('div.dtcontainer');
-  }
+  };
+
+  this.getSvgElementByIndex = function (index) {
+    var codeCell = this.getCodeCellByIndex(index);
+    codeCell.scroll();
+    codeCell.click();
+    return codeCell.$('#svgg');
+  };
 
   this.runCodeCellByIndex = function (index) {
     var codeCell = this.getCodeCellByIndex(index);
@@ -87,19 +107,19 @@ var BeakerXPageObject = function () {
     this.clickRunCell();
     this.kernelIdleIcon.waitForEnabled();
     return codeCell;
-  }
+  };
 
   this.runCellToGetDtContainer = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.dtcontainer');
-  }
+  };
 
   this.runCellToGetSvgElement = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('#svgg');
-  }
+  };
 
   this.runCellAndCheckOutputText = function(index, expectedText){
     var resultTest;
@@ -110,35 +130,35 @@ var BeakerXPageObject = function () {
       resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
-  }
+  };
 
   this.runCellToGetOutputTextElement = function(index){
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.output_subarea.output_text');
-  }
+  };
 
   this.plotLegendContainerIsEnabled = function(dtcontainer){
     var plotLegendContainer = dtcontainer.$('#plotLegendContainer');
     plotLegendContainer.waitForEnabled();
-  }
+  };
 
   this.runCellToGetWidgetElement = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.jupyter-widgets');
-  }
+  };
 
   this.runCellToGetEasyForm = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.beaker-easyform-container');
-  }
+  };
 
   this.runCellToGetTableElement = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.dataTables_scrollBody');
-  }
+  };
 
   this.checkCellOutputText = function(index, expectedText){
     var codeCell = this.getCodeCellByIndex(index);
@@ -151,20 +171,20 @@ var BeakerXPageObject = function () {
       resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
-  }
+  };
 
   this.getTableColumnLabel = function(tableIndex, columnIndex){
     var table = $$("div.dataTables_scrollHead") [tableIndex];
     var tableColumnLabels = table.$$("span.header-text");
     return tableColumnLabels[columnIndex];
-  }
+  };
 
   this.getTableCell = function(tableIndex, rowIndex, columnIndex){
     var table = $$("div.dataTables_scrollBody") [tableIndex];
     var tableRows = table.$$("tbody tr");
     var rowCells = tableRows[rowIndex].$$("td");
   return rowCells[columnIndex];
-  }
+  };
 
 };
 module.exports = BeakerXPageObject;

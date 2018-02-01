@@ -23,14 +23,6 @@ from pandas._libs.tslib import Timestamp
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
-def is_date(string):
-    try:
-        parser.parse(string)
-        return True
-    except Exception:
-        return False
-
-
 def unix_time(dt):
     if isinstance(dt, Timestamp):
         date = dt.to_pydatetime()

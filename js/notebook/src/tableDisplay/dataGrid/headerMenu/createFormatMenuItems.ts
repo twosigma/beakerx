@@ -16,17 +16,17 @@
 
 import MenuItem from "../../../shared/interfaces/menuItemInterface";
 import { TIME_UNIT_FORMATS, scopeData } from '../../consts';
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { getAllowedTypesByType } from "../dataTypes";
-import { IColumn } from "../interface/IColumn";
+import DataGridColumn from "../column/DataGridColumn";
 
-export function createFormatMenuItems(column: IColumn, dataGrid: BeakerxDataGrid) {
+export function createFormatMenuItems(column: DataGridColumn) {
+  const dataGrid = column.dataGrid;
   const types = getAllowedTypesByType(dataGrid.model.getColumnDataType(column));
   let items: MenuItem[] = [];
 
   types.forEach((obj) => {
     if (obj.type === 8) { //datetime
-      items = items.concat(createTimeSubitems(dataGrid));
+      items = items.concat(createTimeSubitems(column));
 
       return;
     }
@@ -39,7 +39,7 @@ export function createFormatMenuItems(column: IColumn, dataGrid: BeakerxDataGrid
     };
 
     if (obj.type === 4) { //double with precision
-      item.items = createPrecisionSubitems(dataGrid);
+      item.items = createPrecisionSubitems(column);
     } else {
       item.action = function(colIdx) {
         //@todo
@@ -51,9 +51,9 @@ export function createFormatMenuItems(column: IColumn, dataGrid: BeakerxDataGrid
   return items;
 }
 
-export function createPrecisionSubitems(dataGrid: BeakerxDataGrid): MenuItem[] {
+export function createPrecisionSubitems(column: DataGridColumn): MenuItem[] {
   const items: MenuItem[] = [];
-  const formetters = dataGrid.model.dataFormatter.getDoubleWithPrecissionFormatters(
+  const formetters = column.dataGrid.model.dataFormatter.getDoubleWithPrecissionFormatters(
     scopeData.allPrecissions
   );
 
@@ -74,7 +74,7 @@ export function createPrecisionSubitems(dataGrid: BeakerxDataGrid): MenuItem[] {
   return items;
 }
 
-export function createTimeSubitems(dataGrid: BeakerxDataGrid): MenuItem[] {
+export function createTimeSubitems(column: DataGridColumn): MenuItem[] {
   const items: MenuItem[] = [];
 
   Object.keys(TIME_UNIT_FORMATS).forEach((key) => {

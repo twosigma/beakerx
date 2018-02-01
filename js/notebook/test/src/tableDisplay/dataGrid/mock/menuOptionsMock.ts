@@ -14,17 +14,13 @@
  *  limitations under the License.
  */
 
-import { ITriggerOptions } from "../headerMenu/HeaderMenu";
-import { COLUMN_TYPES } from "../column/DataGridColumn";
+import { ITriggerOptions } from "@beakerx/tableDisplay/dataGrid/headerMenu/HeaderMenu";
 
-export interface IColumn {
-  index: number,
-  type: COLUMN_TYPES
-}
+const menuOptionsMock: ITriggerOptions = {
+  x: 0,
+  y: 0,
+  width: 20,
+  height: 20
+};
 
-export interface IColumnOptions {
-  index: number,
-  name: string,
-  type: COLUMN_TYPES,
-  menuOptions: ITriggerOptions
-}
+export default menuOptionsMock;

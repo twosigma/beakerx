@@ -17,9 +17,9 @@
 import { ALL_TYPES } from "../dataTypes";
 import { TextRenderer } from "@phosphor/datagrid";
 
-const LEFT: TextRenderer.HorizontalAlignment = 'left';
-const RIGHT: TextRenderer.HorizontalAlignment = 'right';
-const CENTER: TextRenderer.HorizontalAlignment = 'center';
+export const LEFT: TextRenderer.HorizontalAlignment = 'left';
+export const RIGHT: TextRenderer.HorizontalAlignment = 'right';
+export const CENTER: TextRenderer.HorizontalAlignment = 'center';
 
 export const DEFAULT_ALIGNMENT = LEFT;
 
@@ -29,8 +29,16 @@ export const ALIGNMENTS_BY_TYPE = {
   'double': RIGHT
 };
 
-export const getAlignmentByType = (type: number): TextRenderer.HorizontalAlignment => {
-  let alignment = ALIGNMENTS_BY_TYPE[ALL_TYPES[type]];
-
-  return alignment || DEFAULT_ALIGNMENT;
+export const ALIGNMENTS_BY_CHAR = {
+  'C': CENTER,
+  'R': RIGHT,
+  'L': LEFT
 };
+
+export const getAlignmentByType =
+  (type: number): TextRenderer.HorizontalAlignment =>
+    ALIGNMENTS_BY_TYPE[ALL_TYPES[type]] || DEFAULT_ALIGNMENT;
+
+export const getAlignmentByChar =
+  (char: string): TextRenderer.HorizontalAlignment =>
+    ALIGNMENTS_BY_CHAR[char] || DEFAULT_ALIGNMENT;

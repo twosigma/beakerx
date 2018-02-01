@@ -18,5 +18,7 @@ import { DataGrid } from "@phosphor/datagrid";
 
 export default interface IDataGridScopeOptions extends DataGrid.IOptions {
   element: HTMLElement
-  data: any
+  data: any,
+  widgetModel: any,
+  widgetView: any
 }

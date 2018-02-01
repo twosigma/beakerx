@@ -16,13 +16,13 @@
 
 import { DataGrid } from "@phosphor/datagrid";
 import { ITriggerOptions } from "./headerMenu/HeaderMenu";
-import { TableDataModel } from "./TableDataModel";
+import { BeakerxDataGridModel } from "./BeakerxDataGridModel";
 import { Widget } from "@phosphor/widgets";
 import { Signal } from '@phosphor/signaling';
 import { ICellData } from "./interface/ICell";
 import { CellRendererFactory } from "./cell/CellRendererFactory";
 import DataGridColumn, { COLUMN_TYPES } from "./column/DataGridColumn";
-import IDataModelOptions from "./interface/IDataModelOptions";
+import IDataModelState from "./interface/IDataModelState";
 
 interface IColumns {
   index: DataGridColumn[],
@@ -30,7 +30,7 @@ interface IColumns {
 }
 
 export class BeakerxDataGrid extends DataGrid {
-  model: TableDataModel;
+  model: BeakerxDataGridModel;
   columnHeaderSections: any;
   rowHeaderSections: any;
   columnSections: any;
@@ -40,7 +40,7 @@ export class BeakerxDataGrid extends DataGrid {
   columns: IColumns = { index: [], body: [] };
   headerCellHovered = new Signal<this, ICellData|null>(this);
 
-  constructor(options, modelOptions: IDataModelOptions) {
+  constructor(options: DataGrid.IOptions, modelOptions: IDataModelState) {
     super(options);
 
     //@todo this is hack to use private properties
@@ -85,8 +85,8 @@ export class BeakerxDataGrid extends DataGrid {
     return null;
   }
 
-  private addModel(modelOptions: IDataModelOptions) {
-    this.model = new TableDataModel(modelOptions);
+  private addModel(modelState: IDataModelState) {
+    this.model = new BeakerxDataGridModel(modelState);
   }
 
   private addColumns() {
@@ -95,7 +95,7 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   private addBodyColumns() {
-    this.model.columnNames.forEach((columnName, index) => {
+    this.model.columnNames.forEach((name, index) => {
       let menuOptions: ITriggerOptions = {
         x: this.getColumnOffset(index),
         y: 0,
@@ -105,6 +105,7 @@ export class BeakerxDataGrid extends DataGrid {
 
       let column = new DataGridColumn({
         index,
+        name,
         menuOptions,
         type: COLUMN_TYPES.body
       }, this);
@@ -120,6 +121,7 @@ export class BeakerxDataGrid extends DataGrid {
 
     let column = new DataGridColumn({
       index: 0,
+      name: 'index',
       menuOptions: { x: 0, y: 0, width: this.headerHeight, height: this.headerHeight },
       type: COLUMN_TYPES.index
     }, this);

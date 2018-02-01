@@ -23,9 +23,12 @@ import {
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import { scopeData, TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/consts';
 import { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import menuOptionsMock from "../mock/menuOptionsMock";
+import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 
 describe('createFormatMenuItems', () => {
   let dataGrid;
+  let column;
 
   before(() => {
     dataGrid = new BeakerxDataGrid({}, {
@@ -35,6 +38,12 @@ describe('createFormatMenuItems', () => {
       stringFormatForColumn: null,
       hasIndex: false
     });
+    column = new DataGridColumn({
+      index: 0,
+      type: COLUMN_TYPES.index,
+      name: 'index',
+      menuOptions: menuOptionsMock
+    }, dataGrid);
   });
 
   after(() => {
@@ -43,7 +52,7 @@ describe('createFormatMenuItems', () => {
 
   it('should create format menu items', () => {
     let expectedLength = scopeData.allIntTypes.length + Object.keys(TIME_UNIT_FORMATS).length - 1; // datetime is not duplicated
-    let formatMenuItems = createFormatMenuItems({ index: 0, type: COLUMN_TYPES.index}, dataGrid);
+    let formatMenuItems = createFormatMenuItems(column);
 
     expect(formatMenuItems).to.be.an.instanceof(Array);
     expect(formatMenuItems).to.have.length(expectedLength);
@@ -51,7 +60,7 @@ describe('createFormatMenuItems', () => {
 
   describe('createPrecisionSubitems', () => {
     it('should create precission menu items', () => {
-      let precissionMenuItems = createPrecisionSubitems(dataGrid);
+      let precissionMenuItems = createPrecisionSubitems(column);
 
       expect(precissionMenuItems).to.be.an.instanceof(Array);
       expect(precissionMenuItems).to.have.length(scopeData.allPrecissions.length);
@@ -60,7 +69,7 @@ describe('createFormatMenuItems', () => {
 
   describe('createTimeSubitems', () => {
     it('should create time menu items', () => {
-      let timeMenuItems = createTimeSubitems(dataGrid);
+      let timeMenuItems = createTimeSubitems(column);
 
       expect(timeMenuItems).to.be.an.instanceof(Array);
       expect(timeMenuItems).to.have.length(Object.keys(TIME_UNIT_FORMATS).length);

@@ -19,27 +19,27 @@ import { getDisplayType, ALL_TYPES } from './dataTypes';
 import { DataFormatter } from './DataFormatter';
 import { COLUMN_TYPES } from "./column/DataGridColumn";
 import { IColumn } from "./interface/IColumn";
-import IDataModelOptions from './interface/IDataModelOptions';
+import IDataModelState from './interface/IDataModelState';
 
-export class TableDataModel extends DataModel {
+export class BeakerxDataGridModel extends DataModel {
   columnNames: string[];
   dataFormatter: DataFormatter;
 
   static DEFAULT_INDEX_COLUMN_TYPE = ALL_TYPES[1]; // integer
 
   private _data: any;
-  private _options: IDataModelOptions;
+  private _state: IDataModelState;
   private _columnCount: number;
   private _rowCount: number;
 
-  constructor(options: IDataModelOptions) {
+  constructor(state: IDataModelState) {
     super();
 
-    this.columnNames = options.columnNames;
-    this.dataFormatter = new DataFormatter(options);
+    this.columnNames = state.columnNames;
+    this.dataFormatter = new DataFormatter(state);
 
-    this._options = options;
-    this._data = options.values;
+    this._state = state;
+    this._data = state.values;
     this._columnCount = this.columnNames.length || 0;
     this._rowCount = this._data.length;
   }
@@ -67,7 +67,7 @@ export class TableDataModel extends DataModel {
 
     return this.formatData(
       this._data[row][column],
-      this._options.types[column] || 'string',
+      this._state.types[column] || 'string',
       row,
       column
     );
@@ -77,8 +77,8 @@ export class TableDataModel extends DataModel {
     //@todo check if raw type no is required, keep only display type
     const displayType = getDisplayType(
       typeName,
-      this._options.stringFormatForType,
-      this._options.stringFormatForColumn[this.columnNames[column]]
+      this._state.stringFormatForType,
+      this._state.stringFormatForColumn[this.columnNames[column]]
     );
 
     return this.dataFormatter.getFormatFnByType(displayType)(data, row, column);
@@ -86,9 +86,16 @@ export class TableDataModel extends DataModel {
 
   getColumnDataType(column: IColumn) {
     if (column.type === COLUMN_TYPES.index) {
-      return TableDataModel.DEFAULT_INDEX_COLUMN_TYPE;
+      return BeakerxDataGridModel.DEFAULT_INDEX_COLUMN_TYPE;
     }
 
-    return this._options.types[column.index];
+    return this._state.types[column.index];
+  }
+
+  getAlignmentConfig(): { alignmentForColumn: {}, alignmentForType: {} } {
+    return {
+      alignmentForColumn: this._state.alignmentForColumn || {},
+      alignmentForType: this._state.alignmentForType || {},
+    }
   }
 }

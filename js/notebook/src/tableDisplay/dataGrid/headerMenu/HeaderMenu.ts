@@ -17,9 +17,10 @@
 import { CommandRegistry } from '@phosphor/commands';
 import { Widget } from '@phosphor/widgets';
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
-import Menu from '../../tableHeaderMenu/BkoMenu';
+import Menu from './BkoMenu';
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import MenuInterface from '../../../shared/interfaces/menuInterface';
+import DataGridColumn from "../column/DataGridColumn";
 
 export interface ITriggerOptions {
   x: number,
@@ -36,22 +37,25 @@ export default abstract class HeaderMenu implements MenuInterface {
   protected viewport: Widget;
   protected triggerNode: HTMLElement;
   protected dataGrid: BeakerxDataGrid;
+  protected column: DataGridColumn;
 
   private TRIGGER_CLASS_OPENED: string = 'opened';
 
   static DEFAULT_TRIGGER_HEIGHT: number = 20;
 
-  constructor(columnIndex: number, dataGrid: BeakerxDataGrid, triggerOptions: ITriggerOptions) {
+  constructor(column: DataGridColumn, triggerOptions: ITriggerOptions) {
     this.commands = new CommandRegistry();
     this.menu = new Menu({ commands: this.commands });
-    this.viewport = dataGrid.viewport;
-    this.columnIndex = columnIndex;
-    this.dataGrid = dataGrid;
+    this.viewport = column.dataGrid.viewport;
+    this.columnIndex = column.index;
+    this.dataGrid = column.dataGrid;
+    this.column = column;
 
     this.handleKeydownEvent = this.handleKeydownEvent.bind(this);
 
     this.addTrigger(triggerOptions);
     this.buildMenu();
+    this.attachTriggerToMenu();
   }
 
   protected abstract buildMenu(): void
@@ -67,6 +71,10 @@ export default abstract class HeaderMenu implements MenuInterface {
 
   hideTrigger() {
     this.triggerNode.style.visibility = 'hidden';
+  }
+
+  attachTriggerToMenu() {
+    this.menu.trigger = this.triggerNode;
   }
 
   open(submenuIndex?: number): void {
@@ -101,7 +109,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     for (let i = 0, ien = items.length; i < ien; i++) {
       let menuItem = items[i];
 
-      const subitems = (typeof menuItem.items == 'function') ? menuItem.items(this.columnIndex) : menuItem.items;
+      const subitems = (typeof menuItem.items == 'function') ? menuItem.items(this.column) : menuItem.items;
       const hasSubitems = subitems instanceof Array && subitems.length;
 
       menuItem.separator && menu.addItem({ type: 'separator' });
@@ -126,7 +134,7 @@ export default abstract class HeaderMenu implements MenuInterface {
           return menuItem.icon;
         }
 
-        if (typeof menuItem.isChecked == 'function' && menuItem.isChecked(this.columnIndex)) {
+        if (typeof menuItem.isChecked == 'function' && menuItem.isChecked(this.column)) {
           return 'fa fa-check';
         }
 
@@ -134,7 +142,7 @@ export default abstract class HeaderMenu implements MenuInterface {
       },
       execute: (): void => {
         if (menuItem.action && typeof menuItem.action == 'function') {
-          menuItem.action(this.columnIndex);
+          menuItem.action(this.column);
           menuItem.updateLayout && menu.update();
         }
       }
@@ -181,7 +189,12 @@ export default abstract class HeaderMenu implements MenuInterface {
     this.triggerNode.style.cursor = 'pointer';
     this.triggerNode.classList.add('bko-column-header-menu');
     this.triggerNode.classList.add('bko-menu');
-    this.triggerNode.addEventListener('mouseup', () => this.toggleMenu());
+    this.triggerNode.addEventListener('mousedown', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.toggleMenu();
+    });
   }
 
   protected getMenuPosition(trigger: any) {

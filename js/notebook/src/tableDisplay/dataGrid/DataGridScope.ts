@@ -22,13 +22,16 @@ import IDataGridScopeOptions from "./interface/IDataGridScopeOptions";
 export class DataGridScope {
   private dataGrid: BeakerxDataGrid;
   private element: HTMLElement;
+  private tableDisplayModel: any;
+  private tableDisplayView: any;
 
   constructor(options: IDataGridScopeOptions) {
     this.element = options.element;
+    this.tableDisplayModel = options.widgetModel;
+    this.tableDisplayView = options.widgetView;
     this.dataGrid = new BeakerxDataGrid(
       {
-        style: silverStripeStyle,
-        height: 600
+        style: silverStripeStyle
       },
       options.data
     );

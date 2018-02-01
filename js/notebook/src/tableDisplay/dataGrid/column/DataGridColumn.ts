@@ -19,7 +19,7 @@ import IndexMenu from "../headerMenu/IndexMenu";
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
-import { getAlignmentByType } from "./columnAlignment";
+import {ALIGNMENTS_BY_CHAR, getAlignmentByChar, getAlignmentByType} from "./columnAlignment";
 import { TextRenderer} from "@phosphor/datagrid";
 import { ALL_TYPES, getTypeByName } from "../dataTypes";
 
@@ -35,20 +35,23 @@ interface IColumnState {
 
 export default class DataGridColumn {
   index: number;
+  name: string;
   type: COLUMN_TYPES;
   dataType: ALL_TYPES;
   menu: ColumnMenu|IndexMenu;
   dataGrid: BeakerxDataGrid;
-  state: IColumnState;
+
+  private state: IColumnState;
 
   constructor(options: IColumnOptions, dataGrid: BeakerxDataGrid) {
     this.index = options.index;
+    this.name = options.name;
     this.type = options.type;
     this.dataGrid = dataGrid;
     this.dataType = this.getDataType();
     this.state = {
       triggerShown: false,
-      horizontalAlignment: getAlignmentByType(this.dataType)
+      horizontalAlignment: this.getInitialAlignment()
     };
 
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
@@ -56,14 +59,23 @@ export default class DataGridColumn {
     this.connectToHeaderCellHovered();
   }
 
+  setState(state) {
+    this.state = {
+      ...this.state,
+      ...state,
+    };
+
+    this.dataGrid.repaint();
+  }
+
   createMenu(menuOptions): void {
     if (this.type === COLUMN_TYPES.index) {
-      this.menu = new IndexMenu(this.index, this.dataGrid, menuOptions);
+      this.menu = new IndexMenu(this, menuOptions);
 
       return;
     }
 
-    this.menu = new ColumnMenu(this.index, this.dataGrid, menuOptions);
+    this.menu = new ColumnMenu(this, menuOptions);
   }
 
   destroy() {
@@ -94,6 +106,30 @@ export default class DataGridColumn {
     return getTypeByName(this.dataGrid.model.getColumnDataType({
       index: this.index, type: this.type
     }));
+  }
+
+  getInitialAlignment() {
+    let config = this.dataGrid.model.getAlignmentConfig();
+    let alignmentForType = config.alignmentForType[ALL_TYPES[this.dataType]];
+    let alignmentForColumn = config.alignmentForColumn[this.name];
+
+    if (alignmentForType) {
+      return getAlignmentByChar(alignmentForType);
+    }
+
+    if (alignmentForColumn) {
+      return getAlignmentByChar(alignmentForColumn);
+    }
+
+    return getAlignmentByType(this.dataType);
+  }
+
+  getAlignment() {
+    return this.state.horizontalAlignment;
+  }
+
+  setAlignment(horizontalAlignment: TextRenderer.HorizontalAlignment) {
+    this.setState({ horizontalAlignment });
   }
 
 }

@@ -17,9 +17,12 @@
 import { expect } from 'chai';
 import { createIndexMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createIndexMenuItems';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import DataGridColumn, {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import menuOptionsMock from "../mock/menuOptionsMock";
 
 describe('createIndexMenuItems', () => {
   let dataGrid;
+  let column;
 
   before(() => {
     dataGrid = new BeakerxDataGrid({}, {
@@ -29,6 +32,12 @@ describe('createIndexMenuItems', () => {
       stringFormatForColumn: null,
       hasIndex: false
     });
+    column = new DataGridColumn({
+      index: 0,
+      type: COLUMN_TYPES.index,
+      name: 'index',
+      menuOptions: menuOptionsMock
+    }, dataGrid);
   });
 
   after(() => {
@@ -36,10 +45,10 @@ describe('createIndexMenuItems', () => {
   });
 
   it('should create index menu items', () => {
-    let formatMenuItems = createIndexMenuItems({ index: 0, region: 'row-header'}, dataGrid);
+    let indexMenuItems = createIndexMenuItems(column);
 
-    expect(formatMenuItems).to.be.an.instanceof(Array);
-    expect(formatMenuItems).to.have.length(12);
+    expect(indexMenuItems).to.be.an.instanceof(Array);
+    expect(indexMenuItems).to.have.length(12);
   });
 
 });

@@ -19,7 +19,7 @@ import { expect } from 'chai';
 import { Widget } from "@phosphor/widgets";
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
-import { TableDataModel } from "@beakerx/tableDisplay/dataGrid/TableDataModel";
+import { BeakerxDataGridModel } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGridModel";
 
 describe('BeakerxDataGrid', () => {
   let dataGrid;
@@ -50,8 +50,8 @@ describe('BeakerxDataGrid', () => {
     expect(dataGrid.columns.body[0]).to.be.an.instanceof(DataGridColumn);
   });
 
-  it('should have the model property of type TableDataModel', () => {
-    expect(dataGrid.model).to.be.an.instanceof(TableDataModel);
+  it('should have the model property of type BeakerxDataGridModel', () => {
+    expect(dataGrid.model).to.be.an.instanceof(BeakerxDataGridModel);
   });
 
   it('should have the viewport set', () => {

@@ -29,10 +29,10 @@ export class CellRendererFactory {
     let self = this;
 
     return new TextRenderer({
-      horizontalAlignment(config: CellRenderer.ICellConfig) {
+      horizontalAlignment: (config: CellRenderer.ICellConfig) => {
         let column = self.dataGrid.getColumn(config.column, config.region);
 
-        return column ? column.state.horizontalAlignment : DEFAULT_ALIGNMENT;
+        return column ? column.getAlignment() : DEFAULT_ALIGNMENT;
       }
     });
   }

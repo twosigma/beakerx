@@ -22,10 +22,13 @@ import { createIndexMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/
 import HeaderMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/HeaderMenu';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import menuOptionsMock from "../mock/menuOptionsMock";
+import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 
 describe('IndexMenu', () => {
   let dataGrid;
   let indexMenu;
+  let column;
 
   before(() => {
     dataGrid = new BeakerxDataGrid({}, {
@@ -35,7 +38,13 @@ describe('IndexMenu', () => {
       stringFormatForColumn: null,
       hasIndex: false
     });
-    indexMenu = new IndexMenu(0, dataGrid, { x: 0, y: 0, width: 20, height: 20 });
+    column = new DataGridColumn({
+      index: 0,
+      type: COLUMN_TYPES.index,
+      name: 'index',
+      menuOptions: menuOptionsMock
+    }, dataGrid);
+    indexMenu = new IndexMenu(column, menuOptionsMock);
   });
 
   after(() => {
@@ -62,7 +71,7 @@ describe('IndexMenu', () => {
   });
 
   it('should create index menu items', () => {
-    let items = createIndexMenuItems({ index: 0, type: COLUMN_TYPES.index }, dataGrid);
+    let items = createIndexMenuItems(column);
 
     expect(indexMenu['menu'].items).to.have.length.gte(items.length);
   });

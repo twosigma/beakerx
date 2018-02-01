@@ -15,11 +15,11 @@
  */
 
 import { expect } from 'chai';
-import { TableDataModel } from '@beakerx/tableDisplay/dataGrid/TableDataModel';
+import { BeakerxDataGridModel } from '@beakerx/tableDisplay/dataGrid/BeakerxDataGridModel';
 import { DataModel } from "@phosphor/datagrid";
 
 describe('dataGridScope', () => {
-  const tableDataModel = new TableDataModel({
+  const tableDataModel = new BeakerxDataGridModel({
     values: [[1]],
     columnNames: ['first column'],
     hasIndex: false,

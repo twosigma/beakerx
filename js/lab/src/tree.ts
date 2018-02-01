@@ -15,43 +15,45 @@
  */
 
 import { JupyterLabPlugin, JupyterLab, ILayoutRestorer } from "@jupyterlab/application";
-import { ICommandPalette, InstanceTracker } from "@jupyterlab/apputils";
-import { JSONExt } from "@phosphor/coreutils";
-import BeakerXTreeWidget from "./tree/TreeWidget";
+import { ICommandPalette/*, InstanceTracker*/ } from "@jupyterlab/apputils";
+// import { JSONExt } from "@phosphor/coreutils";
+import * as bx from "./../lib/tree";
+//import BeakerXTreeWidget from "../../notebook/src/tree/TreeWidget";
 
 function activate(app: JupyterLab, palette: ICommandPalette, restorer: ILayoutRestorer) {
-  let widget: BeakerXTreeWidget;
+  // let widget: BeakerXTreeWidget;
 
   const command: string = 'beakerx:tree';
 
   app.commands.addCommand(command, {
     label: 'BeakerX Options',
     execute: () => {
-      if (!widget) {
-        widget = new BeakerXTreeWidget();
-        widget.update();
-      }
-      if (!tracker.has(widget)) {
-        tracker.add(widget);
-      }
-
-      if (!widget.isAttached) {
-        app.shell.addToMainArea(widget);
-      } else {
-        widget.update();
-      }
-
-      app.shell.activateById(widget.id);
+      // if (!widget) {
+      //   widget = new BeakerXTreeWidget();
+      //   widget.update();
+      // }
+      // if (!tracker.has(widget)) {
+      //   tracker.add(widget);
+      // }
+      //
+      // if (!widget.isAttached) {
+      //   app.shell.addToMainArea(widget);
+      // } else {
+      //   widget.update();
+      // }
+      //
+      // app.shell.activateById(widget.id);
+      console.log(bx);
     }
   });
 
   palette.addItem({ command, category: 'BeakerX' });
-  let tracker = new InstanceTracker<BeakerXTreeWidget>({ namespace: 'beakerx' });
-  restorer.restore(tracker, {
-    command,
-    args: () => JSONExt.emptyObject,
-    name: () => 'beakerx-tree'
-  });
+  // let tracker = new InstanceTracker<BeakerXTreeWidget>({ namespace: 'beakerx' });
+  // restorer.restore(tracker, {
+  //   command,
+  //   args: () => JSONExt.emptyObject,
+  //   name: () => 'beakerx-tree'
+  // });
 }
 
 const tree: JupyterLabPlugin<void> = {

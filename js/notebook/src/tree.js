@@ -20,39 +20,35 @@ define([
   require
 ) {
   "use strict";
-  var $ = require('jquery');
-  var Widget = require('@phosphor/widgets').Widget;
 
-  // var BeakerXTreeWidget = require('BeakerXTreeWidget').default;
+  function load() {
+    var $ = require('jquery');
+    var Widget = require('@phosphor/widgets').Widget;
+    var BeakerXTreeWidget = require('./tree/TreeWidget').default;
 
-  var load_ipython_extension = function() {
-    // var bxWidget = new BeakerXTreeWidget();
-    var bxWidget = new Widget();
-    bxWidget.id = 'test';
+    var bxWidget = new BeakerXTreeWidget();
+
     Widget.attach(bxWidget, $('.tab-content').get(0));
-
     $('#tabs').append(
       $('<li>').append(
         $('<a>', {
           id: 'beakerx_tab',
-          href: '#beakerx',
+          href: '#beakerx-tree',
           'data-toggle': 'tab',
           text: 'BeakerX'
-        }).click(function(e) {
-          if (window.location.hash === '#beakerx') {
+        }).on('click', function (e) {
+          if (window.location.hash === '#beakerx-tree') {
             return;
           }
 
-          window.history.pushState(null, null, '#beakerx');
+          window.history.pushState(null, '', '#beakerx-tree');
           bxWidget.update();
-          // version.load();
-          // settings.load();
         })
       )
     );
-  };
+  }
 
   return {
-    load_ipython_extension : load_ipython_extension
-  };
+    load_ipython_extension: load,
+  }
 });

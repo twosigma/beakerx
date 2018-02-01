@@ -184,7 +184,7 @@ module.exports = [
     plugins: plugins
   },
   {
-    // tree
+    // tree - notebook
     entry: './src/tree.js',
     output: {
       filename: 'tree.js',
@@ -199,11 +199,31 @@ module.exports = [
       'base/js/namespace',
       'base/js/utils',
       'require',
-      '@phosphor/widgets'
     ],
     watchOptions: {
       ignored: /node_modules/
     },
     plugins: plugins
-  }
+  },
+  {// BeakerXTree JupyterLab bundle
+      entry: './src/tree.js',
+      output: {
+          filename: 'tree.js',
+          path: path.resolve(__dirname, '../lab/lib/'),
+          libraryTarget: 'amd'
+      },
+      module: {
+          rules: rules
+      },
+      resolve: resolve,
+      externals: externals.concat([
+          '@phosphor/widgets',
+          '@phosphor/commands',
+          '@phosphor/disposable',
+          '@phosphor/messaging',
+          '@jupyter-widgets/jupyterlab-manager',
+          '@jupyterlab',
+      ]),
+      plugins: plugins
+  },
 ];

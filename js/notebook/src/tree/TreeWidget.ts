@@ -36,6 +36,7 @@ export default class BeakerXTreeWidget extends Panel {
     super();
 
     this.id = 'beakerx-tree';
+    this.addClass('tab-pane');
     this.setupTitle();
     this.createWidgetContent();
   }

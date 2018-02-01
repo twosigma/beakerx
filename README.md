@@ -14,7 +14,7 @@
     limitations under the License.
 -->
 
-<img width="900" alt="banner" src="https://user-images.githubusercontent.com/963093/30990429-3319ede6-a46f-11e7-9540-41da66ec5275.png">
+<img width="900" alt="banner" src="https://user-images.githubusercontent.com/963093/34594978-31d70312-f1a2-11e7-861c-705a9e932c3c.png">
 
 # BeakerX: Beaker extensions for Jupyter
 
@@ -24,15 +24,14 @@
 [![NPM version](https://badge.fury.io/js/beakerx.svg)](http://badge.fury.io/js/beakerx)
 [![PyPI Version](https://badge.fury.io/py/beakerx.svg)](http://badge.fury.io/py/beakerx)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/beakerx/badges/version.svg)](https://anaconda.org/conda-forge/beakerx)
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.9.1?filepath=StartHere.ipynb)
-[![Docker Hub](https://images.microbadger.com/badges/version/beakerx/beakerx.svg)](https://hub.docker.com/r/beakerx/beakerx/)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/twosigma/beakerx/0.12.0?filepath=StartHere.ipynb)
 
 BeakerX is a collection of JVM kernels and interactive widgets for
 plotting, tables, autotranslation, and other extensions to Jupyter
 Notebook.  BeakerX is in beta and under active development.
 
 The [documentation](https://github.com/twosigma/beakerx/blob/master/StartHere.ipynb) consists of tutorial notebooks on GitHub.
-You can try it in the cloud for free with [Binder](http://mybinder.org/repo/twosigma/beakerx).
+You can try it in the cloud for free with [Binder](https://mybinder.org/v2/gh/twosigma/beakerx/0.12.0?filepath=StartHere.ipynb).
 
 BeakerX is the successor to the [Beaker Notebook (source code
 archive)](https://github.com/twosigma/beaker-notebook-archive).  It
@@ -58,17 +57,17 @@ conda create -y -n beakerx 'python>=3' nodejs pandas openjdk maven
 source activate beakerx
 conda install -y -c conda-forge ipywidgets
 (cd beakerx; pip install -e . --verbose)
-beakerx-install
+beakerx install
 ```
 
 ### Build and Install for Lab
 
 ```
-conda create -y -n labx 'python>=3' nodejs pandas openjdk maven
+conda create -y -n labx 'python>=3' nodejs pandas openjdk maven pytest
 source activate labx
 conda install -y -c conda-forge jupyterlab
 (cd beakerx; pip install -e . --verbose)
-beakerx-install
+beakerx install
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
 (cd js/lab; jupyter labextension install .)
 ```

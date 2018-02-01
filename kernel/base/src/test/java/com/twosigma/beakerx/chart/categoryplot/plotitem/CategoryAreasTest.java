@@ -60,7 +60,7 @@ public class CategoryAreasTest {
   @Test
   public void setBaseWithIntegerListParam_hasBasesIsNotEmpty() {
     //when
-    categoryArea.setBase(Arrays.asList(array1));
+    categoryArea.setBase(Arrays.asList((Object[]) array1));
     //then
     Assertions.assertThat(categoryArea.getBases()).isNotEmpty();
   }

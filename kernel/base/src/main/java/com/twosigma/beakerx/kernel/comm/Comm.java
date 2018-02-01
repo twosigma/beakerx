@@ -33,6 +33,7 @@ import java.util.List;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
+import static java.util.Collections.EMPTY_LIST;
 
 public class Comm {
 
@@ -128,7 +129,11 @@ public class Comm {
   }
 
   public void open() {
-    doOpen(getParentMessage());
+    doOpen(getParentMessage(), Buffer.EMPTY);
+  }
+
+  public void open(Comm.Buffer buffer) {
+    doOpen(getParentMessage(), buffer);
   }
 
   public void open(Message parentMessage) {
@@ -136,7 +141,7 @@ public class Comm {
     open();
   }
 
-  private void doOpen(Message parentMessage) {
+  private void doOpen(Message parentMessage, Buffer buffer) {
     Message message = new Message();
     message.setHeader(new Header(COMM_OPEN, parentMessage != null ? parentMessage.getHeader().getSession() : null));
     if (parentMessage != null) {
@@ -149,6 +154,10 @@ public class Comm {
     HashMap<String, Serializable> state = new HashMap<>();
     state.put(STATE, data);
     state.put(METHOD, (Serializable) data.get(METHOD));
+    if (!buffer.isEmpty()) {
+      state.put(BUFFER_PATHS, buffer.getBufferPaths());
+      message.setBuffers(buffer.getBuffers());
+    }
     map.put(DATA, state);
     map.put(METADATA, metadata);
 
@@ -184,10 +193,18 @@ public class Comm {
   }
 
   public void send() {
-    send(COMM_MSG);
+    send(COMM_MSG, Buffer.EMPTY);
+  }
+
+  public void send(Comm.Buffer buffer) {
+    send(COMM_MSG, buffer);
   }
 
   public void send(JupyterMessages type) {
+    send(type, Buffer.EMPTY);
+  }
+
+  public void send(JupyterMessages type, Comm.Buffer buffer) {
     Message parentMessage = getParentMessage();// can be null
     Message message = new Message();
     message.setHeader(new Header(type, parentMessage != null ? parentMessage.getHeader().getSession() : null));
@@ -204,7 +221,20 @@ public class Comm {
     map.put(METADATA, metadata);
     message.setContent(map);
     message.setMetadata(buildMetadata());
+    if (!buffer.isEmpty()) {
+      message.setBuffers(buffer.getBuffers());
+    }
     kernel.publish(message);
+  }
+
+  public void sendUpdate(Comm.Buffer buffer) {
+    HashMap<String, Serializable> content = new HashMap<>();
+    content.put(METHOD, UPDATE);
+    HashMap<Object, Object> state = new HashMap<>();
+    content.put(STATE, state);
+    content.put(BUFFER_PATHS, buffer.getBufferPaths());
+    this.setData(content);
+    this.send(buffer);
   }
 
   public void sendUpdate(final String propertyName, final Object value) {
@@ -217,7 +247,6 @@ public class Comm {
     this.setData(content);
     this.send();
   }
-
 
   public void handleMsg(Message parentMessage) {
     for (Handler<Message> handler : this.msgCallbackList) {
@@ -245,5 +274,29 @@ public class Comm {
 
   interface GetParentMessageStrategy {
     Message getParentMessage();
+  }
+
+  public static class Buffer {
+    public final static Buffer EMPTY = new Buffer(EMPTY_LIST, new ArrayList<>());
+
+    private List<byte[]> buffers;
+    private ArrayList<List<String>> bufferPaths;
+
+    public Buffer(List<byte[]> buffers, ArrayList<List<String>> bufferPaths) {
+      this.buffers = buffers;
+      this.bufferPaths = bufferPaths;
+    }
+
+    public List<byte[]> getBuffers() {
+      return buffers;
+    }
+
+    public ArrayList<List<String>> getBufferPaths() {
+      return bufferPaths;
+    }
+
+    public boolean isEmpty() {
+      return buffers.isEmpty();
+    }
   }
 }

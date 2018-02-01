@@ -16,7 +16,6 @@
 
 package com.twosigma.beakerx.jvm.threads;
 
-import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
@@ -54,7 +53,7 @@ public class BeakerStdOutErrHandlerTest {
     originErrField = BeakerStdOutErrHandler.class.getDeclaredField("orig_err");
     originErrField.setAccessible(true);
     handler = new BeakerStdOutErrHandler();
-    seo = new SimpleEvaluationObject("code", new ExecuteCodeCallbackTest());
+    seo = new SimpleEvaluationObject("code");
   }
 
   @Before
@@ -123,30 +122,30 @@ public class BeakerStdOutErrHandlerTest {
     BeakerOutputHandler stdOut = seo.getStdOutputHandler();
     BeakerOutputHandler stdErr = seo.getStdErrorHandler();
     //when
-    BeakerStdOutErrHandler.setDefaultOutputHandler(stdOut,  stdErr);
+    BeakerStdOutErrHandler.setDefaultOutputHandler(stdOut, stdErr);
     //then
     Assertions.assertThat(getDefOut(getInstance(handler))).isEqualTo(stdOut);
     Assertions.assertThat(getDefErr(getInstance(handler))).isEqualTo(stdErr);
   }
 
   private BeakerStdOutErrHandler getInstance(BeakerStdOutErrHandler handler) throws Exception {
-    return (BeakerStdOutErrHandler)instanceField.get(handler);
+    return (BeakerStdOutErrHandler) instanceField.get(handler);
   }
 
   private Map<Long, Object> getThrHandlers(BeakerStdOutErrHandler handler) throws Exception {
-    return (Map<Long, Object>)thrHandlersField.get(handler);
+    return (Map<Long, Object>) thrHandlersField.get(handler);
   }
 
   private BeakerOutputHandler getDefOut(BeakerStdOutErrHandler handler) throws Exception {
-    return (BeakerOutputHandler)defOutField.get(handler);
+    return (BeakerOutputHandler) defOutField.get(handler);
   }
 
   private BeakerOutputHandler getDefErr(BeakerStdOutErrHandler handler) throws Exception {
-    return (BeakerOutputHandler)defErrField.get(handler);
+    return (BeakerOutputHandler) defErrField.get(handler);
   }
 
   private PrintStream getOriginOut(BeakerStdOutErrHandler handler) throws Exception {
-    return (PrintStream)originOutField.get(handler);
+    return (PrintStream) originOutField.get(handler);
   }
 
   private PrintStream getOriginErr(BeakerStdOutErrHandler handler) throws Exception {

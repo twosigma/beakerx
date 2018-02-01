@@ -169,30 +169,39 @@ public class MessageCreator {
     List<MessageHolder> ret = new ArrayList<>();
     if (isConsoleOutputMessage(seo)) {
       ret.addAll(createConsoleResult(seo, message));
-    } else if (isSupportedStatus(seo.getStatus())) {
-      ret.addAll(createResultForSupportedStatus(seo, message));
+    } else if (isError(seo.getStatus())) {
+      ret.addAll(createError(seo, message));
+    } else if (isFinish(seo.getStatus()) && seo.isShowResult()) {
+      ret.addAll(createFinish(seo, message));
     } else {
       logger.debug("Unhandled status of SimpleEvaluationObject : " + seo.getStatus());
     }
     return ret;
   }
 
-  private static List<MessageHolder> createResultForSupportedStatus(SimpleEvaluationObject seo, Message message) {
+  private static List<MessageHolder> createFinish(SimpleEvaluationObject seo, Message message) {
     List<MessageHolder> ret = new ArrayList<>();
-    if (EvaluationStatus.FINISHED == seo.getStatus() && showResult(seo)) {
-      MessageHolder mh = createFinishResult(seo, message);
-      if (mh != null) {
-        ret.add(mh);
-      }
-    } else if (EvaluationStatus.ERROR == seo.getStatus()) {
-      ret.add(createErrorResult(seo, message));
+    MessageHolder mh = createFinishResult(seo, message);
+    if (mh != null) {
+      ret.add(mh);
     }
     ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
     return ret;
   }
 
-  private static boolean isSupportedStatus(EvaluationStatus status) {
-    return EvaluationStatus.FINISHED == status || EvaluationStatus.ERROR == status;
+  private static boolean isFinish(EvaluationStatus status) {
+    return EvaluationStatus.FINISHED == status;
+  }
+
+  private static List<MessageHolder> createError(SimpleEvaluationObject seo, Message message) {
+    List<MessageHolder> ret = new ArrayList<>();
+    ret.add(createErrorResult(seo, message));
+    ret.add(new MessageHolder(SocketEnum.SHELL_SOCKET, buildReply(message, seo)));
+    return ret;
+  }
+
+  private static boolean isError(EvaluationStatus status) {
+    return EvaluationStatus.ERROR == status;
   }
 
   private static boolean isConsoleOutputMessage(SimpleEvaluationObject seo) {

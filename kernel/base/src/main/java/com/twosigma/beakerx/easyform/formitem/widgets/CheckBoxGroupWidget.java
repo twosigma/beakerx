@@ -26,6 +26,7 @@ import com.twosigma.beakerx.widgets.box.VBox;
 import com.twosigma.beakerx.widgets.strings.Label;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,6 +58,17 @@ public class CheckBoxGroupWidget extends EasyFormComponent<Box> {
   }
 
   @Override
+  public List<String> formatValue(final Object value) {
+    List<String> result = new ArrayList<>();
+    if (value instanceof Object[]) {
+      result = Arrays.stream((Object[]) value).map(i -> (String) i).collect(Collectors.toList());
+    } else if (value instanceof List) {
+      result = (List<String>) value;
+    }
+    return result;
+  }
+
+  @Override
   public String getLabel() {
     return this.label.getValue();
   }
@@ -75,6 +87,14 @@ public class CheckBoxGroupWidget extends EasyFormComponent<Box> {
     return this.checkboxes.stream().map(EasyFormComponent::getWidget).filter(BoolWidget::getValue).map(ValueWidget::getDescription).collect(Collectors.toList());
   }
 
+  @Override
+  public void setValue(Object value) {
+    List<String> descList = (ArrayList<String>) value;
+    checkboxes.stream()
+            .map(c -> c.getWidget())
+            .forEach(w -> w.setValue(descList.contains(w.getDescription())));
+  }
+
   public void setValues(Collection<String> values) {
     values.forEach(item -> {
       CheckBoxWidget checkbox = new CheckBoxWidget(item);
@@ -87,6 +107,11 @@ public class CheckBoxGroupWidget extends EasyFormComponent<Box> {
     List<Widget> comms = checkboxes.stream().map(EasyFormComponent::getWidget).collect(Collectors.toList());
     Box rightSide = (getHorizontal()) ? new HBox(comms) : new VBox(comms);
     this.widget = new HBox(asList(label, rightSide));
+  }
+
+  @Override
+  protected boolean checkValue(Object value) {
+    return value instanceof Object[] || value instanceof List;
   }
 
 }

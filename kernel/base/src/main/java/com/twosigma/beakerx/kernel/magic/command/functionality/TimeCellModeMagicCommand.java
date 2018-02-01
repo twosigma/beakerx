@@ -37,7 +37,7 @@ public class TimeCellModeMagicCommand extends TimeMagicCommand {
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     Message message = param.getCode().getMessage();
     int executionCount = param.getExecutionCount();
-    return time(param.getCommandCodeBlock(), message, executionCount);
+    return time(param.getCommandCodeBlock(), message, executionCount,param.isShowResult());
   }
 
 }

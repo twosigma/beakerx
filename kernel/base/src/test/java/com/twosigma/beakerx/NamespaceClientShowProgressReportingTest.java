@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx;
 
-import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
@@ -47,7 +46,7 @@ public class NamespaceClientShowProgressReportingTest {
   @Test
   public void updateProgressReporting() throws Exception {
     //given
-    InternalVariable.setValue(new SimpleEvaluationObject("code", new ExecuteCodeCallbackTest()));
+    InternalVariable.setValue(new SimpleEvaluationObject("code"));
     //when
     namespaceClient.showProgressUpdate("msg1", 20);
     namespaceClient.showProgressUpdate("msg2", 40);

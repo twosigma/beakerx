@@ -88,9 +88,7 @@ public class CompiledCodeRunner {
   }
 
   private static SimpleEvaluationObject initOutput(Message message) {
-    final SimpleEvaluationObject seo = new SimpleEvaluationObject("", (seoResult) -> {
-      //nothing to do
-    });
+    final SimpleEvaluationObject seo = new SimpleEvaluationObject("");
     seo.setJupyterMessage(message);
     seo.setOutputHandler();
     seo.addObserver(KernelManager.get().getExecutionResultSender());

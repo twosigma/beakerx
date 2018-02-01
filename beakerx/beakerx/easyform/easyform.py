@@ -49,6 +49,8 @@ class EasyForm(BeakerxBox):
             description=self.getDescription(args, kwargs))
         textarea.cols = getValue(kwargs, 'width', -1)
         textarea.rows = getValue(kwargs, 'height', -1)
+        textarea.value = getValue(kwargs, 'value', "")
+        textarea.placeholder = getValue(kwargs, 'placeholder', "")
         self.children += (textarea,)
         self.components[textarea.description] = textarea
         return textarea
@@ -78,7 +80,7 @@ class EasyForm(BeakerxBox):
             list = SelectMultipleSingle(
                 description=self.getDescription(args, kwargs))
         list.options = self.getOptions(args, kwargs)
-        list.size = getValue(kwargs, 'rows', 2)
+        list.size = getValue(kwargs, 'rows', len(list.options))
 
         self.children += (list,)
         self.components[list.description] = list
@@ -101,6 +103,7 @@ class EasyForm(BeakerxBox):
 
     def addCheckBox(self, *args, **kwargs):
         checkbox = BeakerxCheckbox(description=self.getDescription(args, kwargs))
+        checkbox.value = getValue(kwargs, 'value', False)
         self.children += (checkbox,)
         self.components[checkbox.description] = checkbox
         return checkbox
@@ -155,7 +158,7 @@ class EasyForm(BeakerxBox):
             return ""
 
     def put(self, key, value):
-        self.components[key].value = value
+        self.components[key].set_value(value)
 
     @staticmethod
     def getDescription(args, kwargs):

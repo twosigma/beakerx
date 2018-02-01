@@ -15,16 +15,12 @@
  */
 package com.twosigma.beakerx;
 
-import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
-import static java.util.Collections.unmodifiableList;
-
 import com.twosigma.beakerx.autocomplete.AutocompleteResult;
 import com.twosigma.beakerx.evaluator.Evaluator;
 import com.twosigma.beakerx.evaluator.EvaluatorManager;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beakerx.jvm.object.SimpleEvaluationObjectWithTime;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
 import com.twosigma.beakerx.kernel.EvaluatorParameters;
@@ -40,6 +36,7 @@ import com.twosigma.beakerx.kernel.magic.command.MavenJarResolver;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddImportMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.AddStaticImportMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.BashMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.ClassPathAddMvnCellMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddJarMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddMvnMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathAddRepoMagicCommand;
@@ -47,8 +44,8 @@ import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathRemoveMa
 import com.twosigma.beakerx.kernel.magic.command.functionality.ClasspathShowMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlAliasMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.HtmlMagicCommand;
-import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.JSMagicCommand;
+import com.twosigma.beakerx.kernel.magic.command.functionality.JavaScriptMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LoadMagicMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.LsMagicCommand;
 import com.twosigma.beakerx.kernel.magic.command.functionality.TimeCellModeMagicCommand;
@@ -60,6 +57,8 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.kernel.threads.ExecutionResultSender;
 import com.twosigma.beakerx.message.Message;
+import org.apache.commons.io.FileUtils;
+import org.assertj.core.util.Lists;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,13 +70,15 @@ import java.util.Map;
 import java.util.Observer;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.assertj.core.util.Lists;
+import static com.twosigma.beakerx.kernel.magic.command.ClasspathAddMvnDepsMagicCommandTest.TEST_MVN_CACHE;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.synchronizedList;
 
 public class KernelTest implements KernelFunctionality {
 
-  private List<Message> publishedMessages = new ArrayList<>();
-  private List<Message> sentMessages = new ArrayList<>();
+  private List<Message> publishedMessages = synchronizedList(new ArrayList<>());
+  private List<Message> sentMessages = synchronizedList(new ArrayList<>());
   private String id;
   private Map<String, Comm> commMap = new HashMap<>();
   private ExecutionResultSender executionResultSender = new ExecutionResultSender(this);
@@ -130,6 +131,8 @@ public class KernelTest implements KernelFunctionality {
             new MagicCommandType(ClasspathAddJarMagicCommand.CLASSPATH_ADD_JAR, "<jar path>", new ClasspathAddJarMagicCommand(this)),
             new MagicCommandType(ClasspathAddMvnMagicCommand.CLASSPATH_ADD_MVN, "<group name version>",
                     new ClasspathAddMvnMagicCommand(mavenResolverParam, this)),
+            new MagicCommandType(ClassPathAddMvnCellMagicCommand.CLASSPATH_ADD_MVN_CELL, "<group name version>",
+                    new ClassPathAddMvnCellMagicCommand(mavenResolverParam, this)),
             new MagicCommandType(ClasspathRemoveMagicCommand.CLASSPATH_REMOVE, "<jar path>", new ClasspathRemoveMagicCommand(this)),
             new MagicCommandType(ClasspathShowMagicCommand.CLASSPATH_SHOW, "", new ClasspathShowMagicCommand(this)),
             new MagicCommandType(AddStaticImportMagicCommand.ADD_STATIC_IMPORT, "<classpath>", new AddStaticImportMagicCommand(this)),
@@ -276,19 +279,23 @@ public class KernelTest implements KernelFunctionality {
   }
 
   public List<Message> getPublishedMessages() {
-    return unmodifiableList(publishedMessages);
+    return copy(this.publishedMessages);
   }
 
   public List<Message> getSentMessages() {
-    return unmodifiableList(sentMessages);
+    return copy(this.sentMessages);
+  }
+
+  private List<Message> copy(List<Message> list) {
+    return asList(list.toArray(new Message[0]));
   }
 
   public void clearPublishedMessages() {
-    this.publishedMessages = new ArrayList<>(new ArrayList<>());
+    this.publishedMessages = synchronizedList(new ArrayList<>());
   }
 
   public void clearSentMessages() {
-    this.sentMessages = new ArrayList<>(new ArrayList<>());
+    this.sentMessages = synchronizedList(new ArrayList<>());
   }
 
   public void clearMessages() {
@@ -310,24 +317,9 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public SimpleEvaluationObject executeCode(String code, Message message, int executionCount, ExecuteCodeCallback executeCodeCallback) {
+  public TryResult executeCode(String code, SimpleEvaluationObject seo) {
     this.code = code;
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, executeCodeCallback);
-    seo.setJupyterMessage(message);
-    executeCodeCallback.execute(seo);
-    return seo;
-  }
-
-  @Override
-  public SimpleEvaluationObjectWithTime executeCodeWithTimeMeasurement(String code, Message message,
-                                                                       int executionCount, ExecuteCodeCallbackWithTime executeCodeCallbackWithTime) {
-    this.code = code;
-    SimpleEvaluationObjectWithTime seowt = new SimpleEvaluationObjectWithTime(code, executeCodeCallbackWithTime);
-    seowt.setJupyterMessage(message);
-    seowt.started();
-    seowt.finished(1L);
-    executeCodeCallbackWithTime.execute(seowt);
-    return seowt;
+    return TryResult.createResult(seo.getPayload());
   }
 
   public String getCode() {

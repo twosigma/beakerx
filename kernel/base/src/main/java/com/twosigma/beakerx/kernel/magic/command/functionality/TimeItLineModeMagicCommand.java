@@ -15,7 +15,6 @@
  */
 package com.twosigma.beakerx.kernel.magic.command.functionality;
 
-import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.MagicCommandExecutionParam;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
@@ -36,13 +35,12 @@ public class TimeItLineModeMagicCommand extends TimeMagicCommand {
 
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
-    Code code = param.getCode();
     Message message = param.getCode().getMessage();
     int executionCount = param.getExecutionCount();
-    String codeToExecute = code.asString().replace(TIMEIT_LINE, "");
+    String codeToExecute = param.getCommand().replace(TIMEIT_LINE, "");
     codeToExecute = codeToExecute.replaceAll("(-.)(\\d*\\s)", "");
     try {
-      return timeIt(buildTimeItOption(code), codeToExecute, message, executionCount);
+      return timeIt(buildTimeItOption(param.getCode()), codeToExecute, message, executionCount, param.isShowResult());
     } catch (IllegalArgumentException e) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, e.getMessage());
     }

@@ -15,19 +15,9 @@
  */
 package com.twosigma.beakerx.kernel.magic.command;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
+import com.google.common.base.Preconditions;
 import com.twosigma.beakerx.kernel.commands.MavenInvocationSilentOutputHandler;
 import com.twosigma.beakerx.kernel.commands.MavenJarResolverSilentLogger;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import com.twosigma.beakerx.kernel.magic.command.functionality.MvnLoggerWidget;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
@@ -35,6 +25,15 @@ import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class MavenJarResolver {
 
@@ -49,25 +48,30 @@ public class MavenJarResolver {
 
   public MavenJarResolver(final ResolverParams commandParams,
                           PomFactory pomFactory) {
-    this.commandParams = checkNotNull(commandParams);
+    this.commandParams = Preconditions.checkNotNull(commandParams);
     this.pathToMavenRepo = getOrCreateFile(commandParams.getPathToNotebookJars()).getAbsolutePath();
     this.pomFactory = pomFactory;
   }
 
   public AddMvnCommandResult retrieve(String groupId, String artifactId, String version, MvnLoggerWidget progress) {
+    List<Dependency> dependencies = Arrays.asList(new Dependency(groupId, artifactId, version));
+    return retrieve(dependencies, progress);
+  }
+
+  public AddMvnCommandResult retrieve(List<Dependency> dependencies, MvnLoggerWidget progress) {
     File finalPom = null;
     try {
-      Dependency dependency = new Dependency(groupId, artifactId, version);
-      String pomAsString = pomFactory.createPom(pathToMavenRepo, dependency, commandParams.getRepos());
-      finalPom = saveToFile(commandParams.getPathToNotebookJars(), dependency, pomAsString);
+      String pomAsString = pomFactory.createPom(pathToMavenRepo, dependencies, commandParams.getRepos());
+      finalPom = saveToFile(commandParams.getPathToNotebookJars(), pomAsString);
       InvocationRequest request = createInvocationRequest();
       request.setOffline(commandParams.getOffline());
       request.setPomFile(finalPom);
+      request.setUpdateSnapshots(true);
       Invoker invoker = getInvoker(progress);
       progress.display();
       InvocationResult invocationResult = invoker.execute(request);
       progress.close();
-      return getResult(invocationResult, groupId, artifactId, version);
+      return getResult(invocationResult, dependencies);
     } catch (Exception e) {
       return AddMvnCommandResult.error(e.getMessage());
     } finally {
@@ -75,10 +79,9 @@ public class MavenJarResolver {
     }
   }
 
-  private File saveToFile(String pathToNotebookJars, Dependency dependency, String pomAsString)
+  private File saveToFile(String pathToNotebookJars, String pomAsString)
           throws IOException {
-    File finalPom = new File(pathToNotebookJars + "/poms/pom-" + UUID.randomUUID() + "-" +
-            dependency.getGroupId() + dependency.getArtifactId() + dependency.getVersion() + "xml");
+    File finalPom = new File(pathToNotebookJars + "/poms/pom-" + UUID.randomUUID() + "-" + "xml");
 
     FileUtils.writeStringToFile(finalPom, pomAsString, StandardCharsets.UTF_8);
     return finalPom;
@@ -114,12 +117,19 @@ public class MavenJarResolver {
     return mavenLocation;
   }
 
-  private AddMvnCommandResult getResult(InvocationResult invocationResult, String groupId, String artifactId, String version) {
+  private AddMvnCommandResult getResult(InvocationResult invocationResult, List<Dependency> dependencies) {
     if (invocationResult.getExitCode() != 0) {
       if (invocationResult.getExecutionException() != null) {
         return AddMvnCommandResult.error(invocationResult.getExecutionException().getMessage());
       }
-      return AddMvnCommandResult.error("Could not resolve dependencies for: " + groupId + " : " + artifactId + " : " + version);
+      StringBuilder errorMsgBuilder = new StringBuilder("Could not resolve dependencies for:");
+      for (Dependency dependency : dependencies) {
+        errorMsgBuilder
+                .append("\n").append(dependency.groupId).append(" : ")
+                .append(dependency.artifactId).append(" : ")
+                .append(dependency.version);
+      }
+      return AddMvnCommandResult.error(errorMsgBuilder.toString());
     }
 
     return AddMvnCommandResult.SUCCESS;
@@ -206,8 +216,8 @@ public class MavenJarResolver {
     private Map<String, String> repos = Collections.emptyMap();
 
     public ResolverParams(String pathToCache, String pathToNotebookJars, boolean offline) {
-      this.pathToCache = checkNotNull(pathToCache);
-      this.pathToNotebookJars = checkNotNull(pathToNotebookJars);
+      this.pathToCache = Preconditions.checkNotNull(pathToCache);
+      this.pathToNotebookJars = Preconditions.checkNotNull(pathToNotebookJars);
       this.offline = offline;
     }
 

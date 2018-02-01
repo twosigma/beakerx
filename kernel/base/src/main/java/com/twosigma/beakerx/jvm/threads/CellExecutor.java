@@ -15,9 +15,13 @@
  */
 package com.twosigma.beakerx.jvm.threads;
 
+import com.twosigma.beakerx.TryResult;
+
+import java.util.concurrent.Callable;
+
 public interface CellExecutor {
 
-  boolean executeTask(Runnable tsk);
+  TryResult executeTask(Callable<TryResult> tsk);
 
   void cancelExecution();
 

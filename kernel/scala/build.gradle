@@ -53,6 +53,7 @@ dependencies {
   compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.11'
   compile group: 'jline', name: 'jline', version: '2.12'
 
+  testCompile group: 'org.scalatest', name: 'scalatest_2.11', version: '3.0.4'
   testCompile project(':base').sourceSets.test.output
 }
 
@@ -60,6 +61,10 @@ jar {
   manifest {
     attributes "Main-Class": "$mainClassName"
   }
+}
+
+test {
+  maxHeapSize = '1800m'
 }
 
 task realclean

@@ -23,16 +23,12 @@ import com.twosigma.beakerx.kernel.magic.command.PomFactory;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcomeItem;
 import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutput;
 
-import java.util.Collection;
-
-import static com.twosigma.beakerx.kernel.magic.command.functionality.MagicCommandUtils.splitPath;
-
 public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
 
   public static final String ADD = "add";
   public static final String MVN = "mvn";
   public static final String CLASSPATH_ADD_MVN = CLASSPATH + " " + ADD + " " + MVN;
-  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be " + CLASSPATH_ADD_MVN + " group name version or " + CLASSPATH_ADD_MVN + " group:name:version";
+  public static final String ADD_MVN_FORMAT_ERROR_MESSAGE = "Wrong command format, should be" + CLASSPATH_ADD_MVN + " group name version or " + CLASSPATH_ADD_MVN + " group:name:version";
 
   private MavenJarResolver.ResolverParams commandParams;
   private PomFactory pomFactory;
@@ -57,7 +53,7 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
   @Override
   public MagicCommandOutcomeItem execute(MagicCommandExecutionParam param) {
     String command = param.getCommand();
-    String[] split = splitPath(command);
+    String[] split = MagicCommandUtils.splitPath(command);
     if (split.length != 6 && split.length != 4) {
       return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, ADD_MVN_FORMAT_ERROR_MESSAGE);
     }
@@ -77,12 +73,7 @@ public class ClasspathAddMvnMagicCommand extends ClasspathMagicCommand {
     }
 
     if (result.isJarRetrieved()) {
-      Collection<String> newAddedJars = addJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*");
-      if (newAddedJars.isEmpty()) {
-        return new MagicCommandOutput(MagicCommandOutput.Status.OK);
-      }
-      String textMessage = "Added jar" + (newAddedJars.size() > 1 ? "s: " : ": ") + newAddedJars + "\n";
-      return new MagicCommandOutput(MagicCommandOutput.Status.OK, textMessage);
+      return handleAddedJars(classpathAddMvnCommand.getPathToMavenRepo() + "/*");
     }
     return new MagicCommandOutput(MagicCommandOutput.Status.ERROR, result.getErrorMessage());
   }

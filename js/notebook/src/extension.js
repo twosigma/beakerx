@@ -40,31 +40,22 @@ require('./plot/bko-plot.css');
 define([
   'services/config',
   'services/kernels/comm',
-  'base/js/dialog',
   'base/js/utils',
   'base/js/namespace',
   'base/js/events',
-  'notebook/js/celltoolbar',
-  'notebook/js/codecell',
   'require',
   'underscore',
-
   './htmlOutput/htmlOutput',
-
-  // Plot JS API
   './plot/plotApi',
   './shared/bkCoreManager',
   'big.js',
-  './GistPublish.js'
+  './extension/gistPublish/index'
 ], function(
   configmod,
   comm,
-  dialog,
   utils,
   Jupyter,
   events,
-  celltoolbar,
-  codecell,
   require,
   _,
   htmlOutput,
@@ -78,11 +69,13 @@ define([
   window.Big = big;
 
   var base_url = utils.get_body_data('baseUrl');
-  var config = new configmod.ConfigSection('notebook', {base_url: base_url});
-  var comm;
+  var config = new configmod.ConfigSection('notebook', { base_url: base_url });
   var kernel_info = undefined;
   var LINE_COMMENT_CHAR = '//';
   var commUtils = require('./extension/comm');
+  var initCellUtils = require('./extension/initializationCells');
+
+  GistPublish.registerFeature();
 
   function installKernelHandler() {
     var kernel = Jupyter.notebook.kernel;
@@ -136,101 +129,25 @@ define([
   function interruptToKernel() {
     var kernel = Jupyter.notebook.kernel;
     var kernel_control_target_name = "kernel.control.channel";
-    var comm = kernel.comm_manager.new_comm(kernel_control_target_name,
-                                                             null, null, null, utils.uuid());
+    var comm = kernel.comm_manager.new_comm(kernel_control_target_name, null, null, null, utils.uuid());
     var data = {};
+
     data.kernel_interrupt = true;
     comm.send(data);
     comm.close();
   }
 
   var inNotebook = !Jupyter.NotebookList;
-  // ________ init cell extension code
-  var CellToolbar = celltoolbar.CellToolbar;
-
   var mod_name = 'init_cell';
   var log_prefix = '[' + mod_name + ']';
   var options = { // updated from server's config & nb metadata
-    run_on_kernel_ready: true,
+    run_on_kernel_ready: true
   };
 
-  var toolbar_preset_name = 'Initialization Cell';
-  var init_cell_ui_callback = CellToolbar.utils.checkbox_ui_generator(
-    toolbar_preset_name,
-    function setter (cell, value) {
-      if (value) {
-        cell.metadata.init_cell = true;
-      }
-      else {
-        delete cell.metadata.init_cell;
-      }
-    },
-    function getter (cell) {
-      // if init_cell is undefined, it'll be interpreted as false anyway
-      return cell.metadata.init_cell;
-    }
-  );
-
-  function run_init_cells () {
-    console.log(log_prefix, 'running all initialization cells');
-    var num = 0;
-    var cells = get_init_cells();
-
-    for (var ii = 0; ii < cells.length; ii++) {
-      cells[ii].execute();
-      num++;
-    }
-    console.log(log_prefix, 'finished running ' + num + ' initialization cell' + (num !== 1 ? 's' : ''));
-  }
-
-  function get_init_cells () {
-    var cells = Jupyter.notebook.get_cells();
-
-    return cells.filter(function(cell) {
-      return ((cell instanceof codecell.CodeCell) && cell.metadata.init_cell === true );
-    });
-  }
-
   function callback_notebook_loaded () {
-    var initCells = get_init_cells();
-    // update from metadata
-    var md_opts = Jupyter.notebook.metadata[mod_name];
-    if (md_opts !== undefined) {
-      console.log(log_prefix, 'updating options from notebook metadata:', md_opts);
-      $.extend(true, options, md_opts);
-    }
-
-    // register celltoolbar presets if they haven't been already
-    if (CellToolbar.list_presets().indexOf(toolbar_preset_name) < 0) {
-      // Register a callback to create a UI element for a cell toolbar.
-      CellToolbar.register_callback('init_cell.is_init_cell', init_cell_ui_callback, 'code');
-      // Register a preset of UI elements forming a cell toolbar.
-      CellToolbar.register_preset(toolbar_preset_name, ['init_cell.is_init_cell'], Jupyter.notebook);
-    }
-
-    if (options.run_on_kernel_ready && initCells.length) {
-      if (!Jupyter.notebook.trusted) {
-        dialog.modal({
-          title : 'Initialization cells in untrusted notebook',
-          body : 'This notebook is not trusted, so initialization cells will not be automatically run on kernel load. You can still run them manually, though.',
-          buttons: {'OK': {'class' : 'btn-primary'}},
-          notebook: Jupyter.notebook,
-          keyboard_manager: Jupyter.keyboard_manager,
-        });
-        return;
-      }
-
-      if (Jupyter.notebook && Jupyter.notebook.kernel && Jupyter.notebook.kernel.info_reply.status === 'ok') {
-        // kernel is already ready
-        run_init_cells();
-      }
-      // whenever a (new) kernel  becomes ready, run all initialization cells
-      events.on('kernel_ready.Kernel', run_init_cells);
-    }
-
+    initCellUtils.enableInitializationCellsFeature(options);
     installKernelHandler();
   }
-  // ________ init cell extension code - end
 
   var load_ipython_extension = function() {
 
@@ -250,21 +167,6 @@ define([
     }
 
     if (inNotebook) {
-      // ________ init cell extension code
-      // register action
-      var prefix = 'auto';
-      var action_name = 'run-initialization-cells';
-      var action = {
-        icon: 'fa-calculator',
-        help: 'Run all initialization cells',
-        help_index : 'zz',
-        handler : run_init_cells
-      };
-      var action_full_name = Jupyter.notebook.keyboard_manager.actions.register(action, action_name, prefix);
-
-      // add toolbar button
-      Jupyter.toolbar.add_buttons_group([action_full_name]);
-
       // setup things to run on loading config/notebook
       Jupyter.notebook.config.loaded
         .then(function update_options_from_config () {
@@ -273,14 +175,12 @@ define([
           console.warn(log_prefix, 'error loading config:', reason);
         })
         .then(function () {
-          if (Jupyter.notebook._fully_loaded) {
-            callback_notebook_loaded();
-          }
-          events.on('notebook_loaded.Notebook', callback_notebook_loaded);
+          Jupyter.notebook._fully_loaded ?
+            callback_notebook_loaded() :
+            events.on('notebook_loaded.Notebook', callback_notebook_loaded);
         }).catch(function (reason) {
           console.error(log_prefix, 'unhandled error:', reason);
         });
-      // ________ init cell extension code - end
 
       CodeMirror.extendMode('groovy', { lineComment: LINE_COMMENT_CHAR });
       Jupyter.notebook.get_cells().map(function(cell, i) {

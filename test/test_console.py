@@ -15,6 +15,8 @@
 import os
 import sys
 import pexpect
+import signal
+from subprocess import check_output, CalledProcessError
 
 # Start `jupyter console` using pexpect
 def start_console():
@@ -38,9 +40,7 @@ def stop_console(p, pexpect, t):
     p.expect([pexpect.EOF, pexpect.TIMEOUT], timeout=t)
     if p.isalive():
         p.terminate()
-    
-    os.system("kill -9 `pgrep -f jupyter`");
-
+    kill_processes('jupyter')
 
 def test_lsmagic():
     result = 0
@@ -70,3 +70,11 @@ def test_lsmagic():
     stop_console(p, pexpect, t)
     print("test_lsmagic return code=", result)
     return result
+
+def kill_processes(name):
+    try:
+        pidlist = map(int, check_output(['pgrep', '-f', name]).split())
+    except CalledProcessError:
+        pidlist = []
+    for pid in pidlist:
+        os.kill(pid, signal.SIGKILL)

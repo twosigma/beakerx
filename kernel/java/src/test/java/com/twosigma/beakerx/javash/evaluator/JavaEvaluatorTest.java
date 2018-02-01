@@ -16,22 +16,19 @@
 
 package com.twosigma.beakerx.javash.evaluator;
 
-import com.twosigma.ExecuteCodeCallbackTest;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.javash.kernel.JavaKernelMock;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
-import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.KERNEL_PARAMETERS;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getTestTempFolderFactory;
 import static com.twosigma.beakerx.evaluator.TestBeakerCellExecutor.cellExecutor;
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.ERROR;
-import static com.twosigma.beakerx.jvm.object.SimpleEvaluationObject.EvaluationStatus.FINISHED;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaEvaluatorTest {
 
@@ -56,63 +53,56 @@ public class JavaEvaluatorTest {
     String code = "import com.twosigma.beakerx.chart.xychart.*;\n" +
             "Plot plot = new Plot(); plot.setTitle(\"test title\");\n" +
             "return plot;";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    javaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    Assertions.assertThat(seo.getPayload() instanceof Plot).isTrue();
-    Assertions.assertThat(((Plot) seo.getPayload()).getTitle()).isEqualTo("test title");
+    assertThat(evaluate.result() instanceof Plot).isTrue();
+    assertThat(((Plot) evaluate.result()).getTitle()).isEqualTo("test title");
   }
 
   @Test
   public void evaluateDivisionByZero_shouldReturnArithmeticException() throws Exception {
     //given
     String code = "return 16/0;";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    javaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(ERROR);
-    Assertions.assertThat((String) seo.getPayload()).contains("java.lang.ArithmeticException");
+    assertThat(evaluate.error()).contains("java.lang.ArithmeticException");
   }
 
   @Test
   public void singleImport() throws Exception {
     //given
     String code = "import java.util.Date;";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    javaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(evaluate.result()).isNull();
   }
 
   @Test
   public void onlyPackage() throws Exception {
     //given
     String code = "package beaker.test;";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    javaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(evaluate.result()).isNull();
   }
 
   @Test
   public void noCode() throws Exception {
     //given
     String code = "";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    javaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(evaluate).isNotNull();
   }
 
   @Test
@@ -122,12 +112,11 @@ public class JavaEvaluatorTest {
             "return Stream.of(1, 2, 3, 4).map(i -> { \n" +
             "    return i * 10;\n" +
             "});";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    javaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(evaluate.result()).isNotNull();
   }
 
   @Test
@@ -135,24 +124,22 @@ public class JavaEvaluatorTest {
     //given
     String code = "import java.util.stream.Stream;\n" +
             "return Stream.of(1, 2, 3, 4).map(i -> { return i * 10;});";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    javaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(evaluate.result()).isNotNull();
   }
 
   @Test
   public void evaluateVoid() throws Exception {
     //given
     String code = "System.out.println(\"Hello\");";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    javaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
+    assertThat(evaluate.result()).isNull();
   }
 
   @Test
@@ -164,14 +151,10 @@ public class JavaEvaluatorTest {
             "}else {\n" +
             "    return \"BBB\";\n" +
             "}";
-    SimpleEvaluationObject seo = new SimpleEvaluationObject(code, new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject seo = new SimpleEvaluationObject(code);
     //when
-    javaEvaluator.evaluate(seo, code);
-    waitForResult(seo);
+    TryResult evaluate = javaEvaluator.evaluate(seo, code);
     //then
-    Assertions.assertThat(seo.getStatus()).isEqualTo(FINISHED);
-    Assertions.assertThat((String) seo.getPayload()).isEqualTo("AAA");
+    assertThat((String) evaluate.result()).isEqualTo("AAA");
   }
-
-
 }

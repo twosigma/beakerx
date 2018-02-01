@@ -18,14 +18,41 @@ package com.twosigma.beakerx.scala.chart.xychart
 
 import java.util
 
+import com.twosigma.beakerx.scala.JavaAdapter.{BeakerColor, _}
+
 import scala.collection.JavaConverters._
 
-class SimpleTimePlot(data: util.List[util.Map[String, AnyRef]], columns: util.List[String]) extends com.twosigma.beakerx.chart.xychart.SimpleTimePlot(data, columns) {
+class SimpleTimePlot extends
+  com.twosigma.beakerx.chart.xychart.SimpleTimePlot(null, null) with SimpleTimePlotProperties
 
-  def this(data: util.List[util.Map[String, AnyRef]], columns: Seq[String], yLabel: String, displayNames: Seq[String]) {
-    this(data, columns.asJava)
-    super.setYLabel(yLabel)
-    super.setDisplayNames(displayNames.asJava)
+trait SimpleTimePlotProperties extends TimePlotProperties {
+  this: com.twosigma.beakerx.chart.xychart.SimpleTimePlot =>
+
+  // TODO: SimpleTimePlot has some non-trivial type for colors.  Do we care?
+  def colors: Seq[Object] = getNullableList(getColors)
+  def colors_=[C <: AnyRef : BeakerColor](colors: Seq[C]): Unit = setColors(colors.toObjects.asJava)
+
+  def columns: Seq[String] = getNullableList(getColumns)
+  def columns_=(columns: Seq[String]): Unit = setColumns(columns.asJava)
+
+  // NOTE: in practice, the objects are actually Numbers or Dates, but
+  // we would need to use something like Shapeless to express that.
+  def data: Seq[Map[String, Object]] = getNullableList(getData).map(_.asScala.toMap)
+  def data_=(data: Seq[Map[String, Any]]): Unit = {
+    val maps = data.map(_.mapValues(_.asInstanceOf[Object]).asJava)
+    val list = maps.asJava
+    setData(list)
   }
 
+  def displayLines: Boolean = isDisplayLines
+  def displayLines_=(d: Boolean): Unit = setDisplayLines(d)
+
+  def displayNames: Seq[String] = getNullableList(getDisplayNames)
+  def displayNames_=(ns: Seq[String]): Unit = setDisplayNames(ns.asJava)
+
+  def displayPoints: Boolean = isDisplayPoints
+  def displayPoints_=(d: Boolean): Unit = setDisplayPoints(d)
+
+  def timeColumn: String = getTimeColumn
+  def timeColumn_=(col: String): Unit = setTimeColumn(col)
 }

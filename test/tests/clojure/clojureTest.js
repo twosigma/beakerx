@@ -31,21 +31,21 @@ describe('ClojureTutorial notebook', function () {
   describe('Run first cell. ', function () {
     it('Output contains "0, 1, 1, 2, 3, 5"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(0, '0, 1, 1, 2, 3, 5');
+      beakerxPO.runCellAndCheckOutputText(0, '0, 1, 1, 2, 3, 5');
     });
   });
 
   describe('Run 2nd cell. ', function () {
     it('Output contains "Will print"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(1, 'Will print');
+      beakerxPO.runCellAndCheckOutputText(1, 'Will print');
     });
   });
 
   describe('Run 3rd cell. ', function () {
     it('Output contains "Distinct: 36"', function () {
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(2, 'Distinct: 36');
+      beakerxPO.runCellAndCheckOutputText(2, 'Distinct: 36');
     });
   });
 

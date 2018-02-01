@@ -16,19 +16,19 @@
 package com.twosigma.beakerx.kernel.magic.command;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.PathToJar;
-import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
+import com.twosigma.beakerx.kernel.PlainCode;
 import com.twosigma.beakerx.message.Message;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.List;
 
-import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.executeMagicCommands;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,77 +52,83 @@ public class ClasspathMagicCommandTest {
   }
 
   @Test
-  public void handleClasspathAddJarMagicCommand() throws Exception {
+  public void handleClasspathAddJarMagicCommand() {
     //given
     String allCode = "" +
             "%classpath add jar" + " " + CLASSPATH_TO_JAR + "\n" +
             "code code code";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1);
     //then
-    Assertions.assertThat(code.getCodeBlock().get()).isEqualTo("code code code");
+    PlainCode actual = (PlainCode) code.getCodeFrames().get(1);
+    Assertions.assertThat(actual.getPlainCode()).isEqualTo("code code code");
     assertThat(kernel.getClasspath().get(0)).contains(FOO_JAR);
   }
 
   @Test
-  public void handleClasspathAddJarWildcardMagicCommand() throws Exception {
+  public void handleClasspathAddJarWildcardMagicCommand() {
     //given
     String allCode = "" +
             "%classpath add jar " + SRC_TEST_RESOURCES + "dirWithTwoJars/*";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1);
     //then
-    assertThat(classpath(result)).contains(FOO_JAR, "bar.jar");
+    List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
+    String text = (String) std.get(0).getContent().get("text");
+    assertThat(text).contains(FOO_JAR, "bar.jar");
     assertThat(evaluator.getResetEnvironmentCounter()).isEqualTo(0);
   }
 
   @Test
-  public void shouldCreateMsgWithWrongMagic() throws Exception {
+  public void shouldCreateMsgWithWrongMagic() {
     //given
     String jar = SRC_TEST_RESOURCES + "BeakerXClasspathTest.jar";
     Code code = CodeFactory.create("%classpath2 add jar" + " " + jar, new Message(), kernel);
     //when
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1);
     //then
-    Assertions.assertThat(result.getItems().get(0).getMIMEContainer().get().getData()).isEqualTo(
-            "Cell magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found");
+    List<Message> std = EvaluatorResultTestWatcher.getStderr(kernel.getPublishedMessages());
+    String text = (String) std.get(0).getContent().get("text");
+    assertThat(text).contains("Inline magic %classpath2 add jar ./src/test/resources/BeakerXClasspathTest.jar not found\n");
     assertThat(kernel.getClasspath().size()).isEqualTo(0);
   }
 
   @Test
-  public void showClasspath() throws Exception {
+  public void showClasspath() {
     //given
     kernel.addJarsToClasspath(asList(new PathToJar(CLASSPATH_TO_JAR)));
     Code code = CodeFactory.create("%classpath", new Message(), kernel);
     //when
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1);
     //then
-    assertThat(classpath(result)).contains(FOO_JAR);
+    List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
+    String text = (String) std.get(0).getContent().get("text");
+    assertThat(text).contains(FOO_JAR);
   }
 
   @Test
   public void showClasspathShouldNotContainDuplication() throws Exception {
     //given
     kernel.addJarsToClasspath(asList(new PathToJar(CLASSPATH_TO_JAR)));
+    kernel.clearMessages();
     //when
     kernel.addJarsToClasspath(asList(new PathToJar(CLASSPATH_TO_JAR)));
     Code code = CodeFactory.create("%classpath", new Message(), kernel);
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1);
     //then
-    assertThat(classpath(result)).contains(FOO_JAR);
+    List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
+    String text = (String) std.get(0).getContent().get("text");
+    assertThat(text).contains(FOO_JAR);
   }
 
   @Test
   public void allowExtraWhitespaces() {
     Code code = CodeFactory.create("%classpath  add  jar          " + CLASSPATH_TO_JAR, new Message(), kernel);
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
-    assertThat(classpath(result)).isEqualTo("Added jar: [" + FOO_JAR + "]\n");
+    code.execute(kernel, 1);
+    List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
+    String text = (String) std.get(0).getContent().get("text");
+    assertThat(text).contains("Added jar: [" + FOO_JAR + "]\n");
   }
-
-  private String classpath(MagicCommandOutcome result) {
-    return result.getItems().get(0).getMIMEContainer().get().getData().toString();
-  }
-
 }

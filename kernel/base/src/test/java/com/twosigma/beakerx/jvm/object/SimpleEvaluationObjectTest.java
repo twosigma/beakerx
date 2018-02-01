@@ -16,7 +16,6 @@
 
 package com.twosigma.beakerx.jvm.object;
 
-import com.twosigma.ExecuteCodeCallbackTest;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.ObserverObjectTest;
@@ -36,7 +35,7 @@ public class SimpleEvaluationObjectTest {
 
   @Before
   public void setUp() throws Exception {
-    seo = new SimpleEvaluationObject("code", new ExecuteCodeCallbackTest());
+    seo = new SimpleEvaluationObject("code");
     observer = new ObserverObjectTest();
     seo.addObserver(observer);
     kernel = new KernelTest();
@@ -51,7 +50,7 @@ public class SimpleEvaluationObjectTest {
   @Test
   public void createWithParam_hasExpressionIsParamAndStatusIsQueued() throws Exception {
     //when
-    SimpleEvaluationObject object = new SimpleEvaluationObject("code", new ExecuteCodeCallbackTest());
+    SimpleEvaluationObject object = new SimpleEvaluationObject("code");
     //then
     Assertions.assertThat(object.getExpression()).isEqualTo("code");
     Assertions.assertThat(object.getStatus()).isEqualTo(QUEUED);

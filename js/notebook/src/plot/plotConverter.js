@@ -492,6 +492,7 @@ define([
               }
 
               item.elements = elements;
+              item.yAxisLabel = item.yAxis;
 
               newmodel.data.push(item);
             }

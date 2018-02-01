@@ -16,7 +16,7 @@
 package com.twosigma.beakerx;
 
 import com.twosigma.beakerx.kernel.CloseKernelAction;
-import com.twosigma.beakerx.kernel.Kernel;
+import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.KernelRunner;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
 import org.junit.After;
@@ -25,7 +25,7 @@ import org.junit.Before;
 public abstract class KernelSetUpFixtureTest {
 
   protected KernelSocketsServiceTest kernelSocketsService;
-  protected Kernel kernel;
+  protected KernelFunctionality kernel;
   private  Thread kernelThread;
 
   @Before
@@ -48,9 +48,9 @@ public abstract class KernelSetUpFixtureTest {
     return kernelSocketsService;
   }
 
-  public Kernel getKernel() {
+  public KernelFunctionality getKernel() {
     return kernel;
   }
 
-  protected abstract Kernel createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction);
+  protected abstract KernelFunctionality createKernel(String sessionId, KernelSocketsFactory kernelSocketsFactory, CloseKernelAction closeKernelAction);
 }

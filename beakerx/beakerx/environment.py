@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from os import environ, path
+from os import environ, path, fdopen, O_RDWR, O_CREAT, O_TRUNC, open as osopen
 from jupyter_core import paths
 import json
 import pathlib
@@ -40,9 +40,8 @@ class EnvironmentSettings:
     @staticmethod
     def save_setting_to_file(content):
         pathlib.Path(paths.jupyter_config_dir()).mkdir(parents=True, exist_ok=True)
-        file = open(EnvironmentSettings.config_path, 'w+')
-        file.write(json.dumps(json.loads(content), indent=4, sort_keys=True))
-        file.close()
+        with fdopen(osopen(EnvironmentSettings.config_path, O_RDWR | O_CREAT | O_TRUNC, 0o600), 'w+') as file:
+            file.write(json.dumps(json.loads(content), indent=4, sort_keys=True))
 
     @staticmethod
     def read_setting_from_file():
@@ -74,6 +73,8 @@ class EnvironmentSettings:
             }
             new_prop.append(prop)
         settings['properties'] = new_prop
+        if settings.get('heap_GB'):
+            settings['heap_GB'] = float(settings['heap_GB'])
         content = json.dumps(beakerx_settings)
         return content
 

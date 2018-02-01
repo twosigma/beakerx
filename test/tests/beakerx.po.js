@@ -45,8 +45,17 @@ var BeakerXPageObject = function () {
     browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
   }
 
+  this.clickCellAllOutputClear = function () {
+    browser.click('=Cell');
+    browser.waitForEnabled('=All Output');
+    browser.moveToObject('=All Output');
+    browser.moveToObject('=Toggle');
+    browser.moveToObject('=Clear');
+    browser.click('=Clear')
+  }
+
   this.closeAndHaltNotebook = function () {
-    this.clickSaveNotebook();
+    this.clickCellAllOutputClear();
     browser.click('=File');
     browser.waitForEnabled('=Close and Halt');
     browser.click('=Close and Halt');
@@ -55,6 +64,10 @@ var BeakerXPageObject = function () {
 
   this.getCodeCellByIndex = function (index) {
     return $$('div.code_cell')[index];
+  }
+
+  this.getDtContainerByIndex = function (index) {
+    return this.getCodeCellByIndex(index).$('div.dtcontainer');
   }
 
   this.runCodeCellByIndex = function (index) {
@@ -78,18 +91,18 @@ var BeakerXPageObject = function () {
     return codeCell.$('#svgg');
   }
 
-  this.runCallAndCheckOutputText = function(index, expectedText){
+  this.runCellAndCheckOutputText = function(index, expectedText){
     var resultTest;
     try{
-      resultTest = this.runCallToGetOutputText(index).getText();
+      resultTest = this.runCellToGetOutputTextElement(index).getText();
     }catch(e){
       console.log(expectedText + ' --- ' + e.toString());
-      resultTest = this.runCallToGetOutputText(index).getText();
+      resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
   }
 
-  this.runCallToGetOutputText = function(index){
+  this.runCellToGetOutputTextElement = function(index){
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.output_subarea.output_text');
   }
@@ -97,11 +110,6 @@ var BeakerXPageObject = function () {
   this.plotLegendContainerIsEnabled = function(dtcontainer){
     var plotLegendContainer = dtcontainer.$('#plotLegendContainer');
     plotLegendContainer.waitForEnabled();
-  }
-
-  this.dataTablesIsEnabled = function(dtcontainer){
-    var dataTables = dtcontainer.$('.dataTables_scroll');
-    dataTables.waitForEnabled();
   }
 
   this.runCellToGetWidgetElement = function(index){
@@ -130,9 +138,22 @@ var BeakerXPageObject = function () {
       resultTest = codeCell.$('div.output_subarea.output_text').getText();
     }catch(e){
       console.log(expectedText + ' --- ' + e.toString());
-      resultTest = this.runCallToGetOutputText(index).getText();
+      resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
+  }
+
+  this.getTableColumnLabel = function(tableIndex, columnIndex){
+    var table = $$("div.dataTables_scrollHead") [tableIndex];
+    var tableColumnLabels = table.$$("span.header-text");
+    return tableColumnLabels[columnIndex];
+  }
+
+  this.getTableCell = function(tableIndex, rowIndex, columnIndex){
+    var table = $$("div.dataTables_scrollBody") [tableIndex];
+    var tableRows = table.$$("tbody tr");
+    var rowCells = tableRows[rowIndex].$$("td");
+  return rowCells[columnIndex];
   }
 
 };

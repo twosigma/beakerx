@@ -32,7 +32,7 @@ describe('Kotlin-example notebook', function () {
     it('Output contains "hello, 623"', function () {
       beakerxPO.runCodeCellByIndex(0);
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCallAndCheckOutputText(1, 'hello, 623');
+      beakerxPO.runCellAndCheckOutputText(1, 'hello, 623');
     });
   });
 

@@ -17,6 +17,8 @@ package com.twosigma.beakerx.evaluator;
 
 import com.google.common.collect.Lists;
 import com.twosigma.beakerx.DefaultJVMVariables;
+import com.twosigma.beakerx.NamespaceClient;
+import com.twosigma.beakerx.TryResult;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
@@ -35,6 +37,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 public abstract class BaseEvaluator implements Evaluator {
 
@@ -171,7 +174,7 @@ public abstract class BaseEvaluator implements Evaluator {
     resetEnvironment();
   }
 
-  public boolean executeTask(Runnable codeRunner) {
+  public TryResult executeTask(Callable<TryResult> codeRunner) {
     return executor.executeTask(codeRunner);
   }
 
@@ -206,6 +209,7 @@ public abstract class BaseEvaluator implements Evaluator {
 
   @Override
   public void exit() {
+    NamespaceClient.delBeaker(getSessionId());
     removeTempFolder();
   }
 

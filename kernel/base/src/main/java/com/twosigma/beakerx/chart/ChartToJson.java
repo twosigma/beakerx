@@ -20,6 +20,7 @@ import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.CROS
 import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.DOMAIN_AXIS_LABEL;
 import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.LOG_Y;
 import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.OMIT_CHECKBOXES;
+import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.AUTO_ZOOM;
 import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.RANGE_AXES;
 import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.TIMEZONE;
 import static com.twosigma.beakerx.chart.serializer.AbstractChartSerializer.X_LOWER_MARGIN;
@@ -206,6 +207,12 @@ public class ChartToJson {
   static Map<Object, Object> serializeOmitCheckboxes(boolean omitCheckboxes) {
     Map<Object, Object> value = new LinkedHashMap<>();
     value.put(OMIT_CHECKBOXES, omitCheckboxes);
+    return value;
+  }
+
+  static Map<Object, Object> serializeAutoZoom(boolean autoZoom) {
+    Map<Object, Object> value = new LinkedHashMap<>();
+    value.put(AUTO_ZOOM, autoZoom);
     return value;
   }
 

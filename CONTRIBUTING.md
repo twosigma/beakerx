@@ -34,9 +34,10 @@ If you are reporting a bug:
 
 ## Pull Requests
 
-In order for us to accept your code or pull request,
-we need for you to fill out and email back to us a scan of a signed copy of the
-[Contributor License Agreement](http://beakernotebook.com/cla.zip).
+In order for us to accept your code or pull request, we need for you
+to fill out and email `beaker-cla@twosigma.com` a scan of a signed
+copy of the [Contributor License
+Agreement](http://beakernotebook.com/cla.zip).
 
 BeakerX uses [Google Java
 style](https://google.github.io/styleguide/javaguide.html), and all

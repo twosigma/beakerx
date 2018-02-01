@@ -15,18 +15,20 @@
  */
 package com.twosigma.beakerx.kernel.magic.command;
 
-import static com.twosigma.beakerx.kernel.handler.MagicCommandExecutor.executeMagicCommands;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
 import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.Code;
-import com.twosigma.beakerx.kernel.magic.command.outcome.MagicCommandOutcome;
+import com.twosigma.beakerx.kernel.PlainCode;
 import com.twosigma.beakerx.message.Message;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 
 public class MagicCommandResultOrderTest {
 
@@ -45,7 +47,7 @@ public class MagicCommandResultOrderTest {
   }
 
   @Test
-  public void codeResultShouldBeLast() throws Exception {
+  public void codeResultShouldBeLast() {
     //given
     String allCode = "" +
             "%classpath add jar " + DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
@@ -53,38 +55,38 @@ public class MagicCommandResultOrderTest {
             "code code code";
     //when
     Code code = CodeFactory.create(allCode, new Message(), kernel);
+    code.execute(kernel, 1);
     //then
-    assertThat(code.getCodeBlock().get()).isEqualTo("code code code");
+    PlainCode actual = (PlainCode) code.getCodeFrames().get(2);
+    assertThat(actual.getPlainCode()).isEqualTo("code code code");
   }
 
   @Test
-  public void classpathAddJarShouldBeLast() throws Exception {
+  public void classpathAddJarShouldBeLast() {
     //given
     String allCode = "" +
             "%classpath\n" +
             "%classpath add jar " + DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1);
     //then
-    assertThat(result.getItems().get(0).getMIMEContainer().isPresent()).isTrue();
+    MagicCommand actual = (MagicCommand) code.getCodeFrames().get(1);
+    assertThat(actual.getCommand()).contains("%classpath add jar");
   }
 
   @Test
-  public void classpathShouldBeLast() throws Exception {
+  public void classpathShouldBeLast() {
     //given
     String allCode = "" +
             "%classpath add jar " + DOC_CONTENTS_DEMO_RESOURCES_BEAKERX_TEST_LIBRARY_JAR + "\n" +
             "%classpath";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
-    MagicCommandOutcome result = executeMagicCommands(code, 1, kernel);
+    code.execute(kernel, 1);
     //then
-    assertThat(classpath(result)).contains(DEMO_JAR);
+    List<Message> std = EvaluatorResultTestWatcher.getStdouts(kernel.getPublishedMessages());
+    String text = (String) std.get(0).getContent().get("text");
+    assertThat(text).contains(DEMO_JAR);
   }
-
-  private String classpath(MagicCommandOutcome result) {
-    return (String) result.getItems().get(1).getMIMEContainer().get().getData();
-  }
-
 }

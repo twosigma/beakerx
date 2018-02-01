@@ -20,15 +20,23 @@ from dateutil import parser
 from enum import Enum
 import pytz
 from pandas._libs.tslib import Timestamp
+import re
+
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
+
 def is_date(string):
-    try:
-        parser.parse(string)
-        return True
-    except Exception:
-        return False
+    date_time_regex = '^(\d{4}|\d{2})[-/]' \
+                      '(((0[1-9]|1[0-2])[-/](0[1-9]|[1-2][0-9]|3[01]))' \
+                      '|((0[1-9]|[1-2][0-9]|3[01])[-/](0[1-9]|1[0-2]))){1}' \
+                      '( ([10][0-9]|2[0-4]|[0-9]):' \
+                      '[0-5][0-9]' \
+                      '(:[0-5][0-9]' \
+                      '(\.\d\d\d)?' \
+                      '( [-+]\d\d00)?)?)?$'
+    result = re.match(date_time_regex, string)
+    return result is not None
 
 
 def unix_time(dt):

@@ -17,7 +17,7 @@
 const widgets = require('../widgets');
 const comboBox = require('../comboBox/jQueryComboBox');
 
-import $ from 'jquery';
+import * as $ from 'jquery';
 
 class ComboBoxModel extends widgets.SelectModel {
   defaults() {

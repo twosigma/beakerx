@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import $ from 'jquery';
+import * as $ from 'jquery';
 import _ from 'underscore';
 import { CommandRegistry } from '@phosphor/commands';
 import Menu from './BkoMenu';

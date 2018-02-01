@@ -16,7 +16,7 @@
 
 import { Menu } from '@phosphor/widgets'
 import { Message } from '@phosphor/messaging'
-import $ from 'jquery';
+import * as $ from 'jquery';
 
 export default class BkoMenu extends Menu {
   keepOpen: boolean|undefined;

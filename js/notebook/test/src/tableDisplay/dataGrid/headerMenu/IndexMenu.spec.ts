@@ -21,16 +21,27 @@ import IndexMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/IndexMenu';
 import { createIndexMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createIndexMenuItems';
 import HeaderMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/HeaderMenu';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 
 describe('IndexMenu', () => {
-  const dataGrid = new BeakerxDataGrid({}, {
-    values: [],
-    columnNames: [],
-    types: [],
-    hasIndex: false,
-    stringFormatForColumn: null
+  let dataGrid;
+  let indexMenu;
+
+  before(() => {
+    dataGrid = new BeakerxDataGrid({}, {
+      values: [],
+      columnNames: [],
+      types: [],
+      stringFormatForColumn: null,
+      hasIndex: false
+    });
+    indexMenu = new IndexMenu(0, dataGrid, { x: 0, y: 0, width: 20, height: 20 });
   });
-  const indexMenu = new IndexMenu(0, dataGrid, { x: 0, y: 0, width: 20, height: 20 });
+
+  after(() => {
+    dataGrid.destroy();
+  });
+
 
   it('should be an instance of HeaderMenu', () => {
     expect(indexMenu).to.be.an.instanceof(HeaderMenu);
@@ -51,7 +62,7 @@ describe('IndexMenu', () => {
   });
 
   it('should create index menu items', () => {
-    let items = createIndexMenuItems(0, dataGrid);
+    let items = createIndexMenuItems({ index: 0, type: COLUMN_TYPES.index }, dataGrid);
 
     expect(indexMenu['menu'].items).to.have.length.gte(items.length);
   });

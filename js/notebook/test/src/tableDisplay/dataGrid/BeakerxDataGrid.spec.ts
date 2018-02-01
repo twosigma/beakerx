@@ -18,16 +18,24 @@ import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { Widget } from "@phosphor/widgets";
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/DataGridColumn";
+import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import { TableDataModel } from "@beakerx/tableDisplay/dataGrid/TableDataModel";
 
 describe('BeakerxDataGrid', () => {
-  const dataGrid = new BeakerxDataGrid({}, {
-    values: [2.4565656],
-    columnNames: ['test'],
-    types: ['double'],
-    stringFormatForColumn: null,
-    hasIndex: false,
+  let dataGrid;
+
+  before(() => {
+    dataGrid = new BeakerxDataGrid({}, {
+      values: [2.4565656],
+      columnNames: ['test'],
+      types: ['double'],
+      stringFormatForColumn: null,
+      hasIndex: false,
+    });
+  });
+
+  after(() => {
+    dataGrid.destroy();
   });
 
   it('should create index column', () => {

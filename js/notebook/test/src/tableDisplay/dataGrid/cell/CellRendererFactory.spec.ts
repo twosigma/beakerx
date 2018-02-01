@@ -15,12 +15,13 @@
  */
 
 import { expect } from 'chai';
-import { createColumnMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createColumnMenuItems';
+import { CellRendererFactory } from "@beakerx/tableDisplay/dataGrid/cell/CellRendererFactory";
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import ColumnMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu";
+import { TextRenderer } from "@phosphor/datagrid";
 
-describe('createColumnMenuItems', () => {
+describe('CellRendererFactory', () => {
   let dataGrid;
+  let cellRendererFactory;
 
   before(() => {
     dataGrid = new BeakerxDataGrid({}, {
@@ -30,17 +31,18 @@ describe('createColumnMenuItems', () => {
       stringFormatForColumn: null,
       hasIndex: false
     });
+    cellRendererFactory = new CellRendererFactory(dataGrid);
   });
 
   after(() => {
     dataGrid.destroy();
   });
 
-  it('should create column menu items', () => {
-    let formatMenuItems = createColumnMenuItems({ index: 0, region: 'body'}, dataGrid);
-
-    expect(formatMenuItems).to.be.an.instanceof(Array);
-    expect(formatMenuItems).to.have.length(18);
+  it('should implement getRenderer method', () => {
+    expect(cellRendererFactory).to.have.property('getRenderer');
   });
 
+  it('should return CellRenderer', () => {
+    expect(cellRendererFactory.getRenderer()).to.be.an.instanceof(TextRenderer);
+  });
 });

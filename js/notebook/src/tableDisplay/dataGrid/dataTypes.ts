@@ -35,14 +35,7 @@ export enum TYPES_MAP {
   'integer' = ALL_TYPES['formatted integer']
 }
 
-export enum ALIGNMENTS_BY_TYPE {
-  'datetime' = 'C',
-  'integer' = 'R',
-  'double' = 'R'
-}
-
 const DEFAULT_DOUBLE_WITH_PRECISION_TYPE = '4.3';
-const DEFAULT_ALIGNMENT = 'L';
 
 export const getTypeByName = (typeName: string): number => {
   if (TYPES_MAP[typeName]) {

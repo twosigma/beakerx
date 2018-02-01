@@ -14,16 +14,23 @@
  *  limitations under the License.
  */
 
-import { ITriggerOptions } from "../headerMenu/HeaderMenu";
-import { COLUMN_TYPES } from "../column/DataGridColumn";
+import { ALL_TYPES } from "../dataTypes";
+import { TextRenderer } from "@phosphor/datagrid";
 
-export interface IColumn {
-  index: number,
-  type: COLUMN_TYPES
-}
+const LEFT: TextRenderer.HorizontalAlignment = 'left';
+const RIGHT: TextRenderer.HorizontalAlignment = 'right';
+const CENTER: TextRenderer.HorizontalAlignment = 'center';
 
-export interface IColumnOptions {
-  index: number,
-  type: COLUMN_TYPES,
-  menuOptions: ITriggerOptions
-}
+export const DEFAULT_ALIGNMENT = LEFT;
+
+export const ALIGNMENTS_BY_TYPE = {
+  'datetime': CENTER,
+  'integer': RIGHT,
+  'double': RIGHT
+};
+
+export const getAlignmentByType = (type: number): TextRenderer.HorizontalAlignment => {
+  let alignment = ALIGNMENTS_BY_TYPE[ALL_TYPES[type]];
+
+  return alignment || DEFAULT_ALIGNMENT;
+};

@@ -21,18 +21,27 @@ import ColumnMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu';
 import { createColumnMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createColumnMenuItems';
 import HeaderMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/HeaderMenu';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/DataGridColumn";
+import { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 
 describe('ColumnMenu', () => {
-  const dataGrid = new BeakerxDataGrid({}, {
-    values: [],
-    columnNames: [],
-    types: [],
-    stringFormatForColumn: null,
-    hasIndex: false
-  });
   const triggerOptions = { x: 0, y: 0, width: 20, height: 20 };
-  const columnMenu = new ColumnMenu(0, dataGrid, triggerOptions);
+  let columnMenu;
+  let dataGrid;
+
+  before(() => {
+    dataGrid = new BeakerxDataGrid({}, {
+      values: [],
+      columnNames: [],
+      types: [],
+      stringFormatForColumn: null,
+      hasIndex: false
+    });
+    columnMenu = new ColumnMenu(0, dataGrid, triggerOptions);
+  });
+
+  after(() => {
+    dataGrid.destroy();
+  });
 
   it('should be an instance of HeaderMenu', () => {
     expect(columnMenu).to.be.an.instanceof(HeaderMenu);

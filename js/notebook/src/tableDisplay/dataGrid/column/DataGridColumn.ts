@@ -14,11 +14,14 @@
  *  limitations under the License.
  */
 
-import ColumnMenu from "./headerMenu/ColumnMenu";
-import IndexMenu from "./headerMenu/IndexMenu";
-import { BeakerxDataGrid } from "./BeakerxDataGrid";
-import { IColumnOptions } from "./interface/IColumn";
-import { ICellData } from "./interface/ICell";
+import ColumnMenu from "../headerMenu/ColumnMenu";
+import IndexMenu from "../headerMenu/IndexMenu";
+import { BeakerxDataGrid } from "../BeakerxDataGrid";
+import { IColumnOptions} from "../interface/IColumn";
+import { ICellData } from "../interface/ICell";
+import { getAlignmentByType } from "./columnAlignment";
+import { TextRenderer} from "@phosphor/datagrid";
+import { ALL_TYPES, getTypeByName } from "../dataTypes";
 
 export enum COLUMN_TYPES {
   'index',
@@ -26,12 +29,14 @@ export enum COLUMN_TYPES {
 }
 
 interface IColumnState {
-  triggerShown: boolean
+  triggerShown: boolean,
+  horizontalAlignment: TextRenderer.HorizontalAlignment
 }
 
 export default class DataGridColumn {
   index: number;
   type: COLUMN_TYPES;
+  dataType: ALL_TYPES;
   menu: ColumnMenu|IndexMenu;
   dataGrid: BeakerxDataGrid;
   state: IColumnState;
@@ -40,11 +45,15 @@ export default class DataGridColumn {
     this.index = options.index;
     this.type = options.type;
     this.dataGrid = dataGrid;
-    this.state = { triggerShown: false };
+    this.dataType = this.getDataType();
+    this.state = {
+      triggerShown: false,
+      horizontalAlignment: getAlignmentByType(this.dataType)
+    };
 
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
-
     this.createMenu(options.menuOptions);
+    this.connectToHeaderCellHovered();
   }
 
   createMenu(menuOptions): void {
@@ -59,6 +68,10 @@ export default class DataGridColumn {
 
   destroy() {
     this.menu.destroy();
+  }
+
+  connectToHeaderCellHovered() {
+    this.dataGrid.headerCellHovered.connect(this.handleHeaderCellHovered);
   }
 
   handleHeaderCellHovered(sender: BeakerxDataGrid, data: ICellData|null) {
@@ -76,4 +89,11 @@ export default class DataGridColumn {
     this.menu.showTrigger();
     this.state.triggerShown = true;
   }
+
+  getDataType(): ALL_TYPES {
+    return getTypeByName(this.dataGrid.model.getColumnDataType({
+      index: this.index, type: this.type
+    }));
+  }
+
 }

@@ -17,7 +17,7 @@
 import { createIndexMenuItems } from './createIndexMenuItems';
 import HeaderMenu, { ITriggerOptions } from './HeaderMenu';
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
-import { COLUMN_TYPES } from "../DataGridColumn";
+import { COLUMN_TYPES } from "../column/DataGridColumn";
 
 export default class IndexMenu extends HeaderMenu {
 

@@ -22,15 +22,23 @@ import {
 } from '@beakerx/tableDisplay/dataGrid/headerMenu/createFormatMenuItems';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import { scopeData, TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/consts';
-import { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/DataGridColumn";
+import { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 
 describe('createFormatMenuItems', () => {
-  const dataGrid = new BeakerxDataGrid({}, {
-    values: [],
-    columnNames: [],
-    types: [],
-    hasIndex: false,
-    stringFormatForColumn: null
+  let dataGrid;
+
+  before(() => {
+    dataGrid = new BeakerxDataGrid({}, {
+      values: [],
+      columnNames: [],
+      types: [],
+      stringFormatForColumn: null,
+      hasIndex: false
+    });
+  });
+
+  after(() => {
+    dataGrid.destroy();
   });
 
   it('should create format menu items', () => {

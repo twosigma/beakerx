@@ -20,7 +20,8 @@ import { TableDataModel } from "./TableDataModel";
 import { Widget } from "@phosphor/widgets";
 import { Signal } from '@phosphor/signaling';
 import { ICellData } from "./interface/ICell";
-import DataGridColumn, { COLUMN_TYPES } from "./DataGridColumn";
+import { CellRendererFactory } from "./cell/CellRendererFactory";
+import DataGridColumn, { COLUMN_TYPES } from "./column/DataGridColumn";
 import IDataModelOptions from "./interface/IDataModelOptions";
 
 interface IColumns {
@@ -51,6 +52,7 @@ export class BeakerxDataGrid extends DataGrid {
 
     this.addModel(modelOptions);
     this.addColumns();
+    this.addCellRenderers();
   }
 
   handleEvent(event: Event): void {
@@ -69,6 +71,22 @@ export class BeakerxDataGrid extends DataGrid {
   destroy() {
     this.destroyAllColumns();
     this.dispose();
+  }
+
+  getColumn(index: number, region: string): DataGridColumn|null {
+    if (region === 'body') {
+      return this.columns.body[index];
+    }
+
+    if (region === 'column-header' || region === 'corner-header') {
+      return this.columns.index[index];
+    }
+
+    return null;
+  }
+
+  private addModel(modelOptions: IDataModelOptions) {
+    this.model = new TableDataModel(modelOptions);
   }
 
   private addColumns() {
@@ -92,7 +110,6 @@ export class BeakerxDataGrid extends DataGrid {
       }, this);
 
       this.columns.body.push(column);
-      this.headerCellHovered.connect(column.handleHeaderCellHovered);
     });
   }
 
@@ -108,11 +125,15 @@ export class BeakerxDataGrid extends DataGrid {
     }, this);
 
     this.columns.index.push(column);
-    this.headerCellHovered.connect(column.handleHeaderCellHovered);
   }
 
-  private addModel(modelOptions: IDataModelOptions) {
-    this.model = new TableDataModel(modelOptions);
+  private addCellRenderers() {
+    let cellRendererFactory = new CellRendererFactory(this);
+    let defaultRenderer = cellRendererFactory.getRenderer();
+
+    this.cellRenderers.set('body', {}, defaultRenderer);
+    this.cellRenderers.set('column-header', {}, defaultRenderer);
+    this.cellRenderers.set('row-header', {}, defaultRenderer);
   }
 
   private destroyAllColumns() {

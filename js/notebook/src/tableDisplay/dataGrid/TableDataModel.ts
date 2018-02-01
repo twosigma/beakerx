@@ -17,8 +17,8 @@
 import { DataModel } from "@phosphor/datagrid";
 import { getDisplayType, ALL_TYPES } from './dataTypes';
 import { DataFormatter } from './DataFormatter';
-import { COLUMN_TYPES } from "./DataGridColumn";
-import {IColumn} from "./interface/IColumn";
+import { COLUMN_TYPES } from "./column/DataGridColumn";
+import { IColumn } from "./interface/IColumn";
 import IDataModelOptions from './interface/IDataModelOptions';
 
 export class TableDataModel extends DataModel {
@@ -84,12 +84,11 @@ export class TableDataModel extends DataModel {
     return this.dataFormatter.getFormatFnByType(displayType)(data, row, column);
   }
 
-  getColumnTypeName(column: IColumn) {
+  getColumnDataType(column: IColumn) {
     if (column.type === COLUMN_TYPES.index) {
       return TableDataModel.DEFAULT_INDEX_COLUMN_TYPE;
     }
 
     return this._options.types[column.index];
   }
-
 }

@@ -15,10 +15,10 @@
  */
 
 import { expect, assert } from 'chai';
-import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import DataGridColumn, { COLUMN_TYPES } from '@beakerx/tableDisplay/dataGrid/DataGridColumn';
-import ColumnMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu";
-import IndexMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/IndexMenu";
+import { BeakerxDataGrid } from "../../../../../src/tableDisplay/dataGrid/BeakerxDataGrid";
+import DataGridColumn, { COLUMN_TYPES } from '../../../../../src/tableDisplay/dataGrid/column/DataGridColumn';
+import ColumnMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/ColumnMenu";
+import IndexMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/IndexMenu";
 
 declare var require: Function;
 

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { COLUMN_TYPES } from "../DataGridColumn";
+import { COLUMN_TYPES } from "../column/DataGridColumn";
 
 export interface ICellData {
   type: COLUMN_TYPES,

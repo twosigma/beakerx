@@ -19,12 +19,20 @@ import { createIndexMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 
 describe('createIndexMenuItems', () => {
-  const dataGrid = new BeakerxDataGrid({}, {
-    values: [],
-    columnNames: [],
-    types: [],
-    hasIndex: false,
-    stringFormatForColumn: null
+  let dataGrid;
+
+  before(() => {
+    dataGrid = new BeakerxDataGrid({}, {
+      values: [],
+      columnNames: [],
+      types: [],
+      stringFormatForColumn: null,
+      hasIndex: false
+    });
+  });
+
+  after(() => {
+    dataGrid.destroy();
   });
 
   it('should create index menu items', () => {

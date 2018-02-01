@@ -17,7 +17,7 @@
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { createColumnMenuItems } from './createColumnMenuItems';
 import HeaderMenu, { ITriggerOptions } from "./HeaderMenu";
-import { COLUMN_TYPES } from "../DataGridColumn";
+import { COLUMN_TYPES } from "../column/DataGridColumn";
 
 export default class ColumnMenu extends HeaderMenu {
 

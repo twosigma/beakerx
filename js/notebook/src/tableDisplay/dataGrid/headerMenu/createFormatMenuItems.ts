@@ -21,7 +21,7 @@ import { getAllowedTypesByType } from "../dataTypes";
 import { IColumn } from "../interface/IColumn";
 
 export function createFormatMenuItems(column: IColumn, dataGrid: BeakerxDataGrid) {
-  const types = getAllowedTypesByType(dataGrid.model.getColumnTypeName(column));
+  const types = getAllowedTypesByType(dataGrid.model.getColumnDataType(column));
   let items: MenuItem[] = [];
 
   types.forEach((obj) => {

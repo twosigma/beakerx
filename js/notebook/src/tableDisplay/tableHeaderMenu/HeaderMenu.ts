@@ -167,7 +167,7 @@ export default abstract class HeaderMenu implements MenuInterface {
     return submenu;
   }
 
-  private handleKeydownEvent(event: KeyboardEvent): void {
+  private handleKeydownEvent(event): void {
     this.menu.isVisible && this.menu.handleEvent(event);
   }
 
@@ -194,7 +194,8 @@ export default abstract class HeaderMenu implements MenuInterface {
       })
       .on('keydown.keyTable', '.dropdown-menu-search input', function(event) { event.stopImmediatePropagation(); })
       .on('keyup.HeaderMenu, change', '.dropdown-menu-search input', function(event) {
-        const searchExp = this.value ? new RegExp(this.value, 'i') : null;
+        let value = (this as HTMLInputElement).value;
+        const searchExp = value ? new RegExp(value, 'i') : null;
 
         if (event.keyCode === 27) {
           menu.close();

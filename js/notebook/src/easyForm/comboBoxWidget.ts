@@ -42,7 +42,8 @@ class ComboBoxView extends widgets.SelectView {
     this.listbox.setAttribute('size', this.model.get('size'));
 
     setTimeout(() => {
-      $(this.listbox).combobox({
+      let listbox:any = $(this.listbox);
+      listbox.combobox({
         change: this.setValueToModel.bind(this),
       });
 

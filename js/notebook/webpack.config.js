@@ -206,7 +206,7 @@ module.exports = [
     plugins: plugins
   },
   {// BeakerXTree JupyterLab bundle
-      entry: './src/tree.js',
+      entry: './src/tree/TreeWidget.ts',
       output: {
           filename: 'tree.js',
           path: path.resolve(__dirname, '../lab/lib/'),
@@ -219,10 +219,7 @@ module.exports = [
       externals: externals.concat([
           '@phosphor/widgets',
           '@phosphor/commands',
-          '@phosphor/disposable',
           '@phosphor/messaging',
-          '@jupyter-widgets/jupyterlab-manager',
-          '@jupyterlab',
       ]),
       plugins: plugins
   },

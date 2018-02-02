@@ -19,8 +19,11 @@ declare function require(moduleName: string): any;
 import { JupyterLabPlugin, JupyterLab, ILayoutRestorer } from "@jupyterlab/application";
 import { ICommandPalette, InstanceTracker } from "@jupyterlab/apputils";
 import { JSONExt } from "@phosphor/coreutils";
+import { PageConfig } from "@jupyterlab/coreutils";
 
-const BeakerXTreeWidget = require("../lib/tree.js").default;
+const BeakerXTreeLib = require("../lib/tree.js").default;
+const BeakerXTreeWidget = BeakerXTreeLib.BeakerXTreeWidget;
+const BeakerXApi = BeakerXTreeLib.BeakerXApi;
 
 function activate(app: JupyterLab, palette: ICommandPalette, restorer: ILayoutRestorer) {
   let widget:any;
@@ -31,7 +34,9 @@ function activate(app: JupyterLab, palette: ICommandPalette, restorer: ILayoutRe
     label: 'BeakerX Options',
     execute: () => {
       if (!widget) {
-        widget = new BeakerXTreeWidget();
+        widget = new BeakerXTreeWidget(
+          new BeakerXApi(PageConfig.getBaseUrl())
+        );
         widget.update();
       }
       if (!tracker.has(widget)) {

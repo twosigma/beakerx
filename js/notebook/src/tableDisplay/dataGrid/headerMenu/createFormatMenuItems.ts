@@ -20,8 +20,7 @@ import { getAllowedTypesByType } from "../dataTypes";
 import DataGridColumn from "../column/DataGridColumn";
 
 export function createFormatMenuItems(column: DataGridColumn) {
-  const dataGrid = column.dataGrid;
-  const types = getAllowedTypesByType(dataGrid.model.getColumnDataType(column));
+  const types = getAllowedTypesByType(column.dataType);
   let items: MenuItem[] = [];
 
   types.forEach((obj) => {

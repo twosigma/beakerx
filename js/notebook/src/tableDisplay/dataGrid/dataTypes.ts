@@ -26,29 +26,21 @@ export enum ALL_TYPES {
   'exponential 15',
   'datetime',
   'boolean',
-  'html'
-}
-
-export enum TYPES_MAP {
-  'int64' = ALL_TYPES.string,
-  'time' = ALL_TYPES.datetime,
-  'integer' = ALL_TYPES['formatted integer']
+  'html',
+  'int64',
+  'time'
 }
 
 const DEFAULT_DOUBLE_WITH_PRECISION_TYPE = '4.3';
 
 export const getTypeByName = (typeName: string): number => {
-  if (TYPES_MAP[typeName]) {
-    return TYPES_MAP[typeName];
-  }
-
   return ALL_TYPES[typeName] || 0;
 };
 
 export function getDisplayType(typeName: string, stringFormatForType?: any, stringFormatForColumn?: any) {
   const type: number = getTypeByName(typeName);
 
-  if (type === ALL_TYPES.datetime) {
+  if (type === ALL_TYPES.datetime || type === ALL_TYPES.time) {
     return ALL_TYPES.datetime;
   }
 
@@ -78,27 +70,27 @@ export function getDoublePrecisionByType(type: string|number): string {
 }
 
 export function getAllowedTypesByType(type) {
-  if (!type) {
+  if (type === undefined) {
     return consts.scopeData.allTypes;
   }
 
-  if (type === 'string') {
+  if (type === ALL_TYPES.string) {
     return consts.scopeData.allStringTypes;
   }
 
-  if (type === 'double') {
+  if (type === ALL_TYPES.double) {
     return consts.scopeData.allDoubleTypes;
   }
 
-  if (type === 'integer' || type === 'int64') {
+  if (type === ALL_TYPES.integer || type === ALL_TYPES.int64) {
     return consts.scopeData.allIntTypes;
   }
 
-  if (type === 'time' || type === 'datetime') {
+  if (type === ALL_TYPES.time || type === ALL_TYPES.datetime) {
     return consts.scopeData.allTimeTypes;
   }
 
-  if (type === 'boolean') {
+  if (type === ALL_TYPES.boolean) {
     return consts.scopeData.allBoolTypes;
   }
 

@@ -19,8 +19,8 @@ import IndexMenu from "../headerMenu/IndexMenu";
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
-import {ALIGNMENTS_BY_CHAR, getAlignmentByChar, getAlignmentByType} from "./columnAlignment";
-import { TextRenderer} from "@phosphor/datagrid";
+import { getAlignmentByChar, getAlignmentByType} from "./columnAlignment";
+import { DataModel, TextRenderer } from "@phosphor/datagrid";
 import { ALL_TYPES, getTypeByName } from "../dataTypes";
 
 export enum COLUMN_TYPES {
@@ -57,6 +57,14 @@ export default class DataGridColumn {
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
     this.createMenu(options.menuOptions);
     this.connectToHeaderCellHovered();
+  }
+
+  static getColumnTypeByRegion(region: DataModel.CellRegion) {
+    if (region === 'row-header' || region === 'corner-header') {
+      return COLUMN_TYPES.index;
+    }
+
+    return COLUMN_TYPES.body;
   }
 
   setState(state) {
@@ -98,14 +106,16 @@ export default class DataGridColumn {
       return;
     }
 
-    this.menu.showTrigger();
+    this.menu.showTrigger(data.offset);
     this.state.triggerShown = true;
   }
 
   getDataType(): ALL_TYPES {
-    return getTypeByName(this.dataGrid.model.getColumnDataType({
-      index: this.index, type: this.type
-    }));
+    const typeName = this.type === COLUMN_TYPES.index
+      ? this.dataGrid.model.indexColumnsState.types[this.index]
+      : this.dataGrid.model.bodyColumnsState.types[this.index];
+
+    return getTypeByName(typeName);
   }
 
   getInitialAlignment() {

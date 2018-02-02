@@ -18,8 +18,8 @@ import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { Widget } from "@phosphor/widgets";
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
-import { BeakerxDataGridModel } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGridModel";
+import DataGridColumn, { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import { BeakerxDataGridModel } from "@beakerx/tableDisplay/dataGrid/model/BeakerxDataGridModel";
 
 describe('BeakerxDataGrid', () => {
   let dataGrid;
@@ -39,15 +39,15 @@ describe('BeakerxDataGrid', () => {
   });
 
   it('should create index column', () => {
-    expect(dataGrid.columns).to.have.property('index');
-    expect(dataGrid.columns.index).to.have.length(1);
-    expect(dataGrid.columns.index[0]).to.be.an.instanceof(DataGridColumn);
+    expect(dataGrid.columns).to.have.property(`${COLUMN_TYPES.index}`);
+    expect(dataGrid.columns[COLUMN_TYPES.index]).to.have.length(1);
+    expect(dataGrid.columns[COLUMN_TYPES.index][0]).to.be.an.instanceof(DataGridColumn);
   });
 
   it('should create body column', () => {
-    expect(dataGrid.columns).to.have.property('body');
-    expect(dataGrid.columns.body).to.have.length(1);
-    expect(dataGrid.columns.body[0]).to.be.an.instanceof(DataGridColumn);
+    expect(dataGrid.columns).to.have.property(`${COLUMN_TYPES.body}`);
+    expect(dataGrid.columns[COLUMN_TYPES.body]).to.have.length(1);
+    expect(dataGrid.columns[COLUMN_TYPES.body][0]).to.be.an.instanceof(DataGridColumn);
   });
 
   it('should have the model property of type BeakerxDataGridModel', () => {

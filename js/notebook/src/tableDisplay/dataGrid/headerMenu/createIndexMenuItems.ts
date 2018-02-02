@@ -24,7 +24,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
   const createShowColumnSubmenu = (column): MenuItem[] => {
     const items: MenuItem[] = [];
 
-    dataGrid.model.columnNames.forEach(function(columnName, index) {
+    dataGrid.model.bodyColumnsState.names.forEach(function(columnName, index) {
       items.push({
         title: columnName,
         isChecked: () => {

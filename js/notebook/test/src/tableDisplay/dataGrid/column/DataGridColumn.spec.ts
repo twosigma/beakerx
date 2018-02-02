@@ -36,6 +36,7 @@ describe('DataGridColumn', () => {
     const bodyDataGridColumn = new DataGridColumn({
       type: COLUMN_TYPES.body,
       index: 0,
+      name: 'index',
       menuOptions: { x: 0, y: 0, height: 20, width: 20 }
     }, dataGrid);
 
@@ -48,14 +49,14 @@ describe('DataGridColumn', () => {
     });
 
     it('should have the trigger state set to false', () => {
-      expect(bodyDataGridColumn.state.triggerShown).to.equal(false);
+      expect(bodyDataGridColumn['state'].triggerShown).to.equal(false);
     });
 
     it('should change the trigger state', () => {
       bodyDataGridColumn.handleHeaderCellHovered(
-        dataGrid, { type: COLUMN_TYPES.body, index: 0, delta: 0 }
+        dataGrid, { type: COLUMN_TYPES.body, index: 0, delta: 0, offset: 0 }
       );
-      expect(bodyDataGridColumn.state.triggerShown).to.equal(true);
+      expect(bodyDataGridColumn['state'].triggerShown).to.equal(true);
     });
   });
 
@@ -63,6 +64,7 @@ describe('DataGridColumn', () => {
     const indexDataGridColumn = new DataGridColumn({
       type: COLUMN_TYPES.index,
       index: 0,
+      name: 'index',
       menuOptions: { x: 0, y: 0, height: 20, width: 20 }
     }, dataGrid);
 
@@ -75,14 +77,14 @@ describe('DataGridColumn', () => {
     });
 
     it('should have the trigger state set to false', () => {
-      expect(indexDataGridColumn.state.triggerShown).to.equal(false);
+      expect(indexDataGridColumn['state'].triggerShown).to.equal(false);
     });
 
     it('should change the trigger state', () => {
       indexDataGridColumn.handleHeaderCellHovered(
-        dataGrid, { type: COLUMN_TYPES.index, index: 0, delta: 0 }
+        dataGrid, { type: COLUMN_TYPES.index, index: 0, delta: 0, offset: 0 }
       );
-      expect(indexDataGridColumn.state.triggerShown).to.equal(true);
+      expect(indexDataGridColumn['state'].triggerShown).to.equal(true);
     });
   });
 

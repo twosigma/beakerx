@@ -20,13 +20,13 @@ import { DataFormatter } from '../DataFormatter';
 import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn";
 import IDataModelState from '../interface/IDataGridModelState';
 
+interface IColumnState {
+  names: string[],
+  types: string[]
+}
+
 export class BeakerxDataGridModel extends DataModel {
-  allColumnNames: string[];
-  bodyColumnNames: string[];
-  indexColumnNames: string[];
-  allColumnDataTypes: string[];
-  bodyColumnDataTypes: string[];
-  indexColumnDataTypes: string[];
+  columnsState: {};
   dataFormatter: DataFormatter;
 
   static DEFAULT_INDEX_COLUMN_TYPE = ALL_TYPES[1]; // integer
@@ -40,27 +40,52 @@ export class BeakerxDataGridModel extends DataModel {
   constructor(state: IDataModelState) {
     super();
 
-    this.allColumnNames = state.columnNames;
-    this.bodyColumnNames = state.hasIndex ? state.columnNames.slice(1) : state.columnNames;
-    this.indexColumnNames = state.hasIndex
-      ? state.columnNames.slice(0, 1)
-      : [BeakerxDataGridModel.DEFAULT_INDEX_COLUMN_NAME];
-    this.allColumnDataTypes = state.types;
-    this.bodyColumnDataTypes = state.hasIndex ? state.types.slice(1) : state.types;
-    this.indexColumnDataTypes = state.hasIndex
-      ? state.types.slice(0, 1)
-      : [BeakerxDataGridModel.DEFAULT_INDEX_COLUMN_TYPE];
-    
-    this.dataFormatter = new DataFormatter(state);
-
-    this._state = state;
-    this._data = state.values;
-    this._columnCount = this.bodyColumnNames.length || 0;
-    this._rowCount = this._data.length;
+    this.addColumnsState(state);
+    this.addProperties(state);
   }
 
   get state() {
     return this._state;
+  }
+
+  get bodyColumnsState() {
+    return this.columnsState[COLUMN_TYPES.body];
+  }
+
+  get indexColumnsState() {
+    return this.columnsState[COLUMN_TYPES.index];
+  }
+
+  addColumnsState(state) {
+    let bodyColumnsState: IColumnState = { names: [], types: [] };
+    let indexColumnsState: IColumnState = { names: [], types: [] };
+
+    this.columnsState = {};
+    this.columnsState[COLUMN_TYPES.body] = bodyColumnsState;
+    this.columnsState[COLUMN_TYPES.index] = indexColumnsState;
+
+    this.columnsState[COLUMN_TYPES.body].names = state.hasIndex
+      ? state.columnNames.slice(1)
+      : state.columnNames;
+    this.columnsState[COLUMN_TYPES.index].names = state.hasIndex
+      ? state.columnNames.slice(0, 1)
+      : [BeakerxDataGridModel.DEFAULT_INDEX_COLUMN_NAME];
+
+    this.columnsState[COLUMN_TYPES.body].types = state.hasIndex
+      ? state.types.slice(1)
+      : state.types;
+    this.columnsState[COLUMN_TYPES.index].types = state.hasIndex
+      ? state.types.slice(0, 1)
+      : [BeakerxDataGridModel.DEFAULT_INDEX_COLUMN_TYPE];
+  }
+
+  addProperties(state) {
+    this.dataFormatter = new DataFormatter(state);
+
+    this._state = state;
+    this._data = state.values;
+    this._columnCount = this.bodyColumnsState.names.length || 0;
+    this._rowCount = this._data.length;
   }
 
   rowCount(region: DataModel.RowRegion): number {
@@ -77,11 +102,11 @@ export class BeakerxDataGridModel extends DataModel {
     }
 
     if (region === 'column-header') {
-      return this.bodyColumnNames[columnIndex];
+      return this.bodyColumnsState.names[columnIndex];
     }
 
     if (region === 'corner-header') {
-      return this.indexColumnNames[columnIndex];
+      return this.indexColumnsState.names[columnIndex];
     }
 
     return this.getFormatFn(region, row, columnIndex);
@@ -101,16 +126,16 @@ export class BeakerxDataGridModel extends DataModel {
     const columnType = DataGridColumn.getColumnTypeByRegion(region);
 
     return  columnType === COLUMN_TYPES.index
-      ? this.indexColumnDataTypes[columnIndex]
-      : this.bodyColumnDataTypes[columnIndex];
+      ? this.indexColumnsState.types[columnIndex]
+      : this.bodyColumnsState.types[columnIndex];
   }
 
   getColumnName(columnIndex: number, region: DataModel.CellRegion) {
     const columnType = DataGridColumn.getColumnTypeByRegion(region);
 
     return columnType === COLUMN_TYPES.index
-      ? this.indexColumnNames[columnIndex]
-      : this.bodyColumnNames[columnIndex];
+      ? this.indexColumnsState.names[columnIndex]
+      : this.bodyColumnsState.names[columnIndex];
   }
 
   getFormatFn(region: DataModel.CellRegion, row: number, columnIndex: number): any {

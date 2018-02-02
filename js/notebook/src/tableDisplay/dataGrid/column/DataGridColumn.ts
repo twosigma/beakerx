@@ -112,8 +112,8 @@ export default class DataGridColumn {
 
   getDataType(): ALL_TYPES {
     const typeName = this.type === COLUMN_TYPES.index
-      ? this.dataGrid.model.indexColumnDataTypes[this.index]
-      : this.dataGrid.model.bodyColumnDataTypes[this.index];
+      ? this.dataGrid.model.indexColumnsState.types[this.index]
+      : this.dataGrid.model.bodyColumnsState.types[this.index];
 
     return getTypeByName(typeName);
   }

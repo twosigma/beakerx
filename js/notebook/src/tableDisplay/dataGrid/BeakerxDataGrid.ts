@@ -91,9 +91,9 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   private addBodyColumns() {
-    this.model.bodyColumnNames.forEach((name, index) => {
+    this.model.bodyColumnsState.names.forEach((name, index) => {
       let menuOptions: ITriggerOptions = {
-        x: this.getColumnOffset(index),
+        x: this.getColumnOffset(index, COLUMN_TYPES.body),
         y: 0,
         width: this.headerHeight,
         height: this.headerHeight
@@ -117,7 +117,7 @@ export class BeakerxDataGrid extends DataGrid {
 
     let column = new DataGridColumn({
       index: 0,
-      name: this.model.indexColumnNames[0],
+      name: this.model.indexColumnsState.names[0],
       menuOptions: { x: 0, y: 0, width: this.headerHeight, height: this.headerHeight },
       type: COLUMN_TYPES.index
     }, this);
@@ -142,7 +142,11 @@ export class BeakerxDataGrid extends DataGrid {
     Signal.disconnectAll(this);
   }
 
-  private getColumnOffset(index: number) {
+  private getColumnOffset(index: number, type: COLUMN_TYPES) {
+    if (type === COLUMN_TYPES.index) {
+      return 0;
+    }
+
     return this.rowHeaderSections.totalSize + this.columnSections.sectionOffset(index);
   }
 
@@ -175,16 +179,16 @@ export class BeakerxDataGrid extends DataGrid {
         data = this.findHoveredCellIndex(this.columnHeaderSections, x);
       }
 
-      if (data) {
-        return { ...data, type: COLUMN_TYPES.index, offset: this.getColumnOffset(data.index) };
-      }
-
-      if (x <= this.headerWidth) {
+      if (!data && x <= this.headerWidth) {
         data = this.findHoveredCellIndex(this.rowHeaderSections, y);
       }
 
       if (data) {
-        return { ...data, type: COLUMN_TYPES.index, offset: this.getColumnOffset(data.index) };
+        return {
+          ...data,
+          type: COLUMN_TYPES.index,
+          offset: this.getColumnOffset(data.index, COLUMN_TYPES.index)
+        };
       }
 
       return null;
@@ -197,7 +201,11 @@ export class BeakerxDataGrid extends DataGrid {
       let data = this.findHoveredCellIndex(this.columnSections, pos);
 
       if (data) {
-        return { ...data, type: COLUMN_TYPES.body, offset: this.getColumnOffset(data.index) };
+        return {
+          ...data,
+          type: COLUMN_TYPES.body,
+          offset: this.getColumnOffset(data.index, COLUMN_TYPES.body)
+        };
       }
 
       return null;

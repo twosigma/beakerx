@@ -15,18 +15,22 @@
  */
 
 define([
-  'require'
+  'require',
+  'base/js/namespace'
 ], function(
-  require
+  require,
+  Jupyter
 ) {
   "use strict";
 
-  function load() {
-    var $ = require('jquery');
-    var Widget = require('@phosphor/widgets').Widget;
-    var BeakerXTreeWidget = require('./tree/TreeWidget').default;
+  var $ = require('jquery');
+  var Widget = require('@phosphor/widgets').Widget;
 
-    var bxWidget = new BeakerXTreeWidget();
+  function load() {
+    var base_url = (Jupyter.notebook_list || Jupyter.notebook).base_url;
+    var BeakerXTreeWidget = require('./tree/TreeWidget').default;
+    var BeakerxApi = require('./tree/BeakerXApi').default;
+    var bxWidget = new BeakerXTreeWidget(new BeakerxApi(base_url));
 
     Widget.attach(bxWidget, $('.tab-content').get(0));
     $('#tabs').append(

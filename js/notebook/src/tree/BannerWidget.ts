@@ -16,7 +16,7 @@
 
 import * as $ from 'jquery';
 import { Widget } from "@phosphor/widgets";
-import BeakerxApi from "./BeakerxApi";
+import BeakerXApi from "./BeakerXApi";
 
 export default class BannerWidget extends Widget {
 
@@ -60,9 +60,9 @@ export default class BannerWidget extends Widget {
 </div>
 `;
 
-  constructor() {
+  constructor(api: BeakerXApi) {
     super();
-    BeakerxApi
+    api
       .getVersion()
       .then((version) => {
           this.buildWidget(version);

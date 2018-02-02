@@ -18,7 +18,7 @@ import * as $ from "jquery";
 import * as _ from "underscore";
 import { Widget } from "@phosphor/widgets";
 import { MessageLoop, Message } from "@phosphor/messaging";
-import { IOtherJVMOptions } from "../BeakerxApi";
+import { IOtherJVMOptions } from "../BeakerXApi";
 import { Messages } from "./Messages";
 import OtherOptionsChangedMessage = Messages.OtherOptionsChangedMessage;
 

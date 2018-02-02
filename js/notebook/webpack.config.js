@@ -206,7 +206,7 @@ module.exports = [
     plugins: plugins
   },
   {// BeakerXTree JupyterLab bundle
-      entry: './src/tree/TreeWidget.ts',
+      entry: './src/tree-lab.ts',
       output: {
           filename: 'tree.js',
           path: path.resolve(__dirname, '../lab/lib/'),

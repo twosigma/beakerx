@@ -15,10 +15,6 @@
  */
 
 import * as $ from "jquery";
-// import { PageConfig } from "@jupyterlab/coreutils";
-
- const baseUrl = '/'; //PageConfig.getBaseUrl(); TODO
-const apiUrl = `${baseUrl}beakerx/`;
 
 export interface IDefaultJVMOptions {
   heap_GB: number;
@@ -42,12 +38,19 @@ function getCookie(name) {
   return r ? r[1] : void 0;
 }
 
-export default class BeakerxApi {
+export default class BeakerXApi {
 
-  public static getApiUrl(endpoint: string): string {
-    return `${apiUrl}${endpoint}`;
+  private apiUrl: string;
+
+  constructor(baseUrl: string = '/') {
+    this.apiUrl = `${baseUrl}beakerx/`;
   }
-  public static getVersion(): Promise<string> {
+
+  public getApiUrl(endpoint: string): string {
+    return `${this.apiUrl}${endpoint}`;
+  }
+
+  public getVersion(): Promise<string> {
 
     return new Promise((resolve, reject) => {
       $.ajax(this.getApiUrl('version'), {
@@ -62,7 +65,7 @@ export default class BeakerxApi {
     });
   }
 
-  public static loadSettings(): Promise<IApiSettingsResponse> {
+  public loadSettings(): Promise<IApiSettingsResponse> {
     return new Promise((resolve, reject) => {
       $.ajax(this.getApiUrl('settings'), {
         success: (data, status) => {
@@ -76,7 +79,7 @@ export default class BeakerxApi {
     });
   }
 
-  public static saveSettings(data): Promise<any> {
+  public saveSettings(data): Promise<any> {
     return new Promise<IApiSettingsResponse>((resolve, reject) => {
 
       $.ajax(this.getApiUrl('settings'), {

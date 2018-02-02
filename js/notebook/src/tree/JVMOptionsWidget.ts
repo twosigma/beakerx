@@ -21,10 +21,10 @@ import { DefaultOptionsModel, DefaultOptionsWidget } from "./JVMOptions/DefaultO
 import { OtherOptionsModel, OtherOptionsWidget } from "./JVMOptions/OtherOptionsWidget";
 import { PropertiesModel, PropertiesWidget } from "./JVMOptions/PropertiesWidget";
 import { SyncIndicatorWidget } from "./JVMOptions/SyncIndicatorWidget";
-import BeakerxApi, {
+import BeakerXApi, {
   IApiSettingsResponse, IDefaultJVMOptions, IJVMOptions, IOtherJVMOptions,
   IPropertiesJVMOptions
-} from "./BeakerxApi";
+} from "./BeakerXApi";
 import { Messages } from "./JVMOptions/Messages";
 
 export default class JVMOptionsWidget extends Panel {
@@ -39,7 +39,7 @@ export default class JVMOptionsWidget extends Panel {
 </style>
 `;
 
-  constructor() {
+  constructor(api: BeakerXApi) {
     super();
 
     this.addClass('beakerx_container');
@@ -50,6 +50,7 @@ export default class JVMOptionsWidget extends Panel {
     let propertiesWidget = new PropertiesWidget();
 
     this._model = new JvmOptionsModel(
+      api,
       new DefaultOptionsModel(defaultOptionsWidget),
       new PropertiesModel(propertiesWidget),
       new OtherOptionsModel(otherOptionsWidget),
@@ -109,6 +110,7 @@ export default class JVMOptionsWidget extends Panel {
 class JvmOptionsModel {
 
   constructor(
+    private api: BeakerXApi,
     private defaultOptionsModel: DefaultOptionsModel,
     private propertiesOptionsModel: PropertiesModel,
     private otherOptionsModel: OtherOptionsModel,
@@ -119,7 +121,7 @@ class JvmOptionsModel {
   private _options: IApiSettingsResponse;
 
   public setDefaultOptions(options: IDefaultJVMOptions): void {
-    this._options.jvm_options.heap_GB = parseFloat(`${ options.heap_GB }`);
+    this._options.jvm_options.heap_GB = options.heap_GB;
   }
   public setOtherOptions(options: IOtherJVMOptions): void {
     this._options.jvm_options.other = options;
@@ -131,7 +133,7 @@ class JvmOptionsModel {
   public load() {
     this.syncWidget.onSyncStart();
 
-    BeakerxApi.loadSettings()
+    this.api.loadSettings()
       .then((data: IApiSettingsResponse) => {
         this._options = data;
 
@@ -168,7 +170,7 @@ class JvmOptionsModel {
 
     this.syncWidget.showResult(this.buildResult(payload.jvm_options));
 
-    BeakerxApi.saveSettings({ beakerx:  payload })
+    this.api.saveSettings({ beakerx:  payload })
       .then(() => {
 
         setTimeout(() => {

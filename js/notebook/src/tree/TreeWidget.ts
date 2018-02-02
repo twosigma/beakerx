@@ -19,6 +19,7 @@ import BannerWidget from "./BannerWidget";
 import JVMOptionsWidget from "./JVMOptionsWidget";
 import * as $ from "jquery";
 import {Message} from "@phosphor/messaging";
+import BeakerXApi from "./BeakerXApi";
 
 export default class BeakerXTreeWidget extends Panel {
 
@@ -32,13 +33,13 @@ export default class BeakerXTreeWidget extends Panel {
   }
 </style>
 `;
-  constructor() {
+  constructor(api: BeakerXApi) {
     super();
 
     this.id = 'beakerx-tree';
     this.addClass('tab-pane');
     this.setupTitle();
-    this.createWidgetContent();
+    this.createWidgetContent(api);
   }
 
   private setupTitle() {
@@ -46,10 +47,10 @@ export default class BeakerXTreeWidget extends Panel {
     this.title.closable = true;
   }
 
-  private createWidgetContent() {
-    this.addWidget(new BannerWidget());
+  private createWidgetContent(api: BeakerXApi) {
+    this.addWidget(new BannerWidget(api));
     this.addWidget(new Widget({ node: document.createElement('br') }));
-    this.addWidget(new JVMOptionsWidget());
+    this.addWidget(new JVMOptionsWidget(api));
   }
 
   onAfterAttach(msg: Message): void {

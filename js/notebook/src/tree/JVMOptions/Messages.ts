@@ -1,7 +1,7 @@
 import { Message } from "@phosphor/messaging";
 import {
   IDefaultJVMOptions, IOtherJVMOptions, IPropertiesJVMOptions
-} from "../BeakerxApi";
+} from "../BeakerXApi";
 
 export namespace Messages {
 

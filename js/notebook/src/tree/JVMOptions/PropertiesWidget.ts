@@ -21,7 +21,7 @@ import { Widget } from "@phosphor/widgets";
 import { MessageLoop, Message } from "@phosphor/messaging";
 import { Messages } from "./Messages";
 import PropertiesOptionsChangedMessage = Messages.PropertiesOptionsChangedMessage;
-import { IPropertiesJVMOptions } from "../BeakerxApi";
+import { IPropertiesJVMOptions } from "../BeakerXApi";
 
 export class PropertiesWidget extends Widget {
 

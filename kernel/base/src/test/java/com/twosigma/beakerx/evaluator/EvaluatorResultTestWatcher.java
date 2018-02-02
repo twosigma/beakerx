@@ -102,12 +102,24 @@ public class EvaluatorResultTestWatcher {
     return idleMessage;
   }
 
-  public static Optional<Message> waitForUpdateMessage(KernelTest socketsTest) throws InterruptedException {
+
+  public static Optional<Message> waitForUpdateMessage(KernelSocketsTest socketsTest) throws InterruptedException {
     int count = 0;
-    Optional<Message> idleMessage = getUpdate(socketsTest);
+    Optional<Message> idleMessage = getUpdate(socketsTest.getPublishedMessages());
     while (!idleMessage.isPresent() && count < ATTEMPT) {
       Thread.sleep(SLEEP_IN_MILLIS);
-      idleMessage = getUpdate(socketsTest);
+      idleMessage = getUpdate(socketsTest.getPublishedMessages());
+      count++;
+    }
+    return idleMessage;
+  }
+
+  public static Optional<Message> waitForUpdateMessage(KernelTest kernelTest) throws InterruptedException {
+    int count = 0;
+    Optional<Message> idleMessage = getUpdate(kernelTest.getPublishedMessages());
+    while (!idleMessage.isPresent() && count < ATTEMPT) {
+      Thread.sleep(SLEEP_IN_MILLIS);
+      idleMessage = getUpdate(kernelTest.getPublishedMessages());
       count++;
     }
     return idleMessage;
@@ -139,8 +151,8 @@ public class EvaluatorResultTestWatcher {
   }
 
 
-  private static Optional<Message> getUpdate(KernelTest kernel) {
-    return kernel.getPublishedMessages().stream().
+  private static Optional<Message> getUpdate(List<Message> messages) {
+    return messages.stream().
             filter(x -> x.type().equals(JupyterMessages.COMM_MSG)).
             filter(x -> TestWidgetUtils.getData(x).get("method").equals("update")).
             findFirst();

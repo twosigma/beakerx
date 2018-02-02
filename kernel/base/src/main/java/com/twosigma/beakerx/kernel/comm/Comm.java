@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
@@ -73,11 +74,11 @@ public class Comm {
   }
 
   public Comm(TargetNamesEnum targetName) {
-    this(Utils.uuid(), targetName.getTargetName());
+    this(Utils.commUUID(), targetName.getTargetName());
   }
 
   public Comm(String targetName) {
-    this(Utils.uuid(), targetName);
+    this(Utils.commUUID(), targetName);
   }
 
   public String getCommId() {
@@ -205,21 +206,23 @@ public class Comm {
   }
 
   public void send(JupyterMessages type, Comm.Buffer buffer) {
+    HashMap<String, Serializable> map = new HashMap<>(6);
+    if (type != JupyterMessages.DISPLAY_DATA) {
+      map.put(COMM_ID, getCommId());
+    }
+    map.put(DATA, data);
+    map.put(METADATA, metadata);
+    send(type, buffer, map);
+  }
+
+  public void send(JupyterMessages type, Comm.Buffer buffer, Map<String, Serializable> content) {
     Message parentMessage = getParentMessage();// can be null
     Message message = new Message();
     message.setHeader(new Header(type, parentMessage != null ? parentMessage.getHeader().getSession() : null));
     if (parentMessage != null) {
       message.setParentHeader(getParentMessage().getHeader());
     }
-    HashMap<String, Serializable> map = new HashMap<>(6);
-
-    if (type != JupyterMessages.DISPLAY_DATA) {
-      map.put(COMM_ID, getCommId());
-    }
-
-    map.put(DATA, data);
-    map.put(METADATA, metadata);
-    message.setContent(map);
+    message.setContent(content);
     message.setMetadata(buildMetadata());
     if (!buffer.isEmpty()) {
       message.setBuffers(buffer.getBuffers());
@@ -235,6 +238,10 @@ public class Comm {
     content.put(BUFFER_PATHS, buffer.getBufferPaths());
     this.setData(content);
     this.send(buffer);
+  }
+
+  public void sendOutputContent(final Map<String, Serializable> content) {
+    this.send(JupyterMessages.STREAM, Buffer.EMPTY, content);
   }
 
   public void sendUpdate(final String propertyName, final Object value) {

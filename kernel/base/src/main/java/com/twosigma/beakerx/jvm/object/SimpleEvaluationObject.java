@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.twosigma.beakerx.message.Message;
@@ -42,6 +43,19 @@ public class SimpleEvaluationObject extends Observable {
   private Queue<ConsoleOutput> consoleOutput = new ConcurrentLinkedQueue<>();
   private ProgressReporting progressReporting;
   private boolean showResult = true;
+  private CompletableFuture<Boolean> innerEvaluation = CompletableFuture.completedFuture(true);
+
+  public void startInnerEvaluation() {
+    innerEvaluation = new CompletableFuture<>();
+  }
+
+  public void finishInnerEvaluation() {
+    innerEvaluation.complete(true);
+  }
+
+  public CompletableFuture<Boolean> getInnerEvaluation() {
+    return innerEvaluation;
+  }
 
   public SimpleEvaluationObject(String e, BeakerOutputHandler stdout, BeakerOutputHandler stderr) {
     expression = e;
@@ -74,7 +88,6 @@ public class SimpleEvaluationObject extends Observable {
     setChanged();
     notifyObservers();
   }
-
 
   public synchronized void error(Object r) {
     clrOutputHandler();

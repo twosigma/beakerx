@@ -19,16 +19,25 @@ import com.twosigma.beakerx.KernelExecutionTest;
 import com.twosigma.beakerx.kernel.CloseKernelAction;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.kernel.KernelSocketsFactory;
+import com.twosigma.beakerx.kernel.Utils;
 import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Header;
 import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.twosigma.beakerx.MessageFactoryTest.getExecuteRequestMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForResult;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForUpdateMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorTest.getCacheFolderFactory;
 import static com.twosigma.beakerx.groovy.TestGroovyEvaluator.groovyEvaluator;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,6 +67,83 @@ public class GroovyKernelTest extends KernelExecutionTest {
     Map actual = ((Map) result.getContent().get(Comm.DATA));
     String value = (String) actual.get("text/plain");
     assertThat(value).isEqualTo("[false, false, false]");
+  }
+
+  @Test
+  public void outputWidget() throws Exception {
+    //given
+    String outputCommId = "outputCommId";
+    addOutputWidget(outputCommId);
+    //when
+    String println = "" +
+            "println(\"Hello 1\")\n" +
+            "2+5";
+    evaluateCode(println);
+    simulateSendingUpdateMessageFromUI(outputCommId + "1");
+    //then
+    verifyOutputWidgetResult();
+    verifyIfCommMsgIsEarlierThanResult();
+  }
+
+  private void simulateSendingUpdateMessageFromUI(String outputCommId) {
+    kernelSocketsService.handleMsg(outputWidgetUpdateMessage(outputCommId));
+  }
+
+  private void verifyIfCommMsgIsEarlierThanResult() {
+    List<Message> publishedMessages = kernelSocketsService.getKernelSockets().getPublishedMessages();
+    List<Message> collect = publishedMessages.stream()
+            .filter(x -> (x.type().equals(JupyterMessages.COMM_MSG) || x.type().equals(JupyterMessages.EXECUTE_RESULT)))
+            .collect(Collectors.toList());
+    assertThat(collect.get(0).type()).isEqualTo(JupyterMessages.COMM_MSG);
+    assertThat(collect.get(1).type()).isEqualTo(JupyterMessages.EXECUTE_RESULT);
+  }
+
+  private void verifyOutputWidgetResult() throws InterruptedException {
+    Optional<Message> result = waitForResult(kernelSocketsService.getKernelSockets());
+    assertThat(result).isPresent();
+    Map actual = ((Map) result.get().getContent().get(Comm.DATA));
+    String value = (String) actual.get("text/plain");
+    assertThat(value).isEqualTo("7");
+  }
+
+  private void evaluateCode(String println) throws InterruptedException {
+    Message printlnMessage = getExecuteRequestMessage(println);
+    kernelSocketsService.handleMsg(printlnMessage);
+    Optional<Message> updateMessage = waitForUpdateMessage(kernelSocketsService.getKernelSockets());
+    assertThat(updateMessage).isPresent();
+    kernelSocketsService.clear();
+  }
+
+  private void addOutputWidget(String outputCommId) throws InterruptedException {
+    Utils.setFixedCommUUID(outputCommId);
+    String addWidget = "" +
+            "import com.twosigma.beakerx.widgets.Output\n" +
+            "out2 = new Output()\n" +
+            "OutputManager.setOutput(out2)\n" +
+            "out2";
+    Message addWidgetMessage = getExecuteRequestMessage(addWidget);
+    kernelSocketsService.handleMsg(addWidgetMessage);
+    Optional<Message> idleAddWidget = waitForIdleMessage(kernelSocketsService.getKernelSockets());
+    assertThat(idleAddWidget).isPresent();
+    kernelSocketsService.clear();
+    Utils.setDefaultCommUUID();
+  }
+
+  private Message outputWidgetUpdateMessage(String outputCommId) {
+    Message message = new Message();
+    Header header = new Header();
+    header.setTypeEnum(JupyterMessages.COMM_MSG);
+    message.setHeader(header);
+    HashMap<String, Serializable> content = new HashMap<>();
+    HashMap<String, Serializable> data = new HashMap<>();
+    data.put("method", "update");
+    HashMap<String, Serializable> state = new HashMap<>();
+    state.put("outputs", new ArrayList<>());
+    data.put("state", state);
+    content.put("comm_id", outputCommId);
+    content.put("data", data);
+    message.setContent(content);
+    return message;
   }
 
 }

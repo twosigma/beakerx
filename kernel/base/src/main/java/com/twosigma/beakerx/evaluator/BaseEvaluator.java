@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import com.twosigma.beakerx.DefaultJVMVariables;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.TryResult;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.threads.CellExecutor;
 import com.twosigma.beakerx.kernel.AddImportStatus;
 import com.twosigma.beakerx.kernel.Classpath;
@@ -38,6 +39,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public abstract class BaseEvaluator implements Evaluator {
 
@@ -51,6 +55,7 @@ public abstract class BaseEvaluator implements Evaluator {
   private final CellExecutor executor;
   private Path tempFolder;
   protected Repos repos;
+  protected ExecutorService executorService;
 
   public BaseEvaluator(String id, String sId, CellExecutor cellExecutor, TempFolderFactory tempFolderFactory, EvaluatorParameters evaluatorParameters) {
     shellId = id;
@@ -61,7 +66,20 @@ public abstract class BaseEvaluator implements Evaluator {
     classPath = new Classpath();
     classPath.add(new PathToJar(outDir));
     repos = new Repos();
+    executorService = Executors.newSingleThreadExecutor();
     init(evaluatorParameters);
+  }
+
+  protected TryResult evaluate(SimpleEvaluationObject seo, Callable<TryResult> callable) {
+    Future<TryResult> submit = executorService.submit(callable);
+    TryResult either = null;
+    try {
+      either = submit.get();
+      seo.getInnerEvaluation().get();
+    } catch (Exception e) {
+      either = TryResult.createError(e.getLocalizedMessage());
+    }
+    return either;
   }
 
   protected abstract void addJarToClassLoader(PathToJar pathToJar);

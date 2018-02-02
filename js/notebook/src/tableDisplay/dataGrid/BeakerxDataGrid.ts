@@ -14,30 +14,25 @@
  *  limitations under the License.
  */
 
-import { DataGrid } from "@phosphor/datagrid";
+import { DataGrid, DataModel } from "@phosphor/datagrid";
 import { ITriggerOptions } from "./headerMenu/HeaderMenu";
-import { BeakerxDataGridModel } from "./BeakerxDataGridModel";
+import { BeakerxDataGridModel } from "./model/BeakerxDataGridModel";
 import { Widget } from "@phosphor/widgets";
 import { Signal } from '@phosphor/signaling';
 import { ICellData } from "./interface/ICell";
 import { CellRendererFactory } from "./cell/CellRendererFactory";
 import DataGridColumn, { COLUMN_TYPES } from "./column/DataGridColumn";
-import IDataModelState from "./interface/IDataModelState";
-
-interface IColumns {
-  index: DataGridColumn[],
-  body: DataGridColumn[]
-}
+import IDataModelState from "./interface/IDataGridModelState";
 
 export class BeakerxDataGrid extends DataGrid {
-  model: BeakerxDataGridModel;
-  columnHeaderSections: any;
-  rowHeaderSections: any;
   columnSections: any;
+  columnHeaderSections: any;
+  model: BeakerxDataGridModel;
+  rowHeaderSections: any;
   rowSections: any;
   viewport: Widget;
 
-  columns: IColumns = { index: [], body: [] };
+  columns = {};
   headerCellHovered = new Signal<this, ICellData|null>(this);
 
   constructor(options: DataGrid.IOptions, modelOptions: IDataModelState) {
@@ -53,6 +48,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.addModel(modelOptions);
     this.addColumns();
     this.addCellRenderers();
+    this.repaint();
   }
 
   handleEvent(event: Event): void {
@@ -73,16 +69,10 @@ export class BeakerxDataGrid extends DataGrid {
     this.dispose();
   }
 
-  getColumn(index: number, region: string): DataGridColumn|null {
-    if (region === 'body') {
-      return this.columns.body[index];
-    }
+  getColumn(index: number, region: DataModel.CellRegion): DataGridColumn {
+    const columnType = DataGridColumn.getColumnTypeByRegion(region);
 
-    if (region === 'column-header' || region === 'corner-header') {
-      return this.columns.index[index];
-    }
-
-    return null;
+    return this.columns[columnType][index];
   }
 
   private addModel(modelState: IDataModelState) {
@@ -90,12 +80,18 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   private addColumns() {
+    let bodyColumns: DataGridColumn[] = [];
+    let indexColumns: DataGridColumn[] = [];
+
+    this.columns[COLUMN_TYPES.index] = indexColumns;
+    this.columns[COLUMN_TYPES.body] = bodyColumns;
+
     this.addIndexColumns();
     this.addBodyColumns();
   }
 
   private addBodyColumns() {
-    this.model.columnNames.forEach((name, index) => {
+    this.model.bodyColumnNames.forEach((name, index) => {
       let menuOptions: ITriggerOptions = {
         x: this.getColumnOffset(index),
         y: 0,
@@ -110,7 +106,7 @@ export class BeakerxDataGrid extends DataGrid {
         type: COLUMN_TYPES.body
       }, this);
 
-      this.columns.body.push(column);
+      this.columns[COLUMN_TYPES.body].push(column);
     });
   }
 
@@ -121,12 +117,12 @@ export class BeakerxDataGrid extends DataGrid {
 
     let column = new DataGridColumn({
       index: 0,
-      name: 'index',
+      name: this.model.indexColumnNames[0],
       menuOptions: { x: 0, y: 0, width: this.headerHeight, height: this.headerHeight },
       type: COLUMN_TYPES.index
     }, this);
 
-    this.columns.index.push(column);
+    this.columns[COLUMN_TYPES.index].push(column);
   }
 
   private addCellRenderers() {
@@ -135,12 +131,13 @@ export class BeakerxDataGrid extends DataGrid {
 
     this.cellRenderers.set('body', {}, defaultRenderer);
     this.cellRenderers.set('column-header', {}, defaultRenderer);
+    this.cellRenderers.set('corner-header', {}, defaultRenderer);
     this.cellRenderers.set('row-header', {}, defaultRenderer);
   }
 
   private destroyAllColumns() {
-    this.columns.index.forEach(column => column.destroy());
-    this.columns.body.forEach(column => column.destroy());
+    this.columns[COLUMN_TYPES.index].forEach((column: DataGridColumn) => column.destroy());
+    this.columns[COLUMN_TYPES.body].forEach((column: DataGridColumn) => column.destroy());
 
     Signal.disconnectAll(this);
   }

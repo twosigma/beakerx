@@ -33,6 +33,7 @@ describe('dataTypes', () => {
 
     it('should return proper type number', () => {
       expect(getTypeByName('string')).to.equal(0);
+      expect(getTypeByName('integer')).to.equal(1);
       expect(getTypeByName('formatted integer')).to.equal(2);
       expect(getTypeByName('double')).to.equal(3);
       expect(getTypeByName('double with precision')).to.equal(4);
@@ -41,12 +42,8 @@ describe('dataTypes', () => {
       expect(getTypeByName('datetime')).to.equal(8);
       expect(getTypeByName('boolean')).to.equal(9);
       expect(getTypeByName('html')).to.equal(10);
-    });
-
-    it('should return mapped types number', () => {
-      expect(getTypeByName('integer')).to.equal(2);
-      expect(getTypeByName('int64')).to.equal(0);
-      expect(getTypeByName('time')).to.equal(8);
+      expect(getTypeByName('int64')).to.equal(11);
+      expect(getTypeByName('time')).to.equal(12);
     });
   });
 
@@ -65,6 +62,8 @@ describe('dataTypes', () => {
 
     it('should return display type as number', () => {
       expect(getDisplayType('string')).to.equal(0);
+      expect(getDisplayType('integer')).to.equal(2);
+      expect(getDisplayType('int64')).to.equal(0);
       expect(getDisplayType('formatted integer')).to.equal(0);
       expect(getDisplayType('exponential 5')).to.equal(0);
       expect(getDisplayType('exponential 15')).to.equal(0);
@@ -73,6 +72,7 @@ describe('dataTypes', () => {
       expect(getDisplayType('double')).to.equal('4.3');
       expect(getTypeByName('double with precision')).to.equal(4);
       expect(getDisplayType('datetime')).to.equal(8);
+      expect(getDisplayType('time')).to.equal(8);
     });
   });
 });

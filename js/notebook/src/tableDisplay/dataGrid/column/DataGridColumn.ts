@@ -106,7 +106,7 @@ export default class DataGridColumn {
       return;
     }
 
-    this.menu.showTrigger();
+    this.menu.showTrigger(data.offset);
     this.state.triggerShown = true;
   }
 

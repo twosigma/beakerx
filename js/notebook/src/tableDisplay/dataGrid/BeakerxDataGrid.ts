@@ -176,7 +176,7 @@ export class BeakerxDataGrid extends DataGrid {
       }
 
       if (data) {
-        return { type: COLUMN_TYPES.index, index: data.index, delta: data.delta };
+        return { ...data, type: COLUMN_TYPES.index, offset: this.getColumnOffset(data.index) };
       }
 
       if (x <= this.headerWidth) {
@@ -184,7 +184,7 @@ export class BeakerxDataGrid extends DataGrid {
       }
 
       if (data) {
-        return { type: COLUMN_TYPES.index, index: data.index, delta: data.delta };
+        return { ...data, type: COLUMN_TYPES.index, offset: this.getColumnOffset(data.index) };
       }
 
       return null;
@@ -197,7 +197,7 @@ export class BeakerxDataGrid extends DataGrid {
       let data = this.findHoveredCellIndex(this.columnSections, pos);
 
       if (data) {
-        return { type: COLUMN_TYPES.body, index: data.index, delta: data.delta };
+        return { ...data, type: COLUMN_TYPES.body, offset: this.getColumnOffset(data.index) };
       }
 
       return null;

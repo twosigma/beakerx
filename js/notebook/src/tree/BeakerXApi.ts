@@ -27,8 +27,15 @@ export interface IJVMOptions extends IDefaultJVMOptions {
   properties: IPropertiesJVMOptions;
 }
 
+export interface IUIOptions {
+  auto_close: boolean;
+  improve_fonts: boolean;
+  wide_cells: boolean;
+}
+
 export interface IApiSettingsResponse {
   jvm_options: IJVMOptions;
+  ui_options: IUIOptions;
   version: number;
 }
 

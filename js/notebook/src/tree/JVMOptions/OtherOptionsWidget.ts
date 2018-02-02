@@ -65,6 +65,7 @@ export class OtherOptionsWidget extends Widget {
       .find(this.ADD_BUTTON_SELECTOR)
       .on('click', this.addOptionButtonClickedHandler.bind(this));
   }
+
   private clear() {
     this.$node.find(this.PANEL_SELECTOR).empty();
   }

@@ -1,6 +1,6 @@
 import { Message } from "@phosphor/messaging";
 import {
-  IDefaultJVMOptions, IOtherJVMOptions, IPropertiesJVMOptions
+  IDefaultJVMOptions, IOtherJVMOptions, IPropertiesJVMOptions, IUIOptions
 } from "../BeakerXApi";
 
 export namespace Messages {
@@ -64,4 +64,20 @@ export namespace Messages {
       return this._properties;
     }
   }
+
+  export const TYPE_UI_OPTIONS_CHANGED = 'ui-options-changed';
+
+  export class UIOptionsChangedMessage extends Message {
+    private _options: IUIOptions;
+
+    constructor(options: IUIOptions) {
+      super(TYPE_UI_OPTIONS_CHANGED);
+      this._options = options
+    }
+
+    get options(): IUIOptions {
+      return this._options;
+    }
+  }
+
 }

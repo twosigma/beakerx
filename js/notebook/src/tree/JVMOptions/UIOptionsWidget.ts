@@ -29,17 +29,19 @@ export class UIOptionsWidget extends Widget {
   public readonly HTML_ELEMENT_TEMPLATE = `
 <fieldset id="ui_options">
   <legend>UI Options:</legend>
-  <div class="form-inline form-group">
-    <label class="control-label" for="auto_close">Auto close brackets</label>
-    <input id="auto_close" name="auto_close" type="checkbox" class="form-control mb-2 mr-sm-2 mb-sm-0">
-  </div>
-  <div class="form-inline form-group">
-    <label class="control-label" for="wide_cells">Wide code cells</label>
-    <input id="wide_cells" name="wide_cells" type="checkbox" class="form-control mb-2 mr-sm-2 mb-sm-0">
-  </div>
-  <div class="form-inline form-group">
-    <label class="control-label" for="improve_fonts">Improve fonts</label>
-    <input id="improve_fonts" name="improve_fonts" type="checkbox" class="form-control mb-2 mr-sm-2 mb-sm-0">
+  <div class="form-group">
+    <div class="form-check">
+      <input class="form-check-input" id="auto_close" name="auto_close" type="checkbox">
+      <label class="form-check-label" for="auto_close">Auto close brackets</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" id="wide_cells" name="wide_cells" type="checkbox">
+      <label class="form-check-label" for="wide_cells">Wide code cells</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" id="improve_fonts" name="improve_fonts" type="checkbox">
+      <label class="form-check-label" for="improve_fonts">Improve fonts</label>
+    </div>
   </div>
 </fieldset>
 `;

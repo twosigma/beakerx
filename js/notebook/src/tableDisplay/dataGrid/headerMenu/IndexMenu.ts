@@ -16,12 +16,15 @@
 
 import { createIndexMenuItems } from './createIndexMenuItems';
 import HeaderMenu, { ITriggerOptions } from './HeaderMenu';
-import {BeakerxDataGrid} from "../BeakerxDataGrid";
+import DataGridColumn from "../column/DataGridColumn";
 
 export default class IndexMenu extends HeaderMenu {
 
-  constructor(columnIndex: number, dataGrid: BeakerxDataGrid, triggerOptions: ITriggerOptions) {
-    super(columnIndex, dataGrid, triggerOptions);
+  constructor(
+    column: DataGridColumn,
+    triggerOptions: ITriggerOptions
+  ) {
+    super(column, triggerOptions);
   }
 
   protected buildMenu(): void {
@@ -32,10 +35,7 @@ export default class IndexMenu extends HeaderMenu {
     this.menu.contentNode.classList.add('dropdown-menu');
     this.menu.contentNode.classList.add('bko-table-menu-content');
 
-    let items = createIndexMenuItems(
-      { index: this.columnIndex, region: 'row-header' },
-      this.dataGrid
-    );
+    let items = createIndexMenuItems(this.column);
 
     this.createItems(items, this.menu);
   }

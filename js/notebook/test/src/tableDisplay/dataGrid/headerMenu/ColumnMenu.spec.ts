@@ -21,14 +21,35 @@ import ColumnMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu';
 import { createColumnMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createColumnMenuItems';
 import HeaderMenu from '@beakerx/tableDisplay/dataGrid/headerMenu/HeaderMenu';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import DataGridColumn, { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import menuOptionsMock from "../mock/menuOptionsMock";
 
 describe('ColumnMenu', () => {
-  const dataGrid = new BeakerxDataGrid({}, {
-    values: [],
-    columnNames: [],
-    types: []
+  let columnMenu;
+  let column;
+  let dataGrid;
+
+  before(() => {
+    dataGrid = new BeakerxDataGrid({}, {
+      values: [],
+      columnNames: [],
+      types: [],
+      stringFormatForColumn: null,
+      hasIndex: false
+    });
+    column = new DataGridColumn({
+      index: 0,
+      type: COLUMN_TYPES.body,
+      name: 'test',
+      menuOptions: menuOptionsMock
+    }, dataGrid);
+
+    columnMenu = column.menu;
   });
-  const columnMenu = new ColumnMenu(0, dataGrid, { x: 0 });
+
+  after(() => {
+    dataGrid.destroy();
+  });
 
   it('should be an instance of HeaderMenu', () => {
     expect(columnMenu).to.be.an.instanceof(HeaderMenu);
@@ -49,7 +70,7 @@ describe('ColumnMenu', () => {
   });
 
   it('should create index menu items', () => {
-    let items = createColumnMenuItems(0, dataGrid);
+    let items = createColumnMenuItems(column);
 
     expect(columnMenu['menu'].items).to.have.length.gte(items.length);
   });
@@ -68,7 +89,7 @@ describe('ColumnMenu', () => {
   it('should call the createItems method', () => {
     const stub = sinon.stub(columnMenu, 'createItems');
 
-    columnMenu.buildMenu();
+    columnMenu['buildMenu']();
     expect(stub.calledOnce).to.be.true;
 
     stub.restore();

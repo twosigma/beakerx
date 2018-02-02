@@ -14,13 +14,10 @@
  *  limitations under the License.
  */
 
-import { DataGrid } from '@phosphor/datagrid';
+import { COLUMN_TYPES } from "../column/DataGridColumn";
 
-import './style/dataGrid.scss';
-
-export const silverStripeStyle: DataGrid.IStyle = {
-  ...DataGrid.defaultStyle,
-  voidColor: '#ffffff',
-  headerBackgroundColor: '#E6E6E6',
-  rowBackgroundColor: i => i % 2 === 0 ? '#f9f9f9' : ''
-};
+export interface ICellData {
+  type: COLUMN_TYPES,
+  index: number,
+  delta: number
+}

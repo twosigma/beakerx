@@ -14,17 +14,13 @@
  *  limitations under the License.
  */
 
-import { ITriggerOptions } from "../headerMenu/HeaderMenu";
-import { COLUMN_TYPES } from "../column/DataGridColumn";
+import { DataGrid } from '@phosphor/datagrid';
 
-export interface IColumn {
-  index: number,
-  type: COLUMN_TYPES
-}
+import './dataGrid.scss';
 
-export interface IColumnOptions {
-  index: number,
-  name: string,
-  type: COLUMN_TYPES,
-  menuOptions: ITriggerOptions
-}
+export const silverStripeStyle: DataGrid.IStyle = {
+  ...DataGrid.defaultStyle,
+  voidColor: '#ffffff',
+  headerBackgroundColor: '#E6E6E6',
+  rowBackgroundColor: i => i % 2 === 0 ? '#f9f9f9' : ''
+};

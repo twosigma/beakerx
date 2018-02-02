@@ -17,18 +17,36 @@
 import { expect } from 'chai';
 import { createColumnMenuItems } from '@beakerx/tableDisplay/dataGrid/headerMenu/createColumnMenuItems';
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import ColumnMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu";
+import menuOptionsMock from "../mock/menuOptionsMock";
+import DataGridColumn, {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 
 describe('createColumnMenuItems', () => {
-  const dataGrid = new BeakerxDataGrid({}, {
-    values: [],
-    columnNames: [],
-    types: [],
-    hasIndex: false,
-    stringFormatForColumn: null
+  let dataGrid;
+  let column;
+
+  before(() => {
+    dataGrid = new BeakerxDataGrid({}, {
+      values: [],
+      columnNames: [],
+      types: [],
+      stringFormatForColumn: null,
+      hasIndex: false
+    });
+    column = new DataGridColumn({
+      index: 0,
+      type: COLUMN_TYPES.index,
+      name: 'index',
+      menuOptions: menuOptionsMock
+    }, dataGrid);
+  });
+
+  after(() => {
+    dataGrid.destroy();
   });
 
   it('should create column menu items', () => {
-    let formatMenuItems = createColumnMenuItems({ index: 0, region: 'body'}, dataGrid);
+    let formatMenuItems = createColumnMenuItems(column);
 
     expect(formatMenuItems).to.be.an.instanceof(Array);
     expect(formatMenuItems).to.have.length(18);

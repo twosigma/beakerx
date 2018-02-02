@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-export default interface IDataModelOptions {
+export default interface IDataModelState {
   formatForTimes?: any;
   timeStrings?: any;
 

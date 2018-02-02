@@ -16,10 +16,10 @@
 
 import { createFormatMenuItems } from './createFormatMenuItems';
 import MenuItem from "../../../shared/interfaces/menuItemInterface";
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
-import IColumn from '../interface/IColumn';
+import DataGridColumn from "../column/DataGridColumn";
+import { CENTER, LEFT, RIGHT } from "../column/columnAlignment";
 
-export function createColumnMenuItems(column: IColumn, dataGrid: BeakerxDataGrid): MenuItem[] {
+export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
   return [
     {
       title: 'Hide column',
@@ -40,7 +40,7 @@ export function createColumnMenuItems(column: IColumn, dataGrid: BeakerxDataGrid
     {
       title: 'Format',
       action: undefined,
-      items: createFormatMenuItems(column, dataGrid)
+      items: createFormatMenuItems(column)
     },
     {
       title: 'Sort Ascending',
@@ -61,18 +61,18 @@ export function createColumnMenuItems(column: IColumn, dataGrid: BeakerxDataGrid
     {
       title: 'Align Left',
       separator: true,
-      isChecked: (column) => {},
-      action: (column) => {}
+      isChecked: (column) => column.getAlignment() === LEFT,
+      action: (column) => { column.setAlignment(LEFT) }
     },
     {
       title: 'Align Center',
-      isChecked: (column) => {},
-      action: (column) => {}
+      isChecked: (column) => column.getAlignment() === CENTER,
+      action: (column) => { column.setAlignment(CENTER) }
     },
     {
       title: 'Align Right',
-      isChecked: (column) => {},
-      action: (column) => {}
+      isChecked: (column) => column.getAlignment() === RIGHT,
+      action: (column) => { column.setAlignment(RIGHT) }
     },
     {
       title: 'Heatmap',

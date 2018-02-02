@@ -103,7 +103,6 @@ export class UIOptionsModel {
   }
 
   public update(options: IUIOptions) {
-    console.log(options);
     this.widget.onLoad(options);
   }
 }

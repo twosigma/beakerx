@@ -158,7 +158,7 @@ class EasyForm(BeakerxBox):
             return ""
 
     def put(self, key, value):
-        self.components[key].value = value
+        self.components[key].set_value(value)
 
     @staticmethod
     def getDescription(args, kwargs):

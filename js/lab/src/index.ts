@@ -14,8 +14,7 @@
  *  limitations under the License.
  */
 
-declare function require(moduleName: string): any;
-
+import './global.env';
 import { IJupyterWidgetRegistry } from '@jupyter-widgets/base';
 import { JupyterLab } from '@jupyterlab/application';
 import BeakerxExtension from './plugin';

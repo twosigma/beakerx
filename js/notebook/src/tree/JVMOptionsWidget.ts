@@ -21,9 +21,10 @@ import { DefaultOptionsModel, DefaultOptionsWidget } from "./JVMOptions/DefaultO
 import { OtherOptionsModel, OtherOptionsWidget } from "./JVMOptions/OtherOptionsWidget";
 import { PropertiesModel, PropertiesWidget } from "./JVMOptions/PropertiesWidget";
 import { SyncIndicatorWidget } from "./JVMOptions/SyncIndicatorWidget";
+import { UIOptionsWidget, UIOptionsModel } from "./JVMOptions/UIOptionsWidget";
 import BeakerXApi, {
   IApiSettingsResponse, IDefaultJVMOptions, IJVMOptions, IOtherJVMOptions,
-  IPropertiesJVMOptions
+  IPropertiesJVMOptions, IUIOptions
 } from "./BeakerXApi";
 import { Messages } from "./JVMOptions/Messages";
 
@@ -44,6 +45,7 @@ export default class JVMOptionsWidget extends Panel {
 
     this.addClass('beakerx_container');
 
+    let uiOptionsWidget  = new UIOptionsWidget();
     let defaultOptionsWidget  = new DefaultOptionsWidget();
     let syncIndicatorWidget = new SyncIndicatorWidget();
     let otherOptionsWidget = new OtherOptionsWidget();
@@ -51,12 +53,14 @@ export default class JVMOptionsWidget extends Panel {
 
     this._model = new JvmOptionsModel(
       api,
+      new UIOptionsModel(uiOptionsWidget),
       new DefaultOptionsModel(defaultOptionsWidget),
       new PropertiesModel(propertiesWidget),
       new OtherOptionsModel(otherOptionsWidget),
       syncIndicatorWidget
     );
 
+    this.addWidget(uiOptionsWidget);
     this.addWidget(defaultOptionsWidget);
     this.addWidget(propertiesWidget);
     this.addWidget(otherOptionsWidget);
@@ -75,6 +79,11 @@ export default class JVMOptionsWidget extends Panel {
 
   public processMessage(msg: Message): void {
     switch (msg.type) {
+      case Messages.TYPE_UI_OPTIONS_CHANGED:
+        this.model.clearErrors();
+        this.model.setUIOptions((msg as Messages.UIOptionsChangedMessage).options);
+        this.model.save();
+        break;
       case Messages.TYPE_DEFAULT_JVM_OPTIONS_CHANGED:
         this.model.clearErrors();
         this.model.setDefaultOptions((msg as Messages.DefaultOptionsChangedMessage).values);
@@ -111,6 +120,7 @@ class JvmOptionsModel {
 
   constructor(
     private api: BeakerXApi,
+    private uiOptionsModel: UIOptionsModel,
     private defaultOptionsModel: DefaultOptionsModel,
     private propertiesOptionsModel: PropertiesModel,
     private otherOptionsModel: OtherOptionsModel,
@@ -129,12 +139,22 @@ class JvmOptionsModel {
   public setPropertiesOptions(options: IPropertiesJVMOptions): void {
     this._options.jvm_options.properties = options;
   }
+  public setUIOptions(options: IUIOptions) {
+    this._options.ui_options = options;
+  }
 
   public load() {
     this.syncWidget.onSyncStart();
 
     this.api.loadSettings()
       .then((data: IApiSettingsResponse) => {
+        if (!data.ui_options) {
+          data.ui_options = {
+            auto_close: false,
+            improve_fonts: true,
+            wide_cells: true,
+          }
+        }
         this._options = data;
 
         this.defaultOptionsModel
@@ -143,6 +163,8 @@ class JvmOptionsModel {
           .update(data.jvm_options.properties);
         this.otherOptionsModel
           .update(data.jvm_options.other);
+        this.uiOptionsModel
+          .update(data.ui_options);
 
         this.syncWidget.showResult(this.buildResult(data.jvm_options));
 
@@ -155,11 +177,16 @@ class JvmOptionsModel {
   public save() {
     this.syncWidget.onSyncStart();
 
-    let payload = {
+    let payload: IApiSettingsResponse = {
       "jvm_options": {
         "heap_GB": null,
         "other": [],
         "properties": []
+      },
+      "ui_options": {
+        "auto_close": false,
+        "improve_fonts": true,
+        "wide_cells": true,
       },
       "version": 2
     };
@@ -167,6 +194,10 @@ class JvmOptionsModel {
     payload.jvm_options.heap_GB = this._options.jvm_options.heap_GB;
     payload.jvm_options.other = this._options.jvm_options.other;
     payload.jvm_options.properties = this._options.jvm_options.properties;
+
+    payload.ui_options.auto_close = this._options.ui_options.auto_close;
+    payload.ui_options.improve_fonts = this._options.ui_options.improve_fonts;
+    payload.ui_options.wide_cells = this._options.ui_options.wide_cells;
 
     this.syncWidget.showResult(this.buildResult(payload.jvm_options));
 

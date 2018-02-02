@@ -17,6 +17,7 @@
 import * as $ from 'jquery';
 import { NotebookPanel } from "@jupyterlab/notebook";
 import { showDialog, Dialog, ToolbarButton } from '@jupyterlab/apputils';
+import GistPublishModal from './gistPublishModal';
 
 const CONFIG = {
   gistsUrl: 'https://api.github.com/gists',
@@ -38,39 +39,23 @@ export function addActionButton(panel: NotebookPanel): void {
 }
 
 function openPublishDialog(panel: NotebookPanel) {
-  showDialog({
-    title : 'Publish',
-    body : 'Publish to an anonymous Github Gist, and open in nbviewer?',
-    buttons: [
-      Dialog.okButton({ label: 'OK' }),
-      Dialog.cancelButton({ label: 'Cancel' })
-    ]
-  })
-    .then(() => savePanelState(panel))
-    .then(() => doPublish(panel));
+  const gistPublishModal = new GistPublishModal();
+
+  gistPublishModal.show(personalAccessToken => doPublish(panel, personalAccessToken));
 }
 
-function savePanelState(panel: NotebookPanel): Promise<any> {
-  return new Promise((resolve, reject) => {
-    panel.context.save().then(() => {
-      console.log("widgets state has been saved");
-
-      if (!panel.isDisposed) {
-        resolve();
-      } else {
-        reject();
-      }
-    }, reject);
-  });
-}
-
-function doPublish(panel: NotebookPanel): void {
+function doPublish(panel: NotebookPanel, personalAccessToken: string|null): void {
   const nbjson = panel.notebook.model.toJSON();
   const filedata = {};
 
   filedata[panel.context.contentsModel.name] = {
     content : JSON.stringify(nbjson, undefined, 1)
   };
+
+  let gistsUrl = CONFIG.gistsUrl;
+  if (personalAccessToken) {
+    gistsUrl = `${gistsUrl}?oauth_token=${personalAccessToken}`;
+  }
 
   const settings = {
     type : 'POST',
@@ -82,16 +67,19 @@ function doPublish(panel: NotebookPanel): void {
     success : (data, status) => {
       console.log("gist successfully published: " + data.id);
       window.open(CONFIG.nbviewerBaseUrl + data.id);
-    },
-    error : (jqXHR, status, err) => {
-      const errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
-
-      console.log(errorMsg);
-      showErrorDialog(errorMsg);
     }
   };
 
-  $.ajax(CONFIG.gistsUrl, settings);
+  $.ajax(gistsUrl, settings).catch((jqXHR, status, err) => {
+    let errorMsg = jqXHR.readyState === 0 && !err ? 'NETWORK ERROR!' : err;
+
+    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+      errorMsg = jqXHR.responseJSON.message;
+    }
+
+    console.log(errorMsg);
+    showErrorDialog(errorMsg);
+  });
 }
 
 function showErrorDialog(errorMsg) {

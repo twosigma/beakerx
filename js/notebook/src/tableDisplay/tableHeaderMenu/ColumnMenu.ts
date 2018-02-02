@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import $ from 'jquery';
+import * as $ from 'jquery';
 import HeaderMenu from './HeaderMenu';
 
 export default class ColumnMenu extends HeaderMenu {

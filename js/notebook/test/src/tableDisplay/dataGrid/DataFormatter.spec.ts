@@ -97,7 +97,7 @@ describe('DataFormatter', () => {
 
     it('should escape html characters', () => {
       expect(stringFormatFn('&test<>"Works"Ok/<>', 0, 0))
-        .to.equal('&amp;test&lt;&gt;"Works"Ok&#47;&lt;&gt;');
+        .to.equal('&test<>"Works"Ok/<>');
     });
 
     it('should convert to date', () => {

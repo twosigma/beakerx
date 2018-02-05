@@ -19,6 +19,8 @@ import { getDisplayType, ALL_TYPES } from '../dataTypes';
 import { DataFormatter } from '../DataFormatter';
 import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn";
 import IDataModelState from '../interface/IDataGridModelState';
+import { MapIterator, EmptyIterator, iter } from '@phosphor/algorithm';
+import { IColumn } from "../interface/IColumn";
 
 interface IColumnState {
   names: string[],
@@ -120,6 +122,14 @@ export class BeakerxDataGridModel extends DataModel {
     }
     
     return this._data[row][columnIndex];
+  }
+
+  getColumnValuesIterator(column: IColumn): MapIterator<number, number> {
+    if (!this.state.hasIndex && column.type === COLUMN_TYPES.index) {
+      return new MapIterator<number, any>(new EmptyIterator(), () => null);
+    }
+
+    return new MapIterator(iter(this._data), (rowValues) => rowValues[column.index]);
   }
   
   getDataTypeName(region: DataModel.CellRegion, columnIndex: number) {

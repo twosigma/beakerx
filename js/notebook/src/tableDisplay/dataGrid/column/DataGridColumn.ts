@@ -22,6 +22,7 @@ import { ICellData } from "../interface/ICell";
 import { getAlignmentByChar, getAlignmentByType} from "./columnAlignment";
 import { DataModel, TextRenderer } from "@phosphor/datagrid";
 import { ALL_TYPES, getTypeByName } from "../dataTypes";
+import { minmax, MapIterator } from '@phosphor/algorithm';
 
 export enum COLUMN_TYPES {
   'index',
@@ -40,6 +41,9 @@ export default class DataGridColumn {
   dataType: ALL_TYPES;
   menu: ColumnMenu|IndexMenu;
   dataGrid: BeakerxDataGrid;
+  valuesIterator: MapIterator<number, any>;
+  minValue: any;
+  maxValue: any;
 
   private state: IColumnState;
 
@@ -49,6 +53,7 @@ export default class DataGridColumn {
     this.type = options.type;
     this.dataGrid = dataGrid;
     this.dataType = this.getDataType();
+    this.valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
     this.state = {
       triggerShown: false,
       horizontalAlignment: this.getInitialAlignment()
@@ -57,6 +62,7 @@ export default class DataGridColumn {
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
     this.createMenu(options.menuOptions);
     this.connectToHeaderCellHovered();
+    this.addMinMaxValues();
   }
 
   static getColumnTypeByRegion(region: DataModel.CellRegion) {
@@ -142,4 +148,10 @@ export default class DataGridColumn {
     this.setState({ horizontalAlignment });
   }
 
+  private addMinMaxValues() {
+    let minMax = minmax(this.valuesIterator.clone(), (a:number, b:number) => a - b);
+
+    this.minValue = minMax ? minMax[0] : null;
+    this.maxValue = minMax ? minMax[1] : null;
+  }
 }

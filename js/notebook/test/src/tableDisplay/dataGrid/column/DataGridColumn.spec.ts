@@ -29,7 +29,8 @@ describe('DataGridColumn', () => {
     columnNames: [],
     types: [],
     stringFormatForColumn: null,
-    hasIndex: false
+    hasIndex: false,
+    cellHighlighters: []
   });
 
   describe('DataGridColumn.type === "body"', () => {

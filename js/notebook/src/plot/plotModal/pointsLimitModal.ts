@@ -15,7 +15,7 @@
  */
 
 import _ from 'underscore';
-import $ from 'jquery';
+import * as $ from 'jquery';
 
 export default function plotModal(PlotScope: any) {
 

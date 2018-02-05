@@ -1,4 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+import * as $ from 'jquery';
+import { Widget } from "@phosphor/widgets";
+import BeakerXApi from "./BeakerXApi";
+
+export default class BannerWidget extends Widget {
+
+  static readonly GITHUB_RELEASE_TAG_BASE_URL = 'https://github.com/twosigma/beakerx/releases/tag/';
+  static readonly SVG_LOGO = `
 <svg xmlns="http://www.w3.org/2000/svg" width="70pt" height="20pt" viewBox="0 0 70 20" version="1.1">
     <g id="surface1">
         <path style="fill:#0000000;" d="M 3.761719 3.445312 C 2.816406 3.445312 2.046875 2.675781 2.046875 1.722656 C 2.046875 0.773438 2.816406 0 3.761719 0 C 4.710938 0 5.480469 0.773438 5.480469 1.722656 C 5.476562 2.675781 4.710938 3.445312 3.761719 3.445312 Z M 3.761719 0.46875 C 3.078125 0.46875 2.519531 1.027344 2.519531 1.714844 C 2.519531 2.40625 3.074219 2.964844 3.761719 2.964844 C 4.449219 2.960938 5.003906 2.402344 5.003906 1.714844 C 4.992188 1.035156 4.441406 0.488281 3.761719 0.484375 Z M 3.761719 0.46875 "/>
@@ -15,4 +38,92 @@
         <path style="fill:#0000000;" d="M 64.832031 14.773438 L 62.195312 18.464844 L 61.136719 18.464844 L 64.304688 14.03125 L 64.1875 13.867188 L 60.902344 18.464844 L 59.84375 18.464844 L 63.660156 13.125 L 59.871094 7.824219 L 60.929688 7.824219 L 64.1875 12.386719 L 64.71875 13.125 L 64.835938 13.289062 L 65.363281 14.03125 L 68.53125 18.464844 L 67.472656 18.464844 Z M 64.832031 14.773438 "/>
         <path style="fill:#0000000;" d="M 65.480469 13.867188 L 64.949219 13.125 L 64.835938 12.964844 L 64.304688 12.222656 L 61.160156 7.824219 L 62.21875 7.824219 L 64.832031 11.484375 L 67.449219 7.824219 L 68.507812 7.824219 L 65.363281 12.222656 L 65.480469 12.386719 L 68.742188 7.824219 L 69.800781 7.824219 L 66.007812 13.125 L 69.824219 18.464844 L 68.765625 18.464844 Z M 65.480469 13.867188 "/>
     </g>
-</svg>
+</svg>  
+`;
+
+  static readonly BASIC_HTML_ELEMENT_TEMPLATE = `
+<style>
+  #beakerx_env_toolbar {
+    margin: 0 15px;
+  }
+  #beakerx_info .beakerx_site_link {
+    display: inline-block;
+    margin: 5px 0;
+  }
+
+  #beakerx_info .beakerx_site_link svg {
+    height: 35px;
+  }
+</style>
+<div id="beakerx_env_toolbar" class="list_toolbar">
+    <span id="beakerx_info" class="toolbar_info"></span>
+</div>
+`;
+
+  constructor(api: BeakerXApi) {
+    super();
+    api
+      .getVersion()
+      .then((version) => {
+          this.buildWidget(version);
+      });
+  }
+
+  private buildWidget(version: string) {
+    this.createBaseElement();
+    this.createBanner(version);
+  }
+
+  private createBaseElement(): void {
+    $(BannerWidget.BASIC_HTML_ELEMENT_TEMPLATE)
+      .appendTo(this.node);
+  }
+
+  private createBanner(version: string): void {
+    $(this.node)
+      .find('#beakerx_info')
+      .empty()
+      .append(
+        this.createLinkedBannerElementRow(),
+        this.createLinkedVersionElementRow(version),
+        this.createLinkedFromElementRow()
+      );
+  }
+
+  private createLinkedFromElementRow() {
+    return $('<div>', {
+      text: 'from '
+    }).append(
+      $('<a>', {
+        target: '_blank',
+        href: 'http://opensource.twosigma.com/',
+        text: 'Two Sigma Open Source',
+      })
+    );
+  }
+
+  private createLinkedBannerElementRow() {
+    return $('<div>').append(
+      $('<a>', {
+        class: 'beakerx_site_link',
+        target: '_blank',
+        href: 'http://BeakerX.com',
+      }).append(
+        $(`${BannerWidget.SVG_LOGO}`)
+      )
+    );
+  }
+
+  private createLinkedVersionElementRow(version: string) {
+    return $('<div>', {
+      text: 'version '
+    }).append(
+      $('<a>', {
+        target: '_blank',
+        href: `${BannerWidget.GITHUB_RELEASE_TAG_BASE_URL}${version}`,
+        text: version
+      })
+    );
+  }
+
+}

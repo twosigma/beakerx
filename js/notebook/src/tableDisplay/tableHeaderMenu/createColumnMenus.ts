@@ -15,7 +15,7 @@
  */
 
 import ColumnMenu from './ColumnMenu';
-import $ from 'jquery';
+import * as $ from 'jquery';
 
 export default function createColumnMenus(scope) {
   const settings = scope.table.settings()[0];

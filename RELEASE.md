@@ -95,11 +95,11 @@ conda install --use-local beakerx
 Publish on npmjs
 ----------------
 
-To update the embedded version of our widget library:
-
-- Do a full build.
-- Run `(cd js/notebook; npm publish)`
-- Run `(cd js/lab; npm publish)`
+To update the embedded version of our widget library, and our Lab extension:
+```
+(cd js/notebook; npm publish)
+(cd js/lab; npm publish)
+```
 
 Release to Docker Hub
 ---------------------

@@ -19,7 +19,7 @@ var PlotHelperObject = require('../plot.helper');
 var beakerxPO;
 var plotHelper;
 
-describe('(Groovy) Output Containers Test', function() {
+describe('(Groovy) Output Containers Test', function(){
   beforeAll(function() {
     beakerxPO = new BeakerXPageObject();
     plotHelper = new PlotHelperObject();
@@ -32,16 +32,34 @@ describe('(Groovy) Output Containers Test', function() {
 
   var cellIndex;
 
-  var testStrings = {
+  describe('(Groovy) Hidden Output Containers', function() {
+    it('Cell does not display hidden output', function () {
+      cellIndex = 0;
 
-  };
-
-  describe('(Groovy) Stacked Output Containers', function() {
-    it('Cell displays stacked output', function() {
-      cellIndex = 1;
-
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(codeCell.$('div.output').isEnabled()).toBeTruthy();
+      codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+      expect(codeCell.$('div.output').childNodes).toBe(undefined);
     });
   });
+
+  describe('(Groovy) Stacked Output Containers', function () {
+    it('Cell displays stacked output', function () {
+      cellIndex += 1;
+
+      var testValues = {
+        stackedOutputString: 'pizza!',
+        stackedOutputArray: '[19, 42, hamburger, 92]',
+        stackedOutputHTML: 'HTML masterclass',
+        stackedOutputNull: 'null'
+      };
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+
+      expect(codeCell.$('div.output').isEnabled()).toBeTruthy();
+      expect(codeCell.$$('div.widget-html-pre')[0].getText()).toBe(testValues.stackedOutputString);
+      expect(codeCell.$$('div.widget-html-pre')[1].getText()).toBe(testValues.stackedOutputArray);
+      expect(codeCell.$('div.widget-html-content>h3').getText()).toBe(testValues.stackedOutputHTML);
+      expect(codeCell.$$('div.widget-html-pre')[2].getText()).toBe(testValues.stackedOutputNull);
+    });
+  });
+
+  describe('(Groovy) ')
 });

@@ -170,7 +170,16 @@ describe('Testing of table (python)', function () {
       checkTableRows(tBody, 2);
       checkHeaderValues(tHead, '10', '0\.1');
     });
+  });
 
+  describe("TableDisplay(pandas DataFrame)", function() {
+    it('TableDisplay should display table from pandas dataFrame', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      var tBody = tableHelper.getDataTableBody(dtContainer);
+      expect(tableHelper.getTableBodyCell(tBody, 0, 1).getText()).toMatch('24');
+      expect(tableHelper.getTableBodyCell(tBody, 1, 1).getText()).toMatch('36L');
+    });
   });
 
 });

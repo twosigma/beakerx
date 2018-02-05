@@ -14,13 +14,15 @@
  *  limitations under the License.
  */
 
+import IHihglighterState from "./IHighlighterState";
+
 export default interface IDataModelState {
   formatForTimes?: any;
   timeStrings?: any;
 
   alignmentForColumn?: {},
   alignmentForType?: {},
-  cellHighlighters?: Function[],
+  cellHighlighters: IHihglighterState[],
   columnNames: string[],
   columnOrder?: number[],
   columnsFrozen?: {},

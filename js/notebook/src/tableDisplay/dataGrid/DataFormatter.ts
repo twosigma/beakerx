@@ -129,8 +129,7 @@ export class DataFormatter {
         moment(value.timestamp).format(DEFAULT_TIME_FORMAT) :
         JSON.stringify(value);
     } else if (_.isString(value)) {
-      const escapedText = DataGridHelpers.escapeHTML(value);
-      const limitedText = DataGridHelpers.truncateString(escapedText);
+      const limitedText = DataGridHelpers.truncateString(value);
 
       formattedValue = limitedText;
     }

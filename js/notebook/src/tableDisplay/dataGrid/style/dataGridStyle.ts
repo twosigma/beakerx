@@ -15,8 +15,38 @@
  */
 
 import { DataGrid } from '@phosphor/datagrid';
+import * as bkUtils from '../../../shared/bkUtils';
 
 import './dataGrid.scss';
+
+const bkHelper = require('../../../shared/bkHelper');
+const GLOBALS = require('../../../shared/bkGlobals');
+
+export const DEFAULT_COLORS = {
+  [GLOBALS.THEMES.DEFAULT]: {
+    red: rgbToHex(241, 88, 84),
+    blue: rgbToHex(93, 165, 218),
+    green: rgbToHex(96, 189, 104)
+  },
+  [GLOBALS.THEMES.AMBIANCE]: {
+    red: rgbToHex(191, 39, 31),
+    blue: rgbToHex(46, 119, 191),
+    green: rgbToHex(75, 160, 75)
+  }
+};
+
+export function rgbToHex(r, g, b) {
+  return formatColor(bkUtils.rgbaToHex(r, g, b));
+}
+
+export function getDefaultColor(color) {
+  return DEFAULT_COLORS[bkHelper.getTheme()][color];
+}
+
+export function formatColor(hexColor) {
+  //remove alpha
+  return hexColor.length > 7 ? '#' + hexColor.substr(3) : hexColor;
+}
 
 export const silverStripeStyle: DataGrid.IStyle = {
   ...DataGrid.defaultStyle,

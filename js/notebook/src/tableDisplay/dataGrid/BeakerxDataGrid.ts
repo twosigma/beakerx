@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import { chain, find } from '@phosphor/algorithm'
 import { DataGrid, DataModel } from "@phosphor/datagrid";
 import { ITriggerOptions } from "./headerMenu/HeaderMenu";
 import { BeakerxDataGridModel } from "./model/BeakerxDataGridModel";
@@ -23,6 +24,9 @@ import { ICellData } from "./interface/ICell";
 import { CellRendererFactory } from "./cell/CellRendererFactory";
 import DataGridColumn, { COLUMN_TYPES } from "./column/DataGridColumn";
 import IDataModelState from "./interface/IDataGridModelState";
+import HighlighterManager from "./highlighter/HighlighterManager";
+import IHihglighterState from "./interface/IHighlighterState";
+import { DEFAULT_PAGE_LENGTH } from "../consts";
 
 export class BeakerxDataGrid extends DataGrid {
   columnSections: any;
@@ -31,11 +35,12 @@ export class BeakerxDataGrid extends DataGrid {
   rowHeaderSections: any;
   rowSections: any;
   viewport: Widget;
+  highlighterManager: HighlighterManager;
 
   columns = {};
   headerCellHovered = new Signal<this, ICellData|null>(this);
 
-  constructor(options: DataGrid.IOptions, modelOptions: IDataModelState) {
+  constructor(options: DataGrid.IOptions, modelState: IDataModelState) {
     super(options);
 
     //@todo this is hack to use private properties
@@ -45,9 +50,12 @@ export class BeakerxDataGrid extends DataGrid {
     this.rowSections = this['_rowSections'];
     this.columnSections = this['_columnSections'];
 
-    this.addModel(modelOptions);
+
+    this.addModel(modelState);
     this.addColumns();
+    this.addHighlighterManager(modelState);
     this.addCellRenderers();
+    this.setWidgetHeight();
     this.repaint();
   }
 
@@ -75,8 +83,23 @@ export class BeakerxDataGrid extends DataGrid {
     return this.columns[columnType][index];
   }
 
+  getColumnByName(columnName: string): DataGridColumn|undefined {
+    return find(
+      chain(this.columns[COLUMN_TYPES.body], this.columns[COLUMN_TYPES.index]),
+      (column: DataGridColumn) => column.name === columnName
+    );
+  }
+
   private addModel(modelState: IDataModelState) {
     this.model = new BeakerxDataGridModel(modelState);
+  }
+
+  private addHighlighterManager(modelState: IDataModelState) {
+    let cellHighlighters: IHihglighterState[] = modelState && modelState.cellHighlighters
+      ? modelState.cellHighlighters
+      : [];
+
+    this.highlighterManager = new HighlighterManager(this, cellHighlighters);
   }
 
   private addColumns() {
@@ -133,6 +156,12 @@ export class BeakerxDataGrid extends DataGrid {
     this.cellRenderers.set('column-header', {}, defaultRenderer);
     this.cellRenderers.set('corner-header', {}, defaultRenderer);
     this.cellRenderers.set('row-header', {}, defaultRenderer);
+  }
+
+  private setWidgetHeight() {
+    let bodyRowCount = this.model.rowCount('body');
+    let rowCount = DEFAULT_PAGE_LENGTH < bodyRowCount ? DEFAULT_PAGE_LENGTH : bodyRowCount;
+    this.node.style.minHeight = `${ rowCount * this.baseRowSize + this.baseColumnHeaderSize }px`;
   }
 
   private destroyAllColumns() {

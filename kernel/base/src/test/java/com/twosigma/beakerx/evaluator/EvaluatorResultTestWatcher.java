@@ -125,7 +125,7 @@ public class EvaluatorResultTestWatcher {
     return idleMessage;
   }
 
-  private static Optional<Message> getStreamMessage(KernelTest kernelTest) {
+  public static Optional<Message> getStreamMessage(KernelTest kernelTest) {
     List<Message> listMessagesByType = SearchMessages.getListMessagesByType(kernelTest.getPublishedMessages(), JupyterMessages.STREAM);
     return listMessagesByType.stream().findFirst();
   }

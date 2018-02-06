@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
+import static java.util.Collections.singletonList;
 
 /**
  * Does the actual work of executing user code.
@@ -82,7 +83,7 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     map1.put("execution_count", executionCount);
     map1.put("code", code);
     reply.setContent(map1);
-    kernel.publish(reply);
+    kernel.publish(singletonList(reply));
   }
 
   @Override

@@ -82,20 +82,21 @@ public class GroovyKernelTest extends KernelExecutionTest {
     simulateSendingUpdateMessageFromUI(outputCommId + "1");
     //then
     verifyOutputWidgetResult();
-    verifyIfCommMsgIsEarlierThanResult();
+    verifyIfStreamMsgIsEarlierThanResult();
   }
 
   private void simulateSendingUpdateMessageFromUI(String outputCommId) {
     kernelSocketsService.handleMsg(outputWidgetUpdateMessage(outputCommId));
   }
 
-  private void verifyIfCommMsgIsEarlierThanResult() {
+  private void verifyIfStreamMsgIsEarlierThanResult() {
     List<Message> publishedMessages = kernelSocketsService.getKernelSockets().getPublishedMessages();
     List<Message> collect = publishedMessages.stream()
-            .filter(x -> (x.type().equals(JupyterMessages.COMM_MSG) || x.type().equals(JupyterMessages.EXECUTE_RESULT)))
+            .filter(x -> (x.type().equals(JupyterMessages.STREAM) || x.type().equals(JupyterMessages.EXECUTE_RESULT)))
             .collect(Collectors.toList());
-    assertThat(collect.get(0).type()).isEqualTo(JupyterMessages.COMM_MSG);
-    assertThat(collect.get(1).type()).isEqualTo(JupyterMessages.EXECUTE_RESULT);
+    assertThat(collect.get(0).type()).isEqualTo(JupyterMessages.STREAM);
+    assertThat(collect.get(1).type()).isEqualTo(JupyterMessages.STREAM);
+    assertThat(collect.get(2).type()).isEqualTo(JupyterMessages.EXECUTE_RESULT);
   }
 
   private void verifyOutputWidgetResult() throws InterruptedException {
@@ -111,7 +112,6 @@ public class GroovyKernelTest extends KernelExecutionTest {
     kernelSocketsService.handleMsg(printlnMessage);
     Optional<Message> updateMessage = waitForUpdateMessage(kernelSocketsService.getKernelSockets());
     assertThat(updateMessage).isPresent();
-    kernelSocketsService.clear();
   }
 
   private void addOutputWidget(String outputCommId) throws InterruptedException {

@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SynchronousQueue;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 
 public class NamespaceClient {
   
@@ -98,8 +99,7 @@ public class NamespaceClient {
     state.put("sync", true);
     data.put("state", state);
     data.put("buffer_paths", new HashMap<>());
-    c.setData(data);
-    c.send();
+    c.send(COMM_MSG, Comm.Buffer.EMPTY,data);
     return value;
   }
   
@@ -170,8 +170,7 @@ public class NamespaceClient {
     state.put("value", getJson(tagFilter));
     data.put("state", state);
     data.put("buffer_paths", new HashMap<>());
-    c.setData(data);
-    c.send();
+    c.send(COMM_MSG, Comm.Buffer.EMPTY,data);
     // block
     Object cells = getMessageQueue("CodeCells").take();
     return (List<CodeCell>)cells;
@@ -184,8 +183,7 @@ public class NamespaceClient {
     state.put("runByTag", tag);
     data.put("state", state);
     data.put("buffer_paths", new HashMap<>());
-    c.setData(data);
-    c.send();
+    c.send(COMM_MSG, Comm.Buffer.EMPTY,data);
   }
 
 }

@@ -43,19 +43,6 @@ public class SimpleEvaluationObject extends Observable {
   private Queue<ConsoleOutput> consoleOutput = new ConcurrentLinkedQueue<>();
   private ProgressReporting progressReporting;
   private boolean showResult = true;
-  private CompletableFuture<Boolean> innerEvaluation = CompletableFuture.completedFuture(true);
-
-  public void startInnerEvaluation() {
-    innerEvaluation = new CompletableFuture<>();
-  }
-
-  public void finishInnerEvaluation() {
-    innerEvaluation.complete(true);
-  }
-
-  public CompletableFuture<Boolean> getInnerEvaluation() {
-    return innerEvaluation;
-  }
 
   public SimpleEvaluationObject(String e, BeakerOutputHandler stdout, BeakerOutputHandler stderr) {
     expression = e;

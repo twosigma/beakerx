@@ -75,7 +75,6 @@ public abstract class BaseEvaluator implements Evaluator {
     TryResult either = null;
     try {
       either = submit.get();
-      seo.getInnerEvaluation().get();
     } catch (Exception e) {
       either = TryResult.createError(e.getLocalizedMessage());
     }

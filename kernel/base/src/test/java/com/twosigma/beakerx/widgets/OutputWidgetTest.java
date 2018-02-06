@@ -16,14 +16,18 @@
 package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher;
+import com.twosigma.beakerx.evaluator.InternalVariable;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Map;
 
+import static com.twosigma.beakerx.widgets.Output.OUTPUT_TYPE;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,11 +40,20 @@ public class OutputWidgetTest {
   public void setUp() throws Exception {
     groovyKernel = new KernelTest();
     KernelManager.register(groovyKernel);
+    submitCodeToExecution();
   }
 
   @After
   public void tearDown() throws Exception {
     KernelManager.register(null);
+  }
+
+  private Message submitCodeToExecution() {
+    SimpleEvaluationObject value = new SimpleEvaluationObject("output");
+    Message jupyterMessage = new Message();
+    value.setJupyterMessage(jupyterMessage);
+    InternalVariable.setValue(value);
+    return jupyterMessage;
   }
 
   @Test
@@ -60,10 +73,10 @@ public class OutputWidgetTest {
     //when
     output.appendStdout("Hello 1");
     //then
-    Map<String, String> value = (Map<String, String>) getValueForProperty(groovyKernel, Output.OUTPUTS, List.class).get(0);
-    assertThat(value.get(Output.OUTPUT_TYPE)).isEqualTo(Output.STREAM);
-    assertThat(value.get(Output.NAME)).isEqualTo(Output.STDOUT);
-    assertThat(value.get(Output.TEXT)).isEqualTo("Hello 1\n");
+    Message streamMessage = EvaluatorResultTestWatcher.getStreamMessage(groovyKernel).get();
+    assertThat(streamMessage.getContent().get(OUTPUT_TYPE)).isEqualTo(Output.STREAM.toString());
+    assertThat(streamMessage.getContent().get(Output.NAME)).isEqualTo(Output.STDOUT);
+    assertThat(streamMessage.getContent().get(Output.TEXT)).isEqualTo("Hello 1\n");
   }
 
   @Test
@@ -74,10 +87,10 @@ public class OutputWidgetTest {
     //when
     output.appendStderr("Error 1");
     //then
-    Map<String, String> value = (Map<String, String>) getValueForProperty(groovyKernel, Output.OUTPUTS, List.class).get(0);
-    assertThat(value.get(Output.OUTPUT_TYPE)).isEqualTo(Output.STREAM);
-    assertThat(value.get(Output.NAME)).isEqualTo(Output.STDERR);
-    assertThat(value.get(Output.TEXT)).isEqualTo("Error 1\n");
+    Message streamMessage = EvaluatorResultTestWatcher.getStreamMessage(groovyKernel).get();
+    assertThat(streamMessage.getContent().get(OUTPUT_TYPE)).isEqualTo(Output.STREAM.toString());
+    assertThat(streamMessage.getContent().get(Output.NAME)).isEqualTo(Output.STDERR);
+    assertThat(streamMessage.getContent().get(Output.TEXT)).isEqualTo("Error 1\n");
   }
 
   @Test

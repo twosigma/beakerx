@@ -15,8 +15,9 @@
  */
 package com.twosigma.beakerx.widgets;
 
-import com.twosigma.beakerx.evaluator.InternalVariable;
 import com.twosigma.beakerx.jvm.object.ConsoleOutput;
+import com.twosigma.beakerx.kernel.comm.Comm;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
 import java.io.Serializable;
@@ -82,25 +83,33 @@ public class Output extends DOMWidget {
 
   @Override
   public void updateValue(Object value) {
-    sendUpdate(MSG_ID, "");
-    InternalVariable.getSimpleEvaluationObject().finishInnerEvaluation();
   }
 
-  public void sendOutput(ConsoleOutput co) {
-    InternalVariable.getSimpleEvaluationObject().startInnerEvaluation();
-    sendUpdate(MSG_ID, getComm().getParentMessage().getHeader().getId());
+  public synchronized void sendOutput(ConsoleOutput co) {
+    List<Message> list = new ArrayList<>();
+    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId()));
     Map<String, Serializable> asMap = addOutput(co);
-    getComm().sendOutputContent(asMap);
+    list.add(getComm().createOutputContent(asMap));
+    list.add(getComm().createUpdateMessage(MSG_ID, ""));
+    getComm().publish(list);
+  }
+
+  public void display(MIMEContainer mimeContainer) {
+    List<Message> list = new ArrayList<>();
+    list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId()));
+    HashMap<String, Serializable> content = new HashMap<>();
+    content.put(mimeContainer.getMime().asString(), (Serializable) mimeContainer.getData());
+    list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, content));
+    list.add(getComm().createUpdateMessage(MSG_ID, ""));
+    getComm().publish(list);
   }
 
   public void appendStdout(String text) {
-    addOutput(new ConsoleOutput(false, text + "\n"));
-    sendUpdate(OUTPUTS, outputs);
+    sendOutput(new ConsoleOutput(false, text + "\n"));
   }
 
   public void appendStderr(String text) {
-    addOutput(new ConsoleOutput(true, text + "\n"));
-    sendUpdate(OUTPUTS, outputs);
+    sendOutput(new ConsoleOutput(true, text + "\n"));
   }
 
   private Map<String, Serializable> addOutput(ConsoleOutput co) {
@@ -120,14 +129,5 @@ public class Output extends DOMWidget {
     outputs.put(NAME, co.isError() ? STDERR : STDOUT);
     outputs.put(TEXT, co.getText());
     return outputs;
-  }
-
-  public void display(MIMEContainer mimeContainer) {
-    InternalVariable.getSimpleEvaluationObject().startInnerEvaluation();
-    sendUpdate(MSG_ID, getComm().getParentMessage().getHeader().getId());
-    HashMap<String, Serializable> content = new HashMap<>();
-    content.put(mimeContainer.getMime().asString(), (Serializable) mimeContainer.getData());
-    getComm().setData(content);
-    getComm().send(DISPLAY_DATA);
   }
 }

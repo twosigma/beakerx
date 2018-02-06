@@ -64,6 +64,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,8 +148,8 @@ public class KernelTest implements KernelFunctionality {
   }
 
   @Override
-  public void publish(Message message) {
-    this.publishedMessages.add(message);
+  public void publish(List<Message> message) {
+    this.publishedMessages.addAll(message);
   }
 
   @Override
@@ -334,13 +335,13 @@ public class KernelTest implements KernelFunctionality {
   @Override
   public void sendBusyMessage(Message message) {
     Message busyMessage = MessageCreator.createBusyMessage(message);
-    publish(busyMessage);
+    publish(Collections.singletonList(busyMessage));
   }
 
   @Override
   public void sendIdleMessage(Message message) {
     Message idleMessage = MessageCreator.createIdleMessage(message);
-    publish(idleMessage);
+    publish(Collections.singletonList(idleMessage));
   }
 
   public void exit() {

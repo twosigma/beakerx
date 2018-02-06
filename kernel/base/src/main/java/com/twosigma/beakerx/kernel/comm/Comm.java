@@ -35,6 +35,7 @@ import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_CLOSE;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_OPEN;
 import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.singletonList;
 
 public class Comm {
 
@@ -90,7 +91,7 @@ public class Comm {
   }
 
   public HashMap<?, ?> getData() {
-    return data;
+    return new HashMap<>(data);
   }
 
   public void setData(HashMap<?, ?> data) {
@@ -165,7 +166,7 @@ public class Comm {
     map.put(TARGET_MODULE, getTargetModule());
     message.setContent(map);
     message.setMetadata(buildMetadata());
-    kernel.publish(message);
+    kernel.publish(singletonList(message));
     kernel.addComm(getCommId(), this);
   }
 
@@ -190,32 +191,33 @@ public class Comm {
     message.setMetadata(buildMetadata());
 
     kernel.removeComm(getCommId());
-    kernel.publish(message);
+    kernel.publish(singletonList(message));
   }
 
-  public void send() {
-    send(COMM_MSG, Buffer.EMPTY);
+  public void send(Comm.Buffer buffer,HashMap<?, ?> data) {
+    send(COMM_MSG, buffer,data);
   }
 
-  public void send(Comm.Buffer buffer) {
-    send(COMM_MSG, buffer);
+  public void send(JupyterMessages type,HashMap<?, ?> data) {
+    send(type, Buffer.EMPTY,data);
   }
 
-  public void send(JupyterMessages type) {
-    send(type, Buffer.EMPTY);
+  public void send(JupyterMessages type, Comm.Buffer buffer,HashMap<?, ?> data) {
+    Message message = createMessage(type, buffer, data);
+    kernel.publish(singletonList(message));
   }
 
-  public void send(JupyterMessages type, Comm.Buffer buffer) {
+  public Message createMessage(JupyterMessages type, Buffer buffer, HashMap<?, ?> data) {
     HashMap<String, Serializable> map = new HashMap<>(6);
     if (type != JupyterMessages.DISPLAY_DATA) {
       map.put(COMM_ID, getCommId());
     }
     map.put(DATA, data);
     map.put(METADATA, metadata);
-    send(type, buffer, map);
+    return create(type, buffer, map);
   }
 
-  public void send(JupyterMessages type, Comm.Buffer buffer, Map<String, Serializable> content) {
+  private Message create(JupyterMessages type, Comm.Buffer buffer, Map<String, Serializable> content) {
     Message parentMessage = getParentMessage();// can be null
     Message message = new Message();
     message.setHeader(new Header(type, parentMessage != null ? parentMessage.getHeader().getSession() : null));
@@ -227,7 +229,11 @@ public class Comm {
     if (!buffer.isEmpty()) {
       message.setBuffers(buffer.getBuffers());
     }
-    kernel.publish(message);
+    return message;
+  }
+
+  public void publish(List<Message> list) {
+    kernel.publish(list);
   }
 
   public void sendUpdate(Comm.Buffer buffer) {
@@ -236,23 +242,26 @@ public class Comm {
     HashMap<Object, Object> state = new HashMap<>();
     content.put(STATE, state);
     content.put(BUFFER_PATHS, buffer.getBufferPaths());
-    this.setData(content);
-    this.send(buffer);
+    this.send(buffer,content);
   }
 
-  public void sendOutputContent(final Map<String, Serializable> content) {
-    this.send(JupyterMessages.STREAM, Buffer.EMPTY, content);
+  public Message createOutputContent(final Map<String, Serializable> content) {
+    return this.create(JupyterMessages.STREAM, Buffer.EMPTY, content);
   }
 
   public void sendUpdate(final String propertyName, final Object value) {
+    Message message = createUpdateMessage(propertyName, value);
+    kernel.publish(singletonList(message));
+  }
+
+  public Message createUpdateMessage(String propertyName, Object value) {
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(METHOD, UPDATE);
     HashMap<Object, Object> state = new HashMap<>();
     state.put(propertyName, value);
     content.put(STATE, state);
     content.put(BUFFER_PATHS, new HashMap<>());
-    this.setData(content);
-    this.send();
+    return this.createMessage(COMM_MSG, Buffer.EMPTY,content);
   }
 
   public void handleMsg(Message parentMessage) {

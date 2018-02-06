@@ -116,7 +116,10 @@ def _uninstall_kernels():
         uninstall_cmd = [
             'jupyter', 'kernelspec', 'remove', kernel, '-y', '-f'
         ]
-        subprocess.check_call(uninstall_cmd)
+        try:
+            subprocess.check_call(uninstall_cmd)
+        except subprocess.CalledProcessError:
+            pass #uninstal_cmd prints the appropriate message
 
 
 def _install_magics():
@@ -154,7 +157,7 @@ def _install_kernelspec_manager(prefix, disable=False):
     nb_app = cfg.setdefault("KernelSpecManager", {})
     if disable and nb_app.get(KSMC, None) == CKSM:
         nb_app.pop(KSMC)
-    else:
+    elif not disable:
         nb_app.update({KSMC: CKSM})
 
     log.debug("Writing config in {}...".format(path))

@@ -17,10 +17,9 @@
 import * as d3scale from 'd3-scale';
 import { formatColor, getDefaultColor } from "../style/dataGridStyle";
 import Highlighter from "./Highlighter";
-import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
+import IHihglighterState from "../interface/IHighlighterState";
 import DataGridColumn from "../column/DataGridColumn";
 import {CellRenderer} from "@phosphor/datagrid";
-import { find } from "@phosphor/algorithm";
 
 export default class HeatmapHighlighter extends Highlighter {
   colorScale: Function;
@@ -39,14 +38,6 @@ export default class HeatmapHighlighter extends Highlighter {
   }
 
   getBackgroundColor(config: CellRenderer.ICellConfig) {
-    let value = config.value;
-
-    if (this.state.style === HIGHLIGHTER_STYLE.FULL_ROW) {
-      value = find(this.column.valuesIterator.clone(), (value, index) => {
-        return index === config.row;
-      });
-    }
-
-    return this.colorScale(value);
+    return this.colorScale(this.getValueToHighlight(config));
   }
 }

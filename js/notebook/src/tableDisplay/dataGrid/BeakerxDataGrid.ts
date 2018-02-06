@@ -56,7 +56,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.addHighlighterManager(modelState);
     this.addCellRenderers();
     this.setWidgetHeight();
-    this.repaint();
+    this['_syncViewport']();
   }
 
   handleEvent(event: Event): void {
@@ -161,6 +161,7 @@ export class BeakerxDataGrid extends DataGrid {
   private setWidgetHeight() {
     let bodyRowCount = this.model.rowCount('body');
     let rowCount = DEFAULT_PAGE_LENGTH < bodyRowCount ? DEFAULT_PAGE_LENGTH : bodyRowCount;
+
     this.node.style.minHeight = `${ rowCount * this.baseRowSize + this.baseColumnHeaderSize }px`;
   }
 

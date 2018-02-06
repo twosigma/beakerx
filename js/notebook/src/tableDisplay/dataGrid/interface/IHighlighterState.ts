@@ -35,5 +35,6 @@ export default interface IHihglighterState {
   midColor: string|null,
   midVal: number|null
   style: HIGHLIGHTER_STYLE
-  type: HIGHLIGHTER_TYPE
+  type: HIGHLIGHTER_TYPE,
+  colors: string[]|null
 }

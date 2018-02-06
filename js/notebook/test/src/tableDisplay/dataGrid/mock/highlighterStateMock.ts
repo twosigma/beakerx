@@ -28,7 +28,8 @@ let highlighterStateMock: IHihglighterState = {
   minColor: '#0000ff',
   minVal: 0,
   style: HIGHLIGHTER_STYLE.SINGLE_COLUMN,
-  type: HIGHLIGHTER_TYPE.heatmap
+  type: HIGHLIGHTER_TYPE.heatmap,
+  colors: ['#ff0000', '#00ff00', '#0000ff']
 };
 
 export default highlighterStateMock;

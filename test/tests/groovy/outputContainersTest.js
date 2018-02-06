@@ -111,4 +111,13 @@ describe('(Groovy) Output Containers Test', function(){
       expect(dtContainer.isEnabled()).toBeTruthy();
     });
   });
+
+  describe('(Groovy) Grid Output Containers', function() {
+    it('Charts are rendered correctly', function(){
+      cellIndex += 1;
+
+      var dtContainers = beakerxPO.runCellToGetDtContainers(cellIndex);
+      expect(dtContainers.length).toBe(6);
+    });
+  });
 });

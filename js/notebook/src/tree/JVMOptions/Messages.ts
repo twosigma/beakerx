@@ -1,6 +1,6 @@
 import { Message } from "@phosphor/messaging";
 import {
-  IDefaultJVMOptions, IOtherJVMOptions, IPropertiesJVMOptions, IUIOptions
+  IDefaultJVMOptions, IJVMOptions, IOtherJVMOptions, IPropertiesJVMOptions, IUIOptions
 } from "../BeakerXApi";
 
 export namespace Messages {
@@ -19,7 +19,22 @@ export namespace Messages {
       return this._error;
     }
   }
-  
+
+  export const TYPE_JVM_OPTIONS_CHANGED = 'jvm-options-changed';
+
+  export class JVMOptionsChangedMessage extends Message {
+    private _options: IJVMOptions;
+
+    constructor(options: IJVMOptions) {
+      super(TYPE_JVM_OPTIONS_CHANGED);
+      this._options = options
+    }
+
+    get options(): IJVMOptions {
+      return this._options;
+    }
+  }
+
   export const TYPE_DEFAULT_JVM_OPTIONS_CHANGED = 'jvm-options-changed:default';
 
   export class DefaultOptionsChangedMessage extends Message {

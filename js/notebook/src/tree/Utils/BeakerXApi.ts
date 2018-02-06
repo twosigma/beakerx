@@ -15,30 +15,7 @@
  */
 
 import * as $ from "jquery";
-
-export interface IDefaultJVMOptions {
-  heap_GB: number;
-}
-export interface IOtherJVMOptions extends Array<any> {}
-export interface IPropertiesJVMOptions extends Array<{ name: string; value: string; }> {}
-
-export interface IJVMOptions extends IDefaultJVMOptions {
-  other: IOtherJVMOptions;
-  properties: IPropertiesJVMOptions;
-}
-
-export interface IUIOptions {
-  auto_close: boolean;
-  improve_fonts: boolean;
-  wide_cells: boolean;
-  show_publication: boolean;
-}
-
-export interface IApiSettingsResponse {
-  jvm_options: IJVMOptions;
-  ui_options: IUIOptions;
-  version: number;
-}
+import IApiSettingsResponse from "../Types/IApiSettingsResponse";
 
 function getCookie(name) {
   // from tornado docs: http://www.tornadoweb.org/en/stable/guide/security.html
@@ -69,7 +46,6 @@ export default class BeakerXApi {
           reject();
         }
       });
-
     });
   }
 

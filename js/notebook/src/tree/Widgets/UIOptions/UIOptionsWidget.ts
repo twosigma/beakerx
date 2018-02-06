@@ -16,11 +16,13 @@
 
 import * as $ from "jquery";
 import { Widget } from "@phosphor/widgets";
-import { IUIOptions } from "../BeakerXApi";
 import { MessageLoop } from "@phosphor/messaging";
-import { Messages } from "./Messages";
 
-export class UIOptionsWidget extends Widget {
+import UIOptionsWidgetInterface from "./UIOptionsWidgetInterface";
+import IUIOptions from "../../Types/IUIOptions";
+import {Messages} from "../../Messages";
+
+export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface {
 
   public readonly AUTO_CLOSE_SELECTOR = '#auto_close';
   public readonly WIDE_CELLS_SELECTOR = '#wide_cells';
@@ -109,15 +111,4 @@ export class UIOptionsWidget extends Widget {
   }
 
   private _options: IUIOptions;
-}
-
-export class UIOptionsModel {
-
-  constructor(private widget: UIOptionsWidget) {
-
-  }
-
-  public update(options: IUIOptions) {
-    this.widget.onLoad(options);
-  }
 }

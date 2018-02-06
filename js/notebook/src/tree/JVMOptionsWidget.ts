@@ -16,17 +16,15 @@
 
 import * as $ from "jquery";
 import { Panel } from "@phosphor/widgets";
-import { Message } from "@phosphor/messaging";
+import { Message, MessageLoop } from "@phosphor/messaging";
 import { DefaultOptionsModel, DefaultOptionsWidget } from "./JVMOptions/DefaultOptionsWidget";
 import { OtherOptionsModel, OtherOptionsWidget } from "./JVMOptions/OtherOptionsWidget";
 import { PropertiesModel, PropertiesWidget } from "./JVMOptions/PropertiesWidget";
-import { SyncIndicatorWidget } from "./JVMOptions/SyncIndicatorWidget";
-import { UIOptionsWidget, UIOptionsModel } from "./JVMOptions/UIOptionsWidget";
 import BeakerXApi, {
-  IApiSettingsResponse, IDefaultJVMOptions, IJVMOptions, IOtherJVMOptions,
-  IPropertiesJVMOptions, IUIOptions
+  IDefaultJVMOptions, IJVMOptions, IOtherJVMOptions, IPropertiesJVMOptions
 } from "./BeakerXApi";
 import { Messages } from "./JVMOptions/Messages";
+import JVMOptionsChangedMessage = Messages.JVMOptionsChangedMessage;
 
 export default class JVMOptionsWidget extends Panel {
   public readonly HTML_ELEMENT_TEMPLATE = `
@@ -40,67 +38,33 @@ export default class JVMOptionsWidget extends Panel {
 </style>
 `;
 
-  constructor(api: BeakerXApi) {
+  constructor() {
     super();
 
     this.addClass('beakerx_container');
-
-    let uiOptionsWidget  = new UIOptionsWidget();
-    let defaultOptionsWidget  = new DefaultOptionsWidget();
-    let syncIndicatorWidget = new SyncIndicatorWidget();
-    let otherOptionsWidget = new OtherOptionsWidget();
-    let propertiesWidget = new PropertiesWidget();
-
-    this._model = new JvmOptionsModel(
-      api,
-      new UIOptionsModel(uiOptionsWidget),
-      new DefaultOptionsModel(defaultOptionsWidget),
-      new PropertiesModel(propertiesWidget),
-      new OtherOptionsModel(otherOptionsWidget),
-      syncIndicatorWidget
-    );
-
-    this.addWidget(uiOptionsWidget);
-    this.addWidget(defaultOptionsWidget);
-    this.addWidget(propertiesWidget);
-    this.addWidget(otherOptionsWidget);
-
-    this.addWidget(syncIndicatorWidget);
-  }
-
-  public get model(): JvmOptionsModel {
-    return this._model;
+    this.setupWidgets();
   }
 
   public onBeforeAttach(msg: Message): void {
     this.createWidgetStylesElement();
-    this.model.load();
   }
 
   public processMessage(msg: Message): void {
     switch (msg.type) {
-      case Messages.TYPE_UI_OPTIONS_CHANGED:
-        this.model.clearErrors();
-        this.model.setUIOptions((msg as Messages.UIOptionsChangedMessage).options);
-        this.model.save();
-        break;
       case Messages.TYPE_DEFAULT_JVM_OPTIONS_CHANGED:
-        this.model.clearErrors();
-        this.model.setDefaultOptions((msg as Messages.DefaultOptionsChangedMessage).values);
-        this.model.save();
+        this._model.setDefaultOptions((msg as Messages.DefaultOptionsChangedMessage).values);
+        this.sendMessageToParent(new JVMOptionsChangedMessage(this._model.options));
         break;
       case Messages.TYPE_OTHER_JVM_OPTIONS_CHANGED:
-        this.model.clearErrors();
-        this.model.setOtherOptions((msg as Messages.OtherOptionsChangedMessage).options);
-        this.model.save();
+        this._model.setOtherOptions((msg as Messages.OtherOptionsChangedMessage).options);
+        this.sendMessageToParent(new JVMOptionsChangedMessage(this._model.options));
         break;
       case Messages.TYPE_PROPERTIES_JVM_OPTIONS_CHANGED:
-        this.model.clearErrors();
-        this.model.setPropertiesOptions((msg as Messages.PropertiesOptionsChangedMessage).properties);
-        this.model.save();
+        this._model.setPropertiesOptions((msg as Messages.PropertiesOptionsChangedMessage).properties);
+        this.sendMessageToParent(new JVMOptionsChangedMessage(this._model.options));
         break;
       case Messages.TYPE_JVM_OPTIONS_ERROR:
-        this.model.showError((msg as Messages.JVMOptionsErrorMessage).error);
+        MessageLoop.sendMessage(this.parent, msg);
         break;
       default:
         super.processMessage(msg);
@@ -108,131 +72,77 @@ export default class JVMOptionsWidget extends Panel {
     }
   }
 
-  private _model: JvmOptionsModel;
+  private _model: JVMOptionsModel;
 
   private createWidgetStylesElement(): void {
     $(this.HTML_ELEMENT_TEMPLATE).insertBefore(this.node);
   }
 
+  private setupWidgets() {
+    let defaultOptionsWidget  = new DefaultOptionsWidget();
+    let otherOptionsWidget = new OtherOptionsWidget();
+    let propertiesWidget = new PropertiesWidget();
+
+    this._model = this.createModel(
+      defaultOptionsWidget,
+      propertiesWidget,
+      otherOptionsWidget
+    );
+
+    this.addWidget(defaultOptionsWidget);
+    this.addWidget(propertiesWidget);
+    this.addWidget(otherOptionsWidget);
+  }
+
+  private createModel(defaultOptionsWidget: DefaultOptionsWidget, propertiesWidget: PropertiesWidget, otherOptionsWidget: OtherOptionsWidget) {
+    return new JVMOptionsModel(
+      new DefaultOptionsModel(defaultOptionsWidget),
+      new PropertiesModel(propertiesWidget),
+      new OtherOptionsModel(otherOptionsWidget),
+    );
+  }
+
+  private sendMessageToParent(msg: Message) {
+    MessageLoop.sendMessage(this.parent, msg);
+  }
+
 }
 
-class JvmOptionsModel {
+export class JVMOptionsModel {
+
+  private _options: IJVMOptions
 
   constructor(
-    private api: BeakerXApi,
-    private uiOptionsModel: UIOptionsModel,
     private defaultOptionsModel: DefaultOptionsModel,
     private propertiesOptionsModel: PropertiesModel,
     private otherOptionsModel: OtherOptionsModel,
-    private syncWidget: SyncIndicatorWidget,
   ) {
   }
 
-  private _options: IApiSettingsResponse;
-
-  public setDefaultOptions(options: IDefaultJVMOptions): void {
-    this._options.jvm_options.heap_GB = options.heap_GB;
-  }
-  public setOtherOptions(options: IOtherJVMOptions): void {
-    this._options.jvm_options.other = options;
-  }
-  public setPropertiesOptions(options: IPropertiesJVMOptions): void {
-    this._options.jvm_options.properties = options;
-  }
-  public setUIOptions(options: IUIOptions) {
-    this._options.ui_options = options;
+  public get options(): IJVMOptions {
+    return this._options;
   }
 
-  public load() {
-    this.syncWidget.onSyncStart();
+  public update(options: IJVMOptions) {
+    this._options = options;
 
-    this.api.loadSettings()
-      .then((data: IApiSettingsResponse) => {
-        if (!data.ui_options) {
-          data.ui_options = {
-            auto_close: false,
-            improve_fonts: true,
-            wide_cells: true,
-          }
-        }
-        this._options = data;
-
-        this.defaultOptionsModel
-          .update({ heap_GB: data.jvm_options.heap_GB });
-        this.propertiesOptionsModel
-          .update(data.jvm_options.properties);
-        this.otherOptionsModel
-          .update(data.jvm_options.other);
-        this.uiOptionsModel
-          .update(data.ui_options);
-
-        this.syncWidget.showResult(this.buildResult(data.jvm_options));
-
-        setTimeout(() => {
-          this.syncWidget.onSyncEnd()
-        },1000);
-      });
+    this.defaultOptionsModel
+      .update({ heap_GB: options.heap_GB });
+    this.propertiesOptionsModel
+      .update(options.properties);
+    this.otherOptionsModel
+      .update(options.other);
   }
 
-  public save() {
-    this.syncWidget.onSyncStart();
-
-    let payload: IApiSettingsResponse = {
-      "jvm_options": {
-        "heap_GB": null,
-        "other": [],
-        "properties": []
-      },
-      "ui_options": {
-        "auto_close": false,
-        "improve_fonts": true,
-        "wide_cells": true,
-      },
-      "version": 2
-    };
-
-    payload.jvm_options.heap_GB = this._options.jvm_options.heap_GB;
-    payload.jvm_options.other = this._options.jvm_options.other;
-    payload.jvm_options.properties = this._options.jvm_options.properties;
-
-    payload.ui_options.auto_close = this._options.ui_options.auto_close;
-    payload.ui_options.improve_fonts = this._options.ui_options.improve_fonts;
-    payload.ui_options.wide_cells = this._options.ui_options.wide_cells;
-
-    this.syncWidget.showResult(this.buildResult(payload.jvm_options));
-
-    this.api.saveSettings({ beakerx:  payload })
-      .then(() => {
-
-        setTimeout(() => {
-          this.syncWidget.onSyncEnd()
-        },1000);
-
-      });
+  public setDefaultOptions(values: IDefaultJVMOptions) {
+    this._options.heap_GB = values.heap_GB;
   }
 
-  public showError(error: Error) {
-    this.syncWidget.onError(error);
+  public setOtherOptions(options: IOtherJVMOptions) {
+    this._options.other = options;
   }
 
-  public clearErrors() {
-    this.syncWidget.clearErrors();
+  public setPropertiesOptions(properties: IPropertiesJVMOptions) {
+    this._options.properties = properties;
   }
-
-  private buildResult(options: IJVMOptions): string {
-    let result: string = '';
-    if (options.heap_GB !== null) {
-      result += `-Xmx${ DefaultOptionsModel.normaliseHeapSize(options.heap_GB) } `;
-    }
-
-    for (let other of options.other) {
-      result += `${other} `
-    }
-
-    for (let property of options.properties) {
-      result += `-D${property.name}=${property.value} `;
-    }
-    return result;
-  };
-
 }

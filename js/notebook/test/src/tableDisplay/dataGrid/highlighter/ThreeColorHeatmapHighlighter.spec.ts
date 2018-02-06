@@ -21,41 +21,49 @@ import highlighterStateMock from "../mock/highlighterStateMock";
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import modelStateMock from "../mock/modelStateMock";
 import columnOptionsMock from "../mock/columnOptionsMock";
-import Highlighter from "@beakerx/tableDisplay/dataGrid/highlighter/Highlighter";
 import cellConfigMock from "../mock/cellConfigMock";
+import ThreeColorHeatmapHighlighter
+  from "@beakerx/tableDisplay/dataGrid/highlighter/ThreeColorHeatmapHighlighter";
+import { HIGHLIGHTER_TYPE } from "@beakerx/tableDisplay/dataGrid/interface/IHighlighterState";
 
-describe('HeatmapHighlighter', () => {
+describe('ThreeColorHeatmapHighlighter', () => {
   const dataGrid = new BeakerxDataGrid({}, modelStateMock);
   const column = new DataGridColumn(
     columnOptionsMock,
     dataGrid
   );
 
-  let heatmapHighlighter = new HeatmapHighlighter(
+  let threeColorHeatmapHighlighter = new ThreeColorHeatmapHighlighter(
     column,
-    highlighterStateMock
+    { ...highlighterStateMock, type: HIGHLIGHTER_TYPE.threeColorHeatmap }
   );
 
   it('should be an instance of highlighter', () => {
-    expect(heatmapHighlighter).to.be.an.instanceof(Highlighter);
+    expect(threeColorHeatmapHighlighter).to.be.an.instanceof(HeatmapHighlighter);
   });
 
   it('should have the getBackgroundColor method', () => {
-    expect(heatmapHighlighter).to.have.property('getBackgroundColor');
+    expect(threeColorHeatmapHighlighter).to.have.property('getBackgroundColor');
   });
 
   it('should have the minColor state property', () => {
-    expect(heatmapHighlighter.state).to.have.property('minColor');
+    expect(threeColorHeatmapHighlighter.state).to.have.property('minColor');
   });
 
   it('should have the maxColor state property', () => {
-    expect(heatmapHighlighter.state).to.have.property('maxColor');
+    expect(threeColorHeatmapHighlighter.state).to.have.property('maxColor');
+  });
+
+  it('should have the midColor state property', () => {
+    expect(threeColorHeatmapHighlighter.state).to.have.property('midColor');
   });
 
   it('should return proper backgroud color', () => {
-    expect(heatmapHighlighter.getBackgroundColor(cellConfigMock)).to.equal('rgb(255, 0, 0)');
-
-    const config = { ...cellConfigMock, value: 0 };
-    expect(heatmapHighlighter.getBackgroundColor(config)).to.equal('rgb(0, 0, 255)');
+    expect(threeColorHeatmapHighlighter.getBackgroundColor(cellConfigMock))
+      .to.equal('rgb(255, 0, 0)');
+    expect(threeColorHeatmapHighlighter.getBackgroundColor({ ...cellConfigMock, value: 0 }))
+      .to.equal('rgb(0, 0, 255)');
+    expect(threeColorHeatmapHighlighter.getBackgroundColor({ ...cellConfigMock, value: 0.5 }))
+      .to.equal('rgb(0, 255, 0)');
   });
 });

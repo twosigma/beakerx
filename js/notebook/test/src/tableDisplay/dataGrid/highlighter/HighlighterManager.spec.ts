@@ -22,7 +22,7 @@ import modelStateMock from "../mock/modelStateMock";
 import HeatmapHighlighter from "@beakerx/tableDisplay/dataGrid/highlighter/HeatmapHighlighter";
 import cellConfigMock from "../mock/cellConfigMock";
 
-describe('HighlighterFactory', () => {
+describe('HighlighterManager', () => {
   const dataGrid = new BeakerxDataGrid({}, modelStateMock);
   const highlighterManager = new HighlighterManager(dataGrid, [highlighterStateMock]);
 
@@ -43,6 +43,6 @@ describe('HighlighterFactory', () => {
   });
 
   it('should return proper background', () => {
-    expect(highlighterManager.getCellBackground(cellConfigMock)).to.equal('rgb(0, 0, 255)');
+    expect(highlighterManager.getCellBackground(cellConfigMock)).to.equal('rgb(255, 0, 0)');
   });
 });

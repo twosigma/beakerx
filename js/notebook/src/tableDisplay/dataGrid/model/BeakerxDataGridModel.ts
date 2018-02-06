@@ -15,7 +15,7 @@
  */
 
 import { DataModel } from "@phosphor/datagrid";
-import { getDisplayType, ALL_TYPES } from '../dataTypes';
+import { ALL_TYPES } from '../dataTypes';
 import { DataFormatter } from '../DataFormatter';
 import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn";
 import IDataModelState from '../interface/IDataGridModelState';

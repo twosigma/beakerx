@@ -17,6 +17,7 @@
 import IHihglighterState, { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 import HeatmapHighlighter from "./HeatmapHighlighter";
 import DataGridColumn from "../column/DataGridColumn";
+import ThreeColorHeatmapHighlighter from "./ThreeColorHeatmapHighlighter";
 
 export default class HighlighterFactory {
   static getHighlighter(config: IHihglighterState, column: DataGridColumn) {
@@ -24,6 +25,7 @@ export default class HighlighterFactory {
       case HIGHLIGHTER_TYPE.heatmap:
         return new HeatmapHighlighter(column, config);
       case HIGHLIGHTER_TYPE.threeColorHeatmap:
+        return new ThreeColorHeatmapHighlighter(column, config);
       case HIGHLIGHTER_TYPE.uniqueEntries:
       case HIGHLIGHTER_TYPE.value:
         return null;

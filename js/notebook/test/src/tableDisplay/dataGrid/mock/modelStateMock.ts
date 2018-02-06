@@ -22,7 +22,7 @@ let modelStateMock: IDataGridModelState = {
   hasIndex: false,
   stringFormatForColumn: {},
   types: ['integer', 'integer'],
-  values: [[1, 2],[2, 5]],
+  values: [[1, 2],[0, 0]],
 };
 
 export default modelStateMock;

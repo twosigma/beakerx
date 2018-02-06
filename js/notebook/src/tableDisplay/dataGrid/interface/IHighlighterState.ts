@@ -32,6 +32,8 @@ export default interface IHihglighterState {
   maxVal: number|null
   minColor: string|null,
   minVal: number|null
+  midColor: string|null,
+  midVal: number|null
   style: HIGHLIGHTER_STYLE
   type: HIGHLIGHTER_TYPE
 }

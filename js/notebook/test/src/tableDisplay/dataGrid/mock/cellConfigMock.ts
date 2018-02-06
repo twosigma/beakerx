@@ -17,7 +17,7 @@
 import { CellRenderer } from "@phosphor/datagrid";
 
 const cellConfigMock: CellRenderer.ICellConfig = {
-  region: "column-header",
+  region: "body",
   value: 1,
   column: 0,
   row: 0,

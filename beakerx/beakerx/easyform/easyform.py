@@ -44,6 +44,13 @@ class EasyForm(BeakerxBox):
         self.components[text.description] = text
         return text
 
+    def addPasswordField(self, *args, **kwargs):
+        password = BeakerxPassword(description=self.getDescription(args, kwargs))
+        password.size = getValue(kwargs, 'width', -1)
+        self.children += (password,)
+        self.components[password.description] = password
+        return password
+
     def addTextArea(self, *args, **kwargs):
         textarea = BeakerxTextArea(
             description=self.getDescription(args, kwargs))

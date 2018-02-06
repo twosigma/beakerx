@@ -17,12 +17,12 @@
 var ENTER_KEY_CODE = 13;
 var widgets = require('./widgets');
 var _ = require('underscore');
-
 var selectMultipleWidget = require('./easyForm/selectMultipleWidget');
 var selectMultipleSingleWidget = require('./easyForm/selectMultipleSingleWidget');
 var datePickerWidget = require('./easyForm/datePickerWidget');
 var comboBoxWidget = require('./easyForm/comboBoxWidget').default;
 var textWidget = require('./easyForm/textWidget').default;
+var passwordWidget = require('./easyForm/passwordWidget').default
 var TextareaWidget = require('./easyForm/TextareaWidget').default;
 var checkboxWidget = require('./easyForm/checkboxWidget').default;
 
@@ -99,6 +99,7 @@ _.extend(module.exports, selectMultipleWidget);
 _.extend(module.exports, selectMultipleSingleWidget);
 _.extend(module.exports, datePickerWidget);
 _.extend(module.exports, textWidget);
+_.extend(module.exports, passwordWidget);
 _.extend(module.exports, TextareaWidget);
 _.extend(module.exports, comboBoxWidget);
 _.extend(module.exports, checkboxWidget);

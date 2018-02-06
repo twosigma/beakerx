@@ -17,14 +17,15 @@
 import * as $ from "jquery";
 import { Widget } from "@phosphor/widgets";
 import { IUIOptions } from "../BeakerXApi";
-import {MessageLoop} from "@phosphor/messaging";
-import {Messages} from "./Messages";
+import { MessageLoop } from "@phosphor/messaging";
+import { Messages } from "./Messages";
 
 export class UIOptionsWidget extends Widget {
 
   public readonly AUTO_CLOSE_SELECTOR = '#auto_close';
   public readonly WIDE_CELLS_SELECTOR = '#wide_cells';
   public readonly IMPROVE_FONTS_SELECTOR = '#improve_fonts';
+  public readonly SHOW_PUBLICATION_SELECTOR = '#show_publication';
 
   public readonly HTML_ELEMENT_TEMPLATE = `
 <fieldset id="ui_options">
@@ -42,6 +43,10 @@ export class UIOptionsWidget extends Widget {
       <input class="form-check-input" id="improve_fonts" name="improve_fonts" type="checkbox">
       <label class="form-check-label" for="improve_fonts">Improve fonts</label>
     </div>
+    <div class="form-check">
+      <input class="form-check-input" id="show_publication" name="show_publication" type="checkbox">
+      <label class="form-check-label" for="show_publication">Show publication</label>
+    </div>
   </div>
 </fieldset>
 `;
@@ -56,7 +61,7 @@ export class UIOptionsWidget extends Widget {
     $(this.HTML_ELEMENT_TEMPLATE).appendTo(this.node);
 
     this.$node
-      .find(`${ this.AUTO_CLOSE_SELECTOR },${ this.IMPROVE_FONTS_SELECTOR },${ this.WIDE_CELLS_SELECTOR }`)
+      .find(`${ this.AUTO_CLOSE_SELECTOR },${ this.IMPROVE_FONTS_SELECTOR },${ this.WIDE_CELLS_SELECTOR },${ this.SHOW_PUBLICATION_SELECTOR }`)
       .on('change', this.optionsChangedHandler.bind(this));
   }
 
@@ -66,6 +71,7 @@ export class UIOptionsWidget extends Widget {
     this.setWideCells(options.wide_cells);
     this.setAutoClose(options.auto_close);
     this.setImproveFonts(options.improve_fonts);
+    this.setShowPublication(options.show_publication);
   }
 
   private optionsChangedHandler(evt): void {
@@ -93,6 +99,13 @@ export class UIOptionsWidget extends Widget {
     this.$node
       .find(this.IMPROVE_FONTS_SELECTOR)
       .prop('checked', checked);
+  }
+
+  private setShowPublication(checked: boolean) {
+    this.$node
+      .find(this.SHOW_PUBLICATION_SELECTOR)
+      .prop('checked', checked);
+
   }
 
   private _options: IUIOptions;

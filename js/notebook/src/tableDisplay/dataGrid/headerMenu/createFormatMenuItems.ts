@@ -52,7 +52,7 @@ export function createFormatMenuItems(column: DataGridColumn) {
 
 export function createPrecisionSubitems(column: DataGridColumn): MenuItem[] {
   const items: MenuItem[] = [];
-  const formetters = column.dataGrid.model.dataFormatter.getDoubleWithPrecissionFormatters(
+  const formetters = column.dataGrid.model.dataFormatter.getdoubleWithPrecisionFormatters(
     scopeData.allPrecissions
   );
 

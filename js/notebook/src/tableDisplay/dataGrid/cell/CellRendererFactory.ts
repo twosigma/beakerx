@@ -40,10 +40,15 @@ export class CellRendererFactory {
         return self.dataGrid.highlighterManager.getCellBackground(config);
       },
       horizontalAlignment: (config: CellRenderer.ICellConfig) => {
-        let column = self.dataGrid.getColumn(config.column, config.region);
+        let column = self.dataGrid.getColumn(config);
 
         return column ? column.getAlignment() : DEFAULT_ALIGNMENT;
-      }
+      },
+      format: (config: CellRenderer.ICellConfig) => {
+        let column = self.dataGrid.getColumn(config);
+
+        return DataGridCell.isHeaderCell(config) ? config.value : column.formatFn(config);
+      },
     });
   }
 }

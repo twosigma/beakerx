@@ -18,11 +18,11 @@ import IDataGridModelState from "@beakerx/tableDisplay/dataGrid/interface/IDataG
 
 let modelStateMock: IDataGridModelState = {
   cellHighlighters: [],
-  columnNames: ['test'],
+  columnNames: ['test', 'column'],
   hasIndex: false,
   stringFormatForColumn: {},
-  types: ['integer'],
-  values: [[1][0]],
+  types: ['integer', 'integer'],
+  values: [[1, 2],[2, 5]],
 };
 
 export default modelStateMock;

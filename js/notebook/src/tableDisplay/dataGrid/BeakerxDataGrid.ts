@@ -15,7 +15,7 @@
  */
 
 import { chain, find } from '@phosphor/algorithm'
-import { DataGrid, DataModel } from "@phosphor/datagrid";
+import { CellRenderer, DataGrid } from "@phosphor/datagrid";
 import { ITriggerOptions } from "./headerMenu/HeaderMenu";
 import { BeakerxDataGridModel } from "./model/BeakerxDataGridModel";
 import { Widget } from "@phosphor/widgets";
@@ -77,10 +77,10 @@ export class BeakerxDataGrid extends DataGrid {
     this.dispose();
   }
 
-  getColumn(index: number, region: DataModel.CellRegion): DataGridColumn {
-    const columnType = DataGridColumn.getColumnTypeByRegion(region);
+  getColumn(config: CellRenderer.ICellConfig): DataGridColumn {
+    const columnType = DataGridColumn.getColumnTypeByRegion(config.region);
 
-    return this.columns[columnType][index];
+    return this.columns[columnType][config.column];
   }
 
   getColumnByName(columnName: string): DataGridColumn|undefined {

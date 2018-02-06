@@ -15,7 +15,7 @@
  */
 
 import { expect } from 'chai';
-import { getTypeByName, getDisplayType, ALL_TYPES } from '@beakerx/tableDisplay/dataGrid/dataTypes';
+import {getTypeByName, getDisplayType, ALL_TYPES} from '@beakerx/tableDisplay/dataGrid/dataTypes';
 
 describe('dataTypes', () => {
   describe('getTypeByName', () => {
@@ -53,26 +53,26 @@ describe('dataTypes', () => {
     });
 
     it('should return number', () => {
-      expect(getDisplayType('some dummy value')).to.be.a('number');
+      expect(getDisplayType(65)).to.be.a('number');
     });
 
     it('should return 0 by default', () => {
-      expect(getDisplayType('some dummy value')).to.equal(0);
+      expect(getDisplayType(45)).to.equal(0);
     });
 
     it('should return display type as number', () => {
-      expect(getDisplayType('string')).to.equal(0);
-      expect(getDisplayType('integer')).to.equal(2);
-      expect(getDisplayType('int64')).to.equal(0);
-      expect(getDisplayType('formatted integer')).to.equal(0);
-      expect(getDisplayType('exponential 5')).to.equal(0);
-      expect(getDisplayType('exponential 15')).to.equal(0);
-      expect(getDisplayType('html')).to.equal(0);
-      expect(getDisplayType('boolean')).to.equal(0);
-      expect(getDisplayType('double')).to.equal('4.3');
-      expect(getTypeByName('double with precision')).to.equal(4);
-      expect(getDisplayType('datetime')).to.equal(8);
-      expect(getDisplayType('time')).to.equal(8);
+      expect(getDisplayType(ALL_TYPES.string)).to.equal(0);
+      expect(getDisplayType(ALL_TYPES.integer)).to.equal(2);
+      expect(getDisplayType(ALL_TYPES.int64)).to.equal(0);
+      expect(getDisplayType(ALL_TYPES['formatted integer'])).to.equal(0);
+      expect(getDisplayType(ALL_TYPES['exponential 5'])).to.equal(0);
+      expect(getDisplayType(ALL_TYPES['exponential 15'])).to.equal(0);
+      expect(getDisplayType(ALL_TYPES.html)).to.equal(0);
+      expect(getDisplayType(ALL_TYPES.boolean)).to.equal(0);
+      expect(getDisplayType(ALL_TYPES.double)).to.equal('4.3');
+      expect(getDisplayType(ALL_TYPES['double with precision'])).to.equal(0);
+      expect(getDisplayType(ALL_TYPES.datetime)).to.equal(8);
+      expect(getDisplayType(ALL_TYPES.time)).to.equal(8);
     });
   });
 });

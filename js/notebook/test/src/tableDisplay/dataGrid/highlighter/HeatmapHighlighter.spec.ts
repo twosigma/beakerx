@@ -24,7 +24,7 @@ import columnOptionsMock from "../mock/columnOptionsMock";
 import Highlighter from "@beakerx/tableDisplay/dataGrid/highlighter/Highlighter";
 import cellConfigMock from "../mock/cellConfigMock";
 
-describe('Highlighter', () => {
+describe('HeatmapHighlighter', () => {
   const dataGrid = new BeakerxDataGrid({}, modelStateMock);
   const column = new DataGridColumn(
     columnOptionsMock,
@@ -53,7 +53,7 @@ describe('Highlighter', () => {
   });
 
   it('should return proper backgroud color', () => {
-    expect(heatmapHighlighter.getBackgroundColor(cellConfigMock)).to.equal('rgb(255, 0, 0)');
+    expect(heatmapHighlighter.getBackgroundColor(cellConfigMock)).to.equal('rgb(0, 0, 255)');
 
     const config = { ...cellConfigMock, value: 0 };
     expect(heatmapHighlighter.getBackgroundColor(config)).to.equal('rgb(0, 0, 255)');

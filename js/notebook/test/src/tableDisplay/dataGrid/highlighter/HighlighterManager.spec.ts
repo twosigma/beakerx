@@ -43,6 +43,6 @@ describe('HighlighterFactory', () => {
   });
 
   it('should return proper background', () => {
-    expect(highlighterManager.getCellBackground(cellConfigMock)).to.equal('rgb(255, 0, 0)');
+    expect(highlighterManager.getCellBackground(cellConfigMock)).to.equal('rgb(0, 0, 255)');
   });
 });

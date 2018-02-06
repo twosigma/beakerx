@@ -15,25 +15,16 @@
  */
 
 import { expect } from 'chai';
-import { BeakerxDataGridModel } from '@beakerx/tableDisplay/dataGrid/model/BeakerxDataGridModel';
+import { BeakerxDataGridModel } from '../../../../../src/tableDisplay/dataGrid/model/BeakerxDataGridModel';
 import { DataModel } from "@phosphor/datagrid";
+import modelStateMock from "../mock/modelStateMock";
 
 describe('BeakerxDataGridModel', () => {
   describe('BeakerxDataGridModel.hasIndex === false', () => {
-    const beakerxDataGridModel = new BeakerxDataGridModel({
-      values: [[1]],
-      columnNames: ['first column'],
-      hasIndex: false,
-      types: ['double'],
-      stringFormatForColumn: {}
-    });
+    const beakerxDataGridModel = new BeakerxDataGridModel(modelStateMock);
 
     it('should be instance of DataModel', () => {
       expect(beakerxDataGridModel).to.be.an.instanceof(DataModel);
-    });
-
-    it('should implement the getFormatFn method', () => {
-      expect(beakerxDataGridModel).to.have.property('getFormatFn');
     });
 
     it('should implement the data method', () => {
@@ -42,9 +33,9 @@ describe('BeakerxDataGridModel', () => {
 
     it('should return proper data', () => {
       expect(beakerxDataGridModel.data('corner-header', 0, 0)).to.equal('index');
-      expect(beakerxDataGridModel.data('column-header', 0, 0)).to.equal('first column');
+      expect(beakerxDataGridModel.data('column-header', 0, 0)).to.equal('test');
       expect(beakerxDataGridModel.data('row-header', 0, 0)).to.equal(0);
-      expect(beakerxDataGridModel.data('body', 0, 0)).to.equal('1.000');
+      expect(beakerxDataGridModel.data('body', 0, 0)).to.equal(1);
     });
 
     it('should implement the rowCount method', () => {
@@ -52,7 +43,7 @@ describe('BeakerxDataGridModel', () => {
     });
 
     it('should return the proper row count', () => {
-      expect(beakerxDataGridModel.rowCount('body')).to.equal(1);
+      expect(beakerxDataGridModel.rowCount('body')).to.equal(2);
       expect(beakerxDataGridModel.rowCount('column-header')).to.equal(1);
     });
 
@@ -61,34 +52,31 @@ describe('BeakerxDataGridModel', () => {
     });
 
     it('should return the proper column count', () => {
-      expect(beakerxDataGridModel.columnCount('body')).to.equal(1);
+      expect(beakerxDataGridModel.columnCount('body')).to.equal(2);
       expect(beakerxDataGridModel.columnCount('row-header')).to.equal(1);
     });
   });
 
   describe('BeakerxDataGridModel.hasIndex === true', () => {
     const beakerxDataGridModel = new BeakerxDataGridModel({
-      values: [[1]],
-      columnNames: ['first column'],
-      hasIndex: true,
-      types: ['double'],
-      stringFormatForColumn: {}
+      ...modelStateMock,
+      hasIndex: true
     });
 
     it('should return proper data', () => {
-      expect(beakerxDataGridModel.data('corner-header', 0, 0)).to.equal('first column');
-      expect(beakerxDataGridModel.data('column-header', 0, 0)).to.equal(undefined);
-      expect(beakerxDataGridModel.data('row-header', 0, 0)).to.equal('1.000');
-      expect(beakerxDataGridModel.data('body', 0, 0)).to.equal(undefined);
+      expect(beakerxDataGridModel.data('corner-header', 0, 0)).to.equal('test');
+      expect(beakerxDataGridModel.data('column-header', 0, 0)).to.equal('column');
+      expect(beakerxDataGridModel.data('row-header', 0, 0)).to.equal(1);
+      expect(beakerxDataGridModel.data('body', 0, 0)).to.equal(2);
     });
 
     it('should return the proper row count', () => {
-      expect(beakerxDataGridModel.rowCount('body')).to.equal(1);
+      expect(beakerxDataGridModel.rowCount('body')).to.equal(2);
       expect(beakerxDataGridModel.rowCount('column-header')).to.equal(1);
     });
 
     it('should return the proper column count', () => {
-      expect(beakerxDataGridModel.columnCount('body')).to.equal(0);
+      expect(beakerxDataGridModel.columnCount('body')).to.equal(1);
       expect(beakerxDataGridModel.columnCount('row-header')).to.equal(1);
     });
   });

@@ -17,7 +17,7 @@
 import OtherOptionsWidgetInterface from "../JVMOptions/OtherOptionsWidgetInterface";
 import { IOtherJVMOptions } from "../Types/IJVMOptions";
 
-export class OtherOptionsModel {
+export default class OtherOptionsModel {
 
   constructor(private widget: OtherOptionsWidgetInterface) {
   }

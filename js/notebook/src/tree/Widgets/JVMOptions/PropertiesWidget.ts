@@ -19,11 +19,10 @@ import * as _ from "underscore";
 
 import { Widget } from "@phosphor/widgets";
 import { MessageLoop, Message } from "@phosphor/messaging";
-import { Messages } from "./Messages";
-import PropertiesOptionsChangedMessage = Messages.PropertiesOptionsChangedMessage;
-import { IPropertiesJVMOptions } from "../BeakerXApi";
+import {IPropertiesJVMOptions} from "../../Types/IJVMOptions";
+import {Messages} from "../../Messages";
 
-export class PropertiesWidget extends Widget {
+export default class PropertiesWidget extends Widget {
 
   public readonly ADD_BUTTON_SELECTOR: string = '#add_property_jvm_sett';
   public readonly PROPERTIES_PANEL_SELECTOR: string = '#properties_property';
@@ -172,7 +171,7 @@ export class PropertiesWidget extends Widget {
   }
 
   private propertiesChanged() {
-    let msg = new PropertiesOptionsChangedMessage(this.collectProperties());
+    let msg = new Messages.PropertiesOptionsChangedMessage(this.collectProperties());
     MessageLoop.sendMessage(this.parent, msg);
   }
 
@@ -191,15 +190,6 @@ export class PropertiesWidget extends Widget {
   }
 }
 
-export class PropertiesModel {
-  constructor(private widget: PropertiesWidget) {
-
-  }
-
-  update(properties: IPropertiesJVMOptions) {
-    this.widget.onLoad(properties);
-  }
-}
 
 
 namespace Private {

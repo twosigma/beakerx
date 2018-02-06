@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import DefaultOptionsWidgetInterface from "../JVMOptions/DefaultOptionsWidgetInterface";
+import DefaultOptionsWidgetInterface from "../Widgets/JVMOptions/DefaultOptionsWidgetInterface";
 import { IDefaultJVMOptions } from "../Types/IJVMOptions";
 
 export default class DefaultOptionsModel {

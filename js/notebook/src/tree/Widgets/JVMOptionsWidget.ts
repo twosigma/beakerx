@@ -17,16 +17,17 @@
 import * as $ from "jquery";
 import { Panel } from "@phosphor/widgets";
 import { Message, MessageLoop } from "@phosphor/messaging";
-import { DefaultOptionsModel, DefaultOptionsWidget } from "./JVMOptions/DefaultOptionsWidget";
-import { OtherOptionsModel, OtherOptionsWidget } from "./JVMOptions/OtherOptionsWidget";
-import { PropertiesModel, PropertiesWidget } from "./JVMOptions/PropertiesWidget";
-import BeakerXApi, {
-  IDefaultJVMOptions, IJVMOptions, IOtherJVMOptions, IPropertiesJVMOptions
-} from "./BeakerXApi";
-import { Messages } from "./JVMOptions/Messages";
-import JVMOptionsChangedMessage = Messages.JVMOptionsChangedMessage;
+
+import { Messages } from "../Messages";
+
+import JVMOptionsModel from "../Models/JVMOptionsModel";
+import DefaultOptionsWidget from "./JVMOptions/DefaultOptionsWidget";
+import OtherOptionsWidget from "./JVMOptions/OtherOptionsWidget";
+import PropertiesWidget from "./JVMOptions/PropertiesWidget";
+
 
 export default class JVMOptionsWidget extends Panel {
+
   public readonly HTML_ELEMENT_TEMPLATE = `
 <style>
   #beakerx-tree label { 
@@ -53,15 +54,15 @@ export default class JVMOptionsWidget extends Panel {
     switch (msg.type) {
       case Messages.TYPE_DEFAULT_JVM_OPTIONS_CHANGED:
         this._model.setDefaultOptions((msg as Messages.DefaultOptionsChangedMessage).values);
-        this.sendMessageToParent(new JVMOptionsChangedMessage(this._model.options));
+        this.sendMessageToParent(new Messages.JVMOptionsChangedMessage(this._model.options));
         break;
       case Messages.TYPE_OTHER_JVM_OPTIONS_CHANGED:
         this._model.setOtherOptions((msg as Messages.OtherOptionsChangedMessage).options);
-        this.sendMessageToParent(new JVMOptionsChangedMessage(this._model.options));
+        this.sendMessageToParent(new Messages.JVMOptionsChangedMessage(this._model.options));
         break;
       case Messages.TYPE_PROPERTIES_JVM_OPTIONS_CHANGED:
         this._model.setPropertiesOptions((msg as Messages.PropertiesOptionsChangedMessage).properties);
-        this.sendMessageToParent(new JVMOptionsChangedMessage(this._model.options));
+        this.sendMessageToParent(new Messages.JVMOptionsChangedMessage(this._model.options));
         break;
       case Messages.TYPE_JVM_OPTIONS_ERROR:
         MessageLoop.sendMessage(this.parent, msg);
@@ -70,6 +71,10 @@ export default class JVMOptionsWidget extends Panel {
         super.processMessage(msg);
         break;
     }
+  }
+
+  get model(): JVMOptionsModel {
+    return this._model;
   }
 
   private _model: JVMOptionsModel;
@@ -96,9 +101,9 @@ export default class JVMOptionsWidget extends Panel {
 
   private createModel(defaultOptionsWidget: DefaultOptionsWidget, propertiesWidget: PropertiesWidget, otherOptionsWidget: OtherOptionsWidget) {
     return new JVMOptionsModel(
-      new DefaultOptionsModel(defaultOptionsWidget),
-      new PropertiesModel(propertiesWidget),
-      new OtherOptionsModel(otherOptionsWidget),
+      defaultOptionsWidget,
+      propertiesWidget,
+      otherOptionsWidget,
     );
   }
 
@@ -106,43 +111,4 @@ export default class JVMOptionsWidget extends Panel {
     MessageLoop.sendMessage(this.parent, msg);
   }
 
-}
-
-export class JVMOptionsModel {
-
-  private _options: IJVMOptions
-
-  constructor(
-    private defaultOptionsModel: DefaultOptionsModel,
-    private propertiesOptionsModel: PropertiesModel,
-    private otherOptionsModel: OtherOptionsModel,
-  ) {
-  }
-
-  public get options(): IJVMOptions {
-    return this._options;
-  }
-
-  public update(options: IJVMOptions) {
-    this._options = options;
-
-    this.defaultOptionsModel
-      .update({ heap_GB: options.heap_GB });
-    this.propertiesOptionsModel
-      .update(options.properties);
-    this.otherOptionsModel
-      .update(options.other);
-  }
-
-  public setDefaultOptions(values: IDefaultJVMOptions) {
-    this._options.heap_GB = values.heap_GB;
-  }
-
-  public setOtherOptions(options: IOtherJVMOptions) {
-    this._options.other = options;
-  }
-
-  public setPropertiesOptions(properties: IPropertiesJVMOptions) {
-    this._options.properties = properties;
-  }
 }

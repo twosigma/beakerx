@@ -18,9 +18,9 @@ import * as $ from "jquery";
 import * as _ from "underscore";
 import { Widget } from "@phosphor/widgets";
 import { MessageLoop, Message } from "@phosphor/messaging";
-import { Messages } from "../Messages";
-import { IOtherJVMOptions } from "../Types/IJVMOptions";
 import OtherOptionsWidgetInterface from "./OtherOptionsWidgetInterface";
+import { IOtherJVMOptions } from "../../Types/IJVMOptions";
+import { Messages } from "../../Messages";
 
 export default class OtherOptionsWidget extends Widget implements OtherOptionsWidgetInterface {
 

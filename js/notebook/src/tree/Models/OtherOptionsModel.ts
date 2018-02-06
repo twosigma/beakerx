@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import OtherOptionsWidgetInterface from "../JVMOptions/OtherOptionsWidgetInterface";
+import OtherOptionsWidgetInterface from "../Widgets/JVMOptions/OtherOptionsWidgetInterface";
 import { IOtherJVMOptions } from "../Types/IJVMOptions";
 
 export default class OtherOptionsModel {

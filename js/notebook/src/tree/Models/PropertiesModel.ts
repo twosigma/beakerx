@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import PropertiesWidgetInterface from "../JVMOptions/PropertiesWidgetInterface";
+import PropertiesWidgetInterface from "../Widgets/JVMOptions/PropertiesWidgetInterface";
 import { IPropertiesJVMOptions } from "../Types/IJVMOptions";
 
 export default class PropertiesModel {

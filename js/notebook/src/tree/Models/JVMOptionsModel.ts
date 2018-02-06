@@ -17,9 +17,9 @@
 import IJVMOptions, { IDefaultJVMOptions, IOtherJVMOptions, IPropertiesJVMOptions } from "../Types/IJVMOptions";
 import DefaultOptionsModel from "./DefaultOptionsModel";
 import PropertiesModel from "./PropertiesModel";
-import DefaultOptionsWidgetInterface from "../JVMOptions/DefaultOptionsWidgetInterface";
-import PropertiesWidgetInterface from "../JVMOptions/PropertiesWidgetInterface";
-import OtherOptionsWidgetInterface from "../JVMOptions/OtherOptionsWidgetInterface";
+import DefaultOptionsWidgetInterface from "../Widgets/JVMOptions/DefaultOptionsWidgetInterface";
+import PropertiesWidgetInterface from "../Widgets/JVMOptions/PropertiesWidgetInterface";
+import OtherOptionsWidgetInterface from "../Widgets/JVMOptions/OtherOptionsWidgetInterface";
 import OtherOptionsModel from "./OtherOptionsModel";
 
 export default class JVMOptionsModel {

@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import { IOtherJVMOptions } from "../Types/IJVMOptions";
+import { IPropertiesJVMOptions } from "../../Types/IJVMOptions";
 
-export default interface OtherOptionsWidgetInterface {
-  onLoad: (other: IOtherJVMOptions) => void;
+export default interface PropertiesWidgetInterface {
+  onLoad: (properties: IPropertiesJVMOptions) => void;
 }

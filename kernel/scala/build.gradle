@@ -63,6 +63,10 @@ jar {
   }
 }
 
+test {
+  maxHeapSize = '1800m'
+}
+
 task realclean
 realclean.dependsOn(clean)
 // should also remove

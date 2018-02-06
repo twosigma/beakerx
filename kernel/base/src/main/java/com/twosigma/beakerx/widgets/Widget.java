@@ -97,7 +97,7 @@ public abstract class Widget implements CommFunctionality, DisplayableWidget {
     data.put(MODEL_ID, getComm().getCommId());
     content.put(METHOD, DISPLAY);
     content.put(APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON, data);
-    getComm().send(DISPLAY_DATA,content);
+    getComm().send(DISPLAY_DATA,new Comm.Data(content));
   }
 
   private HashMap<String, Serializable> createContent() {

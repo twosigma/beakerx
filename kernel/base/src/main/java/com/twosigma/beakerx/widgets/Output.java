@@ -99,7 +99,7 @@ public class Output extends DOMWidget {
     list.add(getComm().createUpdateMessage(MSG_ID, getComm().getParentMessage().getHeader().getId()));
     HashMap<String, Serializable> content = new HashMap<>();
     content.put(mimeContainer.getMime().asString(), (Serializable) mimeContainer.getData());
-    list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, content));
+    list.add(getComm().createMessage(DISPLAY_DATA, Comm.Buffer.EMPTY, new Comm.Data(content)));
     list.add(getComm().createUpdateMessage(MSG_ID, ""));
     getComm().publish(list);
   }

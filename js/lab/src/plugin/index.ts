@@ -21,14 +21,7 @@ import { INotebookModel, NotebookPanel } from '@jupyterlab/notebook';
 import { registerCommTargets } from './comm';
 import { registerCommentOutCmd } from './codeEditor';
 import { enableInitializationCellsFeature } from './initializationCells';
-import { registerFeature as registerGistPublishFeature } from './gistPublish';
-
-declare global {
-  interface Window {
-    beakerx: any,
-    require: Function
-  }
-}
+import { registerFeature as registerGistPublishFeature } from './gistPublish/index';
 
 function displayHTML(widget: Widget, html: string): void {
   if (!widget.node || !html) {

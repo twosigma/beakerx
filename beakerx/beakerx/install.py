@@ -50,7 +50,7 @@ def _classpath_for(kernel):
 def _uninstall_nbextension():
     subprocess.check_call(["jupyter", "nbextension", "disable", "beakerx", "--py", "--sys-prefix"])
     subprocess.check_call(["jupyter", "nbextension", "uninstall", "beakerx", "--py", "--sys-prefix"])
-
+    subprocess.check_call(["jupyter", "serverextension", "disable", "beakerx", "--py", "--sys-prefix"])
 
 def _install_nbextension():
     if sys.platform == 'win32':
@@ -181,9 +181,10 @@ def make_parser():
     return parser
 
 
-def _disable_beakerx():
+def _disable_beakerx(args):
     _uninstall_nbextension()
     _uninstall_kernels()
+    _install_kernelspec_manager(args.prefix, disable=True)
 
 
 def _install_beakerx(args):
@@ -196,17 +197,11 @@ def _install_beakerx(args):
     _set_conf_privileges()
 
 
-def install():
-    try:
-        parser = make_parser()
-        args = parser.parse_args()
-        if args.disable:
-            _disable_beakerx()
-        else:
-            _install_beakerx(args)
-    except KeyboardInterrupt:
-        return 130
-    return 0
+def install(args):
+    _install_beakerx(args)
+
+def uninstall(args):
+    _disable_beakerx(args)
 
 
 if __name__ == "__main__":

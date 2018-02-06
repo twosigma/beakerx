@@ -31,6 +31,7 @@ export interface IUIOptions {
   auto_close: boolean;
   improve_fonts: boolean;
   wide_cells: boolean;
+  show_publication: boolean;
 }
 
 export interface IApiSettingsResponse {

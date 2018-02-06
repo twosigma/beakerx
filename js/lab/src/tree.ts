@@ -22,8 +22,7 @@ import { JSONExt } from "@phosphor/coreutils";
 import { PageConfig } from "@jupyterlab/coreutils";
 
 const BeakerXTreeLib = require("../lib/tree.js").default;
-const BeakerXTreeWidget = BeakerXTreeLib.BeakerXTreeWidget;
-const BeakerXApi = BeakerXTreeLib.BeakerXApi;
+const TreeWidget = BeakerXTreeLib.TreeWidget;
 
 function activate(app: JupyterLab, palette: ICommandPalette, restorer: ILayoutRestorer) {
   let widget:any;
@@ -34,9 +33,12 @@ function activate(app: JupyterLab, palette: ICommandPalette, restorer: ILayoutRe
     label: 'BeakerX Options',
     execute: () => {
       if (!widget) {
-        widget = new BeakerXTreeWidget(
-          new BeakerXApi(PageConfig.getBaseUrl())
-        );
+        let options = {
+          baseUrl: PageConfig.getBaseUrl(),
+          isLab: true,
+          CodeCell: null,
+        };
+        widget = new TreeWidget(options);
         widget.update();
       }
       if (!tracker.has(widget)) {

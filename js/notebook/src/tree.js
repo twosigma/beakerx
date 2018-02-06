@@ -27,10 +27,13 @@ define([
   var Widget = require('@phosphor/widgets').Widget;
 
   function load() {
-    var base_url = (Jupyter.notebook_list || Jupyter.notebook).base_url;
-    var BeakerXTreeWidget = require('./tree/TreeWidget').default;
-    var BeakerxApi = require('./tree/BeakerXApi').default;
-    var bxWidget = new BeakerXTreeWidget(new BeakerxApi(base_url));
+    var TreeWidget = require('./tree/TreeWidget').default;
+    var options = {
+      baseUrl: (Jupyter.notebook_list || Jupyter.notebook).base_url,
+      isLab: false,
+      CodeCell: Jupyter.CodeCell,
+    };
+    var bxWidget = new TreeWidget(options);
 
     Widget.attach(bxWidget, $('.tab-content').get(0));
     $('#tabs').append(

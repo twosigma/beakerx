@@ -61,5 +61,54 @@ describe('(Groovy) Output Containers Test', function(){
     });
   });
 
-  describe('(Groovy) ')
+  describe('(Groovy) Tabbed Output Containers', function() {
+    it('Cell displays tabbed output labels', function() {
+      cellIndex += 2;
+
+      var testValues = {
+        tabbedOutputScatter: 'Scatter with History',
+        tabbedOutputShortTerm: 'Short Term',
+        tabbedOutputLongTerm: 'Long Term',
+        tabbedOutputDate: '1990/01'
+      };
+
+      beakerxPO.clickRunCell();
+      beakerxPO.runCodeCellByIndex(cellIndex);
+
+      expect(beakerxPO.getTabLabel(0).getText()).toBe(testValues.tabbedOutputScatter);
+      expect(beakerxPO.getTabLabel(1).getText()).toBe(testValues.tabbedOutputShortTerm);
+      expect(beakerxPO.getTabLabel(2).getText()).toBe(testValues.tabbedOutputLongTerm);
+      expect(beakerxPO.getTabLabel(3).getText()).toBe(testValues.tabbedOutputDate);
+    });
+
+    it('Scatter with history chart is displayed properly', function() {
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+
+      expect(dtContainer.isEnabled()).toBeTruthy();
+    });
+
+    it('Short term line chart is displayed properly', function() {
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+
+      beakerxPO.switchTab(1);
+
+      expect(dtContainer.isEnabled()).toBeTruthy();
+    });
+
+    it('Long term line chart is displayed properly', function() {
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+
+      beakerxPO.switchTab(2);
+
+      expect(dtContainer.isEnabled()).toBeTruthy();
+    });
+
+    it('Table is displayed properly', function() {
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+
+      beakerxPO.switchTab(3);
+
+      expect(dtContainer.isEnabled()).toBeTruthy();
+    });
+  });
 });

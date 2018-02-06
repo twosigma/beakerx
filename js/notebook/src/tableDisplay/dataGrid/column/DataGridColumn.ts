@@ -20,9 +20,10 @@ import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
 import { getAlignmentByChar, getAlignmentByType} from "./columnAlignment";
-import { DataModel, TextRenderer } from "@phosphor/datagrid";
-import { ALL_TYPES, getTypeByName } from "../dataTypes";
+import {CellRenderer, DataModel, TextRenderer} from "@phosphor/datagrid";
+import {ALL_TYPES, getTypeByName} from "../dataTypes";
 import { minmax, MapIterator } from '@phosphor/algorithm';
+import {BeakerxDataGridModel} from "../model/BeakerxDataGridModel";
 
 export enum COLUMN_TYPES {
   'index',
@@ -41,6 +42,7 @@ export default class DataGridColumn {
   dataType: ALL_TYPES;
   menu: ColumnMenu|IndexMenu;
   dataGrid: BeakerxDataGrid;
+  formatFn: CellRenderer.ConfigFunc<string>;
   valuesIterator: MapIterator<number, any>;
   minValue: any;
   maxValue: any;
@@ -53,7 +55,8 @@ export default class DataGridColumn {
     this.type = options.type;
     this.dataGrid = dataGrid;
     this.dataType = this.getDataType();
-    this.valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
+    this.valuesIterator = dataGrid.model.getColumnValuesIterator(this);
+    this.formatFn = dataGrid.model.dataFormatter.getFormatFnByColumn(this);
     this.state = {
       triggerShown: false,
       horizontalAlignment: this.getInitialAlignment()
@@ -116,14 +119,6 @@ export default class DataGridColumn {
     this.state.triggerShown = true;
   }
 
-  getDataType(): ALL_TYPES {
-    const typeName = this.type === COLUMN_TYPES.index
-      ? this.dataGrid.model.indexColumnsState.types[this.index]
-      : this.dataGrid.model.bodyColumnsState.types[this.index];
-
-    return getTypeByName(typeName);
-  }
-
   getInitialAlignment() {
     let config = this.dataGrid.model.getAlignmentConfig();
     let alignmentForType = config.alignmentForType[ALL_TYPES[this.dataType]];
@@ -146,6 +141,16 @@ export default class DataGridColumn {
 
   setAlignment(horizontalAlignment: TextRenderer.HorizontalAlignment) {
     this.setState({ horizontalAlignment });
+  }
+
+  private getDataTypeName(): string {
+    return this.type === COLUMN_TYPES.index
+      ? this.dataGrid.model.indexColumnsState.types[this.index]
+      : this.dataGrid.model.bodyColumnsState.types[this.index];
+  }
+
+  private getDataType(): ALL_TYPES {
+    return getTypeByName(this.getDataTypeName());
   }
 
   private addMinMaxValues() {

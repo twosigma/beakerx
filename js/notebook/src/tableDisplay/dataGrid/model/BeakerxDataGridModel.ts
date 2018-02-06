@@ -15,7 +15,7 @@
  */
 
 import { DataModel } from "@phosphor/datagrid";
-import { getDisplayType, ALL_TYPES } from '../dataTypes';
+import { ALL_TYPES } from '../dataTypes';
 import { DataFormatter } from '../DataFormatter';
 import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn";
 import IDataModelState from '../interface/IDataGridModelState';
@@ -100,7 +100,7 @@ export class BeakerxDataGridModel extends DataModel {
 
   data(region: DataModel.CellRegion, row: number, columnIndex: number): any {
     if (region === 'row-header') {
-      return this.state.hasIndex ? this.getFormatFn(region, row, columnIndex) : row;
+      return this.state.hasIndex ? this.getValue(region, row, columnIndex) : row;
     }
 
     if (region === 'column-header') {
@@ -111,7 +111,7 @@ export class BeakerxDataGridModel extends DataModel {
       return this.indexColumnsState.names[columnIndex];
     }
 
-    return this.getFormatFn(region, row, columnIndex);
+    return this.getValue(region, row, columnIndex);
   }
   
   getValue(region: DataModel.CellRegion, row: number, columnIndex: number) {
@@ -130,33 +130,6 @@ export class BeakerxDataGridModel extends DataModel {
     }
 
     return new MapIterator(iter(this._data), (rowValues) => rowValues[column.index]);
-  }
-  
-  getDataTypeName(region: DataModel.CellRegion, columnIndex: number) {
-    const columnType = DataGridColumn.getColumnTypeByRegion(region);
-
-    return  columnType === COLUMN_TYPES.index
-      ? this.indexColumnsState.types[columnIndex]
-      : this.bodyColumnsState.types[columnIndex];
-  }
-
-  getColumnName(columnIndex: number, region: DataModel.CellRegion) {
-    const columnType = DataGridColumn.getColumnTypeByRegion(region);
-
-    return columnType === COLUMN_TYPES.index
-      ? this.indexColumnsState.names[columnIndex]
-      : this.bodyColumnsState.names[columnIndex];
-  }
-
-  getFormatFn(region: DataModel.CellRegion, row: number, columnIndex: number): any {
-    const value = this.getValue(region, row, columnIndex);
-    const displayType = getDisplayType(
-      this.getDataTypeName(region, columnIndex),
-      this._state.stringFormatForType,
-      this._state.stringFormatForColumn[this.getColumnName(columnIndex, region)]
-    );
-
-    return this.dataFormatter.getFormatFnByType(displayType)(value, row, columnIndex);
   }
 
   getAlignmentConfig(): { alignmentForColumn: {}, alignmentForType: {} } {

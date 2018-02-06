@@ -19,255 +19,310 @@ import { expect, assert } from 'chai';
 import { DataFormatter } from '@beakerx/tableDisplay/dataGrid/DataFormatter';
 import { TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/consts';
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
+import modelStateMock from "./mock/modelStateMock";
+import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import columnOptionsMock from "./mock/columnOptionsMock";
+import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import {ALL_TYPES} from "@beakerx/tableDisplay/dataGrid/dataTypes";
+import cellConfigMock from "./mock/cellConfigMock";
 
 declare var require: Function;
 
 describe('DataFormatter', () => {
   const dataFormatter = new DataFormatter({});
+  const columnDataMock = { dataType: ALL_TYPES.string, name: 'test' };
+  const cellConfig = cellConfigMock;
 
-  it('should implement getFormatFnByType method', () => {
-    expect(dataFormatter.getFormatFnByType).to.be.a('function');
+  it('should implement getFormatFnByColumn method', () => {
+    expect(dataFormatter.getFormatFnByColumn).to.be.a('function');
   });
 
-  describe('getFormatFnByType', () => {
+  describe('getFormatFnByColumn', () => {
     it('should throw Error while called withoud param', () => {
       assert.throws(
-        () => { dataFormatter.getFormatFnByType(undefined); },
+        () => { dataFormatter.getFormatFnByColumn(undefined); },
         Error,
-        "Cannot read property 'toString' of undefined"
+        "Cannot read property 'dataType' of undefined"
       );
     });
 
     it('should return function', () => {
-      expect(dataFormatter.getFormatFnByType(0)).to.be.a('function');
+      expect(dataFormatter.getFormatFnByColumn(columnDataMock, true)).to.be.a('function');
     });
 
     it('should return "string" function', () => {
-      expect(dataFormatter.getFormatFnByType(0)).to.equal(dataFormatter['string']);
+      expect(dataFormatter.getFormatFnByColumn(columnDataMock, true)).to.equal(dataFormatter['string']);
     });
 
     it('should return "string" function', () => {
-      expect(dataFormatter.getFormatFnByType(400)).to.equal(dataFormatter['string']);
+      expect(dataFormatter.getFormatFnByColumn(columnDataMock, true)).to.equal(dataFormatter['string']);
     });
 
     it('should return "integer" function', () => {
-      expect(dataFormatter.getFormatFnByType(1)).to.equal(dataFormatter['integer']);
+      expect(dataFormatter.getFormatFnByColumn({
+        ...columnDataMock,
+        dataType: ALL_TYPES.integer
+      }, true)).to.equal(dataFormatter['integer']);
     });
 
     it('should return "formattedInteger" function', () => {
-      expect(dataFormatter.getFormatFnByType(2)).to.equal(dataFormatter['formattedInteger']);
+      expect(dataFormatter.getFormatFnByColumn({
+        ...columnDataMock,
+        dataType: ALL_TYPES['formatted integer']
+      }, true)).to.equal(dataFormatter['formattedInteger']);
     });
 
     it('should return "double" function', () => {
-      expect(dataFormatter.getFormatFnByType(3)).to.equal(dataFormatter['double']);
+      expect(dataFormatter.getFormatFnByColumn({
+        ...columnDataMock,
+        dataType: ALL_TYPES.double
+      }, true)).to.equal(dataFormatter['double']);
     });
 
     it('should return "exponential_5" function', () => {
-      expect(dataFormatter.getFormatFnByType(6)).to.equal(dataFormatter['exponential_5']);
+      expect(dataFormatter.getFormatFnByColumn({
+        ...columnDataMock,
+        dataType: ALL_TYPES['exponential 5']
+      }, true)).to.equal(dataFormatter['exponential_5']);
     });
 
     it('should return "exponential_15" function', () => {
-      expect(dataFormatter.getFormatFnByType(7)).to.equal(dataFormatter['exponential_15']);
+      expect(dataFormatter.getFormatFnByColumn({
+        ...columnDataMock,
+        dataType: ALL_TYPES['exponential 15']
+      }, true)).to.equal(dataFormatter['exponential_15']);
     });
 
     it('should return "datetime" function', () => {
-      expect(dataFormatter.getFormatFnByType(8)).to.equal(dataFormatter['datetime']);
+      expect(dataFormatter.getFormatFnByColumn({
+        ...columnDataMock,
+        dataType: ALL_TYPES.datetime
+      }, true)).to.equal(dataFormatter['datetime']);
     });
 
     it('should return "boolean" function', () => {
-      expect(dataFormatter.getFormatFnByType(9)).to.equal(dataFormatter['boolean']);
+      expect(dataFormatter.getFormatFnByColumn({
+        ...columnDataMock,
+        dataType: ALL_TYPES.boolean
+      }, true)).to.equal(dataFormatter['boolean']);
     });
 
     it('should return "html" function', () => {
-      expect(dataFormatter.getFormatFnByType(10)).to.equal(dataFormatter['html']);
+      expect(dataFormatter.getFormatFnByColumn({
+        ...columnDataMock,
+        dataType: ALL_TYPES.html
+      }, true)).to.equal(dataFormatter['html']);
     });
 
-    it('should return "doubleWithPrecission" function', () => {
-      expect(dataFormatter.getFormatFnByType('4.3').toString())
-        .to.equal((dataFormatter['doubleWithPrecission']('3')).toString());
+    it('should return "doubleWithPrecision" function', () => {
+      expect(dataFormatter.getFormatFnByColumn({
+        ...columnDataMock,
+        dataType: ALL_TYPES.double
+      }).toString()).to.equal((dataFormatter['doubleWithPrecision']('3')).toString());
     });
   });
 
   describe('dataFormatter.string', () => {
-    const stringFormatFn = dataFormatter.getFormatFnByType(0);
+    const stringFormatFn = dataFormatter.getFormatFnByColumn(columnDataMock, true);
 
     it('should return empty string', () => {
-      expect(stringFormatFn('', 0, 0)).to.equal('');
+      expect(stringFormatFn({ ...cellConfig, value: '' })).to.equal('');
     });
 
-    it('should escape html characters', () => {
-      expect(stringFormatFn('&test<>"Works"Ok/<>', 0, 0))
+    it('should not escape html characters', () => {
+      expect(stringFormatFn({ ...cellConfig, value: '&test<>"Works"Ok/<>' }))
         .to.equal('&test<>"Works"Ok/<>');
     });
 
     it('should convert to date', () => {
-      expect(stringFormatFn({ timestamp: 1516697673043, type: 'Date' }, 0, 0))
+      expect(stringFormatFn({ ...cellConfig, value: { timestamp: 1516697673043, type: 'Date' }}))
         .to.equal('20180123 09:54:33.043 +0100');
     });
 
     it('should return given value', () => {
-      expect(stringFormatFn(1, 0, 0)).to.equal(1);
-      expect(stringFormatFn(null, 0, 0)).to.equal(null);
-      expect(stringFormatFn('', 0, 0)).to.equal('');
-      expect(stringFormatFn(0, 0, 0)).to.equal(0);
-      expect(stringFormatFn(false, 0, 0)).to.equal(false);
+      expect(stringFormatFn({ ...cellConfig, value: 1 })).to.equal(1);
+      expect(stringFormatFn({ ...cellConfig, value: null })).to.equal(null);
+      expect(stringFormatFn({ ...cellConfig, value: '' })).to.equal('');
+      expect(stringFormatFn({ ...cellConfig, value: 0 })).to.equal(0);
+      expect(stringFormatFn({ ...cellConfig, value: false })).to.equal(false);
     });
 
   });
 
   describe('dataFormatter.integer', () => {
-    const integerFormatFn = dataFormatter.getFormatFnByType(1);
+    const integerFormatFn = dataFormatter.getFormatFnByColumn({
+      ...columnDataMock,
+      dataType: ALL_TYPES.integer
+    }, true);
 
     it('should return integer', () => {
-      expect(integerFormatFn('1', 0, 0)).to.equal(1);
-      expect(integerFormatFn('0', 0, 0)).to.equal(0);
-      expect(integerFormatFn('123', 0, 0)).to.equal(123);
-      expect(integerFormatFn(123, 0, 0)).to.equal(123);
-      expect(integerFormatFn(1, 0, 0)).to.equal(1);
+      expect(integerFormatFn({ ...cellConfig, value: '1' })).to.equal(1);
+      expect(integerFormatFn({ ...cellConfig, value: '0' })).to.equal(0);
+      expect(integerFormatFn({ ...cellConfig, value: '123' })).to.equal(123);
+      expect(integerFormatFn({ ...cellConfig, value: 123 })).to.equal(123);
+      expect(integerFormatFn({ ...cellConfig, value: 1 })).to.equal(1);
     });
 
     it('should return empty value', () => {
-      expect(integerFormatFn(undefined, 0, 0)).to.equal(undefined);
-      expect(integerFormatFn(null, 0, 0)).to.equal(null);
-      expect(integerFormatFn(0, 0, 0)).to.equal(0);
-      expect(integerFormatFn('', 0, 0)).to.equal('');
+      expect(integerFormatFn({ ...cellConfig, value: undefined })).to.equal(undefined);
+      expect(integerFormatFn({ ...cellConfig, value: null })).to.equal(null);
+      expect(integerFormatFn({ ...cellConfig, value: 0 })).to.equal(0);
+      expect(integerFormatFn({ ...cellConfig, value: '' })).to.equal('');
     });
 
     it('should return NaN', () => {
-      expect(integerFormatFn(false, 0, 0).toString()).to.equal('NaN');
-      expect(integerFormatFn(NaN, 0, 0).toString()).to.equal('NaN');
-      expect(integerFormatFn('something', 0, 0).toString()).to.equal('NaN');
+      expect(integerFormatFn({ ...cellConfig, value: false }).toString()).to.equal('NaN');
+      expect(integerFormatFn({ ...cellConfig, value: NaN }).toString()).to.equal('NaN');
+      expect(integerFormatFn({ ...cellConfig, value: 'something' }).toString()).to.equal('NaN');
     });
 
   });
 
   describe('dataFormatter.formattedInteger', () => {
-    const formattedIntegerFormatFn = dataFormatter.getFormatFnByType(2);
+    const formattedIntegerFormatFn = dataFormatter.getFormatFnByColumn({
+      ...columnDataMock,
+      dataType: ALL_TYPES['formatted integer']
+    }, true);
 
     it('should return formatted integer', () => {
-      expect(formattedIntegerFormatFn('1', 0, 0)).to.equal('1');
-      expect(formattedIntegerFormatFn('0', 0, 0)).to.equal('0');
-      expect(formattedIntegerFormatFn('123', 0, 0)).to.equal('123');
-      expect(formattedIntegerFormatFn(123, 0, 0)).to.equal('123');
-      expect(formattedIntegerFormatFn(1, 0, 0)).to.equal('1');
-      expect(formattedIntegerFormatFn(0, 0, 0)).to.equal('0');
-      expect(formattedIntegerFormatFn(1230, 0, 0)).to.equal('1,230');
-      expect(formattedIntegerFormatFn(123023, 0, 0)).to.equal('123,023');
-      expect(formattedIntegerFormatFn(1123023, 0, 0)).to.equal('1,123,023');
-      expect(formattedIntegerFormatFn('1123023', 0, 0)).to.equal('1,123,023');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: '1' })).to.equal('1');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: '0' })).to.equal('0');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: '123' })).to.equal('123');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: 123 })).to.equal('123');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: 1 })).to.equal('1');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: 0 })).to.equal('0');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: 1230 })).to.equal('1,230');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: 123023 })).to.equal('123,023');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: 1123023 })).to.equal('1,123,023');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: '1123023' })).to.equal('1,123,023');
     });
 
     it('should return empty value', () => {
-      expect(formattedIntegerFormatFn(undefined, 0, 0)).to.equal(undefined);
-      expect(formattedIntegerFormatFn(null, 0, 0)).to.equal(null);
-      expect(formattedIntegerFormatFn('', 0, 0)).to.equal('');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: undefined })).to.equal(undefined);
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: null })).to.equal(null);
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: '' })).to.equal('');
     });
 
     it('should return NaN', () => {
-      expect(formattedIntegerFormatFn(false, 0, 0).toString()).to.equal('NaN');
-      expect(formattedIntegerFormatFn(NaN, 0, 0).toString()).to.equal('NaN');
-      expect(formattedIntegerFormatFn('something', 0, 0).toString()).to.equal('NaN');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: false }).toString()).to.equal('NaN');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: NaN }).toString()).to.equal('NaN');
+      expect(formattedIntegerFormatFn({ ...cellConfig, value: 'something' }).toString()).to.equal('NaN');
     });
 
   });
 
   describe('dataFormatter.double', () => {
-    const doubleFormatFn = dataFormatter.getFormatFnByType(3);
+    const doubleFormatFn = dataFormatter.getFormatFnByColumn({
+      ...columnDataMock,
+      dataType: ALL_TYPES.double
+    }, true);
 
     it('should return formatted double', () => {
-      expect(doubleFormatFn('1', 0, 0)).to.equal(1);
-      expect(doubleFormatFn('1.2', 0, 0)).to.equal(1.2);
-      expect(doubleFormatFn(1.2, 0, 0)).to.equal(1.2);
+      expect(doubleFormatFn({ ...cellConfig, value: '1' })).to.equal(1);
+      expect(doubleFormatFn({ ...cellConfig, value: '1.2' })).to.equal(1.2);
+      expect(doubleFormatFn({ ...cellConfig, value: 1.2 })).to.equal(1.2);
     });
 
     it('should return empty value', () => {
-      expect(doubleFormatFn(undefined, 0, 0)).to.equal(undefined);
-      expect(doubleFormatFn(null, 0, 0)).to.equal(null);
-      expect(doubleFormatFn('', 0, 0)).to.equal('');
+      expect(doubleFormatFn({ ...cellConfig, value: undefined })).to.equal(undefined);
+      expect(doubleFormatFn({ ...cellConfig, value: null })).to.equal(null);
+      expect(doubleFormatFn({ ...cellConfig, value: '' })).to.equal('');
     });
 
     it('should return NaN', () => {
-      expect(doubleFormatFn(false, 0, 0).toString()).to.equal('NaN');
-      expect(doubleFormatFn(NaN, 0, 0).toString()).to.equal('NaN');
-      expect(doubleFormatFn('something', 0, 0).toString()).to.equal('NaN');
+      expect(doubleFormatFn({ ...cellConfig, value: false }).toString()).to.equal('NaN');
+      expect(doubleFormatFn({ ...cellConfig, value: NaN }).toString()).to.equal('NaN');
+      expect(doubleFormatFn({ ...cellConfig, value: 'something' }).toString()).to.equal('NaN');
     });
 
   });
 
-  describe('dataFormatter.doubleWithPrecission', () => {
-    const doubleWithPrecissionFormatFn = dataFormatter.getFormatFnByType('4.3');
+  describe('dataFormatter.doubleWithPrecision', () => {
+    const doubleWithPrecisionFormatFn = dataFormatter.getFormatFnByColumn({
+      ...columnDataMock,
+      dataType: ALL_TYPES.double
+    });
 
     it('should return formatted double with precission', () => {
-      expect(doubleWithPrecissionFormatFn('1', 0, 0)).to.equal('1.000');
-      expect(doubleWithPrecissionFormatFn('1.2', 0, 0)).to.equal('1.200');
-      expect(doubleWithPrecissionFormatFn(1.2, 0, 0)).to.equal('1.200');
-      expect(doubleWithPrecissionFormatFn(1.23456, 0, 0)).to.equal('1.235');
-      expect(doubleWithPrecissionFormatFn(1.23446, 0, 0)).to.equal('1.234');
+      expect(doubleWithPrecisionFormatFn({ ...cellConfig, value: '1' })).to.equal('1.000');
+      expect(doubleWithPrecisionFormatFn({ ...cellConfig, value: '1.2' })).to.equal('1.200');
+      expect(doubleWithPrecisionFormatFn({ ...cellConfig, value: 1.2 })).to.equal('1.200');
+      expect(doubleWithPrecisionFormatFn({ ...cellConfig, value: 1.23456 })).to.equal('1.235');
+      expect(doubleWithPrecisionFormatFn({ ...cellConfig, value: 1.23446 })).to.equal('1.234');
     });
 
     it('should return empty value', () => {
-      expect(doubleWithPrecissionFormatFn(undefined, 0, 0)).to.equal(undefined);
-      expect(doubleWithPrecissionFormatFn(null, 0, 0)).to.equal(null);
-      expect(doubleWithPrecissionFormatFn('', 0, 0)).to.equal('');
+      expect(doubleWithPrecisionFormatFn({ ...cellConfig, value: undefined })).to.equal(undefined);
+      expect(doubleWithPrecisionFormatFn({ ...cellConfig, value: null })).to.equal(null);
+      expect(doubleWithPrecisionFormatFn({ ...cellConfig, value: '' })).to.equal('');
     });
 
     it('should return NaN', () => {
-      expect(doubleWithPrecissionFormatFn(false, 0, 0).toString()).to.equal('NaN');
-      expect(doubleWithPrecissionFormatFn(NaN, 0, 0).toString()).to.equal('NaN');
-      expect(doubleWithPrecissionFormatFn('something', 0, 0).toString()).to.equal('NaN');
+      expect(doubleWithPrecisionFormatFn({ ...cellConfig, value: false }).toString()).to.equal('NaN');
+      expect(doubleWithPrecisionFormatFn({ ...cellConfig, value: NaN }).toString()).to.equal('NaN');
+      expect(doubleWithPrecisionFormatFn({ ...cellConfig, value: 'something' }).toString()).to.equal('NaN');
     });
 
   });
 
   describe('dataFormatter.exponential_5', () => {
-    const exponential_5FormatFn = dataFormatter.getFormatFnByType(6);
+    const exponential_5FormatFn = dataFormatter.getFormatFnByColumn({
+      ...columnDataMock,
+      dataType: ALL_TYPES['exponential 5']
+    }, true);
 
     it('should return formatted exponential_5', () => {
-      expect(exponential_5FormatFn('1', 0, 0)).to.equal('1.00000e+0');
-      expect(exponential_5FormatFn(1234, 0, 0)).to.equal('1.23400e+3');
-      expect(exponential_5FormatFn(0, 0, 0)).to.equal('0.00000e+0');
+      expect(exponential_5FormatFn({ ...cellConfig, value: '1' })).to.equal('1.00000e+0');
+      expect(exponential_5FormatFn({ ...cellConfig, value: 1234 })).to.equal('1.23400e+3');
+      expect(exponential_5FormatFn({ ...cellConfig, value: 0 })).to.equal('0.00000e+0');
     });
 
     it('should return empty value', () => {
-      expect(exponential_5FormatFn(undefined, 0, 0)).to.equal(undefined);
-      expect(exponential_5FormatFn(null, 0, 0)).to.equal(null);
-      expect(exponential_5FormatFn('', 0, 0)).to.equal('');
+      expect(exponential_5FormatFn({ ...cellConfig, value: undefined })).to.equal(undefined);
+      expect(exponential_5FormatFn({ ...cellConfig, value: null })).to.equal(null);
+      expect(exponential_5FormatFn({ ...cellConfig, value: '' })).to.equal('');
     });
 
     it('should return NaN', () => {
-      expect(exponential_5FormatFn(false, 0, 0).toString()).to.equal('NaN');
-      expect(exponential_5FormatFn(NaN, 0, 0).toString()).to.equal('NaN');
-      expect(exponential_5FormatFn('something', 0, 0).toString()).to.equal('NaN');
+      expect(exponential_5FormatFn({ ...cellConfig, value: false }).toString()).to.equal('NaN');
+      expect(exponential_5FormatFn({ ...cellConfig, value: NaN }).toString()).to.equal('NaN');
+      expect(exponential_5FormatFn({ ...cellConfig, value: 'something' }).toString()).to.equal('NaN');
     });
 
   });
 
   describe('dataFormatter.exponential_15', () => {
-    const exponential_15FormatFn = dataFormatter.getFormatFnByType(7);
+    const exponential_15FormatFn = dataFormatter.getFormatFnByColumn({
+      ...columnDataMock,
+      dataType: ALL_TYPES['exponential 15']
+    }, true);
 
     it('should return formatted exponential_15', () => {
-      expect(exponential_15FormatFn('1', 0, 0)).to.equal('1.000000000000000e+0');
-      expect(exponential_15FormatFn(1234, 0, 0)).to.equal('1.234000000000000e+3');
-      expect(exponential_15FormatFn(12343456, 0, 0)).to.equal('1.234345600000000e+7');
-      expect(exponential_15FormatFn(0, 0, 0)).to.equal('0.000000000000000e+0');
+      expect(exponential_15FormatFn({ ...cellConfig, value: '1' })).to.equal('1.000000000000000e+0');
+      expect(exponential_15FormatFn({ ...cellConfig, value: 1234 })).to.equal('1.234000000000000e+3');
+      expect(exponential_15FormatFn({ ...cellConfig, value: 12343456 })).to.equal('1.234345600000000e+7');
+      expect(exponential_15FormatFn({ ...cellConfig, value: 0 })).to.equal('0.000000000000000e+0');
     });
 
     it('should return empty value', () => {
-      expect(exponential_15FormatFn(undefined, 0, 0)).to.equal(undefined);
-      expect(exponential_15FormatFn(null, 0, 0)).to.equal(null);
-      expect(exponential_15FormatFn('', 0, 0)).to.equal('');
+      expect(exponential_15FormatFn({ ...cellConfig, value: undefined })).to.equal(undefined);
+      expect(exponential_15FormatFn({ ...cellConfig, value: null })).to.equal(null);
+      expect(exponential_15FormatFn({ ...cellConfig, value: '' })).to.equal('');
     });
 
     it('should return NaN', () => {
-      expect(exponential_15FormatFn(false, 0, 0).toString()).to.equal('NaN');
-      expect(exponential_15FormatFn(NaN, 0, 0).toString()).to.equal('NaN');
-      expect(exponential_15FormatFn('something', 0, 0).toString()).to.equal('NaN');
+      expect(exponential_15FormatFn({ ...cellConfig, value: false }).toString()).to.equal('NaN');
+      expect(exponential_15FormatFn({ ...cellConfig, value: NaN }).toString()).to.equal('NaN');
+      expect(exponential_15FormatFn({ ...cellConfig, value: 'something' }).toString()).to.equal('NaN');
     });
 
   });
 
   describe('dataFormatter.datetime', () => {
-    const datetimeFormatFn = dataFormatter.getFormatFnByType(8);
+    const datetimeFormatFn = dataFormatter.getFormatFnByColumn({
+      ...columnDataMock,
+      dataType: ALL_TYPES.datetime
+    }, true);
     const bkUtils = require('@beakerx/shared/bkUtils');
 
     before (() => {
@@ -282,47 +337,53 @@ describe('DataFormatter', () => {
     });
 
     it('should return formatted datetime', () => {
-      expect(datetimeFormatFn({ timestamp: 1516697673043, type: 'Date' }, 0, 0))
+      expect(datetimeFormatFn({ ...cellConfig, value: { timestamp: 1516697673043, type: 'Date' }}))
         .to.equal('20180123 09:54:33.043 +0100');
 
-      expect(datetimeFormatFn(1516703121, 0, 0)).to.equal('20180123 11:25:21.000 +0100');
+      expect(datetimeFormatFn({ ...cellConfig, value: 1516703121 })).to.equal('20180123 11:25:21.000 +0100');
     });
 
     it('should return Invalid date', () => {
-      expect(datetimeFormatFn(NaN, 0, 0).toString()).to.equal('Invalid date');
-      expect(datetimeFormatFn('something', 0, 0).toString()).to.equal('Invalid date');
+      expect(datetimeFormatFn({ ...cellConfig, value: NaN }).toString()).to.equal('Invalid date');
+      expect(datetimeFormatFn({ ...cellConfig, value: 'something' }).toString()).to.equal('Invalid date');
     });
 
   });
 
   describe('dataFormatter.boolean', () => {
-    const booleanFormatFn = dataFormatter.getFormatFnByType(9);
+    const booleanFormatFn = dataFormatter.getFormatFnByColumn({
+      ...columnDataMock,
+      dataType: ALL_TYPES.boolean
+    }, true);
 
     it('should return "true"', () => {
-      expect(booleanFormatFn('something', 0, 0)).to.equal('true');
-      expect(booleanFormatFn(true, 0, 0)).to.equal('true');
-      expect(booleanFormatFn(0, 0, 0)).to.equal('true');
+      expect(booleanFormatFn({ ...cellConfig, value: 'something' })).to.equal('true');
+      expect(booleanFormatFn({ ...cellConfig, value: true })).to.equal('true');
+      expect(booleanFormatFn({ ...cellConfig, value: 0 })).to.equal('true');
     });
 
     it('should return "false"', () => {
-      expect(booleanFormatFn(NaN, 0, 0)).to.equal('false');
-      expect(booleanFormatFn(false, 0, 0)).to.equal('false');
-      expect(booleanFormatFn(undefined, 0, 0)).to.equal('false');
-      expect(booleanFormatFn(null, 0, 0)).to.equal('false');
-      expect(booleanFormatFn('', 0, 0)).to.equal('false');
+      expect(booleanFormatFn({ ...cellConfig, value: NaN })).to.equal('false');
+      expect(booleanFormatFn({ ...cellConfig, value: false })).to.equal('false');
+      expect(booleanFormatFn({ ...cellConfig, value: undefined })).to.equal('false');
+      expect(booleanFormatFn({ ...cellConfig, value: null })).to.equal('false');
+      expect(booleanFormatFn({ ...cellConfig, value: '' })).to.equal('false');
     });
 
   });
 
   describe('dataFormatter.html', () => {
-    const booleanFormatFn = dataFormatter.getFormatFnByType(10);
+    const booleanFormatFn = dataFormatter.getFormatFnByColumn({
+      ...columnDataMock,
+      dataType: ALL_TYPES.html
+    }, true);
     const testObject = { someProp: '' };
 
     it('should return given value', () => {
-      expect(booleanFormatFn('something', 0, 0)).to.equal('something');
-      expect(booleanFormatFn(true, 0, 0)).to.equal(true);
-      expect(booleanFormatFn(0, 0, 0)).to.equal(0);
-      expect(booleanFormatFn(testObject, 0, 0)).to.equal(testObject);
+      expect(booleanFormatFn({ ...cellConfig, value: 'something' })).to.equal('something');
+      expect(booleanFormatFn({ ...cellConfig, value: true })).to.equal(true);
+      expect(booleanFormatFn({ ...cellConfig, value: 0 })).to.equal(0);
+      expect(booleanFormatFn({ ...cellConfig, value: testObject })).to.equal(testObject);
     });
 
   });

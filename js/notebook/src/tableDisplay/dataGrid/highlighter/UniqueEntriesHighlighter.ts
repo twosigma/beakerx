@@ -14,30 +14,43 @@
  *  limitations under the License.
  */
 
-import * as d3scale from 'd3-scale';
-import { formatColor, getDefaultColor } from "../style/dataGridStyle";
 import Highlighter from "./Highlighter";
 import IHihglighterState from "../interface/IHighlighterState";
 import DataGridColumn from "../column/DataGridColumn";
-import {CellRenderer} from "@phosphor/datagrid";
+import { reduce, each } from "@phosphor/algorithm";
+import { CellRenderer } from "@phosphor/datagrid";
+import { DEFAULT_CELL_BACKGROUND } from "../cell/CellRendererFactory";
 
-export default class HeatmapHighlighter extends Highlighter {
-  colorScale: Function;
+export default class UniqueEntriesHighlighter extends Highlighter {
+  uniqueValues: any[] = [];
+  uniqueColors = {};
 
   constructor(column: DataGridColumn, state: IHihglighterState) {
     super(column, state);
 
-    this.state.minVal = this.state.minVal || this.column.minValue;
-    this.state.maxVal = this.state.maxVal || this.column.maxValue;
-    this.state.minColor = formatColor(state.minColor || getDefaultColor('blue'));
-    this.state.maxColor = formatColor(state.maxColor || getDefaultColor('red'));
-
-    this.colorScale = d3scale.scaleLinear()
-      .domain([this.state.minVal, this.state.maxVal])
-      .range([this.state.minColor, this.state.maxColor]);
+    this.generateUniqueValues();
+    this.generateUniqueColors();
   }
 
   getBackgroundColor(config: CellRenderer.ICellConfig) {
-    return this.colorScale(this.getValueToHighlight(config));
+    return this.uniqueColors[this.getValueToHighlight(config)] || DEFAULT_CELL_BACKGROUND;
+  }
+
+  generateColor(colorNum, colors) {
+    return "hsl(" + (colorNum * (360 / colors)) + ", 75%, 85%)";
+  }
+
+  generateUniqueValues() {
+    reduce(
+      this.column.valuesIterator.clone(),
+      (acc, value) => acc.indexOf(value) === -1 && acc.push(value) && acc || acc,
+      this.uniqueValues
+    );
+  }
+
+  generateUniqueColors() {
+    each(this.uniqueValues, (value, index) => {
+      this.uniqueColors[value] = this.generateColor(index, this.uniqueValues.length);
+    });
   }
 }

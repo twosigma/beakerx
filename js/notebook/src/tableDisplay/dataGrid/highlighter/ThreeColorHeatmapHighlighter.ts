@@ -15,29 +15,24 @@
  */
 
 import * as d3scale from 'd3-scale';
-import { formatColor, getDefaultColor } from "../style/dataGridStyle";
-import Highlighter from "./Highlighter";
+import { formatColor } from "../style/dataGridStyle";
 import IHihglighterState from "../interface/IHighlighterState";
 import DataGridColumn from "../column/DataGridColumn";
-import {CellRenderer} from "@phosphor/datagrid";
+import HeatmapHighlighter from "./HeatmapHighlighter";
 
-export default class HeatmapHighlighter extends Highlighter {
-  colorScale: Function;
-
+export default class ThreeColorHeatmapHighlighter extends HeatmapHighlighter {
   constructor(column: DataGridColumn, state: IHihglighterState) {
     super(column, state);
 
-    this.state.minVal = this.state.minVal || this.column.minValue;
-    this.state.maxVal = this.state.maxVal || this.column.maxValue;
-    this.state.minColor = formatColor(state.minColor || getDefaultColor('blue'));
-    this.state.maxColor = formatColor(state.maxColor || getDefaultColor('red'));
+    if (typeof this.state.minVal !== 'number' || typeof this.state.maxVal !== 'number' ) {
+      throw new Error('Min and Max values are not set');
+    }
+
+    this.state.midVal = this.state.midVal || (this.state.minVal + this.state.maxVal / 2);
+    this.state.midColor = formatColor(state.midColor);
 
     this.colorScale = d3scale.scaleLinear()
-      .domain([this.state.minVal, this.state.maxVal])
-      .range([this.state.minColor, this.state.maxColor]);
-  }
-
-  getBackgroundColor(config: CellRenderer.ICellConfig) {
-    return this.colorScale(this.getValueToHighlight(config));
+      .domain([this.state.minVal, this.state.midVal, this.state.maxVal])
+      .range([this.state.minColor, this.state.midColor, this.state.maxColor]);
   }
 }

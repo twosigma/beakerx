@@ -22,11 +22,11 @@ import CellConfigMock from "../mock/cellConfigMock";
 describe('DataGridCell', () => {
   describe('isHeaderCell', () => {
     it('should return true', () => {
-      expect(DataGridCell.isHeaderCell(CellConfigMock)).to.be.true;
+      expect(DataGridCell.isHeaderCell({ ...CellConfigMock, region: 'column-header' })).to.be.true;
     });
 
     it('should return false', () => {
-      let mock: CellRenderer.ICellConfig = { ...CellConfigMock, region: 'body' };
+      let mock: CellRenderer.ICellConfig = { ...CellConfigMock };
       expect(DataGridCell.isHeaderCell(mock)).to.be.false;
     });
   });

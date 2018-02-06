@@ -16,9 +16,14 @@
 
 import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import * as _ from 'underscore';
-import { isDoubleWithPrecision, getDoublePrecisionByType } from './dataTypes';
+import {
+  isDoubleWithPrecision,
+  getDoublePrecisionByType,
+  getDisplayType, ALL_TYPES
+} from './dataTypes';
 import { DataGridHelpers } from './dataGridHelpers';
 import { TIME_UNIT_FORMATS } from '../consts';
+import {CellRenderer} from "@phosphor/datagrid";
 
 const bkUtils = require('../../shared/bkUtils');
 
@@ -55,7 +60,7 @@ export class DataFormatter {
     this.integer = this.integer.bind(this);
     this.formattedInteger = this.formattedInteger.bind(this);
     this.double = this.double.bind(this);
-    this.doubleWithPrecission = this.doubleWithPrecission.bind(this);
+    this.doubleWithPrecision = this.doubleWithPrecision.bind(this);
     this.exponential_5 = this.exponential_5.bind(this);
     this.exponential_15 = this.exponential_15.bind(this);
     this.datetime = this.datetime.bind(this);
@@ -63,9 +68,15 @@ export class DataFormatter {
     this.html = this.html.bind(this);
   }
   
-  getFormatFnByType(displayType: string|number) {
+  getFormatFnByColumn({ dataType, name }, rawType?: boolean): CellRenderer.ConfigFunc<string> {
+    let displayType = rawType ? dataType : getDisplayType(
+      dataType,
+      this.stringFormatForType,
+      this.stringFormatForColumn[name]
+    );
+
     if (isDoubleWithPrecision(displayType)) {
-      return this.doubleWithPrecission(getDoublePrecisionByType(displayType));
+      return this.doubleWithPrecision(getDoublePrecisionByType(displayType));
     }
 
     switch (displayType) {
@@ -91,45 +102,45 @@ export class DataFormatter {
     }
   }
 
-  getDoubleWithPrecissionFormatters(precissions: number[]) {
-    return precissions.map(precission => this.doubleWithPrecission(precission));
+  getdoubleWithPrecisionFormatters(precissions: number[]) {
+    return precissions.map(precission => this.doubleWithPrecision(precission));
   }
 
   private isNull(value: any) {
     return value === undefined || value === '' || value === 'null' || value === null;
   }
 
-  private handleNull(formatFn: Function) {
-    return (value: any, row: number, column: number) => {
-      if (this.isNull(value)) {
-        return value;
+  private handleNull(formatFn: CellRenderer.ConfigFunc<string>): CellRenderer.ConfigFunc<string> {
+    return (config: CellRenderer.ICellConfig): string => {
+      if (this.isNull(config.value)) {
+        return config.value;
       }
 
-      return formatFn(value, row, column);
+      return <string>formatFn(config);
     }
   }
 
-  private value(value: any, row: number, column: number) {
-    let columnName = this.columnNames[column];
+  private value(config: CellRenderer.ICellConfig): string {
+    let columnName = this.columnNames[config.column];
 
-    return this.stringFormatForColumn[columnName].values[columnName][row];
+    return this.stringFormatForColumn[columnName].values[columnName][config.row];
   };
 
-  private string(value: any, row: number, column: number) {
-    const objectValue = _.isObject(value);
-    const stringFormatForColumn = this.stringFormatForColumn[this.columnNames[column]];
-    let formattedValue = value;
+  private string(config: CellRenderer.ICellConfig) {
+    const objectValue = _.isObject(config.value);
+    const stringFormatForColumn = this.stringFormatForColumn[this.columnNames[config.column]];
+    let formattedValue = config.value;
 
     if (!objectValue && stringFormatForColumn && stringFormatForColumn.type === 'value') {
       return this.value;
     }
 
     if (objectValue) {
-      formattedValue = value.type === 'Date' ?
-        moment(value.timestamp).format(DEFAULT_TIME_FORMAT) :
-        JSON.stringify(value);
-    } else if (_.isString(value)) {
-      const limitedText = DataGridHelpers.truncateString(value);
+      formattedValue = config.value.type === 'Date' ?
+        moment(config.value.timestamp).format(DEFAULT_TIME_FORMAT) :
+        JSON.stringify(config.value);
+    } else if (_.isString(config.value)) {
+      const limitedText = DataGridHelpers.truncateString(config.value);
 
       formattedValue = limitedText;
     }
@@ -137,20 +148,20 @@ export class DataFormatter {
     return formattedValue;
   }
 
-  private integer(value: any) {
-    if (this.isNull(value)) {
-      return value;
+  private integer(config: CellRenderer.ICellConfig) {
+    if (this.isNull(config.value)) {
+      return config.value;
     }
 
-    return parseInt(value);
+    return parseInt(config.value);
   }
 
-  private formattedInteger(value: any) {
-    if (this.isNull(value)) {
-      return value;
+  private formattedInteger(config: CellRenderer.ICellConfig) {
+    if (this.isNull(config.value)) {
+      return config.value;
     }
 
-    let x = parseInt(value);
+    let x = parseInt(config.value);
 
     if (!isNaN(x)) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -159,13 +170,13 @@ export class DataFormatter {
     return x;
   }
 
-  private double(value: any, row: number, column: number) {
-    if (this.isNull(value)) {
-      return value;
+  private double(config: CellRenderer.ICellConfig) {
+    if (this.isNull(config.value)) {
+      return config.value;
     }
 
-    let doubleValue = parseFloat(value);
-    let colFormat = this.stringFormatForColumn[this.columnNames[column]];
+    let doubleValue = parseFloat(config.value);
+    let colFormat = this.stringFormatForColumn[this.columnNames[config.column]];
     let typeFormat = this.stringFormatForType.double;
     let format = colFormat && colFormat.type === 'decimal' ? colFormat : typeFormat;
 
@@ -182,57 +193,57 @@ export class DataFormatter {
     return doubleValue.toFixed(format.minDecimals);
   }
 
-  private doubleWithPrecission(precision: any) {
-    return this.handleNull((value) => {
-      return parseFloat(value).toFixed(precision);
+  private doubleWithPrecision(precision: any): CellRenderer.ConfigFunc<string> {
+    return this.handleNull((config: CellRenderer.ICellConfig) => {
+      return parseFloat(config.value).toFixed(precision);
     });
   }
 
-  private exponential_5(value: any) {
-    if (this.isNull(value)) {
-      return value;
+  private exponential_5(config: CellRenderer.ICellConfig): string {
+    if (this.isNull(config.value)) {
+      return config.value;
     }
 
-    return parseFloat(value).toExponential(5);
+    return parseFloat(config.value).toExponential(5);
   }
 
-  private exponential_15(value: any) {
-    if (this.isNull(value)) {
-      return value;
+  private exponential_15(config: CellRenderer.ICellConfig): string {
+    if (this.isNull(config.value)) {
+      return config.value;
     }
 
-    return parseFloat(value).toExponential(15);
+    return parseFloat(config.value).toExponential(15);
   }
 
-  private datetime(value: any, row: number) {
+  private datetime(config: CellRenderer.ICellConfig): string {
     if (this.timeStrings) {
-      return this.timeStrings[row];
+      return this.timeStrings[config.row];
     }
 
     let format = _.isEmpty(this.formatForTimes) ?
       TIME_UNIT_FORMATS.DATETIME.format :
       TIME_UNIT_FORMATS[this.formatForTimes].format;
 
-    if (_.isObject(value) && value.type === 'Date') {
-      return bkUtils.formatTimestamp(value.timestamp, this.timeZone, format);
+    if (_.isObject(config.value) && config.value.type === 'Date') {
+      return bkUtils.formatTimestamp(config.value.timestamp, this.timeZone, format);
     }
 
-    let milli = value * 1000;
+    let milli = config.value * 1000;
 
     return bkUtils.formatTimestamp(milli, this.timeZone, format);
   }
 
-  private boolean(value: any) {
+  private boolean(config: CellRenderer.ICellConfig): string {
     return (
-      this.isNull(value) ||
-      value === false ||
-      (typeof value === 'number' && isNaN(value))
+      this.isNull(config.value) ||
+      config.value === false ||
+      (typeof config.value === 'number' && isNaN(config.value))
     ) ?
       'false':
       'true';
   }
 
-  private html(value: any) {
-    return value;
+  private html(config: CellRenderer.ICellConfig): string {
+    return config.value;
   }
 }

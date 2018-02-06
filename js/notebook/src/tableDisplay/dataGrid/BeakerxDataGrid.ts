@@ -15,7 +15,7 @@
  */
 
 import { chain, find } from '@phosphor/algorithm'
-import { DataGrid, DataModel } from "@phosphor/datagrid";
+import { CellRenderer, DataGrid } from "@phosphor/datagrid";
 import { ITriggerOptions } from "./headerMenu/HeaderMenu";
 import { BeakerxDataGridModel } from "./model/BeakerxDataGridModel";
 import { Widget } from "@phosphor/widgets";
@@ -56,7 +56,7 @@ export class BeakerxDataGrid extends DataGrid {
     this.addHighlighterManager(modelState);
     this.addCellRenderers();
     this.setWidgetHeight();
-    this.repaint();
+    this['_syncViewport']();
   }
 
   handleEvent(event: Event): void {
@@ -77,10 +77,10 @@ export class BeakerxDataGrid extends DataGrid {
     this.dispose();
   }
 
-  getColumn(index: number, region: DataModel.CellRegion): DataGridColumn {
-    const columnType = DataGridColumn.getColumnTypeByRegion(region);
+  getColumn(config: CellRenderer.ICellConfig): DataGridColumn {
+    const columnType = DataGridColumn.getColumnTypeByRegion(config.region);
 
-    return this.columns[columnType][index];
+    return this.columns[columnType][config.column];
   }
 
   getColumnByName(columnName: string): DataGridColumn|undefined {
@@ -161,6 +161,7 @@ export class BeakerxDataGrid extends DataGrid {
   private setWidgetHeight() {
     let bodyRowCount = this.model.rowCount('body');
     let rowCount = DEFAULT_PAGE_LENGTH < bodyRowCount ? DEFAULT_PAGE_LENGTH : bodyRowCount;
+
     this.node.style.minHeight = `${ rowCount * this.baseRowSize + this.baseColumnHeaderSize }px`;
   }
 

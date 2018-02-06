@@ -15,34 +15,21 @@
  */
 
 import IHihglighterState, { HIGHLIGHTER_STYLE } from "../interface/IHighlighterState";
-import { DEFAULT_CELL_BACKGROUND } from "../cell/CellRendererFactory";
-import { CellRenderer } from "@phosphor/datagrid";
 import DataGridColumn from "../column/DataGridColumn";
-import { find } from "@phosphor/algorithm";
+import Highlighter from "./Highlighter";
+import {CellRenderer} from "@phosphor/datagrid";
+import {DEFAULT_CELL_BACKGROUND} from "../cell/CellRendererFactory";
+import { formatColor } from "../style/dataGridStyle";
 
-export default class Highlighter {
-  column: DataGridColumn;
-  state: IHihglighterState;
-
+export default class ValueHighlighter extends Highlighter {
   constructor(column: DataGridColumn, state: IHihglighterState) {
-    this.column = column;
-    this.state = state;
-    this.state.style = state.style || HIGHLIGHTER_STYLE.SINGLE_COLUMN;
+    super(column, state);
+
+    this.state.style = HIGHLIGHTER_STYLE.SINGLE_COLUMN;
+    this.state.colors = this.state.colors || [];
   }
 
   getBackgroundColor(config: CellRenderer.ICellConfig) {
-    return DEFAULT_CELL_BACKGROUND;
-  }
-
-  getValueToHighlight(config: CellRenderer.ICellConfig) {
-    let value = config.value;
-
-    if (this.state.style === HIGHLIGHTER_STYLE.FULL_ROW) {
-      value = find(this.column.valuesIterator.clone(), (value, index) => {
-        return index === config.row;
-      });
-    }
-
-    return value;
+    return this.state.colors && formatColor(this.state.colors[config.row]) || DEFAULT_CELL_BACKGROUND;
   }
 }

@@ -18,19 +18,14 @@ import { expect } from 'chai';
 import { CellRendererFactory } from "@beakerx/tableDisplay/dataGrid/cell/CellRendererFactory";
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
 import { TextRenderer } from "@phosphor/datagrid";
+import modelStateMock from "../mock/modelStateMock";
 
 describe('CellRendererFactory', () => {
   let dataGrid;
   let cellRendererFactory;
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, {
-      values: [],
-      columnNames: [],
-      types: [],
-      stringFormatForColumn: null,
-      hasIndex: false
-    });
+    dataGrid = new BeakerxDataGrid({}, modelStateMock);
     cellRendererFactory = new CellRendererFactory(dataGrid);
   });
 

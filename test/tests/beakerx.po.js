@@ -19,6 +19,10 @@ var BeakerXPageObject = function () {
   this.baseDocURL = 'http://127.0.0.1:8888/tree/doc/contents';
   this.baseTestURL = 'http://127.0.0.1:8888/tree/test/notebooks';
   this.kernelIdleIcon = $('i.kernel_idle_icon');
+  this.outputResultCss = 'div.output_subarea.output_text.output_result';
+  this.outputStderrCss = 'div.output_subarea.output_text.output_stderr';
+  this.outputStdoutCss = 'div.output_subarea.output_text.output_stdout';
+  this.allOutputTextCss = 'div.output_subarea.output_text';
 
   this.runNotebookByName = function(name, done, subDir){
     browser
@@ -134,7 +138,7 @@ var BeakerXPageObject = function () {
 
   this.runCellToGetOutputTextElement = function(index){
     var codeCell = this.runCodeCellByIndex(index);
-    return codeCell.$('div.output_subarea.output_text');
+    return codeCell.$(this.allOutputTextCss);
   };
 
   this.plotLegendContainerIsEnabled = function(dtcontainer){
@@ -165,12 +169,33 @@ var BeakerXPageObject = function () {
     codeCell.scroll();
     var resultTest;
     try{
-      resultTest = codeCell.$('div.output_subarea.output_text').getText();
+      resultTest = codeCell.$(this.allOutputTextCss).getText();
     }catch(e){
       console.log(expectedText + ' --- ' + e.toString());
       resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
+  };
+
+  this.waitAndCheckCellOutputStderrText = function(index, expectedText){
+    this.waitAndCheckCellOutputText(index, expectedText, this.outputStderrCss);
+  };
+
+  this.waitAndCheckCellOutputStdoutText = function(index, expectedText){
+    this.waitAndCheckCellOutputText(index, expectedText, this.outputStdoutCss);
+  };
+
+  this.waitAndCheckCellOutputResultText = function(index, expectedText){
+    this.waitAndCheckCellOutputText(index, expectedText, this.outputResultCss);
+  };
+
+  this.waitAndCheckCellOutputText = function(index, expectedText, selector){
+    var codeCell = this.getCodeCellByIndex(index);
+    codeCell.scroll();
+    browser.waitUntil(function () {
+      var output = codeCell.$(selector);
+      return output.isEnabled() && expectedText.test(output.getText());
+    }, 50000, 'expected output toMatch ' + expectedText);
   };
 
   this.getTableColumnLabel = function(tableIndex, columnIndex){

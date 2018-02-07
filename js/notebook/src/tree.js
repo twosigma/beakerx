@@ -25,13 +25,15 @@ define([
 
   var $ = require('jquery');
   var Widget = require('@phosphor/widgets').Widget;
+  var CodeCell = require('notebook/js/codecell').CodeCell;
 
   function load() {
+    console.log('tree.js load()');
     var TreeWidget = require('./tree/TreeWidget').default;
     var options = {
       baseUrl: (Jupyter.notebook_list || Jupyter.notebook).base_url,
       isLab: false,
-      CodeCell: Jupyter.CodeCell,
+      CodeCell: CodeCell,
     };
     var bxWidget = new TreeWidget(options);
 

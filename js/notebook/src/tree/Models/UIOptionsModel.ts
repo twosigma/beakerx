@@ -19,12 +19,13 @@ import IUIOptions from "../Types/IUIOptions";
 
 export default class UIOptionsModel {
 
-  constructor(private widget: UIOptionsWidgetInterface) {
+  constructor(private widget: UIOptionsWidgetInterface, private CodeCell) {
 
   }
 
   public update(options: IUIOptions) {
     this.widget.onLoad(options);
+    this.CodeCell.options_default.cm_config.autoCloseBrackets = options.auto_close;
   }
 
 }

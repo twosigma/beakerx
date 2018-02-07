@@ -46,17 +46,4 @@ public class PathToJarTest {
       Assertions.assertThat(e.getMessage()).contains("Path does not exist");
     }
   }
-
-  @Test
-  public void shouldThrowErrorIfPathContainsWhitespace() throws Exception {
-    //given
-    //when
-    try {
-      new PathToJar("./pathWithWhitespace demo.jar");
-      fail("Should not create PathToJar with whitespace.");
-    } catch (Exception e) {
-      //then
-      Assertions.assertThat(e.getMessage()).contains("Can not create path with whitespace");
-    }
-  }
 }

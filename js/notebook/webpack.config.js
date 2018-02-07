@@ -197,7 +197,6 @@ module.exports = [
     resolve: resolve,
     externals: [
       'base/js/namespace',
-      'notebook/js/codecell',
       'require',
     ],
     watchOptions: {

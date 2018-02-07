@@ -70,7 +70,7 @@ def load_jupyter_server_extension(nbapp):
     host_pattern = '.*$'
     settings_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/settings')
     version_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/version')
-    javadoc_route_pattern = url_path_join(web_app.settings['base_url'], '/beakerx', '/javadoc/(.*)')
+    javadoc_route_pattern = url_path_join(web_app.settings['base_url'], '/static', '/javadoc/(.*)')
     web_app.add_handlers(host_pattern, [(settings_route_pattern, SettingsHandler)])
     web_app.add_handlers(host_pattern, [(version_route_pattern, VersionHandler)])
     web_app.add_handlers(host_pattern, [(javadoc_route_pattern, JavaDoc)])

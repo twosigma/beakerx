@@ -16,15 +16,18 @@
 
 var BeakerXPageObject = require('../beakerx.po.js');
 var PlotHelperObject = require('../plot.helper.js');
+var TableHelperObject = require('../table.helper.js');
 var beakerxPO;
 var plotHelper;
+var tableHelper;
 
 describe('Publish plot groovy notebook tests', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     plotHelper = new PlotHelperObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/PlotGroovyTest.ipynb');
+    tableHelper = new TableHelperObject();
+    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/nbviewer/PlotNbviewerTest.ipynb');
   });
 
   afterAll(function () {
@@ -35,8 +38,8 @@ describe('Publish plot groovy notebook tests', function () {
   function waitAllDtContainers() {
     browser.waitUntil(function () {
       var dtContainers = $$('div.dtcontainer');
-      return (dtContainers.length > 27) ;
-    }, 60000, 'expected 28 cells outputs are not exist');
+      return (dtContainers.length > 10) ;
+    }, 60000, 'expected 11 cells outputs are not exist');
   }
 
   describe('Run all cells on local notebook', function () {
@@ -44,7 +47,7 @@ describe('Publish plot groovy notebook tests', function () {
       beakerxPO.clickCellRunAll();
       beakerxPO.kernelIdleIcon.waitForEnabled();
     });
-    it('(local notebook) 28 dtContainers are exists', function(){
+    it('(local notebook) 11 dtContainers are exists', function(){
       waitAllDtContainers();
     })
   });
@@ -53,16 +56,20 @@ describe('Publish plot groovy notebook tests', function () {
     it('Should open nbviewer window', function () {
       beakerxPO.publishAndOpenNbviewerWindow();
     });
-    it('(published notebook) 28 dtContainers are exists', function(){
+    it('(published notebook) 11 dtContainers are exists', function(){
       browser.window(browser.windowHandles().value[1]);
       waitAllDtContainers();
     })
   });
 
-  describe('Check "Title and Axis Labels" cell', function(){
+  var cellIndex;
+
+  describe('Check cells with lines', function(){
     var dtContainer;
+
     it('Widget area has dtcontainer', function () {
-      dtContainer = beakerxPO.getDtContainerByIndex(0);
+      cellIndex = 0;
+      dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
       expect(dtContainer.isEnabled()).toBeTruthy();
     });
 
@@ -71,16 +78,9 @@ describe('Publish plot groovy notebook tests', function () {
       plotHelper.checkXLabel(dtContainer, 'Horizontal');
       plotHelper.checkYLabel(dtContainer, 'Vertical');
     });
-  });
-
-  describe('Check cells with lines', function(){
-    it('Plot has line', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(1);
-      expect(plotHelper.getLineByGIndex(svgElement, 0).getAttribute('d')).not.toBeNull();
-    });
 
     it('Should specify color, width and style of line', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(2);
+      var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
       var plotLine = plotHelper.getLineByGIndex(svgElement, 3);
       expect(plotLine.getCssProperty('stroke').value).toEqual('rgb(212,57,59)');
       expect(plotLine.getCssProperty('stroke-width').value).toEqual('2px');
@@ -88,93 +88,15 @@ describe('Publish plot groovy notebook tests', function () {
     });
   });
 
-  describe('Check cell with stems', function(){
-    it('Plot has 6 stems', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(3);
-      expect(plotHelper.getAllGStemLines(svgElement, 0).length).toEqual(6);
-    });
-
-    it('Should set the base of stems', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(4);
-      var baseY1 = Math.round(svgElement.$('#gridline_y_0').getAttribute('y1'));
-      var stemY1 = Math.round(plotHelper.getStemByGAndLineIndexes(svgElement, 0, 1).getAttribute('y1'));
-      expect(baseY1).toEqual(stemY1);
-    });
-  });
-
-  describe('Check cell with bars', function(){
-    it('Plot has 5 bars', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(5);
-      expect(plotHelper.getAllGBarRects(svgElement, 0).length).toEqual(5);
-    });
-  });
-
-  describe('Check cell with points', function(){
-    it('Plot has points', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(6);
-      expect(plotHelper.getAllPointsByGIndexAndType(svgElement, 0, 'rect').length).toBeGreaterThan(0);
-    });
-
-    it('Should sets point colors using lists', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(7);
-      expect(svgElement.$('rect#i0_0').getCssProperty('fill').value).toEqual('rgb(0,0,0)');
-      expect(svgElement.$('rect#i0_1').getCssProperty('fill').value).toEqual('rgb(255,0,0)');
-    });
-  });
-
-  describe('Check cell with areas', function(){
-    it('Plot has 2 areas', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(8);
-      expect(plotHelper.getAllAreas(svgElement).length).toEqual(2);
-    });
-
-    it('Plot has area with base', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(9);
-      expect(plotHelper.getAllAreas(svgElement).length).toEqual(1);
-    });
-  });
-
-  describe('Check cell with stacking', function(){
-    it('Plot has 2 areas', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(10);
-      expect(plotHelper.getAllAreas(svgElement).length).toEqual(2);
-    });
-  });
-
-  describe('Check cell with constant lines', function(){
-    it('Plot has 4 constant lines', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(11);
-      expect(plotHelper.getAllConstLines(svgElement).length).toEqual(4);
-    });
-  });
-
-  describe('Check cell with constant bands', function(){
-    it('Plot has constant band', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(12);
-      expect(plotHelper.getAllConstBands(svgElement).length).toBeGreaterThan(0);
-    });
-
-    it('Should sets constant band color', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(13);
-      expect(svgElement.$('#i1.plot-constband').getCssProperty('fill').value).toEqual('rgb(128,128,128)');
-    });
-  });
-
-  describe('Check cell with text', function(){
-    it('Plot has 8 text elements', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(14);
-      expect(plotHelper.getAllTexts(svgElement).length).toEqual(8);
-    });
-  });
-
   describe('Check cell with crosshair', function(){
     it('Plot has crosshair', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(15);
+      cellIndex +=1;
+      var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
       var pointElement = svgElement.$('rect#i2_0');
       pointElement.scroll();
       pointElement.click();
       svgElement.moveToObject('rect#i2_1');
-      var divPlot = beakerxPO.getCodeCellByIndex(15).$('#svgg');
+      var divPlot = beakerxPO.getCodeCellByIndex(cellIndex).$('#svgg');
       expect(divPlot.$('#cursor_xlabel').isVisible()).toBeTruthy();
       expect(divPlot.$('#cursor_ylabel').isVisible()).toBeTruthy();
     });
@@ -182,68 +104,95 @@ describe('Publish plot groovy notebook tests', function () {
 
   describe('Check "Simple Time Plot" cell', function(){
     it('Time Plot has points elements', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(18);
+      cellIndex +=2;
+      var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
       expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
       expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
-    });
-  });
-
-  describe('Check "Second Y Axis" cell', function(){
-    it('Plot has second Y Axis', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(19);
-      expect(svgElement.$('#yrlabel').isVisible()).toBeTruthy();
-      expect(svgElement.$('#label_yr_1').isVisible()).toBeTruthy();
-    });
-  });
-
-  describe('Check "Logarithmic Scale" cells', function(){
-    it('Plot has 2 lines', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(20);
-      expect(plotHelper.getAllLines(svgElement).length).toEqual(2);
-      svgElement = beakerxPO.getSvgElementByIndex(21);
-      expect(plotHelper.getAllLines(svgElement).length).toEqual(2);
     });
   });
 
   describe('Check "Date Objects for the Time Coordinate" cell', function(){
     it('Plot has points elements', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(22);
+      cellIndex +=1;
+      var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
       expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
       expect(svgElement.$('#i1.plot-point').isVisible()).toBeTruthy();
     });
   });
 
-  describe('Check "Nanosecond Resolution" cell', function(){
-    it('Plot has points elements', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(23);
-      expect(svgElement.$('#i0.plot-point').isVisible()).toBeTruthy();
+  describe('Check Histogram', function () {
+    it('Histogram has Title and Axes Labels', function () {
+      cellIndex +=2;
+      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(dtContainer.$('#maing > g.plot-bar').isEnabled()).toBeTruthy();
+      plotHelper.checkPlotTitle(dtContainer, 'Wide Histogram with Manual Parameters');
+      plotHelper.checkXLabel(dtContainer, 'Size');
+      plotHelper.checkYLabel(dtContainer, 'Count');
     });
   });
 
-  describe('Check "Formating control" cells', function(){
-    it("Plot doesn't have tick labels", function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(24);
-      expect(svgElement.$$('g#labelg > text.plot-label').length).toEqual(0);
-    });
-
-    it("Plot has advanced styling", function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(25);
-      expect(svgElement.$$('g#labelg > text.plot-label')[0].getCssProperty('fill').value).toEqual('rgb(0,128,0)');
-    });
-  });
-
-  describe('Check "Raster" cell', function(){
-    it('Plot has 3 raster elements', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(26);
-      expect(plotHelper.getAllRasters(svgElement).length).toBeGreaterThan(0);
+  describe('Check Heatmap', function () {
+    it('Heatmap has Title and Axes Labels', function () {
+      cellIndex += 1;
+      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(dtContainer.$('#maing > g.heatmap').isEnabled()).toBeTruthy();
+      plotHelper.checkPlotTitle(dtContainer, 'Heatmap Second Example');
+      plotHelper.checkXLabel(dtContainer, 'X Label');
+      plotHelper.checkYLabel(dtContainer, 'Y Label');
+      expect(dtContainer.$$('svg').length).toBe(2);
     });
   });
 
-  describe('Check cell with axis bounds', function(){
-    it('Plot has 2 axis bounds', function(){
-      var svgElement = beakerxPO.getSvgElementByIndex(27);
-      expect(svgElement.$('text#label_y_0').getText()).toEqual('1\.0');
-      expect(svgElement.$('text#label_yr_0').getText()).toEqual('3\.0');
+  describe('Check Levels Of Detail', function () {
+    it('Plot has two polygon elements', function () {
+      cellIndex +=2;
+      var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
+      expect(svgElement.$('#i0 polygon').isVisible()).toBeTruthy();
+      expect(svgElement.$('#i1 polygon').isVisible()).toBeTruthy();
+    });
+  });
+
+  describe('Check TreeMap', function () {
+    it('Plot has TreeMap', function () {
+      cellIndex +=2;
+      var svgElement = beakerxPO.getSvgElementByIndex(cellIndex);
+      expect(svgElement.$$('g.cell').length).toBe(13);
+    });
+  });
+
+  describe('Check Category bars)', function(){
+    it('Plot has 6 bars', function(){
+      cellIndex += 1;
+      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
+      expect(dtContainer.$$('g#maing rect').length).toEqual(6);
+    });
+  });
+
+  describe('Check Tables)', function(){
+    it('Plot has Table', function () {
+      cellIndex +=1 ;
+      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
+      var tBody = tableHelper.getDataTableBody(dtContainer);
+      expect(tableHelper.getTableAllRows(tBody).length).toEqual(25);
+      expect(tableHelper.getTableBodyCell(tBody, 0, 1).getText()).toMatch(/8/);
+      expect(tableHelper.getTableBodyCell(tBody, 0, 2).getText()).toMatch(/8.2586/);
+      expect(tableHelper.getTableBodyCell(tBody, 0, 7).getText()).toMatch(/:\)/);
+    });
+
+    it('Plot has Table with Highlighters', function () {
+      cellIndex +=1 ;
+      var dtContainer = beakerxPO.getDtContainerByIndex(cellIndex);
+      var tBody = tableHelper.getDataTableBody(dtContainer);
+      expect(tableHelper.getTableAllRows(tBody).length).toEqual(9);
+      var cell1_2 = tableHelper.getTableBodyCell(tBody, 0, 2);
+      var cell2_2 = tableHelper.getTableBodyCell(tBody, 1, 2);
+      var cell3_2 = tableHelper.getTableBodyCell(tBody, 2, 2);
+      expect(cell1_2.getText()).toMatch(/2.000/);
+      expect(cell2_2.getText()).toMatch(/4.000/);
+      expect(cell3_2.getText()).toMatch(/2.000/);
+      var color1_2 = cell1_2.getCssProperty('background-color').value;
+      expect(color1_2).not.toEqual(cell2_2.getCssProperty('background-color').value);
+      expect(color1_2).toEqual(cell3_2.getCssProperty('background-color').value);
     });
   });
 

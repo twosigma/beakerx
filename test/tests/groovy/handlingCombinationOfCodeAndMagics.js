@@ -34,7 +34,7 @@ describe('Tests for combination of code and magics', function () {
 
   describe('Combination of code and magics', function () {
     it('mixing of println code and %time magic', function () {
-      var outputs = beakerxPO.runCodeCellByIndex(cellIndex).$$('div.output_subarea.output_text');
+      var outputs = beakerxPO.runCodeCellByIndex(cellIndex).$$(beakerxPO.allOutputTextCss);
       browser.pause(2000);
       expect(outputs[0].getText()).toMatch(new RegExp('test1\n221\n' + timeExp.source));
       expect(outputs[0].getText()).toMatch(new RegExp('test2\n' + timeExp.source));
@@ -43,7 +43,7 @@ describe('Tests for combination of code and magics', function () {
 
     it('%import magic inside code', function () {
       cellIndex += 1;
-      var outputs = beakerxPO.runCodeCellByIndex(cellIndex).$$('div.output_subarea.output_text');
+      var outputs = beakerxPO.runCodeCellByIndex(cellIndex).$$(beakerxPO.allOutputTextCss);
       browser.pause(2000);
       expect(outputs[0].getText()).toMatch(errorExp);
       expect(outputs[1].getText()).toMatch(new RegExp('221\n' + timeExp.source));

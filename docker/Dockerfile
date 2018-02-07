@@ -36,7 +36,7 @@ COPY docker/setup.sh / $HOME/
 COPY docker/start.sh docker/start-notebook.sh docker/start-singleuser.sh /usr/local/bin/
 COPY docker/jupyter_notebook_config.py /etc/jupyter/
 
-RUN chown -R beakerx:beakerx /home/beakerx
+RUN chown -R beakerx:beakerx /home/beakerx /opt/conda/envs/beakerx
 
 WORKDIR $HOME
 

@@ -49,7 +49,6 @@ define([
   './plot/plotApi',
   './shared/bkCoreManager',
   'big.js',
-  './extension/gistPublish/index',
   './tree/Utils/UIOptionsHelper'
 ], function(
   configmod,
@@ -63,7 +62,6 @@ define([
   plotApi,
   bkCoreManager,
   big,
-  GistPublish,
   UIOptionsHelper
 ) {
   "use strict";
@@ -77,7 +75,7 @@ define([
   var commUtils = require('./extension/comm');
   var initCellUtils = require('./extension/initializationCells');
 
-  GistPublish.registerFeature();
+  // GistPublish.registerFeature();
   UIOptionsHelper.registerFeature(base_url);
 
   function installKernelHandler() {

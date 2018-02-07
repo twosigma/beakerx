@@ -1,6 +1,7 @@
 import './../../global.env';
 
 import BeakerXApi from "./BeakerXApi";
+import * as GistPublish from "./../../extension/gistPublish/index";
 
 
 export function registerFeature(baseUrl: string): void {
@@ -58,9 +59,13 @@ function setupWideCells(wideCells: boolean): void {
 }
 
 function setupImproveFonts(improveFonts: boolean) {
+  // TODO;
   console.log('handle improve fonts', improveFonts);
 }
 
 function setupShowPublication(showPublication: boolean) {
-  console.log('handle show publication', showPublication);
+  if (!showPublication) {
+    return;
+  }
+  GistPublish.registerFeature();
 }

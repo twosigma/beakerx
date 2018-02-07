@@ -49,7 +49,8 @@ define([
   './plot/plotApi',
   './shared/bkCoreManager',
   'big.js',
-  './extension/gistPublish/index'
+  './extension/gistPublish/index',
+  './tree/Utils/UIOptionsHelper'
 ], function(
   configmod,
   comm,
@@ -62,7 +63,8 @@ define([
   plotApi,
   bkCoreManager,
   big,
-  GistPublish
+  GistPublish,
+  UIOptionsHelper
 ) {
   "use strict";
 
@@ -76,6 +78,7 @@ define([
   var initCellUtils = require('./extension/initializationCells');
 
   GistPublish.registerFeature();
+  UIOptionsHelper.registerFeature(base_url);
 
   function installKernelHandler() {
     var kernel = Jupyter.notebook.kernel;

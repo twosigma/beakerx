@@ -75,7 +75,6 @@ define([
   var commUtils = require('./extension/comm');
   var initCellUtils = require('./extension/initializationCells');
 
-  // GistPublish.registerFeature();
   UIOptionsHelper.registerFeature(base_url);
 
   function installKernelHandler() {

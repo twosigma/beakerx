@@ -76,12 +76,12 @@ describe('Groovy tests', function () {
     expect(str.charCodeAt(2).toString(16)).toEqual('44f');
   }
 
-  describe('Cyrillic symbols', function () {
+  describe('Cyrillic symbols (Groovy) ', function () {
     var codeCell;
 
     it('Output contains UTF-8 hex string', function () {
       codeCell = beakerxPO.runCodeCellByIndex(7);
-      expect(codeCell.$('.output_subarea.output_text').getText()).toMatch('d18dd18ed18f');
+      beakerxPO.waitAndCheckCellOutputStdoutText(7, /d18dd18ed18f/);
     });
 
     it('Plot title is cyrillic (cp1521)', function () {

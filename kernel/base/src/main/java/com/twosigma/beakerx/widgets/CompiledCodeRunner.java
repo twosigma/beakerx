@@ -28,9 +28,12 @@ import org.slf4j.LoggerFactory;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 public class CompiledCodeRunner {
 
@@ -74,12 +77,12 @@ public class CompiledCodeRunner {
   public static void runCompiledCodeAndPublish(Message message, ExecuteCompiledCode handler, Object... params) {
     final SimpleEvaluationObject seo = initOutput(message);
     InternalVariable.setValue(seo);
-    KernelManager.get().publish(MessageCreator.buildClearOutput(message, true));
+    KernelManager.get().publish(singletonList(MessageCreator.buildClearOutput(message, true)));
     try {
       Object result = handler.executeCode(params);
       if (result != null) {
         List<MIMEContainer> resultString = SerializeToString.doit(result);
-        KernelManager.get().publish(MessageCreator.buildDisplayData(message, resultString));
+        KernelManager.get().publish(singletonList(MessageCreator.buildDisplayData(message, resultString)));
       }
     } catch (Exception e) {
       printError(message, seo, e);

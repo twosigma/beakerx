@@ -70,6 +70,8 @@ public abstract class DOMWidget extends Widget {
             ret = Optional.of(sync_data.get(VALUE));
           } else if (sync_data.containsKey(INDEX)) {
             ret = Optional.of(sync_data.get(INDEX));
+          } else if (sync_data.containsKey("outputs")){
+            ret = Optional.of(sync_data.get("outputs"));
           }
         }
       }

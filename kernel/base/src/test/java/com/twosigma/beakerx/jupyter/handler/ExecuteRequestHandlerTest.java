@@ -32,6 +32,7 @@ import org.junit.Test;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForErrorMessage;
 import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
@@ -39,6 +40,8 @@ import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_REPLY;
 import static com.twosigma.beakerx.message.MessageSerializer.parse;
 import static com.twosigma.beakerx.message.MessageSerializer.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
+
+
 
 public class ExecuteRequestHandlerTest {
 
@@ -53,8 +56,8 @@ public class ExecuteRequestHandlerTest {
     evaluatorTest = new EvaluatorTest();
     kernel = new KernelTest("sid", evaluatorTest) {
       @Override
-      public void publish(Message message) {
-        super.publish(copyMessage(message));
+      public void publish(List<Message> message) {
+        super.publish(message.stream().map(ExecuteRequestHandlerTest::copyMessage).collect(Collectors.toList()));
       }
     };
   }

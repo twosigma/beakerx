@@ -41,8 +41,8 @@ class ScalaCodeRunner implements Callable<TryResult> {
   @Override
   public TryResult call() throws Exception {
     TryResult either;
-    theOutput.setOutputHandler();
     try {
+      theOutput.setOutputHandler();
       InternalVariable.setValue(theOutput);
       either = scalaEvaluator.getShell().evaluate(theOutput, theCode);
     } catch (Throwable e) {
@@ -54,8 +54,9 @@ class ScalaCodeRunner implements Callable<TryResult> {
         e.printStackTrace(pw);
         either = TryResult.createError(sw.toString());
       }
+    } finally {
+      theOutput.clrOutputHandler();
     }
-    theOutput.setOutputHandler();
     return either;
   }
 

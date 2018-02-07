@@ -120,4 +120,19 @@ describe('(Groovy) Output Containers Test', function(){
       expect(dtContainers.length).toBe(6);
     });
   });
+
+  describe('(Groovy) Cyclical Output Containers', function() {
+    it('Charts render correctly on every interval', function() {
+      cellIndex += 1;
+
+      var dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+
+      plotHelper.checkXLabel(dtContainer, '');
+
+      browser.pause(3000);
+
+      dtContainer = beakerxPO.runCellToGetDtContainer(cellIndex);
+      expect(dtContainer.$('text#xlabel').getText()).toBe('Time');
+    });
+  });
 });

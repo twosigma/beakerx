@@ -36,7 +36,6 @@ function activate(app: JupyterLab, palette: ICommandPalette, restorer: ILayoutRe
         let options = {
           baseUrl: PageConfig.getBaseUrl(),
           isLab: true,
-          CodeCell: null,
         };
         widget = new TreeWidget(options);
         widget.update();

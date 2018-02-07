@@ -23,7 +23,7 @@ import { getAlignmentByChar, getAlignmentByType} from "./columnAlignment";
 import {CellRenderer, DataModel, TextRenderer} from "@phosphor/datagrid";
 import {ALL_TYPES, getTypeByName} from "../dataTypes";
 import { minmax, MapIterator } from '@phosphor/algorithm';
-import {BeakerxDataGridModel} from "../model/BeakerxDataGridModel";
+import {HIGHLIGHTER_TYPE} from "../interface/IHighlighterState";
 
 export enum COLUMN_TYPES {
   'index',
@@ -82,7 +82,7 @@ export default class DataGridColumn {
       ...state,
     };
 
-    this.dataGrid.repaint();
+    this.dataGrid['repaint']();
   }
 
   createMenu(menuOptions): void {
@@ -141,6 +141,14 @@ export default class DataGridColumn {
 
   setAlignment(horizontalAlignment: TextRenderer.HorizontalAlignment) {
     this.setState({ horizontalAlignment });
+  }
+
+  getHighlighter(highlighterType: HIGHLIGHTER_TYPE) {
+    return this.dataGrid.highlighterManager.getColumnHighlighters(this, highlighterType);
+  }
+
+  toggleHighlighter(highlighterType: HIGHLIGHTER_TYPE) {
+    this.dataGrid.highlighterManager.toggleColumnHighlighter(this, highlighterType);
   }
 
   private getDataTypeName(): string {

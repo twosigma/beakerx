@@ -32,7 +32,7 @@ export default class HighlighterManager {
 
   constructor(dataGrid: BeakerxDataGrid, highlightersState: IHihglighterState[]) {
     this.dataGrid = dataGrid;
-    this.highlightersState = highlightersState;
+    this.highlightersState = [...highlightersState];
     this.highlighters = [];
 
     this.createHighlighter = this.createHighlighter.bind(this);

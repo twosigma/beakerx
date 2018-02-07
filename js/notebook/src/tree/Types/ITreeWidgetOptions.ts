@@ -17,5 +17,4 @@
 export default interface ITreeWidgetOptions {
   isLab: boolean;
   baseUrl: string;
-  CodeCell: any;
 }

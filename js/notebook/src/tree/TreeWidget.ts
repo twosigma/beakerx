@@ -65,7 +65,7 @@ export default class TreeWidget extends Panel {
     let uiOptionsModel;
     if (false === this.options.isLab) {
       uiOptionsWidget = new UIOptionsWidget();
-      uiOptionsModel = new UIOptionsModel(uiOptionsWidget, this.options.CodeCell);
+      uiOptionsModel = new UIOptionsModel(uiOptionsWidget);
     }
 
     this._model = new TreeWidgetModel(

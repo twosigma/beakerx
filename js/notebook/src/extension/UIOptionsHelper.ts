@@ -1,7 +1,7 @@
-import './../../global.env';
+import './../global.env';
 
-import BeakerXApi from "./BeakerXApi";
-import * as GistPublish from "./../../extension/gistPublish/index";
+import BeakerXApi from "../tree/Utils/BeakerXApi";
+import * as GistPublish from "./gistPublish/index";
 
 
 export function registerFeature(baseUrl: string): void {

@@ -49,7 +49,7 @@ define([
   './plot/plotApi',
   './shared/bkCoreManager',
   'big.js',
-  './tree/Utils/UIOptionsHelper'
+  './extension/UIOptionsHelper'
 ], function(
   configmod,
   comm,

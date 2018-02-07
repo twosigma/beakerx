@@ -53,8 +53,10 @@ export default class TreeWidgetModel {
 
         this.jvmOptionsModel
           .update(data.jvm_options);
-        this.uiOptionsModel
-          .update(data.ui_options);
+        if (!!this.uiOptionsModel) {
+          this.uiOptionsModel
+            .update(data.ui_options);
+        }
 
         this.showResult(data.jvm_options);
 

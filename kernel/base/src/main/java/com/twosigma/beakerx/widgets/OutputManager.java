@@ -1,5 +1,5 @@
 /*
- *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2018 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,15 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.kernel;
+package com.twosigma.beakerx.widgets;
 
-import com.twosigma.beakerx.message.Message;
+import com.twosigma.beakerx.jvm.threads.BeakerStdOutErrHandler;
 
-import java.util.List;
+public class OutputManager {
 
-public abstract class KernelSockets extends Thread {
+  public static void setOutput(Output out) {
+    BeakerStdOutErrHandler.setOuputWidget(out);
+  }
 
-  public abstract void publish(List<Message> message);
-
-  public abstract void send(Message message);
+  public static void clearOutput() {
+    BeakerStdOutErrHandler.clearOutput();
+  }
 }

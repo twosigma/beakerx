@@ -25,6 +25,7 @@ import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beakerx.table.TableDisplayToJson;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -35,10 +36,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SynchronousQueue;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
 
 public class NamespaceClient {
-  
-  private static Map<String,NamespaceClient> nsClients = new ConcurrentHashMap<>();
+
+  private static Map<String, NamespaceClient> nsClients = new ConcurrentHashMap<>();
   private static String currentSession;
   private static Map<String, SynchronousQueue<Object>> messagePool = new HashMap<>();
   private ObjectMapper objectMapper;
@@ -68,14 +70,14 @@ public class NamespaceClient {
   public synchronized void setOutputObj(SimpleEvaluationObject input) {
     currentCeo = input;
   }
-  
+
   public synchronized static NamespaceClient getBeaker() {
-    if (currentSession!=null){
+    if (currentSession != null) {
       return nsClients.get(currentSession);
     }
     return null;
   }
-  
+
   public synchronized static NamespaceClient getBeaker(String session) {
     currentSession = session;
     if (!nsClients.containsKey(session)) {
@@ -83,7 +85,7 @@ public class NamespaceClient {
     }
     return nsClients.get(currentSession);
   }
- 
+
   public synchronized static void delBeaker(String sessionId) {
     nsClients.remove(sessionId);
     currentSession = null;
@@ -98,12 +100,11 @@ public class NamespaceClient {
     state.put("sync", true);
     data.put("state", state);
     data.put("buffer_paths", new HashMap<>());
-    c.setData(data);
-    c.send();
+    c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
     return value;
   }
-  
-  protected String getJson(Object value) throws IOException{
+
+  protected String getJson(Object value) throws IOException {
     StringWriter sw = new StringWriter();
     JsonGenerator jgen = objectMapper.getFactory().createGenerator(sw);
     objectSerializer.writeObject(value, jgen, true);
@@ -114,17 +115,17 @@ public class NamespaceClient {
 
   //TODO : Not Implemented
   public Object setFast(String name, Object value) {
-    throw new RuntimeException("This option is not implemented now") ;
+    throw new RuntimeException("This option is not implemented now");
   }
 
   //TODO : Not Implemented
   public Object unset(String name) {
-    throw new RuntimeException("This option is not implemented now") ;
+    throw new RuntimeException("This option is not implemented now");
   }
 
   //TODO : Not Implemented
   public synchronized Object get(final String name) {
-    throw new RuntimeException("This option is not implemented now") ;
+    throw new RuntimeException("This option is not implemented now");
   }
 
   public static SynchronousQueue<Object> getMessageQueue(String channel) {
@@ -137,7 +138,7 @@ public class NamespaceClient {
   }
 
   protected Comm getAutotranslationComm() {
-    if(autotranslationComm == null){
+    if (autotranslationComm == null) {
       autotranslationComm = new Comm(TargetNamesEnum.BEAKER_AUTOTRANSLATION);
       autotranslationComm.open();
     }
@@ -145,21 +146,21 @@ public class NamespaceClient {
   }
 
   protected Comm getCodeCellsComm() {
-    if(codeCellsComm == null){
+    if (codeCellsComm == null) {
       codeCellsComm = new Comm(TargetNamesEnum.BEAKER_GETCODECELLS);
       codeCellsComm.open();
     }
     return codeCellsComm;
   }
-  
+
   protected Comm getTagRunComm() {
-    if(tagRunComm == null){
+    if (tagRunComm == null) {
       tagRunComm = new Comm(TargetNamesEnum.BEAKER_TAG_RUN);
       tagRunComm.open();
     }
     return tagRunComm;
   }
-  
+
 
   public List<CodeCell> getCodeCells(String tagFilter) throws IOException, InterruptedException {
     // first send message to get cells
@@ -170,11 +171,10 @@ public class NamespaceClient {
     state.put("value", getJson(tagFilter));
     data.put("state", state);
     data.put("buffer_paths", new HashMap<>());
-    c.setData(data);
-    c.send();
+    c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
     // block
     Object cells = getMessageQueue("CodeCells").take();
-    return (List<CodeCell>)cells;
+    return (List<CodeCell>) cells;
   }
 
   public synchronized void runByTag(String tag) {
@@ -184,8 +184,7 @@ public class NamespaceClient {
     state.put("runByTag", tag);
     data.put("state", state);
     data.put("buffer_paths", new HashMap<>());
-    c.setData(data);
-    c.send();
+    c.send(COMM_MSG, Comm.Buffer.EMPTY, new Comm.Data(data));
   }
 
 }

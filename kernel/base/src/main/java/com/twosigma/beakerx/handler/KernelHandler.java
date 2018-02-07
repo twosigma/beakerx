@@ -18,6 +18,8 @@ package com.twosigma.beakerx.handler;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.message.Message;
 
+import java.util.Collections;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public abstract class KernelHandler<T> implements Handler<T> {
@@ -33,7 +35,7 @@ public abstract class KernelHandler<T> implements Handler<T> {
   }
 
   public void publish(Message message) {
-    kernel.publish(message);
+    kernel.publish(Collections.singletonList(message));
   }
 
   public void exit() {

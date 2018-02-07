@@ -37,6 +37,7 @@ import com.twosigma.beakerx.message.Message;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ExecuteRequestHandlerTest {
 
@@ -51,8 +52,8 @@ public class ExecuteRequestHandlerTest {
     evaluatorTest = new EvaluatorTest();
     kernel = new KernelTest("sid", evaluatorTest) {
       @Override
-      public void publish(Message message) {
-        super.publish(copyMessage(message));
+      public void publish(List<Message> message) {
+        super.publish(message.stream().map(ExecuteRequestHandlerTest::copyMessage).collect(Collectors.toList()));
       }
     };
   }

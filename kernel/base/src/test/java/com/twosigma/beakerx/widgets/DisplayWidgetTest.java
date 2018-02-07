@@ -17,19 +17,16 @@ package com.twosigma.beakerx.widgets;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widgets.integers.IntSlider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.twosigma.beakerx.message.Message;
 
 import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
-import static com.twosigma.beakerx.kernel.comm.Comm.METHOD;
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.COMM_MSG;
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.DISPLAY_DATA;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getContent;
 import static com.twosigma.beakerx.widgets.TestWidgetUtils.getData;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyDisplayMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DisplayWidgetTest {
@@ -61,8 +58,8 @@ public class DisplayWidgetTest {
   private void verifyCommDisplayMsg(IntSlider widget) {
     assertThat(groovyKernel.getPublishedMessages().size()).isEqualTo(1);
     Message message = groovyKernel.getPublishedMessages().get(0);
-    assertThat(getData(message).get(METHOD)).isEqualTo(DISPLAY_DATA.getName());
-    verifyDisplayMsg(message);
+    assertThat(getData(message).get(Widget.APPLICATION_VND_JUPYTER_WIDGET_VIEW_JSON)).isNotNull();
+    assertThat(message.type()).isEqualTo(JupyterMessages.DISPLAY_DATA);
     assertThat(getContent(message).get(COMM_ID)).isNull();
   }
 }

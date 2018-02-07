@@ -44,9 +44,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class ClojureEvaluator extends BaseEvaluator {
 
@@ -54,7 +52,6 @@ public class ClojureEvaluator extends BaseEvaluator {
   private final static Logger logger = LoggerFactory.getLogger(ClojureEvaluator.class.getName());
 
   private List<String> requirements;
-  private ExecutorService executorService;
   private DynamicClassLoader loader;
   private Var clojureLoadString = null;
 
@@ -62,7 +59,6 @@ public class ClojureEvaluator extends BaseEvaluator {
     super(id, sId, cellExecutor, tempFolderFactory, evaluatorParameters);
     requirements = new ArrayList<>();
     init();
-    executorService = Executors.newSingleThreadExecutor();
   }
 
   public ClojureEvaluator(String id, String sId, EvaluatorParameters evaluatorParameters) {
@@ -146,14 +142,7 @@ public class ClojureEvaluator extends BaseEvaluator {
 
   @Override
   public TryResult evaluate(SimpleEvaluationObject seo, String code) {
-    Future<TryResult> submit = executorService.submit(new ClojureWorkerThread(this, new JobDescriptor(code, seo)));
-    TryResult either = null;
-    try {
-      either = submit.get();
-    } catch (Exception e) {
-      either = TryResult.createError(e.getLocalizedMessage());
-    }
-    return either;
+    return evaluate(seo, new ClojureWorkerThread(this, new JobDescriptor(code, seo)));
   }
 
   @Override

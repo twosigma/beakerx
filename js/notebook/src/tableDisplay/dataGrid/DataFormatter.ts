@@ -18,8 +18,7 @@ import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import * as _ from 'underscore';
 import {
   isDoubleWithPrecision,
-  getDoublePrecisionByType,
-  getDisplayType, ALL_TYPES
+  getDoublePrecisionByType
 } from './dataTypes';
 import { DataGridHelpers } from './dataGridHelpers';
 import { TIME_UNIT_FORMATS } from '../consts';
@@ -68,13 +67,7 @@ export class DataFormatter {
     this.html = this.html.bind(this);
   }
   
-  getFormatFnByColumn({ dataType, name }, rawType?: boolean): CellRenderer.ConfigFunc<string> {
-    let displayType = rawType ? dataType : getDisplayType(
-      dataType,
-      this.stringFormatForType,
-      this.stringFormatForColumn[name]
-    );
-
+  getFormatFnByDisplayType(displayType): CellRenderer.ConfigFunc<string> {
     if (isDoubleWithPrecision(displayType)) {
       return this.doubleWithPrecision(getDoublePrecisionByType(displayType));
     }

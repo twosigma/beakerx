@@ -16,11 +16,11 @@
 
 import MenuItem from "../../../shared/interfaces/menuItemInterface";
 import { TIME_UNIT_FORMATS, scopeData } from '../../consts';
-import { getAllowedTypesByType } from "../dataTypes";
+import {getAllowedTypesByType, getDisplayType} from "../dataTypes";
 import DataGridColumn from "../column/DataGridColumn";
 
 export function createFormatMenuItems(column: DataGridColumn) {
-  const types = getAllowedTypesByType(column.dataType);
+  const types = getAllowedTypesByType(column.state.dataType);
   let items: MenuItem[] = [];
 
   types.forEach((obj) => {
@@ -32,17 +32,13 @@ export function createFormatMenuItems(column: DataGridColumn) {
 
     let item: MenuItem = {
       title: obj.name,
-      isChecked: function() {
-        //@todo
-      }
+      isChecked: (column) => column.state.displayType === obj.type
     };
 
     if (obj.type === 4) { //double with precision
       item.items = createPrecisionSubitems(column);
     } else {
-      item.action = function(colIdx) {
-        //@todo
-      }
+      item.action = (column) => column.setDisplayType(obj.type)
     }
     items.push(item);
   });
@@ -59,12 +55,8 @@ export function createPrecisionSubitems(column: DataGridColumn): MenuItem[] {
   formetters.forEach((formatter, precision) => {
     let item = {
       title: `${precision}`,
-      isChecked: () => {
-        //@todo
-      },
-      action: () => {
-        //@todo
-      }
+      isChecked: (column) => `4.${precision}` === column.state.displayType,
+      action: (column) => column.setDisplayType(`4.${precision}`)
     };
 
     items.push(item);

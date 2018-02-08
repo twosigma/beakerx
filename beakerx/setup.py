@@ -89,6 +89,7 @@ setup_args = dict(
         get_data_files(os.path.join('beaker'))
     )],
     install_requires    = [
+        'ipykernel<=4.8.0',
         'notebook >=4.4.0',
         'ipywidgets >=7.0.0',
         'pandas'

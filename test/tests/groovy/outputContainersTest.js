@@ -37,7 +37,7 @@ describe('(Groovy) Output Containers Test', function(){
       cellIndex = 0;
 
       codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(codeCell.$('div.output').childNodes).toBe(undefined);
+      expect(codeCell.$('div.output').getText()).toBe('');
     });
   });
 

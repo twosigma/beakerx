@@ -53,7 +53,7 @@ describe('(Groovy) Testing of showing the null execution result', function() {
       cellIndex += 1;
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
 
-      expect(codeCell.$('div.output').childNodes).toBe(undefined);
+      expect(codeCell.$('div.output').getText()).toBe('');
     });
   });
 });

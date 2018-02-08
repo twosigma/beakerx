@@ -69,7 +69,7 @@ function setupWideCells(wideCells: boolean): void {
   }
 
   let s = document.createElement('style');
-  s.innerText = `.container { width:100% !important; }`;
+  s.innerText = `#notebook_panel .container { width:auto; margin: 15px; }`;
 
   document.body.appendChild(s);
 }

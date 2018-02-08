@@ -14,8 +14,22 @@
  *  limitations under the License.
  */
 
-import TreeWidget from "./tree/TreeWidget";
+import DefaultOptionsWidgetInterface from "../Widgets/JVMOptions/DefaultOptionsWidgetInterface";
+import { IDefaultJVMOptions } from "../Types/IJVMOptions";
 
-export default {
-  TreeWidget: TreeWidget,
+export default class DefaultOptionsModel {
+
+  constructor(private widget: DefaultOptionsWidgetInterface) {
+  }
+
+  public update(options: IDefaultJVMOptions): void {
+    this.widget.setHeapGB(options.heap_GB);
+  }
+
+  public static normaliseHeapSize(heap_GB: number): string {
+    if (heap_GB % 1 === 0) {
+      return `${heap_GB}g`;
+    }
+    return parseInt(`${heap_GB * 1024}`) + 'm';
+  }
 }

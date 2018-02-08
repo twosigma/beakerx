@@ -1,7 +1,22 @@
+/*
+ *  Copyright 2017 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 import { Message } from "@phosphor/messaging";
-import {
-  IDefaultJVMOptions, IOtherJVMOptions, IPropertiesJVMOptions
-} from "../BeakerXApi";
+import IJVMOptions, { IDefaultJVMOptions, IOtherJVMOptions, IPropertiesJVMOptions } from "./Types/IJVMOptions";
+import IUIOptions from "./Types/IUIOptions";
 
 export namespace Messages {
 
@@ -19,7 +34,22 @@ export namespace Messages {
       return this._error;
     }
   }
-  
+
+  export const TYPE_JVM_OPTIONS_CHANGED = 'jvm-options-changed';
+
+  export class JVMOptionsChangedMessage extends Message {
+    private _options: IJVMOptions;
+
+    constructor(options: IJVMOptions) {
+      super(TYPE_JVM_OPTIONS_CHANGED);
+      this._options = options
+    }
+
+    get options(): IJVMOptions {
+      return this._options;
+    }
+  }
+
   export const TYPE_DEFAULT_JVM_OPTIONS_CHANGED = 'jvm-options-changed:default';
 
   export class DefaultOptionsChangedMessage extends Message {
@@ -64,4 +94,20 @@ export namespace Messages {
       return this._properties;
     }
   }
+
+  export const TYPE_UI_OPTIONS_CHANGED = 'ui-options-changed';
+
+  export class UIOptionsChangedMessage extends Message {
+    private _options: IUIOptions;
+
+    constructor(options: IUIOptions) {
+      super(TYPE_UI_OPTIONS_CHANGED);
+      this._options = options
+    }
+
+    get options(): IUIOptions {
+      return this._options;
+    }
+  }
+
 }

@@ -14,8 +14,17 @@
  *  limitations under the License.
  */
 
-import TreeWidget from "./tree/TreeWidget";
+import UIOptionsWidgetInterface from "../Widgets/UIOptions/UIOptionsWidgetInterface";
+import IUIOptions from "../Types/IUIOptions";
 
-export default {
-  TreeWidget: TreeWidget,
+export default class UIOptionsModel {
+
+  constructor(private widget: UIOptionsWidgetInterface) {
+
+  }
+
+  public update(options: IUIOptions) {
+    this.widget.onLoad(options);
+  }
+
 }

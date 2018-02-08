@@ -14,8 +14,15 @@
  *  limitations under the License.
  */
 
-import TreeWidget from "./tree/TreeWidget";
+import OtherOptionsWidgetInterface from "../Widgets/JVMOptions/OtherOptionsWidgetInterface";
+import { IOtherJVMOptions } from "../Types/IJVMOptions";
 
-export default {
-  TreeWidget: TreeWidget,
+export default class OtherOptionsModel {
+
+  constructor(private widget: OtherOptionsWidgetInterface) {
+  }
+
+  public update(otherOptions: IOtherJVMOptions): void {
+    this.widget.onLoad(otherOptions);
+  }
 }

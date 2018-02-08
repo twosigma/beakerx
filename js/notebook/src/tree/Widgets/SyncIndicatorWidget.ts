@@ -17,7 +17,7 @@
 import * as $ from "jquery";
 import { Widget } from "@phosphor/widgets";
 
-export class SyncIndicatorWidget extends Widget {
+export default class SyncIndicatorWidget extends Widget {
 
   public readonly HTML_ELEMENT_TEMPLATE = `
 <style>

@@ -18,9 +18,11 @@ import * as $ from "jquery";
 import * as _ from "underscore";
 import { Widget } from "@phosphor/widgets";
 import { MessageLoop } from "@phosphor/messaging";
-import { Messages } from "./Messages";
+import DefaultOptionsWidgetInterface from "./DefaultOptionsWidgetInterface";
+import HeapGBValidator from "../../Utils/HeapGBValidator";
+import { Messages } from "../../Messages";
 
-export class DefaultOptionsWidget extends Widget {
+export default class DefaultOptionsWidget extends Widget implements DefaultOptionsWidgetInterface  {
 
   public readonly HEAP_GB_SELECTOR = '#heap_GB';
 
@@ -80,43 +82,3 @@ export class DefaultOptionsWidget extends Widget {
 
 }
 
-export class DefaultOptionsModel {
-
-  constructor(private widget: DefaultOptionsWidget) {
-
-  }
-
-  public update(options: { heap_GB: number }) {
-    this.widget.setHeapGB(options.heap_GB);
-  }
-
-  public static normaliseHeapSize(heap_GB: number): string {
-    if (heap_GB % 1 === 0) {
-      return `${heap_GB}g`;
-    }
-    return parseInt(`${heap_GB * 1024}`) + 'm';
-  }
-}
-
-class HeapGBValidator {
-
-  /**
-   * @throws Error
-   * @param value
-   */
-  public static validate(value: any): void {
-    if ('' === value) {
-      return;
-    }
-    let parsedVal = parseFloat(value);
-    if (
-      isNaN(parsedVal)
-      || false === isFinite(value)
-      || parsedVal <= 0
-    ) {
-      throw new Error('Heap Size must be a positive decimal number.');
-    }
-    return;
-  }
-
-}

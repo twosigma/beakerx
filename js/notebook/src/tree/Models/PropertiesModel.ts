@@ -14,8 +14,15 @@
  *  limitations under the License.
  */
 
-import TreeWidget from "./tree/TreeWidget";
+import PropertiesWidgetInterface from "../Widgets/JVMOptions/PropertiesWidgetInterface";
+import { IPropertiesJVMOptions } from "../Types/IJVMOptions";
 
-export default {
-  TreeWidget: TreeWidget,
+export default class PropertiesModel {
+
+  constructor(private widget: PropertiesWidgetInterface) {
+  }
+
+  public update(properties: IPropertiesJVMOptions): void {
+    this.widget.onLoad(properties);
+  }
 }

@@ -18,11 +18,11 @@ import * as $ from "jquery";
 import * as _ from "underscore";
 import { Widget } from "@phosphor/widgets";
 import { MessageLoop, Message } from "@phosphor/messaging";
-import { IOtherJVMOptions } from "../BeakerXApi";
-import { Messages } from "./Messages";
-import OtherOptionsChangedMessage = Messages.OtherOptionsChangedMessage;
+import OtherOptionsWidgetInterface from "./OtherOptionsWidgetInterface";
+import { IOtherJVMOptions } from "../../Types/IJVMOptions";
+import { Messages } from "../../Messages";
 
-export class OtherOptionsWidget extends Widget {
+export default class OtherOptionsWidget extends Widget implements OtherOptionsWidgetInterface {
 
   public readonly ADD_BUTTON_SELECTOR = '#add_option_jvm_sett';
   public readonly PANEL_SELECTOR = '#other_property';
@@ -65,6 +65,7 @@ export class OtherOptionsWidget extends Widget {
       .find(this.ADD_BUTTON_SELECTOR)
       .on('click', this.addOptionButtonClickedHandler.bind(this));
   }
+
   private clear() {
     this.$node.find(this.PANEL_SELECTOR).empty();
   }
@@ -196,18 +197,8 @@ export class OtherOptionsWidget extends Widget {
   }
 
   private optionsChanged() {
-    let msg = new OtherOptionsChangedMessage(this._options);
+    let msg = new Messages.OtherOptionsChangedMessage(this._options);
     MessageLoop.sendMessage(this.parent, msg);
-  }
-}
-
-export class OtherOptionsModel {
-  constructor(private widget: OtherOptionsWidget) {
-
-  }
-
-  update(otherOptions: IOtherJVMOptions) {
-    this.widget.onLoad(otherOptions);
   }
 }
 

@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import TreeWidget from "./tree/TreeWidget";
+import { IPropertiesJVMOptions } from "../../Types/IJVMOptions";
 
-export default {
-  TreeWidget: TreeWidget,
+export default interface PropertiesWidgetInterface {
+  onLoad: (properties: IPropertiesJVMOptions) => void;
 }

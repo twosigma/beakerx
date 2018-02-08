@@ -14,8 +14,24 @@
  *  limitations under the License.
  */
 
-import TreeWidget from "./tree/TreeWidget";
+export default class HeapGBValidator {
+  /**
+   * @throws Error
+   * @param value
+   */
+  public static validate(value: any): void {
+    if ('' === value) {
+      return;
+    }
+    let parsedVal = parseFloat(value);
+    if (
+      isNaN(parsedVal)
+      || false === isFinite(value)
+      || parsedVal <= 0
+    ) {
+      throw new Error('Heap Size must be a positive decimal number.');
+    }
+    return;
+  }
 
-export default {
-  TreeWidget: TreeWidget,
 }

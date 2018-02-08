@@ -14,8 +14,9 @@
  *  limitations under the License.
  */
 
-import TreeWidget from "./tree/TreeWidget";
-
-export default {
-  TreeWidget: TreeWidget,
+export default interface IUIOptions {
+  auto_close: boolean;
+  improve_fonts: boolean;
+  wide_cells: boolean;
+  show_publication: boolean;
 }

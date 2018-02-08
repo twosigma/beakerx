@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 
-import TreeWidget from "./tree/TreeWidget";
-
-export default {
-  TreeWidget: TreeWidget,
+export default interface DefaultOptionsWidgetInterface {
+  setHeapGB: (heap_GB: number) => void;
 }

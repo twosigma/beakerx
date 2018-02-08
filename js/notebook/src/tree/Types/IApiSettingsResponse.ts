@@ -14,8 +14,11 @@
  *  limitations under the License.
  */
 
-import TreeWidget from "./tree/TreeWidget";
+import IJVMOptions from "./IJVMOptions";
+import IUIOptions from "./IUIOptions";
 
-export default {
-  TreeWidget: TreeWidget,
+export default interface IApiSettingsResponse {
+  jvm_options: IJVMOptions;
+  ui_options: IUIOptions;
+  version: number;
 }

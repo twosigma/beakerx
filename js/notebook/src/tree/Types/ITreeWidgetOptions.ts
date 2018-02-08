@@ -14,8 +14,7 @@
  *  limitations under the License.
  */
 
-import TreeWidget from "./tree/TreeWidget";
-
-export default {
-  TreeWidget: TreeWidget,
+export default interface ITreeWidgetOptions {
+  isLab: boolean;
+  baseUrl: string;
 }

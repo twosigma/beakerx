@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import TreeWidget from "./tree/TreeWidget";
+import IUIOptions from "../../Types/IUIOptions";
 
-export default {
-  TreeWidget: TreeWidget,
+export default interface UIOptionsWidgetInterface {
+  onLoad: (options: IUIOptions) => void;
 }

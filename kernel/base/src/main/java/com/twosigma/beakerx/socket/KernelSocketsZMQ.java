@@ -34,12 +34,15 @@ import org.zeromq.ZMsg;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.SHUTDOWN_REPLY;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.SHUTDOWN_REQUEST;
 import static java.util.Arrays.asList;
 import static com.twosigma.beakerx.message.MessageSerializer.toJson;
+import static java.util.Collections.singletonList;
 
 public class KernelSocketsZMQ extends KernelSockets {
 
@@ -84,33 +87,34 @@ public class KernelSocketsZMQ extends KernelSockets {
     sockets.register(stdinSocket, ZMQ.Poller.POLLIN);
   }
 
-  public void publish(Message message) {
+  public void publish(List<Message> message) {
     sendMsg(this.iopubSocket, message);
   }
 
   public void send(Message message) {
-    sendMsg(this.shellSocket, message);
+    sendMsg(this.shellSocket, singletonList(message));
   }
 
-  private synchronized void sendMsg(ZMQ.Socket socket, Message message) {
-    String header = toJson(message.getHeader());
-    String parent = toJson(message.getParentHeader());
-    String meta = toJson(message.getMetadata());
-    String content = toJson(message.getContent());
-    String digest = hmac.sign(Arrays.asList(header, parent, meta, content));
+  private synchronized void sendMsg(ZMQ.Socket socket, List<Message> messages) {
+    messages.forEach(message -> {
+      String header = toJson(message.getHeader());
+      String parent = toJson(message.getParentHeader());
+      String meta = toJson(message.getMetadata());
+      String content = toJson(message.getContent());
+      String digest = hmac.sign(Arrays.asList(header, parent, meta, content));
 
-    ZMsg newZmsg = new ZMsg();
-    message.getIdentities().forEach(newZmsg::add);
-    newZmsg.add(DELIM);
-    newZmsg.add(digest.getBytes(StandardCharsets.UTF_8));
-    newZmsg.add(header.getBytes(StandardCharsets.UTF_8));
-    newZmsg.add(parent.getBytes(StandardCharsets.UTF_8));
-    newZmsg.add(meta.getBytes(StandardCharsets.UTF_8));
-    newZmsg.add(content.getBytes(StandardCharsets.UTF_8));
-    message.getBuffers().forEach( x-> newZmsg.add(x));
-    newZmsg.send(socket);
+      ZMsg newZmsg = new ZMsg();
+      message.getIdentities().forEach(newZmsg::add);
+      newZmsg.add(DELIM);
+      newZmsg.add(digest.getBytes(StandardCharsets.UTF_8));
+      newZmsg.add(header.getBytes(StandardCharsets.UTF_8));
+      newZmsg.add(parent.getBytes(StandardCharsets.UTF_8));
+      newZmsg.add(meta.getBytes(StandardCharsets.UTF_8));
+      newZmsg.add(content.getBytes(StandardCharsets.UTF_8));
+      message.getBuffers().forEach(x -> newZmsg.add(x));
+      newZmsg.send(socket);
+    });
   }
-
 
   private Message readMessage(ZMQ.Socket socket) {
     ZMsg zmsg = null;
@@ -194,7 +198,7 @@ public class KernelSocketsZMQ extends KernelSockets {
       reply.setHeader(new Header(SHUTDOWN_REPLY, message.getHeader().getSession()));
       reply.setParentHeader(message.getHeader());
       reply.setContent(message.getContent());
-      sendMsg(controlSocket, reply);
+      sendMsg(controlSocket, Collections.singletonList(reply));
       shutdown();
     }
   }

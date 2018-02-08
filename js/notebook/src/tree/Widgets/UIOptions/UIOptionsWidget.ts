@@ -30,6 +30,11 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   public readonly SHOW_PUBLICATION_SELECTOR = '#show_publication';
 
   public readonly HTML_ELEMENT_TEMPLATE = `
+<style>
+  #ui_options {
+    margin: 0 16px;
+  }
+</style>
 <fieldset id="ui_options">
   <legend>UI Options:</legend>
   <div class="form-group">

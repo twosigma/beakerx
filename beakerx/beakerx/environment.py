@@ -25,6 +25,12 @@ default_config = """
             "heap_GB": null,
             "other": [],
             "properties": {}
+        },
+        "ui_options": {
+            "auto_close": false,
+            "improve_fonts": true,
+            "wide_cells": true,
+            "show_publication": true
         }
     }
 }

@@ -26,6 +26,20 @@ import SyncIndicatorWidget from "../Widgets/SyncIndicatorWidget";
 export default class TreeWidgetModel {
 
   private _options: IApiSettingsResponse;
+  private readonly DEFAULT_CONFIG = {
+    jvm_options: {
+      heap_GB: null,
+      other: [],
+      properties: []
+    },
+    ui_options: {
+      auto_close: false,
+      improve_fonts: true,
+      wide_cells: true,
+      show_publication: true
+    },
+    version: 2
+  };
 
   constructor(
     private api: BeakerXApi,
@@ -41,12 +55,7 @@ export default class TreeWidgetModel {
       .loadSettings()
       .then((data: IApiSettingsResponse) => {
         if (!data.ui_options) {
-          data.ui_options = {
-            auto_close: false,
-            improve_fonts: true,
-            wide_cells: true,
-            show_publication: false,
-          }
+          data.ui_options = this.DEFAULT_CONFIG.ui_options;
         }
 
         this._options = data;
@@ -70,20 +79,7 @@ export default class TreeWidgetModel {
   public save() {
     this.syncStart();
 
-    let payload: IApiSettingsResponse = {
-      "jvm_options": {
-        "heap_GB": null,
-        "other": [],
-        "properties": []
-      },
-      "ui_options": {
-        "auto_close": false,
-        "improve_fonts": true,
-        "wide_cells": true,
-        "show_publication": false,
-      },
-      "version": 2
-    };
+    let payload: IApiSettingsResponse = this.DEFAULT_CONFIG;
 
     payload.jvm_options.heap_GB = this._options.jvm_options.heap_GB;
     payload.jvm_options.other = this._options.jvm_options.other;

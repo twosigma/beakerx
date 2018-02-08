@@ -31,7 +31,7 @@ export function registerFeature(baseUrl: string): void {
 
       setupAutoCloseBrackets(data.ui_options.auto_close);
       setupWideCells(data.ui_options.wide_cells);
-      setupImproveFonts(data.ui_options.improve_fonts);
+      // setupImproveFonts(data.ui_options.improve_fonts);
       setupShowPublication(data.ui_options.show_publication);
 
     })
@@ -49,16 +49,11 @@ function setupAutoCloseBrackets(autoCloseBrackets: boolean): void {
     return cell.cell_type = 'code';
   });
 
-  const patch = {
-    CodeCell: {
-      cm_config: {
-        autoCloseBrackets: autoCloseBrackets
-      }
-    }
-  };
-
   for (let cell of code_cells) {
-    cell.config.update(patch);
+    let cm = cell.code_mirror;
+    if (cm.getOption('autoCloseBrackets') !== autoCloseBrackets) {
+      cm.setOption('autoCloseBrackets', autoCloseBrackets);
+    }
   }
 
 }
@@ -74,10 +69,10 @@ function setupWideCells(wideCells: boolean): void {
   document.body.appendChild(s);
 }
 
-function setupImproveFonts(improveFonts: boolean) {
-  // TODO;
-  console.log('handle improve fonts', improveFonts);
-}
+// function setupImproveFonts(improveFonts: boolean) {
+//   // TODO;
+//   console.log('handle improve fonts', improveFonts);
+// }
 
 function setupShowPublication(showPublication: boolean) {
   if (!showPublication) {

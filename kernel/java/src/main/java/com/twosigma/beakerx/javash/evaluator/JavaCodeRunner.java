@@ -52,10 +52,10 @@ class JavaCodeRunner implements Callable<TryResult> {
   public TryResult call() throws Exception {
     ClassLoader oldld = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(javaEvaluator.getJavaClassLoader());
-    theOutput.setOutputHandler();
     InternalVariable.setValue(theOutput);
     TryResult either;
     try {
+      theOutput.setOutputHandler();
       InternalVariable.setValue(theOutput);
       either = runCode(j);
     } catch (Throwable e) {
@@ -69,9 +69,10 @@ class JavaCodeRunner implements Callable<TryResult> {
         e.printStackTrace(pw);
         either = TryResult.createError(sw.toString());
       }
+    } finally {
+      theOutput.clrOutputHandler();
+      Thread.currentThread().setContextClassLoader(oldld);
     }
-    theOutput.clrOutputHandler();
-    Thread.currentThread().setContextClassLoader(oldld);
     return either;
   }
 

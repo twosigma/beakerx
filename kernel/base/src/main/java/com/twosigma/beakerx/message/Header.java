@@ -25,8 +25,10 @@ import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 @JsonPropertyOrder({ "id", "username", "session", "date", "type", "version" })
 public class Header {
 
+  public static final String MSG_ID = "msg_id";
+
   private String date;
-  @JsonProperty("msg_id")
+  @JsonProperty(MSG_ID)
   private String id;
   private String username;
   private String session;
@@ -43,7 +45,7 @@ public class Header {
     username = "kernel";
     this.type = type;
     this.session = session;
-    this.version = "5.0";
+    this.version = "5.3";
   }
 
   public String asJson() {

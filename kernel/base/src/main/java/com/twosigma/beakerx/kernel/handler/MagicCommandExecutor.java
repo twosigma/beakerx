@@ -21,6 +21,7 @@ import com.twosigma.beakerx.kernel.msg.MessageCreator;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -55,10 +56,10 @@ public class MagicCommandExecutor {
   private static void publishOutcome(KernelFunctionality kernel, Message message, int executionCount, MagicCommandOutcomeItem item, boolean hasError) {
     if (item.getMIMEContainer().isPresent()) {
       if (item.getOutcome().equals(MagicCommandOutcomeItem.Outcome.OUTPUT)) {
-        kernel.publish(MessageCreator.buildOutputMessage(message, (String) item.getMIMEContainer().get().getData(), hasError));
+        kernel.publish(Collections.singletonList(MessageCreator.buildOutputMessage(message, (String) item.getMIMEContainer().get().getData(), hasError)));
       } else {
         MIMEContainer mimeContainer = item.getMIMEContainer().get();
-        kernel.publish(MessageCreator.buildMessage(message, singletonList(mimeContainer), executionCount));
+        kernel.publish(Collections.singletonList(MessageCreator.buildMessage(message, singletonList(mimeContainer), executionCount)));
       }
     }
   }

@@ -16,27 +16,32 @@
 
 package com.twosigma.beakerx.jupyter.handler;
 
-import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
-import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_REPLY;
-import static com.twosigma.beakerx.message.MessageSerializer.parse;
-import static com.twosigma.beakerx.message.MessageSerializer.toJson;
-
+import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.evaluator.EvaluatorTest;
 import com.twosigma.beakerx.kernel.handler.ExecuteRequestHandler;
-import org.assertj.core.api.Assertions;
+import com.twosigma.beakerx.kernel.magic.command.MagicCommandWhichThrowsException;
+import com.twosigma.beakerx.kernel.msg.JupyterMessages;
+import com.twosigma.beakerx.message.Header;
+import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.evaluator.EvaluatorTest;
-import com.twosigma.beakerx.kernel.msg.JupyterMessages;
-import com.twosigma.beakerx.message.Header;
-import com.twosigma.beakerx.message.Message;
-
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForErrorMessage;
+import static com.twosigma.beakerx.evaluator.EvaluatorResultTestWatcher.waitForIdleMessage;
+import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_REPLY;
+import static com.twosigma.beakerx.message.MessageSerializer.parse;
+import static com.twosigma.beakerx.message.MessageSerializer.toJson;
+import static org.assertj.core.api.Assertions.assertThat;
+
+
 
 public class ExecuteRequestHandlerTest {
 
@@ -51,8 +56,8 @@ public class ExecuteRequestHandlerTest {
     evaluatorTest = new EvaluatorTest();
     kernel = new KernelTest("sid", evaluatorTest) {
       @Override
-      public void publish(Message message) {
-        super.publish(copyMessage(message));
+      public void publish(List<Message> message) {
+        super.publish(message.stream().map(ExecuteRequestHandlerTest::copyMessage).collect(Collectors.toList()));
       }
     };
   }
@@ -81,9 +86,9 @@ public class ExecuteRequestHandlerTest {
     executeRequestHandler.handle(message);
     waitForIdleMessage(kernel);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(0);
-    Assertions.assertThat(publishMessage.getContent().get("execution_state")).isEqualTo("busy");
+    assertThat(publishMessage.getContent().get("execution_state")).isEqualTo("busy");
   }
 
   @Test
@@ -94,9 +99,9 @@ public class ExecuteRequestHandlerTest {
     executeRequestHandler.handle(message);
     waitForIdleMessage(kernel);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(0);
-    Assertions.assertThat(publishMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
+    assertThat(publishMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
   @Test
@@ -105,9 +110,9 @@ public class ExecuteRequestHandlerTest {
     executeRequestHandler.handle(message);
     waitForIdleMessage(kernel);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(0);
-    Assertions.assertThat(publishMessage.getHeader().getType())
+    assertThat(publishMessage.getHeader().getType())
             .isEqualTo(JupyterMessages.STATUS.getName());
   }
 
@@ -119,9 +124,9 @@ public class ExecuteRequestHandlerTest {
     executeRequestHandler.handle(message);
     waitForIdleMessage(kernel);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(0);
-    Assertions.assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
+    assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
   @Test
@@ -132,9 +137,9 @@ public class ExecuteRequestHandlerTest {
     executeRequestHandler.handle(message);
     waitForIdleMessage(kernel);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(0);
-    Assertions.assertThat(new String(publishMessage.getIdentities().get(0)))
+    assertThat(new String(publishMessage.getIdentities().get(0)))
             .isEqualTo(expectedIdentities);
   }
 
@@ -146,9 +151,9 @@ public class ExecuteRequestHandlerTest {
     executeRequestHandler.handle(message);
     waitForIdleMessage(kernel);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
-    Assertions.assertThat(publishMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
+    assertThat(publishMessage.getHeader().getSession()).isEqualTo(expectedSessionId);
   }
 
   @Test
@@ -157,9 +162,9 @@ public class ExecuteRequestHandlerTest {
     executeRequestHandler.handle(message);
     waitForIdleMessage(kernel);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
-    Assertions.assertThat(publishMessage.getHeader().getType())
+    assertThat(publishMessage.getHeader().getType())
             .isEqualTo(JupyterMessages.EXECUTE_INPUT.getName());
   }
 
@@ -171,9 +176,9 @@ public class ExecuteRequestHandlerTest {
     executeRequestHandler.handle(message);
     waitForIdleMessage(kernel);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
-    Assertions.assertThat(publishMessage.getContent().get("code")).isEqualTo(expectedCode);
+    assertThat(publishMessage.getContent().get("code")).isEqualTo(expectedCode);
   }
 
   @Test
@@ -182,9 +187,9 @@ public class ExecuteRequestHandlerTest {
     executeRequestHandler.handle(message);
     waitForIdleMessage(kernel);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
-    Assertions.assertThat(publishMessage.getContent().get("execution_count")).isNotNull();
+    assertThat(publishMessage.getContent().get("execution_count")).isNotNull();
   }
 
   @Test
@@ -195,9 +200,9 @@ public class ExecuteRequestHandlerTest {
     executeRequestHandler.handle(message);
     waitForIdleMessage(kernel);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
-    Assertions.assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
+    assertThat(publishMessage.getParentHeader().asJson()).isEqualTo(expectedHeader);
   }
 
   @Test
@@ -208,9 +213,9 @@ public class ExecuteRequestHandlerTest {
     executeRequestHandler.handle(message);
     waitForIdleMessage(kernel);
     //then
-    Assertions.assertThat(kernel.getPublishedMessages()).isNotEmpty();
+    assertThat(kernel.getPublishedMessages()).isNotEmpty();
     Message publishMessage = kernel.getPublishedMessages().get(1);
-    Assertions.assertThat(new String(publishMessage.getIdentities().get(0)))
+    assertThat(new String(publishMessage.getIdentities().get(0)))
             .isEqualTo(expectedIdentities);
   }
 
@@ -221,11 +226,11 @@ public class ExecuteRequestHandlerTest {
     waitForIdleMessage(kernel);
     //then
     final List<Message> publishedMessages = kernel.getPublishedMessages();
-    Assertions.assertThat(publishedMessages).isNotEmpty();
+    assertThat(publishedMessages).isNotEmpty();
     Message firstPublishedMessage = publishedMessages.get(0);
-    Assertions.assertThat(firstPublishedMessage.getContent().get("execution_state")).isEqualTo("busy");
+    assertThat(firstPublishedMessage.getContent().get("execution_state")).isEqualTo("busy");
     Message lastPublishedMessage = publishedMessages.get(publishedMessages.size() - 1);
-    Assertions.assertThat(lastPublishedMessage.getContent().get("execution_state")).isEqualTo("idle");
+    assertThat(lastPublishedMessage.getContent().get("execution_state")).isEqualTo("idle");
   }
 
   @Test
@@ -235,9 +240,9 @@ public class ExecuteRequestHandlerTest {
     waitForIdleMessage(kernel);
     //then
     final List<Message> sentMessages = kernel.getSentMessages();
-    Assertions.assertThat(sentMessages).isNotEmpty();
+    assertThat(sentMessages).isNotEmpty();
     Message firstSentMessage = sentMessages.get(0);
-    Assertions.assertThat(firstSentMessage.getHeader().getTypeEnum()).isEqualTo(EXECUTE_REPLY);
+    assertThat(firstSentMessage.getHeader().getTypeEnum()).isEqualTo(EXECUTE_REPLY);
   }
 
   private static Message copyMessage(Message origin) {
@@ -254,5 +259,14 @@ public class ExecuteRequestHandlerTest {
     copy.setMetadata(parse(metadata, LinkedHashMap.class));
     copy.setContent(parse(content, LinkedHashMap.class));
     return copy;
+  }
+
+  @Test
+  public void shouldSendErrorMessageWhenMagicCommandThrowsException() throws InterruptedException {
+    magicMessage = JupyterHandlerTest.initExecuteRequestMessage();
+    magicMessage.getContent().put("code", MagicCommandWhichThrowsException.MAGIC_COMMAND_WHICH_THROWS_EXCEPTION);
+    executeRequestHandler.handle(magicMessage);
+    Optional<Message> message = waitForErrorMessage(kernel);
+    assertThat(message).isPresent();
   }
 }

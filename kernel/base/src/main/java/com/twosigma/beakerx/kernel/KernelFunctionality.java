@@ -31,7 +31,7 @@ import java.util.Set;
 
 public interface KernelFunctionality {
 
-  void publish(Message message);
+  void publish(List<Message> message);
 
   void addComm(String commId, Comm comm);
 

@@ -17,6 +17,7 @@ package com.twosigma.beakerx.kernel.handler;
 
 
 import com.twosigma.beakerx.handler.KernelHandler;
+import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.kernel.Code;
 import com.twosigma.beakerx.kernel.KernelFunctionality;
 import com.twosigma.beakerx.kernel.magic.command.CodeFactory;
@@ -29,7 +30,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.twosigma.beakerx.kernel.PlainCode.createSimpleEvaluationObject;
 import static com.twosigma.beakerx.kernel.msg.JupyterMessages.EXECUTE_INPUT;
+import static java.util.Collections.singletonList;
 
 /**
  * Does the actual work of executing user code.
@@ -48,7 +51,13 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
 
   @Override
   public void handle(Message message) {
-    executorService.submit(() -> handleMsg(message));
+    executorService.submit(() -> {
+      try {
+        handleMsg(message);
+      } catch (Exception e) {
+        handleException(message, e);
+      }
+    });
   }
 
   private void handleMsg(Message message) {
@@ -82,7 +91,12 @@ public class ExecuteRequestHandler extends KernelHandler<Message> {
     map1.put("execution_count", executionCount);
     map1.put("code", code);
     reply.setContent(map1);
-    kernel.publish(reply);
+    kernel.publish(singletonList(reply));
+  }
+
+  private void handleException(Message message, Exception e) {
+    SimpleEvaluationObject seo = createSimpleEvaluationObject(takeCodeFrom(message), kernel, message, executionCount);
+    seo.error(e);
   }
 
   @Override

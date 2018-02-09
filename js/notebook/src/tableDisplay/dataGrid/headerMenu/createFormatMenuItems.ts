@@ -16,33 +16,29 @@
 
 import MenuItem from "../../../shared/interfaces/menuItemInterface";
 import { TIME_UNIT_FORMATS, scopeData } from '../../consts';
-import { getAllowedTypesByType } from "../dataTypes";
+import { ALL_TYPES, getAllowedTypesByType } from "../dataTypes";
 import DataGridColumn from "../column/DataGridColumn";
 
 export function createFormatMenuItems(column: DataGridColumn) {
-  const types = getAllowedTypesByType(column.dataType);
+  const types = getAllowedTypesByType(column.state.dataType);
   let items: MenuItem[] = [];
 
   types.forEach((obj) => {
     if (obj.type === 8) { //datetime
-      items = items.concat(createTimeSubitems(column));
+      items = items.concat(createTimeSubitems());
 
       return;
     }
 
     let item: MenuItem = {
       title: obj.name,
-      isChecked: function() {
-        //@todo
-      }
+      isChecked: (column) => column.state.displayType === obj.type
     };
 
     if (obj.type === 4) { //double with precision
       item.items = createPrecisionSubitems(column);
     } else {
-      item.action = function(colIdx) {
-        //@todo
-      }
+      item.action = (column) => column.setDisplayType(obj.type)
     }
     items.push(item);
   });
@@ -59,12 +55,8 @@ export function createPrecisionSubitems(column: DataGridColumn): MenuItem[] {
   formetters.forEach((formatter, precision) => {
     let item = {
       title: `${precision}`,
-      isChecked: () => {
-        //@todo
-      },
-      action: () => {
-        //@todo
-      }
+      isChecked: (column) => `4.${precision}` === column.state.displayType,
+      action: (column) => column.setDisplayType(`4.${precision}`)
     };
 
     items.push(item);
@@ -73,23 +65,22 @@ export function createPrecisionSubitems(column: DataGridColumn): MenuItem[] {
   return items;
 }
 
-export function createTimeSubitems(column: DataGridColumn): MenuItem[] {
+export function createTimeSubitems(): MenuItem[] {
   const items: MenuItem[] = [];
 
   Object.keys(TIME_UNIT_FORMATS).forEach((key) => {
-    if (TIME_UNIT_FORMATS.hasOwnProperty(key)) {
-      let item = {
-        title: TIME_UNIT_FORMATS[key].title,
-        isChecked: function() {
-          //@todo
-        },
-        action: function() {
-          //@todo
-        }
-      };
+    let item = {
+      title: TIME_UNIT_FORMATS[key].title,
+      isChecked: (column) => {
+        return (
+          column.state.displayType === ALL_TYPES.datetime ||
+          column.state.displayType === ALL_TYPES.time
+        ) && TIME_UNIT_FORMATS[key] === column.state.formatForTimes
+      },
+      action: (column) => column.setTimeDisplayType(TIME_UNIT_FORMATS[key])
+    };
 
-      items.push(item);
-    }
+    items.push(item);
   });
 
   return items;

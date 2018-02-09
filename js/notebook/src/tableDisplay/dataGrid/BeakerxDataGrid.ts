@@ -50,13 +50,12 @@ export class BeakerxDataGrid extends DataGrid {
     this.rowSections = this['_rowSections'];
     this.columnSections = this['_columnSections'];
 
-
     this.addModel(modelState);
     this.addColumns();
     this.addHighlighterManager(modelState);
     this.addCellRenderers();
     this.setWidgetHeight();
-    this['_syncViewport']();
+    this.model.reset();
   }
 
   handleEvent(event: Event): void {

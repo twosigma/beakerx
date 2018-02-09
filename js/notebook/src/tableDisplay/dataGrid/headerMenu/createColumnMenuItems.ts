@@ -18,6 +18,7 @@ import { createFormatMenuItems } from './createFormatMenuItems';
 import MenuItem from "../../../shared/interfaces/menuItemInterface";
 import DataGridColumn from "../column/DataGridColumn";
 import { CENTER, LEFT, RIGHT } from "../column/columnAlignment";
+import {HIGHLIGHTER_TYPE} from "../interface/IHighlighterState";
 
 export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
   return [
@@ -78,8 +79,8 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
       title: 'Heatmap',
       shortcut: 'H',
       separator: true,
-      isChecked: (column) => {},
-      action: (column) => {}
+      isChecked: (column) => column.getHighlighter(HIGHLIGHTER_TYPE.heatmap).length,
+      action: (column) => column.toggleHighlighter(HIGHLIGHTER_TYPE.heatmap)
     },
     {
       title: 'Data Bars',
@@ -90,8 +91,8 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
     {
       title: 'Color by unique',
       shortcut: 'U',
-      isChecked: (column) => {},
-      action: (column) => {}
+      isChecked: (column) => column.getHighlighter(HIGHLIGHTER_TYPE.uniqueEntries).length,
+      action: (column) => column.toggleHighlighter(HIGHLIGHTER_TYPE.uniqueEntries)
     },
     {
       title: 'Fix Left',

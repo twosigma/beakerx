@@ -18,12 +18,12 @@ import * as moment from 'moment-timezone/builds/moment-timezone-with-data';
 import * as _ from 'underscore';
 import {
   isDoubleWithPrecision,
-  getDoublePrecisionByType,
-  getDisplayType, ALL_TYPES
+  getDoublePrecisionByType
 } from './dataTypes';
 import { DataGridHelpers } from './dataGridHelpers';
 import { TIME_UNIT_FORMATS } from '../consts';
 import {CellRenderer} from "@phosphor/datagrid";
+import DataGridColumn, { IColumnState } from "./column/DataGridColumn";
 
 const bkUtils = require('../../shared/bkUtils');
 
@@ -68,13 +68,7 @@ export class DataFormatter {
     this.html = this.html.bind(this);
   }
   
-  getFormatFnByColumn({ dataType, name }, rawType?: boolean): CellRenderer.ConfigFunc<string> {
-    let displayType = rawType ? dataType : getDisplayType(
-      dataType,
-      this.stringFormatForType,
-      this.stringFormatForColumn[name]
-    );
-
+  getFormatFnByDisplayType(displayType, columnState?: IColumnState): CellRenderer.ConfigFunc<string> {
     if (isDoubleWithPrecision(displayType)) {
       return this.doubleWithPrecision(getDoublePrecisionByType(displayType));
     }
@@ -91,7 +85,7 @@ export class DataFormatter {
       case 7:
         return this.exponential_15;
       case 8:
-        return this.datetime;
+        return this.datetimeWithFormat(this.getTimeFormatForColumn(columnState));
       case 9:
         return this.boolean;
       case 10:
@@ -215,14 +209,14 @@ export class DataFormatter {
     return parseFloat(config.value).toExponential(15);
   }
 
-  private datetime(config: CellRenderer.ICellConfig): string {
+  private datetime(config: CellRenderer.ICellConfig, formatForTimes: any): string {
     if (this.timeStrings) {
       return this.timeStrings[config.row];
     }
 
-    let format = _.isEmpty(this.formatForTimes) ?
-      TIME_UNIT_FORMATS.DATETIME.format :
-      TIME_UNIT_FORMATS[this.formatForTimes].format;
+    let format = _.isEmpty(formatForTimes)
+      ? TIME_UNIT_FORMATS.DATETIME.format
+      : formatForTimes.format;
 
     if (_.isObject(config.value) && config.value.type === 'Date') {
       return bkUtils.formatTimestamp(config.value.timestamp, this.timeZone, format);
@@ -231,6 +225,16 @@ export class DataFormatter {
     let milli = config.value * 1000;
 
     return bkUtils.formatTimestamp(milli, this.timeZone, format);
+  }
+
+  private getTimeFormatForColumn(columnState?: IColumnState) {
+    return columnState && !_.isEmpty(columnState.formatForTimes)
+      ? columnState.formatForTimes
+      : this.formatForTimes;
+  }
+
+  private datetimeWithFormat(formatForTimes?: any) {
+    return (config) => this.datetime(config, formatForTimes);
   }
 
   private boolean(config: CellRenderer.ICellConfig): string {

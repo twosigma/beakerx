@@ -26,7 +26,7 @@ export default class Highlighter {
 
   constructor(column: DataGridColumn, state: IHihglighterState) {
     this.column = column;
-    this.state = state;
+    this.state = { ...state };
     this.state.style = state.style || HIGHLIGHTER_STYLE.SINGLE_COLUMN;
   }
 

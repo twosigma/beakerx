@@ -14,11 +14,14 @@
  *  limitations under the License.
  */
 
-import IHihglighterState, {HIGHLIGHTER_STYLE} from "../interface/IHighlighterState";
+import IHihglighterState, {
+  HIGHLIGHTER_STYLE,
+  HIGHLIGHTER_TYPE
+} from "../interface/IHighlighterState";
 import Highlighter from "./Highlighter";
 import HighlighterFactory from "./HighlighterFactory";
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
-import { each, iter } from "@phosphor/algorithm";
+import { each, iter, filter, toArray } from "@phosphor/algorithm";
 import { CellRenderer } from "@phosphor/datagrid";
 import { DEFAULT_CELL_BACKGROUND } from "../cell/CellRendererFactory";
 
@@ -29,11 +32,12 @@ export default class HighlighterManager {
 
   constructor(dataGrid: BeakerxDataGrid, highlightersState: IHihglighterState[]) {
     this.dataGrid = dataGrid;
-    this.highlightersState = highlightersState;
+    this.highlightersState = [...highlightersState];
     this.highlighters = [];
 
     this.createHighlighter = this.createHighlighter.bind(this);
     this.registerHighlighter = this.registerHighlighter.bind(this);
+    this.unregisterHighlighter = this.unregisterHighlighter.bind(this);
 
     this.createHighlighters(this.highlightersState);
   }
@@ -58,6 +62,51 @@ export default class HighlighterManager {
     }
 
     this.highlighters.push(highlighter);
+  }
+
+  unregisterHighlighter(highlighter: Highlighter) {
+    const index = this.highlighters.indexOf(highlighter);
+
+    index !== -1 && this.highlighters.splice(index, 1);
+  }
+
+  getColumnHighlighters(column, highlighterType: HIGHLIGHTER_TYPE): Highlighter[] {
+    return toArray(filter(
+      iter(this.highlighters),
+      (highlighter: Highlighter) => {
+        return highlighter.column === column && highlighter.state.type === highlighterType
+      }
+    ));
+  }
+
+  addColumnHighlighter(column, highlighterType: HIGHLIGHTER_TYPE) {
+    this.registerHighlighter(HighlighterFactory.getHighlighter({
+      ...HighlighterFactory.defaultHighlighterState,
+      type: highlighterType,
+      style: HIGHLIGHTER_STYLE.SINGLE_COLUMN,
+      colName: column.name
+    }, column));
+  }
+
+  removeColumnHighlighter(column, highlighterType: HIGHLIGHTER_TYPE) {
+    const highlighters = this.getColumnHighlighters(column, highlighterType);
+
+    each(highlighters, this.unregisterHighlighter);
+  }
+
+  toggleColumnHighlighter(column, highlighterType: HIGHLIGHTER_TYPE) {
+    if (this.getColumnHighlighters(column, highlighterType).length) {
+      this.removeColumnHighlighter(column, highlighterType);
+    } else {
+      this.addColumnHighlighter(column, highlighterType);
+    }
+
+    this.dataGrid.repaint();
+  }
+
+  removeHighlighters() {
+    this.highlighters.splice(0, this.highlighters.length);
+    this.dataGrid.repaint();
   }
 
   getCellBackground(config: CellRenderer.ICellConfig): string {

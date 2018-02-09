@@ -117,7 +117,7 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
       title: 'Reset All Interactions',
       separator: true,
       action: () => {
-        //@todo
+        dataGrid.highlighterManager.removeHighlighters();
       }
     }
   ]

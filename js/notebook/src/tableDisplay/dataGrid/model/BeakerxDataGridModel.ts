@@ -58,6 +58,14 @@ export class BeakerxDataGridModel extends DataModel {
     return this.columnsState[COLUMN_TYPES.index];
   }
 
+  reset() {
+    this.emitChanged({ type: 'model-reset' });
+  }
+
+  emitChanged(args: DataModel.ChangedArgs) {
+    super.emitChanged(args);
+  }
+
   addColumnsState(state) {
     let bodyColumnsState: IColumnState = { names: [], types: [] };
     let indexColumnsState: IColumnState = { names: [], types: [] };

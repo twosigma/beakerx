@@ -19,27 +19,29 @@ import IndexMenu from "../headerMenu/IndexMenu";
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
-import { getAlignmentByChar, getAlignmentByType} from "./columnAlignment";
-import {CellRenderer, DataModel, TextRenderer} from "@phosphor/datagrid";
-import {ALL_TYPES, getTypeByName} from "../dataTypes";
+import { getAlignmentByChar, getAlignmentByType } from "./columnAlignment";
+import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
+import { ALL_TYPES, getDisplayType, getTypeByName } from "../dataTypes";
 import { minmax, MapIterator } from '@phosphor/algorithm';
-import {BeakerxDataGridModel} from "../model/BeakerxDataGridModel";
+import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 
 export enum COLUMN_TYPES {
   'index',
   'body'
 }
 
-interface IColumnState {
+export interface IColumnState {
+  dataType: ALL_TYPES,
+  displayType: ALL_TYPES|string,
   triggerShown: boolean,
-  horizontalAlignment: TextRenderer.HorizontalAlignment
+  horizontalAlignment: TextRenderer.HorizontalAlignment,
+  formatForTimes: any
 }
 
 export default class DataGridColumn {
   index: number;
   name: string;
   type: COLUMN_TYPES;
-  dataType: ALL_TYPES;
   menu: ColumnMenu|IndexMenu;
   dataGrid: BeakerxDataGrid;
   formatFn: CellRenderer.ConfigFunc<string>;
@@ -47,21 +49,17 @@ export default class DataGridColumn {
   minValue: any;
   maxValue: any;
 
-  private state: IColumnState;
+  state: IColumnState;
 
   constructor(options: IColumnOptions, dataGrid: BeakerxDataGrid) {
     this.index = options.index;
     this.name = options.name;
     this.type = options.type;
     this.dataGrid = dataGrid;
-    this.dataType = this.getDataType();
     this.valuesIterator = dataGrid.model.getColumnValuesIterator(this);
-    this.formatFn = dataGrid.model.dataFormatter.getFormatFnByColumn(this);
-    this.state = {
-      triggerShown: false,
-      horizontalAlignment: this.getInitialAlignment()
-    };
 
+    this.setInitialState();
+    this.assignFormatFn();
     this.handleHeaderCellHovered = this.handleHeaderCellHovered.bind(this);
     this.createMenu(options.menuOptions);
     this.connectToHeaderCellHovered();
@@ -76,13 +74,46 @@ export default class DataGridColumn {
     return COLUMN_TYPES.body;
   }
 
+  setInitialState() {
+    const dataType = this.getDataType();
+    const displayType = getDisplayType(
+      dataType,
+      this.dataGrid.model.dataFormatter.stringFormatForType,
+      this.dataGrid.model.dataFormatter.stringFormatForColumn[this.name]
+    );
+
+    this.state = {
+      dataType,
+      displayType,
+      triggerShown: false,
+      horizontalAlignment: this.getInitialAlignment(dataType),
+      formatForTimes: {}
+    };
+  }
+
+  assignFormatFn() {
+    this.formatFn = this.dataGrid.model.dataFormatter
+      .getFormatFnByDisplayType(this.state.displayType, this.state);
+  }
+
   setState(state) {
     this.state = {
       ...this.state,
       ...state,
     };
 
+    this.dataGrid['repaint']();
+  }
+  
+  setDisplayType(displayType: ALL_TYPES|string) {
+    this.setState({ displayType });
+    this.assignFormatFn();
     this.dataGrid.repaint();
+  }
+
+  setTimeDisplayType(timeUnit) {
+    this.setState({ formatForTimes: timeUnit });
+    this.setDisplayType(ALL_TYPES.datetime);
   }
 
   createMenu(menuOptions): void {
@@ -119,9 +150,9 @@ export default class DataGridColumn {
     this.state.triggerShown = true;
   }
 
-  getInitialAlignment() {
+  getInitialAlignment(dataType) {
     let config = this.dataGrid.model.getAlignmentConfig();
-    let alignmentForType = config.alignmentForType[ALL_TYPES[this.dataType]];
+    let alignmentForType = config.alignmentForType[ALL_TYPES[dataType]];
     let alignmentForColumn = config.alignmentForColumn[this.name];
 
     if (alignmentForType) {
@@ -132,7 +163,7 @@ export default class DataGridColumn {
       return getAlignmentByChar(alignmentForColumn);
     }
 
-    return getAlignmentByType(this.dataType);
+    return getAlignmentByType(dataType);
   }
 
   getAlignment() {
@@ -141,6 +172,14 @@ export default class DataGridColumn {
 
   setAlignment(horizontalAlignment: TextRenderer.HorizontalAlignment) {
     this.setState({ horizontalAlignment });
+  }
+
+  getHighlighter(highlighterType: HIGHLIGHTER_TYPE) {
+    return this.dataGrid.highlighterManager.getColumnHighlighters(this, highlighterType);
+  }
+
+  toggleHighlighter(highlighterType: HIGHLIGHTER_TYPE) {
+    this.dataGrid.highlighterManager.toggleColumnHighlighter(this, highlighterType);
   }
 
   private getDataTypeName(): string {

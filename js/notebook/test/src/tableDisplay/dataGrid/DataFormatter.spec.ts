@@ -33,97 +33,70 @@ describe('DataFormatter', () => {
   const columnDataMock = { dataType: ALL_TYPES.string, name: 'test' };
   const cellConfig = cellConfigMock;
 
-  it('should implement getFormatFnByColumn method', () => {
-    expect(dataFormatter.getFormatFnByColumn).to.be.a('function');
+  it('should implement getFormatFnByDisplayType method', () => {
+    expect(dataFormatter.getFormatFnByDisplayType).to.be.a('function');
   });
 
-  describe('getFormatFnByColumn', () => {
+  describe('getFormatFnByDisplayType', () => {
     it('should throw Error while called withoud param', () => {
       assert.throws(
-        () => { dataFormatter.getFormatFnByColumn(undefined); },
+        () => { dataFormatter.getFormatFnByDisplayType(undefined); },
         Error,
-        "Cannot read property 'dataType' of undefined"
+        "Cannot read property 'toString' of undefined"
       );
     });
 
     it('should return function', () => {
-      expect(dataFormatter.getFormatFnByColumn(columnDataMock, true)).to.be.a('function');
+      expect(dataFormatter.getFormatFnByDisplayType(ALL_TYPES.integer)).to.be.a('function');
     });
 
     it('should return "string" function', () => {
-      expect(dataFormatter.getFormatFnByColumn(columnDataMock, true)).to.equal(dataFormatter['string']);
+      expect(dataFormatter.getFormatFnByDisplayType('')).to.equal(dataFormatter['string']);
     });
 
     it('should return "string" function', () => {
-      expect(dataFormatter.getFormatFnByColumn(columnDataMock, true)).to.equal(dataFormatter['string']);
+      expect(dataFormatter.getFormatFnByDisplayType(ALL_TYPES.string)).to.equal(dataFormatter['string']);
     });
 
     it('should return "integer" function', () => {
-      expect(dataFormatter.getFormatFnByColumn({
-        ...columnDataMock,
-        dataType: ALL_TYPES.integer
-      }, true)).to.equal(dataFormatter['integer']);
+      expect(dataFormatter.getFormatFnByDisplayType(ALL_TYPES.integer)).to.equal(dataFormatter['integer']);
     });
 
     it('should return "formattedInteger" function', () => {
-      expect(dataFormatter.getFormatFnByColumn({
-        ...columnDataMock,
-        dataType: ALL_TYPES['formatted integer']
-      }, true)).to.equal(dataFormatter['formattedInteger']);
+      expect(dataFormatter.getFormatFnByDisplayType(ALL_TYPES['formatted integer'])).to.equal(dataFormatter['formattedInteger']);
     });
 
     it('should return "double" function', () => {
-      expect(dataFormatter.getFormatFnByColumn({
-        ...columnDataMock,
-        dataType: ALL_TYPES.double
-      }, true)).to.equal(dataFormatter['double']);
+      expect(dataFormatter.getFormatFnByDisplayType(ALL_TYPES.double)).to.equal(dataFormatter['double']);
     });
 
     it('should return "exponential_5" function', () => {
-      expect(dataFormatter.getFormatFnByColumn({
-        ...columnDataMock,
-        dataType: ALL_TYPES['exponential 5']
-      }, true)).to.equal(dataFormatter['exponential_5']);
+      expect(dataFormatter.getFormatFnByDisplayType(ALL_TYPES['exponential 5'])).to.equal(dataFormatter['exponential_5']);
     });
 
     it('should return "exponential_15" function', () => {
-      expect(dataFormatter.getFormatFnByColumn({
-        ...columnDataMock,
-        dataType: ALL_TYPES['exponential 15']
-      }, true)).to.equal(dataFormatter['exponential_15']);
+      expect(dataFormatter.getFormatFnByDisplayType(ALL_TYPES['exponential 15'])).to.equal(dataFormatter['exponential_15']);
     });
 
     it('should return "datetime" function', () => {
-      expect(dataFormatter.getFormatFnByColumn({
-        ...columnDataMock,
-        dataType: ALL_TYPES.datetime
-      }, true)).to.equal(dataFormatter['datetime']);
+      expect(dataFormatter.getFormatFnByDisplayType(ALL_TYPES.datetime).toString()).to.equal(dataFormatter['datetimeWithFormat']({}).toString());
     });
 
     it('should return "boolean" function', () => {
-      expect(dataFormatter.getFormatFnByColumn({
-        ...columnDataMock,
-        dataType: ALL_TYPES.boolean
-      }, true)).to.equal(dataFormatter['boolean']);
+      expect(dataFormatter.getFormatFnByDisplayType(ALL_TYPES.boolean)).to.equal(dataFormatter['boolean']);
     });
 
     it('should return "html" function', () => {
-      expect(dataFormatter.getFormatFnByColumn({
-        ...columnDataMock,
-        dataType: ALL_TYPES.html
-      }, true)).to.equal(dataFormatter['html']);
+      expect(dataFormatter.getFormatFnByDisplayType(ALL_TYPES.html)).to.equal(dataFormatter['html']);
     });
 
     it('should return "doubleWithPrecision" function', () => {
-      expect(dataFormatter.getFormatFnByColumn({
-        ...columnDataMock,
-        dataType: ALL_TYPES.double
-      }).toString()).to.equal((dataFormatter['doubleWithPrecision']('3')).toString());
+      expect(dataFormatter.getFormatFnByDisplayType('4.3').toString()).to.equal((dataFormatter['doubleWithPrecision']('3')).toString());
     });
   });
 
   describe('dataFormatter.string', () => {
-    const stringFormatFn = dataFormatter.getFormatFnByColumn(columnDataMock, true);
+    const stringFormatFn = dataFormatter.getFormatFnByDisplayType(ALL_TYPES.string);
 
     it('should return empty string', () => {
       expect(stringFormatFn({ ...cellConfig, value: '' })).to.equal('');
@@ -150,10 +123,7 @@ describe('DataFormatter', () => {
   });
 
   describe('dataFormatter.integer', () => {
-    const integerFormatFn = dataFormatter.getFormatFnByColumn({
-      ...columnDataMock,
-      dataType: ALL_TYPES.integer
-    }, true);
+    const integerFormatFn = dataFormatter.getFormatFnByDisplayType(ALL_TYPES.integer);
 
     it('should return integer', () => {
       expect(integerFormatFn({ ...cellConfig, value: '1' })).to.equal(1);
@@ -179,10 +149,7 @@ describe('DataFormatter', () => {
   });
 
   describe('dataFormatter.formattedInteger', () => {
-    const formattedIntegerFormatFn = dataFormatter.getFormatFnByColumn({
-      ...columnDataMock,
-      dataType: ALL_TYPES['formatted integer']
-    }, true);
+    const formattedIntegerFormatFn = dataFormatter.getFormatFnByDisplayType(ALL_TYPES['formatted integer']);
 
     it('should return formatted integer', () => {
       expect(formattedIntegerFormatFn({ ...cellConfig, value: '1' })).to.equal('1');
@@ -212,10 +179,7 @@ describe('DataFormatter', () => {
   });
 
   describe('dataFormatter.double', () => {
-    const doubleFormatFn = dataFormatter.getFormatFnByColumn({
-      ...columnDataMock,
-      dataType: ALL_TYPES.double
-    }, true);
+    const doubleFormatFn = dataFormatter.getFormatFnByDisplayType(ALL_TYPES.double);
 
     it('should return formatted double', () => {
       expect(doubleFormatFn({ ...cellConfig, value: '1' })).to.equal(1);
@@ -238,10 +202,7 @@ describe('DataFormatter', () => {
   });
 
   describe('dataFormatter.doubleWithPrecision', () => {
-    const doubleWithPrecisionFormatFn = dataFormatter.getFormatFnByColumn({
-      ...columnDataMock,
-      dataType: ALL_TYPES.double
-    });
+    const doubleWithPrecisionFormatFn = dataFormatter.getFormatFnByDisplayType('4.3');
 
     it('should return formatted double with precission', () => {
       expect(doubleWithPrecisionFormatFn({ ...cellConfig, value: '1' })).to.equal('1.000');
@@ -266,10 +227,7 @@ describe('DataFormatter', () => {
   });
 
   describe('dataFormatter.exponential_5', () => {
-    const exponential_5FormatFn = dataFormatter.getFormatFnByColumn({
-      ...columnDataMock,
-      dataType: ALL_TYPES['exponential 5']
-    }, true);
+    const exponential_5FormatFn = dataFormatter.getFormatFnByDisplayType(ALL_TYPES['exponential 5']);
 
     it('should return formatted exponential_5', () => {
       expect(exponential_5FormatFn({ ...cellConfig, value: '1' })).to.equal('1.00000e+0');
@@ -292,10 +250,7 @@ describe('DataFormatter', () => {
   });
 
   describe('dataFormatter.exponential_15', () => {
-    const exponential_15FormatFn = dataFormatter.getFormatFnByColumn({
-      ...columnDataMock,
-      dataType: ALL_TYPES['exponential 15']
-    }, true);
+    const exponential_15FormatFn = dataFormatter.getFormatFnByDisplayType(ALL_TYPES['exponential 15']);
 
     it('should return formatted exponential_15', () => {
       expect(exponential_15FormatFn({ ...cellConfig, value: '1' })).to.equal('1.000000000000000e+0');
@@ -319,10 +274,7 @@ describe('DataFormatter', () => {
   });
 
   describe('dataFormatter.datetime', () => {
-    const datetimeFormatFn = dataFormatter.getFormatFnByColumn({
-      ...columnDataMock,
-      dataType: ALL_TYPES.datetime
-    }, true);
+    const datetimeFormatFn = dataFormatter.getFormatFnByDisplayType(ALL_TYPES.datetime);
     const bkUtils = require('@beakerx/shared/bkUtils');
 
     before (() => {
@@ -351,10 +303,7 @@ describe('DataFormatter', () => {
   });
 
   describe('dataFormatter.boolean', () => {
-    const booleanFormatFn = dataFormatter.getFormatFnByColumn({
-      ...columnDataMock,
-      dataType: ALL_TYPES.boolean
-    }, true);
+    const booleanFormatFn = dataFormatter.getFormatFnByDisplayType(ALL_TYPES.boolean);
 
     it('should return "true"', () => {
       expect(booleanFormatFn({ ...cellConfig, value: 'something' })).to.equal('true');
@@ -373,10 +322,7 @@ describe('DataFormatter', () => {
   });
 
   describe('dataFormatter.html', () => {
-    const booleanFormatFn = dataFormatter.getFormatFnByColumn({
-      ...columnDataMock,
-      dataType: ALL_TYPES.html
-    }, true);
+    const booleanFormatFn = dataFormatter.getFormatFnByDisplayType(ALL_TYPES.html);
     const testObject = { someProp: '' };
 
     it('should return given value', () => {

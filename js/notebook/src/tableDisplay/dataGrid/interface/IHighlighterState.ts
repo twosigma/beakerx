@@ -29,12 +29,12 @@ export enum HIGHLIGHTER_TYPE {
 export default interface IHihglighterState {
   colName: string,
   maxColor: string|null,
-  maxVal: number|null
+  maxVal: number|null,
   minColor: string|null,
-  minVal: number|null
+  minVal: number|null,
   midColor: string|null,
-  midVal: number|null
-  style: HIGHLIGHTER_STYLE
+  midVal: number|null,
+  style: HIGHLIGHTER_STYLE,
   type: HIGHLIGHTER_TYPE,
   colors: string[]|null
 }

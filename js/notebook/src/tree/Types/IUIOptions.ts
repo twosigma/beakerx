@@ -19,4 +19,5 @@ export default interface IUIOptions {
   improve_fonts: boolean;
   wide_cells: boolean;
   show_publication: boolean;
+  auto_save: boolean;
 }

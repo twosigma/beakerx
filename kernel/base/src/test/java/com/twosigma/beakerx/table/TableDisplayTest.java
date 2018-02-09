@@ -111,6 +111,18 @@ public class TableDisplayTest {
   }
 
   @Test
+  public void shouldSendCommMsgWhenUpdateCell() throws Exception {
+    //given
+    //when
+    tableDisplay.updateCell(0, 0, 121);
+    //then
+    assertThat(tableDisplay.getValues().get(0).get(0)).isEqualTo(121);
+    LinkedHashMap model = getModel();
+    List actual = (List) model.get(VALUES);
+    assertThat(((List)actual.get(0)).get(0)).isEqualTo(121);
+  }
+
+  @Test
   public void shouldSendCommMsgWhenAlignmentProviderForColumnChange() throws Exception {
     //given
     TableDisplayAlignmentProvider centerAlignment = TableDisplayAlignmentProvider.CENTER_ALIGNMENT;

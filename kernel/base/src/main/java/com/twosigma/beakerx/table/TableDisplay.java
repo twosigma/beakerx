@@ -39,7 +39,6 @@ import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTooltips;
 import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCompiledCode;
 import static java.util.Arrays.asList;
 
-import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
@@ -50,7 +49,6 @@ import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beakerx.table.highlight.ValueHighlighter;
 import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
 import com.twosigma.beakerx.widgets.BeakerxWidget;
-import com.twosigma.beakerx.widgets.CommActions;
 import com.twosigma.beakerx.widgets.RunWidgetClosure;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
@@ -147,7 +145,7 @@ public class TableDisplay extends BeakerxWidget {
     subtype = LIST_OF_MAPS_SUBTYPE;
 
     // create columns
-    if(v.size() > 0) {
+    if (v.size() > 0) {
       // Every column gets inspected at least once, so put every column in
       // a list with null for the initial type
       ArrayList<String> columnOrder = new ArrayList<String>();
@@ -160,14 +158,14 @@ public class TableDisplay extends BeakerxWidget {
         columnsToCheck.add(columnName);
         typeTracker.put(columnName, null);
       }
-  
+
       // Visit each row and track the row's type. If some value is found to
       // contain a string, the column is marked as string based and is no
       // longer typechecked
       List<String> columnsToRemove = new ArrayList<String>();
       for (Map<String, Object> row : v) {
         // Remove any columns requested from prior iteration
-        for (String columnToRemove: columnsToRemove) {
+        for (String columnToRemove : columnsToRemove) {
           columnsToCheck.remove(columnToRemove);
         }
         columnsToRemove = new ArrayList<String>();
@@ -191,7 +189,7 @@ public class TableDisplay extends BeakerxWidget {
           }
         }
       }
-  
+
       // Put results of type checking into `columns` and `classes`
       for (String columnName : columnOrder) {
         String columnType = typeTracker.get(columnName);
@@ -660,6 +658,13 @@ public class TableDisplay extends BeakerxWidget {
 
   public String getSubtype() {
     return subtype;
+  }
+
+  @SuppressWarnings("unchecked")
+  public void updateCell(int row, int col, Object value) {
+    List<Object> rowList = (List<Object>) values.get(row);
+    rowList.set(col, value);
+    sendModel();
   }
 
   public void setDoubleClickAction(String tagName) {

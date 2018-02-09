@@ -87,7 +87,7 @@ EasyFormView.prototype.handleEnterKeyPress = function(event) {
 
   var $button = this.$el.find('> .widget-button');
 
-  $(event.target).is('[type="text"]') && $button.first().trigger('click');
+  ($(event.target).is('[type="text"]') || $(event.target).is('[type="password"]')) && $button.first().trigger('click');
 };
 
 module.exports = {

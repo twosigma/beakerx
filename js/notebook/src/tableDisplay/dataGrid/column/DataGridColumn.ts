@@ -19,22 +19,23 @@ import IndexMenu from "../headerMenu/IndexMenu";
 import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { IColumnOptions} from "../interface/IColumn";
 import { ICellData } from "../interface/ICell";
-import { getAlignmentByChar, getAlignmentByType} from "./columnAlignment";
-import {CellRenderer, DataModel, TextRenderer} from "@phosphor/datagrid";
-import {ALL_TYPES, getDisplayType, getTypeByName} from "../dataTypes";
+import { getAlignmentByChar, getAlignmentByType } from "./columnAlignment";
+import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
+import { ALL_TYPES, getDisplayType, getTypeByName } from "../dataTypes";
 import { minmax, MapIterator } from '@phosphor/algorithm';
-import {HIGHLIGHTER_TYPE} from "../interface/IHighlighterState";
+import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
 
 export enum COLUMN_TYPES {
   'index',
   'body'
 }
 
-interface IColumnState {
+export interface IColumnState {
   dataType: ALL_TYPES,
   displayType: ALL_TYPES|string,
   triggerShown: boolean,
-  horizontalAlignment: TextRenderer.HorizontalAlignment
+  horizontalAlignment: TextRenderer.HorizontalAlignment,
+  formatForTimes: any
 }
 
 export default class DataGridColumn {
@@ -85,12 +86,14 @@ export default class DataGridColumn {
       dataType,
       displayType,
       triggerShown: false,
-      horizontalAlignment: this.getInitialAlignment(dataType)
+      horizontalAlignment: this.getInitialAlignment(dataType),
+      formatForTimes: {}
     };
   }
 
   assignFormatFn() {
-    this.formatFn = this.dataGrid.model.dataFormatter.getFormatFnByDisplayType(this.state.displayType);
+    this.formatFn = this.dataGrid.model.dataFormatter
+      .getFormatFnByDisplayType(this.state.displayType, this.state);
   }
 
   setState(state) {
@@ -106,6 +109,11 @@ export default class DataGridColumn {
     this.setState({ displayType });
     this.assignFormatFn();
     this.dataGrid.repaint();
+  }
+
+  setTimeDisplayType(timeUnit) {
+    this.setState({ formatForTimes: timeUnit });
+    this.setDisplayType(ALL_TYPES.datetime);
   }
 
   createMenu(menuOptions): void {

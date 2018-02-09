@@ -79,7 +79,7 @@ describe('DataFormatter', () => {
     });
 
     it('should return "datetime" function', () => {
-      expect(dataFormatter.getFormatFnByDisplayType(ALL_TYPES.datetime)).to.equal(dataFormatter['datetime']);
+      expect(dataFormatter.getFormatFnByDisplayType(ALL_TYPES.datetime).toString()).to.equal(dataFormatter['datetimeWithFormat']({}).toString());
     });
 
     it('should return "boolean" function', () => {

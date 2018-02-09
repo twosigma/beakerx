@@ -53,7 +53,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     <!--</div>-->
     <div class="form-check">
       <input class="form-check-input" id="show_publication" name="show_publication" type="checkbox">
-      <label class="form-check-label" for="show_publication">Show publication</label>
+      <label class="form-check-label" for="show_publication">Show publication button and menu item</label>
     </div>
     <div class="form-check">
       <input class="form-check-input" id="auto_save" name="auto_save" type="checkbox">

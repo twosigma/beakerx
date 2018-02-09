@@ -24,6 +24,7 @@ import com.twosigma.beakerx.easyform.formitem.widgets.CheckBoxGroupWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.CheckBoxWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.ComboBoxWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.DatePickerComponentWidget;
+import com.twosigma.beakerx.easyform.formitem.widgets.PasswordWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.SelectMultipleSingleWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.SelectMultipleWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.RadioButtonComponentWidget;
@@ -82,6 +83,18 @@ public class EasyForm extends ObservableMap<String, Object> implements Displayab
     textField.setLabel(label);
     textField.setSize(size);
     return addComponentOrThrow(label, textField);
+  }
+
+  public EasyFormComponent addPasswordField(final String label) throws Exception {
+    return addPasswordField(label, -1);
+  }
+
+  public EasyFormComponent addPasswordField(String label, int size) throws Exception {
+    PasswordWidget passwordWidget = new PasswordWidget();
+    passwordWidget.registerUpdateValueCallback(passwordWidget::fireChanged);
+    passwordWidget.setLabel(label);
+    passwordWidget.setSize(size);
+    return addComponentOrThrow(label, passwordWidget);
   }
 
   public EasyFormComponent addTextArea(final String label) throws Exception {

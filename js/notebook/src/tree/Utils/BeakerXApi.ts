@@ -32,7 +32,7 @@ export default class BeakerXApi {
       properties: []
     },
     ui_options: {
-      auto_close: false,
+      auto_close: true,
       improve_fonts: true,
       wide_cells: true,
       show_publication: true,

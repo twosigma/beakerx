@@ -196,7 +196,7 @@ def _install_beakerx(args):
     _install_css()
     _copy_icons()
     _install_kernelspec_manager(args.prefix)
-    _install_magics()
+    #_install_magics()
     _set_conf_privileges()
 
 

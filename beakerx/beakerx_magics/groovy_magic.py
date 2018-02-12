@@ -23,6 +23,9 @@ class GroovyMagics(Magics):
 
     def __init__(self, shell):
         super(GroovyMagics, self).__init__(shell)
+        self.km = None
+
+    def start(self):
         self.km = KernelManager()
         self.km.kernel_name = 'groovy'
         self.km.start_kernel()
@@ -39,6 +42,8 @@ class GroovyMagics(Magics):
         self.km.shutdown_kernel(now=True)
 
     def run_cell(self, line, code):
+        if not self.km:
+            self.start()
         self.kc.execute(code, allow_stdin=True)
         reply = self.kc.get_shell_msg()
 

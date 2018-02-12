@@ -21,12 +21,21 @@ describe('Groovy tests', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/GroovyTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/GroovyTest.ipynb');
   }, 2);
 
   afterAll(function () {
     beakerxPO.closeAndHaltNotebook();
   });
+
+  describe('open notebook', function () {
+    it('gg', function(){
+      expect(browser.$('ul.jp-DirListing-content').isEnabled()).toBeTruthy();
+      browser.click('span=notebooks');
+      browser.pause(2000);
+    });
+  });
+
 
   describe('Run first cell. ', function () {
     it('Output contains "2"', function () {

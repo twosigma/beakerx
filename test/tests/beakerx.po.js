@@ -119,6 +119,12 @@ var BeakerXPageObject = function () {
     return codeCell.$('div.dtcontainer');
   };
 
+  this.runCellToGetDtContainers = function(index){
+    this.kernelIdleIcon.waitForEnabled();
+    var codeCell = this.runCodeCellByIndex(index);
+    return codeCell.$$('div.dtcontainer');
+  };
+
   this.runCellToGetSvgElement = function(index){
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
@@ -177,6 +183,15 @@ var BeakerXPageObject = function () {
     expect(resultTest).toMatch(expectedText);
   };
 
+  this.getTabLabel = function(tabIndex) {
+    var tab = $$("div.p-TabBar-tabLabel")[tabIndex];
+    return tab;
+  };
+
+  this.switchTab = function(tabIndex) {
+    var tab = this.getTabLabel(tabIndex);
+    return tab.click();
+  }
   this.waitAndCheckCellOutputStderrText = function(index, expectedText){
     this.waitAndCheckCellOutputText(index, expectedText, this.outputStderrCss);
   };

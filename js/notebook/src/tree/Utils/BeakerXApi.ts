@@ -25,6 +25,22 @@ function getCookie(name) {
 
 export default class BeakerXApi {
 
+  private readonly DEFAULT_SETTINGS: IApiSettingsResponse = {
+    jvm_options: {
+      heap_GB: null,
+      other: [],
+      properties: []
+    },
+    ui_options: {
+      auto_close: true,
+      improve_fonts: true,
+      wide_cells: true,
+      show_publication: true,
+      auto_save: true,
+    },
+    version: 2
+  };
+
   private apiUrl: string;
 
   constructor(baseUrl: string = '/') {
@@ -53,7 +69,7 @@ export default class BeakerXApi {
     return new Promise((resolve, reject) => {
       $.ajax(this.getApiUrl('settings'), {
         success: (data, status) => {
-          resolve(data.beakerx);
+          resolve(this.mergeWithDefaults(data.beakerx));
         },
         error: (jqXHR, status, err) => {
           reject();
@@ -63,8 +79,25 @@ export default class BeakerXApi {
     });
   }
 
+  public mergeWithDefaults(settings: IApiSettingsResponse): IApiSettingsResponse {
+    let merged = this.DEFAULT_SETTINGS;
+
+    if (settings.hasOwnProperty('version')) {
+      merged.version = settings.version;
+    }
+
+    if (settings.hasOwnProperty('ui_options')) {
+      merged.ui_options = settings.ui_options;
+    }
+
+    if (settings.hasOwnProperty('ui_options')) {
+      merged.jvm_options = settings.jvm_options;
+    }
+
+    return merged;
+  }
   public saveSettings(data): Promise<any> {
-    return new Promise<IApiSettingsResponse>((resolve, reject) => {
+    return new Promise<any>((resolve, reject) => {
 
       $.ajax(this.getApiUrl('settings'), {
         method: "POST",

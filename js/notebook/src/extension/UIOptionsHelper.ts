@@ -19,7 +19,6 @@ import './../global.env';
 import BeakerXApi from "../tree/Utils/BeakerXApi";
 import * as GistPublish from "./gistPublish/index";
 
-
 export function registerFeature(baseUrl: string): void {
   if (!!Jupyter.NotebookList) {
     return;
@@ -33,6 +32,7 @@ export function registerFeature(baseUrl: string): void {
       setupWideCells(data.ui_options.wide_cells);
       // setupImproveFonts(data.ui_options.improve_fonts);
       setupShowPublication(data.ui_options.show_publication);
+      setupAutoSave(data.ui_options.auto_save);
 
     })
     .catch((e) => {
@@ -79,4 +79,12 @@ function setupShowPublication(showPublication: boolean) {
     return;
   }
   GistPublish.registerFeature();
+}
+
+function setupAutoSave(autoSave: boolean) {
+  if (autoSave) {
+    return;
+  }
+
+  Jupyter.notebook.set_autosave_interval(0);
 }

@@ -63,7 +63,7 @@ beakerx install
 ### Build and Install for Lab
 
 ```
-conda create -y -n labx 'python>=3' nodejs pandas openjdk maven pytest
+conda create -y -n labx 'python>=3' nodejs pandas openjdk maven
 source activate labx
 conda install -y -c conda-forge jupyterlab
 (cd beakerx; pip install -e . --verbose)

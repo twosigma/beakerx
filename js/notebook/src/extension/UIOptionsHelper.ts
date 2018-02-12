@@ -46,7 +46,7 @@ function setupAutoCloseBrackets(autoCloseBrackets: boolean): void {
 
   // existing
   const code_cells = Jupyter.notebook.get_cells().filter((cell) => {
-    return cell.cell_type = 'code';
+    return cell.cell_type === 'code';
   });
 
   for (let cell of code_cells) {

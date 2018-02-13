@@ -16,22 +16,25 @@
 
 import MenuItem from '../../../shared/interfaces/menuItemInterface';
 import { createFormatMenuItems } from './createFormatMenuItems';
-import DataGridColumn from "../column/DataGridColumn";
+import DataGridColumn, {COLUMN_TYPES} from "../column/DataGridColumn";
 
 export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
 
   const dataGrid = column.dataGrid;
-  const createShowColumnSubmenu = (column): MenuItem[] => {
+  const createShowColumnSubmenu = (): MenuItem[] => {
     const items: MenuItem[] = [];
+    const columnsState = dataGrid.columnManager.bodyColumnsState;
 
-    dataGrid.model.bodyColumnsState.names.forEach(function(columnName, index) {
+    columnsState.names.forEach((name, index) => {
       items.push({
-        title: columnName,
-        isChecked: () => {
-          //@todo
-        },
+        title: name,
+        isChecked: () => columnsState.visibility[index],
         action: () => {
-          //@todo
+          let column = dataGrid.columnManager.getColumnByName(name);
+
+          if (column) {
+            column.state.visible ? column.hide() : column.show();
+          }
         },
         updateLayout: true
       });
@@ -44,7 +47,9 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
     {
       title: 'Show All Columns',
       action: () => {
-        //@todo
+        dataGrid.columnManager.columns[COLUMN_TYPES.body].forEach((column) => {
+          column.show();
+        });
       }
     },
     {
@@ -56,7 +61,9 @@ export function createIndexMenuItems(column: DataGridColumn): MenuItem[] {
     {
       title: 'Hide All Columns',
       action: () => {
-        //@todo
+        dataGrid.columnManager.columns[COLUMN_TYPES.body].forEach((column) => {
+          column.hide();
+        });
       }
     },
     {

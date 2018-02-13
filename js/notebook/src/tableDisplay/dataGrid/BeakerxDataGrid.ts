@@ -14,9 +14,7 @@
  *  limitations under the License.
  */
 
-import { chain, find } from '@phosphor/algorithm'
 import { CellRenderer, DataGrid } from "@phosphor/datagrid";
-import { ITriggerOptions } from "./headerMenu/HeaderMenu";
 import { BeakerxDataGridModel } from "./model/BeakerxDataGridModel";
 import { Widget } from "@phosphor/widgets";
 import { Signal } from '@phosphor/signaling';
@@ -27,6 +25,7 @@ import IDataModelState from "./interface/IDataGridModelState";
 import HighlighterManager from "./highlighter/HighlighterManager";
 import IHihglighterState from "./interface/IHighlighterState";
 import { DEFAULT_PAGE_LENGTH } from "../consts";
+import ColumnManager from "./column/ColumnManager";
 
 export class BeakerxDataGrid extends DataGrid {
   columnSections: any;
@@ -36,8 +35,8 @@ export class BeakerxDataGrid extends DataGrid {
   rowSections: any;
   viewport: Widget;
   highlighterManager: HighlighterManager;
+  columnManager: ColumnManager;
 
-  columns = {};
   headerCellHovered = new Signal<this, ICellData|null>(this);
 
   constructor(options: DataGrid.IOptions, modelState: IDataModelState) {
@@ -50,11 +49,9 @@ export class BeakerxDataGrid extends DataGrid {
     this.rowSections = this['_rowSections'];
     this.columnSections = this['_columnSections'];
 
-    this.addModel(modelState);
-    this.addColumns();
-    this.addHighlighterManager(modelState);
-    this.addCellRenderers();
-    this.setWidgetHeight();
+    this.init(modelState);
+
+    this.columnManager.addColumns();
     this.model.reset();
   }
 
@@ -72,25 +69,33 @@ export class BeakerxDataGrid extends DataGrid {
   }
 
   destroy() {
-    this.destroyAllColumns();
+    this.columnManager.destroy();
     this.dispose();
   }
 
   getColumn(config: CellRenderer.ICellConfig): DataGridColumn {
-    const columnType = DataGridColumn.getColumnTypeByRegion(config.region);
-
-    return this.columns[columnType][config.column];
+    return this.columnManager.getColumn(config);
   }
 
   getColumnByName(columnName: string): DataGridColumn|undefined {
-    return find(
-      chain(this.columns[COLUMN_TYPES.body], this.columns[COLUMN_TYPES.index]),
-      (column: DataGridColumn) => column.name === columnName
-    );
+    return this.columnManager.getColumnByName(columnName);
   }
 
-  private addModel(modelState: IDataModelState) {
-    this.model = new BeakerxDataGridModel(modelState);
+  getColumnOffset(index: number, type: COLUMN_TYPES) {
+    if (type === COLUMN_TYPES.index) {
+      return 0;
+    }
+
+    return this.rowHeaderSections.totalSize + this.columnSections.sectionOffset(index);
+  }
+
+  private init(modelState: IDataModelState) {
+    this.columnManager = new ColumnManager(modelState, this);
+    this.model = new BeakerxDataGridModel(modelState, this.columnManager);
+
+    this.addHighlighterManager(modelState);
+    this.addCellRenderers();
+    this.setWidgetHeight();
   }
 
   private addHighlighterManager(modelState: IDataModelState) {
@@ -99,52 +104,6 @@ export class BeakerxDataGrid extends DataGrid {
       : [];
 
     this.highlighterManager = new HighlighterManager(this, cellHighlighters);
-  }
-
-  private addColumns() {
-    let bodyColumns: DataGridColumn[] = [];
-    let indexColumns: DataGridColumn[] = [];
-
-    this.columns[COLUMN_TYPES.index] = indexColumns;
-    this.columns[COLUMN_TYPES.body] = bodyColumns;
-
-    this.addIndexColumns();
-    this.addBodyColumns();
-  }
-
-  private addBodyColumns() {
-    this.model.bodyColumnsState.names.forEach((name, index) => {
-      let menuOptions: ITriggerOptions = {
-        x: this.getColumnOffset(index, COLUMN_TYPES.body),
-        y: 0,
-        width: this.headerHeight,
-        height: this.headerHeight
-      };
-
-      let column = new DataGridColumn({
-        index,
-        name,
-        menuOptions,
-        type: COLUMN_TYPES.body
-      }, this);
-
-      this.columns[COLUMN_TYPES.body].push(column);
-    });
-  }
-
-  private addIndexColumns(): void {
-    if (!this.rowHeaderSections.sectionCount) {
-      return;
-    }
-
-    let column = new DataGridColumn({
-      index: 0,
-      name: this.model.indexColumnsState.names[0],
-      menuOptions: { x: 0, y: 0, width: this.headerHeight, height: this.headerHeight },
-      type: COLUMN_TYPES.index
-    }, this);
-
-    this.columns[COLUMN_TYPES.index].push(column);
   }
 
   private addCellRenderers() {
@@ -162,21 +121,6 @@ export class BeakerxDataGrid extends DataGrid {
     let rowCount = DEFAULT_PAGE_LENGTH < bodyRowCount ? DEFAULT_PAGE_LENGTH : bodyRowCount;
 
     this.node.style.minHeight = `${ rowCount * this.baseRowSize + this.baseColumnHeaderSize }px`;
-  }
-
-  private destroyAllColumns() {
-    this.columns[COLUMN_TYPES.index].forEach((column: DataGridColumn) => column.destroy());
-    this.columns[COLUMN_TYPES.body].forEach((column: DataGridColumn) => column.destroy());
-
-    Signal.disconnectAll(this);
-  }
-
-  private getColumnOffset(index: number, type: COLUMN_TYPES) {
-    if (type === COLUMN_TYPES.index) {
-      return 0;
-    }
-
-    return this.rowHeaderSections.totalSize + this.columnSections.sectionOffset(index);
   }
 
   //@todo debounce it
@@ -213,8 +157,11 @@ export class BeakerxDataGrid extends DataGrid {
       }
 
       if (data) {
+        let index = this.model.columnManager.indexResolver.resolveIndex(data.index, COLUMN_TYPES.index);
+
         return {
           ...data,
+          index,
           type: COLUMN_TYPES.index,
           offset: this.getColumnOffset(data.index, COLUMN_TYPES.index)
         };
@@ -230,8 +177,11 @@ export class BeakerxDataGrid extends DataGrid {
       let data = this.findHoveredCellIndex(this.columnSections, pos);
 
       if (data) {
+        let index = this.model.columnManager.indexResolver.resolveIndex(data.index, COLUMN_TYPES.body);
+
         return {
           ...data,
+          index,
           type: COLUMN_TYPES.body,
           offset: this.getColumnOffset(data.index, COLUMN_TYPES.body)
         };

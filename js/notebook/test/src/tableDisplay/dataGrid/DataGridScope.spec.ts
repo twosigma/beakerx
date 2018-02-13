@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import modelStateMock from "./mock/modelStateMock";
+
 declare var require: Function;
 
 import { expect, assert } from 'chai';
@@ -24,20 +26,19 @@ import { DataGridScope } from '@beakerx/tableDisplay/dataGrid/DataGridScope';
 const element = document.createElement('div');
 
 describe('dataGridScope', () => {
-  const dataGridScope = new DataGridScope({
+  const scopeOptions = {
     element,
-    data: {
-      values: [],
-      columnNames: [],
-      types: []
-    }
-  });
+    widgetView: new Widget({}),
+    widgetModel: new Widget({}),
+    data: modelStateMock
+  };
+  const dataGridScope = new DataGridScope(scopeOptions);
 
   it('should fail initialization', () => {
     assert.throws(
-      () => { new DataGridScope({ element, data: {} }); },
+      () => { new DataGridScope({ ...scopeOptions, data: {} }); },
       Error,
-      "Cannot read property 'length' of undefined"
+      "Cannot read property 'map' of undefined"
     );
   });
 

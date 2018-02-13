@@ -51,7 +51,7 @@ describe('HighlighterManager', () => {
   });
 
   it('should return heatmap highlighter', () => {
-    expect(highlighterManager.getColumnHighlighters(dataGrid.columns[1][0], HIGHLIGHTER_TYPE.heatmap)[0])
+    expect(highlighterManager.getColumnHighlighters(dataGrid.columnManager.columns[1][0], HIGHLIGHTER_TYPE.heatmap)[0])
       .to.equal(highlighterManager.highlighters[0]);
   });
 

@@ -25,25 +25,20 @@ import { scopeData, TIME_UNIT_FORMATS } from '@beakerx/tableDisplay/consts';
 import { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import menuOptionsMock from "../mock/menuOptionsMock";
 import DataGridColumn from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import modelStateMock from "../mock/modelStateMock";
 
 describe('createFormatMenuItems', () => {
   let dataGrid;
   let column;
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, {
-      values: [],
-      columnNames: [],
-      types: [],
-      stringFormatForColumn: null,
-      hasIndex: false
-    });
+    dataGrid = new BeakerxDataGrid({}, modelStateMock);
     column = new DataGridColumn({
       index: 0,
       type: COLUMN_TYPES.index,
       name: 'index',
       menuOptions: menuOptionsMock
-    }, dataGrid);
+    }, dataGrid, dataGrid.columnManager);
   });
 
   after(() => {
@@ -69,7 +64,7 @@ describe('createFormatMenuItems', () => {
 
   describe('createTimeSubitems', () => {
     it('should create time menu items', () => {
-      let timeMenuItems = createTimeSubitems(column);
+      let timeMenuItems = createTimeSubitems();
 
       expect(timeMenuItems).to.be.an.instanceof(Array);
       expect(timeMenuItems).to.have.length(Object.keys(TIME_UNIT_FORMATS).length);

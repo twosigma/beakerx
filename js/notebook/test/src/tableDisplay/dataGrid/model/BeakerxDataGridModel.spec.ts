@@ -18,10 +18,13 @@ import { expect } from 'chai';
 import { BeakerxDataGridModel } from '../../../../../src/tableDisplay/dataGrid/model/BeakerxDataGridModel';
 import { DataModel } from "@phosphor/datagrid";
 import modelStateMock from "../mock/modelStateMock";
+import {BeakerxDataGrid} from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
+import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
 
 describe('BeakerxDataGridModel', () => {
   describe('BeakerxDataGridModel.hasIndex === false', () => {
-    const beakerxDataGridModel = new BeakerxDataGridModel(modelStateMock);
+    const dataGrid = new BeakerxDataGrid({}, modelStateMock);
+    const beakerxDataGridModel = new BeakerxDataGridModel(modelStateMock, dataGrid.columnManager);
 
     it('should be instance of DataModel', () => {
       expect(beakerxDataGridModel).to.be.an.instanceof(DataModel);
@@ -58,10 +61,11 @@ describe('BeakerxDataGridModel', () => {
   });
 
   describe('BeakerxDataGridModel.hasIndex === true', () => {
-    const beakerxDataGridModel = new BeakerxDataGridModel({
+    const dataGrid = new BeakerxDataGrid({}, {
       ...modelStateMock,
       hasIndex: true
     });
+    const beakerxDataGridModel = dataGrid.model;
 
     it('should return proper data', () => {
       expect(beakerxDataGridModel.data('corner-header', 0, 0)).to.equal('test');

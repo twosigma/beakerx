@@ -19,19 +19,15 @@ import { BeakerxDataGrid } from "../../../../../src/tableDisplay/dataGrid/Beaker
 import DataGridColumn, { COLUMN_TYPES } from '../../../../../src/tableDisplay/dataGrid/column/DataGridColumn';
 import ColumnMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/ColumnMenu";
 import IndexMenu from "../../../../../src/tableDisplay/dataGrid/headerMenu/IndexMenu";
+import modelStateMock from "../mock/modelStateMock";
+import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
 
 declare var require: Function;
 
 
 describe('DataGridColumn', () => {
-  const dataGrid = new BeakerxDataGrid({}, {
-    values: [],
-    columnNames: [],
-    types: [],
-    stringFormatForColumn: null,
-    hasIndex: false,
-    cellHighlighters: []
-  });
+  const dataGrid = new BeakerxDataGrid({}, modelStateMock);
+  const columnManager = dataGrid.columnManager;
 
   describe('DataGridColumn.type === "body"', () => {
     const bodyDataGridColumn = new DataGridColumn({
@@ -39,7 +35,7 @@ describe('DataGridColumn', () => {
       index: 0,
       name: 'index',
       menuOptions: { x: 0, y: 0, height: 20, width: 20 }
-    }, dataGrid);
+    }, dataGrid, columnManager);
 
     it('should have the body column type set', () => {
       expect(bodyDataGridColumn.type).to.equal(COLUMN_TYPES.body);
@@ -67,7 +63,7 @@ describe('DataGridColumn', () => {
       index: 0,
       name: 'index',
       menuOptions: { x: 0, y: 0, height: 20, width: 20 }
-    }, dataGrid);
+    }, dataGrid, columnManager);
 
     it('should have the index column type set', () => {
       expect(indexDataGridColumn.type).to.equal(COLUMN_TYPES.index);

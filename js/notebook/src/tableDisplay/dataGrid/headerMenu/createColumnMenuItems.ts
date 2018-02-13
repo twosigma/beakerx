@@ -24,7 +24,7 @@ export function createColumnMenuItems(column: DataGridColumn): MenuItem[] {
   return [
     {
       title: 'Hide column',
-      action: (column) => {}
+      action: (column) => column.hide()
     },
     {
       title: 'Filter by Expression',

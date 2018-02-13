@@ -21,7 +21,7 @@ describe('(Groovy) Testing of showing the null execution result', function() {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/ShowNullExecutionResultTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/ShowNullExecutionResultTest.ipynb');
   }, 2);
 
   afterAll(function () {
@@ -31,29 +31,25 @@ describe('(Groovy) Testing of showing the null execution result', function() {
   describe('(Groovy) Show null execution result as true', function() {
     it('Cell displays true output', function () {
       cellIndex = 0;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_result').isEnabled()).toBeTruthy();
-      expect(codeCell.$('div.output_result').getText()).toBe('true');
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckCellOutputResultText(cellIndex, /true/);
     });
   });
 
   describe('(Groovy) Show null execution result as null', function() {
     it('Cell displays null output', function () {
       cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output_result').isEnabled()).toBeTruthy();
-      expect(codeCell.$('div.output_result').getText()).toBe('null');
+      beakerxPO.runCodeCellByIndex(cellIndex);
+      beakerxPO.waitAndCheckCellOutputResultText(cellIndex, /null/);
     });
   });
 
   describe('(Groovy) Do not show null execution result', function() {
     it('Cell displays no output', function () {
       cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-
-      expect(codeCell.$('div.output').getText()).toBe('');
+      var output = beakerxPO.runCodeCellByIndex(cellIndex).$(beakerxPO.getOutputWrapperOutputCss());
+      expect(output.isEnabled()).toBeTruthy();
+      expect(output.getText()).toBe('');
     });
   });
 });

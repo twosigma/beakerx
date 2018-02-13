@@ -21,7 +21,7 @@ describe('Groovy tests', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/GroovyTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/GroovyTest.ipynb');
   }, 2);
 
   afterAll(function () {
@@ -38,37 +38,37 @@ describe('Groovy tests', function () {
     it('Output contains "groovy.lang.MissingPropertyException"', function () {
       beakerxPO.runCellAndCheckOutputText(1, 'groovy.lang.MissingPropertyException');
     });
-  }, 2);
+  });
 
   describe('Run 3rd cell. ', function () {
     it('Output contains "2"', function () {
       beakerxPO.runCellAndCheckOutputText(2, '2');
     });
-  }, 2);
+  });
 
   describe('Run 4th cell. ', function () {
     it('Output contains "run_closure"', function () {
       beakerxPO.runCellAndCheckOutputText(3, 'run_closure');
     });
-  }, 2);
+  });
 
   describe('Run 5th cell. ', function () {
     it('Output contains "8"', function () {
       beakerxPO.runCellAndCheckOutputText(4, '8');
     });
-  }, 2);
+  });
 
   describe('Run 6th cell. ', function () {
     it('Output contains "Multiplying Strings!Multiplying Strings!"', function () {
       beakerxPO.runCellAndCheckOutputText(5, 'Multiplying Strings!Multiplying Strings!');
     });
-  }, 2);
+  });
 
   describe('Run 7th cell. ', function () {
     it('Output contains "9.265"', function () {
       beakerxPO.runCellAndCheckOutputText(6, '9.265');
     });
-  }, 2);
+  });
 
   function checkCyrilicString(str){
     expect(str.charCodeAt(0).toString(16)).toEqual('44d');
@@ -97,7 +97,7 @@ describe('Groovy tests', function () {
       var svg = codeCell.$('#svgg');
       checkCyrilicString(svg.$('text#ylabel').getText());
     });
-  }, 2);
+  });
 
   describe('getCodeCells(tag) method', function () {
 
@@ -111,6 +111,6 @@ describe('Groovy tests', function () {
       expect(bkoTable.isEnabled()).toBeTruthy();
       expect(bkoTable.$('tbody > tr').getText()).toMatch('"text/plain":"5"');
     });
-  }, 2);
+  });
 
 });

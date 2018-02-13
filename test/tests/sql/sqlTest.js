@@ -24,7 +24,7 @@ describe('SQL Examples notebook', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     tableHelper = new TableHelperObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/sql/SQLTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/sql/SQLTest.ipynb');
   }, 2);
 
   afterAll(function () {

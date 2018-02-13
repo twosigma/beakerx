@@ -21,7 +21,7 @@ describe('Testing of table Actions', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/TableActionsTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/TableActionsTest.ipynb');
   }, 2);
 
   afterAll(function () {

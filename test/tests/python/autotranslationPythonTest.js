@@ -21,7 +21,7 @@ describe('Autotranslation Python to JavaScript and D3 tests', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/python/AutoTranslationPythonTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/python/AutoTranslationPythonTest.ipynb');
   });
 
   afterAll(function () {

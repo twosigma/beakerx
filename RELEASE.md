@@ -64,12 +64,11 @@ git clone https://github.com/twosigma/beakerx-feedstock.git
 cd beakerx-feedstock
 git remote add upstream https://github.com/conda-forge/beakerx-feedstock.git
 git fetch upstream
-git checkout master
-git reset --hard upstream/master  
+git reset --hard upstream/master
 git push origin master --force
 ```
 - Update the `version` and `sha256` variable values in `recipe/meta.yaml`.
-  Return  build number to 0.
+  Return  build number to 1.
 
 Then test it locally:
 

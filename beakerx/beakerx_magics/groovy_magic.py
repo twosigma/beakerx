@@ -28,10 +28,13 @@ class GroovyMagics(Magics):
 
     def __init__(self, shell):
         super(GroovyMagics, self).__init__(shell)
-        atexit.register(self.stop_kernel)
+        self.km = None
+
+    def start(self):
         self.km = KernelManager()
         self.km.kernel_name = 'groovy'
         self.km.start_kernel()
+        atexit.register(self.stop_kernel)
         self.kc = self.km.client()
         self.kc.start_channels()
         try:
@@ -41,6 +44,8 @@ class GroovyMagics(Magics):
             self._wait_for_ready_backport()
 
     def run_cell(self, line, code):
+        if not self.km:
+            self.start()
         self.kc.execute(code, allow_stdin=True)
         reply = self.kc.get_shell_msg()
 

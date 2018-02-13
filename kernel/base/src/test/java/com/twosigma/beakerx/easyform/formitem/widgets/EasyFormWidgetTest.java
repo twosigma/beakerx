@@ -23,8 +23,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beakerx.widgets.Widget.DESCRIPTION;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widget.Widget.DESCRIPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class EasyFormWidgetTest {

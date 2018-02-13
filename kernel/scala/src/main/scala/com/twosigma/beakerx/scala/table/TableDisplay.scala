@@ -22,7 +22,7 @@ import com.twosigma.beakerx.table._
 import com.twosigma.beakerx.table.format.TableDisplayStringFormat
 import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter
 import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer
-import com.twosigma.beakerx.widgets.DisplayableWidget
+import com.twosigma.beakerx.widget.DisplayableWidget
 
 import scala.collection.JavaConverters._
 

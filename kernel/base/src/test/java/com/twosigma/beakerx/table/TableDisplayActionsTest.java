@@ -20,7 +20,7 @@ import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.handler.CommMsgHandler;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.CommActions;
+import com.twosigma.beakerx.widget.CommActions;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,8 +30,8 @@ import java.util.Map;
 
 import static com.twosigma.beakerx.jupyter.handler.JupyterHandlerTest.initHeader;
 import static com.twosigma.beakerx.kernel.comm.Comm.COMM_ID;
-import static com.twosigma.beakerx.widgets.CommActions.CONTEXT_MENU_CLICK;
-import static com.twosigma.beakerx.widgets.CommActions.DOUBLE_CLICK;
+import static com.twosigma.beakerx.widget.CommActions.CONTEXT_MENU_CLICK;
+import static com.twosigma.beakerx.widget.CommActions.DOUBLE_CLICK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableDisplayActionsTest {

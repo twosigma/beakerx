@@ -20,10 +20,10 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.chart.xychart.Plot;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jupyter.SearchMessages;
-import com.twosigma.beakerx.widgets.TestWidgetUtils;
-import com.twosigma.beakerx.widgets.box.GridView;
-import com.twosigma.beakerx.widgets.box.HBox;
-import com.twosigma.beakerx.widgets.integers.IntText;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
+import com.twosigma.beakerx.widget.box.GridView;
+import com.twosigma.beakerx.widget.box.HBox;
+import com.twosigma.beakerx.widget.integers.IntText;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;
@@ -32,7 +32,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
-import static com.twosigma.beakerx.widgets.BeakerxWidget.MODEL;
+import static com.twosigma.beakerx.widget.BeakerxWidget.MODEL;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -121,7 +121,7 @@ public class GroovyKernelTest extends KernelExecutionTest {
   private void addOutputWidget(String outputCommId) throws InterruptedException {
     Utils.setFixedCommUUID(outputCommId);
     String addWidget = "" +
-            "import com.twosigma.beakerx.widgets.Output\n" +
+            "import com.twosigma.beakerx.widget.Output\n" +
             "out2 = new Output()\n" +
             "OutputManager.setOutput(out2)\n" +
             "out2";

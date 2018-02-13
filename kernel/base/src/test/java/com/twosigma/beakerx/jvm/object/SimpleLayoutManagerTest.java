@@ -19,12 +19,12 @@ package com.twosigma.beakerx.jvm.object;
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-import com.twosigma.beakerx.widgets.Widget;
+import com.twosigma.beakerx.widget.Widget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.findValueForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.findValueForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleLayoutManagerTest {

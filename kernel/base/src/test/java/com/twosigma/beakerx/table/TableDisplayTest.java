@@ -81,10 +81,10 @@ import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TOOLT
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.TYPE;
 import static com.twosigma.beakerx.table.serializer.TableDisplaySerializer.VALUES;
 import static com.twosigma.beakerx.table.serializer.ValueStringFormatSerializer.VALUE_STRING;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.findValueForProperty;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getMessageUpdate;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.findValueForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getMessageUpdate;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 

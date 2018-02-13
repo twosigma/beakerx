@@ -21,7 +21,7 @@ import com.twosigma.beakerx.chart.xychart.plotitem.XYGraphics;
 import com.twosigma.beakerx.kernel.Kernel;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
 import com.twosigma.beakerx.table.TableDisplay;
-import com.twosigma.beakerx.widgets.DisplayableWidget;
+import com.twosigma.beakerx.widget.DisplayableWidget;
 import jupyter.Displayers;
 
 import java.util.Collection;

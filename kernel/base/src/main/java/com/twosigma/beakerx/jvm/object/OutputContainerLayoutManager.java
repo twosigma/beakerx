@@ -17,9 +17,9 @@ package com.twosigma.beakerx.jvm.object;
 
 import com.twosigma.beakerx.SerializeToString;
 import com.twosigma.beakerx.mimetype.MIMEContainer;
-import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.widgets.strings.HTML;
-import com.twosigma.beakerx.widgets.strings.HTMLPre;
+import com.twosigma.beakerx.widget.Widget;
+import com.twosigma.beakerx.widget.strings.HTML;
+import com.twosigma.beakerx.widget.strings.HTMLPre;
 
 import java.util.List;
 import java.util.Optional;

@@ -16,11 +16,11 @@
 package com.twosigma.beakerx.groovy.widgets;
 
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.InteractiveBase;
-import com.twosigma.beakerx.widgets.ValueWidget;
-import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.widgets.strings.Label;
-import com.twosigma.beakerx.widgets.strings.Text;
+import com.twosigma.beakerx.widget.InteractiveBase;
+import com.twosigma.beakerx.widget.ValueWidget;
+import com.twosigma.beakerx.widget.Widget;
+import com.twosigma.beakerx.widget.strings.Label;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.codehaus.groovy.runtime.MethodClosure;

@@ -36,10 +36,9 @@ import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringForma
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeStringFormatForType;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTimeZone;
 import static com.twosigma.beakerx.table.TableDisplayToJson.serializeTooltips;
-import static com.twosigma.beakerx.widgets.CompiledCodeRunner.runCompiledCode;
+import static com.twosigma.beakerx.widget.CompiledCodeRunner.runCompiledCode;
 import static java.util.Arrays.asList;
 
-import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.chart.Color;
 import com.twosigma.beakerx.jvm.serialization.BasicObjectSerializer;
 import com.twosigma.beakerx.jvm.serialization.BeakerObjectConverter;
@@ -49,9 +48,8 @@ import com.twosigma.beakerx.table.format.ValueStringFormat;
 import com.twosigma.beakerx.table.highlight.TableDisplayCellHighlighter;
 import com.twosigma.beakerx.table.highlight.ValueHighlighter;
 import com.twosigma.beakerx.table.renderer.TableDisplayCellRenderer;
-import com.twosigma.beakerx.widgets.BeakerxWidget;
-import com.twosigma.beakerx.widgets.CommActions;
-import com.twosigma.beakerx.widgets.RunWidgetClosure;
+import com.twosigma.beakerx.widget.BeakerxWidget;
+import com.twosigma.beakerx.widget.RunWidgetClosure;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.mimetype.MIMEContainer;

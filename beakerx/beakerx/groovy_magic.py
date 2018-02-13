@@ -15,14 +15,20 @@ from queue import Empty
 from IPython import get_ipython
 from IPython.core.magic import (Magics, magics_class, cell_magic)
 from jupyter_client.manager import KernelManager
+import atexit
 
 
 @magics_class
 class GroovyMagics(Magics):
     _execution_count = 1
 
+    def stop_kernel(self):
+        self.kc.stop_channels()
+        self.km.shutdown_kernel(now=True)
+
     def __init__(self, shell):
         super(GroovyMagics, self).__init__(shell)
+        atexit.register(self.stop_kernel)
         self.km = KernelManager()
         self.km.kernel_name = 'groovy'
         self.km.start_kernel()
@@ -33,10 +39,6 @@ class GroovyMagics(Magics):
             print("Groovy started successfully\n")
         except AttributeError:
             self._wait_for_ready_backport()
-
-    def __del__(self):
-        self.kc.stop_channels()
-        self.km.shutdown_kernel(now=True)
 
     def run_cell(self, line, code):
         self.kc.execute(code, allow_stdin=True)

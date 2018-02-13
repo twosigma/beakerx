@@ -37,12 +37,28 @@ public class Color implements java.io.Serializable {
   public final static Color YELLOW = yellow;
   public final static Color green     = new Color(0, 255, 0);
   public final static Color GREEN = green;
+  public final static Color lightGreen = new Color(144, 238, 144);
+  public final static Color LIGHT_GREEN = lightGreen;
+  public final static Color darkGreen = new Color(0, 100, 0);
+  public final static Color DARK_GREEN = darkGreen;
+  public final static Color olive = new Color(128, 128, 0);
+  public final static Color OLIVE = olive;
   public final static Color magenta   = new Color(255, 0, 255);
   public final static Color MAGENTA = magenta;
+  public final static Color orangeRed = new Color(255, 69, 0);
+  public final static Color ORANGE_RED = orangeRed;
+  public final static Color maroon    = new Color(128, 0, 0);
+  public final static Color MAROON = maroon;
   public final static Color cyan      = new Color(0, 255, 255);
   public final static Color CYAN = cyan;
   public final static Color blue      = new Color(0, 0, 255);
   public final static Color BLUE = blue;
+  public final static Color lightBlue = new Color(173, 216, 230);
+  public final static Color LIGHT_BLUE = lightBlue;
+  public final static Color purple    = new Color(128, 0, 128);
+  public final static Color PURPLE = purple;
+  public final static Color indigo = new Color(75, 0, 130);
+  public final static Color INDIGO = indigo;
 
   private int value;
 

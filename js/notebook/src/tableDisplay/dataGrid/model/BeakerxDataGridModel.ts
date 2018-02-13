@@ -21,41 +21,35 @@ import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn"
 import IDataModelState from '../interface/IDataGridModelState';
 import { MapIterator, EmptyIterator, iter } from '@phosphor/algorithm';
 import { IColumn } from "../interface/IColumn";
+import ColumnManager, {COLUMN_CHANGED_TYPES, IcolumnsChangedArgs} from "../column/ColumnManager";
 
-interface IColumnState {
+export interface IDataGridModelColumnState {
   names: string[],
-  types: string[]
+  types: string[],
+  visibility: boolean[]
 }
 
 export class BeakerxDataGridModel extends DataModel {
-  columnsState: {};
   dataFormatter: DataFormatter;
+  columnManager: ColumnManager;
 
   static DEFAULT_INDEX_COLUMN_TYPE = ALL_TYPES[1]; // integer
   static DEFAULT_INDEX_COLUMN_NAME = 'index';
 
-  private _data: any;
+  private _data: Array<any>;
   private _state: IDataModelState;
   private _columnCount: number;
   private _rowCount: number;
 
-  constructor(state: IDataModelState) {
+  constructor(state: IDataModelState, columnManager: ColumnManager) {
     super();
 
-    this.addColumnsState(state);
-    this.addProperties(state);
+    this.addProperties(state, columnManager);
+    this.connectTocolumnsChanged();
   }
 
   get state() {
     return this._state;
-  }
-
-  get bodyColumnsState() {
-    return this.columnsState[COLUMN_TYPES.body];
-  }
-
-  get indexColumnsState() {
-    return this.columnsState[COLUMN_TYPES.index];
   }
 
   reset() {
@@ -66,36 +60,20 @@ export class BeakerxDataGridModel extends DataModel {
     super.emitChanged(args);
   }
 
-  addColumnsState(state) {
-    let bodyColumnsState: IColumnState = { names: [], types: [] };
-    let indexColumnsState: IColumnState = { names: [], types: [] };
-
-    this.columnsState = {};
-    this.columnsState[COLUMN_TYPES.body] = bodyColumnsState;
-    this.columnsState[COLUMN_TYPES.index] = indexColumnsState;
-
-    this.columnsState[COLUMN_TYPES.body].names = state.hasIndex
-      ? state.columnNames.slice(1)
-      : state.columnNames;
-    this.columnsState[COLUMN_TYPES.index].names = state.hasIndex
-      ? state.columnNames.slice(0, 1)
-      : [BeakerxDataGridModel.DEFAULT_INDEX_COLUMN_NAME];
-
-    this.columnsState[COLUMN_TYPES.body].types = state.hasIndex
-      ? state.types.slice(1)
-      : state.types;
-    this.columnsState[COLUMN_TYPES.index].types = state.hasIndex
-      ? state.types.slice(0, 1)
-      : [BeakerxDataGridModel.DEFAULT_INDEX_COLUMN_TYPE];
-  }
-
-  addProperties(state) {
+  addProperties(state, columnManager) {
     this.dataFormatter = new DataFormatter(state);
+    this.columnManager = columnManager;
 
     this._state = state;
     this._data = state.values;
-    this._columnCount = this.bodyColumnsState.names.length || 0;
+    this._columnCount = this.state.hasIndex
+      ? this.state.columnNames.length -1
+      : this.state.columnNames.length || 0;
     this._rowCount = this._data.length;
+
+    this.setState({
+      columnsVisible: this.state.columnsVisible || {}
+    });
   }
 
   rowCount(region: DataModel.RowRegion): number {
@@ -103,32 +81,53 @@ export class BeakerxDataGridModel extends DataModel {
   }
 
   columnCount(region: DataModel.ColumnRegion): number {
-    return region === 'body' ? this._columnCount : 1;
+    return region === 'body'
+      ? this.columnManager.bodyColumnsState.visibility.filter((value) => value).length
+      : 1;
   }
 
   data(region: DataModel.CellRegion, row: number, columnIndex: number): any {
+    const columnType = DataGridColumn.getColumnTypeByRegion(region);
+    const index = this.columnManager.indexResolver.resolveIndex(columnIndex, columnType);
+
     if (region === 'row-header') {
-      return this.state.hasIndex ? this.getValue(region, row, columnIndex) : row;
+      return this.state.hasIndex ? this.getValue(region, row, index) : row;
     }
 
     if (region === 'column-header') {
-      return this.bodyColumnsState.names[columnIndex];
+      return this.state.columnNames[index];
     }
 
     if (region === 'corner-header') {
-      return this.indexColumnsState.names[columnIndex];
+      return this.state.hasIndex ? this.state.columnNames[index] : BeakerxDataGridModel.DEFAULT_INDEX_COLUMN_NAME;
     }
 
-    return this.getValue(region, row, columnIndex);
+    return this.getValue(region, row, index);
   }
-  
-  getValue(region: DataModel.CellRegion, row: number, columnIndex: number) {
-    const columnType = DataGridColumn.getColumnTypeByRegion(region);
 
-    if (this.state.hasIndex && columnType === COLUMN_TYPES.body) {
-      return this._data[row][columnIndex + 1];
+  setState(state) {
+    this._state = {
+      ...this._state,
+      ...state,
+    };
+  }
+
+  connectTocolumnsChanged() {
+    this.columnManager.columnsChanged.connect(this.setColumnVisible.bind(this));
+  }
+
+  private setColumnVisible(sender: ColumnManager, data: IcolumnsChangedArgs) {
+    if(data.type !== COLUMN_CHANGED_TYPES.columnVisible) {
+      return;
     }
-    
+
+    const columnsVisible = { ...this.state.columnsVisible, [data.column.name]: data.value };
+    this.setState({ columnsVisible });
+
+    this.reset();
+  }
+
+  getValue(region: DataModel.CellRegion, row: number, columnIndex: number) {
     return this._data[row][columnIndex];
   }
 

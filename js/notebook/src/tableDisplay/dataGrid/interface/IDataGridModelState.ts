@@ -27,7 +27,7 @@ export default interface IDataModelState {
   columnOrder?: number[],
   columnsFrozen?: {},
   columnsFrozenRight?: {},
-  columnsVisible?: {},
+  columnsVisible: {},
   contextMenuItems?: object[],
   contextMenuTags?: {},
   dataFontSize?: number|null,

@@ -24,6 +24,7 @@ import { CellRenderer, DataModel, TextRenderer } from "@phosphor/datagrid";
 import { ALL_TYPES, getDisplayType, getTypeByName } from "../dataTypes";
 import { minmax, MapIterator } from '@phosphor/algorithm';
 import { HIGHLIGHTER_TYPE } from "../interface/IHighlighterState";
+import ColumnManager, { COLUMN_CHANGED_TYPES } from "./ColumnManager";
 
 export enum COLUMN_TYPES {
   'index',
@@ -35,7 +36,8 @@ export interface IColumnState {
   displayType: ALL_TYPES|string,
   triggerShown: boolean,
   horizontalAlignment: TextRenderer.HorizontalAlignment,
-  formatForTimes: any
+  formatForTimes: any,
+  visible: boolean
 }
 
 export default class DataGridColumn {
@@ -44,6 +46,7 @@ export default class DataGridColumn {
   type: COLUMN_TYPES;
   menu: ColumnMenu|IndexMenu;
   dataGrid: BeakerxDataGrid;
+  columnManager: ColumnManager;
   formatFn: CellRenderer.ConfigFunc<string>;
   valuesIterator: MapIterator<number, any>;
   minValue: any;
@@ -51,12 +54,13 @@ export default class DataGridColumn {
 
   state: IColumnState;
 
-  constructor(options: IColumnOptions, dataGrid: BeakerxDataGrid) {
+  constructor(options: IColumnOptions, dataGrid: BeakerxDataGrid, columnManager: ColumnManager) {
     this.index = options.index;
     this.name = options.name;
     this.type = options.type;
     this.dataGrid = dataGrid;
-    this.valuesIterator = dataGrid.model.getColumnValuesIterator(this);
+    this.columnManager = columnManager;
+    this.valuesIterator = this.dataGrid.model.getColumnValuesIterator(this);
 
     this.setInitialState();
     this.assignFormatFn();
@@ -87,7 +91,8 @@ export default class DataGridColumn {
       displayType,
       triggerShown: false,
       horizontalAlignment: this.getInitialAlignment(dataType),
-      formatForTimes: {}
+      formatForTimes: {},
+      visible: true
     };
   }
 
@@ -114,6 +119,40 @@ export default class DataGridColumn {
   setTimeDisplayType(timeUnit) {
     this.setState({ formatForTimes: timeUnit });
     this.setDisplayType(ALL_TYPES.datetime);
+  }
+
+  hide() {
+    const args: DataModel.IColumnsChangedArgs = {
+      type: 'columns-removed',
+      region: 'body',
+      index: this.index,
+      span: 0
+    };
+
+    this.setState({ visible: false });
+    this.dataGrid.model.emitChanged(args);
+    this.columnManager.columnsChanged.emit({
+      type: COLUMN_CHANGED_TYPES.columnVisible,
+      value: false,
+      column: this
+    });
+  }
+
+  show() {
+    const args: DataModel.IColumnsChangedArgs = {
+      type: 'columns-inserted',
+      region: 'body',
+      index: this.index,
+      span: 0
+    };
+
+    this.setState({ visible: true });
+    this.dataGrid.model.emitChanged(args);
+    this.columnManager.columnsChanged.emit({
+      type: COLUMN_CHANGED_TYPES.columnVisible,
+      value: true,
+      column: this
+    });
   }
 
   createMenu(menuOptions): void {
@@ -184,8 +223,8 @@ export default class DataGridColumn {
 
   private getDataTypeName(): string {
     return this.type === COLUMN_TYPES.index
-      ? this.dataGrid.model.indexColumnsState.types[this.index]
-      : this.dataGrid.model.bodyColumnsState.types[this.index];
+      ? this.dataGrid.columnManager.columnsState[COLUMN_TYPES.index].types[this.index]
+      : this.dataGrid.columnManager.columnsState[COLUMN_TYPES.body].types[this.index];
   }
 
   private getDataType(): ALL_TYPES {

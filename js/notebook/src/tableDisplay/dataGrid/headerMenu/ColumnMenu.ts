@@ -14,10 +14,9 @@
  *  limitations under the License.
  */
 
-import { BeakerxDataGrid } from "../BeakerxDataGrid";
 import { createColumnMenuItems } from './createColumnMenuItems';
 import HeaderMenu, { ITriggerOptions } from "./HeaderMenu";
-import {COLUMN_TYPES, default as DataGridColumn} from "../column/DataGridColumn";
+import DataGridColumn from "../column/DataGridColumn";
 
 export default class ColumnMenu extends HeaderMenu {
 

@@ -30,10 +30,10 @@ import com.twosigma.beakerx.easyform.formitem.widgets.SelectMultipleWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.RadioButtonComponentWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.TextAreaWidget;
 import com.twosigma.beakerx.easyform.formitem.widgets.TextFieldWidget;
-import com.twosigma.beakerx.widgets.DOMWidget;
-import com.twosigma.beakerx.widgets.DisplayableWidget;
-import com.twosigma.beakerx.widgets.ValueWidget;
-import com.twosigma.beakerx.widgets.Widget;
+import com.twosigma.beakerx.widget.DOMWidget;
+import com.twosigma.beakerx.widget.DisplayableWidget;
+import com.twosigma.beakerx.widget.ValueWidget;
+import com.twosigma.beakerx.widget.Widget;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;

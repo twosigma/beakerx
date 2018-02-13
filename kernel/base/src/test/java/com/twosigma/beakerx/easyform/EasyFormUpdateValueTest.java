@@ -17,8 +17,7 @@ package com.twosigma.beakerx.easyform;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
-import com.twosigma.beakerx.widgets.ValueWidget;
-import com.twosigma.beakerx.widgets.strings.Text;
+import com.twosigma.beakerx.widget.ValueWidget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

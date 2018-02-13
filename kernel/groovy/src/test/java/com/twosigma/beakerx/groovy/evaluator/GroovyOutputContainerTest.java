@@ -25,7 +25,7 @@ import com.twosigma.beakerx.kernel.EvaluatorParameters;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.kernel.PlainCode;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.chart.BeakerxPlot;
+import com.twosigma.beakerx.widget.chart.BeakerxPlot;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsg;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyInternalOpenCommMsg;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GroovyOutputContainerTest {

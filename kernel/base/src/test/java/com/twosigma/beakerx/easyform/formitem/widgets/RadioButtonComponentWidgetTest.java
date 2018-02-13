@@ -17,10 +17,10 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.selections.SelectMultiple;
+import com.twosigma.beakerx.widget.selections.SelectMultiple;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static java.util.Arrays.asList;
 
 public class RadioButtonComponentWidgetTest extends EasyFormWidgetTest {

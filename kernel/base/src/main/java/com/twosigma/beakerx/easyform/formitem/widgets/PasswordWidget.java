@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.strings.Password;
+import com.twosigma.beakerx.widget.strings.Password;
 
 public class PasswordWidget extends EasyFormComponent<Password>{
 

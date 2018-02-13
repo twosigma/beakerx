@@ -24,8 +24,8 @@ import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyMsgForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static java.util.Arrays.asList;
 
 public class EasyFormViewTest {

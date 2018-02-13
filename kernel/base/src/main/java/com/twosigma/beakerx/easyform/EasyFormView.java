@@ -15,9 +15,9 @@
  */
 package com.twosigma.beakerx.easyform;
 
-import com.twosigma.beakerx.widgets.BeakerxWidget;
-import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.widgets.box.Box;
+import com.twosigma.beakerx.widget.BeakerxWidget;
+import com.twosigma.beakerx.widget.Widget;
+import com.twosigma.beakerx.widget.box.Box;
 
 import java.util.List;
 

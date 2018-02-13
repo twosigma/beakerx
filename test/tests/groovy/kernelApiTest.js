@@ -17,11 +17,11 @@
 var BeakerXPageObject = require('../beakerx.po.js');
 var beakerxPO;
 
-describe('(Groovy) Testing of Loading Magic Command', function () {
+describe('(Groovy) Testing of Kernel API', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/LoadMagicCommandTest.ipynb');
+    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/KernelAPITest.ipynb');
   }, 2);
 
   afterAll(function () {
@@ -57,6 +57,52 @@ describe('(Groovy) Testing of Loading Magic Command', function () {
       var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
       expect(codeCell.$('div.output_subarea').isEnabled()).toBeTruthy();
       expect(codeCell.$('div.output_subarea').getText()).toContain(testValues.envs);
+    });
+  });
+
+  describe('(Groovy) Show null execution result as true', function() {
+    it('Cell displays true output', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+
+      expect(codeCell.$('div.output_result').isEnabled()).toBeTruthy();
+      expect(codeCell.$('div.output_result').getText()).toBe('true');
+    });
+  });
+
+  describe('(Groovy) Show null execution result as null', function() {
+    it('Cell displays null output', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+
+      expect(codeCell.$('div.output_result').isEnabled()).toBeTruthy();
+      expect(codeCell.$('div.output_result').getText()).toBe('null');
+    });
+  });
+
+  describe('(Groovy) Do not show null execution result', function() {
+    it('Cell displays no output', function () {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+
+      expect(codeCell.$('div.output').getText()).toBe('');
+    });
+  });
+
+  describe('(Groovy) Jvm Repr', function() {
+    it('Displayer is properly loaded', function() {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+
+      expect(codeCell.$('div.output').getText()).toBe('');
+    });
+
+    it('Cell displays proper output', function() {
+      cellIndex += 1;
+      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
+
+      expect(codeCell.$('div.output_result').getText()).toBe('2');
+
     });
   });
 });

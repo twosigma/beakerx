@@ -1,6 +1,6 @@
 {
   "name": "beakerx-jupyterlab",
-  "version": "0.12.2",
+  "version": "0.13.0",
   "description": "BeakerX: Beaker Extensions for JupyterLab",
   "author": "Two Sigma Open Source, LLC",
   "main": "dist/index.js",
@@ -12,7 +12,7 @@
   "keywords": [
     "ipywidgets",
     "jupyterlab",
-    "jupyterlab extension"
+    "jupyterlab-extension"
   ],
   "scripts": {
     "build": "npm run build:src",

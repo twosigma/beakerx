@@ -52,6 +52,18 @@ public class EasyFormUpdateValueTest {
     assertThat(((ValueWidget) easyForm.getWidget(label)).getValue()).isEqualTo("new Value");
   }
 
+  @Test
+  public void shouldUpdatePasswordField() throws Exception {
+    //given
+    String label = "pass1";
+    EasyForm easyForm = new EasyForm("EasyForm with password field");
+    easyForm.addPasswordField(label);
+    //when
+    easyForm.getWidget(label).doUpdateValueWithCallback("new Value");
+    //then
+    assertThat(((ValueWidget) easyForm.getWidget(label)).getValue()).isEqualTo("new Value");
+  }
+
 
   @Test
   public void shouldUpdateRadioButton() throws Exception {

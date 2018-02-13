@@ -23,6 +23,7 @@ let modelStateMock: IDataGridModelState = {
   stringFormatForColumn: {},
   types: ['integer', 'integer'],
   values: [[1, 2],[0, 0]],
+  columnsVisible: {}
 };
 
 export default modelStateMock;

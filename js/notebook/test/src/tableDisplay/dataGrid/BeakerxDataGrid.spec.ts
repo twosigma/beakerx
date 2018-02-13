@@ -18,36 +18,23 @@ import * as sinon from 'sinon';
 import { expect } from 'chai';
 import { Widget } from "@phosphor/widgets";
 import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid";
-import DataGridColumn, { COLUMN_TYPES } from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
 import { BeakerxDataGridModel } from "@beakerx/tableDisplay/dataGrid/model/BeakerxDataGridModel";
+import modelStateMock from "./mock/modelStateMock";
+import ColumnManager from "@beakerx/tableDisplay/dataGrid/column/ColumnManager";
 
 describe('BeakerxDataGrid', () => {
   let dataGrid;
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, {
-      values: [2.4565656],
-      columnNames: ['test'],
-      types: ['double'],
-      stringFormatForColumn: null,
-      hasIndex: false,
-    });
+    dataGrid = new BeakerxDataGrid({}, modelStateMock);
   });
 
   after(() => {
     dataGrid.destroy();
   });
 
-  it('should create index column', () => {
-    expect(dataGrid.columns).to.have.property(`${COLUMN_TYPES.index}`);
-    expect(dataGrid.columns[COLUMN_TYPES.index]).to.have.length(1);
-    expect(dataGrid.columns[COLUMN_TYPES.index][0]).to.be.an.instanceof(DataGridColumn);
-  });
-
-  it('should create body column', () => {
-    expect(dataGrid.columns).to.have.property(`${COLUMN_TYPES.body}`);
-    expect(dataGrid.columns[COLUMN_TYPES.body]).to.have.length(1);
-    expect(dataGrid.columns[COLUMN_TYPES.body][0]).to.be.an.instanceof(DataGridColumn);
+  it('should create the columnManager', () => {
+    expect(dataGrid.columnManager).to.be.an.instanceof(ColumnManager);
   });
 
   it('should have the model property of type BeakerxDataGridModel', () => {
@@ -60,15 +47,12 @@ describe('BeakerxDataGrid', () => {
   });
 
   it('should implement destroy method', () => {
-    const destroyStub = sinon.stub(dataGrid, 'destroyAllColumns');
     const disposeStub = sinon.stub(dataGrid, 'dispose');
 
     dataGrid.destroy();
 
-    expect(destroyStub.calledOnce).to.be.true;
     expect(disposeStub.calledOnce).to.be.true;
 
-    destroyStub.restore();
     disposeStub.restore();
   });
 });

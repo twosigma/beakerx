@@ -20,25 +20,20 @@ import { BeakerxDataGrid } from "@beakerx/tableDisplay/dataGrid/BeakerxDataGrid"
 import ColumnMenu from "@beakerx/tableDisplay/dataGrid/headerMenu/ColumnMenu";
 import menuOptionsMock from "../mock/menuOptionsMock";
 import DataGridColumn, {COLUMN_TYPES} from "@beakerx/tableDisplay/dataGrid/column/DataGridColumn";
+import modelStateMock from "../mock/modelStateMock";
 
 describe('createColumnMenuItems', () => {
   let dataGrid;
   let column;
 
   before(() => {
-    dataGrid = new BeakerxDataGrid({}, {
-      values: [],
-      columnNames: [],
-      types: [],
-      stringFormatForColumn: null,
-      hasIndex: false
-    });
+    dataGrid = new BeakerxDataGrid({}, modelStateMock);
     column = new DataGridColumn({
       index: 0,
       type: COLUMN_TYPES.index,
       name: 'index',
       menuOptions: menuOptionsMock
-    }, dataGrid);
+    }, dataGrid, dataGrid.columnManager);
   });
 
   after(() => {

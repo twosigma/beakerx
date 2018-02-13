@@ -33,6 +33,13 @@ export default class ColumnIndexResolver {
     this.mapIndexes(COLUMN_TYPES.body, bodyColumnsState);
   }
 
+  resolveIndex(index: number, columnType: COLUMN_TYPES) {
+    return this.applyHasIndex(
+      this.columnIndexesMap[columnType][index],
+      columnType
+    );
+  }
+
   mapIndexes(columnType: COLUMN_TYPES, columnsState: IColumnsState) {
     let prevVisibleIndex = -1;
 
@@ -46,7 +53,7 @@ export default class ColumnIndexResolver {
     }
   }
 
-  getNexVisibleIndex(index: number, columnsState) {
+  private getNexVisibleIndex(index: number, columnsState) {
     if (columnsState.visibility[index] || index >= columnsState.visibility.length - 1) {
       return index;
     }
@@ -54,14 +61,7 @@ export default class ColumnIndexResolver {
     return this.getNexVisibleIndex(index + 1, columnsState);
   }
 
-  resolveIndex(index: number, columnType: COLUMN_TYPES) {
-    return this.applyHasIndex(
-      this.columnIndexesMap[columnType][index],
-      columnType
-    );
-  }
-
-  applyHasIndex(index: number, columnType: COLUMN_TYPES) {
+  private applyHasIndex(index: number, columnType: COLUMN_TYPES) {
     return this.hasIndex && columnType === COLUMN_TYPES.body
       ? index + 1
       : index;

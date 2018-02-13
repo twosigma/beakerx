@@ -20,7 +20,6 @@ var LabPageObject = require('./lab.po.js').prototype;
 var env = require('../tmp.config.js');
 
 function BeakerXPageObject() {
-
   if ('labx' == env.config.cur_env) {
     LabPageObject.constructor.apply(this, arguments);
     BeakerXPageObject.prototype = Object.create(LabPageObject);
@@ -29,13 +28,6 @@ function BeakerXPageObject() {
     NotebookPageObject.constructor.apply(this, arguments);
     BeakerXPageObject.prototype = Object.create(NotebookPageObject);
   }
-
-  this.clickRunCell = function () {
-    var cssRunCell = 'button[data-jupyter-action="jupyter-notebook:run-cell-and-select-next"]';
-    browser.waitForEnabled(cssRunCell);
-    browser.click(cssRunCell);
-    this.kernelIdleIcon.waitForEnabled();
-  };
 
   this.clickSaveNotebook = function () {
     browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
@@ -62,10 +54,6 @@ function BeakerXPageObject() {
     browser.click('=Cell');
     browser.waitForEnabled('=Run All');
     browser.click('=Run All')
-  };
-
-  this.getCodeCellByIndex = function (index) {
-    return $$('div.code_cell')[index];
   };
 
   this.getDtContainerByIndex = function (index) {
@@ -113,7 +101,7 @@ function BeakerXPageObject() {
 
   this.runCellToGetOutputTextElement = function (index) {
     var codeCell = this.runCodeCellByIndex(index);
-    return codeCell.$(this.allOutputTextCss);
+    return codeCell.$(this.getAllOutputTextCss());
   };
 
   this.plotLegendContainerIsEnabled = function (dtcontainer) {
@@ -144,7 +132,7 @@ function BeakerXPageObject() {
     codeCell.scroll();
     var resultTest;
     try {
-      resultTest = codeCell.$(this.allOutputTextCss).getText();
+      resultTest = codeCell.$(this.getAllOutputTextCss()).getText();
     } catch (e) {
       console.log(expectedText + ' --- ' + e.toString());
       resultTest = this.runCellToGetOutputTextElement(index).getText();
@@ -153,15 +141,15 @@ function BeakerXPageObject() {
   };
 
   this.waitAndCheckCellOutputStderrText = function (index, expectedText) {
-    this.waitAndCheckCellOutputText(index, expectedText, this.outputStderrCss);
+    this.waitAndCheckCellOutputText(index, expectedText, this.getOutputStderrCss());
   };
 
   this.waitAndCheckCellOutputStdoutText = function (index, expectedText) {
-    this.waitAndCheckCellOutputText(index, expectedText, this.outputStdoutCss);
+    this.waitAndCheckCellOutputText(index, expectedText, this.getOutputStdoutCss());
   };
 
   this.waitAndCheckCellOutputResultText = function (index, expectedText) {
-    this.waitAndCheckCellOutputText(index, expectedText, this.outputResultCss);
+    this.waitAndCheckCellOutputText(index, expectedText, this.getOutputResultCss());
   };
 
   this.waitAndCheckCellOutputText = function (index, expectedText, selector) {

@@ -17,13 +17,9 @@
 var NotebookPageObject = function () {
 
   this.kernelIdleIcon = $('i.kernel_idle_icon');
-  this.outputResultCss = 'div.output_subarea.output_text.output_result';
-  this.outputStderrCss = 'div.output_subarea.output_text.output_stderr';
-  this.outputStdoutCss = 'div.output_subarea.output_text.output_stdout';
-  this.allOutputTextCss = 'div.output_subarea.output_text';
 
   this.runNotebookByUrl = function(url){
-    console.log('----------notebook')
+    console.log('jupyter notebook application')
     browser.url('http://127.0.0.1:8888/notebooks' + url);
     this.kernelIdleIcon.waitForEnabled();
   };
@@ -43,6 +39,37 @@ var NotebookPageObject = function () {
     browser.moveToObject('=Toggle');
     browser.moveToObject('=Clear');
     browser.click('=Clear')
+  };
+
+  this.getCodeCellByIndex = function (index) {
+    return $$('div.code_cell')[index];
+  };
+
+  this.clickRunCell = function () {
+    var buttonRunCell = browser.$('button[data-jupyter-action="jupyter-notebook:run-cell-and-select-next"]');
+    buttonRunCell.waitForEnabled();
+    buttonRunCell.click();
+    this.kernelIdleIcon.waitForEnabled();
+  };
+
+  this.getOutputResultCss = function () {
+    return 'div.output_subarea.output_text.output_result';
+  };
+
+  this.getOutputStderrCss = function () {
+    return 'div.output_subarea.output_text.output_stderr';
+  };
+
+  this.getOutputStdoutCss = function () {
+    return 'div.output_subarea.output_text.output_stdout';
+  };
+
+  this.getAllOutputTextCss = function () {
+    return 'div.output_subarea.output_text';
+  };
+
+  this.getOutputWrapperOutputCss = function () {
+    return 'div.output_wrapper div.output';
   };
 
 };

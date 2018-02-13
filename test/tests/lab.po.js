@@ -16,13 +16,16 @@
 
 var LabPageObject = function () {
 
+  this.kernelIdleIcon = $('div.jp-Toolbar-kernelStatus.jp-CircleIcon');
+
   this.runNotebookByUrl = function(url){
-    console.log('------------labx');
+    console.log('jupyter lab application');
     browser.url('http://127.0.0.1:8888/lab');
     browser.waitUntil(function(){
       return browser.$('body').getAttribute('data-left-sidebar-widget') === 'filebrowser';
     });
     browser.$('div.p-Widget.jp-DirListing.jp-FileBrowser-listing').waitForEnabled();
+    browser.pause(2000);
     var dirs = url.split('/');
     var i = 0;
     while(dirs.length > i){
@@ -37,28 +40,54 @@ var LabPageObject = function () {
     }
   };
 
-  /* Close and  Shutdown Notebook */
+  /* Close and Shutdown Notebook */
   this.closeAndHaltNotebook = function () {
-    this.clearAllOutputsLab();
+    this.clearAllOutputs();
     browser.click('div=File');
-    browser.pause(3000);
-    // browser.$('li[data-command="filemenu:close-and-cleanup"]').waitForEnabled();
-    browser.$('li[data-command="filemenu:close-and-cleanup"]').click();
-    // browser.$('button.jp-Dialog-button.jp-mod-accept.jp-mod-warn.jp-mod-styled').waitForEnabled();
-    browser.pause(3000);
-    browser.$('button.jp-Dialog-button.jp-mod-accept.jp-mod-warn.jp-mod-styled').click();
-    browser.pause(3000);
+    var closeAndCleanupMenuItem = browser.$('li[data-command="filemenu:close-and-cleanup"]');
+    closeAndCleanupMenuItem.waitForEnabled();
+    closeAndCleanupMenuItem.click();
+    var acceptDialogButton = browser.$('button.jp-Dialog-button.jp-mod-accept.jp-mod-warn.jp-mod-styled');
+    acceptDialogButton.waitForEnabled();
+    acceptDialogButton.click();
   };
 
-  this.clearAllOutputsLab = function() {
+  this.clearAllOutputs = function() {
     browser.click('div=Edit');
-    browser.pause(3000);
-    // browser.$('li[data-command="filemenu:editmenu:clear-all"]').waitForEnabled();
-    browser.$('li[data-command="notebook:clear-all-cell-outputs"]').moveToObject();
-    browser.pause(3000);
-    browser.$('li[data-command="notebook:clear-all-cell-outputs"]').click();
-    browser.pause(3000);
+    var clearAllOutputsMenuItem = browser.$('li[data-command="editmenu:clear-all"]');
+    clearAllOutputsMenuItem.waitForEnabled();
+    clearAllOutputsMenuItem.click();
   }
 
+  this.getCodeCellByIndex = function (index) {
+    return $$('div.p-Widget.jp-Cell.jp-CodeCell.jp-Notebook-cell')[index];
+  };
+
+  this.clickRunCell = function () {
+    var buttonRunCell = browser.$('button.jp-Toolbar-button.jp-RunIcon.jp-Toolbar-item');
+    buttonRunCell.waitForEnabled();
+    buttonRunCell.click();
+    this.kernelIdleIcon.waitForEnabled();
+  };
+
+  this.getOutputResultCss = function () {
+    return 'div.jp-RenderedText.jp-OutputArea-output';
+  };
+
+  this.getOutputStderrCss = function () {
+    return 'div.jp-RenderedText.jp-OutputArea-output';
+  };
+
+  this.getOutputStdoutCss = function () {
+    return 'div.jp-RenderedText.jp-OutputArea-output';
+  };
+
+  this.getAllOutputTextCss = function () {
+    return 'div.jp-RenderedText.jp-OutputArea-output';
+  };
+
+  this.getOutputWrapperOutputCss = function () {
+    return 'div.jp-RenderedText.jp-OutputArea-output';
+  };
 };
 module.exports = LabPageObject;

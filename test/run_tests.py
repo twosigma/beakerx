@@ -23,6 +23,20 @@ import test_console
 here = os.path.abspath(os.path.dirname(__file__))
 beakerx_dir = os.path.abspath(os.path.join(here, ".."))
 test_dir = here
+cur_app = 'notebook'
+
+def set_env(cur_env):
+    tmpConfig = open(os.path.abspath(os.path.join(here, "tmp.config.js")), 'w')
+    tmpConfig.write("exports.config = { cur_env : '%s' }; " %cur_env)
+    tmpConfig.close()
+
+try:
+    cur_env = os.environ['CONDA_DEFAULT_ENV']
+    if cur_env == 'labx':
+        cur_app = 'lab'
+    set_env(cur_env)
+except:
+    sys.exit('Conda environment aren\'t activated')
 
 # update environment
 subprocess.call("yarn install", shell=True)
@@ -42,7 +56,7 @@ with open(os.devnull, "w") as fnull:
             break
 
 # start jupyter notebook
-nb_command = 'jupyter notebook --no-browser --notebook-dir="%s" --NotebookApp.token=""' % beakerx_dir
+nb_command = 'jupyter %(env)s --no-browser --notebook-dir="%(dir)s" --NotebookApp.token=""' % { "env" : cur_app, "dir" : beakerx_dir }
 beakerx = subprocess.Popen(nb_command, shell=True, executable="/bin/bash", preexec_fn=os.setsid, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
 # wait for notebook server to start up
 while 1:

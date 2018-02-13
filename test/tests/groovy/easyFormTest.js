@@ -21,7 +21,7 @@ describe('(Groovy) Testing of EasyForm', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/EasyFormTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/EasyFormTest.ipynb');
   }, 2);
 
   afterAll(function () {

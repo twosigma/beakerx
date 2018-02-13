@@ -21,7 +21,7 @@ describe('big ints tests', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/BigIntsTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/BigIntsTest.ipynb');
   }, 2);
 
   afterAll(function () {

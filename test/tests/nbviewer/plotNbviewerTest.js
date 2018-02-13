@@ -27,8 +27,8 @@ describe('Publish plot groovy notebook tests', function () {
     beakerxPO = new BeakerXPageObject();
     plotHelper = new PlotHelperObject();
     tableHelper = new TableHelperObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/nbviewer/PlotNbviewerTest.ipynb');
-  });
+    beakerxPO.runNotebookByUrl('/test/notebooks/nbviewer/PlotNbviewerTest.ipynb');
+  }, 2);
 
   afterAll(function () {
     browser.window(browser.windowHandles().value[0]);

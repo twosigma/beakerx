@@ -21,7 +21,7 @@ describe('JavaTutorial notebook', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/java/JavaTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/java/JavaTest.ipynb');
   }, 2);
 
   afterAll(function () {

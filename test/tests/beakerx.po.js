@@ -14,55 +14,30 @@
  *  limitations under the License.
  */
 
-var BeakerXPageObject = function () {
+var NotebookPageObject = require('./notebook.po.js').prototype;
+var LabPageObject = require('./lab.po.js').prototype;
 
-  this.baseDocURL = 'http://127.0.0.1:8888/tree/doc/contents';
-  this.baseTestURL = 'http://127.0.0.1:8888/tree/test/notebooks';
-  this.kernelIdleIcon = $('i.kernel_idle_icon');
-  this.outputResultCss = 'div.output_subarea.output_text.output_result';
-  this.outputStderrCss = 'div.output_subarea.output_text.output_stderr';
-  this.outputStdoutCss = 'div.output_subarea.output_text.output_stdout';
-  this.allOutputTextCss = 'div.output_subarea.output_text';
+var env = require('../tmp.config.js');
 
-  this.runNotebookByName = function(name, done, subDir){
-    browser
-      .url(subDir === undefined ? this.baseDocURL : this.baseDocURL + '/' + subDir)
-      .call(done);
-    browser.waitForEnabled('=' + name);
-    browser.click('=' + name);
-    browser.window(browser.windowHandles().value[1]);
-  };
-
-  this.runNotebookByUrl = function(url){
-    browser.url('http://127.0.0.1:8888' + url);
-    this.kernelIdleIcon.waitForEnabled();
-  };
-
-  this.clickRunCell = function () {
-    var cssRunCell = 'button[data-jupyter-action="jupyter-notebook:run-cell-and-select-next"]';
-    browser.waitForEnabled(cssRunCell);
-    browser.click(cssRunCell);
-    this.kernelIdleIcon.waitForEnabled();
-  };
+function BeakerXPageObject() {
+  if ('labx' == env.config.cur_env) {
+    LabPageObject.constructor.apply(this, arguments);
+    BeakerXPageObject.prototype = Object.create(LabPageObject);
+  }
+  else if ('beakerx' == env.config.cur_env) {
+    NotebookPageObject.constructor.apply(this, arguments);
+    BeakerXPageObject.prototype = Object.create(NotebookPageObject);
+  }
 
   this.clickSaveNotebook = function () {
     browser.click('button[data-jupyter-action="jupyter-notebook:save-notebook"]');
   };
 
-  this.clickCellAllOutputClear = function () {
-    browser.click('=Cell');
-    browser.waitForEnabled('=All Output');
-    browser.moveToObject('=All Output');
-    browser.moveToObject('=Toggle');
-    browser.moveToObject('=Clear');
-    browser.click('=Clear')
-  };
-
-  this.clickPublish = function(){
+  this.clickPublish = function () {
     browser.$('button[title="Publish..."]').click();
   };
 
-  this.publishAndOpenNbviewerWindow = function() {
+  this.publishAndOpenNbviewerWindow = function () {
     this.clickPublish();
     browser.pause(1000);
     browser.$('button.btn.btn-default.btn-sm.btn-primary').click();
@@ -75,22 +50,10 @@ var BeakerXPageObject = function () {
     console.log(browser.getUrl());
   };
 
-  this.closeAndHaltNotebook = function () {
-    this.clickCellAllOutputClear();
-    browser.click('=File');
-    browser.waitForEnabled('=Close and Halt');
-    browser.click('=Close and Halt');
-    browser.endAll();
-  };
-
   this.clickCellRunAll = function () {
     browser.click('=Cell');
     browser.waitForEnabled('=Run All');
     browser.click('=Run All')
-  };
-
-  this.getCodeCellByIndex = function (index) {
-    return $$('div.code_cell')[index];
   };
 
   this.getDtContainerByIndex = function (index) {
@@ -113,83 +76,83 @@ var BeakerXPageObject = function () {
     return codeCell;
   };
 
-  this.runCellToGetDtContainer = function(index){
+  this.runCellToGetDtContainer = function (index) {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.dtcontainer');
   };
 
-  this.runCellToGetSvgElement = function(index){
+  this.runCellToGetSvgElement = function (index) {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('#svgg');
   };
 
-  this.runCellAndCheckOutputText = function(index, expectedText){
+  this.runCellAndCheckOutputText = function (index, expectedText) {
     var resultTest;
-    try{
+    try {
       resultTest = this.runCellToGetOutputTextElement(index).getText();
-    }catch(e){
+    } catch (e) {
       console.log(expectedText + ' --- ' + e.toString());
       resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
   };
 
-  this.runCellToGetOutputTextElement = function(index){
+  this.runCellToGetOutputTextElement = function (index) {
     var codeCell = this.runCodeCellByIndex(index);
-    return codeCell.$(this.allOutputTextCss);
+    return codeCell.$(this.getAllOutputTextCss());
   };
 
-  this.plotLegendContainerIsEnabled = function(dtcontainer){
+  this.plotLegendContainerIsEnabled = function (dtcontainer) {
     var plotLegendContainer = dtcontainer.$('#plotLegendContainer');
     plotLegendContainer.waitForEnabled();
   };
 
-  this.runCellToGetWidgetElement = function(index){
+  this.runCellToGetWidgetElement = function (index) {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.jupyter-widgets');
   };
 
-  this.runCellToGetEasyForm = function(index){
+  this.runCellToGetEasyForm = function (index) {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.beaker-easyform-container');
   };
 
-  this.runCellToGetTableElement = function(index){
+  this.runCellToGetTableElement = function (index) {
     this.kernelIdleIcon.waitForEnabled();
     var codeCell = this.runCodeCellByIndex(index);
     return codeCell.$('div.dataTables_scrollBody');
   };
 
-  this.checkCellOutputText = function(index, expectedText){
+  this.checkCellOutputText = function (index, expectedText) {
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();
     var resultTest;
-    try{
-      resultTest = codeCell.$(this.allOutputTextCss).getText();
-    }catch(e){
+    try {
+      resultTest = codeCell.$(this.getAllOutputTextCss()).getText();
+    } catch (e) {
       console.log(expectedText + ' --- ' + e.toString());
       resultTest = this.runCellToGetOutputTextElement(index).getText();
     }
     expect(resultTest).toMatch(expectedText);
   };
 
-  this.waitAndCheckCellOutputStderrText = function(index, expectedText){
-    this.waitAndCheckCellOutputText(index, expectedText, this.outputStderrCss);
+  this.waitAndCheckCellOutputStderrText = function (index, expectedText) {
+    this.waitAndCheckCellOutputText(index, expectedText, this.getOutputStderrCss());
   };
 
-  this.waitAndCheckCellOutputStdoutText = function(index, expectedText){
-    this.waitAndCheckCellOutputText(index, expectedText, this.outputStdoutCss);
+  this.waitAndCheckCellOutputStdoutText = function (index, expectedText) {
+    this.waitAndCheckCellOutputText(index, expectedText, this.getOutputStdoutCss());
   };
 
-  this.waitAndCheckCellOutputResultText = function(index, expectedText){
-    this.waitAndCheckCellOutputText(index, expectedText, this.outputResultCss);
+  this.waitAndCheckCellOutputResultText = function (index, expectedText) {
+    this.waitAndCheckCellOutputText(index, expectedText, this.getOutputResultCss());
   };
 
-  this.waitAndCheckCellOutputText = function(index, expectedText, selector){
+  this.waitAndCheckCellOutputText = function (index, expectedText, selector) {
     var codeCell = this.getCodeCellByIndex(index);
     codeCell.scroll();
     browser.waitUntil(function () {
@@ -198,18 +161,18 @@ var BeakerXPageObject = function () {
     }, 50000, 'expected output toMatch ' + expectedText);
   };
 
-  this.getTableColumnLabel = function(tableIndex, columnIndex){
+  this.getTableColumnLabel = function (tableIndex, columnIndex) {
     var table = $$("div.dataTables_scrollHead") [tableIndex];
     var tableColumnLabels = table.$$("span.header-text");
     return tableColumnLabels[columnIndex];
   };
 
-  this.getTableCell = function(tableIndex, rowIndex, columnIndex){
+  this.getTableCell = function (tableIndex, rowIndex, columnIndex) {
     var table = $$("div.dataTables_scrollBody") [tableIndex];
     var tableRows = table.$$("tbody tr");
     var rowCells = tableRows[rowIndex].$$("td");
-  return rowCells[columnIndex];
+    return rowCells[columnIndex];
   };
-
 };
+
 module.exports = BeakerXPageObject;

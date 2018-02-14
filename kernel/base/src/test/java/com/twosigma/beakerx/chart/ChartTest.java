@@ -24,7 +24,7 @@ import com.twosigma.beakerx.chart.serializer.LegendPositionSerializer;
 import com.twosigma.beakerx.chart.xychart.XYChart;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.chart.BeakerxPlot;
+import com.twosigma.beakerx.widget.chart.BeakerxPlot;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,8 +47,8 @@ import static com.twosigma.beakerx.chart.serializer.ChartSerializer.INIT_HEIGHT;
 import static com.twosigma.beakerx.chart.serializer.ChartSerializer.INIT_WIDTH;
 import static com.twosigma.beakerx.chart.serializer.ChartSerializer.LEGEND_LAYOUT;
 import static com.twosigma.beakerx.chart.serializer.ChartSerializer.LEGEND_POSITION;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getMessageUpdate;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getMessageUpdate;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class ChartTest<T extends Chart> {

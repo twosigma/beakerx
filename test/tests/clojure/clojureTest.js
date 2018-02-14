@@ -21,7 +21,7 @@ describe('ClojureTutorial notebook', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/clojure/ClojureTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/clojure/ClojureTest.ipynb');
   }, 2);
 
   afterAll(function () {

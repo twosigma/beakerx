@@ -21,7 +21,7 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.msg.JupyterMessages;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.TestWidgetUtils;
+import com.twosigma.beakerx.widget.TestWidgetUtils;
 
 import java.util.List;
 import java.util.Optional;

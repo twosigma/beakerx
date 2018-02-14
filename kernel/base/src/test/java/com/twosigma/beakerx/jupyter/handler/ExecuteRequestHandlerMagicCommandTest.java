@@ -122,7 +122,7 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void handleImportMagicCommandAndExecuteTheCode() throws Exception {
     //given
     String code = "" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
+            "%import com.twosigma.beakerx.widget.integers.IntSlider\n" +
             "w = new IntSlider()";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     //when
@@ -136,9 +136,9 @@ public class ExecuteRequestHandlerMagicCommandTest {
   public void noResetEnvironmentForDuplicatedImportPath() throws Exception {
     //when
     String code = "" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n" +
-            "%import com.twosigma.beakerx.widgets.integers.IntSlider\n";
+            "%import com.twosigma.beakerx.widget.integers.IntSlider\n" +
+            "%import com.twosigma.beakerx.widget.integers.IntSlider\n" +
+            "%import com.twosigma.beakerx.widget.integers.IntSlider\n";
     Message magicMessage = JupyterHandlerTest.createExecuteRequestMessage(code);
     executeRequestHandler.handle(magicMessage);
     waitForIdleMessage(kernel);

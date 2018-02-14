@@ -19,8 +19,8 @@ import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.message.Message;
 import org.junit.Test;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beakerx.widgets.Widget.VALUE;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widget.Widget.VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TextFieldWidgetTest extends EasyFormWidgetTest {

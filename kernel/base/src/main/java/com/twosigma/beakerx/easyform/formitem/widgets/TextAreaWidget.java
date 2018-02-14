@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.strings.Textarea;
+import com.twosigma.beakerx.widget.strings.Textarea;
 
 public class TextAreaWidget extends EasyFormComponent<Textarea> {
 

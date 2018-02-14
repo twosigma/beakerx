@@ -18,7 +18,7 @@ package com.twosigma.beakerx.table;
 import com.twosigma.beakerx.NamespaceClient;
 import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.table.action.TableActionDetails;
-import com.twosigma.beakerx.widgets.CommActions;
+import com.twosigma.beakerx.widget.CommActions;
 
 import java.util.ArrayList;
 import java.util.HashMap;

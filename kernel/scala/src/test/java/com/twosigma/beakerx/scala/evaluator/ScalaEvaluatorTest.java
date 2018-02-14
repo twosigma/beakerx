@@ -25,7 +25,7 @@ import com.twosigma.beakerx.kernel.PathToJar;
 import com.twosigma.beakerx.scala.TestScalaEvaluator;
 import com.twosigma.beakerx.scala.kernel.ScalaKernelMock;
 
-import com.twosigma.beakerx.widgets.DisplayableWidget;
+import com.twosigma.beakerx.widget.DisplayableWidget;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

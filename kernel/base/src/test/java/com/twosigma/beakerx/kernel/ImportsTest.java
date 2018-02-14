@@ -37,11 +37,11 @@ public class ImportsTest {
   @Test
   public void shouldNotHaveDuplications() throws Exception {
     //given
-    ImportPath anImport = new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider");
+    ImportPath anImport = new ImportPath("com.twosigma.beakerx.widget.integers.IntSlider");
     //when
     assertThat(imports.add(anImport, urlClassLoader)).isEqualTo(AddImportStatus.ADDED);
     assertThat(imports.add(anImport, urlClassLoader)).isEqualTo(AddImportStatus.EXISTS);
     //then
-    assertThat(imports.getImportPaths()).containsExactly(new ImportPath("com.twosigma.beakerx.widgets.integers.IntSlider"));
+    assertThat(imports.getImportPaths()).containsExactly(new ImportPath("com.twosigma.beakerx.widget.integers.IntSlider"));
   }
 }

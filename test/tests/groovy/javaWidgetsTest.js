@@ -21,7 +21,7 @@ describe('Java widgets notebook', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/JavaWidgetsTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/JavaWidgetsTest.ipynb');
   }, 2);
 
   afterAll(function () {

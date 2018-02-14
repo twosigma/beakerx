@@ -40,23 +40,23 @@ describe('(Groovy) Testing of Kernel API', function () {
 
     it('Jar file is loaded correctly', function () {
       cellIndex = 0;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(codeCell.$('div.output_subarea').isEnabled()).toBeTruthy();
-      expect(codeCell.$('div.output_subarea').getText()).toBe(testValues.loadJarSuccess);
+      var output = beakerxPO.runCellToGetOutputTextElement(cellIndex);
+      expect(output.isEnabled()).toBeTruthy();
+      expect(output.getText()).toBe(testValues.loadJarSuccess);
     });
 
     it('Magic command is added successfully', function () {
       cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(codeCell.$('div.output_subarea').isEnabled()).toBeTruthy();
-      expect(codeCell.$('div.output_subarea').getText()).toBe(testValues.magicCommandSuccess);
+      var output = beakerxPO.runCellToGetOutputTextElement(cellIndex);
+      expect(output.isEnabled()).toBeTruthy();
+      expect(output.getText()).toBe(testValues.magicCommandSuccess);
     });
 
     it('Envs are displayed correctly', function () {
       cellIndex += 1;
-      var codeCell = beakerxPO.runCodeCellByIndex(cellIndex);
-      expect(codeCell.$('div.output_subarea').isEnabled()).toBeTruthy();
-      expect(codeCell.$('div.output_subarea').getText()).toContain(testValues.envs);
+      var output = beakerxPO.runCellToGetOutputTextElement(cellIndex);
+      expect(output.isEnabled()).toBeTruthy();
+      expect(output.getText()).toContain(testValues.envs);
     });
   });
 

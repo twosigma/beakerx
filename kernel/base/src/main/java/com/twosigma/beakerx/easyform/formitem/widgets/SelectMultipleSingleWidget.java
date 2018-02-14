@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.formitem.ListComponent;
-import com.twosigma.beakerx.widgets.selections.SelectMultipleSingle;
+import com.twosigma.beakerx.widget.selections.SelectMultipleSingle;
 
 import java.util.ArrayList;
 import java.util.Collection;

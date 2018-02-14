@@ -16,7 +16,7 @@
 
 exports.config = {
   specs: [
-    './tests/**/*.js'
+    './js/**/*.js'
   ],
   exclude: [],
   maxInstances: 1,

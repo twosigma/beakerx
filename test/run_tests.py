@@ -79,7 +79,7 @@ def signal_handler(sgnl, frame):
     test_util.kill_processes('webdriver')
     test_util.kill_processes('java')
     sys.exit(20)
-signal.signal(signal.SIGINT, test_util.signal_handler)
+signal.signal(signal.SIGINT, signal_handler)
 
 #start webdriverio
 result=subprocess.call("yarn run test", shell=True)

@@ -35,7 +35,7 @@ try:
     elif test_util.hasCondaPackage('jupyterlab'):
         cur_app = 'lab'
     else:
-        sys.exit('can\'t define target app for test')
+        cur_app = 'notebook'
 except Exception as e:
     sys.exit(e.strerr)
 

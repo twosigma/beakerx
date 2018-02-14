@@ -21,7 +21,7 @@ describe('(Groovy) Testing of Loading Magic Command', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/LoadMagicCommandTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/LoadMagicCommandTest.ipynb');
   }, 2);
 
   afterAll(function () {

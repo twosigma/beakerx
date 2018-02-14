@@ -21,7 +21,7 @@ describe('Scala notebook', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/notebooks/scala/SparkScalaTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/scala/SparkScalaTest.ipynb');
   });
 
   afterAll(function () {

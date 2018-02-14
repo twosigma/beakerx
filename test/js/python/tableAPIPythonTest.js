@@ -24,7 +24,7 @@ describe('Testing of table (python)', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     tableHelper = new TableHelperObject();
-    beakerxPO.runNotebookByUrl('/test/notebooks/python/TableAPIPythonTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/python/TableAPIPythonTest.ipynb');
   });
 
   afterAll(function () {

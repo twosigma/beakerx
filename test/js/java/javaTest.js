@@ -21,7 +21,7 @@ describe('JavaTutorial notebook', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/notebooks/java/JavaTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/java/JavaTest.ipynb');
   }, 2);
 
   afterAll(function () {
@@ -65,10 +65,10 @@ describe('JavaTutorial notebook', function () {
   });
 
   describe('Run 7th cell. ', function () {
-    it('Output contains "beakerx/test/notebooks"', function () {
+    it('Output contains "beakerx/test/ipynb"', function () {
       beakerxPO.runCodeCellByIndex(5);
       beakerxPO.kernelIdleIcon.waitForEnabled();
-      beakerxPO.runCellAndCheckOutputText(6, 'beakerx\.test\.notebooks');
+      beakerxPO.runCellAndCheckOutputText(6, 'beakerx\.test\.ipynb');
     }, 2);
   });
 

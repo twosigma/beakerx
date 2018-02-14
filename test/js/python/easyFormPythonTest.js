@@ -21,7 +21,7 @@ describe('(Python) Testing of EasyForm', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/notebooks/python/EasyFormPythonTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/python/EasyFormPythonTest.ipynb');
   }, 2);
 
   afterAll(function () {

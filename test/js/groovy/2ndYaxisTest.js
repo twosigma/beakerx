@@ -21,7 +21,7 @@ describe('2nd Y Axis js', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/2ndYaxisTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/2ndYaxisTest.ipynb');
   }, 2);
 
   afterAll(function () {

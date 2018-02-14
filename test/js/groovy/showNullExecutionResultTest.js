@@ -21,7 +21,7 @@ describe('(Groovy) Testing of showing the null execution result', function() {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/ShowNullExecutionResultTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/ShowNullExecutionResultTest.ipynb');
   }, 2);
 
   afterAll(function () {

@@ -21,7 +21,7 @@ describe('Tests for combination of code and magics', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/codeAndMagicsTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/codeAndMagicsTest.ipynb');
   });
 
   afterAll(function () {

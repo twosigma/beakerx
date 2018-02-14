@@ -21,7 +21,7 @@ describe('Testing of plot Actions', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/PlotActionsTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/PlotActionsTest.ipynb');
   }, 2);
 
   afterAll(function () {

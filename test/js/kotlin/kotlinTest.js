@@ -21,7 +21,7 @@ describe('Kotlin-example notebook', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/notebooks/kotlin/KotlinTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/kotlin/KotlinTest.ipynb');
   }, 2);
 
   afterAll(function () {

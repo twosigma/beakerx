@@ -21,7 +21,7 @@ describe('Groovy js', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/GroovyTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/ipynb/groovy/GroovyTest.ipynb');
   }, 2);
 
   afterAll(function () {

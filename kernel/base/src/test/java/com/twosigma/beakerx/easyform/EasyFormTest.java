@@ -23,8 +23,8 @@ import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyInternalOpenComm
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
 import static com.twosigma.beakerx.widget.Widget.VALUE;
-import static com.twosigma.beakerx.widget.strings.PasswordTest.verifyPasswordField;
-import static com.twosigma.beakerx.widget.strings.TextTest.verifyTextField;
+import static com.twosigma.beakerx.widget.string.PasswordTest.verifyPasswordField;
+import static com.twosigma.beakerx.widget.string.TextTest.verifyTextField;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,16 +36,16 @@ import com.twosigma.beakerx.widget.BeakerxWidget;
 import com.twosigma.beakerx.widget.Button;
 import com.twosigma.beakerx.widget.DatePicker;
 import com.twosigma.beakerx.widget.Widget;
-import com.twosigma.beakerx.widget.bools.Checkbox;
+import com.twosigma.beakerx.widget.bool.Checkbox;
 import com.twosigma.beakerx.widget.box.Box;
 import com.twosigma.beakerx.widget.box.HBox;
-import com.twosigma.beakerx.widget.selections.ComboBox;
-import com.twosigma.beakerx.widget.selections.RadioButtons;
-import com.twosigma.beakerx.widget.selections.SelectMultiple;
-import com.twosigma.beakerx.widget.selections.SelectMultipleSingle;
-import com.twosigma.beakerx.widget.strings.Password;
-import com.twosigma.beakerx.widget.strings.Text;
-import com.twosigma.beakerx.widget.strings.Textarea;
+import com.twosigma.beakerx.widget.selection.ComboBox;
+import com.twosigma.beakerx.widget.selection.RadioButtons;
+import com.twosigma.beakerx.widget.selection.SelectMultiple;
+import com.twosigma.beakerx.widget.selection.SelectMultipleSingle;
+import com.twosigma.beakerx.widget.string.Password;
+import com.twosigma.beakerx.widget.string.Text;
+import com.twosigma.beakerx.widget.string.Textarea;
 
 import java.util.List;
 import java.util.Map;

@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widget.selections.ComboBox;
+import com.twosigma.beakerx.widget.selection.ComboBox;
 import org.junit.Test;
 
 public class ComboBoxWidgetTest extends EasyFormWidgetTest {

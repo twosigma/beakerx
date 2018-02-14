@@ -24,11 +24,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.twosigma.beakerx.widget.bools.Checkbox;
+import com.twosigma.beakerx.widget.bool.Checkbox;
 import com.twosigma.beakerx.widget.floats.FloatSlider;
-import com.twosigma.beakerx.widget.integers.IntSlider;
-import com.twosigma.beakerx.widget.selections.Dropdown;
-import com.twosigma.beakerx.widget.strings.Text;
+import com.twosigma.beakerx.widget.integer.IntSlider;
+import com.twosigma.beakerx.widget.selection.Dropdown;
+import com.twosigma.beakerx.widget.string.Text;
 
 public class InteractiveBase {
 

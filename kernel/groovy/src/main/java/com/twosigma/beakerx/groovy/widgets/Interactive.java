@@ -19,7 +19,7 @@ import com.twosigma.beakerx.message.Message;
 import com.twosigma.beakerx.widget.InteractiveBase;
 import com.twosigma.beakerx.widget.ValueWidget;
 import com.twosigma.beakerx.widget.Widget;
-import com.twosigma.beakerx.widget.strings.Label;
+import com.twosigma.beakerx.widget.string.Label;
 
 import java.util.ArrayList;
 import java.util.List;

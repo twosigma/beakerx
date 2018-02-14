@@ -47,7 +47,7 @@ public class ImportMagicCommandTest {
   @Test
   public void addImport() {
     //given
-    String allCode = "%import com.twosigma.beakerx.widget.integers.IntSlider\n" +
+    String allCode = "%import com.twosigma.beakerx.widget.integer.IntSlider\n" +
             "w = new IntSlider()";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     //when
@@ -55,30 +55,30 @@ public class ImportMagicCommandTest {
     //then
     PlainCode actual = (PlainCode) code.getCodeFrames().get(1);
     assertThat(actual.getPlainCode()).isEqualTo("w = new IntSlider()");
-    assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widget.integers.IntSlider"));
+    assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widget.integer.IntSlider"));
   }
 
   @Test
   public void removeImport() {
     //given
-    String allCode = "%import com.twosigma.beakerx.widget.integers.IntSlider\n";
+    String allCode = "%import com.twosigma.beakerx.widget.integer.IntSlider\n";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     code.execute(kernel, 1);
-    assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widget.integers.IntSlider"));
+    assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widget.integer.IntSlider"));
     //when
-    String allRemoveCode = "%unimport com.twosigma.beakerx.widget.integers.IntSlider\n";
+    String allRemoveCode = "%unimport com.twosigma.beakerx.widget.integer.IntSlider\n";
     Code codeToRemove = CodeFactory.create(allRemoveCode, new Message(), kernel);
     codeToRemove.execute(kernel, 2);
     //then
-    assertThat(kernel.getImports().getImportPaths()).doesNotContain(new ImportPath("com.twosigma.beakerx.widget.integers.IntSlider"));
+    assertThat(kernel.getImports().getImportPaths()).doesNotContain(new ImportPath("com.twosigma.beakerx.widget.integer.IntSlider"));
   }
 
   @Test
   public void allowExtraWhitespaces() {
-    String allCode = "%import       com.twosigma.beakerx.widget.integers.IntSlider";
+    String allCode = "%import       com.twosigma.beakerx.widget.integer.IntSlider";
     Code code = CodeFactory.create(allCode, new Message(), kernel);
     code.execute(kernel, 1);
-    assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widget.integers.IntSlider"));
+    assertThat(kernel.getImports().getImportPaths()).contains(new ImportPath("com.twosigma.beakerx.widget.integer.IntSlider"));
   }
 
   @Test

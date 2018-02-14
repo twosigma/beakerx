@@ -21,7 +21,7 @@ import com.twosigma.beakerx.groovy.TestGroovyEvaluator;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beakerx.KernelTest;
-import com.twosigma.beakerx.widget.integers.IntProgress;
+import com.twosigma.beakerx.widget.integer.IntProgress;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

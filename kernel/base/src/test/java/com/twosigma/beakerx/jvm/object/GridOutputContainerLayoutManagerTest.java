@@ -23,7 +23,7 @@ import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.widget.TestWidgetUtils;
 import com.twosigma.beakerx.widget.box.GridView;
 import com.twosigma.beakerx.widget.box.HBox;
-import com.twosigma.beakerx.widget.integers.IntText;
+import com.twosigma.beakerx.widget.integer.IntText;
 import com.twosigma.beakerx.message.Message;
 import org.junit.After;
 import org.junit.Before;

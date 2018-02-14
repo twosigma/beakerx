@@ -18,11 +18,11 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.widget.ValueWidget;
 import com.twosigma.beakerx.widget.Widget;
-import com.twosigma.beakerx.widget.bools.BoolWidget;
+import com.twosigma.beakerx.widget.bool.BoolWidget;
 import com.twosigma.beakerx.widget.box.Box;
 import com.twosigma.beakerx.widget.box.HBox;
 import com.twosigma.beakerx.widget.box.VBox;
-import com.twosigma.beakerx.widget.strings.Label;
+import com.twosigma.beakerx.widget.string.Label;
 
 import java.util.ArrayList;
 import java.util.Arrays;

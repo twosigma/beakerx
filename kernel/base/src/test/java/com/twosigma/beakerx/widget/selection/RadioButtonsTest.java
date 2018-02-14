@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.selections;
+package com.twosigma.beakerx.widget.selection;
 
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
@@ -26,7 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
-public class DropdownTest {
+public class RadioButtonsTest {
 
   private KernelTest kernel;
 
@@ -45,37 +45,34 @@ public class DropdownTest {
   public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     //when
-    new Dropdown();
+    new RadioButtons();
     //then
-    verifyOpenCommMsg(kernel.getPublishedMessages(), Dropdown.MODEL_NAME_VALUE, Dropdown.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(kernel.getPublishedMessages(), RadioButtons.MODEL_NAME_VALUE, RadioButtons.VIEW_NAME_VALUE);
   }
 
   @Test
   public void shouldSendCommMsgWhenValueChange() throws Exception {
     //given
-    Dropdown dropdown = dropdown();
+    RadioButtons widget = radioButtons();
     //when
-    dropdown.setValue("1");
+    widget.setValue("1");
     //then
-    verifyMsgForProperty(kernel, Dropdown.VALUE, "1");
+    verifyMsgForProperty(kernel, RadioButtons.VALUE, "1");
   }
 
   @Test
   public void shouldSendCommMsgWhenOptionsChange() throws Exception {
     //given
-    Dropdown dropdown = dropdown();
+    RadioButtons widget = radioButtons();
     //when
-    dropdown.setOptions(new String[]{"2", "3"});
+    widget.setOptions(new String[]{"2", "3"});
     //then
-    verifyMsgForProperty(kernel, Dropdown.OPTIONS_LABELS, new String[]{"2", "3"});
+    verifyMsgForProperty(kernel, RadioButtons.OPTIONS_LABELS, new String[]{"2", "3"});
   }
 
-  private Dropdown dropdown() throws NoSuchAlgorithmException {
-    Dropdown widget = new Dropdown();
-    widget.setOptions(new String[]{"0", "1", "2"});
-
+  private RadioButtons radioButtons() throws NoSuchAlgorithmException {
+    RadioButtons widget = new RadioButtons();
     kernel.clearPublishedMessages();
     return widget;
   }
-
 }

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beakerx.widget.selections;
+package com.twosigma.beakerx.widget.selection;
 
 import com.twosigma.beakerx.widget.BeakerxWidget;
 

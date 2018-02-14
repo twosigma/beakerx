@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.twosigma.beakerx.widget.bool.Checkbox;
 import com.twosigma.beakerx.widget.floats.FloatSlider;
 import com.twosigma.beakerx.widget.integer.IntSlider;
-import com.twosigma.beakerx.widget.selections.Dropdown;
+import com.twosigma.beakerx.widget.selection.Dropdown;
 import com.twosigma.beakerx.widget.strings.Text;
 
 public class InteractiveBase {

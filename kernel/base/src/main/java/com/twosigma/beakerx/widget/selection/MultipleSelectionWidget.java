@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.selections;
+package com.twosigma.beakerx.widget.selection;
 
 import com.google.common.collect.Lists;
 import com.twosigma.beakerx.widget.Widget;

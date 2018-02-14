@@ -17,7 +17,7 @@ package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
 import com.twosigma.beakerx.widget.ValueWidget;
-import com.twosigma.beakerx.widget.selections.RadioButtons;
+import com.twosigma.beakerx.widget.selection.RadioButtons;
 import com.twosigma.beakerx.widget.box.HBox;
 
 import java.util.Arrays;

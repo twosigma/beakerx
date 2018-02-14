@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.selections;
+package com.twosigma.beakerx.widget.selection;
 
 import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.kernel.KernelManager;
@@ -24,10 +24,10 @@ import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
 
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
-import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
-public class SelectionSliderTest {
+public class ComboBoxTest {
 
   private KernelTest kernel;
 
@@ -43,63 +43,66 @@ public class SelectionSliderTest {
   }
 
   @Test
-  public void createSelectionSlider_shouldSendCommOpenMessage() throws Exception {
+  public void createWithBooleanParam_shouldSendCommOpenMessage() throws Exception {
     //given
     //when
-    new SelectionSlider();
+    new ComboBox(true);
     //then
-    verifyOpenCommMsg(
+    verifyInternalOpenCommMsgWitLayout(
         kernel.getPublishedMessages(),
-        SelectionSlider.MODEL_NAME_VALUE,
-        SelectionSlider.VIEW_NAME_VALUE
+        ComboBox.MODEL_NAME_VALUE,
+        ComboBox.VIEW_NAME_VALUE
     );
   }
 
   @Test
-  public void setOptions_shouldSendCommMessage() throws Exception {
+  public void createWithEmptyConstructor_shouldSendCommOpenMessage() throws Exception {
+    //given
+    //when
+    new ComboBox();
+    //then
+    verifyInternalOpenCommMsgWitLayout(
+        kernel.getPublishedMessages(),
+        ComboBox.MODEL_NAME_VALUE,
+        ComboBox.VIEW_NAME_VALUE
+    );
+  }
+
+  @Test
+  public void updateValue_shouldSendCommMessage() throws Exception {
     String expected = "test";
     //given
-    SelectionSlider selectionSlider = selectionSlider();
+    ComboBox comboBox = comboBox();
     //when
-    selectionSlider.setOptions(expected);
+    comboBox.updateValue(expected);
     //then
-    verifyMsgForProperty(kernel, SelectionSlider.OPTIONS_LABELS, expected);
+    verifyMsgForProperty(kernel, ComboBox.VALUE, expected);
+  }
+
+  @Test
+  public void setEditable_hasThatEditableFlag() throws Exception {
+    boolean expected = true;
+    //given
+    ComboBox comboBox = comboBox();
+    //when
+    comboBox.setEditable(expected);
+    //then
+    Assertions.assertThat(comboBox.getEditable()).isEqualTo(expected);
   }
 
   @Test
   public void setSize_hasThatSize() throws Exception {
     int expected = 10;
     //given
-    SelectionSlider selectionSlider = selectionSlider();
+    ComboBox comboBox = comboBox();
     //when
-    selectionSlider.setSize(expected);
+    comboBox.setSize(expected);
     //then
-    Assertions.assertThat(selectionSlider.getSize()).isEqualTo(expected);
+    Assertions.assertThat(comboBox.getSize()).isEqualTo(expected);
   }
 
-  @Test
-  public void setOrientation_hasThatOrientation() throws Exception {
-    String expected = "test";
-    //given
-    SelectionSlider selectionSlider = selectionSlider();
-    //when
-    selectionSlider.setOrientation(expected);
-    //then
-    Assertions.assertThat(selectionSlider.getOrientation()).isEqualTo(expected);
-  }
-
-  @Test
-  public void getValueFromObject_returnString() throws Exception {
-    //given
-    SelectionSlider selectionSlider = selectionSlider();
-    //when
-    String result = selectionSlider.getValueFromObject(11);
-    //then
-    Assertions.assertThat(result).isEqualTo("11");
-  }
-
-  private SelectionSlider selectionSlider() throws NoSuchAlgorithmException {
-    SelectionSlider widget = new SelectionSlider();
+  private ComboBox comboBox() throws NoSuchAlgorithmException {
+    ComboBox widget = new ComboBox();
     kernel.clearPublishedMessages();
     return widget;
   }

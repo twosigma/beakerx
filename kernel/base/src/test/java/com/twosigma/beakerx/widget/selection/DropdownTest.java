@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.selections;
+package com.twosigma.beakerx.widget.selection;
 
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
@@ -26,7 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
-public class SelectTest {
+public class DropdownTest {
 
   private KernelTest kernel;
 
@@ -45,33 +45,35 @@ public class SelectTest {
   public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     //when
-    new Select();
+    new Dropdown();
     //then
-    verifyOpenCommMsg(kernel.getPublishedMessages(), Select.MODEL_NAME_VALUE, Select.VIEW_NAME_VALUE);
+    verifyOpenCommMsg(kernel.getPublishedMessages(), Dropdown.MODEL_NAME_VALUE, Dropdown.VIEW_NAME_VALUE);
   }
 
   @Test
   public void shouldSendCommMsgWhenValueChange() throws Exception {
     //given
-    Select widget = select();
+    Dropdown dropdown = dropdown();
     //when
-    widget.setValue("1");
+    dropdown.setValue("1");
     //then
-    verifyMsgForProperty(kernel, Select.VALUE, "1");
+    verifyMsgForProperty(kernel, Dropdown.VALUE, "1");
   }
 
   @Test
   public void shouldSendCommMsgWhenOptionsChange() throws Exception {
     //given
-    Select widget = select();
+    Dropdown dropdown = dropdown();
     //when
-    widget.setOptions(new String[]{"2", "3"});
+    dropdown.setOptions(new String[]{"2", "3"});
     //then
-    verifyMsgForProperty(kernel, RadioButtons.OPTIONS_LABELS, new String[]{"2", "3"});
+    verifyMsgForProperty(kernel, Dropdown.OPTIONS_LABELS, new String[]{"2", "3"});
   }
 
-  private Select select() throws NoSuchAlgorithmException {
-    Select widget = new Select();
+  private Dropdown dropdown() throws NoSuchAlgorithmException {
+    Dropdown widget = new Dropdown();
+    widget.setOptions(new String[]{"0", "1", "2"});
+
     kernel.clearPublishedMessages();
     return widget;
   }

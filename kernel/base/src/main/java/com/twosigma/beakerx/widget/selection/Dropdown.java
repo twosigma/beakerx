@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.selections;
+package com.twosigma.beakerx.widget.selection;
 
-public class Select extends SingleSelectionWidget {
+public class Dropdown extends SingleSelectionWidget {
 
-  public static String VIEW_NAME_VALUE = "SelectView";
-  public static String MODEL_NAME_VALUE = "SelectModel";
+  public static final String VIEW_NAME_VALUE = "DropdownView";
+  public static final String MODEL_NAME_VALUE = "DropdownModel";
 
-  public Select() {
+  public Dropdown() {
     super();
     openComm();
   }
@@ -34,5 +34,5 @@ public class Select extends SingleSelectionWidget {
   public String getViewNameValue() {
     return VIEW_NAME_VALUE;
   }
-
+  
 }

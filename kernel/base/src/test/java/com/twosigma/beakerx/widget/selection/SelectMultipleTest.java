@@ -13,20 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beakerx.widget.selections;
+package com.twosigma.beakerx.widget.selection;
 
-import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.KernelTest;
+import com.twosigma.beakerx.kernel.KernelManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
 import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyMsgForProperty;
-import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
 
-public class RadioButtonsTest {
+public class SelectMultipleTest {
 
   private KernelTest kernel;
 
@@ -45,34 +46,37 @@ public class RadioButtonsTest {
   public void shouldSendCommOpenWhenCreate() throws Exception {
     //given
     //when
-    new RadioButtons();
+    new SelectMultiple();
     //then
-    verifyOpenCommMsg(kernel.getPublishedMessages(), RadioButtons.MODEL_NAME_VALUE, RadioButtons.VIEW_NAME_VALUE);
+    verifyInternalOpenCommMsgWitLayout(kernel.getPublishedMessages(), SelectMultiple.MODEL_NAME_VALUE, SelectMultiple.VIEW_NAME_VALUE);
   }
 
   @Test
   public void shouldSendCommMsgWhenValueChange() throws Exception {
     //given
-    RadioButtons widget = radioButtons();
+    SelectMultiple widget = selectMultiple();
+    widget.setOptions(new String[]{"1","2", "3"});
+    kernel.clearPublishedMessages();
     //when
-    widget.setValue("1");
+    widget.setValue(Arrays.asList("1","2"));
     //then
-    verifyMsgForProperty(kernel, RadioButtons.VALUE, "1");
+    verifyMsgForProperty(kernel, SelectMultiple.VALUE,new String[]{"1","2"});
   }
 
   @Test
   public void shouldSendCommMsgWhenOptionsChange() throws Exception {
     //given
-    RadioButtons widget = radioButtons();
+    SelectMultiple widget = selectMultiple();
     //when
-    widget.setOptions(new String[]{"2", "3"});
+    widget.setOptions(new String[]{"1", "2"});
     //then
-    verifyMsgForProperty(kernel, RadioButtons.OPTIONS_LABELS, new String[]{"2", "3"});
+    verifyMsgForProperty(kernel, SelectMultiple.OPTIONS_LABELS, new String[]{"1", "2"});
   }
 
-  private RadioButtons radioButtons() throws NoSuchAlgorithmException {
-    RadioButtons widget = new RadioButtons();
+  private SelectMultiple selectMultiple() throws NoSuchAlgorithmException {
+    SelectMultiple widget = new SelectMultiple();
     kernel.clearPublishedMessages();
     return widget;
   }
+
 }

@@ -15,8 +15,8 @@
  */
 package com.twosigma.beakerx.jvm.object;
 
-import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.widgets.selectioncontainer.Tab;
+import com.twosigma.beakerx.widget.Widget;
+import com.twosigma.beakerx.widget.selectioncontainer.Tab;
 
 import java.util.List;
 

@@ -99,6 +99,7 @@ class Table(BaseObject):
         if args[0].index.name is not None and args[0].index.name in self.columnNames:
             self.columnNames.remove(args[0].index.name)
 
+        column = None
         for column in self.columnNames:
             column_type = self.convert_type(args[0].dtypes[column].name,
                                             args[0][column].get_values()[0])
@@ -116,7 +117,7 @@ class Table(BaseObject):
                     self.convert_value(args[0].index.get_values()[index], type(args[0].index.get_values()[index]))]
             self.values.append(row)
 
-        if not isinstance(args[0].index, RangeIndex):
+        if not isinstance(args[0].index, RangeIndex) and column is not None:
             self.hasIndex = "true"
             if isinstance(args[0].index, MultiIndex):
                 self.columnNames[:0] = [', '.join(args[0].index.names)]

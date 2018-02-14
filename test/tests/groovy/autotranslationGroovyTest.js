@@ -21,7 +21,7 @@ describe('Autotranslation Groovy to JavaScript and D3 tests', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/AutoTranslationGroovyTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/AutoTranslationGroovyTest.ipynb');
   });
 
   afterAll(function () {

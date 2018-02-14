@@ -25,8 +25,8 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static com.twosigma.beakerx.widgets.BeakerxWidget.MODEL;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widget.BeakerxWidget.MODEL;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
 import static org.junit.Assert.assertTrue;
 
 public class TabbedOutputContainerLayoutManagerTest {

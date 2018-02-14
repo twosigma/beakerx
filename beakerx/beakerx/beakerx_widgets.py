@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ipywidgets import Box, DOMWidget, CoreWidget, Text, Label, Textarea, \
+from ipywidgets import Box, DOMWidget, CoreWidget, \
+    Text, Label, Textarea, Password, \
     Button, Widget, \
     SelectMultiple, Select, Dropdown, Checkbox, HBox, \
     VBox, RadioButtons, register, Layout, widget_serialization, HTML
@@ -138,6 +139,24 @@ class BeakerxText(Text, EasyFormComponent):
 
     def __init__(self, **kwargs):
         super(BeakerxText, self).__init__(**kwargs)
+        self.observe(self.on_value_change, names='value')
+
+    _view_module = Unicode('beakerx').tag(sync=True)
+    _model_module = Unicode('beakerx').tag(sync=True)
+    _model_module_version = Unicode('*').tag(sync=True)
+    _view_module_version = Unicode('*').tag(sync=True)
+
+    size = Int(default_value=-1).tag(sync=True)
+    layout = InstanceDict(BeakerxLayout).tag(sync=True, **widget_serialization)
+    style = None
+
+
+class BeakerxPassword(Password, EasyFormComponent):
+    def on_value_change(self, change):
+        self.fireChanged(change['new'])
+
+    def __init__(self, **kwargs):
+        super(BeakerxPassword, self).__init__(**kwargs)
         self.observe(self.on_value_change, names='value')
 
     _view_module = Unicode('beakerx').tag(sync=True)

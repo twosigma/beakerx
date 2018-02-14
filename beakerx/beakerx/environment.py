@@ -27,10 +27,11 @@ default_config = """
             "properties": {}
         },
         "ui_options": {
-            "auto_close": false,
+            "auto_close": true,
             "improve_fonts": true,
             "wide_cells": true,
-            "show_publication": true
+            "show_publication": true,
+            "auto_save": true
         }
     }
 }

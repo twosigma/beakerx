@@ -21,7 +21,7 @@ describe('Testing of Plot (python)', function () {
 
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/python/PlotPythonTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/python/PlotPythonTest.ipynb');
   }, 2);
 
   afterAll(function () {

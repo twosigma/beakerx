@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.jvm.threads;
 
 import com.twosigma.beakerx.jvm.object.ConsoleOutput;
-import com.twosigma.beakerx.widgets.Output;
+import com.twosigma.beakerx.widget.Output;
 
 import java.io.IOException;
 import java.io.OutputStream;

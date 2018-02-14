@@ -16,7 +16,7 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.bools.Checkbox;
+import com.twosigma.beakerx.widget.bools.Checkbox;
 
 public class CheckBoxWidget extends EasyFormComponent<Checkbox> {
 

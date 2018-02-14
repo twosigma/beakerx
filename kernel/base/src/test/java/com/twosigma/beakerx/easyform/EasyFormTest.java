@@ -15,15 +15,16 @@
  */
 package com.twosigma.beakerx.easyform;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getState;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.getValueForProperty;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyDisplayMsg;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsg;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsg;
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
-import static com.twosigma.beakerx.widgets.Widget.VALUE;
-import static com.twosigma.beakerx.widgets.strings.TextTest.verifyTextField;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getState;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.getValueForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyDisplayMsg;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyInternalOpenCommMsg;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyInternalOpenCommMsgWitLayout;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsg;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.verifyOpenCommMsgWitoutLayout;
+import static com.twosigma.beakerx.widget.Widget.VALUE;
+import static com.twosigma.beakerx.widget.strings.PasswordTest.verifyPasswordField;
+import static com.twosigma.beakerx.widget.strings.TextTest.verifyTextField;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,24 +32,24 @@ import com.twosigma.beakerx.KernelTest;
 import com.twosigma.beakerx.jupyter.SearchMessages;
 import com.twosigma.beakerx.kernel.KernelManager;
 import com.twosigma.beakerx.message.Message;
-import com.twosigma.beakerx.widgets.BeakerxWidget;
-import com.twosigma.beakerx.widgets.Button;
-import com.twosigma.beakerx.widgets.DatePicker;
-import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.widgets.bools.Checkbox;
-import com.twosigma.beakerx.widgets.box.Box;
-import com.twosigma.beakerx.widgets.box.HBox;
-import com.twosigma.beakerx.widgets.selections.ComboBox;
-import com.twosigma.beakerx.widgets.selections.RadioButtons;
-import com.twosigma.beakerx.widgets.selections.SelectMultiple;
-import com.twosigma.beakerx.widgets.selections.SelectMultipleSingle;
-import com.twosigma.beakerx.widgets.strings.Text;
-import com.twosigma.beakerx.widgets.strings.Textarea;
+import com.twosigma.beakerx.widget.BeakerxWidget;
+import com.twosigma.beakerx.widget.Button;
+import com.twosigma.beakerx.widget.DatePicker;
+import com.twosigma.beakerx.widget.Widget;
+import com.twosigma.beakerx.widget.bools.Checkbox;
+import com.twosigma.beakerx.widget.box.Box;
+import com.twosigma.beakerx.widget.box.HBox;
+import com.twosigma.beakerx.widget.selections.ComboBox;
+import com.twosigma.beakerx.widget.selections.RadioButtons;
+import com.twosigma.beakerx.widget.selections.SelectMultiple;
+import com.twosigma.beakerx.widget.selections.SelectMultipleSingle;
+import com.twosigma.beakerx.widget.strings.Password;
+import com.twosigma.beakerx.widget.strings.Text;
+import com.twosigma.beakerx.widget.strings.Textarea;
 
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -272,6 +273,26 @@ public class EasyFormTest {
             Text.MODEL_MODULE_VALUE,
             Text.VIEW_NAME_VALUE,
             Text.VIEW_MODULE_VALUE
+    );
+    verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
+    verifyDisplayMsg(kernel.getPublishedMessages());
+  }
+
+  @Test
+  public void shouldCreateEasyFormWithPasswordField() throws Exception {
+    //given
+    String label = "pass1";
+    //when
+    EasyForm easyForm = new EasyForm("EasyForm with password field");
+    easyForm.addPasswordField(label, 10);
+    easyForm.display();
+    //then
+    verifyPasswordField(
+            kernel.getPublishedMessages(),
+            Password.MODEL_NAME_VALUE,
+            Password.MODEL_MODULE_VALUE,
+            Password.VIEW_NAME_VALUE,
+            Password.VIEW_MODULE_VALUE
     );
     verifyEasyForm(kernel.getPublishedMessages(), easyForm.getCommFunctionalities());
     verifyDisplayMsg(kernel.getPublishedMessages());

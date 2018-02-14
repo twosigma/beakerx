@@ -28,6 +28,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
   public readonly WIDE_CELLS_SELECTOR = '#wide_cells';
   public readonly IMPROVE_FONTS_SELECTOR = '#improve_fonts';
   public readonly SHOW_PUBLICATION_SELECTOR = '#show_publication';
+  public readonly AUTO_SAVE_SELECTOR = '#auto_save';
 
   public readonly HTML_ELEMENT_TEMPLATE = `
 <style>
@@ -52,7 +53,11 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     <!--</div>-->
     <div class="form-check">
       <input class="form-check-input" id="show_publication" name="show_publication" type="checkbox">
-      <label class="form-check-label" for="show_publication">Show publication</label>
+      <label class="form-check-label" for="show_publication">Show publication button and menu item</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" id="auto_save" name="auto_save" type="checkbox">
+      <label class="form-check-label" for="auto_save">Auto save notebooks</label>
     </div>
   </div>
 </fieldset>
@@ -68,7 +73,13 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     $(this.HTML_ELEMENT_TEMPLATE).appendTo(this.node);
 
     this.$node
-      .find(`${ this.AUTO_CLOSE_SELECTOR },${ this.IMPROVE_FONTS_SELECTOR },${ this.WIDE_CELLS_SELECTOR },${ this.SHOW_PUBLICATION_SELECTOR }`)
+      .find([
+        this.AUTO_CLOSE_SELECTOR,
+        this.IMPROVE_FONTS_SELECTOR,
+        this.WIDE_CELLS_SELECTOR,
+        this.SHOW_PUBLICATION_SELECTOR,
+        this.AUTO_SAVE_SELECTOR,
+      ].join(','))
       .on('change', this.optionsChangedHandler.bind(this));
   }
 
@@ -79,6 +90,7 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     this.setAutoClose(options.auto_close);
     // this.setImproveFonts(options.improve_fonts);
     this.setShowPublication(options.show_publication);
+    this.setAutoSave(options.auto_save);
   }
 
   private optionsChangedHandler(evt): void {
@@ -112,7 +124,12 @@ export class UIOptionsWidget extends Widget implements UIOptionsWidgetInterface 
     this.$node
       .find(this.SHOW_PUBLICATION_SELECTOR)
       .prop('checked', checked);
+  }
 
+  private setAutoSave(checked: boolean) {
+    this.$node
+      .find(this.AUTO_SAVE_SELECTOR)
+      .prop('checked', checked);
   }
 
   private _options: IUIOptions;

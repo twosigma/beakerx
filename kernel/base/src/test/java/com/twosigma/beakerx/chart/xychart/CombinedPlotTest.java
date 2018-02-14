@@ -25,7 +25,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
-import static com.twosigma.beakerx.widgets.TestWidgetUtils.findValueForProperty;
+import static com.twosigma.beakerx.widget.TestWidgetUtils.findValueForProperty;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CombinedPlotTest {

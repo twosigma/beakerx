@@ -16,7 +16,7 @@
 
 package com.twosigma.beakerx.chart;
 
-import com.twosigma.beakerx.widgets.CommActions;
+import com.twosigma.beakerx.widget.CommActions;
 import org.apache.commons.lang3.StringUtils;
 
 import com.twosigma.beakerx.NamespaceClient;
@@ -27,7 +27,7 @@ import com.twosigma.beakerx.chart.actions.XYGraphicsActionObject;
 import com.twosigma.beakerx.chart.categoryplot.CategoryPlot;
 import com.twosigma.beakerx.chart.xychart.CombinedPlot;
 import com.twosigma.beakerx.chart.xychart.XYChart;
-import com.twosigma.beakerx.widgets.BeakerxWidget;
+import com.twosigma.beakerx.widget.BeakerxWidget;
 import com.twosigma.beakerx.handler.Handler;
 import com.twosigma.beakerx.message.Message;
 

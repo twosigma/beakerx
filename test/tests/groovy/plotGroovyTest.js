@@ -24,7 +24,7 @@ describe('Plot groovy tests', function () {
   beforeAll(function () {
     beakerxPO = new BeakerXPageObject();
     plotHelper = new PlotHelperObject();
-    beakerxPO.runNotebookByUrl('/notebooks/test/notebooks/groovy/PlotGroovyTest.ipynb');
+    beakerxPO.runNotebookByUrl('/test/notebooks/groovy/PlotGroovyTest.ipynb');
   });
 
   afterAll(function () {

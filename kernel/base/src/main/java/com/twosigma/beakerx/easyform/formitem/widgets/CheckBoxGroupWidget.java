@@ -16,14 +16,13 @@
 package com.twosigma.beakerx.easyform.formitem.widgets;
 
 import com.twosigma.beakerx.easyform.EasyFormComponent;
-import com.twosigma.beakerx.widgets.ValueWidget;
-import com.twosigma.beakerx.widgets.Widget;
-import com.twosigma.beakerx.widgets.bools.BoolWidget;
-import com.twosigma.beakerx.widgets.bools.Checkbox;
-import com.twosigma.beakerx.widgets.box.Box;
-import com.twosigma.beakerx.widgets.box.HBox;
-import com.twosigma.beakerx.widgets.box.VBox;
-import com.twosigma.beakerx.widgets.strings.Label;
+import com.twosigma.beakerx.widget.ValueWidget;
+import com.twosigma.beakerx.widget.Widget;
+import com.twosigma.beakerx.widget.bools.BoolWidget;
+import com.twosigma.beakerx.widget.box.Box;
+import com.twosigma.beakerx.widget.box.HBox;
+import com.twosigma.beakerx.widget.box.VBox;
+import com.twosigma.beakerx.widget.strings.Label;
 
 import java.util.ArrayList;
 import java.util.Arrays;

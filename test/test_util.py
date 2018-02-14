@@ -37,11 +37,3 @@ def hasCondaPackage(package_name):
     except CalledProcessError:
         result = None
     return result is not None
-
-def signal_handler(sgnl, frame):
-    os.killpg(os.getpgid(webcontrol.pid), signal.SIGKILL)
-    os.killpg(os.getpgid(beakerx.pid), signal.SIGKILL)
-    kill_processes('jupyter')
-    kill_processes('webdriver')
-    kill_processes('java')
-    sys.exit(20)

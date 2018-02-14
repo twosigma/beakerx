@@ -72,6 +72,13 @@ while 1:
         break
 
 # create handler for Ctrl+C
+def signal_handler(sgnl, frame):
+    os.killpg(os.getpgid(webcontrol.pid), signal.SIGKILL)
+    os.killpg(os.getpgid(beakerx.pid), signal.SIGKILL)
+    test_util.kill_processes('jupyter')
+    test_util.kill_processes('webdriver')
+    test_util.kill_processes('java')
+    sys.exit(20)
 signal.signal(signal.SIGINT, test_util.signal_handler)
 
 #start webdriverio

@@ -22,6 +22,7 @@ import IDataModelState from '../interface/IDataGridModelState';
 import { MapIterator, EmptyIterator, iter, toArray } from '@phosphor/algorithm';
 import { IColumn } from "../interface/IColumn";
 import ColumnManager, {COLUMN_CHANGED_TYPES, IBkoColumnsChangedArgs} from "../column/ColumnManager";
+import RowManager from "../row/RowManager";
 
 interface IDataGridRow {
   values: any[],
@@ -37,6 +38,7 @@ export interface IDataGridModelColumnState {
 export class BeakerxDataGridModel extends DataModel {
   dataFormatter: DataFormatter;
   columnManager: ColumnManager;
+  rowManager: RowManager;
 
   static DEFAULT_INDEX_COLUMN_TYPE = ALL_TYPES[1]; // integer
   static DEFAULT_INDEX_COLUMN_NAME = 'index';
@@ -69,6 +71,7 @@ export class BeakerxDataGridModel extends DataModel {
   addProperties(state, columnManager) {
     this.dataFormatter = new DataFormatter(state);
     this.columnManager = columnManager;
+    this.rowManager = new RowManager(state.values, state.hasIndex);
 
     this._state = state;
     this._data = state.values;
@@ -101,7 +104,7 @@ export class BeakerxDataGridModel extends DataModel {
     const index = this.columnManager.indexResolver.resolveIndex(columnIndex, columnType);
 
     if (region === 'row-header') {
-      return this.state.hasIndex ? this.getValue(region, row, index) : this._rows[row].index;
+      return this.state.hasIndex ? this.getValue(row, index) : this._rows[row].index;
     }
 
     if (region === 'column-header') {
@@ -112,7 +115,7 @@ export class BeakerxDataGridModel extends DataModel {
       return this.state.hasIndex ? this.state.columnNames[index] : BeakerxDataGridModel.DEFAULT_INDEX_COLUMN_NAME;
     }
 
-    return this.getValue(region, row, index);
+    return this.getValue(row, index);
   }
 
   setState(state) {
@@ -123,48 +126,7 @@ export class BeakerxDataGridModel extends DataModel {
   }
 
   sortByColumn(column: DataGridColumn) {
-    if (column.type === COLUMN_TYPES.index || column.state.sortOrder === SORT_ORDER.NO_SORT) {
-      return this.sortByIndexColumn(column);
-    }
-
-    this.sortByBodyColumn(column);
-  }
-
-  private sortByIndexColumn(column: DataGridColumn) {
-    this.sortRows(column, (row) => row.index);
-    this.reset();
-  }
-
-  private sortByBodyColumn(column: DataGridColumn) {
-    const dateValueResolver = (row) => row.values[column.index].timestamp;
-
-    if (column.state.dataType === ALL_TYPES.datetime || column.state.dataType === ALL_TYPES.time) {
-      return this.sortRows(column, dateValueResolver);
-    }
-
-    return this.sortRows(column, (row) => row.values[column.index]);
-  }
-
-  private sortRows(column: DataGridColumn, valueResolver: Function): void {
-    const shouldReverse = column.state.sortOrder === SORT_ORDER.DESC;
-
-    this._rows = this._rows.sort((row1, row2) => {
-      let value1 = valueResolver(row1);
-      let value2 = valueResolver(row2);
-      let result = 0;
-
-      if (value1 > value2) {
-        result = 1;
-      }
-
-      if (value1 < value2) {
-        result = -1;
-      }
-
-      return shouldReverse ? -result : result;
-    });
-
-    this.reset();
+    this.rowManager.sortByColumn(column);
   }
 
   private connectTocolumnsChanged() {
@@ -182,8 +144,8 @@ export class BeakerxDataGridModel extends DataModel {
     this.reset();
   }
 
-  getValue(region: DataModel.CellRegion, row: number, columnIndex: number) {
-    return this._rows[row].values[columnIndex];
+  getValue(row: number, columnIndex: number) {
+    return this.rowManager.getRowValues(row)[columnIndex];
   }
 
   getColumnValuesIterator(column: IColumn): MapIterator<number, number> {

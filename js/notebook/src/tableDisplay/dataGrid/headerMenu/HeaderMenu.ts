@@ -78,7 +78,7 @@ export default abstract class HeaderMenu implements MenuInterface {
   }
 
   hideTrigger() {
-    if (this.column.state.sortOrder !== SORT_ORDER.NO_SORT) {
+    if (this.column.state.sortOrder !== SORT_ORDER.NO_SORT && this.column.state.visible) {
       return;
     }
 

@@ -19,24 +19,28 @@ import sys
 import subprocess
 import signal
 import test_console
+import test_util
 
 here = os.path.abspath(os.path.dirname(__file__))
 beakerx_dir = os.path.abspath(os.path.join(here, ".."))
 test_dir = here
 cur_app = 'notebook'
 
-def set_env(cur_env):
-    tmpConfig = open(os.path.abspath(os.path.join(here, "tmp.config.js")), 'w')
-    tmpConfig.write("exports.config = { cur_env : '%s' }; " %cur_env)
-    tmpConfig.close()
-
+#define target test app
 try:
-    cur_env = os.environ['CONDA_DEFAULT_ENV']
-    if cur_env == 'labx':
+    if sys.argv.count('lab'):
         cur_app = 'lab'
-    set_env(cur_env)
-except:
-    sys.exit('Conda environment aren\'t activated')
+    elif sys.argv.count('nb'):
+        cur_app = 'notebook'
+    elif test_util.hasCondaPackage('jupyterlab'):
+        cur_app = 'lab'
+    else:
+        sys.exit('can\'t define target app for test')
+except Exception as e:
+    sys.exit(e.strerr)
+
+#save target app as argument for test environment
+test_util.set_cur_app(os.path.abspath(os.path.join(here, "tmp.config.js")), cur_app)
 
 # update environment
 subprocess.call("yarn install", shell=True)
@@ -68,14 +72,7 @@ while 1:
         break
 
 # create handler for Ctrl+C
-def signal_handler(sgnl, frame):
-    os.killpg(os.getpgid(webcontrol.pid), signal.SIGKILL)
-    os.killpg(os.getpgid(beakerx.pid), signal.SIGKILL)
-    test_console.kill_processes('jupyter')
-    test_console.kill_processes('webdriver')
-    test_console.kill_processes('java')
-    sys.exit(20)
-signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGINT, test_util.signal_handler)
 
 #start webdriverio
 result=subprocess.call("yarn run test", shell=True)
@@ -83,7 +80,7 @@ result=subprocess.call("yarn run test", shell=True)
 # Send the signal to all the process groups
 os.killpg(os.getpgid(beakerx.pid), signal.SIGKILL)
 os.killpg(os.getpgid(webcontrol.pid), signal.SIGKILL)
-test_console.kill_processes('java')
+test_util.kill_processes('java')
 
 if not result:
     result = test_console.test_lsmagic()

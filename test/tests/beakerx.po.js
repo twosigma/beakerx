@@ -20,11 +20,11 @@ var LabPageObject = require('./lab.po.js').prototype;
 var env = require('../tmp.config.js');
 
 function BeakerXPageObject() {
-  if ('labx' == env.config.cur_env) {
+  if ('lab' == env.config.cur_app) {
     LabPageObject.constructor.apply(this, arguments);
     BeakerXPageObject.prototype = Object.create(LabPageObject);
   }
-  else if ('beakerx' == env.config.cur_env) {
+  else if ('notebook' == env.config.cur_app) {
     NotebookPageObject.constructor.apply(this, arguments);
     BeakerXPageObject.prototype = Object.create(NotebookPageObject);
   }
